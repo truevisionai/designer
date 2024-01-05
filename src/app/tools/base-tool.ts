@@ -34,8 +34,7 @@ export abstract class BaseTool extends ViewportEventSubscriber implements IEdito
 
 	}
 
-	init (): void {
-	}
+	init (): void {	}
 
 	enable (): void {
 

@@ -3,15 +3,13 @@
  */
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { TextObject } from 'app/modules/three-js/objects/text-object';
 import { Vector3 } from 'three';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { RoadCircleService } from "../../services/road/road-circle.service";
+import { RoadCircleToolService } from "./road-circle-tool.service";
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { MapEvents } from 'app/events/map-events';
-import { RoadCreatedEvent } from "../../events/road/road-created-event";
-import { RoadRemovedEvent } from "../../events/road/road-removed-event";
+import { Environment } from 'app/core/utils/environment';
+
 
 export class RoadCircleTool extends BaseTool {
 
@@ -25,9 +23,9 @@ export class RoadCircleTool extends BaseTool {
 
 	private isDragging = false;
 
-	private debug = false;
+	private debug = !Environment.production;
 
-	constructor ( private circleRoadService: RoadCircleService ) {
+	constructor ( private tool: RoadCircleToolService ) {
 
 		super();
 
@@ -41,11 +39,6 @@ export class RoadCircleTool extends BaseTool {
 
 	init () {
 
-		// HACK: to load the font
-		const tempText = new TextObject( '', new Vector3() );
-		setTimeout( () => tempText.remove(), 2000 );
-
-		super.init();
 
 	}
 
@@ -59,7 +52,7 @@ export class RoadCircleTool extends BaseTool {
 
 		super.disable();
 
-		this.circleRoadService.onToolDisabled();
+		this.tool.onToolDisabled();
 
 	}
 
@@ -94,13 +87,13 @@ export class RoadCircleTool extends BaseTool {
 
 	onRoadAdded ( road: TvRoad ) {
 
-		this.circleRoadService.addRoad( road );
+		this.tool.addRoad( road );
 
 	}
 
 	onRoadRemoved ( road: TvRoad ) {
 
-		this.circleRoadService.removeRoad( road );
+		this.tool.removeRoad( road );
 
 	}
 
@@ -108,7 +101,7 @@ export class RoadCircleTool extends BaseTool {
 
 		if ( this.debug ) console.log( 'onPointerDownSelect', e, this.isDragging, this.isPointerDown, this.currentRadius );
 
-		this.circleRoadService.init( this.pointerDownAt, e.point, this.radius );
+		this.tool.init( this.pointerDownAt, e.point, this.radius );
 
 		this.isDragging = true;
 
@@ -122,7 +115,7 @@ export class RoadCircleTool extends BaseTool {
 
 		if ( !this.isDragging ) return;
 
-		const roads = this.circleRoadService.createRoads();
+		const roads = this.tool.createRoads();
 
 		this.executeAddObject( roads );
 
@@ -147,7 +140,7 @@ export class RoadCircleTool extends BaseTool {
 
 		this.currentRadius = this.pointerDownAt.distanceTo( this.pointerLastAt );
 
-		this.circleRoadService.update( this.radius, this.pointerLastAt );
+		this.tool.update( this.radius, this.pointerLastAt );
 	}
 
 }

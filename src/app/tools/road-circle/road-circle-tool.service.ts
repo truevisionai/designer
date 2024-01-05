@@ -8,33 +8,33 @@ import {
 	Vector2,
 	Vector3
 } from 'three';
-import { SceneService } from '../scene.service';
-import { TextObject } from 'app/modules/three-js/objects/text-object';
+import { SceneService } from '../../services/scene.service';
+import { TextObject3d } from 'app/modules/three-js/objects/text-object';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
 import { Injectable } from '@angular/core';
-import { RoadLinkService } from './road-link.service';
-import { MapService } from '../map.service';
+import { RoadLinkService } from '../../services/road/road-link.service';
+import { MapService } from '../../services/map.service';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from "../../events/road/road-created-event";
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
-import { RoadDebugService } from '../debug/road-debug.service';
+import { RoadDebugService } from '../../services/debug/road-debug.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
+import { DebugTextService } from 'app/services/debug/debug-text.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadCircleService {
+export class RoadCircleToolService {
 
 	private line: LineLoop;
 
-	private text: TextObject;
+	private text3d: TextObject3d;
 
-	private centre: Vector3;
+	private start: Vector3;
 
 	private end: Vector3;
 
@@ -45,12 +45,17 @@ export class RoadCircleService {
 		private mapService: MapService,
 		private roadDebug: RoadDebugService,
 		private roadFactory: RoadFactory,
+		private debugTextService: DebugTextService,
 	) {
 	}
 
 	onToolDisabled () {
 
 		this.roadDebug.clear();
+
+		SceneService.removeFromTool( this.line );
+
+		SceneService.removeFromTool( this.text3d );
 
 	}
 
@@ -84,7 +89,7 @@ export class RoadCircleService {
 
 	init ( centre: Vector3, end: Vector3, radius: number ) {
 
-		this.centre = centre;
+		this.start = centre;
 
 		this.end = end;
 
@@ -92,21 +97,24 @@ export class RoadCircleService {
 
 		let circleGeometry = new CircleGeometry( radius, radius * 4 );
 
-		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: COLOR.CYAN } ) );
+		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: COLOR.CYAN, linewidth: 4 } ) );
 
 		this.line.name = 'circle';
 
 		this.line.position.copy( centre );
 
-		this.text = new TextObject( 'Radius: ' + radius.toFixed( 2 ), centre );
+		this.text3d = this.debugTextService.createTextObject( 'Radius: ' + radius.toFixed( 2 ), 10 );
+
+		this.text3d.position.copy( centre );
 
 		SceneService.addToolObject( this.line );
 
+		SceneService.addToolObject( this.text3d );
 	}
 
 	reset () {
 
-		this.centre = null;
+		this.start = null;
 
 		this.end = null;
 
@@ -114,7 +122,7 @@ export class RoadCircleService {
 
 		SceneService.removeFromTool( this.line );
 
-		this.text.remove();
+		SceneService.removeFromTool( this.text3d );
 
 	}
 
@@ -136,12 +144,12 @@ export class RoadCircleService {
 
 		this.line.geometry = circleBufferGeometry;
 
-		this.text.updateText( 'Radius: ' + radius.toFixed( 2 ) );
+		this.debugTextService.updateText( this.text3d, 'Radius: ' + radius.toFixed( 2 ) );
 	}
 
 	createRoads () {
 
-		const roads = this.createCircularRoads( this.centre, this.end, this.radius );
+		const roads = this.createCircularRoads( this.start, this.end, this.radius );
 
 		this.reset();
 

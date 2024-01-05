@@ -25,7 +25,7 @@ import { ToolType } from 'app/tools/tool-types.enum';
 import { VehicleTool } from 'app/tools/vehicle/vehicle-tool';
 import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
 import { PropPointService } from 'app/tools/prop-point/prop-point.service';
-import { RoadCircleService } from 'app/services/road/road-circle.service';
+import { RoadCircleToolService } from 'app/tools/road-circle/road-circle-tool.service';
 import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
@@ -63,7 +63,7 @@ export class ToolBarService {
 		private roadToolService: RoadToolService,
 		private surfaceToolService: SurfaceToolService,
 		private propPointService: PropPointService,
-		private roadCircleService: RoadCircleService,
+		private roadCircleService: RoadCircleToolService,
 		private roadElevationService: RoadElevationService,
 		private maneuverService: ManeuverService,
 		private laneWidthService: LaneWidthService,

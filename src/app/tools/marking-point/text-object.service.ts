@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TextObject3d } from 'app/modules/three-js/objects/text-object';
-import { FrontSide, MeshBasicMaterial, ShapeGeometry } from 'three';
+import { BufferGeometry, FrontSide, MeshBasicMaterial, ShapeGeometry } from 'three';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
 @Injectable( {
@@ -25,7 +25,37 @@ export class TextObjectService {
 
 	}
 
-	createTextObject ( text: string, size: number = 1 ): TextObject3d {
+	createFromText ( text: string, size: number = 1 ): TextObject3d {
+
+		const geometry = this.createTextGeometry( text, size );
+
+		return this.createTextObject( text, size, geometry, this.defaultMaterial );
+
+	}
+
+	createWithMaterial ( text: string, size: number = 1, material: MeshBasicMaterial ): TextObject3d {
+
+		const geometry = this.createTextGeometry( text, size );
+
+		return this.createTextObject( text, size, geometry, material );
+
+	}
+
+	updateText ( textObject: TextObject3d, text: string ): void {
+
+		textObject.geometry.dispose();
+
+		textObject.geometry = this.createTextGeometry( text, textObject.size );
+
+	}
+
+	private createTextObject ( text: string, size: number, geometry: BufferGeometry, material: MeshBasicMaterial ) {
+
+		return new TextObject3d( text, size, geometry, material );
+
+	}
+
+	private createTextGeometry ( text: string, size: number = 1 ): BufferGeometry {
 
 		const shapes = this.font.generateShapes( text, size );
 
@@ -37,9 +67,8 @@ export class TextObjectService {
 
 		geometry.translate( xMid, 0, 0 );
 
-		return new TextObject3d( text, size, geometry, this.defaultMaterial.clone() );
+		return geometry;
 
 	}
-
 
 }

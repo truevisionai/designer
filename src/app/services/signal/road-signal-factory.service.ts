@@ -79,7 +79,7 @@ export class RoadSignalBuilder {
 
 		const roadCoord = road.getPosThetaAt( signal.s, signal.t );
 
-		const textObject3d = this.textService.createTextObject( signal.text, signal.value );
+		const textObject3d = this.textService.createFromText( signal.text, signal.value );
 
 		textObject3d.position.copy( roadCoord.position );
 
