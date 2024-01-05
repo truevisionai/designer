@@ -14,9 +14,7 @@ import { EditorService } from './editor.service';
 import { SceneService } from './scene.service';
 import { ManagerRegistry } from '../managers/manager-registry';
 import { JunctionManager } from '../managers/junction-manager';
-import { RoadEventListener } from '../listeners/road-event-listener';
 import { EntityManager } from '../managers/entity-manager';
-import { LaneManager } from '../managers/lane-manager';
 import { MapManager } from '../managers/map-manager';
 import { ElevationManager } from '../managers/elevation-manager';
 import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
@@ -26,7 +24,7 @@ import { MapService } from './map.service';
 import { ObjectEventListener } from 'app/listeners/object-event-listener';
 import { RoadLinkService } from './road/road-link.service';
 import { AssetService } from 'app/core/asset/asset.service';
-import { LaneService } from 'app/tools/lane/lane.service';
+import { LaneService } from 'app/services/lane/lane.service';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 
 @Injectable( {
@@ -53,11 +51,7 @@ export class AppService {
 		public files: FileService,
 		public editor: EditorService,
 		private roadService: RoadService,
-		private roadSplineService: RoadSplineService,
-		private mapService: MapService,
-		private roadLinkService: RoadLinkService,
 		private assetService: AssetService,
-		private laneService: LaneService,
 		private eventServiceProvider: EventServiceProvider,
 	) {
 
@@ -72,7 +66,6 @@ export class AppService {
 
 		ManagerRegistry.registerManager( JunctionManager );
 		ManagerRegistry.registerManager( EntityManager );
-		ManagerRegistry.setManager( 'lane-manager', new LaneManager( this.laneService ) );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
 		ManagerRegistry.setManager( 'object-listener', new ObjectEventListener( this.assetService ) );

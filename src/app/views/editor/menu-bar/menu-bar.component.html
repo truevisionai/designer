@@ -124,6 +124,12 @@
 			<span>Redo (CTRL + Y)</span>
 		</button>
 		<mat-divider></mat-divider>
+		<button (click)="onMapSettings()"
+			action="gis-settings"
+			appTrack="menu"
+			mat-menu-item>
+			<span>Map Settings</span>
+		</button>
 		<button (click)="onEsminiSettings()"
 			action="esmini-settings"
 			appTrack="menu"

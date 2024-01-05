@@ -42,7 +42,10 @@ export class SceneBuilderService {
 
 			road.spline = spline;
 
-		} else if ( road.spline.type === SplineType.EXPLICIT ) {
+			this.roadService.buildRoad( road );
+			this.roadService.setRoadIdCounter( road.id );
+
+		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
 
 			if ( road.sStart === undefined || road.sStart === null ) {
 				road.sStart = 0;
@@ -52,11 +55,16 @@ export class SceneBuilderService {
 				road.spline.addRoadSegment( 0, road );
 			}
 
+			this.roadService.buildRoad( road );
+			this.roadService.setRoadIdCounter( road.id );
+
+		} else {
+
+			map.removeRoad( road );
+			console.error( 'Road spline not found', road );
+			return;
 		}
 
-		this.roadService.buildRoad( road );
-
-		this.roadService.setRoadIdCounter( road.id );
 
 	}
 

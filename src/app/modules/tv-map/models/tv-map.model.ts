@@ -14,7 +14,6 @@ import { TvRoad } from './tv-road.model';
 import { TvSurface } from './tv-surface.model';
 import { MapEvents } from 'app/events/map-events';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { RoadRemovedEvent } from "../../../events/road/road-removed-event";
 
 export class TvMap {
 

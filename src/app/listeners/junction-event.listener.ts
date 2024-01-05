@@ -57,17 +57,17 @@ export class JunctionEventListener {
 
 			const connection = connections[ i ];
 
-			connection.incomingRoad.successor = null;
+			if ( connection.incomingRoad?.successor ) {
+				connection.incomingRoad.successor = null;
+			}
 
-			connection.outgoingRoad.predecessor = null;
-
-			// const event = new RoadRemovedEvent( connection.connectingRoad )
+			if ( connection.outgoingRoad?.predecessor ) {
+				connection.outgoingRoad.predecessor = null;
+			}
 
 			this.mapService.map.removeRoad( connection.connectingRoad );
 
 			this.mapService.map.gameObject.remove( connection.connectingRoad.gameObject );
-
-			// MapEvents.roadRemoved.emit( event );
 
 		}
 

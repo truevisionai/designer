@@ -7,7 +7,6 @@ import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { SelectLaneStrategy } from "../../core/snapping/select-strategies/on-lane-strategy";
-import { LaneService } from './lane.service';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
@@ -17,6 +16,7 @@ import { Action, SerializedField } from 'app/core/components/serialization';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { TvLaneType, TravelDirection } from 'app/modules/tv-map/models/tv-common';
+import { LaneToolService } from './lane-tool.service';
 
 export class LaneTool extends BaseTool {
 
@@ -29,7 +29,7 @@ export class LaneTool extends BaseTool {
 	}
 
 	constructor (
-		private tool: LaneService
+		private tool: LaneToolService
 	) {
 		super();
 	}
@@ -238,7 +238,7 @@ export class TvLaneObject {
 	@Action()
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this ) );
+		CommandHistory.execute( new RemoveObjectCommand( this.lane ) );
 
 	}
 

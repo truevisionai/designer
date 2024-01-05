@@ -1,6 +1,5 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { TvSurfaceObject } from 'app/modules/tv-map/models/TvSurfaceObject';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { SurfaceToolService } from './surface-tool.service';
@@ -9,7 +8,7 @@ import { ControlPointStrategy } from 'app/core/snapping/select-strategies/contro
 import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
 import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
 import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
-import { Vector3 } from 'three';
+import { Mesh, Vector3 } from 'three';
 import { AppInspector } from 'app/core/inspector';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
@@ -17,6 +16,10 @@ import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { RemoveObjectCommand } from 'app/commands/remove-object-command';
+import { Action, SerializedField } from 'app/core/components/serialization';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+
 
 export class SurfaceTool extends BaseTool {
 
@@ -25,11 +28,11 @@ export class SurfaceTool extends BaseTool {
 	toolType: ToolType = ToolType.Surface;
 
 	get selectedSurface (): TvSurface {
-		return this.tool.selection.getLastSelected<TvSurface>( TvSurface.name );
+		return this.tool.base.selection.getLastSelected<TvSurface>( TvSurface.name );
 	}
 
 	get selectedControlPoint (): SimpleControlPoint<TvSurface> {
-		return this.tool.selection.getLastSelected<SimpleControlPoint<TvSurface>>( SimpleControlPoint.name );
+		return this.tool.base.selection.getLastSelected<SimpleControlPoint<TvSurface>>( SimpleControlPoint.name );
 	}
 
 	controlPointMoved: boolean;
@@ -44,9 +47,9 @@ export class SurfaceTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.tool.base.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
-		this.tool.selection.registerStrategy( TvSurface.name, new ObjectUserDataStrategy( TvSurface.tag, 'surface' ) );
+		this.tool.base.selection.registerStrategy( TvSurface.name, new ObjectUserDataStrategy( TvSurface.tag, 'surface' ) );
 
 		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
 
@@ -312,4 +315,145 @@ export class SurfaceTool extends BaseTool {
 		}
 
 	}
+}
+
+
+class TvSurfaceObject {
+
+	private _keepAspect: boolean = false;
+	private _height: number;
+	private _width: number;
+
+	constructor (
+		public surface: TvSurface,
+		public mesh: Mesh,
+		private service: SurfaceToolService
+	) {
+		if ( mesh ) {
+			mesh.geometry.computeBoundingBox();
+			this._width = this.mesh.geometry.boundingBox.max.x - this.mesh.geometry.boundingBox.min.x;
+			this._height = this.mesh.geometry.boundingBox.max.y - this.mesh.geometry.boundingBox.min.y;
+		}
+	}
+
+	updateMesh () {
+
+		this.service.updateSurfaceMeshByDimensions( this.surface, this.width, this.height );
+
+	}
+
+	@SerializedField( { type: 'material' } )
+	get materialGuid () {
+		return this.surface.materialGuid;
+	}
+
+	set materialGuid ( value: string ) {
+		this.surface.materialGuid = value;
+	}
+
+	get spline (): AbstractSpline {
+		return this.surface.spline;
+	}
+
+	set spline ( value: any ) {
+		this.surface.spline = value;
+	}
+
+	@SerializedField( { type: 'vector2' } )
+	get offset () {
+		return this.surface.offset;
+	}
+
+	set offset ( value: any ) {
+		this.surface.offset = value;
+	}
+
+	@SerializedField( { type: 'vector2' } )
+	get repeat () {
+		return this.surface.repeat;
+	}
+
+	set repeat ( value: any ) {
+		this.surface.repeat = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get rotation () {
+		return this.surface.rotation;
+	}
+
+	set rotation ( value: any ) {
+		this.surface.rotation = value;
+	}
+
+	@SerializedField( { type: 'boolean' } )
+	get transparent () {
+		return this.surface.transparent;
+	}
+
+	set transparent ( value: any ) {
+		this.surface.transparent = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get opacity () {
+		return this.surface.opacity;
+	}
+
+	set opacity ( value: any ) {
+		this.surface.opacity = value;
+	}
+
+	@SerializedField( { type: 'boolean' } )
+	get keepAspect () {
+		return this._keepAspect;
+	}
+
+	set keepAspect ( value: any ) {
+		this._keepAspect = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get width () {
+		return this._width;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get height () {
+		return this._height;
+	}
+
+	set width ( value: number ) {
+
+		const aspect = this._width / this._height; // aspect ratio of the old dimensions
+
+		this._width = value;
+
+		if ( this.keepAspect ) {
+			this._height = value / aspect; // new height to maintain aspect ratio
+		}
+
+		this.updateMesh();
+	}
+
+	set height ( value: number ) {
+
+		const aspect = this._width / this._height; // aspect ratio of the old dimensions
+
+		this._height = value;
+
+		if ( this.keepAspect ) {
+			this._width = value * aspect; // new width to maintain aspect ratio
+		}
+
+		this.updateMesh();
+	}
+
+	@Action( { name: 'Delete' } )
+	action () {
+
+		CommandHistory.execute( new RemoveObjectCommand( this.surface ) );
+
+	}
+
 }

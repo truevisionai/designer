@@ -32,7 +32,6 @@ export class SurfaceToolService {
 		private splineService: AbstractSplineDebugService,
 		private controlPointFactory: ControlPointFactory,
 		private surfaceBuilder: TvSurfaceBuilder,
-		private roadService: RoadService,
 	) {
 	}
 
@@ -80,7 +79,17 @@ export class SurfaceToolService {
 
 		const mesh = this.surfaceBuilder.buildSurface( surface );
 
+		if ( !mesh ) return;
+
 		this.meshes.add( surface, mesh );
+
+	}
+
+	rebuildSurface ( surface: TvSurface ) {
+
+		this.meshes.remove( surface );
+
+		this.buildSurface( surface );
 
 	}
 
@@ -95,6 +104,8 @@ export class SurfaceToolService {
 	addControlPoint ( surface: TvSurface, point: AbstractControlPoint ) {
 
 		surface.addControlPoint( point );
+
+		this.rebuildSurface( surface );
 
 		SceneService.addToolObject( point );
 
@@ -116,8 +127,6 @@ export class SurfaceToolService {
 
 		} );
 
-		this.roadService.resetMapOpacity();
-
 	}
 
 	showSurfaceHelpers () {
@@ -128,7 +137,6 @@ export class SurfaceToolService {
 
 		} );
 
-		this.roadService.setMapOpacity( 0.5 );
 
 	}
 

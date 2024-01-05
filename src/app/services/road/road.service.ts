@@ -11,7 +11,7 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { CommandHistory } from '../command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Material, Mesh, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
@@ -22,8 +22,6 @@ import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 	providedIn: 'root'
 } )
 export class RoadService {
-
-	private opacityObjects = new Map<Mesh, Material>();
 
 	constructor (
 		private roadSplineService: RoadSplineService,
@@ -391,56 +389,6 @@ export class RoadService {
 		road.setSuccessor( TvRoadLinkChildType.road, outgoing.road, outgoing.contact );
 
 		return road;
-
-	}
-
-	setMapOpacity ( opacity: number ) {
-
-		const objects = this.roads.map(
-			road => road.laneSections.map(
-				laneSection => laneSection.getLaneArray().map(
-					lane => lane.gameObject ) ) ).flat( 2 );
-
-		objects
-			.filter( mesh => mesh instanceof Mesh )
-			.filter( mesh => !this.opacityObjects.has( mesh ) )
-			.forEach( mesh => {
-
-				let material: Material;
-
-				if ( mesh.material instanceof Material ) {
-
-					material = mesh.material;
-
-				} else if ( mesh.material instanceof Array ) {
-
-					material = mesh.material[ 0 ];
-
-				}
-
-				this.opacityObjects.set( mesh, material );
-
-				const clone = material.clone();
-
-				clone.transparent = opacity < 1.0;
-				clone.opacity = opacity;
-				clone.needsUpdate = true;
-
-				mesh.material = clone;
-
-			} );
-
-	}
-
-	resetMapOpacity () {
-
-		this.opacityObjects.forEach( ( originalMaterial, mesh ) => {
-
-			mesh.material = originalMaterial;
-
-		} );
-
-		this.opacityObjects.clear();
 
 	}
 

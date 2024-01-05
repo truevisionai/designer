@@ -51,6 +51,7 @@ export class RoadEventListener {
 
 		this.roadElevationService.createDefaultNodes( event.road );
 
+		this.updateOpacity( event.road );
 	}
 
 	onRoadUpdated ( event: RoadUpdatedEvent ) {
@@ -68,6 +69,8 @@ export class RoadEventListener {
 		this.updateRoadObjects( event.road );
 
 		this.updateJunction( event.road );
+
+		this.updateOpacity( event.road );
 	}
 
 	onRoadRemoved ( event: RoadRemovedEvent ) {
@@ -126,6 +129,12 @@ export class RoadEventListener {
 	updateRoadBoundingBox ( road: TvRoad ) {
 
 		road.computeBoundingBox();
+
+	}
+
+	private updateOpacity ( road: TvRoad ): void {
+
+		this.mapService.setRoadOpacity( road, this.mapService.getOpacityLevel() );
 
 	}
 

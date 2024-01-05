@@ -73,7 +73,7 @@ export class RoadTool extends BaseTool {
 
 	private get selectedSpline (): AbstractSpline {
 
-		return this.selectedControlPoint?.spline;
+		return this.selectedControlPoint?.spline || this.selectedRoad?.spline;
 
 	}
 
@@ -197,7 +197,7 @@ export class RoadTool extends BaseTool {
 					}
 
 					// add point on another road
-					createPoint( selectedRoad.spline, e.point, this.selectedControlPoint );
+					createPoint( selectedSpline, e.point, this.selectedControlPoint );
 
 				}
 

@@ -955,7 +955,11 @@ export class SceneImporterService extends AbstractReader {
 
 		readXmlArray( xmlElement.connection, xml => {
 
-			junction.addConnection( this.parseJunctionConnection( xml, junction ) );
+			const connection = this.parseJunctionConnection( xml, junction );
+
+			if ( !connection ) return;
+
+			junction.addConnection( connection );
 
 		} );
 
@@ -997,7 +1001,8 @@ export class SceneImporterService extends AbstractReader {
 
 		const outgoingRoad = outgoingRoadId ? this.map.getRoadById( outgoingRoadId ) : null;
 
-		if ( !outgoingRoad ) console.warn( 'outgoingRoad', outgoingRoad, connectingRoad );
+		if ( !outgoingRoad ) console.error( 'outgoingRoad', outgoingRoad, connectingRoad );
+		if ( !outgoingRoad ) return;
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
 

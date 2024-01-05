@@ -1,17 +1,20 @@
 import { MapEvents } from "app/events/map-events";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
-import { Manager } from "./manager";
-import { LaneService } from "app/tools/lane/lane.service";
+import { LaneService } from "app/services/lane/lane.service";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
+import { Injectable } from "@angular/core";
+import { Environment } from "app/core/utils/environment";
 
-export class LaneManager extends Manager {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class LaneEventListener {
 
-	private debug = true;
+	private debug = !Environment.production;
 
-	constructor ( private laneService: LaneService ) {
-
-		super();
-
+	constructor (
+		private laneService: LaneService
+	) {
 	}
 
 	init () {

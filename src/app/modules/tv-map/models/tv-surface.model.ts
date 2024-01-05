@@ -32,8 +32,6 @@ export class TvSurface {
 
 	addControlPoint ( point: AbstractControlPoint ) {
 
-		point.visible = true;
-
 		point.mainObject = this;
 
 		this.spline.addControlPoint( point );
@@ -41,8 +39,6 @@ export class TvSurface {
 	}
 
 	removeControlPoint ( point: AbstractControlPoint ) {
-
-		point.visible = false;
 
 		this.spline.removeControlPoint( point );
 

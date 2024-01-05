@@ -25,6 +25,9 @@ import { CommandHistory } from '../../../services/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
 import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-dialog.component';
 import { ProjectService } from 'app/services/project.service';
+import { MapService } from 'app/services/map.service';
+import { AppInspector } from 'app/core/inspector';
+import { SerializedField } from 'app/core/components/serialization';
 
 
 @Component( {
@@ -54,6 +57,7 @@ export class MenuBarComponent implements OnInit {
 		private inputDialogService: AppInputDialogService,
 		private editorService: EditorService,
 		private projectService: ProjectService,
+		private mapService: MapService,
 	) {
 	}
 
@@ -142,6 +146,12 @@ export class MenuBarComponent implements OnInit {
 				this.editorService.settings.odrViewerPath = result.odrViewerPath;
 			}
 		} );
+
+	}
+
+	onMapSettings () {
+
+		AppInspector.setDynamicInspector( new MapSeting( this.mapService, 0.5 ) );
 
 	}
 
@@ -243,5 +253,24 @@ export class MenuBarComponent implements OnInit {
 
 		this.exporter.exportOpenScenario();
 
+	}
+}
+
+class MapSeting {
+
+	constructor (
+		private mapService: MapService,
+		private _opacity: number
+	) {
+	}
+
+	@SerializedField( { type: 'float' } )
+	get opacity () {
+		return this._opacity
+	}
+
+	set opacity ( value: number ) {
+		this._opacity = value;
+		this.mapService.setOpacityLevel( value );
 	}
 }

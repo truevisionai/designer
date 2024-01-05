@@ -30,12 +30,9 @@ import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
 import { LaneMarkingService } from 'app/tools/lane-marking/lane-marking.service';
-import { LaneService } from 'app/tools/lane/lane.service';
-import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-tool.service';
-import { JunctionService } from 'app/services/junction/junction.service';
 import { ToolManager } from 'app/tools/tool-manager';
 import { PropCurveService } from 'app/tools/prop-curve/prop-curve.service';
 import { RoadRampService } from 'app/services/road/road-ramp.service';
@@ -53,6 +50,7 @@ import { PolePropTool } from 'app/tools/prop-barrier/pole-prop-tool';
 import { PolePropToolService } from 'app/tools/prop-barrier/pole-prop-tool.service';
 import { PointMarkingToolService } from 'app/tools/marking-point/point-marking-tool.service';
 import { JunctionToolService } from 'app/tools/junction-tool/junction-tool.service';
+import { LaneToolService } from 'app/tools/lane/lane-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -70,7 +68,7 @@ export class ToolBarService {
 		private maneuverService: ManeuverService,
 		private laneWidthService: LaneWidthService,
 		private laneMarkingService: LaneMarkingService,
-		private laneService: LaneService,
+		private laneToolService: LaneToolService,
 		private crosswalkService: CrosswalkToolService,
 		private roadCuttingService: RoadDividerService,
 		private baseToolService: BaseToolService,
@@ -123,7 +121,7 @@ export class ToolBarService {
 			case ToolType.LaneMarking:
 				return new LaneMarkingTool( this.laneMarkingService );
 			case ToolType.Lane:
-				return new LaneTool( this.laneService );
+				return new LaneTool( this.laneToolService );
 			case ToolType.PointMarkingTool:
 				return new PointMarkingTool( this.pointMarkingToolService );
 			case ToolType.TextMarkingTool:
