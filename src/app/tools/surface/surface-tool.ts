@@ -320,7 +320,7 @@ export class SurfaceTool extends BaseTool {
 
 class TvSurfaceObject {
 
-	private _keepAspect: boolean = false;
+	private _keepAspect: boolean = true;
 	private _height: number;
 	private _width: number;
 
