@@ -3,12 +3,13 @@
  */
 
 import { PointerEventData, } from 'app/events/pointer-event-data';
-import { TextObject3d } from 'app/modules/three-js/objects/text-object';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { SceneService } from 'app/services/scene.service';
 import { MeasurementToolService } from './measurement-tool.service';
 import { BufferGeometry, Line, LineBasicMaterial } from 'three';
+import { TooltipInterface } from 'app/services/debug/tool-tip.service';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 
 export class MeasurementTool extends BaseTool {
 
@@ -18,9 +19,11 @@ export class MeasurementTool extends BaseTool {
 
 	private line: THREE.Line;
 
-	private text: TextObject3d;
-
 	private start: THREE.Vector3;
+	private startPoint: AbstractControlPoint;
+	private endPoint: AbstractControlPoint;
+
+	private toolTip: TooltipInterface;
 
 	constructor ( private tool: MeasurementToolService ) {
 
@@ -34,17 +37,11 @@ export class MeasurementTool extends BaseTool {
 
 		super.disable();
 
-		if ( this.line ) {
+		if ( this.line ) SceneService.removeFromTool( this.line );
 
-			SceneService.removeFromTool( this.line );
+		if ( this.startPoint ) SceneService.removeFromTool( this.startPoint );
 
-			this.line.geometry.dispose();
-
-			this.line = null;
-
-		}
-
-		SceneService.removeFromTool( this.text );
+		if ( this.endPoint ) SceneService.removeFromTool( this.endPoint );
 
 	}
 
@@ -60,23 +57,32 @@ export class MeasurementTool extends BaseTool {
 
 			this.line = new Line( geometry, material );
 
-			const textSize = this.calculateTextSize( pointerEventData );
+			this.startPoint = this.tool.controlPointFactory.createSimpleControlPoint( null, this.start );
 
-			this.text = this.tool.showTextAt( 'Distance', this.start, textSize );
+			this.endPoint = this.tool.controlPointFactory.createSimpleControlPoint( null, this.start );
 
 			SceneService.addToolObject( this.line );
+
+			SceneService.addToolObject( this.startPoint );
+
+			SceneService.addToolObject( this.endPoint );
+
+			this.toolTip = this.tool.showToolTipAt( 'Distance', pointerEventData.point );
 
 		} else {
 
 			this.start = null;
 
-			SceneService.removeFromTool( this.line );
-
 			this.line.geometry.dispose();
 
-			this.line = null;
+			this.tool.removeToolTip( this.toolTip );
 
-			SceneService.removeFromTool( this.text );
+			SceneService.removeFromTool( this.line );
+
+			SceneService.removeFromTool( this.startPoint );
+
+			SceneService.removeFromTool( this.endPoint );
+
 		}
 
 	}
@@ -93,39 +99,14 @@ export class MeasurementTool extends BaseTool {
 
 		const distance = this.start?.distanceTo( pointerEventData.point ).toFixed( 2 );
 
-		this.tool.updateText( this.text, distance + 'm' );
-
-	}
-
-	private calculateTextSize ( pointerEventData: PointerEventData ): number {
-
-		const minTextSize = 1; // minimum text size
-		const maxTextSize = 30; // maximum text size
-		const minCameraDistance = 10; // minimum expected camera distance
-		const maxCameraDistance = 1000; // maximum expected camera distance
-
-		let textSize: number;
-
-		if ( pointerEventData.approxCameraDistance <= minCameraDistance ) {
-
-			textSize = minTextSize;
-
-		} else if ( pointerEventData.approxCameraDistance >= maxCameraDistance ) {
-
-			textSize = maxTextSize;
-
-		} else {
-
-			// Linear interpolation between minTextSize and maxTextSize
-			const fraction = ( pointerEventData.approxCameraDistance - minCameraDistance ) / ( maxCameraDistance - minCameraDistance );
-
-			textSize = minTextSize + fraction * ( maxTextSize - minTextSize );
-
+		if ( this.toolTip ) {
+			this.tool.updateToolTip( this.toolTip.id, distance + 'm' );
 		}
 
-		textSize = Math.min( Math.max( textSize, minTextSize ), maxTextSize ); // Clamping the value
-
-		return textSize;
+		if ( this.endPoint ) {
+			this.endPoint.position.copy( pointerEventData.point );
+		}
 
 	}
+
 }

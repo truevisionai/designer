@@ -98,6 +98,7 @@ import { RoutePartsService } from './services/route-parts.service';
 import { ThemeService } from './services/theme.service';
 import { Vector2FieldComponent } from './fields/vector2-field/vector2-field.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { TooltipComponent } from './components/tooltip/tooltip.component';
 
 /*
   Only Required if you want to use Angular Landing
@@ -137,6 +138,7 @@ const classesToInclude = [
 	FooterBottomComponent,
 	SplashComponent,
 	TranslatePipe,
+	TooltipComponent,
 
 	// Fields
 	ButtonFieldComponent,
