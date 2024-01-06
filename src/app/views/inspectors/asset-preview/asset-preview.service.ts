@@ -352,7 +352,13 @@ export class AssetPreviewService {
 
 		const material = new MeshStandardMaterial( { map: texture } );
 
-		const plane = new PlaneGeometry( 10, 10 );
+		const aspect = texture.image.width / texture.image.height;
+
+		const height = 10
+
+		const width = height * aspect;
+
+		const plane = new PlaneGeometry( width, height );
 
 		var quad = new Mesh( plane, material );
 
@@ -454,7 +460,7 @@ export class AssetPreviewService {
 				break;
 
 			case AssetType.TEXTURE:
-				camera.position.set( 0, 0, 10 );
+				camera.position.set( 0, 0, size.y > size.x ? size.y : size.x );
 				break;
 
 			default:
@@ -472,13 +478,16 @@ export class AssetPreviewService {
 
 	setupScene ( assetType: AssetType, object: Object3D, scene: Scene ) {
 
-		scene.background = new Color( 0xcce0ff );
-
-		scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 );
-
 		object.position.set( 0, 0, 0 );
 
 		scene.add( object );
+
+		// for texture asset type, we don't need to setup scene
+		if ( assetType == AssetType.TEXTURE ) return;
+
+		scene.background = new Color( 0xcce0ff );
+
+		scene.fog = new THREE.Fog( 0xcce0ff, 500, 10000 );
 
 		scene.add( this.ground );
 
