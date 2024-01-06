@@ -70,12 +70,12 @@ export class RoadDebugService {
 
 	upateRoadNodes ( road: TvRoad ) {
 
-		this.hideRoadNodes( road );
+		this.removeRoadNodes( road );
 		this.showRoadNodes( road );
 
 	}
 
-	hideRoadNodes ( road: TvRoad ) {
+	removeRoadNodes ( road: TvRoad ) {
 
 		this.nodes.removeKey( road );
 
@@ -211,6 +211,12 @@ export class RoadDebugService {
 			this.showRoadBorderLine( successor );
 
 		} );
+
+	}
+
+	removeRoadBorderLine ( road: TvRoad ) {
+
+		this.lines.removeKey( road );
 
 	}
 

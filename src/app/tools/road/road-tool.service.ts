@@ -34,7 +34,17 @@ export class RoadToolService {
 	) {
 	}
 
+	clear () {
+
+		this.roadDebug.clear();
+
+		this.splineDebug.clear();
+
+	}
+
 	updateSplineVisuals ( spline: AbstractSpline ) {
+
+		this.removeSplineVisuals( spline );
 
 		const segments = spline.getSplineSegments();
 
@@ -53,6 +63,28 @@ export class RoadToolService {
 		}
 
 		this.splineDebug.updateSpline( spline );
+
+	}
+
+	removeSplineVisuals ( spline: AbstractSpline ) {
+
+		const segments = spline.getSplineSegments();
+
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( !segment.isRoad ) continue;
+
+			const road = segment.getInstance<TvRoad>();
+
+			this.roadDebug.removeRoadBorderLine( road );
+
+			this.roadDebug.removeRoadNodes( road );
+
+		}
+
+		this.splineDebug.remove( spline );
 
 	}
 
@@ -196,6 +228,8 @@ export class RoadToolService {
 		this.splineService.hide( spline );
 
 		this.roadSplineService.removeSpline( spline );
+
+		this.removeSplineVisuals( spline );
 
 	}
 

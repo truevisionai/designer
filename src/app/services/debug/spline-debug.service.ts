@@ -54,6 +54,7 @@ export class SplineDebugService {
 
 		this.selected.delete( spline );
 
+		this.removeBorder( spline );
 	}
 
 	showBorders () {
@@ -126,6 +127,12 @@ export class SplineDebugService {
 			this.lines.addItem( spline, this.debugService.createDebugLine( spline, rightPoints, lineWidth, color ) );
 
 		}
+
+	}
+
+	removeBorder ( spline: AbstractSpline ) {
+
+		this.lines.removeKey( spline );
 
 	}
 

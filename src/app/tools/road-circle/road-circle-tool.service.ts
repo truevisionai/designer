@@ -83,7 +83,7 @@ export class RoadCircleToolService {
 
 	hideRoadNodes ( road: TvRoad ) {
 
-		this.roadDebug.hideRoadNodes( road );
+		this.roadDebug.removeRoadNodes( road );
 
 	}
 

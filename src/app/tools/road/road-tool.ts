@@ -414,6 +414,8 @@ export class RoadTool extends BaseTool {
 
 		MapEvents.splineUpdated.emit( new SplineUpdatedEvent( spline ) );
 
+		this.tool.clear();
+
 		this.tool.updateSplineVisuals( spline );
 
 	}
