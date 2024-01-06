@@ -993,13 +993,16 @@ export class SceneImporterService extends AbstractReader {
 		const incomingRoad = this.map.getRoadById( incomingRoadId );
 		const connectingRoad = this.map.getRoadById( connectingRoadId );
 
+		if ( !connectingRoad ) TvConsole.error( 'connectingRoad not found with id:' + connectingRoadId );
+		if ( !connectingRoad ) return;
+
 		const outgoingRoadId = contactPoint == TvContactPoint.START ?
 			connectingRoad?.successor?.elementId :
 			connectingRoad?.predecessor?.elementId;
 
 		const outgoingRoad = outgoingRoadId ? this.map.getRoadById( outgoingRoadId ) : null;
 
-		if ( !outgoingRoad ) console.error( 'outgoingRoad', outgoingRoad, connectingRoad );
+		if ( !outgoingRoad ) TvConsole.error( 'outgoingRoad not found with id:' + outgoingRoadId );
 		if ( !outgoingRoad ) return;
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );

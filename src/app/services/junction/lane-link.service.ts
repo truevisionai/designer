@@ -33,7 +33,7 @@ export class LaneLinkService {
 
 			const laneCoord = incomingLaneCoords[ i ];
 
-			const link = this.createDrivingLink(
+			const link = this.createLink(
 				connection,
 				laneCoord,
 				outgoingLaneCoords,
@@ -84,7 +84,7 @@ export class LaneLinkService {
 
 			const incomingCoord = incomingCoords[ i ];
 
-			const link = this.createDrivingLink( connection, incomingCoord, outgoingCoords, incomingDirection === outgoingDirection, true );
+			const link = this.createLink( connection, incomingCoord, outgoingCoords, incomingDirection === outgoingDirection, true );
 
 			if ( !link ) continue;
 
@@ -141,12 +141,12 @@ export class LaneLinkService {
 		return connection;
 	}
 
-	private createDrivingLink (
+	private createLink (
 		connection: TvJunctionConnection,
 		incoming: TvLaneCoord,
 		outgoingLanes: TvLaneCoord[],
 		sameDirection = true,
-		addRoadMarks = false
+		nonDriving = false
 	) {
 
 		const roadLength = connection.connectingRoad.length;
@@ -155,11 +155,16 @@ export class LaneLinkService {
 
 		if ( sameDirection ) {
 
-			outgoing = outgoingLanes.find( coord => coord.lane.id === incoming.lane.id );
+			outgoing = outgoingLanes.find( coord => coord.lane.id === incoming.lane.id && coord.lane.type == incoming.lane.type );
 
 		} else {
 
-			outgoing = outgoingLanes.find( coord => coord.lane.id === -incoming.lane.id );
+			outgoing = outgoingLanes.find( coord => coord.lane.id === -incoming.lane.id && coord.lane.type == incoming.lane.type );
+
+		}
+
+		if ( nonDriving ) {
+
 
 		}
 
@@ -179,11 +184,11 @@ export class LaneLinkService {
 		);
 
 		connectionLane.predecessor = incoming.lane.id;
-		connectionLane.successor = outgoing.lane.id;
+		connectionLane.successor = outgoing ? outgoing.lane.id : null;	// when there is no successor
 
 		// NOTE: THIS CAN probably be added in road event listener also
 		const widhtAtStart = incoming.lane.getWidthValue( incoming.s );
-		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
+		const widthAtEnd = outgoing ? outgoing.lane.getWidthValue( outgoing.s ) : 0;
 
 		connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
 		connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );

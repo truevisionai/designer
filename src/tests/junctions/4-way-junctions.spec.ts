@@ -364,7 +364,7 @@ describe( '4-way-junction tests', () => {
 
 		expect( roadA.getRoadLength() ).toBe( 200 );
 		expect( roadA.successor ).toBeNull();
-		expect( roadA.predecessor ).toBeNull();
+		expect( roadA.predecessor ).toBeUndefined();
 
 		expect( roadB.spline.getLength() ).toBe( 200 );
 		expect( roadB.spline.getSplineSegments().length ).toBe( 0 );
@@ -372,6 +372,8 @@ describe( '4-way-junction tests', () => {
 	} );
 
 	it( 'should reset when whole spline is moved away', () => {
+
+		expect( mapService.map.getSplineCount() ).toBe( 0 );
 
 		baseTest.createFourWayJunction( roadService, intersectionService );
 
@@ -398,11 +400,11 @@ describe( '4-way-junction tests', () => {
 
 		expect( horizontal.getRoadLength() ).toBe( 200 );
 		expect( horizontal.successor ).toBeNull();
-		expect( horizontal.predecessor ).toBeNull();
+		expect( horizontal.predecessor ).toBeUndefined();
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
 		expect( vertical.successor ).toBeNull();
-		expect( vertical.predecessor ).toBeNull();
+		expect( vertical.predecessor ).toBeUndefined();
 		expect( vertical.spline.getSplineSegments().length ).toBe( 1 );
 
 	} );
@@ -416,7 +418,7 @@ describe( '4-way-junction tests', () => {
 		const horizontal = roadService.getRoad( 1 );
 		const vertical = roadService.getRoad( 2 );
 
-		vertical.spline.controlPoints.forEach( point => point.position.x += 50 );
+		vertical.spline.controlPoints.forEach( point => point.position.x += 10 );
 
 		tool.onSplineUpdated( vertical.spline );
 
@@ -432,12 +434,12 @@ describe( '4-way-junction tests', () => {
 
 		expect( horizontal.spline.getLength() ).toBe( 200 );
 		expect( horizontal.successor ).toBeDefined();
-		expect( horizontal.predecessor ).toBeNull();
+		expect( horizontal.predecessor ).toBeUndefined();
 		expect( horizontal.spline.getSplineSegments().length ).toBe( 3 );
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
 		expect( vertical.successor ).toBeDefined();
-		expect( vertical.predecessor ).toBeNull();
+		expect( vertical.predecessor ).toBeUndefined();
 		expect( vertical.spline.getSplineSegments().length ).toBe( 3 );
 
 	} );

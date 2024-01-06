@@ -93,8 +93,8 @@ export class IntersectionService {
 
 	checkSplineIntersections ( spline: AbstractSpline ) {
 
-		const splineCount = this.mapService.map.getSplineCount();
-		const splines = this.mapService.map.getSplines();
+		const splines = this.mapService.nonJunctionSplines;
+		const splineCount = splines.length;
 
 		for ( let i = 0; i < splineCount; i++ ) {
 
@@ -112,8 +112,8 @@ export class IntersectionService {
 
 	getSplineIntersections ( spline: AbstractSpline ) {
 
-		const splineCount = this.mapService.map.getSplineCount();
-		const splines = this.mapService.map.getSplines();
+		const splines = this.mapService.nonJunctionSplines;
+		const splineCount = splines.length;
 
 		const intersections = [];
 

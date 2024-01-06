@@ -40,6 +40,11 @@ export class MapService {
 		return this.map.getSplines();
 	}
 
+	get nonJunctionSplines () {
+		return this.nonJunctionRoads.map( road => road.spline )
+			.filter( ( spline, index, self ) => self.indexOf( spline ) === index );
+	}
+
 	setOpacityLevel ( opacity: number ) {
 
 		this.resetMapOpacity();

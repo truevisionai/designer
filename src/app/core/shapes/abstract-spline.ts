@@ -49,6 +49,10 @@ export abstract class AbstractSpline {
 		return this.controlPoints.map( point => point.position );
 	}
 
+	get segmentCount () {
+		return this.getSplineSegments().length;
+	}
+
 	abstract init (): void;
 
 	abstract hide (): void;

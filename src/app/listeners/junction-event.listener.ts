@@ -65,9 +65,12 @@ export class JunctionEventListener {
 				connection.outgoingRoad.predecessor = null;
 			}
 
-			this.mapService.map.removeRoad( connection.connectingRoad );
+			MapEvents.roadRemoved.emit( new RoadRemovedEvent( connection.connectingRoad ) );
 
-			this.mapService.map.gameObject.remove( connection.connectingRoad.gameObject );
+			// either event above or this
+			// this.mapService.map.removeRoad( connection.connectingRoad );
+			// this.mapService.map.removeSpline( connection.connectingRoad.spline );
+			// this.mapService.map.gameObject.remove( connection.connectingRoad.gameObject );
 
 		}
 

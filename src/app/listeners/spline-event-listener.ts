@@ -213,11 +213,11 @@ export class SplineEventListener {
 
 				spline.removeSegment( junction );
 
-				MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction, spline ) );
-
 				this.roadSplineService.rebuildSplineRoads( spline );
 
 			}
+
+			MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction ) );
 
 		}
 	}

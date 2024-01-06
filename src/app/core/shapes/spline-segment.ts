@@ -16,6 +16,10 @@ export class SplineSegment {
 		return this.type == SplineSegmentType.ROAD && this.id != -1;
 	}
 
+	get isConnectingRoad () {
+		return this.isRoad && ( this.segment as TvRoad ).isJunction;
+	}
+
 	get isJunction () {
 		return this.type == SplineSegmentType.JUNCTION && this.id != -1;
 	}
@@ -32,7 +36,7 @@ export class SplineSegment {
 	}
 
 	getInstance<T> () {
-		return this.segment as any;
+		return this.segment as unknown as T;
 	}
 
 	getLength () {
