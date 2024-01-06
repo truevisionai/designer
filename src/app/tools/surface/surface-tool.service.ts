@@ -103,7 +103,9 @@ export class SurfaceToolService {
 
 	addControlPoint ( surface: TvSurface, point: AbstractControlPoint ) {
 
-		surface.addControlPoint( point );
+		point.mainObject = surface;
+
+		surface.spline.insertPoint( point );
 
 		this.rebuildSurface( surface );
 

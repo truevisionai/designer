@@ -169,59 +169,6 @@ export class RoadToolService {
 
 	}
 
-	insertPoint ( spline: AbstractSpline, point: AbstractControlPoint ): void {
-
-		let minDistance = Infinity;
-		let index = spline.controlPoints.length; // insert at the end by default
-
-		for ( let i = 0; i < spline.controlPoints.length - 1; i++ ) {
-
-			const segmentStart = spline.controlPoints[ i ];
-			const segmentEnd = spline.controlPoints[ i + 1 ];
-
-			const distance = this.calculateDistanceToSegment( point, segmentStart, segmentEnd );
-
-			if ( distance < minDistance ) {
-
-				minDistance = distance;
-				index = i + 1;
-
-			}
-
-		}
-
-		spline.controlPoints.splice( index, 0, point );
-
-		spline.update();
-
-	}
-
-	private calculateDistanceToSegment ( point: AbstractControlPoint, segmentStart: AbstractControlPoint, segmentEnd: AbstractControlPoint ): number {
-
-		const segmentDirection = segmentEnd.position.clone().sub( segmentStart.position ).normalize();
-
-		const segmentStartToPoint = point.position.clone().sub( segmentStart.position );
-
-		const projection = segmentStartToPoint.clone().dot( segmentDirection );
-
-		if ( projection < 0 ) {
-
-			return point.position.distanceTo( segmentStart.position );
-
-		} else if ( projection > segmentStart.position.distanceTo( segmentEnd.position ) ) {
-
-			return point.position.distanceTo( segmentEnd.position );
-
-		} else {
-
-			const projectionPoint = segmentDirection.clone().multiplyScalar( projection ).add( segmentStart.position );
-
-			return point.position.distanceTo( projectionPoint );
-
-		}
-
-	}
-
 	removeHighlight () {
 
 		this.roadDebug.removeHighlight();

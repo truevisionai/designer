@@ -466,7 +466,7 @@ export class RoadTool extends BaseTool {
 
 		if ( controlPoint.userData.insert ) {
 
-			this.tool.insertPoint( controlPoint.spline, controlPoint );
+			controlPoint.spline.insertPoint( controlPoint );
 
 		} else {
 

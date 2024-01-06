@@ -489,6 +489,60 @@ export abstract class AbstractSpline {
 		}
 
 	}
+
+	insertPoint ( newPoint: AbstractControlPoint ): void {
+
+		let minDistance = Infinity;
+		let index = this.controlPoints.length; // insert at the end by default
+
+		for ( let i = 0; i < this.controlPoints.length - 1; i++ ) {
+
+			const pointA = this.controlPoints[ i ];
+			const pointB = this.controlPoints[ i + 1 ];
+
+			const distance = this.calculateDistanceToSegment( newPoint, pointA, pointB );
+
+			if ( distance < minDistance ) {
+
+				minDistance = distance;
+				index = i + 1;
+
+			}
+
+		}
+
+		this.controlPoints.splice( index, 0, newPoint );
+
+		this.update();
+
+	}
+
+	private calculateDistanceToSegment ( newPoint: AbstractControlPoint, pointA: AbstractControlPoint, pointB: AbstractControlPoint ): number {
+
+		const segmentDirection = pointB.position.clone().sub( pointA.position ).normalize();
+
+		const segmentStartToPoint = newPoint.position.clone().sub( pointA.position );
+
+		const projection = segmentStartToPoint.clone().dot( segmentDirection );
+
+		if ( projection < 0 ) {
+
+			return newPoint.position.distanceTo( pointA.position );
+
+		} else if ( projection > pointA.position.distanceTo( pointB.position ) ) {
+
+			return newPoint.position.distanceTo( pointB.position );
+
+		} else {
+
+			const projectionPoint = segmentDirection.clone().multiplyScalar( projection ).add( pointA.position );
+
+			return newPoint.position.distanceTo( projectionPoint );
+
+		}
+
+	}
+
 }
 
 
