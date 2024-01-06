@@ -43,6 +43,8 @@ export class MeasurementTool extends BaseTool {
 
 		if ( this.endPoint ) SceneService.removeFromTool( this.endPoint );
 
+		if ( this.toolTip ) this.tool.removeToolTip( this.toolTip );
+
 	}
 
 	onPointerDownSelect ( pointerEventData: PointerEventData ): void {
