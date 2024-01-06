@@ -225,6 +225,8 @@ export class RoadTool extends BaseTool {
 
 				this.lastRoadClicked = null;
 
+				this.tool.clear();
+
 			}
 
 		}, () => {
@@ -232,6 +234,8 @@ export class RoadTool extends BaseTool {
 			this.lastRoadClicked = null;
 
 			this.isRoadDoubleClicked = false;
+
+			this.tool.clear();
 
 		} );
 
