@@ -42,7 +42,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	ToolType = ToolType;
 
-	selectedTool: any;
+	mouseOnTool: IToolMenu;
 
 	@ViewChild( 'popover', { static: false } ) popover: SatPopover;
 
@@ -491,7 +491,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onMouseOver ( tool: any ) {
+	onMouseOver ( tool: IToolMenu ) {
 
 		if ( tool.description ) {
 
@@ -506,13 +506,13 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 				autoFocus: false
 			} );
 
-			this.selectedTool = tool;
+			this.mouseOnTool = tool;
 
 		} else {
 
 			this.popover.close();
 
-			this.selectedTool = null;
+			this.mouseOnTool = null;
 
 		}
 
@@ -524,7 +524,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 		this.popover.close();
 
-		this.selectedTool = null;
+		this.mouseOnTool = null;
 
 	}
 

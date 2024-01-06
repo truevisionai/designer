@@ -449,11 +449,9 @@ $border-radius: 0px !important;
 	}
 
 	.app-viewport-stats {
-		top: 118px;
-		left: 17vw;
 		color: white;
 		height: 38px;
-		padding: 0px 8px !important;
+		padding: 16px 16px !important;
 		position: absolute;
 		width: auto !important;
 		font-size: 0.7rem;
@@ -494,8 +492,8 @@ $border-radius: 0px !important;
 		color: white;
 		width: 32px;
 		position: absolute;
-		right: 26vw;
-		top: 118px;
+		padding: 16px 16px !important;
+		left: 73vw;
 	}
 
 	.viewport-toolbar .mat-icon-button {
