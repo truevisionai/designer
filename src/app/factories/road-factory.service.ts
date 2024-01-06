@@ -15,6 +15,7 @@ import { TvJunction } from "../modules/tv-map/models/junctions/tv-junction";
 import { TvElevationProfile } from 'app/modules/tv-map/models/tv-elevation-profile';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { MapEvents } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -28,6 +29,8 @@ export class RoadFactory {
 	constructor () {
 
 		RoadFactory.instance = this;
+
+		MapEvents.mapRemoved.subscribe( () => this.IDService.reset() );
 
 	}
 

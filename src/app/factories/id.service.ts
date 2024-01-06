@@ -6,15 +6,17 @@ export class IDService {
 
 	constructor () {
 
-		this.reset();
+		this.highestID = 0;
+		this.usedIDs = new Set<number>();
+		this.removedIDs = new Set<number>();
 
 	}
 
 	reset () {
 
 		this.highestID = 0;
-		this.usedIDs = new Set<number>();
-		this.removedIDs = new Set<number>();
+		this.usedIDs.clear()
+		this.removedIDs.clear();
 
 	}
 
@@ -66,6 +68,8 @@ export class IDService {
 	}
 
 	private updateHighestID () {
+
+		this.highestID = 0;
 
 		for ( const id of this.usedIDs ) {
 
