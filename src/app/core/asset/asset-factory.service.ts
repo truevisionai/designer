@@ -272,11 +272,20 @@ export class AssetFactory {
 
 		if ( !metadata ) return;
 
-		const data = this.exporter.exportAsset( type, guid );
+		if ( type == AssetType.TEXTURE ) {
 
-		if ( !data ) return;
+			// for texture we dont need to update the asset file
+			// only metadata file
 
-		this.storage.writeSync( metadata.path, data );
+		} else {
+
+			const data = this.exporter.exportAsset( type, guid );
+
+			if ( !data ) return;
+
+			this.storage.writeSync( metadata.path, data );
+
+		}
 
 		this.updateMetaFile( metadata.path, metadata );
 
