@@ -425,6 +425,10 @@ export class IntersectionService {
 
 			return newRoad;
 
+		} else {
+
+			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( coord.road ) );
+
 		}
 	}
 
