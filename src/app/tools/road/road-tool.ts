@@ -15,7 +15,6 @@ import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-
 import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from 'app/commands/select-object-command';
-import { SceneService } from 'app/services/scene.service';
 import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
 import {
 	MapEvents
@@ -28,13 +27,9 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { OnRoadMovingStrategy } from "../../core/snapping/move-strategies/on-road-moving.strategy";
 import { RoadPosition } from "../../modules/scenario/models/positions/tv-road-position";
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { RoadCreatedEvent } from "../../events/road/road-created-event";
 import { RoadUpdatedEvent } from "../../events/road/road-updated-event";
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
-import { ControlPointCreatedEvent } from "../../events/control-point-created-event";
-import { ControlPointUpdatedEvent } from "../../events/control-point-updated-event";
-import { ControlPointRemovedEvent } from "../../events/control-point-removed-event";
 import { SplineCreatedEvent } from "../../events/spline/spline-created-event";
 import { SplineRemovedEvent } from "../../events/spline/spline-removed-event";
 import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
@@ -454,11 +449,11 @@ export class RoadTool extends BaseTool {
 
 	onControlPointRemoved ( controlPoint: SplineControlPoint ) {
 
-		SceneService.removeFromTool( controlPoint );
+		this.tool.removeControlPoint( controlPoint.spline, controlPoint );
 
-		controlPoint.spline.removeControlPoint( controlPoint );
+		this.onSplineUpdated( controlPoint.spline );
 
-		MapEvents.controlPointRemoved.emit( new ControlPointRemovedEvent( controlPoint, controlPoint.spline ) );
+		AppInspector.clear();
 
 	}
 
@@ -472,11 +467,11 @@ export class RoadTool extends BaseTool {
 
 		if ( controlPoint.userData.insert ) {
 
-			controlPoint.spline.insertPoint( controlPoint );
+			this.tool.insertControlPoint( controlPoint.spline, controlPoint );
 
 		} else {
 
-			this.tool.addPoint( controlPoint.spline, controlPoint );
+			this.tool.addControlPoint( controlPoint.spline, controlPoint );
 
 		}
 

@@ -79,9 +79,14 @@
 		<!-- style="width: 100%;">Duplicate -->
 	<!-- </button> -->
 
-	<button (click)="onDelete()"
+	<button *ngIf="data?.controlPoint" (click)="onDeleteControlPoint()"
 		mat-stroked-button
-		style="width: 100%;">Delete
+		style="width: 100%;">Delete Control Point
+	</button>
+
+	<button (click)="onDeleteSpline()"
+		mat-stroked-button
+		style="width: 100%;">Delete Spline
 	</button>
 
 </div>

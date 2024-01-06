@@ -10,7 +10,6 @@ import { RoadLinkService } from 'app/services/road/road-link.service';
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-point';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { SplineDebugService } from 'app/services/debug/spline-debug.service';
@@ -32,6 +31,36 @@ export class RoadToolService {
 		private splineService: AbstractSplineDebugService,
 		private splineDebug: SplineDebugService,
 	) {
+	}
+
+	addControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ): void {
+
+		spline.addControlPoint( controlPoint );
+
+		spline.update();
+
+		this.splineDebug.addControlPoint( spline, controlPoint );
+
+	}
+
+	insertControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+
+		spline.insertPoint( controlPoint );
+
+		// update not needed
+
+		this.splineDebug.addControlPoint( spline, controlPoint );
+
+	}
+
+	removeControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+
+		spline.removeControlPoint( controlPoint );
+
+		spline.update();
+
+		this.splineDebug.removeControlPoint( spline, controlPoint );
+
 	}
 
 	clear () {
@@ -190,14 +219,6 @@ export class RoadToolService {
 		this.splineService.show( spline );
 
 		this.splineDebug.select( spline );
-
-	}
-
-	addPoint ( spline: AbstractSpline, controlPoint: SplineControlPoint ): void {
-
-		spline.addControlPoint( controlPoint );
-
-		spline.update();
 
 	}
 

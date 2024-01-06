@@ -154,13 +154,34 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	onDelete (): void {
 
-		this.onDeleteSpline();
+		if ( this.data?.controlPoint ) {
+
+			this.onDeleteControlPoint();
+
+		} else if ( this.data?.node ) {
+
+		} else if ( this.data?.road ) {
+
+			this.onDeleteSpline();
+
+		}
 
 	}
 
-	onDeleteSpline (): void {
+	onDeleteControlPoint () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.road.spline ) );
+		if ( !this.data?.controlPoint ) return;
+
+		CommandHistory.execute( new RemoveObjectCommand( this.data.controlPoint ) );
+
+	}
+
+
+	onDeleteSpline () {
+
+		if ( !this.data?.road ) return;
+
+		CommandHistory.execute( new RemoveObjectCommand( this.data.road.spline ) );
 
 	}
 

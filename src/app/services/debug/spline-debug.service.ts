@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
 import { DebugDrawService } from './debug-draw.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Object3DArrayMap } from "../../tools/lane-width/object-3d-map";
 import { Object3D } from "three";
 import { LaneDebugService } from 'app/services/debug/lane-debug.service';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { DebugLine } from './debug-line';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { MapService } from '../map.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { SceneService } from '../scene.service';
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;
@@ -28,6 +26,8 @@ export class SplineDebugService {
 	private lines = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
 
 	private arrows = new Object3DArrayMap<AbstractSpline, Object3D[]>();
+
+	private controlPoints = new Object3DArrayMap<AbstractSpline, Object3D[]>();
 
 	private highlighted = new Set<AbstractSpline>();
 
@@ -259,6 +259,20 @@ export class SplineDebugService {
 		this.removeHighlight();
 
 		this.selected.clear();
+
+	}
+
+	addControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+
+		this.controlPoints.addItem( spline, controlPoint );
+
+	}
+
+	removeControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+
+		SceneService.removeFromTool( controlPoint );
+
+		this.controlPoints.removeItem( spline, controlPoint );
 
 	}
 
