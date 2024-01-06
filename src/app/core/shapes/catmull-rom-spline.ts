@@ -5,20 +5,20 @@
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
-import { AbstractSpline } from './abstract-spline';
+import { AbstractSpline, SplineType } from './abstract-spline';
 import { SceneService } from '../../services/scene.service';
 import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export class CatmullRomSpline extends AbstractSpline {
 
-	public curveType: string = 'curve';
+	public type: SplineType = SplineType.CATMULLROM;
 
 	public curve: CatmullRomCurve3;
 
 	public mesh: Line;
 
-	constructor ( closed = true, public type: CurveType = 'catmullrom', tension = 0.5 ) {
+	constructor ( closed = true, public curveType: CurveType = 'catmullrom', tension = 0.5 ) {
 
 		super( closed, tension );
 
@@ -26,7 +26,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	init (): void {
 
-		this.curve = new CatmullRomCurve3( this.controlPointPositions, this.closed, this.type || 'catmullrom', this.tension );
+		this.curve = new CatmullRomCurve3( this.controlPointPositions, this.closed, this.curveType || 'catmullrom', this.tension );
 
 		const geometry = new BufferGeometry();
 
@@ -49,7 +49,6 @@ export class CatmullRomSpline extends AbstractSpline {
 
 		SceneService.addToolObject( this.mesh );
 	}
-
 
 	hide (): void {
 

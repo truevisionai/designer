@@ -16,24 +16,37 @@ import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 export enum SplineType {
 	AUTO = 'auto',
 	AUTOV2 = 'autov2',
-	EXPLICIT = 'explicit'
+	EXPLICIT = 'explicit',
+	CATMULLROM = 'catmullrom',
 }
 
 export abstract class AbstractSpline {
+
+	public abstract type: SplineType;
+
+	public abstract init (): void;
+
+	public abstract hide (): void;
+
+	public abstract show (): void;
+
+	public abstract hideLines (): void;
+
+	public abstract showLines (): void;
+
+	public abstract update (): void;
+
+	public abstract exportGeometries ( duringImport?: boolean ): TvAbstractRoadGeometry[];
+
+	public abstract getPoint ( t: number, offset: number ): TvPosTheta;
+
+	public abstract getLength (): number;
 
 	public uuid: string;
 
 	public boundingBox: THREE.Box3;
 
-	abstract type: string;
-
 	public controlPoints: AbstractControlPoint[] = [];
-
-	protected controlPointAdded = new EventEmitter<AbstractControlPoint>();
-
-	protected controlPointRemoved = new EventEmitter<AbstractControlPoint>();
-
-	protected meshAddedInScene: boolean;
 
 	protected splineSegments: SplineSegment[] = [];
 
@@ -52,24 +65,6 @@ export abstract class AbstractSpline {
 	get segmentCount () {
 		return this.getSplineSegments().length;
 	}
-
-	abstract init (): void;
-
-	abstract hide (): void;
-
-	abstract show (): void;
-
-	abstract hideLines (): void;
-
-	abstract showLines (): void;
-
-	abstract update (): void;
-
-	abstract exportGeometries ( duringImport?: boolean ): TvAbstractRoadGeometry[];
-
-	abstract getPoint ( t: number, offset: number ): TvPosTheta;
-
-	abstract getLength (): number;
 
 	clone () {
 
@@ -237,7 +232,7 @@ export abstract class AbstractSpline {
 
 	getPath ( offset: number = 0 ) {
 
-		if ( this.type == 'auto' || this.type == 'auto2' || this.type == 'autov2' ) {
+		if ( this.type == SplineType.AUTO || this.type == SplineType.AUTOV2 ) {
 
 			return new AutoSplinePath( this as any, offset );
 
@@ -329,7 +324,8 @@ export abstract class AbstractSpline {
 
 	}
 
-	updateRoadSegments () { }
+	updateRoadSegments () {
+	}
 
 	removeRoadSegment ( segment: SplineSegment ) {
 

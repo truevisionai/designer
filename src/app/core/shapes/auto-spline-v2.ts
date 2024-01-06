@@ -2,7 +2,7 @@ import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-
 import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
 import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
 import { Vector2, Vector3 } from 'three';
-import { AbstractSpline } from './abstract-spline';
+import { AbstractSpline, SplineType } from './abstract-spline';
 import { PolyLine } from './PolyLine';
 import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
@@ -13,7 +13,7 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export class AutoSplineV2 extends AbstractSpline {
 
-	public type = 'autov2';
+	public type: SplineType = SplineType.AUTOV2;
 
 	public polyline: PolyLine;
 

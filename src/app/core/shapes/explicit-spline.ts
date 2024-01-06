@@ -22,7 +22,7 @@ import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
 export class ExplicitSpline extends AbstractSpline {
 
-	type: string = SplineType.EXPLICIT;
+	public type: SplineType = SplineType.EXPLICIT;
 
 	private explicitSegments: Line[] = [];
 
