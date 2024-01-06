@@ -2,6 +2,7 @@ import {
 	AfterViewInit,
 	Component,
 	ComponentFactoryResolver,
+	ComponentRef,
 	Directive,
 	Input,
 	OnDestroy,
@@ -10,7 +11,6 @@ import {
 	ViewChildren,
 	ViewContainerRef
 } from '@angular/core';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 import { getSerializableActions, getSerializableFields, ISerializedField } from 'app/core/components/serialization';
 import { IComponent } from 'app/core/game-object';
@@ -29,8 +29,7 @@ import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/gam
 import { MaterialFieldComponent } from 'app/views/fields/material-field/material-field.component';
 import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-field.component';
 import { Subscription } from 'rxjs';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
-import { AssetService } from 'app/core/asset/asset.service';
+
 
 @Directive( {
 	selector: '[app-field-host]',
@@ -61,15 +60,11 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	@ViewChildren( FieldHostDirective ) fieldHosts: QueryList<FieldHostDirective>;
 
+	fieldComponents = new Map<string, ComponentRef<AbstractFieldComponent>>();
+
 	updateSub?: Subscription;
 
-	set value ( value: any ) {
-
-		this.data = value;
-
-	}
-
-	fieldComponents = {
+	COMPONENTS = {
 		'float': DoubleFieldComponent,
 		'int': DoubleFieldComponent,
 		'number': DoubleFieldComponent,
@@ -87,8 +82,13 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		'material': MaterialFieldComponent,
 	};
 
-	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) {
+	set value ( value: any ) {
+
+		this.data = value;
+
 	}
+
+	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) { }
 
 	ngOnDestroy (): void {
 
@@ -107,6 +107,16 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 	ngAfterViewInit () {
 
 		if ( this.data ) this.loadFields( this.data );
+
+	}
+
+	reloadData () {
+
+		for ( const [ field, componentRef ] of this.fieldComponents ) {
+
+			componentRef.instance.value = this.data[ field ];
+
+		}
 
 	}
 
@@ -153,7 +163,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 		if ( fieldValue === undefined ) return;
 
-		const component = this.fieldComponents[ fieldType ];
+		const component = this.COMPONENTS[ fieldType ];
 
 		const componentFactory = this.componentFactoryResolver.resolveComponentFactory<AbstractFieldComponent>( component );
 
@@ -171,6 +181,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 			CommandHistory.execute( new SetValueCommand( data, item.field, value ) );
 
+			this.reloadData();
+
 		} );
 
 		componentRef.instance.clicked?.subscribe( ( value ) => {
@@ -182,6 +194,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		componentRef.changeDetectorRef.detectChanges();
 
 		this.updateSub = data?.updated?.subscribe( () => componentRef.instance.value = data[ item.field ] );
+
+		this.fieldComponents.set( item.field, componentRef );
 
 	}
 
