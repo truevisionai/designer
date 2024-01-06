@@ -10,6 +10,8 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
 import { Texture } from 'three';
 import { AssetPreviewService } from '../asset-preview/asset-preview.service';
+import { AssetService } from 'app/core/asset/asset.service';
+import { AssetType } from 'app/views/editor/project-browser/file-node.model';
 
 @Component( {
 	selector: 'app-texture-inspector',
@@ -27,7 +29,10 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	public preview: string;
 
-	constructor ( private previewService: AssetPreviewService ) {
+	constructor (
+		private previewService: AssetPreviewService,
+		private assetService: AssetService
+	) {
 	}
 
 	get texture (): Texture {
@@ -50,11 +55,13 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	save () {
 
-		// if ( !this.texture ) return;
+		if ( !this.texture ) return;
 
-		// this.preview = this.previewService.getTexturePreview( this.texture );
+		if ( !this.metadata ) return;
 
-		// AssetFactory.updateTexture( this.metadata.guid, this.texture );
+		this.preview = this.previewService.getTexturePreview( this.texture );
+
+		this.assetService.saveAssetByGuid( AssetType.TEXTURE, this.metadata.guid, this.texture );
 
 	}
 
