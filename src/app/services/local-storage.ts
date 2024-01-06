@@ -9,16 +9,21 @@ import { Injectable } from '@angular/core';
 } )
 export class LocalStorage {
 
-	public store ( key: string, value: string ): void {
+	public store ( key: string, value: any ): void {
 
 		window.localStorage.setItem( key, value );
 
 	}
 
-	public get ( key: string ) {
+	public get ( key: string, value?: any ) {
 
-		return window.localStorage.getItem( key );
+		if ( window.localStorage.getItem( key ) ) {
+			return window.localStorage.getItem( key );
+		}
 
+		this.store( key, value );
+
+		return value;
 	}
 
 	public delete ( key: string ) {

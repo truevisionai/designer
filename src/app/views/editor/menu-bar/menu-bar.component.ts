@@ -28,6 +28,7 @@ import { ProjectService } from 'app/services/project.service';
 import { MapService } from 'app/services/map.service';
 import { AppInspector } from 'app/core/inspector';
 import { SerializedField } from 'app/core/components/serialization';
+import { LocalStorage } from 'app/services/local-storage';
 
 
 @Component( {
@@ -58,10 +59,14 @@ export class MenuBarComponent implements OnInit {
 		private editorService: EditorService,
 		private projectService: ProjectService,
 		private mapService: MapService,
+		private localStorage: LocalStorage
 	) {
 	}
 
 	ngOnInit () {
+
+		const opacity = this.localStorage.get( 'map.opacity', 1 );
+		this.mapService.setOpacityLevel( opacity );
 
 	}
 
@@ -151,7 +156,7 @@ export class MenuBarComponent implements OnInit {
 
 	onMapSettings () {
 
-		AppInspector.setDynamicInspector( new MapSeting( this.mapService, 0.5 ) );
+		AppInspector.setDynamicInspector( new MapSeting( this.mapService, this.localStorage ) );
 
 	}
 
@@ -260,17 +265,17 @@ class MapSeting {
 
 	constructor (
 		private mapService: MapService,
-		private _opacity: number
+		private localStorage: LocalStorage,
 	) {
 	}
 
 	@SerializedField( { type: 'float' } )
 	get opacity () {
-		return this._opacity
+		return this.mapService.getOpacityLevel();
 	}
 
 	set opacity ( value: number ) {
-		this._opacity = value;
 		this.mapService.setOpacityLevel( value );
+		this.localStorage.store( 'map.opacity', value );
 	}
 }
