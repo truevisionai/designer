@@ -24,6 +24,7 @@ import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 import { RoadDebugService } from '../../services/debug/road-debug.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
+import { ViewControllerService } from 'app/modules/three-js/view-controller.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -46,6 +47,7 @@ export class RoadCircleToolService {
 		private roadDebug: RoadDebugService,
 		private roadFactory: RoadFactory,
 		private debugTextService: DebugTextService,
+		public viewController: ViewControllerService,
 	) {
 	}
 

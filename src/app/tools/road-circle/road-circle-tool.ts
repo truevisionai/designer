@@ -54,6 +54,7 @@ export class RoadCircleTool extends BaseTool {
 
 		this.tool.onToolDisabled();
 
+		this.tool.viewController.enableControls();
 	}
 
 	onObjectAdded ( object: any ): void {
@@ -97,13 +98,15 @@ export class RoadCircleTool extends BaseTool {
 
 	}
 
-	onPointerDownSelect ( e: PointerEventData ) {
+	onPointerDownCreate ( e: PointerEventData ) {
 
 		if ( this.debug ) console.log( 'onPointerDownSelect', e, this.isDragging, this.isPointerDown, this.currentRadius );
 
 		this.tool.init( this.pointerDownAt, e.point, this.radius );
 
 		this.isDragging = true;
+
+		this.tool.viewController.disableControls();
 
 	}
 
@@ -122,6 +125,8 @@ export class RoadCircleTool extends BaseTool {
 		this.currentRadius = 0;
 
 		this.isDragging = false;
+
+		this.tool.viewController.enableControls();
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
