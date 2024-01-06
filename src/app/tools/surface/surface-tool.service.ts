@@ -49,7 +49,7 @@ export class SurfaceToolService {
 
 	createSurface ( materialGuid = 'grass', position?: Vector3, curve?: CatmullRomSpline ) {
 
-		return new TvSurface( materialGuid, curve || new CatmullRomSpline() );
+		return new TvSurface( materialGuid, curve || new CatmullRomSpline( true, 'catmullrom', 0 ) );
 
 	}
 
