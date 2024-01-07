@@ -29,6 +29,7 @@ import { MapService } from 'app/services/map.service';
 import { AppInspector } from 'app/core/inspector';
 import { SerializedField } from 'app/core/components/serialization';
 import { LocalStorage } from 'app/services/local-storage';
+import { MapValidatorService } from 'app/services/map-validator.service';
 
 
 @Component( {
@@ -59,7 +60,8 @@ export class MenuBarComponent implements OnInit {
 		private editorService: EditorService,
 		private projectService: ProjectService,
 		private mapService: MapService,
-		private localStorage: LocalStorage
+		private localStorage: LocalStorage,
+		private mapValidator: MapValidatorService,
 	) {
 	}
 
@@ -151,6 +153,12 @@ export class MenuBarComponent implements OnInit {
 				this.editorService.settings.odrViewerPath = result.odrViewerPath;
 			}
 		} );
+
+	}
+
+	validateMap () {
+
+		this.mapValidator.validateMap( this.mapService.map );
 
 	}
 

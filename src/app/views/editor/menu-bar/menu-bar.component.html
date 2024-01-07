@@ -124,6 +124,12 @@
 			<span>Redo (CTRL + Y)</span>
 		</button>
 		<mat-divider></mat-divider>
+		<button (click)="validateMap()"
+			action="gis-settings"
+			appTrack="menu"
+			mat-menu-item>
+			<span>Validate Map</span>
+		</button>
 		<button (click)="onMapSettings()"
 			action="gis-settings"
 			appTrack="menu"
