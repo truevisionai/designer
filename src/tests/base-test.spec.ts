@@ -96,4 +96,46 @@ export class BaseTest {
 		intersectionService.checkSplineIntersections( verticalRoad.spline );
 
 	}
+
+	createTJunction (
+		roadService: RoadService,
+		intersectionService: IntersectionService,
+		leftLaneCount = 1,
+		rightLaneCount = 1,
+		leftWidth = 3.6,
+		rightWidth = 3.6
+	) {
+
+		/**
+		 *
+		 * T junction
+		 *
+		 * | |
+		 * | |- - - -
+		 * | |- - - -
+		 * | |
+		 *
+		 */
+
+		const horizontal = this.makeRoad( [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ],
+			leftLaneCount,
+			rightLaneCount,
+			leftWidth,
+			rightWidth
+		);
+
+		const vertical = this.makeRoad( [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
+			leftLaneCount,
+			rightLaneCount,
+			leftWidth,
+			rightWidth
+		);
+
+		roadService.addRoad( horizontal );
+
+		roadService.addRoad( vertical );
+
+		intersectionService.checkSplineIntersections( vertical.spline );
+
+	}
 }

@@ -90,4 +90,34 @@ describe( 'BaseTest: tests', () => {
 
 	} );
 
+	it( 'should create t-junction correctly', () => {
+
+		expect( roadService.roads.length ).toBe( 0 );
+		expect( roadService.junctionRoads.length ).toBe( 0 );
+
+		baseTest.createTJunction( roadService, intersectionService );
+
+		const roadA = roadService.getRoad( 1 );
+		const roadB = roadService.getRoad( 2 );
+		const roadC = roadService.getRoad( 3 );
+
+		const junction = junctionService.getJunctionById( 1 );
+
+		expect( roadService.roads.length ).toBe( 3 + 6 );
+
+		expect( roadService.nonJunctionRoads.length ).toBe( 3 );
+		expect( roadService.junctionRoads.length ).toBe( 6 );
+
+		expect( junctionService.junctions.length ).toBe( 1 );
+
+		expect( junctionConnectionService.connections.length ).toBe( 6 );
+
+		expect( mapService.map.getSplineCount() ).toBe( 2 + 6 );
+
+		expect( junction ).toBeDefined();
+		expect( junction.connections.size ).toBe( 6 );
+
+	} );
+
+
 } );
