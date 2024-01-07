@@ -142,16 +142,6 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
-		this.readAsOptionalArray( xml.junction, xml => {
-
-			this.parseJunctionConnections( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
-
-			this.parseJunctionPriorities( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
-
-			this.parseJunctionControllers( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
-
-		} );
-
 		readXmlArray( xml.road, xml => {
 
 			const road = this.map.getRoadById( parseInt( xml.attr_id ) );
@@ -171,6 +161,17 @@ export class SceneImporterService extends AbstractReader {
 			}
 
 		} )
+
+		this.readAsOptionalArray( xml.junction, xml => {
+
+			this.parseJunctionConnections( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+
+			this.parseJunctionPriorities( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+
+			this.parseJunctionControllers( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+
+		} );
+
 
 		this.readAsOptionalArray( xml.spline, xml => {
 
