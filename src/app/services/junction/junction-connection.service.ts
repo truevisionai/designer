@@ -149,7 +149,7 @@ export class JunctionConnectionService {
 			outgoing.road
 		);
 
-		this.roadSplineService.rebuildSplineRoads( connectingRoad.spline );
+		this.roadSplineService.rebuildSpline( connectingRoad.spline );
 
 		this.linkService.createDrivingLinks( connection, incoming, outgoing );
 

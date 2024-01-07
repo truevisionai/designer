@@ -81,6 +81,7 @@ export class TvMap {
 	}
 
 	removeSpline ( spline: AbstractSpline ): void {
+		if ( !this.splines.find( s => s.uuid == spline.uuid ) ) return;
 		this.splines.splice( this.splines.indexOf( spline ), 1 );
 	}
 

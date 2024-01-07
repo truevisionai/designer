@@ -115,7 +115,7 @@ export class RoadSplineService {
 		return meshes;
 	}
 
-	rebuildSplineRoads ( spline: AbstractSpline ): void {
+	rebuildSpline ( spline: AbstractSpline ): void {
 
 		this.updateRoadSpline( spline, true );
 

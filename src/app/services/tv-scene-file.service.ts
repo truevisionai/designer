@@ -124,7 +124,9 @@ export class TvSceneFileService {
 
 		const contents = await this.storageService.readAsync( path );
 
-		this.setMap( this.sceneImporter.import( contents ) );
+		const map = this.sceneImporter.import( contents );
+
+		this.setMap( map );
 
 		this.currentFile.path = path;
 

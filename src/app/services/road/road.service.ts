@@ -256,7 +256,7 @@ export class RoadService {
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
-		this.roadSplineService.rebuildSplineRoads( road.spline );
+		this.roadSplineService.rebuildSpline( road.spline );
 
 		this.mapService.map.gameObject.add( road.gameObject );
 
@@ -286,7 +286,7 @@ export class RoadService {
 
 		this.roadSplineService.removeRoadSegment( road );
 
-		this.roadSplineService.rebuildSplineRoads( road.spline );
+		this.roadSplineService.rebuildSpline( road.spline );
 
 		this.mapService.map.gameObject.remove( road.gameObject );
 

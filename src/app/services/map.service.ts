@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
@@ -26,6 +27,10 @@ export class MapService {
 
 	get roads (): TvRoad[] {
 		return this.map.getRoads();
+	}
+
+	get junctions (): TvJunction[] {
+		return this.map.getJunctions();
 	}
 
 	get junctionRoads (): TvRoad[] {
