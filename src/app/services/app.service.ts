@@ -13,18 +13,13 @@ import { AuthService } from './auth.service';
 import { EditorService } from './editor.service';
 import { SceneService } from './scene.service';
 import { ManagerRegistry } from '../managers/manager-registry';
-import { JunctionManager } from '../managers/junction-manager';
 import { EntityManager } from '../managers/entity-manager';
 import { MapManager } from '../managers/map-manager';
 import { ElevationManager } from '../managers/elevation-manager';
 import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
 import { RoadService } from './road/road.service';
-import { RoadSplineService } from './road/road-spline.service';
-import { MapService } from './map.service';
 import { ObjectEventListener } from 'app/listeners/object-event-listener';
-import { RoadLinkService } from './road/road-link.service';
 import { AssetService } from 'app/core/asset/asset.service';
-import { LaneService } from 'app/services/lane/lane.service';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 
 @Injectable( {
@@ -64,13 +59,10 @@ export class AppService {
 
 		AppInfo.electron = electron;
 
-		ManagerRegistry.registerManager( JunctionManager );
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
 		ManagerRegistry.setManager( 'object-listener', new ObjectEventListener( this.assetService ) );
-		// ManagerRegistry.registerManager( RoadSelectionListener );
-		// ManagerRegistry.registerManager( RoadControlPointListener );
 		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );
 
 		ManagerRegistry.initManagers();
