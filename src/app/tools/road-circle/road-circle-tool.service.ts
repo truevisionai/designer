@@ -234,8 +234,8 @@ export class RoadCircleToolService {
 				road.setSuccessorRoad( nextRoad, TvContactPoint.START );
 				nextRoad.setPredecessorRoad( road, TvContactPoint.END );
 
-				this.roadLinkService.linkSuccessor( road, road.successor );
-				this.roadLinkService.linkPredecessor( nextRoad, road.predecessor );
+				// this.roadLinkService.linkSuccessor( road, road.successor );
+				// this.roadLinkService.linkPredecessor( nextRoad, road.predecessor );
 
 			} else {
 
@@ -245,8 +245,8 @@ export class RoadCircleToolService {
 				road.setSuccessorRoad( firstRoad, TvContactPoint.START );
 				firstRoad.setPredecessorRoad( road, TvContactPoint.END );
 
-				this.roadLinkService.linkSuccessor( road, road.successor );
-				this.roadLinkService.linkPredecessor( firstRoad, road.predecessor );
+				// this.roadLinkService.linkSuccessor( road, road.successor );
+				// this.roadLinkService.linkPredecessor( firstRoad, road.predecessor );
 
 			}
 
