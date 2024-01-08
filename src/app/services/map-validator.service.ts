@@ -10,6 +10,9 @@ import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
 import { Object3D } from 'three';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugTextService } from './debug/debug-text.service';
+import { Environment } from 'app/core/utils/environment';
+import { MapEvents } from 'app/events/map-events';
+import { MapService } from './map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,7 +28,46 @@ export class MapValidatorService {
 	constructor (
 		private debugDraw: DebugDrawService,
 		private debugText: DebugTextService,
-	) { }
+		private mapService: MapService,
+	) {
+		this.init();
+	}
+
+	init () {
+
+		if ( Environment.production ) return;
+
+		MapEvents.splineCreated.subscribe( ( spline ) => {
+
+			setTimeout( () => {
+
+				this.validateMap( this.mapService.map );
+
+			}, 1000 );
+
+		} );
+
+		MapEvents.splineUpdated.subscribe( ( spline ) => {
+
+			setTimeout( () => {
+
+				this.validateMap( this.mapService.map );
+
+			}, 1000 );
+
+		} );
+
+		MapEvents.splineRemoved.subscribe( ( spline ) => {
+
+			setTimeout( () => {
+
+				this.validateMap( this.mapService.map );
+
+			}, 1000 );
+
+		} );
+
+	}
 
 	setMap ( map: TvMap ) {
 
@@ -109,7 +151,7 @@ export class MapValidatorService {
 
 				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
 
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
 
 					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
 					this.debugObjects.add( arrow1, arrow1 );
@@ -126,7 +168,7 @@ export class MapValidatorService {
 
 				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
 
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
 
 					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
 					this.debugObjects.add( arrow1, arrow1 );
@@ -140,7 +182,7 @@ export class MapValidatorService {
 
 			if ( roadAPosition.position.distanceTo( roadBPosition.position ) > 0.01 ) {
 
-				this.errors.push( 'Road:' + roadA.id + ' has invalid distance with Successor:' + successor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
+				this.errors.push( 'Road:' + roadA.id + ' has invalid distance with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
 
 				const sphere1 = this.debugDraw.createSphere( roadAPosition.position, 0.5, COLOR.BLUE );
 				this.debugObjects.add( sphere1, sphere1 );
@@ -174,7 +216,7 @@ export class MapValidatorService {
 
 				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
 
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
 
 					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
 					this.debugObjects.add( arrow1, arrow1 );
@@ -189,7 +231,7 @@ export class MapValidatorService {
 
 				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
 
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Predecessor: ' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
 
 					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
 					this.debugObjects.add( arrow1, arrow1 );
@@ -202,7 +244,7 @@ export class MapValidatorService {
 
 			if ( roadAPosition.position.distanceTo( roadBPosition.position ) > 0.01 ) {
 
-				this.errors.push( 'Road:' + roadA.id + ' has invalid distance with Predecessor:' + predecessor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
+				this.errors.push( 'Road:' + roadA.id + ' has invalid distance with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
 
 				const sphere1 = this.debugDraw.createSphere( roadAPosition.position, 0.5, COLOR.BLUE );
 				this.debugObjects.add( sphere1, sphere1 );
