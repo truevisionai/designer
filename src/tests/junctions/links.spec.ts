@@ -22,7 +22,6 @@ describe( 'LaneLinkService', () => {
 	let junctionService: JunctionService;
 	let laneLinkService: LaneLinkService;
 	let connectionService: JunctionConnectionService;
-	let roadFactory = new RoadFactory();
 	let baseTest = new BaseTest();
 	let eventServiceProvider: EventServiceProvider;
 

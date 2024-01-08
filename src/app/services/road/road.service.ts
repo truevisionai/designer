@@ -33,6 +33,12 @@ export class RoadService {
 	) {
 	}
 
+	getRoadFactory (): RoadFactory {
+
+		return this.roadFactory;
+
+	}
+
 	get roads (): TvRoad[] {
 
 		return this.mapService.map.getRoads();

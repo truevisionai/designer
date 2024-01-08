@@ -248,7 +248,7 @@ export class RoadToolService {
 		this.splineService.hideControlPoints( spline );
 		this.splineService.hide( spline );
 
-		this.roadSplineService.removeSpline( spline );
+		// this.roadSplineService.removeSpline( spline );
 
 		this.removeSplineVisuals( spline );
 

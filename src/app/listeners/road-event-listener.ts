@@ -81,19 +81,30 @@ export class RoadEventListener {
 
 		} );
 
-		this.roadLinkService.removeLinks( event.road );
+		// this.roadLinkService.removeLinks( event.road );
 
-		this.roadSplineService.removeRoadSegment( event.road );
+		if ( event.road.isJunction ) {
 
-		this.roadSplineService.rebuildSplineRoads( event.road.spline );
+			this.mapService.map.removeSpline( event.road.spline );
 
-		this.updateLinks( event.road );
+		} else {
+
+			this.roadSplineService.removeRoadSegment( event.road );
+
+		}
+
+		// this.roadSplineService.removeRoadSegment( event.road );
+
+		// this.roadSplineService.rebuildSplineRoads( event.road.spline );
+
+		// this.updateLinks( event.road );
 
 		this.mapService.map.gameObject.remove( event.road.gameObject );
 
 		this.mapService.map.removeRoad( event.road );
 
 		this.roadFactory.idRemoved( event.road.id );
+
 	}
 
 	updateLinks ( road: TvRoad ) {
@@ -140,7 +151,7 @@ export class RoadEventListener {
 
 	private buildRoad ( road: TvRoad ): void {
 
-		this.roadSplineService.rebuildSplineRoads( road.spline );
+		this.roadSplineService.rebuildSpline( road.spline );
 
 	}
 

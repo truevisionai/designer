@@ -5,6 +5,11 @@ import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadLinkChild } from 'app/modules/tv-map/models/tv-road-link-child';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
+import { DebugDrawService } from './debug/debug-draw.service';
+import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
+import { Object3D } from 'three';
+import { COLOR } from 'app/views/shared/utils/colors.service';
+import { DebugTextService } from './debug/debug-text.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -15,7 +20,12 @@ export class MapValidatorService {
 
 	private errors = [];
 
-	constructor () { }
+	private debugObjects = new Object3DMap<Object3D, Object3D>();
+
+	constructor (
+		private debugDraw: DebugDrawService,
+		private debugText: DebugTextService,
+	) { }
 
 	setMap ( map: TvMap ) {
 
@@ -86,27 +96,59 @@ export class MapValidatorService {
 			const roadB = this.map.getRoadById( successor.elementId );
 
 			if ( !roadB ) this.errors.push( 'Successor not found' + successor.elementId + ' for road ' + roadA.id );
+			if ( !roadB ) {
+				const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, 1.0, COLOR.MAGENTA );
+				this.debugObjects.add( sphere1, sphere1 );
+			};
 			if ( !roadB ) return;
 
 			const roadAPosition = roadA.getEndPosTheta();
 			const roadBPosition = roadB.getPosThetaByContact( successor.contactPoint );
 
 			if ( successor.contactPoint == TvContactPoint.START ) {
+
 				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
+
 					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+
+					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
+					this.debugObjects.add( arrow1, arrow1 );
+
+					const arrow2 = this.debugDraw.createArrow( roadBPosition.position, roadBPosition.hdg, COLOR.GREEN );
+					this.debugObjects.add( arrow2, arrow2 );
+
 				}
+
 			} else {
+
 				// validate if hdg are facing each other
 				const diff = Math.abs( roadAPosition.hdg - roadBPosition.hdg );
-				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
-				}
-			}
 
+				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
+
+					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+
+					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
+					this.debugObjects.add( arrow1, arrow1 );
+
+					const arrow2 = this.debugDraw.createArrow( roadBPosition.position, roadBPosition.hdg, COLOR.GREEN );
+					this.debugObjects.add( arrow2, arrow2 );
+
+				}
+
+			}
 
 			if ( roadAPosition.position.distanceTo( roadBPosition.position ) > 0.01 ) {
+
 				this.errors.push( 'Road:' + roadA.id + ' has invalid distance with Successor:' + successor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
+
+				const sphere1 = this.debugDraw.createSphere( roadAPosition.position, 0.5, COLOR.BLUE );
+				this.debugObjects.add( sphere1, sphere1 );
+
+				const sphere2 = this.debugDraw.createSphere( roadBPosition.position, 0.5, COLOR.GREEN );
+				this.debugObjects.add( sphere2, sphere2 );
 			}
+
 		}
 
 	}
@@ -117,7 +159,11 @@ export class MapValidatorService {
 
 			const roadB = this.map.getRoadById( predecessor.elementId );
 
-			if ( !roadB ) this.errors.push( 'Predecossor not found' + predecessor.elementId + ' for road ' + roadA.id );
+			if ( !roadB ) this.errors.push( 'Predecessor not found' + predecessor.elementId + ' for road ' + roadA.id );
+			if ( !roadB ) {
+				const sphere1 = this.debugDraw.createSphere( roadA.getStartPosTheta().position, 1.0, COLOR.MAGENTA );
+				this.debugObjects.add( sphere1, sphere1 );
+			};
 			if ( !roadB ) return;
 
 			const roadAPosition = roadA.getStartPosTheta();
@@ -125,20 +171,47 @@ export class MapValidatorService {
 			const roadBPosition = roadB.getPosThetaByContact( predecessor.contactPoint );
 
 			if ( predecessor.contactPoint == TvContactPoint.END ) {
-				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
-					this.errors.push( 'Road ' + roadA.id + ' has invalid hdg with predecessor connection ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
-				}
-			} else {
-				const diff = Math.abs( roadAPosition.hdg - roadBPosition.hdg );
-				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
-					this.errors.push( 'Road ' + roadA.id + ' has invalid hdg with predecessor connection ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
-				}
-			}
 
+				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
+
+					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+
+					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
+					this.debugObjects.add( arrow1, arrow1 );
+
+					const arrow2 = this.debugDraw.createArrow( roadBPosition.position, roadBPosition.hdg, COLOR.GREEN );
+					this.debugObjects.add( arrow2, arrow2 );
+				}
+
+			} else {
+
+				const diff = Math.abs( roadAPosition.hdg - roadBPosition.hdg );
+
+				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
+
+					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Predecessor: ' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+
+					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
+					this.debugObjects.add( arrow1, arrow1 );
+
+					const arrow2 = this.debugDraw.createArrow( roadBPosition.position, roadBPosition.hdg, COLOR.GREEN );
+					this.debugObjects.add( arrow2, arrow2 );
+				}
+
+			}
 
 			if ( roadAPosition.position.distanceTo( roadBPosition.position ) > 0.01 ) {
-				this.errors.push( 'Road ' + roadA.id + ' has invalid distance with predecessor connection ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
+
+				this.errors.push( 'Road:' + roadA.id + ' has invalid distance with Predecessor:' + predecessor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
+
+				const sphere1 = this.debugDraw.createSphere( roadAPosition.position, 0.5, COLOR.BLUE );
+				this.debugObjects.add( sphere1, sphere1 );
+
+				const sphere2 = this.debugDraw.createSphere( roadBPosition.position, 0.5, COLOR.GREEN );
+				this.debugObjects.add( sphere2, sphere2 );
+
 			}
+
 		}
 
 	}

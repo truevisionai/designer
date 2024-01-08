@@ -1,55 +1,46 @@
 import { HttpClientModule } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map.service';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
-import { Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { BaseTest } from 'tests/base-test.spec';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-point';
+import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { SplineManager } from 'app/managers/spline-manager';
 
 describe( '4-way-junction tests', () => {
 
-	let tool: RoadTool;
 	let baseTest = new BaseTest();
 
+	let roadToolService: RoadToolService;
 	let mapService: MapService;
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
-	let junctionConnectionService: JunctionConnectionService;
-
-	let eventServiceProvider: EventServiceProvider;
+	let splineManager: SplineManager;
 
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
 			imports: [ HttpClientModule ],
-			providers: [ RoadToolService ]
 		} );
 
-		tool = new RoadTool( TestBed.inject( RoadToolService ) )
+		roadToolService = TestBed.inject( RoadToolService );
+		roadService = roadToolService.roadService
 
 		mapService = TestBed.inject( MapService );
-		roadService = TestBed.inject( RoadService );
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
-		junctionConnectionService = TestBed.inject( JunctionConnectionService );
+		splineManager = TestBed.inject( SplineManager );
 
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
-
+		let eventServiceProvider = TestBed.inject( EventServiceProvider );
 		eventServiceProvider.init();
-
-	} );
-
-	beforeEach( () => {
-
-		mapService.reset();
 
 	} );
 
@@ -246,49 +237,182 @@ describe( '4-way-junction tests', () => {
 
 	} );
 
-	it( 'should rebuild junction after junction linked road is removed', () => {
+	it( 'should create 4-way junction for connected road', () => {
 
-		// left to right
-		const road1 = roadService.createDefaultRoad();
-		road1.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		road1.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
+		// expect( true ).toBe( false );
 
-		// bottom to top
-		const road2 = roadService.createDefaultRoad();
-		road2.spline.addControlPointAt( new Vector3( 0, -50, 0 ) );
-		road2.spline.addControlPointAt( new Vector3( 0, 50, 0 ) );
+		/**
+		 * We generate this map:
+		 * 1 is left road
+		 * 2 is right road
+		 * 3 is joining road
+		 * 4 is vertical road
+		 *
+		 * 		 	|   |
+		 *		 	| 5 |
+		 *  	 	|   |
+		 *       	|   |
+		 * ------------------------
+		 * 	1 |	 3	| J |	6 | 2
+		 * ------------------------
+		 * 	 	 	|   |
+		 * 		 	|   |
+		 * 		 	| 4 |
+		 * 		 	|   |
+		 */
 
-		roadService.addRoad( road1 );
-		roadService.addRoad( road2 );
+		const leftRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 0 ), new Vector2( -50, 0 ) ] );
+		const rightRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 50, 0 ), new Vector2( 100, 0 ) ] );
 
-		intersectionService.checkSplineIntersections( road2.spline );
+		const joiningRoad = roadToolService.createJoiningRoad(
+			new RoadNode( leftRoad, TvContactPoint.END ),
+			new RoadNode( rightRoad, TvContactPoint.START )
+		);
 
-		// 4 roads
-		// 12 connections
-		expect( roadService.roads.length ).toBe( 16 );
-		expect( junctionService.junctions.length ).toBe( 1 );
+		roadService.addRoad( joiningRoad );
 
-		const junction = junctionService.junctions[ 0 ];
+		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ] );
 
-		expect( junction.connections.size ).toBe( 12 );
+		expect( mapService.roads.length ).toBe( 4 );
+		expect( roadService.getRoad( 1 ) ).toBe( leftRoad );
+		expect( roadService.getRoad( 2 ) ).toBe( rightRoad );
+		expect( roadService.getRoad( 3 ) ).toBe( joiningRoad );
+		expect( roadService.getRoad( 4 ) ).toBe( vertical );
 
-		// 1->left
-		// 2->bottom
-		// 3->top
-		// 4->right
-		const leftRoad = roadService.getRoad( 1 );
-		const bottomRoad = roadService.getRoad( 2 );
-		const topRoad = roadService.getRoad( 3 );
-		const rightRoad = roadService.getRoad( 4 );
+		splineManager.updateSpline( vertical.spline );
 
-		tool.onRoadRemoved( bottomRoad );
+		expect( roadService.getRoad( 1 ) ).toBe( leftRoad );
+		expect( roadService.getRoad( 2 ) ).toBe( rightRoad );
+		expect( roadService.getRoad( 3 ) ).toBe( joiningRoad );
+		expect( roadService.getRoad( 4 ) ).toBe( vertical );
+		expect( roadService.getRoad( 5 ) ).toBeDefined();
+		expect( roadService.getRoad( 6 ) ).toBeDefined();
 
-		expect( roadService.roads.length ).toBe( 9 );
-		expect( junction.connections.size ).toBe( 6 );
+
+		expect( joiningRoad ).toBeDefined();
+		expect( mapService.junctions.length ).toBe( 1 );
+		expect( mapService.roads.length ).toBe( 18 );
+		expect( mapService.nonJunctionRoads.length ).toBe( 6 );
+		expect( mapService.junctionRoads.length ).toBe( 12 );
+		expect( mapService.splines.length ).toBe( 16 );
+
+		const junction = mapService.junctions[ 0 ];
+		const verticalTopHalf = roadService.getRoad( 5 );
+		const joiningRightHalf = roadService.getRoad( 6 );
+
+		expect( joiningRoad.predecessor.element.id ).toBe( leftRoad.id );
+		expect( joiningRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
+
+		expect( joiningRoad.successor.element ).toBe( junction );
+		expect( joiningRoad.successor.elementType ).toBe( TvRoadLinkChildType.junction );
+		expect( joiningRoad.successor.elementId ).toBe( junction.id );
+		expect( joiningRoad.successor.contactPoint ).toBeUndefined();
+
+		expect( leftRoad.successor.elementType ).toBe( TvRoadLinkChildType.road );
+		expect( leftRoad.successor.elementId ).toBe( joiningRoad.id );
+		expect( leftRoad.successor.contactPoint ).toBe( TvContactPoint.START );
+		expect( leftRoad.predecessor ).toBeUndefined();
+
+		expect( rightRoad.predecessor.elementType ).toBe( TvRoadLinkChildType.road );
+		expect( rightRoad.predecessor.elementId ).toBe( joiningRightHalf.id );
+		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
+		expect( rightRoad.successor ).toBeUndefined();
+
+		expect( joiningRightHalf.predecessor.elementType ).toBe( TvRoadLinkChildType.junction );
+		expect( joiningRightHalf.predecessor.elementId ).toBe( junction.id );
+		expect( joiningRightHalf.predecessor.contactPoint ).toBeUndefined();
+
+		expect( verticalTopHalf.predecessor.elementType ).toBe( TvRoadLinkChildType.junction );
+		expect( verticalTopHalf.predecessor.elementId ).toBe( junction.id );
+		expect( verticalTopHalf.predecessor.contactPoint ).toBeUndefined();
+
+		expect( vertical.successor.elementType ).toBe( TvRoadLinkChildType.junction );
+		expect( vertical.successor.elementId ).toBe( junction.id );
+		expect( vertical.successor.contactPoint ).toBeUndefined();
+
+		expect( joiningRoad.successor.elementType ).toBe( TvRoadLinkChildType.junction );
+		expect( joiningRoad.successor.elementId ).toBe( junction.id );
+		expect( joiningRoad.successor.contactPoint ).toBeUndefined();
 
 	} );
 
-	it( 'should add non-driving lanes correctly', () => {
+	it( 'should reset road when 4-way junction is removed from connected road', () => {
+
+		/**
+		 * We generate this map:
+		 * 1 is left road
+		 * 2 is right road
+		 * 3 is joining road
+		 * 4 is vertical road
+		 *
+		 * 		 	|   |
+		 *		 	| 5 |
+		 *  	 	|   |
+		 *       	|   |
+		 * ------------------------
+		 * 	1 |	 3	| J |	6 | 2
+		 * ------------------------
+		 * 	 	 	|   |
+		 * 		 	|   |
+		 * 		 	| 4 |
+		 * 		 	|   |
+		 */
+
+		const leftRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 0 ), new Vector2( -50, 0 ) ] );
+		const rightRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 50, 0 ), new Vector2( 100, 0 ) ] );
+
+		const joiningRoad = roadToolService.createJoiningRoad(
+			new RoadNode( leftRoad, TvContactPoint.END ),
+			new RoadNode( rightRoad, TvContactPoint.START )
+		);
+
+		roadService.addRoad( joiningRoad );
+
+		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ] );
+
+		expect( mapService.roads.length ).toBe( 4 );
+		expect( roadService.getRoad( 1 ) ).toBe( leftRoad );
+		expect( roadService.getRoad( 2 ) ).toBe( rightRoad );
+		expect( roadService.getRoad( 3 ) ).toBe( joiningRoad );
+		expect( roadService.getRoad( 4 ) ).toBe( vertical );
+
+		// this will create junction
+		splineManager.updateSpline( vertical.spline );
+
+		// move vertical road away
+		vertical.spline.controlPoints.forEach( point => point.position.x += 300 );
+
+		// this should remove junction and remove spline roads
+		splineManager.removeSpline( vertical.spline );
+
+		expect( mapService.junctions.length ).toBe( 0 );
+		expect( mapService.roads.length ).toBe( 3 );
+
+		expect( joiningRoad ).toBeDefined();
+		expect( joiningRoad.spline.controlPoints.length ).toBe( 4 );
+		expect( joiningRoad.spline.getLength() ).toBeCloseTo( 100 );
+
+		expect( joiningRoad.predecessor.elementType ).toBe( TvRoadLinkChildType.road );
+		expect( joiningRoad.predecessor.elementId ).toBe( leftRoad.id );
+		expect( joiningRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
+
+		expect( joiningRoad.successor.elementType ).toBe( TvRoadLinkChildType.road );
+		expect( joiningRoad.successor.elementId ).toBe( rightRoad.id );
+		expect( joiningRoad.successor.contactPoint ).toBe( TvContactPoint.START );
+
+		expect( leftRoad.successor.elementType ).toBe( TvRoadLinkChildType.road );
+		expect( leftRoad.successor.elementId ).toBe( joiningRoad.id );
+		expect( leftRoad.successor.contactPoint ).toBe( TvContactPoint.START );
+		expect( leftRoad.predecessor ).toBeUndefined();
+
+		expect( rightRoad.predecessor.elementType ).toBe( TvRoadLinkChildType.road );
+		expect( rightRoad.predecessor.elementId ).toBe( joiningRoad.id );
+		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
+		expect( rightRoad.successor ).toBeUndefined();
+
+	} );
+
+	it( 'should add non-driving lanes correctly', inject( [ JunctionConnectionService ], ( junctionConnectionService: JunctionConnectionService ) => {
 
 		// left to right
 		const road1 = roadService.createDefaultRoad();
@@ -315,7 +439,7 @@ describe( '4-way-junction tests', () => {
 
 		expect( connection.laneLink.length ).toBe( 3 );
 
-	} );
+	} ) );
 
 	it( 'should create 2 4-way junctions automatically', () => {
 
@@ -349,25 +473,28 @@ describe( '4-way-junction tests', () => {
 
 	} );
 
-	it( 'should reset road when spline is removed from junction', () => {
+	it( 'should work when vertical spline is removed', () => {
 
 		baseTest.createFourWayJunction( roadService, intersectionService );
 
-		const roadA = roadService.getRoad( 1 );
-		const roadB = roadService.getRoad( 2 );
+		const horizontal = roadService.getRoad( 1 );
+		const vertical = roadService.getRoad( 2 );
 
-		tool.onSplineRemoved( roadB.spline );
+		splineManager.removeSpline( vertical.spline );
+
+		expect( mapService.splines.find( i => i.uuid == horizontal.spline.uuid ) ).toBeDefined();
+		expect( mapService.splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeUndefined();
 
 		expect( mapService.map.getJunctionCount() ).toBe( 0 );
 		expect( mapService.map.getRoadCount() ).toBe( 1 );
 		expect( mapService.map.getSplineCount() ).toBe( 1 );
 
-		expect( roadA.getRoadLength() ).toBe( 200 );
-		expect( roadA.successor ).toBeNull();
-		expect( roadA.predecessor ).toBeUndefined();
+		expect( horizontal.getRoadLength() ).toBe( 200 );
+		expect( horizontal.successor ).toBeUndefined();
+		expect( horizontal.predecessor ).toBeUndefined();
 
-		expect( roadB.spline.getLength() ).toBe( 200 );
-		expect( roadB.spline.getSplineSegments().length ).toBe( 0 );
+		expect( vertical.spline.getLength() ).toBe( 200 );
+		expect( vertical.spline.getSplineSegments().length ).toBe( 1 );
 
 	} );
 
@@ -384,26 +511,24 @@ describe( '4-way-junction tests', () => {
 
 		vertical.spline.controlPoints.forEach( point => point.position.x += 300 );
 
-		tool.onControlPointUpdated( vertical.spline.controlPoints[ 0 ] );
-
-		const splines = mapService.map.getSplines();
+		splineManager.updateSpline( vertical.spline );
 
 		// FLAKY TEST
-		// expect( splines.find( i => i.uuid == horizontal.spline.uuid ) ).toBeDefined();
-		expect( splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeDefined();
+		expect( mapService.splines.find( i => i.uuid == horizontal.spline.uuid ) ).toBeDefined();
+		expect( mapService.splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeDefined();
 
-		expect( mapService.map.getJunctionCount() ).toBe( 0 );
-		expect( mapService.map.getRoadCount() ).toBe( 2 );
+		expect( mapService.junctions.length ).toBe( 0 );
+		expect( mapService.roads.length ).toBe( 2 );
 
 		// FLAKY TEST
-		// expect( mapService.map.getSplineCount() ).toBe( 2 );
+		expect( mapService.splines.length ).toBe( 2 );
 
 		expect( horizontal.getRoadLength() ).toBe( 200 );
-		expect( horizontal.successor ).toBeNull();
+		expect( horizontal.successor ).toBeUndefined();
 		expect( horizontal.predecessor ).toBeUndefined();
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
-		expect( vertical.successor ).toBeNull();
+		expect( vertical.successor ).toBeUndefined();
 		expect( vertical.predecessor ).toBeUndefined();
 		expect( vertical.spline.getSplineSegments().length ).toBe( 1 );
 
@@ -418,14 +543,12 @@ describe( '4-way-junction tests', () => {
 		const horizontal = roadService.getRoad( 1 );
 		const vertical = roadService.getRoad( 2 );
 
-		vertical.spline.controlPoints.forEach( point => point.position.x += 10 );
+		vertical.spline.controlPoints.forEach( point => point.position.x = 10 );
 
-		tool.onSplineUpdated( vertical.spline );
+		splineManager.updateSpline( vertical.spline );
 
-		const splines = mapService.map.getSplines();
-
-		expect( splines.find( i => i.uuid == horizontal.spline.uuid ) ).toBeDefined();
-		expect( splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeDefined();
+		expect( mapService.splines.find( i => i.uuid == horizontal.spline.uuid ) ).toBeDefined();
+		expect( mapService.splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeDefined();
 
 		expect( mapService.map.getJunctionCount() ).toBe( 1 );
 		expect( mapService.map.getRoadCount() ).toBe( 16 );

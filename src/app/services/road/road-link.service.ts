@@ -592,15 +592,15 @@ export class RoadLinkService {
 
 		if ( road.successor.isJunction ) {
 
-			const junction = this.getElement<TvJunction>( road.successor );
+			// const junction = this.getElement<TvJunction>( road.successor );
 
-			const connections = junction.getConnectionsForRoad( road );
+			// const connections = junction.getConnectionsForRoad( road );
 
-			connections.forEach( connection => {
+			// connections.forEach( connection => {
 
-				this.connectionService.removeConnection( junction, connection );
+			// 	this.connectionService.removeConnection( junction, connection );
 
-			} );
+			// } );
 
 			return;
 		}
@@ -628,15 +628,15 @@ export class RoadLinkService {
 
 		if ( road.predecessor.isJunction ) {
 
-			const junction = this.getElement<TvJunction>( road.predecessor );
+			// const junction = this.getElement<TvJunction>( road.predecessor );
 
-			const connections = junction.getConnectionsForRoad( road );
+			// const connections = junction.getConnectionsForRoad( road );
 
-			connections.forEach( connection => {
+			// connections.forEach( connection => {
 
-				this.connectionService.removeConnection( junction, connection );
+			// 	this.connectionService.removeConnection( junction, connection );
 
-			} );
+			// } );
 
 			return;
 		}

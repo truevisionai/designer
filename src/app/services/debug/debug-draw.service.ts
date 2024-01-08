@@ -38,6 +38,20 @@ export class DebugDrawService {
 
 	}
 
+	createSphere ( position: Vector3, size = 0.1, color = COLOR.RED ) {
+
+		const geometry = new SphereGeometry( size, 32, 32 );
+
+		const material = new MeshBasicMaterial( { color: color } );
+
+		const sphere = new Mesh( geometry, material );
+
+		sphere.position.copy( position );
+
+		return sphere;
+
+	}
+
 	clear () {
 
 		this.debugObjects.clear();

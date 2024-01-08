@@ -24,9 +24,9 @@ export class BaseTest {
 
 	}
 
-	makeRoad ( points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
+	makeRoad ( roadFactory: RoadFactory, points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
 
-		const road = RoadFactory.instance.createRoadWithLaneCount( leftLaneCount, rightLaneCount, leftWidth, rightWidth );
+		const road = roadFactory.createRoadWithLaneCount( leftLaneCount, rightLaneCount, leftWidth, rightWidth );
 
 		points.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
 
@@ -34,9 +34,9 @@ export class BaseTest {
 
 	}
 
-	makeDefaultRoad ( points: Vector2[] ) {
+	makeDefaultRoad ( roadFactory: RoadFactory, points: Vector2[] ) {
 
-		const road = RoadFactory.instance.createDefaultRoad();
+		const road = roadFactory.createDefaultRoad();
 
 		points.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
 
@@ -46,7 +46,7 @@ export class BaseTest {
 
 	createRoad ( roadService: RoadService, points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
 
-		const road = this.makeRoad( points, leftLaneCount, rightLaneCount, leftWidth, rightWidth );
+		const road = this.makeRoad( roadService.getRoadFactory(), points, leftLaneCount, rightLaneCount, leftWidth, rightWidth );
 
 		roadService.addRoad( road );
 
@@ -56,7 +56,7 @@ export class BaseTest {
 
 	createDefaultRoad ( roadService: RoadService, points: Vector2[] ) {
 
-		const road = this.makeDefaultRoad( points );
+		const road = this.makeDefaultRoad( roadService.getRoadFactory(), points );
 
 		roadService.addRoad( road );
 
@@ -74,7 +74,7 @@ export class BaseTest {
 	) {
 
 		// x-axis
-		const horizontalRoad = this.makeRoad( [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ],
+		const horizontalRoad = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ],
 			leftLaneCount,
 			rightLaneCount,
 			leftWidth,
@@ -82,7 +82,7 @@ export class BaseTest {
 		);
 
 		// y-axis
-		const verticalRoad = this.makeRoad( [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
+		const verticalRoad = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
 			leftLaneCount,
 			rightLaneCount,
 			leftWidth,
@@ -117,14 +117,14 @@ export class BaseTest {
 		 *
 		 */
 
-		const horizontal = this.makeRoad( [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ],
+		const horizontal = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ],
 			leftLaneCount,
 			rightLaneCount,
 			leftWidth,
 			rightWidth
 		);
 
-		const vertical = this.makeRoad( [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
+		const vertical = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
 			leftLaneCount,
 			rightLaneCount,
 			leftWidth,

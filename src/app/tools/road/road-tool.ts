@@ -389,9 +389,9 @@ export class RoadTool extends BaseTool {
 
 	onSplineRemoved ( spline: AbstractSpline ) {
 
-		this.tool.removeSpline( spline );
-
 		MapEvents.splineRemoved.emit( new SplineRemovedEvent( spline ) );
+
+		this.tool.removeSpline( spline );
 
 	}
 

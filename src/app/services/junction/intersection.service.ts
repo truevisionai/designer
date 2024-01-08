@@ -13,6 +13,7 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 @Injectable( {
 	providedIn: 'root'
@@ -377,6 +378,12 @@ export class IntersectionService {
 				newRoad.sStart = sEndJunction;
 
 				this.roadSplineService.addRoadSegmentNew( coord.road.spline, newRoad.sStart, newRoad );
+
+				// set junction as predecessor of new road
+				// |ROAD====>|JUNCTIION|====>NEWROAD|
+				newRoad.setPredecessor( TvRoadLinkChildType.junction, junction );
+
+				coord.road.setSuccessor( TvRoadLinkChildType.junction, junction );
 
 			}
 

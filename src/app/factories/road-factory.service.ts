@@ -22,13 +22,9 @@ import { MapEvents } from 'app/events/map-events';
 } )
 export class RoadFactory {
 
-	public static instance: RoadFactory;
-
 	private IDService = new IDService();
 
 	constructor () {
-
-		RoadFactory.instance = this;
 
 		MapEvents.mapRemoved.subscribe( () => this.IDService.reset() );
 

@@ -435,6 +435,26 @@ export abstract class AbstractSpline {
 
 	}
 
+	getFirstSegment () {
+
+		if ( this.segmentCount == 0 ) return null;
+
+		const segments = this.getSplineSegments();
+
+		return segments[ 0 ];
+
+	}
+
+	getLastSegment () {
+
+		if ( this.segmentCount == 0 ) return null;
+
+		const segments = this.getSplineSegments();
+
+		return segments[ segments.length - 1 ];
+
+	}
+
 	getSegmentAt ( s: number ): SplineSegment {
 
 		const segments = this.getSplineSegments();
