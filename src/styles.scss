@@ -4,6 +4,32 @@
 
 /* You can add global styles to this file, and also import other style files */
 
+@import '@material-design-icons/font';
+
+@font-face {
+	font-family: 'Roboto';
+	src: local('Roboto'), url('./assets/fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: local('Roboto'), url('./assets/fonts/Roboto/Roboto-Medium.ttf') format('truetype');
+	font-weight: 600;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: local('Roboto'), url('./assets/fonts/Roboto/Roboto-Bold.ttf') format('truetype');
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: local('Roboto'), url('./assets/fonts/Roboto/Roboto-Bold.ttf') format('truetype');
+	font-weight: 800;
+}
+
 @import 'desktop-theme.scss';
 
 html,

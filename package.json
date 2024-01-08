@@ -49,6 +49,7 @@
 		"@angular/router": "~12.1.1",
 		"@auth0/angular-jwt": "^5.1.0",
 		"@electron/remote": "^2.0.8",
+		"@material-design-icons/font": "^0.14.13",
 		"@ncstate/sat-popover": "^8.0.1",
 		"@ngx-translate/core": "^12.1.2",
 		"@ngx-translate/http-loader": "^5.0.0",
