@@ -10,6 +10,7 @@ import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from '../tv-road.model';
 import { TvJunctionType } from './tv-junction-type';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { TvContactPoint } from '../tv-common';
 
 export class TvJunction {
 
@@ -383,6 +384,28 @@ export class TvJunction {
 		this._connections = new Map( [ ...this._connections.entries() ].sort( ascOrder ) );
 
 	}
+
+	/**
+	 * Returns the contact point of outgoing road with this junction
+	 *
+	 * @param connection
+	 * @returns
+	 */
+	getOutgoingContact ( connection: TvJunctionConnection ): TvContactPoint {
+
+		const outgoingRoad = connection.outgoingRoad;
+
+		if ( !outgoingRoad ) return;
+
+		if ( outgoingRoad.successor?.isJunction && outgoingRoad.successor.elementId == this.id ) {
+			return TvContactPoint.END;
+		}
+
+		if ( outgoingRoad.predecessor?.isJunction && outgoingRoad.predecessor.elementId == this.id ) {
+			return TvContactPoint.START;
+		}
+	}
+
 
 	private removeJunctionRelation ( road: TvRoad ): void {
 

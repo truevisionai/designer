@@ -112,6 +112,12 @@ export class TvJunctionConnection {
 
 	}
 
+	toString (): string {
+
+		return 'JunctionConnection:' + this.id + ' incomingRoad:' + this.incomingRoadId + ' connectingRoad:' + this.connectingRoadId + ' outgoingRoad:' + this.outgoingRoadId + ' contactPoint:' + this.contactPoint;
+
+	}
+
 	getIncomingContactPoint (): TvContactPoint {
 
 		const incomingPosition = this.getIncomingPosition();
