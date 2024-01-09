@@ -114,17 +114,62 @@ export class JunctionManager {
 
 		roadBeforeJunction.setSuccessor( link.elementType, link.element, link.contactPoint );
 
-		if ( link.isJunction ) return;
+		if ( link.isJunction ) {
 
-		const successorRoad = link.getElement<TvRoad>();
+			const junction = link.getElement<TvJunction>();
 
-		if ( link.contactPoint == TvContactPoint.START ) {
+			// connections where old road was entering junction
+			const incomingConnections = junction.getConnections().filter( i => i.incomingRoad == roadAfterJunction );
 
-			successorRoad.setPredecessorRoad( roadBeforeJunction, TvContactPoint.END );
+			// connections where old road was exiting junction
+			const outgoingConnections = junction.getConnections().filter( i => i.outgoingRoad == roadAfterJunction );
 
-		} else if ( link.contactPoint == TvContactPoint.END ) {
+			for ( let i = 0; i < incomingConnections.length; i++ ) {
 
-			successorRoad.setSuccessorRoad( roadBeforeJunction, TvContactPoint.END );
+				const connection = incomingConnections[ i ];
+
+				connection.incomingRoad = roadBeforeJunction;
+
+				connection.laneLink.forEach( link => {
+
+					link.incomingLane = roadBeforeJunction.laneSections[ 0 ].getLaneById( link.incomingLane.id );
+
+				} );
+
+				connection.connectingRoad.setPredecessorRoad( roadBeforeJunction, TvContactPoint.END );
+
+			}
+
+			for ( let i = 0; i < outgoingConnections.length; i++ ) {
+
+				const connection = outgoingConnections[ i ];
+
+				connection.outgoingRoad = roadBeforeJunction;
+
+				connection.laneLink.forEach( link => {
+
+					// link.connectingLane.
+
+				} );
+
+				connection.connectingRoad.setSuccessorRoad( roadBeforeJunction, TvContactPoint.END );
+
+			}
+
+
+		} else if ( link.isRoad ) {
+
+			const successorRoad = link.getElement<TvRoad>();
+
+			if ( link.contactPoint == TvContactPoint.START ) {
+
+				successorRoad.setPredecessorRoad( roadBeforeJunction, TvContactPoint.END );
+
+			} else if ( link.contactPoint == TvContactPoint.END ) {
+
+				successorRoad.setSuccessorRoad( roadBeforeJunction, TvContactPoint.END );
+
+			}
 
 		}
 

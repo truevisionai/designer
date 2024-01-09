@@ -244,7 +244,7 @@ export class MapValidatorService {
 
 		if ( !junction ) {
 
-			this.errors.push( linkType + ' not found ' + link.toString() + ' for road ' + road.id );
+			this.errors.push( 'validateJunctionLink: ' + linkType + ' not found ' + link.toString() + ' for road ' + road.id );
 
 			const sphere1 = this.debugDraw.createSphere( road.getEndPosTheta().position, 1.0, COLOR.MAGENTA );
 			this.debugObjects.add( sphere1, sphere1 );
@@ -277,9 +277,9 @@ export class MapValidatorService {
 
 	validateIncomingLink ( connection: TvJunctionConnection, incomingContact: TvContactPoint ) {
 
-		this.validateRoadId( connection.incomingRoadId );
-		this.validateRoadId( connection.outgoingRoadId );
-		this.validateRoadId( connection.connectingRoadId );
+		this.validateRoadId( connection.incomingRoadId, connection );
+		this.validateRoadId( connection.outgoingRoadId, connection );
+		this.validateRoadId( connection.connectingRoadId, connection );
 
 		const incomingPosition = connection.incomingRoad.getPosThetaByContact( incomingContact );
 		const connectingPosition = connection.connectingRoad.getPosThetaByContact( connection.contactPoint );
@@ -301,9 +301,9 @@ export class MapValidatorService {
 
 	validateOutgoingLink ( connection: TvJunctionConnection, outgoingContact: TvContactPoint ) {
 
-		this.validateRoadId( connection.incomingRoadId );
-		this.validateRoadId( connection.outgoingRoadId );
-		this.validateRoadId( connection.connectingRoadId );
+		this.validateRoadId( connection.incomingRoadId, connection );
+		this.validateRoadId( connection.outgoingRoadId, connection );
+		this.validateRoadId( connection.connectingRoadId, connection );
 
 		// for outoing link we need the opposite side of connecting road
 		const connectingRoadEndContact = connection.contactPoint == TvContactPoint.START ? TvContactPoint.END : TvContactPoint.START;
@@ -326,13 +326,13 @@ export class MapValidatorService {
 
 	}
 
-	validateRoadId ( id: number ) {
+	validateRoadId ( id: number, connection: TvJunctionConnection ) {
 
 		const road = this.map.getRoadById( id );
 
 		if ( !road ) {
 
-			this.errors.push( road.toString() + ' not found' );
+			this.errors.push( 'ConnectionRoad:' + id + ' not found. ' + connection.toString() );
 
 		}
 	}
