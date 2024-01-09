@@ -14,8 +14,8 @@ export class TvJunctionLaneLink {
 
 	public mesh: LanePathObject;
 
-	public readonly incomingLane: TvLane;
-	public readonly connectingLane: TvLane;
+	public incomingLane: TvLane;
+	public connectingLane: TvLane;
 
 	/**
 	 *

@@ -235,6 +235,16 @@ export class TvRoad {
 		return this.type.length > 0;
 	}
 
+	toString () {
+
+		if ( this.isJunction ) {
+			return `ConnectingRoad:${ this.id } Junction:${ this.junctionId }`;
+		}
+
+		return `Road:${ this.id }`;
+
+	}
+
 	update () {
 
 		this.updateGeometryFromSpline();

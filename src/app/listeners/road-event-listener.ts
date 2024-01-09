@@ -47,7 +47,7 @@ export class RoadEventListener {
 
 		this.roadService.addRoad( event.road );
 
-		this.roadLinkService.addLinks( event.road );
+		// this.roadLinkService.addLinks( event.road );
 
 		this.roadElevationService.createDefaultNodes( event.road );
 
@@ -64,7 +64,7 @@ export class RoadEventListener {
 
 		this.updateElevationNodes( event.road );
 
-		this.rebuildNeighbours( event.road );
+		// this.rebuildNeighbours( event.road );
 
 		this.updateRoadObjects( event.road );
 

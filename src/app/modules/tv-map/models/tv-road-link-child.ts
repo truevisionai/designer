@@ -131,6 +131,10 @@ export class TvRoadLinkChild {
 		return this.element as any;
 	}
 
+	toString() {
+		return `TvRoadLinkChild: ${this.elementType} ${this.elementId} ${this.contactPoint}`;
+	}
+
 	clone (): TvRoadLinkChild {
 
 		return new TvRoadLinkChild(

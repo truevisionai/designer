@@ -221,4 +221,9 @@ export class TvPosTheta {
 		}
 
 	}
+
+	get normalizedHdg () {
+		// Normalize the heading to be within 0 to 2π
+		return this.hdg - Math.floor( this.hdg / ( 2 * Math.PI ) ) * ( 2 * Math.PI );
+	}
 }

@@ -69,6 +69,10 @@ export class TvJunction {
 		this._connections = value;
 	}
 
+	toString () {
+		return `Junction:${ this.id }`;
+	}
+
 	getConnections (): TvJunctionConnection[] {
 		return Array.from( this.connections.values() );
 	}

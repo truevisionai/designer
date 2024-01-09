@@ -87,6 +87,8 @@ export class MapValidatorService {
 
 		this.errors = [];
 
+		this.debugObjects.clear();
+
 		const roads = this.map.getRoads();
 
 		for ( let i = 0; i < roads.length; i++ ) {
@@ -131,142 +133,92 @@ export class MapValidatorService {
 		return true;
 	}
 
-	validateSuccessor ( roadA: TvRoad, successor: TvRoadLinkChild ) {
+	validateLink ( roadA: TvRoad, link: TvRoadLinkChild, linkType: 'successor' | 'predecessor' ) {
 
-		if ( successor.isRoad ) {
+		if ( !link.isRoad ) return;
 
-			const roadB = this.map.getRoadById( successor.elementId );
+		const roadB = this.map.getRoadById( link.elementId );
+		const label = roadA.isJunction ? 'ConnectingRoad' : 'Road';
 
-			if ( !roadB ) this.errors.push( 'Successor not found' + successor.elementId + ' for road ' + roadA.id );
-			if ( !roadB ) {
-				const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, 1.0, COLOR.MAGENTA );
-				this.debugObjects.add( sphere1, sphere1 );
-			};
-			if ( !roadB ) return;
+		if ( !roadB ) {
 
-			const roadAPosition = roadA.getEndPosTheta();
-			const roadBPosition = roadB.getPosThetaByContact( successor.contactPoint );
+			this.errors.push( linkType + ' not found ' + link.toString() + ' for road ' + roadA.id );
 
-			if ( successor.contactPoint == TvContactPoint.START ) {
+			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, 1.0, COLOR.MAGENTA );
+			this.debugObjects.add( sphere1, sphere1 );
 
-				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
+			return;
+		}
 
-					const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+		const pointA = linkType == 'successor' ? roadA.getEndPosTheta() : roadA.getStartPosTheta();
+		const pointB = roadB.getPosThetaByContact( link.contactPoint );
 
-					this.errors.push( element + ':' + roadA.id + ' has invalid hdg with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+		let headingShouldBeSame: boolean = false;
 
-					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
-					this.debugObjects.add( arrow1, arrow1 );
+		if ( linkType == 'successor' && link.contactPoint == TvContactPoint.START || linkType == 'predecessor' && link.contactPoint == TvContactPoint.END ) {
+			headingShouldBeSame = true;
+		}
 
-					const arrow2 = this.debugDraw.createArrow( roadBPosition.position, roadBPosition.hdg, COLOR.GREEN );
-					this.debugObjects.add( arrow2, arrow2 );
+		if ( headingShouldBeSame ) {
 
-				}
+			if ( !Maths.approxEquals( pointA.normalizedHdg, pointB.normalizedHdg ) ) {
 
-			} else {
+				this.errors.push( label + ':' + roadA.id + ' invalid hdg, should be same ' + linkType + ':' + link.toString() + ' ' + pointA.normalizedHdg + ' ' + pointB.normalizedHdg );
 
-				// validate if hdg are facing each other
-				const diff = Math.abs( roadAPosition.hdg - roadBPosition.hdg );
+				const arrow1 = this.debugDraw.createArrow( pointA.position, pointA.normalizedHdg, COLOR.BLUE );
+				this.debugObjects.add( arrow1, arrow1 );
 
-				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
-
-					const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
-
-					this.errors.push( element + ':' + roadA.id + ' has invalid hdg with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
-
-					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
-					this.debugObjects.add( arrow1, arrow1 );
-
-					const arrow2 = this.debugDraw.createArrow( roadBPosition.position, roadBPosition.hdg, COLOR.GREEN );
-					this.debugObjects.add( arrow2, arrow2 );
-
-				}
+				const arrow2 = this.debugDraw.createArrow( pointB.position, pointB.normalizedHdg, COLOR.GREEN );
+				this.debugObjects.add( arrow2, arrow2 );
 
 			}
 
-			if ( roadAPosition.position.distanceTo( roadBPosition.position ) > 0.01 ) {
+		} else {
 
-				const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+			// validate if hdg are facing each other
+			let diff = Math.abs( pointA.normalizedHdg - pointB.normalizedHdg );
 
-				this.errors.push( element + ':' + roadA.id + ' has invalid distance with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
+			// Adjust the difference to find the smaller angle
+			diff = Math.min( diff, 2 * Math.PI - diff );
 
-				const sphere1 = this.debugDraw.createSphere( roadAPosition.position, 0.5, COLOR.BLUE );
-				this.debugObjects.add( sphere1, sphere1 );
+			if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
 
-				const sphere2 = this.debugDraw.createSphere( roadBPosition.position, 0.5, COLOR.GREEN );
-				this.debugObjects.add( sphere2, sphere2 );
+				this.errors.push( label + ':' + roadA.id + ' invalid hdg, should be facing ' + linkType + ':' + link.toString() + ' ' + pointA.normalizedHdg + ' ' + pointB.normalizedHdg );
+
+				const arrow1 = this.debugDraw.createArrow( pointA.position, pointA.normalizedHdg, COLOR.BLUE );
+				this.debugObjects.add( arrow1, arrow1 );
+
+				const arrow2 = this.debugDraw.createArrow( pointB.position, pointB.normalizedHdg, COLOR.GREEN );
+				this.debugObjects.add( arrow2, arrow2 );
+
 			}
 
 		}
+
+		const distance = pointA.position.distanceTo( pointB.position );
+
+		if ( distance > 0.01 ) {
+
+			this.errors.push( label + ':' + roadA.id + ' has invalid distance ' + linkType + ':' + link.elementType + ':' + link.elementId + ' ' + distance );
+
+			const sphere1 = this.debugDraw.createSphere( pointA.position, 0.5, COLOR.BLUE );
+			this.debugObjects.add( sphere1, sphere1 );
+
+			const sphere2 = this.debugDraw.createSphere( pointB.position, 0.5, COLOR.GREEN );
+			this.debugObjects.add( sphere2, sphere2 );
+		}
+
+	}
+
+	validateSuccessor ( roadA: TvRoad, successor: TvRoadLinkChild ) {
+
+		this.validateLink( roadA, successor, 'successor' );
 
 	}
 
 	validatePredecessor ( roadA: TvRoad, predecessor: TvRoadLinkChild ) {
 
-		if ( predecessor.isRoad ) {
-
-			const roadB = this.map.getRoadById( predecessor.elementId );
-
-			if ( !roadB ) this.errors.push( 'Predecessor not found' + predecessor.elementId + ' for road ' + roadA.id );
-			if ( !roadB ) {
-				const sphere1 = this.debugDraw.createSphere( roadA.getStartPosTheta().position, 1.0, COLOR.MAGENTA );
-				this.debugObjects.add( sphere1, sphere1 );
-			};
-			if ( !roadB ) return;
-
-			const roadAPosition = roadA.getStartPosTheta();
-
-			const roadBPosition = roadB.getPosThetaByContact( predecessor.contactPoint );
-
-			if ( predecessor.contactPoint == TvContactPoint.END ) {
-
-				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
-
-					const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
-
-					this.errors.push( element + ':' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
-
-					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
-					this.debugObjects.add( arrow1, arrow1 );
-
-					const arrow2 = this.debugDraw.createArrow( roadBPosition.position, roadBPosition.hdg, COLOR.GREEN );
-					this.debugObjects.add( arrow2, arrow2 );
-				}
-
-			} else {
-
-				const diff = Math.abs( roadAPosition.hdg - roadBPosition.hdg );
-
-				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
-
-					const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
-
-					this.errors.push( element + ':' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
-
-					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
-					this.debugObjects.add( arrow1, arrow1 );
-
-					const arrow2 = this.debugDraw.createArrow( roadBPosition.position, roadBPosition.hdg, COLOR.GREEN );
-					this.debugObjects.add( arrow2, arrow2 );
-				}
-
-			}
-
-			if ( roadAPosition.position.distanceTo( roadBPosition.position ) > 0.01 ) {
-
-				const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
-
-				this.errors.push( element + ':' + roadA.id + ' has invalid distance with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
-
-				const sphere1 = this.debugDraw.createSphere( roadAPosition.position, 0.5, COLOR.BLUE );
-				this.debugObjects.add( sphere1, sphere1 );
-
-				const sphere2 = this.debugDraw.createSphere( roadBPosition.position, 0.5, COLOR.GREEN );
-				this.debugObjects.add( sphere2, sphere2 );
-
-			}
-
-		}
+		this.validateLink( roadA, predecessor, 'predecessor' );
 
 	}
 }

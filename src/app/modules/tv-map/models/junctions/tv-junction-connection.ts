@@ -39,7 +39,7 @@ export class TvJunctionConnection {
 	public readonly uuid: string;
 	public laneLink: TvJunctionLaneLink[] = [];
 	private lastAddedJunctionLaneLinkIndex: number;
-
+	private _outgoingRoad: TvRoad;
 
 	/**
 	 *
@@ -59,8 +59,6 @@ export class TvJunctionConnection {
 		this._outgoingRoad = outgoingRoad;
 	}
 
-	private _outgoingRoad: TvRoad;
-
 	get outgoingRoad (): TvRoad {
 
 		if ( this._outgoingRoad ) return this._outgoingRoad;
@@ -78,6 +76,10 @@ export class TvJunctionConnection {
 			throw new Error( 'Invalid contact point' );
 
 		}
+	}
+
+	set outgoingRoad ( road: TvRoad ) {
+		this._outgoingRoad = road;
 	}
 
 	get incomingRoadId (): number {

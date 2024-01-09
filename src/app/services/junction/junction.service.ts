@@ -95,6 +95,8 @@ export class JunctionService {
 
 		this.removeJunctionMesh( junction );
 
+		this.factory.IDService.remove( junction.id );
+
 	}
 
 	createJunctionFromJunctionNodes ( nodes: JunctionNode[] ) {

@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
+import { SplineSegment } from "app/core/shapes/spline-segment";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
+import { TvRoadLinkChild } from "app/modules/tv-map/models/tv-road-link-child";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapService } from "app/services/map.service";
@@ -52,13 +54,10 @@ export class JunctionManager {
 
 		for ( let i = 0; i < splines.length; i++ ) {
 
-			// spline of 4-junction-7
 			const spline = splines[ i ];
 
-			// 4
 			const previousSegment = spline.getPreviousSegment( junction );
 
-			// 7
 			const nextSegment = spline.getNextSegment( junction );
 
 			if ( nextSegment && nextSegment.isRoad && spline.segmentCount > 2 ) {
@@ -69,31 +68,11 @@ export class JunctionManager {
 
 				this.mapService.map.gameObject.remove( nextRoad.gameObject );
 
+				this.roadFactory.idRemoved( nextRoad.id );
+
 				spline.removeSegment( nextRoad );
 
-				if ( nextRoad.successor && previousSegment.isRoad ) {
-
-					const previousRoad = previousSegment.getInstance<TvRoad>();
-
-					previousRoad.successor = nextRoad.successor;
-
-					if ( previousRoad.successor && previousRoad.successor.isRoad ) {
-
-						const successorRoad = previousRoad.successor.getElement<TvRoad>();
-
-						if ( previousRoad.successor.contactPoint == TvContactPoint.START ) {
-
-							successorRoad.setPredecessorRoad( previousRoad, TvContactPoint.END );
-
-						} else if ( previousRoad.successor.contactPoint == TvContactPoint.END ) {
-
-							successorRoad.setSuccessorRoad( previousRoad, TvContactPoint.END );
-
-						}
-
-					}
-
-				}
+				this.updateSuccessorRelation( nextRoad, previousSegment, nextRoad.successor );
 
 			}
 
@@ -103,21 +82,9 @@ export class JunctionManager {
 
 				if ( nextSegment && nextSegment.isRoad ) {
 
-					previousRoad.successor = nextSegment.getInstance<TvRoad>().successor;
+					const nextRoad = nextSegment.getInstance<TvRoad>();
 
-					if ( previousRoad.successor && previousRoad.successor.isRoad ) {
-
-						if ( previousRoad.successor.contactPoint == TvContactPoint.START ) {
-
-							// road.setPredecessorRoad( road, TvContactPoint.END );
-
-						} else if ( previousRoad.successor.contactPoint == TvContactPoint.END ) {
-
-							// road.setSuccessorRoad( road, TvContactPoint.END );
-
-						}
-
-					}
+					previousRoad.successor = nextRoad.successor;
 
 				} else {
 
@@ -131,6 +98,36 @@ export class JunctionManager {
 
 			this.roadSplineService.rebuildSpline( spline );
 		}
+	}
+
+	updateSuccessorRelation ( roadAfterJunction: TvRoad, previousSegment: SplineSegment, link: TvRoadLinkChild ) {
+
+		if ( !link ) return;
+
+		if ( !roadAfterJunction.successor ) return;
+
+		if ( !previousSegment ) return;
+
+		if ( !previousSegment.isRoad ) return;
+
+		const roadBeforeJunction = previousSegment.getInstance<TvRoad>();
+
+		roadBeforeJunction.setSuccessor( link.elementType, link.element, link.contactPoint );
+
+		if ( link.isJunction ) return;
+
+		const successorRoad = link.getElement<TvRoad>();
+
+		if ( link.contactPoint == TvContactPoint.START ) {
+
+			successorRoad.setPredecessorRoad( roadBeforeJunction, TvContactPoint.END );
+
+		} else if ( link.contactPoint == TvContactPoint.END ) {
+
+			successorRoad.setSuccessorRoad( roadBeforeJunction, TvContactPoint.END );
+
+		}
+
 	}
 
 }

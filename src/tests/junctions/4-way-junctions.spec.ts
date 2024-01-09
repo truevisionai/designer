@@ -13,6 +13,7 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { SplineManager } from 'app/managers/spline-manager';
+import { MapValidatorService } from 'app/services/map-validator.service';
 
 describe( '4-way-junction tests', () => {
 
@@ -24,6 +25,7 @@ describe( '4-way-junction tests', () => {
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
 	let splineManager: SplineManager;
+	let mapValidator: MapValidatorService;
 
 	beforeEach( () => {
 
@@ -42,11 +44,7 @@ describe( '4-way-junction tests', () => {
 		let eventServiceProvider = TestBed.inject( EventServiceProvider );
 		eventServiceProvider.init();
 
-	} );
-
-	afterEach( () => {
-
-		mapService.reset();
+		mapValidator = TestBed.inject( MapValidatorService );
 
 	} );
 
@@ -92,6 +90,7 @@ describe( '4-way-junction tests', () => {
 		expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA );
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
 
+		mapValidator.validateMap( mapService.map, true );
 	} )
 
 	it( 'should create simple junction between same roads', () => {
@@ -129,6 +128,8 @@ describe( '4-way-junction tests', () => {
 		// expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB );
 		// expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA );
 		// expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
+
+		mapValidator.validateMap( mapService.map, true );
 
 	} )
 
@@ -234,6 +235,7 @@ describe( '4-way-junction tests', () => {
 		expect( junction.connections.get( 4 ).incomingRoad.id ).toBe( leftRoad.id );
 		expect( junction.connections.get( 4 ).outgoingRoad.id ).toBe( topRoad.id );
 
+		mapValidator.validateMap( mapService.map, true );
 
 	} );
 
@@ -314,7 +316,7 @@ describe( '4-way-junction tests', () => {
 		expect( leftRoad.predecessor ).toBeUndefined();
 
 		expect( rightRoad.predecessor.elementType ).toBe( TvRoadLinkChildType.road );
-		expect( rightRoad.predecessor.elementId ).toBe( joiningRightHalf.id );
+		expect( rightRoad.predecessor.elementId ).toBe( joiningRightHalf.id );//
 		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 		expect( rightRoad.successor ).toBeUndefined();
 
@@ -333,6 +335,8 @@ describe( '4-way-junction tests', () => {
 		expect( joiningRoad.successor.elementType ).toBe( TvRoadLinkChildType.junction );
 		expect( joiningRoad.successor.elementId ).toBe( junction.id );
 		expect( joiningRoad.successor.contactPoint ).toBeUndefined();
+
+		mapValidator.validateMap( mapService.map, true );
 
 	} );
 
@@ -410,6 +414,7 @@ describe( '4-way-junction tests', () => {
 		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 		expect( rightRoad.successor ).toBeUndefined();
 
+		mapValidator.validateMap( mapService.map, true );
 	} );
 
 	it( 'should add non-driving lanes correctly', inject( [ JunctionConnectionService ], ( junctionConnectionService: JunctionConnectionService ) => {
@@ -439,39 +444,201 @@ describe( '4-way-junction tests', () => {
 
 		expect( connection.laneLink.length ).toBe( 3 );
 
+		mapValidator.validateMap( mapService.map, true );
+
 	} ) );
 
-	it( 'should create 2 4-way junctions automatically', () => {
+	it( 'should create 2 4-way junctions automatically with horizontal roads', () => {
+
+		/**
+		 * We generate this map:
+		 * 1 is left road
+		 * 2 is right road
+		 * 3 is joining road
+		 * 4 is vertical road
+
+
+								|   	|
+								|   	|
+								|   18	|
+								|   	|
+		---------------------------------------------------------------------
+		  2						|  J-2	|								19
+		---------------------------------------------------------------------
+								|   	|
+								|   	|
+								|   4	|
+								|   	|
+		---------------------------------------------------------------------
+		  1						|  J-1	|								5
+		---------------------------------------------------------------------
+								|   	|
+								|   	|
+								|   3	|
+
+
+		*/
 
 		expect( roadService.getRoadCount() ).toBe( 0 );
 
 		// left to right
-		const road1 = roadService.createDefaultRoad();
-		road1.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
-		road1.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
-
-		// left to right
-		const road2 = roadService.createDefaultRoad();
-		road2.spline.addControlPointAt( new Vector3( -100, 50, 0 ) );
-		road2.spline.addControlPointAt( new Vector3( 100, 50, 0 ) );
+		const horizontalBottom = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ] );
+		const horizontalTop = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 50 ), new Vector2( 100, 50 ) ] );
 
 		// bottom to top
-		const road3 = roadService.createDefaultRoad();
-		road3.spline.addControlPointAt( new Vector3( 0, -200, 0 ) );
-		road3.spline.addControlPointAt( new Vector3( 0, 200, 0 ) );
+		const verticalRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -200 ), new Vector2( 0, 200 ) ] );
 
-		roadService.addRoad( road1 );
-		roadService.addRoad( road2 );
-		roadService.addRoad( road3 );
+		roadService.addRoad( horizontalBottom );
+		roadService.addRoad( horizontalTop );
+		roadService.addRoad( verticalRoad );
 
-		intersectionService.checkSplineIntersections( road3.spline );
+		splineManager.updateSpline( verticalRoad.spline );
 
 		expect( junctionService.junctions.length ).toBe( 2 );
-		// 12 for each junction
-		expect( roadService.roads.filter( road => road.isJunction ).length ).toBe( 24 );
-		expect( roadService.roads.filter( road => !road.isJunction ).length ).toBe( 7 );
+		expect( roadService.roads.length ).toBe( 31 );
+		expect( roadService.junctionRoads.length ).toBe( 24 );					// 12 for each
+		expect( roadService.nonJunctionRoads.length ).toBe( 7 );
+
+		expect( roadService.getRoad( 1 ) ).toBe( horizontalBottom );
+		expect( roadService.getRoad( 2 ) ).toBe( horizontalTop );
+		expect( roadService.getRoad( 3 ) ).toBe( verticalRoad );
+		expect( roadService.getRoad( 4 ) ).toBeDefined();
+		expect( roadService.getRoad( 5 ) ).toBeDefined();
+		expect( roadService.getRoad( 18 ) ).toBeDefined();
+		expect( roadService.getRoad( 19 ) ).toBeDefined();
+
+		const junction1 = mapService.junctions[ 0 ];
+		const junction2 = mapService.junctions[ 1 ];
+
+		const horizontalBottomRight = roadService.getRoad( 5 );
+		const horizontalTopRight = roadService.getRoad( 19 );
+		const verticalRoadBottom = roadService.getRoad( 3 );
+		const verticalRoadMiddle = roadService.getRoad( 4 );
+		const verticalRoadTop = roadService.getRoad( 18 );
+
+		expect( verticalRoadBottom.predecessor ).toBeUndefined();
+		expect( verticalRoadBottom.successor.element ).toBe( junction1 );
+
+		expect( verticalRoadMiddle.predecessor.element ).toBe( junction1 );
+		expect( verticalRoadMiddle.successor.element ).toBe( junction2 );
+
+		expect( verticalRoadTop.predecessor.element ).toBe( junction2 );
+		expect( verticalRoadTop.successor ).toBeUndefined();
+
+		expect( horizontalBottom.predecessor ).toBeUndefined();
+		expect( horizontalBottom.successor.element ).toBe( junction1 );
+
+		expect( horizontalBottomRight.predecessor.element ).toBe( junction1 );
+		expect( horizontalBottomRight.successor ).toBeUndefined();
+
+		expect( horizontalTop.predecessor ).toBeUndefined();
+		expect( horizontalTop.successor.element ).toBe( junction2 );
+
+		expect( horizontalTopRight.predecessor.element ).toBe( junction2 );
+		expect( horizontalTopRight.successor ).toBeUndefined();
+
+		mapValidator.validateMap( mapService.map, true );
+
+		// shift vertical
+		verticalRoad.spline.controlPoints.forEach( point => point.position.x += 5 );
+
+		expect( junctionService.junctions.length ).toBe( 2 );
+		expect( roadService.roads.length ).toBe( 31 );
+		expect( roadService.junctionRoads.length ).toBe( 24 );					// 12 for each
+		expect( roadService.nonJunctionRoads.length ).toBe( 7 );
+
+		mapValidator.validateMap( mapService.map, true );
 
 	} );
+
+	it( 'should create 2 4-way junctions automatically with vertical roads', () => {
+
+
+		/**
+
+			|18	|		|	|
+			|  	|		| 3 |
+		- - - - - - - - - - - -
+		1 ->| J2|  19	| J1| -> 4
+		- - - - - - - - - - - -
+			|  	|		|  	|
+			|17	|		| 2	|
+
+		 */
+
+		function expectValidJunction () {
+
+			expect( mapValidator.validateMap( mapService.map ) ).toBe( true );
+
+			expect( junctionService.junctions.length ).toBe( 2 );
+			expect( junctionService.junctions[ 0 ].id ).toBe( 1 );
+			expect( junctionService.junctions[ 1 ].id ).toBe( 2 );
+			expect( roadService.roads.length ).toBe( 31 );
+			expect( roadService.nonJunctionRoads.length ).toBe( 7 );
+			expect( roadService.junctionRoads.length ).toBe( 24 );					// 12 for each
+
+			const rightJunction = junctionService.getJunctionById( 1 );
+			const leftJunction = junctionService.getJunctionById( 2 )
+
+			expect( rightJunction.connections.size ).toBe( 12 );
+			expect( leftJunction.connections.size ).toBe( 12 );
+
+			expect( roadService.getRoad( 1 ) ).toBe( horizontal );
+			expect( roadService.getRoad( 2 ) ).toBe( verticalRight );
+			expect( roadService.getRoad( 17 ) ).toBe( verticalLeft );
+			expect( roadService.getRoad( 3 ) ).toBeDefined();
+			expect( roadService.getRoad( 4 ) ).toBeDefined();
+			expect( roadService.getRoad( 18 ) ).toBeDefined();
+			expect( roadService.getRoad( 19 ) ).toBeDefined();
+
+			expect( roadService.getRoad( 1 ).predecessor ).toBeUndefined();
+			expect( roadService.getRoad( 1 ).successor.element ).toBe( leftJunction );
+
+			expect( roadService.getRoad( 2 ).predecessor ).toBeUndefined();
+			expect( roadService.getRoad( 2 ).successor.element ).toBe( rightJunction );
+
+			expect( roadService.getRoad( 3 ).predecessor.element ).toBe( rightJunction );
+			expect( roadService.getRoad( 3 ).successor ).toBeUndefined();
+
+			expect( roadService.getRoad( 4 ).predecessor.element ).toBe( rightJunction );
+			expect( roadService.getRoad( 4 ).successor ).toBeUndefined();
+
+			expect( roadService.getRoad( 17 ).predecessor ).toBeUndefined();
+			expect( roadService.getRoad( 17 ).successor.element ).toBe( leftJunction );
+
+			expect( roadService.getRoad( 18 ).predecessor.element ).toBe( leftJunction );
+			expect( roadService.getRoad( 18 ).successor ).toBeUndefined();
+
+			expect( roadService.getRoad( 19 ).predecessor.element ).toBe( leftJunction );
+			expect( roadService.getRoad( 19 ).successor.element ).toBe( rightJunction );
+
+		}
+
+		expect( roadService.getRoadCount() ).toBe( 0 );
+
+		const horizontal = baseTest.createDefaultRoad( roadService, [ new Vector2( -200, 0 ), new Vector2( 200, 0 ) ] );
+		const verticalRight = baseTest.createDefaultRoad( roadService, [ new Vector2( 50, -100 ), new Vector2( 50, 100 ) ] );
+
+		// add first vertical road on right
+		splineManager.updateSpline( verticalRight.spline );
+
+		expect( roadService.getRoad( 1 ) ).toBe( horizontal );
+		expect( roadService.getRoad( 2 ) ).toBe( verticalRight );
+		expect( roadService.roads.length ).toBe( 4 + 12 );
+		expect( roadService.nonJunctionRoads.length ).toBe( 4 );
+		expect( roadService.junctionRoads.length ).toBe( 12 );					// 12 for each
+
+		// // add second vertical road on left
+		const verticalLeft = baseTest.createDefaultRoad( roadService, [ new Vector2( -50, -100 ), new Vector2( -50, 100 ) ] );
+
+		splineManager.updateSpline( verticalLeft.spline );
+		expectValidJunction();
+
+		verticalLeft.spline.controlPoints.forEach( point => point.position.x += 1 );
+		splineManager.updateSpline( verticalLeft.spline );
+		expectValidJunction();
+
+	} )
 
 	it( 'should work when vertical spline is removed', () => {
 
@@ -495,6 +662,8 @@ describe( '4-way-junction tests', () => {
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
 		expect( vertical.spline.getSplineSegments().length ).toBe( 1 );
+
+		mapValidator.validateMap( mapService.map, true );
 
 	} );
 
@@ -532,6 +701,8 @@ describe( '4-way-junction tests', () => {
 		expect( vertical.predecessor ).toBeUndefined();
 		expect( vertical.spline.getSplineSegments().length ).toBe( 1 );
 
+		mapValidator.validateMap( mapService.map, true );
+
 	} );
 
 	it( 'should re-update junction when spline is slightly shifted', () => {
@@ -565,6 +736,7 @@ describe( '4-way-junction tests', () => {
 		expect( vertical.predecessor ).toBeUndefined();
 		expect( vertical.spline.getSplineSegments().length ).toBe( 3 );
 
+		mapValidator.validateMap( mapService.map, true );
 	} );
 
 } );

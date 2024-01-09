@@ -14,7 +14,7 @@ import { Injectable } from '@angular/core';
 } )
 export class JunctionFactory {
 
-	private IDService = new IDService();
+	public IDService = new IDService();
 
 	private reset () {
 
