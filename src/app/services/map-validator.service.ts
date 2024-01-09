@@ -103,8 +103,8 @@ export class MapValidatorService {
 
 			} else {
 
-				console.error( this.errors[ i ] );
-				TvConsole.error( this.errors[ i ] );
+				console.error( 'MapValidationFailed', this.errors[ i ] );
+				TvConsole.error( 'MapValidationFailed: ' + this.errors[ i ] );
 
 			}
 
@@ -151,7 +151,9 @@ export class MapValidatorService {
 
 				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
 
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+					const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+
+					this.errors.push( element + ':' + roadA.id + ' has invalid hdg with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
 
 					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
 					this.debugObjects.add( arrow1, arrow1 );
@@ -168,7 +170,9 @@ export class MapValidatorService {
 
 				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
 
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+					const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+
+					this.errors.push( element + ':' + roadA.id + ' has invalid hdg with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
 
 					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
 					this.debugObjects.add( arrow1, arrow1 );
@@ -182,7 +186,9 @@ export class MapValidatorService {
 
 			if ( roadAPosition.position.distanceTo( roadBPosition.position ) > 0.01 ) {
 
-				this.errors.push( 'Road:' + roadA.id + ' has invalid distance with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
+				const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+
+				this.errors.push( element + ':' + roadA.id + ' has invalid distance with Successor:' + successor.elementType + ':' + successor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
 
 				const sphere1 = this.debugDraw.createSphere( roadAPosition.position, 0.5, COLOR.BLUE );
 				this.debugObjects.add( sphere1, sphere1 );
@@ -216,7 +222,9 @@ export class MapValidatorService {
 
 				if ( !Maths.approxEquals( roadAPosition.hdg, roadBPosition.hdg ) ) {
 
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+					const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+
+					this.errors.push( element + ':' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
 
 					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
 					this.debugObjects.add( arrow1, arrow1 );
@@ -231,7 +239,9 @@ export class MapValidatorService {
 
 				if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
 
-					this.errors.push( 'Road:' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
+					const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+
+					this.errors.push( element + ':' + roadA.id + ' has invalid hdg with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.hdg + ' ' + roadBPosition.hdg );
 
 					const arrow1 = this.debugDraw.createArrow( roadAPosition.position, roadAPosition.hdg, COLOR.BLUE );
 					this.debugObjects.add( arrow1, arrow1 );
@@ -244,7 +254,9 @@ export class MapValidatorService {
 
 			if ( roadAPosition.position.distanceTo( roadBPosition.position ) > 0.01 ) {
 
-				this.errors.push( 'Road:' + roadA.id + ' has invalid distance with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
+				const element = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+
+				this.errors.push( element + ':' + roadA.id + ' has invalid distance with Predecessor:' + predecessor.elementType + ':' + predecessor.elementId + ' ' + roadAPosition.position.distanceTo( roadBPosition.position ) );
 
 				const sphere1 = this.debugDraw.createSphere( roadAPosition.position, 0.5, COLOR.BLUE );
 				this.debugObjects.add( sphere1, sphere1 );
