@@ -2,13 +2,13 @@ export class IDService {
 
 	private highestID: number;
 	private usedIDs: Set<number>;
-	private removedIDs: Set<number>;
+	private removedIDs: number[];
 
 	constructor () {
 
 		this.highestID = 0;
 		this.usedIDs = new Set<number>();
-		this.removedIDs = new Set<number>();
+		this.removedIDs = [];
 
 	}
 
@@ -16,7 +16,7 @@ export class IDService {
 
 		this.highestID = 0;
 		this.usedIDs.clear()
-		this.removedIDs.clear();
+		this.removedIDs = [];
 
 	}
 
@@ -32,11 +32,9 @@ export class IDService {
 
 			nextId = importedID;
 
-		} else if ( this.removedIDs.size > 0 ) {
+		} else if ( this.removedIDs.length > 0 ) {
 
-			nextId = this.removedIDs.values().next().value;
-
-			this.removedIDs.delete( nextId );
+			nextId = this.removedIDs.shift(); // Take the smallest ID from the sorted array
 
 		} else {
 
@@ -61,7 +59,18 @@ export class IDService {
 
 		this.usedIDs.delete( id );
 
-		this.removedIDs.add( id );
+		// Insert the removed ID into the sorted array in its correct position
+		const index = this.removedIDs.findIndex( removedId => removedId > id );
+
+		if ( index === -1 ) {
+
+			this.removedIDs.push( id );
+
+		} else {
+
+			this.removedIDs.splice( index, 0, id );
+
+		}
 
 		this.updateHighestID();
 
