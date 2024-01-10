@@ -533,6 +533,46 @@ export abstract class AbstractSpline {
 
 	}
 
+	getSuccessorSpline (): AbstractSpline {
+
+		const lastSegment = this.getLastSegment();
+
+		if ( !lastSegment ) return;
+
+		if ( !lastSegment.isRoad ) return;
+
+		const road = lastSegment.getInstance<TvRoad>();
+
+		if ( !road.successor ) return;
+
+		if ( !road.successor.isRoad ) return;
+
+		const successorRoad = road.successor.getElement<TvRoad>();
+
+		return successorRoad.spline;
+
+	}
+
+	getPredecessorrSpline (): AbstractSpline {
+
+		const firstSegment = this.getFirstSegment();
+
+		if ( !firstSegment ) return;
+
+		if ( !firstSegment.isRoad ) return;
+
+		const road = firstSegment.getInstance<TvRoad>();
+
+		if ( !road.predecessor ) return;
+
+		if ( !road.predecessor.isRoad ) return;
+
+		const predecessorRoad = road.predecessor.getElement<TvRoad>();
+
+		return predecessorRoad.spline;
+
+	}
+
 	private calculateDistanceToSegment ( newPoint: AbstractControlPoint, pointA: AbstractControlPoint, pointB: AbstractControlPoint ): number {
 
 		const segmentDirection = pointB.position.clone().sub( pointA.position ).normalize();

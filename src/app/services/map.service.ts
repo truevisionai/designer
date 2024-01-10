@@ -50,6 +50,10 @@ export class MapService {
 			.filter( ( spline, index, self ) => self.indexOf( spline ) === index );
 	}
 
+	getRoad ( id: number ) {
+		return this.map.getRoadById( id );
+	}
+
 	setOpacityLevel ( opacity: number ) {
 
 		this.resetMapOpacity();

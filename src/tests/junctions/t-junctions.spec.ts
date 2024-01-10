@@ -2,18 +2,23 @@ import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineEventListener } from "app/listeners/spline-event-listener";
+import { SplineManager } from "app/managers/spline-manager";
+import { RoadNode } from "app/modules/three-js/objects/road-node";
+import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
+import { MapValidatorService } from "app/services/map-validator.service";
 import { MapService } from "app/services/map.service";
 import { RoadService } from "app/services/road/road.service";
-import { RoadTool } from "app/tools/road/road-tool";
 import { RoadToolService } from "app/tools/road/road-tool.service";
 import { BaseTest } from "tests/base-test.spec";
-import { Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 
 const DEFAULT_ROAD_WIDTH = 12.2;
 
 describe( 't-junction tests', () => {
+
+	let baseTest = new BaseTest();
 
 	let mapService: MapService;
 	let roadService: RoadService;
@@ -21,8 +26,9 @@ describe( 't-junction tests', () => {
 	let junctionService: JunctionService;
 	let eventServiceProvider: EventServiceProvider;
 	let splineEventListener: SplineEventListener;
-	let baseTest = new BaseTest();
-	let tool: RoadTool;
+	let roadToolService: RoadToolService;
+	let splineManager: SplineManager;
+	let mapValidator: MapValidatorService;
 
 	beforeEach( () => {
 
@@ -31,15 +37,18 @@ describe( 't-junction tests', () => {
 			providers: [ RoadToolService ]
 		} );
 
-		tool = new RoadTool( TestBed.inject( RoadToolService ) );
+		roadToolService = TestBed.inject( RoadToolService );
+		roadService = roadToolService.roadService;
+		splineManager = TestBed.inject( SplineManager );
+
 		mapService = TestBed.inject( MapService );
-		roadService = TestBed.inject( RoadService );
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
 		splineEventListener = TestBed.inject( SplineEventListener );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
-
 		eventServiceProvider.init();
+
+		mapValidator = TestBed.inject( MapValidatorService );
 
 	} );
 
@@ -161,7 +170,7 @@ describe( 't-junction tests', () => {
 		const horizontal = roadService.getRoad( 1 );
 		const vertical = roadService.getRoad( 2 );
 
-		tool.onSplineRemoved( horizontal.spline );
+		splineManager.removeSpline( horizontal.spline );
 
 		const splines = mapService.map.getSplines();
 
@@ -187,7 +196,7 @@ describe( 't-junction tests', () => {
 		const horizontal = roadService.getRoad( 1 );
 		const vertical = roadService.getRoad( 2 );
 
-		tool.onSplineRemoved( vertical.spline );
+		splineManager.removeSpline( vertical.spline );
 
 		if ( mapService.roads.length == 0 ) {
 			console.log( "mapService.roads.length == 0" );
@@ -199,6 +208,66 @@ describe( 't-junction tests', () => {
 
 		expect( mapService.splines.find( i => i.uuid == horizontal.spline.uuid ) ).toBeDefined();
 		expect( mapService.splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeUndefined();
+
+	} );
+
+	it( 'should create 4-way junction for connected road', () => {
+
+		/**
+		 * We generate this map:
+		 * 1 is left road
+		 * 2 is right road
+		 * 3 is joining road
+		 * 4 is vertical road
+		 *
+		 *
+		 * ------------------------
+		 * 	1 |	 3	| J |	5 | 2
+		 * ------------------------
+		 * 	 	 	|   |
+		 * 		 	|   |
+		 * 		 	| 4 |
+		 * 		 	|   |
+		 */
+
+		const leftRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 0 ), new Vector2( -50, 0 ) ] );
+		const rightRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 50, 0 ), new Vector2( 100, 0 ) ] );
+
+		const joiningRoad = roadToolService.createJoiningRoad(
+			new RoadNode( leftRoad, TvContactPoint.END ),
+			new RoadNode( rightRoad, TvContactPoint.START )
+		);
+
+		roadService.addRoad( joiningRoad );
+
+		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 1 ) ] );
+		splineManager.createSpline( vertical.spline );
+
+		expect( mapService.roads.length ).toBe( 5 + 6 );
+		expect( mapService.junctions.length ).toBe( 1 );
+		expect( mapService.splines.length ).toBe( 4 + 6 );
+		expect( mapService.nonJunctionRoads.length ).toBe( 5 );
+		expect( mapService.junctionRoads.length ).toBe( 6 );
+
+		const junction = junctionService.getJunctionById( 1 );
+
+		expect( junction ).toBeDefined();
+		expect( junction.connections.size ).toBe( 6 );
+
+		expect( roadService.getRoad( 1 ).predecessor ).toBeUndefined();
+		expect( roadService.getRoad( 1 ).successor.element ).toBe( roadService.getRoad( 3 ) );
+
+		expect( roadService.getRoad( 3 ).predecessor.element ).toBe( roadService.getRoad( 1 ) );
+		expect( roadService.getRoad( 3 ).successor.element ).toBe( junction );
+
+		expect( roadService.getRoad( 4 ).predecessor ).toBeUndefined();
+		expect( roadService.getRoad( 4 ).successor.element ).toBe( junction );
+
+		expect( roadService.getRoad( 5 ).predecessor.element ).toBe( junction );
+		expect( roadService.getRoad( 5 ).successor.element ).toBe( roadService.getRoad( 2 ) );
+
+		expect( roadService.getRoad( 2 ).predecessor.element ).toBe( roadService.getRoad( 5 ) );
+		expect( roadService.getRoad( 2 ).successor ).toBeUndefined();
 
 	} );
 

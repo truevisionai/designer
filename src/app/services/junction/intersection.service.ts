@@ -116,11 +116,19 @@ export class IntersectionService {
 		const splines = this.mapService.nonJunctionSplines;
 		const splineCount = splines.length;
 
+		const successorSpline = spline.getSuccessorSpline();
+		const predecessorSpline = spline.getPredecessorrSpline();
+
 		const intersections = [];
 
 		for ( let i = 0; i < splineCount; i++ ) {
 
 			const otherSpline = splines[ i ];
+
+			// NOTE: ignore pre or successor splines
+			// MAY NEED TO FIND BETTER OPTION
+			if ( otherSpline == successorSpline ) continue;
+			if ( otherSpline == predecessorSpline ) continue;
 
 			const intersection = this.getSplineIntersectionPoint( spline, otherSpline );
 

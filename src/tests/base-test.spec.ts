@@ -3,7 +3,9 @@ import { Vector2, Vector3 } from "three";
 import { RoadFactory } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
 import { IntersectionService } from "app/services/junction/intersection.service";
-
+import { RoadNode } from "app/modules/three-js/objects/road-node";
+import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
+import { RoadToolService } from "app/tools/road/road-tool.service";
 
 export class BaseTest {
 
@@ -138,4 +140,26 @@ export class BaseTest {
 		intersectionService.checkSplineIntersections( vertical.spline );
 
 	}
+
+	createConnectedRoads ( roadToolService: RoadToolService ) {
+
+		/**
+
+		 * -------------------------------
+		 *  	1 	|	  3	 	| 		2
+		 * -------------------------------
+
+		 */
+
+		const leftRoad = this.createDefaultRoad( roadToolService.roadService, [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
+		const rightRoad = this.createDefaultRoad( roadToolService.roadService, [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
+
+		const leftNode = new RoadNode( leftRoad, TvContactPoint.END );
+		const rightNode = new RoadNode( rightRoad, TvContactPoint.START );
+
+		const joiningRoad = roadToolService.createJoiningRoad( leftNode, rightNode );
+		roadToolService.roadService.addRoad( joiningRoad );
+
+	}
+
 }
