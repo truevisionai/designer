@@ -4,6 +4,7 @@ import { RoadDebugService } from 'app/services/debug/road-debug.service';
 import { BaseToolService } from '../base-tool.service';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { MapEvents } from 'app/events/map-events';
+import { LaneService } from 'app/services/lane/lane.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -14,27 +15,24 @@ export class LaneToolService {
 		public base: BaseToolService,
 		public laneDebug: LaneDebugService,
 		public roadDebug: RoadDebugService,
+		private laneService: LaneService,
 	) { }
 
 	addLane ( lane: TvLane ) {
 
-		lane.laneSection.addLaneInstance( lane, true );
-
-		MapEvents.laneCreated.emit( lane );
+		this.laneService.addLane( lane );
 
 	}
 
 	removeLane ( lane: TvLane ) {
 
-		lane.laneSection.removeLane( lane );
-
-		MapEvents.laneRemoved.emit( lane );
+		this.laneService.removeLane( lane );
 
 	}
 
 	updateLane ( lane: TvLane ) {
 
-		MapEvents.laneUpdated.emit( lane );
+		this.laneService.updateLane( lane );
 
 	}
 

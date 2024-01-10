@@ -1,6 +1,5 @@
 import { MapEvents } from "app/events/map-events";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
-import { LaneService } from "app/services/lane/lane.service";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { Injectable } from "@angular/core";
 import { Environment } from "app/core/utils/environment";
