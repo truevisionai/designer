@@ -40,8 +40,6 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { MaterialFieldComponent } from '../../views/fields/material-field/material-field.component';
 import { TextureFieldComponent } from '../../views/fields/texture-field/texture-field.component';
-import { JunctionEntryInspector } from '../../views/inspectors/junction-entry-inspector/junction-entry-inspector.component';
-import { LaneLinkInspector } from '../../views/inspectors/lane-link-inspector/lane-link-inspector.component';
 import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MaterialInspector } from '../../views/inspectors/material-inspector/material-inspector.component';
 import { AssetPreviewComponent } from '../../views/inspectors/asset-preview/asset-preview.component';
@@ -77,9 +75,7 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		MaterialFieldComponent,
 		GameObjectFieldComponent,
 		TextureFieldComponent,
-		LaneLinkInspector,
 		RoadControlPointInspector,
-		JunctionEntryInspector,
 		RoadStyleInspector,
 		PrefabInspectorComponent,
 		MeshInspectorComponent,
@@ -137,9 +133,7 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		MaterialInspector,
 		RoadSignInspector,
 		RoadMarkingInspector,
-		LaneLinkInspector,
 		RoadControlPointInspector,
-		JunctionEntryInspector,
 		AssetPreviewComponent,
 		RoadStyleInspector,
 		PrefabInspectorComponent,
