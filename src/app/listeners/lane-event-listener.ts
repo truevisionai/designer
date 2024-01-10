@@ -4,6 +4,7 @@ import { LaneService } from "app/services/lane/lane.service";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { Injectable } from "@angular/core";
 import { Environment } from "app/core/utils/environment";
+import { LaneManager } from "app/managers/lane-manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -13,7 +14,7 @@ export class LaneEventListener {
 	private debug = !Environment.production;
 
 	constructor (
-		private laneService: LaneService
+		private laneManager: LaneManager,
 	) {
 	}
 
@@ -29,7 +30,7 @@ export class LaneEventListener {
 
 		if ( this.debug ) console.debug( 'onLaneUpdated', lane );
 
-		this.laneService.onLaneUpdated( lane );
+		this.laneManager.onLaneUpdated( lane );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
 
@@ -39,6 +40,8 @@ export class LaneEventListener {
 
 		if ( this.debug ) console.debug( 'onLaneRemoved', lane );
 
+		this.laneManager.onLaneRemoved( lane );
+
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
 
 	}
@@ -46,6 +49,8 @@ export class LaneEventListener {
 	onLaneCreated ( lane: TvLane ): void {
 
 		if ( this.debug ) console.debug( 'onLaneCreated', lane );
+
+		this.laneManager.onLaneCreated( lane );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
 	}

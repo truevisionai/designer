@@ -30,43 +30,4 @@ export class LaneService {
 
 	}
 
-	updateLane ( lane: TvLane ) {
-
-		// MapEvents.laneUpdated.emit( lane );
-
-	}
-
-	onLaneUpdated ( lane: TvLane ) {
-
-		if ( lane.type == TvLaneType.parking ) {
-
-			this.parkingRoadToolService.removeRepeatedParkingObject( lane.laneSection.road, lane );
-			this.parkingRoadToolService.addRepeatedParkingObject( lane.laneSection.road, lane );
-
-		} else {
-
-			this.parkingRoadToolService.removeRepeatedParkingObject( lane.laneSection.road, lane );
-
-		}
-
-		if ( lane.type == TvLaneType.sidewalk || lane.type == TvLaneType.curb ) {
-
-			if ( lane.getLaneHeightCount() == 0 ) {
-
-				lane.addHeightRecord( 0, 0.12, 0.12 );
-
-			}
-
-		} else {
-
-			if ( lane.getLaneHeightCount() == 1 && lane.getLaneHeight( 0 ).sOffset == 0 ) {
-
-				lane.clearLaneHeight();
-
-			}
-
-		}
-
-	}
-
 }

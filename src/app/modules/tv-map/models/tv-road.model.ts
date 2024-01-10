@@ -1389,6 +1389,38 @@ export class TvRoad {
 
 	}
 
+	getSuccessorLaneSection ( laneSection: TvLaneSection ): TvLaneSection {
+
+		const nextLaneSection = this.laneSections.find( ls => ls.s > laneSection.s );
+
+		if ( nextLaneSection ) return nextLaneSection;
+
+		if ( !this.successor ) return;
+
+		if ( this.successor.isJunction ) return;
+
+		const successorRoad = this.successor.element as TvRoad;
+
+		return successorRoad.getLaneSectionAt( this.successor.contactPoint === TvContactPoint.START ? 0 : successorRoad.length );
+
+	}
+
+	getPredecessorLaneSection ( laneSection: TvLaneSection ) {
+
+		const index = this.laneSections.findIndex( ls => ls == laneSection );
+
+		if ( index > 0 ) return this.laneSections[ index - 1 ];
+
+		if ( !this.predecessor ) return;
+
+		if ( this.predecessor.isJunction ) return;
+
+		const predecessorRoad = this.predecessor.element as TvRoad;
+
+		return predecessorRoad.getLaneSectionAt( this.predecessor.contactPoint === TvContactPoint.START ? 0 : predecessorRoad.length );
+
+	}
+
 	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
