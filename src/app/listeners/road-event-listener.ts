@@ -5,8 +5,6 @@ import { Injectable } from "@angular/core";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { RoadObjectService } from "app/tools/marking-line/road-object.service";
 import { RoadElevationService } from "app/services/road/road-elevation.service";
-import { TvRoadLinkChildType } from "app/modules/tv-map/models/tv-road-link-child";
-import { TvUtils } from "app/modules/tv-map/models/tv-utils";
 import { RoadService } from "app/services/road/road.service";
 import { MapService } from "app/services/map.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
@@ -16,6 +14,7 @@ import { RoadCreatedEvent } from "../events/road/road-created-event";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { RoadRemovedEvent } from "../events/road/road-removed-event";
 import { RoadFactory } from "app/factories/road-factory.service";
+import { RoadManager } from "app/managers/road-manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,7 +30,8 @@ export class RoadEventListener {
 		private roadElevationService: RoadElevationService,
 		private intersectionService: IntersectionService,
 		private junctionService: JunctionService,
-		private roadFactory: RoadFactory
+		private roadFactory: RoadFactory,
+		private roadManager: RoadManager,
 	) {
 	}
 
@@ -45,32 +45,18 @@ export class RoadEventListener {
 
 	onRoadCreated ( event: RoadCreatedEvent ) {
 
-		this.roadService.addRoad( event.road );
+		this.roadManager.addRoad( event.road );
 
-		// this.roadLinkService.addLinks( event.road );
-
-		this.roadElevationService.createDefaultNodes( event.road );
-
-		this.updateOpacity( event.road );
 	}
 
 	onRoadUpdated ( event: RoadUpdatedEvent ) {
 
 		if ( event.road.spline.controlPoints.length < 2 ) return;
 
-		this.buildRoad( event.road );
-
-		this.updateRoadBoundingBox( event.road );
-
-		this.updateElevationNodes( event.road );
-
-		// this.rebuildNeighbours( event.road );
-
-		this.updateRoadObjects( event.road );
+		this.roadManager.updateRoad( event.road );
 
 		this.updateJunction( event.road );
 
-		this.updateOpacity( event.road );
 	}
 
 	onRoadRemoved ( event: RoadRemovedEvent ) {
@@ -134,80 +120,6 @@ export class RoadEventListener {
 		if ( !road.isJunction ) return;
 
 		road.junctionInstance.boundingBox = this.junctionService.computeBoundingBox( road.junctionInstance );
-
-	}
-
-	updateRoadBoundingBox ( road: TvRoad ) {
-
-		road.computeBoundingBox();
-
-	}
-
-	private updateOpacity ( road: TvRoad ): void {
-
-		this.mapService.setRoadOpacity( road, this.mapService.getOpacityLevel() );
-
-	}
-
-	private buildRoad ( road: TvRoad ): void {
-
-		this.roadSplineService.rebuildSpline( road.spline );
-
-	}
-
-	private updateRoadObjects ( road: TvRoad ): void {
-
-		this.roadObjectService.updateRoadObjectPositions( road );
-
-	}
-
-	private updateElevationNodes ( road: TvRoad ): void {
-
-		this.roadElevationService.createDefaultNodes( road );
-
-		if ( road.elevationProfile.getElevationCount() < 2 ) return;
-
-		const lastIndex = road.elevationProfile.elevation.length - 1;
-
-		const lastElevationNode = road.elevationProfile.elevation[ lastIndex ];
-
-		lastElevationNode.s = road.length;
-
-		if ( road.successor && road.successor.elementType == TvRoadLinkChildType.road ) {
-
-			const successor = this.roadLinkService.getElement<TvRoad>( road.successor );
-
-			this.roadElevationService.createDefaultNodes( successor );
-
-			const firstSuccessorElevation = successor.elevationProfile.elevation[ 0 ];
-
-			firstSuccessorElevation.a = road.getElevationValue( road.length );
-
-			TvUtils.computeCoefficients( successor.elevationProfile.elevation, successor.length );
-		}
-
-		if ( road.predecessor && road.predecessor.elementType == TvRoadLinkChildType.road ) {
-
-			const predecessor = this.roadLinkService.getElement<TvRoad>( road.predecessor );
-
-			this.roadElevationService.createDefaultNodes( predecessor );
-
-			const lastPredecessorElevation = predecessor.elevationProfile.elevation[ predecessor.elevationProfile.elevation.length - 1 ];
-
-			lastPredecessorElevation.a = road.getElevationValue( 0 );
-
-			TvUtils.computeCoefficients( predecessor.elevationProfile.elevation, predecessor.length );
-
-		}
-
-	}
-
-
-	private rebuildNeighbours ( road: TvRoad ): void {
-
-		this.roadService.rebuildLink( road.predecessor );
-
-		this.roadService.rebuildLink( road.successor );
 
 	}
 

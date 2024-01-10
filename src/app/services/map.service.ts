@@ -70,7 +70,9 @@ export class MapService {
 
 	}
 
-	setRoadOpacity ( road: TvRoad, opacity: number ) {
+	setRoadOpacity ( road: TvRoad, opacity?: number ) {
+
+		const opacityValue = opacity || this.getOpacityLevel();
 
 		for ( let j = 0; j < road.laneSections.length; j++ ) {
 
@@ -102,8 +104,8 @@ export class MapService {
 
 					const clone = material.clone();
 
-					clone.transparent = opacity < 1.0;
-					clone.opacity = opacity;
+					clone.transparent = opacityValue < 1.0;
+					clone.opacity = opacityValue;
 					clone.needsUpdate = true;
 
 					mesh.material = clone;
@@ -114,8 +116,8 @@ export class MapService {
 
 					const clone = material.clone();
 
-					clone.transparent = opacity < 1.0;
-					clone.opacity = opacity;
+					clone.transparent = opacityValue < 1.0;
+					clone.opacity = opacityValue;
 					clone.needsUpdate = true;
 
 					mesh.material = clone;

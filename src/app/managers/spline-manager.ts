@@ -5,8 +5,6 @@ import { JunctionManager } from "./junction-manager";
 import { RoadManager } from "./road-manager";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { SplineSegment } from "app/core/shapes/spline-segment";
-import { MapEvents } from "app/events/map-events";
-import { RoadCreatedEvent } from "app/events/road/road-created-event";
 import { RoadSplineService } from "app/services/road/road-spline.service";
 import { RoadService } from "app/services/road/road.service";
 import { IntersectionManager } from "./intersection-manager";
@@ -244,7 +242,7 @@ export class SplineManager {
 
 			spline.addRoadSegment( 0, road );
 
-			MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
+			this.roadManager.addRoad( road );
 		}
 	}
 

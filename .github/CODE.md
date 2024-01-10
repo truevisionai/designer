@@ -36,14 +36,15 @@ src/app
 
 ### Listeners 
 - Act upon system or user events, updating objects accordingly.
-- Delegate complex logic to services, focusing on responding to events only.
+- Delegate complex logic to services or managers, focusing on responding to events only.
 
 ### Managers
 - Manage various application states.
 - Example roles include managing active tools, current inspectors, or visual attributes of roads.
+- Manage complex operations related to creation of objects
 
 ### Services
-- Contain business logic for complex operations.
+- Contain business logic for data operations.
 - Centralize and standardize critical operations, making them available to external entities.
 
 ### Models
