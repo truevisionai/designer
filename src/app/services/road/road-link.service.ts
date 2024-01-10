@@ -10,6 +10,7 @@ import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { JunctionConnectionService } from '../junction/junction-connection.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineSegment } from 'app/core/shapes/spline-segment';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,6 +21,90 @@ export class RoadLinkService {
 		private splineService: AbstractSplineDebugService,
 		private connectionService: JunctionConnectionService,
 	) { }
+
+	updateSuccessorRelationWhileCut ( newRoad: TvRoad, link: TvRoadLinkChild, oldRoad: TvRoad ) {
+
+		if ( !newRoad.successor ) return;
+
+		if ( !link ) return;
+
+		if ( link.isRoad ) {
+
+			const successorRoad = link.getElement<TvRoad>();
+
+			if ( link.contactPoint == TvContactPoint.START ) {
+
+				successorRoad.setPredecessorRoad( newRoad, TvContactPoint.END );
+
+			} else if ( link.contactPoint == TvContactPoint.END ) {
+
+				successorRoad.setSuccessorRoad( newRoad, TvContactPoint.END );
+
+			}
+
+		}
+
+
+		if ( link.isJunction ) {
+
+			const junction = link.getElement<TvJunction>();
+
+			// connections where old road was entering junction
+			const incomingConnections = junction.getConnections().filter( i => i.incomingRoad == oldRoad );
+
+			// connections where old road was exiting junction
+			const outgoingConnections = junction.getConnections().filter( i => i.outgoingRoad == oldRoad );
+
+			for ( let i = 0; i < incomingConnections.length; i++ ) {
+
+				const connection = incomingConnections[ i ];
+
+				connection.incomingRoad = newRoad;
+
+				connection.laneLink.forEach( link => {
+
+					link.incomingLane = newRoad.laneSections[ 0 ].getLaneById( link.incomingLane.id );
+
+				} );
+
+				connection.connectingRoad.setPredecessorRoad( newRoad, TvContactPoint.END );
+
+			}
+
+			for ( let i = 0; i < outgoingConnections.length; i++ ) {
+
+				const connection = outgoingConnections[ i ];
+
+				connection.outgoingRoad = newRoad;
+
+				connection.laneLink.forEach( link => {
+
+					// link.connectingLane.
+
+				} );
+
+				connection.connectingRoad.setSuccessorRoad( newRoad, TvContactPoint.END );
+
+			}
+
+		}
+	}
+
+	updateSuccessorRelation ( road: TvRoad, previousSegment: SplineSegment, link: TvRoadLinkChild ) {
+
+		if ( !link ) return;
+
+		if ( !road.successor ) return;
+
+		if ( !previousSegment ) return;
+
+		if ( !previousSegment.isRoad ) return;
+
+		const newRoad = previousSegment.getInstance<TvRoad>();
+
+		this.updateSuccessorRelationWhileCut( newRoad, link, road );
+
+	}
 
 	linkPredecessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
 

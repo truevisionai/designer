@@ -9,6 +9,7 @@ import { JunctionService } from "app/services/junction/junction.service";
 import { MapService } from "app/services/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadSplineService } from "app/services/road/road-spline.service";
+import { RoadManager } from "./road-manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,7 +21,8 @@ export class JunctionManager {
 		private mapService: MapService,
 		private roadSplineService: RoadSplineService,
 		private roadLinkService: RoadLinkService,
-		private roadFactory: RoadFactory
+		private roadFactory: RoadFactory,
+		private roadManager: RoadManager,
 	) {
 	}
 
@@ -30,15 +32,7 @@ export class JunctionManager {
 
 		for ( const connection of connections ) {
 
-			this.roadLinkService.removeLinks( connection.connectingRoad );
-
-			this.mapService.map.removeRoad( connection.connectingRoad );
-
-			this.mapService.map.gameObject.remove( connection.connectingRoad.gameObject );
-
-			this.mapService.map.removeSpline( connection.connectingRoad.spline );
-
-			this.roadFactory.idRemoved( connection.connectingRoad.id );
+			this.roadManager.removeRoad( connection.connectingRoad );
 
 		}
 
@@ -72,7 +66,7 @@ export class JunctionManager {
 
 				spline.removeSegment( nextRoad );
 
-				this.updateSuccessorRelation( nextRoad, previousSegment, nextRoad.successor );
+				this.roadLinkService.updateSuccessorRelation( nextRoad, previousSegment, nextRoad.successor );
 
 			}
 
@@ -100,79 +94,6 @@ export class JunctionManager {
 		}
 	}
 
-	updateSuccessorRelation ( roadAfterJunction: TvRoad, previousSegment: SplineSegment, link: TvRoadLinkChild ) {
 
-		if ( !link ) return;
-
-		if ( !roadAfterJunction.successor ) return;
-
-		if ( !previousSegment ) return;
-
-		if ( !previousSegment.isRoad ) return;
-
-		const roadBeforeJunction = previousSegment.getInstance<TvRoad>();
-
-		roadBeforeJunction.setSuccessor( link.elementType, link.element, link.contactPoint );
-
-		if ( link.isJunction ) {
-
-			const junction = link.getElement<TvJunction>();
-
-			// connections where old road was entering junction
-			const incomingConnections = junction.getConnections().filter( i => i.incomingRoad == roadAfterJunction );
-
-			// connections where old road was exiting junction
-			const outgoingConnections = junction.getConnections().filter( i => i.outgoingRoad == roadAfterJunction );
-
-			for ( let i = 0; i < incomingConnections.length; i++ ) {
-
-				const connection = incomingConnections[ i ];
-
-				connection.incomingRoad = roadBeforeJunction;
-
-				connection.laneLink.forEach( link => {
-
-					link.incomingLane = roadBeforeJunction.laneSections[ 0 ].getLaneById( link.incomingLane.id );
-
-				} );
-
-				connection.connectingRoad.setPredecessorRoad( roadBeforeJunction, TvContactPoint.END );
-
-			}
-
-			for ( let i = 0; i < outgoingConnections.length; i++ ) {
-
-				const connection = outgoingConnections[ i ];
-
-				connection.outgoingRoad = roadBeforeJunction;
-
-				connection.laneLink.forEach( link => {
-
-					// link.connectingLane.
-
-				} );
-
-				connection.connectingRoad.setSuccessorRoad( roadBeforeJunction, TvContactPoint.END );
-
-			}
-
-
-		} else if ( link.isRoad ) {
-
-			const successorRoad = link.getElement<TvRoad>();
-
-			if ( link.contactPoint == TvContactPoint.START ) {
-
-				successorRoad.setPredecessorRoad( roadBeforeJunction, TvContactPoint.END );
-
-			} else if ( link.contactPoint == TvContactPoint.END ) {
-
-				successorRoad.setSuccessorRoad( roadBeforeJunction, TvContactPoint.END );
-
-			}
-
-		}
-
-	}
 
 }

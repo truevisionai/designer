@@ -71,6 +71,24 @@ export class SplineManager {
 
 		}
 
+		const segments = spline.getSplineSegments();
+
+		for ( const segment of segments ) {
+
+			if ( segment.isRoad ) {
+
+				const road = segment.getInstance<TvRoad>();
+
+				this.roadManager.removeRoad( road );
+
+			} else if ( segment.isJunction ) {
+
+				// throw new Error( "method not implemented" );
+
+			}
+
+		}
+
 		this.mapService.map.removeSpline( spline );
 
 	}
