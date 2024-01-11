@@ -14,6 +14,7 @@ import { Environment } from 'app/core/utils/environment';
 import { MapEvents } from 'app/events/map-events';
 import { MapService } from './map.service';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 
 @Injectable( {
 	providedIn: 'root'
@@ -94,7 +95,7 @@ export class MapValidatorService {
 
 		for ( let i = 0; i < roads.length; i++ ) {
 
-			this.validateLinks( roads[ i ] );
+			this.validateRoad( roads[ i ] );
 
 		}
 
@@ -117,7 +118,85 @@ export class MapValidatorService {
 
 	}
 
-	validateLinks ( roadA: TvRoad ) {
+	validateRoad ( road: TvRoad ) {
+
+		this.validateRoadLinks( road );
+
+		this.validateLaneSections( road );
+
+	}
+
+	/**
+
+	The following rules apply to lane sections:
+	Each road shall have at least one lane section.
+	<laneSection> elements shall be defined in ascending order according to the s-coordinate.
+	The length of lane sections shall be greater than zero.
+	There shall always be exactly one center lane at each s-position.
+	Using lanes with a width of 0 for long distances should be avoided.
+	A new lane section shall be defined each time the number of lanes change.
+	A lane section shall remain valid until a new lane section is defined.
+	The properties of lanes inside a lane section may be changed as often as needed.
+	Lane sections may be defined for one side of the road only using the @singleSide attribute.
+
+	 * @param road
+	 * @returns
+	 */
+	validateLaneSections ( road: TvRoad ) {
+
+		const validLaneSection = ( laneSection: TvLaneSection ) =>  {
+
+			if ( laneSection.getLaneCount() == 0 ) {
+				this.errors.push( 'Road:' + road.id + ' LaneSection has no lanes ' + laneSection.toString() );
+			}
+
+			if ( laneSection.getCenterLanes().length == 0 ) {
+				this.errors.push( 'Road:' + road.id + ' LaneSection has no center lanes ' + laneSection.toString() );
+			}
+
+			if ( laneSection.getCenterLanes().length > 1 ) {
+				this.errors.push( 'Road:' + road.id + ' LaneSection has more than one center lane ' + laneSection.toString() );
+			}
+
+			if ( laneSection.getLaneCount() < 2 ) {
+				this.errors.push( 'Road:' + road.id + ' LaneSection has less than 2 lanes ' + laneSection.toString() );
+			}
+
+		}
+
+		if ( road.laneSections.length == 0 ) {
+			this.errors.push( 'Road:' + road.id + ' has no lane sections' );
+			return;
+		}
+
+		const firstLaneSection = road.laneSections[ 0 ];
+
+		if ( firstLaneSection.s != 0 ) {
+			this.errors.push( 'Road:' + road.id + ' first lane section s != 0' + firstLaneSection.toString() );
+		}
+
+		validLaneSection( firstLaneSection );
+
+		for ( let i = 1; i < road.laneSections.length; i++ ) {
+
+			const prevLaneSection = road.laneSections[ i - 1 ];
+			const laneSection = road.laneSections[ i ];
+
+			if ( laneSection.s < prevLaneSection.s ) {
+				this.errors.push( 'Road:' + road.id + ' lane section not in order of increasing s' + prevLaneSection.toString() + laneSection.toString() );
+			}
+
+			if ( Maths.approxEquals( laneSection.s, prevLaneSection.s ) ) {
+				this.errors.push( 'Road:' + road.id + ' lane section s is not increasing' + prevLaneSection.toString() + laneSection.toString() );
+			}
+
+			validLaneSection( laneSection );
+
+		}
+
+	}
+
+	validateRoadLinks ( roadA: TvRoad ) {
 
 		if ( roadA.successor ) {
 

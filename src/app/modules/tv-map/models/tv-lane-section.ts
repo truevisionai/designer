@@ -855,4 +855,10 @@ export class TvLaneSection {
 		} );
 
 	}
+
+	toString () {
+
+		return `LaneSection: id: ${this.id} s: ${this.s} laneCount: ${this.getLaneCount()}`;
+
+	}
 }
