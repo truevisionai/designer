@@ -23,6 +23,12 @@ src/app
 
 ## Responsibilities
 
+- road.model holds road data
+- road.service holds data operations for roads
+- road.factory holds logic to create new roads
+- road.builder holds logic to create 3d object
+- road.manager holds logic to manage roads and operations
+
 ### Commands
 - Handle minor, abstract changes to data or visual layers.
 - Should not contain complex logic, delegate to services or managers as needed.

@@ -5,11 +5,8 @@
 import { Injectable } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { GameObject } from 'app/core/game-object';
 import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
 import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import * as THREE from 'three';
@@ -40,6 +37,7 @@ import {
 } from 'app/modules/three-js/default.config';
 import { RoadStyle } from "../../../core/asset/road.style";
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { RoadBuilder } from 'app/modules/tv-map/builders/road.builder';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -75,7 +73,7 @@ export class AssetPreviewService {
 
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
-	constructor () {
+	constructor ( private roadBuilder: RoadBuilder ) {
 
 		this.ngOnInit();
 		this.ngAfterViewInit();
@@ -402,19 +400,8 @@ export class AssetPreviewService {
 
 	getRoadStyleObject ( roadStyle: RoadStyle ): Object3D {
 
-		const gameObject = new GameObject();
+		return this.roadBuilder.getRoadStyleObject( roadStyle );
 
-		const road = new TvRoad( '', 0, 1 );
-
-		road.laneSections.push( roadStyle.laneSection );
-
-		roadStyle.laneSection.road = road;
-
-		road.addGeometryLine( 0, -250, 0, 0, 500 );
-
-		TvMapBuilder.buildRoad( gameObject, road );
-
-		return gameObject;
 	}
 
 	getRoadMarkingPreview ( marking: TvRoadMarking ): string {
