@@ -9,12 +9,14 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Vector2 } from 'three';
-import { LaneRoadMarkFactory } from 'app/factories/lane-road-mark-factory';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { LaneService } from 'app/services/lane/lane.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class LaneMarkingService {
+export class LaneMarkingToolService {
 
 	private static nodeMap: Object3DMap<string, LaneMarkingNode> = new Object3DMap();
 
@@ -23,43 +25,49 @@ export class LaneMarkingService {
 	constructor (
 		public base: BaseToolService,
 		private debug: LaneDebugService,
-		private roadMarkBuilder: LaneRoadMarkFactory
+		private laneService: LaneService,
 	) { }
 
-	rebuildMarkings ( node: LaneMarkingNode ) {
+	rebuild ( lane: TvLane ) {
 
-		this.roadMarkBuilder.buildRoad( node.lane.laneSection.road );
+		this.laneService.updateLane( lane );
+
+		this.hideRoad( lane.laneSection.road );
+		this.showRoad( lane.laneSection.road );
 
 	}
 
 	updateNode ( node: LaneMarkingNode ) {
 
-		this.rebuildMarkings( node );
+		this.rebuild( node.lane );
 
-		this.hideRoad( node.lane.laneSection.road );
-		this.showRoad( node.lane.laneSection.road );
+	}
+
+	addRoadmark ( lane: TvLane, roadMark: TvLaneRoadMark ) {
+
+		lane.addRoadMarkInstance( roadMark );
+
+		this.rebuild( lane );
 
 	}
 
 	addNode ( node: LaneMarkingNode ) {
 
-		node.lane.addRoadMarkInstance( node.roadmark );
+		this.addRoadmark( node.lane, node.roadmark );
 
-		this.rebuildMarkings( node );
+	}
 
-		this.hideRoad( node.lane.laneSection.road );
-		this.showRoad( node.lane.laneSection.road );
+	removeRoadmark ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+
+		lane.removeRoadMark( roadmark );
+
+		this.rebuild( lane );
 
 	}
 
 	removeNode ( node: LaneMarkingNode ) {
 
-		node.lane.removeRoadMark( node.roadmark );
-
-		this.rebuildMarkings( node );
-
-		this.hideRoad( node.lane.laneSection.road );
-		this.showRoad( node.lane.laneSection.road );
+		this.removeRoadmark( node.lane, node.roadmark );
 
 	}
 
@@ -94,9 +102,9 @@ export class LaneMarkingService {
 
 					line.renderOrder = 999;
 
-					LaneMarkingService.lineMap.add( laneMark.uuid, line );
+					LaneMarkingToolService.lineMap.add( laneMark.uuid, line );
 
-					LaneMarkingService.nodeMap.add( laneMark.uuid, node );
+					LaneMarkingToolService.nodeMap.add( laneMark.uuid, node );
 
 				}
 
@@ -113,9 +121,9 @@ export class LaneMarkingService {
 
 				for ( let i = 0; i < lane.roadMark.length; i++ ) {
 
-					LaneMarkingService.nodeMap.remove( lane.roadMark[ i ].uuid );
+					LaneMarkingToolService.nodeMap.remove( lane.roadMark[ i ].uuid );
 
-					LaneMarkingService.lineMap.remove( lane.roadMark[ i ].uuid );
+					LaneMarkingToolService.lineMap.remove( lane.roadMark[ i ].uuid );
 
 				}
 
@@ -123,9 +131,9 @@ export class LaneMarkingService {
 
 		} );
 
-		LaneMarkingService.lineMap.clear();
+		LaneMarkingToolService.lineMap.clear();
 
-		LaneMarkingService.nodeMap.clear();
+		LaneMarkingToolService.nodeMap.clear();
 
 	}
 

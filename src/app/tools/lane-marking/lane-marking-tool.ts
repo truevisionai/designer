@@ -7,7 +7,7 @@ import { LaneMarkingNode } from '../../modules/three-js/objects/lane-road-mark-n
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { LaneMarkingService } from './lane-marking.service';
+import { LaneMarkingToolService } from './lane-marking-tool.service';
 import { CommandHistory } from 'app/services/command-history';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
@@ -21,6 +21,11 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { UnselectObjectCommand } from "../../commands/unselect-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
+import { Action, SerializedField } from 'app/core/components/serialization';
+import { TvRoadMarkTypes, TvRoadMarkWeights } from 'app/modules/tv-map/models/tv-common';
+import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { RemoveObjectCommand } from 'app/commands/remove-object-command';
+import { Environment } from 'app/core/utils/environment';
 
 export class LaneMarkingTool extends BaseTool {
 
@@ -36,11 +41,11 @@ export class LaneMarkingTool extends BaseTool {
 
 	public selectedNode: LaneMarkingNode;
 
-	private debug: boolean = false;
+	private debug: boolean = !Environment.production;
 
 	private sOld: number;
 
-	constructor ( private laneMarkingService: LaneMarkingService ) {
+	constructor ( private tool: LaneMarkingToolService ) {
 
 		super();
 
@@ -50,15 +55,15 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.setHint( 'Use LEFT CLICK to select road or lane' );
 
-		this.laneMarkingService.base.reset();
+		this.tool.base.reset();
 
-		this.laneMarkingService.base.addSelectionStrategy( new ControlPointStrategy( {
+		this.tool.base.addSelectionStrategy( new ControlPointStrategy( {
 			higlightOnHover: true,
 			higlightOnSelect: false,
 			returnParent: false,
 		} ) );
 
-		this.laneMarkingService.base.addSelectionStrategy( new SelectLineStrategy( {
+		this.tool.base.addSelectionStrategy( new SelectLineStrategy( {
 			higlightOnHover: true,
 			higlightOnSelect: true,
 			tag: null,
@@ -66,9 +71,9 @@ export class LaneMarkingTool extends BaseTool {
 			returnTarget: true,
 		} ) );
 
-		this.laneMarkingService.base.addSelectionStrategy( new SelectLaneStrategy( false ) );
+		this.tool.base.addSelectionStrategy( new SelectLaneStrategy( false ) );
 
-		this.laneMarkingService.base.addMovingStrategy( new EndLaneMovingStrategy() );
+		this.tool.base.addMovingStrategy( new EndLaneMovingStrategy() );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
@@ -84,7 +89,7 @@ export class LaneMarkingTool extends BaseTool {
 
 		super.disable();
 
-		this.laneMarkingService.base.reset();
+		this.tool.base.reset();
 
 		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
@@ -92,7 +97,7 @@ export class LaneMarkingTool extends BaseTool {
 
 	onPointerDownSelect ( e: PointerEventData ) {
 
-		this.laneMarkingService.base.handleSelection( e, selected => {
+		this.tool.base.handleSelection( e, selected => {
 
 			if ( selected instanceof LaneMarkingNode ) {
 
@@ -128,7 +133,7 @@ export class LaneMarkingTool extends BaseTool {
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( !this.laneMarkingService.base.onPointerDown( e ) ) return;
+		if ( !this.tool.base.onPointerDown( e ) ) return;
 
 		if ( !this.selectedLane ) return;
 
@@ -177,13 +182,13 @@ export class LaneMarkingTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		this.laneMarkingService.base.highlight( e );
+		this.tool.base.highlight( e );
 
 		if ( !this.isPointerDown ) return;
 
 		if ( !this.selectedNode ) return
 
-		this.laneMarkingService.base.handleTargetMovement( e, this.selectedNode.lane, position => {
+		this.tool.base.handleTargetMovement( e, this.selectedNode.lane, position => {
 
 			if ( !this.sOld ) this.sOld = this.selectedNode.s;
 
@@ -227,7 +232,13 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( object instanceof LaneMarkingNode ) {
 
-			this.laneMarkingService.addNode( object );
+			this.tool.addNode( object );
+
+		} else if ( object instanceof LaneMarkingNodeInspector ) {
+
+			this.tool.addRoadmark( object.lane, object.roadmark );
+
+			this.showInspector( object.lane, object.roadmark );
 
 		}
 
@@ -239,7 +250,13 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( object instanceof LaneMarkingNode ) {
 
-			this.laneMarkingService.updateNode( object );
+			this.tool.updateNode( object );
+
+		} else if ( object instanceof LaneMarkingNodeInspector ) {
+
+			this.tool.rebuild( object.lane );
+
+			this.showInspector( object.lane, object.roadmark );
 
 		}
 
@@ -251,7 +268,13 @@ export class LaneMarkingTool extends BaseTool {
 
 		if ( object instanceof LaneMarkingNode ) {
 
-			this.laneMarkingService.removeNode( object );
+			this.tool.removeNode( object );
+
+		} else if ( object instanceof LaneMarkingNodeInspector ) {
+
+			this.tool.removeRoadmark( object.lane, object.roadmark );
+
+			AppInspector.clear();
 
 		}
 	}
@@ -284,13 +307,13 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.selectedRoad = road;
 
-		this.laneMarkingService.showRoad( road );
+		this.tool.showRoad( road );
 
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
 
-		this.laneMarkingService.hideRoad( road );
+		this.tool.hideRoad( road );
 
 		this.selectedRoad = null;
 
@@ -304,13 +327,13 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.selectedRoad = lane.laneSection.road;
 
-		this.laneMarkingService.showRoad( lane.laneSection.road );
+		this.tool.showRoad( lane.laneSection.road );
 
 	}
 
 	onLaneUnselected ( lane: TvLane ): void {
 
-		this.laneMarkingService.hideRoad( lane.laneSection.road );
+		this.tool.hideRoad( lane.laneSection.road );
 
 		this.selectedLane = null;
 
@@ -330,7 +353,8 @@ export class LaneMarkingTool extends BaseTool {
 
 		this.selectedRoad = node.lane.laneSection.road;
 
-		AppInspector.setInspector( DynamicInspectorComponent, node );
+		this.showInspector( node.lane, node.roadmark );
+
 	}
 
 	onNodeUnselected ( node: LaneMarkingNode ) {
@@ -340,6 +364,85 @@ export class LaneMarkingTool extends BaseTool {
 		this.selectedNode = null;
 
 		AppInspector.clear();
+
+	}
+
+	showInspector ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+
+		const inspector = new LaneMarkingNodeInspector( lane, roadmark );
+
+		AppInspector.setInspector( DynamicInspectorComponent, inspector );
+
+	}
+
+}
+
+class LaneMarkingNodeInspector {
+
+	constructor (
+		public lane: TvLane,
+		public roadmark: TvLaneRoadMark
+	) {
+	}
+
+	@SerializedField( { type: 'int' } )
+	get s (): number {
+		return this.roadmark.sOffset;
+	}
+
+	set s ( value: number ) {
+		this.roadmark.sOffset = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get width (): number {
+		return this.roadmark.width;
+	}
+
+	set width ( value: number ) {
+		this.roadmark.width = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get length (): number {
+		return this.roadmark.length;
+	}
+
+	set length ( value: number ) {
+		this.roadmark.length = value;
+	}
+
+	@SerializedField( { type: 'float' } )
+	get space (): number {
+		return this.roadmark.space;
+	}
+
+	set space ( value: number ) {
+		this.roadmark.space = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TvRoadMarkTypes } )
+	get markingType (): TvRoadMarkTypes {
+		return this.roadmark.type;
+	}
+
+	set markingType ( value: TvRoadMarkTypes ) {
+		this.roadmark.type = value;
+	}
+
+	@SerializedField( { type: 'enum', enum: TvRoadMarkWeights } )
+	get weight (): TvRoadMarkWeights {
+		return this.roadmark.weight;
+	}
+
+	set weight ( value: TvRoadMarkWeights ) {
+		this.roadmark.weight = value;
+	}
+
+	@Action()
+	delete () {
+
+		CommandHistory.execute( new RemoveObjectCommand( this ) );
 
 	}
 

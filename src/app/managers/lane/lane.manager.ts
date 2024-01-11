@@ -3,7 +3,7 @@ import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { LaneWidthManager } from "./lane-width.manager";
 import { LaneHeightManager } from "./lane-height.manager";
 import { ParkingLaneManager } from "./parking-lane.manager";
-import { LaneTypeChangedEvent } from "app/events/lane/lane-type-changed.event";
+import { LaneMarkingManager } from "./lane-marking.manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -13,7 +13,8 @@ export class LaneManager {
 	constructor (
 		private laneWidthManager: LaneWidthManager,
 		private laneHeightManager: LaneHeightManager,
-		private parkingLaneManager: ParkingLaneManager
+		private parkingLaneManager: ParkingLaneManager,
+		private laneMarkingManager: LaneMarkingManager,
 	) { }
 
 	onLaneCreated ( lane: TvLane ) {
@@ -23,6 +24,8 @@ export class LaneManager {
 		this.laneHeightManager.updateLaneHeight( lane.laneSection.road, lane.laneSection, lane );
 
 		this.parkingLaneManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
+
+		this.laneMarkingManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
 	}
 

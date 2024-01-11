@@ -6,7 +6,6 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { MathUtils, MeshStandardMaterial } from 'three';
 import { GameObject } from '../../../core/game-object';
-import { LaneMarkingNode } from '../../three-js/objects/lane-road-mark-node';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLane } from './tv-lane';
 
@@ -37,7 +36,6 @@ export class TvLaneRoadMark {
 	 */
 	public lastSCoordinate: number;
 	public readonly lane: TvLane;
-	public node: LaneMarkingNode;
 
 	private attr_materialDetails: string;
 	private _materialGuid: string;
@@ -145,6 +143,10 @@ export class TvLaneRoadMark {
 		return this.sOffset;
 	}
 
+	set s ( value: number ) {
+		this.sOffset = value;
+	}
+
 	get sOffset () {
 		return this.attr_sOffset;
 	}
@@ -247,7 +249,7 @@ export class TvLaneRoadMark {
 
 	}
 
-	clone ( s?: number ) {
+	clone ( s?: number, lane?: TvLane ) {
 
 		return new TvLaneRoadMark(
 			s || this.sOffset,
@@ -257,7 +259,7 @@ export class TvLaneRoadMark {
 			this.width,
 			this.laneChange,
 			this.height,
-			this.lane,
+			lane || this.lane,
 			this.length,
 			this.space,
 			this.materialGuid,

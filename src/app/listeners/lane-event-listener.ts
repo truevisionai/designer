@@ -3,7 +3,7 @@ import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { Injectable } from "@angular/core";
 import { Environment } from "app/core/utils/environment";
-import { LaneManager } from "app/managers/lane-manager";
+import { LaneManager } from "app/managers/lane/lane.manager";
 import { LaneTypeChangedEvent } from "app/events/lane/lane-type-changed.event";
 
 @Injectable( {

@@ -29,7 +29,7 @@ import { RoadCircleToolService } from 'app/tools/road-circle/road-circle-tool.se
 import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
-import { LaneMarkingService } from 'app/tools/lane-marking/lane-marking.service';
+import { LaneMarkingToolService } from 'app/tools/lane-marking/lane-marking-tool.service';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-tool.service';
@@ -68,7 +68,7 @@ export class ToolBarService {
 		private roadElevationService: RoadElevationService,
 		private maneuverService: ManeuverService,
 		private laneWidthService: LaneWidthService,
-		private laneMarkingService: LaneMarkingService,
+		private laneMarkingService: LaneMarkingToolService,
 		private laneToolService: LaneToolService,
 		private crosswalkService: CrosswalkToolService,
 		private roadCuttingService: RoadDividerService,
