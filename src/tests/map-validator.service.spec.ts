@@ -52,7 +52,7 @@ describe( 'Service: MapValidator', () => {
 
 	} );
 
-	it( 'should pass for horizontal connections ', () => {
+	it( 'should fail for horizontal connections without lane links', () => {
 
 		const roadA = base.createDefaultRoad( roadService, [
 			new Vector2( 0, 0 ),
@@ -67,13 +67,11 @@ describe( 'Service: MapValidator', () => {
 		roadA.setSuccessorRoad( roadB, TvContactPoint.END );
 		roadB.setSuccessorRoad( roadA, TvContactPoint.END );
 
-		expect( mapValidator.validateMap( mapService.map, true ) ).toBe( true );
-
-		expect( mapValidator.getErrors().length ).toBe( 0 );
+		expect( mapValidator.validateMap( mapService.map ) ).toBe( false );
 
 	} );
 
-	it( 'should pass for vertical connections ', () => {
+	it( 'should fail for vertical connections without lane links', () => {
 
 		const roadA = base.createDefaultRoad( roadService, [
 			new Vector2( 0, 0 ),
@@ -88,9 +86,7 @@ describe( 'Service: MapValidator', () => {
 		roadA.setSuccessorRoad( roadB, TvContactPoint.END );
 		roadB.setSuccessorRoad( roadA, TvContactPoint.END );
 
-		expect( mapValidator.validateMap( mapService.map, true ) ).toBe( true );
-
-		expect( mapValidator.getErrors().length ).toBe( 0 );
+		expect( mapValidator.validateMap( mapService.map ) ).toBe( false );
 
 	} );
 
