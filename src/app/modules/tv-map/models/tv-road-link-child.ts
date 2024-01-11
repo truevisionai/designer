@@ -127,12 +127,32 @@ export class TvRoadLinkChild {
 		this._contactPoint = value;
 	}
 
+	get laneSection () {
+
+		if ( this.isRoad ) {
+
+			const road = this.getElement<TvRoad>();
+
+			if ( this.contactPoint == TvContactPoint.START ) {
+
+				return road.laneSections[ 0 ];
+
+			} else {
+
+				return road.laneSections[ road.laneSections.length - 1 ];
+
+			}
+
+		}
+
+	}
+
 	getElement<T> (): T {
 		return this.element as any;
 	}
 
-	toString() {
-		return `TvRoadLinkChild: ${this.elementType} ${this.elementId} ${this.contactPoint}`;
+	toString () {
+		return `TvRoadLinkChild: ${ this.elementType } ${ this.elementId } ${ this.contactPoint }`;
 	}
 
 	clone (): TvRoadLinkChild {

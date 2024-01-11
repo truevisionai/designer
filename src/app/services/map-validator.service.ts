@@ -15,6 +15,7 @@ import { MapEvents } from 'app/events/map-events';
 import { MapService } from './map.service';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 
 @Injectable( {
 	providedIn: 'root'
@@ -144,7 +145,7 @@ export class MapValidatorService {
 	 */
 	validateLaneSections ( road: TvRoad ) {
 
-		const validLaneSection = ( laneSection: TvLaneSection ) =>  {
+		const validLaneSection = ( laneSection: TvLaneSection ) => {
 
 			if ( laneSection.getLaneCount() == 0 ) {
 				this.errors.push( 'Road:' + road.id + ' LaneSection has no lanes ' + laneSection.toString() );
@@ -160,6 +161,14 @@ export class MapValidatorService {
 
 			if ( laneSection.getLaneCount() < 2 ) {
 				this.errors.push( 'Road:' + road.id + ' LaneSection has less than 2 lanes ' + laneSection.toString() );
+			}
+
+			for ( const [ id, lane ] of laneSection.lanes ) {
+
+				if ( id == 0 ) continue;
+
+				this.validateLane( road, laneSection, lane );
+
 			}
 
 		}
@@ -191,6 +200,97 @@ export class MapValidatorService {
 			}
 
 			validLaneSection( laneSection );
+
+		}
+
+	}
+
+	validateLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		if ( lane.width.length == 0 ) {
+			this.errors.push( 'Road:' + road.id + ' Lane:' + lane.id + ' has no width' );
+		}
+
+		this.validateLaneWidth( lane );
+
+		this.validateLaneLinks( road, laneSection, lane );
+
+		this.validatePolynomials( lane.borders );
+
+	}
+
+	validateLaneWidth ( lane: TvLane ) {
+
+		this.validatePolynomials( lane.width );
+
+	}
+
+	validatePolynomials ( polynomials: { s: number }[] ) {
+
+		for ( let i = 1; i < polynomials.length; i++ ) {
+
+			const prev = polynomials[ i - 1 ];
+			const current = polynomials[ i ];
+
+			if ( prev.s > current.s ) {
+				this.errors.push( 'Polynomials not in order of increasing s ' + prev.toString() + current.toString() );
+			}
+
+			if ( Maths.approxEquals( prev.s, current.s ) ) {
+				this.errors.push( 'Polynomials distance should be more than 0 ' + prev.toString() + current.toString() );
+			}
+
+		}
+
+	}
+
+	/**
+	 * The following rules apply to lane linkage:
+	 * - A lane may have another lane as predecessor or successor.
+	 * - Two lanes shall only be linked if their linkage is clear. If the relationship to a predecessor or successor is ambiguous, junctions shall be used.
+	 * - Multiple predecessors and successors shall be used if a lane is split abruptly or several lanes are merged abruptly. All lanes that are connected shall have a non-zero width at the connection point.
+	 * - Lanes that have a width of zero at the beginning of the lane section shall have no <predecessor> element.
+	 * - Lanes that have a width of zero at the end of the lane section shall have no <successor> element.
+	 * - The <link> element shall be omitted if the lane starts or ends in a junction or has no link.
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 */
+	validateLaneLinks ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		if ( !road.isJunction && road.successor?.isRoad && !lane.successor ) {
+
+			if ( road.successor.laneSection.getLaneCount() != laneSection.getLaneCount() ) {
+
+				this.errors.push( road.toString() + ' has successor ' + road.successor.toString() + ' but lane:' + lane.id + ' has no successor' );
+
+			} else {
+
+				if ( road.successor.contactPoint == TvContactPoint.END ) {
+
+					this.errors.push( road.toString() + ' has successor ' + road.successor.toString() + ' but lane:' + lane.id + ' has no successor' );
+
+				}
+
+			}
+
+		}
+
+		if ( !road.isJunction && road.predecessor?.isRoad && !lane.predecessor ) {
+
+			if ( road.predecessor.laneSection.getLaneCount() != laneSection.getLaneCount() ) {
+
+				this.errors.push( road.toString() + ' has predecessor ' + road.predecessor.toString() + ' but lane:' + lane.id + ' has no predecessor' );
+
+			} else {
+
+				if ( road.predecessor.contactPoint == TvContactPoint.START ) {
+
+					this.errors.push( road.toString() + ' has predecessor ' + road.predecessor.toString() + ' but lane:' + lane.id + ' has no predecessor' );
+
+				}
+
+			}
 
 		}
 

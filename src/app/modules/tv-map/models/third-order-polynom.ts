@@ -119,4 +119,10 @@ export class ThirdOrderPolynom {
 			( this._d * ds * ds * ds );
 	}
 
+	toString () {
+
+		return `s: ${ this.s }, a: ${ this.a }, b: ${ this.b }, c: ${ this.c }, d: ${ this.d }`;
+
+	}
+
 }
