@@ -15,7 +15,7 @@ export class LaneToolService {
 		public base: BaseToolService,
 		public laneDebug: LaneDebugService,
 		public roadDebug: RoadDebugService,
-		private laneService: LaneService,
+		public laneService: LaneService,
 	) { }
 
 	addLane ( lane: TvLane ) {

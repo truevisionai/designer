@@ -16,6 +16,7 @@ import { TvElevationProfile } from 'app/modules/tv-map/models/tv-elevation-profi
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { MapEvents } from 'app/events/map-events';
+import { LaneSectionFactory } from './lane-section.factory';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,7 +25,7 @@ export class RoadFactory {
 
 	private IDService = new IDService();
 
-	constructor () {
+	constructor ( private laneSectionFactory: LaneSectionFactory ) {
 
 		MapEvents.mapRemoved.subscribe( () => this.IDService.reset() );
 
@@ -190,9 +191,13 @@ export class RoadFactory {
 
 		road.clearLaneSections();
 
-		const laneSection = firstNode.getLaneSection().cloneAtS( 0, 0, null, road );
+		const laneSections = this.laneSectionFactory.createLaneSections( road, firstNode, secondNode );
 
-		road.addLaneSectionInstance( laneSection );
+		for ( const laneSection of laneSections ) {
+
+			road.addLaneSectionInstance( laneSection );
+
+		}
 
 		if ( firstNode.road.hasType ) {
 

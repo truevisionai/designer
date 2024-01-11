@@ -17,6 +17,7 @@ import { SplineRemovedEvent } from "./spline/spline-removed-event";
 import { JunctionCreatedEvent } from "./junction/junction-created-event";
 import { JunctionUpdatedEvent } from "./junction/junction-updated-event";
 import { JunctionRemovedEvent } from "./junction/junction-removed-event";
+import { LaneTypeChangedEvent } from "./lane/lane-type-changed.event";
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,6 +53,7 @@ export class MapEvents {
 	@Output() static controlPointRemoved = new EventEmitter<ControlPointRemovedEvent>();
 
 	@Output() static laneCreated = new EventEmitter<TvLane>();
+	@Output() static laneTypeChanged = new EventEmitter<LaneTypeChangedEvent>();
 	@Output() static laneUpdated = new EventEmitter<TvLane>();
 	@Output() static laneRemoved = new EventEmitter<TvLane>();
 

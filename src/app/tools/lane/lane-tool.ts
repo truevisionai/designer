@@ -17,6 +17,7 @@ import { AddObjectCommand } from 'app/commands/add-object-command';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { TvLaneType, TravelDirection } from 'app/modules/tv-map/models/tv-common';
 import { LaneToolService } from './lane-tool.service';
+import { LaneService } from 'app/services/lane/lane.service';
 
 export class LaneTool extends BaseTool {
 
@@ -164,7 +165,9 @@ export class LaneTool extends BaseTool {
 
 		this.tool.laneDebug.selectLane( object );
 
-		AppInspector.setInspector( DynamicInspectorComponent, new TvLaneObject( object ) );
+		const inspector = new TvLaneObject( object, this.tool.laneService );
+
+		AppInspector.setInspector( DynamicInspectorComponent, inspector );
 
 		this.setHint( 'use SHIFT + LEFT CLICK to duplicate a lane' );
 
@@ -184,7 +187,7 @@ export class LaneTool extends BaseTool {
 
 export class TvLaneObject {
 
-	constructor ( public lane: TvLane ) { }
+	constructor ( public lane: TvLane, private laneService: LaneService ) { }
 
 	@SerializedField( { label: 'Lane Id', type: 'int', disabled: true } )
 	get laneId (): number {
@@ -201,7 +204,7 @@ export class TvLaneObject {
 	}
 
 	set type ( value: TvLaneType ) {
-		this.lane.type = value;
+		this.laneService.setLaneType( this.lane, value );
 	}
 
 	@SerializedField( { type: 'boolean' } )

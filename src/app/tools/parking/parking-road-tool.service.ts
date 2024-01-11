@@ -11,8 +11,10 @@ import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
+import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 
 const PARKING_WIDTH = 2.5;
+const PARKING_LENGTH = 5.5;
 const PARKING_HEIGHT = 4.0;
 
 /**
@@ -128,7 +130,7 @@ export class ParkingRoadToolService {
 
 	addRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
 
-		const s = PARKING_WIDTH * 0.5;
+		const s = this.getStartPosition( road, lane.laneSection, lane ) + PARKING_WIDTH * 0.5;
 
 		const roadObject = this.createParkingSpaceRoadObject( road, lane, s );
 
@@ -140,6 +142,39 @@ export class ParkingRoadToolService {
 
 		this.roadObjectService.addRoadObject( road, roadObject );
 
+	}
+
+	private getStartPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): number {
+
+		// find s where the width value is atleast 5.5 or above
+		// const widthValues = lane.width.forEach(width =>>)
+		let s2: number;
+
+		const nextLaneSection = road.laneSections.find( ls => ls.s > laneSection.s );
+
+		if ( nextLaneSection ) {
+
+			s2 = nextLaneSection.s;
+
+		} else {
+
+			s2 = road.length;
+
+		}
+
+		for ( let s = laneSection.s; s < s2; s++ ) {
+
+			const width = lane.getWidthValue( s );
+
+			if ( width >= 5 ) {
+
+				return s;
+
+			}
+
+		}
+
+		return laneSection.s;
 	}
 
 	removeRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
@@ -172,7 +207,7 @@ export class ParkingRoadToolService {
 
 		roadObject.width = PARKING_WIDTH;
 
-		roadObject.length = laneWidth;
+		roadObject.length = Math.max( laneWidth, PARKING_LENGTH );
 
 		roadObject.height = PARKING_HEIGHT;
 
@@ -182,13 +217,13 @@ export class ParkingRoadToolService {
 
 		leftMarking.side = TvSide.LEFT;
 
-		const rightMarking = this.roadObjectService.createMarking();
-
-		rightMarking.side = TvSide.RIGHT;
-
 		roadObject.addMarkingObject( leftMarking );
 
-		roadObject.addMarkingObject( rightMarking );
+		// const rightMarking = this.roadObjectService.createMarking();
+
+		// rightMarking.side = TvSide.RIGHT;
+
+		// roadObject.addMarkingObject( rightMarking );
 
 		// const outline = this.roadObjectService.createOutline( roadObject );
 		// this.createStripedMarking( roadObject, outline );
