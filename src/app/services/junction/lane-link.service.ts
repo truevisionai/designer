@@ -187,13 +187,11 @@ export class LaneLinkService {
 		connectionLane.successor = outgoing ? outgoing.lane.id : null;	// when there is no successor
 
 		// NOTE: THIS CAN probably be added in road event listener also
-		const widhtAtStart = incoming.lane.getWidthValue( incoming.s );
-		const widthAtEnd = outgoing ? outgoing.lane.getWidthValue( outgoing.s ) : 0;
-
-		connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
-		connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
-
-		TvUtils.computeCoefficients( connectionLane.width, roadLength );
+		// const widhtAtStart = incoming.lane.getWidthValue( incoming.s );
+		// const widthAtEnd = outgoing ? outgoing.lane.getWidthValue( outgoing.s ) : 0;
+		// connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
+		// connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
+		// TvUtils.computeCoefficients( connectionLane.width, roadLength );
 
 		return this.createLaneLink( incoming.lane, connectionLane );
 

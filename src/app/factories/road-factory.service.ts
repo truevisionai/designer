@@ -191,7 +191,7 @@ export class RoadFactory {
 
 		road.clearLaneSections();
 
-		const laneSections = this.laneSectionFactory.createLaneSections( road, firstNode, secondNode );
+		const laneSections = this.laneSectionFactory.createFromRoadNode( road, firstNode, secondNode );
 
 		for ( const laneSection of laneSections ) {
 

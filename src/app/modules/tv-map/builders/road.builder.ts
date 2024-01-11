@@ -42,4 +42,10 @@ export class RoadBuilder {
 
 	}
 
+	rebuildRoad ( road: TvRoad ) {
+
+		TvMapBuilder.rebuildRoad( road );
+
+	}
+
 }

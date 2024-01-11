@@ -71,16 +71,6 @@ export class JunctionService {
 
 		this.mapService.map.addJunctionInstance( junction );
 
-		const connections = junction.getConnections();
-
-		for ( let i = 0; i < connections.length; i++ ) {
-
-			const connection = connections[ i ];
-
-			MapEvents.roadCreated.emit( new RoadCreatedEvent( connection.connectingRoad ) );
-
-		}
-
 	}
 
 	updateJunction ( junction: TvJunction ) {

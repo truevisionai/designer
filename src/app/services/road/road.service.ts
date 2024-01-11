@@ -260,11 +260,9 @@ export class RoadService {
 
 		this.mapService.map.addSpline( road.spline );
 
-		if ( road.spline.controlPoints.length < 2 ) return;
-
-		this.roadSplineService.rebuildSpline( road.spline );
-
-		this.mapService.map.gameObject.add( road.gameObject );
+		if ( road.gameObject ) {
+			this.mapService.map.gameObject.add( road.gameObject );
+		}
 
 	}
 

@@ -899,7 +899,29 @@ export class TvLaneSection {
 
 	toString () {
 
-		return `LaneSection: id: ${this.id} s: ${this.s} laneCount: ${this.getLaneCount()}`;
+		return `LaneSection: id: ${ this.id } s: ${ this.s } laneCount: ${ this.getLaneCount() }`;
+
+	}
+
+	isMatching ( other: TvLaneSection ): boolean {
+
+		if ( this.lanes.size !== other.lanes.size ) return false;
+
+		for ( let [ id, laneA ] of this.lanes ) {
+
+			const laneB = other.getLaneById( id );
+
+			if ( !laneB ) return false;
+
+			// if ( laneA.width !== laneB.width ) return false;
+
+			if ( laneA.type != laneB.type ) return false;
+
+			if ( laneA.direction != laneB.direction ) return false;
+
+		}
+
+		return true;
 
 	}
 }

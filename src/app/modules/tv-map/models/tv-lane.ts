@@ -193,7 +193,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	get predecessor () {
-		return this._predecessor;
+		return this._predecessor || this.id;
 	}
 
 	set predecessor ( laneId: number ) {
@@ -234,7 +234,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	get succcessor () {
-		return this._successor;
+		return this._successor || this.id;
 	}
 
 	set succcessor ( laneId: number ) {

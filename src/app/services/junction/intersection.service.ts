@@ -107,7 +107,9 @@ export class IntersectionService {
 
 			if ( !intersection ) continue;
 
-			this.createSplineIntersection( spline, otherSpline, intersection );
+			const junction = this.createJunction( spline, otherSpline, intersection );
+
+			this.junctionService.addJunction( junction );
 
 		}
 
@@ -146,7 +148,7 @@ export class IntersectionService {
 		return intersections;
 	}
 
-	createSplineIntersection ( splineA: AbstractSpline, splineB: AbstractSpline, point: Vector3 ) {
+	createJunction ( splineA: AbstractSpline, splineB: AbstractSpline, point: Vector3 ) {
 
 		if ( splineA == splineB ) return;
 
@@ -170,7 +172,8 @@ export class IntersectionService {
 
 		const junction = this.internal_createIntersectionFromCoords( coordA, coordB );
 
-		this.junctionService.addJunction( junction );
+		return junction;
+
 	}
 
 	postProcessJunction ( junction: TvJunction ) {

@@ -1,9 +1,6 @@
 import { Injectable } from "@angular/core";
-import { SplineSegment } from "app/core/shapes/spline-segment";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
-import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
-import { TvRoadLinkChild } from "app/modules/tv-map/models/tv-road-link-child";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapService } from "app/services/map.service";
@@ -24,6 +21,21 @@ export class JunctionManager {
 		private roadFactory: RoadFactory,
 		private roadManager: RoadManager,
 	) {
+	}
+
+	addJunction ( junction: TvJunction ) {
+
+		this.junctionService.addJunction( junction );
+
+		const connections = junction.getConnections();
+
+		for ( const connection of connections ) {
+
+			this.roadManager.addRoad( connection.connectingRoad );
+
+
+		}
+
 	}
 
 	removeJunction ( junction: TvJunction ) {

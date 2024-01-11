@@ -6,6 +6,8 @@ import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadService } from "app/services/road/road.service";
 import { RoadObjectService } from "app/tools/marking-line/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
+import { LaneManager } from "./lane/lane.manager";
+import { RoadBuilder } from "app/modules/tv-map/builders/road.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,18 +20,26 @@ export class RoadManager {
 		private roadFactory: RoadFactory,
 		private roadService: RoadService,
 		private roadObjectService: RoadObjectService,
-		private roadElevationManager: RoadElevationManager
+		private roadElevationManager: RoadElevationManager,
+		private laneManager: LaneManager,
+		private roadBuilder: RoadBuilder,
 	) { }
 
 	addRoad ( road: TvRoad ) {
 
 		this.roadService.addRoad( road );
 
-		// this.roadLinkService.addLinks( event.road );
+		for ( const laneSection of road.laneSections ) {
+			for ( const [ id, lane ] of laneSection.lanes ) {
+				this.laneManager.onLaneCreated( lane );
+			}
+		}
 
 		this.roadElevationManager.onRoadCreated( road );
 
 		this.mapService.setRoadOpacity( road );
+
+		this.buildRoad( road );
 
 	}
 
@@ -103,6 +113,21 @@ export class RoadManager {
 	private buildRoad ( road: TvRoad ) {
 
 		this.roadService.rebuildRoad( road );
+
+		// or
+		return;
+
+		const segment = road.spline.findSegment( road );
+
+		if ( !segment ) return;
+
+		road.clearGeometries();
+
+		if ( segment.geometries.length == 0 ) return;
+
+		segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+		this.roadBuilder.rebuildRoad( road );
 
 	}
 
