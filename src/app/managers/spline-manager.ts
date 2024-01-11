@@ -41,6 +41,12 @@ export class SplineManager {
 		// first step is always to build the spline from the control points
 		this.buildSpline( spline, spline.getFirstRoadSegment() );
 
+		for ( const road of spline.getRoads() ) {
+
+			this.roadManager.updateRoad( road );
+
+		}
+
 		this.syncSuccessorSpline( spline );
 
 		this.syncPredecessorSpline( spline );

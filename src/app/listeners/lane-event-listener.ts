@@ -33,7 +33,7 @@ export class LaneEventListener {
 
 		this.laneManager.onLaneTypeChanged( event.lane );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.lane.laneSection.road, false ) );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( event.lane.laneSection.road ) );
 
 	}
 
@@ -43,7 +43,7 @@ export class LaneEventListener {
 
 		this.laneManager.onLaneUpdated( lane );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road ) );
 
 	}
 
@@ -53,7 +53,7 @@ export class LaneEventListener {
 
 		this.laneManager.onLaneRemoved( lane );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road ) );
 
 	}
 
@@ -63,7 +63,7 @@ export class LaneEventListener {
 
 		this.laneManager.onLaneCreated( lane );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road, false ) );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road ) );
 	}
 
 }

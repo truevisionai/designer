@@ -15,7 +15,7 @@ import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
 import { PropPolygonTool } from 'app/tools/prop-polygon/prop-polygon-tool';
 import { RoadCircleTool } from 'app/tools/road-circle/road-circle-tool';
 import { RoadDividerTool } from 'app/tools/road-cut-tool/road-divider-tool';
-import { RoadElevationTool } from 'app/tools/road-elevation/road-elevation-tool';
+import { RoadElevationTool } from 'app/tools/road-elevation/road-elevation.tool';
 import { RoadRampTool } from 'app/tools/road-ramp/road-ramp-tool';
 import { RoadSignalTool } from 'app/tools/road-signal-tool';
 import { RoadTool } from 'app/tools/road/road-tool';
@@ -52,6 +52,7 @@ import { PointMarkingToolService } from 'app/tools/marking-point/point-marking-t
 import { JunctionToolService } from 'app/tools/junction-tool/junction-tool.service';
 import { LaneToolService } from 'app/tools/lane/lane-tool.service';
 import { MeasurementToolService } from 'app/tools/pointer/measurement-tool.service';
+import { RoadElevationToolService } from 'app/tools/road-elevation/road-elevation-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,7 +66,7 @@ export class ToolBarService {
 		private surfaceToolService: SurfaceToolService,
 		private propPointService: PropPointService,
 		private roadCircleService: RoadCircleToolService,
-		private roadElevationService: RoadElevationService,
+		private roadElevationService: RoadElevationToolService,
 		private maneuverService: ManeuverService,
 		private laneWidthService: LaneWidthService,
 		private laneMarkingService: LaneMarkingToolService,

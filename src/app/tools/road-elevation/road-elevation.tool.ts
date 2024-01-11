@@ -8,10 +8,8 @@ import { RoadElevationControlPoint } from 'app/modules/three-js/objects/road-ele
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../base-tool'
-import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-road-strategy';
 import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { Action, SerializedField } from 'app/core/components/serialization';
@@ -20,6 +18,10 @@ import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { SetValueCommand } from 'app/commands/set-value-command';
+import { RoadElevationToolService } from './road-elevation-tool.service';
+import { RoadLineMovingStrategy } from 'app/core/snapping/move-strategies/road-line-moving.strategy';
+import { RoadPosition } from 'app/modules/scenario/models/positions/tv-road-position';
+import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
 
 export class RoadElevationTool extends BaseTool {
 
@@ -44,7 +46,7 @@ export class RoadElevationTool extends BaseTool {
 	}
 
 	constructor (
-		private tool: RoadElevationService,
+		private tool: RoadElevationToolService,
 	) {
 		super();
 	}
@@ -57,6 +59,8 @@ export class RoadElevationTool extends BaseTool {
 		this.tool.base.selection.registerStrategy( RoadElevationControlPoint.name, new ControlPointStrategy<RoadElevationControlPoint>() );
 
 		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+
+		this.tool.base.addMovingStrategy( new RoadLineMovingStrategy() );
 
 	}
 
@@ -90,7 +94,7 @@ export class RoadElevationTool extends BaseTool {
 
 			if ( object instanceof TvRoad ) {
 
-				const elevation = this.tool.createElevation( object, e.point );
+				const elevation = this.tool.elevationService.createElevation( object, e.point );
 
 				this.executeAddObject( elevation );
 
@@ -122,7 +126,7 @@ export class RoadElevationTool extends BaseTool {
 
 		const oldPosition = this.pointerDownAt.clone();
 
-		const updateCommand = new UpdatePositionCommand( this.selectedNode, newPosition, oldPosition );
+		const updateCommand = new CopyPositionCommand( this.selectedNode, newPosition, oldPosition );
 
 		CommandHistory.execute( updateCommand );
 
@@ -131,27 +135,40 @@ export class RoadElevationTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		this.tool.debug.clearLines();
+		if ( !this.isPointerDown ) {
 
-		this.tool.base.selection.handleHighlight( e, ( object ) => {
+			this.tool.debug.clearLines();
 
-			if ( object instanceof TvRoad ) {
+			this.tool.base.selection.handleHighlight( e, ( object ) => {
 
-				this.tool.debug.highlightRoad( object );
+				if ( object instanceof TvRoad ) {
+
+					this.tool.debug.highlightRoad( object );
+
+				}
+
+			} );
+
+			return;
+		}
+
+		if ( !this.selectedRoad ) return;
+
+		if ( !this.selectedNode ) return;
+
+		if ( !this.selectedNode.isSelected ) return;
+
+		this.tool.base.handleTargetMovement( e, this.selectedRoad, ( position ) => {
+
+			if ( position instanceof RoadPosition ) {
+
+				this.selectedNode.copyPosition( position.position );
+
+				this.nodeChanged = true;
 
 			}
 
 		} );
-
-		if ( !this.isPointerDown ) return;
-
-		if ( !this.selectedNode ) return;
-
-		// if ( !this.tool.base.onPointerDown( e ) ) return;
-
-		this.selectedNode.copyPosition( e.point );
-
-		this.nodeChanged = true;
 
 	}
 
@@ -160,6 +177,8 @@ export class RoadElevationTool extends BaseTool {
 		if ( this.debug ) console.log( 'onObjectAdded', object );
 
 		if ( object instanceof TvElevation ) {
+
+			if ( !this.selectedRoad ) return;
 
 			this.tool.addElevation( this.selectedRoad, object );
 
@@ -172,15 +191,17 @@ export class RoadElevationTool extends BaseTool {
 
 		if ( object instanceof TvElevation ) {
 
+			if ( !this.selectedRoad ) return;
+
 			this.tool.updateElevation( this.selectedRoad, object );
 
 		} else if ( object instanceof RoadElevationControlPoint ) {
 
-			this.tool.updateElevationNode( this.selectedRoad, object, object.position );
+			this.tool.updateElevationNode( object.road, object, object.position );
 
 		} else if ( object instanceof ElevationNodeObject ) {
 
-			this.tool.updateElevation( this.selectedRoad, object.elevation );
+			this.tool.updateElevation( object.road, object.elevation );
 
 		} else if ( object instanceof RoadElevationObject ) {
 
@@ -188,7 +209,7 @@ export class RoadElevationTool extends BaseTool {
 
 				this.tool.updateElevation( object.road, elevation );
 
-			} )
+			} );
 
 		}
 
@@ -199,6 +220,8 @@ export class RoadElevationTool extends BaseTool {
 		if ( this.debug ) console.log( 'onObjectRemoved', object );
 
 		if ( object instanceof TvElevation ) {
+
+			if ( !this.selectedRoad ) return;
 
 			this.tool.removeElevation( this.selectedRoad, object );
 

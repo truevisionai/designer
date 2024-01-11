@@ -1355,6 +1355,20 @@ export class TvRoad {
 
 	}
 
+	getSByContact ( contact: TvContactPoint ): number {
+
+		if ( contact === TvContactPoint.START ) {
+
+			return 0;
+
+		} else {
+
+			return this.length;
+
+		}
+
+	}
+
 	getRoadCoordByContact ( contact: TvContactPoint ): TvRoadCoord {
 
 		return this.getPosThetaByContact( contact ).toRoadCoord( this );

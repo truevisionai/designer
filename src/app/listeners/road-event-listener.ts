@@ -4,7 +4,6 @@ import { RoadSplineService } from "app/services/road/road-spline.service";
 import { Injectable } from "@angular/core";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { RoadObjectService } from "app/tools/marking-line/road-object.service";
-import { RoadElevationService } from "app/services/road/road-elevation.service";
 import { RoadService } from "app/services/road/road.service";
 import { MapService } from "app/services/map.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
@@ -27,7 +26,6 @@ export class RoadEventListener {
 		private roadSplineService: RoadSplineService,
 		private roadLinkService: RoadLinkService,
 		private roadObjectService: RoadObjectService,
-		private roadElevationService: RoadElevationService,
 		private intersectionService: IntersectionService,
 		private junctionService: JunctionService,
 		private roadFactory: RoadFactory,

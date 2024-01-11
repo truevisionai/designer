@@ -1,136 +1,33 @@
 import { Injectable } from '@angular/core';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadElevationControlPoint } from 'app/modules/three-js/objects/road-elevation-node';
-import { BaseToolService } from 'app/tools/base-tool.service';
-import { Vector3 } from 'three';
-import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { MapEvents } from 'app/events/map-events';
-import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
-import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
-import { RoadDebugService } from '../debug/road-debug.service';
-import { DebugLine } from '../debug/debug-line';
+import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { RoadUpdatedEvent } from "../../events/road/road-updated-event";
+import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
+import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { Vector3 } from 'three';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadElevationService {
 
-	private nodes = new Object3DMap<TvElevation, RoadElevationControlPoint>();
-	private lines = new Object3DMap<TvElevation, DebugLine<TvElevation>>();
-
-	constructor (
-		public base: BaseToolService,
-		public debug: RoadDebugService,
-	) {
-	}
-
-	onToolDisabled () {
-
-		this.nodes.clear();
-
-		this.lines.clear();
-
-		this.debug.clear();
-
-	}
-
-	showControlPoints ( road: TvRoad ) {
-
-		if ( road.elevationProfile.getElevationCount() === 0 ) {
-
-			// add elevation at begininng and end
-			road.addElevation( 0, 0, 0, 0, 0 );
-			road.addElevation( road.length, 0, 0, 0, 0 );
-
-		}
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			this.nodes.add( elevation, this.createElevationNode( road, elevation ) );
-
-			this.lines.add( elevation, this.createElevationLine( road, elevation ) );
-
-		} );
-
-	}
-
-	hideControlPoints ( road: TvRoad ) {
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			this.nodes.remove( elevation );
-
-			this.lines.remove( elevation );
-
-		} );
-
-	}
+	constructor () { }
 
 	createElevation ( road: TvRoad, point: Vector3 ) {
 
-		const roadCoord = road.getPosThetaByPosition( point );
+		const roadCoord = road.getPosThetaByPosition( point ).toRoadCoord( road );
 
-		const elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
+		return this.createElevationAt( roadCoord );
+	}
 
-		elevation.a = road.getElevationValue( roadCoord.s );
+	createElevationAt ( roadCoord: TvRoadCoord ) {
+
+		const elevation = roadCoord.road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
+
+		elevation.a = roadCoord.road.getElevationValue( roadCoord.s );
 
 		return elevation;
-
-	}
-
-	createElevationAt ( road: TvRoad, roadCoord: TvRoadCoord ) {
-
-		const elevation = road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
-
-		elevation.a = road.getElevationValue( roadCoord.s );
-
-		return elevation;
-
-	}
-
-	createElevationNode ( road: TvRoad, elevation: TvElevation ): RoadElevationControlPoint {
-
-		return new RoadElevationControlPoint( road, elevation );
-	}
-
-	createElevationLine ( road: TvRoad, elevation: TvElevation ): DebugLine<TvElevation> {
-
-		return this.debug.createRoadNode( road, elevation, elevation.s );
-
-	}
-
-	removeElevation ( road: TvRoad, node: TvElevation ) {
-
-		this.nodes.remove( node );
-
-		this.lines.remove( node );
-
-		road.removeElevationInstance( node );
-
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
-	}
-
-	updateElevationNode ( road: TvRoad, node: RoadElevationControlPoint, position: Vector3 ) {
-
-		const roadCoord = road.getPosThetaByPosition( position );
-
-		node.elevation.s = roadCoord.s;
-
-		this.updateElevation( road, node.elevation );
-
-	}
-
-	updateElevation ( road: TvRoad, elevation: TvElevation ) {
-
-		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
-
-		this.hideControlPoints( road );
-
-		this.showControlPoints( road );
-
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
 
 	}
 
@@ -138,30 +35,27 @@ export class RoadElevationService {
 
 		road.addElevationInstance( elevation );
 
-		this.nodes.add( elevation, this.createElevationNode( road, elevation ) );
+		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		this.lines.add( elevation, this.createElevationLine( road, elevation ) );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
 	}
 
-	createDefaultNodes ( road: TvRoad ) {
+	removeElevation ( road: TvRoad, elevation: TvElevation ) {
 
-		if ( road.elevationProfile.elevation.length == 0 ) {
+		road.removeElevationInstance( elevation );
 
-			road.addElevation( 0, 0, 0, 0, 0 );
+		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-			if ( road.length > 0.1 ) {
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
-				road.addElevation( road.length, 0, 0, 0, 0 );
+	}
 
-			}
+	updateElevation ( road: TvRoad, elevation: TvElevation ) {
 
-		} else if ( road.elevationProfile.elevation.length == 1 ) {
+		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-			road.addElevation( road.length, 0, 0, 0, 0 );
-
-		}
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
 	}
 

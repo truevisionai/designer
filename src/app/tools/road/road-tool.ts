@@ -456,7 +456,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadUpdated ( road: TvRoad ) {
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road, false ) );
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
