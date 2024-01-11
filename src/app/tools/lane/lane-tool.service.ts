@@ -34,6 +34,10 @@ export class LaneToolService {
 
 		this.laneService.updateLane( lane );
 
+		this.laneDebug.unselectLane( lane );
+
+		this.laneDebug.selectLane( lane );
+
 	}
 
 }
