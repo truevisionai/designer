@@ -5,7 +5,7 @@
 import { TvRoadMarkingManager } from 'app/modules/tv-map/services/marking-manager';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { PointMarkingToolService } from './point-marking-tool.service';
 import { AppInspector } from 'app/core/inspector';
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
@@ -134,7 +134,22 @@ export class PointMarkingTool extends BaseTool {
 
 		if ( !position ) return;
 
+		if ( !asset ) {
+			this.tool.base.setWarning( 'Drag a texture or material asset from the project browser' );
+			return;
+		}
+
+		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL ) {
+			this.tool.base.setWarning( 'Drag a texture or material asset from the project browser' );
+			return;
+		}
+
 		const roadObject = this.tool.createPointMarking( asset, position );
+
+		if ( !roadObject ) {
+			this.tool.base.setWarning( 'Drag point marking on a road or lane' );
+			return;
+		}
 
 		this.executeAddObject( roadObject );
 

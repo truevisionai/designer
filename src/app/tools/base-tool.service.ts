@@ -9,6 +9,7 @@ import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { SelectionService } from './selection.service';
 import { Vector3 } from 'three';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 
 @Injectable( {
@@ -24,6 +25,7 @@ export class BaseToolService {
 	constructor (
 		public statusBar: StatusBarService,
 		public selection: SelectionService,
+		public snackBar: SnackBar
 	) { }
 
 	addSelectionStrategy ( strategy: SelectStrategy<any> ) {
@@ -219,6 +221,13 @@ export class BaseToolService {
 	setHint ( msg: string ) {
 
 		StatusBarService.setHint( msg );
+
+	}
+
+	setWarning ( msg: string ) {
+
+		StatusBarService.setHint( msg );
+		this.snackBar.warn( msg );
 
 	}
 
