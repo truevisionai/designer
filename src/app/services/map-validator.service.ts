@@ -171,6 +171,42 @@ export class MapValidatorService {
 
 			}
 
+			// Lane numbering shall start with 1 next to the center lane in
+			// positive t-direction in ascending order and -1 next to the center lane
+			// in negative t-direction in descending order.
+			// Lane numbering shall be consecutive without any gaps.
+			// 4 3 2 1 0 -1 -2 -3
+			if ( !laneSection.areLeftLanesInOrder() ) {
+
+				const laneIds = laneSection.getLeftLanes().map( lane => lane.id );
+
+				this.errors.push( road.toString() + ' left lanes are not in order ' + laneSection.toString() + ' LaneIds:' + laneIds );
+
+			}
+
+			if ( !laneSection.areRightLanesInOrder() ) {
+
+				const laneIds = laneSection.getRightLanes().map( lane => lane.id );
+
+				this.errors.push( road.toString() + ' right lanes are not in order ' + laneSection.toString() + ' LaneIds:' + laneIds );
+
+			}
+
+			// Lane numbering shall be unique per lane section.
+			const laneIds = [];
+
+			for ( const [ id, lane ] of laneSection.lanes ) {
+
+				if ( laneIds.includes( id ) ) {
+					this.errors.push( road.toString() + ' LaneSection has duplicate lane id ' + laneSection.toString() );
+				}
+
+				laneIds.push( id );
+
+			}
+
+
+
 		}
 
 		if ( road.laneSections.length == 0 ) {

@@ -489,6 +489,47 @@ export class TvLaneSection {
 		// return lanes;
 	}
 
+	areLeftLanesInOrder (): boolean {
+
+		const leftLanes = this.getLeftLanes();
+
+		for ( let i = 0; i < leftLanes.length; i++ ) {
+
+			const lane = leftLanes[ i ];
+
+			const expectedLaneId = leftLanes.length - i;
+
+			if ( lane.id !== expectedLaneId ) {
+
+				return false;
+
+			}
+		}
+
+		return true;
+	}
+
+	areRightLanesInOrder (): boolean {
+
+		const rightLanes = this.getRightLanes();
+
+		for ( let i = 0; i < rightLanes.length; i++ ) {
+
+			const lane = rightLanes[ i ];
+
+			const expectedLaneId = -( i + 1 );
+
+			if ( lane.id !== expectedLaneId ) {
+
+				return false;
+
+			}
+
+		}
+
+		return true;
+	}
+
 	getCenterLaneCount () {
 
 		let count = 0;
