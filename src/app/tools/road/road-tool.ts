@@ -33,6 +33,11 @@ import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 import { SplineCreatedEvent } from "../../events/spline/spline-created-event";
 import { SplineRemovedEvent } from "../../events/spline/spline-removed-event";
 import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
+import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { RoadStyle } from 'app/core/asset/road.style';
+import { SetValueCommand } from 'app/commands/set-value-command';
 
 export class RoadTool extends BaseTool {
 
@@ -121,6 +126,26 @@ export class RoadTool extends BaseTool {
 		this.tool.selection.reset();
 
 		this.tool.base.reset();
+	}
+
+	onAssetDropped ( asset: AssetNode, position: Vector3 ) {
+
+		if ( asset.type != AssetType.ROAD_STYLE ) return;
+
+		const road = TvMapQueries.getRoadByCoords( position.x, position.y );
+
+		if ( !road ) return;
+
+		const roadStyle = AssetDatabase.getInstance<RoadStyle>( asset.guid );
+
+		if ( !roadStyle ) return;
+
+		const oldValue = road.roadStyle.clone( null );
+
+		const newValue = roadStyle.clone( null );
+
+		CommandHistory.execute( new SetValueCommand( road, 'roadStyle', newValue, oldValue) );
+
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {

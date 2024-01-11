@@ -158,15 +158,7 @@ export class ViewportImporterService {
 
 	importRoadStyle ( asset: AssetNode, position: Vector3 ) {
 
-		const road = TvMapQueries.getRoadByCoords( position.x, position.y );
-
-		if ( !road ) return;
-
-		const roadStyle = AssetDatabase.getInstance<RoadStyle>( asset.guid );
-
-		if ( !roadStyle ) return;
-
-		CommandHistory.execute( new SetValueCommand( road, 'roadStyle', roadStyle.clone( null ), road.roadStyle.clone( null ) ) );
+		ToolManager.currentTool?.onAssetDropped( asset, position );
 
 	}
 

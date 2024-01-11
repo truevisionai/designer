@@ -40,7 +40,6 @@ import { AbstractControlPoint } from "../../three-js/objects/abstract-control-po
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
-import { MapEvents } from 'app/events/map-events';
 import { TvRoadCoord } from "./TvRoadCoord";
 
 export class TvRoad {
@@ -1157,16 +1156,6 @@ export class TvRoad {
 		this.addLaneOffsetInstance( roadStyle.laneOffset.clone() );
 
 		this.addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
-
-		this.laneSections.forEach( laneSection => {
-
-			laneSection.lanes.forEach( lane => {
-
-				MapEvents.laneUpdated.emit( lane );
-
-			} );
-
-		} )
 
 		this.elevationProfile = roadStyle.elevationProfile.clone();
 
