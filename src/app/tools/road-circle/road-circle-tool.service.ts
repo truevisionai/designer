@@ -13,7 +13,7 @@ import { TextObject3d } from 'app/modules/three-js/objects/text-object';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TravelDirection, TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
 import { Injectable } from '@angular/core';
 import { RoadLinkService } from '../../services/road/road-link.service';
@@ -181,6 +181,19 @@ export class RoadCircleToolService {
 		for ( let i = 0; i < 4; i++ ) {
 
 			const road = roads[ i ] = this.roadFactory.createDefaultRoad();
+
+			for ( let i = 0; i < road.laneSections.length; i++ ) {
+
+				const laneSection = road.laneSections[ i ];
+
+				for ( const lane of laneSection.getLeftLanes() ) {
+
+					// TODO: check if we need to change the lane id also
+					lane.direction = TravelDirection.forward;
+
+				}
+
+			}
 
 			this.mapService.map.addRoad( road );
 
