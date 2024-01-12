@@ -17,7 +17,9 @@ import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-r
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { Vector3 } from 'three';
+import { MathUtils, Vector3 } from 'three';
+import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-moving.strategy';
+import { RoadPosition } from 'app/modules/scenario/models/positions/tv-road-position';
 
 export class PointMarkingTool extends BaseTool {
 
@@ -59,15 +61,17 @@ export class PointMarkingTool extends BaseTool {
 
 		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
+		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
+
 	}
 
 	enable () {
 
 		super.enable();
 
-		this.tool.boxSelectionService.setStrategy( new ControlPointStrategy() );
+		// this.tool.boxSelectionService.setStrategy( new ControlPointStrategy() );
 
-		this.tool.boxSelectionService.init();
+		// this.tool.boxSelectionService.init();
 
 	}
 
@@ -79,22 +83,22 @@ export class PointMarkingTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.boxSelectionService.reset();
+		// this.tool.boxSelectionService.reset();
 
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		if ( this.boxSelectionStarted ) {
+		// if ( this.boxSelectionStarted ) {
 
-			const objects = this.tool.boxSelectionService.end( e );
+		// 	const objects = this.tool.boxSelectionService.end( e );
 
-			this.selectObject( objects, this.selectedMarking );
+		// 	this.selectObject( objects, this.selectedMarking );
 
-			this.boxSelectionStarted = false;
+		// 	this.boxSelectionStarted = false;
 
-			return;
-		};
+		// 	return;
+		// };
 
 		this.tool.base.selection.handleSelection( e );
 
@@ -104,35 +108,76 @@ export class PointMarkingTool extends BaseTool {
 
 		if ( !this.selectedRoad ) return;
 
-		if ( this.boxSelectionStarted ) {
+		// if ( this.boxSelectionStarted ) {
 
-			const objects = this.tool.boxSelectionService.end( e );
+		// 	const objects = this.tool.boxSelectionService.end( e );
 
-			this.selectObject( objects, this.selectedMarking );
+		// 	this.selectObject( objects, this.selectedMarking );
 
-			this.boxSelectionStarted = false;
+		// 	this.boxSelectionStarted = false;
 
-		} else {
+		// } else {
 
-			this.tool.boxSelectionService.start( e );
+		// 	this.tool.boxSelectionService.start( e );
 
-			this.boxSelectionStarted = true;
+		// 	this.boxSelectionStarted = true;
 
-		}
+		// }
+
+		this.createPointMarking( this.tool.getSelectedAsset(), e.point );
 
 	}
 
 	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
-		if ( !this.boxSelectionStarted ) return;
+		if ( !this.isPointerDown ) return;
 
-		this.tool.boxSelectionService.update( pointerEventData );
+		if ( !this.selectedRoad ) return;
+
+		if ( !this.selectedMarking ) return;
+
+		if ( !this.selectedMarking.isSelected ) return;
+
+		// if ( !this.boxSelectionStarted ) return;
+
+		// this.tool.boxSelectionService.update( pointerEventData );
+
+		this.tool.base.handleMovement( pointerEventData, ( position ) => {
+
+			if ( position instanceof RoadPosition ) {
+
+				console.log( position );
+
+				this.selectedMarking.mainObject.s = position.s;
+
+				this.selectedMarking.mainObject.t = position.t;
+
+				this.selectedMarking.copyPosition( position.position );
+
+				this.tool.updateControls( this.selectedMarking.mainObject );
+
+				this.tool.roadObjectService.updateRoadObject( this.selectedRoad, this.selectedMarking.mainObject );
+
+				// this.nodeChanged = true;
+
+			}
+
+		} );
 
 	}
 
 	onAssetDropped ( asset: AssetNode, position: Vector3 ): void {
 
-		if ( !position ) return;
+		this.createPointMarking( asset, position );
+
+	}
+
+	createPointMarking ( asset: AssetNode, position: Vector3 ) {
+
+		if ( !position ) {
+			this.tool.base.setWarning( 'Drag point marking on a road or lane' );
+			return;
+		}
 
 		if ( !asset ) {
 			this.tool.base.setWarning( 'Drag a texture or material asset from the project browser' );
@@ -398,11 +443,23 @@ class PointMarkingObject {
 	@SerializedField( { 'type': 'vector3', label: 'Rotation' } )
 	get rotation () {
 
-		return this.getValue( this.items, 'rotation', true );
+		// convert from radians to degrees
+		const value = this.getValue( this.items, 'rotation', true );
+
+		value.x = MathUtils.radToDeg( value.x );
+		value.y = MathUtils.radToDeg( value.y );
+		value.z = MathUtils.radToDeg( value.z );
+
+		return value;
 
 	}
 
 	set rotation ( value ) {
+
+		// convert from degrees to radians
+		value.x = MathUtils.degToRad( value.x );
+		value.y = MathUtils.degToRad( value.y );
+		value.z = MathUtils.degToRad( value.z );
 
 		this.setValue( this.items, 'rotation', value, true );
 

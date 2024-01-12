@@ -1,7 +1,9 @@
+import { Injectable } from "@angular/core";
+import { AssetManager } from "app/core/asset/asset.manager";
 import { AssetService } from "app/core/asset/asset.service";
 import { RoadStyle } from "app/core/asset/road.style";
+import { Environment } from "app/core/utils/environment";
 import { MapEvents } from "app/events/map-events";
-import { Manager } from "app/managers/manager";
 import { PropManager } from "app/managers/prop-manager";
 import { RoadStyleManager } from "app/managers/road-style.manager";
 import { TvMaterial } from "app/modules/three-js/objects/tv-material.model";
@@ -9,21 +11,24 @@ import { BaseTool } from "app/tools/base-tool";
 import { ToolManager } from "app/tools/tool-manager";
 import { AssetNode, AssetType } from "app/views/editor/project-browser/file-node.model";
 
-export class ObjectEventListener extends Manager {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ObjectEventListener {
 
-	debug: boolean;
+	private debug: boolean = !Environment.production;
 
 	constructor (
 		private assetService: AssetService,
+		private assetManager: AssetManager,
 	) {
-
-		super();
 
 	}
 
 	init () {
 
 		MapEvents.assetSelected.subscribe( e => this.onAssetSelected( e ) );
+		MapEvents.assetDragged.subscribe( e => this.onAssetSelected( e ) );
 
 		MapEvents.objectSelected.subscribe( e => this.onObjectSelected( e ) );
 		MapEvents.objectUnselected.subscribe( e => this.onObjectUnselected( e ) );
@@ -45,6 +50,14 @@ export class ObjectEventListener extends Manager {
 
 			case AssetType.MODEL:
 				PropManager.setProp( asset as any );
+				break;
+
+			case AssetType.TEXTURE:
+				this.assetManager.setTextureAsset( asset );
+				break;
+
+			case AssetType.MATERIAL:
+				this.assetManager.setMaterialAsset( asset );
 				break;
 
 		}

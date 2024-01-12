@@ -18,7 +18,6 @@ import { MapManager } from '../managers/map-manager';
 import { ElevationManager } from '../managers/elevation-manager';
 import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
 import { RoadService } from './road/road.service';
-import { ObjectEventListener } from 'app/listeners/object-event-listener';
 import { AssetService } from 'app/core/asset/asset.service';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 
@@ -62,7 +61,6 @@ export class AppService {
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.registerManager( MapManager );
 		ManagerRegistry.registerManager( ElevationManager );
-		ManagerRegistry.setManager( 'object-listener', new ObjectEventListener( this.assetService ) );
 		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );
 
 		ManagerRegistry.initManagers();

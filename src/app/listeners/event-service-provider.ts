@@ -5,6 +5,7 @@ import { SplinePointListener } from './spline-point.listener';
 import { SplineEventListener } from './spline-event-listener';
 import { JunctionEventListener } from './junction-event.listener';
 import { LaneEventListener } from 'app/listeners/lane-event-listener';
+import { ObjectEventListener } from './object-event-listener';
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,6 +19,7 @@ export class EventServiceProvider {
 		private splineControlPointListener: SplinePointListener,
 		private junctionEventListener: JunctionEventListener,
 		private laneEventListener: LaneEventListener,
+		private assetEventListener: ObjectEventListener,
 	) {
 	}
 
@@ -29,6 +31,7 @@ export class EventServiceProvider {
 		this.splineControlPointListener.init();
 		this.junctionEventListener.init();
 		this.laneEventListener.init();
+		this.assetEventListener.init();
 
 	}
 

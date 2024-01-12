@@ -28,6 +28,7 @@ export class MapEvents {
 	@Output() static mapRemoved = new EventEmitter<TvMap>();
 
 	@Output() static assetSelected = new EventEmitter<AssetNode>();
+	@Output() static assetDragged = new EventEmitter<AssetNode>();
 
 	@Output() static objectSelected = new EventEmitter<Object>();
 	@Output() static objectUnselected = new EventEmitter<Object>();

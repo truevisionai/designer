@@ -248,6 +248,9 @@ export class AssetComponent implements OnInit {
 		$event.dataTransfer.setData( 'path', this.asset.path );
 
 		$event.dataTransfer.setData( 'guid', this.asset.guid );
+
+		MapEvents.assetDragged.emit( this.asset );
+
 	}
 
 	@HostListener( 'dragend', [ '$event' ] )

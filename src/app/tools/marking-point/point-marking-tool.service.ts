@@ -10,6 +10,7 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Object3DMap } from '../lane-width/object-3d-map';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { BoxSelectionService } from '../box-selection-service';
+import { AssetManager } from 'app/core/asset/asset.manager';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,7 +25,14 @@ export class PointMarkingToolService {
 		public roadObjectService: RoadObjectService,
 		private controlPointFactory: ControlPointFactory,
 		public boxSelectionService: BoxSelectionService,
+		public assetManager: AssetManager
 	) { }
+
+	getSelectedAsset (): AssetNode {
+
+		return this.assetManager.getTextureAsset() || this.assetManager.getMaterialAsset();
+
+	}
 
 	createPointMarking ( asset: AssetNode, position: Vector3 ): TvRoadObject {
 
