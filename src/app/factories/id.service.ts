@@ -59,6 +59,11 @@ export class IDService {
 
 		this.usedIDs.delete( id );
 
+		this.updateHighestID();
+
+		// If the ID is already in the sorted array, don't add it again
+		if ( this.removedIDs.includes( id ) ) return;
+
 		// Insert the removed ID into the sorted array in its correct position
 		const index = this.removedIDs.findIndex( removedId => removedId > id );
 
@@ -71,8 +76,6 @@ export class IDService {
 			this.removedIDs.splice( index, 0, id );
 
 		}
-
-		this.updateHighestID();
 
 	}
 

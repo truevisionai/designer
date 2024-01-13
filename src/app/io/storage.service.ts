@@ -34,10 +34,6 @@ export class StorageService {
 
 			this.storageProvider = new ElectronStorageProvider( fileService );
 
-		} else {
-
-			throw new Error( 'Method not implemented.' );
-
 		}
 
 	}
