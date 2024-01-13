@@ -8,13 +8,12 @@ import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
 import { TvLane } from '../../modules/tv-map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { LaneWidthService } from './lane-width.service';
+import { LaneWidthToolService } from './lane-width-tool.service';
 import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
 import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { MapEvents } from 'app/events/map-events';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugLine } from 'app/services/debug/debug-line';
 import { AddObjectCommand } from "../../commands/add-object-command";
@@ -34,7 +33,7 @@ export class LaneWidthTool extends BaseTool {
 
 	private debug = false;
 
-	constructor ( private laneWidthService: LaneWidthService ) {
+	constructor ( private laneWidthService: LaneWidthToolService ) {
 
 		super();
 
@@ -187,7 +186,6 @@ export class LaneWidthTool extends BaseTool {
 
 			this.laneWidthService.addNode( object );
 
-			this.laneWidthService.removeNode( object );
 		}
 
 	}
@@ -200,7 +198,6 @@ export class LaneWidthTool extends BaseTool {
 
 			this.laneWidthService.updateNode( object );
 
-			MapEvents.laneUpdated.emit( object.lane );
 		}
 
 	}
@@ -299,6 +296,14 @@ export class LaneWidthTool extends BaseTool {
 		AppInspector.clear();
 
 		this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
+
+	}
+
+	onDeleteKeyDown () {
+
+		if ( !this.selectedNode ) return;
+
+		this.executeRemoveObject( this.selectedNode );
 
 	}
 

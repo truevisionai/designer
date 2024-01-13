@@ -77,6 +77,18 @@ export class TvUtils {
 
 	static computeCoefficients ( sections: ThirdOrderPolynom[], sectionLength: number ): void {
 
+		if ( sections.length == 1 ) {
+
+			const current = sections[ 0 ];
+
+			current.a = current.a;
+			current.b = current.b;
+			current.c = 0;
+			current.d = 0;
+
+			return
+		}
+
 		// need at least 2 sections to compute coefficients
 		if ( sections.length < 2 ) return;
 

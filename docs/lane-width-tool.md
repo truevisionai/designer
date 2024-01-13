@@ -1,21 +1,55 @@
 # Lane Width Tool
 
-- [Overview](#overview)
-- [Create Width Node](#create-width-node)
+- [Lane Width Tool](#lane-width-tool)
+	- [Overview](#overview)
+	- [Tool Icon](#tool-icon)
+	- [Select Lane](#select-lane)
+	- [Inspector Window](#inspector-window)
+	- [Create Lane Width Node](#create-lane-width-node)
+	- [Adjust Lane Width Node](#adjust-lane-width-node)
+	- [Delete Lane Width Node](#delete-lane-width-node)
 
-
-<a name="overview"></a>
 ## Overview
 
-This tool helps you modify the width of a lane on the road. A single road lane can contain multiple nodes to control the width of the lane.
+The Lane Width Tool is used to adjust width at desireed location on road. 
 
-<a name="create-width-node"></a>
-## Create Width Node
+> Editing width of center lane is not supported through this tool 
 
-- Select Lane Width Tool from toolbar using `left click`
-- Select Road you want to modify using `left click`
-- Selecting/Unselecting a road will show/hide the existing lane width nodes
-- Take pointer over a lane and use `shift + left click` to create new node 
-- When the node is selected you will the node info in the inspector, modify the width value as desired
+## Tool Icon
 
-<img src="../../../img/docs/lane-width-create.png" width="100%">
+<img src="./img/lane_width_tool_icon.png" width="100" alt="Inspector Window">
+
+## Select Lane
+1. Select `Lane Width Tool` from `Toolbar`
+2. Press `Left Click` to select road which contains target lane
+3. Press `Left Click` to select target lane on selected road
+
+<img src="./img/lane_width_tool_node_selected.png" width="600" alt="Boundary Selected">
+
+## Inspector Window 
+
+> Inspector Window will show some properties when a node is selected 
+
+<img src="./img/lane_width_tool_node_inspector.png" width="300" alt="Inspector Window">
+
+## Create Lane Width Node
+1. Select `Lane Width Tool` icon from `Toolbar`
+2. Press `Left Click` to select road which contains target lane
+3. Press  `Left Click` to select target lane on selected road
+4. Press `Shift` + `Left Click` to create a new width node
+
+<img src="./img/lane_width_tool_node_created.png" width="600" alt="Node Created">
+
+## Adjust Lane Width Node
+1. Select `Lane Width Tool` icon from `Toolbar`
+2. Press `Left Click` to select road which contains target lane
+3. Press `Left Click` to select target lane on selected road
+4. Press `Left Click` to select the target width node
+5. Adjust `Width` value from `Inspector Window`
+
+## Delete Lane Width Node
+1. Select `Lane Width Tool` icon from `Toolbar`
+2. Press `Left Click` to select road which contains target lane
+3. Press `Left Click` to select target lane on selected road
+4. Press `Left Click` to select the target width node
+5. Press `Delete` key or Delete button in `Inspector Window` 

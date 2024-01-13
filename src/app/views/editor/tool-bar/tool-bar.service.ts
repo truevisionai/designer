@@ -28,7 +28,7 @@ import { PropPointService } from 'app/tools/prop-point/prop-point.service';
 import { RoadCircleToolService } from 'app/tools/road-circle/road-circle-tool.service';
 import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
-import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
+import { LaneWidthToolService } from 'app/tools/lane-width/lane-width-tool.service';
 import { LaneMarkingToolService } from 'app/tools/lane-marking/lane-marking-tool.service';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
@@ -68,7 +68,7 @@ export class ToolBarService {
 		private roadCircleService: RoadCircleToolService,
 		private roadElevationService: RoadElevationToolService,
 		private maneuverService: ManeuverService,
-		private laneWidthService: LaneWidthService,
+		private laneWidthService: LaneWidthToolService,
 		private laneMarkingService: LaneMarkingToolService,
 		private laneToolService: LaneToolService,
 		private crosswalkService: CrosswalkToolService,

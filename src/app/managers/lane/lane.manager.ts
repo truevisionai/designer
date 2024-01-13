@@ -19,7 +19,7 @@ export class LaneManager {
 
 	onLaneCreated ( lane: TvLane ) {
 
-		this.laneWidthManager.updateLaneWidth( lane.laneSection.road, lane.laneSection, lane );
+		this.laneWidthManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
 		this.laneHeightManager.updateLaneHeight( lane.laneSection.road, lane.laneSection, lane );
 
@@ -37,7 +37,7 @@ export class LaneManager {
 
 	onLaneUpdated ( lane: TvLane ) {
 
-		//
+		this.laneWidthManager.onLaneUpdated( lane.laneSection.road, lane.laneSection, lane );
 
 	}
 

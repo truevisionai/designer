@@ -1,14 +1,31 @@
 import { Injectable } from "@angular/core";
-import { TvLaneType } from "app/modules/tv-map/models/tv-common";
+import { TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
 import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvLaneSection } from "app/modules/tv-map/models/tv-lane-section";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { TvUtils } from "app/modules/tv-map/models/tv-utils";
 
+/**
+ * LaneWidthManager
+The width of the lane shall be defined for the full length of the lane section. This means that there must be a <width> element for @s="0".
+The center lane shall have no width, meaning that the <width> element shall not be used for the center lane.
+The width of a lane shall remain valid until a new <width> element is defined or the lane section ends.
+A new <width> element shall be defined when the variables of the polynomial function change.
+<width> elements shall not be used together with <border> elements in the same lane group.
+<width> elements shall be defined in ascending order according to the s-coordinate.
+Width (ds) shall be greater than or equal to zero.
+ */
+
 @Injectable( {
 	providedIn: 'root'
 } )
 export class LaneWidthManager {
+
+	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		this.validateLane( lane );
+
+	}
 
 	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
@@ -16,11 +33,13 @@ export class LaneWidthManager {
 
 		const targetWidth = this.getWidthByType( lane.type );
 
-		this.updateLaneWidth( road, laneSection, lane, targetWidth );
+		this.onLaneCreated( road, laneSection, lane, targetWidth );
 
 	}
 
-	updateLaneWidth ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
+	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
+
+		this.validateLane( lane );
 
 		this.syncWithPredecessor( road, laneSection, lane, targetWidth );
 
@@ -146,6 +165,62 @@ export class LaneWidthManager {
 			default: return 3.6;
 
 		}
+
+	}
+
+	private validateLane ( lane: TvLane ) {
+
+		this.ensureMinWidthRecord( lane );
+		this.ensureCorrectOrder( lane );
+		this.removeInvalidNodes( lane );
+	}
+
+	private ensureMinWidthRecord ( lane: TvLane ) {
+
+		if ( lane.side == TvLaneSide.CENTER ) {
+			lane.width.splice( 0, lane.width.length );
+			return;
+		}
+
+
+		if ( lane.width.length == 0 ) {
+
+			lane.addWidthRecord( 0, this.getWidthByType( lane.type ), 0, 0, 0 );
+
+		} else {
+
+			const firstWidth = lane.width[ 0 ];
+
+			if ( firstWidth.s != 0 ) {
+
+				lane.addWidthRecord( 0, firstWidth.a, firstWidth.b, firstWidth.c, firstWidth.d );
+
+			}
+
+		}
+
+	}
+
+	private removeInvalidNodes ( lane: TvLane ) {
+
+		for ( let i = 0; i < lane.width.length; i++ ) {
+
+			const width = lane.width[ i ];
+
+			// Remove nodes that are out of bounds
+			if ( width.s < 0 || width.s > lane.laneSection.length ) {
+
+				lane.width.splice( i, 1 );
+
+			}
+
+		}
+
+	}
+
+	private ensureCorrectOrder ( lane: TvLane ) {
+
+		lane.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
 	}
 }

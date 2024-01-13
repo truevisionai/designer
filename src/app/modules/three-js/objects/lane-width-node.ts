@@ -2,16 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferGeometry, Group, LineBasicMaterial, LineSegments, Vector3 } from 'three';
+import { BufferGeometry, Group, LineBasicMaterial, LineSegments, Vector2, Vector3 } from 'three';
 import { COLOR } from '../../../views/shared/utils/colors.service';
 import { TvLaneWidth } from '../../tv-map/models/tv-lane-width';
 import { TvMapQueries } from '../../tv-map/queries/tv-map-queries';
-import { INode, ISelectable } from './i-selectable';
+import { INode } from './i-selectable';
 import { AnyControlPoint } from "./any-control-point";
-import { SerializedField } from 'app/core/components/serialization';
+import { Action, SerializedField } from 'app/core/components/serialization';
 import { MapEvents } from 'app/events/map-events';
 import { IHasCopyUpdate } from 'app/commands/copy-position-command';
-import { RoadUpdatedEvent } from "../../../events/road/road-updated-event";
+import { CommandHistory } from 'app/services/command-history';
+import { RemoveObjectCommand } from 'app/commands/remove-object-command';
+import { DebugLine } from 'app/services/debug/debug-line';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 
 export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
@@ -19,7 +23,7 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 	public static readonly pointTag = 'width-point';
 	public static readonly lineTag = 'width-line';
 
-	public line: LineSegments;
+	public line: DebugLine<LaneWidthNode>;
 	public point: AnyControlPoint;
 	public isSelected: boolean = false;
 
@@ -46,8 +50,15 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
 	set s ( value: number ) {
 
+		if ( value < 0 ) {
+			console.warn( 'S cannot be negative' );
+			return;
+		}
+
 		this.laneWidth.s = value;
+
 		this.updateLaneWidthValues();
+
 		MapEvents.objectUpdated.emit( this );
 
 	}
@@ -58,9 +69,25 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 	}
 
 	set width ( value: number ) {
+
+		if ( value < 0 ) {
+			console.warn( 'Width cannot be negative' );
+			return;
+		}
+
 		this.laneWidth.a = value;
+
 		this.updateLaneWidthValues();
+
 		MapEvents.objectUpdated.emit( this );
+
+	}
+
+	@Action( { name: 'Delete' } )
+	delete ( value: number ) {
+
+		CommandHistory.execute( new RemoveObjectCommand( this ) );
+
 	}
 
 	constructor ( public laneWidth: TvLaneWidth ) {
@@ -145,11 +172,26 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 		this.point.tag = LaneWidthNode.pointTag;
 		this.add( this.point );
 
-		const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
-		this.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
+		// const lineGeometry = new BufferGeometry().setFromPoints( [ start, end ] );
+		const lineGeometry = new LineGeometry().setPositions( [ start, end ].flatMap( p => [ p.x, p.y, p.z ] ) );
+
+		const material = new LineMaterial( {
+			color: COLOR.CYAN,
+			linewidth: 4,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+		} );
+
+
+		// this.line = new LineSegments( lineGeometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
+		this.line = new DebugLine( this, lineGeometry, material );
 		this.line.name = 'lane-width-node';
 		this.line[ 'tag' ] = LaneWidthNode.lineTag;
-		this.line.renderOrder = 3;
-		this.add( this.line );
+		// this.line.renderOrder = 3;
+		// this.add( this.line );
+
+		this.add( new DebugLine( this, lineGeometry, material ) );
 	}
 }

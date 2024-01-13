@@ -13,17 +13,19 @@ export class DebugLine<T> extends Line2 implements INode {
 	private HOVERED_COLOR = COLOR.YELLOW;
 	private SELECTED_COLOR = COLOR.RED;
 
+	private originalWidth: number;
 
 	constructor ( public target: T, geometry: LineGeometry, material: LineMaterial ) {
 		super( geometry, material );
 		this.name = 'DebugLine';
 		this.renderOrder = 999;
+		this.originalWidth = material?.linewidth || 2;
 	}
 
 	onMouseOver () {
 
 		this.material.color = new Color( this.HOVERED_COLOR );
-		this.material.linewidth = 4;
+		this.material.linewidth = this.originalWidth * 2;
 		this.material.needsUpdate = true;
 
 	}
@@ -31,7 +33,7 @@ export class DebugLine<T> extends Line2 implements INode {
 	onMouseOut () {
 
 		this.material.color = new Color( this.DEFAULT_COLOR );
-		this.material.linewidth = 2;
+		this.material.linewidth = this.originalWidth;
 		this.material.needsUpdate = true;
 
 	}

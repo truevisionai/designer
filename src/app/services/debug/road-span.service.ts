@@ -4,14 +4,9 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { DebugLine } from './debug-line';
 import { DebugDrawService } from './debug-draw.service';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
-import { LaneWidthNode } from 'app/modules/three-js/objects/lane-width-node';
-import { LaneWidthService } from 'app/tools/lane-width/lane-width.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Vector2, Vector3 } from 'three';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 
 @Injectable( {
 	providedIn: 'root'

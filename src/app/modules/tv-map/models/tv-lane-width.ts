@@ -2,14 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneWidthNode } from '../../three-js/objects/lane-width-node';
 import { ThirdOrderPolynom } from './third-order-polynom';
 import { TvLane } from './tv-lane';
-import { TvRoad } from './tv-road.model';
 
 export class TvLaneWidth extends ThirdOrderPolynom {
-
-	public node?: LaneWidthNode;
 
 	public readonly lane: TvLane;
 
@@ -20,7 +16,6 @@ export class TvLaneWidth extends ThirdOrderPolynom {
 		this.lane = lane;
 
 	}
-
 
 	get laneId () {
 		return this.lane.id;
