@@ -4,6 +4,7 @@ import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { JunctionManager } from "./junction-manager";
 import { RoadSplineService } from "app/services/road/road-spline.service";
+import { JunctionService } from "app/services/junction/junction.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -12,7 +13,7 @@ export class IntersectionManager {
 
 	constructor (
 		private intersectionService: IntersectionService,
-		private junctionManager: JunctionManager,
+		private junctionService: JunctionService,
 		private roadSplineService: RoadSplineService,
 	) { }
 
@@ -36,11 +37,16 @@ export class IntersectionManager {
 				item.intersection
 			);
 
+			if ( !junction ) {
+				throw new Error( 'Could not create junction' );
+				return;
+			}
+
+			this.junctionService.addJunction( junction );
+
 			this.roadSplineService.rebuildSpline( item.spline );
 
 			this.roadSplineService.rebuildSpline( item.otherSpline );
-
-			this.junctionManager.addJunction( junction );
 
 		}
 
@@ -58,7 +64,7 @@ export class IntersectionManager {
 
 	removeJunction ( junction: TvJunction ) {
 
-		this.junctionManager.removeJunction( junction );
+		this.junctionService.removeJunction( junction );
 
 	}
 }

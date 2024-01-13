@@ -83,11 +83,13 @@ export class RoadEventListener {
 
 		// this.updateLinks( event.road );
 
-		this.mapService.map.gameObject.remove( event.road.gameObject );
+		// this.mapService.map.gameObject.remove( event.road.gameObject );
 
-		this.mapService.map.removeRoad( event.road );
+		// this.mapService.map.removeRoad( event.road );
 
-		this.roadFactory.idRemoved( event.road.id );
+		// this.roadFactory.idRemoved( event.road.id );
+
+		this.roadManager.removeRoad( event.road );
 
 	}
 

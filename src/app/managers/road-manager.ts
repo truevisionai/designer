@@ -18,7 +18,6 @@ export class RoadManager {
 		private mapService: MapService,
 		private linkService: RoadLinkService,
 		private roadFactory: RoadFactory,
-		private roadService: RoadService,
 		private roadObjectService: RoadObjectService,
 		private roadElevationManager: RoadElevationManager,
 		private laneManager: LaneManager,
@@ -26,8 +25,6 @@ export class RoadManager {
 	) { }
 
 	addRoad ( road: TvRoad ) {
-
-		this.roadService.addRoad( road );
 
 		for ( const laneSection of road.laneSections ) {
 			for ( const [ id, lane ] of laneSection.lanes ) {
@@ -47,7 +44,8 @@ export class RoadManager {
 
 		this.linkService.removeLinks( road );
 
-		this.mapService.map.removeSpline( road.spline );
+		// we only want to remove the segment not the whole spline
+		// this.mapService.map.removeSpline( road.spline );
 
 		this.roadFactory.idRemoved( road.id );
 
@@ -95,7 +93,7 @@ export class RoadManager {
 
 			if ( road.spline == successor.spline ) return;
 
-			this.roadService.rebuildRoad( successor );
+			this.roadBuilder.rebuildRoad( successor );
 
 		}
 
@@ -105,14 +103,14 @@ export class RoadManager {
 
 			if ( road.spline == predecessor.spline ) return;
 
-			this.roadService.rebuildRoad( predecessor );
+			this.roadBuilder.rebuildRoad( predecessor );
 
 		}
 	}
 
 	private buildRoad ( road: TvRoad ) {
 
-		this.roadService.rebuildRoad( road );
+		this.roadBuilder.rebuildRoad( road );
 
 		// or
 		return;

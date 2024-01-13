@@ -30,7 +30,7 @@ export class RoadRampService {
 		public roadSplineService: RoadSplineService,
 		private junctionConnection: JunctionConnectionService,
 		private laneLink: LaneLinkService,
-		private roadService: RoadService,
+		public roadService: RoadService,
 		private junctionService: JunctionService,
 		public mapService: MapService,
 	) { }

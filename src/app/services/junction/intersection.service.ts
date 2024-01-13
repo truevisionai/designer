@@ -445,14 +445,17 @@ export class IntersectionService {
 
 		if ( newRoad ) {
 
-			MapEvents.roadCreated.emit( new RoadCreatedEvent( newRoad ) );
-			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( coord.road ) );
+			// MapEvents.roadCreated.emit( new RoadCreatedEvent( newRoad ) );
+			// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( coord.road ) );
+			this.roadService.addRoad( newRoad );
+			this.roadService.updateRoad( coord.road );
 
 			return newRoad;
 
 		} else {
 
-			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( coord.road ) );
+			// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( coord.road ) );
+			this.roadService.updateRoad( coord.road );
 
 		}
 	}

@@ -33,18 +33,18 @@ describe( '4-way-junction tests', () => {
 			imports: [ HttpClientModule ],
 		} );
 
-		roadToolService = TestBed.inject( RoadToolService );
+		roadToolService = TestBed.get( RoadToolService );
 		roadService = roadToolService.roadService
 
-		mapService = TestBed.inject( MapService );
-		intersectionService = TestBed.inject( IntersectionService );
-		junctionService = TestBed.inject( JunctionService );
-		splineManager = TestBed.inject( SplineManager );
+		mapService = TestBed.get( MapService );
+		intersectionService = TestBed.get( IntersectionService );
+		junctionService = TestBed.get( JunctionService );
+		splineManager = TestBed.get( SplineManager );
 
-		let eventServiceProvider = TestBed.inject( EventServiceProvider );
+		let eventServiceProvider = TestBed.get( EventServiceProvider );
 		eventServiceProvider.init();
 
-		mapValidator = TestBed.inject( MapValidatorService );
+		mapValidator = TestBed.get( MapValidatorService );
 
 	} );
 
@@ -116,8 +116,8 @@ describe( '4-way-junction tests', () => {
 
 		expect( roadService.roads.length ).toBe( 4 );
 
-		// expect( junction ).toBeDefined();
-		// expect( junction.connections.size ).toBe( 2 );
+		expect( junction ).toBeDefined();
+		expect( junction.connections.size ).toBe( 2 );
 
 		// expect( junction.connections.get( 0 ) ).toBeDefined()
 		// expect( junction.connections.get( 0 ).incomingRoad ).toBe( roadA );
@@ -129,6 +129,7 @@ describe( '4-way-junction tests', () => {
 		// expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA );
 		// expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
 
+		expect( mapService.highestestRoadId ).toBe( 4 );
 		mapValidator.validateMap( mapService.map, true );
 
 	} )
@@ -235,6 +236,7 @@ describe( '4-way-junction tests', () => {
 		expect( junction.connections.get( 4 ).incomingRoad.id ).toBe( leftRoad.id );
 		expect( junction.connections.get( 4 ).outgoingRoad.id ).toBe( topRoad.id );
 
+		expect( mapService.highestestRoadId ).toBe( 16 );
 		mapValidator.validateMap( mapService.map, true );
 
 	} );
@@ -336,6 +338,7 @@ describe( '4-way-junction tests', () => {
 		expect( joiningRoad.successor.elementId ).toBe( junction.id );
 		expect( joiningRoad.successor.contactPoint ).toBeUndefined();
 
+		expect( mapService.highestestRoadId ).toBe( 18 );
 		mapValidator.validateMap( mapService.map, true );
 
 	} );
@@ -547,6 +550,7 @@ describe( '4-way-junction tests', () => {
 		expect( roadService.junctionRoads.length ).toBe( 24 );					// 12 for each
 		expect( roadService.nonJunctionRoads.length ).toBe( 7 );
 
+		expect( mapService.highestestRoadId ).toBe( 31 );
 		mapValidator.validateMap( mapService.map, true );
 
 	} );
@@ -632,10 +636,12 @@ describe( '4-way-junction tests', () => {
 		const verticalLeft = baseTest.createDefaultRoad( roadService, [ new Vector2( -50, -100 ), new Vector2( -50, 100 ) ] );
 
 		splineManager.updateSpline( verticalLeft.spline );
+		expect( mapService.highestestRoadId ).toBe( 31 );
 		expectValidJunction();
 
 		verticalLeft.spline.controlPoints.forEach( point => point.position.x += 1 );
 		splineManager.updateSpline( verticalLeft.spline );
+		expect( mapService.highestestRoadId ).toBe( 31 );
 		expectValidJunction();
 
 	} )
@@ -661,7 +667,7 @@ describe( '4-way-junction tests', () => {
 		expect( horizontal.predecessor ).toBeUndefined();
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
-		expect( vertical.spline.getSplineSegments().length ).toBe( 1 );
+		expect( vertical.spline.getSplineSegments().length ).toBe( 0 );
 
 		mapValidator.validateMap( mapService.map, true );
 

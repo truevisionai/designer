@@ -16,15 +16,11 @@ import { Maths } from 'app/utils/maths';
 import { TravelDirection, TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
 import { Injectable } from '@angular/core';
-import { RoadLinkService } from '../../services/road/road-link.service';
-import { MapService } from '../../services/map.service';
-import { MapEvents } from 'app/events/map-events';
-import { RoadCreatedEvent } from "../../events/road/road-created-event";
-import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 import { RoadDebugService } from '../../services/debug/road-debug.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
 import { ViewControllerService } from 'app/modules/three-js/view-controller.service';
+import { RoadService } from 'app/services/road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -42,8 +38,7 @@ export class RoadCircleToolService {
 	private radius: number;
 
 	constructor (
-		private roadLinkService: RoadLinkService,
-		private mapService: MapService,
+		private roadService: RoadService,
 		private roadDebug: RoadDebugService,
 		private roadFactory: RoadFactory,
 		private debugTextService: DebugTextService,
@@ -65,7 +60,7 @@ export class RoadCircleToolService {
 
 		this.showRoadNodes( road );
 
-		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
+		this.roadService.addRoad( road );
 
 	}
 
@@ -73,7 +68,7 @@ export class RoadCircleToolService {
 
 		this.hideRoadNodes( road );
 
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
+		this.roadService.removeRoad( road );
 
 	}
 
@@ -194,8 +189,6 @@ export class RoadCircleToolService {
 				}
 
 			}
-
-			this.mapService.map.addRoad( road );
 
 			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 

@@ -17,6 +17,10 @@ import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { GameObject } from 'app/core/game-object';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
+import { MapEvents } from 'app/events/map-events';
+import { RoadCreatedEvent } from 'app/events/road/road-created-event';
+import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
+import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
 
 @Injectable( {
 	providedIn: 'root'
@@ -260,17 +264,42 @@ export class RoadService {
 
 		this.mapService.map.addSpline( road.spline );
 
+		this.updateRoadGeometries( road );
+
 		if ( road.gameObject ) {
 			this.mapService.map.gameObject.add( road.gameObject );
 		}
 
+		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
 	}
 
-	removeRoad ( road: TvRoad, hideHelpers: boolean = true ) {
+	updateRoad ( road: TvRoad ) {
 
-		if ( hideHelpers ) this.roadSplineService.spline.hideLines( road.spline );
+		this.updateRoadGeometries( road );
 
-		if ( hideHelpers ) this.roadSplineService.spline.hideControlPoints( road.spline );
+		// this.mapService.map.updateRoad( road );
+
+		// this.mapService.map.updateSpline( road.spline );
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+
+	}
+
+	private updateRoadGeometries ( road: TvRoad ) {
+
+		const segment = road.spline.findSegment( road );
+
+		if ( !segment ) return;
+
+		road.clearGeometries();
+
+		if ( segment.geometries.length == 0 ) return;
+
+		segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+	}
+
+	removeRoad ( road: TvRoad ) {
 
 		if ( road.isJunction ) {
 
@@ -286,15 +315,16 @@ export class RoadService {
 
 		} );
 
-		// this.hideRoadNodes( road );
-
-		this.roadSplineService.removeRoadSegment( road );
+		// this.roadSplineService.removeRoadSegment( road );
 
 		this.roadSplineService.rebuildSpline( road.spline );
 
 		this.mapService.map.gameObject.remove( road.gameObject );
 
 		this.roadFactory.idRemoved( road.id );
+
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
+
 	}
 
 	duplicateRoad ( road: TvRoad ) {

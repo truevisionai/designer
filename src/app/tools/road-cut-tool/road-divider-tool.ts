@@ -120,7 +120,7 @@ export class RoadDividerTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			MapEvents.roadCreated.emit( new RoadCreatedEvent( object, false ) );
+			this.tool.roadService.addRoad( object );
 
 		}
 
@@ -133,7 +133,7 @@ export class RoadDividerTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			MapEvents.roadRemoved.emit( new RoadRemovedEvent( object ) );
+			this.tool.roadService.removeRoad( object );
 
 		}
 

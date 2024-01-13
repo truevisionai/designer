@@ -50,6 +50,12 @@ export class MapService {
 			.filter( ( spline, index, self ) => self.indexOf( spline ) === index );
 	}
 
+	get highestestRoadId (): number {
+		return this.roads.reduce( ( highest: TvRoad, road: TvRoad ) => {
+			return road.id > highest.id ? road : highest;
+		} )?.id;
+	}
+
 	getRoad ( id: number ) {
 		return this.map.getRoadById( id );
 	}

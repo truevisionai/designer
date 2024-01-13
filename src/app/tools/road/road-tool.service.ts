@@ -165,9 +165,9 @@ export class RoadToolService {
 
 	}
 
-	removeRoad ( road: TvRoad, hideHelpers: boolean ) {
+	removeRoad ( road: TvRoad ) {
 
-		this.roadService.removeRoad( road, hideHelpers );
+		this.roadService.removeRoad( road );
 
 	}
 

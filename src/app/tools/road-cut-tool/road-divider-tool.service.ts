@@ -16,6 +16,7 @@ export class RoadDividerToolService {
 		public base: BaseToolService,
 		public debugService: DebugDrawService,
 		public roadDebug: RoadDebugService,
+		public roadService: RoadService,
 	) { }
 
 }

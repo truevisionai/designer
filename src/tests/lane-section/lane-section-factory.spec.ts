@@ -6,7 +6,7 @@ import { RoadService } from "app/services/road/road.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2 } from "three";
 
-fdescribe( 'LaneSectionFactory: tests', () => {
+describe( 'LaneSectionFactory: tests', () => {
 
 	let base: BaseTest = new BaseTest;
 	let factory: LaneSectionFactory;

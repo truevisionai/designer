@@ -146,13 +146,13 @@ export class RoadRampTool extends BaseTool {
 
 		} else if ( object instanceof TvRoad ) {
 
-			this.tool.mapService.map.addRoad( object );
+			// this.tool.addRoad( object );
 
 			// this.tool.roadSplineService.addRoadSegment( object );
 
 			// this.tool.roadSplineService.rebuildSplineRoads( object.spline );
 
-			MapEvents.roadCreated.emit( new RoadCreatedEvent( object ) );
+			// MapEvents.roadCreated.emit( new RoadCreatedEvent( object ) );
 
 		}
 
@@ -166,9 +166,7 @@ export class RoadRampTool extends BaseTool {
 
 		} else if ( object instanceof TvRoad ) {
 
-			this.tool.mapService.map.removeRoad( object );
-
-			MapEvents.roadRemoved.emit( new RoadRemovedEvent( object ) );
+			this.tool.roadService.removeRoad( object );
 
 		}
 

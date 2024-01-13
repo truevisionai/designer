@@ -2,11 +2,10 @@ import { Injectable } from "@angular/core";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { JunctionService } from "app/services/junction/junction.service";
 import { MapService } from "app/services/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadSplineService } from "app/services/road/road-spline.service";
-import { RoadManager } from "./road-manager";
+import { RoadService } from "app/services/road/road.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -14,25 +13,21 @@ import { RoadManager } from "./road-manager";
 export class JunctionManager {
 
 	constructor (
-		private junctionService: JunctionService,
-		private mapService: MapService,
 		private roadSplineService: RoadSplineService,
 		private roadLinkService: RoadLinkService,
+		private roadService: RoadService,
+		private mapService: MapService,
 		private roadFactory: RoadFactory,
-		private roadManager: RoadManager,
 	) {
 	}
 
 	addJunction ( junction: TvJunction ) {
 
-		this.junctionService.addJunction( junction );
-
 		const connections = junction.getConnections();
 
 		for ( const connection of connections ) {
 
-			this.roadManager.addRoad( connection.connectingRoad );
-
+			this.roadService.addRoad( connection.connectingRoad );
 
 		}
 
@@ -40,17 +35,15 @@ export class JunctionManager {
 
 	removeJunction ( junction: TvJunction ) {
 
+		this.removeJunctionNextSegment( junction );
+
 		const connections = junction.getConnections();
 
 		for ( const connection of connections ) {
 
-			this.roadManager.removeRoad( connection.connectingRoad );
+			this.roadService.removeRoad( connection.connectingRoad );
 
 		}
-
-		this.removeJunctionNextSegment( junction );
-
-		this.junctionService.removeJunction( junction );
 
 	}
 
@@ -70,13 +63,15 @@ export class JunctionManager {
 
 				const nextRoad = nextSegment.getInstance<TvRoad>();
 
-				this.mapService.map.removeRoad( nextRoad );
+				this.roadService.removeRoad( nextRoad );
 
-				this.mapService.map.gameObject.remove( nextRoad.gameObject );
+				// this.mapService.map.removeRoad( nextRoad );
+
+				// this.mapService.map.gameObject.remove( nextRoad.gameObject );
 
 				this.roadFactory.idRemoved( nextRoad.id );
 
-				spline.removeSegment( nextRoad );
+				// spline.removeSegment( nextRoad );
 
 				this.roadLinkService.updateSuccessorRelation( nextRoad, previousSegment, nextRoad.successor );
 

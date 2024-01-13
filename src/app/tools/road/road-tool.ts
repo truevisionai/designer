@@ -144,7 +144,7 @@ export class RoadTool extends BaseTool {
 
 		const newValue = roadStyle.clone( null );
 
-		CommandHistory.execute( new SetValueCommand( road, 'roadStyle', newValue, oldValue) );
+		CommandHistory.execute( new SetValueCommand( road, 'roadStyle', newValue, oldValue ) );
 
 	}
 
@@ -456,7 +456,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadUpdated ( road: TvRoad ) {
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+		this.tool.roadService.updateRoad( road );
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
@@ -466,9 +466,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadRemoved ( road: TvRoad ) {
 
-		this.tool.removeRoad( road, true );
-
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
+		this.tool.removeRoad( road );
 
 	}
 
@@ -484,7 +482,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadAdded ( road: TvRoad ): void {
 
-		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
+		this.tool.roadService.addRoad( road );
 
 	}
 

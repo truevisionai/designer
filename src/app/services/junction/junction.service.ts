@@ -19,6 +19,8 @@ import { RoadService } from '../road/road.service';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
+import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
+import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 
 @Injectable( {
 	providedIn: 'root'
@@ -71,6 +73,8 @@ export class JunctionService {
 
 		this.mapService.map.addJunctionInstance( junction );
 
+		MapEvents.junctionCreated.emit( new JunctionCreatedEvent( junction ) );
+
 	}
 
 	updateJunction ( junction: TvJunction ) {
@@ -86,6 +90,8 @@ export class JunctionService {
 		this.removeJunctionMesh( junction );
 
 		this.factory.IDService.remove( junction.id );
+
+		MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction ) );
 
 	}
 

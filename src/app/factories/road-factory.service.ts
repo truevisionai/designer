@@ -23,23 +23,25 @@ import { LaneSectionFactory } from './lane-section.factory';
 } )
 export class RoadFactory {
 
-	private IDService = new IDService();
+	private idService: IDService;
 
 	constructor ( private laneSectionFactory: LaneSectionFactory ) {
 
-		MapEvents.mapRemoved.subscribe( () => this.IDService.reset() );
+		this.idService = new IDService();
+
+		MapEvents.mapRemoved.subscribe( () => this.idService.reset() );
 
 	}
 
 	getNextRoadId ( id?: number ) {
 
-		return this.IDService.getNextId( id );
+		return this.idService.getNextId( id );
 
 	}
 
 	idRemoved ( id: number ) {
 
-		this.IDService.remove( id );
+		this.idService.remove( id );
 
 	}
 
@@ -249,7 +251,7 @@ export class RoadFactory {
 
 	createNewRoad ( name?: string, length?: number, id?: number, junction?: TvJunction ): TvRoad {
 
-		const roadId = this.IDService.getNextId( id );
+		const roadId = this.idService.getNextId( id );
 
 		const roadName = name || `Road${ roadId }`;
 

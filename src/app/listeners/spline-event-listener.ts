@@ -324,25 +324,25 @@ export class SplineEventListener {
 		// }
 	}
 
-	private updateSegments ( spline: AbstractSpline ) {
+	// private updateSegments ( spline: AbstractSpline ) {
 
-		const segments = spline.getSplineSegments();
+	// 	const segments = spline.getSplineSegments();
 
-		for ( let i = 0; i < segments.length; i++ ) {
+	// 	for ( let i = 0; i < segments.length; i++ ) {
 
-			const segment = segments[ i ];
+	// 		const segment = segments[ i ];
 
-			if ( segment.isRoad ) {
+	// 		if ( segment.isRoad ) {
 
-				const road = segment.getInstance<TvRoad>();
+	// 			const road = segment.getInstance<TvRoad>();
 
-				MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+	// 			// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
-			}
+	// 		}
 
-		}
+	// 	}
 
-	}
+	// }
 
 	// private removeSegments ( spline: AbstractSpline ) {
 

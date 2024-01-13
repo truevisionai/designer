@@ -27,6 +27,8 @@ export class RoadDividerService {
 
 		this.roadSplineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
 
+		this.roadSplineService.rebuildSpline( road.spline );
+
 		return newRoad
 
 	}
@@ -59,6 +61,8 @@ export class RoadDividerService {
 			road.successor = null;
 
 		}
+
+		this.roadSplineService.rebuildSpline( road.spline );
 
 		newRoad.predecessor = null;
 

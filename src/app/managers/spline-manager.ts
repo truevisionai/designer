@@ -10,6 +10,7 @@ import { RoadService } from "app/services/road/road.service";
 import { IntersectionManager } from "./intersection-manager";
 import { Box3 } from "three";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
+import { JunctionService } from "app/services/junction/junction.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,10 +20,10 @@ export class SplineManager {
 	constructor (
 		private mapService: MapService,
 		private roadManager: RoadManager,
-		private junctionManager: JunctionManager,
 		private roadSplineService: RoadSplineService,
 		private roadService: RoadService,
 		private intersectionManager: IntersectionManager,
+		private junctionService: JunctionService,
 	) { }
 
 	createSpline ( spline: AbstractSpline ) {
@@ -59,19 +60,19 @@ export class SplineManager {
 
 	removeSpline ( spline: AbstractSpline ) {
 
-		const roads = spline.getRoads();
-
-		for ( const road of roads ) {
-
-			this.roadManager.removeRoad( road );
-
-		}
-
 		const junctions = spline.getJunctions();
 
 		for ( const junction of junctions ) {
 
-			this.junctionManager.removeJunction( junction );
+			this.junctionService.removeJunction( junction );
+
+		}
+
+		const roads = spline.getRoads();
+
+		for ( const road of roads ) {
+
+			this.roadService.removeRoad( road );
 
 		}
 
@@ -83,7 +84,7 @@ export class SplineManager {
 
 				const road = segment.getInstance<TvRoad>();
 
-				this.roadManager.removeRoad( road );
+				this.roadService.removeRoad( road );
 
 			} else if ( segment.isJunction ) {
 
@@ -248,7 +249,7 @@ export class SplineManager {
 
 			spline.addRoadSegment( 0, road );
 
-			this.roadManager.addRoad( road );
+			this.roadService.addRoad( road );
 		}
 	}
 

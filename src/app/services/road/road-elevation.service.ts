@@ -6,13 +6,16 @@ import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { Vector3 } from 'three';
+import { RoadService } from './road.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadElevationService {
 
-	constructor () { }
+	constructor (
+		private roadService: RoadService
+	) { }
 
 	createElevation ( road: TvRoad, point: Vector3 ) {
 
@@ -37,7 +40,7 @@ export class RoadElevationService {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+		this.roadService.updateRoad( road );
 
 	}
 
@@ -47,7 +50,7 @@ export class RoadElevationService {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+		this.roadService.updateRoad( road );
 
 	}
 
@@ -55,7 +58,7 @@ export class RoadElevationService {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
+		this.roadService.updateRoad( road );
 
 	}
 
