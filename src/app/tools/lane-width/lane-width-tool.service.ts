@@ -16,6 +16,7 @@ import { Object3DMap } from './object-3d-map';
 import { BaseService } from 'app/services/base.service';
 import { LaneWidthService } from './lane-width.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
+import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 
 @Injectable( {
 	providedIn: 'root'
@@ -174,6 +175,8 @@ export class LaneWidthToolService {
 		road.laneSections.forEach( laneSection => {
 
 			laneSection.lanes.forEach( lane => {
+
+				if ( lane.side == TvLaneSide.CENTER ) return;
 
 				for ( let i = 0; i < lane.width.length; i++ ) {
 
