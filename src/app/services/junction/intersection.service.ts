@@ -492,7 +492,7 @@ export class IntersectionService {
 
 		const [ coordC, coordD ] = this.createNewSegments( junction, coordA, coordB );
 
-		this.internal_addConnections( junction, coordA, coordB, coordC.road, coordD.road );
+		this.internal_addConnections( junction, coordA, coordB, coordC?.road, coordD?.road );
 
 		// this.postProcessJunction( junction );
 

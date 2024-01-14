@@ -7,9 +7,12 @@ import { RoadSplineService } from '../road/road-spline.service';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { RoadService } from '../road/road.service';
-import { LaneLinkService } from './lane-link.service';
 import { TrafficRule } from 'app/modules/tv-map/models/traffic-rule';
 import { MapService } from '../map.service';
+import { ConnectionManager } from 'app/managers/connection.manager';
+import { JunctionConnectionFactory } from 'app/factories/junction-connection.factory';
+import { LaneSectionFactory } from 'app/factories/lane-section.factory';
+import { LaneLinkService } from './lane-link.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,8 +22,11 @@ export class JunctionConnectionService {
 	constructor (
 		private roadService: RoadService,
 		private roadSplineService: RoadSplineService,
-		private linkService: LaneLinkService,
-		private mapService: MapService
+		private mapService: MapService,
+		private connectionManager: ConnectionManager,
+		private coonectionFactory: JunctionConnectionFactory,
+		private laneSectionFactory: LaneSectionFactory,
+		private linkService: LaneLinkService
 	) {
 	}
 
@@ -156,7 +162,37 @@ export class JunctionConnectionService {
 		return connection;
 	}
 
-	postProcessConnection ( connection: TvJunctionConnection ): TvJunctionConnection {
+	createConnectionsForLanes ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvJunctionConnection[] {
+
+		if ( incoming.road.trafficRule == TrafficRule.LHT ) {
+			throw new Error( 'Traffic rule not implemented' );
+		}
+
+		const leftconnections = this.coonectionFactory.createConnections( junction, incoming, outgoing );
+
+		for ( const connection of leftconnections ) {
+
+			this.roadService.addRoad( connection.connectingRoad );
+
+			this.roadSplineService.rebuildSpline( connection.connectingRoad.spline );
+
+		}
+
+		const rigtConnections = this.coonectionFactory.createConnections( junction, outgoing, incoming );
+
+		for ( const connection of rigtConnections ) {
+
+			this.roadService.addRoad( connection.connectingRoad );
+
+			this.roadSplineService.rebuildSpline( connection.connectingRoad.spline );
+
+		}
+
+		return leftconnections.concat( ...rigtConnections );
+
+	}
+
+	postProcessConnection ( junction: TvJunction, connection: TvJunctionConnection, isRight?: boolean ): TvJunctionConnection {
 
 		this.linkService.createNonDrivingLinks( connection );
 

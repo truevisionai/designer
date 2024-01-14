@@ -443,7 +443,7 @@ describe( '4-way-junction tests', () => {
 
 		junction.addConnection( connection );
 
-		junctionConnectionService.postProcessConnection( connection );
+		junctionConnectionService.postProcessConnection( junction, connection );
 
 		expect( connection.laneLink.length ).toBe( 3 );
 
@@ -743,6 +743,36 @@ describe( '4-way-junction tests', () => {
 		expect( vertical.spline.getSplineSegments().length ).toBe( 3 );
 
 		mapValidator.validateMap( mapService.map, true );
+	} );
+
+
+	it( 'should create t-junction between one side lane road', () => {
+
+		// 3 lane on each side
+		const horizontal = baseTest.createDefaultRoad( roadService, [
+			new Vector2( -100, 0 ),
+			new Vector2( 100, 0 )
+		] );
+
+		// 1 lane on each side
+		const vertical = baseTest.createRoad( roadService, [
+			new Vector2( 0, -100 ),
+			new Vector2( 0, 0 )
+		], 1, 1 );
+
+		splineManager.updateSpline( vertical.spline );
+
+		expect( mapService.junctions.length ).toBe( 1 );
+
+		const junction = mapService.getJunction( 1 );
+
+		expect( junction ).toBeDefined();
+		expect( junction.connections.size ).toBe( 6 );
+		expect( roadService.roads.length ).toBe( 9 );
+		expect( roadService.junctionRoads.length ).toBe( 6 );
+		expect( junctionService.junctions.length ).toBe( 1 );
+
+
 	} );
 
 } );
