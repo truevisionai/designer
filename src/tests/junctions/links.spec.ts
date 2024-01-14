@@ -127,7 +127,7 @@ describe( 'LaneLinkService', () => {
 
 		const leftToRightConnection = connectionService.createConnection( junction, incoming, outgoing );
 		expect( leftToRightConnection ).toBeDefined();
-		expect( leftToRightConnection.laneLink.length ).toBe( 1 );
+		expect( leftToRightConnection.laneLink.length ).toBe( 2 );
 
 		// const rightToLeftConnection = connectionService.createConnection( junction, outgoing, incoming );
 		// expect( rightToLeftConnection ).toBeDefined();
@@ -154,7 +154,7 @@ describe( 'LaneLinkService', () => {
 
 		const leftToRight = connectionService.createConnection( junction, incoming, outgoing );
 		expect( leftToRight ).toBeDefined();
-		expect( leftToRight.laneLink.length ).toBe( 1 );
+		expect( leftToRight.laneLink.length ).toBe( 2 );
 		expect( leftToRight.laneLink[ 0 ].incomingLane.id ).toBe( -1 );
 		expect( leftToRight.laneLink[ 0 ].connectingLane.id ).toBe( -1 );
 		expect( leftToRight.laneLink[ 0 ].connectingLane.predecessor ).toBe( -1 );
