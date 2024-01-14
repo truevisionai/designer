@@ -4,7 +4,7 @@ import { RoadFactory } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { RoadNode } from "app/modules/three-js/objects/road-node";
-import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
+import { TvContactPoint, TvLaneType } from "app/modules/tv-map/models/tv-common";
 import { RoadToolService } from "app/tools/road/road-tool.service";
 
 export class BaseTest {
@@ -59,6 +59,28 @@ export class BaseTest {
 	createDefaultRoad ( roadService: RoadService, points: Vector2[] ) {
 
 		const road = this.makeDefaultRoad( roadService.getRoadFactory(), points );
+
+		roadService.addRoad( road );
+
+		return road;
+
+	}
+
+	createOneWayRoad ( roadService: RoadService, points: Vector2[] ) {
+
+		const road = this.createRoad( roadService, points, 1, 2 );
+
+		// --------------------------------
+		// 1 - sidewalk on left
+		// -------------------------------->
+		// -1 - driving road
+		// --------------------------------
+		// -2 - sidewalk on right
+		// --------------------------------
+
+		road.laneSections[ 0 ].lanes.get( 1 ).setType( TvLaneType.sidewalk );
+		road.laneSections[ 0 ].lanes.get( -1 ).setType( TvLaneType.driving );
+		road.laneSections[ 0 ].lanes.get( -2 ).setType( TvLaneType.sidewalk );
 
 		roadService.addRoad( road );
 

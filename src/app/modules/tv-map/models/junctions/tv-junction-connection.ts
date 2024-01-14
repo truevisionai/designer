@@ -35,10 +35,19 @@ The @connectingRoad attribute shall not be used for junctions with @type="direct
 **/
 export class TvJunctionConnection {
 
-	private static counter = 1;
 	public readonly uuid: string;
+
 	public laneLink: TvJunctionLaneLink[] = [];
+
+	/**
+	 * user internally to identity which connections are corner
+	 * connections where we can possibly add sidewalks and
+	 * non-driving lanes
+	 */
+	public isCornerConnection: boolean;
+
 	private lastAddedJunctionLaneLinkIndex: number;
+
 	private _outgoingRoad: TvRoad;
 
 	/**
@@ -334,6 +343,12 @@ export class TvJunctionConnection {
 	getOutgoingLanes (): TvLane[] {
 
 		return this.outgoingRoad.getFirstLaneSection().getLaneArray();
+
+	}
+
+	markAsCornerConnection () {
+
+		this.isCornerConnection = true;
 
 	}
 

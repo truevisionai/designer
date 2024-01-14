@@ -237,8 +237,6 @@ export class IntersectionService {
 
 		}
 
-		const rightConnections: TvJunctionConnection[] = [];
-
 		for ( let i = 0; i < roads.length; i++ ) {
 
 			const road = roads[ i ];
@@ -247,7 +245,11 @@ export class IntersectionService {
 
 			if ( nearestConnection ) {
 
-				rightConnections.push( nearestConnection );
+				nearestConnection.connectingRoad.markAsCornerRoad();
+
+				nearestConnection.markAsCornerConnection();
+
+				// console.log( 'corner', nearestConnection, nearestConnection.connectingRoad );
 
 			}
 
@@ -257,16 +259,7 @@ export class IntersectionService {
 
 			const connection = connections[ i ];
 
-			if ( rightConnections.includes( connection ) ) {
-
-				this.junctionConnectionService.postProcessConnection( junction, connection, true );
-
-			} else {
-
-				this.junctionConnectionService.postProcessConnection( junction, connection, false );
-
-			}
-
+			this.junctionConnectionService.postProcessConnection( junction, connection, connection.isCornerConnection );
 
 		}
 

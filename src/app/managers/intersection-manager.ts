@@ -43,6 +43,8 @@ export class IntersectionManager {
 				return;
 			}
 
+			this.intersectionService.postProcessJunction( junction );
+
 			this.junctionService.addJunction( junction );
 
 			this.roadSplineService.rebuildSpline( item.spline );
@@ -94,7 +96,7 @@ export class IntersectionManager {
 
 		}
 
-		// this.intersection.postProcessJunction( junction );
+		this.intersectionService.postProcessJunction( junction );
 
 		return junction;
 	}

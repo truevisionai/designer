@@ -13,6 +13,7 @@ import { ConnectionManager } from 'app/managers/connection.manager';
 import { JunctionConnectionFactory } from 'app/factories/junction-connection.factory';
 import { LaneSectionFactory } from 'app/factories/lane-section.factory';
 import { LaneLinkService } from './lane-link.service';
+import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -192,11 +193,63 @@ export class JunctionConnectionService {
 
 	}
 
-	postProcessConnection ( junction: TvJunction, connection: TvJunctionConnection, isRight?: boolean ): TvJunctionConnection {
+	postProcessConnection ( junction: TvJunction, connection: TvJunctionConnection, isCorner: boolean = false ): TvJunctionConnection {
 
-		this.linkService.createNonDrivingLinks( connection );
+		const connectingRoad = connection.connectingRoad;
+		// const incomingRoad = connection.incomingRoad;
+		// const outgoingRoad = connection.outgoingRoad;
 
-		this.linkService.addRoadMarks( connection );
+		if ( isCorner ) {
+
+			this.linkService.createNonDrivingLinks( connection );
+
+			this.linkService.addRoadMarks( connection );
+
+			// add missing lanes if any
+			if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
+
+				const lanes = connection.connectingLaneSection.getLaneArray();
+
+				for ( let i = 0; i < lanes.length; i++ ) {
+
+					const lane = lanes[ i ];
+
+					if ( lane.id != -i ) {
+
+						const newLane = connection.connectingLaneSection.addLane( TvLaneSide.RIGHT, -i, TvLaneType.none, false, true );
+
+						const incoming = connection.getIncomingPosition();
+						const laneSection = connection.getIncomingLaneSection();
+						const incomingLane = laneSection.getLaneById( -i );
+
+						if ( !incomingLane ) {
+							console.error( "incoming lane not found" );
+							continue;
+						}
+
+						// NOTE: THIS CAN probably be added in road event listener also
+						const widhtAtStart = incomingLane.getWidthValue( incoming.s );
+						// const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
+						// connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
+						// connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
+						// TvUtils.computeCoefficients( connectionLane.width, roadLength );
+
+						newLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
+						newLane.addWidthRecord( connectingRoad.length, 0, 0, 0, 0 );
+
+						TvUtils.computeCoefficients( newLane.width, connectingRoad.length );
+
+					}
+
+				}
+
+			}
+
+			if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
+				console.error( "lanes are not orderd." + connection.connectingLaneSection.getLaneArray().map( i => i.id ) );
+			}
+
+		}
 
 		return connection;
 	}

@@ -96,6 +96,8 @@ export class TvRoad {
 
 	private _predecessor: TvRoadLinkChild;
 
+	public cornerRoad: boolean = false;
+
 	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
 
 		this.uuid = MathUtils.generateUUID();
@@ -1423,6 +1425,13 @@ export class TvRoad {
 		return predecessorRoad.getLaneSectionAt( this.predecessor.contactPoint === TvContactPoint.START ? 0 : predecessorRoad.length );
 
 	}
+
+	markAsCornerRoad () {
+
+		this.cornerRoad = true;
+
+	}
+
 
 	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 

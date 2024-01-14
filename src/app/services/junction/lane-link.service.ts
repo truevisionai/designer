@@ -5,6 +5,7 @@ import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junct
 import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 
 @Injectable( {
@@ -20,12 +21,12 @@ export class LaneLinkService {
 		const outgoingDirection = this.determineOutgoingDirection( incoming, outgoing );
 
 		const incomingLaneCoords = incoming.laneSection.getLaneArray()
-			.filter( lane => lane.type == TvLaneType.driving )
+			.filter( lane => lane.type == TvLaneType.driving || lane.type == TvLaneType.shoulder )
 			.filter( lane => lane.direction === incomingDirection )
 			.map( lane => incoming.toLaneCoord( lane ) );
 
 		const outgoingLaneCoords = outgoing.laneSection.getLaneArray()
-			.filter( lane => lane.type == TvLaneType.driving )
+			.filter( lane => lane.type == TvLaneType.driving || lane.type == TvLaneType.shoulder )
 			.filter( lane => lane.direction === outgoingDirection )
 			.map( lane => outgoing.toLaneCoord( lane ) );
 
@@ -68,16 +69,35 @@ export class LaneLinkService {
 		const outgoingContact = connection.connectingRoad.successor.contactPoint;
 
 		const incomingDirection = this.determineDirection( incomingContact );
-		const outgoingDirection = this.determineDirection( outgoingContact );
+		let outgoingDirection = TravelDirection.forward;
+
+		if ( incomingContact != outgoingContact ) {
+
+			outgoingDirection = incomingDirection;
+
+		} else {
+
+			if ( incomingDirection === TravelDirection.forward ) {
+
+
+				outgoingDirection = TravelDirection.backward;
+
+			} else {
+
+				outgoingDirection = TravelDirection.forward;
+
+			}
+
+		}
 
 		const incomingCoords = connection.getIncomingLanes()
 			.filter( lane => lane.type != TvLaneType.driving )
-			.filter( lane => lane.direction === outgoingDirection )
+			.filter( lane => lane.direction === incomingDirection )
 			.map( lane => new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, computeS( lane, incomingContact ), 0 ) );
 
 		const outgoingCoords = connection.getOutgoingLanes()
 			.filter( lane => lane.type != TvLaneType.driving )
-			.filter( lane => lane.direction === incomingDirection )
+			.filter( lane => lane.direction === outgoingDirection )
 			.map( lane => new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, computeS( lane, outgoingContact ), 0 ) );
 
 		for ( let i = 0; i < incomingCoords.length; i++ ) {
@@ -153,20 +173,11 @@ export class LaneLinkService {
 
 		let outgoing: TvLaneCoord;
 
-		if ( sameDirection ) {
+		const outgoingLane = TvLaneSection.getNearestLane( outgoingLanes.map( i => i.lane ), incoming.lane );
 
-			outgoing = outgoingLanes.find( coord => coord.lane.id === incoming.lane.id && coord.lane.type == incoming.lane.type );
+		if ( !outgoingLane ) return;
 
-		} else {
-
-			outgoing = outgoingLanes.find( coord => coord.lane.id === -incoming.lane.id && coord.lane.type == incoming.lane.type );
-
-		}
-
-		if ( nonDriving ) {
-
-
-		}
+		outgoing = outgoingLanes.find( i => i.lane === outgoingLane );
 
 		if ( !outgoing ) return;
 
@@ -184,11 +195,11 @@ export class LaneLinkService {
 		);
 
 		connectionLane.predecessor = incoming.lane.id;
-		connectionLane.successor = outgoing ? outgoing.lane.id : null;	// when there is no successor
+		connectionLane.successor = outgoing.lane.id;
 
 		// NOTE: THIS CAN probably be added in road event listener also
 		const widhtAtStart = incoming.lane.getWidthValue( incoming.s );
-		const widthAtEnd = outgoing ? outgoing.lane.getWidthValue( outgoing.s ) : 0;
+		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
 		connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
 		connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
 		TvUtils.computeCoefficients( connectionLane.width, roadLength );
