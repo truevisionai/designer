@@ -185,13 +185,15 @@ export class RoadSplineService {
 	updateConnectingRoadSpline ( connection: TvJunctionConnection ): void {
 
 		const incomingContact = connection.getIncomingContactPoint();
-		const incoming= connection.incomingRoad.getRoadCoordByContact( incomingContact );
-
 		const outgoingContact = connection.getOutgoingContactPoint();
-		const outgoing = connection.outgoingRoad.getRoadCoordByContact( outgoingContact );
 
-		// const incoming = connection.incomingRoad.getPosThetaAt( connection.incomingRoad.length ).toRoadCoord( connection.incomingRoad );
-		// const outgoing = connection.outgoingRoad.getPosThetaAt( 0 ).toRoadCoord( connection.outgoingRoad );
+		const highestLane = connection.connectingRoad.getFirstLaneSection().getLaneById( -1 );
+
+		const predecessorLane = connection.incomingRoad.getFirstLaneSection().getLaneById( highestLane.predecessor );
+		const succcessorLane = connection.outgoingRoad.getFirstLaneSection().getLaneById( highestLane.succcessor );
+
+		const incoming = connection.incomingRoad.getRoadCoordByContact( incomingContact ).toLaneCoord( predecessorLane );
+		const outgoing = connection.outgoingRoad.getRoadCoordByContact( outgoingContact ).toLaneCoord( succcessorLane );
 
 		if ( incoming == null ) throw new Error( 'incoming is null' );
 		if ( outgoing == null ) throw new Error( 'outgoing is null' );
