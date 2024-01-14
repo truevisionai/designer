@@ -258,6 +258,29 @@ export class JunctionService {
 		return junction;
 	}
 
+	addConnectionsFromContactv2 ( junction: TvJunction, roadA: TvRoad, contactA: TvContactPoint, roadB: TvRoad, contactB: TvContactPoint ): TvJunction {
+
+		const coordA = roadA.getRoadCoordByContact( contactA );
+		const coordB = roadB.getRoadCoordByContact( contactB );
+
+		this.setLink( roadA, contactA, junction );
+		this.setLink( roadB, contactB, junction );
+
+		const connections = this.connectionService.createConnectionsForLanes( junction, coordA, coordB );
+
+		for ( const connection of connections ) {
+
+			if ( junction.connections.has( connection.id ) ) {
+				connection.id = junction.connections.size + 1;
+			}
+
+			junction.addConnection( connection );
+
+		}
+
+		return junction;
+	}
+
 	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
 
 		if ( contact == TvContactPoint.START ) {

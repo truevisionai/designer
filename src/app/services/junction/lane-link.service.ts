@@ -204,7 +204,7 @@ export class LaneLinkService {
 	}
 
 	// Method to determine the outgoing direction, needs to be implemented
-	private determineDirection ( contact: TvContactPoint ): TravelDirection {
+	determineDirection ( contact: TvContactPoint ): TravelDirection {
 
 		if ( contact == TvContactPoint.END ) {
 			return TravelDirection.forward;
@@ -213,7 +213,7 @@ export class LaneLinkService {
 		return TravelDirection.backward;
 	}
 
-	private determineOutgoingDirection ( incoming: TvRoadCoord, outgoing: TvRoadCoord ): TravelDirection {
+	determineOutgoingDirection ( incoming: TvRoadCoord, outgoing: TvRoadCoord ): TravelDirection {
 
 		if ( incoming.contact != outgoing.contact ) {
 

@@ -5,6 +5,7 @@ import { IntersectionService } from "app/services/junction/intersection.service"
 import { JunctionManager } from "./junction-manager";
 import { RoadSplineService } from "app/services/road/road-spline.service";
 import { JunctionService } from "app/services/junction/junction.service";
+import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
 
 @Injectable( {
 	providedIn: 'root'
@@ -66,5 +67,35 @@ export class IntersectionManager {
 
 		this.junctionService.removeJunction( junction );
 
+	}
+
+
+	createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {
+
+		let junction: TvJunction;
+
+		junction = this.junctionService.createNewJunction();
+
+		for ( let i = 0; i < coords.length; i++ ) {
+
+			const coordA = coords[ i ];
+
+			for ( let j = i + 1; j < coords.length; j++ ) {
+
+				const coordB = coords[ j ];
+
+				// roads should be different
+				if ( coordA.road === coordB.road ) continue;
+
+				this.intersectionService.addConnections( junction, coordA, coordB );
+
+
+			}
+
+		}
+
+		// this.intersection.postProcessJunction( junction );
+
+		return junction;
 	}
 }

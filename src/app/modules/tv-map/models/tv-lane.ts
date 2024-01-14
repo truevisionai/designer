@@ -193,7 +193,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	get predecessor () {
-		return this._predecessor || this.id;
+		return this._predecessor;
 	}
 
 	set predecessor ( laneId: number ) {
@@ -234,11 +234,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	get succcessor () {
-		return this._successor || this.id;
-	}
-
-	set succcessor ( laneId: number ) {
-		this.setPredecessor( laneId );
+		return this._successor;
 	}
 
 	get inRoadDirection (): boolean {
@@ -347,20 +343,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		this._successor = laneId;
 		this._successorExists = true;
-
-	}
-
-	removePredecessor () {
-
-		this._predecessor = null;
-		this._predecessorExists = false;
-
-	}
-
-	removeSuccessor () {
-
-		this._successor = null;
-		this._successorExists = false;
 
 	}
 
@@ -892,7 +874,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties?(): Object {
+	copyProperties? (): Object {
 
 		return {
 			travelDirection: this.travelDirection,

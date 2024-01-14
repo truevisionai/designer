@@ -243,19 +243,19 @@ export class TvJunction {
 
 	}
 
-	public getJunctionPriorityCount (): number {
+	getJunctionPriorityCount (): number {
 
 		return this._priorities.length;
 
 	}
 
-	public getJunctionControllerCount (): number {
+	getJunctionControllerCount (): number {
 
 		return this._controllers.length;
 
 	}
 
-	public getJunctionPriority ( index: number ) {
+	getJunctionPriority ( index: number ) {
 
 		if ( index < this._priorities.length && this._priorities.length > 0 ) {
 
@@ -266,7 +266,7 @@ export class TvJunction {
 		return null;
 	}
 
-	public getJunctionController ( index: number ) {
+	getJunctionController ( index: number ) {
 
 		if ( index < this._controllers.length && this._controllers.length > 0 ) {
 
@@ -323,7 +323,7 @@ export class TvJunction {
 	 * @param outgoingRoad
 	 * @returns boolean
 	 */
-	public hasRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
+	hasRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
 
 		return this.findRoadConnection( incomingRoad, outgoingRoad ) !== undefined;
 
@@ -336,7 +336,7 @@ export class TvJunction {
 	 * @param outgoingRoad
 	 * @returns {TvJunctionConnection}
 	 */
-	public findRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection {
+	findRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection {
 
 		return this.getConnections()
 			.find( conn =>

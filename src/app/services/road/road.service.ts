@@ -285,7 +285,7 @@ export class RoadService {
 
 	}
 
-	private updateRoadGeometries ( road: TvRoad ) {
+	updateRoadGeometries ( road: TvRoad ) {
 
 		const segment = road.spline.findSegment( road );
 

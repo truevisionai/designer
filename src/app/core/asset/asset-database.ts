@@ -4,6 +4,7 @@
 
 import { Metadata } from 'app/core/asset/metadata.model';
 import { FileUtils } from '../../io/file-utils';
+import { Environment } from '../utils/environment';
 
 export class AssetDatabase {
 
@@ -79,10 +80,12 @@ export class AssetDatabase {
 
 			return this.instances.get( guid );
 
-		} else {
+		} else if ( Environment.production ) {
 
 			console.error( `requested ${ guid } instance does not exist` );
+
 		}
+
 	}
 
 	static getInstanceType<T> ( guid: string ): T {

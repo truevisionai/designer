@@ -60,6 +60,10 @@ export class MapService {
 		return this.map.getRoadById( id );
 	}
 
+	getJunction ( id: number ) {
+		return this.map.getJunctionById( id );
+	}
+
 	setOpacityLevel ( opacity: number ) {
 
 		this.resetMapOpacity();

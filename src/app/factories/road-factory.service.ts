@@ -17,6 +17,8 @@ import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { MapEvents } from 'app/events/map-events';
 import { LaneSectionFactory } from './lane-section.factory';
+import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 
 @Injectable( {
 	providedIn: 'root'
@@ -264,6 +266,20 @@ export class RoadFactory {
 		spline.addRoadSegment( 0, road );
 
 		road.spline = spline;
+
+		return road;
+
+	}
+
+	createConnectingRoad ( junction: TvJunction, entry: TvLaneCoord, exit: TvLaneCoord ): TvRoad {
+
+		const road = this.createNewRoad();
+
+		road.setJunction( junction );
+
+		road.setPredecessor( TvRoadLinkChildType.road, entry.road, entry.contact );
+
+		road.setSuccessor( TvRoadLinkChildType.road, exit.road, exit.contact );
 
 		return road;
 

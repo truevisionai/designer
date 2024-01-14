@@ -70,5 +70,9 @@ export class TvLaneCoord {
 		return new Orientation( 0, 0, 0 );
 	}
 
+	toPosTheta () {
+		return this.posTheta;
+	}
+
 }
 

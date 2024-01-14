@@ -221,8 +221,16 @@ export class TvJunctionConnection {
 
 	}
 
+	public addLaneLinks ( incomingLane: TvLane, connectingLane: TvLane ) {
+
+		this.addLaneLink( new TvJunctionLaneLink( incomingLane, connectingLane ) );
+
+	}
+
 	getConnectingRoad (): TvRoad {
+
 		return undefined;
+
 	}
 
 	getToLaneId ( laneId: number ): number {

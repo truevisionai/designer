@@ -504,6 +504,7 @@ export class TvLaneSection {
 				return false;
 
 			}
+
 		}
 
 		return true;
@@ -922,6 +923,110 @@ export class TvLaneSection {
 		}
 
 		return true;
+
+	}
+
+	getNearestLane ( targetLane: TvLane, side?: TvLaneSide ): TvLane {
+
+		if ( !targetLane ) return null;
+
+		if ( targetLane.id === 0 ) return null;
+
+		if ( targetLane.id > 0 ) {
+
+			const leftLanes = this.getLeftLanes();
+
+			let result: TvLane;
+
+			for ( let id = 1; id <= leftLanes.length; id++ ) {
+
+				const lane = this.getLaneById( id );
+
+				if ( lane ) {
+
+					if ( lane.type == targetLane.type ) {
+
+						result = lane;
+
+					}
+					if ( lane.id >= targetLane.id ) break;
+
+				} else {
+
+					break;
+
+				}
+
+			}
+
+			return result;
+
+		}
+
+
+		if ( targetLane.id < 0 ) {
+
+			const rightLanes = this.getRightLanes();
+
+			let result: TvLane;
+
+			for ( let id = 1; id <= rightLanes.length; id++ ) {
+
+				const lane = this.getLaneById( -id );
+
+				if ( lane ) {
+
+					if ( lane.type == targetLane.type ) {
+
+						result = lane;
+
+					}
+
+					if ( lane.id <= targetLane.id ) break;
+
+				} else {
+
+					break;
+
+				}
+
+			}
+
+			return result;
+
+		}
+
+	}
+
+	static getNearestLane ( lanes: TvLane[], targetLane: TvLane ): TvLane {
+
+		if ( !targetLane ) return null;
+
+		if ( targetLane.id === 0 ) return null;
+
+		const isRight = targetLane.id < 0;
+
+		let closestLane: TvLane | null = null;
+
+		for ( let i = 0; i < lanes.length; i++ ) {
+
+			const currentLaneId = isRight ? -i : i;
+			const currentLane = lanes[ i ];
+
+			if ( currentLane.type != targetLane.type ) continue;
+
+			// Update closestLane only if it's closer to the requested laneId
+			if ( !closestLane || Math.abs( targetLane.id - currentLaneId ) < Math.abs( targetLane.id - closestLane.id ) ) {
+				closestLane = currentLane;
+			}
+
+			if ( currentLane.id === targetLane.id ) {
+				return currentLane; // Exact match
+			}
+
+		}
+
+		return closestLane;
 
 	}
 }

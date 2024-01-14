@@ -101,6 +101,10 @@ export class LaneWidthManager {
 
 			let width: number;
 
+			if ( !targetWidth && lane.predecessor ) {
+				targetWidth = previousLaneSection.getLaneById( lane.predecessor ).getWidthValue( 0 );
+			}
+
 			if ( targetWidth ) {
 
 				width = targetWidth;

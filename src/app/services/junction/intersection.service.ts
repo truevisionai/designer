@@ -15,6 +15,13 @@ import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { RoadLinkService } from '../road/road-link.service';
+import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+
+export class SplineIntersection {
+	spline: AbstractSpline;
+	otherSpline: AbstractSpline;
+	intersection: Vector3
+}
 
 @Injectable( {
 	providedIn: 'root'
@@ -115,7 +122,7 @@ export class IntersectionService {
 
 	}
 
-	getSplineIntersections ( spline: AbstractSpline ): { spline: AbstractSpline, otherSpline: AbstractSpline, intersection: Vector3 }[] {
+	getSplineIntersections ( spline: AbstractSpline ): SplineIntersection[] {
 
 		const splines = this.mapService.nonJunctionSplines;
 		const splineCount = splines.length;
@@ -190,7 +197,7 @@ export class IntersectionService {
 
 			let minAngle = 2 * Math.PI; // Initialize with maximum possible angle (360 degrees)
 			let minDistance = Infinity;
-			let nearestConnection = null;
+			let nearestConnection: TvJunctionConnection;
 
 			for ( let i = 0; i < roadConnections.length; i++ ) {
 
@@ -230,6 +237,8 @@ export class IntersectionService {
 
 		}
 
+		const rightConnections: TvJunctionConnection[] = [];
+
 		for ( let i = 0; i < roads.length; i++ ) {
 
 			const road = roads[ i ];
@@ -238,9 +247,26 @@ export class IntersectionService {
 
 			if ( nearestConnection ) {
 
-				this.junctionConnectionService.postProcessConnection( nearestConnection );
+				rightConnections.push( nearestConnection );
 
 			}
+
+		}
+
+		for ( let i = 0; i < connections.length; i++ ) {
+
+			const connection = connections[ i ];
+
+			if ( rightConnections.includes( connection ) ) {
+
+				this.junctionConnectionService.postProcessConnection( junction, connection, true );
+
+			} else {
+
+				this.junctionConnectionService.postProcessConnection( junction, connection, false );
+
+			}
+
 
 		}
 
@@ -260,13 +286,13 @@ export class IntersectionService {
 
 			const coord = coordA.s > coordB.s ? coordA : coordB;
 
-			const roadC = this.cutRoadForJunction( coord, junction );
+			const roadCCoord = this.cutRoadForJunction( coord, junction );
 
 			this.junctionService.addConnectionsFromContact(
 				junction,
 				coordA.road,
 				TvContactPoint.END,
-				roadC,
+				roadCCoord.road,
 				TvContactPoint.START
 			);
 
@@ -362,7 +388,7 @@ export class IntersectionService {
 
 	}
 
-	cutRoadForJunction ( coord: TvRoadCoord, junction: TvJunction ): TvRoad {
+	cutRoadForJunction ( coord: TvRoadCoord, junction: TvJunction ): TvRoadCoord {
 
 		function isNearRoadStartOrEnd ( coord: TvRoadCoord, width: number ) {
 
@@ -450,7 +476,7 @@ export class IntersectionService {
 			this.roadService.addRoad( newRoad );
 			this.roadService.updateRoad( coord.road );
 
-			return newRoad;
+			return newRoad.getStartPosTheta().toRoadCoord( newRoad );
 
 		} else {
 
@@ -464,15 +490,22 @@ export class IntersectionService {
 
 		const junction = this.junctionService.createNewJunction();
 
-		const roadC = this.cutRoadForJunction( coordA, junction );
-		const roadD = this.cutRoadForJunction( coordB, junction );
+		const [ coordC, coordD ] = this.createNewSegments( junction, coordA, coordB );
 
-		this.internal_addConnections( junction, coordA, coordB, roadC, roadD );
+		this.internal_addConnections( junction, coordA, coordB, coordC.road, coordD.road );
 
-		this.postProcessJunction( junction );
+		// this.postProcessJunction( junction );
 
 		return junction;
 
+	}
+
+	createNewSegments ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord ): TvRoadCoord[] {
+
+		const roadC = this.cutRoadForJunction( coordA, junction );
+		const roadD = this.cutRoadForJunction( coordB, junction );
+
+		return [ roadC, roadD ];
 	}
 
 	private internal_addConnections ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord, roadC: TvRoad, roadD: TvRoad ) {
