@@ -6,7 +6,6 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { JunctionConnectionService } from '../junction/junction-connection.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineSegment } from 'app/core/shapes/spline-segment';
@@ -18,7 +17,6 @@ export class RoadLinkService {
 
 	constructor (
 		private splineService: AbstractSplineDebugService,
-		private connectionService: JunctionConnectionService,
 	) { }
 
 	updateSuccessorRelationWhileCut ( newRoad: TvRoad, link: TvRoadLinkChild, oldRoad: TvRoad ) {
@@ -167,87 +165,6 @@ export class RoadLinkService {
 
 	}
 
-	linkSuccessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
-
-		if ( !link ) return;
-
-		if ( link.isJunction ) {
-
-			// TODO: might have to update connecting/incoming road
-
-			const junction = this.getElement<TvJunction>( link );
-
-			const s = mainRoad.length;
-
-			const coordA = mainRoad.getPosThetaAt( s ).toRoadCoord( mainRoad );
-
-			const roads = junction.getRoads();
-
-			for ( let i = 0; i < roads.length; i++ ) {
-
-				const road = roads[ i ];
-
-				const s = this.getOtherRoadContact( coordA, road );
-
-				const coordB = road.getPosThetaAt( s ).toRoadCoord( road );
-
-				const connection = this.connectionService.createConnection( junction, coordA, coordB );
-
-				this.connectionService.addConnection( junction, connection );
-
-			}
-
-			return;
-		}
-
-		// direction
-		// if successor is starting then our direction is positive
-		// -> ->
-		// if successor is ending then our direction is negative
-		// -> <-
-		const direction = link.contactPoint === TvContactPoint.START ? 1 : -1;
-
-		mainRoad.getLastLaneSection().lanes.forEach( lane => {
-
-			if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id * direction );
-
-		} );
-
-		const linkedRoad = link.getElement<TvRoad>();
-
-		const linkedLaneSection = this.getLaneSection( linkedRoad, link.contactPoint );
-
-		if ( link.contactPoint == TvContactPoint.START ) {
-
-			linkedRoad.setPredecessor( TvRoadLinkChildType.road, mainRoad, TvContactPoint.END );
-
-			linkedLaneSection.lanes.forEach( lane => {
-
-				if ( lane.side !== TvLaneSide.CENTER ) {
-
-					lane.setPredecessor( lane.id * direction );
-
-				}
-
-			} );
-
-		} else if ( link.contactPoint == TvContactPoint.END ) {
-
-			linkedRoad.setSuccessor( TvRoadLinkChildType.road, mainRoad, TvContactPoint.END );
-
-			linkedLaneSection.lanes.forEach( lane => {
-
-				if ( lane.side !== TvLaneSide.CENTER ) {
-
-					lane.setSuccessor( lane.id * direction );
-
-				}
-
-			} );
-
-		}
-	}
-
 	getOtherRoadContact ( coordA: TvRoadCoord, road: TvRoad ): number {
 
 		const distance1 = road.getPosThetaAt( 0 ).position.distanceTo( coordA.position );
@@ -292,22 +209,6 @@ export class RoadLinkService {
 			this.removeSuccessor( road );
 
 		}
-	}
-
-	addLinks ( road: TvRoad ) {
-
-		if ( road.isJunction ) {
-
-			// road.junctionInstance?.removeConnections( road );
-
-		} else {
-
-			this.linkSuccessor( road, road.successor );
-
-			this.linkPredecessor( road, road.predecessor );
-
-		}
-
 	}
 
 	linkRoads ( firstNode: RoadNode, secondNode: RoadNode, joiningRoad: TvRoad ) {
