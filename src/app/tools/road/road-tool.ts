@@ -32,6 +32,7 @@ import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { RoadStyle } from 'app/core/asset/road.style';
 import { SetValueCommand } from 'app/commands/set-value-command';
+import { DebugState } from '../../services/debug/debug-state';
 
 export class RoadTool extends BaseTool {
 
@@ -122,9 +123,9 @@ export class RoadTool extends BaseTool {
 		this.tool.base.reset();
 
 		this.tool.roadService.roads.forEach( road => {
-			this.tool.removeHighlight();
-			this.tool.removeSplineVisuals( road.spline );
-			this.tool.hideSplineVisuals( road.spline );
+
+			this.tool.setSplineState( road.spline, DebugState.REMOVED );
+
 		} );
 
 	}
@@ -240,13 +241,15 @@ export class RoadTool extends BaseTool {
 
 				this.lastRoadClicked = object;
 
+				this.tool.setSplineState( object.spline, DebugState.SELECTED );
+
 			} else {
 
 				this.isRoadDoubleClicked = false;
 
 				this.lastRoadClicked = null;
 
-				this.tool.clear();
+				this.tool.setSplineState( this.selectedSpline, DebugState.DEFAULT );
 
 			}
 
@@ -256,7 +259,7 @@ export class RoadTool extends BaseTool {
 
 			this.isRoadDoubleClicked = false;
 
-			this.tool.clear();
+			if ( this.selectedSpline ) this.tool.setSplineState( this.selectedSpline, DebugState.DEFAULT );
 
 		} );
 
@@ -269,7 +272,9 @@ export class RoadTool extends BaseTool {
 		this.tool.base.handleMovement( e, ( position ) => {
 
 			if ( position instanceof RoadPosition ) {
-				this.tool.highlightSpline( position.road.spline );
+
+				this.tool.setSplineState( position.road.spline, DebugState.HIGHLIGHTED );
+
 			}
 
 			if ( !this.isPointerDown ) return;
@@ -413,7 +418,7 @@ export class RoadTool extends BaseTool {
 
 	onSplineRemoved ( spline: AbstractSpline ) {
 
-		this.tool.removeSpline( spline );
+		this.tool.setSplineState( spline, DebugState.REMOVED );
 
 	}
 
@@ -435,9 +440,7 @@ export class RoadTool extends BaseTool {
 
 		this.tool.udpateSpline( spline );
 
-		this.tool.clear();
-
-		this.tool.updateSplineVisuals( spline );
+		this.tool.setSplineState( spline, DebugState.SELECTED );
 
 	}
 
@@ -511,7 +514,7 @@ export class RoadTool extends BaseTool {
 
 		} else if ( object instanceof AbstractSpline ) {
 
-			this.tool.selectSpline( object );
+			this.tool.setSplineState( object, DebugState.SELECTED );
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
@@ -541,7 +544,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadSelected ( road: TvRoad ): void {
 
-		this.tool.selectSpline( road.spline );
+		this.tool.setSplineState( road.spline, DebugState.SELECTED );
 
 		AppInspector.setInspector( RoadInspector, { road } );
 
@@ -549,7 +552,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadUnselected ( road: TvRoad ): void {
 
-		this.tool.unselectSpline( road.spline );
+		this.tool.setSplineState( road.spline, DebugState.DEFAULT );
 
 		AppInspector.clear();
 
@@ -561,7 +564,9 @@ export class RoadTool extends BaseTool {
 
 		if ( controlPoint instanceof SplineControlPoint ) {
 
-			this.tool.selectSpline( controlPoint.spline );
+			if ( controlPoint.spline.controlPoints.length >= 2 ) {
+				this.tool.setSplineState( controlPoint.spline, DebugState.SELECTED );
+			}
 
 			const segment = controlPoint.spline.getFirstRoadSegment();
 

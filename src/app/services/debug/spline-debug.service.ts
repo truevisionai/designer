@@ -9,6 +9,8 @@ import { MapService } from '../map.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 import { SceneService } from '../scene.service';
+import { DebugState } from 'app/services/debug/debug-state';
+import { AbstractSplineDebugService } from './abstract-spline-debug.service';
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;
@@ -37,11 +39,65 @@ export class SplineDebugService {
 		private debugService: DebugDrawService,
 		private laneDebugService: LaneDebugService,
 		private mapService: MapService,
+		private splineDebugService: AbstractSplineDebugService,
 	) {
 	}
 
 	get splines () {
 		return this.mapService.splines;
+	}
+
+	setState ( spline: AbstractSpline, state: DebugState ) {
+
+		switch ( state ) {
+
+			case DebugState.DEFAULT:
+
+				this.hideControlPoints( spline );
+
+				this.splineDebugService.hideLines( spline );
+
+				this.removeHighlight();
+
+				this.remove( spline );
+
+				this.showBorder( spline );
+
+				break;
+
+			case DebugState.HIGHLIGHTED:
+
+				this.highlight( spline );
+
+				break;
+
+			case DebugState.SELECTED:
+
+				this.remove( spline );
+
+				this.showControlPoints( spline );
+
+				this.splineDebugService.showLines( spline );
+
+				this.select( spline );
+
+				this.showReferenceLine( spline );
+
+				break;
+
+			case DebugState.REMOVED:
+
+				this.remove( spline );
+
+				this.hideControlPoints( spline );
+
+				this.splineDebugService.hide( spline );
+
+				break;
+
+
+		}
+
 	}
 
 	remove ( spline: AbstractSpline ) {
@@ -87,13 +143,23 @@ export class SplineDebugService {
 
 	showReferenceLine ( spline: AbstractSpline ) {
 
+		if ( spline.controlPoints.length < 2 ) return;
+
 		const points = spline.getPoints( LINE_STEP ).map( point => point );
 
 		points.forEach( point => point.z += LINE_ZOFFSET );
 
-		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH );
+		try {
 
-		this.lines.addItem( spline, line );
+			const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH );
+
+			this.lines.addItem( spline, line );
+
+		} catch ( error ) {
+
+			console.error( error );
+
+		}
 
 	}
 
@@ -273,6 +339,18 @@ export class SplineDebugService {
 		SceneService.removeFromTool( controlPoint );
 
 		this.controlPoints.removeItem( spline, controlPoint );
+
+	}
+
+	showControlPoints ( spline: AbstractSpline ) {
+
+		this.splineDebugService.showControlPoints( spline );
+
+	}
+
+	hideControlPoints ( spline: AbstractSpline ) {
+
+		this.splineDebugService.hideControlPoints( spline );
 
 	}
 

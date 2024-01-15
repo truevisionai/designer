@@ -81,17 +81,17 @@ export class RoadDebugService {
 
 	}
 
-	showRoadReferenceLine ( road: TvRoad ) {
+	// showRoadReferenceLine ( road: TvRoad ) {
 
-		const points = road.getReferenceLinePoints( LINE_STEP ).map( point => point.position );
+	// 	const points = road.getReferenceLinePoints( LINE_STEP ).map( point => point.position );
 
-		points.forEach( point => point.z += LINE_ZOFFSET );
+	// 	points.forEach( point => point.z += LINE_ZOFFSET );
 
-		const line = this.debugService.createDebugLine( road, points, LINE_WIDTH );
+	// 	const line = this.debugService.createDebugLine( road, points, LINE_WIDTH );
 
-		this.lines.addItem( road, line );
+	// 	this.lines.addItem( road, line );
 
-	}
+	// }
 
 	showRoadBorderLine ( road: TvRoad, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
 
@@ -130,19 +130,19 @@ export class RoadDebugService {
 
 	}
 
-	selectRoad ( road: TvRoad ) {
+	// selectRoad ( road: TvRoad ) {
 
-		if ( this.selectedRoads.has( road ) ) return;
+	// 	if ( this.selectedRoads.has( road ) ) return;
 
-		this.lines.removeKey( road );
+	// 	this.lines.removeKey( road );
 
-		this.showRoadBorderLine( road, LINE_WIDTH * 3, COLOR.RED );
+	// 	this.showRoadBorderLine( road, LINE_WIDTH * 3, COLOR.RED );
 
-		this.showRoadDirectionArrows( road );
+	// 	this.showRoadDirectionArrows( road );
 
-		this.selectedRoads.add( road );
+	// 	this.selectedRoads.add( road );
 
-	}
+	// }
 
 	removeHighlight () {
 
@@ -178,47 +178,47 @@ export class RoadDebugService {
 
 	}
 
-	unselectRoad ( road: TvRoad ) {
+	// unselectRoad ( road: TvRoad ) {
 
-		this.lines.removeKey( road );
+	// 	this.lines.removeKey( road );
 
-		this.arrows.removeKey( road );
+	// 	this.arrows.removeKey( road );
 
-		this.showRoadBorderLine( road );
+	// 	this.showRoadBorderLine( road );
 
-		this.selectedRoads.delete( road );
+	// 	this.selectedRoads.delete( road );
 
-	}
+	// }
 
-	upateRoadBorderLine ( road: TvRoad, lineWidth = LINE_WIDTH ) {
+	// upateRoadBorderLine ( road: TvRoad, lineWidth = LINE_WIDTH ) {
 
-		this.lines.removeKey( road );
+	// 	this.lines.removeKey( road );
 
-		this.showRoadBorderLine( road, lineWidth );
+	// 	this.showRoadBorderLine( road, lineWidth );
 
-		this.updatePredecessor( road, predecessor => {
+	// 	this.updatePredecessor( road, predecessor => {
 
-			this.lines.removeKey( predecessor );
+	// 		this.lines.removeKey( predecessor );
 
-			this.showRoadBorderLine( predecessor );
+	// 		this.showRoadBorderLine( predecessor );
 
-		} );
+	// 	} );
 
-		this.updateSuccessor( road, successor => {
+	// 	this.updateSuccessor( road, successor => {
 
-			this.lines.removeKey( successor );
+	// 		this.lines.removeKey( successor );
 
-			this.showRoadBorderLine( successor );
+	// 		this.showRoadBorderLine( successor );
 
-		} );
+	// 	} );
 
-	}
+	// }
 
-	removeRoadBorderLine ( road: TvRoad ) {
+	// removeRoadBorderLine ( road: TvRoad ) {
 
-		this.lines.removeKey( road );
+	// 	this.lines.removeKey( road );
 
-	}
+	// }
 
 	showRoadDirectionArrows ( road: TvRoad ) {
 
@@ -232,29 +232,29 @@ export class RoadDebugService {
 
 	}
 
-	updateRoadDirectionArrows ( road: TvRoad ) {
+	// updateRoadDirectionArrows ( road: TvRoad ) {
 
-		this.arrows.removeKey( road );
+	// 	this.arrows.removeKey( road );
 
-		this.showRoadDirectionArrows( road );
+	// 	this.showRoadDirectionArrows( road );
 
-		this.updatePredecessor( road, predecessor => {
+	// 	this.updatePredecessor( road, predecessor => {
 
-			this.arrows.removeKey( predecessor );
+	// 		this.arrows.removeKey( predecessor );
 
-			this.showRoadDirectionArrows( predecessor );
+	// 		this.showRoadDirectionArrows( predecessor );
 
-		} );
+	// 	} );
 
-		this.updateSuccessor( road, successor => {
+	// 	this.updateSuccessor( road, successor => {
 
-			this.arrows.removeKey( successor );
+	// 		this.arrows.removeKey( successor );
 
-			this.showRoadDirectionArrows( successor );
+	// 		this.showRoadDirectionArrows( successor );
 
-		} );
+	// 	} );
 
-	}
+	// }
 
 	getReferenceLinePoints ( road: TvRoad, step = 1.0 ): TvPosTheta[] {
 
@@ -294,77 +294,53 @@ export class RoadDebugService {
 
 	}
 
-	showCornerPoints ( road: TvRoad, ) {
+	// showCornerPoints ( road: TvRoad, ) {
 
-		this.createCornerPoint( road, road.getStartPosTheta() );
-		this.createCornerPoint( road, road.getEndPosTheta() );
+	// 	this.createCornerPoint( road, road.getStartPosTheta() );
+	// 	this.createCornerPoint( road, road.getEndPosTheta() );
 
-	}
+	// }
 
-	hideCornerPoints ( road: TvRoad ) {
+	// hideCornerPoints ( road: TvRoad ) {
 
-		this.cornerPoints.removeKey( road );
+	// 	this.cornerPoints.removeKey( road );
 
-	}
+	// }
 
-	createCornerPoint ( road: TvRoad, coord: TvPosTheta ) {
+	// createCornerPoint ( road: TvRoad, coord: TvPosTheta ) {
 
-		const rightT = road.getRightsideWidth( coord.s );
-		const leftT = road.getLeftSideWidth( coord.s );
+	// 	const rightT = road.getRightsideWidth( coord.s );
+	// 	const leftT = road.getLeftSideWidth( coord.s );
 
-		const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
-		const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
+	// 	const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
+	// 	const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
 
-		const leftPoint = new DynamicControlPoint( road, leftPosition );
-		const rightPoint = new DynamicControlPoint( road, rightPosition );
+	// 	const leftPoint = new DynamicControlPoint( road, leftPosition );
+	// 	const rightPoint = new DynamicControlPoint( road, rightPosition );
 
-		this.cornerPoints.addItem( road, leftPoint );
-		this.cornerPoints.addItem( road, rightPoint );
+	// 	this.cornerPoints.addItem( road, leftPoint );
+	// 	this.cornerPoints.addItem( road, rightPoint );
 
-	}
+	// }
 
-	showAllCornerPoints () {
+	// showAllCornerPoints () {
 
-		this.mapService.map.getRoads().forEach( road => {
+	// 	this.mapService.map.getRoads().forEach( road => {
 
-			this.showCornerPoints( road );
+	// 		this.showCornerPoints( road );
 
-		} );
+	// 	} );
 
-	}
+	// }
 
-	hideAllCornerPoints () {
+	// hideAllCornerPoints () {
 
-		this.mapService.map.getRoads().forEach( road => {
+	// 	this.mapService.map.getRoads().forEach( road => {
 
-			this.hideCornerPoints( road );
+	// 		this.hideCornerPoints( road );
 
-		} );
+	// 	} );
 
-	}
-
-	private updatePredecessor ( road: TvRoad, callback: ( road: TvRoad ) => void ): void {
-
-		if ( road.predecessor?.isRoad ) {
-
-			const predecessor = this.mapService.map.getRoadById( road.predecessor.elementId );
-
-			callback( predecessor );
-
-		}
-
-	}
-
-	private updateSuccessor ( road: TvRoad, callback: ( road: TvRoad ) => void ): void {
-
-		if ( road.successor?.isRoad ) {
-
-			const successor = this.mapService.map.getRoadById( road.successor.elementId );
-
-			callback( successor );
-
-		}
-
-	}
+	// }
 
 }
