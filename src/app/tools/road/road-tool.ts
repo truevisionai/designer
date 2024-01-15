@@ -16,9 +16,6 @@ import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy'
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from 'app/commands/select-object-command';
 import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
-import {
-	MapEvents
-} from 'app/events/map-events';
 import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
 import { RoadTangentPoint } from 'app/modules/three-js/objects/road-tangent-point';
 import { Vector3 } from 'three';
@@ -26,7 +23,6 @@ import { Position } from 'app/modules/scenario/models/position';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { OnRoadMovingStrategy } from "../../core/snapping/move-strategies/on-road-moving.strategy";
 import { RoadPosition } from "../../modules/scenario/models/positions/tv-road-position";
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { AssetDatabase } from 'app/core/asset/asset-database';
@@ -384,7 +380,7 @@ export class RoadTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			// this.onRoadAdded( object );
+			this.onRoadAdded( object );
 
 		} else if ( object instanceof AbstractSpline ) {
 
@@ -663,17 +659,10 @@ export class RoadTool extends BaseTool {
 
 		const road = this.tool.createJoiningRoad( nodeA, nodeB );
 
-		const addRoadCommand = new AddObjectCommand( road );
-
-		const selectRoadCommand = new SelectObjectCommand( road );
-
-		CommandHistory.executeMany( addRoadCommand, selectRoadCommand );
+		this.executeAddObject( road );
 
 		this.tool.base.setHint( 'Modify the new road or select another node to connect' );
 
 	}
 
-	connectRoads ( coordA: TvRoadCoord, coordB: TvRoadCoord ) {
-
-	}
 }

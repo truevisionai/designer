@@ -16,7 +16,7 @@ import { AssetNode, AssetType } from "app/views/editor/project-browser/file-node
 } )
 export class ObjectEventListener {
 
-	private debug: boolean = !Environment.production;
+	private debug: boolean = false; //!Environment.production;
 
 	constructor (
 		private assetService: AssetService,

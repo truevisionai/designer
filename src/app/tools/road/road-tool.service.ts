@@ -161,6 +161,8 @@ export class RoadToolService {
 
 	setSplineState ( spline: AbstractSpline, state: DebugState ) {
 
+		if ( !spline ) return;
+
 		if ( spline.controlPoints.length < 2 ) {
 
 			this.splineDebug.showControlPoints( spline );
