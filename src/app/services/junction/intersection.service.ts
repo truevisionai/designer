@@ -7,13 +7,13 @@ import { Box3, Vector3 } from 'three';
 import { JunctionConnectionService } from './junction-connection.service';
 import { JunctionService } from './junction.service';
 import { RoadService } from '../road/road.service';
-import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { RoadLinkService } from '../road/road-link.service';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { SplineSegmentService } from '../spline/spline-segment.service';
+import { RoadManager } from 'app/managers/road-manager';
 
 export class SplineIntersection {
 	spline: AbstractSpline;
@@ -28,8 +28,8 @@ export class IntersectionService {
 
 	constructor (
 		private mapService: MapService,
+		private roadManager: RoadManager,
 		private roadService: RoadService,
-		private splineFactory: SplineFactory,
 		private junctionService: JunctionService,
 		private junctionConnectionService: JunctionConnectionService,
 		private linkService: RoadLinkService,
@@ -167,8 +167,8 @@ export class IntersectionService {
 		if ( !segmentA || !segmentA.isRoad ) return;
 		if ( !segmentB || !segmentB.isRoad ) return;
 
-		const roadA = this.roadService.getRoad( segmentA.id );
-		const roadB = this.roadService.getRoad( segmentB.id );
+		const roadA = segmentA.getInstance<TvRoad>();
+		const roadB = segmentB.getInstance<TvRoad>();
 
 		if ( !roadA ) return;
 		if ( !roadB ) return;
@@ -463,17 +463,16 @@ export class IntersectionService {
 
 		if ( newRoad ) {
 
-			// MapEvents.roadCreated.emit( new RoadCreatedEvent( newRoad ) );
-			// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( coord.road ) );
-			this.roadService.addRoad( newRoad );
-			this.roadService.updateRoad( coord.road );
+			this.mapService.map.addRoad( newRoad );
+			this.roadManager.addRoad( newRoad );
+
+			this.roadManager.updateRoad( coord.road );
 
 			return newRoad.getStartPosTheta().toRoadCoord( newRoad );
 
 		} else {
 
-			// MapEvents.roadUpdated.emit( new RoadUpdatedEvent( coord.road ) );
-			this.roadService.updateRoad( coord.road );
+			this.roadManager.updateRoad( coord.road );
 
 		}
 	}

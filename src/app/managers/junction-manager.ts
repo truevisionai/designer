@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
-import { RoadFactory } from "app/factories/road-factory.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
+import { MapService } from "app/services/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
+import { SplineBuilder } from "app/services/spline/spline.builder";
+import { RoadManager } from "./road-manager";
 import { RoadService } from "app/services/road/road.service";
-import { SplineService } from "app/services/spline/spline.service";
+import { RoadFactory } from "app/factories/road-factory.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -12,8 +14,10 @@ import { SplineService } from "app/services/spline/spline.service";
 export class JunctionManager {
 
 	constructor (
-		private splineService: SplineService,
 		private roadLinkService: RoadLinkService,
+		private mapService: MapService,
+		private roadManager: RoadManager,
+		private splineBuilder: SplineBuilder,
 		private roadService: RoadService,
 		private roadFactory: RoadFactory,
 	) {
@@ -25,6 +29,7 @@ export class JunctionManager {
 
 		for ( const connection of connections ) {
 
+			// TODO: use road manager
 			this.roadService.addRoad( connection.connectingRoad );
 
 		}
@@ -39,6 +44,7 @@ export class JunctionManager {
 
 		for ( const connection of connections ) {
 
+			// TODO: use road manager
 			this.roadService.removeRoad( connection.connectingRoad );
 
 		}
@@ -99,7 +105,7 @@ export class JunctionManager {
 
 			}
 
-			this.splineService.updateSpline( spline );
+			this.splineBuilder.buildSpline( spline );
 		}
 	}
 

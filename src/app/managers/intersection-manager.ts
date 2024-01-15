@@ -44,7 +44,8 @@ export class IntersectionManager {
 			);
 
 			if ( !junction ) {
-				console.error( 'Could not create junction' );
+				console.error( 'Could not create junction', spline, item );
+				console.trace( 'Could not create junction', spline, item );
 				return;
 			}
 
@@ -77,7 +78,6 @@ export class IntersectionManager {
 		this.junctionManager.removeJunction( junction );
 
 	}
-
 
 	createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {
 

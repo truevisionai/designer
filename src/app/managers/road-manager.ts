@@ -67,6 +67,8 @@ export class RoadManager {
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
+		this.updateRoadGeometries( road );
+
 		this.roadElevationManager.onRoadUpdated( road );
 
 		this.buildRoad( road );
@@ -126,6 +128,7 @@ export class RoadManager {
 
 		const segment = road.spline.findSegment( road );
 
+		if ( !segment ) console.error( 'Road segment not found', road  );
 		if ( !segment ) return;
 
 		road.clearGeometries();
