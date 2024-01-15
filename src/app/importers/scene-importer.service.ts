@@ -181,9 +181,7 @@ export class SceneImporterService extends AbstractReader {
 
 		} );
 
-		// this.map.getRoads().filter( road => road.isJunction ).forEach( road => {
-		// 	road.spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
-		// } );
+
 
 		this.readAsOptionalArray( xml.prop, xml => {
 
@@ -1277,11 +1275,8 @@ export class SceneImporterService extends AbstractReader {
 		const dz = parseFloat( xml.attr_dz );
 		const height = parseFloat( xml.attr_height );
 
-		const corner = new TvCornerRoad( id, road, s, t, dz, height );
+		return new TvCornerRoad( id, road, s, t, dz, height );
 
-		corner.hide();	// by default we want to hide corner points during import
-
-		return corner;
 	}
 
 	private parseRoadObjectRepeat ( roadObject: TvRoadObject, xmlElement: XmlElement ): TvObjectRepeat {

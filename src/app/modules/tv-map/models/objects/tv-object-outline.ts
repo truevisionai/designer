@@ -18,12 +18,6 @@ export class TvObjectOutline {
 	) {
 	}
 
-	addCornerRoad ( road: TvRoad, s: number, t: number, dz: number = 0, height: number = 0, id?: number ): TvCornerRoad {
-		const cornerRoad = new TvCornerRoad( id || this.cornerRoad.length, road, s, t, dz, height );
-		this.cornerRoad.push( cornerRoad );
-		return cornerRoad;
-	}
-
 	getCornerLocal ( i: number ): TvCornerLocal {
 		return this.cornerLocal[ i ];
 	}

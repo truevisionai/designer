@@ -14,16 +14,18 @@ import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-r
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-moving.strategy';
-import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
+// import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
 import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
 import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
-import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
 import { CrosswalkToolService } from "./crosswalk-tool.service";
 import { MarkingObjectInspectorData } from 'app/modules/tv-map/models/objects/marking-object-inspector-data';
+import { Environment } from 'app/core/utils/environment';
+import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { TvCornerRoad } from 'app/modules/tv-map/models/objects/tv-corner-road';
 
 export class CrosswalkTool extends BaseTool {
 
@@ -35,15 +37,15 @@ export class CrosswalkTool extends BaseTool {
 		return this.tool.base.selection.getLastSelected<TvRoadObject>( TvRoadObject.name );
 	}
 
-	get selectedPoint (): TvCornerRoad {
-		return this.tool.base.selection.getLastSelected<TvCornerRoad>( TvCornerRoad.name );
+	get selectedPoint (): SimpleControlPoint<TvCornerRoad> {
+		return this.tool.base.selection.getLastSelected<SimpleControlPoint<TvCornerRoad>>( SimpleControlPoint.name );
 	}
 
 	get selectedRoad (): TvRoad {
 		return this.tool.base.selection.getLastSelected<TvRoad>( TvRoad.name );
 	}
 
-	private debug = false;
+	private debug = !Environment.production;
 
 	private pointMoved: boolean;
 
@@ -59,7 +61,7 @@ export class CrosswalkTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.base.selection.registerStrategy( TvCornerRoad.name, new ControlPointStrategy() );
+		this.tool.base.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 		this.tool.base.selection.registerStrategy( TvRoadObject.name, new ControlPointStrategy() );
 		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
@@ -97,7 +99,7 @@ export class CrosswalkTool extends BaseTool {
 
 			} else {
 
-				this.addCornerRoad( roadCoord );
+				this.createCornerRoad( roadCoord );
 
 			}
 
@@ -144,7 +146,7 @@ export class CrosswalkTool extends BaseTool {
 
 		const newPosition = this.selectedPoint.position.clone();
 
-		if ( newPosition.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+		if ( newPosition.distanceTo( this.pointerDownAt ) < 0.1 ) return;
 
 		const updateCommand = new UpdatePositionCommand( this.selectedPoint, newPosition, oldPosition );
 
@@ -168,11 +170,13 @@ export class CrosswalkTool extends BaseTool {
 
 	}
 
-	addCornerRoad ( roadCoord: TvRoadCoord ) {
+	createCornerRoad ( roadCoord: TvRoadCoord ) {
 
 		const id = this.selectedCrosswalk.outlines[ 0 ].cornerRoad.length;
 
-		const point = new TvCornerRoad( id, roadCoord.road, roadCoord.s, roadCoord.t );
+		const corner = new TvCornerRoad( id, roadCoord.road, roadCoord.s, roadCoord.t );
+
+		const point = this.tool.controlPointFactory.createSimpleControlPoint( corner, corner.getPosition() );
 
 		const addCommand = new AddObjectCommand( point );
 
@@ -184,21 +188,7 @@ export class CrosswalkTool extends BaseTool {
 
 	createCrosswalk ( roadCoord: TvRoadCoord ) {
 
-		const point = new TvCornerRoad( 0, roadCoord.road, roadCoord.s, roadCoord.t, roadCoord.z );
-
-		const marking = new TvObjectMarking();
-
-		marking.addCornerRoad( point );
-
-		const outline = new TvObjectOutline();
-
-		outline.cornerRoad.push( point );
-
-		const crosswalk = new TvRoadObject( ObjectTypes.crosswalk, 'crosswalk', TvRoadObject.counter++, roadCoord.s, roadCoord.t );
-
-		crosswalk.outlines.push( outline );
-
-		crosswalk.markings.push( marking );
+		const crosswalk = this.tool.factory.createRoadObject( roadCoord, ObjectTypes.crosswalk );
 
 		const addCommand = new AddObjectCommand( crosswalk );
 
@@ -216,25 +206,23 @@ export class CrosswalkTool extends BaseTool {
 
 			this.onCrosswalkAdded( object );
 
-		} else if ( object instanceof TvCornerRoad ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
-			this.onCornerRoadAdded( object );
+			this.onControlPointAdded( object );
 
 		}
 
 	}
 
-	onCornerRoadAdded ( object: TvCornerRoad ) {
+	onControlPointAdded ( point: SimpleControlPoint<TvCornerRoad> ) {
 
-		this.tool.objectService.addCornerRoad( this.selectedCrosswalk, object );
+		this.tool.addCornerRoad( this.selectedCrosswalk, point );
 
 	}
 
 	onCrosswalkAdded ( object: TvRoadObject ) {
 
-		this.tool.objectService.addRoadObject( this.selectedRoad, object );
-
-		this.onCrosswalkSelected( object );
+		this.tool.addRoadObject( this.selectedRoad, object );
 
 	}
 
@@ -246,9 +234,9 @@ export class CrosswalkTool extends BaseTool {
 
 			this.onCrosswalkUpdated( object );
 
-		} else if ( object instanceof TvCornerRoad ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
-			this.onCornerRoadUpdated( object );
+			this.onControlPointUpdated( object );
 
 		} else if ( object instanceof TvObjectMarking ) {
 
@@ -260,13 +248,16 @@ export class CrosswalkTool extends BaseTool {
 
 	}
 
-	onCornerRoadUpdated ( object: TvCornerRoad ) {
+	onControlPointUpdated ( point: SimpleControlPoint<TvCornerRoad> ) {
 
-		const roadObject = this.tool.objectService.findByCornerRoad( this.selectedRoad, object );
+		const roadObject = this.tool.objectService.findByCornerRoad( this.selectedRoad, point.object );
 
-		if ( !roadObject ) return;
+		if ( !roadObject ) {
+			console.error( 'roadObject not found', roadObject );
+			return;
+		}
 
-		this.tool.objectService.updateRoadObject( object.road, roadObject );
+		this.tool.updateCornerPointPosition( roadObject, point, point.position );
 
 	}
 
@@ -282,13 +273,13 @@ export class CrosswalkTool extends BaseTool {
 
 		if ( object instanceof TvRoadObject ) {
 
-			this.tool.objectService.removeRoadObject( this.selectedRoad, object );
+			this.tool.removeRoadObject( this.selectedRoad, object );
 
 			this.onCrosswalkUnselected( object );
 
-		} else if ( object instanceof TvCornerRoad ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
-			this.tool.objectService.removeCornerRoad( this.selectedCrosswalk, object );
+			this.tool.removeCornerRoad( this.selectedCrosswalk, object );
 
 		}
 
@@ -306,9 +297,9 @@ export class CrosswalkTool extends BaseTool {
 
 			this.onCrosswalkSelected( object );
 
-		} else if ( object instanceof TvCornerRoad ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
-			this.onCornerRoadSelected( object );
+			this.onControlPointSelected( object );
 
 		}
 
@@ -326,7 +317,7 @@ export class CrosswalkTool extends BaseTool {
 
 			this.onCrosswalkUnselected( object );
 
-		} else if ( object instanceof TvCornerRoad ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.onCornerRoadUnselected( object );
 
@@ -338,14 +329,14 @@ export class CrosswalkTool extends BaseTool {
 
 		this.selectedPoint?.unselect();
 
-		this.tool.objectService.showRoad( road );
+		this.tool.showRoad( road );
 
 		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
 
-		this.tool.objectService.hideRoad( road );
+		this.tool.hideRoad( road );
 
 		this.tool.base.setHint( 'Use LEFT CLICK to select a road' );
 	}
@@ -370,15 +361,20 @@ export class CrosswalkTool extends BaseTool {
 
 	}
 
-	onCornerRoadSelected ( object: TvCornerRoad ) {
+	onControlPointSelected ( point: SimpleControlPoint<TvCornerRoad> ) {
 
-		const roadObject = this.tool.objectService.findByCornerRoad( this.selectedRoad, object );
+		const roadObject = this.tool.objectService.findByCornerRoad( this.selectedRoad, point.mainObject );
 
-		const marking = this.tool.objectService.findMarkingByCornerRoad( roadObject, object );
+		if ( !roadObject ) {
+			console.error( 'roadObject not found', roadObject );
+			return;
+		}
+
+		const marking = this.tool.objectService.findMarkingByCornerRoad( roadObject, point.mainObject );
 
 		this.selectedPoint?.unselect();
 
-		object.select();
+		point.select();
 
 		AppInspector.setInspector( DynamicInspectorComponent, new MarkingObjectInspectorData( roadObject, marking ) );
 
@@ -386,11 +382,11 @@ export class CrosswalkTool extends BaseTool {
 
 	}
 
-	onCornerRoadUnselected ( object: TvCornerRoad ) {
-
-		object.unselect();
+	onCornerRoadUnselected ( point: SimpleControlPoint<TvCornerRoad> ) {
 
 		AppInspector.clear();
+
+		point.unselect();
 
 	}
 

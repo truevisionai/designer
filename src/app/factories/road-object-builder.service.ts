@@ -402,7 +402,9 @@ export class RoadObjectBuilder {
 
 						if ( marking.cornerReferences.includes( cornerRoad.attr_id ) ) {
 
-							points.push( cornerRoad.position );
+							const position = cornerRoad.getPosition();
+
+							points.push( position );
 
 						}
 

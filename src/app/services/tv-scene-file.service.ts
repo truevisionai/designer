@@ -69,6 +69,8 @@ export class TvSceneFileService {
 
 	private setMap ( map: TvMap ) {
 
+		console.log( 'setMap', map );
+
 		this.threeService.reset();
 
 		ToolManager.clear();

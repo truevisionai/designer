@@ -800,11 +800,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const dz = parseFloat( xml.attr_dz );
 		const height = parseFloat( xml.attr_height );
 
-		const corner = new TvCornerRoad( id, road, s, t, dz, height );
-
-		corner.hide();	// by default we want to hide corner points during import
-
-		return corner;
+		return new TvCornerRoad( id, road, s, t, dz, height );
 	}
 
 	public parseRoadObjectRepeatArray ( roadObject: TvRoadObject, xmlElement: XmlElement ): void {

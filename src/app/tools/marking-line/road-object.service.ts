@@ -14,6 +14,8 @@ import { IDService } from 'app/factories/id.service';
 import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
 import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
 import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repeat';
+import { CornerRoadFactory } from 'app/services/road-object/corner-road.factory';
+import { ControlPointFactory } from 'app/factories/control-point.factory';
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,6 +32,8 @@ export class RoadObjectService {
 		private map: MapService,
 		private signal: RoadSignalService, // just for import,
 		private builder: RoadObjectBuilder,
+		private cornerFactory: CornerRoadFactory,
+		private controlPointFactory: ControlPointFactory,
 	) {
 		RoadObjectService.instance = this;
 	}
@@ -110,7 +114,7 @@ export class RoadObjectService {
 
 			if ( !mesh ) return;
 
-			this.objects.add( roadObject, mesh );
+			this.addRoadObjectMesh( roadObject, mesh );
 
 		} );
 
@@ -124,11 +128,17 @@ export class RoadObjectService {
 
 		if ( !mesh ) return;
 
-		this.objects.add( roadObject, mesh );
+		this.addRoadObjectMesh( roadObject, mesh );
 
 		road.addRoadObjectInstance( roadObject );
 
 		this.showRoadObjectCorners( roadObject );
+
+	}
+
+	addRoadObjectMesh ( roadObject: TvRoadObject, mesh: Object3D ) {
+
+		this.objects.add( roadObject, mesh );
 
 	}
 
@@ -180,8 +190,6 @@ export class RoadObjectService {
 
 	addCornerRoad ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {
 
-		SceneService.addToolObject( cornerRoad );
-
 		roadObject.markings[ 0 ].addCornerRoad( cornerRoad );
 
 		roadObject.outlines[ 0 ].cornerRoad.push( cornerRoad );
@@ -191,8 +199,6 @@ export class RoadObjectService {
 	}
 
 	removeCornerRoad ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {
-
-		SceneService.removeFromTool( cornerRoad );
 
 		roadObject.markings[ 0 ].removeCornerRoad( cornerRoad );
 
@@ -222,9 +228,7 @@ export class RoadObjectService {
 
 			outline.cornerRoad.forEach( corner => {
 
-				SceneService.addToolObject( corner );
 
-				corner.show();
 
 			} );
 
@@ -248,9 +252,6 @@ export class RoadObjectService {
 
 			outline.cornerRoad.forEach( corner => {
 
-				SceneService.removeFromTool( corner );
-
-				corner.hide();
 
 			} );
 
@@ -258,35 +259,9 @@ export class RoadObjectService {
 
 	}
 
-	pushCornerRoad ( road: TvRoad, outline: TvObjectOutline, s: number, t: number, height: number = 0.0, dz = 0.0 ) {
-
-		const cornerRoad = this.createCornerRoad( road, outline, s, t, height, dz );
-
-		outline.cornerRoad.push( cornerRoad );
-
-		return cornerRoad;
-
-	}
-
-	createCornerRoad ( road: TvRoad, outline: TvObjectOutline, s: number, t: number, height: number = 0.0, dz = 0.0 ) {
-
-		const id = outline.cornerLocal.length + outline.cornerRoad.length;
-
-		return new TvCornerRoad( id, road, s, t, dz, height );
-
-	}
-
-	createCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ) {
-
-		const id = outline.cornerLocal.length + outline.cornerRoad.length;
-
-		return new TvCornerLocal( id, u, v, z, height );
-
-	}
-
 	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ) {
 
-		const cornerLocal = this.createCornerLocal( outline, u, v, z, height );
+		const cornerLocal = this.cornerFactory.createCornerLocalOutline( outline, u, v, z, height );
 
 		outline.cornerLocal.push( cornerLocal );
 
