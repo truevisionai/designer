@@ -85,6 +85,8 @@ export class CrosswalkTool extends BaseTool {
 
 		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
+		this.tool.onDisabled();
+
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {
@@ -210,6 +212,10 @@ export class CrosswalkTool extends BaseTool {
 
 			this.onControlPointAdded( object );
 
+		} else if ( object instanceof MarkingObjectInspectorData ) {
+
+			this.tool.addRoadObject( object.roadObject.road, object.roadObject );
+
 		}
 
 	}
@@ -243,6 +249,10 @@ export class CrosswalkTool extends BaseTool {
 			const roadObject = this.tool.objectService.findRoadObjectByMarking( this.selectedRoad, object );
 
 			this.tool.objectService.updateRoadObject( this.selectedRoad, roadObject );
+
+		} else if ( object instanceof MarkingObjectInspectorData ) {
+
+			this.tool.updateRoadObject( object.roadObject.road, object.roadObject );
 
 		}
 
@@ -280,6 +290,10 @@ export class CrosswalkTool extends BaseTool {
 		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.tool.removeCornerRoad( this.selectedCrosswalk, object );
+
+		} else if ( object instanceof MarkingObjectInspectorData ) {
+
+			this.tool.removeRoadObject( object.roadObject.road, object.roadObject );
 
 		}
 

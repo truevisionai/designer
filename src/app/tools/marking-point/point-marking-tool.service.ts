@@ -63,6 +63,8 @@ export class PointMarkingToolService {
 
 		roadObject.assetGuid = asset.guid;
 
+		roadObject.zOffset = 0.005;
+
 		return roadObject;
 	}
 

@@ -25,6 +25,12 @@ export class CrosswalkToolService {
 	) {
 	}
 
+	onDisabled () {
+
+		this.points.clear();
+
+	}
+
 	hideRoad ( road: TvRoad ) {
 
 		this.points.removeKey( road );

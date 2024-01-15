@@ -10,8 +10,8 @@ import { AssetDatabase } from "app/core/asset/asset-database";
 export class MarkingObjectInspectorData {
 
 	constructor (
-		private roadObject: TvRoadObject,
-		private marking: TvObjectMarking
+		public roadObject: TvRoadObject,
+		public marking: TvObjectMarking
 	) { }
 
 	@SerializedField( { type: 'float' } )
@@ -108,7 +108,7 @@ export class MarkingObjectInspectorData {
 	@Action( { name: 'Delete' } )
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.roadObject ) );
+		CommandHistory.execute( new RemoveObjectCommand( this ) );
 
 	}
 }

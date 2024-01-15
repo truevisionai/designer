@@ -367,7 +367,7 @@ class RoadSpanObject {
 	}
 
 	@Action( { label: 'Delete' } )
-	update () {
+	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.roadObject ) );
 
