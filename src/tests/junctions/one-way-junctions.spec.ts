@@ -14,7 +14,7 @@ import { RoadToolService } from "app/tools/road/road-tool.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2 } from "three";
 
-describe( 'one-way junctions tests', () => {
+fdescribe( 'one-way junctions tests', () => {
 
 	let baseTest = new BaseTest();
 
@@ -75,6 +75,12 @@ describe( 'one-way junctions tests', () => {
 		expect( junction ).toBeDefined();
 		expect( junction.connections.size ).toBe( 2 );
 
+		mapService.roads.forEach( road => road.laneSections.forEach( section => {
+			if ( !section.areRightLanesInOrder() ) {
+				throw new Error( 'Right lanes are not in order' );
+			}
+		} ) )
+
 		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 0 ).outgoingRoadId ).toBe( 2 );
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 2 );
@@ -115,6 +121,12 @@ describe( 'one-way junctions tests', () => {
 
 		expect( junction ).toBeDefined();
 		expect( junction.connections.size ).toBe( 6 );
+
+		mapService.roads.forEach( road => road.laneSections.forEach( section => {
+			if ( !section.areRightLanesInOrder() ) {
+				throw new Error( 'Right lanes are not in order' );
+			}
+		} ) )
 
 		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 0 ).outgoingRoadId ).toBe( 2 );
@@ -194,6 +206,12 @@ describe( 'one-way junctions tests', () => {
 
 		expect( junction ).toBeDefined();
 		expect( junction.connections.size ).toBe( 12 );
+
+		mapService.roads.forEach( road => road.laneSections.forEach( section => {
+			if ( !section.areRightLanesInOrder() ) {
+				throw new Error( 'Right lanes are not in order' );
+			}
+		} ) )
 
 		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 0 ).outgoingRoadId ).toBe( 2 );

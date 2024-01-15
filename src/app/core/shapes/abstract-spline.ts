@@ -573,6 +573,27 @@ export abstract class AbstractSpline {
 
 	}
 
+	isConnectingRoad () {
+
+		if ( this.splineSegments.length != 1 ) {
+			return false;
+		}
+
+		const segment = this.splineSegments[ 0 ];
+
+		if ( !segment.isRoad ) {
+			return false;
+		}
+
+		const road = segment.getInstance<TvRoad>();
+
+		if ( !road.isJunction ) {
+			return false;
+		}
+
+		return true;
+	}
+
 	private calculateDistanceToSegment ( newPoint: AbstractControlPoint, pointA: AbstractControlPoint, pointB: AbstractControlPoint ): number {
 
 		const segmentDirection = pointB.position.clone().sub( pointA.position ).normalize();

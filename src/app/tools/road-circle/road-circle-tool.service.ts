@@ -184,7 +184,8 @@ export class RoadCircleToolService {
 				for ( const lane of laneSection.getLeftLanes() ) {
 
 					// TODO: check if we need to change the lane id also
-					lane.direction = TravelDirection.forward;
+					// TODO: this is causing some bug due to direction changes
+					// lane.direction = TravelDirection.forward;
 
 				}
 

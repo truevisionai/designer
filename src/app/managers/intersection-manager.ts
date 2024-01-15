@@ -20,6 +20,8 @@ export class IntersectionManager {
 
 	updateIntersections ( spline: AbstractSpline ) {
 
+		if ( spline.isConnectingRoad() ) return;
+
 		// when a spline is updated
 		// we first check if it has junctions or not
 		const junctions = spline.getJunctions();

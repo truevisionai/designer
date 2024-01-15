@@ -60,6 +60,8 @@ export class SplineManager {
 
 	removeSpline ( spline: AbstractSpline ) {
 
+		if ( spline.isConnectingRoad() ) return;
+
 		const junctions = spline.getJunctions();
 
 		for ( const junction of junctions ) {
@@ -100,6 +102,8 @@ export class SplineManager {
 
 	syncSuccessorSpline ( spline: AbstractSpline ) {
 
+		if ( spline.isConnectingRoad() ) return;
+
 		const lastSegment = spline.getLastSegment();
 
 		if ( lastSegment?.isRoad ) {
@@ -117,6 +121,8 @@ export class SplineManager {
 	}
 
 	syncPredecessorSpline ( spline: AbstractSpline ) {
+
+		if ( spline.isConnectingRoad() ) return;
 
 		const firstSegment = spline.getFirstSegment();
 

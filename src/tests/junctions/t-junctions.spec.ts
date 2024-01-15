@@ -4,7 +4,7 @@ import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineEventListener } from "app/listeners/spline-event-listener";
 import { SplineManager } from "app/managers/spline-manager";
 import { RoadNode } from "app/modules/three-js/objects/road-node";
-import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
+import { TvContactPoint, TvLaneType } from "app/modules/tv-map/models/tv-common";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapValidatorService } from "app/services/map-validator.service";
@@ -268,6 +268,21 @@ describe( 't-junction tests', () => {
 
 		expect( roadService.getRoad( 2 ).predecessor.element ).toBe( roadService.getRoad( 5 ) );
 		expect( roadService.getRoad( 2 ).successor ).toBeUndefined();
+
+		// VALIDATE CONNECTIONS
+
+		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 4 );
+		expect( junction.connections.get( 0 ).outgoingRoadId ).toBe( 3 );
+		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 2 );
+		expect( junction.connections.get( 0 ).isCornerConnection ).toBe( undefined );
+		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
+		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.id ).toBe( -1 );
+		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.predecessor ).toBe( -1 );
+		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.succcessor ).toBe( 1 );
+		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.type ).toBe( TvLaneType.shoulder );
+		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.id ).toBe( -2 );
+		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.predecessor ).toBe( -2 );
+		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.succcessor ).toBe( 2 );
 
 	} );
 
