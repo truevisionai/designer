@@ -115,7 +115,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Ramp Tool',
 			click: () => this.setToolType( ToolType.RoadRampTool ),
-			enabled:  false //!Environment.production,
+			enabled: false //!Environment.production,
 		},
 		{
 			id: 'showDividerTool',
@@ -309,7 +309,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Parking Road Tool',
 			click: () => this.setToolType( ToolType.ParkingRoad ),
-			enabled: !Environment.production,
+			enabled: false // !Environment.production,
 		},
 		{
 			id: 'showParkingLotTool',

@@ -1348,6 +1348,8 @@ export class SceneImporterService extends AbstractReader {
 			roll
 		);
 
+		roadSignal.assetGuid = xmlElement.attr_assetGuid;
+
 		this.parseSignalValidity( roadSignal, xmlElement );
 
 		this.parseSignalDependency( roadSignal, xmlElement );

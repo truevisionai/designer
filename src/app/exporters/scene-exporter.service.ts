@@ -910,6 +910,7 @@ export class SceneExporterService {
 			if ( signal.hOffset != null ) nodeSignal[ 'attr_hOffset' ] = signal.hOffset;
 			if ( signal.pitch != null ) nodeSignal[ 'attr_pitch' ] = signal.pitch;
 			if ( signal.roll != null ) nodeSignal[ 'attr_roll' ] = signal.roll;
+			if ( signal.assetGuid != null ) nodeSignal[ 'attr_assetGuid' ] = signal.assetGuid;
 
 			for ( let j = 0; j < signal.getValidityCount(); j++ ) {
 

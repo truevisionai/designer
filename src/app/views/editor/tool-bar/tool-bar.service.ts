@@ -17,7 +17,7 @@ import { RoadCircleTool } from 'app/tools/road-circle/road-circle-tool';
 import { RoadDividerTool } from 'app/tools/road-cut-tool/road-divider-tool';
 import { RoadElevationTool } from 'app/tools/road-elevation/road-elevation.tool';
 import { RoadRampTool } from 'app/tools/road-ramp/road-ramp-tool';
-import { RoadSignalTool } from 'app/tools/road-signal-tool';
+import { RoadSignalTool } from 'app/tools/road-signal/road-signal-tool';
 import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
 import { SurfaceTool } from 'app/tools/surface/surface-tool';
@@ -53,6 +53,7 @@ import { JunctionToolService } from 'app/tools/junction-tool/junction-tool.servi
 import { LaneToolService } from 'app/tools/lane/lane-tool.service';
 import { MeasurementToolService } from 'app/tools/pointer/measurement-tool.service';
 import { RoadElevationToolService } from 'app/tools/road-elevation/road-elevation-tool.service';
+import { RoadSignalToolService } from 'app/tools/road-signal/road-signal-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -85,6 +86,7 @@ export class ToolBarService {
 		private propBarrierToolService: PolePropToolService,
 		private pointMarkingToolService: PointMarkingToolService,
 		private measurementToolService: MeasurementToolService,
+		private roadSignalToolService: RoadSignalToolService,
 	) {
 	}
 
@@ -140,7 +142,7 @@ export class ToolBarService {
 			case ToolType.Vehicle:
 				return new VehicleTool();
 			case ToolType.RoadSignalTool:
-				return new RoadSignalTool();
+				return new RoadSignalTool( this.roadSignalToolService );
 			case ToolType.RoadElevation:
 				return new RoadElevationTool( this.roadElevationService );
 			case ToolType.RoadRampTool:

@@ -46,6 +46,7 @@ export class TvRoadSignal implements IMovable {
 	public dependencies: TvSignalDependency[] = [];
 	public signalReferences: TvSignalReference[] = [];
 	public roadId: number;
+	public assetGuid: string;
 
 	/**
 	 *

@@ -9,6 +9,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
+import { RoadSignalService } from './signal/road-signal.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,6 +20,7 @@ export class SceneBuilderService {
 		private roadService: RoadService,
 		private surfaceService: SurfaceToolService,
 		private roadObjectService: RoadObjectService,
+		private roadSignalService: RoadSignalService,
 	) { }
 
 	buildScene ( map: TvMap ) {
@@ -32,6 +34,8 @@ export class SceneBuilderService {
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
 
 		map.getRoads().forEach( road => this.roadObjectService.buildRoadObjects( road ) );
+
+		map.getRoads().forEach( road => this.roadSignalService.buildSignals( road ) );
 
 		map.getSurfaces().forEach( surface => this.surfaceService.buildSurface( surface ) );
 

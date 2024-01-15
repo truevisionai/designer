@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadSignalBuilder } from './road-signal-factory.service';
+import { RoadSignalBuilder } from './road-signal.builder';
 import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
 import { Object3D } from 'three';
 import { TvDynamicTypes, TvOrientation, TvUnit } from 'app/modules/tv-map/models/tv-common';
@@ -55,6 +55,16 @@ export class RoadSignalService {
 		road.signals.delete( signal.id );
 
 		this.objectMap.remove( signal );
+
+	}
+
+	updateSignal ( road: TvRoad, signal: TvRoadSignal ) {
+
+		this.objectMap.remove( signal );
+
+		const mesh = this.signalBuilder.buildSignal( road, signal );
+
+		this.objectMap.add( signal, mesh );
 
 	}
 

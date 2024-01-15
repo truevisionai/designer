@@ -3,10 +3,11 @@ import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { CircleGeometry, CylinderGeometry, FrontSide, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, TextureLoader, Vector3 } from 'three';
+import { CircleGeometry, CylinderGeometry, FrontSide, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Texture, TextureLoader, Vector3 } from 'three';
 import { ApiService } from '../api.service';
 import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TextObjectService } from 'app/tools/marking-point/text-object.service';
+import { AssetDatabase } from 'app/core/asset/asset-database';
 
 const signDB = [
 	{
@@ -18,6 +19,12 @@ const signDB = [
 	{
 		type: '1000002',
 		subtype: '-1',
+		country: 'OpenDRIVE',
+		url: 'http://www.vzkat.de/2017/Teil03/209.gif'
+	},
+	{
+		type: 'truevision',
+		subtype: 'stop',
 		country: 'OpenDRIVE',
 		url: 'http://www.vzkat.de/2017/Teil03/209.gif'
 	}
@@ -49,9 +56,9 @@ export class RoadSignalBuilder {
 
 		const object = new Object3D();
 
-		const pole = this.createPole( poleHeight, poleWidth );
+		// const pole = this.createPole( poleHeight, poleWidth );
 
-		object.add( pole );
+		// object.add( pole );
 
 		const sign = this.buildSign( signal );
 
@@ -139,7 +146,9 @@ export class RoadSignalBuilder {
 
 	getSignGeometry ( signal: TvRoadSignal ) {
 
-		const geometry = this.createSquare();
+		const width = signal.width || 0.5;
+
+		const geometry = this.createSquare( width, width );
 
 		geometry.rotateX( 90 * Maths.Deg2Rad );
 
@@ -166,9 +175,9 @@ export class RoadSignalBuilder {
 
 	}
 
-	private createSquare () {
+	private createSquare ( width: number = 1, height: number = 1 ) {
 
-		return new PlaneGeometry( 1, 1 );
+		return new PlaneGeometry( width, height );
 
 
 	}
@@ -192,6 +201,17 @@ export class RoadSignalBuilder {
 		if ( !sign ) {
 
 			const texture = new TextureLoader().load( `assets/signs/default.png` );
+
+			return new MeshBasicMaterial( { map: texture, transparent: true, alphaTest: 0.1, side: FrontSide } );
+
+		} else if ( signal.assetGuid ) {
+
+			const texture = AssetDatabase.getInstance<Texture>( signal.assetGuid );
+
+			if ( !texture ) {
+				console.error( `Texture not found for guid: ${ signal.assetGuid }` );
+				return new MeshBasicMaterial( { color: COLOR.RED } );
+			}
 
 			return new MeshBasicMaterial( { map: texture, transparent: true, alphaTest: 0.1, side: FrontSide } );
 
