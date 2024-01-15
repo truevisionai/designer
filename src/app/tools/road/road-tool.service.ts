@@ -169,6 +169,10 @@ export class RoadToolService {
 
 			this.splineDebug.setState( spline, state );
 
+			spline.getSplineSegments().filter( i => i.isRoad ).forEach( segment => {
+				this.updateRoadNodes( segment.getInstance<TvRoad>() );
+			} );
+
 		}
 
 	}
