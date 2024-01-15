@@ -77,12 +77,6 @@ export class JunctionService {
 
 	}
 
-	updateJunction ( junction: TvJunction ) {
-
-		this.buildJunction( junction );
-
-	}
-
 	removeJunction ( junction: TvJunction ) {
 
 		this.mapService.map.removeJunction( junction );

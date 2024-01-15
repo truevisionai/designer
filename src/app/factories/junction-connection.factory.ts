@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { TvJunctionConnection } from "app/modules/tv-map/models/junctions/tv-junction-connection";
 import { TvLaneCoord } from "app/modules/tv-map/models/tv-lane-coord";
-import { RoadSplineService } from "app/services/road/road-spline.service";
+import { SplineFactory } from "app/services/spline/spline.factory";
 import { RoadFactory } from "./road-factory.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
@@ -16,7 +16,7 @@ import { TvLaneSection } from "app/modules/tv-map/models/tv-lane-section";
 export class JunctionConnectionFactory {
 
 	constructor (
-		private roadSplineService: RoadSplineService,
+		private splineFactory: SplineFactory,
 		private roadFactory: RoadFactory,
 		private laneLinkService: LaneLinkService,
 	) { }
@@ -67,7 +67,7 @@ export class JunctionConnectionFactory {
 
 		maneueverLane.setSuccessor( outgoing.laneId );
 
-		road.spline = this.roadSplineService.createManeuverSpline( incoming, outgoing );
+		road.spline = this.splineFactory.createManeuverSpline( incoming, outgoing );
 
 		road.spline.addRoadSegment( 0, road );
 

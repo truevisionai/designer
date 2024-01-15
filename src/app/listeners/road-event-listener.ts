@@ -1,6 +1,5 @@
 import { MapEvents } from "../events/map-events";
 import { RoadLinkService } from "app/services/road/road-link.service";
-import { RoadSplineService } from "app/services/road/road-spline.service";
 import { Injectable } from "@angular/core";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { RoadObjectService } from "app/tools/marking-line/road-object.service";
@@ -14,6 +13,7 @@ import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { RoadRemovedEvent } from "../events/road/road-removed-event";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { RoadManager } from "app/managers/road-manager";
+import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +23,7 @@ export class RoadEventListener {
 	constructor (
 		private mapService: MapService,
 		private roadService: RoadService,
-		private roadSplineService: RoadSplineService,
+		private segmentService: SplineSegmentService,
 		private roadLinkService: RoadLinkService,
 		private roadObjectService: RoadObjectService,
 		private intersectionService: IntersectionService,
@@ -73,7 +73,7 @@ export class RoadEventListener {
 
 		} else {
 
-			this.roadSplineService.removeRoadSegment( event.road );
+			this.segmentService.removeRoadSegment( event.road.spline, event.road );
 
 		}
 

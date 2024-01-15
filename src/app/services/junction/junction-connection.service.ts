@@ -3,15 +3,13 @@ import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadCoord } from "../../modules/tv-map/models/TvRoadCoord";
 import { TvContactPoint, TvLaneSide, TvLaneType } from "../../modules/tv-map/models/tv-common";
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
-import { RoadSplineService } from '../road/road-spline.service';
+import { SplineFactory } from '../spline/spline.factory';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
 import { RoadService } from '../road/road.service';
 import { TrafficRule } from 'app/modules/tv-map/models/traffic-rule';
 import { MapService } from '../map.service';
-import { ConnectionManager } from 'app/managers/connection.manager';
 import { JunctionConnectionFactory } from 'app/factories/junction-connection.factory';
-import { LaneSectionFactory } from 'app/factories/lane-section.factory';
 import { LaneLinkService } from './lane-link.service';
 import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
 
@@ -22,11 +20,9 @@ export class JunctionConnectionService {
 
 	constructor (
 		private roadService: RoadService,
-		private roadSplineService: RoadSplineService,
+		private splineFactory: SplineFactory,
 		private mapService: MapService,
-		private connectionManager: ConnectionManager,
 		private coonectionFactory: JunctionConnectionFactory,
-		private laneSectionFactory: LaneSectionFactory,
 		private linkService: LaneLinkService
 	) {
 	}
@@ -68,7 +64,7 @@ export class JunctionConnectionService {
 
 		const road = this.roadService.createSingleLaneRoad( width );
 
-		road.spline = this.roadSplineService.createManeuverSpline( coordA, coordB );
+		road.spline = this.splineFactory.createManeuverSpline( coordA, coordB );
 
 		return road;
 
@@ -156,7 +152,9 @@ export class JunctionConnectionService {
 			outgoing.road
 		);
 
-		this.roadSplineService.rebuildSpline( connectingRoad.spline );
+		this.roadService.addRoad( connection.connectingRoad );
+
+		// this.splineService.updateSpline( connectingRoad.spline );
 
 		this.linkService.createDrivingLinks( connection, incoming, outgoing );
 
@@ -175,7 +173,7 @@ export class JunctionConnectionService {
 
 			this.roadService.addRoad( connection.connectingRoad );
 
-			this.roadSplineService.rebuildSpline( connection.connectingRoad.spline );
+			// this.splineService.updateSpline( connection.connectingRoad.spline );
 
 		}
 
@@ -185,7 +183,7 @@ export class JunctionConnectionService {
 
 			this.roadService.addRoad( connection.connectingRoad );
 
-			this.roadSplineService.rebuildSpline( connection.connectingRoad.spline );
+			// this.splineService.updateSpline( connection.connectingRoad.spline );
 
 		}
 

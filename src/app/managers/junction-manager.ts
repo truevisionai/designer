@@ -2,10 +2,9 @@ import { Injectable } from "@angular/core";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { MapService } from "app/services/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
-import { RoadSplineService } from "app/services/road/road-spline.service";
 import { RoadService } from "app/services/road/road.service";
+import { SplineService } from "app/services/spline/spline.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -13,10 +12,9 @@ import { RoadService } from "app/services/road/road.service";
 export class JunctionManager {
 
 	constructor (
-		private roadSplineService: RoadSplineService,
+		private splineService: SplineService,
 		private roadLinkService: RoadLinkService,
 		private roadService: RoadService,
-		private mapService: MapService,
 		private roadFactory: RoadFactory,
 	) {
 	}
@@ -95,9 +93,13 @@ export class JunctionManager {
 
 			}
 
-			spline.removeSegment( junction );
+			if ( spline.findSegment( junction ) ) {
 
-			this.roadSplineService.rebuildSpline( spline );
+				spline.removeSegment( junction );
+
+			}
+
+			this.splineService.updateSpline( spline );
 		}
 	}
 

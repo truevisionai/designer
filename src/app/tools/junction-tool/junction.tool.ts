@@ -194,7 +194,7 @@ export class JunctionTool extends BaseTool {
 
 		if ( object instanceof TvJunction ) {
 
-			MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( object ) );
+			this.tool.removeJunction( object );
 
 		}
 

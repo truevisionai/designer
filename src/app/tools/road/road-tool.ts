@@ -27,12 +27,6 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { OnRoadMovingStrategy } from "../../core/snapping/move-strategies/on-road-moving.strategy";
 import { RoadPosition } from "../../modules/scenario/models/positions/tv-road-position";
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { RoadCreatedEvent } from "../../events/road/road-created-event";
-import { RoadUpdatedEvent } from "../../events/road/road-updated-event";
-import { RoadRemovedEvent } from "../../events/road/road-removed-event";
-import { SplineCreatedEvent } from "../../events/spline/spline-created-event";
-import { SplineRemovedEvent } from "../../events/spline/spline-removed-event";
-import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { AssetDatabase } from 'app/core/asset/asset-database';
@@ -126,6 +120,13 @@ export class RoadTool extends BaseTool {
 		this.tool.selection.reset();
 
 		this.tool.base.reset();
+
+		this.tool.roadService.roads.forEach( road => {
+			this.tool.removeHighlight();
+			this.tool.removeSplineVisuals( road.spline );
+			this.tool.hideSplineVisuals( road.spline );
+		} );
+
 	}
 
 	onAssetDropped ( asset: AssetNode, position: Vector3 ) {
@@ -164,7 +165,7 @@ export class RoadTool extends BaseTool {
 
 	createSpline ( position: Vector3 ) {
 
-		const spline = this.tool.roadSplineService.getNewSpline();
+		const spline = this.tool.splineFactory.getNewSpline();
 
 		const point = this.tool.controlPointService.createSplineControlPoint( spline, position );
 
@@ -384,8 +385,6 @@ export class RoadTool extends BaseTool {
 
 			this.tool.addSpline( object );
 
-			MapEvents.splineCreated.emit( new SplineCreatedEvent( object ) );
-
 		} else if ( object instanceof SplineControlPoint ) {
 
 			this.onControlPointAdded( object );
@@ -414,8 +413,6 @@ export class RoadTool extends BaseTool {
 
 	onSplineRemoved ( spline: AbstractSpline ) {
 
-		MapEvents.splineRemoved.emit( new SplineRemovedEvent( spline ) );
-
 		this.tool.removeSpline( spline );
 
 	}
@@ -436,7 +433,7 @@ export class RoadTool extends BaseTool {
 
 	onSplineUpdated ( spline: AbstractSpline ) {
 
-		MapEvents.splineUpdated.emit( new SplineUpdatedEvent( spline ) );
+		this.tool.udpateSpline( spline );
 
 		this.tool.clear();
 

@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AutoSpline } from 'app/core/shapes/auto-spline';
-import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-common';
 import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
@@ -12,7 +10,7 @@ import { BaseToolService } from 'app/tools/base-tool.service';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
-import { RoadSplineService } from './road-spline.service';
+import { SplineFactory } from '../spline/spline.factory';
 import { JunctionConnectionService } from '../junction/junction-connection.service';
 import { LaneLinkService } from '../junction/lane-link.service';
 import { RoadService } from './road.service';
@@ -27,7 +25,7 @@ export class RoadRampService {
 	constructor (
 		public base: BaseToolService,
 		public debug: DebugDrawService,
-		public roadSplineService: RoadSplineService,
+		public roadSplineService: SplineFactory,
 		private junctionConnection: JunctionConnectionService,
 		private laneLink: LaneLinkService,
 		public roadService: RoadService,

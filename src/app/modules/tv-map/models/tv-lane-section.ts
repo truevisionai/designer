@@ -1004,13 +1004,12 @@ export class TvLaneSection {
 
 		if ( targetLane.id === 0 ) return null;
 
-		const isRight = targetLane.id < 0;
-
 		let closestLane: TvLane | null = null;
 
 		for ( let i = 0; i < lanes.length; i++ ) {
 
-			const currentLaneId = isRight ? -i : i;
+			const currentLaneId = targetLane.isRight ? -i : i;
+
 			const currentLane = lanes[ i ];
 
 			if ( currentLane.type != targetLane.type ) continue;

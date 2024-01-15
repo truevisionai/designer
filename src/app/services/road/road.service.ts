@@ -3,7 +3,7 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { BaseService } from '../base.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { RoadSplineService } from './road-spline.service';
+import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map.service';
 import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
 import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
@@ -21,6 +21,7 @@ import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
+import { SplineService } from '../spline/spline.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -28,9 +29,10 @@ import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
 export class RoadService {
 
 	constructor (
-		private roadSplineService: RoadSplineService,
+		private splineFactory: SplineFactory,
+		private splineService: SplineService,
 		private mapService: MapService,
-		private splineService: AbstractSplineDebugService,
+		private splineDebugService: AbstractSplineDebugService,
 		private baseService: BaseService,
 		private roadFactory: RoadFactory,
 		private roadObjectService: RoadObjectService
@@ -131,7 +133,7 @@ export class RoadService {
 
 	createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ) {
 
-		const spline = this.roadSplineService.createSplineFromNodes( firstNode, secondNode );
+		const spline = this.splineFactory.createSplineFromNodes( firstNode, secondNode );
 
 		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
 
@@ -145,31 +147,31 @@ export class RoadService {
 
 	showSpline ( road: TvRoad ) {
 
-		this.splineService.show( road.spline );
+		this.splineDebugService.show( road.spline );
 
 	}
 
 	hideSpline ( road: TvRoad ) {
 
-		this.splineService.hide( road.spline );
+		this.splineDebugService.hide( road.spline );
 
 	}
 
 	showControlPoints ( road: TvRoad ) {
 
-		this.splineService.showControlPoints( road.spline );
+		this.splineDebugService.showControlPoints( road.spline );
 
 	}
 
 	hideControlPoints ( road: TvRoad ) {
 
-		this.splineService.hideControlPoints( road.spline );
+		this.splineDebugService.hideControlPoints( road.spline );
 
 	}
 
 	updateSplineGeometries ( road: TvRoad ) {
 
-		this.roadSplineService.updateRoadSpline( road.spline );
+		this.splineService.updateRoadSpline( road.spline );
 
 	}
 
@@ -262,14 +264,6 @@ export class RoadService {
 
 		this.mapService.map.addRoad( road );
 
-		this.mapService.map.addSpline( road.spline );
-
-		this.updateRoadGeometries( road );
-
-		if ( road.gameObject ) {
-			this.mapService.map.gameObject.add( road.gameObject );
-		}
-
 		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
 	}
 
@@ -314,10 +308,6 @@ export class RoadService {
 			this.roadObjectService.removeObject3d( object );
 
 		} );
-
-		// this.roadSplineService.removeRoadSegment( road );
-
-		this.roadSplineService.rebuildSpline( road.spline );
 
 		this.mapService.map.gameObject.remove( road.gameObject );
 
@@ -414,7 +404,7 @@ export class RoadService {
 
 		const road = this.createNewRoad();
 
-		road.spline = this.roadSplineService.createConnectingRoadSpline( road, incoming, outgoing );
+		road.spline = this.splineFactory.createConnectingRoadSpline( road, incoming, outgoing );
 
 		road.setJunction( junction );
 

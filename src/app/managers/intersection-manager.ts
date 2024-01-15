@@ -2,10 +2,11 @@ import { Injectable } from "@angular/core";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
 import { IntersectionService } from "app/services/junction/intersection.service";
-import { JunctionManager } from "./junction-manager";
-import { RoadSplineService } from "app/services/road/road-spline.service";
-import { JunctionService } from "app/services/junction/junction.service";
 import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
+import { SplineBuilder } from "app/services/spline/spline.builder";
+import { JunctionManager } from "./junction-manager";
+import { JunctionFactory } from "app/factories/junction.factory";
+import { MapService } from "app/services/map.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -13,9 +14,11 @@ import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
 export class IntersectionManager {
 
 	constructor (
+		private mapService: MapService,
 		private intersectionService: IntersectionService,
-		private junctionService: JunctionService,
-		private roadSplineService: RoadSplineService,
+		private junctionManager: JunctionManager,
+		private splineBuilder: SplineBuilder,
+		private junctionFactory: JunctionFactory,
 	) { }
 
 	updateIntersections ( spline: AbstractSpline ) {
@@ -41,17 +44,19 @@ export class IntersectionManager {
 			);
 
 			if ( !junction ) {
-				throw new Error( 'Could not create junction' );
+				console.error( 'Could not create junction' );
 				return;
 			}
 
 			this.intersectionService.postProcessJunction( junction );
 
-			this.junctionService.addJunction( junction );
+			this.mapService.map.addJunctionInstance( junction );
 
-			this.roadSplineService.rebuildSpline( item.spline );
+			this.junctionManager.addJunction( junction );
 
-			this.roadSplineService.rebuildSpline( item.otherSpline );
+			this.splineBuilder.buildSpline( item.spline );
+
+			this.splineBuilder.buildSpline( item.otherSpline );
 
 		}
 
@@ -69,16 +74,14 @@ export class IntersectionManager {
 
 	removeJunction ( junction: TvJunction ) {
 
-		this.junctionService.removeJunction( junction );
+		this.junctionManager.removeJunction( junction );
 
 	}
 
 
 	createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {
 
-		let junction: TvJunction;
-
-		junction = this.junctionService.createNewJunction();
+		const junction = this.junctionFactory.createJunction();
 
 		for ( let i = 0; i < coords.length; i++ ) {
 

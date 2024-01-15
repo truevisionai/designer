@@ -7,15 +7,13 @@ import { Box3, Vector3 } from 'three';
 import { JunctionConnectionService } from './junction-connection.service';
 import { JunctionService } from './junction.service';
 import { RoadService } from '../road/road.service';
-import { RoadSplineService } from '../road/road-spline.service';
+import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { MapEvents } from 'app/events/map-events';
-import { RoadCreatedEvent } from 'app/events/road/road-created-event';
-import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
-import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { RoadLinkService } from '../road/road-link.service';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { SplineSegmentService } from '../spline/spline-segment.service';
 
 export class SplineIntersection {
 	spline: AbstractSpline;
@@ -31,10 +29,11 @@ export class IntersectionService {
 	constructor (
 		private mapService: MapService,
 		private roadService: RoadService,
-		private roadSplineService: RoadSplineService,
+		private splineFactory: SplineFactory,
 		private junctionService: JunctionService,
 		private junctionConnectionService: JunctionConnectionService,
 		private linkService: RoadLinkService,
+		private segmentService: SplineSegmentService,
 	) { }
 
 	getRoadIntersectionPoint ( roadA: TvRoad, roadB: TvRoad, stepSize = 1 ): Vector3 | null {
@@ -401,7 +400,7 @@ export class IntersectionService {
 			const sStartJunction = coord.road.sStart + coord.s - junctionWidth;
 			const sEndJunction = coord.road.sStart + coord.s + junctionWidth;
 
-			this.roadSplineService.addJunctionSegment( coord.road.spline, sStartJunction, junction );
+			this.segmentService.addJunctionSegment( coord.road.spline, sStartJunction, junction );
 
 			if ( sEndJunction < coord.road.spline.getLength() ) {
 
@@ -409,7 +408,7 @@ export class IntersectionService {
 
 				newRoad.sStart = sEndJunction;
 
-				this.roadSplineService.addRoadSegmentNew( coord.road.spline, newRoad.sStart, newRoad );
+				this.segmentService.addRoadSegmentNew( coord.road.spline, newRoad.sStart, newRoad );
 
 				// set junction as predecessor of new road
 				// |ROAD====>|JUNCTIION|====>NEWROAD|

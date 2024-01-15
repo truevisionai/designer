@@ -36,7 +36,15 @@ export class RoadManager {
 
 		this.mapService.setRoadOpacity( road );
 
+		this.updateRoadGeometries( road );
+
 		this.buildRoad( road );
+
+		this.mapService.map.addSpline( road.spline );
+
+		if ( road.gameObject ) {
+			this.mapService.map.gameObject.add( road.gameObject );
+		}
 
 	}
 
@@ -112,8 +120,9 @@ export class RoadManager {
 
 		this.roadBuilder.rebuildRoad( road );
 
-		// or
-		return;
+	}
+
+	private updateRoadGeometries ( road: TvRoad ) {
 
 		const segment = road.spline.findSegment( road );
 
@@ -124,8 +133,6 @@ export class RoadManager {
 		if ( segment.geometries.length == 0 ) return;
 
 		segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-
-		this.roadBuilder.rebuildRoad( road );
 
 	}
 

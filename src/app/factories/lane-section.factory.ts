@@ -162,6 +162,10 @@ export class LaneSectionFactory {
 
 	}
 
+	/**
+	 * Creates a lane section for a connecting road.
+	 * Only right lanes are created.
+	 */
 	createForConnectingRoad ( connectingRoad: TvRoad, predecessor: TvRoadCoord, successor: TvRoadCoord ): TvLaneSection[] {
 
 		const laneSection = this.createLaneSection( connectingRoad );
@@ -246,6 +250,14 @@ export class LaneSectionFactory {
 
 	}
 
+	/**
+	 *
+	 * @param connection
+	 * @param predecessor
+	 * @param successor
+	 * @returns
+	 * @deprecated not working
+	 */
 	createForSingleManeuver ( connection: TvJunctionConnection, predecessor: TvRoadCoord, successor: TvRoadCoord ): TvLaneSection {
 
 		const laneSection = this.createLaneSection( connection.connectingRoad );

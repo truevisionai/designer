@@ -1,16 +1,16 @@
 import { Injectable } from "@angular/core";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map.service";
-import { JunctionManager } from "./junction-manager";
 import { RoadManager } from "./road-manager";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { SplineSegment } from "app/core/shapes/spline-segment";
-import { RoadSplineService } from "app/services/road/road-spline.service";
 import { RoadService } from "app/services/road/road.service";
 import { IntersectionManager } from "./intersection-manager";
 import { Box3 } from "three";
 import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
-import { JunctionService } from "app/services/junction/junction.service";
+import { SplineBuilder } from "app/services/spline/spline.builder";
+import { JunctionManager } from "./junction-manager";
+import { RoadFactory } from "app/factories/road-factory.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,10 +20,11 @@ export class SplineManager {
 	constructor (
 		private mapService: MapService,
 		private roadManager: RoadManager,
-		private roadSplineService: RoadSplineService,
 		private roadService: RoadService,
 		private intersectionManager: IntersectionManager,
-		private junctionService: JunctionService,
+		private splineBuilder: SplineBuilder,
+		private junctionManager: JunctionManager,
+		private roadFactory: RoadFactory,
 	) { }
 
 	createSpline ( spline: AbstractSpline ) {
@@ -66,7 +67,9 @@ export class SplineManager {
 
 		for ( const junction of junctions ) {
 
-			this.junctionService.removeJunction( junction );
+			this.junctionManager.removeJunction( junction );
+
+			this.mapService.map.removeJunction( junction );
 
 		}
 
@@ -74,7 +77,9 @@ export class SplineManager {
 
 		for ( const road of roads ) {
 
-			this.roadService.removeRoad( road );
+			this.roadManager.removeRoad( road );
+
+			this.mapService.map.removeRoad( road );
 
 		}
 
@@ -86,11 +91,9 @@ export class SplineManager {
 
 				const road = segment.getInstance<TvRoad>();
 
-				this.roadService.removeRoad( road );
+				this.roadManager.removeRoad( road );
 
-			} else if ( segment.isJunction ) {
-
-				// throw new Error( "method not implemented" );
+				this.mapService.map.removeRoad( road );
 
 			}
 
@@ -114,7 +117,7 @@ export class SplineManager {
 
 		} else if ( lastSegment?.isJunction ) {
 
-			throw new Error( "method not implemented" );
+			console.error( "method not implemented" );
 
 		}
 
@@ -134,7 +137,7 @@ export class SplineManager {
 
 		} else if ( firstSegment?.isJunction ) {
 
-			throw new Error( "method not implemented" );
+			console.error( "method not implemented" );
 
 		}
 
@@ -226,7 +229,7 @@ export class SplineManager {
 
 		this.addDefaulSegment( spline, firstSegment );
 
-		this.roadSplineService.rebuildSpline( spline );
+		this.splineBuilder.buildSpline( spline );
 
 	}
 
@@ -247,7 +250,9 @@ export class SplineManager {
 
 			} else {
 
-				road = this.roadService.createDefaultRoad();
+				road = this.roadFactory.createDefaultRoad();
+
+				this.mapService.map.addRoad( road );
 
 			}
 
@@ -255,7 +260,7 @@ export class SplineManager {
 
 			spline.addRoadSegment( 0, road );
 
-			this.roadService.addRoad( road );
+			this.roadManager.addRoad( road );
 		}
 	}
 
@@ -283,16 +288,32 @@ export class SplineManager {
 
 					road.computeBoundingBox();
 
-					boundingBox.union( road.boundingBox );
+					if ( road.boundingBox ) {
+
+						boundingBox.union( road.boundingBox );
+
+					} else {
+
+						console.error( "road.boundingBox is null", road );
+
+					}
 
 				}
-
 
 			}
 
 		}
 
-		spline.boundingBox = boundingBox;
+		if ( boundingBox ) {
+
+			spline.boundingBox = boundingBox;
+
+		} else {
+
+			console.error( "boundingBox is null", spline );
+
+		}
+
 	}
 }
 

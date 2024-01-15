@@ -1,161 +1,20 @@
 import { Injectable } from '@angular/core';
 import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Mesh, Vector3 } from 'three';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { MapService } from '../map.service';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
-import { BaseService } from '../base.service';
-import { GameObject } from 'app/core/game-object';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
-import { SplineSegmentType } from 'app/core/shapes/spline-segment';
-import { TvJunction } from "../../modules/tv-map/models/junctions/tv-junction";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadSplineService {
+export class SplineFactory {
 
-	constructor (
-		private mapService: MapService,
-		public spline: AbstractSplineDebugService,
-		private baseService: BaseService,
-	) {
-
-	}
-
-	addJunctionSegment ( spline: AbstractSpline, sStart: number, junction: TvJunction ) {
-
-		if ( sStart >= spline.getLength() ) {
-			throw new Error( 'Start must be less than end' );
-			return;
-		}
-
-		if ( sStart <= 0 ) {
-			throw new Error( 'Start/End must be greater than 0' );
-			return;
-		}
-
-		spline.addJunctionSegment( sStart, junction );
-	}
-
-	addEmptySegment ( spline: AbstractSpline, sStart: number ) {
-
-		if ( sStart >= spline.getLength() ) {
-			throw new Error( 'Start must be less than end' );
-			return;
-		}
-
-		if ( sStart <= 0 ) {
-			throw new Error( 'Start/End must be greater than 0' );
-			return;
-		}
-
-		spline.addSegmentSection( sStart, -1, SplineSegmentType.NONE, null );
-	}
-
-	addRoadSegmentNew ( spline: AbstractSpline, sStart: number, road: TvRoad ) {
-
-		if ( sStart >= spline.getLength() ) {
-			throw new Error( 'Start must be less than end' );
-			return;
-		}
-
-		if ( sStart <= 0 ) {
-			throw new Error( 'Start/End must be greater than 0' );
-			return;
-		}
-
-		spline.addRoadSegment( sStart, road );
-	}
-
-	updateRoadSpline ( spline: AbstractSpline, rebuild: boolean = false ): Mesh[] {
-
-		const meshes: Mesh[] = [];
-
-		if ( spline.controlPoints.length < 2 ) return [];
-
-		spline.update();
-
-		const segments = spline.getSplineSegments();
-
-		for ( let i = 0; i < segments.length; i++ ) {
-
-			const segment = segments[ i ];
-
-			if ( !segment.isRoad ) continue;
-
-			const road = segment.getInstance<TvRoad>();
-
-			road.clearGeometries();
-
-			if ( segment.geometries.length == 0 ) {
-
-				console.error( 'segment.geometries.length == 0', spline );
-
-				continue;
-			}
-
-			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-
-			if ( rebuild ) {
-
-				meshes.push( this.baseService.rebuildRoad( road ) );
-
-			}
-
-		}
-
-		return meshes;
-	}
-
-	rebuildSpline ( spline: AbstractSpline ): void {
-
-		this.updateRoadSpline( spline, true );
-
-	}
-
-	removeRoadSegment ( road: TvRoad ) {
-
-		road.spline?.removeSegment( road );
-
-		if ( road.spline?.getSplineSegments().length == 0 ) {
-
-			this.mapService.map.removeSpline( road.spline );
-
-		}
-
-		// // get road segment and update if next road segment exists
-		// // this is to make sure we maintains gaps if intended
-		// const currentSegment = spline.findSegment( road );
-
-		// if ( currentSegment == null ) return;
-
-		// const nextSegment = spline.getSplineSegments().find( i => i.start > currentSegment.start );
-
-		// if ( nextSegment ) {
-
-		// 	// if next segment exists,
-		// 	currentSegment.makeEmpty();
-
-		// } else {
-
-		// 	spline.removeSegment( road );
-
-		// }
-
-		// if ( spline.getSplineSegments().length == 0 ) {
-
-		// 	this.mapService.map.removeSpline( spline );
-
-		// }
-	}
+	constructor () { }
 
 	createConnectingRoadSpline ( road: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
 
@@ -411,15 +270,4 @@ export class RoadSplineService {
 
 	}
 
-	addSpline ( spline: AbstractSpline ) {
-
-		this.mapService.map.addSpline( spline );
-
-	}
-
-	removeSpline ( spline: AbstractSpline ) {
-
-		this.mapService.map.removeSpline( spline );
-
-	}
 }

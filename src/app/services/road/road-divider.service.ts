@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadService } from './road.service';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { RoadSplineService } from './road-spline.service';
+import { SplineSegmentService } from '../spline/spline-segment.service';
+import { SplineService } from '../spline/spline.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -11,7 +12,8 @@ export class RoadDividerService {
 
 	constructor (
 		private roadService: RoadService,
-		private roadSplineService: RoadSplineService,
+		private segmentService: SplineSegmentService,
+		private splineService: SplineService,
 	) {
 	}
 
@@ -25,19 +27,19 @@ export class RoadDividerService {
 
 		newRoad.sStart = road.sStart + s;
 
-		this.roadSplineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
+		this.segmentService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
 
-		this.roadSplineService.rebuildSpline( road.spline );
+		this.splineService.updateSpline( road.spline );
 
 		return newRoad
 
 	}
 
-	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number  ): TvRoad {
+	cutRoadFromTo ( road: TvRoad, sStart: number, sEnd: number ): TvRoad {
 
 		// TODO: Not used and might need fixes
 
-		this.roadSplineService.addEmptySegment( road.spline, road.sStart + sStart );
+		this.segmentService.addEmptySegment( road.spline, road.sStart + sStart );
 
 		if ( sEnd > road.length ) return;
 
@@ -45,7 +47,7 @@ export class RoadDividerService {
 
 		newRoad.sStart = road.sStart + sEnd;
 
-		this.roadSplineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
+		this.segmentService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
 
 		// update links
 
@@ -62,7 +64,7 @@ export class RoadDividerService {
 
 		}
 
-		this.roadSplineService.rebuildSpline( road.spline );
+		this.splineService.updateSpline( road.spline );
 
 		newRoad.predecessor = null;
 

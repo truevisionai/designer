@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { RoadSplineService } from '../road/road-spline.service';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
 import { BoxGeometry, DoubleSide, ExtrudeGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Shape, Vector3 } from 'three';
@@ -9,10 +8,8 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { SceneService } from '../scene.service';
 import { LaneDirectionHelper } from 'app/modules/tv-map/builders/od-lane-direction-builder';
 import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 import { MapService } from '../map.service';
 
 @Injectable( {
@@ -23,7 +20,7 @@ export class ManeuverService {
 	private static maneuverMeshes: Mesh[] = [];
 	private static entryExitMeshes: Object3D[] = [];
 
-	constructor ( private roadSplineService: RoadSplineService, private mapService: MapService ) { }
+	constructor ( private mapService: MapService ) { }
 
 	createConnectingRoad ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide ) {
 

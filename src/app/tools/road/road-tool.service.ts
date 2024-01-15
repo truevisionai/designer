@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { RoadSplineService } from 'app/services/road/road-spline.service';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseToolService } from '../base-tool.service';
 import { MapService } from 'app/services/map.service';
@@ -13,6 +12,8 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { SplineDebugService } from 'app/services/debug/spline-debug.service';
+import { SplineService } from 'app/services/spline/spline.service';
+import { SplineFactory } from 'app/services/spline/spline.factory';
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,15 +22,16 @@ export class RoadToolService {
 
 	constructor (
 		public selection: SelectionService,
-		public roadSplineService: RoadSplineService,
+		public splineService: SplineService,
 		public base: BaseToolService,
 		public mapService: MapService,
 		public controlPointService: ControlPointFactory,
 		private roadLinkService: RoadLinkService,
 		private roadDebug: RoadDebugService,
 		public roadService: RoadService,
-		private splineService: AbstractSplineDebugService,
+		private splineDebugService: AbstractSplineDebugService,
 		private splineDebug: SplineDebugService,
+		public splineFactory: SplineFactory,
 	) {
 	}
 
@@ -205,18 +207,25 @@ export class RoadToolService {
 
 	unselectSpline ( spline: AbstractSpline ) {
 
-		this.splineService.hideControlPoints( spline );
-		this.splineService.hide( spline );
+		this.splineDebugService.hideControlPoints( spline );
+		this.splineDebugService.hide( spline );
 
 		this.splineDebug.unselect( spline );
 		this.splineDebug.showBorder( spline );
 
 	}
 
+	hideSplineVisuals ( spline: AbstractSpline ) {
+
+		this.splineDebugService.hideControlPoints( spline );
+		this.splineDebugService.hide( spline );
+
+	}
+
 	selectSpline ( spline: AbstractSpline ) {
 
-		this.splineService.showControlPoints( spline );
-		this.splineService.show( spline );
+		this.splineDebugService.showControlPoints( spline );
+		this.splineDebugService.show( spline );
 
 		this.splineDebug.select( spline );
 
@@ -237,7 +246,13 @@ export class RoadToolService {
 
 	addSpline ( spline: AbstractSpline ) {
 
-		this.roadSplineService.addSpline( spline );
+		this.splineService.addSpline( spline );
+
+	}
+
+	udpateSpline ( spline: AbstractSpline ) {
+
+		this.splineService.updateSpline( spline );
 
 	}
 
@@ -245,10 +260,10 @@ export class RoadToolService {
 
 		this.splineDebug.remove( spline );
 
-		this.splineService.hideControlPoints( spline );
-		this.splineService.hide( spline );
+		this.splineDebugService.hideControlPoints( spline );
+		this.splineDebugService.hide( spline );
 
-		// this.roadSplineService.removeSpline( spline );
+		this.splineService.removeSpline( spline );
 
 		this.removeSplineVisuals( spline );
 
