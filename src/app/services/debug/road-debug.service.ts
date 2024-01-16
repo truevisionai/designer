@@ -28,7 +28,7 @@ export class RoadDebugService {
 
 	private lines = new Object3DArrayMap<TvRoad, DebugLine<TvRoad>[]>();
 
-	private nodes = new Object3DArrayMap<TvRoad, DebugLine<TvRoad>[]>();
+	private nodes = new Object3DArrayMap<number, RoadNode[]>();
 
 	private cornerPoints = new Object3DArrayMap<TvRoad, Object3D[]>();
 
@@ -68,8 +68,8 @@ export class RoadDebugService {
 		const startNode = new RoadNode( road, TvContactPoint.START );
 		const endNode = new RoadNode( road, TvContactPoint.END );
 
-		this.nodes.addItem( road, startNode );
-		this.nodes.addItem( road, endNode );
+		this.nodes.addItem( road.id, startNode );
+		this.nodes.addItem( road.id, endNode );
 	}
 
 	upateRoadNodes ( road: TvRoad ) {
@@ -81,7 +81,7 @@ export class RoadDebugService {
 
 	removeRoadNodes ( road: TvRoad ) {
 
-		this.nodes.removeKey( road );
+		this.nodes.removeKey( road.id );
 
 	}
 

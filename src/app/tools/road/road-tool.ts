@@ -245,8 +245,6 @@ export class RoadTool extends BaseTool {
 
 				this.lastRoadClicked = null;
 
-				this.tool.setSplineState( this.selectedSpline, DebugState.DEFAULT );
-
 			}
 
 		}, () => {
@@ -266,12 +264,6 @@ export class RoadTool extends BaseTool {
 		this.tool.removeHighlight();
 
 		this.tool.base.handleMovement( e, ( position ) => {
-
-			if ( position instanceof RoadPosition ) {
-
-				this.tool.setSplineState( position.road.spline, DebugState.HIGHLIGHTED );
-
-			}
 
 			if ( !this.isPointerDown ) return;
 
@@ -414,7 +406,7 @@ export class RoadTool extends BaseTool {
 
 	onSplineRemoved ( spline: AbstractSpline ) {
 
-		this.tool.setSplineState( spline, DebugState.REMOVED );
+		this.tool.removeSpline( spline );
 
 	}
 
@@ -435,8 +427,6 @@ export class RoadTool extends BaseTool {
 	onSplineUpdated ( spline: AbstractSpline ) {
 
 		this.tool.udpateSpline( spline );
-
-		this.tool.setSplineState( spline, DebugState.SELECTED );
 
 	}
 
@@ -506,9 +496,13 @@ export class RoadTool extends BaseTool {
 
 		} else if ( object instanceof TvRoad ) {
 
+			if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
+
 			this.onRoadSelected( object );
 
 		} else if ( object instanceof AbstractSpline ) {
+
+			if ( this.selectedSpline ) this.onObjectUnselected( this.selectedSpline );
 
 			this.tool.setSplineState( object, DebugState.SELECTED );
 
@@ -533,6 +527,10 @@ export class RoadTool extends BaseTool {
 		} else if ( object instanceof AbstractControlPoint ) {
 
 			this.onControlPointUnselected( object );
+
+		} else if ( object instanceof AbstractSpline ) {
+
+			this.tool.setSplineState( object, DebugState.DEFAULT );
 
 		}
 
@@ -560,9 +558,7 @@ export class RoadTool extends BaseTool {
 
 		if ( controlPoint instanceof SplineControlPoint ) {
 
-			if ( controlPoint.spline.controlPoints.length >= 2 ) {
-				this.tool.setSplineState( controlPoint.spline, DebugState.SELECTED );
-			}
+			this.tool.setSplineState( controlPoint.spline, DebugState.SELECTED );
 
 			const segment = controlPoint.spline.getFirstRoadSegment();
 

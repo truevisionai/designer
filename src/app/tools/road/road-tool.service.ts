@@ -151,11 +151,39 @@ export class RoadToolService {
 
 		this.splineService.addSpline( spline );
 
+		this.setSplineState( spline, DebugState.SELECTED );
+
 	}
 
 	udpateSpline ( spline: AbstractSpline ) {
 
 		this.splineService.updateSpline( spline );
+
+		this.setSplineState( spline, DebugState.SELECTED );
+
+		const successor = spline.getSuccessorSpline();
+
+		if ( successor ) {
+
+			this.setSplineState( successor, DebugState.DEFAULT );
+
+		}
+
+		const predecessor = spline.getPredecessorrSpline();
+
+		if ( predecessor ) {
+
+			this.setSplineState( predecessor, DebugState.DEFAULT );
+
+		}
+
+	}
+
+	removeSpline ( spline: AbstractSpline ) {
+
+		this.splineService.removeSpline( spline );
+
+		this.setSplineState( spline, DebugState.REMOVED );
 
 	}
 
@@ -172,7 +200,9 @@ export class RoadToolService {
 			this.splineDebug.setState( spline, state );
 
 			spline.getSplineSegments().filter( i => i.isRoad ).forEach( segment => {
+
 				this.updateRoadNodes( segment.getInstance<TvRoad>() );
+
 			} );
 
 		}
