@@ -42,7 +42,7 @@ export class RoadDividerTool extends BaseTool {
 
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 
-		this.setHint( 'Use LEFT CLICK to divide a road' );
+		this.setHint( 'Use SHIFT + LEFT CLICK to divide a road' );
 
 	}
 
@@ -65,7 +65,7 @@ export class RoadDividerTool extends BaseTool {
 		this.removeLine();
 	}
 
-	onPointerDownSelect ( e: PointerEventData ): void {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
 		this.tool.base.handleSelection( e, ( object ) => {
 
