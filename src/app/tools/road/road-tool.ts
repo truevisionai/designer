@@ -22,13 +22,13 @@ import { Vector3 } from 'three';
 import { Position } from 'app/modules/scenario/models/position';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { OnRoadMovingStrategy } from "../../core/snapping/move-strategies/on-road-moving.strategy";
-import { RoadPosition } from "../../modules/scenario/models/positions/tv-road-position";
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { RoadStyle } from 'app/core/asset/road.style';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugState } from '../../services/debug/debug-state';
+import { RoadPosition } from 'app/modules/scenario/models/positions/tv-road-position';
 
 export class RoadTool extends BaseTool {
 
@@ -117,12 +117,6 @@ export class RoadTool extends BaseTool {
 		this.tool.selection.reset();
 
 		this.tool.base.reset();
-
-		this.tool.roadService.roads.forEach( road => {
-
-			this.tool.setSplineState( road.spline, DebugState.REMOVED );
-
-		} );
 
 	}
 
@@ -264,6 +258,10 @@ export class RoadTool extends BaseTool {
 		this.tool.removeHighlight();
 
 		this.tool.base.handleMovement( e, ( position ) => {
+
+			if ( position instanceof RoadPosition ) {
+				this.tool.setSplineState( position.road.spline, DebugState.HIGHLIGHTED );
+			}
 
 			if ( !this.isPointerDown ) return;
 

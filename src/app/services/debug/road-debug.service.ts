@@ -63,10 +63,10 @@ export class RoadDebugService {
 
 	showRoadNodes ( road: TvRoad ) {
 
-		// const startNode = this.createRoadNode( road, road, 0, 6, COLOR.MAGENTA );
-		// const endNode = this.createRoadNode( road, road, road.length, 6, COLOR.MAGENTA );
-		const startNode = new RoadNode( road, TvContactPoint.START );
-		const endNode = new RoadNode( road, TvContactPoint.END );
+		const startNode = this.createRoadNode( road, road, 0, 6, COLOR.MAGENTA );
+		const endNode = this.createRoadNode( road, road, road.length, 6, COLOR.MAGENTA );
+		// const startNode = new RoadNode( road, TvContactPoint.START );
+		// const endNode = new RoadNode( road, TvContactPoint.END );
 
 		this.nodes.addItem( road.id, startNode );
 		this.nodes.addItem( road.id, endNode );

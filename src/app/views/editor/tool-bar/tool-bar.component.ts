@@ -395,7 +395,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'Pole Prop Tool',
 			description: '',
 			click: () => this.setToolType( ToolType.PolePropTool ),
-			enabled: !Environment.production,
+			enabled: false,//!Environment.production,
 		},
 		{
 			id: 'signal',
@@ -433,7 +433,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Vehicle Tool',
 			click: () => this.setToolType( ToolType.Vehicle ),
-			enabled: true,
+			enabled: Environment.oscEnabled,
 		},
 		{
 			id: 'environment',
@@ -453,7 +453,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 				CommandHistory.execute( command );
 
 			},
-			enabled: true,
+			enabled: Environment.oscEnabled,
 		},
 		// add more tools here...
 	];

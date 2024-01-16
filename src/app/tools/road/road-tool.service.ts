@@ -201,7 +201,15 @@ export class RoadToolService {
 
 			spline.getSplineSegments().filter( i => i.isRoad ).forEach( segment => {
 
-				this.updateRoadNodes( segment.getInstance<TvRoad>() );
+				if ( state === DebugState.REMOVED ) {
+
+					this.roadDebug.removeRoadNodes( segment.getInstance<TvRoad>() );
+
+				} else {
+
+					this.roadDebug.upateRoadNodes( segment.getInstance<TvRoad>() );
+
+				}
 
 			} );
 

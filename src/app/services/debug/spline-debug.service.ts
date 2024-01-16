@@ -326,6 +326,8 @@ export class SplineDebugService {
 
 		this.selected.clear();
 
+		this.splineDebugService.clear();
+
 	}
 
 	addControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
