@@ -8,7 +8,7 @@
 	<div fxFlex="auto">
 		{{ statusService.message }}
 	</div>
-	<div fxFlex="200px">
+	<div fxFlex="200px" *ngIf="oscEnabled">
 		Time: {{ timePassed }}
 	</div>
 	<div fxFlex="200px">

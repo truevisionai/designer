@@ -4,6 +4,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Time } from 'app/core/time';
+import { Environment } from 'app/core/utils/environment';
 import { StatusBarService } from 'app/services/status-bar.service';
 
 @Component( {
@@ -15,7 +16,11 @@ export class StatusBarComponent implements OnInit {
 
 	highlightStatus = false;
 
-	constructor ( public statusService: StatusBarService ) {
+	oscEnabled = Environment.oscEnabled;
+
+	constructor (
+		public statusService: StatusBarService
+	) {
 	}
 
 	get timePassed () {
