@@ -49,6 +49,8 @@ export class LaneWidthManager {
 
 	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
 
+		if ( road.isJunction ) return;
+
 		const currentLaneSection = lane.laneSection;
 		const nextLaneSection = this.nextLaneSection( lane );
 		const ds = Math.min( currentLaneSection.length * 0.2, 16 );
@@ -92,6 +94,8 @@ export class LaneWidthManager {
 	}
 
 	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
+
+		if ( road.isJunction ) return;
 
 		const previousLaneSection = this.previousLaneSection( lane );
 		const currentLaneSection = lane.laneSection;
