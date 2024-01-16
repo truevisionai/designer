@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
@@ -9,12 +10,16 @@ import { Vector2, Vector3 } from 'three';
 describe( 'Service: RoadDivider', () => {
 
 	let base: BaseTest = new BaseTest;
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
 			providers: [ RoadService ],
 			imports: [ HttpClientModule ]
 		} );
+
+		eventServiceProvider = TestBed.get( EventServiceProvider );
+		eventServiceProvider.init();
 	} );
 
 	it( 'should ...', inject( [ RoadService ], ( roadService: RoadService ) => {

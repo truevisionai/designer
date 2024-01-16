@@ -77,6 +77,8 @@ export class IntersectionManager {
 
 		this.junctionManager.removeJunction( junction );
 
+		this.mapService.map.removeJunction( junction );
+
 	}
 
 	createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {

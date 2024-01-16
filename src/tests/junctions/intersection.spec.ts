@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Maths } from 'app/utils/maths';
@@ -13,7 +14,7 @@ describe( 'IntersectionService', () => {
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule ],
+			imports: [ HttpClientModule, MatSnackBarModule ],
 		} );
 
 		roadService = TestBed.inject( RoadService );

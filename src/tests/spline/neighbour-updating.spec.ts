@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineManager } from 'app/managers/spline-manager';
 import { MapService } from 'app/services/map.service';
 import { RoadService } from 'app/services/road/road.service';
@@ -17,7 +18,7 @@ describe( 'RoadTool: UpdateConnectedRoads', () => {
 
 		TestBed.configureTestingModule( {
 			providers: [ RoadService ],
-			imports: [ HttpClientModule ]
+			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
 		roadToolService = TestBed.get( RoadToolService );

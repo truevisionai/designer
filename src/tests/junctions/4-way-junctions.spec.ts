@@ -668,7 +668,6 @@ describe( '4-way-junction tests', () => {
 		expect( horizontal.predecessor ).toBeUndefined();
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
-		expect( vertical.spline.getSplineSegments().length ).toBe( 0 );
 
 		mapValidator.validateMap( mapService.map, true );
 

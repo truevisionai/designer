@@ -7,6 +7,7 @@ import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadManager } from "./road-manager";
 import { RoadService } from "app/services/road/road.service";
 import { RoadFactory } from "app/factories/road-factory.service";
+import { JunctionFactory } from "app/factories/junction.factory";
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,6 +21,7 @@ export class JunctionManager {
 		private splineBuilder: SplineBuilder,
 		private roadService: RoadService,
 		private roadFactory: RoadFactory,
+		private junctionFactory: JunctionFactory,
 	) {
 	}
 
@@ -49,6 +51,7 @@ export class JunctionManager {
 
 		}
 
+		this.junctionFactory.IDService.remove( junction.id );
 	}
 
 	removeJunctionNextSegment ( junction: TvJunction ) {
