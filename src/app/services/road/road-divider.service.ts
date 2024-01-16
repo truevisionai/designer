@@ -53,7 +53,7 @@ export class RoadDividerService {
 
 		if ( road.successor?.isRoad ) {
 
-			const successor = this.roadService.getRoad( road.successor.elementId );
+			const successor = road.successor.getElement<TvRoad>();
 
 			successor.setPredecessorRoad( newRoad, TvContactPoint.END );
 

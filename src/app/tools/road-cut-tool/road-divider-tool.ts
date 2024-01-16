@@ -14,10 +14,7 @@ import { RoadPosition } from 'app/modules/scenario/models/positions/tv-road-posi
 import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-moving.strategy';
 import { RoadDividerToolService } from './road-divider-tool.service';
 import { CommandHistory } from 'app/services/command-history';
-import { MapEvents } from 'app/events/map-events';
 import { AddObjectCommand } from "../../commands/add-object-command";
-import { RoadCreatedEvent } from "../../events/road/road-created-event";
-import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 
 export class RoadDividerTool extends BaseTool {
 
@@ -88,7 +85,9 @@ export class RoadDividerTool extends BaseTool {
 
 		const addCommand = new AddObjectCommand( clone );
 
-		CommandHistory.executeMany( addCommand );
+		const updateCommand = new AddObjectCommand( roadCoord.road );
+
+		CommandHistory.executeMany( addCommand, updateCommand );
 
 		this.setHint( "Modify the new road from Road Tool" );
 

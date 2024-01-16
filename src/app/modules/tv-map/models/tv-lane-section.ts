@@ -1008,14 +1008,20 @@ export class TvLaneSection {
 
 		for ( let i = 0; i < lanes.length; i++ ) {
 
-			const currentLaneId = targetLane.isRight ? -i : i;
-
 			const currentLane = lanes[ i ];
+
+			const currentLaneId = currentLane.id;
+
+			if ( currentLane.id == 0 ) continue;
 
 			if ( currentLane.type != targetLane.type ) continue;
 
+			const currentLaneDiff = Math.abs( Math.abs( currentLaneId ) - Math.abs( targetLane.id ) );
+
+			const closestLaneDiff = closestLane ? Math.abs( Math.abs( closestLane.id ) - Math.abs( targetLane.id ) ) : Infinity;
+
 			// Update closestLane only if it's closer to the requested laneId
-			if ( !closestLane || Math.abs( targetLane.id - currentLaneId ) < Math.abs( targetLane.id - closestLane.id ) ) {
+			if ( !closestLane || currentLaneDiff < closestLaneDiff ) {
 				closestLane = currentLane;
 			}
 

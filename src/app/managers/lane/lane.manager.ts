@@ -4,6 +4,7 @@ import { LaneWidthManager } from "./lane-width.manager";
 import { LaneHeightManager } from "./lane-height.manager";
 import { ParkingLaneManager } from "./parking-lane.manager";
 import { LaneMarkingManager } from "./lane-marking.manager";
+import { LaneLinkManager } from "./lane-link.manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -15,6 +16,7 @@ export class LaneManager {
 		private laneHeightManager: LaneHeightManager,
 		private parkingLaneManager: ParkingLaneManager,
 		private laneMarkingManager: LaneMarkingManager,
+		private laneLinkManager: LaneLinkManager
 	) { }
 
 	onLaneCreated ( lane: TvLane ) {
@@ -27,6 +29,7 @@ export class LaneManager {
 
 		this.laneMarkingManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
+		this.laneLinkManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 	}
 
 	onLaneRemoved ( lane: TvLane ) {

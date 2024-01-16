@@ -101,7 +101,7 @@ export class RoadManager {
 
 			const successor = road.successor.getElement<TvRoad>();
 
-			if ( road.spline == successor.spline ) return;
+			// if ( road.spline == successor.spline ) return;
 
 			this.roadBuilder.rebuildRoad( successor );
 
@@ -111,7 +111,7 @@ export class RoadManager {
 
 			const predecessor = road.predecessor.getElement<TvRoad>();
 
-			if ( road.spline == predecessor.spline ) return;
+			// if ( road.spline == predecessor.spline ) return;
 
 			this.roadBuilder.rebuildRoad( predecessor );
 

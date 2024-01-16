@@ -1402,11 +1402,7 @@ export class TvRoad {
 
 		if ( !this.successor ) return;
 
-		if ( this.successor.isJunction ) return;
-
-		const successorRoad = this.successor.element as TvRoad;
-
-		return successorRoad.getLaneSectionAt( this.successor.contactPoint === TvContactPoint.START ? 0 : successorRoad.length );
+		return this.successor.laneSection
 
 	}
 
@@ -1418,11 +1414,7 @@ export class TvRoad {
 
 		if ( !this.predecessor ) return;
 
-		if ( this.predecessor.isJunction ) return;
-
-		const predecessorRoad = this.predecessor.element as TvRoad;
-
-		return predecessorRoad.getLaneSectionAt( this.predecessor.contactPoint === TvContactPoint.START ? 0 : predecessorRoad.length );
+		return this.predecessor.laneSection;
 
 	}
 

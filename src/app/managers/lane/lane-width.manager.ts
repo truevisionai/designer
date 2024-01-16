@@ -29,11 +29,11 @@ export class LaneWidthManager {
 
 	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
-		lane.width.splice( 0, lane.width.length );
+		this.validateLane( lane );
 
-		const targetWidth = this.getWidthByType( lane.type );
+		this.syncWithPredecessor( road, laneSection, lane );
 
-		this.onLaneCreated( road, laneSection, lane, targetWidth );
+		this.syncWithSuccessor( road, laneSection, lane );
 
 	}
 
@@ -47,7 +47,7 @@ export class LaneWidthManager {
 
 	}
 
-	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth: number ) {
+	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
 
 		const currentLaneSection = lane.laneSection;
 		const nextLaneSection = this.nextLaneSection( lane );
@@ -76,8 +76,8 @@ export class LaneWidthManager {
 				lane.width.splice( lane.width.length - 1, 1 );
 			}
 
-			// lane.addWidthRecord( currentLaneSection.length - ds, width, 0, 0, 0 );
-			lane.addWidthRecord( currentLaneSection.length, width, 0, 0, 0 );
+			lane.addWidthRecord( currentLaneSection.length - ds, width, 0, 0, 0 );
+			lane.addWidthRecord( currentLaneSection.length, 0, 0, 0, 0 );
 
 			TvUtils.computeCoefficients( lane.width, currentLaneSection.length );
 
@@ -91,7 +91,7 @@ export class LaneWidthManager {
 
 	}
 
-	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth: number ) {
+	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
 
 		const previousLaneSection = this.previousLaneSection( lane );
 		const currentLaneSection = lane.laneSection;
@@ -124,8 +124,8 @@ export class LaneWidthManager {
 				lane.width.splice( 0, 1 );
 			}
 
-			lane.addWidthRecord( 0, width, 0, 0, 0 );
-			// lane.addWidthRecord( ds, width, 0, 0, 0 );
+			lane.addWidthRecord( 0, 0, 0, 0, 0 );
+			lane.addWidthRecord( ds, width, 0, 0, 0 );
 
 			TvUtils.computeCoefficients( lane.width, currentLaneSection.length );
 
