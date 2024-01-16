@@ -49,7 +49,7 @@ export class AssetNode {
 				break;
 
 			case AssetType.TEXTURE:
-				response = this.path;
+				response = FileUtils.pathToFileURL( this.path );
 				break;
 
 			case AssetType.MATERIAL:
