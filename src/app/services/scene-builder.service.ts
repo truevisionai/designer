@@ -10,6 +10,7 @@ import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { RoadSignalService } from './signal/road-signal.service';
+import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 
 @Injectable( {
 	providedIn: 'root'
@@ -40,6 +41,8 @@ export class SceneBuilderService {
 		map.getSurfaces().forEach( surface => this.surfaceService.buildSurface( surface ) );
 
 		map.props.forEach( prop => this.buildProp( map, prop ) );
+
+		map.propCurves.forEach( propCurve => this.buildPropCurve( map, propCurve ) );
 
 		SceneService.addToMain( map.gameObject );
 
@@ -90,5 +93,12 @@ export class SceneBuilderService {
 		return scene.getSplines().find( spline => spline.getSplineSegments().find( segment => segment.id === road.id ) );
 
 	}
+
+	buildPropCurve ( map: TvMap, propCurve: PropCurve ): void {
+
+		propCurve.props.forEach( prop => SceneService.addToMain( prop ) );
+
+	}
+
 
 }

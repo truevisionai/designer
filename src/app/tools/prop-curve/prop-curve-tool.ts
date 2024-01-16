@@ -3,18 +3,22 @@
  */
 
 import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { PointerEventData } from 'app/events/pointer-event-data';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { PropModel } from '../../core/models/prop-model.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { FreeMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
 import { PropCurveService } from './prop-curve.service';
-import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
 import { Vector3 } from 'three';
+import { AppInspector } from 'app/core/inspector';
+import { PropCurveInspector } from './prop-curve.inspector';
+import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { AddObjectCommand } from 'app/commands/add-object-command';
+import { CommandHistory } from 'app/services/command-history';
+import { SelectObjectCommand } from 'app/commands/select-object-command';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 
 export class PropCurveTool extends BaseTool {
 
@@ -22,13 +26,17 @@ export class PropCurveTool extends BaseTool {
 
 	public toolType = ToolType.PropCurve;
 
-	private selectedPoint: DynamicControlPoint<PropCurve>;
-
-	private selectedCurve: PropCurve;
-
 	private pointMoved = false;
 
 	private debug = false;
+
+	get selectedCurve (): PropCurve {
+		return this.selectedPoint?.mainObject;
+	}
+
+	get selectedPoint (): SimpleControlPoint<PropCurve> {
+		return this.tool.base.selection.getLastSelected<SimpleControlPoint<PropCurve>>( SimpleControlPoint.name );
+	}
 
 	constructor ( private tool: PropCurveService ) {
 
@@ -42,7 +50,11 @@ export class PropCurveTool extends BaseTool {
 
 		if ( prop ) {
 
-			return new PropModel( prop.guid, prop.data.rotationVariance, prop.data.scaleVariance );
+			return new PropModel(
+				prop.guid,
+				prop.data?.rotationVariance || new Vector3( 0, 0, 0 ),
+				prop.data?.scaleVariance || new Vector3( 0, 0, 0 )
+			);
 
 		}
 
@@ -52,11 +64,11 @@ export class PropCurveTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.base.addSelectionStrategy( new ControlPointStrategy<DynamicControlPoint<PropCurve>>() );
+		this.tool.base.selection.reset();
 
-		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
+		this.tool.base.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
-		this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
+		this.tool.base.setHint( 'use SHIFT + LEFT CLICK to create control point' );
 
 	}
 
@@ -82,52 +94,8 @@ export class PropCurveTool extends BaseTool {
 
 	onPointerDownSelect ( event: PointerEventData ) {
 
-		this.tool.base.handleSelection( event, selected => {
+		this.tool.base.selection.handleSelection( event );
 
-			if ( selected instanceof DynamicControlPoint ) {
-
-				this.selectObject( selected, this.selectedPoint );
-
-			} else if ( selected instanceof PropCurve ) {
-
-				this.selectObject( selected, this.selectedCurve );
-
-			}
-
-		}, () => {
-
-			if ( this.selectedCurve ) {
-
-				this.unselectObject( this.selectedCurve );
-
-			} else if ( this.selectedPoint ) {
-
-				this.unselectObject( this.selectedPoint );
-
-			}
-
-		} );
-
-		// const point = this.selectStrategy.onPointerDown( event );
-
-		// if ( point ) {
-
-		// 	if ( point == this.point ) return;
-
-		// 	const cmd = new SelectPointCommand( this, point, DynamicInspectorComponent, point );
-
-		// 	CommandHistory.execute( cmd );
-
-		// 	this.setHint( 'Drag control point using LEFT CLICK is down' );
-
-		// 	return;
-		// }
-
-		// if ( !this.point ) return;
-
-		// CommandHistory.execute( new SelectPointCommand( this, null, null, null ) );
-
-		// this.setHint( 'Use LEFT CLICK to select control point or use SHIFT + LEFT CLICK to create control point' );
 	}
 
 	onPointerDownCreate ( event: PointerEventData ) {
@@ -138,79 +106,54 @@ export class PropCurveTool extends BaseTool {
 
 		if ( !this.prop ) return;
 
-		this.tool.base.handleMovement( event, position => {
+		if ( !event.point ) return;
 
-			if ( position instanceof WorldPosition ) {
+		if ( this.selectedCurve ) {
 
-				if ( this.selectedCurve ) {
+			this.addCurvePoint( this.selectedCurve, event.point );
 
-					this.addCurvePoint( this.selectedCurve, position.position );
+		} else {
 
-				} else {
+			this.createPropCurve( event.point );
 
-					this.createPropCurve( position.position );
+		}
 
-				}
-
-			}
-
-		} );
-
-		// if ( !this.point ) {
-
-		// 	const point = new DynamicControlPoint<PropCurve>( null, event.point );
-
-		// 	const command = new CreatePropCurveCommand( this, this.prop, point )
-
-		// 	CommandHistory.execute( command );
-
-		// 	this.setHint( 'Add one more control point to create curve' );
-
-		// } else {
-
-		// 	const point = new DynamicControlPoint<PropCurve>( this.point.mainObject, event.point );
-
-		// 	const command = new AddPropCurvePointCommand( this, this.point.mainObject, point )
-
-		// 	CommandHistory.execute( command );
-
-		// 	this.setHint( 'Add more control points or drag control points to modify curve' );
-		// }
 	}
 
 	onPointerMoved ( event: PointerEventData ): void {
 
-		// this.selectStrategy.onPointerMoved( event );
+		if ( !this.pointerDownAt ) return;
 
-		// if ( !this.point?.isSelected ) return;
+		if ( !this.selectedPoint?.isSelected ) return;
 
-		// if ( !this.pointerDownAt ) return;
+		this.selectedPoint?.position.copy( event.point );
 
-		// const position = this.moveStrategy.getPosition( event );
+		this.selectedPoint?.update();
 
-		// this.point?.position.copy( position.position );
-
-		// this.point?.update();
+		this.tool.updateCurve( this.selectedCurve );
 
 	}
 
 	onPointerUp ( event: PointerEventData ): void {
 
-		// if ( event.button !== MouseButton.LEFT ) return;
+		this.tool.base.highlight( event );
 
-		// if ( !this.point?.isSelected ) return;
+		// if ( !this.selectedPoint ) return;
+
+		// if ( !this.selectedPoint.isSelected ) return;
 
 		// if ( !this.pointerDownAt ) return;
 
-		// const position = this.moveStrategy.getPosition( event );
+		// if ( event.button !== MouseButton.LEFT ) return;
 
-		// if ( position.position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
+		// if ( !this.selectedPoint?.isSelected ) return;
 
-		// const command = new UpdatePositionCommand( this.point, position.position, this.pointerDownAt )
+		// const command = new UpdatePositionCommand( this.selectedPoint, event.point, this.pointerDownAt )
 
 		// CommandHistory.execute( command );
 
 		// this.setHint( 'Use Inspector to modify curve properties' );
+
 	}
 
 	createPropCurve ( position: Vector3 ) {
@@ -221,7 +164,11 @@ export class PropCurveTool extends BaseTool {
 
 		propCurve.addControlPoint( point );
 
-		this.executeAddObject( propCurve );
+		const addCommand = new AddObjectCommand( propCurve );
+
+		const selectCommand = new SelectObjectCommand( point, this.selectedPoint );
+
+		CommandHistory.executeMany( addCommand, selectCommand );
 
 	}
 
@@ -241,7 +188,7 @@ export class PropCurveTool extends BaseTool {
 
 			this.onObjectSelected( object );
 
-		} else if ( object instanceof DynamicControlPoint ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.tool.addPropCurvePoint( this.selectedCurve, object );
 
@@ -251,13 +198,30 @@ export class PropCurveTool extends BaseTool {
 
 	}
 
+	onObjectUpdated ( object: any ): void {
+
+		if ( object instanceof PropCurve ) {
+
+			this.tool.updateCurve( object );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			this.onObjectUpdated( object.mainObject );
+
+		} else if ( object instanceof PropCurveInspector ) {
+
+			this.onObjectUpdated( object.curve );
+
+		}
+	}
+
 	onObjectRemoved ( object: any ): void {
 
 		if ( object instanceof PropCurve ) {
 
 			this.tool.removePropCurve( object );
 
-		} else if ( object instanceof DynamicControlPoint ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.tool.removePropCurvePoint( this.selectedCurve, object );
 
@@ -267,16 +231,37 @@ export class PropCurveTool extends BaseTool {
 
 	onObjectSelected ( object: any ): void {
 
+		console.log( 'onObjectSelected', object );
+
 		if ( object instanceof PropCurve ) {
 
-			this.selectedCurve = object;
+			AppInspector.setDynamicInspector( new PropCurveInspector( object ) );
 
-		} else if ( object instanceof DynamicControlPoint ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
-			this.selectedPoint = object;
+			if ( this.selectedPoint ) this.onObjectUnselected( this.selectedPoint );
+
+			object.select();
+
+			AppInspector.setDynamicInspector( new PropCurveInspector( object.mainObject, object ) );
 
 		}
 
+	}
+
+	onObjectUnselected ( object: any ): void {
+
+		if ( object instanceof PropCurve ) {
+
+			AppInspector.clear();
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			object.unselect();
+
+			AppInspector.clear();
+
+		}
 	}
 
 }

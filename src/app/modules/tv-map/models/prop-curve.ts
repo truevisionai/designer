@@ -2,13 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { SerializedField } from 'app/core/components/serialization';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { Maths } from 'app/utils/maths';
 import { Object3D, Vector3 } from 'three';
 import { AnyControlPoint } from "../../three-js/objects/any-control-point";
-import { AbstractControlPoint } from "../../three-js/objects/abstract-control-point";
 
 export class PropCurve {
 
@@ -19,9 +15,9 @@ export class PropCurve {
 	constructor (
 		public propGuid: string,
 		public spline?: CatmullRomSpline,
-		private _spacing: number = 5.0,
-		private _rotation: number = 0.0,
-		private _positionVariance: number = 0.0,
+		public spacing: number = 5.0,
+		public rotation: number = 0.0,
+		public positionVariance: number = 0.0,
 		public reverse = false,
 	) {
 
@@ -37,101 +33,9 @@ export class PropCurve {
 
 	}
 
-	@SerializedField( { type: 'float', min: 0, max: 100 } )
-	get spacing (): number {
-		return this._spacing;
-	}
-
-	set spacing ( value: number ) {
-		this._spacing = value;
-		this.update();
-	}
-
-	@SerializedField( { type: 'float', min: 0, max: 1 } )
-	get rotation (): number {
-		return this._rotation;
-	}
-
-	set rotation ( value: number ) {
-		this._rotation = value;
-		this.update();
-	}
-
-	@SerializedField( { type: 'float', min: 0, max: 100 } )
-	get positionVariance (): number {
-		return this._positionVariance;
-	}
-
-	set positionVariance ( value: number ) {
-		this._positionVariance = value;
-		this.update();
-	}
-
-	show (): void {
-
-		this.spline.show();
-
-		// SceneService.addToMain( this.spline.mesh );
-
-	}
-
-	hide () {
-
-		this.spline.hide();
-
-		// SceneService.removeFromMain( this.spline.mesh );
-
-	}
-
 	update () {
 
 		this.spline.update();
-
-		this.updateProps();
-
-	}
-
-	updateProps () {
-
-		if ( this.spline.controlPoints.length < 2 ) return;
-
-		const length = ( this.spline as CatmullRomSpline ).getLength();
-
-		if ( length <= 0 ) return;
-
-		this.props.splice( 0, this.props.length );
-
-		const spline = this.spline as CatmullRomSpline;
-
-		const instance = AssetDatabase.getInstance( this.propGuid ) as Object3D;
-
-		for ( let i = 0; i < length; i += this.spacing ) {
-
-			const t = spline.curve.getUtoTmapping( 0, i );
-
-			const point = spline.curve.getPoint( t );
-
-			const prop = instance.clone();
-
-			// apply random position variance
-			const position = new Vector3(
-				point.x + Maths.randomFloatBetween( -this.positionVariance, this.positionVariance ),
-				point.y + Maths.randomFloatBetween( -this.positionVariance, this.positionVariance ),
-				point.z + 0,
-			);
-
-			// apply random rotation variance
-			const rotation = new Vector3(
-				prop.rotation.x + Maths.randomFloatBetween( -this.rotation, this.rotation ),
-				prop.rotation.y + Maths.randomFloatBetween( -this.rotation, this.rotation ),
-				prop.rotation.z + Maths.randomFloatBetween( -this.rotation, this.rotation ),
-			);
-
-			this.addProp( prop, position, rotation, prop.scale );
-
-			this.props.push( prop );
-
-		}
 
 	}
 
@@ -145,8 +49,6 @@ export class PropCurve {
 
 		this.props.push( prop );
 
-		// TvMapInstance.addProp( prop );
-
 	}
 
 	addControlPoint ( cp: AnyControlPoint ) {
@@ -154,60 +56,6 @@ export class PropCurve {
 		( this.spline as CatmullRomSpline ).add( cp );
 
 		this.update();
-	}
-
-	bake () {
-
-		// // not used currently
-
-		// this.props.forEach( object => {
-
-		// 	const prop = new PropInstance( this.propGuid, object );
-
-		// 	object.position.copy( object.position );
-
-		// 	// prop.point = AnyControlPoint.create( prop.guid, object.position );
-
-		// 	// prop.point.mainObject = prop;
-
-		// 	TvMapInstance.map.props.push( prop );
-
-		// } );
-
-	}
-
-	//delete () {
-	//
-	//	this.props.forEach( prop => TvMapInstance.map.gameObject.remove( prop ) );
-	//
-	//	this.props.forEach( prop => SceneService.removeFromMain( prop ) );
-	//
-	//	this.props.splice( 0, this.props.length );
-	//
-	//	SceneService.removeFromMain( this.spline.mesh );
-	//
-	//	this.spline.controlPoints.forEach( cp => {
-	//
-	//		this.spline.removeControlPoint( cp );
-	//
-	//	} );
-	//
-	//	this.spline.hide();
-	//
-	//}
-
-	removeControlPoint ( point: AbstractControlPoint ) {
-
-		const index = this.spline.controlPoints.indexOf( point );
-
-		if ( index > -1 ) {
-
-			this.spline.removeControlPoint( point );
-
-		}
-
-		this.update();
-
 	}
 
 }

@@ -22,6 +22,7 @@ import { AddPropPolygonPointCommand } from './add-prop-polygon-point-command';
 // import { CreatePropPolygonCommand } from './create-prop-polygon-command';
 import { SelectMainObjectCommand } from "../../commands/select-main-object-command";
 import { PropPolygonToolService } from "./prop-polygon-tool.service";
+import { Vector3 } from 'three';
 
 export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
 
@@ -56,7 +57,11 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 		if ( prop ) {
 
-			return new PropModel( prop.guid, prop.data.rotationVariance, prop.data.scaleVariance );
+			return new PropModel(
+				prop.guid,
+				prop.data.rotationVariance || new Vector3( 0, 0, 0 ),
+				prop.data.scaleVariance || new Vector3( 0, 0, 0 )
+			);
 
 		}
 

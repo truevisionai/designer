@@ -3,7 +3,7 @@
   -->
 <mat-toolbar #toolbar
 	class="app-toolbar native-border">
-	<ng-container *ngFor="let tool of enabledTools|slice:0:18">
+	<ng-container *ngFor="let tool of enabledTools|slice:0:24">
 		<button (click)="tool.click()"
 			(mouseout)="onMouseOut(tool)"
 			(mouseover)="onMouseOver(tool)"
@@ -30,9 +30,9 @@
 </mat-toolbar>
 
 <!-- second row -->
-<mat-toolbar #toolbar
+<!-- <mat-toolbar #toolbar
 	class="app-toolbar native-border">
-	<ng-container *ngFor="let tool of enabledTools|slice:18:32">
+	<ng-container *ngFor="let tool of enabledTools|slice:24:32">
 		<button (click)="tool.click()"
 			(mouseout)="onMouseOut(tool)"
 			(mouseover)="onMouseOver(tool)"
@@ -56,4 +56,4 @@
 			<div [innerHTML]="mouseOnTool.description | translate"></div>
 		</div>
 	</sat-popover>
-</mat-toolbar>
+</mat-toolbar> -->

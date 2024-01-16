@@ -5,26 +5,27 @@ import { PropModel } from 'app/core/models/prop-model.model';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
 import { Object3D, Vector3 } from 'three';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
-import { SceneService } from 'app/services/scene.service';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { Maths } from 'app/utils/maths';
-import { SelectionService } from '../selection.service';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { Object3DArrayMap, Object3DMap } from '../lane-width/object-3d-map';
+import { PropCurveBuilder } from './prop-curve.builder';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class PropCurveService {
 
-	// private pointMap = new Object3DArrayMap<AbstractSpline, AbstractControlPoint[]>();
+	private points = new Object3DArrayMap<AbstractSpline, AbstractControlPoint[]>();
+	private lines = new Object3DMap<PropCurve, Object3D>();
 
 	constructor (
 		public base: BaseToolService,
 		private mapService: MapService,
 		private splineService: AbstractSplineDebugService,
 		private controlPointFactory: ControlPointFactory,
-		public selection: SelectionService
+		private builder: PropCurveBuilder,
 	) {
 	}
 
@@ -58,7 +59,7 @@ export class PropCurveService {
 
 	}
 
-	addPropCurvePoint ( curve: PropCurve, point: DynamicControlPoint<PropCurve> ) {
+	addPropCurvePoint ( curve: PropCurve, point: SimpleControlPoint<PropCurve> ) {
 
 		this.splineService.addControlPoint( curve.spline, point );
 
@@ -67,58 +68,11 @@ export class PropCurveService {
 
 	updateCurve ( curve: PropCurve ) {
 
-		curve.spline.update();
-
-		curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
-
-		if ( curve.spline.controlPoints.length < 2 ) return;
-
-		const length = curve.spline.getLength();
-
-		if ( length <= 0 ) return;
-
-		curve.props.forEach( prop => SceneService.removeFromMain( prop ) );
-
-		curve.props.splice( 0, curve.props.length );
-
-		const spline = curve.spline;
-
-		const prop = AssetDatabase.getInstance<Object3D>( curve.propGuid );
-
-		for ( let i = 0; i < length; i += curve.spacing ) {
-
-			const t = spline.curve.getUtoTmapping( 0, i );
-
-			const point = spline.curve.getPoint( t );
-
-			const clone = prop.clone();
-
-			// apply random position variance
-			const position = new Vector3(
-				point.x + Maths.randomFloatBetween( -curve.positionVariance, curve.positionVariance ),
-				point.y + Maths.randomFloatBetween( -curve.positionVariance, curve.positionVariance ),
-				point.z + 0,
-			);
-
-			// apply random rotation variance
-			const rotation = new Vector3(
-				clone.rotation.x + Maths.randomFloatBetween( -curve.rotation, curve.rotation ),
-				clone.rotation.y + Maths.randomFloatBetween( -curve.rotation, curve.rotation ),
-				clone.rotation.z + Maths.randomFloatBetween( -curve.rotation, curve.rotation ),
-			);
-
-			curve.addProp( clone, position, rotation, clone.scale );
-
-			curve.props.push( clone );
-
-		}
-
-
-		curve.props.forEach( prop => SceneService.addToMain( prop ) );
+		this.builder.buildPropCurbe( curve );
 
 	}
 
-	removePropCurvePoint ( curve: PropCurve, point: DynamicControlPoint<PropCurve> ) {
+	removePropCurvePoint ( curve: PropCurve, point: SimpleControlPoint<PropCurve> ) {
 
 		this.splineService.removeControlPoint( curve.spline, point );
 
@@ -128,13 +82,33 @@ export class PropCurveService {
 
 	hidePropCurves () {
 
-		this.mapService.map.propCurves.forEach( curve => curve.hide() );
+		this.mapService.map.propCurves.forEach( curve => {
+
+			curve.spline.hide();
+
+			this.lines.remove( curve );
+
+			this.points.removeKey( curve.spline );
+
+		} );
 
 	}
 
 	showPropCurves () {
 
-		this.mapService.map.propCurves.forEach( curve => curve.show() );
+		this.mapService.map.propCurves.forEach( curve => {
+
+			curve.spline.show();
+
+			this.lines.add( curve, curve.spline.mesh );
+
+			curve.spline.controlPoints.forEach( point => {
+
+				this.points.addItem( curve.spline, point )
+
+			} );
+
+		} );
 
 	}
 
@@ -146,7 +120,7 @@ export class PropCurveService {
 
 	createCurvePoint ( propCurve: PropCurve, position: Vector3 ) {
 
-		return this.controlPointFactory.createDynamic( propCurve, position );
+		return this.controlPointFactory.createSimpleControlPoint( propCurve, position );
 
 	}
 

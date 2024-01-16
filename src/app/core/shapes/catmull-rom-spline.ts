@@ -6,7 +6,6 @@ import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
 import { AbstractSpline, SplineType } from './abstract-spline';
-import { SceneService } from '../../services/scene.service';
 import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
 
@@ -47,7 +46,6 @@ export class CatmullRomSpline extends AbstractSpline {
 
 		this.mesh.frustumCulled = false;
 
-		SceneService.addToolObject( this.mesh );
 	}
 
 	hide (): void {
