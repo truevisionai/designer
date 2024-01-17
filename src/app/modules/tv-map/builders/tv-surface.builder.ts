@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
 import { TvSurface } from '../models/tv-surface.model';
-import { ClampToEdgeWrapping, Mesh, MeshLambertMaterial, MeshStandardMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2 } from 'three';
+import { Mesh, MeshStandardMaterial, RepeatWrapping, Texture } from 'three';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { GameObject } from 'app/core/game-object';
 import { OdTextures } from './od.textures';
+import { SurfaceGeometryBuilder } from 'app/services/surface/surface-geometry.builder';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class TvSurfaceBuilder {
 
-	constructor () { }
+	constructor (
+		private surfaceGeometryBuilder: SurfaceGeometryBuilder
+	) { }
 
 	buildSurface ( surface: TvSurface ): Mesh {
 
@@ -19,18 +22,54 @@ export class TvSurfaceBuilder {
 			return;
 		}
 
-		const points: Vector2[] = surface.spline.controlPoints.map( cp => new Vector2( cp.position.x, cp.position.y ) );
+		const mesh = this.buildMesh( surface );
 
-		const shape = new Shape();
+		mesh.position.set( 0, 0, -0.1 );
 
-		shape.setFromPoints( points );
+		mesh.Tag = TvSurface.tag;
 
-		// OLD CODE FOR SPLINE
-		// const first = points.shift();
-		// shape.moveTo( first.x, first.y );
-		// shape.splineThru( points );
+		mesh.userData.surface = surface;
 
-		const geometry = new ShapeGeometry( shape );
+		return mesh;
+
+	}
+
+	buildMesh ( surface: TvSurface ): GameObject {
+
+		const geometry = this.surfaceGeometryBuilder.createPolygon( surface.spline.controlPoints.map( cp => cp.position ) );
+
+		const material = this.buildMaterial( surface );
+
+		const mesh = new GameObject( 'surface:' + surface.uuid, geometry, material );
+
+		return mesh;
+	}
+
+	buildMaterial ( surface: TvSurface ) {
+
+		const texture = this.buildTexture( surface );
+
+		let material: MeshStandardMaterial;
+
+		if ( !surface.materialGuid || surface.materialGuid === 'grass' ) {
+
+			material = new MeshStandardMaterial( { map: texture } );
+
+		} else {
+
+			material = AssetDatabase.getInstance<MeshStandardMaterial>( surface.materialGuid ).clone();
+
+		}
+
+		material.transparent = surface.transparent;
+
+		material.opacity = surface.opacity;
+
+		return material;
+
+	}
+
+	buildTexture ( surface: TvSurface ) {
 
 		let texture: THREE.Texture;
 
@@ -52,31 +91,7 @@ export class TvSurfaceBuilder {
 
 		texture.repeat.copy( surface.repeat );
 
-		let material: MeshStandardMaterial;
-
-		if ( !surface.materialGuid || surface.materialGuid === 'grass' ) {
-
-			material = new MeshStandardMaterial( { map: texture } );
-
-		} else {
-
-			material = AssetDatabase.getInstance<MeshStandardMaterial>( surface.materialGuid ).clone();
-
-		}
-
-		material.transparent = surface.transparent;
-
-		material.opacity = surface.opacity;
-
-		const mesh = new GameObject( 'surface:' + surface.uuid, geometry, material );
-
-		mesh.position.set( 0, 0, -0.1 );
-
-		mesh.Tag = TvSurface.tag;
-
-		mesh.userData.surface = surface;
-
-		return mesh;
+		return texture;
 
 	}
 

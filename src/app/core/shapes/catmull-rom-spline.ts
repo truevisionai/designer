@@ -6,8 +6,8 @@ import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, LineLoop, Vector3 } from 'three';
 import { AbstractSpline, SplineType } from './abstract-spline';
-import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
 import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
 
 export class CatmullRomSpline extends AbstractSpline {
 
@@ -78,7 +78,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	hideAllTangents () {
 
-		this.controlPoints.forEach( ( cp: AnyControlPoint ) => {
+		this.controlPoints.forEach( ( cp: AbstractControlPoint ) => {
 
 			this.hideTangenAt();
 
@@ -129,7 +129,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
-	add ( point: AnyControlPoint ) {
+	add ( point: AbstractControlPoint ) {
 
 		this.controlPoints.push( point );
 

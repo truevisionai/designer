@@ -18,7 +18,7 @@ const enum ISerializedFieldType {
 	ROAD = 'road',
 }
 
-export interface ISerializedField {
+export interface ISerializedFieldSetting {
 	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array' | 'vector2' | 'vector3' | 'road' | 'entity' | 'gameobject' | 'color' | 'texture' | 'object' | 'material';
 	disabled?: boolean;
 	label?: string;
@@ -29,18 +29,31 @@ export interface ISerializedField {
 	enum?: any;
 }
 
-export function Action ( settings?: any ) {
-	return function ( target: any, propertyKey: string, descriptor: PropertyDescriptor ) {
-		let actions = Reflect.getMetadata( 'actions', target ) || [];
-		actions.push( {
-			name: settings?.name || propertyKey,
-			method: target[ propertyKey ]
-		} );
-		Reflect.defineMetadata( 'actions', actions, target );
-	};
+export interface ISerializedActionSetting {
+	name?: string;
+	label?:string;
+	method?: Function;
+	validate?: Function;
 }
 
-export function SerializedField ( settings: ISerializedField ) {
+export function Action ( settings?: ISerializedActionSetting ) {
+
+	return function ( target: any, propertyKey: string, descriptor: PropertyDescriptor ) {
+
+		let actions = Reflect.getMetadata( 'actions', target ) || [];
+
+		actions.push( {
+			name: settings?.name || settings?.label || propertyKey,
+			method: target[ propertyKey ],
+			validate: settings?.validate || (() => true) // Add a validate property
+		} );
+
+		Reflect.defineMetadata( 'actions', actions, target );
+	};
+
+}
+
+export function SerializedField ( settings: ISerializedFieldSetting ) {
 	return function ( target: any, propertyKey: string ) {
 		Reflect.defineMetadata( 'serializable', true, target, propertyKey );
 		Reflect.defineMetadata( 'fieldSettings', settings, target, propertyKey );

@@ -8,7 +8,7 @@ import { ControlPointStrategy } from 'app/core/snapping/select-strategies/contro
 import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
 import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
 import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
-import { Mesh, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { AppInspector } from 'app/core/inspector';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
@@ -16,9 +16,7 @@ import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { Action, SerializedField } from 'app/core/components/serialization';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { TvSurfaceInspector } from './surface.inspector';
 
 
 export class SurfaceTool extends BaseTool {
@@ -59,7 +57,7 @@ export class SurfaceTool extends BaseTool {
 
 		super.enable();
 
-		this.tool.showSurfaceHelpers();
+		this.tool.onToolEnabled();
 
 	}
 
@@ -69,7 +67,7 @@ export class SurfaceTool extends BaseTool {
 
 		this.tool.base.reset();
 
-		this.tool.hideSurfaceHelpers();
+		this.tool.onToolDisabled();
 
 	}
 
@@ -197,7 +195,7 @@ export class SurfaceTool extends BaseTool {
 
 			this.onSurfaceSelected( object );
 
-		} else if ( object instanceof AbstractControlPoint ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.onControlPointSelected( object );
 
@@ -207,19 +205,23 @@ export class SurfaceTool extends BaseTool {
 
 	onSurfaceSelected ( object: TvSurface ) {
 
-		if ( this.selectedSurface ) this.onSufaceUnselected( this.selectedSurface );
+		this.tool.onSelect( object );
 
-		this.tool.showSurface( object );
+		this.showInspector( object );
 
-		const mesh = this.tool.getSurfaceMesh( object );
+	}
 
-		AppInspector.setDynamicInspector( new TvSurfaceObject( object, mesh, this.tool ) );
+	showInspector ( surface: TvSurface, controlPoint?: AbstractControlPoint ): void {
+
+		const mesh = this.tool.getSurfaceMesh( surface );
+
+		AppInspector.setDynamicInspector( new TvSurfaceInspector( surface, mesh, this.tool, controlPoint ) );
 
 	}
 
 	onSufaceUnselected ( object: TvSurface ) {
 
-		this.tool.hideSurface( object );
+		this.tool.onUnselect( object );
 
 		AppInspector.clear();
 
@@ -243,13 +245,15 @@ export class SurfaceTool extends BaseTool {
 
 		controlPoint.unselect();
 
+		this.showInspector( controlPoint.mainObject );
+
 	}
 
-	onControlPointSelected ( controlPoint: AbstractControlPoint ): void {
-
-		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
+	onControlPointSelected ( controlPoint: SimpleControlPoint<TvSurface> ): void {
 
 		controlPoint.select();
+
+		this.showInspector( controlPoint.mainObject, controlPoint );
 
 	}
 
@@ -258,6 +262,8 @@ export class SurfaceTool extends BaseTool {
 		if ( object instanceof TvSurface ) {
 
 			this.tool.addSurface( object );
+
+			this.onSurfaceSelected( object );
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
@@ -283,11 +289,13 @@ export class SurfaceTool extends BaseTool {
 
 			this.tool.removeSurface( object );
 
-			this.onSufaceUnselected( object );
+			AppInspector.clear();
 
-		} else if ( object instanceof AbstractControlPoint ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.tool.removeControlPoint( this.selectedSurface, object );
+
+			this.showInspector( object.mainObject );
 
 		}
 
@@ -299,16 +307,11 @@ export class SurfaceTool extends BaseTool {
 
 			this.tool.updateSurface( object );
 
-		} else if ( object instanceof AbstractControlPoint ) {
+		} else if ( object instanceof SimpleControlPoint ) {
 
-			// this.tool.updateControlPoint( object );
-			if ( this.selectedSurface ) {
+			this.onObjectUpdated( object.mainObject );
 
-				this.tool.updateSurface( this.selectedSurface );
-
-			}
-
-		} else if ( object instanceof TvSurfaceObject ) {
+		} else if ( object instanceof TvSurfaceInspector ) {
 
 			this.tool.updateSurface( object.surface );
 
@@ -317,143 +320,3 @@ export class SurfaceTool extends BaseTool {
 	}
 }
 
-
-class TvSurfaceObject {
-
-	private _keepAspect: boolean = true;
-	private _height: number;
-	private _width: number;
-
-	constructor (
-		public surface: TvSurface,
-		public mesh: Mesh,
-		private service: SurfaceToolService
-	) {
-		if ( mesh ) {
-			mesh.geometry.computeBoundingBox();
-			this._width = this.mesh.geometry.boundingBox.max.x - this.mesh.geometry.boundingBox.min.x;
-			this._height = this.mesh.geometry.boundingBox.max.y - this.mesh.geometry.boundingBox.min.y;
-		}
-	}
-
-	updateMesh () {
-
-		this.service.updateSurfaceMeshByDimensions( this.surface, this.width, this.height );
-
-	}
-
-	@SerializedField( { type: 'material' } )
-	get materialGuid () {
-		return this.surface.materialGuid;
-	}
-
-	set materialGuid ( value: string ) {
-		this.surface.materialGuid = value;
-	}
-
-	get spline (): AbstractSpline {
-		return this.surface.spline;
-	}
-
-	set spline ( value: any ) {
-		this.surface.spline = value;
-	}
-
-	@SerializedField( { type: 'vector2' } )
-	get offset () {
-		return this.surface.offset;
-	}
-
-	set offset ( value: any ) {
-		this.surface.offset = value;
-	}
-
-	@SerializedField( { type: 'vector2' } )
-	get repeat () {
-		return this.surface.repeat;
-	}
-
-	set repeat ( value: any ) {
-		this.surface.repeat = value;
-	}
-
-	@SerializedField( { type: 'float' } )
-	get rotation () {
-		return this.surface.rotation;
-	}
-
-	set rotation ( value: any ) {
-		this.surface.rotation = value;
-	}
-
-	@SerializedField( { type: 'boolean' } )
-	get transparent () {
-		return this.surface.transparent;
-	}
-
-	set transparent ( value: any ) {
-		this.surface.transparent = value;
-	}
-
-	@SerializedField( { type: 'float' } )
-	get opacity () {
-		return this.surface.opacity;
-	}
-
-	set opacity ( value: any ) {
-		this.surface.opacity = value;
-	}
-
-	@SerializedField( { type: 'boolean' } )
-	get keepAspect () {
-		return this._keepAspect;
-	}
-
-	set keepAspect ( value: any ) {
-		this._keepAspect = value;
-	}
-
-	@SerializedField( { type: 'float' } )
-	get width () {
-		return this._width;
-	}
-
-	@SerializedField( { type: 'float' } )
-	get height () {
-		return this._height;
-	}
-
-	set width ( value: number ) {
-
-		const aspect = this._width / this._height; // aspect ratio of the old dimensions
-
-		this._width = value;
-
-		if ( this.keepAspect ) {
-			this._height = value / aspect; // new height to maintain aspect ratio
-		}
-
-		this.updateMesh();
-	}
-
-	set height ( value: number ) {
-
-		const aspect = this._width / this._height; // aspect ratio of the old dimensions
-
-		this._height = value;
-
-		if ( this.keepAspect ) {
-			this._width = value * aspect; // new width to maintain aspect ratio
-		}
-
-		this.updateMesh();
-	}
-
-	@Action( { name: 'Delete' } )
-	action () {
-
-		CommandHistory.execute( new RemoveObjectCommand( this.surface ) );
-
-	}
-
-}

@@ -12,7 +12,7 @@ import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
 import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { DynamicControlPoint, SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
 import { ThreeService } from 'app/modules/three-js/three.service';
 import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
 import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
@@ -478,7 +478,7 @@ export class SceneImporterService extends AbstractReader {
 
 		const type = xml.attr_type || 'catmullrom';
 		const closed = xml.attr_closed === 'true';
-		const tension = parseFloat( xml.attr_tension ) || 0.5;
+		const tension = 0.0; // we ignore this as we want straight lines, parseFloat( xml.attr_tension ) || 0.5;
 
 		const spline = new CatmullRomSpline( closed, type, tension );
 
@@ -486,7 +486,7 @@ export class SceneImporterService extends AbstractReader {
 
 			const position = this.importVector3( xml );
 
-			const controlPoint = new DynamicControlPoint( mainObject, position );
+			const controlPoint = new SimpleControlPoint( mainObject, position );
 
 			spline.addControlPoint( controlPoint );
 

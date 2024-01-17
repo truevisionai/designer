@@ -511,20 +511,26 @@ export abstract class AbstractSpline {
 		let minDistance = Infinity;
 		let index = this.controlPoints.length; // insert at the end by default
 
-		for ( let i = 0; i < this.controlPoints.length - 1; i++ ) {
+		// Ensure the loop includes the segment between the last and first control points
+		for ( let i = 0; i < this.controlPoints.length; i++ ) {
 
 			const pointA = this.controlPoints[ i ];
-			const pointB = this.controlPoints[ i + 1 ];
+
+			// Use modulo to wrap around to the first point when reaching the end
+			const pointB = this.controlPoints[ ( i + 1 ) % this.controlPoints.length ];
 
 			const distance = this.calculateDistanceToSegment( newPoint, pointA, pointB );
 
 			if ( distance < minDistance ) {
-
 				minDistance = distance;
 				index = i + 1;
-
 			}
 
+		}
+
+		// If the closest segment is the last one, adjust the index to be 0 to insert after the last point
+		if ( index === this.controlPoints.length ) {
+			index = 0;
 		}
 
 		this.controlPoints.splice( index, 0, newPoint );
@@ -596,25 +602,24 @@ export abstract class AbstractSpline {
 
 	private calculateDistanceToSegment ( newPoint: AbstractControlPoint, pointA: AbstractControlPoint, pointB: AbstractControlPoint ): number {
 
-		const segmentDirection = pointB.position.clone().sub( pointA.position ).normalize();
+		const segment = pointB.position.clone().sub( pointA.position ); // Vector representing the segment
+		const startToPoint = newPoint.position.clone().sub( pointA.position ); // Vector from start point to newPoint
 
-		const segmentStartToPoint = newPoint.position.clone().sub( pointA.position );
+		const projectionScalar = startToPoint.dot( segment ) / segment.lengthSq(); // Scalar projection
+		const projection = segment.clone().multiplyScalar( projectionScalar ); // Vector projection
 
-		const projection = segmentStartToPoint.clone().dot( segmentDirection );
+		if ( projectionScalar < 0 ) {
 
-		if ( projection < 0 ) {
+			return startToPoint.length(); // Closest point is pointA
 
-			return newPoint.position.distanceTo( pointA.position );
+		} else if ( projectionScalar > 1 ) {
 
-		} else if ( projection > pointA.position.distanceTo( pointB.position ) ) {
-
-			return newPoint.position.distanceTo( pointB.position );
+			return newPoint.position.distanceTo( pointB.position ); // Closest point is pointB
 
 		} else {
 
-			const projectionPoint = segmentDirection.clone().multiplyScalar( projection ).add( pointA.position );
-
-			return newPoint.position.distanceTo( projectionPoint );
+			const closestPoint = pointA.position.clone().add( projection ); // Closest point on the segment
+			return newPoint.position.distanceTo( closestPoint ); // Distance to closest point on the segment
 
 		}
 

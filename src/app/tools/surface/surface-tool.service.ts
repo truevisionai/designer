@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { GameObject } from 'app/core/game-object';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { PointerEventData } from 'app/events/pointer-event-data';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
 import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { MapService } from 'app/services/map.service';
 import { SceneService } from 'app/services/scene.service';
-import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { Mesh, MeshLambertMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2, Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
 import { SelectionService } from '../selection.service';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { TvSurfaceBuilder } from 'app/modules/tv-map/builders/tv-surface.builder';
 import { Object3DMap } from '../lane-width/object-3d-map';
-import { RoadService } from 'app/services/road/road.service';
+import { DebugService, SurfaceDebugService } from './surface-debug.service';
+import { DebugState } from 'app/services/debug/debug-state';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,26 +21,22 @@ import { RoadService } from 'app/services/road/road.service';
 export class SurfaceToolService {
 
 	private meshes = new Object3DMap<TvSurface, Mesh>();
+	private debugService: DebugService;
 
 	constructor (
 		public selection: SelectionService,
 		public base: BaseToolService,
 		private mapService: MapService,
-		private splineService: AbstractSplineDebugService,
 		private controlPointFactory: ControlPointFactory,
 		private surfaceBuilder: TvSurfaceBuilder,
+		surfaceDebugService: SurfaceDebugService
 	) {
+		this.debugService = surfaceDebugService;
 	}
 
 	getSurfaceMesh ( object: TvSurface ) {
 
 		return this.meshes.get( object );
-
-	}
-
-	select ( e: PointerEventData ) {
-
-		// this.base.select( e, this.nodeStrategy, this.pointStrategy );
 
 	}
 
@@ -91,6 +84,8 @@ export class SurfaceToolService {
 
 		this.buildSurface( surface );
 
+		this.debugService.setDebugState( surface, DebugState.HIGHLIGHTED );
+
 	}
 
 	removeSurface ( surface: TvSurface ) {
@@ -99,6 +94,8 @@ export class SurfaceToolService {
 
 		this.mapService.map.removeSurface( surface );
 
+		this.debugService.setDebugState( surface, DebugState.REMOVED );
+
 	}
 
 	addControlPoint ( surface: TvSurface, point: AbstractControlPoint ) {
@@ -106,6 +103,8 @@ export class SurfaceToolService {
 		point.mainObject = surface;
 
 		surface.spline.insertPoint( point );
+
+		surface.spline.update();
 
 		this.rebuildSurface( surface );
 
@@ -117,42 +116,43 @@ export class SurfaceToolService {
 
 		surface.removeControlPoint( point );
 
+		surface.spline.update();
+
+		this.rebuildSurface( surface );
+
 		SceneService.removeFromMain( point );
 
 	}
 
-	hideSurfaceHelpers () {
+	onToolDisabled () {
 
 		this.mapService.map.surfaces.forEach( surface => {
 
-			this.hideSurface( surface );
+			this.debugService.setDebugState( surface, DebugState.REMOVED );
 
 		} );
 
 	}
 
-	showSurfaceHelpers () {
+	onToolEnabled () {
 
 		this.mapService.map.surfaces.forEach( surface => {
 
-			this.showSurface( surface );
+			this.debugService.setDebugState( surface, DebugState.DEFAULT );
 
 		} );
 
+	}
+
+	onUnselect ( surface: TvSurface ) {
+
+		this.debugService.setDebugState( surface, DebugState.DEFAULT );
 
 	}
 
-	hideSurface ( surface: TvSurface ) {
+	onSelect ( surface: TvSurface ) {
 
-		this.splineService.hideLines( surface.spline );
-		this.splineService.hideControlPoints( surface.spline );
-
-	}
-
-	showSurface ( surface: TvSurface ) {
-
-		this.splineService.showLines( surface.spline );
-		this.splineService.showControlPoints( surface.spline );
+		this.debugService.setDebugState( surface, DebugState.SELECTED );
 
 	}
 
@@ -191,34 +191,22 @@ export class SurfaceToolService {
 
 	updateSurfaceMeshByDimensions ( surface: TvSurface, width: number, height: number ) {
 
-		const mesh = this.meshes.get( surface );
+		this.meshes.remove( surface );
 
-		const geometry = mesh.geometry as ShapeGeometry;
+		// if surface is a rectangle
+		if ( surface.spline?.controlPoints.length == 4 ) {
 
-		const shape = new Shape();
+			surface.spline.controlPoints[ 0 ].position.set( 0, 0, 0 );
+			surface.spline.controlPoints[ 1 ].position.set( width, 0, 0 );
+			surface.spline.controlPoints[ 2 ].position.set( width, height, 0 );
+			surface.spline.controlPoints[ 3 ].position.set( 0, height, 0 );
 
-		shape.moveTo( 0, 0 );
-		shape.lineTo( width, 0 );
-		shape.lineTo( width, height );
-		shape.lineTo( 0, height );
-		shape.lineTo( 0, 0 );
-
-		// also update the spline
-
-		const spline = surface.spline;
-
-		if ( spline?.controlPoints.length == 4 ) {
-			spline.controlPoints[ 0 ].position.set( 0, 0, 0 );
-			spline.controlPoints[ 1 ].position.set( width, 0, 0 );
-			spline.controlPoints[ 2 ].position.set( width, height, 0 );
-			spline.controlPoints[ 3 ].position.set( 0, height, 0 );
+			surface.repeat.set( 1 / width, 1 / height );
 		}
 
-		geometry.dispose();
+		const mesh = this.surfaceBuilder.buildMesh( surface );
 
-		geometry.copy( new ShapeGeometry( shape ) );
-
-		surface.repeat.set( 1 / width, 1 / height );
+		this.meshes.add( surface, mesh );
 
 	}
 

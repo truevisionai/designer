@@ -12,7 +12,7 @@ import {
 	ViewContainerRef
 } from '@angular/core';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
-import { getSerializableActions, getSerializableFields, ISerializedField } from 'app/core/components/serialization';
+import { getSerializableActions, getSerializableFields, ISerializedActionSetting, ISerializedFieldSetting } from 'app/core/components/serialization';
 import { IComponent } from 'app/core/game-object';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
@@ -54,9 +54,9 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	@Input() showProperties = true;
 
-	serializableFields: { field: string, settings: ISerializedField }[] = [];
+	serializableFields: { field: string, settings: ISerializedFieldSetting }[] = [];
 
-	serializableActions: { name: string; method: Function; }[];
+	serializableActions: ISerializedActionSetting[];
 
 	@ViewChildren( FieldHostDirective ) fieldHosts: QueryList<FieldHostDirective>;
 
@@ -153,7 +153,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		} );
 	}
 
-	loadField ( data: any, item: { field: string; settings: ISerializedField; }, index: number ) {
+	loadField ( data: any, item: { field: string; settings: ISerializedFieldSetting; }, index: number ) {
 
 		const fieldHost = this.fieldHosts.toArray()[ index ];
 
@@ -199,7 +199,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	applyComponentSettings ( component: AbstractFieldComponent, settings: ISerializedField ) {
+	applyComponentSettings ( component: AbstractFieldComponent, settings: ISerializedFieldSetting ) {
 
 		if ( component instanceof DoubleFieldComponent ) {
 

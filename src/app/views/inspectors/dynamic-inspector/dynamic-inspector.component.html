@@ -16,7 +16,7 @@
 		<ng-container app-field-host></ng-container>
 	</div>
 	<div *ngFor="let action of serializableActions">
-		<app-button-field (clicked)="action.method.apply(data)"
+		<app-button-field *ngIf="action.validate.apply(data)" (clicked)="action.method.apply(data)"
 			label="{{ action.name | titlecase }}">
 		</app-button-field>
 	</div>
