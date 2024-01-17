@@ -28,26 +28,16 @@ export class EnumFieldComponent extends AbstractFieldComponent implements OnInit
 
 	ngOnInit () {
 
-		// KEY, VALUE
-		// UNKNWON = unkonwn
-		// RURAL = rurual
-		//
-
-		// labels are the actual enums
-		// UNKNOWN, RURAL ETC
 		const labels = Object.keys( this.enum );
+		const values = Object.values( this.enum );
 
-		Object.values( this.enum ).forEach( ( value, index ) => {
+		const unsortedOptions = values.map( ( value, index ) => {
+			return { value: value, label: labels[ index ] };
+		} );
 
-			// label is the string to be shown to user
-			// this will only be a string
-			const label = labels[ index ];
-
-			this.options.push( {
-				value: value,
-				label: label,
-			} );
-
+		// Sort the options alphabetically based on the label
+		this.options = unsortedOptions.sort( ( a, b ) => {
+			return a.label.localeCompare( b.label );
 		} );
 
 	}
