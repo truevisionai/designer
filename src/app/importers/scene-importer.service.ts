@@ -1309,24 +1309,41 @@ export class SceneImporterService extends AbstractReader {
 
 	private parseSignal ( road: TvRoad, xmlElement: XmlElement ) {
 
-		const s = parseFloat( xmlElement.attr_s );
-		const t = xmlElement.attr_t;
-		const id = xmlElement.attr_id;
+		function findAvailableId ( id: number, road: TvRoad ) {
+
+			while ( road.signals.has( id ) ) {
+				id++;
+			}
+
+			return id;
+
+		}
+
+		let id = parseFloat( xmlElement.attr_id ) || road.signals.size;
+
+		const s = parseFloat( xmlElement.attr_s ) || road.signals.size;
+		const t = parseFloat( xmlElement.attr_t ) || 0;
 		const name = xmlElement.attr_name;
 		const dynamic = xmlElement.attr_dynamic;
 		const orientation = xmlElement.attr_orientation;
-		const zOffset = xmlElement.attr_zOffset;
+		const zOffset = parseFloat( xmlElement.attr_zOffset ) || 0;
 		const country = xmlElement.attr_country;
 		const type = xmlElement.attr_type;
 		const subtype = xmlElement.attr_subtype;
 		const value = xmlElement.attr_value;
 		const unit = xmlElement.attr_unit;
-		const height = xmlElement.attr_height;
-		const width = xmlElement.attr_width;
+		const height = parseFloat( xmlElement.attr_height ) || 1;
+		const width = parseFloat( xmlElement.attr_width ) || 1;
 		const text = xmlElement.attr_text;
-		const hOffset = xmlElement.attr_hOffset;
-		const pitch = xmlElement.attr_pitch;
-		const roll = xmlElement.attr_roll;
+		const hOffset = parseFloat( xmlElement.attr_hOffset ) || 0;
+		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
+		const roll = parseFloat( xmlElement.attr_roll ) || 0;
+
+		if ( road.signals.has( id ) ) {
+			// TEMP FIX
+			TvConsole.warn( `Signal with id ${ id } already exists, incrementing id to add it ` + road.toString() );
+			id = findAvailableId( id, road );
+		}
 
 		const roadSignal = road.addRoadSignal( s,
 			t,

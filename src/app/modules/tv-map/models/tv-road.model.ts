@@ -753,7 +753,7 @@ export class TvRoad {
 
 		signal.roadId = this.id;
 
-		this._signals.set( id, signal );
+		this._signals.set( signal.id, signal );
 
 		return signal;
 	}
