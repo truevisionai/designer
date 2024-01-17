@@ -3,12 +3,13 @@ import { BaseToolService } from '../base-tool.service';
 import { TextObjectService } from './text-object.service';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { RoadSignalService } from 'app/services/signal/road-signal.service';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { TvRoadSignal, TvSignalSubType, TvSignalType } from 'app/modules/tv-map/models/tv-road-signal.model';
 import { RoadService } from 'app/services/road/road.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { Object3DMap } from '../lane-width/object-3d-map';
 import { Object3D } from 'three';
+import { RoadSignalFactory } from 'app/services/signal/road-signal.factory';
+import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +24,7 @@ export class TextMarkingToolService {
 		private roadSignalService: RoadSignalService,
 		public roadService: RoadService,
 		private controlPointFactory: ControlPointFactory,
+		private signalFactory: RoadSignalFactory,
 	) {
 	}
 
@@ -88,11 +90,9 @@ export class TextMarkingToolService {
 
 	}
 
-	createTextRoadMarking ( road: TvRoad, lane: TvLane, s: number, t: number, text: string ): TvRoadSignal {
+	createTextRoadMarking ( coord: TvRoadCoord, text: string ): TvRoadSignal {
 
-		const signal = this.roadSignalService.createTextRoadMarking( road, lane, s, t, text );
-
-		return signal;
+		return this.signalFactory.createTextRoadMarking( coord, text );
 
 	}
 

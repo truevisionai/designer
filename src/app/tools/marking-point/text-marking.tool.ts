@@ -6,16 +6,11 @@ import { LaneCoordStrategy } from "app/core/snapping/select-strategies/on-lane-s
 import { TvLaneCoord } from "app/modules/tv-map/models/tv-lane-coord";
 import { TvRoadSignal } from "app/modules/tv-map/models/tv-road-signal.model";
 import { AppInspector } from "app/core/inspector";
-import { DynamicInspectorComponent } from "app/views/inspectors/dynamic-inspector/dynamic-inspector.component";
-import { Action, SerializedField } from "app/core/components/serialization";
-import { CommandHistory } from "app/services/command-history";
-import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { ControlPointStrategy } from "app/core/snapping/select-strategies/control-point-strategy";
-import { IHasUpdate } from "app/commands/set-value-command";
-import { MidLaneMovingStrategy } from "app/core/snapping/move-strategies/end-lane.moving.strategy";
 import { OnRoadMovingStrategy } from "app/core/snapping/move-strategies/on-road-moving.strategy";
-import { DynamicControlPoint, SimpleControlPoint } from "app/modules/three-js/objects/dynamic-control-point";
+import { SimpleControlPoint } from "app/modules/three-js/objects/dynamic-control-point";
 import { RoadPosition } from "app/modules/scenario/models/positions/tv-road-position";
+import { TextMarkingInspector } from "./text-marking.inspector";
 
 export class TextMarkingTool extends BaseTool {
 
@@ -71,11 +66,7 @@ export class TextMarkingTool extends BaseTool {
 
 			if ( position instanceof TvLaneCoord ) {
 
-				let t = position.lane.laneSection.getWidthUptoCenter( position.lane, position.s );
-
-				if ( position.lane.id < 0 ) t *= -1;
-
-				const signal = this.tool.createTextRoadMarking( position.road, position.lane, position.s, t, 'STOP' );
+				const signal = this.tool.createTextRoadMarking( position.toRoadCoord(), 'STOP' );
 
 				this.executeAddObject( signal );
 
@@ -145,7 +136,7 @@ export class TextMarkingTool extends BaseTool {
 
 			this.tool.addTextRoadMarking( object );
 
-		} else if ( object instanceof TextRoadMarking ) {
+		} else if ( object instanceof TextMarkingInspector ) {
 
 			this.tool.removeTextRoadMarking( object.signal );
 
@@ -161,7 +152,7 @@ export class TextMarkingTool extends BaseTool {
 
 			this.onSignalSelected( object );
 
-		} else if ( object instanceof TextRoadMarking ) {
+		} else if ( object instanceof TextMarkingInspector ) {
 
 			this.onSignalSelected( object.signal );
 
@@ -179,7 +170,7 @@ export class TextMarkingTool extends BaseTool {
 
 			this.onSignalUnselected( object );
 
-		} else if ( object instanceof TextRoadMarking ) {
+		} else if ( object instanceof TextMarkingInspector ) {
 
 			this.onSignalUnselected( object.signal );
 
@@ -195,7 +186,7 @@ export class TextMarkingTool extends BaseTool {
 
 		this.signal = signal;
 
-		AppInspector.setInspector( DynamicInspectorComponent, new TextRoadMarking( signal ) );
+		AppInspector.setDynamicInspector( new TextMarkingInspector( signal ) );
 
 	}
 
@@ -210,84 +201,4 @@ export class TextMarkingTool extends BaseTool {
 }
 
 
-class TextRoadMarking implements IHasUpdate {
 
-	constructor ( public signal: TvRoadSignal ) { }
-
-	update (): void {
-
-		throw new Error( "Method not implemented." );
-
-	}
-
-	@SerializedField( { 'type': 'float', label: 'Distance' } )
-	get s () {
-		return this.signal.s;
-	}
-
-	set s ( value ) {
-		this.signal.s = value;
-	}
-
-	@SerializedField( { 'type': 'float', label: 'Offset' } )
-	get t () {
-		return this.signal.t;
-	}
-
-	set t ( value ) {
-		this.signal.t = value;
-	}
-
-	@SerializedField( { 'type': 'float', label: 'Heading' } )
-	get hdg () {
-		return this.signal.hOffset;
-	}
-
-	set hdg ( value ) {
-		this.signal.hOffset = value;
-	}
-
-	@SerializedField( { 'type': 'string' } )
-	get text (): string {
-		return this.signal.text;
-	}
-
-	set text ( value: string ) {
-		this.signal.text = value;
-	}
-
-	@SerializedField( { 'type': 'int', label: 'Font Size' } )
-	get value (): number {
-		return this.signal.value;
-	}
-
-	set value ( value: number ) {
-		this.signal.value = value;
-	}
-
-	// @SerializedField( { 'type': 'enum', enum: TvUnit } )
-	// get unit () {
-	// 	return this.signal.unit;
-	// }
-
-	// set unit ( value ) {
-	// 	this.signal.unit = value;
-	// }
-
-	@SerializedField( { 'type': 'float' } )
-	get width () {
-		return this.signal.width;
-	}
-
-	set width ( value ) {
-		this.signal.width = value;
-	}
-
-	@Action( { label: 'Delete' } )
-	delete () {
-
-		CommandHistory.execute( new RemoveObjectCommand( this.signal ) );
-
-	}
-
-}
