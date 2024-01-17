@@ -4,6 +4,7 @@ import { TvLane } from "app/modules/tv-map/models/tv-lane";
 import { TvLaneSection } from "app/modules/tv-map/models/tv-lane-section";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { TvUtils } from "app/modules/tv-map/models/tv-utils";
+import { Maths } from "app/utils/maths";
 
 /**
  * LaneWidthManager
@@ -25,9 +26,29 @@ export class LaneWidthManager {
 
 		this.validateLane( lane );
 
+		return;
+
+		this.syncWithPredecessor( road, laneSection, lane );
+
+		this.syncWithSuccessor( road, laneSection, lane );
+
+	}
+
+	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		this.validateLane( lane );
+
+		return;
+
+		this.syncWithPredecessor( road, laneSection, lane );
+
+		this.syncWithSuccessor( road, laneSection, lane );
+
 	}
 
 	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		return;
 
 		this.validateLane( lane );
 
@@ -37,63 +58,67 @@ export class LaneWidthManager {
 
 	}
 
-	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
-
-		this.validateLane( lane );
-
-		this.syncWithPredecessor( road, laneSection, lane, targetWidth );
-
-		this.syncWithSuccessor( road, laneSection, lane, targetWidth );
-
-	}
-
-	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
+	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
 		if ( road.isJunction ) return;
 
-		const currentLaneSection = lane.laneSection;
+		// if successor is not defined return
+		if ( !lane.succcessor ) return;
+
 		const nextLaneSection = this.nextLaneSection( lane );
-		const ds = Math.min( currentLaneSection.length * 0.2, 16 );
 
-		if ( nextLaneSection && !nextLaneSection.isMatching( currentLaneSection ) ) {
+		if ( !nextLaneSection ) return
 
-			let width: number;
+		// // for now return if lane section is not matching
+		// if ( !nextLaneSection.isMatching( laneSection ) ) return;
 
-			if ( targetWidth ) {
+		const succcessor = nextLaneSection.getLaneById( lane.succcessor );
 
-				width = targetWidth;
+		const lastWidthNode = lane.width[ lane.width.length - 1 ];
 
-			} else if ( lane.width.length > 0 ) {
+		if ( !lastWidthNode ) return;
 
-				width = lane.getWidthValue( currentLaneSection.length );
+		// smooth transition
+		if ( succcessor.id != lane.id ) {
+
+			let nextLaneWidth = succcessor.getWidthValue( 0 );
+
+			// when widths are are different we want smooth transition
+
+			if ( lastWidthNode.s != laneSection.length ) {
+
+				lane.addWidthRecord( laneSection.length - 10, nextLaneWidth, 0, 0, 0 );
+				lane.addWidthRecord( laneSection.length, 0, 0, 0, 0 );
 
 			} else {
 
-				width = this.getWidthByType( lane.type );
+				lane.addWidthRecord( laneSection.length - 10, nextLaneWidth, 0, 0, 0 );
+				lastWidthNode.a = 0;
 
 			}
 
-			// remove last width record at s=lane.length if exists
-			if ( lane.width.length > 0 && lane.width[ lane.width.length - 1 ].s == currentLaneSection.length ) {
-				lane.width.splice( lane.width.length - 1, 1 );
+		} else {
+
+			let nextLaneWidth = succcessor.getWidthValue( 0 );
+
+			if ( lastWidthNode.s != laneSection.length ) {
+
+				lane.addWidthRecord( laneSection.length, nextLaneWidth, 0, 0, 0 );
+
+			} else {
+
+				lastWidthNode.a = nextLaneWidth;
+
 			}
 
-			lane.addWidthRecord( currentLaneSection.length - ds, width, 0, 0, 0 );
-			lane.addWidthRecord( currentLaneSection.length, 0, 0, 0, 0 );
-
-			TvUtils.computeCoefficients( lane.width, currentLaneSection.length );
-
 		}
 
-		if ( lane.width.length == 0 ) {
-
-			lane.addWidthRecord( 0, targetWidth || this.getWidthByType( lane.type ), 0, 0, 0 );
-
-		}
-
+		TvUtils.computeCoefficients( lane.width, laneSection.length );
 	}
 
 	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
+
+		return;
 
 		if ( road.isJunction ) return;
 

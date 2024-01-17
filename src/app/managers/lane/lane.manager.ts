@@ -21,6 +21,8 @@ export class LaneManager {
 
 	onLaneCreated ( lane: TvLane ) {
 
+		this.laneLinkManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
+
 		this.laneWidthManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
 		this.laneHeightManager.updateLaneHeight( lane.laneSection.road, lane.laneSection, lane );
@@ -29,7 +31,6 @@ export class LaneManager {
 
 		this.laneMarkingManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
-		this.laneLinkManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 	}
 
 	onLaneRemoved ( lane: TvLane ) {
