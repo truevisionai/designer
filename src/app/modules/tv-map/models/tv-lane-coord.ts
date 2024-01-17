@@ -9,7 +9,6 @@ import { TvLane } from "./tv-lane";
 import { TvContactPoint } from './tv-common';
 import { Maths } from 'app/utils/maths';
 import { Orientation } from 'app/modules/scenario/models/tv-orientation';
-import { TvRoadCoord } from './TvRoadCoord';
 
 export class TvLaneCoord {
 
@@ -73,10 +72,6 @@ export class TvLaneCoord {
 
 	toPosTheta () {
 		return this.posTheta;
-	}
-
-	toRoadCoord (): TvRoadCoord {
-		return this.posTheta.toRoadCoord( this.road );
 	}
 
 }

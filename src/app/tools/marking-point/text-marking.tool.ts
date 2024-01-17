@@ -2,8 +2,6 @@ import { PointerEventData } from "app/events/pointer-event-data";
 import { BaseTool } from "../base-tool";
 import { ToolType } from "../tool-types.enum";
 import { TextMarkingToolService } from "./text-marking-tool.service";
-import { LaneCoordStrategy } from "app/core/snapping/select-strategies/on-lane-strategy";
-import { TvLaneCoord } from "app/modules/tv-map/models/tv-lane-coord";
 import { TvRoadSignal } from "app/modules/tv-map/models/tv-road-signal.model";
 import { AppInspector } from "app/core/inspector";
 import { ControlPointStrategy } from "app/core/snapping/select-strategies/control-point-strategy";
@@ -11,6 +9,8 @@ import { OnRoadMovingStrategy } from "app/core/snapping/move-strategies/on-road-
 import { SimpleControlPoint } from "app/modules/three-js/objects/dynamic-control-point";
 import { RoadPosition } from "app/modules/scenario/models/positions/tv-road-position";
 import { TextMarkingInspector } from "./text-marking.inspector";
+import { RoadCoordStrategy } from "app/core/snapping/select-strategies/road-coord-strategy";
+import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
 
 export class TextMarkingTool extends BaseTool {
 
@@ -34,7 +34,7 @@ export class TextMarkingTool extends BaseTool {
 
 		this.setHint( 'Text Marking Tool is used for marking text on the road' );
 
-		this.tool.base.addCreationStrategy( new LaneCoordStrategy() );
+		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 
 		this.tool.base.selection.registerStrategy( 'point', new ControlPointStrategy() );
 
@@ -64,9 +64,9 @@ export class TextMarkingTool extends BaseTool {
 
 		this.tool.base.handleCreation( e, ( position ) => {
 
-			if ( position instanceof TvLaneCoord ) {
+			if ( position instanceof TvRoadCoord ) {
 
-				const signal = this.tool.createTextRoadMarking( position.toRoadCoord(), 'STOP' );
+				const signal = this.tool.createTextRoadMarking( position, 'STOP' );
 
 				this.executeAddObject( signal );
 

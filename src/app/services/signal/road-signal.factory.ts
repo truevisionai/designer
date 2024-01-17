@@ -20,7 +20,7 @@ export class RoadSignalFactory {
 		signal.dynamic = TvDynamicTypes.NO;
 		signal.name = name;
 		signal.text = name;
-		signal.orientations = coord.t < 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
+		signal.orientations = coord.t > 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
 		signal.zOffset = 0.005;
 		signal.country = 'OpenDRIVE';
 		signal.roadId = coord.road.id;
@@ -42,7 +42,7 @@ export class RoadSignalFactory {
 		signal.dynamic = TvDynamicTypes.NO;
 		signal.name = name;
 		signal.text = name;
-		signal.orientations = coord.t < 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
+		signal.orientations = coord.t > 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
 		signal.zOffset = 0.005;
 		signal.country = 'OpenDRIVE';
 		signal.roadId = coord.road.id;
@@ -66,7 +66,7 @@ export class RoadSignalFactory {
 		signal.dynamic = TvDynamicTypes.NO;
 		signal.name = text;
 		signal.text = text;
-		signal.orientations = coord.t < 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
+		signal.orientations = coord.t > 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
 		signal.zOffset = 0.005;
 		signal.country = 'OpenDRIVE';
 		signal.roadId = coord.road.id;
