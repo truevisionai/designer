@@ -68,25 +68,6 @@ export class RoadSignalService {
 
 	}
 
-	createTextRoadMarking ( road: TvRoad, lane: TvLane, s: number, t: number, text: string ) {
-
-		const signal = new TvRoadSignal( s, t, road.getRoadSignalCount(), text );
-
-		signal.type = 'roadMark';
-		signal.subtype = 'text';
-		signal.dynamic = TvDynamicTypes.NO;
-		signal.name = text;
-		signal.text = text;
-		signal.orientations = lane.id > 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
-		signal.zOffset = 0.005;
-		signal.country = 'OpenDRIVE';
-		signal.roadId = road.id;
-		signal.unit = TvUnit.T;
-		signal.value = 0.8;
-
-		return signal;
-	}
-
 	updateSignalPosition ( road: TvRoad, signal: TvRoadSignal ) {
 
 		const position = this.getSignalPosition( road, signal );
