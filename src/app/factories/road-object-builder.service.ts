@@ -79,7 +79,7 @@ export class RoadObjectBuilder {
 
 		let geometry: BufferGeometry;
 
-		if ( !lane ) {
+		if ( !lane || lane?.id == 0 ) {
 
 			geometry = new PlaneGeometry( 1, 1 );
 
