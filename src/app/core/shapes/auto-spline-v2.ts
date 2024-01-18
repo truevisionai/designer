@@ -376,7 +376,7 @@ export class AutoSplineV2 extends AbstractSpline {
 
 				[ r, alpha, length, sign ] = this.getArcParams( pp1, pp2, dir1, dir2 );
 
-				if ( r != Infinity ) {
+				if ( r != Infinity && !isNaN( r ) ) {
 
 					s = totalLength;
 

@@ -5,6 +5,7 @@ import { AutoSplineV2 } from "app/core/shapes/auto-spline-v2";
 import { ControlPointFactory } from "app/factories/control-point.factory";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineManager } from "app/managers/spline-manager";
+import { TvArcGeometry } from "app/modules/tv-map/models/geometries/tv-arc-geometry";
 import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { RoadService } from "app/services/road/road.service";
@@ -101,6 +102,23 @@ describe( 'SplineToGeometry test', () => {
 		expect( exportGeometries[ 0 ].y ).toBe( 0 );
 		expect( exportGeometries[ 0 ].hdg ).toBe( 0 );
 
+		for ( let i = 1; i < exportGeometries.length; i++ ) {
+
+			const geometry = exportGeometries[ i ];
+
+			expect( geometry.s ).toBeDefined();
+			expect( geometry.x ).toBeDefined();
+			expect( geometry.y ).toBeDefined();
+			expect( geometry.hdg ).toBeDefined();
+			expect( geometry.length ).toBeDefined();
+
+			if ( geometry instanceof TvArcGeometry ) {
+				expect( geometry.radius ).toBeDefined();
+				expect( geometry.curvature ).toBeDefined();
+			}
+
+		}
+
 	} )
 
 	it( 'should create geometries for automated junction', () => {
@@ -123,6 +141,21 @@ describe( 'SplineToGeometry test', () => {
 
 			expect( road.spline.controlPoints.length ).toBeGreaterThanOrEqual( 2 );
 			expect( road.geometries.length ).toBeGreaterThanOrEqual( 1 );
+
+			for ( let geometry of road.geometries ) {
+
+				expect( geometry.s ).not.toBeNaN();
+				expect( geometry.x ).not.toBeNaN();
+				expect( geometry.y ).not.toBeNaN();
+				expect( geometry.hdg ).not.toBeNaN();
+				expect( geometry.length ).not.toBeNaN();
+
+				if ( geometry instanceof TvArcGeometry ) {
+					expect( geometry.radius ).not.toBeNaN();
+					expect( geometry.curvature ).not.toBeNaN();
+				}
+
+			}
 
 		}
 
