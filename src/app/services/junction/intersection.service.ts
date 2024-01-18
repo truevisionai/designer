@@ -100,6 +100,51 @@ export class IntersectionService {
 
 	}
 
+	getSplineIntersectionPointViaBounds ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): Vector3 | null {
+
+		function createBoundingBoxForSegment ( start: Vector3, end: Vector3, roadWidth: number ): Box3 {
+			const box = new Box3();
+			box.setFromCenterAndSize( start.clone().add( end ).multiplyScalar( 0.5 ), new Vector3( roadWidth, roadWidth, Math.abs( start.z - end.z ) ) );
+			return box;
+		}
+
+		if ( splineA == splineB ) return;
+
+		if ( !this.intersectsSplineBox( splineA, splineB ) ) return;
+
+		const pointsA = splineA.getPoints( stepSize )
+		const pointsB = splineB.getPoints( stepSize );
+
+		for ( let i = 0; i < pointsA.length - 1; i++ ) {
+
+			for ( let j = 0; j < pointsB.length - 1; j++ ) {
+
+				const a = pointsA[ i ];
+				const b = pointsA[ i + 1 ];
+				const c = pointsB[ j ];
+				const d = pointsB[ j + 1 ];
+
+				// Create bounding boxes for the line segments
+				const boxA = createBoundingBoxForSegment( a, b, 12 );
+				const boxB = createBoundingBoxForSegment( c, d, 12 );
+
+				// Check if these bounding boxes intersect
+				if ( this.intersectsBox( boxA, boxB ) ) {
+
+					const intersectionPoint = this.lineIntersection( a, b, c, d );
+
+					if ( intersectionPoint ) {
+						return intersectionPoint;
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
 	checkSplineIntersections ( spline: AbstractSpline ) {
 
 		const splines = this.mapService.nonJunctionSplines;
