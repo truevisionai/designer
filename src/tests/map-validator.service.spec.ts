@@ -7,6 +7,7 @@ import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { HttpClientModule } from '@angular/common/http';
 import { MapService } from 'app/services/map.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 
 describe( 'Service: MapValidator', () => {
 
@@ -14,6 +15,7 @@ describe( 'Service: MapValidator', () => {
 	let roadService: RoadService;
 	let mapValidator: MapValidatorService;
 	let mapService: MapService;
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -25,6 +27,8 @@ describe( 'Service: MapValidator', () => {
 		roadService = TestBed.inject( RoadService );
 		mapValidator = TestBed.inject( MapValidatorService );
 		mapService = TestBed.inject( MapService );
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		eventServiceProvider.init();
 
 	} );
 
