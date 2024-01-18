@@ -35,6 +35,7 @@ export class MapValidatorService {
 		private mapService: MapService,
 		private electron: TvElectronService
 	) {
+		this.init();
 	}
 
 	init () {
