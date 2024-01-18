@@ -13,7 +13,8 @@ export class CustomErrorHandler extends ErrorHandler {
 
 	constructor (
 		protected injector: Injector,
-		private sentry: SentryService
+		private sentry: SentryService,
+		private snackBar: SnackBar
 	) {
 		super();
 	}
@@ -21,7 +22,7 @@ export class CustomErrorHandler extends ErrorHandler {
 	// https://github.com/angular/angular/issues/17010
 	handleError ( error: Error ) {
 
-		SnackBar.error( error?.message );
+		this.snackBar.error( error?.message );
 
 		console.error( error );
 

@@ -365,7 +365,7 @@ class ElevationNodeObject {
 
 		if ( Maths.approxEquals( this.s, 0 ) ) {
 
-			SnackBar.warn( 'Cannot delete first node' );
+			return;
 
 		} else {
 

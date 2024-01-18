@@ -16,7 +16,8 @@ export class ViewHelperService {
 
 	constructor (
 		private cameraService: CameraService,
-		private canvasService: CanvasService
+		private canvasService: CanvasService,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -46,8 +47,8 @@ export class ViewHelperService {
 
 		} catch ( error ) {
 
-			SnackBar.error( 'Error in creating in ViewHelper' );
-			SnackBar.error( error );
+			this.snackBar.error( 'Error in creating in ViewHelper' );
+			this.snackBar.error( error );
 
 		}
 	}

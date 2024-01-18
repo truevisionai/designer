@@ -30,7 +30,8 @@ export class SignupComponent implements OnInit {
 	constructor (
 		private authService: AuthService,
 		private router: Router,
-		private electron: TvElectronService
+		private electron: TvElectronService,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -109,7 +110,7 @@ export class SignupComponent implements OnInit {
 
 		const message = response.message || "User successfully registered";
 
-		SnackBar.success( message );
+		this.snackBar.success( message );
 
 		this.router.navigateByUrl( AppService.homeUrl );
 	}
@@ -125,7 +126,7 @@ export class SignupComponent implements OnInit {
 
 		if ( error != null && error.message != null ) message = error.message;
 
-		SnackBar.error( message );
+		this.snackBar.error( message );
 
 	}
 

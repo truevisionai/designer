@@ -22,7 +22,8 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 export class ModelLoader {
 
 	constructor (
-		private storageService: StorageService
+		private storageService: StorageService,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -188,11 +189,11 @@ export class ModelLoader {
 
 			// errorCallback
 
-		}, function ( error ) {
+		},  ( error ) => {
 
 			errorCallback( "Error in loading SVG file" );
 
-			SnackBar.error( 'Error in loading SVG file' );
+			this.snackBar.error( 'Error in loading SVG file' );
 
 		} );
 

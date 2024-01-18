@@ -30,13 +30,16 @@ export class DepAssetFactory {
 
 	private static storageService: StorageService;
 	private static sceneExporter: SceneExporterService;
+	private static snackBar: SnackBar;
 
 	constructor (
 		storageService: StorageService,
-		sceneExporter: SceneExporterService
+		sceneExporter: SceneExporterService,
+		snackBar: SnackBar
 	) {
 		DepAssetFactory.storageService = storageService;
 		DepAssetFactory.sceneExporter = sceneExporter;
+		DepAssetFactory.snackBar = snackBar;
 	}
 
 	static copyAsset ( guid: string ) {
@@ -105,7 +108,7 @@ export class DepAssetFactory {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar?.error( error );
 
 		}
 	}
@@ -124,7 +127,7 @@ export class DepAssetFactory {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar?.error( error );
 
 		}
 
@@ -153,7 +156,7 @@ export class DepAssetFactory {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar?.error( error );
 
 		}
 
@@ -167,7 +170,7 @@ export class DepAssetFactory {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar?.error( error );
 
 		}
 
@@ -213,7 +216,7 @@ export class DepAssetFactory {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar?.error( error );
 
 		}
 

@@ -52,7 +52,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 	protected map: TvMap;
 
-	constructor () {
+	constructor ( private snackBar: SnackBar ) {
 		super();
 	}
 
@@ -70,11 +70,11 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const openDRIVE: XmlElement = xml.OpenDRIVE;
 
 		if ( !openDRIVE ) TvConsole.error( 'No OpenDRIVE tag found. Import Failed' );
-		if ( !openDRIVE ) SnackBar.warn( 'No OpenDRIVE tag found. Import Failed' );
+		if ( !openDRIVE ) this.snackBar.warn( 'No OpenDRIVE tag found. Import Failed' );
 		if ( !openDRIVE ) return;
 
 		if ( !openDRIVE.road ) TvConsole.error( 'No road tag found. Import Failed' );
-		if ( !openDRIVE.road ) SnackBar.warn( 'No road tag found' );
+		if ( !openDRIVE.road ) this.snackBar.warn( 'No road tag found' );
 		if ( !openDRIVE.road ) return;
 
 		this.map.header = this.parseHeader( openDRIVE.header );
@@ -160,10 +160,10 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		// Get type
 		this.parseRoadTypes( road, xml );
 
-		// if ( !xml.planView ) SnackBar.error( 'no planView found, skipping road import' );
+		// if ( !xml.planView ) this.snackBar.error( 'no planView found, skipping road import' );
 		// if ( !xml.planView ) return;
 
-		// if ( !xml.planView?.geometry ) SnackBar.error( 'no geometry found, skipping road import' );
+		// if ( !xml.planView?.geometry ) this.snackBar.error( 'no geometry found, skipping road import' );
 		// if ( !xml.planView?.geometry ) return;
 
 		if ( xml.planView ) this.parsePlanView( road, xml.planView );
@@ -416,7 +416,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		} else {
 
-			SnackBar.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
+			this.snackBar.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
 
 			road.addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
 

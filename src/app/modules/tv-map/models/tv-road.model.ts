@@ -1430,9 +1430,7 @@ export class TvRoad {
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
 
 		if ( geometry == null ) {
-
-			SnackBar.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
-
+			console.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
 			return;
 		}
 

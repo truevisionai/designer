@@ -34,6 +34,7 @@ export class LaneWidthToolService {
 		private baseService: BaseService,
 		private laneWidthService: LaneWidthService,
 		private debugDrawService: DebugDrawService,
+		private snackBar: SnackBar
 	) { }
 
 	createWidthNode ( lane: TvLane, position: Vector3 ) {
@@ -55,12 +56,12 @@ export class LaneWidthToolService {
 		const index = node.lane.getLaneWidthVector().findIndex( i => i.uuid === node.laneWidth.uuid );
 
 		if ( index === -1 ) {
-			SnackBar.error( 'Unexpected error. Not able to find this node' );
+			this.snackBar.error( 'Unexpected error. Not able to find this node' );
 			return;
 		}
 
 		if ( index === 0 ) {
-			SnackBar.warn( 'First node cannot be edited. Please add a new node.' );
+			this.snackBar.warn( 'First node cannot be edited. Please add a new node.' );
 			return;
 		}
 

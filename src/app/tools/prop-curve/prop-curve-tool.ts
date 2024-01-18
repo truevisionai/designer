@@ -38,7 +38,7 @@ export class PropCurveTool extends BaseTool {
 		return this.tool.base.selection.getLastSelected<SimpleControlPoint<PropCurve>>( SimpleControlPoint.name );
 	}
 
-	constructor ( private tool: PropCurveService ) {
+	constructor ( private tool: PropCurveService, ) {
 
 		super();
 
@@ -100,7 +100,7 @@ export class PropCurveTool extends BaseTool {
 
 	onPointerDownCreate ( event: PointerEventData ) {
 
-		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
+		if ( !this.prop ) this.tool.base.setWarning( 'Select a prop from the project browser' );
 
 		if ( !this.prop ) this.setHint( 'Select a prop from the project browser' );
 

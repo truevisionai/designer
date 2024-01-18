@@ -6,6 +6,7 @@ import { TvLane } from 'app/modules/tv-map/models/tv-lane';
 import { readXmlArray } from 'app/tools/xml-utils';
 import { TvLaneBorder } from 'app/modules/tv-map/models/tv-lane-border';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 
 @Injectable( {
@@ -13,8 +14,8 @@ import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 } )
 export class OpenDrive16Parser extends OpenDrive14Parser {
 
-	constructor () {
-		super();
+	constructor ( snackBar: SnackBar ) {
+		super( snackBar );
 	}
 
 	parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ): TvLane {

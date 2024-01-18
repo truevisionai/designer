@@ -86,7 +86,7 @@ export class PositionFactory {
 
 		if ( type == PositionType.Route ) {
 
-			SnackBar.error( 'Route position not implemented' );
+			// SnackBar.error( 'Route position not implemented' );
 
 		}
 

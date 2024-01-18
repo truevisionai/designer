@@ -29,6 +29,7 @@ export class AssetService {
 		private storageService: StorageService,
 		private metadataFactory: MetadataFactory,
 		private assetFactory: AssetFactory,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -166,7 +167,7 @@ export class AssetService {
 
 		if ( asset.children.length > 0 ) {
 
-			SnackBar.warn( 'Cannot rename folder or asset with children' );
+			this.snackBar.warn( 'Cannot rename folder or asset with children' );
 
 			return;
 		}
@@ -201,7 +202,7 @@ export class AssetService {
 
 		if ( asset.children.length > 0 ) {
 
-			SnackBar.warn( 'Cannot delete folder or asset with children' );
+			this.snackBar.warn( 'Cannot delete folder or asset with children' );
 
 			return false;
 		}

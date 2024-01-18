@@ -47,6 +47,7 @@ export class ProjectBrowserComponent implements OnInit {
 		private electron: TvElectronService,
 		private dialogFactory: DialogFactory,		// dont remove, needed to load dialog components,
 		private assetService: AssetService,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -116,7 +117,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 	async onFileDropped ( file: File, folderPath: string ) {
 
-		if ( !file ) SnackBar.error( 'Incorrect file. Cannot import' );
+		if ( !file ) this.snackBar.error( 'Incorrect file. Cannot import' );
 		if ( !file ) return;
 
 		const extension = FileService.getExtension( file.name );
@@ -180,7 +181,7 @@ export class ProjectBrowserComponent implements OnInit {
 				break;
 
 			default:
-				SnackBar.error( `${ extension } file cannot be imported` );
+				this.snackBar.error( `${ extension } file cannot be imported` );
 				break;
 		}
 
@@ -196,7 +197,7 @@ export class ProjectBrowserComponent implements OnInit {
 	copyFile ( sourcePath: string, destinationPath: string ): boolean {
 
 		if ( !destinationPath ) TvConsole.error( 'destinationPath incorrect' );
-		if ( !destinationPath ) SnackBar.error( 'destinationPath incorrect' );
+		if ( !destinationPath ) this.snackBar.error( 'destinationPath incorrect' );
 		if ( !destinationPath ) return;
 
 		try {
@@ -208,7 +209,7 @@ export class ProjectBrowserComponent implements OnInit {
 		} catch ( error ) {
 
 			TvConsole.error( error );
-			SnackBar.error( error );
+			this.snackBar.error( error );
 
 		}
 	}
@@ -283,7 +284,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 			TvConsole.error( e );
 
-			SnackBar.error( e );
+			this.snackBar.error( e );
 
 		}
 

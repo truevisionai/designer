@@ -57,6 +57,7 @@ export class AssetComponent implements OnInit {
 		private assetService: AssetService,
 		private storageService: StorageService,
 		private ngZone: NgZone,
+		private snackBar: SnackBar
 	) {
 
 	}
@@ -92,7 +93,7 @@ export class AssetComponent implements OnInit {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar.error( error );
 
 		}
 
@@ -111,7 +112,7 @@ export class AssetComponent implements OnInit {
 
 				case AssetType.SCENE:
 					this.importer.importScene( this.asset.path );
-					SnackBar.success( 'Importing Scene ' + this.asset.name );
+					this.snackBar.success( 'Importing Scene ' + this.asset.name );
 					break;
 
 			}
@@ -186,7 +187,7 @@ export class AssetComponent implements OnInit {
 
 		} catch ( error ) {
 
-			SnackBar.warn( 'Could Not Delete Item' );
+			this.snackBar.warn( 'Could Not Delete Item' );
 
 		}
 
@@ -222,7 +223,7 @@ export class AssetComponent implements OnInit {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar.error( error );
 
 		}
 
@@ -230,13 +231,13 @@ export class AssetComponent implements OnInit {
 
 	reimport () {
 
-		SnackBar.error( 'Not able to reimport' );
+		this.snackBar.error( 'Not able to reimport' );
 
 	}
 
 	reimportAll () {
 
-		SnackBar.error( 'Not able to reimport' );
+		this.snackBar.error( 'Not able to reimport' );
 
 	}
 
@@ -308,7 +309,7 @@ export class AssetComponent implements OnInit {
 
 			if ( !isValid.success ) {
 
-				SnackBar.warn( isValid.messsage );
+				this.snackBar.warn( isValid.messsage );
 
 				return;
 

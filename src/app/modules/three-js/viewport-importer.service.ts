@@ -34,12 +34,13 @@ export class ViewportImporterService {
 	constructor (
 		private importerService: ImporterService,
 		private mainFileService: TvSceneFileService,
+		private snackBar: SnackBar
 	) {
 	}
 
 	import ( asset: DragDropData, position: Vector3 ) {
 
-		if ( !asset ) SnackBar.error( 'No data to import!' );
+		if ( !asset ) this.snackBar.error( 'No data to import!' );
 		if ( !asset ) return;
 
 		const filename = asset.assetName;

@@ -30,7 +30,8 @@ export class SigninComponent implements OnInit {
 
 	constructor (
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -79,7 +80,7 @@ export class SigninComponent implements OnInit {
 			this.showResendEmailConfirmationLink = true;
 		}
 
-		SnackBar.error( this.message );
+		this.snackBar.error( this.message );
 
 	}
 
@@ -88,7 +89,7 @@ export class SigninComponent implements OnInit {
 		this.submitButton.disabled = false;
 		this.progressBar.mode = 'determinate';
 
-		SnackBar.show( 'Successfully signed in' );
+		this.snackBar.show( 'Successfully signed in' );
 
 		this.router.navigateByUrl( AppService.homeUrl );
 
@@ -107,13 +108,13 @@ export class SigninComponent implements OnInit {
 
 		this.authService.resendEmailConfirmationLink( this.email.value ).subscribe( res => {
 
-			SnackBar.success( 'Email confirmation link sent. Please check your inbox.' );
+			this.snackBar.success( 'Email confirmation link sent. Please check your inbox.' );
 
 		}, err => {
 
 			this.resendButton.disabled = false;
 
-			SnackBar.error( err?.message || 'Something went wrong' );
+			this.snackBar.error( err?.message || 'Something went wrong' );
 
 		}, () => {
 

@@ -107,7 +107,7 @@ export class PropPointTool extends BaseTool {
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
+		if ( !this.prop ) this.tool.base.setWarning( 'Select a prop from the project browser' );
 
 		if ( !this.prop ) this.tool.base.setHint( 'Select a prop from the project browser' );
 

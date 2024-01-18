@@ -177,7 +177,7 @@ export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWi
 
 	handleCreationMode ( e: PointerEventData ) {
 
-		if ( !this.prop ) SnackBar.warn( 'Select a prop from the project browser' );
+		if ( !this.prop ) this.tool.base.setWarning( 'Select a prop from the project browser' );
 
 		if ( !this.prop ) this.setHint( 'Select a prop from the project browser' );
 

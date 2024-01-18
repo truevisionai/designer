@@ -57,6 +57,7 @@ export class SceneExporterService {
 		private threeService: ThreeService,
 		private mapService: MapService,
 		private openDrive: OpenDriveExporter,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -194,7 +195,7 @@ export class SceneExporterService {
 
 		}
 
-		SnackBar.error( 'Not able to export this spline type' );
+		this.snackBar.error( 'Not able to export this spline type' );
 
 	}
 
@@ -208,7 +209,7 @@ export class SceneExporterService {
 
 		if ( road.spline.controlPoints.length < 2 ) {
 			TvConsole.error( 'Road spline must have atleast 2 control points. Skipping export' );
-			SnackBar.error( 'Road spline must have atleast 2 control points. Skipping export' );
+			this.snackBar.error( 'Road spline must have atleast 2 control points. Skipping export' );
 			return;
 		}
 
@@ -291,7 +292,7 @@ export class SceneExporterService {
 
 		}
 
-		SnackBar.error( 'Not able to export this spline type' );
+		this.snackBar.error( 'Not able to export this spline type' );
 
 	}
 

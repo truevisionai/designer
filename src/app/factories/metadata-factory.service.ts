@@ -21,10 +21,12 @@ import { RoadStyle } from "../core/asset/road.style";
 export class MetadataFactory {
 
 	private static fileService: FileService;
+	private static snackBar: SnackBar;
 
-	constructor ( private fileService: FileService ) {
+	constructor ( private fileService: FileService, private snackBar: SnackBar ) {
 
 		MetadataFactory.fileService = fileService;
+		MetadataFactory.snackBar = snackBar;
 
 	}
 
@@ -152,7 +154,7 @@ export class MetadataFactory {
 
 			console.error( 'Error in writing .meta file', error );
 
-			SnackBar.error( 'Error in writing .meta file. Please Reimport the asset.', '', 5000 );
+			this.snackBar?.error( 'Error in writing .meta file. Please Reimport the asset.', '', 5000 );
 		}
 
 	}
@@ -441,7 +443,7 @@ export class MetadataFactory {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar?.error( error );
 
 			return null;
 
@@ -463,7 +465,7 @@ export class MetadataFactory {
 
 		} catch ( error ) {
 
-			SnackBar.error( error );
+			this.snackBar?.error( error );
 
 			return null;
 

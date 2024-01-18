@@ -57,9 +57,9 @@ export class OpenDriveService {
 
 		} catch ( e ) {
 
-			SnackBar.error( 'Error while importing' );
+			this.snackBar.error( 'Error while importing' );
 
-			SnackBar.error( e );
+			this.snackBar.error( e );
 
 		}
 
@@ -79,7 +79,7 @@ export class OpenDriveService {
 
 		callbackFn?.( map );
 
-		SnackBar.success( `OpenDrive imported ${ file?.path }` );
+		this.snackBar.success( `OpenDrive imported ${ file?.path }` );
 
 		TvConsole.info( 'OpenDrive imported ' + file?.path );
 	}

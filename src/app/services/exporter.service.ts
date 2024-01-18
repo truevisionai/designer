@@ -44,6 +44,7 @@ export class ExporterService {
 		private mapService: MapService,
 		private materialExporter: MaterialExporter,
 		private roadStyleExporter: RoadExporterService,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -132,7 +133,7 @@ export class ExporterService {
 
 		this.fileService.saveFileWithExtension( directory, contents, 'xodr', ( file: IFile ) => {
 
-			SnackBar.success( `File saved ${ file.path }` );
+			this.snackBar.success( `File saved ${ file.path }` );
 
 			ToolManager.enable();
 
@@ -152,7 +153,7 @@ export class ExporterService {
 
 		this.fileService.saveFileWithExtension( directory, contents, 'xosc', ( file: IFile ) => {
 
-			SnackBar.success( `File saved ${ file.path }` );
+			this.snackBar.success( `File saved ${ file.path }` );
 
 			ToolManager.enable();
 
@@ -219,7 +220,7 @@ export class ExporterService {
 
 		this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 
-			SnackBar.success( `File saved ${ file.path }` );
+			this.snackBar.success( `File saved ${ file.path }` );
 
 		} );
 

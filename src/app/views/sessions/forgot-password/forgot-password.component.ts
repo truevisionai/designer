@@ -22,7 +22,7 @@ export class ForgotPasswordComponent implements OnInit {
 
 	@ViewChild( MatButton ) submitButton: MatButton;
 
-	constructor ( private authService: AuthService ) {
+	constructor ( private authService: AuthService, private snackBar: SnackBar ) {
 	}
 
 	ngOnInit () {
@@ -40,7 +40,7 @@ export class ForgotPasswordComponent implements OnInit {
 
 			this.progressBar.mode = 'determinate';
 
-			SnackBar.show( 'Please check your email inbox to reset the password' );
+			this.snackBar.show( 'Please check your email inbox to reset the password' );
 
 		}, error => {
 
@@ -48,7 +48,7 @@ export class ForgotPasswordComponent implements OnInit {
 
 			this.progressBar.mode = 'determinate';
 
-			SnackBar.error( 'Error occured in resseting password' );
+			this.snackBar.error( 'Error occured in resseting password' );
 
 		} );
 	}

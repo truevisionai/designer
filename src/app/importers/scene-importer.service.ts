@@ -74,6 +74,7 @@ export class SceneImporterService extends AbstractReader {
 
 	constructor (
 		private threeService: ThreeService,
+		private snackBar: SnackBar
 	) {
 		super();
 	}
@@ -108,7 +109,7 @@ export class SceneImporterService extends AbstractReader {
 		const version = scene.version;
 		const guid = scene.guid;
 
-		if ( !version ) SnackBar.error( 'Cannot read scene version. Please check scene file before importing', 'OK', 5000 );
+		if ( !version ) this.snackBar.error( 'Cannot read scene version. Please check scene file before importing', 'OK', 5000 );
 		if ( !version ) console.error( 'Cannot read scene version', scene );
 		if ( !version ) return;
 
@@ -811,7 +812,7 @@ export class SceneImporterService extends AbstractReader {
 
 		} else {
 
-			SnackBar.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
+			this.snackBar.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
 
 			road.addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
 

@@ -24,6 +24,7 @@ export class RoadStyleImporter {
 
 	constructor (
 		private storageService: StorageService,
+		private snackBar: SnackBar
 	) { }
 
 	loadAsset ( asset: AssetNode ) {
@@ -43,7 +44,7 @@ export class RoadStyleImporter {
 		// check for main elements first before parsing
 		const version = roadStyleFile.version;
 
-		if ( !version ) SnackBar.error( 'Cannot read road-style version. Please check file before importing', 'OK', 5000 );
+		if ( !version ) this.snackBar.error( 'Cannot read road-style version. Please check file before importing', 'OK', 5000 );
 		if ( !version ) return;
 
 		return this.importRoadStyle( roadStyleFile );

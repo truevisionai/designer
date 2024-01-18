@@ -42,6 +42,7 @@ export class TvSceneFileService {
 		private sceneBuilder: SceneBuilderService,
 		private roadService: RoadService,
 		private roadObjectService: RoadObjectService,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -198,7 +199,7 @@ export class TvSceneFileService {
 
 		this.electronService.setTitle( scene.name, scene.path );
 
-		SnackBar.success( 'Scene Saved!' );
+		this.snackBar.success( 'Scene Saved!' );
 
 	}
 
@@ -213,7 +214,7 @@ export class TvSceneFileService {
 
 		this.assetService.updateSceneAsset( path, this.mapService.map );
 
-		SnackBar.success( 'Scene Saved!' );
+		this.snackBar.success( 'Scene Saved!' );
 
 	}
 

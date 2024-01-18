@@ -7,13 +7,14 @@ import { OpenDrive15Parser } from './open-drive-1-5.parser';
 import { OpenDrive16Parser } from './open-drive-1-6.parser';
 import { TvConsole } from 'app/core/utils/console';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { SnackBar } from 'app/services/snack-bar.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class OpenDriveParserService {
 
-	constructor () { }
+	constructor ( private snackBar: SnackBar ) { }
 
 	parse ( contents: string ): TvMap {
 
@@ -55,35 +56,35 @@ export class OpenDriveParserService {
 	getParser ( version: string ): IOpenDriveParser {
 
 		if ( version == "v1.0" ) {
-			return new OpenDrive14Parser();
+			return new OpenDrive14Parser( this.snackBar );
 		}
 
 		if ( version == "v1.1" ) {
-			return new OpenDrive14Parser();
+			return new OpenDrive14Parser( this.snackBar );
 		}
 
 		if ( version == "v1.2" ) {
-			return new OpenDrive14Parser();
+			return new OpenDrive14Parser( this.snackBar );
 		}
 
 		if ( version == "v1.4" ) {
-			return new OpenDrive14Parser();
+			return new OpenDrive14Parser( this.snackBar );
 		}
 
 		if ( version == "v1.5" ) {
-			return new OpenDrive15Parser();
+			return new OpenDrive15Parser( this.snackBar );
 		}
 
 		if ( version == "v1.6" ) {
-			return new OpenDrive16Parser();
+			return new OpenDrive16Parser( this.snackBar );
 		}
 
 		if ( version == "v1.7" ) {
-			return new OpenDrive16Parser();
+			return new OpenDrive16Parser( this.snackBar );
 		}
 
 		if ( version == "v1.8" ) {
-			return new OpenDrive16Parser();
+			return new OpenDrive16Parser( this.snackBar );
 		}
 
 		if ( version == "v2.0" ) {
