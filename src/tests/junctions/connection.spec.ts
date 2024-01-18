@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { IntersectionService } from 'app/services/junction/intersection.service';
@@ -18,7 +19,7 @@ describe( 'ConnectionService', () => {
 
 		TestBed.configureTestingModule( {
 			providers: [ RoadService ],
-			imports: [ HttpClientModule ]
+			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
 		eventServiceProvider = TestBed.inject( EventServiceProvider );

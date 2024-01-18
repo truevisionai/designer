@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
@@ -28,7 +29,7 @@ describe( 'LaneLinkService', () => {
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule ],
+			imports: [ HttpClientModule, MatSnackBarModule ],
 			providers: [ RoadToolService ]
 		} );
 

@@ -1,5 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { LaneSectionFactory } from "app/factories/lane-section.factory";
 import { TvLaneType } from "app/modules/tv-map/models/tv-common";
 import { MapValidatorService } from "app/services/map-validator.service";
@@ -19,7 +20,7 @@ describe( 'LaneSectionFactory: tests', () => {
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule ],
+			imports: [ HttpClientModule, MatSnackBarModule ],
 			providers: [ LaneSectionFactory ]
 		} );
 

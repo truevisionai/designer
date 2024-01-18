@@ -1,5 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineEventListener } from "app/listeners/spline-event-listener";
 import { SplineManager } from "app/managers/spline-manager";
@@ -33,7 +34,7 @@ describe( 't-junction tests', () => {
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule ],
+			imports: [ HttpClientModule, MatSnackBarModule ],
 			providers: [ RoadToolService ]
 		} );
 

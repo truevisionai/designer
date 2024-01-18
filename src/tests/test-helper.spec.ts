@@ -9,6 +9,7 @@ import { RoadTool } from "app/tools/road/road-tool";
 import { RoadToolService } from "app/tools/road/road-tool.service";
 import { BaseTest } from "./base-test.spec";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe( 'BaseTest: tests', () => {
 
@@ -25,7 +26,7 @@ describe( 'BaseTest: tests', () => {
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule ],
+			imports: [ HttpClientModule, MatSnackBarModule ],
 			providers: [ RoadToolService ]
 		} );
 

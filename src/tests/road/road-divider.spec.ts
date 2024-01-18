@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
@@ -15,7 +16,7 @@ describe( 'Service: RoadDivider', () => {
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
 			providers: [ RoadService ],
-			imports: [ HttpClientModule ]
+			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
 		eventServiceProvider = TestBed.get( EventServiceProvider );

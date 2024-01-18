@@ -4,16 +4,23 @@
 
 import { TestBed } from '@angular/core/testing';
 import { OpenDrive14Parser } from './open-drive-1-4.parser';
+import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 describe( 'OpenDrive Parsing', () => {
 
 	let parser: OpenDrive14Parser;
 
-	beforeEach( () => TestBed.configureTestingModule( {} ) );
-
 	beforeEach( () => {
-		parser = new OpenDrive14Parser();
+
+		TestBed.configureTestingModule( {
+			providers: [ OpenDrive14Parser ],
+			imports: [ HttpClientModule, MatSnackBarModule ]
+		} );
+
+		parser = TestBed.get( OpenDrive14Parser );
+
 	} );
 
 	it( 'should parse header correctly', () => {

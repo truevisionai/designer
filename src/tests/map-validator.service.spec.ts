@@ -6,6 +6,7 @@ import { Vector2 } from 'three';
 import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
 import { HttpClientModule } from '@angular/common/http';
 import { MapService } from 'app/services/map.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe( 'Service: MapValidator', () => {
 
@@ -17,7 +18,7 @@ describe( 'Service: MapValidator', () => {
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule ],
+			imports: [ HttpClientModule, MatSnackBarModule ],
 			providers: [ MapValidatorService ]
 		} );
 

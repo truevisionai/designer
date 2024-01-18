@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Vector3 } from 'three';
@@ -9,7 +10,7 @@ describe( 'Service: RoadCut', () => {
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
 			providers: [ RoadService ],
-			imports: [ HttpClientModule ]
+			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 	} );
 

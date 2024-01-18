@@ -14,6 +14,7 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
 import { SplineManager } from 'app/managers/spline-manager';
 import { MapValidatorService } from 'app/services/map-validator.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe( '4-way-junction tests', () => {
 
@@ -30,7 +31,7 @@ describe( '4-way-junction tests', () => {
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule ],
+			imports: [ HttpClientModule, MatSnackBarModule ],
 		} );
 
 		roadToolService = TestBed.get( RoadToolService );
