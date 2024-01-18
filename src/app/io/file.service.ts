@@ -26,7 +26,7 @@ export class FileService {
 	public path: any;
 	private util: any;
 
-	constructor ( public electronService: TvElectronService, private ngZone: NgZone ) {
+	constructor ( public electronService: TvElectronService, private ngZone: NgZone, private snackBar: SnackBar ) {
 
 		FileService.electron = electronService;
 
@@ -158,7 +158,7 @@ export class FileService {
 		this.fs.readFile( path, 'utf-8', ( err, data ) => {
 
 			if ( err ) {
-				SnackBar.error( 'An error ocurred reading the file :' + err.message );
+				this.snackBar.error( 'An error ocurred reading the file :' + err.message );
 				return;
 			}
 
@@ -216,7 +216,7 @@ export class FileService {
 
 			} else {
 
-				SnackBar.error( 'Could not save file' );
+				this.snackBar.error( 'Could not save file' );
 
 			}
 
@@ -236,7 +236,7 @@ export class FileService {
 
 			if ( res.canceled || res.filePath == null ) {
 
-				SnackBar.show( 'file save cancelled' );
+				this.snackBar.show( 'file save cancelled' );
 
 			} else {
 

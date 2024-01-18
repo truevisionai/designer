@@ -31,7 +31,7 @@ export class TextureFieldComponent implements OnInit {
 
 	metadata: Metadata;
 
-	constructor () { }
+	constructor (private snackBar: SnackBar) { }
 
 	ngOnInit () {
 
@@ -101,7 +101,7 @@ export class TextureFieldComponent implements OnInit {
 
 		if ( !metadata ) {
 
-			SnackBar.warn( 'Metadata not found' );
+			this.snackBar.warn( 'Metadata not found' );
 
 			return;
 		}
@@ -114,7 +114,7 @@ export class TextureFieldComponent implements OnInit {
 
 		} else {
 
-			SnackBar.warn( 'Not a texture' );
+			this.snackBar.warn( 'Not a texture' );
 
 		}
 	}

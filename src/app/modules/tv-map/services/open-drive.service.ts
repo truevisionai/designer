@@ -25,6 +25,7 @@ export class OpenDriveService {
 		private sceneExporter: SceneExporterService,
 		private openDriveParserService: OpenDriveParserService,
 		private mapService: MapService,
+		private snackBar: SnackBar
 	) {
 
 	}
@@ -42,7 +43,7 @@ export class OpenDriveService {
 
 		if ( filepaths == null || filepaths.length == 0 ) return;
 
-		SnackBar.show( 'Importing....' );
+		this.snackBar.show( 'Importing....' );
 
 		try {
 

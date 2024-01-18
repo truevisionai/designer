@@ -83,6 +83,23 @@ export class SnackBar {
 
 	}
 
+	show ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
+
+		return this.open( message, action, duration );
+
+	}
+
+	error ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
+
+		return this.snackBar.open( message, action, {
+			duration: duration,
+			verticalPosition: SnackBar.verticalPosition,
+			horizontalPosition: 'right',
+			panelClass: [ 'red-snackbar' ]
+		} );
+
+	}
+
 	success ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
 
 		return this.snackBar.open( message, action, {
