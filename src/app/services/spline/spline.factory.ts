@@ -8,13 +8,16 @@ import { RoadNode } from 'app/modules/three-js/objects/road-node';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
 import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { ControlPointFactory } from 'app/factories/control-point.factory';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SplineFactory {
 
-	constructor () { }
+	constructor (
+		private pointFactory: ControlPointFactory
+	) { }
 
 	createConnectingRoadSpline ( road: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
 
@@ -200,17 +203,19 @@ export class SplineFactory {
 
 		const distanceAB = v1.distanceTo( v4 );
 
-		const v2 = v1.clone().add( d1.clone().multiplyScalar( distanceAB / 4 ) );
-		const v3 = v4.clone().add( d4.clone().multiplyScalar( distanceAB / 4 ) );
+		const v2 = v1.clone().add( d1.clone().multiplyScalar( distanceAB / 3 ) );
+		const v3 = v4.clone().add( d4.clone().multiplyScalar( distanceAB / 3 ) );
 
 		const spline = new AutoSplineV2();
 
 		if ( road ) spline.addRoadSegment( 0, road );
 
-		spline.addControlPointAt( v1 );
-		spline.addControlPointAt( v2 );
-		spline.addControlPointAt( v3 );
-		spline.addControlPointAt( v4 );
+		spline.controlPoints.push( this.pointFactory.createSplineControlPoint( spline, v1 ) );
+		spline.controlPoints.push( this.pointFactory.createSplineControlPoint( spline, v2 ) );
+		spline.controlPoints.push( this.pointFactory.createSplineControlPoint( spline, v3 ) );
+		spline.controlPoints.push( this.pointFactory.createSplineControlPoint( spline, v4 ) );
+
+		spline.update();
 
 		return spline;
 	}

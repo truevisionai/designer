@@ -59,20 +59,54 @@ export class RoundLine {
 			const p1 = this.points[ i ].position;
 			const p2 = this.points[ i + 1 ].position;
 
-			// Check if the current point and its neighbors are in a straight line
 			if ( !this.isStraightLine( p0, p1, p2 ) ) {
-
-				// Calculate distances to adjacent points
-				const lengths = [ p0.distanceTo( p1 ), p1.distanceTo( p2 ) ];
-
-				// Set radius as half the minimum of these distances
-				this.radiuses[ i ] = Math.min( ...lengths ) / 2;
+				// Advanced curvature analysis
+				const curvature = this.calculateCurvature( p0, p1, p2 );
+				// Adjust radius based on curvature and distances
+				this.radiuses[ i ] = this.adjustRadiusBasedOnCurvature( curvature, p0, p1, p2 );
 			}
-
-			// For straight lines, the radius remains 0 (set during initialization)
+			// Additional logic for smoothing transitions between radii
+			this.radiuses[ i ] = this.smoothTransition( i, this.radiuses );
 		}
 
 	}
+
+	private calculateCurvature ( p0: Vector3, p1: Vector3, p2: Vector3 ): number {
+		const a = p0.distanceTo( p1 );
+		const b = p1.distanceTo( p2 );
+		const c = p2.distanceTo( p0 );
+
+		const s = ( a + b + c ) / 2; // semi-perimeter
+		const area = Math.sqrt( s * ( s - a ) * ( s - b ) * ( s - c ) ); // Heron's formula for area
+
+		const radius = ( a * b * c ) / ( 4 * area ); // radius of circumscribed circle
+		const curvature = 1 / radius; // curvature is the inverse of radius
+
+		return curvature;
+	}
+
+	private adjustRadiusBasedOnCurvature ( curvature: number, p0: Vector3, p1: Vector3, p2: Vector3 ): number {
+		const baseRadius = Math.min( p0.distanceTo( p1 ), p1.distanceTo( p2 ) ); // minimum of the distances to adjacent points
+
+		// Adjusting radius based on curvature: smaller radius for higher curvature
+		// You can introduce a factor to scale the effect of curvature on radius
+		const curvatureFactor = 1.0; // Adjust this factor based on your requirements
+		const adjustedRadius = baseRadius / ( 1 + curvature * curvatureFactor );
+
+		return Math.max( adjustedRadius, 0 ); // ensure non-negative radius
+	}
+
+	private smoothTransition ( index: number, radiuses: number[] ): number {
+		if ( index <= 0 || index >= radiuses.length - 1 ) {
+			return radiuses[ index ]; // No smoothing for first and last points
+		}
+
+		// Simple average of the current radius and its neighbors
+		const smoothedRadius = ( radiuses[ index - 1 ] + radiuses[ index ] + radiuses[ index + 1 ] ) / 3;
+
+		return smoothedRadius;
+	}
+
 
 	private calcRadiusOld (): void {
 
@@ -150,8 +184,8 @@ export class RoundLine {
 
 		if ( this.points.length <= 1 ) return;
 
-		// this.calcRadiusOld();
-		this.calcRadiusNew();
+		this.calcRadiusOld();
+		// this.calcRadiusNew();
 
 		const position = this.mesh.geometry.attributes.position as BufferAttribute;
 

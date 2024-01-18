@@ -221,116 +221,6 @@ export class AutoSplineV2 extends AbstractSpline {
 
 	}
 
-	exportGeometries (): TvAbstractRoadGeometry[] {
-
-		let totalLength = 0;
-
-		const points = this.roundline.points as AbstractControlPoint[];
-
-		const radiuses = this.roundline.radiuses;
-
-		const geometries: TvAbstractRoadGeometry[] = [];
-
-		let s = totalLength;
-
-		for ( let i = 1; i < points.length; i++ ) {
-
-			let x, y, hdg, length;
-
-			const previous = points[ i - 1 ].position;
-			const current = points[ i ].position;
-
-			const p1 = new Vector2( previous.x, previous.y );
-
-			const p2 = new Vector2( current.x, current.y );
-
-			const d = p1.distanceTo( p2 );
-
-			// line between p1 and p2
-			if ( d - radiuses[ i - 1 ] - radiuses[ i ] > 0.001 ) {
-
-				[ x, y ] = new Vector2()
-					.subVectors( p2, p1 )
-					.normalize()
-					.multiplyScalar( radiuses[ i - 1 ] )
-					.add( p1 )
-					.toArray();
-
-				// hdg = new Vector2().subVectors( p2, p1 ).angle();
-				hdg = points[ i - 1 ][ 'hdg' ];
-
-				length = d - radiuses[ i - 1 ] - radiuses[ i ];
-
-				s = totalLength;
-
-				totalLength += length;
-
-				geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
-
-			}
-
-			// arc for p2
-			if ( radiuses[ i ] > 0 ) { // first and last point can't have zero radiuses
-
-				const next = points[ i + 1 ].position;
-
-				const dir1 = new Vector2( current.x - previous.x, current.y - previous.y ).normalize();
-
-				const dir2 = new Vector2( next.x - current.x, next.y - current.y ).normalize();
-
-				const pp1 = new Vector2()
-					.subVectors( p1, p2 )
-					.normalize()
-					.multiplyScalar( radiuses[ i ] )
-					.add( p2 );
-
-				const pp2 = new Vector2()
-					.subVectors( ( new Vector2( next.x, next.y ) ), p2 )
-					.normalize()
-					.multiplyScalar( radiuses[ i ] )
-					.add( p2 );
-
-				x = pp1.x;
-
-				y = pp1.y;
-
-				hdg = dir1.angle();
-
-				let r, alpha, sign;
-
-				[ r, alpha, length, sign ] = this.getArcParams( pp1, pp2, dir1, dir2 );
-
-				if ( r != Infinity ) {
-
-					s = totalLength;
-
-					totalLength += length;
-
-					const curvature = ( sign > 0 ? 1 : -1 ) * ( 1 / r ); // sign < for mirror image
-
-					geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
-
-				} else {
-
-					s = totalLength;
-
-					length = pp1.distanceTo( pp2 );
-
-					totalLength += length;
-
-					geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
-
-					console.warn( 'radius is infinity' );
-
-				}
-
-			}
-
-		}
-
-		return geometries;
-	}
-
 	addControlPointAt ( position: Vector3 ): AbstractControlPoint {
 
 		// const index = this.controlPoints.length;
@@ -386,6 +276,14 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		this.cachedSplineGeometries = [];
 
+		this.cachedSplineGeometries = this.exportGeometries();
+
+	}
+
+	exportGeometries (): TvAbstractRoadGeometry[] {
+
+		if ( this.controlPoints.length < 2 ) return [];
+
 		let totalLength = 0;
 
 		const points = this.roundline.points as AbstractControlPoint[];
@@ -424,8 +322,8 @@ export class AutoSplineV2 extends AbstractSpline {
 					.add( p1 )
 					.toArray();
 
-				// hdg = new Vector2().subVectors( p2, p1 ).angle();
-				hdg = points[ i - 1 ][ 'hdg' ];
+				hdg = new Vector2().subVectors( p2, p1 ).angle();
+				// hdg = points[ i - 1 ][ 'hdg' ];
 
 				length = distance - previousRadius - currentRadius;
 
@@ -433,7 +331,17 @@ export class AutoSplineV2 extends AbstractSpline {
 
 				totalLength += length;
 
-				geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
+				const lastGeometry = geometries[ geometries.length - 1 ];
+
+				if ( lastGeometry instanceof TvLineGeometry && lastGeometry.hdg == hdg ) {
+
+					lastGeometry.length += length;
+
+				} else {
+
+					geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
+
+				}
 
 			}
 
@@ -486,9 +394,19 @@ export class AutoSplineV2 extends AbstractSpline {
 
 					totalLength += length;
 
-					geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
+					const lastGeometry = geometries[ geometries.length - 1 ];
 
-					console.warn( 'radius is infinity' );
+					if ( lastGeometry instanceof TvLineGeometry && lastGeometry.hdg == hdg ) {
+
+						lastGeometry.length += length;
+
+					} else {
+
+						geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
+
+					}
+
+					//console.warn( 'radius is infinity' );
 
 				}
 
@@ -496,7 +414,7 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		}
 
-		this.cachedSplineGeometries = geometries;
-
+		return geometries;
 	}
+
 }

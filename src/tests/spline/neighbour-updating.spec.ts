@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { SplineManager } from 'app/managers/spline-manager';
 import { MapService } from 'app/services/map.service';
 import { RoadService } from 'app/services/road/road.service';
@@ -13,17 +14,21 @@ describe( 'RoadTool: UpdateConnectedRoads', () => {
 	let roadToolService: RoadToolService
 	let mapService: MapService;
 	let splineManager: SplineManager;
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			providers: [ RoadService ],
+			providers: [ RoadService, MatSnackBar ],
 			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
 		roadToolService = TestBed.get( RoadToolService );
 		mapService = TestBed.get( MapService );
 		splineManager = TestBed.get( SplineManager );
+		eventServiceProvider = TestBed.get( EventServiceProvider );
+
+		eventServiceProvider.init();
 
 	} );
 

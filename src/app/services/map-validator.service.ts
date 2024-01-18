@@ -16,6 +16,7 @@ import { MapService } from './map.service';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
 import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvElectronService } from './tv-electron.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -32,11 +33,13 @@ export class MapValidatorService {
 		private debugDraw: DebugDrawService,
 		private debugText: DebugTextService,
 		private mapService: MapService,
+		private electron: TvElectronService
 	) {
-		this.init();
 	}
 
 	init () {
+
+		if ( !this.electron.isElectronApp ) return;
 
 		if ( Environment.production ) return;
 

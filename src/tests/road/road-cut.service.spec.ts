@@ -1,17 +1,24 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Vector3 } from 'three';
 
 describe( 'Service: RoadCut', () => {
 
+	let eventServiceProvider: EventServiceProvider;
+
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
 			providers: [ RoadService ],
 			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
+
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		eventServiceProvider.init();
+
 	} );
 
 	it( 'should ...', inject( [ RoadService ], ( roadService: RoadService ) => {

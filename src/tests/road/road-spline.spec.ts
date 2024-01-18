@@ -13,12 +13,15 @@ describe( 'Service: RoadSpline', () => {
 	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
+
 		TestBed.configureTestingModule( {
 			providers: [ RoadService ],
 			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
+
 		eventServiceProvider = TestBed.get( EventServiceProvider );
 		eventServiceProvider.init();
+
 	} );
 
 	it( 'should ...', inject( [ RoadService ], ( roadService: RoadService ) => {
@@ -36,15 +39,10 @@ describe( 'Service: RoadSpline', () => {
 			new Vector2( 150, 0 ),
 		] )
 
-		expect( road.geometries.length ).toBe( 3 );
+		expect( road.geometries.length ).toBe( 1 );
 
 		expect( road.geometries[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
-		expect( road.geometries[ 1 ].geometryType ).toBe( TvGeometryType.LINE );
-		expect( road.geometries[ 2 ].geometryType ).toBe( TvGeometryType.LINE );
-
-		expect( road.geometries[ 0 ].length ).toBe( 50 );
-		expect( road.geometries[ 1 ].length ).toBe( 50 );
-		expect( road.geometries[ 2 ].length ).toBe( 50 );
+		expect( road.geometries[ 0 ].length ).toBe( 150 );
 
 		expect( road.length ).toBe( 150 );
 

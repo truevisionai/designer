@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Maths } from 'app/utils/maths';
@@ -10,6 +11,7 @@ describe( 'IntersectionService', () => {
 
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -18,9 +20,10 @@ describe( 'IntersectionService', () => {
 		} );
 
 		roadService = TestBed.inject( RoadService );
-
 		intersectionService = TestBed.inject( IntersectionService );
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
 
+		eventServiceProvider.init();
 	} );
 
 	it( 'should detect intersection', () => {

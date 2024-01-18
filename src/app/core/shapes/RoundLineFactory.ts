@@ -158,7 +158,7 @@ export class RoundLineFactory {
 
 					geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
 
-					console.warn( 'radius is infinity' );
+					//console.warn( 'radius is infinity' );
 
 				}
 

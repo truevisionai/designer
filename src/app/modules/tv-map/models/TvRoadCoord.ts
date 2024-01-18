@@ -17,7 +17,7 @@ export class TvRoadCoord {
 
 		if ( Maths.approxEquals( this.s, this.road.length, 1 ) ) return TvContactPoint.END;
 
-		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
+		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ` + this.road.toString() );
 	}
 
 	get contactCheck (): TvContactPoint {
