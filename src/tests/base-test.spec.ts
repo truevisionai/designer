@@ -62,7 +62,7 @@ export class BaseTest {
 
 		roadService.addRoad( road );
 
-		road.spline.update();
+		roadService.updateRoadGeometries( road );
 
 		return road;
 

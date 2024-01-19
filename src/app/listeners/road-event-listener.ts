@@ -71,23 +71,11 @@ export class RoadEventListener {
 
 			this.mapService.map.removeSpline( event.road.spline );
 
-		} else {
+		} else if ( event.road.spline.findSegment( event.road ) ) {
 
 			this.segmentService.removeRoadSegment( event.road.spline, event.road );
 
 		}
-
-		// this.roadSplineService.removeRoadSegment( event.road );
-
-		// this.roadSplineService.rebuildSplineRoads( event.road.spline );
-
-		// this.updateLinks( event.road );
-
-		// this.mapService.map.gameObject.remove( event.road.gameObject );
-
-		// this.mapService.map.removeRoad( event.road );
-
-		// this.roadFactory.idRemoved( event.road.id );
 
 		this.roadManager.removeRoad( event.road );
 

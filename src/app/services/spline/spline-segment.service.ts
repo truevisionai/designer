@@ -60,6 +60,8 @@ export class SplineSegmentService {
 
 	removeRoadSegment ( spline: AbstractSpline, road: TvRoad ) {
 
+		if ( !spline.findSegment( road ) ) return;
+
 		spline.removeSegment( road );
 
 		if ( spline.getSplineSegments().length == 0 ) {
@@ -71,6 +73,8 @@ export class SplineSegmentService {
 	}
 
 	removeJunctionSegment ( spline: AbstractSpline, junction: TvJunction ) {
+
+		if ( !spline.findSegment( junction ) ) return;
 
 		spline.removeSegment( junction );
 

@@ -128,7 +128,7 @@ export class RoadManager {
 
 		const segment = road.spline.findSegment( road );
 
-		if ( !segment ) console.error( 'Road segment not found', road  );
+		if ( !segment ) console.error( 'Road segment not found ' + road.toString()  );
 		if ( !segment ) return;
 
 		road.clearGeometries();

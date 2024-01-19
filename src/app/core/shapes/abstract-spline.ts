@@ -500,7 +500,7 @@ export abstract class AbstractSpline {
 
 		} else {
 
-			console.error( 'segment not found', segment );
+			console.error( 'segment not found' + segment.toString() );
 
 		}
 
