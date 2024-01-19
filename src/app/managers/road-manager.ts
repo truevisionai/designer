@@ -8,6 +8,9 @@ import { RoadObjectService } from "app/tools/marking-line/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
 import { LaneManager } from "./lane/lane.manager";
 import { RoadBuilder } from "app/modules/tv-map/builders/road.builder";
+import { SplineSegmentService } from "app/services/spline/spline-segment.service";
+import { SplineBuilder } from "app/services/spline/spline.builder";
+import { RoadLinkManager } from "./road/road-link.manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,9 +25,14 @@ export class RoadManager {
 		private roadElevationManager: RoadElevationManager,
 		private laneManager: LaneManager,
 		private roadBuilder: RoadBuilder,
+		private segmentService: SplineSegmentService,
+		private splineBuilder: SplineBuilder,
+		private roadLinkManager: RoadLinkManager
 	) { }
 
 	addRoad ( road: TvRoad ) {
+
+		this.roadLinkManager.onRoadCreated( road );
 
 		for ( const laneSection of road.laneSections ) {
 			for ( const [ id, lane ] of laneSection.lanes ) {
@@ -50,16 +58,39 @@ export class RoadManager {
 
 	removeRoad ( road: TvRoad ) {
 
-		this.linkService.removeLinks( road );
+		this.roadLinkManager.onRoadRemoved( road );
 
-		// we only want to remove the segment not the whole spline
-		// this.mapService.map.removeSpline( road.spline );
+		if ( road.isJunction ) {
 
-		this.roadFactory.idRemoved( road.id );
+			this.mapService.map.removeSpline( road.spline );
+
+			road.junctionInstance?.removeConnectingRoad( road );
+
+		} else if ( road.spline.findSegment( road ) ) {
+
+			this.segmentService.removeRoadSegment( road.spline, road );
+
+		}
+
+		if ( road.spline.getSplineSegments().length == 0 ) {
+
+		} else {
+
+			this.splineBuilder.buildSpline( road.spline );
+
+		}
+
+		road.objects.object.forEach( object => {
+
+			this.roadObjectService.removeObject3d( object );
+
+		} );
+
+		this.mapService.map.gameObject.remove( road.gameObject );
 
 		this.mapService.map.removeRoad( road );
 
-		this.mapService.map.gameObject.remove( road.gameObject );
+		this.roadFactory.idRemoved( road.id );
 
 	}
 

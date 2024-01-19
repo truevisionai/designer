@@ -103,9 +103,31 @@ export class IntersectionService {
 	getSplineIntersectionPointViaBounds ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): Vector3 | null {
 
 		function createBoundingBoxForSegment ( start: Vector3, end: Vector3, roadWidth: number ): Box3 {
+
 			const box = new Box3();
+
 			box.setFromCenterAndSize( start.clone().add( end ).multiplyScalar( 0.5 ), new Vector3( roadWidth, roadWidth, Math.abs( start.z - end.z ) ) );
+
 			return box;
+
+		}
+
+		function getWidthAt ( spline: AbstractSpline, position: Vector3 ): number {
+
+			const coord = spline.getCoordAt( position );
+
+			const segment = spline.getSegmentAt( coord.s );
+
+			if ( !segment ) return 12;
+
+			if ( !segment.isRoad ) return 12;
+
+			const road = segment.getInstance<TvRoad>();
+
+			if ( !road ) return 12;
+
+			return road.getRoadWidthAt( coord.s ).totalWidth;
+
 		}
 
 		if ( splineA == splineB ) return;
@@ -124,9 +146,12 @@ export class IntersectionService {
 				const c = pointsB[ j ];
 				const d = pointsB[ j + 1 ];
 
+				const roadWidthA = getWidthAt( splineA, a );
+				const roadWidthB = getWidthAt( splineB, c );
+
 				// Create bounding boxes for the line segments
-				const boxA = createBoundingBoxForSegment( a, b, 12 );
-				const boxB = createBoundingBoxForSegment( c, d, 12 );
+				const boxA = createBoundingBoxForSegment( a, b, roadWidthA );
+				const boxB = createBoundingBoxForSegment( c, d, roadWidthB );
 
 				// Check if these bounding boxes intersect
 				if ( this.intersectsBox( boxA, boxB ) ) {
@@ -185,7 +210,7 @@ export class IntersectionService {
 			if ( otherSpline == successorSpline ) continue;
 			if ( otherSpline == predecessorSpline ) continue;
 
-			const intersection = this.getSplineIntersectionPoint( spline, otherSpline );
+			const intersection = this.getSplineIntersectionPointViaBounds( spline, otherSpline );
 
 			if ( !intersection ) continue;
 

@@ -78,5 +78,34 @@ describe( 'Service: RoadDivider', () => {
 
 	} ) );
 
+	it( 'should divide straight road multiple times', inject( [ RoadService, RoadDividerService ], ( roadService: RoadService, roadDividerService: RoadDividerService ) => {
+
+		const road1 = base.createDefaultRoad( roadService, [
+			new Vector2( 0, 0 ),
+			new Vector2( 500, 0 ),
+		] );
+
+		expect( road1.length ).toBe( 500 );
+
+		const road2 = roadDividerService.divideRoadAt( road1, 300 );
+		roadService.addRoad( road2 );
+
+		const road3 = roadDividerService.divideRoadAt( road1, 100 );
+		roadService.addRoad( road3 );
+
+		expect( road1.successor.element ).toBe( road3 )
+		expect( road1.successor.contactPoint ).toBe( TvContactPoint.START );
+
+		expect( road2.predecessor.element ).toBe( road3 );
+		expect( road2.predecessor.contactPoint ).toBe( TvContactPoint.END );
+
+		expect( road3.predecessor.element ).toBe( road1 );
+		expect( road3.predecessor.contactPoint ).toBe( TvContactPoint.END );
+
+		expect( road1.length ).toBe( 100 );
+		expect( road2.length ).toBe( 200 );
+		expect( road3.length ).toBe( 200 );
+
+	} ) );
 
 } );

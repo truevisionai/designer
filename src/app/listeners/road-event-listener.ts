@@ -1,19 +1,11 @@
 import { MapEvents } from "../events/map-events";
-import { RoadLinkService } from "app/services/road/road-link.service";
 import { Injectable } from "@angular/core";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { RoadObjectService } from "app/tools/marking-line/road-object.service";
-import { RoadService } from "app/services/road/road.service";
-import { MapService } from "app/services/map.service";
-import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
-import { IntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
 import { RoadCreatedEvent } from "../events/road/road-created-event";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { RoadRemovedEvent } from "../events/road/road-removed-event";
-import { RoadFactory } from "app/factories/road-factory.service";
 import { RoadManager } from "app/managers/road-manager";
-import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,14 +13,7 @@ import { SplineSegmentService } from "app/services/spline/spline-segment.service
 export class RoadEventListener {
 
 	constructor (
-		private mapService: MapService,
-		private roadService: RoadService,
-		private segmentService: SplineSegmentService,
-		private roadLinkService: RoadLinkService,
-		private roadObjectService: RoadObjectService,
-		private intersectionService: IntersectionService,
 		private junctionService: JunctionService,
-		private roadFactory: RoadFactory,
 		private roadManager: RoadManager,
 	) {
 	}
@@ -59,47 +44,7 @@ export class RoadEventListener {
 
 	onRoadRemoved ( event: RoadRemovedEvent ) {
 
-		event.road.objects.object.forEach( object => {
-
-			this.roadObjectService.removeObject3d( object );
-
-		} );
-
-		// this.roadLinkService.removeLinks( event.road );
-
-		if ( event.road.isJunction ) {
-
-			this.mapService.map.removeSpline( event.road.spline );
-
-		} else if ( event.road.spline.findSegment( event.road ) ) {
-
-			this.segmentService.removeRoadSegment( event.road.spline, event.road );
-
-		}
-
 		this.roadManager.removeRoad( event.road );
-
-	}
-
-	updateLinks ( road: TvRoad ) {
-
-		if ( road.successor?.isJunction ) {
-
-			const junction = this.roadLinkService.getElement<TvJunction>( road.successor );
-
-			this.intersectionService.postProcessJunction( junction );
-
-			this.junctionService.buildJunction( junction );
-		}
-
-		if ( road.predecessor?.isJunction ) {
-
-			const junction = this.roadLinkService.getElement<TvJunction>( road.predecessor );
-
-			this.intersectionService.postProcessJunction( junction );
-
-			this.junctionService.buildJunction( junction );
-		}
 
 	}
 

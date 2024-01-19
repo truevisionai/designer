@@ -295,25 +295,9 @@ export class RoadService {
 
 	removeRoad ( road: TvRoad ) {
 
-		if ( road.isJunction ) {
-
-			road.junctionInstance?.removeConnectingRoad( road );
-
-		}
+		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
 		this.mapService.map.removeRoad( road );
-
-		road.objects.object.forEach( object => {
-
-			this.roadObjectService.removeObject3d( object );
-
-		} );
-
-		this.mapService.map.gameObject.remove( road.gameObject );
-
-		this.roadFactory.idRemoved( road.id );
-
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
 	}
 

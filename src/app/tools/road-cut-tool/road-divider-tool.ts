@@ -15,6 +15,7 @@ import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-
 import { RoadDividerToolService } from './road-divider-tool.service';
 import { CommandHistory } from 'app/services/command-history';
 import { AddObjectCommand } from "../../commands/add-object-command";
+import { UpdateValueCommand } from 'app/commands/set-value-command';
 
 export class RoadDividerTool extends BaseTool {
 
@@ -85,9 +86,7 @@ export class RoadDividerTool extends BaseTool {
 
 		const addCommand = new AddObjectCommand( clone );
 
-		const updateCommand = new AddObjectCommand( roadCoord.road );
-
-		CommandHistory.executeMany( addCommand, updateCommand );
+		CommandHistory.executeMany( addCommand );
 
 		this.setHint( "Modify the new road from Road Tool" );
 

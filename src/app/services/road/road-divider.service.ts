@@ -19,17 +19,35 @@ export class RoadDividerService {
 
 	divideRoadAt ( road: TvRoad, s: number ) {
 
-		const newRoad = this.roadService.clone( road, s );
+		const oldSuccessor = road.successor;
 
-		road.setSuccessorRoad( newRoad, TvContactPoint.START );
+		const newRoad = this.clone( road, s );
+
+		if ( oldSuccessor?.isRoad ) {
+
+			const nextRoad = oldSuccessor.getElement<TvRoad>();
+
+			nextRoad.setPredecessorRoad( newRoad, TvContactPoint.END );
+
+		}
+
+		newRoad.successor = oldSuccessor;
 
 		newRoad.setPredecessorRoad( road, TvContactPoint.END );
+
+		this.splineService.updateSpline( road.spline );
+
+		return newRoad
+
+	}
+
+	clone ( road: TvRoad, s: number ) {
+
+		const newRoad = this.roadService.clone( road, s );
 
 		newRoad.sStart = road.sStart + s;
 
 		this.segmentService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
-
-		this.splineService.updateSpline( road.spline );
 
 		return newRoad
 
