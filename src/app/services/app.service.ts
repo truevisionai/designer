@@ -15,7 +15,6 @@ import { SceneService } from './scene.service';
 import { ManagerRegistry } from '../managers/manager-registry';
 import { EntityManager } from '../managers/entity-manager';
 import { MapManager } from '../managers/map-manager';
-import { ElevationManager } from '../managers/elevation-manager';
 import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
 import { RoadService } from './road/road.service';
 import { AssetService } from 'app/core/asset/asset.service';
@@ -60,7 +59,6 @@ export class AppService {
 
 		ManagerRegistry.registerManager( EntityManager );
 		ManagerRegistry.registerManager( MapManager );
-		ManagerRegistry.registerManager( ElevationManager );
 		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );
 
 		ManagerRegistry.initManagers();

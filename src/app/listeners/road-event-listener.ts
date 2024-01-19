@@ -5,7 +5,7 @@ import { JunctionService } from "app/services/junction/junction.service";
 import { RoadCreatedEvent } from "../events/road/road-created-event";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { RoadRemovedEvent } from "../events/road/road-removed-event";
-import { RoadManager } from "app/managers/road-manager";
+import { RoadManager } from "app/managers/road/road-manager";
 
 @Injectable( {
 	providedIn: 'root'

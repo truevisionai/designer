@@ -6,11 +6,11 @@ import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadService } from "app/services/road/road.service";
 import { RoadObjectService } from "app/tools/marking-line/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
-import { LaneManager } from "./lane/lane.manager";
+import { LaneManager } from "../lane/lane.manager";
 import { RoadBuilder } from "app/modules/tv-map/builders/road.builder";
 import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 import { SplineBuilder } from "app/services/spline/spline.builder";
-import { RoadLinkManager } from "./road/road-link.manager";
+import { RoadLinkManager } from "./road-link.manager";
 
 @Injectable( {
 	providedIn: 'root'

@@ -4,7 +4,7 @@ import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { MapService } from "app/services/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { SplineBuilder } from "app/services/spline/spline.builder";
-import { RoadManager } from "./road-manager";
+import { RoadManager } from "./road/road-manager";
 import { RoadService } from "app/services/road/road.service";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { JunctionFactory } from "app/factories/junction.factory";

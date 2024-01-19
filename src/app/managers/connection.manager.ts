@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LaneSectionFactory } from 'app/factories/lane-section.factory';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadManager } from './road-manager';
+import { RoadManager } from './road/road-manager';
 
 @Injectable( {
 	providedIn: 'root'
