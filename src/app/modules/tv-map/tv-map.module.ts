@@ -39,7 +39,6 @@ import { MaterialInspector } from '../../views/inspectors/material-inspector/mat
 import { AssetPreviewComponent } from '../../views/inspectors/asset-preview/asset-preview.component';
 import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
 import { TextureInspector } from '../../views/inspectors/texture-inspector/texture-inspector.component';
-import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/asset-inspector.component';
@@ -48,7 +47,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 @NgModule( {
 	declarations: [
 		RoadInspector,
-		TransformInspectorComponent,
 		TextureInspector,
 		MaterialInspector,
 		AssetPreviewComponent,
@@ -91,7 +89,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		MatInputModule,
 	],
 	exports: [
-		TransformInspectorComponent,
 		AssetPreviewComponent,
 		DynamicInspectorComponent,
 		DynamicArrayInspectorComponent,
