@@ -7,21 +7,26 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetaImporter } from 'app/core/asset/metadata.model';
 import { TvMaterial } from 'app/graphics/material/tv-material';
 import { AssetPreviewService } from '../../inspectors/asset-preview/asset-preview.service';
+import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 
 @Component( {
 	selector: 'app-material-field',
 	templateUrl: './material-field.component.html',
 	styleUrls: [ './material-field.component.css' ]
 } )
-export class MaterialFieldComponent implements OnInit {
+export class MaterialFieldComponent extends AbstractFieldComponent implements OnInit {
+
+	// we will either receieve a guid or a value
+	// value is also a guid
+	@Input() value: string;
+	@Input() guid: string;
 
 	@Output() changed = new EventEmitter<string>();
-
-	@Input() guid: string;
 
 	@Input() label: string;
 
 	constructor ( private previewService: AssetPreviewService ) {
+		super();
 	}
 
 	public get preview () {
@@ -29,20 +34,22 @@ export class MaterialFieldComponent implements OnInit {
 	}
 
 	public get metadata () {
-		return AssetDatabase.getMetadata( this.guid );
+		return AssetDatabase.getMetadata( this.guid || this.value );
 	}
 
 	public get material () {
-		return AssetDatabase.getInstance<TvMaterial>( this.guid );
+		return AssetDatabase.getInstance<TvMaterial>( this.guid || this.value );
 	}
 
 	public get filename () {
-		return AssetDatabase.getAssetNameByGuid( this.guid );
+		return AssetDatabase.getAssetNameByGuid( this.guid || this.value );
 	}
 
 	ngOnInit () {
 
-		if ( this.metadata && !this.preview ) this.metadata.preview = this.previewService.getMaterialPreview( this.material );
+		if ( this.metadata && !this.preview ) {
+			this.metadata.preview = this.previewService.getMaterialPreview( this.material );
+		}
 
 	}
 
