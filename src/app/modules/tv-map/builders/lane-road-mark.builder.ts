@@ -5,22 +5,22 @@
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
-import { GameObject } from '../core/game-object';
-import { MeshGeometryData } from '../modules/tv-map/models/mesh-geometry.data';
-import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../modules/tv-map/models/tv-common';
-import { TvLane } from '../modules/tv-map/models/tv-lane';
-import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
-import { TvLaneSection } from '../modules/tv-map/models/tv-lane-section';
-import { TvPosTheta } from '../modules/tv-map/models/tv-pos-theta';
-import { TvRoad } from '../modules/tv-map/models/tv-road.model';
-import { Vertex } from '../modules/tv-map/models/vertex';
-import { OdBuilderConfig } from '../modules/tv-map/builders/od-builder-config';
+import { GameObject } from '../../../core/game-object';
+import { MeshGeometryData } from '../models/mesh-geometry.data';
+import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
+import { TvLane } from '../models/tv-lane';
+import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
+import { TvLaneSection } from '../models/tv-lane-section';
+import { TvPosTheta } from '../models/tv-pos-theta';
+import { TvRoad } from '../models/tv-road.model';
+import { Vertex } from '../models/vertex';
+import { OdBuilderConfig } from './od-builder-config';
 import { Injectable } from '@angular/core';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class LaneRoadMarkFactory {
+export class LaneRoadMarkBuilder {
 
 	public buildRoad ( road: TvRoad ): void {
 
@@ -34,7 +34,7 @@ export class LaneRoadMarkFactory {
 
 			for ( let j = 0; j < lanes.length; j++ ) {
 
-				LaneRoadMarkFactory.processLane( lanes[ j ] );
+				this.processLane( lanes[ j ] );
 
 			}
 
@@ -43,7 +43,7 @@ export class LaneRoadMarkFactory {
 
 	public buildLane ( road: TvRoad, lane: TvLane ): void {
 
-		LaneRoadMarkFactory.processLane( lane );
+		this.processLane( lane );
 
 	}
 
@@ -65,7 +65,7 @@ export class LaneRoadMarkFactory {
 	// 	}
 	// }
 
-	private static processLane ( lane: TvLane ) {
+	private processLane ( lane: TvLane ) {
 
 		const roadMarks = lane.getRoadMarks();
 
@@ -96,7 +96,7 @@ export class LaneRoadMarkFactory {
 	//
 	// }
 
-	private static createVertex ( start: TvPosTheta, roadMark: TvLaneRoadMark, mesh: MeshGeometryData, laneSectionS: number ) {
+	private createVertex ( start: TvPosTheta, roadMark: TvLaneRoadMark, mesh: MeshGeometryData, laneSectionS: number ) {
 
 		const endS = Math.min( start.s + roadMark.length, roadMark.lane.laneSection.endS );
 		const end = roadMark.lane.laneSection.road.getPosThetaAt( endS );
@@ -110,8 +110,8 @@ export class LaneRoadMarkFactory {
 		const elevationStart = lane.laneSection.road.getElevationValue( laneSectionS );
 		const elevationEnd = lane.laneSection.road.getElevationValue( laneSectionS + roadMark.length );
 
-		const startBorder = LaneRoadMarkFactory.getLaneBorder( lane, laneSectionS, lane.laneSection, start );
-		const endBorder = LaneRoadMarkFactory.getLaneBorder( lane, laneSectionS + roadMark.length, lane.laneSection, end );
+		const startBorder = this.getLaneBorder( lane, laneSectionS, lane.laneSection, start );
+		const endBorder = this.getLaneBorder( lane, laneSectionS + roadMark.length, lane.laneSection, end );
 
 		const cosFactor = Maths.cosHdgPlusPiO2( lane.side, start.hdg );
 		const sinFactor = Maths.sinHdgPlusPiO2( lane.side, start.hdg );
@@ -148,17 +148,17 @@ export class LaneRoadMarkFactory {
 
 		if ( lane.side == TvLaneSide.LEFT ) {
 
-			LaneRoadMarkFactory.addVertex( mesh, frontLeft );
-			LaneRoadMarkFactory.addVertex( mesh, frontRight );
-			LaneRoadMarkFactory.addVertex( mesh, backLeft );
-			LaneRoadMarkFactory.addVertex( mesh, backRight );
+			this.addVertex( mesh, frontLeft );
+			this.addVertex( mesh, frontRight );
+			this.addVertex( mesh, backLeft );
+			this.addVertex( mesh, backRight );
 
 		} else {
 
-			LaneRoadMarkFactory.addVertex( mesh, frontRight );
-			LaneRoadMarkFactory.addVertex( mesh, frontLeft );
-			LaneRoadMarkFactory.addVertex( mesh, backRight );
-			LaneRoadMarkFactory.addVertex( mesh, backLeft );
+			this.addVertex( mesh, frontRight );
+			this.addVertex( mesh, frontLeft );
+			this.addVertex( mesh, backRight );
+			this.addVertex( mesh, backLeft );
 		}
 
 		mesh.triangles.push( mesh.currentIndex + 0, mesh.currentIndex + 3, mesh.currentIndex + 2 );
@@ -169,7 +169,7 @@ export class LaneRoadMarkFactory {
 		mesh.indices.push( mesh.currentIndex );
 	}
 
-	private static addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
 
 		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT );
 
@@ -179,7 +179,7 @@ export class LaneRoadMarkFactory {
 
 	}
 
-	private static createRoadMarkObject ( roadMark: TvLaneRoadMark, mesh: MeshGeometryData, lane: TvLane ) {
+	private createRoadMarkObject ( roadMark: TvLaneRoadMark, mesh: MeshGeometryData, lane: TvLane ) {
 
 		const geometry = new THREE.BufferGeometry();
 		const vertices = new Float32Array( mesh.vertices );
@@ -207,7 +207,7 @@ export class LaneRoadMarkFactory {
 		lane.gameObject.add( roadMark.gameObject );
 	}
 
-	private static getCumulativeWidth ( laneSectionS, lane: TvLane, laneSection: TvLaneSection ) {
+	private getCumulativeWidth ( laneSectionS, lane: TvLane, laneSection: TvLaneSection ) {
 
 		let width = 0;
 
@@ -230,12 +230,12 @@ export class LaneRoadMarkFactory {
 		return width;
 	}
 
-	private static getLaneBorder ( lane: TvLane, laneSectionS, laneSection: TvLaneSection, posTheta: TvPosTheta ) {
+	private getLaneBorder ( lane: TvLane, laneSectionS, laneSection: TvLaneSection, posTheta: TvPosTheta ) {
 
 		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, posTheta.hdg );
 		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, posTheta.hdg );
 
-		const cumulativeWidth = LaneRoadMarkFactory.getCumulativeWidth( laneSectionS, lane, laneSection );
+		const cumulativeWidth = this.getCumulativeWidth( laneSectionS, lane, laneSection );
 
 		return new Vector2(
 			posTheta.x + ( cosHdgPlusPiO2 * cumulativeWidth ),
@@ -243,7 +243,7 @@ export class LaneRoadMarkFactory {
 		);
 	}
 
-	private static createRoadMark ( roadMark: TvLaneRoadMark ) {
+	private createRoadMark ( roadMark: TvLaneRoadMark ) {
 
 		const roadMarks = roadMark.lane.getRoadMarks();
 
@@ -280,7 +280,7 @@ export class LaneRoadMarkFactory {
 
 			posTheta = roadMark.lane.laneSection.road.getPosThetaAt( start + s );
 
-			LaneRoadMarkFactory.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
+			this.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
 
 		}
 
@@ -294,7 +294,7 @@ export class LaneRoadMarkFactory {
 
 		// at least 1 vertex is required to create a mesh
 		if ( mesh.vertices.length > 0 ) {
-			LaneRoadMarkFactory.createRoadMarkObject( roadMark, mesh, roadMark.lane );
+			this.createRoadMarkObject( roadMark, mesh, roadMark.lane );
 		}
 
 	}

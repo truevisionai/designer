@@ -17,7 +17,7 @@ import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { TvMapInstance } from '../services/tv-map-instance';
-import { LaneRoadMarkFactory } from '../../../factories/lane-road-mark-factory';
+import { LaneRoadMarkBuilder } from './lane-road-mark.builder';
 import { OdBuilderConfig } from './od-builder-config';
 import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
 import { RoadSignalService } from 'app/services/signal/road-signal.service';
@@ -26,7 +26,7 @@ import { OdMaterials } from './od-materials.service';
 
 export class TvMapBuilder {
 
-	private static roadMarkBuilder = new LaneRoadMarkFactory();
+	private static roadMarkBuilder = new LaneRoadMarkBuilder();
 	// private static roadMarkBuilder = new OdRoadMarkBuilderV1();
 
 	private static JUNCTION_ELEVATION_SHIFT = 0.005;
