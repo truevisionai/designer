@@ -77,6 +77,15 @@ export class LaneMarkingInspector {
 		this.roadmark.color = value;
 	}
 
+	@SerializedField( { type: 'material' } )
+	get material () {
+		return this.roadmark.materialGuid;
+	}
+
+	set material ( value ) {
+		this.roadmark.materialGuid = value;
+	}
+
 	@Action()
 	delete () {
 

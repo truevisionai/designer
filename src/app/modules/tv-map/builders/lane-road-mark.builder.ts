@@ -216,7 +216,16 @@ export class LaneRoadMarkBuilder {
 
 			const material = AssetDatabase.getInstance<TvMaterial>( roadMark.materialGuid );
 
-			if ( material ) return material;
+			if ( material ) {
+
+				return material;
+
+			} else {
+
+				console.error( 'Material not found for road mark' );
+				roadMark.materialGuid = null;
+
+			}
 
 		}
 

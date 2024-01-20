@@ -699,7 +699,7 @@ export class SceneExporterService {
 
 	writeLaneRoadMark ( laneRoadMark: TvLaneRoadMark ) {
 
-		return {
+		const xml = {
 			attr_sOffset: laneRoadMark.sOffset,
 			attr_type: laneRoadMark.type,
 			attr_weight: laneRoadMark.weight,
@@ -710,8 +710,13 @@ export class SceneExporterService {
 			attr_height: laneRoadMark.height,
 			attr_length: laneRoadMark.length,
 			attr_space: laneRoadMark.space,
-			attr_materialGuid: laneRoadMark.materialGuid,
 		};
+
+		if ( laneRoadMark.materialGuid ) {
+			xml[ 'attr_materialGuid' ] = laneRoadMark.materialGuid;
+		}
+
+		return xml;
 	}
 
 	writeLaneMaterial ( laneMaterial: TvLaneMaterial ) {
