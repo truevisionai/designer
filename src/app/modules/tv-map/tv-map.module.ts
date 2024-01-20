@@ -30,25 +30,14 @@ import {
 	FieldHostDirective
 } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
-import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspector/geometry-inspector.component';
-import { MeshInspectorComponent } from 'app/views/inspectors/mesh-inspector/mesh-inspector.component';
-import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
-import { PropPolygonInspectorComponent } from 'app/views/inspectors/prop-polygon-inspector/prop-polygon-inspector.component';
 import { RoadStyleInspector } from 'app/views/inspectors/road-style-inspector/road-style-inspector.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { MaterialFieldComponent } from '../../views/fields/material-field/material-field.component';
 import { TextureFieldComponent } from '../../views/fields/texture-field/texture-field.component';
-import { LaneInspectorComponent } from '../../views/inspectors/lane-type-inspector/lane-inspector.component';
 import { MaterialInspector } from '../../views/inspectors/material-inspector/material-inspector.component';
 import { AssetPreviewComponent } from '../../views/inspectors/asset-preview/asset-preview.component';
-import { PropInstanceInspectorComponent } from '../../views/inspectors/prop-instance-inspector/prop-instance-inspector.component';
-import { PropModelInspectorComponent } from '../../views/inspectors/prop-model-inspector/prop-model-inspector.component';
-import { RoadControlPointInspector } from '../../views/inspectors/road-control-point-inspector/road-control-point-inspector.component';
 import { RoadInspector } from '../../views/inspectors/road-inspector/road-inspector.component';
-import { RoadObjectInspectorComponent } from '../../views/inspectors/road-object-inspector/road-object-inspector.component';
-import { RoadSignInspector } from '../../views/inspectors/road-sign-inspector/road-sign-inspector.component';
-import { ShapeInspectorComponent } from '../../views/inspectors/shape-inspector/shape-inspector.component';
 import { TextureInspector } from '../../views/inspectors/texture-inspector/texture-inspector.component';
 import { TransformInspectorComponent } from '../../views/inspectors/transform-inspector/transform-inspector.component';
 import { ThreeJsModule } from '../three-js/three-js.module';
@@ -58,26 +47,15 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 
 @NgModule( {
 	declarations: [
-		LaneInspectorComponent,
 		RoadInspector,
-		ShapeInspectorComponent,
 		TransformInspectorComponent,
-		RoadObjectInspectorComponent,
-		PropModelInspectorComponent,
-		PropInstanceInspectorComponent,
-		PropPolygonInspectorComponent,
 		TextureInspector,
 		MaterialInspector,
 		AssetPreviewComponent,
-		RoadSignInspector,
 		MaterialFieldComponent,
 		GameObjectFieldComponent,
 		TextureFieldComponent,
-		RoadControlPointInspector,
 		RoadStyleInspector,
-		PrefabInspectorComponent,
-		MeshInspectorComponent,
-		GeometryInspectorComponent,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
 		DynamicArrayInspectorComponent,
@@ -120,22 +98,11 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		AssetInspectorComponent,
 	],
 	entryComponents: [
-		LaneInspectorComponent,
 		RoadInspector,
-		ShapeInspectorComponent,
-		RoadObjectInspectorComponent,
-		PropModelInspectorComponent,
-		PropInstanceInspectorComponent,
-		PropPolygonInspectorComponent,
 		TextureInspector,
 		MaterialInspector,
-		RoadSignInspector,
-		RoadControlPointInspector,
 		AssetPreviewComponent,
 		RoadStyleInspector,
-		PrefabInspectorComponent,
-		MeshInspectorComponent,
-		GeometryInspectorComponent,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
 		AssetInspectorComponent,
