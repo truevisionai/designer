@@ -46,7 +46,7 @@ export class MetadataFactory {
 
 	makeMetadata ( fileName: string, ext: string, path: string, gguid?: string ): Metadata {
 
-		const extension = ext || FileService.getExtension( path );
+		const extension = ext || FileUtils.getExtensionFromPath( path );
 
 		const guid = gguid || THREE.MathUtils.generateUUID();
 
@@ -163,7 +163,7 @@ export class MetadataFactory {
 
 		const filename = FileUtils.getFilenameFromPath( destinationPath );
 
-		const extension = FileService.getExtension( destinationPath );
+		const extension = FileUtils.getExtensionFromPath( destinationPath );
 
 		return this.createMetadata( filename, extension, destinationPath );
 
@@ -172,7 +172,7 @@ export class MetadataFactory {
 
 	static createMetadata ( fileName: string, ext: string, path: string, gguid?: string ): Metadata {
 
-		const extension = ext || FileService.getExtension( path );
+		const extension = ext || FileUtils.getExtensionFromPath( path );
 
 		const guid = gguid || THREE.MathUtils.generateUUID();
 

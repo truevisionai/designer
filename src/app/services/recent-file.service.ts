@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { IFile } from '../io/file';
-import { FileService } from '../io/file.service';
 import { LocalStorage } from './local-storage';
 
 @Injectable( {
@@ -20,14 +19,12 @@ export class RecentFileService {
 
 	constructor (
 		private storage: LocalStorage,
-		private files: FileService
 	) {
 
 		this.loadStorageData();
 
-		this.files.fileImported.subscribe( ( file: IFile ) => this.addToRecentFiles( file ) );
-
-		this.files.fileSaved.subscribe( ( file: IFile ) => this.addToRecentFiles( file ) );
+		// this.files.fileImported.subscribe( ( file: IFile ) => this.addToRecentFiles( file ) );
+		// this.files.fileSaved.subscribe( ( file: IFile ) => this.addToRecentFiles( file ) );
 
 	}
 

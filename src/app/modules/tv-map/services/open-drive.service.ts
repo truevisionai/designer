@@ -13,6 +13,8 @@ import { TvMap } from '../models/tv-map.model';
 import { OpenDriveExporter } from './open-drive-exporter';
 import { OpenDriveParserService } from "../../../importers/open-drive/open-drive-parser.service";
 import { MapService } from 'app/services/map.service';
+import { StorageService } from 'app/io/storage.service';
+import { DialogService } from 'app/services/dialog/dialog.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,12 +22,13 @@ import { MapService } from 'app/services/map.service';
 export class OpenDriveService {
 
 	constructor (
-		public fileService: FileService,
+		private fileService: FileService,
+		private storage: StorageService,
 		private openDriveExporter: OpenDriveExporter,
 		private sceneExporter: SceneExporterService,
 		private openDriveParserService: OpenDriveParserService,
 		private mapService: MapService,
-		private snackBar: SnackBar
+		private snackBar: SnackBar,
 	) {
 
 	}
@@ -35,11 +38,13 @@ export class OpenDriveService {
 	 */
 	async showImportDialog () {
 
-		const res = await this.fileService.showAsyncDialog();
+		const response = await this.fileService.showAsyncDialog();
 
-		if ( res.canceled ) return;
+		if ( response.canceled ) return;
 
-		const filepaths = res.filePaths;
+		if ( response.filePaths == null || response.filePaths.length == 0 ) return;
+
+		const filepaths = response.filePaths;
 
 		if ( filepaths == null || filepaths.length == 0 ) return;
 
@@ -49,11 +54,11 @@ export class OpenDriveService {
 
 			const file = new IFile();
 
-			file.contents = await this.fileService.readAsync( filepaths[ 0 ] );
+			file.contents = await this.storage.readAsync( filepaths[ 0 ] );
 
 			file.path = filepaths[ 0 ];
 
-			this.import( file );
+			this.import( file.path, file.contents );
 
 		} catch ( e ) {
 
@@ -65,9 +70,9 @@ export class OpenDriveService {
 
 	}
 
-	public import ( file: IFile, callbackFn = null ) {
+	public import ( path, contents, callbackFn = null ) {
 
-		const map = this.load( file );
+		const map = this.load( path, contents );
 
 		if ( map == null ) return;
 
@@ -79,14 +84,14 @@ export class OpenDriveService {
 
 		callbackFn?.( map );
 
-		this.snackBar.success( `OpenDrive imported ${ file?.path }` );
+		this.snackBar.success( `OpenDrive imported ${ path }` );
 
-		TvConsole.info( 'OpenDrive imported ' + file?.path );
+		TvConsole.info( 'OpenDrive imported ' + path );
 	}
 
-	public load ( file: IFile, callbackFn = null ): TvMap {
+	public load ( path, contents, callbackFn = null ): TvMap {
 
-		return this.parse( file.contents, callbackFn );
+		return this.parse( contents, callbackFn );
 
 	}
 
@@ -103,11 +108,9 @@ export class OpenDriveService {
 
 	public importFromPath ( filepath: string, callbackFn = null ) {
 
-		this.fileService.readFile( filepath, 'xml', ( file: IFile ) => {
+		const contents = this.storage.readSync( filepath );
 
-			this.import( file, callbackFn );
-
-		} );
+		this.import( filepath, contents, callbackFn );
 
 	}
 

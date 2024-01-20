@@ -107,6 +107,7 @@ import {
 import { TrafficSignalCondition } from './traffic-signal.condition';
 import { UserDefinedValueCondition } from './user-defined-value.condition';
 import { XmlElement } from "../../../importers/xml.element";
+import { StorageService } from 'app/io/storage.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -117,13 +118,13 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	private scenario: TvScenario;
 
-	constructor ( private fileService: FileService ) {
+	constructor ( private storage: StorageService ) {
 		super();
 	}
 
 	async loadPath ( path: string ): Promise<TvScenario> {
 
-		const contents: string = await this.fileService.readAsync( path );
+		const contents: string = await this.storage.readAsync( path );
 
 		this.setPath( FileUtils.getDirectoryFromPath( path ) );
 
@@ -309,7 +310,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 			try {
 
-				const files = this.fileService.readPathContentsSync( path );
+				const files = this.storage.getDirectoryFiles( path );
 
 				return files;
 
@@ -331,9 +332,9 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		const files = this.parseDirectoryPaths( [
 
-			this.fileService.join( this.directoryPath, catalogDirectory ),
+			this.storage.join( this.directoryPath, catalogDirectory ),
 
-			this.fileService.join( this.directoryPath, 'catalogs' ),
+			this.storage.join( this.directoryPath, 'catalogs' ),
 
 		] );
 
@@ -341,7 +342,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 			files.forEach( ( file: IFile ) => {
 
-				const contents = this.fileService.fs.readFileSync( file.path, 'utf-8' );
+				const contents = this.storage.readSync( file.path );
 
 				const defaultOptions = {
 					attributeNamePrefix: 'attr_',

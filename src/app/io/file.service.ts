@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter, Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { SnackBar } from '../services/snack-bar.service';
 import { TvElectronService } from '../services/tv-electron.service';
 
@@ -17,25 +17,17 @@ declare const versions;
 } )
 export class FileService {
 
-	static electron: TvElectronService;
-
-	public fileImported = new EventEmitter<IFile>();
-	public fileSaved = new EventEmitter<IFile>();
-
 	public fs: any;
 	public path: any;
-	private util: any;
 
-	constructor ( public electronService: TvElectronService, private ngZone: NgZone, private snackBar: SnackBar ) {
-
-		FileService.electron = electronService;
+	constructor (
+		private electronService: TvElectronService,
+		private snackBar: SnackBar
+	) {
 
 		if ( this.electronService.isElectronApp ) {
-
 			this.fs = versions.fs();
 			this.path = this.remote.require( 'path' );
-			this.util = this.remote.require( 'util' );
-
 		}
 
 	}
@@ -73,48 +65,9 @@ export class FileService {
 		}
 	}
 
-	static openFile ( onImported: ( files: any ) => void = null, onRead: ( content: string ) => void = null ) {
-
-		// TODO : Test one time creation
-		const form = document.createElement( 'form' );
-		const input = document.createElement( 'input' );
-
-		input.type = 'file';
-
-		form.appendChild( input );
-
-		input.addEventListener( 'change', ( event: any ) => {
-
-			onImported( event.target.files );
-
-			const reader = new FileReader();
-
-			reader.addEventListener( 'load', ( event: any ) => {
-
-				onRead( event.target.result );
-
-			}, false );
-
-			reader.readAsText( event.target.files[ 0 ] );
-
-		} );
-
-		input.click();
-
-	}
-
-	static getExtension ( filename: string ): string {
-
-		return FileUtils.getExtensionFromPath( filename );
-
-	}
-
-	static getFilenameFromPath ( path: string ): string {
-
-		return FileUtils.getFilenameFromPath( path );
-
-	}
-
+	/**
+	 * @deprecated
+	 */
 	async showAsyncDialog (): Promise<Electron.OpenDialogReturnValue> {
 
 		const options = {
@@ -136,7 +89,6 @@ export class FileService {
 
 	}
 
-
 	async writeAsync ( path: string, data, options ): Promise<any> {
 
 		return Promise.resolve( this.fs.writeFileSync( path, data, options ) );
@@ -151,34 +103,6 @@ export class FileService {
 		const arrayBuffer = Uint8Array.from( data ).buffer;
 
 		return Promise.resolve( arrayBuffer );
-	}
-
-	readFile ( path: string, type: string = 'default', callbackFn: any = null ) {
-
-		this.fs.readFile( path, 'utf-8', ( err, data ) => {
-
-			if ( err ) {
-				this.snackBar.error( 'An error ocurred reading the file :' + err.message );
-				return;
-			}
-
-			const file = new IFile();
-
-			file.name = FileUtils.getFilenameFromPath( path );
-			file.path = path;
-			file.contents = data;
-			file.type = type;
-			file.updatedAt = new Date();
-
-			// if ( callbackFn != null ) callbackFn( file );
-
-			// Need to call the callback function from ngZone to trigger change detection in Angular
-			if ( callbackFn != null ) this.ngZone.run( () => callbackFn( file ) );
-
-			this.fileImported.emit( file );
-
-		} );
-
 	}
 
 	saveFileWithExtension ( directory: string = null, contents: string, extension: string, callbackFn: any = null ) {
@@ -224,30 +148,6 @@ export class FileService {
 
 	}
 
-	saveAsFile ( directory: string = null, contents: string, callbackFn: any = null ): any {
-
-		if ( directory == null ) directory = this.projectFolder;
-
-		const options = {
-			defaultPath: directory
-		};
-
-		this.remote.dialog.showSaveDialog( options ).then( ( res: Electron.SaveDialogReturnValue ) => {
-
-			if ( res.canceled || res.filePath == null ) {
-
-				this.snackBar.show( 'file save cancelled' );
-
-			} else {
-
-				this.writeFile( res.filePath, contents, callbackFn );
-
-			}
-
-		} );
-
-	}
-
 	writeFile ( filepath, content, callbackFn: any = null ) {
 
 		this.fs.writeFile( filepath, content, ( err, data ) => {
@@ -264,45 +164,11 @@ export class FileService {
 
 				const file = new IFile( name, filepath, content, null, null, new Date() );
 
-				this.fileSaved.emit( file );
-
 				if ( callbackFn != null ) callbackFn( file );
 
 			}
 
 		} );
-
-	}
-
-	listFiles ( path, callback ) {
-
-		this.fs.readdir( path, ( err, files ) => {
-
-			if ( err ) {
-
-				console.log( 'Error getting directory information.' );
-
-			} else {
-
-				callback( files );
-
-			}
-
-		} );
-
-	}
-
-	deleteFolderSync ( path: string ) {
-
-		if ( this.fs.existsSync( path ) ) {
-
-			this.fs.rmdirSync( path, { recursive: true } );
-
-		} else {
-
-			console.error( 'folder does not exists', path );
-
-		}
 
 	}
 
@@ -385,18 +251,6 @@ export class FileService {
 		return { fileName, filePath };
 	}
 
-
-	readPathContents ( dirpath ) {
-		return new Promise( resolve => {
-			this.fs.readdir( dirpath, this.handled( files => {
-				Promise.all( files.map( file => {
-					const itemPath = this.path.join( dirpath, file );
-					return this.getItemProperties( itemPath );
-				} ) ).then( resolve );
-			} ) );
-		} );
-	}
-
 	readPathContentsSync ( dirpath ) {
 
 		let files = [];
@@ -437,7 +291,7 @@ export class FileService {
 
 		const stats = this.fs.statSync( itemPath );
 
-		const name = FileService.getFilenameFromPath( itemPath );
+		const name = FileUtils.getFilenameFromPath( itemPath );
 
 		return {
 			name: name,
@@ -465,23 +319,6 @@ export class FileService {
 			return 'socket';
 		}
 		return '';
-	}
-
-	handled ( callback ) {
-		return function handledCallback ( err, ...args ) {
-			if ( err ) {
-				throw err;
-			}
-			callback( ...args );
-		};
-	}
-
-	resolve ( relativePath: string, filename: string ): string {
-
-		const dirname = this.path.dirname( relativePath );
-
-		return this.path.resolve( dirname, filename );
-
 	}
 
 	join ( path, filename ): string {

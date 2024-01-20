@@ -5,7 +5,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { FileService } from 'app/io/file.service';
 import { FileExtension } from 'app/io/FileExtension';
 import { DialogFactory } from '../../../factories/dialog.factory';
 import { MetadataFactory } from '../../../factories/metadata-factory.service';
@@ -18,6 +17,8 @@ import { TvElectronService } from 'app/services/tv-electron.service';
 import { VehicleCategory } from 'app/modules/scenario/models/tv-enums';
 import { ProjectService } from "../../../services/project.service";
 import { AssetService } from 'app/core/asset/asset.service';
+import { FileUtils } from 'app/io/file-utils';
+import { StorageService } from 'app/io/storage.service';
 
 @Component( {
 	selector: 'app-project-browser',
@@ -40,14 +41,13 @@ export class ProjectBrowserComponent implements OnInit {
 
 	constructor (
 		private projectService: ProjectService,
-		private fileService: FileService,
 		private projectBrowser: ProjectBrowserService,
 		private appRef: ApplicationRef,
 		private menuService: MenuService,
 		private electron: TvElectronService,
-		private dialogFactory: DialogFactory,		// dont remove, needed to load dialog components,
 		private assetService: AssetService,
-		private snackBar: SnackBar
+		private snackBar: SnackBar,
+		private storage: StorageService,
 	) {
 	}
 
@@ -98,7 +98,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		const folderPath = this.currentFolder ?
 			this.currentFolder.path :
-			this.fileService.projectFolder;
+			this.projectService.projectPath;
 
 		for ( let i = 0; i < $event.dataTransfer.files.length; i++ ) {
 
@@ -120,9 +120,9 @@ export class ProjectBrowserComponent implements OnInit {
 		if ( !file ) this.snackBar.error( 'Incorrect file. Cannot import' );
 		if ( !file ) return;
 
-		const extension = FileService.getExtension( file.name );
+		const extension = FileUtils.getExtensionFromPath( file.name );
 
-		const destinationPath = this.fileService.join( folderPath, file.name );
+		const destinationPath = this.storage.join( folderPath, file.name );
 
 		let copied = false;
 
@@ -202,7 +202,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		try {
 
-			this.fileService.fs.copyFileSync( sourcePath, destinationPath );
+			this.storage.copyFileSync( sourcePath, destinationPath );
 
 			return true;
 
