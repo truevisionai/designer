@@ -7,7 +7,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { IComponent } from 'app/core/game-object';
-import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
+import { TvPrefab } from 'app/graphics/prefab/tv-prefab.model';
 import { Object3D } from 'three';
 
 class FlatNode extends Object3D {

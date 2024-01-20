@@ -6,7 +6,7 @@ import { LinearFilter, LinearMipMapLinearFilter, RGBAFormat, SRGBColorSpace, Tex
 @Injectable( {
 	providedIn: 'root'
 } )
-export class TvTextureLoaderService {
+export class TvTextureLoader {
 
 	private loader = new TextureLoader();
 

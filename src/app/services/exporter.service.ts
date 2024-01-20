@@ -20,8 +20,8 @@ import { SnackBar } from './snack-bar.service';
 import { CoordinateSystem } from './CoordinateSystem';
 import { MapService } from './map.service';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { MaterialExporter } from 'app/exporters/material-exporter';
-import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
+import { TvMaterial } from 'app/graphics/material/tv-material';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
@@ -42,7 +42,7 @@ export class ExporterService {
 		private fileService: FileService,
 		private sceneExporter: SceneExporterService,
 		private mapService: MapService,
-		private materialExporter: MaterialExporter,
+		private materialExporter: TvMaterialExporter,
 		private roadStyleExporter: RoadExporterService,
 		private snackBar: SnackBar
 	) {

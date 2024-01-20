@@ -1,6 +1,6 @@
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { BufferGeometry, MathUtils, Mesh, Object3D, ObjectLoader } from 'three';
-import { TvMaterial } from './tv-material.model';
+import { TvMaterial } from '../material/tv-material';
 
 
 export class TvMesh extends Mesh {

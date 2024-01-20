@@ -9,7 +9,7 @@ import { UpdateMaterialMapCommand } from 'app/commands/update-material-map-comma
 import { IComponent } from 'app/core/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { TvMaterial } from 'app/graphics/material/tv-material';
 import { CommandHistory } from 'app/services/command-history';
 import {
 	MeshBasicMaterial,

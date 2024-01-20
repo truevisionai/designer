@@ -16,7 +16,7 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Texture, Vector3 } from 'three';
 import { TvMapQueries } from '../tv-map/queries/tv-map-queries';
-import { TvMesh } from './objects/TvMesh';
+import { TvMesh } from '../../graphics/mesh/tv-mesh';
 import { CommandHistory } from 'app/services/command-history';
 import { SetValueCommand } from '../../commands/set-value-command';
 import { RoadStyle } from "../../core/asset/road.style";

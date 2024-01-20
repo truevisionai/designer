@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 import { ProjectBrowserService } from '../project-browser/project-browser.service';
 import { AssetNode, AssetType } from '../project-browser/file-node.model';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { TvMaterialLoader } from 'app/loaders/tv-material.loader';
-import { TvTextureLoaderService } from 'app/loaders/tv-texture.loader';
+import { TvMaterialLoader } from 'app/graphics/material/tv-material.loader';
+import { TvTextureLoader } from 'app/graphics/texture/tv-texture.loader';
 import { ModelLoader } from 'app/loaders/model.loader';
 import { RoadStyleImporter } from 'app/loaders/tv-road-style-loader';
 import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 import { EditorSettings } from 'app/services/editor.settings';
 import { BufferGeometryLoader } from 'three/src/loaders/BufferGeometryLoader';
 import { MetaImporter } from 'app/core/asset/metadata.model';
-import { TvPrefabLoader } from 'app/loaders/tv-prefab.loader';
+import { TvPrefabLoader } from 'app/graphics/prefab/tv-prefab.loader';
 import { MeshStandardMaterial } from 'three';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { TvConsole } from 'app/core/utils/console';
-import { MaterialExporter } from 'app/exporters/material-exporter';
+import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,12 +26,12 @@ export class LoadingService {
 	constructor (
 		private projectBrowserService: ProjectBrowserService,
 		private materialLoader: TvMaterialLoader,
-		private textureLoader: TvTextureLoaderService,
+		private textureLoader: TvTextureLoader,
 		private modelLoader: ModelLoader,
 		private roadStyleLoader: RoadStyleImporter,
 		private entityLoader: TvEntityLoader,
 		private editorSettings: EditorSettings,
-		private materialExporter: MaterialExporter,
+		private materialExporter: TvMaterialExporter,
 	) { }
 
 	loadProject ( path: string ) {

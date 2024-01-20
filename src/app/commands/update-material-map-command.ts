@@ -3,7 +3,7 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { TvMaterial } from 'app/graphics/material/tv-material';
 import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
 import { Texture } from 'three';
 import { Metadata } from '../core/asset/metadata.model';

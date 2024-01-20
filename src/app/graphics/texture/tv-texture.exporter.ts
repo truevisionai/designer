@@ -6,7 +6,7 @@ import { Texture } from 'three';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class TextureExporterService {
+export class TvTextureExporter {
 
 	constructor () { }
 
@@ -28,13 +28,13 @@ export class TextureExporterService {
 
 	exportFromTexture ( guid: string, path: string, texture: Texture ): string {
 
-		const json = this.getMetadata( guid, path, texture );
+		const json = this.createMetadata( guid, path, texture );
 
 		return JSON.stringify( json, null, 2 );
 
 	}
 
-	getMetadata ( guid: string, path: string, texture: Texture ): Metadata {
+	createMetadata ( guid: string, path: string, texture: Texture ): Metadata {
 
 		const image = texture.image;
 

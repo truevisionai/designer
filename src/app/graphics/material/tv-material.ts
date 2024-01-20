@@ -4,7 +4,7 @@
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MathUtils, MeshStandardMaterial, MeshStandardMaterialParameters, Texture } from 'three';
-import { SerializedField } from "../../../core/components/serialization";
+import { SerializedField } from "../../core/components/serialization";
 
 export class TvMaterial extends MeshStandardMaterial {
 

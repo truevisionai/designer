@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ICommand, ICommandCallback } from './i-command';
+import { ICommand, ICommandCallback } from './command';
 
 
 export abstract class BaseCommand implements ICommand {

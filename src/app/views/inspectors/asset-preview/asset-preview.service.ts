@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
-import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
+import { TvPrefab } from 'app/graphics/prefab/tv-prefab.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import * as THREE from 'three';

@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
-import { TvMaterial } from "app/modules/three-js/objects/tv-material.model";
+import { TvMaterial } from "app/graphics/material/tv-material";
 import { Texture } from "three";
-import { AssetDatabase } from "../core/asset/asset-database";
+import { AssetDatabase } from "../../core/asset/asset-database";
 import { MetaImporter, Metadata } from "app/core/asset/metadata.model";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class MaterialExporter {
+export class TvMaterialExporter {
 
 	createMetadata ( fileName: string, guid: string, path: string ): Metadata {
 

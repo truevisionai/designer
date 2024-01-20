@@ -3,7 +3,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { ICommand } from './i-command';
+import { ICommand } from './command';
 
 export class MultiCmdsCommand extends BaseCommand {
 

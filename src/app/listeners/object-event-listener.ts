@@ -6,7 +6,7 @@ import { Environment } from "app/core/utils/environment";
 import { MapEvents } from "app/events/map-events";
 import { PropManager } from "app/managers/prop-manager";
 import { RoadStyleManager } from "app/managers/road-style.manager";
-import { TvMaterial } from "app/modules/three-js/objects/tv-material.model";
+import { TvMaterial } from "app/graphics/material/tv-material";
 import { BaseTool } from "app/tools/base-tool";
 import { ToolManager } from "app/tools/tool-manager";
 import { AssetNode, AssetType } from "app/views/editor/project-browser/file-node.model";

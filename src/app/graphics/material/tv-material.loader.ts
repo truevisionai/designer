@@ -1,6 +1,6 @@
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MaterialLoader, Texture } from 'three';
-import { TvMaterial } from '../modules/three-js/objects/tv-material.model';
+import { TvMaterial } from './tv-material';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { StorageService } from 'app/io/storage.service';
 import { Injectable } from '@angular/core';

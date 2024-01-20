@@ -5,8 +5,8 @@
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
-import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
-import { TvPrefab } from 'app/modules/three-js/objects/tv-prefab.model';
+import { TvMaterial } from 'app/graphics/material/tv-material';
+import { TvPrefab } from 'app/graphics/prefab/tv-prefab.model';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
 import { SnackBar } from 'app/services/snack-bar.service';

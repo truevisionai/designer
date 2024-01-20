@@ -12,7 +12,7 @@ import { Texture } from 'three';
 import { AssetPreviewService } from '../asset-preview/asset-preview.service';
 import { AssetService } from 'app/core/asset/asset.service';
 import { AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { TextureExporterService } from 'app/exporters/texture-exporter.service';
+import { TvTextureExporter } from 'app/graphics/texture/tv-texture.exporter';
 
 @Component( {
 	selector: 'app-texture-inspector',
@@ -33,7 +33,7 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 	constructor (
 		private previewService: AssetPreviewService,
 		private assetService: AssetService,
-		private textureExporter: TextureExporterService,
+		private textureExporter: TvTextureExporter,
 	) {
 	}
 
@@ -63,7 +63,7 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 		this.preview = this.previewService.getTexturePreview( this.texture );
 
-		const metadata = this.textureExporter.getMetadata( this.metadata.guid, this.metadata.path, this.texture );
+		const metadata = this.textureExporter.createMetadata( this.metadata.guid, this.metadata.path, this.texture );
 
 		AssetDatabase.setMetadata( this.metadata.guid, metadata );
 

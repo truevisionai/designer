@@ -34,7 +34,6 @@ import { GeometryInspectorComponent } from 'app/views/inspectors/geometry-inspec
 import { MeshInspectorComponent } from 'app/views/inspectors/mesh-inspector/mesh-inspector.component';
 import { PrefabInspectorComponent } from 'app/views/inspectors/prefab-inspector/prefab-inspector.component';
 import { PropPolygonInspectorComponent } from 'app/views/inspectors/prop-polygon-inspector/prop-polygon-inspector.component';
-import { RoadMarkingInspector } from 'app/views/inspectors/road-marking-inspector/road-marking-inspector.component';
 import { RoadStyleInspector } from 'app/views/inspectors/road-style-inspector/road-style-inspector.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
@@ -71,7 +70,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		MaterialInspector,
 		AssetPreviewComponent,
 		RoadSignInspector,
-		RoadMarkingInspector,
 		MaterialFieldComponent,
 		GameObjectFieldComponent,
 		TextureFieldComponent,
@@ -132,7 +130,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		TextureInspector,
 		MaterialInspector,
 		RoadSignInspector,
-		RoadMarkingInspector,
 		RoadControlPointInspector,
 		AssetPreviewComponent,
 		RoadStyleInspector,

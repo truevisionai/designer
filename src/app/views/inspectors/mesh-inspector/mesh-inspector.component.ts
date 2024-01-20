@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { TvMesh } from 'app/modules/three-js/objects/TvMesh';
+import { TvMesh } from 'app/graphics/mesh/tv-mesh';
 
 @Component( {
 	selector: 'app-mesh-inspector',

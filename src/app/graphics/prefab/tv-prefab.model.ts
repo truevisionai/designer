@@ -3,7 +3,7 @@
  */
 
 import { MathUtils, Object3D } from 'three';
-import { TvMesh } from './TvMesh';
+import { TvMesh } from '../mesh/tv-mesh';
 
 export class TvPrefab extends Object3D {
 

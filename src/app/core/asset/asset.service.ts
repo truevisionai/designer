@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
 import { VehicleCategory } from 'app/modules/scenario/models/tv-enums';
-import { TvMaterial } from 'app/modules/three-js/objects/tv-material.model';
+import { TvMaterial } from 'app/graphics/material/tv-material';
 import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
 import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
 import { ExporterService } from 'app/services/exporter.service';

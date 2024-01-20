@@ -4,7 +4,7 @@
 
 import { MultiCmdsCommand } from 'app/commands/multi-cmds-command';
 import { Environment } from 'app/core/utils/environment';
-import { ICommand } from '../commands/i-command';
+import { ICommand } from '../commands/command';
 
 export class CommandHistory {
 
