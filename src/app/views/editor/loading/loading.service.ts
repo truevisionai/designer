@@ -14,6 +14,7 @@ import { TvPrefabLoader } from 'app/loaders/tv-prefab.loader';
 import { MeshStandardMaterial } from 'three';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { TvConsole } from 'app/core/utils/console';
+import { MaterialExporter } from 'app/exporters/material-exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,6 +31,7 @@ export class LoadingService {
 		private roadStyleLoader: RoadStyleImporter,
 		private entityLoader: TvEntityLoader,
 		private editorSettings: EditorSettings,
+		private materialExporter: MaterialExporter,
 	) { }
 
 	loadProject ( path: string ) {
@@ -84,7 +86,7 @@ export class LoadingService {
 
 		const defaultMaterial = new MeshStandardMaterial( { name: 'DefaultMaterial' } );
 
-		const meta = MetadataFactory.createMaterialMetadata( 'DefaultMaterial', 'defaultMaterial', 'Default.material' );
+		const meta = this.materialExporter.createMetadata( 'DefaultMaterial', 'defaultMaterial', 'Default.material' );
 
 		AssetDatabase.setMetadata( meta.guid, meta );
 

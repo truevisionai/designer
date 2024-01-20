@@ -14,6 +14,7 @@ import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'thre
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
 import { Metadata, MetaImporter } from '../core/asset/metadata.model';
 import { RoadStyle } from "../core/asset/road.style";
+import { MaterialExporter } from 'app/exporters/material-exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +24,11 @@ export class MetadataFactory {
 	private static fileService: FileService;
 	private static snackBar: SnackBar;
 
-	constructor ( private fileService: FileService, private snackBar: SnackBar ) {
+	constructor (
+		fileService: FileService,
+		snackBar: SnackBar,
+		private materialExporter: MaterialExporter,
+	) {
 
 		MetadataFactory.fileService = fileService;
 		MetadataFactory.snackBar = snackBar;
@@ -103,7 +108,7 @@ export class MetadataFactory {
 				break;
 
 			case 'material':
-				metadata = MetadataFactory.createMaterialMetadata( fileName, guid, path );
+				metadata = this.materialExporter.createMetadata( fileName, guid, path );
 				break;
 
 			case 'geometry':
