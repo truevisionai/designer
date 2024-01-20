@@ -3,14 +3,14 @@ import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
 import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { DebugState } from 'app/services/debug/debug-state';
 
-export interface DebugService {
-	setDebugState ( object: any, state: DebugState ): void;
+export interface DebugService<T> {
+	setDebugState ( object: T, state: DebugState ): void;
 }
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SurfaceDebugService implements DebugService {
+export class SurfaceDebugService implements DebugService<TvSurface> {
 
 	constructor (
 		private splineService: AbstractSplineDebugService,

@@ -21,7 +21,7 @@ import { DebugState } from 'app/services/debug/debug-state';
 export class SurfaceToolService {
 
 	private meshes = new Object3DMap<TvSurface, Mesh>();
-	private debugService: DebugService;
+	private debugService: DebugService<TvSurface>;
 
 	constructor (
 		public selection: SelectionService,
