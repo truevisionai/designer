@@ -1087,6 +1087,20 @@ export class TvRoad {
 		};
 	}
 
+	getRoadWidthArray (): number[] {
+
+		const widths: number[] = [];
+
+		for ( let s = 0; s <= this.length; s++ ) {
+
+			widths.push( this.getRoadWidthAt( s ).totalWidth );
+
+		}
+
+		return widths;
+
+	}
+
 	getElevationAt ( s: number ): TvElevation {
 
 		return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );

@@ -13,7 +13,7 @@ import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-chil
 import { RoadLinkService } from '../road/road-link.service';
 import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
 import { SplineSegmentService } from '../spline/spline-segment.service';
-import { RoadManager } from 'app/managers/road-manager';
+import { RoadManager } from 'app/managers/road/road-manager';
 
 export class SplineIntersection {
 	spline: AbstractSpline;
@@ -112,24 +112,6 @@ export class IntersectionService {
 
 		}
 
-		function getWidthAt ( spline: AbstractSpline, position: Vector3 ): number {
-
-			const coord = spline.getCoordAt( position );
-
-			const segment = spline.getSegmentAt( coord.s );
-
-			if ( !segment ) return 12;
-
-			if ( !segment.isRoad ) return 12;
-
-			const road = segment.getInstance<TvRoad>();
-
-			if ( !road ) return 12;
-
-			return road.getRoadWidthAt( coord.s ).totalWidth;
-
-		}
-
 		if ( splineA == splineB ) return;
 
 		if ( !this.intersectsSplineBox( splineA, splineB ) ) return;
@@ -146,27 +128,60 @@ export class IntersectionService {
 				const c = pointsB[ j ];
 				const d = pointsB[ j + 1 ];
 
-				const roadWidthA = getWidthAt( splineA, a );
-				const roadWidthB = getWidthAt( splineB, c );
+				const roadWidthA = this.segmentService.getWidthAt( splineA, a, i * stepSize );
+				const roadWidthB = this.segmentService.getWidthAt( splineB, c, j * stepSize );
 
 				// Create bounding boxes for the line segments
 				const boxA = createBoundingBoxForSegment( a, b, roadWidthA );
 				const boxB = createBoundingBoxForSegment( c, d, roadWidthB );
 
 				// Check if these bounding boxes intersect
-				if ( this.intersectsBox( boxA, boxB ) ) {
+				if ( !this.intersectsBox( boxA, boxB ) ) continue;
 
-					const intersectionPoint = this.lineIntersection( a, b, c, d );
+				const intersectionPoint = this.lineIntersection( a, b, c, d );
 
-					if ( intersectionPoint ) {
-						return intersectionPoint;
-					}
-
+				if ( intersectionPoint ) {
+					return intersectionPoint;
 				}
 
 			}
 
 		}
+
+	}
+
+	getSplineIntersectionPointViaBoundsv2 ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): Vector3 | null {
+
+		if ( splineA == splineB ) return;
+
+		if ( !this.intersectsSplineBox( splineA, splineB ) ) return;
+
+		const segmentsA = splineA.getSplineSegments();
+		const segmentsB = splineB.getSplineSegments();
+
+		for ( let i = 0; i < segmentsA.length; i++ ) {
+
+			const segmentA = segmentsA[ i ];
+
+			if ( !segmentA.isRoad ) continue;
+
+			for ( let j = 0; j < segmentsB.length; j++ ) {
+
+				const segmentB = segmentsB[ j ];
+
+				if ( !segmentB.isRoad ) continue;
+
+				const roadA = segmentA.getInstance<TvRoad>();
+				const roadB = segmentB.getInstance<TvRoad>();
+
+				const intersection = this.getRoadIntersectionPoint( roadA, roadB, stepSize );
+
+				if ( intersection ) return intersection;
+
+			}
+
+		}
+
 
 	}
 
@@ -210,7 +225,7 @@ export class IntersectionService {
 			if ( otherSpline == successorSpline ) continue;
 			if ( otherSpline == predecessorSpline ) continue;
 
-			const intersection = this.getSplineIntersectionPointViaBounds( spline, otherSpline );
+			const intersection = this.getSplineIntersectionPointViaBoundsv2( spline, otherSpline );
 
 			if ( !intersection ) continue;
 

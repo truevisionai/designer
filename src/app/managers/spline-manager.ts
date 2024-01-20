@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map.service";
-import { RoadManager } from "./road-manager";
+import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
 import { SplineSegment } from "app/core/shapes/spline-segment";
 import { RoadService } from "app/services/road/road.service";
@@ -11,6 +11,7 @@ import { TvContactPoint } from "app/modules/tv-map/models/tv-common";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { JunctionManager } from "./junction-manager";
 import { RoadFactory } from "app/factories/road-factory.service";
+import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,6 +26,7 @@ export class SplineManager {
 		private splineBuilder: SplineBuilder,
 		private junctionManager: JunctionManager,
 		private roadFactory: RoadFactory,
+		private segmentService: SplineSegmentService,
 	) { }
 
 	createSpline ( spline: AbstractSpline ) {
@@ -33,6 +35,8 @@ export class SplineManager {
 		this.buildSpline( spline, spline.getFirstRoadSegment() );
 
 		this.updateSplineBoundingBox( spline );
+
+		this.segmentService.updateWidthCache( spline );
 
 		this.intersectionManager.updateIntersections( spline );
 
@@ -48,6 +52,8 @@ export class SplineManager {
 			this.roadManager.updateRoad( road );
 
 		}
+
+		this.segmentService.updateWidthCache( spline );
 
 		this.syncSuccessorSpline( spline );
 

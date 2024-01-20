@@ -4,6 +4,7 @@ import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 import { TvConsole } from 'app/core/utils/console';
 import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
 import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { Vector3 } from 'three';
 
 @Injectable( {
 	providedIn: 'root'
@@ -82,5 +83,82 @@ export class SplineSegmentService {
 
 	}
 
+	private splines: Map<AbstractSpline, Map<number, number>> = new Map();
+
+	getWidthCache ( spline: AbstractSpline ) {
+
+		if ( !this.splines.has( spline ) ) {
+
+			return this.updateWidthCache( spline );
+
+		}
+
+		return this.splines.get( spline );
+
+	}
+
+	updateWidthCache ( spline: AbstractSpline ) {
+
+		const cache = new Map<number, number>();
+
+		const segments = spline.getSplineSegments();
+
+		let lastWidth = -1;
+
+		for ( const segment of segments ) {
+
+			if ( !segment.isRoad ) continue;
+
+			const road = segment.getInstance<TvRoad>();
+
+			if ( !road ) continue;
+
+			for ( let s = 0; s <= road.length; s += 5 ) {
+
+				const width = road.getRoadWidthAt( s ).totalWidth;
+
+				if ( width !== lastWidth ) {
+
+					cache.set( road.sStart + s, width );
+
+					lastWidth = width;
+
+				}
+
+			}
+
+		}
+
+		this.splines.set( spline, cache );
+
+		return cache;
+	}
+
+	getWidthAt ( spline: AbstractSpline, position?: Vector3, inputS?:number ): number {
+
+		const cache = this.getWidthCache( spline );
+
+		const checkS = inputS || spline.getCoordAt( position )?.s;
+
+		// Find the closest entry that is less than or equal to coord.s
+		let closestS = -Infinity;
+
+		let closestWidth = 12; // Default width
+
+		for ( const [ s, width ] of cache ) {
+
+			if ( s <= checkS && s > closestS ) {
+
+				closestS = s;
+
+				closestWidth = width;
+
+			}
+
+		}
+
+		return closestWidth;
+
+	}
 
 }
