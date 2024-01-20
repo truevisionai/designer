@@ -223,7 +223,7 @@ export class DefaultVehicleController extends AbstractController {
 			// left lane traffic move opposite
 			// actor.direction = obj.getLaneId() > 0 ? -1 : 1;
 
-			entity.rotation.set( 0, 0, refPos.hdg - Maths.M_PI_2 );
+			entity.rotation.set( 0, 0, refPos.hdg - Maths.PI2 );
 
 			entity.sCoordinate += entity.speed * entity.direction * Maths.Speed2MPH * Time.deltaTime;
 		}

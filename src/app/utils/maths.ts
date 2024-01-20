@@ -8,14 +8,16 @@ import { Vector2, Vector3 } from 'three';
 export class Maths {
 
 	/**
-	 *
+	 * The infamous 3.1415926535... value (Read Only).
+	 * In degrees it is 180 degrees
 	 */
-	public static readonly M_PI = 3.1415926535;
+	public static readonly PI = 3.1415926535;
 
 	/**
-	 *
+	 * Half of PI (Read Only). This is also known as "Pi over two".
+	 * In degrees it is 90 degrees
 	 */
-	public static readonly M_PI_2 = 1.5707963267948966;
+	public static readonly PI2 = 1.5707963267948966;
 
 	/**
 	 * Degrees-to-radians conversion constant (Read Only).
@@ -45,19 +47,19 @@ export class Maths {
 	public static sinHdgPlusPiO2 ( laneSide: TvLaneSide, hdg: number ): number {
 
 		if ( laneSide == TvLaneSide.LEFT ) {
-			return Math.sin( hdg + Maths.M_PI_2 );
+			return Math.sin( hdg + Maths.PI2 );
 		}
 
-		return -Math.sin( hdg + Maths.M_PI_2 );
+		return -Math.sin( hdg + Maths.PI2 );
 	}
 
 	public static cosHdgPlusPiO2 ( laneSide: TvLaneSide, hdg: number ): number {
 
 		if ( laneSide == TvLaneSide.LEFT ) {
-			return Math.cos( hdg + Maths.M_PI_2 );
+			return Math.cos( hdg + Maths.PI2 );
 		}
 
-		return -Math.cos( hdg + Maths.M_PI_2 );
+		return -Math.cos( hdg + Maths.PI2 );
 	}
 
 	public static areaOfTriangle ( A: Vector3, B: Vector3, C: Vector3 ): number {
@@ -457,13 +459,13 @@ export class Maths {
 		const distance = 1;
 
 		const p2 = new Vector3(
-			p1.x + Math.cos( p1Heading + Maths.M_PI_2 ) * distance,
-			p1.y + Math.sin( p1Heading + Maths.M_PI_2 ) * distance
+			p1.x + Math.cos( p1Heading + Maths.PI2 ) * distance,
+			p1.y + Math.sin( p1Heading + Maths.PI2 ) * distance
 		);
 
 		const p4 = new Vector3(
-			p3.x + Math.cos( p3Heading + Maths.M_PI_2 ) * distance,
-			p3.y + Math.sin( p3Heading + Maths.M_PI_2 ) * distance
+			p3.x + Math.cos( p3Heading + Maths.PI2 ) * distance,
+			p3.y + Math.sin( p3Heading + Maths.PI2 ) * distance
 		);
 
 		const center = Maths.lineLineIntersection( p1, p2, p3, p4 );

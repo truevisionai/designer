@@ -6,7 +6,7 @@ describe( 'TvPosTheta', () => {
 	it( 'should find correct angle when intersecting at 90 degree', () => {
 
 		const pointA = new TvPosTheta( -10, -10, 0 );
-		const pointB = new TvPosTheta( 10, 10, -Maths.M_PI_2 );
+		const pointB = new TvPosTheta( 10, 10, -Maths.PI2 );
 
 		const angle1 = pointA.angleTo( pointB );
 		const angle2 = pointB.angleTo( pointA );
@@ -19,7 +19,7 @@ describe( 'TvPosTheta', () => {
 	it( 'should find correct angle when both points are facing each other', () => {
 
 		const pointA = new TvPosTheta( -10, -10, 0 );
-		const pointB = new TvPosTheta( 10, 10, Maths.M_PI );
+		const pointB = new TvPosTheta( 10, 10, Maths.PI );
 
 		const angle1 = pointA.angleTo( pointB );
 		const angle2 = pointB.angleTo( pointA );

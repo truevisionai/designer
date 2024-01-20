@@ -14,7 +14,7 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 	public attr_curvStart;
 	public attr_curvEnd;
 
-	private sqrtPiO2 = Math.sqrt( Maths.M_PI_2 );
+	private sqrtPiO2 = Math.sqrt( Maths.PI2 );
 	private mA;
 	private mCurvature;
 	private mDenormalizeFactor;

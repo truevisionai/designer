@@ -428,7 +428,7 @@ export class MapValidatorService {
 			// Adjust the difference to find the smaller angle
 			diff = Math.min( diff, 2 * Math.PI - diff );
 
-			if ( !Maths.approxEquals( diff, Maths.M_PI ) ) {
+			if ( !Maths.approxEquals( diff, Maths.PI ) ) {
 
 				this.errors.push( label + ':' + roadA.id + ' invalid hdg, should be facing ' + linkType + ':' + link.toString() + ' ' + pointA.normalizedHdg + ' ' + pointB.normalizedHdg );
 

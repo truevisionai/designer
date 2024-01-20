@@ -161,7 +161,7 @@ export class RoadCircleToolService {
 
 		let start = end;
 
-		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.M_PI_2;
+		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Maths.PI2;
 
 		const circumference = 2 * Math.PI * radius;
 
@@ -208,7 +208,7 @@ export class RoadCircleToolService {
 
 			start = arc.endV3;
 
-			hdg += Maths.M_PI_2;
+			hdg += Maths.PI2;
 
 		}
 

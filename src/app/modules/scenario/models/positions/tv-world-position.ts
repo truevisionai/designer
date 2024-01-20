@@ -58,7 +58,7 @@ export class WorldPosition extends Position {
 				attr_x: this.vector0?.x ?? 0,
 				attr_y: this.vector0?.y ?? 0,
 				attr_z: this.vector0?.z ?? 0,
-				attr_h: this.orientation?.h + Maths.M_PI_2 ?? 0,
+				attr_h: this.orientation?.h + Maths.PI2 ?? 0,
 				attr_p: this.orientation?.p ?? 0,
 				attr_r: this.orientation?.r ?? 0,
 			}

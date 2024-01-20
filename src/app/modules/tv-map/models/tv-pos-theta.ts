@@ -127,8 +127,8 @@ export class TvPosTheta {
 		// let cosHdgPlusPiO2 = -1 * Math.cos( this.hdg + Maths.M_PI_2 );
 		// let sinHdgPlusPiO2 = -1 * Math.sin( this.hdg + Maths.M_PI_2 );
 
-		let cosHdgPlusPiO2 = Math.cos( this.hdg + Maths.M_PI_2 );
-		let sinHdgPlusPiO2 = Math.sin( this.hdg + Maths.M_PI_2 );
+		let cosHdgPlusPiO2 = Math.cos( this.hdg + Maths.PI2 );
+		let sinHdgPlusPiO2 = Math.sin( this.hdg + Maths.PI2 );
 
 		this.x += cosHdgPlusPiO2 * ( offset );
 		this.y += sinHdgPlusPiO2 * ( offset );

@@ -254,8 +254,8 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const cumulativeWidth = laneSection.getWidthUptoStart( lane, sCoordinate );
 
-		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
 
 		posTheta.x += cosTheta * ( cumulativeWidth + offset );
 		posTheta.y += sinTheta * ( cumulativeWidth + offset );
@@ -282,8 +282,8 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const cumulativeWidth = laneSection.getWidthUptoEnd( lane, sCoordinate );
 
-		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
 
 		posTheta.x += cosTheta * ( cumulativeWidth + offset );
 		posTheta.y += sinTheta * ( cumulativeWidth + offset );
@@ -339,8 +339,8 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const cumulativeWidth = laneSection.getWidthUptoCenter( lane, sCoordinate );
 
-		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
 
 		posTheta.x += cosTheta * ( cumulativeWidth + offset );
 		posTheta.y += sinTheta * ( cumulativeWidth + offset );

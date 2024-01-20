@@ -33,7 +33,7 @@ export class Orientation {
 		r: number = 0,
 		public type: OrientationType = OrientationType.absolute
 	) {
-		this.euler = new Euler( r, p, h - Maths.M_PI_2 );
+		this.euler = new Euler( r, p, h - Maths.PI2 );
 	}
 
 	get h () {
@@ -79,7 +79,7 @@ export class Orientation {
 
 	toXML ( version?: OpenScenarioVersion ) {
 		return {
-			attr_h: this.h + Maths.M_PI_2 ?? 0,
+			attr_h: this.h + Maths.PI2 ?? 0,
 			attr_p: this.p ?? 0,
 			attr_r: this.r ?? 0,
 			attr_type: this.type

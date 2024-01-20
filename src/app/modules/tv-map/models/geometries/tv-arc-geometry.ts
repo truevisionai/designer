@@ -33,8 +33,8 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 		const clockwise = this.curvature < 0;
 
-		const circleX = this.x - this.radius * Math.cos( this.hdg - Maths.M_PI_2 ) * ( clockwise ? -1 : 1 );
-		const circleY = this.y - this.radius * Math.sin( this.hdg - Maths.M_PI_2 ) * ( clockwise ? -1 : 1 );
+		const circleX = this.x - this.radius * Math.cos( this.hdg - Maths.PI2 ) * ( clockwise ? -1 : 1 );
+		const circleY = this.y - this.radius * Math.sin( this.hdg - Maths.PI2 ) * ( clockwise ? -1 : 1 );
 
 		return new Vector3( circleX, circleY, 0 );
 	}

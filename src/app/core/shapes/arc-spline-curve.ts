@@ -128,13 +128,13 @@ export class CustomSplineCurve {
 	private getRadius ( A: Vector3, line1Hdg: number, C: Vector3, line2Hdg: number ) {
 
 		const B = new Vector3(
-			A.x + Math.cos( line1Hdg + Maths.M_PI_2 ) * 1,
-			A.y + Math.sin( line1Hdg + Maths.M_PI_2 ) * 1
+			A.x + Math.cos( line1Hdg + Maths.PI2 ) * 1,
+			A.y + Math.sin( line1Hdg + Maths.PI2 ) * 1
 		);
 
 		const D = new Vector3(
-			C.x + Math.cos( line2Hdg + Maths.M_PI_2 ) * 1,
-			C.y + Math.sin( line2Hdg + Maths.M_PI_2 ) * 1
+			C.x + Math.cos( line2Hdg + Maths.PI2 ) * 1,
+			C.y + Math.sin( line2Hdg + Maths.PI2 ) * 1
 		);
 
 		const center = Maths.lineLineIntersection( A, B, C, D );

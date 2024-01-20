@@ -32,7 +32,7 @@ describe( 'IntersectionService', () => {
 		roadA.addGeometryLine( 0, -50, 0, 0, 100 );
 
 		const roadB = roadService.createDefaultRoad();
-		roadB.addGeometryLine( 0, 0, -50, Maths.M_PI_2, 50 );
+		roadB.addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
 
@@ -51,7 +51,7 @@ describe( 'IntersectionService', () => {
 
 		const roadB = roadService.createDefaultRoad();
 		roadB.addElevation( 0, 10, 0, 0, 0 );
-		roadB.addGeometryLine( 0, 0, -50, Maths.M_PI_2, 50 );
+		roadB.addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
 
@@ -69,7 +69,7 @@ describe( 'IntersectionService', () => {
 
 		const roadB = roadService.createDefaultRoad();
 		roadB.addElevation( 0, 10, 0, 0, 0 );
-		roadB.addGeometryLine( 0, 0, -50, Maths.M_PI_2, 50 );
+		roadB.addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
 
@@ -85,7 +85,7 @@ describe( 'IntersectionService', () => {
 
 		const roadB = roadService.createDefaultRoad();
 		roadB.addElevation( 0, 10, 0, 0, 0 );
-		roadB.addGeometryLine( 0, 0, -50, Maths.M_PI_2, 50 );
+		roadB.addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
 

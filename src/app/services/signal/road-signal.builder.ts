@@ -100,11 +100,11 @@ export class RoadSignalBuilder {
 
 		if ( signal.orientations === TvOrientation.PLUS ) {
 
-			hdg = signal.hOffset + roadCoord.hdg - Maths.M_PI_2;
+			hdg = signal.hOffset + roadCoord.hdg - Maths.PI2;
 
 		} else if ( signal.orientations === TvOrientation.MINUS ) {
 
-			hdg = signal.hOffset + roadCoord.hdg + Maths.M_PI_2;
+			hdg = signal.hOffset + roadCoord.hdg + Maths.PI2;
 
 		} else {
 

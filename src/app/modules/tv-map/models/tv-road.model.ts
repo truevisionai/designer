@@ -1265,8 +1265,8 @@ export class TvRoad {
 
 		const cumulativeWidth = laneSection.getWidthUptoCenter( lane, s );
 
-		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
 
 		posTheta.x += cosTheta * ( cumulativeWidth + offset );
 		posTheta.y += sinTheta * ( cumulativeWidth + offset );
@@ -1284,8 +1284,8 @@ export class TvRoad {
 
 		const cumulativeWidth = laneSection.getWidthUptoStart( lane, s );
 
-		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
 
 		posTheta.x += cosTheta * ( cumulativeWidth + offset );
 		posTheta.y += sinTheta * ( cumulativeWidth + offset );
@@ -1303,8 +1303,8 @@ export class TvRoad {
 
 		const cumulativeWidth = laneSection.getWidthUptoEnd( lane, s );
 
-		const cosTheta = Math.cos( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.M_PI_2 ) * tDirection;
+		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
+		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
 
 		posTheta.x += cosTheta * ( cumulativeWidth + offset );
 		posTheta.y += sinTheta * ( cumulativeWidth + offset );
