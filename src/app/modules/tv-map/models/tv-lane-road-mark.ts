@@ -2,9 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { MathUtils, MeshStandardMaterial } from 'three';
+import { MathUtils } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLane } from './tv-lane';
@@ -39,7 +38,6 @@ export class TvLaneRoadMark {
 
 	private attr_materialDetails: string;
 	private _materialGuid: string;
-	private _material: MeshStandardMaterial;
 
 	/**
 	 *
@@ -82,22 +80,7 @@ export class TvLaneRoadMark {
 		this.attr_height = height;
 		this.attr_length = length;
 		this.attr_space = space || this.getSpaceByType( type );
-
-		if ( materialGuid ) {
-
-			this.materialGuid = materialGuid;
-
-		} else {
-
-			this._material = new MeshStandardMaterial( {
-				color: this.threeColor,
-				roughness: 1.0,
-				metalness: 0.0,
-			} );
-
-		}
-
-
+		this._materialGuid = materialGuid;
 		this.lane = lane;
 	}
 
@@ -107,16 +90,6 @@ export class TvLaneRoadMark {
 
 	set materialGuid ( value: string ) {
 		this._materialGuid = value;
-		this._material = AssetDatabase.getInstance( value );
-		this._material.needsUpdate = true;
-	}
-
-	get material (): MeshStandardMaterial {
-		return this._material;
-	}
-
-	set material ( value: MeshStandardMaterial ) {
-		this._material = value;
 	}
 
 	get s2 () {
@@ -178,11 +151,6 @@ export class TvLaneRoadMark {
 
 	set color ( value: TvColors ) {
 		this.attr_color = value;
-
-		if ( this.material ) {
-			this._material.color.set( this.threeColor );
-			this._material.needsUpdate = true;
-		}
 	}
 
 	get threeColor () {

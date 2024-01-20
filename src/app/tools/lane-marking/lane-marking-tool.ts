@@ -21,11 +21,9 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { UnselectObjectCommand } from "../../commands/unselect-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
-import { Action, SerializedField } from 'app/core/components/serialization';
-import { TvRoadMarkTypes, TvRoadMarkWeights } from 'app/modules/tv-map/models/tv-common';
 import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { Environment } from 'app/core/utils/environment';
+import { LaneMarkingInspector } from './lane-marking.inspector';
 
 export class LaneMarkingTool extends BaseTool {
 
@@ -234,7 +232,7 @@ export class LaneMarkingTool extends BaseTool {
 
 			this.tool.addNode( object );
 
-		} else if ( object instanceof LaneMarkingNodeInspector ) {
+		} else if ( object instanceof LaneMarkingInspector ) {
 
 			this.tool.addRoadmark( object.lane, object.roadmark );
 
@@ -252,7 +250,7 @@ export class LaneMarkingTool extends BaseTool {
 
 			this.tool.updateNode( object );
 
-		} else if ( object instanceof LaneMarkingNodeInspector ) {
+		} else if ( object instanceof LaneMarkingInspector ) {
 
 			this.tool.rebuild( object.lane );
 
@@ -270,7 +268,7 @@ export class LaneMarkingTool extends BaseTool {
 
 			this.tool.removeNode( object );
 
-		} else if ( object instanceof LaneMarkingNodeInspector ) {
+		} else if ( object instanceof LaneMarkingInspector ) {
 
 			this.tool.removeRoadmark( object.lane, object.roadmark );
 
@@ -369,7 +367,7 @@ export class LaneMarkingTool extends BaseTool {
 
 	showInspector ( lane: TvLane, roadmark: TvLaneRoadMark ) {
 
-		const inspector = new LaneMarkingNodeInspector( lane, roadmark );
+		const inspector = new LaneMarkingInspector( lane, roadmark );
 
 		AppInspector.setInspector( DynamicInspectorComponent, inspector );
 
@@ -377,73 +375,4 @@ export class LaneMarkingTool extends BaseTool {
 
 }
 
-class LaneMarkingNodeInspector {
 
-	constructor (
-		public lane: TvLane,
-		public roadmark: TvLaneRoadMark
-	) {
-	}
-
-	@SerializedField( { type: 'int' } )
-	get s (): number {
-		return this.roadmark.sOffset;
-	}
-
-	set s ( value: number ) {
-		this.roadmark.sOffset = value;
-	}
-
-	@SerializedField( { type: 'float' } )
-	get width (): number {
-		return this.roadmark.width;
-	}
-
-	set width ( value: number ) {
-		this.roadmark.width = value;
-	}
-
-	@SerializedField( { type: 'float' } )
-	get length (): number {
-		return this.roadmark.length;
-	}
-
-	set length ( value: number ) {
-		this.roadmark.length = value;
-	}
-
-	@SerializedField( { type: 'float' } )
-	get space (): number {
-		return this.roadmark.space;
-	}
-
-	set space ( value: number ) {
-		this.roadmark.space = value;
-	}
-
-	@SerializedField( { type: 'enum', enum: TvRoadMarkTypes } )
-	get markingType (): TvRoadMarkTypes {
-		return this.roadmark.type;
-	}
-
-	set markingType ( value: TvRoadMarkTypes ) {
-		this.roadmark.type = value;
-	}
-
-	@SerializedField( { type: 'enum', enum: TvRoadMarkWeights } )
-	get weight (): TvRoadMarkWeights {
-		return this.roadmark.weight;
-	}
-
-	set weight ( value: TvRoadMarkWeights ) {
-		this.roadmark.weight = value;
-	}
-
-	@Action()
-	delete () {
-
-		CommandHistory.execute( new RemoveObjectCommand( this ) );
-
-	}
-
-}

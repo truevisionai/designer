@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { GameObject } from '../../../core/game-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
+import { ObjectTypes, TvColors, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';
@@ -16,6 +16,9 @@ import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { Injectable } from '@angular/core';
+import { AssetDatabase } from 'app/core/asset/asset-database';
+import { TvMaterial } from 'app/graphics/material/tv-material';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -194,7 +197,7 @@ export class LaneRoadMarkBuilder {
 
 		geometry.computeVertexNormals();
 
-		roadMark.gameObject = new GameObject( 'RoadMark:', geometry, roadMark.material );
+		roadMark.gameObject = new GameObject( 'RoadMark:', geometry, this.getMaterial( roadMark ) );
 
 		roadMark.gameObject.Tag = ObjectTypes.LANE_MARKING;
 
@@ -205,6 +208,26 @@ export class LaneRoadMarkBuilder {
 		roadMark.gameObject.userData.roadMark = roadMark;
 
 		lane.gameObject.add( roadMark.gameObject );
+	}
+
+	getMaterial ( roadMark: TvLaneRoadMark ): THREE.Material {
+
+		if ( roadMark.materialGuid ) {
+
+			const material = AssetDatabase.getInstance<TvMaterial>( roadMark.materialGuid );
+
+			if ( material ) return material;
+
+		}
+
+		const color = COLOR.stringToColor( roadMark.color );
+
+		return new THREE.MeshStandardMaterial( {
+			color: color,
+			roughness: 1.0,
+			metalness: 0.0,
+		} );
+
 	}
 
 	private getCumulativeWidth ( laneSectionS, lane: TvLane, laneSection: TvLaneSection ) {
