@@ -1,11 +1,11 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { MapValidatorService } from '../app/services/map-validator.service';
+import { MapValidatorService } from '../app/services/map/map-validator.service';
 import { BaseTest } from './base-test.spec';
 import { RoadService } from 'app/services/road/road.service';
 import { Vector2 } from 'three';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint } from 'app/map/models/tv-common';
 import { HttpClientModule } from '@angular/common/http';
-import { MapService } from 'app/services/map.service';
+import { MapService } from 'app/services/map/map.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 

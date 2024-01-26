@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
-import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvUtils } from 'app/map/models/tv-utils';
 
 @Injectable( {
 	providedIn: 'root'

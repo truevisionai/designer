@@ -1,14 +1,18 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TravelDirection, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TravelDirection, TvLaneSide } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
-import { Object3DArrayMap } from '../../tools/lane-width/object-3d-map';
 import { DebugDrawService } from './debug-draw.service';
-import { DebugLine } from './debug-line';
+import { DebugLine } from '../../objects/debug-line';
 import { Object3D, Vector3 } from 'three';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;

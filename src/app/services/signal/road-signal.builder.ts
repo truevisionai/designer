@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoadSignal } from 'app/map/models/tv-road-signal.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { CircleGeometry, CylinderGeometry, FrontSide, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Texture, TextureLoader, Vector3 } from 'three';
 import { ApiService } from '../api.service';
-import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
-import { TextObjectService } from 'app/tools/marking-point/text-object.service';
+import { TvOrientation } from 'app/map/models/tv-common';
+import { TextObjectService } from 'app/services/text-object.service';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 
 const signDB = [

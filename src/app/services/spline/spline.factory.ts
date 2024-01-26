@@ -1,13 +1,17 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Mesh, Vector3 } from 'three';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { RoadNode } from 'app/objects/road-node';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 
 @Injectable( {

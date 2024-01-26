@@ -1,19 +1,19 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint } from 'app/map/models/tv-common';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
-import { MapService } from 'app/services/map.service';
+import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
 import { Vector2, Vector3 } from 'three';
 import { BaseTest } from 'tests/base-test.spec';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { RoadNode } from 'app/objects/road-node';
+import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { SplineManager } from 'app/managers/spline-manager';
-import { MapValidatorService } from 'app/services/map-validator.service';
+import { MapValidatorService } from 'app/services/map/map-validator.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe( '4-way-junction tests', () => {
@@ -247,7 +247,7 @@ describe( '4-way-junction tests', () => {
 		// expect( true ).toBe( false );
 
 		/**
-		 * We generate this map:
+		 * We generate this models:
 		 * 1 is left road
 		 * 2 is right road
 		 * 3 is joining road
@@ -347,7 +347,7 @@ describe( '4-way-junction tests', () => {
 	it( 'should reset road when 4-way junction is removed from connected road', () => {
 
 		/**
-		 * We generate this map:
+		 * We generate this models:
 		 * 1 is left road
 		 * 2 is right road
 		 * 3 is joining road
@@ -456,7 +456,7 @@ describe( '4-way-junction tests', () => {
 	it( 'should create 2 4-way junctions automatically with horizontal roads', () => {
 
 		/**
-		 * We generate this map:
+		 * We generate this models:
 		 * 1 is left road
 		 * 2 is right road
 		 * 3 is joining road

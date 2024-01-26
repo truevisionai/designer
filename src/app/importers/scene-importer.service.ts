@@ -10,13 +10,13 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
-import { ScenarioEnvironment } from 'app/modules/scenario/models/actions/scenario-environment';
-import { DynamicControlPoint, SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { ThreeService } from 'app/modules/three-js/three.service';
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
+import { ScenarioEnvironment } from 'app/scenario/models/actions/scenario-environment';
+import { DynamicControlPoint, SimpleControlPoint } from 'app/objects/dynamic-control-point';
+import { ThreeService } from 'app/renderer/three.service';
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { PropCurve } from 'app/map/models/prop-curve';
+import { PropPolygon } from 'app/map/models/prop-polygons';
 import {
 	EnumHelper,
 	ObjectTypes,
@@ -28,41 +28,41 @@ import {
 	TvRoadMarkWeights,
 	TvRoadType,
 	TvUnit
-} from 'app/modules/tv-map/models/tv-common';
-import { TvUserData } from 'app/modules/tv-map/models/tv-user-data';
-import { TvControllerControl } from 'app/modules/tv-map/models/tv-controller';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
-import { TvJunctionController } from 'app/modules/tv-map/models/junctions/tv-junction-controller';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
-import { TvJunctionPriority } from 'app/modules/tv-map/models/junctions/tv-junction-priority';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
-import { TvPlaneView } from 'app/modules/tv-map/models/tv-plane-view';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
-import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { SignShapeType } from 'app/modules/tv-map/services/tv-sign.service';
+} from 'app/map/models/tv-common';
+import { TvUserData } from 'app/map/models/tv-user-data';
+import { TvControllerControl } from 'app/map/models/tv-controller';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionController } from 'app/map/models/junctions/tv-junction-controller';
+import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
+import { TvJunctionPriority } from 'app/map/models/junctions/tv-junction-priority';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvMap } from 'app/map/models/tv-map.model';
+import { TvObjectMarking } from 'app/map/models/tv-object-marking';
+import { TvPlaneView } from 'app/map/models/tv-plane-view';
+import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { TvRoadSignal } from 'app/map/models/tv-road-signal.model';
+import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvSurface } from 'app/map/models/tv-surface.model';
+import { SignShapeType } from 'app/map/services/tv-sign.service';
 import { XMLParser } from 'fast-xml-parser';
 import { Euler, Object3D, Vector2, Vector3 } from 'three';
 import { AssetDatabase } from '../core/asset/asset-database';
 import { TvConsole } from '../core/utils/console';
 import { SnackBar } from '../services/snack-bar.service';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
-import { TvCornerRoad } from "../modules/tv-map/models/objects/tv-corner-road";
-import { TvObjectOutline } from "../modules/tv-map/models/objects/tv-object-outline";
+import { TvCornerRoad } from "../map/models/objects/tv-corner-road";
+import { TvObjectOutline } from "../map/models/objects/tv-object-outline";
 import { XmlElement } from "./xml.element";
-import { TvObjectRepeat } from 'app/modules/tv-map/models/objects/tv-object-repeat';
-import { TvRoadObjectSkeleton } from "../modules/tv-map/models/objects/tv-road-object-skeleton";
-import { TvObjectPolyline } from "../modules/tv-map/models/objects/tv-object-polyline";
-import { TvObjectVertexRoad } from "../modules/tv-map/models/objects/tv-object-vertex-road";
-import { TvObjectVertexLocal } from "../modules/tv-map/models/objects/tv-object-vertex-local";
+import { TvObjectRepeat } from 'app/map/models/objects/tv-object-repeat';
+import { TvRoadObjectSkeleton } from "../map/models/objects/tv-road-object-skeleton";
+import { TvObjectPolyline } from "../map/models/objects/tv-object-polyline";
+import { TvObjectVertexRoad } from "../map/models/objects/tv-object-vertex-road";
+import { TvObjectVertexLocal } from "../map/models/objects/tv-object-vertex-local";
 import { SplineSegment, SplineSegmentType } from "../core/shapes/spline-segment";
 
 @Injectable( {

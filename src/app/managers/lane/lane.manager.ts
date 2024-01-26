@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
-import { TvLane } from "app/modules/tv-map/models/tv-lane";
+import { TvLane } from "app/map/models/tv-lane";
 import { LaneWidthManager } from "./lane-width.manager";
 import { LaneHeightManager } from "./lane-height.manager";
 import { ParkingLaneManager } from "./parking-lane.manager";

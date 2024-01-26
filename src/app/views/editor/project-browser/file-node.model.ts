@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { FileExtension } from 'app/io/FileExtension';
+import { FileExtension } from 'app/io/file-extension';
 import { MetaImporter, Metadata } from "../../../core/asset/metadata.model";
 import { FileUtils } from 'app/io/file-utils';
 

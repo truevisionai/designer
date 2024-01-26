@@ -5,7 +5,7 @@
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three';
 import { ARC_TESSEL, MAX_CTRL_POINTS } from './spline-config';
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+import { AbstractControlPoint } from "../../objects/abstract-control-point";
 
 export class RoundLine {
 

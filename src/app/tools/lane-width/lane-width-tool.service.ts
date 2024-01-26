@@ -1,22 +1,26 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { LaneWidthNode } from 'app/modules/three-js/objects/lane-width-node';
-import { MapService } from 'app/services/map.service';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { LaneWidthNode } from 'app/objects/lane-width-node';
+import { MapService } from 'app/services/map/map.service';
+import { TvLane } from 'app/map/models/tv-lane';
 import { BufferGeometry, Vector2, Vector3 } from 'three';
-import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { TvUtils } from 'app/map/models/tv-utils';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { LaneDebugService } from '../../services/debug/lane-debug.service';
-import { DebugLine } from 'app/services/debug/debug-line';
+import { DebugLine } from 'app/objects/debug-line';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { Object3DMap } from './object-3d-map';
+import { Object3DMap } from '../../core/models/object3d-map';
 import { BaseService } from 'app/services/base.service';
 import { LaneWidthService } from './lane-width.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
-import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
+import { TvLaneSide } from 'app/map/models/tv-common';
 
 @Injectable( {
 	providedIn: 'root'

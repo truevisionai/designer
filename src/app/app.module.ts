@@ -22,10 +22,9 @@ import { AppRoutingModule } from './app.routing';
 import { AnalyticsService } from './core/analytics/analytics.service';
 import { CoreModule } from './core/core.module';
 import { errorHandlerFactory } from './error-handler.factory';
-import { ScenarioModule } from './modules/scenario/scenario.module';
-import { ThreeJsModule } from './modules/three-js/three-js.module';
+import { ScenarioModule } from './scenario/scenario.module';
 
-import { TvMapModule } from './modules/tv-map/tv-map.module';
+import { TvMapModule } from './map/tv-map.module';
 
 import { SharedModule } from './views/shared/shared.module';
 import { ImportFbxDialogComponent } from './views/dialogs/import-fbx-dialog/import-fbx-dialog.component';
@@ -58,7 +57,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		CoreModule,
 		EditorModule,
 		TvMapModule,
-		ThreeJsModule,
 		ScenarioModule,
 
 		SessionsModule,

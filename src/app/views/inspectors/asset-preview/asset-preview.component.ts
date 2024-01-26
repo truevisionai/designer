@@ -4,12 +4,12 @@
 
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AppConfig } from 'app/app.config';
-import { TvOrbitControls } from 'app/modules/three-js/objects/tv-orbit-controls';
+import { TvOrbitControls } from 'app/objects/tv-orbit-controls';
 import { Camera, Color, Fog, Object3D, PerspectiveCamera, Scene, } from 'three';
 import { AssetPreviewService } from './asset-preview.service';
 import { AssetNode, AssetType } from "../../editor/project-browser/file-node.model";
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
+import { IViewportController } from 'app/objects/i-viewport-controller';
 
 @Component( {
 	selector: 'app-asset-preview',

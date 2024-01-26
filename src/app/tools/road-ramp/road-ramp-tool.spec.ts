@@ -6,7 +6,7 @@
 // describe( 'RoadRampTool Test', () => {
 
 // 	let tool: RoadRampTool;
-// 	let map: TvMap;
+// 	let models: TvMap;
 
 // 	beforeEach( () => {
 
@@ -14,7 +14,7 @@
 
 // 		tool.init();
 
-// 		map = TvMapInstance.map = new TvMap();
+// 		models = TvMapInstance.models = new TvMap();
 
 // 	} );
 

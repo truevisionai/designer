@@ -1,0 +1,33 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+// /*
+//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+//  */
+
+// import { SignalFactory } from '../../../factories/signal-factory';
+// import { TvRoadSignal } from '../models/tv-road-signal.model';
+// import { TvRoad } from '../models/tv-road.model';
+
+// export class TvSignalHelper {
+
+// 	constructor () {
+// 	}
+
+// 	public static create ( road: TvRoad ) {
+
+// 		road.signals.forEach( signal => {
+
+// 			this.createSignal( road, signal );
+
+// 		} );
+
+// 	}
+
+// 	private static createSignal ( road: TvRoad, signal: TvRoadSignal ) {
+
+// 		SignalFactory.createSignal( road, signal );
+
+// 	}
+// }

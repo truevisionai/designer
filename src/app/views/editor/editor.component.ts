@@ -5,12 +5,12 @@
 import { AfterContentInit, ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { EditorService } from 'app/services/editor.service';
+import { EditorService } from 'app/services/editor/editor.service';
 import { TvConsole } from 'app/core/utils/console';
-import { ScenarioDirectorService } from 'app/modules/scenario/services/scenario-director.service';
+import { ScenarioDirectorService } from 'app/scenario/services/scenario-director.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
-import { ShortcutService } from 'app/services/shortcut.service';
+import { ShortcutService } from 'app/services/editor/shortcut.service';
 
 @Component( {
 	selector: 'app-editor',

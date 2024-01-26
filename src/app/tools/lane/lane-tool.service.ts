@@ -1,8 +1,12 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { LaneDebugService } from 'app/services/debug/lane-debug.service';
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
 import { BaseToolService } from '../base-tool.service';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvLane } from 'app/map/models/tv-lane';
 import { MapEvents } from 'app/events/map-events';
 import { LaneService } from 'app/services/lane/lane.service';
 

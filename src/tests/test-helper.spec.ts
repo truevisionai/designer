@@ -4,7 +4,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { JunctionConnectionService } from "app/services/junction/junction-connection.service";
 import { JunctionService } from "app/services/junction/junction.service";
-import { MapService } from "app/services/map.service";
+import { MapService } from "app/services/map/map.service";
 import { RoadTool } from "app/tools/road/road-tool";
 import { RoadToolService } from "app/tools/road/road-tool.service";
 import { BaseTest } from "./base-test.spec";

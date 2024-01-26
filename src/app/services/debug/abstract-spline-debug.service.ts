@@ -1,11 +1,15 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
-import { Object3DArrayMap } from 'app/tools/lane-width/object-3d-map';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { RoadControlPoint } from 'app/objects/road-control-point';
 import { Object3D } from 'three';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { SceneService } from '../scene.service';
+import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 
 @Injectable( {
 	providedIn: 'root'

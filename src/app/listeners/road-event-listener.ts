@@ -1,6 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MapEvents } from "../events/map-events";
 import { Injectable } from "@angular/core";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
+import { TvRoad } from "app/map/models/tv-road.model";
 import { JunctionService } from "app/services/junction/junction.service";
 import { RoadCreatedEvent } from "../events/road/road-created-event";
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";

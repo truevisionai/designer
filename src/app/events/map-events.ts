@@ -1,7 +1,11 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { EventEmitter, Injectable, Output } from "@angular/core";
-import { TvLane } from "app/modules/tv-map/models/tv-lane";
-import { TvMap } from "app/modules/tv-map/models/tv-map.model";
-import { AbstractControlPoint } from "../modules/three-js/objects/abstract-control-point";
+import { TvLane } from "app/map/models/tv-lane";
+import { TvMap } from "app/map/models/tv-map.model";
+import { AbstractControlPoint } from "../objects/abstract-control-point";
 import { AssetNode } from "app/views/editor/project-browser/file-node.model";
 import { RoadCreatedEvent } from "./road/road-created-event";
 import { RoadUpdatedEvent } from "./road/road-updated-event";

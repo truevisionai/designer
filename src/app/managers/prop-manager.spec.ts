@@ -3,7 +3,7 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+import { PropPolygon } from 'app/map/models/prop-polygons';
 import earcut from 'earcut';
 import { Triangle } from 'three';
 

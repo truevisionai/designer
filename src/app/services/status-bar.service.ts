@@ -4,9 +4,9 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { Vector3 } from 'three';
 import { ViewportEvents } from 'app/events/viewport-events';
 

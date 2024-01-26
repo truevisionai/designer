@@ -1,15 +1,19 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { RoadNode } from 'app/objects/road-node';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Color, Object3D, Vector2 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { SceneService } from '../scene.service';
-import { Highlightable, ISelectable } from 'app/modules/three-js/objects/i-selectable';
-import { MapService } from '../map.service';
+import { Highlightable, ISelectable } from 'app/objects/i-selectable';
+import { MapService } from '../map/map.service';
 
 export class JunctionNode extends Line2 implements ISelectable, Highlightable {
 

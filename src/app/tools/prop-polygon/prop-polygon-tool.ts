@@ -4,17 +4,17 @@
 
 import { IToolWithMainObject, IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
 import { PropModel } from 'app/core/models/prop-model.model';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { ObjectUserDataStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
+import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { DynamicControlPoint } from '../../modules/three-js/objects/dynamic-control-point';
-import { PropPolygon } from '../../modules/tv-map/models/prop-polygons';
+import { DynamicControlPoint } from '../../objects/dynamic-control-point';
+import { PropPolygon } from '../../map/models/prop-polygons';
 import { KeyboardEvents } from '../../events/keyboard-events';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';

@@ -16,10 +16,10 @@ export class OpenDriveApiService {
 	}
 
 	getOpenDrive ( name: string ): Observable<IFile> {
-		return this.files.getFile( name, 'tv-map' );
+		return this.files.getFile( name, 'tv-models' );
 	}
 
 	getAll (): Observable<IFile[]> {
-		return this.files.getFileList( 'tv-map' );
+		return this.files.getFileList( 'tv-models' );
 	}
 }

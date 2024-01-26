@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper';
 import { Camera, Mesh } from 'three';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { RendererService } from 'app/modules/three-js/renderer.service';
-import { CameraService } from 'app/modules/three-js/camera.service';
+import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { RendererService } from 'app/renderer/renderer.service';
+import { CameraService } from 'app/renderer/camera.service';
 import { SceneService } from 'app/services/scene.service';
 
 @Injectable( {

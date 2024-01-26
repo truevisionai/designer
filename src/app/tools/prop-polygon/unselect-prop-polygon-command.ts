@@ -4,7 +4,7 @@
 
 // import { BaseCommand } from 'app/core/commands/base-command';
 // import { SetInspectorCommand } from 'app/core/commands/set-inspector-command';
-// import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+// import { PropPolygon } from 'app/modules/tv-models/models/prop-polygons';
 // import {
 // 	PropPolygonInspectorComponent,
 // 	PropPolygonInspectorData

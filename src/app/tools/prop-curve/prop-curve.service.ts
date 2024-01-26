@@ -1,16 +1,21 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { MapService } from 'app/services/map.service';
+import { MapService } from 'app/services/map/map.service';
 import { PropModel } from 'app/core/models/prop-model.model';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+import { PropCurve } from 'app/map/models/prop-curve';
 import { Object3D, Vector3 } from 'three';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { Object3DArrayMap, Object3DMap } from '../lane-width/object-3d-map';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { Object3DMap } from '../../core/models/object3d-map';
 import { PropCurveBuilder } from './prop-curve.builder';
+import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 
 @Injectable( {
 	providedIn: 'root'

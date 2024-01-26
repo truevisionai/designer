@@ -1,8 +1,12 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import earcut from 'earcut';
 
 import { Injectable } from '@angular/core';
 import { Vector3, BufferGeometry, BufferAttribute } from 'three';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 @Injectable( {
 	providedIn: 'root'
@@ -49,7 +53,7 @@ export class SurfaceGeometryBuilder {
 		geometry.computeVertexNormals();
 
 		// Create UV mapping for the mesh
-		// Here we map each 1x1 Three.js unit to a 1x1 area in the texture.
+		// Here we models each 1x1 Three.js unit to a 1x1 area in the texture.
 		const uvs = new Float32Array( positions.length * 2 );
 		for ( let i = 0; i < positions.length; i++ ) {
 			// Use the x and y positions directly as UV coordinates

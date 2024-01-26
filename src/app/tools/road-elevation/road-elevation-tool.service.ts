@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { RoadElevationControlPoint } from 'app/modules/three-js/objects/road-elevation-node';
-import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { DebugLine } from 'app/services/debug/debug-line';
+import { RoadElevationControlPoint } from 'app/objects/road-elevation-node';
+import { TvElevation } from 'app/map/models/tv-elevation';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
 import { Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
-import { Object3DMap } from '../lane-width/object-3d-map';
+import { Object3DMap } from '../../core/models/object3d-map';
 import { RoadElevationService } from 'app/services/road/road-elevation.service';
 
 @Injectable( {

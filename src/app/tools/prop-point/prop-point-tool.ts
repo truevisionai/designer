@@ -3,7 +3,7 @@
  */
 
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { DynamicControlPoint } from 'app/objects/dynamic-control-point';
 import { CommandHistory } from 'app/services/command-history';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -11,13 +11,13 @@ import { PropInstance } from '../../core/models/prop-instance.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { Object3D, Vector3 } from 'three';
-import { FreeMovingStrategy } from "../../core/snapping/move-strategies/free-moving-strategy";
-import { AnyLaneMovingStrategy } from "app/core/snapping/move-strategies/any-lane.moving.strategy";
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { FreeMovingStrategy } from "../../core/strategies/move-strategies/free-moving-strategy";
+import { AnyLaneMovingStrategy } from "app/core/strategies/move-strategies/any-lane.moving.strategy";
+import { TvContactPoint } from 'app/map/models/tv-common';
 import { PropPointService } from './prop-point.service';
 import { AppInspector } from 'app/core/inspector';
 import { AddObjectCommand } from "../../commands/add-object-command";

@@ -1,7 +1,11 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
-import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { MapService } from "app/services/map.service";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { MapService } from "app/services/map/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadManager } from "./road/road-manager";
@@ -72,9 +76,9 @@ export class JunctionManager {
 
 				this.roadService.removeRoad( nextRoad );
 
-				// this.mapService.map.removeRoad( nextRoad );
+				// this.mapService.models.removeRoad( nextRoad );
 
-				// this.mapService.map.gameObject.remove( nextRoad.gameObject );
+				// this.mapService.models.gameObject.remove( nextRoad.gameObject );
 
 				this.roadFactory.idRemoved( nextRoad.id );
 

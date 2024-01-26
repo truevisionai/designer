@@ -1,21 +1,25 @@
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
-import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
+import { TvLineGeometry } from 'app/map/models/geometries/tv-line-geometry';
 import { Vector2, Vector3 } from 'three';
 import { AbstractSpline, SplineType } from './abstract-spline';
-import { PolyLine } from './PolyLine';
+import { Polyline } from '../../objects/polyline';
 import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
+import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { SplineSegment } from './spline-segment';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 export class AutoSplineV2 extends AbstractSpline {
 
 	public type: SplineType = SplineType.AUTOV2;
 
-	public polyline: PolyLine;
+	public polyline: Polyline;
 
 	public roundline: RoundLine;
 
@@ -29,7 +33,7 @@ export class AutoSplineV2 extends AbstractSpline {
 
 	init () {
 
-		this.polyline = new PolyLine( this.controlPoints );
+		this.polyline = new Polyline( this.controlPoints );
 
 		this.roundline = new RoundLine( this.controlPoints );
 
@@ -229,7 +233,7 @@ export class AutoSplineV2 extends AbstractSpline {
 
 		// const lastRoadId = lastSegment?.roadId;
 
-		// const lastRoad = lastRoadId ? TvMapInstance.map.getRoadById( lastRoadId ) : null;
+		// const lastRoad = lastRoadId ? TvMapInstance.models.getRoadById( lastRoadId ) : null;
 
 		const point = ControlPointFactory.createControl( this, position );
 

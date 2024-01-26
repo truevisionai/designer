@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // /*
 //  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
 //  */
@@ -6,7 +10,7 @@
 // import { SelectPointCommand } from 'app/commands/select-point-command';
 // import { SceneService } from 'app/services/scene.service';
 // import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-// import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
+// import { PropPolygon } from 'app/modules/tv-models/models/prop-polygons';
 // import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 // import { Vector3 } from 'three';
 // import { PropPolygonTool } from './prop-polygon-tool';
@@ -32,7 +36,7 @@
 
 // 	execute (): void {
 
-// 		this.map.propPolygons.push( this.polygon );
+// 		this.models.propPolygons.push( this.polygon );
 
 // 		this.polygon.addControlPoint( this.point );
 
@@ -45,9 +49,9 @@
 
 // 	undo (): void {
 
-// 		const index = this.map.propPolygons.indexOf( this.polygon );
+// 		const index = this.models.propPolygons.indexOf( this.polygon );
 
-// 		this.map.propPolygons.splice( index, 1 );
+// 		this.models.propPolygons.splice( index, 1 );
 
 // 		this.polygon.removeControlPoint( this.point );
 

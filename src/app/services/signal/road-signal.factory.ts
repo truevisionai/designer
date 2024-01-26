@@ -1,7 +1,11 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { TvDynamicTypes, TvOrientation, TvUnit } from 'app/modules/tv-map/models/tv-common';
-import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { TvDynamicTypes, TvOrientation, TvUnit } from 'app/map/models/tv-common';
+import { TvRoadSignal } from 'app/map/models/tv-road-signal.model';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 
 @Injectable( {

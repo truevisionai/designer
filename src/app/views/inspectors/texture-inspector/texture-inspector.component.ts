@@ -4,7 +4,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { IComponent } from 'app/core/game-object';
+import { IComponent } from 'app/objects/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';

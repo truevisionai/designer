@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvLane } from 'app/map/models/tv-lane';
 import { Vector2, Vector3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';

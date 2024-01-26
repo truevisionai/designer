@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvColors } from "app/modules/tv-map/models/tv-common";
+import { TvColors } from "app/map/models/tv-common";
 
 export class COLOR {
 

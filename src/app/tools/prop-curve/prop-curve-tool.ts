@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+import { PropCurve } from 'app/map/models/prop-curve';
 import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { PropModel } from '../../core/models/prop-model.model';
@@ -14,7 +14,7 @@ import { PropCurveService } from './prop-curve.service';
 import { Vector3 } from 'three';
 import { AppInspector } from 'app/core/inspector';
 import { PropCurveInspector } from './prop-curve.inspector';
-import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { CommandHistory } from 'app/services/command-history';
 import { SelectObjectCommand } from 'app/commands/select-object-command';

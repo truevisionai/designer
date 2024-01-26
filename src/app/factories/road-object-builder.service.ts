@@ -1,15 +1,19 @@
-import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Euler, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, PlaneGeometry, Texture, Vector3 } from 'three';
-import { ObjectTypes, TvSide } from '../modules/tv-map/models/tv-common';
+import { ObjectTypes, TvSide } from '../map/models/tv-common';
 import { Injectable } from "@angular/core";
-import { TvRoad } from "../modules/tv-map/models/tv-road.model";
-import { TvObjectMarking } from 'app/modules/tv-map/models/tv-object-marking';
+import { TvRoad } from "../map/models/tv-road.model";
+import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { Maths } from 'app/utils/maths';
-import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
+import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvConsole } from 'app/core/utils/console';
 import { ExtrudeService } from './extrude.service';
-import { TvObjectVertexLocal } from "../modules/tv-map/models/objects/tv-object-vertex-local";
+import { TvObjectVertexLocal } from "../map/models/objects/tv-object-vertex-local";
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
 
 @Injectable( {

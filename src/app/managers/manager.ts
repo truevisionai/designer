@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // import { ScenarioInstance } from "app/modules/scenario/services/scenario-instance";
-// import { TvMapInstance } from "app/modules/tv-map/services/tv-map-instance";
+// import { TvMapInstance } from "app/modules/tv-models/services/tv-models-instance";
 
 export abstract class Manager {
 
@@ -10,7 +14,7 @@ export abstract class Manager {
 	 */
 	get map (): any {
 		throw new Error( 'method not implemented' );
-		// return TvMapInstance.map;
+		// return TvMapInstance.models;
 	}
 
 	/**

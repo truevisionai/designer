@@ -1,6 +1,10 @@
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvRoad } from 'app/map/models/tv-road.model';
 
 export enum SplineSegmentType {
 	ROAD = 'road',

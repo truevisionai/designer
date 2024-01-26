@@ -1,6 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvContactPoint } from 'app/map/models/tv-common';
+import { TvRoad } from 'app/map/models/tv-road.model';
 
 @Injectable( {
 	providedIn: 'root'

@@ -8,7 +8,7 @@ import { ImportFbxDialogComponent } from 'app/views/dialogs/import-fbx-dialog/im
 import {
 	ImportOpenScenarioDialogComponent,
 	ImportOpenScenarioDialogData
-} from '../modules/scenario/dialogs/import-open-scenario-dialog/import-open-scenario-dialog.component';
+} from '../scenario/dialogs/import-open-scenario-dialog/import-open-scenario-dialog.component';
 
 
 @Injectable( {

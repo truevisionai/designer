@@ -1,8 +1,12 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // import { Vector3 } from "three";
 // import { AutoSplineV2 } from './auto-spline-v2';
-// import { TvGeometryType } from "app/modules/tv-map/models/tv-common";
+// import { TvGeometryType } from "app/modules/tv-models/models/tv-common";
 // import { RoadFactory } from "app/factories/road-factory.service";
-// import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
+// import { TvRoad } from "app/modules/tv-models/models/tv-road.model";
 
 // describe( 'AutoSplineV2 tests', () => {
 

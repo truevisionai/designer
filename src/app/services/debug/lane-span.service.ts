@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { ThirdOrderPolynom } from 'app/modules/tv-map/models/third-order-polynom';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { ThirdOrderPolynom } from 'app/map/models/third-order-polynom';
+import { TvLane } from 'app/map/models/tv-lane';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Vector2 } from 'three';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { DebugLine } from './debug-line';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { DebugLine } from '../../objects/debug-line';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 @Injectable( {
 	providedIn: 'root'

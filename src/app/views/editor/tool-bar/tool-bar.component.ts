@@ -7,8 +7,8 @@ import { SatPopover } from '@ncstate/sat-popover';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../../../tools/base-tool';
-import { ToolManager } from '../../../tools/tool-manager';
-import { ThreeService } from '../../../modules/three-js/three.service';
+import { ToolManager } from '../../../managers/tool-manager';
+import { ThreeService } from '../../../renderer/three.service';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { Environment } from 'app/core/utils/environment';
@@ -218,7 +218,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			label: 'Junction',
 			class: 'toolbar-button',
 			toolType: ToolType.Junction,
-			action: 'junction-tool',
+			action: 'junction',
 			icon: 'grid_goldenratio',
 			title: 'Junction Tool',
 			description: '',

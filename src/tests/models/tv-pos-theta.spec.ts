@@ -1,4 +1,4 @@
-import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
+import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { Maths } from "app/utils/maths";
 
 describe( 'TvPosTheta', () => {

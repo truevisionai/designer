@@ -1,17 +1,21 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
-import { MapService } from 'app/services/map.service';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { TvSurface } from 'app/map/models/tv-surface.model';
+import { MapService } from 'app/services/map/map.service';
 import { SceneService } from 'app/services/scene.service';
 import { Mesh, MeshLambertMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2, Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
 import { SelectionService } from '../selection.service';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { TvSurfaceBuilder } from 'app/modules/tv-map/builders/tv-surface.builder';
-import { Object3DMap } from '../lane-width/object-3d-map';
+import { TvSurfaceBuilder } from 'app/map/builders/tv-surface.builder';
+import { Object3DMap } from '../../core/models/object3d-map';
 import { DebugService, SurfaceDebugService } from './surface-debug.service';
 import { DebugState } from 'app/services/debug/debug-state';
 

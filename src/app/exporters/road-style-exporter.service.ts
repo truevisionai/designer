@@ -3,14 +3,14 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
-import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
+import { TvLaneSide } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
+import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { RoadStyle } from "../core/asset/road.style";
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
 
 @Injectable( {
 	providedIn: 'root'

@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractFieldComponent } from '../../../../core/components/abstract-field.component';
-import { ScenarioService } from '../../../../modules/scenario/services/scenario.service';
+import { ScenarioService } from '../../../../scenario/services/scenario.service';
 
 @Component( {
 	selector: 'app-select-entity-field',

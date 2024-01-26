@@ -13,7 +13,7 @@ const statHelper = {
 	isSocket: ( path ) => fs.statSync( path ).isSocket(),
 }
 
-contextBridge.exposeInMainWorld( 'versions', {
+contextBridge.exposeInMainWorld( 'electronFs', {
 	currentDirectory: __dirname,
 	remote: () => remote,
 	setTitle: ( name ) => remote.getCurrentWindow().setTitle( name ),

@@ -1,14 +1,18 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/commands/set-tool-command';
 import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from 'app/tools/base-tool';
-import { JunctionTool } from 'app/tools/junction-tool/junction.tool';
+import { JunctionTool } from 'app/tools/junction/junction.tool';
 import { LaneMarkingTool } from 'app/tools/lane-marking/lane-marking-tool';
 import { LaneWidthTool } from 'app/tools/lane-width/lane-width-tool';
 import { LaneTool } from 'app/tools/lane/lane-tool';
 import { ManeuverTool } from 'app/tools/maneuver/maneuver-tool';
-import { CrosswalkTool } from 'app/tools/marking-line/crosswalk-tool';
-import { PointMarkingTool } from 'app/tools/marking-point/point-marking.tool';
+import { CrosswalkTool } from 'app/tools/crosswalk/crosswalk-tool';
+import { PointMarkingTool } from 'app/tools/point-marking/point-marking.tool';
 import { PointerTool } from 'app/tools/pointer/pointer-tool';
 import { PropCurveTool } from 'app/tools/prop-curve/prop-curve-tool';
 import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
@@ -26,34 +30,31 @@ import { VehicleTool } from 'app/tools/vehicle/vehicle-tool';
 import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
 import { PropPointService } from 'app/tools/prop-point/prop-point.service';
 import { RoadCircleToolService } from 'app/tools/road-circle/road-circle-tool.service';
-import { RoadElevationService } from 'app/services/road/road-elevation.service';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
 import { LaneWidthToolService } from 'app/tools/lane-width/lane-width-tool.service';
 import { LaneMarkingToolService } from 'app/tools/lane-marking/lane-marking-tool.service';
-import { RoadDividerService } from 'app/services/road/road-divider.service';
-import { BaseToolService } from 'app/tools/base-tool.service';
 import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-tool.service';
-import { ToolManager } from 'app/tools/tool-manager';
+import { ToolManager } from 'app/managers/tool-manager';
 import { PropCurveService } from 'app/tools/prop-curve/prop-curve.service';
 import { RoadRampService } from 'app/services/road/road-ramp.service';
-import { CrosswalkToolService } from "../../../tools/marking-line/crosswalk-tool.service";
 import { PropPolygonToolService } from "../../../tools/prop-polygon/prop-polygon-tool.service";
 import { ParkingRoadTool } from 'app/tools/parking/parking-road-tool';
 import { ParkingLotTool } from 'app/tools/parking/parking-lot.tool';
 import { ParkingRoadToolService } from 'app/tools/parking/parking-road-tool.service';
-import { MeasurementTool } from 'app/tools/pointer/measurement.tool';
-import { TextMarkingTool } from 'app/tools/marking-point/text-marking.tool';
-import { TextMarkingToolService } from 'app/tools/marking-point/text-marking-tool.service';
-import { PropSpanTool } from 'app/tools/road-span/prop-span-tool';
-import { PropSpanToolService } from 'app/tools/road-span/prop-span-tool.service';
-import { PolePropTool } from 'app/tools/prop-barrier/pole-prop-tool';
-import { PolePropToolService } from 'app/tools/prop-barrier/pole-prop-tool.service';
-import { PointMarkingToolService } from 'app/tools/marking-point/point-marking-tool.service';
-import { JunctionToolService } from 'app/tools/junction-tool/junction-tool.service';
+import { MeasurementTool } from 'app/tools/measurement/measurement.tool';
+import { TextMarkingTool } from 'app/tools/text-marking/text-marking.tool';
+import { TextMarkingToolService } from 'app/tools/text-marking/text-marking-tool.service';
+import { PropSpanTool } from 'app/tools/prop-span/prop-span-tool';
+import { PropSpanToolService } from 'app/tools/prop-span/prop-span-tool.service';
+import { PolePropTool } from 'app/tools/prop-pole/pole-prop.tool';
+import { PolePropToolService } from 'app/tools/prop-pole/pole-prop.tool.service';
+import { PointMarkingToolService } from 'app/tools/point-marking/point-marking-tool.service';
+import { JunctionToolService } from 'app/tools/junction/junction-tool.service';
 import { LaneToolService } from 'app/tools/lane/lane-tool.service';
-import { MeasurementToolService } from 'app/tools/pointer/measurement-tool.service';
+import { MeasurementToolService } from 'app/tools/measurement/measurement-tool.service';
 import { RoadElevationToolService } from 'app/tools/road-elevation/road-elevation-tool.service';
 import { RoadSignalToolService } from 'app/tools/road-signal/road-signal-tool.service';
+import { CrosswalkToolService } from 'app/tools/crosswalk/crosswalk-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -73,8 +74,6 @@ export class ToolBarService {
 		private laneMarkingService: LaneMarkingToolService,
 		private laneToolService: LaneToolService,
 		private crosswalkService: CrosswalkToolService,
-		private roadCuttingService: RoadDividerService,
-		private baseToolService: BaseToolService,
 		private roadCutToolService: RoadDividerToolService,
 		private junctionToolService: JunctionToolService,
 		private propCurveService: PropCurveService,

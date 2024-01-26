@@ -1,7 +1,11 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { TvElectronService } from '../tv-electron.service';
 import { IFile } from 'app/io/file';
-import { ProjectService } from '../project.service';
+import { ProjectService } from '../editor/project.service';
 import { FileUtils } from 'app/io/file-utils';
 
 interface OpenDialogReturnValue {

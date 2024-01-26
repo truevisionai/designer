@@ -1,9 +1,13 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // /*
 //  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
 //  */
 
 // import { SelectPointCommand } from 'app/commands/select-point-command';
-// import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+// import { PropCurve } from 'app/modules/tv-models/models/prop-curve';
 // import {
 // 	PropCurveInspectorComponent,
 // 	PropCurveInspectorData
@@ -37,7 +41,7 @@
 
 // 		this.selectPointCommand.execute();
 
-// 		this.map.propCurves.push( this.curve );
+// 		this.models.propCurves.push( this.curve );
 
 // 		this.curve.addControlPoint( this.point );
 
@@ -55,9 +59,9 @@
 
 // 		SceneService.removeFromMain( this.point );
 
-// 		const index = this.map.propCurves.indexOf( this.curve );
+// 		const index = this.models.propCurves.indexOf( this.curve );
 
-// 		this.map.propCurves.splice( index, 1 );
+// 		this.models.propCurves.splice( index, 1 );
 
 // 	}
 

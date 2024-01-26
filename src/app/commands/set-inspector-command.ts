@@ -3,7 +3,7 @@
  */
 
 import { Type } from '@angular/core';
-import { IComponent } from '../core/game-object';
+import { IComponent } from '../objects/game-object';
 import { AppInspector } from '../core/inspector';
 import { BaseCommand } from './base-command';
 

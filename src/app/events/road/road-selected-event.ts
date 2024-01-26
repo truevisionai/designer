@@ -1,4 +1,8 @@
-import { TvRoad } from "../../modules/tv-map/models/tv-road.model";
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { TvRoad } from "../../map/models/tv-road.model";
 
 export class RoadSelectedEvent {
 	constructor ( public road: TvRoad ) {

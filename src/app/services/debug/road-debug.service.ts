@@ -1,17 +1,20 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { DebugDrawService } from './debug-draw.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Object3DArrayMap } from "../../tools/lane-width/object-3d-map";
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Object3D } from "three";
 import { LaneDebugService } from 'app/services/debug/lane-debug.service';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvLane } from 'app/map/models/tv-lane';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { DebugLine } from './debug-line';
-import { MapService } from '../map.service';
-import { DynamicControlPoint } from "../../modules/three-js/objects/dynamic-control-point";
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { DebugLine } from '../../objects/debug-line';
+import { MapService } from '../map/map.service';
+import { DynamicControlPoint } from "../../objects/dynamic-control-point";
+import { RoadNode } from 'app/objects/road-node';
+import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;
@@ -87,7 +90,7 @@ export class RoadDebugService {
 
 	// showRoadReferenceLine ( road: TvRoad ) {
 
-	// 	const points = road.getReferenceLinePoints( LINE_STEP ).map( point => point.position );
+	// 	const points = road.getReferenceLinePoints( LINE_STEP ).models( point => point.position );
 
 	// 	points.forEach( point => point.z += LINE_ZOFFSET );
 
@@ -329,7 +332,7 @@ export class RoadDebugService {
 
 	// showAllCornerPoints () {
 
-	// 	this.mapService.map.getRoads().forEach( road => {
+	// 	this.mapService.models.getRoads().forEach( road => {
 
 	// 		this.showCornerPoints( road );
 
@@ -339,7 +342,7 @@ export class RoadDebugService {
 
 	// hideAllCornerPoints () {
 
-	// 	this.mapService.map.getRoads().forEach( road => {
+	// 	this.mapService.models.getRoads().forEach( road => {
 
 	// 		this.hideCornerPoints( road );
 

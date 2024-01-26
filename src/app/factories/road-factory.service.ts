@@ -2,23 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvLaneSide, TvLaneType, TvRoadType } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { RoadNode } from 'app/objects/road-node';
+import { TvLaneSide, TvLaneType, TvRoadType } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadStyleManager } from 'app/managers/road-style.manager';
 import { Vector3 } from 'three';
 import { IDService } from './id.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
-import { TvJunction } from "../modules/tv-map/models/junctions/tv-junction";
-import { TvElevationProfile } from 'app/modules/tv-map/models/tv-elevation-profile';
-import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { TvJunction } from "../map/models/junctions/tv-junction";
+import { TvElevationProfile } from 'app/map/models/tv-elevation-profile';
+import { TvUtils } from 'app/map/models/tv-utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { MapEvents } from 'app/events/map-events';
 import { LaneSectionFactory } from './lane-section.factory';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 
 @Injectable( {
 	providedIn: 'root'
@@ -287,7 +287,7 @@ export class RoadFactory {
 
 	//static removeRoad ( road: TvRoad ) {
 	//
-	//	this.map.gameObject.remove( road.gameObject );
+	//	this.models.gameObject.remove( road.gameObject );
 	//
 	//}
 
@@ -299,7 +299,7 @@ export class RoadFactory {
 	//
 	//	const connectingRoad = RoadFactory.addConnectingRoad( TvLaneSide.RIGHT, laneWidth, junction.id );
 	//
-	//	this.map.addRoad( connectingRoad );
+	//	this.models.addRoad( connectingRoad );
 	//
 	//	connectingRoad.setPredecessor( TvRoadLinkChildType.road, entry.road.id, entry.contact );
 	//
@@ -401,7 +401,7 @@ export class RoadFactory {
 
 	// 	this.makeRoadConnections( firstRoad, firstNode, secondRoad, secondNode, joiningRoad );
 
-	// 	TvMapBuilder.buildRoad( this.map.gameObject, joiningRoad );
+	// 	TvMapBuilder.buildRoad( this.models.gameObject, joiningRoad );
 
 	// 	return joiningRoad;
 	// }
@@ -487,7 +487,7 @@ export class RoadFactory {
 	//
 	//	const road = new TvRoad( name, length, id, junction );
 	//
-	//	this.map.roads.set( road.id, road );
+	//	this.models.roads.set( road.id, road );
 	//
 	//	return road;
 	//}

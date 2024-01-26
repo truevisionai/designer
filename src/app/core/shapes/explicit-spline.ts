@@ -2,23 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
-import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
-import { TvParamPoly3Geometry } from 'app/modules/tv-map/models/geometries/tv-param-poly3-geometry';
-import { TvSpiralGeometry } from 'app/modules/tv-map/models/geometries/tv-spiral-geometry';
-import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { RoadControlPoint } from 'app/objects/road-control-point';
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
+import { TvLineGeometry } from 'app/map/models/geometries/tv-line-geometry';
+import { TvParamPoly3Geometry } from 'app/map/models/geometries/tv-param-poly3-geometry';
+import { TvSpiralGeometry } from 'app/map/models/geometries/tv-spiral-geometry';
+import { TvGeometryType } from 'app/map/models/tv-common';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
 import { AbstractSpline, SplineType } from './abstract-spline';
 
 import * as SPIRAL from './spiral-math.js';
 import { CURVE_TESSEL, CURVE_Y, PARACUBICFACTOR } from './spline-config';
-import { HermiteSpline, Length } from './SplineData';
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { HermiteSpline, Length } from './spline-data';
+import { AbstractControlPoint } from "../../objects/abstract-control-point";
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -149,7 +149,7 @@ export class ExplicitSpline extends AbstractSpline {
 				// const segment = i > 0 ? this.segments[ i - 1 ] : this.segments[ i ];
 
 				// // HACK: to fix incorrect arc length calculation during import,
-				// // when we just rely on open-drive map data instead of actual calculations
+				// // when we just rely on open-drive models data instead of actual calculations
 				// //
 				// // during import use values from cache of segment instead of calculating
 				// // this calcuation has led to bugs in some open-drive maps and

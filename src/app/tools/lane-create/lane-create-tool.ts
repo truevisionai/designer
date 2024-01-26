@@ -3,23 +3,23 @@
  */
 
 // import { SetValueCommand } from 'app/commands/set-value-command';
-// import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
-// import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-// import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-// import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+// import { LineType, OdLaneReferenceLineBuilder } from 'app/modules/tv-models/builders/od-lane-reference-line-builder';
+// import { TvPosTheta } from 'app/modules/tv-models/models/tv-pos-theta';
+// import { TvRoad } from 'app/modules/tv-models/models/tv-road.model';
+// import { TvMapQueries } from 'app/modules/tv-models/queries/tv-models-queries';
 // import { CommandHistory } from 'app/services/command-history';
 // import { COLOR } from 'app/views/shared/utils/colors.service';
 // import { LaneInspectorComponent } from 'app/views/inspectors/lane-type-inspector/lane-inspector.component';
 // import { Line } from 'three';
 // import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
-// import { TvLane } from '../../modules/tv-map/models/tv-lane';
+// import { TvLane } from '../../modules/tv-models/models/tv-lane';
 // import { CallFunctionCommand } from '../../commands/call-function-command';
 // import { DuplicateLaneCommand } from '../../commands/duplicate-lane-command';
 // import { SetInspectorCommand } from '../../commands/set-inspector-command';
 // import { ToolType } from '../tool-types.enum';
 // import { PickingHelper } from '../../services/picking-helper.service';
 // import { BaseTool } from '../base-tool';
-// import { MapEvents } from 'app/events/map-events';
+// import { MapEvents } from 'app/events/models-events';
 
 // /**
 //  * @deprecated
@@ -43,7 +43,7 @@
 
 // 	get road () {
 
-// 		return this.lane ? this.map.getRoadById( this.lane.roadId ) : null;
+// 		return this.lane ? this.models.getRoadById( this.lane.roadId ) : null;
 
 // 	}
 
@@ -138,7 +138,7 @@
 
 // 	// hasInteractedLane ( e: PointerEventData ): boolean {
 
-// 	// 	const road = this.map.getRoadById( this.lane.roadId );
+// 	// 	const road = this.models.getRoadById( this.lane.roadId );
 
 // 	// 	const object = PickingHelper.findByTag( ObjectTypes.LANE, e, road.gameObject.children )[ 0 ];
 
@@ -151,7 +151,7 @@
 
 // 	hasInteratedReferenceLine ( e: PointerEventData ): boolean {
 
-// 		const road = this.map.getRoadById( this.lane.roadId );
+// 		const road = this.models.getRoadById( this.lane.roadId );
 
 // 		if ( !road ) console.error( 'Road not found' );
 
@@ -226,7 +226,7 @@
 
 // 	public selectNewLane ( lane: TvLane ): void {
 
-// 		const road = this.map.getRoadById( lane.roadId );
+// 		const road = this.models.getRoadById( lane.roadId );
 
 // 		CommandHistory.executeMany(
 // 			new SetValueCommand( this, 'lane', lane ),
@@ -248,7 +248,7 @@
 
 // 		const lane = referenceLine.userData.lane as TvLane;
 
-// 		const road = this.map.getRoadById( lane.roadId );
+// 		const road = this.models.getRoadById( lane.roadId );
 
 // 		const posTheta = new TvPosTheta();
 

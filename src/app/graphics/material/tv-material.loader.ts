@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MaterialLoader, Texture } from 'three';
 import { TvMaterial } from './tv-material';

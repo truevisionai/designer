@@ -1,8 +1,12 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseCommand } from "./base-command";
-import { ISelectable } from "../modules/three-js/objects/i-selectable";
+import { ISelectable } from "../objects/i-selectable";
 import { SetInspectorCommand } from "./set-inspector-command";
 import { Type } from "@angular/core";
-import { IComponent } from "../core/game-object";
+import { IComponent } from "../objects/game-object";
 import { IToolWithMainObject } from "./select-point-command";
 
 /**

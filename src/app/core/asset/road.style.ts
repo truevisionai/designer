@@ -1,9 +1,13 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MetaImporter } from "./metadata.model";
-import { TvRoadLaneOffset } from "../../modules/tv-map/models/tv-road-lane-offset";
-import { TvLaneSection } from "../../modules/tv-map/models/tv-lane-section";
-import { TvRoad } from "../../modules/tv-map/models/tv-road.model";
-import { TvElevationProfile } from "app/modules/tv-map/models/tv-elevation-profile";
-import { TvElevation } from "app/modules/tv-map/models/tv-elevation";
+import { TvRoadLaneOffset } from "../../map/models/tv-road-lane-offset";
+import { TvLaneSection } from "../../map/models/tv-lane-section";
+import { TvRoad } from "../../map/models/tv-road.model";
+import { TvElevationProfile } from "app/map/models/tv-elevation-profile";
+import { TvElevation } from "app/map/models/tv-elevation";
 
 export class RoadStyle {
 

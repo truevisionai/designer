@@ -1,10 +1,14 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { MapEvents } from 'app/events/map-events';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { TvElevation } from 'app/map/models/tv-elevation';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
 import { RoadService } from './road.service';
 

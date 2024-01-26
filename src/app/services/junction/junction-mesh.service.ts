@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BufferAttribute, BufferGeometry, DoubleSide, FrontSide, Mesh, MeshPhongMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2, Vector3 } from 'three';
 import earcut from 'earcut';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { MapService } from '../map.service';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { OdTextures } from 'app/map/builders/od.textures';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { MapService } from '../map/map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -146,12 +150,12 @@ export class JunctionMeshService {
 	// 	// }
 	// 	// geometry.setAttribute( 'uv', new BufferAttribute( uvs, 2 ) );
 
-	// 	const map = OdTextures.uv_grid().clone();
+	// 	const models = OdTextures.uv_grid().clone();
 
-	// 	map.wrapS = map.wrapT = RepeatWrapping;
+	// 	models.wrapS = models.wrapT = RepeatWrapping;
 
 	// 	// Create a mesh with a basic material
-	// 	const material = new MeshStandardMaterial( { map: map, side: FrontSide } );
+	// 	const material = new MeshStandardMaterial( { models: models, side: FrontSide } );
 
 	// 	const mesh = new Mesh( geometry, material );
 
@@ -191,7 +195,7 @@ export class JunctionMeshService {
 		geometry.computeVertexNormals();
 
 		// Create UV mapping for the mesh
-		// Here we map each 1x1 Three.js unit to a 1x1 area in the texture.
+		// Here we models each 1x1 Three.js unit to a 1x1 area in the texture.
 		const uvs = new Float32Array( sortedPositions.length * 2 );
 		for ( let i = 0; i < sortedPositions.length; i++ ) {
 			// Use the x and y sortedPositions directly as UV coordinates

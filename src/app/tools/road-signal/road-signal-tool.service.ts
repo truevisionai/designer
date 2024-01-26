@@ -1,18 +1,22 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { Object3D, Vector3 } from 'three';
-import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoadSignal } from 'app/map/models/tv-road-signal.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSignalService } from 'app/services/signal/road-signal.service';
 import { RoadSignalFactory } from 'app/services/signal/road-signal.factory';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { RoadService } from 'app/services/road/road.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { AssetManager } from 'app/core/asset/asset.manager';
-import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { Object3DMap } from '../lane-width/object-3d-map';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { Object3DMap } from '../../core/models/object3d-map';
+import { ObjectTypes } from 'app/map/models/tv-common';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 
 @Injectable( {

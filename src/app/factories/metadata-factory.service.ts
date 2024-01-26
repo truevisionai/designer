@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { FileUtils } from 'app/io/file-utils';
 import { FileService } from 'app/io/file.service';
-import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
+import { TvRoadMarking } from 'app/map/services/marking-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import * as THREE from 'three';

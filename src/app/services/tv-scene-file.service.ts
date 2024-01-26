@@ -5,25 +5,25 @@
 import { Injectable } from '@angular/core';
 import { AppInspector } from 'app/core/inspector';
 import { IFile } from 'app/io/file';
-import { ToolManager } from 'app/tools/tool-manager';
+import { ToolManager } from 'app/managers/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
-import { ThreeService } from 'app/modules/three-js/three.service';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
-import { ScenarioService } from '../modules/scenario/services/scenario.service';
+import { ThreeService } from 'app/renderer/three.service';
+import { TvMap } from 'app/map/models/tv-map.model';
+import { TvMapInstance } from 'app/map/services/tv-map-instance';
+import { ScenarioService } from '../scenario/services/scenario.service';
 import { CommandHistory } from './command-history';
 import { SceneImporterService } from '../importers/scene-importer.service';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { DialogService } from './dialog/dialog.service';
-import { MapService } from "./map.service";
+import { MapService } from "./map/map.service";
 import { StorageService } from 'app/io/storage.service';
 import { AssetService } from 'app/core/asset/asset.service';
 import { FileUtils } from 'app/io/file-utils';
-import { ProjectService } from './project.service';
+import { ProjectService } from './editor/project.service';
 import { SceneBuilderService } from './scene-builder.service';
 import { RoadService } from './road/road.service';
-import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
+import { RoadObjectService } from 'app/tools/crosswalk/road-object.service';
 
 @Injectable( {
 	providedIn: 'root'

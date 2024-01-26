@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { BufferGeometry, MathUtils, Mesh, Object3D, ObjectLoader } from 'three';
 import { TvMaterial } from '../material/tv-material';

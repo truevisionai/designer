@@ -1,5 +1,9 @@
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { PropCurve } from 'app/map/models/prop-curve';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { Action, SerializedField } from 'app/core/components/serialization';
 
 export class PropCurveInspector {

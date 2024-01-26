@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
+import { TvGeometryType } from 'app/map/models/tv-common';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseTest } from 'tests/base-test.spec';
 import { Vector2 } from 'three';

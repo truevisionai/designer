@@ -1,17 +1,21 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvContactPoint } from 'app/map/models/tv-common';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Box3, Vector3 } from 'three';
 import { JunctionConnectionService } from './junction-connection.service';
 import { JunctionService } from './junction.service';
 import { RoadService } from '../road/road.service';
-import { MapService } from '../map.service';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { MapService } from '../map/map.service';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { RoadLinkService } from '../road/road-link.service';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { SplineSegmentService } from '../spline/spline-segment.service';
 import { RoadManager } from 'app/managers/road/road-manager';
 

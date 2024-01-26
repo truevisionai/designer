@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { TvMaterial } from "app/graphics/material/tv-material";
 import { Texture } from "three";

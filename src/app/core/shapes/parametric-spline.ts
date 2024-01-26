@@ -1,8 +1,12 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // /*
 //  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
 //  */
 
-// import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
+// import { TvAbstractRoadGeometry } from 'app/modules/tv-models/models/geometries/tv-abstract-road-geometry';
 // import { COLOR } from 'app/views/shared/utils/colors.service';
 // import { BufferAttribute, BufferGeometry, Group, Line, LineBasicMaterial, Vector2, Vector3 } from 'three';
 // import { AbstractSpline } from './abstract-spline';
@@ -25,7 +29,7 @@
 
 // 	private tangent: TangentLine;
 
-// 	// private polyline: PolyLine;
+// 	// private polyline: Polyline;
 
 // 	// private roundline: RoundLine;
 
@@ -48,7 +52,7 @@
 
 // 		this.tangent = new TangentLine( this.controlPointPositions );
 
-// 		// this.polyline = new PolyLine( this.controlPointPositions );
+// 		// this.polyline = new Polyline( this.controlPointPositions );
 
 // 		// this.roundline = new RoundLine( this.controlPointPositions );
 

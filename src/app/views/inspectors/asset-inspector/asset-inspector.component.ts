@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, ComponentFactoryResolver, Input, OnDestroy, OnInit } from '@angular/core';
 import { AssetService } from 'app/core/asset/asset.service';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';

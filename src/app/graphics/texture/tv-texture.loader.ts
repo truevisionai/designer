@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';

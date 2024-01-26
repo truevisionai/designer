@@ -3,7 +3,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { TvSignService } from 'app/modules/tv-map/services/tv-sign.service';
+import { TvSignService } from 'app/map/services/tv-sign.service';
 import { SearchPipe } from '../../../../core/pipes/search.pipe';
 
 @Component( {
@@ -40,7 +40,7 @@ export class PropBrowserComponent implements OnInit {
 
 		//
 		// var texture = new TextureLoader().load( 'assets/signs/' + model + '.png' );
-		// var material = new MeshBasicMaterial( { map: texture, transparent: true, opacity: 0.9 } );
+		// var material = new MeshBasicMaterial( { models: texture, transparent: true, opacity: 0.9 } );
 		// var geometry = new BoxGeometry( 1, 1, 1 );
 		//
 		// var sign = new Mesh( geometry, material );

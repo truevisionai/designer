@@ -1,7 +1,11 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { GameObject } from 'app/core/game-object';
-import { TvMapBuilder } from 'app/modules/tv-map/builders/tv-map-builder';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { GameObject } from 'app/objects/game-object';
+import { TvMapBuilder } from 'app/map/builders/tv-map-builder';
+import { TvRoad } from 'app/map/models/tv-road.model';
 
 /**
  * Base service

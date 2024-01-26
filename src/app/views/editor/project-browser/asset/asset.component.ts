@@ -4,7 +4,7 @@
 
 import { Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnInit, Output, ViewChild } from '@angular/core';
 import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
-import { DragDropService } from 'app/services/drag-drop.service';
+import { DragDropService } from 'app/services/editor/drag-drop.service';
 import { ImporterService } from 'app/importers/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { SnackBar } from 'app/services/snack-bar.service';

@@ -10,7 +10,7 @@ import { IFile } from './file';
 import { FileUtils } from './file-utils';
 import { TvConsole } from 'app/core/utils/console';
 
-declare const versions;
+declare const electronFs;
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,7 +26,7 @@ export class FileService {
 	) {
 
 		if ( this.electronService.isElectronApp ) {
-			this.fs = versions.fs();
+			this.fs = electronFs.fs();
 			this.path = this.remote.require( 'path' );
 		}
 
@@ -41,7 +41,7 @@ export class FileService {
 	}
 
 	get currentDirectory () {
-		return versions.currentDirectory;
+		return electronFs.currentDirectory;
 	}
 
 	get projectFolder () {
@@ -180,7 +180,7 @@ export class FileService {
 
 				const itemPath = this.path.join( folderPath, item );
 
-				if ( versions.stat.isDirectory( itemPath ) ) {
+				if ( electronFs.stat.isDirectory( itemPath ) ) {
 
 					this.deleteFolderRecursive( itemPath );
 
@@ -303,19 +303,19 @@ export class FileService {
 	}
 
 	getItemType ( item, path ) {
-		if ( versions.stat.isFile( path ) ) {
+		if ( electronFs.stat.isFile( path ) ) {
 			return 'file';
-		} else if ( versions.stat.isDirectory( path ) ) {
+		} else if ( electronFs.stat.isDirectory( path ) ) {
 			return 'directory';
-		} else if ( versions.stat.isBlockDevice( path ) ) {
+		} else if ( electronFs.stat.isBlockDevice( path ) ) {
 			return 'blockdevice';
-		} else if ( versions.stat.isCharacterDevice( path ) ) {
+		} else if ( electronFs.stat.isCharacterDevice( path ) ) {
 			return 'characterdevice';
-		} else if ( versions.stat.isSymbolicLink( path ) ) {
+		} else if ( electronFs.stat.isSymbolicLink( path ) ) {
 			return 'symlink';
-		} else if ( versions.stat.isFIFO( path ) ) {
+		} else if ( electronFs.stat.isFIFO( path ) ) {
 			return 'fifo';
-		} else if ( versions.stat.isSocket( path ) ) {
+		} else if ( electronFs.stat.isSocket( path ) ) {
 			return 'socket';
 		}
 		return '';
@@ -343,11 +343,11 @@ export class FileService {
 
 			const destinationPath = this.path.join( destination, item.name );
 
-			if ( versions.stat.isDirectory( itemPath ) ) {
+			if ( electronFs.stat.isDirectory( itemPath ) ) {
 
 				this.copyDirSync( sourcePath, destinationPath );
 
-			} else if ( versions.stat.isFile( itemPath ) ) {
+			} else if ( electronFs.stat.isFile( itemPath ) ) {
 
 				this.fs.copyFileSync( sourcePath, destinationPath );
 			}

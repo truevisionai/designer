@@ -3,15 +3,15 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { MathUtils, Vector2, Vector3 } from 'three';
 import { AutoSplinePath, ExplicitSplinePath } from './cubic-spline-curve';
 import { SplineSegment, SplineSegmentType } from './spline-segment';
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
+import { AbstractControlPoint } from "../../objects/abstract-control-point";
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
 
 export enum SplineType {
 	AUTO = 'auto',

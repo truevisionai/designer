@@ -1,11 +1,15 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { OpenDrive14Parser } from './open-drive-1-4.parser';
-import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
+import { TvLaneSide } from 'app/map/models/tv-common';
 import { XmlElement } from '../xml.element';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { readXmlArray } from 'app/tools/xml-utils';
-import { TvLaneBorder } from 'app/modules/tv-map/models/tv-lane-border';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { TvLane } from 'app/map/models/tv-lane';
+import { readXmlArray } from 'app/utils/xml-utils';
+import { TvLaneBorder } from 'app/map/models/tv-lane-border';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { SnackBar } from 'app/services/snack-bar.service';
 
 

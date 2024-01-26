@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { OpenDriveService } from 'app/modules/tv-map/services/open-drive.service';
+import { OpenDriveService } from 'app/map/services/open-drive.service';
 import { ApiService } from '../services/api.service';
 import { IFile } from './file';
 

@@ -8,7 +8,7 @@ import { MouseButton, PointerEventData, PointerMoveData } from '../../events/poi
 import { KeyboardEvents } from '../../events/keyboard-events';
 import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
-import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
+import { AnyControlPoint } from "../../objects/any-control-point";
 
 export class CubicBezierCurveEditor extends AbstractShapeEditor {
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetaImporter } from 'app/core/asset/metadata.model';

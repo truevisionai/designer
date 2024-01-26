@@ -1,16 +1,20 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { Object3DMap } from '../lane-width/object-3d-map';
-import { LaneMarkingNode } from 'app/modules/three-js/objects/lane-road-mark-node';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { Object3DMap } from '../../core/models/object3d-map';
+import { LaneMarkingNode } from 'app/objects/lane-road-mark-node';
 import { LaneDebugService } from '../../services/debug/lane-debug.service';
-import { DebugLine } from 'app/services/debug/debug-line';
+import { DebugLine } from 'app/objects/debug-line';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Vector2 } from 'three';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { LaneService } from 'app/services/lane/lane.service';
 
 @Injectable( {

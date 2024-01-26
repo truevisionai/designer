@@ -4,7 +4,7 @@
 
 import { Vector3 } from 'three';
 import { SerializedField } from '../components/serialization';
-import { ObjectTypes } from 'app/modules/tv-map/models/tv-common';
+import { ObjectTypes } from 'app/map/models/tv-common';
 
 /**
  * Prop class instance holds info about the prop

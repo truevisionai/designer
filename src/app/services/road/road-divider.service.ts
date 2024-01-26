@@ -1,7 +1,11 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from './road.service';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint } from 'app/map/models/tv-common';
 import { SplineSegmentService } from '../spline/spline-segment.service';
 import { SplineService } from '../spline/spline.service';
 

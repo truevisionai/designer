@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { MapService } from 'app/services/map.service';
+import { MapService } from 'app/services/map/map.service';
 import { PropInstance } from 'app/core/models/prop-instance.model';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { DynamicControlPoint } from 'app/objects/dynamic-control-point';
 import { Vector3 } from 'three';
 import { SelectionService } from '../selection.service';
-import { Object3DMap } from '../lane-width/object-3d-map';
+import { Object3DMap } from '../../core/models/object3d-map';
 import { SceneService } from 'app/services/scene.service';
 
 @Injectable( {

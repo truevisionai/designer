@@ -3,7 +3,7 @@
  */
 
 import { Type } from '@angular/core';
-import { IComponent } from 'app/core/game-object';
+import { IComponent } from 'app/objects/game-object';
 import { AppInspector } from 'app/core/inspector';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { StatusBarService } from 'app/services/status-bar.service';
@@ -234,7 +234,7 @@ export abstract class BaseTool extends ViewportEventSubscriber {
 
 		// if ( this.highlightedObjects.has( object ) ) {
 
-		// 	// Get the original material from the map
+		// 	// Get the original material from the models
 		// 	const originalMaterial = this.highlightedObjects.get( object );
 
 		// 	// Restore the original material to the object
@@ -243,7 +243,7 @@ export abstract class BaseTool extends ViewportEventSubscriber {
 		// 	// Dispose of the temporary material to free up memory
 		// 	( object.material as MeshBasicMaterial ).dispose();
 
-		// 	// Remove the object from the map
+		// 	// Remove the object from the models
 		// 	this.highlightedObjects.delete( object );
 		// }
 	}
@@ -260,7 +260,7 @@ export abstract class BaseTool extends ViewportEventSubscriber {
 
 		// 	if ( this.highlightedLines.has( object ) ) {
 
-		// 		// Get the original material from the map
+		// 		// Get the original material from the models
 		// 		const originalMaterial = this.highlightedLines.get( object );
 
 		// 		// Restore the original material to the object
@@ -269,7 +269,7 @@ export abstract class BaseTool extends ViewportEventSubscriber {
 		// 		// Dispose of the temporary material to free up memory
 		// 		( object.material as MeshBasicMaterial ).dispose();
 
-		// 		// Remove the object from the map
+		// 		// Remove the object from the models
 		// 		this.highlightedLines.delete( object );
 		// 	}
 

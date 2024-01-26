@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
+import { TvContactPoint } from 'app/map/models/tv-common';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';

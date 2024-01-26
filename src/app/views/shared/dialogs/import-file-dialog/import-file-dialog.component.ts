@@ -32,7 +32,7 @@ export class ImportFileDialogComponent implements OnInit {
 
 	ngOnInit (): void {
 
-		this.fileService.getFileList( 'tv-map' ).subscribe( res => {
+		this.fileService.getFileList( 'tv-models' ).subscribe( res => {
 
 			if ( Array.isArray( res ) ) {
 

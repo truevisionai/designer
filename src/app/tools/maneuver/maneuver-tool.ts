@@ -120,7 +120,7 @@ export class ManeuverTool extends BaseTool {
 
 		//try {
 		//
-		//	const junction = this.map.findJunction( entry.road, exit.road );
+		//	const junction = this.models.findJunction( entry.road, exit.road );
 		//
 		//	if ( !junction ) {
 		//
@@ -177,7 +177,7 @@ export class ManeuverTool extends BaseTool {
 
 	// showLanePathObjects () {
 
-	// 	this.map.junctions.forEach( junction => {
+	// 	this.models.junctions.forEach( junction => {
 
 	// 		junction.connections.forEach( connection => {
 
@@ -203,7 +203,7 @@ export class ManeuverTool extends BaseTool {
 
 	// 	this.lanePathObjects.splice( 0, this.lanePathObjects.length );
 
-	// 	this.map.junctions.forEach( junction => {
+	// 	this.models.junctions.forEach( junction => {
 
 	// 		junction.connections.forEach( connection => {
 

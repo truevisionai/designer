@@ -1,11 +1,15 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvRoadSignal } from 'app/modules/tv-map/models/tv-road-signal.model';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoadSignal } from 'app/map/models/tv-road-signal.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSignalBuilder } from './road-signal.builder';
-import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
+import { Object3DMap } from 'app/core/models/object3d-map';
 import { Object3D } from 'three';
-import { TvDynamicTypes, TvOrientation, TvUnit } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvDynamicTypes, TvOrientation, TvUnit } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
 
 @Injectable( {
 	providedIn: 'root'

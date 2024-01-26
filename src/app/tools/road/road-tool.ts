@@ -1,34 +1,38 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AppInspector } from 'app/core/inspector';
 import { RoadToolService } from './road-tool.service';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-road-strategy';
-import { SplineControlPoint } from 'app/modules/three-js/objects/spline-control-point';
-import { NodeStrategy } from 'app/core/snapping/select-strategies/node-strategy';
+import { RoadNode } from 'app/objects/road-node';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { NodeStrategy } from 'app/core/strategies/select-strategies/node-strategy';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from 'app/commands/select-object-command';
-import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { RoadTangentPoint } from 'app/modules/three-js/objects/road-tangent-point';
+import { FreeMovingStrategy } from 'app/core/strategies/move-strategies/free-moving-strategy';
+import { RoadControlPoint } from 'app/objects/road-control-point';
+import { RoadTangentPoint } from 'app/objects/road-tangent-point';
 import { Vector3 } from 'three';
-import { Position } from 'app/modules/scenario/models/position';
+import { Position } from 'app/scenario/models/position';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { OnRoadMovingStrategy } from "../../core/snapping/move-strategies/on-road-moving.strategy";
+import { OnRoadMovingStrategy } from "../../core/strategies/move-strategies/on-road-moving.strategy";
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { RoadStyle } from 'app/core/asset/road.style';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugState } from '../../services/debug/debug-state';
-import { RoadPosition } from 'app/modules/scenario/models/positions/tv-road-position';
+import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 
 export class RoadTool extends BaseTool {
 

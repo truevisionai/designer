@@ -3,7 +3,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { SplineManager } from 'app/managers/spline-manager';
-import { MapService } from 'app/services/map.service';
+import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
 import { BaseTest } from 'tests/base-test.spec';

@@ -1,7 +1,11 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { ThirdOrderPolynom } from 'app/modules/tv-map/models/third-order-polynom';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { DebugLine } from './debug-line';
+import { ThirdOrderPolynom } from 'app/map/models/third-order-polynom';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { DebugLine } from '../../objects/debug-line';
 import { DebugDrawService } from './debug-draw.service';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { COLOR } from 'app/views/shared/utils/colors.service';
@@ -18,7 +22,7 @@ export class RoadSpanService {
 	) { }
 
 
-	createLinesForPolynom<T> ( road: TvRoad, target: T, cubics: ThirdOrderPolynom[] ): DebugLine<T>[] {
+	createLinesForPolynom<T> ( road: TvRoad, target: T, cubics: ThirdOrderPolynom[] ) {
 
 		road.laneSections.forEach( laneSection => {
 
@@ -54,19 +58,5 @@ export class RoadSpanService {
 		} );
 
 	}
-
-	createLineForPolynom<T> ( road: TvRoad, target: T, cubic: ThirdOrderPolynom ): DebugLine<T> {
-
-		//
-
-	}
-
-	createLine<T> ( road: TvRoad, target: T, s: number[] ): DebugLine<T> {
-
-		//
-
-	}
-
-
 
 }

@@ -1,7 +1,11 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { IHasUpdate } from "app/commands/set-value-command";
 import { PropInstance } from "app/core/models/prop-instance.model";
-import { DynamicControlPoint } from "app/modules/three-js/objects/dynamic-control-point";
-import { OdTextures } from "app/modules/tv-map/builders/od.textures";
+import { DynamicControlPoint } from "app/objects/dynamic-control-point";
+import { OdTextures } from "app/map/builders/od.textures";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from "three";
 

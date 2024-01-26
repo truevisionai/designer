@@ -1,16 +1,20 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
+import { TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { BoxGeometry, DoubleSide, ExtrudeGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Shape, Vector3 } from 'three';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { SceneService } from '../scene.service';
-import { LaneDirectionHelper } from 'app/modules/tv-map/builders/od-lane-direction-builder';
-import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { MapService } from '../map.service';
+import { LaneDirectionHelper } from 'app/map/builders/od-lane-direction-builder';
+import { OdTextures } from 'app/map/builders/od.textures';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { MapService } from '../map/map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,7 +34,7 @@ export class ManeuverService {
 
 		// const connectingRoad = RoadFactory.addConnectingRoad( TvLaneSide.RIGHT, laneWidth, junction.id );
 
-		// // this.map.addRoad( connectingRoad );
+		// // this.models.addRoad( connectingRoad );
 
 		// connectingRoad.setPredecessor( TvRoadLinkChildType.road, entry.road.id, entry.contact );
 
@@ -64,7 +68,7 @@ export class ManeuverService {
 
 	// 	const connectingRoad = RoadFactory.addConnectingRoad( TvLaneSide.RIGHT, laneWidth, junction.id );
 
-	// 	this.map.addRoad( connectingRoad );
+	// 	this.models.addRoad( connectingRoad );
 
 	// 	connectingRoad.setPredecessor( TvRoadLinkChildType.road, entry.road.id, entry.contact );
 

@@ -1,6 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { AssetDatabase } from "app/core/asset/asset-database";
-import { PropCurve } from "app/modules/tv-map/models/prop-curve";
+import { PropCurve } from "app/map/models/prop-curve";
 import { SceneService } from "app/services/scene.service";
 import { Maths } from "app/utils/maths";
 import { Object3D, Vector3 } from "three";

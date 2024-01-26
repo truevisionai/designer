@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvContactPoint, TvLaneSide } from 'app/modules/tv-map/models/tv-common';
+import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { AbstractControlPoint } from "../../objects/abstract-control-point";
+import { RoadNode } from 'app/objects/road-node';
+import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineSegment } from 'app/core/shapes/spline-segment';
 

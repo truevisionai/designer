@@ -1,14 +1,18 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
-import { TvJunctionConnection } from "app/modules/tv-map/models/junctions/tv-junction-connection";
-import { TvLaneCoord } from "app/modules/tv-map/models/tv-lane-coord";
+import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { RoadFactory } from "./road-factory.service";
-import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { TvContactPoint, TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
-import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
+import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { LaneLinkService } from "app/services/junction/lane-link.service";
-import { TvLaneSection } from "app/modules/tv-map/models/tv-lane-section";
+import { TvLaneSection } from "app/map/models/tv-lane-section";
 
 @Injectable( {
 	providedIn: 'root'

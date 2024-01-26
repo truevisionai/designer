@@ -1,16 +1,23 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { DebugDrawService } from './debug-draw.service';
-import { Object3DArrayMap } from "../../tools/lane-width/object-3d-map";
 import { Object3D } from "three";
 import { LaneDebugService } from 'app/services/debug/lane-debug.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { DebugLine } from './debug-line';
-import { MapService } from '../map.service';
+import { DebugLine } from '../../objects/debug-line';
+import { MapService } from '../map/map.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { SceneService } from '../scene.service';
 import { DebugState } from 'app/services/debug/debug-state';
 import { AbstractSplineDebugService } from './abstract-spline-debug.service';
+import { DebugService } from 'app/tools/surface/surface-debug.service';
+import { RoadDebugService } from './road-debug.service';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;

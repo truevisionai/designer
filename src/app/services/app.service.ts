@@ -6,16 +6,12 @@ import { Injectable } from '@angular/core';
 import { FileService } from 'app/io/file.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { ViewportEvents } from '../events/viewport-events';
-import { ThreeService } from '../modules/three-js/three.service';
+import { ThreeService } from '../renderer/three.service';
 import { SnackBar } from './snack-bar.service';
 import { AppInfo } from './app-info.service';
 import { AuthService } from './auth.service';
-import { EditorService } from './editor.service';
+import { EditorService } from './editor/editor.service';
 import { SceneService } from './scene.service';
-import { ManagerRegistry } from '../managers/manager-registry';
-import { EntityManager } from '../managers/entity-manager';
-import { MapManager } from '../managers/map-manager';
-import { RoadSelectionListener } from 'app/listeners/road-selection-listener';
 import { RoadService } from './road/road.service';
 import { AssetService } from 'app/core/asset/asset.service';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
@@ -26,12 +22,17 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 export class AppService {
 
 	static homeUrl = '';
+
 	static loginUrl = '/sessions/signin';
 
 	static eventSystem: ViewportEvents;
+
 	static three: ThreeService;
+
 	static electron: TvElectronService;
+
 	static file: FileService;
+
 	static editor: EditorService;
 
 	constructor (
@@ -48,7 +49,6 @@ export class AppService {
 		private eventServiceProvider: EventServiceProvider,
 	) {
 
-
 		AppService.eventSystem = eventSystem;
 		AppService.three = three;
 		AppService.electron = electron;
@@ -56,12 +56,6 @@ export class AppService {
 		AppService.editor = editor;
 
 		AppInfo.electron = electron;
-
-		ManagerRegistry.registerManager( EntityManager );
-		ManagerRegistry.registerManager( MapManager );
-		ManagerRegistry.setManager( 'road-selection-listener', new RoadSelectionListener( this.roadService ) );
-
-		ManagerRegistry.initManagers();
 
 		this.eventServiceProvider.init();
 	}
@@ -74,7 +68,7 @@ export class AppService {
 
 	public exit () {
 
-		this.files.remote.app.exit( 0 );
+		this.electron.remote.app.exit( 0 );
 
 	}
 

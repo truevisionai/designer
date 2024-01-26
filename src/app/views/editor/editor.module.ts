@@ -26,8 +26,7 @@ import { RouterModule } from '@angular/router';
 import { SatPopoverModule } from '@ncstate/sat-popover';
 import { TranslateModule } from '@ngx-translate/core';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { ScenarioModule } from '../../modules/scenario/scenario.module';
-import { ThreeJsModule } from '../../modules/three-js/three-js.module';
+import { ScenarioModule } from '../../scenario/scenario.module';
 import { SharedModule } from '../shared/shared.module';
 import { ConsoleComponent } from './console/console.component';
 import { ExportGlbDialog } from './dialogs/export-glb-dialog/export-glb-dialog.component';
@@ -44,6 +43,7 @@ import { ProjectBrowserComponent } from './project-browser/project-browser.compo
 import { ProjectHierarchyComponent } from './project-browser/project-hierarchy/project-hierarchy.component';
 import { ToolBarComponent } from './tool-bar/tool-bar.component';
 import { SceneHierarchyComponent } from './scene-hierarchy/scene-hierarchy.component';
+import { ViewportComponent } from "./viewport/viewport.component";
 
 @NgModule( {
 	declarations: [
@@ -62,6 +62,7 @@ import { SceneHierarchyComponent } from './scene-hierarchy/scene-hierarchy.compo
 		ConsoleComponent,
 		TutorialsDialogComponent,
 		SceneHierarchyComponent,
+		ViewportComponent,
 	],
 	imports: [
 		CommonModule,
@@ -73,7 +74,6 @@ import { SceneHierarchyComponent } from './scene-hierarchy/scene-hierarchy.compo
 		MatMenuModule,
 		MatToolbarModule,
 		MatDividerModule,
-		ThreeJsModule,
 		SatPopoverModule,
 		MatIconModule,
 		MatTooltipModule,

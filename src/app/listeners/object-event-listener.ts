@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { AssetManager } from "app/core/asset/asset.manager";
 import { AssetService } from "app/core/asset/asset.service";
@@ -8,7 +12,7 @@ import { PropManager } from "app/managers/prop-manager";
 import { RoadStyleManager } from "app/managers/road-style.manager";
 import { TvMaterial } from "app/graphics/material/tv-material";
 import { BaseTool } from "app/tools/base-tool";
-import { ToolManager } from "app/tools/tool-manager";
+import { ToolManager } from "app/managers/tool-manager";
 import { AssetNode, AssetType } from "app/views/editor/project-browser/file-node.model";
 
 @Injectable( {

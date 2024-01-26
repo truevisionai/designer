@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { PlayerService, PlayerUpdateData } from 'app/core/player.service';
 import { Time } from 'app/core/time';
 import { MapEvents, } from 'app/events/map-events';
-import { ScenarioDirectorService } from 'app/modules/scenario/services/scenario-director.service';
-import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
-import { VehicleService } from 'app/modules/scenario/services/vehicle.service';
-import { TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { ScenarioDirectorService } from 'app/scenario/services/scenario-director.service';
+import { ScenarioService } from 'app/scenario/services/scenario.service';
+import { VehicleService } from 'app/scenario/services/vehicle.service';
+import { TvLaneType } from 'app/map/models/tv-common';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from 'app/services/road/road.service';
 import { Maths } from 'app/utils/maths';
 

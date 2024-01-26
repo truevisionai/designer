@@ -1,22 +1,26 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { RoadNode } from 'app/objects/road-node';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { BaseService } from '../base.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineFactory } from '../spline/spline.factory';
-import { MapService } from '../map.service';
+import { MapService } from '../map/map.service';
 import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
-import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvLane } from 'app/map/models/tv-lane';
 import { CommandHistory } from '../command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Vector3 } from 'three';
-import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
-import { GameObject } from 'app/core/game-object';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
+import { TvMapQueries } from 'app/map/queries/tv-map-queries';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { RoadObjectService } from 'app/tools/crosswalk/road-object.service';
+import { GameObject } from 'app/objects/game-object';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
@@ -271,9 +275,9 @@ export class RoadService {
 
 		this.updateRoadGeometries( road );
 
-		// this.mapService.map.updateRoad( road );
+		// this.mapService.models.updateRoad( road );
 
-		// this.mapService.map.updateSpline( road.spline );
+		// this.mapService.models.updateSpline( road.spline );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 

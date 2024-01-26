@@ -6,16 +6,16 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { Vector3 } from 'three';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { RoadRampService } from 'app/services/road/road-ramp.service';
-import { LaneCoordStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
+import { LaneCoordStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { SceneService } from 'app/services/scene.service';
-import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
+import { FreeMovingStrategy } from 'app/core/strategies/move-strategies/free-moving-strategy';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { CommandHistory } from 'app/services/command-history';
-import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from "../../events/road/road-created-event";
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
@@ -380,7 +380,7 @@ export class RoadRampTool extends BaseTool {
 	//     const v2 = A.clone().add(normalizedDirection.clone().multiplyScalar(offsetFactor));
 	//     const v3 = midPoint.clone().add(perpendicular.clone().multiplyScalar(offsetFactor));
 
-	//     const road = this.map.addDefaultRoad();
+	//     const road = this.models.addDefaultRoad();
 
 	//     road.addControlPointAt(A);
 	//     road.addControlPointAt(v2);
@@ -400,7 +400,7 @@ export class RoadRampTool extends BaseTool {
 
 	// 	const newLane = this.lane.cloneAtS( -1, posTheta.s );
 
-	// 	const road = this.map.addRampRoad( newLane );
+	// 	const road = this.models.addRampRoad( newLane );
 
 	// 	road.addControlPointAt( A );
 	// 	road.addControlPointAt( v2 );
@@ -430,7 +430,7 @@ export class RoadRampTool extends BaseTool {
 	// 			.add( p3.clone().multiplyScalar( Math.pow( t, 3 ) ) );
 	// 	}
 
-	// 	const road = this.map.addDefaultRoad();
+	// 	const road = this.models.addDefaultRoad();
 
 	// 	const controlPoint1 = A.clone().add( normalizedDirection.clone().multiplyScalar( distanceAB / 3 ) );
 	// 	const controlPoint2 = B.clone().add( perpendicular.clone().multiplyScalar( -distanceAB / 3 ) );

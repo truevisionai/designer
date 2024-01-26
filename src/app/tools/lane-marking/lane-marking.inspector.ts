@@ -1,8 +1,12 @@
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { TvLane } from '../../map/models/tv-lane';
 import { CommandHistory } from 'app/services/command-history';
 import { Action, SerializedField } from 'app/core/components/serialization';
-import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from 'app/modules/tv-map/models/tv-common';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from 'app/map/models/tv-common';
+import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 
 

@@ -5,9 +5,9 @@
 import { Injectable } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { IViewportController } from 'app/modules/three-js/objects/i-viewport-controller';
+import { IViewportController } from 'app/objects/i-viewport-controller';
 import { TvPrefab } from 'app/graphics/prefab/tv-prefab.model';
-import { TvRoadMarking } from 'app/modules/tv-map/services/marking-manager';
+import { TvRoadMarking } from 'app/map/services/marking-manager';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import * as THREE from 'three';
 import {
@@ -28,16 +28,16 @@ import {
 	Vector3,
 	WebGLRenderer
 } from 'three';
-import { TvRoadSign } from '../../../modules/tv-map/models/tv-road-sign.model';
+import { TvRoadSign } from '../../../map/models/tv-road-sign.model';
 import {
 	AMBIENT_LIGHT_COLOR,
 	DEFAULT_AMBIENT_LIGHT,
 	DEFAULT_DIRECTIONAL_LIGHT,
 	DIRECTIONAL_LIGHT_POSITION
-} from 'app/modules/three-js/default.config';
+} from 'app/renderer/default.config';
 import { RoadStyle } from "../../../core/asset/road.style";
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { RoadBuilder } from 'app/modules/tv-map/builders/road.builder';
+import { RoadBuilder } from 'app/map/builders/road.builder';
 
 const WIDTH = 200;
 const HEIGHT = 200;

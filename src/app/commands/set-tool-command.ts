@@ -3,7 +3,7 @@
  */
 
 import { BaseTool } from 'app/tools/base-tool';
-import { ToolManager } from 'app/tools/tool-manager';
+import { ToolManager } from 'app/managers/tool-manager';
 import { BaseCommand } from './base-command';
 
 export class SetToolCommand extends BaseCommand {

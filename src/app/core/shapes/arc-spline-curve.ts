@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
-import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
-import { TvSide } from 'app/modules/tv-map/models/tv-common';
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
+import { TvLineGeometry } from 'app/map/models/geometries/tv-line-geometry';
+import { TvSide } from 'app/map/models/tv-common';
 import { Maths } from 'app/utils/maths';
 import { Curve, Vector3 } from 'three';
 

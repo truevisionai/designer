@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { MapEvents } from 'app/events/map-events';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { CommandHistory } from 'app/services/command-history';

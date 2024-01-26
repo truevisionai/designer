@@ -1,11 +1,15 @@
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { TvSurface } from 'app/map/models/tv-surface.model';
 import { SurfaceToolService } from './surface-tool.service';
 import { Mesh } from 'three';
 import { CommandHistory } from 'app/services/command-history';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { Action, SerializedField } from 'app/core/components/serialization';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 export class TvSurfaceInspector {
 

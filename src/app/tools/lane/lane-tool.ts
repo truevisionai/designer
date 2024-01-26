@@ -3,19 +3,19 @@
  */
 
 import { PointerEventData } from '../../events/pointer-event-data';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { TvLane } from '../../map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { SelectLaneStrategy } from "../../core/snapping/select-strategies/on-lane-strategy";
-import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
+import { SelectLaneStrategy } from "../../core/strategies/select-strategies/on-lane-strategy";
+import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { DebugLine } from 'app/services/debug/debug-line';
+import { DebugLine } from 'app/objects/debug-line';
 import { CommandHistory } from 'app/services/command-history';
 import { Action, SerializedField } from 'app/core/components/serialization';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { TvLaneType, TravelDirection } from 'app/modules/tv-map/models/tv-common';
+import { TvLaneType, TravelDirection } from 'app/map/models/tv-common';
 import { LaneToolService } from './lane-tool.service';
 import { LaneService } from 'app/services/lane/lane.service';
 

@@ -6,8 +6,11 @@ const copyrightNotice = `/*
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */`;
 
+// Get the current folder from where the script is executed
+const currentFolder = process.cwd();
+
 // Specify the target folder
-const targetFolder = '/Users/administrator/Code/designer/src/app/';
+const targetFolder = currentFolder + '/src/app/';
 
 // Get all files recursively in the target folder
 function getAllFiles ( dirPath, arrayOfFiles ) {

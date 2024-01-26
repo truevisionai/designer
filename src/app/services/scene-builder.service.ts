@@ -1,16 +1,20 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { TvMap } from 'app/map/models/tv-map.model';
 import { RoadService } from './road/road.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { SceneService } from './scene.service';
-import { GameObject } from 'app/core/game-object';
+import { GameObject } from 'app/objects/game-object';
 import { TvConsole } from 'app/core/utils/console';
 import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
 import { PropInstance } from 'app/core/models/prop-instance.model';
-import { RoadObjectService } from 'app/tools/marking-line/road-object.service';
+import { RoadObjectService } from 'app/tools/crosswalk/road-object.service';
 import { RoadSignalService } from './signal/road-signal.service';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+import { PropCurve } from 'app/map/models/prop-curve';
 
 @Injectable( {
 	providedIn: 'root'

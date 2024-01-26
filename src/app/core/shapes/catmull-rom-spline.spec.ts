@@ -5,7 +5,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Vector3 } from 'three';
 import { CatmullRomSpline } from './catmull-rom-spline';
-import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
+import { AnyControlPoint } from "../../objects/any-control-point";
 
 
 describe( 'CatmullRomSpline test', () => {

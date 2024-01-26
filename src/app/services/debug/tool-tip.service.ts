@@ -1,6 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { EventEmitter, Injectable } from '@angular/core';
-import { CameraService } from 'app/modules/three-js/camera.service';
-import { CanvasService } from 'app/modules/three-js/canvas.service';
+import { CameraService } from 'app/renderer/camera.service';
+import { CanvasService } from 'app/renderer/canvas.service';
 import { Vector2, Vector3 } from 'three';
 
 export interface TooltipInterface {

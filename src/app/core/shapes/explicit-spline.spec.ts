@@ -1,10 +1,14 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // /*
 //  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
 //  */
 
-// import { TvGeometryType } from 'app/modules/tv-map/models/tv-common';
-// import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-// import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
+// import { TvGeometryType } from 'app/modules/tv-models/models/tv-common';
+// import { TvRoad } from 'app/modules/tv-models/models/tv-road.model';
+// import { TvMapInstance } from 'app/modules/tv-models/services/tv-models-instance';
 // import { Maths } from 'app/utils/maths';
 // import { Shape } from 'three';
 // import { ExplicitSplinePath } from './cubic-spline-curve';
@@ -18,7 +22,7 @@
 
 // 	beforeEach( () => {
 
-// 		road = TvMapInstance.map.addDefaultRoad();
+// 		road = TvMapInstance.models.addDefaultRoad();
 
 // 		spline = road.spline = new ExplicitSpline();
 

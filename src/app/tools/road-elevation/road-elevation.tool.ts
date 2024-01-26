@@ -4,23 +4,23 @@
 
 import { ToolType } from 'app/tools/tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { RoadElevationControlPoint } from 'app/modules/three-js/objects/road-elevation-node';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { RoadElevationControlPoint } from 'app/objects/road-elevation-node';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../base-tool'
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-road-strategy';
-import { TvElevation } from 'app/modules/tv-map/models/tv-elevation';
+import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { TvElevation } from 'app/map/models/tv-elevation';
 import { Action, SerializedField } from 'app/core/components/serialization';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadElevationToolService } from './road-elevation-tool.service';
-import { RoadLineMovingStrategy } from 'app/core/snapping/move-strategies/road-line-moving.strategy';
-import { RoadPosition } from 'app/modules/scenario/models/positions/tv-road-position';
+import { RoadLineMovingStrategy } from 'app/core/strategies/move-strategies/road-line-moving.strategy';
+import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
 
 export class RoadElevationTool extends BaseTool {

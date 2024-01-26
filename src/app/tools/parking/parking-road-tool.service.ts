@@ -1,15 +1,19 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { ObjectTypes, TvLaneSide, TvLaneType, TvSide } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { ObjectTypes, TvLaneSide, TvLaneType, TvSide } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadObjectService } from '../marking-line/road-object.service';
+import { RoadObjectService } from '../crosswalk/road-object.service';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
-import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
-import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
 
 const PARKING_WIDTH = 2.5;
 const PARKING_LENGTH = 5.5;

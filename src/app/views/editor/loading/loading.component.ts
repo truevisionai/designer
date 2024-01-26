@@ -1,6 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProjectService } from 'app/services/project.service';
+import { ProjectService } from 'app/services/editor/project.service';
 import { LoadingService } from './loading.service';
 
 @Component( {

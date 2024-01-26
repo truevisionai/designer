@@ -4,18 +4,18 @@
 
 import { CommandHistory } from 'app/services/command-history';
 import { PointerEventData } from '../../events/pointer-event-data';
-import { LaneWidthNode } from '../../modules/three-js/objects/lane-width-node';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { LaneWidthNode } from '../../objects/lane-width-node';
+import { TvLane } from '../../map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { LaneWidthToolService } from './lane-width-tool.service';
-import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
+import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { DebugLine } from 'app/services/debug/debug-line';
+import { DebugLine } from 'app/objects/debug-line';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 

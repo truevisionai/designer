@@ -6,22 +6,22 @@ import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-co
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
 import { PickingHelper } from 'app/services/picking-helper.service';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
+import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { EntityInspector } from 'app/modules/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
-import { TeleportAction } from 'app/modules/scenario/models/actions/tv-teleport-action';
-import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
+import { EntityInspector } from 'app/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
+import { TeleportAction } from 'app/scenario/models/actions/tv-teleport-action';
+import { ScenarioEntity } from 'app/scenario/models/entities/scenario-entity';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
-import { DynamicControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { DynamicControlPoint } from 'app/objects/dynamic-control-point';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { CommandHistory } from 'app/services/command-history';
-import { VehicleEntity } from '../../modules/scenario/models/entities/vehicle-entity';
+import { VehicleEntity } from '../../scenario/models/entities/vehicle-entity';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { AddVehicleCommand } from './add-vehicle-command';
-import { ScenarioService } from "../../modules/scenario/services/scenario.service";
+import { AddVehicleCommand } from '../../commands/add-vehicle-command';
+import { ScenarioService } from "../../scenario/services/scenario.service";
 
 export class VehicleTool extends BaseTool implements IToolWithPoint {
 

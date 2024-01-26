@@ -4,7 +4,7 @@
 
 import { Component, Input } from '@angular/core';
 import { AbstractFieldComponent } from '../../../../core/components/abstract-field.component';
-import { TvMapQueries } from '../../../../modules/tv-map/queries/tv-map-queries';
+import { TvMapQueries } from '../../../../map/queries/tv-map-queries';
 
 @Component( {
 	selector: 'app-road-id-field',

@@ -7,9 +7,9 @@
 //  */
 
 // import { AnyControlPoint, NewDistanceNode } from 'app/modules/three-js/objects/control-point';
-// import { TvMapQueries } from 'app/modules/tv-map/queries/tv-map-queries';
+// import { TvMapQueries } from 'app/modules/tv-models/queries/tv-models-queries';
 // import { MouseButton, PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
-// import { TvPosTheta } from '../../modules/tv-map/models/tv-pos-theta';
+// import { TvPosTheta } from '../../modules/tv-models/models/tv-pos-theta';
 // import { KeyboardInput } from '../input';
 // import { AbstractShapeEditor } from './abstract-shape-editor';
 

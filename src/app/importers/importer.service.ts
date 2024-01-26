@@ -3,8 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
-import { OpenDriveService } from 'app/modules/tv-map/services/open-drive.service';
+import { ScenarioService } from 'app/scenario/services/scenario.service';
+import { OpenDriveService } from 'app/map/services/open-drive.service';
 import { SceneImporterService } from './scene-importer.service';
 import { StorageService } from 'app/io/storage.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseCommand } from "./base-command";
 import { MapEvents } from "../events/map-events";
 

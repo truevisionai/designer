@@ -3,9 +3,9 @@
  */
 
 import { Type } from '@angular/core';
-import { ISelectable } from '../modules/three-js/objects/i-selectable';
-import { IComponent } from '../core/game-object';
-// import { SelectionTool } from '../core/snapping/selection-tool';
+import { ISelectable } from '../objects/i-selectable';
+import { IComponent } from '../objects/game-object';
+// import { SelectionTool } from '../core/strategies/selection-tool';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
 

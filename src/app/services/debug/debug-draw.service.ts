@@ -1,9 +1,13 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { RoadNode } from 'app/objects/road-node';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Mesh, MeshBasicMaterial, Object3D, SphereGeometry, Vector2, Vector3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
@@ -11,11 +15,11 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
-import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
-import { SimpleArrowObject, SharpArrowObject } from 'app/modules/three-js/objects/lane-arrow-object';
-import { DebugLine } from './debug-line';
-import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { Object3DMap } from 'app/core/models/object3d-map';
+import { SimpleArrowObject, SharpArrowObject } from 'app/objects/lane-arrow-object';
+import { DebugLine } from '../../objects/debug-line';
+import { TvLaneSide } from 'app/map/models/tv-common';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 @Injectable( {
 	providedIn: 'root'

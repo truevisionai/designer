@@ -4,12 +4,12 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineEventListener } from "app/listeners/spline-event-listener";
 import { SplineManager } from "app/managers/spline-manager";
-import { RoadNode } from "app/modules/three-js/objects/road-node";
-import { TvContactPoint, TvLaneType } from "app/modules/tv-map/models/tv-common";
+import { RoadNode } from "app/objects/road-node";
+import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
-import { MapValidatorService } from "app/services/map-validator.service";
-import { MapService } from "app/services/map.service";
+import { MapValidatorService } from "app/services/map/map-validator.service";
+import { MapService } from "app/services/map/map.service";
 import { RoadService } from "app/services/road/road.service";
 import { RoadToolService } from "app/tools/road/road-tool.service";
 import { BaseTest } from "tests/base-test.spec";
@@ -215,7 +215,7 @@ describe( 't-junction tests', () => {
 	it( 'should create 4-way junction for connected road', () => {
 
 		/**
-		 * We generate this map:
+		 * We generate this models:
 		 * 1 is left road
 		 * 2 is right road
 		 * 3 is joining road

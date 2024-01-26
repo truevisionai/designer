@@ -6,7 +6,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { AssetFactory } from 'app/core/asset/asset-factory.service';
 import { UpdateMaterialMapCommand } from 'app/commands/update-material-map-command';
-import { IComponent } from 'app/core/game-object';
+import { IComponent } from 'app/objects/game-object';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { TvMaterial } from 'app/graphics/material/tv-material';
@@ -196,7 +196,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	onMapChanged ( $guid: string ) {
 
-		console.log( 'map changed', $guid );
+		console.log( 'models changed', $guid );
 
 		CommandHistory.execute(
 			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'map', $guid )

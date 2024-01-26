@@ -3,8 +3,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { IComponent } from 'app/core/game-object';
-import { TvScenario } from 'app/modules/scenario/models/tv-scenario';
+import { IComponent } from 'app/objects/game-object';
+import { TvScenario } from 'app/scenario/models/tv-scenario';
 
 @Component( {
 	selector: 'app-xosc-file-inspector',

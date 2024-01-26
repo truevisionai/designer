@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvOrientation } from 'app/modules/tv-map/models/tv-common';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvOrientation } from 'app/map/models/tv-common';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { IDService } from './id.service';
 import { Injectable } from '@angular/core';
 
@@ -50,7 +50,7 @@ export class JunctionFactory {
 
 	// static createJunctions () {
 	//
-	// 	const roads = TvMapInstance.map.getRoads();
+	// 	const roads = TvMapInstance.models.getRoads();
 	//
 	// 	const entries = this.createEntries( roads );
 	//
@@ -59,7 +59,7 @@ export class JunctionFactory {
 
 	// static showJunctionEntries () {
 	//
-	// 	const roads = TvMapInstance.map.getRoads();
+	// 	const roads = TvMapInstance.models.getRoads();
 	//
 	// 	const entries = this.createEntries( roads );
 	//
@@ -115,7 +115,7 @@ export class JunctionFactory {
 	//
 	//	const lanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
 	//
-	//	return lanes.map( lane => this.createJunctionEntry( road, lane, contact ) );
+	//	return lanes.models( lane => this.createJunctionEntry( road, lane, contact ) );
 	//}
 
 	//createJunctionEntry ( road: TvRoad, lane: TvLane, contact: TvContactPoint ): JunctionEntryObject {

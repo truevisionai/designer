@@ -1,10 +1,14 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvCornerRoad } from 'app/modules/tv-map/models/objects/tv-corner-road';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { MapService } from '../map.service';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
-import { TvObjectOutline } from 'app/modules/tv-map/models/objects/tv-object-outline';
-import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
+import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { MapService } from '../map/map.service';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
+import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 
 @Injectable( {
 	providedIn: 'root'

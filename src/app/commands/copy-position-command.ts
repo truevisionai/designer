@@ -3,7 +3,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { IHasPosition } from '../modules/three-js/objects/i-has-position';
+import { IHasPosition } from '../objects/i-has-position';
 import { IHasUpdate } from './set-value-command';
 import { MapEvents } from 'app/events/map-events';
 

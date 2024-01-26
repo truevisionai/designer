@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSide, TvSide } from 'app/modules/tv-map/models/tv-common';
+import { TvLaneSide, TvSide } from 'app/map/models/tv-common';
 import { Vector2, Vector3 } from 'three';
 
 export class Maths {

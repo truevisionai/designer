@@ -1,20 +1,20 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MapEvents } from "app/events/map-events";
-import { TvMap } from "app/modules/tv-map/models/tv-map.model";
+import { TvMap } from "app/map/models/tv-map.model";
 import { SceneService } from "../services/scene.service";
-import { Manager } from "./manager";
+import { Injectable } from "@angular/core";
 
-export class MapManager extends Manager {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class MapManager {
 
-	private static _instance = new MapManager();
 	private debug = true;
 
-	static get instance (): MapManager {
-		return this._instance;
-	}
-
 	constructor () {
-
-		super();
 
 	}
 

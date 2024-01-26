@@ -47,9 +47,9 @@ export class SentryService {
 
 		try {
 
-			// we first try to get the map state and tv map state
+			// we first try to get the models state and tv models state
 			// and send it with sentry error
-			// if it fails, we send the error without the map state
+			// if it fails, we send the error without the models state
 			this.captureWithMapState( error, context );
 
 		} catch ( e ) {

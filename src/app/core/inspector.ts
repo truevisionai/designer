@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter, Type } from '@angular/core';
-import { ComponentItem, IComponent } from './game-object';
+import { ComponentItem, IComponent } from '../objects/game-object';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 export class AppInspector {

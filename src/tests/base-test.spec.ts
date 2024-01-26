@@ -1,10 +1,10 @@
-import { TvLaneSection } from "../app/modules/tv-map/models/tv-lane-section";
+import { TvLaneSection } from "../app/map/models/tv-lane-section";
 import { Vector2, Vector3 } from "three";
 import { RoadFactory } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
 import { IntersectionService } from "app/services/junction/intersection.service";
-import { RoadNode } from "app/modules/three-js/objects/road-node";
-import { TvContactPoint, TvLaneType } from "app/modules/tv-map/models/tv-common";
+import { RoadNode } from "app/objects/road-node";
+import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
 import { RoadToolService } from "app/tools/road/road-tool.service";
 
 export class BaseTest {

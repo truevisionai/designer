@@ -3,25 +3,25 @@
  */
 
 import { PointerEventData } from '../../events/pointer-event-data';
-import { LaneMarkingNode } from '../../modules/three-js/objects/lane-road-mark-node';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
+import { LaneMarkingNode } from '../../objects/lane-road-mark-node';
+import { TvLane } from '../../map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { LaneMarkingToolService } from './lane-marking-tool.service';
 import { CommandHistory } from 'app/services/command-history';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { SelectLineStrategy } from 'app/core/snapping/select-strategies/select-line-strategy';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { SelectLaneStrategy } from 'app/core/snapping/select-strategies/on-lane-strategy';
-import { EndLaneMovingStrategy } from 'app/core/snapping/move-strategies/end-lane.moving.strategy';
-import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
+import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
+import { EndLaneMovingStrategy } from 'app/core/strategies/move-strategies/end-lane.moving.strategy';
+import { WorldPosition } from 'app/scenario/models/positions/tv-world-position';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { UnselectObjectCommand } from "../../commands/unselect-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { Environment } from 'app/core/utils/environment';
 import { LaneMarkingInspector } from './lane-marking.inspector';
 

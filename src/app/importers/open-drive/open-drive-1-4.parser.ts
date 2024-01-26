@@ -7,8 +7,8 @@ import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { AbstractReader } from '../abstract-reader';
-import { readXmlArray, readXmlElement } from '../../tools/xml-utils';
-import { TvAbstractRoadGeometry } from '../../modules/tv-map/models/geometries/tv-abstract-road-geometry';
+import { readXmlArray, readXmlElement } from '../../utils/xml-utils';
+import { TvAbstractRoadGeometry } from '../../map/models/geometries/tv-abstract-road-geometry';
 import {
 	EnumHelper,
 	ObjectTypes,
@@ -18,32 +18,32 @@ import {
 	TvOrientation,
 	TvRoadType,
 	TvUnit
-} from '../../modules/tv-map/models/tv-common';
-import { TvUserData } from 'app/modules/tv-map/models/tv-user-data';
-import { TvController, TvControllerControl } from '../../modules/tv-map/models/tv-controller';
-import { TvJunction } from '../../modules/tv-map/models/junctions/tv-junction';
-import { TvJunctionConnection } from '../../modules/tv-map/models/junctions/tv-junction-connection';
-import { TvJunctionController } from '../../modules/tv-map/models/junctions/tv-junction-controller';
-import { TvJunctionLaneLink } from '../../modules/tv-map/models/junctions/tv-junction-lane-link';
-import { TvJunctionPriority } from '../../modules/tv-map/models/junctions/tv-junction-priority';
-import { TvLane } from '../../modules/tv-map/models/tv-lane';
-import { TvLaneSection } from '../../modules/tv-map/models/tv-lane-section';
-import { TvMapHeader } from '../../modules/tv-map/models/tv-map-header';
-import { TvMap } from '../../modules/tv-map/models/tv-map.model';
-import { TvObjectMarking } from '../../modules/tv-map/models/tv-object-marking';
-import { TvPlaneView } from '../../modules/tv-map/models/tv-plane-view';
-import { TvRoadLinkChild, TvRoadLinkChildType } from '../../modules/tv-map/models/tv-road-link-child';
-import { TvRoadObject } from '../../modules/tv-map/models/objects/tv-road-object';
-import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
-import { TvRoadTypeClass } from '../../modules/tv-map/models/tv-road-type.class';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
-import { SignShapeType } from '../../modules/tv-map/services/tv-sign.service';
-import { TvCornerRoad } from "../../modules/tv-map/models/objects/tv-corner-road";
-import { TvObjectOutline } from "../../modules/tv-map/models/objects/tv-object-outline";
+} from '../../map/models/tv-common';
+import { TvUserData } from 'app/map/models/tv-user-data';
+import { TvController, TvControllerControl } from '../../map/models/tv-controller';
+import { TvJunction } from '../../map/models/junctions/tv-junction';
+import { TvJunctionConnection } from '../../map/models/junctions/tv-junction-connection';
+import { TvJunctionController } from '../../map/models/junctions/tv-junction-controller';
+import { TvJunctionLaneLink } from '../../map/models/junctions/tv-junction-lane-link';
+import { TvJunctionPriority } from '../../map/models/junctions/tv-junction-priority';
+import { TvLane } from '../../map/models/tv-lane';
+import { TvLaneSection } from '../../map/models/tv-lane-section';
+import { TvMapHeader } from '../../map/models/tv-map-header';
+import { TvMap } from '../../map/models/tv-map.model';
+import { TvObjectMarking } from '../../map/models/tv-object-marking';
+import { TvPlaneView } from '../../map/models/tv-plane-view';
+import { TvRoadLinkChild, TvRoadLinkChildType } from '../../map/models/tv-road-link-child';
+import { TvRoadObject } from '../../map/models/objects/tv-road-object';
+import { TvRoadSignal } from '../../map/models/tv-road-signal.model';
+import { TvRoadTypeClass } from '../../map/models/tv-road-type.class';
+import { TvRoad } from '../../map/models/tv-road.model';
+import { SignShapeType } from '../../map/services/tv-sign.service';
+import { TvCornerRoad } from "../../map/models/objects/tv-corner-road";
+import { TvObjectOutline } from "../../map/models/objects/tv-object-outline";
 import { XmlElement } from "../xml.element";
 import { IOpenDriveParser } from "./i-open-drive.parser";
-import { TvCornerLocal } from 'app/modules/tv-map/models/objects/tv-corner-local';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
+import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
+import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 
 @Injectable( {
 	providedIn: 'root'

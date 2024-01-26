@@ -1,22 +1,26 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Box3, Mesh, Object3D } from 'three';
 import { RoadDividerService } from '../road/road-divider.service';
-import { TvRoadCoord } from 'app/modules/tv-map/models/TvRoadCoord';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { JunctionMeshService } from './junction-mesh.service';
 import { JunctionNode, JunctionNodeService } from './junction-node.service';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { JunctionConnectionService } from "./junction-connection.service";
 import { LaneLinkService } from './lane-link.service';
-import { MapService } from '../map.service';
-import { Object3DMap } from 'app/tools/lane-width/object-3d-map';
-import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-common';
-import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
+import { MapService } from '../map/map.service';
+import { Object3DMap } from 'app/core/models/object3d-map';
+import { TvContactPoint, TvOrientation } from 'app/map/models/tv-common';
+import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
 import { RoadService } from '../road/road.service';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';

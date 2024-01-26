@@ -3,13 +3,16 @@
  */
 
 import { MapEvents } from 'app/events/map-events';
-import { ScenarioEntity } from 'app/modules/scenario/models/entities/scenario-entity';
-import { ActionType } from 'app/modules/scenario/models/tv-enums';
-// import { ScenarioInstance } from 'app/modules/scenario/services/scenario-instance';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { ScenarioEntity } from 'app/scenario/models/entities/scenario-entity';
+import { ActionType } from 'app/scenario/models/tv-enums';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Manager } from './manager';
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
+import { Injectable } from "@angular/core";
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class EntityManager extends Manager {
 
 	private static _instance = new EntityManager();

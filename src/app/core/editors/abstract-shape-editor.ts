@@ -7,16 +7,16 @@ import { KeyboardEvents } from 'app/events/keyboard-events';
 import { AppService } from 'app/services/app.service';
 import { Debug } from 'app/core/utils/debug';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { OdTextures } from 'app/modules/tv-map/builders/od.textures';
+import { OdTextures } from 'app/map/builders/od.textures';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { BufferAttribute, BufferGeometry, Color, Object3D, PointsMaterial, Vector2, Vector3 } from 'three';
 import { BaseEventData } from '../../events/pointer-event-data';
-import { NewDistanceNode } from '../../modules/three-js/objects/control-point';
+import { NewDistanceNode } from '../../objects/control-point';
 import { SceneService } from '../../services/scene.service';
 import { IShapeEditor } from './i-shape-editor';
-import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
+import { AnyControlPoint } from "../../objects/any-control-point";
 
 export abstract class AbstractShapeEditor implements IShapeEditor {
 

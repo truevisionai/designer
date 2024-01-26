@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { MapService } from '../map.service';
+import { MapService } from '../map/map.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { MapEvents } from 'app/events/map-events';
 import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';

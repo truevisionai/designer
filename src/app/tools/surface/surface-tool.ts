@@ -1,18 +1,22 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { TvSurface } from 'app/map/models/tv-surface.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { SurfaceToolService } from './surface-tool.service';
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { FreeMovingStrategy } from 'app/core/snapping/move-strategies/free-moving-strategy';
-import { WorldPosition } from 'app/modules/scenario/models/positions/tv-world-position';
-import { ObjectUserDataStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { FreeMovingStrategy } from 'app/core/strategies/move-strategies/free-moving-strategy';
+import { WorldPosition } from 'app/scenario/models/positions/tv-world-position';
+import { ObjectUserDataStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
 import { Vector3 } from 'three';
 import { AppInspector } from 'app/core/inspector';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
-import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
+import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';

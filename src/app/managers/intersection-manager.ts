@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
-import { TvJunction } from "app/modules/tv-map/models/junctions/tv-junction";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { IntersectionService } from "app/services/junction/intersection.service";
-import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
+import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { JunctionManager } from "./junction-manager";
 import { JunctionFactory } from "app/factories/junction.factory";
-import { MapService } from "app/services/map.service";
+import { MapService } from "app/services/map/map.service";
 
 @Injectable( {
 	providedIn: 'root'

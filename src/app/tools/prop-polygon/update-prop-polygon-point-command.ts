@@ -3,8 +3,8 @@
  */
 
 import { Vector3 } from 'three';
-import { DynamicControlPoint } from '../../modules/three-js/objects/dynamic-control-point';
-import { PropPolygon } from '../../modules/tv-map/models/prop-polygons';
+import { DynamicControlPoint } from '../../objects/dynamic-control-point';
+import { PropPolygon } from '../../map/models/prop-polygons';
 import { BaseCommand } from '../../commands/base-command';
 
 export class UpdatePropPolygonPointCommand extends BaseCommand {

@@ -7,7 +7,7 @@ import { Vector3 } from 'three';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadCircleToolService } from "./road-circle-tool.service";
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Environment } from 'app/core/utils/environment';
 
 

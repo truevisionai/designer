@@ -5,7 +5,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { Group, Material, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
-import { GameObject } from '../core/game-object';
+import { GameObject } from '../objects/game-object';
 import { XmlElement } from "../importers/xml.element";
 
 @Injectable( {

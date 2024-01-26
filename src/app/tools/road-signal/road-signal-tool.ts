@@ -3,17 +3,17 @@
  */
 import { Vector3 } from 'three';
 import { PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
-import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
-import { TvRoad } from '../../modules/tv-map/models/tv-road.model';
+import { TvRoadSignal } from '../../map/models/tv-road-signal.model';
+import { TvRoad } from '../../map/models/tv-road.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadSignalToolService } from './road-signal-tool.service';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { OnRoadMovingStrategy } from 'app/core/snapping/move-strategies/on-road-moving.strategy';
-import { ControlPointStrategy } from 'app/core/snapping/select-strategies/control-point-strategy';
-import { SelectRoadStrategy } from 'app/core/snapping/select-strategies/select-road-strategy';
-import { SimpleControlPoint } from 'app/modules/three-js/objects/dynamic-control-point';
-import { RoadCoordStrategy } from 'app/core/snapping/select-strategies/road-coord-strategy';
+import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
+import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
+import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { RoadSignalInspector } from './road-signal.inspector';
 

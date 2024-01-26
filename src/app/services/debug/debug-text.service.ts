@@ -1,6 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TextObject3d } from 'app/modules/three-js/objects/text-object';
-import { TextObjectService } from 'app/tools/marking-point/text-object.service';
+import { TextObject3d } from 'app/objects/text-object';
+import { TextObjectService } from 'app/services/text-object.service';
 import { FrontSide, MeshBasicMaterial } from 'three';
 
 @Injectable( {

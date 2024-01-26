@@ -8,9 +8,9 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { Router } from '@angular/router';
 import { IFile } from 'app/io/file';
-import { EditorService } from 'app/services/editor.service';
+import { EditorService } from 'app/services/editor/editor.service';
 import { Environment } from 'app/core/utils/environment';
-import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
+import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { ExporterService } from 'app/services/exporter.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { RecentFileService } from 'app/services/recent-file.service';
@@ -19,17 +19,17 @@ import { TvElectronService } from 'app/services/tv-electron.service';
 import { AppInputDialogService } from 'app/views/shared/dialogs/app-input-dialog/app-input-dialog-service';
 
 import { AppService } from '../../../services/app.service';
-import { OpenDriveService } from '../../../modules/tv-map/services/open-drive.service';
+import { OpenDriveService } from '../../../map/services/open-drive.service';
 import { AppLinks } from '../../../services/app-links';
 import { CommandHistory } from '../../../services/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
 import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-dialog.component';
-import { ProjectService } from 'app/services/project.service';
-import { MapService } from 'app/services/map.service';
+import { ProjectService } from 'app/services/editor/project.service';
+import { MapService } from 'app/services/map/map.service';
 import { AppInspector } from 'app/core/inspector';
 import { SerializedField } from 'app/core/components/serialization';
 import { LocalStorage } from 'app/services/local-storage';
-import { MapValidatorService } from 'app/services/map-validator.service';
+import { MapValidatorService } from 'app/services/map/map-validator.service';
 
 
 @Component( {
@@ -67,7 +67,7 @@ export class MenuBarComponent implements OnInit {
 
 	ngOnInit () {
 
-		const opacity = this.localStorage.get( 'map.opacity', 1 );
+		const opacity = this.localStorage.get( 'models.opacity', 1 );
 		this.mapService.setOpacityLevel( opacity );
 
 	}
@@ -284,6 +284,6 @@ class MapSeting {
 
 	set opacity ( value: number ) {
 		this.mapService.setOpacityLevel( value );
-		this.localStorage.store( 'map.opacity', value );
+		this.localStorage.store( 'models.opacity', value );
 	}
 }

@@ -9,36 +9,36 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
-import { PropPolygon } from 'app/modules/tv-map/models/prop-polygons';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvRoadTypeClass } from 'app/modules/tv-map/models/tv-road-type.class';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { RoadControlPoint } from 'app/objects/road-control-point';
+import { PropCurve } from 'app/map/models/prop-curve';
+import { PropPolygon } from 'app/map/models/prop-polygons';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvMap } from 'app/map/models/tv-map.model';
+import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvSurface } from 'app/map/models/tv-surface.model';
 import { XMLBuilder } from 'fast-xml-parser';
 import { FileService } from '../io/file.service';
-import { TvJunctionConnection } from '../modules/tv-map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from '../map/models/junctions/tv-junction-connection';
 import { SnackBar } from '../services/snack-bar.service';
 import { TvElectronService } from '../services/tv-electron.service';
-import { ThreeService } from 'app/modules/three-js/three.service';
-import { TvLaneSide } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneAccess } from 'app/modules/tv-map/models/tv-lane-access';
-import { TvLaneHeight } from 'app/modules/tv-map/models/tv-lane-height';
-import { TvLaneMaterial } from 'app/modules/tv-map/models/tv-lane-material';
-import { TvLaneRoadMark } from 'app/modules/tv-map/models/tv-lane-road-mark';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvLaneSpeed } from 'app/modules/tv-map/models/tv-lane-speed';
-import { TvLaneVisibility } from 'app/modules/tv-map/models/tv-lane-visibility';
-import { TvLaneWidth } from 'app/modules/tv-map/models/tv-lane-width';
-import { TvRoadObject } from 'app/modules/tv-map/models/objects/tv-road-object';
+import { ThreeService } from 'app/renderer/three.service';
+import { TvLaneSide } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneAccess } from 'app/map/models/tv-lane-access';
+import { TvLaneHeight } from 'app/map/models/tv-lane-height';
+import { TvLaneMaterial } from 'app/map/models/tv-lane-material';
+import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvLaneSpeed } from 'app/map/models/tv-lane-speed';
+import { TvLaneVisibility } from 'app/map/models/tv-lane-visibility';
+import { TvLaneWidth } from 'app/map/models/tv-lane-width';
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { XmlElement } from "../importers/xml.element";
-import { MapService } from "../services/map.service";
-import { TvMapInstance } from 'app/modules/tv-map/services/tv-map-instance';
-import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
+import { MapService } from "../services/map/map.service";
+import { TvMapInstance } from 'app/map/services/tv-map-instance';
+import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -785,10 +785,10 @@ export class SceneExporterService {
 	//		attr_outer: objectOutline.outer,
 	//		attr_closed: objectOutline.closed,
 	//		attr_laneType: objectOutline.laneType,
-	//		cornerRoad: objectOutline?.cornerRoad.map(
+	//		cornerRoad: objectOutline?.cornerRoad.models(
 	//			cornerRoad => this.writeObjectCornerRoad( cornerRoad )
 	//		),
-	//		cornerLocal: objectOutline?.cornerLocal.map(
+	//		cornerLocal: objectOutline?.cornerLocal.models(
 	//			cornerLocal => this.writeObjectCornerLocal( cornerLocal )
 	//		),
 	//	};
@@ -977,7 +977,7 @@ export class SceneExporterService {
 	//
 	//	xmlNode.controller = [];
 	//
-	//	this.map.controllers.forEach( controller => {
+	//	this.models.controllers.forEach( controller => {
 	//
 	//		const nodeController = {
 	//			attr_id: controller.id,

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import {
 	BufferAttribute,
 	BufferGeometry,
@@ -9,17 +13,17 @@ import {
 	Vector3
 } from 'three';
 import { SceneService } from '../../services/scene.service';
-import { TextObject3d } from 'app/modules/three-js/objects/text-object';
+import { TextObject3d } from 'app/objects/text-object';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
-import { TravelDirection, TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { SplineControlPoint } from "../../modules/three-js/objects/spline-control-point";
+import { TravelDirection, TvContactPoint } from 'app/map/models/tv-common';
+import { SplineControlPoint } from "../../objects/spline-control-point";
 import { Injectable } from '@angular/core';
 import { RoadDebugService } from '../../services/debug/road-debug.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
-import { ViewControllerService } from 'app/modules/three-js/view-controller.service';
+import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';
 import { RoadService } from 'app/services/road/road.service';
 
 @Injectable( {

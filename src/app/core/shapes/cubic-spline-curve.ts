@@ -5,7 +5,7 @@
 import { CatmullRomCurve3, Curve, CurvePath, CurveType, Vector3 } from 'three';
 import { AutoSpline } from './auto-spline';
 import { ExplicitSpline } from './explicit-spline';
-import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
+import { AnyControlPoint } from "../../objects/any-control-point";
 
 
 function CubicBezierP0 ( t, p ) {

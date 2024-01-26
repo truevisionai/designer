@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 
 declare const window: any;
-declare const versions: any;
+declare const electronFs: any;
 declare const command: any;
 
 @Injectable( { providedIn: 'root' } )
@@ -14,7 +14,7 @@ export class TvElectronService {
 	constructor () {
 		if ( this.isElectronApp ) {
 			this._electron = window.require( 'electron' );
-			this._remote = versions.remote();
+			this._remote = electronFs.remote();
 		}
 	}
 
@@ -100,7 +100,7 @@ export class TvElectronService {
 
 		if ( filePath ) newTitle += ` - ${ filePath }`;
 
-		versions.setTitle( newTitle );
+		electronFs.setTitle( newTitle );
 	}
 
 	openLink ( link: string ) {

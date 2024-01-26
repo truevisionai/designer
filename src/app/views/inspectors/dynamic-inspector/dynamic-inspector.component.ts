@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import {
 	AfterViewInit,
 	Component,
@@ -13,7 +17,7 @@ import {
 } from '@angular/core';
 import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
 import { getSerializableActions, getSerializableFields, ISerializedActionSetting, ISerializedFieldSetting } from 'app/core/components/serialization';
-import { IComponent } from 'app/core/game-object';
+import { IComponent } from 'app/objects/game-object';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
 import { BooleanFieldComponent } from 'app/views/shared/fields/boolean-field/boolean-field.component';

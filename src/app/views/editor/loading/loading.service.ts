@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { ProjectBrowserService } from '../project-browser/project-browser.service';
 import { AssetNode, AssetType } from '../project-browser/file-node.model';
@@ -7,7 +11,7 @@ import { TvTextureLoader } from 'app/graphics/texture/tv-texture.loader';
 import { ModelLoader } from 'app/loaders/model.loader';
 import { RoadStyleImporter } from 'app/loaders/tv-road-style-loader';
 import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
-import { EditorSettings } from 'app/services/editor.settings';
+import { EditorSettings } from 'app/services/editor/editor.settings';
 import { BufferGeometryLoader } from 'three/src/loaders/BufferGeometryLoader';
 import { MetaImporter } from 'app/core/asset/metadata.model';
 import { TvPrefabLoader } from 'app/graphics/prefab/tv-prefab.loader';

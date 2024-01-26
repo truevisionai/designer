@@ -2,25 +2,25 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadControlPoint } from 'app/modules/three-js/objects/road-control-point';
-import { TvAbstractRoadGeometry } from 'app/modules/tv-map/models/geometries/tv-abstract-road-geometry';
-import { TvArcGeometry } from 'app/modules/tv-map/models/geometries/tv-arc-geometry';
-import { TvLineGeometry } from 'app/modules/tv-map/models/geometries/tv-line-geometry';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { RoadControlPoint } from 'app/objects/road-control-point';
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
+import { TvLineGeometry } from 'app/map/models/geometries/tv-line-geometry';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector2, Vector3 } from 'three';
 import { AbstractSpline, SplineType } from './abstract-spline';
-import { PolyLine } from './PolyLine';
+import { Polyline } from '../../objects/polyline';
 import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
-import { AbstractControlPoint } from "../../modules/three-js/objects/abstract-control-point";
-import { TvPosTheta } from 'app/modules/tv-map/models/tv-pos-theta';
+import { AbstractControlPoint } from "../../objects/abstract-control-point";
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 
 export class AutoSpline extends AbstractSpline {
 
 	public type:SplineType = SplineType.AUTO;
 
-	public polyline: PolyLine;
+	public polyline: Polyline;
 
 	public roundline: RoundLine;
 
@@ -32,7 +32,7 @@ export class AutoSpline extends AbstractSpline {
 
 	init () {
 
-		this.polyline = new PolyLine( this.controlPoints );
+		this.polyline = new Polyline( this.controlPoints );
 
 		this.roundline = new RoundLine( this.controlPoints );
 

@@ -3,10 +3,10 @@
  */
 
 import { Component } from '@angular/core';
-import { EsminiPlayerService } from 'app/core/esmini-player.service';
-import { EditorService } from 'app/services/editor.service';
+import { EsminiPlayerService } from 'app/services/esmini-player.service';
+import { EditorService } from 'app/services/editor/editor.service';
 import { Environment } from 'app/core/utils/environment';
-import { ScenarioViewerService } from 'app/modules/scenario/services/scenario-viewer.service';
+import { ScenarioViewerService } from 'app/scenario/services/scenario-viewer.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { PlayerService } from '../../../core/player.service';
 import { AppInspector } from "../../../core/inspector";

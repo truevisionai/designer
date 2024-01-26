@@ -7,7 +7,7 @@ import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import * as THREE from 'three';
 import { SceneService } from '../../services/scene.service';
 import { AbstractShapeEditor } from './abstract-shape-editor';
-import { AnyControlPoint } from "../../modules/three-js/objects/any-control-point";
+import { AnyControlPoint } from "../../objects/any-control-point";
 
 export class LineEditor extends AbstractShapeEditor {
 

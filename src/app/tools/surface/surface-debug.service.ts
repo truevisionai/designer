@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvSurface } from 'app/modules/tv-map/models/tv-surface.model';
+import { TvSurface } from 'app/map/models/tv-surface.model';
 import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { DebugState } from 'app/services/debug/debug-state';
 

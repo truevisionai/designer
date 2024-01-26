@@ -1,9 +1,13 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 import { TvConsole } from 'app/core/utils/console';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector3 } from 'three';
 
 @Injectable( {
@@ -67,7 +71,7 @@ export class SplineSegmentService {
 
 		if ( spline.getSplineSegments().length == 0 ) {
 
-			// this.mapService.map.removeSpline( road.spline );
+			// this.mapService.models.removeSpline( road.spline );
 
 		}
 

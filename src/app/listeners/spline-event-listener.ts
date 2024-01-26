@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MapEvents } from "../events/map-events";
 import { Injectable } from "@angular/core";
 import { SplineCreatedEvent } from "../events/spline/spline-created-event";

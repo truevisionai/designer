@@ -5,33 +5,33 @@
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/commands/set-tool-command';
 import { IFile } from 'app/io/file';
-import { ToolManager } from 'app/tools/tool-manager';
+import { ToolManager } from 'app/managers/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
-import { OpenScenarioExporter } from 'app/modules/scenario/services/open-scenario-exporter';
-import { ScenarioService } from 'app/modules/scenario/services/scenario.service';
-import { OpenDriveExporter } from 'app/modules/tv-map/services/open-drive-exporter';
-import { TvCarlaExporter } from 'app/modules/tv-map/services/tv-carla-exporter';
+import { OpenScenarioExporter } from 'app/scenario/services/open-scenario-exporter';
+import { ScenarioService } from 'app/scenario/services/scenario.service';
+import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
+import { TvCarlaExporter } from 'app/map/services/tv-carla-exporter';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { FileService } from '../io/file.service';
 import { CommandHistory } from './command-history';
 import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { CoordinateSystem } from './CoordinateSystem';
-import { MapService } from './map.service';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { MapService } from './map/map.service';
+import { TvMap } from 'app/map/models/tv-map.model';
 import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
 import { TvMaterial } from 'app/graphics/material/tv-material';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
-import { VehicleEntity } from 'app/modules/scenario/models/entities/vehicle-entity';
+import { TvRoadSign } from 'app/map/models/tv-road-sign.model';
+import { VehicleEntity } from 'app/scenario/models/entities/vehicle-entity';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 
 import { saveAs } from 'file-saver';
 import { cloneDeep } from 'lodash';
 import { RoadStyle } from 'app/core/asset/road.style';
 import { RoadExporterService } from 'app/exporters/road-style-exporter.service';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -121,7 +121,7 @@ export class ExporterService {
 
 	}
 
-	exportOpenDrive ( filename = 'map.xodr' ) {
+	exportOpenDrive ( filename = 'models.xodr' ) {
 
 		ToolManager.disable();
 

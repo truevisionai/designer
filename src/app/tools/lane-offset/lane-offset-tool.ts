@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 ///*
 // * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
 // */
 //
-//import { OdLaneReferenceLineBuilder } from 'app/modules/tv-map/builders/od-lane-reference-line-builder';
+//import { OdLaneReferenceLineBuilder } from 'app/modules/tv-models/builders/od-lane-reference-line-builder';
 //import { CommandHistory } from 'app/services/command-history';
 //import { MouseButton, PointerEventData } from '../../events/pointer-event-data';
 //import { LaneOffsetNode } from '../../modules/three-js/objects/lane-offset-node';
-//import { TvLane } from '../../modules/tv-map/models/tv-lane';
+//import { TvLane } from '../../modules/tv-models/models/tv-lane';
 //import { KeyboardEvents } from '../../events/keyboard-events';
 //import { ToolType } from '../tool-types.enum';
 //import { PickingHelper } from '../../services/picking-helper.service';
@@ -47,7 +51,7 @@
 //
 //		this.laneHelper?.clear();
 //
-//		this.map.getRoads().forEach( road => road.hideLaneOffsetNodes() );
+//		this.models.getRoads().forEach( road => road.hideLaneOffsetNodes() );
 //
 //		this.clearToolObjects();
 //	}

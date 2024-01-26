@@ -1,15 +1,19 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // /*
 //  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
 //  */
 
 // import { IToolWithMainObject, SelectMainObjectCommand } from 'app/core/commands/select-point-command';
-// import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+// import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 // import { ISelectable } from 'app/modules/three-js/objects/i-selectable';
 // import { CommandHistory } from 'app/services/command-history';
 // import { PointerEventData } from '../../../events/pointer-event-data';
 // import { ToolType } from '../../models/tool-types.enum';
 // import { BaseTool } from '../base-tool';
-// import { ObjectTagStrategy } from 'app/core/snapping/select-strategies/object-tag-strategy';
+// import { ObjectTagStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
 // import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
 // export class ImageTool extends BaseTool implements IToolWithMainObject {

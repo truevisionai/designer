@@ -1,15 +1,19 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseToolService } from '../base-tool.service';
-import { MapService } from 'app/services/map.service';
+import { MapService } from 'app/services/map/map.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { SelectionService } from '../selection.service';
 import { RoadLinkService } from 'app/services/road/road-link.service';
 import { RoadDebugService } from "../../services/debug/road-debug.service";
-import { AbstractControlPoint } from 'app/modules/three-js/objects/abstract-control-point';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
+import { RoadNode } from 'app/objects/road-node';
 import { SplineDebugService } from 'app/services/debug/spline-debug.service';
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';

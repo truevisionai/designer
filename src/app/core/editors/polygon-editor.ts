@@ -55,7 +55,7 @@ export class PolygonEditor extends AbstractShapeEditor {
 		texture.anisotropy = 16;
 
 		// let geometry1 = new BufferGeometry( shape );
-		// var mesh = new THREE.Mesh( geometry1, new THREE.MeshLambertMaterial( { map: texture } ) );
+		// var mesh = new THREE.Mesh( geometry1, new THREE.MeshLambertMaterial( { models: texture } ) );
 		// mesh.position.set( x, y, z - 175 );
 		// mesh.rotation.set( rx, ry, rz );
 		// mesh.scale.set( s, s, s );

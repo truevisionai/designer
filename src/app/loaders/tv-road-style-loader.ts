@@ -2,20 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
-import { TvLaneSide } from '../modules/tv-map/models/tv-common';
-import { TvLane } from '../modules/tv-map/models/tv-lane';
-import { TvLaneRoadMark } from '../modules/tv-map/models/tv-lane-road-mark';
-import { TvLaneWidth } from '../modules/tv-map/models/tv-lane-width';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
+import { TvLaneSide } from '../map/models/tv-common';
+import { TvLane } from '../map/models/tv-lane';
+import { TvLaneRoadMark } from '../map/models/tv-lane-road-mark';
+import { TvLaneWidth } from '../map/models/tv-lane-width';
 import { SnackBar } from '../services/snack-bar.service';
 import { RoadStyle } from "../core/asset/road.style";
 import { XmlElement } from "../importers/xml.element";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { Injectable } from '@angular/core';
 import { StorageService } from 'app/io/storage.service';
-import { readXmlArray, readXmlElement } from 'app/tools/xml-utils';
-import { TvElevationProfile } from 'app/modules/tv-map/models/tv-elevation-profile';
+import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
+import { TvElevationProfile } from 'app/map/models/tv-elevation-profile';
 
 @Injectable( {
 	providedIn: 'root'

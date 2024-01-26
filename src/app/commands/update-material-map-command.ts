@@ -55,7 +55,7 @@ export class UpdateMaterialMapCommand extends BaseCommand {
 			this.material.mapGuid = guid;
 			this.material.map = texture || null;
 
-			// if ( this.material.map ) this.material.map.needsUpdate = true;
+			// if ( this.material.models ) this.material.models.needsUpdate = true;
 
 		} else if ( this.mapName === 'roughnessMap' ) {
 

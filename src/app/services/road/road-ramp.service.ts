@@ -1,9 +1,13 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvContactPoint, TvOrientation } from 'app/modules/tv-map/models/tv-common';
-import { TvVirtualJunction } from 'app/modules/tv-map/models/junctions/tv-virtual-junction';
-import { TvJunctionLaneLink } from 'app/modules/tv-map/models/junctions/tv-junction-lane-link';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvContactPoint, TvOrientation } from 'app/map/models/tv-common';
+import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
+import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { BaseToolService } from 'app/tools/base-tool.service';
@@ -15,7 +19,7 @@ import { JunctionConnectionService } from '../junction/junction-connection.servi
 import { LaneLinkService } from '../junction/lane-link.service';
 import { RoadService } from './road.service';
 import { JunctionService } from '../junction/junction.service';
-import { MapService } from "../map.service";
+import { MapService } from "../map/map.service";
 
 @Injectable( {
 	providedIn: 'root'

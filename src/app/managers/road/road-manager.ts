@@ -1,13 +1,17 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { RoadFactory } from "app/factories/road-factory.service";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { MapService } from "app/services/map.service";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { MapService } from "app/services/map/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadService } from "app/services/road/road.service";
-import { RoadObjectService } from "app/tools/marking-line/road-object.service";
+import { RoadObjectService } from "app/tools/crosswalk/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
 import { LaneManager } from "../lane/lane.manager";
-import { RoadBuilder } from "app/modules/tv-map/builders/road.builder";
+import { RoadBuilder } from "app/map/builders/road.builder";
 import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadLinkManager } from "./road-link.manager";

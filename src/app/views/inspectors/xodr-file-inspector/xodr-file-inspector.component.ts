@@ -3,8 +3,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { IComponent } from 'app/core/game-object';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
+import { IComponent } from 'app/objects/game-object';
+import { TvMap } from 'app/map/models/tv-map.model';
 
 @Component( {
 	selector: 'app-xodr-file-inspector',

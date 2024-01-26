@@ -1,17 +1,21 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
-import { TvRoadCoord } from "../../modules/tv-map/models/TvRoadCoord";
-import { TvContactPoint, TvLaneSide, TvLaneType } from "../../modules/tv-map/models/tv-common";
-import { TvJunctionConnection } from 'app/modules/tv-map/models/junctions/tv-junction-connection';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvRoadCoord } from "../../map/models/TvRoadCoord";
+import { TvContactPoint, TvLaneSide, TvLaneType } from "../../map/models/tv-common";
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { SplineFactory } from '../spline/spline.factory';
-import { TvJunction } from 'app/modules/tv-map/models/junctions/tv-junction';
-import { TvLaneCoord } from 'app/modules/tv-map/models/tv-lane-coord';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { RoadService } from '../road/road.service';
-import { TrafficRule } from 'app/modules/tv-map/models/traffic-rule';
-import { MapService } from '../map.service';
+import { TrafficRule } from 'app/map/models/traffic-rule';
+import { MapService } from '../map/map.service';
 import { JunctionConnectionFactory } from 'app/factories/junction-connection.factory';
 import { LaneLinkService } from './lane-link.service';
-import { TvUtils } from 'app/modules/tv-map/models/tv-utils';
+import { TvUtils } from 'app/map/models/tv-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -112,8 +116,8 @@ export class JunctionConnectionService {
 			}
 		}
 
-		// // If you need to return the connections from this function, you can convert the map to an array
-		// // and map it to actual connection objects or whatever format you need
+		// // If you need to return the connections from this function, you can convert the models to an array
+		// // and models it to actual connection objects or whatever format you need
 		// let result = [];
 
 		// for ( let [ smaller, largerSet ] of connections.entries() ) {

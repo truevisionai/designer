@@ -1,8 +1,12 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
-import { IMovingStrategy } from 'app/core/snapping/move-strategies/move-strategy';
-import { SelectStrategy } from 'app/core/snapping/select-strategies/select-strategy';
+import { IMovingStrategy } from 'app/core/strategies/move-strategies/move-strategy';
+import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { Position } from 'app/modules/scenario/models/position';
+import { Position } from 'app/scenario/models/position';
 import { CommandHistory } from 'app/services/command-history';
 import { StatusBarService } from 'app/services/status-bar.service';
 import { UnselectObjectCommand } from "../commands/unselect-object-command";

@@ -1,9 +1,13 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // /*
 //  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
 //  */
 
 // import { SelectPointCommand } from 'app/commands/select-point-command';
-// import { PropCurve } from 'app/modules/tv-map/models/prop-curve';
+// import { PropCurve } from 'app/modules/tv-models/models/prop-curve';
 // import {
 // 	PropCurveInspectorComponent,
 // 	PropCurveInspectorData

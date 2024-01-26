@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetaImporter, Metadata } from 'app/core/asset/metadata.model';

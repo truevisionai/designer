@@ -1,8 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
-import { RoadNode } from 'app/modules/three-js/objects/road-node';
-import { TvContactPoint } from 'app/modules/tv-map/models/tv-common';
-import { TvRoadLinkChildType } from 'app/modules/tv-map/models/tv-road-link-child';
+import { RoadNode } from 'app/objects/road-node';
+import { TvContactPoint } from 'app/map/models/tv-common';
+import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';

@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSide, TvLaneType } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
+import { TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
 import { PropertyCopyService } from './property-copy.service';
 
 describe( 'PropertyCopyService Test', () => {

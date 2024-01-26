@@ -1,14 +1,18 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
-import { RoadNode } from "app/modules/three-js/objects/road-node";
-import { TvRoadCoord } from "app/modules/tv-map/models/TvRoadCoord";
-import { TvJunctionConnection } from "app/modules/tv-map/models/junctions/tv-junction-connection";
-import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "app/modules/tv-map/models/tv-common";
-import { TvLane } from "app/modules/tv-map/models/tv-lane";
-import { TvLaneCoord } from "app/modules/tv-map/models/tv-lane-coord";
-import { TvLaneSection } from "app/modules/tv-map/models/tv-lane-section";
-import { TvPosTheta } from "app/modules/tv-map/models/tv-pos-theta";
-import { TvRoad } from "app/modules/tv-map/models/tv-road.model";
-import { TvUtils } from "app/modules/tv-map/models/tv-utils";
+import { RoadNode } from "app/objects/road-node";
+import { TvRoadCoord } from "app/map/models/TvRoadCoord";
+import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
+import { TvLane } from "app/map/models/tv-lane";
+import { TvLaneCoord } from "app/map/models/tv-lane-coord";
+import { TvLaneSection } from "app/map/models/tv-lane-section";
+import { TvPosTheta } from "app/map/models/tv-pos-theta";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { TvUtils } from "app/map/models/tv-utils";
 import { LaneLinkService } from "app/services/junction/lane-link.service";
 
 @Injectable( {
@@ -37,8 +41,8 @@ export class LaneSectionFactory {
 		// const incomingDirection = this.laneLinkService.determineDirection( previous.contact );
 		// const outgoingDirection = this.laneLinkService.determineOutgoingDirection( previous, next );
 
-		// const incomingLaneCoords = previous.laneSection.getLaneArray().filter( lane => lane.direction === incomingDirection ).map( lane => previous.toLaneCoord( lane ) );
-		// const outgoingLaneCoords = next.laneSection.getLaneArray().filter( lane => lane.direction === outgoingDirection ).map( lane => next.toLaneCoord( lane ) );
+		// const incomingLaneCoords = previous.laneSection.getLaneArray().filter( lane => lane.direction === incomingDirection ).models( lane => previous.toLaneCoord( lane ) );
+		// const outgoingLaneCoords = next.laneSection.getLaneArray().filter( lane => lane.direction === outgoingDirection ).models( lane => next.toLaneCoord( lane ) );
 
 		// const roadLength = newRoad.getRoadLength();
 

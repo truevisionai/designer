@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { FileService } from './file.service';

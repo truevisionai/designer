@@ -1,12 +1,16 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // /*
 //  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
 //  */
 
 // import { Injectable } from '@angular/core';
-// import { TvJunctionConnection } from 'app/modules/tv-map/models/tv-junction-connection';
-// import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-map/models/tv-junction-lane-link';
-// import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-// import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+// import { TvJunctionConnection } from 'app/modules/tv-models/models/tv-junction-connection';
+// import { LanePathObject, TvJunctionLaneLink } from 'app/modules/tv-models/models/tv-junction-lane-link';
+// import { TvLane } from 'app/modules/tv-models/models/tv-lane';
+// import { TvRoad } from 'app/modules/tv-models/models/tv-road.model';
 // import { BufferGeometry, Line, LineBasicMaterial, Shape } from 'three';
 // import { AbstractSpline } from '../shapes/abstract-spline';
 // import { AutoSpline } from '../shapes/auto-spline';

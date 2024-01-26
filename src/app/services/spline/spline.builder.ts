@@ -1,8 +1,12 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { SplineSegmentService } from './spline-segment.service';
-import { RoadBuilder } from 'app/modules/tv-map/builders/road.builder';
+import { RoadBuilder } from 'app/map/builders/road.builder';
 
 @Injectable( {
 	providedIn: 'root'

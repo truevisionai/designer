@@ -1,10 +1,14 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { EventEmitter, Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
-import { VehicleCategory } from 'app/modules/scenario/models/tv-enums';
+import { VehicleCategory } from 'app/scenario/models/tv-enums';
 import { TvMaterial } from 'app/graphics/material/tv-material';
-import { TvMap } from 'app/modules/tv-map/models/tv-map.model';
-import { TvRoadSign } from 'app/modules/tv-map/models/tv-road-sign.model';
+import { TvMap } from 'app/map/models/tv-map.model';
+import { TvRoadSign } from 'app/map/models/tv-road-sign.model';
 import { ExporterService } from 'app/services/exporter.service';
 import { AssetType, AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { AssetFactory } from './asset-factory.service';
@@ -12,7 +16,7 @@ import { AssetDatabase } from './asset-database';
 import { TvConsole } from '../utils/console';
 import { MathUtils } from 'three';
 import { RoadStyle } from './road.style';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { StorageService } from 'app/io/storage.service';
 import { FileUtils } from 'app/io/file-utils';

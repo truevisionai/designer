@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneSide, TvLaneType, TvRoadMarkTypes } from 'app/modules/tv-map/models/tv-common';
-import { TvLane } from 'app/modules/tv-map/models/tv-lane';
-import { TvLaneSection } from 'app/modules/tv-map/models/tv-lane-section';
-import { TvRoadLaneOffset } from 'app/modules/tv-map/models/tv-road-lane-offset';
-import { TvRoad } from 'app/modules/tv-map/models/tv-road.model';
+import { TvLaneSide, TvLaneType, TvRoadMarkTypes } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadStyle } from "../core/asset/road.style";
 
 export class RoadStyleManager {

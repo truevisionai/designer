@@ -1,8 +1,12 @@
-import { TvRoadSignal } from '../../modules/tv-map/models/tv-road-signal.model';
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { TvRoadSignal } from '../../map/models/tv-road-signal.model';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { Action, SerializedField } from 'app/core/components/serialization';
 import { CommandHistory } from 'app/services/command-history';
-import { TvUnit } from 'app/modules/tv-map/models/tv-common';
+import { TvUnit } from 'app/map/models/tv-common';
 
 
 export class RoadSignalInspector {
