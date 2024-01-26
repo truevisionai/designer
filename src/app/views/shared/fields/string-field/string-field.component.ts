@@ -3,7 +3,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
+import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
 
 @Component( {
 	selector: 'app-string-field',

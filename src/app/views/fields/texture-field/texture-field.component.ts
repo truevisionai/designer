@@ -5,7 +5,7 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetaImporter, Metadata } from 'app/core/asset/metadata.model';
-import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
+import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Texture } from 'three';
 

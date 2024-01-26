@@ -3,7 +3,7 @@
  */
 
 import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
+import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
 import { Color } from 'three';
 
 @Component( {

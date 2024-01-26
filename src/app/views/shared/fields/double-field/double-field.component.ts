@@ -4,7 +4,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { Maths } from 'app/utils/maths';
-import { AbstractFieldComponent } from '../../../../core/components/abstract-field.component';
+import { AbstractFieldComponent } from '../abstract-field.component';
 
 @Component( {
 	selector: 'app-double-field',

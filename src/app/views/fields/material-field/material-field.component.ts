@@ -7,7 +7,7 @@ import { AssetDatabase } from 'app/core/asset/asset-database';
 import { MetaImporter } from 'app/core/asset/metadata.model';
 import { TvMaterial } from 'app/graphics/material/tv-material';
 import { AssetPreviewService } from '../../inspectors/asset-preview/asset-preview.service';
-import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
+import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
 
 @Component( {
 	selector: 'app-material-field',

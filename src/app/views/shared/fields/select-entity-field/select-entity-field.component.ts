@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractFieldComponent } from '../../../../core/components/abstract-field.component';
+import { AbstractFieldComponent } from '../abstract-field.component';
 import { ScenarioService } from '../../../../scenario/services/scenario.service';
 
 @Component( {

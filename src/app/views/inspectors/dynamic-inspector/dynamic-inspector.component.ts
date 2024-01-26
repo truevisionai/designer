@@ -15,7 +15,7 @@ import {
 	ViewChildren,
 	ViewContainerRef
 } from '@angular/core';
-import { AbstractFieldComponent } from 'app/core/components/abstract-field.component';
+import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
 import { getSerializableActions, getSerializableFields, ISerializedActionSetting, ISerializedFieldSetting } from 'app/core/components/serialization';
 import { IComponent } from 'app/objects/game-object';
 import { SetValueCommand } from 'app/commands/set-value-command';

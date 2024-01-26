@@ -3,7 +3,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { AbstractFieldComponent } from '../../../../core/components/abstract-field.component';
+import { AbstractFieldComponent } from '../abstract-field.component';
 import { TvMapQueries } from '../../../../map/queries/tv-map-queries';
 
 @Component( {
