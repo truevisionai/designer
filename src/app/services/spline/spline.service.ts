@@ -9,17 +9,26 @@ import { MapEvents } from 'app/events/map-events';
 import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { SplineCreatedEvent } from 'app/events/spline/spline-created-event';
 import { SplineRemovedEvent } from 'app/events/spline/spline-removed-event';
+import { DataService } from '../debug/data.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineService {
+export class SplineService extends DataService<AbstractSpline> {
 
 	constructor (
 		private mapService: MapService
-	) { }
+	) {
+		super();
+	}
 
-	addSpline ( spline: AbstractSpline ) {
+	all (): AbstractSpline[] {
+
+		return this.mapService.splines;
+
+	}
+
+	add ( spline: AbstractSpline ) {
 
 		this.mapService.map.addSpline( spline );
 
@@ -27,7 +36,7 @@ export class SplineService {
 
 	}
 
-	removeSpline ( spline: AbstractSpline ) {
+	remove ( spline: AbstractSpline ) {
 
 		MapEvents.splineRemoved.emit( new SplineRemovedEvent( spline ) );
 
@@ -35,15 +44,10 @@ export class SplineService {
 
 	}
 
-	updateRoadSpline ( spline: AbstractSpline, rebuild: boolean = false ): void {
+	update ( spline: AbstractSpline ): void {
 
 		MapEvents.splineUpdated.emit( new SplineUpdatedEvent( spline ) );
 
 	}
 
-	updateSpline ( spline: AbstractSpline ): void {
-
-		this.updateRoadSpline( spline, true );
-
-	}
 }

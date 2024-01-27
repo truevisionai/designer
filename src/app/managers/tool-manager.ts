@@ -7,17 +7,17 @@ import { BaseTool } from '../tools/base-tool';
 
 export class ToolManager {
 
-	public static toolChanged = new EventEmitter<BaseTool>();
+	public static toolChanged = new EventEmitter<BaseTool<any>>();
 
-	private static tool: BaseTool;
+	private static tool: BaseTool<any>;
 
-	static get currentTool (): BaseTool {
+	static get currentTool (): BaseTool<any> {
 
 		return this.tool;
 
 	}
 
-	static set currentTool ( value: BaseTool ) {
+	static set currentTool ( value: BaseTool<any> ) {
 
 		if ( !value ) {
 
@@ -42,7 +42,7 @@ export class ToolManager {
 
 	}
 
-	static getTool<T extends BaseTool> (): T {
+	static getTool<T extends BaseTool<any>> (): T {
 
 		return this.tool as T;
 

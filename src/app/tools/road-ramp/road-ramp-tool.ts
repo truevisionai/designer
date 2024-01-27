@@ -20,7 +20,7 @@ import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from "../../events/road/road-created-event";
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 
-export class RoadRampTool extends BaseTool {
+export class RoadRampTool extends BaseTool<any>{
 
 	name: string = 'RoadRampTool';
 
@@ -166,7 +166,7 @@ export class RoadRampTool extends BaseTool {
 
 		} else if ( object instanceof TvRoad ) {
 
-			this.tool.roadService.removeRoad( object );
+			this.tool.roadService.remove( object );
 
 		}
 

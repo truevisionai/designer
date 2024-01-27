@@ -43,7 +43,6 @@ export class RoadCircleToolService {
 
 	constructor (
 		private roadService: RoadService,
-		private roadDebug: RoadDebugService,
 		private roadFactory: RoadFactory,
 		private debugTextService: DebugTextService,
 		public viewController: ViewControllerService,
@@ -51,8 +50,6 @@ export class RoadCircleToolService {
 	}
 
 	onToolDisabled () {
-
-		this.roadDebug.clear();
 
 		SceneService.removeFromTool( this.line );
 
@@ -64,7 +61,7 @@ export class RoadCircleToolService {
 
 		this.showRoadNodes( road );
 
-		this.roadService.addRoad( road );
+		this.roadService.add( road );
 
 	}
 
@@ -72,19 +69,19 @@ export class RoadCircleToolService {
 
 		this.hideRoadNodes( road );
 
-		this.roadService.removeRoad( road );
+		this.roadService.remove( road );
 
 	}
 
 	showRoadNodes ( road: TvRoad ) {
 
-		this.roadDebug.showRoadNodes( road );
+		// this.roadDebug.showRoadNodes( road );
 
 	}
 
 	hideRoadNodes ( road: TvRoad ) {
 
-		this.roadDebug.removeRoadNodes( road );
+		// this.roadDebug.removeRoadNodes( road );
 
 	}
 

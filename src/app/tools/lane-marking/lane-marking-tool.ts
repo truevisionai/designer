@@ -25,7 +25,7 @@ import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { Environment } from 'app/core/utils/environment';
 import { LaneMarkingInspector } from './lane-marking.inspector';
 
-export class LaneMarkingTool extends BaseTool {
+export class LaneMarkingTool extends BaseTool<any>{
 
 	public name: string = 'LaneMarking';
 

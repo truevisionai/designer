@@ -38,7 +38,7 @@ class IToolMenu {
 } )
 export class ToolBarComponent implements OnInit, AfterViewInit {
 
-	currentTool: BaseTool;
+	currentTool: BaseTool<any>;
 
 	ToolType = ToolType;
 
@@ -469,7 +469,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	ngOnInit () {
 
-		ToolManager.toolChanged.subscribe( ( tool: BaseTool ) => {
+		ToolManager.toolChanged.subscribe( ( tool: BaseTool<any> ) => {
 
 			this.currentTool = tool;
 

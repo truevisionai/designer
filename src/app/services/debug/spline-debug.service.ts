@@ -14,10 +14,9 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { SceneService } from '../scene.service';
 import { DebugState } from 'app/services/debug/debug-state';
 import { AbstractSplineDebugService } from './abstract-spline-debug.service';
-import { DebugService } from 'app/tools/surface/surface-debug.service';
 import { RoadDebugService } from './road-debug.service';
-import { TvRoad } from 'app/map/models/tv-road.model';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
+import { DebugService } from 'app/services/debug/debug.service';
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;
@@ -30,7 +29,7 @@ const ARROW_COLOR = COLOR.YELLOW;
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineDebugService {
+export class SplineDebugService extends DebugService<AbstractSpline> {
 
 	private lines = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
 
@@ -38,76 +37,80 @@ export class SplineDebugService {
 
 	private controlPoints = new Object3DArrayMap<AbstractSpline, Object3D[]>();
 
-	private highlighted = new Set<AbstractSpline>();
-
-	private selected = new Set<AbstractSpline>();
-
 	constructor (
 		private debugService: DebugDrawService,
 		private laneDebugService: LaneDebugService,
 		private mapService: MapService,
 		private splineDebugService: AbstractSplineDebugService,
+		private roadDebug: RoadDebugService,
 	) {
+		super();
 	}
 
 	get splines () {
 		return this.mapService.splines;
 	}
 
-	setState ( spline: AbstractSpline, state: DebugState ) {
+	setDebugState ( spline: AbstractSpline, state: DebugState ) {
 
-		switch ( state ) {
+		if ( !spline ) return;
 
-			case DebugState.DEFAULT:
+		if ( spline.controlPoints.length < 2 ) {
 
-				this.hideControlPoints( spline );
+			this.showControlPoints( spline );
 
-				this.splineDebugService.hideLines( spline );
-
-				this.removeHighlight();
-
-				this.remove( spline );
-
-				this.showBorder( spline );
-
-				break;
-
-			case DebugState.HIGHLIGHTED:
-
-				this.highlight( spline );
-
-				break;
-
-			case DebugState.SELECTED:
-
-				this.remove( spline );
-
-				this.showControlPoints( spline );
-
-				this.splineDebugService.showLines( spline );
-
-				this.select( spline );
-
-				this.showReferenceLine( spline );
-
-				break;
-
-			case DebugState.REMOVED:
-
-				this.remove( spline );
-
-				this.hideControlPoints( spline );
-
-				this.splineDebugService.hide( spline );
-
-				break;
-
-
+			return;
 		}
+
+		this.setBaseState( spline, state );
+	}
+
+	onDefault ( spline: AbstractSpline ): void {
+
+		this.showBorder( spline );
 
 	}
 
-	remove ( spline: AbstractSpline ) {
+	onHighlight ( spline: AbstractSpline ): void {
+
+		this.removeBorder( spline );
+		this.showBorder( spline, LINE_WIDTH * 2 );
+
+		this.showArrows( spline );
+
+	}
+
+	onSelected ( spline: AbstractSpline ): void {
+
+		this.showControlPoints( spline );
+
+		this.splineDebugService.showLines( spline );
+
+		this.removeBorder( spline );
+		this.showBorder( spline, LINE_WIDTH * 3, COLOR.RED );
+
+		this.arrows.removeKey( spline );
+		this.showArrows( spline );
+
+		this.showReferenceLine( spline );
+
+	}
+
+	onUnselected ( spline: AbstractSpline ): void {
+
+		this.hideControlPoints( spline );
+
+		this.splineDebugService.hideLines( spline );
+
+		this.removeBorder( spline );
+
+		this.arrows.removeKey( spline );
+
+		this.lines.removeKey( spline );
+
+	}
+
+	onRemoved ( spline: AbstractSpline ) {
 
 		this.lines.removeKey( spline );
 
@@ -118,7 +121,14 @@ export class SplineDebugService {
 		this.selected.delete( spline );
 
 		this.removeBorder( spline );
+
+		this.hideControlPoints( spline );
+
+		this.splineDebugService.hide( spline );
+
 	}
+
+	////// PRIVATE
 
 	showBorders () {
 
@@ -128,22 +138,6 @@ export class SplineDebugService {
 
 			this.showBorder( spline );
 
-		}
-
-	}
-
-	updateSpline ( spline: AbstractSpline ) {
-
-		this.updateArrows( spline );
-
-		if ( this.selected.has( spline ) ) {
-			this.unselect( spline );
-			this.select( spline );
-		}
-
-		if ( this.highlighted.has( spline ) ) {
-			this.unhighlight( spline );
-			this.highlight( spline );
 		}
 
 	}
@@ -249,19 +243,15 @@ export class SplineDebugService {
 
 	}
 
-	unhighlight ( spline: AbstractSpline ) {
-
-		if ( !this.highlighted.has( spline ) ) return;
+	onUnhighlight ( spline: AbstractSpline ) {
 
 		this.lines.removeKey( spline );
 
 		this.arrows.removeKey( spline );
 
-		this.highlighted.delete( spline );
-
 	}
 
-	removeHighlight () {
+	resetHighlighted () {
 
 		this.highlighted.forEach( road => {
 
@@ -329,7 +319,7 @@ export class SplineDebugService {
 
 		this.arrows.clear();
 
-		this.removeHighlight();
+		this.resetHighlighted();
 
 		this.selected.clear();
 

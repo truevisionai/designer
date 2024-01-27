@@ -18,12 +18,19 @@ import { RemoveObjectCommand } from "../commands/remove-object-command";
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { DebugService } from "../services/debug/debug.service";
+import { DataService } from 'app/services/debug/data.service';
+import { DebugState } from "../services/debug/debug-state";
 
-export abstract class BaseTool extends ViewportEventSubscriber {
+export abstract class BaseTool<T> extends ViewportEventSubscriber {
 
 	abstract name: string;
 
 	abstract toolType: ToolType;
+
+	protected debugService: DebugService<T>;
+
+	protected dataService: DataService<T>;
 
 	constructor () {
 
@@ -33,15 +40,27 @@ export abstract class BaseTool extends ViewportEventSubscriber {
 
 	}
 
-	init (): void {	}
+	init (): void { }
 
 	enable (): void {
 
 		this.subscribeToEvents();
 
+		this.dataService?.all().forEach( object => {
+
+			this.debugService?.setDebugState( object, DebugState.DEFAULT );
+
+		} );
+
 	}
 
 	disable (): void {
+
+		this.dataService?.all().forEach( object => {
+
+			this.debugService?.setDebugState( object, DebugState.REMOVED );
+
+		} );
 
 		StatusBarService.clearHint();
 
@@ -97,7 +116,7 @@ export abstract class BaseTool extends ViewportEventSubscriber {
 
 	onKeyDown ( e: KeyboardEvent ): void {
 
-		if ( e.key === 'Delete' || e.key === 'Backspace' ) {
+		if ( e.key === 'Delete' || ( e.key === 'Backspace' && e.metaKey ) ) {
 
 			this.onDeleteKeyDown();
 
@@ -274,6 +293,18 @@ export abstract class BaseTool extends ViewportEventSubscriber {
 		// 	}
 
 		// } );
+	}
+
+	setDebugService ( debugService: DebugService<T> ) {
+
+		this.debugService = debugService;
+
+	}
+
+	setDataService ( dataService: DataService<T> ) {
+
+		this.dataService = dataService;
+
 	}
 
 }

@@ -10,14 +10,12 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { TvSurface } from 'app/map/models/tv-surface.model';
 import { MapService } from 'app/services/map/map.service';
 import { SceneService } from 'app/services/scene.service';
-import { Mesh, MeshLambertMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2, Vector3 } from 'three';
+import { Mesh, Texture, Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
 import { SelectionService } from '../selection.service';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { TvSurfaceBuilder } from 'app/map/builders/tv-surface.builder';
 import { Object3DMap } from '../../core/models/object3d-map';
-import { DebugService, SurfaceDebugService } from './surface-debug.service';
-import { DebugState } from 'app/services/debug/debug-state';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,17 +23,14 @@ import { DebugState } from 'app/services/debug/debug-state';
 export class SurfaceToolService {
 
 	private meshes = new Object3DMap<TvSurface, Mesh>();
-	private debugService: DebugService<TvSurface>;
 
 	constructor (
 		public selection: SelectionService,
 		public base: BaseToolService,
-		private mapService: MapService,
+		public mapService: MapService,
 		private controlPointFactory: ControlPointFactory,
 		private surfaceBuilder: TvSurfaceBuilder,
-		surfaceDebugService: SurfaceDebugService
 	) {
-		this.debugService = surfaceDebugService;
 	}
 
 	getSurfaceMesh ( object: TvSurface ) {
@@ -64,14 +59,6 @@ export class SurfaceToolService {
 
 	}
 
-	addSurface ( surface: TvSurface ) {
-
-		this.mapService.map.addSurface( surface );
-
-		this.buildSurface( surface );
-
-	}
-
 	buildSurface ( surface: TvSurface ) {
 
 		const mesh = this.surfaceBuilder.buildSurface( surface );
@@ -88,17 +75,11 @@ export class SurfaceToolService {
 
 		this.buildSurface( surface );
 
-		this.debugService.setDebugState( surface, DebugState.HIGHLIGHTED );
-
 	}
 
-	removeSurface ( surface: TvSurface ) {
+	removeMesh ( surface: TvSurface ) {
 
 		this.meshes.remove( surface );
-
-		this.mapService.map.removeSurface( surface );
-
-		this.debugService.setDebugState( surface, DebugState.REMOVED );
 
 	}
 
@@ -124,39 +105,7 @@ export class SurfaceToolService {
 
 		this.rebuildSurface( surface );
 
-		SceneService.removeFromMain( point );
-
-	}
-
-	onToolDisabled () {
-
-		this.mapService.map.surfaces.forEach( surface => {
-
-			this.debugService.setDebugState( surface, DebugState.REMOVED );
-
-		} );
-
-	}
-
-	onToolEnabled () {
-
-		this.mapService.map.surfaces.forEach( surface => {
-
-			this.debugService.setDebugState( surface, DebugState.DEFAULT );
-
-		} );
-
-	}
-
-	onUnselect ( surface: TvSurface ) {
-
-		this.debugService.setDebugState( surface, DebugState.DEFAULT );
-
-	}
-
-	onSelect ( surface: TvSurface ) {
-
-		this.debugService.setDebugState( surface, DebugState.SELECTED );
+		SceneService.removeFromTool( point );
 
 	}
 

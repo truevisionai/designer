@@ -24,7 +24,7 @@
 // /**
 //  * @deprecated
 //  */
-// export class LaneCreateTool extends BaseTool {
+// export class LaneCreateTool extends BaseTool<any>{
 
 // 	public name: string = 'LaneCreate';
 // 	public toolType = ToolType.LaneCreate;

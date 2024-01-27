@@ -10,14 +10,11 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SelectionService } from '../selection.service';
 import { RoadLinkService } from 'app/services/road/road-link.service';
-import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadNode } from 'app/objects/road-node';
-import { SplineDebugService } from 'app/services/debug/spline-debug.service';
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';
-import { DebugState } from '../../services/debug/debug-state';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,9 +28,7 @@ export class RoadToolService {
 		public mapService: MapService,
 		public controlPointService: ControlPointFactory,
 		private roadLinkService: RoadLinkService,
-		private roadDebug: RoadDebugService,
 		public roadService: RoadService,
-		private splineDebug: SplineDebugService,
 		public splineFactory: SplineFactory,
 	) {
 	}
@@ -44,17 +39,11 @@ export class RoadToolService {
 
 		spline.update();
 
-		this.splineDebug.addControlPoint( spline, controlPoint );
-
 	}
 
 	insertControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
 
 		spline.insertPoint( controlPoint );
-
-		// update not needed
-
-		this.splineDebug.addControlPoint( spline, controlPoint );
 
 	}
 
@@ -63,8 +52,6 @@ export class RoadToolService {
 		spline.removeControlPoint( controlPoint );
 
 		spline.update();
-
-		this.splineDebug.removeControlPoint( spline, controlPoint );
 
 	}
 
@@ -86,24 +73,6 @@ export class RoadToolService {
 
 	}
 
-	onToolDisabled () {
-
-		this.roadDebug.hideNodes();
-
-		this.roadDebug.clear();
-
-		this.splineDebug.clear();
-
-	}
-
-	onToolEnabled () {
-
-		this.splineDebug.showBorders();
-
-		this.roadDebug.showNodes();
-
-	}
-
 	createDefaultRoad () {
 
 		return this.roadService.createDefaultRoad();
@@ -118,13 +87,7 @@ export class RoadToolService {
 
 	removeRoad ( road: TvRoad ) {
 
-		this.roadService.removeRoad( road );
-
-	}
-
-	updateRoadNodes ( road: TvRoad ) {
-
-		this.roadDebug.upateRoadNodes( road );
+		this.roadService.remove( road );
 
 	}
 
@@ -144,80 +107,21 @@ export class RoadToolService {
 
 	}
 
-	removeHighlight () {
-
-		this.roadDebug.removeHighlight();
-		this.splineDebug.removeHighlight();
-
-	}
-
 	addSpline ( spline: AbstractSpline ) {
 
-		this.splineService.addSpline( spline );
-
-		this.setSplineState( spline, DebugState.SELECTED );
+		this.splineService.add( spline );
 
 	}
 
-	udpateSpline ( spline: AbstractSpline ) {
+	updateSpline ( spline: AbstractSpline ) {
 
-		this.splineService.updateSpline( spline );
-
-		this.setSplineState( spline, DebugState.SELECTED );
-
-		const successor = spline.getSuccessorSpline();
-
-		if ( successor ) {
-
-			this.setSplineState( successor, DebugState.DEFAULT );
-
-		}
-
-		const predecessor = spline.getPredecessorrSpline();
-
-		if ( predecessor ) {
-
-			this.setSplineState( predecessor, DebugState.DEFAULT );
-
-		}
+		this.splineService.update( spline );
 
 	}
 
 	removeSpline ( spline: AbstractSpline ) {
 
-		this.splineService.removeSpline( spline );
-
-		this.setSplineState( spline, DebugState.REMOVED );
-
-	}
-
-	setSplineState ( spline: AbstractSpline, state: DebugState ) {
-
-		if ( !spline ) return;
-
-		if ( spline.controlPoints.length < 2 ) {
-
-			this.splineDebug.showControlPoints( spline );
-
-		} else {
-
-			this.splineDebug.setState( spline, state );
-
-			spline.getSplineSegments().filter( i => i.isRoad ).forEach( segment => {
-
-				if ( state === DebugState.REMOVED ) {
-
-					this.roadDebug.removeRoadNodes( segment.getInstance<TvRoad>() );
-
-				} else {
-
-					this.roadDebug.upateRoadNodes( segment.getInstance<TvRoad>() );
-
-				}
-
-			} );
-
-		}
+		this.splineService.remove( spline );
 
 	}
 

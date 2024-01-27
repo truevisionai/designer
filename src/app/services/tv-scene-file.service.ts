@@ -96,7 +96,7 @@ export class TvSceneFileService {
 
 		map.getRoads().forEach( road => {
 
-			this.roadService.removeRoad( road );
+			this.roadService.remove( road );
 
 			this.roadObjectService.removeObjectsByRoad( road );
 

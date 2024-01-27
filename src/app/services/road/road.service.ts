@@ -18,7 +18,6 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Vector3 } from 'three';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { RoadObjectService } from 'app/tools/crosswalk/road-object.service';
 import { GameObject } from 'app/objects/game-object';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { MapEvents } from 'app/events/map-events';
@@ -26,11 +25,12 @@ import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
 import { SplineService } from '../spline/spline.service';
+import { DataService } from "../debug/data.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadService {
+export class RoadService extends DataService<TvRoad> {
 
 	constructor (
 		private splineFactory: SplineFactory,
@@ -39,8 +39,14 @@ export class RoadService {
 		private splineDebugService: AbstractSplineDebugService,
 		private baseService: BaseService,
 		private roadFactory: RoadFactory,
-		private roadObjectService: RoadObjectService
 	) {
+		super();
+	}
+
+	all (): TvRoad[] {
+
+		return this.roads;
+
 	}
 
 	getRoadFactory (): RoadFactory {
@@ -70,12 +76,6 @@ export class RoadService {
 	getRoadCount (): number {
 
 		return this.roads.length;
-
-	}
-
-	removeAllRoads () {
-
-		this.roads.forEach( road => this.removeRoad( road ) );
 
 	}
 
@@ -175,7 +175,7 @@ export class RoadService {
 
 	updateSplineGeometries ( road: TvRoad ) {
 
-		this.splineService.updateRoadSpline( road.spline );
+		this.splineService.update( road.spline );
 
 	}
 
@@ -264,14 +264,14 @@ export class RoadService {
 
 	}
 
-	addRoad ( road: TvRoad ) {
+	add ( road: TvRoad ) {
 
 		this.mapService.map.addRoad( road );
 
 		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
 	}
 
-	updateRoad ( road: TvRoad ) {
+	update ( road: TvRoad ) {
 
 		this.updateRoadGeometries( road );
 
@@ -297,7 +297,7 @@ export class RoadService {
 
 	}
 
-	removeRoad ( road: TvRoad ) {
+	remove ( road: TvRoad ) {
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
@@ -379,12 +379,6 @@ export class RoadService {
 		}
 
 		return targetLane;
-
-	}
-
-	getRoadMesh ( road: TvRoad ) {
-
-		return road.gameObject;
 
 	}
 

@@ -105,8 +105,8 @@ describe( 'IntersectionService', () => {
 		road2.spline.addControlPointAt( new Vector3( 0, -50, 0 ) );
 		road2.spline.addControlPointAt( new Vector3( 0, 50, 0 ) );
 
-		roadService.addRoad( road1 );
-		roadService.addRoad( road2 );
+		roadService.add( road1 );
+		roadService.add( road2 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( road1, road2 );
 

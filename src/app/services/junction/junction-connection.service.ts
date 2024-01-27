@@ -41,7 +41,7 @@ export class JunctionConnectionService {
 
 		junction.addConnection( connection );
 
-		this.roadService.addRoad( connection.connectingRoad );
+		this.roadService.add( connection.connectingRoad );
 
 	}
 
@@ -49,7 +49,7 @@ export class JunctionConnectionService {
 
 		junction.removeConnection( connection );
 
-		this.roadService.removeRoad( connection.connectingRoad );
+		this.roadService.remove( connection.connectingRoad );
 
 	}
 
@@ -156,7 +156,7 @@ export class JunctionConnectionService {
 			outgoing.road
 		);
 
-		this.roadService.addRoad( connection.connectingRoad );
+		this.roadService.add( connection.connectingRoad );
 
 		// this.splineService.updateSpline( connectingRoad.spline );
 
@@ -175,7 +175,7 @@ export class JunctionConnectionService {
 
 		for ( const connection of leftconnections ) {
 
-			this.roadService.addRoad( connection.connectingRoad );
+			this.roadService.add( connection.connectingRoad );
 
 			// this.splineService.updateSpline( connection.connectingRoad.spline );
 
@@ -185,7 +185,7 @@ export class JunctionConnectionService {
 
 		for ( const connection of rigtConnections ) {
 
-			this.roadService.addRoad( connection.connectingRoad );
+			this.roadService.add( connection.connectingRoad );
 
 			// this.splineService.updateSpline( connection.connectingRoad.spline );
 

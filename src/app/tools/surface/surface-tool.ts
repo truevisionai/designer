@@ -21,9 +21,9 @@ import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { TvSurfaceInspector } from './surface.inspector';
+import { DebugState } from "../../services/debug/debug-state";
 
-
-export class SurfaceTool extends BaseTool {
+export class SurfaceTool extends BaseTool<TvSurface>{
 
 	name: string = 'Surface Tool';
 
@@ -61,8 +61,6 @@ export class SurfaceTool extends BaseTool {
 
 		super.enable();
 
-		this.tool.onToolEnabled();
-
 	}
 
 	disable (): void {
@@ -70,8 +68,6 @@ export class SurfaceTool extends BaseTool {
 		super.disable();
 
 		this.tool.base.reset();
-
-		this.tool.onToolDisabled();
 
 	}
 
@@ -209,7 +205,7 @@ export class SurfaceTool extends BaseTool {
 
 	onSurfaceSelected ( object: TvSurface ) {
 
-		this.tool.onSelect( object );
+		this.debugService.setDebugState( object, DebugState.SELECTED );
 
 		this.showInspector( object );
 
@@ -225,7 +221,7 @@ export class SurfaceTool extends BaseTool {
 
 	onSufaceUnselected ( object: TvSurface ) {
 
-		this.tool.onUnselect( object );
+		this.debugService.setDebugState( object, DebugState.DEFAULT );
 
 		AppInspector.clear();
 
@@ -265,14 +261,17 @@ export class SurfaceTool extends BaseTool {
 
 		if ( object instanceof TvSurface ) {
 
-			this.tool.addSurface( object );
+			this.dataService.add( object );
+
+			this.tool.buildSurface( object );
 
 			this.onSurfaceSelected( object );
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
-			this.tool.addControlPoint( this.selectedSurface, object );
+			this.tool.addControlPoint( object.mainObject, object );
 
+			this.onSurfaceSelected( object.mainObject );
 		}
 
 	}
@@ -291,7 +290,11 @@ export class SurfaceTool extends BaseTool {
 
 		if ( object instanceof TvSurface ) {
 
-			this.tool.removeSurface( object );
+			this.dataService.remove( object );
+
+			this.tool.removeMesh( object );
+
+			this.debugService.setDebugState( object, DebugState.REMOVED );
 
 			AppInspector.clear();
 
@@ -309,6 +312,8 @@ export class SurfaceTool extends BaseTool {
 
 		if ( object instanceof TvSurface ) {
 
+			this.dataService.update( object );
+
 			this.tool.updateSurface( object );
 
 		} else if ( object instanceof SimpleControlPoint ) {
@@ -317,8 +322,9 @@ export class SurfaceTool extends BaseTool {
 
 		} else if ( object instanceof TvSurfaceInspector ) {
 
-			this.tool.updateSurface( object.surface );
+			this.dataService.update( object.surface );
 
+			this.tool.updateSurface( object.surface );
 		}
 
 	}

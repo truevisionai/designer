@@ -34,7 +34,7 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugState } from '../../services/debug/debug-state';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 
-export class RoadTool extends BaseTool {
+export class RoadTool extends BaseTool<AbstractSpline>{
 
 	public name: string = 'Road Tool';
 
@@ -102,21 +102,15 @@ export class RoadTool extends BaseTool {
 
 		super.enable();
 
-		this.tool.onToolEnabled();
-
 	}
 
 	disable (): void {
 
 		super.disable();
 
-		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
-
 		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
 
 		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
-
-		this.tool.onToolDisabled();
 
 		this.tool.selection.reset();
 
@@ -235,7 +229,7 @@ export class RoadTool extends BaseTool {
 
 				this.lastRoadClicked = object;
 
-				this.tool.setSplineState( object.spline, DebugState.SELECTED );
+				this.debugService.setDebugState( object.spline, DebugState.SELECTED );
 
 			} else {
 
@@ -251,7 +245,7 @@ export class RoadTool extends BaseTool {
 
 			this.isRoadDoubleClicked = false;
 
-			if ( this.selectedSpline ) this.tool.setSplineState( this.selectedSpline, DebugState.DEFAULT );
+			if ( this.selectedSpline ) this.debugService.setDebugState( this.selectedSpline, DebugState.DEFAULT );
 
 		} );
 
@@ -259,12 +253,12 @@ export class RoadTool extends BaseTool {
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		this.tool.removeHighlight();
+		this.debugService.resetHighlighted();
 
 		this.tool.base.handleMovement( e, ( position ) => {
 
 			if ( position instanceof RoadPosition ) {
-				this.tool.setSplineState( position.road.spline, DebugState.HIGHLIGHTED );
+				this.debugService.setDebugState( position.road.spline, DebugState.HIGHLIGHTED );
 			}
 
 			if ( !this.isPointerDown ) return;
@@ -380,6 +374,8 @@ export class RoadTool extends BaseTool {
 
 			this.tool.addSpline( object );
 
+			this.debugService.setDebugState( object, DebugState.SELECTED );
+
 		} else if ( object instanceof SplineControlPoint ) {
 
 			this.onControlPointAdded( object );
@@ -410,6 +406,8 @@ export class RoadTool extends BaseTool {
 
 		this.tool.removeSpline( spline );
 
+		this.debugService.setDebugState( spline, DebugState.REMOVED );
+
 	}
 
 	onObjectUpdated ( object: any ): void {
@@ -428,7 +426,13 @@ export class RoadTool extends BaseTool {
 
 	onSplineUpdated ( spline: AbstractSpline ) {
 
-		this.tool.udpateSpline( spline );
+		this.tool.updateSpline( spline );
+
+		this.debugService.updateDebugState( spline, DebugState.SELECTED );
+
+		this.debugService.updateDebugState( spline.getSuccessorSpline(), DebugState.DEFAULT );
+
+		this.debugService.updateDebugState( spline.getPredecessorrSpline(), DebugState.DEFAULT );
 
 	}
 
@@ -444,11 +448,11 @@ export class RoadTool extends BaseTool {
 
 	onRoadUpdated ( road: TvRoad ) {
 
-		this.tool.roadService.updateRoad( road );
+		this.tool.roadService.update( road );
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
-		this.tool.updateRoadNodes( road );
+		this.debugService.setDebugState( road.spline, DebugState.SELECTED );
 
 	}
 
@@ -470,7 +474,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadAdded ( road: TvRoad ): void {
 
-		this.tool.roadService.addRoad( road );
+		this.tool.roadService.add( road );
 
 	}
 
@@ -506,7 +510,7 @@ export class RoadTool extends BaseTool {
 
 			if ( this.selectedSpline ) this.onObjectUnselected( this.selectedSpline );
 
-			this.tool.setSplineState( object, DebugState.SELECTED );
+			this.debugService.setDebugState( object, DebugState.SELECTED );
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
@@ -532,7 +536,7 @@ export class RoadTool extends BaseTool {
 
 		} else if ( object instanceof AbstractSpline ) {
 
-			this.tool.setSplineState( object, DebugState.DEFAULT );
+			this.debugService.setDebugState( object, DebugState.DEFAULT );
 
 		}
 
@@ -540,7 +544,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadSelected ( road: TvRoad ): void {
 
-		this.tool.setSplineState( road.spline, DebugState.SELECTED );
+		this.debugService.setDebugState( road.spline, DebugState.SELECTED );
 
 		AppInspector.setInspector( RoadInspector, { road } );
 
@@ -548,7 +552,7 @@ export class RoadTool extends BaseTool {
 
 	onRoadUnselected ( road: TvRoad ): void {
 
-		this.tool.setSplineState( road.spline, DebugState.DEFAULT );
+		this.debugService.setDebugState( road.spline, DebugState.DEFAULT );
 
 		AppInspector.clear();
 
@@ -560,7 +564,7 @@ export class RoadTool extends BaseTool {
 
 		if ( controlPoint instanceof SplineControlPoint ) {
 
-			this.tool.setSplineState( controlPoint.spline, DebugState.SELECTED );
+			this.debugService.setDebugState( controlPoint.spline, DebugState.SELECTED );
 
 			const segment = controlPoint.spline.getFirstRoadSegment();
 

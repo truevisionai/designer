@@ -121,7 +121,7 @@ export class ParkingRoadToolService {
 
 	addRoad ( road: TvRoad ) {
 
-		this.roadService.addRoad( road );
+		this.roadService.add( road );
 
 		road.getFirstLaneSection().getLaneArray().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
 
@@ -193,7 +193,7 @@ export class ParkingRoadToolService {
 
 	removeRoad ( object: TvRoad ) {
 
-		this.roadService.removeRoad( object );
+		this.roadService.remove( object );
 
 	}
 

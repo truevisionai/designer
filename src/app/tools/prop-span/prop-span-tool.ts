@@ -22,7 +22,7 @@ import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
 
-export class PropSpanTool extends BaseTool {
+export class PropSpanTool extends BaseTool<any>{
 
 	name: string = 'Prop Span Tool';
 

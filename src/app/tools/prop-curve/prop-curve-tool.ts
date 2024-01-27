@@ -20,7 +20,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { SelectObjectCommand } from 'app/commands/select-object-command';
 import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 
-export class PropCurveTool extends BaseTool {
+export class PropCurveTool extends BaseTool<any>{
 
 	public name: string = 'PropCurveTool';
 

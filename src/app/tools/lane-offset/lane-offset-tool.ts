@@ -21,7 +21,7 @@
 //import { UnselectLaneOffsetNodeCommand } from './unselect-lane-offset-node-command';
 //import { UpdateLaneOffsetDistanceCommand } from './update-lane-offset-distance-command';
 //
-//export class LaneOffsetTool extends BaseTool {
+//export class LaneOffsetTool extends BaseTool<any>{
 //
 //	public name: string = 'LaneOffset';
 //	public toolType = ToolType.LaneOffset;

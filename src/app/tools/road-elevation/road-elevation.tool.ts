@@ -23,7 +23,7 @@ import { RoadLineMovingStrategy } from 'app/core/strategies/move-strategies/road
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
 
-export class RoadElevationTool extends BaseTool {
+export class RoadElevationTool extends BaseTool<any>{
 
 	name: string = 'Road Elevation Tool';
 

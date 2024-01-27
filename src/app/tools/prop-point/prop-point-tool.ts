@@ -23,7 +23,7 @@ import { AppInspector } from 'app/core/inspector';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 
-export class PropPointTool extends BaseTool {
+export class PropPointTool extends BaseTool<any>{
 
 	public name: string = 'PropPointTool';
 

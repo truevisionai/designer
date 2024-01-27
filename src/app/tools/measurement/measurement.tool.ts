@@ -11,7 +11,7 @@ import { BufferGeometry, Line, LineBasicMaterial } from 'three';
 import { TooltipInterface } from 'app/services/debug/tool-tip.service';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
-export class MeasurementTool extends BaseTool {
+export class MeasurementTool extends BaseTool<any>{
 
 	public name: string = 'MeasurementTool';
 

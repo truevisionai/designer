@@ -61,8 +61,8 @@ describe( '4-way-junction tests', () => {
 		roadB.spline.addControlPointAt( new Vector3( 0, 20, 0 ) );
 		roadB.spline.addControlPointAt( new Vector3( 0, 70, 0 ) );
 
-		roadService.addRoad( roadA );
-		roadService.addRoad( roadB );
+		roadService.add( roadA );
+		roadService.add( roadB );
 
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
@@ -101,7 +101,7 @@ describe( '4-way-junction tests', () => {
 		roadA.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
 		roadA.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 
-		roadService.addRoad( roadA );
+		roadService.add( roadA );
 
 		const coordA = roadA.getPosThetaAt( 50 ).toRoadCoord( roadA );
 		const coordB = roadA.getPosThetaAt( 100 ).toRoadCoord( roadA );
@@ -147,8 +147,8 @@ describe( '4-way-junction tests', () => {
 		road2.spline.addControlPointAt( new Vector3( 0, -50, 0 ) );
 		road2.spline.addControlPointAt( new Vector3( 0, 50, 0 ) );
 
-		roadService.addRoad( road1 );
-		roadService.addRoad( road2 );
+		roadService.add( road1 );
+		roadService.add( road2 );
 
 		intersectionService.checkSplineIntersections( road2.spline );
 
@@ -274,7 +274,7 @@ describe( '4-way-junction tests', () => {
 			new RoadNode( rightRoad, TvContactPoint.START )
 		);
 
-		roadService.addRoad( joiningRoad );
+		roadService.add( joiningRoad );
 
 		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ] );
 
@@ -374,7 +374,7 @@ describe( '4-way-junction tests', () => {
 			new RoadNode( rightRoad, TvContactPoint.START )
 		);
 
-		roadService.addRoad( joiningRoad );
+		roadService.add( joiningRoad );
 
 		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ] );
 
@@ -432,8 +432,8 @@ describe( '4-way-junction tests', () => {
 		right.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
 		right.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
 
-		roadService.addRoad( left );
-		roadService.addRoad( right );
+		roadService.add( left );
+		roadService.add( right );
 
 		const junction = junctionService.createNewJunction();
 
@@ -493,9 +493,9 @@ describe( '4-way-junction tests', () => {
 		// bottom to top
 		const verticalRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -200 ), new Vector2( 0, 200 ) ] );
 
-		roadService.addRoad( horizontalBottom );
-		roadService.addRoad( horizontalTop );
-		roadService.addRoad( verticalRoad );
+		roadService.add( horizontalBottom );
+		roadService.add( horizontalTop );
+		roadService.add( verticalRoad );
 
 		splineManager.updateSpline( verticalRoad.spline );
 

@@ -16,7 +16,7 @@
 // import { ObjectTagStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
 // import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 
-// export class ImageTool extends BaseTool implements IToolWithMainObject {
+// export class ImageTool extends BaseTool<any>implements IToolWithMainObject {
 
 // 	public name: string = 'ImageTool';
 

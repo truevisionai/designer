@@ -16,7 +16,7 @@ import { TextMarkingInspector } from "./text-marking.inspector";
 import { RoadCoordStrategy } from "app/core/strategies/select-strategies/road-coord-strategy";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 
-export class TextMarkingTool extends BaseTool {
+export class TextMarkingTool extends BaseTool<any>{
 
 	name: string = 'TextMarkingTool';
 

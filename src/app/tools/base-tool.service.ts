@@ -20,14 +20,17 @@ import { Vector3 } from 'three';
 export class BaseToolService {
 
 	private creationStrategies: SelectStrategy<any>[] = [];
+
 	private selectionStrategies: SelectStrategy<any>[] = [];
+
 	private movingStrategies: IMovingStrategy[] = [];
+
 	private currentSelected: any;
 
 	constructor (
-		public statusBar: StatusBarService,
 		public selection: SelectionService,
-	) { }
+	) {
+	}
 
 	addSelectionStrategy ( strategy: SelectStrategy<any> ) {
 

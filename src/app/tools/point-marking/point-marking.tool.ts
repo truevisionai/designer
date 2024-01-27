@@ -21,7 +21,7 @@ import { MathUtils, Vector3 } from 'three';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 
-export class PointMarkingTool extends BaseTool {
+export class PointMarkingTool extends BaseTool<any>{
 
 	public name: string = 'Point Marking Tool';
 

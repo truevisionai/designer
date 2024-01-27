@@ -19,7 +19,7 @@ import { TvLaneType, TravelDirection } from 'app/map/models/tv-common';
 import { LaneToolService } from './lane-tool.service';
 import { LaneService } from 'app/services/lane/lane.service';
 
-export class LaneTool extends BaseTool {
+export class LaneTool extends BaseTool<any>{
 
 	public name: string = 'LaneTool';
 

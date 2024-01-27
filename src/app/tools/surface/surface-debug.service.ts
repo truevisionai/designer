@@ -6,44 +6,63 @@ import { Injectable } from '@angular/core';
 import { TvSurface } from 'app/map/models/tv-surface.model';
 import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { DebugState } from 'app/services/debug/debug-state';
-
-export interface DebugService<T> {
-	setDebugState ( object: T, state: DebugState ): void;
-}
+import { DebugService } from '../../services/debug/debug.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SurfaceDebugService implements DebugService<TvSurface> {
+export class SurfaceDebugService extends DebugService<TvSurface> {
 
 	constructor (
-		private splineService: AbstractSplineDebugService,
-	) { }
+		private debug: AbstractSplineDebugService,
+	) {
+		super();
+	}
 
 	setDebugState ( surface: TvSurface, state: DebugState ): void {
 
-		switch ( state ) {
+		if ( !surface ) return;
 
-			case DebugState.DEFAULT:
-				this.splineService.showLines( surface.spline );
-				this.splineService.hideControlPoints( surface.spline );
-				break;
+		this.setBaseState( surface, state );
 
-			case DebugState.HIGHLIGHTED:
-				this.splineService.showLines( surface.spline );
-				break;
+	}
 
-			case DebugState.SELECTED:
-				this.splineService.showLines( surface.spline );
-				this.splineService.showControlPoints( surface.spline );
-				break;
+	onDefault ( surface: TvSurface ): void {
 
-			case DebugState.REMOVED:
-				this.splineService.hideLines( surface.spline );
-				this.splineService.hideControlPoints( surface.spline );
-				break;
+		this.debug.showLines( surface.spline );
+		this.debug.showControlPoints( surface.spline );
 
-		}
+	}
+
+	onHighlight ( surface: TvSurface ): void {
+
+		this.debug.showLines( surface.spline );
+
+	}
+
+	onUnhighlight ( surface: TvSurface ): void {
+
+		// this.splineService.hideLines( surface.spline );
+
+	}
+
+	onSelected ( surface: TvSurface ): void {
+
+		this.debug.showLines( surface.spline );
+		this.debug.showControlPoints( surface.spline );
+
+	}
+
+	onUnselected ( surface: TvSurface ): void {
+
+
+
+	}
+
+	onRemoved ( surface: TvSurface ): void {
+
+		this.debug.hideLines( surface.spline );
+		this.debug.hideControlPoints( surface.spline );
 
 	}
 

@@ -126,12 +126,12 @@ describe( 'SplineToGeometry test', () => {
 		const vertical = roadService.createDefaultRoad()
 		vertical.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
 		vertical.spline.addControlPointAt( new Vector3( 50, 100, 0 ) );
-		roadService.addRoad( vertical );
+		roadService.add( vertical );
 
 		const horizontal = roadService.createDefaultRoad()
 		horizontal.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
 		horizontal.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
-		roadService.addRoad( horizontal );
+		roadService.add( horizontal );
 
 		splineManager.updateSpline( vertical.spline );
 

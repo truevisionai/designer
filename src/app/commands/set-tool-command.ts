@@ -8,9 +8,9 @@ import { BaseCommand } from './base-command';
 
 export class SetToolCommand extends BaseCommand {
 
-	private oldTool: BaseTool;
+	private oldTool: BaseTool<any>;
 
-	constructor ( private newTool: BaseTool ) {
+	constructor ( private newTool: BaseTool<any> ) {
 
 		super();
 

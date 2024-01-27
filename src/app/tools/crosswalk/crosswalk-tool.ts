@@ -26,7 +26,7 @@ import { Environment } from 'app/core/utils/environment';
 import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 
-export class CrosswalkTool extends BaseTool {
+export class CrosswalkTool extends BaseTool<any>{
 
 	name: string = 'CrosswalkTool';
 

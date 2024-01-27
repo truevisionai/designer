@@ -39,7 +39,7 @@ export class RoadDividerService {
 
 		newRoad.setPredecessorRoad( road, TvContactPoint.END );
 
-		this.splineService.updateSpline( road.spline );
+		this.splineService.update( road.spline );
 
 		return newRoad
 
@@ -86,7 +86,7 @@ export class RoadDividerService {
 
 		}
 
-		this.splineService.updateSpline( road.spline );
+		this.splineService.update( road.spline );
 
 		newRoad.predecessor = null;
 

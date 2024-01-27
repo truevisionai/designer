@@ -8,7 +8,7 @@ import { ToolType } from "../tool-types.enum";
 import { ParkingRoadToolService } from "./parking-road-tool.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 
-export class ParkingLotTool extends BaseTool {
+export class ParkingLotTool extends BaseTool<any>{
 
 	public name: string = 'Parking Lot';
 

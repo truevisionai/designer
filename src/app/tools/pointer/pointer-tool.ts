@@ -8,7 +8,7 @@ import * as THREE from 'three';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 
-export class PointerTool extends BaseTool {
+export class PointerTool extends BaseTool<any>{
 
 	public name: string = 'PointerTool';
 

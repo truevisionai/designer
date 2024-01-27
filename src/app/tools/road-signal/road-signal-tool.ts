@@ -17,7 +17,7 @@ import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-co
 import { AppInspector } from 'app/core/inspector';
 import { RoadSignalInspector } from './road-signal.inspector';
 
-export class RoadSignalTool extends BaseTool {
+export class RoadSignalTool extends BaseTool<any>{
 
 	public name: string = 'RoadSignalTool';
 

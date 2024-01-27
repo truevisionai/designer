@@ -46,8 +46,8 @@ describe( 'ConnectionService', () => {
 		rightRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		rightRoad.spline.addControlPointAt( new Vector3( 40, 0, 0 ) );
 
-		roadService.addRoad( leftRoad );
-		roadService.addRoad( rightRoad );
+		roadService.add( leftRoad );
+		roadService.add( rightRoad );
 
 		expect( leftRoad.getFirstLaneSection().getLaneCount() ).toBe( 7 );
 		expect( rightRoad.getFirstLaneSection().getLaneCount() ).toBe( 7 );
@@ -109,8 +109,8 @@ describe( 'ConnectionService', () => {
 		rightRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		rightRoad.spline.addControlPointAt( new Vector3( 40, 0, 0 ) );
 
-		roadService.addRoad( leftRoad );
-		roadService.addRoad( rightRoad );
+		roadService.add( leftRoad );
+		roadService.add( rightRoad );
 
 		expect( leftRoad.getFirstLaneSection().getLaneCount() ).toBe( 7 );
 		expect( rightRoad.getFirstLaneSection().getLaneCount() ).toBe( 7 );

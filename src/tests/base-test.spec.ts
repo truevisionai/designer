@@ -50,7 +50,7 @@ export class BaseTest {
 
 		const road = this.makeRoad( roadService.getRoadFactory(), points, leftLaneCount, rightLaneCount, leftWidth, rightWidth );
 
-		roadService.addRoad( road );
+		roadService.add( road );
 
 		return road;
 
@@ -60,7 +60,7 @@ export class BaseTest {
 
 		const road = this.makeDefaultRoad( roadService.getRoadFactory(), points );
 
-		roadService.addRoad( road );
+		roadService.add( road );
 
 		roadService.updateRoadGeometries( road );
 
@@ -84,7 +84,7 @@ export class BaseTest {
 		road.laneSections[ 0 ].lanes.get( -2 ).setType( TvLaneType.sidewalk );
 		road.laneSections[ 0 ].lanes.get( -1 ).setType( TvLaneType.driving );
 
-		roadService.addRoad( road );
+		roadService.add( road );
 
 		return road;
 
@@ -115,9 +115,9 @@ export class BaseTest {
 			rightWidth
 		);
 
-		roadService.addRoad( horizontalRoad );
+		roadService.add( horizontalRoad );
 
-		roadService.addRoad( verticalRoad );
+		roadService.add( verticalRoad );
 
 		intersectionService.checkSplineIntersections( verticalRoad.spline );
 
@@ -157,9 +157,9 @@ export class BaseTest {
 			rightWidth
 		);
 
-		roadService.addRoad( horizontal );
+		roadService.add( horizontal );
 
-		roadService.addRoad( vertical );
+		roadService.add( vertical );
 
 		intersectionService.checkSplineIntersections( vertical.spline );
 
@@ -182,7 +182,7 @@ export class BaseTest {
 		const rightNode = new RoadNode( rightRoad, TvContactPoint.START );
 
 		const joiningRoad = roadToolService.createJoiningRoad( leftNode, rightNode );
-		roadToolService.roadService.addRoad( joiningRoad );
+		roadToolService.roadService.add( joiningRoad );
 
 	}
 

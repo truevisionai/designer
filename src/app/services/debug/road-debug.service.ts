@@ -137,20 +137,6 @@ export class RoadDebugService {
 
 	}
 
-	// selectRoad ( road: TvRoad ) {
-
-	// 	if ( this.selectedRoads.has( road ) ) return;
-
-	// 	this.lines.removeKey( road );
-
-	// 	this.showRoadBorderLine( road, LINE_WIDTH * 3, COLOR.RED );
-
-	// 	this.showRoadDirectionArrows( road );
-
-	// 	this.selectedRoads.add( road );
-
-	// }
-
 	removeHighlight () {
 
 		this.highlightedRoads.forEach( road => {
@@ -185,48 +171,6 @@ export class RoadDebugService {
 
 	}
 
-	// unselectRoad ( road: TvRoad ) {
-
-	// 	this.lines.removeKey( road );
-
-	// 	this.arrows.removeKey( road );
-
-	// 	this.showRoadBorderLine( road );
-
-	// 	this.selectedRoads.delete( road );
-
-	// }
-
-	// upateRoadBorderLine ( road: TvRoad, lineWidth = LINE_WIDTH ) {
-
-	// 	this.lines.removeKey( road );
-
-	// 	this.showRoadBorderLine( road, lineWidth );
-
-	// 	this.updatePredecessor( road, predecessor => {
-
-	// 		this.lines.removeKey( predecessor );
-
-	// 		this.showRoadBorderLine( predecessor );
-
-	// 	} );
-
-	// 	this.updateSuccessor( road, successor => {
-
-	// 		this.lines.removeKey( successor );
-
-	// 		this.showRoadBorderLine( successor );
-
-	// 	} );
-
-	// }
-
-	// removeRoadBorderLine ( road: TvRoad ) {
-
-	// 	this.lines.removeKey( road );
-
-	// }
-
 	showRoadDirectionArrows ( road: TvRoad ) {
 
 		this.getReferenceLinePoints( road, ARROW_STEP ).forEach( point => {
@@ -238,30 +182,6 @@ export class RoadDebugService {
 		} );
 
 	}
-
-	// updateRoadDirectionArrows ( road: TvRoad ) {
-
-	// 	this.arrows.removeKey( road );
-
-	// 	this.showRoadDirectionArrows( road );
-
-	// 	this.updatePredecessor( road, predecessor => {
-
-	// 		this.arrows.removeKey( predecessor );
-
-	// 		this.showRoadDirectionArrows( predecessor );
-
-	// 	} );
-
-	// 	this.updateSuccessor( road, successor => {
-
-	// 		this.arrows.removeKey( successor );
-
-	// 		this.showRoadDirectionArrows( successor );
-
-	// 	} );
-
-	// }
 
 	getReferenceLinePoints ( road: TvRoad, step = 1.0 ): TvPosTheta[] {
 

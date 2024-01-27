@@ -118,8 +118,8 @@ describe( 'LaneLinkService', () => {
 		yAxisRoad.spline.addControlPointAt( new Vector3( 10, 0, 0 ) );
 		yAxisRoad.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
 
-		roadService.addRoad( xAxisRoad );
-		roadService.addRoad( yAxisRoad );
+		roadService.add( xAxisRoad );
+		roadService.add( yAxisRoad );
 
 		const junction = junctionService.createNewJunction();
 

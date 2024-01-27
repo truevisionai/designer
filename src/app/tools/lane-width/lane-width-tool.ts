@@ -19,7 +19,7 @@ import { DebugLine } from 'app/objects/debug-line';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 
-export class LaneWidthTool extends BaseTool {
+export class LaneWidthTool extends BaseTool<any>{
 
 	public name: string = 'LaneWidth';
 

@@ -36,7 +36,7 @@ export class JunctionManager {
 		for ( const connection of connections ) {
 
 			// TODO: use road manager
-			this.roadService.addRoad( connection.connectingRoad );
+			this.roadService.add( connection.connectingRoad );
 
 		}
 
@@ -51,7 +51,7 @@ export class JunctionManager {
 		for ( const connection of connections ) {
 
 			// TODO: use road manager
-			this.roadService.removeRoad( connection.connectingRoad );
+			this.roadService.remove( connection.connectingRoad );
 
 		}
 
@@ -74,7 +74,7 @@ export class JunctionManager {
 
 				const nextRoad = nextSegment.getInstance<TvRoad>();
 
-				this.roadService.removeRoad( nextRoad );
+				this.roadService.remove( nextRoad );
 
 				// this.mapService.models.removeRoad( nextRoad );
 

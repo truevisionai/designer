@@ -12,7 +12,7 @@ import { AppInspector } from "app/core/inspector";
 import { TvObjectRepeat } from "app/map/models/objects/tv-object-repeat";
 import { PolePropInspector } from "./pole-prop.inspector";
 
-export class PolePropTool extends BaseTool {
+export class PolePropTool extends BaseTool<any>{
 
 	name: string = 'Prop Barrier';
 

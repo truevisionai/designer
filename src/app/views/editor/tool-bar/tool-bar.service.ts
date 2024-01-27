@@ -6,55 +6,9 @@ import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/commands/set-tool-command';
 import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from 'app/tools/base-tool';
-import { JunctionTool } from 'app/tools/junction/junction.tool';
-import { LaneMarkingTool } from 'app/tools/lane-marking/lane-marking-tool';
-import { LaneWidthTool } from 'app/tools/lane-width/lane-width-tool';
-import { LaneTool } from 'app/tools/lane/lane-tool';
-import { ManeuverTool } from 'app/tools/maneuver/maneuver-tool';
-import { CrosswalkTool } from 'app/tools/crosswalk/crosswalk-tool';
-import { PointMarkingTool } from 'app/tools/point-marking/point-marking.tool';
-import { PointerTool } from 'app/tools/pointer/pointer-tool';
-import { PropCurveTool } from 'app/tools/prop-curve/prop-curve-tool';
-import { PropPointTool } from 'app/tools/prop-point/prop-point-tool';
-import { PropPolygonTool } from 'app/tools/prop-polygon/prop-polygon-tool';
-import { RoadCircleTool } from 'app/tools/road-circle/road-circle-tool';
-import { RoadDividerTool } from 'app/tools/road-cut-tool/road-divider-tool';
-import { RoadElevationTool } from 'app/tools/road-elevation/road-elevation.tool';
-import { RoadRampTool } from 'app/tools/road-ramp/road-ramp-tool';
-import { RoadSignalTool } from 'app/tools/road-signal/road-signal-tool';
-import { RoadTool } from 'app/tools/road/road-tool';
-import { RoadToolService } from 'app/tools/road/road-tool.service';
-import { SurfaceTool } from 'app/tools/surface/surface-tool';
 import { ToolType } from 'app/tools/tool-types.enum';
-import { VehicleTool } from 'app/tools/vehicle/vehicle-tool';
-import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
-import { PropPointService } from 'app/tools/prop-point/prop-point.service';
-import { RoadCircleToolService } from 'app/tools/road-circle/road-circle-tool.service';
-import { ManeuverService } from 'app/services/junction/maneuver.service';
-import { LaneWidthToolService } from 'app/tools/lane-width/lane-width-tool.service';
-import { LaneMarkingToolService } from 'app/tools/lane-marking/lane-marking-tool.service';
-import { RoadDividerToolService } from 'app/tools/road-cut-tool/road-divider-tool.service';
 import { ToolManager } from 'app/managers/tool-manager';
-import { PropCurveService } from 'app/tools/prop-curve/prop-curve.service';
-import { RoadRampService } from 'app/services/road/road-ramp.service';
-import { PropPolygonToolService } from "../../../tools/prop-polygon/prop-polygon-tool.service";
-import { ParkingRoadTool } from 'app/tools/parking/parking-road-tool';
-import { ParkingLotTool } from 'app/tools/parking/parking-lot.tool';
-import { ParkingRoadToolService } from 'app/tools/parking/parking-road-tool.service';
-import { MeasurementTool } from 'app/tools/measurement/measurement.tool';
-import { TextMarkingTool } from 'app/tools/text-marking/text-marking.tool';
-import { TextMarkingToolService } from 'app/tools/text-marking/text-marking-tool.service';
-import { PropSpanTool } from 'app/tools/prop-span/prop-span-tool';
-import { PropSpanToolService } from 'app/tools/prop-span/prop-span-tool.service';
-import { PolePropTool } from 'app/tools/prop-pole/pole-prop.tool';
-import { PolePropToolService } from 'app/tools/prop-pole/pole-prop.tool.service';
-import { PointMarkingToolService } from 'app/tools/point-marking/point-marking-tool.service';
-import { JunctionToolService } from 'app/tools/junction/junction-tool.service';
-import { LaneToolService } from 'app/tools/lane/lane-tool.service';
-import { MeasurementToolService } from 'app/tools/measurement/measurement-tool.service';
-import { RoadElevationToolService } from 'app/tools/road-elevation/road-elevation-tool.service';
-import { RoadSignalToolService } from 'app/tools/road-signal/road-signal-tool.service';
-import { CrosswalkToolService } from 'app/tools/crosswalk/crosswalk-tool.service';
+import { ToolFactory } from "../../../tools/tool.factory";
 
 @Injectable( {
 	providedIn: 'root'
@@ -64,28 +18,7 @@ export class ToolBarService {
 	private height: number;
 
 	constructor (
-		private roadToolService: RoadToolService,
-		private surfaceToolService: SurfaceToolService,
-		private propPointService: PropPointService,
-		private roadCircleService: RoadCircleToolService,
-		private roadElevationService: RoadElevationToolService,
-		private maneuverService: ManeuverService,
-		private laneWidthService: LaneWidthToolService,
-		private laneMarkingService: LaneMarkingToolService,
-		private laneToolService: LaneToolService,
-		private crosswalkService: CrosswalkToolService,
-		private roadCutToolService: RoadDividerToolService,
-		private junctionToolService: JunctionToolService,
-		private propCurveService: PropCurveService,
-		private roadRampService: RoadRampService,
-		private propPolygonToolService: PropPolygonToolService,
-		private parkingRoadToolService: ParkingRoadToolService,
-		private textMarkingToolService: TextMarkingToolService,
-		private propSpanToolService: PropSpanToolService,
-		private propBarrierToolService: PolePropToolService,
-		private pointMarkingToolService: PointMarkingToolService,
-		private measurementToolService: MeasurementToolService,
-		private roadSignalToolService: RoadSignalToolService,
+		private toolFactory: ToolFactory,
 	) {
 	}
 
@@ -93,73 +26,13 @@ export class ToolBarService {
 
 		if ( ToolManager.currentTool?.toolType === type ) return;
 
-		this.setTool( this.createTool( type ) );
+		const tool = this.toolFactory.createTool( type );
+
+		this.setTool( tool );
 
 	}
 
-	createTool ( type: ToolType ): BaseTool {
-
-		switch ( type ) {
-			case ToolType.Road:
-				return new RoadTool( this.roadToolService );
-			case ToolType.RoadCircle:
-				return new RoadCircleTool( this.roadCircleService );
-			case ToolType.Maneuver:
-				return new ManeuverTool( this.maneuverService );
-			case ToolType.Junction:
-				return new JunctionTool( this.junctionToolService );
-			case ToolType.LaneWidth:
-				return new LaneWidthTool( this.laneWidthService );
-			case ToolType.PropPoint:
-				return new PropPointTool( this.propPointService );
-			case ToolType.PropCurve:
-				return new PropCurveTool( this.propCurveService );
-			case ToolType.PropPolygon:
-				return new PropPolygonTool( this.propPolygonToolService );
-			case ToolType.PropSpanTool:
-				return new PropSpanTool( this.propSpanToolService );
-			case ToolType.PolePropTool:
-				return new PolePropTool( this.propBarrierToolService );
-			case ToolType.Surface:
-				return new SurfaceTool( this.surfaceToolService );
-			case ToolType.LaneMarking:
-				return new LaneMarkingTool( this.laneMarkingService );
-			case ToolType.Lane:
-				return new LaneTool( this.laneToolService );
-			case ToolType.PointMarkingTool:
-				return new PointMarkingTool( this.pointMarkingToolService );
-			case ToolType.TextMarkingTool:
-				return new TextMarkingTool( this.textMarkingToolService );
-			case ToolType.LineMarkingTool:
-				throw new Error( 'Invalid tool type' + type );
-			case ToolType.Crosswalk:
-				return new CrosswalkTool( this.crosswalkService );
-			case ToolType.Pointer:
-				return new PointerTool();
-			case ToolType.MeasurementTool:
-				return new MeasurementTool( this.measurementToolService );
-			case ToolType.Vehicle:
-				return new VehicleTool();
-			case ToolType.RoadSignalTool:
-				return new RoadSignalTool( this.roadSignalToolService );
-			case ToolType.RoadElevation:
-				return new RoadElevationTool( this.roadElevationService );
-			case ToolType.RoadRampTool:
-				return new RoadRampTool( this.roadRampService );
-			case ToolType.RoadDividerTool:
-				return new RoadDividerTool( this.roadCutToolService );
-			case ToolType.ParkingRoad:
-				return new ParkingRoadTool( this.parkingRoadToolService );
-			case ToolType.ParkingLot:
-				return new ParkingLotTool( this.parkingRoadToolService );
-			default:
-				throw new Error( 'Invalid tool type' + type );
-				break;
-		}
-
-	}
-
-	private setTool ( tool: BaseTool ) {
+	private setTool ( tool: BaseTool<any> ) {
 
 		CommandHistory.execute( new SetToolCommand( tool ) );
 

@@ -9,9 +9,10 @@ import { BaseTool } from '../base-tool';
 import { RoadCircleToolService } from "./road-circle-tool.service";
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Environment } from 'app/core/utils/environment';
+import { DebugState } from 'app/services/debug/debug-state';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
-
-export class RoadCircleTool extends BaseTool {
+export class RoadCircleTool extends BaseTool<AbstractSpline>{
 
 	public name: string = 'RoadCircleTool';
 
@@ -38,7 +39,6 @@ export class RoadCircleTool extends BaseTool {
 	}
 
 	init () {
-
 
 	}
 
@@ -85,16 +85,19 @@ export class RoadCircleTool extends BaseTool {
 
 	}
 
-
 	onRoadAdded ( road: TvRoad ) {
 
 		this.tool.addRoad( road );
+
+		this.debugService.setDebugState( road.spline, DebugState.DEFAULT );
 
 	}
 
 	onRoadRemoved ( road: TvRoad ) {
 
 		this.tool.removeRoad( road );
+
+		this.debugService.setDebugState( road.spline, DebugState.REMOVED );
 
 	}
 

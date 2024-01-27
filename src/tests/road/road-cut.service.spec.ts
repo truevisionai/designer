@@ -34,7 +34,7 @@ describe( 'Service: RoadCut', () => {
 		oldRoad.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
 		oldRoad.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
 
-		roadService.addRoad( oldRoad );
+		roadService.add( oldRoad );
 
 		expect( oldRoad.length ).toBe( 100 );
 
@@ -47,7 +47,7 @@ describe( 'Service: RoadCut', () => {
 		expect( oldRoad.sStart ).toBe( 0 );
 		expect( newRoad.sStart ).toBe( 60 );
 
-		roadService.addRoad( newRoad );
+		roadService.add( newRoad );
 		roadService.buildSpline( oldRoad.spline );
 
 		expect( oldRoad.length ).toBe( 40 );
@@ -65,7 +65,7 @@ describe( 'Service: RoadCut', () => {
 		oldRoad.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
 		oldRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 
-		roadService.addRoad( oldRoad );
+		roadService.add( oldRoad );
 
 		expect( oldRoad.length ).toBe( 50 );
 

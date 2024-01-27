@@ -24,7 +24,7 @@ import { SelectMainObjectCommand } from "../../commands/select-main-object-comma
 import { PropPolygonToolService } from "./prop-polygon-tool.service";
 import { Vector3 } from 'three';
 
-export class PropPolygonTool extends BaseTool implements IToolWithPoint, IToolWithMainObject {
+export class PropPolygonTool extends BaseTool<any>implements IToolWithPoint, IToolWithMainObject {
 
 	public name: string = 'PropPolygonTool';
 

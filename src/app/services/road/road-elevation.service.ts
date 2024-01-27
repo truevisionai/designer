@@ -44,7 +44,7 @@ export class RoadElevationService {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		this.roadService.updateRoad( road );
+		this.roadService.update( road );
 
 	}
 
@@ -54,7 +54,7 @@ export class RoadElevationService {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		this.roadService.updateRoad( road );
+		this.roadService.update( road );
 
 	}
 
@@ -62,7 +62,7 @@ export class RoadElevationService {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		this.roadService.updateRoad( road );
+		this.roadService.update( road );
 
 	}
 

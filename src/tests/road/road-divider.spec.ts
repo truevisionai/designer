@@ -45,7 +45,7 @@ describe( 'Service: RoadDivider', () => {
 
 		const newRoad = roadDividerService.divideRoadAt( road, 50 );
 
-		roadService.addRoad( newRoad );
+		roadService.add( newRoad );
 
 		expect( newRoad ).toBeDefined();
 		expect( newRoad.sStart ).toBe( 50 );
@@ -88,10 +88,10 @@ describe( 'Service: RoadDivider', () => {
 		expect( road1.length ).toBe( 500 );
 
 		const road2 = roadDividerService.divideRoadAt( road1, 300 );
-		roadService.addRoad( road2 );
+		roadService.add( road2 );
 
 		const road3 = roadDividerService.divideRoadAt( road1, 100 );
-		roadService.addRoad( road3 );
+		roadService.add( road3 );
 
 		expect( road1.successor.element ).toBe( road3 )
 		expect( road1.successor.contactPoint ).toBe( TvContactPoint.START );

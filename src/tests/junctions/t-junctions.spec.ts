@@ -65,8 +65,8 @@ describe( 't-junction tests', () => {
 		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
 		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
 
-		roadService.addRoad( xAxisRoad );
-		roadService.addRoad( yAxisRoad );
+		roadService.add( xAxisRoad );
+		roadService.add( yAxisRoad );
 
 		const junction = junctionService.createNewJunction();
 
@@ -89,13 +89,13 @@ describe( 't-junction tests', () => {
 		const xAxisRoad = roadService.createDefaultRoad();
 		xAxisRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
 		xAxisRoad.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
-		roadService.addRoad( xAxisRoad );
+		roadService.add( xAxisRoad );
 
 		// bottom to top
 		const yAxisRoad = roadService.createDefaultRoad();
 		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
 		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
-		roadService.addRoad( yAxisRoad );
+		roadService.add( yAxisRoad );
 
 		const junction = junctionService.createNewJunction();
 
@@ -124,13 +124,13 @@ describe( 't-junction tests', () => {
 		const xAxisRoad = roadService.createDefaultRoad();
 		xAxisRoad.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
 		xAxisRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
-		roadService.addRoad( xAxisRoad );
+		roadService.add( xAxisRoad );
 
 		// bottom to top
 		const yAxisRoad = roadService.createDefaultRoad();
 		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
 		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
-		roadService.addRoad( yAxisRoad );
+		roadService.add( yAxisRoad );
 
 		intersectionService.checkSplineIntersections( yAxisRoad.spline );
 
@@ -239,7 +239,7 @@ describe( 't-junction tests', () => {
 			new RoadNode( rightRoad, TvContactPoint.START )
 		);
 
-		roadService.addRoad( joiningRoad );
+		roadService.add( joiningRoad );
 
 		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 1 ) ] );
 		splineManager.createSpline( vertical.spline );

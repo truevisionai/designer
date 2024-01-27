@@ -23,7 +23,7 @@ import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from '../../commands/add-vehicle-command';
 import { ScenarioService } from "../../scenario/services/scenario.service";
 
-export class VehicleTool extends BaseTool implements IToolWithPoint {
+export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	public name: string = 'VehicleTool';
 	public toolType = ToolType.Vehicle;

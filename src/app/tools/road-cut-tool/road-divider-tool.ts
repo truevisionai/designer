@@ -17,7 +17,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { UpdateValueCommand } from 'app/commands/set-value-command';
 
-export class RoadDividerTool extends BaseTool {
+export class RoadDividerTool extends BaseTool<any>{
 
 	public name: string = 'RoadDividerTool';
 
@@ -118,7 +118,7 @@ export class RoadDividerTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.roadService.addRoad( object );
+			this.tool.roadService.add( object );
 
 		}
 
@@ -131,7 +131,7 @@ export class RoadDividerTool extends BaseTool {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.roadService.removeRoad( object );
+			this.tool.roadService.remove( object );
 
 		}
 

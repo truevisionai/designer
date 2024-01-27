@@ -7,7 +7,7 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { ManeuverService } from 'app/services/junction/maneuver.service';
 
-export class ManeuverTool extends BaseTool {
+export class ManeuverTool extends BaseTool<any>{
 
 	name: string = 'ManeuverTool';
 

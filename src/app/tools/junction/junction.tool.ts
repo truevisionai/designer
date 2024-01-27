@@ -22,7 +22,7 @@ import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 
 
-export class JunctionTool extends BaseTool {
+export class JunctionTool extends BaseTool<any>{
 
 	public name: string = 'JunctionTool';
 
