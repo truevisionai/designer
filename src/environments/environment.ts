@@ -4,5 +4,7 @@ export const environment = {
 	web_url: 'https://localhost:4200',
 	sentry_dsn: null,
 	osc_enabled: true,
-	mixpanel_id: null
+	mixpanel_id: null,
+	development_tools: true,
+	experimtental_tools: true,
 }
