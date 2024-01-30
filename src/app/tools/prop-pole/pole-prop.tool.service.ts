@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { RoadObjectService } from '../crosswalk/road-object.service';
+import { RoadObjectService } from '../../map/road-object/road-object.service';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { PolePropFactory } from "./pole-prop.factory";
 

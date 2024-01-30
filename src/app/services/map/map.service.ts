@@ -8,6 +8,7 @@ import { TvMap } from 'app/map/models/tv-map.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvMapInstance } from 'app/map/services/tv-map-instance';
 import { Material, Mesh } from 'three';
+import { PropPolygon } from "../../map/prop-polygon/prop-polygon.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -15,6 +16,7 @@ import { Material, Mesh } from 'three';
 export class MapService {
 
 	private opactiyLevel = 1;
+
 	private opacityObjects = new Map<Mesh, Material>();
 
 	constructor () {
@@ -167,4 +169,17 @@ export class MapService {
 
 	}
 
+	removePropPolygon ( object: PropPolygon ) {
+
+		this.map.propPolygons.splice( this.map.propPolygons.indexOf( object ), 1 );
+
+	}
+
+	addPropPolygon ( object: PropPolygon ) {
+
+		if ( this.map.propPolygons.includes( object ) ) return;
+
+		this.map.propPolygons.push( object );
+
+	}
 }

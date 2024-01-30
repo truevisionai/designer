@@ -52,6 +52,7 @@ export class ObjectEventListener {
 
 			case AssetType.MODEL:
 				PropManager.setProp( asset as any );
+				this.assetManager.modelAsset = asset;
 				break;
 
 			case AssetType.TEXTURE:

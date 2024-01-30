@@ -95,10 +95,21 @@ export abstract class AbstractSpline {
 
 	}
 
-	addControlPoint ( cp: AbstractControlPoint ) {
+	addControlPoint ( point: AbstractControlPoint ) {
 
-		this.controlPoints.push( cp );
+		if ( point.tagindex != null && point.tagindex != undefined && !isNaN( point.tagindex ) ) {
 
+			this.controlPoints.splice( point.tagindex, 0, point );
+
+		} else {
+
+			point.tagindex = this.controlPoints.length;
+
+			this.controlPoints.push( point );
+
+		}
+
+		this.updateIndexes();
 	}
 
 	addControlPoints ( points: AbstractControlPoint[] ): void {
@@ -154,6 +165,9 @@ export abstract class AbstractSpline {
 		const index = this.controlPoints.findIndex( p => p.id === cp.id );
 
 		this.controlPoints.splice( index, 1 );
+
+		this.updateIndexes();
+
 	}
 
 	hideControlPoints () {
@@ -535,6 +549,8 @@ export abstract class AbstractSpline {
 
 		this.controlPoints.splice( index, 0, newPoint );
 
+		this.updateIndexes();
+
 		this.update();
 
 	}
@@ -625,6 +641,11 @@ export abstract class AbstractSpline {
 
 	}
 
+	private updateIndexes () {
+
+		this.controlPoints.forEach( ( point, index ) => point.tagindex = index );
+
+	}
 }
 
 

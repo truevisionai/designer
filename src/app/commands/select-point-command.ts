@@ -5,7 +5,6 @@
 import { Type } from '@angular/core';
 import { ISelectable } from '../objects/i-selectable';
 import { IComponent } from '../objects/game-object';
-// import { SelectionTool } from '../core/strategies/selection-tool';
 import { BaseCommand } from './base-command';
 import { SetInspectorCommand } from './set-inspector-command';
 
@@ -16,15 +15,6 @@ export interface IToolWithPoint {
 	setPoint ( value: ISelectable ): void;
 
 	getPoint (): ISelectable;
-}
-
-/**
- * @deprecated
- */
-export interface IToolWithPoints {
-	setPoint ( value: ISelectable[] ): void;
-
-	getPoint (): ISelectable[];
 }
 
 /**
@@ -42,6 +32,7 @@ export interface IToolWithMainObject {
 export class SelectPointCommand extends BaseCommand {
 
 	private readonly oldPoint: ISelectable;
+
 	private readonly setInspectorCommand: SetInspectorCommand;
 
 	constructor (

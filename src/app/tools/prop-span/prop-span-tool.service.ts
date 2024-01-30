@@ -7,7 +7,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { LaneDebugService } from '../../services/debug/lane-debug.service';
 import { MapService } from 'app/services/map/map.service';
 import { BaseToolService } from '../base-tool.service';
-import { RoadObjectService } from '../crosswalk/road-object.service';
+import { RoadObjectService } from '../../map/road-object/road-object.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { ObjectTypes } from 'app/map/models/tv-common';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';

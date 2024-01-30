@@ -7,14 +7,15 @@ import { TvMap } from 'app/map/models/tv-map.model';
 import { RoadService } from './road/road.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
-import { SceneService } from './scene.service';
-import { GameObject } from 'app/objects/game-object';
 import { TvConsole } from 'app/core/utils/console';
-import { SurfaceToolService } from 'app/tools/surface/surface-tool.service';
-import { PropInstance } from 'app/core/models/prop-instance.model';
-import { RoadObjectService } from 'app/tools/crosswalk/road-object.service';
+import { RoadObjectService } from 'app/map/road-object/road-object.service';
 import { RoadSignalService } from './signal/road-signal.service';
-import { PropCurve } from 'app/map/models/prop-curve';
+import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
+import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
+import { SurfaceBuilder } from 'app/map/surface/surface.builder';
+import { SceneService } from './scene.service';
+import { PropPolygonService } from "../map/prop-polygon/prop-polygon.service";
+import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,18 +24,17 @@ export class SceneBuilderService {
 
 	constructor (
 		private roadService: RoadService,
-		private surfaceService: SurfaceToolService,
+		private surfaceBuilder: SurfaceBuilder,
 		private roadObjectService: RoadObjectService,
 		private roadSignalService: RoadSignalService,
-	) { }
+		private propCurveService: PropCurveService,
+		private propPolygonService: PropPolygonService,
+	) {
+	}
 
 	buildScene ( map: TvMap ) {
 
 		SceneService.removeFromMain( map.gameObject );
-
-		map.gameObject = null;
-
-		map.gameObject = new GameObject( 'OpenDrive' );
 
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
 
@@ -42,11 +42,21 @@ export class SceneBuilderService {
 
 		map.getRoads().forEach( road => this.roadSignalService.buildSignals( road ) );
 
-		map.getSurfaces().forEach( surface => this.surfaceService.buildSurface( surface ) );
+		map.getSurfaces().forEach( surface => {
 
-		map.props.forEach( prop => this.buildProp( map, prop ) );
+			map.surfaceGroup.add( surface, this.surfaceBuilder.buildSurface( surface ) );
+
+		} );
+
+		map.props.forEach( prop => {
+
+			map.propsGroup.add( prop, prop.object );
+
+		} );
 
 		map.propCurves.forEach( propCurve => this.buildPropCurve( map, propCurve ) );
+
+		map.propPolygons.forEach( propPolygon => this.buildPropPolygon( map, propPolygon ) );
 
 		SceneService.addToMain( map.gameObject );
 
@@ -83,13 +93,6 @@ export class SceneBuilderService {
 			return;
 		}
 
-
-	}
-
-	buildProp ( map: TvMap, prop: PropInstance ) {
-
-		SceneService.addToMain( prop.object );
-
 	}
 
 	findSpline ( scene: TvMap, road: TvRoad ): AbstractSpline {
@@ -100,9 +103,14 @@ export class SceneBuilderService {
 
 	buildPropCurve ( map: TvMap, propCurve: PropCurve ): void {
 
-		propCurve.props.forEach( prop => SceneService.addToMain( prop ) );
+		this.propCurveService.update( propCurve );
 
 	}
 
+	buildPropPolygon ( map: TvMap, propPolygon: PropPolygon ): void {
+
+		this.propPolygonService.update( propPolygon );
+
+	}
 
 }

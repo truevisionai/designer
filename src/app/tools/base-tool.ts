@@ -2,25 +2,29 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Type } from '@angular/core';
-import { IComponent } from 'app/objects/game-object';
 import { AppInspector } from 'app/core/inspector';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { StatusBarService } from 'app/services/status-bar.service';
-import { Intersection, Line, Mesh, Object3D, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { ViewportEventSubscriber } from './viewport-event-subscriber';
 import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
-import { SceneService } from '../services/scene.service';
 import { CommandHistory } from 'app/services/command-history';
 import { AddObjectCommand } from "../commands/add-object-command";
 import { RemoveObjectCommand } from "../commands/remove-object-command";
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
-import { DebugService } from "../services/debug/debug.service";
+import { DebugService } from "../core/interfaces/debug.service";
 import { DataService } from 'app/services/debug/data.service';
 import { DebugState } from "../services/debug/debug-state";
+import { SelectionService } from "./selection.service";
+import { SimpleControlPoint } from "../objects/dynamic-control-point";
+import { AbstractFactory } from 'app/core/interfaces/abstract-factory';
+import { ControlPointFactory } from 'app/factories/control-point.factory';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { ToolHints } from "../core/interfaces/tool.hints";
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber {
 
@@ -28,11 +32,39 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber {
 
 	abstract toolType: ToolType;
 
+	protected selectionService: SelectionService;
+
 	protected debugService: DebugService<T>;
 
 	protected dataService: DataService<T>;
 
-	constructor () {
+	protected objectFactory: AbstractFactory<T>;
+
+	protected pointFactory: ControlPointFactory;
+
+	protected typeName: string;
+
+	protected currentSelectedPointMoved: boolean;
+
+	protected hints: ToolHints<T>;
+
+	protected get currentSelectedPoint (): SimpleControlPoint<T> {
+		return this.selectionService?.getLastSelected<SimpleControlPoint<T>>( SimpleControlPoint.name );
+	}
+
+	protected get currentSelectedObject (): T {
+
+		if ( this.currentSelectedPoint ) {
+			return this.currentSelectedPoint.mainObject;
+		}
+
+		if ( this.typeName ) {
+			return this.selectionService?.getLastSelected<T>( this.typeName );
+		}
+
+	}
+
+	protected constructor () {
 
 		super();
 
@@ -40,7 +72,11 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber {
 
 	}
 
-	init (): void { }
+	init (): void {
+
+		this.setHint( this.hints?.toolOpened() );
+
+	}
 
 	enable (): void {
 
@@ -66,25 +102,11 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber {
 
 		this.unsubscribeToEvents();
 
-		this.removeHighlight();
-
 	}
 
 	clearInspector () {
 
 		AppInspector.clear();
-
-	}
-
-	clearToolObjects (): void {
-
-		SceneService.removeToolObjects();
-
-	}
-
-	setInspector ( component: Type<IComponent>, data: any ) {
-
-		AppInspector.setInspector( component, data );
 
 	}
 
@@ -109,9 +131,93 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber {
 	}
 
 	onPointerDownSelect ( e: PointerEventData ) {
+
+		this.selectionService?.handleSelection( e );
+
 	}
 
 	onPointerDownCreate ( e: PointerEventData ) {
+
+		if ( !this.currentSelectedObject ) {
+
+			this.onCreateObject( e );
+
+		} else {
+
+			this.onCreatePoint( e );
+
+		}
+
+	}
+
+	onPointerMoved ( e: PointerEventData ): void {
+
+		this.highlight( e );
+
+		if ( !this.isPointerDown ) return;
+
+		if ( !this.currentSelectedPoint ) return;
+
+		if ( !this.currentSelectedPoint.isSelected ) return;
+
+		this.currentSelectedPoint.copyPosition( e.point );
+
+		this.dataService.updatePoint( this.currentSelectedPoint.mainObject, this.currentSelectedPoint );
+
+		this.debugService.setDebugState( this.currentSelectedPoint.mainObject, DebugState.SELECTED );
+
+		this.currentSelectedPointMoved = true;
+
+	}
+
+	onPointerUp ( e: PointerEventData ): void {
+
+		if ( !this.currentSelectedPointMoved ) return;
+
+		if ( !this.currentSelectedPoint ) return;
+
+		if ( !this.currentSelectedPoint.isSelected ) return;
+
+		const oldPosition = this.pointerDownAt.clone();
+
+		const newPosition = this.currentSelectedPoint.position.clone();
+
+		const updateCommand = new UpdatePositionCommand( this.currentSelectedPoint, newPosition, oldPosition );
+
+		CommandHistory.execute( updateCommand );
+
+		this.currentSelectedPointMoved = false;
+
+	}
+
+	onCreateObject ( e: PointerEventData ) {
+
+		if ( e.point == null ) return;
+
+		if ( this.objectFactory == null ) return;
+
+		if ( this.pointFactory == null ) return;
+
+		const object = this.objectFactory.createFromPosition( e.point );
+
+		const point = this.pointFactory.createSimpleControlPoint<T>( object, e.point );
+
+		const addObjectCommand = new AddObjectCommand( object );
+
+		const addPointCommand = new AddObjectCommand( point );
+
+		const selectCommand = new SelectObjectCommand( object, this.currentSelectedObject );
+
+		CommandHistory.executeMany( addObjectCommand, addPointCommand, selectCommand );
+
+	}
+
+	onCreatePoint ( e: PointerEventData ) {
+
+		const point = this.pointFactory.createSimpleControlPoint<T>( this.currentSelectedObject, e.point );
+
+		this.executeAddAndSelect( point, this.currentSelectedPoint );
+
 	}
 
 	onKeyDown ( e: KeyboardEvent ): void {
@@ -129,49 +235,207 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber {
 	}
 
 	onDeleteKeyDown () {
+
+		if ( this.currentSelectedPoint ) {
+
+			this.executeRemoveObject( this.currentSelectedPoint );
+
+		} else if ( this.currentSelectedObject ) {
+
+			this.executeRemoveObject( this.currentSelectedObject );
+
+		}
+
 	}
 
 	onDuplicateKeyDown () {
 	}
 
-	// onRoadCreated ( road: TvRoad ) { }
+	onObjectSelected ( object: T ): void {
 
-	// onRoadSelected ( road: TvRoad ) { }
+		if ( object.constructor.name === this.typeName ) {
 
-	// onRoadUnselected ( road: TvRoad ) { }
+			this.debugService.setDebugState( object, DebugState.SELECTED );
 
-	// onControlPointSelected ( controlPoint: AbstractControlPoint ) { }
+			this.onShowInspector( object );
 
-	// onControlPointUnselected ( controlPoint: AbstractControlPoint ) { }
+			this.setHint( this.hints?.objectSelected( object ) );
 
-	onObjectSelected ( object: any ) {
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			object.select();
+
+			this.onShowInspector( object.mainObject, object );
+
+			this.debugService.setDebugState( object.mainObject, DebugState.SELECTED );
+
+			this.setHint( this.hints?.pointSelected( object.mainObject ) );
+		}
+
 	}
 
-	onObjectUnselected ( object: any ) {
+	onObjectUnselected ( object: T ): void {
+
+		if ( object.constructor.name === this.typeName ) {
+
+			this.debugService.setDebugState( object, DebugState.DEFAULT );
+
+			AppInspector.clear();
+
+			this.setHint( this.hints?.objectUnselected( object ) );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			object.unselect();
+
+			AppInspector.clear();
+
+			this.debugService.setDebugState( object.mainObject, DebugState.DEFAULT );
+
+			this.setHint( this.hints?.pointUnselected() );
+
+		}
+
 	}
 
-	onObjectAdded ( object: any ) {
+	onObjectAdded ( object: T ): void {
+
+		if ( object.constructor.name === this.typeName ) {
+
+			this.dataService.add( object );
+
+			this.debugService.setDebugState( object, DebugState.SELECTED );
+
+			this.setHint( this.hints?.objectAdded( object ) );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			this.dataService.addPoint( object.mainObject, object );
+
+			this.debugService.setDebugState( object.mainObject, DebugState.SELECTED );
+
+			this.setHint( this.hints?.pointAdded() );
+		}
+
 	}
 
-	onObjectUpdated ( object: any ) {
+	onObjectUpdated ( object: T ) {
+
+		if ( object.constructor.name === this.typeName ) {
+
+			this.dataService.update( object );
+
+			this.debugService.setDebugState( object, DebugState.SELECTED );
+
+			this.setHint( this.hints?.objectUpdated( object ) );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			this.dataService.update( object.mainObject );
+
+			this.debugService.setDebugState( object.mainObject, DebugState.SELECTED );
+
+			this.setHint( this.hints?.pointUpdated() );
+
+		}
+
 	}
 
-	onObjectRemoved ( object: any ) {
+	onObjectRemoved ( object: T ) {
+
+		if ( object.constructor.name === this.typeName ) {
+
+			this.dataService.remove( object );
+
+			this.debugService.setDebugState( object, DebugState.REMOVED );
+
+			AppInspector.clear();
+
+			this.selectionService?.clearSelection();
+
+			this.setHint( this.hints?.objectRemoved( object ) );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			this.dataService.removePoint( object.mainObject, object );
+
+			this.debugService.setDebugState( object.mainObject, DebugState.DEFAULT );
+
+			this.onShowInspector( object.mainObject );
+
+			this.setHint( this.hints?.pointRemoved() );
+
+		}
+
 	}
 
 	onAssetDropped ( asset: AssetNode, position: Vector3 ) {
 
+		if ( !this.objectFactory ) {
+
+			this.setHint( 'Importing asset is not supported in this tool.' );
+
+			return;
+		}
+
+		const object = this.objectFactory.createFromAsset( asset, position );
+
+		if ( !object ) {
+
+			this.setHint( 'Importing ' + asset.getTypeAsString() + ' asset is not supported in this tool.' );
+
+			return;
+		}
+
+		this.executeAddObject( object );
+
 	}
 
-	setHint ( msg: string ) {
+	setDebugService ( debugService: DebugService<T> ) {
+
+		this.debugService = debugService;
+
+	}
+
+	setDataService ( dataService: DataService<T> ) {
+
+		this.dataService = dataService;
+
+	}
+
+	setSelectionService ( selectionService: SelectionService ) {
+
+		this.selectionService = selectionService;
+
+	}
+
+	setTypeName ( typeName: string ) {
+
+		this.typeName = typeName;
+
+	}
+
+	setObjectFactory ( objectFactory: AbstractFactory<T> ) {
+
+		this.objectFactory = objectFactory;
+
+	}
+
+	setPointFactory ( controlPointFactory: ControlPointFactory ) {
+
+		this.pointFactory = controlPointFactory;
+
+	}
+
+	setHints ( hints: ToolHints<T> ) {
+
+		this.hints = hints;
+
+	}
+
+	protected setHint ( msg: string ) {
 
 		StatusBarService.setHint( msg );
-
-	}
-
-	clearHint () {
-
-		StatusBarService.clearHint();
 
 	}
 
@@ -193,118 +457,43 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber {
 
 	}
 
+	protected executeAddAndSelect ( object: any, previousObject: any ) {
+
+		CommandHistory.executeMany( new AddObjectCommand( object ), new SelectObjectCommand( object, previousObject ) );
+
+	}
+
 	protected executeRemoveObject ( object: any ) {
 
 		CommandHistory.execute( new RemoveObjectCommand( object ) );
 
 	}
 
-	protected findIntersection<T extends Object3D> ( tag: string, intersections: Intersection[] ): T | null {
+	protected setInspector ( data: any ) {
 
-		for ( const i of intersections ) {
+		AppInspector.setDynamicInspector( data );
 
-			if ( i.object[ 'tag' ] == tag ) {
+	}
 
-				return i.object as T;
-			}
+	protected highlight ( e: PointerEventData ) {
+
+		for ( const strategy of this.selectionService?.getStrategies() ) {
+
+			strategy.onPointerMoved( e );
 
 		}
 
 	}
 
-	protected highlightLine ( object: Line ) {
+	protected handleSelection ( e: PointerEventData ) {
 
-		// const material = object.material as LineBasicMaterial;
-
-		// // Check if the object is already highlighted
-		// if ( !this.highlightedLines.has( object ) ) {
-
-		// 	// Save the original material instance
-		// 	this.highlightedLines.set( object, material );
-
-		// 	// Create a new instance of the material to avoid affecting the shared material
-		// 	const highlightedMaterial = material.clone() as LineBasicMaterial;
-
-		// 	// Set the current temporary material property to highlighted color
-		// 	highlightedMaterial.linewidth += highlightedMaterial.linewidth;
-
-		// 	highlightedMaterial.setValues( {
-		// 		color: COLOR.DEEP_CYAN
-		// 	} );
-
-		// 	// Assign the temporary material to the object
-		// 	object.material = highlightedMaterial;
-
-		// }
-	}
-
-	protected removeHighlight ( object?: Mesh ) {
-
-		// if ( object ) {
-		// 	// Restore the specific object's highlight
-		// 	this.restoreObjectHighlight( object );
-		// } else {
-		// 	// Restore all highlighted objects
-		// 	this.restoreAllHighlights();
-		// }
-	}
-
-	private restoreObjectHighlight ( object: Mesh ) {
-
-		// if ( this.highlightedObjects.has( object ) ) {
-
-		// 	// Get the original material from the models
-		// 	const originalMaterial = this.highlightedObjects.get( object );
-
-		// 	// Restore the original material to the object
-		// 	object.material = originalMaterial;
-
-		// 	// Dispose of the temporary material to free up memory
-		// 	( object.material as MeshBasicMaterial ).dispose();
-
-		// 	// Remove the object from the models
-		// 	this.highlightedObjects.delete( object );
-		// }
-	}
-
-	private restoreAllHighlights () {
-
-		// this.highlightedObjects.forEach( ( originalMaterial, highlightedObject ) => {
-
-		// 	this.restoreObjectHighlight( highlightedObject );
-
-		// } );
-
-		// this.highlightedLines.forEach( ( originalMaterial, object ) => {
-
-		// 	if ( this.highlightedLines.has( object ) ) {
-
-		// 		// Get the original material from the models
-		// 		const originalMaterial = this.highlightedLines.get( object );
-
-		// 		// Restore the original material to the object
-		// 		object.material = originalMaterial;
-
-		// 		// Dispose of the temporary material to free up memory
-		// 		( object.material as MeshBasicMaterial ).dispose();
-
-		// 		// Remove the object from the models
-		// 		this.highlightedLines.delete( object );
-		// 	}
-
-		// } );
-	}
-
-	setDebugService ( debugService: DebugService<T> ) {
-
-		this.debugService = debugService;
+		this.selectionService?.handleSelection( e );
 
 	}
 
-	setDataService ( dataService: DataService<T> ) {
-
-		this.dataService = dataService;
+	protected onShowInspector ( object: T, controlPoint?: AbstractControlPoint ): void {
 
 	}
 
 }
+

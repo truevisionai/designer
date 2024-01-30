@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Manager } from "./manager";
+import { Manager } from "../core/interfaces/manager";
 
 export class ManagerRegistry {
 

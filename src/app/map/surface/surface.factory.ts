@@ -1,0 +1,54 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { CatmullRomSpline } from "app/core/shapes/catmull-rom-spline";
+import { AbstractFactory } from "app/core/interfaces/abstract-factory";
+import { Surface } from "app/map/surface/surface.model";
+import { Texture, Vector3 } from "three";
+import { Injectable } from "@angular/core";
+import { AssetNode, AssetType } from "app/views/editor/project-browser/file-node.model";
+import { AssetDatabase } from "app/core/asset/asset-database";
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class SurfaceFactory extends AbstractFactory<Surface> {
+
+	createFromAsset ( asset: AssetNode, position: Vector3 ): Surface {
+
+		if ( asset.type != AssetType.TEXTURE ) return;
+
+		const texture = AssetDatabase.getInstance<Texture>( asset.guid );
+
+		const surfaceWidth = texture.image.width;
+
+		const surfaceHeight = texture.image.height;
+
+		const surface = this.createSurface( null, position );
+
+		surface.textureGuid = asset.guid;
+
+		surface.repeat.set( 1 / surfaceWidth, 1 / surfaceHeight );
+
+		surface.spline.addControlPoint( this.createControlPoint( surface, new Vector3( 0, 0, 0 ) ) );
+		surface.spline.addControlPoint( this.createControlPoint( surface, new Vector3( surfaceWidth, 0, 0 ) ) );
+		surface.spline.addControlPoint( this.createControlPoint( surface, new Vector3( surfaceWidth, surfaceHeight, 0 ) ) );
+		surface.spline.addControlPoint( this.createControlPoint( surface, new Vector3( 0, surfaceHeight, 0 ) ) );
+
+		return surface;
+
+	}
+
+	createFromPosition ( position: Vector3 ): Surface {
+
+		return this.createSurface( 'grass', position );
+
+	}
+
+	createSurface ( materialGuid = 'grass', position?: Vector3, curve?: CatmullRomSpline ) {
+
+		return new Surface( materialGuid, curve || new CatmullRomSpline( true, 'catmullrom', 0 ) );
+
+	}
+}

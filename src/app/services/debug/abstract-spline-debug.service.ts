@@ -72,7 +72,21 @@ export class AbstractSplineDebugService {
 
 	}
 
+	removeLines ( spline: AbstractSpline ) {
+
+		this.lines.delete( spline );
+
+	}
+
+	removeControlPoints ( spline: AbstractSpline ) {
+
+		this.points.removeKey( spline );
+
+	}
+
 	showControlPoints ( spline: AbstractSpline ) {
+
+		this.points.removeKey( spline );
 
 		spline.controlPoints.forEach( point => {
 

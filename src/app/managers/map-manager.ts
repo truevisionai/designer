@@ -49,8 +49,6 @@ export class MapManager {
 
 		map.propPolygons.forEach( polygon => {
 
-			polygon.delete();
-
 			polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
 
 		} );

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Color, ExtrudeGeometry, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, Shape } from "three";
 import { TvRoad } from "../map/models/tv-road.model";
 import { TvJunctionConnection } from "../map/models/junctions/tv-junction-connection";

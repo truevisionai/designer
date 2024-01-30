@@ -4,17 +4,12 @@
 
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { VehicleEntity } from 'app/scenario/models/entities/vehicle-entity';
 import { TvMaterial } from 'app/graphics/material/tv-material';
 import { TvPrefab } from 'app/graphics/prefab/tv-prefab.model';
-import { TvMap } from 'app/map/models/tv-map.model';
-import { TvRoadMarking } from 'app/map/services/marking-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { BufferGeometry, Texture } from 'three';
 import { MetadataFactory } from '../../factories/metadata-factory.service';
-import { PropModel } from '../models/prop-model.model';
 import { StorageService } from 'app/io/storage.service';
-import { FileUtils } from 'app/io/file-utils';
 import { SceneExporterService } from 'app/exporters/scene-exporter.service';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { ExporterService } from 'app/services/exporter.service';
@@ -29,7 +24,9 @@ import { Metadata } from './metadata.model';
 export class DepAssetFactory {
 
 	private static storageService: StorageService;
+
 	private static sceneExporter: SceneExporterService;
+
 	private static snackBar: SnackBar;
 
 	constructor (
@@ -40,77 +37,6 @@ export class DepAssetFactory {
 		DepAssetFactory.storageService = storageService;
 		DepAssetFactory.sceneExporter = sceneExporter;
 		DepAssetFactory.snackBar = snackBar;
-	}
-
-	static copyAsset ( guid: string ) {
-
-		const metadata = AssetDatabase.getMetadata( guid );
-
-		const extension = FileUtils.getExtensionFromPath( metadata.path );
-
-		const name = FileUtils.getFilenameFromPath( metadata.path ).replace( '.' + extension, '' );
-
-		if ( extension == 'material' ) {
-
-			const instance = AssetDatabase.getInstance<TvMaterial>( guid );
-
-			const clone = instance.clone();
-
-			AssetDatabase.setInstance( clone.guid, clone );
-
-			AssetDatabase.setMetadata( clone.guid, metadata );
-
-			clone.name = name + '_copy';
-
-			const newPath = metadata.path.replace( name, clone.name );
-
-			this.updateMaterial( newPath, clone );
-
-		}
-
-	}
-
-	static updateAsset ( guid: any, data: any ) {
-
-		const metadata = AssetDatabase.getMetadata( guid );
-
-		if ( !metadata ) return;
-
-		if ( data instanceof VehicleEntity ) {
-
-			this.updateVehicleEntity( data, metadata.path );
-
-		}
-
-	}
-
-	static getMeta ( guid: string ) {
-
-		return AssetDatabase.getMetadata( guid );
-
-	}
-
-	static createNewScene ( path: string, filename: string = 'New Scene' ) {
-
-		try {
-
-			const scene = new TvMap();
-
-			const contents = this.sceneExporter.export( scene );
-
-			const destination = path + '/' + filename + '.scene';
-
-			const result = this.storageService.writeSync( destination, contents );
-
-			const meta = MetadataFactory.createMetadata( filename, 'scene', result.path );
-
-			AssetDatabase.setInstance( meta.guid, scene );
-
-		} catch ( error ) {
-
-			this.snackBar?.error( error );
-
-		}
 	}
 
 	static createNewFolder ( path: string, name: string = 'New Folder' ) {
@@ -124,49 +50,6 @@ export class DepAssetFactory {
 			AssetDatabase.setInstance( meta.guid, meta );
 
 			return result;
-
-		} catch ( error ) {
-
-			this.snackBar?.error( error );
-
-		}
-
-	}
-
-
-	static updateVehicleEntity ( vehicle: VehicleEntity, path: string ) {
-
-		const value = JSON.stringify( vehicle.toJSON(), null, 2 );
-
-		this.storageService.writeSync( path, value );
-
-	}
-
-	static createNewRoadMarking ( path: string, name: string = 'NewRoadMarking' ) {
-
-		try {
-
-			// const marking = new TvRoadMarking( name, MarkingTypes.point, null );
-
-			// const result = this.fileService.createFile( path, marking.name, TvRoadMarking.extension, marking.toJSONString() );
-
-			// const meta = MetadataFactory.createMetadata( result.fileName, TvRoadMarking.extension, result.filePath );
-
-			// AssetDatabase.setInstance( meta.guid, marking );
-
-		} catch ( error ) {
-
-			this.snackBar?.error( error );
-
-		}
-
-	}
-
-	static updateRoadMarking ( path: string, marking: TvRoadMarking ) {
-
-		try {
-
-			this.storageService.writeSync( path, marking.toJSONString() );
 
 		} catch ( error ) {
 
@@ -201,47 +84,7 @@ export class DepAssetFactory {
 		this.storageService.writeSync( path, contents );
 
 	}
-
-	static createNewSign ( name: string = 'NewSign', path: string ) {
-
-		try {
-
-			// const sign = new TvRoadSign( name, null );
-
-			// const result = this.fileService.createFile( path, sign.name, 'sign', sign.toJSONString() );
-
-			// const meta = MetadataFactory.createMetadata( result.fileName, 'sign', result.filePath );
-
-			// AssetDatabase.setInstance( meta.guid, sign );
-
-		} catch ( error ) {
-
-			this.snackBar?.error( error );
-
-		}
-
-	}
-
-	static updatePropModelByGuid ( guid: string, prop: PropModel ): void {
-
-		const meta = this.getMeta( guid );
-
-		this.storageService.writeSync( meta.path, JSON.stringify( prop ) );
-	}
-
-	static updateTexture ( guid: string, texture: Texture ): void {
-
-		const meta = this.getMeta( guid );
-
-		const json = MetadataFactory.createTextureMetadata( meta.guid, meta.path, texture );
-
-		const contents = JSON.stringify( json, null, 2 );
-
-		this.storageService.writeSync( meta.path + '.meta', contents );
-	}
-
 }
-
 
 @Injectable( {
 	providedIn: 'root'
@@ -251,7 +94,8 @@ export class AssetFactory {
 	constructor (
 		private storage: StorageService,
 		private exporter: ExporterService,
-	) { }
+	) {
+	}
 
 	createAsset ( asset: AssetNode, data: string ) {
 
@@ -294,24 +138,6 @@ export class AssetFactory {
 
 	}
 
-	saveAssetFile ( asset: AssetNode ) {
-
-		const data = this.exporter.exportAsset( asset.type, asset.metadata.guid );
-
-		if ( !data ) return;
-
-		this.updateAssetFile( asset, data );
-
-	}
-
-	updateAssetFile ( asset: AssetNode, json: string ) {
-
-		this.storage.writeSync( asset.path, json );
-
-		this.updateMetaFileByAsset( asset );
-
-	}
-
 	updateMetaFileByAsset ( asset: AssetNode ) {
 
 		AssetDatabase.setMetadata( asset.metadata.guid, asset.metadata );
@@ -325,14 +151,6 @@ export class AssetFactory {
 		if ( !metadata ) return;
 
 		this.storage.writeSync( path + '.meta', JSON.stringify( metadata ) );
-
-	}
-
-	deleteAsset ( asset: AssetNode ) {
-
-		// this.storage.deleteSync( asset.path );
-
-		// this.storage.deleteSync( asset.path + '.meta' );
 
 	}
 
@@ -363,6 +181,5 @@ export class AssetFactory {
 		return { name, path };
 
 	}
-
 
 }

@@ -1,9 +1,13 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { ToolType } from "./tool-types.enum";
-import { DebugServiceFactory } from "../services/debug/debug.factory";
+import { DebugServiceProvider } from "../core/providers/debug-service.provider";
 import { RoadToolService } from "./road/road-tool.service";
 import { SurfaceToolService } from "./surface/surface-tool.service";
-import { PropPointService } from "./prop-point/prop-point.service";
+import { PropPointService } from "../map/prop-point/prop-point.service";
 import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
 import { RoadElevationToolService } from "./road-elevation/road-elevation-tool.service";
 import { ManeuverService } from "../services/junction/maneuver.service";
@@ -13,7 +17,7 @@ import { LaneToolService } from "./lane/lane-tool.service";
 import { CrosswalkToolService } from "./crosswalk/crosswalk-tool.service";
 import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.service";
 import { JunctionToolService } from "./junction/junction-tool.service";
-import { PropCurveService } from "./prop-curve/prop-curve.service";
+import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { RoadRampService } from "../services/road/road-ramp.service";
 import { PropPolygonToolService } from "./prop-polygon/prop-polygon-tool.service";
 import { ParkingRoadToolService } from "./parking/parking-road-tool.service";
@@ -31,10 +35,10 @@ import { JunctionTool } from "./junction/junction.tool";
 import { LaneWidthTool } from "./lane-width/lane-width-tool";
 import { PropPointTool } from "./prop-point/prop-point-tool";
 import { PropCurveTool } from "./prop-curve/prop-curve-tool";
-import { PropPolygonTool } from "./prop-polygon/prop-polygon-tool";
+import { PropPolygonTool } from "./prop-polygon/prop-polygon.tool";
 import { PropSpanTool } from "./prop-span/prop-span-tool";
 import { PolePropTool } from "./prop-pole/pole-prop.tool";
-import { SurfaceTool } from "./surface/surface-tool";
+import { SurfaceTool } from "./surface/surface.tool";
 import { LaneMarkingTool } from "./lane-marking/lane-marking-tool";
 import { LaneTool } from "./lane/lane-tool";
 import { PointMarkingTool } from "./point-marking/point-marking.tool";
@@ -49,8 +53,18 @@ import { RoadRampTool } from "./road-ramp/road-ramp-tool";
 import { RoadDividerTool } from "./road-cut-tool/road-divider-tool";
 import { ParkingRoadTool } from "./parking/parking-road-tool";
 import { ParkingLotTool } from "./parking/parking-lot.tool";
-import { DataService } from "../services/debug/data.service";
-import { SurfaceService } from "../services/surface/surface.service";
+import { SimpleControlPoint } from "../objects/dynamic-control-point";
+import { ControlPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
+import { SelectionService } from "./selection.service";
+import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
+import { ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-tag-strategy";
+import { Surface } from 'app/map/surface/surface.model';
+import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
+import { ControlPointFactory } from "../factories/control-point.factory";
+import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
+import { DataServiceProvider } from "./data-service-provider.service";
+import { PropInstance } from 'app/map/prop-point/prop-instance.object';
+import { ToolHintsProvider } from "../core/providers/tool-hints.provider";
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,7 +72,7 @@ import { SurfaceService } from "../services/surface/surface.service";
 export class ToolFactory {
 
 	constructor (
-		private debugFactory: DebugServiceFactory,
+		private debugFactory: DebugServiceProvider,
 		private roadToolService: RoadToolService,
 		private surfaceToolService: SurfaceToolService,
 		private propPointService: PropPointService,
@@ -81,7 +95,11 @@ export class ToolFactory {
 		private pointMarkingToolService: PointMarkingToolService,
 		private measurementToolService: MeasurementToolService,
 		private roadSignalToolService: RoadSignalToolService,
-		private surfaceService: SurfaceService,
+		private selectionService: SelectionService,
+		private factoryProvider: FactoryServiceProvider,
+		private pointFactory: ControlPointFactory,
+		private dataServiceProvider: DataServiceProvider,
+		private toolHintsProvider: ToolHintsProvider
 	) {
 	}
 
@@ -106,10 +124,10 @@ export class ToolFactory {
 				tool = new LaneWidthTool( this.laneWidthService );
 				break;
 			case ToolType.PropPoint:
-				tool = new PropPointTool( this.propPointService );
+				tool = new PropPointTool();
 				break;
 			case ToolType.PropCurve:
-				tool = new PropCurveTool( this.propCurveService );
+				tool = new PropCurveTool();
 				break;
 			case ToolType.PropPolygon:
 				tool = new PropPolygonTool( this.propPolygonToolService );
@@ -174,28 +192,55 @@ export class ToolFactory {
 
 		const debugService = this.debugFactory.createDebugService( type );
 
-		const dataService = this.createDataService( type );
+		const dataService = this.dataServiceProvider.createDataService( type );
+
+		const objectFactory = this.factoryProvider.createFromToolType( type );
+
+		const hints = this.toolHintsProvider.createFromToolType( type );
 
 		tool.setDebugService( debugService );
 
 		tool.setDataService( dataService );
 
+		tool.setObjectFactory( objectFactory );
+
+		tool.setPointFactory( this.pointFactory );
+
+		tool.setHints( hints );
+
+		this.setSelectionStrategies( tool, type );
+
 		return tool;
 	}
 
-	createDataService ( type: ToolType ): DataService<any> {
+	setSelectionStrategies ( tool: BaseTool<any>, type: ToolType ) {
 
-		switch ( type ) {
+		this.selectionService.reset();
 
-			case ToolType.Road:
-				return this.roadToolService.splineService;
-
-			case ToolType.RoadCircle:
-				return this.roadToolService.splineService;
-
-			case ToolType.Surface:
-				return this.surfaceService;
+		if ( type == ToolType.PropPolygon ) {
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( PropPolygon.name, new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' ) );
+			tool.setTypeName( PropPolygon.name );
 		}
+
+		if ( type == ToolType.PropCurve ) {
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( PropCurve.name, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
+			tool.setTypeName( PropCurve.name );
+		}
+
+		if ( type == ToolType.PropPoint ) {
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			tool.setTypeName( PropInstance.name );
+		}
+
+		if ( type == ToolType.Surface ) {
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( Surface.name, new ObjectUserDataStrategy( Surface.tag, 'surface' ) );
+			tool.setTypeName( Surface.name );
+		}
+
+		tool.setSelectionService( this.selectionService );
 
 	}
 

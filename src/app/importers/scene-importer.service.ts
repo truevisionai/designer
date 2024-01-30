@@ -3,20 +3,20 @@
  */
 
 import { Injectable } from '@angular/core';
-import { PropInstance } from 'app/core/models/prop-instance.model';
+import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { AbstractReader } from 'app/importers/abstract-reader';
-import { SceneService } from 'app/services/scene.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
 import { ScenarioEnvironment } from 'app/scenario/models/actions/scenario-environment';
-import { DynamicControlPoint, SimpleControlPoint } from 'app/objects/dynamic-control-point';
+import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { ThreeService } from 'app/renderer/three.service';
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
-import { PropCurve } from 'app/map/models/prop-curve';
-import { PropPolygon } from 'app/map/models/prop-polygons';
+import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
+import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
+import { TvTransform } from 'app/map/models/tv-transform';
 import {
 	EnumHelper,
 	ObjectTypes,
@@ -46,7 +46,7 @@ import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { TvRoadSignal } from 'app/map/models/tv-road-signal.model';
 import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvSurface } from 'app/map/models/tv-surface.model';
+import { Surface } from 'app/map/surface/surface.model';
 import { SignShapeType } from 'app/map/services/tv-sign.service';
 import { XMLParser } from 'fast-xml-parser';
 import { Euler, Object3D, Vector2, Vector3 } from 'three';
@@ -243,7 +243,7 @@ export class SceneImporterService extends AbstractReader {
 
 	private importProp ( xml: XmlElement ) {
 
-		const propObject = SceneImporterService.preparePropObject( xml );
+		const propObject = this.preparePropObject( xml );
 
 		const propInstance = new PropInstance( xml.attr_guid, propObject );
 
@@ -290,7 +290,7 @@ export class SceneImporterService extends AbstractReader {
 		return road;
 	}
 
-	private importSurface ( xml: XmlElement ): TvSurface {
+	private importSurface ( xml: XmlElement ): Surface {
 
 		const rotation = parseFloat( xml.attr_rotation ) || 0.0;
 
@@ -308,7 +308,7 @@ export class SceneImporterService extends AbstractReader {
 
 		const spline = this.importCatmullSpline( xml.spline );
 
-		const surface = new TvSurface( material, spline, offset, scale, rotation );
+		const surface = new Surface( material, spline, offset, scale, rotation );
 
 		surface.textureGuid = xml.texture?.attr_guid;
 
@@ -551,36 +551,58 @@ export class SceneImporterService extends AbstractReader {
 
 	private importPropPolygon ( xml: XmlElement ): PropPolygon {
 
-		const guid = xml.attr_guid;
+		const id = xml.attr_id;
+
+		const polygonPropGuid = xml.attr_guid;
 
 		const density = parseFloat( xml.attr_density ) || 0.5;
 
-		const metadata = AssetDatabase.getMetadata( guid );
-
-		if ( !metadata ) return;
-
 		const spline = this.importCatmullSpline( xml.spline );
 
-		const polygon = new PropPolygon( guid, spline, density );
+		const polygon = new PropPolygon( polygonPropGuid, spline, density );
 
-		spline.controlPoints.forEach( p => p.mainObject = p.userData.polygon = polygon );
+		if ( id ) polygon.id = id;
 
-		this.readAsOptionalArray( xml.props, propXml => {
+		spline.controlPoints.forEach( point => point.mainObject = polygon );
 
-			const propObject = SceneImporterService.preparePropObject( propXml );
+		this.readAsOptionalArray( xml.props || xml.prop, prop => {
 
-			polygon.addPropObject( propObject );
+			const guid = prop.attr_guid || polygonPropGuid;
 
-			SceneService.addToMain( propObject );
+			const transform = this.importTransform( prop.transform || prop );
+
+			polygon.addTransform( guid, transform );
 
 		} );
-
-		SceneService.addToMain( polygon.mesh );
 
 		return polygon;
 	}
 
-	private static preparePropObject ( xml: XmlElement ): Object3D {
+	private importTransform ( xml: XmlElement ): TvTransform {
+
+		const position = new Vector3(
+			parseFloat( xml.position.attr_x ) || 0,
+			parseFloat( xml.position.attr_y ) || 0,
+			parseFloat( xml.position.attr_z ) || 0,
+		);
+
+		const rotation = new Euler(
+			parseFloat( xml.rotation.attr_x ) || 0,
+			parseFloat( xml.rotation.attr_y ) || 0,
+			parseFloat( xml.rotation.attr_z ) || 0,
+		);
+
+		const scale = new Vector3(
+			parseFloat( xml.scale.attr_x ) || 1,
+			parseFloat( xml.scale.attr_y ) || 1,
+			parseFloat( xml.scale.attr_z ) || 1,
+		);
+
+		return new TvTransform( position, rotation, scale );
+
+	}
+
+	private preparePropObject ( xml: XmlElement ): Object3D {
 
 		const instance = AssetDatabase.getInstance<Object3D>( xml.attr_guid );
 
@@ -591,21 +613,21 @@ export class SceneImporterService extends AbstractReader {
 		const prop = instance.clone();
 
 		const position = new Vector3(
-			parseFloat( xml.position.attr_x ),
-			parseFloat( xml.position.attr_y ),
-			parseFloat( xml.position.attr_z ),
+			parseFloat( xml.position.attr_x ) || 0,
+			parseFloat( xml.position.attr_y ) || 0,
+			parseFloat( xml.position.attr_z ) || 0,
 		);
 
 		const rotation = new Euler(
-			parseFloat( xml.rotation.attr_x ),
-			parseFloat( xml.rotation.attr_y ),
-			parseFloat( xml.rotation.attr_z ),
+			parseFloat( xml.rotation.attr_x ) || 0,
+			parseFloat( xml.rotation.attr_y ) || 0,
+			parseFloat( xml.rotation.attr_z ) || 0,
 		);
 
 		const scale = new Vector3(
-			parseFloat( xml.scale.attr_x ),
-			parseFloat( xml.scale.attr_y ),
-			parseFloat( xml.scale.attr_z ),
+			parseFloat( xml.scale.attr_x ) || 1,
+			parseFloat( xml.scale.attr_y ) || 1,
+			parseFloat( xml.scale.attr_z ) || 1,
 		);
 
 		prop.position.copy( position );

@@ -8,7 +8,7 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadService } from "app/services/road/road.service";
-import { RoadObjectService } from "app/tools/crosswalk/road-object.service";
+import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
 import { LaneManager } from "../lane/lane.manager";
 import { RoadBuilder } from "app/map/builders/road.builder";

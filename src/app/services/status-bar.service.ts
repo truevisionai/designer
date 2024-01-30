@@ -16,9 +16,13 @@ import { ViewportEvents } from 'app/events/viewport-events';
 export class StatusBarService {
 
 	static message: string = '';
+
 	static messageChanged = new EventEmitter<string>();
+
 	private cursor: PointerEventData;
+
 	private road: TvRoad;
+
 	private pos = new TvPosTheta( 0, 0, 0, 0, 0 );
 
 	// public message = '';
@@ -70,6 +74,10 @@ export class StatusBarService {
 
 	static setHint ( msg: string ) {
 
+		if ( msg == '' || msg == null ) return;
+
+		if ( this.message === msg ) return;
+
 		this.setMessage( 'Hint: ' + msg );
 
 	}
@@ -98,6 +106,5 @@ export class StatusBarService {
 		this.road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
 
 	}
-
 
 }

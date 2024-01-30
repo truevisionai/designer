@@ -11,20 +11,11 @@ import { ToolManager } from 'app/managers/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/importers/importer.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
-import { PropManager } from 'app/managers/prop-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { BufferGeometry, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Texture, Vector3 } from 'three';
-import { TvMapQueries } from '../../../map/queries/tv-map-queries';
+import { BufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import { TvMesh } from '../../../graphics/mesh/tv-mesh';
-import { CommandHistory } from 'app/services/command-history';
-import { SetValueCommand } from '../../../commands/set-value-command';
-import { RoadStyle } from "../../../core/asset/road.style";
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { AddObjectCommand } from 'app/commands/add-object-command';
-import { SelectObjectCommand } from 'app/commands/select-object-command';
-import { PropInstance } from 'app/core/models/prop-instance.model';
-import { ToolType } from 'app/tools/tool-types.enum';
 
 @Injectable( {
 	providedIn: 'root'
@@ -165,29 +156,8 @@ export class ViewportImporterService {
 
 	importModel ( asset: AssetNode, position: Vector3 ) {
 
-		const tool = ToolManager.currentTool;
-
-		if ( tool.toolType == ToolType.PropPoint ) {
-
-			PropManager.setProp( asset as any );
-
-			const object = AssetDatabase.getInstance<Object3D>( asset.guid );
-
-			if ( !object ) return;
-
-			const prop = new PropInstance( asset.guid, object.clone() )
-
-			prop.copyPosition( position );
-
-			const addCommand = new AddObjectCommand( prop );
-
-			const selectCommand = new SelectObjectCommand( prop );
-
-			CommandHistory.executeMany( addCommand, selectCommand );
-
-		}
+		ToolManager.currentTool?.onAssetDropped( asset, position );
 
 	}
-
 
 }

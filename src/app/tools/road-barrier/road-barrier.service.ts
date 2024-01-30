@@ -11,7 +11,7 @@ import { TvRoadObjectSkeleton } from 'app/map/models/objects/tv-road-object-skel
 import { ObjectTypes } from 'app/map/models/tv-common';
 import { Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
-import { RoadObjectService } from '../crosswalk/road-object.service';
+import { RoadObjectService } from '../../map/road-object/road-object.service';
 
 @Injectable( {
 	providedIn: 'root'

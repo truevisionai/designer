@@ -16,7 +16,7 @@ import { DebugState } from 'app/services/debug/debug-state';
 import { AbstractSplineDebugService } from './abstract-spline-debug.service';
 import { RoadDebugService } from './road-debug.service';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
-import { DebugService } from 'app/services/debug/debug.service';
+import { DebugService } from 'app/core/interfaces/debug.service';
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;

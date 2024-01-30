@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadObjectService } from '../crosswalk/road-object.service';
+import { RoadObjectService } from '../../map/road-object/road-object.service';
 import { Vector3, Euler, Object3D } from 'three';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';

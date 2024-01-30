@@ -47,6 +47,12 @@ export class SceneService {
 
 	}
 
+	static getToolLayer (): Group { return this.toolLayer; }
+
+	static getMainLayer (): Group { return this.mainLayer; }
+
+	static getEditorLayer (): Group { return this.editorLayer; }
+
 	static raycastableObjects () {
 
 		const raycastableObjects = [];

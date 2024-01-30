@@ -2,13 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export interface ITvObject {
-
-	OpenDriveType: TvObjectType;
-
-	getType (): TvObjectType;
-}
-
 export enum TvObjectType {
 	ROAD = 1,
 	LANE = 2,

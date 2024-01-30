@@ -8,7 +8,7 @@ import { ObjectTypes, TvLaneSide, TvLaneType, TvSide } from 'app/map/models/tv-c
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadObjectService } from '../crosswalk/road-object.service';
+import { RoadObjectService } from '../../map/road-object/road-object.service';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';

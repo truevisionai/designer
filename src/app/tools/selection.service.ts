@@ -33,6 +33,12 @@ export class SelectionService {
 
 	}
 
+	getStrategies (): SelectStrategy<any>[] {
+
+		return Array.from( this.strategies.values() );
+
+	}
+
 	registerStrategy ( type: string, strategy: SelectStrategy<any> ): void {
 
 		this.strategies.set( type, strategy );
@@ -123,6 +129,12 @@ export class SelectionService {
 		this.tags.clear();
 
 		this.priority.clear();
+
+	}
+
+	clearSelection (): void {
+
+		this.selectedObjects.clear();
 
 	}
 

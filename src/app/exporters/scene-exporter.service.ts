@@ -4,19 +4,19 @@
 
 import { Injectable } from '@angular/core';
 import { IFile } from 'app/io/file';
-import { PropInstance } from 'app/core/models/prop-instance.model';
+import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/objects/road-control-point';
-import { PropCurve } from 'app/map/models/prop-curve';
-import { PropPolygon } from 'app/map/models/prop-polygons';
+import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
+import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvSurface } from 'app/map/models/tv-surface.model';
+import { Surface } from 'app/map/surface/surface.model';
 import { XMLBuilder } from 'fast-xml-parser';
 import { FileService } from '../io/file.service';
 import { TvJunctionConnection } from '../map/models/junctions/tv-junction-connection';
@@ -39,6 +39,7 @@ import { XmlElement } from "../importers/xml.element";
 import { MapService } from "../services/map/map.service";
 import { TvMapInstance } from 'app/map/services/tv-map-instance';
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
+import { TvTransform } from 'app/map/models/tv-transform';
 
 @Injectable( {
 	providedIn: 'root'
@@ -429,9 +430,14 @@ export class SceneExporterService {
 	exportPropPolygon ( polygon: PropPolygon ) {
 
 		return {
-			attr_guid: polygon.propGuid,
+			attr_id: polygon.id,
 			attr_density: polygon.density,
-			props: polygon.getExportJson(),
+			prop: polygon.props.map( prop => {
+				return {
+					attr_guid: prop.guid,
+					transform: this.exportTransform( prop.transform )
+				};
+			} ),
 			spline: {
 				attr_type: polygon.spline.type,
 				attr_closed: polygon.spline.closed,
@@ -446,13 +452,35 @@ export class SceneExporterService {
 
 	}
 
-	exportSurfaces ( surfaces: TvSurface[] ) {
+	exportTransform ( transform: TvTransform ) {
+
+		return {
+			position: {
+				attr_x: transform.position?.x || 0,
+				attr_y: transform.position?.y || 0,
+				attr_z: transform.position?.z || 0,
+			},
+			rotation: {
+				attr_x: transform.rotation?.x || 0,
+				attr_y: transform.rotation?.y || 0,
+				attr_z: transform.rotation?.z || 0,
+			},
+			scale: {
+				attr_x: transform.scale?.x || 1,
+				attr_y: transform.scale?.y || 1,
+				attr_z: transform.scale?.z || 1,
+			}
+		};
+
+	}
+
+	exportSurfaces ( surfaces: Surface[] ) {
 
 		return surfaces.map( surface => this.exportSurface( surface ) );
 
 	}
 
-	exportSurface ( surface: TvSurface ) {
+	exportSurface ( surface: Surface ) {
 
 		return surface.toJson();
 

@@ -21,7 +21,7 @@ import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { ObjectTypes } from 'app/map/models/tv-common';
 import { CrosswalkToolService } from "./crosswalk-tool.service";
-import { CrosswalkInspector } from 'app/tools/crosswalk/crosswalk.inspector';
+import { CrosswalkInspector } from 'app/map/crosswalk/crosswalk.inspector';
 import { Environment } from 'app/core/utils/environment';
 import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';

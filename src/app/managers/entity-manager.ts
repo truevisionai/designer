@@ -6,7 +6,7 @@ import { MapEvents } from 'app/events/map-events';
 import { ScenarioEntity } from 'app/scenario/models/entities/scenario-entity';
 import { ActionType } from 'app/scenario/models/tv-enums';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Manager } from './manager';
+import { Manager } from '../core/interfaces/manager';
 import { RoadUpdatedEvent } from "../events/road/road-updated-event";
 import { Injectable } from "@angular/core";
 

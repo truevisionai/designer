@@ -23,7 +23,7 @@ import { FileUtils } from 'app/io/file-utils';
 import { ProjectService } from './editor/project.service';
 import { SceneBuilderService } from './scene-builder.service';
 import { RoadService } from './road/road.service';
-import { RoadObjectService } from 'app/tools/crosswalk/road-object.service';
+import { RoadObjectService } from 'app/map/road-object/road-object.service';
 
 @Injectable( {
 	providedIn: 'root'

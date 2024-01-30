@@ -14,8 +14,18 @@ export class AssetManager {
 
 	private materialAsset: AssetNode;
 
+	private _modelAsset: AssetNode;
+
 	constructor () {
 
+	}
+
+	get modelAsset (): AssetNode {
+		return this._modelAsset;
+	}
+
+	set modelAsset ( value: AssetNode ) {
+		this._modelAsset = value;
 	}
 
 	setTextureAsset ( asset: AssetNode ) {
@@ -42,4 +52,9 @@ export class AssetManager {
 
 	}
 
+	getProp () {
+
+		return this.modelAsset;
+
+	}
 }

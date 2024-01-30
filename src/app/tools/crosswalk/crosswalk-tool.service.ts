@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { BaseToolService } from "../base-tool.service";
-import { RoadObjectService } from "./road-object.service";
+import { RoadObjectService } from "../../map/road-object/road-object.service";
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { ControlPointFactory } from 'app/factories/control-point.factory';

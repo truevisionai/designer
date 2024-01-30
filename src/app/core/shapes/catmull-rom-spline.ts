@@ -138,6 +138,22 @@ export class CatmullRomSpline extends AbstractSpline {
 		this.update();
 	}
 
+	insertPoint ( newPoint: AbstractControlPoint ) {
+
+		// If the spline is not closed, just add the point to the end
+		if ( !this.closed ) {
+
+			this.addControlPoint( newPoint );
+
+			this.update();
+
+			return;
+
+		}
+
+		super.insertPoint( newPoint );
+	}
+
 	exportGeometries (): TvAbstractRoadGeometry[] {
 
 		throw new Error( 'Method not implemented.' );

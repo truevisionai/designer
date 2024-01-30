@@ -9,9 +9,13 @@ export class Object3DMap<K, T extends Object3D> {
 
 	private map: Map<K, T>;
 
-	constructor ( private parent?: Object3D ) {
+	private parent: Object3D;
+
+	constructor ( parent?: Object3D ) {
 
 		this.map = new Map();
+
+		this.parent = parent || SceneService.getToolLayer();
 
 	}
 
@@ -25,19 +29,19 @@ export class Object3DMap<K, T extends Object3D> {
 
 		if ( this.map.has( key ) ) {
 
-			SceneService.removeFromTool( this.map.get( key ) );
+			this.parent.remove( this.map.get( key ) );
 
 		}
 
 		this.map.set( key, value );
 
-		SceneService.addToolObject( value );
+		this.parent.add( value );
 
 	}
 
 	remove ( key: K ) {
 
-		SceneService.removeFromTool( this.map.get( key ) );
+		this.parent.remove( this.map.get( key ) );
 
 		this.map.delete( key );
 	}
@@ -45,6 +49,12 @@ export class Object3DMap<K, T extends Object3D> {
 	get ( key: K ): T {
 
 		return this.map.get( key );
+
+	}
+
+	has ( key: K ): boolean {
+
+		return this.map.has( key );
 
 	}
 
@@ -64,7 +74,7 @@ export class Object3DMap<K, T extends Object3D> {
 
 		this.map.forEach( value => {
 
-			SceneService.removeFromTool( value );
+			this.parent.remove( value );
 
 		} );
 

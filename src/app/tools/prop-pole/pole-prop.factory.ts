@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
-import { RoadObjectService } from "../crosswalk/road-object.service";
+import { RoadObjectService } from "../../map/road-object/road-object.service";
 import { RoadPosition } from "../../scenario/models/positions/tv-road-position";
 import { ObjectTypes } from "../../map/models/tv-common";
 import { TvRoadObjectSkeleton } from "../../map/models/objects/tv-road-object-skeleton";

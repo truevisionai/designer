@@ -19,7 +19,7 @@ import { Vertex } from '../models/vertex';
 import { TvMapInstance } from '../services/tv-map-instance';
 import { LaneRoadMarkBuilder } from './lane-road-mark.builder';
 import { OdBuilderConfig } from './od-builder-config';
-import { RoadObjectService } from 'app/tools/crosswalk/road-object.service';
+import { RoadObjectService } from 'app/map/road-object/road-object.service';
 import { RoadSignalService } from 'app/services/signal/road-signal.service';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { OdMaterials } from './od-materials.service';
@@ -68,7 +68,7 @@ export class TvMapBuilder {
 		road.gameObject = null;
 		road.gameObject = new GameObject( 'Road:' + road.id );
 		road.gameObject.Tag = ObjectTypes.ROAD;
-		road.gameObject.userData.road = road;
+		//road.gameObject.userData.road = road;
 
 		road.computeLaneSectionCoordinates();
 
@@ -432,9 +432,8 @@ export class TvMapBuilder {
 
 		lane.gameObject = new GameObject( 'Lane:' + lane.id, geometry, material );
 		lane.gameObject.Tag = TvObjectType[ TvObjectType.LANE ];
-		lane.gameObject.OpenDriveType = TvObjectType.LANE;
-		lane.gameObject.userData.data = lane;
-		lane.gameObject.userData.lane = lane;
+		//lane.gameObject.userData.data = lane;
+		//lane.gameObject.userData.lane = lane;
 
 		laneSection.gameObject.add( lane.gameObject );
 	}

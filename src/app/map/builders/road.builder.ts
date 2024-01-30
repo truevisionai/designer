@@ -8,8 +8,8 @@ import { GameObject } from 'app/objects/game-object';
 import { Object3D } from 'three';
 import { TvRoad } from '../models/tv-road.model';
 import { TvMapBuilder } from './tv-map-builder';
-import { RoadObjectBuilder } from 'app/factories/road-object-builder.service';
-import { RoadObjectService } from 'app/tools/crosswalk/road-object.service';
+import { RoadObjectBuilder } from 'app/map/road-object/road-object.builder';
+import { RoadObjectService } from 'app/map/road-object/road-object.service';
 
 @Injectable( {
 	providedIn: 'root'

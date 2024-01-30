@@ -3,17 +3,19 @@
  */
 
 import { GameObject } from 'app/objects/game-object';
-import { PropInstance } from 'app/core/models/prop-instance.model';
+import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { TvConsole } from 'app/core/utils/console';
-import { PropCurve } from './prop-curve';
-import { PropPolygon } from './prop-polygons';
+import { PropCurve } from '../prop-curve/prop-curve.model';
+import { PropPolygon } from '../prop-polygon/prop-polygon.model';
 import { TvController } from './tv-controller';
 import { TvJunction } from './junctions/tv-junction';
 import { TvMapHeader } from './tv-map-header';
 import { TvRoad } from './tv-road.model';
-import { TvSurface } from './tv-surface.model';
+import { Surface } from '../surface/surface.model';
 import { MapEvents } from 'app/events/map-events';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { Object3D } from 'three';
+import { Object3DMap } from 'app/core/models/object3d-map';
 
 export class TvMap {
 
@@ -23,15 +25,35 @@ export class TvMap {
 
 	public propPolygons: PropPolygon[] = [];
 
-	public surfaces: TvSurface[] = [];
+	public surfaces: Surface[] = [];
 
 	public gameObject: GameObject = new GameObject( 'OpenDrive' );
+
+	public surfaceGroup: Object3DMap<Surface, Object3D>;
+
+	public propsGroup: Object3DMap<PropInstance, Object3D>;
+
+	public propCurvesGroup: Object3DMap<PropCurve, Object3D>;
+
+	public propPolygonsGroup: Object3DMap<PropPolygon, Object3D>;
 
 	public header: TvMapHeader = new TvMapHeader( 1, 4, 'Untitled', 1, Date(), 1, 0, 0, 0, 'truevision.ai' );
 
 	private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
 
 	private splines: AbstractSpline[] = [];
+
+	constructor () {
+
+		this.surfaceGroup = new Object3DMap( this.gameObject );
+
+		this.propsGroup = new Object3DMap( this.gameObject );
+
+		this.propCurvesGroup = new Object3DMap( this.gameObject );
+
+		this.propPolygonsGroup = new Object3DMap( this.gameObject );
+
+	}
 
 	/**
 	 * @deprecated use getRoads();
@@ -321,13 +343,13 @@ export class TvMap {
 		return finalJunction;
 	}
 
-	removeSurface ( surface: TvSurface ) {
+	removeSurface ( surface: Surface ) {
 
 		this.surfaces.splice( this.surfaces.indexOf( surface ), 1 );
 
 	}
 
-	addSurface ( surface: TvSurface ) {
+	addSurface ( surface: Surface ) {
 
 		this.surfaces.push( surface );
 
