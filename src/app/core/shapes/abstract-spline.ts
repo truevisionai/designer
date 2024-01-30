@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventEmitter } from '@angular/core';
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import * as THREE from 'three';
 import { MathUtils, Vector2, Vector3 } from 'three';
@@ -115,12 +114,6 @@ export abstract class AbstractSpline {
 	addControlPoints ( points: AbstractControlPoint[] ): void {
 
 		points.forEach( point => this.addControlPoint( point ) );
-
-	}
-
-	addControlPointAtNew ( position: Vector3 ): AbstractControlPoint {
-
-		throw new Error( 'method not implemented' );
 
 	}
 
@@ -341,20 +334,6 @@ export abstract class AbstractSpline {
 	updateRoadSegments () {
 	}
 
-	removeRoadSegment ( segment: SplineSegment ) {
-
-		this.splineSegments = this.splineSegments.filter( i => i != segment );
-
-		this.update();
-	}
-
-	removeRoadSegmentByRoadId ( id: number ) {
-
-		this.splineSegments = this.splineSegments.filter( segment => segment.id != id );
-
-		this.update();
-	}
-
 	getSplineSegments (): SplineSegment[] {
 
 		return this.splineSegments;
@@ -502,21 +481,9 @@ export abstract class AbstractSpline {
 
 	}
 
-	removeSegment ( segment: TvRoad | TvJunction ): void {
+	removeSegment ( segment: SplineSegment ): void {
 
-		const index = this.splineSegments.findIndex( i => i.segment == segment );
-
-		if ( index != -1 ) {
-
-			this.splineSegments.splice( index, 1 );
-
-			this.update();
-
-		} else {
-
-			console.error( 'segment not found' + segment.toString() );
-
-		}
+		this.splineSegments = this.splineSegments.filter( i => i != segment );
 
 	}
 

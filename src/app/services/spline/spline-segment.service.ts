@@ -15,7 +15,10 @@ import { Vector3 } from 'three';
 } )
 export class SplineSegmentService {
 
-	constructor () { }
+	private splines: Map<AbstractSpline, Map<number, number>> = new Map();
+
+	constructor () {
+	}
 
 	addJunctionSegment ( spline: AbstractSpline, sStart: number, junction: TvJunction ) {
 
@@ -67,13 +70,7 @@ export class SplineSegmentService {
 
 		if ( !spline.findSegment( road ) ) return;
 
-		spline.removeSegment( road );
-
-		if ( spline.getSplineSegments().length == 0 ) {
-
-			// this.mapService.models.removeSpline( road.spline );
-
-		}
+		this.removeSegment( spline, road );
 
 	}
 
@@ -81,13 +78,9 @@ export class SplineSegmentService {
 
 		if ( !spline.findSegment( junction ) ) return;
 
-		spline.removeSegment( junction );
-
-		// this.splineService.updateSpline( spline );
+		this.removeSegment( spline, junction );
 
 	}
-
-	private splines: Map<AbstractSpline, Map<number, number>> = new Map();
 
 	getWidthCache ( spline: AbstractSpline ) {
 
@@ -138,7 +131,7 @@ export class SplineSegmentService {
 		return cache;
 	}
 
-	getWidthAt ( spline: AbstractSpline, position?: Vector3, inputS?:number ): number {
+	getWidthAt ( spline: AbstractSpline, position?: Vector3, inputS?: number ): number {
 
 		const cache = this.getWidthCache( spline );
 
@@ -165,4 +158,50 @@ export class SplineSegmentService {
 
 	}
 
+	private removeSegment ( spline: AbstractSpline, query: TvRoad | TvJunction ): void {
+
+		const segments = spline.getSplineSegments();
+
+		const segment = segments.find( i => i.segment == query );
+
+		if ( segment ) {
+
+			const index = segments.findIndex( segment => segment == segment );
+
+			if ( index != -1 ) {
+
+				// TODO: temp bug fix when first segment is removed from spline
+				if ( index == 0 && segment.isRoad ) {
+
+					const road = segment.getInstance<TvRoad>();
+
+					const nextSegment = spline.getNextSegment( road );
+
+					if ( nextSegment && nextSegment.isRoad ) {
+
+						nextSegment.setStart( 0 );
+
+						nextSegment.getInstance<TvRoad>().sStart = 0;
+
+					}
+
+				}
+
+				spline.removeSegment( segment );
+
+				spline.update();
+
+			} else {
+
+				console.error( 'segment not found' + segment.toString() );
+
+			}
+
+		} else {
+
+			console.error( 'segment not found' + query.toString() );
+
+		}
+
+	}
 }
