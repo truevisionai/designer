@@ -35,7 +35,7 @@ export class PropPolygonInspector {
 		this.controlPoint?.position.copy( value );
 	}
 
-	@Action()
+	@Action( { label: 'Delete Polygon' } )
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.polygon ) );
