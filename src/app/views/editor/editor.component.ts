@@ -11,6 +11,7 @@ import { ScenarioDirectorService } from 'app/scenario/services/scenario-director
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { ShortcutService } from 'app/services/editor/shortcut.service';
+import { Environment } from 'app/core/utils/environment';
 
 @Component( {
 	selector: 'app-editor',
@@ -20,6 +21,18 @@ import { ShortcutService } from 'app/services/editor/shortcut.service';
 export class EditorComponent implements OnInit, AfterContentInit {
 
 	consoleLabel = 'Console';
+
+	get isProduction (): boolean {
+		return true; // Environment.production
+	}
+
+	get heirarchyWidth (): number {
+		return this.isProduction ? 0 : 16;
+	}
+
+	get viewportWidth (): number {
+		return this.isProduction ? 76 : 60;
+	}
 
 	constructor (
 		private dialog: MatDialog,
