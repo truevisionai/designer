@@ -55,17 +55,12 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 
 		if ( !spline ) return;
 
-		if ( spline.controlPoints.length < 2 ) {
-
-			this.showControlPoints( spline );
-
-			return;
-		}
-
 		this.setBaseState( spline, state );
 	}
 
 	onDefault ( spline: AbstractSpline ): void {
+
+		if ( spline.controlPoints.length < 2 ) return;
 
 		this.showBorder( spline );
 
@@ -74,6 +69,9 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 	onHighlight ( spline: AbstractSpline ): void {
 
 		this.removeBorder( spline );
+
+		if ( spline.controlPoints.length < 2 ) return;
+
 		this.showBorder( spline, LINE_WIDTH * 2 );
 
 		this.showArrows( spline );
@@ -83,6 +81,8 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 	onSelected ( spline: AbstractSpline ): void {
 
 		this.showControlPoints( spline );
+
+		if ( spline.controlPoints.length < 2 ) return;
 
 		this.splineDebugService.showLines( spline );
 
