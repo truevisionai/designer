@@ -30,6 +30,18 @@ export class Environment {
 
 	}
 
+	static get developmentTools (): boolean {
+
+		return environment.development_tools;
+
+	}
+
+	static get experimentalTools (): boolean {
+
+		return environment.experimtental_tools;
+
+	}
+
 	static get oscEnabled (): boolean {
 
 		return environment.osc_enabled;

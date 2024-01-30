@@ -75,7 +75,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Measurement Tool',
 			click: () => this.setToolType( ToolType.MeasurementTool ),
-			enabled: !Environment.production,
+			enabled: true,
 		},
 		{
 			id: 'showRoadTool',
@@ -115,7 +115,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Ramp Tool',
 			click: () => this.setToolType( ToolType.RoadRampTool ),
-			enabled: false //!Environment.production,
+			enabled: Environment.experimentalTools,
 		},
 		{
 			id: 'showDividerTool',
@@ -126,8 +126,10 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			icon: 'content_cut', // fork_right, call_split
 			track: 'menu',
 			tooltip: 'Divider Tool',
+			title: 'Road Divider Tool',
+			description: 'Tool to divide roads into two connected roads',
 			click: () => this.setToolType( ToolType.RoadDividerTool ),
-			enabled: !Environment.production,
+			enabled: true,
 		},
 		{
 			id: 'showRoadElevationTool',
@@ -137,7 +139,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'road-Elevation-tool',
 			icon: 'height',
 			title: 'Road Elevation Tool',
-			description: null,
+			description: 'Tool to create/edit elevation and height profile of the road',
 			track: 'button',
 			tooltip: 'Road Elevation Tool',
 			click: () => this.setToolType( ToolType.RoadElevation ),
@@ -221,11 +223,11 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'junction',
 			icon: 'grid_goldenratio',
 			title: 'Junction Tool',
-			description: '',
+			description: 'Tool to create custom junctions',
 			track: 'button',
 			tooltip: 'Junction Tool',
 			click: () => this.setToolType( ToolType.Junction ),
-			enabled: !Environment.production,
+			enabled: Environment.developmentTools,
 		},
 		{
 			id: 'showManeueverTool',
@@ -235,11 +237,12 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'maneuver-tool',
 			icon: 'roundabout_left',//'fullscreen_exit',
 			title: 'Maneuver Tool',
-			description: 'Tool to create/edit junction maneuvers <br/> Use SHIFT + LEFT CLICK to select multiple entry/exits <br/> Use LEFT CLICK to select single junction entry/exit <br/> Merge Entry/Exists from inspector to create a junction maneuver <br/><br/> <img src="assets/Maneuver-Tool.gif"/>',
+			description: 'Tool to create/edit junction maneuvers.',
+			// description: 'Tool to create/edit junction maneuvers <br/> Use SHIFT + LEFT CLICK to select multiple entry/exits <br/> Use LEFT CLICK to select single junction entry/exit <br/> Merge Entry/Exists from inspector to create a junction maneuver <br/><br/> <img src="assets/Maneuver-Tool.gif"/>',
 			track: 'button',
 			tooltip: 'Maneuver Tool',
 			click: () => this.setToolType( ToolType.Maneuver ),
-			enabled: true,
+			enabled: Environment.developmentTools,
 		},
 		{
 			id: 'showTrafficTool',
@@ -253,7 +256,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Traffic Light Tool',
 			click: () => this.setToolType( ToolType.TrafficLight ),
-			enabled: false //!Environment.production,
+			enabled: Environment.experimentalTools,
 		},
 		{
 			id: 'showCrosswalkTool',
@@ -263,6 +266,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'crosswalk-tool',
 			icon: 'reorder', // 'call_split', receipt
 			title: 'Crosswalk Tool',
+			description: 'Tool to create crosswalks on road.',
 			track: 'button',
 			tooltip: 'Crosswalk Tool',
 			click: () => this.setToolType( ToolType.Crosswalk ),
@@ -280,7 +284,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Point Marking Tool',
 			click: () => this.setToolType( ToolType.PointMarkingTool ),
-			enabled: !Environment.production,
+			enabled: Environment.developmentTools,
 		},
 		{
 			id: 'showTextMarkingTool',
@@ -290,11 +294,11 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'text-marking-tool',
 			icon: 'text_fields', // format_color_text, text_fields
 			title: 'Text Marking Tool',
-			description: '',
+			description: 'Tool to create text markings on road.',
 			track: 'button',
 			tooltip: 'Text Marking Tool',
 			click: () => this.setToolType( ToolType.TextMarkingTool ),
-			enabled: !Environment.production,
+			enabled: Environment.developmentTools,
 		},
 		{
 			id: 'showParkingRoadTool',
@@ -309,7 +313,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Parking Road Tool',
 			click: () => this.setToolType( ToolType.ParkingRoad ),
-			enabled: false // !Environment.production,
+			enabled: Environment.experimentalTools,
 		},
 		{
 			id: 'showParkingLotTool',
@@ -324,7 +328,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Parking Lot Tool',
 			click: () => this.setToolType( ToolType.ParkingLot ),
-			enabled: !Environment.production,
+			enabled: Environment.experimentalTools,
 		},
 		{
 
@@ -379,9 +383,9 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Prop Span Tool',
 			title: 'Prop Span Tool',
-			description: '',
+			description: 'Tool to place objects which are aligned with road span/shape',
 			click: () => this.setToolType( ToolType.PropSpanTool ),
-			enabled: !Environment.production,
+			enabled: Environment.developmentTools,
 		},
 		{
 			id: 'showPolePropTool',
@@ -395,7 +399,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'Pole Prop Tool',
 			description: '',
 			click: () => this.setToolType( ToolType.PolePropTool ),
-			enabled: false,//!Environment.production,
+			enabled: Environment.experimentalTools,
 		},
 		{
 			id: 'signal',
@@ -407,7 +411,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Signal Tool',
 			click: () => this.setToolType( ToolType.RoadSignalTool ),
-			enabled: !Environment.production,
+			enabled: Environment.experimentalTools,
 		},
 		{
 			id: 'showSurfaceTool',
@@ -433,7 +437,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Vehicle Tool',
 			click: () => this.setToolType( ToolType.Vehicle ),
-			enabled: Environment.oscEnabled,
+			enabled: Environment.experimentalTools && Environment.oscEnabled,
 		},
 		{
 			id: 'environment',
@@ -453,7 +457,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 				CommandHistory.execute( command );
 
 			},
-			enabled: Environment.oscEnabled,
+			enabled: Environment.experimentalTools && Environment.oscEnabled,
 		},
 		// add more tools here...
 	];
