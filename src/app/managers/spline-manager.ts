@@ -31,12 +31,14 @@ export class SplineManager {
 		private junctionManager: JunctionManager,
 		private roadFactory: RoadFactory,
 		private segmentService: SplineSegmentService,
-	) { }
+	) {
+	}
 
 	createSpline ( spline: AbstractSpline ) {
 
-		// first step is always to build the spline from the control points
-		this.buildSpline( spline, spline.getFirstRoadSegment() );
+		this.validateSpline( spline );
+
+		this.buildSpline( spline ); 											// first step is always to build the spline from the control points
 
 		this.updateSplineBoundingBox( spline );
 
@@ -48,8 +50,9 @@ export class SplineManager {
 
 	updateSpline ( spline: AbstractSpline ) {
 
-		// first step is always to build the spline from the control points
-		this.buildSpline( spline, spline.getFirstRoadSegment() );
+		this.validateSpline( spline );
+
+		this.buildSpline( spline );												// first step is always to build the spline from the control points
 
 		for ( const road of spline.getRoads() ) {
 
@@ -127,7 +130,7 @@ export class SplineManager {
 
 		} else if ( lastSegment?.isJunction ) {
 
-			console.error( "method not implemented" );
+			// console.error( "method not implemented" );
 
 		}
 
@@ -147,7 +150,7 @@ export class SplineManager {
 
 		} else if ( firstSegment?.isJunction ) {
 
-			console.error( "method not implemented" );
+			// console.error( "method not implemented" );
 
 		}
 
@@ -172,7 +175,6 @@ export class SplineManager {
 			const distance = firstControlPoint.position.distanceTo( secondControlPoint.position );
 			const directedPosition = firstControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
 
-
 			secondControlPoint.position.copy( directedPosition );
 
 		} else {
@@ -187,7 +189,6 @@ export class SplineManager {
 			const directedPosition = lastControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
 
 			secondLastControlPoint.position.copy( directedPosition );
-
 
 		}
 
@@ -235,11 +236,46 @@ export class SplineManager {
 
 	}
 
-	private buildSpline ( spline: AbstractSpline, firstSegment?: SplineSegment ): void {
-
-		this.addDefaulSegment( spline, firstSegment );
+	private buildSpline ( spline: AbstractSpline ): void {
 
 		this.splineBuilder.buildSpline( spline );
+
+	}
+
+	private validateSpline ( spline: AbstractSpline ) {
+
+		if ( spline.controlPoints.length < 2 ) return;
+
+		const segments = spline.getSplineSegments();
+
+		if ( segments.length == 0 ) {
+
+			this.addDefaulSegment( spline, spline.getFirstSegment() );
+
+		}
+
+		if ( segments.length >= 1 ) {
+
+			const firstSegment = segments[ 0 ];
+
+			firstSegment.setStart( 0 );
+
+		}
+
+		// remove invalid segment that has no geometries
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( !segment.isRoad ) continue;
+
+			if ( segment.geometries.length > 0 ) continue;
+
+			const road = segment.getInstance<TvRoad>();
+
+			this.roadManager.removeRoad( road );
+
+		}
 
 	}
 

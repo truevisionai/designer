@@ -340,6 +340,12 @@ export abstract class AbstractSpline {
 
 	}
 
+	getSplineSegmentCount (): number {
+
+		return this.splineSegments.length;
+
+	}
+
 	addControlPointAt ( position: Vector3 ): AbstractControlPoint {
 
 		throw new Error( 'Method not implemented.' );
@@ -483,7 +489,11 @@ export abstract class AbstractSpline {
 
 	removeSegment ( segment: SplineSegment ): void {
 
-		this.splineSegments = this.splineSegments.filter( i => i != segment );
+		const index = this.splineSegments.indexOf( segment );
+
+		if ( index == -1 ) return;
+
+		this.splineSegments.splice( index, 1 );
 
 	}
 

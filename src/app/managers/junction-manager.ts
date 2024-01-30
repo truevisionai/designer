@@ -12,6 +12,7 @@ import { RoadManager } from "./road/road-manager";
 import { RoadService } from "app/services/road/road.service";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { JunctionFactory } from "app/factories/junction.factory";
+import { SplineSegmentService } from "../services/spline/spline-segment.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,6 +27,7 @@ export class JunctionManager {
 		private roadService: RoadService,
 		private roadFactory: RoadFactory,
 		private junctionFactory: JunctionFactory,
+		private segmentService: SplineSegmentService,
 	) {
 	}
 
@@ -74,15 +76,7 @@ export class JunctionManager {
 
 				const nextRoad = nextSegment.getInstance<TvRoad>();
 
-				this.roadService.remove( nextRoad );
-
-				// this.mapService.models.removeRoad( nextRoad );
-
-				// this.mapService.models.gameObject.remove( nextRoad.gameObject );
-
-				this.roadFactory.idRemoved( nextRoad.id );
-
-				// spline.removeSegment( nextRoad );
+				this.roadManager.removeRoad( nextRoad );
 
 				this.roadLinkService.updateSuccessorRelation( nextRoad, previousSegment, nextRoad.successor );
 
@@ -108,14 +102,12 @@ export class JunctionManager {
 
 			if ( spline.findSegment( junction ) ) {
 
-				spline.removeSegment( junction );
+				this.segmentService.removeJunctionSegment( spline, junction );
 
 			}
 
 			this.splineBuilder.buildSpline( spline );
 		}
 	}
-
-
 
 }

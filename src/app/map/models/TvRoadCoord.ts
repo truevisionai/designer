@@ -21,7 +21,23 @@ export class TvRoadCoord {
 
 		if ( Maths.approxEquals( this.s, this.road.length, 1 ) ) return TvContactPoint.END;
 
-		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ` + this.road.toString() );
+		// return the nearest contact point
+
+		const startDistance = this.road.getPosThetaAt( 0 ).position.distanceTo( this.position );
+
+		const endDistance = this.road.getPosThetaAt( this.road.length ).position.distanceTo( this.position );
+
+		if ( startDistance < endDistance ) {
+
+			return TvContactPoint.START;
+
+		} else {
+
+			return TvContactPoint.END
+
+		}
+
+		// throw new Error( `TvRoadCoord.contact: s is not 0 or length: ${ this.road.length }  s=${ this.s } ` + this.road.toString() );
 	}
 
 	get contactCheck (): TvContactPoint {

@@ -7,6 +7,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SplineSegmentService } from './spline-segment.service';
 import { RoadBuilder } from 'app/map/builders/road.builder';
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,7 +17,8 @@ export class SplineBuilder {
 	constructor (
 		private segmentService: SplineSegmentService,
 		private roadBuilder: RoadBuilder,
-	) { }
+	) {
+	}
 
 	buildSpline ( spline: AbstractSpline ) {
 
@@ -39,6 +41,8 @@ export class SplineBuilder {
 			if ( segment.geometries.length == 0 ) {
 
 				this.segmentService.removeRoadSegment( spline, road );
+
+				TvConsole.error( 'segment.geometries.length == 0' );
 
 				console.error( 'segment.geometries.length == 0', spline );
 

@@ -9,6 +9,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector3 } from 'three';
+import { SegmentManager } from './segment.manager';
 
 @Injectable( {
 	providedIn: 'root'
@@ -17,17 +18,19 @@ export class SplineSegmentService {
 
 	private splines: Map<AbstractSpline, Map<number, number>> = new Map();
 
-	constructor () {
+	constructor (
+		private segmentManager: SegmentManager
+	) {
 	}
 
 	addJunctionSegment ( spline: AbstractSpline, sStart: number, junction: TvJunction ) {
 
-		if ( sStart >= spline.getLength() ) {
+		if ( sStart > spline.getLength() ) {
 			TvConsole.error( 'Start must be less than end' );
 			return;
 		}
 
-		if ( sStart <= 0 ) {
+		if ( sStart < 0 ) {
 			TvConsole.error( 'Start/End must be greater than 0' );
 			return;
 		}
@@ -37,12 +40,12 @@ export class SplineSegmentService {
 
 	addEmptySegment ( spline: AbstractSpline, sStart: number ) {
 
-		if ( sStart >= spline.getLength() ) {
+		if ( sStart > spline.getLength() ) {
 			TvConsole.error( 'Start must be less than end' );
 			return;
 		}
 
-		if ( sStart <= 0 ) {
+		if ( sStart < 0 ) {
 			TvConsole.error( 'Start/End must be greater than 0' );
 			return;
 		}
@@ -52,12 +55,12 @@ export class SplineSegmentService {
 
 	addRoadSegmentNew ( spline: AbstractSpline, sStart: number, road: TvRoad ) {
 
-		if ( sStart >= spline.getLength() ) {
+		if ( sStart > spline.getLength() ) {
 			TvConsole.error( 'Start must be less than end' );
 			return;
 		}
 
-		if ( sStart <= 0 ) {
+		if ( sStart < 0 ) {
 			TvConsole.error( 'Start/End must be greater than 0' );
 			return;
 		}
@@ -164,44 +167,19 @@ export class SplineSegmentService {
 
 		const segment = segments.find( i => i.segment == query );
 
-		if ( segment ) {
-
-			const index = segments.findIndex( segment => segment == segment );
-
-			if ( index != -1 ) {
-
-				// TODO: temp bug fix when first segment is removed from spline
-				if ( index == 0 && segment.isRoad ) {
-
-					const road = segment.getInstance<TvRoad>();
-
-					const nextSegment = spline.getNextSegment( road );
-
-					if ( nextSegment && nextSegment.isRoad ) {
-
-						nextSegment.setStart( 0 );
-
-						nextSegment.getInstance<TvRoad>().sStart = 0;
-
-					}
-
-				}
-
-				spline.removeSegment( segment );
-
-				spline.update();
-
-			} else {
-
-				console.error( 'segment not found' + segment.toString() );
-
-			}
-
-		} else {
+		if ( !segment ) {
 
 			console.error( 'segment not found' + query.toString() );
 
+			TvConsole.error( 'segment not found' + query.toString() );
+
+			return;
+
 		}
+
+		spline.removeSegment( segment );
+
+		this.segmentManager.onRemoved( spline, segment );
 
 	}
 }

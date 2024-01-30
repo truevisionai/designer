@@ -23,7 +23,7 @@ export class SelectionService {
 
 	private priority = new Map<string, number>();
 
-	private debug = true;
+	private debug = false;
 
 	constructor () {
 

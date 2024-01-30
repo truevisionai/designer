@@ -264,7 +264,9 @@ export class IntersectionService {
 			if ( otherSpline == successorSpline ) continue;
 			if ( otherSpline == predecessorSpline ) continue;
 
-			const intersection = this.getSplineIntersectionPointViaBoundsv2( spline, otherSpline );
+			// const intersection = this.getSplineIntersectionPoint( spline, otherSpline );
+			const intersection = this.getSplineIntersectionPointViaBounds( spline, otherSpline );
+			// const intersection = this.getSplineIntersectionPointViaBoundsv2( spline, otherSpline );
 
 			if ( !intersection ) continue;
 
@@ -288,14 +290,23 @@ export class IntersectionService {
 		const segmentA = splineA.getSegmentAt( splineCoordA.s );
 		const segmentB = splineB.getSegmentAt( splineCoordB.s );
 
-		if ( !segmentA || !segmentA.isRoad ) return;
-		if ( !segmentB || !segmentB.isRoad ) return;
+		if ( !segmentA ) console.error( 'segmentA is null', splineA, splineCoordA );
+		if ( !segmentB ) console.error( 'segmentB is null', splineB, splineCoordB );
+
+		if ( !segmentA || !segmentA.isRoad ) {
+			return
+		}
+
+		if ( !segmentB || !segmentB.isRoad ) {
+			return
+		}
 
 		const roadA = segmentA.getInstance<TvRoad>();
 		const roadB = segmentB.getInstance<TvRoad>();
 
-		if ( !roadA ) return;
-		if ( !roadB ) return;
+		if ( !roadA || !roadB ) {
+			return;
+		}
 
 		const coordA = roadA.getPosThetaByPosition( point ).toRoadCoord( roadA );
 		const coordB = roadB.getPosThetaByPosition( point ).toRoadCoord( roadB );
@@ -550,38 +561,7 @@ export class IntersectionService {
 
 		} else {
 
-			const isOver = coord.s + junctionWidth >= coord.road.length;
-			const isUnder = coord.s - junctionWidth <= 0;
-
-			if ( isOver ) {
-
-				const sStartJunction = coord.road.length - junctionWidth;
-				const sEndJunction = coord.road.length;
-
-				coord.road.spline.addJunctionSegment( sStartJunction, junction );
-
-				coord.road.length = sStartJunction;
-
-				coord.s = sStartJunction;
-
-				coord.road.setSuccessor( TvRoadLinkChildType.junction, junction );
-
-			} else if ( isUnder ) {
-
-				const sStartJunction = 0;
-				const sEndJunction = junctionWidth;
-
-				const roadSegment = coord.road.spline.getSegmentAt( 0 );
-
-				roadSegment.setStart( sEndJunction );
-				coord.road.length = coord.road.length - sEndJunction;
-
-				coord.road.spline.addJunctionSegment( sStartJunction, junction );
-
-				coord.s = sStartJunction;
-
-				coord.road.setPredecessor( TvRoadLinkChildType.junction, junction );
-			}
+			this.cutForTJunction( coord, junction );
 
 		}
 
@@ -599,6 +579,50 @@ export class IntersectionService {
 			this.roadManager.updateRoad( coord.road );
 
 		}
+	}
+
+	private cutForTJunction ( coord: TvRoadCoord, junction: TvJunction ) {
+
+		const junctionWidth = coord.road.getRoadWidthAt( coord.s ).totalWidth;
+
+		const atEnd = coord.s + junctionWidth >= coord.road.length;
+		const atStart = coord.s - junctionWidth <= 0;
+
+		if ( atEnd ) {
+
+			const sStartJunction = coord.road.sStart + coord.road.length - junctionWidth;
+
+			this.segmentService.addJunctionSegment( coord.road.spline, sStartJunction, junction );
+
+			coord.road.length = coord.road.length - junctionWidth;
+
+			coord.s = coord.road.length;
+
+			coord.road.setSuccessor( TvRoadLinkChildType.junction, junction );
+
+			return;
+		}
+
+
+		if ( atStart ) {
+
+			const sEndJunction = junctionWidth;
+
+			const segment = coord.road.spline.getSegmentAt( 0 );
+
+			segment.setStart( sEndJunction );
+
+			this.segmentService.addJunctionSegment( coord.road.spline, 0, junction );
+
+			coord.road.length = coord.road.length - sEndJunction;
+
+			coord.s = 0;
+
+			coord.road.setPredecessor( TvRoadLinkChildType.junction, junction );
+
+		}
+
+
 	}
 
 	private internal_createIntersectionFromCoords ( coordA: TvRoadCoord, coordB: TvRoadCoord ): TvJunction {

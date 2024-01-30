@@ -53,7 +53,13 @@ export class SplineSegment {
 	}
 
 	setStart ( start: number ) {
+
 		this.start = start;
+
+		if ( this.segment instanceof TvRoad ) {
+			this.segment.sStart = start;
+		}
+
 	}
 
 	static stringToType ( type: string ): SplineSegmentType {

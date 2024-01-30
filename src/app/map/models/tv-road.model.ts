@@ -643,15 +643,25 @@ export class TvRoad {
 		// 	}
 		// }
 
-		if ( s == null ) TvConsole.error( 's is undefined' );
+		if ( s == null ) {
+			TvConsole.error( 's is undefined' );
+		}
 
-		if ( s > this.length || s < 0 ) TvConsole.warn( 's is greater than road length or less than 0' );
+		if ( s > this.length ) {
+			TvConsole.error( 's is greater than road length' );
+			console.error( `s: ${ s } is greater than road length: ${ this.length }` );
+		}
+
+		if ( s < 0 ) {
+			TvConsole.error( 's is less than 0' );
+			console.error( `s: ${ s } is less than 0, road length: ${ this.length }` );
+		}
 
 		const geometry = this.getGeometryAt( s );
 
 		if ( !geometry ) {
 			console.log( this.geometries );
-			throw new Error( `GeometryNotFoundAt S:${ s } RoadId:${ this.id }` );
+			TvConsole.error( `GeometryNotFoundAt S:${ s } RoadId:${ this.id }` );
 		}
 
 		const odPosTheta = geometry.getRoadCoord( s );

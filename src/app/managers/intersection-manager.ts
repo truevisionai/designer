@@ -33,9 +33,9 @@ export class IntersectionManager {
 		// we first check if it has junctions or not
 		const junctions = spline.getJunctions();
 
-		const intersections = this.intersectionService.getSplineIntersections( spline );
-
 		this.removeJunctions( junctions );
+
+		const intersections = this.intersectionService.getSplineIntersections( spline );
 
 		for ( let i = 0; i < intersections.length; i++ ) {
 
@@ -49,7 +49,7 @@ export class IntersectionManager {
 
 			if ( !junction ) {
 				console.error( 'Could not create junction', spline, item );
-				console.trace( 'Could not create junction', spline, item );
+				// console.trace( 'Could not create junction', spline, item );
 				return;
 			}
 
