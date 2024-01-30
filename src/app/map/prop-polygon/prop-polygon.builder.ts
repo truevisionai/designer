@@ -44,11 +44,13 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
 	public build ( polygon: PropPolygon ): Object3D {
 
-		const points: Vector2[] = this.generatePoints( polygon );
+		// const points: Vector2[] = this.generatePoints( polygon );
 
-		const shape: Shape = this.createShape( points );
+		// const shape: Shape = this.createShape( points );
 
-		const mesh = this.makeMesh( shape, polygon );
+		// const mesh = this.makeMesh( shape, polygon );
+
+		const mesh = new Group();
 
 		if ( polygon.spline.controlPoints.length < 3 ) {
 
@@ -56,7 +58,7 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
 		} else {
 
-			this.updateGeometry( mesh, shape );
+			// this.updateGeometry( mesh, shape );
 
 			this.updateProps( mesh, polygon );
 
@@ -99,7 +101,6 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 		return shape;
 	}
 
-	// Function to generate points from the spline curve
 	private generatePoints ( object: PropPolygon ): Vector2[] {
 
 		return object.spline?.curve?.getPoints( 50 ).map(
@@ -108,7 +109,6 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
 	}
 
-	// Function to update the geometry
 	private updateGeometry ( mesh: Mesh, shape: Shape ): void {
 
 		mesh.geometry.dispose();

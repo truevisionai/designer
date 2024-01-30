@@ -39,19 +39,21 @@ export class PropPolygonService extends DataService<PropPolygon> {
 
 	}
 
-	remove ( object: PropPolygon ): void {
+	remove ( polygon: PropPolygon ): void {
 
-		this.mapService.removePropPolygon( object );
+		this.mapService.removePropPolygon( polygon );
+
+		this.mapService.map.propPolygonsGroup.remove( polygon );
 
 	}
 
-	update ( object: PropPolygon ): void {
+	update ( polygon: PropPolygon ): void {
 
-		object.update();
+		polygon.update();
 
-		this.updatePositions( object );
+		this.updatePositions( polygon );
 
-		this.build( object );
+		this.build( polygon );
 
 	}
 
