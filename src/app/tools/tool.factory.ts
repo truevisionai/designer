@@ -19,7 +19,6 @@ import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.servic
 import { JunctionToolService } from "./junction/junction-tool.service";
 import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { RoadRampService } from "../services/road/road-ramp.service";
-import { PropPolygonToolService } from "./prop-polygon/prop-polygon-tool.service";
 import { ParkingRoadToolService } from "./parking/parking-road-tool.service";
 import { TextMarkingToolService } from "./text-marking/text-marking-tool.service";
 import { PropSpanToolService } from "./prop-span/prop-span-tool.service";
@@ -87,7 +86,6 @@ export class ToolFactory {
 		private junctionToolService: JunctionToolService,
 		private propCurveService: PropCurveService,
 		private roadRampService: RoadRampService,
-		private propPolygonToolService: PropPolygonToolService,
 		private parkingRoadToolService: ParkingRoadToolService,
 		private textMarkingToolService: TextMarkingToolService,
 		private propSpanToolService: PropSpanToolService,
@@ -130,7 +128,7 @@ export class ToolFactory {
 				tool = new PropCurveTool();
 				break;
 			case ToolType.PropPolygon:
-				tool = new PropPolygonTool( this.propPolygonToolService );
+				tool = new PropPolygonTool();
 				break;
 			case ToolType.PropSpanTool:
 				tool = new PropSpanTool( this.propSpanToolService );

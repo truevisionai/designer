@@ -8,7 +8,6 @@ import { PropManager } from 'app/managers/prop-manager';
 import { PropPolygon } from '../../map/prop-polygon/prop-polygon.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { PropPolygonToolService } from "./prop-polygon-tool.service";
 import { Vector3 } from 'three';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { PropPolygonInspector } from "../../map/prop-polygon/prop-polygon.inspector";
@@ -19,7 +18,7 @@ export class PropPolygonTool extends BaseTool<PropPolygon> {
 
 	public toolType: ToolType = ToolType.PropPolygon;
 
-	constructor ( private tool: PropPolygonToolService ) {
+	constructor () {
 
 		super();
 
@@ -42,8 +41,6 @@ export class PropPolygonTool extends BaseTool<PropPolygon> {
 	}
 
 	onCreateObject ( e: PointerEventData ) {
-
-		if ( !this.prop ) this.tool.base.setWarning( 'Select a prop from the project browser' );
 
 		if ( !this.prop ) this.setHint( 'Select a prop from the project browser' );
 
