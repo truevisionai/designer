@@ -6,7 +6,6 @@ import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from '@
 import { SatPopover } from '@ncstate/sat-popover';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
-import { BaseTool } from '../../../tools/base-tool';
 import { ToolManager } from '../../../managers/tool-manager';
 import { ThreeService } from '../../../renderer/three.service';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
@@ -14,6 +13,7 @@ import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-
 import { Environment } from 'app/core/utils/environment';
 import { ToolBarService } from './tool-bar.service';
 import { MatToolbar } from '@angular/material/toolbar';
+import { Tool } from "../../../tools/tool";
 
 class IToolMenu {
 	id: string;
@@ -38,7 +38,7 @@ class IToolMenu {
 } )
 export class ToolBarComponent implements OnInit, AfterViewInit {
 
-	currentTool: BaseTool<any>;
+	currentTool: Tool;
 
 	ToolType = ToolType;
 
@@ -473,7 +473,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	ngOnInit () {
 
-		ToolManager.toolChanged.subscribe( ( tool: BaseTool<any> ) => {
+		ToolManager.toolChanged.subscribe( ( tool: Tool ) => {
 
 			this.currentTool = tool;
 

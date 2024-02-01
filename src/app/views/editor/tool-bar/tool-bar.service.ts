@@ -5,10 +5,10 @@
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/commands/set-tool-command';
 import { CommandHistory } from 'app/services/command-history';
-import { BaseTool } from 'app/tools/base-tool';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { ToolManager } from 'app/managers/tool-manager';
 import { ToolFactory } from "../../../tools/tool.factory";
+import { Tool } from "../../../tools/tool";
 
 @Injectable( {
 	providedIn: 'root'
@@ -32,7 +32,7 @@ export class ToolBarService {
 
 	}
 
-	private setTool ( tool: BaseTool<any> ) {
+	private setTool ( tool: Tool ) {
 
 		CommandHistory.execute( new SetToolCommand( tool ) );
 

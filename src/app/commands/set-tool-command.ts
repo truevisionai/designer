@@ -2,15 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseTool } from 'app/tools/base-tool';
 import { ToolManager } from 'app/managers/tool-manager';
 import { BaseCommand } from './base-command';
+import { Tool } from "../tools/tool";
 
 export class SetToolCommand extends BaseCommand {
 
-	private oldTool: BaseTool<any>;
+	private oldTool: Tool;
 
-	constructor ( private newTool: BaseTool<any> ) {
+	constructor ( private newTool: Tool ) {
 
 		super();
 

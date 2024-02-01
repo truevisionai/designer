@@ -64,6 +64,7 @@ import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { DataServiceProvider } from "./data-service-provider.service";
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { ToolHintsProvider } from "../core/providers/tool-hints.provider";
+import { Tool } from "./tool";
 
 @Injectable( {
 	providedIn: 'root'
@@ -101,9 +102,9 @@ export class ToolFactory {
 	) {
 	}
 
-	createTool ( type: ToolType ): BaseTool<any> {
+	createTool ( type: ToolType ): Tool {
 
-		let tool: BaseTool<any>;
+		let tool: Tool;
 
 		switch ( type ) {
 			case ToolType.Road:
@@ -188,25 +189,21 @@ export class ToolFactory {
 				break;
 		}
 
-		const debugService = this.debugFactory.createDebugService( type );
+		if ( tool instanceof BaseTool ) {
 
-		const dataService = this.dataServiceProvider.createDataService( type );
+			tool.setDebugService( this.debugFactory.createDebugService( type ) );
 
-		const objectFactory = this.factoryProvider.createFromToolType( type );
+			tool.setDataService( this.dataServiceProvider.createDataService( type ) );
 
-		const hints = this.toolHintsProvider.createFromToolType( type );
+			tool.setObjectFactory( this.factoryProvider.createFromToolType( type ) );
 
-		tool.setDebugService( debugService );
+			tool.setPointFactory( this.pointFactory );
 
-		tool.setDataService( dataService );
+			tool.setHints( this.toolHintsProvider.createFromToolType( type ) );
 
-		tool.setObjectFactory( objectFactory );
+			this.setSelectionStrategies( tool, type );
 
-		tool.setPointFactory( this.pointFactory );
-
-		tool.setHints( hints );
-
-		this.setSelectionStrategies( tool, type );
+		}
 
 		return tool;
 	}

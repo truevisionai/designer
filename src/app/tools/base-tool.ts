@@ -25,8 +25,9 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { ToolHints } from "../core/interfaces/tool.hints";
 import { UpdatePositionCommand } from "../commands/update-position-command";
+import { Tool } from "./tool";
 
-export abstract class BaseTool<T> extends ViewportEventSubscriber {
+export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
 	abstract name: string;
 

@@ -3,21 +3,22 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { BaseTool } from '../tools/base-tool';
+
+import { Tool } from "../tools/tool";
 
 export class ToolManager {
 
-	public static toolChanged = new EventEmitter<BaseTool<any>>();
+	public static toolChanged = new EventEmitter<Tool>();
 
-	private static tool: BaseTool<any>;
+	private static tool: Tool;
 
-	static get currentTool (): BaseTool<any> {
+	static get currentTool (): Tool {
 
 		return this.tool;
 
 	}
 
-	static set currentTool ( value: BaseTool<any> ) {
+	static set currentTool ( value: Tool ) {
 
 		if ( !value ) {
 
@@ -42,7 +43,7 @@ export class ToolManager {
 
 	}
 
-	static getTool<T extends BaseTool<any>> (): T {
+	static getTool<T extends Tool> (): T {
 
 		return this.tool as T;
 
