@@ -12,11 +12,7 @@ import { ModelLoader } from 'app/loaders/model.loader';
 import { RoadStyleImporter } from 'app/loaders/tv-road-style-loader';
 import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 import { EditorSettings } from 'app/services/editor/editor.settings';
-import { BufferGeometryLoader } from 'three/src/loaders/BufferGeometryLoader';
-import { MetaImporter } from 'app/core/asset/metadata.model';
-import { TvPrefabLoader } from 'app/graphics/prefab/tv-prefab.loader';
 import { MeshStandardMaterial } from 'three';
-import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { TvConsole } from 'app/core/utils/console';
 import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
 
@@ -24,6 +20,8 @@ import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
 	providedIn: 'root'
 } )
 export class LoadingService {
+
+	public logs: string[] = [];
 
 	private assets: AssetNode[] = [];
 
@@ -36,7 +34,8 @@ export class LoadingService {
 		private entityLoader: TvEntityLoader,
 		private editorSettings: EditorSettings,
 		private materialExporter: TvMaterialExporter,
-	) { }
+	) {
+	}
 
 	loadProject ( path: string ) {
 
@@ -61,7 +60,6 @@ export class LoadingService {
 		this.editorSettings.loadSettings();
 	}
 
-
 	loadFolder ( path: string ) {
 
 		const folder = new AssetNode( AssetType.DIRECTORY, path, path );
@@ -73,6 +71,8 @@ export class LoadingService {
 			this.assets.push( asset );
 
 			folder.children.push( asset );
+
+			// this.logs.push( 'Loading ' + asset.path );
 
 		} );
 

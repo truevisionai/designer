@@ -1,0 +1,28 @@
+@keyframes loading {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(100%);
+	}
+}
+
+.custom-progress-bar {
+	position: relative;
+	height: 4px;
+	overflow: hidden;
+	background-color: #e0e0e0;
+	will-change: transform;
+}
+
+.custom-progress-bar:after {
+	content: '';
+	position: absolute;
+	height: 100%;
+	width: 50%;
+	top: 0;
+	background-color: #535353;
+	animation: loading 2s infinite linear;
+	transform: translateX(0);
+}

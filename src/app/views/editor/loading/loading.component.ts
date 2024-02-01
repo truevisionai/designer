@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from 'app/services/editor/project.service';
 import { LoadingService } from './loading.service';
@@ -12,18 +12,20 @@ import { LoadingService } from './loading.service';
 	templateUrl: './loading.component.html',
 	styleUrls: [ './loading.component.scss' ]
 } )
-export class LoadingComponent implements OnInit, OnDestroy {
+export class LoadingComponent implements AfterViewInit {
 
-	logs = [];
+	get logs (): string[] {
+		return this.loader.logs;
+	}
 
 	constructor (
 		private router: Router,
 		private loader: LoadingService,
 		private project: ProjectService,
-	) { }
+	) {
+	}
 
-
-	ngOnInit () {
+	ngAfterViewInit (): void {
 
 		this.project.setupDefaultAssets();
 
@@ -34,12 +36,6 @@ export class LoadingComponent implements OnInit, OnDestroy {
 			this.router.navigate( [ '/editor/editor' ] );
 
 		}, 1000 )
-
-	}
-
-	ngOnDestroy (): void {
-
-		// throw new Error( 'Method not implemented.' );
 
 	}
 
