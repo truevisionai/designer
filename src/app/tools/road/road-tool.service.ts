@@ -73,18 +73,6 @@ export class RoadToolService {
 
 	}
 
-	createDefaultRoad () {
-
-		return this.roadService.createDefaultRoad();
-
-	}
-
-	rebuildRoad ( road: TvRoad ) {
-
-		this.roadService.rebuildRoad( road );
-
-	}
-
 	removeRoad ( road: TvRoad ) {
 
 		this.roadService.remove( road );

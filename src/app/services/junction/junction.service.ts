@@ -22,7 +22,6 @@ import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction'
 import { RoadService } from '../road/road.service';
 import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { MapEvents } from 'app/events/map-events';
-import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 
@@ -56,20 +55,6 @@ export class JunctionService {
 	getJunctionById ( id: number ) {
 
 		return this.mapService.map.getJunctionById( id );
-
-	}
-
-	buildJunction ( junction: TvJunction ) {
-
-		const connections = junction.getConnections();
-
-		for ( let i = 0; i < connections.length; i++ ) {
-
-			this.roadService.rebuildRoad( connections[ i ].connectingRoad );
-
-		}
-
-		this.createJunctionMesh( junction );
 
 	}
 

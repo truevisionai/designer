@@ -145,12 +145,6 @@ export class RoadService extends DataService<TvRoad> {
 
 	}
 
-	rebuildRoad ( road: TvRoad, showNodes = true ): void {
-
-		this.buildSpline( road.spline, showNodes );
-
-	}
-
 	buildRoad ( road: TvRoad ): GameObject[] {
 
 		return this.buildSpline( road.spline, false );
