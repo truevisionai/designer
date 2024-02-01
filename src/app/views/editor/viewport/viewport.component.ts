@@ -16,7 +16,7 @@ import { Environment } from 'app/core/utils/environment';
 import { RendererService } from "../../../renderer/renderer.service";
 import { ViewHelperService } from "./view-helper.service";
 import { DragDropService } from "../../../services/editor/drag-drop.service";
-import { ViewportImporterService } from "./viewport-importer.service";
+import { ViewportService } from "./viewport.service";
 import { ViewControllerService } from "./view-controller.service";
 import { CameraService } from "../../../renderer/camera.service";
 
@@ -91,7 +91,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		private rendererService: RendererService,
 		private viewHelperService: ViewHelperService,
 		private dragDropService: DragDropService,
-		private viewportImporter: ViewportImporterService,
+		private viewportService: ViewportService,
 		private viewControllerService: ViewControllerService,
 		private cameraService: CameraService,
 	) {
@@ -413,7 +413,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		const data = this.dragDropService.getData();
 
-		this.viewportImporter.import( data, position );
+		this.viewportService.handleAssetDropped( data, position );
 
 		this.dragDropService.clear();
 	}

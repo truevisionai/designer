@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { DragDropData } from 'app/services/editor/drag-drop.service';
 import { ToolManager } from 'app/managers/tool-manager';
-import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/importers/importer.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -15,7 +14,7 @@ import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ViewportImporterService {
+export class ViewportService {
 
 	constructor (
 		private importerService: ImporterService,
@@ -24,12 +23,9 @@ export class ViewportImporterService {
 	) {
 	}
 
-	import ( asset: DragDropData, position: Vector3 ) {
+	handleAssetDropped ( asset: DragDropData, position: Vector3 ) {
 
-		if ( !asset ) this.snackBar.error( 'No data to import!' );
-		if ( !asset ) return;
-
-		switch ( asset.type ) {
+		switch ( asset?.type ) {
 
 			case AssetType.OPENDRIVE:
 				this.importOpenDrive( asset.path );
@@ -68,7 +64,7 @@ export class ViewportImporterService {
 				break;
 
 			default:
-				TvConsole.warn( `File not supported for viewport extension: ${ asset.extension } ` + asset.path );
+				this.snackBar.warn( `File not supported for viewport extension: ${ asset.extension } ` + asset.path );
 				break;
 		}
 

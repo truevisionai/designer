@@ -9,8 +9,7 @@ import { BaseService } from '../base.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map/map.service';
-import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
-import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { TvLane } from 'app/map/models/tv-lane';
 import { CommandHistory } from '../command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
@@ -24,7 +23,6 @@ import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
-import { SplineService } from '../spline/spline.service';
 import { DataService } from "../debug/data.service";
 
 @Injectable( {
@@ -34,9 +32,7 @@ export class RoadService extends DataService<TvRoad> {
 
 	constructor (
 		private splineFactory: SplineFactory,
-		private splineService: SplineService,
 		private mapService: MapService,
-		private splineDebugService: AbstractSplineDebugService,
 		private baseService: BaseService,
 		private roadFactory: RoadFactory,
 	) {
@@ -149,36 +145,6 @@ export class RoadService extends DataService<TvRoad> {
 
 	}
 
-	showSpline ( road: TvRoad ) {
-
-		this.splineDebugService.show( road.spline );
-
-	}
-
-	hideSpline ( road: TvRoad ) {
-
-		this.splineDebugService.hide( road.spline );
-
-	}
-
-	showControlPoints ( road: TvRoad ) {
-
-		this.splineDebugService.showControlPoints( road.spline );
-
-	}
-
-	hideControlPoints ( road: TvRoad ) {
-
-		this.splineDebugService.hideControlPoints( road.spline );
-
-	}
-
-	updateSplineGeometries ( road: TvRoad ) {
-
-		this.splineService.update( road.spline );
-
-	}
-
 	rebuildRoad ( road: TvRoad, showNodes = true ): void {
 
 		this.buildSpline( road.spline, showNodes );
@@ -220,50 +186,6 @@ export class RoadService extends DataService<TvRoad> {
 		return gameObjects;
 	}
 
-	rebuildLink ( link: TvRoadLinkChild ) {
-
-		if ( !link ) return;
-
-		if ( link.isRoad ) {
-
-			this.rebuildLinkedRoad( link );
-
-		} else if ( link.isJunction ) {
-
-			// this.rebuildLinkedJunction( link );
-
-		}
-
-	}
-
-	rebuildLinkedJunction ( link: TvRoadLinkChild ) {
-
-		const junction = this.mapService.map.getJunctionById( link.elementId );
-
-		if ( !junction ) return;
-
-		// console.warn( 'TODO: rebuild junction' );
-
-		for ( const connection of junction.getConnections() ) {
-
-			// this.roadSplineService.updateConnectingRoadSpline( connection );
-
-			// this.rebuildRoad( connection.connectingRoad );
-
-		}
-
-	}
-
-	rebuildLinkedRoad ( link: TvRoadLinkChild ) {
-
-		const road = this.mapService.map.getRoadById( link.elementId );
-
-		if ( !road ) return;
-
-		this.rebuildRoad( road );
-
-	}
-
 	add ( road: TvRoad ) {
 
 		this.mapService.map.addRoad( road );
@@ -274,10 +196,6 @@ export class RoadService extends DataService<TvRoad> {
 	update ( road: TvRoad ) {
 
 		this.updateRoadGeometries( road );
-
-		// this.mapService.models.updateRoad( road );
-
-		// this.mapService.models.updateSpline( road.spline );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
