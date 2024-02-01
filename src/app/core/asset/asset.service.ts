@@ -278,4 +278,19 @@ export class AssetService {
 
 	}
 
+	moveAsset ( asset: AssetNode, folder: AssetNode ) {
+
+		const newPath = this.storageService.join( folder.path, asset.name );
+
+		const oldPath = asset.path;
+
+		this.storageService.renameSync( oldPath, newPath );
+
+		this.storageService.deleteFileSync( oldPath + '.meta' );
+
+		asset.path = newPath;
+
+		this.assetFactory.updateMetaFileByAsset( asset );
+
+	}
 }

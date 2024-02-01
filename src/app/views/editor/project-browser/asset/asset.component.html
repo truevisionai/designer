@@ -21,7 +21,7 @@
 <sat-popover #popover
 	verticalAlign="above">
 	<div class="file-info-popover"
-		*ngIf="asset">
+		*ngIf="asset && !showRenaming && !popoverDisabled">
 		<div class="title">GUID: {{ asset?.guid }}</div>
 		<div>Type: {{ asset?.getTypeAsString () | uppercase }}</div>
 		<div>Name: {{ asset?.name }}</div>

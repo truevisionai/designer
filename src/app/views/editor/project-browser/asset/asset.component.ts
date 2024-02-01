@@ -2,7 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnInit, Output, ViewChild } from '@angular/core';
+import {
+	Component,
+	ElementRef,
+	EventEmitter,
+	HostListener,
+	Input,
+	NgZone,
+	OnInit,
+	Output,
+	ViewChild
+} from '@angular/core';
 import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
 import { DragDropService } from 'app/services/editor/drag-drop.service';
 import { ImporterService } from 'app/importers/importer.service';
@@ -24,6 +34,8 @@ import { StorageService } from 'app/io/storage.service';
 } )
 export class AssetComponent implements OnInit {
 
+	static disablePopover: boolean;
+
 	@ViewChild( 'nameInput' ) nameInputRef: ElementRef<HTMLInputElement>;
 
 	@Output() deleted = new EventEmitter<AssetNode>();
@@ -44,6 +56,10 @@ export class AssetComponent implements OnInit {
 
 	get thumbnail () {
 		return this.asset?.thumbnail;
+	}
+
+	get popoverDisabled () {
+		return AssetComponent.disablePopover;
 	}
 
 	constructor (
@@ -244,6 +260,8 @@ export class AssetComponent implements OnInit {
 	@HostListener( 'dragstart', [ '$event' ] )
 	onDragStart ( $event: DragEvent ) {
 
+		AssetComponent.disablePopover = true;
+
 		this.dragDropService.setData( this.asset );
 
 		$event.dataTransfer.setData( 'path', this.asset.path );
@@ -261,18 +279,46 @@ export class AssetComponent implements OnInit {
 
 	}
 
-
 	@HostListener( 'drop', [ '$event' ] )
 	onDrop ( $event ) {
 
+		AssetComponent.disablePopover = false;
+
 		if ( !this.asset.isDirectory ) return;
 
-		// here we can get the path of the folder where the asset is dropped
+		const dropData = this.dragDropService.getData();
+
+		if ( !dropData ) return;
+
+		if ( dropData.isDirectory ) {
+			this.snackBar.warn( 'Cannot move folder' );
+			return;
+		}
+
+		if ( dropData.path === this.asset.path ) return;
+
+		try {
+
+			this.assetService.moveAsset( dropData, this.asset );
+
+			this.snackBar.success( 'Moved ' + dropData.name + ' to ' + this.asset.name );
+
+			this.renamed.emit( this.asset );
+
+		} catch ( error ) {
+
+			TvConsole.error( "Some error occured in moving asset" );
+
+			this.snackBar.error( error );
+
+		}
 
 	}
 
 	@HostListener( 'window:mousedown', [ '$event' ] )
 	onMouseDown ( $event: MouseEvent ) {
+
+		AssetComponent.disablePopover = true;
 
 		if ( !this.showRenaming ) return;
 
@@ -283,6 +329,13 @@ export class AssetComponent implements OnInit {
 			this.showRenaming = false;
 
 		}
+
+	}
+
+	@HostListener( 'window:mouseup', [ '$event' ] )
+	onMouseUp ( $event: MouseEvent ) {
+
+		AssetComponent.disablePopover = false;
 
 	}
 
@@ -316,8 +369,6 @@ export class AssetComponent implements OnInit {
 			}
 
 			let newName: string;
-
-
 
 			if ( this.asset.isDirectory ) {
 
