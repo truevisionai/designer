@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvElevation } from 'app/map/models/tv-elevation';
+import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector3 } from 'three';
-import { DynamicControlPoint } from './dynamic-control-point';
+import { DynamicControlPoint } from '../../objects/dynamic-control-point';
 
-export class RoadElevationControlPoint extends DynamicControlPoint<any> {
+export class ElevationControlPoint extends DynamicControlPoint<any> {
 
 	static readonly TAG = 'RoadElevationNode';
 
@@ -15,7 +15,7 @@ export class RoadElevationControlPoint extends DynamicControlPoint<any> {
 
 		super( elevation, road?.getPosThetaAt( elevation.s || 0 ).toVector3() || new Vector3() );
 
-		this.tag = this.name = RoadElevationControlPoint.TAG;
+		this.tag = this.name = ElevationControlPoint.TAG;
 
 	}
 

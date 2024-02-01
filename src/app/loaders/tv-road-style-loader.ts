@@ -15,7 +15,7 @@ import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { Injectable } from '@angular/core';
 import { StorageService } from 'app/io/storage.service';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
-import { TvElevationProfile } from 'app/map/models/tv-elevation-profile';
+import { TvElevationProfile } from 'app/map/road-elevation/tv-elevation-profile.model';
 
 @Injectable( {
 	providedIn: 'root'

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ThirdOrderPolynom } from './third-order-polynom';
+import { ThirdOrderPolynom } from '../models/third-order-polynom';
 
 export class TvElevation extends ThirdOrderPolynom {
 

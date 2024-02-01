@@ -4,26 +4,23 @@
 
 import { ToolType } from 'app/tools/tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { RoadElevationControlPoint } from 'app/objects/road-elevation-node';
+import { ElevationControlPoint } from 'app/map/road-elevation/tv-elevation.object';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { CommandHistory } from 'app/services/command-history';
 import { BaseTool } from '../base-tool'
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
-import { TvElevation } from 'app/map/models/tv-elevation';
-import { Action, SerializedField } from 'app/core/components/serialization';
+import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { SnackBar } from 'app/services/snack-bar.service';
-import { Maths } from 'app/utils/maths';
-import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadElevationToolService } from './road-elevation-tool.service';
 import { RoadLineMovingStrategy } from 'app/core/strategies/move-strategies/road-line-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { CopyPositionCommand } from 'app/commands/copy-position-command';
+import { TvRoadElevationInspector } from "../../map/road-elevation/tv-road-elevation.inspector";
+import { TvElevationInspector } from "../../map/road-elevation/tv-elevation.inspector";
 
-export class RoadElevationTool extends BaseTool<any>{
+export class RoadElevationTool extends BaseTool<any> {
 
 	name: string = 'Road Elevation Tool';
 
@@ -39,9 +36,9 @@ export class RoadElevationTool extends BaseTool<any>{
 
 	}
 
-	get selectedNode (): RoadElevationControlPoint {
+	get selectedNode (): ElevationControlPoint {
 
-		return this.tool.base.selection.getLastSelected<RoadElevationControlPoint>( RoadElevationControlPoint.name );
+		return this.tool.base.selection.getLastSelected<ElevationControlPoint>( ElevationControlPoint.name );
 
 	}
 
@@ -51,12 +48,11 @@ export class RoadElevationTool extends BaseTool<any>{
 		super();
 	}
 
-
 	init (): void {
 
 		this.setHint( 'use LEFT CLICK to select a road' );
 
-		this.tool.base.selection.registerStrategy( RoadElevationControlPoint.name, new ControlPointStrategy<RoadElevationControlPoint>() );
+		this.tool.base.selection.registerStrategy( ElevationControlPoint.name, new ControlPointStrategy<ElevationControlPoint>() );
 
 		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
@@ -195,15 +191,15 @@ export class RoadElevationTool extends BaseTool<any>{
 
 			this.tool.updateElevation( this.selectedRoad, object );
 
-		} else if ( object instanceof RoadElevationControlPoint ) {
+		} else if ( object instanceof ElevationControlPoint ) {
 
 			this.tool.updateElevationNode( object.road, object, object.position );
 
-		} else if ( object instanceof ElevationNodeObject ) {
+		} else if ( object instanceof TvElevationInspector ) {
 
 			this.tool.updateElevation( object.road, object.elevation );
 
-		} else if ( object instanceof RoadElevationObject ) {
+		} else if ( object instanceof TvRoadElevationInspector ) {
 
 			object.road.elevationProfile.elevation.forEach( elevation => {
 
@@ -233,7 +229,7 @@ export class RoadElevationTool extends BaseTool<any>{
 
 		if ( this.debug ) console.log( 'onObjectSelected', object );
 
-		if ( object instanceof RoadElevationControlPoint ) {
+		if ( object instanceof ElevationControlPoint ) {
 
 			this.onNodeSelected( object );
 
@@ -249,7 +245,7 @@ export class RoadElevationTool extends BaseTool<any>{
 
 		if ( this.debug ) console.log( 'onObjectUnselected', object );
 
-		if ( object instanceof RoadElevationControlPoint ) {
+		if ( object instanceof ElevationControlPoint ) {
 
 			this.onNodeUnselected( object );
 
@@ -261,17 +257,17 @@ export class RoadElevationTool extends BaseTool<any>{
 
 	}
 
-	onNodeSelected ( object: RoadElevationControlPoint ) {
+	onNodeSelected ( object: ElevationControlPoint ) {
 
 		object?.select();
 
-		AppInspector.setInspector( DynamicInspectorComponent, new ElevationNodeObject( object.road, object.elevation ) );
+		AppInspector.setInspector( DynamicInspectorComponent, new TvElevationInspector( object.road, object.elevation ) );
 
 		this.setHint( 'Drag node to modify position. Change properties from inspector' );
 
 	}
 
-	onNodeUnselected ( object: RoadElevationControlPoint ) {
+	onNodeUnselected ( object: ElevationControlPoint ) {
 
 		object?.unselect();
 
@@ -295,7 +291,7 @@ export class RoadElevationTool extends BaseTool<any>{
 
 		this.tool.showControlPoints( road );
 
-		AppInspector.setInspector( DynamicInspectorComponent, new RoadElevationObject( road ) );
+		AppInspector.setInspector( DynamicInspectorComponent, new TvRoadElevationInspector( road ) );
 
 		this.setHint( 'use LEFT CLICK to select a node' );
 
@@ -303,113 +299,3 @@ export class RoadElevationTool extends BaseTool<any>{
 
 }
 
-
-class ElevationNodeObject {
-
-	constructor (
-		public road: TvRoad,
-		public elevation: TvElevation
-	) {
-	}
-
-	@SerializedField( { type: 'int' } )
-	get s (): number {
-
-		return this.elevation.s;
-
-	}
-
-	set s ( value: number ) {
-
-		this.elevation.s = value;
-
-	}
-
-	@SerializedField( { type: 'int' } )
-	get height (): number {
-
-		return this.elevation.a;
-
-	}
-
-	set height ( value: number ) {
-
-		this.elevation.a = value;
-
-	}
-
-	@Action( { label: 'Increase Elevation' } )
-	increase () {
-
-		const newValue = this.elevation.a + 1;
-
-		const oldValue = this.elevation.a;
-
-		CommandHistory.execute( new SetValueCommand( this.elevation, 'a', newValue, oldValue ) );
-
-	}
-
-	@Action( { label: 'Decrease Elevation' } )
-	decrease () {
-
-		const newValue = this.elevation.a - 1;
-
-		const oldValue = this.elevation.a;
-
-		CommandHistory.execute( new SetValueCommand( this.elevation, 'a', newValue, oldValue ) );
-
-	}
-
-	@Action()
-	delete () {
-
-		if ( Maths.approxEquals( this.s, 0 ) ) {
-
-			return;
-
-		} else {
-
-			CommandHistory.execute( new RemoveObjectCommand( this.elevation ) );
-		}
-	}
-
-}
-
-class RoadElevationObject {
-
-	constructor (
-		public road: TvRoad
-	) {
-	}
-
-	@Action( { label: 'Increase Elevation' } )
-	increase () {
-
-		this.road.elevationProfile.elevation.forEach( elevation => {
-
-			const newValue = elevation.a + 1;
-
-			const oldValue = elevation.a;
-
-			CommandHistory.execute( new SetValueCommand( elevation, 'a', newValue, oldValue ) );
-
-		} );
-
-	}
-
-	@Action( { label: 'Decrease Elevation' } )
-	decrease () {
-
-		this.road.elevationProfile.elevation.forEach( elevation => {
-
-			const newValue = elevation.a - 1;
-
-			const oldValue = elevation.a;
-
-			CommandHistory.execute( new SetValueCommand( elevation, 'a', newValue, oldValue ) );
-
-		} );
-
-	}
-
-}

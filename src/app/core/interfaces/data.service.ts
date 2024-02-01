@@ -62,3 +62,16 @@ export abstract class DataService<T extends any> {
 	}
 
 }
+
+export abstract class LinkedDataService<P, C> {
+
+	abstract all ( parent: P ): C[];
+
+	abstract add ( parent: P, object: C ): void;
+
+	abstract update ( parent: P, object: C ): void;
+
+	abstract remove ( parent: P, object: C ): void;
+
+}
+

@@ -12,7 +12,7 @@ import { IDService } from './id.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
 import { TvJunction } from "../map/models/junctions/tv-junction";
-import { TvElevationProfile } from 'app/map/models/tv-elevation-profile';
+import { TvElevationProfile } from 'app/map/road-elevation/tv-elevation-profile.model';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { MapEvents } from 'app/events/map-events';

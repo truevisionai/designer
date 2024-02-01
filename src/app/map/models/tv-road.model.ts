@@ -20,8 +20,8 @@ import {
 	TvRoadType,
 	TvUnit
 } from './tv-common';
-import { TvElevation } from './tv-elevation';
-import { TvElevationProfile } from './tv-elevation-profile';
+import { TvElevation } from '../road-elevation/tv-elevation.model';
+import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
 import { TvLaneSection } from './tv-lane-section';
 import { TvLateralProfile } from './tv-lateral.profile';

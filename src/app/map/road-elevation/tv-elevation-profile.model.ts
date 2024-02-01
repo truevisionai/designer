@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvElevation } from './tv-elevation';
+import { TvElevation } from './tv-elevation.model';
 
 export class TvElevationProfile {
 

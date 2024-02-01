@@ -3,23 +3,24 @@
  */
 
 import { Injectable } from '@angular/core';
-import { MapEvents } from 'app/events/map-events';
-import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { TvElevation } from 'app/map/models/tv-elevation';
+import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
-import { RoadService } from './road.service';
+import { RoadService } from '../../services/road/road.service';
+import { LinkedDataService } from "../../core/interfaces/data.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadElevationService {
+export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 	constructor (
 		private roadService: RoadService
-	) { }
+	) {
+		super();
+	}
 
 	createElevation ( road: TvRoad, point: Vector3 ) {
 
@@ -38,17 +39,23 @@ export class RoadElevationService {
 
 	}
 
-	addElevation ( road: TvRoad, elevation: TvElevation ) {
+	add ( parent: TvRoad, object: TvElevation ): void {
 
-		road.addElevationInstance( elevation );
+		parent.addElevationInstance( object );
 
-		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
+		TvUtils.computeCoefficients( parent.elevationProfile.elevation, parent.length );
 
-		this.roadService.update( road );
+		this.roadService.update( parent );
 
 	}
 
-	removeElevation ( road: TvRoad, elevation: TvElevation ) {
+	all ( parent: TvRoad ): TvElevation[] {
+
+		return parent.elevationProfile.elevation;
+
+	}
+
+	remove ( road: TvRoad, elevation: TvElevation ): void {
 
 		road.removeElevationInstance( elevation );
 
@@ -58,7 +65,7 @@ export class RoadElevationService {
 
 	}
 
-	updateElevation ( road: TvRoad, elevation: TvElevation ) {
+	update ( road: TvRoad, elevation: TvElevation ): void {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
