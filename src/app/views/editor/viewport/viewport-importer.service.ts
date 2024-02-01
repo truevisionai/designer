@@ -3,18 +3,13 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { Metadata } from 'app/core/asset/metadata.model';
 import { DragDropData } from 'app/services/editor/drag-drop.service';
-import { SceneService } from 'app/services/scene.service';
 import { ToolManager } from 'app/managers/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
 import { ImporterService } from 'app/importers/importer.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { BufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
-import { TvMesh } from '../../../graphics/mesh/tv-mesh';
+import { Vector3 } from 'three';
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 
 @Injectable( {
@@ -34,10 +29,6 @@ export class ViewportImporterService {
 		if ( !asset ) this.snackBar.error( 'No data to import!' );
 		if ( !asset ) return;
 
-		const filename = asset.assetName;
-
-		const metadata = asset.metadata;
-
 		switch ( asset.type ) {
 
 			case AssetType.OPENDRIVE:
@@ -48,32 +39,32 @@ export class ViewportImporterService {
 				this.importerService.importOpenScenario( asset.path );
 				break;
 
-			case AssetType.PREFAB:
-				this.importPrefab( asset.path, filename, position, metadata );
-				break;
-
-			case AssetType.GEOMETRY:
-				this.importGeometry( asset.path, filename, position, metadata );
-				break;
-
-			case AssetType.MODEL:
-				this.importModel( asset, position );
-				break;
-
-			case AssetType.TEXTURE:
-				this.importTexture( asset, position );
-				break;
-
 			case AssetType.SCENE:
 				this.importerService.importScene( asset.path );
 				break;
 
+			case AssetType.PREFAB:
+				this.importAsset( asset, position );
+				break;
+
+			case AssetType.GEOMETRY:
+				this.importAsset( asset, position );
+				break;
+
+			case AssetType.MODEL:
+				this.importAsset( asset, position );
+				break;
+
+			case AssetType.TEXTURE:
+				this.importAsset( asset, position );
+				break;
+
 			case AssetType.ROAD_STYLE:
-				this.importRoadStyle( asset, position );
+				this.importAsset( asset, position );
 				break;
 
 			case AssetType.MATERIAL:
-				this.importMaterial( asset, position );
+				this.importAsset( asset, position );
 				break;
 
 			default:
@@ -81,63 +72,6 @@ export class ViewportImporterService {
 				break;
 		}
 
-	}
-
-	importMaterial ( asset: AssetNode, position: Vector3 ) {
-
-		ToolManager.currentTool?.onAssetDropped( asset, position );
-
-	}
-
-	importTexture ( asset: AssetNode, position: Vector3 ) {
-
-		ToolManager.currentTool?.onAssetDropped( asset, position );
-
-	}
-
-	importGeometry ( path: string, filename: string, position: Vector3, metadata: Metadata ) {
-
-		const geometry = AssetDatabase.getInstance<BufferGeometry>( metadata.guid );
-
-		const model = new Mesh( geometry, new MeshBasicMaterial( { color: COLOR.MAGENTA } ) );
-
-		model.position.copy( position );
-
-		// const box = new Box3().setFromObject( model );
-
-		// const size = box.getSize( new Vector3() );
-
-		// const center = box.getCenter( new Vector3() );
-
-		// clone.position.sub( center );
-
-		// clone.position.z = position.z + ( size.z / 2 );
-
-		SceneService.addToMain( model );
-
-	}
-
-	importPrefab ( path: string, filename: string, position: Vector3, metadata: Metadata ) {
-
-		const prefab = AssetDatabase.getInstance<TvMesh>( metadata.guid );
-
-		if ( !prefab ) return;
-
-		const clone = prefab.clone();
-
-		clone.position.copy( position );
-
-		// const box = new Box3().setFromObject( clone );
-
-		// const size = box.getSize( new Vector3() );
-
-		// const center = box.getCenter( new Vector3() );
-
-		// clone.position.sub( center );
-
-		// clone.position.z = position.z + ( size.z / 2 );
-
-		SceneService.addToMain( clone );
 	}
 
 	importOpenDrive ( path: string ) {
@@ -148,13 +82,7 @@ export class ViewportImporterService {
 
 	}
 
-	importRoadStyle ( asset: AssetNode, position: Vector3 ) {
-
-		ToolManager.currentTool?.onAssetDropped( asset, position );
-
-	}
-
-	importModel ( asset: AssetNode, position: Vector3 ) {
+	importAsset ( asset: AssetNode, position: Vector3 ) {
 
 		ToolManager.currentTool?.onAssetDropped( asset, position );
 
