@@ -8,11 +8,12 @@ import { Object3D } from "three";
 import { LaneDebugService } from 'app/services/debug/lane-debug.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugLine } from '../../objects/debug-line';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { DebugState } from 'app/services/debug/debug-state';
-import { AbstractSplineDebugService } from './abstract-spline-debug.service';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { DebugService } from 'app/core/interfaces/debug.service';
+import { ExplicitSplineHelper } from "./explicit-spline.helper";
+import { AutoSplineHelper } from "./auto-spline.helper";
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;
@@ -31,12 +32,17 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 
 	private arrows = new Object3DArrayMap<AbstractSpline, Object3D[]>();
 
+	private autoSplineHelper: DebugService<AbstractSpline>;
+
+	private explicitSplineHelper: DebugService<AbstractSpline>;
+
 	constructor (
 		private debugService: DebugDrawService,
-		private laneDebugService: LaneDebugService,
-		private splineDebugService: AbstractSplineDebugService,
+		private laneDebugService: LaneDebugService
 	) {
 		super();
+		this.autoSplineHelper = new AutoSplineHelper();
+		this.explicitSplineHelper = new ExplicitSplineHelper();
 	}
 
 	setDebugState ( spline: AbstractSpline, state: DebugState ) {
@@ -44,6 +50,16 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 		if ( !spline ) return;
 
 		this.setBaseState( spline, state );
+
+		if ( spline.type == SplineType.AUTOV2 || spline.type == SplineType.AUTO ) {
+
+			this.autoSplineHelper?.setDebugState( spline, state );
+
+		} else if ( spline.type == SplineType.EXPLICIT ) {
+
+			this.explicitSplineHelper.setDebugState( spline, state );
+
+		}
 	}
 
 	onDefault ( spline: AbstractSpline ): void {
@@ -68,11 +84,7 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 
 	onSelected ( spline: AbstractSpline ): void {
 
-		this.showControlPoints( spline );
-
 		if ( spline.controlPoints.length < 2 ) return;
-
-		this.splineDebugService.showLines( spline );
 
 		this.removeBorder( spline );
 		this.showBorder( spline, LINE_WIDTH * 3, COLOR.RED );
@@ -85,10 +97,6 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 	}
 
 	onUnselected ( spline: AbstractSpline ): void {
-
-		this.hideControlPoints( spline );
-
-		this.splineDebugService.hideLines( spline );
 
 		this.removeBorder( spline );
 
@@ -109,10 +117,6 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 		this.selected.delete( spline );
 
 		this.removeBorder( spline );
-
-		this.hideControlPoints( spline );
-
-		this.splineDebugService.hide( spline );
 
 	}
 
@@ -211,18 +215,6 @@ export class SplineDebugService extends DebugService<AbstractSpline> {
 			this.arrows.addItem( spline, arrow );
 
 		} )
-
-	}
-
-	private showControlPoints ( spline: AbstractSpline ) {
-
-		this.splineDebugService.showControlPoints( spline );
-
-	}
-
-	private hideControlPoints ( spline: AbstractSpline ) {
-
-		this.splineDebugService.hideControlPoints( spline );
 
 	}
 

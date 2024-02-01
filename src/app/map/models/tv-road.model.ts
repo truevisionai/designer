@@ -987,8 +987,6 @@ export class TvRoad {
 	 */
 	public remove ( parent: GameObject ) {
 
-		if ( this.spline ) this.spline.hide();
-
 		parent.remove( this.gameObject );
 
 		this.laneSections.forEach( laneSection => {

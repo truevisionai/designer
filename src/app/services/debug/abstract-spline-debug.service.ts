@@ -6,7 +6,6 @@ import { Injectable } from '@angular/core';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { RoadControlPoint } from 'app/objects/road-control-point';
-import { Object3D } from 'three';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { SceneService } from '../scene.service';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
@@ -22,14 +21,7 @@ export class AbstractSplineDebugService {
 
 	private lines = new Set<AbstractSpline>();
 
-	constructor () { }
-
-	show ( spline: AbstractSpline ) {
-
-		spline.show();
-
-		this.showing.add( spline );
-
+	constructor () {
 	}
 
 	hide ( spline: AbstractSpline ) {
@@ -133,33 +125,9 @@ export class AbstractSplineDebugService {
 
 	}
 
-	removeControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
-
-		spline.removeControlPoint( point );
-
-		this.points.removeItem( spline, point );
-
-	}
-
 	hideControlPoints ( spline: AbstractSpline ) {
 
 		this.points.removeKey( spline );
-
-	}
-
-	clear () {
-
-		for ( const spline of this.lines ) {
-			this.hideLines( spline );
-		}
-
-		for ( const spline of this.showing ) {
-			this.hide( spline );
-		}
-
-		this.showing.clear();
-		this.lines.clear();
-		this.points.clear();
 
 	}
 

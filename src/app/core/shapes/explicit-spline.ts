@@ -23,10 +23,7 @@ export class ExplicitSpline extends AbstractSpline {
 
 	public type: SplineType = SplineType.EXPLICIT;
 
-	private lines: Line<BufferGeometry>[] = [];
-
-	// no need for now
-	// private tangentLines: Line[] = [];
+	public lines: Line<BufferGeometry>[] = [];
 
 	constructor ( private road?: TvRoad ) {
 
