@@ -2,22 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseCommand } from './base-command';
-import { IHasPosition } from '../objects/i-has-position';
-import { IHasUpdate } from './set-value-command';
-import { MapEvents } from 'app/events/map-events';
+import { BaseCommand } from "./base-command";
+import { MapEvents } from "../events/map-events";
+import { IHasCopyUpdate } from "./copy-position-command";
 import { Vector3 } from "three";
 
-export interface IHasCopyUpdate extends IHasUpdate, IHasPosition {
-
-}
-
-export class CopyPositionCommand extends BaseCommand {
+export class UpdatePositionCommand extends BaseCommand {
 
 	private readonly oldPosition: Vector3;
 
 	constructor (
-		private object: IHasPosition,
+		private object: IHasCopyUpdate,
 		private readonly newPosition: Vector3,
 		oldPosition: Vector3 = null
 	) {
@@ -32,9 +27,11 @@ export class CopyPositionCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.object.copyPosition( this.newPosition );
+		this.object?.copyPosition( this.newPosition );
 
-		this.object.updateMatrixWorld( true );
+		this.object?.updateMatrixWorld( true );
+
+		this.object?.update();
 
 		MapEvents.objectUpdated.emit( this.object );
 
@@ -42,9 +39,11 @@ export class CopyPositionCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.object.copyPosition( this.oldPosition );
+		this.object?.copyPosition( this.oldPosition );
 
-		this.object.updateMatrixWorld( true );
+		this.object?.updateMatrixWorld( true );
+
+		this.object?.update();
 
 		MapEvents.objectUpdated.emit( this.object );
 
@@ -56,4 +55,3 @@ export class CopyPositionCommand extends BaseCommand {
 
 	}
 }
-

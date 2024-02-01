@@ -21,7 +21,7 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadElevationToolService } from './road-elevation-tool.service';
 import { RoadLineMovingStrategy } from 'app/core/strategies/move-strategies/road-line-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
-import { CopyPositionCommand, UpdatePositionCommand } from 'app/commands/copy-position-command';
+import { CopyPositionCommand } from 'app/commands/copy-position-command';
 
 export class RoadElevationTool extends BaseTool<any>{
 

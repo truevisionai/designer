@@ -23,8 +23,8 @@ import { SimpleControlPoint } from "../objects/dynamic-control-point";
 import { AbstractFactory } from 'app/core/interfaces/abstract-factory';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { ToolHints } from "../core/interfaces/tool.hints";
+import { UpdatePositionCommand } from "../commands/update-position-command";
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber {
 

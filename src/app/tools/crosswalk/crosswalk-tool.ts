@@ -14,7 +14,6 @@ import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
-import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
@@ -25,6 +24,7 @@ import { CrosswalkInspector } from 'app/map/crosswalk/crosswalk.inspector';
 import { Environment } from 'app/core/utils/environment';
 import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
+import { UpdatePositionCommand } from "../../commands/update-position-command";
 
 export class CrosswalkTool extends BaseTool<any>{
 

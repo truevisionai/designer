@@ -2,13 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IHasCopyUpdate, UpdatePositionCommand } from "../commands/copy-position-command";
+import { IHasCopyUpdate } from "../commands/copy-position-command";
 import { PointerEventData } from "../events/pointer-event-data";
 import { CommandHistory } from "../services/command-history";
 import { AddObjectCommand } from "../commands/add-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { DebugState } from "../services/debug/debug-state";
 import { BaseTool } from "./base-tool";
+import { UpdatePositionCommand } from "../commands/update-position-command";
 
 export abstract class BasePointTool<T extends IHasCopyUpdate> extends BaseTool<T> {
 

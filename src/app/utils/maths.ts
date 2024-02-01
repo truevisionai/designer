@@ -642,4 +642,15 @@ export class Maths {
 
 		}
 	}
+
+	static heading ( previousPoint: Vector2 | Vector3, newPoint: Vector2 | Vector3 ) {
+
+		// Calculate the angle from the previous point to the new point
+		const deltaX = newPoint.x - previousPoint.x;
+		const deltaY = newPoint.y - previousPoint.y;
+
+		// Calculate heading using atan2, and convert it to degrees if necessary
+		return Math.atan2( deltaY, deltaX ); // This will give heading in radians
+
+	}
 }

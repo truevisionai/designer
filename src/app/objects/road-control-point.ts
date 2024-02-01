@@ -5,12 +5,11 @@
 import { SceneService } from 'app/services/scene.service';
 import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { OdTextures } from 'app/map/builders/od.textures';
-import { TvContactPoint, TvGeometryType } from 'app/map/models/tv-common';
+import { TvGeometryType } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
 import { RoadTangentPoint } from './road-tangent-point';
-import { MapEvents } from 'app/events/map-events';
 import { AbstractControlPoint } from "./abstract-control-point";
 
 /**
@@ -23,16 +22,20 @@ export class RoadControlPoint extends AbstractControlPoint {
 	public mainObject: TvRoad;
 
 	public frontTangent: RoadTangentPoint;
+
 	public backTangent: RoadTangentPoint;
 
 	public tangentLine: Line;
+
 	public tangentLineGeometry: BufferGeometry;
+
 	public tangentLineMaterial = new LineBasicMaterial( {
 		color: COLOR.CYAN,
 		linewidth: 2
 	} );
 
 	public hdg: number = 0;
+
 	public segmentType: TvGeometryType;
 
 	public allowChange: boolean = true;
@@ -135,6 +138,16 @@ export class RoadControlPoint extends AbstractControlPoint {
 		if ( !this.allowChange ) return;
 
 		super.copyPosition( position );
+
+		this.updateTangents();
+
+	}
+
+	setPosition ( position: Vector3 ): void {
+
+		if ( !this.allowChange ) return;
+
+		super.setPosition( position );
 
 		this.updateTangents();
 

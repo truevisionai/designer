@@ -2,57 +2,48 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-// /*
-//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
-//  */
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
 
-// import { TvGeometryType } from 'app/modules/tv-models/models/tv-common';
-// import { TvRoad } from 'app/modules/tv-models/models/tv-road.model';
-// import { TvMapInstance } from 'app/modules/tv-models/services/tv-models-instance';
-// import { Maths } from 'app/utils/maths';
-// import { Shape } from 'three';
-// import { ExplicitSplinePath } from './cubic-spline-curve';
-// import { ExplicitSpline } from './explicit-spline';
+import { ExplicitSpline } from './explicit-spline';
+import { TvRoad } from "../../map/models/tv-road.model";
+import { AbstractSpline } from "./abstract-spline";
+import { ControlPointFactory } from "../../factories/control-point.factory";
+import { Vector3 } from "three";
 
+fdescribe( 'ExplicitSpline Test', () => {
 
-// describe( 'ExplicitSpline Test', () => {
+	let road: TvRoad;
+	let spline: AbstractSpline;
+	let pointFactory: ControlPointFactory;
 
-// 	let road: TvRoad;
-// 	let spline: ExplicitSpline;
+	beforeEach( () => {
 
-// 	beforeEach( () => {
+		spline = new ExplicitSpline( road );
+		pointFactory = new ControlPointFactory();
 
-// 		road = TvMapInstance.models.addDefaultRoad();
+	} );
 
-// 		spline = road.spline = new ExplicitSpline();
-
-// 	} );
-
-// 	it( 'should work as curve path', () => {
-
-// 		road.addGeometryLine( 0, 0, 0, 0, 100 );
-
-// 		const shape = new Shape();
-// 		shape.moveTo( 0, -0.25 );
-// 		shape.lineTo( 0, 0.25 );
-
-// 		spline.addFromFile( 0, road.getStartCoord().toVector3(), 0, TvGeometryType.LINE );
-// 		spline.addFromFile( 1, road.getEndCoord().toVector3(), 0, TvGeometryType.LINE );
-
-// 		const path = new ExplicitSplinePath( spline );
-// 		// const path = new CatmullRomPath( [ road.startPosition().toVector3(), road.endPosition().toVector3() ] );
-
-// 		expect( Maths.approxEquals( path.getLength(), 100, 0.01 ) ).toBe( true );
-
-// 		// const extrudeSettings = {
-// 		//     steps: path.getLength() * 2,
-// 		//     bevelEnabled: false,
-// 		//     extrudePath: path
-// 		// };
-
-// 		// const geometry = new ExtrudeGeometry( shape, extrudeSettings );
-
-// 	} );
+	it( 'should create 2 point spline ', () => {
 
 
-// } );
+		// horizontal
+		spline = new ExplicitSpline( road );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3() ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 100 ) ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 200 ) ) );
+
+		expect( spline.getLength() ).toBe( 200 );
+
+		// vertical
+		spline = new ExplicitSpline( road );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3() ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 100, 0 ) ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 200, 0 ) ) );
+
+		expect( spline.getLength() ).toBeCloseTo( 217.03 );
+
+	} );
+
+} );

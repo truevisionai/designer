@@ -96,11 +96,28 @@ export class AbstractSplineDebugService {
 
 			if ( point instanceof RoadControlPoint ) {
 
-				this.points.addItem( spline, point.frontTangent )
+				if ( point.frontTangent ) {
 
-				this.points.addItem( spline, point.backTangent )
+					point.frontTangent.visible = true;
 
-				this.points.addItem( spline, point.tangentLine )
+					this.points.addItem( spline, point.frontTangent )
+				}
+
+				if ( point.backTangent ) {
+
+					point.backTangent.visible = true;
+
+					this.points.addItem( spline, point.backTangent )
+
+				}
+
+				if ( point.tangentLine ) {
+
+					point.tangentLine.visible = true;
+
+					this.points.addItem( spline, point.tangentLine )
+
+				}
 
 			}
 
@@ -126,13 +143,7 @@ export class AbstractSplineDebugService {
 
 	hideControlPoints ( spline: AbstractSpline ) {
 
-		spline.controlPoints.forEach( point => {
-
-			point.visible = false;
-
-			this.points.removeItem( spline, point );
-
-		} );
+		this.points.removeKey( spline );
 
 	}
 

@@ -13,7 +13,6 @@ import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { EntityInspector } from 'app/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { TeleportAction } from 'app/scenario/models/actions/tv-teleport-action';
 import { ScenarioEntity } from 'app/scenario/models/entities/scenario-entity';
-import { UpdatePositionCommand } from 'app/commands/copy-position-command';
 import { DynamicControlPoint } from 'app/objects/dynamic-control-point';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { CommandHistory } from 'app/services/command-history';
@@ -22,6 +21,7 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AddVehicleCommand } from '../../commands/add-vehicle-command';
 import { ScenarioService } from "../../scenario/services/scenario.service";
+import { UpdatePositionCommand } from "../../commands/update-position-command";
 
 export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 

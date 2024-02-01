@@ -8,7 +8,9 @@ import { SplineControlPoint } from "../objects/spline-control-point";
 import { Injectable } from "@angular/core";
 import { DynamicControlPoint, SimpleControlPoint } from "app/objects/dynamic-control-point";
 import { IHasUpdate } from "app/commands/set-value-command";
-import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
+import { RoadControlPoint } from "app/objects/road-control-point";
+import { TvRoad } from "app/map/models/tv-road.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -45,9 +47,18 @@ export class ControlPointFactory {
 
 	}
 
-	createSplineControlPoint ( target: AbstractSpline, position: Vector3 ) {
+	createSplineControlPoint ( spline: AbstractSpline, position: Vector3 ): AbstractControlPoint {
 
-		return new SplineControlPoint( target, position );
+		if ( spline.type === SplineType.EXPLICIT ) {
+
+			const segment = spline.getFirstRoadSegment();
+
+			const road = segment?.getInstance<TvRoad>();
+
+			return new RoadControlPoint( road, position );
+		}
+
+		return new SplineControlPoint( spline, position );
 
 	}
 

@@ -67,7 +67,7 @@ export class DebugServiceProvider {
 
 	private createSplineDebugService (): DebugService<AbstractSpline> {
 
-		return new SplineDebugService( this.debugService, this.laneDebugService, this.mapService, this.splineDebugService, this.roadDebug );
+		return new SplineDebugService( this.debugService, this.laneDebugService, this.splineDebugService );
 
 	}
 

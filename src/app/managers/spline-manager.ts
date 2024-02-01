@@ -169,26 +169,26 @@ export class SplineManager {
 			const firstControlPoint = nextRoad.spline.controlPoints[ 0 ];
 			const secondControlPoint = nextRoad.spline.controlPoints[ 1 ];
 
-			firstControlPoint.position.copy( updatedRoad.getEndPosTheta().position );
+			firstControlPoint.setPosition( updatedRoad.getEndPosTheta().position );
 
 			const direction = updatedRoad.getEndPosTheta().toDirectionVector();
 			const distance = firstControlPoint.position.distanceTo( secondControlPoint.position );
 			const directedPosition = firstControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
 
-			secondControlPoint.position.copy( directedPosition );
+			secondControlPoint.setPosition( directedPosition );
 
 		} else {
 
 			const secondLastControlPoint = nextRoad.spline.controlPoints[ nextRoad.spline.controlPoints.length - 2 ];
 			const lastControlPoint = nextRoad.spline.controlPoints[ nextRoad.spline.controlPoints.length - 1 ];
 
-			lastControlPoint.position.copy( updatedRoad.getStartPosTheta().position );
+			lastControlPoint.setPosition( updatedRoad.getStartPosTheta().position );
 
 			const direction = updatedRoad.getStartPosTheta().toDirectionVector();
 			const distance = secondLastControlPoint.position.distanceTo( lastControlPoint.position );
 			const directedPosition = lastControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
 
-			secondLastControlPoint.position.copy( directedPosition );
+			secondLastControlPoint.setPosition( directedPosition );
 
 		}
 
@@ -209,26 +209,26 @@ export class SplineManager {
 			const firstControlPoint = prevRoad.spline.controlPoints[ 0 ];
 			const secondControlPoint = prevRoad.spline.controlPoints[ 1 ];
 
-			firstControlPoint.position.copy( updatedRoad.getStartPosTheta().position );
+			firstControlPoint.setPosition( updatedRoad.getStartPosTheta().position );
 
 			const direction = updatedRoad.getStartPosTheta().toDirectionVector().negate();
 			const distance = firstControlPoint.position.distanceTo( secondControlPoint.position );
 			const directedPosition = firstControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
 
-			secondControlPoint.position.copy( directedPosition );
+			secondControlPoint.setPosition( directedPosition );
 
 		} else {
 
 			const secondLastControlPoint = prevRoad.spline.controlPoints[ prevRoad.spline.controlPoints.length - 2 ];
 			const lastControlPoint = prevRoad.spline.controlPoints[ prevRoad.spline.controlPoints.length - 1 ];
 
-			lastControlPoint.position.copy( updatedRoad.getStartPosTheta().position );
+			lastControlPoint.setPosition( updatedRoad.getStartPosTheta().position );
 
 			const direction = updatedRoad.getStartPosTheta().toDirectionVector().negate();
 			const distance = secondLastControlPoint.position.distanceTo( lastControlPoint.position );
 			const directedPosition = lastControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
 
-			secondLastControlPoint.position.copy( directedPosition );
+			secondLastControlPoint.setPosition( directedPosition );
 
 		}
 

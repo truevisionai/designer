@@ -11,6 +11,8 @@ import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { Maths } from "../../utils/maths";
+import * as SPIRAL from "./spiral-math";
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -49,7 +51,7 @@ export abstract class AbstractSpline {
 
 	protected splineSegments: SplineSegment[] = [];
 
-	constructor ( public closed = true, public tension = 0.5 ) {
+	protected constructor ( public closed = true, public tension = 0.5 ) {
 
 		this.uuid = MathUtils.generateUUID();
 
@@ -499,30 +501,7 @@ export abstract class AbstractSpline {
 
 	insertPoint ( newPoint: AbstractControlPoint ): void {
 
-		let minDistance = Infinity;
-		let index = this.controlPoints.length; // insert at the end by default
-
-		// Ensure the loop includes the segment between the last and first control points
-		for ( let i = 0; i < this.controlPoints.length; i++ ) {
-
-			const pointA = this.controlPoints[ i ];
-
-			// Use modulo to wrap around to the first point when reaching the end
-			const pointB = this.controlPoints[ ( i + 1 ) % this.controlPoints.length ];
-
-			const distance = this.calculateDistanceToSegment( newPoint, pointA, pointB );
-
-			if ( distance < minDistance ) {
-				minDistance = distance;
-				index = i + 1;
-			}
-
-		}
-
-		// If the closest segment is the last one, adjust the index to be 0 to insert after the last point
-		if ( index === this.controlPoints.length ) {
-			index = 0;
-		}
+		const index = this.findIndex( newPoint );
 
 		this.controlPoints.splice( index, 0, newPoint );
 
@@ -618,10 +597,64 @@ export abstract class AbstractSpline {
 
 	}
 
-	private updateIndexes () {
+	protected updateIndexes () {
 
 		this.controlPoints.forEach( ( point, index ) => point.tagindex = index );
 
+	}
+
+	protected findIndex ( newPoint: AbstractControlPoint ) {
+
+		let minDistance = Infinity;
+		let index = this.controlPoints.length; // insert at the end by default
+
+		// Ensure the loop includes the segment between the last and first control points
+		for ( let i = 0; i < this.controlPoints.length; i++ ) {
+
+			const pointA = this.controlPoints[ i ];
+
+			// Use modulo to wrap around to the first point when reaching the end
+			const pointB = this.controlPoints[ ( i + 1 ) % this.controlPoints.length ];
+
+			const distance = this.calculateDistanceToSegment( newPoint, pointA, pointB );
+
+			if ( distance < minDistance ) {
+				minDistance = distance;
+				index = i + 1;
+			}
+
+		}
+
+		// If the closest segment is the last one, adjust the index to be 0 to insert after the last point
+		if ( index === this.controlPoints.length ) {
+			index = 0;
+		}
+
+		return index;
+	}
+
+	protected calculateHdg ( index: number, position: Vector3 ) {
+
+		const previousPoint = this.controlPoints[ index - 1 ];
+
+		let hdg: number = 0;
+
+		if ( previousPoint ) {
+
+			// hdg from previous point to new point
+			hdg = Maths.heading( previousPoint.position, position );
+
+			if ( isNaN( hdg ) ) {
+				hdg = SPIRAL.vec2Angle( previousPoint.position.x, previousPoint.position.y );
+			}
+
+			if ( isNaN( hdg ) ) {
+				hdg = 0;
+			}
+
+		}
+
+		return hdg;
 	}
 }
 
