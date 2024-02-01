@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { ToolType } from "../../tools/tool-types.enum";
-import { HasSpline } from 'app/services/debug/data.service';
+import { HasSpline } from 'app/core/interfaces/data.service';
 import { ToolHints } from "../interfaces/tool.hints";
 
 @Injectable( {

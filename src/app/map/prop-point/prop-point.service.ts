@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { MapService } from 'app/services/map/map.service';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
-import { DataService } from "../../services/debug/data.service";
+import { DataService } from "../../core/interfaces/data.service";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 @Injectable( {

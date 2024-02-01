@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { DataService } from "../../services/debug/data.service";
+import { DataService } from "../../core/interfaces/data.service";
 import { Surface } from "./surface.model";
 import { MapService } from "../../services/map/map.service";
 import { SurfaceManager } from "./surface.manager";

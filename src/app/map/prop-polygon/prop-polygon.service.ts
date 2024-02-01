@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { DataService } from "../../services/debug/data.service";
+import { DataService } from "../../core/interfaces/data.service";
 import { PropPolygon } from "./prop-polygon.model";
 import { MapService } from "../../services/map/map.service";
 import { PropPolygonBuilder } from "./prop-polygon.builder";

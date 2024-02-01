@@ -8,7 +8,7 @@ import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { SurfaceService } from "../map/surface/surface.service";
 import { PropPolygonService } from "../map/prop-polygon/prop-polygon.service";
 import { ToolType } from "./tool-types.enum";
-import { DataService } from "../services/debug/data.service";
+import { DataService } from "../core/interfaces/data.service";
 import { PropPointService } from "../map/prop-point/prop-point.service";
 
 @Injectable( {

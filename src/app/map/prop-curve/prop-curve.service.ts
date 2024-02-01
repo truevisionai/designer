@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { MapService } from 'app/services/map/map.service';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropCurveBuilder } from './prop-curve.builder';
-import { DataService } from 'app/services/debug/data.service';
+import { DataService } from 'app/core/interfaces/data.service';
 
 @Injectable( {
 	providedIn: 'root'

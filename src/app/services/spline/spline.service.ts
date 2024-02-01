@@ -9,7 +9,7 @@ import { MapEvents } from 'app/events/map-events';
 import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { SplineCreatedEvent } from 'app/events/spline/spline-created-event';
 import { SplineRemovedEvent } from 'app/events/spline/spline-removed-event';
-import { DataService } from '../debug/data.service';
+import { DataService } from '../../core/interfaces/data.service';
 
 @Injectable( {
 	providedIn: 'root'

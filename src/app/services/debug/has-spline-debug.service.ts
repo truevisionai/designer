@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { DebugService } from "../../core/interfaces/debug.service";
 import { DebugState } from "./debug-state";
 import { AbstractSplineDebugService } from "./abstract-spline-debug.service";
-import { HasSpline } from "./data.service";
+import { HasSpline } from "../../core/interfaces/data.service";
 
 
 @Injectable( {

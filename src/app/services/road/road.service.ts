@@ -23,7 +23,7 @@ import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
-import { DataService } from "../debug/data.service";
+import { DataService } from "../../core/interfaces/data.service";
 
 @Injectable( {
 	providedIn: 'root'
