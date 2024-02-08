@@ -22,7 +22,7 @@ import { RoadManager } from 'app/managers/road/road-manager';
 export class SplineIntersection {
 	spline: AbstractSpline;
 	otherSpline: AbstractSpline;
-	intersection: Vector3
+	position: Vector3
 }
 
 @Injectable( {
@@ -253,7 +253,7 @@ export class IntersectionService {
 		const successorSpline = spline.getSuccessorSpline();
 		const predecessorSpline = spline.getPredecessorrSpline();
 
-		const intersections = [];
+		const intersections: SplineIntersection[] = [];
 
 		for ( let i = 0; i < splineCount; i++ ) {
 
@@ -273,7 +273,7 @@ export class IntersectionService {
 			intersections.push( {
 				spline: spline,
 				otherSpline: otherSpline,
-				intersection: intersection
+				position: intersection
 			} );
 		}
 
@@ -581,7 +581,7 @@ export class IntersectionService {
 		}
 	}
 
-	private cutForTJunction ( coord: TvRoadCoord, junction: TvJunction ) {
+	cutForTJunction ( coord: TvRoadCoord, junction: TvJunction ) {
 
 		const junctionWidth = coord.road.getRoadWidthAt( coord.s ).totalWidth;
 
