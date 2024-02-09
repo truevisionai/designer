@@ -21,6 +21,7 @@ import { BaseService } from 'app/services/base.service';
 import { LaneWidthService } from './lane-width.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { TvLaneSide } from 'app/map/models/tv-common';
+import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 
 @Injectable( {
 	providedIn: 'root'
@@ -49,7 +50,13 @@ export class LaneWidthToolService {
 
 		const s = roadCoord.s - lane.laneSection.s;
 
-		const laneWidth = lane.getLaneWidthAt( s ).clone( s );
+		let widthValue = lane.getWidthValue( s );
+
+		if ( !widthValue ) {
+			widthValue = 3.2;
+		}
+
+		const laneWidth = new TvLaneWidth( s, widthValue, 0, 0, 0, lane );
 
 		return new LaneWidthNode( laneWidth );
 
