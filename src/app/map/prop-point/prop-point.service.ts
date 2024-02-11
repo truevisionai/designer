@@ -5,13 +5,13 @@
 import { Injectable } from '@angular/core';
 import { MapService } from 'app/services/map/map.service';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
-import { DataService } from "../../core/interfaces/data.service";
+import { BaseDataService } from "../../core/interfaces/data.service";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PropPointService extends DataService<PropInstance> {
+export class PropPointService extends BaseDataService<PropInstance> {
 
 	constructor (
 		public mapService: MapService

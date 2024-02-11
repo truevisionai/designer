@@ -29,7 +29,7 @@ export class LaneManager {
 
 		this.laneWidthManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
-		this.laneHeightManager.updateLaneHeight( lane.laneSection.road, lane.laneSection, lane );
+		this.laneHeightManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
 		this.parkingLaneManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
@@ -47,13 +47,15 @@ export class LaneManager {
 
 		this.laneWidthManager.onLaneUpdated( lane.laneSection.road, lane.laneSection, lane );
 
+		this.laneHeightManager.onLaneUpdated( lane.laneSection.road, lane.laneSection, lane );
+
 	}
 
 	onLaneTypeChanged ( lane: TvLane ) {
 
 		this.laneWidthManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 
-		this.laneHeightManager.updateLaneHeight( lane.laneSection.road, lane.laneSection, lane );
+		this.laneHeightManager.onLaneUpdated( lane.laneSection.road, lane.laneSection, lane );
 
 		this.parkingLaneManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 

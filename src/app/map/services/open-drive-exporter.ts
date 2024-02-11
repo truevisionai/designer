@@ -17,7 +17,7 @@ import { TvJunctionType } from '../models/junctions/tv-junction-type';
 import { TvJunctionConnection } from '../models/junctions/tv-junction-connection';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
-import { TvLaneHeight } from '../models/tv-lane-height';
+import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { TvLaneMaterial } from '../models/tv-lane-material';
 import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';

@@ -5,50 +5,30 @@
 import { DebugState } from 'app/services/debug/debug-state';
 import { Vector3 } from "three";
 import { SimpleControlPoint } from "../../objects/dynamic-control-point";
+import { DebugService } from './debug.service';
 
-export interface DebugService<T> {
 
-	setDebugState ( object: T, state: DebugState ): void;
+export abstract class LaneNodeDebugService<TvLane> implements DebugService<TvLane> {
 
-	updateDebugState ( object: T, state: DebugState ): void;
+	abstract setDebugState ( object: TvLane, state: DebugState ): void;
 
-	resetHighlighted (): void;
+	abstract onHighlight ( object: TvLane ): void;
 
-	onHighlight ( object: T ): void;
+	abstract onUnhighlight ( object: TvLane ): void;
 
-	onUnhighlight ( object: T ): void;
+	abstract onSelected ( object: TvLane ): void;
 
-	onSelected ( object: T ): void;
+	abstract onUnselected ( object: TvLane ): void;
 
-	onUnselected ( object: T ): void;
+	abstract onDefault ( object: TvLane ): void;
 
-	onDefault ( object: T ): void;
+	abstract onRemoved ( object: TvLane ): void;
 
-	onRemoved ( object: T ): void;
+	protected highlighted = new Set<TvLane>();
 
-}
+	protected selected = new Set<TvLane>();
 
-export abstract class BaseDebugService<T> implements DebugService<T> {
-
-	abstract setDebugState ( object: T, state: DebugState ): void
-
-	abstract onHighlight ( object: T ): void
-
-	abstract onUnhighlight ( object: T ): void
-
-	abstract onSelected ( object: T ): void
-
-	abstract onUnselected ( object: T ): void
-
-	abstract onDefault ( object: T ): void
-
-	abstract onRemoved ( object: T ): void
-
-	protected highlighted = new Set<T>();
-
-	protected selected = new Set<T>();
-
-	protected setBaseState ( object: T, state: DebugState ) {
+	protected setBaseState ( object: TvLane, state: DebugState ) {
 
 		switch ( state ) {
 
@@ -72,7 +52,7 @@ export abstract class BaseDebugService<T> implements DebugService<T> {
 
 	}
 
-	private shouldHighlight ( object: T ) {
+	private shouldHighlight ( object: TvLane ) {
 
 		// we don't want to highlight selected objects
 		if ( this.selected.has( object ) ) return false;
@@ -83,7 +63,7 @@ export abstract class BaseDebugService<T> implements DebugService<T> {
 		return true;
 	}
 
-	private setHighlightState ( object: T ) {
+	private setHighlightState ( object: TvLane ) {
 
 		if ( !this.shouldHighlight( object ) ) return;
 
@@ -93,7 +73,7 @@ export abstract class BaseDebugService<T> implements DebugService<T> {
 
 	}
 
-	private setDefaultState ( object: T ) {
+	private setDefaultState ( object: TvLane ) {
 
 		if ( this.highlighted.has( object ) ) {
 
@@ -114,13 +94,13 @@ export abstract class BaseDebugService<T> implements DebugService<T> {
 		this.onDefault( object );
 	}
 
-	private setSelectedState ( object: T ) {
+	private setSelectedState ( object: TvLane ) {
 
 		if ( this.selected.has( object ) ) {
 
 			this.onSelected( object );
 
-			return
+			return;
 		}
 
 		if ( this.highlighted.has( object ) ) {
@@ -136,7 +116,7 @@ export abstract class BaseDebugService<T> implements DebugService<T> {
 		this.onSelected( object );
 	}
 
-	private setRemovedState ( object: T ) {
+	private setRemovedState ( object: TvLane ) {
 
 		if ( this.selected.has( object ) ) {
 
@@ -174,7 +154,7 @@ export abstract class BaseDebugService<T> implements DebugService<T> {
 
 	}
 
-	updateDebugState ( object: T, state: DebugState ) {
+	updateDebugState ( object: TvLane, state: DebugState ) {
 
 		if ( object ) this.onRemoved( object );
 
@@ -182,7 +162,7 @@ export abstract class BaseDebugService<T> implements DebugService<T> {
 
 	}
 
-	protected createControlPoint ( object: T, position: Vector3 ) {
+	protected createControlPoint ( object: TvLane, position: Vector3 ) {
 
 		return new SimpleControlPoint( object, position );
 

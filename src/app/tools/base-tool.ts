@@ -16,7 +16,7 @@ import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { DebugService } from "../core/interfaces/debug.service";
-import { DataService } from 'app/core/interfaces/data.service';
+import { BaseDataService } from 'app/core/interfaces/data.service';
 import { DebugState } from "../services/debug/debug-state";
 import { SelectionService } from "./selection.service";
 import { SimpleControlPoint } from "../objects/dynamic-control-point";
@@ -37,7 +37,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected debugService: DebugService<T>;
 
-	protected dataService: DataService<T>;
+	protected dataService: BaseDataService<T>;
 
 	protected objectFactory: AbstractFactory<T>;
 
@@ -398,7 +398,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	}
 
-	setDataService ( dataService: DataService<T> ) {
+	setDataService ( dataService: BaseDataService<T> ) {
 
 		this.dataService = dataService;
 

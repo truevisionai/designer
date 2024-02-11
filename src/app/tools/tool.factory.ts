@@ -65,6 +65,12 @@ import { DataServiceProvider } from "./data-service-provider.service";
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { ToolHintsProvider } from "../core/providers/tool-hints.provider";
 import { Tool } from "./tool";
+import { LaneHeightTool } from './lane-height-tool/lane-height.tool';
+import { BaseLaneTool } from "./base-lane.tool";
+import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
+import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
+import { TvLane } from 'app/map/models/tv-lane';
+import { LaneHeightService } from 'app/map/lane-height/lane-height.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -98,7 +104,8 @@ export class ToolFactory {
 		private factoryProvider: FactoryServiceProvider,
 		private pointFactory: ControlPointFactory,
 		private dataServiceProvider: DataServiceProvider,
-		private toolHintsProvider: ToolHintsProvider
+		private toolHintsProvider: ToolHintsProvider,
+		private laneHeightService: LaneHeightService,
 	) {
 	}
 
@@ -145,6 +152,9 @@ export class ToolFactory {
 				break;
 			case ToolType.Lane:
 				tool = new LaneTool( this.laneToolService );
+				break;
+			case ToolType.LaneHeight:
+				tool = new LaneHeightTool();
 				break;
 			case ToolType.PointMarkingTool:
 				tool = new PointMarkingTool( this.pointMarkingToolService );
@@ -203,6 +213,24 @@ export class ToolFactory {
 
 			this.setSelectionStrategies( tool, type );
 
+		} else if ( tool instanceof BaseLaneTool ) {
+
+			tool.debugger = this.debugFactory.createDebugService( type );
+
+			tool.data = this.dataServiceProvider.createLinkedDataService( type );
+
+			tool.factory = this.factoryProvider.createForLaneTool( type );
+
+			tool.hints = this.toolHintsProvider.createFromToolType( type );
+
+			this.selectionService.reset();
+
+			if ( type == ToolType.LaneHeight ) {
+				this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+				this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
+			}
+
+			tool.selection = this.selectionService;
 		}
 
 		return tool;

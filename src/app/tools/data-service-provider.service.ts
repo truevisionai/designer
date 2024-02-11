@@ -8,8 +8,10 @@ import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { SurfaceService } from "../map/surface/surface.service";
 import { PropPolygonService } from "../map/prop-polygon/prop-polygon.service";
 import { ToolType } from "./tool-types.enum";
-import { DataService } from "../core/interfaces/data.service";
+import { BaseDataService, LinkedDataService } from "../core/interfaces/data.service";
 import { PropPointService } from "../map/prop-point/prop-point.service";
+import { LaneService } from "../services/lane/lane.service";
+import { LaneHeightService } from "app/map/lane-height/lane-height.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,10 +24,12 @@ export class DataServiceProvider {
 		private surfaceService: SurfaceService,
 		private propPolygonService: PropPolygonService,
 		private propPointService: PropPointService,
+		private laneService: LaneService,
+		private laneHeightService: LaneHeightService,
 	) {
 	}
 
-	createDataService ( type: ToolType ): DataService<any> {
+	createDataService ( type: ToolType ): BaseDataService<any> {
 
 		switch ( type ) {
 
@@ -46,6 +50,19 @@ export class DataServiceProvider {
 
 			case ToolType.PropPolygon:
 				return this.propPolygonService;
+
+			case ToolType.LaneHeight:
+				return this.laneService;
+		}
+
+	}
+
+	createLinkedDataService ( type: ToolType ): LinkedDataService<any, any> {
+
+		switch ( type ) {
+
+			case ToolType.LaneHeight:
+				return this.laneHeightService;
 		}
 
 	}
