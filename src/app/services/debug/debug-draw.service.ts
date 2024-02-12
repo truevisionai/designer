@@ -156,65 +156,45 @@ export class DebugDrawService {
 
 	createLaneWidthLine ( laneCoord: TvLaneCoord ): Line2 {
 
-		const width = laneCoord.lane.getWidthValue( laneCoord.s );
+		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.s, laneCoord.road, laneCoord.lane );
 
-		const start = laneCoord.position;
-
-		const direction = laneCoord.direction.normalize();
-
-		const perpendicular = direction.clone().cross( new Vector3( 0, 0, 1 ) );
-
-		const end = start.clone().add( perpendicular.clone().multiplyScalar( width ) );
-
-		const lineGeometry = new LineGeometry();
-
-		lineGeometry.setPositions( [
-			start.x, start.y, start.z + 0.1,
-			end.x, end.y, end.z + 0.1
-		] );
-
-		const lineMaterial = new LineMaterial( {
-			color: COLOR.RED,
-			linewidth: RoadNode.defaultWidth,
-			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+		const material = new LineMaterial( {
+			color: COLOR.CYAN,
+			linewidth: 4,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
 			depthTest: false,
 			depthWrite: false,
+			transparent: true,
 		} );
 
-		const line = new Line2( lineGeometry, lineMaterial );
-
-		line.name = 'DebugDrawService.createRoadWidthLine';
-
-		line.renderOrder = 3;
-
-		return line;
-
+		return new DebugLine( null, lineGeometry, material );
 	}
 
 	updateLaneWidthLine ( line: Line2, laneCoord: TvLaneCoord ): Line2 {
 
-		const width = laneCoord.lane.getWidthValue( laneCoord.s );
-
-		const start = laneCoord.position;
-
-		const direction = laneCoord.direction.normalize();
-
-		const perpendicular = direction.clone().cross( new Vector3( 0, 0, 1 ) );
-
-		const end = start.clone().add( perpendicular.clone().multiplyScalar( width ) );
-
-		const lineGeometry = new LineGeometry();
-
-		lineGeometry.setPositions( [
-			start.x, start.y, start.z + 0.1,
-			end.x, end.y, end.z + 0.1
-		] );
+		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.s, laneCoord.road, laneCoord.lane );
 
 		line.geometry.dispose();
 
 		line.geometry = lineGeometry;
 
 		return line;
+
+	}
+
+	createLaneWidthLineGeometry ( laneS: number, road: TvRoad, lane: TvLane ) {
+
+		const s = lane.laneSection.s + laneS;
+
+		const laneWidth = lane.getWidthValue( s );
+
+		const offset = laneWidth * 0.5;
+
+		const start = road.getLaneCenterPosition( lane, s, -offset );
+
+		const end = road.getLaneCenterPosition( lane, s, offset );
+
+		return new LineGeometry().setPositions( [ start, end ].flatMap( p => [ p.x, p.y, p.z ] ) );
 
 	}
 
