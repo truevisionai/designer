@@ -15,11 +15,11 @@ import { CommandHistory } from 'app/services/command-history';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { MathUtils, Vector3 } from 'three';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class PointMarkingTool extends BaseTool<any>{
 

@@ -4,7 +4,6 @@
 
 import { ToolType } from "./tool-types.enum";
 import { TvLane } from "app/map/models/tv-lane";
-import { AbstractControlPoint } from "../objects/abstract-control-point";
 import { SelectionService } from "./selection.service";
 import { LinkedDataService } from "app/core/interfaces/data.service";
 import { Tool } from "./tool";
@@ -21,12 +20,15 @@ import { UnselectObjectCommand } from "app/commands/unselect-object-command";
 import { AppInspector } from "app/core/inspector";
 import { CommandHistory } from "app/services/command-history";
 import { StatusBarService } from "app/services/status-bar.service";
-import { SimpleControlPoint } from "app/objects/dynamic-control-point";
 import { DebugState } from "app/services/debug/debug-state";
 import { KeyboardEvents } from "app/events/keyboard-events";
-import { LaneElementFactory } from "app/core/interfaces/lane-element.factory";
+import { ILaneNodeFactory } from "app/core/interfaces/lane-element.factory";
+import { HasDistanceValue } from "app/core/interfaces/has-distance-value";
+import { DebugDrawService } from "app/services/debug/debug-draw.service";
+import { CopyPositionCommand } from "../commands/copy-position-command";
+import { LaneNode } from "../objects/lane-node";
 
-export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements Tool {
+export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportEventSubscriber implements Tool {
 
 	name: string;
 
@@ -36,17 +38,21 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 	public data: LinkedDataService<TvLane, T>;
 
-	public debugger: DebugService<TvLane>;
+	public debugger: DebugService<TvLane, LaneNode<T>>;
 
 	public hints: ToolHints<T>;
 
 	public selection: SelectionService;
 
-	public factory: LaneElementFactory<T>;
+	public factory: ILaneNodeFactory<LaneNode<T>>;
 
-	protected get selectedPoint (): SimpleControlPoint<T> {
+	public debugDrawService: DebugDrawService;
 
-		return this.selection?.getLastSelected<SimpleControlPoint<T>>( SimpleControlPoint.name );
+	private nodeChanged: boolean;
+
+	protected get selectedNode (): LaneNode<T> {
+
+		return this.selection?.getLastSelected<LaneNode<T>>( LaneNode.name );
 
 	}
 
@@ -58,8 +64,8 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 	protected get selectedObject (): T {
 
-		if ( this.selectedPoint ) {
-			return this.selectedPoint.mainObject;
+		if ( this.selectedNode ) {
+			return this.selectedNode.mainObject;
 		}
 
 		if ( this.typeName ) {
@@ -78,11 +84,15 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 		this.subscribeToEvents();
 
+		this.debugger.enable();
+
 	}
 
 	disable (): void {
 
 		this.unsubscribeToEvents();
+
+		this.debugger.clear();
 
 	}
 
@@ -106,6 +116,48 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 	}
 
+	onPointerUp () {
+
+		if ( !this.nodeChanged ) return;
+
+		if ( !this.selectedNode ) return;
+
+		const newPosition = this.selectedNode.position.clone();
+
+		const oldPosition = this.pointerDownAt.clone();
+
+		const updateCommand = new CopyPositionCommand( this.selectedNode, newPosition, oldPosition );
+
+		CommandHistory.execute( updateCommand );
+
+		this.nodeChanged = false;
+	}
+
+	onPointerMoved ( e: PointerEventData ) {
+
+		if ( !this.isPointerDown ) {
+
+			this.highlight( e );
+
+			return;
+		}
+
+		if ( !this.selectedLane ) return;
+
+		if ( !this.selectedNode ) return;
+
+		if ( !this.selectedNode.isSelected ) return;
+
+		const position = this.selection.handleTargetMovement( e, this.selectedLane );
+
+		if ( !position ) return;
+
+		this.selectedNode.copyPosition( position.position );
+
+		this.nodeChanged = true;
+
+	}
+
 	onPointerDownSelect ( e: PointerEventData ): void {
 
 		this.selection?.handleSelection( e );
@@ -126,13 +178,9 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 		if ( this.selectedLane == null ) return;
 
-		const object = this.factory.createFromPosition( e.point, this.selectedLane );
+		const node = this.factory.createNode( e.point, this.selectedLane );
 
-		const addCommand = new AddObjectCommand( object );
-
-		const selectCommand = new SelectObjectCommand( object, this.selectedObject );
-
-		CommandHistory.executeMany( addCommand, selectCommand );
+		this.executeAddAndSelect( node, this.selectedNode );
 
 	}
 
@@ -148,23 +196,12 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 			this.debugger.setDebugState( object, DebugState.SELECTED );
 
-		} else if ( object.constructor.name === this.typeName ) {
-
-			this.debugger.setDebugState( object, DebugState.SELECTED );
-
-			this.onShowInspector( object );
-
-			this.setHint( this.hints?.objectSelected( object ) );
-
-		} else if ( object instanceof SimpleControlPoint ) {
+		} else if ( object instanceof LaneNode ) {
 
 			object.select();
 
-			this.onShowInspector( object.mainObject, object );
+			this.onShowInspector( object );
 
-			this.debugger.setDebugState( object.mainObject, DebugState.SELECTED );
-
-			this.setHint( this.hints?.pointSelected( object.mainObject ) );
 		}
 
 	}
@@ -175,23 +212,11 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 			this.debugger.setDebugState( object, DebugState.DEFAULT );
 
-		} else if ( object.constructor.name === this.typeName ) {
-
-			this.debugger.setDebugState( object, DebugState.DEFAULT );
-
-			AppInspector.clear();
-
-			this.setHint( this.hints?.objectUnselected( object ) );
-
-		} else if ( object instanceof SimpleControlPoint ) {
+		} else if ( object instanceof LaneNode ) {
 
 			object.unselect();
 
 			AppInspector.clear();
-
-			this.debugger.setDebugState( object.mainObject, DebugState.DEFAULT );
-
-			this.setHint( this.hints?.pointUnselected() );
 
 		}
 
@@ -199,13 +224,11 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 	onObjectAdded ( object: any ): void {
 
-		if ( object.constructor.name === this.typeName ) {
+		if ( object instanceof LaneNode ) {
 
-			this.data.add( this.selectedLane, object );
+			this.data.add( object.lane, object.mainObject );
 
-			this.debugger.setDebugState( object, DebugState.SELECTED );
-
-			this.setHint( this.hints?.objectAdded( object ) );
+			this.debugger.addControl( object.lane, object, DebugState.SELECTED );
 
 		}
 
@@ -217,7 +240,7 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 			this.data.update( this.selectedLane, object );
 
-			this.debugger.setDebugState( object, DebugState.SELECTED );
+			this.debugger.setDebugState( this.selectedLane, DebugState.SELECTED );
 
 			this.setHint( this.hints?.objectUpdated( object ) );
 
@@ -227,17 +250,15 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( object.constructor.name === this.typeName ) {
+		if ( object instanceof LaneNode ) {
 
-			this.data.remove( this.selectedLane, object );
+			this.data.remove( object.lane, object.mainObject );
 
-			this.debugger.setDebugState( object, DebugState.REMOVED );
+			this.debugger.removeControl( object.lane, object );
 
 			AppInspector.clear();
 
 			this.selection?.clearSelection();
-
-			this.setHint( this.hints?.objectRemoved( object ) );
 
 		}
 
@@ -319,9 +340,7 @@ export abstract class BaseLaneTool<T> extends ViewportEventSubscriber implements
 
 	}
 
-	protected onShowInspector ( object: any, controlPoint?: AbstractControlPoint ): void {
-
-		// throw new Error( "Method not implemented." );
+	protected onShowInspector ( object: LaneNode<T> ): void {
 
 	}
 

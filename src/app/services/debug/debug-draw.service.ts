@@ -20,6 +20,10 @@ import { SimpleArrowObject, SharpArrowObject } from 'app/objects/lane-arrow-obje
 import { DebugLine } from '../../objects/debug-line';
 import { TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
+import { Maths } from 'app/utils/maths';
+import { HasDistanceValue } from 'app/core/interfaces/has-distance-value';
+import { LaneNode } from "../../objects/lane-node";
 
 @Injectable( {
 	providedIn: 'root'
@@ -154,6 +158,32 @@ export class DebugDrawService {
 		return line;
 	}
 
+	createLaneHeightNode ( road: TvRoad, lane: TvLane, height: TvLaneHeight ): Line2 {
+
+		const lineGeometry = this.createLaneWidthLineGeometry( height.sOffset, road, lane );
+
+		const material = new LineMaterial( {
+			color: COLOR.CYAN,
+			linewidth: 4,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+		} );
+
+		return new DebugLine( height, lineGeometry, material );
+	}
+
+	createLaneNode<T extends HasDistanceValue> ( road: TvRoad, lane: TvLane, target: T ) {
+
+		const s = lane.laneSection.s + target.s;
+
+		const position = road.getLaneCenterPosition( lane, s );
+
+		return new LaneNode( road, lane, target, position.position );
+
+	}
+
 	createLaneWidthLine ( laneCoord: TvLaneCoord ): Line2 {
 
 		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.s, laneCoord.road, laneCoord.lane );
@@ -236,6 +266,32 @@ export class DebugDrawService {
 		} );
 
 		const line = new DebugLine( target, geometry, material );
+
+		line.renderOrder = 999;
+
+		return line;
+
+	}
+
+	createDashedLine<T> ( target: T, points: Vector3[], lineWidth = 2, color = COLOR.CYAN ): DebugLine<T> {
+
+		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
+
+		const material = new LineMaterial( {
+			gapSize: 0.1,
+			dashed: true,
+			dashSize: 0.2,
+			color: color,
+			linewidth: lineWidth,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+		} );
+
+		const line = new DebugLine( target, geometry, material );
+
+		line.computeLineDistances();
 
 		line.renderOrder = 999;
 
@@ -354,6 +410,38 @@ export class DebugDrawService {
 		}
 
 		return posTheta;
+
+	}
+
+	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
+
+		const points: Vector3[] = [];
+
+		for ( let s = sStart; s < sEnd; s += stepSize ) {
+
+			points.push( this.getPoint( lane, s ) )
+
+		}
+
+		points.push( this.getPoint( lane, sEnd - Maths.Epsilon ) );
+
+		return points;
+	}
+
+	private getPoint ( lane: TvLane, s: number ) {
+
+		let posTheta = lane.laneSection.road.getPosThetaAt( s );
+
+		let width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
+
+		// If right side lane then make the offset negative
+		if ( lane.side === TvLaneSide.RIGHT ) {
+			width *= -1;
+		}
+
+		posTheta.addLateralOffset( width );
+
+		return posTheta.toVector3();
 
 	}
 

@@ -13,7 +13,6 @@ import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SelectRoadStrategy } from "app/core/strategies/select-strategies/select-road-strategy";
-import { SimpleControlPoint } from "app/objects/dynamic-control-point";
 import { ControlPointStrategy } from "app/core/strategies/select-strategies/control-point-strategy";
 import { AppInspector } from "app/core/inspector";
 import { TvObjectRepeat } from "app/map/models/objects/tv-object-repeat";
@@ -21,6 +20,7 @@ import { Action, SerializedField } from "app/core/components/serialization";
 import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class PropSpanTool extends BaseTool<any>{
 

@@ -4,13 +4,18 @@
 
 import { DebugState } from 'app/services/debug/debug-state';
 import { Vector3 } from "three";
-import { SimpleControlPoint } from "../../objects/dynamic-control-point";
 
-export interface DebugService<T> {
+import { SimpleControlPoint } from "../../objects/simple-control-point";
+
+export interface DebugService<T, K> {
 
 	setDebugState ( object: T, state: DebugState ): void;
 
 	updateDebugState ( object: T, state: DebugState ): void;
+
+	enable (): void;
+
+	clear (): void;
 
 	resetHighlighted (): void;
 
@@ -26,9 +31,13 @@ export interface DebugService<T> {
 
 	onRemoved ( object: T ): void;
 
+	addControl ( object: T, control: K, state: DebugState ): void;
+
+	removeControl ( object: T, control: K ): void;
+
 }
 
-export abstract class BaseDebugService<T> implements DebugService<T> {
+export abstract class BaseDebugService<T> implements DebugService<T, any> {
 
 	abstract setDebugState ( object: T, state: DebugState ): void
 
@@ -182,9 +191,35 @@ export abstract class BaseDebugService<T> implements DebugService<T> {
 
 	}
 
+	clear (): void {
+
+		this.highlighted.clear();
+
+		this.selected.clear();
+
+	}
+
+	enable (): void {
+
+		//
+
+	}
+
+	addControl ( object: T, item: any, state: DebugState ): void {
+
+		//
+
+	}
+
 	protected createControlPoint ( object: T, position: Vector3 ) {
 
 		return new SimpleControlPoint( object, position );
+
+	}
+
+	removeControl ( lane: T, object: any ): void {
+
+		//
 
 	}
 }

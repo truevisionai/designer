@@ -52,7 +52,6 @@ import { RoadRampTool } from "./road-ramp/road-ramp-tool";
 import { RoadDividerTool } from "./road-cut-tool/road-divider-tool";
 import { ParkingRoadTool } from "./parking/parking-road-tool";
 import { ParkingLotTool } from "./parking/parking-lot.tool";
-import { SimpleControlPoint } from "../objects/dynamic-control-point";
 import { ControlPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
 import { SelectionService } from "./selection.service";
 import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
@@ -67,10 +66,16 @@ import { ToolHintsProvider } from "../core/providers/tool-hints.provider";
 import { Tool } from "./tool";
 import { LaneHeightTool } from './lane-height-tool/lane-height.tool';
 import { BaseLaneTool } from "./base-lane.tool";
-import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
 import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { TvLane } from 'app/map/models/tv-lane';
 import { LaneHeightService } from 'app/map/lane-height/lane-height.service';
+import { DebugLine } from 'app/objects/debug-line';
+import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
+import {
+	EndLaneMovingStrategy,
+} from "../core/strategies/move-strategies/end-lane.moving.strategy";
+import { LaneNode } from "../objects/lane-node";
+import { SimpleControlPoint } from "../objects/simple-control-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -223,11 +228,19 @@ export class ToolFactory {
 
 			tool.hints = this.toolHintsProvider.createFromToolType( type );
 
+			tool.debugDrawService = this.debugFactory.debugDrawService;
+
 			this.selectionService.reset();
 
 			if ( type == ToolType.LaneHeight ) {
-				this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+
+				this.selectionService.registerStrategy( LaneNode.name, new ControlPointStrategy() );
+
+				this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
+
 				this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
+
+				this.selectionService.addMovingStrategy( new EndLaneMovingStrategy() );
 			}
 
 			tool.selection = this.selectionService;

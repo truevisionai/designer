@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { SurfaceFactory } from "../../map/surface/surface.factory";
 import { AbstractFactory } from "../interfaces/abstract-factory";
-import { LaneElementFactory } from "../interfaces/lane-element.factory";
+import { ILaneNodeFactory } from "../interfaces/lane-element.factory";
 import { PropPolygonFactory } from "../../map/prop-polygon/prop-polygon.factory";
 import { PropCurveFactory } from "../../map/prop-curve/prop-curve.factory";
 import { PropPointFactory } from "../../map/prop-point/prop-point.factory";
@@ -57,9 +57,9 @@ export class FactoryServiceProvider {
 	}
 
 
-	createForLaneTool ( type: ToolType ): LaneElementFactory<any> {
+	createForLaneTool ( type: ToolType ): ILaneNodeFactory<any> {
 
-		let factory: LaneElementFactory<any>;
+		let factory: ILaneNodeFactory<any>;
 
 		switch ( type ) {
 			case ToolType.LaneHeight:
@@ -70,10 +70,6 @@ export class FactoryServiceProvider {
 				return;
 				break;
 		}
-
-		if ( !factory ) return;
-
-		factory.setAssetManager( this.assetManager );
 
 		return factory;
 	}

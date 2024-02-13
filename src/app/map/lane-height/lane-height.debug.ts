@@ -3,19 +3,16 @@
  */
 
 import { Injectable } from "@angular/core";
-import { LaneNodeDebugService } from 'app/core/interfaces/lane-node.debug';
-import { Object3DArrayMap } from "app/core/models/object3d-array-map";
+import { BaseLaneDebugService } from 'app/core/interfaces/lane-node.debug';
 import { TvLane } from "app/map/models/tv-lane";
 import { DebugState } from "app/services/debug/debug-state";
-import { Object3D } from "three";
-import { SimpleControlPoint } from "../../objects/dynamic-control-point";
+import { TvLaneSide } from "../models/tv-common";
+import { TvLaneHeight } from "./lane-height.model";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class LaneHeightDebugService extends LaneNodeDebugService<TvLane> {
-
-	private points = new Object3DArrayMap<TvLane, Object3D[]>();
+export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	setDebugState ( lane: TvLane, state: DebugState ): void {
 
@@ -35,36 +32,111 @@ export class LaneHeightDebugService extends LaneNodeDebugService<TvLane> {
 
 	onSelected ( lane: TvLane ): void {
 
-		lane.height?.forEach( height => {
+		this.showNodes( lane );
 
-			const s = lane.laneSection.s + height.sOffset;
-
-			const width = lane.getWidthValue( height.sOffset );
-
-			const position = lane.laneSection.road.getLaneStartPosition( lane, s );
-
-			const point = new SimpleControlPoint( height, position.position );
-
-			this.points.addItem( lane, point );
-
-		} );
+		this.showLines( lane );
 
 	}
 
 	onUnselected ( lane: TvLane ): void {
 
-		this.points.removeKey( lane );
+		this.nodes.removeKey( lane );
 
 	}
 
 	onDefault ( lane: TvLane ): void {
 
-		this.points.removeKey( lane );
+		this.nodes.removeKey( lane );
+
+		this.showLines( lane );
 
 	}
 
 	onRemoved ( lane: TvLane ): void {
 
+		this.nodes.removeKey( lane );
+
+		this.lines.removeKey( lane );
+
 	}
 
+	clear (): void {
+
+		this.mapService.roads.forEach( road => {
+
+			road.laneSections.forEach( laneSection => {
+
+				laneSection.lanes.forEach( lane => {
+
+					if ( lane.side == TvLaneSide.CENTER ) return;
+
+					this.setBaseState( lane, DebugState.REMOVED );
+
+				} );
+
+			} );
+
+		} );
+
+		super.clear();
+
+	}
+
+	private showNodes ( lane: TvLane ) {
+
+		this.nodes.removeKey( lane );
+
+		for ( let i = 0; i < lane.height.length; i++ ) {
+
+			const height = lane.height[ i ];
+
+			// const node = this.debugDrawService.createLaneHeightNode( lane.laneSection.road, lane, height );
+
+			const point = this.debugDrawService.createLaneNode( lane.laneSection.road, lane, height );
+
+			// this.nodes.addItem( lane, node );
+
+			this.nodes.addItem( lane, point );
+
+		}
+
+	}
+
+	private showLines ( lane: TvLane ) {
+
+		this.lines.removeKey( lane );
+
+		for ( let i = 0; i < lane.height.length; i++ ) {
+
+			const height = lane.height[ i ];
+
+			const sStart = height.sOffset;
+
+			// get s of next lane width node
+			let sEnd = lane.height[ i + 1 ]?.sOffset || lane.laneSection.length;
+
+			const points = this.debugDrawService.getPoints( lane, sStart, sEnd, 0.1 );
+
+			const line = this.debugDrawService.createDebugLine( height, points, 4 );
+
+			this.lines.addItem( lane, line );
+
+		}
+
+		if ( lane.height.length == 0 ) {
+
+			const sStart = 0;
+
+			// get s of next lane width node
+			let sEnd = lane.laneSection.length;
+
+			const points = this.debugDrawService.getPoints( lane, sStart, sEnd, 0.1 );
+
+			const line = this.debugDrawService.createDashedLine( lane, points, 4 );
+
+			this.lines.addItem( lane, line );
+
+		}
+
+	}
 }

@@ -22,9 +22,9 @@ import { ObjectTypes } from 'app/map/models/tv-common';
 import { CrosswalkToolService } from "./crosswalk-tool.service";
 import { CrosswalkInspector } from 'app/map/crosswalk/crosswalk.inspector';
 import { Environment } from 'app/core/utils/environment';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class CrosswalkTool extends BaseTool<any>{
 

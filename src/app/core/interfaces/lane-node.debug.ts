@@ -3,12 +3,25 @@
  */
 
 import { DebugState } from 'app/services/debug/debug-state';
-import { Vector3 } from "three";
-import { SimpleControlPoint } from "../../objects/dynamic-control-point";
+import { Object3D } from "three";
 import { DebugService } from './debug.service';
+import { Object3DArrayMap } from '../models/object3d-array-map';
+import { DebugDrawService } from 'app/services/debug/debug-draw.service';
+import { MapService } from 'app/services/map/map.service';
+import { TvLaneSide } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { HasDistanceValue } from './has-distance-value';
+import { LaneNode } from "../../objects/lane-node";
 
+export abstract class BaseLaneDebugService<T extends HasDistanceValue> implements DebugService<TvLane, LaneNode<T>> {
 
-export abstract class LaneNodeDebugService<TvLane> implements DebugService<TvLane> {
+	public debugDrawService: DebugDrawService;
+
+	public mapService: MapService;
+
+	protected lines = new Object3DArrayMap<TvLane, Object3D[]>();
+
+	protected nodes = new Object3DArrayMap<TvLane, Object3D[]>();
 
 	abstract setDebugState ( object: TvLane, state: DebugState ): void;
 
@@ -29,6 +42,8 @@ export abstract class LaneNodeDebugService<TvLane> implements DebugService<TvLan
 	protected selected = new Set<TvLane>();
 
 	protected setBaseState ( object: TvLane, state: DebugState ) {
+
+		if ( !object ) return;
 
 		switch ( state ) {
 
@@ -162,9 +177,47 @@ export abstract class LaneNodeDebugService<TvLane> implements DebugService<TvLan
 
 	}
 
-	protected createControlPoint ( object: TvLane, position: Vector3 ) {
+	clear (): void {
 
-		return new SimpleControlPoint( object, position );
+		this.resetHighlighted();
+
+		this.resetSelected();
+
+		this.nodes.clear();
+
+		this.lines.clear();
+
+	}
+
+	enable (): void {
+
+		this.mapService.roads.forEach( road => {
+
+			road.laneSections.forEach( laneSection => {
+
+				laneSection.lanes.forEach( lane => {
+
+					if ( lane.side == TvLaneSide.CENTER ) return;
+
+					this.setBaseState( lane, DebugState.DEFAULT );
+
+				} );
+
+			} );
+
+		} );
+
+	}
+
+	addControl ( lane: TvLane, node: LaneNode<T>, state: DebugState ): void {
+
+		this.nodes.addItem( lane, node );
+
+	}
+
+	removeControl ( object: TvLane, control: LaneNode<T> ): void {
+
+		this.nodes.removeItem( object, control );
 
 	}
 }

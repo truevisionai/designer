@@ -11,7 +11,6 @@ import { BaseTool } from '../base-tool';
 import { PropCurveService } from '../../map/prop-curve/prop-curve.service';
 import { Vector3 } from 'three';
 import { PropCurveInspector } from '../../map/prop-curve/prop-curve.inspector';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 export class PropCurveTool extends BaseTool<any> {

@@ -12,10 +12,10 @@ import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { RoadSignalInspector } from './road-signal.inspector';
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class RoadSignalTool extends BaseTool<any>{
 

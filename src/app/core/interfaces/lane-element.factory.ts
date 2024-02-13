@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import { TvLane } from "app/map/models/tv-lane";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { AbstractFactory } from "./abstract-factory";
@@ -19,3 +19,10 @@ export abstract class LaneElementFactory<T> extends AbstractFactory<T> {
 	}
 
 }
+
+export interface ILaneNodeFactory<T extends Object3D> {
+
+	createNode ( position: Vector3, lane: TvLane ): T;
+
+}
+

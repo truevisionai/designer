@@ -12,7 +12,7 @@ import { AbstractSpline } from "./abstract-spline";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { Vector3 } from "three";
 
-fdescribe( 'ExplicitSpline Test', () => {
+describe( 'ExplicitSpline Test', () => {
 
 	let road: TvRoad;
 	let spline: AbstractSpline;

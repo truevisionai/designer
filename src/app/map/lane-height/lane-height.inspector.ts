@@ -4,14 +4,25 @@
 
 import { TvLane } from "../models/tv-lane";
 import { TvLaneHeight } from "./lane-height.model";
-import { SerializedField } from "../../core/components/serialization";
+import { Action, SerializedField } from "../../core/components/serialization";
+import { CommandHistory } from "app/services/command-history";
+import { RemoveObjectCommand } from "app/commands/remove-object-command";
+
+import { LaneNode } from "../../objects/lane-node";
 
 export class LaneHeightInspector {
 
 	constructor (
-		public lane: TvLane,
-		public laneHeight: TvLaneHeight
+		public node: LaneNode<TvLaneHeight>
 	) {
+	}
+
+	get laneHeight (): TvLaneHeight {
+		return this.node.mainObject;
+	}
+
+	get lane (): TvLane {
+		return this.node.lane;
 	}
 
 	@SerializedField( { type: 'float', min: 0 } )
@@ -39,5 +50,10 @@ export class LaneHeightInspector {
 
 	set outerHeight ( value: number ) {
 		this.laneHeight.setOuter( value );
+	}
+
+	@Action( { name: 'Delete' } )
+	delete () {
+		CommandHistory.execute( new RemoveObjectCommand( this.node ) );
 	}
 }

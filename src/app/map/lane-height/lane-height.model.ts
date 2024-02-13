@@ -39,6 +39,14 @@ export class TvLaneHeight {
 		this._sOffset = value;
 	}
 
+	get s () {
+		return this._sOffset;
+	}
+
+	set s ( value ) {
+		this._sOffset = value;
+	}
+
 	get outer () {
 		return this._outer;
 	}

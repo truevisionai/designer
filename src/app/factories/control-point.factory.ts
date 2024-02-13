@@ -6,11 +6,12 @@ import { Vector3 } from "three";
 import { AbstractControlPoint } from "../objects/abstract-control-point";
 import { SplineControlPoint } from "../objects/spline-control-point";
 import { Injectable } from "@angular/core";
-import { DynamicControlPoint, SimpleControlPoint } from "app/objects/dynamic-control-point";
+import { DynamicControlPoint } from "app/objects/dynamic-control-point";
 import { IHasUpdate } from "app/commands/set-value-command";
 import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
 import { RoadControlPoint } from "app/objects/road-control-point";
 import { TvRoad } from "app/map/models/tv-road.model";
+import { SimpleControlPoint } from "../objects/simple-control-point";
 
 @Injectable( {
 	providedIn: 'root'

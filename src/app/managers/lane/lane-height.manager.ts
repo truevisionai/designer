@@ -40,6 +40,8 @@ export class LaneHeightManager {
 
 	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
+		return;
+
 		if ( lane.height.length == 0 ) {
 			return;
 		}

@@ -15,7 +15,7 @@ import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-roa
 import { RoadDividerToolService } from './road-divider-tool.service';
 import { CommandHistory } from 'app/services/command-history';
 import { AddObjectCommand } from "../../commands/add-object-command";
-import { UpdateValueCommand } from 'app/commands/set-value-command';
+
 
 export class RoadDividerTool extends BaseTool<any>{
 
