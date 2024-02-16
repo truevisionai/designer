@@ -33,6 +33,8 @@ export interface DebugService<T, K> {
 
 	addControl ( object: T, control: K, state: DebugState ): void;
 
+	updatePosition ( object: T, control: K ): void;
+
 	removeControl ( object: T, control: K ): void;
 
 }
@@ -206,6 +208,12 @@ export abstract class BaseDebugService<T> implements DebugService<T, any> {
 	}
 
 	addControl ( object: T, item: any, state: DebugState ): void {
+
+		//
+
+	}
+
+	updatePosition ( object: T, control: any ): void {
 
 		//
 

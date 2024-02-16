@@ -25,8 +25,8 @@ import { KeyboardEvents } from "app/events/keyboard-events";
 import { ILaneNodeFactory } from "app/core/interfaces/lane-element.factory";
 import { HasDistanceValue } from "app/core/interfaces/has-distance-value";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
-import { CopyPositionCommand } from "../commands/copy-position-command";
 import { LaneNode } from "../objects/lane-node";
+import { UpdatePositionCommand } from "app/commands/update-position-command";
 
 export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportEventSubscriber implements Tool {
 
@@ -126,7 +126,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 		const oldPosition = this.pointerDownAt.clone();
 
-		const updateCommand = new CopyPositionCommand( this.selectedNode, newPosition, oldPosition );
+		const updateCommand = new UpdatePositionCommand( this.selectedNode, newPosition, oldPosition );
 
 		CommandHistory.execute( updateCommand );
 

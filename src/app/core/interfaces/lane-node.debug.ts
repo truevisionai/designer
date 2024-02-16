@@ -215,6 +215,14 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	}
 
+	updatePosition ( lane: TvLane, control: LaneNode<T> ): void {
+
+		const position = lane.laneSection.road.getLaneEndPosition( lane, control.s );
+
+		control.position.copy( position.position );
+
+	}
+
 	removeControl ( object: TvLane, control: LaneNode<T> ): void {
 
 		this.nodes.removeItem( object, control );

@@ -21,4 +21,15 @@ export class LaneNode<T extends HasDistanceValue> extends SimpleControlPoint<T> 
 		this.mainObject.s = value;
 	}
 
+	update (): void {
+
+		// here position on position we have to update s-value
+		const posTheta = this.road.getPosThetaByPosition( this.position );
+
+		if ( !posTheta ) return;
+
+		this.s = posTheta.s;
+
+	}
+
 }

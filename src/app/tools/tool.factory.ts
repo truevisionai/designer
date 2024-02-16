@@ -241,6 +241,7 @@ export class ToolFactory {
 				this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
 
 				this.selectionService.addMovingStrategy( new EndLaneMovingStrategy() );
+
 			}
 
 			tool.selection = this.selectionService;

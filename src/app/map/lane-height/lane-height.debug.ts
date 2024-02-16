@@ -90,11 +90,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 			const height = lane.height[ i ];
 
-			// const node = this.debugDrawService.createLaneHeightNode( lane.laneSection.road, lane, height );
-
 			const point = this.debugDrawService.createLaneNode( lane.laneSection.road, lane, height );
-
-			// this.nodes.addItem( lane, node );
 
 			this.nodes.addItem( lane, point );
 

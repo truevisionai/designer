@@ -23,6 +23,8 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 			this.data.update( object.lane, object.laneHeight );
 
+			this.debugger.updatePosition( object.lane, object.node );
+
 		} else {
 
 			super.onObjectUpdated( object );
