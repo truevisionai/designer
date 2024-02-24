@@ -80,7 +80,7 @@ export class IntersectionManager {
 
 		const intersections = this.intersectionService.getSplineIntersections( spline );
 
-		const groups = this.groupIntersections( intersections, 10 );
+		const groups = this.createGroups( intersections );
 
 		//for ( let i = 0; i < intersections.length; i++ ) {
 		//
@@ -158,7 +158,7 @@ export class IntersectionManager {
 		return junction;
 	}
 
-	groupIntersections ( intersections: SplineIntersection[], thresholdDistance: number ): IntersectionGroup[] {
+	private createGroups ( intersections: SplineIntersection[], thresholdDistance = 10 ): IntersectionGroup[] {
 
 		const groups: IntersectionGroup[] = [];
 
@@ -213,29 +213,11 @@ export class IntersectionManager {
 
 	}
 
-	private processGroup ( intersectionGroup: IntersectionGroup ) {
+	private processGroup ( group: IntersectionGroup ) {
 
-		const junction = this.junctionFactory.createFromPosition( intersectionGroup.getRepresentativePosition() );
+		const junction = this.createGroupJunction( group );
 
-		const splines = Array.from( intersectionGroup.splines );
-
-		const coords: TvRoadCoord[] = [];
-
-		const junctionWidth = 12;
-
-		for ( let i = 0; i < splines.length; i++ ) {
-
-			const spline = splines[ i ];
-
-			const splineCoords = this.getRoadCoords( spline, junction, intersectionGroup.getRepresentativePosition() );
-
-			for ( let j = 0; j < splineCoords.length; j++ ) {
-
-				coords.push( splineCoords[ j ] );
-
-			}
-
-		}
+		const coords: TvRoadCoord[] = this.createGroupCoords( group, junction );
 
 		for ( let i = 0; i < coords.length; i++ ) {
 
@@ -260,7 +242,53 @@ export class IntersectionManager {
 
 	}
 
-	private getRoadCoords ( spline: AbstractSpline, junction: TvJunction, point: Vector3 ): TvRoadCoord[] {
+	private createGroupJunction ( group: IntersectionGroup ): TvJunction {
+
+		const junctions = new Set<TvJunction>();
+
+		group.splines.forEach( spline => spline.getJunctions().forEach( junction => junctions.add( junction ) ) );
+
+		if ( junctions.size == 0 ) {
+
+			return this.junctionFactory.createFromPosition( group.getRepresentativePosition() );
+
+		}
+
+		if ( junctions.size == 1 ) {
+
+			return junctions.values().next().value;
+
+		}
+
+		throw new Error( 'Multiple junctions found in group' );
+
+	}
+
+	private createGroupCoords ( group: IntersectionGroup, junction: TvJunction ): TvRoadCoord[] {
+
+		const splines = Array.from( group.splines );
+
+		const coords: TvRoadCoord[] = [];
+
+		for ( let i = 0; i < splines.length; i++ ) {
+
+			const spline = splines[ i ];
+
+			const splineCoords = this.createRoadCoords( spline, junction, group.getRepresentativePosition() );
+
+			for ( let j = 0; j < splineCoords.length; j++ ) {
+
+				coords.push( splineCoords[ j ] );
+
+			}
+
+		}
+
+		return coords;
+
+	}
+
+	private createRoadCoords ( spline: AbstractSpline, junction: TvJunction, point: Vector3 ): TvRoadCoord[] {
 
 		const junctionWidth = 12;
 
@@ -272,9 +300,21 @@ export class IntersectionManager {
 
 		if ( !segment || !segment.isRoad ) {
 
-			junction.getIncomingRoads().forEach( road => coords.push( road.getRoadCoordByContact( TvContactPoint.END ) ) );
+			const previousSegment = spline.getPreviousSegment( segment.getInstance() );
 
-			junction.getOutgoingRoads().forEach( road => coords.push( road.getRoadCoordByContact( TvContactPoint.START ) ) );
+			if ( previousSegment && previousSegment.isRoad ) {
+
+				coords.push( previousSegment.getInstance<TvRoad>().getRoadCoordByContact( TvContactPoint.END ) );
+
+			}
+
+			const nextSegment = spline.getNextSegment( segment.getInstance() );
+
+			if ( nextSegment && nextSegment.isRoad ) {
+
+				coords.push( nextSegment.getInstance<TvRoad>().getRoadCoordByContact( TvContactPoint.START ) );
+
+			}
 
 			return coords;
 		}
@@ -337,40 +377,46 @@ export class IntersectionManager {
 
 		} else {
 
-			// coord is in the middle of the road
-			// add junction segment on spline and add new road
-			const oldRoad = startSegment.getInstance<TvRoad>();
-
-			this.segmentService.addJunctionSegment( spline, sStart, junction );
-
-			const newRoad = this.roadService.clone( startSegment.getInstance<TvRoad>(), sStart );
-
-			newRoad.sStart = sEnd;
-
-			this.segmentService.addRoadSegmentNew( spline, sEnd, newRoad );
-
-			newRoad.setPredecessor( TvRoadLinkChildType.junction, junction );
-
-			oldRoad.setSuccessor( TvRoadLinkChildType.junction, junction );
-
-			this.linkService.updateSuccessorRelationWhileCut( newRoad, newRoad.successor, oldRoad );
-
-			this.roadService.add( newRoad );
-
-			this.roadService.update( oldRoad );
-
-			coords.push( oldRoad.getRoadCoordByContact( TvContactPoint.END ) );
-
-			coords.push( newRoad.getRoadCoordByContact( TvContactPoint.START ) );
+			return this.createMiddleRoadCoords( spline, junction, sStart, sEnd );
 
 		}
 
 		return coords;
 	}
 
-	private addSplineSegment ( spline: AbstractSpline, s: number, segment: SplineSegment ) {
+	private createMiddleRoadCoords ( spline: AbstractSpline, junction: TvJunction, sStart: number, sEnd: number ): TvRoadCoord[] {
 
-		//
+		const startSegment = spline.getSegmentAt( sStart );
 
+		const coords = [];
+
+		// coord is in the middle of the road
+		// add junction segment on spline and add new road
+		const oldRoad = startSegment.getInstance<TvRoad>();
+
+		this.segmentService.addJunctionSegment( spline, sStart, junction );
+
+		const newRoad = this.roadService.clone( startSegment.getInstance<TvRoad>(), sStart );
+
+		newRoad.sStart = sEnd;
+
+		this.segmentService.addRoadSegmentNew( spline, sEnd, newRoad );
+
+		newRoad.setPredecessor( TvRoadLinkChildType.junction, junction );
+
+		oldRoad.setSuccessor( TvRoadLinkChildType.junction, junction );
+
+		this.linkService.updateSuccessorRelationWhileCut( newRoad, newRoad.successor, oldRoad );
+
+		this.roadService.add( newRoad );
+
+		this.roadService.update( oldRoad );
+
+		coords.push( oldRoad.getRoadCoordByContact( TvContactPoint.END ) );
+
+		coords.push( newRoad.getRoadCoordByContact( TvContactPoint.START ) );
+
+		return coords;
 	}
+
 }

@@ -261,6 +261,7 @@ export class IntersectionService {
 
 			// NOTE: ignore pre or successor splines
 			// MAY NEED TO FIND BETTER OPTION
+			if ( otherSpline == spline ) continue;
 			if ( otherSpline == successorSpline ) continue;
 			if ( otherSpline == predecessorSpline ) continue;
 
