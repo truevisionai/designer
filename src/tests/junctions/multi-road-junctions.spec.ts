@@ -16,7 +16,7 @@ import { Vector2 } from "three";
 
 const DEFAULT_ROAD_WIDTH = 12.2;
 
-fdescribe( 'Multi-RoadJunctionTests', () => {
+describe( 'Multi-RoadJunctionTests', () => {
 
 	let baseTest = new BaseTest();
 	let mapService: MapService;
