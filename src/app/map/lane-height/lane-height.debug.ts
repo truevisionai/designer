@@ -111,11 +111,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 			// get s of next lane width node
 			let sEnd = lane.height[ i + 1 ]?.sOffset || lane.laneSection.length;
 
-			const points = this.debugDrawService.getPoints( lane, sStart, sEnd, 0.1 );
-
-			const line = this.debugDrawService.createDebugLine( height, points, 4 );
-
-			this.lines.addItem( lane, line );
+			this.createLine( height, lane, sStart, sEnd );
 
 		}
 
@@ -126,13 +122,10 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 			// get s of next lane width node
 			let sEnd = lane.laneSection.length;
 
-			const points = this.debugDrawService.getPoints( lane, sStart, sEnd, 0.1 );
-
-			const line = this.debugDrawService.createDashedLine( lane, points, 4 );
-
-			this.lines.addItem( lane, line );
+			this.createDashedLine( lane, lane, sStart, sEnd );
 
 		}
 
 	}
+
 }

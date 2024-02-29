@@ -228,4 +228,24 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 		this.nodes.removeItem( object, control );
 
 	}
+
+	protected createLine ( node, lane: TvLane, start: number, end: number, lineWidth = 4, stepSize = 0.1 ) {
+
+		const points = this.debugDrawService.getPoints( lane, start, end, stepSize );
+
+		const line = this.debugDrawService.createDebugLine( node, points, lineWidth );
+
+		this.lines.addItem( lane, line );
+
+	}
+
+	protected createDashedLine ( node, lane: TvLane, start: number, end: number, lineWidth = 4, stepSize = 0.1 ) {
+
+		const points = this.debugDrawService.getPoints( lane, start, end, stepSize );
+
+		const line = this.debugDrawService.createDashedLine( node, points, lineWidth );
+
+		this.lines.addItem( lane, line );
+
+	}
 }
