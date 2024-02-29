@@ -60,9 +60,9 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		this.tool.base.reset();
 
-		this.tool.base.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-		this.tool.base.selection.registerStrategy( TvRoadObject.name, new ControlPointStrategy() );
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( TvRoadObject.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );

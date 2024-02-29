@@ -83,9 +83,9 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		this.tool.base.reset();
 
-		this.tool.base.selection.registerStrategy( 'point', new ControlPointStrategy() );
-		this.tool.base.selection.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy( false ) );
+		this.selectionService.registerStrategy( 'point', new ControlPointStrategy() );
+		this.selectionService.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy( false ) );
 
 		// we want all points to be selectable and use 1 point at a time
 		this.tool.base.selection.registerTag( SplineControlPoint.name, 'point' );

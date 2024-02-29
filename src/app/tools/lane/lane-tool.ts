@@ -39,9 +39,9 @@ export class LaneTool extends BaseTool<any>{
 
 		this.tool.base.reset();
 
-		this.tool.base.selection.registerStrategy( DebugLine.name, new SelectLineStrategy() );
+		this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
 
-		this.tool.base.selection.registerStrategy( TvLane.name, new SelectLaneStrategy() );
+		this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 

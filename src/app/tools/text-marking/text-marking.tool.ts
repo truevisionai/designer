@@ -40,7 +40,7 @@ export class TextMarkingTool extends BaseTool<any>{
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 
-		this.tool.base.selection.registerStrategy( 'point', new ControlPointStrategy() );
+		this.selectionService.registerStrategy( 'point', new ControlPointStrategy() );
 
 		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
 

@@ -52,9 +52,9 @@ export class RoadElevationTool extends BaseTool<any> {
 
 		this.setHint( 'use LEFT CLICK to select a road' );
 
-		this.tool.base.selection.registerStrategy( ElevationControlPoint.name, new ControlPointStrategy<ElevationControlPoint>() );
+		this.selectionService.registerStrategy( ElevationControlPoint.name, new ControlPointStrategy<ElevationControlPoint>() );
 
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
 		this.tool.base.addMovingStrategy( new RoadLineMovingStrategy() );
 
