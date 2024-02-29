@@ -26,7 +26,7 @@ export class LaneTool extends BaseTool<any>{
 	public toolType = ToolType.Lane;
 
 	get selectedLane () {
-		return this.tool.base.selection.getLastSelected<TvLane>( TvLane.name );
+		return this.selectionService.getLastSelected<TvLane>( TvLane.name );
 	}
 
 	constructor (

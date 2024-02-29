@@ -33,15 +33,15 @@ export class CrosswalkTool extends BaseTool<any>{
 	toolType = ToolType.Crosswalk;
 
 	get selectedCrosswalk (): TvRoadObject {
-		return this.tool.base.selection.getLastSelected<TvRoadObject>( TvRoadObject.name );
+		return this.selectionService.getLastSelected<TvRoadObject>( TvRoadObject.name );
 	}
 
 	get selectedPoint (): SimpleControlPoint<TvCornerRoad> {
-		return this.tool.base.selection.getLastSelected<SimpleControlPoint<TvCornerRoad>>( SimpleControlPoint.name );
+		return this.selectionService.getLastSelected<SimpleControlPoint<TvCornerRoad>>( SimpleControlPoint.name );
 	}
 
 	get selectedRoad (): TvRoad {
-		return this.tool.base.selection.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
 	}
 
 	private debug = !Environment.production;

@@ -31,13 +31,13 @@ export class PointMarkingTool extends BaseTool<any>{
 
 	get selectedRoad () {
 
-		return this.tool.base.selection.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
 
 	}
 
 	get selectedMarking () {
 
-		return this.tool.base.selection.getLastSelected<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint.name );
+		return this.selectionService.getLastSelected<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint.name );
 
 	}
 
