@@ -67,7 +67,7 @@ export class CrosswalkTool extends BaseTool<any>{
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 
-		this.tool.base.setHint( 'Use LEFT CLICK to select a road' );
+		this.setHint( 'Use LEFT CLICK to select a road' );
 	}
 
 	enable () {
@@ -344,14 +344,14 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		this.tool.showRoad( road );
 
-		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
+		this.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
 
 		this.tool.hideRoad( road );
 
-		this.tool.base.setHint( 'Use LEFT CLICK to select a road' );
+		this.setHint( 'Use LEFT CLICK to select a road' );
 	}
 
 	onCrosswalkSelected ( roadObject: TvRoadObject ) {
@@ -362,7 +362,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		AppInspector.setInspector( DynamicInspectorComponent, new CrosswalkInspector( roadObject, marking ) );
 
-		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to add a point' );
+		this.setHint( 'Use SHIFT + LEFT CLICK to add a point' );
 
 	}
 
@@ -370,7 +370,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		AppInspector.clear();
 
-		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
+		this.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 
 	}
 
@@ -391,7 +391,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		AppInspector.setInspector( DynamicInspectorComponent, new CrosswalkInspector( roadObject, marking ) );
 
-		this.tool.base.setHint( 'Drag the point to move the crosswalk' );
+		this.setHint( 'Drag the point to move the crosswalk' );
 
 	}
 

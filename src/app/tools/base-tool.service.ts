@@ -8,7 +8,6 @@ import { SelectStrategy } from 'app/core/strategies/select-strategies/select-str
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/scenario/models/position';
 import { CommandHistory } from 'app/services/command-history';
-import { StatusBarService } from 'app/services/status-bar.service';
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { SelectionService } from './selection.service';
@@ -220,25 +219,6 @@ export class BaseToolService {
 		this.selectionStrategies = [];
 		this.movingStrategies = [];
 		this.creationStrategies = [];
-	}
-
-	setHint ( msg: string ) {
-
-		StatusBarService.setHint( msg );
-
-	}
-
-	setWarning ( msg: string ) {
-
-		StatusBarService.setHint( msg );
-		// this.snackBar.warn( msg );
-
-	}
-
-	clearHint () {
-
-		StatusBarService.clearHint();
-
 	}
 
 	reset () {

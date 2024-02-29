@@ -175,24 +175,24 @@ export class PointMarkingTool extends BaseTool<any>{
 	createPointMarking ( asset: AssetNode, position: Vector3 ) {
 
 		if ( !position ) {
-			this.tool.base.setWarning( 'Drag point marking on a road or lane' );
+			this.setHint( 'Drag point marking on a road or lane' );
 			return;
 		}
 
 		if ( !asset ) {
-			this.tool.base.setWarning( 'Drag a texture or material asset from the project browser' );
+			this.setHint( 'Drag a texture or material asset from the project browser' );
 			return;
 		}
 
 		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL ) {
-			this.tool.base.setWarning( 'Drag a texture or material asset from the project browser' );
+			this.setHint( 'Drag a texture or material asset from the project browser' );
 			return;
 		}
 
 		const roadObject = this.tool.createPointMarking( asset, position );
 
 		if ( !roadObject ) {
-			this.tool.base.setWarning( 'Drag point marking on a road or lane' );
+			this.setHint( 'Drag point marking on a road or lane' );
 			return;
 		}
 

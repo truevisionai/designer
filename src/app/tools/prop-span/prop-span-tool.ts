@@ -52,7 +52,7 @@ export class PropSpanTool extends BaseTool<any>{
 
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 
-		this.tool.base.setHint( 'use LEFT CLICK to select a road/lane' );
+		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 	}
 
@@ -84,14 +84,14 @@ export class PropSpanTool extends BaseTool<any>{
 
 		if ( !this.road ) {
 
-			this.tool.base.setHint( 'Select a road/lane' );
+			this.setHint( 'Select a road/lane' );
 
 			return;
 		}
 
 		if ( !this.prop ) {
 
-			this.tool.base.setHint( 'Select a prop from project browser' );
+			this.setHint( 'Select a prop from project browser' );
 
 			return;
 		}
@@ -190,11 +190,11 @@ export class PropSpanTool extends BaseTool<any>{
 
 		if ( !this.prop ) {
 
-			this.tool.base.setHint( 'Select a prop' );
+			this.setHint( 'Select a prop' );
 
 		} else {
 
-			this.tool.base.setHint( 'use SHIFT + LEFT CLICK to create object' );
+			this.setHint( 'use SHIFT + LEFT CLICK to create object' );
 
 		}
 
@@ -208,7 +208,7 @@ export class PropSpanTool extends BaseTool<any>{
 
 		this.road = null;
 
-		this.tool.base.setHint( 'use LEFT CLICK to select a road/lane' );
+		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 	}
 

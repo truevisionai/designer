@@ -67,7 +67,7 @@ export class RoadSignalTool extends BaseTool<any>{
 	onPointerDownCreate ( e: PointerEventData ): void {
 
 		if ( !this.selectedRoad ) {
-			this.tool.base.setWarning( 'Select a road' );
+			this.setHint( 'Select a road' );
 			return;
 		}
 
@@ -102,7 +102,7 @@ export class RoadSignalTool extends BaseTool<any>{
 				return;
 			}
 
-			this.tool.base.setHint( 'Drag the signal to the desired position' );
+			this.setHint( 'Drag the signal to the desired position' );
 
 			this.tool.addRoadSignal( this.selectedRoad, object );
 
@@ -181,24 +181,24 @@ export class RoadSignalTool extends BaseTool<any>{
 	createSignal ( asset: AssetNode, position: Vector3 ) {
 
 		if ( !position ) {
-			this.tool.base.setWarning( 'Drag signal on a road or lane' );
+			this.setHint( 'Drag signal on a road or lane' );
 			return;
 		}
 
 		if ( !asset ) {
-			this.tool.base.setWarning( 'Drag a texture asset from the project browser' );
+			this.setHint( 'Drag a texture asset from the project browser' );
 			return;
 		}
 
 		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL ) {
-			this.tool.base.setWarning( 'Drag a texture asset from the project browser' );
+			this.setHint( 'Drag a texture asset from the project browser' );
 			return;
 		}
 
 		const roadSignal = this.tool.createRoadSignal( asset, position, 'truevision', 'stop' );
 
 		if ( !roadSignal ) {
-			this.tool.base.setWarning( 'Drag signal on a road or lane' );
+			this.setHint( 'Drag signal on a road or lane' );
 			return;
 		}
 

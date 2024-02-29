@@ -650,7 +650,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 			node.select();
 
-			this.tool.base.setHint( 'Select another node to connect' );
+			this.setHint( 'Select another node to connect' );
 
 		}
 
@@ -688,21 +688,21 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( nodeA.isConnected ) {
 
-			this.tool.base.setHint( 'Cannot connect a node which is already connected' );
+			this.setHint( 'Cannot connect a node which is already connected' );
 
 			return;
 		}
 
 		if ( nodeB.isConnected ) {
 
-			this.tool.base.setHint( 'Cannot connect a node which is already connected' );
+			this.setHint( 'Cannot connect a node which is already connected' );
 
 			return;
 		}
 
 		if ( nodeA.road === nodeB.road ) {
 
-			this.tool.base.setHint( 'Cannot connect a node to itself' );
+			this.setHint( 'Cannot connect a node to itself' );
 
 			return;
 		}
@@ -711,7 +711,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		this.executeAddObject( road );
 
-		this.tool.base.setHint( 'Modify the new road or select another node to connect' );
+		this.setHint( 'Modify the new road or select another node to connect' );
 
 	}
 
