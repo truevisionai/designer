@@ -100,7 +100,7 @@ export class PointMarkingTool extends BaseTool<any>{
 		// 	return;
 		// };
 
-		this.tool.base.selection.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 

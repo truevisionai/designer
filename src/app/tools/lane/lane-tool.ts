@@ -61,7 +61,7 @@ export class LaneTool extends BaseTool<any>{
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 

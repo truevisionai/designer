@@ -218,7 +218,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleSelection( e, ( object ) => {
+		this.selectionService.handleSelection( e, ( object ) => {
 
 			if ( object instanceof TvRoad ) {
 

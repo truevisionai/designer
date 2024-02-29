@@ -110,7 +110,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 	onPointerDownSelect ( pointerEventData: PointerEventData ) {
 
-		this.tool.base.selection.handleSelection( pointerEventData );
+		this.selectionService.handleSelection( pointerEventData );
 
 	}
 
