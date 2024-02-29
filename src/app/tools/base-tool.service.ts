@@ -197,8 +197,6 @@ export class BaseToolService {
 
 		this.clearStrategies();
 
-		this.selection.reset();
-
 		this.currentSelected = null;
 
 	}
