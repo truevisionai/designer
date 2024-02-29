@@ -33,6 +33,7 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugState } from '../../services/debug/debug-state';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
+import { Environment } from "../../core/utils/environment";
 
 export class RoadTool extends BaseTool<AbstractSpline> {
 
@@ -46,7 +47,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	private pointPositionCache: Vector3[] = [];
 
-	private debug = true;
+	private debug = !Environment.production;
 
 	private selectedNode: RoadNode;
 
@@ -56,13 +57,13 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	private get selectedControlPoint (): SplineControlPoint {
 
-		return this.tool.selection.getLastSelected<any>( 'point' );
+		return this.selectionService.getLastSelected<any>( 'point' );
 
 	}
 
 	private get selectedRoad (): TvRoad {
 
-		return this.tool.selection.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
 
 	}
 
@@ -79,8 +80,6 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 	}
 
 	init (): void {
-
-		this.tool.selection.reset();
 
 		this.tool.base.reset();
 
@@ -111,8 +110,6 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
 
 		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
-
-		this.tool.selection.reset();
 
 		this.tool.base.reset();
 

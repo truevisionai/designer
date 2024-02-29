@@ -8,7 +8,6 @@ import { BaseToolService } from '../base-tool.service';
 import { MapService } from 'app/services/map/map.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { SelectionService } from '../selection.service';
 import { RoadLinkService } from 'app/services/road/road-link.service';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
@@ -22,7 +21,6 @@ import { SplineFactory } from 'app/services/spline/spline.factory';
 export class RoadToolService {
 
 	constructor (
-		public selection: SelectionService,
 		public splineService: SplineService,
 		public base: BaseToolService,
 		public mapService: MapService,
