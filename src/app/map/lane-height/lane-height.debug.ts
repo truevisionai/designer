@@ -32,31 +32,48 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	onSelected ( lane: TvLane ): void {
 
-		this.showNodes( lane );
+		lane.laneSection.lanes.forEach( item => {
 
-		this.showLines( lane );
+			this.showNodes( item );
+
+			this.showLines( item );
+
+		} )
 
 	}
 
 	onUnselected ( lane: TvLane ): void {
 
-		this.nodes.removeKey( lane );
+		lane.laneSection.lanes.forEach( item => {
+
+			this.nodes.removeKey( item );
+
+		} )
 
 	}
 
 	onDefault ( lane: TvLane ): void {
 
-		this.nodes.removeKey( lane );
+		lane.laneSection.lanes.forEach( item => {
 
-		this.showLines( lane );
+			this.nodes.removeKey( item );
+
+			this.showLines( item );
+
+		} )
 
 	}
 
 	onRemoved ( lane: TvLane ): void {
 
-		this.nodes.removeKey( lane );
+		lane.laneSection.lanes.forEach( item => {
 
-		this.lines.removeKey( lane );
+			this.nodes.removeKey( item );
+
+			this.lines.removeKey( item );
+
+		} )
+
 
 	}
 
