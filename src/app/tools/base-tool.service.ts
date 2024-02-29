@@ -61,34 +61,6 @@ export class BaseToolService {
 
 	}
 
-	/**
-	 * @deprecated use handleSelection or handleCreation instead
-	 * @param e
-	 */
-	select ( e: PointerEventData ): void {
-
-		this.handleSelection( e, ( object ) => {
-
-			if ( object === this.currentSelected ) return;
-
-			CommandHistory.execute( new SelectObjectCommand( object, this.currentSelected ) );
-
-			this.currentSelected = object;
-
-		}, () => {
-
-			if ( this.currentSelected ) {
-
-				CommandHistory.execute( new UnselectObjectCommand( this.currentSelected ) );
-
-				this.currentSelected = null;
-
-			}
-
-		} )
-
-	}
-
 	handleSelection ( e: PointerEventData, selectCallback: ( object: any ) => void, unselectCallback: () => void = null ): void {
 
 		for ( let i = 0; i < this.selectionStrategies.length; i++ ) {
