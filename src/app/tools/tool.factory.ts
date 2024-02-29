@@ -72,7 +72,7 @@ import { LaneHeightService } from 'app/map/lane-height/lane-height.service';
 import { DebugLine } from 'app/objects/debug-line';
 import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import {
-	EndLaneMovingStrategy,
+	EndLaneMovingStrategy, MidLaneMovingStrategy,
 } from "../core/strategies/move-strategies/end-lane.moving.strategy";
 import { LaneNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
@@ -240,7 +240,7 @@ export class ToolFactory {
 
 				this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
 
-				this.selectionService.addMovingStrategy( new EndLaneMovingStrategy() );
+				this.selectionService.addMovingStrategy( new MidLaneMovingStrategy() );
 
 			}
 

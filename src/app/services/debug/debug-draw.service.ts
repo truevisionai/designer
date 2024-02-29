@@ -174,13 +174,27 @@ export class DebugDrawService {
 		return new DebugLine( height, lineGeometry, material );
 	}
 
-	createLaneNode<T extends HasDistanceValue> ( road: TvRoad, lane: TvLane, target: T ) {
+	createLaneNode<T extends HasDistanceValue> ( road: TvRoad, lane: TvLane, target: T, side: 'start' | 'center' | 'end' = 'center' ) {
 
 		const s = lane.laneSection.s + target.s;
 
-		const position = road.getLaneCenterPosition( lane, s );
+		let posTheta: TvPosTheta;
 
-		return new LaneNode( road, lane, target, position.position );
+		if ( side === 'center' ) {
+
+			posTheta = road.getLaneCenterPosition( lane, s );
+
+		} else if ( side == 'start' ) {
+
+			posTheta = road.getLaneStartPosition( lane, s );
+
+		} else if ( side == 'end' ) {
+
+			posTheta = road.getLaneEndPosition( lane, s );
+
+		}
+
+		return new LaneNode( road, lane, target, posTheta.position );
 
 	}
 
