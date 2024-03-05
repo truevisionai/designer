@@ -38,6 +38,7 @@ import {
 import { RoadStyle } from "../../../core/asset/road.style";
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { RoadBuilder } from 'app/map/builders/road.builder';
+import { Maths } from 'app/utils/maths';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -489,6 +490,23 @@ export class AssetPreviewService {
 			this.ground.position.z = 0;
 
 		}
+
+	}
+
+	setupGraphScene ( scene: Scene ) {
+
+		scene.background = new Color( 0x000000 );
+
+		const gridHelper = new THREE.GridHelper( 1000, 1000 );
+
+		( gridHelper.material as Material ).transparent = true;
+		( gridHelper.material as Material ).opacity = 0.5;
+		( gridHelper.material as Material ).needsUpdate = false;
+
+		// to adjust with up Z
+		gridHelper.rotateX( Maths.Deg2Rad * 90 );
+
+		scene.add( gridHelper );
 
 	}
 
