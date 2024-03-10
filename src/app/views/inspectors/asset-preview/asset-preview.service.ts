@@ -497,7 +497,7 @@ export class AssetPreviewService {
 
 		scene.background = new Color( 0x000000 );
 
-		const gridHelper = new THREE.GridHelper( 1000, 1000 );
+		const gridHelper = new THREE.GridHelper( 10000, 1000 );
 
 		( gridHelper.material as Material ).transparent = true;
 		( gridHelper.material as Material ).opacity = 0.5;
@@ -508,6 +508,7 @@ export class AssetPreviewService {
 
 		scene.add( gridHelper );
 
+		scene.add( new THREE.AxesHelper( 10000 ) );
 	}
 
 	private addGreenGround ( scene ) {
