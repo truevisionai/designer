@@ -1,29 +1,75 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	ElementRef,
+	EventEmitter,
+	HostListener,
+	Input,
+	OnDestroy,
+	OnInit, Output,
+	ViewChild
+} from '@angular/core';
 import { Environment } from 'app/core/utils/environment';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ViewportEvents } from 'app/events/viewport-events';
 import { CameraService } from 'app/renderer/camera.service';
-import { CanvasService } from 'app/renderer/canvas.service';
-import { RendererService } from 'app/renderer/renderer.service';
 import { ThreeService } from 'app/renderer/three.service';
-import { DragDropService } from 'app/services/editor/drag-drop.service';
 import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
-import { Object3D, WebGLRenderer, Intersection, Vector3, OrthographicCamera, PerspectiveCamera } from 'three';
-import { ViewControllerService } from '../viewport/view-controller.service';
-import { ViewHelperService } from '../viewport/view-helper.service';
-import { ViewportService } from '../viewport/viewport.service';
+import { Object3D, WebGLRenderer, Intersection, OrthographicCamera, PerspectiveCamera, Camera } from 'three';
+import { IViewportController } from "../../../objects/i-viewport-controller";
+import { TvOrbitControls } from "../../../objects/tv-orbit-controls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-@Component({
-  selector: 'app-viewport-new',
-  templateUrl: './viewport-new.component.html',
-  styleUrls: ['./viewport-new.component.scss']
-})
+export class CanvasConfig {
+	width: number = 600;
+
+	height: number = 600;
+
+	left: number = 0;
+
+	top: number = 0;
+}
+
+export class ViewportConfig {
+
+	enableControls: boolean = true;
+
+	showGrid: boolean = true;
+
+	showAxes: boolean = true;
+
+	showFps: boolean = true;
+
+	showStats: boolean = true;
+}
+
+@Component( {
+	selector: 'app-viewport-new',
+	templateUrl: './viewport-new.component.html',
+	styleUrls: [ './viewport-new.component.scss' ]
+} )
 export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-	public beginTime;
+	@Output() updated = new EventEmitter<any>();
 
-	public prevTime;
+	@Output() resized = new EventEmitter<any>();
+
+	@Input() config: ViewportConfig = new ViewportConfig();
+
+	@Input() eventSystem: ViewportEvents;
+
+	@Input() canvasConfig: CanvasConfig = new CanvasConfig();
+
+	@Input() controls: IViewportController;
+
+	@Input() scene: THREE.Scene = new THREE.Scene();
+
+	@Input() camera: THREE.Camera = new THREE.PerspectiveCamera( 45, 1, 0.1, 1000 );
+
+	public beginTime: number;
+
+	public prevTime: number;
 
 	public frames = 0;
 
@@ -33,11 +79,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	intersections: THREE.Intersection[] = [];
 
-	lastIntersection: THREE.Intersection;
-
-	@ViewChild( 'viewport' ) elementRef: ElementRef;
-
-	@ViewChild( 'viewHelper' ) viewHelperRef: ElementRef;
+	@ViewChild( 'viewport' ) viewportRef: ElementRef;
 
 	raycaster = new THREE.Raycaster;
 
@@ -46,8 +88,6 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	prevMousePosition: THREE.Vector2 = new THREE.Vector2();
 
 	mouseDelta: THREE.Vector2 = new THREE.Vector2();
-
-	clock = new THREE.Clock();
 
 	private animationId: number;
 
@@ -64,32 +104,16 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	get canvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement>this.elementRef.nativeElement;
-	}
-
-	get viewHelperCanvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement>this.viewHelperRef.nativeElement;
+		return <HTMLCanvasElement>this.viewportRef.nativeElement;
 	}
 
 	get cameraType (): string {
-		return this.threeService.camera?.type || 'OrthographicCamera';
+		return this.camera?.type || 'OrthographicCamera';
 	}
 
-	get renderer (): WebGLRenderer {
-		return this.rendererService.renderer;
-	}
+	public renderer: WebGLRenderer;
 
-	constructor (
-		private threeService: ThreeService,
-		private eventSystem: ViewportEvents,
-		private canvasService: CanvasService,
-		private rendererService: RendererService,
-		private viewHelperService: ViewHelperService,
-		private dragDropService: DragDropService,
-		private viewportService: ViewportService,
-		private viewControllerService: ViewControllerService,
-		private cameraService: CameraService,
-	) {
+	constructor () {
 		this.render = this.render.bind( this );
 	}
 
@@ -109,13 +133,16 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 			return;
 		}
 
-		this.rendererService.init( this.canvas );
+		this.initRenderer( this.canvas );
 
-		this.threeService.setupScene();
+		const controls = this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
-		this.cameraService.init();
+		// Listen for the 'change' event on OrbitControls
+		( controls as unknown as OrbitControls ).addEventListener( 'change', () => {
 
-		this.viewControllerService.init( this.cameraService.camera, this.canvas );
+			this.updated.emit( this.camera );
+
+		} );
 
 		this.raycaster = new THREE.Raycaster();
 		this.raycaster.params.Line.threshold = 0.5;
@@ -127,8 +154,6 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.render();
 
 		setTimeout( () => {
-
-			this.viewHelperService.init( this.viewHelperCanvas );
 
 			this.onWindowResized();
 
@@ -151,21 +176,13 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		// this seems a faster want to call render function
 		requestAnimationFrame( this.render );
 
-		const delta = this.clock.getDelta();
-
 		this.frameBegin();
-
-		this.viewControllerService.updateCameraPosition();
 
 		this.renderer.clear();
 
-		this.viewHelperService.update( delta );
+		this.renderer.render( this.scene, this.camera );
 
-		this.renderer.render( SceneService.scene, this.threeService.camera );
-
-		this.viewHelperService.render( this.renderer );
-
-		this.viewControllerService.update( delta );
+		this.controls.update();
 
 		this.frameEnd();
 	}
@@ -293,11 +310,11 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( intersection?.object?.type === 'Points' ) {
 
-			this.viewControllerService.disableControls();
+			this.controls.enabled = false;
 
 		} else {
 
-			this.viewControllerService.enableControls();
+			this.controls.enabled = true;
 
 		}
 
@@ -306,11 +323,11 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	onMouseUp ( event: MouseEvent ) {
 
-		this.viewControllerService.enableControls();
+		this.controls.enabled = true;
 
 		this.updateMousePosition( event );
 
-		this.raycaster.setFromCamera( this.currentMousePosition, this.threeService.camera );
+		this.raycaster.setFromCamera( this.currentMousePosition, this.camera );
 
 		this.intersections = this.raycaster.intersectObjects( SceneService.raycastableObjects(), true );
 
@@ -372,56 +389,28 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	@HostListener( 'dragenter', [ '$event' ] )
-	onDragEnter ( $event: DragEvent ) {
-		$event.preventDefault();
-		$event.stopPropagation();
-	}
-
-	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( $event: DragEvent ) {
-		$event.preventDefault();
-		$event.stopPropagation();
-	}
-
-	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( $event: DragEvent ) {
-		$event.preventDefault();
-		$event.stopPropagation();
-	}
-
-	@HostListener( 'drop', [ '$event' ] )
-	async onDrop ( $event: DragEvent ) {
-
-		$event.preventDefault();
-		$event.stopPropagation();
-
-		this.updateMousePosition( $event );
-
-		this.intersections = this.getIntersections( $event );
-
-		this.eventSystem.drop.emit( this.preparePointerData( $event, this.intersections[ 0 ] ) );
-
-		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
-
-		const position = intersection?.point || new Vector3();
-
-		const data = this.dragDropService.getData();
-
-		this.viewportService.handleAssetDropped( data, position );
-
-		this.dragDropService.clear();
-	}
-
 	@HostListener( 'window: resize', [ '$event' ] )
 	onWindowResized () {
 
 		const container = this.renderer.domElement.parentElement.parentElement;
 
-		this.canvasService.resizeViewport( container );
+		const box = container.getBoundingClientRect();
 
-		this.rendererService.onCanvasResized();
+		this.canvasConfig.width = container.clientWidth;
 
+		this.canvasConfig.height = container.clientHeight;
+
+		this.canvasConfig.left = box.left;
+
+		this.canvasConfig.top = box.top;
+
+		this.resized.emit( this.canvasConfig );
+
+		this.renderer.setViewport( -this.canvasConfig.left, -this.canvasConfig.top, this.canvasConfig.width, this.canvasConfig.height );
+
+		this.renderer.setSize( this.canvasConfig.width, this.canvasConfig.height );
+
+		this.resizeCamera( this.camera, this.canvasConfig.width / this.canvasConfig.height );
 	}
 
 	fireSelectionEvents () {
@@ -501,7 +490,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 			p.point = i.point;
 			p.uv = i.uv;
 			p.intersections = this.intersections;
-			p.camera = this.threeService.camera;
+			p.camera = this.camera;
 			p.mouse = this.currentMousePosition;
 			p.mouseDelta = this.mouseDelta;
 			p.mouseEvent = $event;
@@ -511,7 +500,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		} else {
 
 			p.intersections = [];												// intersection are empty
-			p.camera = this.threeService.camera;
+			p.camera = this.camera;
 			p.mouse = this.currentMousePosition;
 			p.mouseDelta = this.mouseDelta;
 			p.approxCameraDistance = 100;
@@ -532,19 +521,19 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	calculateCameraDistance ( i: Intersection ): number {
 
-		if ( this.threeService.camera instanceof OrthographicCamera ) {
+		if ( this.camera instanceof OrthographicCamera ) {
 
 			// Calculate the camera's dimensions
-			const cameraWidth = this.threeService.camera.right - this.threeService.camera.left;
-			const cameraHeight = this.threeService.camera.top - this.threeService.camera.bottom;
+			const cameraWidth = this.camera.right - this.camera.left;
+			const cameraHeight = this.camera.top - this.camera.bottom;
 
 			// Calculate the diagonal size of the camera's visible area
 			const cameraDiagonalSize = Math.sqrt( cameraWidth * cameraWidth + cameraHeight * cameraHeight );
 
 			// Calculate the approximate camera distance using the zoom and the diagonal size
-			return ( cameraDiagonalSize / ( 2 * this.threeService.camera.zoom ) );
+			return ( cameraDiagonalSize / ( 2 * this.camera.zoom ) );
 
-		} else if ( this.threeService.camera instanceof PerspectiveCamera ) {
+		} else if ( this.camera instanceof PerspectiveCamera ) {
 
 			return i.distance;
 
@@ -586,8 +575,8 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	updateMousePosition ( $event: MouseEvent ) {
 
-		this.currentMousePosition.x = ( ( $event.clientX - this.canvasService.left ) / this.canvasService.width ) * 2 - 1;
-		this.currentMousePosition.y = -( ( $event.clientY - this.canvasService.top ) / this.canvasService.height ) * 2 + 1;
+		this.currentMousePosition.x = ( ( $event.clientX - this.canvasConfig.left ) / this.canvasConfig.width ) * 2 - 1;
+		this.currentMousePosition.y = -( ( $event.clientY - this.canvasConfig.top ) / this.canvasConfig.height ) * 2 + 1;
 
 		this.mouseDelta.x = this.currentMousePosition.x - this.prevMousePosition.x;
 		this.mouseDelta.y = this.currentMousePosition.y - this.prevMousePosition.y;
@@ -599,11 +588,11 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	getIntersections ( event: MouseEvent, recursive: boolean = true ): THREE.Intersection[] {
 
-		this.raycaster.setFromCamera( this.currentMousePosition, this.threeService.camera );
+		this.raycaster.setFromCamera( this.currentMousePosition, this.camera );
 
 		this.raycaster.layers.set( 0 );  // default layer
 
-		let intersections = this.raycaster.intersectObjects( SceneService.scene.children, recursive );
+		let intersections = this.raycaster.intersectObjects( this.scene.children, recursive );
 
 		if ( intersections.length > 0 ) {
 
@@ -616,31 +605,45 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		return this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
 	}
 
-	changeCamera () {
+	private initRenderer ( canvas: HTMLCanvasElement ) {
 
-		this.cameraService.changeCamera();
+		this.renderer = new WebGLRenderer( {
+			alpha: false,
+			antialias: true,
+			precision: 'highp',
+			stencil: false
+		} );
+
+		this.renderer.setPixelRatio( window.devicePixelRatio );
+
+		this.renderer.setClearColor( 0xffffff, 1 );
+
+		this.renderer.autoClear = false;
+
+		this.renderer.setViewport( -this.canvasConfig.left, -this.canvasConfig.top, this.canvasConfig.width, this.canvasConfig.height );
+
+		this.renderer.setSize( this.canvasConfig.width, this.canvasConfig.height );
+
+		canvas.appendChild( this.renderer.domElement );
 
 	}
 
-	resetCamera () {
+	private resizeCamera ( camera: Camera, aspect: number ) {
 
-		this.cameraService.resetCamera();
+		if ( camera instanceof OrthographicCamera ) {
 
-	}
+			camera.left = camera.bottom * aspect;
 
-	wireframeMode () {
+			camera.right = camera.top * aspect;
 
-		this.showWireframe = !this.showWireframe;
+			camera.updateProjectionMatrix();
 
-		this.threeService.wireframeMode( this.showWireframe );
+		} else if ( camera instanceof PerspectiveCamera ) {
 
-	}
+			camera.aspect = aspect;
 
-	handleViewHelperClick ( $event: MouseEvent ) {
-
-		$event.stopPropagation();
-
-		this.viewHelperService.handleClick( $event as PointerEvent );
+			camera.updateProjectionMatrix();
+		}
 
 	}
 }

@@ -1,42 +1,60 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { AppConfig } from 'app/app.config';
-import { Object3DMap } from 'app/core/models/object3d-map';
 import { MapEvents } from 'app/events/map-events';
-import { MouseButton } from 'app/events/pointer-event-data';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
-import { ElevationControlPoint } from 'app/map/road-elevation/tv-elevation.object';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
-import { IViewportController } from 'app/objects/i-viewport-controller';
-import { TvOrbitControls } from 'app/objects/tv-orbit-controls';
 import { CameraService } from 'app/renderer/camera.service';
 import { TextObjectService } from 'app/services/text-object.service';
 import { RoadElevationToolService } from 'app/tools/road-elevation/road-elevation-tool.service';
-import { SelectionService } from 'app/tools/selection.service';
 import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
-import { Scene, Group, OrthographicCamera } from 'three';
+import { Scene, Group, OrthographicCamera, Color, Material, Vector3, Camera } from 'three';
+import { CanvasConfig, ViewportConfig } from "../viewport-new/viewport-new.component";
+import { ViewportEvents } from "../../../events/viewport-events";
+import * as THREE from "three";
+import { Maths } from "../../../utils/maths";
+import { PointerEventData } from "../../../events/pointer-event-data";
+import { SelectionService } from "../../../tools/selection.service";
+import { ControlPointStrategy } from "../../../core/strategies/select-strategies/control-point-strategy";
+import { IViewportController } from "../../../objects/i-viewport-controller";
+import { TvOrbitControls } from "../../../objects/tv-orbit-controls";
+
+interface Label {
+	value: number,
+	top: string,
+	left: string,
+	isVisible: boolean
+}
 
 @Component( {
 	selector: 'app-graph-viewport',
 	templateUrl: './graph-viewport.component.html',
 	styleUrls: [ './graph-viewport.component.scss' ]
 } )
-export class GraphViewportComponent implements OnInit, AfterViewInit {
+export class GraphViewportComponent implements OnInit {
 
-	private nodes = new Group();
+	config: ViewportConfig = new ViewportConfig();
 
-	@ViewChild( 'graph' ) viewportRef: ElementRef;
+	eventSystem = new ViewportEvents();
 
-	public frameId: number;
+	nodes = new Group();
 
-	public scene: Scene = new Scene;
+	scene = new Scene();
 
-	public camera: OrthographicCamera;
+	camera: OrthographicCamera;
 
-	public controls: IViewportController;
+	selectionService: SelectionService;
 
-	public selection: SelectionService;
+	yAxisLabels: Label[] = []; // Replace 'any' with an interface for the labels
+
+	xAxisLabels: Label[] = []; // Replace 'any' with an interface for the labels
+
+	canvasConfig: CanvasConfig = new CanvasConfig();
+
+	private yAxisInterval: number = 10;
+
+	private xAxisInterval: number = 10;
 
 	constructor (
 		private previewService: AssetPreviewService,
@@ -44,28 +62,17 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 		private cameraService: CameraService,
 		private textService: TextObjectService,
 	) {
-		this.render = this.render.bind( this );
-	}
-
-	get canvas (): HTMLCanvasElement {
-		return <HTMLCanvasElement>this.viewportRef.nativeElement;
-	}
-
-	get width (): number {
-		return this.canvas.clientWidth;
-	}
-
-	get height () {
-		return this.canvas.clientHeight;
 	}
 
 	ngOnInit () {
 
-		this.previewService.setupGraphScene( this.scene );
+		this.selectionService = new SelectionService();
 
-		this.camera = this.createCamera();
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
-		this.scene.add( this.nodes );
+		this.config.showStats = false;
+
+		this.setupGraphScene( this.scene );
 
 		MapEvents.objectSelected.subscribe( obj => {
 
@@ -84,13 +91,37 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 			this.onRoadRemoved( event.road );
 
 		} );
+
+		this.eventSystem.pointerDown.subscribe( event => this.onPointerDown( event ) );
+
+		this.eventSystem.pointerMoved.subscribe( event => this.onPointerMoved( event ) );
+
+		//// Initialize your labels array with x-axis values
+		//// For example, if you want labels from -10 to 10 on the x-axis
+		//for ( let y = -1000; y <= 1000; y += 10 ) {
+		//	this.yAxisLabels.push( {
+		//		value: y, // The value on the x-axis this label represents
+		//		top: '0px', // Initial top style
+		//		left: '0px', // Initial left style,
+		//		isVisible: true // Initial visibility
+		//	} );
+		//}
+		//
+		//for ( let x = -1000; x <= 1000; x += 10 ) {
+		//	this.xAxisLabels.push( {
+		//		value: x, // The value on the x-axis this label represents
+		//		top: '0px', // Initial top style
+		//		left: '0px', // Initial left style,
+		//		isVisible: true // Initial visibility
+		//	} );
+		//}
+
+		this.createLabels()
 	}
 
 	createCamera () {
 
 		const camera = this.cameraService.createOrthographicCamera( -100, 100, 100, -100 );
-
-		// camera.position.set( 0, 0, 10 );
 
 		camera.up.copy( AppConfig.DEFAULT_UP );
 
@@ -141,193 +172,186 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 		return point;
 	}
 
-	ngAfterViewInit (): void {
+	private setupGraphScene ( scene: Scene ) {
 
-		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
+		scene.background = new Color( 0x000000 );
 
-		this.canvas.appendChild( this.previewService.renderer.domElement );
+		const gridHelper = new THREE.GridHelper( 10000, 1000 );
 
-		setTimeout( () => {
+		( gridHelper.material as Material ).transparent = true;
+		( gridHelper.material as Material ).opacity = 0.5;
+		( gridHelper.material as Material ).needsUpdate = false;
 
-			this.resize();
+		// to adjust with up Z
+		gridHelper.rotateX( Maths.Deg2Rad * 90 );
 
-		}, 0 );
+		scene.add( gridHelper );
 
-		this.render();
+		scene.add( new THREE.AxesHelper( 10000 ) );
 
-		this.updateAxisLabels();
-	}
+		this.camera = this.createCamera();
 
-	ngOnDestroy (): void {
-
-		if ( this.frameId ) cancelAnimationFrame( this.frameId );
-
-	}
-
-	render () {
-
-		// this seems a faster want to call render function
-		this.frameId = requestAnimationFrame( this.render );
-
-		this.previewService.renderer.render( this.scene, this.camera );
-
-		this.controls.update();
-
-		this.updateAxisLabels();
+		this.scene.add( this.nodes );
 
 	}
 
-	@HostListener( 'window: resize', [ '$event' ] )
-	resize () {
+	private onPointerDown ( event: PointerEventData ) {
 
-		const container = this.previewService.renderer.domElement.parentElement;
+		this.selectionService.handleSelection( event );
 
-		const box = container.getBoundingClientRect();
-
-		const width = container.clientWidth || 300;
-
-		// take 75% of the width to maintain 4:3 aspect ratio
-		const height = width ? width * 0.75 : 300; // container.clientHeight;
-
-		this.previewService.renderer.setViewport( -box.left, -box.top, width, height );
-
-		this.previewService.renderer.setSize( width, height );
-
-		const aspect = width / height;
-
-		this.camera.left = this.camera.bottom * aspect;
-
-		this.camera.right = this.camera.top * aspect;
-
-		this.camera.updateProjectionMatrix();
-
-		this.updateAxisLabels();
 	}
 
-	@HostListener( 'mousedown', [ '$event' ] )
-	onMouseDown ( event: MouseEvent ) {
+	private onPointerMoved ( event: PointerEventData ) {
 
-		event.preventDefault();
+		// this.selectionService.handleHighlight( event );
 
-		const container = this.previewService.renderer.domElement.parentElement;
+	}
 
-		const rect = container.getBoundingClientRect();
+	onCanvasResized ( $event: CanvasConfig ) {
 
-		const x = ( ( event.clientX - rect.left ) / this.width ) * 2 - 1;
-		const y = -( ( event.clientY - rect.top ) / this.height ) * 2 + 1;
+		this.canvasConfig = $event;
 
-		// this.previewService.raycaster.setFromCamera( { x, y }, this.camera );
+	}
 
-		// console.log( x, y );
+	// Assuming 'camera' is your Three.js camera and 'renderer' is your Three.js renderer
+	toScreenPosition ( obj: Vector3, camera: Camera, width: number, height: number ) {
 
-		switch ( event.button ) {
+		const vector = new THREE.Vector3();
+		const widthHalf = 0.5 * width;
+		const heightHalf = 0.5 * height;
 
-			case MouseButton.LEFT:
-				// this.handleLeftClick( $event, intersection );
-				break;
+		vector.copy( obj ).project( camera );
 
-			case MouseButton.MIDDLE:
-				// this.handleMiddleClick( $event, intersection );
-				break;
+		vector.x = ( vector.x * widthHalf ) + widthHalf;
+		vector.y = -( vector.y * heightHalf ) + heightHalf;
 
-			case MouseButton.RIGHT:
-				// this.handleRightClick( $event, intersection );
-				break;
+		return { x: vector.x, y: vector.y };
+	}
 
+	onViewUpdated ( $event: any ) {
+
+		this.createLabels();
+		this.updateLabels();
+
+	}
+
+	private createLabels () {
+
+		// Clear existing labels
+		this.yAxisLabels = [];
+		this.xAxisLabels = [];
+
+		// Determine the increment based on the camera's zoom level
+		this.xAxisInterval = this.calculateLabelInterval( this.camera.zoom );
+		this.yAxisInterval = this.calculateLabelInterval( this.camera.zoom );
+
+		// Determine the range of visible values for the y-axis and x-axis
+		const xAxisRange = this.calculateAxisRange( this.camera, 'x' );
+		const yAxisRange = this.calculateAxisRange( this.camera, 'y' );
+
+		// Create labels within the visible range for the x-axis
+		for ( let x = xAxisRange.min; x <= xAxisRange.max; x += this.xAxisInterval ) {
+			this.xAxisLabels.push( {
+				value: x,
+				top: '0px',
+				left: '0px',
+				isVisible: true // Assume initially visible; adjust during update
+			} );
 		}
-	}
 
-	// public xAxisLabelGroup = new Group();;
-	// public yAxisLabelGroup: Group;
-
-	public xAxisLabels: number[] = [];
-
-	public yAxisLabels: number[] = [];
-
-	updateAxisLabels () {
-
-		// this.xAxisLabelGroup.clear();
-
-		// this.scene.remove( this.xAxisLabelGroup );
-
-		// // Calculate visible range based on the camera position and field of view
-		// const visibleRange = {
-		// 	x: [ this.camera.position.x - this.camera.left, this.camera.position.x + this.camera.right ],
-		// 	y: [ this.camera.position.y - this.camera.bottom, this.camera.position.y + this.camera.top ]
-		// };
-
-		// // Update your axis labels here using the visibleRange values
-		// // You would need to have a way to update the labels in your HTML or canvas element that is displaying them.
-
-		const cameraBounds = this.calculateVisibleBounds();
-
-		// this.xAxisLabels = this.calculateAxisLabels( cameraBounds.xMin, cameraBounds.xMax );
-		this.yAxisLabels = this.calculateAxisLabels( cameraBounds.yMin, cameraBounds.yMax );
-
-		//// Update your axis labels
-		//this.yAxisLabels.forEach( label => {
-		//	// Calculate the screen position for each label
-		//	const labelScreenPosition = this.calculateLabelScreenPosition( label );
-		//	// Set the top style property for the label element to align it with the Y position on the screen
-		//	//labelElement.style.top = `${ labelScreenPosition }px`;
-		//} );
-
-		// for ( let x = cameraBounds.xMin; x < cameraBounds.xMax; x += 10 ) {
-
-		// 	const label = this.textService.createFromText( x.toString() );
-
-		// 	label.position.x = x;
-
-		// 	this.xAxisLabelGroup.add( label );
-
-		// }
-
-		// this.scene.add( this.xAxisLabelGroup );
-	}
-
-	calculateVisibleBounds () {
-
-		// Assuming this.camera is your OrthographicCamera instance
-		const zoom = this.camera.zoom;
-		const aspect = this.camera.right / this.camera.top; // Assumes camera.right is the aspect ratio width component
-
-		// Calculate the half size of the visible area (we need to divide by zoom level)
-		const halfHeight = ( this.camera.top - this.camera.bottom ) / 2 / zoom;
-		const halfWidth = halfHeight * aspect;
-
-		// Now calculate the bounds
-		const xMin = this.camera.position.x - halfWidth;
-		const xMax = this.camera.position.x + halfWidth;
-		const yMin = this.camera.position.y - halfHeight;
-		const yMax = this.camera.position.y + halfHeight;
-
-		return { xMin, xMax, yMin, yMax };
-	}
-
-	calculateAxisLabels ( min: number, max: number ): number[] {
-		const labels = [];
-		// Start from the next lowest multiple of 10 if min is not a multiple of 10
-		let start = Math.ceil( min / 10 ) * 10;
-		for ( let i = start; i <= max; i += 10 ) {
-			labels.push( i );
+		// Create labels within the visible range for the y-axis
+		for ( let y = yAxisRange.min; y <= yAxisRange.max; y += this.yAxisInterval ) {
+			this.yAxisLabels.push( {
+				value: y,
+				top: '0px',
+				left: '0px',
+				isVisible: true // Assume initially visible; adjust during update
+			} );
 		}
-		return labels;
+
 	}
 
-	//getLabelStyle ( labelValue ) {
-	//
-	//	const position = this.calculateLabelScreenPosition( labelValue );
-	//	return {
-	//		top: `${ position }px`
-	//		// any other dynamic styles you need
-	//	};
-	//}
+	private calculateAxisRange ( camera: OrthographicCamera, axis: 'x' | 'y' ) {
+		// You would implement the logic here to determine the min and max
+		// visible values along the specified axis based on the camera's
+		// position, zoom level, and aspect ratio.
+		// This is a placeholder implementation:
+		const size = axis === 'y' ? camera.top - camera.bottom : camera.right - camera.left;
 
-	//// This function converts a Y value in your scene's coordinate system to a Y position in pixels on the screen.
-	//calculateLabelScreenPosition ( yValueInScene ) {
-	//	// conversion logic here, you'll need to replace this with your actual conversion code
-	//	const pixelPosition = ( yValueInScene - this.camera.position.y ) * scaleFactor + centerY;
-	//	return pixelPosition;
-	//}
+		let min = camera.position[ axis ] - ( size / 2 ) / camera.zoom;
+		let max = camera.position[ axis ] + ( size / 2 ) / camera.zoom;
 
+		// Round to nearest multiple of 10
+		min = Math.floor( min / 10 ) * 10;
+		max = Math.ceil( max / 10 ) * 10;
+
+		return { min, max };
+	}
+
+	private updateLabels () {
+
+		const labelHeight = 20; // Replace with your label height. You might need to measure this dynamically.
+		const labelWidth = 30; // Estimate or dynamically measure the width of your labels.
+
+		// Calculate the vertical boundaries of the camera view
+		const camTop = this.camera.position.y + ( this.camera.top / this.camera.zoom );
+		const camBottom = this.camera.position.y + ( this.camera.bottom / this.camera.zoom );
+
+		// Calculate the horizontal boundaries of the camera view
+		const camLeft = this.camera.position.x + ( this.camera.left / this.camera.zoom );
+		const camRight = this.camera.position.x + ( this.camera.right / this.camera.zoom );
+
+		this.yAxisLabels.forEach( ( label ) => {
+
+			// Use the label's xValue to determine its 3D position
+			const labelPosition = new THREE.Vector3( 0, label.value, 0 ); // Change y and z if needed
+
+			// Calculate the 2D position
+			const pos2D = this.toScreenPosition( labelPosition, this.camera, this.canvasConfig.width, this.canvasConfig.height );
+
+			// Update the label's style properties
+			label.top = ( this.canvasConfig.top + pos2D.y - labelHeight / 2 ) + 'px';
+
+			// Check if the label's yValue is within the camera's vertical boundaries
+			label.isVisible = ( label.value <= camTop && label.value >= camBottom );
+
+		} );
+
+		this.xAxisLabels.forEach( ( label ) => {
+
+			// Use the label's xValue to determine its 3D position
+			const labelPosition = new THREE.Vector3( label.value, 0, 0 ); // Change y and z if needed
+
+			// Calculate the 2D position
+			const pos2D = this.toScreenPosition( labelPosition, this.camera, this.canvasConfig.width, this.canvasConfig.height );
+
+			// Update the label's style properties
+			label.left = ( pos2D.x - labelWidth / 2 ) + 'px';
+
+			// Check if the label's yValue is within the camera's vertical boundaries
+			label.isVisible = ( label.value <= camRight && label.value >= camLeft );
+
+		} );
+	}
+
+	private calculateLabelInterval ( zoomLevel: number ): number {
+
+		// Define zoom levels and corresponding intervals
+		const zoomIntervals = [
+			{ zoom: 0.5, interval: 100 },
+			{ zoom: 1, interval: 50 },
+			{ zoom: 2, interval: 20 },
+			// ...add as many levels as needed
+		];
+
+		// Find the largest interval for the current zoom level
+		const interval = zoomIntervals.reduce( ( currentInterval, zoomInterval ) => {
+			if ( zoomLevel <= zoomInterval.zoom ) {
+				return zoomInterval.interval;
+			}
+			return currentInterval;
+		}, 10 ); // Default to 10 if no zoom level matches
+
+		return interval;
+	}
 }

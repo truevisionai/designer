@@ -493,23 +493,7 @@ export class AssetPreviewService {
 
 	}
 
-	setupGraphScene ( scene: Scene ) {
 
-		scene.background = new Color( 0x000000 );
-
-		const gridHelper = new THREE.GridHelper( 10000, 1000 );
-
-		( gridHelper.material as Material ).transparent = true;
-		( gridHelper.material as Material ).opacity = 0.5;
-		( gridHelper.material as Material ).needsUpdate = false;
-
-		// to adjust with up Z
-		gridHelper.rotateX( Maths.Deg2Rad * 90 );
-
-		scene.add( gridHelper );
-
-		scene.add( new THREE.AxesHelper( 10000 ) );
-	}
 
 	private addGreenGround ( scene ) {
 

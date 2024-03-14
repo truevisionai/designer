@@ -20,3 +20,23 @@
 .y-axis span {
 	color: white;
 }
+
+
+:host {
+	display: block; /* or 'display: flex;' depending on your needs */
+	width: 100%;
+	height: 100%;
+}
+
+.label-container {
+	color: white;
+	text-align: right;
+}
+
+.label {
+	color: white;
+	width: 22px;
+	text-align: right;
+	font-size: 0.8em;
+
+}

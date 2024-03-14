@@ -4,49 +4,19 @@
 
 
 <div #viewport
-	(click)="onMouseClick($event)"
-	(contextmenu)="onContextMenu($event)"
-	(mousedown)="onMouseDown($event)"
-	(mouseenter)="onMouseEnter($event)"
-	(mouseleave)="onMouseLeave($event)"
-	(mousemove)="onMouseMove($event)"
-	(mouseup)="onMouseUp($event)"
-	fxFlexFill
-	fxLayout="column"
-	id="canvas"
-	style="background:red;"
-	style="position:absolute;">
-
-	<ng-content></ng-content>
-
+     (click)="onMouseClick($event)"
+     (contextmenu)="onContextMenu($event)"
+     (mousedown)="onMouseDown($event)"
+     (mouseenter)="onMouseEnter($event)"
+     (mouseleave)="onMouseLeave($event)"
+     (mousemove)="onMouseMove($event)"
+     (mouseup)="onMouseUp($event)"
+     id="canvas"
+     style="position:absolute;">
+    <ng-content></ng-content>
 </div>
-<div class="app-viewport-stats">
-	<span>{{ cameraType }}</span><br />
-	<span>{{ fps }} FPS</span><br />
-</div>
-<mat-toolbar class="viewport-toolbar">
-	<button (click)="changeCamera()"
-		mat-icon-button
-		matTooltip="Switch Camera"
-		matTooltipPosition="left">
-		<mat-icon>switch_camera</mat-icon>
-	</button>
-	<button (click)="resetCamera()"
-		mat-icon-button
-		matTooltip="Reset Camera"
-		matTooltipPosition="left">
-		<mat-icon>refresh</mat-icon>
-	</button>
-	<button *ngIf="!isProduction"
-		(click)="wireframeMode()"
-		mat-icon-button
-		matTooltip="Wireframe Mode"
-		matTooltipPosition="left">
-		<mat-icon>menu</mat-icon>
-	</button>
-</mat-toolbar>
 
-<div #viewHelper
-	(click)="handleViewHelperClick($event)"
-	class="view-helper">
+<div class="app-viewport-stats" *ngIf="config.showStats">
+    <span>{{ cameraType }}</span><br/>
+    <span>{{ fps }} FPS</span><br/>
 </div>
