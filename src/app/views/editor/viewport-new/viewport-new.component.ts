@@ -94,6 +94,8 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	private onCanvas: boolean;
 
+	private isPointerDown: boolean;
+
 	private showWireframe = false;
 
 	private background = new THREE.Mesh( new THREE.PlaneGeometry( 10000, 10000 ), new THREE.MeshBasicMaterial( {
@@ -269,6 +271,8 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( !this.onCanvas ) return;
 
+		this.isPointerDown = true;
+
 		this.intersections = this.getIntersections( $event, true );
 
 		$event.preventDefault();
@@ -325,6 +329,8 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	onMouseUp ( event: MouseEvent ) {
+
+		this.isPointerDown = false;
 
 		this.controls.enabled = true;
 
@@ -498,6 +504,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 			p.mouse = this.currentMousePosition;
 			p.mouseDelta = this.mouseDelta;
 			p.mouseEvent = $event;
+			p.pointerDown = this.isPointerDown;
 
 			p.approxCameraDistance = this.calculateCameraDistance( i );
 
@@ -507,6 +514,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 			p.camera = this.camera;
 			p.mouse = this.currentMousePosition;
 			p.mouseDelta = this.mouseDelta;
+			p.pointerDown = this.isPointerDown;
 			p.approxCameraDistance = 100;
 
 		}
