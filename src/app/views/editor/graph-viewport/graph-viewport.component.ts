@@ -23,6 +23,12 @@ import { PointerEventData } from "../../../events/pointer-event-data";
 import { SelectionService } from "../../../tools/selection.service";
 import { ControlPointStrategy } from "../../../core/strategies/select-strategies/control-point-strategy";
 import { TvElevationService } from "../../../map/road-elevation/tv-elevation.service";
+import { KeyboardEvents } from 'app/events/keyboard-events';
+import { CommandHistory } from 'app/services/command-history';
+import { AddObjectCommand } from 'app/commands/add-object-command';
+import { ToolBarService } from '../tool-bar/tool-bar.service';
+import { ToolType } from 'app/tools/tool-types.enum';
+import { SetValueCommand } from 'app/commands/set-value-command';
 
 @Component( {
 	selector: 'app-graph-viewport',
@@ -51,6 +57,8 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	viewLoaded = false;
 
+	nodeMoved: boolean;
+
 	get selectedObject (): AbstractControlPoint {
 		return this.selectionService.getLastSelected<AbstractControlPoint>( SimpleControlPoint.name );
 	}
@@ -61,6 +69,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 		private cameraService: CameraService,
 		private textService: TextObjectService,
 		private elevationService: TvElevationService,
+		private toolBarService: ToolBarService,
 	) {
 	}
 
@@ -135,25 +144,40 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		this.selectedRoad = null;
 
+		this.selectionService.clearSelection();
+
 		this.nodes.clear();
 
 	}
 
 	onRoadUpdated ( road: TvRoad ) {
 
-		//this.nodes.clear();
-		//
-		//road.getElevationProfile().getElevations().forEach( elevation => {
-		//
-		//	this.nodes.add( this.createElevationPoint( road, elevation ) );
-		//
-		//} );
+		this.nodes.clear();
+
+		road.getElevationProfile().getElevations().forEach( elevation => {
+
+			this.nodes.add( this.createElevationPoint( road, elevation ) );
+
+		} );
+
+		this.nodes.children.forEach( ( point: AbstractControlPoint ) => {
+
+			if ( point.mainObject !== this.selectedObject.mainObject ) return;
+
+			point.select();
+
+		} );
+
 
 	}
 
 	onRoadRemoved ( road: TvRoad ) {
 
-		//
+		this.selectedRoad = null;
+
+		this.selectionService.clearSelection();
+
+		this.nodes.clear();
 
 	}
 
@@ -193,9 +217,11 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	private onPointerUp ( event: PointerEventData ) {
 
-		console.log( 'Pointer up', event, this.selectedObject );
+		// console.log( 'Pointer up', event, this.selectedObject );
 
 		if ( !this.selectedObject ) return;
+
+		if ( !this.nodeMoved ) return;
 
 		this.selectedObject.isSelected = false;
 
@@ -203,26 +229,63 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		if ( this.selectedObject.mainObject instanceof TvElevation ) {
 
-			this.selectedObject.mainObject.a = event.point.y;
-			this.selectedObject.mainObject.s = event.point.x;
+			this.toolBarService.setToolByType( ToolType.RoadElevation );
 
-			// this.elevationService.update( this.selectedRoad, this.selectedObject.mainObject );
+			CommandHistory.executeMany(
+
+				new SetValueCommand( this.selectedObject.mainObject, 'a', event.point.y ),
+
+				new SetValueCommand( this.selectedObject.mainObject, 's', event.point.x )
+
+			);
 
 		}
 
+		this.nodeMoved = false;
 	}
 
 	private onPointerDown ( event: PointerEventData ) {
 
-		console.log( 'Pointer down', event );
+		// console.log( 'Pointer down', event );
 
-		this.selectionService.handleSelection( event );
+		if ( KeyboardEvents.isShiftKeyDown ) {
+
+			this.handleCreation( event );
+
+		} else {
+
+			this.selectionService.handleSelection( event );
+
+		}
+
+
+	}
+
+	private handleCreation ( event: PointerEventData ) {
+
+		if ( !this.selectedRoad ) return;
+
+		this.toolBarService.setToolByType( ToolType.RoadElevation );
+
+		const elevation = new TvElevation( event.point.x, event.point.y, 0, 0, 0 );
+
+		const point = new SimpleControlPoint( elevation, event.point );
+
+		point.isSelected = true;
+
+		this.nodes.add( point );
+
+		CommandHistory.execute( new AddObjectCommand( elevation ) );
+
+		return;
 
 	}
 
 	private onPointerMoved ( event: PointerEventData ) {
 
-		console.log( 'Pointer moved', event );
+		// console.log( 'Pointer moved', event );
+
+		if ( !event.pointerDown ) return;
 
 		if ( !this.selectedRoad ) return;
 
@@ -233,6 +296,8 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 		this.selectedObject.position.x = event.point.x;
 
 		this.selectedObject.position.y = event.point.y;
+
+		this.nodeMoved = true;
 
 	}
 
@@ -256,7 +321,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	private onPointerClicked ( event: PointerEventData ) {
 
-		console.log( 'Pointer clicked', event );
+		// console.log( 'Pointer clicked', event );
 
 	}
 }

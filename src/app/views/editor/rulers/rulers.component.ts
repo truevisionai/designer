@@ -50,14 +50,12 @@ export class RulersComponent implements OnInit {
 
 	private createLabels () {
 
-		console.log( this.camera.zoom );
-
 		// Clear existing labels
 		this.yAxisLabels = [];
 		this.xAxisLabels = [];
 
 		// Determine the increment based on the camera's zoom level
-		this.xAxisInterval = this.calculateLabelInterval( this.camera.zoom );
+		this.xAxisInterval = this.calculateLabelInterval( this.camera.zoom ) * 2;
 		this.yAxisInterval = this.calculateLabelInterval( this.camera.zoom );
 
 		// Determine the range of visible values for the y-axis and x-axis
