@@ -168,14 +168,9 @@ export class RulersComponent implements OnInit {
 
 		// Define zoom levels and corresponding intervals
 		const zoomIntervals = [
-			{ zoom: 0.1, interval: 1000 },
-			{ zoom: 0.2, interval: 500 },
-			{ zoom: 0.3, interval: 250 },
+			{ zoom: 0.05, interval: 1000 },
+			{ zoom: 0.2, interval: 250 },
 			{ zoom: 0.4, interval: 100 },
-			{ zoom: 0.5, interval: 100 },
-			{ zoom: 0.6, interval: 100 },
-			{ zoom: 0.7, interval: 100 },
-			{ zoom: 0.8, interval: 50 },
 			{ zoom: 0.9, interval: 50 },
 			{ zoom: 1.0, interval: 10 },
 			{ zoom: 5.0, interval: 10 },
