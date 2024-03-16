@@ -2,6 +2,13 @@ import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { Camera, OrthographicCamera, Vector3 } from "three";
 import * as THREE from "three";
 
+interface Label {
+	value: number,
+	top: string,
+	left: string,
+	isVisible: boolean
+}
+
 @Component( {
 	selector: 'app-rulers',
 	templateUrl: './rulers.component.html',
@@ -15,9 +22,9 @@ export class RulersComponent implements OnInit {
 
 	@Input() canvasConfig: { width: number, height: number, top: number };
 
-	xAxisLabels: { value: number, top: string, left: string, isVisible: boolean }[] = [];
+	xAxisLabels: Label[] = [];
 
-	yAxisLabels: { value: number, top: string, left: string, isVisible: boolean }[] = [];
+	yAxisLabels: Label[] = [];
 
 	xAxisInterval: number = 10;
 
@@ -42,6 +49,8 @@ export class RulersComponent implements OnInit {
 	}
 
 	private createLabels () {
+
+		console.log( this.camera.zoom );
 
 		// Clear existing labels
 		this.yAxisLabels = [];
@@ -161,19 +170,29 @@ export class RulersComponent implements OnInit {
 
 		// Define zoom levels and corresponding intervals
 		const zoomIntervals = [
-			{ zoom: 0.5, interval: 10 },
-			{ zoom: 2, interval: 20 },
+			{ zoom: 0.1, interval: 1000 },
+			{ zoom: 0.2, interval: 500 },
+			{ zoom: 0.3, interval: 250 },
+			{ zoom: 0.4, interval: 100 },
+			{ zoom: 0.5, interval: 100 },
+			{ zoom: 0.6, interval: 100 },
+			{ zoom: 0.7, interval: 100 },
+			{ zoom: 0.8, interval: 50 },
+			{ zoom: 0.9, interval: 50 },
+			{ zoom: 1.0, interval: 10 },
+			{ zoom: 5.0, interval: 10 },
+			{ zoom: 10.0, interval: 5 },
 		];
 
-		// Find the largest interval for the current zoom level
-		const interval = zoomIntervals.reduce( ( currentInterval, zoomInterval ) => {
-			if ( zoomLevel <= zoomInterval.zoom ) {
-				return zoomInterval.interval;
+		// Iterate over zoomIntervals to find the appropriate interval
+		for ( let i = 0; i < zoomIntervals.length; i++ ) {
+			if ( zoomLevel <= zoomIntervals[ i ].zoom ) {
+				return zoomIntervals[ i ].interval;
 			}
-			return currentInterval;
-		}, 10 ); // Default to 10 if no zoom level matches
+		}
 
-		return interval;
+		// Return default interval if no matching zoom level is found
+		return 10;
 	}
 
 	// Assuming 'camera' is your Three.js camera and 'renderer' is your Three.js renderer

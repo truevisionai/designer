@@ -47,6 +47,7 @@ import { ViewportComponent } from "./viewport/viewport.component";
 import { GraphViewportComponent } from './graph-viewport/graph-viewport.component';
 import { ViewportNewComponent } from './viewport-new/viewport-new.component';
 import { RulersComponent } from './rulers/rulers.component';
+import { ObjectInspectorComponent } from "../inspectors/object-inspector/object-inspector.component";
 
 @NgModule( {
 	declarations: [
@@ -69,6 +70,7 @@ import { RulersComponent } from './rulers/rulers.component';
 		GraphViewportComponent,
 		ViewportNewComponent,
 		RulersComponent,
+		ObjectInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -102,7 +104,8 @@ import { RulersComponent } from './rulers/rulers.component';
 		ScenarioModule,
 	],
 	exports: [
-		PlayerBarComponent
+		PlayerBarComponent,
+		GraphViewportComponent
 	],
 	entryComponents: [
 		ExportGlbDialog

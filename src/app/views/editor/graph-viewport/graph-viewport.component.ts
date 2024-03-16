@@ -1,12 +1,8 @@
 import {
 	AfterViewInit,
 	Component,
-	ElementRef,
 	EventEmitter,
-	HostListener,
-	Input,
 	OnInit, Output,
-	ViewChild
 } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { MapEvents } from 'app/events/map-events';
@@ -26,22 +22,14 @@ import { Maths } from "../../../utils/maths";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { SelectionService } from "../../../tools/selection.service";
 import { ControlPointStrategy } from "../../../core/strategies/select-strategies/control-point-strategy";
-import { IViewportController } from "../../../objects/i-viewport-controller";
-import { TvOrbitControls } from "../../../objects/tv-orbit-controls";
-
-interface Label {
-	value: number,
-	top: string,
-	left: string,
-	isVisible: boolean
-}
+import { TvElevationService } from "../../../map/road-elevation/tv-elevation.service";
 
 @Component( {
 	selector: 'app-graph-viewport',
 	templateUrl: './graph-viewport.component.html',
 	styleUrls: [ './graph-viewport.component.scss' ]
 } )
-export class GraphViewportComponent implements OnInit {
+export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	config: ViewportConfig = new ViewportConfig();
 
@@ -59,11 +47,20 @@ export class GraphViewportComponent implements OnInit {
 
 	@Output() viewUpdated = new EventEmitter<any>();
 
+	private selectedRoad: TvRoad;
+
+	viewLoaded = false;
+
+	get selectedObject (): AbstractControlPoint {
+		return this.selectionService.getLastSelected<AbstractControlPoint>( SimpleControlPoint.name );
+	}
+
 	constructor (
 		private previewService: AssetPreviewService,
 		private roadElevation: RoadElevationToolService,
 		private cameraService: CameraService,
 		private textService: TextObjectService,
+		private elevationService: TvElevationService,
 	) {
 	}
 
@@ -83,6 +80,12 @@ export class GraphViewportComponent implements OnInit {
 
 		} );
 
+		MapEvents.objectUnselected.subscribe( obj => {
+
+			if ( obj instanceof TvRoad ) this.onRoadUnselected( obj );
+
+		} );
+
 		MapEvents.roadUpdated.subscribe( event => {
 
 			this.onRoadUpdated( event.road );
@@ -96,10 +99,9 @@ export class GraphViewportComponent implements OnInit {
 		} );
 
 		this.eventSystem.pointerUp.subscribe( event => this.onPointerUp( event ) );
-
 		this.eventSystem.pointerDown.subscribe( event => this.onPointerDown( event ) );
-
 		this.eventSystem.pointerMoved.subscribe( event => this.onPointerMoved( event ) );
+		this.eventSystem.pointerClicked.subscribe( event => this.onPointerClicked( event ) );
 
 	}
 
@@ -117,6 +119,8 @@ export class GraphViewportComponent implements OnInit {
 
 	onRoadSelected ( road: TvRoad ) {
 
+		this.selectedRoad = road;
+
 		this.nodes.clear();
 
 		road.getElevationProfile().getElevations().forEach( elevation => {
@@ -127,15 +131,23 @@ export class GraphViewportComponent implements OnInit {
 
 	}
 
-	onRoadUpdated ( road: TvRoad ) {
+	onRoadUnselected ( road: TvRoad ) {
+
+		this.selectedRoad = null;
 
 		this.nodes.clear();
 
-		road.getElevationProfile().getElevations().forEach( elevation => {
+	}
 
-			this.nodes.add( this.createElevationPoint( road, elevation ) );
+	onRoadUpdated ( road: TvRoad ) {
 
-		} );
+		//this.nodes.clear();
+		//
+		//road.getElevationProfile().getElevations().forEach( elevation => {
+		//
+		//	this.nodes.add( this.createElevationPoint( road, elevation ) );
+		//
+		//} );
 
 	}
 
@@ -181,11 +193,28 @@ export class GraphViewportComponent implements OnInit {
 
 	private onPointerUp ( event: PointerEventData ) {
 
-		console.log( 'Pointer up', event );
+		console.log( 'Pointer up', event, this.selectedObject );
+
+		if ( !this.selectedObject ) return;
+
+		this.selectedObject.isSelected = false;
+
+		if ( !this.selectedObject.mainObject ) return;
+
+		if ( this.selectedObject.mainObject instanceof TvElevation ) {
+
+			this.selectedObject.mainObject.a = event.point.y;
+			this.selectedObject.mainObject.s = event.point.x;
+
+			// this.elevationService.update( this.selectedRoad, this.selectedObject.mainObject );
+
+		}
 
 	}
 
 	private onPointerDown ( event: PointerEventData ) {
+
+		console.log( 'Pointer down', event );
 
 		this.selectionService.handleSelection( event );
 
@@ -193,7 +222,17 @@ export class GraphViewportComponent implements OnInit {
 
 	private onPointerMoved ( event: PointerEventData ) {
 
-		// this.selectionService.handleHighlight( event );
+		console.log( 'Pointer moved', event );
+
+		if ( !this.selectedRoad ) return;
+
+		if ( !this.selectedObject ) return;
+
+		if ( !this.selectedObject.isSelected ) return;
+
+		this.selectedObject.position.x = event.point.x;
+
+		this.selectedObject.position.y = event.point.y;
 
 	}
 
@@ -209,4 +248,15 @@ export class GraphViewportComponent implements OnInit {
 
 	}
 
+	ngAfterViewInit (): void {
+
+		this.viewLoaded = true;
+
+	}
+
+	private onPointerClicked ( event: PointerEventData ) {
+
+		console.log( 'Pointer clicked', event );
+
+	}
 }

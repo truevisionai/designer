@@ -96,6 +96,12 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	private showWireframe = false;
 
+	private background = new THREE.Mesh( new THREE.PlaneGeometry( 10000, 10000 ), new THREE.MeshBasicMaterial( {
+		color: 0xFFFFFF,
+		transparent: true,
+		opacity: 0
+	} ) );
+
 	get isProduction () {
 		return Environment.production;
 	}
@@ -331,7 +337,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		// if not intersection found then check for background intersection
 		if ( this.intersections.length < 1 ) {
 
-			this.intersections = this.raycaster.intersectObjects( this.scene.children, false );
+			this.intersections = this.raycaster.intersectObjects( [ this.background ], false );
 
 		}
 
@@ -408,6 +414,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.renderer.setSize( this.canvasConfig.width, this.canvasConfig.height );
 
 		this.resizeCamera( this.camera, this.canvasConfig.width / this.canvasConfig.height );
+
 	}
 
 	fireSelectionEvents () {
@@ -599,7 +606,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		// check for background intersection
-		return this.raycaster.intersectObjects( this.scene.children, false );
+		return this.raycaster.intersectObjects( [ this.background ], false );
 	}
 
 	private initRenderer ( canvas: HTMLCanvasElement ) {

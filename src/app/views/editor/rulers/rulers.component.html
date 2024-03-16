@@ -6,8 +6,8 @@
         </div>
     </div>
 </div>
-<div class="label-container">
-    <div *ngFor="let label of xAxisLabels" [style.bottom]="'28px'" [style.left]="label.left"
+<div class="label-container" [style.position]="'absolute'">
+    <div *ngFor="let label of xAxisLabels" [style.bottom]="'0px'" [style.left]="label.left"
          [style.position]="'absolute'">
         <div class="label" *ngIf="label.isVisible">
             {{label.value }}

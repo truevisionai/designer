@@ -7,7 +7,7 @@
         (resized)="onCanvasResized($event)">
 </app-viewport-new>
 
-<app-rulers
+<app-rulers *ngIf="viewLoaded"
         [viewUpdated]="viewUpdated"
         [camera]="camera"
         [canvasConfig]="canvasConfig">
