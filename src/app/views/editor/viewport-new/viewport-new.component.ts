@@ -12,9 +12,6 @@ import {
 import { Environment } from 'app/core/utils/environment';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ViewportEvents } from 'app/events/viewport-events';
-import { CameraService } from 'app/renderer/camera.service';
-import { ThreeService } from 'app/renderer/three.service';
-import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { Object3D, WebGLRenderer, Intersection, OrthographicCamera, PerspectiveCamera, Camera } from 'three';
 import { IViewportController } from "../../../objects/i-viewport-controller";
@@ -329,12 +326,12 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster.setFromCamera( this.currentMousePosition, this.camera );
 
-		this.intersections = this.raycaster.intersectObjects( SceneService.raycastableObjects(), true );
+		this.intersections = this.raycaster.intersectObjects( this.scene.children, true );
 
 		// if not intersection found then check for background intersection
 		if ( this.intersections.length < 1 ) {
 
-			this.intersections = this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
+			this.intersections = this.raycaster.intersectObjects( this.scene.children, false );
 
 		}
 
@@ -602,7 +599,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		// check for background intersection
-		return this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
+		return this.raycaster.intersectObjects( this.scene.children, false );
 	}
 
 	private initRenderer ( canvas: HTMLCanvasElement ) {

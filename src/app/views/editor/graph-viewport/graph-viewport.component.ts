@@ -92,29 +92,11 @@ export class GraphViewportComponent implements OnInit {
 
 		} );
 
+		this.eventSystem.pointerUp.subscribe( event => this.onPointerUp( event ) );
+
 		this.eventSystem.pointerDown.subscribe( event => this.onPointerDown( event ) );
 
 		this.eventSystem.pointerMoved.subscribe( event => this.onPointerMoved( event ) );
-
-		//// Initialize your labels array with x-axis values
-		//// For example, if you want labels from -10 to 10 on the x-axis
-		//for ( let y = -1000; y <= 1000; y += 10 ) {
-		//	this.yAxisLabels.push( {
-		//		value: y, // The value on the x-axis this label represents
-		//		top: '0px', // Initial top style
-		//		left: '0px', // Initial left style,
-		//		isVisible: true // Initial visibility
-		//	} );
-		//}
-		//
-		//for ( let x = -1000; x <= 1000; x += 10 ) {
-		//	this.xAxisLabels.push( {
-		//		value: x, // The value on the x-axis this label represents
-		//		top: '0px', // Initial top style
-		//		left: '0px', // Initial left style,
-		//		isVisible: true // Initial visibility
-		//	} );
-		//}
 
 		this.createLabels()
 	}
@@ -192,6 +174,12 @@ export class GraphViewportComponent implements OnInit {
 		this.camera = this.createCamera();
 
 		this.scene.add( this.nodes );
+
+	}
+
+	private onPointerUp ( event: PointerEventData ) {
+
+		console.log( 'Pointer up', event );
 
 	}
 
