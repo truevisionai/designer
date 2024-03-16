@@ -7,19 +7,8 @@
         (resized)="onCanvasResized($event)">
 </app-viewport-new>
 
-<div class="label-container">
-    <div *ngFor="let label of yAxisLabels" [style.top]="label.top"
-         [style.position]="'absolute'">
-        <div class="label" *ngIf="label.isVisible">
-            {{label.value }}
-        </div>
-    </div>
-</div>
-<div class="label-container">
-    <div *ngFor="let label of xAxisLabels" [style.bottom]="'28px'" [style.left]="label.left"
-         [style.position]="'absolute'">
-        <div class="label" *ngIf="label.isVisible">
-            {{label.value }}
-        </div>
-    </div>
-</div>
+<app-rulers
+        [viewUpdated]="viewUpdated"
+        [camera]="camera"
+        [canvasConfig]="canvasConfig">
+</app-rulers>

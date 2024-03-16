@@ -46,6 +46,7 @@ import { SceneHierarchyComponent } from './scene-hierarchy/scene-hierarchy.compo
 import { ViewportComponent } from "./viewport/viewport.component";
 import { GraphViewportComponent } from './graph-viewport/graph-viewport.component';
 import { ViewportNewComponent } from './viewport-new/viewport-new.component';
+import { RulersComponent } from './rulers/rulers.component';
 
 @NgModule( {
 	declarations: [
@@ -67,6 +68,7 @@ import { ViewportNewComponent } from './viewport-new/viewport-new.component';
 		ViewportComponent,
 		GraphViewportComponent,
 		ViewportNewComponent,
+		RulersComponent,
 	],
 	imports: [
 		CommonModule,
