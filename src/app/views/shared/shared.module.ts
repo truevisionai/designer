@@ -53,7 +53,6 @@ import { HeaderTopComponent } from './components/header-top/header-top.component
 import { AdminLayoutComponent } from './components/layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
-import { ObjectInspectorComponent } from './components/object-inspector/object-inspector.component';
 import { PropBrowserComponent } from './components/prop-browser/prop-browser.component';
 import { SidebarSideComponent } from './components/sidebar-side/sidebar-side.component';
 import { SidebarTopComponent } from './components/sidebar-top/sidebar-top.component';
@@ -133,7 +132,6 @@ const classesToInclude = [
 	KeysPipe,
 	StatusBarComponent,
 	ImportFileDialogComponent,
-	ObjectInspectorComponent,
 	SearchPipe,
 	FooterBottomComponent,
 	SplashComponent,

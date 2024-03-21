@@ -42,8 +42,6 @@ function openEditorWindow () {
 		title: TITLE,
 		width: width,
 		height: height,
-		minWidth: MIN_WIDTH,
-		minHeight: MIN_HEIGHT,
 		backgroundColor: '#ffffff',
 		icon: `file://${ __dirname }/dist/assets/icon.png`,
 		webPreferences: {
@@ -53,6 +51,8 @@ function openEditorWindow () {
 			preload: path.join( __dirname, 'preload.js' )
 		}
 	} );
+
+	editorWindow.setMenuBarVisibility( false );
 
 	const remoteMain = require( "@electron/remote/main" )
 	remoteMain.initialize()

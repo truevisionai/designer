@@ -98,13 +98,13 @@ export class RoadElevationToolService {
 
 	}
 
-	private createElevationNode ( road: TvRoad, elevation: TvElevation ): ElevationControlPoint {
+	createElevationNode ( road: TvRoad, elevation: TvElevation ): ElevationControlPoint {
 
 		return new ElevationControlPoint( road, elevation );
 
 	}
 
-	private createElevationLine ( road: TvRoad, elevation: TvElevation ): DebugLine<TvElevation> {
+	createElevationLine ( road: TvRoad, elevation: TvElevation ): DebugLine<TvElevation> {
 
 		return this.debug.createRoadNode( road, elevation, elevation.s );
 

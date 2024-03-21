@@ -242,7 +242,23 @@ export class DebugDrawService {
 
 	}
 
-	createLine ( positions: Vector3[], color = 0xffffff ): Line2 {
+	createLine ( positions: Vector3[], color = 0xffffff, lineWidth = 2 ): Line2 {
+
+		const geometry = this.createLineGeometry( positions );
+
+		const material = new LineMaterial( {
+			color: color,
+			linewidth: lineWidth, // in world units with size attenuation, pixels otherwise
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+		} );
+
+		return new Line2( geometry, material );
+	}
+
+	createLineGeometry ( positions: Vector3[] ): LineGeometry {
 
 		const geometry = new LineGeometry();
 
@@ -254,16 +270,8 @@ export class DebugDrawService {
 
 		geometry.setPositions( positionsArray );
 
-		const material = new LineMaterial( {
-			color: color,
-			linewidth: 2, // in world units with size attenuation, pixels otherwise
-			resolution: new Vector2( window.innerWidth, window.innerHeight ),
-			depthTest: false,
-			depthWrite: false,
-			transparent: true,
-		} );
+		return geometry;
 
-		return new Line2( geometry, material );
 	}
 
 	createDebugLine<T> ( target: T, points: Vector3[], lineWidth = 2, color = COLOR.CYAN ): DebugLine<T> {

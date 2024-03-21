@@ -11,7 +11,8 @@ import { ScenarioDirectorService } from 'app/scenario/services/scenario-director
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { ShortcutService } from 'app/services/editor/shortcut.service';
-import { Environment } from 'app/core/utils/environment';
+import { ToolManager } from "../../managers/tool-manager";
+import { ToolType } from "../../tools/tool-types.enum";
 
 @Component( {
 	selector: 'app-editor',
@@ -34,6 +35,28 @@ export class EditorComponent implements OnInit, AfterContentInit {
 		return this.isProduction ? 76 : 60;
 	}
 
+	get inspectorHeight (): number {
+
+		if ( this.isElevationToolOpened ) {
+			return 70;
+		}
+
+		return 100
+	}
+
+	get graphHeight (): number {
+
+		if ( this.isElevationToolOpened ) {
+			return 30;
+		}
+
+		return 0
+	}
+
+	get isElevationToolOpened (): boolean {
+		return ToolManager.currentTool?.toolType == ToolType.RoadElevation;
+	}
+
 	constructor (
 		private dialog: MatDialog,
 		private analytics: AnalyticsService,
@@ -41,7 +64,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 		private editor: EditorService,
 		private oscPlayer: ScenarioDirectorService,
 		private changeDetectorRef: ChangeDetectorRef,
-		private shortcutService: ShortcutService
+		private shortcutService: ShortcutService,
 	) {
 
 		TvConsole.logsChanged.subscribe( () => this.onLogsChanged() );
@@ -74,8 +97,6 @@ export class EditorComponent implements OnInit, AfterContentInit {
 	}
 
 	showNewScenarioDialog () {
-
-
 
 	}
 

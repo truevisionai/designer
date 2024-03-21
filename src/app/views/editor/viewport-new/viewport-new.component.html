@@ -1,0 +1,22 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+
+<div #viewport
+     (click)="onMouseClick($event)"
+     (contextmenu)="onContextMenu($event)"
+     (mousedown)="onMouseDown($event)"
+     (mouseenter)="onMouseEnter($event)"
+     (mouseleave)="onMouseLeave($event)"
+     (mousemove)="onMouseMove($event)"
+     (mouseup)="onMouseUp($event)"
+     id="canvas"
+     style="position:absolute;">
+    <ng-content></ng-content>
+</div>
+
+<div class="app-viewport-stats" *ngIf="config.showStats">
+    <span>{{ cameraType }}</span><br/>
+    <span>{{ fps }} FPS</span><br/>
+</div>
