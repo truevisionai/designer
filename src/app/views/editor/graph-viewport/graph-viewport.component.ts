@@ -29,6 +29,8 @@ import { AddObjectCommand } from 'app/commands/add-object-command';
 import { ToolBarService } from '../tool-bar/tool-bar.service';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { SetValueCommand } from 'app/commands/set-value-command';
+import { DebugDrawService } from "../../../services/debug/debug-draw.service";
+import { Line2 } from "three/examples/jsm/lines/Line2";
 
 @Component( {
 	selector: 'app-graph-viewport',
@@ -42,6 +44,8 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 	eventSystem = new ViewportEvents();
 
 	nodes = new Group();
+
+	line: Line2;
 
 	scene = new Scene();
 
@@ -70,6 +74,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 		private textService: TextObjectService,
 		private elevationService: TvElevationService,
 		private toolBarService: ToolBarService,
+		private debugDrawService: DebugDrawService,
 	) {
 	}
 
@@ -130,13 +135,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		this.selectedRoad = road;
 
-		this.nodes.clear();
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			this.nodes.add( this.createElevationPoint( road, elevation ) );
-
-		} );
+		this.updateLine( road );
 
 	}
 
@@ -148,27 +147,13 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		this.nodes.clear();
 
+		this.line.visible = false;
+
 	}
 
 	onRoadUpdated ( road: TvRoad ) {
 
-		this.nodes.clear();
-
-		road.getElevationProfile().getElevations().forEach( elevation => {
-
-			this.nodes.add( this.createElevationPoint( road, elevation ) );
-
-		} );
-
-		this.nodes.children.forEach( ( point: AbstractControlPoint ) => {
-
-			if ( !this.selectedObject ) return;
-
-			if ( point.mainObject !== this.selectedObject.mainObject ) return;
-
-			point.select();
-
-		} );
+		this.updateLine( road );
 
 	}
 
@@ -213,6 +198,10 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 		this.camera = this.createCamera();
 
 		this.scene.add( this.nodes );
+
+		this.line = this.debugDrawService.createLine( [ new Vector3( 0, 0, 0 ), new Vector3( 0, 0, 0 ) ], 0xffffff, 4 );
+
+		this.scene.add( this.line );
 
 	}
 
@@ -320,6 +309,41 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 	private onPointerClicked ( event: PointerEventData ) {
 
 		// console.log( 'Pointer clicked', event );
+
+	}
+
+	private updateLine ( road: TvRoad ) {
+
+		this.nodes.clear();
+
+		road.getElevationProfile().getElevations().forEach( elevation => {
+
+			this.nodes.add( this.createElevationPoint( road, elevation ) );
+
+		} );
+
+		this.nodes.children.forEach( ( point: AbstractControlPoint ) => {
+
+			if ( !this.selectedObject ) return;
+
+			if ( point.mainObject !== this.selectedObject.mainObject ) return;
+
+			point.select();
+
+		} );
+
+		this.line.visible = true;
+
+		let positions: Vector3[] = [];
+
+		for ( let s = 0; s < road.getRoadLength(); s += 0.1 ) {
+
+			positions.push( new Vector3( s, road.getElevationValue( s ), 0 ) );
+		}
+
+		this.line.geometry.dispose();
+
+		this.line.geometry = this.debugDrawService.createLineGeometry( positions );
 
 	}
 }
