@@ -52,9 +52,9 @@
 
 		<div fxFlex="24" fxLayout="column">
 
-            <app-object-inspector fxFlex="70"></app-object-inspector>
+            <app-object-inspector [fxFlex]="inspectorHeight"></app-object-inspector>
 
-            <app-graph-viewport fxFlex="30"></app-graph-viewport>
+            <app-graph-viewport *ngIf="isElevationToolOpened" [fxFlex]="graphHeight"></app-graph-viewport>
 
         </div>
 

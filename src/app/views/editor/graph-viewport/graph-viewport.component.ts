@@ -162,12 +162,13 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		this.nodes.children.forEach( ( point: AbstractControlPoint ) => {
 
+			if ( !this.selectedObject ) return;
+
 			if ( point.mainObject !== this.selectedObject.mainObject ) return;
 
 			point.select();
 
 		} );
-
 
 	}
 
@@ -232,11 +233,9 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 			this.toolBarService.setToolByType( ToolType.RoadElevation );
 
 			CommandHistory.executeMany(
-
 				new SetValueCommand( this.selectedObject.mainObject, 'a', event.point.y ),
 
 				new SetValueCommand( this.selectedObject.mainObject, 's', event.point.x )
-
 			);
 
 		}
@@ -257,7 +256,6 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 			this.selectionService.handleSelection( event );
 
 		}
-
 
 	}
 
