@@ -44,6 +44,10 @@ import { ProjectHierarchyComponent } from './project-browser/project-hierarchy/p
 import { ToolBarComponent } from './tool-bar/tool-bar.component';
 import { SceneHierarchyComponent } from './scene-hierarchy/scene-hierarchy.component';
 import { ViewportComponent } from "./viewport/viewport.component";
+import { GraphViewportComponent } from './graph-viewport/graph-viewport.component';
+import { ViewportNewComponent } from './viewport-new/viewport-new.component';
+import { RulersComponent } from './rulers/rulers.component';
+import { ObjectInspectorComponent } from "../inspectors/object-inspector/object-inspector.component";
 
 @NgModule( {
 	declarations: [
@@ -63,6 +67,10 @@ import { ViewportComponent } from "./viewport/viewport.component";
 		TutorialsDialogComponent,
 		SceneHierarchyComponent,
 		ViewportComponent,
+		GraphViewportComponent,
+		ViewportNewComponent,
+		RulersComponent,
+		ObjectInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -96,7 +104,8 @@ import { ViewportComponent } from "./viewport/viewport.component";
 		ScenarioModule,
 	],
 	exports: [
-		PlayerBarComponent
+		PlayerBarComponent,
+		GraphViewportComponent
 	],
 	entryComponents: [
 		ExportGlbDialog

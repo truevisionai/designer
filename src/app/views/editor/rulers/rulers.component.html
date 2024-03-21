@@ -1,0 +1,16 @@
+<div class="label-container y-axis">
+    <div *ngFor="let label of yAxisLabels" [style.top]="label.top"
+         [style.position]="'absolute'">
+        <div class="label" *ngIf="label.isVisible">
+            {{label.value }}
+        </div>
+    </div>
+</div>
+<div class="label-container x-axis" [style.position]="'absolute'">
+    <div *ngFor="let label of xAxisLabels" [style.bottom]="'0px'" [style.left]="label.left"
+         [style.position]="'absolute'">
+        <div class="label" *ngIf="label.isVisible">
+            {{label.value }}
+        </div>
+    </div>
+</div>

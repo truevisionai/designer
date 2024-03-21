@@ -1,0 +1,14 @@
+<app-viewport-new
+        [config]="config"
+        [eventSystem]="eventSystem"
+        [scene]="scene"
+        [camera]="camera"
+        (updated)="onViewUpdated($event)"
+        (resized)="onCanvasResized($event)">
+</app-viewport-new>
+
+<app-rulers *ngIf="viewLoaded"
+        [viewUpdated]="viewUpdated"
+        [camera]="camera"
+        [canvasConfig]="canvasConfig">
+</app-rulers>

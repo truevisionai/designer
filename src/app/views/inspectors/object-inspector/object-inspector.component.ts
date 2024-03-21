@@ -3,9 +3,9 @@
  */
 
 import { AfterViewInit, Component, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
-import { ComponentItem, IComponent } from '../../../../objects/game-object';
-import { AppInspector } from '../../../../core/inspector';
-import { ComponentContainerDirective } from '../../directives/component-container.directive';
+import { ComponentItem, IComponent } from '../../../objects/game-object';
+import { AppInspector } from '../../../core/inspector';
+import { ComponentContainerDirective } from '../../shared/directives/component-container.directive';
 
 @Component( {
 	selector: 'app-object-inspector',

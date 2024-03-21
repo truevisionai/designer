@@ -38,6 +38,7 @@ import {
 import { RoadStyle } from "../../../core/asset/road.style";
 import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
 import { RoadBuilder } from 'app/map/builders/road.builder';
+import { Maths } from 'app/utils/maths';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -491,6 +492,8 @@ export class AssetPreviewService {
 		}
 
 	}
+
+
 
 	private addGreenGround ( scene ) {
 
