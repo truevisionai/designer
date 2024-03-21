@@ -11,7 +11,6 @@ import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
 import { ScenarioEnvironment } from 'app/scenario/models/actions/scenario-environment';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { ThreeService } from 'app/renderer/three.service';
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
@@ -64,6 +63,7 @@ import { TvObjectPolyline } from "../map/models/objects/tv-object-polyline";
 import { TvObjectVertexRoad } from "../map/models/objects/tv-object-vertex-road";
 import { TvObjectVertexLocal } from "../map/models/objects/tv-object-vertex-local";
 import { SplineSegment, SplineSegmentType } from "../core/shapes/spline-segment";
+import { SimpleControlPoint } from "../objects/simple-control-point";
 
 @Injectable( {
 	providedIn: 'root'

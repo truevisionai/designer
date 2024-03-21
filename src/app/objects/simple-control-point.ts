@@ -1,15 +1,10 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
-
-import { OdTextures } from 'app/map/builders/od.textures';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
-import { IHasUpdate } from '../commands/set-value-command';
-import { SerializedField } from 'app/core/components/serialization';
 import { AbstractControlPoint } from "./abstract-control-point";
+import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from "three";
+import { OdTextures } from "../map/builders/od.textures";
+import { COLOR } from "../views/shared/utils/colors.service";
+import { SerializedField } from "../core/components/serialization";
 
-export class DynamicControlPoint<T extends IHasUpdate> extends AbstractControlPoint {
+export class SimpleControlPoint<T> extends AbstractControlPoint {
 
 	public mainObject: T;
 
@@ -63,7 +58,6 @@ export class DynamicControlPoint<T extends IHasUpdate> extends AbstractControlPo
 	set Position ( value: Vector3 ) {
 
 		this.position.copy( value );
-		this.update();
 
 	}
 
@@ -73,10 +67,4 @@ export class DynamicControlPoint<T extends IHasUpdate> extends AbstractControlPo
 
 	}
 
-	update () {
-
-		this.mainObject?.update();
-
-	}
 }
-

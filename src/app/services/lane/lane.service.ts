@@ -8,15 +8,34 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { MapEvents } from 'app/events/map-events';
 import { TvLaneType } from 'app/map/models/tv-common';
 import { LaneTypeChangedEvent } from 'app/events/lane/lane-type-changed.event';
+import { BaseDataService } from "../../core/interfaces/data.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class LaneService {
+export class LaneService extends BaseDataService<TvLane> {
 
 	constructor (
 		public base: BaseToolService,
-	) { }
+	) {
+		super();
+	}
+
+	all (): TvLane[] {
+		return [];
+	}
+
+	add ( object: TvLane ): void {
+		this.addLane( object );
+	}
+
+	update ( object: TvLane ): void {
+		this.updateLane( object );
+	}
+
+	remove ( object: TvLane ): void {
+		this.removeLane( object );
+	}
 
 	addLane ( lane: TvLane ) {
 

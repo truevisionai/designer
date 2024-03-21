@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
-import { DebugService } from "../../core/interfaces/debug.service";
+import { BaseDebugService } from "../../core/interfaces/debug.service";
 import { ExplicitSpline } from "../../core/shapes/explicit-spline";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
@@ -10,7 +14,7 @@ import { DebugState } from "./debug-state";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ExplicitSplineHelper extends DebugService<ExplicitSpline> {
+export class ExplicitSplineHelper extends BaseDebugService<ExplicitSpline> {
 
 	private lines = new Object3DArrayMap<AbstractSpline, Line[]>();
 

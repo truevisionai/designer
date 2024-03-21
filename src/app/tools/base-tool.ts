@@ -16,16 +16,16 @@ import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
 import { DebugService } from "../core/interfaces/debug.service";
-import { DataService } from 'app/core/interfaces/data.service';
+import { BaseDataService } from 'app/core/interfaces/data.service';
 import { DebugState } from "../services/debug/debug-state";
 import { SelectionService } from "./selection.service";
-import { SimpleControlPoint } from "../objects/dynamic-control-point";
 import { AbstractFactory } from 'app/core/interfaces/abstract-factory';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { ToolHints } from "../core/interfaces/tool.hints";
 import { UpdatePositionCommand } from "../commands/update-position-command";
 import { Tool } from "./tool";
+import { SimpleControlPoint } from "../objects/simple-control-point";
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -35,9 +35,9 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected selectionService: SelectionService;
 
-	protected debugService: DebugService<T>;
+	protected debugService: DebugService<T, any>;
 
-	protected dataService: DataService<T>;
+	protected dataService: BaseDataService<T>;
 
 	protected objectFactory: AbstractFactory<T>;
 
@@ -392,13 +392,13 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	}
 
-	setDebugService ( debugService: DebugService<T> ) {
+	setDebugService ( debugService: DebugService<T, any> ) {
 
 		this.debugService = debugService;
 
 	}
 
-	setDataService ( dataService: DataService<T> ) {
+	setDataService ( dataService: BaseDataService<T> ) {
 
 		this.dataService = dataService;
 

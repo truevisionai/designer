@@ -9,12 +9,12 @@ import { MapEvents } from 'app/events/map-events';
 import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { SplineCreatedEvent } from 'app/events/spline/spline-created-event';
 import { SplineRemovedEvent } from 'app/events/spline/spline-removed-event';
-import { DataService } from '../../core/interfaces/data.service';
+import { BaseDataService } from '../../core/interfaces/data.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineService extends DataService<AbstractSpline> {
+export class SplineService extends BaseDataService<AbstractSpline> {
 
 	constructor (
 		private mapService: MapService

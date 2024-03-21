@@ -4,27 +4,60 @@
 
 import { DebugState } from 'app/services/debug/debug-state';
 import { Vector3 } from "three";
-import { SimpleControlPoint } from "../../objects/dynamic-control-point";
 
-export abstract class DebugService<T> {
+import { SimpleControlPoint } from "../../objects/simple-control-point";
+
+export interface DebugService<T, K> {
+
+	setDebugState ( object: T, state: DebugState ): void;
+
+	updateDebugState ( object: T, state: DebugState ): void;
+
+	enable (): void;
+
+	clear (): void;
+
+	resetHighlighted (): void;
+
+	onHighlight ( object: T ): void;
+
+	onUnhighlight ( object: T ): void;
+
+	onSelected ( object: T ): void;
+
+	onUnselected ( object: T ): void;
+
+	onDefault ( object: T ): void;
+
+	onRemoved ( object: T ): void;
+
+	addControl ( object: T, control: K, state: DebugState ): void;
+
+	updatePosition ( object: T, control: K ): void;
+
+	removeControl ( object: T, control: K ): void;
+
+}
+
+export abstract class BaseDebugService<T> implements DebugService<T, any> {
+
+	abstract setDebugState ( object: T, state: DebugState ): void
+
+	abstract onHighlight ( object: T ): void
+
+	abstract onUnhighlight ( object: T ): void
+
+	abstract onSelected ( object: T ): void
+
+	abstract onUnselected ( object: T ): void
+
+	abstract onDefault ( object: T ): void
+
+	abstract onRemoved ( object: T ): void
 
 	protected highlighted = new Set<T>();
 
 	protected selected = new Set<T>();
-
-	abstract setDebugState ( object: T, state: DebugState ): void;
-
-	abstract onHighlight ( object: T ): void;
-
-	abstract onUnhighlight ( object: T ): void;
-
-	abstract onSelected ( object: T ): void;
-
-	abstract onUnselected ( object: T ): void;
-
-	abstract onDefault ( object: T ): void;
-
-	abstract onRemoved ( object: T ): void;
 
 	protected setBaseState ( object: T, state: DebugState ) {
 
@@ -160,9 +193,41 @@ export abstract class DebugService<T> {
 
 	}
 
+	clear (): void {
+
+		this.highlighted.clear();
+
+		this.selected.clear();
+
+	}
+
+	enable (): void {
+
+		//
+
+	}
+
+	addControl ( object: T, item: any, state: DebugState ): void {
+
+		//
+
+	}
+
+	updatePosition ( object: T, control: any ): void {
+
+		//
+
+	}
+
 	protected createControlPoint ( object: T, position: Vector3 ) {
 
 		return new SimpleControlPoint( object, position );
+
+	}
+
+	removeControl ( lane: T, object: any ): void {
+
+		//
 
 	}
 }

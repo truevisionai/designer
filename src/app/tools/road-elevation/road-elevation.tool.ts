@@ -32,13 +32,13 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	get selectedRoad (): TvRoad {
 
-		return this.tool.base.selection.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
 
 	}
 
 	get selectedNode (): ElevationControlPoint {
 
-		return this.tool.base.selection.getLastSelected<ElevationControlPoint>( ElevationControlPoint.name );
+		return this.selectionService.getLastSelected<ElevationControlPoint>( ElevationControlPoint.name );
 
 	}
 
@@ -52,9 +52,9 @@ export class RoadElevationTool extends BaseTool<any> {
 
 		this.setHint( 'use LEFT CLICK to select a road' );
 
-		this.tool.base.selection.registerStrategy( ElevationControlPoint.name, new ControlPointStrategy<ElevationControlPoint>() );
+		this.selectionService.registerStrategy( ElevationControlPoint.name, new ControlPointStrategy<ElevationControlPoint>() );
 
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
 		this.tool.base.addMovingStrategy( new RoadLineMovingStrategy() );
 
@@ -108,7 +108,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 

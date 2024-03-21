@@ -33,6 +33,7 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugState } from '../../services/debug/debug-state';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
+import { Environment } from "../../core/utils/environment";
 
 export class RoadTool extends BaseTool<AbstractSpline> {
 
@@ -46,7 +47,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	private pointPositionCache: Vector3[] = [];
 
-	private debug = true;
+	private debug = !Environment.production;
 
 	private selectedNode: RoadNode;
 
@@ -56,13 +57,13 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	private get selectedControlPoint (): SplineControlPoint {
 
-		return this.tool.selection.getLastSelected<any>( 'point' );
+		return this.selectionService.getLastSelected<any>( 'point' );
 
 	}
 
 	private get selectedRoad (): TvRoad {
 
-		return this.tool.selection.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
 
 	}
 
@@ -80,13 +81,11 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	init (): void {
 
-		this.tool.selection.reset();
-
 		this.tool.base.reset();
 
-		this.tool.base.selection.registerStrategy( 'point', new ControlPointStrategy() );
-		this.tool.base.selection.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy( false ) );
+		this.selectionService.registerStrategy( 'point', new ControlPointStrategy() );
+		this.selectionService.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy( false ) );
 
 		// we want all points to be selectable and use 1 point at a time
 		this.tool.base.selection.registerTag( SplineControlPoint.name, 'point' );
@@ -111,8 +110,6 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
 
 		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
-
-		this.tool.selection.reset();
 
 		this.tool.base.reset();
 
@@ -221,7 +218,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleSelection( e, ( object ) => {
+		this.selectionService.handleSelection( e, ( object ) => {
 
 			if ( object instanceof TvRoad ) {
 
@@ -653,7 +650,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 			node.select();
 
-			this.tool.base.setHint( 'Select another node to connect' );
+			this.setHint( 'Select another node to connect' );
 
 		}
 
@@ -691,21 +688,21 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( nodeA.isConnected ) {
 
-			this.tool.base.setHint( 'Cannot connect a node which is already connected' );
+			this.setHint( 'Cannot connect a node which is already connected' );
 
 			return;
 		}
 
 		if ( nodeB.isConnected ) {
 
-			this.tool.base.setHint( 'Cannot connect a node which is already connected' );
+			this.setHint( 'Cannot connect a node which is already connected' );
 
 			return;
 		}
 
 		if ( nodeA.road === nodeB.road ) {
 
-			this.tool.base.setHint( 'Cannot connect a node to itself' );
+			this.setHint( 'Cannot connect a node to itself' );
 
 			return;
 		}
@@ -714,7 +711,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		this.executeAddObject( road );
 
-		this.tool.base.setHint( 'Modify the new road or select another node to connect' );
+		this.setHint( 'Modify the new road or select another node to connect' );
 
 	}
 

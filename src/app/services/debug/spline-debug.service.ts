@@ -11,7 +11,7 @@ import { DebugLine } from '../../objects/debug-line';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { DebugState } from 'app/services/debug/debug-state';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
-import { DebugService } from 'app/core/interfaces/debug.service';
+import { BaseDebugService } from 'app/core/interfaces/debug.service';
 import { ExplicitSplineHelper } from "./explicit-spline.helper";
 import { AutoSplineHelper } from "./auto-spline.helper";
 
@@ -26,15 +26,15 @@ const ARROW_COLOR = COLOR.YELLOW;
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineDebugService extends DebugService<AbstractSpline> {
+export class SplineDebugService extends BaseDebugService<AbstractSpline> {
 
 	private lines = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
 
 	private arrows = new Object3DArrayMap<AbstractSpline, Object3D[]>();
 
-	private autoSplineHelper: DebugService<AbstractSpline>;
+	private autoSplineHelper: BaseDebugService<AbstractSpline>;
 
-	private explicitSplineHelper: DebugService<AbstractSpline>;
+	private explicitSplineHelper: BaseDebugService<AbstractSpline>;
 
 	constructor (
 		private debugService: DebugDrawService,

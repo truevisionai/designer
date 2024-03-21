@@ -12,10 +12,10 @@ import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { RoadSignalInspector } from './road-signal.inspector';
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class RoadSignalTool extends BaseTool<any>{
 
@@ -25,11 +25,11 @@ export class RoadSignalTool extends BaseTool<any>{
 
 
 	get selectedPoint (): SimpleControlPoint<TvRoadSignal> {
-		return this.tool.base.selection.getLastSelected<SimpleControlPoint<TvRoadSignal>>( SimpleControlPoint.name );
+		return this.selectionService.getLastSelected<SimpleControlPoint<TvRoadSignal>>( SimpleControlPoint.name );
 	}
 
 	get selectedRoad (): TvRoad {
-		return this.tool.base.selection.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
 	}
 
 	constructor ( private tool: RoadSignalToolService ) {
@@ -43,8 +43,8 @@ export class RoadSignalTool extends BaseTool<any>{
 		super.init();
 
 		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
-		this.tool.base.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 	}
@@ -67,7 +67,7 @@ export class RoadSignalTool extends BaseTool<any>{
 	onPointerDownCreate ( e: PointerEventData ): void {
 
 		if ( !this.selectedRoad ) {
-			this.tool.base.setWarning( 'Select a road' );
+			this.setHint( 'Select a road' );
 			return;
 		}
 
@@ -77,7 +77,7 @@ export class RoadSignalTool extends BaseTool<any>{
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 
@@ -102,7 +102,7 @@ export class RoadSignalTool extends BaseTool<any>{
 				return;
 			}
 
-			this.tool.base.setHint( 'Drag the signal to the desired position' );
+			this.setHint( 'Drag the signal to the desired position' );
 
 			this.tool.addRoadSignal( this.selectedRoad, object );
 
@@ -181,24 +181,24 @@ export class RoadSignalTool extends BaseTool<any>{
 	createSignal ( asset: AssetNode, position: Vector3 ) {
 
 		if ( !position ) {
-			this.tool.base.setWarning( 'Drag signal on a road or lane' );
+			this.setHint( 'Drag signal on a road or lane' );
 			return;
 		}
 
 		if ( !asset ) {
-			this.tool.base.setWarning( 'Drag a texture asset from the project browser' );
+			this.setHint( 'Drag a texture asset from the project browser' );
 			return;
 		}
 
 		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL ) {
-			this.tool.base.setWarning( 'Drag a texture asset from the project browser' );
+			this.setHint( 'Drag a texture asset from the project browser' );
 			return;
 		}
 
 		const roadSignal = this.tool.createRoadSignal( asset, position, 'truevision', 'stop' );
 
 		if ( !roadSignal ) {
-			this.tool.base.setWarning( 'Drag signal on a road or lane' );
+			this.setHint( 'Drag signal on a road or lane' );
 			return;
 		}
 

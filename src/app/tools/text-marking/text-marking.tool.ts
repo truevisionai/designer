@@ -10,11 +10,11 @@ import { TvRoadSignal } from "app/map/models/tv-road-signal.model";
 import { AppInspector } from "app/core/inspector";
 import { ControlPointStrategy } from "app/core/strategies/select-strategies/control-point-strategy";
 import { OnRoadMovingStrategy } from "app/core/strategies/move-strategies/on-road-moving.strategy";
-import { SimpleControlPoint } from "app/objects/dynamic-control-point";
 import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
 import { TextMarkingInspector } from "./text-marking.inspector";
 import { RoadCoordStrategy } from "app/core/strategies/select-strategies/road-coord-strategy";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class TextMarkingTool extends BaseTool<any>{
 
@@ -40,7 +40,7 @@ export class TextMarkingTool extends BaseTool<any>{
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 
-		this.tool.base.selection.registerStrategy( 'point', new ControlPointStrategy() );
+		this.selectionService.registerStrategy( 'point', new ControlPointStrategy() );
 
 		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
 
@@ -82,7 +82,7 @@ export class TextMarkingTool extends BaseTool<any>{
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 

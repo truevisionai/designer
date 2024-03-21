@@ -17,9 +17,11 @@ import { LinkedDataService } from "../../core/interfaces/data.service";
 export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 	constructor (
-		private roadService: RoadService
+		roadService: RoadService
 	) {
 		super();
+
+		this.parentService = roadService;
 	}
 
 	createElevation ( road: TvRoad, point: Vector3 ) {
@@ -45,7 +47,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( parent.elevationProfile.elevation, parent.length );
 
-		this.roadService.update( parent );
+		this.parentService.update( parent );
 
 	}
 
@@ -61,7 +63,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		this.roadService.update( road );
+		this.parentService.update( road );
 
 	}
 
@@ -69,7 +71,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
 
-		this.roadService.update( road );
+		this.parentService.update( road );
 
 	}
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ToolType } from "./tool-types.enum";
 import { PointerEventData } from "../events/pointer-event-data";
 import { AssetNode } from "../views/editor/project-browser/file-node.model";
@@ -29,15 +33,15 @@ export interface Tool {
 
 	onCreatePoint ( e: PointerEventData ): void;
 
-	onObjectSelected ( object ): void;
+	onObjectSelected ( object: any ): void;
 
-	onObjectUnselected ( object ): void;
+	onObjectUnselected ( object: any ): void;
 
-	onObjectAdded ( object ): void;
+	onObjectAdded ( object: any ): void;
 
-	onObjectUpdated ( object ): void;
+	onObjectUpdated ( object: any ): void;
 
-	onObjectRemoved ( object ): void;
+	onObjectRemoved ( object: any ): void;
 
 	onAssetDropped ( asset: AssetNode, position: Vector3 ): void;
 

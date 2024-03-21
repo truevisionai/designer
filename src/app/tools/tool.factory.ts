@@ -52,7 +52,6 @@ import { RoadRampTool } from "./road-ramp/road-ramp-tool";
 import { RoadDividerTool } from "./road-cut-tool/road-divider-tool";
 import { ParkingRoadTool } from "./parking/parking-road-tool";
 import { ParkingLotTool } from "./parking/parking-lot.tool";
-import { SimpleControlPoint } from "../objects/dynamic-control-point";
 import { ControlPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
 import { SelectionService } from "./selection.service";
 import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
@@ -65,6 +64,18 @@ import { DataServiceProvider } from "./data-service-provider.service";
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { ToolHintsProvider } from "../core/providers/tool-hints.provider";
 import { Tool } from "./tool";
+import { LaneHeightTool } from './lane-height-tool/lane-height.tool';
+import { BaseLaneTool } from "./base-lane.tool";
+import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
+import { TvLane } from 'app/map/models/tv-lane';
+import { LaneHeightService } from 'app/map/lane-height/lane-height.service';
+import { DebugLine } from 'app/objects/debug-line';
+import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
+import {
+	EndLaneMovingStrategy, MidLaneMovingStrategy,
+} from "../core/strategies/move-strategies/end-lane.moving.strategy";
+import { LaneNode } from "../objects/lane-node";
+import { SimpleControlPoint } from "../objects/simple-control-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -98,7 +109,8 @@ export class ToolFactory {
 		private factoryProvider: FactoryServiceProvider,
 		private pointFactory: ControlPointFactory,
 		private dataServiceProvider: DataServiceProvider,
-		private toolHintsProvider: ToolHintsProvider
+		private toolHintsProvider: ToolHintsProvider,
+		private laneHeightService: LaneHeightService,
 	) {
 	}
 
@@ -145,6 +157,9 @@ export class ToolFactory {
 				break;
 			case ToolType.Lane:
 				tool = new LaneTool( this.laneToolService );
+				break;
+			case ToolType.LaneHeight:
+				tool = new LaneHeightTool();
 				break;
 			case ToolType.PointMarkingTool:
 				tool = new PointMarkingTool( this.pointMarkingToolService );
@@ -203,6 +218,33 @@ export class ToolFactory {
 
 			this.setSelectionStrategies( tool, type );
 
+		} else if ( tool instanceof BaseLaneTool ) {
+
+			tool.debugger = this.debugFactory.createDebugService( type );
+
+			tool.data = this.dataServiceProvider.createLinkedDataService( type );
+
+			tool.factory = this.factoryProvider.createForLaneTool( type );
+
+			tool.hints = this.toolHintsProvider.createFromToolType( type );
+
+			tool.debugDrawService = this.debugFactory.debugDrawService;
+
+			this.selectionService.reset();
+
+			if ( type == ToolType.LaneHeight ) {
+
+				this.selectionService.registerStrategy( LaneNode.name, new ControlPointStrategy() );
+
+				this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
+
+				this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
+
+				this.selectionService.addMovingStrategy( new MidLaneMovingStrategy() );
+
+			}
+
+			tool.selection = this.selectionService;
 		}
 
 		return tool;

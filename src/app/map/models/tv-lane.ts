@@ -11,7 +11,6 @@ import { MeshGeometryData } from './mesh-geometry.data';
 import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLaneAccess } from './tv-lane-access';
 import { TvLaneBorder } from './tv-lane-border';
-import { TvLaneHeight } from './tv-lane-height';
 import { TvLaneMaterial } from './tv-lane-material';
 import { TvLaneRoadMark, TvRoadMarkLaneChange } from './tv-lane-road-mark';
 import { TvLaneSection } from './tv-lane-section';
@@ -20,6 +19,7 @@ import { TvLaneVisibility } from './tv-lane-visibility';
 import { TvLaneWidth } from './tv-lane-width';
 import { TvUtils } from './tv-utils';
 import { TrafficRule } from './traffic-rule';
+import { TvLaneHeight } from '../lane-height/lane-height.model';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
