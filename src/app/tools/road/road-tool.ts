@@ -252,6 +252,8 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		this.debugService.resetHighlighted();
 
+		this.highlight( e );
+
 		this.tool.base.handleMovement( e, ( position ) => {
 
 			if ( position instanceof RoadPosition ) {
