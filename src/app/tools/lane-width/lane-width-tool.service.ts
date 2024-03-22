@@ -40,7 +40,8 @@ export class LaneWidthToolService {
 		private laneWidthService: LaneWidthService,
 		private debugDrawService: DebugDrawService,
 		private snackBar: SnackBar
-	) { }
+	) {
+	}
 
 	createWidthNode ( lane: TvLane, position: Vector3 ) {
 
@@ -84,6 +85,16 @@ export class LaneWidthToolService {
 
 		// update s offset as per the new position on road
 		node.laneWidth.s = adjustedS;
+
+		const startPosition = road.getLaneStartPosition( node.lane, adjustedS ).toVector3();
+
+		const distance = position.distanceTo( startPosition );
+
+		node.laneWidth.a = distance;
+
+		const laneSectionLength = road.length - node.lane.laneSection.s;
+
+		TvUtils.computeCoefficients( node.lane.width, laneSectionLength );
 
 		this.updateNode( node );
 
@@ -144,7 +155,6 @@ export class LaneWidthToolService {
 
 		this.hideWidthNodes( node.lane.laneSection.road );
 		this.showWidthNodes( node.lane.laneSection.road );
-
 
 	}
 

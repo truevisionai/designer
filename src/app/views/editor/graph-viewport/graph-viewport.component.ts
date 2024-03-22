@@ -9,7 +9,6 @@ import { MapEvents } from 'app/events/map-events';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { CameraService } from 'app/renderer/camera.service';
 import { TextObjectService } from 'app/services/text-object.service';
 import { RoadElevationToolService } from 'app/tools/road-elevation/road-elevation-tool.service';
@@ -31,6 +30,7 @@ import { ToolType } from 'app/tools/tool-types.enum';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugDrawService } from "../../../services/debug/debug-draw.service";
 import { Line2 } from "three/examples/jsm/lines/Line2";
+import { SimpleControlPoint } from "../../../objects/simple-control-point";
 
 @Component( {
 	selector: 'app-graph-viewport',
