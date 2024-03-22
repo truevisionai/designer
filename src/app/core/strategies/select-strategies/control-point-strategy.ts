@@ -48,9 +48,9 @@ export class ControlPointStrategy<T extends AbstractControlPoint> extends Select
 
 		const intersection = this.findNearestIntersection( pointerEventData.point, intersections );
 
-		if ( intersection ) {
-			this.selected = intersection.object as any;
-		}
+		if ( !intersection ) return;
+
+		this.selected = intersection.object as any;
 
 		if ( this.options?.higlightOnSelect ) {
 			this.selected?.select();
