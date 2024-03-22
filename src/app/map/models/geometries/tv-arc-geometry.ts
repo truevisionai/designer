@@ -57,7 +57,7 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 	get middleV3 (): Vector3 {
 
-		return this.getRoadCoord( this.endS / 2 ).toVector3();
+		return this.getRoadCoord( this.s + ( ( this.endS - this.s ) / 2 ) ).toVector3();
 
 	}
 

@@ -18,6 +18,7 @@ import { PropPolygon } from "../../map/prop-polygon/prop-polygon.model";
 import { PropPolygonDebugService } from "../../map/prop-polygon/prop-polygon.debug";
 import { PointDebugService } from "../../services/debug/point-debug.service";
 import { HasSplineDebugService } from "../../services/debug/has-spline-debug.service";
+import { TextObjectService } from "app/services/text-object.service";
 import { LaneHeightDebugService } from "../../map/lane-height/lane-height.debug";
 import { BaseLaneDebugService } from "../interfaces/lane-node.debug";
 
@@ -32,6 +33,7 @@ export class DebugServiceProvider {
 		private mapService: MapService,
 		private splineDebugService: AbstractSplineDebugService,
 		private roadDebug: RoadDebugService,
+		private textService: TextObjectService,
 		public debugDrawService: DebugDrawService,
 	) {
 	}
@@ -91,7 +93,7 @@ export class DebugServiceProvider {
 
 	private createSplineDebugService (): BaseDebugService<AbstractSpline> {
 
-		return new SplineDebugService( this.debugService, this.laneDebugService );
+		return new SplineDebugService( this.debugService, this.laneDebugService, this.textService );
 
 	}
 
