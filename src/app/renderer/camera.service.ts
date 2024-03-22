@@ -35,6 +35,23 @@ export class CameraService {
 		this.canvasService.resized.subscribe( () => this.onCanvasResized() );
 	}
 
+	createOrthographicCamera ( left: number, right: number, top: number, bottom: number, near: number = 1, far: number = 100000 ): OrthographicCamera {
+
+		// higher near value >= 10 reduces the z fighting that
+		// happens in rendering road markings
+		// const near = 1;
+		// const far = 100000;
+
+		const orthographicCamera = new THREE.OrthographicCamera( left, right, top, bottom, near, far );
+
+		orthographicCamera.position.set( 0, 0, 50 );
+
+		orthographicCamera.up.copy( AppConfig.DEFAULT_UP );
+
+		return orthographicCamera;
+
+	}
+
 	init () {
 
 		// higher near value >= 10 reduces the z fighting that
@@ -51,9 +68,7 @@ export class CameraService {
 		const top = height / otherDivider;
 		const bottom = height / -otherDivider;
 
-		const orthographicCamera = new THREE.OrthographicCamera( left, right, top, bottom, near, far );
-		orthographicCamera.position.set( 0, 0, 50 );
-		orthographicCamera.up.copy( AppConfig.DEFAULT_UP );
+		const orthographicCamera = this.createOrthographicCamera( left, right, top, bottom, near, far );
 
 		const perspectiveCamera = new THREE.PerspectiveCamera( 50, width / height, near, far );
 		perspectiveCamera.position.set( 0, 5, 10 );

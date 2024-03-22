@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SimpleControlPoint } from "app/objects/dynamic-control-point";
 import { AssetNode } from "app/views/editor/project-browser/file-node.model";
 import { Vector3 } from "three";
 import { AssetManager } from "../asset/asset.manager";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export abstract class AbstractFactory<T> {
 

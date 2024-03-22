@@ -653,4 +653,12 @@ export class Maths {
 		return Math.atan2( deltaY, deltaX ); // This will give heading in radians
 
 	}
+
+	static round( value: number, precision: number = 2 ) {
+
+		const multiplier = Math.pow( 10, precision || 0 );
+
+		return Math.round( value * multiplier ) / multiplier;
+
+	}
 }

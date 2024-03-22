@@ -1446,7 +1446,6 @@ export class TvRoad {
 
 	}
 
-
 	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );

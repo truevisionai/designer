@@ -26,7 +26,7 @@ export class LaneTool extends BaseTool<any>{
 	public toolType = ToolType.Lane;
 
 	get selectedLane () {
-		return this.tool.base.selection.getLastSelected<TvLane>( TvLane.name );
+		return this.selectionService.getLastSelected<TvLane>( TvLane.name );
 	}
 
 	constructor (
@@ -39,9 +39,9 @@ export class LaneTool extends BaseTool<any>{
 
 		this.tool.base.reset();
 
-		this.tool.base.selection.registerStrategy( DebugLine.name, new SelectLineStrategy() );
+		this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
 
-		this.tool.base.selection.registerStrategy( TvLane.name, new SelectLaneStrategy() );
+		this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
@@ -61,7 +61,7 @@ export class LaneTool extends BaseTool<any>{
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 

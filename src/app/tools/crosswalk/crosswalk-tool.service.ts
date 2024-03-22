@@ -11,8 +11,8 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { Object3D, Vector3 } from 'three';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 @Injectable( {
 	providedIn: 'root'

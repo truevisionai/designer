@@ -50,7 +50,14 @@
 		<!--			</button>-->
 		<!--		</mat-toolbar>-->
 
-		<app-object-inspector fxFlex="24"></app-object-inspector>
+		<div fxFlex="24" fxLayout="column">
+
+            <app-object-inspector [fxFlex]="inspectorHeight"></app-object-inspector>
+
+            <app-graph-viewport *ngIf="isElevationToolOpened" [fxFlex]="graphHeight"></app-graph-viewport>
+
+        </div>
+
 
 	</div>
 

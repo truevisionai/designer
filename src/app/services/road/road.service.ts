@@ -23,12 +23,12 @@ import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
-import { DataService } from "../../core/interfaces/data.service";
+import { BaseDataService } from "../../core/interfaces/data.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadService extends DataService<TvRoad> {
+export class RoadService extends BaseDataService<TvRoad> {
 
 	constructor (
 		private splineFactory: SplineFactory,

@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { DataService } from "../../core/interfaces/data.service";
+import { BaseDataService } from "../../core/interfaces/data.service";
 import { Surface } from "./surface.model";
 import { MapService } from "../../services/map/map.service";
 import { SurfaceManager } from "./surface.manager";
@@ -11,7 +11,7 @@ import { SurfaceManager } from "./surface.manager";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SurfaceService extends DataService<Surface> {
+export class SurfaceService extends BaseDataService<Surface> {
 
 	constructor (
 		private mapService: MapService,

@@ -7,7 +7,7 @@ import { Debug } from 'app/core/utils/debug';
 import { MathUtils } from 'three';
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
-import { TvLaneHeight } from './tv-lane-height';
+import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { TvLaneRoadMark } from './tv-lane-road-mark';
 import { TvLaneSectionSample } from './tv-lane-section-sample';
 import { TvRoad } from './tv-road.model';

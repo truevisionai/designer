@@ -19,7 +19,7 @@ import { DebugLine } from 'app/objects/debug-line';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 
-export class LaneWidthTool extends BaseTool<any>{
+export class LaneWidthTool extends BaseTool<any> {
 
 	public name: string = 'LaneWidth';
 
@@ -28,7 +28,9 @@ export class LaneWidthTool extends BaseTool<any>{
 	private nodeChanged: boolean = false;
 
 	private selectedLane: TvLane;
+
 	private selectedNode: LaneWidthNode;
+
 	private oldValue: number;
 
 	private debug = false;
@@ -94,6 +96,8 @@ export class LaneWidthTool extends BaseTool<any>{
 				this.selectObject( selected.target, this.selectedNode );
 
 			} else if ( selected instanceof TvLane ) {
+
+				if ( this.selectedNode ) this.selectedNode.isSelected = false;
 
 				if ( this.selectedLane === selected ) return;
 
@@ -168,6 +172,8 @@ export class LaneWidthTool extends BaseTool<any>{
 
 		if ( !this.laneWidthService.base.onPointerDown( e ) ) return;
 
+		if ( !this.selectedNode.isSelected ) return;
+
 		this.laneWidthService.updateByPosition( this.selectedNode, e.point );
 
 		if ( !this.nodeChanged ) {
@@ -223,7 +229,6 @@ export class LaneWidthTool extends BaseTool<any>{
 		if ( object instanceof TvLane ) {
 
 			this.onLaneSelected( object );
-
 
 		} else if ( object instanceof LaneWidthNode ) {
 

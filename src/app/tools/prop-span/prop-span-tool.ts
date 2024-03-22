@@ -13,7 +13,6 @@ import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SelectRoadStrategy } from "app/core/strategies/select-strategies/select-road-strategy";
-import { SimpleControlPoint } from "app/objects/dynamic-control-point";
 import { ControlPointStrategy } from "app/core/strategies/select-strategies/control-point-strategy";
 import { AppInspector } from "app/core/inspector";
 import { TvObjectRepeat } from "app/map/models/objects/tv-object-repeat";
@@ -21,6 +20,7 @@ import { Action, SerializedField } from "app/core/components/serialization";
 import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class PropSpanTool extends BaseTool<any>{
 
@@ -44,15 +44,15 @@ export class PropSpanTool extends BaseTool<any>{
 
 	init (): void {
 
-		this.tool.base.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 
-		this.tool.base.setHint( 'use LEFT CLICK to select a road/lane' );
+		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 	}
 
@@ -76,7 +76,7 @@ export class PropSpanTool extends BaseTool<any>{
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 
@@ -84,14 +84,14 @@ export class PropSpanTool extends BaseTool<any>{
 
 		if ( !this.road ) {
 
-			this.tool.base.setHint( 'Select a road/lane' );
+			this.setHint( 'Select a road/lane' );
 
 			return;
 		}
 
 		if ( !this.prop ) {
 
-			this.tool.base.setHint( 'Select a prop from project browser' );
+			this.setHint( 'Select a prop from project browser' );
 
 			return;
 		}
@@ -190,11 +190,11 @@ export class PropSpanTool extends BaseTool<any>{
 
 		if ( !this.prop ) {
 
-			this.tool.base.setHint( 'Select a prop' );
+			this.setHint( 'Select a prop' );
 
 		} else {
 
-			this.tool.base.setHint( 'use SHIFT + LEFT CLICK to create object' );
+			this.setHint( 'use SHIFT + LEFT CLICK to create object' );
 
 		}
 
@@ -208,7 +208,7 @@ export class PropSpanTool extends BaseTool<any>{
 
 		this.road = null;
 
-		this.tool.base.setHint( 'use LEFT CLICK to select a road/lane' );
+		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 	}
 

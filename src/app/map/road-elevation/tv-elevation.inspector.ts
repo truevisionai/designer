@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvRoad } from "../models/tv-road.model";
 import { TvElevation } from "./tv-elevation.model";
 import { Action, SerializedField } from "../../core/components/serialization";

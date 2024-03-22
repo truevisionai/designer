@@ -22,9 +22,9 @@ import { ObjectTypes } from 'app/map/models/tv-common';
 import { CrosswalkToolService } from "./crosswalk-tool.service";
 import { CrosswalkInspector } from 'app/map/crosswalk/crosswalk.inspector';
 import { Environment } from 'app/core/utils/environment';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class CrosswalkTool extends BaseTool<any>{
 
@@ -33,15 +33,15 @@ export class CrosswalkTool extends BaseTool<any>{
 	toolType = ToolType.Crosswalk;
 
 	get selectedCrosswalk (): TvRoadObject {
-		return this.tool.base.selection.getLastSelected<TvRoadObject>( TvRoadObject.name );
+		return this.selectionService.getLastSelected<TvRoadObject>( TvRoadObject.name );
 	}
 
 	get selectedPoint (): SimpleControlPoint<TvCornerRoad> {
-		return this.tool.base.selection.getLastSelected<SimpleControlPoint<TvCornerRoad>>( SimpleControlPoint.name );
+		return this.selectionService.getLastSelected<SimpleControlPoint<TvCornerRoad>>( SimpleControlPoint.name );
 	}
 
 	get selectedRoad (): TvRoad {
-		return this.tool.base.selection.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
 	}
 
 	private debug = !Environment.production;
@@ -60,14 +60,14 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		this.tool.base.reset();
 
-		this.tool.base.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-		this.tool.base.selection.registerStrategy( TvRoadObject.name, new ControlPointStrategy() );
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( TvRoadObject.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 
-		this.tool.base.setHint( 'Use LEFT CLICK to select a road' );
+		this.setHint( 'Use LEFT CLICK to select a road' );
 	}
 
 	enable () {
@@ -110,7 +110,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 	onPointerDownSelect ( pointerEventData: PointerEventData ) {
 
-		this.tool.base.selection.handleSelection( pointerEventData );
+		this.selectionService.handleSelection( pointerEventData );
 
 	}
 
@@ -344,14 +344,14 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		this.tool.showRoad( road );
 
-		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
+		this.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
 
 		this.tool.hideRoad( road );
 
-		this.tool.base.setHint( 'Use LEFT CLICK to select a road' );
+		this.setHint( 'Use LEFT CLICK to select a road' );
 	}
 
 	onCrosswalkSelected ( roadObject: TvRoadObject ) {
@@ -362,7 +362,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		AppInspector.setInspector( DynamicInspectorComponent, new CrosswalkInspector( roadObject, marking ) );
 
-		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to add a point' );
+		this.setHint( 'Use SHIFT + LEFT CLICK to add a point' );
 
 	}
 
@@ -370,7 +370,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		AppInspector.clear();
 
-		this.tool.base.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
+		this.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 
 	}
 
@@ -391,7 +391,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 		AppInspector.setInspector( DynamicInspectorComponent, new CrosswalkInspector( roadObject, marking ) );
 
-		this.tool.base.setHint( 'Drag the point to move the crosswalk' );
+		this.setHint( 'Drag the point to move the crosswalk' );
 
 	}
 

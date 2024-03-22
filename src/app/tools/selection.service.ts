@@ -9,11 +9,15 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { CommandHistory } from 'app/services/command-history';
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
+import { IMovingStrategy } from "../core/strategies/move-strategies/move-strategy";
+import { Position } from "../scenario/models/position";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SelectionService {
+
+	private movingStrategies: IMovingStrategy[] = [];
 
 	private strategies = new Map<string, SelectStrategy<any>>();
 
@@ -129,6 +133,8 @@ export class SelectionService {
 		this.tags.clear();
 
 		this.priority.clear();
+
+		this.movingStrategies = [];
 
 	}
 
@@ -252,4 +258,27 @@ export class SelectionService {
 
 	}
 
+	addMovingStrategy ( strategy: IMovingStrategy ) {
+
+		this.movingStrategies.push( strategy );
+
+	}
+
+	handleTargetMovement ( e: PointerEventData, target: any ): Position {
+
+		for ( let i = 0; i < this.movingStrategies.length; i++ ) {
+
+			const strategy = this.movingStrategies[ i ];
+
+			const position = strategy.getPosition( e, target );
+
+			if ( position ) {
+
+				return position;
+
+			}
+
+		}
+
+	}
 }

@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { DebugService } from "../../core/interfaces/debug.service";
+import { BaseDebugService } from "../../core/interfaces/debug.service";
 import { DebugState } from "./debug-state";
 import { Object3DMap } from "../../core/models/object3d-map";
 import { PropInstance } from "../../map/prop-point/prop-instance.object";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 
-export class PointDebugService extends DebugService<PropInstance> {
+export class PointDebugService extends BaseDebugService<PropInstance> {
 
 	private points = new Object3DMap<number, AbstractControlPoint>();
 

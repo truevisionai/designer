@@ -26,7 +26,7 @@ import { ThreeService } from 'app/renderer/three.service';
 import { TvLaneSide } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneAccess } from 'app/map/models/tv-lane-access';
-import { TvLaneHeight } from 'app/map/models/tv-lane-height';
+import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
 import { TvLaneMaterial } from 'app/map/models/tv-lane-material';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';

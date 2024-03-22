@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { DataService } from "../../core/interfaces/data.service";
+import { BaseDataService } from "../../core/interfaces/data.service";
 import { PropPolygon } from "./prop-polygon.model";
 import { MapService } from "../../services/map/map.service";
 import { PropPolygonBuilder } from "./prop-polygon.builder";
@@ -14,7 +14,7 @@ import { Euler, Vector3 } from 'three';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PropPolygonService extends DataService<PropPolygon> {
+export class PropPolygonService extends BaseDataService<PropPolygon> {
 
 	constructor (
 		private mapService: MapService,

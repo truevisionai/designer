@@ -284,6 +284,12 @@ export abstract class TvAbstractRoadGeometry {
 
 	}
 
+	public get typeAsString (): string {
+
+		return TvAbstractRoadGeometry.getTypeAsString( this.geometryType );
+
+	}
+
 	protected binarySearch_GetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
 
 		const point = new Vector2( x, y );

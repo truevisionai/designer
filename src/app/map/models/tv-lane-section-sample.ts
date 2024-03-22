@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLaneHeight } from './tv-lane-height';
+import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { TvLaneRoadMark } from './tv-lane-road-mark';
 
 

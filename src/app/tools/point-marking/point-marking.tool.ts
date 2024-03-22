@@ -15,11 +15,11 @@ import { CommandHistory } from 'app/services/command-history';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { SimpleControlPoint } from 'app/objects/dynamic-control-point';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { MathUtils, Vector3 } from 'three';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 export class PointMarkingTool extends BaseTool<any>{
 
@@ -31,13 +31,13 @@ export class PointMarkingTool extends BaseTool<any>{
 
 	get selectedRoad () {
 
-		return this.tool.base.selection.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
 
 	}
 
 	get selectedMarking () {
 
-		return this.tool.base.selection.getLastSelected<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint.name );
+		return this.selectionService.getLastSelected<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint.name );
 
 	}
 
@@ -57,9 +57,9 @@ export class PointMarkingTool extends BaseTool<any>{
 
 		super.init();
 
-		this.tool.base.selection.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
-		this.tool.base.selection.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 
@@ -100,7 +100,7 @@ export class PointMarkingTool extends BaseTool<any>{
 		// 	return;
 		// };
 
-		this.tool.base.selection.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 
@@ -175,24 +175,24 @@ export class PointMarkingTool extends BaseTool<any>{
 	createPointMarking ( asset: AssetNode, position: Vector3 ) {
 
 		if ( !position ) {
-			this.tool.base.setWarning( 'Drag point marking on a road or lane' );
+			this.setHint( 'Drag point marking on a road or lane' );
 			return;
 		}
 
 		if ( !asset ) {
-			this.tool.base.setWarning( 'Drag a texture or material asset from the project browser' );
+			this.setHint( 'Drag a texture or material asset from the project browser' );
 			return;
 		}
 
 		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL ) {
-			this.tool.base.setWarning( 'Drag a texture or material asset from the project browser' );
+			this.setHint( 'Drag a texture or material asset from the project browser' );
 			return;
 		}
 
 		const roadObject = this.tool.createPointMarking( asset, position );
 
 		if ( !roadObject ) {
-			this.tool.base.setWarning( 'Drag point marking on a road or lane' );
+			this.setHint( 'Drag point marking on a road or lane' );
 			return;
 		}
 

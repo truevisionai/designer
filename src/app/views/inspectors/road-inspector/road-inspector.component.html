@@ -89,4 +89,15 @@
 		style="width: 100%;">Delete Spline
 	</button>
 
+	<div *ngIf="!isProduction">
+		<mat-card *ngFor="let geometry of road.geometries">
+			<mat-card-header>
+				<mat-card-title>Type: {{ geometry.typeAsString }}</mat-card-title>
+				<mat-card-subtitle>
+					X: {{ geometry.x }}<br/>
+					Y: {{ geometry.y }}
+				</mat-card-subtitle>
+			</mat-card-header>
+		</mat-card>
+	</div>
 </div>
