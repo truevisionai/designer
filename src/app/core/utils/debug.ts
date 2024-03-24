@@ -10,7 +10,7 @@ export class Debug {
 
 		if ( !Environment.production ) {
 
-			Debug.log( message );
+			console.log( message );
 
 		}
 	}
