@@ -18,6 +18,7 @@ export interface StrategySettings {
 export class ControlPointStrategy<T extends AbstractControlPoint> extends SelectStrategy<T> {
 
 	private current: T = null;
+
 	private selected: T = null;
 
 	constructor ( private options?: StrategySettings ) {
@@ -41,9 +42,15 @@ export class ControlPointStrategy<T extends AbstractControlPoint> extends Select
 			this.selected?.unselect();
 		}
 
-		this.selected = pointerEventData.intersections
+		const intersections = pointerEventData.intersections
 			.filter( i => i.object.visible )
-			.find( i => i.object instanceof Points )?.object as any;
+			.filter( i => i.object.type === 'Points' );
+
+		const intersection = this.findNearestIntersection( pointerEventData.point, intersections );
+
+		if ( !intersection ) return;
+
+		this.selected = intersection.object as any;
 
 		if ( this.options?.higlightOnSelect ) {
 			this.selected?.select();
@@ -65,9 +72,15 @@ export class ControlPointStrategy<T extends AbstractControlPoint> extends Select
 
 		if ( !this.current?.isSelected ) this.current?.onMouseOut();
 
-		this.current = pointerEventData.intersections
+		const intersections = pointerEventData.intersections
 			.filter( i => i.object.visible )
-			.find( i => i.object instanceof Points )?.object as any;
+			.filter( i => i.object.type === 'Points' );
+
+		const intersection = this.findNearestIntersection( pointerEventData.point, intersections );
+
+		if ( !intersection ) return;
+
+		this.current = intersection.object as any;
 
 		if ( !this.current?.isSelected ) this.current?.onMouseOver();
 

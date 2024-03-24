@@ -7,6 +7,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
+import { Intersection, Vector3 } from "three";
 
 export abstract class SelectStrategy<T> {
 
@@ -16,7 +17,9 @@ export abstract class SelectStrategy<T> {
 
 	abstract onPointerUp ( pointerEventData: PointerEventData ): T;
 
-	select ( e: PointerEventData ): T { return this.onPointerDown( e ); }
+	select ( e: PointerEventData ): T {
+		return this.onPointerDown( e );
+	}
 
 	abstract dispose (): void;
 
@@ -96,5 +99,27 @@ export abstract class SelectStrategy<T> {
 		// }
 	}
 
+	protected findNearestIntersection ( point: Vector3, intersections: Intersection[] ) {
+
+		if ( intersections.length === 0 ) return;
+
+		let intersection = intersections[ 0 ];
+
+		for ( let i = 1; i < intersections.length; i++ ) {
+
+			const currentDistance = intersection.object.position.distanceTo( point );
+
+			const newDistance = intersections[ i ].object.position.distanceTo( point );
+
+			if ( newDistance < currentDistance ) {
+
+				intersection = intersections[ i ];
+
+			}
+
+		}
+
+		return intersection;
+	}
 }
 
