@@ -246,7 +246,19 @@ export class IntersectionManager {
 
 		const junctions = new Set<TvJunction>();
 
-		group.splines.forEach( spline => spline.getJunctions().forEach( junction => junctions.add( junction ) ) );
+		group.splines.forEach( spline => spline.getJunctions().forEach( junction => {
+
+			const groupPosition = group.getRepresentativePosition();
+
+			const bbox = junction.boundingBox || this.junctionService.computeBoundingBox( junction );
+
+			if ( bbox.distanceToPoint( groupPosition ) < 10 ) {
+
+				junctions.add( junction )
+
+			}
+
+		} ) );
 
 		if ( junctions.size == 0 ) {
 

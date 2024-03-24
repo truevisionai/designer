@@ -493,10 +493,6 @@ describe( '4-way-junction tests', () => {
 		// bottom to top
 		const verticalRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -200 ), new Vector2( 0, 200 ) ] );
 
-		roadService.add( horizontalBottom );
-		roadService.add( horizontalTop );
-		roadService.add( verticalRoad );
-
 		splineManager.updateSpline( verticalRoad.spline );
 
 		expect( junctionService.junctions.length ).toBe( 2 );
@@ -745,7 +741,6 @@ describe( '4-way-junction tests', () => {
 
 		mapValidator.validateMap( mapService.map, true );
 	} );
-
 
 	it( 'should create t-junction between one side lane road', () => {
 
