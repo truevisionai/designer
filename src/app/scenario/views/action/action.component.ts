@@ -27,7 +27,7 @@ export class ActionComponent implements OnInit {
 
 	constructor () {
 
-		// console.log( this.action );
+		// Debug.log( this.action );
 
 	}
 
@@ -39,7 +39,7 @@ export class ActionComponent implements OnInit {
 
 	ngOnInit () {
 
-		// console.log( this.action );
+		// Debug.log( this.action );
 
 	}
 

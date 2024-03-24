@@ -246,13 +246,13 @@ export class DynamicArrayInspectorComponent implements OnInit, AfterViewInit {
 
 	ngOnInit (): void {
 
-		// console.log( 'ngOnInit', this.data );
+		// Debug.log( 'ngOnInit', this.data );
 
 	}
 
 	ngAfterViewInit (): void {
 
-		// console.log( 'ngAfterViewInit', this.data );
+		// Debug.log( 'ngAfterViewInit', this.data );
 
 		this.data.forEach( ( element: Object, index ) => {
 

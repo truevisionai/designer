@@ -207,7 +207,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	private onPointerUp ( event: PointerEventData ) {
 
-		// console.log( 'Pointer up', event, this.selectedObject );
+		// Debug.log( 'Pointer up', event, this.selectedObject );
 
 		if ( !this.selectedObject ) return;
 
@@ -234,7 +234,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	private onPointerDown ( event: PointerEventData ) {
 
-		// console.log( 'Pointer down', event );
+		// Debug.log( 'Pointer down', event );
 
 		if ( KeyboardEvents.isShiftKeyDown ) {
 
@@ -270,7 +270,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	private onPointerMoved ( event: PointerEventData ) {
 
-		// console.log( 'Pointer moved', event );
+		// Debug.log( 'Pointer moved', event );
 
 		if ( !event.pointerDown ) return;
 
@@ -308,7 +308,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	private onPointerClicked ( event: PointerEventData ) {
 
-		// console.log( 'Pointer clicked', event );
+		// Debug.log( 'Pointer clicked', event );
 
 	}
 

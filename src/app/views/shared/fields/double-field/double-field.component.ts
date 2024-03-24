@@ -5,6 +5,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Maths } from 'app/utils/maths';
 import { AbstractFieldComponent } from '../abstract-field.component';
+import { Debug } from 'app/core/utils/debug';
 
 @Component( {
 	selector: 'app-double-field',
@@ -72,7 +73,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		// console.log( $event.deltaX, $event.deltaY );
+		// Debug.log( $event.deltaX, $event.deltaY );
 
 		if ( $event.deltaY < 0 && this.value < this.max ) {
 			this.value += this.step;
@@ -156,7 +157,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 			}
 		} else {
 
-			console.log( 'inputValue', inputValue );
+			Debug.log( 'inputValue', inputValue );
 
 		}
 	}

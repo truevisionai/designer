@@ -80,12 +80,12 @@ export class VehicleWaypointController extends AbstractController {
 				// If it will overshoot, just set the position to the waypoint
 				this.cube.position.copy( waypoint );
 				this.currentWaypoint++;
-				console.log( 'waypoint reached' );
+				// Debug.log( 'waypoint reached' );
 			}
 
 		} else {
 
-			console.log( 'waypoint reached' );
+			// Debug.log( 'waypoint reached' );
 
 			this.currentWaypoint++;
 

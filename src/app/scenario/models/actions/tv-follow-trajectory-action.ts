@@ -102,7 +102,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 	private steering ( entity: ScenarioEntity ) {
 
-		// console.log( this );
+		// Debug.log( this );
 
 		if ( this.index >= this.trajectory.vertices.length ) {
 
@@ -115,7 +115,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 		const vertex = this.trajectory.vertices[ this.index ];
 
-		// console.log( vertex );
+		// Debug.log( vertex );
 
 		const target = vertex.position.getVectorPosition();
 
@@ -125,9 +125,9 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 		const newPosition: Vector3 = Maths.moveTowards( entity.position, target, maxChange );
 
-		// console.log( entity.position, target, maxChange, newPosition );
+		// Debug.log( entity.position, target, maxChange, newPosition );
 
-		// console.log( newPosition );
+		// Debug.log( newPosition );
 
 		entity.setPosition( newPosition );
 

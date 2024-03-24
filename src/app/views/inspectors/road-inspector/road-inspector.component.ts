@@ -19,6 +19,7 @@ import { AssetService } from 'app/core/asset/asset.service';
 import { RoadService } from 'app/services/road/road.service';
 import { UpdatePositionCommand } from "../../../commands/update-position-command";
 import { Environment } from 'app/core/utils/environment';
+import { Debug } from 'app/core/utils/debug';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -99,7 +100,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 		this.assetService.createRoadStyleAsset( saved.directory, this.road, saved.filename );
 
-		console.log( 'exporting road style to: ' + saved.filePath );
+		Debug.log( 'exporting road style to: ' + saved.filePath );
 
 	}
 

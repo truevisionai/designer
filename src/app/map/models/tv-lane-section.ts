@@ -124,7 +124,7 @@ export class TvLaneSection {
 			width += element.getWidthValue( sCoordinate );
 		}
 
-		// console.log(`upto-start lane-id: ${lane.id} s: ${sCoordinate} width: ${width}`);
+		// Debug.log(`upto-start lane-id: ${lane.id} s: ${sCoordinate} width: ${width}`);
 
 		return width;
 
@@ -160,7 +160,7 @@ export class TvLaneSection {
 			if ( element.id == lane.id ) break;
 		}
 
-		// console.log(`upto-end lane-id: ${lane.id} s: ${sCoordinate} width: ${width}`);
+		// Debug.log(`upto-end lane-id: ${lane.id} s: ${sCoordinate} width: ${width}`);
 
 		return width;
 
@@ -822,7 +822,7 @@ export class TvLaneSection {
 
 			const distance = Math.abs( laneT - Math.abs( t ) );
 
-			// if ( this.debug ) console.log( lane.id, laneT, t, distance < THRESHOLD );
+			// if ( this.debug ) Debug.log( lane.id, laneT, t, distance < THRESHOLD );
 
 			if ( distance < minDistance && distance < THRESHOLD ) {
 				minDistance = distance;

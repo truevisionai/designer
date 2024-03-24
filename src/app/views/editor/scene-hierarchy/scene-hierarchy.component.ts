@@ -90,8 +90,6 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
 		this.changeDet.detectChanges();
 
-		if ( this.debug ) console.log( 'SceneHierarchyComponent.onSceneChanged', SceneService.scene );
-
 	}
 
 	ngOnDestroy (): void {
@@ -102,7 +100,6 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
 	onNodeClicked ( node: FlatNode ) {
 
-		console.log( 'node clicked', node );
 
 	}
 }

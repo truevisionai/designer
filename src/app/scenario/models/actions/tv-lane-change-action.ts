@@ -98,7 +98,7 @@ export class LaneChangeAction extends PrivateAction {
 
 		if ( this.debug ) {
 
-			console.log( 'LaneChangeAction', entity.getCurrentLaneId(), this.lateralDistance, entity.getCurrentLaneOffset(), newLaneOffset, elapsedTime );
+			// Debug.log( 'LaneChangeAction', entity.getCurrentLaneId(), this.lateralDistance, entity.getCurrentLaneOffset(), newLaneOffset, elapsedTime );
 
 		}
 

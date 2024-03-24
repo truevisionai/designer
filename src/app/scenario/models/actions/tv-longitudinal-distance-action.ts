@@ -82,7 +82,7 @@ export class LongitudinalDistanceAction extends PrivateAction {
 
 		}
 
-		// console.log( 'LongitudinalDistanceAction', entity.name, currentDistance, this.targetDistance, entity.getCurrentSpeed() );
+		// Debug.log( 'LongitudinalDistanceAction', entity.name, currentDistance, this.targetDistance, entity.getCurrentSpeed() );
 	}
 
 	private computeLongitudinalDistance ( entity: ScenarioEntity ) {

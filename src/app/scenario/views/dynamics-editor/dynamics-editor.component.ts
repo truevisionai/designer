@@ -5,6 +5,7 @@
 import { Component, Input } from '@angular/core';
 import { DynamicsDimension, DynamicsShape } from 'app/scenario/models/tv-enums';
 import { TransitionDynamics } from '../../models/actions/transition-dynamics';
+import { Debug } from 'app/core/utils/debug';
 
 @Component( {
 	selector: 'app-dynamics-editor',
@@ -33,7 +34,7 @@ export class DynamicsEditorComponent {
 
 	onShapeChanged ( $event: DynamicsShape ) {
 
-		console.log( $event );
+		Debug.log( $event );
 
 		this.dynamics.dynamicsShape = $event;
 
@@ -43,7 +44,7 @@ export class DynamicsEditorComponent {
 
 	onDimensionChanged ( $event: DynamicsDimension ) {
 
-		console.log( $event );
+		Debug.log( $event );
 
 		this.dynamics.dynamicsDimension = $event;
 
@@ -53,7 +54,7 @@ export class DynamicsEditorComponent {
 
 	onValueChanged ( $event: number ) {
 
-		console.log( $event );
+		Debug.log( $event );
 
 		this.dynamics.value = $event;
 

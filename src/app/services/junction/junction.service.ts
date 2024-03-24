@@ -24,6 +24,7 @@ import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
+import { Debug } from 'app/core/utils/debug';
 
 @Injectable( {
 	providedIn: 'root'
@@ -80,7 +81,7 @@ export class JunctionService {
 
 	createJunctionFromJunctionNodes ( nodes: JunctionNode[] ) {
 
-		console.log( 'createJunctionFromJunctionNodes', nodes[ 0 ], nodes[ 1 ] );
+		Debug.log( 'createJunctionFromJunctionNodes', nodes[ 0 ], nodes[ 1 ] );
 
 		const coords = nodes.map( node => node.roadCoord );
 
@@ -92,7 +93,7 @@ export class JunctionService {
 
 		connections.forEach( connection => junction.addConnection( connection ) );
 
-		console.log( connections );
+		Debug.log( connections );
 
 		// make connections
 

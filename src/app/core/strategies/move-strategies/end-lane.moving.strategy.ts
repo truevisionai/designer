@@ -17,7 +17,7 @@ export class EndLaneMovingStrategy extends MovingStrategy<TvLane> {
 
 		const s = posTheta.s - target.laneSection.s;
 
-		// console.log( posTheta, s );
+		// Debug.log( posTheta, s );
 		const position = target.laneSection.road.getLaneEndPosition( target, s );
 
 		// return new LanePositionv2( lane.laneSection.road, lane, s );
@@ -34,7 +34,7 @@ export class MidLaneMovingStrategy extends MovingStrategy<TvLane> {
 
 		const s = posTheta.s - target.laneSection.s;
 
-		// console.log( posTheta, s );
+		// Debug.log( posTheta, s );
 		const position = target.laneSection.road.getLaneCenterPosition( target, s );
 
 		// return new LanePositionv2( lane.laneSection.road, lane, s );

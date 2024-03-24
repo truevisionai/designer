@@ -179,7 +179,7 @@ describe( 't-junction tests', () => {
 		expect( splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeDefined();
 
 		if ( mapService.roads.length == 2 ) {
-			console.log( "mapService.roads.length == 2" );
+			throw new Error( "mapService.roads.length == 2" );
 		}
 
 		expect( mapService.junctions.length ).toBe( 0 );
@@ -200,7 +200,7 @@ describe( 't-junction tests', () => {
 		splineManager.removeSpline( vertical.spline );
 
 		if ( mapService.roads.length == 0 ) {
-			console.log( "mapService.roads.length == 0" );
+			throw new Error( "mapService.roads.length == 0" );
 		}
 
 		expect( mapService.junctions.length ).toBe( 0 );

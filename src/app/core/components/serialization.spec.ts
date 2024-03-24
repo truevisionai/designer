@@ -12,7 +12,7 @@ describe( 'Serialization', () => {
 
 		const properties = getSerializableFields( obj );
 
-		console.log( properties );
+		expect( properties ).toBeDefined();
 
 	} );
 

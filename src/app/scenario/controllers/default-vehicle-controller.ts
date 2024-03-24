@@ -274,7 +274,7 @@ export class DefaultVehicleController extends AbstractController {
 	//
 	// 	// if ( entityInFront.length > 0 ) {
 	// 	//
-	// 	//     // console.log( 'entity-in-front', actor, entityInFront );
+	// 	//     // Debug.log( 'entity-in-front', actor, entityInFront );
 	// 	//     if ( actor.speed != entityInFront[ 0 ].speed ) {
 	// 	//
 	// 	//         const ttc = Math.abs( actor.sCoordinate - entityInFront[ 0 ].sCoordinate );
@@ -316,7 +316,7 @@ export class DefaultVehicleController extends AbstractController {
 	//
 	// 	} else {
 	//
-	// 		// console.log( 'vehicle-in-front' );
+	// 		// Debug.log( 'vehicle-in-front' );
 	//
 	// 	}
 	//

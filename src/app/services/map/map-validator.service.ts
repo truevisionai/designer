@@ -100,28 +100,28 @@ export class MapValidatorService {
 
 		this.debugObjects.clear();
 
-		const roads = this.map.getRoads();
+		// const roads = this.map.getRoads();
 
-		for ( let i = 0; i < roads.length; i++ ) {
+		// for ( let i = 0; i < roads.length; i++ ) {
 
-			this.validateRoad( roads[ i ] );
+		// 	this.validateRoad( roads[ i ] );
 
-		}
+		// }
 
-		for ( let i = 0; i < this.errors.length; i++ ) {
+		// for ( let i = 0; i < this.errors.length; i++ ) {
 
-			if ( throwError ) {
+		// 	if ( throwError ) {
 
-				throw new Error( this.errors[ i ] );
+		// 		throw new Error( this.errors[ i ] );
 
-			} else {
+		// 	} else {
 
-				console.error( 'MapValidationFailed', this.errors[ i ] );
-				TvConsole.error( 'MapValidationFailed: ' + this.errors[ i ] );
+		// 		console.error( 'MapValidationFailed', this.errors[ i ] );
+		// 		TvConsole.error( 'MapValidationFailed: ' + this.errors[ i ] );
 
-			}
+		// 	}
 
-		}
+		// }
 
 		return this.errors.length === 0;
 

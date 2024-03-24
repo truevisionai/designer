@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Debug } from 'app/core/utils/debug';
 import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
 import { ScenarioEntity } from '../entities/scenario-entity';
@@ -79,7 +80,7 @@ export class SpeedAction extends PrivateAction {
 
 		}
 
-		if ( this.debug ) console.log( 'SpeedAction', entity.getCurrentSpeed(), this.targetSpeed, elapsedTime, this.dynamics );
+		// if ( this.debug ) Debug.log( 'SpeedAction', entity.getCurrentSpeed(), this.targetSpeed, elapsedTime, this.dynamics );
 
 	}
 

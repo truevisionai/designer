@@ -17,6 +17,7 @@ import { Group, Material, Mesh, Object3D } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { FileUtils } from '../../../io/file-utils';
 import { FileService } from '../../../io/file.service';
+import { Debug } from 'app/core/utils/debug';
 
 export class ImportFbxDialogData {
 	constructor ( public path: string, public destinationPath: string, public extension: string ) {
@@ -188,7 +189,7 @@ export class ImportFbxDialogComponent implements OnInit {
 
 		if ( this.geometryUuidMap.has( mesh.geometry.uuid ) ) {
 
-			console.log( 'geometry already saved', mesh.geometry.uuid, mesh.geometry.name );
+			Debug.log( 'geometry already saved', mesh.geometry.uuid, mesh.geometry.name );
 
 			return this.geometryUuidMap.get( mesh.geometry.uuid );
 		}
@@ -215,7 +216,7 @@ export class ImportFbxDialogComponent implements OnInit {
 
 		if ( this.materialUuidMap.has( material.uuid ) ) {
 
-			console.log( 'material already saved', material.uuid, material.name );
+			Debug.log( 'material already saved', material.uuid, material.name );
 
 			return this.materialUuidMap.get( material.uuid );
 		}

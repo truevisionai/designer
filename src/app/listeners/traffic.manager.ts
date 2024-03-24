@@ -138,8 +138,6 @@ export class TrafficManager {
 
 		if ( this.disabled ) return;
 
-		console.log( 'tick', Time.frameCount );
-
 	}
 
 }
