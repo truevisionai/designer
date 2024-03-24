@@ -24,6 +24,7 @@ import { ProjectService } from './editor/project.service';
 import { SceneBuilderService } from './scene-builder.service';
 import { RoadService } from './road/road.service';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
+import { Debug } from 'app/core/utils/debug';
 
 @Injectable( {
 	providedIn: 'root'
@@ -70,7 +71,7 @@ export class TvSceneFileService {
 
 	private setMap ( map: TvMap ) {
 
-		console.log( 'setMap', map );
+		Debug.log( 'setMap', map );
 
 		this.threeService.reset();
 

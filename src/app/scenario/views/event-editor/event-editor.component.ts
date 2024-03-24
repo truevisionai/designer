@@ -13,6 +13,7 @@ import { TvAction } from '../../models/tv-action';
 import { ActionType, ConditionType } from '../../models/tv-enums';
 import { TvEvent } from '../../models/tv-event';
 import { ScenarioService } from '../../services/scenario.service';
+import { Debug } from 'app/core/utils/debug';
 
 @Component( {
 	selector: 'app-event-editor',
@@ -82,7 +83,7 @@ export class EventEditorComponent implements OnInit {
 			},
 			{
 				label: 'Delete',
-				click: () => console.log( 'delete' ),
+				click: () => Debug.log( 'delete' ),
 			},
 		] );
 

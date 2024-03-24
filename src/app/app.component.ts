@@ -16,6 +16,7 @@ import { LayoutService } from './views/shared/services/layout.service';
 
 import { RoutePartsService } from './views/shared/services/route-parts.service';
 import { ThemeService } from './views/shared/services/theme.service';
+import { Debug } from './core/utils/debug';
 
 @Component( {
 	selector: 'app-root',
@@ -48,7 +49,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 	ngOnInit () {
 
-		console.log( 'App Version: ', Environment.version );
+		Debug.log( 'App Version: ', Environment.version );
 
 		this.analytics.init();
 

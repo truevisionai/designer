@@ -275,7 +275,7 @@ export class AssetComponent implements OnInit {
 	@HostListener( 'dragend', [ '$event' ] )
 	onDragEnd ( $event ) {
 
-		// console.log( $event )
+		// Debug.log( $event )
 
 	}
 

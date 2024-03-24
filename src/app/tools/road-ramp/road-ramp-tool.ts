@@ -19,6 +19,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from "../../events/road/road-created-event";
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
+import { Debug } from 'app/core/utils/debug';
 
 export class RoadRampTool extends BaseTool<any>{
 
@@ -211,7 +212,7 @@ export class RoadRampTool extends BaseTool<any>{
 
 		if ( distance < 5 ) return;
 
-		console.log( distance, this.startCoord, position );
+		Debug.log( distance, this.startCoord, position );
 
 		if ( !this.referenceLine ) {
 
@@ -235,14 +236,14 @@ export class RoadRampTool extends BaseTool<any>{
 
 		const distance = v1.distanceTo( v2 );
 
-		// console.log( 'distance', distance, v1, v2 );
+		// Debug.log( 'distance', distance, v1, v2 );
 
 		return distance;
 	}
 
 	showStartLine ( position: TvLaneCoord | Vector3 ) {
 
-		console.log( 'show start line', position );
+		Debug.log( 'show start line', position );
 
 		if ( position instanceof TvLaneCoord ) {
 
@@ -294,7 +295,7 @@ export class RoadRampTool extends BaseTool<any>{
 		// // 	this.roadRampService.updateRampSpline( this.rampRoadSpline, this.startCoord.position, this.endCoord, this.startCoord.posTheta.toDirectionVector() );
 		// // }
 
-		// console.log( 'moved', this.startCoord.position.distanceTo( e.point ), this.startCoord, this.endCoord );
+		// Debug.log( 'moved', this.startCoord.position.distanceTo( e.point ), this.startCoord, this.endCoord );
 
 	}
 
@@ -306,7 +307,7 @@ export class RoadRampTool extends BaseTool<any>{
 
 	// 	// 	this.endCoord = laneCoord || e.point;
 
-	// 	// 	console.log( 'create ramp', this.startCoord, this.endCoord );
+	// 	// 	Debug.log( 'create ramp', this.startCoord, this.endCoord );
 
 	// 	// 	const virtualJunction = JunctionFactory.createVirtualJunction( this.startCoord.road, this.startCoord.s, this.startCoord.s + 20, TvOrientation.PLUS );
 
@@ -321,11 +322,11 @@ export class RoadRampTool extends BaseTool<any>{
 
 	// 	// if ( e.button != MouseButton.LEFT ) return;
 
-	// 	// // console.log( 'is down', this.isPointerDown, this.pointerDownAt, 'up at', e.point );
+	// 	// // Debug.log( 'is down', this.isPointerDown, this.pointerDownAt, 'up at', e.point );
 
 	// 	// if ( this.lane && this.start ) {
 
-	// 	// 	// console.log( 'create ramp', this.lane, this.start, this.end );
+	// 	// 	// Debug.log( 'create ramp', this.lane, this.start, this.end );
 
 	// 	// 	// SceneService.add( AnyControlPoint.create( '', this.start ) );
 	// 	// 	// SceneService.add( AnyControlPoint.create( '', this.end ) );
@@ -387,7 +388,7 @@ export class RoadRampTool extends BaseTool<any>{
 	//     road.addControlPointAt(v3);
 	//     road.addControlPointAt(B);
 
-	//     console.log("road", [A, v2, v3, B]);
+	//     Debug.log("road", [A, v2, v3, B]);
 
 	//     road.updateGeometryFromSpline();
 	// }
@@ -443,7 +444,7 @@ export class RoadRampTool extends BaseTool<any>{
 	// 	road.addControlPointAt( v3 );
 	// 	road.addControlPointAt( B );
 
-	// 	console.log( "road", [ A, v2, v3, B ] );
+	// 	Debug.log( "road", [ A, v2, v3, B ] );
 
 	// 	road.updateGeometryFromSpline();
 	// }

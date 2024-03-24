@@ -49,7 +49,7 @@ describe( 'ParameterRef', () => {
 	} );
 
 	it( 'should throw error for unsafe or unsupported expressions', () => {
-		const ref = new ParameterRef( '${console.log("This is unsafe")}' );
+		const ref = new ParameterRef( '${Debug.log("This is unsafe")}' );
 		expect( () => ref.getInterpretedValue() ).toThrow( new Error( 'Unsafe or unsupported expression' ) );
 	} );
 

@@ -43,7 +43,7 @@ export class SerializationService {
 
 	getSerialized<T, P extends keyof T> ( object: T, properties: IField<T, P>[] ): any {
 
-		console.log( properties );
+		Debug.log( properties );
 
 		for ( const key in object ) {
 
@@ -57,7 +57,7 @@ export class SerializationService {
 
 				} else {
 
-					// console.log( key, element );
+					// Debug.log( key, element );
 
 				}
 

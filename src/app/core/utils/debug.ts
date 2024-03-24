@@ -6,11 +6,11 @@ import { Environment } from './environment';
 
 export class Debug {
 
-	static log ( message?: any, ...optionalParams: any[] ) {
+	static log ( ...message: any ) {
 
 		if ( !Environment.production ) {
 
-			console.log( message, optionalParams );
+			Debug.log( message );
 
 		}
 	}

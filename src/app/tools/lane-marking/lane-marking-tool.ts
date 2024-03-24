@@ -24,6 +24,7 @@ import { SelectObjectCommand } from "../../commands/select-object-command";
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { Environment } from 'app/core/utils/environment';
 import { LaneMarkingInspector } from './lane-marking.inspector';
+import { Debug } from 'app/core/utils/debug';
 
 export class LaneMarkingTool extends BaseTool<any>{
 
@@ -226,7 +227,7 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 	onObjectAdded ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectAdded', object );
+		if ( this.debug ) Debug.log( 'onObjectAdded', object );
 
 		if ( object instanceof LaneMarkingNode ) {
 
@@ -244,7 +245,7 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 	onObjectUpdated ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectUpdated', object );
+		if ( this.debug ) Debug.log( 'onObjectUpdated', object );
 
 		if ( object instanceof LaneMarkingNode ) {
 
@@ -262,7 +263,7 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectUpdated', object );
+		if ( this.debug ) Debug.log( 'onObjectUpdated', object );
 
 		if ( object instanceof LaneMarkingNode ) {
 

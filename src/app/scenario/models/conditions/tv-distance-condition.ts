@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Debug } from 'app/core/utils/debug';
 import { Position } from '../position';
 import { ConditionType, CoordinateSystem, RelativeDistanceType, RoutingAlgorithm, Rule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
@@ -53,7 +54,7 @@ export class DistanceCondition extends EntityCondition {
 			entityName => this.calculateDistance( entityName, this.position, this.freespace )
 		);
 
-		if ( this.debug ) console.log( 'distanceValues', distanceValues, this.rule, this.value );
+		// if ( this.debug ) Debug.log( 'distanceValues', distanceValues, this.rule, this.value );
 
 		return this.isTriggerRulePassing( distanceValues, this.rule, this.value );
 	}
@@ -75,7 +76,7 @@ export class DistanceCondition extends EntityCondition {
 	//
 	// 			const distance = entity.position.distanceTo( otherPosition );
 	//
-	// 			// console.log( 'distance-to-entity', distance );
+	// 			// Debug.log( 'distance-to-entity', distance );
 	//
 	// 			const passed = ConditionService.hasRulePassed( this.rule, distance, this.value );
 	//

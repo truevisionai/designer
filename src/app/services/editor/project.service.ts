@@ -9,6 +9,7 @@ import { Metadata } from 'app/core/asset/metadata.model';
 import { StorageService } from 'app/io/storage.service';
 import { AssetService } from 'app/core/asset/asset.service';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
+import { Debug } from 'app/core/utils/debug';
 
 declare const electronFs;
 
@@ -110,7 +111,7 @@ export class ProjectService {
 
 		} catch ( error ) {
 
-			console.log( error );
+			Debug.log( error );
 
 			throw new Error( 'Error in setting up default project folder' );
 
@@ -144,7 +145,7 @@ export class ProjectService {
 
 				const destinationPath = this.storageService.join( destinationFolder, file.name );
 
-				console.log( file, destinationPath );
+				Debug.log( file, destinationPath );
 
 				if ( file.name.includes( '.meta' ) ) {
 

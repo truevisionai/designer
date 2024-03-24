@@ -405,7 +405,7 @@ export class TvRoad {
 
 		if ( elevation == null ) return 0;
 
-		// console.log( value );
+		// Debug.log( value );
 
 		return elevation.getValue( s );
 	}
@@ -660,7 +660,6 @@ export class TvRoad {
 		const geometry = this.getGeometryAt( s );
 
 		if ( !geometry ) {
-			console.log( this.geometries );
 			TvConsole.error( `GeometryNotFoundAt S:${ s } RoadId:${ this.id }` );
 		}
 

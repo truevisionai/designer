@@ -72,7 +72,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent implements On
 	@HostListener( 'dragover', [ '$event' ] )
 	onDragOver ( $event ) {
 
-		// console.log( "dragover", $event )
+		// Debug.log( "dragover", $event )
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -82,7 +82,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent implements On
 	@HostListener( 'dragleave', [ '$event' ] )
 	onDragLeave ( $event ) {
 
-		// console.log( "dragleave", $event )
+		// Debug.log( "dragleave", $event )
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -92,8 +92,8 @@ export class MaterialFieldComponent extends AbstractFieldComponent implements On
 	@HostListener( 'drop', [ '$event' ] )
 	onDrop ( $event: DragEvent ) {
 
-		// console.log( "drop", $event )
-		// console.log( "guid", $event.dataTransfer.getData( "guid" ) );
+		// Debug.log( "drop", $event )
+		// Debug.log( "guid", $event.dataTransfer.getData( "guid" ) );
 
 		$event.preventDefault();
 		$event.stopPropagation();

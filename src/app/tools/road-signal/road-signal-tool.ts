@@ -16,6 +16,7 @@ import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-co
 import { AppInspector } from 'app/core/inspector';
 import { RoadSignalInspector } from './road-signal.inspector';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { Debug } from 'app/core/utils/debug';
 
 export class RoadSignalTool extends BaseTool<any>{
 
@@ -98,7 +99,7 @@ export class RoadSignalTool extends BaseTool<any>{
 		if ( object instanceof TvRoadSignal ) {
 
 			if ( !this.selectedRoad ) {
-				console.log( 'selected road is null' );
+				Debug.log( 'selected road is null' );
 				return;
 			}
 
@@ -133,7 +134,7 @@ export class RoadSignalTool extends BaseTool<any>{
 		if ( object instanceof TvRoadSignal ) {
 
 			if ( !this.selectedRoad ) {
-				console.log( 'selected road is null' );
+				Debug.log( 'selected road is null' );
 				return;
 			}
 

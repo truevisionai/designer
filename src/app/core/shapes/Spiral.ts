@@ -25,7 +25,7 @@ class Spiral {
 		// var ed = SPIRAL.vec2Angle( this.points[ 3 ].x - this.points[ 2 ].x, this.points[ 3 ].z - this.points[ 2 ].z );
 		// var k, dk, L, iter;
 		// [ k, dk, L, iter ] = SPIRAL.buildClothoid( this.points[ 0 ].x * 100, this.points[ 0 ].z * 100, sd, this.points[ 3 ].x * 100, this.points[ 3 ].z * 100, ed );
-		// //console.log(k,dk,L);
+		// //Debug.log(k,dk,L);
 		// var spiralarc = SPIRAL.clothoid_1( this.points[ 0 ].x * 100, this.points[ 0 ].z * 100, this.points[ 0 ].y, sd, k, k + dk * L, L, this.points[ 3 ].y, ARC_SEGMENTS - 1 )
 		// var position = this.mesh.geometry.attributes.position;
 		// for ( var i = 0; i < ARC_SEGMENTS; i++ ) {

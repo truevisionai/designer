@@ -25,6 +25,7 @@ import { Environment } from 'app/core/utils/environment';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { Debug } from 'app/core/utils/debug';
 
 export class CrosswalkTool extends BaseTool<any>{
 
@@ -201,7 +202,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 	onObjectAdded ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectAdded', object );
+		if ( this.debug ) Debug.log( 'onObjectAdded', object );
 
 		if ( object instanceof TvRoadObject ) {
 
@@ -233,7 +234,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 	onObjectUpdated ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectUpdated', object );
+		if ( this.debug ) Debug.log( 'onObjectUpdated', object );
 
 		if ( object instanceof TvRoadObject ) {
 
@@ -278,7 +279,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectRemoved', object );
+		if ( this.debug ) Debug.log( 'onObjectRemoved', object );
 
 		if ( object instanceof TvRoadObject ) {
 
@@ -300,7 +301,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 	onObjectSelected ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectSelected', object );
+		if ( this.debug ) Debug.log( 'onObjectSelected', object );
 
 		if ( object instanceof TvRoad ) {
 
@@ -320,7 +321,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 	onObjectUnselected ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectUnselected', object );
+		if ( this.debug ) Debug.log( 'onObjectUnselected', object );
 
 		if ( object instanceof TvRoad ) {
 

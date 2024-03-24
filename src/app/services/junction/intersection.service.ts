@@ -383,7 +383,7 @@ export class IntersectionService {
 
 				nearestConnection.markAsCornerConnection();
 
-				// console.log( 'corner', nearestConnection, nearestConnection.connectingRoad );
+				// Debug.log( 'corner', nearestConnection, nearestConnection.connectingRoad );
 
 			}
 

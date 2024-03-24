@@ -182,7 +182,7 @@ export class JunctionFactory {
 	// 					// for straight connections we only merge same lane-id
 	// 					if ( Math.abs( A.lane.id ) != Math.abs( B.lane.id ) ) return;
 
-	// 					console.log( 'straight' );
+	// 					Debug.log( 'straight' );
 
 	// 					const entry = A.isEntry ? A : B;
 
@@ -194,7 +194,7 @@ export class JunctionFactory {
 
 	// 					if ( B.isLastDrivingLane() ) return;
 
-	// 					console.log( 'left' );
+	// 					Debug.log( 'left' );
 
 	// 					const entry = A.isEntry ? A : B;
 
@@ -206,7 +206,7 @@ export class JunctionFactory {
 
 	// 					if ( B.isLastDrivingLane() ) return;
 
-	// 					console.log( 'right' );
+	// 					Debug.log( 'right' );
 
 	// 					const entry = A.isEntry ? A : B;
 
@@ -218,7 +218,7 @@ export class JunctionFactory {
 
 	// 			} );
 
-	// 		console.log( A, mergeOptions );
+	// 		Debug.log( A, mergeOptions );
 
 	// 	}
 	// }
@@ -235,7 +235,7 @@ export class JunctionFactory {
 	// 		// for straight connections we only merge same lane-id
 	// 		if ( Math.abs( entry.lane.id ) != Math.abs( exit.lane.id ) ) return;
 
-	// 		console.log( 'straight' );
+	// 		Debug.log( 'straight' );
 
 	// 		this.connect( entry, exit );
 
@@ -245,7 +245,7 @@ export class JunctionFactory {
 
 	// 	// 	if ( exit.isLastDrivingLane() ) return;
 
-	// 	// 	console.log( 'left' );
+	// 	// 	Debug.log( 'left' );
 
 	// 	// 	this.connect( entry, exit );
 
@@ -253,7 +253,7 @@ export class JunctionFactory {
 
 	// 	// 	if ( exit.isLastDrivingLane() ) return;
 
-	// 	// 	console.log( 'right' );
+	// 	// 	Debug.log( 'right' );
 
 	// 	// 	this.connect( entry, exit );
 

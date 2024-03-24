@@ -146,7 +146,7 @@ export class ManeuverTool extends BaseTool<any>{
 		//
 		//} catch ( error ) {
 		//
-		//	console.log( error );
+		//	Debug.log( error );
 		//
 		//	return;
 		//}

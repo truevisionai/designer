@@ -27,7 +27,7 @@ export class RoadStyleInspector implements OnInit, IComponent, OnDestroy {
 
 	ngOnInit () {
 
-		// console.log( this.data );
+		// Debug.log( this.data );
 
 		const gameObject = new GameObject();
 

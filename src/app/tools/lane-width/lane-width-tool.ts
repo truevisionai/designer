@@ -18,6 +18,7 @@ import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugLine } from 'app/objects/debug-line';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
+import { Debug } from 'app/core/utils/debug';
 
 export class LaneWidthTool extends BaseTool<any> {
 
@@ -186,7 +187,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectAdded ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectAdded', object );
+		if ( this.debug ) Debug.log( 'onObjectAdded', object );
 
 		if ( object instanceof LaneWidthNode ) {
 
@@ -198,7 +199,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectUpdated ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectUpdated', object );
+		if ( this.debug ) Debug.log( 'onObjectUpdated', object );
 
 		if ( object instanceof LaneWidthNode ) {
 
@@ -210,7 +211,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectRemoved', object );
+		if ( this.debug ) Debug.log( 'onObjectRemoved', object );
 
 		if ( object instanceof LaneWidthNode ) {
 
@@ -222,7 +223,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectSelected ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectSelected', object );
+		if ( this.debug ) Debug.log( 'onObjectSelected', object );
 
 		this.laneWidthService.base.setSelected( object );
 
@@ -239,7 +240,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectUnselected ( object: any ): void {
 
-		if ( this.debug ) console.log( 'onObjectUnselected', object );
+		if ( this.debug ) Debug.log( 'onObjectUnselected', object );
 
 		if ( object instanceof TvLane ) {
 

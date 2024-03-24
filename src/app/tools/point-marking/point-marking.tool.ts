@@ -20,6 +20,7 @@ import { MathUtils, Vector3 } from 'three';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { Debug } from 'app/core/utils/debug';
 
 export class PointMarkingTool extends BaseTool<any>{
 
@@ -146,7 +147,7 @@ export class PointMarkingTool extends BaseTool<any>{
 
 			if ( position instanceof RoadPosition ) {
 
-				console.log( position );
+				Debug.log( position );
 
 				this.selectedMarking.mainObject.s = position.s;
 

@@ -158,7 +158,7 @@ export class ScenarioDirectorService {
 
 		// // set parameters
 		// this.reader.replaceParamaterValues( this.openScenario.objects, ( object, property ) => {
-		//     console.log( 'replaced', object, property );
+		//     Debug.log( 'replaced', object, property );
 		// } );
 
 		// set road traffic state

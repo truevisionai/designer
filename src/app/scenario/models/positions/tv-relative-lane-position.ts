@@ -11,6 +11,7 @@ import { Position } from '../position';
 import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 import { XmlElement } from "../../../importers/xml.element";
+import { Debug } from 'app/core/utils/debug';
 
 export class RelativeLanePosition extends Position {
 
@@ -47,7 +48,6 @@ export class RelativeLanePosition extends Position {
 		this._ds = ds;
 		this._dLane = dLane;
 		this._entityRef = entityRef;
-		console.log( 'init', this );
 	}
 
 	private _entityRef: EntityRef;

@@ -118,11 +118,11 @@ export class Maths {
 
 		// var dot = a.x * b.x + a.y * b.y;
 		// if ( dot > 0 )
-		//     console.log( '<90 degrees' );
+		//     Debug.log( '<90 degrees' );
 		// else if ( dot < 0 )
-		//     console.log( '>90 degrees' );
+		//     Debug.log( '>90 degrees' );
 		// else
-		//     console.log( '90 degrees' );
+		//     Debug.log( '90 degrees' );
 
 		// subtracting co-ordinates of point A from
 		// B and P, to make A as origin
@@ -168,7 +168,7 @@ export class Maths {
 		const crossProduct = pointVector.cross( lineVector );
 
 		// Determine which side of the line the point lies on
-		// console.log(crossProduct);
+		// Debug.log(crossProduct);
 
 		if ( crossProduct.z > 0 ) {
 

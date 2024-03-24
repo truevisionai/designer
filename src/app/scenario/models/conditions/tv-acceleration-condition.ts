@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Debug } from 'app/core/utils/debug';
 import { ConditionType, DirectionDimension, Rule, TriggeringRule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';
 
@@ -38,7 +39,7 @@ export class AccelerationCondition extends EntityCondition {
 
 			const acceleration = this.getEntity( entityName ).getCurrentAcceleration();
 
-			if ( this.debug ) console.log( 'AccelerationCondition', entityName, acceleration, this.value, this.rule );
+			// if ( this.debug ) Debug.log( 'AccelerationCondition', entityName, acceleration, this.value, this.rule );
 
 			return this.hasRulePassed( this.rule, acceleration, this.value );
 

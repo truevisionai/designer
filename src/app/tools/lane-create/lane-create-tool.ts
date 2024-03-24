@@ -80,7 +80,7 @@
 
 // 			this.endPosTheta = posTheta;
 
-// 			console.log( 'clone lane updating at ', posTheta );
+// 			Debug.log( 'clone lane updating at ', posTheta );
 
 // 		}
 
@@ -99,7 +99,7 @@
 
 // 		if ( this.isPointerDown && this.dragging && this.road ) {
 
-// 			console.log( 'clone lane ended at ', this.endPosTheta );
+// 			Debug.log( 'clone lane ended at ', this.endPosTheta );
 
 // 			this.createNewLane( this.lane, this.road, this.startPosTheta, this.endPosTheta );
 
@@ -256,7 +256,7 @@
 
 // 		const laneSection = road.getLaneSectionAt( posTheta.s );
 
-// 		console.log( 'clone lane start at ', posTheta, laneSection );
+// 		Debug.log( 'clone lane start at ', posTheta, laneSection );
 
 // 		this.dragging = true;
 
