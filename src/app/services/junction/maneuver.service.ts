@@ -7,7 +7,15 @@ import { TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
-import { BoxGeometry, DoubleSide, ExtrudeGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Shape, Vector3 } from 'three';
+import {
+	BoxGeometry, BufferGeometry,
+	Float32BufferAttribute,
+	Mesh,
+	MeshBasicMaterial,
+	MeshStandardMaterial,
+	Object3D, PlaneGeometry,
+	Vector3
+} from 'three';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { SceneService } from '../scene.service';
 import { LaneDirectionHelper } from 'app/map/builders/od-lane-direction-builder';
@@ -15,14 +23,16 @@ import { OdTextures } from 'app/map/builders/od.textures';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { MapService } from '../map/map.service';
+import { TvPosTheta } from "../../map/models/tv-pos-theta";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ManeuverService {
 
-	private static maneuverMeshes: Mesh[] = [];
-	private static entryExitMeshes: Object3D[] = [];
+	private maneuverMeshes: Mesh[] = [];
+
+	private entryExitMeshes: Object3D[] = [];
 
 	constructor ( private mapService: MapService ) { }
 
@@ -106,7 +116,7 @@ export class ManeuverService {
 
 					const maneuverMesh = this.createManeuverMesh( connection, link );
 
-					ManeuverService.maneuverMeshes.push( maneuverMesh );
+					this.maneuverMeshes.push( maneuverMesh );
 
 					SceneService.addToolObject( maneuverMesh );
 
@@ -120,7 +130,7 @@ export class ManeuverService {
 
 	hideAllManeuvers () {
 
-		ManeuverService.maneuverMeshes.forEach( maneuverMesh => SceneService.removeFromTool( maneuverMesh ) );
+		this.maneuverMeshes.forEach( maneuverMesh => SceneService.removeFromTool( maneuverMesh ) );
 
 	}
 
@@ -193,9 +203,9 @@ export class ManeuverService {
 
 	hideAllEntryExitPoints () {
 
-		ManeuverService.entryExitMeshes.forEach( mesh => SceneService.removeFromTool( mesh ) );
+		this.entryExitMeshes.forEach( mesh => SceneService.removeFromTool( mesh ) );
 
-		ManeuverService.entryExitMeshes.splice( 0, ManeuverService.entryExitMeshes.length );
+		this.entryExitMeshes.splice( 0, this.entryExitMeshes.length );
 
 	}
 
@@ -208,11 +218,11 @@ export class ManeuverService {
 			alphaTest: 0.9,
 			transparent: true,
 			color: COLOR.SKYBLUE,
-			side: DoubleSide
+			depthTest: false,
+			depthWrite: false
 		} );
 
-		const geometry = new BoxGeometry( 1, 1, 0.02 );
-		// const geometry = new PlaneGeometry( 1, 1, 0.01 );
+		const geometry = new PlaneGeometry( 1, 1 );
 
 		const mesh = new Mesh( geometry, material );
 
@@ -231,7 +241,7 @@ export class ManeuverService {
 
 		mesh.add( meshLine );
 
-		ManeuverService.entryExitMeshes.push( mesh );
+		this.entryExitMeshes.push( mesh );
 
 		return mesh;
 	}
@@ -240,45 +250,70 @@ export class ManeuverService {
 
 		const width = connection.connectingRoad.getFirstLaneSection().getWidthUptoCenter( link.connectingLane, 0 );
 
-		const spline = connection.connectingRoad.spline;
-
-		if ( spline.controlPointPositions.length < 2 ) return;
-
 		let offset = width;
 
 		if ( link.connectingLane.id < 0 ) offset *= -1;
 
-		const path = connection.connectingRoad.spline.getPath( offset );
+		const positions = connection.connectingRoad.getReferenceLinePoints( 1, offset );
 
-		// Define extrude settings
-		const extrudeSettings = {
-			steps: 50,
-			bevelEnabled: false,
-			bevelThickness: 1,
-			bevelSize: 1,
-			bevelOffset: 1,
-			bevelSegments: 1,
-			extrudePath: path
-		};
+		if ( positions.length < 2 ) return;
 
-		// Create a rectangular shape to be extruded along the path
-		const shape = new Shape();
-		shape.moveTo( -0.1, -0.5 );
-		shape.lineTo( -0.1, 0.5 );
-
-		// Create geometry and mesh
-		const geometry = new ExtrudeGeometry( shape, extrudeSettings );
-		const material = new MeshBasicMaterial( { color: COLOR.GREEN, opacity: 0.2, transparent: true } );
-
-		const mesh = new Mesh( geometry, material );
+		const mesh = this.createMesh( positions );
 
 		const distance = connection.connectingRoad.length / 5;
+
 		const arrows = LaneDirectionHelper.drawSingleLane( link.connectingLane, distance, 0.25 );
 
 		arrows.forEach( arrow => mesh.add( arrow ) );
 
 		return mesh;
 
-
 	}
+
+	private createMesh ( directedPoints: TvPosTheta[], width = 1.0 ) {
+
+		// Early return if not enough positions
+		if ( directedPoints.length < 2 ) return;
+
+		const material = new MeshBasicMaterial( {
+			color: 0x00ff00,
+			opacity: 0.2,
+			transparent: true,
+			depthTest: false,
+			depthWrite: false
+		} );
+
+		// Calculate width offset based on lane ID
+		let offset = width * 0.5;
+
+		// Create vertices array
+		const vertices = [];
+		const indices = []; // For faces
+
+		directedPoints.forEach( point => {
+
+			const left = point.clone().addLateralOffset( -offset );
+			const right = point.clone().addLateralOffset( offset );
+
+			// Push vertices for both left and right positions
+			vertices.push( left.x, left.y, left.z + 0.1 );
+			vertices.push( right.x, right.y, right.z + 0.1 );
+
+		} );
+
+		for ( let i = 0; i < vertices.length / 3 - 2; i += 2 ) {
+			/// First triangle (reversed winding order)
+			indices.push( i, i + 2, i + 1 );
+			// Second triangle (reversed winding order)
+			indices.push( i + 1, i + 2, i + 3 );
+		}
+
+		const geometry = new BufferGeometry();
+
+		geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+		geometry.setIndex( indices );
+
+		return new Mesh( geometry, material );
+	}
+
 }

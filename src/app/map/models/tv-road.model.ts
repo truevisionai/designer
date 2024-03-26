@@ -1137,17 +1137,17 @@ export class TvRoad {
 		return coordinates;
 	}
 
-	getReferenceLinePoints ( step = 1.0 ): TvPosTheta[] {
+	getReferenceLinePoints ( step = 1.0, t?: number ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
 		for ( let s = 0; s <= this.length; s += step ) {
 
-			points.push( this.getPosThetaAt( s ) );
+			points.push( this.getPosThetaAt( s, t ) );
 
 		}
 
-		points.push( this.getPosThetaAt( this.length - Maths.Epsilon ) );
+		points.push( this.getPosThetaAt( this.length - Maths.Epsilon, t ) );
 
 		return points;
 	}
