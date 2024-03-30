@@ -37,6 +37,10 @@ mat-icon .info {
 	height: 30px;
 }
 
+.mat-button {
+	font-size: 0.7rem;
+}
+
 .console-toolbar-button {
 	height: 30px;
 	padding: 0;
