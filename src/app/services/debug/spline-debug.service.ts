@@ -253,13 +253,18 @@ export class SplineDebugService extends BaseDebugService<AbstractSpline> {
 
 	private showArrows ( spline: AbstractSpline ) {
 
-		spline.getDirectedPoints( ARROW_STEP ).forEach( point => {
+		spline.getRoads().forEach( road => {
 
-			const arrow = this.debugService.createSharpArrow( point.position, point.hdg, ARROW_COLOR, ARROW_SIZE );
+			road.getReferenceLinePoints( ARROW_STEP ).forEach( point => {
 
-			this.arrows.addItem( spline, arrow );
+				const arrow = this.debugService.createSharpArrow( point.position, point.hdg, ARROW_COLOR, ARROW_SIZE );
 
-		} )
+				this.arrows.addItem( spline, arrow );
+
+
+			} );
+
+		} );
 
 	}
 
