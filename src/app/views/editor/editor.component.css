@@ -1,3 +1,8 @@
 /*
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
+
+.app-object-inspector {
+	padding-left: 4px;
+	padding-top: 4px;
+}
