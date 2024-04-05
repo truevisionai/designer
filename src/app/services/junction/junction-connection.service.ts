@@ -16,6 +16,7 @@ import { MapService } from '../map/map.service';
 import { JunctionConnectionFactory } from 'app/factories/junction-connection.factory';
 import { LaneLinkService } from './lane-link.service';
 import { TvUtils } from 'app/map/models/tv-utils';
+import { Vector3 } from 'three';
 
 @Injectable( {
 	providedIn: 'root'
@@ -192,6 +193,86 @@ export class JunctionConnectionService {
 		}
 
 		return leftconnections.concat( ...rigtConnections );
+
+	}
+
+	postProcessJunction ( junction: TvJunction ) {
+
+		const roads = junction.getRoads();
+
+		const connections = junction.getConnections();
+
+		function findClosedConnection ( road: TvRoad ) {
+
+			const roadConnections = connections.filter( i => i.incomingRoadId == road.id );
+
+			if ( roadConnections.length == 0 ) return;
+
+			let minAngle = 2 * Math.PI; // Initialize with maximum possible angle (360 degrees)
+			let minDistance = Infinity;
+			let nearestConnection: TvJunctionConnection;
+
+			for ( let i = 0; i < roadConnections.length; i++ ) {
+
+				const connection = roadConnections[ i ];
+
+				const connectingRoad = connection.connectingRoad;
+
+				const p1 = connectingRoad.spline.getFirstPoint()
+				const p1Direction = p1.getDirectionVector();
+
+				const p2 = connectingRoad.spline.getLastPoint();
+				const p2Direction = p2.getDirectionVector().negate();
+
+				const distance = p1.position.distanceTo( p2.position );
+
+				// find angle between road direction and connecting road direction
+				let crossProduct = new Vector3().crossVectors( p1Direction, p2Direction );
+				let angle = p1Direction.angleTo( p2Direction );
+
+				// Determine if the angle is to the left or right
+				if ( crossProduct.z < 0 ) {
+					// Angle to the right
+					angle = Math.PI * 2 - angle;
+				}
+
+				if ( angle < minAngle ) {
+
+					minDistance = distance;
+					minAngle = angle;
+					nearestConnection = connection;
+
+				}
+
+			}
+
+			return nearestConnection;
+
+		}
+
+		for ( let i = 0; i < roads.length; i++ ) {
+
+			const road = roads[ i ];
+
+			const nearestConnection = findClosedConnection( road );
+
+			if ( nearestConnection ) {
+
+				nearestConnection.connectingRoad.markAsCornerRoad();
+
+				nearestConnection.markAsCornerConnection();
+
+			}
+
+		}
+
+		for ( let i = 0; i < connections.length; i++ ) {
+
+			const connection = connections[ i ];
+
+			this.postProcessConnection( junction, connection, connection.isCornerConnection );
+
+		}
 
 	}
 
