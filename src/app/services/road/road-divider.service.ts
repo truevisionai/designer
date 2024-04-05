@@ -23,21 +23,7 @@ export class RoadDividerService {
 
 	divideRoadAt ( road: TvRoad, s: number ) {
 
-		const oldSuccessor = road.successor;
-
-		const newRoad = this.clone( road, s );
-
-		if ( oldSuccessor?.isRoad ) {
-
-			const nextRoad = oldSuccessor.getElement<TvRoad>();
-
-			nextRoad.setPredecessorRoad( newRoad, TvContactPoint.END );
-
-		}
-
-		newRoad.successor = oldSuccessor;
-
-		newRoad.setPredecessorRoad( road, TvContactPoint.END );
+		const newRoad = this.roadService.divideRoad( road, s );
 
 		this.splineService.update( road.spline );
 

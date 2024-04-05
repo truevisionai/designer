@@ -104,7 +104,13 @@ export class JunctionToolService {
 				// roads should be different
 				if ( coordA.road === coordB.road ) continue;
 
-				this.intersection.addConnections( junction, coordA, coordB );
+				this.junctionService.addConnectionsFromContact(
+					junction,
+					coordA.road,
+					coordA.contact,
+					coordB.road,
+					coordB.contact
+				);
 
 
 			}
