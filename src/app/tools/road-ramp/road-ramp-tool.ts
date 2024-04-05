@@ -11,26 +11,26 @@ import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { RoadRampService } from 'app/services/road/road-ramp.service';
 import { LaneCoordStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { SceneService } from 'app/services/scene.service';
-import { FreeMovingStrategy } from 'app/core/strategies/move-strategies/free-moving-strategy';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { CommandHistory } from 'app/services/command-history';
 import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { MapEvents } from 'app/events/map-events';
-import { RoadCreatedEvent } from "../../events/road/road-created-event";
-import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 import { Debug } from 'app/core/utils/debug';
+import { TvContactPoint } from "../../map/models/tv-common";
+import { TvJunction } from "../../map/models/junctions/tv-junction";
 
-export class RoadRampTool extends BaseTool<any>{
+export class RoadRampTool extends BaseTool<any> {
 
 	name: string = 'RoadRampTool';
 
 	toolType: ToolType = ToolType.RoadRampTool;
 
 	private startCoord: TvLaneCoord | Vector3;
+
 	private endCoord: TvLaneCoord | Vector3;
 
 	private startLine: Line2;
+
 	private referenceLine: Line2;
 
 	constructor (
@@ -127,33 +127,47 @@ export class RoadRampTool extends BaseTool<any>{
 
 	createRampRoad ( startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ) {
 
-		const virtualJunction = this.tool.createJunction( startCoord, endCoord );
+		if ( startCoord instanceof TvLaneCoord ) {
 
-		const connectionRoad = this.tool.createRampRoad( virtualJunction, startCoord, endCoord );
+			const sStart = startCoord.s;
 
-		const addJunctionCommand = new AddObjectCommand( virtualJunction );
+			const sEnd = sStart + 20;
 
-		const addRoadCommand = new AddObjectCommand( connectionRoad );
+			const newRoad = this.tool.roadService.divideRoad( startCoord.road, sEnd );
 
-		CommandHistory.executeMany( addJunctionCommand, addRoadCommand );
+			newRoad.sStart = sEnd;
+
+			this.tool.segmentService.addRoadSegmentNew( startCoord.road.spline, newRoad.sStart, newRoad );
+
+			// this.tool.splineService.update( newRoad.spline );
+
+			const junction = this.tool.junctionService.createJunctionFromContact( startCoord.road, TvContactPoint.END, newRoad, TvContactPoint.START );
+
+			this.tool.segmentService.addJunctionSegment( startCoord.road.spline, sStart, junction );
+
+			this.tool.junctionService.addJunction( junction );
+
+			const addJunctionCommand = new AddObjectCommand( junction );
+
+			const addRoadCommand = new AddObjectCommand( newRoad );
+
+			this.tool.roadService.update( startCoord.road );
+
+			CommandHistory.executeMany( addJunctionCommand, addRoadCommand );
+
+		}
 
 	}
 
 	onObjectAdded ( object: any ): void {
 
-		if ( object instanceof TvVirtualJunction ) {
+		if ( object instanceof TvJunction ) {
 
-			this.tool.mapService.map.addJunctionInstance( object );
+			this.tool.junctionService.addJunction( object );
 
 		} else if ( object instanceof TvRoad ) {
 
-			// this.tool.addRoad( object );
-
-			// this.tool.roadSplineService.addRoadSegment( object );
-
-			// this.tool.roadSplineService.rebuildSplineRoads( object.spline );
-
-			// MapEvents.roadCreated.emit( new RoadCreatedEvent( object ) );
+			this.tool.roadService.add( object );
 
 		}
 

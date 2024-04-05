@@ -20,6 +20,11 @@ import { LaneLinkService } from '../junction/lane-link.service';
 import { RoadService } from './road.service';
 import { JunctionService } from '../junction/junction.service';
 import { MapService } from "../map/map.service";
+import { TvJunction } from "../../map/models/junctions/tv-junction";
+import { RoadDividerService } from "./road-divider.service";
+import { SplineSegmentService } from "../spline/spline-segment.service";
+import { JunctionFactory } from "../../factories/junction.factory";
+import { SplineService } from "../spline/spline.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,11 +38,17 @@ export class RoadRampService {
 		private junctionConnection: JunctionConnectionService,
 		private laneLink: LaneLinkService,
 		public roadService: RoadService,
-		private junctionService: JunctionService,
+		public junctionService: JunctionService,
 		public mapService: MapService,
-	) { }
+		public roadCutService: RoadDividerService,
+		public segmentService: SplineSegmentService,
+		public junctionFactory: JunctionFactory,
+		public connectionService: JunctionConnectionService,
+		public splineService: SplineService,
+	) {
+	}
 
-	createJunction ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): TvVirtualJunction {
+	createJunction ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): TvJunction {
 
 		if ( startPosition instanceof TvLaneCoord ) {
 
@@ -47,7 +58,15 @@ export class RoadRampService {
 
 			const orientation = TvOrientation.PLUS;
 
-			return this.junctionService.createVirtualJunction( startPosition.road, sStart, sEnd, orientation );
+			const junction = this.junctionFactory.createJunction();
+
+			const road = this.roadService.clone( startPosition.road );
+
+			this.segmentService.addRoadSegmentNew( startPosition.road.spline, sEnd, road );
+
+			this.segmentService.addJunctionSegment( startPosition.road.spline, sStart, junction );
+
+			return junction;
 
 		} else {
 
@@ -96,6 +115,8 @@ export class RoadRampService {
 		virtualJunction.addConnection( connection );
 
 		rampRoad.setJunction( virtualJunction );
+
+		rampRoad.spline.addRoadSegment( 0, rampRoad );
 
 		// const startElevation = incomingRoad.getElevationValue( sStart );
 

@@ -7,7 +7,7 @@ import { TvLaneSide, TvLaneType, TvRoadType } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadStyleManager } from 'app/managers/road-style.manager';
-import { Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { IDService } from './id.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
@@ -120,6 +120,15 @@ export class RoadFactory {
 
 	}
 
+	createFromControlPoints ( controlPoints: Vector2[], type: TvRoadType = TvRoadType.TOWN, maxSpeed: number = 40 ): TvRoad {
+
+		const road = this.createDefaultRoad( type, maxSpeed );
+
+		controlPoints.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
+
+		return road;
+
+	}
 
 	createStraightRoad ( position: Vector3, hdg = 0, length = 10 ): TvRoad {
 

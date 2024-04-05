@@ -24,6 +24,7 @@ import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
+import { TvContactPoint } from 'app/map/models/tv-common';
 
 @Injectable( {
 	providedIn: 'root'
@@ -96,6 +97,8 @@ export class RoadService extends BaseDataService<TvRoad> {
 		clone.name = `Road ${ clone.id }`;
 
 		clone.objects.object.forEach( object => object.road = clone );
+
+		clone.sStart = road.sStart + s;
 
 		return clone;
 
@@ -310,10 +313,30 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	setRoadIdCounter ( id: number ) {
+	setRoadIdCounter ( id: number ): number {
 
 		return this.roadFactory.getNextRoadId( id );
 
 	}
 
+	divideRoad ( road: TvRoad, s: number ): TvRoad {
+
+		const oldSuccessor = road.successor;
+
+		const newRoad = this.clone( road, s );
+
+		if ( oldSuccessor?.isRoad ) {
+
+			const nextRoad = oldSuccessor.getElement<TvRoad>();
+
+			nextRoad.setPredecessorRoad( newRoad, TvContactPoint.END );
+
+		}
+
+		newRoad.successor = oldSuccessor;
+
+		newRoad.setPredecessorRoad( road, TvContactPoint.END );
+
+		return newRoad;
+	}
 }
