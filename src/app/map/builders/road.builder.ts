@@ -46,9 +46,9 @@ export class RoadBuilder {
 
 	}
 
-	rebuildRoad ( road: TvRoad ) {
+	rebuildRoad ( road: TvRoad ): GameObject {
 
-		TvMapBuilder.rebuildRoad( road );
+		return TvMapBuilder.rebuildRoad( road );
 
 	}
 

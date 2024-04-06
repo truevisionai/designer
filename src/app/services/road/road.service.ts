@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { RoadNode } from 'app/objects/road-node';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { BaseService } from '../base.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map/map.service';
@@ -25,6 +24,7 @@ import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
 import { TvContactPoint } from 'app/map/models/tv-common';
+import { RoadBuilder } from "../../map/builders/road.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,7 +34,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 	constructor (
 		private splineFactory: SplineFactory,
 		private mapService: MapService,
-		private baseService: BaseService,
+		private roadBuilder: RoadBuilder,
 		private roadFactory: RoadFactory,
 	) {
 		super();
@@ -174,7 +174,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 			// this.updateRoadNodes( road, showNodes );
 
-			const gameObject = this.baseService.rebuildRoad( road );
+			const gameObject = this.roadBuilder.rebuildRoad( road );
 
 			gameObjects.push( gameObject );
 
