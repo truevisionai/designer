@@ -2,10 +2,17 @@
   ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
   -->
 
-<div class="object-inspector-container"
-	fxFlexFill
-	fxLayout="column">
-	<perfect-scrollbar>
-		<ng-template appComponentContainer></ng-template>
-	</perfect-scrollbar>
-</div>
+<mat-tab-group class="inspector-tab-group" fxFlexFill>
+    <mat-tab label="Inspector">
+        <div class="object-inspector-container">
+            <perfect-scrollbar>
+                <ng-template appComponentContainer></ng-template>
+            </perfect-scrollbar>
+        </div>
+    </mat-tab>
+    <mat-tab label="Hierarchy">
+        <app-scene-hierarchy></app-scene-hierarchy>
+    </mat-tab>
+</mat-tab-group>
+
+

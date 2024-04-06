@@ -135,7 +135,7 @@ $border-radius: 0px !important;
 	}
 
 	.mat-tree-node .mat-icon {
-		line-height: 18px;
+		line-height: 14px;
 		font-size: 18px;
 	}
 
@@ -205,36 +205,43 @@ $border-radius: 0px !important;
 
 	.mat-tab-nav-bar,
 	.mat-tab-header {
-		border-bottom: 1px solid $panel-border-color;
-		background: $panel-color;
+		border-bottom: 1px none $panel-border-color;
+		background: $panel-300;
 	}
 
 	.mat-tab-label {
-		height: 32px !important;
-		background: $panel-color;
+		height: 28px !important;
+		background: $panel-300;
 		opacity: 1;
-		// min-width: 120px !important;
 		font-size: 0.7rem;
+		min-width: auto !important;
 	}
 
 	.mat-tab-label-active {
 		background: $panel-color;
+		border-radius: 4px 4px 0px 0px;
+
 	}
 
 	.mat-ink-bar {
 		background-color: transparent !important;
 	}
 
-	.object-inspector-container {
-		background: $panel-color;
-		display: flex;
-		flex-direction: column;
+	.inspector-tab-group {
 		height: 100%;
-		overflow: hidden;
-		// border-left: 1px solid #4d4d4d;
-		// padding: 8px 8px 0 8px;
 	}
 
+	.inspector-tab-group .mat-tab-body-wrapper {
+		height: 100%;
+	}
+
+	.object-inspector-container, app-scene-hierarchy {
+		height: 100%; /* Fill their parent's height */
+		display: flex; /* If you need to apply flex layout inside */
+		flex-direction: column;
+		background: $panel-color;
+		overflow: hidden;
+	}
 
 	.inspector-form-container {
 		padding: 8px 8px 0 8px;

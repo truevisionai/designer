@@ -17,10 +17,6 @@
 	padding-inline-start: 8px !important;
 }
 
-.mat-icon-button {
-	margin-right: 15px !important;
-}
-
 .mat-tree-node {
 	height: 32px !important;
 	min-height: 32px !important;
@@ -30,9 +26,9 @@
 .mat-icon-button {
 	margin-right: 12px !important;
 	height: 32px !important;
-	line-height: 36px !important;
+	line-height: 28px !important;
 	flex: 1;
 	text-align: left;
-	font-size: 0.8rem;
+	font-size: 0.7rem;
 	font-weight: 400;
 }
