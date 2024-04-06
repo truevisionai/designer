@@ -53,6 +53,41 @@ export class JunctionService {
 
 	}
 
+	createFromCoords ( coords: TvRoadCoord[] ): TvJunction {
+
+		let junction: TvJunction;
+
+		junction = this.createNewJunction();
+
+		for ( let i = 0; i < coords.length; i++ ) {
+
+			const coordA = coords[ i ];
+
+			for ( let j = i + 1; j < coords.length; j++ ) {
+
+				const coordB = coords[ j ];
+
+				// roads should be different
+				if ( coordA.road === coordB.road ) continue;
+
+				this.addConnectionsFromContact(
+					junction,
+					coordA.road,
+					coordA.contact,
+					coordB.road,
+					coordB.contact
+				);
+
+
+			}
+
+		}
+
+		this.connectionService.postProcessJunction( junction );
+
+		return junction;
+	}
+
 	getJunctionById ( id: number ) {
 
 		return this.mapService.map.getJunctionById( id );

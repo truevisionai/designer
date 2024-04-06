@@ -98,6 +98,8 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		clone.objects.object.forEach( object => object.road = clone );
 
+		clone.sStart = road.sStart + s;
+
 		return clone;
 
 	}
