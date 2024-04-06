@@ -133,27 +133,19 @@ export class RoadRampTool extends BaseTool<any> {
 
 			const sEnd = sStart + 20;
 
-			const newRoad = this.tool.roadService.divideRoad( startCoord.road, sEnd );
+			const coordA = startCoord.road.getRoadCoordAt( sStart );
 
-			newRoad.sStart = sEnd;
+			const coordB = startCoord.road.getRoadCoordAt( sEnd );
 
-			this.tool.segmentService.addRoadSegmentNew( startCoord.road.spline, newRoad.sStart, newRoad );
-
-			// this.tool.splineService.update( newRoad.spline );
-
-			const junction = this.tool.junctionService.createJunctionFromContact( startCoord.road, TvContactPoint.END, newRoad, TvContactPoint.START );
-
-			this.tool.segmentService.addJunctionSegment( startCoord.road.spline, sStart, junction );
-
-			this.tool.junctionService.addJunction( junction );
+			const junction = this.tool.junctionService.createFromCoords( [ coordA, coordB ] );
 
 			const addJunctionCommand = new AddObjectCommand( junction );
 
-			const addRoadCommand = new AddObjectCommand( newRoad );
+			const rampRoad = this.tool.createRampRoad( junction, startCoord, endCoord );
 
-			this.tool.roadService.update( startCoord.road );
+			const addRoadCommand = new AddObjectCommand( rampRoad );
 
-			CommandHistory.executeMany( addJunctionCommand, addRoadCommand );
+			CommandHistory.executeMany( addRoadCommand, addJunctionCommand );
 
 		}
 

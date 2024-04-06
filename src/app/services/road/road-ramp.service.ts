@@ -45,6 +45,7 @@ export class RoadRampService {
 		public junctionFactory: JunctionFactory,
 		public connectionService: JunctionConnectionService,
 		public splineService: SplineService,
+		public roadDividerService: RoadDividerService,
 	) {
 	}
 
@@ -94,7 +95,7 @@ export class RoadRampService {
 
 	// }
 
-	createRampRoad ( virtualJunction: TvVirtualJunction, startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ): TvRoad {
+	createRampRoad ( junction: TvJunction, startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ): TvRoad {
 
 		const incomingRoad = startCoord instanceof TvLaneCoord ? startCoord.road : null;
 
@@ -108,13 +109,13 @@ export class RoadRampService {
 
 		rampRoad.spline = this.createRampSplineV2( startCoord, endCoord );
 
-		const connection = this.junctionConnection.createConnectionV2( virtualJunction, incomingRoad, rampRoad, TvContactPoint.START );
+		const connection = this.junctionConnection.createConnectionV2( junction, incomingRoad, rampRoad, TvContactPoint.START );
 
 		connection.addLaneLink( new TvJunctionLaneLink( incomingLane, connectionLane ) );
 
-		virtualJunction.addConnection( connection );
+		junction.addConnection( connection );
 
-		rampRoad.setJunction( virtualJunction );
+		rampRoad.setJunction( junction );
 
 		rampRoad.spline.addRoadSegment( 0, rampRoad );
 

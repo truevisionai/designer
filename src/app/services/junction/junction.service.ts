@@ -67,20 +67,34 @@ export class JunctionService {
 
 				const coordB = coords[ j ];
 
-				// roads should be different
-				if ( coordA.road === coordB.road ) continue;
+				// if roads are same
+				if ( coordA.road === coordB.road ) {
 
-				this.addConnectionsFromContact(
-					junction,
-					coordA.road,
-					coordA.contact,
-					coordB.road,
-					coordB.contact
-				);
+					const high = coordA.s > coordB.s ? coordA : coordB;
 
+					const low = coordA.s < coordB.s ? coordA : coordB;
 
+					const newRoadCoord = this.dividerService.cutRoadForJunctionFromTo( high, junction, low.s, high.s );
+
+					this.addConnectionsFromContact(
+						junction,
+						coordA.road,
+						TvContactPoint.END,
+						newRoadCoord.road,
+						TvContactPoint.START
+					);
+
+				} else {
+
+					this.addConnectionsFromContact(
+						junction,
+						coordA.road,
+						coordA.contact,
+						coordB.road,
+						coordB.contact
+					);
+				}
 			}
-
 		}
 
 		this.connectionService.postProcessJunction( junction );
