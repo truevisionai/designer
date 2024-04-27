@@ -14,7 +14,7 @@ import { AddObjectCommand } from "../commands/add-object-command";
 import { RemoveObjectCommand } from "../commands/remove-object-command";
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { Asset } from 'app/core/asset/asset.model';
 import { DebugService } from "../core/interfaces/debug.service";
 import { BaseDataService } from 'app/core/interfaces/data.service';
 import { DebugState } from "../services/debug/debug-state";
@@ -370,7 +370,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	}
 
-	onAssetDropped ( asset: AssetNode, position: Vector3 ) {
+	onAssetDropped ( asset: Asset, position: Vector3 ) {
 
 		if ( !this.objectFactory ) {
 

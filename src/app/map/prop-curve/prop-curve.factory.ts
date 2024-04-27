@@ -5,7 +5,7 @@
 import { Injectable } from "@angular/core";
 import { AbstractFactory } from "../../core/interfaces/abstract-factory";
 import { PropCurve } from "./prop-curve.model";
-import { AssetNode, AssetType } from "../../views/editor/project-browser/file-node.model";
+import { Asset, AssetType } from "../../core/asset/asset.model";
 import { Vector3 } from "three";
 import { PropManager } from "../../managers/prop-manager";
 
@@ -14,7 +14,7 @@ import { PropManager } from "../../managers/prop-manager";
 } )
 export class PropCurveFactory extends AbstractFactory<PropCurve> {
 
-	createFromAsset ( asset: AssetNode, position: Vector3 ): PropCurve {
+	createFromAsset ( asset: Asset, position: Vector3 ): PropCurve {
 
 		if ( asset.type != AssetType.MODEL ) return;
 

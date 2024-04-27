@@ -14,7 +14,7 @@ import { TvRoad } from '../../../map/models/tv-road.model';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { DialogService } from 'app/services/dialog/dialog.service';
-import { RoadStyle } from 'app/core/asset/road.style';
+import { RoadStyle } from 'app/graphics/road-style/road-style.model';
 import { AssetService } from 'app/core/asset/asset.service';
 import { RoadService } from 'app/services/road/road.service';
 import { UpdatePositionCommand } from "../../../commands/update-position-command";

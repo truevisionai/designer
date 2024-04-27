@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdTextures } from 'app/map/builders/od.textures';
+import { OdTextures } from 'app/deprecated/od.textures';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { IHasUpdate } from '../commands/set-value-command';

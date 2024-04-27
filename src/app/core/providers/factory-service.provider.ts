@@ -12,6 +12,7 @@ import { PropCurveFactory } from "../../map/prop-curve/prop-curve.factory";
 import { PropPointFactory } from "../../map/prop-point/prop-point.factory";
 import { AssetManager } from "../asset/asset.manager";
 import { LaneHeightFactory } from 'app/map/lane-height/lane-height.factory';
+import { AssetService } from '../asset/asset.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,7 +20,8 @@ import { LaneHeightFactory } from 'app/map/lane-height/lane-height.factory';
 export class FactoryServiceProvider {
 
 	constructor (
-		private assetManager: AssetManager
+		private assetManager: AssetManager,
+		private assetService: AssetService,
 	) {
 	}
 
@@ -52,6 +54,8 @@ export class FactoryServiceProvider {
 		if ( !factory ) return;
 
 		factory.setAssetManager( this.assetManager );
+
+		factory.setAssetService( this.assetService );
 
 		return factory;
 	}

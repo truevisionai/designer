@@ -73,6 +73,18 @@ export class FileUtils {
 		throw new Error( 'unknown platform' + process.platform );
 	}
 
+	static getFilenameWithoutExtension ( path: string ): string {
+
+		if ( !path ) return;
+
+		const filename = FileUtils.getFilenameFromPath( path );
+
+		const extension = FileUtils.getExtensionFromPath( path );
+
+		return filename.replace( '.' + extension, '' );
+
+	}
+
 	static pathToFileURL ( path: string ): string {
 
 		if ( !path ) return;

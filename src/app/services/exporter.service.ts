@@ -15,23 +15,17 @@ import { TvCarlaExporter } from 'app/map/services/tv-carla-exporter';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { FileService } from '../io/file.service';
 import { CommandHistory } from './command-history';
-import { SceneExporterService } from '../exporters/scene-exporter.service';
 import { SnackBar } from './snack-bar.service';
 import { CoordinateSystem } from './CoordinateSystem';
 import { MapService } from './map/map.service';
-import { TvMap } from 'app/map/models/tv-map.model';
-import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
-import { TvMaterial } from 'app/graphics/material/tv-material';
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { TvRoadSign } from 'app/map/models/tv-road-sign.model';
-import { VehicleEntity } from 'app/scenario/models/entities/vehicle-entity';
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { SceneService } from "./scene.service";
+import { Object3D } from "three";
+import { FileExtension } from "../io/file-extension";
+import { StorageService } from "../io/storage.service";
+import { FileUtils } from "../io/file-utils";
 
 import { saveAs } from 'file-saver';
 import { cloneDeep } from 'lodash';
-import { RoadStyle } from 'app/core/asset/road.style';
-import { RoadExporterService } from 'app/exporters/road-style-exporter.service';
-import { TvRoad } from 'app/map/models/tv-road.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -40,88 +34,13 @@ export class ExporterService {
 
 	constructor (
 		private fileService: FileService,
-		private sceneExporter: SceneExporterService,
 		private mapService: MapService,
-		private materialExporter: TvMaterialExporter,
-		private roadStyleExporter: RoadExporterService,
-		private snackBar: SnackBar
+		private snackBar: SnackBar,
+		private storage: StorageService,
 	) {
 	}
 
-	exportAsset ( assetType: AssetType, assetGuid: string ): string {
-
-		if ( assetType == AssetType.MATERIAL ) {
-
-			return this.getMaterialExport( AssetDatabase.getInstance( assetGuid ) );
-
-		} else if ( assetType == AssetType.SCENE ) {
-
-			return this.getSceneExport( AssetDatabase.getInstance( assetGuid ) );
-
-		} else if ( assetType == AssetType.ENTITY ) {
-
-			return this.getVehicleExport( AssetDatabase.getInstance( assetGuid ) );
-
-		} else {
-
-			TvConsole.error( 'ExporterService: exportAsset: Unknown asset type ' + assetType );
-
-		}
-
-	}
-
-	getRoadStyleExport ( roadStyle: TvRoad | RoadStyle ): string {
-
-		if ( roadStyle instanceof TvRoad ) {
-
-			return this.roadStyleExporter.exportRoadAsStyle( roadStyle );
-
-		} else if ( roadStyle instanceof RoadStyle ) {
-
-			return this.roadStyleExporter.exportRoadStyle( roadStyle );
-
-		} else {
-
-			TvConsole.error( 'ExporterService: getRoadStyleExport: Unknown input type ' + roadStyle );
-
-		}
-
-	}
-
-
-	getRoadSignExport ( sign: TvRoadSign ) {
-
-		return sign.toJSONString();
-
-	}
-
-	getSceneExport ( map: TvMap ): string {
-
-		return this.sceneExporter.export( map );
-
-	}
-
-	getVehicleExport ( vehicle: VehicleEntity ): string {
-
-		return vehicle.toJSONString();
-
-	}
-
-	getMaterialExport ( material: TvMaterial ): string {
-
-		return this.materialExporter.export( material );
-
-	}
-
-	exportScene () {
-
-		this.clearTool();
-
-		this.sceneExporter.saveAs();
-
-	}
-
-	exportOpenDrive ( filename = 'models.xodr' ) {
+	exportOpenDrive () {
 
 		ToolManager.disable();
 
@@ -129,9 +48,11 @@ export class ExporterService {
 
 		const contents = mapExporter.getOutput( this.mapService.map );
 
-		const directory = this.fileService.projectFolder;
+		const filename = FileUtils.getFilenameWithoutExtension( this.mapService.map.header.attr_name );
 
-		this.fileService.saveFileWithExtension( directory, contents, 'xodr', ( file: IFile ) => {
+		const path = this.storage.join( this.fileService.projectFolder, filename );
+
+		this.fileService.saveFileWithExtension( path, contents, FileExtension.OPENDRIVE, ( file: IFile ) => {
 
 			this.snackBar.success( `File saved ${ file.path }` );
 
@@ -161,13 +82,23 @@ export class ExporterService {
 
 	}
 
-	exportGLB ( filename = 'road.glb', coordinateSystem = CoordinateSystem.UNITY_GLTF ) {
+	exportGLB ( filename = 'road.glb', coordinateSystem = CoordinateSystem.UNITY_GLTF, includeProps = false ) {
 
 		this.clearTool();
 
 		const exporter = new GLTFExporter();
 
-		const gameObjectToExport = cloneDeep( this.mapService.map.gameObject );
+		let gameObjectToExport: Object3D;
+
+		if ( includeProps ) {
+
+			gameObjectToExport = cloneDeep( SceneService.getMainLayer() );
+
+		} else {
+
+			gameObjectToExport = cloneDeep( this.mapService.map.gameObject );
+
+		}
 
 		// Change the coordinate system of the cloned gameObject
 		ThreeJsUtils.changeCoordinateSystem( gameObjectToExport, CoordinateSystem.OPEN_DRIVE, coordinateSystem );

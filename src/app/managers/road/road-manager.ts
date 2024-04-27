@@ -7,7 +7,6 @@ import { RoadFactory } from "app/factories/road-factory.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
 import { RoadLinkService } from "app/services/road/road-link.service";
-import { RoadService } from "app/services/road/road.service";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
 import { LaneManager } from "../lane/lane.manager";
@@ -15,6 +14,7 @@ import { RoadBuilder } from "app/map/builders/road.builder";
 import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadLinkManager } from "./road-link.manager";
+import { SceneService } from "app/services/scene.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +23,6 @@ export class RoadManager {
 
 	constructor (
 		private mapService: MapService,
-		private linkService: RoadLinkService,
 		private roadFactory: RoadFactory,
 		private roadObjectService: RoadObjectService,
 		private roadElevationManager: RoadElevationManager,
@@ -50,7 +49,7 @@ export class RoadManager {
 
 		this.updateRoadGeometries( road );
 
-		this.buildRoad( road );
+		this.rebuildRoad( road );
 
 		this.mapService.map.addSpline( road.spline );
 
@@ -106,7 +105,7 @@ export class RoadManager {
 
 		this.roadElevationManager.onRoadUpdated( road );
 
-		this.buildRoad( road );
+		this.rebuildRoad( road );
 
 		this.updateRoadBoundingBox( road );
 
@@ -138,7 +137,7 @@ export class RoadManager {
 
 			// if ( road.spline == successor.spline ) return;
 
-			this.roadBuilder.rebuildRoad( successor );
+			this.rebuildRoad( successor );
 
 		}
 
@@ -148,14 +147,18 @@ export class RoadManager {
 
 			// if ( road.spline == predecessor.spline ) return;
 
-			this.roadBuilder.rebuildRoad( predecessor );
+			this.rebuildRoad( predecessor );
 
 		}
 	}
 
-	private buildRoad ( road: TvRoad ) {
+	private rebuildRoad ( road: TvRoad ) {
 
-		this.roadBuilder.rebuildRoad( road );
+		if ( road.gameObject ) this.mapService.map.gameObject.remove( road.gameObject );
+
+		if ( road.gameObject ) SceneService.removeFromMain( road.gameObject );
+
+		this.roadBuilder.rebuildRoad( road, this.mapService.map );
 
 	}
 
@@ -163,7 +166,7 @@ export class RoadManager {
 
 		const segment = road.spline.findSegment( road );
 
-		if ( !segment ) console.error( 'Road segment not found ' + road.toString()  );
+		if ( !segment ) console.error( 'Road segment not found ' + road.toString() );
 		if ( !segment ) return;
 
 		road.clearGeometries();

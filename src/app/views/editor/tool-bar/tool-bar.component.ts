@@ -425,7 +425,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Signal Tool',
 			click: () => this.setToolType( ToolType.RoadSignalTool ),
-			enabled: Environment.experimentalTools,
+			enabled: true,
 		},
 		{
 			id: 'showSurfaceTool',

@@ -6,7 +6,7 @@ import { EventEmitter, Injectable, Output } from "@angular/core";
 import { TvLane } from "app/map/models/tv-lane";
 import { TvMap } from "app/map/models/tv-map.model";
 import { AbstractControlPoint } from "../objects/abstract-control-point";
-import { AssetNode } from "app/views/editor/project-browser/file-node.model";
+import { Asset } from "app/core/asset/asset.model";
 import { RoadCreatedEvent } from "./road/road-created-event";
 import { RoadUpdatedEvent } from "./road/road-updated-event";
 import { RoadRemovedEvent } from "./road/road-removed-event";
@@ -31,8 +31,8 @@ export class MapEvents {
 	@Output() static mapLoaded = new EventEmitter<TvMap>();
 	@Output() static mapRemoved = new EventEmitter<TvMap>();
 
-	@Output() static assetSelected = new EventEmitter<AssetNode>();
-	@Output() static assetDragged = new EventEmitter<AssetNode>();
+	@Output() static assetSelected = new EventEmitter<Asset>();
+	@Output() static assetDragged = new EventEmitter<Asset>();
 
 	@Output() static objectSelected = new EventEmitter<Object>();
 	@Output() static objectUnselected = new EventEmitter<Object>();

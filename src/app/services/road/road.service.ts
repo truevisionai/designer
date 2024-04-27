@@ -174,7 +174,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 			// this.updateRoadNodes( road, showNodes );
 
-			const gameObject = this.roadBuilder.rebuildRoad( road );
+			const gameObject = this.roadBuilder.buildRoad( road );
+
+			road.gameObject = gameObject;
 
 			gameObjects.push( gameObject );
 

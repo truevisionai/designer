@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AssetNode } from '../file-node.model';
+import { Asset } from '../../../../core/asset/asset.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 
@@ -15,20 +15,20 @@ import { MatTreeNestedDataSource } from "@angular/material/tree";
 export class ProjectHierarchyComponent implements OnInit {
 
 	@Input() treeControl;
-	@Input() dataSource: MatTreeNestedDataSource<AssetNode>;
+	@Input() dataSource: MatTreeNestedDataSource<Asset>;
 
-	selectedFolder: AssetNode;
+	selectedFolder: Asset;
 
 	constructor (
 		private projectBrowser: ProjectBrowserService
 	) { }
 
-	hasChild = ( _: number, node: AssetNode ) => true;
+	hasChild = ( _: number, node: Asset ) => true;
 
 	ngOnInit () {
 	}
 
-	onClick ( node: AssetNode ) {
+	onClick ( node: Asset ) {
 
 		this.selectedFolder = node;
 

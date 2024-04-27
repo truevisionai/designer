@@ -2,18 +2,21 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetNode } from "app/views/editor/project-browser/file-node.model";
+import { Asset } from "app/core/asset/asset.model";
 import { Vector3 } from "three";
 import { AssetManager } from "../asset/asset.manager";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { AssetService } from "../asset/asset.service";
 
 export abstract class AbstractFactory<T> {
 
 	abstract createFromPosition ( position: Vector3 ): T;
 
-	abstract createFromAsset ( asset: AssetNode, position: Vector3 ): T;
+	abstract createFromAsset ( asset: Asset, position: Vector3 ): T;
 
 	protected assetManager: AssetManager;
+
+	protected assetService: AssetService;
 
 	createControlPoint ( object: T, position: Vector3 ) {
 
@@ -24,6 +27,12 @@ export abstract class AbstractFactory<T> {
 	setAssetManager ( manager: AssetManager ) {
 
 		this.assetManager = manager;
+
+	}
+
+	setAssetService ( assetService: AssetService ) {
+
+		this.assetService = assetService;
 
 	}
 

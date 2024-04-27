@@ -6,5 +6,5 @@ export const environment = {
 	osc_enabled: true,
 	mixpanel_id: null,
 	development_tools: true,
-	experimtental_tools: true,
+	experimtental_tools: false,
 }

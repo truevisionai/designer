@@ -4,12 +4,14 @@
 
 import { Injectable } from '@angular/core';
 import { Surface } from './surface.model';
-import { Mesh, MeshStandardMaterial, Object3D, Object3DEventMap, RepeatWrapping, Texture } from 'three';
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { Material, Mesh, MeshStandardMaterial, Object3D, RepeatWrapping } from 'three';
 import { GameObject } from 'app/objects/game-object';
-import { OdTextures } from '../builders/od.textures';
+import { OdTextures } from '../../deprecated/od.textures';
 import { SurfaceGeometryBuilder } from 'app/services/surface/surface-geometry.builder';
 import { MeshBuilder } from 'app/core/interfaces/mesh.builder';
+import { TvMaterialService } from "../../graphics/material/tv-material.service";
+import { TvTextureService } from "../../graphics/texture/tv-texture.service";
+import { TvTexture } from "../../graphics/texture/tv-texture.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -17,7 +19,9 @@ import { MeshBuilder } from 'app/core/interfaces/mesh.builder';
 export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 	constructor (
-		private surfaceGeometryBuilder: SurfaceGeometryBuilder
+		private surfaceGeometryBuilder: SurfaceGeometryBuilder,
+		private materialService: TvMaterialService,
+		private textureService: TvTextureService,
 	) {
 		super();
 	}
@@ -62,7 +66,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 		const texture = this.buildTexture( surface );
 
-		let material: MeshStandardMaterial;
+		let material: Material;
 
 		if ( !surface.materialGuid || surface.materialGuid === 'grass' ) {
 
@@ -70,7 +74,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 		} else {
 
-			material = AssetDatabase.getInstance<MeshStandardMaterial>( surface.materialGuid ).clone();
+			material = this.materialService.getMaterial( surface.materialGuid ).material.clone();
 
 		}
 
@@ -84,7 +88,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 	buildTexture ( surface: Surface ) {
 
-		let texture: THREE.Texture;
+		let texture: TvTexture;
 
 		if ( surface.textureGuid === undefined ) {
 
@@ -94,7 +98,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 		} else {
 
-			texture = AssetDatabase.getInstance<Texture>( surface.textureGuid ).clone();
+			texture = this.textureService.getTexture( surface.textureGuid ).texture.clone();
 
 		}
 

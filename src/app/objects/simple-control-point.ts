@@ -1,6 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractControlPoint } from "./abstract-control-point";
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from "three";
-import { OdTextures } from "../map/builders/od.textures";
+import { OdTextures } from "../deprecated/od.textures";
 import { COLOR } from "../views/shared/utils/colors.service";
 import { SerializedField } from "../core/components/serialization";
 

@@ -4,17 +4,21 @@
 
 import { Injectable } from '@angular/core';
 import { ProjectBrowserService } from '../project-browser/project-browser.service';
-import { AssetNode, AssetType } from '../project-browser/file-node.model';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { TvMaterialLoader } from 'app/graphics/material/tv-material.loader';
-import { TvTextureLoader } from 'app/graphics/texture/tv-texture.loader';
-import { ModelLoader } from 'app/loaders/model.loader';
-import { RoadStyleImporter } from 'app/loaders/tv-road-style-loader';
+import { Asset, AssetType } from '../../../core/asset/asset.model';
+import { DeprecatedModelLoader } from 'app/loaders/model.loader';
+import { RoadStyleLoader } from 'app/graphics/road-style/road-style.loader';
 import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 import { EditorSettings } from 'app/services/editor/editor.settings';
-import { MeshStandardMaterial } from 'three';
+import { BufferGeometryLoader } from 'three';
 import { TvConsole } from 'app/core/utils/console';
-import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
+import { TvObjectLoader } from "../../../graphics/object/tv-object.loader";
+import { StorageService } from "../../../io/storage.service";
+import { TvTextureService } from "../../../graphics/texture/tv-texture.service";
+import { TvMaterialService } from "../../../graphics/material/tv-material.service";
+import { AssetService } from "../../../core/asset/asset.service";
+import { AssetDatabase } from "../../../core/asset/asset-database";
+import { LoaderFactory } from "../../../factories/loader.factory";
+import { MaterialAsset } from "../../../graphics/material/tv-material.asset";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,17 +27,20 @@ export class LoadingService {
 
 	public logs: string[] = [];
 
-	private assets: AssetNode[] = [];
+	private assets: Asset[] = [];
 
 	constructor (
+		private assetService: AssetService,
 		private projectBrowserService: ProjectBrowserService,
-		private materialLoader: TvMaterialLoader,
-		private textureLoader: TvTextureLoader,
-		private modelLoader: ModelLoader,
-		private roadStyleLoader: RoadStyleImporter,
+		private modelLoader: DeprecatedModelLoader,
+		private roadStyleLoader: RoadStyleLoader,
 		private entityLoader: TvEntityLoader,
 		private editorSettings: EditorSettings,
-		private materialExporter: TvMaterialExporter,
+		private prefabLoader: TvObjectLoader,
+		private storageService: StorageService,
+		private textureService: TvTextureService,
+		private materialService: TvMaterialService,
+		private assetLoaderProvider: LoaderFactory,
 	) {
 	}
 
@@ -45,7 +52,11 @@ export class LoadingService {
 
 		this.loadMaterials();
 
+		this.loadGeometries();
+
 		this.loadModels();
+
+		this.loadPrefabs();
 
 		this.loadRoadStyles();
 
@@ -62,11 +73,11 @@ export class LoadingService {
 
 	loadFolder ( path: string ) {
 
-		const folder = new AssetNode( AssetType.DIRECTORY, path, path );
+		const folder = new Asset( AssetType.DIRECTORY, path, path );
 
 		this.projectBrowserService.getAssets( path ).forEach( asset => {
 
-			AssetDatabase.setMetadata( asset.metadata.guid, asset.metadata );
+			this.assetService.addAsset( asset );
 
 			this.assets.push( asset );
 
@@ -86,25 +97,19 @@ export class LoadingService {
 
 	}
 
-	loadDefaultAssets () {
-
-		const defaultMaterial = new MeshStandardMaterial( { name: 'DefaultMaterial' } );
-
-		const meta = this.materialExporter.createMetadata( 'DefaultMaterial', 'defaultMaterial', 'Default.material' );
-
-		AssetDatabase.setMetadata( meta.guid, meta );
-
-		AssetDatabase.setInstance( meta.guid, defaultMaterial );
-
-	}
-
 	loadTextures () {
+
+		const loader = this.assetLoaderProvider.getLoader( AssetType.TEXTURE );
 
 		this.assets.filter( asset => asset.type == AssetType.TEXTURE ).forEach( asset => {
 
-			const texture = this.textureLoader.loadTexture( asset );
+			const texture = loader.load( asset );
 
-			AssetDatabase.setInstance( asset.metadata.guid, texture );
+			if ( asset.guid != texture.guid ) {
+				console.error( 'Texture guid mismatch', asset.guid, texture.guid, asset );
+			}
+
+			this.textureService.addTexture( texture.guid, texture );
 
 		} );
 
@@ -112,11 +117,21 @@ export class LoadingService {
 
 	loadMaterials () {
 
+		const loader = this.assetLoaderProvider.getLoader( AssetType.MATERIAL );
+
 		this.assets.filter( asset => asset.type == AssetType.MATERIAL ).forEach( asset => {
 
-			const material = this.materialLoader.loadMaterial( asset );
+			const material = loader.load( asset );
 
-			AssetDatabase.setInstance( asset.metadata.guid, material );
+			if ( material.guid != asset.guid ) {
+
+				console.warn( 'Material guid mismatch', asset.guid, material.guid, asset, material );
+
+				this.updateMaterial( asset, material );
+
+			}
+
+			this.materialService.addMaterial( material );
 
 		} )
 
@@ -144,7 +159,7 @@ export class LoadingService {
 
 		this.assets.filter( asset => asset.type == AssetType.ROAD_STYLE ).forEach( asset => {
 
-			const roadStyle = this.roadStyleLoader.loadAsset( asset );
+			const roadStyle = this.roadStyleLoader.load( asset );
 
 			AssetDatabase.setInstance( asset.metadata.guid, roadStyle );
 
@@ -166,57 +181,37 @@ export class LoadingService {
 
 	loadGeometries () {
 
-		// const loader = new BufferGeometryLoader();
+		const loader = new BufferGeometryLoader();
 
-		// AssetDatabase.getMetadataAll().forEach( meta => {
+		this.assets.filter( asset => asset.type == AssetType.GEOMETRY ).forEach( asset => {
 
-		// 	if ( meta.importer == MetaImporter.GEOMETRY ) {
+			const contents = this.storageService.readSync( asset.path );
 
-		// 		const contents = this.storageService.readSync( meta.path );
+			const json = JSON.parse( contents );
 
-		// 		const json = JSON.parse( contents );
+			const geometry = loader.parse( json );
 
-		// 		const geometry = loader.parse( json );
+			geometry.uuid = json.uuid;
 
-		// 		geometry.uuid = json.uuid;
+			AssetDatabase.setInstance( asset.guid, geometry );
 
-		// 		AssetDatabase.setInstance( meta.guid, geometry );
-
-		// 	}
-
-		// } );
+		} )
 
 	}
 
 	loadPrefabs () {
 
-		// const loader = new TvPrefabLoader();
+		this.assets.filter( asset => asset.type == AssetType.OBJECT ).forEach( asset => {
 
-		// AssetDatabase.getMetadataAll().forEach( meta => {
+			const objectAsset = this.prefabLoader.load( asset );
 
-		// 	if ( meta.importer == MetaImporter.PREFAB ) {
+			if ( objectAsset.guid != asset.guid ) {
+				console.error( 'Prefab guid mismatch', asset.guid, objectAsset.guid );
+			}
 
-		// 		const contents = this.storageService.readSync( meta.path );
+			AssetDatabase.setInstance( asset.guid, objectAsset );
 
-		// 		const prefab = loader.parsePrefab( JSON.parse( contents ) );
-
-		// 		if ( prefab.guid != meta.guid ) {
-
-		// 			console.error( 'Prefab guid mismatch', meta.guid, prefab.guid );
-
-		// 			prefab.guid = prefab.uuid = meta.guid;
-
-		// 			// AssetFactory.updatePrefab( meta.path, prefab );
-
-		// 			AssetDatabase.setInstance( meta.guid, prefab );
-
-		// 		} else {
-
-		// 			AssetDatabase.setInstance( meta.guid, prefab );
-		// 		}
-		// 	}
-
-		// } );
+		} )
 
 	}
 
@@ -292,4 +287,23 @@ export class LoadingService {
 
 	}
 
+	private updateMaterial ( asset: Asset, material: MaterialAsset ) {
+
+		if ( material instanceof MaterialAsset ) {
+
+			material.setGuid( asset.guid );
+
+			this.materialService.addMaterial( material );
+
+			this.materialService.updateAsset( asset );
+
+			console.log( asset, material );
+
+		} else {
+
+			console.error( 'Material is not an instance of MaterialAsset', material );
+
+		}
+
+	}
 }

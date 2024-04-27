@@ -12,7 +12,7 @@ import {
 	OnInit,
 	ViewChild
 } from '@angular/core';
-import { AssetNode, AssetType } from '../file-node.model';
+import { Asset, AssetType } from '../../../../core/asset/asset.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { AssetService } from 'app/core/asset/asset.service';
 
@@ -25,11 +25,11 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	@ViewChild( 'content' ) contentRef: ElementRef;
 
-	@Input() folder: AssetNode;
+	@Input() folder: Asset;
 
 	widthInPercent: string;
 
-	files: AssetNode[] = [];
+	files: Asset[] = [];
 
 	get sortedFiles () {
 
@@ -53,9 +53,9 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 		this.files = this.folder ? this.projectBrowserService.getAssets( this.folder.path ) : [];
 
-		this.projectBrowserService.folderChanged.subscribe( folder => this.refershFolder() );
+		this.projectBrowserService.folderChanged.subscribe( folder => this.refreshFolder() );
 
-		this.assetService.assetCreated.subscribe( asset => this.refershFolder() );
+		this.assetService.assetCreated.subscribe( asset => this.refreshFolder() );
 
 	}
 
@@ -81,19 +81,19 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onFileDeleted ( $node: AssetNode ) {
+	onFileDeleted ( $node: Asset ) {
 
-		this.refershFolder();
+		this.refreshFolder();
 
 	}
 
 	onFileRenamed ( $event ) {
 
-		this.refershFolder();
+		this.refreshFolder();
 
 	}
 
-	refershFolder () {
+	refreshFolder () {
 
 		this.appRef.tick();
 

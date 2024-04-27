@@ -8,7 +8,7 @@ import earcut from 'earcut';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
-import { OdTextures } from 'app/map/builders/od.textures';
+import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { MapService } from '../map/map.service';
 

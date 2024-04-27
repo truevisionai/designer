@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadSignal } from "app/map/models/tv-road-signal.model";
+import { TvRoadSignal } from "app/map/road-signal/tv-road-signal.model";
 import { Action, SerializedField } from "app/core/components/serialization";
 import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";

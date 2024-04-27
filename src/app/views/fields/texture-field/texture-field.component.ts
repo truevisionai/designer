@@ -3,11 +3,13 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MetaImporter, Metadata } from 'app/core/asset/metadata.model';
+import { Metadata } from 'app/core/asset/metadata.model';
 import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Texture } from 'three';
+import { TvTextureService } from "../../../graphics/texture/tv-texture.service";
+import { TvTexture } from "../../../graphics/texture/tv-texture.model";
+import { AssetService } from "../../../core/asset/asset.service";
+import { AssetType } from "../../../core/asset/asset.model";
 
 @Component( {
 	selector: 'app-texture-field',
@@ -19,11 +21,12 @@ export class TextureFieldComponent extends AbstractFieldComponent implements OnI
 	@Output() changed = new EventEmitter<string>();
 
 	@Input() value: string;
+
 	@Input() guid: string;
 
 	@Input() label: string = 'Map';
 
-	instance: Texture;
+	texture: TvTexture;
 
 	image: any;
 
@@ -33,7 +36,11 @@ export class TextureFieldComponent extends AbstractFieldComponent implements OnI
 
 	metadata: Metadata;
 
-	constructor ( private snackBar: SnackBar ) {
+	constructor (
+		private snackBar: SnackBar,
+		private textureService: TvTextureService,
+		private assetService: AssetService
+	) {
 
 		super();
 
@@ -45,15 +52,15 @@ export class TextureFieldComponent extends AbstractFieldComponent implements OnI
 
 	ngOnInit () {
 
-		this.instance = this.id ? AssetDatabase.getInstance<Texture>( this.id ) : null;
+		this.texture = this.id ? this.textureService.getTexture( this.id )?.texture : null;
 
-		this.image = this.instance ? this.instance.image : null;
+		this.image = this.texture ? this.texture.image : null;
 
 		this.thumbnail = this.image ? this.image.currentSrc : '';
 
-		this.filename = this.id ? AssetDatabase.getAssetNameByGuid( this.id ) : '';
+		this.filename = this.id ? this.assetService.getAssetName( this.id ) : '';
 
-		this.metadata = this.id ? AssetDatabase.getMetadata( this.id ) : null;
+		this.metadata = this.id ? this.assetService.getMetadata( this.id ) : null;
 
 	}
 
@@ -104,27 +111,26 @@ export class TextureFieldComponent extends AbstractFieldComponent implements OnI
 
 		const guid = $event.dataTransfer.getData( 'guid' );
 
-		if ( !guid ) return;
-
-		const metadata = AssetDatabase.getMetadata( guid );
-
-		if ( !metadata ) {
-
-			this.snackBar.warn( 'Metadata not found' );
-
+		if ( !guid ) {
+			this.snackBar.warn( 'Invalid guid' );
 			return;
 		}
 
-		if ( metadata.importer === MetaImporter.TEXTURE ) {
+		const asset = this.assetService.getAsset( guid );
 
-			this.guid = guid;
-
-			this.changed.emit( guid );
-
-		} else {
-
-			this.snackBar.warn( 'Not a texture' );
-
+		if ( !asset ) {
+			this.snackBar.warn( 'Invalid asset. Asset not found' );
+			return;
 		}
+
+		if ( asset.type !== AssetType.TEXTURE ) {
+			this.snackBar.warn( 'Not a texture' );
+			return;
+		}
+
+		this.guid = guid;
+
+		this.changed.emit( guid );
+
 	}
 }

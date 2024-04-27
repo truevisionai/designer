@@ -5,7 +5,7 @@
 import { MeshStandardMaterial } from 'three';
 import { COLOR } from '../../views/shared/utils/colors.service';
 import { TvLane } from '../models/tv-lane';
-import { OdTextures } from './od.textures';
+import { OdTextures } from '../../deprecated/od.textures';
 
 export class OdMaterials {
 

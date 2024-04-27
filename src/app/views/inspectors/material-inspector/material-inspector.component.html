@@ -61,33 +61,6 @@
 		[value]="material.color"
 		label="Color"></app-color-field>
 
-	<app-texture-field (changed)="onMapChanged($event)"
-		[guid]="material.mapGuid"
-		label="Map"></app-texture-field>
-
-	<app-texture-field (changed)="onRoughnessMapChanged($event)"
-		[guid]="material.roughnessMapGuid"
-		label="Roughness Map"></app-texture-field>
-
-	<app-texture-field (changed)="onNormalMapChanged($event)"
-		[guid]="material.normalMapGuid"
-		label="Normal Map"></app-texture-field>
-
-	<app-vector2-field (changed)="updateMaterialProperty( this.material, 'normalScale', $event )"
-		*ngIf="material.normalScale != undefined"
-		[value]="material.normalScale"
-		label="normalScale"
-		max="1"
-		min="0"></app-vector2-field>
-
-	<app-texture-field (changed)="onAOMapChanged($event)"
-		[guid]="material.aoMapGuid"
-		label="AO Map"></app-texture-field>
-
-	<app-texture-field (changed)="onDisplacementMapChanged($event)"
-		[guid]="material.displacementMapGuid"
-		label="Displacement Map"></app-texture-field>
-
 	<app-double-field (changed)="updateMaterialProperty( this.material, 'displacementScale', $event )"
 		*ngIf="material.displacementScale != undefined"
 		[value]="material.displacementScale"
@@ -102,9 +75,12 @@
 		max="1"
 		min="0"></app-double-field>
 
-	<app-texture-field (changed)="onAlphaMapChanged($event)"
-		[guid]="material.alphaMapGuid"
-		label="Alpha Map"></app-texture-field>
+	<app-vector2-field (changed)="updateMaterialProperty( this.material, 'normalScale', $event )"
+		*ngIf="material.normalScale != undefined"
+		[value]="material.normalScale"
+		label="normalScale"
+		max="1"
+		min="0"></app-vector2-field>
 
 	<app-double-field (changed)="updateMaterialProperty( this.material, 'alphaTest', $event )"
 		*ngIf="material.alphaTest != undefined"
@@ -112,4 +88,34 @@
 		label="alphaTest"
 		max="1"
 		min="0"></app-double-field>
+
+	<app-texture-field (changed)="onMapChanged($event)"
+		[guid]="material.map?.['guid']"
+		label="Map"></app-texture-field>
+
+	<app-texture-field (changed)="onRoughnessMapChanged($event)"
+		[guid]="material.roughnessMap?.['guid']"
+		label="Roughness Map"></app-texture-field>
+
+	<app-texture-field (changed)="onMetalnessMapChanged($event)"
+		[guid]="material.metalnessMap?.['guid']"
+		label="Metalness Map"></app-texture-field>
+
+	<app-texture-field (changed)="onNormalMapChanged($event)"
+		[guid]="material.normalMap?.['guid']"
+		label="Normal Map"></app-texture-field>
+
+	<app-texture-field (changed)="onAOMapChanged($event)"
+		[guid]="material.aoMap?.['guid']"
+		label="AO Map"></app-texture-field>
+
+	<app-texture-field (changed)="onDisplacementMapChanged($event)"
+		[guid]="material.displacementMap?.['guid']"
+		label="Displacement Map"></app-texture-field>
+
+	<app-texture-field (changed)="onAlphaMapChanged($event)"
+		[guid]="material.alphaMap?.['guid']"
+		label="Alpha Map"></app-texture-field>
+
+
 </div>

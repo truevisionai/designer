@@ -3,51 +3,53 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MaterialInspector } from 'app/views/inspectors/material-inspector/material-inspector.component';
 import { TextureInspector } from 'app/views/inspectors/texture-inspector/texture-inspector.component';
 import { AppInspector } from '../core/inspector';
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/asset-inspector.component';
-
-export enum InspectorType {
-	prop_model_inspector = 'prop_model_inspector',
-	prop_instance_inspector = 'prop_instance_inspector',
-}
+import { TvMaterialService } from "../graphics/material/tv-material.service";
+import { StandardMaterialInspector } from "../views/inspectors/material-inspector/standard-material.inspector";
+import { AssetPreviewService } from "../views/inspectors/asset-preview/asset-preview.service";
+import { MaterialInspector } from "../views/inspectors/material-inspector/material-inspector.component";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class InspectorFactoryService {
+export class InspectorFactory {
 
-	constructor () {
+	constructor (
+		private materialService: TvMaterialService,
+		private previewService: AssetPreviewService,
+	) {
 	}
 
-	setAssetInspector ( asset: AssetNode ) {
+	setAssetInspector ( asset: Asset ) {
 
 		if ( asset.type === AssetType.TEXTURE ) {
 
-			const instance = AssetDatabase.getInstance( asset.metadata.guid );
-
-			AppInspector.setInspector( TextureInspector, {
-				texture: instance,
-				guid: asset.metadata.guid
-			} );
+			AppInspector.setInspector( TextureInspector, asset );
 
 		} else if ( asset.type === AssetType.MATERIAL ) {
 
-			const instance = AssetDatabase.getInstance( asset.metadata.guid );
+			 AppInspector.setInspector( MaterialInspector, asset );
 
-			AppInspector.setInspector( MaterialInspector, {
-				material: instance,
-				guid: asset.metadata.guid
-			} );
+			// this.setMaterialInspector( asset );
 
 		} else {
 
 			AppInspector.setInspector( AssetInspectorComponent, asset );
 
 		}
+
+	}
+
+	setMaterialInspector ( asset: Asset ) {
+
+		const materialAsset = this.materialService.getMaterial( asset.guid );
+
+		const inspector = new StandardMaterialInspector( materialAsset, this.materialService, this.previewService );
+
+		AppInspector.setDynamicInspector( inspector );
 
 	}
 

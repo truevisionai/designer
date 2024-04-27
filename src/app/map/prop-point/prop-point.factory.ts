@@ -4,17 +4,18 @@
 
 import { AbstractFactory } from "../../core/interfaces/abstract-factory";
 import { PropInstance } from "./prop-instance.object";
-import { AssetNode, AssetType } from "../../views/editor/project-browser/file-node.model";
+import { Asset, AssetType } from "../../core/asset/asset.model";
 import { Object3D, Vector3 } from "three";
-import { AssetDatabase } from "../../core/asset/asset-database";
 
 export class PropPointFactory extends AbstractFactory<PropInstance> {
 
-	createFromAsset ( asset: AssetNode, position: Vector3 ): PropInstance {
+	createFromAsset ( asset: Asset, position: Vector3 ): PropInstance {
 
-		if ( asset.type != AssetType.MODEL ) return;
+		const model = this.getModel( asset );
 
-		const clone = AssetDatabase.getInstance<Object3D>( asset.guid )?.clone();
+		if ( !model ) return;
+
+		const clone = model.clone();
 
 		if ( !clone ) return;
 
@@ -30,13 +31,31 @@ export class PropPointFactory extends AbstractFactory<PropInstance> {
 
 		if ( !prop ) return;
 
-		const clone = AssetDatabase.getInstance<Object3D>( prop.guid )?.clone();
+		const asset = this.assetService.getAsset( prop.guid );
+
+		const clone = this.getModel( asset )?.clone();
 
 		if ( !clone ) return;
 
 		clone.position.copy( position );
 
 		return new PropInstance( prop.guid, clone );
+
+	}
+
+	private getModel ( asset: Asset ): Object3D {
+
+		if ( asset.type == AssetType.MODEL ) {
+
+			return this.assetService.getModelAsset( asset.guid );
+
+		}
+
+		if ( asset.type == AssetType.OBJECT ) {
+
+			return this.assetService.getObjectAsset( asset.guid )?.instance;
+
+		}
 
 	}
 
