@@ -3,7 +3,21 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BufferAttribute, BufferGeometry, DoubleSide, FrontSide, Mesh, MeshPhongMaterial, MeshStandardMaterial, RepeatWrapping, Shape, ShapeGeometry, Texture, Vector2, Vector3 } from 'three';
+import {
+	BufferAttribute,
+	BufferGeometry,
+	DoubleSide,
+	FrontSide,
+	Mesh,
+	MeshPhongMaterial,
+	MeshStandardMaterial,
+	RepeatWrapping,
+	Shape,
+	ShapeGeometry,
+	Texture,
+	Vector2,
+	Vector3
+} from 'three';
 import earcut from 'earcut';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
@@ -19,7 +33,8 @@ export class JunctionMeshService {
 
 	constructor (
 		private mapService: MapService
-	) { }
+	) {
+	}
 
 	createJunctionFromRoadCoords ( coords: TvRoadCoord[] ) {
 
@@ -46,21 +61,7 @@ export class JunctionMeshService {
 
 	createMeshFromJunction ( junction: TvJunction ) {
 
-		const coords: TvRoadCoord[] = [];
-
-		this.mapService.map.getRoads().filter( road => !road.isJunction ).forEach( road => {
-
-			if ( road.successor?.elementType == 'junction' && road.successor?.elementId == junction.id ) {
-
-				coords.push( road.getEndPosTheta().toRoadCoord( road ) );
-
-			} else if ( road.predecessor?.elementType == 'junction' && road.predecessor?.elementId == junction.id ) {
-
-				coords.push( road.getStartPosTheta().toRoadCoord( road ) );
-
-			}
-
-		} );
+		const coords = junction.getRoadCoords();
 
 		return this.createJunctionFromRoadCoords( coords );
 
@@ -166,12 +167,17 @@ export class JunctionMeshService {
 
 		function sortByAngle ( points, center ) {
 			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
-			return points.map( ( point, index ) => ( { point, index } ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
+			return points.map( ( point, index ) => ( {
+				point,
+				index
+			} ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
 		}
 
 		// Calculate the centroid of the points
 		let center = new Vector3();
-		positions.forEach( p => { center.add( p ); } );
+		positions.forEach( p => {
+			center.add( p );
+		} );
 		center.divideScalar( positions.length );
 
 		// Sort the points by angle from the center

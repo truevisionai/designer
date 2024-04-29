@@ -21,11 +21,16 @@ import { HasSplineDebugService } from "../../services/debug/has-spline-debug.ser
 import { TextObjectService } from "app/services/text-object.service";
 import { LaneHeightDebugService } from "../../map/lane-height/lane-height.debug";
 import { BaseLaneDebugService } from "../interfaces/lane-node.debug";
+import { JunctionDebugService, ManeuverMesh } from "app/services/junction/junction.debug";
+import { JunctionService } from "app/services/junction/junction.service";
+import { ManeuverDebugService } from "app/services/junction/maneuver.debug";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class DebugServiceProvider {
+
+	static instance: DebugServiceProvider;
 
 	constructor (
 		private debugService: DebugDrawService,
@@ -35,7 +40,11 @@ export class DebugServiceProvider {
 		private roadDebug: RoadDebugService,
 		private textService: TextObjectService,
 		public debugDrawService: DebugDrawService,
+		private junctionService: JunctionService,
+		private junctionDebugService: JunctionDebugService,
+		private maneuverDebugService: ManeuverDebugService,
 	) {
+		DebugServiceProvider.instance = this;
 	}
 
 	createDebugService ( type: ToolType ): DebugService<any, any> {
@@ -72,6 +81,14 @@ export class DebugServiceProvider {
 				debugService = new LaneHeightDebugService();
 				break;
 
+			case ToolType.Junction:
+				debugService = this.junctionDebugService;
+				break;
+
+			case ToolType.Maneuver:
+				debugService = this.junctionDebugService;
+				break;
+
 		}
 
 		if ( debugService instanceof BaseLaneDebugService ) {
@@ -80,6 +97,58 @@ export class DebugServiceProvider {
 
 			debugService.mapService = this.mapService;
 
+		}
+
+		return debugService;
+	}
+
+	createByObjectType ( type: ToolType, object: any ): DebugService<any, any> {
+
+		let debugService: DebugService<any, any>;
+
+		if ( type == ToolType.Maneuver && object instanceof ManeuverMesh ) {
+			debugService = this.maneuverDebugService;
+		}
+
+		if ( type == ToolType.Maneuver ) {
+			debugService = this.junctionDebugService;
+		}
+
+		if ( type == ToolType.Junction && object instanceof ManeuverMesh ) {
+			debugService = this.junctionDebugService;
+		}
+
+		if ( type == ToolType.Junction ) {
+			debugService = this.junctionDebugService;
+		}
+
+		if ( object instanceof AbstractSpline ) {
+			debugService = this.createSplineDebugService();
+		}
+
+		if ( object instanceof Surface ) {
+			debugService = this.createSurfaceDebugService();
+		}
+
+		if ( object instanceof PropPolygon ) {
+			debugService = this.createPropPolygonDebugService();
+		}
+
+		if ( object instanceof PropPolygon ) {
+			debugService = this.createPropPolygonDebugService();
+		}
+
+		if ( object instanceof PropPolygon ) {
+			debugService = this.createPropPolygonDebugService();
+		}
+
+		if ( object instanceof PropPolygon ) {
+			debugService = this.createPropPolygonDebugService();
+		}
+
+		if ( debugService instanceof BaseLaneDebugService ) {
+			debugService.debugDrawService = this.debugDrawService;
+			debugService.mapService = this.mapService;
 		}
 
 		return debugService;
