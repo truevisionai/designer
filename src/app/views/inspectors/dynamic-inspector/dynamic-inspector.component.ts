@@ -106,6 +106,9 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	ngOnInit () {
 
+		// change label to class name
+		// if ( this.data ) this.label = this.data.constructor.name;
+
 		if ( this.data ) this.serializableFields = getSerializableFields( this.data );
 
 		if ( this.data ) this.serializableActions = getSerializableActions( this.data );
