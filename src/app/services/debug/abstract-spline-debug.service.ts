@@ -24,6 +24,20 @@ export class AbstractSplineDebugService {
 	constructor () {
 	}
 
+	clear () {
+
+		this.points.clear();
+
+		this.showing.forEach( spline => spline.hideLines() );
+
+		this.showing.clear();
+
+		this.lines.forEach( spline => spline.hideLines() );
+
+		this.lines.clear();
+
+	}
+
 	hide ( spline: AbstractSpline ) {
 
 		spline.hide();

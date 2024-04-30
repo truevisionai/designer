@@ -24,13 +24,13 @@ export class ManeuverRoadDebugger extends BaseDebugger<ManeuverMesh> {
 
 	onHighlight ( object: ManeuverMesh ): void {
 
-		console.error( 'Method not implemented.', object );
+		// console.error( 'Method not implemented.', object );
 
 	}
 
 	onUnhighlight ( object: ManeuverMesh ): void {
 
-		console.error( 'Method not implemented.', object );
+		// console.error( 'Method not implemented.', object );
 
 	}
 
@@ -53,13 +53,23 @@ export class ManeuverRoadDebugger extends BaseDebugger<ManeuverMesh> {
 
 	onDefault ( object: ManeuverMesh ): void {
 
-		console.error( 'Method not implemented.', object );
+		//
 
 	}
 
 	onRemoved ( object: ManeuverMesh ): void {
 
-		console.error( 'Method not implemented.', object );
+		this.splineDebugger.hideControlPoints( object.connection.connectingRoad.spline );
+
+		this.splineDebugger.hideLines( object.connection.connectingRoad.spline );
+
+	}
+
+	clear (): void {
+
+		this.splineDebugger.clear();
+
+		super.clear();
 
 	}
 

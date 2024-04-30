@@ -105,6 +105,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	onRemoved ( junction: TvJunction ): void {
 
 		this.meshes.removeKey( junction );
+		this.entries.removeKey( junction );
+		this.maneuvers.removeKey( junction );
 
 	}
 

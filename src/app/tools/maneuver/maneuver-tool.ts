@@ -9,6 +9,8 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { DebugServiceProvider } from 'app/core/providers/debug-service.provider';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DebugState } from "../../services/debug/debug-state";
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { ManeuverMesh } from 'app/services/junction/junction.debug';
 
 export class ManeuverTool extends BaseTool<any> {
 
@@ -37,6 +39,9 @@ export class ManeuverTool extends BaseTool<any> {
 	disable () {
 
 		super.disable();
+
+		this.tool.junctionDebugger.clear();
+		this.tool.maneuverDebugger.clear();
 
 	}
 
