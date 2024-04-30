@@ -11,7 +11,7 @@ import { ViewportEventSubscriber } from "./viewport-event-subscriber";
 import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
 import { Asset } from "app/core/asset/asset.model";
 import { Vector3 } from "three";
-import { DebugService } from "app/core/interfaces/debug.service";
+import { IDebugger } from "app/core/interfaces/debug.service";
 import { ToolHints } from "app/core/interfaces/tool.hints";
 import { AddObjectCommand } from "app/commands/add-object-command";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
@@ -38,7 +38,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	public data: LinkedDataService<TvLane, T>;
 
-	public debugger: DebugService<TvLane, LaneNode<T>>;
+	public debugger: IDebugger<TvLane, LaneNode<T>>;
 
 	public hints: ToolHints<T>;
 

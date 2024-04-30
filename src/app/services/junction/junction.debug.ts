@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BaseDebugService } from 'app/core/interfaces/debug.service';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { DebugState } from '../debug/debug-state';
 import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
@@ -27,11 +26,12 @@ import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-li
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { ISelectable } from "../../objects/i-selectable";
+import { BaseDebugger } from "../../core/interfaces/base-debugger";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionDebugService extends BaseDebugService<TvJunction> {
+export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	private meshes = new Object3DArrayMap<TvJunction, Object3D[]>();
 
@@ -64,18 +64,13 @@ export class JunctionDebugService extends BaseDebugService<TvJunction> {
 
 	}
 
-	onSelected ( object: any ): void {
+	onSelected ( object: TvJunction ): void {
 
-		if ( object instanceof TvJunction ) {
+		this.entries.removeKey( object );
+		this.maneuvers.removeKey( object );
 
-			this.showEntries( object );
-			this.showManeuvers( object );
-
-		} else if ( object instanceof TvJunctionLaneLink ) {
-
-			// this.showManeuvers( object.junction );
-
-		}
+		this.showEntries( object );
+		this.showManeuvers( object );
 
 	}
 

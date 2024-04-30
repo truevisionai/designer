@@ -11,13 +11,13 @@ import { DebugLine } from '../../objects/debug-line';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { DebugState } from 'app/services/debug/debug-state';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
-import { BaseDebugService } from 'app/core/interfaces/debug.service';
 import { ExplicitSplineHelper } from "./explicit-spline.helper";
 import { AutoSplineHelper } from "./auto-spline.helper";
 import { TextObjectService } from '../text-object.service';
 import { TvGeometryType } from 'app/map/models/tv-common';
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { Maths } from 'app/utils/maths';
+import { BaseDebugger } from "../../core/interfaces/base-debugger";
 
 const LINE_WIDTH = 1.5;
 const LINE_STEP = 0.1;
@@ -30,7 +30,7 @@ const ARROW_COLOR = COLOR.YELLOW;
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineDebugService extends BaseDebugService<AbstractSpline> {
+export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	private lines = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
 
@@ -38,9 +38,9 @@ export class SplineDebugService extends BaseDebugService<AbstractSpline> {
 
 	private texts = new Object3DArrayMap<AbstractSpline, Object3D[]>();
 
-	private autoSplineHelper: BaseDebugService<AbstractSpline>;
+	private autoSplineHelper: BaseDebugger<AbstractSpline>;
 
-	private explicitSplineHelper: BaseDebugService<AbstractSpline>;
+	private explicitSplineHelper: BaseDebugger<AbstractSpline>;
 
 	constructor (
 		private debugService: DebugDrawService,

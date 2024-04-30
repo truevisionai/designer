@@ -8,6 +8,7 @@ import { ManeuverToolService } from 'app/tools/maneuver/maneuver-tool.service';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { DebugServiceProvider } from 'app/core/providers/debug-service.provider';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { DebugState } from "../../services/debug/debug-state";
 
 export class ManeuverTool extends BaseTool<any> {
 
@@ -39,6 +40,28 @@ export class ManeuverTool extends BaseTool<any> {
 
 	}
 
+	onPointerMoved ( e: PointerEventData ) {
+
+		this.highlight( e );
+
+		if ( !this.isPointerDown ) return;
+
+		if ( !this.currentSelectedPoint ) return;
+
+		if ( !this.currentSelectedPoint.isSelected ) return;
+
+		const newPosition = this.selectionService.handleTargetMovement( e, this.currentSelectedPoint );
+
+		this.currentSelectedPoint.copyPosition( newPosition.position );
+
+		// this.dataService.updatePoint( this.currentSelectedPoint.mainObject, this.currentSelectedPoint );
+
+		// this.debugService.setDebugState( this.currentSelectedPoint.mainObject, DebugState.SELECTED );
+
+		this.currentSelectedPointMoved = true;
+
+	}
+
 	onPointerDownSelect ( e: PointerEventData ): void {
 
 		this.selectionService?.handleSelection( e );
@@ -47,23 +70,37 @@ export class ManeuverTool extends BaseTool<any> {
 
 	onObjectSelected ( object: any ): void {
 
-		this.debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
+		const debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
 
-		this.debugService?.onSelected( object );
+		debugService?.onSelected( object );
 
 	}
 
 	onObjectUnselected ( object: any ) {
 
-		this.debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
+		const debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
 
-		this.debugService?.onUnselected( object );
+		debugService?.onUnselected( object );
 
 	}
 
 	onObjectUpdated ( object: any ): void {
 
 		if ( object instanceof SplineControlPoint ) {
+
+			const junctionId = object.spline.getRoads()[ 0 ]?.junctionId;
+
+			if ( junctionId ) {
+
+				const junction = this.tool.junctionService.getJunctionById( junctionId );
+
+				if ( junction ) {
+
+					this.tool.junctionDebugger.setDebugState( junction, DebugState.SELECTED );
+
+				}
+
+			}
 
 			this.tool.splineService.update( object.spline );
 

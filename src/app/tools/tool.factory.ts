@@ -74,6 +74,7 @@ import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select
 import {
 	EndLaneMovingStrategy, MidLaneMovingStrategy,
 } from "../core/strategies/move-strategies/end-lane.moving.strategy";
+import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies/follow-heading-moving-strategy';
 import { LaneNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
@@ -292,7 +293,7 @@ export class ToolFactory {
 			this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
 			this.selectionService.registerTag( TvJunction.name, TvJunction.name );
 
-			this.selectionService.addMovingStrategy( new FreeMovingStrategy() );
+			this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
 
 			tool.setTypeName( TvJunction.name );
 
