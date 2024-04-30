@@ -5,11 +5,12 @@
 import { Injectable } from '@angular/core';
 import { DragDropData } from 'app/services/editor/drag-drop.service';
 import { ToolManager } from 'app/managers/tool-manager';
-import { ImporterService } from 'app/importers/importer.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Vector3 } from 'three';
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { LoaderFactory } from 'app/factories/loader.factory';
+import { TvMap } from 'app/map/models/tv-map.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -17,29 +18,33 @@ import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node
 export class ViewportService {
 
 	constructor (
-		private importerService: ImporterService,
-		private mainFileService: TvSceneFileService,
+		private loaderFactory: LoaderFactory,
+		private sceneFileService: TvSceneFileService,
 		private snackBar: SnackBar
 	) {
 	}
 
-	handleAssetDropped ( asset: DragDropData, position: Vector3 ) {
+	async handleAssetDropped ( asset: DragDropData, position: Vector3 ) {
 
 		switch ( asset?.type ) {
 
 			case AssetType.OPENDRIVE:
-				this.importOpenDrive( asset.path );
+				this.loadOpenDrive( asset );
 				break;
 
 			case AssetType.OPENSCENARIO:
-				this.importerService.importOpenScenario( asset.path );
+				this.loadScenario( asset );
 				break;
 
 			case AssetType.SCENE:
-				this.importerService.importScene( asset.path );
+				this.loadScene( asset );
 				break;
 
 			case AssetType.PREFAB:
+				this.importAsset( asset, position );
+				break;
+
+			case AssetType.OBJECT:
 				this.importAsset( asset, position );
 				break;
 
@@ -70,15 +75,39 @@ export class ViewportService {
 
 	}
 
-	importOpenDrive ( path: string ) {
+	loadScene ( asset: Asset ) {
 
-		this.mainFileService.newScene();
+		const assetLoader = this.loaderFactory.getLoader( AssetType.SCENE );
 
-		this.importerService.importOpenDrive( path );
+		const map = assetLoader.load( asset ) as TvMap;
+
+		this.sceneFileService.setMap( map );
+
+		this.sceneFileService.setFilePath( asset.path, map );
 
 	}
 
-	importAsset ( asset: AssetNode, position: Vector3 ) {
+	loadScenario ( asset: Asset ) {
+
+		// const assetLoader = this.loaderFactory.getLoader( AssetType.OPENSCENARIO )
+
+		// const map = assetLoader.load( asset );
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	loadOpenDrive ( asset: Asset ) {
+
+		const assetLoader = this.loaderFactory.getLoader( AssetType.OPENDRIVE )
+
+		const map = assetLoader.load( asset ) as TvMap;
+
+		this.sceneFileService.setMap( map );
+
+	}
+
+	importAsset ( asset: Asset, position: Vector3 ) {
 
 		ToolManager.currentTool?.onAssetDropped( asset, position );
 

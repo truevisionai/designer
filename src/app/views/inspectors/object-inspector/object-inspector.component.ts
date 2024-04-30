@@ -49,6 +49,8 @@ export class ObjectInspectorComponent implements OnInit, AfterViewInit {
 		componentInstance.data = component.data;
 
 		AppInspector.inspectorCreated.emit( componentInstance );
+
+		AppInspector.lastInspectorCreated = componentInstance;
 	}
 
 	clearInspector () {

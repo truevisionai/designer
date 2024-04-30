@@ -5,11 +5,12 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { TvOrbitControls } from 'app/objects/tv-orbit-controls';
-import { Camera, Color, Fog, Object3D, PerspectiveCamera, Scene, } from 'three';
+import { Object3D, PerspectiveCamera, Scene, } from 'three';
 import { AssetPreviewService } from './asset-preview.service';
-import { AssetNode, AssetType } from "../../editor/project-browser/file-node.model";
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { Asset, AssetType } from "../../../core/asset/asset.model";
 import { IViewportController } from 'app/objects/i-viewport-controller';
+import { AssetService } from 'app/core/asset/asset.service';
+import { RoadStyle } from 'app/graphics/road-style/road-style.model';
 
 @Component( {
 	selector: 'app-asset-preview',
@@ -18,7 +19,7 @@ import { IViewportController } from 'app/objects/i-viewport-controller';
 } )
 export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-	@Input() asset: AssetNode;
+	@Input() asset: Asset;
 
 	@ViewChild( 'viewport' ) viewportRef: ElementRef;
 
@@ -30,9 +31,9 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	public controls: IViewportController;
 
-	object3d: Object3D;
+	@Input() object3d: Object3D;
 
-	constructor ( private previewService: AssetPreviewService ) {
+	constructor ( private previewService: AssetPreviewService, private assetService: AssetService ) {
 
 		this.render = this.render.bind( this );
 
@@ -52,7 +53,13 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	ngOnInit () {
 
-		this.object3d = this.getObject3d( this.asset );
+		if ( !this.object3d ) {
+
+			this.object3d = this.getObject3d( this.asset );
+
+		}
+
+		if ( !this.object3d ) return;
 
 		this.previewService.setupScene( this.asset.type, this.object3d, this.scene );
 
@@ -71,6 +78,11 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	ngAfterViewInit (): void {
+
+		if ( !this.object3d ) {
+			console.error( 'Object3d not found' );
+			return;
+		}
 
 		this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
@@ -123,15 +135,21 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	getObject3d ( asset: AssetNode ): Object3D {
+	getObject3d ( asset: Asset ): Object3D {
 
 		if ( asset.type === AssetType.MODEL ) {
 
-			return AssetDatabase.getInstance( this.asset.guid );
+			return this.assetService.getModelAsset( this.asset.guid );
+
+		} else if ( asset.type === AssetType.OBJECT ) {
+
+			return this.assetService.getObjectAsset( this.asset.guid )?.instance;
 
 		} else if ( asset.type === AssetType.ROAD_STYLE ) {
 
-			return this.previewService.getRoadStyleObject( AssetDatabase.getInstance( this.asset.guid ) );
+			const instance = this.assetService.getInstance<RoadStyle>( this.asset.guid );
+
+			return this.previewService.getRoadStyleObject( instance );
 
 		}
 

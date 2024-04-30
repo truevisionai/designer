@@ -3,16 +3,13 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { IComponent } from 'app/objects/game-object';
-import { Metadata } from 'app/core/asset/metadata.model';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
-import { Texture } from 'three';
 import { AssetPreviewService } from '../asset-preview/asset-preview.service';
-import { AssetService } from 'app/core/asset/asset.service';
-import { AssetType } from 'app/views/editor/project-browser/file-node.model';
-import { TvTextureExporter } from 'app/graphics/texture/tv-texture.exporter';
+import { Asset } from 'app/core/asset/asset.model';
+import { TvTexture } from "../../../graphics/texture/tv-texture.model";
+import { TvTextureService } from "../../../graphics/texture/tv-texture.service";
 
 @Component( {
 	selector: 'app-texture-inspector',
@@ -21,29 +18,23 @@ import { TvTextureExporter } from 'app/graphics/texture/tv-texture.exporter';
 } )
 export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
-	public data: {
-		texture: Texture,
-		guid: string
-	};
-
-	public metadata: Metadata;
+	public data: Asset;
 
 	public preview: string;
 
+	public texture: TvTexture;
+
 	constructor (
 		private previewService: AssetPreviewService,
-		private assetService: AssetService,
-		private textureExporter: TvTextureExporter,
+		private textureService: TvTextureService,
 	) {
-	}
-
-	get texture (): Texture {
-		return this.data.texture;
 	}
 
 	ngOnInit () {
 
-		this.metadata = AssetDatabase.getMetadata( this.data.guid );
+		this.texture = this.textureService.getTexture( this.data.guid )?.texture;
+
+		if ( !this.texture ) return;
 
 		this.preview = this.previewService.getTexturePreview( this.texture );
 
@@ -57,21 +48,13 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	save () {
 
-		if ( !this.texture ) return;
+		if ( !this.data ) return;
 
-		if ( !this.metadata ) return;
-
-		this.preview = this.previewService.getTexturePreview( this.texture );
-
-		const metadata = this.textureExporter.createMetadata( this.metadata.guid, this.metadata.path, this.texture );
-
-		AssetDatabase.setMetadata( this.metadata.guid, metadata );
-
-		this.assetService.saveAssetByGuid( AssetType.TEXTURE, this.metadata.guid, this.texture );
+		this.textureService.update( this.data );
 
 	}
 
-	onChange ( $newValue: any, property: keyof Texture ) {
+	onChange ( $newValue: any, property: keyof TvTexture ) {
 
 		if ( !this.texture ) return;
 
@@ -82,6 +65,5 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 		this.save();
 
 	}
-
 
 }

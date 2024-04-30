@@ -4,43 +4,45 @@
 
 import { Injectable } from '@angular/core';
 import { ScenarioService } from 'app/scenario/services/scenario.service';
-import { OpenDriveService } from 'app/map/services/open-drive.service';
-import { SceneImporterService } from './scene-importer.service';
-import { StorageService } from 'app/io/storage.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { LoaderFactory } from 'app/factories/loader.factory';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ImporterService {
 
-	/**
-	 * This class is responsible for importing all supported files
-	 **/
 	constructor (
-		private storageService: StorageService,
-		private openDriveService: OpenDriveService,
-		private sceneImporter: SceneImporterService,
+		private loaderFactory: LoaderFactory,
 		private scenarioService: ScenarioService,		// dont remove required for import
 		private sceneFileService: TvSceneFileService,
 	) {
 	}
 
-	async importOpenScenario ( path: string ) {
+	async importAsset ( asset: Asset ) {
 
-		await this.scenarioService.importScenario( path );
+		switch ( asset.type ) {
+
+			case AssetType.SCENE:
+				await this.importScene( asset );
+				break;
+
+			default:
+				console.error( 'Asset type not supported for import', asset.type );
+				break;
+
+		}
 
 	}
 
-	async importScene ( path: string ) {
+	async importScene ( asset: Asset ) {
 
-		this.sceneFileService.openFromPath( path );
+		const assetLoader = this.loaderFactory.getLoader( AssetType.SCENE )
 
-	}
+		const scene = assetLoader.load( asset );
 
-	importOpenDrive ( filepath: string ) {
-
-		this.openDriveService.importFromPath( filepath );
+		this.sceneFileService.setMap( scene );
 
 	}
 

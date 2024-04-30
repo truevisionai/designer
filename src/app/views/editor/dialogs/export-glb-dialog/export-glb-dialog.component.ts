@@ -45,11 +45,10 @@ export class ExportGlbDialog implements OnInit {
 			coordinateSystem = CoordinateSystem.UNITY_GLTF;
 		}
 
-		this.exporter.exportGLB( this.filename, coordinateSystem );
+		this.exporter.exportGLB( this.filename, coordinateSystem, this.includeProps );
 
 		this.dialogRef.close();
 
 	}
-
 
 }

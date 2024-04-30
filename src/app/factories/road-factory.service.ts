@@ -6,8 +6,8 @@ import { RoadNode } from 'app/objects/road-node';
 import { TvLaneSide, TvLaneType, TvRoadType } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { RoadStyleManager } from 'app/managers/road-style.manager';
-import { Vector3 } from 'three';
+import { RoadStyleManager } from 'app/graphics/road-style/road-style.manager';
+import { Vector2, Vector3 } from 'three';
 import { IDService } from './id.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
@@ -27,7 +27,7 @@ export class RoadFactory {
 
 	private idService: IDService;
 
-	constructor ( private laneSectionFactory: LaneSectionFactory ) {
+	constructor ( private laneSectionFactory: LaneSectionFactory, private roadStyleManager: RoadStyleManager ) {
 
 		this.idService = new IDService();
 
@@ -76,7 +76,7 @@ export class RoadFactory {
 		// FIX: minor elevation to avoid z-fighting
 		// road.addElevation( 0, 0.05, 0, 0, 0 );
 
-		const roadStyle = RoadStyleManager.getRampRoadStyle( road, lane );
+		const roadStyle = this.roadStyleManager.getRampRoadStyle( road, lane );
 
 		road.addLaneOffsetInstance( roadStyle.laneOffset );
 
@@ -92,7 +92,7 @@ export class RoadFactory {
 
 		road.setType( type, maxSpeed );
 
-		const roadStyle = RoadStyleManager.getRoadStyle( road );
+		const roadStyle = this.roadStyleManager.getRoadStyle( road );
 
 		road.addLaneOffsetInstance( roadStyle.laneOffset );
 
@@ -110,7 +110,7 @@ export class RoadFactory {
 
 		road.setType( type, maxSpeed );
 
-		const roadStyle = RoadStyleManager.getParkingRoadStyle( road );
+		const roadStyle = this.roadStyleManager.getParkingRoadStyle( road );
 
 		road.addLaneOffsetInstance( roadStyle.laneOffset );
 
@@ -120,6 +120,15 @@ export class RoadFactory {
 
 	}
 
+	createFromControlPoints ( controlPoints: Vector2[], type: TvRoadType = TvRoadType.TOWN, maxSpeed: number = 40 ): TvRoad {
+
+		const road = this.createDefaultRoad( type, maxSpeed );
+
+		controlPoints.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
+
+		return road;
+
+	}
 
 	createStraightRoad ( position: Vector3, hdg = 0, length = 10 ): TvRoad {
 
@@ -215,7 +224,7 @@ export class RoadFactory {
 
 		}
 
-		const roadLength = spline.getLength();;
+		const roadLength = spline.getLength();
 
 		const elevationProfile = this.computeElevationProfile(
 			roadLength,

@@ -1,0 +1,217 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { Injectable } from '@angular/core';
+import { TvLaneSide } from 'app/map/models/tv-common';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
+import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
+import { RoadStyle } from "./road-style.model";
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
+import { AssetExporter } from "../../core/interfaces/asset-exporter";
+import { TvConsole } from "../../core/utils/console";
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class RoadExporterService implements AssetExporter<RoadStyle> {
+
+	constructor (
+		private openDriveExporter: OpenDriveExporter,
+	) {
+	}
+
+	exportRoadStyle ( style: RoadStyle ): string {
+
+		const xmlNode = {
+			version: 1,
+			laneOffset: null,
+			laneSection: null,
+			elevationProfile: {
+				elevation: style.elevations.map( elevation => {
+					return {
+						attr_s: elevation.s,
+						attr_a: elevation.a,
+						attr_b: elevation.b,
+						attr_c: elevation.c,
+						attr_d: elevation.d,
+					};
+				} )
+			},
+		};
+
+		this.writeLaneOffset( xmlNode, style.laneOffset );
+
+		this.writeLaneSection( xmlNode, style.laneSection );
+
+		return JSON.stringify( xmlNode );
+	}
+
+	exportRoadAsStyle ( road: TvRoad ): any {
+
+		const roadStyle = new RoadStyle();
+
+		roadStyle.laneOffset = road.getLaneOffsetAt( 0 ).clone();
+
+		roadStyle.laneSection = road.getLaneSectionAt( 0 ).cloneAtS( 0, 0 );
+
+		roadStyle.elevationProfile = road.elevationProfile.clone();
+
+		return this.exportRoadStyle( roadStyle );
+
+	}
+
+	writeLaneSection ( xmlNode: any, laneSection: TvLaneSection ) {
+
+		const leftLanes = {
+			lane: []
+		};
+		const centerLanes = {
+			lane: []
+		};
+		const rightLanes = {
+			lane: []
+		};
+
+		for ( let i = 0; i < laneSection.getLaneCount(); i++ ) {
+
+			const lane = laneSection.getLane( i );
+			const side = lane.getSide();
+
+			if ( side === TvLaneSide.LEFT ) {
+
+				this.writeLane( leftLanes, lane );
+
+			} else if ( side === TvLaneSide.RIGHT ) {
+
+				this.writeLane( rightLanes, lane );
+
+			} else if ( side === TvLaneSide.CENTER ) {
+
+				this.writeLane( centerLanes, lane );
+
+			}
+		}
+
+		const laneSectionNode = {
+			attr_s: laneSection.s,
+		};
+
+		if ( leftLanes.lane.length > 0 ) laneSectionNode[ 'left' ] = leftLanes;
+
+		if ( centerLanes.lane.length > 0 ) laneSectionNode[ 'center' ] = centerLanes;
+
+		if ( rightLanes.lane.length > 0 ) laneSectionNode[ 'right' ] = rightLanes;
+
+		xmlNode.laneSection = laneSectionNode;
+	}
+
+	writeLane ( xmlNode, lane: TvLane ): any {
+
+		const laneNode = {
+			attr_id: lane.id,
+			attr_type: lane.type,
+			attr_level: lane.level,
+			// link: {},
+			width: [],
+			roadMark: [],
+			// material: [],
+			// visibility: [],
+			// speed: [],
+			// access: [],
+			// height: []
+		};
+
+		for ( let i = 0; i < lane.getLaneWidthCount(); i++ ) {
+			this.openDriveExporter.writeLaneWidth( laneNode, lane.getLaneWidth( i ) );
+		}
+
+		for ( let i = 0; i < lane.getLaneRoadMarkCount(); i++ ) {
+			this.openDriveExporter.writeLaneRoadMark( laneNode, lane.getLaneRoadMark( i ) );
+		}
+
+		// NOTE: below lane properties can be added as needed
+
+		// for ( let i = 0; i < lane.getLaneMaterialCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneMaterial( laneNode, lane.getLaneMaterial( i ) );
+		// }
+
+		// for ( let i = 0; i < lane.getLaneVisibilityCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneVisibility( laneNode, lane.getLaneVisibility( i ) );
+		// }
+
+		// for ( let i = 0; i < lane.getLaneSpeedCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneSpeed( laneNode, lane.getLaneSpeed( i ) );
+		// }
+
+		// for ( let i = 0; i < lane.getLaneAccessCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneAccess( laneNode, lane.getLaneAccess( i ) );
+		// }
+
+		// for ( let i = 0; i < lane.getLaneHeightCount(); i++ ) {
+		//     this.openDriveWriter.writeLaneHeight( laneNode, lane.getLaneHeight( i ) );
+		// }
+
+		xmlNode.lane.push( laneNode );
+
+		return laneNode;
+	}
+
+	writeLaneOffset ( xmlNode, laneOffset: TvRoadLaneOffset ) {
+
+		xmlNode.laneOffset = {
+			attr_s: laneOffset.s,
+			attr_a: laneOffset.a,
+			attr_b: laneOffset.b,
+			attr_c: laneOffset.c,
+			attr_d: laneOffset.d,
+		};
+
+		return xmlNode;
+	}
+
+	exportTypes ( types: TvRoadTypeClass[] ) {
+
+		return types.map( type => {
+
+			return {
+				attr_s: type.s,
+				attr_type: type.type,
+				speed: {
+					attr_max: type.speed.max,
+					attr_unit: type.speed.unit
+				},
+			};
+
+		} );
+
+	}
+
+	exportAsString ( instance: RoadStyle ): string {
+
+		if ( instance instanceof TvRoad ) {
+
+			return this.exportRoadAsStyle( instance );
+
+		} else if ( instance instanceof RoadStyle ) {
+
+			return this.exportRoadStyle( instance );
+
+		} else {
+
+			TvConsole.error( 'ExporterService: getRoadStyleExport: Unknown input type ' + instance );
+
+		}
+
+	}
+
+	exportAsJSON ( asset: RoadStyle ): any {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+}

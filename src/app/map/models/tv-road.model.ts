@@ -32,10 +32,10 @@ import { TvRoadLanes } from './tv-road-lanes';
 import { TvRoadLinkChild, TvRoadLinkChildType } from './tv-road-link-child';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvRoadObject } from './objects/tv-road-object';
-import { TvRoadSignal } from './tv-road-signal.model';
+import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvUtils } from './tv-utils';
-import { RoadStyle } from "../../core/asset/road.style";
+import { RoadStyle } from "../../graphics/road-style/road-style.model";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
@@ -68,6 +68,8 @@ export class TvRoad {
 
 	public boundingBox: Box3;
 
+	public gameObject: GameObject;
+
 	private lastAddedLaneSectionIndex: number;
 
 	private lastAddedRoadObjectIndex: number;
@@ -87,8 +89,6 @@ export class TvRoad {
 	private _length: number;
 
 	private _id: number;
-
-	private _gameObject: GameObject;
 
 	private junction: TvJunction;
 
@@ -210,14 +210,6 @@ export class TvRoad {
 
 	get junctionInstance (): TvJunction {
 		return this.junction;
-	}
-
-	get gameObject () {
-		return this._gameObject;
-	}
-
-	set gameObject ( value ) {
-		this._gameObject = value;
 	}
 
 	get isJunction (): boolean {
@@ -1137,17 +1129,17 @@ export class TvRoad {
 		return coordinates;
 	}
 
-	getReferenceLinePoints ( step = 1.0 ): TvPosTheta[] {
+	getReferenceLinePoints ( step = 1.0, t?: number ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
 		for ( let s = 0; s <= this.length; s += step ) {
 
-			points.push( this.getPosThetaAt( s ) );
+			points.push( this.getPosThetaAt( s, t ) );
 
 		}
 
-		points.push( this.getPosThetaAt( this.length - Maths.Epsilon ) );
+		points.push( this.getPosThetaAt( this.length - Maths.Epsilon, t ) );
 
 		return points;
 	}

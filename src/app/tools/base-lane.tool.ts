@@ -9,9 +9,9 @@ import { LinkedDataService } from "app/core/interfaces/data.service";
 import { Tool } from "./tool";
 import { ViewportEventSubscriber } from "./viewport-event-subscriber";
 import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
-import { AssetNode } from "app/views/editor/project-browser/file-node.model";
+import { Asset } from "app/core/asset/asset.model";
 import { Vector3 } from "three";
-import { DebugService } from "app/core/interfaces/debug.service";
+import { IDebugger } from "app/core/interfaces/debug.service";
 import { ToolHints } from "app/core/interfaces/tool.hints";
 import { AddObjectCommand } from "app/commands/add-object-command";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
@@ -38,7 +38,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	public data: LinkedDataService<TvLane, T>;
 
-	public debugger: DebugService<TvLane, LaneNode<T>>;
+	public debugger: IDebugger<TvLane, LaneNode<T>>;
 
 	public hints: ToolHints<T>;
 
@@ -264,7 +264,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	}
 
-	onAssetDropped ( asset: AssetNode, position: Vector3 ): void {
+	onAssetDropped ( asset: Asset, position: Vector3 ): void {
 
 		this.setHint( 'Asset drop is not supported' );
 

@@ -4,6 +4,7 @@
 
 import { CoordinateSystem } from 'app/services/CoordinateSystem';
 import { CanvasTexture, Object3D, Vector3 } from 'three';
+import { TvTexture } from "../../graphics/texture/tv-texture.model";
 
 export class ThreeJsUtils {
 
@@ -63,7 +64,7 @@ export class ThreeJsUtils {
 		return gameObject;
 	}
 
-	static createPinkTexture ( width, height ): CanvasTexture {
+	static createPinkTexture ( width, height ) {
 
 		// Create a canvas
 		const canvas = document.createElement( 'canvas' );
@@ -80,8 +81,6 @@ export class ThreeJsUtils {
 		context.fillRect( 0, 0, width, height );
 
 		// Create a texture from the canvas
-		const pinkTexture = new CanvasTexture( canvas );
-
-		return pinkTexture;
+		return TvTexture.createFromTexture( 'pink', new CanvasTexture( canvas ) );
 	}
 }

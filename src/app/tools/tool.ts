@@ -4,7 +4,7 @@
 
 import { ToolType } from "./tool-types.enum";
 import { PointerEventData } from "../events/pointer-event-data";
-import { AssetNode } from "../views/editor/project-browser/file-node.model";
+import { Asset } from "../core/asset/asset.model";
 import { Vector3 } from "three";
 
 export interface Tool {
@@ -43,7 +43,7 @@ export interface Tool {
 
 	onObjectRemoved ( object: any ): void;
 
-	onAssetDropped ( asset: AssetNode, position: Vector3 ): void;
+	onAssetDropped ( asset: Asset, position: Vector3 ): void;
 
 	onKeyDown ( e: KeyboardEvent ): void;
 

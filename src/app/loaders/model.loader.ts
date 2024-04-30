@@ -15,16 +15,29 @@ import { StorageService } from 'app/io/storage.service';
 import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, ShapeGeometry } from 'three';
 import { TvConsole } from 'app/core/utils/console';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
+import { AssetLoader } from "../core/interfaces/asset.loader";
+import { Asset } from "../core/asset/asset.model";
 
+/**
+ * @deprecated
+ */
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ModelLoader {
+export class DeprecatedModelLoader implements AssetLoader {
 
 	constructor (
 		private storageService: StorageService,
 		private snackBar: SnackBar
 	) {
+	}
+
+	load ( asset: Asset ): any {
+
+		const path = asset.path;
+
+		this.loadSync( path, null, null );
+
 	}
 
 	loadSync ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
@@ -66,7 +79,7 @@ export class ModelLoader {
 
 	private loadOBJ ( filepath: string, success: Function, error: Function ) {
 
-		var loader = new OBJLoader();
+		const loader = new OBJLoader();
 
 		const data = this.storageService.readSync( filepath );
 
@@ -83,6 +96,7 @@ export class ModelLoader {
 
 		success( group );
 
+		return group;
 	}
 
 	private loadGLTF ( filepath: string, success: Function, error: Function ) {
@@ -128,13 +142,12 @@ export class ModelLoader {
 
 		success( group.scene );
 
+		return group.scene;
 	}
 
 	private async loadFBX ( filepath: string, success: Function, error: Function ) {
 
 		const loader = new FBXLoader();
-
-		// const buffer = await this.fileService.readAsArrayBuffer( filepath );
 
 		const buffer = await this.storageService.readAsync( filepath, {
 			encoding: 'arraybuffer'
@@ -146,6 +159,7 @@ export class ModelLoader {
 
 		success( object );
 
+		return object;
 	}
 
 	private loadSVG ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
@@ -189,7 +203,7 @@ export class ModelLoader {
 
 			// errorCallback
 
-		},  ( error ) => {
+		}, ( error ) => {
 
 			errorCallback( "Error in loading SVG file" );
 
@@ -198,4 +212,5 @@ export class ModelLoader {
 		} );
 
 	}
+
 }

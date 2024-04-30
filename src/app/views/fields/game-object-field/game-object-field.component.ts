@@ -3,10 +3,10 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MetaImporter } from 'app/core/asset/metadata.model';
 import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
-import { Object3D } from 'three';
+import { Asset, AssetType } from "../../../core/asset/asset.model";
+import { AssetService } from "../../../core/asset/asset.service";
+import { SnackBar } from "../../../services/snack-bar.service";
 
 @Component( {
 	selector: 'app-game-object-field',
@@ -24,28 +24,41 @@ export class GameObjectFieldComponent implements OnInit {
 
 	@Input() label: string;
 
-	constructor ( private previewService: AssetPreviewService ) {
+	private asset: Asset;
+
+	constructor (
+		private previewService: AssetPreviewService,
+		private assetService: AssetService,
+		private snackBar: SnackBar,
+	) {
 	}
 
-	public get preview () {
-		return this.metadata ? this.metadata.preview : null;
-	}
-
-	public get metadata () {
-		return AssetDatabase.getMetadata( this.value );
-	}
-
-	public get object () {
-		return AssetDatabase.getInstance<Object3D>( this.value );
-	}
-
-	public get filename () {
-		return AssetDatabase.getAssetNameByGuid( this.value );
+	get preview () {
+		return this.asset?.preview;
 	}
 
 	ngOnInit () {
 
-		if ( this.metadata && !this.preview ) this.metadata.preview = this.previewService.getModelPreview( this.object );
+		this.asset = this.assetService.getAsset( this.value );
+
+		if ( !this.asset ) return;
+
+		if ( this.preview ) return;
+
+		if ( this.asset.type === AssetType.MODEL ) {
+
+			const object = this.assetService.getModelAsset( this.asset.guid );
+
+			this.asset.preview = this.previewService.getModelPreview( object );
+
+		} else if ( this.asset.type === AssetType.OBJECT ) {
+
+			const object = this.assetService.getObjectAsset( this.asset.guid );
+
+			this.asset.preview = this.previewService.getModelPreview( object.instance );
+
+		}
+
 
 	}
 
@@ -89,15 +102,26 @@ export class GameObjectFieldComponent implements OnInit {
 
 		const guid = $event.dataTransfer.getData( 'guid' );
 
-		if ( guid ) {
+		if ( !guid ) {
+			this.snackBar.warn( 'Invalid guid' );
+			return;
+		}
 
-			const metadata = AssetDatabase.getMetadata( guid );
+		const asset = this.assetService.getAsset( guid );
 
-			if ( metadata && metadata.importer === MetaImporter.MODEL ) {
+		if ( !asset ) {
+			this.snackBar.warn( 'Invalid asset. Asset not found' );
+			return;
+		}
 
-				this.changed.emit( guid );
+		if ( asset.type === AssetType.OBJECT || asset.type === AssetType.MODEL ) {
 
-			}
+			this.changed.emit( guid );
+
+		} else {
+
+			this.snackBar.warn( 'Invalid asset type' );
+
 		}
 	}
 }

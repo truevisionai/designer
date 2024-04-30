@@ -1,6 +1,7 @@
 const { contextBridge } = require( 'electron' )
 const remote = require( '@electron/remote' )
 const fs = require( 'fs' )
+const converter = require( 'fbx2gltf' );
 
 // NOTE: fs.stat on macos is not working properly this is bug fix
 const statHelper = {
@@ -21,6 +22,14 @@ contextBridge.exposeInMainWorld( 'electronFs', {
 	fsPromises: () => require( 'fs/promises' ),
 	stat: statHelper
 } )
+
+contextBridge.exposeInMainWorld( 'buffer', {
+	from: ( buffer, arg1 ) => arg1 ? Buffer.from( buffer, arg1 ) : Buffer.from( buffer ),
+} )
+
+contextBridge.exposeInMainWorld( 'fbxToGlTF', {
+	convert: ( sourcePath, destinationPath ) => converter( sourcePath, destinationPath )
+} );
 
 contextBridge.exposeInMainWorld( 'stat', statHelper )
 

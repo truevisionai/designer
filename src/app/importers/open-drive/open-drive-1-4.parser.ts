@@ -34,7 +34,7 @@ import { TvObjectMarking } from '../../map/models/tv-object-marking';
 import { TvPlaneView } from '../../map/models/tv-plane-view';
 import { TvRoadLinkChild, TvRoadLinkChildType } from '../../map/models/tv-road-link-child';
 import { TvRoadObject } from '../../map/models/objects/tv-road-object';
-import { TvRoadSignal } from '../../map/models/tv-road-signal.model';
+import { TvRoadSignal } from '../../map/road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from '../../map/models/tv-road-type.class';
 import { TvRoad } from '../../map/models/tv-road.model';
 import { SignShapeType } from '../../map/services/tv-sign.service';
@@ -896,11 +896,9 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		roadSignal.userData = this.parseUserData( xmlElement );
 
-		if ( roadSignal.userDataMap.has( 'sign_shape' ) ) {
+		if ( roadSignal.userDataMap.has( 'assetGuid' ) ) {
 
-			const signShape = roadSignal.userDataMap.get( 'sign_shape' );
-
-			roadSignal.signShape = SignShapeType[ signShape.attr_value ] as SignShapeType;
+			roadSignal.assetGuid = roadSignal.userDataMap.get( 'assetGuid' ).attr_value;
 
 		}
 	}

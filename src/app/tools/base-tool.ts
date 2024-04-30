@@ -14,8 +14,8 @@ import { AddObjectCommand } from "../commands/add-object-command";
 import { RemoveObjectCommand } from "../commands/remove-object-command";
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
-import { DebugService } from "../core/interfaces/debug.service";
+import { Asset } from 'app/core/asset/asset.model';
+import { IDebugger } from "../core/interfaces/debug.service";
 import { BaseDataService } from 'app/core/interfaces/data.service';
 import { DebugState } from "../services/debug/debug-state";
 import { SelectionService } from "./selection.service";
@@ -35,7 +35,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected selectionService: SelectionService;
 
-	protected debugService: DebugService<T, any>;
+	protected debugService: IDebugger<T, any>;
 
 	protected dataService: BaseDataService<T>;
 
@@ -370,7 +370,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	}
 
-	onAssetDropped ( asset: AssetNode, position: Vector3 ) {
+	onAssetDropped ( asset: Asset, position: Vector3 ) {
 
 		if ( !this.objectFactory ) {
 
@@ -392,7 +392,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	}
 
-	setDebugService ( debugService: DebugService<T, any> ) {
+	setDebugService ( debugService: IDebugger<T, any> ) {
 
 		this.debugService = debugService;
 

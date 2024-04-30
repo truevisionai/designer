@@ -3,11 +3,13 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { MetaImporter } from 'app/core/asset/metadata.model';
-import { TvMaterial } from 'app/graphics/material/tv-material';
 import { AssetPreviewService } from '../../inspectors/asset-preview/asset-preview.service';
 import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
+import { AssetService } from "../../../core/asset/asset.service";
+import { TvMaterialService } from "../../../graphics/material/tv-material.service";
+import { MaterialAsset } from "../../../graphics/material/tv-material.asset";
+import { Asset, AssetType } from "../../../core/asset/asset.model";
+import { SnackBar } from "../../../services/snack-bar.service";
 
 @Component( {
 	selector: 'app-material-field',
@@ -19,37 +21,48 @@ export class MaterialFieldComponent extends AbstractFieldComponent implements On
 	// we will either receieve a guid or a value
 	// value is also a guid
 	@Input() value: string;
+
 	@Input() guid: string;
 
 	@Output() changed = new EventEmitter<string>();
 
 	@Input() label: string;
 
-	constructor ( private previewService: AssetPreviewService ) {
+	preview: string;
+
+	materialAsset: MaterialAsset;
+
+	asset: Asset;
+
+	constructor (
+		private previewService: AssetPreviewService,
+		private assetService: AssetService,
+		private materialService: TvMaterialService,
+		private snackBar: SnackBar
+	) {
 		super();
 	}
 
-	public get preview () {
-		return this.metadata ? this.metadata.preview : null;
-	}
-
 	public get metadata () {
-		return AssetDatabase.getMetadata( this.guid || this.value );
-	}
-
-	public get material () {
-		return AssetDatabase.getInstance<TvMaterial>( this.guid || this.value );
+		return this.assetService.getMetadata( this.guid || this.value );
 	}
 
 	public get filename () {
-		return AssetDatabase.getAssetNameByGuid( this.guid || this.value );
+		return this.assetService.getAssetName( this.guid || this.value );
 	}
 
 	ngOnInit () {
 
-		if ( this.metadata && !this.preview ) {
-			this.metadata.preview = this.previewService.getMaterialPreview( this.material );
+		this.asset = this.assetService.getAsset( this.guid || this.value );
+
+		if ( !this.asset ) {
+			this.snackBar.warn( 'Invalid asset' );
+			return;
 		}
+
+		this.materialAsset = this.materialService.getMaterial( this.guid || this.value );
+
+		this.preview = this.previewService.getPreview( this.asset );
 
 	}
 
@@ -72,7 +85,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent implements On
 	@HostListener( 'dragover', [ '$event' ] )
 	onDragOver ( $event ) {
 
-		// Debug.log( "dragover", $event )
+		// DONT REMOVE THIS
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -82,7 +95,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent implements On
 	@HostListener( 'dragleave', [ '$event' ] )
 	onDragLeave ( $event ) {
 
-		// Debug.log( "dragleave", $event )
+		// DONT REMOVE THIS
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -92,26 +105,29 @@ export class MaterialFieldComponent extends AbstractFieldComponent implements On
 	@HostListener( 'drop', [ '$event' ] )
 	onDrop ( $event: DragEvent ) {
 
-		// Debug.log( "drop", $event )
-		// Debug.log( "guid", $event.dataTransfer.getData( "guid" ) );
-
 		$event.preventDefault();
 		$event.stopPropagation();
 
 		const guid = $event.dataTransfer.getData( 'guid' );
 
-		if ( guid ) {
-
-			const metadata = AssetDatabase.getMetadata( guid );
-
-			if ( metadata && metadata.importer === MetaImporter.MATERIAL ) {
-
-				this.changed.emit( guid );
-
-				// update preview
-				// metadata.preview = this.previewService.getMaterialPreview( AssetDatabase.getInstance( guid ) );
-			}
+		if ( !guid ) {
+			this.snackBar.warn( 'Invalid guid' );
+			return;
 		}
+
+		const asset = this.assetService.getAsset( guid );
+
+		if ( !asset ) {
+			this.snackBar.warn( 'Invalid asset. Asset not found' );
+			return;
+		}
+
+		if ( asset.type != AssetType.MATERIAL ) {
+			this.snackBar.warn( 'Invalid asset. Not a material' );
+			return;
+		}
+
+		this.changed.emit( guid );
 	}
 
 }

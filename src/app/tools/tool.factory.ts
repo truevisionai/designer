@@ -10,7 +10,7 @@ import { SurfaceToolService } from "./surface/surface-tool.service";
 import { PropPointService } from "../map/prop-point/prop-point.service";
 import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
 import { RoadElevationToolService } from "./road-elevation/road-elevation-tool.service";
-import { ManeuverService } from "../services/junction/maneuver.service";
+import { ManeuverToolService } from "./maneuver/maneuver-tool.service";
 import { LaneWidthToolService } from "./lane-width/lane-width-tool.service";
 import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service";
 import { LaneToolService } from "./lane/lane-tool.service";
@@ -55,7 +55,7 @@ import { ParkingLotTool } from "./parking/parking-lot.tool";
 import { ControlPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
 import { SelectionService } from "./selection.service";
 import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
-import { ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-tag-strategy";
+import { ObjectTagStrategy, ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-tag-strategy";
 import { Surface } from 'app/map/surface/surface.model';
 import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
 import { ControlPointFactory } from "../factories/control-point.factory";
@@ -74,8 +74,13 @@ import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select
 import {
 	EndLaneMovingStrategy, MidLaneMovingStrategy,
 } from "../core/strategies/move-strategies/end-lane.moving.strategy";
+import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies/follow-heading-moving-strategy';
 import { LaneNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { ManeuverMesh } from 'app/services/junction/junction.debug';
+import { FreeMovingStrategy } from 'app/core/strategies/move-strategies/free-moving-strategy';
 
 @Injectable( {
 	providedIn: 'root'
@@ -89,7 +94,7 @@ export class ToolFactory {
 		private propPointService: PropPointService,
 		private roadCircleService: RoadCircleToolService,
 		private roadElevationService: RoadElevationToolService,
-		private maneuverService: ManeuverService,
+		private maneuverToolService: ManeuverToolService,
 		private laneWidthService: LaneWidthToolService,
 		private laneMarkingService: LaneMarkingToolService,
 		private laneToolService: LaneToolService,
@@ -126,7 +131,7 @@ export class ToolFactory {
 				tool = new RoadCircleTool( this.roadCircleService );
 				break;
 			case ToolType.Maneuver:
-				tool = new ManeuverTool( this.maneuverService );
+				tool = new ManeuverTool( this.maneuverToolService );
 				break;
 			case ToolType.Junction:
 				tool = new JunctionTool( this.junctionToolService );
@@ -275,6 +280,23 @@ export class ToolFactory {
 			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 			this.selectionService.registerStrategy( Surface.name, new ObjectUserDataStrategy( Surface.tag, 'surface' ) );
 			tool.setTypeName( Surface.name );
+		}
+
+		if ( type == ToolType.Maneuver ) {
+
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( 'link' ) );
+			this.selectionService.registerStrategy( TvJunction.name, new ObjectUserDataStrategy( 'junction', 'junction' ) );
+
+			this.selectionService.registerTag( SimpleControlPoint.name, SimpleControlPoint.name );
+			this.selectionService.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
+			this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
+			this.selectionService.registerTag( TvJunction.name, TvJunction.name );
+
+			this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
+
+			tool.setTypeName( TvJunction.name );
+
 		}
 
 		tool.setSelectionService( this.selectionService );

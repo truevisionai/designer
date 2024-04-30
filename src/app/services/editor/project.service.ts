@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { TvElectronService } from '../tv-electron.service';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { Asset } from 'app/core/asset/asset.model';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { StorageService } from 'app/io/storage.service';
 import { AssetService } from 'app/core/asset/asset.service';
@@ -188,7 +188,7 @@ export class ProjectService {
 		}
 	}
 
-	fetchMetaFile ( file: AssetNode | string ): Metadata {
+	fetchMetaFile ( file: Asset | string ): Metadata {
 
 		try {
 

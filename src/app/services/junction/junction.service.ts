@@ -14,43 +14,89 @@ import { JunctionNode, JunctionNodeService } from './junction-node.service';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { JunctionConnectionService } from "./junction-connection.service";
-import { LaneLinkService } from './lane-link.service';
 import { MapService } from '../map/map.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { TvContactPoint, TvOrientation } from 'app/map/models/tv-common';
 import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
-import { RoadService } from '../road/road.service';
 import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 import { Debug } from 'app/core/utils/debug';
+import { BaseDataService } from "../../core/interfaces/data.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionService {
+export class JunctionService extends BaseDataService<TvJunction> {
 
 	private objectMap = new Object3DMap<TvJunction, Object3D>();
 
 	constructor (
 		private factory: JunctionFactory,
 		private dividerService: RoadDividerService,
-		private junctionNodeService: JunctionNodeService,
 		public junctionMeshService: JunctionMeshService,
 		public connectionService: JunctionConnectionService,
 		public debug: DebugDrawService,
 		public base: BaseToolService,
-		public laneLinkService: LaneLinkService,
 		public mapService: MapService,
-		private roadService: RoadService,
 	) {
+		super();
 	}
 
 	get junctions () {
 
 		return this.mapService.map.getJunctions();
 
+	}
+
+	createFromCoords ( coords: TvRoadCoord[] ): TvJunction {
+
+		let junction: TvJunction;
+
+		junction = this.createNewJunction();
+
+		for ( let i = 0; i < coords.length; i++ ) {
+
+			const coordA = coords[ i ];
+
+			for ( let j = i + 1; j < coords.length; j++ ) {
+
+				const coordB = coords[ j ];
+
+				// if roads are same
+				if ( coordA.road === coordB.road ) {
+
+					const high = coordA.s > coordB.s ? coordA : coordB;
+
+					const low = coordA.s < coordB.s ? coordA : coordB;
+
+					const newRoadCoord = this.dividerService.cutRoadForJunctionFromTo( high, junction, low.s, high.s );
+
+					this.addConnectionsFromContact(
+						junction,
+						coordA.road,
+						TvContactPoint.END,
+						newRoadCoord.road,
+						TvContactPoint.START
+					);
+
+				} else {
+
+					this.addConnectionsFromContact(
+						junction,
+						coordA.road,
+						coordA.contact,
+						coordB.road,
+						coordB.contact
+					);
+				}
+			}
+		}
+
+		this.connectionService.postProcessJunction( junction );
+
+		return junction;
 	}
 
 	getJunctionById ( id: number ) {
@@ -147,7 +193,7 @@ export class JunctionService {
 
 	createJunctionMesh ( junction: TvJunction ) {
 
-		// const mesh = this.junctionMeshService.createMeshFromJunction( junction );
+		return this.junctionMeshService.createMeshFromJunction( junction );
 
 		// this.objectMap.add( junction, mesh );
 
@@ -298,6 +344,30 @@ export class JunctionService {
 		}
 
 		return boundingBox;
+	}
+
+	add ( object: TvJunction ): void {
+
+		this.addJunction( object );
+
+	}
+
+	all (): TvJunction[] {
+
+		return this.junctions;
+
+	}
+
+	remove ( object: TvJunction ): void {
+
+		this.removeJunction( object );
+
+	}
+
+	update ( object: TvJunction ): void {
+
+		// this.createJunctionMesh( object );
+
 	}
 
 }

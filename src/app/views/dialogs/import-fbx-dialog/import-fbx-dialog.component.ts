@@ -4,20 +4,12 @@
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { DepAssetFactory } from 'app/core/asset/asset-factory.service';
-import { MetadataFactory } from 'app/factories/metadata-factory.service';
-import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
-import { TvMaterial } from 'app/graphics/material/tv-material';
-import { TvPrefab } from 'app/graphics/prefab/tv-prefab.model';
-import { TvMesh } from 'app/graphics/mesh/tv-mesh';
-import { CoordinateSystem } from 'app/services/CoordinateSystem';
-import { Group, Material, Mesh, Object3D } from 'three';
-
+import { Object3D } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { FileUtils } from '../../../io/file-utils';
 import { FileService } from '../../../io/file.service';
-import { Debug } from 'app/core/utils/debug';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { TvConsole } from 'app/core/utils/console';
 
 export class ImportFbxDialogData {
 	constructor ( public path: string, public destinationPath: string, public extension: string ) {
@@ -31,13 +23,15 @@ export class ImportFbxDialogData {
 } )
 export class ImportFbxDialogComponent implements OnInit {
 
+	error: string;
+
 	object: Object3D;
+
+	assetNode: Asset;
 
 	scale = 1;
 
 	destinationFolder: string;
-	private materialUuidMap = new Map<string, string>();
-	private geometryUuidMap = new Map<string, string>();
 
 	constructor (
 		private dialogRef: MatDialogRef<ImportFbxDialogComponent>,
@@ -50,196 +44,29 @@ export class ImportFbxDialogComponent implements OnInit {
 
 		const loader = new FBXLoader();
 
-		const buffer = await this.fileService.readAsArrayBuffer( this.data.path );
+		try {
 
-		const directory = FileUtils.getDirectoryFromPath( this.data.path );
+			const buffer = await this.fileService.readAsArrayBuffer( this.data.path );
 
-		this.object = loader.parse( buffer, directory );
+			const directory = FileUtils.getDirectoryFromPath( this.data.path );
 
-	}
+			this.object = loader.parse( buffer, directory );
 
-	onScaleChanged ( $scale ) {
+			this.assetNode = new Asset( AssetType.MODEL, '', '' );
 
-		// this.object?.scale.setScalar( $scale );
+		} catch ( e: any ) {
+
+			this.error = 'Error in loading fbx file ' + e.message.replace( 'THREE', '' );
+
+			TvConsole.error( 'Error in loading fbx file ' );
+
+
+		}
 
 	}
 
 	import () {
 
-		const directory = FileUtils.getDirectoryFromPath( this.data.destinationPath );
-
-		const folder = DepAssetFactory.createNewFolder( directory );
-
-		this.destinationFolder = folder.path;
-
-		ThreeJsUtils.changeCoordinateSystem( this.object, CoordinateSystem.UNITY_GLTF, CoordinateSystem.OPEN_DRIVE );
-
-		const prefab = new TvPrefab();
-
-		prefab.add( this.makePrefab( this.object ) );
-
-		this.saveObject( prefab );
-
-		this.dialogRef.close();
-
-	}
-
-	makePrefab ( object: Object3D ): TvPrefab {
-
-		const prefab = new TvPrefab();
-
-		prefab.copy( object as any, false );
-
-		object.children.forEach( child => {
-
-			prefab.add( this.parseChild( child ) );
-
-		} );
-
-		return prefab;
-	}
-
-	parseChild ( object: Object3D ): Object3D {
-
-		if ( object instanceof Mesh ) {
-
-			const mesh = new TvMesh( object.uuid, object.name );
-
-			mesh.copy( object as any, false );
-
-			if ( object.material instanceof Array ) {
-
-				mesh.materialGuid = object.material.map(
-					material => this.saveMaterial( material )
-				);
-
-			} else {
-
-				mesh.materialGuid = this.saveMaterial( object.material );
-
-			}
-
-			mesh.material = object.material;
-
-			if ( object.geometry ) {
-
-				mesh.geometry = object.geometry;
-
-				mesh.geometryGuid = this.saveGeometry( mesh );
-
-			}
-
-			return mesh;
-		} else if ( object instanceof Group ) {
-
-			const prefab = new TvPrefab();
-
-			prefab.copy( object as any, false );
-
-			object.children.forEach( child => {
-
-				prefab.add( this.parseChild( child ) );
-
-			} );
-
-			return prefab;
-
-		} else if ( object instanceof Object3D ) {
-
-			const prefab = new TvPrefab();
-
-			prefab.copy( object as any, false );
-
-			object.children.forEach( child => {
-
-				prefab.add( this.parseChild( child ) );
-
-			} );
-
-		} else {
-
-			console.error( object );
-
-			return new TvPrefab();
-
-		}
-	}
-
-	saveObject ( prefab: TvPrefab ) {
-
-		// const directory = FileUtils.getDirectoryFromPath( this.data.destinationPath );
-
-		const filename = 'imported-prefab';
-
-		const extension = 'prefab';
-
-		const destinationPath = this.fileService.join( this.destinationFolder, filename + '.' + extension );
-
-		const metadata = MetadataFactory.createMetadata( filename, extension, destinationPath, prefab.guid );
-
-		DepAssetFactory.updatePrefab( metadata.path, prefab );
-
-		AssetDatabase.setInstance( metadata.guid, prefab );
-
-		return metadata.guid;
-	}
-
-
-	saveGeometry ( mesh: TvMesh ): string {
-
-		if ( this.geometryUuidMap.has( mesh.geometry.uuid ) ) {
-
-			Debug.log( 'geometry already saved', mesh.geometry.uuid, mesh.geometry.name );
-
-			return this.geometryUuidMap.get( mesh.geometry.uuid );
-		}
-
-
-		const filename = mesh.name + '-geometry' || mesh.geometry.uuid;
-
-		const extension = 'geometry';
-
-		const destinationPath = this.fileService.join( this.destinationFolder, filename + '.' + extension );
-
-		const metadata = MetadataFactory.createMetadata( filename, extension, destinationPath, mesh.geometry.uuid );
-
-		DepAssetFactory.updateGeometry( metadata.path, mesh.geometry );
-
-		AssetDatabase.setInstance( metadata.guid, mesh.geometry );
-
-		this.geometryUuidMap.set( mesh.geometry.uuid, metadata.guid );
-
-		return metadata.guid;
-	}
-
-	saveMaterial ( material: Material ): string {
-
-		if ( this.materialUuidMap.has( material.uuid ) ) {
-
-			Debug.log( 'material already saved', material.uuid, material.name );
-
-			return this.materialUuidMap.get( material.uuid );
-		}
-
-		// const directory = FileUtils.getDirectoryFromPath( this.data.destinationPath );
-
-		const filename = FileUtils.getFilenameFromPath( material.name );
-
-		const extension = 'material';
-
-		const destinationPath = this.fileService.join( this.destinationFolder, filename + '.' + extension );
-
-		const tvMaterial = new TvMaterial( material.uuid ).copy( material );
-
-		const metadata = MetadataFactory.createMetadata( filename, extension, destinationPath, tvMaterial.guid );
-
-		DepAssetFactory.updateMaterial( metadata.path, tvMaterial );
-
-		AssetDatabase.setInstance( metadata.guid, tvMaterial );
-
-		this.materialUuidMap.set( material.uuid, metadata.guid );
-
-		return metadata.guid;
 	}
 
 }

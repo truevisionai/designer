@@ -9,7 +9,7 @@ import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/
 import { Vector3 } from 'three';
 import { XmlElement } from "../importers/xml.element";
 import { Injectable } from '@angular/core';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { Asset } from 'app/core/asset/asset.model';
 import { StorageService } from 'app/io/storage.service';
 
 @Injectable( {
@@ -22,7 +22,7 @@ export class TvEntityLoader {
 	) {
 	}
 
-	loadEntity ( asset: AssetNode ) {
+	loadEntity ( asset: Asset ) {
 
 		const contents = this.storageService.readSync( asset.path );
 

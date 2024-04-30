@@ -8,15 +8,12 @@ import {
 	BufferGeometry,
 	CatmullRomCurve3,
 	Color,
-	Euler,
 	Float32BufferAttribute,
-	Material,
 	Mesh,
 	MeshBasicMaterial,
 	MeshStandardMaterial,
 	Object3D,
 	PlaneGeometry,
-	Texture,
 	Vector3
 } from 'three';
 import { ObjectTypes, TvSide } from '../models/tv-common';
@@ -25,12 +22,16 @@ import { TvRoad } from "../models/tv-road.model";
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { Maths } from 'app/utils/maths';
 import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvConsole } from 'app/core/utils/console';
 import { ExtrudeService } from '../../factories/extrude.service';
 import { TvObjectVertexLocal } from "../models/objects/tv-object-vertex-local";
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
 import { MeshBuilder } from "../../core/interfaces/mesh.builder";
+import { AssetService } from "../../core/asset/asset.service";
+import { TvMaterialService } from "../../graphics/material/tv-material.service";
+import { TvTextureService } from "../../graphics/texture/tv-texture.service";
+import { AssetType } from "../../core/asset/asset.model";
+import { COLOR } from "../../views/shared/utils/colors.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -38,7 +39,10 @@ import { MeshBuilder } from "../../core/interfaces/mesh.builder";
 export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	constructor (
-		private extrudeService: ExtrudeService
+		private extrudeService: ExtrudeService,
+		private assetService: AssetService,
+		private materialService: TvMaterialService,
+		private textureService: TvTextureService,
 	) {
 		super();
 	}
@@ -87,23 +91,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		if ( !roadObject.assetGuid ) return;
 
-		const asset = AssetDatabase.getInstance( roadObject.assetGuid );
-
-		let material: MeshStandardMaterial;
-
-		if ( asset instanceof MeshStandardMaterial ) {
-
-			material = asset;
-
-		} else if ( asset instanceof Texture ) {
-
-			material = new MeshStandardMaterial( {
-				map: asset,
-				transparent: true,
-				alphaTest: 0.9
-			} );
-
-		}
+		const material = this.getRoadMarkMaterial( roadObject.assetGuid );
 
 		const roadCoord = road.getPosThetaAt( roadObject.s, roadObject.t );
 
@@ -272,7 +260,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 				const posTheta = road.getPosThetaAt( s, t );
 
-				const repeatMesh = AssetDatabase.getInstance<Object3D>( roadObject.assetGuid )?.clone();
+				const repeatMesh = this.assetService.getInstance<Object3D>( roadObject.assetGuid )?.clone();
 
 				repeatMesh.name = 'repeat:' + i;
 
@@ -884,4 +872,28 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 	// 	return new THREE.Mesh( geometry, material );
 	//
 	// }
+
+	private getRoadMarkMaterial ( assetGuid: string ) {
+
+		const asset = this.assetService.getAsset( assetGuid );
+
+		if ( asset?.type == AssetType.MATERIAL ) {
+
+			return this.materialService.getMaterial( assetGuid ).material;
+
+		} else if ( asset?.type == AssetType.TEXTURE ) {
+
+			const texture = this.textureService.getTexture( assetGuid );
+
+			return new MeshStandardMaterial( {
+				map: texture.texture,
+				transparent: true,
+				alphaTest: 0.9
+			} );
+
+		} else {
+
+			return new MeshStandardMaterial( { color: COLOR.MAGENTA } );
+		}
+	}
 }

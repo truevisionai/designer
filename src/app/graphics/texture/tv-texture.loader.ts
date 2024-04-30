@@ -3,26 +3,41 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
-import { LinearFilter, LinearMipMapLinearFilter, RGBAFormat, SRGBColorSpace, Texture, TextureLoader, UnsignedByteType } from 'three';
+import { Asset } from 'app/core/asset/asset.model';
+import {
+	LinearFilter,
+	LinearMipMapLinearFilter,
+	RGBAFormat,
+	SRGBColorSpace,
+	TextureLoader,
+	UnsignedByteType
+} from 'three';
+import { TextureAsset, TvTexture } from "./tv-texture.model";
+import { AssetLoader } from "../../core/interfaces/asset.loader";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class TvTextureLoader {
+export class TvTextureLoader implements AssetLoader {
 
 	private loader = new TextureLoader();
 
-	constructor () { }
+	constructor () {
+	}
 
-	loadTexture ( asset: AssetNode ): Texture {
+	load ( asset: Asset ): TextureAsset {
 
 		const json = asset.metadata.data;
 
-		const texture = this.loader.load( asset.path );
+		return this.loadFromJSON( json, asset.path, asset.guid );
 
-		texture.uuid = json.uuid;
+	}
+
+	loadFromJSON ( json: any, path: string, guid: string ): TextureAsset {
+
+		const texture = this.loader.load( path );
+
+		texture.uuid = guid || json.uuid;
 
 		texture.name = json.name;
 
@@ -48,8 +63,9 @@ export class TvTextureLoader {
 		texture.format = json.format || RGBAFormat;
 		texture.type = json.type || UnsignedByteType;
 
-		return texture;
+		const tvTexture = TvTexture.createFromTexture( guid || json.uuid, texture );
+
+		return new TextureAsset( tvTexture.guid, tvTexture );
 
 	}
-
 }

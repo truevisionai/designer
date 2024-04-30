@@ -3,18 +3,18 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseDebugService } from "../../core/interfaces/debug.service";
 import { AutoSplineV2 } from "../../core/shapes/auto-spline-v2";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { Line } from "three";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { DebugState } from "./debug-state";
+import { BaseDebugger } from "../../core/interfaces/base-debugger";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class AutoSplineHelper extends BaseDebugService<AutoSplineV2> {
+export class AutoSplineHelper extends BaseDebugger<AutoSplineV2> {
 
 	private lines = new Object3DArrayMap<AbstractSpline, Line[]>();
 

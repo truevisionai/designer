@@ -19,7 +19,7 @@ export interface IStorageProvider {
 
 	readSync ( path: string, options?: any ): string;
 
-	writeSync ( path: string, contents: string, options?: any ): PutFileResponse;
+	writeSync ( path: string, contents: any, options?: any ): PutFileResponse;
 
 	writeAsync ( path: string, contents: string, options?: any ): Promise<PutFileResponse>;
 
@@ -66,7 +66,7 @@ export class StorageService {
 
 	}
 
-	writeSync ( path: string, contents: string, options?: any ): PutFileResponse {
+	writeSync ( path: string, contents: any, options?: any ): PutFileResponse {
 
 		return this.storageProvider.writeSync( path, contents, options );
 

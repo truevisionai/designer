@@ -3,50 +3,50 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AssetNode } from "app/views/editor/project-browser/file-node.model";
+import { Asset } from "app/core/asset/asset.model";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class AssetManager {
 
-	private textureAsset: AssetNode;
+	private textureAsset: Asset;
 
-	private materialAsset: AssetNode;
+	private materialAsset: Asset;
 
-	private _modelAsset: AssetNode;
+	private _modelAsset: Asset;
 
 	constructor () {
 
 	}
 
-	get modelAsset (): AssetNode {
+	get modelAsset (): Asset {
 		return this._modelAsset;
 	}
 
-	set modelAsset ( value: AssetNode ) {
+	set modelAsset ( value: Asset ) {
 		this._modelAsset = value;
 	}
 
-	setTextureAsset ( asset: AssetNode ) {
+	setTextureAsset ( asset: Asset ) {
 
 		this.textureAsset = asset;
 
 	}
 
-	getTextureAsset (): AssetNode {
+	getTextureAsset (): Asset {
 
 		return this.textureAsset;
 
 	}
 
-	setMaterialAsset ( asset: AssetNode ) {
+	setMaterialAsset ( asset: Asset ) {
 
 		this.materialAsset = asset;
 
 	}
 
-	getMaterialAsset (): AssetNode {
+	getMaterialAsset (): Asset {
 
 		return this.materialAsset;
 

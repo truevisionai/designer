@@ -6,7 +6,7 @@ import { PointerEventData } from "app/events/pointer-event-data";
 import { BaseTool } from "../base-tool";
 import { ToolType } from "../tool-types.enum";
 import { TextMarkingToolService } from "./text-marking-tool.service";
-import { TvRoadSignal } from "app/map/models/tv-road-signal.model";
+import { TvRoadSignal } from "app/map/road-signal/tv-road-signal.model";
 import { AppInspector } from "app/core/inspector";
 import { ControlPointStrategy } from "app/core/strategies/select-strategies/control-point-strategy";
 import { OnRoadMovingStrategy } from "app/core/strategies/move-strategies/on-road-moving.strategy";

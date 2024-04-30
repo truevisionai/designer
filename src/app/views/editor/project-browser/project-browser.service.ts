@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
-import { AssetNode, AssetType } from './file-node.model';
+import { Asset, AssetType } from '../../../core/asset/asset.model';
 import { StorageService } from "../../../io/storage.service";
 import { Metadata } from "../../../core/asset/metadata.model";
 
@@ -12,7 +12,7 @@ import { Metadata } from "../../../core/asset/metadata.model";
 } )
 export class ProjectBrowserService {
 
-	public folderChanged = new EventEmitter<AssetNode>();
+	public folderChanged = new EventEmitter<Asset>();
 
 	constructor (
 		private storage: StorageService
@@ -23,7 +23,7 @@ export class ProjectBrowserService {
 
 		return this.storage.getDirectoryFiles( path ).filter( node => node.type == 'directory' ).map( node => {
 
-			return new AssetNode( AssetType.DIRECTORY, node.name, node.path );
+			return new Asset( AssetType.DIRECTORY, node.name, node.path );
 
 		} );
 
@@ -31,28 +31,35 @@ export class ProjectBrowserService {
 
 	getAssets ( path: string ) {
 
-		return this.storage.getDirectoryFiles( path )
-			.filter( node => !node.name.includes( ".meta" ) )
-			.filter( node => this.hasMetadata( node ) )
-			.map( node => {
+		const assets: Asset[] = [];
 
-				const metadata = this.getMetadata( node );
+		for ( const node of this.storage.getDirectoryFiles( path ) ) {
 
-				if ( node.type == 'directory' ) {
+			if ( node.name.includes( ".meta" ) ) continue;
 
-					return new AssetNode( AssetType.DIRECTORY, node.name, node.path, metadata );
+			if ( !this.hasMetadata( node ) ) continue;
 
-				}
+			const metadata = this.getMetadata( node );
 
-				const type = AssetNode.getType( metadata.importer );
+			if ( node.type == 'directory' ) {
 
-				return new AssetNode( type, node.name, node.path, metadata );
+				assets.push( new Asset( AssetType.DIRECTORY, node.name, node.path, metadata ) );
 
-			} );
+			} else {
+
+				const type = Asset.getType( metadata.importer );
+
+				assets.push( new Asset( type, node.name, node.path, metadata ) );
+
+			}
+
+		}
+
+		return assets;
 
 	}
 
-	getMetadata ( file: AssetNode | string ): Metadata {
+	getMetadata ( file: Asset | string ): Metadata {
 
 		try {
 
@@ -77,7 +84,7 @@ export class ProjectBrowserService {
 
 	}
 
-	hasMetadata ( file: AssetNode | string ): boolean {
+	hasMetadata ( file: Asset | string ): boolean {
 
 		try {
 

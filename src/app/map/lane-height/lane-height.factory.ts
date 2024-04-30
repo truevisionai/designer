@@ -7,7 +7,7 @@ import { TvLaneHeight } from "./lane-height.model";
 import { Vector3 } from "three";
 import { Injectable } from "@angular/core";
 import { TvLane } from "../models/tv-lane";
-import { AssetNode } from "app/views/editor/project-browser/file-node.model";
+import { Asset } from "app/core/asset/asset.model";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { LaneNode } from "../../objects/lane-node";
 
@@ -46,7 +46,7 @@ export class LaneHeightFactory extends LaneElementFactory<TvLaneHeight> implemen
 
 	}
 
-	createFromAsset ( asset: AssetNode, position: Vector3 ): TvLaneHeight {
+	createFromAsset ( asset: Asset, position: Vector3 ): TvLaneHeight {
 
 		throw new Error( "Method not implemented." );
 

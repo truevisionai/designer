@@ -16,7 +16,12 @@ import {
 	ViewContainerRef
 } from '@angular/core';
 import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
-import { getSerializableActions, getSerializableFields, ISerializedActionSetting, ISerializedFieldSetting } from 'app/core/components/serialization';
+import {
+	getSerializableActions,
+	getSerializableFields,
+	ISerializedActionSetting,
+	ISerializedFieldSetting
+} from 'app/core/components/serialization';
 import { IComponent } from 'app/objects/game-object';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
@@ -33,7 +38,6 @@ import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/gam
 import { MaterialFieldComponent } from 'app/views/fields/material-field/material-field.component';
 import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-field.component';
 import { Subscription } from 'rxjs';
-
 
 @Directive( {
 	selector: '[app-field-host]',
@@ -102,6 +106,9 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	ngOnInit () {
 
+		// change label to class name
+		// if ( this.data ) this.label = this.data.constructor.name;
+
 		if ( this.data ) this.serializableFields = getSerializableFields( this.data );
 
 		if ( this.data ) this.serializableActions = getSerializableActions( this.data );
@@ -114,7 +121,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	reloadData () {
+	reload () {
 
 		for ( const [ field, componentRef ] of this.fieldComponents ) {
 
@@ -185,8 +192,6 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 			CommandHistory.execute( new SetValueCommand( data, item.field, value ) );
 
-			this.reloadData();
-
 		} );
 
 		componentRef.instance.clicked?.subscribe( ( value ) => {
@@ -227,12 +232,12 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 }
 
-
 @Component( {
 	selector: 'app-dynamic-array-inspector',
-	template: `<div *ngFor="let item of data">
-	<ng-container app-field-host></ng-container>
-</div>`,
+	template: `
+        <div *ngFor="let item of data">
+            <ng-container app-field-host></ng-container>
+        </div>`,
 	styleUrls: [ './dynamic-inspector.component.scss' ]
 } )
 export class DynamicArrayInspectorComponent implements OnInit, AfterViewInit {

@@ -2,36 +2,31 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { ManeuverService } from 'app/services/junction/maneuver.service';
+import { ManeuverToolService } from 'app/tools/maneuver/maneuver-tool.service';
+import { PointerEventData } from 'app/events/pointer-event-data';
+import { DebugServiceProvider } from 'app/core/providers/debug-service.provider';
+import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { DebugState } from "../../services/debug/debug-state";
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { ManeuverMesh } from 'app/services/junction/junction.debug';
 
-export class ManeuverTool extends BaseTool<any>{
+export class ManeuverTool extends BaseTool<any> {
 
 	name: string = 'ManeuverTool';
 
 	toolType = ToolType.Maneuver;
 
-	//public selectionTool: SelectionTool<JunctionEntryObject>;
-
-	// private entries: JunctionEntryObject[] = [];
-
-	// private lanePathObjects = [];
-
-	//private selected: JunctionEntryObject[] = [];
-
-	// private laneDirectionHelper = new OdLaneDirectionBuilder( null );
-
-	constructor ( private maneuverService: ManeuverService ) {
+	constructor ( private tool: ManeuverToolService ) {
 
 		super();
-
-		//this.selectionTool = new SelectionTool( JunctionEntryObject.tag );
 
 	}
 
 	init () {
+
+		super.init();
 
 	}
 
@@ -39,184 +34,87 @@ export class ManeuverTool extends BaseTool<any>{
 
 		super.enable();
 
-		this.maneuverService.showAllManeuvers();
-		this.maneuverService.showAllEntryExitPoints();
 	}
 
 	disable () {
 
 		super.disable();
 
-		//this.selectionTool?.dispose();
-
-		this.maneuverService.hideAllManeuvers();
-		this.maneuverService.hideAllEntryExitPoints();
-	}
-
-	onPointerClicked ( e: PointerEventData ) {
-
-		//if ( e.button != MouseButton.LEFT ) return;
-		//
-		//const shiftKeyDown = KeyboardEvents.isShiftKeyDown;
-		//
-		//if ( shiftKeyDown ) {
-		//
-		//	this.selectionTool?.start( e );
-		//
-		//} else if ( this.selectionTool?.isSelecting ) {
-		//
-		//	const newValue = this.selected.concat( this.selectionTool?.end( e ) );
-		//
-		//	CommandHistory.execute( new SelectPointsCommand( this, newValue, JunctionEntryInspector, newValue ) );
-		//
-		//	this.setHint( 'Use LEFT CLICK to select junctions points' );
-		//
-		//} else {
-		//
-		//	if ( !shiftKeyDown && this.isJunctionObjectSelected( e ) ) return;
-		//
-		//	if ( this.selected.length > 0 ) {
-		//
-		//		CommandHistory.execute( new SelectPointsCommand( this, [], null, null ), );
-		//
-		//		this.setHint( 'Use LEFT CLICK to select junctions points' );
-		//
-		//	}
-		//}
-	}
-
-	onPointerUp ( e: PointerEventData ) {
+		this.tool.junctionDebugger.clear();
+		this.tool.maneuverDebugger.clear();
 
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		//if ( this.selectionTool?.isSelecting ) {
-		//
-		//	this.selectionTool?.update( e ).forEach( object => {
-		//		object.select();
-		//	} );
-		//
-		//}
+		this.highlight( e );
+
+		if ( !this.isPointerDown ) return;
+
+		if ( !this.currentSelectedPoint ) return;
+
+		if ( !this.currentSelectedPoint.isSelected ) return;
+
+		const newPosition = this.selectionService.handleTargetMovement( e, this.currentSelectedPoint );
+
+		this.currentSelectedPoint.copyPosition( newPosition.position );
+
+		// this.dataService.updatePoint( this.currentSelectedPoint.mainObject, this.currentSelectedPoint );
+
+		// this.debugService.setDebugState( this.currentSelectedPoint.mainObject, DebugState.SELECTED );
+
+		this.currentSelectedPointMoved = true;
 
 	}
 
-	isJunctionObjectSelected ( event: PointerEventData ) {
+	onPointerDownSelect ( e: PointerEventData ): void {
 
-		//const junctionObject = this.findIntersection<JunctionEntryObject>( JunctionEntryObject.tag, event.intersections );
-		//
-		//if ( !junctionObject ) return false;
-		//
-		//const newValue = this.selected.concat( junctionObject );
-		//
-		//CommandHistory.execute( new SelectPointsCommand( this, newValue, JunctionEntryInspector, newValue ) );
-		//
-		//this.setHint( 'Select another junction entry to connect to' );
-		//
-		//return true;
-	}
-
-	createJunctionConnection ( entry: any, exit: any ): void {
-
-		//try {
-		//
-		//	const junction = this.models.findJunction( entry.road, exit.road );
-		//
-		//	if ( !junction ) {
-		//
-		//		// CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, null, null ) );
-		//
-		//	} else {
-		//
-		//		const connection = junction.findRoadConnection( entry.road, exit.road );
-		//
-		//		const laneLink = connection?.laneLink.find( i => i.from === entry.lane.id );
-		//
-		//		if ( connection && laneLink ) {
-		//
-		//			SnackBar.warn( 'Connection already exists' );
-		//
-		//		} else {
-		//
-		//			// CommandHistory.execute( new CreateSingleManeuver( this, entry, exit, junction, connection, laneLink ) );
-		//
-		//		}
-		//
-		//	}
-		//
-		//} catch ( error ) {
-		//
-		//	Debug.log( error );
-		//
-		//	return;
-		//}
+		this.selectionService?.handleSelection( e );
 
 	}
 
-	//isValidEntryExit ( a: JunctionEntryObject, b: JunctionEntryObject ) {
-	//
-	//	// Error Handling: Check if a and b are defined
-	//	if ( !a || !b ) TvConsole.error( 'Both a and b must be defined.' );
-	//	if ( !a || !b ) return;
-	//
-	//	// Assuming a and b are instances of JunctionEntryObject, they should have the properties 'lane' and 'contact'
-	//	// If these properties are not defined, throw an error
-	//	if ( !a.lane || !a.contact || !b.lane || !b.contact ) TvConsole.error( 'a and b must have the properties \'lane\' and \'contact\'.' );
-	//	if ( !a.lane || !a.contact || !b.lane || !b.contact ) return;
-	//
-	//	if ( a.isEntry && b.isEntry || a.isExit && b.isExit ) SnackBar.warn( 'Cannot connect two entries or two exits.' );
-	//	if ( a.isEntry && b.isEntry || a.isExit && b.isExit ) return;
-	//
-	//	return {
-	//		entry: a.isEntry ? a : b,
-	//		exit: b.isExit ? b : a,
-	//		side: TvLaneSide.RIGHT
-	//	};
-	//
-	//}
+	onObjectSelected ( object: any ): void {
 
-	// showLanePathObjects () {
+		const debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
 
-	// 	this.models.junctions.forEach( junction => {
+		debugService?.onSelected( object );
 
-	// 		junction.connections.forEach( connection => {
+	}
 
-	// 			connection.laneLink.forEach( link => {
+	onObjectUnselected ( object: any ) {
 
-	// 				link.update();
+		const debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
 
-	// 				link.show();
+		debugService?.onUnselected( object );
 
-	// 				SceneService.addToMain( link.mesh );
+	}
 
-	// 			} );
+	onObjectUpdated ( object: any ): void {
 
-	// 		} );
+		if ( object instanceof SplineControlPoint ) {
 
-	// 	} );
+			const junctionId = object.spline.getRoads()[ 0 ]?.junctionId;
 
-	// }
+			if ( junctionId ) {
 
-	// hideLanePathObjects () {
+				const junction = this.tool.junctionService.getJunctionById( junctionId );
 
-	// 	this.lanePathObjects.forEach( obj => SceneService.removeFromMain( obj ) );
+				if ( junction ) {
 
-	// 	this.lanePathObjects.splice( 0, this.lanePathObjects.length );
+					this.tool.junctionDebugger.setDebugState( junction, DebugState.SELECTED );
 
-	// 	this.models.junctions.forEach( junction => {
+				}
 
-	// 		junction.connections.forEach( connection => {
+			}
 
-	// 			connection.laneLink.forEach( link => {
+			this.tool.splineService.update( object.spline );
 
-	// 				link.hide();
+		} else {
 
-	// 				SceneService.removeFromMain( link.mesh );
+			super.onObjectUpdated( object );
 
-	// 			} );
+		}
 
-	// 		} );
+	}
 
-	// 	} );
-	// }
 }

@@ -6,12 +6,12 @@ import { Injectable } from '@angular/core';
 import { Surface } from 'app/map/surface/surface.model';
 import { AbstractSplineDebugService } from 'app/services/debug/abstract-spline-debug.service';
 import { DebugState } from 'app/services/debug/debug-state';
-import { BaseDebugService } from '../../core/interfaces/debug.service';
+import { BaseDebugger } from "../../core/interfaces/base-debugger";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SurfaceDebugService extends BaseDebugService<Surface> {
+export class SurfaceDebugService extends BaseDebugger<Surface> {
 
 	constructor (
 		private debug: AbstractSplineDebugService,

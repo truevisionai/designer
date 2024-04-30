@@ -14,6 +14,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadNode } from 'app/objects/road-node';
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';
+import { AssetService } from 'app/core/asset/asset.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,6 +22,7 @@ import { SplineFactory } from 'app/services/spline/spline.factory';
 export class RoadToolService {
 
 	constructor (
+		public assetService: AssetService,
 		public splineService: SplineService,
 		public base: BaseToolService,
 		public mapService: MapService,

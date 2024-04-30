@@ -5,20 +5,17 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { FileExtension } from 'app/io/file-extension';
-import { DialogFactory } from '../../../factories/dialog.factory';
-import { MetadataFactory } from '../../../factories/metadata-factory.service';
 import { TvConsole } from '../../../core/utils/console';
 import { SnackBar } from '../../../services/snack-bar.service';
-import { AssetNode, AssetType } from './file-node.model';
+import { Asset, AssetType } from '../../../core/asset/asset.model';
 import { ProjectBrowserService } from './project-browser.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { VehicleCategory } from 'app/scenario/models/tv-enums';
 import { ProjectService } from "../../../services/editor/project.service";
 import { AssetService } from 'app/core/asset/asset.service';
-import { FileUtils } from 'app/io/file-utils';
-import { StorageService } from 'app/io/storage.service';
+import { TvMaterialFactory } from 'app/graphics/material/tv-material.factory';
+import { AssetImporter } from "../../../core/asset/asset.importer";
 
 @Component( {
 	selector: 'app-project-browser',
@@ -27,9 +24,9 @@ import { StorageService } from 'app/io/storage.service';
 } )
 export class ProjectBrowserComponent implements OnInit {
 
-	currentFolder: AssetNode;
+	currentFolder: Asset;
 
-	folderTree = new NestedTreeControl<AssetNode>( ( node: AssetNode ) => {
+	folderTree = new NestedTreeControl<Asset>( ( node: Asset ) => {
 		if ( node.type === AssetType.DIRECTORY ) {
 			return this.projectBrowser.getFolders( node.path )
 		} else {
@@ -37,7 +34,7 @@ export class ProjectBrowserComponent implements OnInit {
 		}
 	} );
 
-	dataSource: MatTreeNestedDataSource<AssetNode> = new MatTreeNestedDataSource<AssetNode>();
+	dataSource: MatTreeNestedDataSource<Asset> = new MatTreeNestedDataSource<Asset>();
 
 	constructor (
 		private projectService: ProjectService,
@@ -47,7 +44,8 @@ export class ProjectBrowserComponent implements OnInit {
 		private electron: TvElectronService,
 		private assetService: AssetService,
 		private snackBar: SnackBar,
-		private storage: StorageService,
+		private materialFactory: TvMaterialFactory,
+		private assetImporter: AssetImporter,
 	) {
 	}
 
@@ -55,7 +53,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		this.dataSource.data = [];
 
-		this.currentFolder = new AssetNode( AssetType.DIRECTORY, 'root', this.projectService.projectPath );
+		this.currentFolder = new Asset( AssetType.DIRECTORY, 'root', this.projectService.projectPath );
 
 		this.loadFilesInFolder();
 
@@ -63,7 +61,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 	}
 
-	onFolderChanged ( node: AssetNode ) {
+	onFolderChanged ( node: Asset ) {
 
 		this.currentFolder = node;
 
@@ -104,7 +102,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 			const file = $event.dataTransfer.files[ i ];
 
-			await this.onFileDropped( file, folderPath );
+			await this.handleDroppedFile( file, folderPath );
 
 		}
 
@@ -115,106 +113,16 @@ export class ProjectBrowserComponent implements OnInit {
 		}
 	}
 
-	async onFileDropped ( file: File, folderPath: string ) {
+	async handleDroppedFile ( file: File, folderPath: string ) {
 
 		if ( !file ) this.snackBar.error( 'Incorrect file. Cannot import' );
 		if ( !file ) return;
 
-		const extension = FileUtils.getExtensionFromPath( file.name );
-
-		const destinationPath = this.storage.join( folderPath, file.name );
-
-		let copied = false;
-
-		switch ( extension ) {
-
-			case FileExtension.GLTF:
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			case FileExtension.GLB:
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			case FileExtension.OBJ:
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			case FileExtension.FBX:
-				DialogFactory.showImportFBXDialog( file.path, destinationPath, extension )
-					?.afterClosed()
-					.subscribe( () => {
-						this.onFolderChanged( this.currentFolder );
-					} );
-				break;
-
-			case FileExtension.JPG:
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			case FileExtension.JPEG:
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			case 'png':
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			case 'tga':
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			case 'svg':
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			case FileExtension.OPENSCENARIO:
-				DialogFactory.showImportOpenScenarioDialog( file.path, destinationPath, extension )
-					?.afterClosed()
-					.subscribe( () => {
-						this.onFolderChanged( this.currentFolder );
-					} );
-				break;
-
-			case FileExtension.OPENDRIVE:
-				copied = this.copyFile( file.path, destinationPath );
-				break;
-
-			default:
-				this.snackBar.error( `${ extension } file cannot be imported` );
-				break;
-		}
-
-		if ( copied ) {
-
-			MetadataFactory.createMetadata( file.name, extension, destinationPath );
-
-			this.refreshFolder();
-		}
+		await this.assetImporter.import( file.path, folderPath );
 
 	}
 
-	copyFile ( sourcePath: string, destinationPath: string ): boolean {
-
-		if ( !destinationPath ) TvConsole.error( 'destinationPath incorrect' );
-		if ( !destinationPath ) this.snackBar.error( 'destinationPath incorrect' );
-		if ( !destinationPath ) return;
-
-		try {
-
-			this.storage.copyFileSync( sourcePath, destinationPath );
-
-			return true;
-
-		} catch ( error ) {
-
-			TvConsole.error( error );
-			this.snackBar.error( error );
-
-		}
-	}
-
-	onContextMenu ( $event, selectedNode?: AssetNode ) {
+	onContextMenu ( $event, selectedNode?: Asset ) {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -232,7 +140,7 @@ export class ProjectBrowserComponent implements OnInit {
 				},
 				{
 					label: 'Material',
-					click: () => this.assetService.createMaterialAsset( this.currentFolder.path )
+					click: () => this.assetService.createMaterialAsset( this.currentFolder.path, 'Material.material', this.materialFactory.createNew() )
 				},
 				{
 					label: 'Entity',
@@ -262,7 +170,6 @@ export class ProjectBrowserComponent implements OnInit {
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
-
 
 	refreshFolder () {
 

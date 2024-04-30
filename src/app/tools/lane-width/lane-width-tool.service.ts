@@ -17,7 +17,6 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { Object3DMap } from '../../core/models/object3d-map';
-import { BaseService } from 'app/services/base.service';
 import { LaneWidthService } from './lane-width.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { TvLaneSide } from 'app/map/models/tv-common';
@@ -36,7 +35,6 @@ export class LaneWidthToolService {
 		public base: BaseToolService,
 		private mapService: MapService,
 		private debug: LaneDebugService,
-		private baseService: BaseService,
 		private laneWidthService: LaneWidthService,
 		private debugDrawService: DebugDrawService,
 		private snackBar: SnackBar

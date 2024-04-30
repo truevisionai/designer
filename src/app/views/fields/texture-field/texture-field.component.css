@@ -3,18 +3,23 @@
  */
 
 .texture-card {
-	padding: 8px;
+	padding: 0.5rem 0;
+    margin: 0.5rem 0;
 }
 
 .texture-card-thumbnail {
 	float: left;
-	margin-right: 8px;
-	height: 18px !important;
-	width: 18px !important;
+	margin-right: 12px;
+	height: 28px !important;
+	width: 28px !important;
+}
+
+.texture-card .mat-card-title {
+	font-size: 0.8em !important;
 }
 
 .texture-card .mat-card-subtitle {
-	font-size: 10px;
+	font-size: 0.7em !important;
 }
 
 .btn-remove {

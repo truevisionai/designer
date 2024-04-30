@@ -25,10 +25,9 @@ import { Vector3 } from 'three';
 import { Position } from 'app/scenario/models/position';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { OnRoadMovingStrategy } from "../../core/strategies/move-strategies/on-road-moving.strategy";
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { RoadStyle } from 'app/core/asset/road.style';
+import { RoadStyle } from 'app/graphics/road-style/road-style.model';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugState } from '../../services/debug/debug-state';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
@@ -115,7 +114,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	}
 
-	onAssetDropped ( asset: AssetNode, position: Vector3 ) {
+	onAssetDropped ( asset: Asset, position: Vector3 ) {
 
 		if ( asset.type != AssetType.ROAD_STYLE ) return;
 
@@ -123,7 +122,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( !road ) return;
 
-		const roadStyle = AssetDatabase.getInstance<RoadStyle>( asset.guid );
+		const roadStyle = this.tool.assetService.getInstance<RoadStyle>( asset.guid );
 
 		if ( !roadStyle ) return;
 
