@@ -28,6 +28,7 @@ import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import { MaterialAsset } from 'app/graphics/material/tv-material.asset';
 import { TvMaterialLoader } from 'app/graphics/material/tv-material.loader';
 import { TvMaterialExporter } from "../graphics/material/tv-material.exporter";
+import { SnackBar } from 'app/services/snack-bar.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -45,6 +46,7 @@ export class ModelImporter implements Importer {
 		private materialLoader: TvMaterialLoader,
 		private materialExporter: TvMaterialExporter,
 		private assetService: AssetService,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -286,6 +288,9 @@ export class ModelImporter implements Importer {
 
 		this.assetService.addAsset( asset );
 
+		this.assetService.assetCreated.emit( asset );
+
+		this.snackBar.success( 'New Asset Imported' );
 	}
 
 	private async convertToGLB ( sourcePath: string, successCallback?: Function, errorCallback?: Function ) {
