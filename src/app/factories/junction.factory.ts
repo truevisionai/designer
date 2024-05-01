@@ -9,8 +9,9 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { IDService } from './id.service';
 import { Injectable } from '@angular/core';
 import { AbstractFactory } from "../core/interfaces/abstract-factory";
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+
 import { Vector3 } from 'three';
+import { Asset } from 'app/core/asset/asset.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,7 +32,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createFromAsset ( asset: AssetNode, position: Vector3 ): TvJunction {
+	createFromAsset ( asset: Asset, position: Vector3 ): TvJunction {
 
 		return undefined;
 
