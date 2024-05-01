@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import {
 	AfterViewInit,
 	Component,
@@ -13,7 +17,7 @@ import { CameraService } from 'app/renderer/camera.service';
 import { TextObjectService } from 'app/services/text-object.service';
 import { RoadElevationToolService } from 'app/tools/road-elevation/road-elevation-tool.service';
 import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
-import { Scene, Group, OrthographicCamera, Color, Material, Vector3, Camera } from 'three';
+import { Scene, Group, OrthographicCamera, Color, Vector3 } from 'three';
 import { CanvasConfig, ViewportConfig } from "../viewport-new/viewport-new.component";
 import { ViewportEvents } from "../../../events/viewport-events";
 import * as THREE from "three";
@@ -184,9 +188,9 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		const gridHelper = new THREE.GridHelper( 10000, 1000 );
 
-		( gridHelper.material as Material ).transparent = true;
-		( gridHelper.material as Material ).opacity = 0.5;
-		( gridHelper.material as Material ).needsUpdate = false;
+		gridHelper.material.transparent = true;
+		gridHelper.material.opacity = 0.5;
+		gridHelper.material.needsUpdate = false;
 
 		// to adjust with up Z
 		gridHelper.rotateX( Maths.Deg2Rad * 90 );

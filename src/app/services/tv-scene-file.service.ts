@@ -12,7 +12,7 @@ import { TvMap } from 'app/map/models/tv-map.model';
 import { TvMapInstance } from 'app/map/services/tv-map-instance';
 import { ScenarioService } from '../scenario/services/scenario.service';
 import { CommandHistory } from './command-history';
-import { SceneImporterService } from '../importers/scene-importer.service';
+import { SceneLoader } from '../map/scene/scene.loader';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';
 import { DialogService } from './dialog/dialog.service';
@@ -25,6 +25,7 @@ import { SceneBuilderService } from './scene-builder.service';
 import { RoadService } from './road/road.service';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
 import { Debug } from 'app/core/utils/debug';
+import { MapEvents } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -32,7 +33,7 @@ import { Debug } from 'app/core/utils/debug';
 export class TvSceneFileService {
 
 	constructor (
-		private sceneImporter: SceneImporterService,
+		private sceneLoader: SceneLoader,
 		private threeService: ThreeService,
 		private electronService: TvElectronService,
 		private mapService: MapService,
@@ -69,9 +70,9 @@ export class TvSceneFileService {
 
 	}
 
-	private setMap ( map: TvMap ) {
+	setMap ( map: TvMap ) {
 
-		Debug.log( 'setMap', map );
+		this.destroyMap( this.mapService.map );
 
 		this.threeService.reset();
 
@@ -81,13 +82,25 @@ export class TvSceneFileService {
 
 		CommandHistory.clear();
 
-		this.destroyMap( this.mapService.map );
-
 		this.scenario?.destroy();
 
 		this.mapService.map = map;
 
 		this.sceneBuilder.buildScene( map );
+
+	}
+
+	setFilePath ( path: string, map: TvMap ) {
+
+		if ( !this.currentFile ) this.currentFile = new IFile( 'Untitled.scene' );
+
+		this.currentFile.path = path;
+
+		this.currentFile.name = FileUtils.getFilenameFromPath( path );
+
+		map.header.attr_name = this.currentFile.name;
+
+		this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
 
 	}
 
@@ -105,6 +118,7 @@ export class TvSceneFileService {
 
 		map.destroy();
 
+		MapEvents.mapRemoved.emit( map );
 	}
 
 	async showOpenWindow ( path?: string ) {
@@ -128,15 +142,11 @@ export class TvSceneFileService {
 
 		const contents = await this.storageService.readAsync( path );
 
-		const map = this.sceneImporter.import( contents );
+		const map = this.sceneLoader.loadContents( contents );
 
 		this.setMap( map );
 
-		this.currentFile.path = path;
-
-		this.currentFile.name = FileUtils.getFilenameFromPath( path );
-
-		this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
+		this.setFilePath( path, map );
 
 		callback?.();
 
@@ -191,6 +201,8 @@ export class TvSceneFileService {
 		const directory = FileUtils.getDirectoryFromPath( path );
 
 		const fullName = FileUtils.getFilenameFromPath( path );
+
+		this.mapService.map.header.attr_name = fullName;
 
 		const scene = this.assetService.createSceneAsset( directory, this.mapService.map, fullName );
 

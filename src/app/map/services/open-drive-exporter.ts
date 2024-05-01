@@ -944,8 +944,8 @@ export class OpenDriveExporter {
 			if ( signal.pitch != null ) nodeSignal[ 'attr_pitch' ] = signal.pitch;
 			if ( signal.roll != null ) nodeSignal[ 'attr_roll' ] = signal.roll;
 
-			signal.userDataMap.delete( 'sign_shape' );
-			signal.userDataMap.set( 'sign_shape', new TvUserData( 'sign_shape', signal.signShape ) );
+			signal.userDataMap.delete( 'assetGuid' );
+			signal.userDataMap.set( 'assetGuid', new TvUserData( 'assetGuid', signal.assetGuid ) );
 
 			this.writeUserDataFromMap( nodeSignal.userData, signal.getUserData() );
 

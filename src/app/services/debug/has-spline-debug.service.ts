@@ -3,16 +3,16 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BaseDebugService } from "../../core/interfaces/debug.service";
 import { DebugState } from "./debug-state";
 import { AbstractSplineDebugService } from "./abstract-spline-debug.service";
 import { HasSpline } from "../../core/interfaces/data.service";
+import { BaseDebugger } from "../../core/interfaces/base-debugger";
 
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class HasSplineDebugService<T extends HasSpline> extends BaseDebugService<T> {
+export class HasSplineDebugService<T extends HasSpline> extends BaseDebugger<T> {
 
 	constructor ( private debug: AbstractSplineDebugService ) {
 		super();

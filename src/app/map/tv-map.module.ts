@@ -30,7 +30,6 @@ import {
 	FieldHostDirective
 } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { EsminiInspectorComponent } from 'app/views/inspectors/esmini-inspector/esmini-inspector.component';
-import { RoadStyleInspector } from 'app/views/inspectors/road-style-inspector/road-style-inspector.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { MaterialFieldComponent } from '../views/fields/material-field/material-field.component';
@@ -52,7 +51,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		MaterialFieldComponent,
 		GameObjectFieldComponent,
 		TextureFieldComponent,
-		RoadStyleInspector,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
 		DynamicArrayInspectorComponent,
@@ -97,7 +95,6 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		TextureInspector,
 		MaterialInspector,
 		AssetPreviewComponent,
-		RoadStyleInspector,
 		EsminiInspectorComponent,
 		DynamicInspectorComponent,
 		AssetInspectorComponent,

@@ -6,13 +6,13 @@ import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
 import { TextObjectService } from '../../services/text-object.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { RoadSignalService } from 'app/services/signal/road-signal.service';
-import { TvRoadSignal, TvSignalSubType, TvSignalType } from 'app/map/models/tv-road-signal.model';
+import { RoadSignalService } from 'app/map/road-signal/road-signal.service';
+import { TvRoadSignal, TvSignalSubType, TvSignalType } from 'app/map/road-signal/tv-road-signal.model';
 import { RoadService } from 'app/services/road/road.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { Object3DMap } from '../../core/models/object3d-map';
 import { Object3D } from 'three';
-import { RoadSignalFactory } from 'app/services/signal/road-signal.factory';
+import { RoadSignalFactory } from 'app/map/road-signal/road-signal.factory';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 
 @Injectable( {

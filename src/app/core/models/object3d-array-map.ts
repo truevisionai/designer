@@ -41,6 +41,18 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	}
 
+	getItems  ( key: K ) {
+
+		return this.map.get( key );
+
+	}
+
+	has ( key: K ) {
+
+		return this.map.has( key );
+
+	}
+
 	removeItem ( key: K, object: Object3D ) {
 
 		if ( !this.map.has( key ) ) return;

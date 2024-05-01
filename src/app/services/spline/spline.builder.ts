@@ -35,7 +35,6 @@ export class SplineBuilder {
 
 		spline.update();
 
-
 		for ( let i = 0; i < segments.length; i++ ) {
 
 			const segment = segments[ i ];
@@ -59,8 +58,7 @@ export class SplineBuilder {
 
 			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
-			this.roadBuilder.rebuildRoad( road )
-
+			this.roadBuilder.rebuildRoad( road, this.mapService.map );
 		}
 
 	}

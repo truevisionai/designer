@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { HasDistanceValue } from "../core/interfaces/has-distance-value";
 import { TvRoad } from "../map/models/tv-road.model";
 import { TvLane } from "../map/models/tv-lane";

@@ -4,10 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { AppConfig } from 'app/app.config';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { IViewportController } from 'app/objects/i-viewport-controller';
-import { TvPrefab } from 'app/graphics/prefab/tv-prefab.model';
-import { TvRoadMarking } from 'app/map/services/marking-manager';
+import { TvObjectAsset } from 'app/graphics/object/tv-object.asset';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import * as THREE from 'three';
 import {
@@ -35,10 +33,12 @@ import {
 	DEFAULT_DIRECTIONAL_LIGHT,
 	DIRECTIONAL_LIGHT_POSITION
 } from 'app/renderer/default.config';
-import { RoadStyle } from "../../../core/asset/road.style";
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { RoadStyle } from "../../../graphics/road-style/road-style.model";
+import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { RoadBuilder } from 'app/map/builders/road.builder';
-import { Maths } from 'app/utils/maths';
+import { TvTexture } from "../../../graphics/texture/tv-texture.model";
+import { TvRoadMarking } from "../../../deprecated/tv-road-marking";
+import { AssetService } from 'app/core/asset/asset.service';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -74,7 +74,10 @@ export class AssetPreviewService {
 
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
-	constructor ( private roadBuilder: RoadBuilder ) {
+	constructor (
+		private roadBuilder: RoadBuilder,
+		private assetService: AssetService,
+	) {
 
 		this.ngOnInit();
 		this.ngAfterViewInit();
@@ -146,7 +149,7 @@ export class AssetPreviewService {
 
 	}
 
-	createCube () {
+	private createCube () {
 
 		const geometry = new BoxGeometry( 1, 1, 1 );
 
@@ -157,7 +160,7 @@ export class AssetPreviewService {
 		this.cube.visible = false;
 	}
 
-	createPlane () {
+	private createPlane () {
 
 		const geometry = new PlaneGeometry( 10, 10 );
 
@@ -168,7 +171,7 @@ export class AssetPreviewService {
 		this.plane.visible = false;
 	}
 
-	createSphere () {
+	private createSphere () {
 
 		const geometry = new SphereGeometry( 1, 32, 32 );
 
@@ -179,75 +182,82 @@ export class AssetPreviewService {
 		this.sphere.visible = false;
 	}
 
-	updatePreview ( asset: AssetNode ) {
+	getPreview ( asset: Asset ) {
+
+		let preview: string;
 
 		if ( asset.type === AssetType.MATERIAL ) {
 
-			const instance = AssetDatabase.getInstance<Material>( asset.guid );
+			const instance = this.assetService.getMaterialAsset( asset.guid );
 
 			if ( !instance ) return;
 
-			asset.preview = this.getMaterialPreview( instance );
+			preview = this.getMaterialPreview( instance.material );
 
 		} else if ( asset.type === AssetType.ROAD_SIGN ) {
 
-			const instance = AssetDatabase.getInstance<TvRoadSign>( asset.guid );
+			const instance = this.assetService.getInstance<TvRoadSign>( asset.guid );
 
 			if ( !instance ) return;
 
-			asset.preview = this.getSignPreview( instance );
+			preview = this.getSignPreview( instance );
 
 		} else if ( asset.type === AssetType.MODEL ) {
 
-			const instance = AssetDatabase.getInstance<Object3D>( asset.guid );
+			const instance = this.assetService.getInstance<Object3D>( asset.guid );
 
 			if ( !instance ) return;
 
-			asset.preview = this.getModelPreview( instance );
+			preview = this.getModelPreview( instance );
 
 		} else if ( asset.type === AssetType.PREFAB ) {
 
-			const prefab = AssetDatabase.getInstance<TvPrefab>( asset.guid );
+			preview = this.getModelPreview( this.assetService.getInstance<Object3D>( asset.guid ) );
 
-			asset.preview = this.getModelPreview( prefab );
+		} else if ( asset.type === AssetType.OBJECT ) {
+
+			const objectAsset = this.assetService.getInstance<TvObjectAsset>( asset.guid );
+
+			preview = this.getModelPreview( objectAsset.instance );
 
 		} else if ( asset.type === AssetType.ROAD_STYLE ) {
 
-			const instance = AssetDatabase.getInstance<RoadStyle>( asset.guid );
+			const instance = this.assetService.getInstance<RoadStyle>( asset.guid );
 
 			if ( !instance ) return;
 
-			asset.preview = this.getRoadStylePreview( instance );
+			preview = this.getRoadStylePreview( instance );
 
 		} else if ( asset.type === AssetType.ROAD_MARKING ) {
 
-			const instance = AssetDatabase.getInstance( asset.guid );
+			const instance = this.assetService.getInstance( asset.guid );
 
 			if ( !instance ) return;
 
-			asset.preview = this.getRoadMarkingPreview( instance as TvRoadMarking );
+			preview = this.getRoadMarkingPreview( instance as TvRoadMarking );
 
 		} else if ( asset.type === AssetType.GEOMETRY ) {
 
-			const instance = AssetDatabase.getInstance<BufferGeometry>( asset.guid );
+			const instance = this.assetService.getInstance<BufferGeometry>( asset.guid );
 
 			if ( !instance ) return;
 
-			asset.preview = this.getGeometryPreview( instance );
+			preview = this.getGeometryPreview( instance );
 
 		} else if ( asset.type === AssetType.TEXTURE ) {
 
-			const instance = AssetDatabase.getInstance<Texture>( asset.guid );
+			const instance = this.assetService.getTexture( asset.guid );
 
 			if ( !instance ) return;
 
-			asset.preview = this.getTexturePreview( instance );
+			preview = this.getTexturePreview( instance.texture );
 
 		}
 
+		return preview;
 	}
 
-	getGeometryPreview ( geometry: THREE.BufferGeometry ): any {
+	private getGeometryPreview ( geometry: THREE.BufferGeometry ): any {
 
 		if ( !geometry ) return;
 
@@ -296,7 +306,7 @@ export class AssetPreviewService {
 		return image;
 	}
 
-	resetScene () {
+	private resetScene () {
 
 		this.cube.material = this.cubeMaterial;
 
@@ -318,7 +328,7 @@ export class AssetPreviewService {
 
 	}
 
-	getSignPreview ( sign: TvRoadSign ): string {
+	private getSignPreview ( sign: TvRoadSign ): string {
 
 		return '';
 
@@ -345,7 +355,7 @@ export class AssetPreviewService {
 		return image;
 	}
 
-	getTexturePreview ( texture: THREE.Texture ): string {
+	getTexturePreview ( texture: TvTexture ): string {
 
 		if ( !texture ) return;
 
@@ -378,7 +388,7 @@ export class AssetPreviewService {
 		return image;
 	}
 
-	getRoadStylePreview ( roadStyle: RoadStyle ): string {
+	private getRoadStylePreview ( roadStyle: RoadStyle ): string {
 
 		const object3d = this.getRoadStyleObject( roadStyle );
 
@@ -405,7 +415,7 @@ export class AssetPreviewService {
 
 	}
 
-	getRoadMarkingPreview ( marking: TvRoadMarking ): string {
+	private getRoadMarkingPreview ( marking: TvRoadMarking ): string {
 
 		this.scene.add( marking.mesh );
 
@@ -492,8 +502,6 @@ export class AssetPreviewService {
 		}
 
 	}
-
-
 
 	private addGreenGround ( scene ) {
 

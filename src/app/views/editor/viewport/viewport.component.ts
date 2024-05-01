@@ -419,7 +419,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		const data = this.dragDropService.getData();
 
-		this.viewportService.handleAssetDropped( data, position );
+		await this.viewportService.handleAssetDropped( data, position );
 
 		this.dragDropService.clear();
 	}

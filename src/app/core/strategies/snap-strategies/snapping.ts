@@ -13,10 +13,6 @@ export interface ISnappable {
 	snap ( strategy: ISnapStrategy ): void;
 }
 
-export interface IMovable {
-	move ( position: Vector3 ): void;
-}
-
 export interface IHasLane {
 	lane: TvLane;
 }

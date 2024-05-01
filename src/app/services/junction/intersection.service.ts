@@ -10,14 +10,10 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Box3, Vector3 } from 'three';
 import { JunctionConnectionService } from './junction-connection.service';
 import { JunctionService } from './junction.service';
-import { RoadService } from '../road/road.service';
 import { MapService } from '../map/map.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
-import { RoadLinkService } from '../road/road-link.service';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { SplineSegmentService } from '../spline/spline-segment.service';
-import { RoadManager } from 'app/managers/road/road-manager';
+import { RoadDividerService } from "../road/road-divider.service";
 
 export class SplineIntersection {
 	spline: AbstractSpline;
@@ -32,12 +28,10 @@ export class IntersectionService {
 
 	constructor (
 		private mapService: MapService,
-		private roadManager: RoadManager,
-		private roadService: RoadService,
 		private junctionService: JunctionService,
 		private junctionConnectionService: JunctionConnectionService,
-		private linkService: RoadLinkService,
 		private segmentService: SplineSegmentService,
+		private roadDividerService: RoadDividerService
 	) { }
 
 	getRoadIntersectionPoint ( roadA: TvRoad, roadB: TvRoad, stepSize = 1 ): Vector3 | null {
@@ -320,83 +314,7 @@ export class IntersectionService {
 
 	postProcessJunction ( junction: TvJunction ) {
 
-		const roads = junction.getRoads();
-
-		const connections = junction.getConnections();
-
-		function findClosedConnection ( road: TvRoad ) {
-
-			const roadConnections = connections.filter( i => i.incomingRoadId == road.id );
-
-			if ( roadConnections.length == 0 ) return;
-
-			let minAngle = 2 * Math.PI; // Initialize with maximum possible angle (360 degrees)
-			let minDistance = Infinity;
-			let nearestConnection: TvJunctionConnection;
-
-			for ( let i = 0; i < roadConnections.length; i++ ) {
-
-				const connection = roadConnections[ i ];
-
-				const connectingRoad = connection.connectingRoad;
-
-				const p1 = connectingRoad.spline.getFirstPoint()
-				const p1Direction = p1.getDirectionVector();
-
-				const p2 = connectingRoad.spline.getLastPoint();
-				const p2Direction = p2.getDirectionVector().negate();
-
-				const distance = p1.position.distanceTo( p2.position );
-
-				// find angle between road direction and connecting road direction
-				let crossProduct = new Vector3().crossVectors( p1Direction, p2Direction );
-				let angle = p1Direction.angleTo( p2Direction );
-
-				// Determine if the angle is to the left or right
-				if ( crossProduct.z < 0 ) {
-					// Angle to the right
-					angle = Math.PI * 2 - angle;
-				}
-
-				if ( angle < minAngle ) {
-
-					minDistance = distance;
-					minAngle = angle;
-					nearestConnection = connection;
-
-				}
-
-			}
-
-			return nearestConnection;
-
-		}
-
-		for ( let i = 0; i < roads.length; i++ ) {
-
-			const road = roads[ i ];
-
-			const nearestConnection = findClosedConnection( road );
-
-			if ( nearestConnection ) {
-
-				nearestConnection.connectingRoad.markAsCornerRoad();
-
-				nearestConnection.markAsCornerConnection();
-
-				// Debug.log( 'corner', nearestConnection, nearestConnection.connectingRoad );
-
-			}
-
-		}
-
-		for ( let i = 0; i < connections.length; i++ ) {
-
-			const connection = connections[ i ];
-
-			this.junctionConnectionService.postProcessConnection( junction, connection, connection.isCornerConnection );
-
-		}
+		this.junctionConnectionService.postProcessJunction( junction );
 
 	}
 
@@ -518,111 +436,7 @@ export class IntersectionService {
 
 	cutRoadForJunction ( coord: TvRoadCoord, junction: TvJunction ): TvRoadCoord {
 
-		function isNearRoadStartOrEnd ( coord: TvRoadCoord, width: number ) {
-
-			const isOver = coord.s + width >= coord.road.length;
-			const isUnder = coord.s - width <= 0;
-
-			return isOver || isUnder;
-
-		}
-
-		const junctionWidth = coord.road.getRoadWidthAt( coord.s ).totalWidth;
-
-		let newRoad: TvRoad
-
-		if ( !isNearRoadStartOrEnd( coord, junctionWidth ) ) {
-
-			const sStartJunction = coord.road.sStart + coord.s - junctionWidth;
-			const sEndJunction = coord.road.sStart + coord.s + junctionWidth;
-
-			this.segmentService.addJunctionSegment( coord.road.spline, sStartJunction, junction );
-
-			if ( sEndJunction < coord.road.spline.getLength() ) {
-
-				newRoad = this.roadService.clone( coord.road, coord.s + junctionWidth );
-
-				newRoad.sStart = sEndJunction;
-
-				this.segmentService.addRoadSegmentNew( coord.road.spline, newRoad.sStart, newRoad );
-
-				// set junction as predecessor of new road
-				// |ROAD====>|JUNCTIION|====>NEWROAD|
-				newRoad.setPredecessor( TvRoadLinkChildType.junction, junction );
-
-				coord.road.setSuccessor( TvRoadLinkChildType.junction, junction );
-
-				this.linkService.updateSuccessorRelationWhileCut( newRoad, newRoad.successor, coord.road );
-
-			}
-
-			coord.road.length = sStartJunction;
-
-			coord.s -= junctionWidth;
-
-		} else {
-
-			this.cutForTJunction( coord, junction );
-
-		}
-
-		if ( newRoad ) {
-
-			this.mapService.map.addRoad( newRoad );
-			this.roadManager.addRoad( newRoad );
-
-			this.roadManager.updateRoad( coord.road );
-
-			return newRoad.getStartPosTheta().toRoadCoord( newRoad );
-
-		} else {
-
-			this.roadManager.updateRoad( coord.road );
-
-		}
-	}
-
-	cutForTJunction ( coord: TvRoadCoord, junction: TvJunction ) {
-
-		const junctionWidth = coord.road.getRoadWidthAt( coord.s ).totalWidth;
-
-		const atEnd = coord.s + junctionWidth >= coord.road.length;
-		const atStart = coord.s - junctionWidth <= 0;
-
-		if ( atEnd ) {
-
-			const sStartJunction = coord.road.sStart + coord.road.length - junctionWidth;
-
-			this.segmentService.addJunctionSegment( coord.road.spline, sStartJunction, junction );
-
-			coord.road.length = coord.road.length - junctionWidth;
-
-			coord.s = coord.road.length;
-
-			coord.road.setSuccessor( TvRoadLinkChildType.junction, junction );
-
-			return;
-		}
-
-
-		if ( atStart ) {
-
-			const sEndJunction = junctionWidth;
-
-			const segment = coord.road.spline.getSegmentAt( 0 );
-
-			segment.setStart( sEndJunction );
-
-			this.segmentService.addJunctionSegment( coord.road.spline, 0, junction );
-
-			coord.road.length = coord.road.length - sEndJunction;
-
-			coord.s = 0;
-
-			coord.road.setPredecessor( TvRoadLinkChildType.junction, junction );
-
-		}
-
+		return this.roadDividerService.cutRoadForJunction( coord, junction );
 
 	}
 

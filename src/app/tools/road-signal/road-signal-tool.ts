@@ -3,18 +3,18 @@
  */
 import { Vector3 } from 'three';
 import { PointerEventData, PointerMoveData } from '../../events/pointer-event-data';
-import { TvRoadSignal } from '../../map/models/tv-road-signal.model';
+import { TvRoadSignal } from '../../map/road-signal/tv-road-signal.model';
 import { TvRoad } from '../../map/models/tv-road.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadSignalToolService } from './road-signal-tool.service';
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
 import { AppInspector } from 'app/core/inspector';
-import { RoadSignalInspector } from './road-signal.inspector';
+import { RoadSignalInspector } from '../../map/road-signal/road-signal.inspector';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { Debug } from 'app/core/utils/debug';
 
@@ -88,7 +88,7 @@ export class RoadSignalTool extends BaseTool<any>{
 
 	}
 
-	onAssetDropped ( asset: AssetNode, position: Vector3 ): void {
+	onAssetDropped ( asset: Asset, position: Vector3 ): void {
 
 		this.createSignal( asset, position );
 
@@ -179,7 +179,7 @@ export class RoadSignalTool extends BaseTool<any>{
 
 	}
 
-	createSignal ( asset: AssetNode, position: Vector3 ) {
+	createSignal ( asset: Asset, position: Vector3 ) {
 
 		if ( !position ) {
 			this.setHint( 'Drag signal on a road or lane' );
@@ -191,7 +191,7 @@ export class RoadSignalTool extends BaseTool<any>{
 			return;
 		}
 
-		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL ) {
+		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL && asset.type != AssetType.OBJECT && asset.type != AssetType.MODEL ) {
 			this.setHint( 'Drag a texture asset from the project browser' );
 			return;
 		}

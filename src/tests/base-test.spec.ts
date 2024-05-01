@@ -38,11 +38,7 @@ export class BaseTest {
 
 	makeDefaultRoad ( roadFactory: RoadFactory, points: Vector2[] ) {
 
-		const road = roadFactory.createDefaultRoad();
-
-		points.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
-
-		return road;
+		return roadFactory.createFromControlPoints( points );
 
 	}
 

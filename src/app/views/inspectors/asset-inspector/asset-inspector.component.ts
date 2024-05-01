@@ -3,8 +3,7 @@
  */
 
 import { Component, ComponentFactoryResolver, Input, OnDestroy, OnInit } from '@angular/core';
-import { AssetService } from 'app/core/asset/asset.service';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { Asset } from 'app/core/asset/asset.model';
 import { DynamicInspectorComponent } from '../dynamic-inspector/dynamic-inspector.component';
 
 @Component( {
@@ -14,11 +13,10 @@ import { DynamicInspectorComponent } from '../dynamic-inspector/dynamic-inspecto
 } )
 export class AssetInspectorComponent extends DynamicInspectorComponent implements OnDestroy {
 
-	@Input() data: AssetNode;
+	@Input() data: Asset;
 
 	constructor (
 		componentFactoryResolver: ComponentFactoryResolver,
-		private assetSerice: AssetService,
 	) {
 		super( componentFactoryResolver );
 	}
@@ -26,8 +24,6 @@ export class AssetInspectorComponent extends DynamicInspectorComponent implement
 	ngOnDestroy (): void {
 
 		super.ngOnDestroy();
-
-		this.assetSerice.saveAsset( this.data );
 
 	}
 

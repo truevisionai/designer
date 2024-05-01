@@ -4,7 +4,7 @@
 
 import { DebugState } from 'app/services/debug/debug-state';
 import { Object3D } from "three";
-import { DebugService } from './debug.service';
+import { IDebugger } from './debug.service';
 import { Object3DArrayMap } from '../models/object3d-array-map';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { MapService } from 'app/services/map/map.service';
@@ -13,7 +13,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { HasDistanceValue } from './has-distance-value';
 import { LaneNode } from "../../objects/lane-node";
 
-export abstract class BaseLaneDebugService<T extends HasDistanceValue> implements DebugService<TvLane, LaneNode<T>> {
+export abstract class BaseLaneDebugService<T extends HasDistanceValue> implements IDebugger<TvLane, LaneNode<T>> {
 
 	public debugDrawService: DebugDrawService;
 

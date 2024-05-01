@@ -281,7 +281,6 @@ export class TvMap {
 
 		this.clear();
 
-		MapEvents.mapRemoved.emit( this );
 	}
 
 	getJunctions () {

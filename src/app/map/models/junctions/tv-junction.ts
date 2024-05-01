@@ -11,64 +11,26 @@ import { TvRoad } from '../tv-road.model';
 import { TvJunctionType } from './tv-junction-type';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvContactPoint } from '../tv-common';
+import { TvRoadCoord } from "../TvRoadCoord";
+import { TvRoadLinkChildType } from "../tv-road-link-child";
 
 export class TvJunction {
 
-	private _id: number;
-	private _name: string;
-	private _priorities: TvJunctionPriority[] = [];
-	private _controllers: TvJunctionController[] = [];
-	private _connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
+	public priorities: TvJunctionPriority[] = [];
+
+	public controllers: TvJunctionController[] = [];
+
+	public connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
 	public position?: Vector3;
+
 	public type: TvJunctionType = TvJunctionType.DEFAULT;
+
 	public mesh: Mesh;
+
 	public boundingBox: Box3;
 
-	constructor ( name: string, id: number ) {
-		this._name = name;
-		this._id = id;
-	}
-
-	get name (): string {
-		return this._name;
-	}
-
-	set name ( value: string ) {
-		this._name = value;
-	}
-
-	get id (): number {
-		return this._id;
-	}
-
-	set id ( value: number ) {
-		this._id = value;
-	}
-
-	get priorities (): TvJunctionPriority[] {
-		return this._priorities;
-	}
-
-	set priorities ( value: TvJunctionPriority[] ) {
-		this._priorities = value;
-	}
-
-	get controllers (): TvJunctionController[] {
-		return this._controllers;
-	}
-
-	set controllers ( value: TvJunctionController[] ) {
-		this._controllers = value;
-	}
-
-	get connections (): Map<number, TvJunctionConnection> {
-		return this._connections;
-	}
-
-	set connections ( value: Map<number, TvJunctionConnection> ) {
-		this._connections = value;
-	}
+	constructor ( public name: string, public id: number ) { }
 
 	toString () {
 		return `Junction:${ this.id }`;
@@ -194,25 +156,48 @@ export class TvJunction {
 
 		const connections = this.getConnections();
 
-		const roads = [];
+		const roads = new Set<TvRoad>();
 
 		for ( let i = 0; i < connections.length; i++ ) {
 
 			const connection = connections[ i ];
 
-			if ( connection.incomingRoad && roads.indexOf( connection.incomingRoad ) === -1 ) {
+			if ( connection.incomingRoad ) {
+				roads.add( connection.incomingRoad );
+			}
 
-				roads.push( connection.incomingRoad );
+			if ( connection.outgoingRoad ) {
+				roads.add( connection.outgoingRoad );
+			}
 
-			} else if ( connection.outgoingRoad && roads.indexOf( connection.outgoingRoad ) === -1 ) {
+		}
 
-				roads.push( connection.outgoingRoad );
+		return [ ...roads ];
+	}
+
+	getRoadCoords () {
+
+		const coords: TvRoadCoord[] = [];
+
+		const roads = this.getRoads();
+
+		for ( const road of roads ) {
+
+			if ( road.successor?.elementType == TvRoadLinkChildType.junction && road.successor?.elementId == this.id ) {
+
+				coords.push( road.getEndPosTheta().toRoadCoord( road ) );
+
+			}
+
+			if ( road.predecessor?.elementType == TvRoadLinkChildType.junction && road.predecessor?.elementId == this.id ) {
+
+				coords.push( road.getStartPosTheta().toRoadCoord( road ) );
 
 			}
 
 		}
 
-		return roads;
+		return coords;
 	}
 
 	private removeIncomingConnections ( road: TvRoad ) {
@@ -245,21 +230,21 @@ export class TvJunction {
 
 	getJunctionPriorityCount (): number {
 
-		return this._priorities.length;
+		return this.priorities.length;
 
 	}
 
 	getJunctionControllerCount (): number {
 
-		return this._controllers.length;
+		return this.controllers.length;
 
 	}
 
 	getJunctionPriority ( index: number ) {
 
-		if ( index < this._priorities.length && this._priorities.length > 0 ) {
+		if ( index < this.priorities.length && this.priorities.length > 0 ) {
 
-			return this._priorities[ index ];
+			return this.priorities[ index ];
 
 		}
 
@@ -268,9 +253,9 @@ export class TvJunction {
 
 	getJunctionController ( index: number ) {
 
-		if ( index < this._controllers.length && this._controllers.length > 0 ) {
+		if ( index < this.controllers.length && this.controllers.length > 0 ) {
 
-			return this._controllers[ index ];
+			return this.controllers[ index ];
 
 		}
 
@@ -279,19 +264,19 @@ export class TvJunction {
 
 	addConnection ( connection: TvJunctionConnection ) {
 
-		this._connections.set( connection.id, connection );
+		this.connections.set( connection.id, connection );
 
 	}
 
 	addPriority ( priority: TvJunctionPriority ) {
 
-		this._priorities.push( priority );
+		this.priorities.push( priority );
 
 	}
 
 	addController ( controller: TvJunctionController ) {
 
-		this._controllers.push( controller );
+		this.controllers.push( controller );
 
 	}
 
@@ -377,11 +362,11 @@ export class TvJunction {
 
 	sortConnections (): void {
 
-		this._connections.forEach( connection => connection.sortLinks() );
+		this.connections.forEach( connection => connection.sortLinks() );
 
 		const ascOrder = ( a: [ number, TvJunctionConnection ], b: [ number, TvJunctionConnection ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
 
-		this._connections = new Map( [ ...this._connections.entries() ].sort( ascOrder ) );
+		this.connections = new Map( [ ...this.connections.entries() ].sort( ascOrder ) );
 
 	}
 
@@ -405,7 +390,6 @@ export class TvJunction {
 			return TvContactPoint.START;
 		}
 	}
-
 
 	private removeJunctionRelation ( road: TvRoad ): void {
 

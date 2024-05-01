@@ -4,7 +4,7 @@
 
 import { SceneService } from 'app/services/scene.service';
 import { CURVE_Y } from 'app/core/shapes/spline-config';
-import { OdTextures } from 'app/map/builders/od.textures';
+import { OdTextures } from 'app/deprecated/od.textures';
 import { TvGeometryType } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';

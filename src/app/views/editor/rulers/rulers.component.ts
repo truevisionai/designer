@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { Camera, OrthographicCamera, Vector3 } from "three";
 import * as THREE from "three";

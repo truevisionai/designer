@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
-import { SceneExporterService } from 'app/exporters/scene-exporter.service';
+import { SceneExporter } from 'app/map/scene/scene.exporter';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { IFile } from '../../io/file';
 import { FileService } from '../../io/file.service';
@@ -14,7 +14,8 @@ import { OpenDriveExporter } from './open-drive-exporter';
 import { OpenDriveParserService } from "../../importers/open-drive/open-drive-parser.service";
 import { MapService } from 'app/services/map/map.service';
 import { StorageService } from 'app/io/storage.service';
-import { DialogService } from 'app/services/dialog/dialog.service';
+import { SceneService } from 'app/services/scene.service';
+import { MapEvents } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,10 +26,11 @@ export class OpenDriveService {
 		private fileService: FileService,
 		private storage: StorageService,
 		private openDriveExporter: OpenDriveExporter,
-		private sceneExporter: SceneExporterService,
+		private sceneExporter: SceneExporter,
 		private openDriveParserService: OpenDriveParserService,
 		private mapService: MapService,
 		private snackBar: SnackBar,
+		private mapBuilder: TvMapBuilder,
 	) {
 
 	}
@@ -72,15 +74,21 @@ export class OpenDriveService {
 
 	public import ( path, contents, callbackFn = null ) {
 
-		const map = this.load( path, contents );
+		const old = this.mapService.map;
+
+		const map = this.parse( contents );
 
 		if ( map == null ) return;
 
-		this.mapService.map?.destroy();
+		old?.destroy();
 
-		this.mapService.map = map;
+		MapEvents.mapRemoved.emit( old );
 
-		TvMapBuilder.buildMap( this.mapService.map );
+		SceneService.removeFromMain( old.gameObject );
+
+		map.gameObject = this.mapBuilder.build( map );
+
+		SceneService.addToMain( map.gameObject );
 
 		callbackFn?.( map );
 
@@ -89,22 +97,25 @@ export class OpenDriveService {
 		TvConsole.info( 'OpenDrive imported ' + path );
 	}
 
-	public load ( path, contents, callbackFn = null ): TvMap {
 
-		return this.parse( contents, callbackFn );
+
+	parse ( contents: string, ): TvMap {
+
+		return this.openDriveParserService.parse( contents );
 
 	}
 
-	public parse ( contents: string, callbackFn = null ): TvMap {
+	private load ( filepath: string ) {
 
-		const map = this.openDriveParserService.parse( contents );
+		const contents = this.storage.readSync( filepath );
+
+		const map = this.parse( contents );
 
 		if ( map == null ) return;
 
-		if ( callbackFn != null ) callbackFn();
-
 		return map;
 	}
+
 
 	public importFromPath ( filepath: string, callbackFn = null ) {
 
@@ -122,7 +133,7 @@ export class OpenDriveService {
 
 	getSceneOutput () {
 
-		return this.sceneExporter.export();
+		return this.sceneExporter.exportAsString();
 
 	}
 

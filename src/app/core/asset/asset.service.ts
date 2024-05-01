@@ -6,60 +6,122 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { VehicleFactory } from 'app/factories/vehicle.factory';
 import { VehicleCategory } from 'app/scenario/models/tv-enums';
-import { TvMaterial } from 'app/graphics/material/tv-material';
+import { TvStandardMaterial } from 'app/graphics/material/tv-standard-material';
 import { TvMap } from 'app/map/models/tv-map.model';
-import { TvRoadSign } from 'app/map/models/tv-road-sign.model';
-import { ExporterService } from 'app/services/exporter.service';
-import { AssetType, AssetNode } from 'app/views/editor/project-browser/file-node.model';
-import { AssetFactory } from './asset-factory.service';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { AssetDatabase } from './asset-database';
 import { TvConsole } from '../utils/console';
-import { MathUtils } from 'three';
-import { RoadStyle } from './road.style';
+import { MathUtils, Object3D } from 'three';
+import { RoadStyle } from '../../graphics/road-style/road-style.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { StorageService } from 'app/io/storage.service';
 import { FileUtils } from 'app/io/file-utils';
+import { ExporterFactory } from "../../factories/exporter.factory";
+import { Metadata } from "./metadata.model";
+import { MaterialAsset } from "../../graphics/material/tv-material.asset";
+import { TvObjectAsset } from 'app/graphics/object/tv-object.asset';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class AssetService {
 
-	assetCreated = new EventEmitter<AssetNode>();
+	private assets = new Map<string, Asset>();
+
+	assetCreated = new EventEmitter<Asset>();
 
 	constructor (
-		private exporter: ExporterService,
 		private storageService: StorageService,
 		private metadataFactory: MetadataFactory,
-		private assetFactory: AssetFactory,
-		private snackBar: SnackBar
+		private snackBar: SnackBar,
+		private exporterFactory: ExporterFactory,
 	) {
 	}
 
-	getAssetInstance<T> ( asset: AssetNode ): T {
+	addAsset ( asset: Asset ) {
 
-		return AssetDatabase.getInstance( asset.metadata.guid );
+		this.assets.set( asset.guid, asset );
+
+		this.setMetadata( asset.guid, asset.metadata );
+
+		if ( !asset.metadata ) {
+			console.warn( 'Asset metadata is missing' );
+		}
+
+	}
+
+	getAsset ( guid: string ): Asset {
+
+		return this.assets.get( guid );
+
+	}
+
+	getTexture ( guid: string ) {
+
+		return AssetDatabase.getTexture( guid );
+
+	}
+
+	getInstance<T> ( guid: string ): T {
+
+		return AssetDatabase.getInstance<T>( guid );
+
+	}
+
+	getObjectAsset ( guid: string ) {
+
+		return this.getInstance<TvObjectAsset>( guid );
+
+	}
+
+	getMaterialAsset ( guid: string ) {
+
+		return this.getInstance<MaterialAsset>( guid );
+
+	}
+
+	getModelAsset ( guid: string ) {
+
+		return this.getInstance<Object3D>( guid );
+
+	}
+
+	getMetadata ( guid: string ): Metadata {
+
+		return AssetDatabase.getMetadata( guid );
+
+	}
+
+	setMetadata ( guid: string, metadata: Metadata ) {
+
+		AssetDatabase.setMetadata( guid, metadata );
+
+	}
+
+	setInstance ( guid: string, instance: any ) {
+
+		AssetDatabase.setInstance( guid, instance );
 
 	}
 
 	updateSceneAsset ( path: string, scene: TvMap ): void {
 
-		const data = this.exporter.getSceneExport( scene );
+		const data = this.exporterFactory.getExporter( AssetType.SCENE ).exportAsString( scene );
 
 		this.storageService.writeSync( path, data );
 
 	}
 
-	createNewAsset ( type: AssetType, filename: string, directory: string, data?: string, instance?: any ) {
+	createNewAsset ( type: AssetType, filename: string, directory: string, data?: string, instance?: any, guid?: string ): Asset {
 
 		const fullPath = this.storageService.join( directory, filename );
 
-		const asset = new AssetNode( type, filename, fullPath );
+		const asset = new Asset( type, filename, fullPath );
 
 		if ( type != AssetType.DIRECTORY ) {
 
-			const response = this.assetFactory.getNameAndPath( asset );
+			const response = this.getNameAndPath( asset );
 
 			asset.name = response.name;
 
@@ -67,11 +129,13 @@ export class AssetService {
 
 		}
 
-		asset.metadata = this.metadataFactory.makeAssetMetadata( asset );
+		asset.metadata = this.metadataFactory.makeAssetMetadata( asset, guid );
 
-		this.assetFactory.createAsset( asset, data );
+		this.writeAssetFile( asset, data );
 
-		AssetDatabase.setInstance( asset.metadata.guid, instance );
+		AssetDatabase.setInstance( asset.guid, instance );
+
+		this.addAsset( asset );
 
 		this.assetCreated.emit( asset );
 
@@ -82,7 +146,7 @@ export class AssetService {
 
 		const scene = instance || new TvMap();
 
-		const data = this.exporter.getSceneExport( scene );
+		const data = this.exporterFactory.getExporter( AssetType.SCENE ).exportAsString( scene );
 
 		return this.createNewAsset( AssetType.SCENE, filename, directory, data, scene );
 
@@ -90,7 +154,7 @@ export class AssetService {
 
 	createRoadStyleAsset ( directory: string, style: TvRoad | RoadStyle, filename: string = 'RoadStyle.roadstyle' ) {
 
-		const data = this.exporter.getRoadStyleExport( style );
+		const data = this.exporterFactory.getExporter( AssetType.ROAD_STYLE ).exportAsString( style );
 
 		return this.createNewAsset( AssetType.ROAD_STYLE, filename, directory, data, style );
 
@@ -106,30 +170,19 @@ export class AssetService {
 
 	}
 
-	createMaterialAsset ( path: string, instance?: TvMaterial ) {
+	createMaterialAsset ( path: string, name = 'Material.material', material: MaterialAsset ) {
 
-		const material = instance || new TvMaterial();
+		const data = this.exporterFactory.getExporter( AssetType.MATERIAL ).exportAsString( material );
 
-		const data = this.exporter.getMaterialExport( material );
+		return this.createNewAsset( AssetType.MATERIAL, name, path, data, material, material.guid );
 
-		return this.createNewAsset( AssetType.MATERIAL, 'Material.material', path, data, material );
-
-	}
-
-	createSignAsset ( path: string ) {
-
-		const sign = new TvRoadSign( 'Sign', null );
-
-		const data = this.exporter.getRoadSignExport( sign );
-
-		this.createNewAsset( AssetType.ROAD_SIGN, 'Sign.sign', path, data, sign );
 	}
 
 	createEntityAsset ( path: string, category: VehicleCategory = VehicleCategory.car ): void {
 
 		const entity = VehicleFactory.createVehicle( category );
 
-		const data = this.exporter.getVehicleExport( entity );
+		const data = this.exporterFactory.getExporter( AssetType.ENTITY ).exportAsString( entity );
 
 		this.createNewAsset( AssetType.ENTITY, entity.name + '.entity', path, data, entity );
 
@@ -137,23 +190,42 @@ export class AssetService {
 
 	saveAssetByGuid ( type: AssetType, guid: string, object: any ) {
 
-		this.assetFactory.saveAssetByGuid( type, guid, object );
+		const metadata = AssetDatabase.getMetadata( guid );
+
+		if ( !metadata ) return;
+
+		if ( type == AssetType.TEXTURE ) {
+
+			// for texture we dont need to update the asset file
+			// only metadata file
+
+		} else {
+
+			const data = this.getAssetContent( type, guid );
+
+			if ( !data ) return;
+
+			this.storageService.writeSync( metadata.path, data );
+
+		}
+
+		this.updateMetaFile( metadata.path, metadata );
 
 	}
 
-	saveAsset ( data: AssetNode ) {
+	saveAsset ( data: Asset ) {
 
 		this.saveAssetByGuid( data.type, data.metadata.guid, AssetDatabase.getInstance( data.metadata.guid ) );
 
 	}
 
-	copyAsset ( asset: AssetNode ) {
+	copyAsset ( asset: Asset ) {
 
 		const cloneName = asset.assetName + '_copy';
 
 		if ( asset.type == AssetType.MATERIAL ) {
 
-			const instance = AssetDatabase.getInstance<TvMaterial>( asset.metadata.guid );
+			const instance = AssetDatabase.getInstance<TvStandardMaterial>( asset.metadata.guid );
 
 			const clone = instance.clone();
 
@@ -167,7 +239,7 @@ export class AssetService {
 
 	}
 
-	renameAsset ( asset: AssetNode, name: string ) {
+	renameAsset ( asset: Asset, name: string ) {
 
 		if ( asset.children.length > 0 ) {
 
@@ -192,7 +264,7 @@ export class AssetService {
 
 			asset.path = newPath;
 
-			this.assetFactory.updateMetaFileByAsset( asset );
+			this.updateMetaFileByAsset( asset );
 
 		} catch ( error ) {
 
@@ -202,7 +274,7 @@ export class AssetService {
 
 	}
 
-	deleteAsset ( asset: AssetNode ): boolean {
+	deleteAsset ( asset: Asset ): boolean {
 
 		if ( asset.children.length > 0 ) {
 
@@ -226,7 +298,7 @@ export class AssetService {
 		return true;
 	}
 
-	private deleteFolder ( asset: AssetNode ) {
+	private deleteFolder ( asset: Asset ) {
 
 		try {
 
@@ -242,7 +314,7 @@ export class AssetService {
 
 	}
 
-	private deleteFile ( asset: AssetNode ) {
+	private deleteFile ( asset: Asset ) {
 
 		try {
 
@@ -258,7 +330,7 @@ export class AssetService {
 
 	}
 
-	private deleteMetadata ( asset: AssetNode ) {
+	private deleteMetadata ( asset: Asset ) {
 
 		try {
 
@@ -278,7 +350,7 @@ export class AssetService {
 
 	}
 
-	moveAsset ( asset: AssetNode, folder: AssetNode ) {
+	moveAsset ( asset: Asset, folder: Asset ) {
 
 		const newPath = this.storageService.join( folder.path, asset.name );
 
@@ -290,7 +362,82 @@ export class AssetService {
 
 		asset.path = newPath;
 
-		this.assetFactory.updateMetaFileByAsset( asset );
+		this.updateMetaFileByAsset( asset );
+
+	}
+
+	private writeAssetFile ( asset: Asset, data: string ) {
+
+		if ( data ) this.storageService.writeSync( asset.path, data );
+
+		this.writeAssetMetaFile( asset );
+
+	}
+
+	private writeAssetMetaFile ( asset: Asset ) {
+
+		if ( !asset.metadata ) return;
+
+		this.storageService.writeSync( asset.path + '.meta', JSON.stringify( asset.metadata ) );
+
+	}
+
+	updateMetaFileByAsset ( asset: Asset ) {
+
+		AssetDatabase.setMetadata( asset.metadata.guid, asset.metadata );
+
+		this.updateMetaFile( asset.path, asset.metadata );
+
+	}
+
+	updateMetaFile ( path: string, metadata: Metadata ) {
+
+		if ( !metadata ) return;
+
+		this.storageService.writeSync( path + '.meta', JSON.stringify( metadata ) );
+
+	}
+
+	getNameAndPath ( asset: Asset ): { name: string, path: string } {
+
+		let name = asset.assetName;
+
+		let path = asset.path;
+
+		let count = 1;
+
+		while ( this.storageService.exists( path ) && count <= 20 ) {
+
+			name = `${ asset.assetName }(${ count++ })`;
+
+			if ( asset.isDirectory ) {
+
+				path = this.storageService.join( asset.directoryPath, name );
+
+			} else {
+
+				path = this.storageService.join( asset.directoryPath, `${ name }.${ asset.extension }` );
+
+			}
+
+		}
+
+		return { name, path };
+
+	}
+
+	getAssetContent ( assetType: AssetType, assetGuid: string ): string {
+
+		const exporter = this.exporterFactory.getExporter( assetType )
+
+		const output = exporter.exportAsString( this.getInstance( assetGuid ) );
+
+		return output;
+	}
+
+	getAssetName ( guid: string ) {
+
+		return AssetDatabase.getAssetNameByGuid( guid );
 
 	}
 }

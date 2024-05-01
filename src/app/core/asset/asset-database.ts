@@ -5,12 +5,14 @@
 import { Metadata } from 'app/core/asset/metadata.model';
 import { FileUtils } from '../../io/file-utils';
 import { Environment } from '../utils/environment';
+import { TextureAsset } from "../../graphics/texture/tv-texture.model";
+import { MaterialAsset } from "../../graphics/material/tv-material.asset";
+import { Object3D } from "three";
+import { TvObjectAsset } from "../../graphics/object/tv-object.asset";
 
 export class AssetDatabase {
 
 	private static metadata: Map<string, Metadata> = new Map<string, Metadata>();
-
-	// private static previewCache: Map<string, string> = new Map<string, string>();
 
 	private static instances: Map<string, any> = new Map<string, any>();
 
@@ -37,31 +39,6 @@ export class AssetDatabase {
 		}
 	}
 
-	static deleteAssetByGuid ( guid: string ) {
-
-		const metadata = this.getMetadata( guid );
-
-		// file or folder
-		if ( metadata.isFolder ) {
-
-			// if folder remove all files under the folder
-
-		} else {
-
-			// remove metadata from memory
-			// remove meta file
-			// remove instance from memory
-			// remove instance file
-
-		}
-	}
-
-	static getMetadataAll () {
-
-		return this.metadata;
-
-	}
-
 	static removeMetadata ( guid: string ) {
 
 		return this.metadata.delete( guid );
@@ -80,27 +57,29 @@ export class AssetDatabase {
 
 			return this.instances.get( guid );
 
-		} else if ( Environment.production ) {
+		} else {
 
-			console.error( `requested ${ guid } instance does not exist` );
+			console.warn( `Undefined asset ${ guid }` );
 
 		}
 
 	}
 
-	static getInstanceType<T> ( guid: string ): T {
+	static getTexture ( guid: string ): TextureAsset {
 
-		return this.getInstance( guid );
+		return this.getInstance<TextureAsset>( guid );
+
+	}
+
+	static getMaterial ( guid: string ): MaterialAsset {
+
+		return this.getInstance<MaterialAsset>( guid );
 
 	}
 
 	static removeInstance ( guid: string ) {
 
 		this.instances.delete( guid );
-
-	}
-
-	static setPreview ( guid: string, preview: string ) {
 
 	}
 
@@ -117,6 +96,26 @@ export class AssetDatabase {
 			console.error( error );
 
 		}
+
+	}
+
+	static has ( uuid: string ) {
+
+		return this.instances.has( uuid );
+
+	}
+
+	static getPropObject ( guid: string ): Object3D {
+
+		const prop = this.getInstance<Object3D>( guid );
+
+		if ( prop == null ) return;
+
+		if ( prop instanceof TvObjectAsset ) {
+			return prop.instance;
+		}
+
+		return prop;
 
 	}
 }

@@ -12,7 +12,7 @@ import { RoadObjectBuilder } from 'app/map/road-object/road-object.builder';
 import { Object3DMap } from '../../core/models/object3d-map';
 import { Object3D } from 'three';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
-import { RoadSignalService } from 'app/services/signal/road-signal.service';
+import { RoadSignalService } from 'app/map/road-signal/road-signal.service';
 import { ObjectTypes, TvColors, TvRoadMarkWeights, TvSide } from 'app/map/models/tv-common';
 import { IDService } from 'app/factories/id.service';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
@@ -30,8 +30,6 @@ export class RoadObjectService {
 
 	private ids: Map<TvRoad, IDService> = new Map();
 
-	static instance: RoadObjectService;
-
 	constructor (
 		private map: MapService,
 		private signal: RoadSignalService, // just for import,
@@ -39,7 +37,6 @@ export class RoadObjectService {
 		private cornerFactory: CornerRoadFactory,
 		private controlPointFactory: ControlPointFactory,
 	) {
-		RoadObjectService.instance = this;
 	}
 
 	removeObjectsByRoad ( road: TvRoad ) {

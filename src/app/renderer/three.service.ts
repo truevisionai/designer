@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { Maths } from 'app/utils/maths';
-import { Material, } from 'three';
 import { SceneService } from '../services/scene.service';
 import { ScenarioEnvironment } from '../scenario/models/actions/scenario-environment';
 import { DEFAULT_AMBIENT_LIGHT } from './default.config';
@@ -91,9 +90,9 @@ export class ThreeService {
 
 		const gridHelper = new THREE.GridHelper( 1000, 100 );
 
-		( gridHelper.material as Material ).transparent = true;
-		( gridHelper.material as Material ).opacity = 0.5;
-		( gridHelper.material as Material ).needsUpdate = false;
+		gridHelper.material.transparent = true;
+		gridHelper.material.opacity = 0.5;
+		gridHelper.material.needsUpdate = false;
 
 		// to adjust with up Z
 		gridHelper.rotateX( Maths.Deg2Rad * 90 );

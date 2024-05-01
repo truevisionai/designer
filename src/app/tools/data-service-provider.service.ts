@@ -12,6 +12,7 @@ import { BaseDataService, LinkedDataService } from "../core/interfaces/data.serv
 import { PropPointService } from "../map/prop-point/prop-point.service";
 import { LaneService } from "../services/lane/lane.service";
 import { LaneHeightService } from "app/map/lane-height/lane-height.service";
+import { JunctionService } from "../services/junction/junction.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,6 +27,7 @@ export class DataServiceProvider {
 		private propPointService: PropPointService,
 		private laneService: LaneService,
 		private laneHeightService: LaneHeightService,
+		private junctionService: JunctionService
 	) {
 	}
 
@@ -53,6 +55,12 @@ export class DataServiceProvider {
 
 			case ToolType.LaneHeight:
 				return this.laneService;
+
+			case ToolType.Junction:
+				return this.junctionService;
+
+			case ToolType.Maneuver:
+				return this.junctionService;
 		}
 
 	}

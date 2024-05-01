@@ -13,7 +13,7 @@ import {
 	Output,
 	ViewChild
 } from '@angular/core';
-import { InspectorFactoryService } from 'app/factories/inspector-factory.service';
+import { InspectorFactory } from 'app/factories/inspector-factory.service';
 import { DragDropService } from 'app/services/editor/drag-drop.service';
 import { ImporterService } from 'app/importers/importer.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
@@ -21,11 +21,10 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
 import { TvConsole } from '../../../../core/utils/console';
-import { AssetNode, AssetType } from '../file-node.model';
+import { Asset, AssetType } from '../../../../core/asset/asset.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { AssetService } from 'app/core/asset/asset.service';
 import { MapEvents } from 'app/events/map-events';
-import { StorageService } from 'app/io/storage.service';
 
 @Component( {
 	selector: 'app-asset',
@@ -38,11 +37,11 @@ export class AssetComponent implements OnInit {
 
 	@ViewChild( 'nameInput' ) nameInputRef: ElementRef<HTMLInputElement>;
 
-	@Output() deleted = new EventEmitter<AssetNode>();
+	@Output() deleted = new EventEmitter<Asset>();
 
-	@Output() renamed = new EventEmitter<AssetNode>();
+	@Output() renamed = new EventEmitter<Asset>();
 
-	@Input() asset: AssetNode;
+	@Input() asset: Asset;
 
 	public showRenaming: boolean;
 
@@ -69,9 +68,8 @@ export class AssetComponent implements OnInit {
 		private projectBrowserService: ProjectBrowserService,
 		private importer: ImporterService,
 		private dragDropService: DragDropService,
-		private inspectorFactory: InspectorFactoryService,
+		private inspectorFactory: InspectorFactory,
 		private assetService: AssetService,
-		private storageService: StorageService,
 		private ngZone: NgZone,
 		private snackBar: SnackBar
 	) {
@@ -124,14 +122,7 @@ export class AssetComponent implements OnInit {
 
 		} else {
 
-			switch ( this.asset.type ) {
-
-				case AssetType.SCENE:
-					this.importer.importScene( this.asset.path );
-					this.snackBar.success( 'Importing Scene ' + this.asset.name );
-					break;
-
-			}
+			this.importer.importAsset( this.asset );
 
 		}
 	}
@@ -390,11 +381,17 @@ export class AssetComponent implements OnInit {
 
 	}
 
-	private initPreview ( asset: AssetNode ) {
+	private initPreview ( asset: Asset ) {
 
 		if ( asset.type == AssetType.SCENE ) return;
 
-		this.previewService.updatePreview( asset );
+		const preview = this.previewService.getPreview( asset );
+
+		if ( preview ) {
+
+			asset.preview = preview;
+
+		}
 	}
 
 	private isValidFilename ( name: string ): { success: boolean, messsage: string } {

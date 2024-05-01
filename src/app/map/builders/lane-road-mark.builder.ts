@@ -17,7 +17,7 @@ import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { TvMaterial } from 'app/graphics/material/tv-material';
+import { TvStandardMaterial } from 'app/graphics/material/tv-standard-material';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 
 @Injectable( {
@@ -214,7 +214,7 @@ export class LaneRoadMarkBuilder {
 
 		if ( roadMark.materialGuid ) {
 
-			const material = AssetDatabase.getInstance<TvMaterial>( roadMark.materialGuid );
+			const material = AssetDatabase.getMaterial( roadMark.materialGuid )?.material;
 
 			if ( material ) {
 

@@ -3,13 +3,8 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
-import { AssetFactory } from 'app/core/asset/asset-factory.service';
-import { UpdateMaterialMapCommand } from 'app/commands/update-material-map-command';
 import { IComponent } from 'app/objects/game-object';
-import { Metadata } from 'app/core/asset/metadata.model';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { TvMaterial } from 'app/graphics/material/tv-material';
 import { CommandHistory } from 'app/services/command-history';
 import {
 	MeshBasicMaterial,
@@ -20,7 +15,13 @@ import {
 	MeshStandardMaterial
 } from 'three';
 import { AssetPreviewService } from '../asset-preview/asset-preview.service';
-import { AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { AssetService } from "../../../core/asset/asset.service";
+import { TvMaterialService } from "../../../graphics/material/tv-material.service";
+import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { TvStandardMaterial } from 'app/graphics/material/tv-standard-material';
+import { MapEvents } from "../../../events/map-events";
+import { Subscription } from "rxjs";
+import { TvTextureService } from 'app/graphics/texture/tv-texture.service';
 
 @Component( {
 	selector: 'app-material-inspector',
@@ -29,25 +30,12 @@ import { AssetType } from 'app/views/editor/project-browser/file-node.model';
 } )
 export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
-	public data: {
-		material: TvMaterial,
-		guid: string
-	};
+	public data: Asset;
 
-	public metadata: Metadata;
-
-	constructor (
-		private previewService: AssetPreviewService,
-		private assetFactory: AssetFactory
-	) {
-	}
+	public material: TvStandardMaterial;
 
 	get thumbnail () {
-		return this.metadata.preview;
-	}
-
-	get material () {
-		return this.data.material;
+		return this.data?.preview;
 	}
 
 	get materialTypes () {
@@ -75,6 +63,34 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 	set emissive ( value ) {
 		this.material.emissive.setStyle( value );
 		this.updatePreviewCache();
+	}
+
+	private subscription: Subscription;
+
+	constructor (
+		private previewService: AssetPreviewService,
+		private assetService: AssetService,
+		private materialService: TvMaterialService,
+		private textureService: TvTextureService,
+	) {
+	}
+
+	ngOnInit () {
+
+		this.material = this.materialService.getMaterial( this.data.guid )?.material as TvStandardMaterial;
+
+		this.subscription = MapEvents.objectUpdated.subscribe( e => this.onObjectUpdated( e ) );
+
+	}
+
+	ngOnDestroy () {
+
+		this.subscription?.unsubscribe();
+
+		this.materialService.updateAsset( this.data );
+
+		this.updatePreviewCache();
+
 	}
 
 	onTypeChanged ( newMaterialType: string ) {
@@ -113,27 +129,12 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 		}
 
 		try {
-			this.data.material = this.data.material.copy( newMaterial );
+			this.material = this.material.copy( newMaterial );
 		} catch ( error ) {
 			console.error( error );
 		}
 
-		this.assetFactory.saveAssetByGuid( AssetType.MATERIAL, this.data.guid, this.data.material );
-
-		this.updatePreviewCache();
-
-	}
-
-	ngOnInit () {
-
-		this.metadata = AssetDatabase.getMetadata( this.data.guid );
-
-	}
-
-
-	ngOnDestroy () {
-
-		this.assetFactory.saveAssetByGuid( AssetType.MATERIAL, this.data.guid, this.data.material );
+		this.assetService.saveAssetByGuid( AssetType.MATERIAL, this.data.guid, this.material );
 
 		this.updatePreviewCache();
 
@@ -196,55 +197,62 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	onMapChanged ( $guid: string ) {
 
-		CommandHistory.execute(
-			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'map', $guid )
-		);
+		const texture = this.textureService.getTexture( $guid )?.texture;
+
+		this.updateGuid( this.material, 'map', texture );
 
 	}
 
 	onRoughnessMapChanged ( $guid: string ) {
 
-		CommandHistory.execute(
-			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'roughnessMap', $guid )
-		);
+		const texture = this.textureService.getTexture( $guid )?.texture;
+
+		this.updateGuid( this.material, 'roughnessMap', texture );
+
+	}
+
+	onMetalnessMapChanged ( $guid: string ) {
+
+		const texture = this.textureService.getTexture( $guid )?.texture;
+
+		this.updateGuid( this.material, 'metalnessMap', texture );
 
 	}
 
 	onNormalMapChanged ( $guid: string ) {
 
-		CommandHistory.execute(
-			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'normalMap', $guid )
-		);
+		const texture = this.textureService.getTexture( $guid )?.texture;
+
+		this.updateGuid( this.material, 'normalMap', texture );
 
 	}
 
 	onAOMapChanged ( $guid: string ) {
 
-		CommandHistory.execute(
-			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'aoMap', $guid )
-		);
+		const texture = this.textureService.getTexture( $guid )?.texture;
+
+		this.updateGuid( this.material, 'aoMap', texture );
 
 	}
 
 	onDisplacementMapChanged ( $guid: string ) {
 
-		CommandHistory.execute(
-			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'displacementMap', $guid )
-		);
+		const texture = this.textureService.getTexture( $guid )?.texture;
+
+		this.updateGuid( this.material, 'displacementMap', texture );
 
 	}
 
 	onAlphaMapChanged ( $guid: string ) {
 
-		CommandHistory.execute(
-			new UpdateMaterialMapCommand( this.previewService, this.material, this.metadata, 'alphaMap', $guid )
-		);
+		const texture = this.textureService.getTexture( $guid )?.texture;
 
+		this.updateGuid( this.material, 'alphaMap', texture );
 	}
 
 	private updatePreviewCache () {
 
-		this.metadata.preview = this.getFreshPreview();
+		this.data.preview = this.getFreshPreview();
 
 	}
 
@@ -256,10 +264,28 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 		material[ propertyName ] = newValue;
 
-		CommandHistory.executeMany(
-			new SetValueCommand<T, K>( material, propertyName, newValue, oldValue ),
+		CommandHistory.execute( new SetValueCommand<T, K>( material, propertyName, newValue, oldValue ) );
+	}
 
-			new SetValueCommand( this.metadata, 'preview', this.getFreshPreview() )
-		);
+	updateGuid<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ) {
+
+		const setValueCommand = new SetValueCommand<T, K>( material, propertyName, newValue );
+
+		CommandHistory.execute( setValueCommand );
+
+	}
+
+	private onObjectUpdated ( object: Object ) {
+
+		if ( object == this.material ) {
+
+			this.updatePreviewCache();
+
+		} else {
+
+			console.log( 'Object updated is not the material', object );
+
+		}
+
 	}
 }

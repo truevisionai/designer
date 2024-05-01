@@ -7,7 +7,7 @@ import { BaseToolService } from '../base-tool.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadObjectService } from '../../map/road-object/road-object.service';
 import { Vector3, Euler, Object3D } from 'three';
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { ObjectTypes } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
@@ -32,13 +32,13 @@ export class PointMarkingToolService {
 		public assetManager: AssetManager
 	) { }
 
-	getSelectedAsset (): AssetNode {
+	getSelectedAsset (): Asset {
 
 		return this.assetManager.getTextureAsset() || this.assetManager.getMaterialAsset();
 
 	}
 
-	createPointMarking ( asset: AssetNode, position: Vector3 ): TvRoadObject {
+	createPointMarking ( asset: Asset, position: Vector3 ): TvRoadObject {
 
 		const lane = this.roadService.findLaneAtPosition( position );
 

@@ -5,21 +5,21 @@
 import { CatmullRomSpline } from "app/core/shapes/catmull-rom-spline";
 import { AbstractFactory } from "app/core/interfaces/abstract-factory";
 import { Surface } from "app/map/surface/surface.model";
-import { Texture, Vector3 } from "three";
 import { Injectable } from "@angular/core";
-import { AssetNode, AssetType } from "app/views/editor/project-browser/file-node.model";
+import { Asset, AssetType } from "app/core/asset/asset.model";
 import { AssetDatabase } from "app/core/asset/asset-database";
+import { Vector3 } from "three";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SurfaceFactory extends AbstractFactory<Surface> {
 
-	createFromAsset ( asset: AssetNode, position: Vector3 ): Surface {
+	createFromAsset ( asset: Asset, position: Vector3 ): Surface {
 
 		if ( asset.type != AssetType.TEXTURE ) return;
 
-		const texture = AssetDatabase.getInstance<Texture>( asset.guid );
+		const texture = AssetDatabase.getTexture( asset.guid )?.texture;
 
 		const surfaceWidth = texture.image.width;
 

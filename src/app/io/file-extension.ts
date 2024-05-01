@@ -22,16 +22,19 @@ export enum FileExtension {
 
 	// Texture file extensions
 	JPG = 'jpg',
-	JPEG = 'jpg',
+	JPEG = 'jpeg',
 	PNG = 'png',
 	SVG = 'svg',
+	TGA = 'tga',
 
 	// internal file extensions
+	MESH = 'mesh',
 	PROP = 'prop',
 	SCENE = 'scene',
 	ROADSTYLE = 'roadstyle',
 	ROADSIGN = 'roadsign',
 	PREFAB = 'prefab',
-	MATERIAL = 'material'
-
+	OBJECT = 'object',
+	MATERIAL = 'material',
+	GEOMETRY = 'geometry',
 }

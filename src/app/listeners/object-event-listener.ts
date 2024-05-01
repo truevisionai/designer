@@ -5,13 +5,17 @@
 import { Injectable } from "@angular/core";
 import { AssetManager } from "app/core/asset/asset.manager";
 import { AssetService } from "app/core/asset/asset.service";
-import { RoadStyle } from "app/core/asset/road.style";
+import { RoadStyle } from "app/graphics/road-style/road-style.model";
 import { MapEvents } from "app/events/map-events";
 import { PropManager } from "app/managers/prop-manager";
-import { RoadStyleManager } from "app/managers/road-style.manager";
-import { TvMaterial } from "app/graphics/material/tv-material";
+import { RoadStyleManager } from "app/graphics/road-style/road-style.manager";
+import { TvStandardMaterial } from "app/graphics/material/tv-standard-material";
 import { ToolManager } from "app/managers/tool-manager";
-import { AssetNode, AssetType } from "app/views/editor/project-browser/file-node.model";
+import { Asset, AssetType } from "app/core/asset/asset.model";
+import { AppInspector } from "../core/inspector";
+import { DynamicInspectorComponent } from "../views/inspectors/dynamic-inspector/dynamic-inspector.component";
+import { AssetInspectorComponent } from "../views/inspectors/asset-inspector/asset-inspector.component";
+import { MaterialAsset } from "../graphics/material/tv-material.asset";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +27,7 @@ export class ObjectEventListener {
 	constructor (
 		private assetService: AssetService,
 		private assetManager: AssetManager,
+		private roadStyleManager: RoadStyleManager,
 	) {
 
 	}
@@ -40,14 +45,14 @@ export class ObjectEventListener {
 
 	}
 
-	onAssetSelected ( asset: AssetNode ): void {
+	onAssetSelected ( asset: Asset ): void {
 
-		const instance = this.assetService.getAssetInstance( asset );
+		const instance = this.assetService.getInstance( asset.guid );
 
 		switch ( asset.type ) {
 
 			case AssetType.ROAD_STYLE:
-				RoadStyleManager.setCurrentStyle( instance as RoadStyle );
+				this.roadStyleManager.setCurrentStyle( instance as RoadStyle );
 				break;
 
 			case AssetType.MODEL:
@@ -71,7 +76,7 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectUpdated', object );
 
-		if ( object instanceof TvMaterial ) {
+		if ( object instanceof TvStandardMaterial ) {
 
 			this.assetService.saveAssetByGuid( AssetType.MATERIAL, object.guid, object );
 
@@ -80,6 +85,10 @@ export class ObjectEventListener {
 			ToolManager.getTool()?.onObjectUpdated( object );
 
 		}
+
+		this.updateInspector();
+
+		this.updateAsset( object );
 
 	}
 
@@ -115,5 +124,25 @@ export class ObjectEventListener {
 
 	}
 
+	private updateInspector () {
+
+		const inspector = AppInspector.lastInspectorCreated;
+
+		if ( inspector instanceof DynamicInspectorComponent ) {
+			inspector.reload();
+		}
+
+		if ( inspector instanceof AssetInspectorComponent ) {
+			inspector.reload();
+		}
+	}
+
+	private updateAsset ( object: Object ) {
+
+		if ( object instanceof MaterialAsset ) {
+
+		}
+
+	}
 }
 

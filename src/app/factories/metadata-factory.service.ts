@@ -6,15 +6,13 @@ import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { FileUtils } from 'app/io/file-utils';
 import { FileService } from 'app/io/file.service';
-import { TvRoadMarking } from 'app/map/services/marking-manager';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
 import * as THREE from 'three';
-import { RepeatWrapping, Texture, TextureLoader, UVMapping, Vector3 } from 'three';
-import { TGALoader } from 'three/examples/jsm/loaders/TGALoader';
+import { Vector3 } from 'three';
 import { Metadata, MetaImporter } from '../core/asset/metadata.model';
-import { RoadStyle } from "../core/asset/road.style";
-import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
+import { RoadStyle } from "../graphics/road-style/road-style.model";
+import { TvRoadMarking } from "../deprecated/tv-road-marking";
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,12 +20,12 @@ import { TvMaterialExporter } from 'app/graphics/material/tv-material.exporter';
 export class MetadataFactory {
 
 	private static fileService: FileService;
+
 	private static snackBar: SnackBar;
 
 	constructor (
 		fileService: FileService,
 		snackBar: SnackBar,
-		private materialExporter: TvMaterialExporter,
 	) {
 
 		MetadataFactory.fileService = fileService;
@@ -35,7 +33,7 @@ export class MetadataFactory {
 
 	}
 
-	makeAssetMetadata ( asset: AssetNode ): Metadata {
+	makeAssetMetadata ( asset: Asset, guid?: string ): Metadata {
 
 		if ( asset.type == AssetType.DIRECTORY ) {
 
@@ -43,7 +41,7 @@ export class MetadataFactory {
 
 		} else {
 
-			return this.makeMetadata( asset.name, asset.extension, asset.path );
+			return this.makeMetadata( asset.name, asset.extension, asset.path, guid );
 
 		}
 
@@ -87,28 +85,8 @@ export class MetadataFactory {
 				metadata = MetadataFactory.createOpenScenarioMetadata( fileName, guid, path );
 				break;
 
-			case 'png':
-				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'png' );
-				break;
-
-			case 'jpg':
-				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'jpg' );
-				break;
-
-			case 'jpeg':
-				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'jpeg' );
-				break;
-
-			case 'svg':
-				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'svg' );
-				break;
-
-			case 'tga':
-				metadata = MetadataFactory.createTextureMetaInternal( guid, path, 'tga' );
-				break;
-
 			case 'material':
-				metadata = this.materialExporter.createMetadata( fileName, guid, path );
+				metadata = MetadataFactory.createMaterialMetadata( fileName, guid, path );
 				break;
 
 			case 'geometry':
@@ -117,6 +95,10 @@ export class MetadataFactory {
 
 			case 'prefab':
 				metadata = MetadataFactory.createPrefabMetadata( fileName, guid, path );
+				break;
+
+			case 'object':
+				metadata = MetadataFactory.createObjectMetadata( fileName, guid, path );
 				break;
 
 			case 'sign':
@@ -141,7 +123,7 @@ export class MetadataFactory {
 
 	}
 
-	static saveMetadataFile ( file: AssetNode | string, metadata: Metadata ): void {
+	static saveMetadataFile ( file: Asset | string, metadata: Metadata ): void {
 
 		try {
 
@@ -173,7 +155,6 @@ export class MetadataFactory {
 		return this.createMetadata( filename, extension, destinationPath );
 
 	}
-
 
 	static createMetadata ( fileName: string, ext: string, path: string, gguid?: string ): Metadata {
 
@@ -213,26 +194,6 @@ export class MetadataFactory {
 				metadata = this.createOpenScenarioMetadata( fileName, guid, path );
 				break;
 
-			case 'png':
-				metadata = this.createTextureMetaInternal( guid, path, 'png' );
-				break;
-
-			case 'jpg':
-				metadata = this.createTextureMetaInternal( guid, path, 'jpg' );
-				break;
-
-			case 'jpeg':
-				metadata = this.createTextureMetaInternal( guid, path, 'jpeg' );
-				break;
-
-			case 'svg':
-				metadata = this.createTextureMetaInternal( guid, path, 'svg' );
-				break;
-
-			case 'tga':
-				metadata = this.createTextureMetaInternal( guid, path, 'tga' );
-				break;
-
 			case 'material':
 				metadata = this.createMaterialMetadata( fileName, guid, path );
 				break;
@@ -243,6 +204,10 @@ export class MetadataFactory {
 
 			case 'prefab':
 				metadata = this.createPrefabMetadata( fileName, guid, path );
+				break;
+
+			case 'object':
+				metadata = this.createObjectMetadata( fileName, guid, path );
 				break;
 
 			case 'sign':
@@ -360,35 +325,6 @@ export class MetadataFactory {
 
 	}
 
-	static createTextureMetadata ( guid: string, path: string, texture: Texture ) {
-
-		const image = texture.image;
-
-		// unset image to avoid write image data in json
-		// this will reduce the size of the json file and
-		// saves time
-		texture.image = null;
-
-		const data = texture.toJSON( undefined );
-
-		// set image again
-		texture.image = image;
-
-		// const version = data.metadata.version || 4.5;
-
-		data[ 'metadata' ] = null;
-
-		return {
-			guid: guid,
-			version: 4.5,
-			type: 'Texture',
-			importer: MetaImporter.TEXTURE,
-			data: data,
-			path: path
-		};
-
-	}
-
 	static createMaterialMetadata ( name: string, guid: string, path: string ) {
 
 		return {
@@ -422,6 +358,17 @@ export class MetadataFactory {
 
 	}
 
+	static createObjectMetadata ( name: string, guid: string, path: string ) {
+
+		return {
+			guid: guid,
+			importer: MetaImporter.OBJECT,
+			data: {},
+			path: path,
+		};
+
+	}
+
 	static createSignMetadata ( name: string, guid: string, path: string ) {
 
 		return {
@@ -431,70 +378,5 @@ export class MetadataFactory {
 			path: path,
 		};
 
-	}
-
-	static loadTexture ( path: string ): Texture {
-
-		try {
-
-			const texture = new TextureLoader().load( path );
-
-			texture.wrapS = RepeatWrapping;
-			texture.wrapT = RepeatWrapping;
-			texture.mapping = UVMapping;
-			texture.repeat.set( 1, 1 );
-
-			return texture;
-
-		} catch ( error ) {
-
-			this.snackBar?.error( error );
-
-			return null;
-
-		}
-	}
-
-	static loadTGATexture ( path: string ): Texture {
-
-		try {
-
-			const texture = new TGALoader().load( path );
-
-			texture.wrapS = RepeatWrapping;
-			texture.wrapT = RepeatWrapping;
-			texture.mapping = UVMapping;
-			texture.repeat.set( 1, 1 );
-
-			return texture;
-
-		} catch ( error ) {
-
-			this.snackBar?.error( error );
-
-			return null;
-
-		}
-	}
-
-	private static createTextureMetaInternal ( guid: string, path: string, extension: string ): Metadata {
-
-		let texture: Texture;
-
-		if ( extension == 'tga' ) {
-
-			texture = this.loadTGATexture( path );
-
-		} else {
-
-			texture = this.loadTexture( path );
-
-		}
-
-		const metadata = this.createTextureMetadata( guid, path, texture );
-
-		AssetDatabase.setInstance( metadata.guid, texture );
-
-		return metadata;
 	}
 }

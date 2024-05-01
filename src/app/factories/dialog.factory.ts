@@ -10,19 +10,17 @@ import {
 	ImportOpenScenarioDialogData
 } from '../scenario/dialogs/import-open-scenario-dialog/import-open-scenario-dialog.component';
 
-
 @Injectable( {
 	providedIn: 'root'
 } )
 export class DialogFactory {
 
-	private static dialog: MatDialog;
-
-	constructor ( dialog: MatDialog ) {
-		DialogFactory.dialog = dialog;
+	constructor (
+		private dialog: MatDialog
+	) {
 	}
 
-	static showImportOpenScenarioDialog ( path: string, destinationPath: string, extension: string ) {
+	showImportOpenScenarioDialog ( path: string, destinationPath: string, extension: string ) {
 
 		return this.dialog.open( ImportOpenScenarioDialogComponent, {
 			width: '680px',
@@ -32,7 +30,7 @@ export class DialogFactory {
 
 	}
 
-	static showImportFBXDialog ( path: string, destinationPath: string, extension: string ) {
+	showImportFBXDialog ( path: string, destinationPath: string, extension: string ) {
 
 		return this.dialog.open( ImportFbxDialogComponent, {
 			width: '680px',

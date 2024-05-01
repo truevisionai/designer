@@ -661,4 +661,10 @@ export class Maths {
 		return Math.round( value * multiplier ) / multiplier;
 
 	}
+
+	static normalizeHeading( heading: number ) {
+
+		return ( heading + Maths.PI ) % ( 2 * Maths.PI ) - Maths.PI;
+	}
+
 }

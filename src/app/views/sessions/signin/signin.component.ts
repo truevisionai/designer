@@ -102,7 +102,7 @@ export class SigninComponent implements OnInit {
 			return;
 		}
 
-		this.resendButton.disabled = true;
+		if ( this.resendButton ) this.resendButton.disabled = true;
 
 		this.showResendEmailConfirmationLink = false;
 
@@ -112,13 +112,13 @@ export class SigninComponent implements OnInit {
 
 		}, err => {
 
-			this.resendButton.disabled = false;
+			if ( this.resendButton ) this.resendButton.disabled = false;
 
 			this.snackBar.error( err?.message || 'Something went wrong' );
 
 		}, () => {
 
-			this.resendButton.disabled = false;
+			if ( this.resendButton ) this.resendButton.disabled = false;
 
 		} )
 

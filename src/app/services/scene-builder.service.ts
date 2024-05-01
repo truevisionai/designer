@@ -9,7 +9,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
-import { RoadSignalService } from './signal/road-signal.service';
+import { RoadSignalService } from '../map/road-signal/road-signal.service';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { SurfaceBuilder } from 'app/map/surface/surface.builder';
@@ -70,7 +70,7 @@ export class SceneBuilderService {
 
 			road.spline = spline;
 
-			this.roadService.buildRoad( road );
+			this.roadService.buildRoad( road ).forEach( gameObject => map.gameObject.add( gameObject ) );
 			this.roadService.setRoadIdCounter( road.id );
 
 		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
@@ -83,7 +83,7 @@ export class SceneBuilderService {
 				road.spline.addRoadSegment( 0, road );
 			}
 
-			this.roadService.buildRoad( road );
+			this.roadService.buildRoad( road ).forEach( gameObject => map.gameObject.add( gameObject ) );
 			this.roadService.setRoadIdCounter( road.id );
 
 		} else {

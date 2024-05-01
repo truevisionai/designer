@@ -2,10 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadMarkingManager } from 'app/map/services/marking-manager';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { AssetNode, AssetType } from 'app/views/editor/project-browser/file-node.model';
+import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { PointMarkingToolService } from './point-marking-tool.service';
 import { AppInspector } from 'app/core/inspector';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
@@ -45,12 +44,6 @@ export class PointMarkingTool extends BaseTool<any>{
 	constructor ( private tool: PointMarkingToolService ) {
 
 		super();
-
-	}
-
-	get marking () {
-
-		return TvRoadMarkingManager.currentMarking;
 
 	}
 
@@ -167,13 +160,13 @@ export class PointMarkingTool extends BaseTool<any>{
 
 	}
 
-	onAssetDropped ( asset: AssetNode, position: Vector3 ): void {
+	onAssetDropped ( asset: Asset, position: Vector3 ): void {
 
 		this.createPointMarking( asset, position );
 
 	}
 
-	createPointMarking ( asset: AssetNode, position: Vector3 ) {
+	createPointMarking ( asset: Asset, position: Vector3 ) {
 
 		if ( !position ) {
 			this.setHint( 'Drag point marking on a road or lane' );

@@ -4,12 +4,12 @@
 
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { Asset } from 'app/core/asset/asset.model';
 import { Object3D, Vector3 } from 'three';
-import { TvRoadSignal } from 'app/map/models/tv-road-signal.model';
+import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { RoadSignalService } from 'app/services/signal/road-signal.service';
-import { RoadSignalFactory } from 'app/services/signal/road-signal.factory';
+import { RoadSignalService } from 'app/map/road-signal/road-signal.service';
+import { RoadSignalFactory } from 'app/map/road-signal/road-signal.factory';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { RoadService } from 'app/services/road/road.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
@@ -35,13 +35,13 @@ export class RoadSignalToolService {
 		public controlPointFactory: ControlPointFactory,
 	) { }
 
-	getSelectedAsset (): AssetNode {
+	getSelectedAsset (): Asset {
 
 		return this.assetManager.getTextureAsset();
 
 	}
 
-	createRoadSignal ( asset: AssetNode, position: Vector3, type: string, subtype: string ): TvRoadSignal {
+	createRoadSignal ( asset: Asset, position: Vector3, type: string, subtype: string ): TvRoadSignal {
 
 		const lane = this.roadService.findLaneAtPosition( position );
 

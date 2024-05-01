@@ -4,7 +4,7 @@
 
 import { DynamicMeta } from 'app/core/asset/metadata.model';
 import { PropModel } from 'app/map/prop-point/prop-model.model';
-import { AssetNode } from 'app/views/editor/project-browser/file-node.model';
+import { Asset } from 'app/core/asset/asset.model';
 
 export class PropManager {
 
@@ -22,7 +22,7 @@ export class PropManager {
 
 	}
 
-	static getAssetNode (): AssetNode {
+	static getAssetNode (): Asset {
 
 		return this.prop as any;
 

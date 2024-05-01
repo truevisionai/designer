@@ -6,12 +6,13 @@ import { SerializedField } from 'app/core/components/serialization';
 import { TvBoundingBox } from '../tv-bounding-box';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
-import { Color, DirectionalLight, Vector3, WebGLCubeRenderTarget } from 'three';
+import { Color, DataTexture, DirectionalLight, Vector3, WebGLCubeRenderTarget } from 'three';
 import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { DIRECTIONAL_LIGHT_COLOR, DIRECTIONAL_LIGHT_INTENSITY } from 'app/renderer/default.config';
 import { XmlElement } from "../../../importers/xml.element";
+import { TvTexture } from "../../../graphics/texture/tv-texture.model";
 
 enum CloudState {
 	Cloudy = 'cloudy',
@@ -261,7 +262,7 @@ class Wind {
 
 class DomeImage {
 
-	private texture: THREE.DataTexture;
+	private texture: TvTexture;
 	private renderTarget: WebGLCubeRenderTarget;
 	private cubeCamera: THREE.CubeCamera;
 
@@ -321,7 +322,7 @@ class DomeImage {
 
 		if ( this._textureGuid == 'default' ) return;
 
-		const texture = AssetDatabase.getInstance<THREE.DataTexture>( this._textureGuid );
+		const texture = AssetDatabase.getTexture( this._textureGuid )?.texture;
 
 		if ( !texture ) return;
 
