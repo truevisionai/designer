@@ -115,7 +115,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Ramp Tool',
 			click: () => this.setToolType( ToolType.RoadRampTool ),
-			enabled: Environment.experimentalTools,
+			enabled: Environment.developmentTools,
 		},
 		{
 			id: 'showDividerTool',
