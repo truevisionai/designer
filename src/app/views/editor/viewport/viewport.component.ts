@@ -19,6 +19,7 @@ import { DragDropService } from "../../../services/editor/drag-drop.service";
 import { ViewportService } from "./viewport.service";
 import { ViewControllerService } from "./view-controller.service";
 import { CameraService } from "../../../renderer/camera.service";
+import { MapService } from 'app/services/map/map.service';
 
 @Component( {
 	selector: 'app-viewport',
@@ -94,6 +95,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		private viewportService: ViewportService,
 		private viewControllerService: ViewControllerService,
 		private cameraService: CameraService,
+		private mapService: MapService,
 	) {
 		this.render = this.render.bind( this );
 	}

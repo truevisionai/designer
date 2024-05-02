@@ -182,4 +182,30 @@ export class MapService {
 		this.map.propPolygons.push( object );
 
 	}
+
+	getLaneMeshes () {
+
+		const meshes: Mesh[] = [];
+
+		for ( const road of this.roads ) {
+
+			for ( const laneSection of road.laneSections ) {
+
+				for ( const lane of laneSection.getLaneArray() ) {
+
+					if ( lane.gameObject instanceof Mesh ) {
+
+						meshes.push( lane.gameObject );
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return meshes;
+
+	}
 }
