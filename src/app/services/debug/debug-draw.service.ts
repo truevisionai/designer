@@ -34,11 +34,7 @@ export class DebugDrawService {
 
 	drawSphere ( position: Vector3, size = 0.1, color = COLOR.RED ) {
 
-		const geometry = new SphereGeometry( size, 32, 32 );
-
-		const material = new MeshBasicMaterial( { color: color } );
-
-		const sphere = new Mesh( geometry, material );
+		const sphere = this.createSphere( position, size, color );
 
 		sphere.position.copy( position );
 
