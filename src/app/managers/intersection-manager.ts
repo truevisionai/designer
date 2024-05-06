@@ -20,35 +20,7 @@ import { TvRoadLinkChildType } from "../map/models/tv-road-link-child";
 import { RoadService } from "../services/road/road.service";
 import { TvContactPoint } from "../map/models/tv-common";
 import { RoadLinkService } from "../services/road/road-link.service";
-
-class IntersectionGroup {
-
-	intersections: Vector3[] = []; // Positions of intersections in this group
-
-	splines: Set<AbstractSpline> = new Set(); // Unique splines involved in the intersections of this group
-
-	constructor ( initialIntersection: Vector3, initialSplines: AbstractSpline[] ) {
-		this.addIntersection( initialIntersection, initialSplines );
-	}
-
-	addIntersection ( intersection: Vector3, splines: AbstractSpline[] ) {
-		this.intersections.push( intersection );
-		splines.forEach( spline => this.splines.add( spline ) );
-	}
-
-	// Calculates the centroid of the intersections as the representative position
-	getRepresentativePosition (): Vector3 {
-		let x = 0, y = 0, z = 0;
-		this.intersections.forEach( intersection => {
-			x += intersection.x;
-			y += intersection.y;
-			z += intersection.z;
-		} );
-		const count = this.intersections.length;
-		return new Vector3( x / count, y / count, z / count );
-	}
-
-}
+import { IntersectionGroup } from "./Intersection-group";
 
 @Injectable( {
 	providedIn: 'root'
@@ -171,7 +143,7 @@ export class IntersectionManager {
 			if ( processed[ i ] ) continue; // Skip already processed intersections
 
 			// Create a new group with the current intersection
-			const group = new IntersectionGroup( intersection.position, [ intersection.spline, intersection.otherSpline ] );
+			const group = new IntersectionGroup( intersection );
 
 			processed[ i ] = true;
 
@@ -186,7 +158,7 @@ export class IntersectionManager {
 
 					if ( distance <= thresholdDistance ) {
 
-						group.addIntersection( otherIntersection.position, [ otherIntersection.spline, otherIntersection.otherSpline ] );
+						group.addSplineIntersection( otherIntersection );
 
 						processed[ j ] = true;
 
@@ -246,7 +218,9 @@ export class IntersectionManager {
 
 		const junctions = new Set<TvJunction>();
 
-		group.splines.forEach( spline => spline.getJunctions().forEach( junction => {
+		const splines = group.getSplines();
+
+		splines.forEach( spline => spline.getJunctions().forEach( junction => {
 
 			const groupPosition = group.getRepresentativePosition();
 
@@ -278,7 +252,7 @@ export class IntersectionManager {
 
 	private createGroupCoords ( group: IntersectionGroup, junction: TvJunction ): TvRoadCoord[] {
 
-		const splines = Array.from( group.splines );
+		const splines = group.getSplines()
 
 		const coords: TvRoadCoord[] = [];
 
@@ -286,7 +260,7 @@ export class IntersectionManager {
 
 			const spline = splines[ i ];
 
-			const splineCoords = this.createRoadCoords( spline, junction, group.getRepresentativePosition() );
+			const splineCoords = this.createRoadCoords( junction, spline, group );
 
 			for ( let j = 0; j < splineCoords.length; j++ ) {
 
@@ -300,13 +274,22 @@ export class IntersectionManager {
 
 	}
 
-	private createRoadCoords ( spline: AbstractSpline, junction: TvJunction, point: Vector3 ): TvRoadCoord[] {
-
-		const junctionWidth = 12;
+	private createRoadCoords ( junction: TvJunction, spline: AbstractSpline, group: IntersectionGroup ): TvRoadCoord[] {
 
 		const coords = [];
 
-		const splineCoord = spline.getCoordAt( point );
+		const splineCoord = spline.getCoordAt( group.getRepresentativePosition() );
+
+		// angle in radians
+		// const angle = group.getApproachingAngle( spline );
+
+		let junctionWidth = 12;
+
+		// // increase width for sharper angles by some factor
+		// if ( angle > Math.PI / 4 ) {
+		// 	junctionWidth *= 2;
+		// }
+
 
 		const segment = spline.getSegmentAt( splineCoord.s );
 

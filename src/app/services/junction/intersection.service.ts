@@ -16,9 +16,13 @@ import { SplineSegmentService } from '../spline/spline-segment.service';
 import { RoadDividerService } from "../road/road-divider.service";
 
 export class SplineIntersection {
-	spline: AbstractSpline;
-	otherSpline: AbstractSpline;
-	position: Vector3
+	constructor (
+		public spline: AbstractSpline,
+		public otherSpline: AbstractSpline,
+		public position: Vector3,
+		public angle?: number
+	) {
+	}
 }
 
 @Injectable( {
@@ -56,7 +60,7 @@ export class IntersectionService {
 
 				if ( distance < stepSize ) {
 
-					return this.lineIntersection( a, b, c, d );
+					return this.findLineIntersection( a, b, c, d );
 
 				}
 
@@ -123,7 +127,7 @@ export class IntersectionService {
 
 				if ( distance <= stepSize * 2 ) {
 
-					return this.lineIntersection( a, b, c, d );
+					return this.findLineIntersection( a, b, c, d );
 
 				}
 
@@ -133,7 +137,7 @@ export class IntersectionService {
 
 	}
 
-	getSplineIntersectionPointViaBounds ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): Vector3 | null {
+	getSplineIntersectionPointViaBounds ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): SplineIntersection | null {
 
 		function createBoundingBoxForSegment ( start: Vector3, end: Vector3, roadWidth: number ): Box3 {
 
@@ -171,10 +175,13 @@ export class IntersectionService {
 				// Check if these bounding boxes intersect
 				if ( !this.intersectsBox( boxA, boxB ) ) continue;
 
-				const intersectionPoint = this.lineIntersection( a, b, c, d );
+				const intersectionPoint = this.findLineIntersection( a, b, c, d );
 
 				if ( intersectionPoint ) {
-					return intersectionPoint;
+
+					const angle = this.findLineIntersectionAngle( a, b, c, d );
+
+					return new SplineIntersection( splineA, splineB, intersectionPoint, angle );
 				}
 
 			}
@@ -265,11 +272,7 @@ export class IntersectionService {
 
 			if ( !intersection ) continue;
 
-			intersections.push( {
-				spline: spline,
-				otherSpline: otherSpline,
-				position: intersection
-			} );
+			intersections.push( intersection );
 		}
 
 		return intersections;
@@ -404,7 +407,7 @@ export class IntersectionService {
 
 	}
 
-	private lineIntersection ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ): Vector3 | null {
+	private findLineIntersection ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ): Vector3 | null {
 
 		// Direction vectors for the lines
 		const dir1 = b.clone().sub( a );
@@ -431,6 +434,17 @@ export class IntersectionService {
 		}
 
 		return null; // Lines do not intersect
+
+	}
+
+	private findLineIntersectionAngle ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ) {
+
+		const dir1 = b.clone().sub( a );
+		const dir2 = d.clone().sub( c );
+
+		const angle = dir1.angleTo( dir2 );
+
+		return angle;
 
 	}
 
