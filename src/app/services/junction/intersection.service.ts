@@ -8,12 +8,13 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Box3, Vector3 } from 'three';
-import { JunctionConnectionService } from './junction-connection.service';
+import { ConnectionService } from '../../map/junction/connection/connection.service';
 import { JunctionService } from './junction.service';
 import { MapService } from '../map/map.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { SplineSegmentService } from '../spline/spline-segment.service';
 import { RoadDividerService } from "../road/road-divider.service";
+import { Maths } from "../../utils/maths";
 
 export class SplineIntersection {
 	constructor (
@@ -33,7 +34,7 @@ export class IntersectionService {
 	constructor (
 		private mapService: MapService,
 		private junctionService: JunctionService,
-		private junctionConnectionService: JunctionConnectionService,
+		private junctionConnectionService: ConnectionService,
 		private segmentService: SplineSegmentService,
 		private roadDividerService: RoadDividerService
 	) { }
@@ -60,7 +61,7 @@ export class IntersectionService {
 
 				if ( distance < stepSize ) {
 
-					return this.findLineIntersection( a, b, c, d );
+					return Maths.findLineIntersection( a, b, c, d );
 
 				}
 
@@ -127,7 +128,7 @@ export class IntersectionService {
 
 				if ( distance <= stepSize * 2 ) {
 
-					return this.findLineIntersection( a, b, c, d );
+					return Maths.findLineIntersection( a, b, c, d );
 
 				}
 
@@ -175,11 +176,11 @@ export class IntersectionService {
 				// Check if these bounding boxes intersect
 				if ( !this.intersectsBox( boxA, boxB ) ) continue;
 
-				const intersectionPoint = this.findLineIntersection( a, b, c, d );
+				const intersectionPoint = Maths.findLineIntersection( a, b, c, d );
 
 				if ( intersectionPoint ) {
 
-					const angle = this.findLineIntersectionAngle( a, b, c, d );
+					const angle = Maths.findLineIntersectionAngle( a, b, c, d );
 
 					return new SplineIntersection( splineA, splineB, intersectionPoint, angle );
 				}
@@ -404,47 +405,6 @@ export class IntersectionService {
 		const boxIntersection = boxA.intersectsBox( boxB );
 
 		return boxIntersection;
-
-	}
-
-	private findLineIntersection ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ): Vector3 | null {
-
-		// Direction vectors for the lines
-		const dir1 = b.clone().sub( a );
-		const dir2 = d.clone().sub( c );
-
-		// Vector from a to c
-		const ac = c.clone().sub( a );
-
-		// Check if lines are parallel (cross product is zero)
-		const crossDir1Dir2 = dir1.clone().cross( dir2 );
-		if ( crossDir1Dir2.lengthSq() === 0 ) return null; // Lines are parallel
-
-		// Compute the parameters t and s
-		const t = ( ac.clone().cross( dir2 ).dot( crossDir1Dir2 ) ) / crossDir1Dir2.lengthSq();
-		const s = ( ac.clone().cross( dir1 ).dot( crossDir1Dir2 ) ) / crossDir1Dir2.lengthSq();
-
-		// Compute the closest points on the lines
-		const closestPtOnLine1 = a.clone().add( dir1.multiplyScalar( t ) );
-		const closestPtOnLine2 = c.clone().add( dir2.multiplyScalar( s ) );
-
-		// Check if the closest points are the same (within a small tolerance)
-		if ( closestPtOnLine1.distanceTo( closestPtOnLine2 ) < 1e-6 ) {
-			return closestPtOnLine1; // Intersection point
-		}
-
-		return null; // Lines do not intersect
-
-	}
-
-	private findLineIntersectionAngle ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ) {
-
-		const dir1 = b.clone().sub( a );
-		const dir2 = d.clone().sub( c );
-
-		const angle = dir1.angleTo( dir2 );
-
-		return angle;
 
 	}
 

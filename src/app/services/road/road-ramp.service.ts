@@ -15,7 +15,7 @@ import { DebugDrawService } from '../debug/debug-draw.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { SplineFactory } from '../spline/spline.factory';
-import { JunctionConnectionService } from '../junction/junction-connection.service';
+import { ConnectionService } from '../../map/junction/connection/connection.service';
 import { LaneLinkService } from '../junction/lane-link.service';
 import { RoadService } from './road.service';
 import { JunctionService } from '../junction/junction.service';
@@ -35,7 +35,7 @@ export class RoadRampService {
 		public base: BaseToolService,
 		public debug: DebugDrawService,
 		public roadSplineService: SplineFactory,
-		private junctionConnection: JunctionConnectionService,
+		private junctionConnection: ConnectionService,
 		private laneLink: LaneLinkService,
 		public roadService: RoadService,
 		public junctionService: JunctionService,
@@ -43,7 +43,7 @@ export class RoadRampService {
 		public roadCutService: RoadDividerService,
 		public segmentService: SplineSegmentService,
 		public junctionFactory: JunctionFactory,
-		public connectionService: JunctionConnectionService,
+		public connectionService: ConnectionService,
 		public splineService: SplineService,
 		public roadDividerService: RoadDividerService,
 	) {

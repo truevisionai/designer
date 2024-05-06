@@ -21,6 +21,7 @@ import { RoadService } from "../services/road/road.service";
 import { TvContactPoint } from "../map/models/tv-common";
 import { RoadLinkService } from "../services/road/road-link.service";
 import { IntersectionGroup } from "./Intersection-group";
+import { GeometryUtils } from "app/services/surface/surface-geometry.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -191,13 +192,15 @@ export class IntersectionManager {
 
 		const coords: TvRoadCoord[] = this.createGroupCoords( group, junction );
 
-		for ( let i = 0; i < coords.length; i++ ) {
+		const sortedCoords = GeometryUtils.sortCoordsByAngle( coords );
 
-			const coordA = coords[ i ];
+		for ( let i = 0; i < sortedCoords.length; i++ ) {
 
-			for ( let j = i + 1; j < coords.length; j++ ) {
+			const coordA = sortedCoords[ i ];
 
-				const coordB = coords[ j ];
+			for ( let j = i + 1; j < sortedCoords.length; j++ ) {
+
+				const coordB = sortedCoords[ j ];
 
 				// roads should be different
 				if ( coordA.road === coordB.road ) continue;

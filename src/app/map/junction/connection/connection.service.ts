@@ -4,30 +4,25 @@
 
 import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvRoadCoord } from "../../map/models/TvRoadCoord";
-import { TvContactPoint, TvLaneSide, TvLaneType } from "../../map/models/tv-common";
+import { TvRoadCoord } from "../../models/TvRoadCoord";
+import { TvContactPoint, TvLaneSide, TvLaneType } from "../../models/tv-common";
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
-import { SplineFactory } from '../spline/spline.factory';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
-import { RoadService } from '../road/road.service';
+import { RoadService } from '../../../services/road/road.service';
 import { TrafficRule } from 'app/map/models/traffic-rule';
-import { MapService } from '../map/map.service';
-import { JunctionConnectionFactory } from 'app/factories/junction-connection.factory';
-import { LaneLinkService } from './lane-link.service';
+import { MapService } from '../../../services/map/map.service';
+import { LaneLinkService } from '../../../services/junction/lane-link.service';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionConnectionService {
+export class ConnectionService {
 
 	constructor (
 		private roadService: RoadService,
-		private splineFactory: SplineFactory,
 		private mapService: MapService,
-		private coonectionFactory: JunctionConnectionFactory,
 		private linkService: LaneLinkService
 	) {
 	}
@@ -38,22 +33,6 @@ export class JunctionConnectionService {
 
 	}
 
-	addConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
-
-		junction.addConnection( connection );
-
-		this.roadService.add( connection.connectingRoad );
-
-	}
-
-	removeConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
-
-		junction.removeConnection( connection );
-
-		this.roadService.remove( connection.connectingRoad );
-
-	}
-
 	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint, outgoingRoad?: TvRoad ) {
 
 		const id = junction.connections.size + 1;
@@ -61,18 +40,6 @@ export class JunctionConnectionService {
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact, outgoingRoad );
 
 		return connection
-	}
-
-	connectLaneCoord ( coordA: TvLaneCoord, coordB: TvLaneCoord ): TvRoad {
-
-		const width = coordA.lane.getWidthValue( coordA.s );
-
-		const road = this.roadService.createSingleLaneRoad( width );
-
-		road.spline = this.splineFactory.createManeuverSpline( coordA, coordB );
-
-		return road;
-
 	}
 
 	createConnections ( junction: TvJunction, coords: TvRoadCoord[] ): TvJunctionConnection[] {
@@ -166,36 +133,6 @@ export class JunctionConnectionService {
 		return connection;
 	}
 
-	createConnectionsForLanes ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvJunctionConnection[] {
-
-		if ( incoming.road.trafficRule == TrafficRule.LHT ) {
-			throw new Error( 'Traffic rule not implemented' );
-		}
-
-		const leftconnections = this.coonectionFactory.createConnections( junction, incoming, outgoing );
-
-		for ( const connection of leftconnections ) {
-
-			this.roadService.add( connection.connectingRoad );
-
-			// this.splineService.updateSpline( connection.connectingRoad.spline );
-
-		}
-
-		const rigtConnections = this.coonectionFactory.createConnections( junction, outgoing, incoming );
-
-		for ( const connection of rigtConnections ) {
-
-			this.roadService.add( connection.connectingRoad );
-
-			// this.splineService.updateSpline( connection.connectingRoad.spline );
-
-		}
-
-		return leftconnections.concat( ...rigtConnections );
-
-	}
-
 	postProcessJunction ( junction: TvJunction ) {
 
 		const roads = junction.getRoads();
@@ -282,56 +219,54 @@ export class JunctionConnectionService {
 		// const incomingRoad = connection.incomingRoad;
 		// const outgoingRoad = connection.outgoingRoad;
 
-		if ( isCorner ) {
+		if ( !isCorner ) return connection;
 
-			this.linkService.createNonDrivingLinks( connection );
+		this.linkService.createNonDrivingLinks( connection );
 
-			this.linkService.addRoadMarks( connection );
+		this.linkService.addRoadMarks( connection );
 
-			// add missing lanes if any
-			if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
+		// add missing lanes if any
+		if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
 
-				const lanes = connection.connectingLaneSection.getLaneArray();
+			const lanes = connection.connectingLaneSection.getLaneArray();
 
-				for ( let i = 0; i < lanes.length; i++ ) {
+			for ( let i = 0; i < lanes.length; i++ ) {
 
-					const lane = lanes[ i ];
+				const lane = lanes[ i ];
 
-					if ( lane.id != -i ) {
+				if ( lane.id != -i ) {
 
-						const newLane = connection.connectingLaneSection.addLane( TvLaneSide.RIGHT, -i, TvLaneType.none, false, true );
+					const newLane = connection.connectingLaneSection.addLane( TvLaneSide.RIGHT, -i, TvLaneType.none, false, true );
 
-						const incoming = connection.getIncomingPosition();
-						const laneSection = connection.getIncomingLaneSection();
-						const incomingLane = laneSection.getLaneById( -i );
+					const incoming = connection.getIncomingPosition();
+					const laneSection = connection.getIncomingLaneSection();
+					const incomingLane = laneSection.getLaneById( -i );
 
-						if ( !incomingLane ) {
-							console.error( "incoming lane not found" );
-							continue;
-						}
-
-						// NOTE: THIS CAN probably be added in road event listener also
-						const widhtAtStart = incomingLane.getWidthValue( incoming.s );
-						// const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
-						// connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
-						// connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
-						// TvUtils.computeCoefficients( connectionLane.width, roadLength );
-
-						newLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
-						newLane.addWidthRecord( connectingRoad.length, 0, 0, 0, 0 );
-
-						TvUtils.computeCoefficients( newLane.width, connectingRoad.length );
-
+					if ( !incomingLane ) {
+						console.error( "incoming lane not found" );
+						continue;
 					}
+
+					// NOTE: THIS CAN probably be added in road event listener also
+					const widhtAtStart = incomingLane.getWidthValue( incoming.s );
+					// const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
+					// connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
+					// connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
+					// TvUtils.computeCoefficients( connectionLane.width, roadLength );
+
+					newLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
+					newLane.addWidthRecord( connectingRoad.length, 0, 0, 0, 0 );
+
+					TvUtils.computeCoefficients( newLane.width, connectingRoad.length );
 
 				}
 
 			}
 
-			if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
-				console.error( "lanes are not orderd." + connection.connectingLaneSection.getLaneArray().map( i => i.id ) );
-			}
+		}
 
+		if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
+			console.error( "lanes are not orderd." + connection.connectingLaneSection.getLaneArray().map( i => i.id ) );
 		}
 
 		return connection;

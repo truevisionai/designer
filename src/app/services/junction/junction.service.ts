@@ -13,7 +13,7 @@ import { JunctionMeshService } from './junction-mesh.service';
 import { JunctionNode, JunctionNodeService } from './junction-node.service';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
-import { JunctionConnectionService } from "./junction-connection.service";
+import { ConnectionService } from "../../map/junction/connection/connection.service";
 import { MapService } from '../map/map.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { TvContactPoint, TvOrientation } from 'app/map/models/tv-common';
@@ -36,7 +36,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		private factory: JunctionFactory,
 		private dividerService: RoadDividerService,
 		public junctionMeshService: JunctionMeshService,
-		public connectionService: JunctionConnectionService,
+		public connectionService: ConnectionService,
 		public debug: DebugDrawService,
 		public base: BaseToolService,
 		public mapService: MapService,
@@ -288,28 +288,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		return junction;
 	}
 
-	addConnectionsFromContactv2 ( junction: TvJunction, roadA: TvRoad, contactA: TvContactPoint, roadB: TvRoad, contactB: TvContactPoint ): TvJunction {
 
-		const coordA = roadA.getRoadCoordByContact( contactA );
-		const coordB = roadB.getRoadCoordByContact( contactB );
-
-		this.setLink( roadA, contactA, junction );
-		this.setLink( roadB, contactB, junction );
-
-		const connections = this.connectionService.createConnectionsForLanes( junction, coordA, coordB );
-
-		for ( const connection of connections ) {
-
-			if ( junction.connections.has( connection.id ) ) {
-				connection.id = junction.connections.size + 1;
-			}
-
-			junction.addConnection( connection );
-
-		}
-
-		return junction;
-	}
 
 	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
 

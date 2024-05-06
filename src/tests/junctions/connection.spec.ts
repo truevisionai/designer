@@ -4,7 +4,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { IntersectionService } from 'app/services/junction/intersection.service';
-import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
+import { ConnectionService } from 'app/map/junction/connection/connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseTest } from 'tests/base-test.spec';
@@ -95,10 +95,10 @@ describe( 'ConnectionService', () => {
 
 	} ) );
 
-	it( 'should create connection with same road same direction', inject( [ RoadService, JunctionService, JunctionConnectionService ], (
+	it( 'should create connection with same road same direction', inject( [ RoadService, JunctionService, ConnectionService ], (
 		roadService: RoadService,
 		junctionService: JunctionService,
-		connectionService: JunctionConnectionService,
+		connectionService: ConnectionService,
 	) => {
 
 		const leftRoad = roadService.createDefaultRoad();
