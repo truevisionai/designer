@@ -8,8 +8,6 @@ import { MapService } from "app/services/map/map.service";
 import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SplineSegment } from "app/core/shapes/spline-segment";
-import { RoadService } from "app/services/road/road.service";
-import { IntersectionManager } from "./intersection-manager";
 import { Box3 } from "three";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { SplineBuilder } from "app/services/spline/spline.builder";
@@ -25,8 +23,6 @@ export class SplineManager {
 	constructor (
 		private mapService: MapService,
 		private roadManager: RoadManager,
-		private roadService: RoadService,
-		private intersectionManager: IntersectionManager,
 		private splineBuilder: SplineBuilder,
 		private junctionManager: JunctionManager,
 		private roadFactory: RoadFactory,
@@ -44,7 +40,7 @@ export class SplineManager {
 
 		this.segmentService.updateWidthCache( spline );
 
-		this.intersectionManager.updateIntersections( spline );
+		this.junctionManager.updateJunctions( spline );
 
 	}
 
@@ -68,7 +64,7 @@ export class SplineManager {
 
 		this.updateSplineBoundingBox( spline );
 
-		this.intersectionManager.updateIntersections( spline );
+		this.junctionManager.updateJunctions( spline );
 
 	}
 

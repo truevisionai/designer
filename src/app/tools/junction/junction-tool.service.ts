@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
-import { IntersectionService } from 'app/services/junction/intersection.service';
 import { ConnectionService } from 'app/map/junction/connection/connection.service';
 import { JunctionMeshService } from 'app/services/junction/junction-mesh.service';
 import { JunctionNodeService } from 'app/services/junction/junction-node.service';
@@ -30,9 +29,6 @@ export class JunctionToolService {
 
 	constructor (
 		private junctionService: JunctionService,
-		private intersection: IntersectionService,
-		private factory: JunctionFactory,
-		private dividerService: RoadDividerService,
 		private junctionNodeService: JunctionNodeService,
 		public junctionMeshService: JunctionMeshService,
 		public connectionService: ConnectionService,
