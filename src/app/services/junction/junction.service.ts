@@ -6,23 +6,20 @@ import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Box3, Mesh, Object3D } from 'three';
+import { Box3, Object3D } from 'three';
 import { RoadDividerService } from '../road/road-divider.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { JunctionMeshService } from './junction-mesh.service';
-import { JunctionNode, JunctionNodeService } from './junction-node.service';
+import { JunctionBuilder } from './junction.builder';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { ConnectionService } from "../../map/junction/connection/connection.service";
 import { MapService } from '../map/map.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
-import { TvContactPoint, TvOrientation } from 'app/map/models/tv-common';
-import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
+import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
-import { Debug } from 'app/core/utils/debug';
 import { BaseDataService } from "../../core/interfaces/data.service";
 
 @Injectable( {
@@ -35,7 +32,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 	constructor (
 		private factory: JunctionFactory,
 		private dividerService: RoadDividerService,
-		public junctionMeshService: JunctionMeshService,
+		public junctionMeshService: JunctionBuilder,
 		public connectionService: ConnectionService,
 		public debug: DebugDrawService,
 		public base: BaseToolService,
@@ -125,75 +122,75 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	createJunctionFromJunctionNodes ( nodes: JunctionNode[] ) {
+	//createJunctionFromJunctionNodes ( nodes: JunctionNode[] ) {
+	//
+	//	Debug.log( 'createJunctionFromJunctionNodes', nodes[ 0 ], nodes[ 1 ] );
+	//
+	//	const coords = nodes.map( node => node.roadCoord );
+	//
+	//	const junction = this.factory.createJunction();
+	//
+	//	junction.mesh = this.createMeshFromRoadCoords( coords );
+	//
+	//	const connections = this.connectionService.createConnections( junction, coords );
+	//
+	//	connections.forEach( connection => junction.addConnection( connection ) );
+	//
+	//	Debug.log( connections );
+	//
+	//	// make connections
+	//
+	//	// make links
+	//
+	//	// make connecting-roads
+	//
+	//	// update roads links
+	//
+	//	return junction;
+	//
+	//}
 
-		Debug.log( 'createJunctionFromJunctionNodes', nodes[ 0 ], nodes[ 1 ] );
+	//createMeshFromRoadCoords ( coords: TvRoadCoord[] ): Mesh {
+	//
+	//	const points = [];
+	//
+	//	coords.forEach( roadCoord => {
+	//
+	//		const s = roadCoord.s;
+	//
+	//		const rightT = roadCoord.road.getRightsideWidth( s );
+	//		const leftT = roadCoord.road.getLeftSideWidth( s );
+	//
+	//		const leftCorner = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
+	//		const rightCorner = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );
+	//
+	//		points.push( leftCorner );
+	//		points.push( rightCorner );
+	//
+	//	} );
+	//
+	//	return this.junctionMeshService.createPolygonalMesh( points );
+	//
+	//}
 
-		const coords = nodes.map( node => node.roadCoord );
+	//getUniqueRoads ( coords: TvRoadCoord[] ) {
+	//
+	//	const uniqueRoads = [];
+	//
+	//	for ( const coord of coords ) {
+	//
+	//		if ( !uniqueRoads.includes( coord.road ) ) {
+	//			uniqueRoads.push( coord.road );
+	//		}
+	//
+	//	}
+	//
+	//	return uniqueRoads;
+	//}
 
-		const junction = this.factory.createJunction();
+	buildJunctionMesh ( junction: TvJunction ) {
 
-		junction.mesh = this.createMeshFromRoadCoords( coords );
-
-		const connections = this.connectionService.createConnections( junction, coords );
-
-		connections.forEach( connection => junction.addConnection( connection ) );
-
-		Debug.log( connections );
-
-		// make connections
-
-		// make links
-
-		// make connecting-roads
-
-		// update roads links
-
-		return junction;
-
-	}
-
-	createMeshFromRoadCoords ( coords: TvRoadCoord[] ): Mesh {
-
-		const points = [];
-
-		coords.forEach( roadCoord => {
-
-			const s = roadCoord.s;
-
-			const rightT = roadCoord.road.getRightsideWidth( s );
-			const leftT = roadCoord.road.getLeftSideWidth( s );
-
-			const leftCorner = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
-			const rightCorner = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );
-
-			points.push( leftCorner );
-			points.push( rightCorner );
-
-		} );
-
-		return this.junctionMeshService.createPolygonalMesh( points );
-
-	}
-
-	getUniqueRoads ( coords: TvRoadCoord[] ) {
-
-		const uniqueRoads = [];
-
-		for ( const coord of coords ) {
-
-			if ( !uniqueRoads.includes( coord.road ) ) {
-				uniqueRoads.push( coord.road );
-			}
-
-		}
-
-		return uniqueRoads;
-	}
-
-	createJunctionMesh ( junction: TvJunction ) {
-
-		return this.junctionMeshService.createMeshFromJunction( junction );
+		return this.junctionMeshService.buildJunctionMesh( junction );
 
 		// this.objectMap.add( junction, mesh );
 
@@ -249,11 +246,11 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	createVirtualJunction ( road: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
-
-		return this.factory.createVirtualJunction( road, sStart, sEnd, orientation );
-
-	}
+	//createVirtualJunction ( road: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
+	//
+	//	return this.factory.createVirtualJunction( road, sStart, sEnd, orientation );
+	//
+	//}
 
 	createJunctionFromContact (
 		roadA: TvRoad, contactA: TvContactPoint,
@@ -287,8 +284,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		return junction;
 	}
-
-
 
 	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
 

@@ -87,7 +87,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.meshes.removeKey( junction );
 		}
 
-		const mesh = this.junctionService.createJunctionMesh( junction );
+		const mesh = this.junctionService.buildJunctionMesh( junction );
 
 		( mesh.material as MeshBasicMaterial ).color.set( COLOR.YELLOW );
 		( mesh.material as MeshBasicMaterial ).depthTest = false;
