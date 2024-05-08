@@ -13,6 +13,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvContactPoint } from '../tv-common';
 import { TvRoadCoord } from "../TvRoadCoord";
 import { TvRoadLinkChildType } from "../tv-road-link-child";
+import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 
 export class TvJunction {
 
@@ -29,6 +30,8 @@ export class TvJunction {
 	public mesh: Mesh;
 
 	public boundingBox: Box3;
+
+	public boundary: TvJunctionBoundary;
 
 	constructor ( public name: string, public id: number ) { }
 

@@ -838,6 +838,20 @@ export class TvRoad {
 
 	}
 
+	getLaneSectionAtContact ( contactPoint: TvContactPoint ): TvLaneSection {
+
+		if ( contactPoint == TvContactPoint.START ) {
+
+			return this.getFirstLaneSection();
+
+		} else if ( contactPoint == TvContactPoint.END ) {
+
+			return this.getLastLaneSection();
+
+		}
+
+	}
+
 	// todo move this lanes
 	updateLaneOffsetValues (): void {
 
