@@ -20,11 +20,12 @@ import { GeometryUtils } from "../services/surface/surface-geometry.builder";
 import { TvContactPoint } from "../map/models/tv-common";
 import { TvRoadLinkChildType } from "../map/models/tv-road-link-child";
 import { JunctionService } from "../services/junction/junction.service";
-import { Box3, Vector3 } from "three";
-import { Maths } from "../utils/maths";
+import { Vector3 } from "three";
 import { RoadDividerService } from "../services/road/road-divider.service";
 import { ConnectionService } from "../map/junction/connection/connection.service";
 import { SplineService } from "app/services/spline/spline.service";
+import { LaneLinkService } from "app/services/junction/lane-link.service";
+import { TvJunctionBoundaryService } from "app/map/junction-boundary/tv-junction-boundary.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -44,6 +45,8 @@ export class JunctionManager {
 		private roadDividerService: RoadDividerService,
 		private connectionService: ConnectionService,
 		private splineService: SplineService,
+		private laneLinkService: LaneLinkService,
+		private junctionBoundaryService: TvJunctionBoundaryService,
 	) {
 	}
 
@@ -57,6 +60,8 @@ export class JunctionManager {
 			this.roadService.add( connection.connectingRoad );
 
 		}
+
+		this.junctionBoundaryService.update( junction );
 
 	}
 
@@ -161,6 +166,27 @@ export class JunctionManager {
 		this.processGroups( groups );
 	}
 
+	checkSplineIntersections ( spline: AbstractSpline ) {
+
+		const splines = this.mapService.nonJunctionSplines;
+		const splineCount = splines.length;
+
+		for ( let i = 0; i < splineCount; i++ ) {
+
+			const otherSpline = splines[ i ];
+
+			const intersection = this.splineService.findIntersection( spline, otherSpline );
+
+			if ( !intersection ) continue;
+
+			const junction = this.createJunction( spline, otherSpline, intersection );
+
+			this.junctionService.addJunction( junction );
+
+		}
+
+	}
+
 	private createGroups ( intersections: SplineIntersection[], thresholdDistance = 10 ): IntersectionGroup[] {
 
 		const groups: IntersectionGroup[] = [];
@@ -218,30 +244,68 @@ export class JunctionManager {
 
 	private processGroup ( group: IntersectionGroup ) {
 
+		function getHeading ( coord: TvRoadCoord ) {
+
+			if ( coord.contact == TvContactPoint.START ) {
+				return coord.h + Math.PI;
+			}
+
+			return coord.h;
+
+		}
+
 		const junction = this.createGroupJunction( group );
 
 		const coords: TvRoadCoord[] = this.createGroupCoords( group, junction );
 
-		const sortedCoords = GeometryUtils.sortCoordsByAngle( coords );
+		for ( let i = 0; i < coords.length; i++ ) {
 
-		for ( let i = 0; i < sortedCoords.length; i++ ) {
+			const coordA = coords[ i ];
 
-			const coordA = sortedCoords[ i ];
+			let rightConnectionCreated = false;
 
-			for ( let j = i + 1; j < sortedCoords.length; j++ ) {
+			for ( let j = i + 1; j < coords.length; j++ ) {
 
-				const coordB = sortedCoords[ j ];
+				const coordB = coords[ j ];
 
 				// roads should be different
 				if ( coordA.road === coordB.road ) continue;
 
-				this.addConnections( junction, coordA, coordB );
+				// const coordAHeading = getHeading( coordA );
+				// const coordBHeading = getHeading( coordB );
+
+				// const angle = Math.abs( coordAHeading - coordBHeading );
+
+				// console.log( coordA.roadId, coordB.roadId, 'angle', angle, coordA.h, coordB.h );
+
+				this.junctionService.setLink( coordA.road, coordA.contact, junction );
+
+				this.junctionService.setLink( coordB.road, coordB.contact, junction );
+
+				// ----------------------------
+
+				const connectionAB = this.connectionService.createConnection( junction, coordA, coordB, !rightConnectionCreated );
+
+				this.connectionService.postProcessConnection( junction, connectionAB, !rightConnectionCreated );
+
+				junction.addConnection( connectionAB );
+
+				// ----------------------------
+
+				// check if this is the first and last connection
+				const isFirstAndLast = i == 0 && j == coords.length - 1;
+
+				const connectionBA = this.connectionService.createConnection( junction, coordB, coordA, isFirstAndLast );
+
+				this.connectionService.postProcessConnection( junction, connectionBA, isFirstAndLast );
+
+				junction.addConnection( connectionBA );
+
+				rightConnectionCreated = true;
 
 			}
 
 		}
-
-		this.postProcessJunction( junction );
 
 		this.junctionService.addJunction( junction );
 
@@ -303,7 +367,12 @@ export class JunctionManager {
 
 		}
 
-		return coords;
+		const sortedCoords = GeometryUtils.sortCoordsByAngle( coords );
+
+		// console.log( 'sortedCoords', sortedCoords );
+		// console.log( 'sortedCoords', sortedCoords.map( coord => coord.roadId ) );
+
+		return sortedCoords;
 
 	}
 
@@ -446,28 +515,7 @@ export class JunctionManager {
 		return coords;
 	}
 
-	checkSplineIntersections ( spline: AbstractSpline ) {
-
-		const splines = this.mapService.nonJunctionSplines;
-		const splineCount = splines.length;
-
-		for ( let i = 0; i < splineCount; i++ ) {
-
-			const otherSpline = splines[ i ];
-
-			const intersection = this.splineService.findIntersection( spline, otherSpline );
-
-			if ( !intersection ) continue;
-
-			const junction = this.createJunction( spline, otherSpline, intersection );
-
-			this.junctionService.addJunction( junction );
-
-		}
-
-	}
-
-	cutRoadForJunction ( coord: TvRoadCoord, junction: TvJunction ): TvRoadCoord {
+	private cutRoadForJunction ( coord: TvRoadCoord, junction: TvJunction ): TvRoadCoord {
 
 		return this.roadDividerService.cutRoadForJunction( coord, junction );
 
@@ -487,7 +535,7 @@ export class JunctionManager {
 
 	}
 
-	createNewSegments ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord ): TvRoadCoord[] {
+	private createNewSegments ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord ): TvRoadCoord[] {
 
 		const roadC = this.cutRoadForJunction( coordA, junction );
 		const roadD = this.cutRoadForJunction( coordB, junction );
@@ -558,7 +606,7 @@ export class JunctionManager {
 
 	}
 
-	createJunction ( splineA: AbstractSpline, splineB: AbstractSpline, point: Vector3 ) {
+	private createJunction ( splineA: AbstractSpline, splineB: AbstractSpline, point: Vector3 ) {
 
 		if ( splineA == splineB ) return;
 
@@ -595,13 +643,13 @@ export class JunctionManager {
 
 	}
 
-	postProcessJunction ( junction: TvJunction ) {
+	private postProcessJunction ( junction: TvJunction ) {
 
 		this.connectionService.postProcessJunction( junction );
 
 	}
 
-	createIntersectionByContact (
+	private createIntersectionByContact (
 		coordA: TvRoadCoord,
 		contactA: TvContactPoint,
 		coordB: TvRoadCoord,
@@ -649,7 +697,7 @@ export class JunctionManager {
 
 	}
 
-	addConnections ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord ) {
+	private addConnections ( junction: TvJunction, coordA: TvRoadCoord, coordB: TvRoadCoord ) {
 
 		this.junctionService.addConnectionsFromContact(
 			junction,
@@ -661,7 +709,7 @@ export class JunctionManager {
 
 	}
 
-	createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {
+	private createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {
 
 		const junction = this.junctionFactory.createJunction();
 

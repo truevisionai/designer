@@ -104,7 +104,7 @@ export class ConnectionService {
 		return junctionConnections;
 	}
 
-	createConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ) {
+	createConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): TvJunctionConnection {
 
 		if ( incoming.road.trafficRule == TrafficRule.LHT ) {
 			throw new Error( 'Traffic rule not implemented' );
@@ -126,9 +126,15 @@ export class ConnectionService {
 
 		this.roadService.add( connection.connectingRoad );
 
-		// this.splineService.updateSpline( connectingRoad.spline );
-
 		this.linkService.createDrivingLinks( connection, incoming, outgoing );
+
+		if ( isCorner ) {
+
+			connection.markAsCornerConnection();
+
+			connection.connectingRoad.markAsCornerRoad();
+
+		}
 
 		return connection;
 	}
