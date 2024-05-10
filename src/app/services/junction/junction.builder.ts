@@ -23,13 +23,16 @@ import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoadLinkChildType } from "../../map/models/tv-road-link-child";
+import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class JunctionBuilder {
 
-	constructor () {
+	constructor (
+		private junctionBoundaryService: TvJunctionBoundaryService
+	) {
 	}
 
 	buildFromRoadCoords ( coords: TvRoadCoord[] ) {
@@ -50,6 +53,14 @@ export class JunctionBuilder {
 			points.push( rightPosition );
 
 		} );
+
+		return this.createPolygonalMesh( points );
+
+	}
+
+	buildJunctionBoundary ( junction: TvJunction ) {
+
+		const points = this.junctionBoundaryService.getBoundaryPositions( junction );
 
 		return this.createPolygonalMesh( points );
 

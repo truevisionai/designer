@@ -87,19 +87,26 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.meshes.removeKey( junction );
 		}
 
-		const mesh = this.junctionService.buildJunctionMesh( junction );
+		const mesh = this.createJunctionMesh( junction );
 
-		( mesh.material as MeshBasicMaterial ).color.set( COLOR.YELLOW );
+		this.meshes.addItem( junction, mesh );
+
+	}
+
+	createJunctionMesh ( junction: TvJunction ) {
+
+		const mesh = this.junctionService.buildJunctionBoundary( junction );
+
+		( mesh.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
 		( mesh.material as MeshBasicMaterial ).depthTest = false;
 		( mesh.material as MeshBasicMaterial ).transparent = true;
-		( mesh.material as MeshBasicMaterial ).opacity = 0.1;
+		( mesh.material as MeshBasicMaterial ).opacity = 0.2;
 		( mesh.material as MeshBasicMaterial ).needsUpdate = true;
 
 		mesh[ 'tag' ] = 'junction';
 		mesh.userData.junction = junction;
 
-		this.meshes.addItem( junction, mesh );
-
+		return mesh;
 	}
 
 	onRemoved ( junction: TvJunction ): void {
@@ -272,6 +279,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			depthWrite: false
 		} );
 
+		const geometry: BufferGeometry = this.makeManeuverGeometry( directedPoints, width );
+
+		return new ManeuverMesh( junction, connection, link, geometry, material );
+	}
+
+	makeManeuverGeometry ( directedPoints: TvPosTheta[], width: number ): BufferGeometry {
+
 		// Calculate width offset based on lane ID
 		let offset = width * 0.5;
 
@@ -302,7 +316,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
 		geometry.setIndex( indices );
 
-		return new ManeuverMesh( junction, connection, link, geometry, material );
+		return geometry;
 	}
 }
 

@@ -32,7 +32,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 	constructor (
 		private factory: JunctionFactory,
 		private dividerService: RoadDividerService,
-		public junctionMeshService: JunctionBuilder,
+		public junctionBuilder: JunctionBuilder,
 		public connectionService: ConnectionService,
 		public debug: DebugDrawService,
 		public base: BaseToolService,
@@ -190,11 +190,17 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	buildJunctionMesh ( junction: TvJunction ) {
 
-		return this.junctionMeshService.buildJunctionMesh( junction );
+		return this.junctionBuilder.buildJunctionMesh( junction );
 
 		// this.objectMap.add( junction, mesh );
 
 		// junction.boundingBox = new Box3().setFromObject( mesh );
+
+	}
+
+	buildJunctionBoundary ( junction: TvJunction ) {
+
+		return this.junctionBuilder.buildJunctionBoundary( junction );
 
 	}
 
