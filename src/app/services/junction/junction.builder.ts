@@ -31,7 +31,7 @@ import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction
 export class JunctionBuilder {
 
 	constructor (
-		private junctionBoundaryService: TvJunctionBoundaryService
+		public junctionBoundaryService: TvJunctionBoundaryService
 	) {
 	}
 

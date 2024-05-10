@@ -27,6 +27,7 @@ import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { ISelectable } from "../../objects/i-selectable";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
+import { DebugDrawService } from '../debug/debug-draw.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,7 +40,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	private maneuvers = new Object3DArrayMap<TvJunction, Object3D[]>();
 
-	constructor ( private junctionService: JunctionService ) {
+	constructor ( private junctionService: JunctionService, private debug: DebugDrawService ) {
 
 		super();
 
@@ -90,6 +91,29 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		const mesh = this.createJunctionMesh( junction );
 
 		this.meshes.addItem( junction, mesh );
+
+		const outline = this.createJunctionOutline( junction );
+
+		if ( outline ) this.meshes.addItem( junction, outline );
+
+	}
+
+	createJunctionOutline ( junction: TvJunction ): Object3D {
+
+		const positions = this.junctionService.junctionBuilder.junctionBoundaryService.getBoundaryPositions( junction );
+
+		if ( positions.length < 2 ) return;
+
+		// add first point to close the loop
+		positions.push( positions[ 0 ].clone() );
+
+		const mesh = this.debug.createLine( positions, COLOR.CYAN );
+
+		mesh[ 'tag' ] = 'junction';
+
+		mesh.userData.junction = junction;
+
+		return mesh;
 
 	}
 

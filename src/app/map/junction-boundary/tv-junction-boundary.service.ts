@@ -5,6 +5,7 @@ import { TvBoundarySegmentType, TvJointBoundary, TvJunctionBoundary, TvJunctionS
 import { TvRoad } from '../models/tv-road.model';
 import { Vector3 } from 'three';
 import { TvContactPoint } from '../models/tv-common';
+import { GeometryUtils } from 'app/services/surface/surface-geometry.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,7 +40,9 @@ export class TvJunctionBoundaryService {
 
 		} );
 
-		return positions;
+		const sortedPositions = GeometryUtils.sortByAngle( positions );
+
+		return sortedPositions;
 	}
 
 	createJunctionBoundary ( junction: TvJunction ): TvJunctionBoundary {
