@@ -38,8 +38,6 @@ export class RoadBuilder {
 
 	getRoadStyleObject ( roadStyle: RoadStyle ): Object3D {
 
-		const mapMesh = new GameObject();
-
 		const road = new TvRoad( '', 0, 1 );
 
 		road.laneSections.push( roadStyle.laneSection );
@@ -48,11 +46,11 @@ export class RoadBuilder {
 
 		road.addGeometryLine( 0, -250, 0, 0, 500 );
 
-		this.buildRoad( road, mapMesh );
+		const gameObject = road.gameObject = this.buildRoad( road );
 
 		this.roadObjectService.buildRoadObjects( road );
 
-		return mapMesh;
+		return gameObject;
 	}
 
 	rebuildRoad ( road: TvRoad, map: TvMap ): GameObject {
