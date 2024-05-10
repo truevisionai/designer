@@ -7,7 +7,11 @@ import { Object3DMap } from "../../core/models/object3d-map";
 import { PropInstance } from "../../map/prop-point/prop-instance.object";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
+import { Injectable } from "@angular/core";
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class PointDebugService extends BaseDebugger<PropInstance> {
 
 	private points = new Object3DMap<number, AbstractControlPoint>();

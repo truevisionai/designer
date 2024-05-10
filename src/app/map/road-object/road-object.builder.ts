@@ -260,21 +260,45 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 				const posTheta = road.getPosThetaAt( s, t );
 
-				const repeatMesh = this.assetService.getInstance<Object3D>( roadObject.assetGuid )?.clone();
+				const objectInstance = this.getObject3dInstance( roadObject.assetGuid );
 
-				repeatMesh.name = 'repeat:' + i;
+				if ( !objectInstance ) continue;
 
-				repeatMesh.position.copy( posTheta.position );
+				objectInstance.name = 'repeat:' + i;
 
-				repeatMesh.position.z += zOffset;
+				objectInstance.position.copy( posTheta.position );
 
-				roadObjectMesh.add( repeatMesh );
+				objectInstance.position.z += zOffset;
+
+				roadObjectMesh.add( objectInstance );
 
 			}
 
 		}
 
 		return roadObjectMesh;
+
+	}
+
+	getObject3dInstance ( assetGuid: string ) {
+
+		const asset = this.assetService.getAsset( assetGuid );
+
+		if ( asset.type == AssetType.MODEL ) {
+
+			const model = this.assetService.getModelAsset( assetGuid );
+
+			return model?.clone();
+
+		}
+
+		if ( asset.type == AssetType.OBJECT ) {
+
+			const object = this.assetService.getObjectAsset( assetGuid );
+
+			return object?.instance?.clone();
+
+		}
 
 	}
 
