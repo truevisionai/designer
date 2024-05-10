@@ -24,6 +24,7 @@ import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
 import { RoadSignalService } from '../road-signal/road-signal.service';
 import { TvMap } from '../models/tv-map.model';
+import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,6 +35,7 @@ export class RoadBuilder {
 		private roadObjectService: RoadObjectService,
 		private roadMarkBuilder: LaneRoadMarkBuilder,
 		private roadSignalService: RoadSignalService,
+		private materialService: TvMaterialService,
 	) { }
 
 	getRoadStyleObject ( roadStyle: RoadStyle ): Object3D {

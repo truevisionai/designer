@@ -1500,9 +1500,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const lane = laneSection.addLane( laneSide, id, type, level, false );
 
-		if ( xmlElement.attr_materialGuid ) {
-			lane.threeMaterialGuid = xmlElement.attr_materialGuid;
-		}
+		lane.threeMaterialGuid = xmlElement?.attr_materialGuid || null;
 
 		if ( xmlElement.link != null ) {
 
