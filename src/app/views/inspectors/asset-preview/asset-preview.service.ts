@@ -417,14 +417,13 @@ export class AssetPreviewService {
 
 		road.addGeometryLine( 0, -250, 0, 0, 500 );
 
-		road.elevationProfile = roadStyle.elevationProfile.clone();
+		road.elevationProfile = roadStyle.elevationProfile;
 
 		road.laneOffsets.splice( 0, road.laneOffsets.length );
-		road.laneOffsets.push( roadStyle.laneOffset.clone() );
+		road.laneOffsets.push( roadStyle.laneOffset );
 
 		road.laneSections.splice( 0, road.laneSections.length );
-		road.laneSections.push( roadStyle.laneSection.cloneAtS() );
-		road.laneSections.forEach( laneSection => laneSection.road = road );
+		road.addLaneSectionInstance( roadStyle.laneSection )
 
 		roadStyle.objects.forEach( obj => road.addRoadObjectInstance( obj.clone() ) );
 
