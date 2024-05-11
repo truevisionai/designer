@@ -130,11 +130,11 @@ export class PropSpanTool extends BaseTool<any>{
 
 				const repeat = this.point.target as TvObjectRepeat;
 
-				repeat.s = roadObject.s = position.s;
+				repeat.sStart = roadObject.s = position.s;
 
 				repeat.tStart = roadObject.t = position.t;
 
-				repeat.length = this.road.length - position.s;
+				repeat.segmentLength = this.road.length - position.s;
 
 				this.point.position.copy( position.position );
 
@@ -311,26 +311,26 @@ class RoadSpanObject {
 
 	set s ( value ) {
 		this.roadObject.s = value;
-		this.repeat.s = value;
+		this.repeat.sStart = value;
 		this.updateLength();
 	}
 
 	@SerializedField( { 'type': 'float', label: 'Gap' } )
-	get distance () {
-		return this.repeat.distance;
+	get gap () {
+		return this.repeat.gap;
 	}
 
-	set distance ( value ) {
-		this.repeat.distance = value;
+	set gap ( value ) {
+		this.repeat.gap = value;
 	}
 
 	@SerializedField( { 'type': 'float', label: 'Segment Length' } )
 	get length () {
-		return this.repeat.length;
+		return this.repeat.segmentLength;
 	}
 
 	set length ( value ) {
-		this.repeat.length = value;
+		this.repeat.segmentLength = value;
 	}
 
 	@SerializedField( { 'type': 'float', label: 'Laterl Offset Start' } )
@@ -379,9 +379,9 @@ class RoadSpanObject {
 
 	updateLength () {
 
-		if ( this.repeat.s + this.repeat.length > this.roadObject.road.length ) {
+		if ( this.repeat.sStart + this.repeat.segmentLength > this.roadObject.road.length ) {
 
-			this.repeat.length = this.roadObject.road.length - this.repeat.s;
+			this.repeat.segmentLength = this.roadObject.road.length - this.repeat.sStart;
 
 		}
 

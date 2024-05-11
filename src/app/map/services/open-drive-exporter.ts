@@ -695,9 +695,9 @@ export class OpenDriveExporter {
 	writeObjectRepeat ( repeat: TvObjectRepeat ): XmlElement {
 
 		const xml = {
-			attr_s: repeat.s,
-			attr_length: repeat.length,
-			attr_distance: repeat.distance,
+			attr_s: repeat.sStart,
+			attr_length: repeat.segmentLength,
+			attr_distance: repeat.gap,
 		}
 
 		if ( repeat.tStart ) xml[ 'attr_tStart' ] = repeat.tStart;

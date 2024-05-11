@@ -66,7 +66,7 @@ export class RoadObjectService {
 
 			// TODO: update position of road object
 			// this is inefficient, but it works for now
-			this.updateRoadObject( object.road, object );
+			this.updateRoadObject( road, object );
 
 		} );
 
@@ -171,7 +171,7 @@ export class RoadObjectService {
 
 		this.hideRoadObjectCorners( roadObject );
 
-		road.removeRoadObjectById( roadObject.attr_id );
+		road?.removeRoadObjectById( roadObject.attr_id );
 
 	}
 

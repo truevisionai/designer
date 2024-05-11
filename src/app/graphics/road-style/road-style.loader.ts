@@ -17,6 +17,8 @@ import { StorageService } from 'app/io/storage.service';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
 import { TvElevationProfile } from 'app/map/road-elevation/tv-elevation-profile.model';
 import { AssetLoader } from "../../core/interfaces/asset.loader";
+import { OpenDrive16Parser } from 'app/importers/open-drive/open-drive-1-6.parser';
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,7 +27,8 @@ export class RoadStyleLoader implements AssetLoader {
 
 	constructor (
 		private storageService: StorageService,
-		private snackBar: SnackBar
+		private snackBar: SnackBar,
+		private openDriveParser: OpenDrive16Parser,
 	) {
 	}
 
@@ -68,7 +71,38 @@ export class RoadStyleLoader implements AssetLoader {
 
 		roadStyle.elevationProfile = this.importElevationProfile( json );
 
+		readXmlArray( json.objects?.object, xml => roadStyle.objects.push( this.parseRoadObject( xml ) ) );
+
 		return roadStyle;
+	}
+
+	parseRoadObject ( xmlElement: XmlElement ) {
+
+		const type = xmlElement.attr_type;
+		const name = xmlElement.attr_name;
+		const id = parseFloat( xmlElement.attr_id ) || 0;
+		const s = parseFloat( xmlElement.attr_s ) || 0;
+		const t = parseFloat( xmlElement.attr_t ) || 0;
+		const zOffset = parseFloat( xmlElement.attr_zOffset ) || 0.005;
+		const validLength = parseFloat( xmlElement.attr_validLength ) || 0;
+
+		const length = parseFloat( xmlElement.attr_length ) || 0;
+		const width = parseFloat( xmlElement.attr_width ) || 0;
+		const radius = parseFloat( xmlElement.attr_radius ) || 0;
+		const height = parseFloat( xmlElement.attr_height ) || 0;
+		const hdg = parseFloat( xmlElement.attr_hdg ) || 0;
+		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
+		const roll = parseFloat( xmlElement.attr_roll ) || 0;
+
+		const orientation = TvRoadObject.orientationFromString( xmlElement.attr_orientation );
+
+		const roadObject = new TvRoadObject( type, name, id, s, t, zOffset, validLength, orientation, length, width, radius, height, hdg, pitch, roll );
+
+		roadObject.assetGuid = xmlElement.attr_assetGuid;
+
+		this.openDriveParser.parseRoadObjectRepeatArray( roadObject, xmlElement );
+
+		return roadObject;
 	}
 
 	importElevationProfile ( json: XmlElement ): TvElevationProfile {

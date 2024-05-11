@@ -13,6 +13,8 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvConsole } from "../../core/utils/console";
+import { SceneExporter } from 'app/map/scene/scene.exporter';
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,6 +23,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 
 	constructor (
 		private openDriveExporter: OpenDriveExporter,
+		private sceneExporter: SceneExporter,
 	) {
 	}
 
@@ -41,26 +44,31 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 					};
 				} )
 			},
+			objects: {
+				object: style.objects.map( object => {
+					return this.writeRoadObject( object )
+				} )
+			},
 		};
 
 		this.writeLaneOffset( xmlNode, style.laneOffset );
 
 		this.writeLaneSection( xmlNode, style.laneSection );
 
-		return JSON.stringify( xmlNode );
+		return JSON.stringify( xmlNode, null, 2 );
+	}
+
+	writeRoadObject ( object: TvRoadObject ): any {
+
+		return this.sceneExporter.writeRoadObject( object );
+
 	}
 
 	exportRoadAsStyle ( road: TvRoad ): any {
 
-		const roadStyle = new RoadStyle();
+		const style = RoadStyle.fromRoad( road );
 
-		roadStyle.laneOffset = road.getLaneOffsetAt( 0 ).clone();
-
-		roadStyle.laneSection = road.getLaneSectionAt( 0 ).cloneAtS( 0, 0 );
-
-		roadStyle.elevationProfile = road.elevationProfile.clone();
-
-		return this.exportRoadStyle( roadStyle );
+		return this.exportRoadStyle( style );
 
 	}
 
