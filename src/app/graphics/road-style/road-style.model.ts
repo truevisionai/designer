@@ -36,7 +36,8 @@ export class RoadStyle {
 
 	private _elevationProfile: TvElevationProfile;
 
-	constructor () { }
+	constructor () {
+	}
 
 	static fromRoad ( road: TvRoad ): RoadStyle {
 

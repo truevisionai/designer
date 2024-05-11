@@ -13,13 +13,15 @@ import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
 import { TvLane } from '../tv-lane';
 import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
-import { Euler, Vector3 } from 'three';
+import { Euler, Object3D, Vector3 } from 'three';
 
 export class TvRoadObject {
 
 	public static counter = 1;
 
 	public road: TvRoad;
+
+	public mesh: Object3D;
 
 	public attr_type: ObjectTypes;
 

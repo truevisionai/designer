@@ -440,4 +440,10 @@ export class AssetService {
 		return AssetDatabase.getAssetNameByGuid( guid );
 
 	}
+
+	getRoadStyleAsset ( guid: string ) {
+
+		return this.getInstance<RoadStyle>( guid );
+
+	}
 }

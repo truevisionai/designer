@@ -149,7 +149,7 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 			const instance = this.assetService.getInstance<RoadStyle>( this.asset.guid );
 
-			return this.previewService.getRoadStyleObject( instance );
+			return this.previewService.buildRoadStyleObject( instance );
 
 		}
 

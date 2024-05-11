@@ -7,7 +7,7 @@ import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSignalBuilder } from './road-signal.builder';
 import { Object3DMap } from 'app/core/models/object3d-map';
-import { Object3D } from 'three';
+import { Group, Object3D } from 'three';
 import { SceneService } from "../../services/scene.service";
 
 @Injectable( {
@@ -25,12 +25,21 @@ export class RoadSignalService {
 
 	buildSignals ( road: TvRoad ) {
 
-		road.signals.forEach( signal => {
+		const group = new Group();
 
-			this.buildSignal( road, signal );
+		group.name = 'RoadSignals';
 
-		} )
+		for ( const signal of road.signals.values() ) {
 
+			const mesh = this.buildSignal( road, signal );
+
+			if ( !mesh ) continue;
+
+			group.add( mesh );
+
+		}
+
+		return group;
 	}
 
 	buildSignal ( road: TvRoad, signal: TvRoadSignal ) {

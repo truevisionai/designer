@@ -11,7 +11,7 @@ export class TvRoadLanes {
 
 	public laneSections: TvLaneSection[] = [];
 
-	private laneOffsets: TvRoadLaneOffset[] = [];
+	public laneOffsets: TvRoadLaneOffset[] = [];
 
 	constructor () {
 

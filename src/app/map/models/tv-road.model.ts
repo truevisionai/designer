@@ -215,6 +215,10 @@ export class TvRoad {
 		return this.lanes.laneSections;
 	}
 
+	get laneOffsets () {
+		return this.lanes.laneOffsets;
+	}
+
 	get hasType (): boolean {
 		return this.type.length > 0;
 	}
@@ -1165,15 +1169,9 @@ export class TvRoad {
 
 		this.elevationProfile = roadStyle.elevationProfile.clone();
 
-		if ( roadStyle.objects.length > 0 ) {
+		this.objects.object = [];
 
-			roadStyle.objects.map( obj => this.addRoadObjectInstance( obj.clone() ) );
-
-		} else {
-
-			this.objects.object = [];
-
-		}
+		roadStyle.objects.map( obj => this.addRoadObjectInstance( obj.clone() ) );
 
 	}
 

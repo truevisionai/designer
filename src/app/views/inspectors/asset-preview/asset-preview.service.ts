@@ -11,7 +11,8 @@ import * as THREE from 'three';
 import {
 	Box3,
 	BoxGeometry,
-	BufferGeometry, Camera,
+	BufferGeometry,
+	Camera,
 	Color,
 	Material,
 	Mesh,
@@ -21,7 +22,6 @@ import {
 	PlaneGeometry,
 	Scene,
 	SphereGeometry,
-	Texture,
 	TextureLoader,
 	Vector3,
 	WebGLRenderer
@@ -29,7 +29,6 @@ import {
 import { TvRoadSign } from '../../../map/models/tv-road-sign.model';
 import {
 	AMBIENT_LIGHT_COLOR,
-	DEFAULT_AMBIENT_LIGHT,
 	DEFAULT_DIRECTIONAL_LIGHT,
 	DIRECTIONAL_LIGHT_POSITION
 } from 'app/renderer/default.config';
@@ -39,6 +38,8 @@ import { RoadBuilder } from 'app/map/builders/road.builder';
 import { TvTexture } from "../../../graphics/texture/tv-texture.model";
 import { TvRoadMarking } from "../../../deprecated/tv-road-marking";
 import { AssetService } from 'app/core/asset/asset.service';
+import { TvRoad } from "../../../map/models/tv-road.model";
+import { MapService } from 'app/services/map/map.service';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -77,6 +78,7 @@ export class AssetPreviewService {
 	constructor (
 		private roadBuilder: RoadBuilder,
 		private assetService: AssetService,
+		private mapService: MapService,
 	) {
 
 		this.ngOnInit();
@@ -222,7 +224,7 @@ export class AssetPreviewService {
 
 		} else if ( asset.type === AssetType.ROAD_STYLE ) {
 
-			const instance = this.assetService.getInstance<RoadStyle>( asset.guid );
+			const instance = this.assetService.getRoadStyleAsset( asset.guid );
 
 			if ( !instance ) return;
 
@@ -390,7 +392,7 @@ export class AssetPreviewService {
 
 	private getRoadStylePreview ( roadStyle: RoadStyle ): string {
 
-		const object3d = this.getRoadStyleObject( roadStyle );
+		const object3d = this.buildRoadStyleObject( roadStyle );
 
 		this.setupScene( AssetType.ROAD_STYLE, object3d, this.scene );
 
@@ -409,9 +411,24 @@ export class AssetPreviewService {
 		return image;
 	}
 
-	getRoadStyleObject ( roadStyle: RoadStyle ): Object3D {
+	buildRoadStyleObject ( roadStyle: RoadStyle ): Object3D {
 
-		return this.roadBuilder.getRoadStyleObject( roadStyle );
+		const road = new TvRoad( '', 0, 1 );
+
+		road.addGeometryLine( 0, -250, 0, 0, 500 );
+
+		road.elevationProfile = roadStyle.elevationProfile.clone();
+
+		road.laneOffsets.splice( 0, road.laneOffsets.length );
+		road.laneOffsets.push( roadStyle.laneOffset.clone() );
+
+		road.laneSections.splice( 0, road.laneSections.length );
+		road.laneSections.push( roadStyle.laneSection.cloneAtS() );
+		road.laneSections.forEach( laneSection => laneSection.road = road );
+
+		roadStyle.objects.forEach( obj => road.addRoadObjectInstance( obj.clone() ) );
+
+		return this.roadBuilder.rebuildRoad( road, this.mapService.map );
 
 	}
 
