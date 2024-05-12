@@ -152,7 +152,7 @@ export class AssetService {
 
 	}
 
-	createRoadStyleAsset ( directory: string, style: TvRoad | RoadStyle, filename: string = 'RoadStyle.roadstyle' ) {
+	createRoadStyleAsset ( directory: string, style: RoadStyle, filename: string = 'RoadStyle.roadstyle' ) {
 
 		const data = this.exporterFactory.getExporter( AssetType.ROAD_STYLE ).exportAsString( style );
 

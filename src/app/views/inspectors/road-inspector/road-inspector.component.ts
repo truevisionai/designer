@@ -19,7 +19,7 @@ import { AssetService } from 'app/core/asset/asset.service';
 import { RoadService } from 'app/services/road/road.service';
 import { UpdatePositionCommand } from "../../../commands/update-position-command";
 import { Environment } from 'app/core/utils/environment';
-import { Debug } from 'app/core/utils/debug';
+import { TvConsole } from "../../../core/utils/console";
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -98,9 +98,11 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 		if ( !saved ) return;
 
-		this.assetService.createRoadStyleAsset( saved.directory, this.road, saved.filename );
+		const style = RoadStyle.fromRoad( this.road );
 
-		Debug.log( 'exporting road style to: ' + saved.filePath );
+		this.assetService.createRoadStyleAsset( saved.directory, style, saved.filename );
+
+		TvConsole.info( 'Exporting road style to: ' + saved.filePath );
 
 	}
 

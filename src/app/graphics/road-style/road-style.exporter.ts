@@ -9,10 +9,8 @@ import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { RoadStyle } from "./road-style.model";
-import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
-import { TvConsole } from "../../core/utils/console";
 import { SceneExporter } from 'app/map/scene/scene.exporter';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 
@@ -27,7 +25,15 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 	) {
 	}
 
-	exportRoadStyle ( style: RoadStyle ): string {
+	exportAsString ( style: RoadStyle ): string {
+
+		const json = this.exportAsJSON( style );
+
+		return JSON.stringify( json, null, 2 );
+
+	}
+
+	exportAsJSON ( style: RoadStyle ): any {
 
 		const xmlNode = {
 			version: 1,
@@ -55,24 +61,15 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 
 		this.writeLaneSection( xmlNode, style.laneSection );
 
-		return JSON.stringify( xmlNode, null, 2 );
 	}
 
-	writeRoadObject ( object: TvRoadObject ): any {
+	private writeRoadObject ( object: TvRoadObject ): any {
 
 		return this.sceneExporter.writeRoadObject( object );
 
 	}
 
-	exportRoadAsStyle ( road: TvRoad ): any {
-
-		const style = RoadStyle.fromRoad( road );
-
-		return this.exportRoadStyle( style );
-
-	}
-
-	writeLaneSection ( xmlNode: any, laneSection: TvLaneSection ) {
+	private writeLaneSection ( xmlNode: any, laneSection: TvLaneSection ) {
 
 		const leftLanes = {
 			lane: []
@@ -117,7 +114,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 		xmlNode.laneSection = laneSectionNode;
 	}
 
-	writeLane ( xmlNode, lane: TvLane ): any {
+	private writeLane ( xmlNode, lane: TvLane ): any {
 
 		const laneNode = {
 			attr_id: lane.id,
@@ -168,7 +165,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 		return laneNode;
 	}
 
-	writeLaneOffset ( xmlNode, laneOffset: TvRoadLaneOffset ) {
+	private writeLaneOffset ( xmlNode, laneOffset: TvRoadLaneOffset ) {
 
 		xmlNode.laneOffset = {
 			attr_s: laneOffset.s,
@@ -181,7 +178,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 		return xmlNode;
 	}
 
-	exportTypes ( types: TvRoadTypeClass[] ) {
+	private exportTypes ( types: TvRoadTypeClass[] ) {
 
 		return types.map( type => {
 
@@ -195,30 +192,6 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 			};
 
 		} );
-
-	}
-
-	exportAsString ( instance: RoadStyle ): string {
-
-		if ( instance instanceof TvRoad ) {
-
-			return this.exportRoadAsStyle( instance );
-
-		} else if ( instance instanceof RoadStyle ) {
-
-			return this.exportRoadStyle( instance );
-
-		} else {
-
-			TvConsole.error( 'ExporterService: getRoadStyleExport: Unknown input type ' + instance );
-
-		}
-
-	}
-
-	exportAsJSON ( asset: RoadStyle ): any {
-
-		throw new Error( 'Method not implemented.' );
 
 	}
 
