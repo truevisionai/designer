@@ -5,21 +5,12 @@
 import { GameObject } from 'app/objects/game-object';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvConsole } from 'app/core/utils/console';
-import { SnackBar } from 'app/services/snack-bar.service';
 import { Maths } from 'app/utils/maths';
 import { Box3, MathUtils, Vector2, Vector3 } from 'three';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
-import {
-	ObjectTypes,
-	TvContactPoint,
-	TvDynamicTypes,
-	TvLaneSide,
-	TvOrientation,
-	TvRoadType,
-	TvUnit
-} from './tv-common';
+import { ObjectTypes, TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevation } from '../road-elevation/tv-elevation.model';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
@@ -222,6 +213,10 @@ export class TvRoad {
 
 	get laneSections () {
 		return this.lanes.laneSections;
+	}
+
+	get laneOffsets () {
+		return this.lanes.laneOffsets;
 	}
 
 	get hasType (): boolean {
@@ -1188,17 +1183,15 @@ export class TvRoad {
 
 		this.elevationProfile = roadStyle.elevationProfile.clone();
 
+		this.objects.object = [];
+
+		roadStyle.objects.map( obj => this.addRoadObjectInstance( obj.clone() ) );
+
 	}
 
 	get roadStyle (): RoadStyle {
 
-		const roadStyle = new RoadStyle();
-
-		roadStyle.laneOffset = this.getLaneOffsetAt( 0 ).clone();
-
-		roadStyle.laneSection = this.getLaneSectionAt( 0 ).cloneAtS( 0, 0 )
-
-		return roadStyle;
+		return RoadStyle.fromRoad( this );
 
 	}
 

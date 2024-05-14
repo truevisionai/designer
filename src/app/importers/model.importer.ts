@@ -28,6 +28,7 @@ import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import { MaterialAsset } from 'app/graphics/material/tv-material.asset';
 import { TvMaterialLoader } from 'app/graphics/material/tv-material.loader';
 import { TvMaterialExporter } from "../graphics/material/tv-material.exporter";
+import { SnackBar } from 'app/services/snack-bar.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -45,6 +46,7 @@ export class ModelImporter implements Importer {
 		private materialLoader: TvMaterialLoader,
 		private materialExporter: TvMaterialExporter,
 		private assetService: AssetService,
+		private snackBar: SnackBar
 	) {
 	}
 
@@ -143,34 +145,25 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private createAssets ( sourcePath: string, destinationFolder: string, object: Object3D ) {
+	private async createAssets ( sourcePath: string, destinationFolder: string, object: Object3D ) {
 
 		ThreeJsUtils.changeCoordinateSystem( object, CoordinateSystem.UNITY_GLTF, CoordinateSystem.OPEN_DRIVE );
 
-		// Traverse the object and flip UVs if necessary
-		object.traverse( function ( child ) {
-			if ( child[ 'isMesh' ] ) {
-				const uvAttribute = child[ 'geometry' ]?.attributes.uv;
-				if ( uvAttribute ) {
-					// Example: Flip UVs vertically
-					for ( let i = 0; i < uvAttribute.count; i++ ) {
-						uvAttribute.setY( i, 1 - uvAttribute.getY( i ) );
-					}
-					uvAttribute.needsUpdate = true;
-				}
-			}
-		} );
-
 		object.updateMatrixWorld( true );
+
+		this.flipUVs( object );
 
 		const json = object.toJSON();
 
-		this.saveTextures( json, destinationFolder );
+		await this.saveTextures( json, destinationFolder );
 
-		this.saveMaterials( json, destinationFolder );
+		await this.saveMaterials( json, destinationFolder );
 
-		this.saveObject( sourcePath, destinationFolder, object );
+		await this.saveObject( sourcePath, destinationFolder, object );
 
+		// NOTE: DONT REMOVE THIS LINE
+		// flip again to revert the changes
+		this.flipUVs( object );
 	}
 
 	private async importOBJ ( sourcePath: string, destinationFolder: string ) {
@@ -185,7 +178,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private saveMaterials ( json: any, destinationFolder: string ) {
+	private async saveMaterials ( json: any, destinationFolder: string ): Promise<void> {
 
 		if ( !json?.materials ) return;
 
@@ -221,45 +214,62 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private saveTextures ( json: any, destinationFolder: string ) {
+	private async saveTextures ( json: any, destinationFolder: string ) {
 
 		if ( !json.textures ) return;
 
-		// write textures
 		for ( const texture of json.textures ) {
 
-			if ( typeof texture.image !== 'string' ) continue;
+			await this.saveTexture( json, texture, destinationFolder );
 
-			const image = json?.images.find( image => image.uuid === texture.image );
-
-			if ( !image ) continue;
-
-			const data = image.url.split( ',' )[ 1 ]; // Get the base64 encoded string
-
-			const buffer = this.preload.buffer.from( data, 'base64' ); // Convert base64 to binary buffer
-
-			const extension = image.url.match( /image\/(png|jpeg);/ )[ 1 ]; // Detect the extension (PNG or JPEG)
-
-			const imageName = ( texture.name || 'images-' + image.uuid ) + '.' + extension;
-
-			const imagePath = destinationFolder + '/' + imageName;
-
-			this.storageService.writeSync( imagePath, buffer ); // Write the file as binary data
-
-			const textureAsset = this.textureLoader.loadFromJSON( texture, imagePath, texture.uuid );
-
-			const metadata = textureAsset.toMetadata( imagePath );
-
-			const textureMetadata = JSON.stringify( metadata, null, 2 );
-
-			this.storageService.writeSync( imagePath + '.meta', textureMetadata );
-
-			this.textureService.addTexture( textureAsset.guid, textureAsset );
-
-			const asset = new Asset( AssetType.MATERIAL, textureAsset.guid, imagePath, metadata );
-
-			this.assetService.addAsset( asset );
 		}
+
+	}
+
+	async saveTexture ( json: any, texture: any, destinationFolder: string ): Promise<void> {
+
+		if ( typeof texture.image !== 'string' ) return;
+
+		const imagePath = this.saveImage( json, texture, destinationFolder );
+
+		if ( !imagePath ) return;
+
+		const textureAsset = await this.textureLoader.loadAsyncPath( texture, imagePath, texture.uuid );
+
+		const metadata = textureAsset.toMetadata( imagePath );
+
+		const textureMetadata = JSON.stringify( metadata, null, 2 );
+
+		this.storageService.writeSync( imagePath + '.meta', textureMetadata );
+
+		this.textureService.addTexture( textureAsset.guid, textureAsset );
+
+		const asset = new Asset( AssetType.MATERIAL, textureAsset.guid, imagePath, metadata );
+
+		this.assetService.addAsset( asset );
+
+	}
+
+	private saveImage ( json, texture, destinationFolder: string ) {
+
+		const image = json?.images.find( image => image.uuid === texture.image );
+
+		if ( !image ) return;
+
+		const data = image.url.split( ',' )[ 1 ]; // Get the base64 encoded string
+
+		const buffer = this.preload.buffer.from( data, 'base64' ); // Convert base64 to binary buffer
+
+		const extension = image.url.match( /image\/(png|jpeg);/ )[ 1 ]; // Detect the extension (PNG or JPEG)
+
+		const imageName = ( texture.name || 'images-' + image.uuid ) + '.' + extension;
+
+		const imagePath = destinationFolder + '/' + imageName;
+
+		this.storageService.writeSync( imagePath, buffer ); // Write the file as binary data
+
+		return imagePath;
+
 	}
 
 	private saveObject ( sourcePath: string, destinationFolder: string, object: Object3D ) {
@@ -285,6 +295,10 @@ export class ModelImporter implements Importer {
 		const asset = new Asset( AssetType.OBJECT, objectAsset.guid, objectPath, metadata );
 
 		this.assetService.addAsset( asset );
+
+		this.assetService.assetCreated.emit( asset );
+
+		this.snackBar.success( 'New Asset Imported' );
 
 	}
 
@@ -315,4 +329,21 @@ export class ModelImporter implements Importer {
 		return outputPath;
 
 	}
+
+	private flipUVs ( object: Object3D ) {
+
+		// Traverse and conditionally modify UVs after the system change
+		object.traverse( function ( child ) {
+			if ( child[ 'isMesh' ] ) {
+				const uvAttribute = child[ 'geometry' ].attributes.uv;
+				if ( uvAttribute ) {
+					for ( let i = 0; i < uvAttribute.count; i++ ) {
+						uvAttribute.setY( i, 1 - uvAttribute.getY( i ) );  // Flip UVs vertically
+					}
+					uvAttribute.needsUpdate = true;
+				}
+			}
+		} );
+	}
+
 }

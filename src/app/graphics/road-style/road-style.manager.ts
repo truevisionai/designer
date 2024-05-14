@@ -50,11 +50,13 @@ export class RoadStyleManager {
 
 	getDefaultRoadStyle ( road: TvRoad ): RoadStyle {
 
-		const roadStyle = new RoadStyle( road );
+		const roadStyle = new RoadStyle();
 
 		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
+
+		roadStyle.setRoad( road );
 
 		const leftLane3 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
 		const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
@@ -89,11 +91,13 @@ export class RoadStyleManager {
 
 	getParkingRoadStyle ( road: TvRoad ): RoadStyle {
 
-		const roadStyle = new RoadStyle( road );
+		const roadStyle = new RoadStyle();
 
 		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
+
+		roadStyle.setRoad( road );
 
 		const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.parking, true, true );
 		const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );

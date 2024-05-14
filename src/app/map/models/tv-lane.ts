@@ -61,11 +61,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public height: TvLaneHeight[] = [];
 
+	public threeMaterialGuid: string;
+
 	public isSelected: boolean;
 
 	private travelDirection: TravelDirection;
-
-	private _threeMaterialGuid: string;
 
 	private _successor: number;
 
@@ -134,14 +134,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	set direction ( value: TravelDirection ) {
 		this.travelDirection = value;
-	}
-
-	get threeMaterialGuid (): string {
-		return this._threeMaterialGuid;
-	}
-
-	set threeMaterialGuid ( value: string ) {
-		this._threeMaterialGuid = value;
 	}
 
 	set successor ( laneId: number ) {

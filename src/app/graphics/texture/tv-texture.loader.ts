@@ -9,6 +9,7 @@ import {
 	LinearMipMapLinearFilter,
 	RGBAFormat,
 	SRGBColorSpace,
+	Texture,
 	TextureLoader,
 	UnsignedByteType
 } from 'three';
@@ -29,13 +30,30 @@ export class TvTextureLoader implements AssetLoader {
 
 		const json = asset.metadata.data;
 
-		return this.loadFromJSON( json, asset.path, asset.guid );
+		const texture = this.loadFromJSON( json, asset.path, asset.guid );
+
+		return texture;
+	}
+
+
+
+	async loadAsyncPath ( json: any, path: string, guid: string ): Promise<TextureAsset> {
+
+		const texture = await this.loader.loadAsync( path );
+
+		return this.parse( texture, json, guid );
 
 	}
 
 	loadFromJSON ( json: any, path: string, guid: string ): TextureAsset {
 
 		const texture = this.loader.load( path );
+
+		return this.parse( texture, json, guid );
+
+	}
+
+	private parse ( texture: Texture, json: any, guid: string ): TextureAsset {
 
 		texture.uuid = guid || json.uuid;
 

@@ -6,7 +6,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/objects/game-object';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { CommandHistory } from 'app/services/command-history';
-import { AssetPreviewService } from '../asset-preview/asset-preview.service';
 import { Asset } from 'app/core/asset/asset.model';
 import { TvTexture } from "../../../graphics/texture/tv-texture.model";
 import { TvTextureService } from "../../../graphics/texture/tv-texture.service";
@@ -25,7 +24,6 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 	public texture: TvTexture;
 
 	constructor (
-		private previewService: AssetPreviewService,
 		private textureService: TvTextureService,
 	) {
 	}
@@ -36,7 +34,7 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 		if ( !this.texture ) return;
 
-		this.preview = this.previewService.getTexturePreview( this.texture );
+		this.preview = this.texture?.image?.src;
 
 	}
 

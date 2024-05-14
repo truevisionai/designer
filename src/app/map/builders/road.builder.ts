@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { RoadStyle } from 'app/graphics/road-style/road-style.model';
 import { GameObject } from 'app/objects/game-object';
-import { BufferGeometry, Material, MeshBasicMaterial, Object3D, Vector2, Vector3 } from 'three';
+import * as THREE from 'three';
+import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
 import { TvRoad } from '../models/tv-road.model';
 import { LaneBufferGeometry } from './LaneBufferGeometry';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
@@ -13,7 +13,6 @@ import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
 import { LaneRoadMarkBuilder } from './lane-road-mark.builder';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Maths } from 'app/utils/maths';
-import * as THREE from 'three';
 import { TvObjectType } from '../interfaces/i-tv-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
 import { TvLane } from '../models/tv-lane';
@@ -24,6 +23,7 @@ import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
 import { RoadSignalService } from '../road-signal/road-signal.service';
 import { TvMap } from '../models/tv-map.model';
+import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,25 +34,8 @@ export class RoadBuilder {
 		private roadObjectService: RoadObjectService,
 		private roadMarkBuilder: LaneRoadMarkBuilder,
 		private roadSignalService: RoadSignalService,
-	) { }
-
-	getRoadStyleObject ( roadStyle: RoadStyle ): Object3D {
-
-		const mapMesh = new GameObject();
-
-		const road = new TvRoad( '', 0, 1 );
-
-		road.laneSections.push( roadStyle.laneSection );
-
-		roadStyle.laneSection.road = road;
-
-		road.addGeometryLine( 0, -250, 0, 0, 500 );
-
-		this.buildRoad( road, mapMesh );
-
-		this.roadObjectService.buildRoadObjects( road );
-
-		return mapMesh;
+		private materialService: TvMaterialService,
+	) {
 	}
 
 	rebuildRoad ( road: TvRoad, map: TvMap ): GameObject {
@@ -87,25 +70,15 @@ export class RoadBuilder {
 
 		}
 
+		road.gameObject = gameObject;
+
 		this.roadMarkBuilder.buildRoad( road );
 
-		this.buildRoadObjects( road );
+		gameObject.add( this.roadObjectService.buildRoadObjects( road ) );
 
-		this.buildRoadSignals( road );
+		gameObject.add( this.roadSignalService.buildSignals( road ) );
 
 		return gameObject;
-
-	}
-
-	buildRoadSignals ( road: TvRoad ) {
-
-		this.roadSignalService.buildSignals( road );
-
-	}
-
-	buildRoadObjects ( road: TvRoad ) {
-
-		this.roadObjectService.buildRoadObjects( road );
 
 	}
 

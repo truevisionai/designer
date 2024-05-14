@@ -60,6 +60,11 @@ export class ObjectEventListener {
 				this.assetManager.modelAsset = asset;
 				break;
 
+			case AssetType.OBJECT:
+				PropManager.setProp( asset as any );
+				this.assetManager.modelAsset = asset;
+				break;
+
 			case AssetType.TEXTURE:
 				this.assetManager.setTextureAsset( asset );
 				break;

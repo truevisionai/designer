@@ -32,6 +32,7 @@ import { TvMaterialService } from "../../graphics/material/tv-material.service";
 import { TvTextureService } from "../../graphics/texture/tv-texture.service";
 import { AssetType } from "../../core/asset/asset.model";
 import { COLOR } from "../../views/shared/utils/colors.service";
+import { TvObjectRepeat } from "../models/objects/tv-object-repeat";
 
 @Injectable( {
 	providedIn: 'root'
@@ -152,11 +153,15 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			const repeat = roadObject.getRepeat( i );
 
-			for ( let ds = 0; ds < repeat.length; ds += repeat.distance ) {
+			const segmentLength = TvObjectRepeat.calculateLength( repeat.segmentLength, road.length );
 
-				const s = repeat.s + ds;
+			for ( let ds = 0; ds < segmentLength; ds += repeat.gap ) {
 
-				const fraction = ds / repeat.length;
+				const s = repeat.sStart + ds;
+
+				if ( s > road.length ) continue;
+
+				const fraction = ds / segmentLength;
 
 				const t = repeat.tStart && repeat.tEnd ?
 					Maths.linearInterpolation( repeat.tStart, repeat.tEnd, fraction ) : roadObject.t;
@@ -237,11 +242,15 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			const repeat = roadObject.getRepeat( i );
 
-			for ( let ds = 0; ds < repeat.length; ds += repeat.distance ) {
+			const segmentLength = TvObjectRepeat.calculateLength( repeat.segmentLength, road.length );
 
-				const s = repeat.s + ds;
+			for ( let ds = 0; ds < segmentLength; ds += repeat.gap ) {
 
-				const fraction = ds / repeat.length;
+				const s = repeat.sStart + ds;
+
+				if ( s > road.length ) continue;
+
+				const fraction = ds / segmentLength;
 
 				const width = repeat.widthStart && repeat.widthEnd ?
 					Maths.linearInterpolation( repeat.widthStart, repeat.widthEnd, fraction ) : roadObject.width;
@@ -260,21 +269,45 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 				const posTheta = road.getPosThetaAt( s, t );
 
-				const repeatMesh = this.assetService.getInstance<Object3D>( roadObject.assetGuid )?.clone();
+				const objectInstance = this.getObject3dInstance( roadObject.assetGuid );
 
-				repeatMesh.name = 'repeat:' + i;
+				if ( !objectInstance ) continue;
 
-				repeatMesh.position.copy( posTheta.position );
+				objectInstance.name = 'repeat:' + i;
 
-				repeatMesh.position.z += zOffset;
+				objectInstance.position.copy( posTheta.position );
 
-				roadObjectMesh.add( repeatMesh );
+				objectInstance.position.z += zOffset;
+
+				roadObjectMesh.add( objectInstance );
 
 			}
 
 		}
 
 		return roadObjectMesh;
+
+	}
+
+	getObject3dInstance ( assetGuid: string ) {
+
+		const asset = this.assetService.getAsset( assetGuid );
+
+		if ( asset.type == AssetType.MODEL ) {
+
+			const model = this.assetService.getModelAsset( assetGuid );
+
+			return model?.clone();
+
+		}
+
+		if ( asset.type == AssetType.OBJECT ) {
+
+			const object = this.assetService.getObjectAsset( assetGuid );
+
+			return object?.instance?.clone();
+
+		}
 
 	}
 
@@ -302,9 +335,11 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			const repeat = roadObject.getRepeat( i );
 
-			for ( let s = repeat.s; s < repeat.length; s += repeat.distance ) {
+			const segmentLength = TvObjectRepeat.calculateLength( repeat.segmentLength, road.length );
 
-				const fraction = s / repeat.length;
+			for ( let s = repeat.sStart; s < segmentLength; s += repeat.gap ) {
+
+				const fraction = s / segmentLength;
 
 				const width = repeat.widthStart && repeat.widthEnd ?
 					Maths.linearInterpolation( repeat.widthStart, repeat.widthEnd, fraction ) : roadObject.width;

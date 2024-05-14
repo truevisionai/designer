@@ -6,27 +6,21 @@ import { Injectable } from '@angular/core';
 import { MapService } from 'app/services/map/map.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvCornerRoad } from "../models/objects/tv-corner-road";
-import { SceneService } from 'app/services/scene.service';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { RoadObjectBuilder } from 'app/map/road-object/road-object.builder';
-import { Object3DMap } from '../../core/models/object3d-map';
-import { Object3D } from 'three';
+import { Group } from 'three';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { RoadSignalService } from 'app/map/road-signal/road-signal.service';
-import { ObjectTypes, TvColors, TvRoadMarkWeights, TvSide } from 'app/map/models/tv-common';
+import { ObjectTypes, TvColors, TvRoadMarkWeights } from 'app/map/models/tv-common';
 import { IDService } from 'app/factories/id.service';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
-import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 import { TvObjectRepeat } from 'app/map/models/objects/tv-object-repeat';
 import { CornerRoadFactory } from 'app/services/road-object/corner-road.factory';
-import { ControlPointFactory } from 'app/factories/control-point.factory';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadObjectService {
-
-	private objects = new Object3DMap<TvRoadObject, Object3D>();
 
 	private ids: Map<TvRoad, IDService> = new Map();
 
@@ -35,7 +29,6 @@ export class RoadObjectService {
 		private signal: RoadSignalService, // just for import,
 		private builder: RoadObjectBuilder,
 		private cornerFactory: CornerRoadFactory,
-		private controlPointFactory: ControlPointFactory,
 	) {
 	}
 
@@ -48,7 +41,6 @@ export class RoadObjectService {
 		} );
 
 	}
-
 
 	clone ( roadObject: TvRoadObject ): TvRoadObject {
 
@@ -66,7 +58,7 @@ export class RoadObjectService {
 
 			// TODO: update position of road object
 			// this is inefficient, but it works for now
-			this.updateRoadObject( object.road, object );
+			this.updateRoadObject( road, object );
 
 		} );
 
@@ -107,39 +99,38 @@ export class RoadObjectService {
 
 	}
 
-	buildRoadObjects ( road: TvRoad ): void {
+	buildRoadObjects ( road: TvRoad ) {
 
-		road.objects.object.forEach( roadObject => {
+		const group = new Group();
+
+		group.name = 'RoadObjects';
+
+		for ( const roadObject of road.objects.object ) {
 
 			const mesh = this.buildRoadObject( road, roadObject );
 
-			if ( !mesh ) return;
+			if ( !mesh ) continue;
 
-			this.addRoadObjectMesh( roadObject, mesh );
+			group.add( mesh );
 
-		} );
+		}
 
+		return group;
 	}
 
 	addRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		if ( road.objects.object.find( object => object.attr_id === roadObject.attr_id ) ) return;
 
-		const mesh = this.buildRoadObject( road, roadObject );
+		const mesh = roadObject.mesh = this.buildRoadObject( road, roadObject );
 
 		if ( !mesh ) return;
 
-		this.addRoadObjectMesh( roadObject, mesh );
+		road?.gameObject?.add( mesh );
 
 		road.addRoadObjectInstance( roadObject );
 
 		this.showRoadObjectCorners( roadObject );
-
-	}
-
-	addRoadObjectMesh ( roadObject: TvRoadObject, mesh: Object3D ) {
-
-		this.objects.add( roadObject, mesh );
 
 	}
 
@@ -171,13 +162,13 @@ export class RoadObjectService {
 
 		this.hideRoadObjectCorners( roadObject );
 
-		road.removeRoadObjectById( roadObject.attr_id );
+		road?.removeRoadObjectById( roadObject.attr_id );
 
 	}
 
 	removeObject3d ( roadObject: TvRoadObject ): void {
 
-		this.objects.remove( roadObject );
+		roadObject.mesh?.parent?.remove( roadObject.mesh );
 
 	}
 
@@ -229,8 +220,6 @@ export class RoadObjectService {
 
 			outline.cornerRoad.forEach( corner => {
 
-
-
 			} );
 
 		} );
@@ -252,7 +241,6 @@ export class RoadObjectService {
 		object.outlines.forEach( outline => {
 
 			outline.cornerRoad.forEach( corner => {
-
 
 			} );
 

@@ -19,13 +19,14 @@ import { PropPolygon } from "./prop-polygon.model";
 import { MeshBuilder } from "../../core/interfaces/mesh.builder";
 import { GameObject } from "../../objects/game-object";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { AssetDatabase } from "../../core/asset/asset-database";
 import { AppConfig } from "../../app.config";
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { TvTransform } from '../models/tv-transform';
 import { PropPoint } from "../prop-point/prop-point.model";
 
 import earcut from 'earcut';
+import { AssetType } from 'app/core/asset/asset.model';
+import { AssetService } from 'app/core/asset/asset.service';
 
 interface IChildAndMesh {
 	mesh: Mesh;
@@ -38,7 +39,7 @@ interface IChildAndMesh {
 } )
 export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
-	constructor () {
+	constructor ( private assetService: AssetService ) {
 		super();
 	}
 
@@ -212,9 +213,25 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
 	}
 
-	private getPropInstance ( guid: string ): Object3D {
+	private getPropInstance ( assetGuid: string ): Object3D {
 
-		const propInstance = AssetDatabase.getInstance<Object3D>( guid );
+		if ( !assetGuid ) return;
+
+		const asset = this.assetService.getAsset( assetGuid );
+
+		if ( !asset ) return;
+
+		let propInstance: Object3D;
+
+		if ( asset.type == AssetType.OBJECT ) {
+
+			propInstance = this.assetService.getObjectAsset( asset.guid )?.instance;
+
+		} else if ( asset.type == AssetType.MODEL ) {
+
+			propInstance = this.assetService.getModelAsset( asset.guid );
+
+		}
 
 		propInstance.up.copy( AppConfig.DEFAULT_UP );
 
