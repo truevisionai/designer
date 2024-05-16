@@ -9,6 +9,7 @@ import { TvScenario } from '../models/tv-scenario';
 import { ScenarioDirectorService } from './scenario-director.service';
 import { ScenarioService } from './scenario.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClientModule } from '@angular/common/http';
 
 
 describe( 'ScenarioPlayerService', () => {
@@ -19,7 +20,7 @@ describe( 'ScenarioPlayerService', () => {
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
-			imports: [ MatSnackBarModule ],
+			imports: [ MatSnackBarModule, HttpClientModule ],
 			providers: [ ScenarioDirectorService, PlayerService ],
 		} );
 
