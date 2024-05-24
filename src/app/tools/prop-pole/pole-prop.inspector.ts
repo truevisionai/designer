@@ -3,7 +3,7 @@
  */
 
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
-import { Action, SerializedField } from "app/core/components/serialization";
+import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { CommandHistory } from "app/services/command-history";
 import { TvObjectVertexRoad } from "../../map/models/objects/tv-object-vertex-road";
@@ -113,7 +113,7 @@ export class PolePropInspector {
 
 	// }
 
-	@Action( { label: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.roadObject ) );

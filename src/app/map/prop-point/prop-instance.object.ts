@@ -3,7 +3,7 @@
  */
 
 import { Object3D, Vector3 } from 'three';
-import { Action, SerializedField } from '../../core/components/serialization';
+import { SerializedAction, SerializedField } from '../../core/components/serialization';
 import { AssetDatabase } from '../../core/asset/asset-database';
 import { CommandHistory } from 'app/services/command-history';
 import { RemoveObjectCommand } from "../../commands/remove-object-command";
@@ -20,7 +20,7 @@ export class PropInstance extends Object3D implements IHasCopyUpdate {
 
 	}
 
-	@Action()
+	@SerializedAction()
 	delete () {
 
 		CommandHistory.executeMany( new UnselectObjectCommand( this ), new RemoveObjectCommand( this ) );

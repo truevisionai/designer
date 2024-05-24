@@ -3,7 +3,7 @@
  */
 
 import { TvRoad } from "../models/tv-road.model";
-import { Action } from "../../core/components/serialization";
+import { SerializedAction } from "../../core/components/serialization";
 import { CommandHistory } from "../../services/command-history";
 import { SetValueCommand } from "../../commands/set-value-command";
 
@@ -14,7 +14,7 @@ export class TvRoadElevationInspector {
 	) {
 	}
 
-	@Action( { label: 'Increase Elevation' } )
+	@SerializedAction( { label: 'Increase Elevation' } )
 	increase () {
 
 		this.road.elevationProfile.elevation.forEach( elevation => {
@@ -29,7 +29,7 @@ export class TvRoadElevationInspector {
 
 	}
 
-	@Action( { label: 'Decrease Elevation' } )
+	@SerializedAction( { label: 'Decrease Elevation' } )
 	decrease () {
 
 		this.road.elevationProfile.elevation.forEach( elevation => {

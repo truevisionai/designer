@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Action } from "app/core/components/serialization";
+import { SerializedAction } from "app/core/components/serialization";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TrafficLightToolService } from "./traffic-light-tool.service";
 import { AutoSignalizationType } from "./auto-signalize-junction.service";
@@ -15,27 +15,27 @@ export class TvJunctionSignalizationInspector {
 	) {
 	}
 
-	@Action( { label: 'All Go' } )
+	@SerializedAction( { label: 'All Go' } )
 	allGo () {
 		this.tool.autoSignalService.addSignalization( this.junction, AutoSignalizationType.ALL_GO );
 	}
 
-	@Action( { label: 'All Stop' } )
+	@SerializedAction( { label: 'All Stop' } )
 	allStop () {
 		this.tool.autoSignalService.addSignalization( this.junction, AutoSignalizationType.ALL_STOP );
 	}
 
-	@Action( { label: 'All Yield' } )
+	@SerializedAction( { label: 'All Yield' } )
 	allYield () {
 		this.tool.autoSignalService.addSignalization( this.junction, AutoSignalizationType.ALL_YIELD );
 	}
 
-	@Action( { label: 'Split Phase' } )
+	@SerializedAction( { label: 'Split Phase' } )
 	splitPhase () {
 		this.tool.autoSignalService.addSignalization( this.junction, AutoSignalizationType.SPIT_PHASE );
 	}
 
-	@Action( { label: 'Remove Signalization' } )
+	@SerializedAction( { label: 'Remove Signalization' } )
 	remove () {
 		this.tool.autoSignalService.removeSignalization( this.junction );
 	}

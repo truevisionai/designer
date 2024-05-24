@@ -16,7 +16,7 @@ import { SelectRoadStrategy } from "app/core/strategies/select-strategies/select
 import { ControlPointStrategy } from "app/core/strategies/select-strategies/control-point-strategy";
 import { AppInspector } from "app/core/inspector";
 import { TvObjectRepeat } from "app/map/models/objects/tv-object-repeat";
-import { Action, SerializedField } from "app/core/components/serialization";
+import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
@@ -370,7 +370,7 @@ class RoadSpanObject {
 		this.repeat.zOffsetEnd = value;
 	}
 
-	@Action( { label: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.roadObject ) );

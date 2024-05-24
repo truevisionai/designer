@@ -4,24 +4,6 @@
 
 import 'reflect-metadata';
 
-// our decorators
-export function Serializable () {
-	return function ( target: any, propertyKey: string ) {
-		Reflect.defineMetadata( 'serializable', true, target, propertyKey );
-	};
-}
-
-const enum ISerializedFieldType {
-	INT = 'int',
-	FLOAT = 'float',
-	STRING = 'string',
-	BOOLEAN = 'boolean',
-	ENUM = 'enum',
-	ARRAY = 'array',
-	VECTOR3 = 'vector3',
-	ROAD = 'road',
-}
-
 export interface ISerializedFieldSetting {
 	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array' | 'vector2' | 'vector3' | 'road' | 'entity' | 'gameobject' | 'color' | 'texture' | 'object' | 'material';
 	disabled?: boolean;
@@ -34,22 +16,21 @@ export interface ISerializedFieldSetting {
 }
 
 export interface ISerializedActionSetting {
-	name?: string;
-	label?:string;
+	label: string;
 	method?: Function;
 	validate?: Function;
 }
 
-export function Action ( settings?: ISerializedActionSetting ) {
+export function SerializedAction ( settings?: ISerializedActionSetting ) {
 
 	return function ( target: any, propertyKey: string, descriptor: PropertyDescriptor ) {
 
-		let actions = Reflect.getMetadata( 'actions', target ) || [];
+		let actions: ISerializedActionSetting[] = Reflect.getMetadata( 'actions', target ) || [];
 
 		actions.push( {
-			name: settings?.name || settings?.label || propertyKey,
+			label: settings?.label || propertyKey,
 			method: target[ propertyKey ],
-			validate: settings?.validate || (() => true) // Add a validate property
+			validate: settings?.validate || ( () => true ) // Add a validate property
 		} );
 
 		Reflect.defineMetadata( 'actions', actions, target );
@@ -64,7 +45,7 @@ export function SerializedField ( settings: ISerializedFieldSetting ) {
 	};
 }
 
-export function getSerializableActions ( target: any ): { name: string, method: Function }[] {
+export function getSerializableActions ( target: any ): ISerializedActionSetting[] {
 	const proto = Object.getPrototypeOf( target );
 	return Reflect.getMetadata( 'actions', proto ) || [];
 }
@@ -81,49 +62,4 @@ export function getSerializableFields ( object: any ): { field: string, settings
 			settings: Reflect.getMetadata( 'fieldSettings', object, property ) || {}
 		} ) );
 
-}
-
-export class PlayerStats {
-
-	constructor () {
-		this._movementSpeed = 1;
-		this._hitPoints = 100;
-		this._hasHealthPotion = false;
-	}
-
-	private _movementSpeed: number;
-
-	@SerializedField( { type: 'int' } )
-	get movementSpeed (): number {
-		return this._movementSpeed;
-	}
-
-	set movementSpeed ( value: number ) {
-		this._movementSpeed = value;
-		// Perform other steps here...
-	}
-
-	private _hitPoints: number;
-
-	@SerializedField( { type: 'int' } )
-	get hitPoints (): number {
-		return this._hitPoints;
-	}
-
-	set hitPoints ( value: number ) {
-		this._hitPoints = value;
-		// Perform other steps here...
-	}
-
-	private _hasHealthPotion: boolean;
-
-	@SerializedField( { type: 'boolean' } )
-	get hasHealthPotion (): boolean {
-		return this._hasHealthPotion;
-	}
-
-	set hasHealthPotion ( value: boolean ) {
-		this._hasHealthPotion = value;
-		// Perform other steps here...
-	}
 }

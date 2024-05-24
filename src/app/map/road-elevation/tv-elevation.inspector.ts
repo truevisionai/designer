@@ -4,7 +4,7 @@
 
 import { TvRoad } from "../models/tv-road.model";
 import { TvElevation } from "./tv-elevation.model";
-import { Action, SerializedField } from "../../core/components/serialization";
+import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { CommandHistory } from "../../services/command-history";
 import { SetValueCommand } from "../../commands/set-value-command";
 import { Maths } from "../../utils/maths";
@@ -44,7 +44,7 @@ export class TvElevationInspector {
 
 	}
 
-	@Action( { label: 'Increase Elevation' } )
+	@SerializedAction( { label: 'Increase Elevation' } )
 	increase () {
 
 		const newValue = this.elevation.a + 1;
@@ -55,7 +55,7 @@ export class TvElevationInspector {
 
 	}
 
-	@Action( { label: 'Decrease Elevation' } )
+	@SerializedAction( { label: 'Decrease Elevation' } )
 	decrease () {
 
 		const newValue = this.elevation.a - 1;
@@ -66,7 +66,7 @@ export class TvElevationInspector {
 
 	}
 
-	@Action()
+	@SerializedAction()
 	delete () {
 
 		if ( Maths.approxEquals( this.s, 0 ) ) {
