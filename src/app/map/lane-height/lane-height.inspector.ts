@@ -4,7 +4,7 @@
 
 import { TvLane } from "../models/tv-lane";
 import { TvLaneHeight } from "./lane-height.model";
-import { Action, SerializedField } from "../../core/components/serialization";
+import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 
@@ -52,7 +52,7 @@ export class LaneHeightInspector {
 		this.laneHeight.setOuter( value );
 	}
 
-	@Action( { name: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	delete () {
 		CommandHistory.execute( new RemoveObjectCommand( this.node ) );
 	}

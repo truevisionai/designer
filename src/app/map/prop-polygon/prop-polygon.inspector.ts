@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Action, SerializedField } from "../../core/components/serialization";
+import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { PropPolygon } from "./prop-polygon.model";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { CommandHistory } from "../../services/command-history";
@@ -35,7 +35,7 @@ export class PropPolygonInspector {
 		this.controlPoint?.position.copy( value );
 	}
 
-	@Action( { label: 'Delete Polygon' } )
+	@SerializedAction( { label: 'Delete Polygon' } )
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.polygon ) );

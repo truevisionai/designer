@@ -12,7 +12,7 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { DebugLine } from 'app/objects/debug-line';
 import { CommandHistory } from 'app/services/command-history';
-import { Action, SerializedField } from 'app/core/components/serialization';
+import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { TvLaneType, TravelDirection } from 'app/map/models/tv-common';
@@ -225,7 +225,7 @@ export class TvLaneObject {
 		this.lane.direction = value;
 	}
 
-	@Action()
+	@SerializedAction()
 	duplicate () {
 
 		const newId = this.lane.isLeft ? this.lane.id + 1 : this.lane.id - 1;
@@ -238,7 +238,7 @@ export class TvLaneObject {
 
 	}
 
-	@Action()
+	@SerializedAction()
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.lane ) );

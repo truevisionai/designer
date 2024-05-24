@@ -96,7 +96,8 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) { }
+	constructor ( private componentFactoryResolver: ComponentFactoryResolver ) {
+	}
 
 	ngOnDestroy (): void {
 

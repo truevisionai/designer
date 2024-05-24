@@ -8,7 +8,7 @@ import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { PointMarkingToolService } from './point-marking-tool.service';
 import { AppInspector } from 'app/core/inspector';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
-import { Action, SerializedField } from 'app/core/components/serialization';
+import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { CommandHistory } from 'app/services/command-history';
 import { TvRoad } from 'app/map/models/tv-road.model';
@@ -472,7 +472,7 @@ class PointMarkingObject {
 
 	}
 
-	@Action( { label: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.items ) );

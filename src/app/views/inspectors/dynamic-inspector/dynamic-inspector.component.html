@@ -17,7 +17,7 @@
 	</div>
 	<div *ngFor="let action of serializableActions">
 		<app-button-field *ngIf="action.validate.apply(data)" (clicked)="action.method.apply(data)"
-			label="{{ action.name | titlecase }}">
+			label="{{ action.label | titlecase }}">
 		</app-button-field>
 	</div>
 </div>

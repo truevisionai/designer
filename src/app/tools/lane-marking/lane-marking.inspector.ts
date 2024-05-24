@@ -4,7 +4,7 @@
 
 import { TvLane } from '../../map/models/tv-lane';
 import { CommandHistory } from 'app/services/command-history';
-import { Action, SerializedField } from 'app/core/components/serialization';
+import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from 'app/map/models/tv-common';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
@@ -90,7 +90,7 @@ export class LaneMarkingInspector {
 		this.roadmark.materialGuid = value;
 	}
 
-	@Action()
+	@SerializedAction()
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this ) );

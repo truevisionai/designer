@@ -8,7 +8,7 @@ import { TvLaneWidth } from '../map/models/tv-lane-width';
 import { TvMapQueries } from '../map/queries/tv-map-queries';
 import { INode } from './i-selectable';
 import { AnyControlPoint } from "./any-control-point";
-import { Action, SerializedField } from 'app/core/components/serialization';
+import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { MapEvents } from 'app/events/map-events';
 import { IHasCopyUpdate } from 'app/commands/copy-position-command';
 import { CommandHistory } from 'app/services/command-history';
@@ -83,7 +83,7 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
 	}
 
-	@Action( { name: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	delete ( value: number ) {
 
 		CommandHistory.execute( new RemoveObjectCommand( this ) );

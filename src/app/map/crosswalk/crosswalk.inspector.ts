@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Action, SerializedField } from "app/core/components/serialization";
+import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { TvRoadObject } from "../models/objects/tv-road-object";
 import { TvObjectMarking } from "../models/tv-object-marking";
 import { CommandHistory } from "app/services/command-history";
@@ -109,7 +109,7 @@ export class CrosswalkInspector {
 		this.marking.material.needsUpdate = true;
 	}
 
-	@Action( { name: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this ) );

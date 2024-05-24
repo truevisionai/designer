@@ -3,7 +3,7 @@
  */
 
 import { TvRoadSignal } from "app/map/road-signal/tv-road-signal.model";
-import { Action, SerializedField } from "app/core/components/serialization";
+import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { TvOrientation } from "app/map/models/tv-common";
@@ -82,7 +82,7 @@ export class TextMarkingInspector {
 		this.signal.orientation = value;
 	}
 
-	@Action( { label: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.signal ) );

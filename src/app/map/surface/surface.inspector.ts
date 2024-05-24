@@ -7,7 +7,7 @@ import { SurfaceToolService } from '../../tools/surface/surface-tool.service';
 import { Mesh } from 'three';
 import { CommandHistory } from 'app/services/command-history';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { Action, SerializedField } from 'app/core/components/serialization';
+import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
@@ -143,15 +143,15 @@ export class TvSurfaceInspector {
 		this.updateMesh();
 	}
 
-	@Action( { name: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	deleteSurface () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.surface ) );
 
 	}
 
-	@Action( {
-		name: 'Delete Control Point',
+	@SerializedAction( {
+		label: 'Delete Control Point',
 		validate: function() { return this.controlPoint !== undefined; } // Using the validation method
 	})
 	deleteControlPoint () {

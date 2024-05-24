@@ -4,7 +4,7 @@
 
 import { TvRoadSignal } from './tv-road-signal.model';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { Action, SerializedField } from 'app/core/components/serialization';
+import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { CommandHistory } from 'app/services/command-history';
 import { TvOrientation, TvUnit } from 'app/map/models/tv-common';
 
@@ -122,7 +122,7 @@ export class RoadSignalInspector {
 		this.signal.text = value;
 	}
 
-	@Action( { label: 'Delete' } )
+	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
 		CommandHistory.execute( new RemoveObjectCommand( this.signal ) );
