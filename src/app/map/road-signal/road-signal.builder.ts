@@ -15,7 +15,6 @@ import {
 	MeshBasicMaterial,
 	Object3D,
 	PlaneGeometry,
-	Texture,
 	TextureLoader,
 	Vector3
 } from 'three';
@@ -25,27 +24,7 @@ import { TextObjectService } from 'app/services/text-object.service';
 import { TvTextureService } from "../../graphics/texture/tv-texture.service";
 import { AssetService } from 'app/core/asset/asset.service';
 import { AssetType } from 'app/core/asset/asset.model';
-
-const signDB = [
-	{
-		type: '1000001',
-		subtype: '-1',
-		country: 'OpenDRIVE',
-		url: 'https://d37iyw84027v1q.cloudfront.net/na/bradyid/BradyID_Medium/75205.jpg'
-	},
-	{
-		type: '1000002',
-		subtype: '-1',
-		country: 'OpenDRIVE',
-		url: 'http://www.vzkat.de/2017/Teil03/209.gif'
-	},
-	{
-		type: 'truevision',
-		subtype: 'stop',
-		country: 'OpenDRIVE',
-		url: 'http://www.vzkat.de/2017/Teil03/209.gif'
-	}
-]
+import { SignalDatabase } from './road-signal.database';
 
 @Injectable( {
 	providedIn: 'root'
@@ -72,47 +51,13 @@ export class RoadSignalBuilder {
 
 		const parentObject = new Object3D();
 
-		let sign: Object3D;
-
-		if ( signal.assetGuid ) {
-
-			const asset = this.assetService.getAsset( signal.assetGuid );
-
-			if ( asset && asset.type == AssetType.OBJECT ) {
-
-				sign = this.assetService.getObjectAsset( asset.guid )?.instance.clone();
-
-			}
-
-			if ( asset && asset.type == AssetType.MODEL ) {
-
-				sign = this.assetService.getModelAsset( asset.guid )?.clone();
-
-			}
-
-			if ( asset.type == AssetType.TEXTURE || asset.type == AssetType.MATERIAL ) {
-
-				const poleWidth = 0.05;
-
-				const poleHeight = signal.height || 3.5;
-
-				sign = this.buildSign( signal );
-
-				// -poleWidth to adjust for the pole and avoid
-				// the sign from being inside the pole
-				sign.position.set( 0, -poleWidth, poleHeight );
-
-				this.addPole( parentObject, poleHeight, poleWidth );
-
-			}
-
-		}
+		const sign = this.buildSignAsset( parentObject, signal );
 
 		parentObject.add( sign );
 
 		parentObject.position.copy( position.toVector3() );
 
-		parentObject.position.z += signal.zOffset;
+		// parentObject.position.z += signal.zOffset;
 
 		parentObject.rotation.x = signal.pitch;
 
@@ -124,7 +69,59 @@ export class RoadSignalBuilder {
 
 	}
 
-	buildRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
+	private buildSignAsset ( parentObject: Object3D, signal: TvRoadSignal ): Object3D {
+
+		let sign: Object3D;
+
+		if ( !signal.assetGuid ) {
+
+			const poleWidth = 0.05;
+
+			const zOffset = signal.zOffset || 3.5;
+
+			sign = this.buildSignalByType( signal );
+
+			// -poleWidth to adjust for the pole and avoid
+			// the sign from being inside the pole
+			sign.position.set( 0, -poleWidth, zOffset );
+
+			this.addPole( parentObject, zOffset, poleWidth );
+
+			return sign;
+		}
+
+		const asset = this.assetService.getAsset( signal.assetGuid );
+
+		if ( asset && asset.type == AssetType.OBJECT ) {
+
+			sign = this.assetService.getObjectAsset( asset.guid )?.instance.clone();
+
+		}
+
+		if ( asset && asset.type == AssetType.MODEL ) {
+
+			sign = this.assetService.getModelAsset( asset.guid )?.clone();
+
+		}
+
+		if ( asset && ( asset.type == AssetType.TEXTURE || asset.type == AssetType.MATERIAL ) ) {
+
+			const poleWidth = 0.05;
+
+			const zOffset = signal.zOffset || 3.5;
+
+			sign = this.buildSignalByType( signal );
+
+			// -poleWidth to adjust for the pole and avoid
+			// the sign from being inside the pole
+			sign.position.set( 0, -poleWidth, zOffset );
+
+			this.addPole( parentObject, zOffset, poleWidth );
+
+		}
+	}
+
+	private buildRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
 
 		if ( signal.subtype === 'text' ) {
 
@@ -134,7 +131,7 @@ export class RoadSignalBuilder {
 
 	}
 
-	buildTextRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
+	private buildTextRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
 
 		const roadCoord = road.getPosThetaAt( signal.s, signal.t );
 
@@ -169,7 +166,7 @@ export class RoadSignalBuilder {
 		return textObject3d;
 	}
 
-	buildSign ( signal: TvRoadSignal ): Object3D {
+	private buildSignalByType ( signal: TvRoadSignal ): Object3D {
 
 		const geometry = this.getSignGeometry( signal );
 
@@ -184,7 +181,9 @@ export class RoadSignalBuilder {
 
 		const width = signal.width || 0.5;
 
-		const geometry = this.createSquare( width, width );
+		const height = signal.height || 0.5;
+
+		const geometry = this.createSquare( width, height );
 
 		geometry.rotateX( 90 * Maths.Deg2Rad );
 
@@ -231,18 +230,20 @@ export class RoadSignalBuilder {
 
 	private getSignMaterial ( signal: TvRoadSignal ) {
 
-		const sign = signDB.find( sign => sign.type === signal.type && sign.subtype === signal.subtype );
+		const sign = SignalDatabase.findBySignal( signal );
 
-		if ( !sign ) {
+		if ( sign ) {
 
-			const texture = new TextureLoader().load( `assets/signs/default.png` );
+			const texture = new TextureLoader().load( sign.url );
 
 			return new MeshBasicMaterial( { map: texture, transparent: true, alphaTest: 0.1, side: FrontSide } );
 
 		}
 
 		if ( !signal.assetGuid ) {
+
 			return new MeshBasicMaterial( { color: COLOR.MAGENTA } );
+
 		}
 
 		const asset = this.assetService.getAsset( signal.assetGuid );
@@ -286,11 +287,11 @@ export class RoadSignalBuilder {
 
 		let hdg: number;
 
-		if ( signal.orientations === TvOrientation.PLUS ) {
+		if ( signal.orientation === TvOrientation.PLUS ) {
 
 			hdg = signal.hOffset + roadCoord.hdg - Maths.PI2;
 
-		} else if ( signal.orientations === TvOrientation.MINUS ) {
+		} else if ( signal.orientation === TvOrientation.MINUS ) {
 
 			hdg = signal.hOffset + roadCoord.hdg + Maths.PI2;
 

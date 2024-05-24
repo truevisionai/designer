@@ -8,8 +8,7 @@ import { RoadService } from 'app/services/road/road.service';
 import { RoadObjectService } from '../../map/road-object/road-object.service';
 import { Vector3, Euler, Object3D } from 'three';
 import { Asset, AssetType } from 'app/core/asset/asset.model';
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
-import { ObjectTypes } from 'app/map/models/tv-common';
+import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Object3DMap } from '../../core/models/object3d-map';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
@@ -48,7 +47,7 @@ export class PointMarkingToolService {
 
 		const roadObject = this.roadObjectService.createRoadObject(
 			lane.laneSection.road,
-			ObjectTypes.roadMark,
+			TvRoadObjectType.roadMark,
 			roodCoord.s,
 			roodCoord.t
 		);
@@ -94,7 +93,7 @@ export class PointMarkingToolService {
 
 	showControls ( road: TvRoad ) {
 
-		road.objects.object.filter( roadObject => roadObject.attr_type == ObjectTypes.roadMark ).forEach( roadObject => {
+		road.objects.object.filter( roadObject => roadObject.attr_type == TvRoadObjectType.roadMark ).forEach( roadObject => {
 
 			const position = road.getPosThetaAt( roadObject.s, roadObject.t ).position;
 

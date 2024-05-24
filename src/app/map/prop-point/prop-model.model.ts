@@ -4,7 +4,7 @@
 
 import { Vector3 } from 'three';
 import { SerializedField } from '../../core/components/serialization';
-import { ObjectTypes } from 'app/map/models/tv-common';
+import { TvRoadObjectType } from "../models/objects/tv-road-object";
 
 /**
  * Prop class instance holds info about the prop
@@ -38,16 +38,16 @@ export class PropModel {
 		this._scaleVariance = value;
 	}
 
-	@SerializedField( { type: 'enum', enum: ObjectTypes } )
-	get propType (): ObjectTypes {
+	@SerializedField( { type: 'enum', enum: TvRoadObjectType } )
+	get propType (): TvRoadObjectType {
 		return this._propType;
 	}
 
-	set propType ( value: ObjectTypes ) {
+	set propType ( value: TvRoadObjectType ) {
 		this._propType = value;
 	}
 
-	private _propType: ObjectTypes = ObjectTypes.none;
+	private _propType: TvRoadObjectType = TvRoadObjectType.none;
 
 	constructor (
 		private _guid: string,

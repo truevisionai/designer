@@ -28,6 +28,8 @@ export enum TvLaneType {
 	// b) continuous two-way left turn lane on multi-lane roads – US road networks)
 	median = 'median', // Describes a lane that sits between driving lanes that lead in opposite directions.
 	// It is typically used to separate traffic in towns on large roads.
+	slipLane = 'slipLane', // On a slip lane a driver can change roads without driving into the main intersection.
+	shared = 'shared', // Shared by all traffic participants. For shared walking/biking lanes use <access>.
 	special1 = 'special1',
 	special2 = 'special2',
 	special3 = 'special3',
@@ -39,7 +41,7 @@ export enum TvLaneType {
 	offRamp = 'offRamp', // A ramp leading away from a motorway and onto rural urban roads.
 	onRamp = 'onRamp', // A ramp leading to a motorway from rural or urban roads.
 	connectingRamp = 'connectingRamp', // A ramp that connects two motorways, for example, motorway junctions.
-	bux = 'bux',
+	bus = 'bus',
 	taxi = 'taxi',
 	HOV = 'HOV',
 	curb = 'curb', // Describes curb stones. Curb stones have a different height than the adjacent drivable lanes.
@@ -135,7 +137,6 @@ export enum TravelDirection {
 	undirected = 'undirected'
 }
 
-
 export enum TvRoadType {
 	UNKNOWN = 'unknown',
 	RURAL = 'rural',
@@ -204,72 +205,6 @@ export enum TvLaneSide {
 	LEFT,
 	CENTER,
 	RIGHT
-}
-
-export enum ObjectTypes {
-
-	// A barrier is a continuous roadside object, which cannot be passed.
-	barrier = 'barrier',
-
-	// A building is a closed object, which cannot be passed.
-	building = 'building',
-
-	// A crosswalk is an object on the road that can be passed.
-	// It is recommended to be defined as <crossPath> within a junction for pedestrian/bicycle simulation.
-	//If the crosswalk is defined as an object only, it will not be used for pedestrian/bicycle simulation
-	crosswalk = 'crosswalk',
-
-	// A gantry is an object above a road on which <signals> are placed.
-	gantry = 'gantry',
-
-
-	// An obstacle is an object on or beside the road that cannot be passed.
-	obstacle = 'obstacle',
-
-	// A parkingSpace is an object on a lane on which vehicles are parked.
-	parkingSpace = 'parkingSpace',
-
-	// A pole is a thin long object.
-	pole = 'pole',
-
-	// A roadMark object is painted on the road and can be passed.
-	roadMark = 'roadMark',
-
-	// A roadSurface object is on the road and can be passed.
-	// new in 1.8
-	roadSurface = 'roadSurface',
-
-	// A trafficIsland object is on the road and should not be passed by vehicles.
-	trafficIsland = 'trafficIsland',
-
-	// A tree object is a single vegetational object with a trunk.
-	tree = 'tree',
-
-	// A vegetation object is a single vegetational object without a trunk or an area of vegetation.
-	vegetation = 'vegetation',
-
-	// All other objects, that don’t fit into existing categories or unknown.
-	none = 'none',
-
-	// deprecated all below
-	patch = 'patch',
-	motorbike = 'motorbike',
-	pedestrian = 'pedestrian',
-	railing = 'railing',
-	soundBarrier = 'soundBarrier',
-	streetLamp = 'streetLamp',
-	trailer = 'trailer',
-	train = 'train',
-	tram = 'tram',
-	van = 'van',
-	wind = 'wind',
-	bus = 'bus',
-	bike = 'bike',
-	car = 'car',
-	ROAD = 'ROAD',
-	LANE = 'LANE',
-	LANE_MARKING = 'LANE_MARKING',
-	VEHICLE = 'vehicle',
 }
 
 export enum ObjectFillType {

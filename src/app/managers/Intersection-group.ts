@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { SplineIntersection } from 'app/services/junction/spline-intersection';

@@ -121,5 +121,11 @@ export abstract class SelectStrategy<T> {
 
 		return intersection;
 	}
+
+	protected filterByType ( intersections: Intersection[], type: any ): any {
+
+		return intersections.filter( i => i.object.visible == true ).find( i => i.object instanceof type )?.object;
+
+	}
 }
 

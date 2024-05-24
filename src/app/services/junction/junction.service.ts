@@ -15,12 +15,14 @@ import { BaseToolService } from 'app/tools/base-tool.service';
 import { ConnectionService } from "../../map/junction/connection/connection.service";
 import { MapService } from '../map/map.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
-import { TvContactPoint } from 'app/map/models/tv-common';
+import { TvContactPoint, TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
 import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
+import { TrafficRule } from 'app/map/models/traffic-rule';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -347,6 +349,45 @@ export class JunctionService extends BaseDataService<TvJunction> {
 	update ( object: TvJunction ): void {
 
 		// this.createJunctionMesh( object );
+
+	}
+
+	getJunctionGates ( junction: TvJunction ) {
+
+		const coords: TvLaneCoord[] = [];
+
+		const roads = junction.getIncomingRoads();
+
+		for ( const road of roads ) {
+
+			const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
+
+			const s = contactPoint == TvContactPoint.START ? 0 : road.length;
+
+			const laneSection = road.getLaneSectionAt( s );
+
+			let side = road.trafficRule == TrafficRule.LHT ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
+
+			// if road contact is start then reverse the side
+			if ( contactPoint == TvContactPoint.START ) {
+
+				side = side == TvLaneSide.LEFT ? TvLaneSide.RIGHT : TvLaneSide.LEFT;
+
+			}
+
+			const lanes = side == TvLaneSide.LEFT ? laneSection.getLeftLanes() : laneSection.getRightLanes();
+
+			for ( const lane of lanes ) {
+
+				if ( lane.type != TvLaneType.driving ) continue;
+
+				coords.push( new TvLaneCoord( road, laneSection, lane, s, 0 ) );
+
+			}
+
+		}
+
+		return coords;
 
 	}
 

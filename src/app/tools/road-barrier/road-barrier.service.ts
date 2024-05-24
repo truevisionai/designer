@@ -8,10 +8,10 @@ import { TvObjectPolyline } from 'app/map/models/objects/tv-object-polyline';
 import { TvObjectVertexLocal } from 'app/map/models/objects/tv-object-vertex-local';
 import { TvObjectVertexRoad } from 'app/map/models/objects/tv-object-vertex-road';
 import { TvRoadObjectSkeleton } from 'app/map/models/objects/tv-road-object-skeleton';
-import { ObjectTypes } from 'app/map/models/tv-common';
 import { Vector3 } from 'three';
 import { BaseToolService } from '../base-tool.service';
 import { RoadObjectService } from '../../map/road-object/road-object.service';
+import { TvRoadObjectType } from "../../map/models/objects/tv-road-object";
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,7 +33,7 @@ export class RoadBarrierService {
 		// 	.lineTo( -sqLength, 0 )
 		// 	.lineTo( 0, 0 );
 
-		const object = this.objectService.createRoadObject( position.road, ObjectTypes.barrier, position.s, position.t );
+		const object = this.objectService.createRoadObject( position.road, TvRoadObjectType.barrier, position.s, position.t );
 
 		object.subType = 'wall';
 

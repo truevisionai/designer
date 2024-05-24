@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SerializedField } from "app/core/components/serialization";
 import { ManeuverMesh } from "app/services/junction/junction.debug";
 import { ManeuverToolService } from "app/tools/maneuver/maneuver-tool.service";

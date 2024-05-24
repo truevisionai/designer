@@ -341,4 +341,31 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		return newRoad;
 	}
+
+	findLowestRightRoad ( road: TvRoad, s: number ) {
+
+		const laneSection = road.getLaneSectionAt( s );
+
+		const lanes = laneSection.lanes;
+
+		let lowestLane: TvLane;
+
+		for ( const [ id, lane ] of lanes ) {
+
+			if ( !lowestLane ) {
+				lowestLane = lane;
+				continue;
+			}
+
+			if ( lane.isRight && lane.id < lowestLane.id ) {
+				lowestLane = lane;
+			}
+
+		}
+
+	}
+
+	findHighestRightRoad ( road: TvRoad ) {
+
+	}
 }

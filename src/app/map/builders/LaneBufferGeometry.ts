@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferGeometry } from 'three';

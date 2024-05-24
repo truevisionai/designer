@@ -2,10 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
 import { TvObjectMarking } from '../map/models/tv-object-marking';
-import { ObjectTypes } from 'app/map/models/tv-common';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 
 export class MarkingObjectBuilder {
@@ -70,7 +69,7 @@ export class MarkingObjectBuilder {
 
 		let geometry: BufferGeometry;
 
-		if ( points.length < 2 && marking.side != null && roadObject.attr_type == ObjectTypes.parkingSpace ) {
+		if ( points.length < 2 && marking.side != null && roadObject.attr_type == TvRoadObjectType.parkingSpace ) {
 
 			const side = marking.side == 'left' ? 1 : -1;
 

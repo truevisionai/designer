@@ -15,8 +15,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
-import { Object3DMap } from 'app/core/models/object3d-map';
-import { SimpleArrowObject, SharpArrowObject } from 'app/objects/lane-arrow-object';
+import { SharpArrowObject, SimpleArrowObject } from 'app/objects/lane-arrow-object';
 import { DebugLine } from '../../objects/debug-line';
 import { TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
@@ -197,20 +196,20 @@ export class DebugDrawService {
 
 	}
 
-	createLaneWidthLine ( laneCoord: TvLaneCoord ): Line2 {
+	createLaneWidthLine ( target: any, laneCoord: TvLaneCoord, color = COLOR.CYAN, width = 4 ): DebugLine<any> {
 
 		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.s, laneCoord.road, laneCoord.lane );
 
 		const material = new LineMaterial( {
-			color: COLOR.CYAN,
-			linewidth: 4,
+			color: color,
+			linewidth: width,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ),
 			depthTest: false,
 			depthWrite: false,
 			transparent: true,
 		} );
 
-		return new DebugLine( null, lineGeometry, material );
+		return new DebugLine( target, lineGeometry, material );
 	}
 
 	updateLaneWidthLine ( line: Line2, laneCoord: TvLaneCoord ): Line2 {

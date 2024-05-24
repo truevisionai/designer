@@ -4,8 +4,10 @@
 
 export class IDService {
 
+	private readonly usedIDs: Set<number>;
+
 	private highestID: number;
-	private usedIDs: Set<number>;
+
 	private removedIDs: number[];
 
 	constructor () {

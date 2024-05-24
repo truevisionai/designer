@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { DebugState } from '../debug/debug-state';
@@ -39,6 +43,10 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	private entries = new Object3DArrayMap<TvJunction, Object3D[]>();
 
 	private maneuvers = new Object3DArrayMap<TvJunction, Object3D[]>();
+
+	public shouldShowManeuvers = true;
+
+	public shouldShowEntries = true;
 
 	constructor ( private junctionService: JunctionService, private debug: DebugDrawService ) {
 
@@ -143,6 +151,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	showManeuvers ( junction: TvJunction ) {
 
+		if ( !this.shouldShowManeuvers ) return;
+
 		junction.connections.forEach( connection => {
 
 			connection.laneLink.forEach( link => {
@@ -160,6 +170,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	}
 
 	private showEntries ( junction: TvJunction ): void {
+
+		if ( !this.shouldShowEntries ) return;
 
 		const roads = junction.getRoads();
 
@@ -225,7 +237,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	private createEntryExitBoxMesh ( position: Vector3, hdg = 0, laneWidth = 3.6 ) {
+	createEntryExitBoxMesh ( position: Vector3, hdg = 0, laneWidth = 3.6 ) {
 
 		const texture = OdTextures.arrowCircle();
 

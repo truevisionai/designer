@@ -2,12 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
-import { SignShapeType } from '../services/tv-sign.service';
 import { TvDynamicTypes, TvOrientation, TvUnit } from '../models/tv-common';
 import { TvUserData } from '../models/tv-user-data';
-import { TvRoad } from '../models/tv-road.model';
 import { TvLaneValidity } from "../models/objects/tv-lane-validity";
+import { MathUtils } from "three";
 
 export enum TvSignalType {
 	RoadMark = 'roadMark',
@@ -19,14 +17,31 @@ export enum TvSignalSubType {
 	Unknown = 'unknown',
 }
 
+export enum TvSignalDependencyType {
+	TrafficLight = 'trafficLight',
+	Unknown = 'unknown',
+}
+
+export enum TvReferenceElementType {
+	Object = 'object',
+	Signal = 'signal',
+}
+
 export class TvRoadSignal {
 
-	public static counter = 1;
+	public readonly uuid: string;
 
 	public validities: TvLaneValidity[] = [];
+
 	public dependencies: TvSignalDependency[] = [];
-	public signalReferences: TvSignalReference[] = [];
+
+	public references: TvReference[] = [];
+
+	public userData: Map<string, TvUserData> = new Map<string, TvUserData>();
+
+	// internal use
 	public roadId: number;
+
 	public assetGuid: string;
 
 	/**
@@ -36,7 +51,7 @@ export class TvRoadSignal {
 	 * @param id
 	 * @param name
 	 * @param dynamic
-	 * @param orientation "+" = valid in positive s- direction, "-" = valid in negative s- direction, "none" = valid in both directions
+	 * @param orientation "+" = valid in positive s-direction, "-" = valid in negative s-direction, "none" = valid in both directions
 	 * @param zOffset z offset from the road to bottom edge of the signal. This represents the vertical clearance of the object. Relative to the reference line.
 	 * @param country
 	 * @param type Type identifier according to country code or "-1" / "none". See extra document.
@@ -56,7 +71,7 @@ export class TvRoadSignal {
 		public id: number,
 		public name: string,
 		public dynamic?: TvDynamicTypes,
-		public orientations?: TvOrientation,
+		public orientation?: TvOrientation,
 		public zOffset?: number,
 		public country?: string,
 		public type?: string,
@@ -70,89 +85,84 @@ export class TvRoadSignal {
 		public pitch: number = 0,
 		public roll: number = 0
 	) {
-
-		TvRoadSignal.counter++;
-
-	}
-
-	private _userData: Map<string, TvUserData> = new Map<string, TvUserData>();
-
-	set userData ( values: TvUserData[] ) {
-		values.forEach( data => this._userData.set( data.attr_code, data ) );
-	}
-
-	get userDataMap () {
-		return this._userData;
-	}
-
-	get assetName () {
-		return this._userData.get( 'asset_name' );
-	}
-
-	getRoad (): TvRoad {
-		throw new Error( 'method not implemented' );
-		// return TvMapQueries.findRoadById( this.roadId );
-	}
-
-	getUserData () {
-		return this._userData;
+		this.uuid = MathUtils.generateUUID();
 	}
 
 	addValidity ( fromLane: number, toLane: number ): void {
 		this.validities.push( new TvLaneValidity( fromLane, toLane ) );
 	}
 
-	getValidity ( index: number ): TvLaneValidity {
-		return this.validities[ index ];
-	}
-
-	getValidityCount (): number {
-		return this.validities.length;
-	}
-
-	addDependency ( id: number, type: string ) {
+	addDependency ( id: number, type: TvSignalDependencyType ) {
 		this.dependencies.push( new TvSignalDependency( id, type ) );
 	}
 
-	getDependency ( index: number ): TvSignalDependency {
-		return this.dependencies[ index ];
+	addReference ( elementId: number, elementType: TvReferenceElementType, type?: string ) {
+		this.references.push( new TvReference( elementId, elementType, type ) );
 	}
 
-	getDependencyCount (): number {
-		return this.dependencies.length;
+	static stringToDynamicType ( value: string ): TvDynamicTypes {
+		if ( value === 'yes' ) {
+			return TvDynamicTypes.YES;
+		} else if ( value === 'no' ) {
+			return TvDynamicTypes.NO;
+		} else {
+			return TvDynamicTypes.NO;
+		}
 	}
 
-	getSignalReference ( index: number ): TvSignalReference {
-		return this.signalReferences[ index ];
+	static stringToOrientation ( value: any ) {
+		if ( value === '+' ) {
+			return TvOrientation.PLUS;
+		} else if ( value === '-' ) {
+			return TvOrientation.MINUS;
+		} else if ( value === 'none' ) {
+			return TvOrientation.NONE;
+		} else {
+			return TvOrientation.NONE;
+		}
 	}
 
-	getSignalReferenceCount (): number {
-		return this.signalReferences.length;
-	}
-
-	addUserData ( key: string, value: string ) {
-		this._userData.set( key, new TvUserData( key, value ) );
-	}
-
-	move ( position: Vector3 ): void {
-		// this.gameObject?.position.copy( position );
-		// this.controlPoint?.position.copy( position );
+	static stringToUnit ( value: string ): TvUnit {
+		if ( value === 'm' ) {
+			return TvUnit.METER;
+		} else if ( value === 'km' ) {
+			return TvUnit.KM;
+		} else if ( value === 'ft' ) {
+			return TvUnit.FEET;
+		} else if ( value === 'mile' ) {
+			return TvUnit.MILE;
+		} else if ( value === 'm/s' ) {
+			return TvUnit.METER_PER_SECOND;
+		} else if ( value === 'mph' ) {
+			return TvUnit.MILES_PER_HOUR;
+		} else if ( value === 'km/h' ) {
+			return TvUnit.KM_PER_HOUR;
+		} else if ( value === 'kg' ) {
+			return TvUnit.KG;
+		} else if ( value === 't' ) {
+			return TvUnit.T;
+		} else if ( value === '%' ) {
+			return TvUnit.PERCENT;
+		} else {
+			return TvUnit.NONE;
+		}
 	}
 }
 
 /**
+ * Signal dependency means that one signal controls the output of another signal.
+ *
  * The signal dependency record provides signals with a means to control other signals. Signs can e.g.
  * restrict other signs for various types of vehicles, warning lights can be turned on when a traffic light
  * goes red etc. The signal dependency record is an optional child record of the signal record. A signal
  * may have multiple dependency records.
  */
 export class TvSignalDependency {
-	public id: number;
-	public type: string;
 
-	constructor ( id: number, type: string ) {
-		this.id = id;
-		this.type = type;
+	constructor (
+		public id: number,
+		public type?: TvSignalDependencyType
+	) {
 	}
 
 }
@@ -163,11 +173,15 @@ export class TvSignalDependency {
  * inconsistencies by multiply defining an entire signal entry, the user only needs to define the complete
  * signal entry once and can refer to this complete record by means of the signal reference record.
  */
-export class TvSignalReference {
+export class TvSignalRef {
 	public s: number;
+
 	public t: number;
+
 	public id: number;
+
 	public orientations: TvOrientation;
+
 	public laneValidities: TvLaneValidity[] = [];
 
 	getValidityCount (): number {
@@ -179,14 +193,25 @@ export class TvSignalReference {
 	}
 }
 
-export class StaticSignal extends TvRoadSignal {
+export class TvReference {
 
+	/**
+	 * Signal reference means that there is some kind of link between two
+	 * signals or objects. A signal reference is valid for one specific signal only.
+	 *
+	 * An example would be a traffic light which uses a <reference> to a stop
+	 * line in order to specify where traffic participants have to stop on red.
+	 * The stop line in turn has a <dependency> on the traffic light,
+	 * since traffic should stop there only if the traffic light is red.
+	 *
+	 * @param elementId Unique ID of the linked element
+	 * @param elementType Type of the linked element
+	 * @param type Type of the linkage Free text, depending on application
+	 */
 	constructor (
-		s: number,
-		t: number,
+		public elementId: number,
+		public elementType: TvReferenceElementType,
+		public type?: string
 	) {
-		super( s, t, TvRoadSignal.counter, 'StaticSignal', TvDynamicTypes.NO, TvOrientation.MINUS );
 	}
-
 }
-

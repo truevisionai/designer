@@ -31,9 +31,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public markMeshData: MeshGeometryData;
 
-	public attr_id: number;
+	public id: number;
 
-	private attr_type: TvLaneType;
+	public type: TvLaneType;
 
 	/**
 	 * "true" = keep lane on level, .i.e. do not apply superelevation or crossfall
@@ -43,13 +43,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 * have been defined.
 	 * default is false
 	 */
-	private attr_level: boolean = false;
+	public level: boolean = false;
 
 	public width: TvLaneWidth[] = [];
 
 	public borders: TvLaneBorder[] = [];
 
-	public roadMark: TvLaneRoadMark[] = [];
+	public roadMarks: TvLaneRoadMark[] = [];
 
 	public material: TvLaneMaterial[] = [];
 
@@ -63,15 +63,15 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public threeMaterialGuid: string;
 
+	public side: TvLaneSide;
+
 	public isSelected: boolean;
 
-	private travelDirection: TravelDirection;
+	public direction: TravelDirection;
+
+	public roadId: number;
 
 	private _successor: number;
-
-	private _roadId: number;
-
-	private _side: TvLaneSide;
 
 	private _predecessorExists: boolean;
 
@@ -83,57 +83,25 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	constructor ( side: TvLaneSide, id: number, type: TvLaneType, level: boolean = false, roadId?: number, laneSection?: TvLaneSection ) {
 
-		this._side = side;
+		this.side = side;
 
 		this.uuid = MathUtils.generateUUID();
-		this.attr_id = id;
-		this.attr_type = type;
-		this.attr_level = level;
+		this.id = id;
+		this.type = type;
+		this.level = level;
 		this.roadId = roadId;
 		this._laneSection = laneSection;
 
 		if ( this.side === TvLaneSide.LEFT ) {
-			this.travelDirection = TravelDirection.backward;
+			this.direction = TravelDirection.backward;
 		} else if ( this.side === TvLaneSide.RIGHT ) {
-			this.travelDirection = TravelDirection.forward;
+			this.direction = TravelDirection.forward;
 		} else if ( this.side === TvLaneSide.CENTER ) {
-			this.travelDirection = TravelDirection.undirected;
+			this.direction = TravelDirection.undirected;
 		} else {
-			this.travelDirection = TravelDirection.undirected;
+			this.direction = TravelDirection.undirected;
 		}
 
-	}
-
-	get laneId (): number {
-		return Number( this.attr_id );
-	}
-
-	set laneId ( value: number ) {
-		this.attr_id = value;
-	}
-
-	get type (): TvLaneType {
-		return this.attr_type;
-	}
-
-	set type ( value: TvLaneType ) {
-		this.attr_type = value;
-	}
-
-	get level (): boolean {
-		return this.attr_level;
-	}
-
-	set level ( value ) {
-		this.attr_level = value;
-	}
-
-	get direction () {
-		return this.travelDirection;
-	}
-
-	set direction ( value: TravelDirection ) {
-		this.travelDirection = value;
 	}
 
 	set successor ( laneId: number ) {
@@ -148,40 +116,20 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this._laneSection = value;
 	}
 
-	get roadId () {
-		return this._roadId;
-	}
-
-	set roadId ( value ) {
-		this._roadId = value;
-	}
-
-	get side (): TvLaneSide {
-		return this._side;
-	}
-
 	get isLeft (): boolean {
-		return this._side === TvLaneSide.LEFT;
+		return this.side === TvLaneSide.LEFT;
 	}
 
 	get isRight (): boolean {
-		return this._side === TvLaneSide.RIGHT;
+		return this.side === TvLaneSide.RIGHT;
 	}
 
 	get predecessorExists (): boolean {
 		return this._predecessorExists;
 	}
 
-	set predecessorExists ( value: boolean ) {
-		this._predecessorExists = value;
-	}
-
 	get successorExists (): boolean {
 		return this._successorExists;
-	}
-
-	set successorExists ( value: boolean ) {
-		this._successorExists = value;
 	}
 
 	get predecessor () {
@@ -194,35 +142,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	get laneSectionId () {
 		return this._laneSection?.id;
-	}
-
-	get sideAsString (): string {
-
-		switch ( this.side ) {
-
-			case TvLaneSide.LEFT:
-				return 'left';
-				break;
-
-			case TvLaneSide.CENTER:
-				return 'center';
-				break;
-
-			case TvLaneSide.RIGHT:
-				return 'right';
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	get id (): number {
-		return Number( this.attr_id );
-	}
-
-	set id ( value: number ) {
-		this.attr_id = value;
 	}
 
 	get succcessor () {
@@ -306,22 +225,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		// this.gameObject.material.needsUpdate = true;
 
-	}
-
-	setSide ( side: TvLaneSide ) {
-		this._side = side;
-	}
-
-	setId ( id: number ) {
-		this.attr_id = id;
-	}
-
-	setType ( type: TvLaneType ) {
-		this.attr_type = type;
-	}
-
-	setLevel ( level: boolean ) {
-		this.attr_level = level;
 	}
 
 	setPredecessor ( laneId: number ) {
@@ -458,44 +361,12 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.height.splice( 0, this.height.length );
 	}
 
-	getSide (): TvLaneSide {
-		return this._side;
-	}
-
-	getId (): number {
-		return Number( this.attr_id );
-	}
-
-	getType (): string {
-		return this.attr_type;
-	}
-
-	getLevel (): boolean {
-		return this.attr_level;
-	}
-
-	isPredecessorSet () {
-		return this._predecessorExists;
-	}
-
-	getPredecessor () {
-		return this._predecessor;
-	}
-
-	isSuccessorSet () {
-		return this._successorExists;
-	}
-
-	getSuccessor () {
-		return this._successor;
-	}
-
 	getLaneWidthVector (): TvLaneWidth[] {
 		return this.width;
 	}
 
 	getLaneRoadMarkVector (): TvLaneRoadMark[] {
-		return this.roadMark;
+		return this.roadMarks;
 	}
 
 	getLaneWidth ( index ): TvLaneWidth {
@@ -509,8 +380,8 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getLaneRoadMark ( index ): TvLaneRoadMark {
 
-		if ( this.roadMark.length > 0 && index < this.roadMark.length ) {
-			return this.roadMark[ index ];
+		if ( this.roadMarks.length > 0 && index < this.roadMarks.length ) {
+			return this.roadMarks[ index ];
 		}
 
 		return null;
@@ -566,7 +437,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	getLaneRoadMarkCount (): number {
-		return this.roadMark.length;
+		return this.roadMarks.length;
 	}
 
 	getLaneMaterialCount (): number {
@@ -736,36 +607,8 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 */
 	getRoadMark ( sCheck ): TvLaneRoadMark {
 
-		return TvUtils.checkIntervalArray( this.roadMark, sCheck );
+		return TvUtils.checkIntervalArray( this.roadMarks, sCheck );
 
-		// if ( result == null ) {
-
-		// 	console.warn( 'roadmark not found using default' );
-
-		// 	result = new TvLaneRoadMark( 0, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0, TvRoadMarkLaneChange.NONE, 0, this );
-
-		// }
-
-		// return result;
-
-		// const laneRoadMark = new OdLaneRoadMark( 0, OdRoadMarkTypes.SOLID, OdRoadMarkWeights.STANDARD, OdColors.WHITE, 0, '', 0 );
-		//
-		// const index = this.checkLaneRoadMarkInterval( sCheck );
-		//
-		// if ( index >= 0 ) {
-		//
-		//     const currentRoadMark = this.roadMark[ index ];
-		//
-		//     laneRoadMark.setType( currentRoadMark.getType() );
-		//     laneRoadMark.setWeight( currentRoadMark.getWeight() );
-		//     laneRoadMark.setMaterial( currentRoadMark.getMaterial() );
-		//     laneRoadMark.setWidth( currentRoadMark.getWidth() );
-		//     laneRoadMark.setHeight( currentRoadMark.getHeight() );
-		//     laneRoadMark.setLaneChange( currentRoadMark.getLaneChange() );
-		//
-		// }
-		//
-		// return laneRoadMark;
 	}
 
 	// clones the entire lane
@@ -832,21 +675,15 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getRoadMarkAt ( s: number ): TvLaneRoadMark {
 
-		return TvUtils.checkIntervalArray( this.roadMark, s );
-
-	}
-
-	getRoadMarks () {
-
-		return this.roadMark;
+		return TvUtils.checkIntervalArray( this.roadMarks, s );
 
 	}
 
 	addRoadMarkInstance ( roadmark: TvLaneRoadMark ) {
 
-		this.roadMark.push( roadmark );
+		this.roadMarks.push( roadmark );
 
-		this.roadMark.sort( ( a, b ) => a.sOffset > b.sOffset ? 1 : -1 );
+		this.roadMarks.sort( ( a, b ) => a.sOffset > b.sOffset ? 1 : -1 );
 
 	}
 
@@ -869,7 +706,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	copyProperties? (): Object {
 
 		return {
-			travelDirection: this.travelDirection,
+			travelDirection: this.direction,
 			type: this.type,
 			level: this.level,
 		};
@@ -904,7 +741,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	removeRoadMark ( roadmark: TvLaneRoadMark ) {
 
-		this.roadMark.splice( this.roadMark.indexOf( roadmark ), 1 );
+		this.roadMarks.splice( this.roadMarks.indexOf( roadmark ), 1 );
 
 	}
 
@@ -914,11 +751,73 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	removeBorder ( border: TvLaneBorder ) {
+	static stringToType ( type: string ): TvLaneType {
 
-		this.borders.splice( this.borders.indexOf( border ), 1 );
+		if ( type === 'bidirectional' ) return TvLaneType.bidirectional;
+		if ( type === 'driving' ) return TvLaneType.driving;
+		if ( type === 'stop' ) return TvLaneType.stop;
+		if ( type === 'shoulder' ) return TvLaneType.shoulder;
+		if ( type === 'restricted' ) return TvLaneType.restricted;
+		if ( type === 'median' ) return TvLaneType.median;
+		if ( type === 'special1' ) return TvLaneType.special1;
+		if ( type === 'special2' ) return TvLaneType.special2;
+		if ( type === 'special3' ) return TvLaneType.special3;
+		if ( type === 'roadWorks' ) return TvLaneType.roadWorks;
+		if ( type === 'tram' ) return TvLaneType.tram;
+		if ( type === 'rail' ) return TvLaneType.rail;
+		if ( type === 'entry' ) return TvLaneType.entry;
+		if ( type === 'exit' ) return TvLaneType.exit;
+		if ( type === 'offRamp' ) return TvLaneType.offRamp;
+		if ( type === 'onRamp' ) return TvLaneType.onRamp;
+		if ( type === 'connectingRamp' ) return TvLaneType.connectingRamp;
+		if ( type === 'bus' ) return TvLaneType.bus;
+		if ( type === 'taxi' ) return TvLaneType.taxi;
+		if ( type === 'HOV' ) return TvLaneType.HOV;
+		if ( type === 'sidewalk' ) return TvLaneType.sidewalk;
+		if ( type === 'walking' ) return TvLaneType.sidewalk;
+		if ( type === 'biking' ) return TvLaneType.biking;
+		if ( type === 'border' ) return TvLaneType.border;
+		if ( type === 'curb' ) return TvLaneType.curb;
+		if ( type === 'parking' ) return TvLaneType.parking;
+		if ( type === 'slipLane' ) return TvLaneType.slipLane;
+		if ( type === 'shared' ) return TvLaneType.shared;
+		if ( type === 'none' ) return TvLaneType.none;
+
+		return TvLaneType.none;
 
 	}
 
+	static typeToString ( type: TvLaneType ): string {
+
+		if ( type === TvLaneType.bidirectional ) return 'bidirectional';
+		if ( type === TvLaneType.driving ) return 'driving';
+		if ( type === TvLaneType.stop ) return 'stop';
+		if ( type === TvLaneType.shoulder ) return 'shoulder';
+		if ( type === TvLaneType.restricted ) return 'restricted';
+		if ( type === TvLaneType.median ) return 'median';
+		if ( type === TvLaneType.special1 ) return 'special1';
+		if ( type === TvLaneType.special2 ) return 'special2';
+		if ( type === TvLaneType.special3 ) return 'special3';
+		if ( type === TvLaneType.roadWorks ) return 'roadWorks';
+		if ( type === TvLaneType.tram ) return 'tram';
+		if ( type === TvLaneType.rail ) return 'rail';
+		if ( type === TvLaneType.entry ) return 'entry';
+		if ( type === TvLaneType.exit ) return 'exit';
+		if ( type === TvLaneType.offRamp ) return 'offRamp';
+		if ( type === TvLaneType.onRamp ) return 'onRamp';
+		if ( type === TvLaneType.connectingRamp ) return 'connectingRamp';
+		if ( type === TvLaneType.bus ) return 'bus';
+		if ( type === TvLaneType.taxi ) return 'taxi';
+		if ( type === TvLaneType.HOV ) return 'HOV';
+		if ( type === TvLaneType.sidewalk ) return 'sidewalk';
+		if ( type === TvLaneType.biking ) return 'biking';
+		if ( type === TvLaneType.border ) return 'border';
+		if ( type === TvLaneType.curb ) return 'curb';
+		if ( type === TvLaneType.parking ) return 'parking';
+		if ( type === TvLaneType.none ) return 'none';
+
+		return 'none';
+
+	}
 }
 

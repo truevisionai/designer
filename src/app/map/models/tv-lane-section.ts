@@ -16,12 +16,15 @@ import { TvUtils } from './tv-utils';
 export class TvLaneSection {
 
 	public readonly id: number;
+
 	public readonly uuid: string;
 
 	public gameObject: GameObject;
 
 	public attr_s: number;
+
 	public attr_singleSide: boolean;
+
 	// old property
 	public endS: number;
 
@@ -88,7 +91,6 @@ export class TvLaneSection {
 			Debug.log( i, lane );
 
 		} );
-
 
 	}
 
@@ -270,7 +272,7 @@ export class TvLaneSection {
 
 		if ( this.laneArray.length > 0 ) {
 
-			if ( this.laneArray[ 0 ].getSide() === TvLaneSide.LEFT ) {
+			if ( this.laneArray[ 0 ].side === TvLaneSide.LEFT ) {
 
 				return this.laneArray[ 0 ];
 
@@ -289,7 +291,7 @@ export class TvLaneSection {
 
 			const index = this.laneArray.length - 1;
 
-			if ( this.laneArray[ index ].getSide() === TvLaneSide.RIGHT ) {
+			if ( this.laneArray[ index ].side === TvLaneSide.RIGHT ) {
 
 				return this.laneArray[ index ];
 
@@ -308,7 +310,7 @@ export class TvLaneSection {
 
 		for ( let i = 0; i < size; i++ ) {
 
-			if ( this.laneArray[ i ].getSide() === TvLaneSide.CENTER ) {
+			if ( this.laneArray[ i ].side === TvLaneSide.CENTER ) {
 
 				return this.laneArray[ i ];
 
@@ -434,7 +436,7 @@ export class TvLaneSection {
 
 		for ( let i = 0; i < this.getLaneCount(); i++ ) {
 
-			if ( this.laneArray[ i ].getId() === 0 ) {
+			if ( this.laneArray[ i ].id === 0 ) {
 
 				return i;
 
@@ -457,7 +459,7 @@ export class TvLaneSection {
 		//
 		// for ( let i = 0; i < this.getLaneCount(); i++ ) {
 		//
-		//     if ( this.laneVector[ i ].getSide() === LaneSide.LEFT ) {
+		//     if ( this.laneVector[ i ].side === LaneSide.LEFT ) {
 		//
 		//         count++;
 		//
@@ -479,7 +481,7 @@ export class TvLaneSection {
 		//
 		// for ( let i = 0; i < this.getLaneCount(); i++ ) {
 		//
-		//     if ( this.laneVector[ i ].getSide() === LaneSide.LEFT ) {
+		//     if ( this.laneVector[ i ].side === LaneSide.LEFT ) {
 		//
 		//         lanes.push( this.laneVector[ i ] );
 		//
@@ -537,7 +539,7 @@ export class TvLaneSection {
 
 		for ( let i = 0; i < this.getLaneCount(); i++ ) {
 
-			if ( this.laneArray[ i ].getSide() === TvLaneSide.CENTER ) {
+			if ( this.laneArray[ i ].side === TvLaneSide.CENTER ) {
 
 				count++;
 
@@ -549,7 +551,7 @@ export class TvLaneSection {
 
 	getCenterLanes () {
 
-		return this.laneArray.filter( lane => lane.getSide() === TvLaneSide.CENTER );
+		return this.laneArray.filter( lane => lane.side === TvLaneSide.CENTER );
 
 	}
 
@@ -565,7 +567,7 @@ export class TvLaneSection {
 		//
 		// for ( let i = 0; i < this.getLaneCount(); i++ ) {
 		//
-		//     if ( this.laneVector[ i ].getSide() === LaneSide.RIGHT ) {
+		//     if ( this.laneVector[ i ].side === LaneSide.RIGHT ) {
 		//
 		//         count++;
 		//
@@ -587,7 +589,7 @@ export class TvLaneSection {
 		//
 		// for ( let i = 0; i < this.getLaneCount(); i++ ) {
 		//
-		//     if ( this.laneVector[ i ].getSide() === LaneSide.RIGHT ) {
+		//     if ( this.laneVector[ i ].side === LaneSide.RIGHT ) {
 		//
 		//         lanes.push( this.laneVector[ i ] );
 		//
@@ -595,66 +597,6 @@ export class TvLaneSection {
 		// }
 		//
 		// return lanes;
-	}
-
-	/**
-	 * Fill a special structure with all the lane / lane section data that is sampled at a provided s-offset position along the road
-	 * @param sCheck s-offset along the road at which to sample the lane section
-	 * @param laneSectionSample The structure that has to be filled with the sampled data
-	 * @return Returns true if the operation was successful.
-	 */
-	fillLaneSectionSample ( sCheck: number, laneSectionSample: TvLaneSectionSample ) {
-
-		laneSectionSample.clearVectors();
-
-
-		const leftMax = 0;
-		const rightMax = this.getLaneCount() - 1;
-
-		sCheck -= this.getS();
-
-		let level: boolean;
-		let type: string;
-		let height: TvLaneHeight;
-		let roadMark: TvLaneRoadMark;
-		let width = 0;
-
-		if ( this.getLeftLaneCount() > 0 ) {
-
-			const zeroLaneIndex = this.getZeroLaneIndex();
-
-			for ( let i = zeroLaneIndex; i >= leftMax; i-- ) {
-
-				const lane = this.getLane( i );
-
-				type = lane.getType();
-				level = lane.getLevel();
-				height = lane.getHeightValue( sCheck );
-				roadMark = lane.getRoadMark( sCheck );
-				width = lane.getWidthValue( sCheck );          // and accumulate the width
-
-				laneSectionSample.addLeftRecord( type, width, height, roadMark, level );
-			}
-		}
-
-		if ( this.getRightLaneCount() > 0 ) {
-
-			for ( let i = this.getZeroLaneIndex(); i <= rightMax; i++ ) {
-
-				const lane = this.getLane( i );
-
-				type = lane.getType();
-				level = lane.getLevel();
-				height = lane.getHeightValue( sCheck );
-				roadMark = lane.getRoadMark( sCheck );
-				width = lane.getWidthValue( sCheck );
-
-				laneSectionSample.addRightRecord( type, width, height, roadMark, level );
-
-			}
-		}
-
-		return true;
 	}
 
 	getLaneOffset ( lane: TvLane ) {
@@ -667,7 +609,7 @@ export class TvLaneSection {
 
 				const element = this.laneArray[ i ];
 
-				if ( element.getSide() === lane.getSide() ) {
+				if ( element.side === lane.side ) {
 
 					offsetFromCenter += element.getWidthValue( 0 );
 
@@ -711,10 +653,10 @@ export class TvLaneSection {
 			for ( let [ id, lane ] of lanes ) {
 
 				// shift left lanes
-				if ( id >= newLane.id && newLane.id > 0 ) lane.setId( lane.id + 1 );
+				if ( id >= newLane.id && newLane.id > 0 ) lane.id = ( lane.id + 1 );
 
 				// shift right lanes
-				if ( id <= newLane.id && newLane.id < 0 ) lane.setId( lane.id - 1 );
+				if ( id <= newLane.id && newLane.id < 0 ) lane.id = ( lane.id - 1 );
 
 				this.laneMap.set( lane.id, lane );
 
@@ -769,10 +711,10 @@ export class TvLaneSection {
 		for ( let [ id, lane ] of lanes ) {
 
 			// shift left lanes
-			if ( id > deletedLane.id && deletedLane.id > 0 ) lane.setId( id - 1 );
+			if ( id > deletedLane.id && deletedLane.id > 0 ) lane.id = ( id - 1 );
 
 			// shift right lanes
-			if ( id < deletedLane.id && deletedLane.id < 0 ) lane.setId( id + 1 );
+			if ( id < deletedLane.id && deletedLane.id < 0 ) lane.id = ( id + 1 );
 
 			newLaneMap.set( lane.id, lane );
 
@@ -962,7 +904,6 @@ export class TvLaneSection {
 			return result;
 
 		}
-
 
 		if ( targetLane.id < 0 ) {
 

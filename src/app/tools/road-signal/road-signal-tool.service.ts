@@ -10,13 +10,9 @@ import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSignalService } from 'app/map/road-signal/road-signal.service';
 import { RoadSignalFactory } from 'app/map/road-signal/road-signal.factory';
-import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { RoadService } from 'app/services/road/road.service';
-import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { AssetManager } from 'app/core/asset/asset.manager';
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { Object3DMap } from '../../core/models/object3d-map';
-import { ObjectTypes } from 'app/map/models/tv-common';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 
 @Injectable( {
@@ -33,7 +29,8 @@ export class RoadSignalToolService {
 		public roadService: RoadService,
 		public assetManager: AssetManager,
 		public controlPointFactory: ControlPointFactory,
-	) { }
+	) {
+	}
 
 	getSelectedAsset (): Asset {
 

@@ -41,6 +41,7 @@ import { TvMapInstance } from 'app/map/services/tv-map-instance';
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { TvTransform } from 'app/map/models/tv-transform';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
+import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -645,17 +646,16 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		for ( let i = 0; i < laneSection.getLaneCount(); i++ ) {
 
 			const lane = laneSection.getLane( i );
-			const side = lane.getSide();
 
-			if ( side === TvLaneSide.LEFT ) {
+			if ( lane.side === TvLaneSide.LEFT ) {
 
 				this.writeLane( leftLanes, lane );
 
-			} else if ( side === TvLaneSide.RIGHT ) {
+			} else if ( lane.side === TvLaneSide.RIGHT ) {
 
 				this.writeLane( rightLanes, lane );
 
-			} else if ( side === TvLaneSide.CENTER ) {
+			} else if ( lane.side === TvLaneSide.CENTER ) {
 
 				this.writeLane( centerLanes, lane );
 
@@ -680,12 +680,12 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		const laneNode = {
 			attr_id: lane.id,
-			attr_type: lane.type,
+			attr_type: TvLane.typeToString( lane.type ),
 			attr_level: lane.level === true ? 'true' : 'false',
 			attr_materialGuid: lane.threeMaterialGuid,
 			link: {},
 			width: lane.width.map( width => this.writeLaneWidth( width ) ),
-			roadMark: lane.roadMark.map( mark => this.writeLaneRoadMark( mark ) ),
+			roadMark: lane.roadMarks.map( mark => this.writeLaneRoadMark( mark ) ),
 			material: lane.material.map( material => this.writeLaneMaterial( material ) ),
 			visibility: lane.visibility.map( visibility => this.writeLaneVisibility( visibility ) ),
 			speed: lane.speed.map( speed => this.writeLaneSpeed( speed ) ),
@@ -907,96 +907,23 @@ export class SceneExporter implements AssetExporter<TvMap> {
 	//	}
 	//}
 
-	writeSignals ( xmlNode, road: TvRoad ) {
+	writeSignals ( xmlNode: XmlElement, road: TvRoad ) {
+
+		if ( road.signals.size === 0 ) return;
 
 		xmlNode.signals = {
-			signal: []
+			signal: road.getRoadSignals().map( signal => this.writeSignal( signal ) )
 		};
 
-		road.signals.forEach( ( signal, signalId ) => {
+	}
 
-			const nodeSignal = {
+	public writeSignal ( signal: TvRoadSignal ) {
 
-				// TODO: ACCESS VIA GETTERS & SETTERS
-				// Attributes
-				attr_s: signal.s,
-				attr_t: signal.t,
-				attr_id: signal.id,
-				attr_name: signal.name,
-				attr_dynamic: signal.dynamic,
-				attr_orientation: signal.orientations,
-				attr_zOffset: signal.zOffset,
-				attr_country: signal.country,
-				attr_type: signal.type,
-				attr_subtype: signal.subtype,
+		const xml = this.openDrive.writeSignal( signal );
 
-				// Elements
-				validity: [],
-				dependency: [],
-				signalReference: [],
-				userData: [],
-			};
+		if ( signal.assetGuid != null ) xml[ 'attr_assetGuid' ] = signal.assetGuid;
 
-			if ( signal.value != null ) nodeSignal[ 'attr_value' ] = signal.value;
-			if ( signal.unit != null ) nodeSignal[ 'attr_unit' ] = signal.unit;
-			if ( signal.height != null ) nodeSignal[ 'attr_height' ] = signal.height;
-			if ( signal.width != null ) nodeSignal[ 'attr_width' ] = signal.width;
-			if ( signal.text != null ) nodeSignal[ 'attr_text' ] = signal.text;
-			if ( signal.hOffset != null ) nodeSignal[ 'attr_hOffset' ] = signal.hOffset;
-			if ( signal.pitch != null ) nodeSignal[ 'attr_pitch' ] = signal.pitch;
-			if ( signal.roll != null ) nodeSignal[ 'attr_roll' ] = signal.roll;
-			if ( signal.assetGuid != null ) nodeSignal[ 'attr_assetGuid' ] = signal.assetGuid;
-
-			for ( let j = 0; j < signal.getValidityCount(); j++ ) {
-
-				const validity = signal.getValidity( j );
-
-				// TODO: ACCESS VIA GETTERS & SETTER
-				nodeSignal.validity.push( {
-					attr_fromLane: validity.attr_fromLane,
-					attr_toLane: validity.attr_toLane
-				} );
-			}
-
-			for ( let j = 0; j < signal.getDependencyCount(); j++ ) {
-
-				const dependency = signal.getDependency( j );
-
-				nodeSignal.dependency.push( {
-					attr_id: dependency.id,
-					attr_type: dependency.type
-				} );
-			}
-
-			for ( let j = 0; j < signal.getSignalReferenceCount(); j++ ) {
-
-				const signalReference = signal.getSignalReference( j );
-
-				const nodeSignalReference = {
-					attr_s: signalReference.s,
-					attr_t: signalReference.t,
-					attr_id: signalReference.id,
-					attr_orientation: signalReference.orientations,
-					validity: []
-				};
-
-				for ( let k = 0; k < signalReference.getValidityCount(); k++ ) {
-
-					const validity = signalReference.getValidity( k );
-
-					// TODO: ACCESS VIA GETTERS & SETTER
-					nodeSignalReference.validity.push( {
-						attr_fromLane: validity.attr_fromLane,
-						attr_toLane: validity.attr_toLane
-					} );
-				}
-
-				nodeSignal.signalReference.push( nodeSignalReference );
-			}
-
-			xmlNode.signals.signal.push( nodeSignal );
-
-		} );
+		return xml;
 
 	}
 

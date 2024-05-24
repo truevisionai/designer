@@ -200,12 +200,12 @@ export class DefaultVehicleController extends AbstractController {
 			if ( entity.direction > 0 && entity.sCoordinate > currentLaneSection.endS ) {
 
 				entity.laneSectionId += 1;
-				entity.laneId = currentLane.getSuccessor();
+				entity.laneId = currentLane.succcessor;
 
 			} else if ( entity.direction < 0 && entity.sCoordinate < currentLaneSection.s ) {
 
 				entity.laneSectionId -= 1;
-				entity.laneId = currentLane.getPredecessor();
+				entity.laneId = currentLane.predecessor;
 
 			} else {
 

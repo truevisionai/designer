@@ -5,8 +5,7 @@
 import { Injectable } from '@angular/core';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
-import { ObjectTypes } from 'app/map/models/tv-common';
+import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { CornerRoadFactory } from './corner-road.factory';
 
@@ -19,11 +18,11 @@ export class RoadObjectFactory {
 		private cornerFactory: CornerRoadFactory
 	) { }
 
-	createRoadObject ( roadCoord: TvRoadCoord, type: ObjectTypes ): TvRoadObject | null {
+	createRoadObject ( roadCoord: TvRoadCoord, type: TvRoadObjectType ): TvRoadObject | null {
 
 		switch ( type ) {
 
-			case ObjectTypes.crosswalk:
+			case TvRoadObjectType.crosswalk:
 				return this.createCrosswalkObject( roadCoord );
 
 			default:
@@ -44,7 +43,7 @@ export class RoadObjectFactory {
 
 		outline.cornerRoad.push( point );
 
-		const crosswalk = new TvRoadObject( ObjectTypes.crosswalk, 'crosswalk', TvRoadObject.counter++, roadCoord.s, roadCoord.t );
+		const crosswalk = new TvRoadObject( TvRoadObjectType.crosswalk, 'crosswalk', TvRoadObject.counter++, roadCoord.s, roadCoord.t );
 
 		crosswalk.road = roadCoord.road;
 

@@ -18,7 +18,6 @@ import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { TvTransform } from 'app/map/models/tv-transform';
 import {
 	EnumHelper,
-	ObjectTypes,
 	TvColors,
 	TvContactPoint,
 	TvGeometryType,
@@ -29,7 +28,7 @@ import {
 	TvUnit
 } from 'app/map/models/tv-common';
 import { TvUserData } from 'app/map/models/tv-user-data';
-import { TvControllerControl } from 'app/map/models/tv-controller';
+import { TvControllerControl } from 'app/map/signal-controller/tv-signal-controller';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionController } from 'app/map/models/junctions/tv-junction-controller';
@@ -1007,7 +1006,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		readXmlArray( xmlElement.controller, xml => {
 
-			junction.addController( this.parseJunctionController( xml ) );
+			junction.controllers.push( this.parseJunctionController( xml ) );
 
 		} );
 
@@ -1402,11 +1401,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		this.parseSignalDependency( roadSignal, xmlElement );
 
-		roadSignal.userData = this.parseUserData( xmlElement );
+		this.parseUserData( xmlElement ).forEach( i => roadSignal.userData.set( i.code, i.value ) );
 
-		if ( roadSignal.userDataMap.has( 'assetGuid' ) ) {
+		if ( roadSignal.userData.has( 'assetGuid' ) ) {
 
-			roadSignal.assetGuid = roadSignal.userDataMap.get( 'assetGuid' ).attr_value;
+			roadSignal.assetGuid = roadSignal.userData.get( 'assetGuid' ).value;
 
 		}
 	}
@@ -1495,7 +1494,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 	private parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ) {
 
 		const id = parseFloat( xmlElement.attr_id );
-		const type = xmlElement.attr_type;
+		const type = TvLane.stringToType( xmlElement.attr_type );
 		const level = xmlElement.attr_level == 'true';
 
 		const lane = laneSection.addLane( laneSide, id, type, level, false );

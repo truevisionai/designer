@@ -3,10 +3,10 @@
  */
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { ObjectTypes } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { Object3D, Raycaster, Vector3 } from 'three';
 import { AbstractControlPoint } from "../objects/abstract-control-point";
+import { TvRoadObjectType } from "../map/models/objects/tv-road-object";
 
 export class PickingHelper {
 
@@ -133,7 +133,7 @@ export class PickingHelper {
 
 	public static checkLaneObjectInteraction ( event: PointerEventData, tag?: string ): TvLane {
 
-		const laneTag = tag || ObjectTypes.LANE;
+		const laneTag = tag || TvRoadObjectType.LANE;
 
 		let lane = null;
 
