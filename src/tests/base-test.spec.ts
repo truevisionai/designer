@@ -76,9 +76,9 @@ export class BaseTest {
 		// -2 - sidewalk on right
 		// --------------------------------
 
-		road.laneSections[ 0 ].lanes.get( 1 ).setType( TvLaneType.sidewalk );
-		road.laneSections[ 0 ].lanes.get( -2 ).setType( TvLaneType.sidewalk );
-		road.laneSections[ 0 ].lanes.get( -1 ).setType( TvLaneType.driving );
+		road.laneSections[ 0 ].lanes.get( 1 ).type = TvLaneType.sidewalk;
+		road.laneSections[ 0 ].lanes.get( -2 ).type = TvLaneType.sidewalk;
+		road.laneSections[ 0 ].lanes.get( -1 ).type = TvLaneType.driving;
 
 		roadService.add( road );
 

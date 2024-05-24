@@ -6,7 +6,7 @@ import { JunctionService } from 'app/services/junction/junction.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Vector2 } from 'three';
 
-fdescribe( 'JunctionService', () => {
+describe( 'JunctionService', () => {
 
 	let roadService: RoadService;
 	let junctionService: JunctionService;

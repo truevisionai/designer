@@ -6,12 +6,10 @@ import { Injectable } from '@angular/core';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { AbstractReader } from '../abstract-reader';
 import { readXmlArray, readXmlElement } from '../../utils/xml-utils';
 import { TvAbstractRoadGeometry } from '../../map/models/geometries/tv-abstract-road-geometry';
 import {
 	EnumHelper,
-	ObjectTypes,
 	TvContactPoint,
 	TvGeometryType,
 	TvLaneSide,
@@ -20,7 +18,7 @@ import {
 	TvUnit
 } from '../../map/models/tv-common';
 import { TvUserData } from 'app/map/models/tv-user-data';
-import { TvController, TvControllerControl } from '../../map/models/tv-controller';
+import { TvControllerControl, TvSignalController } from '../../map/signal-controller/tv-signal-controller';
 import { TvJunction } from '../../map/models/junctions/tv-junction';
 import { TvJunctionConnection } from '../../map/models/junctions/tv-junction-connection';
 import { TvJunctionController } from '../../map/models/junctions/tv-junction-controller';
@@ -37,23 +35,23 @@ import { TvRoadObject } from '../../map/models/objects/tv-road-object';
 import { TvRoadSignal } from '../../map/road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from '../../map/models/tv-road-type.class';
 import { TvRoad } from '../../map/models/tv-road.model';
-import { SignShapeType } from '../../map/services/tv-sign.service';
 import { TvCornerRoad } from "../../map/models/objects/tv-corner-road";
 import { TvObjectOutline } from "../../map/models/objects/tv-object-outline";
 import { XmlElement } from "../xml.element";
 import { IOpenDriveParser } from "./i-open-drive.parser";
 import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
+import { TvRoadLaneOffset } from "../../map/models/tv-road-lane-offset";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParser {
+export class OpenDrive14Parser implements IOpenDriveParser {
 
 	protected map: TvMap;
 
 	constructor ( private snackBar: SnackBar ) {
-		super();
+
 	}
 
 	setMap ( map: TvMap ) {
@@ -81,7 +79,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		readXmlArray( openDRIVE.controller, xml => {
 
-			this.map.addControllerInstance( this.parseController( xml ) );
+			this.map.addController( this.parseController( xml ) );
 
 		} );
 
@@ -95,11 +93,17 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		readXmlArray( openDRIVE.junction, ( xml ) => {
 
-			this.parseJunctionConnections( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+			const junctionId = parseInt( xml.attr_id );
 
-			this.parseJunctionPriorities( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+			const junction = this.map.getJunctionById( junctionId )
 
-			this.parseJunctionControllers( this.map.getJunctionById( parseInt( xml.attr_id ) ), xml );
+			if ( !junction ) return;
+
+			this.parseJunctionConnections( junction, xml );
+
+			this.parseJunctionPriorities( junction, xml );
+
+			this.parseJunctionControllers( junction, xml );
 
 		} );
 
@@ -538,21 +542,17 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 	}
 
-	public parseController ( xmlElement: XmlElement ): TvController {
+	public parseController ( xmlElement: XmlElement ): TvSignalController {
 
 		const id = parseFloat( xmlElement.attr_id );
 		const name = xmlElement.attr_name;
 		const sequence = xmlElement.attr_sequence ? parseFloat( xmlElement.attr_sequence ) : null;
 
-		const controller = new TvController( id, name, sequence );
+		const controls: TvControllerControl[] = [];
 
-		readXmlArray( xmlElement.control, xml => {
+		readXmlArray( xmlElement.control, xml => controls.push( this.parseControl( xml ) ) );
 
-			controller.addControl( this.parseControl( xml ) );
-
-		} );
-
-		return controller;
+		return new TvSignalController( id, name, sequence, controls );
 	}
 
 	public parseJunction ( xmlElement: XmlElement ): TvJunction {
@@ -568,7 +568,9 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		readXmlArray( xmlElement.connection, xml => {
 
-			junction.addConnection( this.parseJunctionConnection( xml, junction ) );
+			const connection = this.parseJunctionConnection( xml, junction );
+
+			if ( connection ) junction.addConnection( connection );
 
 		} );
 
@@ -588,7 +590,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		readXmlArray( xmlElement.controller, xml => {
 
-			junction.addController( this.parseJunctionController( xml ) );
+			junction.controllers.push( this.parseJunctionController( xml ) );
 
 		} );
 
@@ -603,6 +605,16 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		const incomingRoad = this.map.getRoadById( incomingRoadId );
 		const connectingRoad = this.map.getRoadById( connectingRoadId );
+
+		if ( !incomingRoad ) {
+			TvConsole.error( "Incoming road not found" );
+			return;
+		}
+
+		if ( !connectingRoad ) {
+			TvConsole.error( "Connecting road not found" );
+			return;
+		}
 
 		const outgoingRoadId = contactPoint == TvContactPoint.START ?
 			connectingRoad?.successor?.elementId :
@@ -680,7 +692,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		readXmlArray( xmlElement.laneOffset, ( xml ) => {
 
-			this.parseLaneOffset( road, xml );
+			road.laneOffsets.push( this.parseLaneOffset( xml ) );
 
 		} );
 
@@ -704,7 +716,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 	public parseRoadObject ( road: TvRoad, xmlElement: XmlElement ): TvRoadObject {
 
-		const type = xmlElement.attr_type;
+		const type = TvRoadObject.stringToType( xmlElement.attr_type );
 		const name = xmlElement.attr_name;
 		const id = parseFloat( xmlElement.attr_id ) || 0;
 		const s = parseFloat( xmlElement.attr_s ) || 0;
@@ -851,24 +863,25 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 	public parseSignal ( road: TvRoad, xmlElement: XmlElement ) {
 
+		const id = parseInt( xmlElement.attr_id );
+
 		const s = parseFloat( xmlElement.attr_s );
-		const t = xmlElement.attr_t;
-		const id = xmlElement.attr_id;
+		const t = parseFloat( xmlElement.attr_t );
 		const name = xmlElement.attr_name;
-		const dynamic = xmlElement.attr_dynamic;
-		const orientation = xmlElement.attr_orientation;
-		const zOffset = xmlElement.attr_zOffset;
+		const dynamic = TvRoadSignal.stringToDynamicType( xmlElement.attr_dynamic );
+		const orientation = TvRoadSignal.stringToOrientation( xmlElement.attr_orientation )
+		const zOffset = parseFloat( xmlElement.attr_zOffset );
 		const country = xmlElement.attr_country;
 		const type = xmlElement.attr_type;
 		const subtype = xmlElement.attr_subtype;
 		const value = xmlElement.attr_value;
-		const unit = xmlElement.attr_unit;
-		const height = xmlElement.attr_height;
-		const width = xmlElement.attr_width;
+		const unit = TvRoadSignal.stringToUnit( xmlElement.attr_unit );
+		const height = parseFloat( xmlElement.attr_height );
+		const width = parseFloat( xmlElement.attr_width );
 		const text = xmlElement.attr_text;
-		const hOffset = xmlElement.attr_hOffset;
-		const pitch = xmlElement.attr_pitch;
-		const roll = xmlElement.attr_roll;
+		const hOffset = parseFloat( xmlElement.attr_hOffset );
+		const pitch = parseFloat( xmlElement.attr_pitch );
+		const roll = parseFloat( xmlElement.attr_roll );
 
 		const roadSignal = road.addRoadSignal( s,
 			t,
@@ -894,61 +907,33 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		this.parseSignalDependency( roadSignal, xmlElement );
 
-		roadSignal.userData = this.parseUserData( xmlElement );
+		this.parseUserData( xmlElement ).forEach( i => roadSignal.userData.set( i.code, i.value ) );
 
-		if ( roadSignal.userDataMap.has( 'assetGuid' ) ) {
+		if ( roadSignal.userData.has( 'assetGuid' ) ) {
 
-			roadSignal.assetGuid = roadSignal.userDataMap.get( 'assetGuid' ).attr_value;
+			roadSignal.assetGuid = roadSignal.userData.get( 'assetGuid' ).value;
 
 		}
 	}
 
 	public parseSignalValidity ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
 
-		if ( xmlElement.validity != null && xmlElement.validity !== '' ) {
+		readXmlArray( xmlElement.validity, xml => {
 
-			if ( Array.isArray( xmlElement.validity ) ) {
+			signal.addValidity( parseFloat( xml.attr_fromLane ), parseFloat( xml.attr_toLane ) );
 
-				for ( let i = 0; i < xmlElement.validity.length; i++ ) {
+		} );
 
-					const validity = xmlElement.validity[ i ];
-
-					signal.addValidity( parseFloat( validity.attr_fromLane ), parseFloat( validity.attr_toLane ) );
-
-				}
-
-			} else {
-
-				const validity = xmlElement.validity;
-
-				signal.addValidity( parseFloat( validity.attr_fromLane ), parseFloat( validity.attr_toLane ) );
-
-			}
-		}
 	}
 
 	public parseSignalDependency ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
 
-		if ( xmlElement.dependency != null && xmlElement.dependency !== '' ) {
+		readXmlArray( xmlElement.dependency, xml => {
 
-			if ( Array.isArray( xmlElement.dependency ) ) {
+			signal.addDependency( parseFloat( xml.attr_id ), xml.attr_type );
 
-				for ( let i = 0; i < xmlElement.dependency.length; i++ ) {
+		} );
 
-					const dependency = xmlElement.dependency[ i ];
-
-					signal.addDependency( parseFloat( dependency.attr_id ), dependency.attr_type );
-
-				}
-
-			} else {
-
-				const dependency = xmlElement.dependency;
-
-				signal.addDependency( parseFloat( dependency.attr_id ), dependency.attr_type );
-
-			}
-		}
 	}
 
 	public parseSurface ( road: TvRoad, xmlElement: XmlElement ) {
@@ -987,7 +972,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 	public parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ): TvLane {
 
 		const id = parseFloat( xmlElement.attr_id );
-		const type = xmlElement.attr_type;
+		const type = TvLane.stringToType( xmlElement.attr_type );
 		const level = xmlElement.attr_level == 'true';
 
 		laneSection.addLane( laneSide, id, type, level, false );
@@ -1119,31 +1104,17 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 
 		const response: TvUserData[] = [];
 
-		if ( xmlElement.userData != null ) {
+		readXmlArray( xmlElement.userData, xml => {
 
-			if ( Array.isArray( xmlElement.userData ) ) {
+			response.push( new TvUserData( xml.attr_code, xml.attr_value ) );
 
-				for ( let i = 0; i < xmlElement.userData.length; i++ ) {
-
-					const userData = xmlElement.userData[ i ];
-
-					response.push( new TvUserData( userData.attr_code, userData.attr_value ) );
-
-				}
-
-			} else {
-
-				response.push( new TvUserData( xmlElement.userData.attr_code, xmlElement.userData.attr_value ) );
-
-			}
-
-		}
+		} );
 
 		return response;
 
 	}
 
-	public parseLaneOffset ( road: TvRoad, xml: XmlElement ) {
+	public parseLaneOffset ( xml: XmlElement ) {
 
 		const s = parseFloat( xml.attr_s );
 		const a = parseFloat( xml.attr_a );
@@ -1151,7 +1122,7 @@ export class OpenDrive14Parser extends AbstractReader implements IOpenDriveParse
 		const c = parseFloat( xml.attr_c );
 		const d = parseFloat( xml.attr_d );
 
-		road.addLaneOffset( s, a, b, c, d );
+		return new TvRoadLaneOffset( s, a, b, c, d );
 	}
 
 	public parseControl ( xml: XmlElement ): TvControllerControl {

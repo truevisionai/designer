@@ -8,13 +8,14 @@ import { Vector2, Vector3 } from 'three';
 import { GameObject } from '../../objects/game-object';
 import { COLOR } from '../../views/shared/utils/colors.service';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { ObjectTypes, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
+import { TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
+import { TvRoadObjectType } from "../models/objects/tv-road-object";
 
 const ROADMARK_BROKEN_TILING = 3.0;
 
@@ -87,7 +88,7 @@ export class OdRoadMarkBuilderV1 {
 
 	private processLane ( laneSection: TvLaneSection, lane: TvLane ) {
 
-		const roadMarks = lane.getRoadMarks();
+		const roadMarks = lane.roadMarks;
 
 		roadMarks.forEach( mark => mark.clearMesh() );
 
@@ -315,7 +316,7 @@ export class OdRoadMarkBuilderV1 {
 
 		roadMark.gameObject = new GameObject( 'RoadMark:', geometry, material );
 
-		roadMark.gameObject.Tag = ObjectTypes.LANE_MARKING;
+		roadMark.gameObject.Tag = TvRoadObjectType.LANE_MARKING;
 
 		roadMark.gameObject.userData.data = lane;
 

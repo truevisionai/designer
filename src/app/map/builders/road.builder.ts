@@ -9,7 +9,7 @@ import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 't
 import { TvRoad } from '../models/tv-road.model';
 import { LaneBufferGeometry } from './LaneBufferGeometry';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
-import { ObjectTypes, TvLaneSide, TvLaneType } from '../models/tv-common';
+import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { LaneRoadMarkBuilder } from './lane-road-mark.builder';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Maths } from 'app/utils/maths';
@@ -24,6 +24,7 @@ import { OdMaterials } from './od-materials.service';
 import { RoadSignalService } from '../road-signal/road-signal.service';
 import { TvMap } from '../models/tv-map.model';
 import { TvMaterialService } from 'app/graphics/material/tv-material.service';
+import { TvRoadObjectType } from "../models/objects/tv-road-object";
 
 @Injectable( {
 	providedIn: 'root'
@@ -54,7 +55,7 @@ export class RoadBuilder {
 
 		const gameObject = new GameObject( 'Road:' + road.id );
 
-		gameObject.Tag = ObjectTypes.ROAD;
+		gameObject.Tag = TvRoadObjectType.ROAD;
 
 		road.computeLaneSectionCoordinates();
 

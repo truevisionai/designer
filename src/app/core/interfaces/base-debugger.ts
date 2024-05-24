@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { DebugState } from "../../services/debug/debug-state";
 import { Vector3 } from "three";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
@@ -24,6 +28,8 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 	protected selected = new Set<T>();
 
 	protected setBaseState ( object: T, state: DebugState ) {
+
+		if ( !object ) return;
 
 		switch ( state ) {
 

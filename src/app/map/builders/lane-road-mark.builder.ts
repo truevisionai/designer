@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { GameObject } from '../../objects/game-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { ObjectTypes, TvColors, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
+import { TvColors, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';
@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { TvStandardMaterial } from 'app/graphics/material/tv-standard-material';
 import { COLOR } from 'app/views/shared/utils/colors.service';
+import { TvRoadObjectType } from "../models/objects/tv-road-object";
 
 @Injectable( {
 	providedIn: 'root'
@@ -70,9 +71,7 @@ export class LaneRoadMarkBuilder {
 
 	private processLane ( lane: TvLane ) {
 
-		const roadMarks = lane.getRoadMarks();
-
-		for ( const roadMark of roadMarks ) {
+		for ( const roadMark of lane.roadMarks ) {
 
 			this.createRoadMark( roadMark );
 
@@ -199,7 +198,7 @@ export class LaneRoadMarkBuilder {
 
 		roadMark.gameObject = new GameObject( 'RoadMark:', geometry, this.getMaterial( roadMark ) );
 
-		roadMark.gameObject.Tag = ObjectTypes.LANE_MARKING;
+		roadMark.gameObject.Tag = TvRoadObjectType.LANE_MARKING;
 
 		roadMark.gameObject.userData.data = lane;
 
@@ -277,7 +276,7 @@ export class LaneRoadMarkBuilder {
 
 	private createRoadMark ( roadMark: TvLaneRoadMark ) {
 
-		const roadMarks = roadMark.lane.getRoadMarks();
+		const roadMarks = roadMark.lane.roadMarks;
 
 		roadMark.clearMesh();
 

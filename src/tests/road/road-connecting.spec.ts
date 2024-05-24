@@ -8,6 +8,7 @@ import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolService } from 'app/tools/road/road-tool.service';
 import { BaseTest } from 'tests/base-test.spec';
 import { Vector2 } from 'three';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe( 'RoadTool: Connecting Roads', () => {
 
@@ -18,7 +19,7 @@ describe( 'RoadTool: Connecting Roads', () => {
 
 		TestBed.configureTestingModule( {
 			providers: [ RoadService ],
-			imports: [ HttpClientModule ]
+			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
 		tool = new RoadTool( TestBed.inject( RoadToolService ) )

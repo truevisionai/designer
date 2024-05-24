@@ -9,8 +9,7 @@ import { MapService } from 'app/services/map/map.service';
 import { BaseToolService } from '../base-tool.service';
 import { RoadObjectService } from '../../map/road-object/road-object.service';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { ObjectTypes } from 'app/map/models/tv-common';
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { Object3DMap } from '../../core/models/object3d-map';
 import { Object3D } from 'three';
@@ -136,7 +135,7 @@ export class PropSpanToolService {
 
 	createRoadSpanObject ( assetGuid: string, position: TvRoadCoord ) {
 
-		const roadObject = this.createRoadObject( assetGuid, position, ObjectTypes.tree );
+		const roadObject = this.createRoadObject( assetGuid, position, TvRoadObjectType.tree );
 
 		const repeatLength = position.road.length - position.s;
 
@@ -172,7 +171,7 @@ export class PropSpanToolService {
 
 	}
 
-	createRoadObject ( assetGuid: string, position: TvRoadCoord, objectType: ObjectTypes ) {
+	createRoadObject ( assetGuid: string, position: TvRoadCoord, objectType: TvRoadObjectType ) {
 
 		const roadObject = this.roadObjectService.createRoadObject( position.road, objectType, position.s, position.t );
 

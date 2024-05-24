@@ -7,15 +7,15 @@ import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from '../prop-curve/prop-curve.model';
 import { PropPolygon } from '../prop-polygon/prop-polygon.model';
-import { TvController } from './tv-controller';
+import { TvSignalController } from '../signal-controller/tv-signal-controller';
 import { TvJunction } from './junctions/tv-junction';
 import { TvMapHeader } from './tv-map-header';
 import { TvRoad } from './tv-road.model';
 import { Surface } from '../surface/surface.model';
-import { MapEvents } from 'app/events/map-events';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Object3D } from 'three';
 import { Object3DMap } from 'app/core/models/object3d-map';
+import { IDService } from 'app/factories/id.service';
 
 export class TvMap {
 
@@ -39,9 +39,14 @@ export class TvMap {
 
 	public header: TvMapHeader = new TvMapHeader( 1, 4, 'Untitled', 1, Date(), 1, 0, 0, 0, 'truevision.ai' );
 
+	public controllers: Map<number, TvSignalController> = new Map<number, TvSignalController>();
+
+	public controllerIds = new IDService();
+
 	private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
 
 	private splines: AbstractSpline[] = [];
+
 
 	constructor () {
 
@@ -79,18 +84,13 @@ export class TvMap {
 		this._junctions = value;
 	}
 
-	private _controllers: Map<number, TvController> = new Map<number, TvController>();
-
-	get controllers (): Map<number, TvController> {
-		return this._controllers;
-	}
-
-	set controllers ( value: Map<number, TvController> ) {
-		this._controllers = value;
-	}
 
 	getRoads (): TvRoad[] {
 		return Array.from( this._roads.values() );
+	}
+
+	getControllers () {
+		return Array.from( this.controllers.values() );
 	}
 
 	public getHeader (): TvMapHeader {
@@ -158,27 +158,6 @@ export class TvMap {
 	getSurfaces () {
 
 		return this.surfaces;
-
-	}
-
-	public addController ( id: number, name: string, sequence: number ): TvController {
-
-		const controller = new TvController( id, name, sequence );
-
-		this._controllers.set( id, controller );
-
-		return controller;
-	}
-
-	public getControllerCount (): number {
-
-		return this._controllers.size;
-
-	}
-
-	public getController ( index: number ) {
-
-		return this._controllers.get( index );
 
 	}
 
@@ -271,9 +250,9 @@ export class TvMap {
 
 	}
 
-	addControllerInstance ( odController: TvController ) {
+	addController ( controller: TvSignalController ) {
 
-		this.controllers.set( odController.id, odController );
+		this.controllers.set( controller.id, controller );
 
 	}
 

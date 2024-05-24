@@ -12,13 +12,18 @@ import { OpenDrive16Parser } from './open-drive-1-6.parser';
 import { TvConsole } from 'app/core/utils/console';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { SnackBar } from 'app/services/snack-bar.service';
+import { RoadSignalIdService } from "../../map/road-signal/road-signal-id.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class OpenDriveParserService {
 
-	constructor ( private snackBar: SnackBar ) { }
+	constructor (
+		private snackBar: SnackBar,
+		private signalIdService: RoadSignalIdService,
+	) {
+	}
 
 	parse ( contents: string ): TvMap {
 
@@ -37,7 +42,11 @@ export class OpenDriveParserService {
 
 		const openDriveParser: IOpenDriveParser = this.getOpenDriveParser( root );
 
-		return openDriveParser.parse( root );
+		const map = openDriveParser.parse( root );
+
+		this.postProcess( map );
+
+		return map;
 	}
 
 	private parseVersion ( xml: XmlElement ): string {
@@ -96,5 +105,26 @@ export class OpenDriveParserService {
 		}
 
 		throw new Error( "Unsupported OpenDRIVE version: " + version );
+	}
+
+	private postProcess ( map: TvMap ) {
+
+		for ( const road of map.getRoads() ) {
+
+			for ( const signal of road.getRoadSignals() ) {
+
+				try {
+
+					// this.signalIdService.getNextId( signal.id );
+
+				} catch ( e ) {
+
+					TvConsole.error( e );
+
+				}
+
+			}
+		}
+
 	}
 }

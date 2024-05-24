@@ -5,15 +5,15 @@
 export class TvUserData {
 
 	constructor (
-		public attr_code: string,
-		public attr_value: any
+		public code: string,
+		public value: any
 	) {
 	}
 
 	clone (): TvUserData {
 		return new TvUserData(
-			this.attr_code,
-			this.attr_value
+			this.code,
+			this.value
 		);
 	}
 }

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { ModelImporter } from "../importers/model.importer";
 import { TextureImporter } from "../importers/texture.importer";

@@ -10,7 +10,7 @@ import { Box3, MathUtils, Vector2, Vector3 } from 'three';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { ObjectTypes, TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevation } from '../road-elevation/tv-elevation.model';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
@@ -22,7 +22,7 @@ import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoadLanes } from './tv-road-lanes';
 import { TvRoadLinkChild, TvRoadLinkChildType } from './tv-road-link-child';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
-import { TvRoadObject } from './objects/tv-road-object';
+import { TvRoadObject, TvRoadObjectType } from './objects/tv-road-object';
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvUtils } from './tv-utils';
@@ -759,7 +759,7 @@ export class TvRoad {
 	}
 
 	addRoadObject (
-		type: ObjectTypes,
+		type: TvRoadObjectType,
 		name: string,
 		id: number,
 		s: number,
@@ -1263,19 +1263,15 @@ export class TvRoad {
 
 	getLaneCenterPosition ( lane: TvLane, s: number, offset = 0 ) {
 
-		const posTheta = this.getPosThetaAt( s );
-
 		const laneSection = this.getLaneSectionAt( s );
 
 		const tDirection = lane.id > 0 ? 1 : -1;
 
-		const cumulativeWidth = laneSection.getWidthUptoCenter( lane, s );
+		const t = ( laneSection.getWidthUptoCenter( lane, s ) + offset ) * tDirection;
 
-		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
+		const posTheta = this.getPosThetaAt( s, t );
 
-		posTheta.x += cosTheta * ( cumulativeWidth + offset );
-		posTheta.y += sinTheta * ( cumulativeWidth + offset );
+		posTheta.t = t;
 
 		return posTheta;
 	}

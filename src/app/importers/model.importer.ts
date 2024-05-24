@@ -258,6 +258,11 @@ export class ModelImporter implements Importer {
 
 		const data = image.url.split( ',' )[ 1 ]; // Get the base64 encoded string
 
+		if ( !data ) {
+			TvConsole.error( 'Image data not found' );
+			return;
+		}
+
 		const buffer = this.preload.buffer.from( data, 'base64' ); // Convert base64 to binary buffer
 
 		const extension = image.url.match( /image\/(png|jpeg);/ )[ 1 ]; // Detect the extension (PNG or JPEG)

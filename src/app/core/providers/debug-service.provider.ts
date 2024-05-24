@@ -73,6 +73,10 @@ export class DebugServiceProvider {
 
 			debugService = this.injector.get( JunctionDebugService );
 
+		} else if ( type === ToolType.TrafficLight ) {
+
+			debugService = this.injector.get( JunctionDebugService );
+
 		}
 
 		if ( debugService instanceof BaseLaneDebugService ) {
@@ -86,7 +90,7 @@ export class DebugServiceProvider {
 		return debugService;
 	}
 
-	createByObjectType ( type: ToolType, object: any ): IDebugger<any, any> {
+	createByObjectType ( toolType: ToolType, object: any ): IDebugger<any, any> {
 
 		let debugService: IDebugger<any, any>;
 
@@ -94,9 +98,26 @@ export class DebugServiceProvider {
 
 			debugService = this.injector.get( ManeuverRoadDebugger );
 
+			if ( toolType === ToolType.TrafficLight ) {
+
+				( debugService as ManeuverRoadDebugger ).shouldShowControlPoints = false;
+				( debugService as ManeuverRoadDebugger ).shouldShowLines = false;
+
+			}
+
 		} else if ( object instanceof TvJunction ) {
 
 			debugService = this.injector.get( JunctionDebugService );
+
+			if ( toolType === ToolType.TrafficLight ) {
+
+				( debugService as JunctionDebugService ).shouldShowEntries = false;
+
+			} else {
+
+				( debugService as JunctionDebugService ).shouldShowEntries = true;
+
+			}
 
 		} else if ( object instanceof AbstractControlPoint ) {
 

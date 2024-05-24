@@ -81,15 +81,15 @@ export class LaneMarkingToolService {
 
 			laneSection.lanes.forEach( lane => {
 
-				for ( let i = 0; i < lane.roadMark.length; i++ ) {
+				for ( let i = 0; i < lane.roadMarks.length; i++ ) {
 
-					const laneMark = lane.roadMark[ i ];
+					const laneMark = lane.roadMarks[ i ];
 
 					const node = new LaneMarkingNode( lane, laneMark );
 
 					const sStart = laneMark.s;
 
-					const sEnd = lane.roadMark[ i + 1 ]?.s || laneSection.length;
+					const sEnd = lane.roadMarks[ i + 1 ]?.s || laneSection.length;
 
 					const points = this.debug.getPoints( lane, sStart, sEnd, 0.1 );
 
@@ -123,11 +123,11 @@ export class LaneMarkingToolService {
 
 			laneSection.lanes.forEach( lane => {
 
-				for ( let i = 0; i < lane.roadMark.length; i++ ) {
+				for ( let i = 0; i < lane.roadMarks.length; i++ ) {
 
-					LaneMarkingToolService.nodeMap.remove( lane.roadMark[ i ].uuid );
+					LaneMarkingToolService.nodeMap.remove( lane.roadMarks[ i ].uuid );
 
-					LaneMarkingToolService.lineMap.remove( lane.roadMark[ i ].uuid );
+					LaneMarkingToolService.lineMap.remove( lane.roadMarks[ i ].uuid );
 
 				}
 

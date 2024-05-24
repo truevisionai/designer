@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { XMLBuilder } from 'fast-xml-parser';
+import { XMLBuilder, XmlBuilderOptions } from 'fast-xml-parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
 import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
@@ -38,6 +38,10 @@ import { TvLaneValidity } from '../models/objects/tv-lane-validity';
 import { TvObjectPolyline } from "../models/objects/tv-object-polyline";
 import { TvObjectVertexRoad } from "../models/objects/tv-object-vertex-road";
 import { TvObjectVertexLocal } from "../models/objects/tv-object-vertex-local";
+import { TvReference, TvRoadSignal, TvSignalDependency } from '../road-signal/tv-road-signal.model';
+import { TvJunctionController } from '../models/junctions/tv-junction-controller';
+import { TvJunctionPriority } from '../models/junctions/tv-junction-priority';
+import { TvControllerControl, TvSignalController } from '../signal-controller/tv-signal-controller';
 
 @Injectable( {
 	providedIn: 'root'
@@ -45,6 +49,7 @@ import { TvObjectVertexLocal } from "../models/objects/tv-object-vertex-local";
 export class OpenDriveExporter {
 
 	public xmlDocument: Object;
+
 	public map: TvMap;
 
 	public constructor () {
@@ -55,14 +60,11 @@ export class OpenDriveExporter {
 
 		this.map = map;
 
-		const defaultOptions = {
+		const defaultOptions: Partial<XmlBuilderOptions> = {
 			attributeNamePrefix: 'attr_',
-			attrNodeName: false,
 			ignoreAttributes: false,
 			suppressBooleanAttributes: false,
-			supressEmptyNode: false,
 			format: true,
-			trimValues: true,
 		};
 
 		const builder = new XMLBuilder( defaultOptions );
@@ -113,7 +115,8 @@ export class OpenDriveExporter {
 		const rootNode = {
 			header: {},
 			road: [],
-			junction: []
+			junction: this.map.getJunctions().map( junction => this.writeJunction( junction ) ),
+			controller: this.map.getControllers().map( controller => this.writeSignalController( controller ) ),
 		};
 
 		this.xmlDocument = {
@@ -128,13 +131,6 @@ export class OpenDriveExporter {
 
 		} );
 
-		this.writeControllers( rootNode );
-
-		this.map.junctions.forEach( junction => {
-
-			this.writeJunction( rootNode, junction );
-
-		} );
 	}
 
 	/**
@@ -187,7 +183,9 @@ export class OpenDriveExporter {
 			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject ) )
 		};
 
-		this.writeSignals( xml, road );
+		if ( road.signals.size > 0 ) {
+			xml[ 'signals' ] = this.writeSignals( road );
+		}
 	}
 
 	public writeRoadLinks ( xmlNode, road: TvRoad ) {
@@ -467,17 +465,16 @@ export class OpenDriveExporter {
 		for ( let i = 0; i < laneSection.getLaneCount(); i++ ) {
 
 			const lane = laneSection.getLane( i );
-			const side = lane.getSide();
 
-			if ( side === TvLaneSide.LEFT ) {
+			if ( lane.side === TvLaneSide.LEFT ) {
 
 				this.writeLane( leftLanes, lane );
 
-			} else if ( side === TvLaneSide.RIGHT ) {
+			} else if ( lane.side === TvLaneSide.RIGHT ) {
 
 				this.writeLane( rightLanes, lane );
 
-			} else if ( side === TvLaneSide.CENTER ) {
+			} else if ( lane.side === TvLaneSide.CENTER ) {
 
 				this.writeLane( centerLanes, lane );
 
@@ -502,7 +499,7 @@ export class OpenDriveExporter {
 
 		const laneNode = {
 			attr_id: lane.id,
-			attr_type: lane.type,
+			attr_type: TvLane.typeToString( lane.type ),
 			attr_level: lane.level === true ? 'true' : 'false',
 			link: {},
 			width: [],
@@ -628,16 +625,7 @@ export class OpenDriveExporter {
 			attr_name: roadObject.name,
 			attr_id: roadObject.attr_id,
 			attr_s: roadObject.s,
-			attr_t: roadObject.t,
-			repeat: roadObject.repeats.map( repeat => this.writeObjectRepeat( repeat ) ),
-			validity: roadObject.validity.map( validity => this.writeObjectValidity( validity ) ),
-			userData: roadObject.userData.map( userData => this.writeUserData( userData ) ),
-			markings: {
-				marking: roadObject.markings.map( marking => this.writeObjectMarking( marking ) )
-			},
-			outlines: {
-				outline: roadObject.outlines.map( outline => this.writeObjectOutlineV2( outline ) )
-			},
+			attr_t: roadObject.t
 		};
 
 		if ( roadObject.zOffset ) xml[ 'attr_zOffset' ] = roadObject.zOffset;
@@ -654,6 +642,30 @@ export class OpenDriveExporter {
 		this.writeObjectMaterial( xml, roadObject );
 
 		this.writeObjectParkingSpace( xml, roadObject );
+
+		if ( roadObject.repeats.length > 0 ) {
+			xml[ 'repeat' ] = roadObject.repeats.map( repeat => this.writeObjectRepeat( repeat ) );
+		}
+
+		if ( roadObject.validity.length > 0 ) {
+			xml[ 'validity' ] = roadObject.validity.map( validity => this.writeObjectValidity( validity ) );
+		}
+
+		if ( roadObject.userData.length > 0 ) {
+			xml[ 'userData' ] = roadObject.userData.map( userData => this.writeUserData( userData ) );
+		}
+
+		if ( roadObject.markings.length > 0 ) {
+			xml[ 'markings' ] = {
+				marking: roadObject.markings.map( marking => this.writeObjectMarking( marking ) )
+			};
+		}
+
+		if ( roadObject.outlines.length > 0 ) {
+			xml[ 'outlines' ] = {
+				outline: roadObject.outlines.map( outline => this.writeObjectOutlineV2( outline ) )
+			};
+		}
 
 		if (
 			roadObject.skeleton &&
@@ -867,12 +879,11 @@ export class OpenDriveExporter {
 
 	}
 
-
 	public writeObjectValidity ( validity: TvLaneValidity ): XmlElement {
 
 		return {
-			attr_fromLane: validity.attr_fromLane,
-			attr_toLane: validity.attr_toLane
+			attr_fromLane: validity.fromLane,
+			attr_toLane: validity.toLane
 		}
 
 	}
@@ -905,137 +916,103 @@ export class OpenDriveExporter {
 		}
 	}
 
-	public writeSignals ( xmlNode, road: TvRoad ) {
+	public writeSignals ( road: TvRoad ) {
 
-		xmlNode.signals = {
-			signal: []
+		return {
+			signal: road.getRoadSignals().map( signal => this.writeSignal( signal ) )
 		};
 
-		road.signals.forEach( ( signal, signalId ) => {
+	}
 
-			const nodeSignal = {
+	public writeSignal ( signal: TvRoadSignal ) {
 
-				// TODO: ACCESS VIA GETTERS & SETTERS
-				// Attributes
-				attr_s: signal.s,
-				attr_t: signal.t,
-				attr_id: signal.id,
-				attr_name: signal.name,
-				attr_dynamic: signal.dynamic,
-				attr_orientation: signal.orientations,
-				attr_zOffset: signal.zOffset,
-				attr_country: signal.country,
-				attr_type: signal.type,
-				attr_subtype: signal.subtype,
+		const xml = {
+			attr_s: signal.s,
+			attr_t: signal.t,
+			attr_id: signal.id,
+			attr_name: signal.name,
+			attr_dynamic: signal.dynamic,
+			attr_orientation: signal.orientation,
+			attr_zOffset: signal.zOffset,
+			attr_country: signal.country,
+			attr_type: signal.type,
+			attr_subtype: signal.subtype,
+		};
 
-				// Elements
-				validity: [],
-				dependency: [],
-				signalReference: [],
-				userData: [],
-			};
+		if ( signal.value != null ) xml[ 'attr_value' ] = signal.value;
+		if ( signal.unit != null ) xml[ 'attr_unit' ] = signal.unit;
+		if ( signal.height != null ) xml[ 'attr_height' ] = signal.height;
+		if ( signal.width != null ) xml[ 'attr_width' ] = signal.width;
+		if ( signal.text != null ) xml[ 'attr_text' ] = signal.text;
+		if ( signal.hOffset != null ) xml[ 'attr_hOffset' ] = signal.hOffset;
+		if ( signal.pitch != null ) xml[ 'attr_pitch' ] = signal.pitch;
+		if ( signal.roll != null ) xml[ 'attr_roll' ] = signal.roll;
 
-			if ( signal.value != null ) nodeSignal[ 'attr_value' ] = signal.value;
-			if ( signal.unit != null ) nodeSignal[ 'attr_unit' ] = signal.unit;
-			if ( signal.height != null ) nodeSignal[ 'attr_height' ] = signal.height;
-			if ( signal.width != null ) nodeSignal[ 'attr_width' ] = signal.width;
-			if ( signal.text != null ) nodeSignal[ 'attr_text' ] = signal.text;
-			if ( signal.hOffset != null ) nodeSignal[ 'attr_hOffset' ] = signal.hOffset;
-			if ( signal.pitch != null ) nodeSignal[ 'attr_pitch' ] = signal.pitch;
-			if ( signal.roll != null ) nodeSignal[ 'attr_roll' ] = signal.roll;
+		if ( signal.assetGuid ) {
+			signal.userData.delete( 'assetGuid' );
+			signal.userData.set( 'assetGuid', new TvUserData( 'assetGuid', signal.assetGuid ) );
+		}
 
-			signal.userDataMap.delete( 'assetGuid' );
-			signal.userDataMap.set( 'assetGuid', new TvUserData( 'assetGuid', signal.assetGuid ) );
+		if ( signal.validities.length > 0 ) {
+			xml[ 'validity' ] = signal.validities.map( validity => this.writeObjectValidity( validity ) );
+		}
 
-			this.writeUserDataFromMap( nodeSignal.userData, signal.getUserData() );
+		if ( signal.userData.size > 0 ) {
+			xml[ 'userData' ] = Array.from( signal.userData.values() ).map( userData => this.writeUserData( userData ) );
+		}
 
-			for ( let j = 0; j < signal.getValidityCount(); j++ ) {
+		if ( signal.references.length > 0 ) {
+			xml[ 'reference' ] = signal.references.map( reference => this.writeReference( reference ) );
+		}
 
-				const validity = signal.getValidity( j );
+		if ( signal.dependencies.length > 0 ) {
+			xml[ 'dependency' ] = signal.dependencies.map( dependency => this.writeSignalDependency( dependency ) );
+		}
 
-				// TODO: ACCESS VIA GETTERS & SETTER
-				nodeSignal.validity.push( {
-					attr_fromLane: validity.attr_fromLane,
-					attr_toLane: validity.attr_toLane
-				} );
-			}
+		return xml;
+	}
 
-			for ( let j = 0; j < signal.getDependencyCount(); j++ ) {
+	writeSignalDependency ( dependency: TvSignalDependency ): any {
+		return {
+			attr_id: dependency.id,
+			attr_type: dependency.type
+		}
+	}
 
-				const dependency = signal.getDependency( j );
+	writeReference ( reference: TvReference ): any {
 
-				nodeSignal.dependency.push( {
-					attr_id: dependency.id,
-					attr_type: dependency.type
-				} );
-			}
-
-			for ( let j = 0; j < signal.getSignalReferenceCount(); j++ ) {
-
-				const signalReference = signal.getSignalReference( j );
-
-				const nodeSignalReference = {
-					attr_s: signalReference.s,
-					attr_t: signalReference.t,
-					attr_id: signalReference.id,
-					attr_orientation: signalReference.orientations,
-					validity: []
-				};
-
-				for ( let k = 0; k < signalReference.getValidityCount(); k++ ) {
-
-					const validity = signalReference.getValidity( k );
-
-					// TODO: ACCESS VIA GETTERS & SETTER
-					nodeSignalReference.validity.push( {
-						attr_fromLane: validity.attr_fromLane,
-						attr_toLane: validity.attr_toLane
-					} );
-				}
-
-				nodeSignal.signalReference.push( nodeSignalReference );
-			}
-
-			xmlNode.signals.signal.push( nodeSignal );
-
-		} );
+		return {
+			attr_id: reference.elementId,
+			attr_elementType: reference.elementType,
+			attr_type: reference.type,
+		}
 
 	}
 
 	public writeSurface ( xmlNode, road: TvRoad ) {
 	}
 
-	public writeControllers ( xmlNode ) {
+	public writeSignalController ( controller: TvSignalController ) {
 
-		xmlNode.controller = [];
+		return {
+			attr_id: controller.id,
+			attr_name: controller.name,
+			attr_sequence: controller.sequence,
+			control: controller.controls.map( control => this.writeSignalControl( control ) )
+		}
 
-		this.map.controllers.forEach( controller => {
-
-			const nodeController = {
-				attr_id: controller.id,
-				attr_name: controller.name,
-				control: []
-			};
-
-			if ( controller.sequence ) {
-				nodeController[ 'attr_sequence' ] = controller.sequence;
-			}
-
-			controller.controls.forEach( control => {
-
-				nodeController.control.push( {
-					attr_signalId: control.signalId,
-					attr_type: control.type
-				} );
-
-			} );
-
-			xmlNode.controller.push( nodeController );
-
-		} );
 	}
 
-	public writeJunction ( xmlNode, junction: TvJunction ) {
+	public writeSignalControl ( control: TvControllerControl ): any {
+
+		return {
+			attr_signalId: control.signalId,
+			attr_type: control.type
+		}
+
+	}
+
+	public writeJunction ( junction: TvJunction ) {
 
 		if ( junction.connections.size === 0 ) return;
 
@@ -1043,8 +1020,6 @@ export class OpenDriveExporter {
 			attr_id: junction.id,
 			attr_name: junction.name,
 			connection: [],
-			priority: [],
-			controller: []
 		};
 
 		if ( junction.type == TvJunctionType.VIRTUAL ) {
@@ -1067,11 +1042,15 @@ export class OpenDriveExporter {
 
 		this.writeJunctionConnection( nodeJunction, junction );
 
-		this.writeJunctionPriority( nodeJunction, junction );
+		if ( junction.priorities.length > 1 ) {
+			nodeJunction[ 'priority' ] = junction.priorities.map( priority => this.writeJunctionPriority( priority ) )
+		}
 
-		this.writeJunctionController( nodeJunction, junction );
+		if ( junction.controllers.length > 0 ) {
+			nodeJunction[ 'controller' ] = junction.controllers.map( controller => this.writeJunctionController( controller ) );
+		}
 
-		xmlNode.junction.push( nodeJunction );
+		return nodeJunction;
 	}
 
 	private writeDefaultJunction ( junction: TvJunction ): XmlElement {
@@ -1099,7 +1078,6 @@ export class OpenDriveExporter {
 			controller: []
 		};
 	}
-
 
 	public writeJunctionConnection ( xmlNode, junction: TvJunction ) {
 
@@ -1139,31 +1117,22 @@ export class OpenDriveExporter {
 		}
 	}
 
-	public writeJunctionPriority ( xmlNode, junction: TvJunction ) {
+	public writeJunctionPriority ( priority: TvJunctionPriority ) {
 
-		for ( let i = 0; i < junction.getJunctionPriorityCount(); i++ ) {
-
-			const priority = junction.getJunctionPriority( i );
-
-			xmlNode.priority.push( {
-				attr_high: priority.high,
-				attr_low: priority.low,
-			} );
+		return {
+			attr_high: priority.high,
+			attr_low: priority.low,
 		}
 	}
 
-	public writeJunctionController ( xmlNode, junction: TvJunction ) {
+	public writeJunctionController ( controller: TvJunctionController ) {
 
-		for ( let i = 0; i < junction.getJunctionControllerCount(); i++ ) {
-
-			const controller = junction.getJunctionController( i );
-
-			xmlNode.priority.push( {
-				attr_id: controller.id,
-				attr_type: controller.type,
-				attr_sequence: controller.sequence,
-			} );
+		return {
+			attr_id: controller.id,
+			attr_type: controller.type,
+			attr_sequence: controller.sequence,
 		}
+
 	}
 
 	public writeUserDataFromArray ( xmlNode, userData: TvUserData[] ) {
@@ -1180,8 +1149,8 @@ export class OpenDriveExporter {
 	public writeUserData ( data: TvUserData ) {
 
 		return {
-			attr_code: data.attr_code,
-			attr_value: data.attr_value
+			attr_code: data.code,
+			attr_value: data.value
 		}
 
 	}

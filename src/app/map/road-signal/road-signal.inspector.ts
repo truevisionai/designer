@@ -70,11 +70,11 @@ export class RoadSignalInspector {
 
 	@SerializedField( { 'type': 'enum', enum: TvOrientation } )
 	get orientation () {
-		return this.signal.orientations;
+		return this.signal.orientation;
 	}
 
 	set orientation ( value ) {
-		this.signal.orientations = value;
+		this.signal.orientation = value;
 	}
 
 	@SerializedField( { 'type': 'float', label: 'Height' } )

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvStandardMaterial } from "../../../graphics/material/tv-standard-material";
 import { MaterialAsset } from "../../../graphics/material/tv-material.asset";
 import { TvMaterialService } from "../../../graphics/material/tv-material.service";

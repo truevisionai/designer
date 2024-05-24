@@ -16,9 +16,8 @@ import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspecto
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
-import { ObjectTypes } from 'app/map/models/tv-common';
 import { CrosswalkToolService } from "./crosswalk-tool.service";
 import { CrosswalkInspector } from 'app/map/crosswalk/crosswalk.inspector';
 import { Environment } from 'app/core/utils/environment';
@@ -190,7 +189,7 @@ export class CrosswalkTool extends BaseTool<any>{
 
 	createCrosswalk ( roadCoord: TvRoadCoord ) {
 
-		const crosswalk = this.tool.factory.createRoadObject( roadCoord, ObjectTypes.crosswalk );
+		const crosswalk = this.tool.factory.createRoadObject( roadCoord, TvRoadObjectType.crosswalk );
 
 		const addCommand = new AddObjectCommand( crosswalk );
 
