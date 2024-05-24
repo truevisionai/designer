@@ -43,11 +43,11 @@ export class LaneMarkingManager {
 
 		if ( L1 && L1.type == TvLaneType.driving ) {
 
-			L1.roadMark.splice( 0, L1.roadMark.length );
+			L1.roadMarks.splice( 0, L1.roadMarks.length );
 
-			if ( L2 && L2.roadMark.length > 0 ) {
+			if ( L2 && L2.roadMarks.length > 0 ) {
 
-				const clone = L2.roadMark[ 0 ].clone( 0, L1 );
+				const clone = L2.roadMarks[ 0 ].clone( 0, L1 );
 
 				L1.addRoadMarkInstance( clone )
 

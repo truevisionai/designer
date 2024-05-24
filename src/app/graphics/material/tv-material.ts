@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Material } from "three";
 
 export class TvMaterial extends Material {

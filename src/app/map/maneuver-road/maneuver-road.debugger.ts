@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { DebugState } from "../../services/debug/debug-state";
 import { ManeuverMesh } from "../../services/junction/junction.debug";
@@ -8,6 +12,10 @@ import { BaseDebugger } from "../../core/interfaces/base-debugger";
 	providedIn: 'root'
 } )
 export class ManeuverRoadDebugger extends BaseDebugger<ManeuverMesh> {
+
+	public shouldShowControlPoints = true;
+
+	public shouldShowLines = true;
 
 	constructor ( private splineDebugger: AbstractSplineDebugService ) {
 
@@ -38,8 +46,13 @@ export class ManeuverRoadDebugger extends BaseDebugger<ManeuverMesh> {
 
 		object.select();
 
-		this.splineDebugger.showControlPoints( object.connection.connectingRoad.spline );
-		this.splineDebugger.showLines( object.connection.connectingRoad.spline );
+		if ( this.shouldShowControlPoints ) {
+			this.splineDebugger.showControlPoints( object.connection.connectingRoad.spline );
+		}
+
+		if ( this.shouldShowLines ) {
+			this.splineDebugger.showLines( object.connection.connectingRoad.spline );
+		}
 	}
 
 	onUnselected ( object: ManeuverMesh ): void {

@@ -255,7 +255,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 			if ( !this.startLine ) {
 
-				this.startLine = this.tool.debug.createLaneWidthLine( position );
+				this.startLine = this.tool.debug.createLaneWidthLine( null, position );
 
 				SceneService.addToolObject( this.startLine );
 

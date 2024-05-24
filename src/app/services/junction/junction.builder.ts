@@ -6,10 +6,8 @@ import { Injectable } from '@angular/core';
 import {
 	BufferAttribute,
 	BufferGeometry,
-	DoubleSide,
 	FrontSide,
 	Mesh,
-	MeshPhongMaterial,
 	MeshStandardMaterial,
 	RepeatWrapping,
 	Shape,
@@ -24,19 +22,20 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { MapService } from '../map/map.service';
+import { TvRoadLinkChildType } from "../../map/models/tv-road-link-child";
+import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionMeshService {
+export class JunctionBuilder {
 
 	constructor (
-		private mapService: MapService
+		public junctionBoundaryService: TvJunctionBoundaryService
 	) {
 	}
 
-	createJunctionFromRoadCoords ( coords: TvRoadCoord[] ) {
+	buildFromRoadCoords ( coords: TvRoadCoord[] ) {
 
 		const points = [];
 
@@ -59,11 +58,19 @@ export class JunctionMeshService {
 
 	}
 
-	createMeshFromJunction ( junction: TvJunction ) {
+	buildJunctionBoundary ( junction: TvJunction ) {
+
+		const points = this.junctionBoundaryService.getBoundaryPositions( junction );
+
+		return this.createPolygonalMesh( points );
+
+	}
+
+	buildJunctionMesh ( junction: TvJunction ) {
 
 		const coords = junction.getRoadCoords();
 
-		return this.createJunctionFromRoadCoords( coords );
+		return this.buildFromRoadCoords( coords );
 
 	}
 
@@ -73,11 +80,11 @@ export class JunctionMeshService {
 
 		roads.forEach( road => {
 
-			if ( road?.successor?.elementType == 'junction' ) {
+			if ( road?.successor?.elementType == TvRoadLinkChildType.junction ) {
 
 				coords.push( road.getEndPosTheta() );
 
-			} else if ( road?.predecessor?.elementType == 'junction' ) {
+			} else if ( road?.predecessor?.elementType == TvRoadLinkChildType.junction ) {
 
 				coords.push( road.getStartPosTheta() );
 

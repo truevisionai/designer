@@ -430,6 +430,46 @@ export class Maths {
 		return new Vector3( x, y, 0 );
 	}
 
+	static findLineIntersection ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ): Vector3 | null {
+
+		// Direction vectors for the lines
+		const dir1 = b.clone().sub( a );
+		const dir2 = d.clone().sub( c );
+
+		// Vector from a to c
+		const ac = c.clone().sub( a );
+
+		// Check if lines are parallel (cross product is zero)
+		const crossDir1Dir2 = dir1.clone().cross( dir2 );
+		if ( crossDir1Dir2.lengthSq() === 0 ) return null; // Lines are parallel
+
+		// Compute the parameters t and s
+		const t = ( ac.clone().cross( dir2 ).dot( crossDir1Dir2 ) ) / crossDir1Dir2.lengthSq();
+		const s = ( ac.clone().cross( dir1 ).dot( crossDir1Dir2 ) ) / crossDir1Dir2.lengthSq();
+
+		// Compute the closest points on the lines
+		const closestPtOnLine1 = a.clone().add( dir1.multiplyScalar( t ) );
+		const closestPtOnLine2 = c.clone().add( dir2.multiplyScalar( s ) );
+
+		// Check if the closest points are the same (within a small tolerance)
+		if ( closestPtOnLine1.distanceTo( closestPtOnLine2 ) < 1e-6 ) {
+			return closestPtOnLine1; // Intersection point
+		}
+
+		return null; // Lines do not intersect
+	}
+
+	static findLineIntersectionAngle ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ) {
+
+		const dir1 = b.clone().sub( a );
+		const dir2 = d.clone().sub( c );
+
+		const angle = dir1.angleTo( dir2 );
+
+		return angle;
+
+	}
+
 	/**
 	 * Get points of intersection of 2 points with headings
 	 * @param p1
@@ -538,7 +578,6 @@ export class Maths {
 
 		//         C.y <= Math.max( A.y, B.y );
 
-
 		//     return on && between;
 
 		// }
@@ -615,7 +654,6 @@ export class Maths {
 
 			const intersections = [];
 
-
 			const F_online = Maths.isPointOnLine( A, B, F );
 
 			if ( F_online ) intersections.push( F );
@@ -654,7 +692,7 @@ export class Maths {
 
 	}
 
-	static round( value: number, precision: number = 2 ) {
+	static round ( value: number, precision: number = 2 ) {
 
 		const multiplier = Math.pow( 10, precision || 0 );
 
@@ -662,7 +700,7 @@ export class Maths {
 
 	}
 
-	static normalizeHeading( heading: number ) {
+	static normalizeHeading ( heading: number ) {
 
 		return ( heading + Maths.PI ) % ( 2 * Maths.PI ) - Maths.PI;
 	}

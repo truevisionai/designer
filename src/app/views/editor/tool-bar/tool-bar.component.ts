@@ -115,7 +115,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Ramp Tool',
 			click: () => this.setToolType( ToolType.RoadRampTool ),
-			enabled: Environment.experimentalTools,
+			enabled: Environment.developmentTools,
 		},
 		{
 			id: 'showDividerTool',
@@ -270,7 +270,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Traffic Light Tool',
 			click: () => this.setToolType( ToolType.TrafficLight ),
-			enabled: Environment.experimentalTools,
+			enabled: true,
 		},
 		{
 			id: 'showCrosswalkTool',

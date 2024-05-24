@@ -7,6 +7,7 @@ import earcut from 'earcut';
 import { Injectable } from '@angular/core';
 import { Vector3, BufferGeometry, BufferAttribute } from 'three';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -78,9 +79,11 @@ export class GeometryUtils {
 		return center;
 	}
 
-	static sortByAngle ( points: Vector3[], center: Vector3 ) {
+	static sortByAngle ( points: Vector3[], center?: Vector3 ) {
 
-		const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
+		const centroid = center || GeometryUtils.getCentroid( points );
+
+		const angles = points.map( point => Math.atan2( point.y - centroid.y, point.x - centroid.x ) );
 
 		return points.map( ( point, index ) => ( { point, index } ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
 
@@ -95,6 +98,18 @@ export class GeometryUtils {
 		let sortedPoints = GeometryUtils.sortByAngle( points.map( p => p.position ), center );
 
 		return sortedPoints.map( p => points.find( point => point.position.equals( p ) ) );
+
+	}
+
+	static sortCoordsByAngle ( coords: TvRoadCoord[] ): TvRoadCoord[] {
+
+		// Calculate the centroid of the points
+		let center = GeometryUtils.getCentroid( coords.map( p => p.position ) );
+
+		// Sort the points by angle from the center
+		let sortedPoints = GeometryUtils.sortByAngle( coords.map( p => p.position ), center );
+
+		return sortedPoints.map( p => coords.find( point => point.position.equals( p ) ) );
 
 	}
 

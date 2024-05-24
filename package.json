@@ -47,7 +47,7 @@
 		"@angular/platform-browser": "~12.1.1",
 		"@angular/platform-browser-dynamic": "~12.1.1",
 		"@angular/router": "~12.1.1",
-		"@auth0/angular-jwt": "^5.0.0",
+		"@auth0/angular-jwt": "^5.0.2",
 		"@electron/remote": "^2.0.8",
 		"@material-design-icons/font": "^0.14.13",
 		"@ncstate/sat-popover": "^8.0.1",
@@ -93,6 +93,7 @@
 		"karma-coverage": "~2.0.3",
 		"karma-jasmine": "~4.0.0",
 		"karma-jasmine-html-reporter": "^1.5.0",
+		"karma-spec-reporter": "0.0.36",
 		"typescript": "~4.3.2"
 	},
 	"engines": {

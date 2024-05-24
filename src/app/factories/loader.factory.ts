@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { AssetType } from "../core/asset/asset.model";
 import { TvMaterialLoader } from "../graphics/material/tv-material.loader";

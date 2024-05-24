@@ -12,6 +12,8 @@ describe( 'Service: RoadDivider', () => {
 
 	let base: BaseTest = new BaseTest;
 	let eventServiceProvider: EventServiceProvider;
+	let roadService: RoadService;
+	let roadDividerService: RoadDividerService;
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
@@ -21,15 +23,13 @@ describe( 'Service: RoadDivider', () => {
 
 		eventServiceProvider = TestBed.get( EventServiceProvider );
 		eventServiceProvider.init();
+
+		roadService = TestBed.get( RoadService );
+		roadDividerService = TestBed.get( RoadDividerService );
+
 	} );
 
-	it( 'should ...', inject( [ RoadService ], ( roadService: RoadService ) => {
-
-		expect( roadService ).toBeTruthy();
-
-	} ) );
-
-	it( 'should divide straight road in middle', inject( [ RoadService, RoadDividerService ], ( roadService: RoadService, roadDividerService: RoadDividerService ) => {
+	it( 'should divide straight road in middle', () => {
 
 		// const road = roadService.createDefaultRoad();
 		// road.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
@@ -76,9 +76,9 @@ describe( 'Service: RoadDivider', () => {
 		expect( newRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 
 
-	} ) );
+	} );
 
-	it( 'should divide straight road multiple times', inject( [ RoadService, RoadDividerService ], ( roadService: RoadService, roadDividerService: RoadDividerService ) => {
+	it( 'should divide straight road multiple times', () => {
 
 		const road1 = base.createDefaultRoad( roadService, [
 			new Vector2( 0, 0 ),
@@ -106,6 +106,6 @@ describe( 'Service: RoadDivider', () => {
 		expect( road2.length ).toBe( 200 );
 		expect( road3.length ).toBe( 200 );
 
-	} ) );
+	} );
 
 } );

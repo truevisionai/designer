@@ -8,12 +8,12 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Box3, Vector3 } from 'three';
-import { JunctionConnectionService } from './junction-connection.service';
 import { JunctionService } from './junction.service';
 import { MapService } from '../map/map.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { SplineSegmentService } from '../spline/spline-segment.service';
 import { RoadDividerService } from "../road/road-divider.service";
+import { ConnectionService } from 'app/map/junction/connection/connection.service';
 
 export class SplineIntersection {
 	spline: AbstractSpline;
@@ -29,7 +29,7 @@ export class IntersectionService {
 	constructor (
 		private mapService: MapService,
 		private junctionService: JunctionService,
-		private junctionConnectionService: JunctionConnectionService,
+		private junctionConnectionService: ConnectionService,
 		private segmentService: SplineSegmentService,
 		private roadDividerService: RoadDividerService
 	) { }

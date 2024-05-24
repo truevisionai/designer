@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { DebugState } from '../debug/debug-state';
@@ -27,6 +31,7 @@ import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { ISelectable } from "../../objects/i-selectable";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
+import { DebugDrawService } from '../debug/debug-draw.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,7 +44,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	private maneuvers = new Object3DArrayMap<TvJunction, Object3D[]>();
 
-	constructor ( private junctionService: JunctionService ) {
+	public shouldShowManeuvers = true;
+
+	public shouldShowEntries = true;
+
+	constructor ( private junctionService: JunctionService, private debug: DebugDrawService ) {
 
 		super();
 
@@ -87,19 +96,49 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.meshes.removeKey( junction );
 		}
 
-		const mesh = this.junctionService.createJunctionMesh( junction );
+		const mesh = this.createJunctionMesh( junction );
 
-		( mesh.material as MeshBasicMaterial ).color.set( COLOR.YELLOW );
+		this.meshes.addItem( junction, mesh );
+
+		const outline = this.createJunctionOutline( junction );
+
+		if ( outline ) this.meshes.addItem( junction, outline );
+
+	}
+
+	createJunctionOutline ( junction: TvJunction ): Object3D {
+
+		const positions = this.junctionService.junctionBuilder.junctionBoundaryService.getBoundaryPositions( junction );
+
+		if ( positions.length < 2 ) return;
+
+		// add first point to close the loop
+		positions.push( positions[ 0 ].clone() );
+
+		const mesh = this.debug.createLine( positions, COLOR.CYAN );
+
+		mesh[ 'tag' ] = 'junction';
+
+		mesh.userData.junction = junction;
+
+		return mesh;
+
+	}
+
+	createJunctionMesh ( junction: TvJunction ) {
+
+		const mesh = this.junctionService.buildJunctionBoundary( junction );
+
+		( mesh.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
 		( mesh.material as MeshBasicMaterial ).depthTest = false;
 		( mesh.material as MeshBasicMaterial ).transparent = true;
-		( mesh.material as MeshBasicMaterial ).opacity = 0.1;
+		( mesh.material as MeshBasicMaterial ).opacity = 0.2;
 		( mesh.material as MeshBasicMaterial ).needsUpdate = true;
 
 		mesh[ 'tag' ] = 'junction';
 		mesh.userData.junction = junction;
 
-		this.meshes.addItem( junction, mesh );
-
+		return mesh;
 	}
 
 	onRemoved ( junction: TvJunction ): void {
@@ -111,6 +150,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	}
 
 	showManeuvers ( junction: TvJunction ) {
+
+		if ( !this.shouldShowManeuvers ) return;
 
 		junction.connections.forEach( connection => {
 
@@ -129,6 +170,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	}
 
 	private showEntries ( junction: TvJunction ): void {
+
+		if ( !this.shouldShowEntries ) return;
 
 		const roads = junction.getRoads();
 
@@ -194,7 +237,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	private createEntryExitBoxMesh ( position: Vector3, hdg = 0, laneWidth = 3.6 ) {
+	createEntryExitBoxMesh ( position: Vector3, hdg = 0, laneWidth = 3.6 ) {
 
 		const texture = OdTextures.arrowCircle();
 
@@ -272,6 +315,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			depthWrite: false
 		} );
 
+		const geometry: BufferGeometry = this.makeManeuverGeometry( directedPoints, width );
+
+		return new ManeuverMesh( junction, connection, link, geometry, material );
+	}
+
+	makeManeuverGeometry ( directedPoints: TvPosTheta[], width: number ): BufferGeometry {
+
 		// Calculate width offset based on lane ID
 		let offset = width * 0.5;
 
@@ -302,7 +352,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
 		geometry.setIndex( indices );
 
-		return new ManeuverMesh( junction, connection, link, geometry, material );
+		return geometry;
 	}
 }
 

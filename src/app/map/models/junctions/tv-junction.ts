@@ -13,6 +13,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvContactPoint } from '../tv-common';
 import { TvRoadCoord } from "../TvRoadCoord";
 import { TvRoadLinkChildType } from "../tv-road-link-child";
+import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 
 export class TvJunction {
 
@@ -29,6 +30,8 @@ export class TvJunction {
 	public mesh: Mesh;
 
 	public boundingBox: Box3;
+
+	public boundary: TvJunctionBoundary;
 
 	constructor ( public name: string, public id: number ) { }
 
@@ -97,19 +100,19 @@ export class TvJunction {
 
 	getIncomingRoads (): TvRoad[] {
 
-		const incomingRoads: TvRoad[] = [];
+		const roads = new Set<TvRoad>();
 
 		this.connections.forEach( connection => {
 
 			if ( connection.incomingRoad ) {
 
-				incomingRoads.push( connection.incomingRoad );
+				roads.add( connection.incomingRoad );
 
 			}
 
 		} );
 
-		return incomingRoads;
+		return [ ...roads ];
 
 	}
 
@@ -136,19 +139,19 @@ export class TvJunction {
 
 	getOutgoingRoads (): TvRoad[] {
 
-		const outgoingRoads: TvRoad[] = [];
+		const roads = new Set<TvRoad>();
 
 		this.connections.forEach( connection => {
 
 			if ( connection.outgoingRoad ) {
 
-				outgoingRoads.push( connection.outgoingRoad );
+				roads.add( connection.outgoingRoad );
 
 			}
 
 		} );
 
-		return outgoingRoads;
+		return [ ...roads ];
 
 	}
 
@@ -274,11 +277,6 @@ export class TvJunction {
 
 	}
 
-	addController ( controller: TvJunctionController ) {
-
-		this.controllers.push( controller );
-
-	}
 
 	getRandomConnectionFor ( incomingRoadId: number, laneId?: number ): TvJunctionConnection {
 

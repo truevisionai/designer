@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { IntersectionService } from 'app/services/junction/intersection.service';
-import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
+import { ConnectionService } from 'app/map/junction/connection/connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
@@ -421,7 +421,7 @@ describe( '4-way-junction tests', () => {
 		mapValidator.validateMap( mapService.map, true );
 	} );
 
-	it( 'should add non-driving lanes correctly', inject( [ JunctionConnectionService ], ( junctionConnectionService: JunctionConnectionService ) => {
+	it( 'should add non-driving lanes correctly', inject( [ ConnectionService ], ( junctionConnectionService: ConnectionService ) => {
 
 		// left to right
 		const left = roadService.createDefaultRoad();
@@ -492,10 +492,6 @@ describe( '4-way-junction tests', () => {
 
 		// bottom to top
 		const verticalRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -200 ), new Vector2( 0, 200 ) ] );
-
-		roadService.add( horizontalBottom );
-		roadService.add( horizontalTop );
-		roadService.add( verticalRoad );
 
 		splineManager.updateSpline( verticalRoad.spline );
 
@@ -745,7 +741,6 @@ describe( '4-way-junction tests', () => {
 
 		mapValidator.validateMap( mapService.map, true );
 	} );
-
 
 	it( 'should create t-junction between one side lane road', () => {
 

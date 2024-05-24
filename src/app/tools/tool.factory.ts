@@ -71,16 +71,15 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { LaneHeightService } from 'app/map/lane-height/lane-height.service';
 import { DebugLine } from 'app/objects/debug-line';
 import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
-import {
-	EndLaneMovingStrategy, MidLaneMovingStrategy,
-} from "../core/strategies/move-strategies/end-lane.moving.strategy";
+import { MidLaneMovingStrategy, } from "../core/strategies/move-strategies/end-lane.moving.strategy";
 import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies/follow-heading-moving-strategy';
 import { LaneNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { ManeuverMesh } from 'app/services/junction/junction.debug';
-import { FreeMovingStrategy } from 'app/core/strategies/move-strategies/free-moving-strategy';
+import { TrafficLightTool } from './traffic-light/traffic-light.tool';
+import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -116,6 +115,7 @@ export class ToolFactory {
 		private dataServiceProvider: DataServiceProvider,
 		private toolHintsProvider: ToolHintsProvider,
 		private laneHeightService: LaneHeightService,
+		private trafficLightToolService: TrafficLightToolService,
 	) {
 	}
 
@@ -204,6 +204,9 @@ export class ToolFactory {
 			case ToolType.ParkingLot:
 				tool = new ParkingLotTool( this.parkingRoadToolService );
 				break;
+			case ToolType.TrafficLight:
+				tool = new TrafficLightTool( this.trafficLightToolService );
+				break;
 			default:
 				throw new Error( 'Invalid tool type' + type );
 				break;
@@ -285,6 +288,24 @@ export class ToolFactory {
 		if ( type == ToolType.Maneuver ) {
 
 			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( 'link' ) );
+			this.selectionService.registerStrategy( TvJunction.name, new ObjectUserDataStrategy( 'junction', 'junction' ) );
+
+			this.selectionService.registerTag( SimpleControlPoint.name, SimpleControlPoint.name );
+			this.selectionService.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
+			this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
+			this.selectionService.registerTag( TvJunction.name, TvJunction.name );
+
+			this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
+
+			tool.setTypeName( TvJunction.name );
+
+		}
+
+		if ( type == ToolType.TrafficLight ) {
+
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
 			this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( 'link' ) );
 			this.selectionService.registerStrategy( TvJunction.name, new ObjectUserDataStrategy( 'junction', 'junction' ) );
 

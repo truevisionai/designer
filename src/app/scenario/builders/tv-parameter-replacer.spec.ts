@@ -36,10 +36,10 @@ describe( 'ParameterReplacer tests', () => {
 
 	// } );
 
-	// it( 'it should replace all $owner variables correctly', () => {
+	it( 'it should replace all $owner variables correctly', () => {
 
-	//     expect( true ).toBe( true );
+	    expect( true ).toBe( true );
 
-	// } );
+	} );
 
 } );

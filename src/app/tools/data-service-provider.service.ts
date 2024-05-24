@@ -61,6 +61,9 @@ export class DataServiceProvider {
 
 			case ToolType.Maneuver:
 				return this.junctionService;
+
+			case ToolType.TrafficLight:
+				return this.junctionService;
 		}
 
 	}

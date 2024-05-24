@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import {
 	BoxGeometry,
 	BufferGeometry,
@@ -14,9 +14,10 @@ import {
 	MeshStandardMaterial,
 	Object3D,
 	PlaneGeometry,
+	TextureLoader,
 	Vector3
 } from 'three';
-import { ObjectTypes, TvSide } from '../models/tv-common';
+import { TvSide } from '../models/tv-common';
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../models/tv-road.model";
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
@@ -60,29 +61,29 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	buildRoadObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
-		const type: ObjectTypes = roadObject.attr_type;
+		const type: TvRoadObjectType = roadObject.attr_type;
 
 		switch ( type ) {
 
-			case ObjectTypes.crosswalk:
+			case TvRoadObjectType.crosswalk:
 				return this.buildCrosswalkObject( road, roadObject );
 
-			case ObjectTypes.parkingSpace:
+			case TvRoadObjectType.parkingSpace:
 				return this.buildParkingSpaceObject( road, roadObject );
 
-			case ObjectTypes.tree:
+			case TvRoadObjectType.tree:
 				return this.buildTreeObject( road, roadObject );
 
-			case ObjectTypes.vegetation:
+			case TvRoadObjectType.vegetation:
 				return this.buildVegetationObject( road, roadObject );
 
-			case ObjectTypes.barrier:
+			case TvRoadObjectType.barrier:
 				return this.buildBarrierObject( road, roadObject );
 
-			case ObjectTypes.pole:
+			case TvRoadObjectType.pole:
 				return this.buildPoleObject( road, roadObject );
 
-			case ObjectTypes.roadMark:
+			case TvRoadObjectType.roadMark:
 				return this.buildRoadMarkObject( road, roadObject );
 		}
 
@@ -90,9 +91,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	buildRoadMarkObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
-		if ( !roadObject.assetGuid ) return;
-
-		const material = this.getRoadMarkMaterial( roadObject.assetGuid );
+		const material = this.getRoadMarkMaterial( roadObject );
 
 		const roadCoord = road.getPosThetaAt( roadObject.s, roadObject.t );
 
@@ -436,7 +435,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		const points: Vector3[] = [];
 
-		if ( marking.side != null && marking.side != TvSide.NONE && roadObject.attr_type == ObjectTypes.parkingSpace ) {
+		if ( marking.side != null && marking.side != TvSide.NONE && roadObject.attr_type == TvRoadObjectType.parkingSpace ) {
 
 			const side = marking.side == TvSide.LEFT ? 1 : -1;
 
@@ -908,17 +907,40 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 	//
 	// }
 
-	private getRoadMarkMaterial ( assetGuid: string ) {
+	private getRoadMarkMaterial ( roadObject: TvRoadObject ) {
 
-		const asset = this.assetService.getAsset( assetGuid );
+		const subType: any = {
+			'arrowLeft': 'http://www.vzkat.de/2017/Teil03/206.gif',
+			'arrowRight': 'http://www.vzkat.de/2017/Teil03/206.gif',
+			'arrowStraight': 'http://www.vzkat.de/2017/Teil03/206.gif',
+		}
 
-		if ( asset?.type == AssetType.MATERIAL ) {
+		if ( !roadObject.assetGuid ) {
 
-			return this.materialService.getMaterial( assetGuid ).material;
+			const url = subType[ roadObject.subType ] ?? 'http://www.vzkat.de/2017/Teil03/206.gif';
 
-		} else if ( asset?.type == AssetType.TEXTURE ) {
+			const texture = new TextureLoader().load( url );
 
-			const texture = this.textureService.getTexture( assetGuid );
+			return new MeshStandardMaterial( {
+				map: texture,
+				transparent: true,
+				alphaTest: 0.9
+			} );
+		}
+
+		const asset = this.assetService.getAsset( roadObject.assetGuid );
+
+		if ( !asset ) {
+			return new MeshStandardMaterial( { color: COLOR.MAGENTA } );
+		}
+
+		if ( asset.type == AssetType.MATERIAL ) {
+			return this.materialService.getMaterial( roadObject.assetGuid ).material;
+		}
+
+		if ( asset.type == AssetType.TEXTURE ) {
+
+			const texture = this.textureService.getTexture( roadObject.assetGuid );
 
 			return new MeshStandardMaterial( {
 				map: texture.texture,
@@ -926,9 +948,6 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 				alphaTest: 0.9
 			} );
 
-		} else {
-
-			return new MeshStandardMaterial( { color: COLOR.MAGENTA } );
 		}
 	}
 }

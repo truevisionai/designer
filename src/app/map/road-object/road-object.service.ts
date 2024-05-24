@@ -6,12 +6,12 @@ import { Injectable } from '@angular/core';
 import { MapService } from 'app/services/map/map.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvCornerRoad } from "../models/objects/tv-corner-road";
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { RoadObjectBuilder } from 'app/map/road-object/road-object.builder';
 import { Group } from 'three';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { RoadSignalService } from 'app/map/road-signal/road-signal.service';
-import { ObjectTypes, TvColors, TvRoadMarkWeights } from 'app/map/models/tv-common';
+import { TvColors, TvRoadMarkWeights } from 'app/map/models/tv-common';
 import { IDService } from 'app/factories/id.service';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvObjectRepeat } from 'app/map/models/objects/tv-object-repeat';
@@ -81,7 +81,7 @@ export class RoadObjectService {
 		return this.ids.get( road ).getNextId();
 	}
 
-	createRoadObject ( road: TvRoad, type: ObjectTypes, s: number, t: number ) {
+	createRoadObject ( road: TvRoad, type: TvRoadObjectType, s: number, t: number ) {
 
 		const id = this.getRoadObjectId( road );
 

@@ -75,11 +75,11 @@ export class TextMarkingInspector {
 
 	@SerializedField( { 'type': 'enum', label: 'Orientation', enum: TvOrientation } )
 	get orientation (): TvOrientation {
-		return this.signal.orientations;
+		return this.signal.orientation;
 	}
 
 	set orientation ( value: TvOrientation ) {
-		this.signal.orientations = value;
+		this.signal.orientation = value;
 	}
 
 	@Action( { label: 'Delete' } )

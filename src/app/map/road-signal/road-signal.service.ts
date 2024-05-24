@@ -9,6 +9,8 @@ import { RoadSignalBuilder } from './road-signal.builder';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { Group, Object3D } from 'three';
 import { SceneService } from "../../services/scene.service";
+import { Maths } from "../../utils/maths";
+import { RoadSignalIdService } from "./road-signal-id.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,6 +21,7 @@ export class RoadSignalService {
 
 	constructor (
 		private signalBuilder: RoadSignalBuilder,
+		private signalIdService: RoadSignalIdService,
 	) {
 		this.objectMap = new Object3DMap<TvRoadSignal, Object3D>( SceneService.getMainLayer() );
 	}
@@ -66,6 +69,8 @@ export class RoadSignalService {
 
 		this.objectMap.remove( signal );
 
+		this.signalIdService.remove( signal.id );
+
 	}
 
 	updateSignal ( road: TvRoad, signal: TvRoadSignal ) {
@@ -92,6 +97,39 @@ export class RoadSignalService {
 
 		return road.getPosThetaAt( signal.s, signal.t );
 
+	}
+
+	findSignal ( road: TvRoad, query: TvRoadSignal ): TvRoadSignal | undefined {
+
+		const signals = road.getRoadSignals();
+
+		for ( const sign of signals ) {
+
+			if ( sign.type != query.type ) continue;
+
+			if ( !Maths.approxEquals( sign.s, query.s ) ) continue;
+
+			return sign;
+
+		}
+
+	}
+
+	findSignalsByType ( road: TvRoad, types: string[] = [] ) {
+
+		const signals = road.getRoadSignals();
+
+		const results: TvRoadSignal[] = [];
+
+		for ( const sign of signals ) {
+
+			if ( !types.includes( sign.type ) ) continue;
+
+			results.push( sign );
+
+		}
+
+		return results;
 	}
 
 }

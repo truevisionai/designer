@@ -12,20 +12,17 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 
 	private current: T = null;
 	private selected: T = null;
+	private options: StrategySettings = {};
 
-	constructor ( private options?: StrategySettings ) {
+	constructor ( options?: StrategySettings ) {
 
 		super();
 
-		if ( !this.options ) {
-			this.options = {
-				higlightOnHover: true,
-				higlightOnSelect: true,
-				tag: null,
-				returnParent: false,
-				returnTarget: false,
-			};
-		}
+		this.options.higlightOnHover = options?.higlightOnHover ?? true;
+		this.options.higlightOnSelect = options?.higlightOnSelect ?? true;
+		this.options.tag = options?.tag ?? null;
+		this.options.returnParent = options?.returnParent ?? false;
+		this.options.returnTarget = options?.returnTarget ?? false;
 
 	}
 
@@ -35,9 +32,7 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 			this.selected?.unselect();
 		}
 
-		this.selected = pointerEventData.intersections
-			.filter( i => i.object.visible )
-			.find( i => i.object instanceof Line2 )?.object as any;
+		this.selected = this.filterByType( pointerEventData.intersections, DebugLine );
 
 		if ( this.options?.higlightOnSelect ) {
 			this.selected?.select();
@@ -59,20 +54,20 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 
 		if ( !this.current?.isSelected ) this.current?.onMouseOut();
 
-		this.current = pointerEventData.intersections
-			.filter( i => i.object.visible )
-			.find( i => i.object instanceof Line2 )?.object as any;
+		this.current = this.filterByType( pointerEventData.intersections, DebugLine );
 
-		if ( !this.current?.isSelected ) this.current?.onMouseOver();
+		if ( !this.current ) return;
+
+		console.log( this.current );
+
+		if ( !this.current.isSelected ) this.current.onMouseOver();
 
 		return this.current;
 	}
 
 	onPointerUp ( pointerEventData: PointerEventData ): T {
 
-		const object = pointerEventData.intersections
-			.filter( i => i.object.visible )
-			.find( i => i.object instanceof Line2 )?.object as any;
+		const object = this.filterByType( pointerEventData.intersections, DebugLine );
 
 		if ( !object ) return;
 

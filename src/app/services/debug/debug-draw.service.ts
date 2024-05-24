@@ -9,14 +9,13 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Mesh, MeshBasicMaterial, Object3D, SphereGeometry, Vector2, Vector3 } from 'three';
+import { Mesh, MeshBasicMaterial, SphereGeometry, Vector2, Vector3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
-import { Object3DMap } from 'app/core/models/object3d-map';
-import { SimpleArrowObject, SharpArrowObject } from 'app/objects/lane-arrow-object';
+import { SharpArrowObject, SimpleArrowObject } from 'app/objects/lane-arrow-object';
 import { DebugLine } from '../../objects/debug-line';
 import { TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
@@ -24,25 +23,34 @@ import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
 import { Maths } from 'app/utils/maths';
 import { HasDistanceValue } from 'app/core/interfaces/has-distance-value';
 import { LaneNode } from "../../objects/lane-node";
+import { SceneService } from '../scene.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class DebugDrawService {
 
-	private debugObjects = new Object3DMap<this, Object3D>();
+	private group = SceneService.getToolLayer();
+
+	private static _instance: DebugDrawService;
+
+	static get instance (): DebugDrawService {
+		return this._instance;
+	}
+
+	constructor () {
+
+		DebugDrawService._instance = this;
+
+	}
 
 	drawSphere ( position: Vector3, size = 0.1, color = COLOR.RED ) {
 
-		const geometry = new SphereGeometry( size, 32, 32 );
-
-		const material = new MeshBasicMaterial( { color: color } );
-
-		const sphere = new Mesh( geometry, material );
+		const sphere = this.createSphere( position, size, color );
 
 		sphere.position.copy( position );
 
-		this.debugObjects.add( this, sphere );
+		this.group.add( sphere );
 
 	}
 
@@ -62,18 +70,8 @@ export class DebugDrawService {
 
 	clear () {
 
-		this.debugObjects.clear();
+		this.group.clear();
 
-	}
-
-	private static _instance: DebugDrawService;
-
-	static get instance (): DebugDrawService {
-		return this._instance;
-	}
-
-	constructor () {
-		DebugDrawService._instance = this;
 	}
 
 	createRoadWidthLine ( roadCoord: TvRoadCoord ): Line2 {
@@ -198,20 +196,20 @@ export class DebugDrawService {
 
 	}
 
-	createLaneWidthLine ( laneCoord: TvLaneCoord ): Line2 {
+	createLaneWidthLine ( target: any, laneCoord: TvLaneCoord, color = COLOR.CYAN, width = 4 ): DebugLine<any> {
 
 		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.s, laneCoord.road, laneCoord.lane );
 
 		const material = new LineMaterial( {
-			color: COLOR.CYAN,
-			linewidth: 4,
+			color: color,
+			linewidth: width,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ),
 			depthTest: false,
 			depthWrite: false,
 			transparent: true,
 		} );
 
-		return new DebugLine( null, lineGeometry, material );
+		return new DebugLine( target, lineGeometry, material );
 	}
 
 	updateLaneWidthLine ( line: Line2, laneCoord: TvLaneCoord ): Line2 {
@@ -325,6 +323,18 @@ export class DebugDrawService {
 
 		// Create a 2D arrow at the current position and direction.
 		return new SimpleArrowObject( position, hdg, size );
+
+	}
+
+	drawArrow ( position: Vector3, hdg: number, color = 0xffffff, size = 1.0 ): Mesh {
+
+		const arrow = this.createArrow( position, hdg, color, size );
+
+		arrow.position.copy( position );
+
+		this.group.add( arrow );
+
+		return arrow;
 
 	}
 

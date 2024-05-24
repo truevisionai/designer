@@ -6,7 +6,7 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { IntersectionService } from 'app/services/junction/intersection.service';
-import { JunctionConnectionService } from 'app/services/junction/junction-connection.service';
+import { ConnectionService } from 'app/map/junction/connection/connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { LaneLinkService } from 'app/services/junction/lane-link.service';
 import { MapService } from 'app/services/map/map.service';
@@ -22,7 +22,7 @@ describe( 'LaneLinkService', () => {
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
 	let laneLinkService: LaneLinkService;
-	let connectionService: JunctionConnectionService;
+	let connectionService: ConnectionService;
 	let baseTest = new BaseTest();
 	let eventServiceProvider: EventServiceProvider;
 
@@ -38,7 +38,7 @@ describe( 'LaneLinkService', () => {
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
 		laneLinkService = TestBed.inject( LaneLinkService );
-		connectionService = TestBed.inject( JunctionConnectionService );
+		connectionService = TestBed.inject( ConnectionService );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 
 		eventServiceProvider.init();

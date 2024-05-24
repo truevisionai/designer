@@ -8,17 +8,33 @@ import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction'
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { IDService } from './id.service';
 import { Injectable } from '@angular/core';
+import { AbstractFactory } from "../core/interfaces/abstract-factory";
+
+import { Vector3 } from 'three';
+import { Asset } from 'app/core/asset/asset.model';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionFactory {
+export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	public IDService = new IDService();
 
 	private reset () {
 
 		this.IDService = new IDService();
+
+	}
+
+	createFromPosition ( position: Vector3 ): TvJunction {
+
+		return this.createJunction();
+
+	}
+
+	createFromAsset ( asset: Asset, position: Vector3 ): TvJunction {
+
+		return undefined;
 
 	}
 
@@ -323,27 +339,27 @@ export class JunctionFactory {
 
 	//connect ( junction: TvJunction, entry: JunctionEntryObject, exit: JunctionEntryObject ) {
 
-		// if ( !junction ) {
+	// if ( !junction ) {
 
-		// 	( new CreateSingleManeuver( null, entry, exit, junction, null, null ) ).execute();
+	// 	( new CreateSingleManeuver( null, entry, exit, junction, null, null ) ).execute();
 
-		// } else {
+	// } else {
 
-		// 	const connection = junction.findRoadConnection( entry.road, exit.road );
+	// 	const connection = junction.findRoadConnection( entry.road, exit.road );
 
-		// 	const laneLink = connection?.laneLink.find( i => i.from === entry.lane.id );
+	// 	const laneLink = connection?.laneLink.find( i => i.from === entry.lane.id );
 
-		// 	if ( connection && laneLink ) {
+	// 	if ( connection && laneLink ) {
 
-		// 		TvConsole.warn( 'Connection already exists' );
+	// 		TvConsole.warn( 'Connection already exists' );
 
-		// 	} else {
+	// 	} else {
 
-		// 		( new CreateSingleManeuver( null, entry, exit, junction, connection, laneLink ) ).execute();
+	// 		( new CreateSingleManeuver( null, entry, exit, junction, connection, laneLink ) ).execute();
 
-		// 	}
+	// 	}
 
-		// }
+	// }
 
 	//}
 

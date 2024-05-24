@@ -5,12 +5,12 @@
 import { Injectable } from "@angular/core";
 import { RoadObjectService } from "../../map/road-object/road-object.service";
 import { RoadPosition } from "../../scenario/models/positions/tv-road-position";
-import { ObjectTypes } from "../../map/models/tv-common";
 import { TvRoadObjectSkeleton } from "../../map/models/objects/tv-road-object-skeleton";
 import { TvObjectPolyline } from "../../map/models/objects/tv-object-polyline";
 import { TvObjectVertexRoad } from "../../map/models/objects/tv-object-vertex-road";
 import { TvObjectVertexLocal } from "../../map/models/objects/tv-object-vertex-local";
 import { Vector3 } from "three";
+import { TvRoadObjectType } from "../../map/models/objects/tv-road-object";
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,7 +24,7 @@ export class PolePropFactory {
 
 	createStreetLight ( position: RoadPosition, height = 4, width = 2.0, poleWidth = 0.15 ) {
 
-		const object = this.objectService.createRoadObject( position.road, ObjectTypes.pole, position.s, position.t );
+		const object = this.objectService.createRoadObject( position.road, TvRoadObjectType.pole, position.s, position.t );
 
 		object.skeleton = new TvRoadObjectSkeleton();
 
@@ -45,7 +45,7 @@ export class PolePropFactory {
 
 	createSmallPole ( position: RoadPosition, height = 1, radius = 0.05, useLocalVertex = true ) {
 
-		const object = this.objectService.createRoadObject( position.road, ObjectTypes.pole, position.s, position.t );
+		const object = this.objectService.createRoadObject( position.road, TvRoadObjectType.pole, position.s, position.t );
 
 		object.radius = radius;
 
