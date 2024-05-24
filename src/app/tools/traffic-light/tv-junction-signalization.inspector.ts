@@ -15,27 +15,42 @@ export class TvJunctionSignalizationInspector {
 	) {
 	}
 
-	@SerializedAction( { label: 'All Go' } )
+	@SerializedAction( {
+		label: 'All Go',
+		description: 'Let all traffic go'
+	} )
 	allGo () {
 		this.tool.autoSignalService.addSignalization( this.junction, AutoSignalizationType.ALL_GO );
 	}
 
-	@SerializedAction( { label: 'All Stop' } )
+	@SerializedAction( {
+		label: 'All Stop',
+		description: 'All traffic will stop at junction'
+	} )
 	allStop () {
 		this.tool.autoSignalService.addSignalization( this.junction, AutoSignalizationType.ALL_STOP );
 	}
 
-	@SerializedAction( { label: 'All Yield' } )
+	@SerializedAction( {
+		label: 'All Yield',
+		description: 'All traffic will yield at junction'
+	} )
 	allYield () {
 		this.tool.autoSignalService.addSignalization( this.junction, AutoSignalizationType.ALL_YIELD );
 	}
 
-	@SerializedAction( { label: 'Split Phase' } )
+	@SerializedAction( {
+		label: 'Split Phase',
+		description: 'All traffic will go and stop a phased maneer'
+	} )
 	splitPhase () {
 		this.tool.autoSignalService.addSignalization( this.junction, AutoSignalizationType.SPIT_PHASE );
 	}
 
-	@SerializedAction( { label: 'Remove Signalization' } )
+	@SerializedAction( {
+		label: 'Remove Signalization',
+		description: 'Remove signalization from junction'
+	} )
 	remove () {
 		this.tool.autoSignalService.removeSignalization( this.junction );
 	}
