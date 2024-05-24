@@ -17,6 +17,7 @@ export interface ISerializedFieldSetting {
 
 export interface ISerializedActionSetting {
 	label: string;
+	description?: string;
 	method?: Function;
 	validate?: Function;
 }
@@ -29,6 +30,7 @@ export function SerializedAction ( settings?: ISerializedActionSetting ) {
 
 		actions.push( {
 			label: settings?.label || propertyKey,
+			description: settings?.description || null,
 			method: target[ propertyKey ],
 			validate: settings?.validate || ( () => true ) // Add a validate property
 		} );
