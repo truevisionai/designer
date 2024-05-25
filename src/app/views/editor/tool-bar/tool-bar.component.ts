@@ -9,7 +9,9 @@ import { CommandHistory } from 'app/services/command-history';
 import { ToolManager } from '../../../managers/tool-manager';
 import { ThreeService } from '../../../renderer/three.service';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
+import {
+	EnvironmentInspectorComponent
+} from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { Environment } from 'app/core/utils/environment';
 import { ToolBarService } from './tool-bar.service';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -26,7 +28,7 @@ class IToolMenu {
 	title?: string;
 	description?: string;
 	track: string;
-	tooltip: string;
+	tooltip?: string;
 	click: Function;
 	enabled?: boolean = true;
 }
@@ -59,7 +61,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'Pointer Tool',
 			description: 'Pointer tool is used to view from different angles and to select the objects. You can browse the scene without interacting with any object in the scene',
 			track: 'menu',
-			tooltip: 'Pointer Tool',
 			click: () => this.setToolType( ToolType.Pointer ),
 			enabled: true,
 		},
@@ -73,7 +74,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'Measurement Tool',
 			description: 'Measurement tool is used to measure the distance between two points in the scene',
 			track: 'menu',
-			tooltip: 'Measurement Tool',
 			click: () => this.setToolType( ToolType.MeasurementTool ),
 			enabled: true,
 		},
@@ -87,7 +87,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'ROAD-GEOMETRY-TITLE',
 			description: 'ROAD-GEOMETRY-DESCRIPTION',
 			track: 'button',
-			tooltip: 'Road Tool',
 			click: () => this.setToolType( ToolType.Road ),
 			enabled: true,
 		},
@@ -101,7 +100,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'ROAD-CIRCLE-TITLE',
 			description: 'ROAD-CIRCLE-DESCRIPTION',
 			track: 'button',
-			tooltip: 'Road Circle Tool',
 			click: () => this.setToolType( ToolType.RoadCircle ),
 			enabled: true,
 		},
@@ -115,7 +113,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			tooltip: 'Ramp Tool',
 			click: () => this.setToolType( ToolType.RoadRampTool ),
-			enabled: Environment.developmentTools,
+			enabled: false,
 		},
 		{
 			id: 'showDividerTool',
@@ -125,9 +123,8 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'divider-tool',
 			icon: 'content_cut', // fork_right, call_split
 			track: 'menu',
-			tooltip: 'Divider Tool',
-			title: 'Road Divider Tool',
-			description: 'Tool to divide roads into two connected roads',
+			title: 'ROAD-DIVIDER-TITLE',
+			description: 'ROAD-DIVIDER-DESCRIPTION',
 			click: () => this.setToolType( ToolType.RoadDividerTool ),
 			enabled: true,
 		},
@@ -138,10 +135,9 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			toolType: ToolType.RoadElevation,
 			action: 'road-Elevation-tool',
 			icon: 'height',
-			title: 'Road Elevation Tool',
-			description: 'Tool to create/edit elevation and height profile of the road',
+			title: 'ROAD-ELEVATION-TITLE',
+			description: 'ROAD-ELEVATION-DESCRIPTION',
 			track: 'button',
-			tooltip: 'Road Elevation Tool',
 			click: () => this.setToolType( ToolType.RoadElevation ),
 			enabled: true,
 		},
@@ -155,7 +151,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'LANE-TOOL-TITLE',
 			description: 'LANE-TOOL-DESCRIPTION',
 			track: 'button',
-			tooltip: 'Lane Tool',
 			click: () => this.setToolType( ToolType.Lane ),
 			enabled: true,
 		},
@@ -169,7 +164,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'LANE-WIDTH-TOOL-TITLE',
 			description: 'LANE-WIDTH-TOOL-DESCRIPTION',
 			track: 'button',
-			tooltip: 'Lane Width Tool',
 			click: () => this.setToolType( ToolType.LaneWidth ),
 			enabled: true,
 		},
@@ -180,10 +174,9 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			toolType: ToolType.LaneHeight,
 			action: 'lane-height-tool',
 			icon: 'upload',
-			title: 'LANE-HEIGHT-TOOL-TITLE',
-			description: 'LANE-HEIGHT-TOOL-DESCRIPTION',
+			title: 'LANE-HEIGHT-TITLE',
+			description: 'LANE-HEIGHT-DESCRIPTION',
 			track: 'button',
-			tooltip: 'Lane Height Tool',
 			click: () => this.setToolType( ToolType.LaneHeight ),
 			enabled: true,
 		},
@@ -250,11 +243,9 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			toolType: ToolType.Maneuver,
 			action: 'maneuver-tool',
 			icon: 'roundabout_left',//'fullscreen_exit',
-			title: 'Maneuver Tool',
-			description: 'Tool to create/edit junction maneuvers.',
-			// description: 'Tool to create/edit junction maneuvers <br/> Use SHIFT + LEFT CLICK to select multiple entry/exits <br/> Use LEFT CLICK to select single junction entry/exit <br/> Merge Entry/Exists from inspector to create a junction maneuver <br/><br/> <img src="assets/Maneuver-Tool.gif"/>',
+			title: 'MANEUVER-TITLE',
+			description: 'MANEUVER-DESCRIPTION',
 			track: 'button',
-			tooltip: 'Maneuver Tool',
 			click: () => this.setToolType( ToolType.Maneuver ),
 			enabled: Environment.developmentTools,
 		},
@@ -423,7 +414,8 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'signal-tool',
 			icon: 'directions', // signpost,directions
 			track: 'menu',
-			tooltip: 'Signal Tool',
+			title: 'ROAD-SIGNAL-TOOL-TITLE',
+			description: 'ROAD-SIGNAL-TOOL-DESCRIPTION',
 			click: () => this.setToolType( ToolType.RoadSignalTool ),
 			enabled: true,
 		},
@@ -435,7 +427,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'surface-tool',
 			icon: 'landscape',
 			track: 'button',
-			tooltip: 'Surface Tool',
 			title: 'Surface Tool',
 			description: 'Tool to create simple surface around road networks <br/> Use `SHIFT` + `LEFT CLICK` to create control points <br/> DRAG control points to get desired shape <br/><br/> <img src="assets/Surface-Tool.gif"/>',
 			click: () => this.setToolType( ToolType.Surface ),
