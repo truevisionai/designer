@@ -42,7 +42,7 @@ function openEditorWindow () {
 		title: TITLE,
 		width: width,
 		height: height,
-		backgroundColor: '#ffffff',
+		backgroundColor: '#000000', // Set background color to black
 		icon: `file://${ __dirname }/dist/assets/icon.png`,
 		webPreferences: {
 			nodeIntegration: true,
@@ -127,7 +127,7 @@ function openSplashWindow () {
 		title: TITLE,
 		width: 720,
 		height: 405,
-		backgroundColor: '#ffffff',
+		backgroundColor: '#000000', // Set background color to black
 		resizable: false,
 		movable: false,
 		minimizable: false,
