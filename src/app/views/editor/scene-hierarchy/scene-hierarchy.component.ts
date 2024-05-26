@@ -4,10 +4,11 @@
 
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { SceneService } from 'app/services/scene.service';
 import { Subscription } from 'rxjs';
 import { Object3D } from 'three';
+import { Environment } from "../../../core/utils/environment";
 
 class FlatNode extends Object3D {
 	expandable: boolean;
@@ -30,10 +31,11 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 	}
 
 	transformer = ( node: Object3D, level: number ) => {
+		const name = this.debug ? node.id + ':' + node.name + ':' + node.type : node.name;
 		return {
 			id: node.id,
 			uuid: node.uuid,
-			name: node.id + ':' + node.name + ':' + node.type,
+			name: name,
 			type: node.type,
 			children: node.children,
 			expandable: !!node.children && node.children.length > 0,
@@ -41,17 +43,25 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 			object: node,
 		};
 	};
+
 	treeFlattener = new MatTreeFlattener( this.transformer, node => node.level, node => node.expandable, node => node.children );
+
 	treeControl = new FlatTreeControl<FlatNode>( node => node.level, node => node.expandable );
+
 	dataSource = new MatTreeFlatDataSource( this.treeControl, this.treeFlattener );
 
 	private sceneChangedSubscription: Subscription;
-	private debug = false;
+
+	private debug = !Environment.production;
 
 	private timeoutId: any = null;
+
 	private readonly debounceDuration = 100; // duration in milliseconds
 
-	constructor ( private changeDet: ChangeDetectorRef ) { }
+	constructor (
+		private changeDet: ChangeDetectorRef
+	) {
+	}
 
 	hasChild = ( _: number, node: FlatNode ) => node.expandable;
 
@@ -62,9 +72,18 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 		return [ treeNode ];
 	}
 
+	get children () {
+
+		if ( this.debug ) {
+			return SceneService.scene;
+		}
+
+		return SceneService.getMainLayer();
+	}
+
 	ngOnInit (): void {
 
-		this.dataSource.data = this.generateTreeData( SceneService.scene );
+		this.dataSource.data = this.generateTreeData( this.children );
 
 		this.sceneChangedSubscription = SceneService.changed.subscribe( () => {
 
@@ -86,7 +105,7 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
 	onSceneChanged (): void {
 
-		this.dataSource.data = this.generateTreeData( SceneService.scene );
+		this.dataSource.data = this.generateTreeData( this.children );
 
 		this.changeDet.detectChanges();
 
@@ -99,7 +118,6 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 	}
 
 	onNodeClicked ( node: FlatNode ) {
-
 
 	}
 }
