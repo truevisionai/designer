@@ -653,7 +653,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	parseTimeReference ( xml: XmlElement ): TimeReference {
 
-		let timeReference = new TimeReference;
+		let timeReference: TimeReference;
 
 		if ( xml.Timing != null ) {
 
@@ -661,7 +661,9 @@ export class OpenScenarioLoader extends AbstractReader {
 			let scale = parseFloat( xml.Timing.attr_scale );
 			let offset = parseFloat( xml.Timing.attr_offset );
 
-			timeReference.timing = new Timing( domainAbsoluteRelative, scale, offset );
+			const timing = new Timing( domainAbsoluteRelative, scale, offset );
+
+			return new TimeReference( timing );
 
 		} else if ( xml.None != null ) {
 

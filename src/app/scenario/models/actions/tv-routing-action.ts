@@ -34,7 +34,7 @@ export class FollowRouteAction extends AbstractRoutingAction {
 }
 
 export class TimeReference {
-	public timing: Timing;
+	constructor ( public timing: Timing ) { }
 }
 
 export class Timing {

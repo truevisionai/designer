@@ -6,7 +6,9 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/objects/game-object';
 import { AppInspector } from '../../../../core/inspector';
 import { ToolManager } from '../../../../managers/tool-manager';
-import { FollowTrajectoryAction } from '../../../models/actions/tv-follow-trajectory-action';
+import { TvAction } from 'app/scenario/models/tv-action';
+import { FollowTrajectoryAction } from 'app/scenario/models/actions/tv-follow-trajectory-action';
+import { ActionType } from 'app/scenario/models/tv-enums';
 
 @Component( {
 	selector: 'app-follow-trajectory',
@@ -17,19 +19,24 @@ export class FollowTrajectoryComponent implements OnInit, IComponent, OnDestroy 
 
 	data: FollowTrajectoryAction;
 
-	@Input() action: FollowTrajectoryAction;
+	@Input() action: TvAction;
 
-	constructor () {
+	get trajectory () {
+
+		return this.action as any;
 	}
+
+	constructor () { }
 
 	ngOnInit () {
 
 		ToolManager.disable();
 
-		if ( this.data != null && this.action == null ) {
-
-			this.action = this.data;
+		if ( this.action.actionType !== ActionType.Private_Routing_FollowTrajectory ) {
+			throw new Error( 'Invalid action type' );
 		}
+
+		this.data = this.action as FollowTrajectoryAction;
 
 	}
 
@@ -38,7 +45,6 @@ export class FollowTrajectoryComponent implements OnInit, IComponent, OnDestroy 
 		ToolManager.enable();
 
 	}
-
 
 	onExit () {
 
