@@ -22,6 +22,10 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { SessionsRoutes } from './sessions.routing';
 import { SigninComponent } from './signin/signin.component';
 import { SignupComponent } from './signup/signup.component';
+import { QuestionsComponent } from './questions/questions.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatRadioModule } from '@angular/material/radio';
+import { QuesionsDialogComponent } from './questions/questions-dialog.component';
 
 @NgModule( {
 	imports: [
@@ -40,6 +44,8 @@ import { SignupComponent } from './signup/signup.component';
 		MatFormFieldModule,
 		MatInputModule,
 		FlexLayoutModule,
+		MatStepperModule,
+		MatRadioModule,
 	],
 	declarations: [
 		ForgotPasswordComponent,
@@ -47,7 +53,9 @@ import { SignupComponent } from './signup/signup.component';
 		SigninComponent,
 		SignupComponent,
 		NotFoundComponent,
-		ErrorComponent
+		ErrorComponent,
+		QuestionsComponent,
+		QuesionsDialogComponent,
 	]
 } )
 export class SessionsModule {
