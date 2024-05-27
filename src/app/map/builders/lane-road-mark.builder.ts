@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 import { GameObject } from '../../objects/game-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { TvColors, TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
+import { TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';
@@ -17,7 +17,6 @@ import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
-import { TvStandardMaterial } from 'app/graphics/material/tv-standard-material';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvRoadObjectType } from "../models/objects/tv-road-object";
 
@@ -28,75 +27,88 @@ export class LaneRoadMarkBuilder {
 
 	public buildRoad ( road: TvRoad ): void {
 
-		// this.road = road;
+		const laneSections = road.getLaneSections();
 
-		for ( let i = 0; i < road.getLaneSections().length; i++ ) {
+		for ( let i = 0; i < laneSections.length; i++ ) {
 
-			const laneSection = road.getLaneSections()[ i ];
+			const laneSection = laneSections[ i ];
 
 			const lanes = laneSection.getLaneArray();
 
 			for ( let j = 0; j < lanes.length; j++ ) {
 
-				this.processLane( lanes[ j ] );
+				const lane = lanes[ j ];
+
+				for ( const roadMark of lane.roadMarks ) {
+
+					this.createRoadMark( roadMark, lane, laneSection, road );
+
+				}
 
 			}
 
 		}
 	}
 
-	public buildLane ( road: TvRoad, lane: TvLane ): void {
+	private createRoadMark ( roadMark: TvLaneRoadMark, lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
 
-		this.processLane( lane );
+		const roadMarks = lane.roadMarks;
 
-	}
+		roadMark.clearMesh();
 
-	// private createMeshIndices ( geom: MeshGeometryData ): void {
-	//
-	// 	let index = 0;
-	//
-	// 	for ( let i = 0; i < ( geom.indices.length / 2 ) - 1; i++ ) {
-	//
-	// 		geom.triangles.push( index );
-	// 		geom.triangles.push( index + 1 );
-	// 		geom.triangles.push( index + 2 );
-	//
-	// 		geom.triangles.push( index + 1 );
-	// 		geom.triangles.push( index + 3 );
-	// 		geom.triangles.push( index + 2 );
-	//
-	// 		index += 2;
-	// 	}
-	// }
+		const nextRoadMark = roadMarks.find( i => i.s > roadMark.s );
 
-	private processLane ( lane: TvLane ) {
+		const mesh = new MeshGeometryData();
 
-		for ( const roadMark of lane.roadMarks ) {
+		// setting the next coordinate
+		// if the next road mark is not available,
+		// then the next coordinate is the end of the lane section
+		let nextS: number;
 
-			this.createRoadMark( roadMark );
+		if ( nextRoadMark ) {
+
+			nextS = nextRoadMark.s;
+
+		} else {
+
+			nextS = laneSection.length;
 
 		}
 
-	}
+		const s2 = nextS - roadMark.s;
 
-	// private updateLastCoordinate ( roadMarks: TvLaneRoadMark[], laneSection: TvLaneSection ) {
-	//
-	// 	// setting the last coordinate
-	// 	roadMarks.forEach( ( mark, index ) => {
-	//
-	// 		if ( index < roadMarks.length - 1 ) {
-	//
-	// 			mark.lastSCoordinate = roadMarks[ index + 1 ].sOffset;
-	//
-	// 		} else {
-	//
-	// 			mark.lastSCoordinate = laneSection.length;
-	//
-	// 		}
-	//
-	// 	} );
-	//
-	// }
+		if ( roadMark.type == TvRoadMarkTypes.NONE ) return;
+
+		let posTheta = new TvPosTheta();
+
+		const step = roadMark.length + roadMark.space;
+
+		const start = laneSection.s + roadMark.s;
+
+		for ( let s = 0; s < s2; s += step ) {
+
+			posTheta.s = start + s;
+
+			posTheta = road.getPosThetaAt( start + s );
+
+			this.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
+
+		}
+
+		if ( roadMark.s2 < 1 ) return;
+
+		// // one last entry is required to create a mesh
+		// const lastS = posTheta.s = ( start + mark.s2 ) - Maths.Epsilon;
+		// const laneSectionS = ( mark.s + mark.s2 ) - Maths.Epsilon;
+		// posTheta = lane.laneSection.road.getRoadCoordAt( lastS );
+		// this.createVertex( posTheta, mark, mesh, laneSectionS );
+
+		// at least 1 vertex is required to create a mesh
+		if ( mesh.vertices.length > 0 ) {
+			this.createRoadMarkObject( roadMark, mesh, roadMark.lane );
+		}
+
+	}
 
 	private createVertex ( start: TvPosTheta, roadMark: TvLaneRoadMark, mesh: MeshGeometryData, laneSectionS: number ) {
 
@@ -209,7 +221,7 @@ export class LaneRoadMarkBuilder {
 		lane.gameObject.add( roadMark.gameObject );
 	}
 
-	getMaterial ( roadMark: TvLaneRoadMark ): THREE.Material {
+	private getMaterial ( roadMark: TvLaneRoadMark ): THREE.Material {
 
 		if ( roadMark.materialGuid ) {
 
@@ -274,59 +286,5 @@ export class LaneRoadMarkBuilder {
 		);
 	}
 
-	private createRoadMark ( roadMark: TvLaneRoadMark ) {
 
-		const roadMarks = roadMark.lane.roadMarks;
-
-		roadMark.clearMesh();
-
-		const nextRoadMark = roadMarks.find( i => i.s > roadMark.s );
-
-		const mesh = new MeshGeometryData();
-
-		const start = roadMark.lane.laneSection.s + roadMark.s;
-
-		// setting the next coordinate
-		// if the next road mark is not available,
-		// then the next coordinate is the end of the lane section
-		if ( nextRoadMark ) {
-
-			roadMark.lastSCoordinate = nextRoadMark.sOffset;
-
-		} else {
-
-			roadMark.lastSCoordinate = roadMark.lane.laneSection.length;
-
-		}
-
-		if ( roadMark.type == TvRoadMarkTypes.NONE ) return;
-
-		let posTheta = new TvPosTheta();
-
-		const step = roadMark.length + roadMark.space;
-
-		for ( let s = 0; s < roadMark.s2; s += step ) {
-
-			posTheta.s = start + s;
-
-			posTheta = roadMark.lane.laneSection.road.getPosThetaAt( start + s );
-
-			this.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
-
-		}
-
-		if ( roadMark.s2 < 1 ) return;
-
-		// // one last entry is required to create a mesh
-		// const lastS = posTheta.s = ( start + mark.s2 ) - Maths.Epsilon;
-		// const laneSectionS = ( mark.s + mark.s2 ) - Maths.Epsilon;
-		// posTheta = lane.laneSection.road.getRoadCoordAt( lastS );
-		// this.createVertex( posTheta, mark, mesh, laneSectionS );
-
-		// at least 1 vertex is required to create a mesh
-		if ( mesh.vertices.length > 0 ) {
-			this.createRoadMarkObject( roadMark, mesh, roadMark.lane );
-		}
-
-	}
 }
