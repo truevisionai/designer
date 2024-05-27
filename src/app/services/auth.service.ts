@@ -10,6 +10,12 @@ import { User } from '../core/models/user';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 
+export interface LoginSuccessResponse {
+	token: string;
+	expires_in: number;
+	token_type: string;
+}
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -62,7 +68,7 @@ export class AuthService {
 
 	}
 
-	public login ( email: string, password: string ) {
+	public login ( email: string, password: string ): Observable<LoginSuccessResponse> {
 
 		return this.api.post( '/auth/login', { email, password } )
 

@@ -13,6 +13,8 @@ import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { ShortcutService } from 'app/services/editor/shortcut.service';
 import { ToolManager } from "../../managers/tool-manager";
 import { ToolType } from "../../tools/tool-types.enum";
+import { QuesionsDialogComponent } from '../sessions/questions/questions-dialog.component';
+import { ProfileService } from 'app/services/profile.service';
 
 @Component( {
 	selector: 'app-editor',
@@ -65,6 +67,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 		private oscPlayer: ScenarioDirectorService,
 		private changeDetectorRef: ChangeDetectorRef,
 		private shortcutService: ShortcutService,
+		private profileService: ProfileService,
 	) {
 
 		TvConsole.logsChanged.subscribe( () => this.onLogsChanged() );
@@ -83,6 +86,29 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 		this.mainFileService.newScene();
 		this.shortcutService.init();
+
+		this.openQuestionsDialog();
+	}
+
+	openQuestionsDialog () {
+
+		this.profileService.fetchUser().subscribe( ( user ) => {
+
+			if ( user.onboarding_completed == true ) return;
+
+			this.dialog.open( QuesionsDialogComponent, {
+				data: {},
+				width: '40vw',
+				closeOnNavigation: false,
+				disableClose: true,
+			} );
+
+		}, ( error ) => {
+
+			console.error( error );
+
+		} );
+
 
 	}
 

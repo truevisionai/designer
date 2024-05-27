@@ -1,0 +1,57 @@
+.mat-stepper-horizontal {
+	margin-top: 8px;
+	color: rgb(198, 198, 198);
+}
+
+.mat-mdc-form-field {
+	margin-top: 16px;
+}
+
+::ng-deep .mat-horizontal-stepper-header {
+	display: none !important;
+}
+
+::ng-deep .mat-stepper-horizontal-line {
+	display: none !important;
+}
+
+/* Styles for the stepper buttons */
+.button-container {
+	display: flex;
+	justify-content: space-between;
+	/* Aligns items on the main-axis to space between */
+	margin-top: 20px;
+	/* Adds some space above the button container */
+}
+
+/* You might also want to ensure full width to avoid any misalignment issues */
+.mat-stepper-horizontal,
+.mat-stepper-vertical {
+	width: 100%;
+	/* Ensures the stepper takes full width */
+}
+
+.centered-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	// height: 100%;
+	/* full height of the viewport */
+}
+
+.content-wrapper {
+	text-align: left;
+	color: rgb(198, 198, 198);
+}
+
+.header {
+	text-align: center;
+}
+
+.baseline-container {
+	display: flex;
+	justify-content: center;
+	align-items: baseline;
+	// height: 100%;
+	/* full height of the viewport */
+}

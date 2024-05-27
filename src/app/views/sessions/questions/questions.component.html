@@ -1,0 +1,184 @@
+<div [ngClass]="{'baseline-container': !showHeader, 'centered-container': showHeader}">
+	<div class="content-wrapper">
+		<div style="width: 100%;">
+
+			<div class="header"
+				*ngIf="showHeader">
+				<h2>Welcome, Tell us a little about you</h2>
+				<p>This will help us provide you a better experience</p>
+			</div>
+
+			<mat-stepper linear
+				#stepper>
+
+				<!-- profile -->
+				<mat-step [stepControl]="profileGroup">
+					<form [formGroup]="profileGroup">
+						<ng-template matStepLabel>Profile</ng-template>
+						<h4>Which option best describes you?</h4>
+						<p>Please select one option</p>
+						<mat-radio-group formControlName="profile">
+							<p *ngFor="let profile of profiles">
+								<mat-radio-button [value]="profile">
+									{{ profile | titlecase }}
+								</mat-radio-button>
+							</p>
+						</mat-radio-group>
+						<div class="button-container">
+							<button mat-stroked-button
+								matStepperPrevious>Back</button>
+							<button [disabled]="profileGroup.invalid"
+								color="accent"
+								mat-flat-button
+								matStepperNext>Next</button>
+						</div>
+					</form>
+				</mat-step>
+
+				<!-- languages -->
+				<mat-step [stepControl]="languages">
+					<form [formGroup]="languages">
+						<ng-template matStepLabel>Language</ng-template>
+						<h4>Which programming languages do you use for your projects?</h4>
+						<p>This helps us understand which languages to support for documentation and future development.</p>
+						<p>Please select at least one option</p>
+						<p><mat-checkbox formControlName="cpp">C++</mat-checkbox></p>
+						<p><mat-checkbox formControlName="python">Python</mat-checkbox></p>
+						<p><mat-checkbox formControlName="csharp">C#</mat-checkbox></p>
+						<p><mat-checkbox formControlName="rust">Rust</mat-checkbox></p>
+						<p><mat-checkbox formControlName="golang">Go</mat-checkbox></p>
+						<p><mat-checkbox formControlName="java">Java</mat-checkbox></p>
+						<p><mat-checkbox formControlName="other">Other</mat-checkbox></p>
+						<p *ngIf="languages.get('other').value">
+							<mat-form-field>
+								<mat-label>Specify Other Language</mat-label>
+								<input matInput
+									formControlName="otherLanguageName">
+							</mat-form-field>
+						</p>
+						<div class="button-container">
+							<button mat-stroked-button
+								matStepperPrevious>Back</button>
+							<button [disabled]="languages.invalid"
+								color="accent"
+								mat-flat-button
+								matStepperNext>Next</button>
+						</div>
+					</form>
+				</mat-step>
+
+				<!-- simulators -->
+				<mat-step [stepControl]="simulators">
+					<form [formGroup]="simulators">
+						<h4>Which simulators do you use for your projects?</h4>
+						<p>This helps us understand which simulators to focus on for improving our integration.</p>
+						<p>Please select at least one option</p>
+						<p><mat-checkbox formControlName="airsim">AirSim</mat-checkbox></p>
+						<p><mat-checkbox formControlName="awsim">AWSIM</mat-checkbox></p>
+						<p><mat-checkbox formControlName="carla">CARLA</mat-checkbox></p>
+						<p><mat-checkbox formControlName="gazebo">Gazebo</mat-checkbox></p>
+						<p><mat-checkbox formControlName="sumo">SUMO</mat-checkbox></p>
+						<p><mat-checkbox formControlName="lgsvl">LGSVL</mat-checkbox></p>
+						<p><mat-checkbox formControlName="other">Other</mat-checkbox></p>
+						<p *ngIf="simulators.get('other').value">
+							<mat-form-field>
+								<mat-label>Specify Other Simulator</mat-label>
+								<input matInput
+									formControlName="otherSimulatorName">
+							</mat-form-field>
+						</p>
+						<div class="button-container">
+							<button mat-stroked-button
+								matStepperPrevious>Back</button>
+							<button [disabled]="simulators.invalid"
+								color="accent"
+								mat-flat-button
+								matStepperNext>Next</button>
+						</div>
+					</form>
+				</mat-step>
+
+				<!-- frameworks -->
+				<mat-step [stepControl]="frameworks">
+					<form [formGroup]="frameworks">
+						<ng-template matStepLabel>Framework</ng-template>
+						<h4>Which frameworks do you use?</h4>
+						<p>This helps us understand which frameworks to support in our tool.</p>
+						<p>Please select at least one option</p>
+						<p><mat-checkbox formControlName="ros">ROS</mat-checkbox></p>
+						<p><mat-checkbox formControlName="ros2">ROS 2</mat-checkbox></p>
+						<p><mat-checkbox formControlName="baiduApollo">Baidu Apollo</mat-checkbox></p>
+						<p><mat-checkbox formControlName="autoware1">Autoware 1</mat-checkbox></p>
+						<p><mat-checkbox formControlName="autoware2">Autoware 2</mat-checkbox></p>
+						<p><mat-checkbox formControlName="other">Other</mat-checkbox></p>
+						<p *ngIf="frameworks.get('other').value">
+							<mat-form-field>
+								<mat-label>Specify Other Framework</mat-label>
+								<input matInput
+									formControlName="otherFrameworkName">
+							</mat-form-field>
+						</p>
+						<div class="button-container">
+							<button mat-stroked-button
+								matStepperPrevious>Back</button>
+							<button [disabled]="frameworks.invalid"
+								color="accent"
+								mat-flat-button
+								matStepperNext>Next</button>
+						</div>
+					</form>
+				</mat-step>
+
+				<!-- robots -->
+				<mat-step [stepControl]="robots">
+					<form [formGroup]="robots">
+						<ng-template matStepLabel>Robots</ng-template>
+						<h4>Which robots or vehicle do use for your projects?</h4>
+						<p>This helps us understand which vehicles and robots to support in our tool.</p>
+						<p>Please select at least one option</p>
+						<p><mat-checkbox formControlName="cars">Autonomous cars</mat-checkbox></p>
+						<p><mat-checkbox formControlName="drones">Drones</mat-checkbox></p>
+						<p><mat-checkbox formControlName="industrial">Industrial robots</mat-checkbox></p>
+						<p><mat-checkbox formControlName="educational">Educational robots</mat-checkbox></p>
+						<p><mat-checkbox formControlName="agricultural">Agricultural robots</mat-checkbox></p>
+						<p><mat-checkbox formControlName="delivery">Delivery robots</mat-checkbox></p>
+						<p><mat-checkbox formControlName="other">Other</mat-checkbox></p>
+						<p *ngIf="robots.get('other').value">
+							<mat-form-field>
+								<mat-label>Specify Other Robot</mat-label>
+								<input matInput
+									formControlName="otherRobotName">
+							</mat-form-field>
+						</p>
+						<div class="button-container">
+							<button mat-stroked-button
+								matStepperPrevious>Back</button>
+							<button [disabled]="robots.invalid"
+								color="accent"
+								mat-flat-button
+								matStepperNext>Next</button>
+						</div>
+					</form>
+				</mat-step>
+
+				<!-- final -->
+				<mat-step>
+					<ng-template matStepLabel>Done</ng-template>
+					<h4>Thank you for sharing this information</h4>
+					<p>This will help us improve our tools and serve you better.</p>
+					<div class="button-container">
+						<button mat-stroked-button
+							matStepperPrevious>Back</button>
+						<button color="accent"
+							mat-flat-button
+							(click)="submit()">Submit</button>
+					</div>
+				</mat-step>
+
+			</mat-stepper>
+
+			<!-- {{ parentForm?.value | json }} -->
+
+		</div>
+	</div>
+</div>
