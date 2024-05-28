@@ -43,10 +43,11 @@ export class TvMap {
 
 	public controllerIds = new IDService();
 
-	private _roads: Map<number, TvRoad> = new Map<number, TvRoad>();
+	public roads: Map<number, TvRoad> = new Map<number, TvRoad>();
+
+	public junctions: Map<number, TvJunction> = new Map<number, TvJunction>();
 
 	private splines: AbstractSpline[] = [];
-
 
 	constructor () {
 
@@ -60,33 +61,8 @@ export class TvMap {
 
 	}
 
-	/**
-	 * @deprecated use getRoads();
-	 */
-	get roads (): Map<number, TvRoad> {
-		return this._roads;
-	}
-
-	/**
-	 * @deprecated use setRoads()
-	 */
-	set roads ( value: Map<number, TvRoad> ) {
-		this._roads = value;
-	}
-
-	private _junctions: Map<number, TvJunction> = new Map<number, TvJunction>();
-
-	get junctions (): Map<number, TvJunction> {
-		return this._junctions;
-	}
-
-	set junctions ( value: Map<number, TvJunction> ) {
-		this._junctions = value;
-	}
-
-
 	getRoads (): TvRoad[] {
-		return Array.from( this._roads.values() );
+		return Array.from( this.roads.values() );
 	}
 
 	getControllers () {
@@ -133,25 +109,9 @@ export class TvMap {
 		return road;
 	}
 
-	/**
-	 *
-	 * @returns @deprecated
-	 */
-	addDefaultRoad (): TvRoad {
-
-		throw new Error( 'Method not implemented.' );
-
-	}
-
 	addRoad ( road: TvRoad ) {
 
-		this._roads.set( road.id, road );
-
-	}
-
-	addRoads ( roads: TvRoad[] ) {
-
-		roads.forEach( road => this.addRoad( road ) );
+		this.roads.set( road.id, road );
 
 	}
 
@@ -167,17 +127,11 @@ export class TvMap {
 
 	}
 
-	public deleteJunction ( id ): void {
-
-		this._junctions.delete( id );
-
-	}
-
 	getRoadById ( roadId: number ): TvRoad {
 
-		if ( this._roads.has( roadId ) ) {
+		if ( this.roads.has( roadId ) ) {
 
-			return this._roads.get( roadId );
+			return this.roads.get( roadId );
 
 		} else {
 
@@ -191,19 +145,19 @@ export class TvMap {
 
 	public getRoadCount (): number {
 
-		return this._roads.size;
+		return this.roads.size;
 
 	}
 
 	public getJunctionById ( id: number ): TvJunction {
 
-		return this._junctions.get( id );
+		return this.junctions.get( id );
 
 	}
 
 	public getJunctionCount (): number {
 
-		return this._junctions.size;
+		return this.junctions.size;
 
 	}
 
@@ -212,9 +166,9 @@ export class TvMap {
 	 */
 	public clear () {
 
-		this._roads.clear();
+		this.roads.clear();
 
-		this._junctions.clear();
+		this.junctions.clear();
 
 		this.props.splice( 0, this.props.length );
 
@@ -227,26 +181,9 @@ export class TvMap {
 		this.splines.splice( 0, this.splines.length );
 	}
 
-	public setHeader (
-		revMajor: number,
-		revMinor: number,
-		name: string,
-		version: number,
-		date: string,
-		north: number,
-		south: number,
-		east: number,
-		west: number,
-		vendor: string
-	) {
-
-		return this.header = new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
-
-	}
-
 	addJunctionInstance ( junction: TvJunction ) {
 
-		this._junctions.set( junction.id, junction );
+		this.junctions.set( junction.id, junction );
 
 	}
 
@@ -263,62 +200,15 @@ export class TvMap {
 	}
 
 	getJunctions () {
-		return Array.from( this._junctions.values() );
+
+		return Array.from( this.junctions.values() );
+
 	}
 
 	removeJunction ( junction: TvJunction ) {
-		this._junctions.delete( junction.id );
-	}
 
-	sortRoads () {
+		this.junctions.delete( junction.id );
 
-		const ascOrder = ( a: [ number, TvRoad ], b: [ number, TvRoad ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
-
-		this._roads = new Map( [ ...this._roads.entries() ].sort( ascOrder ) );
-	}
-
-	sortJunctions () {
-
-		this.junctions.forEach( junction => junction.sortConnections() );
-
-		const ascOrder = ( a: [ number, TvJunction ], b: [ number, TvJunction ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
-
-		this._junctions = new Map( [ ...this._junctions.entries() ].sort( ascOrder ) );
-	}
-
-	findJunction ( incoming: TvRoad, outgoing: TvRoad ): TvJunction {
-
-		let finalJunction: TvJunction = null;
-
-		for ( const junction of this.getJunctions() ) {
-
-			const connections = junction.getConnections();
-
-			for ( let i = 0; i < connections.length; i++ ) {
-
-				const connection = connections[ i ];
-				const connectingRoad = connection.connectingRoad;
-
-				if ( connection.incomingRoadId === incoming.id || connection.incomingRoadId === outgoing.id ) {
-					finalJunction = junction;
-					break;
-				}
-
-				if ( connectingRoad?.predecessor.elementId === incoming.id ) {
-					finalJunction = junction;
-					break;
-				}
-
-				if ( connectingRoad?.successor.elementId === outgoing.id ) {
-					finalJunction = junction;
-					break;
-				}
-			}
-
-			if ( finalJunction ) break;
-		}
-
-		return finalJunction;
 	}
 
 	removeSurface ( surface: Surface ) {
