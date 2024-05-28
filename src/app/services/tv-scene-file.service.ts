@@ -98,7 +98,7 @@ export class TvSceneFileService {
 
 		this.currentFile.name = FileUtils.getFilenameFromPath( path );
 
-		map.header.attr_name = this.currentFile.name;
+		map.header.name = this.currentFile.name;
 
 		this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
 
@@ -202,7 +202,7 @@ export class TvSceneFileService {
 
 		const fullName = FileUtils.getFilenameFromPath( path );
 
-		this.mapService.map.header.attr_name = fullName;
+		this.mapService.map.header.name = fullName;
 
 		const scene = this.assetService.createSceneAsset( directory, this.mapService.map, fullName );
 

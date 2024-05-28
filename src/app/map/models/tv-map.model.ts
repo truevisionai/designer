@@ -37,7 +37,7 @@ export class TvMap {
 
 	public propPolygonsGroup: Object3DMap<PropPolygon, Object3D>;
 
-	public header: TvMapHeader = new TvMapHeader( 1, 4, 'Untitled', 1, Date(), 1, 0, 0, 0, 'truevision.ai' );
+	public header: TvMapHeader;
 
 	public controllers: Map<number, TvSignalController> = new Map<number, TvSignalController>();
 
@@ -58,6 +58,8 @@ export class TvMap {
 		this.propCurvesGroup = new Object3DMap( this.gameObject );
 
 		this.propPolygonsGroup = new Object3DMap( this.gameObject );
+
+		this.header = new TvMapHeader();
 
 	}
 

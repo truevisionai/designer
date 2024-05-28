@@ -48,7 +48,7 @@ export class ExporterService {
 
 		const contents = mapExporter.getOutput( this.mapService.map );
 
-		const filename = FileUtils.getFilenameWithoutExtension( this.mapService.map.header.attr_name );
+		const filename = FileUtils.getFilenameWithoutExtension( this.mapService.map.header.name );
 
 		const path = this.storage.join( this.fileService.projectFolder, filename );
 

@@ -44,16 +44,16 @@ describe( 'OpenDrive Parsing', () => {
 
 		const header = parser.parseHeader( headerXml );
 
-		expect( header.attr_revMajor ).toBe( 1 );
-		expect( header.attr_revMinor ).toBe( 4 );
-		expect( header.attr_name ).toBe( headerXml.attr_name );
-		expect( header.attr_version ).toBe( 1 );
-		expect( header.attr_date ).toBe( headerXml.attr_date );
-		expect( header.attr_north ).toBe( 1 );
-		expect( header.attr_south ).toBe( 1 );
-		expect( header.attr_east ).toBe( 1 );
-		expect( header.attr_west ).toBe( 1 );
-		expect( header.attr_vendor ).toBe( headerXml.attr_vendor );
+		expect( header.revMajor ).toBe( 1 );
+		expect( header.revMinor ).toBe( 4 );
+		expect( header.name ).toBe( headerXml.attr_name );
+		expect( header.version ).toBe( 1 );
+		expect( header.date ).toBe( headerXml.attr_date );
+		expect( header.north ).toBe( 1 );
+		expect( header.south ).toBe( 1 );
+		expect( header.east ).toBe( 1 );
+		expect( header.west ).toBe( 1 );
+		expect( header.vendor ).toBe( headerXml.attr_vendor );
 
 	} );
 
