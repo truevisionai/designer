@@ -9,6 +9,7 @@ import { TextureAsset } from "../../graphics/texture/tv-texture.model";
 import { MaterialAsset } from "../../graphics/material/tv-material.asset";
 import { Object3D } from "three";
 import { TvObjectAsset } from "../../graphics/object/tv-object.asset";
+import { TvConsole } from "../utils/console";
 
 export class AssetDatabase {
 
@@ -59,7 +60,7 @@ export class AssetDatabase {
 
 		} else {
 
-			console.warn( `Undefined asset ${ guid }` );
+			TvConsole.warn( `Undefined asset ${ guid }` );
 
 		}
 
