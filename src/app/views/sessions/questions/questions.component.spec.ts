@@ -7,6 +7,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from "@angular/router";
+import { HttpClientModule } from "@angular/common/http";
 
 describe( 'QuestionsComponent', () => {
 	let component: QuestionsComponent;
@@ -21,7 +23,9 @@ describe( 'QuestionsComponent', () => {
 				MatCheckboxModule,
 				MatFormFieldModule,
 				MatInputModule,
-				BrowserAnimationsModule
+				BrowserAnimationsModule,
+				HttpClientModule,
+				RouterModule.forRoot( [] )
 			],
 			declarations: [ QuestionsComponent ],
 			providers: [ FormBuilder ]
