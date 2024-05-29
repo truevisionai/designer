@@ -3,8 +3,8 @@
  */
 
 import { ConditionUtils } from '../../builders/condition-utils';
-// import { ScenarioInstance } from '../../services/scenario-instance';
 import { ConditionCategory, ConditionEdge, ConditionType, Rule } from '../tv-enums';
+import { TvScenario } from "../tv-scenario";
 
 export function conditionTypeToString ( type: ConditionType ) {
 
@@ -60,17 +60,23 @@ export function conditionTypeToString ( type: ConditionType ) {
 
 	if ( type == ConditionType.TrafficSignalController ) return 'TrafficSignalControllerCondition';
 
-
 }
 
 export abstract class Condition {
 
 	public abstract category: ConditionCategory;
+
 	public abstract conditionType: ConditionType;
+
 	public abstract label: string;
+
 	public delay: number = 0;
+
 	public edge: ConditionEdge = ConditionEdge.risingOrFalling;
+
 	public passed: boolean;
+
+	public scenario: TvScenario;
 
 	constructor () {
 	}
@@ -78,13 +84,6 @@ export abstract class Condition {
 	get conditionTypeString () {
 		return conditionTypeToString( this.conditionType );
 	}
-
-	protected get scenario (): any {
-		throw new Error( 'method not implemented' );
-		// return ScenarioInstance.scenario;
-	}
-
-	// abstract toXML (): any;
 
 	abstract hasPassed (): boolean;
 
@@ -96,6 +95,7 @@ export abstract class Condition {
 
 	reset () {
 		this.passed = false;
+		this.scenario = null;
 	}
 }
 

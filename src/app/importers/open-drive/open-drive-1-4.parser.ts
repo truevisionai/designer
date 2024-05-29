@@ -54,13 +54,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	setMap ( map: TvMap ) {
-		this.map = map;
-	}
-
-	/**
-	 * Reads the data from the OpenDrive structure to a file
-	 */
 	parse ( xml: XmlElement ) {
 
 		this.map = new TvMap();
@@ -71,43 +64,31 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		if ( !openDRIVE ) this.snackBar.warn( 'No OpenDRIVE tag found. Import Failed' );
 		if ( !openDRIVE ) return;
 
-		if ( !openDRIVE.road ) TvConsole.error( 'No road tag found. Import Failed' );
-		if ( !openDRIVE.road ) this.snackBar.warn( 'No road tag found' );
-		if ( !openDRIVE.road ) return;
+		if ( !openDRIVE?.road ) TvConsole.error( 'No road tag found. Import Failed' );
+		if ( !openDRIVE?.road ) this.snackBar.warn( 'No road tag found' );
+		if ( !openDRIVE?.road ) return;
 
-		this.map.header = this.parseHeader( openDRIVE.header );
+		this.map.header = this.parseHeader( openDRIVE?.header );
 
-		readXmlArray( openDRIVE.controller, xml => {
+		readXmlArray( openDRIVE?.controller, xml => {
 
 			this.map.addController( this.parseController( xml ) );
 
 		} );
 
-		readXmlArray( openDRIVE.junction, ( xml ) => {
+		readXmlArray( openDRIVE?.junction, ( xml ) => {
 
 			this.map.addJunctionInstance( this.parseJunction( xml ) );
 
 		} );
 
-		this.parseRoads( openDRIVE );
+		readXmlArray( openDRIVE?.road, ( xml ) => {
 
-		readXmlArray( openDRIVE.junction, ( xml ) => {
-
-			const junctionId = parseInt( xml.attr_id );
-
-			const junction = this.map.getJunctionById( junctionId )
-
-			if ( !junction ) return;
-
-			this.parseJunctionConnections( junction, xml );
-
-			this.parseJunctionPriorities( junction, xml );
-
-			this.parseJunctionControllers( junction, xml );
+			this.map.addRoad( this.parseRoad( xml ) );
 
 		} );
 
-		readXmlArray( openDRIVE.road, ( xml ) => {
+		readXmlArray( openDRIVE?.road, ( xml ) => {
 
 			const road = this.map.getRoadById( parseInt( xml.attr_id ) );
 
@@ -123,17 +104,25 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		} );
 
-		// if ( xml.link != null ) {
-		// this.parseRoadLinks( road, xml.link );
-		// }
+		readXmlArray( openDRIVE?.junction, ( xml ) => {
+
+			const junctionId = parseInt( xml.attr_id );
+
+			const junction = this.map.getJunctionById( junctionId )
+
+			if ( !junction ) return;
+
+			this.parseJunctionConnections( junction, xml );
+
+			this.parseJunctionPriorities( junction, xml );
+
+			this.parseJunctionControllers( junction, xml );
+
+		} );
 
 		return this.map;
 	}
 
-	/**
-	 * The following methods are used to read the data from the XML file and fill in the the OpenDrive structure
-	 * Methods follow the hierarchical structure and are called automatically when ReadFile is executed
-	 */
 	public parseHeader ( xmlElement: XmlElement ): TvMapHeader {
 
 		const revMajor = parseFloat( xmlElement.attr_revMajor );
@@ -229,22 +218,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		spline.addRoadSegment( 0, road );
 
 		return spline;
-	}
-
-	public parseRoads ( xmlElement: XmlElement ) {
-
-		if ( xmlElement.road == null ) TvConsole.error( 'no roads found' );
-
-		if ( xmlElement.road == null ) return;
-
-		readXmlArray( xmlElement.road, ( xml ) => {
-
-			const road = this.parseRoad( xml );
-
-			if ( road ) this.map.addRoad( road );
-
-		} );
-
 	}
 
 	public parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ) {
@@ -625,6 +598,8 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		if ( !outgoingRoad ) console.warn( 'outgoingRoad', outgoingRoad, connectingRoad );
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
+
+		connection.junction = junction;
 
 		readXmlArray( xmlElement.laneLink, xml => {
 

@@ -3,13 +3,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { VehicleFactory } from 'app/factories/vehicle.factory';
+import { EntityFactory } from 'app/scenario/entity/entity.factory';
 import { FileUtils } from 'app/io/file-utils';
 import { AbstractReader } from 'app/importers/abstract-reader';
 import { XMLParser } from 'fast-xml-parser';
 import { Vector3 } from 'three';
 import { IFile } from '../../io/file';
-import { FileService } from '../../io/file.service';
 import { readXmlArray, readXmlElement } from '../../utils/xml-utils';
 import { TvConsole } from '../../core/utils/console';
 import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
@@ -88,7 +87,7 @@ import { TvEvent } from '../models/tv-event';
 import { FileHeader } from '../models/tv-file-header';
 import { EventAction, Maneuver } from '../models/tv-maneuver';
 import { Orientation } from '../models/tv-orientation';
-import { Parameter, ParameterDeclaration } from '../models/tv-parameter-declaration';
+import { ParameterDeclaration } from '../models/tv-parameter-declaration';
 import { TvProperty } from '../models/tv-properties';
 import { RoadNetwork } from '../models/tv-road-network';
 import { Route, Waypoint } from '../models/tv-route';
@@ -96,8 +95,15 @@ import { TvScenario } from '../models/tv-scenario';
 import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { Storyboard } from '../models/tv-storyboard';
-import { AbstractShape, ClothoidShape, ControlPoint, PolylineShape, SplineShape, Trajectory, Vertex } from '../models/tv-trajectory';
-import { ParameterResolver } from './scenario-builder.service';
+import {
+	AbstractShape,
+	ClothoidShape,
+	ControlPoint,
+	PolylineShape,
+	SplineShape,
+	Trajectory,
+	Vertex
+} from '../models/tv-trajectory';
 import {
 	TrafficSignalController,
 	TrafficSignalControllerCondition,
@@ -108,6 +114,7 @@ import { TrafficSignalCondition } from './traffic-signal.condition';
 import { UserDefinedValueCondition } from './user-defined-value.condition';
 import { XmlElement } from "../../importers/xml.element";
 import { StorageService } from 'app/io/storage.service';
+import { ParameterResolver } from "./parameter.resolver";
 
 @Injectable( {
 	providedIn: 'root'
@@ -116,9 +123,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	private directoryPath: string;
 
-	private scenario: TvScenario;
-
-	constructor ( private storage: StorageService ) {
+	constructor ( private storage: StorageService, private vehicleFactory: EntityFactory ) {
 		super();
 	}
 
@@ -217,7 +222,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	parseScenario ( xml: XmlElement ): TvScenario {
 
-		const scenario = this.scenario = new TvScenario();
+		const scenario = new TvScenario();
 
 		scenario.parameterDeclarations = this.parseParameterDeclarations( xml.ParameterDeclarations );
 
@@ -367,7 +372,6 @@ export class OpenScenarioLoader extends AbstractReader {
 
 			} );
 
-
 		} catch ( error ) {
 
 			TvConsole.error( error );
@@ -478,20 +482,10 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		const value: string = xml.attr_value;
 
-		const type: ParameterType = Parameter.stringToEnum( xml.attr_type || xml.attr_parameterType );
+		const type: ParameterType = ParameterDeclaration.stringToType( xml.attr_type || xml.attr_parameterType );
 
-		return new ParameterDeclaration( new Parameter( name, type, value ) );
+		return new ParameterDeclaration( name, type, value );
 
-	}
-
-	parseParameter ( xml: XmlElement ): Parameter {
-
-		const name: string = xml.attr_name;
-		const value: string = xml.attr_value;
-
-		const type = Parameter.stringToEnum( xml.attr_type || xml.attr_parameterType );
-
-		return new Parameter( name, type, value );
 	}
 
 	parseSpeedCondition ( xml: XmlElement ): SpeedCondition {
@@ -742,7 +736,7 @@ export class OpenScenarioLoader extends AbstractReader {
 			}
 		}
 
-		entityObject = entityObject || VehicleFactory.createDefaultCar( name );
+		entityObject = entityObject || this.vehicleFactory.createDefaultCar( name );
 
 		entityObject.name = name;
 
@@ -1226,7 +1220,6 @@ export class OpenScenarioLoader extends AbstractReader {
 			} );
 		} );
 
-
 		return act;
 
 	}
@@ -1313,7 +1306,6 @@ export class OpenScenarioLoader extends AbstractReader {
 		readXmlArray( xml.StartTrigger?.ConditionGroup, ( xml ) => {
 			event.startConditionGroups.push( this.parseConditionGroup( xml ) );
 		} );
-
 
 		return event;
 	}
@@ -1634,7 +1626,6 @@ export class OpenScenarioLoader extends AbstractReader {
 		} );
 
 		return shape;
-
 
 	}
 
@@ -2130,7 +2121,6 @@ export class OpenScenarioLoader extends AbstractReader {
 				return DirectionDimension.all;
 
 		}
-
 
 	}
 

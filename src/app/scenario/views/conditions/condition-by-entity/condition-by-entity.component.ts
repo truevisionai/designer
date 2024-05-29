@@ -3,9 +3,9 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { ScenarioService } from 'app/scenario/services/scenario.service';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { ConditionType, TriggeringRule } from '../../../models/tv-enums';
+import { EntityService } from "../../../entity/entity.service";
 
 @Component( {
 	selector: 'app-condition-by-entity',
@@ -20,13 +20,11 @@ export class ConditionByEntityComponent implements OnInit {
 
 	conditions = ConditionType;
 
-	constructor () {
+	constructor ( private entityService: EntityService ) {
 	}
 
 	get entities () {
-
-		return [ ...ScenarioService.scenario.objects.keys() ];
-
+		return this.entityService.entities.map( entity => entity.name );
 	}
 
 	// only selecting one entity is supported for now

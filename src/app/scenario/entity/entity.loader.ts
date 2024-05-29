@@ -7,7 +7,7 @@ import { ScenarioEntity } from 'app/scenario/models/entities/scenario-entity';
 import { VehicleEntity } from 'app/scenario/models/entities/vehicle-entity';
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/scenario/models/tv-bounding-box';
 import { Vector3 } from 'three';
-import { XmlElement } from "../importers/xml.element";
+import { XmlElement } from "../../importers/xml.element";
 import { Injectable } from '@angular/core';
 import { Asset } from 'app/core/asset/asset.model';
 import { StorageService } from 'app/io/storage.service';
@@ -15,7 +15,7 @@ import { StorageService } from 'app/io/storage.service';
 @Injectable( {
 	providedIn: 'root'
 } )
-export class TvEntityLoader {
+export class EntityLoader {
 
 	constructor (
 		private storageService: StorageService

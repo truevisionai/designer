@@ -118,7 +118,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( asset.type != AssetType.ROAD_STYLE ) return;
 
-		const road = TvMapQueries.getRoadByCoords( position.x, position.y );
+		const road = this.tool.roadService.findNearestRoad( position );
 
 		if ( !road ) return;
 

@@ -21,7 +21,8 @@ export class ActEditorComponent implements OnInit {
 	constructor (
 		public dialogRef: MatDialogRef<ActEditorComponent>,
 		@Inject( MAT_DIALOG_DATA ) public data: ScenarioEntity,
-		private dialog: MatDialog
+		private dialog: MatDialog,
+		private scenarioService: ScenarioService
 	) {
 
 	}
@@ -31,7 +32,7 @@ export class ActEditorComponent implements OnInit {
 	}
 
 	get scenario () {
-		return ScenarioService.scenario;
+		return this.scenarioService.getScenario();
 	}
 
 	ngOnInit () {

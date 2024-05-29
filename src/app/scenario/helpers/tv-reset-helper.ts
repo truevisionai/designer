@@ -11,13 +11,13 @@ import { Story } from '../models/tv-story';
 
 export class ResetHelper {
 
-	constructor ( private openScenario: TvScenario ) {
+	constructor ( private scenario: TvScenario ) {
 
 	}
 
 	reset () {
 
-		this.openScenario.objects.forEach( entity => {
+		this.scenario.objects.forEach( entity => {
 
 			entity.enable();
 
@@ -27,13 +27,13 @@ export class ResetHelper {
 
 		} );
 
-		this.openScenario.storyboard.stories.forEach( story => {
+		this.scenario.storyboard.stories.forEach( story => {
 
 			this.resetStory( story );
 
 		} );
 
-		this.openScenario.storyboard.endConditionGroups.forEach( group => {
+		this.scenario.storyboard.endConditionGroups.forEach( group => {
 
 			group.reset();
 

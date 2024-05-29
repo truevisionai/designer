@@ -6,9 +6,9 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { Vector3 } from 'three';
 import { ViewportEvents } from 'app/events/viewport-events';
+import { RoadService } from "./road/road.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -27,7 +27,9 @@ export class StatusBarService {
 
 	// public message = '';
 
-	constructor () {
+	constructor (
+		public roadService: RoadService,
+	) {
 		this.cursor = new PointerEventData();
 		this.cursor.point = new Vector3();
 		ViewportEvents.instance?.pointerMoved.subscribe( this.onPointerMoved.bind( this ) );
@@ -103,7 +105,8 @@ export class StatusBarService {
 		if ( !data?.point ) return;
 
 		this.cursor = data;
-		this.road = TvMapQueries.getRoadByCoords( data.point.x, data.point.y, this.pos );
+
+		this.road = this.roadService.findNearestRoad( data.point, this.pos );
 
 	}
 

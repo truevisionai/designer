@@ -2,12 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-
-import { SnackBar } from 'app/services/snack-bar.service';
+import { Injectable } from "@angular/core";
 import { Vector3 } from 'three';
 import { TvConsole } from '../../core/utils/console';
 import { TvPosTheta } from '../../map/models/tv-pos-theta';
-import { TvMapQueries } from '../../map/queries/tv-map-queries';
 import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { EntityRef } from '../models/entity-ref';
 import { Position } from '../models/position';
@@ -20,13 +18,17 @@ import { RoadPosition } from '../models/positions/tv-road-position';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { PositionType } from '../models/tv-enums';
 import { Orientation } from '../models/tv-orientation';
+import { RoadService } from "../../services/road/road.service";
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class PositionFactory {
-	static reset () {
-		// throw new Error( 'Method not implemented.' );
+
+	constructor ( private roadService: RoadService ) {
 	}
 
-	public static createPosition ( type: PositionType, position: Position, entity?: ScenarioEntity ): Position {
+	public createPosition ( type: PositionType, position: Position, entity?: ScenarioEntity ): Position {
 
 		const vector3 = position ? position.getVectorPosition() : new Vector3( 0, 0, 0 );
 
@@ -34,7 +36,7 @@ export class PositionFactory {
 
 	}
 
-	public static createPositionFromVector ( type: PositionType, vector3: Vector3, orientation?: Orientation, entity?: ScenarioEntity ) {
+	private createPositionFromVector ( type: PositionType, vector3: Vector3, orientation?: Orientation, entity?: ScenarioEntity ) {
 
 		if ( type == PositionType.World ) {
 
@@ -92,11 +94,11 @@ export class PositionFactory {
 
 	}
 
-	static createRoadPosition ( vector3: Vector3, orientation: Orientation ): RoadPosition {
+	private createRoadPosition ( vector3: Vector3, orientation: Orientation ): RoadPosition {
 
 		const posTheta = new TvPosTheta();
 
-		const road = TvMapQueries.getRoadByCoords( vector3.x, vector3.y, posTheta );
+		const road = this.roadService.findNearestRoad( vector3, posTheta );
 
 		if ( road ) {
 
@@ -110,11 +112,11 @@ export class PositionFactory {
 
 	}
 
-	static createRelativeRoadPosition ( entity: EntityRef, vector3: Vector3, orientation: Orientation ): RelativeRoadPosition {
+	private createRelativeRoadPosition ( entity: EntityRef, vector3: Vector3, orientation: Orientation ): RelativeRoadPosition {
 
 		const posTheta = new TvPosTheta();
 
-		const road = TvMapQueries.getRoadByCoords( vector3.x, vector3.y, posTheta );
+		const road = this.roadService.findNearestRoad( vector3, posTheta );
 
 		if ( road ) {
 
@@ -128,13 +130,13 @@ export class PositionFactory {
 
 	}
 
-	public static createRelativeLanePosition ( entityRef: string, vector3: Vector3, orientation: Orientation ): RelativeLanePosition {
+	private createRelativeLanePosition ( entityRef: string, vector3: Vector3, orientation: Orientation ): RelativeLanePosition {
 
 		// return new RelativeLanePosition( new EntityRef( entityRef ), 0, 0, 0, 0, orientation );
 
 		const posTheta = new TvPosTheta();
 
-		const results = TvMapQueries.getLaneByCoords( vector3.x, vector3.y, posTheta );
+		const results = this.roadService.findNearestLane( vector3, posTheta );
 
 		if ( results ) {
 
@@ -148,11 +150,11 @@ export class PositionFactory {
 
 	}
 
-	private static createLanePosition ( vector3: Vector3, orientation: Orientation ): LanePosition {
+	private createLanePosition ( vector3: Vector3, orientation: Orientation ): LanePosition {
 
 		const posTheta = new TvPosTheta();
 
-		const results = TvMapQueries.getLaneByCoords( vector3.x, vector3.y, posTheta );
+		const results = this.roadService.findNearestLane( vector3, posTheta );
 
 		if ( results ) {
 

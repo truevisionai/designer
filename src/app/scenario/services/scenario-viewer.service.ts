@@ -16,12 +16,14 @@ import { CameraService } from "../../renderer/camera.service";
 export class ScenarioViewerService {
 
 	private originalPosition = new Vector3();
+
 	private originalQuaternion = new Quaternion();
 
 	constructor (
 		private player: PlayerService,
 		private viewController: ViewControllerService,
 		private cameraService: CameraService,
+		private scenarioService: ScenarioService,
 	) {
 
 		player.playerStarted.subscribe( e => this.onPlayerStarted() );
@@ -34,7 +36,7 @@ export class ScenarioViewerService {
 
 	setFocus () {
 
-		const entities = [ ...ScenarioService.scenario.objects.values() ];
+		const entities = this.scenarioService.entities;
 
 		if ( entities.length === 0 ) {
 
@@ -43,13 +45,13 @@ export class ScenarioViewerService {
 			return;
 		}
 
-		const entity = [ ...ScenarioService.scenario.objects.values() ][ 0 ];
+		const entity = entities[ 0 ];
 
 		// Store original position and orientation
 		this.originalPosition.copy( this.cameraService.camera.position );
 		this.originalQuaternion.copy( this.cameraService.camera.quaternion );
 
-		this.viewController.setFocusTarget( entity );
+		// this.viewController.setFocusTarget( entity );
 
 	}
 
@@ -81,7 +83,7 @@ export class ScenarioViewerService {
 
 	private removeFocus () {
 
-		const entities = [ ...ScenarioService.scenario.objects.values() ];
+		const entities = this.scenarioService.entities;
 
 		if ( entities.length === 0 ) {
 

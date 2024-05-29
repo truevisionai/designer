@@ -11,7 +11,6 @@ import { ScenarioEntity } from './scenario-entity';
 
 export class VehicleEntity extends ScenarioEntity {
 
-
 	public scenarioObjectType: ScenarioObjectType = ScenarioObjectType.vehicle;
 
 	constructor (
@@ -24,7 +23,6 @@ export class VehicleEntity extends ScenarioEntity {
 	) {
 		super( name, boundingBox );
 	}
-
 
 	@SerializedField( { type: 'string' } )
 	get entityName (): string {

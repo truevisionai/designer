@@ -9,21 +9,29 @@ import { VehicleEntity } from 'app/scenario/models/entities/vehicle-entity';
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/scenario/models/tv-bounding-box';
 import { ActionType, VehicleCategory } from 'app/scenario/models/tv-enums';
 import { Orientation } from 'app/scenario/models/tv-orientation';
-import { EntityManager } from 'app/managers/entity-manager';
 import { Object3D, Vector3 } from 'three';
-import { IDService } from './id.service';
+import { IDService } from '../../factories/id.service';
+import { Injectable } from "@angular/core";
 
-export class VehicleFactory {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class EntityFactory {
 
-	private static entityId = new IDService();
+	private entityIds = new IDService();
 
-	static reset () {
+	constructor (
+		private actionFactory: ActionFactory
+	) {
+	}
 
-		this.entityId.reset();
+	reset () {
+
+		this.entityIds.reset();
 
 	}
 
-	static createVehicleAt ( vector3: Vector3, orientation?: Orientation ): VehicleEntity {
+	createVehicleAt ( vector3: Vector3, orientation?: Orientation ): VehicleEntity {
 
 		const vehicle: VehicleEntity = this.getSelectedVehicle();
 
@@ -31,17 +39,17 @@ export class VehicleFactory {
 
 		vehicle.rotation.copy( orientation.toEuler() );
 
-		vehicle.addInitAction( ActionFactory.createPositionAction( vehicle, vector3, orientation ) );
+		vehicle.addInitAction( this.actionFactory.createPositionAction( vehicle, vector3, orientation ) );
 
-		vehicle.addInitAction( ActionFactory.createActionWithoutName( ActionType.Private_Longitudinal_Speed, vehicle ) );
+		vehicle.addInitAction( this.actionFactory.createActionWithoutName( ActionType.Private_Longitudinal_Speed, vehicle ) );
 
 		return vehicle;
 
 	}
 
-	static getSelectedVehicle (): VehicleEntity {
+	getSelectedVehicle (): VehicleEntity {
 
-		const selectedVehicle = EntityManager.instance.getEntity<VehicleEntity>();
+		const selectedVehicle = null; //EntityManager.instance.getEntity<VehicleEntity>();
 
 		if ( !selectedVehicle ) return this.createDefaultCar();
 
@@ -51,7 +59,7 @@ export class VehicleFactory {
 
 			const mesh = AssetDatabase.getInstance<Object3D>( selectedVehicle.model3d ).clone();
 
-			vehicle.name = this.entityId.getName( 'Vehicle' );
+			vehicle.name = this.entityIds.getName( 'Vehicle' );
 
 			vehicle.geometry.dispose();
 
@@ -63,7 +71,7 @@ export class VehicleFactory {
 
 			const vehicle = selectedVehicle?.clone();
 
-			vehicle.name = this.entityId.getName( 'Vehicle' );
+			vehicle.name = this.entityIds.getName( 'Vehicle' );
 
 			return vehicle;
 
@@ -71,7 +79,7 @@ export class VehicleFactory {
 
 	}
 
-	static createVehicle ( category: VehicleCategory ): VehicleEntity {
+	createVehicle ( category: VehicleCategory ): VehicleEntity {
 
 		switch ( category ) {
 
@@ -91,9 +99,9 @@ export class VehicleFactory {
 
 	}
 
-	static createDefaultCar ( name?: string, category = VehicleCategory.car ): VehicleEntity {
+	createDefaultCar ( name?: string, category = VehicleCategory.car ): VehicleEntity {
 
-		const vehicleName = name || this.entityId.getName( 'Vehicle' );
+		const vehicleName = name || this.entityIds.getName( 'Vehicle' );
 
 		const boundingBox = new TvBoundingBox(
 			new Vector3( 1.3, 0.0, 0.75 ),
@@ -114,9 +122,9 @@ export class VehicleFactory {
 		return vehicleEntity;
 	}
 
-	static createDefaultTruck ( name?: string, category = VehicleCategory.truck ): VehicleEntity {
+	createDefaultTruck ( name?: string, category = VehicleCategory.truck ): VehicleEntity {
 
-		const vehicleName = name || this.entityId.getName( 'Truck' );
+		const vehicleName = name || this.entityIds.getName( 'Truck' );
 
 		const boundingBox = new TvBoundingBox(
 			new Vector3( 1.3, 0.0, 0.75 ),

@@ -11,7 +11,7 @@ import { JunctionEventListener } from './junction-event.listener';
 import { LaneEventListener } from 'app/listeners/lane-event-listener';
 import { ObjectEventListener } from './object-event-listener';
 import { MapManager } from "../managers/map-manager";
-import { EntityManager } from "../managers/entity-manager";
+import { EntityManager } from "../scenario/entity/entity.manager";
 
 @Injectable( {
 	providedIn: 'root'

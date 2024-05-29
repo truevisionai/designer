@@ -31,60 +31,9 @@ export abstract class TvBaseQueries {
 }
 
 export class TvMapQueries extends TvBaseQueries {
-
-	static getRoadWidthAt ( roadId: number, s: number ) {
-
-		let leftWidth = 0, rightWidth = 0;
-
-		this.findRoadById( roadId )
-			.getLaneSectionAt( s )
-			.getLeftLanes()
-			.forEach( lane => leftWidth += lane.getWidthValue( s ) );
-
-		this.findRoadById( roadId )
-			.getLaneSectionAt( s )
-			.getRightLanes()
-			.forEach( lane => rightWidth += lane.getWidthValue( s ) );
-
-		return {
-			totalWidth: leftWidth + rightWidth,
-			leftSideWidth: leftWidth,
-			rightSideWidth: rightWidth,
-		};
-	}
-
 	static findRoadById ( id: number ): TvRoad {
 
 		return this.map.roads.get( id );
-
-	}
-
-	static getSignalById ( id: number ) {
-
-		let res = null;
-
-		for ( const road of this.roads ) {
-
-			for ( const signal of road[ 1 ].signals ) {
-
-				if ( signal[ 1 ].id === id ) {
-
-					res = signal;
-					break;
-
-				}
-
-			}
-
-			if ( res ) break;
-		}
-
-		return res;
-	}
-
-	static getRoadPosition ( roadId: number, s: number, t: number ): TvPosTheta {
-
-		return this.findRoadById( roadId ).getPosThetaAt( s, t );
 
 	}
 
@@ -99,6 +48,16 @@ export class TvMapQueries extends TvBaseQueries {
 		return posTheta.toRoadCoord( road );
 	}
 
+	/**
+	 * use RoadService.findNearestRoad
+	 *
+	 * @param x
+	 * @param y
+	 * @param posTheta
+	 * @param roadIdsToIgnore
+	 * @returns
+	 * @deprecated use RoadService.findNearestRoad
+	 */
 	static getRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {
 
 		// console.time( 'get-road' );
@@ -146,151 +105,6 @@ export class TvMapQueries extends TvBaseQueries {
 		// console.timeEnd( 'get-road' );
 
 		return nearestRoad;
-
-	}
-
-	/**
-	 * this will return a road only if the x,y fall on the road
-	 * currently on approximation does not work correctly
-	 * @param x
-	 * @param y
-	 * @param posTheta
-	 * @param roadIdsToIgnore
-	 */
-	static getStrictRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {
-
-		const tmpPosTheta = new TvPosTheta();
-
-		let nearestRoad: TvRoad = null;
-
-		let nearestGeometry: TvAbstractRoadGeometry = null;
-
-		let nearestPosition: Vector2 = null;
-
-		let minDistance = Number.MAX_SAFE_INTEGER;
-
-		const point = new Vector2( x, y );
-
-		let road: TvRoad;
-
-		for ( const keyValue of this.roads ) {
-
-			road = keyValue[ 1 ];
-
-			let geometry: TvAbstractRoadGeometry;
-
-			if ( roadIdsToIgnore.includes( road.id ) ) continue;
-
-			for ( let j = 0; j < road.geometries.length; j++ ) {
-
-				geometry = road.geometries[ j ];
-
-				const nearestPoint = geometry.getNearestPointFrom( x, y, tmpPosTheta );
-
-				const distance = point.distanceTo( nearestPoint );
-
-				if ( distance < minDistance ) {
-
-					minDistance = distance;
-					nearestRoad = road;
-					nearestGeometry = geometry;
-					nearestPosition = nearestPoint;
-
-					if ( posTheta ) {
-						posTheta.copy( tmpPosTheta );
-					}
-				}
-			}
-		}
-
-		if ( !nearestRoad || !tmpPosTheta ) return null;
-
-		const distanceStart = point.distanceToSquared( nearestGeometry.getPositionAt( nearestGeometry.s ).toVector2() );
-		const distanceEnd = point.distanceToSquared( nearestGeometry.getPositionAt( nearestGeometry.endS ).toVector2() );
-		const distanceMin = point.distanceToSquared( nearestPosition );
-
-		if ( distanceStart < distanceMin ) {
-			nearestPosition = road.getPosThetaAt( nearestGeometry.s ).toVector2();
-		} else if ( distanceEnd < distanceMin ) {
-			nearestPosition = road.getPosThetaAt( nearestGeometry.endS ).toVector2();
-		}
-
-		if ( point.distanceTo( nearestPosition ) > 1 ) {
-
-			return nearestRoad;
-
-		} else {
-
-			return null;
-
-		}
-
-
-		// const width = nearestRoad.getRoadWidthAt( tmpPosTheta.s );
-		// const t = tmpPosTheta.t;
-		//
-		// if ( tmpPosTheta.s > 0 && t > 0 && Math.abs( t ) <= width.leftSideWidth ) {
-		// 	return nearestRoad;
-		// } else if ( tmpPosTheta.s > 0 && t < 0 && Math.abs( t ) <= width.rightSideWidth ) {
-		// 	return nearestRoad;
-		// } else {
-		// 	return null;
-		// }
-	}
-
-	static getLaneStartPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
-
-		const road = this.roads.get( roadId );
-
-		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
-
-		let posTheta = road.getPosThetaAt( sCoordinate );
-
-		const laneSection = road.getLaneSectionAt( sCoordinate );
-
-		const lane = laneSection.getLaneById( laneId );
-
-		const tDirection = laneId > 0 ? 1 : -1;
-
-		const cumulativeWidth = laneSection.getWidthUptoStart( lane, sCoordinate );
-
-		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
-
-		posTheta.x += cosTheta * ( cumulativeWidth + offset );
-		posTheta.y += sinTheta * ( cumulativeWidth + offset );
-
-		if ( refPos ) refPos.copy( posTheta );
-
-		return posTheta.toVector3();
-
-	}
-
-	static getLaneEndPosition ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0, refPos?: TvPosTheta ): Vector3 {
-
-		const road = this.roads.get( roadId );
-
-		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
-
-		let posTheta = road.getPosThetaAt( sCoordinate );
-
-		const laneSection = road.getLaneSectionAt( sCoordinate );
-
-		const lane = laneSection.getLaneById( laneId );
-
-		const tDirection = laneId > 0 ? 1 : -1;
-
-		const cumulativeWidth = laneSection.getWidthUptoEnd( lane, sCoordinate );
-
-		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
-
-		posTheta.x += cosTheta * ( cumulativeWidth + offset );
-		posTheta.y += sinTheta * ( cumulativeWidth + offset );
-
-		if ( refPos ) refPos.copy( posTheta );
-
-		return posTheta.toVector3();
 
 	}
 
@@ -351,32 +165,6 @@ export class TvMapQueries extends TvBaseQueries {
 
 	}
 
-	static getLanePosHdg ( roadId: number, laneId: number, sCoordinate: number, offset: number = 0 ): TvPosTheta {
-
-		const posTheta = new TvPosTheta();
-
-		this.getLaneCenterPosition( roadId, laneId, sCoordinate, offset, posTheta );
-
-		return posTheta;
-
-	}
-
-	static getWaypoints ( direction: number, roadId: number, laneId: number, sCoordinate: number, offset: number = 0 ): TvPosTheta[] {
-
-		let waypoints = [];
-
-		const road = this.findRoadById( roadId );
-
-		for ( let s = sCoordinate; s <= road.length && s >= 0; s += direction ) {
-			const posTheta = new TvPosTheta();
-			this.getLaneCenterPosition( roadId, laneId, s, offset, posTheta );
-			waypoints.push( posTheta );
-		}
-
-		return waypoints;
-
-	}
-
 	/**
 	 *
 	 * @param x
@@ -385,7 +173,10 @@ export class TvMapQueries extends TvBaseQueries {
 	 * @param roadIdsToIgnore
 	 * @deprecated
 	 */
-	static getLaneByCoords ( x: number, y: number, posTheta: TvPosTheta, ...roadIdsToIgnore ): { road: TvRoad, lane: TvLane } {
+	static getLaneByCoords ( x: number, y: number, posTheta: TvPosTheta, ...roadIdsToIgnore ): {
+		road: TvRoad,
+		lane: TvLane
+	} {
 
 		let resultLane: TvLane = null;
 
@@ -563,7 +354,6 @@ export class TvMapQueries extends TvBaseQueries {
 
 	static laneSpeedFromRoadType ( laneCoord, double ) {
 	}
-
 
 	static getRoadMark ( lane: TvLane, double ) {
 	}

@@ -17,6 +17,7 @@ export enum ParameterType {
 	unsignedInt = 'unsignedInt',
 	unsignedShort = 'unsignedShort',
 	dateTime = 'dateTime',
+	unknown = 'unknown',
 }
 
 export enum Sex {

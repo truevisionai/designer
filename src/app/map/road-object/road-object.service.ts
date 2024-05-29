@@ -10,7 +10,6 @@ import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-o
 import { RoadObjectBuilder } from 'app/map/road-object/road-object.builder';
 import { Group } from 'three';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
-import { RoadSignalService } from 'app/map/road-signal/road-signal.service';
 import { TvColors, TvRoadMarkWeights } from 'app/map/models/tv-common';
 import { IDService } from 'app/factories/id.service';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
@@ -26,7 +25,6 @@ export class RoadObjectService {
 
 	constructor (
 		private map: MapService,
-		private signal: RoadSignalService, // just for import,
 		private builder: RoadObjectBuilder,
 		private cornerFactory: CornerRoadFactory,
 	) {

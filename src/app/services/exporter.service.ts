@@ -37,6 +37,7 @@ export class ExporterService {
 		private mapService: MapService,
 		private snackBar: SnackBar,
 		private storage: StorageService,
+		private scenarioService: ScenarioService,
 	) {
 	}
 
@@ -68,7 +69,7 @@ export class ExporterService {
 
 		const scenarioExporter = new OpenScenarioExporter();
 
-		const contents = scenarioExporter.getOutputString( ScenarioService.scenario );
+		const contents = scenarioExporter.getOutputString( this.scenarioService.getScenario() );
 
 		const directory = this.fileService.projectFolder;
 

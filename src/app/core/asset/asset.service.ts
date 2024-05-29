@@ -4,7 +4,6 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
-import { VehicleFactory } from 'app/factories/vehicle.factory';
 import { VehicleCategory } from 'app/scenario/models/tv-enums';
 import { TvStandardMaterial } from 'app/graphics/material/tv-standard-material';
 import { TvMap } from 'app/map/models/tv-map.model';
@@ -13,7 +12,6 @@ import { AssetDatabase } from './asset-database';
 import { TvConsole } from '../utils/console';
 import { MathUtils, Object3D } from 'three';
 import { RoadStyle } from '../../graphics/road-style/road-style.model';
-import { TvRoad } from 'app/map/models/tv-road.model';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { StorageService } from 'app/io/storage.service';
 import { FileUtils } from 'app/io/file-utils';
@@ -180,11 +178,13 @@ export class AssetService {
 
 	createEntityAsset ( path: string, category: VehicleCategory = VehicleCategory.car ): void {
 
-		const entity = VehicleFactory.createVehicle( category );
+		// TODO: implement entity creation
 
-		const data = this.exporterFactory.getExporter( AssetType.ENTITY ).exportAsString( entity );
+		// const entity = this.entityService.createVehicleByType( category );
 
-		this.createNewAsset( AssetType.ENTITY, entity.name + '.entity', path, data, entity );
+		// const data = this.exporterFactory.getExporter( AssetType.ENTITY ).exportAsString( entity );
+
+		// this.createNewAsset( AssetType.ENTITY, entity.name + '.entity', path, data, entity );
 
 	}
 

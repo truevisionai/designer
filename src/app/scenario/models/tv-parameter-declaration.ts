@@ -21,90 +21,77 @@ export class ValueConstraint {
 
 export class ParameterDeclaration {
 
+	public valueConstraints: ValueConstraint[] = [];
+
 	constructor (
-		public parameter: Parameter,
-		private valueConstraints: ValueConstraint[] = []
+		public name: string,
+		public type: ParameterType,
+		public value: string,
 	) {
 	}
-}
 
-export class Parameter {
+	static stringToType ( type: string ): ParameterType {
 
-	public name: string;
-	public type: ParameterType;
-
-	constructor ( name: string, type: ParameterType, private _value: string ) {
-
-		this.name = name;
-		this.type = type;
-
-	}
-
-	public get value (): string {
-		return this._value;
-	}
-
-	public set value ( value: string ) {
-		this._value = value;
-	}
-
-	static stringToEnum ( type: string ): ParameterType {
-
-		switch ( type ) {
-			case 'integer':
-				return ParameterType.integer;
-				break;
-			case 'double':
-				return ParameterType.double;
-				break;
-			case 'string':
-				return ParameterType.string;
-				break;
-			case 'boolean':
-				return ParameterType.boolean;
-				break;
-			case 'unsignedInt':
-				return ParameterType.unsignedInt;
-				break;
-			case 'unsignedShort':
-				return ParameterType.unsignedShort;
-				break;
-			case 'dateTime':
-				return ParameterType.dateTime;
-				break;
-			default:
-				throw new Error( 'unknown paramater type' );
+		if ( type === 'integer' ) {
+			return ParameterType.integer;
+		} else if ( type === 'double' ) {
+			return ParameterType.double;
+		} else if ( type === 'string' ) {
+			return ParameterType.string;
+		} else if ( type === 'boolean' ) {
+			return ParameterType.boolean;
+		} else if ( type === 'unsignedInt' ) {
+			return ParameterType.unsignedInt;
+		} else if ( type === 'unsignedShort' ) {
+			return ParameterType.unsignedShort;
+		} else if ( type === 'dateTime' ) {
+			return ParameterType.dateTime;
+		} else {
+			return ParameterType.unknown;
 		}
 
 	}
 
 	getValue<T> (): any {
 
-		switch ( this.type ) {
-			case ParameterType.integer:
-				return parseInt( this._value );
-				break;
-			case ParameterType.double:
-				return parseFloat( this._value );
-				break;
-			case ParameterType.string:
-				return this._value;
-				break;
-			case ParameterType.boolean:
-				return this._value === 'true';
-				break;
-			case ParameterType.unsignedInt:
-				return parseInt( this._value );
-				break;
-			case ParameterType.unsignedShort:
-				return parseInt( this._value );
-				break;
-			case ParameterType.dateTime:
-				return this._value;
-				break;
-			default:
-				throw new Error( 'unknown paramater type' );
+		if ( this.type === ParameterType.integer ) {
+			return parseInt( this.value );
+		} else if ( this.type === ParameterType.double ) {
+			return parseFloat( this.value );
+		} else if ( this.type === ParameterType.string ) {
+			return this.value;
+		} else if ( this.type === ParameterType.boolean ) {
+			return this.value === 'true';
+		} else if ( this.type === ParameterType.unsignedInt ) {
+			return parseInt( this.value );
+		} else if ( this.type === ParameterType.unsignedShort ) {
+			return parseInt( this.value );
+		} else if ( this.type === ParameterType.dateTime ) {
+			return this.value;
+		} else {
+			return null;
 		}
 
+	}
+
+	static typeToString ( type: ParameterType ) {
+
+		if ( type === ParameterType.integer ) {
+			return 'integer';
+		} else if ( type === ParameterType.double ) {
+			return 'double';
+		} else if ( type === ParameterType.string ) {
+			return 'string';
+		} else if ( type === ParameterType.boolean ) {
+			return 'boolean';
+		} else if ( type === ParameterType.unsignedInt ) {
+			return 'unsignedInt';
+		} else if ( type === ParameterType.unsignedShort ) {
+			return 'unsignedShort';
+		} else if ( type === ParameterType.dateTime ) {
+			return 'dateTime';
+		} else {
+			return 'unknown';
+		}
 	}
 }

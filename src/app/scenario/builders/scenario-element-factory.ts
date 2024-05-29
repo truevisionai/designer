@@ -13,18 +13,29 @@ import { ManeuverGroup } from '../models/tv-sequence';
 import { Story } from '../models/tv-story';
 import { ActionFactory } from './action-factory';
 import { ConditionFactory } from './condition-factory';
+import { Injectable } from "@angular/core";
 
-
+@Injectable( {
+	providedIn: 'root'
+} )
 export class ScenarioElementFactory {
 
-	private static storyId = new IDService();
-	private static actId = new IDService();
-	private static maneuverGroupId = new IDService();
-	private static maneuverId = new IDService();
-	private static eventId = new IDService();
-	private static actionId = new IDService();
+	private storyId = new IDService();
 
-	static reset () {
+	private actId = new IDService();
+
+	private maneuverGroupId = new IDService();
+
+	private maneuverId = new IDService();
+
+	private eventId = new IDService();
+
+	private actionId = new IDService();
+
+	constructor ( private actionFactory: ActionFactory ) {
+	}
+
+	reset () {
 
 		this.storyId.reset();
 		this.actId.reset();
@@ -35,11 +46,11 @@ export class ScenarioElementFactory {
 
 	}
 
-	static makeStory ( entity: ScenarioEntity, $actionType: ActionType ) {
+	makeStory ( entity: ScenarioEntity, $actionType: ActionType ) {
 
 		const story = this.createStory( entity );
 
-		const action = ActionFactory.createActionWithoutName( $actionType, entity );
+		const action = this.actionFactory.createActionWithoutName( $actionType, entity );
 
 		const act = this.createAct();
 
@@ -60,7 +71,7 @@ export class ScenarioElementFactory {
 		return story;
 	}
 
-	static createStory ( entity: ScenarioEntity ) {
+	createStory ( entity: ScenarioEntity ) {
 
 		const id = this.storyId.getNextId();
 
@@ -69,7 +80,7 @@ export class ScenarioElementFactory {
 		return new Story( storyName, entity.name );
 	}
 
-	static createAct () {
+	createAct () {
 
 		const id = this.actId.getNextId();
 
@@ -77,7 +88,7 @@ export class ScenarioElementFactory {
 
 	}
 
-	static createManeuverGroup ( entity: ScenarioEntity ) {
+	createManeuverGroup ( entity: ScenarioEntity ) {
 
 		const id = this.maneuverGroupId.getNextId();
 
@@ -87,7 +98,7 @@ export class ScenarioElementFactory {
 
 	}
 
-	static createManeuver () {
+	createManeuver () {
 
 		const id = this.maneuverId.getNextId();
 
@@ -97,7 +108,7 @@ export class ScenarioElementFactory {
 
 	}
 
-	static createEvent ( action: PrivateAction ) {
+	createEvent ( action: PrivateAction ) {
 
 		const id = this.eventId.getNextId();
 
@@ -114,17 +125,17 @@ export class ScenarioElementFactory {
 		return event;
 	}
 
-	static createEventAction ( $actionType: ActionType, entity: ScenarioEntity ) {
+	createEventAction ( $actionType: ActionType, entity: ScenarioEntity ) {
 
 		const actionID = this.actionId.getNextId();
 
 		const name = `Action${ actionID }`;
 
-		return ActionFactory.createNamedAction( name, $actionType, entity );
+		return this.actionFactory.createNamedAction( name, $actionType, entity );
 
 	}
 
-	static createEmptyEvent () {
+	createEmptyEvent () {
 
 		const id = this.eventId.getNextId();
 

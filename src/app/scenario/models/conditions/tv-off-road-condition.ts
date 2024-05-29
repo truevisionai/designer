@@ -16,7 +16,7 @@ export class OffRoadCondition extends EntityCondition {
 	conditionType = ConditionType.ByEntity_Offroad;
 	public label: string = 'OffRoadCondition';
 
-	private tmpDurations: Map<string, number> = new Map();
+	public tmpDurations: Map<string, number> = new Map();
 
 	/**
 	 * Amount of time of driving offroad. Unit: s; Range: [0..inf[.

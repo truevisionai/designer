@@ -12,6 +12,8 @@ import { TvLaneSection } from './tv-lane-section';
 import { TvMap } from './tv-map.model';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvRoad } from './tv-road.model';
+import { RoadService } from 'app/services/road/road.service';
+import { Vector2 } from 'three';
 
 describe( 'OpenDrive Model', () => {
 
@@ -28,15 +30,17 @@ describe( 'OpenDrive Model', () => {
 	let rightFour: TvLane;
 
 	let mapService: MapService;
+	let roadService: RoadService;
 
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
 			imports: [ HttpClientModule ],
-			providers: [ MapService ]
+			providers: [ MapService, RoadService ]
 		} );
 
 		mapService = TestBed.inject( MapService );
+		roadService = TestBed.inject( RoadService );
 
 	} );
 
@@ -103,7 +107,7 @@ describe( 'OpenDrive Model', () => {
 
 		road.addGeometryLine( 0, 0, 0, 0, 10 );
 
-		const result = TvMapQueries.getRoadByCoords( 1, 1 );
+		const result = roadService.findNearestRoad( new Vector2( 1, 1 ) );
 
 		expect( result.id ).toBe( 1 );
 

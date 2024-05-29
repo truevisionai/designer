@@ -16,6 +16,7 @@ import { ScenarioService } from '../../../services/scenario.service';
 export class PositionActionComponent {
 
 	@Input() action: PrivateAction;
+
 	@Input() entity: ScenarioEntity;
 
 	get positionAction () {
@@ -24,6 +25,9 @@ export class PositionActionComponent {
 
 	get position () {
 		return this.positionAction?.position;
+	}
+
+	constructor ( private scenarioService: ScenarioService ) {
 	}
 
 	onPositionChanged ( $event: Position ) {
@@ -46,7 +50,7 @@ export class PositionActionComponent {
 
 	private updateOtherEntities () {
 
-		ScenarioService.scenario.executeInitActions();
+		this.scenarioService.getScenario().executeInitActions();
 
 	}
 }

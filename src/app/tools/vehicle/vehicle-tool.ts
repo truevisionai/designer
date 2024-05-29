@@ -4,8 +4,6 @@
 
 import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import { VehicleFactory } from 'app/factories/vehicle.factory';
-import { PickingHelper } from 'app/services/picking-helper.service';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
 import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
@@ -19,23 +17,25 @@ import { CommandHistory } from 'app/services/command-history';
 import { VehicleEntity } from '../../scenario/models/entities/vehicle-entity';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { AddVehicleCommand } from '../../commands/add-vehicle-command';
-import { ScenarioService } from "../../scenario/services/scenario.service";
-import { UpdatePositionCommand } from "../../commands/update-position-command";
+import { EntityService } from "../../scenario/entity/entity.service";
+import { AddObjectCommand } from 'app/commands/add-object-command';
+import { PickingHelper } from "../../services/picking-helper.service";
 
 export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	public name: string = 'VehicleTool';
+
 	public toolType = ToolType.Vehicle;
 
-
 	private movingStrategy: SelectStrategy<TvRoadCoord>;
+
 	private controlPointStrategy: SelectStrategy<DynamicControlPoint<ScenarioEntity>>;
 
 	private points: DynamicControlPoint<ScenarioEntity>[] = [];
+
 	private point: DynamicControlPoint<ScenarioEntity>;
 
-	constructor () {
+	constructor ( private entityService: EntityService ) {
 
 		super();
 
@@ -57,7 +57,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	enable (): void {
 
-		ScenarioService.scenario.objects.forEach( ( entity ) => {
+		this.entityService.entities.forEach( ( entity ) => {
 
 			this.createControlPoint( entity );
 
@@ -69,7 +69,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 		const controlPoint = new DynamicControlPoint( entity );
 
-		entity.add( controlPoint );
+		// entity.add( controlPoint );
 
 		this.points.push( controlPoint );
 
@@ -99,11 +99,11 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 		if ( !roadCoord ) return;
 
-		const vehicleEntity = VehicleFactory.createVehicleAt( roadCoord.position, roadCoord.orientation );
+		const vehicleEntity = this.entityService.createVehicleAt( roadCoord.position, roadCoord.orientation );
 
-		const point = this.createControlPoint( vehicleEntity );
+		// const point = this.createControlPoint( vehicleEntity );
 
-		CommandHistory.execute( new AddVehicleCommand( this, vehicleEntity, point ) );
+		CommandHistory.execute( new AddObjectCommand( vehicleEntity ) );
 
 	}
 
@@ -152,7 +152,6 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	}
 
-
 	updateLocation ( entity: ScenarioEntity, roadCoord: TvRoadCoord ) {
 
 		const teleportAction = entity.initActions.find( action => action instanceof TeleportAction ) as TeleportAction;
@@ -173,14 +172,14 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 		if ( position.distanceTo( this.pointerDownAt ) < 0.5 ) return;
 
-		CommandHistory.execute( new UpdatePositionCommand( this.point.mainObject, position, this.pointerDownAt ) );
+		// TODO: fix this
+		// CommandHistory.execute( new UpdatePositionCommand( this.point.mainObject, position, this.pointerDownAt ) );
 
 	}
 
-
 	isVehicleSelected ( event: PointerEventData ): boolean {
 
-		const vehicles = [ ...ScenarioService.scenario.objects.values() ].map( ( object ) => object );
+		const vehicles = this.entityService.entities.map( entity => entity.mesh );
 
 		const vehicle = PickingHelper.findNearestViaDistance( event.point, vehicles, 2 );
 
@@ -189,6 +188,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 		this.selectVehicle( vehicle.userData.entity );
 
 		return true;
+
 	}
 
 	selectVehicle ( entity: VehicleEntity ) {

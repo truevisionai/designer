@@ -71,10 +71,6 @@ export class TvMap {
 		return Array.from( this.controllers.values() );
 	}
 
-	public getHeader (): TvMapHeader {
-		return this.header;
-	}
-
 	addSpline ( spline: AbstractSpline ): void {
 		if ( this.splines.find( s => s.uuid == spline.uuid ) ) return;
 		this.splines.push( spline );
