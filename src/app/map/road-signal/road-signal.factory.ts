@@ -123,9 +123,9 @@ export class RoadSignalFactory {
 
 		const signal = this.createRoadSignal( roadCoord, name, type, subType );
 
-		signal.zOffset = 4.0;
-		signal.height = 2.0;
-		signal.width = 1.0;
+		signal.zOffset = 3.0;
+		signal.height = 0.5;
+		signal.width = 0.3;
 
 		return signal;
 
