@@ -129,31 +129,31 @@ export class TvRoadObject {
 
 	public skeleton?: TvRoadObjectSkeleton;
 
-	private attr_s: number;
+	public s: number;
 
-	private attr_t: number;
+	public t: number;
 
-	private attr_zOffset: number;
+	public zOffset: number;
 
-	private attr_validLength: number;
+	public validLength: number;
 
-	private attr_orientation: TvOrientation;
+	public orientation: TvOrientation;
 
-	private attr_length: number;
+	public length: number;
 
-	private attr_width: number;
+	public width: number;
 
-	private attr_radius: number;
+	public radius: number;
 
-	private attr_height: number;
+	public height: number;
 
-	private attr_hdg: number;
+	public hdg: number;
 
-	private attr_pitch: number;
+	public pitch: number;
 
-	private attr_roll: number;
+	public roll: number;
 
-	private repeat: TvObjectRepeat[] = [];
+	public repeat: TvObjectRepeat[] = [];
 
 	private _markings: TvObjectMarking[] = [];
 
@@ -182,110 +182,22 @@ export class TvRoadObject {
 		TvRoadObject.counter++;
 		this.attr_type = type;
 		this.name = name;
-		this.attr_s = s;
-		this.attr_t = t;
-		this.attr_zOffset = zOffset;
-		this.attr_validLength = validLength;
-		this.attr_orientation = orientation;
-		this.attr_length = length;
-		this.attr_width = width;
-		this.attr_radius = radius;
-		this.attr_height = height;
-		this.attr_hdg = hdg;
-		this.attr_pitch = pitch;
-		this.attr_roll = roll;
+		this.s = s;
+		this.t = t;
+		this.zOffset = zOffset;
+		this.validLength = validLength;
+		this.orientation = orientation;
+		this.length = length;
+		this.width = width;
+		this.radius = radius;
+		this.height = height;
+		this.hdg = hdg;
+		this.pitch = pitch;
+		this.roll = roll;
 	}
 
 	get markings (): TvObjectMarking[] {
 		return this._markings;
-	}
-
-	get s (): number {
-		return this.attr_s;
-	}
-
-	set s ( value: number ) {
-		this.attr_s = value;
-	}
-
-	get t (): number {
-		return this.attr_t;
-	}
-
-	set t ( value: number ) {
-		this.attr_t = value;
-	}
-
-	get zOffset (): number {
-		return this.attr_zOffset;
-	}
-
-	set zOffset ( value: number ) {
-		this.attr_zOffset = value;
-	}
-
-	get validLength (): number {
-		return this.attr_validLength;
-	}
-
-	get orientation (): any {
-		return this.attr_orientation;
-	}
-
-	get length (): number {
-		return this.attr_length;
-	}
-
-	set length ( value: number ) {
-		this.attr_length = value;
-	}
-
-	get width (): number {
-		return this.attr_width;
-	}
-
-	set width ( value: number ) {
-		this.attr_width = value;
-	}
-
-	get radius (): number {
-		return this.attr_radius;
-	}
-
-	set radius ( value: number ) {
-		this.attr_radius = value;
-	}
-
-	get height (): number {
-		return this.attr_height;
-	}
-
-	set height ( value: number ) {
-		this.attr_height = value;
-	}
-
-	get hdg (): number {
-		return this.attr_hdg;
-	}
-
-	set hdg ( value: number ) {
-		this.attr_hdg = value;
-	}
-
-	get pitch (): number {
-		return this.attr_pitch;
-	}
-
-	set pitch ( value: number ) {
-		this.attr_pitch = value;
-	}
-
-	get roll (): number {
-		return this.attr_roll;
-	}
-
-	set roll ( value: number ) {
-		this.attr_roll = value;
 	}
 
 	get scale (): Vector3 {
@@ -385,7 +297,7 @@ export class TvRoadObject {
 
 	toOrientationString (): string {
 
-		switch ( this.attr_orientation ) {
+		switch ( this.orientation ) {
 
 			case TvOrientation.NONE:
 				return 'none';
@@ -429,18 +341,18 @@ export class TvRoadObject {
 			this.attr_type,
 			this.name,
 			id || this.attr_id,
-			this.attr_s,
-			this.attr_t,
-			this.attr_zOffset,
-			this.attr_validLength,
-			this.attr_orientation,
-			this.attr_length,
-			this.attr_width,
-			this.attr_radius,
-			this.attr_height,
-			this.attr_hdg,
-			this.attr_pitch,
-			this.attr_roll
+			this.s,
+			this.t,
+			this.zOffset,
+			this.validLength,
+			this.orientation,
+			this.length,
+			this.width,
+			this.radius,
+			this.height,
+			this.hdg,
+			this.pitch,
+			this.roll
 		);
 
 		object.road = this.road;

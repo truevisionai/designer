@@ -8,6 +8,7 @@ import {
 	BufferGeometry,
 	CatmullRomCurve3,
 	Color,
+	Euler,
 	Float32BufferAttribute,
 	Mesh,
 	MeshBasicMaterial,
@@ -17,7 +18,7 @@ import {
 	TextureLoader,
 	Vector3
 } from 'three';
-import { TvSide } from '../models/tv-common';
+import { TvOrientation, TvSide } from '../models/tv-common';
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../models/tv-road.model";
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
@@ -89,41 +90,57 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	}
 
-	buildRoadMarkObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
+	buildRoadMarkObject ( road: TvRoad, object: TvRoadObject ): Object3D {
 
-		const material = this.getRoadMarkMaterial( roadObject );
+		const material = this.getRoadMarkMaterial( object );
 
-		const roadCoord = road.getPosThetaAt( roadObject.s, roadObject.t );
+		const roadCoord = road.getPosThetaAt( object.s, object.t );
 
-		const lane = roadObject.road.getLaneAt( roadObject.s, roadObject.t );
+		const lane = object.road.getLaneAt( object.s, object.t );
 
 		let geometry: BufferGeometry;
+
+		let mesh: Mesh;
 
 		if ( !lane || lane?.id == 0 ) {
 
 			geometry = new PlaneGeometry( 1, 1 );
 
-			const model = new Mesh( geometry, material );
+			mesh = new Mesh( geometry, material );
 
-			model.position.copy( roadCoord.position );
+			mesh.position.copy( roadCoord.position );
 
-			model.position.z += roadObject.zOffset;
+			mesh.position.z += object.zOffset;
 
-			model.scale.copy( roadObject.scale )
+			mesh.scale.copy( object.scale )
 
-			return model;
+			mesh.rotation.x = object.pitch;
+
+			mesh.rotation.y = object.roll;
+
+			mesh.rotation.z = this.calculateHeading( road, object );
 
 		} else {
 
-			geometry = new DecalGeometry( lane.gameObject, roadCoord.position, roadObject.rotation, roadObject.scale )
+			const position = roadCoord.position;
 
-			const model = new Mesh( geometry, material );
+			position.z += object.zOffset;
 
-			model.position.z += roadObject.zOffset;
+			const rotation = new Euler();
 
-			return model;
+			rotation.x = object.pitch;
+
+			rotation.y = object.roll;
+
+			rotation.z = this.calculateHeading( road, object );
+
+			geometry = new DecalGeometry( lane.gameObject, position, rotation, object.scale )
+
+			mesh = new Mesh( geometry, material );
 
 		}
+
+		return mesh;
 	}
 
 	buildPoleObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
@@ -223,6 +240,30 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 	buildVegetationObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
 		throw new Error( 'Method not implemented.' );
+
+	}
+
+	private calculateHeading ( road: TvRoad, roadObject: TvRoadObject ) {
+
+		const roadCoord = road.getPosThetaAt( roadObject.s, roadObject.t );
+
+		let hdg: number;
+
+		if ( roadObject.orientation === TvOrientation.PLUS ) {
+
+			hdg = roadObject.hdg + roadCoord.hdg - Maths.PI2;
+
+		} else if ( roadObject.orientation === TvOrientation.MINUS ) {
+
+			hdg = roadObject.hdg + roadCoord.hdg + Maths.PI2;
+
+		} else {
+
+			hdg = roadCoord.hdg;
+
+		}
+
+		return hdg;
 
 	}
 

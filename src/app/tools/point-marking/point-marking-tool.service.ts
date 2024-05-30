@@ -14,6 +14,7 @@ import { Object3DMap } from '../../core/models/object3d-map';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { BoxSelectionService } from '../box-selection-service';
 import { AssetManager } from 'app/core/asset/asset.manager';
+import { TvOrientation } from 'app/map/models/tv-common';
 
 @Injectable( {
 	providedIn: 'root'
@@ -62,11 +63,11 @@ export class PointMarkingToolService {
 
 		}
 
-		roadObject.rotation = new Euler( 0, 0, 0 );
-
 		roadObject.assetGuid = asset.guid;
 
 		roadObject.zOffset = 0.005;
+
+		roadObject.orientation = roodCoord.t > 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
 
 		return roadObject;
 	}
