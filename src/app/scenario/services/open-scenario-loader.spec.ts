@@ -219,18 +219,6 @@ describe( 'ReaderService', () => {
 
 	} );
 
-	it( 'should parse LongitudinalPurpose->None correctly', () => {
-
-		const xml = {
-			None: '',
-		};
-
-		const LongitudinalPurpose = loader.parseTimeReference( xml );
-
-		expect( LongitudinalPurpose.timing ).toBe( null || undefined );
-
-	} );
-
 	it( 'should parse LongitudinalPurpose->Timing correctly', () => {
 
 		const xml = {

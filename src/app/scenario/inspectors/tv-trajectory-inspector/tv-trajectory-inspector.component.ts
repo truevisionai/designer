@@ -9,7 +9,7 @@ import { Debug } from 'app/core/utils/debug';
 import { CatmullRomCurve3, Points } from 'three';
 import { Position } from '../../models/position';
 import { WorldPosition } from '../../models/positions/tv-world-position';
-import { Trajectory, Vertex } from '../../models/tv-trajectory';
+import { PolylineShape, Trajectory, Vertex } from '../../models/tv-trajectory';
 
 @Component( {
 	selector: 'app-tv-trajectory-inspector',
@@ -70,13 +70,17 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 			if ( this.disableEditing ) return;
 
-			let reference = this.trajectory.vertices.length;
+			if ( this.trajectory.shape instanceof PolylineShape ) {
 
-			let position = new WorldPosition( e.position.clone() );
+				const time = this.trajectory.shape.vertices.length;
 
-			let vertex = new Vertex( reference, position );
+				const position = new WorldPosition( e.position.clone() );
 
-			this.trajectory.vertices.push( vertex );
+				const vertex = new Vertex( time, position );
+
+				this.trajectory.shape.vertices.push( vertex );
+
+			}
 
 		} );
 
@@ -90,16 +94,21 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 	drawTrajectory () {
 
-		this.trajectory.vertices.forEach( vertex => {
+		if ( this.trajectory.shape instanceof PolylineShape ) {
 
-			// Important! Need to set the vector3
-			vertex.position.setPosition( vertex.position.getVectorPosition() );
+			this.trajectory.shape.vertices.forEach( vertex => {
 
-			this.shapeEditor.addControlPoint( vertex.position.getVectorPosition() );
+				// Important! Need to set the vector3
+				vertex.position.setPosition( vertex.position.getVectorPosition() );
 
-		} );
+				this.shapeEditor.addControlPoint( vertex.position.getVectorPosition() );
 
-		this.shapeEditor.draw();
+			} );
+
+			this.shapeEditor.draw();
+
+		}
+
 	}
 
 	addGeometryChangeListener () {
@@ -110,7 +119,11 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 			curve.points.forEach( ( point, i ) => {
 
-				this.trajectory.vertices[ i ].position.setPosition( point );
+				if ( this.trajectory.shape instanceof PolylineShape ) {
+
+					this.trajectory.shape.vertices[ i ].position.setPosition( point );
+
+				}
 
 			} );
 

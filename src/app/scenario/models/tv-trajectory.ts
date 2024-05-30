@@ -14,8 +14,6 @@ export enum EnumTrajectoryDomain {
 
 export class Trajectory {
 
-	// min 2 vertices are mandatory
-	public vertices: Vertex[] = [];
 	public parameterDeclarations: ParameterDeclaration[] = [];
 
 	constructor (
@@ -24,7 +22,6 @@ export class Trajectory {
 		public domain: EnumTrajectoryDomain,
 		public shape: AbstractShape
 	) {
-
 	}
 
 	addParameter ( parameterDeclaration: ParameterDeclaration ) {
@@ -49,6 +46,8 @@ export abstract class AbstractShape {
 }
 
 export class PolylineShape extends AbstractShape {
+
+	// min 2 vertices mandatory
 	vertices: Vertex[] = [];
 
 	addVertex ( vertex: Vertex ) {

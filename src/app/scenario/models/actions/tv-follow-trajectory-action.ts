@@ -7,8 +7,9 @@ import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
 import { ScenarioEntity } from '../entities/scenario-entity';
 import { ActionType, TrajectoryFollowingMode } from '../tv-enums';
-import { Trajectory } from '../tv-trajectory';
+import { PolylineShape, Trajectory } from '../tv-trajectory';
 import { AbstractRoutingAction, TimeReference } from './tv-routing-action';
+import { TvConsole } from 'app/core/utils/console';
 
 
 export class FollowTrajectoryAction extends AbstractRoutingAction {
@@ -104,7 +105,14 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 		// Debug.log( this );
 
-		if ( this.index >= this.trajectory.vertices.length ) {
+		if ( !( this.trajectory.shape instanceof PolylineShape ) ) {
+			TvConsole.error( 'unsupported shape' );
+			return;
+		}
+
+		const shape = this.trajectory.shape;
+
+		if ( shape instanceof PolylineShape && this.index >= shape.vertices.length ) {
 
 			this.isCompleted = true;
 
@@ -113,9 +121,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 			return;
 		}
 
-		const vertex = this.trajectory.vertices[ this.index ];
-
-		// Debug.log( vertex );
+		const vertex = shape.vertices[ this.index ];
 
 		const target = vertex.position.getVectorPosition();
 

@@ -16,8 +16,12 @@ import { ScenarioEntity } from '../models/entities/scenario-entity';
 import { EntityRef } from '../models/entity-ref';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { TvAction } from '../models/tv-action';
-import { ActionType, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
+import { ActionType, DomainAbsoluteRelative, DynamicsDimension, DynamicsShape } from '../models/tv-enums';
 import { Orientation } from '../models/tv-orientation';
+import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-action';
+import { EnumTrajectoryDomain, PolylineShape, Trajectory, Vertex } from '../models/tv-trajectory';
+import { TimeReference, Timing } from '../models/actions/tv-routing-action';
+import { Maths } from 'app/utils/maths';
 import { Injectable } from "@angular/core";
 
 @Injectable( {
@@ -78,7 +82,7 @@ export class ActionFactory {
 				break;
 
 			case ActionType.Private_Routing_FollowTrajectory:
-				throw new Error( `Unsupported private action: ${ type }` );
+				action = this.createRouteFollowTrajectoryAction( entity );
 				break;
 
 			case ActionType.UserDefined_Command:
@@ -117,6 +121,28 @@ export class ActionFactory {
 		return action;
 
 	}
+
+	createRouteFollowTrajectoryAction ( entity: ScenarioEntity ): any {
+
+		const shape = new PolylineShape();
+
+		const startPosition = new WorldPosition( entity.getPosition() );
+
+		const vertex = new Vertex( 0, startPosition );
+
+		shape.addVertex( vertex );
+
+		const random = Maths.randomNumberBetween( 1, 10 );
+
+		const trajectory = new Trajectory( 'Trajectory' + random, false, EnumTrajectoryDomain.Distance, shape );
+
+		const action = new FollowTrajectoryAction( trajectory );
+
+		action.timeReference = new TimeReference( new Timing( DomainAbsoluteRelative.absolute, 1, 0 ) );
+
+		return action
+	}
+
 
 	createChangeLaneOffsetAction ( entity?: ScenarioEntity ) {
 
