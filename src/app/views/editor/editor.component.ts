@@ -87,21 +87,24 @@ export class EditorComponent implements OnInit, AfterContentInit {
 		this.mainFileService.newScene();
 		this.shortcutService.init();
 
-		this.openQuestionsDialog();
+		this.onEditorOpened();
 	}
 
-	openQuestionsDialog () {
+	onEditorOpened () {
+
+		if ( !navigator.onLine ) return;
+
+		this.fetchUserProfile();
+
+	}
+
+	fetchUserProfile () {
 
 		this.profileService.fetchUser().subscribe( ( user ) => {
 
 			if ( user.onboarding_completed == true ) return;
 
-			this.dialog.open( QuesionsDialogComponent, {
-				data: {},
-				width: '40vw',
-				closeOnNavigation: false,
-				disableClose: true,
-			} );
+			this.openOnboardingForm();
 
 		}, ( error ) => {
 
@@ -109,6 +112,16 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 		} );
 
+	}
+
+	openOnboardingForm () {
+
+		this.dialog.open( QuesionsDialogComponent, {
+			data: {},
+			width: '40vw',
+			closeOnNavigation: false,
+			disableClose: true,
+		} );
 
 	}
 
