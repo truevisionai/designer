@@ -12,7 +12,7 @@
 
 <div *ngIf="data && showProperties"
 	[class.inspector-editor-padding]="showToolbar">
-	<div *ngFor="let item of serializableFields">
+	<div *ngFor="let item of serializableFields" matTooltipPosition="left" [matTooltip]="item.settings.description">
 		<ng-container app-field-host></ng-container>
 	</div>
 	<div *ngFor="let action of serializableActions">

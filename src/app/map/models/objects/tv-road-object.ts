@@ -161,6 +161,24 @@ export class TvRoadObject {
 		return this.repeat;
 	}
 
+	/**
+	 *
+	 * @param type
+	 * @param name
+	 * @param attr_id
+	 * @param s
+	 * @param t
+	 * @param zOffset z-offset of object’s origin relative to the elevation of the road reference line
+	 * @param validLength Validity of object along s-axis (0.0 for point object)
+	 * @param orientation
+	 * @param length Length of the object’s bounding box, alternative to @radius. @length is defined in the local coordinate system u/v along the u-axis
+	 * @param width Width of the object’s bounding box, alternative to @radius. @width is defined in the local coordinate system u/v along the v-axis
+	 * @param radius radius of the circular object’s bounding box, alternative to @length and @width. @radius is defined in the local coordinate system u/v
+	 * @param height Height of the object’s bounding box. @height is defined in the local coordinate system u/v along the z-axis
+	 * @param hdg Heading angle of the object relative to road direction
+	 * @param pitch Pitch angle relative to the x/y-plane
+	 * @param roll Roll angle relative to the x/y-plane
+	 */
 	constructor (
 		type: TvRoadObjectType,
 		name: string,

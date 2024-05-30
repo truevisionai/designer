@@ -15,6 +15,8 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { BoxSelectionService } from '../box-selection-service';
 import { AssetManager } from 'app/core/asset/asset.manager';
 import { TvOrientation } from 'app/map/models/tv-common';
+import { TvTextureService } from 'app/graphics/texture/tv-texture.service';
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,7 +31,8 @@ export class PointMarkingToolService {
 		public roadObjectService: RoadObjectService,
 		private controlPointFactory: ControlPointFactory,
 		public boxSelectionService: BoxSelectionService,
-		public assetManager: AssetManager
+		public assetManager: AssetManager,
+		public textureService: TvTextureService,
 	) { }
 
 	getSelectedAsset (): Asset {
@@ -42,15 +45,30 @@ export class PointMarkingToolService {
 
 		const lane = this.roadService.findLaneAtPosition( position );
 
-		if ( !lane ) return;
+		if ( !lane ) {
+			TvConsole.error( 'Could not find lane at position' );
+			return;
+		}
 
 		const roodCoord = this.roadService.findRoadCoordAtPosition( position );
+
+		if ( !roodCoord ) {
+			TvConsole.error( 'Could not find road coord at position' );
+			return;
+		};
+
+		const laneCoord = roodCoord.road.getLaneCenterPosition( lane, roodCoord.s );
+
+		if ( !laneCoord ) {
+			TvConsole.error( 'Could not find lane coord at position' );
+			return;
+		}
 
 		const roadObject = this.roadObjectService.createRoadObject(
 			lane.laneSection.road,
 			TvRoadObjectType.roadMark,
-			roodCoord.s,
-			roodCoord.t
+			laneCoord.s,
+			laneCoord.t
 		);
 
 		if ( asset.type == AssetType.MATERIAL ) {
@@ -59,7 +77,17 @@ export class PointMarkingToolService {
 
 		} else if ( asset.type == AssetType.TEXTURE ) {
 
-			roadObject.width = roadObject.height = roadObject.length = 1;
+			const textureAsset = this.textureService.getTexture( asset.guid );
+
+			// maintain aspect ratio
+			const width = textureAsset.texture.image.width || 1;
+			const height = textureAsset.texture.image.height || 1;
+
+			const aspectRatio = width / height;
+
+			roadObject.width = 1;
+			roadObject.height = 0;
+			roadObject.length = 1 / aspectRatio;
 
 		}
 

@@ -102,6 +102,10 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		let mesh: Mesh;
 
+		const scale = new Vector3( object.width, object.length, 0.1 );
+
+		const rotation = new Euler( object.pitch, object.roll, this.calculateHeading( road, object ) );
+
 		if ( !lane || lane?.id == 0 ) {
 
 			geometry = new PlaneGeometry( 1, 1 );
@@ -112,32 +116,19 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			mesh.position.z += object.zOffset;
 
-			mesh.scale.copy( object.scale )
+			mesh.scale.copy( scale )
 
-			mesh.rotation.x = object.pitch;
-
-			mesh.rotation.y = object.roll;
-
-			mesh.rotation.z = this.calculateHeading( road, object );
+			mesh.rotation.copy( rotation );
 
 		} else {
 
 			const position = roadCoord.position;
 
-			position.z += object.zOffset;
-
-			const rotation = new Euler();
-
-			rotation.x = object.pitch;
-
-			rotation.y = object.roll;
-
-			rotation.z = this.calculateHeading( road, object );
-
-			geometry = new DecalGeometry( lane.gameObject, position, rotation, object.scale )
+			geometry = new DecalGeometry( lane.gameObject, position, rotation, scale )
 
 			mesh = new Mesh( geometry, material );
 
+			mesh.position.z += object.zOffset;
 		}
 
 		return mesh;

@@ -2,7 +2,6 @@ import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { CommandHistory } from 'app/services/command-history';
-import { MathUtils } from 'three';
 
 
 export class PointMarkingInspector {
@@ -67,55 +66,56 @@ export class PointMarkingInspector {
 
 	}
 
-	@SerializedField( { 'type': 'float', label: 'Z Offset' } )
+	@SerializedField( {
+		type: 'float',
+		label: 'Z Offset',
+		description: 'z-offset of object origin relative to the elevation of the road reference line'
+	} )
 	get zOffset () {
-
-		return this.getValue( this.items, 'zOffset', true );
-
+		return this.getValue( this.items, 'zOffset', true ) || 0;
 	}
 
 	set zOffset ( value ) {
-
 		this.setValue( this.items, 'zOffset', value, true );
-
 	}
 
-	@SerializedField( { 'type': 'vector3', label: 'Rotation' } )
-	get rotation () {
-
-		// convert from radians to degrees
-		const value = this.getValue( this.items, 'rotation', true );
-
-		value.x = MathUtils.radToDeg( value.x );
-		value.y = MathUtils.radToDeg( value.y );
-		value.z = MathUtils.radToDeg( value.z );
-
-		return value;
-
+	@SerializedField( {
+		type: 'float',
+		label: 'Heading Angle',
+		description: 'Heading angle of the object relative to road direction'
+	} )
+	get heading () {
+		return this.getValue( this.items, 'hdg', true ) || 0;
 	}
 
-	set rotation ( value ) {
-
-		// convert from degrees to radians
-		value.x = MathUtils.degToRad( value.x );
-		value.y = MathUtils.degToRad( value.y );
-		value.z = MathUtils.degToRad( value.z );
-
-		this.setValue( this.items, 'rotation', value, true );
-
+	set heading ( value ) {
+		this.setValue( this.items, 'hdg', value, true );
 	}
 
-	@SerializedField( { 'type': 'vector3', label: 'Scale' } )
-	get scale () {
-
-		return this.getValue( this.items, 'scale', true );
-
+	@SerializedField( {
+		type: 'float',
+		label: 'Width',
+		description: 'Width of the object'
+	} )
+	get width () {
+		return this.getValue( this.items, 'width', true );
 	}
 
-	set scale ( value ) {
+	set width ( value ) {
+		this.setValue( this.items, 'width', value, true );
+	}
 
-		this.setValue( this.items, 'scale', value, true );
+	@SerializedField( {
+		type: 'float',
+		label: 'Length',
+		description: 'Length of the object'
+	} )
+	get length () {
+		return this.getValue( this.items, 'length', true );
+	}
 
+	set length ( value ) {
+		this.setValue( this.items, 'length', value, true );
 	}
 
 	@SerializedAction( { label: 'Delete' } )
