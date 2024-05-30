@@ -2,14 +2,23 @@
 	<div class="content-wrapper">
 		<div style="width: 100%;">
 
-			<div class="header"
-				*ngIf="showHeader">
-				<h2>Welcome, Tell us a little about you</h2>
-				<p>This will help us provide you a better experience</p>
-			</div>
-
 			<mat-stepper linear
 				#stepper>
+
+				<!-- welcome -->
+				<mat-step>
+					<div class="header">
+						<h4>Welcome, Please tell us a little about you</h4>
+						<p>This will help us provide you a better experience</p>
+						<br/>
+					</div>
+					<div class="button-container">
+						<button class="full-width"
+							color="accent"
+							mat-flat-button
+							matStepperNext>Start</button>
+					</div>
+				</mat-step>
 
 				<!-- profile -->
 				<mat-step [stepControl]="profileGroup">
