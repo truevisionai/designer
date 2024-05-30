@@ -2,8 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MathUtils, Vector3 } from 'three';
-import { SceneService } from '../../services/scene.service';
+import { Vector3 } from 'three';
 import { TvPosTheta } from '../../map/models/tv-pos-theta';
 import { TvMapQueries } from '../../map/queries/tv-map-queries';
 import { TeleportAction } from './actions/tv-teleport-action';
@@ -23,37 +22,25 @@ import { RoadNetwork } from './tv-road-network';
 import { ManeuverGroup } from './tv-sequence';
 import { Story } from './tv-story';
 import { Storyboard } from './tv-storyboard';
-// import { ActionFactory, ScenarioElementFactory } from '../builders/action-factory';
-// import { JunctionFactory } from 'app/core/factories/junction.factory';
-// import { PositionFactory } from '../builders/position-factory';
-// import { VehicleFactory } from 'app/core/factories/vehicle.factory';
-// import { ConditionFactory } from '../builders/condition-factory';
 
 export class TvScenario {
 
 	public fileHeader = new FileHeader;
+
 	public catalogs: Catalogs;
+
 	public parameterDeclarations: ParameterDeclaration[] = [];
+
 	public roadNetwork: RoadNetwork;
+
 	public storyboard = new Storyboard;
+
 	public objects: Map<string, ScenarioEntity> = new Map<string, ScenarioEntity>();
 
 	public db: NameDB = new NameDB();
 
-	constructor () {}
-
-	// get parameters () {
-	// 	return this.parameterDeclaration.parameters;
-	// }
-	//
-	// findParameter ( name: string ) {
-	//
-	// 	const result = this.parameters.find( parameter => parameter.name === name );
-	//
-	// 	if ( result == null || undefined ) throw new Error( 'Param with given value not found '.concat( name ) );
-	//
-	// 	return result;
-	// }
+	constructor () {
+	}
 
 	setRoadNetworkPath ( path: string ) {
 		this.roadNetwork = new RoadNetwork( new File( path ), null );
@@ -64,17 +51,7 @@ export class TvScenario {
 	}
 
 	getParameterDeclaration ( name: string ): ParameterDeclaration {
-		return this.parameterDeclarations.find( param => param.parameter.name === name );
-	}
-
-	/**
-	 *
-	 * @deprecated
-	 */
-	addEntity ( object: ScenarioEntity ): any {
-		this.addObject( object );
-		// old code just for reference
-		// this.m_Entities.addObject( object );
+		return this.parameterDeclarations.find( param => param.name === name );
 	}
 
 	addStory ( story: Story ) {
@@ -99,33 +76,6 @@ export class TvScenario {
 	addObject ( object: ScenarioEntity ) {
 
 		this.objects.set( object.name, object );
-
-	}
-
-	getActionsByEntity ( name: string ) {
-
-		let actions: TvAction[] = [];
-
-		this.getManeuversForEntity( name ).forEach( maneuver => {
-
-			maneuver.events.forEach( event => {
-
-				event.getActions().forEach( action => {
-
-					actions.push( action );
-
-				} );
-
-			} );
-
-		} );
-
-		return actions;
-	}
-
-	removeObject ( object: ScenarioEntity ) {
-
-		this.objects.delete( object.name );
 
 	}
 
@@ -215,55 +165,6 @@ export class TvScenario {
 
 	}
 
-	clear () {
-
-		this.db.clear();
-
-		this.parameterDeclarations.splice( 0, this.parameterDeclarations.length );
-
-		this.objects.forEach( entity => {
-
-			SceneService.removeFromMain( entity );
-
-			entity.initActions.splice( 0, entity.initActions.length );
-
-		} );
-
-		this.storyboard.stories.forEach( story => {
-
-			story.acts.splice( 0, story.acts.length );
-
-		} );
-
-		this.objects.clear();
-
-		this.storyboard.stories.clear();
-
-		// ScenarioElementFactory.reset();
-		// JunctionFactory.reset();
-		// ActionFactory.reset()
-		// PositionFactory.reset();
-		// VehicleFactory.reset();
-		// ConditionFactory.reset();
-	}
-
-	destroy () {
-
-		this.clear();
-
-	}
-
-	createStory ( entity: ScenarioEntity ): Story {
-
-		const storyName = `Story${ this.storyboard.stories.size + 1 }`;
-
-		const story = new Story( storyName, entity.name );
-
-		this.storyboard.addStory( story );
-
-		return story;
-	}
-
 	findEntityActions ( entity: ScenarioEntity ): PrivateAction[] {
 
 		const actions: PrivateAction[] = [];
@@ -287,23 +188,6 @@ export class TvScenario {
 		return actions;
 	}
 
-	addActionEvent ( entity: ScenarioEntity, action: PrivateAction ): void {
-
-		const maneuvers = this.getManeuversForEntity( entity.name );
-
-		if ( maneuvers.length > 0 ) {
-
-			const event = maneuvers[ 0 ].addNewEvent( `Event-${ MathUtils.randInt( 1, 100 ) }` );
-
-			event.addNewAction( `Action-${ MathUtils.randInt( 1, 100 ) }`, action );
-
-			// event.addStartCondition( new SimulationTimeCondition( 0, Rule.greater_than ) );
-
-		}
-
-
-	}
-
 	findEntityEvents ( entity: ScenarioEntity ): TvEvent[] {
 
 		const events: TvEvent[] = [];
@@ -322,7 +206,6 @@ export class TvScenario {
 
 		return events;
 
-
 	}
 
 	getEntityVectorPosition ( entityName: string ): Vector3 {
@@ -337,11 +220,9 @@ export class TvScenario {
 
 			entity.initActions.filter( i => i instanceof PrivateAction ).forEach( ( action: PrivateAction ) => {
 
-
 			} );
 
 		} );
-
 
 		const laterActions: { entity: ScenarioEntity, action: TvAction }[] = [];
 

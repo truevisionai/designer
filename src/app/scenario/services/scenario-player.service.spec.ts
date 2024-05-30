@@ -16,6 +16,7 @@ describe( 'ScenarioPlayerService', () => {
 
 	let scenarioPlayer: ScenarioDirectorService;
 	let playerService: PlayerService;
+	let scenario: TvScenario;
 
 
 	beforeEach( () => {
@@ -30,10 +31,9 @@ describe( 'ScenarioPlayerService', () => {
 
 	beforeEach( () => {
 
-		ScenarioService.scenario = new TvScenario();
+		scenario = new TvScenario();
 
-		ScenarioService.scenario.storyboard.addEndCondition( new SimulationTimeCondition( 10 ) );
-
+		scenario.storyboard.addEndCondition( new SimulationTimeCondition( 10 ) );
 
 	} );
 

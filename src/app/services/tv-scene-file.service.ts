@@ -24,7 +24,6 @@ import { ProjectService } from './editor/project.service';
 import { SceneBuilderService } from './scene-builder.service';
 import { RoadService } from './road/road.service';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
-import { Debug } from 'app/core/utils/debug';
 import { MapEvents } from 'app/events/map-events';
 
 @Injectable( {
@@ -44,7 +43,8 @@ export class TvSceneFileService {
 		private sceneBuilder: SceneBuilderService,
 		private roadService: RoadService,
 		private roadObjectService: RoadObjectService,
-		private snackBar: SnackBar
+		private snackBar: SnackBar,
+		private scenarioService: ScenarioService,
 	) {
 	}
 
@@ -57,7 +57,7 @@ export class TvSceneFileService {
 	}
 
 	private get scenario () {
-		return ScenarioService.scenario;
+		return this.scenarioService.getScenario();
 	}
 
 	newScene ( map?: TvMap ) {
@@ -82,7 +82,7 @@ export class TvSceneFileService {
 
 		CommandHistory.clear();
 
-		this.scenario?.destroy();
+		this.scenarioService.destroy();
 
 		this.mapService.map = map;
 
@@ -98,7 +98,7 @@ export class TvSceneFileService {
 
 		this.currentFile.name = FileUtils.getFilenameFromPath( path );
 
-		map.header.attr_name = this.currentFile.name;
+		map.header.name = this.currentFile.name;
 
 		this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
 
@@ -202,7 +202,7 @@ export class TvSceneFileService {
 
 		const fullName = FileUtils.getFilenameFromPath( path );
 
-		this.mapService.map.header.attr_name = fullName;
+		this.mapService.map.header.name = fullName;
 
 		const scene = this.assetService.createSceneAsset( directory, this.mapService.map, fullName );
 

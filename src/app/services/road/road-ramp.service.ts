@@ -109,7 +109,15 @@ export class RoadRampService {
 
 		rampRoad.spline = this.createRampSplineV2( startCoord, endCoord );
 
-		const connection = this.junctionConnection.createConnectionV2( junction, incomingRoad, rampRoad, TvContactPoint.START );
+		const outgoingRoad = endCoord instanceof TvLaneCoord ? endCoord.road : null;
+
+		const connection = this.junctionConnection.createConnectionV2(
+			junction,
+			incomingRoad,
+			rampRoad,
+			TvContactPoint.START,
+			outgoingRoad
+		);
 
 		connection.addLaneLink( new TvJunctionLaneLink( incomingLane, connectionLane ) );
 

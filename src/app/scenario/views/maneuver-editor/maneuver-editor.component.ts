@@ -14,11 +14,14 @@ import { ScenarioEntity } from '../../models/entities/scenario-entity';
 export class ManeuverEditorComponent implements OnInit {
 
 	@Input() entity: ScenarioEntity;
+
 	@Input() maneuver: Maneuver;
 
 	@Input() isOpen = true;
 
-	constructor () {
+	constructor (
+		private elementFactory: ScenarioElementFactory
+	) {
 	}
 
 	ngOnInit () {
@@ -32,7 +35,7 @@ export class ManeuverEditorComponent implements OnInit {
 
 	addEvent () {
 
-		const event = ScenarioElementFactory.createEmptyEvent();
+		const event = this.elementFactory.createEmptyEvent();
 
 		this.maneuver.addEvent( event );
 

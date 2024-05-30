@@ -15,7 +15,7 @@ import { AbstractPositionEditor } from './AbstractPositionEditor';
 } )
 export class PositionEditorComponent extends AbstractPositionEditor implements OnInit {
 
-	constructor () {
+	constructor ( private positionFactory: PositionFactory ) {
 		super();
 	}
 
@@ -29,7 +29,6 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 
 	ngOnInit () {
 
-
 	}
 
 	onPositionTypeChanged ( $type: PositionType ) {
@@ -40,7 +39,7 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 		// for example when changing from world to road
 		// the current vector3 can be translated to road position
 
-		this.position = PositionFactory.createPosition( $type, this.position, this.entity );
+		this.position = this.positionFactory.createPosition( $type, this.position, this.entity );
 
 		this.positionChanged.emit( this.position );
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { ToolType } from "./tool-types.enum";
 import { DebugServiceProvider } from "../core/providers/debug-service.provider";
 import { RoadToolService } from "./road/road-tool.service";
@@ -80,6 +80,7 @@ import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { ManeuverMesh } from 'app/services/junction/junction.debug';
 import { TrafficLightTool } from './traffic-light/traffic-light.tool';
 import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';
+import { EntityService } from "../scenario/entity/entity.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -87,6 +88,7 @@ import { TrafficLightToolService } from './traffic-light/traffic-light-tool.serv
 export class ToolFactory {
 
 	constructor (
+		private injector: Injector,
 		private debugFactory: DebugServiceProvider,
 		private roadToolService: RoadToolService,
 		private surfaceToolService: SurfaceToolService,
@@ -184,7 +186,7 @@ export class ToolFactory {
 				tool = new MeasurementTool( this.measurementToolService );
 				break;
 			case ToolType.Vehicle:
-				tool = new VehicleTool();
+				tool = new VehicleTool( this.injector.get( EntityService ) );
 				break;
 			case ToolType.RoadSignalTool:
 				tool = new RoadSignalTool( this.roadSignalToolService );

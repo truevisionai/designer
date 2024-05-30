@@ -7,7 +7,6 @@ import { ProjectBrowserService } from '../project-browser/project-browser.servic
 import { Asset, AssetType } from '../../../core/asset/asset.model';
 import { DeprecatedModelLoader } from 'app/loaders/model.loader';
 import { RoadStyleLoader } from 'app/graphics/road-style/road-style.loader';
-import { TvEntityLoader } from 'app/loaders/tv-entity.loader';
 import { EditorSettings } from 'app/services/editor/editor.settings';
 import { BufferGeometryLoader } from 'three';
 import { TvConsole } from 'app/core/utils/console';
@@ -19,6 +18,7 @@ import { AssetService } from "../../../core/asset/asset.service";
 import { AssetDatabase } from "../../../core/asset/asset-database";
 import { LoaderFactory } from "../../../factories/loader.factory";
 import { MaterialAsset } from "../../../graphics/material/tv-material.asset";
+import { EntityLoader } from 'app/scenario/entity/entity.loader';
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,7 +34,7 @@ export class LoadingService {
 		private projectBrowserService: ProjectBrowserService,
 		private modelLoader: DeprecatedModelLoader,
 		private roadStyleLoader: RoadStyleLoader,
-		private entityLoader: TvEntityLoader,
+		private entityLoader: EntityLoader,
 		private editorSettings: EditorSettings,
 		private prefabLoader: TvObjectLoader,
 		private storageService: StorageService,

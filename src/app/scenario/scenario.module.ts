@@ -112,6 +112,7 @@ import { ActEditorComponent } from './views/tv-act-editor/tv-act-editor.componen
 		RelativeRoadPositionComponent,
 		TrajectoryPositionComponent,
 		FollowTrajectoryComponent,
+		ActEditorComponent,
 	],
 	imports: [
 		CommonModule,

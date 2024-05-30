@@ -42,6 +42,9 @@ import { TvReference, TvRoadSignal, TvSignalDependency } from '../road-signal/tv
 import { TvJunctionController } from '../models/junctions/tv-junction-controller';
 import { TvJunctionPriority } from '../models/junctions/tv-junction-priority';
 import { TvControllerControl, TvSignalController } from '../signal-controller/tv-signal-controller';
+import { TvMapHeader } from "../models/tv-map-header";
+import { TvRoadTypeClass } from "../models/tv-road-type.class";
+import { TvRoadSpeed } from "../models/tv-road.speed";
 
 @Injectable( {
 	providedIn: 'root'
@@ -113,7 +116,7 @@ export class OpenDriveExporter {
 	public writeFile ( fileName: string ) {
 
 		const rootNode = {
-			header: {},
+			header: this.writeHeader( this.map.header ),
 			road: [],
 			junction: this.map.getJunctions().map( junction => this.writeJunction( junction ) ),
 			controller: this.map.getControllers().map( controller => this.writeSignalController( controller ) ),
@@ -122,8 +125,6 @@ export class OpenDriveExporter {
 		this.xmlDocument = {
 			'OpenDRIVE': rootNode
 		};
-
-		this.writeHeader( rootNode.header );
 
 		this.map.roads.forEach( road => {
 
@@ -138,21 +139,20 @@ export class OpenDriveExporter {
 	 * Methods follow the same hierarchical structure and are called automatically when WriteFile
 	 * is executed
 	 */
-	public writeHeader ( xmlNode ) {
+	public writeHeader ( header: TvMapHeader ) {
 
-		const header = this.map.getHeader();
-
-		// Add all attributes
-		xmlNode.attr_revMajor = header.revMajor;
-		xmlNode.attr_revMinor = header.revMinor;
-		xmlNode.attr_name = header.name;
-		xmlNode.attr_version = header.version;
-		xmlNode.attr_date = header.date;
-		xmlNode.attr_north = header.north;
-		xmlNode.attr_south = header.south;
-		xmlNode.attr_east = header.east;
-		xmlNode.attr_west = header.west;
-		xmlNode.attr_vendor = header.vendor;
+		return {
+			attr_revMajor: header.revMajor,
+			attr_revMinor: header.revMinor,
+			attr_name: header.name,
+			attr_version: header.version,
+			attr_date: header.date,
+			attr_north: header.north,
+			attr_south: header.south,
+			attr_east: header.east,
+			attr_west: header.west,
+			attr_vendor: header.vendor,
+		};
 
 	}
 
@@ -163,13 +163,12 @@ export class OpenDriveExporter {
 			attr_length: road.length,
 			attr_id: road.id,
 			attr_junction: road.junctionId,
+			type: road.type.map( type => this.writeRoadType( type ) ),
 		};
 
 		xmlNode.road.push( xml );
 
 		this.writeRoadLinks( xml, road );
-
-		this.writeRoadType( xml, road );
 
 		this.writePlanView( xml, road );
 
@@ -262,30 +261,20 @@ export class OpenDriveExporter {
 
 	}
 
-	public writeRoadType ( xmlNode, road: TvRoad ) {
+	public writeRoadType ( roadType: TvRoadTypeClass ) {
 
-		if ( road.type.length > 0 ) {
+		const xml = {
+			attr_s: roadType.s,
+			attr_type: TvRoadTypeClass.typeToString( roadType.type ),
+		};
 
-			xmlNode.type = [];
-
-			road.getTypes().forEach( type => {
-
-				const typeXml = {
-					attr_s: type.s,
-					attr_type: type.type,
-				};
-
-				if ( type.speed ) {
-					typeXml[ 'speed' ] = {};
-					typeXml[ 'speed' ][ 'attr_max' ] = type.speed.max;
-					typeXml[ 'speed' ][ 'attr_unit' ] = type.speed.unit;
-				}
-
-				xmlNode.type.push( typeXml );
-
-			} );
+		if ( roadType.speed ) {
+			xml[ 'speed' ] = {};
+			xml[ 'speed' ][ 'attr_max' ] = roadType.speed.max;
+			xml[ 'speed' ][ 'attr_unit' ] = TvRoadSpeed.unitToString( roadType.speed.unit );
 		}
 
+		return xml;
 	}
 
 	public writePlanView ( xmlNode, road: TvRoad ) {

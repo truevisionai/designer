@@ -4,8 +4,6 @@
 
 import { MathUtils } from 'three';
 import { TvConsole } from '../../../core/utils/console';
-import { TvMapQueries } from '../../queries/tv-map-queries';
-import { TvMapInstance } from '../../services/tv-map-instance';
 import { TvContactPoint } from '../tv-common';
 import { TvJunction } from './tv-junction';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
@@ -32,7 +30,7 @@ between the lanes. Lane changes within this junction are possible.
 The linked lanes shall fit smoothly as described for roads (see Section 8.2).
 The @connectingRoad attribute shall not be used for junctions with @type="direct".
 
-**/
+ **/
 export class TvJunctionConnection {
 
 	public readonly uuid: string;
@@ -46,9 +44,7 @@ export class TvJunctionConnection {
 	 */
 	public isCornerConnection: boolean;
 
-	private lastAddedJunctionLaneLinkIndex: number;
-
-	private _outgoingRoad: TvRoad;
+	public junction: TvJunction;
 
 	/**
 	 *
@@ -62,34 +58,11 @@ export class TvJunctionConnection {
 		public incomingRoad: TvRoad,
 		public connectingRoad: TvRoad,
 		public contactPoint: TvContactPoint,
-		outgoingRoad: TvRoad = null,
+		public outgoingRoad: TvRoad = null,
 	) {
 		this.uuid = MathUtils.generateUUID();
-		this._outgoingRoad = outgoingRoad;
 	}
 
-	get outgoingRoad (): TvRoad {
-
-		if ( this._outgoingRoad ) return this._outgoingRoad;
-
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			return TvMapQueries.findRoadById( this.connectingRoad?.successor.elementId );
-
-		} else if ( this.contactPoint == TvContactPoint.END ) {
-
-			return TvMapQueries.findRoadById( this.connectingRoad?.predecessor.elementId );
-
-		} else {
-
-			throw new Error( 'Invalid contact point' );
-
-		}
-	}
-
-	set outgoingRoad ( road: TvRoad ) {
-		this._outgoingRoad = road;
-	}
 
 	get incomingRoadId (): number {
 		return this.incomingRoad?.id;
@@ -101,10 +74,6 @@ export class TvJunctionConnection {
 
 	get outgoingRoadId (): number {
 		return this.outgoingRoad?.id;
-	}
-
-	get junction () {
-		return TvMapInstance.map.getJunctionById( this.connectingRoad.junctionId );
 	}
 
 	get connectingLaneSection () {
@@ -202,43 +171,13 @@ export class TvJunctionConnection {
 
 	}
 
-	public cloneJunctionLaneLink ( index ) {
-
-		// TODO
-
-	}
-
-	public deleteJunctionLaneLink ( index ) {
-
-		this.laneLink.splice( index, 1 );
-
-	}
-
-	public getLastAddedJunctionLaneLink (): TvJunctionLaneLink {
-
-		return this.laneLink[ this.lastAddedJunctionLaneLinkIndex ];
-
-	}
-
-	public addLaneLink ( laneLink: TvJunctionLaneLink ) {
+	addLaneLink ( laneLink: TvJunctionLaneLink ) {
 
 		const exists = this.laneLink.find( link => link.from == laneLink.from && link.to == laneLink.to );
 
 		if ( exists ) return;
 
 		this.laneLink.push( laneLink );
-
-	}
-
-	public addLaneLinks ( incomingLane: TvLane, connectingLane: TvLane ) {
-
-		this.addLaneLink( new TvJunctionLaneLink( incomingLane, connectingLane ) );
-
-	}
-
-	getConnectingRoad (): TvRoad {
-
-		return undefined;
 
 	}
 
@@ -255,27 +194,6 @@ export class TvJunctionConnection {
 		}
 
 		return null;
-	}
-
-	getFromLaneId ( laneId: number ): number {
-
-		for ( const link of this.laneLink ) {
-
-			if ( link.to == laneId ) {
-
-				return link.from;
-
-			}
-
-		}
-
-		return null;
-	}
-
-	removeLinkAtIndex ( index: number ) {
-
-		this.laneLink.splice( index, 1 );
-
 	}
 
 	removeLaneLink ( laneLink: TvJunctionLaneLink ) {
@@ -298,13 +216,7 @@ export class TvJunctionConnection {
 
 	delete () {
 
-		// this.laneLink.forEach(lane => )
-
-		// this.connectingRoad
-
 		this.laneLink.splice( 0, this.laneLink.length );
-
-		// this.
 
 		if ( !this.junction ) return;
 

@@ -20,6 +20,7 @@ import { Story } from '../models/tv-story';
 import { ScenarioEvents } from './scenario-events';
 import { ScenarioService } from './scenario.service';
 import { MapService } from "../../services/map/map.service";
+import { ConditionGroup } from '../models/conditions/tv-condition-group';
 
 export interface StoryboardEvent {
 	name: string;
@@ -127,7 +128,7 @@ export class ScenarioDirectorService {
 
 		} );
 
-		if ( ConditionUtils.hasGroupsPassed( this.scenarioService.getScenario().storyboard.endConditionGroups ) ) {
+		if ( this.hasGroupsPassed( this.scenario.storyboard.endConditionGroups ) ) {
 
 			this.userPlayer.stop();
 
@@ -191,7 +192,7 @@ export class ScenarioDirectorService {
 
 			if ( !act.hasStarted ) {
 
-				act.shouldStart = ConditionUtils.hasGroupsPassed( act.startConditionGroups );
+				act.shouldStart = this.hasGroupsPassed( act.startConditionGroups );
 
 				if ( act.shouldStart ) this.startAct( act );
 
@@ -386,4 +387,25 @@ export class ScenarioDirectorService {
 
 	}
 
+	private hasGroupsPassed ( conditionGroups: ConditionGroup[] ): boolean {
+
+		for ( let i = 0; i < conditionGroups.length; i++ ) {
+
+			const group = conditionGroups[ i ];
+
+			for ( let j = 0; j < group.conditions.length; j++ ) {
+
+				const condition = group.conditions[ j ];
+
+				if ( !condition.scenario ) {
+
+					condition.scenario = this.scenario;
+
+				}
+			}
+		}
+
+		return ConditionUtils.hasGroupsPassed( conditionGroups );
+
+	}
 }

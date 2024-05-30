@@ -39,6 +39,8 @@ export class ConnectionService {
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact, outgoingRoad );
 
+		connection.junction = junction;
+
 		return connection
 	}
 
@@ -123,6 +125,8 @@ export class ConnectionService {
 			TvContactPoint.START,
 			outgoing.road
 		);
+
+		connection.junction = junction;
 
 		this.roadService.add( connection.connectingRoad );
 

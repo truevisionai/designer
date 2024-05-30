@@ -22,16 +22,14 @@ import { FollowTrajectoryAction } from '../models/actions/tv-follow-trajectory-a
 import { EnumTrajectoryDomain, PolylineShape, Trajectory, Vertex } from '../models/tv-trajectory';
 import { TimeReference, Timing } from '../models/actions/tv-routing-action';
 import { Maths } from 'app/utils/maths';
+import { Injectable } from "@angular/core";
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class ActionFactory {
 
-	static reset () {
-
-		// IDService.reset();
-
-	}
-
-	public static createNamedAction ( name: string, type: ActionType, entity?: ScenarioEntity ) {
+	public createNamedAction ( name: string, type: ActionType, entity?: ScenarioEntity ) {
 
 		const action = this.createActionWithoutName( type, entity ) as TvAction;
 
@@ -41,7 +39,7 @@ export class ActionFactory {
 
 	}
 
-	public static createActionWithoutName ( type: ActionType, entity?: ScenarioEntity ) {
+	public createActionWithoutName ( type: ActionType, entity?: ScenarioEntity ) {
 
 		let action: any;
 
@@ -124,7 +122,7 @@ export class ActionFactory {
 
 	}
 
-	static createRouteFollowTrajectoryAction ( entity: ScenarioEntity ): any {
+	createRouteFollowTrajectoryAction ( entity: ScenarioEntity ): any {
 
 		const shape = new PolylineShape();
 
@@ -145,7 +143,8 @@ export class ActionFactory {
 		return action
 	}
 
-	static createChangeLaneOffsetAction ( entity?: ScenarioEntity ) {
+
+	createChangeLaneOffsetAction ( entity?: ScenarioEntity ) {
 
 		// 3.2 lane width
 		const target = entity ?
@@ -156,7 +155,7 @@ export class ActionFactory {
 
 	}
 
-	public static createPositionAction ( entity?: ScenarioEntity, vector3?: Vector3, orientation?: Orientation ) {
+	public createPositionAction ( entity?: ScenarioEntity, vector3?: Vector3, orientation?: Orientation ) {
 
 		const position = vector3 || entity?.position || new Vector3();
 
@@ -164,7 +163,7 @@ export class ActionFactory {
 
 	}
 
-	static createLongitudinalDistanceAction ( entity: ScenarioEntity ) {
+	createLongitudinalDistanceAction ( entity: ScenarioEntity ) {
 
 		const dynamics = new DynamicConstraints( 3, 9, 40 );
 
@@ -172,7 +171,7 @@ export class ActionFactory {
 
 	}
 
-	private static createSpeedAction ( entity?: ScenarioEntity ) {
+	private createSpeedAction ( entity?: ScenarioEntity ) {
 
 		return new SpeedAction(
 			new TransitionDynamics( DynamicsShape.step, 0, DynamicsDimension.time ),
@@ -180,7 +179,7 @@ export class ActionFactory {
 		);
 	}
 
-	private static createLaneChangeAction ( entity?: ScenarioEntity ) {
+	private createLaneChangeAction ( entity?: ScenarioEntity ) {
 
 		const target = entity ? new RelativeTarget( new EntityRef( entity.name ), 1 ) : new AbsoluteTarget( 1 );
 

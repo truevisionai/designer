@@ -10,38 +10,32 @@ import { TvScenario } from '../models/tv-scenario';
 import { OpenScenarioLoader } from './open-scenario.loader';
 import { ScenarioBuilder } from './scenario-builder.service';
 import { StorageService } from 'app/io/storage.service';
+import { EntityBuilder } from "../entity/entity.builder";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ScenarioService {
 
-	private static _scenario: TvScenario = new TvScenario();
+	public scenario: TvScenario = new TvScenario();
 
 	constructor (
 		private openScenarioImporter: OpenScenarioLoader,
 		private openDriveService: OpenDriveService,
 		private storage: StorageService,
+		private entityBuilder: EntityBuilder
 	) {
 	}
 
-	static get scenario () {
+	get entities () {
 
-		return this._scenario;
-
-	}
-
-	static set scenario ( value ) {
-
-		this.scenario?.destroy();
-
-		this._scenario = value;
+		return Array.from( this.scenario?.objects?.values() || [] );
 
 	}
 
 	async importScenario ( path: string ) {
 
-		ScenarioService.scenario?.destroy();
+		this.destroy();
 
 		const scenario = await this.openScenarioImporter.loadPath( path );
 
@@ -57,29 +51,55 @@ export class ScenarioService {
 
 		this.openDriveService.importFromPath( mapFilePath, () => {
 
-			ScenarioService.scenario = scenario;
+			this.setScenario( scenario );
 
 			// need after scenario change because action, objects in scenario are dependent
 			// this.scenario to be set and correct
-			new ScenarioBuilder( scenario ).buildScenario();
+			const builder = new ScenarioBuilder( this.entityBuilder );
+
+			builder.buildScenario( scenario );
 
 		} );
 
 	}
 
-	static getGlobalParameterValue ( paremeterName: string ): string {
+	getScenario (): TvScenario {
 
-		const declaration = this._scenario.getParameterDeclaration( paremeterName );
-
-		if ( !declaration ) return null;
-
-		return declaration.parameter?.getValue();
+		return this.scenario;
 
 	}
 
-	getScenario (): TvScenario {
+	setScenario ( scenario: TvScenario ) {
 
-		return ScenarioService.scenario;
+		this.destroy();
+
+		this.scenario = scenario;
+
+	}
+
+	destroy () {
+
+		if ( !this.scenario ) return;
+
+		this.scenario.db.clear();
+
+		this.scenario.parameterDeclarations.splice( 0, this.scenario.parameterDeclarations.length );
+
+		this.scenario.objects.forEach( entity => {
+
+			entity.initActions.splice( 0, entity.initActions.length );
+
+		} );
+
+		this.scenario.storyboard.stories.forEach( story => {
+
+			story.acts.splice( 0, story.acts.length );
+
+		} );
+
+		this.scenario.objects.clear();
+
+		this.scenario.storyboard.stories.clear();
 
 	}
 

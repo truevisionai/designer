@@ -13,7 +13,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { CommandHistory } from '../command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { GameObject } from 'app/objects/game-object';
@@ -25,6 +25,8 @@ import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { RoadBuilder } from "../../map/builders/road.builder";
+import { TvPosTheta } from "../../map/models/tv-pos-theta";
+import { Maths } from "../../utils/maths";
 
 @Injectable( {
 	providedIn: 'root'
@@ -365,7 +367,99 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	findHighestRightRoad ( road: TvRoad ) {
+	findNearestRoad ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): TvRoad {
+
+		const point = new Vector2( position.x, position.y );
+		const temp = new TvPosTheta();
+
+		let nearestRoad: TvRoad = null;
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		for ( const road of this.roads ) {
+
+			if ( roadIdsToIgnore.includes( road.id ) ) continue;
+
+			for ( const geometry of road.geometries ) {
+
+				const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+
+				const distance = point.distanceTo( nearestPoint );
+
+				if ( distance < minDistance ) {
+
+					minDistance = distance;
+					nearestRoad = road;
+
+					if ( posTheta ) posTheta.copy( temp );
+				}
+			}
+		}
+
+		return nearestRoad;
+
+	}
+
+	findNearestLane ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ) {
+
+		let nearestLane: TvLane = null;
+
+		const nearestRoad = this.findNearestRoad( position, posTheta, ...roadIdsToIgnore );
+
+		const s = posTheta.s;
+		const t = posTheta.t;
+
+		for ( const laneSection of nearestRoad.laneSections ) {
+
+			// TODO: Fix this, checkInteral does not check properly
+			if ( laneSection.checkInterval( s ) ) {
+
+				// t is positive of left
+				// left lanes are positive int
+				// right lanes are negative int
+
+				let lanes: TvLane[] = [];
+
+				// positive t means left side
+				if ( t > 0 ) {
+
+					lanes = laneSection.getLeftLanes().reverse();
+
+				} else if ( t < 0 ) {
+
+					lanes = laneSection.getRightLanes();
+
+				} else if ( Maths.approxEquals( t, 0 ) ) {
+
+					lanes = laneSection.getCenterLanes();
+
+				}
+
+				let cumulativeWidth = 0;
+
+				for ( const lane of lanes ) {
+
+					const width = lane.getWidthValue( s );
+
+					cumulativeWidth += width;
+
+					if ( cumulativeWidth >= Math.abs( t ) ) {
+
+						nearestLane = lane;
+						break;
+
+					}
+
+				}
+
+				break;
+			}
+
+		}
+
+		return {
+			road: nearestRoad,
+			lane: nearestLane
+		};
 
 	}
 }

@@ -10,6 +10,8 @@ import { TvPosTheta } from '../tv-pos-theta';
 import { TvRoad } from '../tv-road.model';
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { RoadService } from 'app/services/road/road.service';
+import { Vector2 } from 'three';
 
 describe( 'TvLineGeometry', () => {
 
@@ -17,15 +19,17 @@ describe( 'TvLineGeometry', () => {
 	let road: TvRoad;
 	let pose = new TvPosTheta();
 	let mapService: MapService;
+	let roadService: RoadService;
 
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
 			imports: [ HttpClientModule ],
-			providers: [ MapService ]
+			providers: [ MapService, RoadService ]
 		} );
 
 		mapService = TestBed.inject( MapService );
+		roadService = TestBed.inject( RoadService );
 
 		map = mapService.map;
 
@@ -178,27 +182,27 @@ describe( 'TvLineGeometry', () => {
 		road2.addGeometryLine( 0, 10, 0, 0, 10 );
 		road3.addGeometryLine( 0, 20, 0, 0, 10 );
 
-		let roadResult = TvMapQueries.getRoadByCoords( 0, 0 );
+		let roadResult = roadService.findNearestRoad( new Vector2( 0, 0 ) );
 		expect( roadResult ).not.toBeNull();
 		expect( roadResult.id ).toBe( 1 );
 
-		roadResult = TvMapQueries.getRoadByCoords( 1, 10 );
+		roadResult = roadService.findNearestRoad( new Vector2( 1, 10 ) );
 		expect( roadResult ).not.toBeNull();
 		expect( roadResult.id ).toBe( 1 );
 
-		roadResult = TvMapQueries.getRoadByCoords( 11, 0 );
+		roadResult = roadService.findNearestRoad( new Vector2( 11, 0 ) );
 		expect( roadResult ).not.toBeNull();
 		expect( roadResult.id ).toBe( 2 );
 
-		roadResult = TvMapQueries.getRoadByCoords( 11, 10 );
+		roadResult = roadService.findNearestRoad( new Vector2( 11, 10 ) );
 		expect( roadResult ).not.toBeNull();
 		expect( roadResult.id ).toBe( 2 );
 
-		roadResult = TvMapQueries.getRoadByCoords( 21, 0 );
+		roadResult = roadService.findNearestRoad( new Vector2( 21, 0 ) );
 		expect( roadResult ).not.toBeNull();
 		expect( roadResult.id ).toBe( 3 );
 
-		roadResult = TvMapQueries.getRoadByCoords( 21, 10 );
+		roadResult = roadService.findNearestRoad( new Vector2( 21, 10 ) );
 		expect( roadResult ).not.toBeNull();
 		expect( roadResult.id ).toBe( 3 );
 

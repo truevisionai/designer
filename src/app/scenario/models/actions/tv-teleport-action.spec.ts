@@ -8,7 +8,7 @@ describe( 'TvTeleportAction', () => {
 
 	it( 'should import correctly', () => {
 
-		const loader = new OpenScenarioLoader( null );
+		const loader = new OpenScenarioLoader( null, null );
 
 		const worldPosition = loader.parseWorldPosition( {
 			'attr_x': 0,

@@ -43,28 +43,15 @@ export class AutoSignalizeJunctionService {
 
 	removeSignalization ( junction: TvJunction ) {
 
-		this.removeControllers( junction, AutoSignalizationType.SPIT_PHASE );
+		this.removeControllers( junction );
 
-		for ( const road of junction.getIncomingRoads() ) {
-
-			// const position = this.findSignalPosition( road, AutoSignalizationType.ALL_GO );
-
-			const signals = this.signalService.findSignalsByType( road, [ '206', '205', '294', '100001' ] );
-
-			for ( const signal of signals ) {
-
-				this.signalService.removeSignal( road, signal );
-
-			}
-
-			this.roadService.update( road );
-		}
+		this.removeSignals( junction );
 
 	}
 
 	addSignalization ( junction: TvJunction, type: AutoSignalizationType, useProps = false ) {
 
-		this.removeControllers( junction, type );
+		this.removeControllers( junction );
 
 		for ( const road of junction.getIncomingRoads() ) {
 
@@ -237,7 +224,7 @@ export class AutoSignalizeJunctionService {
 		signal.addValidity( minLaneId, maxLaneId );
 	}
 
-	private removeControllers ( junction: TvJunction, type: AutoSignalizationType ) {
+	private removeControllers ( junction: TvJunction ) {
 
 		// remove existing controllers from junction and map
 		for ( const controller of junction.controllers ) {
@@ -262,6 +249,23 @@ export class AutoSignalizeJunctionService {
 		this.controllerService.addController( controller );
 
 		junction.controllers.push( new TvJunctionController( controller.id, controller.name ) );
+
+	}
+
+	private removeSignals ( junction: TvJunction ) {
+
+		for ( const road of junction.getIncomingRoads() ) {
+
+			const signals = this.signalService.findSignalsByType( road, [ '206', '205', '294', '1000001' ] );
+
+			for ( const signal of signals ) {
+
+				this.signalService.removeSignal( road, signal );
+
+			}
+
+			this.roadService.update( road );
+		}
 
 	}
 }

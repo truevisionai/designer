@@ -6,16 +6,15 @@ import { MapEvents } from 'app/events/map-events';
 import { ScenarioEntity } from 'app/scenario/models/entities/scenario-entity';
 import { ActionType } from 'app/scenario/models/tv-enums';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Manager } from '../core/interfaces/manager';
-import { RoadUpdatedEvent } from "../events/road/road-updated-event";
+import { RoadUpdatedEvent } from "../../events/road/road-updated-event";
 import { Injectable } from "@angular/core";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class EntityManager extends Manager {
+export class EntityManager {
 
-	private static _instance = new EntityManager();
+	private static _instance: EntityManager;
 
 	private debug = false;
 
@@ -26,9 +25,7 @@ export class EntityManager extends Manager {
 	}
 
 	constructor () {
-
-		super();
-
+		EntityManager._instance = this;
 	}
 
 	public init (): void {
@@ -37,14 +34,13 @@ export class EntityManager extends Manager {
 
 	}
 
-
 	onRoadUpdated ( event: RoadUpdatedEvent ): void {
 
 		if ( this.debug ) console.debug( 'onRoadUpdated' );
 
-		// we want to teleport all entities to the new position
-		// when road is updated
-		// ScenarioInstance.scenario.objects.forEach( ( entity: ScenarioEntity ) => {
+		// // we want to teleport all entities to the new position
+		// // when road is updated
+		// this.entityService.entities.forEach( entity => {
 
 		// 	this.updateEntityPosition( entity, event.road );
 
@@ -53,6 +49,8 @@ export class EntityManager extends Manager {
 	}
 
 	updateEntityPosition ( entity: ScenarioEntity, road: TvRoad ) {
+
+		return;
 
 		const teleportAction = entity.initActions
 			.find( action => action.actionType == ActionType.Private_Position );

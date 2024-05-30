@@ -6,7 +6,8 @@ import { VehicleEntity } from '../models/entities/vehicle-entity';
 import { WorldPosition } from '../models/positions/tv-world-position';
 import { PolylineShape } from '../models/tv-trajectory';
 import { OpenScenarioLoader } from './open-scenario.loader';
-import { ParameterResolver } from './scenario-builder.service';
+
+import { ParameterResolver } from "./parameter.resolver";
 
 const vehicleCatalogContent = `<?xml version="1.0" encoding="UTF-8"?>
 <OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Schema/OpenSCENARIO.xsd">
@@ -48,7 +49,7 @@ describe( 'ReaderService', () => {
 	let loader: OpenScenarioLoader;
 
 	beforeEach( () => {
-		loader = new OpenScenarioLoader( null );
+		loader = new OpenScenarioLoader( null, null );
 	} );
 
 	it( 'should parse Header correctly', () => {
@@ -88,7 +89,6 @@ describe( 'ReaderService', () => {
 		expect( roadNetwork.sceneGraph.filepath ).toBe( xml.SceneGraph.attr_filepath );
 
 	} );
-
 
 	it( 'should parse Entities correctly', () => {
 
@@ -248,10 +248,10 @@ describe( 'ReaderService', () => {
 				attr_strategy: 'fastest',
 				Position: { World: { attr_x: 1, attr_y: 2, attr_z: 3 } },
 			},
-			{
-				attr_strategy: 'fastest',
-				Position: { World: { attr_x: 4, attr_y: 5, attr_z: 6 } },
-			}, ]
+				{
+					attr_strategy: 'fastest',
+					Position: { World: { attr_x: 4, attr_y: 5, attr_z: 6 } },
+				}, ]
 		};
 
 		const route = loader.parseRoute( xml );
@@ -263,7 +263,6 @@ describe( 'ReaderService', () => {
 
 	} );
 
-
 } );
 
 describe( 'CatalogLoader', () => {
@@ -271,7 +270,7 @@ describe( 'CatalogLoader', () => {
 	let loader: OpenScenarioLoader;
 
 	beforeEach( () => {
-		loader = new OpenScenarioLoader( null );
+		loader = new OpenScenarioLoader( null, null );
 	} );
 
 	it( 'should parse vehicle catalog correctly', () => {
@@ -299,7 +298,7 @@ describe( 'CatalogLoader', () => {
 		expect( car1.performance.mass ).toBeNaN();
 		expect( car1.performance.maxSpeed ).toBeNaN();
 
-		xml = new ParameterResolver( null ).replaceParameterWithValue( xml );
+		xml = new ParameterResolver().replaceParameterWithValue( xml );
 		catalog = loader.parseCatalogFile( xml );
 
 		expect( catalog.name ).toBe( 'VehicleCatalog' );
@@ -321,6 +320,5 @@ describe( 'CatalogLoader', () => {
 		expect( car1.performance.mass as any ).toBe( 1600 );
 
 	} );
-
 
 } );

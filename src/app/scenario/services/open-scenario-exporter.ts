@@ -1466,17 +1466,17 @@ export class OpenScenarioExporter {
 		if ( this.version == OpenScenarioVersion.v0_9 ) {
 
 			return {
-				attr_name: parameterDeclaration.parameter.name,
-				attr_value: parameterDeclaration.parameter.value,
-				attr_type: parameterDeclaration.parameter.type,
+				attr_name: parameterDeclaration.name,
+				attr_value: parameterDeclaration.value,
+				attr_type: ParameterDeclaration.typeToString( parameterDeclaration.type ),
 			};
 
 		}
 
 		return {
-			attr_name: parameterDeclaration.parameter.name,
-			attr_value: parameterDeclaration.parameter.value,
-			attr_parameterType: parameterDeclaration.parameter.type,
+			attr_name: parameterDeclaration.name,
+			attr_value: parameterDeclaration.value,
+			attr_parameterType: ParameterDeclaration.typeToString( parameterDeclaration.type ),
 		};
 
 	}

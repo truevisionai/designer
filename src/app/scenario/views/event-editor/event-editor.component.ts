@@ -31,12 +31,14 @@ export class EventEditorComponent implements OnInit {
 	@Input() isOpen = true;
 
 	constructor (
-		private menuService: MenuService
+		private menuService: MenuService,
+		private elementFactory: ScenarioElementFactory,
+		private scenarioService: ScenarioService
 	) {
 	}
 
 	get scenario () {
-		return ScenarioService.scenario;
+		return this.scenarioService.getScenario();
 	}
 
 	ngOnInit () {
@@ -52,7 +54,7 @@ export class EventEditorComponent implements OnInit {
 
 	addAction ( $type: ActionType ) {
 
-		const action = ScenarioElementFactory.createEventAction( $type, this.entity );
+		const action = this.elementFactory.createEventAction( $type, this.entity );
 
 		this.event.addNewAction( action.name, action );
 
@@ -104,7 +106,7 @@ export class EventEditorComponent implements OnInit {
 		$event.preventDefault();
 		$event.stopPropagation();
 
-		ScenarioService.scenario.storyboard.removeEvent( this.event );
+		this.scenario.storyboard.removeEvent( this.event );
 
 	}
 }

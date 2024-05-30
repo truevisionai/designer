@@ -8,7 +8,7 @@ import { Time } from 'app/core/time';
 import { MapEvents, } from 'app/events/map-events';
 import { ScenarioDirectorService } from 'app/scenario/services/scenario-director.service';
 import { ScenarioService } from 'app/scenario/services/scenario.service';
-import { VehicleService } from 'app/scenario/services/vehicle.service';
+import { EntityService } from 'app/scenario/entity/entity.service';
 import { TvLaneType } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from 'app/services/road/road.service';
@@ -28,7 +28,7 @@ export class TrafficManager {
 	constructor (
 		private playerService: PlayerService,
 		private roadService: RoadService,
-		private vehicleService: VehicleService,
+		private vehicleService: EntityService,
 		private scenarioService: ScenarioService,
 		private scenarioDirector: ScenarioDirectorService
 	) { }
@@ -121,8 +121,6 @@ export class TrafficManager {
 
 						const vehicle = this.vehicleService.createVehicleOnLane( road, lane, s, 0 );
 
-						this.vehicleService.addVehicle( vehicle );
-						// this.scenarioService.getScenario().addObject( vehicle );
 
 					}
 

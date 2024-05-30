@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Host, HostBinding, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { SatPopover } from '@ncstate/sat-popover';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/services/command-history';
@@ -535,6 +535,18 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 		this.mouseOnTool = null;
 
+	}
+
+	@HostListener( 'document:keydown', [ '$event' ] )
+	onKeyDown ( event: KeyboardEvent ) {
+
+		// check if mouse is on tool
+		if ( !this.mouseOnTool ) return;
+
+		// check if F1 key is pressed
+		if ( event.key !== 'F1' ) return;
+
+		// TODO: open help section for that tool
 	}
 
 	setToolType ( type: ToolType ) {

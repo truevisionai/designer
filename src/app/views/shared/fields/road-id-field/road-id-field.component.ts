@@ -4,7 +4,7 @@
 
 import { Component, Input } from '@angular/core';
 import { AbstractFieldComponent } from '../abstract-field.component';
-import { TvMapQueries } from '../../../../map/queries/tv-map-queries';
+import { RoadService } from "../../../../services/road/road.service";
 
 @Component( {
 	selector: 'app-road-id-field',
@@ -15,12 +15,12 @@ export class RoadIdFieldComponent extends AbstractFieldComponent {
 
 	@Input() value: number;
 
-	constructor () {
+	constructor ( private roadService: RoadService ) {
 		super();
 	}
 
 	get roads (): number[] {
-		return TvMapQueries.getRoadArray().map( ( road ) => road.id );
+		return this.roadService.roads.map( road => road.id );
 	}
 
 	ngOnInit () {
