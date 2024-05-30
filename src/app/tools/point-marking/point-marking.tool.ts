@@ -218,8 +218,16 @@ export class PointMarkingTool extends BaseTool<any> {
 
 			}
 
+		} else if ( object instanceof TvRoadObject ) {
+
+			if ( this.selectedMarking ) this.onObjectUnselected( this.selectedMarking );
+
+			this.tool.showControls( object.road );
+
+			AppInspector.setDynamicInspector( new PointMarkingInspector( [ object ] ) );
 
 		}
+
 
 	}
 
@@ -255,6 +263,7 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		}
 
+		this.onObjectSelected( object );
 	}
 
 	addRoadObject ( object: TvRoadObject ) {
