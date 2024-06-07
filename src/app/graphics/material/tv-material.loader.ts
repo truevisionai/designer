@@ -57,19 +57,15 @@ export class TvMaterialLoader implements AssetLoader {
 		const data = JSON.parse( contents );
 
 		if ( data.version === '0.2' || data.version === 0.2 ) {
-
 			return this.parseVersion02( data );
+		}
 
-		} else if ( data.version == '0.1' || data.version == 0.1 ) {
-
+		if ( data.version == '0.1' || data.version == 0.1 ) {
 			return this.parseVersion01( data );
+		}
 
-		} else {
-
-			console.error( 'Unknown material version', data );
-
-			throw new Error( 'Unknown material version' );
-
+		if ( data.metadata?.generator == 'Material.toJSON' ) {
+			return this.parseVersion01( data );
 		}
 
 	}

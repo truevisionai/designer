@@ -123,6 +123,8 @@ export class LoadingService {
 
 			const material = loader.load( asset );
 
+			if ( !material ) return;
+
 			if ( material.guid != asset.guid ) {
 
 				console.warn( 'Material guid mismatch', asset.guid, material.guid, asset, material );
