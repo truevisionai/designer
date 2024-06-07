@@ -168,9 +168,7 @@ export class ParameterService {
 
 		const declaration = this.scenarioService.scenario.getParameterDeclaration( name );
 
-		if ( !declaration ) return null;
-
-		return declaration.parameter?.getValue();
+		return declaration?.getValue();
 
 	}
 }
