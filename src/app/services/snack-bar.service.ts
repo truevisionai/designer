@@ -3,28 +3,20 @@
  */
 
 import { Injectable } from '@angular/core';
-import { MatSnackBar, MatSnackBarRef, MatSnackBarVerticalPosition, SimpleSnackBar } from '@angular/material/snack-bar';
-import { TvConsole } from 'app/core/utils/console';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SnackBar {
 
-	private static snackBar: MatSnackBar;
-	private static verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-
-	constructor ( private snackBar: MatSnackBar ) {
-
-		SnackBar.snackBar = snackBar;
-
-	}
+	constructor ( private snackBar: MatSnackBar ) { }
 
 	open ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
 
 		return this.snackBar.open( message, action, {
 			duration: duration,
-			verticalPosition: SnackBar.verticalPosition,
+			verticalPosition: 'bottom',
 			horizontalPosition: 'right'
 		} );
 
@@ -40,7 +32,7 @@ export class SnackBar {
 
 		return this.snackBar.open( message, action, {
 			duration: duration,
-			verticalPosition: SnackBar.verticalPosition,
+			verticalPosition: 'bottom',
 			horizontalPosition: 'right',
 			panelClass: [ 'red-snackbar' ]
 		} );
@@ -51,7 +43,7 @@ export class SnackBar {
 
 		return this.snackBar.open( message, action, {
 			duration: duration,
-			verticalPosition: SnackBar.verticalPosition,
+			verticalPosition: 'bottom',
 			horizontalPosition: 'right',
 			panelClass: [ 'green-snackbar' ]
 		} );
@@ -62,7 +54,7 @@ export class SnackBar {
 
 		return this.snackBar.open( message, action, {
 			duration: duration,
-			verticalPosition: SnackBar.verticalPosition,
+			verticalPosition: 'bottom',
 			horizontalPosition: 'right',
 			panelClass: [ 'yellow-snackbar' ]
 		} );

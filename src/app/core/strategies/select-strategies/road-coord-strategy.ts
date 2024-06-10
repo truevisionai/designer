@@ -5,11 +5,21 @@
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { SelectStrategy } from './select-strategy';
+import { IDebugger } from 'app/core/interfaces/debug.service';
+import { TvRoad } from 'app/map/models/tv-road.model';
 
 export class RoadCoordStrategy extends SelectStrategy<TvRoadCoord> {
 
-	constructor ( private includeJunctionRoads = false ) {
+	public debugger: IDebugger<TvRoad, any>;
+
+	private road: TvRoad;
+	private highlight = true;
+
+	constructor ( private includeJunctionRoads = false, highlight = false ) {
+
 		super();
+
+		this.highlight = highlight
 	}
 
 	onPointerDown ( pointerEventData: PointerEventData ): TvRoadCoord {
@@ -27,12 +37,22 @@ export class RoadCoordStrategy extends SelectStrategy<TvRoadCoord> {
 
 	onPointerMoved ( pointerEventData: PointerEventData ): TvRoadCoord {
 
+		if ( this.highlight && this.road ) {
+			this.debugger?.onUnhighlight( this.road );
+		}
+
 		const coord = this.onRoadGeometry( pointerEventData );
 
 		if ( !coord ) return;
 
-		if ( coord.road.isJunction && !this.includeJunctionRoads ) {
+		this.road = coord.road;
+
+		if ( this.road.isJunction && !this.includeJunctionRoads ) {
 			return;
+		}
+
+		if ( this.highlight && this.road ) {
+			this.debugger?.onHighlight( this.road );
 		}
 
 		return coord

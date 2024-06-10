@@ -146,7 +146,7 @@ export class LaneRoadMarkBuilder {
 		);
 
 		const frontRight = new Vertex(
-			new Vector3( x2, y2, elevationStart + height.getOuter() ),
+			new Vector3( x2, y2, elevationStart + height.outer ),
 			new Vector2( 0, roadMark.width )
 		);
 
@@ -156,7 +156,7 @@ export class LaneRoadMarkBuilder {
 		);
 
 		const backRight = new Vertex(
-			new Vector3( x4, y4, elevationEnd + height.getOuter() ),
+			new Vector3( x4, y4, elevationEnd + height.outer ),
 			new Vector2( roadMark.length, roadMark.width )
 		);
 

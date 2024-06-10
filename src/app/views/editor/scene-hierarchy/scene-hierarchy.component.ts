@@ -59,7 +59,8 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 	private readonly debounceDuration = 100; // duration in milliseconds
 
 	constructor (
-		private changeDet: ChangeDetectorRef
+		private changeDet: ChangeDetectorRef,
+		private sceneService: SceneService,
 	) {
 	}
 
@@ -75,10 +76,10 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 	get children () {
 
 		if ( this.debug ) {
-			return SceneService.scene;
+			return this.sceneService.scene;
 		}
 
-		return SceneService.getMainLayer();
+		return this.sceneService.mainLayer;
 	}
 
 	ngOnInit (): void {

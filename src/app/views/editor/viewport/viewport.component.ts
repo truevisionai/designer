@@ -96,6 +96,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		private viewControllerService: ViewControllerService,
 		private cameraService: CameraService,
 		private mapService: MapService,
+		private sceneService: SceneService,
 	) {
 		this.render = this.render.bind( this );
 	}
@@ -174,7 +175,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.viewHelperService.update( delta );
 
-		this.renderer.render( SceneService.scene, this.threeService.camera );
+		this.renderer.render( this.sceneService.scene, this.threeService.camera );
 
 		this.viewHelperService.render( this.renderer );
 
@@ -616,7 +617,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster.layers.set( 0 );  // default layer
 
-		let intersections = this.raycaster.intersectObjects( SceneService.scene.children, recursive );
+		let intersections = this.raycaster.intersectObjects( this.sceneService.scene.children, recursive );
 
 		if ( intersections.length > 0 ) {
 
@@ -626,7 +627,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		// check for background intersection
-		return this.raycaster.intersectObjects( [ SceneService.bgForClicks ], false );
+		return this.raycaster.intersectObjects( [ this.sceneService.bgForClicks ], false );
 	}
 
 	changeCamera () {

@@ -18,6 +18,7 @@ import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { ControlPointDebugger } from "../../services/debug/control-point.debugger";
 import { LaneHeightDebugService } from "app/tools/lane-height/lane-height.debug";
 import { LaneMarkingToolDebugger } from "app/tools/lane-marking/lane-marking-tool.debugger";
+import { TextMarkingToolDebugger } from "app/tools/text-marking/text-marking-tool.debugger";
 
 @Injectable( {
 	providedIn: 'root'
@@ -81,6 +82,10 @@ export class DebugServiceProvider {
 		} else if ( type == ToolType.LaneMarking ) {
 
 			debugService = this.injector.get( LaneMarkingToolDebugger );
+
+		} else if ( type == ToolType.TextMarkingTool ) {
+
+			debugService = this.injector.get( TextMarkingToolDebugger );
 
 		}
 

@@ -79,8 +79,8 @@ export class LaneHeightManager {
 
 		if ( otherLaneHeight ) {
 
-			otherLaneHeight.setInner( height.inner );
-			otherLaneHeight.setOuter( height.outer );
+			otherLaneHeight.inner = height.inner;
+			otherLaneHeight.outer = height.outer;
 
 		}
 

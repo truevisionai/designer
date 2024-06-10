@@ -27,15 +27,31 @@ export class SceneService {
 		return SceneService.scene;
 	}
 
+	get bgForClicks (): THREE.Mesh {
+		return SceneService.bgForClicks;
+	}
+
+	get editorLayer (): Group {
+		return SceneService.editorLayer;
+	}
+
+	get mainLayer (): Group {
+		return SceneService.mainLayer;
+	}
+
+	get toolLayer (): Group {
+		return SceneService.toolLayer;
+	}
+
 	constructor () {
 
-		SceneService.editorLayer.name = 'Editor';
-		SceneService.mainLayer.name = 'Main';
-		SceneService.toolLayer.name = 'Tool';
+		this.editorLayer.name = 'Editor';
+		this.mainLayer.name = 'Main';
+		this.toolLayer.name = 'Tool';
 
-		SceneService.scene.add( SceneService.editorLayer );
-		SceneService.scene.add( SceneService.mainLayer );
-		SceneService.scene.add( SceneService.toolLayer );
+		this.scene.add( this.editorLayer );
+		this.scene.add( this.mainLayer );
+		this.scene.add( this.toolLayer );
 
 		SceneService.bgForClicks = new THREE.Mesh( new THREE.PlaneGeometry( 10000, 10000 ), new THREE.MeshBasicMaterial( {
 			color: 0xFFFFFF,

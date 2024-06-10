@@ -232,9 +232,9 @@ export class DebugDrawService {
 
 		const laneWidth = lane.getWidthValue( s );
 
-		const innerHeight = lane.getHeightValue( s )?.getInner();
+		const innerHeight = lane.getHeightValue( s )?.inner;
 
-		const outerHeight = lane.getHeightValue( s )?.getOuter();
+		const outerHeight = lane.getHeightValue( s )?.outer;
 
 		const offset = laneWidth * 0.5;
 

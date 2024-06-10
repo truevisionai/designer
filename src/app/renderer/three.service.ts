@@ -22,6 +22,7 @@ export class ThreeService {
 
 	constructor (
 		private cameraService: CameraService,
+		private sceneService: SceneService,
 	) {
 
 	}
@@ -52,7 +53,7 @@ export class ThreeService {
 
 	public get scene () {
 
-		return SceneService.scene;
+		return this.sceneService.scene;
 
 	}
 
@@ -134,7 +135,7 @@ export class ThreeService {
 
 	wireframeMode ( showWireframe: boolean ) {
 
-		SceneService.scene.traverse( function ( child ) {
+		this.sceneService.scene.traverse( function ( child ) {
 
 			if ( child instanceof THREE.Mesh ) {
 

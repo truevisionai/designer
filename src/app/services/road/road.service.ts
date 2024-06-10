@@ -25,6 +25,7 @@ import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from "../../map/models/tv-pos-theta";
 import { Maths } from "../../utils/maths";
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,9 +35,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 	public static instance: RoadService;
 
 	constructor (
-		private splineFactory: SplineFactory,
-		private mapService: MapService,
-		private roadFactory: RoadFactory,
+		public splineFactory: SplineFactory,
+		public mapService: MapService,
+		public roadFactory: RoadFactory,
 	) {
 		super();
 		RoadService.instance = this;
@@ -326,6 +327,21 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
+	findLaneCoord ( position: Vector3 ): TvLaneCoord {
+
+		const roadCoord = this.findRoadCoord( position );
+
+		if ( !roadCoord ) return;
+
+		const posTheta = roadCoord.toPosTheta();
+
+		const result = this.findNearestLane( position, posTheta );
+
+		if ( !result ) return;
+
+		return new TvLaneCoord( roadCoord.road, result.lane.laneSection, result.lane, roadCoord.s, roadCoord.t );
+	}
+
 	createConnectionRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvRoad {
 
 		const road = this.createNewRoad();
@@ -514,6 +530,30 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 * @param sOffset s offset is relative to lane section
 	 * @returns
 	 */
+	findLaneCenterPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		const t = this.findWidthUptoCenter( road, laneSection, lane, sOffset );
+
+		const sign = lane.id >= 0 ? 1 : -1;
+
+		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
+
+		const laneHeight = lane.getHeightValue( sOffset );
+
+		posTheta.z += laneHeight.getLinearValue( 0.5 );
+
+		return posTheta;
+
+	}
+
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sOffset s offset is relative to lane section
+	 * @returns
+	 */
 	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
 
 		if ( lane.side == TvLaneSide.CENTER ) return 0;
@@ -534,6 +574,32 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return width;
 	}
 
+	findWidthUptoCenter ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		if ( lane.side == TvLaneSide.CENTER ) return 0;
+
+		let totalWidth = 0;
+
+		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
+
+		for ( let i = 0; i < lanes.length; i++ ) {
+
+			const currentLane = lanes[ i ];
+
+			const laneWidth = currentLane.getWidthValue( sOffset );
+
+			totalWidth += laneWidth;
+
+			if ( currentLane.id == lane.id ) {
+
+				totalWidth -= laneWidth / 2;
+				break;
+			}
+		}
+
+		return totalWidth;
+	}
+
 	/**
 	 *
 	 * @param road
@@ -544,6 +610,25 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		return road.getPosThetaAt( s, t );
 
+	}
+
+	STtoXYZ ( road: TvRoad, s: number, t: number ) {
+
+		const posTheta = road.getPosThetaAt( s, t );
+
+		const position = posTheta.toVector3();
+
+		const laneCoord = this.findLaneCoord( position );
+
+		if ( !laneCoord ) return;
+
+		const lane = laneCoord.lane;
+
+		const laneHeight = lane.getHeightValue( laneCoord.s );
+
+		position.z += laneHeight.getLinearValue( 0.5 );
+
+		return position;
 	}
 
 }

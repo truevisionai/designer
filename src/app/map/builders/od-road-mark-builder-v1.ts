@@ -264,7 +264,7 @@ export class OdRoadMarkBuilderV1 {
 		texX = roadMarkTexModifierMax1;
 
 		const v2 = new Vertex(
-			new Vector3( x2, y2, roadCoord.z + height.getOuter() ),
+			new Vector3( x2, y2, roadCoord.z + height.outer ),
 			new Vector2( texX, texY )
 		);
 

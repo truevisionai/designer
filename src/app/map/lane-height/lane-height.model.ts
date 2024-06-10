@@ -19,9 +19,11 @@ export class TvLaneHeight {
 
 	public readonly uuid: string;
 
-	private _sOffset = 0;
-	private _inner = 0;
-	private _outer = 0;
+	public sOffset = 0;
+
+	public inner = 0;
+
+	public outer = 0;
 
 	/**
 	 *
@@ -30,50 +32,27 @@ export class TvLaneHeight {
 	 * @param outer Outer offset from road level
 	 */
 	constructor ( sOffset: number, inner: number, outer: number ) {
-		this._sOffset = sOffset || 0;
-		this._inner = inner || 0;
-		this._outer = outer || 0;
+
+		this.sOffset = sOffset || 0;
+
+		this.inner = inner || 0;
+
+		this.outer = outer || 0;
+
 		this.uuid = MathUtils.generateUUID();
+
 	}
 
-	get sOffset () {
-		return this._sOffset;
-	}
+	get s () { return this.sOffset; }
 
-	set sOffset ( value ) {
-		this._sOffset = value;
-	}
+	set s ( value ) { this.sOffset = value; }
 
-	get s () {
-		return this._sOffset;
+	/**
+	 * Get the linear value of the lane height at a given t
+	 * @param t 0 to 1
+	 * @returns
+	 */
+	getLinearValue ( t: number ) {
+		return this.inner + ( this.outer - this.inner ) * t;
 	}
-
-	set s ( value ) {
-		this._sOffset = value;
-	}
-
-	get outer () {
-		return this._outer;
-	}
-
-	get inner () {
-		return this._inner;
-	}
-
-	getOuter () {
-		return this._outer;
-	}
-
-	setOuter ( value: number ) {
-		this._outer = value;
-	}
-
-	getInner () {
-		return this._inner;
-	}
-
-	setInner ( value: number ) {
-		this._inner = value;
-	}
-
 }

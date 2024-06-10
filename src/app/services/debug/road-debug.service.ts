@@ -16,7 +16,7 @@ import { DynamicControlPoint } from "../../objects/dynamic-control-point";
 import { RoadNode } from 'app/objects/road-node';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 
-const LINE_WIDTH = 1.5;
+const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
 const LINE_ZOFFSET = 0.1;
 

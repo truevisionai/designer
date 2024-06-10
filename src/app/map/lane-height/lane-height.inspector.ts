@@ -31,7 +31,7 @@ export class LaneHeightInspector {
 	}
 
 	set innerHeight ( value: number ) {
-		this.laneHeight.setInner( value );
+		this.laneHeight.inner = value;
 	}
 
 	@SerializedField( { type: 'float', min: 0, max: 1 } )
@@ -40,7 +40,7 @@ export class LaneHeightInspector {
 	}
 
 	set outerHeight ( value: number ) {
-		this.laneHeight.setOuter( value );
+		this.laneHeight.outer = value;
 	}
 
 	@SerializedAction( { label: 'Delete' } )

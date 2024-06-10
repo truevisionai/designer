@@ -11,7 +11,6 @@ import { LaneBufferGeometry } from './LaneBufferGeometry';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { LaneRoadMarkBuilder } from './lane-road-mark.builder';
-import { AssetDatabase } from 'app/core/asset/asset-database';
 import { Maths } from 'app/utils/maths';
 import { TvObjectType } from '../interfaces/i-tv-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
@@ -201,7 +200,7 @@ export class RoadBuilder {
 		geometry.computeBoundingBox();
 		geometry.computeVertexNormals();
 
-		return this.createLaneGameObject( lane, geometry, this.getLaneMaterial( lane ) );
+		return this.createLaneGameObject( lane, geometry, this.getLaneMaterial( road, lane ) );
 
 	}
 
@@ -209,14 +208,14 @@ export class RoadBuilder {
 
 		const geometry = new LaneBufferGeometry( lane, laneSection, road );
 
-		return this.createLaneGameObject( lane, geometry, this.getLaneMaterial( lane ) );
+		return this.createLaneGameObject( lane, geometry, this.getLaneMaterial( road, lane ) );
 
 	}
 
-	getLaneMaterial ( lane: TvLane ) {
+	getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
 
 		// if guid is set use the material from the asset database
-		if ( lane.threeMaterialGuid ) return AssetDatabase.getMaterial( lane.threeMaterialGuid )?.material;
+		if ( lane.threeMaterialGuid ) return this.materialService.getMaterial( lane.threeMaterialGuid )?.material;
 
 		let material: Material;
 		let guid: string;
@@ -229,31 +228,27 @@ export class RoadBuilder {
 		switch ( lane.type ) {
 
 			case TvLaneType.driving:
-				guid = lane.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
+				guid = road?.drivingMaterialGuid || drivingMaterialGuid;
 				break;
 
 			case TvLaneType.border:
-				guid = lane.laneSection?.road?.borderMaterialGuid || borderMaterialGuid;
+				guid = road?.borderMaterialGuid || borderMaterialGuid;
 				break;
 
 			case TvLaneType.sidewalk:
-				guid = lane.laneSection?.road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
+				guid = road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
 				break;
 
 			case TvLaneType.shoulder:
-				guid = lane.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				guid = road?.shoulderMaterialGuid || shoulderMaterialGuid;
 				break;
 
 			case TvLaneType.stop:
-				guid = lane.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
-				break;
-
-			case TvLaneType.stop:
-				guid = lane.laneSection?.road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				guid = road?.shoulderMaterialGuid || shoulderMaterialGuid;
 				break;
 
 			case TvLaneType.parking:
-				guid = lane.laneSection?.road?.drivingMaterialGuid || drivingMaterialGuid;
+				guid = road?.drivingMaterialGuid || drivingMaterialGuid;
 				break;
 
 			default:
@@ -263,7 +258,7 @@ export class RoadBuilder {
 		}
 
 		// find by guid
-		if ( guid ) material = AssetDatabase.getMaterial( guid )?.material;
+		if ( guid ) material = this.materialService.getMaterial( guid )?.material;
 
 		// if no material found then use in built
 		if ( !material ) material = OdMaterials.getLaneMaterial( lane );
@@ -289,26 +284,26 @@ export class RoadBuilder {
 		v1.position = new Vector3( pos.x + p1X, pos.y + p1Y, pos.z );
 		v1.uvs = new Vector2( 0, sCoordinate );
 
-		if ( height.getInner() > 0 ) {
+		if ( height.inner > 0 ) {
 			vv1 = new Vertex();
 			const p1X = cosHdgPlusPiO2 * cumulativeWidth;
 			const p1Y = sinHdgPlusPiO2 * cumulativeWidth;
-			vv1.position = new Vector3( pos.x + p1X, pos.y + p1Y, pos.z + height.getInner() );
-			vv1.uvs = new Vector2( height.getInner(), sCoordinate );
+			vv1.position = new Vector3( pos.x + p1X, pos.y + p1Y, pos.z + height.inner );
+			vv1.uvs = new Vector2( height.inner, sCoordinate );
 		}
 
 		const v2 = new Vertex();
 		const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
 		const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
 		v2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z );
-		v2.uvs = new Vector2( height.getInner() + width, sCoordinate );
+		v2.uvs = new Vector2( height.inner + width, sCoordinate );
 
-		if ( height.getOuter() > 0 ) {
+		if ( height.outer > 0 ) {
 			vv2 = new Vertex();
 			const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
 			const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
-			vv2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z + height.getOuter() );
-			vv2.uvs = new Vector2( height.getInner() + width + height.getOuter(), sCoordinate );
+			vv2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z + height.outer );
+			vv2.uvs = new Vector2( height.inner + width + height.outer, sCoordinate );
 		}
 
 		if ( lane.side == TvLaneSide.RIGHT ) {

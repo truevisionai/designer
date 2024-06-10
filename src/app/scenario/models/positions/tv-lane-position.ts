@@ -108,4 +108,10 @@ export class NewLanePosition extends Position {
 
 	}
 
+	toString (): string {
+
+		return `LanePosition: Road:${ this.road.id } Section:${ this.laneSection.id } Lane:${ this.lane.id } S:${ this.s } Offset:${ this.offset }`;
+
+	}
+
 }

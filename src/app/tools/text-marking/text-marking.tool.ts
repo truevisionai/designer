@@ -15,16 +15,24 @@ import { TextMarkingInspector } from "./text-marking.inspector";
 import { RoadCoordStrategy } from "app/core/strategies/select-strategies/road-coord-strategy";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { SelectRoadStrategy } from "app/core/strategies/select-strategies/select-road-strategy";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { DebugState } from "app/services/debug/debug-state";
+import { LaneCoordStrategy } from "app/core/strategies/select-strategies/on-lane-strategy";
+import { AnyLaneMovingStrategy } from "app/core/strategies/move-strategies/any-lane.moving.strategy";
+import { TvLaneCoord } from "app/map/models/tv-lane-coord";
+import { NewLanePosition } from "app/scenario/models/positions/tv-lane-position";
+import { SetValueCommand } from "app/commands/set-value-command";
+import { CommandHistory } from "app/services/command-history";
+import { Maths } from "app/utils/maths";
+import { UpdatePositionCommand } from "app/commands/update-position-command";
+import { CopyPositionCommand } from "app/commands/copy-position-command";
 
-export class TextMarkingTool extends BaseTool<any>{
+export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 	name: string = 'TextMarkingTool';
 
 	toolType: ToolType = ToolType.TextMarkingTool;
-
-	signal: TvRoadSignal;
-
-	controlPoint: SimpleControlPoint<TvRoadSignal>;
 
 	constructor (
 		private tool: TextMarkingToolService
@@ -38,13 +46,21 @@ export class TextMarkingTool extends BaseTool<any>{
 
 		this.setHint( 'Text Marking Tool is used for marking text on the road' );
 
-		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
+		const selectRoadStrategy = new SelectRoadStrategy( false, true );
 
-		this.selectionService.registerStrategy( 'point', new ControlPointStrategy() );
+		selectRoadStrategy.debugger = this.tool.toolDebugger;
+
+		// this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
+		this.tool.base.addCreationStrategy( new LaneCoordStrategy() );
+
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, selectRoadStrategy );
 
 		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
+		this.tool.base.addSelectionStrategy( selectRoadStrategy );
 
-		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
+		// this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
+		this.tool.base.addMovingStrategy( new AnyLaneMovingStrategy() );
 
 	}
 
@@ -52,31 +68,34 @@ export class TextMarkingTool extends BaseTool<any>{
 
 		super.enable();
 
-		this.tool.showAllControlPoints();
-
 	}
 
 	disable (): void {
 
 		super.disable();
 
-		this.tool.hideAllControlPoints();
-
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		this.tool.base.handleCreation( e, ( position ) => {
+		if ( !e.point ) return;
 
-			if ( position instanceof TvRoadCoord ) {
+		const laneCoord = this.tool.roadService.findLaneCoord( e.point );
 
-				const signal = this.tool.createTextRoadMarking( position, 'STOP' );
+		if ( !laneCoord ) return;
 
-				this.executeAddObject( signal );
+		const posTheta = this.tool.roadService.findLaneCenterPosition(
+			laneCoord.road,
+			laneCoord.laneSection,
+			laneCoord.lane,
+			laneCoord.s
+		);
 
-			}
+		const roadCoord = posTheta.toRoadCoord( laneCoord.road );
 
-		} );
+		const signal = this.tool.createTextRoadMarking( roadCoord, 'STOP' );
+
+		this.executeAddObject( signal );
 
 	}
 
@@ -86,22 +105,41 @@ export class TextMarkingTool extends BaseTool<any>{
 
 	}
 
+	onPointerUp ( e: PointerEventData ): void {
+
+		if ( !this.currentSelectedPoint ) return;
+
+		if ( !this.currentSelectedPointMoved ) return;
+
+		if ( !this.pointerDownAt ) return;
+
+		const command = new CopyPositionCommand( this.currentSelectedPoint, this.currentSelectedPoint.position, this.pointerDownAt );
+
+		CommandHistory.execute( command );
+
+		this.currentSelectedPointMoved = false;
+
+	}
+
 	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
 		this.tool.base.highlight( pointerEventData );
 
-		if ( !this.signal ) return;
+		if ( !this.isPointerDown ) return;
 
-		const road = this.tool.roadService.getRoad( this.signal.roadId );
+		if ( !this.currentSelectedObject ) return;
+
+		const road = this.tool.roadService.getRoad( this.currentSelectedObject.roadId );
 
 		this.tool.base.handleTargetMovement( pointerEventData, road, ( position: any ) => {
 
-			if ( position instanceof RoadPosition ) {
+			if ( position instanceof NewLanePosition ) {
 
-				// this.signal.s = position.s;
-				// this.signal.t = position.t;
+				this.currentSelectedObject.s = position.s;
 
-				// this.tool.updateSignalPosition( this.signal );
+				this.updateTextMarking( this.currentSelectedObject );
+
+				this.currentSelectedPointMoved = true;
 
 			}
 
@@ -112,7 +150,7 @@ export class TextMarkingTool extends BaseTool<any>{
 
 		if ( object instanceof TvRoadSignal ) {
 
-			this.tool.addTextRoadMarking( object );
+			this.addTextMarking( object );
 
 			this.onSignalSelected( object );
 
@@ -124,7 +162,7 @@ export class TextMarkingTool extends BaseTool<any>{
 
 		if ( object instanceof TvRoadSignal ) {
 
-			this.tool.removeTextRoadMarking( object );
+			this.removeTextMarking( object );
 
 			this.onSignalUnselected( object );
 
@@ -136,15 +174,25 @@ export class TextMarkingTool extends BaseTool<any>{
 
 		if ( object instanceof TvRoadSignal ) {
 
-			this.tool.removeTextRoadMarking( object );
-
-			this.tool.addTextRoadMarking( object );
+			this.updateTextMarking( object );
 
 		} else if ( object instanceof TextMarkingInspector ) {
 
-			this.tool.removeTextRoadMarking( object.signal );
+			this.updateTextMarking( object.signal );
 
-			this.tool.addTextRoadMarking( object.signal );
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			if ( object.target instanceof TvRoadSignal ) {
+
+				const laneCoord = this.tool.roadService.findLaneCoord( object.position );
+
+				// this.currentSelectedObject.roadId = laneCoord.road.id;
+
+				this.currentSelectedObject.s = laneCoord.s;
+
+				this.updateTextMarking( object.target );
+
+			}
 
 		}
 
@@ -164,7 +212,19 @@ export class TextMarkingTool extends BaseTool<any>{
 
 			this.onSignalSelected( object.target );
 
+		} else if ( object instanceof TvRoad ) {
+
+			this.onRoadSelected( object );
+
 		}
+
+	}
+
+	onRoadSelected ( road: TvRoad ) {
+
+		if ( this.currentSelectedObject ) this.onSignalUnselected( this.currentSelectedObject );
+
+		this.tool.toolDebugger.onSelected( road );
 
 	}
 
@@ -182,13 +242,17 @@ export class TextMarkingTool extends BaseTool<any>{
 
 			this.onSignalUnselected( object.target );
 
+		} else if ( object instanceof TvRoad ) {
+
+			this.tool.toolDebugger.onUnselected( object );
+
 		}
 
 	}
 
 	onSignalSelected ( signal: TvRoadSignal ) {
 
-		this.signal = signal;
+		this.currentSelectedPoint?.select();
 
 		AppInspector.setDynamicInspector( new TextMarkingInspector( signal ) );
 
@@ -196,13 +260,46 @@ export class TextMarkingTool extends BaseTool<any>{
 
 	onSignalUnselected ( signal: TvRoadSignal ) {
 
-		this.signal = null;
+		this.currentSelectedPoint?.unselect();
 
 		AppInspector.clear();
 
 	}
 
+	addTextMarking ( signal: TvRoadSignal ) {
+
+		const road = this.tool.roadService.getRoad( signal.roadId );
+
+		if ( !road ) return;
+
+		this.tool.signalService.addSignalNew( road, signal );
+
+		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
+
+	}
+
+	updateTextMarking ( signal: TvRoadSignal ) {
+
+		const road = this.tool.roadService.getRoad( signal.roadId );
+
+		if ( !road ) return;
+
+		this.tool.signalService.updateSignal( road, signal );
+
+		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
+
+	}
+
+	removeTextMarking ( signal: TvRoadSignal ) {
+
+		const road = this.tool.roadService.getRoad( signal.roadId );
+
+		if ( !road ) return;
+
+		this.tool.signalService.removeSignal( road, signal );
+
+		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
+
+	}
+
 }
-
-
-

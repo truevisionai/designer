@@ -13,6 +13,7 @@ import { PropPointService } from "../map/prop-point/prop-point.service";
 import { LaneService } from "../services/lane/lane.service";
 import { LaneHeightService } from "app/map/lane-height/lane-height.service";
 import { JunctionService } from "../services/junction/junction.service";
+import { RoadService } from "app/services/road/road.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,6 +66,9 @@ export class DataServiceProvider {
 
 			case ToolType.TrafficLight:
 				return this.junctionService;
+
+			case ToolType.TextMarkingTool:
+				return this.injector.get( RoadService );
 		}
 
 	}

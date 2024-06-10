@@ -671,6 +671,8 @@ export class TvRoad {
 
 		odPosTheta.z = this.getElevationValue( s );
 
+		odPosTheta.t = t;
+
 		return odPosTheta;
 	}
 

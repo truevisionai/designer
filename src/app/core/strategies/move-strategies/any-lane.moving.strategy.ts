@@ -5,10 +5,11 @@
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { MovingStrategy } from "./move-strategy";
 import { Position } from "app/scenario/models/position";
-import { LanePosition } from "app/scenario/models/positions/tv-lane-position";
+import { LanePosition, NewLanePosition } from "app/scenario/models/positions/tv-lane-position";
 import { TvContactPoint } from "app/map/models/tv-common";
+import { TvLane } from "app/map/models/tv-lane";
 
-export class AnyLaneMovingStrategy extends MovingStrategy<any> {
+export class AnyLaneMovingStrategy extends MovingStrategy<TvLane> {
 
 	constructor ( private contact?: TvContactPoint ) {
 
@@ -16,7 +17,7 @@ export class AnyLaneMovingStrategy extends MovingStrategy<any> {
 
 	}
 
-	getPosition ( e: PointerEventData ): Position {
+	getPosition ( e: PointerEventData, targetLane?: TvLane ): Position {
 
 		const laneCoord = this.onLaneCoord( e );
 
@@ -32,7 +33,7 @@ export class AnyLaneMovingStrategy extends MovingStrategy<any> {
 			offset += laneCoord.lane.getWidthValue( laneCoord.s ) * 0.5;
 		}
 
-		return new LanePosition( laneCoord.roadId, laneCoord.laneId, offset, laneCoord.s, null );
+		return new NewLanePosition( laneCoord.road, laneCoord.laneSection, laneCoord.lane, laneCoord.s, offset );
 
 	}
 

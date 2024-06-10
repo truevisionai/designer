@@ -25,6 +25,7 @@ import { TvTextureService } from "../../graphics/texture/tv-texture.service";
 import { AssetService } from 'app/core/asset/asset.service';
 import { AssetType } from 'app/core/asset/asset.model';
 import { SignalDatabase } from './road-signal.database';
+import { RoadService } from 'app/services/road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -36,6 +37,7 @@ export class RoadSignalBuilder {
 		private textService: TextObjectService,
 		private texturService: TvTextureService,
 		private assetService: AssetService,
+		private roadService: RoadService,
 	) {
 	}
 
@@ -133,11 +135,11 @@ export class RoadSignalBuilder {
 
 	private buildTextRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
 
-		const roadCoord = road.getPosThetaAt( signal.s, signal.t );
+		const position = this.roadService.STtoXYZ( road, signal.s, signal.t );
 
 		const textObject3d = this.textService.createFromText( signal.text, signal.value );
 
-		textObject3d.position.copy( roadCoord.position );
+		textObject3d.position.copy( position );
 
 		textObject3d.position.z += signal.zOffset;
 

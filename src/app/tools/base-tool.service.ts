@@ -7,9 +7,6 @@ import { IMovingStrategy } from 'app/core/strategies/move-strategies/move-strate
 import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/scenario/models/position';
-import { CommandHistory } from 'app/services/command-history';
-import { UnselectObjectCommand } from "../commands/unselect-object-command";
-import { SelectObjectCommand } from "../commands/select-object-command";
 import { SelectionService } from './selection.service';
 import { Vector3 } from 'three';
 
@@ -24,8 +21,6 @@ export class BaseToolService {
 
 	private movingStrategies: IMovingStrategy[] = [];
 
-	private currentSelected: any;
-
 	constructor (
 		public selection: SelectionService,
 	) {
@@ -34,12 +29,6 @@ export class BaseToolService {
 	addSelectionStrategy ( strategy: SelectStrategy<any> ) {
 
 		this.selectionStrategies.push( strategy );
-
-	}
-
-	getSelectionStrategies () {
-
-		return this.selectionStrategies;
 
 	}
 
@@ -57,7 +46,6 @@ export class BaseToolService {
 
 	setSelected ( object: any ) {
 
-		this.currentSelected = object;
 
 	}
 
@@ -197,7 +185,6 @@ export class BaseToolService {
 
 		this.clearStrategies();
 
-		this.currentSelected = null;
 
 	}
 

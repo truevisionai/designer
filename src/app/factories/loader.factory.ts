@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { AssetType } from "../core/asset/asset.model";
 import { TvMaterialLoader } from "../graphics/material/tv-material.loader";
 import { TvTextureLoader } from "../graphics/texture/tv-texture.loader";
@@ -11,17 +11,14 @@ import { AssetLoader } from "../core/interfaces/asset.loader";
 import { RoadStyleLoader } from "../graphics/road-style/road-style.loader";
 import { SceneLoader } from 'app/map/scene/scene.loader';
 
+
 @Injectable( {
 	providedIn: 'root'
 } )
 export class LoaderFactory {
 
 	constructor (
-		private materialLoader: TvMaterialLoader,
-		private textureLoader: TvTextureLoader,
-		private objectLoader: TvObjectLoader,
-		private roadStyleLoader: RoadStyleLoader,
-		private sceneLoader: SceneLoader,
+		private injector: Injector
 	) {
 	}
 
@@ -38,18 +35,18 @@ export class LoaderFactory {
 				break;
 
 			case AssetType.MATERIAL:
-				loader = this.materialLoader;
+				loader = this.injector.get( TvMaterialLoader );
 				break;
 
 			case AssetType.MODEL:
-				loader = this.objectLoader;
+				loader = this.injector.get( TvObjectLoader );
 				break;
 
 			case AssetType.MESH:
 				break;
 
 			case AssetType.SCENE:
-				loader = this.sceneLoader;
+				loader = this.injector.get( SceneLoader );
 				break;
 
 			case AssetType.ROAD_SIGN:
@@ -68,11 +65,11 @@ export class LoaderFactory {
 				break;
 
 			case AssetType.TEXTURE:
-				loader = this.textureLoader;
+				loader = this.injector.get( TvTextureLoader );
 				break;
 
 			case AssetType.OBJECT:
-				loader = this.objectLoader;
+				loader = this.injector.get( TvObjectLoader );
 				break;
 
 			case AssetType.GEOMETRY:
@@ -82,7 +79,7 @@ export class LoaderFactory {
 				break;
 
 			case AssetType.ROAD_STYLE:
-				loader = this.roadStyleLoader;
+				loader = this.injector.get( RoadStyleLoader );
 				break;
 
 			default:

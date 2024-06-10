@@ -31,6 +31,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public markMeshData: MeshGeometryData;
 
+	/**
+	 * +positive lane id for left lanes
+	 * -negative lane id for right lanes
+	 */
 	public id: number;
 
 	public type: TvLaneType;
@@ -592,8 +596,8 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 			const currentHeight = this.getLaneHeight( index );
 
-			laneHeight.setInner( currentHeight.getInner() );
-			laneHeight.setOuter( currentHeight.getOuter() );
+			laneHeight.inner = currentHeight.inner;
+			laneHeight.outer = currentHeight.outer;
 
 		}
 

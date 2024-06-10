@@ -9,6 +9,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector3 } from 'three';
 import { ViewportEvents } from 'app/events/viewport-events';
 import { RoadService } from "./road/road.service";
+import { TvLane } from 'app/map/models/tv-lane';
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,6 +23,8 @@ export class StatusBarService {
 	private cursor: PointerEventData;
 
 	private road: TvRoad;
+
+	private lane: TvLane;
 
 	private pos = new TvPosTheta( 0, 0, 0, 0, 0 );
 
@@ -59,6 +62,14 @@ export class StatusBarService {
 		return this.road ? this.road.id : '';
 	}
 
+	get laneSectionId () {
+		return this.lane ? this.lane.laneSectionId : '';
+	}
+
+	get laneId () {
+		return this.lane ? this.lane.id : '';
+	}
+
 	get coordinates () {
 		const x = this.cursor?.point?.x?.toFixed( 1 );
 		const y = this.cursor?.point?.y?.toFixed( 1 );
@@ -69,6 +80,10 @@ export class StatusBarService {
 	get roadCoordinates () {
 		return `Road: ${ this.roadId }, S: ${ this.s }, T: ${ this.t }`;
 	}
+
+	// get roadCoordinates () {
+	// 	return `Road: ${ this.roadId }, LaneSection: ${this.laneSectionId} Lane: ${this.laneId} S: ${ this.s }, T: ${ this.t }`;
+	// }
 
 	get message () {
 		return StatusBarService.message;
@@ -108,6 +123,19 @@ export class StatusBarService {
 
 		this.road = this.roadService.findNearestRoad( data.point, this.pos );
 
+		// const coord = this.roadService.findLaneCoord( data.point );
+
+		// if ( !coord ) {
+		// 	this.road = undefined;
+		// 	this.pos.s = undefined;
+		// 	this.pos.t = undefined;
+		// 	this.lane = undefined;
+		// } else {
+		// 	this.road = coord.road;
+		// 	this.pos.s = coord.s;
+		// 	this.pos.t = coord.offset;
+		// 	this.lane = coord.lane;
+		// }
 	}
 
 }

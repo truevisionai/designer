@@ -63,6 +63,14 @@ export class RoadSignalService {
 
 	}
 
+	addSignalNew ( road: TvRoad, signal: TvRoadSignal ) {
+
+		const mesh = this.signalBuilder.buildSignal( road, signal );
+
+		this.addSignal( road, signal, mesh );
+
+	}
+
 	removeSignal ( road: TvRoad, signal: TvRoadSignal ) {
 
 		road.signals.delete( signal.id );
@@ -77,25 +85,7 @@ export class RoadSignalService {
 
 		this.objectMap.remove( signal );
 
-		const mesh = this.signalBuilder.buildSignal( road, signal );
-
-		this.objectMap.add( signal, mesh );
-
-	}
-
-	updateSignalPosition ( road: TvRoad, signal: TvRoadSignal ) {
-
-		const position = this.getSignalPosition( road, signal );
-
-		const object = this.objectMap.get( signal );
-
-		object.position.set( position.x, position.y, position.z );
-
-	}
-
-	getSignalPosition ( road: TvRoad, signal: TvRoadSignal ) {
-
-		return road.getPosThetaAt( signal.s, signal.t );
+		this.addSignalNew( road, signal );
 
 	}
 
