@@ -7,11 +7,9 @@ import { Debug } from 'app/core/utils/debug';
 import { MathUtils } from 'three';
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
-import { TvLaneHeight } from '../lane-height/lane-height.model';
-import { TvLaneRoadMark } from './tv-lane-road-mark';
-import { TvLaneSectionSample } from './tv-lane-section-sample';
 import { TvRoad } from './tv-road.model';
 import { TvUtils } from './tv-utils';
+import { Maths } from "../../utils/maths";
 
 export class TvLaneSection {
 
@@ -868,6 +866,73 @@ export class TvLaneSection {
 
 	}
 
+	isHeightMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+
+		if ( this.lanes.size !== other.lanes.size ) return false;
+
+		for ( let [ id, laneA ] of this.lanes ) {
+
+			const laneB = other.getLaneById( id );
+
+			if ( !laneB ) return false;
+
+			const heightA = laneA.getHeightValue( sOffset );
+			const heightB = laneB.getHeightValue( otherSOffset );
+
+			if ( !Maths.approxEquals( heightA.inner, heightB.inner ) ) return false;
+			if ( !Maths.approxEquals( heightA.outer, heightB.outer ) ) return false;
+
+		}
+
+		return true;
+	}
+
+	isWidthMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+
+		if ( this.lanes.size !== other.lanes.size ) return false;
+
+		for ( let [ id, laneA ] of this.lanes ) {
+
+			const laneB = other.getLaneById( id );
+
+			if ( !laneB ) return false;
+
+			const widthA = laneA.getWidthValue( sOffset );
+			const widthB = laneB.getWidthValue( otherSOffset );
+
+			if ( !Maths.approxEquals( widthA, widthB ) ) return false;
+
+		}
+
+		return true;
+	}
+
+	isMarkingMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+
+		if ( this.lanes.size !== other.lanes.size ) return false;
+
+		for ( let [ id, laneA ] of this.lanes ) {
+
+			const laneB = other.getLaneById( id );
+
+			if ( !laneB ) return false;
+
+			const roadMarkA = laneA.getRoadMarkAt( sOffset );
+			const roadMarkB = laneB.getRoadMarkAt( otherSOffset );
+
+			if ( !roadMarkA && !roadMarkB ) continue;
+
+			if ( !roadMarkA && roadMarkB ) return false;
+
+			if ( roadMarkA && !roadMarkB ) return false;
+
+			if ( !roadMarkA.isMatching( roadMarkB ) ) return false;
+
+		}
+
+		return true;
+	}
+
 	getNearestLane ( targetLane: TvLane, side?: TvLaneSide ): TvLane {
 
 		if ( !targetLane ) return null;
@@ -974,5 +1039,16 @@ export class TvLaneSection {
 
 		return closestLane;
 
+	}
+
+	computeWidthAt ( sOffset: number ) {
+
+		let width = 0;
+
+		this.getLeftLanes().forEach( lane => width += lane.getWidthValue( sOffset ) );
+
+		this.getRightLanes().forEach( lane => width += lane.getWidthValue( sOffset ) );
+
+		return width;
 	}
 }

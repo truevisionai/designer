@@ -663,6 +663,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		}
 
+		const height = this.getHeightValue( s || 0 );
+
+		if ( height ) newLane.addHeightRecord( height.sOffset, height.inner, height.outer );
+
 		return newLane;
 
 	}
@@ -703,7 +707,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties? (): Object {
+	copyProperties?(): Object {
 
 		return {
 			travelDirection: this.direction,

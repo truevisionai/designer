@@ -36,6 +36,8 @@ describe( 'Service: RoadDivider', () => {
 		// road.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
 		// roadService.addRoad( road );
 
+		const S_OFFSET = 50;
+
 		const road = base.createDefaultRoad( roadService, [
 			new Vector2( -50, 0 ),
 			new Vector2( 50, 0 ),
@@ -43,13 +45,15 @@ describe( 'Service: RoadDivider', () => {
 
 		expect( road.length ).toBe( 100 );
 
-		const newRoad = roadDividerService.divideRoadAt( road, 50 );
+		const oldLaneSection = road.getLaneSectionAt( S_OFFSET );
+
+		const newRoad = roadDividerService.divideRoadAt( road, S_OFFSET );
 
 		roadService.add( newRoad );
 
 		expect( newRoad ).toBeDefined();
-		expect( newRoad.sStart ).toBe( 50 );
-		expect( newRoad.length ).toBe( 50 );
+		expect( newRoad.sStart ).toBe( S_OFFSET );
+		expect( newRoad.length ).toBe( 100 - S_OFFSET );
 
 		expect( road ).toBeDefined();
 		expect( road.sStart ).toBe( 0 );
@@ -75,8 +79,20 @@ describe( 'Service: RoadDivider', () => {
 		expect( newRoad.predecessor.elementId ).toBe( road.id );
 		expect( newRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 
+		// check laneSection
+		const laneSection = newRoad.laneSections[ 0 ];
+
+		expect( newRoad.laneSections.length ).toBe( 1 );
+		expect( laneSection ).toBeDefined();
+		expect( laneSection.s ).toBe( 0 );
+
+		expect( laneSection.isMatching( oldLaneSection ) ).toBe( true );
+		expect( laneSection.isWidthMatching( oldLaneSection ) );
+		expect( laneSection.isHeightMatching( oldLaneSection ) ).toBe( true );
+		expect( laneSection.isMarkingMatching( oldLaneSection ) ).toBe( true );
 
 	} );
+
 
 	it( 'should divide straight road multiple times', () => {
 

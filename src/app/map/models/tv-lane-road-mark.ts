@@ -210,4 +210,29 @@ export class TvLaneRoadMark {
 		}
 	}
 
+	isMatching ( other: TvLaneRoadMark ): boolean {
+
+		if ( this.type !== other.type ) return false;
+
+		if ( this.weight !== other.weight ) return false;
+
+		if ( this.color !== other.color ) return false;
+
+		if ( this.width !== other.width ) return false;
+
+		if ( this.laneChange !== other.laneChange ) return false;
+
+		if ( this.height !== other.height ) return false;
+
+		if ( this.length !== other.length ) return false;
+
+		if ( this.space !== other.space ) return false;
+
+		if ( this.rule !== other.rule ) return false;
+
+		if ( this.materialGuid !== other.materialGuid ) return false;
+
+		return true;
+
+	}
 }
