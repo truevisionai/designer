@@ -7,6 +7,9 @@ import { TvMapQueries } from '../../../map/queries/tv-map-queries';
 import { Position } from '../position';
 import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvLane } from 'app/map/models/tv-lane';
 
 export class LanePosition extends Position {
 
@@ -62,6 +65,41 @@ export class LanePosition extends Position {
 
 	getLaneArray () {
 		return TvMapQueries.findRoadById( this.roadId ).getLaneSectionAt( this.sCoordinate ).getLaneArray();
+	}
+
+	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+}
+
+export class NewLanePosition extends Position {
+
+	public readonly label: string = 'Lane Position';
+
+	public readonly type = PositionType.Lane;
+
+	public readonly isDependent: boolean = false;
+
+	constructor (
+		public road: TvRoad,
+		public laneSection: TvLaneSection,
+		public lane: TvLane,
+		public s = 0,
+		public offset = 0,
+		orientation: Orientation = null
+	) {
+
+		super( null, orientation );
+
+	}
+
+	getVectorPosition (): Vector3 {
+
+		return this.road.getLaneCenterPosition( this.lane, this.s ).toVector3();
+
 	}
 
 	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {

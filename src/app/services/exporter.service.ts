@@ -10,7 +10,6 @@ import { TvConsole } from 'app/core/utils/console';
 import { ThreeJsUtils } from 'app/core/utils/threejs-utils';
 import { OpenScenarioExporter } from 'app/scenario/services/open-scenario-exporter';
 import { ScenarioService } from 'app/scenario/services/scenario.service';
-import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { TvCarlaExporter } from 'app/map/services/tv-carla-exporter';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { FileService } from '../io/file.service';
@@ -23,6 +22,7 @@ import { Object3D } from "three";
 import { FileExtension } from "../io/file-extension";
 import { StorageService } from "../io/storage.service";
 import { FileUtils } from "../io/file-utils";
+import { ExporterFactory } from 'app/factories/exporter.factory';
 
 import { saveAs } from 'file-saver';
 import { cloneDeep } from 'lodash';
@@ -38,6 +38,7 @@ export class ExporterService {
 		private snackBar: SnackBar,
 		private storage: StorageService,
 		private scenarioService: ScenarioService,
+		private exporterFactory: ExporterFactory,
 	) {
 	}
 
@@ -45,9 +46,9 @@ export class ExporterService {
 
 		ToolManager.disable();
 
-		const mapExporter = new OpenDriveExporter();
+		const mapExporter = this.exporterFactory.getMapExporter( 1, 1 );
 
-		const contents = mapExporter.getOutput( this.mapService.map );
+		const contents = mapExporter.exportAsString( this.mapService.map );
 
 		const filename = FileUtils.getFilenameWithoutExtension( this.mapService.map.header.name );
 

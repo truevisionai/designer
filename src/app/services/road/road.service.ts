@@ -12,34 +12,34 @@ import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { TvLane } from 'app/map/models/tv-lane';
 import { CommandHistory } from '../command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Vector2, Vector3 } from 'three';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { GameObject } from 'app/objects/game-object';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { MapEvents } from 'app/events/map-events';
 import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
-import { TvContactPoint } from 'app/map/models/tv-common';
-import { RoadBuilder } from "../../map/builders/road.builder";
+import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from "../../map/models/tv-pos-theta";
 import { Maths } from "../../utils/maths";
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadService extends BaseDataService<TvRoad> {
 
+	public static instance: RoadService;
+
 	constructor (
 		private splineFactory: SplineFactory,
 		private mapService: MapService,
-		private roadBuilder: RoadBuilder,
 		private roadFactory: RoadFactory,
 	) {
 		super();
+		RoadService.instance = this;
 	}
 
 	all (): TvRoad[] {
@@ -150,42 +150,42 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	buildRoad ( road: TvRoad ): GameObject[] {
+	// buildRoad ( road: TvRoad ): GameObject[] {
 
-		return this.buildSpline( road.spline, false );
+	// 	return this.buildSpline( road.spline, false );
 
-	}
+	// }
 
-	buildSpline ( spline: AbstractSpline, showNodes = true ): GameObject[] {
+	// buildSpline ( spline: AbstractSpline, showNodes = true ): GameObject[] {
 
-		const gameObjects = [];
+	// 	const gameObjects = [];
 
-		if ( spline.controlPoints.length < 2 ) {
-			return gameObjects;
-		}
+	// 	if ( spline.controlPoints.length < 2 ) {
+	// 		return gameObjects;
+	// 	}
 
-		spline.getSplineSegments().forEach( segment => {
+	// 	spline.getSplineSegments().forEach( segment => {
 
-			if ( !segment.isRoad ) return;
+	// 		if ( !segment.isRoad ) return;
 
-			const road = this.mapService.map.getRoadById( segment.id );
+	// 		const road = this.mapService.map.getRoadById( segment.id );
 
-			road.clearGeometries();
+	// 		road.clearGeometries();
 
-			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+	// 		segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
-			// this.updateRoadNodes( road, showNodes );
+	// 		// this.updateRoadNodes( road, showNodes );
 
-			const gameObject = this.roadBuilder.buildRoad( road );
+	// 		const gameObject = this.roadBuilder.buildRoad( road );
 
-			road.gameObject = gameObject;
+	// 		road.gameObject = gameObject;
 
-			gameObjects.push( gameObject );
+	// 		gameObjects.push( gameObject );
 
-		} );
+	// 	} );
 
-		return gameObjects;
-	}
+	// 	return gameObjects;
+	// }
 
 	add ( road: TvRoad ) {
 
@@ -259,6 +259,31 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		return TvMapQueries.findRoadCoord( position );
 
+	}
+
+	findRoadCoord ( position: Vector3 ): TvRoadCoord | null {
+
+		const posTheta = new TvPosTheta();
+
+		const road = this.findNearestRoad( position, posTheta );
+
+		if ( !road ) {
+			return;
+		}
+
+		const roadCoord = posTheta.toRoadCoord( road );
+
+		if ( Math.abs( roadCoord.s ) < 0.01 ) {
+			return;
+		}
+
+		const width = roadCoord.t > 0 ? road.getLeftSideWidth( roadCoord.s ) : road.getRightsideWidth( roadCoord.s );
+
+		if ( Math.abs( roadCoord.t ) > width ) {
+			return;
+		}
+
+		return roadCoord;
 	}
 
 	findLaneAtPosition ( position: Vector3 ): TvLane {
@@ -462,4 +487,63 @@ export class RoadService extends BaseDataService<TvRoad> {
 		};
 
 	}
+
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sOffset s offset is relative to lane section
+	 */
+	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		const t = this.findWidthUpto( road, laneSection, lane, sOffset );
+
+		const sign = lane.id > 0 ? 1 : -1;
+
+		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
+
+		return posTheta;
+	}
+
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sOffset s offset is relative to lane section
+	 * @returns
+	 */
+	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		if ( lane.side == TvLaneSide.CENTER ) return 0;
+
+		let width = 0;
+
+		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
+
+		for ( let i = 0; i < lanes.length; i++ ) {
+
+			var element = lanes[ i ];
+
+			width += element.getWidthValue( sOffset );
+
+			if ( element.id == lane.id ) break;
+		}
+
+		return width;
+	}
+
+	/**
+	 *
+	 * @param road
+	 * @param s
+	 * @param t
+	 */
+	findRoadPosition ( road: TvRoad, s: number, t: number = 0 ) {
+
+		return road.getPosThetaAt( s, t );
+
+	}
+
 }

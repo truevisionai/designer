@@ -9,6 +9,7 @@ import { SplineSegmentService } from './spline-segment.service';
 import { RoadBuilder } from 'app/map/builders/road.builder';
 import { TvConsole } from 'app/core/utils/console';
 import { MapService } from '../map/map.service';
+import { GameObject } from 'app/objects/game-object';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,6 +21,35 @@ export class SplineBuilder {
 		private roadBuilder: RoadBuilder,
 		private mapService: MapService,
 	) {
+	}
+
+	build ( spline: AbstractSpline ): GameObject[] {
+
+		const gameObjects = [];
+
+		if ( spline.controlPoints.length < 2 ) {
+			return gameObjects;
+		}
+
+		spline.getSplineSegments().forEach( segment => {
+
+			if ( !segment.isRoad ) return;
+
+			const road = this.mapService.map.getRoadById( segment.id );
+
+			road.clearGeometries();
+
+			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+			const gameObject = this.roadBuilder.buildRoad( road );
+
+			road.gameObject = gameObject;
+
+			gameObjects.push( gameObject );
+
+		} );
+
+		return gameObjects;
 	}
 
 	buildSpline ( spline: AbstractSpline ) {

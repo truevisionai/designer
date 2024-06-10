@@ -4,11 +4,13 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
+import { SplineBuilder } from 'app/services/spline/spline.builder';
 import { Vector3 } from 'three';
 
 describe( 'Service: RoadCut', () => {
 
 	let eventServiceProvider: EventServiceProvider;
+	let splineBuilder: SplineBuilder;
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
@@ -18,6 +20,8 @@ describe( 'Service: RoadCut', () => {
 
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		eventServiceProvider.init();
+
+		splineBuilder = TestBed.inject( SplineBuilder );
 
 	} );
 
@@ -48,7 +52,7 @@ describe( 'Service: RoadCut', () => {
 		expect( newRoad.sStart ).toBe( 60 );
 
 		roadService.add( newRoad );
-		roadService.buildSpline( oldRoad.spline );
+		splineBuilder.buildSpline( oldRoad.spline );
 
 		expect( oldRoad.length ).toBe( 40 );
 		expect( newRoad.length ).toBe( 40 );
@@ -77,7 +81,7 @@ describe( 'Service: RoadCut', () => {
 		expect( oldRoad.spline.getSplineSegments().length ).toBe( 2 );
 		expect( oldRoad.sStart ).toBe( 0 );
 
-		roadService.buildSpline( oldRoad.spline );
+		splineBuilder.buildSpline( oldRoad.spline );
 
 		expect( oldRoad.length ).toBe( 40 );
 

@@ -16,17 +16,17 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { EndLaneMovingStrategy } from 'app/core/strategies/move-strategies/end-lane.moving.strategy';
-import { WorldPosition } from 'app/scenario/models/positions/tv-world-position';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { AddObjectCommand } from "../../commands/add-object-command";
-import { UnselectObjectCommand } from "../../commands/unselect-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { Environment } from 'app/core/utils/environment';
 import { LaneMarkingInspector } from './lane-marking.inspector';
-import { Debug } from 'app/core/utils/debug';
+import { DebugState } from 'app/services/debug/debug-state';
+import { Maths } from 'app/utils/maths';
+import { NewLanePosition } from 'app/scenario/models/positions/tv-lane-position';
 
-export class LaneMarkingTool extends BaseTool<any>{
+export class LaneMarkingTool extends BaseTool<any> {
 
 	public name: string = 'LaneMarking';
 
@@ -39,10 +39,6 @@ export class LaneMarkingTool extends BaseTool<any>{
 	public selectedLane: TvLane;
 
 	public selectedNode: LaneMarkingNode;
-
-	private debug: boolean = !Environment.production;
-
-	private sOld: number;
 
 	constructor ( private tool: LaneMarkingToolService ) {
 
@@ -70,7 +66,11 @@ export class LaneMarkingTool extends BaseTool<any>{
 			returnTarget: true,
 		} ) );
 
-		this.tool.base.addSelectionStrategy( new SelectLaneStrategy( false ) );
+		const laneStrategy = new SelectLaneStrategy( true );
+
+		laneStrategy.debugger = this.tool.toolDebugger;
+
+		this.tool.base.addSelectionStrategy( laneStrategy );
 
 		this.tool.base.addMovingStrategy( new EndLaneMovingStrategy() );
 
@@ -92,6 +92,10 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 		if ( this.selectedRoad ) this.onRoadUnselected( this.selectedRoad );
 
+		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
+
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+
 	}
 
 	onPointerDownSelect ( e: PointerEventData ) {
@@ -102,15 +106,15 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 				if ( this.selectedNode === selected ) return;
 
-				CommandHistory.execute( new SelectObjectCommand( selected, this.selectedNode ) );
+				this.selectObject( selected, this.selectedNode );
 
-			}
+			} else if ( selected instanceof TvLane ) {
 
-			else if ( selected instanceof TvLane ) {
+				if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
 
 				if ( this.selectedLane === selected ) return;
 
-				CommandHistory.execute( new SelectObjectCommand( selected, this.selectedLane ) );
+				this.selectObject( selected, this.selectedLane );
 
 			}
 
@@ -118,11 +122,11 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 			if ( this.selectedNode ) {
 
-				CommandHistory.execute( new UnselectObjectCommand( this.selectedNode ) );
+				this.unselectObject( this.selectedNode );
 
 			} else if ( this.selectedLane ) {
 
-				CommandHistory.execute( new UnselectObjectCommand( this.selectedLane ) );
+				this.unselectObject( this.selectedLane );
 
 			}
 
@@ -132,23 +136,23 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( !this.tool.base.onPointerDown( e ) ) return;
-
 		if ( !this.selectedLane ) return;
 
 		const roadCoord = this.selectedRoad.getPosThetaByPosition( e.point );
 
-		const s = roadCoord.s - this.selectedLane.laneSection.s;
+		const s = Maths.clamp( roadCoord.s - this.selectedLane.laneSection.s, 0, this.selectedLane.laneSection.length );
 
-		let currentMarking = this.selectedLane.getRoadMarkAt( s );
+		let marking = this.selectedLane.getRoadMarkAt( s )?.clone( s );
 
-		if ( !currentMarking ) {
-			currentMarking = this.selectedLane.addNoneRoadMark()
+		if ( !marking ) {
+			marking = TvLaneRoadMark.createSolid( this.selectedLane, s );
 		}
 
-		const marking = currentMarking.clone( s );
+		const road = this.selectedLane.laneSection.road;
 
-		const node = new LaneMarkingNode( this.selectedLane, marking );
+		const laneSection = this.selectedLane.laneSection;
+
+		const node = this.tool.toolDebugger.createNode( road, laneSection, this.selectedLane, marking );
 
 		const addCommand = new AddObjectCommand( node );
 
@@ -166,22 +170,30 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 		if ( !this.pointerDownAt ) return;
 
+		const laneSection = this.selectedNode.lane.laneSection;
+
+		const oldPosition = this.pointerDownAt.clone();
+		const oldRoadCoord = this.tool.roadService.findRoadCoordAtPosition( oldPosition );
+		const oldOffset = Maths.clamp( oldRoadCoord.s - laneSection.s, 0, laneSection.length );
+
 		const newPosition = this.selectedNode.position.clone();
+		const newRoadCoord = this.tool.roadService.findRoadCoordAtPosition( newPosition );
+		const newOffset = Maths.clamp( newRoadCoord.s - laneSection.s, 0, laneSection.length );
 
-		const posTheta = this.selectedLane.laneSection.road.getPosThetaByPosition( newPosition );
-
-		const sCurrent = posTheta.s - this.selectedLane.laneSection.s;
-
-		CommandHistory.execute( new SetValueCommand( this.selectedNode, 's', sCurrent, this.sOld ) );
+		CommandHistory.execute( new SetValueCommand( this.selectedNode, 's', newOffset, oldOffset ) );
 
 		this.nodeMoved = false;
 
-		this.sOld = null;
 	}
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		this.tool.base.highlight( e );
+		if ( !this.isPointerDown ) {
+
+			this.tool.base.highlight( e );
+
+			return;
+		}
 
 		if ( !this.isPointerDown ) return;
 
@@ -189,11 +201,17 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 		this.tool.base.handleTargetMovement( e, this.selectedNode.lane, position => {
 
-			if ( !this.sOld ) this.sOld = this.selectedNode.s;
+			if ( position instanceof NewLanePosition ) {
 
-			if ( position instanceof WorldPosition ) {
+				const road = position.road;
 
-				this.selectedNode.position.copy( position.position );
+				const laneSection = position.laneSection;
+
+				const lane = position.lane;
+
+				const location = this.tool.roadService.findLaneEndPosition( road, laneSection, lane, position.s )
+
+				this.selectedNode.position.copy( location.toVector3() );
 
 			}
 
@@ -209,15 +227,11 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 			this.onNodeSelected( object );
 
-		}
-
-		else if ( object instanceof TvLane ) {
+		} else if ( object instanceof TvLane ) {
 
 			this.onLaneSelected( object );
 
-		}
-
-		else if ( object instanceof TvRoad ) {
+		} else if ( object instanceof TvRoad ) {
 
 			this.onRoadSelected( object );
 
@@ -227,17 +241,13 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 	onObjectAdded ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectAdded', object );
-
 		if ( object instanceof LaneMarkingNode ) {
 
-			this.tool.addNode( object );
+			this.addRoadMark( object.lane, object.roadmark );
 
 		} else if ( object instanceof LaneMarkingInspector ) {
 
-			this.tool.addRoadmark( object.lane, object.roadmark );
-
-			this.showInspector( object.lane, object.roadmark );
+			this.addRoadMark( object.lane, object.roadmark );
 
 		}
 
@@ -245,17 +255,13 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 	onObjectUpdated ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectUpdated', object );
-
 		if ( object instanceof LaneMarkingNode ) {
 
-			this.tool.updateNode( object );
+			this.updateRoadMark( object.lane, object.roadmark );
 
 		} else if ( object instanceof LaneMarkingInspector ) {
 
-			this.tool.rebuild( object.lane );
-
-			this.showInspector( object.lane, object.roadmark );
+			this.updateRoadMark( object.lane, object.roadmark );
 
 		}
 
@@ -263,17 +269,13 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectUpdated', object );
-
 		if ( object instanceof LaneMarkingNode ) {
 
-			this.tool.removeNode( object );
+			this.removeRoadMark( object.lane, object.roadmark );
 
 		} else if ( object instanceof LaneMarkingInspector ) {
 
-			this.tool.removeRoadmark( object.lane, object.roadmark );
-
-			AppInspector.clear();
+			this.removeRoadMark( object.lane, object.roadmark );
 
 		}
 	}
@@ -284,15 +286,11 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 			this.onNodeUnselected( object );
 
-		}
-
-		else if ( object instanceof TvLane ) {
+		} else if ( object instanceof TvLane ) {
 
 			this.onLaneUnselected( object );
 
-		}
-
-		else if ( object instanceof TvRoad ) {
+		} else if ( object instanceof TvRoad ) {
 
 			this.onRoadUnselected( object );
 
@@ -306,13 +304,13 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 		this.selectedRoad = road;
 
-		this.tool.showRoad( road );
+		this.tool.toolDebugger.setDebugState( road, DebugState.SELECTED );
 
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
 
-		this.tool.hideRoad( road );
+		this.tool.toolDebugger.setDebugState( road, DebugState.DEFAULT );
 
 		this.selectedRoad = null;
 
@@ -320,19 +318,21 @@ export class LaneMarkingTool extends BaseTool<any>{
 
 	onLaneSelected ( lane: TvLane ): void {
 
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+
 		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
 
 		this.selectedLane = lane;
 
 		this.selectedRoad = lane.laneSection.road;
 
-		this.tool.showRoad( lane.laneSection.road );
+		this.tool.toolDebugger.setDebugState( lane.laneSection.road, DebugState.SELECTED );
 
 	}
 
 	onLaneUnselected ( lane: TvLane ): void {
 
-		this.tool.hideRoad( lane.laneSection.road );
+		this.tool.toolDebugger.setDebugState( lane.laneSection.road, DebugState.DEFAULT );
 
 		this.selectedLane = null;
 
@@ -371,6 +371,36 @@ export class LaneMarkingTool extends BaseTool<any>{
 		const inspector = new LaneMarkingInspector( lane, roadmark );
 
 		AppInspector.setInspector( DynamicInspectorComponent, inspector );
+
+	}
+
+	addRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+
+		this.tool.addRoadmark( lane, roadmark );
+
+		this.tool.toolDebugger.updateDebugState( lane.laneSection.road, DebugState.SELECTED );
+
+		this.showInspector( lane, roadmark );
+
+	}
+
+	updateRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+
+		this.tool.rebuild( lane );
+
+		this.tool.toolDebugger.updateDebugState( lane.laneSection.road, DebugState.SELECTED );
+
+		this.showInspector( lane, roadmark );
+
+	}
+
+	removeRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+
+		this.tool.removeRoadmark( lane, roadmark );
+
+		this.tool.toolDebugger.updateDebugState( lane.laneSection.road, DebugState.SELECTED );
+
+		AppInspector.clear();
 
 	}
 

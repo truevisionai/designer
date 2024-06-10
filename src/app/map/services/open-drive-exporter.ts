@@ -45,11 +45,12 @@ import { TvControllerControl, TvSignalController } from '../signal-controller/tv
 import { TvMapHeader } from "../models/tv-map-header";
 import { TvRoadTypeClass } from "../models/tv-road-type.class";
 import { TvRoadSpeed } from "../models/tv-road.speed";
+import { AssetExporter } from 'app/core/interfaces/asset-exporter';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class OpenDriveExporter {
+export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	public xmlDocument: Object;
 
@@ -59,9 +60,9 @@ export class OpenDriveExporter {
 
 	}
 
-	public getOutput ( map: TvMap ): string {
+	exportAsString ( asset: TvMap ): string {
 
-		this.map = map;
+		const json = this.exportAsJSON( asset );
 
 		const defaultOptions: Partial<XmlBuilderOptions> = {
 			attributeNamePrefix: 'attr_',
@@ -72,26 +73,19 @@ export class OpenDriveExporter {
 
 		const builder = new XMLBuilder( defaultOptions );
 
-		this.writeFile( '' );
+		return builder.build( json );
 
-		const data = builder.build( this.xmlDocument );
+	}
 
-		// if ( Environment.production ) {
+	exportAsJSON ( asset: TvMap ) {
 
-		//   const blob: any = new Blob( [data], { type: 'application/xml' } );
+		return this.writeFile( asset );
 
-		//   // Debug.log( blob );
+	}
 
-		//   // TODO : Export OpenDRIVE
-		//   // saveAs( blob, 'openDrive.xodr' );
+	public getOutput ( map: TvMap ): string {
 
-		// } else {
-
-		//   Debug.log( data );
-
-		// }
-
-		return data;
+		return this.exportAsString( map );
 
 	}
 
@@ -113,25 +107,26 @@ export class OpenDriveExporter {
 	/**
 	 * Writes the data from the OpenDrive structure to a file
 	 */
-	public writeFile ( fileName: string ) {
+	public writeFile ( map: TvMap ) {
 
 		const rootNode = {
-			header: this.writeHeader( this.map.header ),
+			header: this.writeHeader( map.header ),
 			road: [],
-			junction: this.map.getJunctions().map( junction => this.writeJunction( junction ) ),
-			controller: this.map.getControllers().map( controller => this.writeSignalController( controller ) ),
+			junction: map.getJunctions().map( junction => this.writeJunction( junction ) ),
+			controller: map.getControllers().map( controller => this.writeSignalController( controller ) ),
 		};
 
-		this.xmlDocument = {
+		const xmlDocument = {
 			'OpenDRIVE': rootNode
 		};
 
-		this.map.roads.forEach( road => {
+		map.roads.forEach( road => {
 
 			this.writeRoad( rootNode, road );
 
 		} );
 
+		return xmlDocument;
 	}
 
 	/**
@@ -553,7 +548,7 @@ export class OpenDriveExporter {
 			attr_type: laneRoadMark.type,
 			attr_weight: laneRoadMark.weight,
 			attr_color: laneRoadMark.color,
-			attr_material: laneRoadMark.materialDetails,
+			attr_material: laneRoadMark.materialName,
 			attr_width: laneRoadMark.width,
 			attr_laneChange: laneRoadMark.laneChange,
 			attr_height: laneRoadMark.height,

@@ -17,6 +17,7 @@ import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { ControlPointDebugger } from "../../services/debug/control-point.debugger";
 import { LaneHeightDebugService } from "app/tools/lane-height/lane-height.debug";
+import { LaneMarkingToolDebugger } from "app/tools/lane-marking/lane-marking-tool.debugger";
 
 @Injectable( {
 	providedIn: 'root'
@@ -76,6 +77,10 @@ export class DebugServiceProvider {
 		} else if ( type === ToolType.TrafficLight ) {
 
 			debugService = this.injector.get( JunctionDebugService );
+
+		} else if ( type == ToolType.LaneMarking ) {
+
+			debugService = this.injector.get( LaneMarkingToolDebugger );
 
 		}
 

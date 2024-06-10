@@ -5,9 +5,10 @@
 import { TvLane } from '../../map/models/tv-lane';
 import { CommandHistory } from 'app/services/command-history';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
-import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from 'app/map/models/tv-common';
+import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights, TvSupporteRoadMarkTypes } from 'app/map/models/tv-common';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
+import { Maths } from 'app/utils/maths';
 
 
 export class LaneMarkingInspector {
@@ -20,11 +21,11 @@ export class LaneMarkingInspector {
 
 	@SerializedField( { type: 'int' } )
 	get s (): number {
-		return this.roadmark.sOffset;
+		return this.roadmark.sOffset + this.lane.laneSection.s;
 	}
 
 	set s ( value: number ) {
-		this.roadmark.sOffset = value;
+		this.roadmark.sOffset = Maths.clamp( value - this.lane.laneSection.s, 0, this.lane.laneSection.length );
 	}
 
 	@SerializedField( { type: 'float' } )
@@ -54,13 +55,14 @@ export class LaneMarkingInspector {
 		this.roadmark.space = value;
 	}
 
-	@SerializedField( { type: 'enum', enum: TvRoadMarkTypes } )
+	@SerializedField( { type: 'enum', enum: TvSupporteRoadMarkTypes } )
 	get markingType (): TvRoadMarkTypes {
 		return this.roadmark.type;
 	}
 
 	set markingType ( value: TvRoadMarkTypes ) {
 		this.roadmark.type = value;
+		this.space = TvLaneRoadMark.getSpaceByType( value );
 	}
 
 	@SerializedField( { type: 'enum', enum: TvRoadMarkWeights } )
@@ -70,6 +72,7 @@ export class LaneMarkingInspector {
 
 	set weight ( value: TvRoadMarkWeights ) {
 		this.roadmark.weight = value;
+		this.width = TvLaneRoadMark.getWidthByWeight( value );
 	}
 
 	@SerializedField( { type: 'enum', enum: TvColors } )

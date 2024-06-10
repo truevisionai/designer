@@ -24,6 +24,8 @@ import { Maths } from 'app/utils/maths';
 import { HasDistanceValue } from 'app/core/interfaces/has-distance-value';
 import { LanePointNode, LaneSpanNode } from "../../objects/lane-node";
 import { SceneService } from '../scene.service';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { RoadService } from '../road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -38,7 +40,7 @@ export class DebugDrawService {
 		return this._instance;
 	}
 
-	constructor () {
+	constructor ( private roadService: RoadService ) {
 
 		DebugDrawService._instance = this;
 
@@ -465,6 +467,14 @@ export class DebugDrawService {
 
 	}
 
+	/**
+	 *
+	 * @param lane
+	 * @param sStart s with respect to road
+	 * @param sEnd  s with respect to road
+	 * @param stepSize
+	 * @returns
+	 */
 	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
 
 		const points: Vector3[] = [];
@@ -480,6 +490,37 @@ export class DebugDrawService {
 		return points;
 	}
 
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sStart with respect to laneSection
+	 * @param sEnd with respect to laneSection
+	 * @param stepSize
+	 * @returns
+	 */
+	getPositions ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
+
+		const positions: TvPosTheta[] = [];
+
+		for ( let s = sStart; s < sEnd; s += stepSize ) {
+
+			positions.push( this.roadService.findLaneEndPosition( road, laneSection, lane, s ) )
+
+		}
+
+		positions.push( this.roadService.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
+
+		return positions;
+	}
+
+	/**
+	 *
+	 * @param lane
+	 * @param s s with respect to road
+	 * @returns
+	 */
 	private getPoint ( lane: TvLane, s: number ) {
 
 		let posTheta = lane.laneSection.road.getPosThetaAt( s );

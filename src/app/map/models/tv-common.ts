@@ -60,6 +60,12 @@ export enum TvRoadMarkTypes {
 	CURB = 'curb',
 }
 
+export enum TvSupporteRoadMarkTypes {
+	NONE = 'none',
+	SOLID = 'solid',
+	BROKEN = 'broken',
+}
+
 export enum TvRoadMarkWeights {
 	STANDARD = 'standard',
 	BOLD = 'bold'

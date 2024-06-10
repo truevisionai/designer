@@ -6,7 +6,6 @@ import { TvLane } from '../map/models/tv-lane';
 import { TvLaneRoadMark } from '../map/models/tv-lane-road-mark';
 import { ISelectable } from './i-selectable';
 import { DynamicControlPoint } from './dynamic-control-point';
-import { Vector3 } from 'three';
 import { SerializedField } from 'app/core/components/serialization';
 
 export class LaneMarkingNode extends DynamicControlPoint<any> implements ISelectable {
@@ -22,25 +21,11 @@ export class LaneMarkingNode extends DynamicControlPoint<any> implements ISelect
 		this.roadmark.sOffset = value;
 	}
 
-	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark, position?: Vector3 ) {
+	constructor ( public lane: TvLane, public roadmark: TvLaneRoadMark ) {
 
-		super( roadmark, position );
-
-		this.layers.enable( 31 );
+		super( roadmark );
 
 		this.tag = LaneMarkingNode.tag;
-
-		if ( position ) {
-
-			this.position.copy( position );
-
-		} else {
-
-			const lanePosition = lane.laneSection.road.getLaneEndPosition( lane, roadmark.sOffset );
-
-			this.position.copy( lanePosition.toVector3() );
-
-		}
 
 	}
 

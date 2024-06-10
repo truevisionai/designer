@@ -6,11 +6,15 @@ import { SelectStrategy } from "./select-strategy";
 import { TvLane } from "../../../map/models/tv-lane";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { TvLaneCoord } from "../../../map/models/tv-lane-coord";
+import { IDebugger } from "app/core/interfaces/debug.service";
+import { TvRoad } from "app/map/models/tv-road.model";
 
 export class SelectLaneStrategy extends SelectStrategy<TvLane> {
 
 	private lane: TvLane;
 	private selected: TvLane;
+
+	public debugger: IDebugger<TvRoad, any>;
 
 	constructor ( private hoverHighlight = true, private selectHighlight = false ) {
 		super();
@@ -30,11 +34,15 @@ export class SelectLaneStrategy extends SelectStrategy<TvLane> {
 
 	onPointerMoved ( pointerEventData: PointerEventData ): TvLane {
 
-		if ( this.hoverHighlight ) this.lane?.unhighlight();
+		if ( this.hoverHighlight && this.lane ) {
+			this.debugger?.onUnhighlight( this.lane.laneSection.road );
+		}
 
 		this.lane = this.onLaneGeometry( pointerEventData );
 
-		if ( this.hoverHighlight ) this.lane?.highlight();
+		if ( this.hoverHighlight && this.lane ) {
+			this.debugger?.onHighlight( this.lane.laneSection.road );
+		}
 
 		return this.lane;
 	}

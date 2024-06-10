@@ -480,8 +480,13 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		for ( const strategy of this.selectionService?.getStrategies() ) {
 
-			strategy.onPointerMoved( e );
+			const result = strategy.onPointerMoved( e );
 
+			if ( result ) {
+
+				return result;
+
+			}
 		}
 
 	}

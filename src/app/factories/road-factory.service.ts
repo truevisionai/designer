@@ -47,6 +47,12 @@ export class RoadFactory {
 
 	}
 
+	setCounter ( id: number ) {
+
+		this.idService.getNextId( id );
+
+	}
+
 	//static cloneRoad ( road: TvRoad, s = 0 ): TvRoad {
 	//
 	//	const cloned = road.clone( s );

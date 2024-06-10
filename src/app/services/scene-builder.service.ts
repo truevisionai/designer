@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { TvMap } from 'app/map/models/tv-map.model';
-import { RoadService } from './road/road.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { TvConsole } from 'app/core/utils/console';
@@ -16,6 +15,9 @@ import { SurfaceBuilder } from 'app/map/surface/surface.builder';
 import { SceneService } from './scene.service';
 import { PropPolygonService } from "../map/prop-polygon/prop-polygon.service";
 import { PropCurveService } from "../map/prop-curve/prop-curve.service";
+import { RoadBuilder } from 'app/map/builders/road.builder';
+import { SplineBuilder } from './spline/spline.builder';
+import { RoadFactory } from 'app/factories/road-factory.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,12 +25,14 @@ import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 export class SceneBuilderService {
 
 	constructor (
-		private roadService: RoadService,
+		private splineBuilder: SplineBuilder,
+		private roadBuilder: RoadBuilder,
 		private surfaceBuilder: SurfaceBuilder,
 		private roadObjectService: RoadObjectService,
 		private roadSignalService: RoadSignalService,
 		private propCurveService: PropCurveService,
 		private propPolygonService: PropPolygonService,
+		private roadFactory: RoadFactory,
 	) {
 	}
 
@@ -70,8 +74,11 @@ export class SceneBuilderService {
 
 			road.spline = spline;
 
-			this.roadService.buildRoad( road ).forEach( gameObject => map.gameObject.add( gameObject ) );
-			this.roadService.setRoadIdCounter( road.id );
+			const gameObject = this.roadBuilder.buildRoad( road );
+
+			map.gameObject.add( gameObject );
+
+			this.roadFactory.setCounter( road.id );
 
 		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
 
@@ -83,8 +90,11 @@ export class SceneBuilderService {
 				road.spline.addRoadSegment( 0, road );
 			}
 
-			this.roadService.buildRoad( road ).forEach( gameObject => map.gameObject.add( gameObject ) );
-			this.roadService.setRoadIdCounter( road.id );
+			const gameObject = this.roadBuilder.buildRoad( road );
+
+			map.gameObject.add( gameObject );
+
+			this.roadFactory.setCounter( road.id );
 
 		} else {
 

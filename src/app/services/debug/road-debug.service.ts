@@ -102,9 +102,11 @@ export class RoadDebugService {
 
 		const add = ( lane: TvLane ) => {
 
-			const points = this.laneDebugService.getPoints( lane, 0, lane.laneSection.length, LINE_STEP );
+			const points = this.debugService.getPositions( road, lane.laneSection, lane, 0, lane.laneSection.length, LINE_STEP );
 
-			const line = this.debugService.createDebugLine( road, points, lineWidth, color );
+			const positions = points.map( point => point.position );
+
+			const line = this.debugService.createDebugLine( road, positions, lineWidth, color );
 
 			this.lines.addItem( road, line );
 		}
@@ -116,6 +118,12 @@ export class RoadDebugService {
 			add( laneSection.getLeftMostLane() );
 
 		} )
+
+	}
+
+	removeRoadBorderLine ( road: TvRoad ) {
+
+		this.lines.removeKey( road );
 
 	}
 

@@ -10,6 +10,7 @@ import { TvMaterialService } from "../../../graphics/material/tv-material.servic
 import { MaterialAsset } from "../../../graphics/material/tv-material.asset";
 import { Asset, AssetType } from "../../../core/asset/asset.model";
 import { SnackBar } from "../../../services/snack-bar.service";
+import { TvConsole } from 'app/core/utils/console';
 
 @Component( {
 	selector: 'app-material-field',
@@ -53,10 +54,14 @@ export class MaterialFieldComponent extends AbstractFieldComponent implements On
 
 	ngOnInit () {
 
+		if ( !this.guid && !this.value ) {
+			return;
+		}
+
 		this.asset = this.assetService.getAsset( this.guid || this.value );
 
 		if ( !this.asset ) {
-			this.snackBar.warn( 'Invalid asset' );
+			TvConsole.warn( `Asset with guid: ${this.guid} not found` );
 			return;
 		}
 

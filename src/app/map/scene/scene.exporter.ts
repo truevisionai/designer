@@ -733,7 +733,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			attr_type: laneRoadMark.type,
 			attr_weight: laneRoadMark.weight,
 			attr_color: laneRoadMark.color,
-			attr_material: laneRoadMark.materialDetails,
+			attr_material: laneRoadMark.materialName,
 			attr_width: laneRoadMark.width,
 			attr_laneChange: laneRoadMark.laneChange,
 			attr_height: laneRoadMark.height,

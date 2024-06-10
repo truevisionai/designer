@@ -11,6 +11,8 @@ import { RoadExporterService } from "../graphics/road-style/road-style.exporter"
 import { TvMeshExporter } from "../graphics/mesh/tv-mesh.exporter";
 import { TvObjectExporter } from "../graphics/object/tv-object.exporter";
 import { SceneExporter } from "../map/scene/scene.exporter";
+import { TvMap } from 'app/map/models/tv-map.model';
+import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,4 +60,9 @@ export class ExporterFactory {
 
 	}
 
+	getMapExporter ( major: number, minor: number ): AssetExporter<TvMap> {
+
+		return new OpenDriveExporter();
+
+	}
 }

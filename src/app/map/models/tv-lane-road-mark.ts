@@ -15,29 +15,59 @@ export enum TvRoadMarkLaneChange {
 	BOTH = 'both',
 }
 
+export enum TvRoadMarkRule {
+	CAUTION = 'caution',
+	NO_PASSING = 'no_passing',
+	NONE = 'none',
+}
+
 export class TvLaneRoadMark {
 
 	public readonly uuid: string;
-	public gameObject: GameObject;
-	public attr_sOffset: number;
-	public attr_type: TvRoadMarkTypes;
-	public attr_weight: TvRoadMarkWeights;
-	public attr_color: TvColors;
 
-	public attr_width: number;
-	public attr_laneChange: TvRoadMarkLaneChange;
-	public attr_height: number = 0;
-	public attr_length: number = 3.0;
-	public attr_space: number = 4.5;
+	public readonly lane: TvLane;
+
+	public gameObject: GameObject;
+
+	public sOffset: number;
+
+	public type: TvRoadMarkTypes;
+
+	public weight: TvRoadMarkWeights;
+
+	public color: TvColors;
+
+	public width: number;
+
+	public laneChange: TvRoadMarkLaneChange;
+
+	public height: number = 0;
+
+	public length: number = 3.0;
+
+	public space: number = 4.5;
+
+	/**
+	 * Material of the road mark. Identifiers to be defined by the user, use "standard" as default value.
+	 */
+	public materialName: string;
+
+	/**
+	 * GUID of the material of the road mark.
+	 */
+	public materialGuid: string;
 
 	/**
 	 * @deprecated
 	 */
 	public lastSCoordinate: number;
-	public readonly lane: TvLane;
 
-	private attr_materialDetails: string;
-	private _materialGuid: string;
+	/**
+	 * Rule that must be observed when passing the line from inside, for example,
+	 * from the lane with the lower absolute ID to the lane with
+	 * the higher absolute ID
+	 */
+	public rule: TvRoadMarkRule;
 
 	/**
 	 *
@@ -71,45 +101,21 @@ export class TvLaneRoadMark {
 
 		this.uuid = MathUtils.generateUUID();
 
-		this.attr_sOffset = sOffset;
-		this.attr_type = type;
-		this.attr_weight = weight || TvRoadMarkWeights.STANDARD;
-		this.attr_color = color || TvColors.STANDARD;
-		this.attr_width = width || this.getWidthByWeight( weight );
-		this.attr_laneChange = laneChange || TvRoadMarkLaneChange.NONE;
-		this.attr_height = height;
-		this.attr_length = length;
-		this.attr_space = space || this.getSpaceByType( type );
-		this._materialGuid = materialGuid;
+		this.sOffset = sOffset;
+		this.type = type;
+		this.weight = weight || TvRoadMarkWeights.STANDARD;
+		this.color = color || TvColors.STANDARD;
+		this.width = width || TvLaneRoadMark.getWidthByWeight( weight );
+		this.laneChange = laneChange || TvRoadMarkLaneChange.NONE;
+		this.height = height;
+		this.length = length;
+		this.space = space || TvLaneRoadMark.getSpaceByType( type );
+		this.materialGuid = materialGuid;
 		this.lane = lane;
-	}
-
-	get materialGuid (): string {
-		return this._materialGuid;
-	}
-
-	set materialGuid ( value: string ) {
-		this._materialGuid = value;
 	}
 
 	get s2 () {
 		return this.lastSCoordinate - this.sOffset;
-	}
-
-	get space () {
-		return this.attr_space;
-	}
-
-	set space ( value: number ) {
-		this.attr_space = value;
-	}
-
-	get length () {
-		return this.attr_length;
-	}
-
-	set length ( value: number ) {
-		this.attr_length = value;
 	}
 
 	get s () {
@@ -120,76 +126,19 @@ export class TvLaneRoadMark {
 		this.sOffset = value;
 	}
 
-	get sOffset () {
-		return this.attr_sOffset;
-	}
-
-	set sOffset ( value ) {
-		this.attr_sOffset = value;
-	}
-
-	get type () {
-		return this.attr_type;
-	}
-
-	set type ( value: TvRoadMarkTypes ) {
-		this.attr_type = value;
-		this.attr_space = this.getSpaceByType( value );
-	}
-
-	get weight (): TvRoadMarkWeights {
-		return this.attr_weight;
-	}
-
-	set weight ( value ) {
-		this.attr_weight = value;
-	}
-
-	get color () {
-		return this.attr_color;
-	}
-
-	set color ( value: TvColors ) {
-		this.attr_color = value;
-	}
-
 	get threeColor () {
-		return COLOR.stringToColor( this.attr_color );
-	}
-
-	get materialDetails () {
-		return this.attr_materialDetails;
-	}
-
-	set materialDetails ( value: string ) {
-		this.attr_materialDetails = value;
-	}
-
-	get width () {
-		return this.attr_width;
-	}
-
-	set width ( value: number ) {
-		this.attr_width = value;
-	}
-
-	get laneChange () {
-		return this.attr_laneChange;
-	}
-
-	get height () {
-		return this.attr_height;
+		return COLOR.stringToColor( this.color );
 	}
 
 	getType () {
-		return this.attr_type;
+		return this.type;
 	}
 
 	setType ( value ) {
-		this.attr_type = value;
+		this.type = value;
 	}
 
-	getSpaceByType ( value: TvRoadMarkTypes ) {
+	static getSpaceByType ( value: TvRoadMarkTypes ) {
 		if ( value == TvRoadMarkTypes.BROKEN ) {
 			return 4.5;
 		} else {
@@ -197,7 +146,7 @@ export class TvLaneRoadMark {
 		}
 	}
 
-	getWidthByWeight ( value: TvRoadMarkWeights ) {
+	static getWidthByWeight ( value: TvRoadMarkWeights ) {
 		if ( value == TvRoadMarkWeights.BOLD ) {
 			return 0.3;
 		} else {
@@ -232,6 +181,12 @@ export class TvLaneRoadMark {
 			this.space,
 			this.materialGuid,
 		);
+	}
+
+	static createSolid ( lane: TvLane, s: number ): TvLaneRoadMark {
+
+		return new TvLaneRoadMark( s, TvRoadMarkTypes.SOLID, TvRoadMarkWeights.STANDARD, TvColors.STANDARD, 0.15, TvRoadMarkLaneChange.NONE, 0, lane );
+
 	}
 
 	static laneChangeFromString ( value: string ) {
