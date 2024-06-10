@@ -114,7 +114,7 @@ export class LaneDebugService {
 
 		const add = ( lane: TvLane, side: TvLaneSide ) => {
 
-			const points = this.getLinePoints( lane, side, LINE_STEP ).map( point => point.position );
+			const points = this.debugService.getDirectedPoints( lane, side, LINE_STEP ).map( point => point.position );
 
 			const line = this.debugService.createDebugLine( lane, points, lineWidth, color );
 
@@ -157,7 +157,7 @@ export class LaneDebugService {
 
 		}
 
-		const points = this.getArrowPoints( lane, TvLaneSide.CENTER, ARROW_STEP );
+		const points = this.debugService.getDirectedPoints( lane, TvLaneSide.CENTER, ARROW_STEP );
 
 		for ( let i = 0; i < points.length; i++ ) {
 
@@ -178,135 +178,9 @@ export class LaneDebugService {
 
 	}
 
-	// createRoadLaneLines ( road: TvRoad, stepSize = 1.0, zOffset = 0.0, width = 2 ) {
-
-	// 	const lines: DebugLine<TvLane>[] = [];
-
-	// 	road.laneSections.forEach( laneSection => {
-
-	// 		laneSection.lanes.forEach( lane => {
-
-	// 			for ( let i = 0; i < lane.width.length; i++ ) {
-
-	// 				const laneWidth = lane.width[ i ];
-
-	// 				const sStart = laneWidth.s;
-
-	// 				// get s of next lane width node
-	// 				let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
-
-	// 				const points = this.getPoints( lane, sStart, sEnd, stepSize );
-
-	// 				points.forEach( point => point.z += zOffset );
-
-	// 				const line = this.debugService.createDebugLine( lane, points, width );
-
-	// 				lines.push( line );
-
-	// 			}
-
-	// 		} );
-
-	// 	} );
-
-	// 	return lines;
-
-	// }
-
 	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
 
-		const points: Vector3[] = [];
-
-		for ( let s = sStart; s < sEnd; s += stepSize ) {
-
-			points.push( this.getPoint( lane, s ) )
-
-		}
-
-		points.push( this.getPoint( lane, sEnd - Maths.Epsilon ) );
-
-		return points;
-	}
-
-	private getLinePoints ( lane: TvLane, side: TvLaneSide = TvLaneSide.RIGHT, stepSize = 1.0 ) {
-
-		const points: TvPosTheta[] = [];
-
-		for ( let s = lane.laneSection.s; s < lane.laneSection.length; s += stepSize ) {
-
-			points.push( this.getDirectedPoint( lane, s, side ) )
-
-		}
-
-		points.push( this.getDirectedPoint( lane, lane.laneSection.length - Maths.Epsilon, side ) );
-
-		return points;
-	}
-
-	private getArrowPoints ( lane: TvLane, side: TvLaneSide, stepSize = 1.0 ) {
-
-		const points: TvPosTheta[] = [];
-
-		for ( let s = lane.laneSection.s + stepSize; s < lane.laneSection.length; s += stepSize ) {
-
-			points.push( this.getDirectedPoint( lane, s, side ) )
-
-		}
-
-		return points;
-	}
-
-	private getPoint ( lane: TvLane, s: number ) {
-
-		let posTheta = lane.laneSection.road.getPosThetaAt( s );
-
-		let width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
-
-		// If right side lane then make the offset negative
-		if ( lane.side === TvLaneSide.RIGHT ) {
-			width *= -1;
-		}
-
-		posTheta.addLateralOffset( width );
-
-		return posTheta.toVector3();
-
-	}
-
-	private getDirectedPoint ( lane: TvLane, s: number, side: TvLaneSide = TvLaneSide.RIGHT ) {
-
-		let posTheta = lane.laneSection.road.getPosThetaAt( s );
-
-		let width: number;
-
-		if ( side === TvLaneSide.LEFT ) {
-
-			width = lane.laneSection.getWidthUptoStart( lane, s - lane.laneSection.s );
-
-		} else if ( side === TvLaneSide.CENTER ) {
-
-			width = lane.laneSection.getWidthUptoCenter( lane, s - lane.laneSection.s );
-
-		} else {
-
-			width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
-
-		}
-
-		// If right side lane then make the offset negative
-		if ( lane.side === TvLaneSide.RIGHT ) {
-
-			width *= -1;
-
-			posTheta.addLateralOffset( width );
-
-		} else {
-
-			posTheta.addLateralOffset( width );
-
-		}
-
-		return posTheta;
+		return this.debugService.getPoints( lane, sStart, sEnd, stepSize );
 
 	}
 

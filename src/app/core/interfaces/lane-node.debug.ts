@@ -11,9 +11,9 @@ import { MapService } from 'app/services/map/map.service';
 import { TvLaneSide } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { HasDistanceValue } from './has-distance-value';
-import { LaneNode } from "../../objects/lane-node";
+import { LanePointNode } from "../../objects/lane-node";
 
-export abstract class BaseLaneDebugService<T extends HasDistanceValue> implements IDebugger<TvLane, LaneNode<T>> {
+export abstract class BaseLaneDebugService<T extends HasDistanceValue> implements IDebugger<TvLane, LanePointNode<T>> {
 
 	public debugDrawService: DebugDrawService;
 
@@ -209,13 +209,13 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	}
 
-	addControl ( lane: TvLane, node: LaneNode<T>, state: DebugState ): void {
+	addControl ( lane: TvLane, node: LanePointNode<T>, state: DebugState ): void {
 
 		this.nodes.addItem( lane, node );
 
 	}
 
-	updatePosition ( lane: TvLane, control: LaneNode<T> ): void {
+	updatePosition ( lane: TvLane, control: LanePointNode<T> ): void {
 
 		const position = lane.laneSection.road.getLaneEndPosition( lane, control.s );
 
@@ -223,7 +223,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	}
 
-	removeControl ( object: TvLane, control: LaneNode<T> ): void {
+	removeControl ( object: TvLane, control: LanePointNode<T> ): void {
 
 		this.nodes.removeItem( object, control );
 
@@ -235,8 +235,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 		const line = this.debugDrawService.createDebugLine( node, points, lineWidth );
 
-		this.lines.addItem( lane, line );
-
+		return line;
 	}
 
 	protected createDashedLine ( node, lane: TvLane, start: number, end: number, lineWidth = 4, stepSize = 0.1 ) {
@@ -245,7 +244,6 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 		const line = this.debugDrawService.createDashedLine( node, points, lineWidth );
 
-		this.lines.addItem( lane, line );
-
+		return line;
 	}
 }

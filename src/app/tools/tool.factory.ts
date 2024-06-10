@@ -64,7 +64,7 @@ import { DataServiceProvider } from "./data-service-provider.service";
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { ToolHintsProvider } from "../core/providers/tool-hints.provider";
 import { Tool } from "./tool";
-import { LaneHeightTool } from './lane-height-tool/lane-height.tool';
+import { LaneHeightTool } from './lane-height/lane-height.tool';
 import { BaseLaneTool } from "./base-lane.tool";
 import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { TvLane } from 'app/map/models/tv-lane';
@@ -73,7 +73,7 @@ import { DebugLine } from 'app/objects/debug-line';
 import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { MidLaneMovingStrategy, } from "../core/strategies/move-strategies/end-lane.moving.strategy";
 import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies/follow-heading-moving-strategy';
-import { LaneNode } from "../objects/lane-node";
+import { LanePointNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
@@ -81,6 +81,7 @@ import { ManeuverMesh } from 'app/services/junction/junction.debug';
 import { TrafficLightTool } from './traffic-light/traffic-light.tool';
 import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';
 import { EntityService } from "../scenario/entity/entity.service";
+import { LaneHeightToolService } from './lane-height/lane-height-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -166,7 +167,7 @@ export class ToolFactory {
 				tool = new LaneTool( this.laneToolService );
 				break;
 			case ToolType.LaneHeight:
-				tool = new LaneHeightTool();
+				tool = new LaneHeightTool( this.injector.get( LaneHeightToolService ) );
 				break;
 			case ToolType.PointMarkingTool:
 				tool = new PointMarkingTool( this.pointMarkingToolService );
@@ -244,7 +245,7 @@ export class ToolFactory {
 
 			if ( type == ToolType.LaneHeight ) {
 
-				this.selectionService.registerStrategy( LaneNode.name, new ControlPointStrategy() );
+				this.selectionService.registerStrategy( LanePointNode.name, new ControlPointStrategy() );
 
 				this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from "@angular/core";
+import { Injectable, Injector } from "@angular/core";
 import { SplineService } from "../services/spline/spline.service";
 import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { SurfaceService } from "../map/surface/surface.service";
@@ -20,6 +20,7 @@ import { JunctionService } from "../services/junction/junction.service";
 export class DataServiceProvider {
 
 	constructor (
+		private injector: Injector,
 		private splineService: SplineService,
 		private propCurveService: PropCurveService,
 		private surfaceService: SurfaceService,
@@ -73,7 +74,7 @@ export class DataServiceProvider {
 		switch ( type ) {
 
 			case ToolType.LaneHeight:
-				return this.laneHeightService;
+				return this.injector.get( LaneHeightService );
 		}
 
 	}

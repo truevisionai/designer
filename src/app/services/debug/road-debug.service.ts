@@ -33,8 +33,6 @@ export class RoadDebugService {
 
 	private nodes = new Object3DArrayMap<number, RoadNode[]>();
 
-	private cornerPoints = new Object3DArrayMap<TvRoad, Object3D[]>();
-
 	private arrows = new Object3DArrayMap<TvRoad, Object3D[]>();
 
 	private highlightedRoads = new Set<TvRoad>();

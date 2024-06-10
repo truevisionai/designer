@@ -2,6 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { MathUtils } from "three/src/math/MathUtils";
+
 /**
 
 Rules
@@ -14,6 +16,8 @@ Lane height shall be used for small scale elevation only.
 
  */
 export class TvLaneHeight {
+
+	public readonly uuid: string;
 
 	private _sOffset = 0;
 	private _inner = 0;
@@ -29,6 +33,7 @@ export class TvLaneHeight {
 		this._sOffset = sOffset || 0;
 		this._inner = inner || 0;
 		this._outer = outer || 0;
+		this.uuid = MathUtils.generateUUID();
 	}
 
 	get sOffset () {

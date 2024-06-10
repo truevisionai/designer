@@ -6,10 +6,12 @@ import { HasDistanceValue } from "../core/interfaces/has-distance-value";
 import { TvRoad } from "../map/models/tv-road.model";
 import { TvLane } from "../map/models/tv-lane";
 import { Vector3 } from "three";
-
 import { SimpleControlPoint } from "./simple-control-point";
+import { DebugLine } from "./debug-line";
+import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 
-export class LaneNode<T extends HasDistanceValue> extends SimpleControlPoint<T> {
+export class LanePointNode<T extends HasDistanceValue> extends SimpleControlPoint<T> {
 
 	constructor ( public road: TvRoad, public lane: TvLane, mainObject: T, position?: Vector3 ) {
 
@@ -34,6 +36,24 @@ export class LaneNode<T extends HasDistanceValue> extends SimpleControlPoint<T> 
 
 		this.s = posTheta.s;
 
+	}
+
+}
+
+export class LaneSpanNode<T extends HasDistanceValue> extends DebugLine<T> {
+
+	constructor ( public road: TvRoad, public lane: TvLane, target: T, geometry: LineGeometry, material: LineMaterial ) {
+
+		super( target, geometry, material );
+
+	}
+
+	get s (): number {
+		return this.target?.s;
+	}
+
+	set s ( value: number ) {
+		this.target.s = value;
 	}
 
 }

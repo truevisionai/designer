@@ -19,7 +19,7 @@ import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { Maths } from 'app/utils/maths';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 
-const LINE_WIDTH = 1.5;
+const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
 const LINE_ZOFFSET = 0.1;
 
@@ -212,7 +212,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	private showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
+	showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
 
 		const leftPoints = [];
 		const rightPoints = [];
@@ -245,7 +245,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	private removeBorder ( spline: AbstractSpline ) {
+	removeBorder ( spline: AbstractSpline ) {
 
 		this.lines.removeKey( spline );
 

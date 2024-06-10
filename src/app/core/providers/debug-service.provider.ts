@@ -10,13 +10,13 @@ import { MapService } from "../../services/map/map.service";
 import { ToolType } from "../../tools/tool-types.enum";
 import { PointDebugService } from "../../services/debug/point-debug.service";
 import { HasSplineDebugService } from "../../services/debug/has-spline-debug.service";
-import { LaneHeightDebugService } from "../../map/lane-height/lane-height.debug";
 import { BaseLaneDebugService } from "../interfaces/lane-node.debug";
 import { JunctionDebugService, ManeuverMesh } from "app/services/junction/junction.debug";
 import { ManeuverRoadDebugger } from "app/map/maneuver-road/maneuver-road.debugger";
 import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { ControlPointDebugger } from "../../services/debug/control-point.debugger";
+import { LaneHeightDebugService } from "app/tools/lane-height/lane-height.debug";
 
 @Injectable( {
 	providedIn: 'root'

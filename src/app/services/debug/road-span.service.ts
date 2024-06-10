@@ -37,7 +37,7 @@ export class RoadSpanService {
 					// get s of next lane width node
 					let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
 
-					const points = this.debug.getLanePoints( lane, sStart, sEnd, 0.1 );
+					const points = this.debug.getDirectedPoints( lane, sStart, sEnd, 0.1 );
 
 					const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 

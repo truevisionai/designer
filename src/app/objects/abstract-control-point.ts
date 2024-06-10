@@ -8,6 +8,10 @@ import { IHasPosition } from "./i-has-position";
 import { EventEmitter } from "@angular/core";
 import { COLOR } from "../views/shared/utils/colors.service";
 
+const DEFAULT_COLOR = COLOR.CYAN;
+const HOVERED_COLOR = COLOR.YELLOW;
+const SELECTED_COLOR = COLOR.RED;
+
 export abstract class AbstractControlPoint extends Points implements ISelectable, IHasPosition {
 
 	public mainObject: any;
@@ -17,9 +21,6 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 	public updated = new EventEmitter<AbstractControlPoint>();
 	public isSelected: boolean;
-	protected DEFAULT_CONTROL_POINT_COLOR = COLOR.CYAN;
-	protected HOVERED_CONTROL_POINT_COLOR = COLOR.YELLOW;
-	protected SELECTED_CONTROL_POINT_COLOR = COLOR.RED;
 
 	get target (): any {
 		return this.mainObject;
@@ -72,14 +73,14 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 	onMouseOver () {
 
-		( this.material as PointsMaterial ).color = new Color( this.HOVERED_CONTROL_POINT_COLOR );
+		( this.material as PointsMaterial ).color = new Color( HOVERED_COLOR );
 		( this.material as PointsMaterial ).needsUpdate = true;
 
 	}
 
 	onMouseOut () {
 
-		( this.material as PointsMaterial ).color = new Color( this.DEFAULT_CONTROL_POINT_COLOR );
+		( this.material as PointsMaterial ).color = new Color( DEFAULT_COLOR );
 		( this.material as PointsMaterial ).needsUpdate = true;
 
 	}
@@ -88,7 +89,7 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 		this.isSelected = true;
 
-		( this.material as PointsMaterial ).color = new Color( this.SELECTED_CONTROL_POINT_COLOR );
+		( this.material as PointsMaterial ).color = new Color( SELECTED_COLOR );
 		( this.material as PointsMaterial ).needsUpdate = true;
 
 	}
@@ -97,7 +98,7 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 		this.isSelected = false;
 
-		( this.material as PointsMaterial ).color = new Color( this.DEFAULT_CONTROL_POINT_COLOR );
+		( this.material as PointsMaterial ).color = new Color( DEFAULT_COLOR );
 		( this.material as PointsMaterial ).needsUpdate = true;
 
 	}

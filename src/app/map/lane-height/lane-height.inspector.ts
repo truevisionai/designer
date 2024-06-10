@@ -2,27 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLane } from "../models/tv-lane";
 import { TvLaneHeight } from "./lane-height.model";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
-
-import { LaneNode } from "../../objects/lane-node";
+import { TvLane } from "../models/tv-lane";
 
 export class LaneHeightInspector {
 
 	constructor (
-		public node: LaneNode<TvLaneHeight>
+		public laneHeight: TvLaneHeight,
+		public lane: TvLane
 	) {
-	}
-
-	get laneHeight (): TvLaneHeight {
-		return this.node.mainObject;
-	}
-
-	get lane (): TvLane {
-		return this.node.lane;
 	}
 
 	@SerializedField( { type: 'float', min: 0 } )
@@ -54,6 +45,6 @@ export class LaneHeightInspector {
 
 	@SerializedAction( { label: 'Delete' } )
 	delete () {
-		CommandHistory.execute( new RemoveObjectCommand( this.node ) );
+		CommandHistory.execute( new RemoveObjectCommand( this ) );
 	}
 }

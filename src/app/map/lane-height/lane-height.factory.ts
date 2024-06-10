@@ -9,12 +9,12 @@ import { Injectable } from "@angular/core";
 import { TvLane } from "../models/tv-lane";
 import { Asset } from "app/core/asset/asset.model";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
-import { LaneNode } from "../../objects/lane-node";
+import { LanePointNode } from "../../objects/lane-node";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class LaneHeightFactory extends LaneElementFactory<TvLaneHeight> implements ILaneNodeFactory<LaneNode<TvLaneHeight>> {
+export class LaneHeightFactory extends LaneElementFactory<TvLaneHeight> implements ILaneNodeFactory<LanePointNode<TvLaneHeight>> {
 
 	createFromPosition ( position: Vector3, lane: TvLane ): TvLaneHeight {
 
@@ -30,7 +30,7 @@ export class LaneHeightFactory extends LaneElementFactory<TvLaneHeight> implemen
 
 	}
 
-	createNode ( position: Vector3, lane: TvLane ): LaneNode<TvLaneHeight> {
+	createNode ( position: Vector3, lane: TvLane ): LanePointNode<TvLaneHeight> {
 
 		const height = this.createFromPosition( position, lane );
 

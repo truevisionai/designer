@@ -580,13 +580,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	/**
 	 * Evaluate the record and return the height object
-	 * @param sCheck
+	 * @param sOffset
 	 */
-	getHeightValue ( sCheck ): TvLaneHeight {
+	getHeightValue ( sOffset: number ): TvLaneHeight {
 
-		const laneHeight = new TvLaneHeight( 0, 0, 0 );
+		const laneHeight = new TvLaneHeight( sOffset, 0, 0 );
 
-		const index = this.checkLaneHeightInterval( sCheck );
+		const index = this.checkLaneHeightInterval( sOffset );
 
 		if ( index >= 0 ) {
 

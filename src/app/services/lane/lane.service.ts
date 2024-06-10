@@ -9,6 +9,8 @@ import { MapEvents } from 'app/events/map-events';
 import { TvLaneType } from 'app/map/models/tv-common';
 import { LaneTypeChangedEvent } from 'app/events/lane/lane-type-changed.event';
 import { BaseDataService } from "../../core/interfaces/data.service";
+import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
+import { RoadService } from '../road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -17,6 +19,7 @@ export class LaneService extends BaseDataService<TvLane> {
 
 	constructor (
 		public base: BaseToolService,
+		public roadService: RoadService,
 	) {
 		super();
 	}
@@ -66,6 +69,32 @@ export class LaneService extends BaseDataService<TvLane> {
 		lane.type = type;
 
 		MapEvents.laneTypeChanged.emit( new LaneTypeChangedEvent( lane, type, oldType ) );
+
+	}
+
+	findLaneByLaneHeight ( height: TvLaneHeight ): TvLane {
+
+		for ( const road of this.roadService.all() ) {
+
+			for ( const laneSection of road.laneSections ) {
+
+				for ( const lane of laneSection.getLaneArray() ) {
+
+					for ( const laneHeight of lane.height ) {
+
+						if ( laneHeight.uuid === height.uuid ) {
+
+							return lane;
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
 
 	}
 

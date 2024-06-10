@@ -25,7 +25,7 @@ import { KeyboardEvents } from "app/events/keyboard-events";
 import { ILaneNodeFactory } from "app/core/interfaces/lane-element.factory";
 import { HasDistanceValue } from "app/core/interfaces/has-distance-value";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
-import { LaneNode } from "../objects/lane-node";
+import { LanePointNode } from "../objects/lane-node";
 import { UpdatePositionCommand } from "app/commands/update-position-command";
 
 export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportEventSubscriber implements Tool {
@@ -38,21 +38,21 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	public data: LinkedDataService<TvLane, T>;
 
-	public debugger: IDebugger<TvLane, LaneNode<T>>;
+	public debugger: IDebugger<TvLane, LanePointNode<T>>;
 
 	public hints: ToolHints<T>;
 
 	public selection: SelectionService;
 
-	public factory: ILaneNodeFactory<LaneNode<T>>;
+	public factory: ILaneNodeFactory<LanePointNode<T>>;
 
 	public debugDrawService: DebugDrawService;
 
-	private nodeChanged: boolean;
+	protected nodeChanged: boolean;
 
-	protected get selectedNode (): LaneNode<T> {
+	protected get selectedNode (): LanePointNode<T> {
 
-		return this.selection?.getLastSelected<LaneNode<T>>( LaneNode.name );
+		return this.selection?.getLastSelected<LanePointNode<T>>( LanePointNode.name );
 
 	}
 
@@ -116,7 +116,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	}
 
-	onPointerUp () {
+	onPointerUp ( e: PointerEventData ) {
 
 		if ( !this.nodeChanged ) return;
 
@@ -196,7 +196,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 			this.debugger.setDebugState( object, DebugState.SELECTED );
 
-		} else if ( object instanceof LaneNode ) {
+		} else if ( object instanceof LanePointNode ) {
 
 			object.select();
 
@@ -212,7 +212,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 			this.debugger.setDebugState( object, DebugState.DEFAULT );
 
-		} else if ( object instanceof LaneNode ) {
+		} else if ( object instanceof LanePointNode ) {
 
 			object.unselect();
 
@@ -224,7 +224,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	onObjectAdded ( object: any ): void {
 
-		if ( object instanceof LaneNode ) {
+		if ( object instanceof LanePointNode ) {
 
 			this.data.add( object.lane, object.mainObject );
 
@@ -240,7 +240,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 			this.data.update( this.selectedLane, object );
 
-			this.debugger.setDebugState( this.selectedLane, DebugState.SELECTED );
+			this.debugger.updateDebugState( this.selectedLane, DebugState.SELECTED );
 
 			this.setHint( this.hints?.objectUpdated( object ) );
 
@@ -250,7 +250,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( object instanceof LaneNode ) {
+		if ( object instanceof LanePointNode ) {
 
 			this.data.remove( object.lane, object.mainObject );
 
@@ -326,9 +326,19 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	protected highlight ( e: PointerEventData ) {
 
+		this.debugger.resetHighlighted();
+
 		for ( const strategy of this.selection?.getStrategies() ) {
 
-			strategy.onPointerMoved( e );
+			const object = strategy.onPointerMoved( e );
+
+			if ( object instanceof TvLane ) {
+
+				this.debugger.setDebugState( object, DebugState.HIGHLIGHTED );
+
+			}
+
+			if ( object ) return object;
 
 		}
 
@@ -340,7 +350,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	}
 
-	protected onShowInspector ( object: LaneNode<T> ): void {
+	protected onShowInspector ( object: LanePointNode<T> ): void {
 
 	}
 

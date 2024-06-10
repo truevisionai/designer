@@ -1,0 +1,17 @@
+import { Injectable } from '@angular/core';
+import { LaneHeightDebugService } from './lane-height.debug';
+import { LaneService } from 'app/services/lane/lane.service';
+import { RoadService } from 'app/services/road/road.service';
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class LaneHeightToolService {
+
+	constructor (
+		public laneDebugger: LaneHeightDebugService,
+		public laneService: LaneService,
+		public roadService: RoadService,
+	) { }
+
+}
