@@ -5,6 +5,7 @@
 import { Injectable } from '@angular/core';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { TextObject3d } from 'app/objects/text-object';
+import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
 import { ToolTipService, TooltipInterface } from 'app/services/debug/tool-tip.service';
 import { SceneService } from 'app/services/scene.service';
@@ -16,8 +17,9 @@ import { Vector3 } from 'three';
 export class MeasurementToolService {
 
 	constructor (
-		private debugTextService: DebugTextService,
-		private toolTipService: ToolTipService,
+		public debugService: DebugDrawService,
+		public debugTextService: DebugTextService,
+		public toolTipService: ToolTipService,
 		public controlPointFactory: ControlPointFactory,
 	) { }
 

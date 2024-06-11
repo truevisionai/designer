@@ -55,9 +55,17 @@ export class MeasurementTool extends BaseTool<any>{
 
 			const geometry = new BufferGeometry().setFromPoints( [ this.start, this.start ] );
 
-			const material = new LineBasicMaterial( { color: 0xffffff, linewidth: 5, } );
+			const material = new LineBasicMaterial( {
+				color: 0xffffff,
+				linewidth: 5,
+				depthTest: false,
+				depthWrite: false,
+				transparent: true,
+			} );
 
 			this.line = new Line( geometry, material );
+
+			this.line.renderOrder = 999;
 
 			this.startPoint = this.tool.controlPointFactory.createSimpleControlPoint( null, this.start );
 
