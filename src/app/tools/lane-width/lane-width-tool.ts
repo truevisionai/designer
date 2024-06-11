@@ -109,6 +109,8 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onPointerUp ( e: PointerEventData ) {
 
+		this.tool.base.enableControls();
+
 		if ( ! this.nodeChanged ) return;
 
 		if ( ! this.selectedNode ) return;
@@ -151,6 +153,8 @@ export class LaneWidthTool extends BaseTool<any> {
 		}
 
 		this.nodeChanged = true;
+
+		this.tool.base.disableControls();
 
 	}
 

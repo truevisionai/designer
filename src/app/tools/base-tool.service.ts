@@ -9,6 +9,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/scenario/models/position';
 import { SelectionService } from './selection.service';
 import { Vector3 } from 'three';
+import { ViewControllerService } from "../views/editor/viewport/view-controller.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +24,7 @@ export class BaseToolService {
 
 	constructor (
 		public selection: SelectionService,
+		private viewController: ViewControllerService,
 	) {
 	}
 
@@ -188,4 +190,15 @@ export class BaseToolService {
 
 	}
 
+	enableControls () {
+
+		this.viewController.enableControls();
+
+	}
+
+	disableControls () {
+
+		this.viewController.disableControls();
+
+	}
 }
