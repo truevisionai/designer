@@ -12,13 +12,16 @@ import { LaneWidthToolService } from './lane-width-tool.service';
 import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
-import { AppInspector } from 'app/core/inspector';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { DebugLine } from 'app/objects/debug-line';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
-import { Debug } from 'app/core/utils/debug';
+import { DebugState } from "../../services/debug/debug-state";
+import { DebugLine } from "../../objects/debug-line";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { LaneWidthNodeInspector } from "./lane-width-node-inspector";
+import { Vector3 } from "three";
+import { TvLaneWidth } from "../../map/models/tv-lane-width";
+import { TvRoad } from "../../map/models/tv-road.model";
 
 export class LaneWidthTool extends BaseTool<any> {
 
@@ -34,9 +37,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	private oldValue: number;
 
-	private debug = false;
-
-	constructor ( private laneWidthService: LaneWidthToolService ) {
+	constructor ( private tool: LaneWidthToolService ) {
 
 		super();
 
@@ -44,18 +45,26 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	init () {
 
-		this.laneWidthService.base.reset();
+		this.tool.base.reset();
 
-		this.laneWidthService.base.addSelectionStrategy( new ControlPointStrategy( {
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy( {
 			higlightOnHover: true,
 			higlightOnSelect: false,
 			tag: LaneWidthNode.pointTag,
 			returnParent: true,
 		} ) );
 
-		this.laneWidthService.base.addSelectionStrategy( new SelectLineStrategy() );
+		this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
 
-		this.laneWidthService.base.addSelectionStrategy( new SelectLaneStrategy() );
+		const selectLaneStrategy = new SelectLaneStrategy();
+
+		selectLaneStrategy.debugger = this.tool.toolDebugger;
+
+		this.selectionService.registerStrategy( TvLane.name, selectLaneStrategy );
+
+		this.setDataService( this.tool.roadService );
+
+		this.setDebugService( this.tool.toolDebugger );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
@@ -71,64 +80,24 @@ export class LaneWidthTool extends BaseTool<any> {
 
 		super.disable();
 
-		this.laneWidthService.base.reset();
-
-		this.laneWidthService.removeAllWidthNodes()
+		this.tool.base.reset();
 
 		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
 
-		if ( this.selectedNode ) this.onLaneWidthNodeUnselected( this.selectedNode );
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
 	}
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.laneWidthService.base.handleSelection( e, selected => {
-
-			if ( selected instanceof LaneWidthNode ) {
-
-				if ( this.selectedNode === selected ) return;
-
-				this.selectObject( selected, this.selectedNode );
-
-			} else if ( selected instanceof DebugLine ) {
-
-				if ( this.selectedNode === selected.target ) return;
-
-				this.selectObject( selected.target, this.selectedNode );
-
-			} else if ( selected instanceof TvLane ) {
-
-				if ( this.selectedNode ) this.selectedNode.isSelected = false;
-
-				if ( this.selectedLane === selected ) return;
-
-				this.selectObject( selected, this.selectedLane );
-
-			}
-
-		}, () => {
-
-			if ( this.selectedNode ) {
-
-				this.unselectObject( this.selectedNode );
-
-			} else if ( this.selectedLane ) {
-
-				this.unselectObject( this.selectedLane );
-
-			}
-
-		} );
+		this.handleSelection( e );
 
 	}
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( !this.laneWidthService.base.onPointerDown( e ) ) return;
+		if ( ! this.selectedLane ) return;
 
-		if ( !this.selectedLane ) return;
-
-		const node = this.laneWidthService.createWidthNode( this.selectedLane, e.point );
+		const node = this.createWidthNode( this.selectedLane.laneSection.road, this.selectedLane, e.point );
 
 		const addCommand = new AddObjectCommand( node );
 
@@ -140,11 +109,13 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onPointerUp ( e: PointerEventData ) {
 
-		if ( !this.nodeChanged ) return;
+		if ( ! this.nodeChanged ) return;
 
-		if ( !this.selectedNode ) return;
+		if ( ! this.selectedNode ) return;
 
-		if ( !this.oldValue ) return;
+		if ( ! this.selectedNode.isSelected ) return;
+
+		if ( ! this.oldValue ) return;
 
 		// these could also be user to get old and new s
 		// const newPosition = this.selectedNode.position.clone();
@@ -165,20 +136,18 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		this.laneWidthService.base.highlight( e );
+		this.highlight( e );
 
-		if ( !this.isPointerDown ) return;
+		if ( ! this.isPointerDown ) return;
 
-		if ( !this.selectedNode ) return;
+		if ( ! this.selectedNode ) return;
 
-		if ( !this.laneWidthService.base.onPointerDown( e ) ) return;
+		if ( ! this.selectedNode.isSelected ) return;
 
-		if ( !this.selectedNode.isSelected ) return;
+		this.tool.updateByPosition( this.selectedNode, e.point );
 
-		this.laneWidthService.updateByPosition( this.selectedNode, e.point );
-
-		if ( !this.nodeChanged ) {
-			this.oldValue = this.selectedNode.s;
+		if ( ! this.nodeChanged ) {
+			this.oldValue = this.selectedNode.laneWidth.s;
 		}
 
 		this.nodeChanged = true;
@@ -187,11 +156,11 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectAdded ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectAdded', object );
-
 		if ( object instanceof LaneWidthNode ) {
 
-			this.laneWidthService.addNode( object );
+			this.addWidthNode( object );
+
+			this.onNodeSelected( object );
 
 		}
 
@@ -199,11 +168,13 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectUpdated ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectUpdated', object );
-
 		if ( object instanceof LaneWidthNode ) {
 
-			this.laneWidthService.updateNode( object );
+			this.updateWidthNode( object );
+
+		} else if ( object instanceof LaneWidthNodeInspector ) {
+
+			this.updateWidthNode( object.node );
 
 		}
 
@@ -211,11 +182,11 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectRemoved', object );
-
 		if ( object instanceof LaneWidthNode ) {
 
-			this.laneWidthService.removeNode( object );
+			this.removeWidthNode( object );
+
+			this.onNodeUnselected( object );
 
 		}
 
@@ -223,24 +194,18 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onObjectSelected ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectSelected', object );
-
-		this.laneWidthService.base.setSelected( object );
-
 		if ( object instanceof TvLane ) {
 
 			this.onLaneSelected( object );
 
 		} else if ( object instanceof LaneWidthNode ) {
 
-			this.onLaneWidthNodeSelected( object );
+			this.onNodeSelected( object );
 		}
 
 	}
 
 	onObjectUnselected ( object: any ): void {
-
-		if ( this.debug ) Debug.log( 'onObjectUnselected', object );
 
 		if ( object instanceof TvLane ) {
 
@@ -248,7 +213,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 		} else if ( object instanceof LaneWidthNode ) {
 
-			this.onLaneWidthNodeUnselected( object );
+			this.onNodeUnselected( object );
 
 		}
 
@@ -256,50 +221,55 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onLaneSelected ( lane: TvLane ): void {
 
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+
 		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
 
 		this.selectedLane = lane;
 
-		// this.selectedLane.select();
+		this.debugService?.updateDebugState( lane.laneSection.road, DebugState.SELECTED );
 
-		this.laneWidthService.showWidthNodes( lane.laneSection.road );
-
-		AppInspector.clear();
+		this.clearInspector();
 
 		this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
+
 	}
 
 	onLaneUnselected ( lane: TvLane ): void {
 
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+
 		this.selectedLane = null;
 
-		// lane.unselect();
-
-		this.laneWidthService.hideWidthNodes( lane.laneSection.road );
+		this.debugService?.updateDebugState( lane.laneSection.road, DebugState.DEFAULT );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
+
 	}
 
-	onLaneWidthNodeSelected ( node: LaneWidthNode ): void {
+	onNodeSelected ( node: LaneWidthNode ): void {
 
-		if ( this.selectedNode ) this.onLaneWidthNodeUnselected( this.selectedNode );
+		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
+
+		node?.select();
 
 		this.selectedNode = node;
 
-		this.laneWidthService.selectNode( node );
+		this.setInspector( new LaneWidthNodeInspector( node ) );
 
-		AppInspector.setInspector( DynamicInspectorComponent, node );
+		this.debugService?.updateDebugState( node.lane.laneSection.road, DebugState.SELECTED );
 
 		this.setHint( 'Drag node to modify position. Change properties from inspector' );
+
 	}
 
-	onLaneWidthNodeUnselected ( node: LaneWidthNode ): void {
+	onNodeUnselected ( node: LaneWidthNode ): void {
+
+		node?.unselect();
 
 		this.selectedNode = null;
 
-		this.laneWidthService.unselectNode( node );
-
-		AppInspector.clear();
+		this.clearInspector();
 
 		this.setHint( 'use LEFT CLICK to select a node or use SHIFT + LEFT CLICK to add new node' );
 
@@ -307,9 +277,53 @@ export class LaneWidthTool extends BaseTool<any> {
 
 	onDeleteKeyDown () {
 
-		if ( !this.selectedNode ) return;
+		if ( ! this.selectedNode ) return;
 
 		this.executeRemoveObject( this.selectedNode );
+
+	}
+
+	createWidthNode ( road: TvRoad, lane: TvLane, position: Vector3 ) {
+
+		const roadCoord = road.getPosThetaByPosition( position );
+
+		const sOffset = roadCoord.s - lane.laneSection.s;
+
+		const widthValue = lane.getWidthValue( sOffset ) || 3.2;
+
+		const laneWidth = new TvLaneWidth( sOffset, widthValue, 0, 0, 0, lane );
+
+		return this.tool.toolDebugger.createNode( road, lane.laneSection, lane, laneWidth );
+
+	}
+
+	addWidthNode ( node: LaneWidthNode ) {
+
+		this.tool.laneWidthService.addLaneWidth( node.lane.laneSection, node.lane, node.laneWidth );
+
+		this.debugService?.updateDebugState( node.lane.laneSection.road, DebugState.SELECTED );
+
+		this.setInspector( new LaneWidthNodeInspector( node ) );
+
+	}
+
+	updateWidthNode ( node: LaneWidthNode ) {
+
+		this.tool.laneWidthService.updateLaneWidth( node.lane.laneSection, node.lane, node.laneWidth );
+
+		this.debugService?.updateDebugState( node.lane.laneSection.road, DebugState.SELECTED );
+
+		this.setInspector( new LaneWidthNodeInspector( node ) );
+
+	}
+
+	removeWidthNode ( node: LaneWidthNode ) {
+
+		this.tool.laneWidthService.removeLaneWidth( node.lane.laneSection, node.lane, node.laneWidth );
+
+		this.debugService?.updateDebugState( node.lane.laneSection.road, DebugState.DEFAULT );
+
+		this.clearInspector();
 
 	}
 

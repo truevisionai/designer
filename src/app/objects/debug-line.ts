@@ -17,6 +17,8 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	isSelected: boolean;
 
+	tag: string;
+
 	private originalWidth: number;
 
 	constructor ( public target: T, geometry: LineGeometry, material: LineMaterial ) {

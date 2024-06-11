@@ -385,29 +385,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return newRoad;
 	}
 
-	findLowestRightRoad ( road: TvRoad, s: number ) {
-
-		const laneSection = road.getLaneSectionAt( s );
-
-		const lanes = laneSection.lanes;
-
-		let lowestLane: TvLane;
-
-		for ( const [ id, lane ] of lanes ) {
-
-			if ( !lowestLane ) {
-				lowestLane = lane;
-				continue;
-			}
-
-			if ( lane.isRight && lane.id < lowestLane.id ) {
-				lowestLane = lane;
-			}
-
-		}
-
-	}
-
 	findNearestRoad ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): TvRoad {
 
 		const point = new Vector2( position.x, position.y );
@@ -554,6 +531,30 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 * @param sOffset s offset is relative to lane section
 	 * @returns
 	 */
+	findLaneStartPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		const t = this.findWidthUptoStart( road, laneSection, lane, sOffset );
+
+		const sign = lane.id >= 0 ? 1 : -1;
+
+		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
+
+		const laneHeight = lane.getHeightValue( sOffset );
+
+		posTheta.z += laneHeight.getLinearValue( 0 );
+
+		return posTheta;
+
+	}
+
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sOffset s offset is relative to lane section
+	 * @returns
+	 */
 	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
 
 		if ( lane.side == TvLaneSide.CENTER ) return 0;
@@ -600,6 +601,27 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return totalWidth;
 	}
 
+	findWidthUptoStart ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		if ( lane.side == TvLaneSide.CENTER ) return 0;
+
+		let width = 0;
+
+		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
+
+		for ( let i = 0; i < lanes.length; i++ ) {
+
+			const currentLane = lanes[ i ];
+
+			if ( currentLane.id == lane.id ) break;
+
+			width += currentLane.getWidthValue( sOffset );
+
+		}
+
+		return width;
+	}
+
 	/**
 	 *
 	 * @param road
@@ -609,6 +631,12 @@ export class RoadService extends BaseDataService<TvRoad> {
 	findRoadPosition ( road: TvRoad, s: number, t: number = 0 ) {
 
 		return road.getPosThetaAt( s, t );
+
+	}
+
+	findRoadPositionAt ( road: TvRoad, position: Vector3 ) {
+
+		return road.getPosThetaByPosition( position );
 
 	}
 

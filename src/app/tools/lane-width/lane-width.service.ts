@@ -14,7 +14,10 @@ import { LaneService } from 'app/services/lane/lane.service';
 } )
 export class LaneWidthService {
 
-	constructor ( private laneService: LaneService ) { }
+	constructor (
+		private laneService: LaneService
+	) {
+	}
 
 	addLaneWidth ( laneSection: TvLaneSection, lane: TvLane, laneWidth: TvLaneWidth ) {
 

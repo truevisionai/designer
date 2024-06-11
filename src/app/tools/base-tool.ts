@@ -478,6 +478,8 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected highlight ( e: PointerEventData ) {
 
+		if ( this.isPointerDown ) return;
+
 		for ( const strategy of this.selectionService?.getStrategies() ) {
 
 			const result = strategy.onPointerMoved( e );
