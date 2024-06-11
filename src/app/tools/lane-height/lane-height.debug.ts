@@ -11,11 +11,11 @@ import { TvLaneHeight } from "../../map/lane-height/lane-height.model";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { SplineDebugService } from "app/services/debug/spline-debug.service";
 import { Object3DArrayMap } from "app/core/models/object3d-array-map";
 import { Object3D } from "three";
 import { DebugLine } from "app/objects/debug-line";
 import { LaneSpanNode } from "app/objects/lane-node";
+import { RoadDebugService } from "../../services/debug/road-debug.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,7 +31,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 	private lineCache = new Map<TvLaneHeight, DebugLine<any>>();
 	private nodeCache = new Map<TvLaneHeight, LaneSpanNode<any>>();
 
-	constructor ( private splineDebugger: SplineDebugService ) {
+	constructor ( private roadDebugger: RoadDebugService ) {
 
 		super();
 
@@ -47,7 +47,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 		if ( this.highlightedRoads.has( lane.laneSection.road ) ) return;
 
-		this.splineDebugger.showBorder( lane.laneSection.road.spline );
+		this.roadDebugger.showRoadBorderLine( lane.laneSection.road );
 
 		this.highlightedRoads.add( lane.laneSection.road );
 
@@ -57,7 +57,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 		if ( this.selectedRoads.has( lane.laneSection.road ) ) return;
 
-		this.splineDebugger.removeBorder( lane.laneSection.road.spline );
+		this.roadDebugger.removeRoadBorderLine( lane.laneSection.road );
 
 		this.highlightedRoads.delete( lane.laneSection.road );
 
@@ -177,11 +177,11 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 			const height = lane.height[ i ];
 
-			const sStart = height.sOffset;
+			const sStart = height.sOffset + lane.laneSection.s;
 
 			const next = lane.height[ i + 1 ];
 
-			const sEnd = next?.sOffset || lane.laneSection.length;
+			const sEnd = ( next?.sOffset || lane.laneSection.length ) + lane.laneSection.s;
 
 			let line: DebugLine<any>;
 
@@ -207,9 +207,9 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 		if ( lane.height.length == 0 ) {
 
-			const sStart = 0;
+			const sStart = lane.laneSection.s;
 
-			const sEnd = lane.laneSection.length;
+			const sEnd = lane.laneSection.s + lane.laneSection.length;
 
 			const line = this.createDashedLine( lane, lane, sStart, sEnd );
 

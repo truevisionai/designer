@@ -114,7 +114,11 @@ export class LaneDebugService {
 
 		const add = ( lane: TvLane, side: TvLaneSide ) => {
 
-			const points = this.debugService.getDirectedPoints( lane, side, LINE_STEP ).map( point => point.position );
+			const road = lane.laneSection.road;
+
+			const laneSection = lane.laneSection;
+
+			const points = this.debugService.getDirectedPoints( road, laneSection, lane, side, LINE_STEP ).map( point => point.position );
 
 			const line = this.debugService.createDebugLine( lane, points, lineWidth, color );
 
@@ -157,7 +161,11 @@ export class LaneDebugService {
 
 		}
 
-		const points = this.debugService.getDirectedPoints( lane, TvLaneSide.CENTER, ARROW_STEP );
+		const road = lane.laneSection.road;
+
+		const laneSection = lane.laneSection;
+
+		const points = this.debugService.getDirectedPoints( road, laneSection, lane, TvLaneSide.CENTER, ARROW_STEP );
 
 		for ( let i = 0; i < points.length; i++ ) {
 

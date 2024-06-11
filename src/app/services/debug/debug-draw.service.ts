@@ -413,38 +413,40 @@ export class DebugDrawService {
 		return line;
 	}
 
-	getDirectedPoints ( lane: TvLane, side: TvLaneSide, stepSize = 1.0 ): TvPosTheta[] {
+	getDirectedPoints ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, side: TvLaneSide, stepSize = 1.0 ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
-		const sEnd = lane.laneSection.length;
+		const next = road.laneSections.find( i => i.s > laneSection.s );
 
-		for ( let s = 0; s < sEnd; s += stepSize ) {
+		const sEnd = next?.s || road.length;
 
-			points.push( this.getDirectedPoint( lane, s, side ) )
+		for ( let sOffset = 0; sOffset < sEnd; sOffset += stepSize ) {
+
+			points.push( this.getDirectedPoint( road, laneSection, lane, laneSection.s + sOffset, side ) );
 
 		}
 
 		return points;
 	}
 
-	private getDirectedPoint ( lane: TvLane, s: number, side: TvLaneSide = TvLaneSide.RIGHT ): TvPosTheta {
+	private getDirectedPoint ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, side: TvLaneSide = TvLaneSide.RIGHT ): TvPosTheta {
 
-		const point = lane.laneSection.road.getPosThetaAt( s );
+		const point = this.roadService.findRoadPosition( road, sOffset );
 
 		let width: number;
 
 		if ( side === TvLaneSide.LEFT ) {
 
-			width = lane.laneSection.getWidthUptoStart( lane, s - lane.laneSection.s );
+			width = laneSection.getWidthUptoStart( lane, sOffset - laneSection.s );
 
 		} else if ( side === TvLaneSide.CENTER ) {
 
-			width = lane.laneSection.getWidthUptoCenter( lane, s - lane.laneSection.s );
+			width = laneSection.getWidthUptoCenter( lane, sOffset - laneSection.s );
 
 		} else {
 
-			width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
+			width = laneSection.getWidthUptoEnd( lane, sOffset - laneSection.s );
 
 		}
 
