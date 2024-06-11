@@ -40,6 +40,8 @@ export class SceneBuilderService {
 
 		SceneService.removeFromMain( map.gameObject );
 
+		map.getSplines().forEach( spline => this.buildSpline( map, spline ) );
+
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
 
 		map.getRoads().forEach( road => this.roadObjectService.buildRoadObjects( road ) );
@@ -68,11 +70,28 @@ export class SceneBuilderService {
 
 	buildRoad ( map: TvMap, road: TvRoad ): void {
 
+		function fixGeometry ( road: TvRoad ) {
+
+			const segment = road.spline.findSegment( road );
+
+			if ( ! segment ) console.error( 'Road segment not found ' + road.toString() );
+			if ( ! segment ) return;
+
+			road.clearGeometries();
+
+			if ( segment.geometries.length == 0 ) return;
+
+			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+
+		}
+
 		const spline = this.findSpline( map, road );
 
 		if ( spline && ( spline.type === SplineType.AUTO || spline.type == SplineType.AUTOV2 ) ) {
 
 			road.spline = spline;
+
+			fixGeometry( road );
 
 			const gameObject = this.roadBuilder.buildRoad( road );
 
@@ -107,7 +126,7 @@ export class SceneBuilderService {
 
 	findSpline ( scene: TvMap, road: TvRoad ): AbstractSpline {
 
-		return scene.getSplines().find( spline => spline.getSplineSegments().find( segment => segment.id === road.id ) );
+		return scene.getSplines().find( spline => spline.findSegment( road ) );
 
 	}
 
@@ -123,4 +142,9 @@ export class SceneBuilderService {
 
 	}
 
+	private buildSpline ( map: TvMap, spline: AbstractSpline ) {
+
+		spline.updateRoadSegments();
+
+	}
 }
