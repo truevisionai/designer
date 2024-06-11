@@ -163,10 +163,6 @@ export class LaneDebugService {
 
 			const point = points[ i ];
 
-			if ( lane.direction == TravelDirection.backward ) {
-				point.hdg += Math.PI;
-			}
-
 			addArrow( point.position, point.hdg );
 
 			if ( lane.direction != TravelDirection.bidirectional ) continue;

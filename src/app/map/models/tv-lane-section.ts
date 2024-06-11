@@ -92,6 +92,11 @@ export class TvLaneSection {
 
 	}
 
+	/**
+	 *
+	 * @param lane
+	 * @param sCoordinate with respect to lane section
+	 */
 	getWidthUptoStart ( lane: TvLane, sCoordinate: number ): number {
 
 		let width = 0;

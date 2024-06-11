@@ -17,7 +17,7 @@ import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
 import { SharpArrowObject, SimpleArrowObject } from 'app/objects/lane-arrow-object';
 import { DebugLine } from '../../objects/debug-line';
-import { TvLaneSide } from 'app/map/models/tv-common';
+import { TravelDirection, TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
 import { Maths } from 'app/utils/maths';
@@ -413,24 +413,24 @@ export class DebugDrawService {
 		return line;
 	}
 
-	getDirectedPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ): TvPosTheta[] {
+	getDirectedPoints ( lane: TvLane, side: TvLaneSide, stepSize = 1.0 ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
-		for ( let s = sStart; s < sEnd; s += stepSize ) {
+		const sEnd = lane.laneSection.length;
 
-			points.push( this.getDirectedPoint( lane, s ) )
+		for ( let s = 0; s < sEnd; s += stepSize ) {
+
+			points.push( this.getDirectedPoint( lane, s, side ) )
 
 		}
-
-		points.push( this.getDirectedPoint( lane, sEnd - Number.EPSILON ) );
 
 		return points;
 	}
 
 	private getDirectedPoint ( lane: TvLane, s: number, side: TvLaneSide = TvLaneSide.RIGHT ): TvPosTheta {
 
-		let posTheta = lane.laneSection.road.getPosThetaAt( s );
+		const point = lane.laneSection.road.getPosThetaAt( s );
 
 		let width: number;
 
@@ -450,20 +450,17 @@ export class DebugDrawService {
 
 		// If right side lane then make the offset negative
 		if ( lane.side === TvLaneSide.RIGHT ) {
-
 			width *= -1;
-
-			posTheta.addLateralOffset( width );
-
-		} else {
-
-			posTheta.addLateralOffset( width );
-
-			posTheta.hdg += Math.PI;
-
 		}
 
-		return posTheta;
+		point.addLateralOffset( width );
+
+		// NOTE: this can be used if we want hdg to be adjusted with travel direction
+		if ( lane.direction == TravelDirection.backward ) {
+			point.hdg += Math.PI;
+		}
+
+		return point;
 
 	}
 

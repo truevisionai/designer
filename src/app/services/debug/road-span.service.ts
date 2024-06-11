@@ -20,43 +20,4 @@ export class RoadSpanService {
 	constructor (
 		private debug: DebugDrawService
 	) { }
-
-
-	createLinesForPolynom<T> ( road: TvRoad, target: T, cubics: ThirdOrderPolynom[] ) {
-
-		road.laneSections.forEach( laneSection => {
-
-			laneSection.lanes.forEach( lane => {
-
-				for ( let i = 0; i < cubics.length; i++ ) {
-
-					const cubic = cubics[ i ];
-
-					const sStart = cubic.s;
-
-					// get s of next lane width node
-					let sEnd = lane.width[ i + 1 ]?.s || laneSection.length;
-
-					const points = this.debug.getDirectedPoints( lane, sStart, sEnd, 0.1 );
-
-					const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
-
-					const material = new LineMaterial( {
-						color: COLOR.CYAN,
-						linewidth: 2,
-						resolution: new Vector2( window.innerWidth, window.innerHeight ),
-						depthTest: false,
-						depthWrite: false,
-					} );
-
-					const line = new DebugLine( cubic, geometry, material );
-
-				}
-
-			} );
-
-		} );
-
-	}
-
 }
