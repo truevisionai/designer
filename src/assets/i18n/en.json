@@ -75,6 +75,8 @@
     "PROP-POINT-TOOL-TITLE": "Prop Point Tool",
     "PROP-POLYGON-TOOL-DESCRIPTION": "Select a Prop from Project Browser. <br/> Use SHIFT + LEFT CLICK to add Props in polygon in environment. <br/><br/> <img src='assets/Prop-Polygon-Tool.gif'/>",
     "PROP-POLYGON-TOOL-TITLE": "Prop Polygon Tool",
+    "PROP-SPAN-TOOL-DESCRIPTION": "Place props along side a road. <br/> Select a Prop from Project Browser. <br/> Use SHIFT + LEFT CLICK to add Props in span in environment. <br/><br/> <img src='assets/Prop-Span-Tool.gif'/>",
+    "PROP-SPAN-TOOL-TITLE": "Prop Span Tool",
     "RADIO": "Radio",
     "ROAD-CIRCLE-DESCRIPTION": "Tool to create circular road. <br />  Use SHIFT + LEFT CLICK then drag to control circle size. <br/> Use Road Tool to modify shape of the circle <br/><br/> <img src='assets/Road-Circle-Tool.gif'/>",
     "ROAD-CIRCLE-TITLE": "Road Circle Tool",
