@@ -413,8 +413,8 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'signal-tool',
 			icon: 'directions', // signpost,directions
 			track: 'menu',
-			title: 'ROAD-SIGNAL-TOOL-TITLE',
-			description: 'ROAD-SIGNAL-TOOL-DESCRIPTION',
+			title: 'ROAD-SIGN-TOOL-TITLE',
+			description: 'ROAD-SIGN-TOOL-DESCRIPTION',
 			click: () => this.setToolType( ToolType.RoadSignalTool ),
 			enabled: true,
 		},

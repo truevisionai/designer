@@ -88,7 +88,7 @@
     "ROAD-GEOMETRY-TITLE": "Road Tool",
     "ROAD-OBJECT-TOOL-DESCRIPTION": "Add objects & props in the environment. <br />  Use SHIFT + LEFT CLICK to add an object in the environment. <br/>  Drag the control point to move the object. <br/> Change values from the inspector.",
     "ROAD-OBJECT-TOOL-TITLE": "Road Object Tool",
-    "ROAD-SIGN-TOOL-DESCRIPTION": "Add Road Sign. <br />  Use SHIFT + LEFT CLICK to add a sign in the environment. <br/>  Drag the control point to move the sign. <br/> Change values from the inspector.",
+    "ROAD-SIGN-TOOL-DESCRIPTION": "Add traffic signs on road. <br/> Drag & drop asset from project browser. <br />  Use SHIFT + LEFT CLICK to add. <br/>  Drag the control point to move the sign. <br/> Change values from the inspector. <br/><br/> <img src='assets/Road-Sign-Tool.gif'/>",
     "ROAD-SIGN-TOOL-TITLE": "Road Sign Tool",
     "SAVE": "Save",
     "SELECT": "Select",
