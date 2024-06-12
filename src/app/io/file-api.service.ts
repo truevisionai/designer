@@ -53,7 +53,7 @@ export class FileApiService {
 			const tvMapState = tvMap || this.mapService.getSceneOutput();
 
 			return this.api.put( '/files/log-error', {
-				error: e.name,
+				error: e?.name || 'UnknownError',
 				mapStates: {
 					openDriveState: openDriveState,
 					tvMapState: tvMapState,
