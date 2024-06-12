@@ -127,7 +127,7 @@ export class RoadDebugService {
 
 	}
 
-	highlightRoad ( road: TvRoad ) {
+	highlightRoad ( road: TvRoad, arrows = true ) {
 
 		if ( this.selectedRoads.has( road ) ) return;
 
@@ -137,7 +137,7 @@ export class RoadDebugService {
 
 		this.showRoadBorderLine( road, LINE_WIDTH * 2 );
 
-		this.showRoadDirectionArrows( road );
+		if ( arrows ) this.showRoadDirectionArrows( road );
 
 		this.highlightedRoads.add( road );
 
@@ -147,17 +147,25 @@ export class RoadDebugService {
 
 		this.highlightedRoads.forEach( road => {
 
-			if ( this.selectedRoads.has( road ) ) return;
-
-			this.lines.removeKey( road );
-
-			this.arrows.removeKey( road );
-
-			this.showRoadBorderLine( road );
+			this.unHighlightRoad( road );
 
 		} )
 
 		this.highlightedRoads.clear();
+
+	}
+
+	unHighlightRoad ( road: TvRoad ) {
+
+		if ( this.selectedRoads.has( road ) ) return;
+
+		this.lines.removeKey( road );
+
+		this.arrows.removeKey( road );
+
+		this.showRoadBorderLine( road );
+
+		this.highlightedRoads.delete( road );
 
 	}
 

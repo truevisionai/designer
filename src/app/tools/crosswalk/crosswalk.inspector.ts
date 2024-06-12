@@ -3,11 +3,11 @@
  */
 
 import { SerializedAction, SerializedField } from "app/core/components/serialization";
-import { TvRoadObject } from "../models/objects/tv-road-object";
-import { TvObjectMarking } from "../models/tv-object-marking";
+import { TvRoadObject } from "../../map/models/objects/tv-road-object";
+import { TvObjectMarking } from "../../map/models/tv-object-marking";
 import { CommandHistory } from "app/services/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
-import { TvColors, TvRoadMarkWeights } from "../models/tv-common";
+import { TvColors, TvRoadMarkWeights } from "../../map/models/tv-common";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { AssetDatabase } from "app/core/asset/asset-database";
 
