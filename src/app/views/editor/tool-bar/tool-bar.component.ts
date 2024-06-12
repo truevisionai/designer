@@ -298,8 +298,8 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			toolType: ToolType.TextMarkingTool,
 			action: 'text-marking-tool',
 			icon: 'text_fields', // format_color_text, text_fields
-			title: 'Text Marking Tool',
-			description: 'Tool to create text markings on road.',
+			title: 'TEXT-MARKING-TOOL-TITLE',
+			description: 'TEXT-MARKING-TOOL-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Text Marking Tool',
 			click: () => this.setToolType( ToolType.TextMarkingTool ),
