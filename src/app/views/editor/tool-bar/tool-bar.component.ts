@@ -270,8 +270,8 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			toolType: ToolType.Crosswalk,
 			action: 'crosswalk-tool',
 			icon: 'reorder', // 'call_split', receipt
-			title: 'Crosswalk Tool',
-			description: 'Tool to create crosswalks on road.',
+			title: 'CROSSWALK-TOOL-TITLE',
+			description: 'CROSSWALK-TOOL-DESCRIPTION',
 			track: 'button',
 			tooltip: 'Crosswalk Tool',
 			click: () => this.setToolType( ToolType.Crosswalk ),
