@@ -198,9 +198,11 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		} else if ( object instanceof CornerControlPoint ) {
 
-			this.updateCornerRoad( object.roadObject, object );
+			this.updateCornerRoad( object );
 
 		} else if ( object instanceof TvObjectMarking ) {
+
+			if ( !this.selectedRoad ) return;
 
 			const roadObject = this.tool.objectService.findRoadObjectByMarking( this.selectedRoad, object );
 
@@ -395,23 +397,19 @@ export class CrosswalkTool extends BaseTool<any> {
 
 	}
 
-	updateCornerRoad ( object: TvRoadObject, point: CornerControlPoint ) {
+	updateCornerRoad ( controlPoint: CornerControlPoint ) {
 
-		const roadObject = object || this.tool.objectService.findByCornerRoad( this.selectedRoad, point.object );
+		const roadObject = controlPoint.roadObject;
 
-		if ( !roadObject ) {
-			console.error( 'roadObject not found', roadObject );
-			return;
-		}
-
-		const coord = roadObject.road.getPosThetaByPosition( point.position );
+		const coord = controlPoint.road.getPosThetaByPosition( controlPoint.position );
 
 		if ( !coord ) {
 			return;
 		}
 
-		point.mainObject.s = coord.s;
-		point.mainObject.t = coord.t;
+		controlPoint.corner.s = coord.s;
+
+		controlPoint.corner.t = coord.t;
 
 		this.updateCrosswalk( roadObject.road, roadObject );
 
