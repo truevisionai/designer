@@ -85,17 +85,11 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	private getNextRoadId (): number {
-
-		return this.roadFactory.getNextRoadId();
-
-	}
-
 	clone ( road: TvRoad, s = 0 ) {
 
 		const clone = road.clone( s );
 
-		clone.id = this.getNextRoadId();
+		clone.id = this.roadFactory.getNextRoadId();
 
 		clone.name = `Road ${ clone.id }`;
 
@@ -355,12 +349,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 		road.setSuccessor( TvRoadLinkChildType.road, outgoing.road, outgoing.contact );
 
 		return road;
-
-	}
-
-	setRoadIdCounter ( id: number ): number {
-
-		return this.roadFactory.getNextRoadId( id );
 
 	}
 

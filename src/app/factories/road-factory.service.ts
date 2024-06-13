@@ -8,48 +8,38 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadStyleManager } from 'app/graphics/road-style/road-style.manager';
 import { Vector2, Vector3 } from 'three';
-import { IDService } from './id.service';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
 import { TvJunction } from "../map/models/junctions/tv-junction";
 import { TvElevationProfile } from 'app/map/road-elevation/tv-elevation-profile.model';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { MapEvents } from 'app/events/map-events';
 import { LaneSectionFactory } from './lane-section.factory';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { MapService } from "../services/map/map.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadFactory {
 
-	private idService: IDService;
-
-	constructor ( private laneSectionFactory: LaneSectionFactory, private roadStyleManager: RoadStyleManager ) {
-
-		this.idService = new IDService();
-
-		MapEvents.mapRemoved.subscribe( () => this.idService.reset() );
-
+	constructor (
+		private mapService: MapService,
+		private laneSectionFactory: LaneSectionFactory,
+		private roadStyleManager: RoadStyleManager
+	) {
 	}
 
 	getNextRoadId ( id?: number ) {
 
-		return this.idService.getNextId( id );
-
-	}
-
-	idRemoved ( id: number ) {
-
-		this.idService.remove( id );
+		return this.mapService.map.roads.next();
 
 	}
 
 	setCounter ( id: number ) {
 
-		this.idService.getNextId( id );
+		// this.mapService.map.roads.add( id );
 
 	}
 
@@ -268,7 +258,7 @@ export class RoadFactory {
 
 	createNewRoad ( name?: string, length?: number, id?: number, junction?: TvJunction ): TvRoad {
 
-		const roadId = this.idService.getNextId( id );
+		const roadId = this.getNextRoadId( id );
 
 		const roadName = name || `Road${ roadId }`;
 

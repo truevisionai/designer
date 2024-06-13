@@ -6,7 +6,6 @@ import { Injectable } from "@angular/core";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
-import { RoadLinkService } from "app/services/road/road-link.service";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
 import { LaneManager } from "../lane/lane.manager";
@@ -23,7 +22,6 @@ export class RoadManager {
 
 	constructor (
 		private mapService: MapService,
-		private roadFactory: RoadFactory,
 		private roadObjectService: RoadObjectService,
 		private roadElevationManager: RoadElevationManager,
 		private laneManager: LaneManager,
@@ -92,8 +90,6 @@ export class RoadManager {
 		this.mapService.map.gameObject.remove( road.gameObject );
 
 		this.mapService.map.removeRoad( road );
-
-		this.roadFactory.idRemoved( road.id );
 
 	}
 

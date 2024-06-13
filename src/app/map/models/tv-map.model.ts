@@ -16,6 +16,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Object3D } from 'three';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { IDService } from 'app/factories/id.service';
+import { ManagedMap } from "../../core/models/managed-map";
 
 export class TvMap {
 
@@ -43,7 +44,7 @@ export class TvMap {
 
 	public controllerIds = new IDService();
 
-	public roads: Map<number, TvRoad> = new Map<number, TvRoad>();
+	public roads = new ManagedMap<TvRoad>();
 
 	public junctions: Map<number, TvJunction> = new Map<number, TvJunction>();
 

@@ -50,12 +50,6 @@ export class SceneBuilderService {
 		// map.getRoads().forEach( road => this.roadObjectService.buildRoadObjects( road ) );
 		// map.getRoads().forEach( road => this.roadSignalService.buildSignals( road ) );
 
-		for ( const road of map.getRoads() ) {
-			for ( const signal of road.getRoadSignals() ) {
-				this.signalIdService.add( signal.id );
-			}
-		}
-
 		map.getSurfaces().forEach( surface => {
 
 			map.surfaceGroup.add( surface, this.surfaceBuilder.buildSurface( surface ) );
@@ -105,8 +99,6 @@ export class SceneBuilderService {
 
 			map.gameObject.add( gameObject );
 
-			this.roadFactory.setCounter( road.id );
-
 		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
 
 			if ( road.sStart === undefined || road.sStart === null ) {
@@ -120,8 +112,6 @@ export class SceneBuilderService {
 			const gameObject = this.roadBuilder.buildRoad( road );
 
 			map.gameObject.add( gameObject );
-
-			this.roadFactory.setCounter( road.id );
 
 		} else {
 
