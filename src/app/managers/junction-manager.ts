@@ -78,7 +78,7 @@ export class JunctionManager {
 
 		}
 
-		this.junctionFactory.IDService.remove( junction.id );
+		this.mapService.map.junctions.delete( junction.id );
 	}
 
 	removeJunctions ( junctions: TvJunction[] ) {

@@ -12,18 +12,15 @@ import { AbstractFactory } from "../core/interfaces/abstract-factory";
 
 import { Vector3 } from 'three';
 import { Asset } from 'app/core/asset/asset.model';
+import { MapService } from 'app/services/map/map.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class JunctionFactory extends AbstractFactory<TvJunction> {
 
-	public IDService = new IDService();
-
-	private reset () {
-
-		this.IDService = new IDService();
-
+	constructor ( private mapService: MapService ) {
+		super();
 	}
 
 	createFromPosition ( position: Vector3 ): TvJunction {
@@ -38,11 +35,11 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createJunction ( junctionName?: string, junctionId?: number ): TvJunction {
+	createJunction (): TvJunction {
 
-		const id = this.IDService.getNextId( junctionId );
+		const id = this.mapService.map.junctions.next();
 
-		const name = junctionName || `Junction${ id }`;
+		const name = `Junction${ id }`;
 
 		return new TvJunction( name, id );
 
@@ -50,7 +47,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	createVirtualJunction ( mainRoad: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
 
-		const id = this.IDService.getNextId();
+		const id = this.mapService.map.junctions.next();
 
 		const name = `VirtualJunction${ id }`;
 

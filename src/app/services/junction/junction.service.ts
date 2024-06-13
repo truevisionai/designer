@@ -118,8 +118,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		this.removeJunctionMesh( junction );
 
-		this.factory.IDService.remove( junction.id );
-
 		MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction ) );
 
 	}

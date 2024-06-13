@@ -46,7 +46,7 @@ export class TvMap {
 
 	public roads = new ManagedMap<TvRoad>();
 
-	public junctions: Map<number, TvJunction> = new Map<number, TvJunction>();
+	public junctions = new ManagedMap<TvJunction>();
 
 	private splines: AbstractSpline[] = [];
 
