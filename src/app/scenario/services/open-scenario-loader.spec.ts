@@ -8,6 +8,9 @@ import { PolylineShape } from '../models/tv-trajectory';
 import { OpenScenarioLoader } from './open-scenario.loader';
 
 import { ParameterResolver } from "./parameter.resolver";
+import { TestBed } from "@angular/core/testing";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { HttpClientModule } from "@angular/common/http";
 
 const vehicleCatalogContent = `<?xml version="1.0" encoding="UTF-8"?>
 <OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Schema/OpenSCENARIO.xsd">
@@ -49,7 +52,12 @@ describe( 'ReaderService', () => {
 	let loader: OpenScenarioLoader;
 
 	beforeEach( () => {
-		loader = new OpenScenarioLoader( null, null );
+		TestBed.configureTestingModule( {
+			imports: [ MatSnackBarModule, HttpClientModule ],
+			providers: [ OpenScenarioLoader ],
+		} );
+
+		loader = TestBed.inject( OpenScenarioLoader );
 	} );
 
 	it( 'should parse Header correctly', () => {
