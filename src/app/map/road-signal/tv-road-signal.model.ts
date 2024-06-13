@@ -5,7 +5,7 @@
 import { TvDynamicTypes, TvOrientation, TvUnit } from '../models/tv-common';
 import { TvUserData } from '../models/tv-user-data';
 import { TvLaneValidity } from "../models/objects/tv-lane-validity";
-import { MathUtils } from "three";
+import { MathUtils, Object3D } from "three";
 
 export enum TvSignalType {
 	RoadMark = 'roadMark',
@@ -37,12 +37,14 @@ export class TvRoadSignal {
 
 	public references: TvReference[] = [];
 
-	public userData: Map<string, TvUserData> = new Map<string, TvUserData>();
+	public userData: Map<string, string | number> = new Map<string, string | number>();
 
 	// internal use
 	public roadId: number;
 
 	public assetGuid: string;
+
+	public mesh: Object3D;
 
 	/**
 	 *

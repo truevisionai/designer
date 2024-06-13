@@ -9,6 +9,10 @@ import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { Asset } from 'app/core/asset/asset.model';
 import { RoadSignalIdService } from "./road-signal-id.service";
 
+const POLE_SIGN_ZOFFSET = 2.0;
+const ROAD_SIGN_HEIGHT = 0.5;
+const ROAD_SIGN_WIDTH = 0.5;
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -19,11 +23,23 @@ export class RoadSignalFactory {
 	) {
 	}
 
+	createTrafficLight ( roadCoord: TvRoadCoord, name: string, type: string, subType: string ) {
+
+		const signal = this.createRoadSignal( roadCoord, name, type, subType );
+
+		signal.zOffset = 3.0;
+		signal.height = 0.5;
+		signal.width = 0.3;
+
+		return signal;
+
+	}
+
 	createPoledSign ( coord: TvRoadCoord, name: string, type: string, subtype: string = '-1' ) {
 
 		const signal = this.createRoadSignal( coord, name, type, subtype );
 
-		signal.zOffset = 1.85;
+		signal.zOffset = POLE_SIGN_ZOFFSET;
 
 		return signal;
 
@@ -55,8 +71,8 @@ export class RoadSignalFactory {
 		signal.roadId = coord.road.id;
 		signal.unit = TvUnit.NONE;
 		signal.value = null;
-		signal.height = 0.5;
-		signal.width = 0.5;
+		signal.height = ROAD_SIGN_HEIGHT;
+		signal.width = ROAD_SIGN_WIDTH;
 
 		return signal;
 
@@ -72,13 +88,13 @@ export class RoadSignalFactory {
 		signal.name = name;
 		signal.text = name;
 		signal.orientation = coord.t > 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
-		signal.zOffset = 0.005;
+		signal.zOffset = POLE_SIGN_ZOFFSET;
 		signal.country = 'OpenDRIVE';
 		signal.roadId = coord.road.id;
 		signal.unit = TvUnit.NONE;
 		signal.value = null;
-		signal.height = 2.0;
-		signal.width = 0.7;
+		signal.height = ROAD_SIGN_HEIGHT;
+		signal.width = ROAD_SIGN_WIDTH;
 
 		signal.assetGuid = asset.guid;
 
@@ -116,18 +132,6 @@ export class RoadSignalFactory {
 	private getNextId () {
 
 		return this.idService.getNextId();
-
-	}
-
-	createTrafficLight ( roadCoord: TvRoadCoord, name: string, type: string, subType: string ) {
-
-		const signal = this.createRoadSignal( roadCoord, name, type, subType );
-
-		signal.zOffset = 3.0;
-		signal.height = 0.5;
-		signal.width = 0.3;
-
-		return signal;
 
 	}
 }

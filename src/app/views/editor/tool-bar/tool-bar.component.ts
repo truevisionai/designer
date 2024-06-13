@@ -406,16 +406,16 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			enabled: Environment.experimentalTools,
 		},
 		{
-			id: 'signal',
-			label: 'Signal',
+			id: 'sign',
+			label: 'Sign',
 			class: 'toolbar-button border-right',
-			toolType: ToolType.RoadSignalTool,
-			action: 'signal-tool',
+			toolType: ToolType.RoadSignTool,
+			action: 'road-sign-tool',
 			icon: 'directions', // signpost,directions
 			track: 'menu',
 			title: 'ROAD-SIGN-TOOL-TITLE',
 			description: 'ROAD-SIGN-TOOL-DESCRIPTION',
-			click: () => this.setToolType( ToolType.RoadSignalTool ),
+			click: () => this.setToolType( ToolType.RoadSignTool ),
 			enabled: true,
 		},
 		{

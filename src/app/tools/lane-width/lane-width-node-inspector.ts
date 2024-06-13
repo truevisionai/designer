@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { LaneWidthNode } from "../../objects/lane-width-node";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { CommandHistory } from "../../services/command-history";

@@ -884,9 +884,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		this.parseUserData( xmlElement ).forEach( i => roadSignal.userData.set( i.code, i.value ) );
 
-		if ( roadSignal.userData.has( 'assetGuid' ) ) {
+		if ( !roadSignal.assetGuid && roadSignal.userData.has( 'assetGuid' ) ) {
 
-			roadSignal.assetGuid = roadSignal.userData.get( 'assetGuid' ).value;
+			roadSignal.assetGuid = roadSignal.userData.get( 'assetGuid' ) as string;
 
 		}
 	}

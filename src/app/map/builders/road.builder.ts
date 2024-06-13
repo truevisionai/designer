@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { GameObject } from 'app/objects/game-object';
 import * as THREE from 'three';
-import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
+import { BufferGeometry, Group, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
 import { TvRoad } from '../models/tv-road.model';
 import { LaneBufferGeometry } from './LaneBufferGeometry';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
@@ -20,10 +20,10 @@ import { TvPosTheta } from '../models/tv-pos-theta';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
-import { RoadSignalService } from '../road-signal/road-signal.service';
 import { TvMap } from '../models/tv-map.model';
 import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 import { TvRoadObjectType } from "../models/objects/tv-road-object";
+import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,8 +33,8 @@ export class RoadBuilder {
 	constructor (
 		private roadObjectService: RoadObjectService,
 		private roadMarkBuilder: LaneRoadMarkBuilder,
-		private roadSignalService: RoadSignalService,
 		private materialService: TvMaterialService,
+		private signalBuilder: RoadSignalBuilder,
 	) {
 	}
 
@@ -76,7 +76,7 @@ export class RoadBuilder {
 
 		gameObject.add( this.roadObjectService.buildRoadObjects( road ) );
 
-		gameObject.add( this.roadSignalService.buildSignals( road ) );
+		gameObject.add( this.buildSignals( road ) );
 
 		return gameObject;
 
@@ -391,5 +391,22 @@ export class RoadBuilder {
 		gameObject.Tag = TvObjectType[ TvObjectType.LANE ];
 
 		return gameObject;
+	}
+
+	private buildSignals ( road: TvRoad ) {
+
+		road.signalGroup?.clear();
+
+		for ( const signal of road.getRoadSignals() ) {
+
+			signal.mesh = this.signalBuilder.buildSignal( road, signal )
+
+			if ( !signal.mesh ) continue;
+
+			road.signalGroup?.add( signal.mesh );
+
+		}
+
+		return road.signalGroup;
 	}
 }

@@ -50,6 +50,14 @@ export class Asset {
 
 	}
 
+	get isMaterial (): boolean {
+		return this.type == AssetType.MATERIAL
+	}
+
+	get isTexture (): boolean {
+		return this.type == AssetType.TEXTURE;
+	}
+
 	get thumbnail (): string {
 
 		let response = null;

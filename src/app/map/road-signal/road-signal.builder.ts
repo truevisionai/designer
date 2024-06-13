@@ -55,7 +55,7 @@ export class RoadSignalBuilder {
 
 		const sign = this.buildSignAsset( parentObject, signal );
 
-		parentObject.add( sign );
+		if ( sign ) parentObject.add( sign );
 
 		parentObject.position.copy( position.toVector3() );
 
@@ -73,54 +73,35 @@ export class RoadSignalBuilder {
 
 	private buildSignAsset ( parentObject: Object3D, signal: TvRoadSignal ): Object3D {
 
+		const asset = signal.assetGuid ? this.assetService.getAsset( signal.assetGuid ) : null;
+
 		let sign: Object3D;
 
-		if ( !signal.assetGuid ) {
+		if ( !asset || asset.isMaterial || asset.isTexture ) {
 
-			const poleWidth = 0.05;
+			const poleRadius = 0.02;
 
-			const zOffset = signal.zOffset || 3.5;
+			const zOffset = signal.zOffset || 2.0;
 
-			sign = this.buildSignalByType( signal );
+			sign = this.buildSignBoardMesh( signal );
 
-			// -poleWidth to adjust for the pole and avoid
+			// -poleRadius to adjust for the pole and avoid
 			// the sign from being inside the pole
-			sign.position.set( 0, -poleWidth, zOffset );
+			sign.position.set( 0, -poleRadius, zOffset );
 
-			this.addPole( parentObject, zOffset, poleWidth );
+			this.addPole( parentObject, zOffset, poleRadius );
 
-			return sign;
-		}
-
-		const asset = this.assetService.getAsset( signal.assetGuid );
-
-		if ( asset && asset.type == AssetType.OBJECT ) {
+		} else if ( asset && asset.type == AssetType.OBJECT ) {
 
 			sign = this.assetService.getObjectAsset( asset.guid )?.instance.clone();
 
-		}
-
-		if ( asset && asset.type == AssetType.MODEL ) {
+		} else if ( asset && asset.type == AssetType.MODEL ) {
 
 			sign = this.assetService.getModelAsset( asset.guid )?.clone();
 
 		}
 
-		if ( asset && ( asset.type == AssetType.TEXTURE || asset.type == AssetType.MATERIAL ) ) {
-
-			const poleWidth = 0.05;
-
-			const zOffset = signal.zOffset || 3.5;
-
-			sign = this.buildSignalByType( signal );
-
-			// -poleWidth to adjust for the pole and avoid
-			// the sign from being inside the pole
-			sign.position.set( 0, -poleWidth, zOffset );
-
-			this.addPole( parentObject, zOffset, poleWidth );
-
-		}
+		return sign;
 	}
 
 	private buildRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
@@ -168,18 +149,17 @@ export class RoadSignalBuilder {
 		return textObject3d;
 	}
 
-	private buildSignalByType ( signal: TvRoadSignal ): Object3D {
+	private buildSignBoardMesh ( signal: TvRoadSignal ): Mesh {
 
-		const geometry = this.getSignGeometry( signal );
+		const geometry = this.buildSignGeometry( signal );
 
 		const material = this.getSignMaterial( signal );
 
-		const mesh = new Mesh( geometry, material );
+		return new Mesh( geometry, material );
 
-		return mesh;
 	}
 
-	private getSignGeometry ( signal: TvRoadSignal ) {
+	private buildSignGeometry ( signal: TvRoadSignal ) {
 
 		const width = signal.width || 0.5;
 
@@ -192,9 +172,9 @@ export class RoadSignalBuilder {
 		return geometry;
 	}
 
-	private createPole ( poleHeight: number, poleWidth: number ): Object3D {
+	private createPole ( poleHeight: number, poleRadius: number ): Object3D {
 
-		const geometry = new CylinderGeometry( poleWidth, poleWidth, poleHeight, 32 );
+		const geometry = new CylinderGeometry( poleRadius, poleRadius, poleHeight, 32 );
 		const material = new MeshBasicMaterial( { color: COLOR.LIGHTGRAY } );
 
 		const pole = new Mesh( geometry, material );
@@ -232,55 +212,60 @@ export class RoadSignalBuilder {
 
 	private getSignMaterial ( signal: TvRoadSignal ) {
 
-		const sign = SignalDatabase.findBySignal( signal );
+		const defaultMaterial = new MeshBasicMaterial( {
+			color: COLOR.MAGENTA
+		} );
 
-		if ( sign ) {
-
-			const texture = new TextureLoader().load( sign.url );
-
-			return new MeshBasicMaterial( { map: texture, transparent: true, alphaTest: 0.1, side: FrontSide } );
-
-		}
-
-		if ( !signal.assetGuid ) {
-
-			return new MeshBasicMaterial( { color: COLOR.MAGENTA } );
-
-		}
-
-		const asset = this.assetService.getAsset( signal.assetGuid );
+		const asset = signal?.assetGuid ? this.assetService.getAsset( signal.assetGuid ) : null;
 
 		if ( !asset ) {
-			console.error( `Asset not found for guid: ${ signal.assetGuid }` );
-			return new MeshBasicMaterial( { color: COLOR.MAGENTA } );
-		}
 
-		if ( asset.type === AssetType.TEXTURE ) {
+			console.error( `Asset not found for guid: ${ signal.assetGuid }` );
+
+			const signInDatabase = SignalDatabase.findBySignal( signal );
+
+			if ( signInDatabase ) {
+
+				const texture = new TextureLoader().load( signInDatabase.url );
+
+				return new MeshBasicMaterial( {
+					map: texture,
+					transparent: true,
+					alphaTest: 0.1,
+					side: FrontSide
+				} );
+
+			}
+
+		} else if ( asset.type === AssetType.TEXTURE ) {
 
 			const texture = this.texturService.getTexture( signal.assetGuid )?.texture;
 
 			if ( !texture ) {
 				console.error( `Texture not found for guid: ${ signal.assetGuid }` );
-				return new MeshBasicMaterial( { color: COLOR.MAGENTA } );
+				return defaultMaterial;
 			}
 
-			return new MeshBasicMaterial( { map: texture, transparent: true, alphaTest: 0.1, side: FrontSide } );
-		}
+			return new MeshBasicMaterial( {
+				map: texture,
+				transparent: true,
+				alphaTest: 0.1,
+				side: FrontSide
+			} );
 
-		if ( asset.type === AssetType.MATERIAL ) {
+		} else if ( asset.type === AssetType.MATERIAL ) {
 
 			const material = this.assetService.getMaterialAsset( signal.assetGuid )?.material;
 
 			if ( !material ) {
 				console.error( `Material not found for guid: ${ signal.assetGuid }` );
-				return new MeshBasicMaterial( { color: COLOR.MAGENTA } );
+				return defaultMaterial;
 			}
 
 			return material;
-
 		}
 
-		return new MeshBasicMaterial( { color: COLOR.MAGENTA } );
+		return defaultMaterial;
 	}
 
 	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ) {
@@ -307,9 +292,9 @@ export class RoadSignalBuilder {
 
 	}
 
-	private addPole ( object: Object3D, poleHeight: number, poleWidth: number ) {
+	private addPole ( object: Object3D, poleHeight: number, poleRadius: number ) {
 
-		const pole = this.createPole( poleHeight, poleWidth );
+		const pole = this.createPole( poleHeight, poleRadius );
 
 		object.add( pole );
 

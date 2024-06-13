@@ -7,7 +7,8 @@ import { BaseDebugger } from "app/core/interfaces/base-debugger";
 import { Object3DArrayMap } from "app/core/models/object3d-array-map";
 import { ControlPointFactory } from "app/factories/control-point.factory";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { TvRoadSignal, TvSignalType, TvSignalSubType } from "app/map/road-signal/tv-road-signal.model";
+import { TvRoadSignal } from "app/map/road-signal/tv-road-signal.model";
+import { SimpleControlPoint } from "app/objects/simple-control-point";
 import { DebugState } from "app/services/debug/debug-state";
 import { RoadDebugService } from "app/services/debug/road-debug.service";
 import { RoadService } from "app/services/road/road.service";
@@ -16,11 +17,11 @@ import { Object3D } from "three";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class TextMarkingToolDebugger extends BaseDebugger<TvRoad> {
+export class RoadSignToolDebugger extends BaseDebugger<TvRoad> {
 
 	private points = new Object3DArrayMap<TvRoad, Object3D[]>();
 
-	private cache = new Map<TvRoadSignal, Object3D>();
+	private cache = new Map<TvRoadSignal, SimpleControlPoint<TvRoadSignal>>();
 
 	constructor (
 		private roadDebugger: RoadDebugService,
@@ -110,13 +111,13 @@ export class TextMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	createNode ( road: TvRoad, signal: TvRoadSignal ) {
 
-		if ( signal.type != TvSignalType.RoadMark ) return;
+		// if ( signal.type == TvSignalType.RoadMark ) return;
 
-		if ( signal.subtype != TvSignalSubType.Text ) return;
+		// if ( signal.subtype == TvSignalSubType.Text ) return;
 
 		const posTheta = this.roadService.findRoadPosition( road, signal.s, signal.t );
 
-		let point: Object3D;
+		let point: SimpleControlPoint<TvRoadSignal>;
 
 		if ( this.cache.has( signal ) ) {
 
@@ -134,5 +135,4 @@ export class TextMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 		return point;
 	}
-
 }

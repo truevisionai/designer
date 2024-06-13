@@ -6,7 +6,7 @@ import { GameObject } from 'app/objects/game-object';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { Maths } from 'app/utils/maths';
-import { Box3, MathUtils, Vector2, Vector3 } from 'three';
+import { Box3, Group, MathUtils, Vector2, Vector3 } from 'three';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
@@ -61,6 +61,8 @@ export class TvRoad {
 
 	public gameObject: GameObject;
 
+	public signalGroup: Group = new Group();
+
 	private lastAddedLaneSectionIndex: number;
 
 	private lastAddedRoadObjectIndex: number;
@@ -101,6 +103,7 @@ export class TvRoad {
 		this._objects = new TvObjectContainer();
 		this._signals = new Map<number, TvRoadSignal>();
 
+		this.signalGroup.name = 'SignalGroup';
 	}
 
 	get successor (): TvRoadLinkChild {

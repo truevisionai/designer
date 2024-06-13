@@ -25,7 +25,7 @@ import { PropSpanToolService } from "./prop-span/prop-span-tool.service";
 import { PolePropToolService } from "./prop-pole/pole-prop.tool.service";
 import { PointMarkingToolService } from "./point-marking/point-marking-tool.service";
 import { MeasurementToolService } from "./measurement/measurement-tool.service";
-import { RoadSignalToolService } from "./road-signal/road-signal-tool.service";
+import { RoadSignToolService } from "./road-signal/road-sign-tool.service";
 import { BaseTool } from "./base-tool";
 import { RoadTool } from "./road/road-tool";
 import { RoadCircleTool } from "./road-circle/road-circle-tool";
@@ -46,7 +46,7 @@ import { CrosswalkTool } from "./crosswalk/crosswalk-tool";
 import { PointerTool } from "./pointer/pointer-tool";
 import { MeasurementTool } from "./measurement/measurement.tool";
 import { VehicleTool } from "./vehicle/vehicle-tool";
-import { RoadSignalTool } from "./road-signal/road-signal-tool";
+import { RoadSignTool } from "./road-signal/road-sign-tool";
 import { RoadElevationTool } from "./road-elevation/road-elevation.tool";
 import { RoadRampTool } from "./road-ramp/road-ramp-tool";
 import { RoadDividerTool } from "./road-cut-tool/road-divider-tool";
@@ -111,7 +111,7 @@ export class ToolFactory {
 		private propBarrierToolService: PolePropToolService,
 		private pointMarkingToolService: PointMarkingToolService,
 		private measurementToolService: MeasurementToolService,
-		private roadSignalToolService: RoadSignalToolService,
+		private roadSignalToolService: RoadSignToolService,
 		private selectionService: SelectionService,
 		private factoryProvider: FactoryServiceProvider,
 		private pointFactory: ControlPointFactory,
@@ -189,8 +189,8 @@ export class ToolFactory {
 			case ToolType.Vehicle:
 				tool = new VehicleTool( this.injector.get( EntityService ) );
 				break;
-			case ToolType.RoadSignalTool:
-				tool = new RoadSignalTool( this.roadSignalToolService );
+			case ToolType.RoadSignTool:
+				tool = new RoadSignTool( this.roadSignalToolService );
 				break;
 			case ToolType.RoadElevation:
 				tool = new RoadElevationTool( this.roadElevationService );

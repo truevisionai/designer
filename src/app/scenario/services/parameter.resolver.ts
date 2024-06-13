@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { XmlElement } from "../../importers/xml.element";
 import { isObject } from "rxjs/internal-compatibility";
 import { cloneDeep } from "lodash";

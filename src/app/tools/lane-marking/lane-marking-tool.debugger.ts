@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { Object3DMap } from "app/core/models/object3d-map";
 import { DebugLine } from "app/objects/debug-line";

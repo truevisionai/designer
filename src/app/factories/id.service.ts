@@ -85,6 +85,16 @@ export class IDService {
 
 	}
 
+	add ( id: number ) {
+
+		this.usedIDs.add( id );
+
+		this.removedIDs = this.removedIDs.filter( removedId => removedId !== id );
+
+		this.updateHighestID();
+
+	}
+
 	private updateHighestID () {
 
 		this.highestID = 0;

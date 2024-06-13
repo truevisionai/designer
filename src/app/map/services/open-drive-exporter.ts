@@ -934,7 +934,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		if ( signal.assetGuid ) {
 			signal.userData.delete( 'assetGuid' );
-			signal.userData.set( 'assetGuid', new TvUserData( 'assetGuid', signal.assetGuid ) );
+			signal.userData.set( 'assetGuid', signal.assetGuid );
 		}
 
 		if ( signal.validities.length > 0 ) {
@@ -942,7 +942,12 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 
 		if ( signal.userData.size > 0 ) {
-			xml[ 'userData' ] = Array.from( signal.userData.values() ).map( userData => this.writeUserData( userData ) );
+			xml[ 'userData' ] = Array.from( signal.userData.keys() ).map( key => {
+				return {
+					attr_code: key,
+					attr_value: signal.userData.get( key )
+				}
+			} );
 		}
 
 		if ( signal.references.length > 0 ) {

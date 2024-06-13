@@ -18,6 +18,7 @@ import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { RoadBuilder } from 'app/map/builders/road.builder';
 import { SplineBuilder } from './spline/spline.builder';
 import { RoadFactory } from 'app/factories/road-factory.service';
+import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,6 +34,7 @@ export class SceneBuilderService {
 		private propCurveService: PropCurveService,
 		private propPolygonService: PropPolygonService,
 		private roadFactory: RoadFactory,
+		private signalIdService: RoadSignalIdService,
 	) {
 	}
 
@@ -44,9 +46,15 @@ export class SceneBuilderService {
 
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
 
-		map.getRoads().forEach( road => this.roadObjectService.buildRoadObjects( road ) );
+		// NOTE: note needed as road builder already is building these
+		// map.getRoads().forEach( road => this.roadObjectService.buildRoadObjects( road ) );
+		// map.getRoads().forEach( road => this.roadSignalService.buildSignals( road ) );
 
-		map.getRoads().forEach( road => this.roadSignalService.buildSignals( road ) );
+		for ( const road of map.getRoads() ) {
+			for ( const signal of road.getRoadSignals() ) {
+				this.signalIdService.add( signal.id );
+			}
+		}
 
 		map.getSurfaces().forEach( surface => {
 
@@ -74,8 +82,8 @@ export class SceneBuilderService {
 
 			const segment = road.spline.findSegment( road );
 
-			if ( ! segment ) console.error( 'Road segment not found ' + road.toString() );
-			if ( ! segment ) return;
+			if ( !segment ) console.error( 'Road segment not found ' + road.toString() );
+			if ( !segment ) return;
 
 			road.clearGeometries();
 

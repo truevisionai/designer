@@ -25,6 +25,7 @@ import { SceneBuilderService } from './scene-builder.service';
 import { RoadService } from './road/road.service';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
 import { MapEvents } from 'app/events/map-events';
+import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -45,6 +46,7 @@ export class TvSceneFileService {
 		private roadObjectService: RoadObjectService,
 		private snackBar: SnackBar,
 		private scenarioService: ScenarioService,
+		private signalIdService: RoadSignalIdService,
 	) {
 	}
 
@@ -117,6 +119,8 @@ export class TvSceneFileService {
 		} );
 
 		map.destroy();
+
+		this.signalIdService.reset();
 
 		MapEvents.mapRemoved.emit( map );
 	}

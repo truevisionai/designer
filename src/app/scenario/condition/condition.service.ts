@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { Condition } from "../models/conditions/tv-condition";
 import { ConditionType, Rule, TriggeringRule } from "../models/tv-enums";

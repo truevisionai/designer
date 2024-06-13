@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';

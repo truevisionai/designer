@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { LaneHeightDebugService } from './lane-height.debug';
 import { LaneService } from 'app/services/lane/lane.service';
