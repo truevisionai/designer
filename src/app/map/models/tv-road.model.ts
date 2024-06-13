@@ -589,18 +589,6 @@ export class TvRoad {
 
 	}
 
-	getRoadObject ( i: number ): TvRoadObject {
-
-		return this._objects.object[ i ];
-
-	}
-
-	getRoadObjectCount (): number {
-
-		return this._objects.object.length;
-
-	}
-
 	getElevationProfile (): TvElevationProfile {
 
 		return this.elevationProfile;
@@ -697,31 +685,6 @@ export class TvRoad {
 
 	}
 
-	// TODO: Fix this
-	getSuperElevationValue ( s: number ): number {
-
-		return null;
-
-	}
-
-	// fillLaneSectionSample ( s: number, laneSectionSample: OdLaneSectionSample ) {
-	//
-	//     const index = this.checkLaneSectionInterval( s );
-	//
-	//     if ( index >= 0 ) {
-	//
-	//         this.lanes.laneSection[ index ].fillLaneSectionSample( s, laneSectionSample );
-	//
-	//     }
-	// }
-
-	// TODO: Fix this
-	getCrossfallValue ( s: number, angleLeft: number, angleRight: number ): number {
-
-		return null;
-
-	}
-
 	addRoadSignal (
 		s: number,
 		t: number,
@@ -757,53 +720,6 @@ export class TvRoad {
 		this._signals.set( signal.id, signal );
 
 		return signal;
-	}
-
-	getLastAddedRoadObject (): TvRoadObject {
-		return this._objects.object[ this.lastAddedRoadObjectIndex ];
-	}
-
-	addRoadObject (
-		type: TvRoadObjectType,
-		name: string,
-		id: number,
-		s: number,
-		t: number,
-		zOffset: number = 0,
-		validLength: number = 0,
-		orientation: TvOrientation = TvOrientation.NONE,
-		length: number = 0,
-		width: number = 0,
-		radius: number = 0,
-		height: number = 0,
-		hdg: number = 0,
-		pitch: number = 0,
-		roll: number = 0
-	): TvRoadObject {
-
-		const obj = new TvRoadObject(
-			type,
-			name,
-			id,
-			s,
-			t,
-			zOffset,
-			validLength,
-			orientation,
-			length,
-			width,
-			radius,
-			height,
-			hdg,
-			pitch,
-			roll
-		);
-
-		obj.road = this;
-
-		this.addRoadObjectInstance( obj );
-
-		return obj;
 	}
 
 	addRoadObjectInstance ( roadObject: TvRoadObject ) {
@@ -1373,20 +1289,6 @@ export class TvRoad {
 		} else {
 
 			return this.getEndPosTheta()
-
-		}
-
-	}
-
-	getSByContact ( contact: TvContactPoint ): number {
-
-		if ( contact === TvContactPoint.START ) {
-
-			return 0;
-
-		} else {
-
-			return this.length;
 
 		}
 
