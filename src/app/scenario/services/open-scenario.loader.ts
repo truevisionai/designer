@@ -214,7 +214,8 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		} else if ( root?.ParameterValueDistribution ) {
 
-			throw new Error( 'ParameterValueDistribution not implemented yet' );
+			// TODO: Implement this
+			TvConsole.error( 'ParameterValueDistribution not implemented yet' );
 
 		}
 
@@ -1379,7 +1380,9 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	parseUserDefinedAction ( item: any ): TvAction {
 
-		throw new Error( 'Method not implemented.' );
+		// TODO: Implement this
+		TvConsole.error( 'Method not implemented.' );
+		return null;
 
 	}
 
@@ -1749,7 +1752,8 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		} else if ( xml.RoutePosition || xml.RoutePositionPosition ) {
 
-			throw new Error( 'RoutePosition not implemented yet' );
+			// TODO: Implement this
+			TvConsole.error( 'RoutePosition not implemented yet' );
 
 		} else if ( xml.TrajectoryPosition ) {
 
@@ -1757,7 +1761,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		} else {
 
-			throw new Error( 'unknown position' );
+			TvConsole.error( 'unknown position' );
 
 		}
 
@@ -1832,7 +1836,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		} else if ( xml.Distance != null ) {
 
-			throw new Error( 'not implemented' );
+			TvConsole.error( 'not implemented' );
 
 		}
 
@@ -1893,7 +1897,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		} else {
 
-			throw new Error( 'unknown target' );
+			TvConsole.error( 'unknown target' );
 
 		}
 	}
@@ -1923,7 +1927,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 		} else {
 
-			throw new Error( 'Unsupported or unknown vertex shape' );
+			TvConsole.error( 'Unsupported or unknown vertex shape' );
 
 		}
 	}

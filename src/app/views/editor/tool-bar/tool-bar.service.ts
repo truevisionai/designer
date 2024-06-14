@@ -9,6 +9,7 @@ import { ToolType } from 'app/tools/tool-types.enum';
 import { ToolManager } from 'app/managers/tool-manager';
 import { ToolFactory } from "../../../tools/tool.factory";
 import { Tool } from "../../../tools/tool";
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -27,6 +28,11 @@ export class ToolBarService {
 		if ( ToolManager.currentTool?.toolType === type ) return;
 
 		const tool = this.toolFactory.createTool( type );
+
+		if ( !tool ) {
+			TvConsole.error( `Tool not found for type: ${ type }` );
+			return
+		}
 
 		this.setTool( tool );
 

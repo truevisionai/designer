@@ -228,7 +228,7 @@ export class FileService {
 
 		} catch ( error ) {
 
-			// throw new Error( `Error in creating project at ${ path }` );
+			this.snackBar.error( `Error in creating project at ${ path }` );
 
 		}
 

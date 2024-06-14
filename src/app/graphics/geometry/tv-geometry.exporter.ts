@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { TvGeometry } from "./tv-geometry";
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
-import { Asset } from "../../core/asset/asset.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,9 +23,4 @@ export class TvGeometryExporter implements AssetExporter<TvGeometry> {
 
 	}
 
-	createAsset ( folderPath: string, asset: TvGeometry ): Asset {
-
-		throw new Error( 'Method not implemented.' );
-
-	}
 }

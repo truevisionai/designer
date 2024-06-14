@@ -32,10 +32,6 @@ export class ViewportService {
 				this.loadOpenDrive( asset );
 				break;
 
-			case AssetType.OPENSCENARIO:
-				this.loadScenario( asset );
-				break;
-
 			case AssetType.SCENE:
 				this.loadScene( asset );
 				break;
@@ -84,16 +80,6 @@ export class ViewportService {
 		this.sceneFileService.setMap( map );
 
 		this.sceneFileService.setFilePath( asset.path, map );
-
-	}
-
-	loadScenario ( asset: Asset ) {
-
-		// const assetLoader = this.loaderFactory.getLoader( AssetType.OPENSCENARIO )
-
-		// const map = assetLoader.load( asset );
-
-		throw new Error( 'Method not implemented.' );
 
 	}
 

@@ -223,7 +223,10 @@ export class MenuBarComponent implements OnInit {
 
 	importOdExample ( filename: string ) {
 
-		if ( filename == null ) throw new Error( 'Invalid filename' );
+		if ( filename == null ) {
+			console.error( 'Invalid filename' );
+			return;
+		}
 
 		const filepath = `./assets/open-drive/${ filename }`;
 

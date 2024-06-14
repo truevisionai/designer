@@ -37,7 +37,6 @@ export class TvRoadCoord {
 
 		}
 
-		// throw new Error( `TvRoadCoord.contact: s is not 0 or length: ${ this.road.length }  s=${ this.s } ` + this.road.toString() );
 	}
 
 	get contactCheck (): TvContactPoint {
@@ -60,7 +59,10 @@ export class TvRoadCoord {
 
 		} else {
 
-			throw new Error( `TvRoadCoord.laneSection: Invalid contact point ${ this.contact }` );
+			console.error( `TvRoadCoord.laneSection: Invalid contact point ${ this.contact }` );
+
+			return this.road.getFirstLaneSection();
+
 		}
 
 	}

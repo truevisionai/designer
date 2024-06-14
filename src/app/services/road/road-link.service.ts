@@ -455,7 +455,7 @@ export class RoadLinkService {
 
 		} else {
 
-			throw new Error( 'RoadLinkService.getEnd: unknown contactPoint: ' + link.contactPoint );
+			console.error( 'RoadLinkService.getEnd: unknown contactPoint: ' + link.contactPoint );
 
 		}
 
@@ -473,7 +473,7 @@ export class RoadLinkService {
 
 		} else {
 
-			throw new Error( 'RoadLinkService.getMid2: unknown contactPoint: ' + link.contactPoint );
+			console.error( 'RoadLinkService.getMid2: unknown contactPoint: ' + link.contactPoint );
 
 		}
 

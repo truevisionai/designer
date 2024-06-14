@@ -272,13 +272,13 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	onDuplicateKeyDown (): void {
 
-		// throw new Error( "Method not implemented." );
+		//
 
 	}
 
 	onDeleteKeyDown (): void {
 
-		// throw new Error( "Method not implemented." );
+		//
 
 	}
 

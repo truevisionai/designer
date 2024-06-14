@@ -37,6 +37,7 @@ import { AssetLoader } from "../../core/interfaces/asset.loader";
 import { TvTexture } from '../texture/tv-texture.model';
 import { AssetService } from "../../core/asset/asset.service";
 import { isObject } from "rxjs/internal-compatibility";
+import { COLOR } from 'app/views/shared/utils/colors.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -171,7 +172,8 @@ export class TvMaterialLoader implements AssetLoader {
 		if ( json.guid !== undefined ) material.guid = json.guid;
 
 		if ( !material.guid ) {
-			throw new Error( 'Material guid is required' );
+			console.error( 'Material guid not found', json );
+			return new MeshBasicMaterial( { color: COLOR.MAGENTA } );
 		}
 
 		if ( json.uuid !== undefined ) material.uuid = json.uuid;

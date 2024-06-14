@@ -242,7 +242,7 @@ export class JunctionManager {
 
 	}
 
-	private processGroup ( group: IntersectionGroup ) {
+	private processGroup ( group: IntersectionGroup ): void {
 
 		function getHeading ( coord: TvRoadCoord ) {
 
@@ -255,6 +255,8 @@ export class JunctionManager {
 		}
 
 		const junction = this.createGroupJunction( group );
+
+		if ( !junction ) return;
 
 		const coords: TvRoadCoord[] = this.createGroupCoords( group, junction );
 
@@ -343,7 +345,7 @@ export class JunctionManager {
 
 		}
 
-		throw new Error( 'Multiple junctions found in group' );
+		console.error( 'Multiple junctions found in group' );
 
 	}
 

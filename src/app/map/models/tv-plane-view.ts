@@ -116,10 +116,16 @@ export class TvPlaneView {
 		const planView2Geometries = this.geometries.filter( geometry => geometry.s > commonGeometry.s );
 
 		if ( !commonGeometry ) {
-			throw new Error( 'could not find geometry at s' );
+			console.error( 'could not find geometry at s', this );
+			return [ planView1, planView2 ];
 		}
 
 		const geometries = commonGeometry.cut( s );
+
+		if ( !geometries ) {
+			console.error( 'could not cut geometry', this );
+			return [ planView1, planView2 ];
+		}
 
 		planView1.addGeometry( geometries[ 0 ] );
 		planView1Geometries.forEach( geometry => planView1.addGeometry( geometry ) );

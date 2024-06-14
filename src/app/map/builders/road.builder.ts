@@ -336,7 +336,8 @@ export class RoadBuilder {
 	createMeshIndices ( geom: MeshGeometryData, verticesPerStep = 2 ): void {
 
 		if ( verticesPerStep < 2 ) {
-			throw new Error( "verticesPerStep should be at least 2" );
+			console.error( "verticesPerStep should be at least 2" );
+			return;
 		}
 
 		for ( let i = 0; i < geom.indices.length / verticesPerStep - 1; i++ ) {

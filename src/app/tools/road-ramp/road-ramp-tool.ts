@@ -102,10 +102,6 @@ export class RoadRampTool extends BaseTool<any> {
 
 			//
 
-		} else {
-
-			throw new Error( 'Invalid position' );
-
 		}
 
 		if ( this.startCoord ) {

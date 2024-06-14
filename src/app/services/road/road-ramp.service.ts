@@ -69,10 +69,6 @@ export class RoadRampService {
 
 			return junction;
 
-		} else {
-
-			throw new Error( 'startCoord must be of type TvLaneCoord' );
-
 		}
 
 	}

@@ -24,29 +24,15 @@ export class TvMeshExporter implements AssetExporter<TvMesh> {
 
 	exportAsJSON ( mesh: TvMesh ) {
 
-		throw new Error( 'Method not implemented.' );
+		// NOTE: this is not correct, but it is just a placeholder
+		const data = {
+			guid: mesh.guid,
+			name: mesh.name,
+			geometryGuid: mesh.geometryGuid,
+			materialGuid: mesh.materialGuid
+		};
 
-		// if ( mesh.materialGuid ) mesh.material = new MeshStandardMaterial();
-
-		// const data = mesh.toJSON( undefined );
-
-		// if ( mesh.materialGuid ) data.materialGuid = mesh.materialGuid;
-		// if ( mesh.geometryGuid ) data.geometryGuid = mesh.geometryGuid;
-
-		// if ( mesh.materialGuid ) {
-		// 	if ( mesh.materialGuid instanceof Array ) {
-		// 		mesh.material = data.materialGuid.map( ( guid: string ) => this.getMaterial( guid ) );
-		// 	} else {
-		// 		mesh.material = this.getMaterial( mesh.materialGuid );
-		// 	}
-		// }
-
-		// return data;
-
-	}
-
-	private getMaterial ( guid: string ) {
-		// return this.assetService.getMaterialAsset( guid )?.material;
+		return data;
 	}
 
 }

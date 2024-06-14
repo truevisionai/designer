@@ -11,11 +11,13 @@ export class PolygonDistributionService {
 	static distributePoints ( points: Vector3[], density: number ): Vector3[] {
 
 		if ( points.length < 3 ) {
-			throw new Error( 'At least 3 points are required to form a polygon.' );
+			console.error( 'At least 3 points are required to form a polygon.' );
+			return [];
 		}
 
 		if ( density < 0 || density > 1 ) {
-			throw new Error( 'Density must be between 0 and 1.' );
+			console.error( 'Density must be between 0 and 1.' );
+			return [];
 		}
 
 		const flattenedPoints: number[] = [];

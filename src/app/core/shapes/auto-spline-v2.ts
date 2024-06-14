@@ -146,6 +146,7 @@ export class AutoSplineV2 extends AbstractSpline {
 					if ( currentS + remainingLength <= geometry.endS ) {
 						// The rest of the segment fits within this geometry
 						const sections = geometry.cut( currentS );
+						if ( !sections ) continue;
 						section = sections[ 1 ];
 						section.length = remainingLength;
 						// Update the start 's' to be relative to the segment's start, not the spline's start
@@ -155,6 +156,7 @@ export class AutoSplineV2 extends AbstractSpline {
 					} else {
 						// The segment extends beyond this geometry
 						const sections = geometry.cut( currentS );
+						if ( !sections ) continue;
 						section = sections[ 1 ];
 						section.s = lengthCovered;
 						section.length = geometry.endS - currentS; // The section's length is the remaining length of the geometry

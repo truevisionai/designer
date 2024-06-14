@@ -43,8 +43,7 @@ export class ConnectionManager {
 		const firstLaneSection = connectingRoad.getFirstLaneSection();
 
 		if ( !firstLaneSection.areLeftLanesInOrder() || !firstLaneSection.areRightLanesInOrder() ) {
-			console.error( firstLaneSection.lanes );
-			throw new Error( "lanes are not in order" );
+			console.error( 'Lane order is not correct', firstLaneSection.getLaneArray() );
 		}
 
 		// connectingRoad.getFirstLaneSection().getLaneArray().filter( lane => lane.id ).forEach( connectingLane => {

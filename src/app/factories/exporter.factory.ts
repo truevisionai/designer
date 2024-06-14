@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetType } from "../core/asset/asset.model";
+import { Asset, AssetType } from "../core/asset/asset.model";
 import { TvMaterialExporter } from "../graphics/material/tv-material.exporter";
 import { AssetExporter } from "../core/interfaces/asset-exporter";
 import { TvGeometryExporter } from "../graphics/geometry/tv-geometry.exporter";
@@ -13,6 +13,7 @@ import { TvObjectExporter } from "../graphics/object/tv-object.exporter";
 import { SceneExporter } from "../map/scene/scene.exporter";
 import { TvMap } from 'app/map/models/tv-map.model';
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
+import { TvConsole } from 'app/core/utils/console';
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,7 +30,7 @@ export class ExporterFactory {
 	) {
 	}
 
-	getExporter ( type: AssetType ): AssetExporter<any> {
+	getExporter ( type: AssetType ): AssetExporter<any> | null {
 
 		switch ( type ) {
 
@@ -55,7 +56,8 @@ export class ExporterFactory {
 				return this.sceneExporter;
 
 			default:
-				throw new Error( 'Unknown asset type:' + type );
+				TvConsole.error( 'Unknown asset type:' + Asset.getTypeAsString( type ) );
+				return;
 		}
 
 	}

@@ -29,7 +29,7 @@ export class ManeuverEditorComponent implements OnInit {
 
 	delete ( $event: MouseEvent ) {
 
-		// throw new Error( 'Method not implemented.' );
+		// TODO: Implement this
 
 	}
 

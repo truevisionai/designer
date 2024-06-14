@@ -109,7 +109,8 @@ export class ConnectionService {
 	createConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): TvJunctionConnection {
 
 		if ( incoming.road.trafficRule == TrafficRule.LHT ) {
-			throw new Error( 'Traffic rule not implemented' );
+			// TODO: Implement this
+			console.error( 'Traffic rule not implemented' );
 		}
 
 		const connectingRoad = this.roadService.createConnectionRoad( junction, incoming, outgoing );

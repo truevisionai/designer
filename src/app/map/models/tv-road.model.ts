@@ -609,18 +609,6 @@ export class TvRoad {
 
 	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
 
-		// // helps catch bugs
-		// if ( this.geometries.length == 0 ) {
-
-		// 	if ( this.spline?.controlPoints.length > 1 ) {
-		// 		this.updateGeometryFromSpline();
-		// 	}
-
-		// 	if ( this.geometries.length == 0 ) {
-		// 		throw new Error( 'NoGeometriesFound' );
-		// 	}
-		// }
-
 		if ( s == null ) {
 			TvConsole.error( 's is undefined' );
 		}
@@ -642,15 +630,6 @@ export class TvRoad {
 		}
 
 		const odPosTheta = geometry.getRoadCoord( s );
-
-		// if ( !geometryType ) {
-		//
-		// 	SentryService.captureException( new Error( `GeometryErrorWithFile S:${ s } RoadId:${ this.id }` ) );
-		//
-		// 	SnackBar.error( `GeometryTypeNotFoundAt ${ s } RoadId:${ this.id }` );
-		//
-		// 	return;
-		// }
 
 		const laneOffset = this.getLaneOffsetValue( s );
 

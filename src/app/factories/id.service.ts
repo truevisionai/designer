@@ -29,7 +29,7 @@ export class IDService {
 	getNextId ( importedID?: number ): number {
 
 		if ( this.usedIDs.has( importedID ) ) {
-			throw new Error( `IDService: ID ${ importedID } already in use!` );
+			return importedID;
 		}
 
 		let nextId = null;

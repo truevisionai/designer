@@ -122,7 +122,7 @@ export class ToolFactory {
 	) {
 	}
 
-	createTool ( type: ToolType ): Tool {
+	createTool ( type: ToolType ): Tool|null {
 
 		let tool: Tool;
 
@@ -175,8 +175,6 @@ export class ToolFactory {
 			case ToolType.TextMarkingTool:
 				tool = new TextMarkingTool( this.textMarkingToolService );
 				break;
-			case ToolType.LineMarkingTool:
-				throw new Error( 'Invalid tool type' + type );
 			case ToolType.Crosswalk:
 				tool = new CrosswalkTool( this.crosswalkService );
 				break;
@@ -211,7 +209,7 @@ export class ToolFactory {
 				tool = new TrafficLightTool( this.trafficLightToolService );
 				break;
 			default:
-				throw new Error( 'Invalid tool type' + type );
+				console.error( 'Invalid tool type' + type );
 				break;
 		}
 

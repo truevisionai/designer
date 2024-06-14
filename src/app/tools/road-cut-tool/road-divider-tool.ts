@@ -17,7 +17,7 @@ import { CommandHistory } from 'app/services/command-history';
 import { AddObjectCommand } from "../../commands/add-object-command";
 
 
-export class RoadDividerTool extends BaseTool<any>{
+export class RoadDividerTool extends BaseTool<any> {
 
 	public name: string = 'RoadDividerTool';
 
@@ -99,10 +99,6 @@ export class RoadDividerTool extends BaseTool<any>{
 			if ( position instanceof RoadPosition ) {
 
 				this.drawLine( position );
-
-			} else {
-
-				throw new Error( 'Invalid position type' );
 
 			}
 

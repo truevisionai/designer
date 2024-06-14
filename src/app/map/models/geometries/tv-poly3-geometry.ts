@@ -86,7 +86,6 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 		this.cosTheta = Math.cos( this.hdg );
 
 
-		// throw new Error("Method not implemented.");
 	}
 
 	getBezierValue ( sCheck ): number {

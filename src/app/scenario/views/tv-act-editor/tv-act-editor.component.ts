@@ -44,7 +44,7 @@ export class ActEditorComponent implements OnInit {
 
 	addCondition () {
 
-		throw new Error( 'Not implemented' );
+		// TODO: Implement this
 
 	}
 

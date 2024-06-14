@@ -538,7 +538,7 @@ export class ParkingRoadToolService {
 
 	hideBoundingBox ( roadObject: TvRoadObject ) {
 
-		// throw new Error( 'Method not implemented.' );
+		//
 
 	}
 

@@ -86,6 +86,11 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			case TvRoadObjectType.roadMark:
 				return this.buildRoadMarkObject( road, roadObject );
+
+			default:
+				// TODO: Implement this
+				TvConsole.error( 'Road object type not implemented yet' + type );
+				return new Object3D();
 		}
 
 	}
@@ -232,7 +237,8 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	buildVegetationObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
-		throw new Error( 'Method not implemented.' );
+		// TODO: Implement this
+		return new Object3D();
 
 	}
 
@@ -266,7 +272,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			TvConsole.error( 'Tree object with asset guid not implemented yet' );
 
-			return;
+			return new Object3D();
 		}
 
 		const roadObjectMesh = new Object3D();

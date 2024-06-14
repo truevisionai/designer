@@ -171,13 +171,17 @@ export class WebDialogProvider implements IDialogProvider {
 
 	openDialog ( options: any ): Promise<any> {
 
-		throw new Error( 'Method not implemented.' );
+		// TODO: Implement this
+		console.warn( 'WebDialogProvider.openDialog not implemented' );
+		return Promise.resolve( { canceled: true, filePaths: [] } );
 
 	}
 
 	saveDialog ( options: any ): Promise<any> {
 
-		throw new Error( 'Method not implemented.' );
+		// TODO: Implement this
+		console.warn( 'WebDialogProvider.openDialog not implemented' );
+		return Promise.resolve( { canceled: true, filePaths: [] } );
 
 	}
 

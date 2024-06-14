@@ -28,7 +28,7 @@ export class TvLaneCoord {
 
 		if ( Maths.approxEquals( this.s, this.road.length ) ) return TvContactPoint.END;
 
-		throw new Error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
+		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
 	}
 
 	get roadId (): number {

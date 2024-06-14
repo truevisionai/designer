@@ -12,7 +12,6 @@ import { OpenDrive16Parser } from './open-drive-1-6.parser';
 import { TvConsole } from 'app/core/utils/console';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { RoadSignalIdService } from "../../map/road-signal/road-signal-id.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,7 +20,6 @@ export class OpenDriveParserService {
 
 	constructor (
 		private snackBar: SnackBar,
-		private signalIdService: RoadSignalIdService,
 	) {
 	}
 
@@ -40,11 +38,13 @@ export class OpenDriveParserService {
 
 		const root: XmlElement = xmlParser.parse( contents );
 
-		const openDriveParser: IOpenDriveParser = this.getOpenDriveParser( root );
+		const openDriveParser = this.getOpenDriveParser( root );
+
+		if ( !openDriveParser ) {
+			return new TvMap();
+		}
 
 		const map = openDriveParser.parse( root );
-
-		this.postProcess( map );
 
 		return map;
 	}
@@ -57,7 +57,7 @@ export class OpenDriveParserService {
 		return "v" + revMajor + "." + revMinor;
 	}
 
-	private getOpenDriveParser ( root: XmlElement ): IOpenDriveParser {
+	private getOpenDriveParser ( root: XmlElement ): IOpenDriveParser | undefined {
 
 		const version = this.parseVersion( root );
 
@@ -66,7 +66,7 @@ export class OpenDriveParserService {
 		return this.getParser( version );
 	}
 
-	getParser ( version: string ): IOpenDriveParser {
+	getParser ( version: string ): IOpenDriveParser | undefined {
 
 		if ( version == "v1.0" ) {
 			return new OpenDrive14Parser( this.snackBar );
@@ -101,30 +101,10 @@ export class OpenDriveParserService {
 		}
 
 		if ( version == "v2.0" ) {
-			throw new Error( "Unsupported OpenDRIVE version: " + version );
+			this.snackBar.error( "Unsupported OpenDRIVE version: " + version );
 		}
 
-		throw new Error( "Unsupported OpenDRIVE version: " + version );
+		this.snackBar.error( "Unsupported OpenDRIVE version: " + version );
 	}
 
-	private postProcess ( map: TvMap ) {
-
-		for ( const road of map.getRoads() ) {
-
-			for ( const signal of road.getRoadSignals() ) {
-
-				try {
-
-					// this.signalIdService.getNextId( signal.id );
-
-				} catch ( e ) {
-
-					TvConsole.error( e );
-
-				}
-
-			}
-		}
-
-	}
 }

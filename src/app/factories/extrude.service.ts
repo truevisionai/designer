@@ -33,7 +33,7 @@ export class ExtrudeService {
 
 			if ( vertex instanceof TvObjectVertexRoad ) {
 
-				throw new Error( 'Not implemented' );
+				// TODO: Implement this
 
 			} else if ( vertex instanceof TvObjectVertexLocal ) {
 

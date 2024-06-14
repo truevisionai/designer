@@ -171,13 +171,21 @@ export abstract class TvAbstractRoadGeometry {
 	 * @param s coordinate at which the geometry is to be cut
 	 * @returns new geometries
 	 */
-	public cut ( s: number ): [ TvAbstractRoadGeometry, TvAbstractRoadGeometry ] {
+	public cut ( s: number ): [ TvAbstractRoadGeometry, TvAbstractRoadGeometry ] | null {
 
-		if ( s > this.endS ) throw new Error( `s: ${ s } is greater than endS: ${ this.endS }` );
-		if ( s < this.s ) throw new Error( `s: ${ s } is less than startS: ${ this.s }` );
+		if ( s > this.endS ) {
+			console.error( `s: ${ s } is greater than endS: ${ this.endS }` );
+			return null;
+		}
+
+		if ( s < this.s ) {
+			console.error( `s: ${ s } is less than startS: ${ this.s }` );
+			return null;
+		}
 
 		if ( this.geometryType !== TvGeometryType.LINE && this.geometryType !== TvGeometryType.ARC ) {
-			throw new Error( 'cutting is only supported for line and arc' );
+			console.error( 'cutting is only supported for line and arc' );
+			return null;
 		}
 
 		const coord = this.getRoadCoord( s );
@@ -214,69 +222,6 @@ export abstract class TvAbstractRoadGeometry {
 
 		return ( v.x ) + ( v.y * t ) + ( v.z * t * t );
 	}
-
-	// protected loopToGetNearestPoint ( x: number, y: number, refPosTheta?: TvPosTheta ): Vector2 {
-	//
-	// 	let nearestPoint: Vector2 = null;
-	//
-	// 	const point = new Vector2( x, y );
-	//
-	// 	// const curve = this.getCurve();
-	//
-	// 	let tmpPosTheta = new TvPosTheta();
-	//
-	// 	let minDistance = Number.MAX_SAFE_INTEGER;
-	//
-	// 	// const curveLength = curve.getLength();
-	//
-	// 	for ( let s = this.s; s <= this.endS; s++ ) {
-	//
-	// 		tmpPosTheta = this.getRoadCoord( s );
-	//
-	// 		const distance = tmpPosTheta.toVector2().distanceTo( point );
-	//
-	// 		if ( distance < minDistance ) {
-	//
-	// 			minDistance = distance;
-	// 			nearestPoint = tmpPosTheta.toVector2();
-	//
-	// 			if ( refPosTheta ) {
-	//
-	// 				refPosTheta.x = x;
-	// 				refPosTheta.y = y;
-	// 				refPosTheta.s = s;
-	// 				refPosTheta.t = distance;
-	// 				refPosTheta.hdg = tmpPosTheta.hdg;
-	// 			}
-	// 		}
-	// 	}
-	//
-	// 	if ( nearestPoint == null ) {
-	//
-	// 		throw new Error( 'could not find the nearest point' );
-	//
-	// 	} else {
-	//
-	// 		if ( refPosTheta ) {
-	//
-	// 			// calculating the lane side for correct value of t
-	//
-	// 			const tmp1 = new TvPosTheta();
-	// 			const tmp2 = new TvPosTheta();
-	//
-	// 			this.getRoadCoord( refPosTheta.s );
-	// 			this.getRoadCoord( refPosTheta.s + 1 );
-	//
-	// 			const side = Maths.direction( tmp1.toVector3(), tmp2.toVector3(), refPosTheta.toVector3() );
-	//
-	// 			if ( side == TvSide.RIGHT ) refPosTheta.t *= -1;
-	//
-	// 		}
-	//
-	// 	}
-	//
-	// 	return nearestPoint;
-	// }
 
 	public endCoord (): TvPosTheta {
 

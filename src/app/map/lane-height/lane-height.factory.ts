@@ -18,11 +18,17 @@ export class LaneHeightFactory extends LaneElementFactory<TvLaneHeight> implemen
 
 	createFromPosition ( position: Vector3, lane: TvLane ): TvLaneHeight {
 
-		if ( !lane ) throw new Error( "Lane is required" );
+		if ( !lane ) {
+			console.error( "Lane is required" );
+			return new TvLaneHeight( 0, 0, 0 );
+		}
 
 		const posTheta = this.getPosTheta( position, lane );
 
-		if ( !posTheta ) throw new Error( "Position is not on the lane" );
+		if ( !posTheta ) {
+			console.error( "Position is not on the lane" );
+			return new TvLaneHeight( 0, 0, 0 );
+		}
 
 		const height = lane.getHeightValue( posTheta.s );
 
@@ -48,7 +54,7 @@ export class LaneHeightFactory extends LaneElementFactory<TvLaneHeight> implemen
 
 	createFromAsset ( asset: Asset, position: Vector3 ): TvLaneHeight {
 
-		throw new Error( "Method not implemented." );
+		return new TvLaneHeight( 0, 0, 0 );
 
 	}
 

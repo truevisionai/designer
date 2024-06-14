@@ -213,9 +213,15 @@ export class RoadCircleToolService {
 
 		}
 
-		if ( roads.length != 4 ) throw new Error( 'Road count for circular road is incorrect' );
+		if ( roads.length != 4 ) {
+			console.error( 'Road count for circular road is incorrect' );
+			return [];
+		}
 
-		if ( points.length != 16 ) throw new Error( 'Point count for circular road is incorrect' );
+		if ( points.length != 16 ) {
+			console.error( 'Point count for circular road is incorrect' );
+			return [];
+		}
 
 		for ( let j = 0; j < 4; j++ ) {
 

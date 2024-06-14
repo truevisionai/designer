@@ -133,20 +133,25 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const road = this.roads.get( roadId );
 
-		if ( road === undefined ) throw new Error( `Road with ID: ${ roadId } not found` );
+		if ( road === undefined ) {
+			console.error( `Road with ID: ${ roadId } not found` );
+			return new Vector3();
+		}
 
 		const posTheta = road.getPosThetaAt( sCoordinate );
 
 		const laneSection = road.getLaneSectionAt( sCoordinate );
 
 		if ( !laneSection ) {
-			throw new Error( `LaneSection not found for road: ${ roadId } at ${ sCoordinate }` );
+			console.error( `LaneSection not found for road: ${ roadId } at ${ sCoordinate }` );
+			return new Vector3();
 		}
 
 		const lane = laneSection.getLaneById( laneId );
 
 		if ( !lane ) {
-			throw new Error( `Lane not found for road ${ roadId } at ${ sCoordinate } with id:${ laneId }` );
+			console.error( `Lane not found for road ${ roadId } at ${ sCoordinate } with id:${ laneId }` );
+			return new Vector3();
 		}
 
 		const tDirection = laneId > 0 ? 1 : -1;

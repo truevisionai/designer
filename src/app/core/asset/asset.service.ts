@@ -105,7 +105,11 @@ export class AssetService {
 
 	updateSceneAsset ( path: string, scene: TvMap ): void {
 
-		const data = this.exporterFactory.getExporter( AssetType.SCENE ).exportAsString( scene );
+		const exporter = this.exporterFactory.getExporter( AssetType.SCENE );
+
+		if ( !exporter ) return;
+
+		const data = exporter.exportAsString( scene );
 
 		this.storageService.writeSync( path, data );
 
@@ -140,11 +144,13 @@ export class AssetService {
 		return asset;
 	}
 
-	createSceneAsset ( directory: string, instance?: TvMap, filename: string = 'Scene.scene' ) {
+	createSceneAsset ( directory: string, instance?: TvMap, filename: string = 'Scene.scene' ): Asset | null {
 
 		const scene = instance || new TvMap();
 
-		const data = this.exporterFactory.getExporter( AssetType.SCENE ).exportAsString( scene );
+		const exporter = this.exporterFactory.getExporter( AssetType.SCENE );
+
+		const data = exporter.exportAsString( scene );
 
 		return this.createNewAsset( AssetType.SCENE, filename, directory, data, scene );
 
@@ -152,7 +158,9 @@ export class AssetService {
 
 	createRoadStyleAsset ( directory: string, style: RoadStyle, filename: string = 'RoadStyle.roadstyle' ) {
 
-		const data = this.exporterFactory.getExporter( AssetType.ROAD_STYLE ).exportAsString( style );
+		const exporter = this.exporterFactory.getExporter( AssetType.ROAD_STYLE );
+
+		const data = exporter.exportAsString( style );
 
 		return this.createNewAsset( AssetType.ROAD_STYLE, filename, directory, data, style );
 
@@ -170,7 +178,9 @@ export class AssetService {
 
 	createMaterialAsset ( path: string, name = 'Material.material', material: MaterialAsset ) {
 
-		const data = this.exporterFactory.getExporter( AssetType.MATERIAL ).exportAsString( material );
+		const exporter = this.exporterFactory.getExporter( AssetType.MATERIAL );
+
+		const data = exporter.exportAsString( material );
 
 		return this.createNewAsset( AssetType.MATERIAL, name, path, data, material, material.guid );
 
