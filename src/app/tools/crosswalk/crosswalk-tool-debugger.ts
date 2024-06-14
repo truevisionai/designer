@@ -37,13 +37,13 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 	onHighlight ( road: TvRoad ): void {
 
-		this.roadDebugger.highlightRoad( road, false );
+		this.roadDebugger.showRoadBorderLine( road );
 
 	}
 
 	onUnhighlight ( road: TvRoad ): void {
 
-		this.roadDebugger.unHighlightRoad( road );
+		this.roadDebugger.removeRoadBorderLine( road );
 
 	}
 
