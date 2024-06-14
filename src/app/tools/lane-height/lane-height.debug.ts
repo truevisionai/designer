@@ -6,7 +6,6 @@ import { Injectable } from "@angular/core";
 import { BaseLaneDebugService } from 'app/core/interfaces/lane-node.debug';
 import { TvLane } from "app/map/models/tv-lane";
 import { DebugState } from "app/services/debug/debug-state";
-import { TvLaneSide } from "../../map/models/tv-common";
 import { TvLaneHeight } from "../../map/lane-height/lane-height.model";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { COLOR } from "app/views/shared/utils/colors.service";
@@ -119,6 +118,8 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 		this.highlighted.clear();
 
 		this.selectedRoads.clear();
+
+		this.roadDebugger.clear();
 
 		super.clear();
 
