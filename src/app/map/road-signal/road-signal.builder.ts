@@ -220,7 +220,7 @@ export class RoadSignalBuilder {
 
 		if ( !asset ) {
 
-			console.error( `Asset not found for guid: ${ signal.assetGuid }` );
+			if ( signal.assetGuid ) console.error( `Asset not found for guid: ${ signal.assetGuid }` );
 
 			const signInDatabase = SignalDatabase.findBySignal( signal );
 

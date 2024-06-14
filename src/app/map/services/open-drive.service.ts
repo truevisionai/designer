@@ -95,8 +95,12 @@ export class OpenDriveService {
 		this.snackBar.success( `OpenDrive imported ${ path }` );
 
 		TvConsole.info( 'OpenDrive imported ' + path );
-	}
 
+		this.mapService.map = map;
+
+		// this.sceneBuilder.buildScene( map );
+
+	}
 
 
 	parse ( contents: string, ): TvMap {
@@ -105,19 +109,7 @@ export class OpenDriveService {
 
 	}
 
-	private load ( filepath: string ) {
-
-		const contents = this.storage.readSync( filepath );
-
-		const map = this.parse( contents );
-
-		if ( map == null ) return;
-
-		return map;
-	}
-
-
-	public importFromPath ( filepath: string, callbackFn = null ) {
+	importFromPath ( filepath: string, callbackFn = null ) {
 
 		const contents = this.storage.readSync( filepath );
 

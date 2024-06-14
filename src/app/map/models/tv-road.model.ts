@@ -611,22 +611,24 @@ export class TvRoad {
 
 		if ( s == null ) {
 			TvConsole.error( 's is undefined' );
+			s = 0;
 		}
 
 		if ( s > this.length ) {
-			TvConsole.error( 's is greater than road length' );
-			console.error( `s: ${ s } is greater than road length: ${ this.length }` );
+			console.error( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
+			s = this.length;
 		}
 
 		if ( s < 0 ) {
 			TvConsole.error( 's is less than 0' );
-			console.error( `s: ${ s } is less than 0, road length: ${ this.length }` );
+			console.error( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
+			s = 0;
 		}
 
 		const geometry = this.getGeometryAt( s );
 
 		if ( !geometry ) {
-			TvConsole.error( `GeometryNotFoundAt S:${ s } RoadId:${ this.id }` );
+			TvConsole.error( `GeometryNotFoundAt S:${ s } ${ this.toString() } length: ${ this.length }` );
 		}
 
 		const odPosTheta = geometry.getRoadCoord( s );
