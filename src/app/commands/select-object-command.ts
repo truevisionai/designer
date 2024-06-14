@@ -4,6 +4,7 @@
 
 import { BaseCommand } from "./base-command";
 import { MapEvents } from "../events/map-events";
+import { TvConsole } from "app/core/utils/console";
 
 export class SelectObjectCommand extends BaseCommand {
 
@@ -15,7 +16,7 @@ export class SelectObjectCommand extends BaseCommand {
 
 		super();
 
-		if ( object == null ) throw new Error( 'object cannot be null' );
+		if ( object == null ) TvConsole.warn( 'object cannot be null' );
 
 		if ( Array.isArray( object ) ) {
 

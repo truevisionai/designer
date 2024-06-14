@@ -4,38 +4,44 @@
 
 import { BaseCommand } from "./base-command";
 import { MapEvents } from "../events/map-events";
+import { TvConsole } from "app/core/utils/console";
 
 export class UnselectObjectCommand extends BaseCommand {
 
-    private readonly objects: any[];
+	private readonly objects: any[] = [];
 
-    constructor ( object: any | any[] ) {
+	constructor ( object: any | any[] ) {
 
-        super();
+		super();
 
-        if ( object == null ) {
-            throw new Error( 'object cannot be null' );
-        }
+		if ( object == null ) {
 
-        // Normalize the input to always be an array.
-        this.objects = Array.isArray( object ) ? [ ...object ] : [ object ];
-    }
+			TvConsole.warn( 'object cannot be null' );
 
-    execute () {
+		} else {
 
-        this.objects.forEach( object => MapEvents.objectUnselected.emit( object ) );
+			// Normalize the input to always be an array.
+			this.objects = Array.isArray( object ) ? [ ...object ] : [ object ];
 
-    }
+		}
 
-    undo (): void {
+	}
 
-        this.objects.forEach( object => MapEvents.objectSelected.emit( object ) );
+	execute () {
 
-    }
+		this.objects.forEach( object => MapEvents.objectUnselected.emit( object ) );
 
-    redo (): void {
+	}
 
-        this.execute();
+	undo (): void {
 
-    }
+		this.objects.forEach( object => MapEvents.objectSelected.emit( object ) );
+
+	}
+
+	redo (): void {
+
+		this.execute();
+
+	}
 }

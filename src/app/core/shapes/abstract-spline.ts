@@ -13,6 +13,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { Maths } from "../../utils/maths";
 import * as SPIRAL from "./spiral-math";
+import { TvConsole } from '../utils/console';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -92,7 +93,6 @@ export abstract class AbstractSpline {
 
 	clear () {
 
-		throw new Error( 'Method not implemented.' );
 
 	}
 
@@ -205,40 +205,6 @@ export abstract class AbstractSpline {
 		return [ r, alpha, length, Math.sign( p2proj.y ) ];
 	}
 
-	/**
-	 *
-	 * @deprecated dont use this make another internal for any sub class
-	 * @param tag
-	 * @param id
-	 * @param cpobjidx
-	 */
-	createControlPoint ( tag: 'cp' | 'tpf' | 'tpb', id: number, cpobjidx?: any ): AbstractControlPoint {
-
-		throw new Error( 'Method not implemented.' );
-
-		// // let cptobj = new THREE.Mesh( this.tcboxgeometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-		// // let controlPointObject = new BaseControlPoint( null, new Vector3(), tag, id, cpobjidx );
-
-		// controlPointObject[ 'tag' ] = tag;
-		// controlPointObject[ 'tagindex' ] = id;
-
-		// controlPointObject.userData.is_button = true;
-		// controlPointObject.userData.is_control_point = true;
-		// controlPointObject.userData.is_selectable = true;
-
-		// SceneService.addToolObject( controlPointObject );
-
-		// if ( cpobjidx == undefined ) {
-		// 	this.controlPoints.push( controlPointObject );
-		// } else {
-		// 	this.controlPoints.splice( cpobjidx, 0, controlPointObject );
-		// }
-
-		// this.controlPointAdded.emit( controlPointObject );
-
-		// return controlPointObject;
-	}
-
 	getPath ( offset: number = 0 ) {
 
 		if ( this.type == SplineType.AUTO || this.type == SplineType.AUTOV2 ) {
@@ -251,7 +217,7 @@ export abstract class AbstractSpline {
 
 		} else {
 
-			throw new Error( 'Invalid spline type' );
+			TvConsole.error( 'Invalid spline type' );
 
 		}
 
@@ -306,7 +272,7 @@ export abstract class AbstractSpline {
 
 		if ( exists ) {
 
-			throw new Error( 'Segment already exists' );
+			console.error( 'Segment already exists', segment );
 
 		} else {
 
@@ -348,9 +314,15 @@ export abstract class AbstractSpline {
 
 	}
 
+	/**
+	 *
+	 * @param position
+	 * @returns
+	 * @deprecated
+	 */
 	addControlPointAt ( position: Vector3 ): AbstractControlPoint {
 
-		throw new Error( 'Method not implemented.' );
+		return null;
 
 	}
 

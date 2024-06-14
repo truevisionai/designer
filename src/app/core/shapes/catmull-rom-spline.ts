@@ -8,6 +8,7 @@ import { BufferGeometry, CatmullRomCurve3, CurveType, Line, LineBasicMaterial, L
 import { AbstractSpline, SplineType } from './abstract-spline';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { TvConsole } from '../utils/console';
 
 export class CatmullRomSpline extends AbstractSpline {
 
@@ -156,7 +157,8 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	exportGeometries (): TvAbstractRoadGeometry[] {
 
-		throw new Error( 'Method not implemented.' );
+		TvConsole.warn( 'Catmull rom spline does not support export geometries.' );
+		return [];
 
 	}
 
@@ -174,7 +176,8 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	getPoint ( t: number, offset: number ): TvPosTheta {
 
-		throw new Error( 'Method not implemented.' );
+		TvConsole.warn( 'Catmull rom spline does not support export geometries.' );
+		return;
 
 	}
 

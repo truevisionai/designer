@@ -217,6 +217,8 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			const path = road.spline.getPath( roadObject.t );
 
+			if ( !path ) return;
+
 			const geometry = this.extrudeService.buildExtrudeGeometry( path, shape );
 
 			const mesh = new Mesh( geometry, new MeshStandardMaterial( { color: '#919A9E' } ) );
