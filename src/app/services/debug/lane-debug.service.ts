@@ -182,10 +182,4 @@ export class LaneDebugService {
 
 	}
 
-	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
-
-		return this.debugService.getPoints( lane, sStart, sEnd, stepSize );
-
-	}
-
 }

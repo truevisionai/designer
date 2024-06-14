@@ -4,8 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { DebugDrawService } from './debug-draw.service';
-import { Object3D, Vector2, Vector3 } from "three";
-import { LaneDebugService } from 'app/services/debug/lane-debug.service';
+import { Object3D } from "three";
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugLine } from '../../objects/debug-line';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
@@ -18,6 +17,7 @@ import { TvGeometryType } from 'app/map/models/tv-common';
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { Maths } from 'app/utils/maths';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
+import { RoadDebugService } from "./road-debug.service";
 
 const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
@@ -43,8 +43,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 	private explicitSplineHelper: BaseDebugger<AbstractSpline>;
 
 	constructor (
+		private roadDebugger: RoadDebugService,
 		private debugService: DebugDrawService,
-		private laneDebugService: LaneDebugService,
 		private textService: TextObjectService,
 	) {
 		super();
@@ -108,7 +108,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		this.texts.removeKey( spline );
 
-		spline.getRoads().forEach( road => {
+		for ( const road of spline.getRoads() ) {
 
 			road.geometries.filter( g => g.geometryType == TvGeometryType.ARC ).forEach( ( geometry: TvArcGeometry ) => {
 
@@ -133,7 +133,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 			} )
 
-		} );
+		}
 
 	}
 
@@ -214,32 +214,9 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
 
-		const leftPoints = [];
-		const rightPoints = [];
+		for ( const road of spline.getRoads() ) {
 
-		const roads = spline.getRoads();
-
-		for ( let i = 0; i < roads.length; i++ ) {
-
-			const road = roads[ i ];
-
-			if ( road.isJunction ) continue;
-
-			road.laneSections?.forEach( laneSection => {
-
-				const leftLane = laneSection.getLeftMostLane();
-				const left = this.laneDebugService.getPoints( leftLane, 0, laneSection.length, LINE_STEP );
-
-				const rightLane = laneSection.getRightMostLane();
-				const right = this.laneDebugService.getPoints( rightLane, 0, laneSection.length, LINE_STEP );
-
-				leftPoints.push( ...left );
-				rightPoints.push( ...right );
-
-			} );
-
-			this.lines.addItem( spline, this.debugService.createDebugLine( spline, leftPoints, lineWidth, color ) );
-			this.lines.addItem( spline, this.debugService.createDebugLine( spline, rightPoints, lineWidth, color ) );
+			this.roadDebugger.showRoadBorderLine( road, lineWidth, color );
 
 		}
 
@@ -247,24 +224,28 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	removeBorder ( spline: AbstractSpline ) {
 
-		this.lines.removeKey( spline );
+		for ( const road of spline.getRoads() ) {
+
+			this.roadDebugger.removeRoadBorderLine( road );
+
+		}
 
 	}
 
 	private showArrows ( spline: AbstractSpline ) {
 
-		spline.getRoads().forEach( road => {
+		for ( const road of spline.getRoads() ) {
 
-			road.getReferenceLinePoints( ARROW_STEP ).forEach( point => {
+			for ( const point of road.getReferenceLinePoints( ARROW_STEP ) ) {
 
 				const arrow = this.debugService.createSharpArrow( point.position, point.hdg, ARROW_COLOR, ARROW_SIZE );
 
 				this.arrows.addItem( spline, arrow );
 
 
-			} );
+			}
 
-		} );
+		}
 
 	}
 
@@ -281,6 +262,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 		this.autoSplineHelper?.clear();
 
 		this.explicitSplineHelper?.clear();
+
+		this.roadDebugger.clear();
 
 	}
 

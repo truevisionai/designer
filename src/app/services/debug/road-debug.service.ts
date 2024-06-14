@@ -41,7 +41,6 @@ export class RoadDebugService {
 
 	constructor (
 		private debugService: DebugDrawService,
-		private laneDebugService: LaneDebugService,
 		private mapService: MapService,
 	) {
 	}
