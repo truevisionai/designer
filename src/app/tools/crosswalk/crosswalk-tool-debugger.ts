@@ -113,6 +113,16 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 		return node;
 	}
+
+	clear (): void {
+
+		this.nodes.clear();
+
+		this.roadDebugger.clear();
+
+		super.clear();
+
+	}
 }
 
 export class CornerControlPoint extends SimpleControlPoint<TvCornerRoad> {

@@ -20,7 +20,6 @@ import { Maths } from 'app/utils/maths';
 import { TravelDirection, TvContactPoint } from 'app/map/models/tv-common';
 import { SplineControlPoint } from "../../objects/spline-control-point";
 import { Injectable } from '@angular/core';
-import { RoadDebugService } from '../../services/debug/road-debug.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
 import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';

@@ -135,4 +135,14 @@ export class RoadSignToolDebugger extends BaseDebugger<TvRoad> {
 
 		return point;
 	}
+
+	clear (): void {
+
+		this.points.clear();
+
+		this.roadDebugger.clear();
+
+		super.clear();
+
+	}
 }

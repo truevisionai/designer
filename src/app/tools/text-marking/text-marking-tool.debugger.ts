@@ -135,4 +135,12 @@ export class TextMarkingToolDebugger extends BaseDebugger<TvRoad> {
 		return point;
 	}
 
+	clear (): void {
+
+		this.points.clear();
+
+		super.clear();
+
+	}
+
 }

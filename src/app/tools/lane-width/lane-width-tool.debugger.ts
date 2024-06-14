@@ -209,4 +209,12 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 		return line;
 
 	}
+
+	clear (): void {
+
+		this.items.clear();
+
+		super.clear();
+
+	}
 }
