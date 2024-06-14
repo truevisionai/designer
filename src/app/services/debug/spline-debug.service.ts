@@ -268,4 +268,20 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
+	clear () {
+
+		super.clear();
+
+		this.lines.clear();
+
+		this.arrows.clear();
+
+		this.texts.clear();
+
+		this.autoSplineHelper?.clear();
+
+		this.explicitSplineHelper?.clear();
+
+	}
+
 }

@@ -112,21 +112,13 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	clear (): void {
 
-		this.mapService.roads.forEach( road => {
+		this.lines.clear();
 
-			road.laneSections.forEach( laneSection => {
+		this.nodes.clear();
 
-				laneSection.lanes.forEach( lane => {
+		this.highlighted.clear();
 
-					if ( lane.side == TvLaneSide.CENTER ) return;
-
-					this.setBaseState( lane, DebugState.REMOVED );
-
-				} );
-
-			} );
-
-		} );
+		this.selectedRoads.clear();
 
 		super.clear();
 

@@ -13,7 +13,7 @@ import { RoadService } from 'app/services/road/road.service';
 export class LaneHeightToolService {
 
 	constructor (
-		public laneDebugger: LaneHeightDebugService,
+		public toolDebugger: LaneHeightDebugService,
 		public laneService: LaneService,
 		public roadService: RoadService,
 	) { }

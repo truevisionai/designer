@@ -184,4 +184,17 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 		return this.debugService.createDashedLine( node, positions );
 
 	}
+
+	clear () {
+
+		super.clear();
+
+		this.spanLines.clear();
+
+		this.nodes.clear();
+
+		this.roadDebugger.clear();
+
+	}
+
 }

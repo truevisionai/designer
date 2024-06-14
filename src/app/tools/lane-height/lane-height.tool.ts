@@ -32,6 +32,14 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 	}
 
+	init (): void {
+
+		this.debugger = this.tool.toolDebugger;
+
+		this.setHint( 'use LEFT CLICK to select a road' );
+
+	}
+
 	onPointerUp ( e: PointerEventData ) {
 
 		if ( !e.point ) return
@@ -97,7 +105,7 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 		const height = this.selectedLane.getHeightValue( sOffset ) || new TvLaneHeight( sOffset, 0.1, 0.1 );
 
-		const node = this.tool.laneDebugger.createHeightNode( this.selectedLane, height );
+		const node = this.tool.toolDebugger.createHeightNode( this.selectedLane, height );
 
 		this.executeAddAndSelect( node, this.selectedNode );
 

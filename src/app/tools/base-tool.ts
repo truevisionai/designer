@@ -99,6 +99,8 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		} );
 
+		this.debugService?.clear();
+
 		StatusBarService.clearHint();
 
 		this.unsubscribeToEvents();

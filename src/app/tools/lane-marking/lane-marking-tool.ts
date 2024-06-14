@@ -74,6 +74,8 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 		this.tool.base.addMovingStrategy( new EndLaneMovingStrategy() );
 
+		this.setDebugService( this.tool.toolDebugger );
+
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 	}
