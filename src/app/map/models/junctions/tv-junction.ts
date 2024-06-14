@@ -389,6 +389,47 @@ export class TvJunction {
 		}
 	}
 
+	static stringToType ( value: string ): TvJunctionType {
+
+		switch ( value ) {
+
+			case "default":
+				return TvJunctionType.DEFAULT;
+
+			case "virtual":
+				return TvJunctionType.VIRTUAL;
+
+			case "direct":
+				return TvJunctionType.DIRECT;
+
+			default:
+				return TvJunctionType.DEFAULT;
+
+		}
+
+	}
+
+	static typeToString ( value: TvJunctionType ): string {
+
+		switch ( value ) {
+
+			case TvJunctionType.DEFAULT:
+				return "default";
+
+			case TvJunctionType.VIRTUAL:
+				return "virtual";
+
+			case TvJunctionType.DIRECT:
+				return "direct";
+
+			default:
+				return "default";
+
+		}
+
+	}
+
+
 	private removeJunctionRelation ( road: TvRoad ): void {
 
 		let hasConnections = false;

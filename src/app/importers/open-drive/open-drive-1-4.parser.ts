@@ -535,7 +535,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
-		return new TvJunction( name, id );
+		const junction = new TvJunction( name, id );
+
+		junction.type = TvJunction.stringToType( xmlElement.attr_type );
+
+		return junction;
 
 	}
 
@@ -576,18 +580,21 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const id = parseInt( xmlElement.attr_id );
 		const incomingRoadId = parseInt( xmlElement.attr_incomingRoad );
 		const connectingRoadId = parseInt( xmlElement.attr_connectingRoad );
+		const linkedRoadId = parseInt( xmlElement.attr_linkedRoad );
+
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-		const incomingRoad = this.map.getRoadById( incomingRoadId );
-		const connectingRoad = this.map.getRoadById( connectingRoadId );
+		const linkedRoad = linkedRoadId ? this.map.getRoadById( linkedRoadId ) : null;
+		const incomingRoad = incomingRoadId ? this.map.getRoadById( incomingRoadId ) : null;
+		const connectingRoad = connectingRoadId ? this.map.getRoadById( connectingRoadId ) : linkedRoad;
 
 		if ( !incomingRoad ) {
 			TvConsole.error( "Incoming road not found" );
 			return;
 		}
 
-		if ( !connectingRoad ) {
-			TvConsole.error( "Connecting road not found" );
+		if ( !connectingRoad && !linkedRoad ) {
+			TvConsole.error( "Connecting/Linked road not found" );
 			return;
 		}
 
@@ -597,7 +604,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const outgoingRoad = outgoingRoadId ? this.map.getRoadById( outgoingRoadId ) : null;
 
-		if ( !outgoingRoad ) console.warn( 'outgoingRoad', outgoingRoad, connectingRoad );
+		if ( !outgoingRoad ) {
+			console.warn( 'outgoingRoad', outgoingRoad, connectingRoad );
+		}
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
 
