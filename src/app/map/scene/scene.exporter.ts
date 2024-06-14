@@ -222,6 +222,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			attr_name: road.name,
 			attr_length: road.length,
 			attr_junction: road.junctionId,
+			attr_rule: TvRoad.ruleToString( road.trafficRule ),
 			drivingMaterialGuid: road.drivingMaterialGuid,
 			sidewalkMaterialGuid: road.sidewalkMaterialGuid,
 			borderMaterialGuid: road.borderMaterialGuid,

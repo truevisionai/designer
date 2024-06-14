@@ -158,6 +158,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			attr_length: road.length,
 			attr_id: road.id,
 			attr_junction: road.junctionId,
+			attr_rule: TvRoad.ruleToString( road.trafficRule ),
 			type: road.type.map( type => this.writeRoadType( type ) ),
 		};
 

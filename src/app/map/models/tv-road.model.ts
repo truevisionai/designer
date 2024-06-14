@@ -1326,6 +1326,12 @@ export class TvRoad {
 
 	}
 
+	static ruleToString ( trafficRule: TrafficRule ) {
+
+		return trafficRule === TrafficRule.RHT ? 'RHT' : 'LHT';
+
+	}
+
 	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
 
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
