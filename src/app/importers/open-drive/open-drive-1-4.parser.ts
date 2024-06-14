@@ -150,6 +150,8 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const road = new TvRoad( name, length, id, junction );
 
+		road.trafficRule = TvRoad.stringToRule( xml.attr_trafficRule );
+
 		// Get type
 		this.parseRoadTypes( road, xml );
 

@@ -1326,9 +1326,15 @@ export class TvRoad {
 
 	}
 
-	static ruleToString ( trafficRule: TrafficRule ) {
+	static ruleToString ( rule: TrafficRule ): string {
 
-		return trafficRule === TrafficRule.RHT ? 'RHT' : 'LHT';
+		return rule === TrafficRule.LHT ? 'LHT' : 'RHT';
+
+	}
+
+	static stringToRule ( value: string ): TrafficRule {
+
+		return value === 'LHT' ? TrafficRule.LHT : TrafficRule.RHT;
 
 	}
 
