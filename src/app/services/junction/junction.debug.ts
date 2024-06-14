@@ -354,6 +354,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		return geometry;
 	}
+
+	clear () {
+		super.clear();
+		this.meshes.clear();
+		this.entries.clear();
+		this.maneuvers.clear();
+	}
 }
 
 export class ManeuverMesh extends Mesh implements ISelectable {
