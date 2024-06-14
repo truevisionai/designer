@@ -105,7 +105,7 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 		} else {
 
-			node = new CornerControlPoint( road, road.objects.object[ 0 ], corner );
+			node = new CornerControlPoint( road, roadObject, corner );
 
 			this.nodeCache.set( corner, node );
 
