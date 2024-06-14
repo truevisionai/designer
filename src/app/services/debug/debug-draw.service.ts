@@ -417,19 +417,30 @@ export class DebugDrawService {
 
 		const points: TvPosTheta[] = [];
 
-		const next = road.laneSections.find( i => i.s > laneSection.s );
+		const nextLaneSection = road.laneSections.find( i => i.s > laneSection.s );
 
-		const sEnd = next?.s || road.length;
+		const sEnd = nextLaneSection?.s || laneSection.length;
 
-		for ( let sOffset = 0; sOffset < sEnd; sOffset += stepSize ) {
+		for ( let sOffset = laneSection.s; sOffset < sEnd; sOffset += stepSize ) {
 
-			points.push( this.getDirectedPoint( road, laneSection, lane, laneSection.s + sOffset, side ) );
+			const point = this.getDirectedPoint( road, laneSection, lane, sOffset, side );
+
+			points.push( point );
 
 		}
 
 		return points;
 	}
 
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sOffset with respect to road
+	 * @param side
+	 * @private
+	 */
 	private getDirectedPoint ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, side: TvLaneSide = TvLaneSide.RIGHT ): TvPosTheta {
 
 		const point = this.roadService.findRoadPosition( road, sOffset );
