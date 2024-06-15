@@ -1,0 +1,50 @@
+{
+  "guid": "df28b7c8-1a7b-486c-a862-ecf02164a68c",
+  "version": 4.5,
+  "type": "Texture",
+  "importer": "TextureImporter",
+  "data": {
+    "metadata": {
+      "version": 4.6,
+      "type": "Texture",
+      "generator": "Texture.toJSON"
+    },
+    "uuid": "9e1a63df-ffdb-4e88-9dfc-9c39b97d7c6d",
+    "name": "",
+    "image": "43c705de-6bbe-4067-bd1c-b2c7eecb5a57",
+    "mapping": 300,
+    "channel": 0,
+    "repeat": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "center": [
+      0,
+      0
+    ],
+    "rotation": 0,
+    "wrap": [
+      1000,
+      1000
+    ],
+    "format": 1023,
+    "internalFormat": null,
+    "type": 1009,
+    "colorSpace": "",
+    "minFilter": 1008,
+    "magFilter": 1006,
+    "anisotropy": 1,
+    "flipY": true,
+    "generateMipmaps": true,
+    "premultiplyAlpha": false,
+    "unpackAlignment": 4,
+    "userData": {
+      "guid": "df28b7c8-1a7b-486c-a862-ecf02164a68c"
+    }
+  },
+  "path": "/Users/himanshu/Documents/Truevision/Signs/TurnRight.png"
+}

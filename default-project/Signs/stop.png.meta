@@ -1,0 +1,50 @@
+{
+  "guid": "58ee7f95-6965-4590-8222-5c44acea8382",
+  "version": 4.5,
+  "type": "Texture",
+  "importer": "TextureImporter",
+  "data": {
+    "metadata": {
+      "version": 4.6,
+      "type": "Texture",
+      "generator": "Texture.toJSON"
+    },
+    "uuid": "be0f8448-7820-42b6-9f99-2851fe809f98",
+    "name": "",
+    "image": "d685c781-8f66-4e71-898b-af55ccd117c2",
+    "mapping": 300,
+    "channel": 0,
+    "repeat": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "center": [
+      0,
+      0
+    ],
+    "rotation": 0,
+    "wrap": [
+      1000,
+      1000
+    ],
+    "format": 1023,
+    "internalFormat": null,
+    "type": 1009,
+    "colorSpace": "srgb",
+    "minFilter": 1008,
+    "magFilter": 1006,
+    "anisotropy": 1,
+    "flipY": true,
+    "generateMipmaps": true,
+    "premultiplyAlpha": false,
+    "unpackAlignment": 4,
+    "userData": {
+      "guid": "58ee7f95-6965-4590-8222-5c44acea8382"
+    }
+  },
+  "path": "/Users/himanshu/Documents/Truevision/Signs/stop.png"
+}

@@ -1,0 +1,50 @@
+{
+  "guid": "e7aed14d-05db-4644-a9a5-039d4ed3a17e",
+  "version": 4.5,
+  "type": "Texture",
+  "importer": "TextureImporter",
+  "data": {
+    "metadata": {
+      "version": 4.6,
+      "type": "Texture",
+      "generator": "Texture.toJSON"
+    },
+    "uuid": "50fa4d6c-a299-4ac9-b5fa-4f9ef739adac",
+    "name": "",
+    "image": "2342f7f1-ce85-4568-9331-ab305978a074",
+    "mapping": 300,
+    "channel": 0,
+    "repeat": [
+      1,
+      1
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "center": [
+      0,
+      0
+    ],
+    "rotation": 0,
+    "wrap": [
+      1000,
+      1000
+    ],
+    "format": 1023,
+    "internalFormat": null,
+    "type": 1009,
+    "colorSpace": "",
+    "minFilter": 1008,
+    "magFilter": 1006,
+    "anisotropy": 1,
+    "flipY": true,
+    "generateMipmaps": true,
+    "premultiplyAlpha": false,
+    "unpackAlignment": 4,
+    "userData": {
+      "guid": "e7aed14d-05db-4644-a9a5-039d4ed3a17e"
+    }
+  },
+  "path": "/Users/himanshu/Documents/Truevision/Signs/NotUTurn.png"
+}

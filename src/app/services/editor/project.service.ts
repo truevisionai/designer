@@ -123,17 +123,19 @@ export class ProjectService {
 
 	createDefaultAssets () {
 
-		this.createBaseAssets( 'RoadStyles' );
+		this.copyAssets( 'RoadStyles' );
 
-		this.createBaseAssets( 'Props' );
+		this.copyAssets( 'Props' );
 
-		this.createBaseAssets( 'RoadMarkings' );
+		this.copyAssets( 'RoadMarkings' );
 
-		this.createBaseAssets( 'Materials' );
+		this.copyAssets( 'Materials' );
+
+		this.copyAssets( 'Signs' );
 
 	}
 
-	createBaseAssets ( subFolder: string ) {
+	copyAssets ( subFolder: string ) {
 
 		try {
 
