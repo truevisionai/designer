@@ -283,6 +283,8 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			const segmentLength = TvObjectRepeat.calculateLength( repeat.segmentLength, road.length );
 
+			let counter = 0;
+
 			for ( let ds = 0; ds < segmentLength; ds += repeat.gap ) {
 
 				const s = repeat.sStart + ds;
@@ -312,7 +314,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 				if ( !objectInstance ) continue;
 
-				objectInstance.name = 'repeat:' + i;
+				objectInstance.name = 'repeat:' + counter++;
 
 				objectInstance.position.copy( posTheta.position );
 

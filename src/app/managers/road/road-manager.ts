@@ -83,7 +83,7 @@ export class RoadManager {
 
 		road.objects.object.forEach( object => {
 
-			this.roadObjectService.removeObject3d( object );
+			this.roadObjectService.removeObject3d( road, object );
 
 		} );
 

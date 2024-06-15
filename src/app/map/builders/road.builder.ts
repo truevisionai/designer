@@ -8,7 +8,6 @@ import * as THREE from 'three';
 import { BufferGeometry, Group, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
 import { TvRoad } from '../models/tv-road.model';
 import { LaneBufferGeometry } from './LaneBufferGeometry';
-import { RoadObjectService } from 'app/map/road-object/road-object.service';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
 import { LaneRoadMarkBuilder } from './lane-road-mark.builder';
 import { Maths } from 'app/utils/maths';
@@ -24,6 +23,7 @@ import { TvMap } from '../models/tv-map.model';
 import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 import { TvRoadObjectType } from "../models/objects/tv-road-object";
 import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
+import { RoadObjectBuilder } from "../road-object/road-object.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,10 +31,10 @@ import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
 export class RoadBuilder {
 
 	constructor (
-		private roadObjectService: RoadObjectService,
 		private roadMarkBuilder: LaneRoadMarkBuilder,
 		private materialService: TvMaterialService,
 		private signalBuilder: RoadSignalBuilder,
+		private objectBuilder: RoadObjectBuilder,
 	) {
 	}
 
@@ -74,7 +74,7 @@ export class RoadBuilder {
 
 		this.roadMarkBuilder.buildRoad( road );
 
-		gameObject.add( this.roadObjectService.buildRoadObjects( road ) );
+		gameObject.add( this.buildRoadObjects( road ) );
 
 		gameObject.add( this.buildSignals( road ) );
 
@@ -409,5 +409,23 @@ export class RoadBuilder {
 		}
 
 		return road.signalGroup;
+	}
+
+	private buildRoadObjects ( road: TvRoad ) {
+
+		road.objectGroup?.clear();
+
+		for ( const roadObject of road.getRoadObjects() ) {
+
+			roadObject.mesh = this.objectBuilder.buildRoadObject( road, roadObject )
+
+			if ( !roadObject.mesh ) continue;
+
+			road.objectGroup?.add( roadObject.mesh );
+
+		}
+
+		return road.objectGroup;
+
 	}
 }

@@ -62,6 +62,7 @@ export class TvRoad {
 	public gameObject: GameObject;
 
 	public signalGroup: Group = new Group();
+	public objectGroup: Group = new Group();
 
 	private lastAddedLaneSectionIndex: number;
 
@@ -104,6 +105,7 @@ export class TvRoad {
 		this._signals = new Map<number, TvRoadSignal>();
 
 		this.signalGroup.name = 'SignalGroup';
+		this.objectGroup.name = 'ObjectGroup';
 	}
 
 	get successor (): TvRoadLinkChild {

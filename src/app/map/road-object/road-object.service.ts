@@ -97,34 +97,15 @@ export class RoadObjectService {
 
 	}
 
-	buildRoadObjects ( road: TvRoad ) {
-
-		const group = new Group();
-
-		group.name = 'RoadObjects';
-
-		for ( const roadObject of road.objects.object ) {
-
-			const mesh = this.buildRoadObject( road, roadObject );
-
-			if ( !mesh ) continue;
-
-			group.add( mesh );
-
-		}
-
-		return group;
-	}
-
 	addRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		if ( road.objects.object.find( object => object.attr_id === roadObject.attr_id ) ) return;
 
-		const mesh = roadObject.mesh = this.buildRoadObject( road, roadObject );
+		const mesh = this.buildRoadObject( road, roadObject );
 
 		if ( !mesh ) return;
 
-		road?.gameObject?.add( mesh );
+		road.objectGroup?.add( mesh );
 
 		road.addRoadObjectInstance( roadObject );
 
@@ -150,13 +131,15 @@ export class RoadObjectService {
 
 	buildRoadObject ( road: TvRoad, roadObject: TvRoadObject ) {
 
-		return this.builder.buildRoadObject( road, roadObject );
+		roadObject.mesh = this.builder.buildRoadObject( road, roadObject );
+
+		return roadObject.mesh;
 
 	}
 
 	removeRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		this.removeObject3d( roadObject );
+		this.removeObject3d( road, roadObject );
 
 		this.hideRoadObjectCorners( roadObject );
 
@@ -164,9 +147,9 @@ export class RoadObjectService {
 
 	}
 
-	removeObject3d ( roadObject: TvRoadObject ): void {
+	removeObject3d ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		roadObject.mesh?.parent?.remove( roadObject.mesh );
+		road.objectGroup?.remove( roadObject.mesh );
 
 	}
 
