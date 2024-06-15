@@ -72,4 +72,13 @@ export class AutoSplineHelper extends BaseDebugger<AutoSplineV2> {
 
 	}
 
+	clear () {
+
+		super.clear();
+
+		this.lines.clear();
+
+		this.points.clear();
+	}
+
 }

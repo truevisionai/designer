@@ -68,5 +68,15 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 
 	}
 
+	clear () {
+
+		super.clear();
+
+		this.lines.clear();
+
+		this.points.clear();
+
+	}
+
 }
 
