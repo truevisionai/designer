@@ -27,6 +27,8 @@ import { SplineService } from "app/services/spline/spline.service";
 import { LaneLinkService } from "app/services/junction/lane-link.service";
 import { TvJunctionBoundaryService } from "app/map/junction-boundary/tv-junction-boundary.service";
 
+const JUNCTION_WIDTH = 18;
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -387,8 +389,6 @@ export class JunctionManager {
 		// angle in radians
 		// const angle = group.getApproachingAngle( spline );
 
-		let junctionWidth = 12;
-
 		// // increase width for sharper angles by some factor
 		// if ( angle > Math.PI / 4 ) {
 		// 	junctionWidth *= 2;
@@ -417,8 +417,8 @@ export class JunctionManager {
 			return coords;
 		}
 
-		const sStart = splineCoord.s - junctionWidth;
-		const sEnd = splineCoord.s + junctionWidth;
+		const sStart = splineCoord.s - JUNCTION_WIDTH;
+		const sEnd = splineCoord.s + JUNCTION_WIDTH;
 
 		const startSegment = spline.getSegmentAt( sStart );
 		const endSegment = spline.getSegmentAt( sEnd );
@@ -430,11 +430,10 @@ export class JunctionManager {
 			// coord is at the junction or joining of two roads
 			// add junction segment on spline and update both roads
 
-		} else if ( sStart <= junctionWidth || sEnd > spline.getLength() ) {
+		} else if ( sStart <= JUNCTION_WIDTH || sEnd > spline.getLength() ) {
 
 			// coord is at the start/end of the road
 			// add junction segment on spline and update road
-			const junctionWidth = 12;
 
 			const atStart = sStart <= 0;
 			const atEnd = sEnd >= spline.getLength();
@@ -443,7 +442,7 @@ export class JunctionManager {
 
 				const road = endSegment.getInstance<TvRoad>();
 
-				const sStartJunction = splineCoord.s - junctionWidth;
+				const sStartJunction = splineCoord.s - JUNCTION_WIDTH;
 
 				this.segmentService.addJunctionSegment( spline, sStartJunction, junction );
 
@@ -459,7 +458,7 @@ export class JunctionManager {
 
 				const road = segment.getInstance<TvRoad>();
 
-				const sEndJunction = junctionWidth;
+				const sEndJunction = JUNCTION_WIDTH;
 
 				segment.setStart( sEndJunction );
 
