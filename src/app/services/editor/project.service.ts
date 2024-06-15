@@ -133,6 +133,8 @@ export class ProjectService {
 
 		this.copyAssets( 'Signs' );
 
+		this.copyAssets( 'Scenes' );
+
 	}
 
 	copyAssets ( subFolder: string ) {

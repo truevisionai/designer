@@ -1,0 +1,1895 @@
+<version>0.1</version>
+<road id="1" sStart="0" name="Road1" length="69.93148499699342" junction="-1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <successor elementType="junction" elementId="1"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+    <elevation s="69.93148499699342" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <left>
+        <lane id="3" type="sidewalk" level="true">
+          <link></link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+        <lane id="2" type="shoulder" level="true">
+          <link></link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="1" type="driving" level="false">
+          <link></link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="0"></roadMark>
+        </lane>
+      </left>
+      <center>
+        <lane id="0" type="driving" level="false">
+          <link></link>
+          <roadMark sOffset="0" type="broken" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="4.5"></roadMark>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link></link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="0"></roadMark>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link></link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-3" type="sidewalk" level="true">
+          <link></link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects>
+    <object type="tree" name="" id="2" s="0.9146501898482502" t="5.035420202687307" zOffset="0.005" orientation="none" length="1" width="1" height="1" assetGuid="97654775-41C1-4C02-A0C1-26A7292B6831">
+      <repeat s="0.9146501898482502" length="69.01683480714517" distance="10"></repeat>
+    </object>
+    <object type="tree" name="" id="1" s="0.9020915075457485" t="-4.885654276541738" zOffset="0.005" orientation="none" length="1" width="1" height="1" assetGuid="97654775-41C1-4C02-A0C1-26A7292B6831">
+      <repeat s="0.9020915075457485" length="69.02939348944767" distance="10"></repeat>
+    </object>
+    <object type="crosswalk" name="crosswalk" id="61" s="69.32346997659326" t="3.4668381213166133" zOffset="0.005" orientation="none" length="1" width="1">
+      <markings>
+        <marking color="white" spaceLength="0.3" lineLength="0.3" side="none" weight="standard" startOffset="0" stopOffset="0" zOffset="0.005" width="1.83">
+          <cornerReference id="0"></cornerReference>
+          <cornerReference id="1"></cornerReference>
+        </marking>
+      </markings>
+      <outlines>
+        <outline id="0" fillType="none" outer="false" closed="false" laneType="none">
+          <cornerRoad id="0" s="68.86940749201199" t="3.482207576556844" dz="0" height="NaN"></cornerRoad>
+          <cornerRoad id="1" s="68.89677257208314" t="-3.8456607858615057" dz="0" height="0"></cornerRoad>
+        </outline>
+      </outlines>
+    </object>
+  </objects>
+  <signals>
+    <signal s="66.31393085935639" t="-1.8" id="2" name="STOP" dynamic="no" orientation="+" zOffset="0.005" country="OpenDRIVE" type="roadMark" subtype="text" value="0.8" unit="t" height="0.8552000168710947" width="2.939199924468994" text="STOP" hOffset="0" pitch="0" roll="0"></signal>
+    <signal s="69.93148499699342" t="-5.1" id="1" name="YieldSignal" dynamic="no" orientation="+" zOffset="2" country="OpenDRIVE" type="205" subtype="-1" unit="none" height="0.5" width="0.5" text="none" hOffset="0" pitch="0" roll="0"></signal>
+    <signal s="69.93148499698341" t="0" id="4" name="StopLine" dynamic="no" orientation="+" zOffset="0.05" country="OpenDRIVE" type="294" subtype="-1" unit="none" height="0.03" width="3.75" text="none" hOffset="0" pitch="0" roll="0">
+      <validity fromLane="-3" toLane="3"></validity>
+      <dependency id="1" type="trafficLight"></dependency>
+    </signal>
+  </signals>
+</road>
+<road id="2" sStart="0" name="Road2" length="41.36188783042771" junction="-1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <successor elementType="junction" elementId="1"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+    <elevation s="41.36188783042771" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <left>
+        <lane id="3" type="sidewalk" level="true">
+          <link></link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+        <lane id="2" type="shoulder" level="true">
+          <link></link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="1" type="driving" level="false">
+          <link></link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="0"></roadMark>
+        </lane>
+      </left>
+      <center>
+        <lane id="0" type="driving" level="false">
+          <link></link>
+          <roadMark sOffset="0" type="broken" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="4.5"></roadMark>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link></link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="0"></roadMark>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link></link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-3" type="sidewalk" level="true">
+          <link></link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects>
+    <object type="tree" name="" id="2" s="1.1927865859413234" t="4.913567788425983" zOffset="0.005" orientation="none" length="1" width="1" height="1" assetGuid="97654775-41C1-4C02-A0C1-26A7292B6831">
+      <repeat s="1.1927865859413234" length="40.16910124448639" distance="10"></repeat>
+    </object>
+    <object type="tree" name="" id="3" s="1.3812950199381326" t="-5.187561960807141" zOffset="0.005" orientation="none" length="1" width="1" height="1" assetGuid="97654775-41C1-4C02-A0C1-26A7292B6831">
+      <repeat s="1.3812950199381326" length="39.98059281048958" distance="10"></repeat>
+    </object>
+    <object type="crosswalk" name="crosswalk" id="65" s="40.06012642534223" t="-3.6204925943733253" zOffset="0.005" orientation="none" length="1" width="1">
+      <markings>
+        <marking color="white" spaceLength="0.3" lineLength="0.3" side="none" weight="standard" startOffset="0" stopOffset="0" zOffset="0.005" width="1.83">
+          <cornerReference id="0"></cornerReference>
+          <cornerReference id="1"></cornerReference>
+        </marking>
+      </markings>
+      <outlines>
+        <outline id="0" fillType="none" outer="false" closed="false" laneType="none">
+          <cornerRoad id="0" s="40.06012642534223" t="-3.6204925943733253" dz="0" height="NaN"></cornerRoad>
+          <cornerRoad id="1" s="40.004206914693256" t="3.5945928782321612" dz="0" height="0"></cornerRoad>
+        </outline>
+      </outlines>
+    </object>
+  </objects>
+  <signals>
+    <signal s="37.53929638072083" t="-1.8" id="3" name="STOP" dynamic="no" orientation="+" zOffset="0.005" country="OpenDRIVE" type="roadMark" subtype="text" value="0.8" unit="t" height="0.8552000168710947" width="2.939199924468994" text="STOP" hOffset="0" pitch="0" roll="0"></signal>
+    <signal s="41.36188783042771" t="-5.1" id="5" name="YieldSignal" dynamic="no" orientation="+" zOffset="2" country="OpenDRIVE" type="205" subtype="-1" unit="none" height="0.5" width="0.5" text="none" hOffset="0" pitch="0" roll="0"></signal>
+    <signal s="41.361887830417714" t="0" id="6" name="StopLine" dynamic="no" orientation="+" zOffset="0.05" country="OpenDRIVE" type="294" subtype="-1" unit="none" height="0.03" width="3.75" text="none" hOffset="0" pitch="0" roll="0">
+      <validity fromLane="-3" toLane="3"></validity>
+      <dependency id="5" type="trafficLight"></dependency>
+    </signal>
+  </signals>
+</road>
+<road id="3" sStart="77.36188783042772" name="Road 3" length="35.295981653804446" junction="-1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="junction" elementId="1"></predecessor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+    <elevation s="35.295981653804446" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <left>
+        <lane id="3" type="sidewalk" level="true">
+          <link></link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+        <lane id="2" type="shoulder" level="true">
+          <link></link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="1" type="driving" level="false">
+          <link></link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="0"></roadMark>
+        </lane>
+      </left>
+      <center>
+        <lane id="0" type="driving" level="false">
+          <link></link>
+          <roadMark sOffset="0" type="broken" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="4.5"></roadMark>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link></link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="0"></roadMark>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link></link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-3" type="sidewalk" level="true">
+          <link></link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects>
+    <object type="tree" name="" id="2" s="8.13743935007495" t="5.261116083982709" zOffset="0.005" orientation="none" length="1" width="1" height="1" assetGuid="97654775-41C1-4C02-A0C1-26A7292B6831">
+      <repeat s="8.13743935007495" length="27.158542303729497" distance="10" tStart="5.261116083982709"></repeat>
+    </object>
+    <object type="tree" name="" id="1" s="6.391774282065942" t="-5.642176194273179" zOffset="0.005" orientation="none" length="1" width="1" height="1" assetGuid="97654775-41C1-4C02-A0C1-26A7292B6831">
+      <repeat s="6.391774282065942" length="28.904207371738504" distance="10" tStart="-5.642176194273179"></repeat>
+    </object>
+    <object type="crosswalk" name="crosswalk" id="59" s="1.3465120784697138" t="-3.597228106260241" zOffset="0.005" orientation="none" length="1" width="1">
+      <markings>
+        <marking color="white" spaceLength="0.3" lineLength="0.3" side="none" weight="standard" startOffset="0" stopOffset="0" zOffset="0.005" width="1.83">
+          <cornerReference id="0"></cornerReference>
+          <cornerReference id="1"></cornerReference>
+        </marking>
+      </markings>
+      <outlines>
+        <outline id="0" fillType="none" outer="false" closed="false" laneType="none">
+          <cornerRoad id="0" s="1.3465120784697138" t="-3.597228106260241" dz="0" height="NaN"></cornerRoad>
+          <cornerRoad id="1" s="1.2522011606873744" t="4.031975850263448" dz="0" height="0"></cornerRoad>
+        </outline>
+      </outlines>
+    </object>
+  </objects>
+  <signals>
+    <signal s="3.297593268831866" t="1.8" id="1" name="STOP" dynamic="no" orientation="-" zOffset="0.005" country="OpenDRIVE" type="roadMark" subtype="text" value="0.8" unit="t" height="0.8552000168710947" width="2.939199924468994" text="STOP" hOffset="0" pitch="0" roll="0"></signal>
+    <signal s="1" t="5.1" id="9" name="YieldSignal" dynamic="no" orientation="-" zOffset="2" country="OpenDRIVE" type="205" subtype="-1" unit="none" height="0.5" width="0.5" text="none" hOffset="0" pitch="0" roll="0"></signal>
+    <signal s="2" t="0" id="10" name="StopLine" dynamic="no" orientation="-" zOffset="0.05" country="OpenDRIVE" type="294" subtype="-1" unit="none" height="0.03" width="3.75" text="none" hOffset="0" pitch="0" roll="0">
+      <validity fromLane="-3" toLane="3"></validity>
+      <dependency id="9" type="trafficLight"></dependency>
+    </signal>
+  </signals>
+</road>
+<road id="4" sStart="105.93148499699342" name="Road 4" length="63.73067018242833" junction="-1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="junction" elementId="1"></predecessor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+    <elevation s="63.73067018242833" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <left>
+        <lane id="3" type="sidewalk" level="true">
+          <link></link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+        <lane id="2" type="shoulder" level="true">
+          <link></link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="1" type="driving" level="false">
+          <link></link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="0"></roadMark>
+        </lane>
+      </left>
+      <center>
+        <lane id="0" type="driving" level="false">
+          <link></link>
+          <roadMark sOffset="0" type="broken" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="4.5"></roadMark>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link></link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <roadMark sOffset="0" type="solid" weight="standard" color="white" width="0.15" laneChange="none" height="0" length="3" space="0"></roadMark>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link></link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-3" type="sidewalk" level="true">
+          <link></link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects>
+    <object type="tree" name="" id="2" s="6.23872010253933" t="5.179448969381509" zOffset="0.005" orientation="none" length="1" width="1" height="1" assetGuid="97654775-41C1-4C02-A0C1-26A7292B6831">
+      <repeat s="6.23872010253933" length="57.491950079888994" distance="7" tStart="5.179448969381509"></repeat>
+    </object>
+    <object type="tree" name="" id="1" s="6.75762822616645" t="-5.135835826595646" zOffset="0.005" orientation="none" length="1" width="1" height="1" assetGuid="97654775-41C1-4C02-A0C1-26A7292B6831">
+      <repeat s="6.75762822616645" length="56.97304195626187" distance="10" tStart="-5.135835826595646"></repeat>
+    </object>
+    <object type="crosswalk" name="crosswalk" id="57" s="1.0219064247013874" t="-3.5527198501080584" zOffset="0.005" orientation="none" length="1" width="1">
+      <markings>
+        <marking color="white" spaceLength="0.3" lineLength="0.3" side="none" weight="standard" startOffset="0" stopOffset="0" zOffset="0.005" width="1.83">
+          <cornerReference id="0"></cornerReference>
+          <cornerReference id="1"></cornerReference>
+        </marking>
+      </markings>
+      <outlines>
+        <outline id="0" fillType="none" outer="false" closed="false" laneType="none">
+          <cornerRoad id="0" s="1.0219064247013874" t="-3.5527198501080584" dz="0" height="NaN"></cornerRoad>
+          <cornerRoad id="1" s="1.0219064247013874" t="3.747977025690904" dz="0" height="0"></cornerRoad>
+        </outline>
+      </outlines>
+    </object>
+  </objects>
+  <signals>
+    <signal s="3.8144380072698216" t="1.8" id="4" name="STOP" dynamic="no" orientation="-" zOffset="0.005" country="OpenDRIVE" type="roadMark" subtype="text" value="0.8" unit="t" height="0.8552000168710947" width="2.939199924468994" text="STOP" hOffset="0" pitch="0" roll="0"></signal>
+    <signal s="1" t="5.1" id="7" name="YieldSignal" dynamic="no" orientation="-" zOffset="2" country="OpenDRIVE" type="205" subtype="-1" unit="none" height="0.5" width="0.5" text="none" hOffset="0" pitch="0" roll="0"></signal>
+    <signal s="2" t="0" id="8" name="StopLine" dynamic="no" orientation="-" zOffset="0.05" country="OpenDRIVE" type="294" subtype="-1" unit="none" height="0.03" width="3.75" text="none" hOffset="0" pitch="0" roll="0">
+      <validity fromLane="-3" toLane="3"></validity>
+      <dependency id="7" type="trafficLight"></dependency>
+    </signal>
+  </signals>
+</road>
+<road id="5" sStart="0" name="Road5" length="28.788377424915627" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="1" contactPoint="end"></predecessor>
+    <successor elementType="road" elementId="2" contactPoint="end"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="-1"></predecessor>
+            <successor id="1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="28.788377424915627" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="-2"></predecessor>
+            <successor id="2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="28.788377424915627" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-3" type="sidewalk" level="true">
+          <link>
+            <predecessor id="-3"></predecessor>
+            <successor id="3"></successor>
+          </link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <width sOffset="28.788377424915627" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="6" sStart="0" name="Road6" length="28.788377424915627" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="2" contactPoint="end"></predecessor>
+    <successor elementType="road" elementId="1" contactPoint="end"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="-1"></predecessor>
+            <successor id="1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="28.788377424915627" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="-2"></predecessor>
+            <successor id="2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="28.788377424915627" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="7" sStart="0" name="Road7" length="36.000000000010004" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="1" contactPoint="end"></predecessor>
+    <successor elementType="road" elementId="4" contactPoint="start"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="-1"></predecessor>
+            <successor id="-1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="36.000000000010004" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="-2"></predecessor>
+            <successor id="-2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="36.000000000010004" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="8" sStart="0" name="Road8" length="36.000000000010004" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="4" contactPoint="start"></predecessor>
+    <successor elementType="road" elementId="1" contactPoint="end"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="1"></predecessor>
+            <successor id="1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="36.000000000010004" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="2"></predecessor>
+            <successor id="2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="36.000000000010004" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="9" sStart="0" name="Road9" length="29.266012893366227" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="1" contactPoint="end"></predecessor>
+    <successor elementType="road" elementId="3" contactPoint="start"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="-1"></predecessor>
+            <successor id="-1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="29.266012893366227" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="-2"></predecessor>
+            <successor id="-2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="29.266012893366227" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="10" sStart="0" name="Road10" length="29.26601289336623" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="3" contactPoint="start"></predecessor>
+    <successor elementType="road" elementId="1" contactPoint="end"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="1"></predecessor>
+            <successor id="1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="29.26601289336623" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="2"></predecessor>
+            <successor id="2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="29.26601289336623" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-3" type="sidewalk" level="true">
+          <link>
+            <predecessor id="3"></predecessor>
+            <successor id="3"></successor>
+          </link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <width sOffset="29.26601289336623" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="11" sStart="0" name="Road11" length="29.264839255338664" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="2" contactPoint="end"></predecessor>
+    <successor elementType="road" elementId="4" contactPoint="start"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="-1"></predecessor>
+            <successor id="-1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="29.264839255338664" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="-2"></predecessor>
+            <successor id="-2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="29.264839255338664" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-3" type="sidewalk" level="true">
+          <link>
+            <predecessor id="-3"></predecessor>
+            <successor id="-3"></successor>
+          </link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <width sOffset="29.264839255338664" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="12" sStart="0" name="Road12" length="29.26483925533867" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="4" contactPoint="start"></predecessor>
+    <successor elementType="road" elementId="2" contactPoint="end"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="1"></predecessor>
+            <successor id="1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="29.26483925533867" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="2"></predecessor>
+            <successor id="2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="29.26483925533867" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="13" sStart="0" name="Road13" length="36.00000000001" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="2" contactPoint="end"></predecessor>
+    <successor elementType="road" elementId="3" contactPoint="start"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="-1"></predecessor>
+            <successor id="-1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="36.00000000001" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="-2"></predecessor>
+            <successor id="-2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="36.00000000001" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="14" sStart="0" name="Road14" length="36.00000000001" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="3" contactPoint="start"></predecessor>
+    <successor elementType="road" elementId="2" contactPoint="end"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="1"></predecessor>
+            <successor id="1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="36.00000000001" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="2"></predecessor>
+            <successor id="2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="36.00000000001" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="15" sStart="0" name="Road15" length="28.784673726464312" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="4" contactPoint="start"></predecessor>
+    <successor elementType="road" elementId="3" contactPoint="start"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="1"></predecessor>
+            <successor id="-1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="28.784673726464312" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="2"></predecessor>
+            <successor id="-2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="28.784673726464312" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-3" type="sidewalk" level="true">
+          <link>
+            <predecessor id="3"></predecessor>
+            <successor id="-3"></successor>
+          </link>
+          <width sOffset="0" a="2" b="0" c="0" d="0"></width>
+          <width sOffset="28.784673726464312" a="2" b="0" c="0" d="0"></width>
+          <height sOffset="0" inner="0.12" outer="0.12"></height>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<road id="16" sStart="0" name="Road16" length="28.784673726464312" junction="1" rule="RHT">
+  <drivingMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</drivingMaterialGuid>
+  <sidewalkMaterialGuid>87B8CB52-7E11-4F22-9CF6-285EC8FE9218</sidewalkMaterialGuid>
+  <borderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</borderMaterialGuid>
+  <shoulderMaterialGuid>09B39764-2409-4A58-B9AB-D9C18AD5485C</shoulderMaterialGuid>
+  <link>
+    <predecessor elementType="road" elementId="3" contactPoint="start"></predecessor>
+    <successor elementType="road" elementId="4" contactPoint="start"></successor>
+  </link>
+  <type s="0" type="town">
+    <speed max="40" unit="mph"></speed>
+  </type>
+  <elevationProfile>
+    <elevation s="0" a="0" b="0" c="0" d="0"></elevation>
+  </elevationProfile>
+  <lanes>
+    <laneOffset s="0" a="0" b="0" c="0" d="0"></laneOffset>
+    <laneSection s="0">
+      <center>
+        <lane id="0" type="none" level="false">
+          <link></link>
+        </lane>
+      </center>
+      <right>
+        <lane id="-1" type="driving" level="false">
+          <link>
+            <predecessor id="1"></predecessor>
+            <successor id="-1"></successor>
+          </link>
+          <width sOffset="0" a="3.6" b="0" c="0" d="0"></width>
+          <width sOffset="28.784673726464312" a="3.6" b="0" c="0" d="0"></width>
+        </lane>
+        <lane id="-2" type="shoulder" level="true">
+          <link>
+            <predecessor id="2"></predecessor>
+            <successor id="-2"></successor>
+          </link>
+          <width sOffset="0" a="0.5" b="0" c="0" d="0"></width>
+          <width sOffset="28.784673726464312" a="0.5" b="0" c="0" d="0"></width>
+        </lane>
+      </right>
+    </laneSection>
+  </lanes>
+  <objects></objects>
+</road>
+<propPolygon id="f8b2c4b1-5dc7-42cf-ba22-ea63d5e90046" density="0.1">
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-59.80371289346817" y="-17.537618827644053" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-59.350316021516406" y="-26.0559175993842" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-27.972501021420847" y="-20.172039931206434" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-45.04638433615681" y="-12.719788349433324" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-53.2302972016828" y="-11.482039476399853" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-42.40688759069586" y="-17.239725148851658" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-27.96095609358848" y="-11.414046427804307" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-39.24541513921725" y="-33.416621876060645" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-49.2273687132335" y="-41.199344813751324" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-40.01073549007217" y="-11.847712420462509" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-46.359247714474904" y="-33.410959095283395" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-20.791815528988636" y="-27.083796451309336" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-24.96186849980641" y="-26.548456868261376" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-51.14006074819342" y="-26.14392082514017" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-56.839194314680334" y="-40.381474147084816" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-2.705381890434063" y="-52.91788136955587" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="0.9077544612153589" y="-44.9897268317467" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-17.660059187536568" y="-42.67459521304271" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-16.91282924394024" y="-41.184430589061236" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-20.462328198813186" y="-40.800596450899974" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-27.83597346312151" y="-49.75138352621566" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-36.52588420494057" y="-43.57043049979798" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-28.670413491719675" y="-47.51206515064196" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-42.35255352111549" y="-50.58419900378055" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="1.3520468465605024" y="-45.814978734743086" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-45.692248893873426" y="-53.515655314441005" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="2.249998059181735" y="-12.230931869594503" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-23.63354181305564" y="-35.639915707654545" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-58.39994601357718" y="-55.47390943834856" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <spline type="catmullrom" closed="true" tension="0">
+    <point x="-63.094076033900976" y="-57.41488633890777" z="7.105427357601002e-15"></point>
+    <point x="4.327375888824463" y="-53.9650993347168" z="-4.1452067472969034e-12"></point>
+    <point x="3.6983660417536357" y="-11.177491604793424" z="0"></point>
+    <point x="-64.01882392858279" y="-9.999999999999998" z="1.0794896754262595e-7"></point>
+  </spline>
+</propPolygon>
+<propPolygon id="366dbd47-a3e6-42c2-8077-3125c13b0c07" density="0.1">
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="54.063305725344634" y="-12.997273647746203" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="38.20438927597795" y="-48.690437521841574" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="45.83119045391747" y="-45.58171608197856" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="87.38269768274266" y="-19.60967894048427" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="55.08525860123399" y="-29.752992318029452" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="52.28775276379544" y="-34.87281040865199" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="37.681686199171494" y="-12.244267324238974" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="93.88265736144749" y="-15.942067123281806" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="57.688180488464525" y="-39.259378096763285" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="63.30425474110322" y="-13.095541771568284" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="66.38066359029857" y="-16.31474038314773" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="41.2698111270546" y="-21.29671079029329" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="54.67260716583435" y="-36.44348998506613" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="77.25819803731632" y="-13.850258172816176" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="77.71525777086495" y="-35.88577380902964" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="73.47858121161472" y="-48.94244958294962" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="89.62233755066589" y="-44.99114095505835" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="97.32291315319881" y="-30.839073409296887" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="95.62663012137874" y="-22.105313273882217" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="48.383035794346014" y="-50.07815780090501" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="80.49756085513877" y="-32.45656321225297" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="90.86495257830914" y="-50.95605442410509" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="80.31919286996704" y="-27.253633870618028" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="78.33616800958357" y="-39.879761466005135" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="65.0014413561761" y="-45.60779581142992" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="36.667837604149696" y="-53.96391115336309" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="55.936297295169204" y="-45.195360188350186" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <spline type="catmullrom" closed="true" tension="0">
+    <point x="35.62413461105762" y="-10.73244403348776" z="7.105427357601002e-15"></point>
+    <point x="102.66835697548993" y="-10.73244403348776" z="7.105427357601002e-15"></point>
+    <point x="102.8995439491604" y="-52.80847324153182" z="0"></point>
+    <point x="34.930573690046266" y="-54.42678205944828" z="-7.105427357601002e-15"></point>
+  </spline>
+</propPolygon>
+<propPolygon id="9822b93a-db74-4f20-b1bb-c9e3a66e3590" density="0.1">
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="53.07132172729798" y="33.32058130380401" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="53.058767230844985" y="25.50647382369948" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="63.40192635097304" y="33.49789200182818" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="45.85456899203241" y="45.28973208086272" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="80.25265886020262" y="44.705696677520706" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="37.82741297464672" y="50.374991912687136" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="72.55427913006521" y="41.48713878412119" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="64.58096473615774" y="43.453749499224664" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="89.94778974924982" y="56.224679308002756" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="78.71027302377736" y="54.47783510120852" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="42.12563233454222" y="40.26066167658211" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="39.18718905291643" y="39.8536743834296" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="101.02676287199692" y="51.786585138677935" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="101.087530246011" y="29.874244524753593" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="78.82892496126374" y="31.66186072384778" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="91.9135520245053" y="37.93729840400607" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="81.50940731027657" y="28.745953788572486" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="51.53950708284386" y="21.616888449005323" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="63.48969838823914" y="14.418468952245794" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="83.51942939735119" y="18.89375900935825" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="91.66175714148412" y="45.56261935068073" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="82.43519974280218" y="16.070454287963482" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="55.856705958734" y="26.642741216731025" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="93.05671649552585" y="50.697924442650816" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="52.46359301575779" y="17.352659553866175" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <spline type="catmullrom" closed="true" tension="0">
+    <point x="36.48463781267766" y="13.80775742121251" z="-2.842170943040401e-14"></point>
+    <point x="101.20322222651636" y="14.689733861186031" z="0"></point>
+    <point x="101.56872273511723" y="57.02095360909606" z="2.842170943040401e-14"></point>
+    <point x="36.45822727995234" y="54.55597585973378" z="0"></point>
+  </spline>
+</propPolygon>
+<propPolygon id="bff33ef9-c34d-4a32-b4de-67d142b5cb42" density="0.1">
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="1.1190577331719052" y="49.61425331784388" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-59.55378720859209" y="14.652228896442203" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-16.591217461077044" y="32.0047129827137" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="2.392946516775112" y="28.903929601942416" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-0.34735566738856605" y="49.38342047679368" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-16.554480838461245" y="17.751535354515" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="4.213150843332094" y="22.978251093099004" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-6.863201191622439" y="38.99125026879409" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="6.734755970149198" y="52.671079253708406" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="6.61594233453066" y="36.207782967206654" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-42.18842988351918" y="12.353667299711784" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-18.851290453733448" y="34.15570463654386" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-55.30744759605491" y="14.803329911418892" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-31.080478516479516" y="31.399514526139196" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-56.8106107220024" y="42.97144074012092" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-52.740969296134566" y="48.816304401796074" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-63.717598646892775" y="24.167392367564453" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-31.213824139100183" y="32.59483362843306" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-26.900925074856158" y="37.99233179637621" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-21.928879214756797" y="38.45202471638046" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-51.18937623835616" y="49.20704941149523" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-61.40046303689043" y="44.42435537692587" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-47.641483930036934" y="38.45944898724065" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-62.896249201309324" y="28.723947225327233" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-57.32336688827284" y="38.68277831629319" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-42.67010583171307" y="45.22140230387176" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-24.529883951403008" y="36.234021405252975" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-61.20242970636796" y="51.31920516267519" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <prop guid="42076FCA-53E8-4616-AA8B-EF694F834BD7">
+    <transform>
+      <position x="-32.6289429521498" y="54.10034940119247" z="0"></position>
+      <rotation x="0" y="0" z="0"></rotation>
+      <scale x="1" y="1" z="1"></scale>
+    </transform>
+  </prop>
+  <spline type="catmullrom" closed="true" tension="0">
+    <point x="5.868541613036292" y="11.402500442889664" z="0"></point>
+    <point x="-64.01508727586663" y="12.264655826303922" z="2.842170943040401e-14"></point>
+    <point x="-63.05218819217086" y="55.324074947698605" z="0"></point>
+    <point x="7.181607938125323" y="54.45439529728317" z="0"></point>
+  </spline>
+</propPolygon>
+<spline uuid="6055ae83-ec96-42a5-b9a4-a51a9d6423f0" type="autov2">
+  <point x="-64.85257283880416" y="1.6947291169818726" z="0"></point>
+  <point x="104.80864187202472" y="2.259638819679203" z="7.105427357601002e-15"></point>
+  <roadSegment start="0" id="1" type="road"></roadSegment>
+  <roadSegment start="69.93148499699342" id="1" type="junction"></roadSegment>
+  <roadSegment start="105.93148499699342" id="4" type="road"></roadSegment>
+</spline>
+<spline uuid="6517b3ec-218c-452c-bfb6-883b17fa41b3" type="autov2">
+  <point x="21.977908639181535" y="-57.36494244725393" z="-7.105427357601002e-15"></point>
+  <point x="24.06933883248895" y="55.273512249500556" z="0"></point>
+  <roadSegment start="0" id="2" type="road"></roadSegment>
+  <roadSegment start="41.36188783042771" id="1" type="junction"></roadSegment>
+  <roadSegment start="77.36188783042772" id="3" type="road"></roadSegment>
+</spline>
+<spline uuid="d0027ef9-ac2f-4f35-a6b5-517f2d1fe2dd" type="autov2">
+  <point x="5.078524515070384" y="1.927574057310784" z="0"></point>
+  <point x="13.470899449175699" y="1.9555175919426102" z="0"></point>
+  <point x="22.90156949982756" y="-7.619207523865805" z="0"></point>
+  <point x="22.745768900135953" y="-16.010182678689148" z="0"></point>
+  <roadSegment start="0" id="5" type="road"></roadSegment>
+</spline>
+<spline uuid="5cb72ff8-8806-424d-8259-36140b7b7adf" type="autov2">
+  <point x="22.745768900135953" y="-16.010182678689148" z="0"></point>
+  <point x="22.90156949982756" y="-7.619207523865805" z="0"></point>
+  <point x="13.470899449175699" y="1.9555175919426102" z="0"></point>
+  <point x="5.078524515070384" y="1.927574057310784" z="0"></point>
+  <roadSegment start="0" id="6" type="road"></roadSegment>
+</spline>
+<spline uuid="f488715d-d7af-447f-9ab3-50af97a12a1b" type="autov2">
+  <point x="5.078524515070384" y="1.927574057310784" z="0"></point>
+  <point x="17.078457996862262" y="1.9675294405558021" z="0"></point>
+  <point x="29.078391478654147" y="2.0074848238008203" z="0"></point>
+  <point x="41.078324960446025" y="2.0474402070458386" z="0"></point>
+  <roadSegment start="0" id="7" type="road"></roadSegment>
+</spline>
+<spline uuid="deb8e7d6-945c-4f09-a229-b10e31d3b89e" type="autov2">
+  <point x="41.078324960446025" y="2.0474402070458386" z="0"></point>
+  <point x="29.078391478654147" y="2.0074848238008203" z="0"></point>
+  <point x="17.078457996862262" y="1.9675294405558021" z="0"></point>
+  <point x="5.078524515070384" y="1.927574057310784" z="0"></point>
+  <roadSegment start="0" id="8" type="road"></roadSegment>
+</spline>
+<spline uuid="587a654a-e34f-4578-9ffd-f5e23b85db07" type="autov2">
+  <point x="5.078524515070384" y="1.927574057310784" z="0"></point>
+  <point x="13.65631318458577" y="1.956134951769516" z="0"></point>
+  <point x="23.254845998451366" y="11.407255330596655" z="0"></point>
+  <point x="23.414088719282073" y="19.98361329534027" z="0"></point>
+  <roadSegment start="0" id="9" type="road"></roadSegment>
+</spline>
+<spline uuid="7b2d03b9-2b83-4e46-8a5e-62ba3e9d3663" type="autov2">
+  <point x="23.414088719282073" y="19.98361329534027" z="0"></point>
+  <point x="23.254845998451366" y="11.407255330596655" z="0"></point>
+  <point x="13.65631318458577" y="1.956134951769516" z="0"></point>
+  <point x="5.078524515070384" y="1.927574057310784" z="0"></point>
+  <roadSegment start="0" id="10" type="road"></roadSegment>
+</spline>
+<spline uuid="a8491f87-e04d-44c3-a9fd-a8b16657dbc1" type="autov2">
+  <point x="22.745768900135953" y="-16.010182678689148" z="0"></point>
+  <point x="22.905005234947712" y="-7.434168646680305" z="0"></point>
+  <point x="32.50088028104014" y="2.018880457948177" z="0"></point>
+  <point x="41.078324960446025" y="2.0474402070458386" z="0"></point>
+  <roadSegment start="0" id="11" type="road"></roadSegment>
+</spline>
+<spline uuid="0ad013f9-a512-4f85-9505-8bf742ba2b53" type="autov2">
+  <point x="41.078324960446025" y="2.0474402070458386" z="0"></point>
+  <point x="32.50088028104014" y="2.018880457948177" z="0"></point>
+  <point x="22.905005234947712" y="-7.434168646680305" z="0"></point>
+  <point x="22.745768900135953" y="-16.010182678689148" z="0"></point>
+  <roadSegment start="0" id="12" type="road"></roadSegment>
+</spline>
+<spline uuid="3cfc482b-1e42-4d42-8a97-adccc6962aed" type="autov2">
+  <point x="22.745768900135953" y="-16.010182678689148" z="0"></point>
+  <point x="22.96854217318466" y="-4.012250687346009" z="0"></point>
+  <point x="23.191315446233368" y="7.985681303997131" z="0"></point>
+  <point x="23.414088719282073" y="19.98361329534027" z="0"></point>
+  <roadSegment start="0" id="13" type="road"></roadSegment>
+</spline>
+<spline uuid="9cfe0715-03c3-4707-af13-f6bc019e9a65" type="autov2">
+  <point x="23.414088719282073" y="19.98361329534027" z="0"></point>
+  <point x="23.191315446233368" y="7.985681303997131" z="0"></point>
+  <point x="22.96854217318466" y="-4.012250687346009" z="0"></point>
+  <point x="22.745768900135953" y="-16.010182678689148" z="0"></point>
+  <roadSegment start="0" id="14" type="road"></roadSegment>
+</spline>
+<spline uuid="84647585-a4d4-44aa-97fd-1be382186008" type="autov2">
+  <point x="41.078324960446025" y="2.0474402070458386" z="0"></point>
+  <point x="32.68702972685974" y="2.0195002674212756" z="0"></point>
+  <point x="23.258308163736455" y="11.593717660950766" z="0"></point>
+  <point x="23.414088719282073" y="19.98361329534027" z="0"></point>
+  <roadSegment start="0" id="15" type="road"></roadSegment>
+</spline>
+<spline uuid="70e0d5a8-bf6d-4b88-a8cc-1934197d5930" type="autov2">
+  <point x="23.414088719282073" y="19.98361329534027" z="0"></point>
+  <point x="23.258308163736455" y="11.593717660950766" z="0"></point>
+  <point x="32.68702972685974" y="2.0195002674212756" z="0"></point>
+  <point x="41.078324960446025" y="2.0474402070458386" z="0"></point>
+  <roadSegment start="0" id="16" type="road"></roadSegment>
+</spline>
+<junction id="1" name="Junction1">
+  <position x="0" y="0" z="0"></position>
+  <connection id="0" incomingRoad="1" connectingRoad="5" contactPoint="start">
+    <laneLink from="-1" to="-1"></laneLink>
+    <laneLink from="-2" to="-2"></laneLink>
+    <laneLink from="-3" to="-3"></laneLink>
+  </connection>
+  <connection id="1" incomingRoad="2" connectingRoad="6" contactPoint="start">
+    <laneLink from="-1" to="-1"></laneLink>
+    <laneLink from="-2" to="-2"></laneLink>
+  </connection>
+  <connection id="2" incomingRoad="1" connectingRoad="7" contactPoint="start">
+    <laneLink from="-1" to="-1"></laneLink>
+    <laneLink from="-2" to="-2"></laneLink>
+  </connection>
+  <connection id="3" incomingRoad="4" connectingRoad="8" contactPoint="start">
+    <laneLink from="2" to="-2"></laneLink>
+    <laneLink from="1" to="-1"></laneLink>
+  </connection>
+  <connection id="4" incomingRoad="1" connectingRoad="9" contactPoint="start">
+    <laneLink from="-1" to="-1"></laneLink>
+    <laneLink from="-2" to="-2"></laneLink>
+  </connection>
+  <connection id="5" incomingRoad="3" connectingRoad="10" contactPoint="start">
+    <laneLink from="2" to="-2"></laneLink>
+    <laneLink from="1" to="-1"></laneLink>
+    <laneLink from="3" to="-3"></laneLink>
+  </connection>
+  <connection id="6" incomingRoad="2" connectingRoad="11" contactPoint="start">
+    <laneLink from="-1" to="-1"></laneLink>
+    <laneLink from="-2" to="-2"></laneLink>
+    <laneLink from="-3" to="-3"></laneLink>
+  </connection>
+  <connection id="7" incomingRoad="4" connectingRoad="12" contactPoint="start">
+    <laneLink from="2" to="-2"></laneLink>
+    <laneLink from="1" to="-1"></laneLink>
+  </connection>
+  <connection id="8" incomingRoad="2" connectingRoad="13" contactPoint="start">
+    <laneLink from="-1" to="-1"></laneLink>
+    <laneLink from="-2" to="-2"></laneLink>
+  </connection>
+  <connection id="9" incomingRoad="3" connectingRoad="14" contactPoint="start">
+    <laneLink from="2" to="-2"></laneLink>
+    <laneLink from="1" to="-1"></laneLink>
+  </connection>
+  <connection id="10" incomingRoad="4" connectingRoad="15" contactPoint="start">
+    <laneLink from="2" to="-2"></laneLink>
+    <laneLink from="1" to="-1"></laneLink>
+    <laneLink from="3" to="-3"></laneLink>
+  </connection>
+  <connection id="11" incomingRoad="3" connectingRoad="16" contactPoint="start">
+    <laneLink from="2" to="-2"></laneLink>
+    <laneLink from="1" to="-1"></laneLink>
+  </connection>
+</junction>
+<environment name="Default">
+  <Weather>
+    <Sun azimuth="1" elevation="0" illuminance="6">
+      <Color r="1" g="1" b="1"></Color>
+    </Sun>
+  </Weather>
+</environment>
