@@ -10,11 +10,14 @@ import { Vector3 } from 'three';
 import { ViewportEvents } from 'app/events/viewport-events';
 import { RoadService } from "./road/road.service";
 import { TvLane } from 'app/map/models/tv-lane';
+import { SnackBar } from "./snack-bar.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class StatusBarService {
+
+	static messageLogs: string[] = [];
 
 	static message: string = '';
 
@@ -28,11 +31,13 @@ export class StatusBarService {
 
 	private pos = new TvPosTheta( 0, 0, 0, 0, 0 );
 
-	// public message = '';
+	static snackBar: SnackBar;
 
 	constructor (
 		public roadService: RoadService,
+		public snackBar: SnackBar,
 	) {
+		StatusBarService.snackBar = snackBar;
 		this.cursor = new PointerEventData();
 		this.cursor.point = new Vector3();
 		ViewportEvents.instance?.pointerMoved.subscribe( this.onPointerMoved.bind( this ) );
@@ -93,19 +98,30 @@ export class StatusBarService {
 
 		if ( msg == '' || msg == null ) return;
 
-		if ( this.message === msg ) return;
+		const hint = 'Hint: ' + msg;
 
-		this.setMessage( 'Hint: ' + msg );
+		this.setMessage( hint, true );
 
+		// // check message logs if last 2 messages are same then show snackbar
+		// if ( this.messageLogs.length > 1 && this.messageLogs[ this.messageLogs.length - 1 ] === this.messageLogs[ this.messageLogs.length - 2 ] ) {
+		// 	this.snackBar.warn( hint );
+		// }
 	}
 
-	static setMessage ( msg: string ) {
+	static setMessage ( msg: string, force = false ) {
 
-		if ( this.message === msg ) return;
+		if ( !force && this.message === msg ) return;
 
 		this.message = msg;
 
 		this.messageChanged.emit( this.message );
+
+		// only keep last 5 message logs
+		this.messageLogs.push( msg );
+
+		if ( this.messageLogs.length > 5 ) {
+			this.messageLogs.shift();
+		}
 
 	}
 
