@@ -14,4 +14,7 @@ npm run sentry-inject
 
 npm run sentry-upload
 
+# remove .map files from dist folder
+rm -rf dist/*.map
+
 npm run release
