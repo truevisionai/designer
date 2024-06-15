@@ -122,5 +122,7 @@ export class TvConsole {
 		if ( this.logs.length > MAX_LOG_COUNT ) this.logs.pop();
 
 		this.logsChanged.emit();
+
+		console.error( message );
 	}
 }

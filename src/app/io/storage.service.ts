@@ -98,7 +98,17 @@ export class StorageService {
 
 	copyFileSync ( sourcePath: string, destinationPath: string ): PutFileResponse {
 
-		return this.fileService.fs.copyFileSync( sourcePath, destinationPath );
+		try {
+
+			return this.fileService.fs.copyFileSync( sourcePath, destinationPath );
+
+		} catch ( error ) {
+
+			console.error( error );
+
+			return null;
+
+		}
 
 	}
 

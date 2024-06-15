@@ -70,6 +70,8 @@ export class ProjectService {
 
 	}
 
+	private defaultProjectPath: string;
+
 	constructor (
 		private electronService: TvElectronService,
 		private storageService: StorageService,
@@ -143,6 +145,8 @@ export class ProjectService {
 
 			const defaultProjectPath = this.getDefaultProjectPath( subFolder );
 
+			console.log( 'defaultProjectPath', defaultProjectPath );
+
 			this.storageService.getDirectoryFiles( defaultProjectPath ).forEach( file => {
 
 				const destinationFolder = this.storageService.join( this.projectPath, `/${ subFolder }/` );
@@ -179,17 +183,40 @@ export class ProjectService {
 
 	getDefaultProjectPath ( folder: string ) {
 
+		if ( this.defaultProjectPath ) return this.defaultProjectPath;
+
+		const pathsToCheck = [];
+
 		if ( this.electronService.remote.app.isPackaged ) {
 
 			const appPath = this.electronService.remote.app.getAppPath();
 
-			return this.storageService.resolve( appPath, `./default-project/${ folder }` );
+			pathsToCheck.push( this.storageService.resolve( appPath, `./default-project/${ folder }` ) );
+			pathsToCheck.push( this.storageService.resolve( appPath, `../default-project/${ folder }` ) );
+			pathsToCheck.push( this.storageService.resolve( appPath, `../../default-project/${ folder }` ) );
+
+			// Check common AppImage locations
+			pathsToCheck.push( this.storageService.resolve( '/usr/lib', `./default-project/${ folder }` ) );
+			pathsToCheck.push( this.storageService.resolve( '/tmp/.mount_', `./default-project/${ folder }` ) );
 
 		} else {
 
-			return this.storageService.join( this.currentDirectory, `/default-project/${ folder }` );
+			pathsToCheck.push( this.storageService.join( this.currentDirectory, `/default-project/${ folder }` ) );
 
 		}
+
+		for ( const path of pathsToCheck ) {
+
+			if ( this.storageService.exists( path ) ) {
+
+				return this.defaultProjectPath = path;
+
+			}
+
+		}
+
+		throw new Error( `Default project path for ${ folder } not found in expected locations.` );
+
 	}
 
 	fetchMetaFile ( file: Asset | string ): Metadata {

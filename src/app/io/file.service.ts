@@ -230,6 +230,8 @@ export class FileService {
 
 			this.snackBar.error( `Error in creating project at ${ path }` );
 
+			console.error( error );
+
 		}
 
 	}
@@ -262,6 +264,8 @@ export class FileService {
 		} catch ( error ) {
 
 			TvConsole.error( error );
+
+			console.error( error );
 
 			return [];
 
