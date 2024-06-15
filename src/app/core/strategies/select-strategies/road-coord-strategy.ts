@@ -15,11 +15,12 @@ export class RoadCoordStrategy extends SelectStrategy<TvRoadCoord> {
 	private road: TvRoad;
 	private highlight = true;
 
-	constructor ( private includeJunctionRoads = false, highlight = false ) {
+	constructor ( private includeJunctionRoads = false, highlight = false, roadDebugger?: IDebugger<TvRoad, any> ) {
 
 		super();
 
-		this.highlight = highlight
+		this.highlight = highlight;
+		this.debugger = roadDebugger;
 	}
 
 	onPointerDown ( pointerEventData: PointerEventData ): TvRoadCoord {

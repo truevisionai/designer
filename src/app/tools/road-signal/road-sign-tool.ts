@@ -46,7 +46,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
 		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy( true, true, this.tool.toolDebugger ) );
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 
@@ -105,7 +105,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
-		this.tool.base.highlight( pointerEventData );
+		this.highlight( pointerEventData );
 
 		if ( !this.isPointerDown ) return;
 

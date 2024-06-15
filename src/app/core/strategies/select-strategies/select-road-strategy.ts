@@ -16,11 +16,13 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 
 	private highlight = true;
 
-	constructor ( private includeJunctionRoads = false, higlight = false ) {
+	constructor ( private includeJunctionRoads = false, higlight = false, roadDebugger?: IDebugger<TvRoad, any> ) {
 
 		super();
 
 		this.highlight = higlight;
+
+		this.debugger = roadDebugger;
 
 	}
 
