@@ -70,8 +70,6 @@ export class ProjectService {
 
 	}
 
-	private defaultProjectPath: string;
-
 	constructor (
 		private electronService: TvElectronService,
 		private storageService: StorageService,
@@ -183,8 +181,6 @@ export class ProjectService {
 
 	getDefaultProjectPath ( folder: string ) {
 
-		if ( this.defaultProjectPath ) return this.defaultProjectPath;
-
 		const pathsToCheck = [];
 
 		if ( this.electronService.remote.app.isPackaged ) {
@@ -209,7 +205,7 @@ export class ProjectService {
 
 			if ( this.storageService.exists( path ) ) {
 
-				return this.defaultProjectPath = path;
+				return path;
 
 			}
 
