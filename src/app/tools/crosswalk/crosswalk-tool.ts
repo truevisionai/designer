@@ -95,6 +95,16 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		const roadCoord = this.tool.roadService.findRoadCoord( e.point );
 
+		if ( !roadCoord ) {
+			this.setHint( 'Click on a road to create a crosswalk' );
+			return;
+		}
+
+		if ( roadCoord.road.isJunction ) {
+			this.setHint( 'Cannot create crosswalk on junction road' );
+			return;
+		}
+
 		if ( !this.selectedCrosswalk ) {
 
 			this.createCrosswalk( roadCoord );
@@ -329,6 +339,8 @@ export class CrosswalkTool extends BaseTool<any> {
 	}
 
 	createCornerRoad ( roadObject: TvRoadObject, roadCoord: TvRoadCoord ) {
+
+		if ( roadCoord.roadId != roadObject.road.id ) return;
 
 		const id = this.selectedCrosswalk.outlines[ 0 ].cornerRoad.length;
 
