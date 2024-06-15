@@ -4,7 +4,7 @@ Truevision Designer is a 3D tool to design roads, intersections and environments
 
 From this repository you can build the Truevision Designer for Windows and Linux.
 
-[![Video](docs/img/welcome.jpg)]
+![Video](docs/img/welcome.jpg)
 
 
 ## Features
