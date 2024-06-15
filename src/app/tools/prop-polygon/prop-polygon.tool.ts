@@ -12,7 +12,7 @@ import { Vector3 } from 'three';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { PropPolygonInspector } from "../../map/prop-polygon/prop-polygon.inspector";
 
-export class PropPolygonTool extends BaseTool<PropPolygon> {
+export class PropPolygonTool extends BaseTool<any> {
 
 	public name: string = 'PropPolygonTool';
 
@@ -35,6 +35,20 @@ export class PropPolygonTool extends BaseTool<PropPolygon> {
 				prop.data?.rotationVariance || new Vector3( 0, 0, 0 ),
 				prop.data?.scaleVariance || new Vector3( 0, 0, 0 )
 			);
+
+		}
+
+	}
+
+	onObjectUpdated ( object: any ) {
+
+		if ( object instanceof PropPolygonInspector ) {
+
+			super.onObjectUpdated( object.polygon );
+
+		} else {
+
+			super.onObjectUpdated( object );
 
 		}
 
