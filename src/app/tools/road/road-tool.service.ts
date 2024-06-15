@@ -25,9 +25,8 @@ export class RoadToolService {
 		public assetService: AssetService,
 		public splineService: SplineService,
 		public base: BaseToolService,
-		public mapService: MapService,
-		public controlPointService: ControlPointFactory,
-		private roadLinkService: RoadLinkService,
+		public pointFactory: ControlPointFactory,
+		public roadLinkService: RoadLinkService,
 		public roadService: RoadService,
 		public splineFactory: SplineFactory,
 	) {

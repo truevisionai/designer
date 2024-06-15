@@ -152,7 +152,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		const spline = this.tool.splineFactory.getNewSpline();
 
-		const point = this.tool.controlPointService.createSplineControlPoint( spline, position );
+		const point = this.tool.pointFactory.createSplineControlPoint( spline, position );
 
 		spline.controlPoints.push( point );
 
