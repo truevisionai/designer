@@ -87,3 +87,17 @@ Mesh Builders are responsible for building 3d objects based on map/data layer
 - Manage external libraries or tools effectively to prevent conflicts and ensure smooth updates and deployment.
 
 Following these guidelines helps create a robust, clear, and efficient codebase, simplifying both individual contributions and team collaborations.
+
+
+## Prioritization
+
+MoSCoW method
+The MosCow Method is a four-step process for prioritizing product requirements around their return on investment (ROI). 
+It stands for “must haves,” “should haves,” “could haves,” and “will not haves.” 
+
+Here’s a breakdown of the model: 
+
+Must Have (M): These are the requirements needed for the project's success.
+Should Have (S): These are important requirements for the project but not necessary.
+Could Have (C ):  These requirements are “nice to have.” But don’t have as much impact as the others. 
+Will Not Have (W): These requirements aren’t a priority for the project.
