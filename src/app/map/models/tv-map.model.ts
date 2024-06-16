@@ -13,7 +13,7 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoad } from './tv-road.model';
 import { Surface } from '../surface/surface.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Object3D } from 'three';
+import { Object3D, Vector2 } from 'three';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { IDService } from 'app/factories/id.service';
 import { ManagedMap } from "../../core/models/managed-map";
@@ -47,6 +47,8 @@ export class TvMap {
 	public roads = new ManagedMap<TvRoad>();
 
 	public junctions = new ManagedMap<TvJunction>();
+
+	public offset = new Vector2();
 
 	private splines: AbstractSpline[] = [];
 
