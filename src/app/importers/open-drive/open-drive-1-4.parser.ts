@@ -249,14 +249,14 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const elementId = parseFloat( xmlElement.attr_elementId );
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-		if ( !contactPoint ) TvConsole.error( 'no contact point found' );
-
-		const elementS = parseFloat( xmlElement.attr_elementS );
-		const elementDir = this.parseOrientation( xmlElement.attr_elementDir );
+		const elementS = xmlElement.attr_elementS ? parseFloat( xmlElement.attr_elementS ) : null;
+		const elementDir: TvOrientation = xmlElement.attr_elementDir ? this.parseOrientation( xmlElement.attr_elementDir ) : null;
 
 		let element = null;
 
 		if ( elementType == TvRoadLinkChildType.road ) {
+
+			if ( !contactPoint ) TvConsole.error( 'no contact point found' );
 
 			element = this.map.getRoadById( elementId );
 
@@ -273,11 +273,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const roadLink = new TvRoadLinkChild( elementType, element, contactPoint );
 
-		if ( elementS != null ) {
+		if ( elementS ) {
 			roadLink.elementS = elementS;
 		}
 
-		if ( elementDir != null ) {
+		if ( elementDir ) {
 			roadLink.elementDir = elementDir;
 		}
 
