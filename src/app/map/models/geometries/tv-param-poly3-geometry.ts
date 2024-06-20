@@ -117,7 +117,7 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 		const pos = this.getPoint( t );
 		const hdg_t = this.getHdg( t );
 
-		return new TvPosTheta( pos.x, pos.y, hdg_t );
+		return new TvPosTheta( pos.x, pos.y, hdg_t, s );
 
 
 		// // Calculate U and V from the cubic polynomial
