@@ -64,6 +64,10 @@ export enum TvSupporteRoadMarkTypes {
 	NONE = 'none',
 	SOLID = 'solid',
 	BROKEN = 'broken',
+	SOLID_SOLID = 'solid solid',
+	SOLID_BROKEN = 'solid broken',
+	BROKEN_SOLID = 'broken solid',
+	BROKEN_BROKEN = 'broken broken',
 }
 
 export enum TvRoadMarkWeights {

@@ -20,6 +20,7 @@ import { TvLaneWidth } from './tv-lane-width';
 import { TvUtils } from './tv-utils';
 import { TrafficRule } from './traffic-rule';
 import { TvLaneHeight } from '../lane-height/lane-height.model';
+import { OrderedMap } from "../../core/models/ordered-map";
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -53,7 +54,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public borders: TvLaneBorder[] = [];
 
-	public roadMarks: TvLaneRoadMark[] = [];
+	public roadMarks = new OrderedMap<TvLaneRoadMark>();
 
 	public material: TvLaneMaterial[] = [];
 
@@ -369,23 +370,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.width;
 	}
 
-	getLaneRoadMarkVector (): TvLaneRoadMark[] {
-		return this.roadMarks;
-	}
-
 	getLaneWidth ( index ): TvLaneWidth {
 
 		if ( this.width.length > 0 && index < this.width.length ) {
 			return this.width[ index ];
-		}
-
-		return null;
-	}
-
-	getLaneRoadMark ( index ): TvLaneRoadMark {
-
-		if ( this.roadMarks.length > 0 && index < this.roadMarks.length ) {
-			return this.roadMarks[ index ];
 		}
 
 		return null;
@@ -438,10 +426,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getLaneWidthCount (): number {
 		return this.width.length;
-	}
-
-	getLaneRoadMarkCount (): number {
-		return this.roadMarks.length;
 	}
 
 	getLaneMaterialCount (): number {
@@ -611,7 +595,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 */
 	getRoadMark ( sCheck ): TvLaneRoadMark {
 
-		return TvUtils.checkIntervalArray( this.roadMarks, sCheck );
+		return this.roadMarks.findAt( sCheck );
 
 	}
 
@@ -626,11 +610,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d, newLane ) );
 		} );
 
-		this.getLaneRoadMarkVector().forEach( roadMark => {
-			newLane.addRoadMarkInstance( new TvLaneRoadMark(
-				roadMark.sOffset, roadMark.type, roadMark.weight, roadMark.color,
-				roadMark.width, roadMark.laneChange, roadMark.height, newLane
-			) );
+		this.roadMarks.forEach( roadMark => {
+			const clone = roadMark.clone( roadMark.sOffset, newLane );
+			newLane.roadMarks.set( clone.s, clone );
 		} );
 
 		return newLane;
@@ -683,15 +665,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getRoadMarkAt ( s: number ): TvLaneRoadMark {
 
-		return TvUtils.checkIntervalArray( this.roadMarks, s );
+		return this.roadMarks.findAt( s );
 
 	}
 
 	addRoadMarkInstance ( roadmark: TvLaneRoadMark ) {
 
-		this.roadMarks.push( roadmark );
-
-		this.roadMarks.sort( ( a, b ) => a.sOffset > b.sOffset ? 1 : -1 );
+		this.roadMarks.set( roadmark.s, roadmark );
 
 	}
 
@@ -749,7 +729,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	removeRoadMark ( roadmark: TvLaneRoadMark ) {
 
-		this.roadMarks.splice( this.roadMarks.indexOf( roadmark ), 1 );
+		this.roadMarks.remove( roadmark );
 
 	}
 

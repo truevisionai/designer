@@ -88,7 +88,7 @@ export class OdRoadMarkBuilderV1 {
 
 	private processLane ( laneSection: TvLaneSection, lane: TvLane ) {
 
-		const roadMarks = lane.roadMarks;
+		const roadMarks = lane.roadMarks.toArray();
 
 		roadMarks.forEach( mark => mark.clearMesh() );
 

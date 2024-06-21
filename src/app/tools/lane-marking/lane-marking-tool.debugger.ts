@@ -91,19 +91,17 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 			laneSection.lanes.forEach( lane => {
 
-				for ( let i = 0; i < lane.roadMarks.length; i++ ) {
+				lane.roadMarks.forEach( roadMark => {
 
-					const laneMark = lane.roadMarks[ i ];
+					const node = this.createNode( road, laneSection, lane, roadMark );
 
-					const node = this.createNode( road, laneSection, lane, laneMark );
+					const line = this.createSpanLine( road, laneSection, lane, roadMark, node );
 
-					const line = this.createSpanLine( road, laneSection, lane, laneMark, node );
+					this.spanLines.add( roadMark.uuid, line );
 
-					this.spanLines.add( laneMark.uuid, line );
+					this.nodes.add( roadMark.uuid, node );
 
-					this.nodes.add( laneMark.uuid, node );
-
-				}
+				} );
 
 			} );
 
@@ -116,13 +114,13 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 			laneSection.lanes.forEach( lane => {
 
-				for ( let i = 0; i < lane.roadMarks.length; i++ ) {
+				lane.roadMarks.forEach( roadMark => {
 
-					this.nodes.remove( lane.roadMarks[ i ].uuid );
+					this.nodes.remove( roadMark.uuid );
 
-					this.spanLines.remove( lane.roadMarks[ i ].uuid );
+					this.spanLines.remove( roadMark.uuid );
 
-				}
+				} );
 
 			} )
 
@@ -159,9 +157,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	createSpanLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadmark: TvLaneRoadMark, node: LaneMarkingNode ) {
 
-		const index = lane.roadMarks.indexOf( roadmark );
-
-		const nextRoadMark = lane.roadMarks[ index + 1 ];
+		const nextRoadMark = lane.roadMarks.getNext( roadmark );
 
 		const sStart = roadmark.s;
 

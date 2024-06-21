@@ -63,6 +63,7 @@ export class LaneMarkingInspector {
 	set markingType ( value: TvRoadMarkTypes ) {
 		this.roadmark.type = value;
 		this.space = TvLaneRoadMark.getSpaceByType( value );
+		this.length = TvLaneRoadMark.getLengthByType( value );
 	}
 
 	@SerializedField( { type: 'enum', enum: TvRoadMarkWeights } )

@@ -476,9 +476,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 * @param lane
 	 * @param sOffset s offset is relative to lane section
 	 */
-	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0 ) {
 
-		const t = this.findWidthUpto( road, laneSection, lane, sOffset );
+		const t = this.findWidthUpto( road, laneSection, lane, sOffset ) + tOffset;
 
 		const sign = lane.id > 0 ? 1 : -1;
 

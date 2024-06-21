@@ -21,6 +21,16 @@ export enum TvRoadMarkRule {
 	NONE = 'none',
 }
 
+export const STANDARD_WIDTH = 0.15;
+export const DASH_LENGTH = 3.0;
+export const DASH_SPACE = 9.0;
+export const DOUBLE_LINE_SPACE = 0.1;
+export const BOTTS_DOTS_DIAMETER = 0.1;
+export const BOTTS_DOTS_HEIGHT = 0.02;
+export const BOTTS_DOTS_SPACE = 1.2;
+export const CURB_HEIGHT = 0.15;
+export const CURB_WIDTH = 0.3;
+
 export class TvLaneRoadMark {
 
 	public readonly uuid: string;
@@ -94,7 +104,7 @@ export class TvLaneRoadMark {
 		laneChange: TvRoadMarkLaneChange = TvRoadMarkLaneChange.NONE,
 		height: number = 0.00,
 		lane: TvLane,
-		length: number = 3.0,
+		length: number = null,
 		space: number = null,
 		materialGuid: string = null
 	) {
@@ -112,6 +122,7 @@ export class TvLaneRoadMark {
 		this.space = space || TvLaneRoadMark.getSpaceByType( type );
 		this.materialGuid = materialGuid;
 		this.lane = lane;
+		this.length = length || TvLaneRoadMark.getLengthByType( type );
 	}
 
 	get s2 () {
@@ -139,10 +150,53 @@ export class TvLaneRoadMark {
 	}
 
 	static getSpaceByType ( value: TvRoadMarkTypes ) {
-		if ( value == TvRoadMarkTypes.BROKEN ) {
-			return 4.5;
-		} else {
-			return 0;
+		switch ( value ) {
+			case TvRoadMarkTypes.SOLID:
+				return 0;
+			case TvRoadMarkTypes.BROKEN:
+				return 4.5;
+			case TvRoadMarkTypes.SOLID_SOLID:
+				return 0;
+			case TvRoadMarkTypes.SOLID_BROKEN:
+				return 4.5;
+			case TvRoadMarkTypes.BROKEN_SOLID:
+				return 4.5;
+			case TvRoadMarkTypes.BROKEN_BROKEN:
+				return 4.5;
+			case TvRoadMarkTypes.BOTTS_DOTS:
+				return 1.2;
+			case TvRoadMarkTypes.GRASS:
+				return 0;
+			case TvRoadMarkTypes.CURB:
+				return 0;
+			default:
+				return 0;
+		}
+
+	}
+
+	static getLengthByType ( value: TvRoadMarkTypes ) {
+		switch ( value ) {
+			case TvRoadMarkTypes.SOLID:
+				return 1.0;
+			case TvRoadMarkTypes.BROKEN:
+				return DASH_LENGTH;
+			case TvRoadMarkTypes.SOLID_SOLID:
+				return 1.0;
+			case TvRoadMarkTypes.SOLID_BROKEN:
+				return DASH_LENGTH;
+			case TvRoadMarkTypes.BROKEN_SOLID:
+				return DASH_LENGTH;
+			case TvRoadMarkTypes.BROKEN_BROKEN:
+				return DASH_LENGTH;
+			case TvRoadMarkTypes.BOTTS_DOTS:
+				return 1.0;
+			case TvRoadMarkTypes.GRASS:
+				return 1.0;
+			case TvRoadMarkTypes.CURB:
+				return 1.0;
+			default:
+				return 1.0;
 		}
 	}
 

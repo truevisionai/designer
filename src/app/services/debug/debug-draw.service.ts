@@ -9,7 +9,15 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Mesh, MeshBasicMaterial, SphereGeometry, Vector2, Vector3 } from 'three';
+import {
+	Color,
+	Mesh,
+	MeshBasicMaterial,
+	PointsMaterial,
+	SphereGeometry,
+	Vector2,
+	Vector3
+} from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
@@ -26,6 +34,7 @@ import { LanePointNode, LaneSpanNode } from "../../objects/lane-node";
 import { SceneService } from '../scene.service';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { RoadService } from '../road/road.service';
+import { SimpleControlPoint } from "../../objects/simple-control-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -43,6 +52,14 @@ export class DebugDrawService {
 	constructor ( private roadService: RoadService ) {
 
 		DebugDrawService._instance = this;
+
+	}
+
+	drawPoint ( position: Vector3, size = 10, color = COLOR.RED ) {
+
+		const point = this.createPoint( position, size, color );
+
+		this.group.add( point );
 
 	}
 
@@ -68,6 +85,18 @@ export class DebugDrawService {
 
 		return sphere;
 
+	}
+
+	createPoint ( position: Vector3, size = 10, color = COLOR.RED ) {
+
+		const point = new SimpleControlPoint( null, position );
+
+		( point.material as PointsMaterial ).color = new Color( color );
+		( point.material as PointsMaterial ).size = size;
+		( point.material as PointsMaterial ).needsUpdate = true;
+
+
+		return point;
 	}
 
 	clear () {
@@ -547,5 +576,4 @@ export class DebugDrawService {
 		return posTheta.toVector3();
 
 	}
-
 }

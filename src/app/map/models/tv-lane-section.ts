@@ -341,84 +341,6 @@ export class TvLaneSection {
 	}
 
 	/**
-	 * Get the lane section s-offset
-	 */
-	getS () {
-		return this.attr_s;
-	}
-
-	setS ( value ) {
-		this.attr_s = value;
-	}
-
-	/**
-	 * Get the lane section final s-offset which is the
-	 * s-offset of the last record of the lane section
-	 */
-	getS2 () {
-
-		let maxSValue = 0;
-
-		const size = this.getLaneCount();
-
-		for ( let i = 0; i < size; i++ ) {
-
-			const lane = this.getLane( i );
-
-			const width = lane.getLaneWidth( i );
-			if ( width != null ) {
-				if ( width.s > maxSValue ) {
-					maxSValue = width.s;
-				}
-			}
-
-			const roadMark = lane.getLaneRoadMark( i );
-			if ( roadMark != null ) {
-				if ( roadMark.sOffset > maxSValue ) {
-					maxSValue = roadMark.sOffset;
-				}
-			}
-
-			const material = lane.getLaneMaterial( i );
-			if ( material != null ) {
-				if ( material.sOffset > maxSValue ) {
-					maxSValue = material.sOffset;
-				}
-			}
-
-			const visibility = lane.getLaneVisibility( i );
-			if ( visibility != null ) {
-				if ( visibility.sOffset > maxSValue ) {
-					maxSValue = visibility.sOffset;
-				}
-			}
-
-			const speed = lane.getLaneSpeed( i );
-			if ( speed != null ) {
-				if ( speed.sOffset > maxSValue ) {
-					maxSValue = speed.sOffset;
-				}
-			}
-
-			const access = lane.getLaneAccess( i );
-			if ( access != null ) {
-				if ( access.sOffset > maxSValue ) {
-					maxSValue = access.sOffset;
-				}
-			}
-
-			const height = lane.getLaneHeight( i );
-			if ( height != null ) {
-				if ( height.sOffset > maxSValue ) {
-					maxSValue = height.sOffset;
-				}
-			}
-		}
-
-		return this.getS() + maxSValue;
-	}
-
-	/**
 	 * Check if the tested s-offset is inside the lane section interval
 	 * @param sCheck A double s-offset value that has to be checked
 	 * @returns {boolean} Return true if the s-offset value belongs to current lane section, false otherwise
@@ -430,24 +352,6 @@ export class TvLaneSection {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Return the lane-0 index in the lanes vector
-	 */
-	getZeroLaneIndex () {
-
-		for ( let i = 0; i < this.getLaneCount(); i++ ) {
-
-			if ( this.laneArray[ i ].id === 0 ) {
-
-				return i;
-
-			}
-
-		}
-
-		return 0;
 	}
 
 	getLeftLaneCount () {

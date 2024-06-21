@@ -4,12 +4,12 @@
 
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
-import { Vector2, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, Mesh, Object3D, Vector2, Vector3 } from 'three';
 import { GameObject } from '../../objects/game-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
 import { TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
 import { TvLane } from '../models/tv-lane';
-import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
+import { DOUBLE_LINE_SPACE, TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
@@ -19,11 +19,19 @@ import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/core/asset/asset-database';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvRoadObjectType } from "../models/objects/tv-road-object";
+import { RoadService } from "../../services/road/road.service";
+import { DebugDrawService } from "../../services/debug/debug-draw.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class LaneRoadMarkBuilder {
+
+	constructor (
+		private roadService: RoadService,
+		private debugService: DebugDrawService,
+	) {
+	}
 
 	public buildRoad ( road: TvRoad ): void {
 
@@ -39,9 +47,67 @@ export class LaneRoadMarkBuilder {
 
 				const lane = lanes[ j ];
 
-				for ( const roadMark of lane.roadMarks ) {
+				for ( const roadMark of lane.roadMarks.values() ) {
 
-					this.createRoadMark( roadMark, lane, laneSection, road );
+					// this.createRoadMark( roadMark, lane, laneSection, road );
+
+					const roadMarkMesh = new Object3D();
+
+					roadMarkMesh.name = "RoadMark:" + roadMark.s;
+
+					const subMeshes = [];
+
+					if ( roadMark.type == TvRoadMarkTypes.SOLID_SOLID ) {
+
+						const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
+
+						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, -tOffset );
+						const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID );
+
+						if ( mesh1 ) subMeshes.push( mesh1 );
+						if ( mesh2 ) subMeshes.push( mesh2 );
+
+					} else if ( roadMark.type == TvRoadMarkTypes.BROKEN_SOLID ) {
+
+						const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
+
+						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN, -tOffset );
+						const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, );
+
+						if ( mesh1 ) subMeshes.push( mesh1 );
+						if ( mesh2 ) subMeshes.push( mesh2 );
+
+					} else if ( roadMark.type == TvRoadMarkTypes.SOLID_BROKEN ) {
+
+						const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
+
+						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, -tOffset );
+						const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN );
+
+						if ( mesh1 ) subMeshes.push( mesh1 );
+						if ( mesh2 ) subMeshes.push( mesh2 );
+
+					} else if ( roadMark.type == TvRoadMarkTypes.BROKEN_BROKEN ) {
+
+						const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
+
+						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN, -tOffset );
+						const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN );
+
+						if ( mesh1 ) subMeshes.push( mesh1 );
+						if ( mesh2 ) subMeshes.push( mesh2 );
+
+					} else {
+
+						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, roadMark.type );
+
+						if ( mesh1 ) subMeshes.push( mesh1 );
+
+					}
+
+					subMeshes.forEach( mesh => roadMarkMesh.add( mesh ) );
+
+					lane.gameObject?.add( roadMarkMesh );
 
 				}
 
@@ -50,13 +116,184 @@ export class LaneRoadMarkBuilder {
 		}
 	}
 
-	private createRoadMark ( roadMark: TvLaneRoadMark, lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+	private buildRoadMark ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadMark: TvLaneRoadMark, type: TvRoadMarkTypes, tOffset = 0 ) {
 
-		const roadMarks = lane.roadMarks;
+		if ( type == TvRoadMarkTypes.NONE ) return;
+
+		const positions: number[] = [];
+		const uvs: number[] = [];
+		const normals: number[] = [];
+		const indices: number[] = [];
+
+		const nextRoadMark = lane.roadMarks.getNext( roadMark );
+		const sEnd = nextRoadMark?.s || laneSection.length;
+
+		// Determine step size and vertex count based on road mark type
+		let step = type === TvRoadMarkTypes.SOLID ? 1 : roadMark.length + roadMark.space;
+
+		let index = 0;
+		let currentIndex = 0;
+
+		const addVertex = ( index: number, position: Vector3, uvX: number, uvY: number ) => {
+
+			positions.push( position.x, position.y, position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT );
+
+			normals.push( 0, 0, 1 );
+
+			uvs.push( uvX, uvY );
+
+			return index + 1;
+
+		}
+
+		const processStep = ( sOffset: number ) => {
+
+			const posTheta = this.roadService.findLaneEndPosition( road, laneSection, lane, sOffset, tOffset );
+
+			const leftStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 );
+			const rightStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
+
+			if ( type === TvRoadMarkTypes.SOLID ) {
+
+				index = addVertex( index, leftStart.position, sOffset, 0 );
+				index = addVertex( index, rightStart.position, sOffset, roadMark.width );
+
+				if ( currentIndex > 0 ) {
+					indices.push( currentIndex, currentIndex - 1, currentIndex + 1 );
+					indices.push( currentIndex - 2, currentIndex - 1, currentIndex );
+				}
+
+				currentIndex += 2;
+
+			} else if ( type == TvRoadMarkTypes.BROKEN ) {
+
+				index = addVertex( index, leftStart.position, 0, 0 );
+				index = addVertex( index, rightStart.position, 0, roadMark.width );
+
+				const nextSOffset = Math.min( sOffset + roadMark.length, sEnd );
+				const nextPosTheta = this.roadService.findLaneEndPosition( road, laneSection, lane, nextSOffset, tOffset );
+
+				const leftEnd = nextPosTheta.clone().addLateralOffset( roadMark.width * 0.5 );
+				const rightEnd = nextPosTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
+
+				index = addVertex( index, leftEnd.position, roadMark.length, 0 );
+				index = addVertex( index, rightEnd.position, roadMark.length, roadMark.width );
+
+				indices.push( currentIndex, currentIndex + 1, currentIndex + 2 );
+				indices.push( currentIndex + 2, currentIndex + 1, currentIndex + 3 );
+
+				currentIndex += 4;
+			}
+
+		}
+
+		for ( let s = roadMark.s; s < sEnd; s += step ) {
+			processStep( s );
+		}
+
+		processStep( sEnd - Maths.Epsilon );
+
+		const geometry = new BufferGeometry();
+
+		geometry.setIndex( indices );
+		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( positions ), 3 ) );
+		geometry.setAttribute( 'normal', new BufferAttribute( new Float32Array( normals ), 3 ) );
+		geometry.setAttribute( 'uv', new BufferAttribute( new Float32Array( uvs ), 2 ) );
+
+		geometry.computeBoundingBox();
+		geometry.computeBoundingSphere();
+
+		const material = this.getMaterial( roadMark );
+
+		return new Mesh( geometry, material );
+
+	}
+
+
+	// private buildRoadMark ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadMark: TvLaneRoadMark ) {
+	//
+	// 	if ( roadMark.type == TvRoadMarkTypes.NONE ) return;
+	//
+	// 	function addVertex ( index, geometry, position, uvX, uvY ) {
+	// 		const posArray = geometry.attributes.position.array;
+	// 		const normArray = geometry.attributes.normal.array;
+	// 		const uvArray = geometry.attributes.uv.array;
+	//
+	// 		posArray[ index * 3 ] = position.x;
+	// 		posArray[ index * 3 + 1 ] = position.y;
+	// 		posArray[ index * 3 + 2 ] = position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT;
+	//
+	// 		normArray[ index * 3 ] = 0;
+	// 		normArray[ index * 3 + 1 ] = 0;
+	// 		normArray[ index * 3 + 2 ] = 1;
+	//
+	// 		uvArray[ index * 2 ] = uvX;
+	// 		uvArray[ index * 2 + 1 ] = uvY;
+	//
+	// 		return index + 1;
+	// 	}
+	//
+	// 	const geometry = new BufferGeometry();
+	// 	const nextRoadMark = lane.roadMarks.find( i => i.s > roadMark.s );
+	// 	const sEnd = nextRoadMark?.s || laneSection.length;
+	//
+	// 	// Calculate the number of vertices
+	// 	const vertexCount = Math.ceil( ( sEnd - roadMark.s ) / roadMark.length ) * 4; // Four vertices per step
+	// 	const vertices = new Float32Array( vertexCount * 3 );
+	// 	const normals = new Float32Array( vertexCount * 3 );
+	// 	const uvs = new Float32Array( vertexCount * 2 );
+	// 	const indices = [];
+	//
+	// 	geometry.setAttribute( 'position', new BufferAttribute( vertices, 3 ) );
+	// 	geometry.setAttribute( 'normal', new BufferAttribute( normals, 3 ) );
+	// 	geometry.setAttribute( 'uv', new BufferAttribute( uvs, 2 ) );
+	//
+	// 	let index = 0;
+	// 	let currentIndex = 0;
+	//
+	// 	let step = roadMark.length + roadMark.space;
+	//
+	// 	for ( let s = roadMark.s; s < sEnd; s += step ) {
+	//
+	// 		const posTheta = this.roadService.findLaneEndPosition( road, laneSection, lane, s );
+	//
+	// 		const nextSOffset = Math.min( s + roadMark.length, sEnd );
+	// 		const nextPosTheta = this.roadService.findLaneEndPosition( road, laneSection, lane, nextSOffset );
+	//
+	// 		const leftStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 );
+	// 		const rightStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
+	//
+	// 		const leftEnd = nextPosTheta.clone().addLateralOffset( roadMark.width * 0.5 );
+	// 		const rightEnd = nextPosTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
+	//
+	// 		index = addVertex( index, geometry, leftStart.position, 0, 0 );
+	// 		index = addVertex( index, geometry, rightStart.position, 0, roadMark.width );
+	// 		index = addVertex( index, geometry, leftEnd.position, roadMark.length, 0 );
+	// 		index = addVertex( index, geometry, rightEnd.position, roadMark.length, roadMark.width );
+	//
+	// 		indices.push( currentIndex, currentIndex + 1, currentIndex + 2 );
+	// 		indices.push( currentIndex + 2, currentIndex + 1, currentIndex + 3 );
+	//
+	// 		currentIndex += 4;
+	// 	}
+	//
+	// 	geometry.setIndex( indices );
+	//
+	// 	geometry.computeBoundingBox();
+	// 	geometry.computeBoundingSphere();
+	//
+	// 	const material = this.getMaterial( roadMark );
+	// 	const mesh = new Mesh( geometry, material );
+	//
+	// 	lane.gameObject.add( mesh );
+	//
+	// }
+
+	private createRoadMark ( roadMark: TvLaneRoadMark, lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
 
 		roadMark.clearMesh();
 
-		const nextRoadMark = roadMarks.find( i => i.s > roadMark.s );
+		const nextRoadMark = lane.roadMarks.getNext( roadMark );
 
 		const mesh = new MeshGeometryData();
 
