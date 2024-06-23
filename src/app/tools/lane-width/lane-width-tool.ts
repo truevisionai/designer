@@ -117,7 +117,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 		if ( ! this.selectedNode.isSelected ) return;
 
-		if ( ! this.oldValue ) return;
+		if ( this.oldValue === null ) return;
 
 		// these could also be user to get old and new s
 		// const newPosition = this.selectedNode.position.clone();

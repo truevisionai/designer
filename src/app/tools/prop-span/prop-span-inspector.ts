@@ -21,6 +21,24 @@ export class PropSpanInspector {
 		this.roadObject.width = value;
 	}
 
+	// @SerializedField( { 'type': 'float', label: 'Object Height' } )
+	// get objectHeight () {
+	// 	return this.roadObject.height;
+	// }
+
+	// set objectHeight ( value ) {
+	// 	this.roadObject.height = value;
+	// }
+
+	// @SerializedField( { 'type': 'float', label: 'Object Length' } )
+	// get objectLength () {
+	// 	return this.roadObject.length;
+	// }
+
+	// set objectLength ( value ) {
+	// 	this.roadObject.length = value;
+	// }
+
 	@SerializedField( { 'type': 'float', label: 'Start Position' } )
 	get s () {
 		return this.roadObject.s;
@@ -50,7 +68,7 @@ export class PropSpanInspector {
 		this.repeat.segmentLength = value;
 	}
 
-	@SerializedField( { 'type': 'float', label: 'Laterl Offset Start' } )
+	@SerializedField( { 'type': 'float', label: 'Lateral Offset Start' } )
 	get t () {
 		return this.roadObject.t;
 	}
