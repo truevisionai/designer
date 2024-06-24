@@ -1036,7 +1036,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		readXmlArray( xmlElement.laneLink, xml => {
 
-			connection.addLaneLink( this.parseJunctionConnectionLaneLink( xml, junction, connection ) );
+			const laneLink = this.parseJunctionConnectionLaneLink( xml, junction, connection );
+
+			if ( !laneLink ) return;
+
+			connection.addLaneLink( laneLink );
 
 		} );
 
@@ -1045,10 +1049,66 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private parseJunctionConnectionLaneLink ( xmlElement: XmlElement, junction: TvJunction, connection: TvJunctionConnection ): TvJunctionLaneLink {
 
-		const from = parseInt( xmlElement.attr_from );
-		const to = parseInt( xmlElement.attr_to );
+		const fromLaneId = parseInt( xmlElement.attr_from );
+		const toLaneId = parseInt( xmlElement.attr_to );
 
-		return connection.makeLaneLink( junction, from, to );
+		function findContactPoint ( incomingRoad: TvRoad ) {
+
+			if ( incomingRoad.successor?.elementId === junction.id ) {
+				return TvContactPoint.END;
+			}
+
+			if ( incomingRoad.predecessor?.elementId === junction.id ) {
+				return TvContactPoint.START;
+			}
+
+			return null;
+		}
+
+		if ( !connection.incomingRoad ) {
+			return;
+		}
+
+		// contact point of the incoming road with junction
+		const incomingContactPoint = findContactPoint( connection.incomingRoad );
+
+		if ( !incomingContactPoint ) {
+			TvConsole.error( 'contact point not found' );
+			console.error( 'contact point not found', xmlElement );
+			return;
+		}
+
+		const incomingLaneSection = connection.incomingRoad.getLaneSectionAtContact( incomingContactPoint );
+		const connectionLaneSection = connection.connectingRoad.getLaneSectionAtContact( connection.contactPoint );
+
+		if ( !incomingLaneSection ) {
+			TvConsole.error( 'incoming lane section not found' );
+			console.error( 'contact point not found', xmlElement );
+			return;
+		}
+
+		if ( !connectionLaneSection ) {
+			TvConsole.error( 'connection lane section not found' );
+			console.error( 'contact point not found', xmlElement );
+			return;
+		}
+
+		const fromLane = incomingLaneSection.getLaneById( fromLaneId );
+		const toLane = connectionLaneSection.getLaneById( toLaneId );
+
+		if ( !fromLane ) {
+			TvConsole.error( 'from lane not found' );
+			console.error( 'from lane not found', xmlElement );
+			return;
+		}
+
+		if ( !toLane ) {
+			TvConsole.error( 'to lane not found' );
+			console.error( 'to lane not found', xmlElement );
+			return;
+		}
+
+		return new TvJunctionLaneLink( fromLane, toLane );
 	}
 
 	private parseJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {

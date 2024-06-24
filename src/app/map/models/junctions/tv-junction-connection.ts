@@ -224,13 +224,6 @@ export class TvJunctionConnection {
 
 	}
 
-	makeLaneLink ( junction: TvJunction, from: number, to: number ): TvJunctionLaneLink {
-
-		const fromLane = this.findFromLane( junction, from );
-		const toLane = this.findToLane( to );
-
-		return new TvJunctionLaneLink( fromLane, toLane );
-	}
 
 	getIncomingLaneSection () {
 
@@ -264,28 +257,5 @@ export class TvJunctionConnection {
 
 	}
 
-	private findFromLane ( junction: TvJunction, from: number ): TvLane {
-
-		const junctionId = this.connectingRoad.junctionId;
-
-		const successor = this.incomingRoad.successor;
-		const predecessor = this.incomingRoad.predecessor;
-
-		if ( successor?.isJunction && successor.elementId == junctionId ) {
-
-			return this.incomingRoad.getLastLaneSection().getLaneById( from );
-
-		} else if ( predecessor?.isJunction && predecessor.elementId == junctionId ) {
-
-			return this.incomingRoad.getFirstLaneSection().getLaneById( from );
-
-		}
-	}
-
-	private findToLane ( laneId: number ): TvLane {
-
-		return this.connectingLaneSection.getLaneById( laneId );
-
-	}
 }
 
