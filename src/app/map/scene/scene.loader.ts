@@ -65,6 +65,7 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { StorageService } from "../../io/storage.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
 import { Asset } from 'app/core/asset/asset.model';
+import { ControlPointFactory } from "../../factories/control-point.factory";
 
 @Injectable( {
 	providedIn: 'root'
@@ -223,13 +224,25 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private importSpline ( xml: XmlElement ): AbstractSpline | undefined {
 
-		if ( xml.attr_type === 'autov2' ) {
+		if ( xml?.attr_type === 'autov2' ) {
 
 			return this.importAutoSplineV2( xml );
 
 		}
 
-		TvConsole.error( 'unknown spline type' );
+		if ( xml?.attr_type === 'explicit' ) {
+
+			return this.importExplicitSpline( xml );
+
+		}
+
+		if ( xml?.attr_type === 'auto' ) {
+
+			return this.importAutoSpline( xml );
+
+		}
+
+		TvConsole.error( 'unknown spline type:' + xml?.attr_type );
 	}
 
 	private readEnvironment ( xml: XmlElement ) {
@@ -338,41 +351,20 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const type = xml.attr_type;
 
+		// support for old version
+		// convert auto to autov2 and add to spline list
 		if ( type === 'auto' ) {
 
-			const autoSpline = this.importAutoSpline( xml );
+			const spline = this.importAutoSpline( xml );
 
-			const autoSplineV2 = new AutoSplineV2();
+			spline.addRoadSegment( 0, road );
 
-			autoSpline.controlPoints.forEach( cp => {
+			road.spline = spline;
 
-				autoSplineV2.addControlPointAt( cp.position );
-
-			} );
-
-			autoSplineV2.addRoadSegment( 0, road );
-
-			road.spline = autoSplineV2;
-
-			this.map.addSpline( autoSplineV2 );
-
-			// autoSplineV2.updateRoadSegments();
-
-			// autoSplineV2.getRoadSegments().forEach( segment => {
-
-			// 	this.roadService.regenerateGeometries( road );
-
-			// } );
+			this.map.addSpline( spline );
 
 			return;
 		}
-
-		// if ( type === 'autov2' ) {
-
-		// 	// road.spline = this.importAutoSplineV2( xml );
-
-		// 	return;
-		// }
 
 		if ( type === 'explicit' ) {
 
@@ -384,10 +376,10 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
-		console.error( 'unknown spline type' );
+		console.error( 'unknown spline type', type );
 	}
 
-	private importExplicitSpline ( xml: XmlElement, road: TvRoad ): ExplicitSpline {
+	private importExplicitSpline ( xml: XmlElement, road?: TvRoad ): ExplicitSpline {
 
 		const spline = new ExplicitSpline( road );
 
@@ -421,22 +413,22 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private importAutoSpline ( xml: XmlElement ): AbstractSpline {
 
-		const spline = new AutoSpline()
-
-		if ( xml.attr_uuid ) spline.uuid;
+		const spline = new AutoSplineV2();
 
 		this.readAsOptionalArray( xml.point, xml => {
 
 			const position = this.importVector3( xml );
 
-			spline.addControlPointAt( position )
+			const point = ControlPointFactory.createSplineControlPoint( spline, position );
+
+			spline.controlPoints.push( point );
 
 		} );
 
-		// to not show any lines or control points
-		// spline.hide();
+		this.map.addSpline( spline );
 
 		return spline;
+
 	}
 
 	private importAutoSplineV2 ( xml: XmlElement ): AutoSplineV2 {
