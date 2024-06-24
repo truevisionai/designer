@@ -484,8 +484,6 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( point instanceof SplineControlPoint ) {
 
-			point.parent.remove( point );
-
 			this.tool.removeControlPoint( point.spline, point );
 
 			this.onSplineUpdated( point.spline );
@@ -493,8 +491,6 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 			AppInspector.clear();
 
 		} else if ( point instanceof RoadControlPoint ) {
-
-			point.parent.remove( point );
 
 			this.tool.removeControlPoint( point.road.spline, point );
 
