@@ -319,7 +319,9 @@ export class JunctionService extends BaseDataService<TvJunction> {
 				connectingRoad.computeBoundingBox();
 			}
 
-			boundingBox.union( connectingRoad.boundingBox );
+			if ( connectingRoad.boundingBox ) {
+				boundingBox.union( connectingRoad.boundingBox );
+			}
 
 		}
 
