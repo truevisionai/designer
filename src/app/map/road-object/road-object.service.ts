@@ -159,6 +159,12 @@ export class RoadObjectService {
 
 		this.addRoadObject( road, roadObject );
 
+		// road.objectGroup.remove( roadObject.mesh );
+
+		// roadObject.mesh = this.builder.build( roadObject );
+
+		// road.objectGroup.add( roadObject.mesh );
+
 	}
 
 	addCornerRoad ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {

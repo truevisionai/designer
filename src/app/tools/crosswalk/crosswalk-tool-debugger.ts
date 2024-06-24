@@ -101,8 +101,6 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 			node = this.nodeCache.get( corner );
 
-			node.position.copy( position?.position );
-
 		} else {
 
 			node = new CornerControlPoint( road, roadObject, corner );
@@ -110,6 +108,8 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 			this.nodeCache.set( corner, node );
 
 		}
+
+		node.position.copy( position?.position );
 
 		return node;
 	}
