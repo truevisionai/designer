@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 export class ManagedMap<V> extends Map<number, V> {
 
 	private used = new Set<number>();
