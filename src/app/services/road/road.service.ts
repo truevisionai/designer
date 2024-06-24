@@ -342,7 +342,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		road.spline = this.splineFactory.createConnectingRoadSpline( road, incoming, outgoing );
 
-		road.setJunction( junction );
+		road.junction = junction;
 
 		road.setPredecessor( TvRoadLinkChildType.road, incoming.road, incoming.contact );
 

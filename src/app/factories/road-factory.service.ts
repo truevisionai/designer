@@ -280,7 +280,7 @@ export class RoadFactory {
 
 		const road = this.createNewRoad();
 
-		road.setJunction( junction );
+		road.junction = junction;
 
 		road.setPredecessor( TvRoadLinkChildType.road, entry.road, entry.contact );
 

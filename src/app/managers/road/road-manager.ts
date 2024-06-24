@@ -65,7 +65,7 @@ export class RoadManager {
 
 			this.mapService.map.removeSpline( road.spline );
 
-			road.junctionInstance?.removeConnectingRoad( road );
+			road.junction?.removeConnectingRoad( road );
 
 		} else if ( road.spline.findSegment( road ) ) {
 

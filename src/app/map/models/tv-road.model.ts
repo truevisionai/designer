@@ -37,9 +37,9 @@ export class TvRoad {
 
 	public readonly uuid: string;
 
-	private _spline: AbstractSpline;
+	public spline: AbstractSpline;
 
-	private _sStart: number;
+	public sStart: number;
 
 	public type: TvRoadTypeClass[] = [];
 
@@ -62,150 +62,51 @@ export class TvRoad {
 	public gameObject: GameObject;
 
 	public signalGroup: Group = new Group();
+
 	public objectGroup: Group = new Group();
-
-	private lastAddedLaneSectionIndex: number;
-
-	private lastAddedRoadObjectIndex: number;
 
 	private lanes: TvRoadLanes;
 
-	private _objects: TvObjectContainer;
+	public objects: TvObjectContainer;
 
-	private _signals: Map<number, TvRoadSignal>;
+	public signals: Map<number, TvRoadSignal>;
 
-	private _planView = new TvPlaneView;
+	public planView = new TvPlaneView;
 
-	private _neighbors: TvRoadLinkNeighbor[] = [];
+	public neighbors: TvRoadLinkNeighbor[] = [];
 
-	private _name: string;
+	public name: string;
 
-	private _length: number;
+	public length: number;
 
-	private _id: number;
+	public id: number;
 
-	private junction: TvJunction;
+	public junction: TvJunction;
 
-	private _successor: TvRoadLinkChild;
+	public successor: TvRoadLinkChild;
 
-	private _predecessor: TvRoadLinkChild;
+	public predecessor: TvRoadLinkChild;
 
 	public cornerRoad: boolean = false;
 
 	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
 
 		this.uuid = MathUtils.generateUUID();
-		this._name = name;
-		this._length = length;
-		this._id = id;
+		this.name = name;
+		this.length = length;
+		this.id = id;
 		this.junction = junction;
 		this.lanes = new TvRoadLanes();
 		this.elevationProfile = new TvElevationProfile();
-		this._objects = new TvObjectContainer();
-		this._signals = new Map<number, TvRoadSignal>();
+		this.objects = new TvObjectContainer();
+		this.signals = new Map<number, TvRoadSignal>();
 
 		this.signalGroup.name = 'SignalGroup';
 		this.objectGroup.name = 'ObjectGroup';
 	}
 
-	get successor (): TvRoadLinkChild {
-		return this._successor;
-	}
-
-	set successor ( value: TvRoadLinkChild ) {
-		this._successor = value;
-	}
-
-	get predecessor (): TvRoadLinkChild {
-		return this._predecessor;
-	}
-
-	set predecessor ( value: TvRoadLinkChild ) {
-		this._predecessor = value;
-	}
-
 	get junctionId (): number {
 		return this.junction?.id ?? -1;
-	}
-
-	setJunction ( junction: TvJunction ) {
-		this.junction = junction;
-	}
-
-	get sStart (): number {
-		return this._sStart;
-	}
-
-	set sStart ( value: number ) {
-		this._sStart = value;
-	}
-
-	get spline (): AbstractSpline {
-		return this._spline;
-	}
-
-	set spline ( value: AbstractSpline ) {
-		this._spline = value;
-	}
-
-	get objects (): TvObjectContainer {
-		return this._objects;
-	}
-
-	set objects ( value: TvObjectContainer ) {
-		this._objects = value;
-	}
-
-	get signals (): Map<number, TvRoadSignal> {
-		return this._signals;
-	}
-
-	set signals ( value: Map<number, TvRoadSignal> ) {
-		this._signals = value;
-	}
-
-	get planView (): TvPlaneView {
-		return this._planView;
-	}
-
-	set planView ( value: TvPlaneView ) {
-		this._planView = value;
-	}
-
-	get neighbors (): TvRoadLinkNeighbor[] {
-		return this._neighbors;
-	}
-
-	set neighbors ( value: TvRoadLinkNeighbor[] ) {
-		this._neighbors = value;
-	}
-
-	get name (): string {
-		return this._name;
-	}
-
-	set name ( value: string ) {
-		this._name = value;
-	}
-
-	get length (): number {
-		return this._length;
-	}
-
-	set length ( value: number ) {
-		this._length = value;
-	}
-
-	get id (): number {
-		return this._id;
-	}
-
-	set id ( value: number ) {
-		this._id = value;
-	}
-
-	get junctionInstance (): TvJunction {
-		return this.junction;
 	}
 
 	get isJunction (): boolean {
@@ -213,7 +114,7 @@ export class TvRoad {
 	}
 
 	get geometries () {
-		return this._planView.geometries;
+		return this.planView.geometries;
 	}
 
 	get laneSections () {
@@ -305,15 +206,15 @@ export class TvRoad {
 
 	getPlanView (): TvPlaneView {
 
-		return this._planView;
+		return this.planView;
 
 	}
 
 	addPlanView () {
 
-		if ( this._planView == null ) {
+		if ( this.planView == null ) {
 
-			this._planView = new TvPlaneView();
+			this.planView = new TvPlaneView();
 
 		}
 	}
@@ -425,9 +326,6 @@ export class TvRoad {
 
 		this.addGetLaneSection( s, singleSide );
 
-		this.lastAddedLaneSectionIndex = this.lanes.laneSections.length - 1;
-
-		return this.lastAddedLaneSectionIndex;
 	}
 
 	addLaneSectionInstance ( laneSection: TvLaneSection ) {
@@ -466,19 +364,6 @@ export class TvRoad {
 		this.addLaneSectionInstance( laneSection );
 
 		return laneSection;
-	}
-
-	duplicateLaneSectionAt ( s: number ): TvLaneSection {
-
-		const laneSection = this.getLaneSectionAt( s );
-
-		const newId = this.lanes.laneSections.length + 1;
-
-		const newLaneSection = laneSection.cloneAtS( newId, s );
-
-		this.addLaneSectionInstance( newLaneSection );
-
-		return newLaneSection;
 	}
 
 	sortLaneSections () {
@@ -521,22 +406,6 @@ export class TvRoad {
 
 	}
 
-	getLaneSectionLength ( section: TvLaneSection ) {
-
-		// find next section higher than requested section
-		const next = this.laneSections.find( s => s.s > section.s );
-
-		return next ?
-			next.s - section.s :
-			this.length - section.s;
-	}
-
-	getLastAddedLaneSection () {
-
-		return this.lanes.laneSections[ this.lastAddedLaneSectionIndex ];
-
-	}
-
 	getTypes (): TvRoadTypeClass[] {
 
 		return this.type;
@@ -545,49 +414,25 @@ export class TvRoad {
 
 	addSignal ( signal: TvRoadSignal ): void {
 
-		this._signals.set( signal.id, signal );
-
-	}
-
-	removeSignal ( signal: TvRoadSignal ): any {
-
-		this.removeSignalById( signal.id );
-
-	}
-
-	removeSignalById ( signalId: number ): boolean {
-
-		return this.signals.delete( signalId );
-
-	}
-
-	getRoadSignalCount (): number {
-
-		return this._signals.size;
+		this.signals.set( signal.id, signal );
 
 	}
 
 	getRoadSignals (): TvRoadSignal[] {
 
-		return [ ...this._signals.values() ];
-
-	}
-
-	getRoadSignal ( id: number ) {
-
-		return this._signals.get( id );
+		return [ ...this.signals.values() ];
 
 	}
 
 	getRoadSignalById ( id: number ): TvRoadSignal {
 
-		return this._signals.get( id );
+		return this.signals.get( id );
 
 	}
 
 	getRoadObjects (): TvRoadObject[] {
 
-		return this._objects.object;
+		return this.objects.object;
 
 	}
 
@@ -652,19 +497,13 @@ export class TvRoad {
 
 	getGeometryBlockCount (): number {
 
-		return this._planView.geometries.length;
+		return this.planView.geometries.length;
 
 	}
 
 	getGeometryBlock ( i: number ): TvAbstractRoadGeometry {
 
-		return this._planView.geometries[ i ];
-
-	}
-
-	getRoadLength () {
-
-		return this._length;
+		return this.planView.geometries[ i ];
 
 	}
 
@@ -700,7 +539,7 @@ export class TvRoad {
 
 		signal.roadId = this.id;
 
-		this._signals.set( signal.id, signal );
+		this.signals.set( signal.id, signal );
 
 		return signal;
 	}
@@ -711,20 +550,19 @@ export class TvRoad {
 
 		roadObject.road = this;
 
-		this._objects.object.push( roadObject );
+		this.objects.object.push( roadObject );
 
-		this.lastAddedRoadObjectIndex = this._objects.object.length - 1;
 	}
 
 	removeRoadObjectById ( id: number ) {
 
-		for ( let i = 0; i < this._objects.object.length; i++ ) {
+		for ( let i = 0; i < this.objects.object.length; i++ ) {
 
-			const element = this._objects.object[ i ];
+			const element = this.objects.object[ i ];
 
 			if ( element.attr_id == id ) {
 
-				this._objects.object.splice( i, 1 );
+				this.objects.object.splice( i, 1 );
 				break;
 
 			}
@@ -830,7 +668,7 @@ export class TvRoad {
 
 		this.computeLaneSectionLength();
 
-		return this._planView.addGeometryLine( s, x, y, hdg, length );
+		return this.planView.addGeometryLine( s, x, y, hdg, length );
 
 	}
 
@@ -840,7 +678,7 @@ export class TvRoad {
 
 		this.computeLaneSectionLength();
 
-		return this._planView.addGeometryArc( s, x, y, hdg, length, curvature );
+		return this.planView.addGeometryArc( s, x, y, hdg, length, curvature );
 
 	}
 
@@ -854,7 +692,7 @@ export class TvRoad {
 
 		this.computeLaneSectionLength();
 
-		return this._planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
+		return this.planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
 
 	}
 
@@ -864,7 +702,7 @@ export class TvRoad {
 
 		this.computeLaneSectionLength();
 
-		return this._planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
+		return this.planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
 
 	}
 
@@ -1099,48 +937,6 @@ export class TvRoad {
 
 	}
 
-	isPredecessor ( otherRoad: TvRoad ): boolean {
-
-		if ( !this.predecessor ) return false;
-
-		if ( this.predecessor.isJunction ) return false;
-
-		return this.predecessor.elementId === otherRoad.id;
-	}
-
-	isSuccessor ( otherRoad: TvRoad ): boolean {
-
-		if ( !this.successor ) return false;
-
-		if ( this.successor.isJunction ) return false;
-
-		return this.successor.elementId === otherRoad.id;
-	}
-
-	removeConnection ( otherRoad: TvRoad ) {
-
-		if ( this.isPredecessor( otherRoad ) ) {
-
-			this.predecessor = null;
-
-		} else if ( this.isSuccessor( otherRoad ) ) {
-
-			this.successor = null;
-
-		}
-
-		if ( otherRoad.isPredecessor( this ) ) {
-
-			otherRoad.predecessor = null;
-
-		} else if ( otherRoad.isSuccessor( this ) ) {
-
-			otherRoad.successor = null;
-
-		}
-
-	}
-
 	clone ( s: number ): TvRoad {
 
 		const road = new TvRoad( this.name, this.length, this.id, this.junction );
@@ -1153,7 +949,7 @@ export class TvRoad {
 		road.borderMaterialGuid = this.borderMaterialGuid;
 		road.shoulderMaterialGuid = this.shoulderMaterialGuid;
 		road.trafficRule = this.trafficRule;
-		road.planView = this._planView.clone();
+		road.planView = this.planView.clone();
 		road.predecessor = this.predecessor?.clone();
 		road.successor = this.successor?.clone();
 

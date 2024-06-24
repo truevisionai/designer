@@ -660,7 +660,7 @@ describe( '4-way-junction tests', () => {
 		expect( mapService.map.getRoadCount() ).toBe( 1 );
 		expect( mapService.map.getSplineCount() ).toBe( 1 );
 
-		expect( horizontal.getRoadLength() ).toBe( 200 );
+		expect( horizontal.length ).toBe( 200 );
 		expect( horizontal.successor ).toBeUndefined();
 		expect( horizontal.predecessor ).toBeUndefined();
 

@@ -54,9 +54,9 @@ export class RoadEventListener {
 
 	updateJunction ( road: TvRoad ) {
 
-		if ( !road.isJunction ) return;
+		if ( !road.junction ) return;
 
-		road.junctionInstance.boundingBox = this.junctionService.computeBoundingBox( road.junctionInstance );
+		road.junction.boundingBox = this.junctionService.computeBoundingBox( road.junction );
 
 	}
 

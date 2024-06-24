@@ -119,7 +119,7 @@ export class RoadRampService {
 
 		junction.addConnection( connection );
 
-		rampRoad.setJunction( junction );
+		rampRoad.junction = junction;
 
 		rampRoad.spline.addRoadSegment( 0, rampRoad );
 

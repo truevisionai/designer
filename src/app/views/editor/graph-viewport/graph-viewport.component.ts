@@ -340,7 +340,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		let positions: Vector3[] = [];
 
-		for ( let s = 0; s < road.getRoadLength(); s += 0.1 ) {
+		for ( let s = 0; s < road.length; s += 0.1 ) {
 
 			positions.push( new Vector3( s, road.getElevationValue( s ), 0 ) );
 		}

@@ -1522,12 +1522,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private parseLaneSection ( road: TvRoad, xmlElement: XmlElement ) {
 
+		const id = road.laneSections.length + 1;
 		const s = parseFloat( xmlElement.attr_s );
 		const singleSide = xmlElement.attr_singleSide == 'true';
 
-		road.addLaneSection( s, singleSide );
-
-		const laneSection = road.getLastAddedLaneSection();
+		const laneSection = new TvLaneSection( id, s, singleSide, road );
 
 		readXmlElement( xmlElement.left, xml => {
 			readXmlArray( xml.lane, xml => {
