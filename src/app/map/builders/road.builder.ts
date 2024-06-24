@@ -24,6 +24,7 @@ import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 import { TvRoadObjectType } from "../models/objects/tv-road-object";
 import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
 import { RoadObjectBuilder } from "../road-object/road-object.builder";
+import { TvConsole } from "../../core/utils/console";
 
 @Injectable( {
 	providedIn: 'root'
@@ -56,6 +57,16 @@ export class RoadBuilder {
 
 		gameObject.Tag = TvRoadObjectType.ROAD;
 
+		if ( road.geometries.length == 0 ) {
+
+			TvConsole.error( `${ road.toString() } has no geometries` );
+
+			road.gameObject = gameObject;
+
+			return gameObject;
+		}
+
+
 		road.computeLaneSectionCoordinates();
 
 		const laneSections = road.getLaneSections();
@@ -69,8 +80,6 @@ export class RoadBuilder {
 			gameObject.add( laneSection.gameObject );
 
 		}
-
-		road.gameObject = gameObject;
 
 		this.roadMarkBuilder.buildRoad( road );
 
