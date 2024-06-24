@@ -79,7 +79,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 	}
 
 	get roadType () {
-		return this.road ? this.road.getRoadTypeAt( 0 ) : null;
+		return this.road?.type.length > 0 ? this.road.type[ 0 ] : null;
 	}
 
 	ngOnInit () {
