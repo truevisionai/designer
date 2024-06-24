@@ -281,7 +281,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			const repeat = roadObject.getRepeat( i );
 
-			const segmentLength = TvObjectRepeat.calculateLength( repeat.segmentLength, road.length );
+			const segmentLength = repeat.computeLength( road.length );
 
 			let counter = 0;
 

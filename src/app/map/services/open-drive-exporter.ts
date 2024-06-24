@@ -175,7 +175,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		this.writeLanes( xml, road );
 
 		xml[ 'objects' ] = {
-			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject ) )
+			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject, road ) )
 		};
 
 		if ( road.signals.size > 0 ) {
@@ -603,7 +603,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	public writeRoadObject ( roadObject: TvRoadObject ): XmlElement {
+	public writeRoadObject ( roadObject: TvRoadObject, road?: TvRoad ): XmlElement {
 
 		const xml = {
 			attr_type: roadObject.attr_type,
@@ -629,7 +629,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		this.writeObjectParkingSpace( xml, roadObject );
 
 		if ( roadObject.repeats.length > 0 ) {
-			xml[ 'repeat' ] = roadObject.repeats.map( repeat => this.writeObjectRepeat( repeat ) );
+			xml[ 'repeat' ] = roadObject.repeats.map( repeat => this.writeObjectRepeat( repeat, road ) );
 		}
 
 		if ( roadObject.validity.length > 0 ) {
@@ -689,11 +689,11 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeObjectRepeat ( repeat: TvObjectRepeat ): XmlElement {
+	writeObjectRepeat ( repeat: TvObjectRepeat, road?: TvRoad ): XmlElement {
 
 		const xml = {
 			attr_s: repeat.sStart,
-			attr_length: repeat.segmentLength,
+			attr_length: repeat.computeLength( road?.length ),
 			attr_distance: repeat.gap,
 		}
 

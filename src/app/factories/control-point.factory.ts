@@ -30,6 +30,12 @@ export class ControlPointFactory {
 
 	}
 
+	static createSimpleControlPoint<T> ( target: T, position: Vector3 ): SimpleControlPoint<T> {
+
+		return new SimpleControlPoint( target, position );
+
+	}
+
 	static createSplineControlPoint ( target: any, position: Vector3 ) {
 
 		return new SplineControlPoint( target, position );

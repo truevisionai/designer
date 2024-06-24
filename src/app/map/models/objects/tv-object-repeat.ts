@@ -3,6 +3,7 @@
  */
 
 import { TvLane } from "../tv-lane";
+import { Maths } from "../../../utils/maths";
 
 export class TvObjectRepeat {
 
@@ -58,7 +59,18 @@ export class TvObjectRepeat {
 		);
 	}
 
-	static calculateLength ( segmentLength: number, roadLength: number ) {
+	/**
+	 *
+	 * @param segmentLength
+	 * @param roadLength
+	 * @returns
+	 * @deprecated
+	 */
+	static calculateLength ( segmentLength: number, roadLength?: number ) {
+
+		if ( !roadLength ) {
+			return segmentLength;
+		}
 
 		if ( !segmentLength ) {
 			return roadLength;
@@ -73,5 +85,39 @@ export class TvObjectRepeat {
 		}
 
 		return segmentLength;
+	}
+
+	computeLength ( roadLength?: number ) {
+
+		let actualLength = roadLength;
+
+		if ( !roadLength ) {
+
+			actualLength = this.segmentLength;
+
+		} else if ( !this.segmentLength ) {
+
+			actualLength = roadLength - this.sStart
+
+		} else if ( this.segmentLength == -1 ) {
+
+			actualLength = roadLength - this.sStart;
+
+		} else if ( this.segmentLength == 0 ) {
+
+			actualLength = roadLength - this.sStart;
+
+		} else {
+
+			actualLength = this.segmentLength;
+
+		}
+
+		if ( roadLength ) {
+			actualLength = Maths.clamp( actualLength, 0, roadLength );
+		}
+
+		return actualLength;
+
 	}
 }

@@ -19,6 +19,10 @@ import { TvObjectRepeat } from "app/map/models/objects/tv-object-repeat";
 import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { PropSpanInspector } from "./prop-span-inspector";
+import { DebugState } from "../../services/debug/debug-state";
+import { CommandHistory } from "../../services/command-history";
+import { UpdatePositionCommand } from "../../commands/update-position-command";
+import { Vector3 } from "three";
 
 export class PropSpanTool extends BaseTool<any> {
 
@@ -46,13 +50,19 @@ export class PropSpanTool extends BaseTool<any> {
 
 		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		const selectRoadStrategy = new SelectRoadStrategy( false, true );
+
+		selectRoadStrategy.debugger = this.tool.toolDebugger;
+
+		this.selectionService.registerStrategy( TvRoad.name, selectRoadStrategy );
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
+
+		this.setDebugService( this.tool.toolDebugger );
 
 	}
 
@@ -65,10 +75,6 @@ export class PropSpanTool extends BaseTool<any> {
 	disable (): void {
 
 		super.disable();
-
-		this.tool.hideRoads();
-
-		this.tool.clearControlPoints();
 
 		this.tool.base.reset();
 
@@ -112,6 +118,8 @@ export class PropSpanTool extends BaseTool<any> {
 
 	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
+		this.highlight( pointerEventData );
+
 		if ( !this.isPointerDown ) return;
 
 		if ( !this.road ) return;
@@ -124,21 +132,11 @@ export class PropSpanTool extends BaseTool<any> {
 
 			if ( position instanceof RoadPosition ) {
 
-				const roadObject = this.tool.roadObjectService.findRoadObjectByRepeat( this.point.target );
-
-				if ( !roadObject ) return;
-
-				const repeat = this.point.target as TvObjectRepeat;
-
-				repeat.sStart = roadObject.s = position.s;
-
-				repeat.tStart = roadObject.t = position.t;
-
-				repeat.segmentLength = this.road.length - position.s;
-
 				this.point.position.copy( position.position );
 
 				this.pointMoved = true;
+
+				this.tool.base.disableControls();
 
 			}
 
@@ -146,17 +144,19 @@ export class PropSpanTool extends BaseTool<any> {
 
 	}
 
-	onPointerUp ( pointerEventData: PointerEventData ): void {
+	onPointerUp ( e: PointerEventData ): void {
+
+		this.tool.base.enableControls();
 
 		if ( !this.point ) return;
 
 		if ( !this.pointMoved ) return;
 
-		const roadObject = this.tool.roadObjectService.findRoadObjectByRepeat( this.point.target );
+		const newPosition = this.tool.roadService.findRoadCoordAtPosition( e.point );
 
-		if ( !roadObject ) return;
+		const oldPosition = this.tool.roadService.findRoadCoordAtPosition( this.pointerDownAt );
 
-		this.tool.updateRoadSpanObject( roadObject, this.point.target );
+		CommandHistory.execute( new UpdatePositionCommand( this.point, newPosition.position, oldPosition.position ) );
 
 		this.pointMoved = false;
 
@@ -170,7 +170,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 		} else if ( object instanceof SimpleControlPoint ) {
 
-			this.onControlPointSelected( object );
+			this.onPointSelected( object );
 
 		}
 
@@ -184,9 +184,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 		this.road = road;
 
-		this.tool.showRoadLines( road );
-
-		this.tool.showRoad( road );
+		this.debugService?.updateDebugState( road, DebugState.SELECTED );
 
 		if ( !this.prop ) {
 
@@ -202,9 +200,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 	onRoadUnselected ( road: TvRoad ) {
 
-		this.tool.hideRoadLines( road );
-
-		this.tool.hideRoad( road );
+		this.debugService?.updateDebugState( road, DebugState.DEFAULT );
 
 		this.road = null;
 
@@ -212,25 +208,27 @@ export class PropSpanTool extends BaseTool<any> {
 
 	}
 
-	onControlPointUnselected ( point: SimpleControlPoint<TvObjectRepeat> ) {
+	onPointUnselected ( point: SimpleControlPoint<TvObjectRepeat> ) {
 
 		this.point = null;
 
 		point.unselect();
 
-		AppInspector.clear();
+		this.clearInspector();
 
 	}
 
-	onControlPointSelected ( point: SimpleControlPoint<TvObjectRepeat> ) {
+	onPointSelected ( point: SimpleControlPoint<TvObjectRepeat> ) {
 
-		const roadObject = this.tool.roadObjectService.findRoadObjectByRepeat( point.target );
+		const roadObject = point.userData.roadObject;
 
-		if ( !roadObject ) return;
+		const repeat = point.userData.repeat;
 
 		this.point = point;
 
-		AppInspector.setDynamicInspector( new PropSpanInspector( roadObject, point.target ) );
+		if ( !roadObject || !repeat ) return;
+
+		AppInspector.setDynamicInspector( new PropSpanInspector( roadObject, repeat ) );
 
 		point.select();
 
@@ -244,7 +242,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 		} else if ( object instanceof SimpleControlPoint ) {
 
-			this.onControlPointUnselected( object );
+			this.onPointUnselected( object );
 
 		}
 
@@ -254,7 +252,17 @@ export class PropSpanTool extends BaseTool<any> {
 
 		if ( object instanceof PropSpanInspector ) {
 
-			this.tool.updateRoadSpanObject( object.roadObject, object.repeat );
+			this.updateRoadSpanObject( object.roadObject, object.repeat );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			const roadObject = object.userData.roadObject;
+			const repeat = object.userData.repeat;
+			const road = object.userData.road;
+
+			if ( !roadObject || !repeat || !road ) return;
+
+			this.updateByPosition( roadObject, repeat, object.position );
 
 		} else {
 
@@ -270,7 +278,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 			this.tool.addRoadSpanObject( object.road, object );
 
-			this.tool.showControls( object.road, object );
+			this.debugService?.updateDebugState( object.road, DebugState.SELECTED );
 
 		}
 
@@ -282,9 +290,35 @@ export class PropSpanTool extends BaseTool<any> {
 
 			this.tool.removeRoadSpanObject( object.road, object );
 
-			this.tool.hideControls( object.road, object );
+			this.debugService?.updateDebugState( object.road, DebugState.SELECTED );
 
 		}
+
+	}
+
+	updateRoadSpanObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat, road?: TvRoad ) {
+
+		this.tool.removeRoadSpanObject( roadObject.road, roadObject );
+
+		this.tool.addRoadSpanObject( roadObject.road, roadObject );
+
+		this.debugService?.updateDebugState( roadObject.road, DebugState.SELECTED );
+
+	}
+
+	updateByPosition ( roadObject: TvRoadObject, repeat: TvObjectRepeat, position: Vector3 ) {
+
+		const coord = this.tool.roadService.findRoadCoordAtPosition( position );
+
+		if ( !coord ) return;
+
+		repeat.sStart = roadObject.s = coord.s;
+
+		repeat.tStart = roadObject.t = coord.t;
+
+		repeat.segmentLength = this.road.length - coord.s;
+
+		this.updateRoadSpanObject( roadObject, repeat );
 
 	}
 
