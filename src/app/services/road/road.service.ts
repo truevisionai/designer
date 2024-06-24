@@ -527,6 +527,8 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
 
+		if ( !posTheta ) return;
+
 		const laneHeight = lane.getHeightValue( sOffset );
 
 		posTheta.z += laneHeight.getLinearValue( 0 );

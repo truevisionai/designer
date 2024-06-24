@@ -43,16 +43,20 @@ export class LaneWidthToolService {
 
 		const road = node.lane.laneSection.road;
 
-		const roadCoord = road.getPosThetaByPosition( position );
+		const roadCoord = this.roadService.findRoadCoord( position );
 
-		const adjustedS = roadCoord.s - node.lane.laneSection.s;
+		if ( !roadCoord ) return;
+
+		const sLaneSection = roadCoord.s - node.lane.laneSection.s;
+
+		const startPosTheta = this.roadService.findLaneStartPosition( road, node.lane.laneSection, node.lane, sLaneSection );
+
+		if ( !startPosTheta ) return;
 
 		// update s offset as per the new position on road
-		node.laneWidth.s = adjustedS;
+		node.laneWidth.s = sLaneSection;
 
-		const startPosition = road.getLaneStartPosition( node.lane, adjustedS ).toVector3();
-
-		node.laneWidth.a = position.distanceTo( startPosition );
+		node.laneWidth.a = position.distanceTo( startPosTheta.position );
 
 		const laneSectionLength = road.length - node.lane.laneSection.s;
 

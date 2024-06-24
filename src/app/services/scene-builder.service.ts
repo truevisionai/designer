@@ -95,9 +95,9 @@ export class SceneBuilderService {
 
 			fixGeometry( road );
 
-			const gameObject = this.roadBuilder.buildRoad( road );
+			road.gameObject = this.roadBuilder.buildRoad( road );
 
-			map.gameObject.add( gameObject );
+			map.gameObject.add( road.gameObject );
 
 		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
 
@@ -109,9 +109,9 @@ export class SceneBuilderService {
 				road.spline.addRoadSegment( 0, road );
 			}
 
-			const gameObject = this.roadBuilder.buildRoad( road );
+			road.gameObject = this.roadBuilder.buildRoad( road );
 
-			map.gameObject.add( gameObject );
+			map.gameObject.add( road.gameObject );
 
 		} else {
 
