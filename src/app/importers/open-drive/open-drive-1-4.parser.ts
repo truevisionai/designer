@@ -910,24 +910,32 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 	public parseSignal ( road: TvRoad, xmlElement: XmlElement ) {
 
 		const id = parseInt( xmlElement.attr_id );
-
-		const s = parseFloat( xmlElement.attr_s );
-		const t = parseFloat( xmlElement.attr_t );
 		const name = xmlElement.attr_name;
-		const dynamic = TvRoadSignal.stringToDynamicType( xmlElement.attr_dynamic );
-		const orientation = TvRoadSignal.stringToOrientation( xmlElement.attr_orientation )
-		const zOffset = parseFloat( xmlElement.attr_zOffset );
 		const country = xmlElement.attr_country;
 		const type = xmlElement.attr_type;
 		const subtype = xmlElement.attr_subtype;
-		const value = xmlElement.attr_value;
-		const unit = TvRoadSignal.stringToUnit( xmlElement.attr_unit );
-		const height = parseFloat( xmlElement.attr_height );
-		const width = parseFloat( xmlElement.attr_width );
 		const text = xmlElement.attr_text;
-		const hOffset = parseFloat( xmlElement.attr_hOffset );
-		const pitch = parseFloat( xmlElement.attr_pitch );
-		const roll = parseFloat( xmlElement.attr_roll );
+
+		// this could be a number or text so we need to check
+		const value = parseFloat( xmlElement.attr_value ) || xmlElement.attr_value;
+		const unit = TvRoadSignal.stringToUnit( xmlElement.attr_unit );
+
+		// position
+		const s = parseFloat( xmlElement.attr_s ) || 0;
+		const t = parseFloat( xmlElement.attr_t ) || 0;
+		const zOffset = parseFloat( xmlElement.attr_zOffset ) || 0;
+
+		// dimensions
+		const height = parseFloat( xmlElement.attr_height ) || 0;
+		const width = parseFloat( xmlElement.attr_width ) || 0;
+
+		// rotation
+		const hOffset = parseFloat( xmlElement.attr_hOffset ) || 0;
+		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
+		const roll = parseFloat( xmlElement.attr_roll ) || 0;
+
+		const dynamic = TvRoadSignal.stringToDynamicType( xmlElement.attr_dynamic );
+		const orientation = TvRoadSignal.stringToOrientation( xmlElement.attr_orientation )
 
 		const roadSignal = road.addRoadSignal( s,
 			t,
