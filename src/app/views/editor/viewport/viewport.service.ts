@@ -26,6 +26,14 @@ export class ViewportService {
 
 	async handleAssetDropped ( asset: DragDropData, position: Vector3 ) {
 
+		const type = asset?.type;
+
+		if ( !type ) {
+			console.error( 'Asset type not found', asset, position );
+			this.snackBar.warn( `File not supported for viewport extension: ${ asset?.extension } ` + asset?.path );
+			return;
+		}
+
 		switch ( asset?.type ) {
 
 			case AssetType.OPENDRIVE:
@@ -65,7 +73,6 @@ export class ViewportService {
 				break;
 
 			default:
-				this.snackBar.warn( `File not supported for viewport extension: ${ asset.extension } ` + asset.path );
 				break;
 		}
 
