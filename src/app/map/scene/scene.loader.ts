@@ -187,6 +187,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const spline = this.importSpline( xml );
 
+			if ( !spline ) return;
+
 			this.map.addSpline( spline );
 
 		} );
@@ -219,7 +221,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private importSpline ( xml: XmlElement ): AbstractSpline {
+	private importSpline ( xml: XmlElement ): AbstractSpline | undefined {
 
 		if ( xml.attr_type === 'autov2' ) {
 
