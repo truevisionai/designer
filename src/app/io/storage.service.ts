@@ -5,6 +5,7 @@
 import { Injectable } from '@angular/core';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { FileService } from './file.service';
+import { AppInfo } from 'app/services/app-info.service';
 
 
 export interface PutFileResponse {
@@ -86,7 +87,29 @@ export class StorageService {
 
 	join ( path: string, filename: string ): string {
 
-		return this.fileService.path.join( path, filename );
+		try {
+
+			return this.fileService.path.join( path, filename );
+
+		} catch ( error ) {
+
+			console.error( 'Error in join', error );
+
+			if ( !path ) {
+				return filename;
+			}
+
+			if ( !filename ) {
+				return path;
+			}
+
+			if ( AppInfo.electron.isWindows ) {
+				return path + '\\' + filename;
+			}
+
+			return path + '/' + filename;
+
+		}
 
 	}
 
