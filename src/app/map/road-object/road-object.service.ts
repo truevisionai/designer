@@ -169,9 +169,17 @@ export class RoadObjectService {
 
 	addCornerRoad ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {
 
-		roadObject.markings[ 0 ].addCornerRoad( cornerRoad );
+		if ( roadObject.markings.length == 0 ) {
+			roadObject.markings.push( this.createMarking() );
+		}
 
-		roadObject.outlines[ 0 ].cornerRoad.push( cornerRoad );
+		if ( roadObject.outlines.length == 0 ) {
+			roadObject.outlines.push( this.createOutline( roadObject ) );
+		}
+
+		roadObject.markings[ 0 ]?.addCornerRoad( cornerRoad );
+
+		roadObject.outlines[ 0 ]?.cornerRoad.push( cornerRoad );
 
 		this.updateRoadObject( roadObject.road, roadObject );
 
@@ -179,12 +187,12 @@ export class RoadObjectService {
 
 	removeCornerRoad ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {
 
-		roadObject.markings[ 0 ].removeCornerRoad( cornerRoad );
+		roadObject.markings[ 0 ]?.removeCornerRoad( cornerRoad );
 
-		const index = roadObject.outlines[ 0 ].cornerRoad.indexOf( cornerRoad );
+		const index = roadObject.outlines[ 0 ]?.cornerRoad.indexOf( cornerRoad );
 
 		if ( index > -1 ) {
-			roadObject.outlines[ 0 ].cornerRoad.splice( index, 1 );
+			roadObject.outlines[ 0 ]?.cornerRoad.splice( index, 1 );
 		}
 
 		this.updateRoadObject( roadObject.road, roadObject );
