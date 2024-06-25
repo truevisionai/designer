@@ -33,7 +33,7 @@ import { ManeuverTool } from "./maneuver/maneuver-tool";
 import { JunctionTool } from "./junction/junction.tool";
 import { LaneWidthTool } from "./lane-width/lane-width-tool";
 import { PropPointTool } from "./prop-point/prop-point-tool";
-import { PropCurveTool } from "./prop-curve/prop-curve-tool";
+import { PropCurveTool, PropCurveToolService } from "./prop-curve/prop-curve-tool";
 import { PropPolygonTool } from "./prop-polygon/prop-polygon.tool";
 import { PropSpanTool } from "./prop-span/prop-span-tool";
 import { PolePropTool } from "./prop-pole/pole-prop.tool";
@@ -122,7 +122,7 @@ export class ToolFactory {
 	) {
 	}
 
-	createTool ( type: ToolType ): Tool|null {
+	createTool ( type: ToolType ): Tool | null {
 
 		let tool: Tool;
 
@@ -146,7 +146,7 @@ export class ToolFactory {
 				tool = new PropPointTool();
 				break;
 			case ToolType.PropCurve:
-				tool = new PropCurveTool();
+				tool = new PropCurveTool( this.injector.get( PropCurveToolService ) );
 				break;
 			case ToolType.PropPolygon:
 				tool = new PropPolygonTool();

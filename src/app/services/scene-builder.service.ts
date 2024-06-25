@@ -52,7 +52,14 @@ export class SceneBuilderService {
 
 		map.getSurfaces().forEach( surface => {
 
-			map.surfaceGroup.add( surface, this.surfaceBuilder.buildSurface( surface ) );
+			surface.mesh = this.surfaceBuilder.build( surface );
+
+			if ( !surface.mesh ) {
+				TvConsole.error( 'Error building surface mesh for surface id ' + surface.uuid );
+				return;
+			}
+
+			map.surfaceGroup.add( surface, surface.mesh );
 
 		} );
 

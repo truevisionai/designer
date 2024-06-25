@@ -59,10 +59,6 @@ export class DebugServiceProvider {
 
 			debugService = this.injector.get( HasSplineDebugService );
 
-		} else if ( type === ToolType.PropCurve ) {
-
-			debugService = this.injector.get( HasSplineDebugService );
-
 		} else if ( type === ToolType.LaneHeight ) {
 
 			debugService = this.injector.get( LaneHeightDebugService );

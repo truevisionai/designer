@@ -10,6 +10,7 @@ import { PropPolygonBuilder } from "./prop-polygon.builder";
 import { PolygonDistributionService } from '../builders/polygon-distribution.service';
 import { TvTransform } from '../models/tv-transform';
 import { Euler, Vector3 } from 'three';
+import { SplineBuilder } from "../../services/spline/spline.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,7 +19,8 @@ export class PropPolygonService extends BaseDataService<PropPolygon> {
 
 	constructor (
 		private mapService: MapService,
-		private builder: PropPolygonBuilder
+		private builder: PropPolygonBuilder,
+		private splineBuilder: SplineBuilder,
 	) {
 		super();
 	}
@@ -49,8 +51,6 @@ export class PropPolygonService extends BaseDataService<PropPolygon> {
 
 	update ( polygon: PropPolygon ): void {
 
-		polygon.update();
-
 		this.updatePositions( polygon );
 
 		this.build( polygon );
@@ -58,6 +58,8 @@ export class PropPolygonService extends BaseDataService<PropPolygon> {
 	}
 
 	private build ( object: PropPolygon ) {
+
+		this.splineBuilder.buildCatmullRom( object.spline );
 
 		if ( object.spline.controlPoints.length < 3 ) return;
 

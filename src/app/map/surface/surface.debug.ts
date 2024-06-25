@@ -56,7 +56,6 @@ export class SurfaceDebugService extends BaseDebugger<Surface> {
 	onUnselected ( surface: Surface ): void {
 
 
-
 	}
 
 	onRemoved ( surface: Surface ): void {

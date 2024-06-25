@@ -3,13 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SplineSegmentService } from './spline-segment.service';
 import { RoadBuilder } from 'app/map/builders/road.builder';
 import { TvConsole } from 'app/core/utils/console';
 import { MapService } from '../map/map.service';
 import { GameObject } from 'app/objects/game-object';
+import { CatmullRomCurve3 } from "three";
+import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
 
 @Injectable( {
 	providedIn: 'root'
@@ -116,4 +118,32 @@ export class SplineBuilder {
 
 	}
 
+	buildNew ( spline: AbstractSpline ) {
+
+		if ( spline.type === SplineType.CATMULLROM ) {
+
+			this.buildCatmullRom( spline as CatmullRomSpline );
+
+		}
+
+	}
+
+	buildCatmullRom ( spline: CatmullRomSpline ) {
+
+		if ( spline.controlPoints.length < 2 ) return;
+
+		if ( !spline.curve ) {
+			spline.curve = new CatmullRomCurve3(
+				spline.controlPointPositions,
+				spline.closed,
+				spline.curveType,
+				spline.tension
+			);
+		}
+
+		spline.curve.points = spline.controlPointPositions;
+
+		spline.curve.updateArcLengths();
+
+	}
 }

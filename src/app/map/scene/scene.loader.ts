@@ -421,7 +421,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const point = ControlPointFactory.createSplineControlPoint( spline, position );
 
-			spline.controlPoints.push( point );
+			spline.addControlPoint( point );
 
 		} );
 
@@ -495,12 +495,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			spline.addControlPoint( controlPoint );
 
 		} );
-
-		// to make the line and other calculations
-		spline.update();
-
-		// to not show any lines or control points
-		spline.hide();
 
 		return spline;
 	}

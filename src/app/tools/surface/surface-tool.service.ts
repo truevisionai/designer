@@ -4,9 +4,9 @@
 
 import { Injectable } from '@angular/core';
 import { Surface } from 'app/map/surface/surface.model';
-import { SurfaceBuilder } from 'app/map/surface/surface.builder';
 import { MapService } from 'app/services/map/map.service';
 import { Mesh } from "three";
+import { SurfaceService } from "../../map/surface/surface.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -14,8 +14,8 @@ import { Mesh } from "three";
 export class SurfaceToolService {
 
 	constructor (
-		private surfaceBuilder: SurfaceBuilder,
-		private mapService: MapService
+		private mapService: MapService,
+		private surfaceService: SurfaceService,
 	) {
 	}
 
@@ -25,15 +25,9 @@ export class SurfaceToolService {
 
 	}
 
-	private removeMesh ( surface: Surface ) {
-
-		this.mapService.map.surfaceGroup.remove( surface );
-
-	}
-
 	updateSurfaceMeshByDimensions ( surface: Surface, width: number, height: number ) {
 
-		this.removeMesh( surface );
+		this.mapService.map.surfaceGroup.remove( surface );
 
 		// if surface is a rectangle
 		if ( surface.spline?.controlPoints.length == 4 ) {
@@ -46,9 +40,7 @@ export class SurfaceToolService {
 			surface.repeat.set( 1 / width, 1 / height );
 		}
 
-		const mesh = this.surfaceBuilder.buildMesh( surface );
-
-		this.mapService.map.surfaceGroup.add( surface, mesh );
+		this.surfaceService.update( surface );
 
 	}
 

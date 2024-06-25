@@ -3,8 +3,7 @@
  */
 
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { MathUtils, Vector2 } from 'three';
+import { MathUtils, Object3D, Vector2 } from 'three';
 
 export class Surface {
 
@@ -12,13 +11,13 @@ export class Surface {
 
 	public uuid: string;
 
-	isSelected: boolean;
+	public textureGuid: string;
 
-	textureGuid: string;
+	public transparent: boolean = true;
 
-	transparent: boolean = true;
+	public opacity: number = 1.0;
 
-	opacity: number = 1.0;
+	public mesh: Object3D;
 
 	constructor (
 		public materialGuid: string,
@@ -28,20 +27,6 @@ export class Surface {
 		public rotation: number = 0.0,
 	) {
 		this.uuid = MathUtils.generateUUID();
-	}
-
-	addControlPoint ( point: AbstractControlPoint ) {
-
-		point.mainObject = this;
-
-		this.spline.addControlPoint( point );
-
-	}
-
-	removeControlPoint ( point: AbstractControlPoint ) {
-
-		this.spline.removeControlPoint( point );
-
 	}
 
 	toJson () {

@@ -12,6 +12,7 @@ import { MeshBuilder } from 'app/core/interfaces/mesh.builder';
 import { TvMaterialService } from "../../graphics/material/tv-material.service";
 import { TvTextureService } from "../../graphics/texture/tv-texture.service";
 import { TvTexture } from "../../graphics/texture/tv-texture.model";
+import { SplineBuilder } from "../../services/spline/spline.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,6 +23,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 		private surfaceGeometryBuilder: SurfaceGeometryBuilder,
 		private materialService: TvMaterialService,
 		private textureService: TvTextureService,
+		private splineBuilder: SplineBuilder,
 	) {
 		super();
 	}
@@ -32,7 +34,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 	}
 
-	buildSurface ( surface: Surface ): Mesh {
+	private buildSurface ( surface: Surface ): Mesh {
 
 		// update the surface if >=3 points are present
 		if ( surface.spline.controlPoints.length < 2 ) {
@@ -51,18 +53,18 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 	}
 
-	buildMesh ( surface: Surface ): GameObject {
+	private buildMesh ( surface: Surface ): GameObject {
+
+		this.splineBuilder.buildNew( surface.spline );
 
 		const geometry = this.surfaceGeometryBuilder.createPolygon( surface.spline.controlPoints.map( cp => cp.position ) );
 
 		const material = this.buildMaterial( surface );
 
-		const mesh = new GameObject( 'surface:' + surface.uuid, geometry, material );
-
-		return mesh;
+		return new GameObject( 'surface:' + surface.uuid, geometry, material );
 	}
 
-	buildMaterial ( surface: Surface ) {
+	private buildMaterial ( surface: Surface ) {
 
 		const texture = this.buildTexture( surface );
 
@@ -86,7 +88,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 	}
 
-	buildTexture ( surface: Surface ) {
+	private buildTexture ( surface: Surface ) {
 
 		let texture: TvTexture;
 

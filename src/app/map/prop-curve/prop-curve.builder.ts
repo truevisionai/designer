@@ -10,13 +10,17 @@ import { MeshBuilder } from "../../core/interfaces/mesh.builder";
 import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
 import { AssetService } from "app/core/asset/asset.service";
 import { AssetType } from "app/core/asset/asset.model";
+import { SplineBuilder } from "../../services/spline/spline.builder";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
-	constructor ( private assetService: AssetService ) {
+	constructor (
+		private splineBuilder: SplineBuilder,
+		private assetService: AssetService
+	) {
 		super();
 	}
 
@@ -28,9 +32,11 @@ export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
 		if ( curve.spline.controlPoints.length < 2 ) return;
 
-		const length = curve.spline.getLength();
+		this.splineBuilder.buildNew( curve.spline );
 
-		if ( length <= 0 ) return;
+		const curveLength = curve.spline.getLength();
+
+		if ( curveLength === 0 ) return;
 
 		curve.props.splice( 0, curve.props.length );
 
@@ -56,7 +62,7 @@ export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
 		}
 
-		for ( let i = 0; i < length; i += curve.spacing ) {
+		for ( let i = 0; i < curveLength; i += curve.spacing ) {
 
 			const t = spline.curve.getUtoTmapping( 0, i );
 

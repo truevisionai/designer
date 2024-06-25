@@ -28,9 +28,11 @@ export class SurfaceManager extends Manager {
 
 	onAdded ( surface: Surface ) {
 
-		const mesh = this.surfaceBuilder.buildMesh( surface );
+		surface.mesh = this.surfaceBuilder.build( surface );
 
-		this.mapService.map.surfaceGroup.add( surface, mesh );
+		if ( !surface.mesh ) return;
+
+		this.mapService.map.surfaceGroup.add( surface, surface.mesh );
 
 	}
 
@@ -42,9 +44,11 @@ export class SurfaceManager extends Manager {
 
 	onUpdated ( surface: Surface ) {
 
-		const mesh = this.surfaceBuilder.buildMesh( surface );
+		surface.mesh = this.surfaceBuilder.build( surface );
 
-		this.mapService.map.surfaceGroup.add( surface, mesh );
+		if ( !surface.mesh ) return;
+
+		this.mapService.map.surfaceGroup.add( surface, surface.mesh );
 
 	}
 

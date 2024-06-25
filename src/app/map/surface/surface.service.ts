@@ -36,8 +36,6 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 	update ( object: Surface ): void {
 
-		object.spline.update();
-
 		this.surfaceManager.onUpdated( object );
 
 	}

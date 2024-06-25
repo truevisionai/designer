@@ -98,7 +98,7 @@ export abstract class AbstractSpline {
 
 	addControlPoint ( point: AbstractControlPoint ) {
 
-		if ( point.tagindex != null && point.tagindex != undefined && !isNaN( point.tagindex ) ) {
+		if ( point.tagindex != null && !isNaN( point.tagindex ) ) {
 
 			this.controlPoints.splice( point.tagindex, 0, point );
 
@@ -157,7 +157,12 @@ export abstract class AbstractSpline {
 
 	removeControlPoint ( cp: AbstractControlPoint ) {
 
+		// NOTE: updating here before removing to ensure correct indexes, fix for undo/redo
+		this.updateIndexes();
+
 		const index = this.controlPoints.findIndex( p => p.id === cp.id );
+
+		if ( index == -1 ) return;
 
 		this.controlPoints.splice( index, 1 );
 
