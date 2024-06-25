@@ -16,8 +16,11 @@ import { Vector3 } from 'three';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
-import { Debug } from 'app/core/utils/debug';
-import { PointMarkingInspector } from './PointMarkingInspector';
+import { PointMarkingInspector } from './point-marking.inspector';
+import { DebugState } from "../../services/debug/debug-state";
+import { CopyPositionCommand } from 'app/commands/copy-position-command';
+import { CommandHistory } from 'app/services/command-history';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 
 export class PointMarkingTool extends BaseTool<any> {
 
@@ -28,15 +31,11 @@ export class PointMarkingTool extends BaseTool<any> {
 	private boxSelectionStarted: boolean = false;
 
 	get selectedRoad () {
-
 		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
-
 	}
 
-	get selectedMarking () {
-
+	override get currentSelectedPoint () {
 		return this.selectionService.getLastSelected<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint.name );
-
 	}
 
 	constructor ( private tool: PointMarkingToolService ) {
@@ -51,9 +50,15 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		const selectRoadStrategy = new SelectRoadStrategy( false, true );
+
+		selectRoadStrategy.debugger = this.tool.toolDebugger;
+
+		this.selectionService.registerStrategy( TvRoad.name, selectRoadStrategy );
 
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
+
+		this.setDebugService( this.tool.toolDebugger );
 
 	}
 
@@ -71,11 +76,9 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		super.disable();
 
-		this.tool.hideAllControls();
+		this.debugService?.clear();
 
 		this.tool.base.reset();
-
-		// this.tool.boxSelectionService.reset();
 
 	}
 
@@ -116,19 +119,51 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		// }
 
-		this.createPointMarking( this.tool.getSelectedAsset(), e.point );
+		const roadObject = this.createPointMarking( this.tool.getSelectedAsset(), e.point );
+
+		if ( !roadObject ) return;
+
+		const point = this.tool.toolDebugger.createNode( this.selectedRoad, roadObject );
+
+		this.executeAddAndSelect( point, this.currentSelectedPoint );
+
+	}
+
+	onPointerUp ( e: PointerEventData ) {
+
+		this.tool.base.enableControls();
+
+		if ( !this.pointerDownAt ) return;
+
+		if ( !this.currentSelectedPointMoved ) return;
+
+		if ( !this.currentSelectedPoint ) return;
+
+		if ( !this.currentSelectedPoint.isSelected ) return;
+
+		const newPosition = e.point.clone();
+
+		const oldPosition = this.pointerDownAt.clone();
+
+		const command = new CopyPositionCommand( this.currentSelectedPoint, newPosition, oldPosition );
+
+		CommandHistory.execute( command );
+
+		this.currentSelectedPointMoved = false;
 
 	}
 
 	onPointerMoved ( pointerEventData: PointerEventData ): void {
 
+		this.highlight( pointerEventData );
+
 		if ( !this.isPointerDown ) return;
 
 		if ( !this.selectedRoad ) return;
 
-		if ( !this.selectedMarking ) return;
+		if ( !this.currentSelectedPoint ) return;
 
-		if ( !this.selectedMarking.isSelected ) return;
+		if ( !this.currentSelectedPoint.isSelected ) return;
 
 		// if ( !this.boxSelectionStarted ) return;
 
@@ -138,19 +173,11 @@ export class PointMarkingTool extends BaseTool<any> {
 
 			if ( position instanceof RoadPosition ) {
 
-				Debug.log( position );
+				this.tool.base.disableControls();
 
-				this.selectedMarking.mainObject.s = position.s;
+				this.currentSelectedPoint?.position.copy( position.position );
 
-				this.selectedMarking.mainObject.t = position.t;
-
-				this.selectedMarking.copyPosition( position.position );
-
-				this.tool.updateControls( this.selectedMarking.mainObject );
-
-				this.tool.roadObjectService.updateRoadObject( this.selectedRoad, this.selectedMarking.mainObject );
-
-				// this.nodeChanged = true;
+				this.currentSelectedPointMoved = true;
 
 			}
 
@@ -164,7 +191,170 @@ export class PointMarkingTool extends BaseTool<any> {
 
 	}
 
-	createPointMarking ( asset: Asset, position: Vector3 ) {
+	onObjectSelected ( object: any ): void {
+
+		if ( object instanceof TvRoad ) {
+
+			this.onRoadSelected( object );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			this.onPointSelected( object );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( obj => this.onObjectSelected( obj ) );
+
+		}
+
+	}
+
+	onObjectUnselected ( object: any ): void {
+
+		if ( object instanceof TvRoad ) {
+
+			this.onRoadUnselected( object );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			this.onPointUnselected( object );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( obj => this.onObjectUnselected( obj ) );
+
+
+		}
+
+	}
+
+	onObjectAdded ( object: any ): void {
+
+		if ( object instanceof Array ) {
+
+			object.forEach( obj => this.onObjectAdded( obj ) );
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			this.addPointMarking( object.userData.road, object.mainObject );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( obj => this.onObjectAdded( obj ) );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( object instanceof SimpleControlPoint ) {
+
+			this.removePointMarking( object.userData.road, object.mainObject );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( obj => this.onObjectRemoved( obj ) );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( obj => this.onObjectRemoved( obj ) );
+
+		}
+
+	}
+
+	onObjectUpdated ( object: any ): void {
+
+		if ( object instanceof PointMarkingInspector ) {
+
+			object.points.forEach( point => {
+
+				this.tool.roadObjectService.updateRoadObject( point.userData.road, point.mainObject );
+
+				this.debugService?.updateDebugState( point.userData.road, DebugState.SELECTED );
+
+			} )
+
+		} else if ( object instanceof SimpleControlPoint ) {
+
+			this.onPointUpdated( object );
+
+		}
+
+	}
+
+	onDeleteKeyDown (): void {
+
+		if ( !this.currentSelectedPoint ) return;
+
+		this.executeRemoveObject( this.currentSelectedPoint );
+
+	}
+
+	onDuplicateKeyDown (): void {
+
+		if ( !this.currentSelectedPoint ) return;
+
+		const road = this.currentSelectedPoint.userData.road;
+		const s = this.currentSelectedPoint.mainObject.s + 5;   // 5 mtrs ahead
+		const t = this.currentSelectedPoint.mainObject.t;
+
+		if ( !road || !s || !t ) return;
+
+		if ( s > road.length ) {
+			this.setHint( 'Cannot duplicate point marking outside road' );
+			return;
+		}
+
+		const posTheta = this.tool.roadService.findRoadPosition( road, s, t );
+
+		if ( !posTheta ) return;
+
+		const assetGuid = this.currentSelectedPoint.mainObject.assetGuid;
+
+		const asset = assetGuid ? this.tool.assetService.getAsset( assetGuid ) : this.tool.getSelectedAsset();
+
+		const roadObject = this.createPointMarking( asset, posTheta.position );
+
+		if ( !roadObject ) return;
+
+		const point = this.tool.toolDebugger.createNode( this.selectedRoad, roadObject );
+
+		this.executeAddAndSelect( point, this.currentSelectedPoint );
+	}
+
+	onRoadSelected ( road: TvRoad ) {
+
+		this.debugService?.updateDebugState( road, DebugState.SELECTED );
+
+		this.clearInspector();
+
+	}
+
+	onRoadUnselected ( road: TvRoad ) {
+
+		this.debugService?.updateDebugState( road, DebugState.DEFAULT );
+
+	}
+
+	onPointSelected ( point: SimpleControlPoint<TvRoadObject> ) {
+
+		point.select();
+
+		AppInspector.setDynamicInspector( new PointMarkingInspector( [ point ] ) );
+
+	}
+
+	onPointUnselected ( point: SimpleControlPoint<TvRoadObject> ) {
+
+		point.unselect();
+
+		this.clearInspector();
+
+	}
+
+	private createPointMarking ( asset: Asset, position: Vector3 ) {
 
 		if ( !position ) {
 			this.setHint( 'Drag point marking on a road or lane' );
@@ -188,179 +378,51 @@ export class PointMarkingTool extends BaseTool<any> {
 			return;
 		}
 
-		this.executeAddObject( roadObject );
+		return roadObject;
 
 	}
 
-	onObjectSelected ( object: any ): void {
+	private addPointMarking ( road: TvRoad, object: TvRoadObject ) {
 
-		if ( object instanceof TvRoad ) {
+		this.tool.roadObjectService.addRoadObject( road, object );
 
-			if ( this.selectedRoad ) this.onObjectUnselected( this.selectedRoad );
-
-			this.tool.showControls( object );
-
-		} else if ( object instanceof SimpleControlPoint ) {
-
-			if ( this.selectedMarking ) this.onObjectUnselected( this.selectedMarking );
-
-			object.select();
-
-			this.tool.showControls( object.mainObject.road );
-
-			AppInspector.setDynamicInspector( new PointMarkingInspector( [ object.mainObject ] ) );
-
-		} else if ( object instanceof Array ) {
-
-			if ( object[ 0 ] instanceof SimpleControlPoint ) {
-
-				AppInspector.setDynamicInspector( new PointMarkingInspector( object.map( o => o.mainObject ) ) );
-
-			}
-
-		} else if ( object instanceof TvRoadObject ) {
-
-			if ( this.selectedMarking ) this.onObjectUnselected( this.selectedMarking );
-
-			this.tool.showControls( object.road );
-
-			AppInspector.setDynamicInspector( new PointMarkingInspector( [ object ] ) );
-
-		}
-
+		this.debugService?.updateDebugState( road, DebugState.SELECTED );
 
 	}
 
-	onObjectUnselected ( object: any ): void {
+	private updatePointMarking ( road: TvRoad, object: TvRoadObject ) {
 
-		if ( object instanceof TvRoad ) {
+		this.tool.roadObjectService.updateRoadObject( road, object );
 
-			this.tool.hideControls( object );
-
-		} else if ( object instanceof SimpleControlPoint ) {
-
-			object.unselect();
-
-			AppInspector.setDynamicInspector( null );
-
-		}
+		this.debugService?.updateDebugState( road, DebugState.SELECTED );
 
 	}
 
-	onObjectAdded ( object: any ): void {
+	private onPointUpdated ( point: SimpleControlPoint<TvRoadObject> ) {
 
-		if ( object instanceof TvRoadObject ) {
+		const coord = this.tool.roadService.findRoadCoord( point.position );
 
-			this.addRoadObject( object );
+		if ( !coord ) return;
 
-		} else if ( object instanceof Array ) {
+		point.mainObject.s = coord.s;
 
-			if ( object[ 0 ] instanceof TvRoadObject ) {
+		point.mainObject.t = coord.t;
 
-				object.forEach( obj => this.addRoadObject( obj ) );
+		point.copyPosition( coord.position );
 
-			}
+		this.debugService?.updateDebugState( coord.road, DebugState.SELECTED );
 
-		}
-
-		this.onObjectSelected( object );
-	}
-
-	addRoadObject ( object: TvRoadObject ) {
-
-		this.tool.roadObjectService.addRoadObject( object.road, object );
-
-		this.tool.hideAllControls();
-
-		this.tool.showControls( object.road );
+		this.updatePointMarking( point.userData.road, point.mainObject );
 
 	}
 
-	onObjectRemoved ( object: any ): void {
+	private removePointMarking ( road: TvRoad, object: TvRoadObject ) {
 
-		if ( object instanceof TvRoad ) {
+		this.tool.roadObjectService.removeRoadObject( road, object );
 
-			this.tool.hideControls( object );
+		this.debugService?.updateDebugState( road, DebugState.SELECTED );
 
-		} else if ( object instanceof TvRoadObject ) {
-
-			this.tool.removePointMarking( object );
-
-		} else if ( object instanceof Array ) {
-
-			if ( object[ 0 ] instanceof TvRoadObject ) {
-
-				object.forEach( obj => this.tool.removePointMarking( obj ) );
-
-			}
-
-		}
-
-	}
-
-	onObjectUpdated ( object: any ): void {
-
-		if ( object instanceof PointMarkingInspector ) {
-
-			object.items.forEach( obj => {
-
-				this.tool.roadObjectService.updateRoadObject( obj.road, obj );
-
-				this.tool.updateControls( obj );
-
-			} )
-
-			if ( object.items instanceof Array ) {
-
-				object.items.forEach( obj => {
-
-					this.tool.roadObjectService.updateRoadObject( obj.road, obj );
-
-					this.tool.updateControls( obj );
-
-				} )
-
-			} else {
-
-				// this.tool.roadObjectService.updateRoadObject( object.object.road, object.object );
-
-				// this.tool.updateControls( object.object );
-
-			}
-
-		}
-
-	}
-
-	onDeleteKeyDown (): void {
-
-		if ( !this.selectedMarking ) return;
-
-		if ( this.selectedMarking instanceof Array ) {
-
-			this.selectedMarking.forEach( marking => {
-
-				this.tool.removePointMarking( marking.mainObject );
-
-			} );
-
-		} else {
-
-			this.tool.removePointMarking( this.selectedMarking.mainObject );
-
-		}
-
-	}
-
-	onDuplicateKeyDown (): void {
-
-		if ( !this.selectedMarking ) return;
-
-		const clone = this.tool.roadObjectService.clone( this.selectedMarking.mainObject );
-
-		clone.s += 5;
-
-		this.executeAddObject( clone );
+		this.clearInspector();
 
 	}
 

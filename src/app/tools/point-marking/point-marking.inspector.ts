@@ -6,11 +6,14 @@ import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { CommandHistory } from 'app/services/command-history';
+import { SimpleControlPoint } from 'app/objects/simple-control-point';
 
 
 export class PointMarkingInspector {
 
-	constructor ( public items: TvRoadObject[] ) { }
+	constructor ( public points: SimpleControlPoint<TvRoadObject>[] ) { }
+
+	get items () { return this.points.map( point => point.object ); }
 
 	getValue<T, K extends keyof T> ( items: T[], key: K, multi = true ): T[ K ] {
 
@@ -125,7 +128,7 @@ export class PointMarkingInspector {
 	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.items ) );
+		CommandHistory.execute( new RemoveObjectCommand( this.points ) );
 
 	}
 

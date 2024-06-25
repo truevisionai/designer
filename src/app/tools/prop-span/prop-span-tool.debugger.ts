@@ -110,6 +110,8 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 			point = ControlPointFactory.createSimpleControlPoint( repeat, coord.position );
 
+			this.pointsCache.set( repeat, point );
+
 		} else {
 
 			point = this.pointsCache.get( repeat );

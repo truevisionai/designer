@@ -6,34 +6,31 @@ import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadObjectService } from '../../map/road-object/road-object.service';
-import { Vector3, Euler, Object3D } from 'three';
+import { Vector3 } from 'three';
 import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
-import { TvRoad } from 'app/map/models/tv-road.model';
-import { Object3DMap } from '../../core/models/object3d-map';
-import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { BoxSelectionService } from '../box-selection-service';
 import { AssetManager } from 'app/core/asset/asset.manager';
 import { TvOrientation } from 'app/map/models/tv-common';
 import { TvTextureService } from 'app/graphics/texture/tv-texture.service';
 import { TvConsole } from 'app/core/utils/console';
+import { PointMarkingToolDebugger } from "./point-marking-tool.debugger";
+import { AssetService } from "../../core/asset/asset.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class PointMarkingToolService {
 
-	private controlPoints = new Object3DMap<TvRoadObject, Object3D>();
-
 	constructor (
 		public base: BaseToolService,
 		public roadService: RoadService,
 		public roadObjectService: RoadObjectService,
-		private controlPointFactory: ControlPointFactory,
-		public boxSelectionService: BoxSelectionService,
 		public assetManager: AssetManager,
+		public assetService: AssetService,
 		public textureService: TvTextureService,
-	) { }
+		public toolDebugger: PointMarkingToolDebugger,
+	) {
+	}
 
 	getSelectedAsset (): Asset {
 
@@ -55,11 +52,11 @@ export class PointMarkingToolService {
 		if ( !roodCoord ) {
 			TvConsole.error( 'Could not find road coord at position' );
 			return;
-		};
+		}
 
-		const laneCoord = roodCoord.road.getLaneCenterPosition( lane, roodCoord.s );
+		const posTheta = roodCoord.road.getLaneCenterPosition( lane, roodCoord.s );
 
-		if ( !laneCoord ) {
+		if ( !posTheta ) {
 			TvConsole.error( 'Could not find lane coord at position' );
 			return;
 		}
@@ -67,8 +64,8 @@ export class PointMarkingToolService {
 		const roadObject = this.roadObjectService.createRoadObject(
 			lane.laneSection.road,
 			TvRoadObjectType.roadMark,
-			laneCoord.s,
-			laneCoord.t
+			posTheta.s,
+			posTheta.t
 		);
 
 		if ( asset.type == AssetType.MATERIAL ) {
@@ -99,55 +96,4 @@ export class PointMarkingToolService {
 
 		return roadObject;
 	}
-
-	removePointMarking ( roadObject: TvRoadObject ) {
-
-		this.roadObjectService.removeRoadObject( roadObject.road, roadObject );
-
-		this.controlPoints.remove( roadObject );
-
-	}
-
-	hideAllControls () {
-
-		this.controlPoints.clear();
-
-	}
-
-	hideControls ( road: TvRoad ) {
-
-		this.controlPoints.clear();
-
-	}
-
-	showControls ( road: TvRoad ) {
-
-		road.objects.object.filter( roadObject => roadObject.attr_type == TvRoadObjectType.roadMark ).forEach( roadObject => {
-
-			const position = road.getPosThetaAt( roadObject.s, roadObject.t ).position;
-
-			const controlPoint = this.controlPointFactory.createSimpleControlPoint( roadObject, position );
-
-			this.controlPoints.add( roadObject, controlPoint );
-
-		} );
-
-	}
-
-	updateControls ( roadObject: TvRoadObject ) {
-
-		if ( !roadObject ) return;
-
-		const position = roadObject.road.getPosThetaAt( roadObject.s, roadObject.t ).position;
-
-		const controlPoint = this.controlPoints.get( roadObject );
-
-		if ( !controlPoint ) return;
-
-		controlPoint.position.copy( position );
-
-	}
-
-
-
 }

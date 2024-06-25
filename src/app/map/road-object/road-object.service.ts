@@ -155,15 +155,15 @@ export class RoadObjectService {
 
 	updateRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		this.removeRoadObject( road, roadObject );
+		// this.removeRoadObject( road, roadObject );
 
-		this.addRoadObject( road, roadObject );
+		// this.addRoadObject( road, roadObject );
 
-		// road.objectGroup.remove( roadObject.mesh );
+		road.objectGroup.remove( roadObject.mesh );
 
-		// roadObject.mesh = this.builder.build( roadObject );
+		roadObject.mesh = this.builder.build( roadObject );
 
-		// road.objectGroup.add( roadObject.mesh );
+		road.objectGroup.add( roadObject.mesh );
 
 	}
 
