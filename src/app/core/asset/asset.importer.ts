@@ -18,9 +18,9 @@ export class AssetImporter {
 
 	async import ( sourcePath: string, destinationFolder: string ) {
 
-		const extension = FileUtils.getExtensionFromPath( sourcePath ).toLowerCase();
+		const extension = FileUtils.getExtensionFromPath( sourcePath );
 
-		const importer = this.factory.getImporter( extension );
+		const importer = this.factory.getImporter( extension.toLowerCase() );
 
 		if ( !importer ) return;
 

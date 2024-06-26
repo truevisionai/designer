@@ -16,6 +16,7 @@ import { ProjectService } from "../../../services/editor/project.service";
 import { AssetService } from 'app/core/asset/asset.service';
 import { TvMaterialFactory } from 'app/graphics/material/tv-material.factory';
 import { AssetImporter } from "../../../core/asset/asset.importer";
+import { FileUtils } from 'app/io/file-utils';
 
 @Component( {
 	selector: 'app-project-browser',
@@ -115,8 +116,25 @@ export class ProjectBrowserComponent implements OnInit {
 
 	async handleDroppedFile ( file: File, folderPath: string ) {
 
-		if ( !file ) this.snackBar.error( 'Incorrect file. Cannot import' );
-		if ( !file ) return;
+		if ( !file ) {
+			this.snackBar.error( 'Incorrect file. Cannot import' );
+			console.error( 'Incorrect file. Cannot import' );
+			return;
+		}
+
+		if ( !file.path ) {
+			this.snackBar.error( 'Incorrect file path. Cannot import' );
+			console.error( 'Incorrect file path. Cannot import', file, folderPath );
+			return;
+		}
+
+		const extension = FileUtils.getExtensionFromPath( file.path );
+
+		if ( !extension ) {
+			this.snackBar.error( 'Incorrect file extension. Cannot import' );
+			console.error( 'Incorrect file extension. Cannot import', file, folderPath );
+			return;
+		}
 
 		await this.assetImporter.import( file.path, folderPath );
 
