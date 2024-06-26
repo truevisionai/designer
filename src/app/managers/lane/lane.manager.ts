@@ -10,6 +10,9 @@ import { ParkingLaneManager } from "./parking-lane.manager";
 import { LaneMarkingManager } from "./lane-marking.manager";
 import { LaneLinkManager } from "./lane-link.manager";
 import { LaneMaterialManager } from "./lane-material.manager";
+import { MapEvents } from "../../events/map-events";
+import { SplineRemovedEvent } from "../../events/spline/spline-removed-event";
+import { RoadUpdatedEvent } from "../../events/road/road-updated-event";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +26,8 @@ export class LaneManager {
 		private laneMarkingManager: LaneMarkingManager,
 		private laneLinkManager: LaneLinkManager,
 		private laneMaterialManager: LaneMaterialManager,
-	) { }
+	) {
+	}
 
 	onLaneCreated ( lane: TvLane ) {
 
@@ -42,6 +46,19 @@ export class LaneManager {
 	onLaneRemoved ( lane: TvLane ) {
 
 		this.parkingLaneManager.onLaneRemoved( lane.laneSection.road, lane.laneSection, lane );
+
+		// if road has only 1 lane section and
+		// that lane section has no lanes, then
+		// remove the whole spline as we no longer have valid road
+		if ( lane.laneSection.road.laneSections.length == 1 && lane.laneSection.lanes.size == 1 ) {
+
+			MapEvents.splineRemoved.emit( new SplineRemovedEvent( lane.laneSection.road.spline ) );
+
+		} else {
+
+			MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road ) );
+
+		}
 
 	}
 

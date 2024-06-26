@@ -57,8 +57,6 @@ export class LaneEventListener {
 
 		this.laneManager.onLaneRemoved( lane );
 
-		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( lane.laneSection.road ) );
-
 	}
 
 	onLaneCreated ( lane: TvLane ): void {
