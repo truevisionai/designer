@@ -275,6 +275,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 	private onPointerMoved ( event: PointerEventData ) {
 
 		// Debug.log( 'Pointer moved', event );
+		this.selectionService.highlight( event );
 
 		if ( !event.pointerDown ) return;
 

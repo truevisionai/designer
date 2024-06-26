@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { TvMapControls, TvOrbitControls } from "../../../objects/tv-orbit-controls";
 import * as THREE from "three";
 import { Object3D, OrthographicCamera, PerspectiveCamera, Vector3 } from "three";
@@ -14,14 +14,11 @@ import { IViewportController } from "../../../objects/i-viewport-controller";
 } )
 export class ViewControllerService {
 
+	@Output() updated = new EventEmitter<any>();
+
 	private controls: IViewportController;
 
 	private target: Object3D;
-
-	// This will create a vector to store the offset position from the object
-	private p_offset = new THREE.Vector3( 20, 20, 20 );
-
-	private o_offset = new THREE.Vector3( 0, 0, 100 );
 
 	constructor (
 		private cameraService: CameraService
@@ -31,8 +28,15 @@ export class ViewControllerService {
 
 	init ( camera: THREE.Camera, canvas: HTMLCanvasElement ) {
 
-		this.controls = TvOrbitControls.getNew( camera, canvas );
+		const controls = TvOrbitControls.getNew( camera, canvas );
 
+		controls.addEventListener( 'end', () => {
+
+			this.updated.emit( this.cameraService.camera );
+
+		} );
+
+		this.controls = controls;
 	}
 
 	enableControls () {
@@ -57,6 +61,12 @@ export class ViewControllerService {
 	getFocusTarget () {
 
 		return this.target;
+
+	}
+
+	getTarget () {
+
+		return this.target?.position || this.controls.getTarget();
 
 	}
 
@@ -128,5 +138,16 @@ export class ViewControllerService {
 		//
 		//this.camera.lookAt( target.position );
 
+	}
+
+	getDistance () {
+
+		if ( this.controls instanceof TvOrbitControls ) {
+
+			return this.controls?.getDistance();
+
+		}
+
+		return 0;
 	}
 }

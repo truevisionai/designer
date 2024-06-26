@@ -74,6 +74,20 @@ export class SelectionService {
 
 	}
 
+	highlight ( e: PointerEventData ) {
+
+		for ( const strategy of this.getStrategies() ) {
+
+			const result = strategy.onPointerMoved( e );
+
+			if ( result ) {
+
+				return result;
+
+			}
+		}
+	}
+
 	handleSelection ( e: PointerEventData, selected?: ( object: any ) => void, unselected?: () => void ): void {
 
 		for ( const [ type, strategy ] of this.strategies ) {

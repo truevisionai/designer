@@ -17,7 +17,7 @@ import { Environment } from 'app/core/utils/environment';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ViewportEvents } from 'app/events/viewport-events';
 import * as THREE from 'three';
-import { Object3D, WebGLRenderer, Intersection, OrthographicCamera, PerspectiveCamera, Camera } from 'three';
+import { Object3D, WebGLRenderer, Intersection, OrthographicCamera, PerspectiveCamera, Camera, Vector3 } from 'three';
 import { IViewportController } from "../../../objects/i-viewport-controller";
 import { TvOrbitControls } from "../../../objects/tv-orbit-controls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -147,9 +147,11 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		const controls = this.controls = TvOrbitControls.getNew( this.camera, this.canvas );
 
 		// Listen for the 'change' event on OrbitControls
-		( controls as unknown as OrbitControls ).addEventListener( 'change', () => {
+		controls.addEventListener( 'end', () => {
 
 			this.updated.emit( this.camera );
+
+			this.adjustRaycasterThreshold();
 
 		} );
 
@@ -660,6 +662,55 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 			camera.updateProjectionMatrix();
 		}
+
+	}
+
+	adjustRaycasterThreshold () {
+
+		const target = this.controls.getTarget() || new Vector3();
+
+		const cameraDistance = this.computeDistance( target );
+
+		// Adjust the threshold based on camera distance
+		const min = 1.0; // minimum threshold
+		const minDistance = 100; // distance at which the threshold is minimum
+
+		const maxDistance = 1000; // distance at which the threshold is maximum
+		const max = 10.0; // maximum threshold
+
+		const normalizedDistance = Math.min( Math.max( ( cameraDistance - minDistance ) / ( maxDistance - minDistance ), 0 ), 1 );
+
+		const threshold = max + ( min - max ) * ( 1 - normalizedDistance );
+
+		this.raycaster.params.Points.threshold = threshold;
+
+		console.log( 'Threshold:', threshold, 'Distance', cameraDistance );
+
+	}
+
+	computeDistance ( target: Vector3, camera?: Camera ) {
+
+		camera = camera ?? this.camera;
+
+		if ( camera instanceof THREE.OrthographicCamera ) {
+
+			const cameraWidth = camera.right - camera.left;
+
+			const cameraHeight = camera.top - camera.bottom;
+
+			const cameraDiagonalSize = Math.sqrt( cameraWidth * cameraWidth + cameraHeight * cameraHeight );
+
+			return cameraDiagonalSize / ( 2 * camera.zoom );
+
+		} else if ( camera instanceof THREE.PerspectiveCamera ) {
+
+			const cameraPosition = camera.position;
+
+			return cameraPosition.distanceTo( target );
+
+		}
+
+		return 0;
 
 	}
 }

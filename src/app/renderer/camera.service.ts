@@ -207,4 +207,30 @@ export class CameraService {
 		camera.updateProjectionMatrix();
 
 	}
+
+	computeDistance ( target: Vector3, camera?: Camera ) {
+
+		camera = camera ?? this.camera;
+
+		if ( camera instanceof THREE.OrthographicCamera ) {
+
+			const cameraWidth = camera.right - camera.left;
+
+			const cameraHeight = camera.top - camera.bottom;
+
+			const cameraDiagonalSize = Math.sqrt( cameraWidth * cameraWidth + cameraHeight * cameraHeight );
+
+			return cameraDiagonalSize / ( 2 * camera.zoom );
+
+		} else if ( camera instanceof THREE.PerspectiveCamera ) {
+
+			const cameraPosition = camera.position;
+
+			return cameraPosition.distanceTo( target );
+
+		}
+
+		return 0;
+
+	}
 }
