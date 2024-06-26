@@ -71,7 +71,7 @@ export class CameraService {
 		const orthographicCamera = this.createOrthographicCamera( left, right, top, bottom, near, far );
 
 		const perspectiveCamera = new THREE.PerspectiveCamera( 50, width / height, near, far );
-		perspectiveCamera.position.set( 0, 5, 10 );
+		perspectiveCamera.position.set( 0, -50, 200 );
 		perspectiveCamera.up.copy( AppConfig.DEFAULT_UP );
 
 		this.cameras.push( orthographicCamera );
@@ -168,15 +168,43 @@ export class CameraService {
 
 	resetCamera () {
 
-		this.camera.position.copy( this.camera.userData.initialPosition ?? new Vector3( 0, 0, 50 ) );
+		if ( this.camera instanceof OrthographicCamera ) {
+
+			this.resetOrthographicCamera( this.camera );
+
+		} else if ( this.camera instanceof PerspectiveCamera ) {
+
+			this.resetPerspectiveCamera( this.camera );
+
+		}
+
+	}
+
+	private resetOrthographicCamera ( camera: OrthographicCamera ) {
+
+		this.camera.position.copy( this.camera.userData.initialPosition ?? new Vector3( 0, 0, 200 ) );
 
 		this.camera.rotation.copy( this.camera.userData.initialRotation ?? new Euler() );
 
 		this.camera.up.copy( this.camera.userData.initialUp ?? AppConfig.DEFAULT_UP );
 
-		( this.camera as any ).lookAt( 0, 0, 0 );
+		camera.lookAt( 0, 0, 0 );
 
-		( this.camera as any ).updateProjectionMatrix();
+		camera.updateProjectionMatrix();
+
 	}
 
+	private resetPerspectiveCamera ( camera: PerspectiveCamera ) {
+
+		this.camera.position.copy( this.camera.userData.initialPosition ?? new Vector3( 0, -50, 200 ) );
+
+		this.camera.rotation.copy( this.camera.userData.initialRotation ?? new Euler() );
+
+		this.camera.up.copy( this.camera.userData.initialUp ?? AppConfig.DEFAULT_UP );
+
+		camera.lookAt( 0, 0, 0 );
+
+		camera.updateProjectionMatrix();
+
+	}
 }

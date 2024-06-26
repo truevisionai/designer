@@ -640,6 +640,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.cameraService.resetCamera();
 
+		// NOTE: view controller reset & update  is very important
+		this.viewControllerService.setFocusTarget( new Vector3( 0, 0, 0 ) );
+		this.viewControllerService.update( 1 );
+
 	}
 
 	wireframeMode () {

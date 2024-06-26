@@ -47,10 +47,10 @@ export class ViewControllerService {
 
 	}
 
-	setFocusTarget ( target: THREE.Object3D ) {
+	setFocusTarget ( target: Vector3 ) {
 
-		this.target = target;
-		this.controls.setTarget( target.position );
+		// this.target = target;
+		this.controls.setTarget( target );
 
 	}
 
