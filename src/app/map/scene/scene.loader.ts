@@ -1540,6 +1540,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			} );
 		} );
 
+		road.addLaneSectionInstance( laneSection );
 	}
 
 	private parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ) {
