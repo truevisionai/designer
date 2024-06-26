@@ -7,7 +7,7 @@ import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadNode } from 'app/objects/road-node';
 import { CommandHistory } from 'app/services/command-history';
-import { Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { IComponent } from '../../../objects/game-object';
 import { TvRoadType } from '../../../map/models/tv-common';
 import { TvRoad } from '../../../map/models/tv-road.model';
@@ -58,8 +58,8 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 		return this.data.controlPoint;
 	}
 
-	get controlPointPosition (): Vector3 {
-		return this.controlPoint?.position.clone();
+	get controlPointPosition (): Vector2 {
+		return new Vector2( this.controlPoint?.position.x || 0, this.controlPoint?.position.y || 0 );
 	}
 
 	get node (): RoadNode {
@@ -148,11 +148,13 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	}
 
-	onControlPointChanged ( $newPosition: Vector3 ) {
+	onControlPointChanged ( $position: Vector2 ) {
+
+		const newPosition = new Vector3( $position.x, $position.y, 0 );
 
 		const oldPosition = this.controlPoint.position.clone();
 
-		const updateCommand = new UpdatePositionCommand( this.controlPoint, $newPosition, oldPosition );
+		const updateCommand = new UpdatePositionCommand( this.controlPoint, newPosition, oldPosition );
 
 		CommandHistory.execute( updateCommand );
 
