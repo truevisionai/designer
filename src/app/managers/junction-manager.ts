@@ -363,6 +363,8 @@ export class JunctionManager {
 
 			const splineCoords = this.createRoadCoords( junction, spline, group );
 
+			if ( splineCoords.length == 0 ) console.error( 'splineCoords is empty', spline, junction, group );
+
 			for ( let j = 0; j < splineCoords.length; j++ ) {
 
 				coords.push( splineCoords[ j ] );
@@ -397,6 +399,8 @@ export class JunctionManager {
 		const segment = spline.getSegmentAt( splineCoord.s );
 
 		if ( !segment || !segment.isRoad ) {
+
+			if ( !segment ) return coords;
 
 			const previousSegment = spline.getPreviousSegment( segment.getInstance() );
 

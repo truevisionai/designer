@@ -17,7 +17,9 @@ import { TvGeometryType } from 'app/map/models/tv-common';
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { Maths } from 'app/utils/maths';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
-import { RoadDebugService } from "./road-debug.service";
+import { TvRoad } from "../../map/models/tv-road.model";
+import { TvLane } from "../../map/models/tv-lane";
+import { TvLaneSection } from "../../map/models/tv-lane-section";
 
 const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
@@ -32,7 +34,9 @@ const ARROW_COLOR = COLOR.YELLOW;
 } )
 export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
-	private lines = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
+	private referenceLines = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
+
+	private borders = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
 
 	private arrows = new Object3DArrayMap<AbstractSpline, Object3D[]>();
 
@@ -43,7 +47,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 	private explicitSplineHelper: BaseDebugger<AbstractSpline>;
 
 	constructor (
-		private roadDebugger: RoadDebugService,
+		// private roadDebugger: RoadDebugService,
 		private debugService: DebugDrawService,
 		private textService: TextObjectService,
 	) {
@@ -137,13 +141,19 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
+	removeCurvature ( spline: AbstractSpline ) {
+
+		this.texts.removeKey( spline );
+
+	}
+
 	onUnselected ( spline: AbstractSpline ): void {
 
 		this.removeBorder( spline );
 
 		this.arrows.removeKey( spline );
 
-		this.lines.removeKey( spline );
+		this.referenceLines.removeKey( spline );
 
 		this.texts.removeKey( spline );
 
@@ -151,7 +161,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	onRemoved ( spline: AbstractSpline ) {
 
-		this.lines.removeKey( spline );
+		this.referenceLines.removeKey( spline );
 
 		this.arrows.removeKey( spline );
 
@@ -171,7 +181,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		if ( this.highlighted.has( spline ) ) return;
 
-		this.lines.removeKey( spline );
+		this.referenceLines.removeKey( spline );
 
 		this.showBorder( spline, LINE_WIDTH * 2 );
 
@@ -183,14 +193,14 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	onUnhighlight ( spline: AbstractSpline ) {
 
-		this.lines.removeKey( spline );
+		this.referenceLines.removeKey( spline );
 
 		this.arrows.removeKey( spline );
 
 	}
 
 	////// PRIVATE
-	private showReferenceLine ( spline: AbstractSpline ) {
+	showReferenceLine ( spline: AbstractSpline ) {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
@@ -202,7 +212,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 			const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH );
 
-			this.lines.addItem( spline, line );
+			this.referenceLines.addItem( spline, line );
 
 		} catch ( error ) {
 
@@ -212,27 +222,45 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
+	removeReferenceLine ( spline: AbstractSpline ) {
+
+		this.referenceLines.removeKey( spline );
+
+	}
+
 	showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
 
-		for ( const road of spline.getRoads() ) {
+		const add = ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) => {
 
-			this.roadDebugger.showRoadBorderLine( road, lineWidth, color );
+			const points = this.debugService.getPositions( road, laneSection, lane, 0, laneSection.length, LINE_STEP );
 
+			const positions = points.map( point => point.position );
+
+			const line = this.debugService.createDebugLine( road, positions, lineWidth, color );
+
+			this.borders.addItem( spline, line );
 		}
+
+		spline.getRoads().forEach( road => {
+
+			road.laneSections?.forEach( laneSection => {
+
+				add( road, laneSection, laneSection.getRightMostLane() );
+
+				add( road, laneSection, laneSection.getLeftMostLane() );
+
+			} )
+		} )
 
 	}
 
 	removeBorder ( spline: AbstractSpline ) {
 
-		for ( const road of spline.getRoads() ) {
-
-			this.roadDebugger.removeRoadBorderLine( road );
-
-		}
+		this.borders.removeKey( spline );
 
 	}
 
-	private showArrows ( spline: AbstractSpline ) {
+	showArrows ( spline: AbstractSpline ) {
 
 		for ( const road of spline.getRoads() ) {
 
@@ -249,11 +277,17 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
+	removeArrows ( spline: AbstractSpline ) {
+
+		this.arrows.removeKey( spline );
+
+	}
+
 	clear () {
 
 		super.clear();
 
-		this.lines.clear();
+		this.referenceLines.clear();
 
 		this.arrows.clear();
 
@@ -262,8 +296,6 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 		this.autoSplineHelper?.clear();
 
 		this.explicitSplineHelper?.clear();
-
-		this.roadDebugger.clear();
 
 	}
 

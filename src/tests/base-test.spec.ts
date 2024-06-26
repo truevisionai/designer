@@ -5,7 +5,7 @@ import { RoadService } from "../app/services/road/road.service";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { RoadNode } from "app/objects/road-node";
 import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
-import { RoadToolService } from "app/tools/road/road-tool.service";
+import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 
 export class BaseTest {
 
@@ -161,7 +161,7 @@ export class BaseTest {
 
 	}
 
-	createConnectedRoads ( roadToolService: RoadToolService ) {
+	createConnectedRoads ( roadToolService: RoadToolHelper ) {
 
 		/**
 

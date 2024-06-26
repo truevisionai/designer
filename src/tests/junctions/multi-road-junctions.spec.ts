@@ -5,7 +5,7 @@ import { BaseTest } from "../base-test.spec";
 import { MapService } from "../../app/services/map/map.service";
 import { RoadService } from "../../app/services/road/road.service";
 import { EventServiceProvider } from "../../app/listeners/event-service-provider";
-import { RoadToolService } from "../../app/tools/road/road-tool.service";
+import { RoadToolHelper } from "../../app/tools/road/road-tool-helper.service";
 import { Vector2 } from "three";
 import { JunctionManager } from "../../app/managers/junction-manager";
 
@@ -15,17 +15,17 @@ describe( 'Multi-RoadJunctionTests', () => {
 	let mapService: MapService;
 	let roadService: RoadService;
 	let eventServiceProvider: EventServiceProvider;
-	let roadToolService: RoadToolService;
+	let roadToolService: RoadToolHelper;
 	let junctionManager: JunctionManager;
 
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
 			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: [ RoadToolService ]
+			providers: [ RoadToolHelper ]
 		} );
 
-		roadToolService = TestBed.inject( RoadToolService );
+		roadToolService = TestBed.inject( RoadToolHelper );
 		roadService = roadToolService.roadService;
 
 		mapService = TestBed.inject( MapService );

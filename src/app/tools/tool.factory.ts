@@ -5,7 +5,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { ToolType } from "./tool-types.enum";
 import { DebugServiceProvider } from "../core/providers/debug-service.provider";
-import { RoadToolService } from "./road/road-tool.service";
+import { RoadToolHelper } from "./road/road-tool-helper.service";
 import { SurfaceToolService } from "./surface/surface-tool.service";
 import { PropPointService } from "../map/prop-point/prop-point.service";
 import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
@@ -91,7 +91,7 @@ export class ToolFactory {
 	constructor (
 		private injector: Injector,
 		private debugFactory: DebugServiceProvider,
-		private roadToolService: RoadToolService,
+		private roadToolService: RoadToolHelper,
 		private surfaceToolService: SurfaceToolService,
 		private propPointService: PropPointService,
 		private roadCircleService: RoadCircleToolService,

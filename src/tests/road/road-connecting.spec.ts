@@ -5,7 +5,7 @@ import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadTool } from 'app/tools/road/road-tool';
-import { RoadToolService } from 'app/tools/road/road-tool.service';
+import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { BaseTest } from 'tests/base-test.spec';
 import { Vector2 } from 'three';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -22,7 +22,7 @@ describe( 'RoadTool: Connecting Roads', () => {
 			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
-		tool = new RoadTool( TestBed.inject( RoadToolService ) )
+		tool = new RoadTool( TestBed.inject( RoadToolHelper ) )
 
 	} );
 
@@ -32,7 +32,7 @@ describe( 'RoadTool: Connecting Roads', () => {
 
 	} ) );
 
-	it( 'should connect roads', inject( [ RoadToolService ], ( roadToolService: RoadToolService ) => {
+	it( 'should connect roads', inject( [ RoadToolHelper ], ( roadToolService: RoadToolHelper ) => {
 
 		const leftRoad = base.createDefaultRoad( roadToolService.roadService, [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
 		const rightRoad = base.createDefaultRoad( roadToolService.roadService, [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );

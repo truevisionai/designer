@@ -18,15 +18,18 @@ import { SimpleControlPoint } from "../objects/simple-control-point";
 } )
 export class ControlPointFactory {
 
-	static createControl ( target: AbstractSpline, position: Vector3, type = 'spline' ): AbstractControlPoint {
+	static createControl ( spline: AbstractSpline, position: Vector3 ): AbstractControlPoint {
 
-		if ( type = 'spline' ) {
+		if ( spline.type === SplineType.EXPLICIT ) {
 
-			return this.createSplineControlPoint( target, position );
+			const segment = spline.getFirstRoadSegment();
 
+			const road = segment?.getInstance<TvRoad>();
+
+			return new RoadControlPoint( road, position );
 		}
 
-		return this.createSplineControlPoint( target, position );
+		return this.createSplineControlPoint( spline, position );
 
 	}
 
@@ -36,9 +39,18 @@ export class ControlPointFactory {
 
 	}
 
-	static createSplineControlPoint ( target: any, position: Vector3 ) {
+	static createSplineControlPoint ( spline: AbstractSpline, position: Vector3 ) {
 
-		return new SplineControlPoint( target, position );
+		if ( spline.type === SplineType.EXPLICIT ) {
+
+			const segment = spline.getFirstRoadSegment();
+
+			const road = segment?.getInstance<TvRoad>();
+
+			return new RoadControlPoint( road, position );
+		}
+
+		return new SplineControlPoint( spline, position );
 
 	}
 
@@ -54,18 +66,16 @@ export class ControlPointFactory {
 
 	}
 
+
+	/**
+	 * can use static createSplineControlPoint method instead
+	 * @param spline
+	 * @param position
+	 * @deprecated
+	 */
 	createSplineControlPoint ( spline: AbstractSpline, position: Vector3 ): AbstractControlPoint {
 
-		if ( spline.type === SplineType.EXPLICIT ) {
-
-			const segment = spline.getFirstRoadSegment();
-
-			const road = segment?.getInstance<TvRoad>();
-
-			return new RoadControlPoint( road, position );
-		}
-
-		return new SplineControlPoint( spline, position );
+		return ControlPointFactory.createControl( spline, position );
 
 	}
 

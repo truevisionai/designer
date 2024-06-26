@@ -6,7 +6,7 @@ import { ConnectionService } from 'app/map/junction/connection/connection.servic
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadToolService } from 'app/tools/road/road-tool.service';
+import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { Vector2, Vector3 } from 'three';
 import { BaseTest } from 'tests/base-test.spec';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
@@ -20,7 +20,7 @@ describe( '4-way-junction tests', () => {
 
 	let baseTest = new BaseTest();
 
-	let roadToolService: RoadToolService;
+	let roadToolService: RoadToolHelper;
 	let mapService: MapService;
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;
@@ -34,7 +34,7 @@ describe( '4-way-junction tests', () => {
 			imports: [ HttpClientModule, MatSnackBarModule ],
 		} );
 
-		roadToolService = TestBed.get( RoadToolService );
+		roadToolService = TestBed.get( RoadToolHelper );
 		roadService = roadToolService.roadService
 
 		mapService = TestBed.get( MapService );

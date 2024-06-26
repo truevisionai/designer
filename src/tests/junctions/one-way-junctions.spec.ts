@@ -11,7 +11,7 @@ import { JunctionService } from "app/services/junction/junction.service";
 import { MapValidatorService } from "app/services/map/map-validator.service";
 import { MapService } from "app/services/map/map.service";
 import { RoadService } from "app/services/road/road.service";
-import { RoadToolService } from "app/tools/road/road-tool.service";
+import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2 } from "three";
 
@@ -25,7 +25,7 @@ describe( 'one-way junctions tests', () => {
 	let junctionService: JunctionService;
 	let eventServiceProvider: EventServiceProvider;
 	let splineEventListener: SplineEventListener;
-	let roadToolService: RoadToolService;
+	let roadToolService: RoadToolHelper;
 	let splineManager: SplineManager;
 	let mapValidator: MapValidatorService;
 	let intersectionManager: IntersectionManager;
@@ -34,10 +34,10 @@ describe( 'one-way junctions tests', () => {
 
 		TestBed.configureTestingModule( {
 			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: [ RoadToolService ]
+			providers: [ RoadToolHelper ]
 		} );
 
-		roadToolService = TestBed.inject( RoadToolService );
+		roadToolService = TestBed.inject( RoadToolHelper );
 		roadService = roadToolService.roadService;
 		splineManager = TestBed.inject( SplineManager );
 		intersectionManager = TestBed.inject( IntersectionManager );

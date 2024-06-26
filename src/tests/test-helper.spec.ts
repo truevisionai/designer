@@ -6,7 +6,7 @@ import { ConnectionService } from "app/map/junction/connection/connection.servic
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapService } from "app/services/map/map.service";
 import { RoadTool } from "app/tools/road/road-tool";
-import { RoadToolService } from "app/tools/road/road-tool.service";
+import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { BaseTest } from "./base-test.spec";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
@@ -27,10 +27,10 @@ describe( 'BaseTest: tests', () => {
 
 		TestBed.configureTestingModule( {
 			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: [ RoadToolService ]
+			providers: [ RoadToolHelper ]
 		} );
 
-		tool = new RoadTool( TestBed.inject( RoadToolService ) )
+		tool = new RoadTool( TestBed.inject( RoadToolHelper ) )
 
 		mapService = TestBed.inject( MapService );
 		roadService = TestBed.inject( RoadService );

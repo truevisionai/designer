@@ -15,11 +15,12 @@ import { RoadNode } from 'app/objects/road-node';
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { AssetService } from 'app/core/asset/asset.service';
+import { RoadToolDebugger } from "./road-tool.debugger";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadToolService {
+export class RoadToolHelper {
 
 	constructor (
 		public assetService: AssetService,
@@ -29,6 +30,7 @@ export class RoadToolService {
 		public roadLinkService: RoadLinkService,
 		public roadService: RoadService,
 		public splineFactory: SplineFactory,
+		public toolDebugger: RoadToolDebugger,
 	) {
 	}
 
@@ -38,11 +40,15 @@ export class RoadToolService {
 
 		spline.update();
 
+		this.splineService.update( spline );
+
 	}
 
 	insertControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
 
 		spline.insertPoint( controlPoint );
+
+		this.splineService.update( spline );
 
 	}
 
@@ -51,6 +57,8 @@ export class RoadToolService {
 		spline.removeControlPoint( controlPoint );
 
 		spline.update();
+
+		this.splineService.update( spline );
 
 	}
 

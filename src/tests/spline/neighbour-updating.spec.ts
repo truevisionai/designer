@@ -5,13 +5,13 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { SplineManager } from 'app/managers/spline-manager';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadToolService } from 'app/tools/road/road-tool.service';
+import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { BaseTest } from 'tests/base-test.spec';
 
 describe( 'RoadTool: UpdateConnectedRoads', () => {
 
 	let base: BaseTest = new BaseTest;
-	let roadToolService: RoadToolService
+	let roadToolService: RoadToolHelper
 	let mapService: MapService;
 	let splineManager: SplineManager;
 	let eventServiceProvider: EventServiceProvider;
@@ -23,7 +23,7 @@ describe( 'RoadTool: UpdateConnectedRoads', () => {
 			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
-		roadToolService = TestBed.get( RoadToolService );
+		roadToolService = TestBed.get( RoadToolHelper );
 		mapService = TestBed.get( MapService );
 		splineManager = TestBed.get( SplineManager );
 		eventServiceProvider = TestBed.get( EventServiceProvider );

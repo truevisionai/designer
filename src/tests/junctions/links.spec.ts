@@ -11,7 +11,7 @@ import { JunctionService } from 'app/services/junction/junction.service';
 import { LaneLinkService } from 'app/services/junction/lane-link.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadToolService } from 'app/tools/road/road-tool.service';
+import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2, Vector3 } from 'three';
 
@@ -30,7 +30,7 @@ describe( 'LaneLinkService', () => {
 
 		TestBed.configureTestingModule( {
 			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: [ RoadToolService ]
+			providers: [ RoadToolHelper ]
 		} );
 
 		mapService = TestBed.inject( MapService );

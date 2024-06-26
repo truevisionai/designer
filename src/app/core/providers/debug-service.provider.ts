@@ -39,11 +39,7 @@ export class DebugServiceProvider {
 
 		let debugService: IDebugger<any, any>;
 
-		if ( type === ToolType.Road ) {
-
-			debugService = this.injector.get( SplineDebugService );
-
-		} else if ( type === ToolType.RoadCircle ) {
+		if ( type === ToolType.RoadCircle ) {
 
 			debugService = this.injector.get( SplineDebugService );
 

@@ -25,7 +25,7 @@ export class RoadCircleTool extends BaseTool<AbstractSpline>{
 
 	private isDragging = false;
 
-	private debug = !Environment.production;
+	private debug = false;
 
 	constructor ( private tool: RoadCircleToolService ) {
 

@@ -9,7 +9,7 @@ import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspecto
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { AppInspector } from 'app/core/inspector';
-import { RoadToolService } from './road-tool.service';
+import { RoadToolHelper } from './road-tool-helper.service';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { RoadNode } from 'app/objects/road-node';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
@@ -26,13 +26,14 @@ import { Position } from 'app/scenario/models/position';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { OnRoadMovingStrategy } from "../../core/strategies/move-strategies/on-road-moving.strategy";
 import { Asset, AssetType } from 'app/core/asset/asset.model';
-import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { RoadStyle } from 'app/graphics/road-style/road-style.model';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugState } from '../../services/debug/debug-state';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
 import { Environment } from "../../core/utils/environment";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { ControlPointFactory } from "../../factories/control-point.factory";
 
 export class RoadTool extends BaseTool<AbstractSpline> {
 
@@ -54,9 +55,9 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	private lastRoadClicked: TvRoad;
 
-	private get selectedControlPoint (): SplineControlPoint {
+	override get currentSelectedPoint (): SimpleControlPoint<AbstractSpline> {
 
-		return this.selectionService.getLastSelected<any>( 'point' );
+		return this.selectionService.getLastSelected<SimpleControlPoint<AbstractSpline>>( SimpleControlPoint.name );
 
 	}
 
@@ -68,11 +69,11 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	private get selectedSpline (): AbstractSpline {
 
-		return this.selectedControlPoint?.spline || this.selectedRoad?.spline;
+		return this.currentSelectedPoint?.mainObject || this.selectedRoad?.spline;
 
 	}
 
-	constructor ( private tool: RoadToolService ) {
+	constructor ( private tool: RoadToolHelper ) {
 
 		super();
 
@@ -82,17 +83,19 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		this.tool.base.reset();
 
-		this.selectionService.registerStrategy( 'point', new ControlPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 		this.selectionService.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
 		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy( false ) );
 
 		// we want all points to be selectable and use 1 point at a time
-		this.tool.base.selection.registerTag( SplineControlPoint.name, 'point' );
-		this.tool.base.selection.registerTag( RoadControlPoint.name, 'point' );
-		this.tool.base.selection.registerTag( RoadTangentPoint.name, 'point' );
+		this.tool.base.selection.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
+		this.tool.base.selection.registerTag( RoadControlPoint.name, SimpleControlPoint.name );
+		this.tool.base.selection.registerTag( RoadTangentPoint.name, SimpleControlPoint.name );
 
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 		this.tool.base.addMovingStrategy( new FreeMovingStrategy() );
+
+		this.setDebugService( this.tool.toolDebugger );
 
 	}
 
@@ -106,7 +109,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		super.disable();
 
-		if ( this.selectedControlPoint ) this.onControlPointUnselected( this.selectedControlPoint );
+		if ( this.currentSelectedPoint ) this.onPointUnselected( this.currentSelectedPoint );
 
 		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
 
@@ -148,22 +151,6 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	}
 
-	createSpline ( position: Vector3 ) {
-
-		const spline = this.tool.splineFactory.getNewSpline();
-
-		const point = this.tool.pointFactory.createSplineControlPoint( spline, position );
-
-		spline.controlPoints.push( point );
-
-		const addCommand = new AddObjectCommand( spline );
-
-		const selectCommand = new SelectObjectCommand( point, this.selectedControlPoint );
-
-		CommandHistory.executeMany( addCommand, selectCommand );
-
-	}
-
 	handleAddingControlPoint ( selectedSpline: AbstractSpline, selectedRoad: TvRoad, e: PointerEventData ) {
 
 		const createPoint = ( spline: AbstractSpline, position: Vector3, oldPoint: AbstractControlPoint, insert: boolean = false ) => {
@@ -187,7 +174,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 				if ( object?.spline?.uuid === selectedSpline?.uuid ) {
 
 					// add point on same road
-					createPoint( selectedSpline, e.point, this.selectedControlPoint, true );
+					createPoint( selectedSpline, e.point, this.currentSelectedPoint, true );
 
 				} else {
 
@@ -197,7 +184,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 					}
 
 					// add point on another road
-					createPoint( selectedSpline, e.point, this.selectedControlPoint );
+					createPoint( selectedSpline, e.point, this.currentSelectedPoint );
 
 				}
 
@@ -210,7 +197,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 				return;
 			}
 
-			createPoint( selectedSpline, e.point, this.selectedControlPoint );
+			createPoint( selectedSpline, e.point, this.currentSelectedPoint );
 
 		} );
 	}
@@ -261,17 +248,21 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 			if ( !this.isPointerDown ) return;
 
-			if ( this.selectedControlPoint && this.selectedControlPoint.isSelected ) {
+			if ( this.currentSelectedPoint && this.currentSelectedPoint.isSelected ) {
 
-				this.handleControlPointMovement( this.selectedSpline, this.selectedControlPoint, position );
+				this.handleControlPointMovement( this.selectedSpline, this.currentSelectedPoint, position );
 
 				this.controlPointMoved = true;
+
+				this.tool.base.disableControls();
 
 			} else if ( this.isRoadDoubleClicked ) {
 
 				this.handleRoadMovement( position );
 
 				this.roadMoved = true;
+
+				this.tool.base.disableControls();
 
 			}
 
@@ -320,13 +311,15 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	onPointerUp ( e: PointerEventData ): void {
 
-		if ( this.controlPointMoved && this.selectedControlPoint ) {
+		this.tool.base.enableControls();
+
+		if ( this.controlPointMoved && this.currentSelectedPoint ) {
 
 			const oldPosition = this.pointerDownAt.clone();
 
-			const newPosition = this.selectedControlPoint.position.clone();
+			const newPosition = this.currentSelectedPoint.position.clone();
 
-			const updateCommand = new UpdatePositionCommand( this.selectedControlPoint, newPosition, oldPosition );
+			const updateCommand = new UpdatePositionCommand( this.currentSelectedPoint, newPosition, oldPosition );
 
 			CommandHistory.execute( updateCommand );
 
@@ -370,13 +363,11 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		} else if ( object instanceof AbstractSpline ) {
 
-			this.tool.addSpline( object );
-
-			this.debugService.setDebugState( object, DebugState.SELECTED );
+			this.onSplineAdded( object );
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
-			this.onControlPointAdded( object );
+			this.onPointAdded( object );
 
 		}
 
@@ -390,21 +381,13 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
-			this.onControlPointRemoved( object );
+			this.onPointRemoved( object );
 
 		} else if ( object instanceof AbstractSpline ) {
 
 			this.onSplineRemoved( object );
 
 		}
-
-	}
-
-	onSplineRemoved ( spline: AbstractSpline ) {
-
-		this.tool.removeSpline( spline );
-
-		this.debugService.setDebugState( spline, DebugState.REMOVED );
 
 	}
 
@@ -416,131 +399,10 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
-			this.onControlPointUpdated( object );
+			this.onPointUpdated( object );
 
 		}
 
-	}
-
-	onSplineUpdated ( spline: AbstractSpline ) {
-
-		this.tool.updateSpline( spline );
-
-		if ( spline.type == SplineType.AUTOV2 ) {
-
-			this.debugService.updateDebugState( spline, DebugState.SELECTED );
-
-			this.debugService.updateDebugState( spline.getSuccessorSpline(), DebugState.DEFAULT );
-
-			this.debugService.updateDebugState( spline.getPredecessorrSpline(), DebugState.DEFAULT );
-
-		} else if ( spline.type == SplineType.EXPLICIT ) {
-
-			this.debugService.updateDebugState( spline, DebugState.SELECTED );
-
-			this.debugService.updateDebugState( spline.getSuccessorSpline(), DebugState.DEFAULT );
-
-			this.debugService.updateDebugState( spline.getPredecessorrSpline(), DebugState.DEFAULT );
-
-		}
-
-	}
-
-	onControlPointUpdated ( controlPoint: AbstractControlPoint ) {
-
-		if ( controlPoint instanceof SplineControlPoint ) {
-
-			this.onSplineUpdated( controlPoint.spline );
-
-		} else if ( controlPoint instanceof RoadControlPoint ) {
-
-			this.onSplineUpdated( controlPoint.road.spline );
-
-		} else if ( controlPoint instanceof RoadTangentPoint ) {
-
-			this.onSplineUpdated( controlPoint.road.spline );
-
-		}
-
-	}
-
-	onRoadUpdated ( road: TvRoad ) {
-
-		this.tool.roadService.update( road );
-
-		if ( road.spline.controlPoints.length < 2 ) return;
-
-		this.debugService.setDebugState( road.spline, DebugState.SELECTED );
-
-	}
-
-	onRoadRemoved ( road: TvRoad ) {
-
-		this.tool.removeRoad( road );
-
-	}
-
-	onControlPointRemoved ( point: AbstractControlPoint ) {
-
-		if ( point instanceof SplineControlPoint ) {
-
-			this.tool.removeControlPoint( point.spline, point );
-
-			this.onSplineUpdated( point.spline );
-
-			AppInspector.clear();
-
-		} else if ( point instanceof RoadControlPoint ) {
-
-			this.tool.removeControlPoint( point.road.spline, point );
-
-			this.onSplineUpdated( point.road.spline );
-
-			AppInspector.clear();
-
-		}
-
-	}
-
-	onRoadAdded ( road: TvRoad ): void {
-
-		this.tool.roadService.add( road );
-
-	}
-
-	onControlPointAdded ( controlPoint: AbstractControlPoint ): void {
-
-		if ( controlPoint instanceof SplineControlPoint ) {
-
-			if ( controlPoint.userData.insert ) {
-
-				this.tool.insertControlPoint( controlPoint.spline, controlPoint );
-
-			} else {
-
-				this.tool.addControlPoint( controlPoint.spline, controlPoint );
-
-			}
-
-			this.onSplineUpdated( controlPoint.spline );
-
-		}
-
-		if ( controlPoint instanceof RoadControlPoint ) {
-
-			if ( controlPoint.userData.insert ) {
-
-				this.tool.insertControlPoint( controlPoint.road.spline, controlPoint );
-
-			} else {
-
-				this.tool.addControlPoint( controlPoint.road.spline, controlPoint );
-
-			}
-
-			this.onSplineUpdated( controlPoint.road.spline );
-
-		}
 	}
 
 	onObjectSelected ( object: Object ): void {
@@ -563,7 +425,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
-			this.onControlPointSelected( object );
+			this.onPointSelected( object );
 
 		}
 
@@ -581,93 +443,13 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
-			this.onControlPointUnselected( object );
+			this.onPointUnselected( object );
 
 		} else if ( object instanceof AbstractSpline ) {
 
 			this.debugService.setDebugState( object, DebugState.DEFAULT );
 
 		}
-
-	}
-
-	onRoadSelected ( road: TvRoad ): void {
-
-		this.debugService.setDebugState( road.spline, DebugState.SELECTED );
-
-		AppInspector.setInspector( RoadInspector, { road } );
-
-	}
-
-	onRoadUnselected ( road: TvRoad ): void {
-
-		this.debugService.setDebugState( road.spline, DebugState.DEFAULT );
-
-		AppInspector.clear();
-
-	}
-
-	onControlPointSelected ( controlPoint: AbstractControlPoint ): void {
-
-		controlPoint?.select();
-
-		if ( controlPoint instanceof SplineControlPoint ) {
-
-			this.debugService.setDebugState( controlPoint.spline, DebugState.SELECTED );
-
-			const segment = controlPoint.spline.getFirstRoadSegment();
-
-			if ( !segment ) return;
-
-			AppInspector.setInspector( RoadInspector, { road: segment.getInstance<TvRoad>(), controlPoint } );
-
-		}
-
-	}
-
-	onControlPointUnselected ( controlPoint: AbstractControlPoint ): void {
-
-		if ( controlPoint instanceof SplineControlPoint ) {
-
-			controlPoint?.unselect();
-
-			AppInspector.clear();
-
-		}
-
-	}
-
-	onNodeSelected ( node: RoadNode ) {
-
-		if ( this.selectedNode ) {
-
-			this.connectNodes( this.selectedNode, node );
-
-			this.selectedNode = null;
-
-		} else {
-
-			this.selectedNode = node;
-
-			node.select();
-
-			this.setHint( 'Select another node to connect' );
-
-		}
-
-	}
-
-	onNodeUnselected ( node: RoadNode ) {
-
-		node.unselect();
-
-		// time hack to make sure the node is unselected
-		// before we clear the selected node
-		setTimeout( () => {
-
-			this.selectedNode = null;
-
-		}, 300 );
 
 	}
 
@@ -713,6 +495,249 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 		this.executeAddObject( road );
 
 		this.setHint( 'Modify the new road or select another node to connect' );
+
+	}
+
+	// region point operations
+
+	onPointAdded ( point: AbstractControlPoint ): void {
+
+		const addPoint = ( spline: AbstractSpline, point: AbstractControlPoint ) => {
+
+			if ( point.userData.insert ) {
+
+				this.tool.insertControlPoint( spline, point );
+
+			} else {
+
+				this.tool.addControlPoint( spline, point );
+
+			}
+
+			this.debugService?.updateDebugState( spline, DebugState.SELECTED );
+
+			// AppInspector.setInspector( RoadInspector, { road: segment.getInstance<TvRoad>(), controlPoint } );
+
+		}
+
+		if ( point instanceof SplineControlPoint ) {
+
+			addPoint( point.spline, point )
+
+		} else if ( point instanceof RoadControlPoint ) {
+
+			addPoint( point.road.spline, point );
+
+		} else {
+
+			console.error( 'Unknown control point type', point );
+			return;
+
+		}
+
+	}
+
+	onPointUpdated ( controlPoint: AbstractControlPoint ) {
+
+		if ( controlPoint instanceof SplineControlPoint ) {
+
+			this.onSplineUpdated( controlPoint.spline );
+
+		} else if ( controlPoint instanceof RoadControlPoint ) {
+
+			this.onSplineUpdated( controlPoint.road.spline );
+
+		} else if ( controlPoint instanceof RoadTangentPoint ) {
+
+			this.onSplineUpdated( controlPoint.road.spline );
+
+		}
+
+	}
+
+	onPointRemoved ( point: AbstractControlPoint ) {
+
+		const removePoint = ( spline: AbstractSpline, point: AbstractControlPoint ) => {
+
+			this.tool.removeControlPoint( spline, point );
+
+			this.debugService?.updateDebugState( spline, DebugState.DEFAULT );
+
+			// this.clearInspector();
+
+		}
+
+		if ( point instanceof SplineControlPoint ) {
+
+			removePoint( point.spline, point );
+
+		} else if ( point instanceof RoadControlPoint ) {
+
+			removePoint( point.road.spline, point );
+
+		}
+
+	}
+
+	onPointSelected ( controlPoint: AbstractControlPoint ): void {
+
+		controlPoint?.select();
+
+		if ( controlPoint instanceof SplineControlPoint ) {
+
+			this.debugService.setDebugState( controlPoint.spline, DebugState.SELECTED );
+
+			const segment = controlPoint.spline.getFirstRoadSegment();
+
+			if ( !segment ) return;
+
+			AppInspector.setInspector( RoadInspector, { road: segment.getInstance<TvRoad>(), controlPoint } );
+
+		}
+
+	}
+
+	onPointUnselected ( controlPoint: AbstractControlPoint ): void {
+
+		if ( controlPoint instanceof SplineControlPoint ) {
+
+			controlPoint?.unselect();
+
+			AppInspector.clear();
+
+		}
+
+	}
+
+	// endregion
+
+	onRoadUpdated ( road: TvRoad ) {
+
+		this.tool.roadService.update( road );
+
+		if ( road.spline.controlPoints.length < 2 ) return;
+
+		this.debugService.setDebugState( road.spline, DebugState.SELECTED );
+
+	}
+
+	onRoadRemoved ( road: TvRoad ) {
+
+		this.tool.removeRoad( road );
+
+	}
+
+	onRoadAdded ( road: TvRoad ): void {
+
+		this.tool.roadService.add( road );
+
+	}
+
+	createSpline ( position: Vector3 ) {
+
+		const spline = this.tool.splineFactory.getNewSpline();
+
+		const point = ControlPointFactory.createControl( spline, position );
+
+		this.executeAddAndSelect( point, this.currentSelectedPoint );
+
+		// spline.controlPoints.push( point );
+
+		// const addCommand = new AddObjectCommand( spline );
+
+		// const selectCommand = new SelectObjectCommand( point, this.currentSelectedPoint );
+
+		// CommandHistory.executeMany( addCommand, selectCommand );
+
+	}
+
+	onSplineUpdated ( spline: AbstractSpline ) {
+
+		this.tool.updateSpline( spline );
+
+		if ( spline.type == SplineType.AUTOV2 ) {
+
+			this.debugService.updateDebugState( spline, DebugState.SELECTED );
+
+			this.debugService.updateDebugState( spline.getSuccessorSpline(), DebugState.DEFAULT );
+
+			this.debugService.updateDebugState( spline.getPredecessorrSpline(), DebugState.DEFAULT );
+
+		} else if ( spline.type == SplineType.EXPLICIT ) {
+
+			this.debugService.updateDebugState( spline, DebugState.SELECTED );
+
+			this.debugService.updateDebugState( spline.getSuccessorSpline(), DebugState.DEFAULT );
+
+			this.debugService.updateDebugState( spline.getPredecessorrSpline(), DebugState.DEFAULT );
+
+		}
+
+	}
+
+	onSplineAdded ( spline: AbstractSpline ) {
+
+		this.tool.addSpline( spline );
+
+		this.debugService.setDebugState( spline, DebugState.SELECTED );
+
+	}
+
+	onSplineRemoved ( spline: AbstractSpline ) {
+
+		this.tool.removeSpline( spline );
+
+		this.debugService.setDebugState( spline, DebugState.REMOVED );
+
+	}
+
+	onRoadSelected ( road: TvRoad ): void {
+
+		this.debugService.setDebugState( road.spline, DebugState.SELECTED );
+
+		AppInspector.setInspector( RoadInspector, { road } );
+
+	}
+
+	onRoadUnselected ( road: TvRoad ): void {
+
+		this.debugService.setDebugState( road.spline, DebugState.DEFAULT );
+
+		AppInspector.clear();
+
+	}
+
+	onNodeSelected ( node: RoadNode ) {
+
+		if ( this.selectedNode ) {
+
+			this.connectNodes( this.selectedNode, node );
+
+			this.selectedNode = null;
+
+		} else {
+
+			this.selectedNode = node;
+
+			node.select();
+
+			this.setHint( 'Select another node to connect' );
+
+		}
+
+	}
+
+	onNodeUnselected ( node: RoadNode ) {
+
+		node.unselect();
+
+		// time hack to make sure the node is unselected
+		// before we clear the selected node
+		setTimeout( () => {
+
+			this.selectedNode = null;
+
+		}, 300 );
 
 	}
 
