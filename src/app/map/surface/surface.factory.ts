@@ -31,10 +31,10 @@ export class SurfaceFactory extends AbstractFactory<Surface> {
 
 		surface.repeat.set( 1 / surfaceWidth, 1 / surfaceHeight );
 
-		surface.spline.addControlPoint( this.createControlPoint( surface, new Vector3( 0, 0, 0 ) ) );
-		surface.spline.addControlPoint( this.createControlPoint( surface, new Vector3( surfaceWidth, 0, 0 ) ) );
-		surface.spline.addControlPoint( this.createControlPoint( surface, new Vector3( surfaceWidth, surfaceHeight, 0 ) ) );
-		surface.spline.addControlPoint( this.createControlPoint( surface, new Vector3( 0, surfaceHeight, 0 ) ) );
+		surface.spline.controlPoints.push( this.createControlPoint( surface, new Vector3( 0, 0, 0 ) ) );
+		surface.spline.controlPoints.push( this.createControlPoint( surface, new Vector3( surfaceWidth, 0, 0 ) ) );
+		surface.spline.controlPoints.push( this.createControlPoint( surface, new Vector3( surfaceWidth, surfaceHeight, 0 ) ) );
+		surface.spline.controlPoints.push( this.createControlPoint( surface, new Vector3( 0, surfaceHeight, 0 ) ) );
 
 		return surface;
 

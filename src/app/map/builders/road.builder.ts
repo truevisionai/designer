@@ -24,6 +24,7 @@ import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 import { TvRoadObjectType } from "../models/objects/tv-road-object";
 import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
 import { RoadObjectBuilder } from "../road-object/road-object.builder";
+import { RoadService } from 'app/services/road/road.service';
 import { TvConsole } from "../../core/utils/console";
 
 @Injectable( {
@@ -36,6 +37,7 @@ export class RoadBuilder {
 		private materialService: TvMaterialService,
 		private signalBuilder: RoadSignalBuilder,
 		private objectBuilder: RoadObjectBuilder,
+		private roadService: RoadService,
 	) {
 	}
 
@@ -91,7 +93,7 @@ export class RoadBuilder {
 
 	}
 
-	buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
 
 		const laneSectionMesh = new GameObject( 'LaneSection' );
 
@@ -134,7 +136,7 @@ export class RoadBuilder {
 		return laneSectionMesh;
 	}
 
-	createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+	private createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
 
 		const geometry = new BufferGeometry();
 
@@ -144,45 +146,25 @@ export class RoadBuilder {
 
 	}
 
-	buildLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
+	private buildLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
 
-		let roadStep = road.isJunction ? OdBuilderConfig.JUNCTION_STEP : OdBuilderConfig.ROAD_STEP;
-		let posTheta = new TvPosTheta;
-
-		let cumulativeWidth = 0;
+		let stepSize = road.isJunction ? OdBuilderConfig.JUNCTION_STEP : OdBuilderConfig.ROAD_STEP;
 
 		lane.meshData = null;
 		lane.meshData = new MeshGeometryData;
 
-		lane.markMeshData = null;
-		lane.markMeshData = new MeshGeometryData;
+		const sStart = laneSection.s;
+		const nextLaneSection = road.laneSections.find( section => section.s > laneSection.s );
+		const sEnd = nextLaneSection?.s || road.length;
 
-		const laneSectionLength = laneSection.endS - laneSection.s;
+		for ( let sOffset = sStart; sOffset < sEnd; sOffset += stepSize ) {
 
-		let step = 0;
-
-		for ( let s = laneSection.s; s < laneSection.endS; s += roadStep ) {
-
-			step += roadStep;
-
-			cumulativeWidth = laneSection.getWidthUptoStart( lane, step );
-
-			s = Maths.clamp( s, laneSection.s, laneSection.endS );
-
-			posTheta = road.getPosThetaAt( s );
-
-			this.makeLaneVertices( s, posTheta, lane, road, cumulativeWidth, step );
+			this.makeLaneVertices( road, laneSection, lane, sOffset );
 
 		}
 
 		// add last s geometry to close any gaps
-		let lastSCoordinate = Maths.clamp( laneSection.endS - Maths.Epsilon, laneSection.s, laneSection.endS );
-
-		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSectionLength );
-
-		posTheta = road.getPosThetaAt( lastSCoordinate );
-
-		this.makeLaneVertices( lastSCoordinate, posTheta, lane, road, cumulativeWidth, laneSectionLength );
+		this.makeLaneVertices( road, laneSection, lane, sEnd - Maths.Epsilon );
 
 		let perStep = 2;
 
@@ -221,7 +203,7 @@ export class RoadBuilder {
 
 	}
 
-	getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
+	private getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
 
 		// if guid is set use the material from the asset database
 		if ( lane.threeMaterialGuid ) return this.materialService.getMaterial( lane.threeMaterialGuid )?.material;
@@ -276,43 +258,35 @@ export class RoadBuilder {
 
 	}
 
-	makeLaneVertices ( sCoordinate: number, pos: TvPosTheta, lane: TvLane, road: TvRoad, cumulativeWidth: number, laneSectionS: number ) {
+	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		const start = this.roadService.findLaneStartPosition( road, laneSection, lane, sOffset - laneSection.s, 0, false );
+		const end = this.roadService.findLaneEndPosition( road, laneSection, lane, sOffset - laneSection.s, 0, false );
+
+		const width = lane.getWidthValue( sOffset - laneSection.s );
+		const height = lane.getHeightValue( sOffset - laneSection.s );
 
 		let vv1: Vertex;
 		let vv2: Vertex;
 
-		const width = lane.getWidthValue( laneSectionS );
-		const height = lane.getHeightValue( laneSectionS );
-
-		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, pos.hdg );
-		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, pos.hdg );
-
 		const v1 = new Vertex();
-		const p1X = cosHdgPlusPiO2 * cumulativeWidth;
-		const p1Y = sinHdgPlusPiO2 * cumulativeWidth;
-		v1.position = new Vector3( pos.x + p1X, pos.y + p1Y, pos.z );
-		v1.uvs = new Vector2( 0, sCoordinate );
+		v1.position = start.position?.clone();
+		v1.uvs = new Vector2( 0, sOffset );
 
 		if ( height.inner > 0 ) {
 			vv1 = new Vertex();
-			const p1X = cosHdgPlusPiO2 * cumulativeWidth;
-			const p1Y = sinHdgPlusPiO2 * cumulativeWidth;
-			vv1.position = new Vector3( pos.x + p1X, pos.y + p1Y, pos.z + height.inner );
-			vv1.uvs = new Vector2( height.inner, sCoordinate );
+			vv1.position = start.position?.clone().add( new Vector3( 0, 0, height.inner ) );
+			vv1.uvs = new Vector2( height.inner, sOffset );
 		}
 
 		const v2 = new Vertex();
-		const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
-		const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
-		v2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z );
-		v2.uvs = new Vector2( height.inner + width, sCoordinate );
+		v2.position = end.position?.clone();
+		v2.uvs = new Vector2( height.inner + width, sOffset );
 
 		if ( height.outer > 0 ) {
 			vv2 = new Vertex();
-			const p2X = cosHdgPlusPiO2 * ( cumulativeWidth + width );
-			const p2Y = sinHdgPlusPiO2 * ( cumulativeWidth + width );
-			vv2.position = new Vector3( pos.x + p2X, pos.y + p2Y, pos.z + height.outer );
-			vv2.uvs = new Vector2( height.inner + width + height.outer, sCoordinate );
+			vv2.position = end.position?.clone().add( new Vector3( 0, 0, height.outer ) );
+			vv2.uvs = new Vector2( height.inner + width + height.outer, sOffset );
 		}
 
 		if ( lane.side == TvLaneSide.RIGHT ) {
@@ -333,7 +307,7 @@ export class RoadBuilder {
 
 	}
 
-	addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
 
 		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z );
 		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
@@ -342,7 +316,7 @@ export class RoadBuilder {
 
 	}
 
-	createMeshIndices ( geom: MeshGeometryData, verticesPerStep = 2 ): void {
+	private createMeshIndices ( geom: MeshGeometryData, verticesPerStep = 2 ): void {
 
 		if ( verticesPerStep < 2 ) {
 			console.error( "verticesPerStep should be at least 2" );

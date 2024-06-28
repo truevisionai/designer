@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { IFile } from 'app/io/file';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
@@ -149,11 +149,13 @@ export class SceneExporter implements AssetExporter<TvMap> {
 					attr_y: point.y,
 					attr_z: point.z
 				} ) ),
-				roadSegment: spline.getSplineSegments().map( segment => ( {
-					attr_start: segment.start,
-					attr_id: segment.id,
-					attr_type: segment.type,
-				} ) )
+				roadSegment: spline.segmentMap.map( ( segment, s ) => {
+					return {
+						attr_start: s,
+						attr_id: segment.id,
+						attr_type: segment.type,
+					};
+				} )
 			};
 
 		}
@@ -168,8 +170,8 @@ export class SceneExporter implements AssetExporter<TvMap> {
 					attr_y: point.y,
 					attr_z: point.z
 				} ) ),
-				roadSegment: spline.getSplineSegments().map( segment => ( {
-					attr_start: segment.start,
+				roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
+					attr_start: s,
 					attr_id: segment.id,
 					attr_type: segment.type,
 				} ) )
@@ -189,8 +191,8 @@ export class SceneExporter implements AssetExporter<TvMap> {
 					attr_hdg: point.hdg,
 					attr_type: point.segmentType,
 				} ) ),
-				roadSegment: spline.getSplineSegments().map( segment => ( {
-					attr_start: segment.start,
+				roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
+					attr_start: s,
 					attr_id: segment.id,
 					attr_type: segment.type,
 				} ) )

@@ -24,6 +24,9 @@ import { RoadFactory } from 'app/factories/road-factory.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
 import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';
 import { RoadService } from 'app/services/road/road.service';
+import { SplineService } from "../../services/spline/spline.service";
+import { ControlPointFactory } from "../../factories/control-point.factory";
+import { SplineBuilder } from "../../services/spline/spline.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -41,6 +44,8 @@ export class RoadCircleToolService {
 	private radius: number;
 
 	constructor (
+		private splineBuilder: SplineBuilder,
+		private splineService: SplineService,
 		private roadService: RoadService,
 		private roadFactory: RoadFactory,
 		private debugTextService: DebugTextService,
@@ -201,10 +206,10 @@ export class RoadCircleToolService {
 			let a2 = startPosTheta.moveForward( +distance );
 			let b2 = endPosTheta.moveForward( -distance );
 
-			points.push( new SplineControlPoint( road.spline, start ) );
-			points.push( new SplineControlPoint( road.spline, a2.toVector3() ) );
-			points.push( new SplineControlPoint( road.spline, b2.toVector3() ) );
-			points.push( new SplineControlPoint( road.spline, arc.endV3.clone() ) );
+			points.push( ControlPointFactory.createControl( road.spline, start ) );
+			points.push( ControlPointFactory.createControl( road.spline, a2.toVector3() ) );
+			points.push( ControlPointFactory.createControl( road.spline, b2.toVector3() ) );
+			points.push( ControlPointFactory.createControl( road.spline, arc.endV3.clone() ) );
 
 			start = arc.endV3;
 
@@ -229,16 +234,14 @@ export class RoadCircleToolService {
 			// const spline = new AutoSpline( road );
 			const spline = road.spline;
 
-			spline.addControlPoint( points[ j * 4 + 0 ] );
-			spline.addControlPoint( points[ j * 4 + 1 ] );
-			spline.addControlPoint( points[ j * 4 + 2 ] );
-			spline.addControlPoint( points[ j * 4 + 3 ] );
+			spline.controlPoints.push( points[ j * 4 + 0 ] );
+			spline.controlPoints.push( points[ j * 4 + 1 ] );
+			spline.controlPoints.push( points[ j * 4 + 2 ] );
+			spline.controlPoints.push( points[ j * 4 + 3 ] );
 
 			road.spline = spline;
 
-			road.spline.hide();
-
-			road.updateGeometryFromSpline();
+			this.splineBuilder.buildSpline( spline );
 
 			if ( ( j + 1 ) < roads.length ) {
 

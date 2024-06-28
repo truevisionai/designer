@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { DebugDrawService } from './debug-draw.service';
-import { Object3D } from "three";
+import { Object3D, Vector2 } from "three";
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugLine } from '../../objects/debug-line';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
@@ -13,20 +13,26 @@ import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { ExplicitSplineHelper } from "./explicit-spline.helper";
 import { AutoSplineHelper } from "./auto-spline.helper";
 import { TextObjectService } from '../text-object.service';
-import { TvGeometryType } from 'app/map/models/tv-common';
+import { TvContactPoint, TvGeometryType } from 'app/map/models/tv-common';
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { Maths } from 'app/utils/maths';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { TvLane } from "../../map/models/tv-lane";
 import { TvLaneSection } from "../../map/models/tv-lane-section";
+import { SplineService } from "../spline/spline.service";
+import { RoadDebugService } from './road-debug.service';
+import { RoadNode } from 'app/objects/road-node';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { Line2 } from 'three/examples/jsm/lines/Line2';
 
 const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
 const LINE_ZOFFSET = 0.1;
 
 const ARROW_SIZE = 1.5;
-const ARROW_STEP = 5;
+const ARROW_STEP = 10;
 const ARROW_COLOR = COLOR.YELLOW;
 
 @Injectable( {
@@ -34,26 +40,50 @@ const ARROW_COLOR = COLOR.YELLOW;
 } )
 export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
-	private referenceLines = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
+	private polylines: Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>;
 
-	private borders = new Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>();
+	private referenceLines: Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>;
 
-	private arrows = new Object3DArrayMap<AbstractSpline, Object3D[]>();
+	private borders: Object3DArrayMap<AbstractSpline, DebugLine<AbstractSpline>[]>;
 
-	private texts = new Object3DArrayMap<AbstractSpline, Object3D[]>();
+	private arrows: Object3DArrayMap<AbstractSpline, Object3D[]>;
+
+	private texts: Object3DArrayMap<AbstractSpline, Object3D[]>;
+
+	private points: Object3DArrayMap<AbstractSpline, Object3D[]>;
+
+	private nodes: Object3DArrayMap<AbstractSpline, Object3D[]>;
 
 	private autoSplineHelper: BaseDebugger<AbstractSpline>;
 
 	private explicitSplineHelper: BaseDebugger<AbstractSpline>;
 
 	constructor (
-		// private roadDebugger: RoadDebugService,
+		private splineService: SplineService,
 		private debugService: DebugDrawService,
 		private textService: TextObjectService,
+		private roadDebugger: RoadDebugService,
 	) {
 		super();
+
+		this.polylines = new Object3DArrayMap();
+
+		this.referenceLines = new Object3DArrayMap();
+
+		this.borders = new Object3DArrayMap();
+
+		this.arrows = new Object3DArrayMap();
+
+		this.texts = new Object3DArrayMap();
+
+		this.points = new Object3DArrayMap();
+
+		this.nodes = new Object3DArrayMap();
+
 		this.autoSplineHelper = new AutoSplineHelper();
+
 		this.explicitSplineHelper = new ExplicitSplineHelper();
+
 	}
 
 	setDebugState ( spline: AbstractSpline, state: DebugState ) {
@@ -98,7 +128,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 		if ( spline.controlPoints.length < 2 ) return;
 
 		this.removeBorder( spline );
-		this.showBorder( spline, LINE_WIDTH * 3, COLOR.RED );
+		this.showBorder( spline, LINE_WIDTH, COLOR.RED );
 
 		this.arrows.removeKey( spline );
 		this.showArrows( spline );
@@ -112,7 +142,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		this.texts.removeKey( spline );
 
-		for ( const road of spline.getRoads() ) {
+		for ( const road of this.splineService.getRoads( spline ) ) {
 
 			road.geometries.filter( g => g.geometryType == TvGeometryType.ARC ).forEach( ( geometry: TvArcGeometry ) => {
 
@@ -204,7 +234,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
-		const points = spline.getPoints( LINE_STEP ).map( point => point );
+		const points = this.splineService.getPoints( spline, LINE_STEP );
 
 		points.forEach( point => point.z += LINE_ZOFFSET );
 
@@ -241,7 +271,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 			this.borders.addItem( spline, line );
 		}
 
-		spline.getRoads().forEach( road => {
+		this.splineService.getRoads( spline ).forEach( road => {
 
 			road.laneSections?.forEach( laneSection => {
 
@@ -262,7 +292,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showArrows ( spline: AbstractSpline ) {
 
-		for ( const road of spline.getRoads() ) {
+		for ( const road of this.splineService.getRoads( spline ) ) {
 
 			for ( const point of road.getReferenceLinePoints( ARROW_STEP ) ) {
 
@@ -287,15 +317,132 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		super.clear();
 
+		this.borders.clear();
+
+		this.polylines.clear();
+
 		this.referenceLines.clear();
 
 		this.arrows.clear();
 
 		this.texts.clear();
 
+		this.nodes.clear();
+
 		this.autoSplineHelper?.clear();
 
 		this.explicitSplineHelper?.clear();
+
+		this.roadDebugger.clear();
+
+	}
+
+	showControlPoints ( spline: AbstractSpline ) {
+
+		spline.controlPoints.forEach( point => {
+
+			this.points.addItem( spline, point );
+
+		} );
+
+	}
+
+	removeControlPoints ( spline: AbstractSpline ) {
+
+		this.points.removeKey( spline );
+
+	}
+
+	showPolyline ( spline: AbstractSpline ) {
+
+		if ( spline.type == SplineType.EXPLICIT ) return;
+
+		const points = spline.controlPoints.map( point => point.position );
+
+		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH );
+
+		this.polylines.addItem( spline, line );
+
+	}
+
+	removePolyline ( spline: AbstractSpline ) {
+
+		this.polylines.removeKey( spline );
+
+	}
+
+	showNodes ( spline: AbstractSpline ) {
+
+		const firstRoad = this.splineService.findFirstRoad( spline );
+		const lastRoad = this.splineService.findLastRoad( spline );
+
+		const startNode = this.createNode( firstRoad, TvContactPoint.START );
+		const endNode = this.createNode( lastRoad, TvContactPoint.END );
+
+		this.nodes.addItem( spline, startNode );
+		this.nodes.addItem( spline, endNode );
+
+	}
+
+	removeNodes ( spline: AbstractSpline ) {
+
+		this.nodes.removeKey( spline );
+
+	}
+
+	createNode ( road: TvRoad, contact: TvContactPoint ) {
+
+		const node = new RoadNode( road, contact );
+
+		const sCoord = contact == TvContactPoint.START ? 0 : road.length;
+
+		const result = road.getRoadWidthAt( sCoord );
+
+		const start = road.getPosThetaAt( sCoord, result.leftSideWidth );
+		const end = road.getPosThetaAt( sCoord, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z,
+			end.x, end.y, end.z
+		] );
+
+		const lineMaterial = new LineMaterial( {
+			color: RoadNode.defaultColor,
+			linewidth: RoadNode.defaultWidth,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+			depthTest: false,
+			depthWrite: false,
+		} );
+
+		const line = node.line = new Line2( lineGeometry, lineMaterial );
+
+		line.name = RoadNode.lineTag;
+
+		line[ 'tag' ] = RoadNode.lineTag;
+
+		line.renderOrder = 3;
+
+		node.add( line );
+
+		return node;
+
+	}
+
+	updateNode ( node: RoadNode ) {
+
+		const sOffset = node.contact == TvContactPoint.START ? 0 : node.road.length;
+
+		const result = node.road.getRoadWidthAt( sOffset );
+
+		const start = node.road.getPosThetaAt( sOffset, result.leftSideWidth );
+		const end = node.road.getPosThetaAt( sOffset, -result.rightSideWidth );
+
+		node.line.geometry.dispose();
+
+		node.line.geometry.setPositions(
+			[].concat( ...[ start.toVector3(), end.toVector3() ].map( ( v ) => [ v.x, v.y, v.z ] ) )
+		);
 
 	}
 

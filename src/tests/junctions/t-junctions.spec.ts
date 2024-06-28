@@ -14,6 +14,7 @@ import { RoadService } from "app/services/road/road.service";
 import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2, Vector3 } from "three";
+import { SplineControlPoint } from "app/objects/spline-control-point";
 
 const DEFAULT_ROAD_WIDTH = 12.2;
 
@@ -57,13 +58,13 @@ describe( 't-junction tests', () => {
 
 		// left to right
 		const xAxisRoad = roadService.createDefaultRoad();
-		xAxisRoad.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
-		xAxisRoad.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+		xAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -100, 0, 0 ) ) );
+		xAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 100, 0, 0 ) ) );
 
 		// bottom to top
 		const yAxisRoad = roadService.createDefaultRoad();
-		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
-		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
+		yAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, -100, 0 ) ) );
+		yAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 100, 0 ) ) );
 
 		roadService.add( xAxisRoad );
 		roadService.add( yAxisRoad );
@@ -87,14 +88,14 @@ describe( 't-junction tests', () => {
 
 		// left to right
 		const xAxisRoad = roadService.createDefaultRoad();
-		xAxisRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
-		xAxisRoad.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+		xAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 0, 0 ) ) );
+		xAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 100, 0, 0 ) ) );
 		roadService.add( xAxisRoad );
 
 		// bottom to top
 		const yAxisRoad = roadService.createDefaultRoad();
-		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
-		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
+		yAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, -100, 0 ) ) );
+		yAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 100, 0 ) ) );
 		roadService.add( yAxisRoad );
 
 		const junction = junctionService.createNewJunction();
@@ -122,14 +123,14 @@ describe( 't-junction tests', () => {
 
 		// left to right
 		const xAxisRoad = roadService.createDefaultRoad();
-		xAxisRoad.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
-		xAxisRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
+		xAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -100, 0, 0 ) ) );
+		xAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 0, 0 ) ) );
 		roadService.add( xAxisRoad );
 
 		// bottom to top
 		const yAxisRoad = roadService.createDefaultRoad();
-		yAxisRoad.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
-		yAxisRoad.spline.addControlPointAt( new Vector3( 0, 100, 0 ) );
+		yAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, -100, 0 ) ) );
+		yAxisRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 100, 0 ) ) );
 		roadService.add( yAxisRoad );
 
 		intersectionService.checkSplineIntersections( yAxisRoad.spline );

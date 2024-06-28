@@ -310,48 +310,50 @@ export class CatmullRomPath extends CurvePath<Vector3> {
 	}
 }
 
-export class ExplicitSplinePath extends CurvePath<Vector3> {
-
-	constructor (
-		private spline: ExplicitSpline,
-		private offset: number = 0,
-	) {
-
-		super();
-	}
-
-	getPoint ( t: number, optionalTarget?: Vector3 ): Vector3 {
-
-		return this.spline.getPoint( t, this.offset ).toVector3();
-
-	}
-
-	getLength () {
-
-		return this.spline.getLength();
-
-	}
-}
-
-export class AutoSplinePath extends CurvePath<Vector3> {
-
-	constructor (
-		private spline: AutoSpline,
-		private offset: number = 0,
-	) {
-
-		super();
-	}
-
-	getPoint ( t: number, optionalTarget?: Vector3 ): Vector3 {
-
-		return this.spline.getPoint( t, this.offset ).toVector3();
-
-	}
-
-	getLength () {
-
-		return this.spline.getLength();
-
-	}
-}
+// export class ExplicitSplinePath extends CurvePath<Vector3> {
+//
+// 	constructor (
+// 		private spline: ExplicitSpline,
+// 		private offset: number = 0,
+// 	) {
+//
+// 		super();
+// 	}
+//
+// 	getPoint ( t: number, optionalTarget?: Vector3 ): Vector3 {
+//
+// 		return this.spline.getPoint( t, this.offset ).toVector3();
+//
+// 	}
+//
+// 	getLength () {
+//
+// 		return this.spline.getLength();
+//
+// 	}
+// }
+//
+// export class AutoSplinePath extends CurvePath<Vector3> {
+//
+// 	constructor (
+// 		private spline: AutoSpline,
+// 		private offset: number = 0,
+// 	) {
+//
+// 		super();
+// 	}
+//
+// 	getPoint ( t: number, optionalTarget?: Vector3 ): Vector3 {
+//
+// 		// return this.spline.getPoint( t, this.offset ).toVector3();
+// 		return new Vector3();
+//
+// 	}
+//
+// 	getLength () {
+//
+// 		// return this.spline.getLength();
+// 		return 0;
+//
+// 	}
+// }

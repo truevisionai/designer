@@ -19,6 +19,8 @@ import { RoadBuilder } from 'app/map/builders/road.builder';
 import { SplineBuilder } from './spline/spline.builder';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
+import { SplineService } from "./spline/spline.service";
+import { RoadService } from "./road/road.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -35,6 +37,8 @@ export class SceneBuilderService {
 		private propPolygonService: PropPolygonService,
 		private roadFactory: RoadFactory,
 		private signalIdService: RoadSignalIdService,
+		private splineService: SplineService,
+		private roadService: RoadService,
 	) {
 	}
 
@@ -79,28 +83,13 @@ export class SceneBuilderService {
 
 	buildRoad ( map: TvMap, road: TvRoad ): void {
 
-		function fixGeometry ( road: TvRoad ) {
-
-			const segment = road.spline.findSegment( road );
-
-			if ( !segment ) console.error( 'Road segment not found ' + road.toString() );
-			if ( !segment ) return;
-
-			road.clearGeometries();
-
-			if ( segment.geometries.length == 0 ) return;
-
-			segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-
-		}
-
 		const spline = this.findSpline( map, road );
 
 		if ( spline && ( spline.type === SplineType.AUTO || spline.type == SplineType.AUTOV2 ) ) {
 
 			road.spline = spline;
 
-			fixGeometry( road );
+			this.roadService.updateRoadGeometries( road );
 
 			road.gameObject = this.roadBuilder.buildRoad( road );
 
@@ -112,9 +101,11 @@ export class SceneBuilderService {
 				road.sStart = 0;
 			}
 
-			if ( road.spline.getSplineSegments().length == 0 ) {
-				road.spline.addRoadSegment( 0, road );
+			if ( road.spline.segmentMap.size == 0 ) {
+				road.spline.segmentMap.set( 0, road );
 			}
+
+			this.splineBuilder.buildSpline( road.spline );
 
 			road.gameObject = this.roadBuilder.buildRoad( road );
 
@@ -131,7 +122,7 @@ export class SceneBuilderService {
 
 	findSpline ( scene: TvMap, road: TvRoad ): AbstractSpline {
 
-		return scene.getSplines().find( spline => spline.findSegment( road ) );
+		return scene.getSplines().find( spline => this.splineService.hasSegment( spline, road ) );
 
 	}
 
@@ -149,7 +140,7 @@ export class SceneBuilderService {
 
 	private buildSpline ( map: TvMap, spline: AbstractSpline ) {
 
-		spline.updateRoadSegments();
+		this.splineBuilder.buildSpline( spline );
 
 	}
 }

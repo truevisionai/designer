@@ -52,7 +52,7 @@ export class ExporterService {
 
 		const filename = FileUtils.getFilenameWithoutExtension( this.mapService.map.header.name );
 
-		const path = this.storage.join( this.fileService.projectFolder, filename );
+		const path = this.storage.join( this.fileService.projectFolder, filename || "map" );
 
 		this.fileService.saveFileWithExtension( path, contents, FileExtension.OPENDRIVE, ( file: IFile ) => {
 

@@ -21,7 +21,8 @@ export class MeasurementToolService {
 		public debugTextService: DebugTextService,
 		public toolTipService: ToolTipService,
 		public controlPointFactory: ControlPointFactory,
-	) { }
+	) {
+	}
 
 	showToolTipAt ( text: string, position: Vector3 ) {
 

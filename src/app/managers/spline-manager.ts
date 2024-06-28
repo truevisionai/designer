@@ -7,13 +7,13 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map/map.service";
 import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { SplineSegment } from "app/core/shapes/spline-segment";
 import { Box3 } from "three";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { JunctionManager } from "./junction-manager";
 import { RoadFactory } from "app/factories/road-factory.service";
-import { SplineSegmentService } from "app/services/spline/spline-segment.service";
+import { SplineService } from "../services/spline/spline.service";
+import { TvJunction } from "../map/models/junctions/tv-junction";
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,7 +26,7 @@ export class SplineManager {
 		private splineBuilder: SplineBuilder,
 		private junctionManager: JunctionManager,
 		private roadFactory: RoadFactory,
-		private segmentService: SplineSegmentService,
+		private splineService: SplineService
 	) {
 	}
 
@@ -38,7 +38,7 @@ export class SplineManager {
 
 		this.updateSplineBoundingBox( spline );
 
-		this.segmentService.updateWidthCache( spline );
+		this.splineService.updateWidthCache( spline );
 
 		this.junctionManager.updateJunctions( spline );
 
@@ -50,13 +50,13 @@ export class SplineManager {
 
 		this.buildSpline( spline );												// first step is always to build the spline from the control points
 
-		for ( const road of spline.getRoads() ) {
+		for ( const road of this.splineService.getRoads( spline ) ) {
 
 			this.roadManager.updateRoad( road );
 
 		}
 
-		this.segmentService.updateWidthCache( spline );
+		this.splineService.updateWidthCache( spline );
 
 		this.syncSuccessorSpline( spline );
 
@@ -70,43 +70,46 @@ export class SplineManager {
 
 	removeSpline ( spline: AbstractSpline ) {
 
-		if ( spline.isConnectingRoad() ) return;
+		if ( this.splineService.isConnectionRoad( spline ) ) return;
 
-		const junctions = spline.getJunctions();
+		for ( const segment of spline.segmentMap.toArray() ) {
 
-		for ( const junction of junctions ) {
+			if ( segment instanceof TvJunction ) {
 
-			this.junctionManager.removeJunction( junction );
+				this.junctionManager.removeJunction( segment );
 
-			this.mapService.map.removeJunction( junction );
-
-		}
-
-		const roads = spline.getRoads();
-
-		for ( const road of roads ) {
-
-			this.roadManager.removeRoad( road );
-
-			this.mapService.map.removeRoad( road );
+				this.mapService.map.removeJunction( segment );
+			}
 
 		}
 
-		const segments = spline.getSplineSegments();
+		for ( const segment of spline.segmentMap.toArray() ) {
 
-		for ( const segment of segments ) {
+			if ( segment instanceof TvRoad ) {
 
-			if ( segment.isRoad ) {
+				this.roadManager.removeRoad( segment );
 
-				const road = segment.getInstance<TvRoad>();
-
-				this.roadManager.removeRoad( road );
-
-				this.mapService.map.removeRoad( road );
+				this.mapService.map.removeRoad( segment );
 
 			}
 
 		}
+
+		// const segments = spline.getSplineSegments();
+		//
+		// for ( const segment of segments ) {
+		//
+		// 	if ( segment.isRoad ) {
+		//
+		// 		const road = segment.getInstance<TvRoad>();
+		//
+		// 		this.roadManager.removeRoad( road );
+		//
+		// 		this.mapService.map.removeRoad( road );
+		//
+		// 	}
+		//
+		// }
 
 		this.mapService.map.removeSpline( spline );
 
@@ -114,17 +117,15 @@ export class SplineManager {
 
 	syncSuccessorSpline ( spline: AbstractSpline ) {
 
-		if ( spline.isConnectingRoad() ) return;
+		if ( this.splineService.isConnectionRoad( spline ) ) return;
 
-		const lastSegment = spline.getLastSegment();
+		const lastSegment = spline.segmentMap.getLast();
 
-		if ( lastSegment?.isRoad ) {
+		if ( lastSegment instanceof TvRoad ) {
 
-			const road = lastSegment.getInstance<TvRoad>();
+			this.syncRoadSuccessorSpline( lastSegment );
 
-			this.syncRoadSuccessorSpline( road );
-
-		} else if ( lastSegment?.isJunction ) {
+		} else if ( lastSegment instanceof TvJunction ) {
 
 			// console.error( "method not implemented" );
 
@@ -134,17 +135,15 @@ export class SplineManager {
 
 	syncPredecessorSpline ( spline: AbstractSpline ) {
 
-		if ( spline.isConnectingRoad() ) return;
+		if ( this.splineService.isConnectionRoad( spline ) ) return;
 
-		const firstSegment = spline.getFirstSegment();
+		const firstSegment = spline.segmentMap.getFirst();
 
-		if ( firstSegment?.isRoad ) {
+		if ( firstSegment instanceof TvRoad ) {
 
-			const road = firstSegment.getInstance<TvRoad>();
+			this.syncRoadPredecessorrSpline( firstSegment );
 
-			this.syncRoadPredecessorrSpline( road );
-
-		} else if ( firstSegment?.isJunction ) {
+		} else if ( firstSegment instanceof TvJunction ) {
 
 			// console.error( "method not implemented" );
 
@@ -242,67 +241,61 @@ export class SplineManager {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
-		const segments = spline.getSplineSegments();
+		const segments = spline.segmentMap.toArray();
 
 		if ( segments.length == 0 ) {
 
-			this.addDefaulSegment( spline, spline.getFirstSegment() );
+			this.addDefaultSegment( spline, this.splineService.findFirstRoad( spline ) );
 
 		}
 
 		if ( segments.length >= 1 ) {
 
-			const firstSegment = segments[ 0 ];
+			const firstSegment = this.splineService.findFirstRoad( spline );
 
-			firstSegment.setStart( 0 );
+			if ( firstSegment ) {
 
-		}
-
-		// remove invalid segment that has no geometries
-		for ( let i = 0; i < segments.length; i++ ) {
-
-			const segment = segments[ i ];
-
-			if ( !segment.isRoad ) continue;
-
-			if ( segment.geometries.length > 0 ) continue;
-
-			const road = segment.getInstance<TvRoad>();
-
-			this.roadManager.removeRoad( road );
-
-		}
-
-	}
-
-	private addDefaulSegment ( spline: AbstractSpline, firstSegment?: SplineSegment ) {
-
-		const segments = spline.getSplineSegments();
-
-		if ( segments.length == 0 && spline.controlPoints.length >= 2 ) {
-
-			let road: TvRoad
-
-			if ( firstSegment && firstSegment.isRoad ) {
-
-				road = firstSegment.getInstance<TvRoad>();
-
-				road.successor = null;
-				road.predecessor = null;
-
-			} else {
-
-				road = this.roadFactory.createDefaultRoad();
-
-				this.mapService.map.addRoad( road );
+				firstSegment.sStart = 0;
 
 			}
 
+		}
+
+		// const roads = this.splineService.getRoads( spline );
+
+		// // remove invalid segment that has no geometries
+		// for ( let i = 0; i < roads.length; i++ ) {
+		//
+		// 	const road = roads[ i ];
+		//
+		// 	if ( road.geometries.length > 0 ) continue;
+		//
+		// 	this.roadManager.removeRoad( road );
+		//
+		// }
+
+	}
+
+	private addDefaultSegment ( spline: AbstractSpline, input?: TvRoad ) {
+
+		const segments = spline.segmentMap.toArray();
+
+		if ( segments.length == 0 && spline.controlPoints.length >= 2 ) {
+
+			let road: TvRoad;
+
+			if ( !input ) {
+				road = this.roadFactory.createDefaultRoad();
+			}
+
 			road.spline = spline;
+			road.successor = null;
+			road.predecessor = null;
+			spline.segmentMap.set( 0, road );
 
-			spline.addRoadSegment( 0, road );
 
-			this.roadManager.addRoad( road );
+			this.mapService.map.addRoad( road );
+			// this.roadManager.addRoad( road );
 		}
 	}
 
@@ -310,35 +303,73 @@ export class SplineManager {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
-		const boundingBox = new Box3();
+		let boundingBox = new Box3();
 
-		const segments = spline.getSplineSegments();
+		const segments = spline.segmentMap.toArray();
 
 		for ( let i = 0; i < segments.length; i++ ) {
 
 			const segment = segments[ i ];
 
-			if ( segment.isRoad ) {
+			if ( segment instanceof TvRoad ) {
 
-				const road = segment.getInstance<TvRoad>();
+				if ( segment.boundingBox ) {
 
-				if ( road.boundingBox ) {
-
-					boundingBox.union( road.boundingBox );
+					boundingBox.union( segment.boundingBox );
 
 				} else {
 
-					road.computeBoundingBox();
+					segment.computeBoundingBox();
 
-					if ( road.boundingBox ) {
+					if ( segment.boundingBox ) {
 
-						boundingBox.union( road.boundingBox );
+						boundingBox.union( segment.boundingBox );
 
 					} else {
 
-						console.error( "road.boundingBox is null", road );
+						boundingBox = null;
 
 					}
+				}
+			}
+		}
+
+		if ( !boundingBox ) {
+			boundingBox = this.updateSplineBouningBoxFromGeometry( spline );
+		}
+
+		if ( !boundingBox ) {
+			console.error( "boundingBox is null", spline );
+			return;
+		}
+
+		spline.boundingBox = boundingBox;
+
+	}
+
+	private updateSplineBouningBoxFromGeometry ( spline: AbstractSpline ) {
+
+		const boundingBox = new Box3();
+
+		const segments = spline.segmentMap.toArray();
+
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( segment instanceof TvRoad ) {
+
+				const roadLength = segment.length;
+
+				for ( let s = 0; s < roadLength; s++ ) {
+
+					const width = segment.getRoadWidthAt( s );
+
+					const left = segment.getPosThetaAt( s, -width.totalWidth );
+					const right = segment.getPosThetaAt( s, width.totalWidth );
+
+					boundingBox.expandByPoint( left.position );
+					boundingBox.expandByPoint( right.position );
 
 				}
 
@@ -346,16 +377,7 @@ export class SplineManager {
 
 		}
 
-		if ( boundingBox ) {
-
-			spline.boundingBox = boundingBox;
-
-		} else {
-
-			console.error( "boundingBox is null", spline );
-
-		}
-
+		return boundingBox;
 	}
 }
 

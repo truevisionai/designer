@@ -79,4 +79,17 @@ export class ManagedMap<V> extends Map<number, V> {
 		return id;
 
 	}
+
+	includes ( value: V ): boolean {
+
+		return this.toArray().includes( value );
+
+	}
+
+	toArray () {
+
+		return Array.from( this.values() );
+
+	}
+
 }

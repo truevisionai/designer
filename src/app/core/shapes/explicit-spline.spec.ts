@@ -30,17 +30,17 @@ describe( 'ExplicitSpline Test', () => {
 
 		// horizontal
 		spline = new ExplicitSpline( road );
-		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3() ) );
-		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 100 ) ) );
-		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 200 ) ) );
+		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3() ) );
+		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100 ) ) );
+		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 200 ) ) );
 
 		expect( spline.getLength() ).toBe( 200 );
 
 		// vertical
 		spline = new ExplicitSpline( road );
-		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3() ) );
-		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 100, 0 ) ) );
-		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 200, 0 ) ) );
+		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3() ) );
+		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 100, 0 ) ) );
+		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 200, 0 ) ) );
 
 		expect( spline.getLength() ).toBeCloseTo( 217.03 );
 

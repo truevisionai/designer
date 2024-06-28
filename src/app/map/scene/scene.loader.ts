@@ -65,6 +65,8 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { StorageService } from "../../io/storage.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
 import { Asset } from 'app/core/asset/asset.model';
+import { SplineControlPoint } from "../../objects/spline-control-point";
+import { RoadControlPoint } from "../../objects/road-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 
 @Injectable( {
@@ -357,7 +359,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const spline = this.importAutoSpline( xml );
 
-			spline.addRoadSegment( 0, road );
+			spline.segmentMap.set( 0, road );
 
 			road.spline = spline;
 
@@ -381,6 +383,20 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private importExplicitSpline ( xml: XmlElement, road?: TvRoad ): ExplicitSpline {
 
+		function addControlPoint ( spline: ExplicitSpline, index: number, position: Vector3, hdg: number, segType: TvGeometryType ) {
+
+			const controlPoint = new RoadControlPoint( road, position, 'cp', index, index );
+
+			controlPoint.segmentType = segType;
+
+			spline.controlPoints.push( controlPoint );
+
+			controlPoint.hdg = hdg;
+
+			controlPoint.addDefaultTangents( hdg, 1, 1 );
+
+		}
+
 		const spline = new ExplicitSpline( road );
 
 		if ( xml.attr_uuid ) spline.uuid;
@@ -399,14 +415,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const segType = +xml.attr_type;
 
-			spline.addFromFile( index, position, hdg, segType );
+			addControlPoint( spline, index, position, hdg, segType );
 
 			index++;
 
 		} );
-
-		// to not show any lines or control points
-		spline.hide();
 
 		return spline;
 	}
@@ -421,7 +434,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const point = ControlPointFactory.createSplineControlPoint( spline, position );
 
-			spline.addControlPoint( point );
+			point.tagindex = spline.controlPoints.length;
+
+			spline.controlPoints.push( point );
 
 		} );
 
@@ -441,7 +456,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const position = this.importVector3( xml );
 
-			spline.addControlPointAt( position );
+			const point = new SplineControlPoint( spline, position );
+
+			point.tagindex = spline.controlPoints.length;
+
+			spline.controlPoints.push( point );
 
 		} );
 
@@ -455,12 +474,12 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			if ( type == SplineSegmentType.ROAD ) {
 
 				const road = this.map.getRoadById( id );
-				spline.addSegmentSection( start, id, type, road );
+				spline.segmentMap.set( start, road );
 
 			} else if ( type == SplineSegmentType.JUNCTION ) {
 
 				const junction = this.map.getJunctionById( id );
-				spline.addSegmentSection( start, id, type, junction );
+				spline.segmentMap.set( start, junction );
 
 			} else {
 
@@ -468,7 +487,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 				if ( id != -1 ) {
 					const road = this.map.getRoadById( id );
 					if ( !road ) return;
-					spline.addSegmentSection( start, id, SplineSegmentType.ROAD, road );
+					spline.segmentMap.set( start, road );
 				}
 
 			}
@@ -492,7 +511,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const controlPoint = new SimpleControlPoint( mainObject, position );
 
-			spline.addControlPoint( controlPoint );
+			controlPoint.tagindex = spline.controlPoints.length;
+
+			spline.controlPoints.push( controlPoint );
 
 		} );
 
@@ -634,32 +655,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		prop.scale.copy( scale );
 
 		return prop;
-	}
-
-	private makeSplineFromGeometry ( road: TvRoad, geometries: TvAbstractRoadGeometry[] ): ExplicitSpline {
-
-		const spline = new ExplicitSpline( road );
-
-		if ( geometries.length === 0 ) return spline;
-
-		let lastGeometry: TvAbstractRoadGeometry;
-
-		for ( let i = 0; i < geometries.length; i++ ) {
-
-			lastGeometry = geometries[ i ];
-
-			spline.addFromFile( i, lastGeometry.startV3, lastGeometry.hdg, lastGeometry.geometryType, lastGeometry );
-		}
-
-		const lastCoord = lastGeometry.endCoord();
-
-		spline.addFromFile( geometries.length, lastCoord.toVector3(), lastCoord.hdg, lastGeometry.geometryType, lastGeometry );
-
-		spline.hide();
-
-		spline.controlPoints.forEach( cp => cp.userData.roadId = road.id );
-
-		return spline;
 	}
 
 	private parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ) {

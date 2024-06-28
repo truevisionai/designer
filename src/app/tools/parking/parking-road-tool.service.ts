@@ -14,6 +14,7 @@ import { Vector3 } from 'three';
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { SplineService } from "../../services/spline/spline.service";
 
 const PARKING_WIDTH = 2.5;
 const PARKING_LENGTH = 5.5;
@@ -68,7 +69,9 @@ export class ParkingRoadToolService {
 		private roadService: RoadService,
 		private controlPointFactory: ControlPointFactory,
 		private roadObjectService: RoadObjectService,
-	) { }
+		private splineService: SplineService
+	) {
+	}
 
 	createParkingRoad ( points: Vector3[] ) {
 
@@ -78,7 +81,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			road.addControlPoint( point );
+			this.splineService.addControlPoint( road.spline, point );
 
 		}
 
@@ -95,7 +98,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			road.addControlPoint( point );
+			this.splineService.addControlPoint( road.spline, point );
 
 		}
 
@@ -112,7 +115,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			road.addControlPoint( point );
+			this.splineService.addControlPoint( road.spline, point );
 
 		}
 
@@ -494,7 +497,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			road.addControlPoint( point );
+			this.splineService.addControlPoint( road.spline, point );
 
 		}
 
@@ -514,7 +517,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			road.addControlPoint( point );
+			this.splineService.addControlPoint( road.spline, point );
 
 		}
 

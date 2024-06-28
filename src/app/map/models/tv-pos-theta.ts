@@ -11,47 +11,23 @@ import { TvRoad } from './tv-road.model';
 
 export class TvPosTheta {
 
-	private _x: number;
-	private _y: number;
-	private _z: number = 0;
-	private _s: number;
-	private _t: number;
-	private _hdg: number;
-
-	get x () { return this._x; }
-
-	set x ( value ) { this._x = value; }
-
-	get y () { return this._y; }
-
-	set y ( value ) { this._y = value; }
-
-	get z (): number { return this._z; }
-
-	set z ( value: number ) { this._z = value; }
-
-	get s () { return this._s; }
-
-	set s ( value ) { this._s = value; }
-
-	get t () { return this._t; }
-
-	set t ( value ) { this._t = value; }
-
-	get hdg () { return this._hdg; }
-
-	set hdg ( value ) { this._hdg = value; }
+	public x: number;
+	public y: number;
+	public z: number = 0;
+	public s: number;
+	public t: number;
+	public hdg: number;
 
 	get position (): Vector3 {
 		return new Vector3( this.x, this.y, this.z );
 	}
 
 	constructor ( x?: number, y?: number, hdg?: number, s?: number, t?: number, z?: number ) {
-		this._x = x;
-		this._y = y;
-		this._hdg = hdg;
-		this._s = s;
-		this._t = t;
+		this.x = x;
+		this.y = y;
+		this.hdg = hdg;
+		this.s = s;
+		this.t = t;
 		this.z = z;
 	}
 
@@ -225,5 +201,9 @@ export class TvPosTheta {
 	get normalizedHdg () {
 		// Normalize the heading to be within 0 to 2π
 		return this.hdg - Math.floor( this.hdg / ( 2 * Math.PI ) ) * ( 2 * Math.PI );
+	}
+
+	toString () {
+		return `x:${ this.x?.toFixed( 2 ) }, y:${ this.y?.toFixed( 2 ) }, z:${ this.z?.toFixed( 2 ) }, hdg:${ this.hdg?.toFixed( 2 ) }, s:${ this.s?.toFixed( 2 ) }, t:${ this.t?.toFixed( 2 ) }`;
 	}
 }

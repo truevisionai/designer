@@ -121,6 +121,30 @@ export class LaneLinkService {
 
 	addRoadMarks ( connection: TvJunctionConnection ): TvJunctionConnection {
 
+		connection.connectingRoad.laneSections.forEach( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				if ( lane.side == TvLaneSide.CENTER ) return;
+
+				const previousLaneId = lane.predecessor || lane.id;
+
+				const previousLane = connection.incomingRoad.getLastLaneSection().getLaneById( previousLaneId );
+
+				if ( previousLane ) {
+
+					const lastRoadMark = previousLane.roadMarks[ previousLane.roadMarks.size - 1 ];
+
+					if ( lastRoadMark ) {
+						lane.addRoadMarkInstance( lastRoadMark.clone( 0, lane ) );
+					}
+
+				}
+
+			} );
+
+		} );
+
 		// TODO: test and
 		return;
 

@@ -322,8 +322,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 				// TODO: ADD REST OF THE VALUES
 				nodeGeometry[ 'spiral' ] = {};
-				nodeGeometry[ 'spiral' ][ 'attr_curvStart' ] = sprial.attr_curvStart;
-				nodeGeometry[ 'spiral' ][ 'attr_curvEnd' ] = sprial.attr_curvEnd;
+				nodeGeometry[ 'spiral' ][ 'attr_curvStart' ] = sprial.curvStart;
+				nodeGeometry[ 'spiral' ][ 'attr_curvEnd' ] = sprial.curvEnd;
 
 				break;
 
@@ -344,6 +344,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 				const paramPoly3 = geometryBlock as TvParamPoly3Geometry;
 
 				nodeGeometry[ 'paramPoly3' ] = {};
+
+				nodeGeometry[ 'paramPoly3' ][ 'attr_pRange' ] = paramPoly3.pRange;
 
 				nodeGeometry[ 'paramPoly3' ][ 'attr_aU' ] = paramPoly3.aU;
 				nodeGeometry[ 'paramPoly3' ][ 'attr_bU' ] = paramPoly3.bU;

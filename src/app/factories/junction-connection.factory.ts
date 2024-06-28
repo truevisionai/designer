@@ -74,7 +74,7 @@ export class JunctionConnectionFactory {
 
 		road.spline = this.splineFactory.createManeuverSpline( incoming, outgoing );
 
-		road.spline.addRoadSegment( 0, road );
+		road.spline.segmentMap.set( 0, road );
 
 		return this.createConnectionInstance( junction, road, incoming.road, outgoing.road );
 

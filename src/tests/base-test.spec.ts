@@ -6,6 +6,7 @@ import { IntersectionService } from "app/services/junction/intersection.service"
 import { RoadNode } from "app/objects/road-node";
 import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
 import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
+import { SplineControlPoint } from "app/objects/spline-control-point";
 
 export class BaseTest {
 
@@ -30,7 +31,7 @@ export class BaseTest {
 
 		const road = roadFactory.createRoadWithLaneCount( leftLaneCount, rightLaneCount, leftWidth, rightWidth );
 
-		points.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
+		points.forEach( point => road.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( point.x, point.y, 0 ) ) ) );
 
 		return road;
 

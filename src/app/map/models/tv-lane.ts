@@ -29,8 +29,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public meshData: MeshGeometryData;
 
-	public markMeshData: MeshGeometryData;
-
 	/**
 	 * +positive lane id for left lanes
 	 * -negative lane id for right lanes

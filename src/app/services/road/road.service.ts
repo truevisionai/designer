@@ -137,7 +137,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
 
-		spline.addRoadSegment( 0, joiningRoad );
+		spline.segmentMap.set( 0, joiningRoad );
 
 		joiningRoad.spline = spline;
 
@@ -191,7 +191,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	update ( road: TvRoad ) {
 
-		this.updateRoadGeometries( road );
+		// this.updateRoadGeometries( road );
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
@@ -199,15 +199,15 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	updateRoadGeometries ( road: TvRoad ) {
 
-		const segment = road.spline.findSegment( road );
-
-		if ( !segment ) return;
-
-		road.clearGeometries();
-
-		if ( segment.geometries.length == 0 ) return;
-
-		segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
+		// const segment = road.spline.findSegment( road );
+		//
+		// if ( !segment ) return;
+		//
+		// road.clearGeometries();
+		//
+		// if ( segment.geometries.length == 0 ) return;
+		//
+		// segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
 	}
 
@@ -475,14 +475,21 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 * @param laneSection
 	 * @param lane
 	 * @param sOffset s offset is relative to lane section
+	 * @param tOffset
+	 * @param withLaneHeight
 	 */
-	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0 ) {
+	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
 
 		const t = this.findWidthUpto( road, laneSection, lane, sOffset ) + tOffset;
 
 		const sign = lane.id > 0 ? 1 : -1;
 
 		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
+
+		if ( withLaneHeight ) {
+			const laneHeight = lane.getHeightValue( sOffset );
+			posTheta.z += laneHeight.getLinearValue( 1 );
+		}
 
 		return posTheta;
 	}
@@ -517,9 +524,10 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 * @param laneSection
 	 * @param lane
 	 * @param sOffset s offset is relative to lane section
+	 * @param withLaneHeight
 	 * @returns
 	 */
-	findLaneStartPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+	findLaneStartPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
 
 		const t = this.findWidthUptoStart( road, laneSection, lane, sOffset );
 
@@ -529,9 +537,10 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		if ( !posTheta ) return;
 
-		const laneHeight = lane.getHeightValue( sOffset );
-
-		posTheta.z += laneHeight.getLinearValue( 0 );
+		if ( withLaneHeight ) {
+			const laneHeight = lane.getHeightValue( sOffset );
+			posTheta.z += laneHeight.getLinearValue( 0 );
+		}
 
 		return posTheta;
 

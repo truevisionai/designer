@@ -14,6 +14,8 @@ import { MapService } from '../../../services/map/map.service';
 import { LaneLinkService } from '../../../services/junction/lane-link.service';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
+import { RoadBuilder } from "../../builders/road.builder";
+import { SplineBuilder } from "../../../services/spline/spline.builder";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,6 +23,8 @@ import { Vector3 } from 'three';
 export class ConnectionService {
 
 	constructor (
+		private splineBuilder: SplineBuilder,
+		private roadBuilder: RoadBuilder,
 		private roadService: RoadService,
 		private mapService: MapService,
 		private linkService: LaneLinkService
@@ -129,7 +133,10 @@ export class ConnectionService {
 
 		connection.junction = junction;
 
-		this.roadService.add( connection.connectingRoad );
+		this.splineBuilder.buildSpline( connection.connectingRoad.spline );
+
+		// this.roadBuilder.buildRoad( connection.connectingRoad );
+		this.roadBuilder.rebuildRoad( connectingRoad, this.mapService.map );
 
 		this.linkService.createDrivingLinks( connection, incoming, outgoing );
 

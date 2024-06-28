@@ -27,6 +27,12 @@ export class PropPolygon {
 
 	}
 
+	update (): void {
+
+		this.spline.update();
+
+	}
+
 	addTransform ( guid: string, transform: TvTransform ) {
 
 		this.props.push( { guid, transform } );

@@ -73,7 +73,7 @@ export class FileUtils {
 		throw new Error( 'unknown platform' + process.platform );
 	}
 
-	static getFilenameWithoutExtension ( path: string ): string {
+	static getFilenameWithoutExtension ( path: string ): string|undefined {
 
 		if ( !path ) return;
 

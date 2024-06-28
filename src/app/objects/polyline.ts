@@ -10,7 +10,7 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 export class Polyline {
 
-	curveType;
+	curveType: string;
 
 	mesh: Line;
 

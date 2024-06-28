@@ -10,6 +10,8 @@ import { Line } from "three";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { DebugState } from "./debug-state";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
+import { Polyline } from "../../objects/polyline";
+import { RoundLine } from "../../core/shapes/round-line";
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,6 +24,9 @@ export class AutoSplineHelper extends BaseDebugger<AutoSplineV2> {
 
 	onDefault ( object: AutoSplineV2 ): void {
 
+		// this.polyline = new Polyline( this.controlPoints );
+		// this.roundline = new RoundLine( this.controlPoints );
+
 	}
 
 	onHighlight ( object: AutoSplineV2 ): void {
@@ -31,7 +36,6 @@ export class AutoSplineHelper extends BaseDebugger<AutoSplineV2> {
 	onRemoved ( object: AutoSplineV2 ): void {
 
 		this.lines.removeKey( object );
-
 		this.points.removeKey( object );
 
 	}
@@ -42,9 +46,8 @@ export class AutoSplineHelper extends BaseDebugger<AutoSplineV2> {
 
 		if ( object.controlPoints.length < 2 ) return;
 
-		this.lines.addItem( object, object.polyline.mesh );
-
-		this.lines.addItem( object, object.roundline.mesh );
+		this.lines.addItem( object, this.createPolyline( object )?.mesh )
+		this.lines.addItem( object, this.createRoundLine( object )?.mesh );
 
 	}
 
@@ -64,9 +67,8 @@ export class AutoSplineHelper extends BaseDebugger<AutoSplineV2> {
 
 		if ( !object ) return;
 
-		object.polyline.mesh.visible = true;
-
-		object.roundline.mesh.visible = true;
+		this.lines.addItem( object, this.createPolyline( object )?.mesh )
+		this.lines.addItem( object, this.createRoundLine( object )?.mesh );
 
 		this.setBaseState( object, state );
 
@@ -81,4 +83,11 @@ export class AutoSplineHelper extends BaseDebugger<AutoSplineV2> {
 		this.points.clear();
 	}
 
+	createPolyline ( object: AutoSplineV2 ) {
+		return new Polyline( object.controlPoints );
+	}
+
+	createRoundLine ( object: AutoSplineV2 ) {
+		return new RoundLine( object.controlPoints );
+	}
 }

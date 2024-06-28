@@ -203,6 +203,15 @@ export class SpiralUtils {
 
 	}
 
+	/**
+	 * calculate position
+	 * @param s
+	 * @param cDot
+	 * @param x
+	 * @param y
+	 * @param t
+	 * @returns {x: number, y: number, t: number}
+	 */
 	static odrSpiral ( s, cDot, x, y, t ) {
 
 		return odrSpiral( s, cDot, x, y, t );

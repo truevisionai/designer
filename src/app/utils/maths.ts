@@ -4,6 +4,7 @@
 
 import { TvLaneSide, TvSide } from 'app/map/models/tv-common';
 import { Vector2, Vector3 } from 'three';
+import { TvPosTheta } from "../map/models/tv-pos-theta";
 
 export class Maths {
 
@@ -705,4 +706,17 @@ export class Maths {
 		return ( heading + Maths.PI ) % ( 2 * Maths.PI ) - Maths.PI;
 	}
 
+	static findIntersection ( a: TvPosTheta, b: TvPosTheta ) {
+
+		return this.lineLineIntersection_2( a.position, a.hdg, b.position, b.hdg );
+
+	}
+
+	static vec2Angle ( x: number, y: number ) {
+		const d = Math.sqrt( x * x + y * y );
+		x /= d;
+		y /= d
+		if ( y >= 0 ) return Math.acos( x );
+		else return 2 * Math.PI - Math.acos( x );
+	}
 }

@@ -9,6 +9,7 @@ import { JunctionService } from 'app/services/junction/junction.service';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseTest } from 'tests/base-test.spec';
 import { Vector3 } from 'three';
+import { SplineControlPoint } from 'app/objects/spline-control-point';
 
 describe( 'ConnectionService', () => {
 
@@ -39,12 +40,12 @@ describe( 'ConnectionService', () => {
 	) => {
 
 		const leftRoad = roadService.createDefaultRoad();
-		leftRoad.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		leftRoad.spline.addControlPointAt( new Vector3( -10, 0, 0 ) );
+		leftRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -50, 0, 0 ) ) );
+		leftRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -10, 0, 0 ) ) );
 
 		const rightRoad = roadService.createDefaultRoad();
-		rightRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
-		rightRoad.spline.addControlPointAt( new Vector3( 40, 0, 0 ) );
+		rightRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 0, 0 ) ) );
+		rightRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 40, 0, 0 ) ) );
 
 		roadService.add( leftRoad );
 		roadService.add( rightRoad );
@@ -102,12 +103,12 @@ describe( 'ConnectionService', () => {
 	) => {
 
 		const leftRoad = roadService.createDefaultRoad();
-		leftRoad.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		leftRoad.spline.addControlPointAt( new Vector3( -10, 0, 0 ) );
+		leftRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -50, 0, 0 ) ) );
+		leftRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -10, 0, 0 ) ) );
 
 		const rightRoad = roadService.createDefaultRoad();
-		rightRoad.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
-		rightRoad.spline.addControlPointAt( new Vector3( 40, 0, 0 ) );
+		rightRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 0, 0 ) ) );
+		rightRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 40, 0, 0 ) ) );
 
 		roadService.add( leftRoad );
 		roadService.add( rightRoad );

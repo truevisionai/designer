@@ -154,21 +154,6 @@ export class TrafficLightTool extends BaseTool<any> {
 
 		if ( object instanceof SplineControlPoint ) {
 
-			const junctionId = object.spline.getRoads()[ 0 ]?.junctionId;
-
-			if ( junctionId ) {
-
-				// const junction = this.tool.junctionService.getJunctionById( junctionId );
-
-				// if ( junction ) {
-
-				// 	this.tool.junctionDebugger.setDebugState( junction, DebugState.SELECTED );
-
-				// }
-
-			}
-
-			// this.tool.splineService.update( object.spline );
 
 		} else {
 

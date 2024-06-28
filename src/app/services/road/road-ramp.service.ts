@@ -22,7 +22,6 @@ import { JunctionService } from '../junction/junction.service';
 import { MapService } from "../map/map.service";
 import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { RoadDividerService } from "./road-divider.service";
-import { SplineSegmentService } from "../spline/spline-segment.service";
 import { JunctionFactory } from "../../factories/junction.factory";
 import { SplineService } from "../spline/spline.service";
 
@@ -41,7 +40,6 @@ export class RoadRampService {
 		public junctionService: JunctionService,
 		public mapService: MapService,
 		public roadCutService: RoadDividerService,
-		public segmentService: SplineSegmentService,
 		public junctionFactory: JunctionFactory,
 		public connectionService: ConnectionService,
 		public splineService: SplineService,
@@ -63,9 +61,9 @@ export class RoadRampService {
 
 			const road = this.roadService.clone( startPosition.road );
 
-			this.segmentService.addRoadSegmentNew( startPosition.road.spline, sEnd, road );
+			this.splineService.addRoadSegmentNew( startPosition.road.spline, sEnd, road );
 
-			this.segmentService.addJunctionSegment( startPosition.road.spline, sStart, junction );
+			this.splineService.addJunctionSegment( startPosition.road.spline, sStart, junction );
 
 			return junction;
 
@@ -121,7 +119,7 @@ export class RoadRampService {
 
 		rampRoad.junction = junction;
 
-		rampRoad.spline.addRoadSegment( 0, rampRoad );
+		this.splineService.addRoadSegmentNew( rampRoad.spline, 0, rampRoad );
 
 		// const startElevation = incomingRoad.getElevationValue( sStart );
 
@@ -193,7 +191,7 @@ export class RoadRampService {
 
 		const spline = this.createRampSplineV2( startPosition, endPosition );
 
-		const points = spline.getPoints( 0.1 );
+		const points = this.splineService.getPoints( spline, 0.1 );
 
 		const line = this.debug.createLine( points );
 
@@ -205,7 +203,7 @@ export class RoadRampService {
 
 		const spline = this.createRampSplineV2( startPosition, endPosition );
 
-		const positions = spline.getPoints( 0.1 );
+		const positions = this.splineService.getPoints( spline, 0.1 );
 
 		const geometry = new LineGeometry();
 

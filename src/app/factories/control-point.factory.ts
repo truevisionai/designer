@@ -20,15 +20,6 @@ export class ControlPointFactory {
 
 	static createControl ( spline: AbstractSpline, position: Vector3 ): AbstractControlPoint {
 
-		if ( spline.type === SplineType.EXPLICIT ) {
-
-			const segment = spline.getFirstRoadSegment();
-
-			const road = segment?.getInstance<TvRoad>();
-
-			return new RoadControlPoint( road, position );
-		}
-
 		return this.createSplineControlPoint( spline, position );
 
 	}
@@ -43,11 +34,11 @@ export class ControlPointFactory {
 
 		if ( spline.type === SplineType.EXPLICIT ) {
 
-			const segment = spline.getFirstRoadSegment();
+			const road = spline.segmentMap.getFirst();
 
-			const road = segment?.getInstance<TvRoad>();
-
-			return new RoadControlPoint( road, position );
+			if ( road instanceof TvRoad ) {
+				return new RoadControlPoint( road, position );
+			}
 		}
 
 		return new SplineControlPoint( spline, position );

@@ -18,7 +18,7 @@ import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 export class AutoSpline extends AbstractSpline {
 
-	public type:SplineType = SplineType.AUTO;
+	public type: SplineType = SplineType.AUTO;
 
 	public polyline: Polyline;
 
@@ -42,7 +42,7 @@ export class AutoSpline extends AbstractSpline {
 
 		this.controlPoints.forEach( i => i.visible = false );
 
-		this.hideLines();
+		// this.hideLines();
 
 	}
 
@@ -69,11 +69,6 @@ export class AutoSpline extends AbstractSpline {
 
 	}
 
-	addControlPoint ( cp: RoadControlPoint ) {
-
-		super.addControlPoint( cp );
-
-	}
 
 	update () {
 
@@ -125,117 +120,117 @@ export class AutoSpline extends AbstractSpline {
 
 	}
 
-	exportGeometries (): TvAbstractRoadGeometry[] {
-
-		let totalLength = 0;
-
-		const points = this.roundline.points as RoadControlPoint[];
-
-		const radiuses = this.roundline.radiuses;
-
-		const geometries: TvAbstractRoadGeometry[] = [];
-
-		let s = totalLength;
-
-		for ( let i = 1; i < points.length; i++ ) {
-
-			let x, y, hdg, length;
-
-			const previous = points[ i - 1 ].position;
-			const current = points[ i ].position;
-
-			const p1 = new Vector2( previous.x, previous.y );
-
-			const p2 = new Vector2( current.x, current.y );
-
-			const d = p1.distanceTo( p2 );
-
-			// line between p1 and p2
-			if ( d - radiuses[ i - 1 ] - radiuses[ i ] > 0.001 ) {
-
-				[ x, y ] = new Vector2()
-					.subVectors( p2, p1 )
-					.normalize()
-					.multiplyScalar( radiuses[ i - 1 ] )
-					.add( p1 )
-					.toArray();
-
-				// hdg = new Vector2().subVectors( p2, p1 ).angle();
-				hdg = points[ i - 1 ].hdg;
-
-				length = d - radiuses[ i - 1 ] - radiuses[ i ];
-
-				s = totalLength;
-
-				totalLength += length;
-
-				geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
-
-			}
-
-			// arc for p2
-			if ( radiuses[ i ] > 0 ) { // first and last point can't have zero radiuses
-
-				const next = points[ i + 1 ].position;
-
-				const dir1 = new Vector2( current.x - previous.x, current.y - previous.y ).normalize();
-
-				const dir2 = new Vector2( next.x - current.x, next.y - current.y ).normalize();
-
-				const pp1 = new Vector2()
-					.subVectors( p1, p2 )
-					.normalize()
-					.multiplyScalar( radiuses[ i ] )
-					.add( p2 );
-
-				const pp2 = new Vector2()
-					.subVectors( ( new Vector2( next.x, next.y ) ), p2 )
-					.normalize()
-					.multiplyScalar( radiuses[ i ] )
-					.add( p2 );
-
-				x = pp1.x;
-
-				y = pp1.y;
-
-				hdg = dir1.angle();
-
-				let r, alpha, sign;
-
-				[ r, alpha, length, sign ] = this.getArcParams( pp1, pp2, dir1, dir2 );
-
-				if ( r != Infinity ) {
-
-					s = totalLength;
-
-					totalLength += length;
-
-					const curvature = ( sign > 0 ? 1 : -1 ) * ( 1 / r ); // sign < for mirror image
-
-					geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
-
-
-				} else {
-
-					s = totalLength;
-
-					length = pp1.distanceTo( pp2 );
-
-					totalLength += length;
-
-					geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
-
-					//console.warn( 'radius is infinity' );
-
-				}
-
-
-			}
-
-		}
-
-		return geometries;
-	}
+	// exportGeometries (): TvAbstractRoadGeometry[] {
+	//
+	// 	let totalLength = 0;
+	//
+	// 	const points = this.roundline.points as RoadControlPoint[];
+	//
+	// 	const radiuses = this.roundline.radiuses;
+	//
+	// 	const geometries: TvAbstractRoadGeometry[] = [];
+	//
+	// 	let s = totalLength;
+	//
+	// 	for ( let i = 1; i < points.length; i++ ) {
+	//
+	// 		let x, y, hdg, length;
+	//
+	// 		const previous = points[ i - 1 ].position;
+	// 		const current = points[ i ].position;
+	//
+	// 		const p1 = new Vector2( previous.x, previous.y );
+	//
+	// 		const p2 = new Vector2( current.x, current.y );
+	//
+	// 		const d = p1.distanceTo( p2 );
+	//
+	// 		// line between p1 and p2
+	// 		if ( d - radiuses[ i - 1 ] - radiuses[ i ] > 0.001 ) {
+	//
+	// 			[ x, y ] = new Vector2()
+	// 				.subVectors( p2, p1 )
+	// 				.normalize()
+	// 				.multiplyScalar( radiuses[ i - 1 ] )
+	// 				.add( p1 )
+	// 				.toArray();
+	//
+	// 			// hdg = new Vector2().subVectors( p2, p1 ).angle();
+	// 			hdg = points[ i - 1 ].hdg;
+	//
+	// 			length = d - radiuses[ i - 1 ] - radiuses[ i ];
+	//
+	// 			s = totalLength;
+	//
+	// 			totalLength += length;
+	//
+	// 			geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
+	//
+	// 		}
+	//
+	// 		// arc for p2
+	// 		if ( radiuses[ i ] > 0 ) { // first and last point can't have zero radiuses
+	//
+	// 			const next = points[ i + 1 ].position;
+	//
+	// 			const dir1 = new Vector2( current.x - previous.x, current.y - previous.y ).normalize();
+	//
+	// 			const dir2 = new Vector2( next.x - current.x, next.y - current.y ).normalize();
+	//
+	// 			const pp1 = new Vector2()
+	// 				.subVectors( p1, p2 )
+	// 				.normalize()
+	// 				.multiplyScalar( radiuses[ i ] )
+	// 				.add( p2 );
+	//
+	// 			const pp2 = new Vector2()
+	// 				.subVectors( ( new Vector2( next.x, next.y ) ), p2 )
+	// 				.normalize()
+	// 				.multiplyScalar( radiuses[ i ] )
+	// 				.add( p2 );
+	//
+	// 			x = pp1.x;
+	//
+	// 			y = pp1.y;
+	//
+	// 			hdg = dir1.angle();
+	//
+	// 			let r, alpha, sign;
+	//
+	// 			[ r, alpha, length, sign ] = this.getArcParams( pp1, pp2, dir1, dir2 );
+	//
+	// 			if ( r != Infinity ) {
+	//
+	// 				s = totalLength;
+	//
+	// 				totalLength += length;
+	//
+	// 				const curvature = ( sign > 0 ? 1 : -1 ) * ( 1 / r ); // sign < for mirror image
+	//
+	// 				geometries.push( new TvArcGeometry( s, x, y, hdg, length, curvature ) );
+	//
+	//
+	// 			} else {
+	//
+	// 				s = totalLength;
+	//
+	// 				length = pp1.distanceTo( pp2 );
+	//
+	// 				totalLength += length;
+	//
+	// 				geometries.push( new TvLineGeometry( s, x, y, hdg, length ) );
+	//
+	// 				//console.warn( 'radius is infinity' );
+	//
+	// 			}
+	//
+	//
+	// 		}
+	//
+	// 	}
+	//
+	// 	return geometries;
+	// }
 
 	addControlPointAt ( position: Vector3 ): RoadControlPoint {
 
@@ -245,40 +240,38 @@ export class AutoSpline extends AbstractSpline {
 
 		this.controlPoints.push( point );
 
-		this.update();
-
 		return point;
 	}
 
-	getPoint ( t: number, offset = 0 ): TvPosTheta {
-
-		const geometries = this.exportGeometries();
-
-		const length = geometries.map( g => g.length ).reduce( ( a, b ) => a + b );
-
-		const s = length * t;
-
-		const geometry = geometries.find( g => s >= g.s && s <= g.endS );
-
-		const posTheta = geometry.getRoadCoord( s );
-
-		posTheta.addLateralOffset( offset );
-
-		return posTheta;
-	}
-
-	getLength () {
-
-		const geometries = this.exportGeometries();
-
-		let length = 0;
-
-		for ( let i = 0; i < geometries.length; i++ ) {
-
-			length += geometries[ i ].length;
-
-		}
-
-		return length;
-	}
+	// getPoint ( t: number, offset = 0 ): TvPosTheta {
+	//
+	// 	const geometries = this.exportGeometries();
+	//
+	// 	const length = geometries.map( g => g.length ).reduce( ( a, b ) => a + b );
+	//
+	// 	const s = length * t;
+	//
+	// 	const geometry = geometries.find( g => s >= g.s && s <= g.endS );
+	//
+	// 	const posTheta = geometry.getRoadCoord( s );
+	//
+	// 	posTheta.addLateralOffset( offset );
+	//
+	// 	return posTheta;
+	// }
+	//
+	// getLength () {
+	//
+	// 	const geometries = this.exportGeometries();
+	//
+	// 	let length = 0;
+	//
+	// 	for ( let i = 0; i < geometries.length; i++ ) {
+	//
+	// 		length += geometries[ i ].length;
+	//
+	// 	}
+	//
+	// 	return length;
+	// }
 }

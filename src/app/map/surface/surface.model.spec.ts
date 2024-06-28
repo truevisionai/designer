@@ -25,7 +25,7 @@ describe( 'TvSurface', () => {
 
 		const spline = new CatmullRomSpline( true, 'catmullrom', 0.5 );
 
-		spline.addControlPoints( controlPoints );
+		controlPoints.forEach( point => spline.controlPoints.push( point ) );
 
 		const offset = new Vector2( 10, 20 );
 		const scale = new Vector2( 2, 3 );

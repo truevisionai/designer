@@ -6,22 +6,23 @@ import { Injectable } from '@angular/core';
 import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Mesh, Vector3 } from 'three';
+import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { Vector3 } from 'three';
 import { RoadNode } from 'app/objects/road-node';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
+import { ExplicitSpline } from "../../core/shapes/explicit-spline";
+import { Maths } from "../../utils/maths";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SplineFactory {
 
-	constructor (
-		private pointFactory: ControlPointFactory
-	) { }
+	constructor () {
+	}
 
 	createConnectingRoadSpline ( road: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
 
@@ -83,7 +84,7 @@ export class SplineFactory {
 
 		const spline = this.createSpline( a, aDirection, b, bDirection );
 
-		spline.addRoadSegment( 0, connection.connectingRoad );
+		spline.segmentMap.set( 0, connection.connectingRoad );
 
 		connection.connectingRoad.spline = spline
 
@@ -212,12 +213,12 @@ export class SplineFactory {
 
 		const spline = new AutoSplineV2();
 
-		if ( road ) spline.addRoadSegment( 0, road );
+		if ( road ) spline.segmentMap.set( 0, road );
 
-		spline.controlPoints.push( this.pointFactory.createSplineControlPoint( spline, v1 ) );
-		spline.controlPoints.push( this.pointFactory.createSplineControlPoint( spline, v2 ) );
-		spline.controlPoints.push( this.pointFactory.createSplineControlPoint( spline, v3 ) );
-		spline.controlPoints.push( this.pointFactory.createSplineControlPoint( spline, v4 ) );
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, v1 ) );
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, v2 ) );
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, v3 ) );
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, v4 ) );
 
 		spline.update();
 
@@ -279,4 +280,30 @@ export class SplineFactory {
 
 	}
 
+	/**
+	 * creates a straight spline
+	 * @param start
+	 * @param length
+	 * @param degrees
+	 * @param type
+	 */
+	static createStraight ( start: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ): AbstractSpline {
+
+		const hdg = Maths.Deg2Rad * degrees;
+		const direction = new Vector3( Math.cos( hdg ), Math.sin( hdg ), 0 );
+		const secondPoint = start.clone().add( direction.clone().multiplyScalar( length ) );
+
+		let spline: AbstractSpline;
+
+		if ( type === SplineType.EXPLICIT ) {
+			spline = new ExplicitSpline();
+		} else {
+			spline = new AutoSplineV2();
+		}
+
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, start ) );
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, secondPoint ) );
+
+		return spline;
+	}
 }

@@ -20,7 +20,9 @@ export class CustomErrorHandler extends ErrorHandler {
 	}
 
 	// https://github.com/angular/angular/issues/17010
-	handleError ( error: Error ) {
+	handleError ( error?: Error ) {
+
+		if ( !error ) return;
 
 		this.snackBar.error( error?.message );
 

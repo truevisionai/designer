@@ -220,7 +220,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			const shape = this.extrudeService.buildShape( polyline );
 
-			const path = road.spline.getPath( roadObject.t );
+			const path = null; //road.spline.getPath( roadObject.t );
 
 			if ( !path ) return;
 

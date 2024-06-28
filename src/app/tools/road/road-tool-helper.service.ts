@@ -5,8 +5,6 @@
 import { Injectable } from '@angular/core';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseToolService } from '../base-tool.service';
-import { MapService } from 'app/services/map/map.service';
-import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadLinkService } from 'app/services/road/road-link.service';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
@@ -26,7 +24,6 @@ export class RoadToolHelper {
 		public assetService: AssetService,
 		public splineService: SplineService,
 		public base: BaseToolService,
-		public pointFactory: ControlPointFactory,
 		public roadLinkService: RoadLinkService,
 		public roadService: RoadService,
 		public splineFactory: SplineFactory,
@@ -34,33 +31,23 @@ export class RoadToolHelper {
 	) {
 	}
 
-	addControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ): void {
-
-		spline.addControlPoint( controlPoint );
-
-		spline.update();
-
-		this.splineService.update( spline );
-
-	}
-
-	insertControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
-
-		spline.insertPoint( controlPoint );
-
-		this.splineService.update( spline );
-
-	}
-
-	removeControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
-
-		spline.removeControlPoint( controlPoint );
-
-		spline.update();
-
-		this.splineService.update( spline );
-
-	}
+	// addControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ): void {
+	//
+	// 	this.splineService.addControlPoint( spline, controlPoint );
+	//
+	// }
+	//
+	// insertControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+	//
+	// 	this.splineService.insertControlPoint( spline, controlPoint );
+	//
+	// }
+	//
+	// removeControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+	//
+	// 	this.splineService.removeControlPoint( spline, controlPoint );
+	//
+	// }
 
 	showLinks ( spline: AbstractSpline, point: AbstractControlPoint ) {
 
@@ -102,22 +89,22 @@ export class RoadToolHelper {
 
 	}
 
-	addSpline ( spline: AbstractSpline ) {
-
-		this.splineService.add( spline );
-
-	}
-
-	updateSpline ( spline: AbstractSpline ) {
-
-		this.splineService.update( spline );
-
-	}
-
-	removeSpline ( spline: AbstractSpline ) {
-
-		this.splineService.remove( spline );
-
-	}
+	// addSpline ( spline: AbstractSpline ) {
+	//
+	// 	this.splineService.add( spline );
+	//
+	// }
+	//
+	// updateSpline ( spline: AbstractSpline ) {
+	//
+	// 	this.splineService.update( spline );
+	//
+	// }
+	//
+	// removeSpline ( spline: AbstractSpline ) {
+	//
+	// 	this.splineService.remove( spline );
+	//
+	// }
 
 }

@@ -18,6 +18,7 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { ControlPointStrategy } from "../../core/strategies/select-strategies/control-point-strategy";
 import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
 import { DebugState } from "../../services/debug/debug-state";
+import { SplineService } from "../../services/spline/spline.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -27,6 +28,7 @@ export class PropCurveToolService {
 	constructor (
 		public toolDebugger: PropCurveToolDebugger,
 		public service: PropCurveService,
+		public splineService: SplineService,
 	) {
 	}
 }
@@ -199,7 +201,7 @@ export class PropCurveTool extends BaseTool<PropCurve> {
 
 	private addPoint ( curve: PropCurve, point: SimpleControlPoint<PropCurve> ) {
 
-		curve.spline.addControlPoint( point );
+		this.tool.splineService.addControlPoint( curve.spline, point );
 
 		this.tool.service.update( curve );
 
@@ -209,7 +211,7 @@ export class PropCurveTool extends BaseTool<PropCurve> {
 
 	private removePoint ( curve: PropCurve, point: SimpleControlPoint<PropCurve> ) {
 
-		curve.spline.removeControlPoint( point );
+		this.tool.splineService.removeControlPoint( curve.spline, point );
 
 		this.tool.service.update( curve );
 

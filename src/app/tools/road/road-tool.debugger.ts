@@ -36,6 +36,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		if ( spline.controlPoints.length < 2 ) return;
 
 		this.splineDebugger.showBorder( spline );
+		// this.splineDebugger.showNodes( spline );
 
 	}
 
@@ -50,6 +51,17 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 	}
 
+	onUnhighlight ( spline: AbstractSpline ) {
+
+		this.splineDebugger.removeArrows( spline );
+		this.splineDebugger.removeBorder( spline );
+
+		if ( spline.controlPoints.length < 2 ) return;
+
+		this.splineDebugger.showBorder( spline );
+
+	}
+
 	onSelected ( spline: AbstractSpline ): void {
 
 		if ( spline.controlPoints.length < 2 ) return;
@@ -61,6 +73,9 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.showArrows( spline );
 		this.splineDebugger.showReferenceLine( spline );
 		this.splineDebugger.showCurvature( spline );
+		this.splineDebugger.showPolyline( spline );
+		this.splineDebugger.showControlPoints( spline );
+
 	}
 
 	onUnselected ( spline: AbstractSpline ): void {
@@ -69,6 +84,8 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.removeArrows( spline );
 		this.splineDebugger.removeReferenceLine( spline );
 		this.splineDebugger.removeCurvature( spline );
+		this.splineDebugger.removePolyline( spline );
+		this.splineDebugger.removeControlPoints( spline );
 
 	}
 
@@ -78,15 +95,12 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.removeArrows( spline );
 		this.splineDebugger.removeReferenceLine( spline );
 		this.splineDebugger.removeCurvature( spline );
+		this.splineDebugger.removePolyline( spline );
+		this.splineDebugger.removeControlPoints( spline );
+		// this.splineDebugger.removeNodes( spline );
 
 		this.highlighted.delete( spline );
 		this.selected.delete( spline );
-
-	}
-
-	onUnhighlight ( spline: AbstractSpline ) {
-
-		this.splineDebugger.removeArrows( spline );
 
 	}
 
@@ -95,6 +109,14 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		super.clear();
 
 		this.splineDebugger.clear();
+
+	}
+
+	resetHighlighted () {
+
+		this.highlighted.forEach( spline => this.onDefault( spline ) );
+
+		super.resetHighlighted();
 
 	}
 

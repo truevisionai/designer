@@ -7,6 +7,7 @@ import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineManager } from "app/managers/spline-manager";
 import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
+import { SplineControlPoint } from "app/objects/spline-control-point";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { RoadService } from "app/services/road/road.service";
 import { SplineFactory } from "app/services/spline/spline.factory";
@@ -72,7 +73,7 @@ describe( 'SplineToGeometry test', () => {
 
 		spline.update();
 
-		const exportGeometries = spline.exportGeometries();
+		const exportGeometries = spline.geometries;
 
 		expect( exportGeometries.length ).toBe( 1 );
 
@@ -93,7 +94,7 @@ describe( 'SplineToGeometry test', () => {
 
 		const spline = splineFactory.createSpline( v1.position, v1.toDirectionVector(), v2.position, v2.toDirectionVector() );
 
-		const exportGeometries = spline.exportGeometries();
+		const exportGeometries = spline.geometries;
 
 		expect( exportGeometries.length ).toBe( 4 );
 
@@ -124,13 +125,13 @@ describe( 'SplineToGeometry test', () => {
 	it( 'should create geometries for automated junction', () => {
 
 		const vertical = roadService.createDefaultRoad()
-		vertical.spline.addControlPointAt( new Vector3( 0, -100, 0 ) );
-		vertical.spline.addControlPointAt( new Vector3( 50, 100, 0 ) );
+		vertical.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, -100, 0 ) ) );
+		vertical.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 50, 100, 0 ) ) );
 		roadService.add( vertical );
 
 		const horizontal = roadService.createDefaultRoad()
-		horizontal.spline.addControlPointAt( new Vector3( -100, 0, 0 ) );
-		horizontal.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+		horizontal.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -100, 0, 0 ) ) );
+		horizontal.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 100, 0, 0 ) ) );
 		roadService.add( horizontal );
 
 		splineManager.updateSpline( vertical.spline );

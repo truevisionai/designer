@@ -210,6 +210,8 @@ export class TvMap {
 
 		this.junctions.delete( junction.id );
 
+		console.log( 'junction removed', junction );
+
 	}
 
 	removeSurface ( surface: Surface ) {

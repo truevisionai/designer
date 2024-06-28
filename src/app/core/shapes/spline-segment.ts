@@ -12,6 +12,10 @@ export enum SplineSegmentType {
 	NONE = 'none'
 }
 
+
+/**
+ * @deprecated
+ */
 export class SplineSegment {
 
 	public geometries: TvAbstractRoadGeometry[] = [];

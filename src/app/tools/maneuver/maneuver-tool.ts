@@ -93,7 +93,9 @@ export class ManeuverTool extends BaseTool<any> {
 
 		if ( object instanceof SplineControlPoint ) {
 
-			const junctionId = object.spline.getRoads()[ 0 ]?.junctionId;
+			const firstRoad = this.tool.splineService.findFirstRoad( object.spline );
+
+			const junctionId = firstRoad?.junctionId;
 
 			if ( junctionId ) {
 

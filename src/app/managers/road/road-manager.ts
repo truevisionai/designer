@@ -3,17 +3,17 @@
  */
 
 import { Injectable } from "@angular/core";
-import { RoadFactory } from "app/factories/road-factory.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
 import { LaneManager } from "../lane/lane.manager";
 import { RoadBuilder } from "app/map/builders/road.builder";
-import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadLinkManager } from "./road-link.manager";
 import { SceneService } from "app/services/scene.service";
+import { SplineService } from "../../services/spline/spline.service";
+import { RoadService } from "../../services/road/road.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,10 +26,12 @@ export class RoadManager {
 		private roadElevationManager: RoadElevationManager,
 		private laneManager: LaneManager,
 		private roadBuilder: RoadBuilder,
-		private segmentService: SplineSegmentService,
 		private splineBuilder: SplineBuilder,
-		private roadLinkManager: RoadLinkManager
-	) { }
+		private roadLinkManager: RoadLinkManager,
+		private splineService: SplineService,
+		private roadService: RoadService,
+	) {
+	}
 
 	addRoad ( road: TvRoad ) {
 
@@ -45,7 +47,9 @@ export class RoadManager {
 
 		this.mapService.setRoadOpacity( road );
 
-		this.updateRoadGeometries( road );
+		if ( road.spline?.geometries.length == 0 ) {
+			this.splineService.update( road.spline );
+		}
 
 		this.rebuildRoad( road );
 
@@ -67,13 +71,13 @@ export class RoadManager {
 
 			road.junction?.removeConnectingRoad( road );
 
-		} else if ( road.spline.findSegment( road ) ) {
+		} else if ( this.splineService.hasSegment( road.spline, road ) ) {
 
-			this.segmentService.removeRoadSegment( road.spline, road );
+			road.spline.segmentMap.remove( road );
 
 		}
 
-		if ( road.spline.getSplineSegments().length == 0 ) {
+		if ( road.spline.segmentMap.size == 0 ) {
 
 		} else {
 
@@ -150,27 +154,20 @@ export class RoadManager {
 
 	private rebuildRoad ( road: TvRoad ) {
 
-		if ( road.gameObject ) this.mapService.map.gameObject.remove( road.gameObject );
+		if ( road.gameObject ) {
 
-		if ( road.gameObject ) SceneService.removeFromMain( road.gameObject );
+			this.mapService.map.gameObject.remove( road.gameObject );
+
+			// try to remove from both places
+			SceneService.removeFromMain( road.gameObject );
+
+		}
 
 		this.roadBuilder.rebuildRoad( road, this.mapService.map );
-
 	}
+
 
 	private updateRoadGeometries ( road: TvRoad ) {
 
-		const segment = road.spline.findSegment( road );
-
-		if ( !segment ) console.error( 'Road segment not found ' + road.toString() );
-		if ( !segment ) return;
-
-		road.clearGeometries();
-
-		if ( segment.geometries.length == 0 ) return;
-
-		segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-
 	}
-
 }

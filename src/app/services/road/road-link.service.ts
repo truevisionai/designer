@@ -12,7 +12,7 @@ import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.servi
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { SplineSegment } from 'app/core/shapes/spline-segment';
+import { SplineService } from "../spline/spline.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,8 +20,10 @@ import { SplineSegment } from 'app/core/shapes/spline-segment';
 export class RoadLinkService {
 
 	constructor (
-		private splineService: AbstractSplineDebugService,
-	) { }
+		private splineDebugService: AbstractSplineDebugService,
+		private splineService: SplineService,
+	) {
+	}
 
 	updateSuccessorRelationWhileCut ( newRoad: TvRoad, link: TvRoadLinkChild, oldRoad: TvRoad ) {
 
@@ -91,7 +93,7 @@ export class RoadLinkService {
 		}
 	}
 
-	updateSuccessorRelation ( road: TvRoad, previousSegment: SplineSegment, link: TvRoadLinkChild ) {
+	updateSuccessorRelation ( road: TvRoad, previousSegment: TvRoad | TvJunction, link: TvRoadLinkChild ) {
 
 		if ( !link ) return;
 
@@ -99,11 +101,9 @@ export class RoadLinkService {
 
 		if ( !previousSegment ) return;
 
-		if ( !previousSegment.isRoad ) return;
+		if ( !( previousSegment instanceof TvRoad ) ) return;
 
-		const newRoad = previousSegment.getInstance<TvRoad>();
-
-		this.updateSuccessorRelationWhileCut( newRoad, link, road );
+		this.updateSuccessorRelationWhileCut( previousSegment, link, road );
 
 	}
 
@@ -259,9 +259,9 @@ export class RoadLinkService {
 
 			const successor = this.getElement<TvRoad>( road.successor );
 
-			this.splineService.hideLines( successor.spline );
+			this.splineDebugService.hideLines( successor.spline );
 
-			this.splineService.hideControlPoints( successor.spline );
+			this.splineDebugService.hideControlPoints( successor.spline );
 
 		}
 
@@ -269,9 +269,9 @@ export class RoadLinkService {
 
 			const predecessor = this.getElement<TvRoad>( road.predecessor );
 
-			this.splineService.hideLines( predecessor.spline );
+			this.splineDebugService.hideLines( predecessor.spline );
 
-			this.splineService.hideControlPoints( predecessor.spline );
+			this.splineDebugService.hideControlPoints( predecessor.spline );
 
 		}
 
@@ -279,37 +279,25 @@ export class RoadLinkService {
 
 	showSplineLinks ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
 
-		const roads = spline.getRoads();
+		const firstSegment = spline.segmentMap.getFirst();
+		const lastSegment = spline.segmentMap.getLast();
 
-		const firstRoad = roads[ 0 ];
-		const lastRoad = roads[ roads.length - 1 ];
-
-		if ( firstRoad ) this.showLinks( firstRoad, controlPoint );
-		if ( lastRoad ) this.showLinks( lastRoad, controlPoint );
+		if ( firstSegment instanceof TvRoad ) this.showLinks( firstSegment, controlPoint );
+		if ( lastSegment instanceof TvRoad ) this.showLinks( lastSegment, controlPoint );
 
 	}
 
 	updateSplineLinks ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
 
-		// const roads = spline.getRoads();
+		const roads = this.splineService.getRoads( spline );
 
-		// const firstRoad = roads[ 0 ];
-		// const lastRoad = roads[ roads.length - 1 ];
-
-		// this.updateLinks( firstRoad, controlPoint );
-		// this.updateLinks( lastRoad, controlPoint );
-
-	}
-
-	hideSplineLinks ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
-
-		const roads = spline.getRoads();
+		if ( roads.length == 0 ) return;
 
 		const firstRoad = roads[ 0 ];
 		const lastRoad = roads[ roads.length - 1 ];
 
-		this.hideLinks( firstRoad );
-		this.hideLinks( lastRoad );
+		this.updateLinks( firstRoad, controlPoint );
+		this.updateLinks( lastRoad, controlPoint );
 
 	}
 
@@ -319,9 +307,9 @@ export class RoadLinkService {
 
 			const successor = this.getElement<TvRoad>( road.successor );
 
-			this.splineService.showLines( successor.spline );
+			this.splineDebugService.showLines( successor.spline );
 
-			this.splineService.showControlPoints( successor.spline );
+			this.splineDebugService.showControlPoints( successor.spline );
 
 		}
 
@@ -329,9 +317,9 @@ export class RoadLinkService {
 
 			const predecessor = this.getElement<TvRoad>( road.predecessor );
 
-			this.splineService.showLines( predecessor.spline );
+			this.splineDebugService.showLines( predecessor.spline );
 
-			this.splineService.showControlPoints( predecessor.spline );
+			this.splineDebugService.showControlPoints( predecessor.spline );
 
 		}
 
@@ -404,7 +392,7 @@ export class RoadLinkService {
 
 		end.position.copy( mid1.getForwardPosition( distance ) );
 
-		successor.spline.update();
+		this.splineService.update( successor.spline );
 
 	}
 
@@ -433,7 +421,7 @@ export class RoadLinkService {
 
 		end.position.copy( newP4 );
 
-		predecessor.spline.update();
+		this.splineService.update( predecessor.spline );
 
 	}
 
@@ -539,7 +527,6 @@ export class RoadLinkService {
 			} );
 
 		}
-
 
 
 	}

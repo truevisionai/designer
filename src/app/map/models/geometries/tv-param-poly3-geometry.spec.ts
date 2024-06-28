@@ -2,19 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvPosTheta } from '../tv-pos-theta';
 import { TvRoad } from '../tv-road.model';
 
 describe( 'OdParamPoly3Geometry', () => {
 
 	let road: TvRoad;
-	let pose: TvPosTheta;
 
 	beforeEach( () => {
-
-		pose = new TvPosTheta();
-
-		road = new TvRoad( '', 100, 1);
 
 		road.addPlanView();
 

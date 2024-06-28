@@ -15,6 +15,10 @@ import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { SplineManager } from 'app/managers/spline-manager';
 import { MapValidatorService } from 'app/services/map/map-validator.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SplineService } from "../../app/services/spline/spline.service";
+import { AutoSplineV2 } from "../../app/core/shapes/auto-spline-v2";
+import { ControlPointFactory } from "../../app/factories/control-point.factory";
+import { SplineControlPoint } from 'app/objects/spline-control-point';
 
 describe( '4-way-junction tests', () => {
 
@@ -27,6 +31,7 @@ describe( '4-way-junction tests', () => {
 	let junctionService: JunctionService;
 	let splineManager: SplineManager;
 	let mapValidator: MapValidatorService;
+	let splineService: SplineService;
 
 	beforeEach( () => {
 
@@ -47,19 +52,21 @@ describe( '4-way-junction tests', () => {
 
 		mapValidator = TestBed.get( MapValidatorService );
 
+		splineService = TestBed.get( SplineService );
+
 	} );
 
 	it( 'should create simple junction between 2 different roads', () => {
 
 		// left to right
 		const roadA = roadService.createDefaultRoad();
-		roadA.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		roadA.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
+		roadA.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -50, 0, 0 ) ) );
+		roadA.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 0, 0 ) ) );
 
 		// bottom to top
 		const roadB = roadService.createDefaultRoad();
-		roadB.spline.addControlPointAt( new Vector3( 0, 20, 0 ) );
-		roadB.spline.addControlPointAt( new Vector3( 0, 70, 0 ) );
+		roadB.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 20, 0 ) ) );
+		roadB.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 70, 0 ) ) );
 
 		roadService.add( roadA );
 		roadService.add( roadB );
@@ -98,8 +105,8 @@ describe( '4-way-junction tests', () => {
 
 		// left to right
 		const roadA = roadService.createDefaultRoad();
-		roadA.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		roadA.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+		roadA.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -50, 0, 0 ) ) );
+		roadA.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 100, 0, 0 ) ) );
 
 		roadService.add( roadA );
 
@@ -138,19 +145,17 @@ describe( '4-way-junction tests', () => {
 	it( 'should create 4-way junction', () => {
 
 		// left to right
-		const road1 = roadService.createDefaultRoad();
-		road1.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		road1.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
+		const spline = new AutoSplineV2();
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, new Vector3( -50, 0, 0 ) ) );
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, new Vector3( 50, 0, 0 ) ) );
 
 		// bottom to top
-		const road2 = roadService.createDefaultRoad();
-		road2.spline.addControlPointAt( new Vector3( 0, -50, 0 ) );
-		road2.spline.addControlPointAt( new Vector3( 0, 50, 0 ) );
+		const spline2 = new AutoSplineV2();
+		spline2.controlPoints.push( ControlPointFactory.createControl( spline2, new Vector3( 0, -50, 0 ) ) );
+		spline2.controlPoints.push( ControlPointFactory.createControl( spline2, new Vector3( 0, 50, 0 ) ) );
 
-		roadService.add( road1 );
-		roadService.add( road2 );
-
-		intersectionService.checkSplineIntersections( road2.spline );
+		splineService.add( spline );
+		splineService.add( spline2 );
 
 		expect( junctionService.junctions.length ).toBe( 1 );
 
@@ -425,12 +430,12 @@ describe( '4-way-junction tests', () => {
 
 		// left to right
 		const left = roadService.createDefaultRoad();
-		left.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		left.spline.addControlPointAt( new Vector3( 0, 0, 0 ) );
+		left.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -50, 0, 0 ) ) );
+		left.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 0, 0 ) ) );
 
 		const right = roadService.createDefaultRoad();
-		right.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
-		right.spline.addControlPointAt( new Vector3( 100, 0, 0 ) );
+		right.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 50, 0, 0 ) ) );
+		right.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 100, 0, 0 ) ) );
 
 		roadService.add( left );
 		roadService.add( right );
@@ -482,7 +487,7 @@ describe( '4-way-junction tests', () => {
 								|   3	|
 
 
-		*/
+		 */
 
 		expect( roadService.getRoadCount() ).toBe( 0 );
 
@@ -703,7 +708,7 @@ describe( '4-way-junction tests', () => {
 	//	expect( vertical.spline.getLength() ).toBe( 200 );
 	//	expect( vertical.successor ).toBeUndefined();
 	//	expect( vertical.predecessor ).toBeUndefined();
-	//	expect( vertical.spline.getSplineSegments().length ).toBe( 1 );
+	//	expect( vertical.spline.segmentMap.size ).toBe( 1 );
 	//
 	//	mapValidator.validateMap( mapService.map, true );
 	//
@@ -733,12 +738,12 @@ describe( '4-way-junction tests', () => {
 		expect( horizontal.spline.getLength() ).toBe( 200 );
 		expect( horizontal.successor ).toBeDefined();
 		expect( horizontal.predecessor ).toBeUndefined();
-		expect( horizontal.spline.getSplineSegments().length ).toBe( 3 );
+		expect( horizontal.spline.segmentMap.size ).toBe( 3 );
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
 		expect( vertical.successor ).toBeDefined();
 		expect( vertical.predecessor ).toBeUndefined();
-		expect( vertical.spline.getSplineSegments().length ).toBe( 3 );
+		expect( vertical.spline.segmentMap.size ).toBe( 3 );
 
 		mapValidator.validateMap( mapService.map, true );
 	} );

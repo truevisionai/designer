@@ -6,7 +6,6 @@ import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from './road.service';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { SplineSegmentService } from '../spline/spline-segment.service';
 import { SplineService } from '../spline/spline.service';
 import { TvRoadCoord } from "../../map/models/TvRoadCoord";
 import { TvJunction } from "../../map/models/junctions/tv-junction";
@@ -24,7 +23,6 @@ export class RoadDividerService {
 		private mapService: MapService,
 		private roadManager: RoadManager,
 		private roadService: RoadService,
-		private segmentService: SplineSegmentService,
 		private splineService: SplineService,
 		private linkService: RoadLinkService,
 	) {
@@ -34,7 +32,7 @@ export class RoadDividerService {
 
 		const newRoad = this.roadService.divideRoad( road, s );
 
-		this.segmentService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
+		this.splineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
 
 		this.splineService.update( road.spline );
 
@@ -48,7 +46,7 @@ export class RoadDividerService {
 
 		newRoad.sStart = road.sStart + s;
 
-		this.segmentService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
+		this.splineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
 
 		return newRoad
 
@@ -58,7 +56,7 @@ export class RoadDividerService {
 
 		// TODO: Not used and might need fixes
 
-		this.segmentService.addEmptySegment( road.spline, road.sStart + sStart );
+		this.splineService.addEmptySegment( road.spline, road.sStart + sStart );
 
 		if ( sEnd > road.length ) return;
 
@@ -66,7 +64,7 @@ export class RoadDividerService {
 
 		newRoad.sStart = road.sStart + sEnd;
 
-		this.segmentService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
+		this.splineService.addRoadSegmentNew( road.spline, newRoad.sStart, newRoad );
 
 		// update links
 
@@ -111,15 +109,15 @@ export class RoadDividerService {
 
 		if ( !this.isNearRoadStartOrEnd( center, junctionWidth ) ) {
 
-			this.segmentService.addJunctionSegment( center.road.spline, sStartJunction, junction );
+			this.splineService.addJunctionSegment( center.road.spline, sStartJunction, junction );
 
-			if ( sEndJunction < center.road.spline.getLength() ) {
+			if ( sEndJunction < this.splineService.getLength( center.road.spline ) ) {
 
 				newRoad = this.roadService.clone( center.road, center.s + junctionWidth );
 
 				newRoad.sStart = sEndJunction;
 
-				this.segmentService.addRoadSegmentNew( center.road.spline, newRoad.sStart, newRoad );
+				this.splineService.addRoadSegmentNew( center.road.spline, newRoad.sStart, newRoad );
 
 				// set junction as predecessor of new road
 				// |ROAD====>|JUNCTIION|====>NEWROAD|
@@ -169,7 +167,7 @@ export class RoadDividerService {
 
 			const sStartJunction = coord.road.sStart + coord.road.length - junctionWidth;
 
-			this.segmentService.addJunctionSegment( coord.road.spline, sStartJunction, junction );
+			this.splineService.addJunctionSegment( coord.road.spline, sStartJunction, junction );
 
 			coord.road.length = coord.road.length - junctionWidth;
 
@@ -184,11 +182,11 @@ export class RoadDividerService {
 
 			const sEndJunction = junctionWidth;
 
-			const segment = coord.road.spline.getSegmentAt( 0 );
+			// const segment = coord.road.spline.getSegmentAt( 0 );
 
-			segment.setStart( sEndJunction );
+			// segment.setStart( sEndJunction );
 
-			this.segmentService.addJunctionSegment( coord.road.spline, 0, junction );
+			this.splineService.addJunctionSegment( coord.road.spline, 0, junction );
 
 			coord.road.length = coord.road.length - sEndJunction;
 

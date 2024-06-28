@@ -34,7 +34,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 		linewidth: 2
 	} );
 
-	public hdg: number = 0;
+	public hdg: number;
 
 	public segmentType: TvGeometryType;
 
@@ -246,23 +246,23 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 	}
 
-	removeTangents () {
-
-		SceneService.removeFromMain( this.frontTangent );
-
-		SceneService.removeFromMain( this.backTangent );
-
-		SceneService.removeFromMain( this.tangentLine );
-
-	}
-
-	moveForward ( s: number ): RoadControlPoint {
-
-		const x = this.position.x + Math.cos( this.hdg ) * s;
-		const y = this.position.y + Math.sin( this.hdg ) * s;
-
-		return new RoadControlPoint( this.road, new Vector3( x, y, 0 ), this.tag, this.tagindex, this.tagindex );
-	}
+	// removeTangents () {
+	//
+	// 	SceneService.removeFromMain( this.frontTangent );
+	//
+	// 	SceneService.removeFromMain( this.backTangent );
+	//
+	// 	SceneService.removeFromMain( this.tangentLine );
+	//
+	// }
+	//
+	// moveForward ( s: number ): RoadControlPoint {
+	//
+	// 	const x = this.position.x + Math.cos( this.hdg ) * s;
+	// 	const y = this.position.y + Math.sin( this.hdg ) * s;
+	//
+	// 	return new RoadControlPoint( this.road, new Vector3( x, y, 0 ), this.tag, this.tagindex, this.tagindex );
+	// }
 
 	private initPosition ( position: Vector3 ) {
 

@@ -9,7 +9,7 @@ import { Group, Object3D, Vector3 } from "three";
 import { MeshBuilder } from "../../core/interfaces/mesh.builder";
 import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
 import { AssetService } from "app/core/asset/asset.service";
-import { AssetType } from "app/core/asset/asset.model";
+import { Asset, AssetType } from "app/core/asset/asset.model";
 import { SplineBuilder } from "../../services/spline/spline.builder";
 
 @Injectable( {
@@ -18,8 +18,8 @@ import { SplineBuilder } from "../../services/spline/spline.builder";
 export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
 	constructor (
+		private assetService: AssetService,
 		private splineBuilder: SplineBuilder,
-		private assetService: AssetService
 	) {
 		super();
 	}
@@ -28,19 +28,13 @@ export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
 		const group = new Group();
 
-		curve.spline.update();
-
 		if ( curve.spline.controlPoints.length < 2 ) return;
 
-		this.splineBuilder.buildNew( curve.spline );
+		this.splineBuilder.buildSpline( curve.spline );
 
-		const curveLength = curve.spline.getLength();
-
-		if ( curveLength === 0 ) return;
+		if ( curve.spline.getLength() <= 0 ) return;
 
 		curve.props.splice( 0, curve.props.length );
-
-		const spline = curve.spline as CatmullRomSpline;
 
 		const assetGuid = curve.propGuid;
 
@@ -50,19 +44,18 @@ export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
 		if ( !asset ) return;
 
-		let prop: Object3D;
+		this.placeProps( curve, curve.spline as CatmullRomSpline, group, asset );
 
-		if ( asset.type == AssetType.OBJECT ) {
+		return group;
+	}
 
-			prop = this.assetService.getObjectAsset( asset.guid )?.instance;
+	private placeProps ( curve: PropCurve, spline: CatmullRomSpline, group: Group, asset: Asset ) {
 
-		} else if ( asset.type == AssetType.MODEL ) {
+		const prop = this.getProp( asset );
 
-			prop = this.assetService.getModelAsset( asset.guid );
+		if ( !prop ) return;
 
-		}
-
-		for ( let i = 0; i < curveLength; i += curve.spacing ) {
+		for ( let i = 0; i < spline.getLength(); i += curve.spacing ) {
 
 			const t = spline.curve.getUtoTmapping( 0, i );
 
@@ -92,7 +85,22 @@ export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
 		}
 
-		return group;
 	}
 
+	private getProp ( asset: Asset ): Object3D {
+
+		let prop: Object3D;
+
+		if ( asset.type == AssetType.OBJECT ) {
+
+			prop = this.assetService.getObjectAsset( asset.guid )?.instance;
+
+		} else if ( asset.type == AssetType.MODEL ) {
+
+			prop = this.assetService.getModelAsset( asset.guid );
+
+		}
+
+		return prop;
+	}
 }

@@ -39,9 +39,7 @@ export abstract class BaseDataService<T extends any> {
 
 		if ( object[ 'spline' ] && object[ 'spline' ] instanceof AbstractSpline ) {
 
-			object[ 'spline' ].insertPoint( point );
-
-			object[ 'spline' ].update();
+			object[ 'spline' ].controlPoints.push( point );
 
 		}
 
@@ -52,9 +50,9 @@ export abstract class BaseDataService<T extends any> {
 
 		if ( object[ 'spline' ] && object[ 'spline' ] instanceof AbstractSpline ) {
 
-			object[ 'spline' ].removeControlPoint( point );
+			const index = object[ 'spline' ].controlPoints.indexOf( point );
 
-			object[ 'spline' ].update();
+			object[ 'spline' ].controlPoints.splice( index, 1 );
 
 		}
 

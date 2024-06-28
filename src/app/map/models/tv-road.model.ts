@@ -462,13 +462,13 @@ export class TvRoad {
 		}
 
 		if ( s > this.length ) {
-			console.error( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
+			console.trace( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
 			s = this.length;
 		}
 
 		if ( s < 0 ) {
 			TvConsole.error( 's is less than 0' );
-			console.error( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
+			console.trace( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
 			s = 0;
 		}
 
@@ -740,46 +740,20 @@ export class TvRoad {
 		} );
 	}
 
-	/**
-	 *
-	 * @param point
-	 * @deprecated
-	 */
-	addControlPoint ( point: AbstractControlPoint ) {
-
-		this.spline.addControlPoint( point );
-
-		this.spline.update();
-
-	}
-
-	/**
-	 *
-	 * @param cp
-	 * @deprecated
-	 */
-	removeControlPoint ( cp: AbstractControlPoint ) {
-
-		this.spline.removeControlPoint( cp );
-
-		this.spline.update();
-
-	}
-
 	updateGeometryFromSpline ( duringImport = false ) {
 
-		// make length 0 because geometry will update road length again
-		this.length = 0;
-
-		this.spline.update();
-
-		this.clearGeometries();
-
-		this.spline.exportGeometries( duringImport ).forEach( geometry => {
-
-			this.addGeometry( geometry );
-
-		} );
+		// // make length 0 because geometry will update road length again
+		// this.length = 0;
+		//
+		// this.spline.update();
+		//
+		// this.clearGeometries();
+		//
+		// this.spline.exportGeometries( duringImport ).forEach( geometry => {
+		//
+		// 	this.addGeometry( geometry );
+		//
+		// } );
 
 	}
 

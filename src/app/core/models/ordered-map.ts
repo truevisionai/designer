@@ -88,6 +88,18 @@ export class OrderedMap<T> extends Map<number, T> {
 
 	}
 
+	getNextKey ( value: T ) {
+
+		const next = this.getNext( value );
+
+		if ( next === null ) {
+			return null;
+		}
+
+		return this.findKey( next );
+
+	}
+
 	getLast () {
 
 		const values = this.toArray();
@@ -106,11 +118,16 @@ export class OrderedMap<T> extends Map<number, T> {
 
 	findAt ( query: number ) {
 
-		for ( const [ key, value ] of this.entries() ) {
+		let item = null;
 
-			if ( key >= query ) return value;
+		for ( const [ sOffset, value ] of this.entries() ) {
+
+			if ( query >= sOffset ) item = value;
 
 		}
+
+		return item;
+
 	}
 
 	forEach ( callbackfn: ( value: T, key: number, map: Map<number, T> ) => void, thisArg?: any ) {

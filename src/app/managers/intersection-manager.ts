@@ -27,43 +27,43 @@ export class IntersectionManager {
 
 	updateIntersections ( spline: AbstractSpline ) {
 
-		if ( spline.isConnectingRoad() ) return;
-
-		// when a spline is updated
-		// we first check if it has junctions or not
-		const junctions = spline.getJunctions();
-
-		this.removeJunctions( junctions );
-
-		const intersections = this.intersectionService.getSplineIntersections( spline );
-
-		for ( let i = 0; i < intersections.length; i++ ) {
-
-			const item = intersections[ i ];
-
-			const junction = this.intersectionService.createJunction(
-				item.spline,
-				item.otherSpline,
-				item.intersection
-			);
-
-			if ( !junction ) {
-				console.error( 'Could not create junction', spline, item );
-				// console.trace( 'Could not create junction', spline, item );
-				return;
-			}
-
-			this.intersectionService.postProcessJunction( junction );
-
-			this.mapService.map.addJunctionInstance( junction );
-
-			this.junctionManager.addJunction( junction );
-
-			this.splineBuilder.buildSpline( item.spline );
-
-			this.splineBuilder.buildSpline( item.otherSpline );
-
-		}
+		// if ( spline.isConnectingRoad() ) return;
+		//
+		// // when a spline is updated
+		// // we first check if it has junctions or not
+		// const junctions = spline.getJunctions();
+		//
+		// this.removeJunctions( junctions );
+		//
+		// const intersections = this.intersectionService.getSplineIntersections( spline );
+		//
+		// for ( let i = 0; i < intersections.length; i++ ) {
+		//
+		// 	const item = intersections[ i ];
+		//
+		// 	const junction = this.intersectionService.createJunction(
+		// 		item.spline,
+		// 		item.otherSpline,
+		// 		item.intersection
+		// 	);
+		//
+		// 	if ( !junction ) {
+		// 		console.error( 'Could not create junction', spline, item );
+		// 		// console.trace( 'Could not create junction', spline, item );
+		// 		return;
+		// 	}
+		//
+		// 	this.intersectionService.postProcessJunction( junction );
+		//
+		// 	this.mapService.map.addJunctionInstance( junction );
+		//
+		// 	this.junctionManager.addJunction( junction );
+		//
+		// 	this.splineBuilder.buildSpline( item.spline );
+		//
+		// 	this.splineBuilder.buildSpline( item.otherSpline );
+		//
+		// }
 
 	}
 

@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
+import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Maths } from 'app/utils/maths';
@@ -97,13 +98,13 @@ describe( 'IntersectionService', () => {
 
 		// left to right
 		const road1 = roadService.createDefaultRoad();
-		road1.spline.addControlPointAt( new Vector3( -50, 0, 0 ) );
-		road1.spline.addControlPointAt( new Vector3( 50, 0, 0 ) );
+		road1.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -50, 0, 0 ) ) );
+		road1.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 50, 0, 0 ) ) );
 
 		// bottom to top
 		const road2 = roadService.createDefaultRoad();
-		road2.spline.addControlPointAt( new Vector3( 0, -50, 0 ) );
-		road2.spline.addControlPointAt( new Vector3( 0, 50, 0 ) );
+		road2.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, -50, 0 ) ) );
+		road2.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 50, 0 ) ) );
 
 		roadService.add( road1 );
 		roadService.add( road2 );
@@ -115,6 +116,6 @@ describe( 'IntersectionService', () => {
 		expect( intersection.y ).toBeCloseTo( 0 );
 		expect( intersection.z ).toBeCloseTo( 0 );
 
-	});
+	} );
 
 } );

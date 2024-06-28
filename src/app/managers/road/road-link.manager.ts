@@ -63,7 +63,7 @@ export class RoadLinkManager {
 
 		}
 
-		if ( !predecessorRoad && road.successor?.isRoad ) {
+		if ( !predecessorRoad && road.successor?.isRoad && successorRoad ) {
 
 			if ( road.successor.contactPoint === TvContactPoint.START ) {
 
@@ -77,7 +77,7 @@ export class RoadLinkManager {
 
 		}
 
-		if ( !successorRoad && road.predecessor?.isRoad ) {
+		if ( !successorRoad && road.predecessor?.isRoad && predecessorRoad ) {
 
 			if ( road.predecessor.contactPoint === TvContactPoint.START ) {
 

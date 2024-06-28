@@ -4,9 +4,9 @@
 
 import { Injectable } from '@angular/core';
 import { DebugState } from "./debug-state";
-import { AbstractSplineDebugService } from "./abstract-spline-debug.service";
 import { HasSpline } from "../../core/interfaces/data.service";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
+import { SplineDebugService } from "./spline-debug.service";
 
 
 @Injectable( {
@@ -14,7 +14,7 @@ import { BaseDebugger } from "../../core/interfaces/base-debugger";
 } )
 export class HasSplineDebugService<T extends HasSpline> extends BaseDebugger<T> {
 
-	constructor ( private debug: AbstractSplineDebugService ) {
+	constructor ( private debug: SplineDebugService ) {
 		super();
 	}
 
@@ -27,39 +27,41 @@ export class HasSplineDebugService<T extends HasSpline> extends BaseDebugger<T> 
 
 	onDefault ( object: T ): void {
 
-		this.debug.showLines( object.spline );
+		this.debug.showReferenceLine( object.spline );
 		this.debug.showControlPoints( object.spline );
 
 	}
 
 	onHighlight ( object: T ): void {
 
-		this.debug.showLines( object.spline );
+		this.debug.showReferenceLine( object.spline );
 		this.debug.showControlPoints( object.spline );
 
 	}
 
 	onRemoved ( object: T ): void {
 
-		this.debug.removeLines( object.spline );
+		this.debug.removeReferenceLine( object.spline );
 		this.debug.removeControlPoints( object.spline );
-
-		this.debug.hideLines( object.spline );
-		this.debug.hideControlPoints( object.spline );
 
 	}
 
 	onSelected ( object: T ): void {
 
-		this.debug.showLines( object.spline );
+		this.debug.showReferenceLine( object.spline );
 		this.debug.showControlPoints( object.spline );
 
 	}
 
 	onUnhighlight ( object: T ): void {
+
+
 	}
 
 	onUnselected ( object: T ): void {
+
+		this.debug.removeControlPoints( object.spline );
+
 	}
 
 }

@@ -41,11 +41,11 @@ export class AbstractSplineDebugService {
 
 		this.points.clear();
 
-		this.showing.forEach( spline => spline.hideLines() );
+		// this.showing.forEach( spline => spline.hideLines() );
 
 		this.showing.clear();
 
-		this.lines.forEach( spline => spline.hideLines() );
+		// this.lines.forEach( spline => spline.hideLines() );
 
 		this.lines.clear();
 
@@ -53,7 +53,7 @@ export class AbstractSplineDebugService {
 
 	hide ( spline: AbstractSpline ) {
 
-		spline.hide();
+		// spline.hide();
 
 		this.showing.delete( spline );
 
@@ -67,7 +67,7 @@ export class AbstractSplineDebugService {
 
 		} else {
 
-			spline.showLines();
+			// spline.showLines();
 
 		}
 
@@ -83,7 +83,7 @@ export class AbstractSplineDebugService {
 
 		} else {
 
-			spline.hideLines();
+			// spline.hideLines();
 
 		}
 

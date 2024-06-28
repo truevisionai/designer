@@ -42,6 +42,8 @@ import { IOpenDriveParser } from "./i-open-drive.parser";
 import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { TvRoadLaneOffset } from "../../map/models/tv-road-lane-offset";
+import { RoadControlPoint } from "../../objects/road-control-point";
+import { Vector3 } from "three";
 
 @Injectable( {
 	providedIn: 'root'
@@ -165,17 +167,17 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		road.spline = this.makeSplineFromGeometry( road, road.planView.geometries );
 
-		road.length = 0;
+		// road.length = 0;
 
-		road.spline.update();
+		// road.spline.update();
 
-		road.clearGeometries();
+		// road.clearGeometries();
 
-		road.spline.exportGeometries( true ).forEach( geometry => {
-
-			road.addGeometry( geometry );
-
-		} );
+		// road.spline.exportGeometries( true ).forEach( geometry => {
+		//
+		// 	road.addGeometry( geometry );
+		//
+		// } );
 
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
@@ -196,6 +198,22 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	public makeSplineFromGeometry ( road: TvRoad, geometries: TvAbstractRoadGeometry[] ): ExplicitSpline {
 
+		function addControlPoint ( spline: ExplicitSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
+
+			const controlPoint = new RoadControlPoint( road, position, 'cp', index, index );
+
+			controlPoint.segmentType = geometry.geometryType;
+
+			spline.controlPoints.push( controlPoint );
+
+			controlPoint.hdg = hdg;
+
+			controlPoint.userData.geometry = geometry;
+
+			controlPoint.addDefaultTangents( hdg, 1, 1 );
+
+		}
+
 		const spline = new ExplicitSpline( road );
 
 		if ( geometries.length === 0 ) return spline;
@@ -206,18 +224,23 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			lastGeometry = geometries[ i ];
 
-			spline.addFromFile( i, lastGeometry.startV3, lastGeometry.hdg, lastGeometry.geometryType, lastGeometry );
+			spline.geometries.push( lastGeometry );
+
+			addControlPoint( spline, lastGeometry, i, lastGeometry.startV3, lastGeometry.hdg );
+			// spline.addFromFile( i, lastGeometry.startV3, lastGeometry.hdg, lastGeometry.geometryType, lastGeometry );
+
 		}
 
 		const lastCoord = lastGeometry.endCoord();
 
-		spline.addFromFile( geometries.length, lastCoord.toVector3(), lastCoord.hdg, lastGeometry.geometryType, lastGeometry );
-
-		spline.hide();
+		// spline.addFromFile( geometries.length, lastCoord.toVector3(), lastCoord.hdg, lastGeometry.geometryType, lastGeometry );
+		addControlPoint( spline, lastGeometry, geometries.length, lastCoord.toVector3(), lastCoord.hdg );
 
 		spline.controlPoints.forEach( cp => cp.userData.roadId = road.id );
 
-		spline.addRoadSegment( 0, road );
+		spline.segmentMap.set( 0, road );
+
+		road.sStart = 0;
 
 		return spline;
 	}
@@ -495,6 +518,8 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			case TvGeometryType.PARAMPOLY3:
 
+				const pRange = xmlElement.paramPoly3.attr_pRange;
+
 				const aU = parseFloat( xmlElement.paramPoly3.attr_aU );
 				const bU = parseFloat( xmlElement.paramPoly3.attr_bU );
 				const cU = parseFloat( xmlElement.paramPoly3.attr_cU );
@@ -505,7 +530,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 				const cV = parseFloat( xmlElement.paramPoly3.attr_cV );
 				const dV = parseFloat( xmlElement.paramPoly3.attr_dV );
 
-				planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
+				planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange );
 
 				break;
 

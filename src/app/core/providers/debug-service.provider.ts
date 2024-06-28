@@ -5,7 +5,6 @@
 import { Injectable, Injector } from "@angular/core";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { IDebugger } from "../interfaces/debug.service";
-import { SplineDebugService } from "app/services/debug/spline-debug.service";
 import { MapService } from "../../services/map/map.service";
 import { ToolType } from "../../tools/tool-types.enum";
 import { PointDebugService } from "../../services/debug/point-debug.service";
@@ -19,6 +18,7 @@ import { ControlPointDebugger } from "../../services/debug/control-point.debugge
 import { LaneHeightDebugService } from "app/tools/lane-height/lane-height.debug";
 import { LaneMarkingToolDebugger } from "app/tools/lane-marking/lane-marking-tool.debugger";
 import { TextMarkingToolDebugger } from "app/tools/text-marking/text-marking-tool.debugger";
+import { RoadToolDebugger } from "../../tools/road/road-tool.debugger";
 
 @Injectable( {
 	providedIn: 'root'
@@ -41,7 +41,7 @@ export class DebugServiceProvider {
 
 		if ( type === ToolType.RoadCircle ) {
 
-			debugService = this.injector.get( SplineDebugService );
+			debugService = this.injector.get( RoadToolDebugger );
 
 		} else if ( type === ToolType.Surface ) {
 

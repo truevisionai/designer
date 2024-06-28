@@ -3,7 +3,7 @@
  */
 
 import { RoadNode } from 'app/objects/road-node';
-import { TvLaneSide, TvLaneType, TvRoadType } from 'app/map/models/tv-common';
+import { TvContactPoint, TvLaneSide, TvLaneType, TvRoadType } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadStyleManager } from 'app/graphics/road-style/road-style.manager';
@@ -18,6 +18,7 @@ import { LaneSectionFactory } from './lane-section.factory';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { MapService } from "../services/map/map.service";
+import { ControlPointFactory } from "./control-point.factory";
 
 @Injectable( {
 	providedIn: 'root'
@@ -120,7 +121,15 @@ export class RoadFactory {
 
 		const road = this.createDefaultRoad( type, maxSpeed );
 
-		controlPoints.forEach( point => road.spline.addControlPointAt( new Vector3( point.x, point.y, 0 ) ) );
+		controlPoints.forEach( value => {
+
+			const position = new Vector3( value.x, value.y, 0 );
+
+			const point = ControlPointFactory.createControl( road.spline, position );
+
+			road.spline.controlPoints.push( point );
+
+		} );
 
 		return road;
 
@@ -210,7 +219,9 @@ export class RoadFactory {
 
 		if ( firstNode.road.hasType ) {
 
-			const roadType = firstNode.road.getRoadTypeAt( firstNode.sCoordinate );
+			const s = firstNode.contact === TvContactPoint.START ? 0 : firstNode.road.length;
+
+			const roadType = firstNode.road.getRoadTypeAt( s );
 
 			road.setType( roadType.type, roadType.speed.max, roadType.speed.unit );
 
@@ -219,18 +230,6 @@ export class RoadFactory {
 			road.setType( TvRoadType.TOWN, 40 );
 
 		}
-
-		const roadLength = spline.getLength();
-
-		const elevationProfile = this.computeElevationProfile(
-			roadLength,
-			firstNode.road,
-			firstNode.sCoordinate,
-			secondNode.road,
-			secondNode.sCoordinate
-		);
-
-		road.addElevationProfile( elevationProfile );
 
 		return road;
 	}
@@ -268,7 +267,7 @@ export class RoadFactory {
 
 		const spline = new AutoSplineV2();
 
-		spline.addRoadSegment( 0, road );
+		spline.segmentMap.set( 0, road );
 
 		road.spline = spline;
 
