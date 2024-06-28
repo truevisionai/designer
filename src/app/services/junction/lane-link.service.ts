@@ -198,8 +198,8 @@ export class LaneLinkService {
 			true
 		);
 
-		connectionLane.predecessor = incoming.lane.id;
-		connectionLane.successor = outgoing.lane.id;
+		connectionLane.predecessorId = incoming.lane.id;
+		connectionLane.successorId = outgoing.lane.id;
 
 		// NOTE: THIS CAN probably be added in road event listener also
 		const widhtAtStart = incoming.lane.getWidthValue( incoming.s );

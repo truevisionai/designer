@@ -18,7 +18,6 @@ import { TvLaneSpeed } from './tv-lane-speed';
 import { TvLaneVisibility } from './tv-lane-visibility';
 import { TvLaneWidth } from './tv-lane-width';
 import { TvUtils } from './tv-utils';
-import { TrafficRule } from './traffic-rule';
 import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { OrderedMap } from "../../core/models/ordered-map";
 
@@ -76,13 +75,17 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public roadId: number;
 
-	private _successor: number;
+	public successorId: number;
 
-	private _predecessorExists: boolean;
+	public predecessorId: number;
 
-	private _successorExists: boolean;
+	get successorExists (): boolean {
+		return this.successorId !== undefined && this.successorId !== null;
+	}
 
-	private _predecessor: number;
+	get predecessorExists (): boolean {
+		return this.predecessorId !== undefined && this.predecessorId !== null;
+	}
 
 	private _laneSection: TvLaneSection;
 
@@ -109,9 +112,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	set successor ( laneId: number ) {
-		this.setSuccessor( laneId );
-	}
+	// // TODO: Fix this bug
+	// set successor ( laneId: number ) {
+	// 	this.setSuccessor( laneId );
+	// }
 
 	get laneSection (): TvLaneSection {
 		return this._laneSection;
@@ -129,42 +133,8 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.side === TvLaneSide.RIGHT;
 	}
 
-	get predecessorExists (): boolean {
-		return this._predecessorExists;
-	}
-
-	get successorExists (): boolean {
-		return this._successorExists;
-	}
-
-	get predecessor () {
-		return this._predecessor;
-	}
-
-	set predecessor ( laneId: number ) {
-		this.setPredecessor( laneId );
-	}
-
 	get laneSectionId () {
 		return this._laneSection?.id;
-	}
-
-	get succcessor () {
-		return this._successor;
-	}
-
-	get inRoadDirection (): boolean {
-
-		if ( this.laneSection.road.trafficRule == TrafficRule.RHT ) {
-
-			return this.side === TvLaneSide.RIGHT;
-
-		} else if ( this.laneSection.road.trafficRule == TrafficRule.LHT ) {
-
-			return this.side === TvLaneSide.LEFT;
-
-		}
-
 	}
 
 	update (): void {
@@ -229,20 +199,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		// this.gameObject.material = originalMaterial;
 
 		// this.gameObject.material.needsUpdate = true;
-
-	}
-
-	setPredecessor ( laneId: number ) {
-
-		this._predecessor = laneId;
-		this._predecessorExists = true;
-
-	}
-
-	setSuccessor ( laneId: number ) {
-
-		this._successor = laneId;
-		this._successorExists = true;
 
 	}
 
@@ -691,7 +647,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties?(): Object {
+	copyProperties? (): Object {
 
 		return {
 			travelDirection: this.direction,

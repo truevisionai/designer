@@ -278,12 +278,12 @@ describe( 't-junction tests', () => {
 		expect( junction.connections.get( 0 ).isCornerConnection ).toBe( true );
 		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
 		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.id ).toBe( -1 );
-		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.predecessor ).toBe( -1 );
-		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.succcessor ).toBe( -1 );
+		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.predecessorId ).toBe( -1 );
+		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.successorId ).toBe( -1 );
 		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.type ).toBe( TvLaneType.shoulder );
 		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.id ).toBe( -2 );
-		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.predecessor ).toBe( -2 );
-		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.succcessor ).toBe( -2 );
+		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.predecessorId ).toBe( -2 );
+		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.successorId ).toBe( -2 );
 
 	} );
 

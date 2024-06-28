@@ -60,7 +60,7 @@ export class LaneDebugService {
 
 		this.showLaneBorders( lane, LINE_WIDTH * 2, COLOR.RED );
 
-		this.showLaneDirection( lane );
+		this.showDirectionalArrows( lane );
 
 		this.selectedLanes.add( lane );
 
@@ -88,7 +88,7 @@ export class LaneDebugService {
 
 		this.showLaneBorders( lane, LINE_WIDTH * 2 );
 
-		this.showLaneDirection( lane );
+		this.showDirectionalArrows( lane );
 
 		this.highlightedLanes.add( lane );
 
@@ -149,13 +149,13 @@ export class LaneDebugService {
 
 	}
 
-	showLaneDirection ( lane: TvLane ) {
+	showDirectionalArrows ( lane: TvLane, color: number = ARROW_COLOR, size: number = ARROW_SIZE ) {
 
 		if ( lane.direction == TravelDirection.undirected ) return;
 
 		const addArrow = ( position: Vector3, hdg: number ) => {
 
-			const arrow = this.debugService.createSharpArrow( position, hdg, ARROW_COLOR, ARROW_SIZE );
+			const arrow = this.debugService.createSharpArrow( position, hdg, color, size );
 
 			this.arrows.addItem( lane, arrow );
 
@@ -182,4 +182,9 @@ export class LaneDebugService {
 
 	}
 
+	removeDirectionalArrows ( lane: TvLane ) {
+
+		this.arrows.removeKey( lane );
+
+	}
 }

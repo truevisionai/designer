@@ -19,12 +19,12 @@ export class LaneLinkManager {
 		const prevLaneSection = road.getPredecessorLaneSection( laneSection );
 		const nextLaneSection = road.getSuccessorLaneSection( laneSection );
 
-		if ( !lane.predecessor && prevLaneSection ) {
-			lane.setPredecessor( prevLaneSection.getNearestLane( lane )?.id );
+		if ( !lane.predecessorExists && prevLaneSection ) {
+			lane.predecessorId = ( prevLaneSection.getNearestLane( lane )?.id );
 		}
 
-		if ( !lane.succcessor && nextLaneSection ) {
-			lane.setSuccessor( nextLaneSection.getNearestLane( lane )?.id );
+		if ( !lane.successorExists && nextLaneSection ) {
+			lane.successorId = ( nextLaneSection.getNearestLane( lane )?.id );
 		}
 	}
 
@@ -38,7 +38,7 @@ export class LaneLinkManager {
 
 			const successorLane = this.findSuccessor( predecessorLanes[ i ], successorLanes );
 
-			predecessorLanes[ i ].successor = successorLane?.id;
+			predecessorLanes[ i ].successorId = successorLane?.id;
 
 		}
 
@@ -46,7 +46,7 @@ export class LaneLinkManager {
 
 			const predecessorLane = this.findPredecessor( successorLanes[ i ], predecessorLanes );
 
-			successorLanes[ i ].predecessor = predecessorLane?.id;
+			successorLanes[ i ].predecessorId = predecessorLane?.id;
 
 		}
 

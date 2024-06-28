@@ -167,14 +167,14 @@ export class RoadStyleLoader implements AssetLoader {
 			if ( predecessorXml != null ) {
 
 				// tslint:disable-next-line:radix
-				lane.setPredecessor( parseInt( predecessorXml.attr_id ) );
+				lane.predecessorId = ( parseInt( predecessorXml.attr_id ) );
 
 			}
 
 			if ( successorXml != null ) {
 
 				// tslint:disable-next-line:radix
-				lane.setSuccessor( parseInt( successorXml.attr_id ) );
+				lane.successorId = ( parseInt( successorXml.attr_id ) );
 
 			}
 		}

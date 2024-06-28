@@ -7,10 +7,17 @@ import { TvColors } from "app/map/models/tv-common";
 export class COLOR {
 
 	static RED = 0xFF0000;
+	static MRED = 0xfa4e4e;
+
 	static GREEN = 0x00FF00;
+	static MGREEN = 0x47a847;
+
 	static DARKGREEN = 0x006400;
 	static YELLOW = 0xFFFF00;
+
 	static BLUE = 0x0000FF;
+	static MBLUE = 0x3f3fff;
+
 	static SKYBLUE = 0x00FFFF;
 	static DARKBLUE = 0x00008B;
 	static ORANGE = 0xFF4500;

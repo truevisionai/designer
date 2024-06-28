@@ -1560,13 +1560,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( predecessorXml != null ) {
 
-				lane.setPredecessor( parseInt( predecessorXml.attr_id ) );
+				lane.predecessorId = ( parseInt( predecessorXml.attr_id ) );
 
 			}
 
 			if ( successorXml != null ) {
 
-				lane.setSuccessor( parseInt( successorXml.attr_id ) );
+				lane.successorId = ( parseInt( successorXml.attr_id ) );
 
 			}
 		}

@@ -444,6 +444,17 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			enabled: Environment.experimentalTools && Environment.oscEnabled,
 		},
 		{
+			id: 'connections',
+			label: 'Debug Connections Tool',
+			class: 'toolbar-button',
+			toolType: ToolType.DebugConnections,
+			action: 'debug-connections-tool',
+			icon: 'directions_car',
+			track: 'menu',
+			click: () => this.setToolType( ToolType.DebugConnections ),
+			enabled: true,
+		},
+		{
 			id: 'environment',
 			label: 'Environment',
 			class: 'toolbar-button',

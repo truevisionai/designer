@@ -3,55 +3,27 @@
  */
 
 import { TvLane } from "app/map/models/tv-lane";
-import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
+import { TrafficRule } from "../map/models/traffic-rule";
+import { TvLaneSide } from "../map/models/tv-common";
 
 export class LaneUtils {
 
-	static getPredecessorLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): TvLane {
+	static inRoadDirection ( road: TvRoad, lane: TvLane ): boolean {
 
-		// if predecessor is not defined return
-		if ( !lane.predecessor ) return;
+		if ( road.trafficRule == TrafficRule.RHT ) {
 
-		const predecessorLaneSection = this.predecessorLaneSection( road, laneSection );
+			return lane.side === TvLaneSide.RIGHT;
 
-		if ( !predecessorLaneSection ) return
+		} else if ( road.trafficRule == TrafficRule.LHT ) {
 
-		const predecessor = predecessorLaneSection.getLaneById( lane.predecessor );
+			return lane.side === TvLaneSide.LEFT;
 
-		if ( !predecessor ) return;
+		} else {
 
-		return predecessor;
+			return false;
 
-	}
-
-	static getSuccessorLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): TvLane {
-
-		// if successor is not defined return
-		if ( !lane.succcessor ) return;
-
-		const successorLaneSection = this.successorLaneSection( road, laneSection );
-
-		if ( !successorLaneSection ) return
-
-		const succcessor = successorLaneSection.getLaneById( lane.succcessor );
-
-		if ( !succcessor ) return;
-
-		return succcessor;
+		}
 
 	}
-
-	static predecessorLaneSection ( road: TvRoad, laneSection: TvLaneSection ): TvLaneSection {
-
-		return road.getPredecessorLaneSection( laneSection );
-
-	}
-
-	static successorLaneSection ( road: TvRoad, laneSection: TvLaneSection ): TvLaneSection {
-
-		return road.getSuccessorLaneSection( laneSection );
-
-	}
-
 }

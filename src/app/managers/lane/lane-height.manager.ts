@@ -8,7 +8,6 @@ import { TvLaneType } from "app/map/models/tv-common";
 import { TvLane } from "app/map/models/tv-lane";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { LaneUtils } from "app/utils/lane.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -42,27 +41,29 @@ export class LaneHeightManager {
 
 		return;
 
-		if ( lane.height.length == 0 ) {
-			return;
-		}
+		// TODO: Implement this
 
-		const succcessor = LaneUtils.getSuccessorLane( road, laneSection, lane );
+		// if ( lane.height.length == 0 ) {
+		// 	return;
+		// }
 
-		const predecessor = LaneUtils.getPredecessorLane( road, laneSection, lane );
+		// const succcessor = LaneUtils.getSuccessorLane( road, laneSection, lane );
 
-		const lastHeight = lane.height[ lane.height.length - 1 ];
+		// const predecessor = LaneUtils.getPredecessorLane( road, laneSection, lane );
 
-		if ( succcessor && lastHeight ) {
+		// const lastHeight = lane.height[ lane.height.length - 1 ];
 
-			this.sync( succcessor, lastHeight );
+		// if ( succcessor && lastHeight ) {
 
-		}
+		// 	this.sync( succcessor, lastHeight );
 
-		if ( predecessor ) {
+		// }
 
-			this.sync( predecessor, lane.getHeightValue( 0 ) );
+		// if ( predecessor ) {
 
-		}
+		// 	this.sync( predecessor, lane.getHeightValue( 0 ) );
+
+		// }
 
 	}
 

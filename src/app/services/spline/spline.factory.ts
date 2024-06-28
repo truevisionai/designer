@@ -55,8 +55,8 @@ export class SplineFactory {
 
 		const highestLane = connection.connectingRoad.getFirstLaneSection().getLaneById( -1 );
 
-		const predecessorLane = connection.incomingRoad.getFirstLaneSection().getLaneById( highestLane.predecessor );
-		const succcessorLane = connection.outgoingRoad.getFirstLaneSection().getLaneById( highestLane.succcessor );
+		const predecessorLane = connection.incomingRoad.getFirstLaneSection().getLaneById( highestLane.predecessorId );
+		const succcessorLane = connection.outgoingRoad.getFirstLaneSection().getLaneById( highestLane.successorId );
 
 		const incoming = connection.incomingRoad.getRoadCoordByContact( incomingContact ).toLaneCoord( predecessorLane );
 		const outgoing = connection.outgoingRoad.getRoadCoordByContact( outgoingContact ).toLaneCoord( succcessorLane );

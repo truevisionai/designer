@@ -127,7 +127,7 @@ export class RoadLinkService {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 
-				lane.setPredecessor( lane.id * direction );
+				lane.predecessorId = ( lane.id * direction );
 
 			}
 
@@ -145,7 +145,7 @@ export class RoadLinkService {
 
 				if ( lane.side !== TvLaneSide.CENTER ) {
 
-					lane.setPredecessor( lane.id * direction );
+					lane.predecessorId = ( lane.id * direction );
 
 				}
 
@@ -159,7 +159,7 @@ export class RoadLinkService {
 
 				if ( lane.side !== TvLaneSide.CENTER ) {
 
-					lane.setSuccessor( lane.id * direction );
+					lane.successorId = ( lane.id * direction );
 
 				}
 
@@ -490,12 +490,12 @@ export class RoadLinkService {
 
 			firstRoad.setPredecessor( TvRoadLinkChildType.road, joiningRoad, TvContactPoint.START );
 			firstRoad.getFirstLaneSection().lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
+				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( -lane.id );
 			} );
 
 			joiningRoad.setPredecessor( TvRoadLinkChildType.road, firstRoad, TvContactPoint.START );
 			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( -lane.id );
+				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( -lane.id );
 			} );
 
 		} else {
@@ -504,12 +504,12 @@ export class RoadLinkService {
 
 			firstRoad.setSuccessor( TvRoadLinkChildType.road, joiningRoad, TvContactPoint.START );
 			firstRoad.getLastLaneSection().lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( lane.id );
 			} );
 
 			joiningRoad.setPredecessor( TvRoadLinkChildType.road, firstRoad, TvContactPoint.END );
 			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( lane.id );
 			} );
 
 		}
@@ -518,24 +518,24 @@ export class RoadLinkService {
 
 			secondRoad.setPredecessor( TvRoadLinkChildType.road, joiningRoad, TvContactPoint.END );
 			secondRoad.getFirstLaneSection().lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setPredecessor( lane.id );
+				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( lane.id );
 			} );
 
 			joiningRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad, TvContactPoint.START );
 			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( lane.id );
+				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( lane.id );
 			} );
 
 		} else {
 
 			secondRoad.setSuccessor( TvRoadLinkChildType.road, joiningRoad, TvContactPoint.END );
 			secondRoad.getLastLaneSection().lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
+				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( -lane.id );
 			} );
 
 			joiningRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad, TvContactPoint.END );
 			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
-				if ( lane.side !== TvLaneSide.CENTER ) lane.setSuccessor( -lane.id );
+				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( -lane.id );
 			} );
 
 		}

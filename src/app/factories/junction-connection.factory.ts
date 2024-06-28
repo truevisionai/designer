@@ -23,7 +23,8 @@ export class JunctionConnectionFactory {
 		private splineFactory: SplineFactory,
 		private roadFactory: RoadFactory,
 		private laneLinkService: LaneLinkService,
-	) { }
+	) {
+	}
 
 	createConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvJunctionConnection[] {
 
@@ -67,9 +68,9 @@ export class JunctionConnectionFactory {
 
 		const maneueverLane = laneSection.addLane( TvLaneSide.RIGHT, -1, incoming.lane.type, false, false );
 
-		maneueverLane.setPredecessor( incoming.laneId );
+		maneueverLane.predecessorId = incoming.laneId;
 
-		maneueverLane.setSuccessor( outgoing.laneId );
+		maneueverLane.successorId = outgoing.laneId;
 
 		road.spline = this.splineFactory.createManeuverSpline( incoming, outgoing );
 

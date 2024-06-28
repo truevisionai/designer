@@ -67,7 +67,7 @@ export class LaneWidthManager {
 		if ( road.isJunction ) return;
 
 		// if successor is not defined return
-		if ( !lane.succcessor ) return;
+		if ( !lane.successorExists ) return;
 
 		const nextLaneSection = this.nextLaneSection( lane );
 
@@ -76,7 +76,7 @@ export class LaneWidthManager {
 		// // for now return if lane section is not matching
 		// if ( !nextLaneSection.isMatching( laneSection ) ) return;
 
-		const succcessor = nextLaneSection.getLaneById( lane.succcessor );
+		const succcessor = nextLaneSection.getLaneById( lane.successorId );
 
 		const lastWidthNode = lane.width[ lane.width.length - 1 ];
 
@@ -134,8 +134,8 @@ export class LaneWidthManager {
 
 			let width: number;
 
-			if ( !targetWidth && lane.predecessor ) {
-				targetWidth = previousLaneSection.getLaneById( lane.predecessor ).getWidthValue( 0 );
+			if ( !targetWidth && lane.predecessorId ) {
+				targetWidth = previousLaneSection.getLaneById( lane.predecessorId ).getWidthValue( 0 );
 			}
 
 			if ( targetWidth ) {

@@ -58,21 +58,21 @@ export class LaneSectionFactory {
 
 				if ( previous.contact == TvContactPoint.END ) {
 
-					lane.predecessor = previous.laneSection.getNearestLane( lane )?.id;
+					lane.predecessorId = previous.laneSection.getNearestLane( lane )?.id;
 
 				} else {
 
-					lane.predecessor = -previous.laneSection.getNearestLane( lane )?.id;
+					lane.predecessorId = -previous.laneSection.getNearestLane( lane )?.id;
 
 				}
 
 				if ( next.contact == TvContactPoint.START ) {
 
-					lane.successor = next.laneSection.getNearestLane( lane )?.id;
+					lane.successorId = next.laneSection.getNearestLane( lane )?.id;
 
 				} else {
 
-					lane.successor = -next.laneSection.getNearestLane( lane )?.id;
+					lane.successorId = -next.laneSection.getNearestLane( lane )?.id;
 
 				}
 
@@ -125,21 +125,21 @@ export class LaneSectionFactory {
 
 				if ( previous.contact == TvContactPoint.END && prevLane ) {
 
-					lane.predecessor = prevLane?.id;
+					lane.predecessorId = prevLane?.id;
 
 				} else if ( prevLane ) {
 
-					lane.predecessor = -prevLane?.id;
+					lane.predecessorId = -prevLane?.id;
 
 				}
 
 				if ( next.contact == TvContactPoint.START && nextLane ) {
 
-					lane.successor = nextLane?.id;
+					lane.successorId = nextLane?.id;
 
 				} else if ( nextLane ) {
 
-					lane.successor = -nextLane?.id;
+					lane.successorId = -nextLane?.id;
 
 				}
 
@@ -220,11 +220,11 @@ export class LaneSectionFactory {
 				);
 
 				if ( prevLane ) {
-					lane.predecessor = prevLane.id;
+					lane.predecessorId = prevLane.id;
 				}
 
 				if ( nextLane ) {
-					lane.successor = nextLane.id;
+					lane.successorId = nextLane.id;
 				}
 
 				lane.width.splice( 0, lane.width.length );
@@ -278,11 +278,11 @@ export class LaneSectionFactory {
 		}
 
 		if ( predecessorLane ) {
-			maneuverLane.predecessor = predecessorLane?.id
+			maneuverLane.predecessorId = predecessorLane?.id
 		}
 
 		if ( successorLane ) {
-			maneuverLane.successor = successorLane?.id
+			maneuverLane.successorId = successorLane?.id
 		}
 
 		return laneSection;

@@ -25,6 +25,7 @@ export enum ToolType {
 	MeasurementTool,
 	RoadRampTool,
 	Vehicle,
+	DebugConnections,
 	RoadSignTool,
 	Crosswalk,
 	Environment,

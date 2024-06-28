@@ -1,6 +1,6 @@
 <div *ngFor="let tooltip of tooltips"
-	[style.left.px]="tooltip.position.x"
-	[style.top.px]="tooltip.position.y"
-	class="tooltip">
-	{{ tooltip.content }}
+     [style.left.px]="tooltip.position.x"
+     [style.top.px]="tooltip.position.y"
+     [innerHTML]="tooltip.content"
+     class="tooltip">
 </div>

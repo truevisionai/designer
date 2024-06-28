@@ -152,7 +152,17 @@ export class TvRoadLinkChild {
 	}
 
 	toString () {
-		return `TvRoadLinkChild: ${ this.elementType } ${ this.elementId } ${ this.contactPoint }`;
+
+		if ( this.elementType == TvRoadLinkChildType.road ) {
+
+			return `Link: ${ this.elementType }:${ this.elementId } Contact:${ this.contactPoint }`;
+
+		} else {
+
+			return `Link: ${ this.elementType }:${ this.elementId }`;
+
+		}
+
 	}
 
 	clone (): TvRoadLinkChild {

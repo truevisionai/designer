@@ -83,7 +83,7 @@ export class DefaultVehicleController extends AbstractController {
 					if ( successor.elementType == 'road' ) {
 
 						nextRoad = this.map.getRoadById( successor.elementId );
-						nextLaneId = currentLane.successorExists ? currentLane.succcessor : currentLane.id;
+						nextLaneId = currentLane.successorExists ? currentLane.successorId : currentLane.id;
 
 					} else if ( successor.elementType == 'junction' ) {
 
@@ -145,7 +145,7 @@ export class DefaultVehicleController extends AbstractController {
 				if ( predecessor.elementType == 'road' ) {
 
 					nextRoad = this.map.getRoadById( predecessor.elementId );
-					nextLaneId = currentLane.predecessorExists ? currentLane.predecessor : currentLane.id;
+					nextLaneId = currentLane.predecessorExists ? currentLane.predecessorId : currentLane.id;
 
 				} else if ( predecessor.elementType == 'junction' ) {
 
@@ -200,12 +200,12 @@ export class DefaultVehicleController extends AbstractController {
 			if ( entity.direction > 0 && entity.sCoordinate > currentLaneSection.endS ) {
 
 				entity.laneSectionId += 1;
-				entity.laneId = currentLane.succcessor;
+				entity.laneId = currentLane.successorId;
 
 			} else if ( entity.direction < 0 && entity.sCoordinate < currentLaneSection.s ) {
 
 				entity.laneSectionId -= 1;
-				entity.laneId = currentLane.predecessor;
+				entity.laneId = currentLane.predecessorId;
 
 			} else {
 

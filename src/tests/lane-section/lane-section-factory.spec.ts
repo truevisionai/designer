@@ -76,21 +76,21 @@ describe( 'LaneSectionFactory: tests', () => {
 		expect( laneSections[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( laneSections[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( laneSections[ 0 ].getLaneById( 3 ).predecessor ).toBe( 3 );
-		expect( laneSections[ 0 ].getLaneById( 2 ).predecessor ).toBe( 2 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).predecessor ).toBe( 1 );
-		expect( laneSections[ 0 ].getLaneById( 0 ).predecessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( -3 ).predecessor ).toBe( -3 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).predecessor ).toBe( -2 );
-		expect( laneSections[ 0 ].getLaneById( -1 ).predecessor ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( 3 ).predecessorId ).toBe( 3 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).predecessorId ).toBe( 2 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).predecessorId ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 0 ).predecessorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( -3 ).predecessorId ).toBe( -3 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).predecessorId ).toBe( -2 );
+		expect( laneSections[ 0 ].getLaneById( -1 ).predecessorId ).toBe( -1 );
 
-		expect( laneSections[ 0 ].getLaneById( 3 ).succcessor ).toBe( 3 );
-		expect( laneSections[ 0 ].getLaneById( 2 ).succcessor ).toBe( 2 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).succcessor ).toBe( 1 );
-		expect( laneSections[ 0 ].getLaneById( 0 ).succcessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( -3 ).succcessor ).toBe( -3 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).succcessor ).toBe( -2 );
-		expect( laneSections[ 0 ].getLaneById( -1 ).succcessor ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( 3 ).successorId ).toBe( 3 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).successorId ).toBe( 2 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).successorId ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 0 ).successorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( -3 ).successorId ).toBe( -3 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).successorId ).toBe( -2 );
+		expect( laneSections[ 0 ].getLaneById( -1 ).successorId ).toBe( -1 );
 
 
 	} );
@@ -120,21 +120,21 @@ describe( 'LaneSectionFactory: tests', () => {
 		expect( laneSections[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( laneSections[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( laneSections[ 0 ].getLaneById( 3 ).predecessor ).toBe( 3 );
-		expect( laneSections[ 0 ].getLaneById( 2 ).predecessor ).toBe( 2 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).predecessor ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 3 ).predecessorId ).toBe( 3 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).predecessorId ).toBe( 2 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).predecessorId ).toBe( 1 );
 		// expect( laneSections[ 0 ].getLaneById( 0 ).predecessor ).toBe( 0 );
-		expect( laneSections[ 0 ].getLaneById( -3 ).predecessor ).toBe( -3 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).predecessor ).toBe( -2 );
-		expect( laneSections[ 0 ].getLaneById( -1 ).predecessor ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( -3 ).predecessorId ).toBe( -3 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).predecessorId ).toBe( -2 );
+		expect( laneSections[ 0 ].getLaneById( -1 ).predecessorId ).toBe( -1 );
 
-		expect( laneSections[ 0 ].getLaneById( 3 ).succcessor ).toBe( -3 );
-		expect( laneSections[ 0 ].getLaneById( 2 ).succcessor ).toBe( -2 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).succcessor ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( 3 ).successorId ).toBe( -3 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).successorId ).toBe( -2 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).successorId ).toBe( -1 );
 		// expect( laneSections[ 0 ].getLaneById( 0 ).succcessor ).toBe( 0 );
-		expect( laneSections[ 0 ].getLaneById( -3 ).succcessor ).toBe( 3 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).succcessor ).toBe( 2 );
-		expect( laneSections[ 0 ].getLaneById( -1 ).succcessor ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( -3 ).successorId ).toBe( 3 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).successorId ).toBe( 2 );
+		expect( laneSections[ 0 ].getLaneById( -1 ).successorId ).toBe( 1 );
 
 
 	} );
@@ -164,21 +164,21 @@ describe( 'LaneSectionFactory: tests', () => {
 		expect( laneSections[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( laneSections[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( laneSections[ 0 ].getLaneById( 3 ).predecessor ).toBe( -3 );
-		expect( laneSections[ 0 ].getLaneById( 2 ).predecessor ).toBe( -2 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).predecessor ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( 3 ).predecessorId ).toBe( -3 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).predecessorId ).toBe( -2 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).predecessorId ).toBe( -1 );
 		// expect( laneSections[ 0 ].getLaneById( 0 ).predecessor ).toBe( 0 );
-		expect( laneSections[ 0 ].getLaneById( -3 ).predecessor ).toBe( 3 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).predecessor ).toBe( 2 );
-		expect( laneSections[ 0 ].getLaneById( -1 ).predecessor ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( -3 ).predecessorId ).toBe( 3 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).predecessorId ).toBe( 2 );
+		expect( laneSections[ 0 ].getLaneById( -1 ).predecessorId ).toBe( 1 );
 
-		expect( laneSections[ 0 ].getLaneById( 3 ).succcessor ).toBe( 3 );
-		expect( laneSections[ 0 ].getLaneById( 2 ).succcessor ).toBe( 2 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).succcessor ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 3 ).successorId ).toBe( 3 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).successorId ).toBe( 2 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).successorId ).toBe( 1 );
 		// expect( laneSections[ 0 ].getLaneById( 0 ).succcessor ).toBe( 0 );
-		expect( laneSections[ 0 ].getLaneById( -3 ).succcessor ).toBe( -3 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).succcessor ).toBe( -2 );
-		expect( laneSections[ 0 ].getLaneById( -1 ).succcessor ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( -3 ).successorId ).toBe( -3 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).successorId ).toBe( -2 );
+		expect( laneSections[ 0 ].getLaneById( -1 ).successorId ).toBe( -1 );
 
 	} );
 
@@ -220,17 +220,17 @@ describe( 'LaneSectionFactory: tests', () => {
 		expect( laneSections[ 0 ].getLaneById( -1 ).type ).toBe( TvLaneType.driving );
 		expect( laneSections[ 0 ].getLaneById( -2 ).type ).toBe( TvLaneType.driving );
 
-		expect( laneSections[ 0 ].getLaneById( 2 ).predecessor ).toBe( 2 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).predecessor ).toBe( 1 );
-		expect( laneSections[ 0 ].getLaneById( 0 ).predecessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( -1 ).predecessor ).toBe( -1 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).predecessor ).toBe( -2 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).predecessorId ).toBe( 2 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).predecessorId ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 0 ).predecessorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( -1 ).predecessorId ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).predecessorId ).toBe( -2 );
 
-		expect( laneSections[ 0 ].getLaneById( 2 ).succcessor ).toBe( 1 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).succcessor ).toBe( 1 );
-		expect( laneSections[ 0 ].getLaneById( 0 ).succcessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( -1 ).succcessor ).toBe( -1 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).succcessor ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).successorId ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).successorId ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 0 ).successorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( -1 ).successorId ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).successorId ).toBe( -1 );
 
 	} );
 
@@ -276,17 +276,17 @@ describe( 'LaneSectionFactory: tests', () => {
 		expect( laneSection.getLaneById( -1 ).type ).toBe( TvLaneType.driving );
 		expect( laneSection.getLaneById( -2 ).type ).toBe( TvLaneType.driving );
 
-		expect( laneSection.getLaneById( 2 ).predecessor ).toBe( 1 );
-		expect( laneSection.getLaneById( 1 ).predecessor ).toBe( 1 );
-		expect( laneSection.getLaneById( 0 ).predecessor ).toBe( undefined );
-		expect( laneSection.getLaneById( -1 ).predecessor ).toBe( -1 );
-		expect( laneSection.getLaneById( -2 ).predecessor ).toBe( -1 );
+		expect( laneSection.getLaneById( 2 ).predecessorId ).toBe( 1 );
+		expect( laneSection.getLaneById( 1 ).predecessorId ).toBe( 1 );
+		expect( laneSection.getLaneById( 0 ).predecessorId ).toBe( undefined );
+		expect( laneSection.getLaneById( -1 ).predecessorId ).toBe( -1 );
+		expect( laneSection.getLaneById( -2 ).predecessorId ).toBe( -1 );
 
-		expect( laneSection.getLaneById( 2 ).succcessor ).toBe( 2 );
-		expect( laneSection.getLaneById( 1 ).succcessor ).toBe( 1 );
-		expect( laneSection.getLaneById( 0 ).succcessor ).toBe( undefined );
-		expect( laneSection.getLaneById( -1 ).succcessor ).toBe( -1 );
-		expect( laneSection.getLaneById( -2 ).succcessor ).toBe( -2 );
+		expect( laneSection.getLaneById( 2 ).successorId ).toBe( 2 );
+		expect( laneSection.getLaneById( 1 ).successorId ).toBe( 1 );
+		expect( laneSection.getLaneById( 0 ).successorId ).toBe( undefined );
+		expect( laneSection.getLaneById( -1 ).successorId ).toBe( -1 );
+		expect( laneSection.getLaneById( -2 ).successorId ).toBe( -2 );
 
 	} );
 
@@ -332,21 +332,21 @@ describe( 'LaneSectionFactory: tests', () => {
 		expect( laneSections[ 0 ].getLaneById( -2 ).type ).toBe( TvLaneType.shoulder );
 		expect( laneSections[ 0 ].getLaneById( -3 ).type ).toBe( TvLaneType.sidewalk );
 
-		expect( laneSections[ 0 ].getLaneById( 3 ).predecessor ).toBe( 3 );
-		expect( laneSections[ 0 ].getLaneById( 2 ).predecessor ).toBe( 2 );
-		expect( laneSections[ 0 ].getLaneById( 1 ).predecessor ).toBe( 1 );
-		expect( laneSections[ 0 ].getLaneById( 0 ).predecessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( -1 ).predecessor ).toBe( -1 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).predecessor ).toBe( -2 );
-		expect( laneSections[ 0 ].getLaneById( -3 ).predecessor ).toBe( -3 );
+		expect( laneSections[ 0 ].getLaneById( 3 ).predecessorId ).toBe( 3 );
+		expect( laneSections[ 0 ].getLaneById( 2 ).predecessorId ).toBe( 2 );
+		expect( laneSections[ 0 ].getLaneById( 1 ).predecessorId ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 0 ).predecessorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( -1 ).predecessorId ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).predecessorId ).toBe( -2 );
+		expect( laneSections[ 0 ].getLaneById( -3 ).predecessorId ).toBe( -3 );
 
-		expect( laneSections[ 0 ].getLaneById( 3 ).succcessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( 2 ).succcessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( 1 ).succcessor ).toBe( 1 );
-		expect( laneSections[ 0 ].getLaneById( 0 ).succcessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( -1 ).succcessor ).toBe( -1 );
-		expect( laneSections[ 0 ].getLaneById( -2 ).succcessor ).toBe( undefined );
-		expect( laneSections[ 0 ].getLaneById( -3 ).succcessor ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( 3 ).successorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( 2 ).successorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( 1 ).successorId ).toBe( 1 );
+		expect( laneSections[ 0 ].getLaneById( 0 ).successorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( -1 ).successorId ).toBe( -1 );
+		expect( laneSections[ 0 ].getLaneById( -2 ).successorId ).toBe( undefined );
+		expect( laneSections[ 0 ].getLaneById( -3 ).successorId ).toBe( undefined );
 
 	} );
 
@@ -375,15 +375,15 @@ describe( 'LaneSectionFactory: tests', () => {
 		expect( leftToRight[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( leftToRight[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( leftToRight[ 0 ].getLaneById( 0 ).predecessor ).toBe( undefined );
-		expect( leftToRight[ 0 ].getLaneById( -1 ).predecessor ).toBe( -1 );
-		expect( leftToRight[ 0 ].getLaneById( -2 ).predecessor ).toBe( -2 );
-		expect( leftToRight[ 0 ].getLaneById( -3 ).predecessor ).toBe( -3 );
+		expect( leftToRight[ 0 ].getLaneById( 0 ).predecessorId ).toBe( undefined );
+		expect( leftToRight[ 0 ].getLaneById( -1 ).predecessorId ).toBe( -1 );
+		expect( leftToRight[ 0 ].getLaneById( -2 ).predecessorId ).toBe( -2 );
+		expect( leftToRight[ 0 ].getLaneById( -3 ).predecessorId ).toBe( -3 );
 
-		expect( leftToRight[ 0 ].getLaneById( 0 ).succcessor ).toBe( undefined );
-		expect( leftToRight[ 0 ].getLaneById( -1 ).succcessor ).toBe( -1 );
-		expect( leftToRight[ 0 ].getLaneById( -2 ).succcessor ).toBe( -2 );
-		expect( leftToRight[ 0 ].getLaneById( -3 ).succcessor ).toBe( -3 );
+		expect( leftToRight[ 0 ].getLaneById( 0 ).successorId ).toBe( undefined );
+		expect( leftToRight[ 0 ].getLaneById( -1 ).successorId ).toBe( -1 );
+		expect( leftToRight[ 0 ].getLaneById( -2 ).successorId ).toBe( -2 );
+		expect( leftToRight[ 0 ].getLaneById( -3 ).successorId ).toBe( -3 );
 
 		const rightToLeft = factory.createForConnectingRoad( roadB, coordB, coordA );
 
@@ -393,15 +393,15 @@ describe( 'LaneSectionFactory: tests', () => {
 		expect( rightToLeft[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( rightToLeft[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( rightToLeft[ 0 ].getLaneById( 0 ).predecessor ).toBe( undefined );
-		expect( rightToLeft[ 0 ].getLaneById( -1 ).predecessor ).toBe( 1 );
-		expect( rightToLeft[ 0 ].getLaneById( -2 ).predecessor ).toBe( 2 );
-		expect( rightToLeft[ 0 ].getLaneById( -3 ).predecessor ).toBe( 3 );
+		expect( rightToLeft[ 0 ].getLaneById( 0 ).predecessorId ).toBe( undefined );
+		expect( rightToLeft[ 0 ].getLaneById( -1 ).predecessorId ).toBe( 1 );
+		expect( rightToLeft[ 0 ].getLaneById( -2 ).predecessorId ).toBe( 2 );
+		expect( rightToLeft[ 0 ].getLaneById( -3 ).predecessorId ).toBe( 3 );
 
-		expect( rightToLeft[ 0 ].getLaneById( 0 ).succcessor ).toBe( undefined );
-		expect( rightToLeft[ 0 ].getLaneById( -1 ).succcessor ).toBe( 1 );
-		expect( rightToLeft[ 0 ].getLaneById( -2 ).succcessor ).toBe( 2 );
-		expect( rightToLeft[ 0 ].getLaneById( -3 ).succcessor ).toBe( 3 );
+		expect( rightToLeft[ 0 ].getLaneById( 0 ).successorId ).toBe( undefined );
+		expect( rightToLeft[ 0 ].getLaneById( -1 ).successorId ).toBe( 1 );
+		expect( rightToLeft[ 0 ].getLaneById( -2 ).successorId ).toBe( 2 );
+		expect( rightToLeft[ 0 ].getLaneById( -3 ).successorId ).toBe( 3 );
 
 	} );
 
@@ -444,13 +444,13 @@ describe( 'LaneSectionFactory: tests', () => {
 		// expect( leftToRight[ 0 ].getLaneById( -2 ).type ).toBe( TvLaneType.shoulder );
 		// expect( leftToRight[ 0 ].getLaneById( -3 ).type ).toBe( TvLaneType.sidewalk );
 
-		expect( leftToRight[ 0 ].getLaneById( 0 ).predecessor ).toBe( undefined );
-		expect( leftToRight[ 0 ].getLaneById( -1 ).predecessor ).toBe( -1 );
+		expect( leftToRight[ 0 ].getLaneById( 0 ).predecessorId ).toBe( undefined );
+		expect( leftToRight[ 0 ].getLaneById( -1 ).predecessorId ).toBe( -1 );
 		// expect( leftToRight[ 0 ].getLaneById( -2 ).predecessor ).toBe( -2 );
 		// expect( leftToRight[ 0 ].getLaneById( -3 ).predecessor ).toBe( -3 );
 
-		expect( leftToRight[ 0 ].getLaneById( 0 ).succcessor ).toBe( undefined );
-		expect( leftToRight[ 0 ].getLaneById( -1 ).succcessor ).toBe( -1 );
+		expect( leftToRight[ 0 ].getLaneById( 0 ).successorId ).toBe( undefined );
+		expect( leftToRight[ 0 ].getLaneById( -1 ).successorId ).toBe( -1 );
 		// expect( leftToRight[ 0 ].getLaneById( -2 ).succcessor ).toBe( undefined );
 		// expect( leftToRight[ 0 ].getLaneById( -3 ).succcessor ).toBe( undefined );
 
@@ -470,13 +470,13 @@ describe( 'LaneSectionFactory: tests', () => {
 		// expect( rightToLeft[ 0 ].getLaneById( -2 ).type ).toBe( TvLaneType.shoulder );
 		// expect( rightToLeft[ 0 ].getLaneById( -3 ).type ).toBe( TvLaneType.sidewalk );
 
-		expect( rightToLeft[ 0 ].getLaneById( 0 ).predecessor ).toBe( undefined );
-		expect( rightToLeft[ 0 ].getLaneById( -1 ).predecessor ).toBe( 1 );
+		expect( rightToLeft[ 0 ].getLaneById( 0 ).predecessorId ).toBe( undefined );
+		expect( rightToLeft[ 0 ].getLaneById( -1 ).predecessorId ).toBe( 1 );
 		// expect( rightToLeft[ 0 ].getLaneById( -2 ).predecessor ).toBe( undefined );
 		// expect( rightToLeft[ 0 ].getLaneById( -3 ).predecessor ).toBe( undefined );
 
-		expect( rightToLeft[ 0 ].getLaneById( 0 ).succcessor ).toBe( undefined );
-		expect( rightToLeft[ 0 ].getLaneById( -1 ).succcessor ).toBe( 1 );
+		expect( rightToLeft[ 0 ].getLaneById( 0 ).successorId ).toBe( undefined );
+		expect( rightToLeft[ 0 ].getLaneById( -1 ).successorId ).toBe( 1 );
 		// expect( rightToLeft[ 0 ].getLaneById( -2 ).succcessor ).toBe( 2 );
 		// expect( rightToLeft[ 0 ].getLaneById( -3 ).succcessor ).toBe( 3 );
 

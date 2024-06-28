@@ -82,6 +82,7 @@ import { TrafficLightTool } from './traffic-light/traffic-light.tool';
 import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';
 import { EntityService } from "../scenario/entity/entity.service";
 import { LaneHeightToolService } from './lane-height/lane-height-tool.service';
+import { DebugConnectionTool, DebugConnectionToolService } from "./debug-connections/debug-connections.tool";
 
 @Injectable( {
 	providedIn: 'root'
@@ -127,6 +128,9 @@ export class ToolFactory {
 		let tool: Tool;
 
 		switch ( type ) {
+			case ToolType.DebugConnections:
+				tool = new DebugConnectionTool( this.injector.get( DebugConnectionToolService ) );
+				break;
 			case ToolType.Road:
 				tool = this.createRoadTool()
 				break;

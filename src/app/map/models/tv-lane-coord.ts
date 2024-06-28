@@ -9,6 +9,7 @@ import { TvLane } from "./tv-lane";
 import { TvContactPoint } from './tv-common';
 import { Maths } from 'app/utils/maths';
 import { Orientation } from 'app/scenario/models/tv-orientation';
+import { LaneUtils } from "../../utils/lane.utils";
 
 export class TvLaneCoord {
 
@@ -56,7 +57,7 @@ export class TvLaneCoord {
 	}
 
 	get laneDirection (): Vector3 {
-		if ( this.lane.inRoadDirection ) {
+		if ( LaneUtils.inRoadDirection( this.road, this.lane ) ) {
 			return this.direction;
 		} else {
 			return this.direction.negate();

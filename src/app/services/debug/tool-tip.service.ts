@@ -27,13 +27,14 @@ export class ToolTipService {
 	constructor (
 		private canvasService: CanvasService,
 		private cameraService: CameraService
-	) { }
+	) {
+	}
 
-	createFrom3D ( text: string, position: Vector3 ) {
+	createFrom3D ( text: string, position: Vector2 | Vector3 ) {
 
 		const id = this.tooltips.size + 1;
 
-		const position2D = this.get2DPosition( position );
+		const position2D = position instanceof Vector2 ? position : this.get2DPosition( position );
 
 		return this.createTooltip( id, text, position2D );
 
@@ -50,13 +51,21 @@ export class ToolTipService {
 		return toolTip;
 	}
 
-	private updateTooltipPosition ( id: number, position: Vector2 ) {
+	updateTooltipPosition ( id: number, position: Vector2 | Vector3 ) {
 
 		if ( this.tooltips.has( id ) ) {
 
 			const tooltip = this.tooltips.get( id );
 
-			tooltip.position = position;
+			if ( position instanceof Vector3 ) {
+
+				tooltip.position = this.get2DPosition( position );
+
+			} else {
+
+				tooltip.position = position;
+
+			}
 
 			this.tooltipUpdated.emit( tooltip );
 
@@ -86,7 +95,6 @@ export class ToolTipService {
 
 			this.tooltipRemoved.emit( toolTip );
 
-
 		}
 
 	}
@@ -104,9 +112,19 @@ export class ToolTipService {
 		vector.x = ( vector.x + 1 ) / 2 * ( this.canvasService.width )
 		vector.x += this.canvasService.left;
 
-		vector.y = - ( vector.y - 1 ) / 2 * ( this.canvasService.height );
+		vector.y = -( vector.y - 1 ) / 2 * ( this.canvasService.height );
 		vector.y += this.canvasService.top;
 
 		return new Vector2( vector.x, vector.y );
+	}
+
+	clear () {
+
+		this.tooltips.forEach( ( tooltip ) => {
+			this.tooltipRemoved.emit( tooltip );
+		} );
+
+		this.tooltips.clear();
+
 	}
 }

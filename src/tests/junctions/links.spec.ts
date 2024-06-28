@@ -158,16 +158,16 @@ describe( 'LaneLinkService', () => {
 		expect( leftToRight.laneLink.length ).toBe( 2 );
 		expect( leftToRight.laneLink[ 0 ].incomingLane.id ).toBe( -1 );
 		expect( leftToRight.laneLink[ 0 ].connectingLane.id ).toBe( -1 );
-		expect( leftToRight.laneLink[ 0 ].connectingLane.predecessor ).toBe( -1 );
-		expect( leftToRight.laneLink[ 0 ].connectingLane.succcessor ).toBe( -1 );
+		expect( leftToRight.laneLink[ 0 ].connectingLane.predecessorId ).toBe( -1 );
+		expect( leftToRight.laneLink[ 0 ].connectingLane.successorId ).toBe( -1 );
 
 		const rightToLeft = connectionService.createConnection( junction, outgoing, incoming );
 		expect( rightToLeft ).toBeDefined();
 		expect( rightToLeft.laneLink.length ).toBe( 1 );
 		expect( rightToLeft.laneLink[ 0 ].incomingLane.id ).toBe( 1 );
 		expect( rightToLeft.laneLink[ 0 ].connectingLane.id ).toBe( -1 );
-		expect( rightToLeft.laneLink[ 0 ].connectingLane.predecessor ).toBe( 1 );
-		expect( rightToLeft.laneLink[ 0 ].connectingLane.succcessor ).toBe( 1 );
+		expect( rightToLeft.laneLink[ 0 ].connectingLane.predecessorId ).toBe( 1 );
+		expect( rightToLeft.laneLink[ 0 ].connectingLane.successorId ).toBe( 1 );
 
 	} );
 

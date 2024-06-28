@@ -787,7 +787,11 @@ export class TvRoad {
 
 		let width = 0;
 
-		this.getLaneSectionAt( s ).getLeftLanes().forEach( lane => {
+		const laneSection = this.getLaneSectionAt( s );
+
+		if ( !laneSection ) return 0;
+
+		laneSection.getLeftLanes().forEach( lane => {
 			width += lane.getWidthValue( s );
 		} );
 
@@ -798,7 +802,11 @@ export class TvRoad {
 
 		let width = 0;
 
-		this.getLaneSectionAt( s ).getRightLanes().forEach( lane => {
+		const laneSection = this.getLaneSectionAt( s );
+
+		if ( !laneSection ) return 0;
+
+		laneSection.getRightLanes().forEach( lane => {
 			width += lane.getWidthValue( s );
 		} );
 

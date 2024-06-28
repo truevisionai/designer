@@ -94,12 +94,12 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		// not link for center lanes
 		if ( lane.side === TvLaneSide.CENTER ) return;
 
-		if ( lane.predecessorExists != null ) {
-			laneNode.link[ 'predecessor' ] = { attr_id: lane.predecessor };
+		if ( lane.predecessorExists ) {
+			laneNode.link[ 'predecessor' ] = { attr_id: lane.predecessorId };
 		}
 
-		if ( lane.successorExists != null ) {
-			laneNode.link[ 'successor' ] = { attr_id: lane.succcessor };
+		if ( lane.successorExists ) {
+			laneNode.link[ 'successor' ] = { attr_id: lane.successorId };
 		}
 
 	}

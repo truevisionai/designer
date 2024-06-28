@@ -302,7 +302,7 @@ export class MapValidatorService {
 	 */
 	validateLaneLinks ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
-		if ( !road.isJunction && road.successor?.isRoad && !lane.successor ) {
+		if ( !road.isJunction && road.successor?.isRoad && !lane.successorExists ) {
 
 			if ( road.successor.laneSection.getLaneCount() != laneSection.getLaneCount() ) {
 
@@ -320,7 +320,7 @@ export class MapValidatorService {
 
 		}
 
-		if ( !road.isJunction && road.predecessor?.isRoad && !lane.predecessor ) {
+		if ( !road.isJunction && road.predecessor?.isRoad && !lane.predecessorExists ) {
 
 			if ( road.predecessor.laneSection.getLaneCount() != laneSection.getLaneCount() ) {
 
