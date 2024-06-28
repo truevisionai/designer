@@ -98,6 +98,7 @@ export class TvRoad {
 		this.junction = junction;
 		this.lanes = new TvRoadLanes();
 		this.elevationProfile = new TvElevationProfile();
+		this.lateralProfile = new TvLateralProfile();
 		this.objects = new TvObjectContainer();
 		this.signals = new Map<number, TvRoadSignal>();
 
@@ -489,6 +490,10 @@ export class TvRoad {
 		odPosTheta.addLateralOffset( t );
 
 		odPosTheta.z = this.getElevationValue( s );
+
+		// const e = this.getSuperelevationValue( s ); // Add this line to get the superelevation angle
+		const e = this.lateralProfile.superElevations.findAt( s )?.getValue( s );
+		if ( t > 0 || t < 0 ) odPosTheta.z += t * Math.tan( e || 0 ); // Adjust z based on superelevation
 
 		odPosTheta.t = t;
 

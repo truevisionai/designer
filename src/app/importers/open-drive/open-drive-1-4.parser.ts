@@ -749,7 +749,32 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parseLateralProfile ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseLateralProfile ( road: TvRoad, xml: XmlElement ) {
+
+		readXmlArray( xml.superelevation, ( xml: XmlElement ) => {
+
+			const s = parseFloat( xml.attr_s ) || 0;
+			const a = parseFloat( xml.attr_a ) || 0;
+			const b = parseFloat( xml.attr_b ) || 0;
+			const c = parseFloat( xml.attr_c ) || 0;
+			const d = parseFloat( xml.attr_d ) || 0;
+
+			road.lateralProfile.addSuperElevation( s, a, b, c, d );
+
+		} );
+
+		readXmlArray( xml.shape, ( xml: XmlElement ) => {
+
+			const s = parseFloat( xml.attr_s ) || 0;
+			const t = parseFloat( xml.attr_t ) || 0;
+			const a = parseFloat( xml.attr_a ) || 0;
+			const b = parseFloat( xml.attr_b ) || 0;
+			const c = parseFloat( xml.attr_c ) || 0;
+			const d = parseFloat( xml.attr_d ) || 0;
+
+			road.lateralProfile.addShape( s, t, a, b, c, d );
+
+		} );
 
 	}
 
