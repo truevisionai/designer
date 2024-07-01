@@ -8,36 +8,32 @@ import { TvLaneType } from "app/map/models/tv-common";
 import { TvLane } from "app/map/models/tv-lane";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
+import { LaneUtils } from "app/utils/lane.utils";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class LaneHeightManager {
 
+
+	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		const heightValue = this.getHeightValueByType( lane.type );
+
+		lane.height.forEach( height => height.inner = height.outer = heightValue );
+
+	}
+
 	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
-		if ( lane.type == TvLaneType.sidewalk || lane.type == TvLaneType.curb ) {
-
-			if ( lane.getLaneHeightCount() == 0 ) {
-
-				lane.addHeightRecord( 0, 0.12, 0.12 );
-
-			}
-
-		} else {
-
-			if ( lane.getLaneHeightCount() == 1 && lane.getLaneHeight( 0 ).sOffset == 0 ) {
-
-				lane.clearLaneHeight();
-
-			}
-
-		}
+		this.createDefaultNodes( road, laneSection, lane );
 
 	}
 
 
 	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		this.createDefaultNodes( road, laneSection, lane );
 
 		return;
 
@@ -87,4 +83,77 @@ export class LaneHeightManager {
 
 	}
 
+	private createDefaultNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
+
+		if ( road.isJunction ) return;
+
+		this.ensureMinimumTwoNodes( road, laneSection, lane );
+
+		this.updateFirstAndLastNodes( road, laneSection, lane );
+
+	}
+
+	private ensureMinimumTwoNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		const nextLaneSection = LaneUtils.getNextLaneSection( road, laneSection );
+
+		const sEnd = nextLaneSection ? nextLaneSection.s - laneSection.s : road.length - laneSection.s;
+
+		if ( lane.height.length === 0 ) {
+
+			let height = this.getHeightValueByType( lane.type );
+
+			lane.addHeightRecord( 0, height, height );
+			lane.addHeightRecord( sEnd, height, height );
+
+		}
+
+		if ( lane.height.length == 1 ) {
+
+			const inner = lane.height[ 0 ].inner;
+			const outer = lane.height[ 0 ].outer;
+
+			lane.addHeightRecord( sEnd, inner, outer );
+
+		}
+
+	}
+
+	private updateFirstAndLastNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		if ( lane.height.length === 0 ) return;
+
+		const firstHeight = lane.height[ 0 ];
+
+		if ( firstHeight.sOffset !== 0 ) {
+
+			firstHeight.sOffset = 0;
+
+		}
+
+		const lastHeight = lane.height[ lane.height.length - 1 ];
+
+		if ( lastHeight.sOffset !== road.length - laneSection.s ) {
+
+			lastHeight.sOffset = road.length - laneSection.s;
+
+		}
+
+	}
+
+	private getHeightValueByType ( type: TvLaneType ): number {
+
+		switch ( type ) {
+
+			case TvLaneType.sidewalk:
+				return 0.12;
+
+			case TvLaneType.curb:
+				return 0.12;
+
+			default:
+				return 0;
+		}
+
+	}
 }

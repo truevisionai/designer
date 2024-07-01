@@ -554,8 +554,6 @@ export class DebugDrawService {
 	 */
 	private getPoint ( lane: TvLane, s: number ) {
 
-		let posTheta = lane.laneSection.road.getPosThetaAt( s );
-
 		let width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
 
 		// If right side lane then make the offset negative
@@ -563,7 +561,7 @@ export class DebugDrawService {
 			width *= -1;
 		}
 
-		posTheta.addLateralOffset( width );
+		const posTheta = lane.laneSection.road.getPosThetaAt( s, width );
 
 		return posTheta.toVector3();
 

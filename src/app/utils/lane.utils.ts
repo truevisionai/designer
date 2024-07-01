@@ -6,8 +6,23 @@ import { TvLane } from "app/map/models/tv-lane";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TrafficRule } from "../map/models/traffic-rule";
 import { TvLaneSide } from "../map/models/tv-common";
+import { TvLaneSection } from "app/map/models/tv-lane-section";
 
 export class LaneUtils {
+
+	static getNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ): TvLaneSection | null {
+
+		const index = road.laneSections.indexOf( laneSection );
+
+		if ( index == road.laneSections.length - 1 ) {
+
+			return null;
+
+		}
+
+		return road.laneSections[ index + 1 ];
+
+	}
 
 	static inRoadDirection ( road: TvRoad, lane: TvLane ): boolean {
 

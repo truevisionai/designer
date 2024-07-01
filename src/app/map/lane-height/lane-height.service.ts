@@ -31,11 +31,15 @@ export class LaneHeightService extends LinkedDataService<TvLane, TvLaneHeight> {
 
 		parent.height.push( object );
 
+		parent.height.sort( ( a, b ) => a.sOffset - b.sOffset );
+
 		this.parentService.update( parent );
 
 	}
 
 	update ( parent: TvLane, object: TvLaneHeight ): void {
+
+		parent.height.sort( ( a, b ) => a.sOffset - b.sOffset );
 
 		this.parentService.update( parent );
 
@@ -50,6 +54,8 @@ export class LaneHeightService extends LinkedDataService<TvLane, TvLaneHeight> {
 			parent.height.splice( index, 1 );
 
 		}
+
+		parent.height.sort( ( a, b ) => a.sOffset - b.sOffset );
 
 		this.parentService.update( parent );
 

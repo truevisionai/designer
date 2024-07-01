@@ -74,7 +74,7 @@ export class LaneManager {
 
 		this.laneWidthManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 
-		this.laneHeightManager.onLaneUpdated( lane.laneSection.road, lane.laneSection, lane );
+		this.laneHeightManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 
 		this.parkingLaneManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 

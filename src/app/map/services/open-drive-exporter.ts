@@ -555,9 +555,29 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			this.writeLaneAccess( laneNode, lane.getLaneAccess( i ) );
 		}
 
-		for ( let i = 0; i < lane.getLaneHeightCount(); i++ ) {
+		for ( let i = 0; i < lane.height.length; i++ ) {
 			this.writeLaneHeight( laneNode, lane.getLaneHeight( i ) );
 		}
+
+		// NOTE: commented logic is to avoid exporting redundant lane height data
+
+		// let prev = lane.height.length > 0 ? lane.height[ 0 ] : null;
+
+		// if ( prev ) this.writeLaneHeight( laneNode, prev );
+
+		// for ( let i = 1; i < lane.height.length; i++ ) {
+
+		// 	const current = lane.height[ i ];
+
+		// 	if ( !current.matches( prev ) ) {
+
+		// 		this.writeLaneHeight( laneNode, prev );
+
+		// 		prev = current;
+
+		// 	}
+
+		// }
 
 		xmlNode.lane.push( laneNode );
 

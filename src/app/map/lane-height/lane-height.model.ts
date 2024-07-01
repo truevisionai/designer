@@ -55,4 +55,9 @@ export class TvLaneHeight {
 	getLinearValue ( t: number ) {
 		return this.inner + ( this.outer - this.inner ) * t;
 	}
+
+	matches ( other: TvLaneHeight ) {
+		return this.inner === other.inner && this.outer === other.outer;
+	}
+
 }
