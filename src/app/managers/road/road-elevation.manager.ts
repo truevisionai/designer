@@ -41,7 +41,7 @@ export class RoadElevationManager {
 
 	}
 
-	syncPredecessor ( road: TvRoad ) {
+	private syncPredecessor ( road: TvRoad ) {
 
 		if ( !road.predecessor ) return;
 
@@ -56,6 +56,23 @@ export class RoadElevationManager {
 			lastElevation.a = road.getElevationValue( 0 );
 
 			TvUtils.computeCoefficients( predecessor.elevationProfile.elevation, predecessor.length );
+
+		}
+
+		if ( road.predecessor.isRoad ) {
+
+			const prevRoad = road.predecessor.element as TvRoad;
+
+			const prevSuperElevation = prevRoad.lateralProfile.superElevations.getLast();
+			const firstSuperElevation = road.lateralProfile.superElevations.getFirst();
+
+			if ( prevSuperElevation && firstSuperElevation ) {
+				prevSuperElevation.a = firstSuperElevation.a;
+			} else {
+				console.error( 'Super elevation not found predecessor', prevSuperElevation, firstSuperElevation );
+			}
+
+			prevRoad.lateralProfile.superElevations.computeCoefficients( prevRoad.length );
 
 		}
 
@@ -89,6 +106,23 @@ export class RoadElevationManager {
 			firstElevation.a = road.getElevationValue( road.length );
 
 			TvUtils.computeCoefficients( successor.elevationProfile.elevation, successor.length );
+
+		}
+
+		if ( road.successor.isRoad ) {
+
+			const nextRoad = road.successor.element as TvRoad;
+
+			const nextSuperElevation = nextRoad.lateralProfile.superElevations.getFirst();
+			const lastSuperElevation = road.lateralProfile.superElevations.getLast();
+
+			if ( nextSuperElevation && lastSuperElevation ) {
+				nextSuperElevation.a = lastSuperElevation.a;
+			} else {
+				console.error( 'Super elevation not found successor', nextSuperElevation, lastSuperElevation );
+			}
+
+			nextRoad.lateralProfile.superElevations.computeCoefficients( nextRoad.length );
 
 		}
 
@@ -141,16 +175,34 @@ export class RoadElevationManager {
 
 		// Add two default nodes if there are no nodes
 		if ( road.elevationProfile.elevation.length === 0 ) {
-			road.addElevation( 0, 0, 0, 0, 0 );
-			road.addElevation( road.length, 0, 0, 0, 0 );
-			return;
+			this.addFirstElevationNode( road );
+			this.addLastElevationNode( road );
 		}
 
 		// Add a node at the end if there's only one node
 		if ( road.elevationProfile.elevation.length === 1 ) {
-			road.addElevation( road.length, 0, 0, 0, 0 );
+			this.addLastElevationNode( road );
 		}
 
+		// Add two default nodes if there are no nodes
+		if ( road.lateralProfile.superElevations.length === 0 ) {
+			road.lateralProfile.addSuperElevation( 0, 0, 0, 0, 0 );
+			road.lateralProfile.addSuperElevation( road.length, 0, 0, 0, 0 );
+		}
+
+		// Add a node at the end if there's only one node
+		if ( road.lateralProfile.superElevations.length === 1 ) {
+			road.lateralProfile.addSuperElevation( road.length, 0, 0, 0, 0 );
+		}
+
+	}
+
+	addFirstElevationNode ( road: TvRoad ) {
+		road.addElevation( 0, 0, 0, 0, 0 );
+	}
+
+	addLastElevationNode ( road: TvRoad ) {
+		road.addElevation( road.length, 0, 0, 0, 0 );
 	}
 
 	private updateFirstAndLastNodes ( road: TvRoad ) {
@@ -165,6 +217,14 @@ export class RoadElevationManager {
 		if ( lastIndex >= 0 ) {
 			road.elevationProfile.elevation[ lastIndex ].s = road.length;
 		}
+
+		const firstSuperElevation = road.lateralProfile.superElevations.getFirst();
+
+		const lastSuperElevation = road.lateralProfile.superElevations.getLast();
+
+		if ( firstSuperElevation ) firstSuperElevation.s = 0;
+
+		if ( lastSuperElevation ) lastSuperElevation.s = road.length;
 
 	}
 

@@ -86,6 +86,10 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 	}
 
+	get spline () {
+		return this.road?.spline;
+	}
+
 	private get index () {
 		return this.road.spline?.controlPoints.indexOf( this );
 	}

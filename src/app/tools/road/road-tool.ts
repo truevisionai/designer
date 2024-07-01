@@ -242,6 +242,12 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 				this.handleControlPointMovement( this.currentPoint, position );
 
+				if ( this.currentPoint instanceof SplineControlPoint ) {
+					this.debugService.updateDebugState( this.currentPoint.spline, DebugState.SELECTED );
+				} else if ( this.currentPoint instanceof RoadControlPoint ) {
+					this.debugService.updateDebugState( this.currentPoint.spline, DebugState.SELECTED );
+				}
+
 				this.controlPointMoved = true;
 
 				this.tool.base.disableControls();

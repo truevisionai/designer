@@ -127,7 +127,7 @@ export class LaneLinkService {
 
 				if ( lane.side == TvLaneSide.CENTER ) return;
 
-				const previousLaneId = lane.predecessor || lane.id;
+				const previousLaneId = lane.predecessorId || lane.id;
 
 				const previousLane = connection.incomingRoad.getLastLaneSection().getLaneById( previousLaneId );
 

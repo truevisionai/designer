@@ -111,7 +111,7 @@ export class DebugDrawService {
 
 	}
 
-	createRoadWidthLinev2 ( road: TvRoad, s: number ): Line2 {
+	createRoadWidthLinev2<T> ( road: TvRoad, s: number, target?: T, width = 2 ): DebugLine<T> {
 
 		const result = road.getRoadWidthAt( s );
 
@@ -119,28 +119,8 @@ export class DebugDrawService {
 
 		const end = road.getPosThetaAt( s, -result.rightSideWidth );
 
-		const lineGeometry = new LineGeometry();
+		return this.createDebugLine( target, [ start.position, end.position ], width );
 
-		lineGeometry.setPositions( [
-			start.x, start.y, start.z + 0.1,
-			end.x, end.y, end.z + 0.1
-		] );
-
-		const lineMaterial = new LineMaterial( {
-			color: COLOR.RED,
-			linewidth: RoadNode.defaultWidth,
-			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
-			depthTest: false,
-			depthWrite: false,
-		} );
-
-		const line = new Line2( lineGeometry, lineMaterial );
-
-		line.name = 'DebugDrawService.createRoadWidthLine';
-
-		line.renderOrder = 3;
-
-		return line;
 	}
 
 	updateRoadWidthLine ( line: Line2, roadCoord: TvRoadCoord ): Line2 {
@@ -472,30 +452,28 @@ export class DebugDrawService {
 	 */
 	private getDirectedPoint ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, side: TvLaneSide = TvLaneSide.RIGHT ): TvPosTheta {
 
-		const point = this.roadService.findRoadPosition( road, sOffset );
-
-		let width: number;
+		let t: number;
 
 		if ( side === TvLaneSide.LEFT ) {
 
-			width = laneSection.getWidthUptoStart( lane, sOffset - laneSection.s );
+			t = laneSection.getWidthUptoStart( lane, sOffset - laneSection.s );
 
 		} else if ( side === TvLaneSide.CENTER ) {
 
-			width = laneSection.getWidthUptoCenter( lane, sOffset - laneSection.s );
+			t = laneSection.getWidthUptoCenter( lane, sOffset - laneSection.s );
 
 		} else {
 
-			width = laneSection.getWidthUptoEnd( lane, sOffset - laneSection.s );
+			t = laneSection.getWidthUptoEnd( lane, sOffset - laneSection.s );
 
 		}
 
 		// If right side lane then make the offset negative
 		if ( lane.side === TvLaneSide.RIGHT ) {
-			width *= -1;
+			t *= -1;
 		}
 
-		point.addLateralOffset( width );
+		const point = this.roadService.findRoadPosition( road, sOffset, t );
 
 		// NOTE: this can be used if we want hdg to be adjusted with travel direction
 		if ( lane.direction == TravelDirection.backward ) {
@@ -552,6 +530,20 @@ export class DebugDrawService {
 		positions.push( this.roadService.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
 
 		return positions;
+	}
+
+	getRoadPositions ( road: TvRoad, sStart: number, sEnd: number, stepSize = 0.1 ) {
+
+		const positions: TvPosTheta[] = [];
+
+		for ( let s = sStart; s < sEnd; s += stepSize ) {
+
+			positions.push( this.roadService.findRoadPosition( road, Maths.clamp( s, 0, road.length ), 0 ) )
+
+		}
+
+		return positions;
+
 	}
 
 	/**

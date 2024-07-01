@@ -63,29 +63,13 @@ export class RoadCircleToolService {
 
 	addRoad ( road: TvRoad ) {
 
-		this.showRoadNodes( road );
-
 		this.roadService.add( road );
 
 	}
 
 	removeRoad ( road: TvRoad ) {
 
-		this.hideRoadNodes( road );
-
 		this.roadService.remove( road );
-
-	}
-
-	showRoadNodes ( road: TvRoad ) {
-
-		// this.roadDebug.showRoadNodes( road );
-
-	}
-
-	hideRoadNodes ( road: TvRoad ) {
-
-		// this.roadDebug.removeRoadNodes( road );
 
 	}
 
@@ -182,20 +166,6 @@ export class RoadCircleToolService {
 
 			const road = roads[ i ] = this.roadFactory.createDefaultRoad();
 
-			for ( let i = 0; i < road.laneSections.length; i++ ) {
-
-				const laneSection = road.laneSections[ i ];
-
-				for ( const lane of laneSection.getLeftLanes() ) {
-
-					// TODO: check if we need to change the lane id also
-					// TODO: this is causing some bug due to direction changes
-					// lane.direction = TravelDirection.forward;
-
-				}
-
-			}
-
 			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 
 			const startPosTheta = arc.getRoadCoord( 0 );
@@ -250,9 +220,6 @@ export class RoadCircleToolService {
 				road.setSuccessorRoad( nextRoad, TvContactPoint.START );
 				nextRoad.setPredecessorRoad( road, TvContactPoint.END );
 
-				// this.roadLinkService.linkSuccessor( road, road.successor );
-				// this.roadLinkService.linkPredecessor( nextRoad, road.predecessor );
-
 			} else {
 
 				// its last road, so make connection with the first one
@@ -260,9 +227,6 @@ export class RoadCircleToolService {
 
 				road.setSuccessorRoad( firstRoad, TvContactPoint.START );
 				firstRoad.setPredecessorRoad( road, TvContactPoint.END );
-
-				// this.roadLinkService.linkSuccessor( road, road.successor );
-				// this.roadLinkService.linkPredecessor( firstRoad, road.predecessor );
 
 			}
 

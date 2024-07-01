@@ -405,7 +405,11 @@ export class JunctionManager {
 		if ( differentRoads ) {
 			// Handle junction segment for different roads
 		} else if ( this.isAtStartOrEndOfSpline( spline, sStart, sEnd, junctionWidth ) ) {
-			this.handleStartOrEndOfSpline( spline, junction, coords, sStart, sEnd, startSegment, endSegment, junctionWidth );
+			if ( startSegment instanceof TvRoad && endSegment instanceof TvRoad ) {
+				this.handleStartOrEndOfSpline( spline, junction, coords, sStart, sEnd, startSegment, endSegment, junctionWidth );
+			} else {
+				console.error( spline, startSegment, endSegment );
+			}
 		} else {
 			return this.createMiddleRoadCoords( spline, junction, sStart, sEnd );
 		}

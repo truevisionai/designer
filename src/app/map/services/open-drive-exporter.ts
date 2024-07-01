@@ -46,6 +46,7 @@ import { TvMapHeader } from "../models/tv-map-header";
 import { TvRoadTypeClass } from "../models/tv-road-type.class";
 import { TvRoadSpeed } from "../models/tv-road.speed";
 import { AssetExporter } from 'app/core/interfaces/asset-exporter';
+import { TvLateralProfileShape, TvSuperElevation } from '../models/tv-lateral.profile';
 
 @Injectable( {
 	providedIn: 'root'
@@ -170,7 +171,9 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		this.writeElevationProfile( xml, road );
 
-		this.writeLateralProfile( xml, road );
+		if ( road.lateralProfile ) {
+			xml[ 'lateralProfile' ] = this.writeLateralProfile( road );
+		}
 
 		this.writeLanes( xml, road );
 
@@ -395,7 +398,35 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeLateralProfile ( xmlNode, road: TvRoad ) {
+	public writeLateralProfile ( road: TvRoad ) {
+
+		return {
+			superelevation: road.lateralProfile.superElevations.map( superElevation => this.writeSuperElevation( superElevation ) ),
+			shape: road.lateralProfile.shapes.map( shape => this.writeLateralProfileShape( shape ) ),
+			crossSectionSurface: [],
+		}
+
+	}
+
+	writeSuperElevation ( superElevation: TvSuperElevation ): XmlElement {
+		return {
+			attr_s: superElevation.s,
+			attr_a: superElevation.a,
+			attr_b: superElevation.b,
+			attr_c: superElevation.c,
+			attr_d: superElevation.d,
+		};
+	}
+
+	writeLateralProfileShape ( shape: TvLateralProfileShape ): XmlElement {
+		return {
+			attr_s: shape.s,
+			attr_t: shape.t,
+			attr_a: shape.a,
+			attr_b: shape.b,
+			attr_c: shape.c,
+			attr_d: shape.d,
+		};
 	}
 
 	public writeLanes ( xmlNode, road: TvRoad ) {

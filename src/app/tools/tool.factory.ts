@@ -83,6 +83,10 @@ import { TrafficLightToolService } from './traffic-light/traffic-light-tool.serv
 import { EntityService } from "../scenario/entity/entity.service";
 import { LaneHeightToolService } from './lane-height/lane-height-tool.service';
 import { DebugConnectionTool, DebugConnectionToolService } from "./debug-connections/debug-connections.tool";
+import {
+	SuperElevationTool,
+	SuperElevationToolHelper
+} from "./road-super-elevation/super-elevation.tool";
 
 @Injectable( {
 	providedIn: 'root'
@@ -136,6 +140,9 @@ export class ToolFactory {
 				break;
 			case ToolType.RoadCircle:
 				tool = new RoadCircleTool( this.roadCircleService );
+				break;
+			case ToolType.SuperElevation:
+				tool = new SuperElevationTool( this.injector.get( SuperElevationToolHelper ) );
 				break;
 			case ToolType.Maneuver:
 				tool = new ManeuverTool( this.maneuverToolService );

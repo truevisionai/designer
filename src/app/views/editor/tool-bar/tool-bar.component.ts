@@ -131,7 +131,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 		{
 			id: 'showRoadElevationTool',
 			label: 'Elevation',
-			class: 'toolbar-button border-right',
+			class: 'toolbar-button',
 			toolType: ToolType.RoadElevation,
 			action: 'road-Elevation-tool',
 			icon: 'height',
@@ -139,6 +139,19 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			description: 'ROAD-ELEVATION-DESCRIPTION',
 			track: 'button',
 			click: () => this.setToolType( ToolType.RoadElevation ),
+			enabled: true,
+		},
+		{
+			id: 'showSuperElevationTool',
+			label: 'SuperElevation',
+			class: 'toolbar-button border-right',
+			toolType: ToolType.SuperElevation,
+			action: 'road-super-elevation-tool',
+			icon: 'replay',
+			title: 'SUPER-ELEVATION-TITLE',
+			description: 'SUPER-ELEVATION-DESCRIPTION',
+			track: 'button',
+			click: () => this.setToolType( ToolType.SuperElevation ),
 			enabled: true,
 		},
 		{
@@ -452,7 +465,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			icon: 'directions_car',
 			track: 'menu',
 			click: () => this.setToolType( ToolType.DebugConnections ),
-			enabled: true,
+			enabled: !Environment.production && Environment.experimentalTools,
 		},
 		{
 			id: 'environment',

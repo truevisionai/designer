@@ -5,8 +5,25 @@
 import { OrderedMap } from 'app/core/models/ordered-map';
 import { ThirdOrderPolynom } from './third-order-polynom';
 import { TvLateralProfileCrossfall } from './tv-lateral-profile-crossfall';
+import { OrderedArray } from "../../core/models/ordered-array";
 
+
+/**
+ * Superelevation does not change the actual width of a lane,
+ * but it affects the projected width. The default value for superelevation is zero
+ *
+ * Superelevation has positive values for roads falling to the right side
+ * and negative values for roads falling to the left side.
+ *
+ * Superelevation specifies the transverse slope along the road reference line.
+ * Superelevation is constant in each cross section and can vary in road
+ * reference line direction.
+ */
 export class TvSuperElevation extends ThirdOrderPolynom {
+
+	clone () {
+		return new TvSuperElevation( this.s, this.a, this.b, this.c, this.d );
+	}
 
 }
 
@@ -21,12 +38,12 @@ export class TvLateralProfileShape {
 
 export class TvLateralProfile {
 
-	public superElevations: OrderedMap<TvSuperElevation>;
+	public superElevations: OrderedArray<TvSuperElevation>;
 	public crossfalls: TvLateralProfileCrossfall[];
 	public shapes: TvLateralProfileShape[];
 
 	constructor () {
-		this.superElevations = new OrderedMap<TvSuperElevation>();
+		this.superElevations = new OrderedArray<TvSuperElevation>();
 		this.crossfalls = [];
 		this.shapes = [];
 	}

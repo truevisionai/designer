@@ -116,7 +116,7 @@ export class OrderedMap<T> extends Map<number, T> {
 
 	}
 
-	findAt ( query: number ) {
+	findAt ( query: number ): T | undefined {
 
 		let item = null;
 

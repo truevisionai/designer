@@ -100,6 +100,8 @@
     "SLIDER": "Slider",
     "SNACKBAR": "Snackbar",
     "SUBITEM": "Subitem",
+    "SUPER-ELEVATION-DESCRIPTION": "Tool to edit road roll angle or super elevation. <br/> Use SHIFT + LEFT CLICK to a node. <br/><br/> <img src='assets/Super-Elevation-Tool.gif'/>",
+    "SUPER-ELEVATION-TITLE": "Super Elevation Tool",
     "SWITCH": "Switch",
     "TABLES": "Tables",
     "TABS": "Tabs",
