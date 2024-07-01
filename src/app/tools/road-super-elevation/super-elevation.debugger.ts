@@ -13,7 +13,7 @@ import { Vector3 } from 'three';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { DebugLine } from "../../objects/debug-line";
 import { DebugDrawService } from "../../services/debug/debug-draw.service";
-import { RoadService } from "../../services/road/road.service";
+import { RoadDebugService } from 'app/services/debug/road-debug.service';
 
 
 @Injectable( {
@@ -30,7 +30,10 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 	private spanLines: Object3DArrayMap<TvRoad, DebugLine<TvSuperElevation>[]>
 	private spanCache: Map<TvSuperElevation, DebugLine<TvSuperElevation>>;
 
-	constructor ( private debugService: DebugDrawService, private roadService: RoadService ) {
+	constructor (
+		private debugService: DebugDrawService,
+		private roadDebugger: RoadDebugService,
+	) {
 
 		super();
 
@@ -49,11 +52,15 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 	}
 
 	onHighlight ( road: TvRoad ): void {
-		//
+
+		this.roadDebugger.showRoadBorderLine( road );
+
 	}
 
 	onUnhighlight ( road: TvRoad ): void {
-		//
+
+		this.roadDebugger.removeRoadBorderLine( road );
+
 	}
 
 	onSelected ( road: TvRoad ): void {
@@ -192,6 +199,8 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 		this.nodeLines.clear();
 
 		this.spanLines.clear();
+
+		this.roadDebugger.clear();
 
 	}
 }

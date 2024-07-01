@@ -57,7 +57,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy( false, true, this.helper.toolDebugger ) );
 
 		// this.base.addMovingStrategy( new RoadLineMovingStrategy() );
 
