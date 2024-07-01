@@ -133,7 +133,7 @@ export class LaneLinkService {
 
 				if ( previousLane ) {
 
-					const lastRoadMark = previousLane.roadMarks[ previousLane.roadMarks.size - 1 ];
+					const lastRoadMark = previousLane.roadMarks.getLast();
 
 					if ( lastRoadMark ) {
 						lane.addRoadMarkInstance( lastRoadMark.clone( 0, lane ) );
