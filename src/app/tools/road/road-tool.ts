@@ -32,6 +32,8 @@ import { UpdatePositionCommand } from "../../commands/update-position-command";
 import { Environment } from "../../core/utils/environment";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
+import { AddObjectCommand } from 'app/commands/add-object-command';
+import { SelectObjectCommand } from 'app/commands/select-object-command';
 
 export class RoadTool extends BaseTool<AbstractSpline> {
 
@@ -363,6 +365,8 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
+			object.select();
+
 			this.addPoint( object );
 
 		}
@@ -641,7 +645,13 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		const point = ControlPointFactory.createControl( spline, position );
 
-		this.executeAddAndSelect( point, this.currentPoint );
+		const addSplineCommand = new AddObjectCommand( spline );
+
+		const addPointCommand = new AddObjectCommand( point );
+
+		const selectCommand = new SelectObjectCommand( point, this.currentSelectedPoint );
+
+		CommandHistory.executeMany( addSplineCommand, addPointCommand, selectCommand );
 
 	}
 
