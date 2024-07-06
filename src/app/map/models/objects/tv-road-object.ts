@@ -335,7 +335,7 @@ export class TvRoadObject {
 
 	static orientationFromString ( orientation: string ): TvOrientation {
 
-		switch ( orientation.toLowerCase().trim() ) {
+		switch ( orientation?.toLowerCase().trim() ) {
 
 			case 'none':
 				return TvOrientation.NONE;

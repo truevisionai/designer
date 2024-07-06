@@ -247,19 +247,19 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	public parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ) {
 
-		if ( xmlElement.predecessor != null ) {
+		if ( xmlElement?.predecessor != null ) {
 
 			road.predecessor = this.parseRoadLinkChild( xmlElement.predecessor );
 
 		}
 
-		if ( xmlElement.successor != null ) {
+		if ( xmlElement?.successor != null ) {
 
 			road.successor = this.parseRoadLinkChild( xmlElement.successor );
 
 		}
 
-		if ( xmlElement.neighbor != null ) {
+		if ( xmlElement?.neighbor != null ) {
 
 			console.error( 'neighbour not supported' );
 
