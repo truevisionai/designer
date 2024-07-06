@@ -30,6 +30,8 @@ export class SnackBar {
 
 	error ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
 
+		console.error( message );
+
 		return this.snackBar.open( message, action, {
 			duration: duration,
 			verticalPosition: 'bottom',
