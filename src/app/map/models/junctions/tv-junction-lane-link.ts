@@ -2,21 +2,26 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from '../../../services/scene.service';
-import { TvJunctionConnection } from './tv-junction-connection';
+import { TvContactPoint } from '../tv-common';
 import { TvLane } from '../tv-lane';
+import { TvRoad } from '../tv-road.model';
 
 export class TvJunctionLaneLink {
 
 	public incomingLane: TvLane;
+	public incomingRoad?: TvRoad;
+	public incomingContactPoint?: TvContactPoint;
+
 	public connectingLane: TvLane;
+	public connectingRoad?: TvRoad;
+	public connectingContactPoint?: TvContactPoint;
 
 	/**
 	 *
 	 * @param from ID of the incoming lane
 	 * @param to ID of the connecting lane
 	 */
-	constructor ( from: TvLane, to: TvLane, private connection?: TvJunctionConnection ) {
+	constructor ( from: TvLane, to: TvLane ) {
 		this.incomingLane = from;
 		this.connectingLane = to;
 	}
@@ -29,23 +34,16 @@ export class TvJunctionLaneLink {
 		return this.connectingLane?.id;
 	}
 
-	get incomingRoad () {
-		return this.incomingLane?.laneSection?.road;
-	}
-
-	get connectingRoad () {
-		return this.connectingLane?.laneSection?.road;
-	}
-
-	delete () {
-
-		this.connectingLane.laneSection.removeLane( this.connectingLane );
-
-	}
-
 	clone (): any {
 
-		return new TvJunctionLaneLink( this.incomingLane, this.connectingLane, this.connection );
+		const link = new TvJunctionLaneLink( this.incomingLane, this.connectingLane );
+
+		link.incomingRoad = this.incomingRoad;
+		link.connectingRoad = this.connectingRoad;
+		link.incomingContactPoint = this.incomingContactPoint;
+		link.connectingContactPoint = this.connectingContactPoint;
+
+		return link;
 
 	}
 

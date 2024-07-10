@@ -46,9 +46,11 @@ export class SceneBuilderService {
 
 		SceneService.removeFromMain( map.gameObject );
 
-		map.getSplines().forEach( spline => this.buildSpline( map, spline ) );
+		map.getSplines().forEach( spline => this.splineBuilder.buildSpline( spline ) );
 
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
+
+		map.getSplines().forEach( spline => this.splineBuilder.buildBoundingBox( spline ) );
 
 		// NOTE: note needed as road builder already is building these
 		// map.getRoads().forEach( road => this.roadObjectService.buildRoadObjects( road ) );
@@ -101,7 +103,7 @@ export class SceneBuilderService {
 				road.sStart = 0;
 			}
 
-			if ( road.spline.segmentMap.size == 0 ) {
+			if ( road.spline.segmentMap.length == 0 ) {
 				road.spline.segmentMap.set( 0, road );
 			}
 
@@ -138,9 +140,4 @@ export class SceneBuilderService {
 
 	}
 
-	private buildSpline ( map: TvMap, spline: AbstractSpline ) {
-
-		this.splineBuilder.buildSpline( spline );
-
-	}
 }

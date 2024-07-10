@@ -12,6 +12,9 @@ import { JunctionManager } from "./junction-manager";
 import { JunctionFactory } from "app/factories/junction.factory";
 import { MapService } from "app/services/map/map.service";
 
+/**
+ * @deprecated
+ */
 @Injectable( {
 	providedIn: 'root'
 } )

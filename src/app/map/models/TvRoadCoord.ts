@@ -10,6 +10,14 @@ import { Maths } from 'app/utils/maths';
 import { TvLaneCoord } from './tv-lane-coord';
 import { TvLane } from './tv-lane';
 
+export class TvRoadEdge {
+	constructor (
+		public road: TvRoad,
+		public contact: TvContactPoint
+	) {
+	}
+}
+
 export class TvRoadCoord {
 
 	constructor ( public road: TvRoad, public s: number, public t: number = 0, public z: number = 0, public h?, public p?, public r?) {

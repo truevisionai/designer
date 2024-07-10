@@ -7,6 +7,8 @@ import { SplineService } from 'app/services/spline/spline.service';
 import { ManeuverRoadDebugger } from "../../map/maneuver-road/maneuver-road.debugger";
 import { JunctionDebugService } from "../../services/junction/junction.debug";
 import { JunctionService } from "../../services/junction/junction.service";
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineControlPoint } from 'app/objects/spline-control-point';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,5 +21,13 @@ export class ManeuverToolService {
 		public maneuverDebugger: ManeuverRoadDebugger,
 		public junctionDebugger: JunctionDebugService,
 	) { }
+
+	addControlPoint ( spline: AbstractSpline, point: SplineControlPoint ) {
+		this.splineService.addControlPoint( spline, point );
+	}
+
+	removeControlPoint ( spline: AbstractSpline, point: SplineControlPoint ) {
+		this.splineService.removeControlPoint( spline, point );
+	}
 
 }

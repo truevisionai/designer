@@ -187,7 +187,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 				if ( lane.isLeft ) posTheta.hdg += Math.PI;
 
-				const mesh1 = this.createEntryExitBoxMesh( posTheta.toVector3(), posTheta.hdg, laneWidth );
+				const mesh1 = this.debug.createEntryExitBoxMesh( posTheta.toVector3(), posTheta.hdg, laneWidth );
 
 				this.entries.addItem( junction, mesh1 );
 
@@ -207,7 +207,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 				if ( lane.isLeft ) posTheta.hdg += Math.PI;
 
-				const mesh2 = this.createEntryExitBoxMesh( posTheta.toVector3(), posTheta.hdg, laneWidth );
+				const mesh2 = this.debug.createEntryExitBoxMesh( posTheta.toVector3(), posTheta.hdg, laneWidth );
 
 				this.entries.addItem( junction, mesh2 );
 
@@ -235,43 +235,6 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		}
 
-	}
-
-	createEntryExitBoxMesh ( position: Vector3, hdg = 0, laneWidth = 3.6 ) {
-
-		const texture = OdTextures.arrowCircle();
-
-		const material = new MeshStandardMaterial( {
-			map: texture,
-			alphaTest: 0.9,
-			transparent: true,
-			color: COLOR.SKYBLUE,
-			depthTest: false,
-			depthWrite: false
-		} );
-
-		const geometry = new PlaneGeometry( 1, 1 );
-
-		const mesh = new Mesh( geometry, material );
-
-		mesh.name = 'entry-exit-point';
-
-		mesh.position.copy( position );
-
-		// Compute the direction vector from the heading
-		const direction = new Vector3( Math.cos( hdg ), Math.sin( hdg ), 0 ).normalize();
-
-		// Apply the rotation to the mesh based on the computed direction
-		mesh.quaternion.setFromUnitVectors( new Vector3( 0, 1, 0 ), direction );
-
-		const boxLine = new BoxGeometry( laneWidth, 0.5, 0.01 );
-		const meshLine = new Mesh( boxLine, new MeshBasicMaterial( { color: COLOR.GREEN } ) );
-
-		mesh.add( meshLine );
-
-		// this.entryExitMeshes.push( mesh );
-
-		return mesh;
 	}
 
 	private createManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {

@@ -16,6 +16,8 @@ const LINE_WIDTH = 2.0;
 } )
 export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
+	private showBoundingBox = false;
+
 	constructor (
 		private splineDebugger: SplineDebugService,
 	) {
@@ -38,6 +40,8 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.showBorder( spline );
 		// this.splineDebugger.showNodes( spline );
 
+		if ( this.showBoundingBox ) this.splineDebugger.showBoundingBox( spline );
+
 	}
 
 	onHighlight ( spline: AbstractSpline ): void {
@@ -48,6 +52,8 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 		this.splineDebugger.showBorder( spline );
 		this.splineDebugger.showArrows( spline );
+
+		if ( this.showBoundingBox ) this.splineDebugger.showBoundingBox( spline );
 
 	}
 
@@ -75,6 +81,8 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.showCurvature( spline );
 		this.splineDebugger.showPolyline( spline );
 		this.splineDebugger.showControlPoints( spline );
+
+		if ( this.showBoundingBox ) this.splineDebugger.showBoundingBox( spline );
 
 	}
 

@@ -7,7 +7,6 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map/map.service";
 import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { Box3 } from "three";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { JunctionManager } from "./junction-manager";
@@ -34,9 +33,11 @@ export class SplineManager {
 
 		this.validateSpline( spline );
 
-		this.buildSpline( spline ); 											// first step is always to build the spline from the control points
+		this.splineBuilder.buildSpline( spline );
 
-		this.updateSplineBoundingBox( spline );
+		this.splineBuilder.buildSegments( spline );
+
+		this.splineBuilder.buildBoundingBox( spline );
 
 		this.splineService.updateWidthCache( spline );
 
@@ -48,21 +49,22 @@ export class SplineManager {
 
 		this.validateSpline( spline );
 
-		this.buildSpline( spline );												// first step is always to build the spline from the control points
+		this.splineBuilder.buildSpline( spline );
 
-		for ( const road of this.splineService.getRoads( spline ) ) {
+		this.splineBuilder.buildSegments( spline );
 
-			this.roadManager.updateRoad( road );
+		// TODO: Check if this is needed
+		// for ( const road of this.splineService.getRoads( spline ) ) {
+		// 	this.roadManager.updateRoad( road );
+		// }
 
-		}
+		this.splineBuilder.buildBoundingBox( spline );
 
 		this.splineService.updateWidthCache( spline );
 
 		this.syncSuccessorSpline( spline );
 
 		this.syncPredecessorSpline( spline );
-
-		this.updateSplineBoundingBox( spline );
 
 		this.junctionManager.updateJunctions( spline );
 
@@ -76,9 +78,8 @@ export class SplineManager {
 
 			if ( segment instanceof TvJunction ) {
 
-				this.junctionManager.removeJunction( segment );
+				this.junctionManager.removeJunction( segment, spline );
 
-				this.mapService.map.removeJunction( segment );
 			}
 
 		}
@@ -187,7 +188,7 @@ export class SplineManager {
 
 		}
 
-		this.buildSpline( nextRoad.spline );
+		this.splineBuilder.buildSpline( nextRoad.spline );
 
 	}
 
@@ -227,13 +228,7 @@ export class SplineManager {
 
 		}
 
-		this.buildSpline( prevRoad.spline );
-
-	}
-
-	private buildSpline ( spline: AbstractSpline ): void {
-
-		this.splineBuilder.buildSpline( spline );
+		this.splineBuilder.buildSpline( prevRoad.spline );
 
 	}
 
@@ -245,11 +240,18 @@ export class SplineManager {
 
 		if ( segments.length == 0 ) {
 
-			this.addDefaultSegment( spline, this.splineService.findFirstRoad( spline ) );
+			const road = this.roadFactory.createDefaultRoad();
 
-		}
+			road.spline = spline;
 
-		if ( segments.length >= 1 ) {
+			spline.segmentMap.set( 0, road );
+
+			this.mapService.map.addRoad( road );
+
+			// TODO: check if need this or not
+			// this.roadManager.addRoad( road );
+
+		} else if ( segments.length >= 1 ) {
 
 			const firstSegment = this.splineService.findFirstRoad( spline );
 
@@ -261,124 +263,8 @@ export class SplineManager {
 
 		}
 
-		// const roads = this.splineService.getRoads( spline );
-
-		// // remove invalid segment that has no geometries
-		// for ( let i = 0; i < roads.length; i++ ) {
-		//
-		// 	const road = roads[ i ];
-		//
-		// 	if ( road.geometries.length > 0 ) continue;
-		//
-		// 	this.roadManager.removeRoad( road );
-		//
-		// }
-
 	}
 
-	private addDefaultSegment ( spline: AbstractSpline, input?: TvRoad ) {
-
-		const segments = spline.segmentMap.toArray();
-
-		if ( segments.length == 0 && spline.controlPoints.length >= 2 ) {
-
-			let road: TvRoad;
-
-			if ( !input ) {
-				road = this.roadFactory.createDefaultRoad();
-			}
-
-			road.spline = spline;
-			road.successor = null;
-			road.predecessor = null;
-			spline.segmentMap.set( 0, road );
-
-
-			this.mapService.map.addRoad( road );
-			// this.roadManager.addRoad( road );
-		}
-	}
-
-	private updateSplineBoundingBox ( spline: AbstractSpline ) {
-
-		if ( spline.controlPoints.length < 2 ) return;
-
-		let boundingBox = new Box3();
-
-		const segments = spline.segmentMap.toArray();
-
-		for ( let i = 0; i < segments.length; i++ ) {
-
-			const segment = segments[ i ];
-
-			if ( segment instanceof TvRoad ) {
-
-				if ( segment.boundingBox ) {
-
-					boundingBox.union( segment.boundingBox );
-
-				} else {
-
-					segment.computeBoundingBox();
-
-					if ( segment.boundingBox ) {
-
-						boundingBox.union( segment.boundingBox );
-
-					} else {
-
-						boundingBox = null;
-
-					}
-				}
-			}
-		}
-
-		if ( !boundingBox ) {
-			boundingBox = this.updateSplineBouningBoxFromGeometry( spline );
-		}
-
-		if ( !boundingBox ) {
-			console.error( "boundingBox is null", spline );
-			return;
-		}
-
-		spline.boundingBox = boundingBox;
-
-	}
-
-	private updateSplineBouningBoxFromGeometry ( spline: AbstractSpline ) {
-
-		const boundingBox = new Box3();
-
-		const segments = spline.segmentMap.toArray();
-
-		for ( let i = 0; i < segments.length; i++ ) {
-
-			const segment = segments[ i ];
-
-			if ( segment instanceof TvRoad ) {
-
-				const roadLength = segment.length;
-
-				for ( let s = 0; s < roadLength; s++ ) {
-
-					const width = segment.getRoadWidthAt( s );
-
-					const left = segment.getPosThetaAt( s, -width.totalWidth );
-					const right = segment.getPosThetaAt( s, width.totalWidth );
-
-					boundingBox.expandByPoint( left.position );
-					boundingBox.expandByPoint( right.position );
-
-				}
-
-			}
-
-		}
-
-		return boundingBox;
-	}
 }
 
 

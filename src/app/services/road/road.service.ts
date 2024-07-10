@@ -101,7 +101,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	createRampRoad ( connectionLane: TvLane ) {
+	createRampRoad ( connectionLane?: TvLane ) {
 
 		return this.roadFactory.createRampRoad( connectionLane );
 

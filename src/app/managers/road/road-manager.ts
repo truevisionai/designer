@@ -13,7 +13,6 @@ import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadLinkManager } from "./road-link.manager";
 import { SceneService } from "app/services/scene.service";
 import { SplineService } from "../../services/spline/spline.service";
-import { RoadService } from "../../services/road/road.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -29,7 +28,6 @@ export class RoadManager {
 		private splineBuilder: SplineBuilder,
 		private roadLinkManager: RoadLinkManager,
 		private splineService: SplineService,
-		private roadService: RoadService,
 	) {
 	}
 
@@ -77,7 +75,7 @@ export class RoadManager {
 
 		}
 
-		if ( road.spline.segmentMap.size == 0 ) {
+		if ( road.spline.segmentMap.length == 0 ) {
 
 		} else {
 
@@ -101,25 +99,15 @@ export class RoadManager {
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
-		this.updateRoadGeometries( road );
-
 		this.roadElevationManager.onRoadUpdated( road );
 
 		this.rebuildRoad( road );
-
-		this.updateRoadBoundingBox( road );
 
 		this.buildLinks( road );
 
 		this.updateRoadObjects( road );
 
 		this.mapService.setRoadOpacity( road );
-
-	}
-
-	private updateRoadBoundingBox ( road: TvRoad ) {
-
-		road.computeBoundingBox();
 
 	}
 
@@ -166,8 +154,4 @@ export class RoadManager {
 		this.roadBuilder.rebuildRoad( road, this.mapService.map );
 	}
 
-
-	private updateRoadGeometries ( road: TvRoad ) {
-
-	}
 }

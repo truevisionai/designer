@@ -5,17 +5,20 @@
 import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from "../../models/TvRoadCoord";
-import { TvContactPoint, TvLaneSide, TvLaneType } from "../../models/tv-common";
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../../models/tv-common";
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { RoadService } from '../../../services/road/road.service';
 import { TrafficRule } from 'app/map/models/traffic-rule';
 import { MapService } from '../../../services/map/map.service';
-import { LaneLinkService } from '../../../services/junction/lane-link.service';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
-import { RoadBuilder } from "../../builders/road.builder";
 import { SplineBuilder } from "../../../services/spline/spline.builder";
+import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
+import { TvLane } from 'app/map/models/tv-lane';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { LaneUtils } from 'app/utils/lane.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,10 +27,8 @@ export class ConnectionService {
 
 	constructor (
 		private splineBuilder: SplineBuilder,
-		private roadBuilder: RoadBuilder,
 		private roadService: RoadService,
 		private mapService: MapService,
-		private linkService: LaneLinkService
 	) {
 	}
 
@@ -135,10 +136,12 @@ export class ConnectionService {
 
 		this.splineBuilder.buildSpline( connection.connectingRoad.spline );
 
-		// this.roadBuilder.buildRoad( connection.connectingRoad );
-		this.roadBuilder.rebuildRoad( connectingRoad, this.mapService.map );
+		this.splineBuilder.buildSegments( connection.connectingRoad.spline );
 
-		this.linkService.createDrivingLinks( connection, incoming, outgoing );
+		// NOTE: bounding box will not be built for if road has not lanes
+		// this.splineBuilder.buildBoundingBox( connection.connectingRoad.spline );
+
+		this.createDrivingLinks( connection, incoming, outgoing );
 
 		if ( isCorner ) {
 
@@ -146,6 +149,18 @@ export class ConnectionService {
 
 			connection.connectingRoad.markAsCornerRoad();
 
+		}
+
+		return connection;
+	}
+
+	createConnectionV3 ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): TvJunctionConnection {
+
+		const connection = this.createConnection( junction, incoming, outgoing, isCorner );
+
+		if ( connection.laneLink.length == 0 ) {
+			console.error( 'No lane links created', connection );
+			return;
 		}
 
 		return connection;
@@ -239,9 +254,9 @@ export class ConnectionService {
 
 		if ( !isCorner ) return connection;
 
-		this.linkService.createNonDrivingLinks( connection );
+		this.createNonDrivingLinks( connection );
 
-		this.linkService.addRoadMarks( connection );
+		this.addRoadMarks( connection );
 
 		// add missing lanes if any
 		if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
@@ -290,4 +305,226 @@ export class ConnectionService {
 		return connection;
 	}
 
+	createDrivingLinks ( connection: TvJunctionConnection, incoming: TvRoadCoord, outgoing: TvRoadCoord ) {
+
+		const incomingDirection = LaneUtils.determineDirection( incoming.contact );
+		const outgoingDirection = LaneUtils.determineOutgoingDirection( incoming, outgoing );
+
+		const incomingLaneCoords = incoming.laneSection.getLaneArray()
+			.filter( lane => lane.type == TvLaneType.driving || lane.type == TvLaneType.shoulder )
+			.filter( lane => lane.direction === incomingDirection )
+			.map( lane => incoming.toLaneCoord( lane ) );
+
+		const outgoingLaneCoords = outgoing.laneSection.getLaneArray()
+			.filter( lane => lane.type == TvLaneType.driving || lane.type == TvLaneType.shoulder )
+			.filter( lane => lane.direction === outgoingDirection )
+			.map( lane => outgoing.toLaneCoord( lane ) );
+
+		for ( let i = 0; i < incomingLaneCoords.length; i++ ) {
+
+			const laneCoord = incomingLaneCoords[ i ];
+
+			const link = this.createLink( connection, laneCoord, outgoingLaneCoords );
+
+			if ( !link ) continue;
+
+			connection.addLaneLink( link );
+		}
+
+	}
+
+	createNonDrivingLinks ( connection: TvJunctionConnection ): TvJunctionConnection {
+
+		function computeS ( lane: TvLane, contact: TvContactPoint ): number {
+
+			if ( contact == TvContactPoint.START ) {
+
+				return 0;
+
+			} else if ( contact == TvContactPoint.END ) {
+
+				return lane.laneSection.road.length;
+
+			}
+
+		}
+
+		const incomingContact = connection.connectingRoad.predecessor.contactPoint;
+		const outgoingContact = connection.connectingRoad.successor.contactPoint;
+
+		const incomingDirection = LaneUtils.determineDirection( incomingContact );
+		let outgoingDirection = TravelDirection.forward;
+
+		if ( incomingContact != outgoingContact ) {
+
+			outgoingDirection = incomingDirection;
+
+		} else {
+
+			if ( incomingDirection === TravelDirection.forward ) {
+
+				outgoingDirection = TravelDirection.backward;
+
+			} else {
+
+				outgoingDirection = TravelDirection.forward;
+
+			}
+
+		}
+
+		const incomingCoords = connection.getIncomingLanes()
+			.filter( lane => lane.type != TvLaneType.driving )
+			.filter( lane => lane.direction === incomingDirection )
+			.map( lane => new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, computeS( lane, incomingContact ), 0 ) );
+
+		const outgoingCoords = connection.getOutgoingLanes()
+			.filter( lane => lane.type != TvLaneType.driving )
+			.filter( lane => lane.direction === outgoingDirection )
+			.map( lane => new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, computeS( lane, outgoingContact ), 0 ) );
+
+		for ( let i = 0; i < incomingCoords.length; i++ ) {
+
+			const incomingCoord = incomingCoords[ i ];
+
+			const link = this.createLink( connection, incomingCoord, outgoingCoords );
+
+			if ( !link ) continue;
+
+			connection.addLaneLink( link );
+
+		}
+
+		return connection;
+	}
+
+	addRoadMarks ( connection: TvJunctionConnection ): TvJunctionConnection {
+
+		connection.connectingRoad.laneSections.forEach( laneSection => {
+
+			laneSection.lanes.forEach( lane => {
+
+				if ( lane.side == TvLaneSide.CENTER ) return;
+
+				const previousLaneId = lane.predecessorId || lane.id;
+
+				const previousLane = connection.incomingRoad.getLastLaneSection().getLaneById( previousLaneId );
+
+				if ( previousLane ) {
+
+					const lastRoadMark = previousLane.roadMarks.getLast();
+
+					if ( lastRoadMark ) {
+						lane.addRoadMarkInstance( lastRoadMark.clone( 0, lane ) );
+					}
+
+				}
+
+			} );
+
+		} );
+
+		// TODO: test and
+		return;
+
+		// function computeS ( lane: TvLane, contact: TvContactPoint ): number {
+
+		// 	if ( contact == TvContactPoint.START ) {
+
+		// 		return 0;
+
+		// 	} else if ( contact == TvContactPoint.END ) {
+
+		// 		return lane.laneSection.road.length;
+
+		// 	}
+
+		// }
+
+		// const incomingContact = connection.connectingRoad.predecessor.contactPoint;
+		// const outgoingContact = connection.connectingRoad.successor.contactPoint;
+
+		// const incomingDirection = this.determineDirection( incomingContact );
+		// const outgoingDirection = this.determineDirection( outgoingContact );
+
+		// const incomingCoords = connection.getIncomingLanes()
+		// 	.filter( lane => lane.direction === outgoingDirection )
+		// 	.map( lane => new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, computeS( lane, incomingContact ), 0 ) );
+
+		// for ( let i = 0; i < incomingCoords.length; i++ ) {
+
+		// 	const incoming = incomingCoords[ i ];
+
+		// 	const roadmark = incoming.lane.getRoadMarkAt( incoming.s );
+
+		// 	const laneLink = connection.laneLink.find( link => link.incomingLane === incoming.lane );
+
+		// 	if ( roadmark && laneLink ) {
+		// 		laneLink.connectingLane.addRoadMarkInstance( roadmark.clone( 0 ) );
+		// 	}
+
+		// }
+
+		// return connection;
+	}
+
+	private createLink ( connection: TvJunctionConnection, incoming: TvLaneCoord, outgoingLanes: TvLaneCoord[] ) {
+
+		const roadLength = connection.connectingRoad.length;
+
+		let outgoing: TvLaneCoord;
+
+		const outgoingLane = TvLaneSection.getNearestLane( outgoingLanes.map( i => i.lane ), incoming.lane );
+
+		if ( !outgoingLane ) return;
+
+		outgoing = outgoingLanes.find( i => i.lane === outgoingLane );
+
+		if ( !outgoing ) return;
+
+		// check if this outgoing lane is already connected
+		const exists = connection.laneLink.find( link => link.connectingLane.successorId == outgoing.lane.id );
+
+		if ( exists ) return;
+
+		const newLaneId = -Math.abs( incoming.lane.id );
+
+		// avoids adding the same lane twice
+		if ( connection.connectingLaneSection.hasLaneId( newLaneId ) ) return;
+
+		const connectionLane = connection.connectingLaneSection.addLane(
+			TvLaneSide.RIGHT,
+			newLaneId,
+			incoming.lane.type,
+			incoming.lane.level,
+			true
+		);
+
+		connectionLane.predecessorId = incoming.lane.id;
+		connectionLane.successorId = outgoing.lane.id;
+
+		// NOTE: THIS CAN probably be added in road event listener also
+		const widhtAtStart = incoming.lane.getWidthValue( incoming.s );
+		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
+		connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
+		connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
+		TvUtils.computeCoefficients( connectionLane.width, roadLength );
+
+		return this.createLaneLink( incoming.lane, connectionLane, incoming, connection.connectingRoad );
+
+	}
+
+	private createLaneLink ( from: TvLane, to: TvLane, incoming: TvLaneCoord | TvRoadCoord, connectingRoad: TvRoad ) {
+
+		const link = new TvJunctionLaneLink( from, to );
+
+		link.incomingRoad = incoming.road;
+		link.incomingContactPoint = incoming.contact;
+
+		link.connectingRoad = connectingRoad;
+		link.connectingContactPoint = TvContactPoint.START;
+
+		return link;
+
+	}
 }

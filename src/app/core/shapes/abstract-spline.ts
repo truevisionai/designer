@@ -3,12 +3,11 @@
  */
 
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
-import * as THREE from 'three';
-import { MathUtils, Vector3 } from 'three';
+import { Box3, MathUtils, Vector3 } from 'three';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { OrderedMap } from '../models/ordered-map';
+import { OrderedMap } from "../models/ordered-map";
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -26,7 +25,7 @@ export abstract class AbstractSpline {
 
 	public uuid: string;
 
-	public boundingBox: THREE.Box3;
+	public boundingBox: Box3;
 
 	public controlPoints: AbstractControlPoint[] = [];
 

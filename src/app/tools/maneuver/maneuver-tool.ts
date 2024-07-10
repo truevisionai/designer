@@ -9,8 +9,8 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { DebugServiceProvider } from 'app/core/providers/debug-service.provider';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DebugState } from "../../services/debug/debug-state";
-import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { ManeuverMesh } from 'app/services/junction/junction.debug';
+import { ManeuverControlPointInspector, ManeuverInspector } from './maneuver.inspector';
 
 export class ManeuverTool extends BaseTool<any> {
 
@@ -73,11 +73,49 @@ export class ManeuverTool extends BaseTool<any> {
 
 	}
 
+	onObjectAdded ( object: any ): void {
+
+		if ( object instanceof SplineControlPoint ) {
+
+			this.tool.addControlPoint( object.spline, object );
+
+		} else {
+
+			super.onObjectAdded( object );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: any ): void {
+
+		if ( object instanceof SplineControlPoint ) {
+
+			this.tool.removeControlPoint( object.spline, object );
+
+		} else {
+
+			super.onObjectRemoved( object );
+
+		}
+
+	}
+
 	onObjectSelected ( object: any ): void {
 
 		const debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
 
 		debugService?.onSelected( object );
+
+		if ( object instanceof ManeuverMesh ) {
+
+			this.setInspector( new ManeuverInspector( object ) );
+
+		} else if ( object instanceof SplineControlPoint ) {
+
+			this.setInspector( new ManeuverControlPointInspector( object ) );
+
+		}
 
 	}
 
@@ -86,6 +124,16 @@ export class ManeuverTool extends BaseTool<any> {
 		const debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
 
 		debugService?.onUnselected( object );
+
+		if ( object instanceof ManeuverMesh ) {
+
+			this.clearInspector();
+
+		} else if ( object instanceof SplineControlPoint ) {
+
+			this.clearInspector();
+
+		}
 
 	}
 

@@ -42,6 +42,7 @@ import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { TvTransform } from 'app/map/models/tv-transform';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
+import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 
 @Injectable( {
 	providedIn: 'root'
@@ -139,6 +140,16 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	exportSpline ( spline: AbstractSpline ): any {
 
+		function exportSegmentType ( segment: NewSegment ): string {
+			if ( segment instanceof TvRoad ) {
+				return SplineSegmentType.ROAD;
+			} else if ( segment instanceof TvJunction ) {
+				return SplineSegmentType.JUNCTION;
+			} else {
+				return null;
+			}
+		}
+
 		if ( spline instanceof AutoSpline ) {
 
 			return {
@@ -153,7 +164,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 					return {
 						attr_start: s,
 						attr_id: segment.id,
-						attr_type: segment.type,
+						attr_type: exportSegmentType( segment )
 					};
 				} )
 			};
@@ -173,7 +184,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 				roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
 					attr_start: s,
 					attr_id: segment.id,
-					attr_type: segment.type,
+					attr_type: exportSegmentType( segment )
 				} ) )
 			};
 
@@ -194,7 +205,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 				roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
 					attr_start: s,
 					attr_id: segment.id,
-					attr_type: segment.type,
+					attr_type: exportSegmentType( segment )
 				} ) )
 			};
 
@@ -686,6 +697,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			attr_type: TvLane.typeToString( lane.type ),
 			attr_level: lane.level === true ? 'true' : 'false',
 			attr_materialGuid: lane.threeMaterialGuid,
+			attr_direction: lane.direction,
 			link: {},
 			width: lane.width.map( width => this.writeLaneWidth( width ) ),
 			roadMark: lane.roadMarks.map( mark => this.writeLaneRoadMark( mark ) ),

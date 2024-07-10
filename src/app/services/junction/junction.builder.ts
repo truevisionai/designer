@@ -7,6 +7,7 @@ import {
 	BufferAttribute,
 	BufferGeometry,
 	FrontSide,
+	Group,
 	Mesh,
 	MeshStandardMaterial,
 	RepeatWrapping,
@@ -24,6 +25,7 @@ import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoadLinkChildType } from "../../map/models/tv-road-link-child";
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
+import { RoadBuilder } from 'app/map/builders/road.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,8 +33,15 @@ import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction
 export class JunctionBuilder {
 
 	constructor (
+		public roadBuilder: RoadBuilder,
 		public junctionBoundaryService: TvJunctionBoundaryService
 	) {
+	}
+
+	build ( junction: TvJunction ) {
+
+		// return this.buildConnectingRoads( junction );
+
 	}
 
 	buildFromRoadCoords ( coords: TvRoadCoord[] ) {
@@ -72,6 +81,29 @@ export class JunctionBuilder {
 
 		return this.buildFromRoadCoords( coords );
 
+	}
+
+	buildConnectingRoads ( junction: TvJunction ) {
+
+		const connnections = junction.getConnections();
+
+		const connectingRoads = connnections.map( connection => connection.connectingRoad );
+
+		const mesh = new Mesh();
+
+		connectingRoads.forEach( road => {
+
+			const roadMesh = this.roadBuilder.buildRoad( road );
+
+			if ( roadMesh ) {
+
+				mesh.add( roadMesh );
+
+			}
+
+		} );
+
+		return mesh;
 	}
 
 	createMeshFromRoads ( roads: TvRoad[] ): Mesh {

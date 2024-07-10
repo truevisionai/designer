@@ -18,7 +18,7 @@ import { CrosswalkToolService } from "./crosswalk/crosswalk-tool.service";
 import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.service";
 import { JunctionToolService } from "./junction/junction-tool.service";
 import { PropCurveService } from "../map/prop-curve/prop-curve.service";
-import { RoadRampService } from "../services/road/road-ramp.service";
+import { RampToolHelper } from "./road-ramp/road-ramp.helper";
 import { ParkingRoadToolService } from "./parking/parking-road-tool.service";
 import { TextMarkingToolService } from "./text-marking/text-marking-tool.service";
 import { PropSpanToolService } from "./prop-span/prop-span-tool.service";
@@ -109,7 +109,7 @@ export class ToolFactory {
 		private roadCutToolService: RoadDividerToolService,
 		private junctionToolService: JunctionToolService,
 		private propCurveService: PropCurveService,
-		private roadRampService: RoadRampService,
+		private roadRampService: RampToolHelper,
 		private parkingRoadToolService: ParkingRoadToolService,
 		private textMarkingToolService: TextMarkingToolService,
 		private propSpanToolService: PropSpanToolService,
@@ -205,7 +205,7 @@ export class ToolFactory {
 				tool = new RoadElevationTool( this.roadElevationService );
 				break;
 			case ToolType.RoadRampTool:
-				tool = new RoadRampTool( this.roadRampService );
+				tool = new RoadRampTool( this.injector.get( RampToolHelper ) );
 				break;
 			case ToolType.RoadDividerTool:
 				tool = new RoadDividerTool( this.roadCutToolService );

@@ -10,6 +10,7 @@ import { Position } from 'app/scenario/models/position';
 import { SelectionService } from './selection.service';
 import { Vector3 } from 'three';
 import { ViewControllerService } from "../views/editor/viewport/view-controller.service";
+import { CursorService } from 'app/services/editor/cursor.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,6 +26,7 @@ export class BaseToolService {
 	constructor (
 		public selection: SelectionService,
 		private viewController: ViewControllerService,
+		private cursorService: CursorService,
 	) {
 	}
 
@@ -201,4 +203,11 @@ export class BaseToolService {
 		this.viewController.disableControls();
 
 	}
+
+	setCursor ( hint: string ) {
+
+		this.cursorService.setCursor( hint );
+
+	}
+
 }

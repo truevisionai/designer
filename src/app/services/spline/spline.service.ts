@@ -19,6 +19,7 @@ import { TvConsole } from "../../core/utils/console";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
 import { TvPosTheta } from "../../map/models/tv-pos-theta";
+import { DebugDrawService } from '../debug/debug-draw.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,6 +34,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		super();
 	}
 
+	get nonJunctionSplines () { return this.mapService.nonJunctionSplines; }
 
 	all (): AbstractSpline[] {
 
@@ -62,11 +64,11 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	findIntersections ( spline: AbstractSpline ): SplineIntersection[] {
+	findIntersections ( spline: AbstractSpline, otherSplines = null ): SplineIntersection[] {
 
 		if ( spline.controlPoints.length < 2 ) return [];
 
-		const splines = this.mapService.nonJunctionSplines;
+		const splines = otherSplines || this.mapService.nonJunctionSplines;
 		const splineCount = splines.length;
 
 		const successorSpline = this.getSuccessorSpline( spline );
@@ -85,7 +87,8 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			if ( otherSpline == predecessorSpline ) continue;
 
 			// const intersection = this.getSplineIntersectionPoint( spline, otherSpline );
-			const intersection = this.findIntersectionByBounds( spline, otherSpline );
+			// const intersection = this.findIntersectionByBounds( spline, otherSpline );
+			const intersection = this.findClosestIntersection( spline, otherSpline );
 			// const intersection = this.getSplineIntersectionPointViaBoundsv2( spline, otherSpline );
 
 			if ( !intersection ) continue;
@@ -180,6 +183,67 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		}
 
+	}
+
+	findClosestIntersection ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): SplineIntersection | null {
+
+		function createBoundingBoxForSegment ( start: Vector3, end: Vector3, roadWidth: number ): Box3 {
+
+			const box = new Box3();
+
+			box.setFromCenterAndSize( start.clone().add( end ).multiplyScalar( 0.5 ), new Vector3( roadWidth, roadWidth, Math.abs( start.z - end.z ) ) );
+
+			return box;
+
+		}
+
+		if ( splineA == splineB ) return;
+
+		if ( !this.intersectsSplineBox( splineA, splineB ) ) return;
+
+		const pointsA = this.getPoints( splineA, stepSize );
+		const pointsB = this.getPoints( splineB, stepSize );
+
+		let currentDistance = Number.MAX_VALUE;
+		let closestLeftIndex = 0;
+		let closestRightIndex = 0;
+
+		for ( let i = 0; i < pointsA.length; i++ ) {
+
+			for ( let j = 0; j < pointsB.length; j++ ) {
+
+				const distance = pointsA[ i ].distanceTo( pointsB[ j ] );
+
+				if ( distance < currentDistance ) {
+					currentDistance = distance;
+					closestLeftIndex = i;
+					closestRightIndex = j;
+				}
+			}
+		}
+
+		let angle = 0;
+
+		if (
+			closestLeftIndex < pointsA.length - 1 &&
+			closestRightIndex < pointsB.length - 1
+		) {
+
+			angle = Maths.findLineIntersectionAngle( pointsA[ closestLeftIndex ], pointsA[ closestLeftIndex + 1 ], pointsB[ closestRightIndex ], pointsB[ closestRightIndex + 1 ] )
+
+			// const roadWidthA = this.getWidthAt( splineA, pointsA[ closestLeftIndex ], closestLeftIndex * stepSize );
+			// const roadWidthB = this.getWidthAt( splineB, pointsB[ closestRightIndex ], closestRightIndex * stepSize );
+
+			// // Create bounding boxes for the line segments
+			// const boxA = createBoundingBoxForSegment( pointsA[ closestLeftIndex ], pointsA[ closestLeftIndex + 1 ], roadWidthA );
+			// const boxB = createBoundingBoxForSegment( pointsB[ closestRightIndex ], pointsB[ closestRightIndex + 1 ], roadWidthB );
+
+			// // Check if these bounding boxes intersect
+			// if ( !this.intersectsBox( boxA, boxB ) ) return;
+		}
+
+
+		return new SplineIntersection( splineA, splineB, pointsA[ closestLeftIndex ], 0 );
 	}
 
 	findIntersectionByBoundv2 ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): Vector3 | null {
@@ -337,7 +401,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		// check if road segment already exists
 		if ( spline.segmentMap.contains( segment ) ) return;
 
-		if ( spline.segmentMap.has( sStart ) ) {
+		if ( spline.segmentMap.hasKey( sStart ) ) {
 
 			console.error( 'Segment already exists', segment );
 
@@ -741,7 +805,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	isConnectionRoad ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.size != 1 ) {
+		if ( spline.segmentMap.length != 1 ) {
 			return false;
 		}
 
@@ -811,12 +875,19 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		// Ensure the loop includes the segment between the last and first control points
 		for ( let i = 0; i < spline.controlPoints.length; i++ ) {
 
-			const pointA = spline.controlPoints[ i ];
+			const current = spline.controlPoints[ i ];
+
+			const nextIndex = ( i + 1 ) % spline.controlPoints.length;
+
+			// If the spline is open, do not consider the last segment
+			if ( !spline.closed && nextIndex === 0 ) {
+				break;
+			}
 
 			// Use modulo to wrap around to the first point when reaching the end
-			const pointB = spline.controlPoints[ ( i + 1 ) % spline.controlPoints.length ];
+			const next = spline.controlPoints[ nextIndex ];
 
-			const distance = this.calculateDistanceToSegment( newPoint, pointA, pointB );
+			const distance = this.calculateDistanceToSegment( newPoint, current, next );
 
 			if ( distance < minDistance ) {
 				minDistance = distance;

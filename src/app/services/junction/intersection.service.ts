@@ -21,6 +21,9 @@ export class SplineIntersection {
 	intersection: Vector3
 }
 
+/**
+ * @deprecated
+ */
 @Injectable( {
 	providedIn: 'root'
 } )

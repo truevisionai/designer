@@ -92,7 +92,7 @@ export class TvJunctionConnection {
 
 	toString (): string {
 
-		return 'JunctionConnection:' + this.id + ' incomingRoad:' + this.incomingRoadId + ' connectingRoad:' + this.connectingRoadId + ' outgoingRoad:' + this.outgoingRoadId + ' contactPoint:' + this.contactPoint;
+		return 'Connection:' + this.id + ' incomingRoad:' + this.incomingRoadId + ' connectingRoad:' + this.connectingRoadId + ' outgoingRoad:' + this.outgoingRoadId + ' contactPoint:' + this.contactPoint;
 
 	}
 
@@ -195,35 +195,6 @@ export class TvJunctionConnection {
 
 		return null;
 	}
-
-	removeLaneLink ( laneLink: TvJunctionLaneLink ) {
-
-		const index = this.laneLink.findIndex( link => link.from == laneLink.from && link.to == laneLink.to );
-
-		if ( index > -1 ) {
-
-			this.laneLink.splice( index, 1 );
-
-			laneLink.delete();
-
-		} else {
-
-			TvConsole.warn( 'TvJunctionConnection.removeLink' + 'Link not found' );
-
-		}
-
-	}
-
-	delete () {
-
-		this.laneLink.splice( 0, this.laneLink.length );
-
-		if ( !this.junction ) return;
-
-		this.junction.removeConnectionById( this.id );
-
-	}
-
 
 	getIncomingLaneSection () {
 

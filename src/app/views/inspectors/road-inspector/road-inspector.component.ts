@@ -9,7 +9,7 @@ import { RoadNode } from 'app/objects/road-node';
 import { CommandHistory } from 'app/services/command-history';
 import { Vector2, Vector3 } from 'three';
 import { IComponent } from '../../../objects/game-object';
-import { TvRoadType } from '../../../map/models/tv-common';
+import { TvGeometryType, TvRoadType } from '../../../map/models/tv-common';
 import { TvRoad } from '../../../map/models/tv-road.model';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
@@ -20,6 +20,7 @@ import { RoadService } from 'app/services/road/road.service';
 import { UpdatePositionCommand } from "../../../commands/update-position-command";
 import { Environment } from 'app/core/utils/environment';
 import { TvConsole } from "../../../core/utils/console";
+import { RoadControlPoint } from 'app/objects/road-control-point';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -38,12 +39,20 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	isProduction = Environment.production;
 
+	segmentTypes = TvGeometryType;
+
 	constructor (
 		private dialogService: DialogService,
 		private assetService: AssetService,
 		private roadService: RoadService,
 	) {
 		super();
+	}
+
+	get segmentType (): TvGeometryType {
+		if ( this.controlPoint instanceof RoadControlPoint ) {
+			return this.controlPoint.segmentType;
+		}
 	}
 
 	get road (): TvRoad {

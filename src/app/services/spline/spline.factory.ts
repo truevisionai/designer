@@ -135,7 +135,7 @@ export class SplineFactory {
 		return spline;
 	}
 
-	createManeuverSpline ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide = TvLaneSide.RIGHT ): AbstractSpline {
+	static createManeuverSpline ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide = TvLaneSide.RIGHT ): AbstractSpline {
 
 		if ( entry == null ) throw new Error( 'entry is null' );
 		if ( exit == null ) throw new Error( 'exit is null' );
@@ -155,7 +155,7 @@ export class SplineFactory {
 			exitDirection = exit.posTheta.toDirectionVector();
 		}
 
-		return this.createSpline( entry.position, entryDirection, exit.position, exitDirection );
+		return this.createRoadSpline( entry.position, entryDirection, exit.position, exitDirection );
 	}
 
 	///**
@@ -197,28 +197,37 @@ export class SplineFactory {
 
 	private createRoadSpline ( road: TvRoad, v1: Vector3, v1Direction: Vector3, v4: Vector3, v4Direction: Vector3 ): AbstractSpline {
 
-		if ( v1 == null ) throw new Error( 'entry is null' );
-		if ( v1Direction == null ) throw new Error( 'entryDirection is null' );
-		if ( v4 == null ) throw new Error( 'exit is null' );
-		if ( v4Direction == null ) throw new Error( 'exitDirection is null' );
-
-		// directions must be normalized
-		const d1 = v1Direction.clone().normalize();
-		const d4 = v4Direction.clone().normalize();
-
-		const distanceAB = v1.distanceTo( v4 );
-
-		const v2 = v1.clone().add( d1.clone().multiplyScalar( distanceAB / 3 ) );
-		const v3 = v4.clone().add( d4.clone().multiplyScalar( distanceAB / 3 ) );
-
-		const spline = new AutoSplineV2();
+		const spline = SplineFactory.createRoadSpline( v1, v1Direction, v4, v4Direction );
 
 		if ( road ) spline.segmentMap.set( 0, road );
 
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, v1 ) );
+		return spline;
+
+	}
+
+	static createRoadSpline ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): AbstractSpline {
+
+		if ( start == null ) throw new Error( 'entry is null' );
+		if ( startDirection == null ) throw new Error( 'entryDirection is null' );
+		if ( end == null ) throw new Error( 'exit is null' );
+		if ( endDirection == null ) throw new Error( 'exitDirection is null' );
+
+		// directions must be normalized
+		const d1 = startDirection.clone().normalize();
+		const d4 = endDirection.clone().normalize();
+
+		const distance = start.distanceTo( end );
+
+		// v2 and v3 are the control points
+		const v2 = start.clone().add( d1.clone().multiplyScalar( distance / divider ) );
+		const v3 = end.clone().add( d4.clone().multiplyScalar( distance / divider ) );
+
+		const spline = new AutoSplineV2();
+
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, start ) );
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, v2 ) );
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, v3 ) );
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, v4 ) );
+		spline.controlPoints.push( ControlPointFactory.createControl( spline, end ) );
 
 		spline.update();
 

@@ -7,7 +7,7 @@ import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { TvRoad } from "../../map/models/tv-road.model";
 import { AutoSplineV2 } from "../../core/shapes/auto-spline-v2";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { CatmullRomCurve3, Vector2 } from "three";
+import { Box3, CatmullRomCurve3, Vector2 } from "three";
 import { TvAbstractRoadGeometry } from "../../map/models/geometries/tv-abstract-road-geometry";
 import { TvLineGeometry } from "../../map/models/geometries/tv-line-geometry";
 import { TvArcGeometry } from "../../map/models/geometries/tv-arc-geometry";
@@ -21,6 +21,9 @@ import { PARACUBICFACTOR } from "../../core/shapes/spline-config";
 import { HermiteSpline, Length } from "../../core/shapes/spline-data";
 import { TvParamPoly3Geometry } from "../../map/models/geometries/tv-param-poly3-geometry";
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
+import { RoadBuilder } from 'app/map/builders/road.builder';
+import { MapService } from '../map/map.service';
+import { Maths } from 'app/utils/maths';
 
 function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
@@ -50,45 +53,92 @@ function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 )
 	return [ r, alpha, length, Math.sign( p2proj.y ) ];
 }
 
+function breakGeometries ( geometries: TvAbstractRoadGeometry[], sStart: number, sEnd: number | null ): TvAbstractRoadGeometry[] {
+
+	const newGeometries: TvAbstractRoadGeometry[] = [];
+
+	let currentS = 0;
+
+	for ( const geometry of geometries ) {
+
+		const effectiveSEnd = sEnd !== null ? sEnd : Infinity;
+
+		if ( geometry.endS <= sStart || geometry.s >= effectiveSEnd ) continue; // Skip if geometry is completely out of bounds
+
+		const newGeometry = geometry.clone();
+
+		newGeometry.s = currentS;
+
+		if ( geometry.s < sStart && geometry.endS > sStart ) {
+
+			const posTheta = geometry.getRoadCoord( sStart );
+
+			newGeometry.x = posTheta.x;
+
+			newGeometry.y = posTheta.y;
+
+			newGeometry.hdg = posTheta.hdg;
+
+			newGeometry.length = Math.min( geometry.endS, effectiveSEnd ) - sStart;
+
+		} else if ( geometry.endS > effectiveSEnd ) {
+
+			const posTheta = geometry.getRoadCoord( geometry.s );
+
+			newGeometry.x = posTheta.x;
+
+			newGeometry.y = posTheta.y;
+
+			newGeometry.hdg = posTheta.hdg;
+
+			newGeometry.length = effectiveSEnd - geometry.s;
+
+		} else {
+
+			const posTheta = geometry.getRoadCoord( geometry.s );
+
+			newGeometry.x = posTheta.x;
+
+			newGeometry.y = posTheta.y;
+
+			newGeometry.hdg = posTheta.hdg;
+
+			newGeometry.length = geometry.length;
+
+		}
+
+		newGeometries.push( newGeometry );
+
+		currentS += newGeometry.length;
+
+	}
+
+	return newGeometries;
+
+}
+
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SplineBuilder {
 
 	constructor (
+		private mapService: MapService,
+		private roadBuilder: RoadBuilder,
 		private autoSplineBuilder: AutoSplineBuilder,
 		private explicitSplineBuilder: ExplicitSplineBuilder
 	) {
 	}
 
-	// build ( spline: AbstractSpline ): GameObject[] {
-	//
-	// 	const gameObjects = [];
-	//
-	// 	if ( spline.controlPoints.length < 2 ) {
-	// 		return gameObjects;
-	// 	}
-	//
-	// 	spline.getSplineSegments().forEach( segment => {
-	//
-	// 		if ( !segment.isRoad ) return;
-	//
-	// 		const road = this.mapService.map.getRoadById( segment.id );
-	//
-	// 		road.clearGeometries();
-	//
-	// 		segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-	//
-	// 		const gameObject = this.roadBuilder.buildRoad( road );
-	//
-	// 		road.gameObject = gameObject;
-	//
-	// 		gameObjects.push( gameObject );
-	//
-	// 	} );
-	//
-	// 	return gameObjects;
-	// }
+	build ( spline: AbstractSpline ) {
+
+		this.buildSpline( spline );
+
+		this.buildSegments( spline );
+
+		this.buildBoundingBox( spline );
+
+	}
 
 	buildSpline ( spline: AbstractSpline ) {
 
@@ -106,6 +156,63 @@ export class SplineBuilder {
 
 		}
 
+	}
+
+	buildSegments ( spline: AbstractSpline ) {
+
+		for ( const segment of spline.segmentMap.toArray() ) {
+
+			if ( segment instanceof TvRoad ) {
+
+				this.roadBuilder.rebuildRoad( segment, this.mapService.map );
+
+			}
+
+		}
+
+	}
+
+	buildBoundingBox ( spline: AbstractSpline ) {
+
+		if ( spline.controlPoints.length < 2 ) return;
+
+		let boundingBox = new Box3();
+
+		const segments = spline.segmentMap.toArray();
+
+		for ( let i = 0; i < segments.length; i++ ) {
+
+			const segment = segments[ i ];
+
+			if ( segment instanceof TvRoad ) {
+
+				if ( segment.boundingBox ) {
+
+					boundingBox.union( segment.boundingBox );
+
+				} else {
+
+					segment.computeBoundingBox();
+
+					if ( segment.boundingBox ) {
+
+						boundingBox.union( segment.boundingBox );
+
+					} else {
+
+						boundingBox = null;
+
+					}
+				}
+			}
+		}
+
+		if ( !boundingBox ) {
+			console.error( "boundingBox is null", this );
+			return;
+		}
+
+		spline.boundingBox = boundingBox;
 	}
 
 	buildCatmullRomSpline ( spline: CatmullRomSpline ) {
@@ -254,7 +361,7 @@ export class AutoSplineBuilder {
 
 				const sEnd = spline.segmentMap.getNextKey( road ) || splineLength;
 
-				const newGeometries = this.buildGeometries( splineGeometries, sStart, sEnd );
+				const newGeometries = this.breakGeometries( splineGeometries, sStart, sEnd );
 
 				newGeometries.forEach( geometry => road.addGeometry( geometry ) );
 
@@ -405,67 +512,9 @@ export class AutoSplineBuilder {
 		return geometries;
 	}
 
-	buildGeometries ( geometries: TvAbstractRoadGeometry[], sStart: number, sEnd: number | null ): TvAbstractRoadGeometry[] {
+	breakGeometries ( geometries: TvAbstractRoadGeometry[], sStart: number, sEnd: number | null ): TvAbstractRoadGeometry[] {
 
-		const newGeometries: TvAbstractRoadGeometry[] = [];
-
-		let currentS = 0;
-
-		for ( const geometry of geometries ) {
-
-			const effectiveSEnd = sEnd !== null ? sEnd : Infinity;
-
-			if ( geometry.endS <= sStart || geometry.s >= effectiveSEnd ) continue; // Skip if geometry is completely out of bounds
-
-			const newGeometry = geometry.clone();
-
-			newGeometry.s = currentS;
-
-			if ( geometry.s < sStart && geometry.endS > sStart ) {
-
-				const posTheta = geometry.getRoadCoord( sStart );
-
-				newGeometry.x = posTheta.x;
-
-				newGeometry.y = posTheta.y;
-
-				newGeometry.hdg = posTheta.hdg;
-
-				newGeometry.length = Math.min( geometry.endS, effectiveSEnd ) - sStart;
-
-			} else if ( geometry.endS > effectiveSEnd ) {
-
-				const posTheta = geometry.getRoadCoord( geometry.s );
-
-				newGeometry.x = posTheta.x;
-
-				newGeometry.y = posTheta.y;
-
-				newGeometry.hdg = posTheta.hdg;
-
-				newGeometry.length = effectiveSEnd - geometry.s;
-
-			} else {
-
-				const posTheta = geometry.getRoadCoord( geometry.s );
-
-				newGeometry.x = posTheta.x;
-
-				newGeometry.y = posTheta.y;
-
-				newGeometry.hdg = posTheta.hdg;
-
-				newGeometry.length = geometry.length;
-
-			}
-
-			newGeometries.push( newGeometry );
-
-			currentS += newGeometry.length;
-
-		}
-
-		return newGeometries;
+		return breakGeometries( geometries, sStart, sEnd );
 
 	}
 }
@@ -480,6 +529,10 @@ export class ExplicitSplineBuilder {
 
 		const geometries = this.exportFromSpline( spline );
 
+		let splineLength = 0;
+
+		geometries.forEach( geometry => splineLength += geometry.length );
+
 		const segments = spline.segmentMap.toArray();
 
 		for ( const segment of segments ) {
@@ -488,7 +541,13 @@ export class ExplicitSplineBuilder {
 
 				segment.clearGeometries();
 
-				geometries.forEach( geometry => segment.addGeometry( geometry ) );
+				const sStart = segment.sStart;
+
+				const sEnd = spline.segmentMap.getNextKey( segment ) || splineLength;
+
+				const newGeometries = breakGeometries( geometries, sStart, sEnd );
+
+				newGeometries.forEach( geometry => segment.addGeometry( geometry ) );
 
 			}
 
@@ -551,10 +610,15 @@ export class ExplicitSplineBuilder {
 			const p1 = new Vector2( currentPoint.position.x, currentPoint.position.y );
 			const p2 = new Vector2( previousPoint.position.x, previousPoint.position.y );
 
-			if ( !currentPoint.hdg ) {
+			// Calculate heading only if it's not defined
+			if ( currentPoint.hdg === null || currentPoint.hdg === undefined ) {
 				currentPoint.hdg = Math.atan2( p1.y - p2.y, p1.x - p2.x );
 			}
 
+			// Ensure the first point also gets a heading if it's not defined
+			if ( i === 1 && ( previousPoint.hdg === null || previousPoint.hdg === undefined ) ) {
+				previousPoint.hdg = Math.atan2( p2.y - p1.y, p2.x - p1.x );
+			}
 		}
 
 	}
@@ -655,6 +719,14 @@ export class ExplicitSplineBuilder {
 
 		const curvStart = k;
 		const curvEnd = ( k + dk * _L );
+
+		if (
+			Maths.approxEquals( curvStart, 0, 0.0001 ) &&
+			Maths.approxEquals( curvEnd, 0, 0.0001 )
+		) {
+			p1.segmentType = TvGeometryType.LINE;
+			return this.createLineGeometry( p1, p2 );
+		}
 
 		return new TvSpiralGeometry( 0, x, y, hdg, length, curvStart, curvEnd );
 

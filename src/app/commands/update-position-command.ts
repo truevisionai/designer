@@ -11,6 +11,8 @@ export class UpdatePositionCommand extends BaseCommand {
 
 	private readonly oldPosition: Vector3;
 
+	public fireEvents: boolean = true;
+
 	constructor (
 		private object: IHasCopyUpdate,
 		private readonly newPosition: Vector3,
@@ -33,7 +35,7 @@ export class UpdatePositionCommand extends BaseCommand {
 
 		this.object?.update();
 
-		MapEvents.objectUpdated.emit( this.object );
+		if ( this.fireEvents ) MapEvents.objectUpdated.emit( this.object );
 
 	}
 
@@ -45,7 +47,7 @@ export class UpdatePositionCommand extends BaseCommand {
 
 		this.object?.update();
 
-		MapEvents.objectUpdated.emit( this.object );
+		if ( this.fireEvents ) MapEvents.objectUpdated.emit( this.object );
 
 	}
 

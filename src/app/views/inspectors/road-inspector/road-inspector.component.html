@@ -62,6 +62,12 @@
 		<app-vector2-field (changed)="onControlPointChanged($event)"
 			[value]="controlPointPosition"
 			label="Control Point"></app-vector2-field>
+		<app-enum-field [disabled]="true"
+			*ngIf="segmentType"
+			[enum]="segmentTypes"
+			[value]="segmentType"
+			label="Segment Type">
+		</app-enum-field>
 	</div>
 
 </div>
@@ -90,14 +96,15 @@
 	</button>
 
 	<div *ngIf="!isProduction">
-		<mat-card *ngFor="let geometry of road.geometries">
-			<mat-card-header>
-				<mat-card-title>Type: {{ geometry.typeAsString }}</mat-card-title>
-				<mat-card-subtitle>
-					X: {{ geometry.x }}<br/>
-					Y: {{ geometry.y }}
-				</mat-card-subtitle>
-			</mat-card-header>
-		</mat-card>
+
+		<div *ngFor="let geometry of road.geometries">
+			<div>
+				<app-enum-field [enum]="segmentTypes"
+					[value]="geometry.geometryType"
+					label="Geometry Type">
+				</app-enum-field>
+				{{ geometry.x }}, {{ geometry.y }}, {{ geometry.hdg }} <br />
+			</div>
+		</div>
 	</div>
 </div>

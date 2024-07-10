@@ -5,6 +5,7 @@ import { TvLaneSection } from "../models/tv-lane-section";
 import { TvLane } from "../models/tv-lane";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvContactPoint } from "../models/tv-common";
+import { LaneUtils } from 'app/utils/lane.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,7 +35,7 @@ export class MapQueryService {
 
 		if ( lane.successorExists ) {
 
-			const nextLaneSection = this.findNextLaneSection( road, laneSection );
+			const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
 
 			if ( !nextLaneSection ) return [];
 
@@ -101,7 +102,7 @@ export class MapQueryService {
 
 		if ( lane.predecessorExists ) {
 
-			const prevLaneSection = this.findPreviousLaneSection( road, laneSection );
+			const prevLaneSection = LaneUtils.findPreviousLaneSection( road, laneSection );
 
 			if ( !prevLaneSection ) return [];
 
@@ -162,59 +163,4 @@ export class MapQueryService {
 
 	}
 
-	findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
-
-		const index = road.laneSections.indexOf( laneSection );
-
-		if ( index === 0 ) {
-
-			if ( !road.predecessor ) return null;
-
-			if ( !road.predecessor.isRoad ) return null;
-
-			const predecessorRoad = road.predecessor.element as TvRoad;
-
-			if ( road.predecessor.contactPoint == TvContactPoint.START ) {
-
-				return predecessorRoad.laneSections[ 0 ];
-
-			} else {
-
-				return predecessorRoad.laneSections[ predecessorRoad.laneSections.length - 1 ];
-
-			}
-
-		}
-
-		return road.laneSections[ index - 1 ];
-
-	}
-
-	findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
-
-		const index = road.laneSections.indexOf( laneSection );
-
-		if ( index === road.laneSections.length - 1 ) {
-
-			if ( !road.successor ) return null;
-
-			if ( !road.successor.isRoad ) return null;
-
-			const successorRoad = road.successor.element as TvRoad;
-
-			if ( road.successor.contactPoint == TvContactPoint.START ) {
-
-				return successorRoad.laneSections[ 0 ];
-
-			} else {
-
-				return successorRoad.laneSections[ successorRoad.laneSections.length - 1 ];
-
-			}
-
-		}
-
-		return road.laneSections[ index + 1 ];
-
-	}
 }

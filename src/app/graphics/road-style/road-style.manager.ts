@@ -33,7 +33,7 @@ export class RoadStyleManager {
 		return this.getDefaultRoadStyle( road );
 	}
 
-	getRampRoadStyle ( road: TvRoad, lane: TvLane ): RoadStyle {
+	getRampRoadStyle ( road: TvRoad, lane?: TvLane ): RoadStyle {
 
 		const roadStyle = new RoadStyle();
 
@@ -43,7 +43,24 @@ export class RoadStyleManager {
 
 		roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
-		roadStyle.laneSection.addLaneInstance( lane, true );
+		if ( lane ) {
+
+			roadStyle.laneSection.addLaneInstance( lane, true );
+
+		} else {
+
+			roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+
+			roadStyle.laneSection.getLaneArray().filter( lane => lane.side !== TvLaneSide.CENTER ).forEach( lane => {
+
+				const width = lane.type === TvLaneType.parking ? 5.6 : 3.6;
+
+				lane.addWidthRecord( 0, width, 0, 0, 0 );
+
+			} );
+
+		}
+
 
 		return roadStyle;
 	}

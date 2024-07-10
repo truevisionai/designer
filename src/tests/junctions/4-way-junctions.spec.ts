@@ -738,12 +738,12 @@ describe( '4-way-junction tests', () => {
 		expect( horizontal.spline.getLength() ).toBe( 200 );
 		expect( horizontal.successor ).toBeDefined();
 		expect( horizontal.predecessor ).toBeUndefined();
-		expect( horizontal.spline.segmentMap.size ).toBe( 3 );
+		expect( horizontal.spline.segmentMap.length ).toBe( 3 );
 
 		expect( vertical.spline.getLength() ).toBe( 200 );
 		expect( vertical.successor ).toBeDefined();
 		expect( vertical.predecessor ).toBeUndefined();
-		expect( vertical.spline.segmentMap.size ).toBe( 3 );
+		expect( vertical.spline.segmentMap.length ).toBe( 3 );
 
 		mapValidator.validateMap( mapService.map, true );
 	} );

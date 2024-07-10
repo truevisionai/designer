@@ -10,6 +10,7 @@ import { TvRoad } from '../models/tv-road.model';
 import { Vector3 } from 'three';
 import { TvContactPoint } from '../models/tv-common';
 import { GeometryUtils } from 'app/services/surface/surface-geometry.builder';
+import { TvJunctionConnection } from '../models/junctions/tv-junction-connection';
 
 @Injectable( {
 	providedIn: 'root'
@@ -28,25 +29,78 @@ export class TvJunctionBoundaryService {
 
 		const positions: Vector3[] = [];
 
-		junction.getRoadCoords().forEach( coord => {
+		const coords = junction.getRoadCoords();
 
-			const segment = this.createJointSegment( coord );
+		for ( let i = 0; i < coords.length; i++ ) {
 
-			this.createBoundaryPositions( segment ).forEach( pos => positions.push( pos ) );
-
-		} );
-
-		junction.getConnections().filter( c => c.isCornerConnection ).forEach( connection => {
-
-			const segment = this.createLaneSegment( connection.connectingRoad );
+			const segment = this.createJointSegment( coords[ i ] );
 
 			this.createBoundaryPositions( segment ).forEach( pos => positions.push( pos ) );
 
-		} );
+		}
+
+		// TODO: add support for connections to make smoother boundary for junctions
+
+		// const connections = this.getOutermostCornerConnections( junction );
+
+		// for ( let i = 0; i < connections.length; i++ ) {
+
+		// 	const connection = connections[ i ];
+
+		// 	// if ( !connection.isCornerConnection ) continue;
+
+		// 	const segment = this.createLaneSegment( connection.connectingRoad );
+
+		// 	this.createBoundaryPositions( segment ).forEach( pos => positions.push( pos ) );
+
+		// }
 
 		const sortedPositions = GeometryUtils.sortByAngle( positions );
 
 		return sortedPositions;
+	}
+
+	getOutermostCornerConnections ( junction: TvJunction ) {
+
+		const items: TvJunctionConnection[] = [];
+
+		const connections = junction.getConnections();
+
+		// for each incoming road, find the outermost corner connection
+		const pairs = new Map<TvRoad, TvJunctionConnection>();
+
+		for ( let i = 0; i < connections.length; i++ ) {
+
+			const connection = connections[ i ];
+
+			if ( !connection.isCornerConnection ) continue;
+
+			if ( !pairs.has( connection.incomingRoad ) ) {
+
+				pairs.set( connection.incomingRoad, connection );
+
+				continue;
+			}
+
+			const existing = pairs.get( connection.incomingRoad );
+
+			if ( connection.laneLink.length == 0 || existing.laneLink.length == 0 ) continue;
+
+			const existingLaneId = existing.laneLink[ 0 ].incomingLane.id;
+
+			const connectionLaneId = connection.laneLink[ 0 ].incomingLane.id;
+
+			if ( Math.abs( connectionLaneId ) > Math.abs( existingLaneId ) ) {
+
+				pairs.set( connection.incomingRoad, connection );
+
+			}
+
+		}
+
+		pairs.forEach( connection => items.push( connection ) );
+
+		return items;
 	}
 
 	createJunctionBoundary ( junction: TvJunction ): TvJunctionBoundary {

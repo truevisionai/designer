@@ -10,9 +10,14 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import {
+	Box3,
+	Box3Helper,
+	BoxGeometry,
 	Color,
 	Mesh,
 	MeshBasicMaterial,
+	MeshStandardMaterial,
+	PlaneGeometry,
 	PointsMaterial,
 	SphereGeometry,
 	Vector2,
@@ -35,6 +40,7 @@ import { SceneService } from '../scene.service';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { RoadService } from '../road/road.service';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { OdTextures } from 'app/deprecated/od.textures';
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,6 +58,14 @@ export class DebugDrawService {
 	constructor ( private roadService: RoadService ) {
 
 		DebugDrawService._instance = this;
+
+	}
+
+	drawBox ( boundingBox: Box3 ) {
+
+		const box = new Box3Helper( boundingBox );
+
+		this.group.add( box );
 
 	}
 
@@ -565,5 +579,40 @@ export class DebugDrawService {
 
 		return posTheta.toVector3();
 
+	}
+
+	createEntryExitBoxMesh ( position: Vector3, hdg = 0, width = 3.6 ) {
+
+		const texture = OdTextures.arrowCircle();
+
+		const material = new MeshStandardMaterial( {
+			map: texture,
+			alphaTest: 0.9,
+			transparent: true,
+			color: COLOR.SKYBLUE,
+			depthTest: false,
+			depthWrite: false
+		} );
+
+		const geometry = new PlaneGeometry( 1, 1 );
+
+		const mesh = new Mesh( geometry, material );
+
+		mesh.name = 'entry-exit-point';
+
+		mesh.position.copy( position );
+
+		// Compute the direction vector from the heading
+		const direction = new Vector3( Math.cos( hdg ), Math.sin( hdg ), 0 ).normalize();
+
+		// Apply the rotation to the mesh based on the computed direction
+		mesh.quaternion.setFromUnitVectors( new Vector3( 0, 1, 0 ), direction );
+
+		const boxLine = new BoxGeometry( width, 0.5, 0.01 );
+		const meshLine = new Mesh( boxLine, new MeshBasicMaterial( { color: COLOR.GREEN } ) );
+
+		mesh.add( meshLine );
+
+		return mesh;
 	}
 }

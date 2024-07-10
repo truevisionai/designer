@@ -5,7 +5,7 @@
 import { OrderedMap } from 'app/core/models/ordered-map';
 import { ThirdOrderPolynom } from './third-order-polynom';
 import { TvLateralProfileCrossfall } from './tv-lateral-profile-crossfall';
-import { OrderedArray } from "../../core/models/ordered-array";
+import { PolynomialArray } from "../../core/models/ordered-array";
 
 
 /**
@@ -38,12 +38,12 @@ export class TvLateralProfileShape {
 
 export class TvLateralProfile {
 
-	public superElevations: OrderedArray<TvSuperElevation>;
+	public superElevations: PolynomialArray<TvSuperElevation>;
 	public crossfalls: TvLateralProfileCrossfall[];
 	public shapes: TvLateralProfileShape[];
 
 	constructor () {
-		this.superElevations = new OrderedArray<TvSuperElevation>();
+		this.superElevations = new PolynomialArray<TvSuperElevation>();
 		this.crossfalls = [];
 		this.shapes = [];
 	}

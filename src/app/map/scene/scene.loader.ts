@@ -1097,7 +1097,16 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			return;
 		}
 
-		return new TvJunctionLaneLink( fromLane, toLane );
+		const link = new TvJunctionLaneLink( fromLane, toLane );
+
+		link.incomingRoad = connection.incomingRoad;
+		link.incomingContactPoint = incomingContactPoint;
+
+		link.connectingRoad = connection.connectingRoad;
+		link.connectingContactPoint = connection.contactPoint;
+
+		return link;
+
 	}
 
 	private parseJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {
@@ -1547,6 +1556,10 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const lane = laneSection.addLane( laneSide, id, type, level, false );
 
 		lane.threeMaterialGuid = xmlElement?.attr_materialGuid || null;
+
+		if ( xmlElement?.attr_direction ) {
+			lane.direction = xmlElement.attr_direction;
+		}
 
 		if ( xmlElement.link != null ) {
 

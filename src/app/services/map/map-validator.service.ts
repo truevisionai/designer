@@ -21,6 +21,8 @@ import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-conne
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvElectronService } from '../tv-electron.service';
+import { RoadService } from '../road/road.service';
+import { LaneUtils } from 'app/utils/lane.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -37,7 +39,8 @@ export class MapValidatorService {
 		private debugDraw: DebugDrawService,
 		private debugText: DebugTextService,
 		private mapService: MapService,
-		private electron: TvElectronService
+		private electron: TvElectronService,
+		private roadService: RoadService,
 	) {
 		this.init();
 	}
@@ -446,18 +449,59 @@ export class MapValidatorService {
 
 		}
 
-		const distance = pointA.position.distanceTo( pointB.position );
+		const mainLaneSection = linkType == 'successor' ? roadA.getLastLaneSection() : roadA.getFirstLaneSection();
 
-		if ( distance > 0.01 ) {
+		mainLaneSection.lanes.forEach( ( mainLane ) => {
 
-			this.errors.push( label + ':' + roadA.id + ' has invalid distance ' + linkType + ':' + link.elementType + ':' + link.elementId + ' ' + distance );
+			if ( mainLane.id == 0 ) return;
 
-			const sphere1 = this.debugDraw.createSphere( pointA.position, 0.5, COLOR.BLUE );
-			this.debugObjects.add( sphere1, sphere1 );
+			let otherPosition: any;
 
-			const sphere2 = this.debugDraw.createSphere( pointB.position, 0.5, COLOR.GREEN );
-			this.debugObjects.add( sphere2, sphere2 );
-		}
+			const mainPosition = this.roadService.findLaneStartPosition( roadA, mainLaneSection, mainLane, linkType == 'successor' ? roadA.length : 0 );
+
+			if ( linkType == 'successor' ) {
+
+				const nextLaneSection = LaneUtils.findNextLaneSection( roadA, mainLaneSection );
+				const nextLane = LaneUtils.findSuccessorLane( roadA, mainLaneSection, mainLane );
+				const offset = link.contactPoint == TvContactPoint.START ? 0 : roadB.length;
+
+				if ( !nextLane ) {
+					this.errors.push( label + ':' + roadA.id + ' has no successor lane ' + linkType + ':' + link.elementType + ':' + link.elementId );
+					return;
+				}
+
+				otherPosition = this.roadService.findLaneStartPosition( roadB, nextLaneSection, nextLane, offset );
+
+			} else {
+
+				const prevLaneSection = LaneUtils.findPreviousLaneSection( roadA, mainLaneSection );
+				const prevLane = LaneUtils.findPredecessorLane( roadA, mainLaneSection, mainLane );
+				const offset = link.contactPoint == TvContactPoint.START ? 0 : roadB.length;
+
+				if ( !prevLane ) {
+					this.errors.push( label + ':' + roadA.id + ' has no predecessor lane ' + linkType + ':' + link.elementType + ':' + link.elementId );
+					return;
+				}
+
+				otherPosition = this.roadService.findLaneStartPosition( roadB, prevLaneSection, prevLane, offset );
+
+			}
+
+
+			const distance = mainPosition.position.distanceTo( otherPosition.position );
+
+			if ( distance > 0.01 ) {
+
+				this.errors.push( label + ':' + roadA.id + ' has invalid distance ' + linkType + ':' + link.elementType + ':' + link.elementId + ' ' + distance );
+
+				const sphere1 = this.debugDraw.createSphere( mainPosition.position, 0.5, COLOR.BLUE );
+				this.debugObjects.add( sphere1, sphere1 );
+
+				const sphere2 = this.debugDraw.createSphere( otherPosition.position, 0.5, COLOR.GREEN );
+				this.debugObjects.add( sphere2, sphere2 );
+			}
+
+		} );
 
 	}
 
@@ -484,7 +528,7 @@ export class MapValidatorService {
 
 		for ( let i = 0; i < incomingConnections.length; i++ ) {
 
-			this.validateIncomingLink( incomingConnections[ i ], incomingContact );
+			this.validateConnection( incomingConnections[ i ], incomingContact );
 
 		}
 
@@ -498,28 +542,36 @@ export class MapValidatorService {
 
 	}
 
-	validateIncomingLink ( connection: TvJunctionConnection, incomingContact: TvContactPoint ) {
+	validateConnection ( connection: TvJunctionConnection, incomingContact: TvContactPoint ) {
 
 		this.validateRoadId( connection.incomingRoadId, connection );
 		this.validateRoadId( connection.outgoingRoadId, connection );
 		this.validateRoadId( connection.connectingRoadId, connection );
 
-		const incomingPosition = connection.incomingRoad.getPosThetaByContact( incomingContact );
-		const connectingPosition = connection.connectingRoad.getPosThetaByContact( connection.contactPoint );
+		connection.laneLink.forEach( link => {
 
-		const distance = incomingPosition.position.distanceTo( connectingPosition.position );
+			const incomingLaneSection = link.incomingRoad.getLaneSectionAtContact( link.incomingContactPoint );
+			const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;
+			const incomingPosition = this.roadService.findLaneStartPosition( link.incomingRoad, incomingLaneSection, link.incomingLane, incomingSOffset );
 
-		if ( distance > 0.01 ) {
+			const connectingLaneSection = link.connectingRoad.getLaneSectionAtContact( link.connectingContactPoint );
+			const connectingSOffset = link.connectingContactPoint == TvContactPoint.START ? 0 : link.connectingRoad.length;
+			const connectingPosition = this.roadService.findLaneStartPosition( link.connectingRoad, connectingLaneSection, link.connectingLane, connectingSOffset );
 
-			this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + incomingContact + ' distance:' + distance );
+			const distance = incomingPosition.position.distanceTo( connectingPosition.position );
 
-			const sphere1 = this.debugDraw.createSphere( incomingPosition.position, 0.5, COLOR.BLUE );
-			this.debugObjects.add( sphere1, sphere1 );
+			if ( distance > 0.01 ) {
 
-			const sphere2 = this.debugDraw.createSphere( connectingPosition.position, 0.5, COLOR.GREEN );
-			this.debugObjects.add( sphere2, sphere2 );
-		}
+				this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + incomingContact + ' distance:' + distance );
 
+				const sphere1 = this.debugDraw.createSphere( incomingPosition.position, 0.5, COLOR.BLUE );
+				this.debugObjects.add( sphere1, sphere1 );
+
+				const sphere2 = this.debugDraw.createSphere( connectingPosition.position, 0.5, COLOR.GREEN );
+				this.debugObjects.add( sphere2, sphere2 );
+			}
+
+		} );
 	}
 
 	validateOutgoingLink ( connection: TvJunctionConnection, outgoingContact: TvContactPoint ) {
@@ -531,21 +583,32 @@ export class MapValidatorService {
 		// for outoing link we need the opposite side of connecting road
 		const connectingRoadEndContact = connection.contactPoint == TvContactPoint.START ? TvContactPoint.END : TvContactPoint.START;
 
-		const connectingPosition = connection.connectingRoad.getPosThetaByContact( connectingRoadEndContact );
-		const outgoingPosition = connection.outgoingRoad.getPosThetaByContact( outgoingContact );
+		connection.laneLink.forEach( link => {
 
-		const distance = outgoingPosition.position.distanceTo( connectingPosition.position );
+			const connectingLaneSection = link.connectingRoad.getLaneSectionAtContact( connectingRoadEndContact );
+			const connectingSOffset = connectingRoadEndContact == TvContactPoint.START ? 0 : link.connectingRoad.length;
+			const connectingPosition = this.roadService.findLaneStartPosition( link.connectingRoad, connectingLaneSection, link.connectingLane, connectingSOffset );
 
-		if ( distance > 0.01 ) {
+			const outgoingRoad = connection.connectingRoad.successor.getElement<TvRoad>();
+			const outgoingLaneSection = outgoingRoad.getLaneSectionAtContact( outgoingContact );
+			const outgoingLane = outgoingLaneSection.getLaneById( link.connectingLane.successorId );
+			const outgoingSOffset = outgoingContact == TvContactPoint.START ? 0 : outgoingRoad.length;
+			const outgoingPosition = this.roadService.findLaneStartPosition( outgoingRoad, outgoingLaneSection, outgoingLane, outgoingSOffset );
 
-			this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + outgoingContact + ' distance:' + distance );
+			const distance = outgoingPosition.position.distanceTo( connectingPosition.position );
 
-			const sphere1 = this.debugDraw.createSphere( outgoingPosition.position, 0.5, COLOR.BLUE );
-			this.debugObjects.add( sphere1, sphere1 );
+			if ( distance > 0.01 ) {
 
-			const sphere2 = this.debugDraw.createSphere( connectingPosition.position, 0.5, COLOR.GREEN );
-			this.debugObjects.add( sphere2, sphere2 );
-		}
+				this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + outgoingContact + ' distance:' + distance );
+
+				const sphere1 = this.debugDraw.createSphere( outgoingPosition.position, 0.5, COLOR.BLUE );
+				this.debugObjects.add( sphere1, sphere1 );
+
+				const sphere2 = this.debugDraw.createSphere( connectingPosition.position, 0.5, COLOR.GREEN );
+				this.debugObjects.add( sphere2, sphere2 );
+			}
+
+		} );
 
 	}
 
@@ -555,7 +618,7 @@ export class MapValidatorService {
 
 		if ( !road ) {
 
-			this.errors.push( 'ConnectionRoad:' + id + ' not found. ' + connection.toString() );
+			this.errors.push( 'Linked Road:' + id + ' not found. ' + connection.toString() );
 
 		}
 	}

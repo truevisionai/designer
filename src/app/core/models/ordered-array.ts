@@ -2,11 +2,12 @@ import { ThirdOrderPolynom } from "../../map/models/third-order-polynom";
 import { Maths } from "../../utils/maths";
 import { TvUtils } from "../../map/models/tv-utils";
 
-export class OrderedArray<T extends ThirdOrderPolynom> {
+export class OrderedArry<T> {
 
-	private entries: T[] = [];
+	protected entries: T[] = [];
 
-	constructor () {
+	constructor ( private key: string = 's' ) {
+
 	}
 
 	get length () {
@@ -19,9 +20,11 @@ export class OrderedArray<T extends ThirdOrderPolynom> {
 		if ( this.contains( value ) ) return this;
 
 		// if we already have an entry with the same s value, we don't add it
-		if ( this.entries.find( entry => Maths.approxEquals( entry.s, key ) ) ) {
+		if ( this.entries.find( entry => Maths.approxEquals( entry[ this.key ], key ) ) ) {
 			return this;
 		}
+
+		value[ this.key ] = key;
 
 		this.entries.push( value );
 
@@ -32,7 +35,7 @@ export class OrderedArray<T extends ThirdOrderPolynom> {
 
 	sort () {
 
-		this.entries.sort( ( a, b ) => a.s - b.s );
+		this.entries.sort( ( a, b ) => a[ this.key ] - b[ this.key ] );
 
 	}
 
@@ -58,7 +61,7 @@ export class OrderedArray<T extends ThirdOrderPolynom> {
 
 		const entry = this.entries.find( entry => entry === value );
 
-		return entry ? entry.s : null
+		return entry ? entry[ this.key ] : null
 
 	}
 
@@ -97,7 +100,7 @@ export class OrderedArray<T extends ThirdOrderPolynom> {
 			return null;
 		}
 
-		return next.s;
+		return next[ this.key ];
 
 	}
 
@@ -119,7 +122,7 @@ export class OrderedArray<T extends ThirdOrderPolynom> {
 
 		for ( const entry of this.entries ) {
 
-			if ( query >= entry.s ) item = entry;
+			if ( query >= entry[ this.key ] ) item = entry;
 
 		}
 
@@ -127,10 +130,16 @@ export class OrderedArray<T extends ThirdOrderPolynom> {
 
 	}
 
+	hasKey ( key: number ): boolean {
+
+		return this.entries.find( entry => Maths.approxEquals( key, entry[ this.key ] ) ) != undefined;
+
+	}
+
 	forEach ( callbackfn: ( value: T, key: number, values: T[] ) => void, thisArg?: any ) {
 
 		for ( const entry of this.entries ) {
-			callbackfn.call( thisArg, entry, entry.s, this.entries );
+			callbackfn.call( thisArg, entry, entry[ this.key ], this.entries );
 		}
 
 	}
@@ -140,10 +149,18 @@ export class OrderedArray<T extends ThirdOrderPolynom> {
 		const result: U[] = [];
 
 		for ( const entry of this.entries ) {
-			result.push( callbackfn.call( thisArg, entry, entry.s, this.entries ) );
+			result.push( callbackfn.call( thisArg, entry, entry[ this.key ], this.entries ) );
 		}
 
 		return result;
+	}
+
+}
+
+export class PolynomialArray<T extends ThirdOrderPolynom> extends OrderedArry<T> {
+
+	constructor () {
+		super( 's' );
 	}
 
 	computeCoefficients ( length: number ) {

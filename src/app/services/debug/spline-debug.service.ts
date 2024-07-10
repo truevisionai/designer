@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { DebugDrawService } from './debug-draw.service';
-import { Object3D, Vector2 } from "three";
+import { Box3Helper, Object3D, Vector2 } from "three";
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugLine } from '../../objects/debug-line';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
@@ -48,6 +48,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	private arrows: Object3DArrayMap<AbstractSpline, Object3D[]>;
 
+	private boundingBoxes: Object3DArrayMap<AbstractSpline, Object3D[]>;
+
 	private texts: Object3DArrayMap<AbstractSpline, Object3D[]>;
 
 	private points: Object3DArrayMap<AbstractSpline, Object3D[]>;
@@ -79,6 +81,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 		this.points = new Object3DArrayMap();
 
 		this.nodes = new Object3DArrayMap();
+
+		this.boundingBoxes = new Object3DArrayMap();
 
 		this.autoSplineHelper = new AutoSplineHelper();
 
@@ -310,6 +314,19 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 	removeArrows ( spline: AbstractSpline ) {
 
 		this.arrows.removeKey( spline );
+
+	}
+
+	showBoundingBox ( spline: AbstractSpline ) {
+
+		this.removeBoundingBox( spline );
+		this.boundingBoxes.addItem( spline, new Box3Helper( spline.boundingBox ) );
+
+	}
+
+	removeBoundingBox ( spline: AbstractSpline ) {
+
+		this.boundingBoxes.removeKey( spline );
 
 	}
 

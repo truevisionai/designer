@@ -27,7 +27,7 @@ describe( 'Service: SplineBuilder', () => {
 
 		const splineGeometries = [ new TvLineGeometry( 0, 0, 0, 0, 100 ) ];
 
-		const geometries = splineBuilder.buildGeometries( splineGeometries, 0, 10 );
+		const geometries = splineBuilder.breakGeometries( splineGeometries, 0, 10 );
 
 		expect( geometries.length ).toBe( 1 );
 		expect( geometries[ 0 ].s ).toBe( 0 );
@@ -42,7 +42,7 @@ describe( 'Service: SplineBuilder', () => {
 
 		const splineGeometries = [ new TvLineGeometry( 0, 0, 0, 0, 100 ) ];
 
-		const geometries = splineBuilder.buildGeometries( splineGeometries, 10, 50 );
+		const geometries = splineBuilder.breakGeometries( splineGeometries, 10, 50 );
 
 		expect( geometries.length ).toBe( 1 );
 		expect( geometries[ 0 ].s ).toBe( 0 );
@@ -60,7 +60,7 @@ describe( 'Service: SplineBuilder', () => {
 			new TvLineGeometry( 50, 50, 0, 0, 100 )
 		];
 
-		const geometries = splineBuilder.buildGeometries( splineGeometries, 10, 120 );
+		const geometries = splineBuilder.breakGeometries( splineGeometries, 10, 120 );
 
 		expect( geometries.length ).toBe( 2 );
 		expect( geometries[ 0 ].s ).toBe( 0 ); // s should be 0 for the first segment
@@ -79,7 +79,7 @@ describe( 'Service: SplineBuilder', () => {
 	it( 'should handle sEnd as null', () => {
 		const splineGeometries = [ new TvLineGeometry( 0, 0, 0, 0, 100 ) ];
 
-		const geometries = splineBuilder.buildGeometries( splineGeometries, 10, null );
+		const geometries = splineBuilder.breakGeometries( splineGeometries, 10, null );
 
 		expect( geometries.length ).toBe( 1 );
 		expect( geometries[ 0 ].s ).toBe( 0 ); // s should be 0
@@ -92,7 +92,7 @@ describe( 'Service: SplineBuilder', () => {
 	it( 'should handle sEnd exactly the length of the geometry', () => {
 		const splineGeometries = [ new TvLineGeometry( 0, 0, 0, 0, 100 ) ];
 
-		const geometries = splineBuilder.buildGeometries( splineGeometries, 0, 100 );
+		const geometries = splineBuilder.breakGeometries( splineGeometries, 0, 100 );
 
 		expect( geometries.length ).toBe( 1 );
 		expect( geometries[ 0 ].s ).toBe( 0 ); // s should be 0

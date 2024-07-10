@@ -45,7 +45,7 @@ export class RoadBuilder {
 
 		if ( road.gameObject ) map.gameObject.remove( road.gameObject );
 
-		road.gameObject = this.buildRoad( road, map.gameObject );
+		road.gameObject = this.buildRoad( road );
 
 		map.gameObject.add( road.gameObject );
 
@@ -53,23 +53,13 @@ export class RoadBuilder {
 
 	}
 
-	buildRoad ( road: TvRoad, parent?: GameObject ): GameObject {
+	buildRoad ( road: TvRoad ): GameObject {
 
-		const gameObject = new GameObject( 'Road:' + road.id );
-
-		gameObject.Tag = TvRoadObjectType.ROAD;
-
-		if ( road.geometries.length == 0 ) {
-
-			TvConsole.error( `${ road.toString() } has no geometries` );
-
-			road.gameObject = gameObject;
-
-			return gameObject;
-		}
-
+		const gameObject = this.createRoadGameObject( road );
 
 		road.computeLaneSectionCoordinates();
+
+		if ( !this.shouldBuild( road ) ) return gameObject;
 
 		const laneSections = road.getLaneSections();
 
@@ -89,8 +79,37 @@ export class RoadBuilder {
 
 		gameObject.add( this.buildSignals( road ) );
 
+		road.computeBoundingBox();
+
 		return gameObject;
 
+	}
+
+	private shouldBuild ( road: TvRoad ): boolean {
+
+		if ( road.isJunction ) {
+			return OdBuilderConfig.BUILD_CONNECTING_ROADS;
+		}
+
+		// dont build if no geometries
+		return road.geometries.length > 0;
+	}
+
+	private createRoadGameObject ( road: TvRoad ) {
+
+		const gameObject = new GameObject( 'Road:' + road.id );
+
+		gameObject.Tag = TvRoadObjectType.ROAD;
+
+		if ( road.geometries.length == 0 ) {
+
+			TvConsole.error( `${ road.toString() } has no geometries` );
+
+			road.gameObject = gameObject;
+
+		}
+
+		return gameObject;
 	}
 
 	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {

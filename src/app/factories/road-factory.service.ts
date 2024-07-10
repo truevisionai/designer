@@ -66,7 +66,7 @@ export class RoadFactory {
 	//
 	//}
 
-	createRampRoad ( lane: TvLane ): TvRoad {
+	createRampRoad ( lane?: TvLane ): TvRoad {
 
 		const road = this.createNewRoad();
 
@@ -96,6 +96,26 @@ export class RoadFactory {
 		road.addLaneSectionInstance( roadStyle.laneSection );
 
 		road.addElevationProfile( roadStyle.elevationProfile );
+
+		return road;
+
+	}
+
+	createHighwayRoad ( type: TvRoadType = TvRoadType.MOTORWAY, maxSpeed: number = 40 ): TvRoad {
+
+		const road = this.createNewRoad();
+
+		road.setType( type, maxSpeed );
+
+		const laneSection = road.addGetLaneSection( 0 );
+
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+		laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 3.6, 0, 0, 0 );
+		laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.addLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.addLane( TvLaneSide.RIGHT, -6, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
 
 		return road;
 

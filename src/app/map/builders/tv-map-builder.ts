@@ -30,7 +30,7 @@ export class TvMapBuilder {
 
 		for ( const road of roads ) {
 
-			const object3D = this.roadBuilder.buildRoad( road, parent );
+			const object3D = this.roadBuilder.buildRoad( road );
 
 			if ( !object3D ) continue;
 

@@ -579,6 +579,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this._laneSection );
 
+		newLane.direction = this.direction;
+		newLane.threeMaterialGuid = this.threeMaterialGuid;
+
 		const width = this.getLaneWidthAt( s || 0 );
 
 		if ( width ) {

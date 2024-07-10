@@ -6,14 +6,12 @@ import { Injectable } from "@angular/core";
 import { RoadNode } from "app/objects/road-node";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
-import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
-import { TvLane } from "app/map/models/tv-lane";
+import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
-import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvUtils } from "app/map/models/tv-utils";
-import { LaneLinkService } from "app/services/junction/lane-link.service";
+import { LaneUtils } from "app/utils/lane.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,7 +19,6 @@ import { LaneLinkService } from "app/services/junction/lane-link.service";
 export class LaneSectionFactory {
 
 	constructor (
-		private laneLinkService: LaneLinkService
 	) { }
 
 	createSuccessorLaneSection ( road: TvRoad ) {
@@ -160,7 +157,7 @@ export class LaneSectionFactory {
 
 	getIncomingLanes ( predecessor: TvRoadCoord ): TvLaneCoord[] {
 
-		const incomingDirection = this.laneLinkService.determineDirection( predecessor.contact );
+		const incomingDirection = LaneUtils.determineDirection( predecessor.contact );
 
 		return predecessor.laneSection.getLaneArray()
 			.filter( lane => lane.direction === incomingDirection )
@@ -176,8 +173,8 @@ export class LaneSectionFactory {
 
 		const laneSection = this.createLaneSection( connectingRoad );
 
-		const incomingDirection = this.laneLinkService.determineDirection( predecessor.contact );
-		const outgoingDirection = this.laneLinkService.determineOutgoingDirection( predecessor, successor );
+		const incomingDirection = LaneUtils.determineDirection( predecessor.contact );
+		const outgoingDirection = LaneUtils.determineOutgoingDirection( predecessor, successor );
 
 		const incomingLaneCoords = predecessor.laneSection.getLaneArray()
 			.filter( lane => lane.direction === incomingDirection )

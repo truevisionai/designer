@@ -2,15 +2,35 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export class OrderedMap<T> extends Map<number, T> {
+import { Debug } from "../utils/debug";
+
+export class OrderedMap<T> {
+
+	private internalMap: Map<number, T> = new Map();
 
 	constructor () {
-		super();
+		this.internalMap = new Map();
+	}
+
+	get length () {
+		return this.internalMap.size;
+	}
+
+	values () {
+		return this.internalMap.values();
 	}
 
 	set ( key: number, value: T, sort = true ): this {
 
-		super.set( key, value );
+		// check if value is already present
+		if ( this.contains( value ) ) {
+			// remove the value
+			Debug.log( value );
+			Debug.log( 'Value already present in the map, removing it' );
+			this.remove( value );
+		}
+
+		this.internalMap.set( key, value );
 
 		if ( sort ) this.sort();
 
@@ -19,9 +39,9 @@ export class OrderedMap<T> extends Map<number, T> {
 
 	sort () {
 
-		const entries = [ ...this.entries() ].sort( ( a, b ) => a[ 0 ] - b[ 0 ] );
+		const entries = [ ...this.internalMap.entries() ].sort( ( a, b ) => a[ 0 ] - b[ 0 ] );
 
-		this.clear();
+		this.internalMap.clear();
 
 		for ( const [ key, value ] of entries ) {
 			this.set( key, value, false );
@@ -31,7 +51,7 @@ export class OrderedMap<T> extends Map<number, T> {
 
 	toArray (): T[] {
 
-		return [ ...this.values() ];
+		return [ ...this.internalMap.values() ];
 
 	}
 
@@ -46,14 +66,14 @@ export class OrderedMap<T> extends Map<number, T> {
 		const key = this.findKey( value );
 
 		if ( key !== null ) {
-			this.delete( key );
+			this.internalMap.delete( key );
 		}
 
 	}
 
 	findKey ( value: T ): number | null {
 
-		const entries = [ ...this.entries() ];
+		const entries = [ ...this.internalMap.entries() ];
 
 		const entry = entries.find( ( [ , v ] ) => v === value );
 
@@ -120,7 +140,7 @@ export class OrderedMap<T> extends Map<number, T> {
 
 		let item = null;
 
-		for ( const [ sOffset, value ] of this.entries() ) {
+		for ( const [ sOffset, value ] of this.internalMap.entries() ) {
 
 			if ( query >= sOffset ) item = value;
 
@@ -130,9 +150,15 @@ export class OrderedMap<T> extends Map<number, T> {
 
 	}
 
+	hasKey ( key: number ): boolean {
+
+		return this.internalMap.has( key );
+
+	}
+
 	forEach ( callbackfn: ( value: T, key: number, map: Map<number, T> ) => void, thisArg?: any ) {
 
-		for ( const [ key, value ] of this.entries() ) {
+		for ( const [ key, value ] of this.internalMap.entries() ) {
 			callbackfn.call( thisArg, value, key, this );
 		}
 	}
@@ -141,7 +167,7 @@ export class OrderedMap<T> extends Map<number, T> {
 
 		const result: U[] = [];
 
-		for ( const [ key, value ] of this.entries() ) {
+		for ( const [ key, value ] of this.internalMap.entries() ) {
 			result.push( callbackfn.call( thisArg, value, key, this ) );
 		}
 

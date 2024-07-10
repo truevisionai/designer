@@ -8,7 +8,6 @@ import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { ConnectionService } from 'app/map/junction/connection/connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
-import { LaneLinkService } from 'app/services/junction/lane-link.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
@@ -22,7 +21,6 @@ describe( 'LaneLinkService', () => {
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
-	let laneLinkService: LaneLinkService;
 	let connectionService: ConnectionService;
 	let baseTest = new BaseTest();
 	let eventServiceProvider: EventServiceProvider;
@@ -38,7 +36,6 @@ describe( 'LaneLinkService', () => {
 		roadService = TestBed.inject( RoadService );
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
-		laneLinkService = TestBed.inject( LaneLinkService );
 		connectionService = TestBed.inject( ConnectionService );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 

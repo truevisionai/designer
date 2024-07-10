@@ -1059,19 +1059,18 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		if ( junction.connections.size === 0 ) return;
 
-		let nodeJunction: XmlElement = {
+		let xml: XmlElement = {
 			attr_id: junction.id,
 			attr_name: junction.name,
-			connection: [],
 		};
 
 		if ( junction.type == TvJunctionType.VIRTUAL ) {
 
-			nodeJunction = this.writeVirtualJunction( junction as TvVirtualJunction );
+			xml = this.writeVirtualJunction( junction as TvVirtualJunction );
 
 		} else if ( junction.type == TvJunctionType.DEFAULT ) {
 
-			nodeJunction = this.writeDefaultJunction( junction );
+			xml = this.writeDefaultJunction( junction );
 
 		} else if ( junction.type == TvJunctionType.DIRECT ) {
 
@@ -1083,17 +1082,92 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		}
 
-		this.writeJunctionConnection( nodeJunction, junction );
+		// const connections = this.mergeConnections( junction );
+		const connections = junction.getConnections();
+
+		if ( connections.length > 0 ) {
+			xml[ 'connection' ] = connections.map( connection => this.writeConnection( connection ) )
+		}
 
 		if ( junction.priorities.length > 1 ) {
-			nodeJunction[ 'priority' ] = junction.priorities.map( priority => this.writeJunctionPriority( priority ) )
+			xml[ 'priority' ] = junction.priorities.map( priority => this.writeJunctionPriority( priority ) )
 		}
 
 		if ( junction.controllers.length > 0 ) {
-			nodeJunction[ 'controller' ] = junction.controllers.map( controller => this.writeJunctionController( controller ) );
+			xml[ 'controller' ] = junction.controllers.map( controller => this.writeJunctionController( controller ) );
 		}
 
-		return nodeJunction;
+		return xml;
+	}
+
+	private mergeConnections ( junction: TvJunction ) {
+
+		let map = new Map<number, TvJunctionConnection[]>();
+
+		const sorted = junction.getConnections().sort( ( a, b ) => a.incomingRoad.id - b.incomingRoad.id );
+
+		sorted.forEach( connection => {
+
+			if ( !map.has( connection.incomingRoad.id ) ) {
+				map.set( connection.incomingRoad.id, [] );
+			}
+
+			map.get( connection.incomingRoad.id ).push( connection );
+
+		} );
+
+		const uniqueConnections = [];
+
+		const processed = new Set<TvJunctionConnection>();
+
+		for ( let [ incomingRoadId, connections ] of map ) {
+
+			// sort by whether the connection is a corner road or not
+			const cornerConnections = connections.filter( connection => connection.isCornerConnection );
+			const nonCornerConnections = connections.filter( connection => !connection.isCornerConnection );
+
+			if ( cornerConnections.length > 0 ) {
+
+				const id = junction.connections.size;
+				const incomingRoad = cornerConnections[ 0 ].incomingRoad;
+				const connectingRoad = cornerConnections[ 0 ].connectingRoad;
+				const contactPoint = cornerConnections[ 0 ].contactPoint;
+
+				const group = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
+
+				cornerConnections.forEach( connection => {
+
+					connection.laneLink.forEach( link => {
+
+						group.laneLink.push( link );
+
+					} )
+
+					processed.add( connection );
+
+				} );
+
+				uniqueConnections.push( group );
+
+			}
+
+			for ( let i = 0; i < nonCornerConnections.length; i++ ) {
+
+				const connection = nonCornerConnections[ i ];
+
+				if ( !processed.has( connection ) ) {
+
+					uniqueConnections.push( connection );
+
+					processed.add( connection );
+
+				}
+
+			}
+		}
+
+		return uniqueConnections;
+
 	}
 
 	private writeDefaultJunction ( junction: TvJunction ): XmlElement {
@@ -1122,42 +1196,26 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		};
 	}
 
-	public writeJunctionConnection ( xmlNode, junction: TvJunction ) {
+	public writeConnection ( connection: TvJunctionConnection ) {
 
-		junction.connections.forEach( connection => {
+		const xml = {
+			attr_id: connection.id,
+			attr_incomingRoad: connection.incomingRoadId,
+			attr_connectingRoad: connection.connectingRoadId,
+			laneLink: connection.laneLink.map( laneLink => {
+				return {
+					attr_from: laneLink.from,
+					attr_to: laneLink.to
+				}
+			} )
+		};
 
-			const nodeConnection = {
-				attr_id: connection.id,
-				attr_incomingRoad: connection.incomingRoadId,
-				attr_connectingRoad: connection.connectingRoadId,
-				laneLink: []
-			};
-
-			if ( connection.contactPoint != null ) {
-
-				nodeConnection[ 'attr_contactPoint' ] = connection.contactPoint;
-
-			}
-
-			this.writeJunctionConnectionLaneLink( nodeConnection, connection );
-
-			xmlNode.connection.push( nodeConnection );
-
-		} );
-
-	}
-
-	public writeJunctionConnectionLaneLink ( xmlNode, junctionConnection: TvJunctionConnection ) {
-
-		for ( let i = 0; i < junctionConnection.getJunctionLaneLinkCount(); i++ ) {
-
-			const laneLink = junctionConnection.getJunctionLaneLink( i );
-
-			xmlNode.laneLink.push( {
-				attr_from: laneLink.from,
-				attr_to: laneLink.to,
-			} );
+		// TODO: check if some new connection types dont have contact point
+		if ( connection.contactPoint !== null ) {
+			xml[ 'attr_contactPoint' ] = connection.contactPoint;
 		}
+
+		return xml;
 	}
 
 	public writeJunctionPriority ( priority: TvJunctionPriority ) {

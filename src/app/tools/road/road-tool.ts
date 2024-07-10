@@ -117,7 +117,13 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	enable (): void {
 
-		super.enable();
+		this.subscribeToEvents();
+
+		this.tool.splineService.nonJunctionSplines.forEach( spline => {
+
+			this.debugService?.setDebugState( spline, DebugState.DEFAULT );
+
+		} );
 
 	}
 
@@ -327,13 +333,17 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 			const commands = [];
 
-			this.selectedRoad.spline.controlPoints.forEach( ( point, index ) => {
+			this.selectedRoad.spline.controlPoints.forEach( ( point, index, array ) => {
+
+				const isLastPoint = index === array.length - 1;
 
 				const oldPosition = this.pointPositionCache[ index ].clone();
 
 				const newPosition = point.position.clone();
 
 				const updateCommand = new UpdatePositionCommand( point, newPosition, oldPosition );
+
+				updateCommand.fireEvents = isLastPoint;
 
 				commands.push( updateCommand );
 

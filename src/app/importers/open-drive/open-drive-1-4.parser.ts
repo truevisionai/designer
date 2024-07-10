@@ -711,7 +711,15 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			return;
 		}
 
-		return new TvJunctionLaneLink( fromLane, toLane );
+		const link = new TvJunctionLaneLink( fromLane, toLane );
+
+		link.incomingRoad = connection.incomingRoad;
+		link.incomingContactPoint = incomingContactPoint;
+
+		link.connectingRoad = connection.connectingRoad;
+		link.connectingContactPoint = connection.contactPoint;
+
+		return link;
 	}
 
 	public parseJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {
