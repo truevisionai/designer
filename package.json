@@ -32,7 +32,8 @@
 		"release": "electron-builder build --linux --windows -p always",
 		"win-release": "electron-builder build --windows -p always",
 		"sentry-inject": "sentry-cli sourcemaps inject ./dist",
-		"sentry-upload": "sentry-cli sourcemaps upload --use-artifact-bundle --release=$npm_package_version --validate ./dist"
+		"sentry-upload": "sentry-cli sourcemaps upload --use-artifact-bundle --release=$npm_package_version --validate ./dist",
+		"copyright": "node scripts/add_copyright"
 	},
 	"private": true,
 	"dependencies": {

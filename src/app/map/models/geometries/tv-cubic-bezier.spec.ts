@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Vector2 } from 'three';
 import { TvCubicBezier } from "./tv-cubic-bezier";
 

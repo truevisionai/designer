@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { ViewportEvents } from 'app/events/viewport-events';
 

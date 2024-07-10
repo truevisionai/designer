@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ThirdOrderPolynom } from "../../map/models/third-order-polynom";
 import { Maths } from "../../utils/maths";
 import { TvUtils } from "../../map/models/tv-utils";

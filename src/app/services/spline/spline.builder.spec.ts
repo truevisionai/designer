@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TestBed, async, inject } from '@angular/core/testing';
 import { AutoSplineBuilder, SplineBuilder } from "./spline.builder";
 import { TvLineGeometry } from "../../map/models/geometries/tv-line-geometry";
