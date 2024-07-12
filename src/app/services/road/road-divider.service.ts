@@ -121,9 +121,9 @@ export class RoadDividerService {
 
 				// set junction as predecessor of new road
 				// |ROAD====>|JUNCTIION|====>NEWROAD|
-				newRoad.setPredecessor( TvRoadLinkType.junction, junction );
+				newRoad.setPredecessor( TvRoadLinkType.JUNCTION, junction );
 
-				center.road.setSuccessor( TvRoadLinkType.junction, junction );
+				center.road.setSuccessor( TvRoadLinkType.JUNCTION, junction );
 
 				this.linkService.updateSuccessorRelationWhileCut( newRoad, newRoad.successor, center.road );
 
@@ -173,7 +173,7 @@ export class RoadDividerService {
 
 			coord.s = coord.road.length;
 
-			coord.road.setSuccessor( TvRoadLinkType.junction, junction );
+			coord.road.setSuccessor( TvRoadLinkType.JUNCTION, junction );
 
 			return;
 		}
@@ -192,7 +192,7 @@ export class RoadDividerService {
 
 			coord.s = 0;
 
-			coord.road.setPredecessor( TvRoadLinkType.junction, junction );
+			coord.road.setPredecessor( TvRoadLinkType.JUNCTION, junction );
 
 		}
 

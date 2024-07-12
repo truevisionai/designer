@@ -301,9 +301,9 @@ export class RoadFactory {
 
 		road.junction = junction;
 
-		road.setPredecessor( TvRoadLinkType.road, entry.road, entry.contact );
+		road.setPredecessor( TvRoadLinkType.ROAD, entry.road, entry.contact );
 
-		road.setSuccessor( TvRoadLinkType.road, exit.road, exit.contact );
+		road.setSuccessor( TvRoadLinkType.ROAD, exit.road, exit.contact );
 
 		return road;
 

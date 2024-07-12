@@ -295,11 +295,11 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		if ( contact == TvContactPoint.START ) {
 
-			road.setPredecessor( TvRoadLinkType.junction, junction );
+			road.setPredecessor( TvRoadLinkType.JUNCTION, junction );
 
 		} else if ( contact == TvContactPoint.END ) {
 
-			road.setSuccessor( TvRoadLinkType.junction, junction );
+			road.setSuccessor( TvRoadLinkType.JUNCTION, junction );
 
 		}
 

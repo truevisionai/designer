@@ -189,13 +189,13 @@ export class TvRoad {
 
 	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		this.setSuccessor( TvRoadLinkType.road, road, contactPoint );
+		this.setSuccessor( TvRoadLinkType.ROAD, road, contactPoint );
 
 	}
 
 	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		this.setPredecessor( TvRoadLinkType.road, road, contactPoint );
+		this.setPredecessor( TvRoadLinkType.ROAD, road, contactPoint );
 
 	}
 

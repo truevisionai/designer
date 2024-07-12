@@ -666,11 +666,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		let element: TvRoad | TvJunction;
 
-		if ( elementType == TvRoadLinkType.road ) {
+		if ( elementType == TvRoadLinkType.ROAD ) {
 
 			element = this.map.getRoadById( elementId );
 
-		} else if ( elementType == TvRoadLinkType.junction ) {
+		} else if ( elementType == TvRoadLinkType.JUNCTION ) {
 
 			element = this.map.getJunctionById( elementId );
 
@@ -708,11 +708,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( value === 'road' ) {
 
-			return TvRoadLinkType.road;
+			return TvRoadLinkType.ROAD;
 
 		} else if ( value === 'junction' ) {
 
-			return TvRoadLinkType.junction;
+			return TvRoadLinkType.JUNCTION;
 
 		} else {
 

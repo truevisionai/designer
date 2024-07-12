@@ -7,8 +7,8 @@ import { TvRoad } from './tv-road.model';
 import { TvJunction } from './junctions/tv-junction';
 
 export enum TvRoadLinkType {
-	road = 'road',
-	junction = 'junction'
+	ROAD = 'road',
+	JUNCTION = 'junction'
 }
 
 /**
@@ -89,7 +89,7 @@ export class TvRoadLink {
 			throw new Error( 'Element is required' );
 		}
 
-		if ( elementType == TvRoadLinkType.road && !contactPoint ) {
+		if ( elementType == TvRoadLinkType.ROAD && !contactPoint ) {
 			throw new Error( 'Contact point is required for road link' );
 		}
 
@@ -101,11 +101,11 @@ export class TvRoadLink {
 	}
 
 	get isRoad () {
-		return this.type === TvRoadLinkType.road;
+		return this.type === TvRoadLinkType.ROAD;
 	}
 
 	get isJunction () {
-		return this.type === TvRoadLinkType.junction;
+		return this.type === TvRoadLinkType.JUNCTION;
 	}
 
 	get laneSection () {
@@ -134,7 +134,7 @@ export class TvRoadLink {
 
 	toString () {
 
-		if ( this.type == TvRoadLinkType.road ) {
+		if ( this.type == TvRoadLinkType.ROAD ) {
 
 			return `Link: ${ this.type }:${ this.id } Contact:${ this.contactPoint }`;
 

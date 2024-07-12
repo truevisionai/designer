@@ -221,13 +221,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			if ( road.isJunction ) continue;
 
-			if ( road.predecessor?.type == TvRoadLinkType.junction ) {
+			if ( road.predecessor?.type == TvRoadLinkType.JUNCTION ) {
 
 				processFirstSection( road, road.getFirstLaneSection() );
 
 			}
 
-			if ( road.successor?.type == TvRoadLinkType.junction ) {
+			if ( road.successor?.type == TvRoadLinkType.JUNCTION ) {
 
 				processLastSection( road, road.getLastLaneSection() );
 

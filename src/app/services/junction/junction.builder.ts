@@ -149,11 +149,11 @@ export class JunctionBuilder {
 
 		roads.forEach( road => {
 
-			if ( road?.successor?.type == TvRoadLinkType.junction ) {
+			if ( road?.successor?.type == TvRoadLinkType.JUNCTION ) {
 
 				coords.push( road.getEndPosTheta() );
 
-			} else if ( road?.predecessor?.type == TvRoadLinkType.junction ) {
+			} else if ( road?.predecessor?.type == TvRoadLinkType.JUNCTION ) {
 
 				coords.push( road.getStartPosTheta() );
 

@@ -176,13 +176,13 @@ export class TvJunction {
 
 		for ( const road of roads ) {
 
-			if ( road.successor?.type == TvRoadLinkType.junction && road.successor?.id == this.id ) {
+			if ( road.successor?.type == TvRoadLinkType.JUNCTION && road.successor?.id == this.id ) {
 
 				coords.push( road.getEndPosTheta().toRoadCoord( road ) );
 
 			}
 
-			if ( road.predecessor?.type == TvRoadLinkType.junction && road.predecessor?.id == this.id ) {
+			if ( road.predecessor?.type == TvRoadLinkType.JUNCTION && road.predecessor?.id == this.id ) {
 
 				coords.push( road.getStartPosTheta().toRoadCoord( road ) );
 
@@ -201,13 +201,13 @@ export class TvJunction {
 
 		for ( const road of roads ) {
 
-			if ( road.successor?.type == TvRoadLinkType.junction && road.successor?.id == this.id ) {
+			if ( road.successor?.type == TvRoadLinkType.JUNCTION && road.successor?.id == this.id ) {
 
 				edges.push( new TvRoadEdge( road, TvContactPoint.END ) );
 
 			}
 
-			if ( road.predecessor?.type == TvRoadLinkType.junction && road.predecessor?.id == this.id ) {
+			if ( road.predecessor?.type == TvRoadLinkType.JUNCTION && road.predecessor?.id == this.id ) {
 
 				edges.push( new TvRoadEdge( road, TvContactPoint.START ) );
 
