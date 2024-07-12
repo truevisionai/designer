@@ -9,7 +9,7 @@ import { TvContactPoint } from 'app/map/models/tv-common';
 import { SplineService } from '../spline/spline.service';
 import { TvRoadCoord } from "../../map/models/TvRoadCoord";
 import { TvJunction } from "../../map/models/junctions/tv-junction";
-import { TvRoadLinkChildType } from "../../map/models/tv-road-link-child";
+import { TvRoadLinkType } from "../../map/models/tv-road-link";
 import { RoadLinkService } from "./road-link.service";
 import { RoadManager } from "../../managers/road/road-manager";
 import { MapService } from "../map/map.service";
@@ -121,9 +121,9 @@ export class RoadDividerService {
 
 				// set junction as predecessor of new road
 				// |ROAD====>|JUNCTIION|====>NEWROAD|
-				newRoad.setPredecessor( TvRoadLinkChildType.junction, junction );
+				newRoad.setPredecessor( TvRoadLinkType.junction, junction );
 
-				center.road.setSuccessor( TvRoadLinkChildType.junction, junction );
+				center.road.setSuccessor( TvRoadLinkType.junction, junction );
 
 				this.linkService.updateSuccessorRelationWhileCut( newRoad, newRoad.successor, center.road );
 
@@ -173,7 +173,7 @@ export class RoadDividerService {
 
 			coord.s = coord.road.length;
 
-			coord.road.setSuccessor( TvRoadLinkChildType.junction, junction );
+			coord.road.setSuccessor( TvRoadLinkType.junction, junction );
 
 			return;
 		}
@@ -192,7 +192,7 @@ export class RoadDividerService {
 
 			coord.s = 0;
 
-			coord.road.setPredecessor( TvRoadLinkChildType.junction, junction );
+			coord.road.setPredecessor( TvRoadLinkType.junction, junction );
 
 		}
 

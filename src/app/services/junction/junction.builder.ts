@@ -23,7 +23,7 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvRoadLinkChildType } from "../../map/models/tv-road-link-child";
+import { TvRoadLinkType } from "../../map/models/tv-road-link";
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { RoadBuilder } from 'app/map/builders/road.builder';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
@@ -149,11 +149,11 @@ export class JunctionBuilder {
 
 		roads.forEach( road => {
 
-			if ( road?.successor?.elementType == TvRoadLinkChildType.junction ) {
+			if ( road?.successor?.type == TvRoadLinkType.junction ) {
 
 				coords.push( road.getEndPosTheta() );
 
-			} else if ( road?.predecessor?.elementType == TvRoadLinkChildType.junction ) {
+			} else if ( road?.predecessor?.type == TvRoadLinkType.junction ) {
 
 				coords.push( road.getStartPosTheta() );
 

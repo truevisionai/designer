@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { RoadNode } from 'app/objects/road-node';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
@@ -46,21 +46,21 @@ describe( 'RoadTool: Connecting Roads', () => {
 		expect( joiningRoad.spline.controlPoints.length ).toBe( 4 );
 		expect( joiningRoad.spline.getLength() ).toBeCloseTo( 100 );
 
-		expect( joiningRoad.predecessor.elementType ).toBe( TvRoadLinkChildType.road );
-		expect( joiningRoad.predecessor.elementId ).toBe( leftRoad.id );
+		expect( joiningRoad.predecessor.type ).toBe( TvRoadLinkType.road );
+		expect( joiningRoad.predecessor.id ).toBe( leftRoad.id );
 		expect( joiningRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 
-		expect( joiningRoad.successor.elementType ).toBe( TvRoadLinkChildType.road );
-		expect( joiningRoad.successor.elementId ).toBe( rightRoad.id );
+		expect( joiningRoad.successor.type ).toBe( TvRoadLinkType.road );
+		expect( joiningRoad.successor.id ).toBe( rightRoad.id );
 		expect( joiningRoad.successor.contactPoint ).toBe( TvContactPoint.START );
 
-		expect( leftRoad.successor.elementType ).toBe( TvRoadLinkChildType.road );
-		expect( leftRoad.successor.elementId ).toBe( joiningRoad.id );
+		expect( leftRoad.successor.type ).toBe( TvRoadLinkType.road );
+		expect( leftRoad.successor.id ).toBe( joiningRoad.id );
 		expect( leftRoad.successor.contactPoint ).toBe( TvContactPoint.START );
 		expect( leftRoad.predecessor ).toBeUndefined();
 
-		expect( rightRoad.predecessor.elementType ).toBe( TvRoadLinkChildType.road );
-		expect( rightRoad.predecessor.elementId ).toBe( joiningRoad.id );
+		expect( rightRoad.predecessor.type ).toBe( TvRoadLinkType.road );
+		expect( rightRoad.predecessor.id ).toBe( joiningRoad.id );
 		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 		expect( rightRoad.successor ).toBeUndefined();
 

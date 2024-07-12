@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvMap } from 'app/map/models/tv-map.model';
-import { TvRoadLinkChild } from 'app/map/models/tv-road-link-child';
+import { TvRoadLink } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { DebugDrawService } from '../debug/debug-draw.service';
@@ -361,7 +361,7 @@ export class MapValidatorService {
 
 	}
 
-	validateSuccessor ( roadA: TvRoad, link: TvRoadLinkChild ) {
+	validateSuccessor ( roadA: TvRoad, link: TvRoadLink ) {
 
 		if ( link.isRoad ) {
 
@@ -375,7 +375,7 @@ export class MapValidatorService {
 
 	}
 
-	validatePredecessor ( roadA: TvRoad, link: TvRoadLinkChild ) {
+	validatePredecessor ( roadA: TvRoad, link: TvRoadLink ) {
 
 		if ( link.isRoad ) {
 
@@ -389,11 +389,11 @@ export class MapValidatorService {
 
 	}
 
-	validateRoadLink ( roadA: TvRoad, link: TvRoadLinkChild, linkType: 'successor' | 'predecessor' ) {
+	validateRoadLink ( roadA: TvRoad, link: TvRoadLink, linkType: 'successor' | 'predecessor' ) {
 
 		if ( !link.isRoad ) return;
 
-		const roadB = this.map.getRoadById( link.elementId );
+		const roadB = this.map.getRoadById( link.id );
 		const label = roadA.isJunction ? 'ConnectingRoad' : 'Road';
 
 		if ( !roadB ) {
@@ -468,7 +468,7 @@ export class MapValidatorService {
 				const offset = link.contactPoint == TvContactPoint.START ? 0 : roadB.length;
 
 				if ( !nextLane ) {
-					this.errors.push( label + ':' + roadA.id + ' has no successor lane ' + linkType + ':' + link.elementType + ':' + link.elementId );
+					this.errors.push( label + ':' + roadA.id + ' has no successor lane ' + linkType + ':' + link.type + ':' + link.id );
 					return;
 				}
 
@@ -481,7 +481,7 @@ export class MapValidatorService {
 				const offset = link.contactPoint == TvContactPoint.START ? 0 : roadB.length;
 
 				if ( !prevLane ) {
-					this.errors.push( label + ':' + roadA.id + ' has no predecessor lane ' + linkType + ':' + link.elementType + ':' + link.elementId );
+					this.errors.push( label + ':' + roadA.id + ' has no predecessor lane ' + linkType + ':' + link.type + ':' + link.id );
 					return;
 				}
 
@@ -494,7 +494,7 @@ export class MapValidatorService {
 
 			if ( distance > 0.01 ) {
 
-				this.errors.push( label + ':' + roadA.id + ' has invalid distance ' + linkType + ':' + link.elementType + ':' + link.elementId + ' ' + distance );
+				this.errors.push( label + ':' + roadA.id + ' has invalid distance ' + linkType + ':' + link.type + ':' + link.id + ' ' + distance );
 
 				const sphere1 = this.debugDraw.createSphere( mainPosition.position, SPHERE_SIZE, COLOR.BLUE );
 				this.debugObjects.add( sphere1, sphere1 );
@@ -510,9 +510,9 @@ export class MapValidatorService {
 
 	}
 
-	validateJunctionLink ( road: TvRoad, link: TvRoadLinkChild, linkType: 'successor' | 'predecessor' ) {
+	validateJunctionLink ( road: TvRoad, link: TvRoadLink, linkType: 'successor' | 'predecessor' ) {
 
-		const junction = this.map.getJunctionById( link.elementId );
+		const junction = this.map.getJunctionById( link.id );
 
 		if ( !junction ) {
 

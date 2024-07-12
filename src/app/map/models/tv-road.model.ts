@@ -20,7 +20,7 @@ import { TvPlaneView } from './tv-plane-view';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoadLanes } from './tv-road-lanes';
-import { TvRoadLinkChild, TvRoadLinkChildType } from './tv-road-link-child';
+import { TvRoadLink, TvRoadLinkType } from './tv-road-link';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvRoadObject, TvRoadObjectType } from './objects/tv-road-object';
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
@@ -83,9 +83,9 @@ export class TvRoad {
 
 	public junction: TvJunction;
 
-	public successor: TvRoadLinkChild;
+	public successor: TvRoadLink;
 
-	public predecessor: TvRoadLinkChild;
+	public predecessor: TvRoadLink;
 
 	public cornerRoad: boolean = false;
 
@@ -175,27 +175,27 @@ export class TvRoad {
 
 	}
 
-	setSuccessor ( elementType: TvRoadLinkChildType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
+	setSuccessor ( elementType: TvRoadLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
 
-		this.successor = new TvRoadLinkChild( elementType, element, contactPoint );
+		this.successor = new TvRoadLink( elementType, element, contactPoint );
 
 	}
 
-	setPredecessor ( elementType: TvRoadLinkChildType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
+	setPredecessor ( elementType: TvRoadLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
 
-		this.predecessor = new TvRoadLinkChild( elementType, element, contactPoint );
+		this.predecessor = new TvRoadLink( elementType, element, contactPoint );
 
 	}
 
 	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		this.setSuccessor( TvRoadLinkChildType.road, road, contactPoint );
+		this.setSuccessor( TvRoadLinkType.road, road, contactPoint );
 
 	}
 
 	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		this.setPredecessor( TvRoadLinkChildType.road, road, contactPoint );
+		this.setPredecessor( TvRoadLinkType.road, road, contactPoint );
 
 	}
 

@@ -16,7 +16,7 @@ import { ConnectionService } from "../../map/junction/connection/connection.serv
 import { MapService } from '../map/map.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { TvContactPoint, TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
-import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
@@ -228,12 +228,12 @@ export class JunctionService extends BaseDataService<TvJunction> {
 					break;
 				}
 
-				if ( connectingRoad?.predecessor.elementId === incoming.id ) {
+				if ( connectingRoad?.predecessor.id === incoming.id ) {
 					finalJunction = junction;
 					break;
 				}
 
-				if ( connectingRoad?.successor.elementId === outgoing.id ) {
+				if ( connectingRoad?.successor.id === outgoing.id ) {
 					finalJunction = junction;
 					break;
 				}
@@ -295,11 +295,11 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		if ( contact == TvContactPoint.START ) {
 
-			road.setPredecessor( TvRoadLinkChildType.junction, junction );
+			road.setPredecessor( TvRoadLinkType.junction, junction );
 
 		} else if ( contact == TvContactPoint.END ) {
 
-			road.setSuccessor( TvRoadLinkChildType.junction, junction );
+			road.setSuccessor( TvRoadLinkType.junction, junction );
 
 		}
 

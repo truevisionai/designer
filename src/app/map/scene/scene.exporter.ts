@@ -509,18 +509,18 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		if ( road.predecessor != null ) {
 
-			if ( road.predecessor.elementType === 'junction' ) {
+			if ( road.predecessor.type === 'junction' ) {
 
 				xmlNode.link.predecessor = {
-					attr_elementType: road.predecessor.elementType,
-					attr_elementId: road.predecessor.elementId,
+					attr_elementType: road.predecessor.type,
+					attr_elementId: road.predecessor.id,
 				};
 
 			} else {
 
 				xmlNode.link.predecessor = {
-					attr_elementType: road.predecessor.elementType,
-					attr_elementId: road.predecessor.elementId,
+					attr_elementType: road.predecessor.type,
+					attr_elementId: road.predecessor.id,
 					attr_contactPoint: road.predecessor.contactPoint,
 				};
 
@@ -529,18 +529,18 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		if ( road.successor != null ) {
 
-			if ( road.successor.elementType === 'junction' ) {
+			if ( road.successor.type === 'junction' ) {
 
 				xmlNode.link.successor = {
-					attr_elementType: road.successor.elementType,
-					attr_elementId: road.successor.elementId,
+					attr_elementType: road.successor.type,
+					attr_elementId: road.successor.id,
 				};
 
 			} else {
 
 				xmlNode.link.successor = {
-					attr_elementType: road.successor.elementType,
-					attr_elementId: road.successor.elementId,
+					attr_elementType: road.successor.type,
+					attr_elementId: road.successor.id,
 					attr_contactPoint: road.successor.contactPoint,
 				};
 

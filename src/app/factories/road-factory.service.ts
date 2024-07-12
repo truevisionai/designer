@@ -16,7 +16,7 @@ import { TvUtils } from 'app/map/models/tv-utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { LaneSectionFactory } from './lane-section.factory';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
-import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { MapService } from "../services/map/map.service";
 import { ControlPointFactory } from "./control-point.factory";
 
@@ -301,9 +301,9 @@ export class RoadFactory {
 
 		road.junction = junction;
 
-		road.setPredecessor( TvRoadLinkChildType.road, entry.road, entry.contact );
+		road.setPredecessor( TvRoadLinkType.road, entry.road, entry.contact );
 
-		road.setSuccessor( TvRoadLinkChildType.road, exit.road, exit.contact );
+		road.setSuccessor( TvRoadLinkType.road, exit.road, exit.contact );
 
 		return road;
 

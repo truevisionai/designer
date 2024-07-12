@@ -22,7 +22,7 @@ import { JunctionService } from './junction.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvLaneType } from 'app/map/models/tv-common';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
-import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { LaneDirectionHelper } from 'app/map/builders/od-lane-direction-builder';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
@@ -221,13 +221,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			if ( road.isJunction ) continue;
 
-			if ( road.predecessor?.elementType == TvRoadLinkChildType.junction ) {
+			if ( road.predecessor?.type == TvRoadLinkType.junction ) {
 
 				processFirstSection( road, road.getFirstLaneSection() );
 
 			}
 
-			if ( road.successor?.elementType == TvRoadLinkChildType.junction ) {
+			if ( road.successor?.type == TvRoadLinkType.junction ) {
 
 				processLastSection( road, road.getLastLaneSection() );
 

@@ -30,7 +30,7 @@ import { TvMapHeader } from '../../map/models/tv-map-header';
 import { TvMap } from '../../map/models/tv-map.model';
 import { TvObjectMarking } from '../../map/models/tv-object-marking';
 import { TvPlaneView } from '../../map/models/tv-plane-view';
-import { TvRoadLinkChild, TvRoadLinkChildType } from '../../map/models/tv-road-link-child';
+import { TvRoadLink, TvRoadLinkType } from '../../map/models/tv-road-link';
 import { TvRoadObject } from '../../map/models/objects/tv-road-object';
 import { TvRoadSignal } from '../../map/road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from '../../map/models/tv-road-type.class';
@@ -216,7 +216,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		}
 	}
 
-	public parseRoadLinkChild ( xmlElement: XmlElement ): TvRoadLinkChild {
+	public parseRoadLinkChild ( xmlElement: XmlElement ): TvRoadLink {
 
 		const elementType = this.parseElementType( xmlElement.attr_elementType );
 		const elementId = parseFloat( xmlElement.attr_elementId );
@@ -227,13 +227,13 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		let element = null;
 
-		if ( elementType == TvRoadLinkChildType.road ) {
+		if ( elementType == TvRoadLinkType.road ) {
 
 			if ( !contactPoint ) TvConsole.error( 'no contact point found' );
 
 			element = this.map.getRoadById( elementId );
 
-		} else if ( elementType == TvRoadLinkChildType.junction ) {
+		} else if ( elementType == TvRoadLinkType.junction ) {
 
 			element = this.map.getJunctionById( elementId );
 
@@ -244,7 +244,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		}
 
-		const roadLink = new TvRoadLinkChild( elementType, element, contactPoint );
+		const roadLink = new TvRoadLink( elementType, element, contactPoint );
 
 		if ( elementS ) {
 			roadLink.elementS = elementS;
@@ -277,15 +277,15 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parseElementType ( value: string ): TvRoadLinkChildType {
+	public parseElementType ( value: string ): TvRoadLinkType {
 
 		if ( value === 'road' ) {
 
-			return TvRoadLinkChildType.road;
+			return TvRoadLinkType.road;
 
 		} else if ( value === 'junction' ) {
 
-			return TvRoadLinkChildType.junction;
+			return TvRoadLinkType.junction;
 
 		} else {
 
@@ -574,8 +574,8 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		}
 
 		const outgoingRoadId = contactPoint == TvContactPoint.START ?
-			connectingRoad?.successor?.elementId :
-			connectingRoad?.predecessor?.elementId;
+			connectingRoad?.successor?.id :
+			connectingRoad?.predecessor?.id;
 
 		const outgoingRoad = !isNaN( outgoingRoadId ) ? this.map.getRoadById( outgoingRoadId ) : null;
 
@@ -607,11 +607,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		function findContactPoint ( incomingRoad: TvRoad ) {
 
-			if ( incomingRoad.successor?.elementId === junction.id ) {
+			if ( incomingRoad.successor?.id === junction.id ) {
 				return TvContactPoint.END;
 			}
 
-			if ( incomingRoad.predecessor?.elementId === junction.id ) {
+			if ( incomingRoad.predecessor?.id === junction.id ) {
 				return TvContactPoint.START;
 			}
 

@@ -26,13 +26,13 @@ export class DefaultVehicleController extends AbstractController {
 
 		const successor = currentRoad.successor;
 
-		if ( successor.elementType == 'road' ) {
+		if ( successor.type == 'road' ) {
 
-			nextRoad = map.getRoadById( successor.elementId );
+			nextRoad = map.getRoadById( successor.id );
 
-		} else if ( successor.elementType == 'junction' ) {
+		} else if ( successor.type == 'junction' ) {
 
-			const junction = map.getJunctionById( successor.elementId );
+			const junction = map.getJunctionById( successor.id );
 			const connection = junction.getRandomConnectionFor( currentRoad.id );
 
 			nextRoad = connection.connectingRoad;
@@ -80,14 +80,14 @@ export class DefaultVehicleController extends AbstractController {
 					let contactPoint = successor.contactPoint;
 
 					// find road
-					if ( successor.elementType == 'road' ) {
+					if ( successor.type == 'road' ) {
 
-						nextRoad = this.map.getRoadById( successor.elementId );
+						nextRoad = this.map.getRoadById( successor.id );
 						nextLaneId = currentLane.successorExists ? currentLane.successorId : currentLane.id;
 
-					} else if ( successor.elementType == 'junction' ) {
+					} else if ( successor.type == 'junction' ) {
 
-						const junction = this.map.getJunctionById( successor.elementId );
+						const junction = this.map.getJunctionById( successor.id );
 						const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
 						contactPoint = connection.contactPoint;
@@ -142,14 +142,14 @@ export class DefaultVehicleController extends AbstractController {
 				let contactPoint = predecessor.contactPoint;
 
 				// find road
-				if ( predecessor.elementType == 'road' ) {
+				if ( predecessor.type == 'road' ) {
 
-					nextRoad = this.map.getRoadById( predecessor.elementId );
+					nextRoad = this.map.getRoadById( predecessor.id );
 					nextLaneId = currentLane.predecessorExists ? currentLane.predecessorId : currentLane.id;
 
-				} else if ( predecessor.elementType == 'junction' ) {
+				} else if ( predecessor.type == 'junction' ) {
 
-					const junction = this.map.getJunctionById( predecessor.elementId );
+					const junction = this.map.getJunctionById( predecessor.id );
 					const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
 					contactPoint = connection.contactPoint;

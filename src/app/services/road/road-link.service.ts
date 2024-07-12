@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvRoadLinkChild, TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { RoadNode } from 'app/objects/road-node';
@@ -25,7 +25,7 @@ export class RoadLinkService {
 	) {
 	}
 
-	updateSuccessorRelationWhileCut ( newRoad: TvRoad, link: TvRoadLinkChild, oldRoad: TvRoad ) {
+	updateSuccessorRelationWhileCut ( newRoad: TvRoad, link: TvRoadLink, oldRoad: TvRoad ) {
 
 		if ( !newRoad.successor ) return;
 
@@ -93,7 +93,7 @@ export class RoadLinkService {
 		}
 	}
 
-	updateSuccessorRelation ( road: TvRoad, previousSegment: TvRoad | TvJunction, link: TvRoadLinkChild ) {
+	updateSuccessorRelation ( road: TvRoad, previousSegment: TvRoad | TvJunction, link: TvRoadLink ) {
 
 		if ( !link ) return;
 
@@ -107,7 +107,7 @@ export class RoadLinkService {
 
 	}
 
-	linkPredecessor ( mainRoad: TvRoad, link: TvRoadLinkChild ) {
+	linkPredecessor ( mainRoad: TvRoad, link: TvRoadLink ) {
 
 		if ( !link ) return;
 
@@ -139,7 +139,7 @@ export class RoadLinkService {
 
 		if ( link.contactPoint == TvContactPoint.START ) {
 
-			linkedRoad.setPredecessor( TvRoadLinkChildType.road, mainRoad, TvContactPoint.START );
+			linkedRoad.setPredecessor( TvRoadLinkType.road, mainRoad, TvContactPoint.START );
 
 			linkedLaneSection.lanes.forEach( lane => {
 
@@ -153,7 +153,7 @@ export class RoadLinkService {
 
 		} else if ( link.contactPoint == TvContactPoint.END ) {
 
-			linkedRoad.setSuccessor( TvRoadLinkChildType.road, mainRoad, TvContactPoint.START );
+			linkedRoad.setSuccessor( TvRoadLinkType.road, mainRoad, TvContactPoint.START );
 
 			linkedLaneSection.lanes.forEach( lane => {
 
@@ -371,7 +371,7 @@ export class RoadLinkService {
 
 	}
 
-	private updateSuccessorLink ( road: TvRoad, link: TvRoadLinkChild ) {
+	private updateSuccessorLink ( road: TvRoad, link: TvRoadLink ) {
 
 		if ( !link ) return;
 
@@ -396,7 +396,7 @@ export class RoadLinkService {
 
 	}
 
-	private updatePredecessorLink ( road: TvRoad, link: TvRoadLinkChild ) {
+	private updatePredecessorLink ( road: TvRoad, link: TvRoadLink ) {
 
 		if ( !link ) return;
 
@@ -425,13 +425,13 @@ export class RoadLinkService {
 
 	}
 
-	getElement<T> ( link: TvRoadLinkChild ): T {
+	getElement<T> ( link: TvRoadLink ): T {
 
 		return link.getElement<T>();
 
 	}
 
-	private getEnd ( link: TvRoadLinkChild ) {
+	private getEnd ( link: TvRoadLink ) {
 
 		if ( link.contactPoint == TvContactPoint.START ) {
 
@@ -449,7 +449,7 @@ export class RoadLinkService {
 
 	}
 
-	private getMid2 ( link: TvRoadLinkChild ) {
+	private getMid2 ( link: TvRoadLink ) {
 
 		if ( link.contactPoint == TvContactPoint.START ) {
 
@@ -476,12 +476,12 @@ export class RoadLinkService {
 
 			// link will be negative as joining roaad will in opposite direction
 
-			firstRoad.setPredecessor( TvRoadLinkChildType.road, joiningRoad, TvContactPoint.START );
+			firstRoad.setPredecessor( TvRoadLinkType.road, joiningRoad, TvContactPoint.START );
 			firstRoad.getFirstLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( -lane.id );
 			} );
 
-			joiningRoad.setPredecessor( TvRoadLinkChildType.road, firstRoad, TvContactPoint.START );
+			joiningRoad.setPredecessor( TvRoadLinkType.road, firstRoad, TvContactPoint.START );
 			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( -lane.id );
 			} );
@@ -490,12 +490,12 @@ export class RoadLinkService {
 
 			// links will be in same direction
 
-			firstRoad.setSuccessor( TvRoadLinkChildType.road, joiningRoad, TvContactPoint.START );
+			firstRoad.setSuccessor( TvRoadLinkType.road, joiningRoad, TvContactPoint.START );
 			firstRoad.getLastLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( lane.id );
 			} );
 
-			joiningRoad.setPredecessor( TvRoadLinkChildType.road, firstRoad, TvContactPoint.END );
+			joiningRoad.setPredecessor( TvRoadLinkType.road, firstRoad, TvContactPoint.END );
 			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( lane.id );
 			} );
@@ -504,24 +504,24 @@ export class RoadLinkService {
 
 		if ( secondNode.contact === TvContactPoint.START ) {
 
-			secondRoad.setPredecessor( TvRoadLinkChildType.road, joiningRoad, TvContactPoint.END );
+			secondRoad.setPredecessor( TvRoadLinkType.road, joiningRoad, TvContactPoint.END );
 			secondRoad.getFirstLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( lane.id );
 			} );
 
-			joiningRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad, TvContactPoint.START );
+			joiningRoad.setSuccessor( TvRoadLinkType.road, secondRoad, TvContactPoint.START );
 			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( lane.id );
 			} );
 
 		} else {
 
-			secondRoad.setSuccessor( TvRoadLinkChildType.road, joiningRoad, TvContactPoint.END );
+			secondRoad.setSuccessor( TvRoadLinkType.road, joiningRoad, TvContactPoint.END );
 			secondRoad.getLastLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( -lane.id );
 			} );
 
-			joiningRoad.setSuccessor( TvRoadLinkChildType.road, secondRoad, TvContactPoint.END );
+			joiningRoad.setSuccessor( TvRoadLinkType.road, secondRoad, TvContactPoint.END );
 			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( -lane.id );
 			} );

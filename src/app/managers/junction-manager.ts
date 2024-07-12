@@ -16,7 +16,7 @@ import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { IntersectionGroup } from "./Intersection-group";
 import { TvRoadCoord } from "../map/models/TvRoadCoord";
 import { TvContactPoint } from "../map/models/tv-common";
-import { TvRoadLinkChildType } from "../map/models/tv-road-link-child";
+import { TvRoadLinkType } from "../map/models/tv-road-link";
 import { JunctionService } from "../services/junction/junction.service";
 import { RoadDividerService } from "../services/road/road-divider.service";
 import { ConnectionService } from "../map/junction/connection/connection.service";
@@ -414,11 +414,11 @@ export class JunctionManager {
 
 		if ( contact == TvContactPoint.START ) {
 
-			road.setPredecessor( TvRoadLinkChildType.junction, junction );
+			road.setPredecessor( TvRoadLinkType.junction, junction );
 
 		} else if ( contact == TvContactPoint.END ) {
 
-			road.setSuccessor( TvRoadLinkChildType.junction, junction );
+			road.setSuccessor( TvRoadLinkType.junction, junction );
 
 		}
 
@@ -608,7 +608,7 @@ export class JunctionManager {
 
 		spline.segmentMap.set( 0, junction );
 
-		road.setPredecessor( TvRoadLinkChildType.junction, junction );
+		road.setPredecessor( TvRoadLinkType.junction, junction );
 
 		this.rebuildRoad( road );
 
@@ -657,9 +657,9 @@ export class JunctionManager {
 
 		}
 
-		newRoad.setPredecessor( TvRoadLinkChildType.junction, junction );
+		newRoad.setPredecessor( TvRoadLinkType.junction, junction );
 
-		oldRoad.setSuccessor( TvRoadLinkChildType.junction, junction );
+		oldRoad.setSuccessor( TvRoadLinkType.junction, junction );
 
 		this.linkService.updateSuccessorRelationWhileCut( newRoad, newRoad.successor, oldRoad );
 

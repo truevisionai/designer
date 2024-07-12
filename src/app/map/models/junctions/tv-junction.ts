@@ -12,7 +12,7 @@ import { TvJunctionType } from './tv-junction-type';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvContactPoint } from '../tv-common';
 import { TvRoadCoord, TvRoadEdge } from "../TvRoadCoord";
-import { TvRoadLinkChildType } from "../tv-road-link-child";
+import { TvRoadLinkType } from "../tv-road-link";
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 
 export class TvJunction {
@@ -176,13 +176,13 @@ export class TvJunction {
 
 		for ( const road of roads ) {
 
-			if ( road.successor?.elementType == TvRoadLinkChildType.junction && road.successor?.elementId == this.id ) {
+			if ( road.successor?.type == TvRoadLinkType.junction && road.successor?.id == this.id ) {
 
 				coords.push( road.getEndPosTheta().toRoadCoord( road ) );
 
 			}
 
-			if ( road.predecessor?.elementType == TvRoadLinkChildType.junction && road.predecessor?.elementId == this.id ) {
+			if ( road.predecessor?.type == TvRoadLinkType.junction && road.predecessor?.id == this.id ) {
 
 				coords.push( road.getStartPosTheta().toRoadCoord( road ) );
 
@@ -201,13 +201,13 @@ export class TvJunction {
 
 		for ( const road of roads ) {
 
-			if ( road.successor?.elementType == TvRoadLinkChildType.junction && road.successor?.elementId == this.id ) {
+			if ( road.successor?.type == TvRoadLinkType.junction && road.successor?.id == this.id ) {
 
 				edges.push( new TvRoadEdge( road, TvContactPoint.END ) );
 
 			}
 
-			if ( road.predecessor?.elementType == TvRoadLinkChildType.junction && road.predecessor?.elementId == this.id ) {
+			if ( road.predecessor?.type == TvRoadLinkType.junction && road.predecessor?.id == this.id ) {
 
 				edges.push( new TvRoadEdge( road, TvContactPoint.START ) );
 
@@ -395,11 +395,11 @@ export class TvJunction {
 
 		if ( !outgoingRoad ) return;
 
-		if ( outgoingRoad.successor?.isJunction && outgoingRoad.successor.elementId == this.id ) {
+		if ( outgoingRoad.successor?.isJunction && outgoingRoad.successor.id == this.id ) {
 			return TvContactPoint.END;
 		}
 
-		if ( outgoingRoad.predecessor?.isJunction && outgoingRoad.predecessor.elementId == this.id ) {
+		if ( outgoingRoad.predecessor?.isJunction && outgoingRoad.predecessor.id == this.id ) {
 			return TvContactPoint.START;
 		}
 	}
@@ -464,11 +464,11 @@ export class TvJunction {
 
 		if ( !hasConnections ) {
 
-			if ( road.successor?.isJunction && road.successor.elementId === this.id ) {
+			if ( road.successor?.isJunction && road.successor.id === this.id ) {
 
 				road.successor = null;
 
-			} else if ( road.predecessor?.isJunction && road.predecessor.elementId === this.id ) {
+			} else if ( road.predecessor?.isJunction && road.predecessor.id === this.id ) {
 
 				road.predecessor = null;
 

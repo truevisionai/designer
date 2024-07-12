@@ -35,7 +35,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
-import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
+import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
@@ -666,11 +666,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		let element: TvRoad | TvJunction;
 
-		if ( elementType == TvRoadLinkChildType.road ) {
+		if ( elementType == TvRoadLinkType.road ) {
 
 			element = this.map.getRoadById( elementId );
 
-		} else if ( elementType == TvRoadLinkChildType.junction ) {
+		} else if ( elementType == TvRoadLinkType.junction ) {
 
 			element = this.map.getJunctionById( elementId );
 
@@ -704,15 +704,15 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseElementType ( value: string ): TvRoadLinkChildType {
+	private parseElementType ( value: string ): TvRoadLinkType {
 
 		if ( value === 'road' ) {
 
-			return TvRoadLinkChildType.road;
+			return TvRoadLinkType.road;
 
 		} else if ( value === 'junction' ) {
 
-			return TvRoadLinkChildType.junction;
+			return TvRoadLinkType.junction;
 
 		} else {
 
@@ -901,8 +901,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 
 		const outgoingRoadId = contactPoint == TvContactPoint.START ?
-			connectingRoad?.successor?.elementId :
-			connectingRoad?.predecessor?.elementId;
+			connectingRoad?.successor?.id :
+			connectingRoad?.predecessor?.id;
 
 		const outgoingRoad = !isNaN( outgoingRoadId ) ? this.map.getRoadById( outgoingRoadId ) : null;
 
@@ -935,11 +935,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		function findContactPoint ( incomingRoad: TvRoad ) {
 
-			if ( incomingRoad.successor?.elementId === junction.id ) {
+			if ( incomingRoad.successor?.id === junction.id ) {
 				return TvContactPoint.END;
 			}
 
-			if ( incomingRoad.predecessor?.elementId === junction.id ) {
+			if ( incomingRoad.predecessor?.id === junction.id ) {
 				return TvContactPoint.START;
 			}
 

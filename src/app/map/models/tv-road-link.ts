@@ -2,12 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvConsole } from 'app/core/utils/console';
 import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
 import { TvJunction } from './junctions/tv-junction';
 
-export enum TvRoadLinkChildType {
+export enum TvRoadLinkType {
 	road = 'road',
 	junction = 'junction'
 }
@@ -43,15 +42,15 @@ For a virtual junction as successor or predecessor the
 @elemetType, @elementId, @elementS and @elementDir attributes shall be used.
 
  */
-export class TvRoadLinkChild {
+export class TvRoadLink {
 
-	private _element: TvRoad | TvJunction;
+	public element: TvRoad | TvJunction;
 
-	private _elementType: TvRoadLinkChildType;
+	public type: TvRoadLinkType;
 
-	private _elementId: number;
+	public id: number;
 
-	private _contactPoint: TvContactPoint;
+	public contactPoint: TvContactPoint;
 
 	/**
 	 * TODO:
@@ -80,51 +79,33 @@ export class TvRoadLinkChild {
 
 	/**
 	 *
-	 * @param elementType
-	 * @param elementId ID of the linked element
+	 * @param elementType Type of linked element (road or junction)
+	 * @param element Linked element (road or junction)
 	 * @param contactPoint Contact point of link on the linked element
 	 */
-	constructor ( elementType: TvRoadLinkChildType, element: TvRoad | TvJunction, contactPoint: TvContactPoint ) {
-		this._element = element;
-		this._elementType = elementType;
-		this._elementId = element?.id;
-		this._contactPoint = contactPoint;
-	}
+	constructor ( elementType: TvRoadLinkType, element: TvRoad | TvJunction, contactPoint: TvContactPoint ) {
 
-	get element () {
-		return this._element;
+		if ( !element ) {
+			throw new Error( 'Element is required' );
+		}
+
+		if ( elementType == TvRoadLinkType.road && !contactPoint ) {
+			throw new Error( 'Contact point is required for road link' );
+		}
+
+		this.element = element;
+		this.type = elementType;
+		this.id = element.id;
+		this.contactPoint = contactPoint;
+
 	}
 
 	get isRoad () {
-		return this._elementType === TvRoadLinkChildType.road;
+		return this.type === TvRoadLinkType.road;
 	}
 
 	get isJunction () {
-		return this._elementType === TvRoadLinkChildType.junction;
-	}
-
-	get elementType () {
-		return this._elementType;
-	}
-
-	set elementType ( value ) {
-		this._elementType = value;
-	}
-
-	get elementId () {
-		return this._elementId;
-	}
-
-	set elementId ( value ) {
-		this._elementId = value;
-	}
-
-	get contactPoint () {
-		return this._contactPoint;
-	}
-
-	set contactPoint ( value ) {
-		this._contactPoint = value;
+		return this.type === TvRoadLinkType.junction;
 	}
 
 	get laneSection () {
@@ -153,22 +134,22 @@ export class TvRoadLinkChild {
 
 	toString () {
 
-		if ( this.elementType == TvRoadLinkChildType.road ) {
+		if ( this.type == TvRoadLinkType.road ) {
 
-			return `Link: ${ this.elementType }:${ this.elementId } Contact:${ this.contactPoint }`;
+			return `Link: ${ this.type }:${ this.id } Contact:${ this.contactPoint }`;
 
 		} else {
 
-			return `Link: ${ this.elementType }:${ this.elementId }`;
+			return `Link: ${ this.type }:${ this.id }`;
 
 		}
 
 	}
 
-	clone (): TvRoadLinkChild {
+	clone (): TvRoadLink {
 
-		return new TvRoadLinkChild(
-			this.elementType,
+		return new TvRoadLink(
+			this.type,
 			this.element,
 			this.contactPoint
 		);

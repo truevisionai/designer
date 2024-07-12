@@ -66,11 +66,11 @@ describe( 'ConnectionService', () => {
 
 		expect( leftRoad.predecessor ).toBeUndefined();
 		expect( leftRoad.successor ).toBeDefined()
-		expect( leftRoad.successor.elementId ).toBe( junction.id );
+		expect( leftRoad.successor.id ).toBe( junction.id );
 
 		expect( rightRoad.successor ).toBeUndefined();
 		expect( rightRoad.predecessor ).toBeDefined()
-		expect( rightRoad.predecessor.elementId ).toBe( junction.id );
+		expect( rightRoad.predecessor.id ).toBe( junction.id );
 
 		// expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( leftRoad.id );
 		// expect( junction.connections.get( 0 ).outgoingRoad.id ).toBe( rightRoad.id );
@@ -135,12 +135,12 @@ describe( 'ConnectionService', () => {
 		expect( connection.connectingRoad.id ).toBe( 3 );
 
 		expect( connection.connectingRoad.predecessor ).toBeDefined();
-		expect( connection.connectingRoad.predecessor.elementId ).toBe( leftRoad.id );
+		expect( connection.connectingRoad.predecessor.id ).toBe( leftRoad.id );
 		expect( connection.connectingRoad.predecessor.isRoad ).toBe( true )
 		expect( connection.connectingRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 
 		expect( connection.connectingRoad.successor ).toBeDefined();
-		expect( connection.connectingRoad.successor.elementId ).toBe( rightRoad.id );
+		expect( connection.connectingRoad.successor.id ).toBe( rightRoad.id );
 		expect( connection.connectingRoad.successor.isRoad ).toBe( true )
 		expect( connection.connectingRoad.successor.contactPoint ).toBe( TvContactPoint.START );
 
