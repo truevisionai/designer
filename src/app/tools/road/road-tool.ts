@@ -283,6 +283,12 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 					this.debugService.updateDebugState( this.currentPoint.spline, DebugState.SELECTED );
 				} else if ( this.currentPoint instanceof RoadControlPoint ) {
 					this.debugService.updateDebugState( this.currentPoint.spline, DebugState.SELECTED );
+				} else if ( this.currentPoint instanceof RoadTangentPoint ) {
+					this.debugService.updateDebugState( this.currentPoint.controlPoint.spline, DebugState.SELECTED );
+				} else if ( this.currentPoint instanceof SimpleControlPoint ) {
+					this.debugService.updateDebugState( this.currentPoint.mainObject, DebugState.SELECTED );
+				} else {
+					console.error( 'Unknown control point type', this.currentPoint );
 				}
 
 				this.controlPointMoved = true;
