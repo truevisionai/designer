@@ -200,7 +200,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 					attr_y: point.position.y,
 					attr_z: point.position.z,
 					attr_hdg: point.hdg,
-					attr_type: point.segmentType,
+					attr_type: point.geometry?.type || point.segmentType,
 				} ) ),
 				roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
 					attr_start: s,
@@ -298,12 +298,13 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 			return {
 				attr_type: spline.type,
+				geometry: spline.geometries.map( geometry => this.openDrive.writeGeometry( geometry ) ),
 				point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
 					attr_x: point.position.x,
 					attr_y: point.position.y,
 					attr_z: point.position.z,
 					attr_hdg: point.hdg,
-					attr_type: point.segmentType,
+					attr_type: point.geometry?.type || point.segmentType,
 				} ) )
 			};
 

@@ -6,6 +6,8 @@ export class OdBuilderConfig {
 
 	public static BUILD_CONNECTING_ROADS = true;
 
+	public static ADD_CONNECTING_ROADS = true;
+
 	public static ROAD_STEP = 1.0;
 
 	public static JUNCTION_STEP = 0.5;

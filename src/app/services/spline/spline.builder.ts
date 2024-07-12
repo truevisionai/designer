@@ -565,24 +565,38 @@ export class ExplicitSplineBuilder {
 
 		this.updateHdgs( controlPoints );
 
-		const geometryTypes = controlPoints.map( cp => cp.segmentType );
+		const geometryTypes: TvGeometryType[] = this.getSegments( spline );
 
 		const hdgs: number[][] = controlPoints.map( cp => [ cp.hdg, 7, 7 ] );
 
-		const points = spline.controlPoints.map( cp => cp.position );
+		const points = controlPoints.map( cp => cp.position );
 
 		let s = 0;
 
 		const geometries: TvAbstractRoadGeometry[] = [];
 
-		for ( let i = 0; i < geometryTypes.length - 1; i++ ) {
+		for ( let i = 0; i < geometryTypes.length; i++ ) {
 
-			const currentPoint = spline.controlPoints[ i ] as RoadControlPoint;
-			const nextPoint = spline.controlPoints[ i + 1 ] as RoadControlPoint;
+			const currentPoint = controlPoints[ i ];
+			const nextPoint = controlPoints[ i + 1 ];
 
 			const geometryType = geometryTypes[ i ];
 
-			const geometry = this.computeGeometry( geometryType, currentPoint, nextPoint );
+			let geometry: TvAbstractRoadGeometry;
+
+			if ( geometryType == TvGeometryType.PARAMPOLY3 ) {
+
+				geometry = currentPoint.segmentGeometry
+
+			} else {
+
+				geometry = this.computeGeometry( geometryType, currentPoint, nextPoint );
+
+				currentPoint.segmentGeometry = geometry;
+
+				nextPoint.segmentGeometry = geometry;
+
+			}
 
 			if ( !geometry ) continue;
 
@@ -595,6 +609,16 @@ export class ExplicitSplineBuilder {
 		}
 
 		return geometries;
+	}
+
+	private getSegments ( spline: ExplicitSpline ) {
+
+		const points = spline.controlPoints as RoadControlPoint[];
+
+		const currentGeometries = spline.geometries;
+
+		// return all points except last
+		return points.map( point => point.segmentType ).slice( 0, points.length - 1 );
 	}
 
 	private updateHdgs ( controlPoints: RoadControlPoint[] ) {

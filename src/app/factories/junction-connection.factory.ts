@@ -174,6 +174,8 @@ export class JunctionConnectionFactory {
 
 		this.createLaneWidth( incoming, connectingLane, connectingRoad, outgoing );
 
+		this.createHeightNodes( incoming, connectingLane, connectingRoad, outgoing );
+
 		if ( corner ) this.createRoadMarks( laneSection, incoming );
 
 		connectingLane.predecessorId = incoming.laneId;
@@ -219,6 +221,23 @@ export class JunctionConnectionFactory {
 
 		TvUtils.computeCoefficients( connectingLane.width, roadLength );
 
+	}
+
+	createHeightNodes ( incoming: TvLaneCoord, connectingLane: TvLane, connectingRoad: TvRoad, outgoing: TvLaneCoord ) {
+
+		const roadLength = connectingRoad.length;
+
+		const startHeight = incoming.lane.getHeightValue( incoming.s );
+
+		const endHeight = outgoing.lane.getHeightValue( outgoing.s );
+
+		// if ( startHeight.inner > 0 || startHeight.outer > 0 ) {
+		connectingLane.addHeightRecord( 0, startHeight.inner, startHeight.outer );
+		// }
+
+		// if ( endHeight.inner > 0 || endHeight.outer > 0 ) {
+		connectingLane.addHeightRecord( roadLength, endHeight.inner, endHeight.outer );
+		// }
 	}
 
 	createLink ( incoming: TvLaneCoord, connectingLane: TvLane, connectingRoad: TvRoad, connection: TvJunctionConnection ) {

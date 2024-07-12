@@ -15,6 +15,8 @@ import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-conne
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { ExplicitSpline } from "../../core/shapes/explicit-spline";
 import { Maths } from "../../utils/maths";
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { RoadControlPoint } from 'app/objects/road-control-point';
 
 @Injectable( {
 	providedIn: 'root'
@@ -315,4 +317,45 @@ export class SplineFactory {
 
 		return spline;
 	}
+
+	static createExplicitSpline ( geometries: TvAbstractRoadGeometry[], road: TvRoad ): ExplicitSpline {
+
+		function addControlPoint ( spline: ExplicitSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
+
+			const point = ControlPointFactory.createRoadControlPoint( road, geometry, index, position, hdg );
+
+			spline.controlPoints.push( point );
+
+		}
+
+		const spline = new ExplicitSpline( road );
+
+		if ( geometries.length === 0 ) return spline;
+
+		let lastGeometry: TvAbstractRoadGeometry;
+
+		for ( let i = 0; i < geometries.length; i++ ) {
+
+			lastGeometry = geometries[ i ];
+
+			spline.geometries.push( lastGeometry );
+
+			addControlPoint( spline, lastGeometry, i, lastGeometry.startV3, lastGeometry.hdg );
+
+		}
+
+		const lastCoord = lastGeometry.endCoord();
+
+		addControlPoint( spline, lastGeometry, geometries.length, lastCoord.toVector3(), lastCoord.hdg );
+
+		spline.controlPoints.forEach( cp => cp.userData.roadId = road.id );
+
+		spline.segmentMap.set( 0, road );
+
+		road.sStart = 0;
+
+		return spline;
+
+	}
+
 }

@@ -6,13 +6,11 @@ import { Injectable } from '@angular/core';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { AbstractReader } from 'app/importers/abstract-reader';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { AutoSpline } from 'app/core/shapes/auto-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
 import { ScenarioEnvironment } from 'app/scenario/models/actions/scenario-environment';
 import { ThreeService } from 'app/renderer/three.service';
-import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { TvTransform } from 'app/map/models/tv-transform';
@@ -20,7 +18,6 @@ import {
 	EnumHelper,
 	TvColors,
 	TvContactPoint,
-	TvGeometryType,
 	TvLaneSide,
 	TvRoadMarkTypes,
 	TvRoadMarkWeights,
@@ -38,7 +35,6 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
-import { TvPlaneView } from 'app/map/models/tv-plane-view';
 import { TvRoadLinkChildType } from 'app/map/models/tv-road-link-child';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
@@ -66,8 +62,13 @@ import { StorageService } from "../../io/storage.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
 import { Asset } from 'app/core/asset/asset.model';
 import { SplineControlPoint } from "../../objects/spline-control-point";
-import { RoadControlPoint } from "../../objects/road-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
+import { TvLineGeometry } from '../models/geometries/tv-line-geometry';
+import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
+import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
+import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
+import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
+import { SplineFactory } from 'app/services/spline/spline.factory';
 
 @Injectable( {
 	providedIn: 'root'
@@ -232,12 +233,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
-		if ( xml?.attr_type === 'explicit' ) {
-
-			return this.importExplicitSpline( xml );
-
-		}
-
 		if ( xml?.attr_type === 'auto' ) {
 
 			return this.importAutoSpline( xml );
@@ -372,8 +367,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			road.spline = this.importExplicitSpline( xml, road );
 
-			road.updateGeometryFromSpline( true );
-
 			return;
 
 		}
@@ -383,43 +376,19 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private importExplicitSpline ( xml: XmlElement, road?: TvRoad ): ExplicitSpline {
 
-		function addControlPoint ( spline: ExplicitSpline, index: number, position: Vector3, hdg: number, segType: TvGeometryType ) {
+		const geometries = []
 
-			const controlPoint = new RoadControlPoint( road, position, 'cp', index, index );
+		this.readAsOptionalArray( xml.geometry, xml => {
 
-			controlPoint.segmentType = segType;
+			const geometry = this.parseGeometry( xml );
 
-			spline.controlPoints.push( controlPoint );
-
-			controlPoint.hdg = hdg;
-
-			controlPoint.addDefaultTangents( hdg, 1, 1 );
-
-		}
-
-		const spline = new ExplicitSpline( road );
-
-		if ( xml.attr_uuid ) spline.uuid;
-
-		let index = 0;
-
-		this.readAsOptionalArray( xml.point, xml => {
-
-			const position = new Vector3(
-				parseFloat( xml.attr_x ),
-				parseFloat( xml.attr_y ),
-				parseFloat( xml.attr_z ),
-			);
-
-			const hdg = parseFloat( xml.attr_hdg );
-
-			const segType = +xml.attr_type;
-
-			addControlPoint( spline, index, position, hdg, segType );
-
-			index++;
+			if ( geometry ) geometries.push( geometry );
 
 		} );
+
+		const spline: ExplicitSpline = SplineFactory.createExplicitSpline( geometries, road );
+
+		if ( xml.attr_uuid ) spline.uuid = xml.attr_uuid;
 
 		return spline;
 	}
@@ -806,84 +775,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parsePlanView ( road: TvRoad, xmlElement: XmlElement ) {
+	private parseGeometry ( xml: XmlElement ) {
 
-		if ( xmlElement.geometry != null ) {
-
-			if ( Array.isArray( xmlElement.geometry ) ) {
-
-				for ( let i = 0; i < xmlElement.geometry.length; i++ ) {
-
-					this.parseGeometryType( road, xmlElement.geometry[ i ] );
-
-				}
-
-			} else {
-
-				this.parseGeometryType( road, xmlElement.geometry );
-
-			}
-
-		} else {
-
-			this.snackBar.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
-
-			road.addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
-
-		}
-	}
-
-	private parseGeometryType ( road: TvRoad, xmlElement: XmlElement ) {
-
-		if ( xmlElement.line != null ) {
-
-			this.parseGeometryBlock( road, xmlElement, TvGeometryType.LINE );
-
-		} else if ( xmlElement.arc != null ) {
-
-			this.parseGeometryBlock( road, xmlElement, TvGeometryType.ARC );
-
-		} else if ( xmlElement.spiral != null ) {
-
-			this.parseGeometryBlock( road, xmlElement, TvGeometryType.SPIRAL );
-
-		} else if ( xmlElement.poly3 != null ) {
-
-			this.parseGeometryBlock( road, xmlElement, TvGeometryType.POLY3 );
-
-		} else if ( xmlElement.paramPoly3 != null ) {
-
-			this.parseGeometryBlock( road, xmlElement, TvGeometryType.PARAMPOLY3 );
-
-		} else {
-
-			console.error( 'unknown geometry type', xmlElement );
-
-		}
-	}
-
-	private parseGeometryBlock ( road: TvRoad, xmlElement: XmlElement, geometryType: TvGeometryType ) {
-
-		const s = parseFloat( xmlElement.attr_s );
-		const x = parseFloat( xmlElement.attr_x );
-		const y = parseFloat( xmlElement.attr_y );
-		const hdg = parseFloat( xmlElement.attr_hdg );
-		const length = parseFloat( xmlElement.attr_length );
-
-		road.addPlanView();
-
-		const planView = road.getPlanView();
-
-		this.parseGeometry( planView, xmlElement, geometryType );
-	}
-
-	private parseGeometry ( planView: TvPlaneView, xmlElement: XmlElement, geometryType: TvGeometryType ) {
-
-		const s = parseFloat( xmlElement.attr_s );
-		const x = parseFloat( xmlElement.attr_x );
-		const y = parseFloat( xmlElement.attr_y );
-		let hdg = parseFloat( xmlElement.attr_hdg );
-		const length = parseFloat( xmlElement.attr_length );
+		const s = parseFloat( xml.attr_s );
+		const x = parseFloat( xml.attr_x );
+		const y = parseFloat( xml.attr_y );
+		let hdg = parseFloat( xml.attr_hdg );
+		const length = parseFloat( xml.attr_length );
 
 		// unsure of this, but works well so far
 		// hdg += Maths.M_PI_2;
@@ -894,61 +792,51 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		// const x = parsedX * -1;
 		// const y = parsedY;
 
-		switch ( geometryType ) {
+		if ( xml.line != null ) {
 
-			case TvGeometryType.LINE:
+			return new TvLineGeometry( s, x, y, hdg, length );
 
-				planView.addGeometryLine( s, x, y, hdg, length );
+		} else if ( xml.arc != null ) {
 
-				break;
+			const curvature = parseFloat( xml.arc.attr_curvature );
 
-			case TvGeometryType.SPIRAL:
+			return new TvArcGeometry( s, x, y, hdg, length, curvature );
 
-				const curvStart = parseFloat( xmlElement.spiral.attr_curvStart );
-				const curvEnd = parseFloat( xmlElement.spiral.attr_curvEnd );
+		} else if ( xml.spiral != null ) {
 
-				planView.addGeometrySpiral( s, x, y, hdg, length, curvStart, curvEnd );
+			const curvStart = parseFloat( xml.spiral.attr_curvStart );
+			const curvEnd = parseFloat( xml.spiral.attr_curvEnd );
 
-				break;
+			return new TvSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd );
 
-			case TvGeometryType.ARC:
+		} else if ( xml.poly3 != null ) {
 
-				const curvature = parseFloat( xmlElement.arc.attr_curvature );
+			const a = parseFloat( xml.poly3.attr_a );
+			const b = parseFloat( xml.poly3.attr_b );
+			const c = parseFloat( xml.poly3.attr_c );
+			const d = parseFloat( xml.poly3.attr_d );
 
-				planView.addGeometryArc( s, x, y, hdg, length, curvature );
+			return new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d );
 
-				break;
+		} else if ( xml.paramPoly3 != null ) {
 
-			case TvGeometryType.POLY3:
+			const pRange = xml.paramPoly3.attr_pRange;
 
-				const a = parseFloat( xmlElement.poly3.attr_a );
-				const b = parseFloat( xmlElement.poly3.attr_b );
-				const c = parseFloat( xmlElement.poly3.attr_c );
-				const d = parseFloat( xmlElement.poly3.attr_d );
+			const aU = parseFloat( xml.paramPoly3.attr_aU );
+			const bU = parseFloat( xml.paramPoly3.attr_bU );
+			const cU = parseFloat( xml.paramPoly3.attr_cU );
+			const dU = parseFloat( xml.paramPoly3.attr_dU );
 
-				planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
+			const aV = parseFloat( xml.paramPoly3.attr_aV );
+			const bV = parseFloat( xml.paramPoly3.attr_bV );
+			const cV = parseFloat( xml.paramPoly3.attr_cV );
+			const dV = parseFloat( xml.paramPoly3.attr_dV );
 
-				break;
+			return new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange );
 
-			case TvGeometryType.PARAMPOLY3:
+		} else {
 
-				const aU = parseFloat( xmlElement.paramPoly3.attr_aU );
-				const bU = parseFloat( xmlElement.paramPoly3.attr_bU );
-				const cU = parseFloat( xmlElement.paramPoly3.attr_cU );
-				const dU = parseFloat( xmlElement.paramPoly3.attr_dU );
-
-				const aV = parseFloat( xmlElement.paramPoly3.attr_aV );
-				const bV = parseFloat( xmlElement.paramPoly3.attr_bV );
-				const cV = parseFloat( xmlElement.paramPoly3.attr_cV );
-				const dV = parseFloat( xmlElement.paramPoly3.attr_dV );
-
-				planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
-
-				break;
-
-			default:
-				console.error( 'unknown geometry type', geometryType );
-				break;
+			console.error( 'unknown geometry type', xml );
 
 		}
 
@@ -1004,20 +892,24 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const connectingRoadId = parseInt( xmlElement.attr_connectingRoad );
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-		const incomingRoad = this.map.getRoadById( incomingRoadId );
-		const connectingRoad = this.map.getRoadById( connectingRoadId );
+		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoadById( incomingRoadId ) : null;
+		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoadById( connectingRoadId ) : null;
 
-		if ( !connectingRoad ) TvConsole.error( 'connectingRoad not found with id:' + connectingRoadId );
-		if ( !connectingRoad ) return;
+		if ( !connectingRoad ) {
+			TvConsole.error( 'connectingRoad not found with id:' + connectingRoadId );
+			return;
+		}
 
 		const outgoingRoadId = contactPoint == TvContactPoint.START ?
 			connectingRoad?.successor?.elementId :
 			connectingRoad?.predecessor?.elementId;
 
-		const outgoingRoad = outgoingRoadId ? this.map.getRoadById( outgoingRoadId ) : null;
+		const outgoingRoad = !isNaN( outgoingRoadId ) ? this.map.getRoadById( outgoingRoadId ) : null;
 
-		if ( !outgoingRoad ) TvConsole.error( 'outgoingRoad not found with id:' + outgoingRoadId );
-		if ( !outgoingRoad ) return;
+		if ( !outgoingRoad ) {
+			TvConsole.error( 'outgoingRoad not found with id:' + outgoingRoadId );
+			return;
+		}
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
 
@@ -1407,7 +1299,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		let id = parseFloat( xmlElement.attr_id ) || road.signals.size;
 
-		const s = parseFloat( xmlElement.attr_s ) || road.signals.size;
+		const s = parseFloat( xmlElement.attr_s ) || 0;
 		const t = parseFloat( xmlElement.attr_t ) || 0;
 		const name = xmlElement.attr_name;
 		const dynamic = xmlElement.attr_dynamic;

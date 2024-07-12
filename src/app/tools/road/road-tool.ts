@@ -119,6 +119,11 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		this.subscribeToEvents();
 
+		// HACK: temp fix to prevent too many splines from being highlighted
+		if ( this.tool.splineService.nonJunctionSplines.length > 100 ) {
+			return;
+		}
+
 		this.tool.splineService.nonJunctionSplines.forEach( spline => {
 
 			this.debugService?.setDebugState( spline, DebugState.DEFAULT );
@@ -159,7 +164,13 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( this.selectedSpline ) {
 
-			this.createPoint( this.selectedSpline, this.selectedRoad, e );
+			const spline = this.selectedSpline || this.selectedRoad?.spline;
+
+			const hasSuccessor = this.selectedRoad?.successor != null || false;
+
+			const hasPredecessor = this.selectedRoad?.predecessor != null || false;
+
+			this.createPoint( e, spline, hasSuccessor, hasPredecessor );
 
 		} else {
 
@@ -169,28 +180,46 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	}
 
-	createPoint ( object: TvRoad | AbstractSpline, currentRoad: TvRoad, e: PointerEventData ) {
-
-		const spline: AbstractSpline = object instanceof TvRoad ? object.spline : object;
+	createPoint ( e: PointerEventData, spline: AbstractSpline, hasSuccessor: boolean, hasPredecessor: boolean ) {
 
 		if ( !spline ) return;
 
-		if ( currentRoad?.successor ) {
+		const roadCoord = this.tool.roadService.findRoadCoord( e.point );
+
+		const clickedSameRoad = roadCoord && roadCoord.road.spline === spline;
+
+		const clickedOtherRoad = roadCoord && roadCoord.road.spline !== spline;
+
+		if ( clickedOtherRoad && hasSuccessor ) {
 			this.setHint( 'Cannot add a control point to a road with a successor' );
 			return;
 		}
 
-		const roadCoord = this.tool.roadService.findRoadCoord( e.point );
-
-		let insert = false;
-
-		if ( roadCoord && ( roadCoord.road.spline === spline || roadCoord.road.spline === currentRoad?.spline ) ) {
-			insert = true;
+		if ( !clickedSameRoad && hasSuccessor ) {
+			this.setHint( 'Cannot add a control point to a road with a successor' );
+			return;
 		}
 
-		const point = ControlPointFactory.createControl( spline, e.point );
+		const index = this.tool.splineService.findIndex( spline, e.point );
 
-		if ( insert ) point.userData.insert = insert;
+		if ( index === 0 && hasSuccessor ) {
+			this.setHint( 'Cannot add a control point to the start of a road' );
+			return;
+		}
+
+		if ( index === 0 && hasPredecessor ) {
+			this.setHint( 'Cannot add a control point to the start of a road with a predecessor' );
+			return;
+		}
+
+		if ( index == spline.controlPoints.length - 1 && hasSuccessor && !clickedSameRoad ) {
+			this.setHint( 'Cannot add a control point to the end of a road with a successor' );
+			return;
+		}
+
+		const point = ControlPointFactory.createControl( spline, e.point, index );
+
+		point.userData.insert = clickedSameRoad;
 
 		this.executeAddAndSelect( point, this.currentPoint );
 
@@ -262,9 +291,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 			} else if ( this.isRoadDoubleClicked ) {
 
-				this.handleRoadMovement( position );
-
-				this.roadMoved = true;
+				this.handleRoadMovement( this.selectedSpline || this.selectedRoad.spline, position );
 
 				this.tool.base.disableControls();
 
@@ -274,17 +301,23 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	}
 
-	handleRoadMovement ( position: Position ) {
+	handleRoadMovement ( spline: AbstractSpline, position: Position ) {
+
+		if ( spline.type === SplineType.EXPLICIT ) {
+			// TODO:
+			this.setHint( 'Moving explicit roads is not supported' );
+			return;
+		}
 
 		const delta = position.position.clone().sub( this.pointerDownAt );
 
 		if ( this.pointPositionCache.length === 0 ) {
 
-			this.pointPositionCache = this.selectedRoad.spline.controlPoints.map( point => point.position.clone() );
+			this.pointPositionCache = spline.controlPoints.map( point => point.position.clone() );
 
 		}
 
-		this.selectedRoad.spline.controlPoints.forEach( ( point, index ) => {
+		spline.controlPoints.forEach( ( point, index ) => {
 
 			const newPosition = this.pointPositionCache[ index ].clone().add( delta );
 
@@ -294,7 +327,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		} );
 
-		// this.tool.splineService.update( this.selectedRoad.spline );
+		// this.tool.splineService.update( spline );
 
 		this.roadMoved = true;
 	}
@@ -514,19 +547,23 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( point instanceof SplineControlPoint ) {
 
-			this.updateSpline( point.spline );
+			this.tool.splineService.updateControlPoint( point );
 
 			this.tool.updateLinks( point.spline, point );
 
+			this.updateSplineOverlay( point.spline );
+
 		} else if ( point instanceof RoadControlPoint ) {
 
-			point.updateTangents();
+			this.tool.splineService.updateControlPoint( point );
 
-			this.updateSpline( point.road.spline );
+			this.updateSplineOverlay( point.road.spline );
 
 		} else if ( point instanceof RoadTangentPoint ) {
 
-			this.updateSpline( point.road.spline );
+			this.tool.splineService.updateControlPoint( point );
+
+			this.updateSplineOverlay( point.road.spline );
 
 		} else {
 
@@ -582,6 +619,12 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 			AppInspector.setInspector( RoadInspector, { road: segment, controlPoint: point } );
 
 		} else if ( point instanceof RoadControlPoint ) {
+
+			this.debugService.setDebugState( point.road.spline, DebugState.SELECTED );
+
+			AppInspector.setInspector( RoadInspector, { road: point.road, controlPoint: point } );
+
+		} else if ( point instanceof RoadTangentPoint ) {
 
 			this.debugService.setDebugState( point.road.spline, DebugState.SELECTED );
 
@@ -653,7 +696,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		const spline = this.tool.splineFactory.getNewSpline();
 
-		const point = ControlPointFactory.createControl( spline, position );
+		const point = ControlPointFactory.createControl( spline, position, 0 );
 
 		const addSplineCommand = new AddObjectCommand( spline );
 
@@ -668,6 +711,12 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 	updateSpline ( spline: AbstractSpline ) {
 
 		this.tool.splineService.update( spline );
+
+		this.updateSplineOverlay( spline );
+
+	}
+
+	updateSplineOverlay ( spline: AbstractSpline ) {
 
 		this.debugService.updateDebugState( spline, DebugState.SELECTED );
 

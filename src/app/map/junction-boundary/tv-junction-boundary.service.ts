@@ -9,8 +9,8 @@ import { TvBoundarySegmentType, TvJointBoundary, TvJunctionBoundary, TvJunctionS
 import { TvRoad } from '../models/tv-road.model';
 import { Vector3 } from 'three';
 import { TvContactPoint } from '../models/tv-common';
-import { GeometryUtils } from 'app/services/surface/surface-geometry.builder';
 import { TvJunctionConnection } from '../models/junctions/tv-junction-connection';
+import { GeometryUtils } from 'app/services/surface/geometry-utils';
 
 @Injectable( {
 	providedIn: 'root'

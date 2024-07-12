@@ -12,15 +12,17 @@ import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
 import { RoadControlPoint } from "app/objects/road-control-point";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SimpleControlPoint } from "../objects/simple-control-point";
+import { TvAbstractRoadGeometry } from "app/map/models/geometries/tv-abstract-road-geometry";
+import { Maths } from "app/utils/maths";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ControlPointFactory {
 
-	static createControl ( spline: AbstractSpline, position: Vector3 ): AbstractControlPoint {
+	static createControl ( spline: AbstractSpline, position: Vector3, index?: number ): AbstractControlPoint {
 
-		return this.createSplineControlPoint( spline, position );
+		return this.createSplineControlPoint( spline, position, index );
 
 	}
 
@@ -30,19 +32,49 @@ export class ControlPointFactory {
 
 	}
 
-	static createSplineControlPoint ( spline: AbstractSpline, position: Vector3 ) {
+	static createSplineControlPoint ( spline: AbstractSpline, position: Vector3, index?: number ): AbstractControlPoint {
 
 		if ( spline.type === SplineType.EXPLICIT ) {
 
 			const road = spline.segmentMap.getFirst();
 
 			if ( road instanceof TvRoad ) {
-				return new RoadControlPoint( road, position );
+
+				const pointIndex = index || spline.controlPoints.length - 1;
+
+				const geometry = spline.geometries[ pointIndex - 1 ];
+
+				const hdg = geometry?.hdg || 0;
+
+				return this.createRoadControlPoint( road, geometry, pointIndex, position, hdg );
+
 			}
+
 		}
 
 		return new SplineControlPoint( spline, position );
 
+	}
+
+	static createRoadControlPoint ( road: TvRoad, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
+
+		if ( !geometry ) {
+			console.error( 'Geometry not found for road control point', road, geometry, index );
+		}
+
+		const controlPoint = new RoadControlPoint( road, position, index );
+
+		controlPoint.segmentGeometry = geometry;
+
+		controlPoint.segmentType = geometry?.geometryType;
+
+		controlPoint.hdg = hdg;
+
+		controlPoint.userData.geometry = geometry;
+
+		controlPoint.addDefaultTangents( hdg, 1, 1 );
+
+		return controlPoint;
 	}
 
 	createDynamic<T extends IHasUpdate> ( target: T, position: Vector3 ): DynamicControlPoint<T> {

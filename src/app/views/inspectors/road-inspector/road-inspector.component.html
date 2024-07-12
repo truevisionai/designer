@@ -103,7 +103,27 @@
 					[value]="geometry.geometryType"
 					label="Geometry Type">
 				</app-enum-field>
-				{{ geometry.x }}, {{ geometry.y }}, {{ geometry.hdg }} <br />
+                <app-vector3-field [disabled]="true"
+                                   [value]="geometry.startV3"
+                                   label="Start">
+                </app-vector3-field>
+                <app-double-field [disabled]="true"
+                                  [value]="geometry.hdg"
+                                  label="Hdg">
+                </app-double-field>
+                <app-double-field [disabled]="true"
+                                  [value]="geometry.length"
+                                  label="Length">
+                </app-double-field>
+				 <app-double-field [disabled]="true"
+                                  [value]="geometry['curvStart'] || geometry['curvature']"
+                                  label="Curvature Start">
+                </app-double-field>
+				<app-double-field [disabled]="true"
+                                  [value]="geometry['curvEnd'] || geometry['curvature']"
+                                  label="Curvature End">
+                </app-double-field>
+                <br/>
 			</div>
 		</div>
 	</div>

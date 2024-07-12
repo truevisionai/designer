@@ -11,6 +11,7 @@ import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three'
 import { IHasUpdate } from '../commands/set-value-command';
 import { RoadControlPoint } from './road-control-point';
 import { AbstractControlPoint } from "./abstract-control-point";
+import { SplineType } from 'app/core/shapes/abstract-spline';
 
 export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate {
 
@@ -78,10 +79,6 @@ export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate
 
 		this.updateTangents();
 
-		this.controlPoint.updateTangentLine();
-
-		this.road.update();
-
 		this.updateSuccessor();
 
 		this.updatePredecessor();
@@ -144,13 +141,38 @@ export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate
 
 		this.controlPoint.segmentType = TvGeometryType.SPIRAL;
 
-		if ( this.road.spline.type === 'explicit' ) {
+		if ( this.road.spline.type === SplineType.EXPLICIT ) {
 
-			(this.road.spline as any ).markAsSpiral( this );
+			this.markAsSpiral( this.road.spline.controlPoints, this );
 
 		}
 
 		this.update();
+
+	}
+
+	markAsSpiral ( controlPoints: AbstractControlPoint[], point: AbstractControlPoint ) {
+
+		const idx = point.tagindex;
+
+		if ( idx > 0 ) {
+
+			const previousPoint = controlPoints[ idx - 1 ] as RoadControlPoint;
+			const currentPoint = controlPoints[ idx ] as RoadControlPoint;
+
+			// need to set previous point to spiral to avoid bugs
+			previousPoint.segmentType = TvGeometryType.SPIRAL;
+			currentPoint.segmentType = TvGeometryType.SPIRAL;
+
+			// FOR NOW: hdg changes are not needed those are handled in update function
+
+			// const dir1 = new Vector2( Math.cos( this.hdgs[ idx - 1 ][ 0 ] ), Math.sin( this.hdgs[ idx - 1 ][ 0 ] ) );
+			// const dir2 = new Vector2( Math.cos( this.hdgs[ idx ][ 0 ] ), Math.sin( this.hdgs[ idx ][ 0 ] ) );
+
+			// const sd = SPIRAL.vec2Angle( dir1.x, dir1.y );
+			// const ed = SPIRAL.vec2Angle( dir2.x, dir2.y );
+
+		}
 
 	}
 

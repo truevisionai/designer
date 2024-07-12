@@ -4,22 +4,25 @@
 
 import { Injectable } from '@angular/core';
 import { MapService } from '../map/map.service';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { MapEvents } from 'app/events/map-events';
 import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { SplineCreatedEvent } from 'app/events/spline/spline-created-event';
 import { SplineRemovedEvent } from 'app/events/spline/spline-removed-event';
 import { BaseDataService } from '../../core/interfaces/data.service';
-import { Box3, Vector2, Vector3 } from 'three';
+import { Box3, BufferAttribute, Vector2, Vector3 } from 'three';
 import { Maths } from 'app/utils/maths';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SplineIntersection } from '../junction/spline-intersection';
 import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { TvConsole } from "../../core/utils/console";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
 import { TvPosTheta } from "../../map/models/tv-pos-theta";
-import { DebugDrawService } from '../debug/debug-draw.service';
+import { SplineControlPoint } from "../../objects/spline-control-point";
+import { RoadControlPoint } from "../../objects/road-control-point";
+import { RoadTangentPoint } from "../../objects/road-tangent-point";
+import { TvGeometryType } from "../../map/models/tv-common";
+import { CURVE_Y } from "../../core/shapes/spline-config";
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,7 +37,9 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		super();
 	}
 
-	get nonJunctionSplines () { return this.mapService.nonJunctionSplines; }
+	get nonJunctionSplines () {
+		return this.mapService.nonJunctionSplines;
+	}
 
 	all (): AbstractSpline[] {
 
@@ -87,8 +92,8 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			if ( otherSpline == predecessorSpline ) continue;
 
 			// const intersection = this.getSplineIntersectionPoint( spline, otherSpline );
-			// const intersection = this.findIntersectionByBounds( spline, otherSpline );
-			const intersection = this.findClosestIntersection( spline, otherSpline );
+			const intersection = this.findIntersectionByBounds( spline, otherSpline );
+			// const intersection = this.findClosestIntersection( spline, otherSpline );
 			// const intersection = this.getSplineIntersectionPointViaBoundsv2( spline, otherSpline );
 
 			if ( !intersection ) continue;
@@ -413,14 +418,6 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	removeJunctionSegment ( spline: AbstractSpline, junction: TvJunction ) {
-
-		if ( !spline.segmentMap.contains( junction ) ) return;
-
-		this.removeSegment( spline, junction );
-
-	}
-
 	getWidthCache ( spline: AbstractSpline ) {
 
 		if ( !this.splinesCache.has( spline ) ) {
@@ -493,44 +490,9 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	private removeSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction ): void {
+	removeControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
 
-		spline.segmentMap.remove( segment );
-
-		// // make sure first segment has start = 0
-		// const firstSegment = spline.getFirstSegment();
-		//
-		// if ( firstSegment instanceof TvRoad ) {
-		//
-		// 	firstSegment.sStart = 0;
-		//
-		// }
-		//
-		// if ( firstSegment.start > 0 && firstSegment.isJunction ) {
-		//
-		// 	this.addDefaultSegment( spline );
-		//
-		// }
-
-		// spline.update();
-
-	}
-
-	private addDefaultSegment ( spline: AbstractSpline ) {
-
-		// const road = this.roadFactory.createDefaultRoad();
-		//
-		// road.spline = spline;
-		//
-		// spline.addRoadSegment( 0, road );
-		//
-		// this.roadService.add( road );
-
-	}
-
-	removeControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
-
-		const index = spline.controlPoints.findIndex( p => p.id === controlPoint.id );
+		const index = spline.controlPoints.findIndex( p => p.id === point.id );
 
 		if ( index == -1 ) return;
 
@@ -542,11 +504,21 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	insertControlPoint ( spline: AbstractSpline, newPoint: AbstractControlPoint ) {
+	insertControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
 
-		const index = this.findIndex( spline, newPoint );
+		const index = this.findIndex( spline, point.position );
 
-		spline.controlPoints.splice( index, 0, newPoint );
+		this.addControlPoint( spline, point, index );
+
+	}
+
+	addControlPoint ( spline: AbstractSpline, point: AbstractControlPoint, index?: number ) {
+
+		index = index || spline.controlPoints.length;
+
+		spline.controlPoints.splice( index, 0, point );
+
+		this.updatePointHeading( spline, point, index );
 
 		this.updateIndexes( spline );
 
@@ -554,119 +526,34 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	addControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
+	updatePointHeading ( spline: AbstractSpline, point: AbstractControlPoint, index: number ) {
 
-		spline.controlPoints.push( controlPoint );
+		if ( index == 0 ) return;
 
-		this.updateIndexes( spline );
+		if ( spline.type !== SplineType.EXPLICIT ) return;
 
-		this.update( spline );
+		if ( !( point instanceof RoadControlPoint ) ) return;
 
-	}
+		point.segmentType = TvGeometryType.SPIRAL;
 
-	updateGeometry ( spline: AbstractSpline ) {
+		const nextPoint = spline.controlPoints[ index + 1 ];
 
-		// spline.update();
+		const previousPoint = spline.controlPoints[ index - 1 ];
 
-		// const geometries = spline.exportGeometries();
+		if ( nextPoint instanceof RoadControlPoint ) {
 
-		// const splineLength = spline.getLength();
+			point.hdg = Maths.heading( point.position, nextPoint.position );
 
-		// const segments = spline.segmentMap.toArray();
+		}
 
-		// for ( let i = 0; i < segments.length; i++ ) {
+		if ( previousPoint instanceof RoadControlPoint ) {
 
-		// 	const segment = segments[ i ];
+			previousPoint.segmentType = TvGeometryType.SPIRAL;
 
-		// 	const nextSegment = spline.segmentMap.getNext( segment );
+			previousPoint.hdg = Maths.heading( previousPoint.position, point.position );
 
-		// 	const currentKey = spline.segmentMap.findKey( segment );
+		}
 
-		// 	const nextKey = spline.segmentMap.findKey( nextSegment );
-
-		// 	// Clear previous geometries
-		// 	// this.geometries.clear();
-
-		// 	let segmentLength: number;
-
-		// 	if ( nextSegment ) {
-		// 		segmentLength = nextKey - currentKey;
-		// 	} else {
-		// 		segmentLength = splineLength - currentKey;
-		// 	}
-
-		// 	// Variables to keep track of the current position and remaining length of the segment
-		// 	let currentS = currentKey;
-		// 	let remainingLength = segmentLength;
-		// 	let lengthCovered = 0;
-
-		// 	if ( !( segment instanceof TvRoad ) ) {
-		// 		remainingLength -= segmentLength;
-		// 		currentS += segmentLength;
-		// 		lengthCovered += segmentLength;
-		// 		continue;
-		// 	}
-
-		// 	// Iterate through the geometries to find those that fall within the segment
-		// 	for ( const geometry of geometries ) {
-
-		// 		// If the current position has surpassed this geometry, skip it
-		// 		if ( currentS > geometry.endS ) {
-		// 			continue;
-		// 		}
-
-		// 		// If the current position is before this geometry, break the loop as we have covered all relevant geometries
-		// 		if ( currentS < geometry.s ) {
-		// 			break;
-		// 		}
-
-		// 		// Cut the geometry if the current position is within this geometry's bounds
-		// 		if ( currentS >= geometry.s && currentS < geometry.endS ) {
-		// 			// The segment's current position is within this geometry
-		// 			let section: TvAbstractRoadGeometry;
-		// 			if ( currentS + remainingLength <= geometry.endS ) {
-		// 				// The rest of the segment fits within this geometry
-		// 				const sections = geometry.cut( currentS );
-		// 				section = sections[ 1 ];
-		// 				section.length = remainingLength;
-		// 				// Update the start 's' to be relative to the segment's start, not the spline's start
-		// 				section.s = lengthCovered;
-
-		// 				remainingLength = 0; // The segment is now fully covered
-		// 			} else {
-		// 				// The segment extends beyond this geometry
-		// 				const sections = geometry.cut( currentS );
-		// 				section = sections[ 1 ];
-		// 				section.s = lengthCovered;
-		// 				section.length = geometry.endS - currentS; // The section's length is the remaining length of the geometry
-		// 				remainingLength -= section.length; // Reduce the remaining length by what's covered by this geometry
-		// 			}
-
-		// 			// Update the start 's' to be relative to the segment's start, not the spline's start
-		// 			// section.s -= segment.start;
-		// 			// Add this section to the segment's geometries
-		// 			segment.geometries.push( section );
-
-		// 			// Update the current position
-		// 			currentS += section.length;
-
-		// 			// Update the length covered so far
-		// 			lengthCovered += section.length;
-
-		// 			// If the segment is fully covered, break the loop
-		// 			if ( remainingLength <= 0 ) {
-		// 				break;
-		// 			}
-		// 		}
-		// 	}
-
-		// 	// Validation to ensure we are not exceeding the segment's length
-		// 	// const totalGeomLength = segment.geometries.reduce( ( total, geom ) => total + geom.length, 0 );
-		// 	// if ( segment.length != -1 && totalGeomLength > segment.length ) {
-		// 	// 	console.error( `Total length of geometries exceeds the segment length for segment starting at ${ segment.start }`, segment.length, totalGeomLength, segment.geometries );
-		// 	// 	// Additional handling may be needed here depending on your application's requirements
-		// 	// }
-		// }
 	}
 
 	getSuccessorSpline ( spline: AbstractSpline ): AbstractSpline {
@@ -789,6 +676,11 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		const geometry = spline.geometries.find( g => s >= g.s && s <= g.endS );
 
+		if ( !geometry ) {
+			console.error( 'No geometry found for s:', s, spline );
+			return new TvPosTheta();
+		}
+
 		const posTheta = geometry.getRoadCoord( s );
 
 		posTheta.addLateralOffset( offset );
@@ -866,8 +758,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-
-	protected findIndex ( spline: AbstractSpline, newPoint: AbstractControlPoint ) {
+	findIndex ( spline: AbstractSpline, position: Vector3 ) {
 
 		let minDistance = Infinity;
 		let index = spline.controlPoints.length; // insert at the end by default
@@ -887,18 +778,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			// Use modulo to wrap around to the first point when reaching the end
 			const next = spline.controlPoints[ nextIndex ];
 
-			const distance = this.calculateDistanceToSegment( newPoint, current, next );
+			const distance = this.calculateDistanceToSegment( position, current, next );
 
 			if ( distance < minDistance ) {
 				minDistance = distance;
-				index = i + 1;
+				index = nextIndex;
 			}
 
-		}
-
-		// If the closest segment is the last one, adjust the index to be 0 to insert after the last point
-		if ( index === spline.controlPoints.length ) {
-			index = 0;
 		}
 
 		return index;
@@ -928,10 +814,10 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		return hdg;
 	}
 
-	private calculateDistanceToSegment ( newPoint: AbstractControlPoint, pointA: AbstractControlPoint, pointB: AbstractControlPoint ): number {
+	private calculateDistanceToSegment ( newPosition: Vector3, pointA: AbstractControlPoint, pointB: AbstractControlPoint ): number {
 
 		const segment = pointB.position.clone().sub( pointA.position ); // Vector representing the segment
-		const startToPoint = newPoint.position.clone().sub( pointA.position ); // Vector from start point to newPoint
+		const startToPoint = newPosition.clone().sub( pointA.position ); // Vector from start point to newPoint
 
 		const projectionScalar = startToPoint.dot( segment ) / segment.lengthSq(); // Scalar projection
 		const projection = segment.clone().multiplyScalar( projectionScalar ); // Vector projection
@@ -942,15 +828,119 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		} else if ( projectionScalar > 1 ) {
 
-			return newPoint.position.distanceTo( pointB.position ); // Closest point is pointB
+			return newPosition.distanceTo( pointB.position ); // Closest point is pointB
 
 		} else {
 
 			const closestPoint = pointA.position.clone().add( projection ); // Closest point on the segment
-			return newPoint.position.distanceTo( closestPoint ); // Distance to closest point on the segment
+			return newPosition.distanceTo( closestPoint ); // Distance to closest point on the segment
 
 		}
 
+	}
+
+	/**
+	 * Handle point update, it should update geometry and other related data
+	 * @param point
+	 */
+	updateControlPoint ( point: AbstractControlPoint ): void {
+
+		if ( point instanceof SplineControlPoint ) {
+
+			this.updateSplineControlPoint( point );
+
+			this.update( point.spline );
+
+		} else if ( point instanceof RoadControlPoint ) {
+
+			this.updateRoadControlPoint( point );
+
+			this.update( point.spline );
+
+		} else if ( point instanceof RoadTangentPoint ) {
+
+			this.updateRoadTangentPoint( point );
+
+			this.update( point.road.spline );
+
+		} else {
+
+			console.error( 'Unknown control point type', point );
+
+		}
+
+	}
+
+	private updateSplineControlPoint ( point: SplineControlPoint ) {
+
+	}
+
+	private updateRoadControlPoint ( point: RoadControlPoint ) {
+
+		this.updateTangentLine( point );
+
+	}
+
+	private updateTangentLine ( point: RoadControlPoint ) {
+
+		if ( point.frontTangent ) {
+
+			point.segmentType = TvGeometryType.SPIRAL;
+
+			const frontPosition = new Vector3( Math.cos( point.hdg ), Math.sin( point.hdg ), CURVE_Y )
+				.multiplyScalar( point.frontTangent.length )
+				.add( point.position );
+
+			point.frontTangent.copyPosition( frontPosition );
+
+		}
+
+		if ( point.backTangent ) {
+
+			point.segmentType = TvGeometryType.SPIRAL;
+
+			const backPosition = new Vector3( Math.cos( point.hdg ), Math.sin( point.hdg ), CURVE_Y )
+				.multiplyScalar( -point.backTangent.length )
+				.add( point.position );
+
+			point.backTangent.copyPosition( backPosition );
+
+		}
+
+		point.frontTangent?.updateTangents();
+
+		point.backTangent?.updateTangents();
+
+		if ( point.frontTangent || point.backTangent ) {
+
+			if ( point.tangentLine && point.backTangent ) {
+
+				const buffer = point.tangentLineGeometry.attributes.position as BufferAttribute;
+
+				buffer.setXYZ( 0, point.frontTangent.position.x, point.frontTangent.position.y, point.frontTangent.position.z );
+
+				buffer.setXYZ( 1, point.backTangent.position.x, point.backTangent.position.y, point.backTangent.position.z );
+
+				buffer.needsUpdate = true;
+			}
+
+		}
+
+	}
+
+	private updateRoadTangentPoint ( point: RoadTangentPoint ) {
+
+		// point.controlPoint.update();
+
+		point.updateTangents();
+
+		this.updateTangentLine( point.controlPoint );
+
+		// point.road.update();
+
+		// point.updateSuccessor();
+
+		// point.updatePredecessor();
 	}
 
 }

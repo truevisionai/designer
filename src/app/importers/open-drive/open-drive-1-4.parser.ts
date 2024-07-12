@@ -42,8 +42,7 @@ import { IOpenDriveParser } from "./i-open-drive.parser";
 import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { TvRoadLaneOffset } from "../../map/models/tv-road-lane-offset";
-import { RoadControlPoint } from "../../objects/road-control-point";
-import { Vector3 } from "three";
+import { SplineFactory } from 'app/services/spline/spline.factory';
 
 @Injectable( {
 	providedIn: 'root'
@@ -165,7 +164,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		if ( xml.planView ) this.parsePlanView( road, xml.planView );
 
-		road.spline = this.makeSplineFromGeometry( road, road.planView.geometries );
+		road.spline = SplineFactory.createExplicitSpline( road.planView.geometries, road );
 
 		// road.length = 0;
 
@@ -194,55 +193,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		if ( xml.surface != null && xml.surface !== '' ) this.parseSurface( road, xml.surface );
 
 		return road;
-	}
-
-	public makeSplineFromGeometry ( road: TvRoad, geometries: TvAbstractRoadGeometry[] ): ExplicitSpline {
-
-		function addControlPoint ( spline: ExplicitSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
-
-			const controlPoint = new RoadControlPoint( road, position, 'cp', index, index );
-
-			controlPoint.segmentType = geometry.geometryType;
-
-			spline.controlPoints.push( controlPoint );
-
-			controlPoint.hdg = hdg;
-
-			controlPoint.userData.geometry = geometry;
-
-			controlPoint.addDefaultTangents( hdg, 1, 1 );
-
-		}
-
-		const spline = new ExplicitSpline( road );
-
-		if ( geometries.length === 0 ) return spline;
-
-		let lastGeometry: TvAbstractRoadGeometry;
-
-		for ( let i = 0; i < geometries.length; i++ ) {
-
-			lastGeometry = geometries[ i ];
-
-			spline.geometries.push( lastGeometry );
-
-			addControlPoint( spline, lastGeometry, i, lastGeometry.startV3, lastGeometry.hdg );
-			// spline.addFromFile( i, lastGeometry.startV3, lastGeometry.hdg, lastGeometry.geometryType, lastGeometry );
-
-		}
-
-		const lastCoord = lastGeometry.endCoord();
-
-		// spline.addFromFile( geometries.length, lastCoord.toVector3(), lastCoord.hdg, lastGeometry.geometryType, lastGeometry );
-		addControlPoint( spline, lastGeometry, geometries.length, lastCoord.toVector3(), lastCoord.hdg );
-
-		spline.controlPoints.forEach( cp => cp.userData.roadId = road.id );
-
-		spline.segmentMap.set( 0, road );
-
-		road.sStart = 0;
-
-		return spline;
 	}
 
 	public parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ) {
@@ -609,9 +559,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-		const linkedRoad = linkedRoadId ? this.map.getRoadById( linkedRoadId ) : null;
-		const incomingRoad = incomingRoadId ? this.map.getRoadById( incomingRoadId ) : null;
-		const connectingRoad = connectingRoadId ? this.map.getRoadById( connectingRoadId ) : linkedRoad;
+		const linkedRoad = !isNaN( linkedRoadId ) ? this.map.getRoadById( linkedRoadId ) : null;
+		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoadById( incomingRoadId ) : null;
+		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoadById( connectingRoadId ) : linkedRoad;
 
 		if ( !incomingRoad ) {
 			TvConsole.error( "Incoming road not found" );
@@ -627,7 +577,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			connectingRoad?.successor?.elementId :
 			connectingRoad?.predecessor?.elementId;
 
-		const outgoingRoad = outgoingRoadId ? this.map.getRoadById( outgoingRoadId ) : null;
+		const outgoingRoad = !isNaN( outgoingRoadId ) ? this.map.getRoadById( outgoingRoadId ) : null;
 
 		if ( !outgoingRoad ) {
 			console.warn( 'outgoingRoad', outgoingRoad, connectingRoad );

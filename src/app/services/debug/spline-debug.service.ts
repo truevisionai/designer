@@ -26,6 +26,8 @@ import { RoadNode } from 'app/objects/road-node';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
+import { RoadControlPoint } from "../../objects/road-control-point";
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
@@ -360,7 +362,46 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 			this.points.addItem( spline, point );
 
+			this.showTangents( spline, point );
+
 		} );
+
+	}
+
+	showTangents ( spline: AbstractSpline, point: AbstractControlPoint ) {
+
+		if ( point instanceof RoadControlPoint ) {
+
+			if ( !point.frontTangent || !point.backTangent ) {
+				point.addDefaultTangents( point.hdg, 7, 7 );
+			}
+
+			const index = spline.controlPoints.indexOf( point );
+
+			if ( index != spline.controlPoints.length - 1 ) {
+
+				point.frontTangent.visible = true;
+
+				this.points.addItem( spline, point.frontTangent )
+			}
+
+			if ( index != 0 ) {
+
+				point.backTangent.visible = true;
+
+				this.points.addItem( spline, point.backTangent )
+
+			}
+
+			if ( point.tangentLine ) {
+
+				point.tangentLine.visible = true;
+
+				this.points.addItem( spline, point.tangentLine )
+
+			}
+
+		}
 
 	}
 

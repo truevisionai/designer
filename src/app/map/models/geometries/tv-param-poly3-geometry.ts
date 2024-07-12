@@ -90,9 +90,7 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 		if ( this.pRange === 'arcLength' ) {
 
-			const points = this.generatePointsArcLength( 0.0001 );
-
-			console.log( 'curve', this.length, points.length );
+			const points = this.generatePointsArcLength( 0.001 );
 
 			return this.curve = new SplineCurve( points );
 
@@ -100,9 +98,7 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 		if ( this.pRange == 'normalized' ) {
 
-			const points = this.generatePoints( 0.0001 );
-
-			console.log( 'curve', this.length, points.length );
+			const points = this.generatePoints( 0.001 );
 
 			return this.curve = new SplineCurve( points );
 		}
@@ -115,6 +111,11 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 		const point0 = this.getPointArcLength( p0 );
 		const pointMid = this.getPointArcLength( mid );
 		const point1 = this.getPointArcLength( p1 );
+
+		if ( mid == null ) return;
+		if ( point0 == null ) return;
+		if ( pointMid == null ) return;
+		if ( point1 == null ) return;
 
 		const dx = ( point0.x + point1.x ) / 2 - pointMid.x;
 		const dy = ( point0.y + point1.y ) / 2 - pointMid.y;

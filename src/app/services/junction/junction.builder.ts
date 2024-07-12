@@ -6,8 +6,8 @@ import { Injectable } from '@angular/core';
 import {
 	BufferAttribute,
 	BufferGeometry,
+	DoubleSide,
 	FrontSide,
-	Group,
 	Mesh,
 	MeshStandardMaterial,
 	RepeatWrapping,
@@ -26,6 +26,9 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoadLinkChildType } from "../../map/models/tv-road-link-child";
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { RoadBuilder } from 'app/map/builders/road.builder';
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { TvLaneType } from "../../map/models/tv-common";
+import { GeometryUtils } from '../surface/geometry-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -40,7 +43,41 @@ export class JunctionBuilder {
 
 	build ( junction: TvJunction ) {
 
-		// return this.buildConnectingRoads( junction );
+		// NOTE: This is a temporary implementation to visualize the junction
+		// NOTE: This does not work
+
+		const connnections = junction.getConnections();
+
+		const connectingRoads = connnections.map( connection => connection.connectingRoad );
+
+		const roadGeometries: BufferGeometry[] = [];
+
+		connectingRoads.forEach( road =>
+
+			road.laneSections.forEach( laneSection =>
+
+				laneSection.getLaneArray().forEach( lane => {
+
+					if ( lane.id == 0 ) return;
+
+					if ( !lane.gameObject ) return;
+
+					if ( lane.type != TvLaneType.driving ) return;
+
+					roadGeometries.push( lane.gameObject.geometry );
+
+				} )
+			) );
+
+		const geometry = BufferGeometryUtils.mergeGeometries( roadGeometries );
+
+		// Create geometry from triangulated points
+		const junctionGeometry = GeometryUtils.createPolygonFromBufferGeometry( geometry );
+
+		// Create material and mesh
+		const material = new MeshStandardMaterial( { color: 0x0000FF, side: DoubleSide } );
+
+		return new Mesh( junctionGeometry, material );
 
 	}
 

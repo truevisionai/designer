@@ -11,11 +11,10 @@ import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadManager } from "./road/road-manager";
 import { RoadService } from "app/services/road/road.service";
 import { JunctionFactory } from "app/factories/junction.factory";
-import { AbstractSpline } from "../core/shapes/abstract-spline";
+import { AbstractSpline, SplineType } from "../core/shapes/abstract-spline";
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { IntersectionGroup } from "./Intersection-group";
 import { TvRoadCoord } from "../map/models/TvRoadCoord";
-import { GeometryUtils } from "../services/surface/surface-geometry.builder";
 import { TvContactPoint } from "../map/models/tv-common";
 import { TvRoadLinkChildType } from "../map/models/tv-road-link-child";
 import { JunctionService } from "../services/junction/junction.service";
@@ -26,6 +25,8 @@ import { TvJunctionBoundaryService } from "app/map/junction-boundary/tv-junction
 import { RoadBuilder } from "../map/builders/road.builder";
 import { Maths } from "app/utils/maths";
 import { JunctionConnectionFactory } from "app/factories/junction-connection.factory";
+import { JunctionBuilder } from "app/services/junction/junction.builder";
+import { GeometryUtils } from "app/services/surface/geometry-utils";
 
 const JUNCTION_WIDTH = 10;
 
@@ -51,6 +52,7 @@ export class JunctionManager {
 		public splineService: SplineService,
 		public junctionBoundaryService: TvJunctionBoundaryService,
 		public connectionFactory: JunctionConnectionFactory,
+		public junctionBuilder: JunctionBuilder,
 	) {
 	}
 
@@ -76,6 +78,12 @@ export class JunctionManager {
 		this.junctionBoundaryService.update( junction );
 
 		junction.boundingBox = this.junctionService.computeBoundingBox( junction );
+
+		// if ( junction.mesh ) this.mapService.map.gameObject.remove( junction.mesh );
+
+		// junction.mesh = this.junctionBuilder.build( junction );
+
+		// this.mapService.map.gameObject.add( junction.mesh );
 
 	}
 
@@ -114,6 +122,8 @@ export class JunctionManager {
 			this.processGroups( groups );
 
 		}
+
+		// if ( junction.mesh ) this.mapService.map.gameObject.remove( junction.mesh );
 
 	}
 
@@ -195,6 +205,8 @@ export class JunctionManager {
 	updateJunctions ( spline: AbstractSpline ) {
 
 		if ( this.splineService.isConnectionRoad( spline ) ) return;
+
+		if ( spline.type == SplineType.EXPLICIT ) return;
 
 		if ( this.debug ) console.debug( 'updateJunctions', spline );
 
@@ -528,15 +540,49 @@ export class JunctionManager {
 		return sStart <= junctionWidth || sEnd >= splineLength - junctionWidth;
 	}
 
-	handleStartOrEndOfSpline ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadCoord[], sStart: number, sEnd: number, segment: TvRoad, endSegment: TvRoad, junctionWidth: number ) {
+	handleStartOrEndOfSpline ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadCoord[], sStart: number, sEnd: number, startSegment: TvRoad, endSegment: TvRoad, junctionWidth: number ) {
+
+		if ( !endSegment ) return;
+
 		const splineLength = this.splineService.getLength( spline );
+
+		const hasPredecessor = startSegment.predecessor != null;
+
 		const atStart = sStart <= junctionWidth;
+
+		const hasSuccessor = endSegment.successor != null;
+
 		const atEnd = sEnd >= splineLength - junctionWidth;
 
-		if ( atEnd && endSegment instanceof TvRoad ) {
-			this.addEndSegmentCoords( spline, junction, coords, sStart, endSegment );
+		if ( atEnd ) {
+
+			if ( hasSuccessor ) {
+
+				// console.error( 'hasSuccessor', endSegment );
+
+				this.addEndSegmentCoords( spline, junction, coords, sEnd, endSegment );
+
+			} else {
+
+				this.addEndSegmentCoords( spline, junction, coords, sStart, endSegment );
+
+			}
+
+
 		} else if ( atStart ) {
-			this.addStartSegmentCoords( spline, junction, coords, junctionWidth );
+
+			if ( hasPredecessor ) {
+
+				// console.error( 'hasPredecessor', startSegment );
+
+				this.addStartSegmentCoords( spline, junction, coords, junctionWidth );
+
+			} else {
+
+				this.addStartSegmentCoords( spline, junction, coords, junctionWidth );
+
+			}
+
 		}
 	}
 

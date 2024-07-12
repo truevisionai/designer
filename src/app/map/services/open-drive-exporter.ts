@@ -279,93 +279,82 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	public writePlanView ( xmlNode, road: TvRoad ) {
 
 		xmlNode.planView = {
-			geometry: []
+			geometry: road.geometries.map( geometry => this.writeGeometry( geometry ) )
 		};
 
-		const geometryCount = road.getGeometryBlockCount();
-
-		for ( let i = 0; i < geometryCount; i++ ) {
-			this.writeGeometryBlock( xmlNode.planView, road.getGeometryBlock( i ) );
-		}
 	}
 
-	public writeGeometryBlock ( xmlNode, geometryBlock: TvAbstractRoadGeometry ) {
+	public writeGeometry ( geometry: TvAbstractRoadGeometry ) {
 
-		const nodeGeometry = {
-			attr_s: geometryBlock.s.toExponential( 16 ),
-			attr_x: geometryBlock.x.toExponential( 16 ),
-			attr_y: geometryBlock.y.toExponential( 16 ),
-			attr_hdg: geometryBlock.hdg.toExponential( 16 ),
-			attr_length: geometryBlock.length.toExponential( 16 ),
+		const xml: XmlElement = {
+			attr_s: geometry.s.toExponential( 16 ),
+			attr_x: geometry.x.toExponential( 16 ),
+			attr_y: geometry.y.toExponential( 16 ),
+			attr_hdg: geometry.hdg.toExponential( 16 ),
+			attr_length: geometry.length.toExponential( 16 ),
 		};
 
-		xmlNode.geometry.push( nodeGeometry );
-
-		// TODO: ADD POLY3 GEOMETRY
-		switch ( geometryBlock.geometryType ) {
+		switch ( geometry.geometryType ) {
 
 			case TvGeometryType.LINE:
 
-				nodeGeometry[ 'line' ] = null;
+				xml[ 'line' ] = null;
 
 				break;
 
 			case TvGeometryType.ARC:
 
-				const arc = geometryBlock as TvArcGeometry;
+				const arc = geometry as TvArcGeometry;
 
-				nodeGeometry[ 'arc' ] = {};
-				nodeGeometry[ 'arc' ][ 'attr_curvature' ] = arc.curvature;
+				xml[ 'arc' ] = {};
+				xml[ 'arc' ][ 'attr_curvature' ] = arc.curvature;
 
 				break;
 
 			case TvGeometryType.SPIRAL:
 
-				const sprial = geometryBlock as TvSpiralGeometry;
+				const sprial = geometry as TvSpiralGeometry;
 
-				// TODO: ADD REST OF THE VALUES
-				nodeGeometry[ 'spiral' ] = {};
-				nodeGeometry[ 'spiral' ][ 'attr_curvStart' ] = sprial.curvStart;
-				nodeGeometry[ 'spiral' ][ 'attr_curvEnd' ] = sprial.curvEnd;
+				xml[ 'spiral' ] = {};
+				xml[ 'spiral' ][ 'attr_curvStart' ] = sprial.curvStart;
+				xml[ 'spiral' ][ 'attr_curvEnd' ] = sprial.curvEnd;
 
 				break;
 
 			case TvGeometryType.POLY3:
 
-				const poly3 = geometryBlock as TvPoly3Geometry;
+				const poly3 = geometry as TvPoly3Geometry;
 
-				nodeGeometry[ 'poly3' ] = {};
-				nodeGeometry[ 'poly3' ][ 'attr_a' ] = poly3.attr_a;
-				nodeGeometry[ 'poly3' ][ 'attr_b' ] = poly3.attr_b;
-				nodeGeometry[ 'poly3' ][ 'attr_c' ] = poly3.attr_c;
-				nodeGeometry[ 'poly3' ][ 'attr_d' ] = poly3.attr_d;
+				xml[ 'poly3' ] = {};
+				xml[ 'poly3' ][ 'attr_a' ] = poly3.attr_a;
+				xml[ 'poly3' ][ 'attr_b' ] = poly3.attr_b;
+				xml[ 'poly3' ][ 'attr_c' ] = poly3.attr_c;
+				xml[ 'poly3' ][ 'attr_d' ] = poly3.attr_d;
 
 				break;
 
 			case TvGeometryType.PARAMPOLY3:
 
-				const paramPoly3 = geometryBlock as TvParamPoly3Geometry;
+				const paramPoly3 = geometry as TvParamPoly3Geometry;
 
-				nodeGeometry[ 'paramPoly3' ] = {};
+				xml[ 'paramPoly3' ] = {};
 
-				nodeGeometry[ 'paramPoly3' ][ 'attr_pRange' ] = paramPoly3.pRange;
+				xml[ 'paramPoly3' ][ 'attr_pRange' ] = paramPoly3.pRange;
 
-				nodeGeometry[ 'paramPoly3' ][ 'attr_aU' ] = paramPoly3.aU;
-				nodeGeometry[ 'paramPoly3' ][ 'attr_bU' ] = paramPoly3.bU;
-				nodeGeometry[ 'paramPoly3' ][ 'attr_cU' ] = paramPoly3.cU;
-				nodeGeometry[ 'paramPoly3' ][ 'attr_dU' ] = paramPoly3.dU;
+				xml[ 'paramPoly3' ][ 'attr_aU' ] = paramPoly3.aU;
+				xml[ 'paramPoly3' ][ 'attr_bU' ] = paramPoly3.bU;
+				xml[ 'paramPoly3' ][ 'attr_cU' ] = paramPoly3.cU;
+				xml[ 'paramPoly3' ][ 'attr_dU' ] = paramPoly3.dU;
 
-				nodeGeometry[ 'paramPoly3' ][ 'attr_aV' ] = paramPoly3.aV;
-				nodeGeometry[ 'paramPoly3' ][ 'attr_bV' ] = paramPoly3.bV;
-				nodeGeometry[ 'paramPoly3' ][ 'attr_cV' ] = paramPoly3.cV;
-				nodeGeometry[ 'paramPoly3' ][ 'attr_dV' ] = paramPoly3.dV;
+				xml[ 'paramPoly3' ][ 'attr_aV' ] = paramPoly3.aV;
+				xml[ 'paramPoly3' ][ 'attr_bV' ] = paramPoly3.bV;
+				xml[ 'paramPoly3' ][ 'attr_cV' ] = paramPoly3.cV;
+				xml[ 'paramPoly3' ][ 'attr_dV' ] = paramPoly3.dV;
 
 				break;
 		}
 
-	}
-
-	public writeGeometry ( xmlNode, roadGeometry, geometryType ) {
+		return xml;
 	}
 
 	public writeElevationProfile ( xmlNode, road: TvRoad ) {

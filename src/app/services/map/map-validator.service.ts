@@ -24,6 +24,8 @@ import { TvElectronService } from '../tv-electron.service';
 import { RoadService } from '../road/road.service';
 import { LaneUtils } from 'app/utils/lane.utils';
 
+const SPHERE_SIZE = 0.1;
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -119,8 +121,8 @@ export class MapValidatorService {
 
 			} else {
 
-				console.error( 'MapValidationFailed', this.errors[ i ] );
-				TvConsole.error( 'MapValidationFailed: ' + this.errors[ i ] );
+				console.warn( 'MapValidationFailed', this.errors[ i ] );
+				TvConsole.warn( 'MapValidationFailed: ' + this.errors[ i ] );
 
 			}
 
@@ -398,7 +400,7 @@ export class MapValidatorService {
 
 			this.errors.push( linkType + ' not found ' + link.toString() + ' for road ' + roadA.id );
 
-			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, 1.0, COLOR.MAGENTA );
+			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE, COLOR.MAGENTA );
 			this.debugObjects.add( sphere1, sphere1 );
 
 			return;
@@ -494,11 +496,14 @@ export class MapValidatorService {
 
 				this.errors.push( label + ':' + roadA.id + ' has invalid distance ' + linkType + ':' + link.elementType + ':' + link.elementId + ' ' + distance );
 
-				const sphere1 = this.debugDraw.createSphere( mainPosition.position, 0.5, COLOR.BLUE );
+				const sphere1 = this.debugDraw.createSphere( mainPosition.position, SPHERE_SIZE, COLOR.BLUE );
 				this.debugObjects.add( sphere1, sphere1 );
 
-				const sphere2 = this.debugDraw.createSphere( otherPosition.position, 0.5, COLOR.GREEN );
+				const sphere2 = this.debugDraw.createSphere( otherPosition.position, SPHERE_SIZE, COLOR.GREEN );
 				this.debugObjects.add( sphere2, sphere2 );
+
+				const line = this.debugDraw.createLine( [ mainPosition.position, otherPosition.position ], COLOR.MAGENTA );
+				this.debugObjects.add( line, line );
 			}
 
 		} );
@@ -513,7 +518,7 @@ export class MapValidatorService {
 
 			this.errors.push( 'validateJunctionLink: ' + linkType + ' not found ' + link.toString() + ' for road ' + road.id );
 
-			const sphere1 = this.debugDraw.createSphere( road.getEndPosTheta().position, 1.0, COLOR.MAGENTA );
+			const sphere1 = this.debugDraw.createSphere( road.getEndPosTheta().position, SPHERE_SIZE, COLOR.MAGENTA );
 			this.debugObjects.add( sphere1, sphere1 );
 
 			return;
@@ -564,11 +569,14 @@ export class MapValidatorService {
 
 				this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + incomingContact + ' distance:' + distance );
 
-				const sphere1 = this.debugDraw.createSphere( incomingPosition.position, 0.5, COLOR.BLUE );
+				const sphere1 = this.debugDraw.createSphere( incomingPosition.position, SPHERE_SIZE, COLOR.BLUE );
 				this.debugObjects.add( sphere1, sphere1 );
 
-				const sphere2 = this.debugDraw.createSphere( connectingPosition.position, 0.5, COLOR.GREEN );
+				const sphere2 = this.debugDraw.createSphere( connectingPosition.position, SPHERE_SIZE, COLOR.GREEN );
 				this.debugObjects.add( sphere2, sphere2 );
+
+				const line = this.debugDraw.createLine( [ incomingPosition.position, connectingPosition.position ], COLOR.ORANGE );
+				this.debugObjects.add( line, line );
 			}
 
 		} );
@@ -601,11 +609,14 @@ export class MapValidatorService {
 
 				this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + outgoingContact + ' distance:' + distance );
 
-				const sphere1 = this.debugDraw.createSphere( outgoingPosition.position, 0.5, COLOR.BLUE );
+				const sphere1 = this.debugDraw.createSphere( outgoingPosition.position, SPHERE_SIZE, COLOR.BLUE );
 				this.debugObjects.add( sphere1, sphere1 );
 
-				const sphere2 = this.debugDraw.createSphere( connectingPosition.position, 0.5, COLOR.GREEN );
+				const sphere2 = this.debugDraw.createSphere( connectingPosition.position, SPHERE_SIZE, COLOR.GREEN );
 				this.debugObjects.add( sphere2, sphere2 );
+
+				const line = this.debugDraw.createLine( [ connectingPosition.position, outgoingPosition.position ], COLOR.GREEN );
+				this.debugObjects.add( line, line );
 			}
 
 		} );

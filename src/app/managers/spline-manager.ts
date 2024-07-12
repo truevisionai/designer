@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map/map.service";
 import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
@@ -120,6 +120,8 @@ export class SplineManager {
 
 		if ( this.splineService.isConnectionRoad( spline ) ) return;
 
+		if ( spline.type === SplineType.EXPLICIT ) return;
+
 		const lastSegment = spline.segmentMap.getLast();
 
 		if ( lastSegment instanceof TvRoad ) {
@@ -137,6 +139,8 @@ export class SplineManager {
 	syncPredecessorSpline ( spline: AbstractSpline ) {
 
 		if ( this.splineService.isConnectionRoad( spline ) ) return;
+
+		if ( spline.type === SplineType.EXPLICIT ) return;
 
 		const firstSegment = spline.segmentMap.getFirst();
 

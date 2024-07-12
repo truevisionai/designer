@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SceneService } from 'app/services/scene.service';
 import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TvGeometryType } from 'app/map/models/tv-common';
@@ -11,6 +10,7 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
 import { RoadTangentPoint } from './road-tangent-point';
 import { AbstractControlPoint } from "./abstract-control-point";
+import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 
 /**
  * @deprecated
@@ -38,18 +38,14 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 	public segmentType: TvGeometryType;
 
+	public segmentGeometry: TvAbstractRoadGeometry;
+
 	public allowChange: boolean = true;
 
 	// tag, tagindex, cpobjidx are not used anywhere in new fixed workflow
 	// can add hdg here and
 	// remove segmentType from here to spline directly
-	constructor (
-		public road: TvRoad,
-		position: Vector3,
-		tag = 'cp',
-		tagindex?: number,
-		cpobjidx?: number,
-	) {
+	constructor ( public road: TvRoad, position: Vector3, tagindex?: number ) {
 
 		super( new BufferGeometry(), new PointsMaterial() );
 
@@ -79,7 +75,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 		this.userData.is_control_point = true;
 		this.userData.is_selectable = true;
 
-		this.tag = tag;
+		this.tag = 'cp';
 		this.tagindex = tagindex;
 
 		this.renderOrder = 3;
@@ -103,47 +99,14 @@ export class RoadControlPoint extends AbstractControlPoint {
 		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
 	}
 
-	updateTangents () {
-
-		if ( this.frontTangent ) {
-
-			this.segmentType = TvGeometryType.SPIRAL;
-
-			const frontPosition = new Vector3( Math.cos( this.hdg ), Math.sin( this.hdg ), CURVE_Y )
-				.multiplyScalar( this.frontTangent.length )
-				.add( this.position );
-
-			this.frontTangent.copyPosition( frontPosition );
-
-		}
-
-		if ( this.backTangent ) {
-
-			this.segmentType = TvGeometryType.SPIRAL;
-
-			const backPosition = new Vector3( Math.cos( this.hdg ), Math.sin( this.hdg ), CURVE_Y )
-				.multiplyScalar( -this.backTangent.length )
-				.add( this.position );
-
-			this.backTangent.copyPosition( backPosition );
-
-		}
-
-		if ( this.frontTangent || this.backTangent ) {
-
-			this.updateTangentLine();
-
-		}
-
-	}
-
 	copyPosition ( position: Vector3 ) {
 
 		if ( !this.allowChange ) return;
 
 		super.copyPosition( position );
 
-		this.updateTangents();
+		// NOTE: we need to ensure if position is update th
+		this.segmentType = TvGeometryType.SPIRAL;
 
 	}
 
@@ -153,13 +116,15 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 		super.setPosition( position );
 
-		this.updateTangents();
+		// NOTE: we need to ensure if position is update th
+		this.segmentType = TvGeometryType.SPIRAL;
 
 	}
 
 	update () {
 
-		this.road.update();
+		// NOTE: we need to ensure if position is update th
+		this.segmentType = TvGeometryType.SPIRAL;
 
 	}
 
@@ -235,21 +200,6 @@ export class RoadControlPoint extends AbstractControlPoint {
 		// SceneService.addToMain( this.tangentLine );
 	}
 
-	updateTangentLine () {
-
-		if ( this.tangentLine && this.backTangent ) {
-
-			const buffer = this.tangentLineGeometry.attributes.position as BufferAttribute;
-
-			buffer.setXYZ( 0, this.frontTangent.position.x, this.frontTangent.position.y, this.frontTangent.position.z );
-
-			buffer.setXYZ( 1, this.backTangent.position.x, this.backTangent.position.y, this.backTangent.position.z );
-
-			buffer.needsUpdate = true;
-		}
-
-	}
-
 	// removeTangents () {
 	//
 	// 	SceneService.removeFromMain( this.frontTangent );
@@ -273,8 +223,6 @@ export class RoadControlPoint extends AbstractControlPoint {
 		if ( !this.allowChange ) return;
 
 		super.copyPosition( position );
-
-		this.updateTangents();
 
 	}
 

@@ -140,12 +140,6 @@ export class TvRoad {
 
 	}
 
-	update () {
-
-		this.updateGeometryFromSpline();
-
-	}
-
 	hasSuccessor () {
 
 		return this.successor != null;
@@ -743,23 +737,6 @@ export class TvRoad {
 			if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
 
 		} );
-	}
-
-	updateGeometryFromSpline ( duringImport = false ) {
-
-		// // make length 0 because geometry will update road length again
-		// this.length = 0;
-		//
-		// this.spline.update();
-		//
-		// this.clearGeometries();
-		//
-		// this.spline.exportGeometries( duringImport ).forEach( geometry => {
-		//
-		// 	this.addGeometry( geometry );
-		//
-		// } );
-
 	}
 
 	getLeftSideWidth ( s: number ) {
