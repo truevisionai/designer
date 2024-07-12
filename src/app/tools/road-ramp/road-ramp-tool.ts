@@ -202,9 +202,9 @@ export class RoadRampTool extends BaseTool<any> {
 
 		if ( startCoord instanceof TvLaneCoord ) {
 
-			const spline = this.helper.createSpline( startCoord, endCoord );
+			const road = this.helper.createRampRoad( startCoord, endCoord );
 
-			const addComand = new AddObjectCommand( spline );
+			const addComand = new AddObjectCommand( road.spline );
 
 			CommandHistory.execute( addComand );
 
@@ -283,15 +283,25 @@ export class RoadRampTool extends BaseTool<any> {
 
 		const startCoord = this.helper.roadService.findLaneCoord( spline.getFirstPoint()?.position );
 
-		const road = this.helper.roadFactory.createNewRoad();
+		let road: TvRoad
 
-		road.spline = spline;
+		if ( spline.segmentMap.length === 0 ) {
 
-		this.helper.addLaneSection( startCoord, null, road );
+			this.helper.roadFactory.createNewRoad();
 
-		this.adjustSpline( road, spline );
+			road.spline = spline;
 
-		road.spline.segmentMap.set( 0, road );
+			this.helper.addLaneSection( startCoord, null, road );
+
+			this.adjustSpline( road, spline );
+
+			road.spline.segmentMap.set( 0, road );
+
+		} else {
+
+			road = spline.segmentMap.getFirst() as TvRoad;
+
+		}
 
 		this.helper.mapService.map.addRoad( road );
 
