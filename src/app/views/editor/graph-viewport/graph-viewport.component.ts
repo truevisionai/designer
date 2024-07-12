@@ -339,6 +339,8 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		this.line.visible = true;
 
+		if ( road.length < 1 ) return;
+
 		let positions: Vector3[] = [];
 
 		for ( let s = 0; s < road.length; s += 0.1 ) {
