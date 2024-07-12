@@ -24,6 +24,7 @@ import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
 import { DebugState } from "../../services/debug/debug-state";
 import { CornerControlPoint } from './crosswalk-tool-debugger';
+import { TvConsole } from 'app/core/utils/console';
 
 export class CrosswalkTool extends BaseTool<any> {
 
@@ -186,7 +187,7 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		if ( object instanceof TvRoadObject ) {
 
-			this.addCrosswalk( this.selectedRoad, object );
+			this.addCrosswalk( object.road || this.selectedRoad, object );
 
 		} else if ( object instanceof CornerControlPoint ) {
 
@@ -204,7 +205,7 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		if ( object instanceof TvRoadObject ) {
 
-			this.updateCrosswalk( this.selectedRoad, object );
+			this.updateCrosswalk( object.road, object );
 
 		} else if ( object instanceof CornerControlPoint ) {
 
@@ -216,7 +217,14 @@ export class CrosswalkTool extends BaseTool<any> {
 
 			const roadObject = this.tool.objectService.findRoadObjectByMarking( this.selectedRoad, object );
 
-			this.tool.objectService.updateRoadObject( this.selectedRoad, roadObject );
+			const road = roadObject.road || this.selectedRoad;
+
+			if ( !road ) {
+				console.error( 'Failed to update crosswalk', object, roadObject );
+				return;
+			}
+
+			this.tool.objectService.updateRoadObject( road, roadObject );
 
 		} else if ( object instanceof CrosswalkInspector ) {
 
@@ -230,7 +238,7 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		if ( object instanceof TvRoadObject ) {
 
-			this.removeCrosswalk( this.selectedRoad, object );
+			this.removeCrosswalk( object.road, object );
 
 		} else if ( object instanceof CornerControlPoint ) {
 
@@ -386,6 +394,12 @@ export class CrosswalkTool extends BaseTool<any> {
 	}
 
 	removeCrosswalk ( road: TvRoad, object: TvRoadObject ) {
+
+		if ( !road ) {
+			console.error( 'Failed to remove crosswalk', object, road );
+			TvConsole.error( `Failed to remove crosswalk` );
+			return;
+		}
 
 		this.tool.objectService.removeRoadObject( road, object );
 
