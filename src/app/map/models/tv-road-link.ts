@@ -5,6 +5,7 @@
 import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
 import { TvJunction } from './junctions/tv-junction';
+import { TvRoadCoord } from './TvRoadCoord';
 
 export enum TvRoadLinkType {
 	ROAD = 'road',
@@ -143,6 +144,18 @@ export class TvRoadLink {
 			return `Link: ${ this.type }:${ this.id }`;
 
 		}
+
+	}
+
+	toRoadCoord () {
+
+		if ( this.type == TvRoadLinkType.JUNCTION ) return;
+
+		const road = this.element as TvRoad;
+
+		const s = this.contactPoint == TvContactPoint.START ? 0 : road.length;
+
+		return new TvRoadCoord( road, s, 0 );
 
 	}
 

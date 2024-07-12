@@ -8,7 +8,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map/map.service';
-import { TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvLane } from 'app/map/models/tv-lane';
 import { CommandHistory } from '../command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
@@ -344,9 +344,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		road.junction = junction;
 
-		road.setPredecessor( TvRoadLinkType.road, incoming.road, incoming.contact );
+		road.setPredecessor( TvRoadLinkType.ROAD, incoming.road, incoming.contact );
 
-		road.setSuccessor( TvRoadLinkType.road, outgoing.road, outgoing.contact );
+		road.setSuccessor( TvRoadLinkType.ROAD, outgoing.road, outgoing.contact );
 
 		return road;
 
@@ -656,6 +656,25 @@ export class RoadService extends BaseDataService<TvRoad> {
 		position.z += laneHeight.getLinearValue( 0.5 );
 
 		return position;
+	}
+
+	findLinkPosition ( link: TvRoadLink ): TvPosTheta {
+
+		if ( link.type == TvRoadLinkType.JUNCTION ) {
+			throw new Error( 'Junction link does not have position' );
+		}
+
+		const road = link.element as TvRoad
+
+		if ( link.contactPoint == TvContactPoint.START ) {
+
+			return this.findRoadPosition( road, 0 );
+
+		} else {
+
+			return this.findRoadPosition( road, road.length );
+
+		}
 	}
 
 }
