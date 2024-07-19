@@ -719,4 +719,10 @@ export class Maths {
 		if ( y >= 0 ) return Math.acos( x );
 		else return 2 * Math.PI - Math.acos( x );
 	}
+
+	static lerp ( min: number, max: number, t: number ) {
+
+		return min + t * ( max - min );
+
+	}
 }

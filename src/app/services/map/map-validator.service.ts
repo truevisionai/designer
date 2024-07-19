@@ -400,7 +400,7 @@ export class MapValidatorService {
 
 			this.errors.push( linkType + ' not found ' + link.toString() + ' for road ' + roadA.id );
 
-			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE, COLOR.MAGENTA );
+			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE*10, COLOR.MAGENTA );
 			this.debugObjects.add( sphere1, sphere1 );
 
 			return;

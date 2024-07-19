@@ -32,9 +32,9 @@ export class DebugConnectionToolService {
 
 export class DebugConnectionTool extends BaseTool<any> {
 
-	public name: string = 'PointerTool';
+	public name: string = 'DebugTool';
 
-	public toolType = ToolType.Pointer;
+	public toolType = ToolType.DebugConnections;
 	private toolTip: any;
 
 	constructor ( private tool: DebugConnectionToolService ) {
@@ -50,6 +50,12 @@ export class DebugConnectionTool extends BaseTool<any> {
 		super.init();
 
 		this.setDebugService( this.tool.toolDebugger );
+
+		this.tool.mapService.nonJunctionSplines.forEach( spline => {
+
+			this.tool.toolDebugger.roadToolDebugger.onDefault( spline );
+
+		} );
 
 	}
 

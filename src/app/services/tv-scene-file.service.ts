@@ -26,6 +26,9 @@ import { RoadService } from './road/road.service';
 import { RoadObjectService } from 'app/map/road-object/road-object.service';
 import { MapEvents } from 'app/events/map-events';
 import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
+import { LocalStorage, STORAGE_KEYS } from './local-storage';
+import { Environment } from 'app/core/utils/environment';
+import { MapFixer } from './map/map-fixer.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -47,6 +50,8 @@ export class TvSceneFileService {
 		private snackBar: SnackBar,
 		private scenarioService: ScenarioService,
 		private signalIdService: RoadSignalIdService,
+		private localStorage: LocalStorage,
+		private mapFixer: MapFixer,
 	) {
 	}
 
@@ -90,6 +95,8 @@ export class TvSceneFileService {
 
 		this.sceneBuilder.buildScene( map );
 
+		this.mapFixer.fixMap( map );
+
 	}
 
 	setFilePath ( path: string, map: TvMap ) {
@@ -103,6 +110,27 @@ export class TvSceneFileService {
 		map.header.name = this.currentFile.name;
 
 		this.electronService.setTitle( this.currentFile.name, this.currentFile.path );
+
+		if ( path != null ) {
+			this.localStorage.store( STORAGE_KEYS.LAST_FILE, path );
+		}
+
+	}
+
+	openLastFile () {
+
+		const lastFile = this.localStorage.get( STORAGE_KEYS.LAST_FILE );
+
+		// USE LAST FILE IN DEV MODE ONLY
+		if ( lastFile != null && lastFile != 'undefined' && !Environment.production ) {
+
+			this.openFromPath( lastFile );
+
+		} else {
+
+			this.newScene();
+
+		}
 
 	}
 

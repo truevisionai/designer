@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvLaneSide, TvLaneType, TvOrientation, TvRoadMarkTypes, TvSide } from 'app/map/models/tv-common';
+import { TvContactPoint, TvLaneSide, TvLaneType, TvOrientation, TvRoadMarkTypes } from 'app/map/models/tv-common';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector3 } from 'three';
@@ -28,6 +28,7 @@ import { LaneUtils } from 'app/utils/lane.utils';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
+import { TvRoadLinkNeighbor } from "../../map/models/tv-road-link-neighbor";
 
 @Injectable( {
 	providedIn: 'root'
@@ -81,6 +82,14 @@ export class RampToolHelper {
 		const rampRoad = this.roadService.createNewRoad();
 
 		rampRoad.spline = this.createSpline( startCoord, endCoord );
+
+		if ( startCoord instanceof TvLaneCoord ) {
+
+			startCoord.road.neighbors.push( new TvRoadLinkNeighbor( rampRoad, TvContactPoint.START ) );
+
+			rampRoad.neighbors.push( new TvRoadLinkNeighbor( startCoord.road, null ) );
+
+		}
 
 		this.addLaneSection( startCoord, endCoord, rampRoad );
 

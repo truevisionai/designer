@@ -9,6 +9,7 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { AppInspector } from 'app/core/inspector';
 import { TvSurfaceInspector } from '../../map/surface/surface.inspector';
 import { BaseSplineTool } from "../base-spline-tool";
+import { DebugState } from 'app/services/debug/debug-state';
 
 export class SurfaceTool extends BaseSplineTool<Surface> {
 
@@ -32,11 +33,21 @@ export class SurfaceTool extends BaseSplineTool<Surface> {
 
 	onObjectUpdated ( object: any ): void {
 
-		super.onObjectUpdated( object );
-
 		if ( object instanceof TvSurfaceInspector ) {
 
 			this.dataService.update( object.surface );
+
+			this.debugService.updateDebugState( object.surface, DebugState.SELECTED );
+
+		} else if ( object instanceof Surface ) {
+
+			this.dataService.update( object );
+
+			this.debugService.updateDebugState( object, DebugState.SELECTED );
+
+		} else {
+
+			super.onObjectUpdated( object );
 
 		}
 

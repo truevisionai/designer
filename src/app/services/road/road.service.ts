@@ -26,6 +26,7 @@ import { TvPosTheta } from "../../map/models/tv-pos-theta";
 import { Maths } from "../../utils/maths";
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { RoadUtils } from 'app/utils/road.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -87,15 +88,11 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	clone ( road: TvRoad, s = 0 ) {
 
-		const clone = road.clone( s );
+		const clone = RoadUtils.clone( road, s );
 
 		clone.id = this.roadFactory.getNextRoadId();
 
 		clone.name = `Road ${ clone.id }`;
-
-		clone.objects.object.forEach( object => object.road = clone );
-
-		clone.sStart = road.sStart + s;
 
 		return clone;
 
@@ -191,23 +188,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	update ( road: TvRoad ) {
 
-		// this.updateRoadGeometries( road );
-
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
-
-	}
-
-	updateRoadGeometries ( road: TvRoad ) {
-
-		// const segment = road.spline.findSegment( road );
-		//
-		// if ( !segment ) return;
-		//
-		// road.clearGeometries();
-		//
-		// if ( segment.geometries.length == 0 ) return;
-		//
-		// segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
 
 	}
 
@@ -354,23 +335,8 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	divideRoad ( road: TvRoad, s: number ): TvRoad {
 
-		const oldSuccessor = road.successor;
+		return RoadUtils.divideRoad( road, s, this.roadFactory.getNextRoadId() );
 
-		const newRoad = this.clone( road, s );
-
-		if ( oldSuccessor?.isRoad ) {
-
-			const nextRoad = oldSuccessor.getElement<TvRoad>();
-
-			nextRoad.setPredecessorRoad( newRoad, TvContactPoint.END );
-
-		}
-
-		newRoad.successor = oldSuccessor;
-
-		newRoad.setPredecessorRoad( road, TvContactPoint.END );
-
-		return newRoad;
 	}
 
 	findNearestRoad ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): TvRoad {

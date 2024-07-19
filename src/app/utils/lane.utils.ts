@@ -5,7 +5,7 @@
 import { TvLane } from "app/map/models/tv-lane";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TrafficRule } from "../map/models/traffic-rule";
-import { TravelDirection, TvContactPoint, TvLaneSide } from "../map/models/tv-common";
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 
@@ -199,6 +199,46 @@ export class LaneUtils {
 		if ( lastRoadMark ) {
 			lane.addRoadMarkInstance( lastRoadMark.clone( 0, lane ) );
 		}
+
+	}
+
+	static findOuterMostLane ( laneSection: TvLaneSection, side: TvLaneSide, type?: TvLaneType ) {
+
+		const lanes = laneSection.getLaneArray().filter( lane => lane.side == side && ( !type || lane.type == type ) );
+
+		if ( lanes.length === 0 ) return null;
+
+		let outerMostLaneId = side === TvLaneSide.RIGHT ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
+		let outerMostLane = null;
+
+		for ( const current of lanes ) {
+
+			if ( side === TvLaneSide.LEFT && current.id > outerMostLaneId ) {
+
+				outerMostLane = current;
+				outerMostLaneId = current.id;
+
+			} else if ( side === TvLaneSide.RIGHT && current.id < outerMostLaneId ) {
+
+				outerMostLane = current;
+				outerMostLaneId = current.id;
+
+			}
+
+		}
+
+		return outerMostLane;
+	}
+
+	static findOuterMostDrivingLane ( laneSection: TvLaneSection, side: TvLaneSide ) {
+
+		return this.findOuterMostLane( laneSection, side, TvLaneType.driving );
+
+	}
+
+	static findOuterMostDrivingConnection ( laneSection: TvLaneSection, side: TvLaneSide ) {
+
+		return this.findOuterMostLane( laneSection, side, TvLaneType.driving );
 
 	}
 

@@ -33,8 +33,22 @@ export abstract class AbstractSpline {
 
 	public geometries: TvAbstractRoadGeometry[] = [];
 
-	protected constructor ( public closed = true, public tension = 0.5 ) {
+	public waypoints: AbstractControlPoint[] = [];
+
+	public widthCache: Map<number, number> = new Map();
+
+	public closed: boolean;
+
+	public tension: number;
+
+	protected constructor ( closed?: boolean, tension?: number ) {
+
 		this.uuid = MathUtils.generateUUID();
+
+		this.closed = closed || false;
+
+		this.tension = tension || 0.5;
+
 	}
 
 	get controlPointPositions (): Vector3[] {
@@ -57,7 +71,8 @@ export abstract class AbstractSpline {
 		return this.controlPoints.length >= 2 ? this.controlPoints[ this.controlPoints.length - 2 ] : null;
 	}
 
-	update () { }
+	update () {
+	}
 
 	getLength (): number {
 

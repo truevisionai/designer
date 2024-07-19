@@ -21,7 +21,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { AnalyticsService } from './core/analytics/analytics.service';
 import { CoreModule } from './core/core.module';
-import { errorHandlerFactory } from './error-handler.factory';
+import { errorHandlerFactory } from './exceptions/error-handler.factory';
 import { ScenarioModule } from './scenario/scenario.module';
 
 import { TvMapModule } from './map/tv-map.module';

@@ -13,6 +13,9 @@ import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadLinkManager } from "./road-link.manager";
 import { SceneService } from "app/services/scene.service";
 import { SplineService } from "../../services/spline/spline.service";
+import { TvContactPoint } from "app/map/models/tv-common";
+import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
 
 @Injectable( {
 	providedIn: 'root'
@@ -62,6 +65,9 @@ export class RoadManager {
 	removeRoad ( road: TvRoad ) {
 
 		this.roadLinkManager.onRoadRemoved( road );
+
+		// alternative to roadLinkManager
+		// this.removeLinks( road );
 
 		if ( road.isJunction ) {
 
@@ -154,4 +160,40 @@ export class RoadManager {
 		this.roadBuilder.rebuildRoad( road, this.mapService.map );
 	}
 
+	private removeLinks ( removedRoad: TvRoad ) {
+
+		if ( removedRoad.isJunction ) return;
+
+		const processLink = ( link: TvRoadLink ) => {
+
+			if ( link.isRoad ) {
+
+				const road = link.element as TvRoad;
+
+				if ( link.contactPoint === TvContactPoint.START ) {
+
+					road.predecessor = removedRoad.successor?.clone();
+
+				} else {
+
+					road.successor = removedRoad.successor?.clone();
+
+				}
+
+			} else if ( link.isJunction ) {
+
+				// if the road is connected to a junction, remove the road from the junction
+				const junction = link.element as TvJunction;
+				const connections = junction.getConnections().filter( connection => connection.incomingRoad === removedRoad );
+				connections.forEach( connection => this.removeRoad( connection.connectingRoad ) );
+
+			}
+
+		}
+
+		if ( removedRoad.predecessor ) processLink( removedRoad.predecessor );
+
+		if ( removedRoad.successor ) processLink( removedRoad.successor );
+
+	}
 }

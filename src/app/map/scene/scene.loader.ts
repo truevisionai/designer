@@ -682,6 +682,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
+		if ( !element ) {
+			console.error( 'element not found', xml );
+			return;
+		}
+
 		if ( type === 0 ) {
 
 			road.setPredecessor( elementType, element, contactPoint );
@@ -955,7 +960,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( !incomingContactPoint ) {
 			TvConsole.error( 'contact point not found' );
-			console.error( 'contact point not found', xmlElement );
+			console.error( 'contact point not found', xmlElement, connection );
 			return;
 		}
 
@@ -964,13 +969,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( !incomingLaneSection ) {
 			TvConsole.error( 'incoming lane section not found' );
-			console.error( 'contact point not found', xmlElement );
+			console.error( 'contact point not found', xmlElement, connection );
 			return;
 		}
 
 		if ( !connectionLaneSection ) {
 			TvConsole.error( 'connection lane section not found' );
-			console.error( 'contact point not found', xmlElement );
+			console.error( 'contact point not found', xmlElement, connection );
 			return;
 		}
 
@@ -979,13 +984,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( !fromLane ) {
 			TvConsole.error( 'from lane not found' );
-			console.error( 'from lane not found', xmlElement );
+			console.error( 'from lane not found', xmlElement, connection );
 			return;
 		}
 
 		if ( !toLane ) {
 			TvConsole.error( 'to lane not found' );
-			console.error( 'to lane not found', xmlElement );
+			console.error( 'to lane not found', xmlElement, connection );
 			return;
 		}
 

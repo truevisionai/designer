@@ -20,6 +20,8 @@ export class IntersectionGroup {
 	 */
 	private splines: Set<AbstractSpline> = new Set();
 
+	public centroid: Vector3;
+
 	constructor ( i: SplineIntersection ) {
 
 		this.addSplineIntersection( i );
@@ -41,6 +43,8 @@ export class IntersectionGroup {
 	 * @returns Vector3
 	 */
 	getRepresentativePosition (): Vector3 {
+
+		if ( this.centroid ) return this.centroid;
 
 		let x = 0, y = 0, z = 0;
 

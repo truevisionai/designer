@@ -59,8 +59,6 @@ export class BaseTest {
 
 		roadService.add( road );
 
-		roadService.updateRoadGeometries( road );
-
 		return road;
 
 	}

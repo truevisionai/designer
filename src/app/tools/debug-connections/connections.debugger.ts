@@ -11,6 +11,7 @@ import { Material, MeshBasicMaterial } from "three";
 import { MapQueryService } from "../../map/queries/map-query.service";
 import { LaneDebugService } from "../../services/debug/lane-debug.service";
 import { COLOR } from "../../views/shared/utils/colors.service";
+import { RoadToolDebugger } from "../road/road-tool.debugger";
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,12 +20,19 @@ export class ConnectionsDebugger extends BaseDebugger<TvLaneCoord> {
 
 	highlightedLanes = new Map<TvLane, Material | Material[]>();
 
-	constructor ( private queryService: MapQueryService, private laneDebugService: LaneDebugService ) {
+	constructor (
+		private queryService: MapQueryService,
+		private laneDebugService: LaneDebugService,
+		public roadToolDebugger: RoadToolDebugger,
+	) {
+
 		super();
 	}
 
 	setDebugState ( coord: TvLaneCoord, state: DebugState ): void {
+
 		this.setBaseState( coord, state );
+
 	}
 
 	onHighlight ( coord: TvLaneCoord ): void {
@@ -102,6 +110,8 @@ export class ConnectionsDebugger extends BaseDebugger<TvLaneCoord> {
 		super.clear();
 
 		this.resetHighlighted();
+
+		this.roadToolDebugger.clear();
 
 	}
 

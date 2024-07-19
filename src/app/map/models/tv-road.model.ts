@@ -457,13 +457,13 @@ export class TvRoad {
 		}
 
 		if ( s > this.length ) {
-			console.trace( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
+			console.error( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
 			s = this.length;
 		}
 
 		if ( s < 0 ) {
 			TvConsole.error( 's is less than 0' );
-			console.trace( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
+			console.error( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
 			s = 0;
 		}
 

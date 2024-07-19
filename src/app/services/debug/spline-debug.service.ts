@@ -28,6 +28,7 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { RoadControlPoint } from "../../objects/road-control-point";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { SplineUtils } from 'app/utils/spline.utils';
 
 const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
@@ -358,13 +359,27 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showControlPoints ( spline: AbstractSpline ) {
 
-		spline.controlPoints.forEach( point => {
+		for ( let i = 0; i < spline.controlPoints.length; i++ ) {
+
+			const point = spline.controlPoints[ i ];
+
+			if ( spline.type == SplineType.EXPLICIT ) {
+
+				if ( i == 0 && SplineUtils.isPredecessorJunction( spline ) ) {
+					continue;
+				}
+
+				if ( i == spline.controlPoints.length - 1 && SplineUtils.isSuccessorJunction( spline ) ) {
+					continue;
+				}
+
+			}
 
 			this.points.addItem( spline, point );
 
 			this.showTangents( spline, point );
 
-		} );
+		}
 
 	}
 
@@ -413,9 +428,15 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showPolyline ( spline: AbstractSpline ) {
 
+		if ( spline.controlPoints.length < 2 ) return;
+
 		if ( spline.type == SplineType.EXPLICIT ) return;
 
 		const points = spline.controlPoints.map( point => point.position );
+
+		if ( spline.closed && points.length > 2 ) {
+			points.push( points[ 0 ] );
+		}
 
 		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH );
 
@@ -431,14 +452,19 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showNodes ( spline: AbstractSpline ) {
 
-		const firstRoad = this.splineService.findFirstRoad( spline );
-		const lastRoad = this.splineService.findLastRoad( spline );
+		spline.segmentMap.forEach( ( segment, key ) => {
 
-		const startNode = this.createNode( firstRoad, TvContactPoint.START );
-		const endNode = this.createNode( lastRoad, TvContactPoint.END );
+			if ( segment instanceof TvRoad ) {
 
-		this.nodes.addItem( spline, startNode );
-		this.nodes.addItem( spline, endNode );
+				const startNode = this.createNode( segment, TvContactPoint.START );
+				const endNode = this.createNode( segment, TvContactPoint.END );
+
+				this.nodes.addItem( spline, startNode );
+				this.nodes.addItem( spline, endNode );
+
+			}
+
+		} )
 
 	}
 

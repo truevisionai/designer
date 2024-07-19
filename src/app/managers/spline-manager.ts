@@ -39,8 +39,6 @@ export class SplineManager {
 
 		this.splineBuilder.buildBoundingBox( spline );
 
-		this.splineService.updateWidthCache( spline );
-
 		this.junctionManager.updateJunctions( spline );
 
 	}
@@ -59,8 +57,6 @@ export class SplineManager {
 		// }
 
 		this.splineBuilder.buildBoundingBox( spline );
-
-		this.splineService.updateWidthCache( spline );
 
 		this.syncSuccessorSpline( spline );
 
@@ -90,27 +86,9 @@ export class SplineManager {
 
 				this.roadManager.removeRoad( segment );
 
-				this.mapService.map.removeRoad( segment );
-
 			}
 
 		}
-
-		// const segments = spline.getSplineSegments();
-		//
-		// for ( const segment of segments ) {
-		//
-		// 	if ( segment.isRoad ) {
-		//
-		// 		const road = segment.getInstance<TvRoad>();
-		//
-		// 		this.roadManager.removeRoad( road );
-		//
-		// 		this.mapService.map.removeRoad( road );
-		//
-		// 	}
-		//
-		// }
 
 		this.mapService.map.removeSpline( spline );
 

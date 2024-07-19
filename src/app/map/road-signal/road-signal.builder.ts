@@ -49,7 +49,10 @@ export class RoadSignalBuilder {
 
 		}
 
-		const position = road.getPosThetaAt( signal.s, signal.t );
+		// clamp signal s value if it is out of bounds
+		signal.s = Maths.clamp( signal.s, 0, road.length );
+
+		const position = this.roadService.findRoadPosition( road, signal.s, signal.t );
 
 		const parentObject = new Object3D();
 

@@ -5,8 +5,8 @@
 import { Injectable } from "@angular/core";
 import { DebugState } from "../../services/debug/debug-state";
 import { ManeuverMesh } from "../../services/junction/junction.debug";
-import { AbstractSplineDebugService } from "../../services/debug/abstract-spline-debug.service";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
+import { SplineDebugService } from "../../services/debug/spline-debug.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -15,9 +15,9 @@ export class ManeuverRoadDebugger extends BaseDebugger<ManeuverMesh> {
 
 	public shouldShowControlPoints = true;
 
-	public shouldShowLines = true;
+	public shouldShowLines = false;
 
-	constructor ( private splineDebugger: AbstractSplineDebugService ) {
+	constructor ( public splineDebugger: SplineDebugService ) {
 
 		super();
 
@@ -51,7 +51,7 @@ export class ManeuverRoadDebugger extends BaseDebugger<ManeuverMesh> {
 		}
 
 		if ( this.shouldShowLines ) {
-			this.splineDebugger.showLines( object.connection.connectingRoad.spline );
+			this.splineDebugger.showPolyline( object.connection.connectingRoad.spline );
 		}
 	}
 
@@ -59,22 +59,22 @@ export class ManeuverRoadDebugger extends BaseDebugger<ManeuverMesh> {
 
 		object.unselect();
 
-		this.splineDebugger.hideControlPoints( object.connection.connectingRoad.spline );
-		this.splineDebugger.hideLines( object.connection.connectingRoad.spline );
+		this.splineDebugger.removeControlPoints( object.connection.connectingRoad.spline );
+		this.splineDebugger.removePolyline( object.connection.connectingRoad.spline );
 
 	}
 
 	onDefault ( object: ManeuverMesh ): void {
 
-		//
+		this.splineDebugger.removeControlPoints( object.connection.connectingRoad.spline );
+		this.splineDebugger.removePolyline( object.connection.connectingRoad.spline );
 
 	}
 
 	onRemoved ( object: ManeuverMesh ): void {
 
-		this.splineDebugger.hideControlPoints( object.connection.connectingRoad.spline );
-
-		this.splineDebugger.hideLines( object.connection.connectingRoad.spline );
+		this.splineDebugger.removeControlPoints( object.connection.connectingRoad.spline );
+		this.splineDebugger.removePolyline( object.connection.connectingRoad.spline );
 
 	}
 

@@ -11,7 +11,7 @@ import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { SplineService } from "../spline/spline.service";
 
 @Injectable( {
@@ -25,7 +25,7 @@ export class RoadLinkService {
 	) {
 	}
 
-	updateSuccessorRelationWhileCut ( newRoad: TvRoad, link: TvRoadLink, oldRoad: TvRoad ) {
+	updateSuccessorRelationWhileCut ( newRoad: TvRoad, link: TvRoadLink, oldRoad: TvRoad, removed = false ) {
 
 		if ( !newRoad.successor ) return;
 
@@ -47,8 +47,7 @@ export class RoadLinkService {
 
 		}
 
-
-		if ( link.isJunction ) {
+		if ( link.isJunction && removed ) {
 
 			const junction = link.getElement<TvJunction>();
 
@@ -93,7 +92,7 @@ export class RoadLinkService {
 		}
 	}
 
-	updateSuccessorRelation ( road: TvRoad, previousSegment: TvRoad | TvJunction, link: TvRoadLink ) {
+	updateSuccessorRelation ( road: TvRoad, previousSegment: TvRoad | TvJunction, link: TvRoadLink, removed = false ) {
 
 		if ( !link ) return;
 
@@ -103,7 +102,7 @@ export class RoadLinkService {
 
 		if ( !( previousSegment instanceof TvRoad ) ) return;
 
-		this.updateSuccessorRelationWhileCut( previousSegment, link, road );
+		this.updateSuccessorRelationWhileCut( previousSegment, link, road, removed );
 
 	}
 
@@ -351,10 +350,11 @@ export class RoadLinkService {
 
 		if ( road.predecessor.isJunction ) return false;
 
-		const index = road.spline.controlPoints.indexOf( controlPoint );
+		// const index = road.spline.controlPoints.indexOf( controlPoint );
 
-		return index === 0 || index === 1;
+		// return index === 0 || index === 1;
 
+		return true;
 	}
 
 	private shouldUpdateSuccessor ( road: TvRoad, controlPoint: AbstractControlPoint ) {
@@ -363,24 +363,33 @@ export class RoadLinkService {
 
 		if ( road.successor.isJunction ) return false;
 
-		const controlPoints = road.spline.controlPoints;
+		// const controlPoints = road.spline.controlPoints;
 
-		const index = road.spline.controlPoints.indexOf( controlPoint );
+		// const index = road.spline.controlPoints.indexOf( controlPoint );
 
-		return index === controlPoints.length - 1 || index === controlPoints.length - 2;
+		// return index === controlPoints.length - 1 || index === controlPoints.length - 2;
 
+		return true;
 	}
 
 	private updateSuccessorLink ( road: TvRoad, link: TvRoadLink ) {
 
 		if ( !link ) return;
 
-		const successor = this.getElement<TvRoad>( link );
+		if ( !link.isRoad ) return;
+
+		if ( road.spline.type == SplineType.EXPLICIT ) return;
+
+		const successor = link.element as TvRoad;
+
+		if ( road.spline.uuid == successor.spline.uuid ) return;
 
 		const start = road.spline.getSecondLastPoint();
 		const mid1 = road.spline.getLastPoint();
-		const mid2 = this.getMid2( link );
-		const end = this.getEnd( link );
+		const mid2 = this.getMid2( successor, link.contactPoint );
+		const end = this.getEnd( successor, link.contactPoint );
+
+		if ( !mid2 || !end ) return;
 
 		let distance: number = mid2.position.distanceTo( end.position );
 
@@ -400,16 +409,20 @@ export class RoadLinkService {
 
 		if ( !link ) return;
 
-		if ( road.spline.type == 'explicit' ) return;
+		if ( !link.isRoad ) return;
 
-		const predecessor = this.getElement<TvRoad>( link );
+		if ( road.spline.type == SplineType.EXPLICIT ) return;
 
-		if ( !predecessor ) return;
+		const predecessor = link.element as TvRoad;
+
+		if ( road.spline.uuid == predecessor.spline.uuid ) return;
 
 		const start = road.spline.getSecondPoint();
 		const mid1 = road.spline.getFirstPoint();
-		const mid2 = this.getMid2( link );
-		const end = this.getEnd( link );
+		const mid2 = this.getMid2( predecessor, link.contactPoint );
+		const end = this.getEnd( predecessor, link.contactPoint );
+
+		if ( !mid2 || !end ) return;
 
 		const distance = mid2.position.distanceTo( end.position );
 
@@ -431,37 +444,37 @@ export class RoadLinkService {
 
 	}
 
-	private getEnd ( link: TvRoadLink ) {
+	private getEnd ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		if ( link.contactPoint == TvContactPoint.START ) {
+		if ( contactPoint == TvContactPoint.START ) {
 
-			return this.getElement<TvRoad>( link ).spline.getSecondPoint();
+			return road.spline.getSecondPoint();
 
-		} else if ( link.contactPoint == TvContactPoint.END ) {
+		} else if ( contactPoint == TvContactPoint.END ) {
 
-			return this.getElement<TvRoad>( link ).spline.getSecondLastPoint();
+			return road.spline.getSecondLastPoint();
 
 		} else {
 
-			console.error( 'RoadLinkService.getEnd: unknown contactPoint: ' + link.contactPoint );
+			console.error( 'RoadLinkService.getEnd: unknown contactPoint: ' + contactPoint );
 
 		}
 
 	}
 
-	private getMid2 ( link: TvRoadLink ) {
+	private getMid2 ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		if ( link.contactPoint == TvContactPoint.START ) {
+		if ( contactPoint == TvContactPoint.START ) {
 
-			return this.getElement<TvRoad>( link ).spline.getFirstPoint();
+			return road.spline.getFirstPoint();
 
-		} else if ( link.contactPoint == TvContactPoint.END ) {
+		} else if ( contactPoint == TvContactPoint.END ) {
 
-			return this.getElement<TvRoad>( link ).spline.getLastPoint();
+			return road.spline.getLastPoint();
 
 		} else {
 
-			console.error( 'RoadLinkService.getMid2: unknown contactPoint: ' + link.contactPoint );
+			console.error( 'RoadLinkService.getMid2: unknown contactPoint: ' + contactPoint );
 
 		}
 

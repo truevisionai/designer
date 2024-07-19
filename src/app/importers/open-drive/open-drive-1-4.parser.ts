@@ -199,13 +199,21 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		if ( xmlElement?.predecessor != null ) {
 
-			road.predecessor = this.parseRoadLinkChild( xmlElement.predecessor );
+			const link = this.parseRoadLinkChild( xmlElement.predecessor );
+
+			if ( !link ) TvConsole.error( 'Predecessor not found for ' + road.toString() );
+
+			road.predecessor = link;
 
 		}
 
 		if ( xmlElement?.successor != null ) {
 
-			road.successor = this.parseRoadLinkChild( xmlElement.successor );
+			const link = this.parseRoadLinkChild( xmlElement.successor );
+
+			if ( !link ) TvConsole.error( 'Successor not found for ' + road.toString() );
+
+			road.successor = link;
 
 		}
 
@@ -242,6 +250,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			TvConsole.error( 'unknown elementType' );
 			return;
 
+		}
+
+		if ( !element ) {
+			console.error( 'element not found', xmlElement );
+			return;
 		}
 
 		const roadLink = new TvRoadLink( elementType, element, contactPoint );

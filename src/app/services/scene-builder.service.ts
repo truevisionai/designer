@@ -46,7 +46,7 @@ export class SceneBuilderService {
 
 		SceneService.removeFromMain( map.gameObject );
 
-		map.getSplines().forEach( spline => this.splineBuilder.buildSpline( spline ) );
+		map.getSplines().forEach( spline => this.splineBuilder.buildGeometry( spline ) );
 
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
 
@@ -87,11 +87,15 @@ export class SceneBuilderService {
 
 		const spline = this.findSpline( map, road );
 
-		if ( spline && ( spline.type === SplineType.AUTO || spline.type == SplineType.AUTOV2 ) ) {
+		if ( !spline ) {
+			map.removeRoad( road );
+			TvConsole.error( 'Road spline not found for road id ' + road.id );
+			return;
+		}
+
+		if ( spline.type === SplineType.AUTO || spline.type == SplineType.AUTOV2 ) {
 
 			road.spline = spline;
-
-			this.roadService.updateRoadGeometries( road );
 
 			road.gameObject = this.roadBuilder.buildRoad( road );
 
@@ -99,15 +103,11 @@ export class SceneBuilderService {
 
 		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
 
-			if ( road.sStart === undefined || road.sStart === null ) {
-				road.sStart = 0;
-			}
+			road.sStart = 0;
 
 			if ( road.spline.segmentMap.length == 0 ) {
 				road.spline.segmentMap.set( 0, road );
 			}
-
-			this.splineBuilder.buildSpline( road.spline );
 
 			road.gameObject = this.roadBuilder.buildRoad( road );
 
@@ -118,6 +118,7 @@ export class SceneBuilderService {
 			map.removeRoad( road );
 			TvConsole.error( 'Road spline not found for road id ' + road.id );
 			return;
+
 		}
 
 	}

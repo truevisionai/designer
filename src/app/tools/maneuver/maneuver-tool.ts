@@ -6,11 +6,11 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { ManeuverToolService } from 'app/tools/maneuver/maneuver-tool.service';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { DebugServiceProvider } from 'app/core/providers/debug-service.provider';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DebugState } from "../../services/debug/debug-state";
 import { ManeuverMesh } from 'app/services/junction/junction.debug';
 import { ManeuverControlPointInspector, ManeuverInspector } from './maneuver.inspector';
+import { TvJunction } from "../../map/models/junctions/tv-junction";
 
 export class ManeuverTool extends BaseTool<any> {
 
@@ -59,10 +59,6 @@ export class ManeuverTool extends BaseTool<any> {
 
 		this.currentSelectedPoint.copyPosition( newPosition.position );
 
-		// this.dataService.updatePoint( this.currentSelectedPoint.mainObject, this.currentSelectedPoint );
-
-		// this.debugService.setDebugState( this.currentSelectedPoint.mainObject, DebugState.SELECTED );
-
 		this.currentSelectedPointMoved = true;
 
 	}
@@ -75,45 +71,51 @@ export class ManeuverTool extends BaseTool<any> {
 
 	onObjectAdded ( object: any ): void {
 
-		if ( object instanceof SplineControlPoint ) {
-
-			this.tool.addControlPoint( object.spline, object );
-
-		} else {
-
-			super.onObjectAdded( object );
-
-		}
+		// if ( object instanceof SplineControlPoint ) {
+		//
+		// 	this.tool.addControlPoint( object.spline, object );
+		//
+		// } else {
+		//
+		// 	super.onObjectAdded( object );
+		//
+		// }
 
 	}
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( object instanceof SplineControlPoint ) {
-
-			this.tool.removeControlPoint( object.spline, object );
-
-		} else {
-
-			super.onObjectRemoved( object );
-
-		}
+		// if ( object instanceof SplineControlPoint ) {
+		//
+		// 	this.tool.removeControlPoint( object.spline, object );
+		//
+		// } else {
+		//
+		// 	super.onObjectRemoved( object );
+		//
+		// }
 
 	}
 
 	onObjectSelected ( object: any ): void {
 
-		const debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
-
-		debugService?.onSelected( object );
-
 		if ( object instanceof ManeuverMesh ) {
 
 			this.setInspector( new ManeuverInspector( object ) );
 
+			this.tool.maneuverDebugger.updateDebugState( object, DebugState.SELECTED );
+
 		} else if ( object instanceof SplineControlPoint ) {
 
 			this.setInspector( new ManeuverControlPointInspector( object ) );
+
+		} else if ( object instanceof TvJunction ) {
+
+			this.tool.junctionDebugger.updateDebugState( object, DebugState.SELECTED );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( obj => this.onObjectSelected( obj ) );
 
 		}
 
@@ -121,17 +123,23 @@ export class ManeuverTool extends BaseTool<any> {
 
 	onObjectUnselected ( object: any ) {
 
-		const debugService = DebugServiceProvider.instance.createByObjectType( ToolType.Maneuver, object );
-
-		debugService?.onUnselected( object );
-
 		if ( object instanceof ManeuverMesh ) {
 
 			this.clearInspector();
 
+			this.tool.maneuverDebugger.updateDebugState( object, DebugState.REMOVED );
+
 		} else if ( object instanceof SplineControlPoint ) {
 
 			this.clearInspector();
+
+		} else if ( object instanceof TvJunction ) {
+
+			this.tool.junctionDebugger.updateDebugState( object, DebugState.DEFAULT );
+
+		} else if ( object instanceof Array ) {
+
+			object.forEach( obj => this.onObjectUnselected( obj ) );
 
 		}
 
@@ -140,6 +148,8 @@ export class ManeuverTool extends BaseTool<any> {
 	onObjectUpdated ( object: any ): void {
 
 		if ( object instanceof SplineControlPoint ) {
+
+			this.tool.splineService.update( object.spline );
 
 			const firstRoad = this.tool.splineService.findFirstRoad( object.spline );
 
@@ -151,13 +161,11 @@ export class ManeuverTool extends BaseTool<any> {
 
 				if ( junction ) {
 
-					this.tool.junctionDebugger.setDebugState( junction, DebugState.SELECTED );
+					this.tool.junctionDebugger.updateDebugState( junction, DebugState.SELECTED );
 
 				}
 
 			}
-
-			this.tool.splineService.update( object.spline );
 
 		} else {
 

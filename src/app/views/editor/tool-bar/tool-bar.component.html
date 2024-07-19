@@ -3,7 +3,7 @@
   -->
 <mat-toolbar #toolbar
 	class="app-toolbar native-border">
-	<ng-container *ngFor="let tool of enabledTools|slice:0:24">
+	<ng-container *ngFor="let tool of enabledTools|slice:0:26">
 		<button (click)="tool.click()"
 			(mouseout)="onMouseOut(tool)"
 			(mouseover)="onMouseOver(tool)"

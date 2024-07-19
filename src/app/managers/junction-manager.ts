@@ -27,6 +27,12 @@ import { Maths } from "app/utils/maths";
 import { JunctionConnectionFactory } from "app/factories/junction-connection.factory";
 import { JunctionBuilder } from "app/services/junction/junction.builder";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
+import { SplineFactory } from "app/services/spline/spline.factory";
+import { RoadUtils } from "../utils/road.utils";
+import { MathUtils, Vector2, Vector3 } from "three";
+import { DebugDrawService } from "../services/debug/debug-draw.service";
+import { COLOR } from "../views/shared/utils/colors.service";
+import { TvPosTheta } from "app/map/models/tv-pos-theta";
 
 const JUNCTION_WIDTH = 10;
 
@@ -119,7 +125,17 @@ export class JunctionManager {
 
 			const groups = this.createGroups( intersections );
 
-			this.processGroups( groups );
+			for ( const group of groups ) {
+
+				this.convertGroupToJunction( group );
+
+			}
+
+		} else {
+
+			spline?.segmentMap.remove( junction );
+
+			console.debug( '[JunctionManager]: removing junction', junction );
 
 		}
 
@@ -129,6 +145,23 @@ export class JunctionManager {
 
 	removeNextSegment ( spline: AbstractSpline, junction: TvJunction ) {
 
+		function updateFirstSegment () {
+
+			const firsSegment = spline.segmentMap.getFirst();
+
+			if ( firsSegment instanceof TvRoad ) {
+				firsSegment.sStart = 0;
+				spline.segmentMap.remove( firsSegment );
+				spline.segmentMap.set( 0, firsSegment );
+			}
+		}
+
+
+		if ( spline.segmentMap.length < 2 ) {
+			if ( this.debug ) console.info( 'Spline has less than 2 segments' );
+			return;
+		}
+
 		const previousSegment = spline.segmentMap.getPrevious( junction );
 		const nextSegment = spline.segmentMap.getNext( junction );
 
@@ -136,16 +169,63 @@ export class JunctionManager {
 
 		const roadCount = this.splineService.getRoads( spline ).length;
 
-		if ( spline.segmentMap.length < 2 ) {
-			if ( this.debug ) console.info( 'Spline has less than 2 segments' );
-			return;
-		}
+		this.updateLinks( previousSegment, nextSegment, roadCount );
+
+		spline.segmentMap.remove( junction );
+
+		updateFirstSegment();
+
+		this.splineBuilder.buildSpline( spline );
+
+		this.splineBuilder.buildSegments( spline );
+
+		this.splineBuilder.buildBoundingBox( spline );
+
+	}
+
+	updateLinks ( previousSegment: TvRoad | TvJunction, nextSegment: TvRoad | TvJunction, roadCount: number ) {
+
+		let isNextSegmentRemoved = false;
 
 		if ( roadCount > 1 && nextSegment instanceof TvRoad ) {
 
-			this.roadManager.removeRoad( nextSegment );
+			// // we assume true bu default
+			// let laneSectionMatches = true;
 
-			this.roadLinkService.updateSuccessorRelation( nextSegment, previousSegment, nextSegment.successor );
+			// if ( previousSegment instanceof TvRoad && nextSegment instanceof TvRoad ) {
+			// 	// check if they have same lansection or not
+			// 	const laneSectionA = previousSegment.getLastLaneSection();
+			// 	const laneSectionB = nextSegment.getFirstLaneSection();
+			// 	laneSectionMatches = laneSectionA.isMatching( laneSectionB );
+			// }
+
+			// if the next segment has no successor we can remove it safely
+			// if the next segment has road we can remove it
+			if ( ( !nextSegment.successor || nextSegment.successor?.isRoad ) ) {
+
+				this.roadManager.removeRoad( nextSegment );
+
+				this.roadLinkService.updateSuccessorRelation( nextSegment, previousSegment, nextSegment.successor );
+
+				isNextSegmentRemoved = true;
+
+				console.debug( 'road after junction removed', nextSegment.toString() );
+
+			} else {
+
+				if ( previousSegment instanceof TvRoad ) {
+
+					// Update Link Relations if Next Road
+					// Connect Next With Previous
+					nextSegment.setPredecessorRoad( previousSegment, TvContactPoint.END );
+
+				} else {
+
+					console.debug( 'Previous Segment is not a Road' );
+
+				}
+
+			}
 
 		} else if ( nextSegment instanceof TvRoad ) {
 
@@ -161,12 +241,31 @@ export class JunctionManager {
 
 		}
 
+
 		if ( previousSegment instanceof TvRoad ) {
 
-			if ( roadCount > 1 && nextSegment instanceof TvRoad ) {
+			if ( isNextSegmentRemoved ) {
 
-				// because next segment will be removed
-				previousSegment.successor = nextSegment.successor;
+				if ( nextSegment instanceof TvRoad ) {
+
+					// because next segment will be removed
+					previousSegment.successor = nextSegment.successor;
+
+				} else {
+
+					throw new Error( 'Next Segment is not a Road' );
+
+				}
+
+			} else if ( nextSegment instanceof TvRoad ) {
+
+				// Update Link Relations with Next Road
+				// Connect Previous With Next
+				previousSegment.setSuccessorRoad( nextSegment, TvContactPoint.START );
+
+			} else if ( nextSegment instanceof TvJunction ) {
+
+				previousSegment.setPredecessor( TvRoadLinkType.JUNCTION, nextSegment );
 
 			} else {
 
@@ -174,31 +273,16 @@ export class JunctionManager {
 
 			}
 
-		}
+		} else if ( previousSegment instanceof TvJunction ) {
 
-		spline.segmentMap.remove( junction );
+			console.debug( 'Previous Segment is Junction' );
 
-		if ( spline.segmentMap.length == 1 ) {
+		} else {
 
-			const segment = spline.segmentMap.getFirst();
-
-			if ( segment instanceof TvRoad ) {
-
-				segment.sStart = 0;
-
-				spline.segmentMap.remove( segment );
-
-				spline.segmentMap.set( 0, segment );
-
-			}
+			console.debug( 'Previous Segment is NULL' );
 
 		}
 
-		this.splineBuilder.buildSpline( spline );
-
-		this.splineBuilder.buildSegments( spline );
-
-		this.splineBuilder.buildBoundingBox( spline );
 
 	}
 
@@ -216,11 +300,9 @@ export class JunctionManager {
 
 		if ( this.debug ) console.debug( 'junctions-remove', junctions );
 
-		junctions.forEach( junction => {
-
+		for ( const junction of junctions ) {
 			this.removeJunction( junction, spline );
-
-		} );
+		}
 
 		const intersections = this.splineService.findIntersections( spline );
 
@@ -230,11 +312,21 @@ export class JunctionManager {
 
 		if ( this.debug ) console.debug( 'groups', groups );
 
-		groups.forEach( group => {
+		this.mergeGroups( groups );
 
-			group.getSplines().forEach( groupSpline => {
+		for ( const group of groups ) {
+			this.convertGroupToJunction( group );
+		}
 
-				groupSpline.segmentMap.forEach( segment => {
+	}
+
+	mergeGroups ( groups: IntersectionGroup[] ) {
+
+		for ( const group of groups ) {
+
+			for ( const spline of group.getSplines() ) {
+
+				spline.segmentMap.forEach( segment => {
 
 					if ( segment instanceof TvJunction ) {
 
@@ -246,7 +338,7 @@ export class JunctionManager {
 
 							segment.getIncomingSplines().forEach( incomingSpline => group.addSplineIntersection( new SplineIntersection(
 								incomingSpline,
-								groupSpline,
+								spline,
 								group.getRepresentativePosition()
 							) ) );
 
@@ -258,11 +350,45 @@ export class JunctionManager {
 
 				} );
 
-			} );
+			}
 
-		} );
+		}
 
-		this.processGroups( groups );
+	}
+
+	updateConnections ( junction: TvJunction, spline: AbstractSpline ) {
+
+		// we will regenerate splines for each connecting road
+		// no other modification is needed
+
+		const connections = junction.getConnections();
+
+		for ( const connection of connections ) {
+
+			const prevRoad = connection.connectingRoad.predecessor.element as TvRoad;
+			const prevCoord = prevRoad.getRoadCoordByContact( connection.connectingRoad.predecessor.contactPoint );
+
+			const nextRoad = connection.connectingRoad.successor.element as TvRoad;
+			const nextRoadCoord = nextRoad.getRoadCoordByContact( connection.connectingRoad.successor.contactPoint );
+
+			connection.laneLink.forEach( link => {
+
+				const incomingLane = link.incomingLane;
+				const connectingLane = link.connectingLane;
+				const outgoingLane = nextRoad.laneSections[ 0 ].getLaneById( connectingLane.successorId );
+
+				const newSpline = SplineFactory.createManeuverSpline( prevCoord.toLaneCoord( incomingLane ), nextRoadCoord.toLaneCoord( outgoingLane ) );
+
+				connection.connectingRoad.spline.controlPoints = newSpline.controlPoints;
+
+				this.splineBuilder.buildSpline( connection.connectingRoad.spline );
+
+				this.splineBuilder.buildSegments( connection.connectingRoad.spline );
+
+			} )
+
+		}
+
 	}
 
 	// checkSplineIntersections ( spline: AbstractSpline ) {
@@ -324,6 +450,8 @@ export class JunctionManager {
 
 			}
 
+			group.centroid = group.getRepresentativePosition();
+
 			groups.push( group );
 
 		}
@@ -331,17 +459,7 @@ export class JunctionManager {
 		return groups;
 	}
 
-	processGroups = ( groups: IntersectionGroup[] ) => {
-
-		for ( let i = 0; i < groups.length; i++ ) {
-
-			this.processGroup( groups[ i ] );
-
-		}
-
-	}
-
-	processGroup ( group: IntersectionGroup ): void {
+	convertGroupToJunction ( group: IntersectionGroup ): void {
 
 		const junction = this.createGroupJunction( group );
 
@@ -350,8 +468,6 @@ export class JunctionManager {
 		const links: TvRoadLink[] = this.createGroupCoords( group, junction );
 
 		if ( this.debug ) console.log( 'coords', links.length, links );
-
-		// TODO: readjust coords based on angle between roads
 
 		for ( let i = 0; i < links.length; i++ ) {
 
@@ -374,26 +490,6 @@ export class JunctionManager {
 				this.setLink( linkA.element, linkA.contactPoint, junction );
 
 				this.setLink( linkB.element, linkB.contactPoint, junction );
-
-				// const connectionAB = this.connectionService.createConnectionV3( junction, coordA, coordB, !rightConnectionCreated );
-
-				// if ( connectionAB ) {
-
-				// 	this.connectionService.postProcessConnection( junction, connectionAB, !rightConnectionCreated );
-
-				// 	junction.addConnection( connectionAB );
-
-				// }
-
-				// const connectionBA = this.connectionService.createConnectionV3( junction, coordB, coordA, isFirstAndLast );
-
-				// if ( connectionBA ) {
-
-				// 	this.connectionService.postProcessConnection( junction, connectionBA, isFirstAndLast );
-
-				// 	junction.addConnection( connectionBA );
-
-				// }
 
 				this.connectionFactory.createConnections( junction, linkA.toRoadCoord(), linkB.toRoadCoord(), !rightConnectionCreated );
 
@@ -487,11 +583,7 @@ export class JunctionManager {
 
 		const sortedCoords = this.sortLinks( coords );
 
-		// console.log( 'sortedCoords', sortedCoords );
-		// console.log( 'sortedCoords', sortedCoords.map( coord => coord.roadId ) );
-
 		return sortedCoords;
-
 	}
 
 	sortLinks ( links: TvRoadLink[] ): TvRoadLink[] {
@@ -502,119 +594,196 @@ export class JunctionManager {
 
 		const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
 
-		return links.map( ( point, index ) => ( { point, index } ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
+		return links.map( ( point, index ) => ( {
+			point,
+			index
+		} ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
 
 	}
 
 	createRoadCoords ( junction: TvJunction, spline: AbstractSpline, group: IntersectionGroup ): TvRoadLink[] {
-		const coords = [];
-		const junctionCenterPoint = this.splineService.getCoordAt( spline, group.getRepresentativePosition() );
-		const segment = spline.segmentMap.findAt( junctionCenterPoint.s );
+
+		const links: TvRoadLink[] = [];
+
+		const junctionCenter = group.getRepresentativePosition();
+
+		const junctionCoord = this.splineService.getCoordAt( spline, junctionCenter );
+
+		const segment = spline.segmentMap.findAt( junctionCoord.s );
 
 		if ( !segment || !( segment instanceof TvRoad ) ) {
-			if ( !segment ) return coords;
-			this.addCoordsFromAdjacentSegments( spline, coords, segment );
-			return coords;
+
+			if ( !segment ) return links;
+
+			this.addCoordsFromAdjacentSegments( spline, links, segment );
+
+			return links;
+
 		}
 
-		const junctionWidth = this.computeJunctionWidth( group );
-		const sStart = Maths.clamp( junctionCenterPoint.s - junctionWidth, 0, spline.getLength() );
-		const sEnd = Maths.clamp( junctionCenterPoint.s + junctionWidth, 0, spline.getLength() );
+		const junctionWidth = this.computeJunctionWidth( group, spline );
+
+		const sStart = Maths.clamp( junctionCoord.s - junctionWidth, 0, spline.getLength() );
+
+		const sEnd = Maths.clamp( junctionCoord.s + junctionWidth, 0, spline.getLength() );
+
 		const startSegment = spline.segmentMap.findAt( sStart );
+
 		const endSegment = spline.segmentMap.findAt( sEnd );
+
+		const isNearStart = () => sStart <= 0;
+
+		const isNearEnd = () => sEnd >= this.splineService.getLength( spline );
+
 		const differentRoads = startSegment && endSegment ? startSegment != endSegment : false;
 
 		if ( differentRoads ) {
+
 			// Handle junction segment for different roads
-		} else if ( this.isAtStartOrEndOfSpline( spline, sStart, sEnd, junctionWidth ) ) {
-			if ( startSegment instanceof TvRoad && endSegment instanceof TvRoad ) {
-				this.handleStartOrEndOfSpline( spline, junction, coords, sStart, sEnd, startSegment, endSegment, junctionWidth );
-			} else {
-				console.error( spline, startSegment, endSegment );
+			console.debug( 'different roads', startSegment, endSegment );
+
+			this.splineService.addJunctionSegment( spline, sStart - 5, junction );
+
+			if ( startSegment instanceof TvRoad ) {
+
+				links.push( new TvRoadLink( TvRoadLinkType.ROAD, startSegment, TvContactPoint.END ) );
+
+				RoadUtils.unlinkSuccessor( startSegment );
+
 			}
+
+			if ( endSegment instanceof TvRoad ) {
+
+				endSegment.sStart = sEnd + 5;
+
+				links.push( new TvRoadLink( TvRoadLinkType.ROAD, endSegment, TvContactPoint.START ) );
+
+				RoadUtils.unlinkPredecessor( endSegment );
+
+			}
+
+			this.splineBuilder.build( spline );
+
+		} else if ( isNearStart() || isNearEnd() ) {
+
+			if ( startSegment instanceof TvRoad && endSegment instanceof TvRoad ) {
+
+				this.handleEdgeJunction( spline, junction, links, sStart, sEnd, startSegment, endSegment, junctionWidth );
+
+			} else {
+
+				console.error( spline, startSegment, endSegment );
+
+			}
+
 		} else {
-			return this.createMiddleRoadCoords( spline, junction, sStart, sEnd );
+
+			console.debug( 'cutting road', spline.uuid, junction.toString(), sStart, sEnd );
+
+			return this.handleJunctionInMiddle( spline, junction, sStart, sEnd );
+
 		}
 
-		return coords;
+		return links;
 	}
 
 	addCoordsFromAdjacentSegments ( spline: AbstractSpline, coords: TvRoadLink[], segment: any ) {
+
+		console.debug( 'addCoordsFromAdjacentSegments', segment );
+
 		const previousSegment = spline.segmentMap.getPrevious( segment );
+
 		if ( previousSegment instanceof TvRoad ) {
-			// coords.push( previousSegment.getRoadCoordByContact( TvContactPoint.END ) );
+
 			coords.push( new TvRoadLink( TvRoadLinkType.ROAD, previousSegment, TvContactPoint.END ) );
+
 		}
+
 		const nextSegment = spline.segmentMap.getNext( segment );
+
 		if ( nextSegment instanceof TvRoad ) {
-			// coords.push( nextSegment.getRoadCoordByContact( TvContactPoint.START ) );
+
 			coords.push( new TvRoadLink( TvRoadLinkType.ROAD, nextSegment, TvContactPoint.START ) );
+
 		}
+
 	}
 
-	isAtStartOrEndOfSpline ( spline: AbstractSpline, sStart: number, sEnd: number, junctionWidth: number ): boolean {
-		const splineLength = this.splineService.getLength( spline );
-		return sStart <= junctionWidth || sEnd >= splineLength - junctionWidth;
-	}
+	handleEdgeJunction ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], sStart: number, sEnd: number, startSegment: TvRoad, mainRoad: TvRoad, junctionWidth: number ) {
 
-	handleStartOrEndOfSpline ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], sStart: number, sEnd: number, startSegment: TvRoad, endSegment: TvRoad, junctionWidth: number ) {
-
-		if ( !endSegment ) return;
+		if ( !mainRoad ) return;
 
 		const splineLength = this.splineService.getLength( spline );
 
 		const hasPredecessor = startSegment.predecessor != null;
 
-		const atStart = sStart <= junctionWidth;
+		const hasSuccessor = mainRoad.successor != null;
 
-		const hasSuccessor = endSegment.successor != null;
+		const isNearStart = sStart <= 0;
 
-		const atEnd = sEnd >= splineLength - junctionWidth;
+		const isNearEnd = sEnd >= splineLength;
 
-		if ( atEnd ) {
+		if ( isNearEnd ) {
+
+			console.debug( 'adding end segment coords', mainRoad.toString() );
+
+			this.handleJunctionAtEnd( spline, junction, coords, sStart, mainRoad );
 
 			if ( hasSuccessor ) {
 
-				// console.error( 'hasSuccessor', endSegment );
+				console.warn( 'hasSuccessor', mainRoad );
 
-				this.addEndSegmentCoords( spline, junction, coords, sEnd, endSegment );
+				const nextLink = mainRoad.successor?.clone();
 
-			} else {
+				if ( nextLink.element instanceof TvRoad ) {
 
-				this.addEndSegmentCoords( spline, junction, coords, sStart, endSegment );
+					RoadUtils.unlinkSuccessor( mainRoad );
+					RoadUtils.unlinkPredecessor( nextLink.element );
+
+					coords.push( new TvRoadLink( TvRoadLinkType.ROAD, nextLink.element, nextLink.contactPoint ) );
+
+				} else {
+
+					console.warn( 'nextLink is not a road', nextLink );
+
+				}
 
 			}
 
+		} else if ( isNearStart ) {
 
-		} else if ( atStart ) {
+			console.debug( 'adding start segment coords', startSegment );
 
 			if ( hasPredecessor ) {
 
-				// console.error( 'hasPredecessor', startSegment );
+				console.debug( 'hasPredecessor', startSegment );
 
-				this.addStartSegmentCoords( spline, junction, coords, junctionWidth );
+				this.handleJunctionAtStart( spline, junction, coords, junctionWidth );
 
 			} else {
 
-				this.addStartSegmentCoords( spline, junction, coords, junctionWidth );
+				this.handleJunctionAtStart( spline, junction, coords, junctionWidth );
 
 			}
+
+		} else {
+
+			throw new Error( 'Invalid start/end segment' );
 
 		}
 	}
 
-	addEndSegmentCoords ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], sStart: number, endSegment: TvRoad ) {
+	handleJunctionAtEnd ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], sStartJunction: number, road: TvRoad ) {
 
-		this.splineService.addJunctionSegment( spline, sStart, junction );
+		this.splineService.addJunctionSegment( spline, sStartJunction, junction );
 
-		this.rebuildRoad( endSegment );
+		this.rebuildRoad( road );
 
-		// coords.push( endSegment.getRoadCoordByContact( TvContactPoint.END ) );
-		coords.push( new TvRoadLink( TvRoadLinkType.ROAD, endSegment, TvContactPoint.END ) );
+		coords.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.END ) );
 
 	}
 
-	addStartSegmentCoords ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], junctionWidth: number ) {
+	handleJunctionAtStart ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], junctionWidth: number ) {
 
 		const road = this.splineService.findFirstRoad( spline );
 
@@ -630,63 +799,62 @@ export class JunctionManager {
 
 		this.rebuildRoad( road );
 
-		// const coord = road.getRoadCoordByContact( TvContactPoint.START );
-		// coords.push( coord );
-
 		coords.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.START ) );
 
 	}
 
-	createMiddleRoadCoords ( spline: AbstractSpline, junction: TvJunction, sStart: number, sEnd: number ): TvRoadLink[] {
+	handleJunctionInMiddle ( spline: AbstractSpline, junction: TvJunction, sStart: number, sEnd: number ): TvRoadLink[] {
 
-		const startSegment = spline.segmentMap.findAt( sStart );
+		const segment = spline.segmentMap.findAt( sStart );
 
-		if ( !( startSegment instanceof TvRoad ) ) {
-			console.error( 'startSegment is not a road', startSegment, sStart, sEnd );
+		if ( !( segment instanceof TvRoad ) ) {
+			console.error( 'startSegment is not a road', segment, sStart, sEnd );
 			return [];
 		}
 
-		const newRoad = this.createNewRoadSegment( spline, startSegment, junction, sStart, sEnd );
+		const mainRoad = segment as TvRoad;
 
-		// return [
-		// 	new TvRoadCoord( startSegment, startSegment.length ),
-		// 	new TvRoadCoord( newRoad, 0 )
-		// ];
+		const newRoad = this.createNewRoadSegment( spline, mainRoad, junction, sStart, sEnd );
+
+		console.debug( 'created new segment', newRoad.toString(), mainRoad.toString(), junction.toString(), sStart, sEnd );
+
 		return [
-			new TvRoadLink( TvRoadLinkType.ROAD, startSegment, TvContactPoint.END ),
+			new TvRoadLink( TvRoadLinkType.ROAD, mainRoad, TvContactPoint.END ),
 			new TvRoadLink( TvRoadLinkType.ROAD, newRoad, TvContactPoint.START )
-		]
+		];
 	}
 
 	createNewRoadSegment ( spline: AbstractSpline, oldRoad: TvRoad, junction: TvJunction, sStart: number, sEnd: number ): TvRoad {
 
-		const newRoad = this.roadService.clone( oldRoad, sStart );
+		const clone = this.roadService.clone( oldRoad, sStart );
 
-		newRoad.sStart = sEnd;
+		clone.sStart = sEnd;
 
-		this.splineService.addRoadSegmentNew( spline, sEnd, newRoad );
+		this.splineService.addRoadSegmentNew( spline, sEnd, clone );
 
 		if ( oldRoad.successor?.isRoad ) {
 
 			const successor = oldRoad.successor.getElement<TvRoad>();
 
-			successor.setPredecessorRoad( newRoad, TvContactPoint.END );
+			successor.setPredecessorRoad( clone, TvContactPoint.END );
 
-			newRoad.successor = oldRoad.successor;
+			clone.successor = oldRoad.successor.clone();
 
 		} else if ( oldRoad.successor?.isJunction ) {
 
-			console.error( 'successor is junction', oldRoad.successor );
+			clone.successor = oldRoad.successor.clone();
+
+			this.replaceConnections( oldRoad.successor.element as TvJunction, oldRoad, clone, TvContactPoint.END )
 
 		}
 
-		newRoad.setPredecessor( TvRoadLinkType.JUNCTION, junction );
+		clone.setPredecessor( TvRoadLinkType.JUNCTION, junction );
 
 		oldRoad.setSuccessor( TvRoadLinkType.JUNCTION, junction );
 
-		this.linkService.updateSuccessorRelationWhileCut( newRoad, newRoad.successor, oldRoad );
+		this.linkService.updateSuccessorRelationWhileCut( clone, clone.successor, oldRoad );
 
-		this.mapService.map.addRoad( newRoad );
+		this.mapService.map.addRoad( clone );
 
 		this.splineService.addJunctionSegment( spline, sStart, junction );
 
@@ -694,7 +862,7 @@ export class JunctionManager {
 
 		this.splineBuilder.buildSegments( spline );
 
-		return newRoad;
+		return clone;
 
 	}
 
@@ -1069,19 +1237,23 @@ export class JunctionManager {
 	// 	return junction;
 	// }
 
-	computeJunctionWidth ( group: IntersectionGroup ) {
+	computeJunctionWidth ( group: IntersectionGroup, mainSpline: AbstractSpline ) {
+
+		const junctionCenter = group.getRepresentativePosition();
+
+		const junctionCoord = this.splineService.getCoordAt( mainSpline, junctionCenter )
+
+		// const segment = mainSpline.segmentMap.findAt( junctionCoord.s );
 
 		let maxWidth = JUNCTION_WIDTH;
 
 		const splines = group.getSplines();
 
-		const center = group.getRepresentativePosition();
-
 		for ( let i = 0; i < splines.length; i++ ) {
 
 			const spline = splines[ i ];
 
-			const posTheta = this.splineService.getCoordAt( spline, center );
+			const posTheta = this.splineService.getCoordAt( spline, junctionCenter );
 
 			const segment = spline.segmentMap.findAt( posTheta.s );
 
@@ -1094,11 +1266,26 @@ export class JunctionManager {
 					maxWidth = width;
 
 				}
+
+			} else if ( segment instanceof TvJunction ) {
+
+				const prev = spline.segmentMap.getPrevious( segment );
+
+				if ( prev instanceof TvRoad ) {
+
+					const width = prev.getRoadWidthAt( posTheta.s - prev.sStart )?.totalWidth;
+
+					if ( width && width > maxWidth ) {
+
+						maxWidth = width;
+
+					}
+
+				}
 			}
 		}
 
-		// add just for saftey margin
-		return maxWidth + 2;
+		return maxWidth;
 	}
 
 	// adjustRoadCoordByHeading ( a: TvRoadCoord, b: TvRoadCoord, radius = 50 ) {
@@ -1136,4 +1323,211 @@ export class JunctionManager {
 	// 		// const targetPosition = intersectionPoint.clone().add( new Vector3().subVectors( coordA.position, intersectionPoint ).setLength( targetDistance ) );
 	// 	}
 	// }
+
+	private replaceConnections ( junction: TvJunction, oldRoad: TvRoad, newRoad: TvRoad, contact: TvContactPoint ) {
+
+		for ( const connection of junction.getConnections() ) {
+
+			if ( connection.connectingRoad.predecessor?.element == oldRoad ) {
+
+				connection.connectingRoad.setPredecessorRoad( newRoad, contact );
+
+			}
+
+			if ( connection.connectingRoad.successor?.element == oldRoad ) {
+
+				connection.connectingRoad.setSuccessorRoad( newRoad, contact );
+
+			}
+
+		}
+
+	}
+
+	private adjustCoord ( junction: TvJunction, group: IntersectionGroup, links: TvRoadLink[] ) {
+
+		for ( let i = 0; i < links.length; i++ ) {
+
+			const leftLink = links[ i ];
+			const rightLink = links[ ( i + 1 ) % links.length ];
+
+			const leftRoad = leftLink.element as TvRoad;
+			const rightRoad = rightLink.element as TvRoad;
+
+			const leftRoadSize = leftRoad.getRoadWidthAt( leftRoad.sStart )
+			const rightRoadSize = rightRoad.getRoadWidthAt( rightRoad.sStart );
+
+			// const center = this.computeJunctionCenter( leftLink, rightLink );
+			// const center = group.getRepresentativePosition();
+			const center = junction.position;
+
+			DebugDrawService.instance.clear();
+			DebugDrawService.instance.drawSphere( center, 1.0, COLOR.MAGENTA );
+
+			let distanceFromCenter = Math.max( leftRoadSize.totalWidth, leftRoadSize.totalWidth );
+
+			const angle = this.computeApproachingAngle( leftLink, rightLink, center );
+
+			if ( leftRoad.spline.uuid != rightRoad.spline.uuid ) {
+
+				const diff = Math.abs( Maths.PI2 - angle );
+
+				distanceFromCenter = distanceFromCenter + distanceFromCenter * Math.tan( diff * 0.5 );
+
+			}
+
+			console.debug( 'distanceFromCenter', distanceFromCenter, angle, leftRoad.toString(), rightRoad.toString() )
+
+			const junctionCoord = this.splineService.getCoordAt( rightRoad.spline, center );
+
+			if ( rightLink.contactPoint === TvContactPoint.START ) {
+
+				const splineOffset = junctionCoord.s + distanceFromCenter;
+
+				// If start of road then shift road
+				rightRoad.spline.segmentMap.remove( rightRoad );
+				rightRoad.spline.segmentMap.set( splineOffset, rightRoad );
+
+				rightRoad.sStart = splineOffset;
+
+			} else if ( rightLink.contactPoint === TvContactPoint.END ) {
+
+				const splineOffset = junctionCoord.s - distanceFromCenter;
+
+				// If end of road then shift junction to right
+				rightRoad.spline.segmentMap.remove( junction );
+				rightRoad.spline.segmentMap.set( splineOffset, junction );
+
+			}
+
+		}
+
+		for ( let i = 0; i < links.length; i++ ) {
+
+			this.splineBuilder.build( ( links[ i ].element as TvRoad ).spline );
+
+		}
+
+	}
+
+	private angleBetween ( p1: Vector3, center: Vector3, p2: Vector3 ): number {
+		const vectorA = new Vector2( p1.x - center.x, p1.y - center.y );
+		const vectorB = new Vector2( p2.x - center.x, p2.y - center.y );
+
+		const dotProduct = vectorA.dot( vectorB );
+		const magnitudeA = vectorA.length();
+		const magnitudeB = vectorB.length();
+
+		const cosTheta = dotProduct / ( magnitudeA * magnitudeB );
+		return Math.acos( MathUtils.clamp( cosTheta, -1, 1 ) ); // Ensure the value is within [-1, 1] to avoid NaN
+	}
+
+	private computeJunctionCenter ( leftLink: TvRoadLink, rightLink: TvRoadLink ): Vector3 {
+
+		// find center point
+
+		const leftRoad = leftLink.element as TvRoad;
+		const rightRoad = rightLink.element as TvRoad;
+
+		const leftRoadSize = leftRoad.getRoadWidthAt( leftRoad.sStart );
+		const rightRoadSize = rightRoad.getRoadWidthAt( rightRoad.sStart );
+
+		const leftT = leftLink.contactPoint == TvContactPoint.END ? -1 : 1;
+		const rightT = rightLink.contactPoint == TvContactPoint.END ? -1 : 1;
+
+		const leftCenterT = leftRoadSize.leftSideWidth - leftRoadSize.rightSideWidth;
+		const rightCenterT = rightRoadSize.leftSideWidth - rightRoadSize.rightSideWidth;
+
+		let leftEntry = this.roadService.findLinkPosition( leftLink ).addLateralOffset( leftCenterT * 0.5 );
+		let rightEntry = this.roadService.findLinkPosition( rightLink ).addLateralOffset( rightCenterT * 0.5 );
+
+		if ( leftLink.contactPoint == TvContactPoint.START ) {
+			leftEntry = leftEntry.rotateDegree( 180 );
+		}
+
+		if ( rightLink.contactPoint == TvContactPoint.START ) {
+			rightEntry = rightEntry.rotateDegree( 180 );
+		}
+
+		if ( leftRoad.spline.uuid == rightRoad.spline.uuid ) {
+
+			// Calculate the midpoint
+			const midpoint = new Vector3(
+				( leftEntry.position.x + rightEntry.position.x ) / 2,
+				( leftEntry.position.y + rightEntry.position.y ) / 2,
+				( leftEntry.position.z + rightEntry.position.z ) / 2
+			);
+
+			return midpoint;
+		}
+
+		return Maths.findIntersection( leftEntry, rightEntry );
+
+	}
+
+	private computeApproachingAngle ( leftLink: TvRoadLink, rightLink: TvRoadLink, center: Vector3 ) {
+
+		const leftRoad = leftLink.element as TvRoad;
+		const rightRoad = rightLink.element as TvRoad;
+
+		const leftRoadSize = leftRoad.getRoadWidthAt( leftRoad.sStart );
+		const rightRoadSize = rightRoad.getRoadWidthAt( rightRoad.sStart );
+
+		const leftCenterT = leftRoadSize.leftSideWidth - leftRoadSize.rightSideWidth;
+		const rightCenterT = rightRoadSize.leftSideWidth - rightRoadSize.rightSideWidth;
+
+		let leftEntry = this.roadService.findLinkPosition( leftLink ).addLateralOffset( leftCenterT * 0.5 );
+		let rightEntry = this.roadService.findLinkPosition( rightLink ).addLateralOffset( rightCenterT * 0.5 );
+
+		return this.angleBetween( leftEntry.position, center, rightEntry.position );
+	}
+
+
+	private computeGroupCentroid ( group: IntersectionGroup ) {
+
+		if ( !group.centroid ) {
+			return group.getRepresentativePosition();
+		}
+
+		const splines = group.getSplines();
+
+		const points: TvPosTheta[] = [];
+
+		for ( const spline of splines ) {
+
+			const coord = this.splineService.getCoordAt( spline, group.getRepresentativePosition() );
+
+			const segment = spline.segmentMap.findAt( coord.s );
+
+			if ( segment instanceof TvRoad ) {
+
+				const size = segment.getRoadWidthAt( coord.s );
+
+				const t = size.leftSideWidth - size.rightSideWidth;
+
+				const roadMidPosition = this.roadService.findRoadPosition( segment, coord.s, t * 0.5 );
+				// const roadLeftPosition = this.roadService.findRoadPosition( segment, coord.s, size.leftSideWidth );
+				// const roadRightPosition = this.roadService.findRoadPosition( segment, coord.s, size.rightSideWidth );
+
+				points.push( roadMidPosition );
+
+			}
+		}
+
+		const intersections: Vector3[] = [];
+
+		for ( let i = 0; i < points.length; i++ ) {
+
+			const p1 = points[ i ];
+			const p2 = points[ ( i + 1 ) % points.length ];
+
+			const intersection = Maths.findIntersection( p1, p2 );
+
+			intersections.push( intersection );
+
+		}
+
+		return GeometryUtils.getCentroid( intersections );
+
+	}
 }

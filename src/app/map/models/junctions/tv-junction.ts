@@ -11,8 +11,8 @@ import { TvRoad } from '../tv-road.model';
 import { TvJunctionType } from './tv-junction-type';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvContactPoint } from '../tv-common';
-import { TvRoadCoord, TvRoadEdge } from "../TvRoadCoord";
-import { TvRoadLinkType } from "../tv-road-link";
+import { TvRoadCoord } from "../TvRoadCoord";
+import { TvRoadLink, TvRoadLinkType } from "../tv-road-link";
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 
 export class TvJunction {
@@ -33,7 +33,8 @@ export class TvJunction {
 
 	public boundary: TvJunctionBoundary;
 
-	constructor ( public name: string, public id: number ) { }
+	constructor ( public name: string, public id: number ) {
+	}
 
 	toString () {
 		return `Junction:${ this.id }`;
@@ -55,21 +56,6 @@ export class TvJunction {
 		} );
 
 	}
-
-	removeConnection ( connection: TvJunctionConnection ) {
-
-		this.connections.delete( connection.id );
-
-	}
-
-	private removeConnectionsForRoad ( road: TvRoad ): void {
-
-		this.removeIncomingConnections( road );
-
-		this.removeOutgoingConnections( road );
-
-	}
-
 	getConnectingRoads (): TvRoad[] {
 
 		const connectingRoads: TvRoad[] = [];
@@ -193,9 +179,9 @@ export class TvJunction {
 		return coords;
 	}
 
-	getRoadEdges (): TvRoadEdge[] {
+	getLinks (): TvRoadLink[] {
 
-		const edges: TvRoadEdge[] = [];
+		const edges: TvRoadLink[] = [];
 
 		const roads = this.getRoads();
 
@@ -203,47 +189,19 @@ export class TvJunction {
 
 			if ( road.successor?.type == TvRoadLinkType.JUNCTION && road.successor?.id == this.id ) {
 
-				edges.push( new TvRoadEdge( road, TvContactPoint.END ) );
+				edges.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.END ) );
 
 			}
 
 			if ( road.predecessor?.type == TvRoadLinkType.JUNCTION && road.predecessor?.id == this.id ) {
 
-				edges.push( new TvRoadEdge( road, TvContactPoint.START ) );
+				edges.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.START ) );
 
 			}
 
 		}
 
 		return edges;
-	}
-
-	private removeIncomingConnections ( road: TvRoad ) {
-
-		this.connections.forEach( connection => {
-
-			if ( connection.incomingRoadId === road.id ) {
-
-				this.connections.delete( connection.id );
-
-			}
-
-		} );
-
-	}
-
-	private removeOutgoingConnections ( road: TvRoad ) {
-
-		this.connections.forEach( connection => {
-
-			if ( connection.outgoingRoadId === road.id ) {
-
-				this.connections.delete( connection.id );
-
-			}
-
-		} );
-
 	}
 
 	getJunctionPriorityCount (): number {
@@ -442,39 +400,6 @@ export class TvJunction {
 
 		}
 
-	}
-
-
-	private removeJunctionRelation ( road: TvRoad ): void {
-
-		let hasConnections = false;
-
-		for ( const connection of this.connections ) {
-
-			if ( connection[ 1 ].incomingRoadId === road.id ) {
-
-				hasConnections = true;
-
-			} else if ( connection[ 1 ].outgoingRoad.id === road.id ) {
-
-				hasConnections = true;
-
-			}
-		}
-
-		if ( !hasConnections ) {
-
-			if ( road.successor?.isJunction && road.successor.id === this.id ) {
-
-				road.successor = null;
-
-			} else if ( road.predecessor?.isJunction && road.predecessor.id === this.id ) {
-
-				road.predecessor = null;
-
-			}
-
-		}
 	}
 
 }

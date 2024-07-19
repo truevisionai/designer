@@ -67,7 +67,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 		{
 			id: 'showMeasurementTool',
 			label: 'Measurement',
-			class: 'toolbar-button border-right',
+			class: 'toolbar-button',
 			toolType: ToolType.MeasurementTool,
 			action: 'Measurement-tool',
 			icon: 'straighten',
@@ -76,6 +76,17 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'menu',
 			click: () => this.setToolType( ToolType.MeasurementTool ),
 			enabled: true,
+		},
+		{
+			id: 'connections',
+			label: 'Debug',
+			class: 'toolbar-button border-right',
+			toolType: ToolType.DebugConnections,
+			action: 'debug-connections-tool',
+			icon: 'bug_report',
+			track: 'menu',
+			click: () => this.setToolType( ToolType.DebugConnections ),
+			enabled: !Environment.production && Environment.developmentTools,
 		},
 		{
 			id: 'showRoadTool',
@@ -260,11 +271,11 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			description: 'MANEUVER-DESCRIPTION',
 			track: 'button',
 			click: () => this.setToolType( ToolType.Maneuver ),
-			enabled: Environment.developmentTools,
+			enabled: true,
 		},
 		{
 			id: 'showTrafficTool',
-			label: 'Traffic-Signal',
+			label: 'Traffic Signal',
 			class: 'toolbar-button',
 			toolType: ToolType.TrafficLight,
 			action: 'traffic-signal-tool',
@@ -272,7 +283,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'TRAFFIC-SIGNAL-TOOL-TITLE',
 			description: 'TRAFFIC-SIGNAL-TOOL-DESCRIPTION',
 			track: 'button',
-			tooltip: 'Traffic Signal Tool',
 			click: () => this.setToolType( ToolType.TrafficLight ),
 			enabled: true,
 		},
@@ -302,7 +312,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Point Marking Tool',
 			click: () => this.setToolType( ToolType.PointMarkingTool ),
-			enabled: Environment.developmentTools,
 		},
 		{
 			id: 'showTextMarkingTool',
@@ -316,7 +325,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Text Marking Tool',
 			click: () => this.setToolType( ToolType.TextMarkingTool ),
-			enabled: Environment.developmentTools,
+			enabled: true,
 		},
 		{
 			id: 'showParkingRoadTool',
@@ -351,7 +360,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 		{
 
 			id: 'showPropPointTool',
-			label: 'PropPoint',
+			label: 'Prop Point',
 			class: 'toolbar-button',
 			toolType: ToolType.PropPoint,
 			action: 'prop-point-tool',
@@ -393,7 +402,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 		},
 		{
 			id: 'showPropSpanTool',
-			label: 'PropSpan',
+			label: 'Prop Span',
 			class: 'toolbar-button',
 			toolType: ToolType.PropSpanTool,
 			action: 'prop-span-tool',
@@ -402,7 +411,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			title: 'PROP-SPAN-TOOL-TITLE',
 			description: 'PROP-SPAN-TOOL-DESCRIPTION',
 			click: () => this.setToolType( ToolType.PropSpanTool ),
-			enabled: Environment.developmentTools,
+			enabled: true,
 		},
 		{
 			id: 'showPolePropTool',
@@ -455,17 +464,6 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			tooltip: 'Vehicle Tool',
 			click: () => this.setToolType( ToolType.Vehicle ),
 			enabled: Environment.experimentalTools && Environment.oscEnabled,
-		},
-		{
-			id: 'connections',
-			label: 'Debug Connections Tool',
-			class: 'toolbar-button',
-			toolType: ToolType.DebugConnections,
-			action: 'debug-connections-tool',
-			icon: 'directions_car',
-			track: 'menu',
-			click: () => this.setToolType( ToolType.DebugConnections ),
-			enabled: !Environment.production && Environment.experimentalTools,
 		},
 		{
 			id: 'environment',

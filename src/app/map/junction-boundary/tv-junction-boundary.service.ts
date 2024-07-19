@@ -5,23 +5,33 @@
 import { Injectable } from '@angular/core';
 import { TvJunction } from '../models/junctions/tv-junction';
 import { TvRoadCoord } from '../models/TvRoadCoord';
-import { TvBoundarySegmentType, TvJointBoundary, TvJunctionBoundary, TvJunctionSegmentBoundary, TvLaneBoundary } from './tv-junction-boundary';
+import {
+	TvBoundarySegmentType,
+	TvJointBoundary,
+	TvJunctionBoundary,
+	TvJunctionSegmentBoundary,
+	TvLaneBoundary
+} from './tv-junction-boundary';
 import { TvRoad } from '../models/tv-road.model';
-import { Vector3 } from 'three';
-import { TvContactPoint } from '../models/tv-common';
-import { TvJunctionConnection } from '../models/junctions/tv-junction-connection';
+import { MeshBasicMaterial, Vector3 } from 'three';
+import { TvContactPoint, TvLaneSide } from '../models/tv-common';
 import { GeometryUtils } from 'app/services/surface/geometry-utils';
+import { LaneUtils } from "../../utils/lane.utils";
+import { TvLane } from "../models/tv-lane";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class TvJunctionBoundaryService {
 
-	constructor () { }
+	constructor () {
+	}
 
 	update ( junction: TvJunction ) {
 
 		junction.boundary = this.createJunctionBoundary( junction );
+
+		// this.getOutermostCornerConnections( junction );
 
 	}
 
@@ -62,45 +72,76 @@ export class TvJunctionBoundaryService {
 
 	getOutermostCornerConnections ( junction: TvJunction ) {
 
-		const items: TvJunctionConnection[] = [];
+		let incomingContact: TvContactPoint;
 
-		const connections = junction.getConnections();
+		const findOuterMostLane = ( road: TvRoad ) => {
 
-		// for each incoming road, find the outermost corner connection
-		const pairs = new Map<TvRoad, TvJunctionConnection>();
+			// find right most lane
+			if ( road.successor?.element.id == junction.id ) {
 
-		for ( let i = 0; i < connections.length; i++ ) {
+				incomingContact = TvContactPoint.END;
 
-			const connection = connections[ i ];
+				return LaneUtils.findOuterMostDrivingLane( road.getLastLaneSection(), TvLaneSide.RIGHT );
 
-			if ( !connection.isCornerConnection ) continue;
-
-			if ( !pairs.has( connection.incomingRoad ) ) {
-
-				pairs.set( connection.incomingRoad, connection );
-
-				continue;
 			}
 
-			const existing = pairs.get( connection.incomingRoad );
+			// find left most lane
+			if ( road.predecessor?.element.id == junction.id ) {
 
-			if ( connection.laneLink.length == 0 || existing.laneLink.length == 0 ) continue;
+				incomingContact = TvContactPoint.START;
 
-			const existingLaneId = existing.laneLink[ 0 ].incomingLane.id;
-
-			const connectionLaneId = connection.laneLink[ 0 ].incomingLane.id;
-
-			if ( Math.abs( connectionLaneId ) > Math.abs( existingLaneId ) ) {
-
-				pairs.set( connection.incomingRoad, connection );
+				return LaneUtils.findOuterMostDrivingLane( road.getLastLaneSection(), TvLaneSide.LEFT );
 
 			}
 
 		}
 
-		pairs.forEach( connection => items.push( connection ) );
+		const findOuterConnection = ( incomingRoad: TvRoad, incomingLane: TvLane ) => {
 
-		return items;
+			const cornerConnections = junction.getConnections()
+				.filter( conn => conn.isCornerConnection )
+				.filter( conn => conn.incomingRoadId === incomingRoad.id );
+
+			for ( const cornerConnection of cornerConnections ) {
+				for ( const link of cornerConnection.laneLink ) {
+					if ( link.incomingLane.id == incomingLane.id ) {
+						return cornerConnection;
+					}
+				}
+			}
+		}
+
+		const incomingRoads = junction.getIncomingRoads();
+
+		for ( let i = 0; i < incomingRoads.length; i++ ) {
+
+			const incomingRoad = incomingRoads[ i ];
+
+			const outerLane = findOuterMostLane( incomingRoad );
+
+			if ( !outerLane ) continue;
+
+			const cornerConnection = findOuterConnection( incomingRoad, outerLane );
+
+			// console.log( incomingRoad.toString(), outerLane, cornerConnection?.toString() );
+
+			outerLane.gameObject.material = ( outerLane.gameObject.material as MeshBasicMaterial ).clone();
+			( outerLane.gameObject.material as MeshBasicMaterial ).color.set( 0xff0000 );
+			( outerLane.gameObject.material as MeshBasicMaterial ).needsUpdate = true;
+
+			if ( cornerConnection ) {
+				cornerConnection.connectingRoad.getFirstLaneSection().getLaneArray().forEach( lane => {
+					lane.gameObject.material = ( lane.gameObject.material as MeshBasicMaterial ).clone();
+					( lane.gameObject.material as MeshBasicMaterial ).color.set( 0xff0000 );
+					( lane.gameObject.material as MeshBasicMaterial ).needsUpdate = true;
+				} );
+			} else {
+				// console.error( 'No corner connection found for incoming road', incomingRoad.toString() )
+			}
+
+		}
+
+
 	}
 
 	createJunctionBoundary ( junction: TvJunction ): TvJunctionBoundary {

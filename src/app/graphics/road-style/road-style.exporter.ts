@@ -61,6 +61,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 
 		this.writeLaneSection( xmlNode, style.laneSection );
 
+		return xmlNode;
 	}
 
 	private writeRoadObject ( object: TvRoadObject ): any {

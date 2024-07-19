@@ -29,6 +29,14 @@ export class MapQueryService {
 		return this.mapService.roads;
 	}
 
+	get splines () {
+		return this.mapService.splines;
+	}
+
+	get nonJunctionSplines () {
+		return this.mapService.nonJunctionSplines;
+	}
+
 	get junctions () {
 		return this.mapService.junctions;
 	}

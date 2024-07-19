@@ -4,6 +4,11 @@
 
 import { Injectable } from '@angular/core';
 
+export const STORAGE_KEYS = {
+	USER: 'user',
+	LAST_FILE: 'lastOpenedFile',
+}
+
 @Injectable( {
 	providedIn: 'root'
 } )

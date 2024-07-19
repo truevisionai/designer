@@ -87,6 +87,8 @@ export class RoadBuilder {
 
 	private shouldBuild ( road: TvRoad ): boolean {
 
+		if ( road.geometries.length == 0 ) return false;
+
 		if ( road.isJunction ) {
 			return OdBuilderConfig.BUILD_CONNECTING_ROADS;
 		}

@@ -35,6 +35,7 @@ import { TvTextureService } from "../../graphics/texture/tv-texture.service";
 import { AssetType } from "../../core/asset/asset.model";
 import { COLOR } from "../../views/shared/utils/colors.service";
 import { TvObjectRepeat } from "../models/objects/tv-object-repeat";
+import { RoadService } from 'app/services/road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -46,6 +47,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 		private assetService: AssetService,
 		private materialService: TvMaterialService,
 		private textureService: TvTextureService,
+		private roadService: RoadService,
 	) {
 		super();
 	}
@@ -99,7 +101,10 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		const material = this.getRoadMarkMaterial( object );
 
-		const roadCoord = road.getPosThetaAt( object.s, object.t );
+		// clamp signal s value if it is out of bounds
+		object.s = Maths.clamp( object.s, 0, road.length );
+
+		const roadCoord = this.roadService.findRoadPosition( road, object.s, object.t );
 
 		const lane = object.road.getLaneAt( object.s, object.t );
 

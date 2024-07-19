@@ -18,8 +18,6 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 
 	private lines = new Object3DArrayMap<AbstractSpline, Line[]>();
 
-	private points = new Object3DArrayMap<AbstractSpline, AbstractControlPoint[]>();
-
 	onDefault ( object: ExplicitSpline ): void {
 
 	}
@@ -32,13 +30,9 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 
 		this.lines.removeKey( object );
 
-		this.points.removeKey( object );
-
 	}
 
 	onSelected ( object: ExplicitSpline ): void {
-
-		this.points.addItems( object, object.controlPoints );
 
 		if ( object.controlPoints.length < 2 ) return;
 
@@ -53,8 +47,6 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 	onUnselected ( object: ExplicitSpline ): void {
 
 		this.lines.removeKey( object );
-
-		this.points.removeKey( object );
 
 	}
 
@@ -73,8 +65,6 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 		super.clear();
 
 		this.lines.clear();
-
-		this.points.clear();
 
 	}
 

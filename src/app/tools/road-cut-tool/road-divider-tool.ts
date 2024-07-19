@@ -116,6 +116,8 @@ export class RoadDividerTool extends BaseTool<any> {
 
 			this.tool.roadService.add( object );
 
+			this.tool.splineBuilder.build( object.spline );
+
 		}
 
 		this.tool.roadDebug.hideNodes();
@@ -128,6 +130,8 @@ export class RoadDividerTool extends BaseTool<any> {
 		if ( object instanceof TvRoad ) {
 
 			this.tool.roadService.remove( object );
+
+			this.tool.splineBuilder.build( object.spline );
 
 		}
 

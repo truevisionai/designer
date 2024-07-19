@@ -2,14 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export class TvRoadLinkNeighbor {
-	public attr_side;
-	public attr_elementId;
-	public attr_direction;
+import { TvRoad } from "./tv-road.model";
+import { TvContactPoint } from "./tv-common";
 
-	constructor ( side: string, elementId: string, direction: string ) {
-		this.attr_side = side;
-		this.attr_elementId = elementId;
-		this.attr_direction = direction;
+export class TvRoadLinkNeighbor {
+
+	public element: TvRoad;
+	public contact: TvContactPoint;
+
+	constructor ( element: TvRoad, contact: TvContactPoint ) {
+		this.element = element
+		this.contact = contact;
 	}
 }

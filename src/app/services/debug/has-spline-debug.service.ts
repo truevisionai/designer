@@ -27,28 +27,31 @@ export class HasSplineDebugService<T extends HasSpline> extends BaseDebugger<T> 
 
 	onDefault ( object: T ): void {
 
-		this.debug.showReferenceLine( object.spline );
+		this.debug.showPolyline( object.spline );
 		this.debug.showControlPoints( object.spline );
 
 	}
 
 	onHighlight ( object: T ): void {
 
-		this.debug.showReferenceLine( object.spline );
+		this.debug.showPolyline( object.spline );
 		this.debug.showControlPoints( object.spline );
 
 	}
 
 	onRemoved ( object: T ): void {
 
-		this.debug.removeReferenceLine( object.spline );
+		this.debug.removePolyline( object.spline );
 		this.debug.removeControlPoints( object.spline );
 
 	}
 
 	onSelected ( object: T ): void {
 
-		this.debug.showReferenceLine( object.spline );
+		this.debug.removePolyline( object.spline );
+		this.debug.removeControlPoints( object.spline );
+
+		this.debug.showPolyline( object.spline );
 		this.debug.showControlPoints( object.spline );
 
 	}

@@ -203,6 +203,10 @@ export class TvPosTheta {
 		return this.hdg - Math.floor( this.hdg / ( 2 * Math.PI ) ) * ( 2 * Math.PI );
 	}
 
+	distanceTo ( b: TvPosTheta ) {
+		return this.toVector3().distanceTo( b.toVector3() );
+	}
+
 	toString () {
 		return `x:${ this.x?.toFixed( 2 ) }, y:${ this.y?.toFixed( 2 ) }, z:${ this.z?.toFixed( 2 ) }, hdg:${ this.hdg?.toFixed( 2 ) }, s:${ this.s?.toFixed( 2 ) }, t:${ this.t?.toFixed( 2 ) }`;
 	}

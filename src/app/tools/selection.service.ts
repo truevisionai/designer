@@ -139,6 +139,12 @@ export class SelectionService {
 
 	}
 
+	getAll () {
+
+		return this.selectedObjects.values();
+
+	}
+
 	reset () {
 
 		this.strategies.clear();

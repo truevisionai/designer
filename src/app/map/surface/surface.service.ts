@@ -7,6 +7,8 @@ import { BaseDataService } from "../../core/interfaces/data.service";
 import { Surface } from "./surface.model";
 import { MapService } from "../../services/map/map.service";
 import { SurfaceManager } from "./surface.manager";
+import { AbstractControlPoint } from "../../objects/abstract-control-point";
+import { SplineService } from "../../services/spline/spline.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,6 +18,7 @@ export class SurfaceService extends BaseDataService<Surface> {
 	constructor (
 		private mapService: MapService,
 		private surfaceManager: SurfaceManager,
+		private splineService: SplineService,
 	) {
 		super();
 	}
@@ -45,6 +48,20 @@ export class SurfaceService extends BaseDataService<Surface> {
 		this.mapService.map.removeSurface( object );
 
 		this.surfaceManager.onRemoved( object );
+
+	}
+
+	addPoint ( object: Surface, point: AbstractControlPoint ) {
+
+		const index = this.splineService.findIndex( object.spline, point.position );
+
+		object.spline.controlPoints.splice( index, 0, point );
+
+		this.splineService.updatePointHeading( object.spline, point, index );
+
+		this.splineService.updateIndexes( object.spline );
+
+		this.update( object );
 
 	}
 

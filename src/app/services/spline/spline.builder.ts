@@ -7,7 +7,7 @@ import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { TvRoad } from "../../map/models/tv-road.model";
 import { AutoSplineV2 } from "../../core/shapes/auto-spline-v2";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { Box3, CatmullRomCurve3, Vector2 } from "three";
+import { Box3, CatmullRomCurve3, Vector2, Vector3 } from "three";
 import { TvAbstractRoadGeometry } from "../../map/models/geometries/tv-abstract-road-geometry";
 import { TvLineGeometry } from "../../map/models/geometries/tv-line-geometry";
 import { TvArcGeometry } from "../../map/models/geometries/tv-arc-geometry";
@@ -24,6 +24,11 @@ import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { RoadBuilder } from 'app/map/builders/road.builder';
 import { MapService } from '../map/map.service';
 import { Maths } from 'app/utils/maths';
+import { TvConsole } from 'app/core/utils/console';
+import { MapEvents } from "../../events/map-events";
+import { RoadRemovedEvent } from "../../events/road/road-removed-event";
+import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { SplineService } from "./spline.service";
 
 function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
@@ -123,6 +128,7 @@ function breakGeometries ( geometries: TvAbstractRoadGeometry[], sStart: number,
 export class SplineBuilder {
 
 	constructor (
+		private splineService: SplineService,
 		private mapService: MapService,
 		private roadBuilder: RoadBuilder,
 		private autoSplineBuilder: AutoSplineBuilder,
@@ -140,7 +146,7 @@ export class SplineBuilder {
 
 	}
 
-	buildSpline ( spline: AbstractSpline ) {
+	buildGeometry ( spline: AbstractSpline ) {
 
 		if ( spline instanceof AutoSplineV2 ) {
 
@@ -155,6 +161,17 @@ export class SplineBuilder {
 			this.buildCatmullRomSpline( spline );
 
 		}
+
+	}
+
+	/**
+	 *
+	 * @param spline
+	 * @deprecated
+	 */
+	buildSpline ( spline: AbstractSpline ) {
+
+		this.buildGeometry( spline );
 
 	}
 
@@ -174,25 +191,19 @@ export class SplineBuilder {
 
 	buildBoundingBox ( spline: AbstractSpline ) {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		function updateBoundingBox () {
 
-		let boundingBox = new Box3();
+			if ( spline.controlPoints.length < 2 ) return;
 
-		const segments = spline.segmentMap.toArray();
+			let boundingBox = new Box3();
 
-		for ( let i = 0; i < segments.length; i++ ) {
+			const segments = spline.segmentMap.toArray();
 
-			const segment = segments[ i ];
+			for ( let i = 0; i < segments.length; i++ ) {
 
-			if ( segment instanceof TvRoad ) {
+				const segment = segments[ i ];
 
-				if ( segment.boundingBox ) {
-
-					boundingBox.union( segment.boundingBox );
-
-				} else {
-
-					segment.computeBoundingBox();
+				if ( segment instanceof TvRoad ) {
 
 					if ( segment.boundingBox ) {
 
@@ -200,19 +211,35 @@ export class SplineBuilder {
 
 					} else {
 
-						boundingBox = null;
+						segment.computeBoundingBox();
 
+						if ( segment.boundingBox ) {
+
+							boundingBox.union( segment.boundingBox );
+
+						} else {
+
+							boundingBox = null;
+
+						}
 					}
 				}
 			}
+
+			if ( !boundingBox ) {
+				console.error( "boundingBox is null", this );
+				return;
+			}
+
+			spline.boundingBox = boundingBox;
 		}
 
-		if ( !boundingBox ) {
-			console.error( "boundingBox is null", this );
-			return;
-		}
+		this.updateWidthCache( spline );
 
-		spline.boundingBox = boundingBox;
+		this.updateWaypoints( spline );
+
+		updateBoundingBox();
+
 	}
 
 	buildCatmullRomSpline ( spline: CatmullRomSpline ) {
@@ -257,6 +284,86 @@ export class SplineBuilder {
 		spline.curve.updateArcLengths();
 
 	}
+
+	updateWidthCache ( spline: AbstractSpline ) {
+
+		spline.widthCache.clear();
+
+		const roads = this.splineService.getRoads( spline );
+
+		let lastWidth = -1;
+
+		for ( let i = 0; i < roads.length; i++ ) {
+
+			const road = roads[ i ];
+
+			for ( let s = 0; s <= road.length; s += 5 ) {
+
+				const width = road.getRoadWidthAt( s ).totalWidth;
+
+				if ( width !== lastWidth ) {
+
+					spline.widthCache.set( road.sStart + s, width );
+
+					lastWidth = width;
+
+				}
+
+			}
+
+		}
+	}
+
+	updateWaypoints ( spline: AbstractSpline ) {
+
+		spline.waypoints = [];
+
+		const stepSize = 1;
+
+		const positions = this.splineService.getPoints( spline, stepSize );
+
+		for ( let i = 0; i < positions.length - 1; i++ ) {
+
+			const position = positions[ i ];
+
+			const roadWidth = this.getWidthAt( spline, position, i * stepSize );
+
+			const point = new SimpleControlPoint( null, position );
+
+			point.userData.width = roadWidth;
+
+			spline.waypoints.push( point );
+
+		}
+
+	}
+
+	getWidthAt ( spline: AbstractSpline, position?: Vector3, inputS?: number ): number {
+
+		const cache = spline.widthCache;
+
+		const checkS = inputS //;|| spline.getCoordAt( position )?.s;
+
+		// Find the closest entry that is less than or equal to coord.s
+		let closestS = -Infinity;
+
+		let closestWidth = 12; // Default width
+
+		for ( const [ s, width ] of cache ) {
+
+			if ( s <= checkS && s > closestS ) {
+
+				closestS = s;
+
+				closestWidth = width;
+
+			}
+
+		}
+
+		return closestWidth;
+
+	}
 }
 
 
@@ -281,8 +388,10 @@ export class AutoSplineBuilder {
 
 				if ( segment.geometries.length == 0 ) {
 
-					console.log( segment );
-					throw new Error( 'No geometries found for road segment' );
+					TvConsole.error( 'No geometries found for road' + segment.toString() );
+					console.error( 'No geometries found for road', segment );
+
+					MapEvents.roadRemoved.emit( new RoadRemovedEvent( segment ) );
 
 				}
 

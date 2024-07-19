@@ -10,7 +10,7 @@ import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { SplineCreatedEvent } from 'app/events/spline/spline-created-event';
 import { SplineRemovedEvent } from 'app/events/spline/spline-removed-event';
 import { BaseDataService } from '../../core/interfaces/data.service';
-import { Box3, BufferAttribute, Vector2, Vector3 } from 'three';
+import { Box3, BufferAttribute, Points, Vector2, Vector3 } from 'three';
 import { Maths } from 'app/utils/maths';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SplineIntersection } from '../junction/spline-intersection';
@@ -23,13 +23,13 @@ import { RoadControlPoint } from "../../objects/road-control-point";
 import { RoadTangentPoint } from "../../objects/road-tangent-point";
 import { TvGeometryType } from "../../map/models/tv-common";
 import { CURVE_Y } from "../../core/shapes/spline-config";
+import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
+import { SimpleControlPoint } from 'app/objects/simple-control-point';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SplineService extends BaseDataService<AbstractSpline> {
-
-	private splinesCache: Map<AbstractSpline, Map<number, number>> = new Map();
 
 	constructor (
 		private mapService: MapService,
@@ -153,33 +153,30 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		if ( !this.intersectsSplineBox( splineA, splineB ) ) return;
 
-		const pointsA = this.getPoints( splineA, stepSize )
-		const pointsB = this.getPoints( splineB, stepSize );
+		for ( let i = 0; i < splineA.waypoints.length - 1; i++ ) {
 
-		for ( let i = 0; i < pointsA.length - 1; i++ ) {
+			for ( let j = 0; j < splineB.waypoints.length - 1; j++ ) {
 
-			for ( let j = 0; j < pointsB.length - 1; j++ ) {
+				const a = splineA.waypoints[ i ];
+				const b = splineA.waypoints[ i + 1 ];
+				const c = splineB.waypoints[ j ];
+				const d = splineB.waypoints[ j + 1 ];
 
-				const a = pointsA[ i ];
-				const b = pointsA[ i + 1 ];
-				const c = pointsB[ j ];
-				const d = pointsB[ j + 1 ];
-
-				const roadWidthA = this.getWidthAt( splineA, a, i * stepSize );
-				const roadWidthB = this.getWidthAt( splineB, c, j * stepSize );
+				const roadWidthA = a.userData.width;
+				const roadWidthB = c.userData.width;
 
 				// Create bounding boxes for the line segments
-				const boxA = createBoundingBoxForSegment( a, b, roadWidthA );
-				const boxB = createBoundingBoxForSegment( c, d, roadWidthB );
+				const boxA = createBoundingBoxForSegment( a.position, b.position, roadWidthA );
+				const boxB = createBoundingBoxForSegment( c.position, d.position, roadWidthB );
 
 				// Check if these bounding boxes intersect
 				if ( !this.intersectsBox( boxA, boxB ) ) continue;
 
-				const intersectionPoint = Maths.findLineIntersection( a, b, c, d );
+				const intersectionPoint = Maths.findLineIntersection( a.position, b.position, c.position, d.position );
 
 				if ( intersectionPoint ) {
 
-					const angle = Maths.findLineIntersectionAngle( a, b, c, d );
+					const angle = Maths.findLineIntersectionAngle( a.position, b.position, c.position, d.position );
 
 					return new SplineIntersection( splineA, splineB, intersectionPoint, angle );
 				}
@@ -418,78 +415,6 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	getWidthCache ( spline: AbstractSpline ) {
-
-		if ( !this.splinesCache.has( spline ) ) {
-
-			return this.updateWidthCache( spline );
-
-		}
-
-		return this.splinesCache.get( spline );
-
-	}
-
-	updateWidthCache ( spline: AbstractSpline ) {
-
-		const cache = new Map<number, number>();
-
-		const roads = this.getRoads( spline );
-
-		let lastWidth = -1;
-
-		for ( let i = 0; i < roads.length; i++ ) {
-
-			const road = roads[ i ];
-
-			for ( let s = 0; s <= road.length; s += 5 ) {
-
-				const width = road.getRoadWidthAt( s ).totalWidth;
-
-				if ( width !== lastWidth ) {
-
-					cache.set( road.sStart + s, width );
-
-					lastWidth = width;
-
-				}
-
-			}
-
-		}
-
-		this.splinesCache.set( spline, cache );
-
-		return cache;
-	}
-
-	getWidthAt ( spline: AbstractSpline, position?: Vector3, inputS?: number ): number {
-
-		const cache = this.getWidthCache( spline );
-
-		const checkS = inputS //;|| spline.getCoordAt( position )?.s;
-
-		// Find the closest entry that is less than or equal to coord.s
-		let closestS = -Infinity;
-
-		let closestWidth = 12; // Default width
-
-		for ( const [ s, width ] of cache ) {
-
-			if ( s <= checkS && s > closestS ) {
-
-				closestS = s;
-
-				closestWidth = width;
-
-			}
-
-		}
-
-		return closestWidth;
-
-	}
-
 	removeControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
 
 		const index = spline.controlPoints.findIndex( p => p.id === point.id );
@@ -570,7 +495,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		if ( !road.successor.isRoad ) return;
 
-		const successorRoad = road.successor.getElement<TvRoad>();
+		const successorRoad = road.successor.element as TvRoad;
 
 		return successorRoad.spline;
 
@@ -590,7 +515,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		if ( !road.predecessor.isRoad ) return;
 
-		const predecessorRoad = road.predecessor.getElement<TvRoad>();
+		const predecessorRoad = road.predecessor.element as TvRoad;
 
 		return predecessorRoad.spline;
 
@@ -651,6 +576,10 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	getPoints ( spline: AbstractSpline, step: number ) {
 
+		if ( spline instanceof CatmullRomSpline ) {
+			return spline.getPoints();
+		}
+
 		const points: Vector3[] = [];
 
 		const length = this.getLength( spline );
@@ -661,7 +590,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		for ( let i = 0; i <= 1; i += d ) {
 
-			points.push( this.getPoint( spline, i, 0 ).toVector3() );
+			const point = this.getPoint( spline, i, 0 );
+
+			if ( point instanceof Vector3 ) {
+				points.push( point );
+			} else {
+				points.push( point.toVector3() );
+			}
 
 		}
 
@@ -669,6 +604,10 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 	}
 
 	getPoint ( spline: AbstractSpline, t: number, offset = 0 ) {
+
+		if ( spline instanceof CatmullRomSpline ) {
+			return spline.curve.getPointAt( t );
+		}
 
 		const length = this.getLength( spline );
 

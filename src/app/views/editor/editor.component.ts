@@ -84,7 +84,6 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	ngOnInit () {
 
-		this.mainFileService.newScene();
 		this.shortcutService.init();
 
 		this.onEditorOpened();
@@ -92,13 +91,25 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	onEditorOpened () {
 
-		if ( !navigator.onLine ) return;
+		this.openLastEditedFile();
 
 		this.fetchUserProfile();
 
 	}
 
+	openLastEditedFile () {
+
+		setTimeout( () => {
+
+			this.mainFileService.openLastFile();
+
+		}, 300 );
+
+	}
+
 	fetchUserProfile () {
+
+		if ( !navigator.onLine ) return;
 
 		this.profileService.fetchUser().subscribe( ( user ) => {
 
