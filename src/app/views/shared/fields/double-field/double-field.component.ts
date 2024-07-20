@@ -5,7 +5,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Maths } from 'app/utils/maths';
 import { AbstractFieldComponent } from '../abstract-field.component';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 
 @Component( {
 	selector: 'app-double-field',
@@ -157,7 +157,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent implements OnIn
 			}
 		} else {
 
-			Debug.log( 'inputValue', inputValue );
+			Log.info( 'inputValue', inputValue );
 
 		}
 	}

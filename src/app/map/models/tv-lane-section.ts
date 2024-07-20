@@ -3,7 +3,7 @@
  */
 
 import { GameObject } from 'app/objects/game-object';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 import { MathUtils } from 'three';
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
@@ -86,7 +86,7 @@ export class TvLaneSection {
 
 		this.getLeftLanes().reverse().forEach( ( lane, i ) => {
 
-			Debug.log( i, lane );
+			Log.info( i, lane );
 
 		} );
 

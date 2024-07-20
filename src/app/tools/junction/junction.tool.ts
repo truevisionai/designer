@@ -20,7 +20,7 @@ import { JunctionToolService } from './junction-tool.service';
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 
 
 export class JunctionTool extends BaseTool<any> {
@@ -166,11 +166,11 @@ export class JunctionTool extends BaseTool<any> {
 
 		if ( this.selectedNodes.length < 2 ) return;
 
-		if ( this.debug ) Debug.log( 'onKeyDown', e );
+		if ( this.debug ) Log.info( 'onKeyDown', e );
 
 		if ( e.code !== 'Space' ) return;
 
-		if ( this.debug ) Debug.log( 'Space', this.selectedNodes );
+		if ( this.debug ) Log.info( 'Space', this.selectedNodes );
 
 		const coords = this.selectedNodes.map( node => node.roadCoord );
 
@@ -203,7 +203,7 @@ export class JunctionTool extends BaseTool<any> {
 
 	onObjectSelected ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectSelected', object );
+		if ( this.debug ) Log.info( 'onObjectSelected', object );
 
 		if ( object instanceof JunctionNode ) {
 
@@ -215,7 +215,7 @@ export class JunctionTool extends BaseTool<any> {
 
 	onObjectUnselected ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectUnselected', object );
+		if ( this.debug ) Log.info( 'onObjectUnselected', object );
 
 		if ( object instanceof JunctionNode ) {
 
@@ -227,7 +227,7 @@ export class JunctionTool extends BaseTool<any> {
 
 	onNodeSelected ( node: JunctionNode ) {
 
-		Debug.log( 'onNodeSelected', node.roadCoord.contact );
+		Log.info( 'onNodeSelected', node.roadCoord.contact );
 
 		node?.select();
 

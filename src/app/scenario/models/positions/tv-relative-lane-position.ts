@@ -11,7 +11,7 @@ import { Position } from '../position';
 import { OpenScenarioVersion, PositionType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';
 import { XmlElement } from "../../../importers/xml.element";
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 
 export class RelativeLanePosition extends Position {
 

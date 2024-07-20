@@ -5,7 +5,7 @@
 import { EventEmitter } from '@angular/core';
 import { KeyboardEvents } from 'app/events/keyboard-events';
 import { AppService } from 'app/services/app.service';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { COLOR } from 'app/views/shared/utils/colors.service';
@@ -187,7 +187,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 	disable () {
 
-		Debug.log( 'eventd disabled' );
+		Log.info( 'eventd disabled' );
 
 		this.pointerMovedSubscriber.unsubscribe();
 		this.pointerClickedSubscriber.unsubscribe();

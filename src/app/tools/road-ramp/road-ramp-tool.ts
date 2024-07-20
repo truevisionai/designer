@@ -13,7 +13,7 @@ import { SceneService } from 'app/services/scene.service';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { CommandHistory } from 'app/services/command-history';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 import { TvLaneType } from "../../map/models/tv-common";
 import { RampToolHelper } from './road-ramp.helper';
 import { COLOR } from 'app/views/shared/utils/colors.service';
@@ -226,7 +226,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 			const distance = v1.distanceTo( v2 );
 
-			if ( this.debug ) Debug.log( 'distance', distance, v1, v2 );
+			if ( this.debug ) Log.info( 'distance', distance, v1, v2 );
 
 			return distance;
 		}
@@ -235,7 +235,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 		if ( distance < 5 ) return;
 
-		if ( this.debug ) Debug.log( distance, this.startCoord, position );
+		if ( this.debug ) Log.info( distance, this.startCoord, position );
 
 		if ( !this.referenceLine ) {
 
@@ -253,7 +253,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 	private showStartLine ( position: TvLaneCoord | Vector3 ) {
 
-		if ( this.debug ) Debug.log( 'show start line', position );
+		if ( this.debug ) Log.info( 'show start line', position );
 
 		// vector3 as start not supported
 		if ( position instanceof Vector3 ) return;

@@ -19,7 +19,7 @@ import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { CopyPositionCommand } from 'app/commands/copy-position-command';
 import { TvRoadElevationInspector } from "../../map/road-elevation/tv-road-elevation.inspector";
 import { TvElevationInspector } from "../../map/road-elevation/tv-elevation.inspector";
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 
 export class RoadElevationTool extends BaseTool<any> {
 
@@ -171,7 +171,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectAdded ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectAdded', object );
+		if ( this.debug ) Log.info( 'onObjectAdded', object );
 
 		if ( object instanceof TvElevation ) {
 
@@ -184,7 +184,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectUpdated ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectUpdated', object );
+		if ( this.debug ) Log.info( 'onObjectUpdated', object );
 
 		if ( object instanceof TvElevation ) {
 
@@ -214,7 +214,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectRemoved', object );
+		if ( this.debug ) Log.info( 'onObjectRemoved', object );
 
 		if ( object instanceof TvElevation ) {
 
@@ -228,7 +228,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectSelected ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectSelected', object );
+		if ( this.debug ) Log.info( 'onObjectSelected', object );
 
 		if ( object instanceof ElevationControlPoint ) {
 
@@ -244,7 +244,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectUnselected ( object: any ): void {
 
-		if ( this.debug ) Debug.log( 'onObjectUnselected', object );
+		if ( this.debug ) Log.info( 'onObjectUnselected', object );
 
 		if ( object instanceof ElevationControlPoint ) {
 

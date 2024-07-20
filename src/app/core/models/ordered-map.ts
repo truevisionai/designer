@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Debug } from "../utils/debug";
+import { Log } from "../utils/log";
 
 export class OrderedMap<T> {
 
@@ -25,8 +25,8 @@ export class OrderedMap<T> {
 		// check if value is already present
 		if ( this.contains( value ) ) {
 			// remove the value
-			Debug.log( value );
-			Debug.log( 'Value already present in the map, removing it' );
+			Log.info( value );
+			Log.info( 'Value already present in the map, removing it' );
 			this.remove( value );
 		}
 

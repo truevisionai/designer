@@ -4,7 +4,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { IComponent } from 'app/objects/game-object';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 import { Trajectory } from '../../models/tv-trajectory';
 
 @Component( {
@@ -26,7 +26,7 @@ export class TrajectoriesInspectorComponent implements OnInit, IComponent {
 
 	ngOnInit () {
 
-		Debug.log( this.data );
+		Log.info( this.data );
 
 	}
 

@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 import { XMLBuilder } from 'fast-xml-parser';
 import { DefaultVehicleController } from '../controllers/default-vehicle-controller';
 import { AbstractController } from '../models/abstract-controller';
@@ -108,7 +108,7 @@ export class OpenScenarioExporter {
 
 		const builder = new XMLBuilder( defaultOptions );
 
-		Debug.log( this.openScenario );
+		Log.info( this.openScenario );
 
 		// this makes the osc object
 		this.writeOpenScenario();

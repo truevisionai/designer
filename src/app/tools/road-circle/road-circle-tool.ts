@@ -11,7 +11,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Environment } from 'app/core/utils/environment';
 import { DebugState } from 'app/services/debug/debug-state';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 
 export class RoadCircleTool extends BaseTool<AbstractSpline>{
 
@@ -104,7 +104,7 @@ export class RoadCircleTool extends BaseTool<AbstractSpline>{
 
 	onPointerDownCreate ( e: PointerEventData ) {
 
-		if ( this.debug ) Debug.log( 'onPointerDownSelect', e, this.isDragging, this.isPointerDown, this.currentRadius );
+		if ( this.debug ) Log.info( 'onPointerDownSelect', e, this.isDragging, this.isPointerDown, this.currentRadius );
 
 		this.tool.init( this.pointerDownAt, e.point, this.radius );
 
@@ -116,7 +116,7 @@ export class RoadCircleTool extends BaseTool<AbstractSpline>{
 
 	onPointerUp ( e: PointerEventData ) {
 
-		if ( this.debug ) Debug.log( 'onPointerUp', e, this.isDragging, this.isPointerDown, this.currentRadius );
+		if ( this.debug ) Log.info( 'onPointerUp', e, this.isDragging, this.isPointerDown, this.currentRadius );
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
@@ -135,7 +135,7 @@ export class RoadCircleTool extends BaseTool<AbstractSpline>{
 
 	onPointerMoved ( e: PointerEventData ) {
 
-		if ( this.debug ) Debug.log( 'onPointerMoved', e, this.isDragging, this.isPointerDown, this.currentRadius );
+		if ( this.debug ) Log.info( 'onPointerMoved', e, this.isDragging, this.isPointerDown, this.currentRadius );
 
 		if ( e.button !== MouseButton.LEFT ) return;
 

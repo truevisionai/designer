@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 import { Position } from '../position';
 import { ConditionType, CoordinateSystem, RelativeDistanceType, RoutingAlgorithm, Rule } from '../tv-enums';
 import { EntityCondition } from './entity-condition';

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
 import { ScenarioEntity } from '../entities/scenario-entity';

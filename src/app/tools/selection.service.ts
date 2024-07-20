@@ -11,7 +11,7 @@ import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { IMovingStrategy } from "../core/strategies/move-strategies/move-strategy";
 import { Position } from "../scenario/models/position";
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -223,7 +223,7 @@ export class SelectionService {
 
 		this.selectedObjects.set( tag, object );
 
-		if ( this.debug ) Debug.log( 'selected', tag, object, this.selectedObjects );
+		if ( this.debug ) Log.info( 'selected', tag, object, this.selectedObjects );
 
 	}
 
@@ -243,7 +243,7 @@ export class SelectionService {
 
 		this.selectedObjects.delete( tag );
 
-		if ( this.debug ) Debug.log( 'unselected', tag, object, this.selectedObjects );
+		if ( this.debug ) Log.info( 'unselected', tag, object, this.selectedObjects );
 	}
 
 	private getTag ( object: Object ): string {

@@ -5,7 +5,7 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
 import { PolyLineEditor } from 'app/core/editors/polyline-editor';
-import { Debug } from 'app/core/utils/debug';
+import { Log } from 'app/core/utils/log';
 import { CatmullRomCurve3, Points } from 'three';
 import { Position } from '../../models/position';
 import { WorldPosition } from '../../models/positions/tv-world-position';
@@ -50,7 +50,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 			this.shapeEditor.disable();
 
-			Debug.log( 'disable', this.trajectory.name );
+			Log.info( 'disable', this.trajectory.name );
 
 		} else {
 
@@ -58,7 +58,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 			this.shapeEditor.enable();
 
-			Debug.log( 'enabld', this.trajectory.name );
+			Log.info( 'enabld', this.trajectory.name );
 
 		}
 
