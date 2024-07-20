@@ -32,6 +32,7 @@ import { OdTextures } from 'app/deprecated/od.textures';
 import { ISelectable } from "../../objects/i-selectable";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { DebugDrawService } from '../debug/debug-draw.service';
+import { JunctionManager } from 'app/managers/junction-manager';
 
 @Injectable( {
 	providedIn: 'root'
@@ -48,7 +49,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	public shouldShowEntries = true;
 
-	constructor ( private junctionService: JunctionService, private debug: DebugDrawService ) {
+	constructor ( private junctionService: JunctionService, private debug: DebugDrawService, private junctionManager: JunctionManager ) {
 
 		super();
 
@@ -100,15 +101,19 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		this.meshes.addItem( junction, mesh );
 
-		const outline = this.createJunctionOutline( junction );
+		// const outline = this.createJunctionOutline( junction );
 
-		if ( outline ) this.meshes.addItem( junction, outline );
+		// if ( outline ) this.meshes.addItem( junction, outline );
 
 	}
 
 	createJunctionOutline ( junction: TvJunction ): Object3D {
 
-		const positions = this.junctionService.junctionBuilder.junctionBoundaryService.getBoundaryPositions( junction );
+		if ( !junction.boundary ) {
+			this.junctionManager.boundaryManager.update( junction );
+		}
+
+		const positions = this.junctionService.junctionBuilder.boundaryBuilder.convertBoundaryToPositions( junction.boundary );
 
 		if ( positions.length < 2 ) return;
 
@@ -127,7 +132,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	createJunctionMesh ( junction: TvJunction ) {
 
-		const mesh = this.junctionService.buildJunctionBoundary( junction );
+		if ( !junction.boundary ) {
+			this.junctionManager.boundaryManager.update( junction );
+		}
+
+		const mesh = this.junctionService.junctionBuilder.buildJunctionMesh( junction );
 
 		( mesh.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
 		( mesh.material as MeshBasicMaterial ).depthTest = false;

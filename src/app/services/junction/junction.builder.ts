@@ -24,7 +24,7 @@ import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoadLinkType } from "../../map/models/tv-road-link";
-import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
+import { TvJunctionBoundaryBuilder } from 'app/map/junction-boundary/tv-junction-boundary.builder';
 import { RoadBuilder } from 'app/map/builders/road.builder';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { TvLaneType } from "../../map/models/tv-common";
@@ -37,11 +37,11 @@ export class JunctionBuilder {
 
 	constructor (
 		public roadBuilder: RoadBuilder,
-		public junctionBoundaryService: TvJunctionBoundaryService
+		public boundaryBuilder: TvJunctionBoundaryBuilder
 	) {
 	}
 
-	build ( junction: TvJunction ) {
+	build ( junction: TvJunction ): Mesh {
 
 		// NOTE: This is a temporary implementation to visualize the junction
 		// NOTE: This does not work
@@ -83,7 +83,7 @@ export class JunctionBuilder {
 
 	buildFromRoadCoords ( coords: TvRoadCoord[] ) {
 
-		const points = [];
+		const points: Vector3[] = [];
 
 		coords.forEach( roadCoord => {
 
@@ -95,8 +95,8 @@ export class JunctionBuilder {
 			const leftPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
 			const rightPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );
 
-			points.push( leftPosition );
-			points.push( rightPosition );
+			points.push( leftPosition.toVector3() );
+			points.push( rightPosition.toVector3() );
 
 		} );
 
@@ -104,11 +104,9 @@ export class JunctionBuilder {
 
 	}
 
-	buildJunctionBoundary ( junction: TvJunction ) {
+	buildBoundaryMesh ( junction: TvJunction ): Mesh {
 
-		const points = this.junctionBoundaryService.getBoundaryPositions( junction );
-
-		return this.createPolygonalMesh( points );
+		return this.boundaryBuilder.build( junction.boundary );
 
 	}
 

@@ -230,6 +230,58 @@ export class LaneUtils {
 		return outerMostLane;
 	}
 
+	static findHigestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
+
+		const lanes = laneSection.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => !type || lane.type == type );
+
+		if ( lanes.length === 0 ) return null;
+
+		let highestLaneId = Number.MIN_SAFE_INTEGER;
+		let highestLane = null;
+
+		for ( const current of lanes ) {
+
+			if ( current.id > highestLaneId ) {
+
+				highestLane = current;
+				highestLaneId = current.id;
+
+			}
+
+		}
+
+		return highestLane;
+
+	}
+
+	static findLowestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
+
+		const lanes = laneSection.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => !type || lane.type == type );
+
+		if ( lanes.length === 0 ) return null;
+
+		let lowestLaneId = Number.MAX_SAFE_INTEGER;
+		let lowestLane = null;
+
+		for ( const current of lanes ) {
+
+			if ( current.id < lowestLaneId ) {
+
+				lowestLane = current;
+				lowestLaneId = current.id;
+
+			}
+
+		}
+
+		return lowestLane;
+
+	}
+
 	static findOuterMostDrivingLane ( laneSection: TvLaneSection, side: TvLaneSide ) {
 
 		return this.findOuterMostLane( laneSection, side, TvLaneType.driving );

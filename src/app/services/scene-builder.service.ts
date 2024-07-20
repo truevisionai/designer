@@ -21,6 +21,7 @@ import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
 import { SplineService } from "./spline/spline.service";
 import { RoadService } from "./road/road.service";
+import { JunctionBuilder } from './junction/junction.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,6 +40,7 @@ export class SceneBuilderService {
 		private signalIdService: RoadSignalIdService,
 		private splineService: SplineService,
 		private roadService: RoadService,
+		private junctionBuilder: JunctionBuilder,
 	) {
 	}
 
@@ -85,7 +87,7 @@ export class SceneBuilderService {
 
 	buildRoad ( map: TvMap, road: TvRoad ): void {
 
-		const spline = this.findSpline( map, road );
+		const spline = this.findSpline( map, road ) || road.spline;
 
 		if ( !spline ) {
 			map.removeRoad( road );

@@ -23,7 +23,7 @@ import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event
 import { Debug } from 'app/core/utils/debug';
 
 
-export class JunctionTool extends BaseTool<any>{
+export class JunctionTool extends BaseTool<any> {
 
 	public name: string = 'JunctionTool';
 

@@ -14,6 +14,7 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { JunctionManager } from "../../managers/junction-manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,8 +22,9 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 export class JunctionToolService {
 
 	constructor (
-		private junctionService: JunctionService,
-		private junctionNodeService: JunctionNodeService,
+		public junctionManager: JunctionManager,
+		public junctionService: JunctionService,
+		public junctionNodeService: JunctionNodeService,
 		public debug: DebugDrawService,
 		public base: BaseToolService,
 		public mapService: MapService,

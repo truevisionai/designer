@@ -21,7 +21,10 @@ import { JunctionService } from "../services/junction/junction.service";
 import { RoadDividerService } from "../services/road/road-divider.service";
 import { ConnectionService } from "../map/junction/connection/connection.service";
 import { SplineService } from "app/services/spline/spline.service";
-import { TvJunctionBoundaryService } from "app/map/junction-boundary/tv-junction-boundary.service";
+import {
+	TvJunctionBoundaryManager,
+	TvJunctionBoundaryBuilder
+} from "app/map/junction-boundary/tv-junction-boundary.builder";
 import { RoadBuilder } from "../map/builders/road.builder";
 import { Maths } from "app/utils/maths";
 import { JunctionConnectionFactory } from "app/factories/junction-connection.factory";
@@ -56,7 +59,7 @@ export class JunctionManager {
 		public roadDividerService: RoadDividerService,
 		public connectionService: ConnectionService,
 		public splineService: SplineService,
-		public junctionBoundaryService: TvJunctionBoundaryService,
+		public boundaryManager: TvJunctionBoundaryManager,
 		public connectionFactory: JunctionConnectionFactory,
 		public junctionBuilder: JunctionBuilder,
 	) {
@@ -81,15 +84,22 @@ export class JunctionManager {
 
 		}
 
-		this.junctionBoundaryService.update( junction );
-
-		junction.boundingBox = this.junctionService.computeBoundingBox( junction );
+		this.updateBoundary( junction );
 
 		// if ( junction.mesh ) this.mapService.map.gameObject.remove( junction.mesh );
 
 		// junction.mesh = this.junctionBuilder.build( junction );
 
 		// this.mapService.map.gameObject.add( junction.mesh );
+
+	}
+
+	updateBoundary ( junction: TvJunction ) {
+
+		this.boundaryManager.update( junction );
+
+		junction.boundingBox = this.junctionService.computeBoundingBox( junction );
+
 
 	}
 

@@ -24,11 +24,30 @@ export interface TvJunctionSegmentBoundary {
 // goes from left to right of the road
 export class TvJointBoundary implements TvJunctionSegmentBoundary {
 	type: TvBoundarySegmentType = TvBoundarySegmentType.JOINT;
+
+	/**
+	 * The road that the joint boundary is on
+	 */
 	road: TvRoad;
-	transitionLength: number;
+
+	/**
+	 * Contact point on the road
+	 */
 	contactPoint: TvContactPoint;
-	jointLaneStart: TvLane;
-	jointLaneEnd: TvLane;
+
+	/**
+	 * the lane crossed by the segment. If missing all lanes are crossed by the segment.
+	 */
+	jointLaneStart?: TvLane;
+
+	/**
+	 * the lane crossed by the segment. If missing all lanes are crossed by the segment.
+	 */
+	jointLaneEnd?: TvLane;
+
+	toString () {
+		return `JointBoundary: roadId=${ this.road.id } contactPoint=${ this.contactPoint } jointLaneStart=${ this.jointLaneStart?.id } jointLaneEnd=${ this.jointLaneEnd?.id }`;
+	}
 }
 
 // roadId="8" boundaryLane="-2" sStart="begin" sEnd="end"
@@ -40,4 +59,8 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 	boundaryLane: TvLane;
 	sStart: number | TvContactPoint;
 	sEnd: number | TvContactPoint;
+
+	toString () {
+		return `LaneBoundary: roadId=${ this.road.id } boundaryLane=${ this.boundaryLane.id } sStart=${ this.sStart } sEnd=${ this.sEnd }`;
+	}
 }
