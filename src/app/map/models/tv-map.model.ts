@@ -17,6 +17,7 @@ import { Object3D, Vector2 } from 'three';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { IDService } from 'app/factories/id.service';
 import { ManagedMap } from "../../core/models/managed-map";
+import { ModelNotFoundException } from 'app/exceptions/exceptions';
 
 export class TvMap {
 
@@ -130,18 +131,11 @@ export class TvMap {
 
 	getRoadById ( roadId: number ): TvRoad {
 
-		if ( this.roads.has( roadId ) ) {
-
-			return this.roads.get( roadId );
-
-		} else {
-
-			TvConsole.error( `${ roadId } road-id not found` );
-
-			console.error( `${ roadId } road-id not found` );
-
+		if ( !this.roads.has( roadId ) ) {
+			throw new ModelNotFoundException( `Road with id ${ roadId } not found` );
 		}
 
+		return this.roads.get( roadId );
 	}
 
 	public getRoadCount (): number {
