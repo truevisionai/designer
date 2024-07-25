@@ -668,6 +668,7 @@ export class JunctionManager {
 			// Handle junction segment for different roads
 			Log.debug( 'different roads', startSegment, endSegment );
 
+			SplineUtils.removeSegment( spline, junction );
 			SplineUtils.addSegment( spline, sStart - 5, junction );
 
 			if ( startSegment instanceof TvRoad ) {
@@ -888,6 +889,7 @@ export class JunctionManager {
 
 	handleJunctionAtEnd ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], sStartJunction: number, road: TvRoad ) {
 
+		SplineUtils.removeSegment( spline, junction );
 		SplineUtils.addSegment( spline, sStartJunction, junction );
 
 		this.rebuildRoad( road );
