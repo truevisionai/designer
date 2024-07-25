@@ -16,11 +16,15 @@ import { SplineService } from "../../services/spline/spline.service";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvRoadLink } from "app/map/models/tv-road-link";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
+import { Log } from "app/core/utils/log";
+import { RoadFixerService } from "./road-fixer.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadManager {
+
+	private debug = true;
 
 	constructor (
 		private mapService: MapService,
@@ -31,12 +35,17 @@ export class RoadManager {
 		private splineBuilder: SplineBuilder,
 		private roadLinkManager: RoadLinkManager,
 		private splineService: SplineService,
+		private roadFixerService: RoadFixerService
 	) {
 	}
 
 	addRoad ( road: TvRoad ) {
 
+		if ( this.debug ) Log.debug( 'Add', road.toString() );
+
 		this.roadLinkManager.onRoadCreated( road );
+
+		this.roadFixerService.fix( road );
 
 		for ( const laneSection of road.laneSections ) {
 			for ( const [ id, lane ] of laneSection.lanes ) {
@@ -64,10 +73,17 @@ export class RoadManager {
 
 	removeRoad ( road: TvRoad ) {
 
+		if ( this.debug ) Log.debug( 'Remove', road.toString() );
+
 		this.roadLinkManager.onRoadRemoved( road );
 
 		// alternative to roadLinkManager
 		// this.removeLinks( road );
+
+		if ( !road.spline ) {
+			Log.error( 'Road has no spline', road.toString() );
+			return;
+		}
 
 		if ( road.isJunction ) {
 
@@ -75,15 +91,13 @@ export class RoadManager {
 
 			road.junction?.removeConnectingRoad( road );
 
-		} else if ( this.splineService.hasSegment( road.spline, road ) ) {
+		} else {
 
-			road.spline.segmentMap.remove( road );
+			road.spline?.segmentMap.remove( road );
 
 		}
 
-		if ( road.spline.segmentMap.length == 0 ) {
-
-		} else {
+		if ( road.spline?.segmentMap.length > 0 ) {
 
 			this.splineBuilder.buildSpline( road.spline );
 
@@ -102,6 +116,12 @@ export class RoadManager {
 	}
 
 	updateRoad ( road: TvRoad ) {
+
+		if ( this.debug ) Log.debug( 'Update', road.toString() );
+
+		this.roadFixerService.fix( road );
+
+		this.mapService.map.gameObject.remove( road.gameObject );
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 

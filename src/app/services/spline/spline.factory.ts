@@ -17,6 +17,8 @@ import { ExplicitSpline } from "../../core/shapes/explicit-spline";
 import { Maths } from "../../utils/maths";
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { RoadControlPoint } from 'app/objects/road-control-point';
+import { TvRoadLink } from 'app/map/models/tv-road-link';
+import { DebugDrawService } from '../debug/debug-draw.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -51,47 +53,6 @@ export class SplineFactory {
 		return this.createRoadSpline( road, a, aDirection, b, bDirection );
 	}
 
-	updateConnectingRoadSpline ( connection: TvJunctionConnection ): void {
-
-		const incomingContact = connection.getIncomingContactPoint();
-		const outgoingContact = connection.getOutgoingContactPoint();
-
-		const highestLane = connection.connectingRoad.getFirstLaneSection().getLaneById( -1 );
-
-		const predecessorLane = connection.incomingRoad.getFirstLaneSection().getLaneById( highestLane.predecessorId );
-		const succcessorLane = connection.outgoingRoad.getFirstLaneSection().getLaneById( highestLane.successorId );
-
-		const incoming = connection.incomingRoad.getRoadCoordByContact( incomingContact ).toLaneCoord( predecessorLane );
-		const outgoing = connection.outgoingRoad.getRoadCoordByContact( outgoingContact ).toLaneCoord( succcessorLane );
-
-		if ( incoming == null ) throw new Error( 'incoming is null' );
-		if ( outgoing == null ) throw new Error( 'outgoing is null' );
-
-		const a = incoming.position;
-		const b = outgoing.position;
-
-		let aDirection: Vector3, bDirection: Vector3;
-
-		if ( incoming.contact === TvContactPoint.START ) {
-			aDirection = incoming.toPosTheta().toDirectionVector().multiplyScalar( -1 );
-		} else {
-			aDirection = incoming.toPosTheta().toDirectionVector();
-		}
-
-		if ( outgoing.contact === TvContactPoint.START ) {
-			bDirection = outgoing.toPosTheta().toDirectionVector().multiplyScalar( -1 );
-		} else {
-			bDirection = outgoing.toPosTheta().toDirectionVector();
-		}
-
-		const spline = this.createSpline( a, aDirection, b, bDirection );
-
-		spline.segmentMap.set( 0, connection.connectingRoad );
-
-		connection.connectingRoad.spline = spline
-
-	}
-
 	createSplineFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
 
 		if ( firstNode == null ) throw new Error( 'firstNode is null' );
@@ -117,6 +78,34 @@ export class SplineFactory {
 		return this.createSpline( a, aDirection, b, bDirection );
 	}
 
+	createSplineFromLinks ( firstNode: TvRoadLink, secondNode: TvRoadLink ) {
+
+		if ( firstNode == null ) throw new Error( 'firstNode is null' );
+		if ( secondNode == null ) throw new Error( 'secondNode is null' );
+
+		const roadA = firstNode.element as TvRoad;
+		const roadB = secondNode.element as TvRoad;
+
+		const a = roadA.getRoadCoordByContact( firstNode.contactPoint );
+		const b = roadB.getRoadCoordByContact( secondNode.contactPoint );
+
+		let aDirection: Vector3, bDirection: Vector3;
+
+		if ( firstNode.contactPoint === TvContactPoint.START ) {
+			aDirection = a.toPosTheta().toDirectionVector().normalize().multiplyScalar( -1 );
+		} else {
+			aDirection = a.toPosTheta().toDirectionVector().normalize()
+		}
+
+		if ( secondNode.contactPoint === TvContactPoint.START ) {
+			bDirection = b.toPosTheta().toDirectionVector().normalize().multiplyScalar( -1 );
+		} else {
+			bDirection = b.toPosTheta().toDirectionVector().normalize();
+		}
+
+		return this.createSpline( a.position, aDirection, b.position, bDirection );
+	}
+
 	createRampRoadSpline ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide ): AbstractSpline {
 
 		if ( entry == null ) throw new Error( 'entry is null' );
@@ -137,11 +126,7 @@ export class SplineFactory {
 		return spline;
 	}
 
-	static createManeuverSpline ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide = TvLaneSide.RIGHT ): AbstractSpline {
-
-		if ( entry == null ) throw new Error( 'entry is null' );
-		if ( exit == null ) throw new Error( 'exit is null' );
-		if ( side == null ) throw new Error( 'side is null' );
+	static createManeuverSpline ( entry: TvLaneCoord, exit: TvLaneCoord, divider = 3 ): AbstractSpline {
 
 		let entryDirection: Vector3, exitDirection: Vector3;
 
@@ -157,7 +142,7 @@ export class SplineFactory {
 			exitDirection = exit.posTheta.toDirectionVector();
 		}
 
-		return this.createRoadSpline( entry.position, entryDirection, exit.position, exitDirection );
+		return this.createRoadSpline( entry.position, entryDirection, exit.position, exitDirection, divider );
 	}
 
 	///**

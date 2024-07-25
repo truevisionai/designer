@@ -324,7 +324,7 @@ export class OdRoadMarkBuilderV1 {
 
 		roadMark.gameObject.userData.roadMark = roadMark;
 
-		lane.gameObject.add( roadMark.gameObject );
+		lane.laneSection.road.gameObject?.add( roadMark.gameObject );
 	}
 
 	private getMaterial ( roadMark: TvLaneRoadMark ) {

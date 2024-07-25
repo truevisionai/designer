@@ -23,6 +23,8 @@ export class TvJunction {
 
 	public connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
+	public corners: TvJunctionConnection[] = [];
+
 	public position?: Vector3;
 
 	public type: TvJunctionType = TvJunctionType.DEFAULT;
@@ -32,6 +34,8 @@ export class TvJunction {
 	public boundingBox: Box3;
 
 	public boundary: TvJunctionBoundary;
+
+	public auto: boolean = true;
 
 	constructor ( public name: string, public id: number ) {
 	}
@@ -56,6 +60,7 @@ export class TvJunction {
 		} );
 
 	}
+
 	getConnectingRoads (): TvRoad[] {
 
 		const connectingRoads: TvRoad[] = [];
@@ -80,10 +85,12 @@ export class TvJunction {
 
 		this.connections.forEach( connection => {
 
-			if ( connection.incomingRoad ) {
+			if ( connection.connectingRoad?.predecessor?.isRoad ) {
+				roads.add( connection.connectingRoad.predecessor.element as TvRoad );
+			}
 
-				roads.add( connection.incomingRoad );
-
+			if ( connection.connectingRoad?.successor?.isRoad ) {
+				roads.add( connection.connectingRoad.successor.element as TvRoad );
 			}
 
 		} );
@@ -94,89 +101,23 @@ export class TvJunction {
 
 	getIncomingSplines (): AbstractSpline[] {
 
-		const splines = [];
+		const splines = new Set<AbstractSpline>();
 
-		const incomingRoads = this.getIncomingRoads();
+		this.getIncomingRoads().forEach( road => splines.add( road.spline ) );
 
-		for ( let i = 0; i < incomingRoads.length; i++ ) {
-
-			const incomingRoad = incomingRoads[ i ];
-
-			if ( !splines.includes( incomingRoad.spline ) ) {
-
-				splines.push( incomingRoad.spline );
-
-			}
-
-		}
-
-		return splines;
-	}
-
-	getOutgoingRoads (): TvRoad[] {
-
-		const roads = new Set<TvRoad>();
-
-		this.connections.forEach( connection => {
-
-			if ( connection.outgoingRoad ) {
-
-				roads.add( connection.outgoingRoad );
-
-			}
-
-		} );
-
-		return [ ...roads ];
-
+		return [ ...splines ];
 	}
 
 	getRoads (): TvRoad[] {
 
-		const connections = this.getConnections();
+		return this.getIncomingRoads();
 
-		const roads = new Set<TvRoad>();
-
-		for ( let i = 0; i < connections.length; i++ ) {
-
-			const connection = connections[ i ];
-
-			if ( connection.incomingRoad ) {
-				roads.add( connection.incomingRoad );
-			}
-
-			if ( connection.outgoingRoad ) {
-				roads.add( connection.outgoingRoad );
-			}
-
-		}
-
-		return [ ...roads ];
 	}
 
 	getRoadCoords () {
 
-		const coords: TvRoadCoord[] = [];
+		return this.getLinks().map( link => link.toRoadCoord() );
 
-		const roads = this.getRoads();
-
-		for ( const road of roads ) {
-
-			if ( road.successor?.type == TvRoadLinkType.JUNCTION && road.successor?.id == this.id ) {
-
-				coords.push( road.getEndPosTheta().toRoadCoord( road ) );
-
-			}
-
-			if ( road.predecessor?.type == TvRoadLinkType.JUNCTION && road.predecessor?.id == this.id ) {
-
-				coords.push( road.getStartPosTheta().toRoadCoord( road ) );
-
-			}
-
-		}
-
-		return coords;
 	}
 
 	getLinks (): TvRoadLink[] {
@@ -186,6 +127,8 @@ export class TvJunction {
 		const roads = this.getRoads();
 
 		for ( const road of roads ) {
+
+			if ( road.geometries.length == 0 ) continue;
 
 			if ( road.successor?.type == TvRoadLinkType.JUNCTION && road.successor?.id == this.id ) {
 
@@ -250,7 +193,6 @@ export class TvJunction {
 
 	}
 
-
 	getRandomConnectionFor ( incomingRoadId: number, laneId?: number ): TvJunctionConnection {
 
 		const connections = [ ...this.connections.values() ].filter( connection => {
@@ -270,96 +212,6 @@ export class TvJunction {
 		const randomIndex = Maths.randomNumberBetween( 0, connections.length - 1 );
 
 		return connections[ randomIndex ];
-	}
-
-	/**
-	 * Checks if the junction has a connection to the given road
-	 *
-	 * @param incomingRoad
-	 * @param outgoingRoad
-	 * @returns boolean
-	 */
-	hasRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
-
-		return this.findRoadConnection( incomingRoad, outgoingRoad ) !== undefined;
-
-	}
-
-	/**
-	 * Find connections to the given incoming and outgoing road
-	 *
-	 * @param incomingRoad
-	 * @param outgoingRoad
-	 * @returns {TvJunctionConnection}
-	 */
-	findRoadConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection {
-
-		return this.getConnections()
-			.find( conn =>
-				conn.incomingRoadId === incomingRoad.id &&
-				conn.outgoingRoadId === outgoingRoad.id
-			);
-
-	}
-
-	getConnectionsForRoad ( road: TvRoad ): TvJunctionConnection[] {
-
-		const connections = this.getConnections();
-
-		const results = [];
-
-		for ( let i = 0; i < connections.length; i++ ) {
-
-			const connection = connections[ i ];
-
-			if ( connection.connectingRoadId === road.id ) {
-
-				results.push( connection );
-
-			} else if ( connection.incomingRoadId === road.id ) {
-
-				results.push( connection );
-
-			} else if ( connection.outgoingRoadId === road.id ) {
-
-				results.push( connection );
-
-			}
-
-		}
-
-		return results;
-	}
-
-	sortConnections (): void {
-
-		this.connections.forEach( connection => connection.sortLinks() );
-
-		const ascOrder = ( a: [ number, TvJunctionConnection ], b: [ number, TvJunctionConnection ] ) => a[ 1 ].id > b[ 1 ].id ? 1 : -1;
-
-		this.connections = new Map( [ ...this.connections.entries() ].sort( ascOrder ) );
-
-	}
-
-	/**
-	 * Returns the contact point of outgoing road with this junction
-	 *
-	 * @param connection
-	 * @returns
-	 */
-	getOutgoingContact ( connection: TvJunctionConnection ): TvContactPoint {
-
-		const outgoingRoad = connection.outgoingRoad;
-
-		if ( !outgoingRoad ) return;
-
-		if ( outgoingRoad.successor?.isJunction && outgoingRoad.successor.id == this.id ) {
-			return TvContactPoint.END;
-		}
-
-		if ( outgoingRoad.predecessor?.isJunction && outgoingRoad.predecessor.id == this.id ) {
-			return TvContactPoint.START;
-		}
 	}
 
 	static stringToType ( value: string ): TvJunctionType {

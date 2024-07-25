@@ -13,22 +13,28 @@ export class GeometryUtils {
 	static getCentroid ( positions: Vector3[] ): Vector3 {
 
 		let center = new Vector3();
-		positions.forEach( p => { center.add( p ); } );
+		positions.forEach( p => center.add( p ) );
 		center.divideScalar( positions.length );
 
 		return center;
 	}
 
-	static sortByAngle ( points: Vector3[], center?: Vector3 ) {
+	static sortByAngle ( points: Vector3[], center?: Vector3, clockwise: boolean = false ): Vector3[] {
 
 		const centroid = center || GeometryUtils.getCentroid( points );
 
-		const angles = points.map( point => Math.atan2( point.y - centroid.y, point.x - centroid.x ) );
+		const normalizeAngle = ( angle ) => ( angle + 2 * Math.PI ) % ( 2 * Math.PI );
 
-		return points.map( ( point, index ) => ( {
-			point,
-			index
-		} ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
+		return points.sort( ( a, b ) => {
+			const angleA = normalizeAngle( Math.atan2( a.y - centroid.y, a.x - centroid.x ) );
+			const angleB = normalizeAngle( Math.atan2( b.y - centroid.y, b.x - centroid.x ) );
+
+			if ( clockwise ) {
+				return angleB - angleA; // For clockwise order
+			} else {
+				return angleA - angleB; // For counter-clockwise order
+			}
+		} );
 
 	}
 
@@ -44,13 +50,9 @@ export class GeometryUtils {
 
 	}
 
-	static sortCoordsByAngle ( coords: TvRoadCoord[] ): TvRoadCoord[] {
+	static sortCoordsByAngle ( coords: TvRoadCoord[], clockwise = false ): TvRoadCoord[] {
 
-		// Calculate the centroid of the points
-		let center = GeometryUtils.getCentroid( coords.map( p => p.position ) );
-
-		// Sort the points by angle from the center
-		let sortedPoints = GeometryUtils.sortByAngle( coords.map( p => p.position ), center );
+		let sortedPoints = GeometryUtils.sortByAngle( coords.map( p => p.position ), null, clockwise );
 
 		return sortedPoints.map( p => coords.find( point => point.position.equals( p ) ) );
 
@@ -194,4 +196,47 @@ export class GeometryUtils {
 
 	}
 
+	static findFarthestPoints ( points: Vector3[] ): [ Vector3, Vector3 ] {
+
+		let maxDistance = 0;
+		let farthestPoints: [ Vector3, Vector3 ] = [ points[ 0 ], points[ 0 ] ];
+
+		for ( let i = 0; i < points.length; i++ ) {
+			for ( let j = i + 1; j < points.length; j++ ) {
+				const distance = points[ i ].distanceTo( points[ j ] );
+				if ( distance > maxDistance ) {
+					maxDistance = distance;
+					farthestPoints = [ points[ i ], points[ j ] ];
+				}
+			}
+		}
+
+		return farthestPoints;
+	}
+
+	sortPointsByReferenceLine ( points: Vector3[], referenceLine: Vector3 ): Vector3[] {
+		return points.sort( ( a, b ) => {
+			const projectionA = a.dot( referenceLine );
+			const projectionB = b.dot( referenceLine );
+			return projectionA - projectionB;
+		} );
+	}
+
+	static isCollinear ( p1: Vector3, p2: Vector3, p3: Vector3 ): boolean {
+		// Calculate the area of the triangle formed by the points
+		const area = p1.x * ( p2.y - p3.y ) + p2.x * ( p3.y - p1.y ) + p3.x * ( p1.y - p2.y );
+		return Math.abs( area ) < 1e-10; // Use a small threshold to account for floating-point precision
+	}
+
+	static ensureNonCollinear ( points: Vector3[] ): Vector3[] {
+		// Check if all points are collinear and adjust if necessary
+		for ( let i = 0; i < points.length - 2; i++ ) {
+			if ( GeometryUtils.isCollinear( points[ i ], points[ i + 1 ], points[ i + 2 ] ) ) {
+				// Adjust the third point slightly
+				points[ i + 2 ].x += 0.01;
+				points[ i + 2 ].y += 0.01;
+			}
+		}
+		return points;
+	}
 }

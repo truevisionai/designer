@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { IntersectionService } from 'app/services/junction/intersection.service';
-import { ConnectionService } from 'app/map/junction/connection/connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
@@ -19,6 +18,7 @@ import { SplineService } from "../../app/services/spline/spline.service";
 import { AutoSplineV2 } from "../../app/core/shapes/auto-spline-v2";
 import { ControlPointFactory } from "../../app/factories/control-point.factory";
 import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { DepConnectionFactory } from "../../app/map/junction/dep-connection.factory";
 
 describe( '4-way-junction tests', () => {
 
@@ -90,12 +90,10 @@ describe( '4-way-junction tests', () => {
 
 		expect( junction.connections.get( 0 ) ).toBeDefined()
 		expect( junction.connections.get( 0 ).incomingRoad ).toBe( roadA );
-		expect( junction.connections.get( 0 ).outgoingRoad ).toBe( roadB );
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
 
 		expect( junction.connections.get( 1 ) ).toBeDefined()
 		expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB );
-		expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA );
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
 
 		mapValidator.validateMap( mapService.map, true );
@@ -224,23 +222,18 @@ describe( '4-way-junction tests', () => {
 
 		expect( junction.connections.get( 0 ).connectingRoad.id ).toBe( 5 );
 		expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( bottomRoad.id );
-		expect( junction.connections.get( 0 ).outgoingRoad.id ).toBe( leftRoad.id );
 
 		expect( junction.connections.get( 1 ).connectingRoad.id ).toBe( 6 );
 		expect( junction.connections.get( 1 ).incomingRoad.id ).toBe( leftRoad.id );
-		expect( junction.connections.get( 1 ).outgoingRoad.id ).toBe( bottomRoad.id );
 
 		expect( junction.connections.get( 2 ).connectingRoad.id ).toBe( 7 );
 		expect( junction.connections.get( 2 ).incomingRoad.id ).toBe( bottomRoad.id );
-		expect( junction.connections.get( 2 ).outgoingRoad.id ).toBe( topRoad.id );
 
 		expect( junction.connections.get( 3 ).connectingRoad.id ).toBe( 8 );
 		expect( junction.connections.get( 3 ).incomingRoad.id ).toBe( topRoad.id );
-		expect( junction.connections.get( 3 ).outgoingRoad.id ).toBe( bottomRoad.id );
 
 		expect( junction.connections.get( 4 ).connectingRoad.id ).toBe( 9 );
 		expect( junction.connections.get( 4 ).incomingRoad.id ).toBe( leftRoad.id );
-		expect( junction.connections.get( 4 ).outgoingRoad.id ).toBe( topRoad.id );
 
 		expect( mapService.highestestRoadId ).toBe( 16 );
 		mapValidator.validateMap( mapService.map, true );
@@ -426,7 +419,7 @@ describe( '4-way-junction tests', () => {
 		mapValidator.validateMap( mapService.map, true );
 	} );
 
-	it( 'should add non-driving lanes correctly', inject( [ ConnectionService ], ( junctionConnectionService: ConnectionService ) => {
+	it( 'should add non-driving lanes correctly', inject( [ DepConnectionFactory ], ( junctionConnectionService: DepConnectionFactory ) => {
 
 		// left to right
 		const left = roadService.createDefaultRoad();

@@ -529,19 +529,10 @@ export class MapValidatorService {
 		const pointA = linkType == 'successor' ? road.getEndPosTheta() : road.getStartPosTheta();
 
 		const incomingConnections = junction.getConnections().filter( c => c.incomingRoad == road );
-		const outgoingConnections = junction.getConnections().filter( c => c.outgoingRoad == road );
 
 		for ( let i = 0; i < incomingConnections.length; i++ ) {
 
 			this.validateConnection( incomingConnections[ i ], incomingContact );
-
-		}
-
-		for ( let i = 0; i < outgoingConnections.length; i++ ) {
-
-			const outgoingContact = junction.getOutgoingContact( outgoingConnections[ i ] );
-
-			this.validateOutgoingLink( outgoingConnections[ i ], outgoingContact );
 
 		}
 
@@ -550,7 +541,6 @@ export class MapValidatorService {
 	validateConnection ( connection: TvJunctionConnection, incomingContact: TvContactPoint ) {
 
 		this.validateRoadId( connection.incomingRoadId, connection );
-		this.validateRoadId( connection.outgoingRoadId, connection );
 		this.validateRoadId( connection.connectingRoadId, connection );
 
 		connection.laneLink.forEach( link => {
@@ -585,7 +575,6 @@ export class MapValidatorService {
 	validateOutgoingLink ( connection: TvJunctionConnection, outgoingContact: TvContactPoint ) {
 
 		this.validateRoadId( connection.incomingRoadId, connection );
-		this.validateRoadId( connection.outgoingRoadId, connection );
 		this.validateRoadId( connection.connectingRoadId, connection );
 
 		// for outoing link we need the opposite side of connecting road

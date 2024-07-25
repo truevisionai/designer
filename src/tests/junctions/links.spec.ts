@@ -6,7 +6,6 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { IntersectionService } from 'app/services/junction/intersection.service';
-import { ConnectionService } from 'app/map/junction/connection/connection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
@@ -14,6 +13,7 @@ import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2, Vector3 } from 'three';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { DepConnectionFactory } from 'app/map/junction/dep-connection.factory';
 
 describe( 'LaneLinkService', () => {
 
@@ -21,7 +21,7 @@ describe( 'LaneLinkService', () => {
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
-	let connectionService: ConnectionService;
+	let connectionService: DepConnectionFactory;
 	let baseTest = new BaseTest();
 	let eventServiceProvider: EventServiceProvider;
 
@@ -36,7 +36,7 @@ describe( 'LaneLinkService', () => {
 		roadService = TestBed.inject( RoadService );
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
-		connectionService = TestBed.inject( ConnectionService );
+		connectionService = TestBed.inject( DepConnectionFactory );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 
 		eventServiceProvider.init();
@@ -87,7 +87,6 @@ describe( 'LaneLinkService', () => {
 		expect( junction.connections.get( 0 ) ).toBeDefined()
 		expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( roadA.id )
 		expect( junction.connections.get( 0 ).connectingRoad.id ).toBe( leftToRight.id )
-		expect( junction.connections.get( 0 ).outgoingRoad.id ).toBe( roadB.id )
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
 
 		expect( leftToRight.laneSections[ 0 ].lanes.size ).toBe( 4 );
@@ -96,7 +95,6 @@ describe( 'LaneLinkService', () => {
 		expect( junction.connections.get( 1 ) ).toBeDefined()
 		expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB )
 		expect( junction.connections.get( 1 ).connectingRoad ).toBe( rightToLeft )
-		expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA )
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
 
 		expect( rightToLeft.laneSections[ 0 ].lanes.size ).toBe( 4 );

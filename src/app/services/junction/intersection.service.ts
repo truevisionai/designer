@@ -12,7 +12,7 @@ import { JunctionService } from './junction.service';
 import { MapService } from '../map/map.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { RoadDividerService } from "../road/road-divider.service";
-import { ConnectionService } from 'app/map/junction/connection/connection.service';
+import { DepConnectionFactory } from 'app/map/junction/connection/dep-connection.factory';
 import { SplineService } from "../spline/spline.service";
 
 export class SplineIntersection {
@@ -32,7 +32,7 @@ export class IntersectionService {
 	constructor (
 		private mapService: MapService,
 		private junctionService: JunctionService,
-		private junctionConnectionService: ConnectionService,
+		private junctionConnectionService: DepConnectionFactory,
 		private roadDividerService: RoadDividerService,
 		private splineService: SplineService,
 	) {

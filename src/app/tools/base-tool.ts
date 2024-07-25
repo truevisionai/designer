@@ -89,6 +89,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		} );
 
+		this.debugService?.enable();
 	}
 
 	disable (): void {

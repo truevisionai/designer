@@ -27,6 +27,8 @@ import { Maths } from "../../utils/maths";
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { RoadUtils } from 'app/utils/road.utils';
+import { GeometryUtils } from '../surface/geometry-utils';
+import { MapQueryService } from 'app/map/queries/map-query.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,6 +41,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 		public splineFactory: SplineFactory,
 		public mapService: MapService,
 		public roadFactory: RoadFactory,
+		public queryService: MapQueryService,
 	) {
 		super();
 		RoadService.instance = this;
@@ -128,11 +131,11 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	createJoiningRoad ( firstNode: RoadNode, secondNode: RoadNode ) {
+	createJoiningRoadFromLinks ( firstNode: TvRoadLink, secondNode: TvRoadLink ) {
 
-		const spline = this.splineFactory.createSplineFromNodes( firstNode, secondNode );
+		const spline = this.splineFactory.createSplineFromLinks( firstNode, secondNode );
 
-		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
+		const joiningRoad = this.roadFactory.createFromLinks( spline, firstNode, secondNode );
 
 		spline.segmentMap.set( 0, joiningRoad );
 
@@ -446,18 +449,8 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 */
 	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
 
-		const t = this.findWidthUpto( road, laneSection, lane, sOffset ) + tOffset;
+		return this.queryService.findLaneEndPosition( road, laneSection, lane, sOffset, tOffset, withLaneHeight );
 
-		const sign = lane.id > 0 ? 1 : -1;
-
-		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
-
-		if ( withLaneHeight ) {
-			const laneHeight = lane.getHeightValue( sOffset );
-			posTheta.z += laneHeight.getLinearValue( 1 );
-		}
-
-		return posTheta;
 	}
 
 	/**
@@ -470,17 +463,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 */
 	findLaneCenterPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
 
-		const t = this.findWidthUptoCenter( road, laneSection, lane, sOffset );
-
-		const sign = lane.id >= 0 ? 1 : -1;
-
-		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
-
-		const laneHeight = lane.getHeightValue( sOffset );
-
-		posTheta.z += laneHeight.getLinearValue( 0.5 );
-
-		return posTheta;
+		return this.queryService.findLaneCenterPosition( road, laneSection, lane, sOffset );
 
 	}
 
@@ -522,48 +505,14 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 */
 	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
 
-		if ( lane.side == TvLaneSide.CENTER ) return 0;
+		return this.queryService.findWidthUpto( road, laneSection, lane, sOffset );
 
-		let width = 0;
-
-		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
-
-		for ( let i = 0; i < lanes.length; i++ ) {
-
-			var element = lanes[ i ];
-
-			width += element.getWidthValue( sOffset );
-
-			if ( element.id == lane.id ) break;
-		}
-
-		return width;
 	}
 
 	findWidthUptoCenter ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
 
-		if ( lane.side == TvLaneSide.CENTER ) return 0;
+		return this.queryService.findWidthUptoCenter( road, laneSection, lane, sOffset );
 
-		let totalWidth = 0;
-
-		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
-
-		for ( let i = 0; i < lanes.length; i++ ) {
-
-			const currentLane = lanes[ i ];
-
-			const laneWidth = currentLane.getWidthValue( sOffset );
-
-			totalWidth += laneWidth;
-
-			if ( currentLane.id == lane.id ) {
-
-				totalWidth -= laneWidth / 2;
-				break;
-			}
-		}
-
-		return totalWidth;
 	}
 
 	findWidthUptoStart ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
@@ -595,7 +544,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 	 */
 	findRoadPosition ( road: TvRoad, s: number, t: number = 0 ) {
 
-		return road.getPosThetaAt( s, t );
+		return this.queryService.findRoadPosition( road, s, t );
 
 	}
 
@@ -641,6 +590,34 @@ export class RoadService extends BaseDataService<TvRoad> {
 			return this.findRoadPosition( road, road.length );
 
 		}
+	}
+
+	sortLinks ( links: TvRoadLink[], clockwise = true ): TvRoadLink[] {
+
+		const points = links.map( coord => this.findLinkPosition( coord ) );
+
+		const center = GeometryUtils.getCentroid( points.map( p => p.position ) );
+
+		if ( clockwise ) {
+
+			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
+
+			return links.map( ( point, index ) => ( {
+				point,
+				index
+			} ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
+
+		} else {
+
+			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
+
+			return links.map( ( point, index ) => ( {
+				point,
+				index
+			} ) ).sort( ( a, b ) => angles[ b.index ] - angles[ a.index ] ).map( sortedObj => sortedObj.point );
+
+		}
+
 	}
 
 }

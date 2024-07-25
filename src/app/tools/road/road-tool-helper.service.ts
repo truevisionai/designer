@@ -14,6 +14,9 @@ import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { AssetService } from 'app/core/asset/asset.service';
 import { RoadToolDebugger } from "./road-tool.debugger";
+import { TvRoadLink } from 'app/map/models/tv-road-link';
+import { RoadFactory } from 'app/factories/road-factory.service';
+import { SplineBuilder } from 'app/services/spline/spline.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -28,6 +31,8 @@ export class RoadToolHelper {
 		public roadService: RoadService,
 		public splineFactory: SplineFactory,
 		public toolDebugger: RoadToolDebugger,
+		public roadFactory: RoadFactory,
+		public splineBuilder: SplineBuilder,
 	) {
 	}
 
@@ -81,9 +86,45 @@ export class RoadToolHelper {
 
 	createJoiningRoad ( nodeA: RoadNode, nodeB: RoadNode ) {
 
-		const joiningRoad = this.roadService.createJoiningRoad( nodeA, nodeB );
+		const joiningRoad = this.createFromNodes( nodeA, nodeB );
 
 		this.roadLinkService.linkRoads( nodeA, nodeB, joiningRoad );
+
+		return joiningRoad;
+
+	}
+
+	createFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
+
+		const spline = this.splineFactory.createSplineFromNodes( firstNode, secondNode );
+
+		this.splineBuilder.buildGeometry( spline );
+
+		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
+
+		spline.segmentMap.set( 0, joiningRoad );
+
+		joiningRoad.spline = spline;
+
+		this.splineBuilder.build( spline );
+
+		return joiningRoad;
+
+	}
+
+	createFromLinks ( firstNode: TvRoadLink, secondNode: TvRoadLink ) {
+
+		const spline = this.splineFactory.createSplineFromLinks( firstNode, secondNode );
+
+		this.splineBuilder.buildGeometry( spline );
+
+		const joiningRoad = this.roadFactory.createFromLinks( spline, firstNode, secondNode );
+
+		spline.segmentMap.set( 0, joiningRoad );
+
+		joiningRoad.spline = spline;
+
+		this.splineBuilder.build( spline );
 
 		return joiningRoad;
 

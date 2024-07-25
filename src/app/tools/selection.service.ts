@@ -139,9 +139,9 @@ export class SelectionService {
 
 	}
 
-	getAll () {
+	getSelectedObjects () {
 
-		return this.selectedObjects.values();
+		return Array.from( this.selectedObjects.values() );
 
 	}
 

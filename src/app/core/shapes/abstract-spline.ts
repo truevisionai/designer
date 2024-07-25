@@ -35,6 +35,10 @@ export abstract class AbstractSpline {
 
 	public waypoints: AbstractControlPoint[] = [];
 
+	public centerPoints: AbstractControlPoint[] = [];
+	public leftPoints: AbstractControlPoint[] = [];
+	public rightPoints: AbstractControlPoint[] = [];
+
 	public widthCache: Map<number, number> = new Map();
 
 	public closed: boolean;
@@ -82,6 +86,10 @@ export abstract class AbstractSpline {
 
 		return length;
 
+	}
+
+	toString () {
+		return `Spline Type:${ this.type } Segments:${ this.segmentMap.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
 	}
 
 }

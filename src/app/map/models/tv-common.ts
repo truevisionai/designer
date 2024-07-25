@@ -5,6 +5,13 @@
 import { TvConsole } from '../../core/utils/console';
 import { DynamicsDimension, DynamicsShape } from '../../scenario/models/tv-enums';
 
+export enum TurnType {
+	STRAIGHT = 'straight',
+	LEFT = 'left',
+	RIGHT = 'right',
+	OTHER = 'other'
+}
+
 export enum TvElementType {
 	road = 'road',
 	junction = 'junction'

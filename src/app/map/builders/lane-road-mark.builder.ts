@@ -47,73 +47,78 @@ export class LaneRoadMarkBuilder {
 
 				const lane = lanes[ j ];
 
-				for ( const roadMark of lane.roadMarks.values() ) {
-
-					// this.createRoadMark( roadMark, lane, laneSection, road );
-
-					const roadMarkMesh = new Object3D();
-
-					roadMarkMesh.name = "RoadMark:" + roadMark.s;
-
-					const subMeshes = [];
-
-					if ( roadMark.type == TvRoadMarkTypes.SOLID_SOLID ) {
-
-						const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
-
-						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, -tOffset );
-						const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID );
-
-						if ( mesh1 ) subMeshes.push( mesh1 );
-						if ( mesh2 ) subMeshes.push( mesh2 );
-
-					} else if ( roadMark.type == TvRoadMarkTypes.BROKEN_SOLID ) {
-
-						const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
-
-						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN, -tOffset );
-						const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, );
-
-						if ( mesh1 ) subMeshes.push( mesh1 );
-						if ( mesh2 ) subMeshes.push( mesh2 );
-
-					} else if ( roadMark.type == TvRoadMarkTypes.SOLID_BROKEN ) {
-
-						const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
-
-						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, -tOffset );
-						const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN );
-
-						if ( mesh1 ) subMeshes.push( mesh1 );
-						if ( mesh2 ) subMeshes.push( mesh2 );
-
-					} else if ( roadMark.type == TvRoadMarkTypes.BROKEN_BROKEN ) {
-
-						const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
-
-						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN, -tOffset );
-						const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN );
-
-						if ( mesh1 ) subMeshes.push( mesh1 );
-						if ( mesh2 ) subMeshes.push( mesh2 );
-
-					} else {
-
-						const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, roadMark.type );
-
-						if ( mesh1 ) subMeshes.push( mesh1 );
-
-					}
-
-					subMeshes.forEach( mesh => roadMarkMesh.add( mesh ) );
-
-					lane.gameObject?.add( roadMarkMesh );
-
-				}
+				this.buildLane( road, laneSection, lane );
 
 			}
 
 		}
+	}
+
+	buildLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+
+		const roadMarkMesh = new Object3D();
+
+		for ( const roadMark of lane.roadMarks.values() ) {
+
+			roadMarkMesh.name = "RoadMark:" + roadMark.s;
+
+			const subMeshes = [];
+
+			if ( roadMark.type == TvRoadMarkTypes.SOLID_SOLID ) {
+
+				const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
+
+				const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, -tOffset );
+				const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID );
+
+				if ( mesh1 ) subMeshes.push( mesh1 );
+				if ( mesh2 ) subMeshes.push( mesh2 );
+
+			} else if ( roadMark.type == TvRoadMarkTypes.BROKEN_SOLID ) {
+
+				const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
+
+				const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN, -tOffset );
+				const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, );
+
+				if ( mesh1 ) subMeshes.push( mesh1 );
+				if ( mesh2 ) subMeshes.push( mesh2 );
+
+			} else if ( roadMark.type == TvRoadMarkTypes.SOLID_BROKEN ) {
+
+				const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
+
+				const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.SOLID, -tOffset );
+				const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN );
+
+				if ( mesh1 ) subMeshes.push( mesh1 );
+				if ( mesh2 ) subMeshes.push( mesh2 );
+
+			} else if ( roadMark.type == TvRoadMarkTypes.BROKEN_BROKEN ) {
+
+				const tOffset = roadMark.width + DOUBLE_LINE_SPACE;
+
+				const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN, -tOffset );
+				const mesh2 = this.buildRoadMark( road, laneSection, lane, roadMark, TvRoadMarkTypes.BROKEN );
+
+				if ( mesh1 ) subMeshes.push( mesh1 );
+				if ( mesh2 ) subMeshes.push( mesh2 );
+
+			} else {
+
+				const mesh1 = this.buildRoadMark( road, laneSection, lane, roadMark, roadMark.type );
+
+				if ( mesh1 ) subMeshes.push( mesh1 );
+
+			}
+
+			subMeshes.forEach( mesh => roadMarkMesh.add( mesh ) );
+
+			// lane.laneSection.road.gameObject.add( roadMarkMesh );
+
+		}
+
+		return roadMarkMesh;
 	}
 
 	private buildRoadMark ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadMark: TvLaneRoadMark, type: TvRoadMarkTypes, tOffset = 0 ) {
@@ -455,7 +460,8 @@ export class LaneRoadMarkBuilder {
 
 		roadMark.gameObject.userData.roadMark = roadMark;
 
-		lane.gameObject.add( roadMark.gameObject );
+		lane.laneSection.road.gameObject.add( roadMark.gameObject );
+
 	}
 
 	private getMaterial ( roadMark: TvLaneRoadMark ): THREE.Material {

@@ -6,6 +6,7 @@ import { TvMap } from "app/map/models/tv-map.model";
 import { TvRoadLink } from "app/map/models/tv-road-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Maths } from "../../utils/maths";
+import { Log } from "../../core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -54,7 +55,18 @@ export class MapFixer {
 
 	fixSuccessor ( predecessor: TvRoad, link: TvRoadLink ) {
 
-		if ( link.isJunction ) return;
+		if ( link.isJunction ) {
+
+			const junction = link.element as TvJunction
+
+			const connections = junction.getConnections().filter( connection => connection.incomingRoad = predecessor );
+
+			if ( connections.length == 0 ) {
+				console.error( 'No connections found for road ' + predecessor.id );
+			}
+
+			return;
+		}
 
 		const successor = link.element as TvRoad;
 
@@ -82,7 +94,18 @@ export class MapFixer {
 
 	fixPredecessor ( successor: TvRoad, link: TvRoadLink ) {
 
-		if ( link.isJunction ) return;
+		if ( link.isJunction ) {
+
+			const junction = link.element as TvJunction
+
+			const connections = junction.getConnections().filter( connection => connection.incomingRoad = successor );
+
+			if ( connections.length == 0 ) {
+				console.error( 'No connections found for road ' + successor.id );
+			}
+
+			return;
+		}
 
 		const predecessor = link.element as TvRoad;
 
@@ -143,7 +166,7 @@ export class MapFixer {
 			return [ TvContactPoint.END, TvContactPoint.END ];
 		}
 
-		console.error( 'Roads are not connected' );
+		Log.error( 'Roads are not connected', a.toString(), b.toString() );
 
 		return [ null, null ];
 	}

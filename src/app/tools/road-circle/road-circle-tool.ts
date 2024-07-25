@@ -90,6 +90,8 @@ export class RoadCircleTool extends BaseTool<AbstractSpline>{
 
 		this.tool.addRoad( road );
 
+		this.tool.splineBuilder.build( road.spline );
+
 		this.debugService.setDebugState( road.spline, DebugState.DEFAULT );
 
 	}

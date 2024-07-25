@@ -10,6 +10,7 @@ import { Color, Group } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { ISelectable } from './i-selectable';
+import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 
 export class RoadNode extends Group implements ISelectable {
 
@@ -90,5 +91,10 @@ export class RoadNode extends Group implements ISelectable {
 
 	}
 
+	toLink () {
+
+		return new TvRoadLink( TvRoadLinkType.ROAD, this.road, this.contact );
+
+	}
 
 }

@@ -212,7 +212,7 @@ export class TvLaneRoadMark {
 
 		if ( this.gameObject ) {
 
-			this.lane?.gameObject.remove( this.gameObject );
+			this.lane.laneSection?.road?.gameObject?.remove( this.gameObject );
 
 			this.gameObject = null;
 

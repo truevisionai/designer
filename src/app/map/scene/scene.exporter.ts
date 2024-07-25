@@ -43,6 +43,7 @@ import { TvTransform } from 'app/map/models/tv-transform';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { SplineSegmentType } from 'app/core/shapes/spline-segment';
+import { TvJointBoundary, TvJunctionSegmentBoundary, TvLaneBoundary } from '../junction-boundary/tv-junction-boundary';
 
 @Injectable( {
 	providedIn: 'root'
@@ -163,7 +164,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 				roadSegment: spline.segmentMap.map( ( segment, s ) => {
 					return {
 						attr_start: s,
-						attr_id: segment.id,
+						attr_id: segment?.id,
 						attr_type: exportSegmentType( segment )
 					};
 				} )
@@ -183,7 +184,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 				} ) ),
 				roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
 					attr_start: s,
-					attr_id: segment.id,
+					attr_id: segment?.id,
 					attr_type: exportSegmentType( segment )
 				} ) )
 			};
@@ -342,6 +343,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		return {
 			attr_id: junction.id,
 			attr_name: junction.name,
+			attr_auto: junction.auto ? 'true' : 'false',
 			position: {
 				attr_x: junction.position ? junction.position.x : 0,
 				attr_y: junction.position ? junction.position.y : 0,
@@ -349,7 +351,10 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			},
 			connection: junction.getConnections().map( connection => this.exportJunctionConnection( connection ) ),
 			priority: [],
-			controller: []
+			controller: [],
+			boundary: {
+				segment: junction.boundary?.segments.map( segment => this.exportBoundarySegment( segment ) )
+			},
 		};
 
 		// this.openDriveWriter.writeJunctionConnection( xml, junction );
@@ -361,6 +366,30 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		// this.openDriveWriter.writeJunctionPriority( xml, junction );
 
 		// return xml;
+	}
+
+	exportBoundarySegment ( segment: TvJunctionSegmentBoundary ): XmlElement {
+
+		if ( segment instanceof TvLaneBoundary ) {
+			return {
+				attr_type: 'lane',
+				attr_roadId: segment.road.id,
+				attr_boundaryLane: segment.boundaryLane.id,
+				attr_sStart: segment.sStart,
+				attr_sEnd: segment.sEnd,
+			};
+		}
+
+		if ( segment instanceof TvJointBoundary ) {
+			return {
+				attr_type: 'joint',
+				attr_roadId: segment.road.id,
+				attr_contactPoint: segment.contactPoint,
+				attr_jointLaneStart: segment.jointLaneStart?.id,
+				attr_jointLaneEnd: segment.jointLaneEnd?.id,
+			};
+		}
+
 	}
 
 	exportProps ( props: PropInstance[] ) {

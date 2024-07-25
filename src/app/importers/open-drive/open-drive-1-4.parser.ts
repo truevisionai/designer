@@ -586,17 +586,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			return;
 		}
 
-		const outgoingRoadId = contactPoint == TvContactPoint.START ?
-			connectingRoad?.successor?.id :
-			connectingRoad?.predecessor?.id;
-
-		const outgoingRoad = !isNaN( outgoingRoadId ) ? this.map.getRoadById( outgoingRoadId ) : null;
-
-		if ( !outgoingRoad ) {
-			console.warn( 'outgoingRoad', outgoingRoad, connectingRoad );
-		}
-
-		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint, outgoingRoad );
+		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
 
 		connection.junction = junction;
 

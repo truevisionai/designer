@@ -8,7 +8,7 @@ import { TvRoad } from "../models/tv-road.model";
 import { TvLaneSection } from "../models/tv-lane-section";
 import { TvLane } from "../models/tv-lane";
 import { TvJunction } from "../models/junctions/tv-junction";
-import { TvContactPoint } from "../models/tv-common";
+import { TvContactPoint, TvLaneSide } from "../models/tv-common";
 import { LaneUtils } from 'app/utils/lane.utils';
 
 @Injectable( {
@@ -20,6 +20,7 @@ export class MapQueryService {
 		private mapService: MapService,
 	) {
 	}
+
 
 	get map () {
 		return this.mapService.map;
@@ -175,4 +176,60 @@ export class MapQueryService {
 
 	}
 
+	findRoadPosition ( road: TvRoad, sOffset: number, t: number ) {
+		return road.getPosThetaAt( sOffset, t );
+	}
+
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sOffset s offset is relative to lane section
+	 * @param tOffset
+	 * @param withLaneHeight
+	 */
+	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
+
+		const t = this.findWidthUpto( road, laneSection, lane, sOffset ) + tOffset;
+
+		const sign = lane.id > 0 ? 1 : -1;
+
+		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
+
+		if ( withLaneHeight ) {
+			const laneHeight = lane.getHeightValue( sOffset );
+			posTheta.z += laneHeight.getLinearValue( 1 );
+		}
+
+		return posTheta;
+	}
+
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sOffset s offset is relative to lane section
+	 * @returns
+	 */
+	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		if ( lane.side == TvLaneSide.CENTER ) return 0;
+
+		let width = 0;
+
+		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
+
+		for ( let i = 0; i < lanes.length; i++ ) {
+
+			var element = lanes[ i ];
+
+			width += element.getWidthValue( sOffset );
+
+			if ( element.id == lane.id ) break;
+		}
+
+		return width;
+	}
 }

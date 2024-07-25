@@ -133,10 +133,10 @@ export class TvRoad {
 	toString () {
 
 		if ( this.isJunction ) {
-			return `ConnectingRoad:${ this.id } Junction:${ this.junctionId }`;
+			return `ConnectingRoad:${ this.id } Junction:${ this.junctionId } Successor:${ this.successor?.element.id } Predecessor:${ this.predecessor?.element.id }`;
 		}
 
-		return `Road:${ this.id }`;
+		return `Road:${ this.id } Successor:${ this.successor?.type }:${ this.successor?.element.id } Predecessor:${ this.predecessor?.type }:${ this.predecessor?.element.id }`;
 
 	}
 

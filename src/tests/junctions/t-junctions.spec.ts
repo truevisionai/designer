@@ -243,7 +243,7 @@ describe( 't-junction tests', () => {
 		roadService.add( joiningRoad );
 
 		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 1 ) ] );
-		splineManager.createSpline( vertical.spline );
+		splineManager.addSpline( vertical.spline );
 
 		expect( mapService.roads.length ).toBe( 5 + 6 );
 		expect( mapService.junctions.length ).toBe( 1 );
@@ -274,7 +274,6 @@ describe( 't-junction tests', () => {
 		// VALIDATE CONNECTIONS
 
 		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 4 );
-		expect( junction.connections.get( 0 ).outgoingRoadId ).toBe( 5 );
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
 		expect( junction.connections.get( 0 ).isCornerConnection ).toBe( true );
 		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );

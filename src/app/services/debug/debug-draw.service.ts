@@ -10,6 +10,7 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import {
+	Box2,
 	Box3,
 	Box3Helper,
 	BoxGeometry,
@@ -38,9 +39,10 @@ import { HasDistanceValue } from 'app/core/interfaces/has-distance-value';
 import { LanePointNode, LaneSpanNode } from "../../objects/lane-node";
 import { SceneService } from '../scene.service';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
-import { RoadService } from '../road/road.service';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { OdTextures } from 'app/deprecated/od.textures';
+import { TextObjectService } from '../text-object.service';
+import { MapQueryService } from 'app/map/queries/map-query.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -55,9 +57,19 @@ export class DebugDrawService {
 		return this._instance;
 	}
 
-	constructor ( private roadService: RoadService ) {
+	constructor ( private queryService: MapQueryService, private textService: TextObjectService ) {
 
 		DebugDrawService._instance = this;
+
+	}
+
+	drawText ( text: string, position: Vector3, size = 1, color = COLOR.WHITE ) {
+
+		const textObject = this.textService.createFromText( text, size );
+
+		textObject.position.copy( position );
+
+		this.group.add( textObject );
 
 	}
 
@@ -66,6 +78,20 @@ export class DebugDrawService {
 		const box = new Box3Helper( boundingBox );
 
 		this.group.add( box );
+
+	}
+
+	drawBox2D ( box: Box2, color = COLOR.WHITE ) {
+
+		const geometry = new PlaneGeometry( box.getSize( new Vector2() ).x, box.getSize( new Vector2() ).y );
+
+		const material = new MeshBasicMaterial( { color: color, side: 2 } );
+
+		const mesh = new Mesh( geometry, material );
+
+		mesh.position.set( box.getCenter( new Vector2() ).x, box.getCenter( new Vector2() ).y, 0 );
+
+		this.group.add( mesh );
 
 	}
 
@@ -84,6 +110,16 @@ export class DebugDrawService {
 		sphere.position.copy( position );
 
 		this.group.add( sphere );
+
+	}
+
+	drawLine ( positions: Vector3[], color = 0xffffff, lineWidth = 2 ) {
+
+		if ( positions.length < 2 ) return;
+
+		const line = this.createLine( positions, color, lineWidth );
+
+		this.group.add( line );
 
 	}
 
@@ -487,7 +523,7 @@ export class DebugDrawService {
 			t *= -1;
 		}
 
-		const point = this.roadService.findRoadPosition( road, sOffset, t );
+		const point = this.queryService.findRoadPosition( road, sOffset, t );
 
 		// NOTE: this can be used if we want hdg to be adjusted with travel direction
 		if ( lane.direction == TravelDirection.backward ) {
@@ -537,11 +573,11 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			positions.push( this.roadService.findLaneEndPosition( road, laneSection, lane, s ) )
+			positions.push( this.queryService.findLaneEndPosition( road, laneSection, lane, s ) )
 
 		}
 
-		positions.push( this.roadService.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
+		positions.push( this.queryService.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
 
 		return positions;
 	}
@@ -552,7 +588,7 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			positions.push( this.roadService.findRoadPosition( road, Maths.clamp( s, 0, road.length ), 0 ) )
+			positions.push( this.queryService.findRoadPosition( road, Maths.clamp( s, 0, road.length ), 0 ) )
 
 		}
 

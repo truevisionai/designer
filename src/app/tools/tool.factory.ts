@@ -16,7 +16,7 @@ import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service
 import { LaneToolService } from "./lane/lane-tool.service";
 import { CrosswalkToolService } from "./crosswalk/crosswalk-tool.service";
 import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.service";
-import { JunctionToolService } from "./junction/junction-tool.service";
+import { JunctionToolHelper } from "./junction/junction-tool.helper";
 import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { RampToolHelper } from "./road-ramp/road-ramp.helper";
 import { ParkingRoadToolService } from "./parking/parking-road-tool.service";
@@ -107,7 +107,7 @@ export class ToolFactory {
 		private laneToolService: LaneToolService,
 		private crosswalkService: CrosswalkToolService,
 		private roadCutToolService: RoadDividerToolService,
-		private junctionToolService: JunctionToolService,
+		private junctionToolService: JunctionToolHelper,
 		private propCurveService: PropCurveService,
 		private roadRampService: RampToolHelper,
 		private parkingRoadToolService: ParkingRoadToolService,

@@ -3,13 +3,13 @@
  */
 
 import { MathUtils } from 'three';
-import { TvConsole } from '../../../core/utils/console';
 import { TvContactPoint } from '../tv-common';
 import { TvJunction } from './tv-junction';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { TvLane } from '../tv-lane';
 import { TvRoad } from '../tv-road.model';
 import { TvPosTheta } from '../tv-pos-theta';
+import { Log } from 'app/core/utils/log';
 
 /**
 
@@ -58,11 +58,12 @@ export class TvJunctionConnection {
 		public incomingRoad: TvRoad,
 		public connectingRoad: TvRoad,
 		public contactPoint: TvContactPoint,
-		public outgoingRoad: TvRoad = null,
 	) {
 		this.uuid = MathUtils.generateUUID();
-	}
 
+		if ( incomingRoad?.id == connectingRoad?.id ) Log.error( 'InvalidConnection', this.toString() );
+
+	}
 
 	get incomingRoadId (): number {
 		return this.incomingRoad?.id;
@@ -70,10 +71,6 @@ export class TvJunctionConnection {
 
 	get connectingRoadId (): number {
 		return this.connectingRoad?.id;
-	}
-
-	get outgoingRoadId (): number {
-		return this.outgoingRoad?.id;
 	}
 
 	get connectingLaneSection () {
@@ -92,7 +89,7 @@ export class TvJunctionConnection {
 
 	toString (): string {
 
-		return 'Connection:' + this.id + ' incomingRoad:' + this.incomingRoadId + ' connectingRoad:' + this.connectingRoadId + ' outgoingRoad:' + this.outgoingRoadId + ' contactPoint:' + this.contactPoint;
+		return 'Connection:' + this.id + ' incomingRoad:' + this.incomingRoadId + ' connectingRoad:' + this.connectingRoadId + ' contactPoint:' + this.contactPoint;
 
 	}
 
@@ -101,16 +98,6 @@ export class TvJunctionConnection {
 		const incomingPosition = this.getIncomingPosition();
 
 		const contact = this.incomingRoad.getContactByPosition( incomingPosition.position );
-
-		return contact;
-
-	}
-
-	getOutgoingContactPoint (): TvContactPoint {
-
-		const outgoingPosition = this.getOutgoingPosition();
-
-		const contact = this.outgoingRoad.getContactByPosition( outgoingPosition.position );
 
 		return contact;
 
@@ -130,20 +117,6 @@ export class TvJunctionConnection {
 
 	}
 
-	getOutgoingPosition (): TvPosTheta {
-
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			return this.connectingRoad.getEndPosTheta();
-
-		} else if ( this.contactPoint == TvContactPoint.END ) {
-
-			return this.connectingRoad.getStartPosTheta();
-
-		}
-
-	}
-
 	clone () {
 
 		const clone = new TvJunctionConnection( this.id, this.incomingRoad, this.connectingRoad, this.contactPoint );
@@ -151,11 +124,6 @@ export class TvJunctionConnection {
 		clone.laneLink = this.laneLink.map( link => link.clone() );
 
 		return clone;
-	}
-
-	sortLinks (): void {
-
-		this.laneLink = this.laneLink.sort( ( a, b ) => a.from > b.from ? 1 : -1 );
 
 	}
 
@@ -218,7 +186,7 @@ export class TvJunctionConnection {
 
 	getOutgoingLanes (): TvLane[] {
 
-		return this.outgoingRoad.getFirstLaneSection().getLaneArray();
+		throw new Error( 'Method not implemented.' );
 
 	}
 

@@ -26,11 +26,14 @@ import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
 import { RoadObjectBuilder } from "../road-object/road-object.builder";
 import { RoadService } from 'app/services/road/road.service';
 import { TvConsole } from "../../core/utils/console";
+import { Log } from "../../core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadBuilder {
+
+	private debug = true;
 
 	constructor (
 		private roadMarkBuilder: LaneRoadMarkBuilder,
@@ -61,6 +64,8 @@ export class RoadBuilder {
 
 		if ( !this.shouldBuild( road ) ) return gameObject;
 
+		if ( this.debug ) Log.debug( 'building', road.toString() );
+
 		const laneSections = road.getLaneSections();
 
 		for ( let i = 0; i < laneSections.length; i++ ) {
@@ -73,7 +78,32 @@ export class RoadBuilder {
 
 		}
 
-		this.roadMarkBuilder.buildRoad( road );
+		// NOTE: not using this this to support connection meshes
+		// this.roadMarkBuilder.buildRoad( road );
+
+		for ( let i = 0; i < laneSections.length; i++ ) {
+
+			const laneSection = laneSections[ i ];
+
+			const lanes = laneSection.getLaneArray();
+
+			for ( let j = 0; j < lanes.length; j++ ) {
+
+				const lane = lanes[ j ];
+
+				const roadMarkMesh = this.roadMarkBuilder.buildLane( road, laneSection, lane );
+
+				if ( roadMarkMesh ) {
+
+					laneSection.gameObject.add( roadMarkMesh );
+
+				}
+
+			}
+
+		}
+
+		this.updateJunctionVisibility( road );
 
 		gameObject.add( this.buildRoadObjects( road ) );
 
@@ -85,16 +115,39 @@ export class RoadBuilder {
 
 	}
 
-	private shouldBuild ( road: TvRoad ): boolean {
+	updateJunctionVisibility ( road: TvRoad ) {
 
-		if ( road.geometries.length == 0 ) return false;
+		if ( !road.isJunction ) return;
 
-		if ( road.isJunction ) {
-			return OdBuilderConfig.BUILD_CONNECTING_ROADS;
+		const laneSections = road.getLaneSections();
+
+		for ( let i = 0; i < laneSections.length; i++ ) {
+
+			const laneSection = laneSections[ i ];
+
+			const lanes = laneSection.getLaneArray();
+
+			for ( let j = 0; j < lanes.length; j++ ) {
+
+				const lane = lanes[ j ];
+
+				lane.gameObject.visible = lane.type == TvLaneType.sidewalk;
+
+			}
+
 		}
 
-		// dont build if no geometries
-		return road.geometries.length > 0;
+	}
+
+	private shouldBuild ( road: TvRoad ): boolean {
+
+		const hasGeomtry = road.geometries.length > 0;
+
+		if ( !hasGeomtry ) return false;
+
+		if ( road.isJunction ) return OdBuilderConfig.BUILD_CONNECTING_ROADS;
+
+		return true;
 	}
 
 	private createRoadGameObject ( road: TvRoad ) {

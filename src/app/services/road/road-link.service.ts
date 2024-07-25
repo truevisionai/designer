@@ -54,9 +54,6 @@ export class RoadLinkService {
 			// connections where old road was entering junction
 			const incomingConnections = junction.getConnections().filter( i => i.incomingRoad == oldRoad );
 
-			// connections where old road was exiting junction
-			const outgoingConnections = junction.getConnections().filter( i => i.outgoingRoad == oldRoad );
-
 			for ( let i = 0; i < incomingConnections.length; i++ ) {
 
 				const connection = incomingConnections[ i ];
@@ -70,22 +67,6 @@ export class RoadLinkService {
 				} );
 
 				connection.connectingRoad.setPredecessorRoad( newRoad, TvContactPoint.END );
-
-			}
-
-			for ( let i = 0; i < outgoingConnections.length; i++ ) {
-
-				const connection = outgoingConnections[ i ];
-
-				connection.outgoingRoad = newRoad;
-
-				connection.laneLink.forEach( link => {
-
-					// link.connectingLane.
-
-				} );
-
-				connection.connectingRoad.setSuccessorRoad( newRoad, TvContactPoint.END );
 
 			}
 
@@ -214,6 +195,13 @@ export class RoadLinkService {
 		}
 	}
 
+	/**
+	 *
+	 * @param firstNode
+	 * @param secondNode
+	 * @param joiningRoad
+	 * @deprecated does not work as expected
+	 */
 	linkRoads ( firstNode: RoadNode, secondNode: RoadNode, joiningRoad: TvRoad ) {
 
 		this.createLinksOld( firstNode, secondNode, joiningRoad );
@@ -480,6 +468,13 @@ export class RoadLinkService {
 
 	}
 
+	/**
+	 *
+	 * @param firstNode
+	 * @param secondNode
+	 * @param joiningRoad
+	 * @deprecated does not work as expected
+	 */
 	private createLinksOld ( firstNode: RoadNode, secondNode: RoadNode, joiningRoad: TvRoad ) {
 
 		const firstRoad = firstNode.road;

@@ -31,7 +31,7 @@ export class SplineEventListener {
 
 	onSplineCreated ( event: SplineCreatedEvent ) {
 
-		this.splineManager.createSpline( event.spline );
+		this.splineManager.addSpline( event.spline );
 
 	}
 

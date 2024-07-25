@@ -13,7 +13,6 @@ import { DebugDrawService } from '../../services/debug/debug-draw.service';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { SplineFactory } from '../../services/spline/spline.factory';
-import { ConnectionService } from '../../map/junction/connection/connection.service';
 import { RoadService } from '../../services/road/road.service';
 import { JunctionService } from '../../services/junction/junction.service';
 import { MapService } from "../../services/map/map.service";
@@ -29,6 +28,7 @@ import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvRoadLinkNeighbor } from "../../map/models/tv-road-link-neighbor";
+import { SplineUtils } from "../../utils/spline.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,14 +39,12 @@ export class RampToolHelper {
 		public base: BaseToolService,
 		public debug: DebugDrawService,
 		public splineFactory: SplineFactory,
-		public junctionConnection: ConnectionService,
 		public roadFactory: RoadFactory,
 		public roadService: RoadService,
 		public junctionService: JunctionService,
 		public mapService: MapService,
 		public roadCutService: RoadDividerService,
 		public junctionFactory: JunctionFactory,
-		public connectionService: ConnectionService,
 		public splineService: SplineService,
 		public splineBuilder: SplineBuilder,
 		public roadDividerService: RoadDividerService,
@@ -67,9 +65,9 @@ export class RampToolHelper {
 
 			const road = this.roadService.clone( startPosition.road );
 
-			this.splineService.addRoadSegmentNew( startPosition.road.spline, sEnd, road );
+			SplineUtils.addSegment( startPosition.road.spline, sEnd, road );
 
-			this.splineService.addJunctionSegment( startPosition.road.spline, sStart, junction );
+			SplineUtils.addSegment( startPosition.road.spline, sStart, junction );
 
 			return junction;
 

@@ -10,30 +10,36 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { JunctionManager } from "./junction-manager";
-import { RoadFactory } from "app/factories/road-factory.service";
 import { SplineService } from "../services/spline/spline.service";
 import { TvJunction } from "../map/models/junctions/tv-junction";
+import { SplineUtils } from "app/utils/spline.utils";
+import { SplineFixerService } from "app/services/spline/spline.fixer";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class SplineManager {
 
+	private debug = true;
+
 	constructor (
 		private mapService: MapService,
 		private roadManager: RoadManager,
 		private splineBuilder: SplineBuilder,
 		private junctionManager: JunctionManager,
-		private roadFactory: RoadFactory,
-		private splineService: SplineService
+		private splineService: SplineService,
+		private splineValidator: SplineFixerService
 	) {
 	}
 
-	createSpline ( spline: AbstractSpline ) {
+	addSpline ( spline: AbstractSpline ) {
 
-		this.validateSpline( spline );
+		if ( this.debug ) Log.debug( "addSpline", spline.toString() );
 
-		this.splineBuilder.buildSpline( spline );
+		this.splineValidator.fix( spline );
+
+		this.splineBuilder.buildGeometry( spline );
 
 		this.splineBuilder.buildSegments( spline );
 
@@ -45,16 +51,17 @@ export class SplineManager {
 
 	updateSpline ( spline: AbstractSpline ) {
 
-		this.validateSpline( spline );
+		if ( this.debug ) Log.debug( "updateSpline", spline.toString() );
 
-		this.splineBuilder.buildSpline( spline );
+		this.splineValidator.fix( spline );
 
-		this.splineBuilder.buildSegments( spline );
+		this.splineBuilder.buildGeometry( spline );
 
-		// TODO: Check if this is needed
-		// for ( const road of this.splineService.getRoads( spline ) ) {
-		// 	this.roadManager.updateRoad( road );
-		// }
+		for ( const road of this.splineService.getRoads( spline ) ) {
+
+			this.roadManager.updateRoad( road );
+
+		}
 
 		this.splineBuilder.buildBoundingBox( spline );
 
@@ -68,7 +75,9 @@ export class SplineManager {
 
 	removeSpline ( spline: AbstractSpline ) {
 
-		if ( this.splineService.isConnectionRoad( spline ) ) return;
+		if ( this.debug ) Log.debug( "removeSpline", spline.toString() );
+
+		if ( SplineUtils.isConnection( spline ) ) return;
 
 		for ( const segment of spline.segmentMap.toArray() ) {
 
@@ -96,7 +105,7 @@ export class SplineManager {
 
 	syncSuccessorSpline ( spline: AbstractSpline ) {
 
-		if ( this.splineService.isConnectionRoad( spline ) ) return;
+		if ( SplineUtils.isConnection( spline ) ) return;
 
 		if ( spline.type === SplineType.EXPLICIT ) return;
 
@@ -108,7 +117,23 @@ export class SplineManager {
 
 		} else if ( lastSegment instanceof TvJunction ) {
 
-			// console.error( "method not implemented" );
+			console.debug( "last segment is junction", lastSegment.toString(), spline.uuid );
+
+		}
+
+		const splineSuccessor = SplineUtils.findSuccessor( spline );
+
+		if ( splineSuccessor instanceof TvRoad ) {
+
+			console.debug( "successor is road", splineSuccessor.toString(), spline.uuid );
+
+			this.syncRoadSuccessorSpline( splineSuccessor );
+
+		} else if ( splineSuccessor instanceof TvJunction ) {
+
+			console.debug( "successor is junction", splineSuccessor.toString(), spline.uuid );
+
+			this.junctionManager.updateCustomJunctionConnections( splineSuccessor );
 
 		}
 
@@ -116,7 +141,7 @@ export class SplineManager {
 
 	syncPredecessorSpline ( spline: AbstractSpline ) {
 
-		if ( this.splineService.isConnectionRoad( spline ) ) return;
+		if ( SplineUtils.isConnection( spline ) ) return;
 
 		if ( spline.type === SplineType.EXPLICIT ) return;
 
@@ -128,10 +153,25 @@ export class SplineManager {
 
 		} else if ( firstSegment instanceof TvJunction ) {
 
-			// console.error( "method not implemented" );
+			console.debug( "first segment is junction", firstSegment.toString(), spline.uuid );
 
 		}
 
+		const splinePredecessor = SplineUtils.findPredecessor( spline );
+
+		if ( splinePredecessor instanceof TvRoad ) {
+
+			console.debug( "predecessor is road", splinePredecessor.toString(), spline.uuid );
+
+			this.syncRoadPredecessorrSpline( splinePredecessor );
+
+		} else if ( splinePredecessor instanceof TvJunction ) {
+
+			console.debug( "predecessor is junction", splinePredecessor.toString(), spline.uuid );
+
+			this.junctionManager.updateCustomJunctionConnections( splinePredecessor );
+
+		}
 	}
 
 	syncRoadSuccessorSpline ( updatedRoad: TvRoad ) {
@@ -211,39 +251,6 @@ export class SplineManager {
 		}
 
 		this.splineBuilder.buildSpline( prevRoad.spline );
-
-	}
-
-	private validateSpline ( spline: AbstractSpline ) {
-
-		if ( spline.controlPoints.length < 2 ) return;
-
-		const segments = spline.segmentMap.toArray();
-
-		if ( segments.length == 0 ) {
-
-			const road = this.roadFactory.createDefaultRoad();
-
-			road.spline = spline;
-
-			spline.segmentMap.set( 0, road );
-
-			this.mapService.map.addRoad( road );
-
-			// TODO: check if need this or not
-			// this.roadManager.addRoad( road );
-
-		} else if ( segments.length >= 1 ) {
-
-			const firstSegment = this.splineService.findFirstRoad( spline );
-
-			if ( firstSegment ) {
-
-				firstSegment.sStart = 0;
-
-			}
-
-		}
 
 	}
 

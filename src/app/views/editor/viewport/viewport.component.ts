@@ -656,6 +656,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
+	clearDebugElements () {
+
+		this.sceneService.toolLayer?.clear();
+
+	}
+
 	handleViewHelperClick ( $event: MouseEvent ) {
 
 		$event.stopPropagation();

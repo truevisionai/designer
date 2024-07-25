@@ -22,6 +22,11 @@ import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
 import { SplineService } from "./spline/spline.service";
 import { RoadService } from "./road/road.service";
 import { JunctionBuilder } from './junction/junction.builder';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { JunctionManager } from 'app/managers/junction-manager';
+import { TvJunctionBoundaryFactory } from "../map/junction-boundary/tv-junction-boundary.factory";
+import { ConnectionFactory } from 'app/factories/connection.factory';
+import { SplineUtils } from "../utils/spline.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -41,6 +46,8 @@ export class SceneBuilderService {
 		private splineService: SplineService,
 		private roadService: RoadService,
 		private junctionBuilder: JunctionBuilder,
+		private junctionManager: JunctionManager,
+		private connectionFactory: ConnectionFactory
 	) {
 	}
 
@@ -53,6 +60,8 @@ export class SceneBuilderService {
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
 
 		map.getSplines().forEach( spline => this.splineBuilder.buildBoundingBox( spline ) );
+
+		map.getJunctions().forEach( junction => this.buildJunction( map, junction ) );
 
 		// NOTE: note needed as road builder already is building these
 		// map.getRoads().forEach( road => this.roadObjectService.buildRoadObjects( road ) );
@@ -82,6 +91,37 @@ export class SceneBuilderService {
 		map.propPolygons.forEach( propPolygon => this.buildPropPolygon( map, propPolygon ) );
 
 		SceneService.addToMain( map.gameObject );
+
+	}
+
+	buildJunction ( map: TvMap, junction: TvJunction ): void {
+
+		if ( junction.connections.size == 0 ) {
+
+			TvConsole.warn( 'Removing junction with no connections ' + junction.id );
+
+			this.junctionManager.removeJunction( junction );
+
+			return;
+		}
+
+		if ( !junction.boundary || junction.boundary.segments.length == 0 ) {
+
+			TvConsole.warn( 'Re-building boundary for junction:' + junction.id );
+
+			junction.boundary = TvJunctionBoundaryFactory.createFromJunction( junction );
+
+		}
+
+		if ( junction.corners.length == 0 ) {
+
+			this.connectionFactory.addCornerConnections( junction );
+
+		}
+
+		junction.mesh = this.junctionBuilder.build( junction );
+
+		map.gameObject?.add( junction.mesh );
 
 	}
 
@@ -127,7 +167,7 @@ export class SceneBuilderService {
 
 	findSpline ( scene: TvMap, road: TvRoad ): AbstractSpline {
 
-		return scene.getSplines().find( spline => this.splineService.hasSegment( spline, road ) );
+		return scene.getSplines().find( spline => SplineUtils.hasSegment( spline, road ) );
 
 	}
 

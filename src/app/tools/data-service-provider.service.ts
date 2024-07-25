@@ -58,9 +58,6 @@ export class DataServiceProvider {
 			case ToolType.LaneHeight:
 				return this.laneService;
 
-			case ToolType.Junction:
-				return this.junctionService;
-
 			case ToolType.Maneuver:
 				return this.junctionService;
 

@@ -29,6 +29,7 @@ import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
 import { LocalStorage, STORAGE_KEYS } from './local-storage';
 import { Environment } from 'app/core/utils/environment';
 import { MapFixer } from './map/map-fixer.service';
+import { SceneService } from "./scene.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -138,13 +139,7 @@ export class TvSceneFileService {
 
 		if ( map == null ) return;
 
-		map.getRoads().forEach( road => {
-
-			this.roadService.remove( road );
-
-			this.roadObjectService.removeObjectsByRoad( road );
-
-		} );
+		SceneService.removeFromMain( map.gameObject );
 
 		map.destroy();
 

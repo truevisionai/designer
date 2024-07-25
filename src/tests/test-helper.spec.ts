@@ -2,7 +2,7 @@ import { RoadService } from "../app/services/road/road.service";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { ConnectionService } from "app/map/junction/connection/connection.service";
+import { DepConnectionFactory } from "app/map/junction/connection/dep-connection.factory";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapService } from "app/services/map/map.service";
 import { RoadTool } from "app/tools/road/road-tool";
@@ -19,7 +19,7 @@ describe( 'BaseTest: tests', () => {
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
-	let junctionConnectionService: ConnectionService;
+	let junctionConnectionService: DepConnectionFactory;
 	let baseTest = new BaseTest();
 	let eventServiceProvider: EventServiceProvider;
 
@@ -36,7 +36,7 @@ describe( 'BaseTest: tests', () => {
 		roadService = TestBed.inject( RoadService );
 		intersectionService = TestBed.inject( IntersectionService );
 		junctionService = TestBed.inject( JunctionService );
-		junctionConnectionService = TestBed.inject( ConnectionService );
+		junctionConnectionService = TestBed.inject( DepConnectionFactory );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 
 		eventServiceProvider.init();

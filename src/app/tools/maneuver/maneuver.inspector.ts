@@ -16,10 +16,10 @@ export class ManeuverInspector {
 	) {
 	}
 
-	// @SerializedAction( { label: 'Delete' } )
-	// deleteManeuver () {
-	// 	CommandHistory.execute( new RemoveObjectCommand( this.maneuver ) );
-	// }
+	@SerializedAction( { label: 'Delete' } )
+	deleteManeuver () {
+		CommandHistory.execute( new RemoveObjectCommand( this.maneuver ) );
+	}
 
 }
 

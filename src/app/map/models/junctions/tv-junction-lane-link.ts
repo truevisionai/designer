@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvContactPoint } from '../tv-common';
+import { TurnType, TvContactPoint } from '../tv-common';
 import { TvLane } from '../tv-lane';
 import { TvRoad } from '../tv-road.model';
 
@@ -15,6 +15,14 @@ export class TvJunctionLaneLink {
 	public connectingLane: TvLane;
 	public connectingRoad?: TvRoad;
 	public connectingContactPoint?: TvContactPoint;
+
+	/**
+	 * can be useful to track if the link is modified
+	 * for exporting as link connection or different
+	 */
+	public modified: boolean = true;
+
+	public turnType: TurnType;
 
 	/**
 	 *

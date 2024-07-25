@@ -83,11 +83,9 @@ describe( 'one-way junctions tests', () => {
 		} ) )
 
 		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 1 );
-		expect( junction.connections.get( 0 ).outgoingRoadId ).toBe( 2 );
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 2 );
 
 		expect( junction.connections.get( 1 ).incomingRoadId ).toBe( 2 );
-		expect( junction.connections.get( 1 ).outgoingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 1 );
 
 
@@ -130,13 +128,11 @@ describe( 'one-way junctions tests', () => {
 		} ) )
 
 		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 1 );
-		expect( junction.connections.get( 0 ).outgoingRoadId ).toBe( 2 );
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 1 );
 		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
 		expect( junction.connections.get( 0 ).isCornerConnection ).toBe( undefined );
 
 		expect( junction.connections.get( 1 ).incomingRoadId ).toBe( 2 );
-		expect( junction.connections.get( 1 ).outgoingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 1 );
 		expect( junction.connections.get( 1 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.sidewalk );
 		expect( junction.connections.get( 1 ).isCornerConnection ).toBe( true );
@@ -146,22 +142,18 @@ describe( 'one-way junctions tests', () => {
 		// expect( junction.connections.get( 1 ).laneLink.length ).toBe( 1 );
 		//
 		expect( junction.connections.get( 2 ).incomingRoadId ).toBe( 1 );
-		expect( junction.connections.get( 2 ).outgoingRoadId ).toBe( 3 );
 		expect( junction.connections.get( 2 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.sidewalk );
 		expect( junction.connections.get( 2 ).isCornerConnection ).toBe( true );
 
 		expect( junction.connections.get( 3 ).incomingRoadId ).toBe( 3 );
-		expect( junction.connections.get( 3 ).outgoingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 3 ).laneLink.length ).toBe( 0 );
 		expect( junction.connections.get( 3 ).isCornerConnection ).toBe( undefined );
 
 		expect( junction.connections.get( 4 ).incomingRoadId ).toBe( 2 );
-		expect( junction.connections.get( 4 ).outgoingRoadId ).toBe( 3 );
 		expect( junction.connections.get( 4 ).laneLink.length ).toBe( 0 );
 		expect( junction.connections.get( 4 ).isCornerConnection ).toBe( undefined );
 
 		expect( junction.connections.get( 5 ).incomingRoadId ).toBe( 3 );
-		expect( junction.connections.get( 5 ).outgoingRoadId ).toBe( 2 );
 		expect( junction.connections.get( 5 ).laneLink.length ).toBe( 2 );
 		expect( junction.connections.get( 5 ).isCornerConnection ).toBe( true );
 
@@ -215,7 +207,6 @@ describe( 'one-way junctions tests', () => {
 		} ) )
 
 		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 1 );
-		expect( junction.connections.get( 0 ).outgoingRoadId ).toBe( 2 );
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 1 );
 		expect( junction.connections.get( 0 ).isCornerConnection ).toBe( undefined );
 		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
@@ -223,12 +214,10 @@ describe( 'one-way junctions tests', () => {
 		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.successorId ).toBe( -1 );
 
 		expect( junction.connections.get( 1 ).incomingRoadId ).toBe( 2 );
-		expect( junction.connections.get( 1 ).outgoingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 0 );
 		expect( junction.connections.get( 1 ).isCornerConnection ).toBe( undefined );
 
 		expect( junction.connections.get( 2 ).incomingRoadId ).toBe( 1 );
-		expect( junction.connections.get( 2 ).outgoingRoadId ).toBe( 3 );
 		expect( junction.connections.get( 2 ).isCornerConnection ).toBe( true );
 		expect( junction.connections.get( 2 ).laneLink.length ).toBe( 1 );
 		expect( junction.connections.get( 2 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.sidewalk );
@@ -236,12 +225,10 @@ describe( 'one-way junctions tests', () => {
 		expect( junction.connections.get( 2 ).laneLink[ 0 ].connectingLane.successorId ).toBe( 1 );
 
 		expect( junction.connections.get( 3 ).incomingRoadId ).toBe( 3 );
-		expect( junction.connections.get( 3 ).outgoingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 3 ).laneLink.length ).toBe( 0 );
 		expect( junction.connections.get( 3 ).isCornerConnection ).toBe( undefined );
 
 		expect( junction.connections.get( 4 ).incomingRoadId ).toBe( 1 );
-		expect( junction.connections.get( 4 ).outgoingRoadId ).toBe( 4 );
 		expect( junction.connections.get( 4 ).laneLink.length ).toBe( 1 );
 		expect( junction.connections.get( 4 ).isCornerConnection ).toBe( undefined );
 		expect( junction.connections.get( 4 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
@@ -249,7 +236,6 @@ describe( 'one-way junctions tests', () => {
 		expect( junction.connections.get( 4 ).laneLink[ 0 ].connectingLane.successorId ).toBe( -1 );
 
 		expect( junction.connections.get( 5 ).incomingRoadId ).toBe( 4 );
-		expect( junction.connections.get( 5 ).outgoingRoadId ).toBe( 1 );
 		expect( junction.connections.get( 5 ).laneLink.length ).toBe( 1 );
 		expect( junction.connections.get( 5 ).isCornerConnection ).toBe( true );
 		expect( junction.connections.get( 5 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.sidewalk );
@@ -257,12 +243,10 @@ describe( 'one-way junctions tests', () => {
 		expect( junction.connections.get( 5 ).laneLink[ 0 ].connectingLane.successorId ).toBe( 1 );
 
 		expect( junction.connections.get( 6 ).incomingRoadId ).toBe( 2 );
-		expect( junction.connections.get( 6 ).outgoingRoadId ).toBe( 3 );
 		expect( junction.connections.get( 6 ).laneLink.length ).toBe( 0 );
 		expect( junction.connections.get( 6 ).isCornerConnection ).toBe( undefined );
 
 		expect( junction.connections.get( 7 ).incomingRoadId ).toBe( 3 );
-		expect( junction.connections.get( 7 ).outgoingRoadId ).toBe( 2 );
 		expect( junction.connections.get( 7 ).laneLink.length ).toBe( 2 );
 		expect( junction.connections.get( 7 ).isCornerConnection ).toBe( true );
 		expect( junction.connections.get( 7 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
@@ -273,7 +257,6 @@ describe( 'one-way junctions tests', () => {
 		expect( junction.connections.get( 7 ).laneLink[ 1 ].connectingLane.successorId ).toBe( -2 );
 
 		expect( junction.connections.get( 8 ).incomingRoadId ).toBe( 2 );
-		expect( junction.connections.get( 8 ).outgoingRoadId ).toBe( 4 );
 		expect( junction.connections.get( 8 ).laneLink.length ).toBe( 1 );
 		expect( junction.connections.get( 8 ).isCornerConnection ).toBe( true );
 		expect( junction.connections.get( 8 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.sidewalk );
@@ -281,12 +264,10 @@ describe( 'one-way junctions tests', () => {
 		expect( junction.connections.get( 8 ).laneLink[ 0 ].connectingLane.successorId ).toBe( -2 );
 
 		expect( junction.connections.get( 9 ).incomingRoadId ).toBe( 4 );
-		expect( junction.connections.get( 9 ).outgoingRoadId ).toBe( 2 );
 		expect( junction.connections.get( 9 ).laneLink.length ).toBe( 0 );
 		expect( junction.connections.get( 9 ).isCornerConnection ).toBe( undefined );
 
 		expect( junction.connections.get( 10 ).incomingRoadId ).toBe( 3 );
-		expect( junction.connections.get( 10 ).outgoingRoadId ).toBe( 4 );
 		expect( junction.connections.get( 10 ).laneLink.length ).toBe( 1 );
 		expect( junction.connections.get( 10 ).isCornerConnection ).toBe( undefined );
 		expect( junction.connections.get( 10 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
@@ -294,7 +275,6 @@ describe( 'one-way junctions tests', () => {
 		expect( junction.connections.get( 10 ).laneLink[ 0 ].connectingLane.successorId ).toBe( -1 );
 
 		expect( junction.connections.get( 11 ).incomingRoadId ).toBe( 4 );
-		expect( junction.connections.get( 11 ).outgoingRoadId ).toBe( 3 );
 		expect( junction.connections.get( 11 ).laneLink.length ).toBe( 0 );
 		expect( junction.connections.get( 11 ).isCornerConnection ).toBe( undefined );
 

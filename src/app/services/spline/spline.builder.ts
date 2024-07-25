@@ -138,7 +138,7 @@ export class SplineBuilder {
 
 	build ( spline: AbstractSpline ) {
 
-		this.buildSpline( spline );
+		this.buildGeometry( spline );
 
 		this.buildSegments( spline );
 
@@ -238,6 +238,8 @@ export class SplineBuilder {
 
 		this.updateWaypoints( spline );
 
+		this.updateBoundPoints( spline );
+
 		updateBoundingBox();
 
 	}
@@ -316,15 +318,17 @@ export class SplineBuilder {
 
 	updateWaypoints ( spline: AbstractSpline ) {
 
+		return;
+
 		spline.waypoints = [];
 
 		const stepSize = 1;
 
-		const positions = this.splineService.getPoints( spline, stepSize );
+		const points = this.splineService.getPoints( spline, stepSize );
 
-		for ( let i = 0; i < positions.length - 1; i++ ) {
+		for ( let i = 0; i < points.length - 1; i++ ) {
 
-			const position = positions[ i ];
+			const position = points[ i ];
 
 			const roadWidth = this.getWidthAt( spline, position, i * stepSize );
 
@@ -364,6 +368,44 @@ export class SplineBuilder {
 		return closestWidth;
 
 	}
+
+	private updateBoundPoints ( spline: AbstractSpline ) {
+
+		spline.leftPoints = [];
+		spline.rightPoints = [];
+		spline.centerPoints = [];
+
+		spline.segmentMap.forEach( segment => {
+
+			if ( segment instanceof TvRoad ) {
+
+				for ( let s = 0; s < segment.length; s++ ) {
+
+					const roadWidth = segment.getRoadWidthAt( s );
+
+					const center = segment.getPosThetaAt( s );
+					const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
+					const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
+
+					const centerPoint = new SimpleControlPoint( null, center.position );
+					const leftPoint = new SimpleControlPoint( null, left.position );
+					const rightPoint = new SimpleControlPoint( null, right.position );
+
+					// centerPoint.userData.width = roadWidth.totalWidth;
+					// leftPoint.userData.width = roadWidth.leftSideWidth;
+					// rightPoint.userData.width = roadWidth.rightSideWidth;
+
+					spline.leftPoints.push( leftPoint );
+					spline.centerPoints.push( centerPoint );
+					spline.rightPoints.push( rightPoint );
+
+				}
+
+			}
+
+		} );
+
+	}
 }
 
 
@@ -391,7 +433,9 @@ export class AutoSplineBuilder {
 					TvConsole.error( 'No geometries found for road' + segment.toString() );
 					console.error( 'No geometries found for road', segment );
 
-					MapEvents.roadRemoved.emit( new RoadRemovedEvent( segment ) );
+					if ( !segment.isJunction ) {
+						MapEvents.roadRemoved.emit( new RoadRemovedEvent( segment ) );
+					}
 
 				}
 

@@ -34,6 +34,7 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { SelectObjectCommand } from 'app/commands/select-object-command';
+import { SplineUtils } from 'app/utils/spline.utils';
 
 export class RoadTool extends BaseTool<AbstractSpline> {
 
@@ -311,7 +312,12 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( spline.type === SplineType.EXPLICIT ) {
 			// TODO:
-			this.setHint( 'Moving explicit roads is not supported' );
+			this.setHint( 'Moving explicit roads is not supported. Add control points to modify spline.' );
+			return;
+		}
+
+		if ( SplineUtils.isConnectedToJunction( spline ) ) {
+			this.setHint( 'Moving spline connected with junction is not supported. Add control points to modify spline.' );
 			return;
 		}
 

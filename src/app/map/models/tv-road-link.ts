@@ -6,6 +6,8 @@ import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
 import { TvJunction } from './junctions/tv-junction';
 import { TvRoadCoord } from './TvRoadCoord';
+import { TvLaneCoord } from './tv-lane-coord';
+import { TvLane } from './tv-lane';
 
 export enum TvRoadLinkType {
 	ROAD = 'road',
@@ -101,6 +103,10 @@ export class TvRoadLink {
 
 	}
 
+	get contact () {
+		return this.contactPoint;
+	}
+
 	get isRoad () {
 		return this.type === TvRoadLinkType.ROAD;
 	}
@@ -137,11 +143,11 @@ export class TvRoadLink {
 
 		if ( this.type == TvRoadLinkType.ROAD ) {
 
-			return `Link: ${ this.type }:${ this.id } Contact:${ this.contactPoint }`;
+			return `Link: Contact:${ this.contactPoint } ${ this.element.toString() }`;
 
 		} else {
 
-			return `Link: ${ this.type }:${ this.id }`;
+			return `Link: Junction: ${ this.element.toString() }`;
 
 		}
 
@@ -156,6 +162,19 @@ export class TvRoadLink {
 		const s = this.contactPoint == TvContactPoint.START ? 0 : road.length;
 
 		return new TvRoadCoord( road, s, 0 );
+
+	}
+
+	toLaneCoord ( lane: TvLane ) {
+
+		if ( this.type == TvRoadLinkType.JUNCTION ) return;
+
+		const road = this.element as TvRoad;
+
+		const s = this.contactPoint == TvContactPoint.START ? 0 : road.length;
+
+		return new TvLaneCoord( road, this.laneSection, lane, s, 0 );
+
 
 	}
 

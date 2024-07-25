@@ -26,9 +26,10 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoadLinkType } from "../../map/models/tv-road-link";
 import { TvJunctionBoundaryBuilder } from 'app/map/junction-boundary/tv-junction-boundary.builder';
 import { RoadBuilder } from 'app/map/builders/road.builder';
+import { RoadService } from '../road/road.service';
+import { TvLaneType } from 'app/map/models/tv-common';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
-import { TvLaneType } from "../../map/models/tv-common";
-import { GeometryUtils } from '../surface/geometry-utils';
+import { SplineBuilder } from '../spline/spline.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -36,23 +37,37 @@ import { GeometryUtils } from '../surface/geometry-utils';
 export class JunctionBuilder {
 
 	constructor (
+		public roadService: RoadService,
 		public roadBuilder: RoadBuilder,
-		public boundaryBuilder: TvJunctionBoundaryBuilder
+		public boundaryBuilder: TvJunctionBoundaryBuilder,
+		public splineBuilder: SplineBuilder,
 	) {
 	}
 
-	build ( junction: TvJunction ): Mesh {
+	build ( junction: TvJunction ) {
+
+		return this.buildFromConnectionV2( junction );
+
+	}
+
+	buildFromBoundary ( junction: TvJunction ): Mesh {
+
+		return this.boundaryBuilder.buildViaShape( junction.boundary );
+
+	}
+
+	buildFromConnectionV2 ( junction: TvJunction ): Mesh {
 
 		// NOTE: This is a temporary implementation to visualize the junction
 		// NOTE: This does not work
+
+		const geometries = [];
 
 		const connnections = junction.getConnections();
 
 		const connectingRoads = connnections.map( connection => connection.connectingRoad );
 
-		const roadGeometries: BufferGeometry[] = [];
-
-		connectingRoads.forEach( road =>
+		const addRoadGeometries = ( road: TvRoad ) => {
 
 			road.laneSections.forEach( laneSection =>
 
@@ -62,86 +77,78 @@ export class JunctionBuilder {
 
 					if ( !lane.gameObject ) return;
 
-					if ( lane.type != TvLaneType.driving ) return;
+					if ( lane.id == 0 ) return;
 
-					roadGeometries.push( lane.gameObject.geometry );
+					if ( lane.type == TvLaneType.sidewalk ) return;
+
+					geometries.push( lane.gameObject.geometry );
 
 				} )
-			) );
 
-		const geometry = BufferGeometryUtils.mergeGeometries( roadGeometries );
+			);
 
-		// Create geometry from triangulated points
-		const junctionGeometry = GeometryUtils.createPolygonFromBufferGeometry( geometry );
+		};
 
-		// Create material and mesh
-		const material = new MeshStandardMaterial( { color: 0x0000FF, side: DoubleSide } );
+		junction.corners.map( corner => {
 
-		return new Mesh( junctionGeometry, material );
+			corner.connectingRoad.gameObject = this.roadBuilder.buildRoad( corner.connectingRoad );
 
-	}
-
-	buildFromRoadCoords ( coords: TvRoadCoord[] ) {
-
-		const points: Vector3[] = [];
-
-		coords.forEach( roadCoord => {
-
-			const s = roadCoord.s;
-
-			const rightT = roadCoord.road.getRightsideWidth( s );
-			const leftT = roadCoord.road.getLeftSideWidth( s );
-
-			const leftPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
-			const rightPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );
-
-			points.push( leftPosition.toVector3() );
-			points.push( rightPosition.toVector3() );
+			addRoadGeometries( corner.connectingRoad );
 
 		} );
 
-		return this.createPolygonalMesh( points );
+		connectingRoads.forEach( road => addRoadGeometries( road ) );
+
+		if ( geometries.length == 0 ) return new Mesh();
+
+		const geometry = BufferGeometryUtils.mergeGeometries( geometries );
+
+		return new Mesh( geometry, this.junctionMaterial );
 
 	}
 
-	buildBoundaryMesh ( junction: TvJunction ): Mesh {
+	// buildMeshFromConnections ( junction: TvJunction ) {
 
-		return this.boundaryBuilder.build( junction.boundary );
+	// 	const sortedLinks = this.roadService.sortLinks( junction.getLinks() );
 
-	}
+	// 	const roads: TvRoad[] = [];
 
-	buildJunctionMesh ( junction: TvJunction ) {
+	// 	for ( let i = 0; i < sortedLinks.length; i++ ) {
 
-		const coords = junction.getRoadCoords();
+	// 		const linkA = sortedLinks[ i ];
 
-		return this.buildFromRoadCoords( coords );
+	// 		let rightConnectionCreated = false;
 
-	}
+	// 		for ( let j = i + 1; j < sortedLinks.length; j++ ) {
 
-	buildConnectingRoads ( junction: TvJunction ) {
+	// 			// check if this is the first and last connection
+	// 			const isFirstAndLast = i == 0 && j == sortedLinks.length - 1;
 
-		const connnections = junction.getConnections();
+	// 			const isCorner = !rightConnectionCreated && !isFirstAndLast;
 
-		const connectingRoads = connnections.map( connection => connection.connectingRoad );
+	// 			const linkB = sortedLinks[ j ];
 
-		const mesh = new Mesh();
+	// 			const coordA = this.roadService.findLinkPosition( linkA );
 
-		connectingRoads.forEach( road => {
+	// 			const coordB = this.roadService.findLinkPosition( linkB );
 
-			const roadMesh = this.roadBuilder.buildRoad( road );
+	// 			if ( !coordA || !coordB ) continue;
 
-			if ( roadMesh ) {
+	// 			const road = this.roadService.createJoiningRoadFromLinks( linkA, linkB );
 
-				mesh.add( roadMesh );
+	// 			this.roadBuilder.buildRoad( road );
 
-			}
+	// 			roads.push( road );
 
-		} );
+	// 		}
 
-		return mesh;
-	}
+	// 	}
 
-	createMeshFromRoads ( roads: TvRoad[] ): Mesh {
+	// 	return this.combineMeshes( roads );
+
+	// }
+
+	private createMeshFromRoads ( roads: TvRoad[] ): Mesh {
 
 		const coords: TvPosTheta[] = [];
 
@@ -162,7 +169,7 @@ export class JunctionBuilder {
 		return this.createMeshFromPosTheta( coords );
 	}
 
-	createMeshFromPosTheta ( coords: TvPosTheta[] ): Mesh {
+	private createMeshFromPosTheta ( coords: TvPosTheta[] ): Mesh {
 
 		const positions: Vector3[] = coords.map( coord => coord.toVector3() );
 
@@ -170,7 +177,7 @@ export class JunctionBuilder {
 
 	}
 
-	createMeshFromRoadCoord ( coords: TvRoadCoord[] ): Mesh {
+	private createMeshFromRoadCoord ( coords: TvRoadCoord[] ): Mesh {
 
 		const positions: Vector3[] = coords.map( coord => coord.position );
 
@@ -237,7 +244,7 @@ export class JunctionBuilder {
 	// 	return mesh;
 	// }
 
-	createPolygonalMesh ( positions: Vector3[] ): Mesh {
+	private createPolygonalMesh ( positions: Vector3[] ): Mesh {
 
 		function sortByAngle ( points, center ) {
 			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
@@ -289,7 +296,7 @@ export class JunctionBuilder {
 		return mesh;
 	}
 
-	createSmoothShapeMesh ( positions: Vector3[] ): Mesh {
+	private createSmoothShapeMesh ( positions: Vector3[] ): Mesh {
 
 		const positions2D = positions.map( p => new Vector2( p.x, p.y ) );
 
@@ -309,7 +316,7 @@ export class JunctionBuilder {
 
 	}
 
-	createLinedShapeMesh ( positions: Vector3[] ): Mesh {
+	private createLinedShapeMesh ( positions: Vector3[] ): Mesh {
 
 		const shape = new Shape();
 
@@ -350,4 +357,60 @@ export class JunctionBuilder {
 
 		return new MeshStandardMaterial( { map: map, side: FrontSide } );
 	}
+
+	private combineMeshes ( roads: TvRoad[] ): Mesh {
+
+		const roadGeometries: BufferGeometry[] = [];
+
+		roads.forEach( road =>
+
+			road.laneSections.forEach( laneSection =>
+
+				laneSection.getLaneArray().forEach( lane => {
+
+					if ( lane.id == 0 ) return;
+
+					if ( !lane.gameObject ) return;
+
+					if ( lane.type != TvLaneType.driving ) return;
+
+					roadGeometries.push( lane.gameObject.geometry );
+
+				} )
+
+			) );
+
+		const geometry = BufferGeometryUtils.mergeGeometries( roadGeometries );
+
+		const material = new MeshStandardMaterial( {
+			color: 0x0000FF,
+			side: DoubleSide
+		} );
+
+		return new Mesh( geometry, material );
+	}
+
+	private buildFromRoadCoords ( coords: TvRoadCoord[] ): Mesh {
+
+		const points: Vector3[] = [];
+
+		coords.forEach( roadCoord => {
+
+			const s = roadCoord.s;
+
+			const rightT = roadCoord.road.getRightsideWidth( s );
+			const leftT = roadCoord.road.getLeftSideWidth( s );
+
+			const leftPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
+			const rightPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );
+
+			points.push( leftPosition.toVector3() );
+			points.push( rightPosition.toVector3() );
+
+		} );
+
+		return this.createPolygonalMesh( points );
+
+	}
+
 }

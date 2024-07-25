@@ -10,7 +10,7 @@ import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { SplineCreatedEvent } from 'app/events/spline/spline-created-event';
 import { SplineRemovedEvent } from 'app/events/spline/spline-removed-event';
 import { BaseDataService } from '../../core/interfaces/data.service';
-import { Box3, BufferAttribute, Points, Vector2, Vector3 } from 'three';
+import { Box2, Box3, BufferAttribute, Points, Vector2, Vector3 } from 'three';
 import { Maths } from 'app/utils/maths';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SplineIntersection } from '../junction/spline-intersection';
@@ -25,6 +25,8 @@ import { TvGeometryType } from "../../map/models/tv-common";
 import { CURVE_Y } from "../../core/shapes/spline-config";
 import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
 import { SimpleControlPoint } from 'app/objects/simple-control-point';
+import { SplineUtils } from 'app/utils/spline.utils';
+import { DebugDrawService } from '../debug/debug-draw.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -92,7 +94,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			if ( otherSpline == predecessorSpline ) continue;
 
 			// const intersection = this.getSplineIntersectionPoint( spline, otherSpline );
-			const intersection = this.findIntersectionByBounds( spline, otherSpline );
+			const intersection = this.findIntersectionsViaBox2D( spline, otherSpline );
 			// const intersection = this.findClosestIntersection( spline, otherSpline );
 			// const intersection = this.getSplineIntersectionPointViaBoundsv2( spline, otherSpline );
 
@@ -184,6 +186,170 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			}
 
 		}
+
+	}
+
+	findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): SplineIntersection | null {
+
+		function getAveragePoint ( box: Box2 ) {
+			const center = box.getCenter( new Vector2() );
+			return new Vector2( center.x, center.y );
+		}
+
+		function createBoxFromSegment ( leftStart: Vector3, rightStart: Vector3, leftEnd: Vector3, rightEnd: Vector3 ) {
+			// Use the left and right points to directly define the box boundaries
+			const points = [
+				new Vector2( leftStart.x, leftStart.y ),
+				new Vector2( rightStart.x, rightStart.y ),
+				new Vector2( leftEnd.x, leftEnd.y ),
+				new Vector2( rightEnd.x, rightEnd.y )
+			];
+
+			// Create a Box2 that bounds the road segment
+			return new Box2().setFromPoints( points );
+		}
+
+		if ( splineA == splineB ) return;
+
+		if ( !this.intersectsSplineBox( splineA, splineB ) ) return;
+
+		let intersections: SplineIntersection[] = [];
+		let startPoint: Vector2 = null;
+		let endPoint: Vector2 = null;
+		let lastIntersection = false;
+		let currentIntersectionBox = new Box2(); // To track the intersection area
+
+		for ( let i = 0; i < splineA.centerPoints.length - 1; i++ ) {
+
+			let currentIntersection = false;
+
+			const aLeftStart = splineA.leftPoints[ i ];
+			const aRightStart = splineA.rightPoints[ i ];
+			const aLeftEnd = splineA.leftPoints[ i + 1 ];
+			const aRightEnd = splineA.rightPoints[ i + 1 ];
+
+			if ( !aLeftStart || !aRightStart || !aLeftEnd || !aRightEnd ) continue;
+
+			for ( let j = 0; j < splineB.centerPoints.length - 1; j++ ) {
+
+				const bLeftStart = splineB.leftPoints[ j ];
+				const bRightStart = splineB.rightPoints[ j ];
+				const bLeftEnd = splineB.leftPoints[ j + 1 ];
+				const bRightEnd = splineB.rightPoints[ j + 1 ];
+
+				if ( !bLeftStart || !bRightStart || !bLeftEnd || !bRightEnd ) continue;
+
+				// Create boxes for each segment using left and right points
+				const boxA = createBoxFromSegment( aLeftStart.position, aRightStart.position, aLeftEnd.position, aRightEnd.position );
+				const boxB = createBoxFromSegment( bLeftStart.position, bRightStart.position, bLeftEnd.position, bRightEnd.position );
+
+				// Check if these boxes intersect
+				if ( boxA.intersectsBox( boxB ) ) {
+
+					const intersection = boxA.clone().intersect( boxB );
+
+					if ( !lastIntersection ) {
+
+						startPoint = getAveragePoint( intersection );
+
+						currentIntersectionBox.copy( intersection );
+
+					} else {
+
+						currentIntersectionBox.union( intersection );
+
+					}
+
+					endPoint = getAveragePoint( intersection );
+
+					lastIntersection = true;
+
+					currentIntersection = true;
+
+				}
+
+			}
+
+			if ( lastIntersection && !currentIntersection ) {
+
+				const average = getAveragePoint( currentIntersectionBox )
+				const center = new Vector3( average.x, average.y, 0 );
+				const intersection = new SplineIntersection( splineA, splineB, center );
+
+				intersection.start = startPoint;
+				intersection.end = endPoint;
+				intersection.area = currentIntersectionBox.clone();
+
+				intersections.push( intersection );
+
+				lastIntersection = false; // Reset intersection tracking
+
+				currentIntersectionBox.makeEmpty(); // Reset the intersection box
+
+			}
+
+		}
+
+		if ( lastIntersection ) {
+
+			const average = getAveragePoint( currentIntersectionBox )
+			const center = new Vector3( average.x, average.y, 0 );
+			const intersection = new SplineIntersection( splineA, splineB, center );
+
+			intersection.start = startPoint;
+			intersection.end = endPoint;
+			intersection.area = currentIntersectionBox.clone();
+
+			intersections.push( intersection );
+
+		}
+
+		if ( intersections.length > 0 ) {
+
+			intersections.forEach( intersection => {
+
+				this.computeOffsets( intersection );
+
+			} )
+
+			// TODO: support multiple junctions per spline
+			// for now return the first intersection
+			return intersections[ 0 ];
+		}
+
+	}
+
+	computeOffsets ( intersection: SplineIntersection ) {
+
+		// DebugDrawService.instance.drawBox2D( intersection.area );
+		// DebugDrawService.instance.drawSphere( intersection.position );
+
+		const BUFFER = 2;
+
+		const corners = [
+			new Vector3( intersection.area.min.x, intersection.area.min.y, 0 ),
+			new Vector3( intersection.area.max.x, intersection.area.min.y, 0 ),
+			new Vector3( intersection.area.max.x, intersection.area.max.y, 0 ),
+			new Vector3( intersection.area.min.x, intersection.area.max.y, 0 )
+		];
+
+		const splineACoords = corners.map( corner => this.getCoordAt( intersection.spline, corner ) ).sort( ( a, b ) => a.s - b.s );
+		const splineBCoords = corners.map( corner => this.getCoordAt( intersection.otherSpline, corner ) ).sort( ( a, b ) => a.s - b.s );
+
+		const aMin = splineACoords[ 0 ];
+		const aMax = splineACoords[ splineACoords.length - 1 ];
+
+		const bMin = splineBCoords[ 0 ];
+		const bMax = splineBCoords[ splineBCoords.length - 1 ];
+
+		// DebugDrawService.instance.drawLine( [ aMin.position, aMax.position ], 0xff0000 );
+		// DebugDrawService.instance.drawLine( [ bMin.position, bMax.position ], 0x0000ff );
+
+		intersection.splineStart = Math.max( aMin.s - BUFFER, 0 );
+		intersection.splineEnd = Math.min( aMax.s + BUFFER, intersection.spline.getLength() );
+
+		intersection.otherStart = Math.max( bMin.s - BUFFER, 0 );
+		intersection.otherEnd = Math.min( bMax.s + BUFFER, intersection.otherSpline.getLength() );
 
 	}
 
@@ -343,78 +509,6 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction ) {
-
-		return spline.segmentMap.contains( segment );
-
-	}
-
-	addJunctionSegment ( spline: AbstractSpline, sStart: number, junction: TvJunction ) {
-
-		if ( sStart > this.getLength( spline ) ) {
-			TvConsole.error( 'Start must be less than end' );
-			return;
-		}
-
-		if ( sStart < 0 ) {
-			TvConsole.error( 'Start/End must be greater than 0' );
-			return;
-		}
-
-		this.addSegmentSection( spline, sStart, junction );
-	}
-
-	addEmptySegment ( spline: AbstractSpline, sStart: number ) {
-
-		if ( sStart > this.getLength( spline ) ) {
-			TvConsole.error( 'Start must be less than end' );
-			return;
-		}
-
-		if ( sStart < 0 ) {
-			TvConsole.error( 'Start/End must be greater than 0' );
-			return;
-		}
-
-		// spline.addSegmentSection( sStart, -1, SplineSegmentType.NONE, null );
-		this.addSegmentSection( spline, sStart, null );
-	}
-
-	addRoadSegmentNew ( spline: AbstractSpline, sStart: number, road: TvRoad ) {
-
-		if ( sStart > this.getLength( spline ) ) {
-			TvConsole.error( 'Start must be less than end' );
-			return;
-		}
-
-		if ( sStart < 0 ) {
-			TvConsole.error( 'Start/End must be greater than 0' );
-			return;
-		}
-
-		this.addSegmentSection( spline, sStart, road );
-
-	}
-
-	addSegmentSection ( spline: AbstractSpline, sStart: number, segment: TvRoad | TvJunction ) {
-
-		if ( sStart == null ) return;
-
-		// check if road segment already exists
-		if ( spline.segmentMap.contains( segment ) ) return;
-
-		if ( spline.segmentMap.hasKey( sStart ) ) {
-
-			console.error( 'Segment already exists', segment );
-
-		} else {
-
-			spline.segmentMap.set( sStart, segment );
-
-		}
-
-	}
-
 	removeControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
 
 		const index = spline.controlPoints.findIndex( p => p.id === point.id );
@@ -483,41 +577,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	getSuccessorSpline ( spline: AbstractSpline ): AbstractSpline {
 
-		const lastSegment = spline.segmentMap.getLast();
-
-		if ( !lastSegment ) return;
-
-		if ( !( lastSegment instanceof TvRoad ) ) return;
-
-		const road = lastSegment;
-
-		if ( !road.successor ) return;
-
-		if ( !road.successor.isRoad ) return;
-
-		const successorRoad = road.successor.element as TvRoad;
-
-		return successorRoad.spline;
+		return SplineUtils.getSuccessorSpline( spline );
 
 	}
 
 	getPredecessorSpline ( spline: AbstractSpline ): AbstractSpline {
 
-		const firstSegment = spline.segmentMap.getFirst();
-
-		if ( !firstSegment ) return;
-
-		if ( !( firstSegment instanceof TvRoad ) ) return;
-
-		const road = firstSegment;
-
-		if ( !road.predecessor ) return;
-
-		if ( !road.predecessor.isRoad ) return;
-
-		const predecessorRoad = road.predecessor.element as TvRoad;
-
-		return predecessorRoad.spline;
+		return SplineUtils.getPredecessorSpline( spline );
 
 	}
 
@@ -570,7 +636,6 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		} );
 
 		return junctions;
-
 
 	}
 
@@ -634,19 +699,16 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
+	/**
+	 *
+	 * @param spline
+	 * @returns
+	 * @deprecated use SplineUtils.isConnectedToJunction
+	 */
 	isConnectionRoad ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.length != 1 ) {
-			return false;
-		}
+		return SplineUtils.isConnection( spline );
 
-		const segment = spline.segmentMap.getFirst();
-
-		if ( !( segment instanceof TvRoad ) ) {
-			return false;
-		}
-
-		return segment.isJunction;
 	}
 
 	getCoordAt ( spline: AbstractSpline, point: Vector3 ) {

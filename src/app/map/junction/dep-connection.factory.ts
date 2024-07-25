@@ -4,31 +4,33 @@
 
 import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvRoadCoord } from "../../models/TvRoadCoord";
-import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../../models/tv-common";
+import { TvRoadCoord } from "../models/TvRoadCoord";
+import { TravelDirection, TurnType, TvContactPoint, TvLaneSide, TvLaneType } from "../models/tv-common";
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { RoadService } from '../../../services/road/road.service';
+import { RoadService } from '../../services/road/road.service';
 import { TrafficRule } from 'app/map/models/traffic-rule';
-import { MapService } from '../../../services/map/map.service';
+import { MapService } from '../../services/map/map.service';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
-import { SplineBuilder } from "../../../services/spline/spline.builder";
+import { SplineBuilder } from "../../services/spline/spline.builder";
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { LaneUtils } from 'app/utils/lane.utils';
+import { ConnectionFactory } from "../../factories/connection.factory";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ConnectionService {
+export class DepConnectionFactory {
 
 	constructor (
 		private splineBuilder: SplineBuilder,
 		private roadService: RoadService,
 		private mapService: MapService,
+		private factory: ConnectionFactory
 	) {
 	}
 
@@ -38,11 +40,53 @@ export class ConnectionService {
 
 	}
 
-	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint, outgoingRoad?: TvRoad ) {
+	createConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): TvJunctionConnection {
+
+		if ( incoming.road.trafficRule == TrafficRule.LHT ) {
+			// TODO: Implement this
+			console.error( 'Traffic rule not implemented' );
+		}
+
+		const connectingRoad = this.roadService.createConnectionRoad( junction, incoming, outgoing );
+
+		const laneSection = connectingRoad.addGetLaneSection( 0 );
+
+		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+
+		const connection = new TvJunctionConnection(
+			junction.connections.size,
+			incoming.road,
+			connectingRoad,
+			TvContactPoint.START,
+		);
+
+		connection.junction = junction;
+
+		this.splineBuilder.buildSpline( connection.connectingRoad.spline );
+
+		this.splineBuilder.buildSegments( connection.connectingRoad.spline );
+
+		// NOTE: bounding box will not be built for if road has not lanes
+		// this.splineBuilder.buildBoundingBox( connection.connectingRoad.spline );
+
+		this.createDrivingLinks( connection, incoming, outgoing );
+
+		if ( isCorner ) {
+
+			connection.markAsCornerConnection();
+
+			connection.connectingRoad.markAsCornerRoad();
+
+		}
+
+		return connection;
+	}
+
+	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint ) {
 
 		const id = junction.connections.size + 1;
 
-		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact, outgoingRoad );
+		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact );
 
 		connection.junction = junction;
 
@@ -109,49 +153,6 @@ export class ConnectionService {
 		// }
 
 		return junctionConnections;
-	}
-
-	createConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): TvJunctionConnection {
-
-		if ( incoming.road.trafficRule == TrafficRule.LHT ) {
-			// TODO: Implement this
-			console.error( 'Traffic rule not implemented' );
-		}
-
-		const connectingRoad = this.roadService.createConnectionRoad( junction, incoming, outgoing );
-
-		const laneSection = connectingRoad.addGetLaneSection( 0 );
-
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
-
-		const connection = new TvJunctionConnection(
-			junction.connections.size,
-			incoming.road,
-			connectingRoad,
-			TvContactPoint.START,
-			outgoing.road
-		);
-
-		connection.junction = junction;
-
-		this.splineBuilder.buildSpline( connection.connectingRoad.spline );
-
-		this.splineBuilder.buildSegments( connection.connectingRoad.spline );
-
-		// NOTE: bounding box will not be built for if road has not lanes
-		// this.splineBuilder.buildBoundingBox( connection.connectingRoad.spline );
-
-		this.createDrivingLinks( connection, incoming, outgoing );
-
-		if ( isCorner ) {
-
-			connection.markAsCornerConnection();
-
-			connection.connectingRoad.markAsCornerRoad();
-
-		}
-
-		return connection;
 	}
 
 	createConnectionV3 ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): TvJunctionConnection {
@@ -249,8 +250,6 @@ export class ConnectionService {
 	postProcessConnection ( junction: TvJunction, connection: TvJunctionConnection, isCorner: boolean = false ): TvJunctionConnection {
 
 		const connectingRoad = connection.connectingRoad;
-		// const incomingRoad = connection.incomingRoad;
-		// const outgoingRoad = connection.outgoingRoad;
 
 		if ( !isCorner ) return connection;
 
@@ -305,10 +304,10 @@ export class ConnectionService {
 		return connection;
 	}
 
-	createDrivingLinks ( connection: TvJunctionConnection, incoming: TvRoadCoord, outgoing: TvRoadCoord ) {
+	private createDrivingLinks ( connection: TvJunctionConnection, incoming: TvRoadCoord, outgoing: TvRoadCoord ) {
 
 		const incomingDirection = LaneUtils.determineDirection( incoming.contact );
-		const outgoingDirection = LaneUtils.determineOutgoingDirection( incoming, outgoing );
+		const outgoingDirection = LaneUtils.determineOutDirection( outgoing.contact );
 
 		const incomingLaneCoords = incoming.laneSection.getLaneArray()
 			.filter( lane => lane.type == TvLaneType.driving || lane.type == TvLaneType.shoulder )
@@ -333,7 +332,7 @@ export class ConnectionService {
 
 	}
 
-	createNonDrivingLinks ( connection: TvJunctionConnection ): TvJunctionConnection {
+	private createNonDrivingLinks ( connection: TvJunctionConnection ): TvJunctionConnection {
 
 		function computeS ( lane: TvLane, contact: TvContactPoint ): number {
 
@@ -398,7 +397,7 @@ export class ConnectionService {
 		return connection;
 	}
 
-	addRoadMarks ( connection: TvJunctionConnection ): TvJunctionConnection {
+	private addRoadMarks ( connection: TvJunctionConnection ): TvJunctionConnection {
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
 

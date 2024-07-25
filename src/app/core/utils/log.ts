@@ -6,14 +6,16 @@ import { Environment } from './environment';
 
 export class Log {
 
+	// private static logFilePath = path.join( __dirname, 'application.log' );
+
 	// static info ( ...message: any ) {
 	// 	if ( Environment.production ) return;
 	// 	console.log( ...message );
 	// }
 
-	// static log ( message: string, ...optionalParams: any[] ): void {
-	// 	this.writeLog( 'LOG', message, optionalParams );
-	// }
+	static log ( message: string, ...optionalParams: any[] ): void {
+		this.writeLog( 'LOG', message, optionalParams );
+	}
 
 	static debug ( message: string, ...optionalParams: any[] ): void {
 		this.writeLog( 'DEBUG', message, optionalParams );
@@ -27,26 +29,47 @@ export class Log {
 		this.writeLog( 'ERROR', message, optionalParams );
 	}
 
-	// private static logFilePath = path.join( __dirname, 'application.log' );
+	static warn ( message: string, ...optionalParams: any[] ): void {
+		this.writeLog( 'WARN', message, optionalParams );
+	}
 
 	private static getCallerInfo (): string {
+
 		const stack = new Error().stack;
+
 		if ( stack ) {
+
 			const stackLines = stack.split( '\n' );
+
 			// Filter out the stack lines belonging to the Logger class itself
 			for ( let i = 2; i < stackLines.length; i++ ) {
+
 				const stackLine = stackLines[ i ];
-				if ( !stackLine.includes( 'Log.' ) && stackLine.includes( 'at' ) ) {
+
+				if ( !stackLine?.includes( 'Log.' ) && stackLine?.includes( 'at' ) ) {
+
 					const match = stackLine.match( /\s+at\s+(.*?)\s+\((.*):(\d+):(\d+)\)/ );
+
 					if ( match && match[ 1 ] && match[ 2 ] && match[ 3 ] && match[ 4 ] ) {
-						const methodName = match[ 1 ];
-						const line = match[ 3 ];
-						const column = match[ 4 ];
-						return `${ methodName } (Line:${ line }:${ column })`;
+
+						// eg. JunctionConnectionFactory.createConnections
+						const classAndMethod = match[ 1 ];
+						const className = classAndMethod.split( '.' )[ 0 ] ?? 'unknown';
+
+						// const line = match[ 3 ];
+						// const column = match[ 4 ];
+
+						// (Line:${ line }:${ column }) // can be added if needed
+						return `${ className }`;
+
 					}
+
 				}
+
 			}
+
 		}
+
 		return 'unknown';
 	}
 
@@ -55,10 +78,24 @@ export class Log {
 		if ( Environment.production ) return;
 
 		const callerInfo = this.getCallerInfo();
-		const timestamp = new Date().toISOString();
-		const logMessage = `[${ timestamp }] [${ level }] ${ callerInfo } - ${ message }`;
 
-		console.log( logMessage, ...optionalParams );
+		// user friendly timestamp
+		//const timestamp = new Date().toISOString();
+		const timestamp = new Date().toLocaleTimeString();
+
+		const logMessage = `[${ timestamp }] [${ level }] ${ callerInfo } ${ message }`;
+
+		switch ( level ) {
+			case 'ERROR':
+				console.error( logMessage, ...optionalParams );
+				break;
+			case 'WARN':
+				console.warn( logMessage, ...optionalParams );
+				break;
+			default:
+				console.log( logMessage, ...optionalParams );
+				break;
+		}
 
 		// Write to log file
 		// fs.appendFileSync( this.logFilePath, logMessage + '\n' );

@@ -11,6 +11,10 @@ import { DebugState } from "../../services/debug/debug-state";
 import { ManeuverMesh } from 'app/services/junction/junction.debug';
 import { ManeuverControlPointInspector, ManeuverInspector } from './maneuver.inspector';
 import { TvJunction } from "../../map/models/junctions/tv-junction";
+import { AbstractSpline } from "../../core/shapes/abstract-spline";
+import { TvRoad } from "../../map/models/tv-road.model";
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 
 export class ManeuverTool extends BaseTool<any> {
 
@@ -85,15 +89,21 @@ export class ManeuverTool extends BaseTool<any> {
 
 	onObjectRemoved ( object: any ): void {
 
-		// if ( object instanceof SplineControlPoint ) {
-		//
-		// 	this.tool.removeControlPoint( object.spline, object );
-		//
-		// } else {
-		//
-		// 	super.onObjectRemoved( object );
-		//
-		// }
+		if ( object instanceof ManeuverMesh ) {
+
+			this.removeManeuver( object.junction, object.connection, object.link );
+
+		} else {
+
+		}
+
+	}
+
+	removeManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+
+		this.tool.connectionService.removeLink( junction, connection, link );
+
+		this.tool.junctionDebugger.updateDebugState( junction, DebugState.SELECTED );
 
 	}
 
@@ -151,21 +161,13 @@ export class ManeuverTool extends BaseTool<any> {
 
 			this.tool.splineService.update( object.spline );
 
-			const firstRoad = this.tool.splineService.findFirstRoad( object.spline );
+			const connectingRoad = this.findConnectingRoad( object.spline );
 
-			const junctionId = firstRoad?.junctionId;
+			if ( !connectingRoad ) return;
 
-			if ( junctionId ) {
+			this.tool.junctionDebugger.updateDebugState( connectingRoad.junction, DebugState.SELECTED );
 
-				const junction = this.tool.junctionService.getJunctionById( junctionId );
-
-				if ( junction ) {
-
-					this.tool.junctionDebugger.updateDebugState( junction, DebugState.SELECTED );
-
-				}
-
-			}
+			this.markAsDirty( connectingRoad.junction, connectingRoad );
 
 		} else {
 
@@ -173,6 +175,39 @@ export class ManeuverTool extends BaseTool<any> {
 
 		}
 
+	}
+
+	onDeleteKeyDown () {
+
+		// dont delete anything via keyboard for now
+
+	}
+
+	private markAsDirty ( junction: TvJunction, connectingRoad: TvRoad ) {
+
+		const connection = junction.getConnections().find( c => c.connectingRoad === connectingRoad );
+
+		if ( connection ) {
+
+			connection.laneLink.forEach( laneLink => {
+
+				laneLink.modified = false;
+
+			} );
+
+		}
+
+	}
+
+	private findConnectingRoad ( spline: AbstractSpline ): TvRoad {
+
+		const road = this.tool.splineService.findFirstRoad( spline );
+
+		if ( road.isJunction ) return;
+
+		if ( !road.junction ) return;
+
+		return road;
 	}
 
 }

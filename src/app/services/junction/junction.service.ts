@@ -12,7 +12,7 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { JunctionBuilder } from './junction.builder';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { BaseToolService } from 'app/tools/base-tool.service';
-import { ConnectionService } from "../../map/junction/connection/connection.service";
+import { DepConnectionFactory } from "../../map/junction/dep-connection.factory";
 import { MapService } from '../map/map.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { TvContactPoint, TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
@@ -35,7 +35,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		private factory: JunctionFactory,
 		private dividerService: RoadDividerService,
 		public junctionBuilder: JunctionBuilder,
-		public connectionService: ConnectionService,
+		public connectionService: DepConnectionFactory,
 		public debug: DebugDrawService,
 		public base: BaseToolService,
 		public mapService: MapService,
@@ -53,7 +53,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		let junction: TvJunction;
 
-		junction = this.createNewJunction();
+		junction = this.createCustomJunction();
 
 		for ( let i = 0; i < coords.length; i++ ) {
 
@@ -190,7 +190,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	buildJunctionMesh ( junction: TvJunction ) {
 
-		return this.junctionBuilder.buildBoundaryMesh( junction );
+		return this.junctionBuilder.buildFromBoundary( junction );
 
 	}
 
@@ -240,6 +240,15 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		return this.factory.createJunction();
 
+	}
+
+	createCustomJunction () {
+
+		const junction = this.factory.createJunction();
+
+		junction.auto = false;
+
+		return junction;
 	}
 
 	//createVirtualJunction ( road: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {

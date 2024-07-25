@@ -5,9 +5,12 @@
 import { TvLane } from "app/map/models/tv-lane";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TrafficRule } from "../map/models/traffic-rule";
-import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../map/models/tv-common";
+import { TravelDirection, TurnType, TvContactPoint, TvLaneSide, TvLaneType } from "../map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
+import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvLaneCoord } from "app/map/models/tv-lane-coord";
+import { Maths } from "./maths";
 
 export class LaneUtils {
 
@@ -144,24 +147,6 @@ export class LaneUtils {
 		return TravelDirection.backward;
 	}
 
-	static determineOutgoingDirection ( incoming: TvRoadCoord, outgoing: TvRoadCoord ): TravelDirection {
-
-		if ( incoming.contact != outgoing.contact ) {
-
-			return incoming.travelDirection;
-
-		}
-
-		if ( incoming.travelDirection === TravelDirection.forward ) {
-
-			return TravelDirection.backward;
-
-		}
-
-		return TravelDirection.forward;
-
-	}
-
 	// when we only have incoming lane
 	static copyPreviousLane ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
 
@@ -236,12 +221,22 @@ export class LaneUtils {
 			.filter( lane => lane.id != 0 )
 			.filter( lane => !type || lane.type == type );
 
+		return this.findHighest( lanes, type );
+	}
+
+	static findHighest ( lanes: TvLane[], type?: TvLaneType ) {
+
 		if ( lanes.length === 0 ) return null;
 
 		let highestLaneId = Number.MIN_SAFE_INTEGER;
 		let highestLane = null;
 
 		for ( const current of lanes ) {
+
+			// ignore center lanes
+			if ( current.side == TvLaneSide.CENTER ) continue;
+
+			if ( type && current.type != type ) continue;
 
 			if ( current.id > highestLaneId ) {
 
@@ -262,12 +257,23 @@ export class LaneUtils {
 			.filter( lane => lane.id != 0 )
 			.filter( lane => !type || lane.type == type );
 
+		return this.findLowest( lanes, type );
+
+	}
+
+	static findLowest ( lanes: TvLane[], type?: TvLaneType ) {
+
 		if ( lanes.length === 0 ) return null;
 
 		let lowestLaneId = Number.MAX_SAFE_INTEGER;
 		let lowestLane = null;
 
 		for ( const current of lanes ) {
+
+			// ignore center lanes
+			if ( current.side == TvLaneSide.CENTER ) continue;
+
+			if ( type && current.type != type ) continue;
 
 			if ( current.id < lowestLaneId ) {
 
@@ -292,6 +298,136 @@ export class LaneUtils {
 
 		return this.findOuterMostLane( laneSection, side, TvLaneType.driving );
 
+	}
+
+	static createIncomingCoords ( roadCoord: TvRoadCoord | TvRoadLink, corner: boolean, matchDirection = true ) {
+
+		const direction = LaneUtils.determineDirection( roadCoord.contact );
+
+		let lanes: TvLane[] = [];
+
+		if ( matchDirection ) {
+			lanes = roadCoord.laneSection.getLaneArray().filter( lane => lane.direction === direction );
+		} else {
+			lanes = roadCoord.laneSection.getLaneArray();
+		}
+
+		const coords = lanes.map( lane => roadCoord.toLaneCoord( lane ) );
+
+		if ( this.shouldSortIncoming( roadCoord.contact, corner ) ) {
+			// sort by lane id in ascending order
+			coords.sort( ( a, b ) => a.lane.id - b.lane.id );
+		}
+
+		return coords;
+	}
+
+	static createOutgoingCoords ( roadCoord: TvRoadCoord | TvRoadLink, corner: boolean, matchDirection = true ) {
+
+		const direction = LaneUtils.determineOutDirection( roadCoord.contact );
+
+		let lanes: TvLane[] = [];
+
+		if ( matchDirection ) {
+			lanes = roadCoord.laneSection.getLaneArray().filter( lane => lane.direction === direction );
+		} else {
+			lanes = roadCoord.laneSection.getLaneArray();
+		}
+
+		const coords = lanes.map( lane => roadCoord.toLaneCoord( lane ) );
+
+		if ( this.shouldSortOutgoing( roadCoord.contact, corner ) ) {
+			// sort by lane id in ascending order
+			coords.sort( ( a, b ) => a.lane.id - b.lane.id );
+		}
+
+		return coords;
+	}
+
+	static shouldSortIncoming ( contact: TvContactPoint, corner: boolean ): boolean {
+
+		if ( corner ) {
+			return contact === TvContactPoint.END ? true : false;
+		}
+
+		return contact === TvContactPoint.END ? false : true;
+	}
+
+	static shouldSortOutgoing ( contact: TvContactPoint, corner: boolean ): boolean {
+
+		if ( corner ) {
+			return contact === TvContactPoint.END ? false : true;
+		}
+
+		return contact === TvContactPoint.END ? true : false;
+	}
+
+	static determineTurnType ( incomingCoord: TvLaneCoord | TvRoadCoord, outgoingCoord: TvLaneCoord | TvRoadCoord ): TurnType {
+
+		// TODO: for now, if spline is same then it is straight
+		// We can improve this later
+		if ( incomingCoord.road.spline.uuid == outgoingCoord.road.spline.uuid ) {
+			return TurnType.STRAIGHT;
+		}
+
+		const roadA = incomingCoord.road.getPosThetaByContact( incomingCoord.contact );
+		const roadB = outgoingCoord.road.getPosThetaByContact( outgoingCoord.contact );
+
+		if ( incomingCoord.contact == TvContactPoint.START ) {
+			roadA.rotateDegree( 180 );
+		}
+
+		if ( outgoingCoord.contact == TvContactPoint.START ) {
+			roadB.rotateDegree( 180 );
+		}
+
+		return Maths.findTurnType( roadA.position, roadB.position, roadA.hdg );
+	}
+
+	static findLeftMostIncomingLane ( incoming: TvRoadLink | TvRoadCoord | TvLaneCoord, matchDirection = true ): TvLane {
+
+		const direction = LaneUtils.determineDirection( incoming.contact );
+
+		let lanes = [];
+
+		if ( matchDirection ) {
+			lanes = incoming.laneSection.getLaneArray().filter( lane => lane.direction === direction );
+		} else {
+			lanes = incoming.laneSection.getLaneArray();
+		}
+
+		if ( incoming.contact == TvContactPoint.START ) {
+			return LaneUtils.findLowest( lanes, TvLaneType.driving );
+		}
+
+		if ( incoming.contact == TvContactPoint.END ) {
+			return LaneUtils.findHighest( lanes, TvLaneType.driving );
+		}
+
+		return null;
+	}
+
+	static findRightMostIncomingLane ( incoming: TvRoadLink | TvRoadCoord | TvLaneCoord, matchDirection = true ): TvLane {
+
+		const direction = LaneUtils.determineDirection( incoming.contact );
+
+		let lanes = [];
+
+		if ( matchDirection ) {
+			lanes = incoming.laneSection.getLaneArray().filter( lane => lane.direction === direction );
+		} else {
+			lanes = incoming.laneSection.getLaneArray();
+		}
+
+		if ( incoming.contact == TvContactPoint.START ) {
+			return LaneUtils.findHighest( lanes, TvLaneType.driving );
+		}
+
+		if ( incoming.contact == TvContactPoint.END ) {
+			return LaneUtils.findLowest( lanes, TvLaneType.driving );
+		}
+
+		return null;
 	}
 
 }

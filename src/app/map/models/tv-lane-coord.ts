@@ -23,6 +23,10 @@ export class TvLaneCoord {
 
 	}
 
+	toString () {
+		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.s } offset:${ this.offset }`;
+	}
+
 	get contact (): TvContactPoint {
 
 		if ( Maths.approxEquals( this.s, 0 ) ) return TvContactPoint.START;

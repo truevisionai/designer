@@ -9,6 +9,7 @@ import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
 import {
 	BoxGeometry,
 	BufferGeometry,
+	Color,
 	Float32BufferAttribute,
 	Material,
 	Mesh,
@@ -16,28 +17,35 @@ import {
 	MeshStandardMaterial,
 	Object3D,
 	PlaneGeometry,
+	Vector2,
 	Vector3
 } from 'three';
 import { JunctionService } from './junction.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { TvLaneType } from 'app/map/models/tv-common';
+import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
-import { TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { LaneDirectionHelper } from 'app/map/builders/od-lane-direction-builder';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
-import { OdTextures } from 'app/deprecated/od.textures';
-import { ISelectable } from "../../objects/i-selectable";
+import { Highlightable, ISelectable } from "../../objects/i-selectable";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { DebugDrawService } from '../debug/debug-draw.service';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { Line2 } from 'three/examples/jsm/lines/Line2';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+import { MapService } from '../map/map.service';
 import { JunctionManager } from 'app/managers/junction-manager';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class JunctionDebugService extends BaseDebugger<TvJunction> {
+
+	private nodes = new Object3DArrayMap<TvRoad, Object3D[]>();
 
 	private meshes = new Object3DArrayMap<TvJunction, Object3D[]>();
 
@@ -49,9 +57,22 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	public shouldShowEntries = true;
 
-	constructor ( private junctionService: JunctionService, private debug: DebugDrawService, private junctionManager: JunctionManager ) {
+	public shouldShowOutline = false;
 
+	constructor (
+		private junctionService: JunctionService,
+		private debug: DebugDrawService,
+		private mapService: MapService,
+		private junctionManager: JunctionManager
+	) {
 		super();
+	}
+
+	enable (): void {
+
+		super.enable();
+
+		this.mapService.nonJunctionRoads.forEach( road => this.showNodes( road ) );
 
 	}
 
@@ -101,9 +122,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		this.meshes.addItem( junction, mesh );
 
-		// const outline = this.createJunctionOutline( junction );
-
-		// if ( outline ) this.meshes.addItem( junction, outline );
+		if ( this.shouldShowOutline ) this.showOutline( junction );
 
 	}
 
@@ -136,7 +155,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.junctionManager.boundaryManager.update( junction );
 		}
 
-		const mesh = this.junctionService.junctionBuilder.buildJunctionMesh( junction );
+		const mesh = this.junctionService.junctionBuilder.buildFromBoundary( junction );
 
 		( mesh.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
 		( mesh.material as MeshBasicMaterial ).depthTest = false;
@@ -176,6 +195,72 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		} );
 
+	}
+
+	showOutline ( junction: TvJunction ) {
+
+		const outline = this.createJunctionOutline( junction );
+
+		if ( outline ) this.meshes.addItem( junction, outline );
+
+	}
+
+	showNodes ( road: TvRoad ) {
+
+		if ( road.isJunction ) return;
+
+		if ( !road.predecessor || road.predecessor.isJunction ) {
+
+			const startNode = this.createJunctionNode( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.START ) );
+
+			this.nodes.addItem( road, startNode );
+
+		}
+
+		if ( !road.successor || road.successor.isJunction ) {
+
+			const endNode = this.createJunctionNode( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.END ) );
+
+			this.nodes.addItem( road, endNode );
+
+		}
+
+	}
+
+	private createJunctionNode ( link: TvRoadLink ): JunctionNode {
+
+		const roadCoord = link.toRoadCoord();
+
+		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
+
+		const start = roadCoord.road.getPosThetaAt( roadCoord.s, result.leftSideWidth );
+
+		const end = roadCoord.road.getPosThetaAt( roadCoord.s, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z + 0.1,
+			end.x, end.y, end.z + 0.1
+		] );
+
+		const lineMaterial = new LineMaterial( {
+			color: COLOR.CYAN,
+			linewidth: 6,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
+			depthTest: false,
+			depthWrite: false,
+		} );
+
+		const junctionNode = new JunctionNode( link, lineGeometry, lineMaterial );
+
+		junctionNode.name = 'DebugDrawService.createRoadWidthLine';
+
+		junctionNode[ 'tag' ] = JunctionNode.tag;
+
+		junctionNode.renderOrder = 3;
+
+		return junctionNode;
 	}
 
 	private showEntries ( junction: TvJunction ): void {
@@ -328,10 +413,17 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	}
 
 	clear () {
+
 		super.clear();
+
 		this.meshes.clear();
+
 		this.entries.clear();
+
 		this.maneuvers.clear();
+
+		this.nodes.clear();
+
 	}
 }
 
@@ -359,4 +451,41 @@ export class ManeuverMesh extends Mesh implements ISelectable {
 		this.material[ 'color' ].set( COLOR.GREEN );
 	}
 
+}
+
+
+export class JunctionNode extends Line2 implements ISelectable, Highlightable {
+
+	static tag = 'JunctionNode'
+	tag = 'JunctionNode'
+	isSelected: boolean;
+	defaulColor = COLOR.CYAN;
+
+	constructor ( public link: TvRoadLink, geometry?: LineGeometry, material?: LineMaterial ) {
+		super( geometry, material );
+	}
+
+	select () {
+		this.isSelected = true;
+		this.material.color = new Color( COLOR.RED );
+		this.renderOrder = 5;
+	}
+
+	unselect () {
+		this.isSelected = false;
+		this.material.color = new Color( this.defaulColor );
+		this.renderOrder = 3;
+	}
+
+	onMouseOver () {
+		if ( this.isSelected ) return;
+		this.material.color = new Color( COLOR.YELLOW );
+		this.material.needsUpdate = true;
+	}
+
+	onMouseOut () {
+		if ( this.isSelected ) return;
+		this.material.color = new Color( this.defaulColor );
+		this.material.needsUpdate = true;
+	}
 }

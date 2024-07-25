@@ -44,11 +44,11 @@ export class RoadCircleToolService {
 	private radius: number;
 
 	constructor (
-		private splineBuilder: SplineBuilder,
-		private splineService: SplineService,
-		private roadService: RoadService,
-		private roadFactory: RoadFactory,
-		private debugTextService: DebugTextService,
+		public splineBuilder: SplineBuilder,
+		public splineService: SplineService,
+		public roadService: RoadService,
+		public roadFactory: RoadFactory,
+		public debugTextService: DebugTextService,
 		public viewController: ViewControllerService,
 	) {
 	}

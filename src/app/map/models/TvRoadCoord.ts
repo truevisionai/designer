@@ -67,6 +67,12 @@ export class TvRoadCoord {
 
 	}
 
+	get lanes () {
+
+		return this.laneSection.getLaneArray();
+
+	}
+
 	get roadId (): number {
 
 		return this.road.id;
@@ -152,4 +158,7 @@ export class TvRoadCoord {
 
 	}
 
+	toString () {
+		return `Road:${ this.road.id }, S:${ this.s }, T:${ this.t }`;
+	}
 }

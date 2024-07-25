@@ -13,7 +13,7 @@ export class IntersectionGroup {
 	/**
 	 * Positions of intersections in this group
 	 */
-	private intersections: SplineIntersection[] = [];
+	public intersections: SplineIntersection[] = [];
 
 	/**
 	 * Unique splines involved in the intersections of this group

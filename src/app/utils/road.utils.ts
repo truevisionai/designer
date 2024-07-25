@@ -85,28 +85,32 @@ export class RoadUtils {
 
 	}
 
-	static linkSuccessor ( road: TvRoad, successor: TvRoad, contactPoint: TvContactPoint ) {
+	static linkSuccessor ( road: TvRoad, successor: TvRoad, successorContact: TvContactPoint ) {
 
 		if ( road.successor ) this.unlinkSuccessor( road );
 
-		if ( contactPoint === TvContactPoint.START ) {
+		if ( successorContact === TvContactPoint.START ) {
 
 			successor.setPredecessorRoad( road, TvContactPoint.START );
 
-		} else {
+		} else if ( successorContact === TvContactPoint.END ) {
 
 			successor.setPredecessorRoad( road, TvContactPoint.END );
 
+		} else {
+
+			throw new Error( "Invalid contact point" );
+
 		}
 
-		road.successor = new TvRoadLink( TvRoadLinkType.ROAD, successor, contactPoint );
+		road.successor = new TvRoadLink( TvRoadLinkType.ROAD, successor, successorContact );
 	}
 
-	static linkPredecessor ( road: TvRoad, predecessor: TvRoad, contactPoint: TvContactPoint ) {
+	static linkPredecessor ( road: TvRoad, predecessor: TvRoad, predecessorContact: TvContactPoint ) {
 
 		if ( road.predecessor ) this.unlinkPredecessor( road );
 
-		if ( contactPoint === TvContactPoint.START ) {
+		if ( predecessorContact === TvContactPoint.START ) {
 
 			predecessor.setSuccessorRoad( road, TvContactPoint.START );
 
@@ -116,7 +120,7 @@ export class RoadUtils {
 
 		}
 
-		road.predecessor = new TvRoadLink( TvRoadLinkType.ROAD, predecessor, contactPoint );
+		road.predecessor = new TvRoadLink( TvRoadLinkType.ROAD, predecessor, predecessorContact );
 
 	}
 

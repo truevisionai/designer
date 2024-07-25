@@ -3,10 +3,21 @@
  */
 
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Vector3 } from 'three';
+import { Box2, Vector2, Vector3 } from 'three';
 
 
 export class SplineIntersection {
+
+	public area: Box2;
+	public start: Vector2;
+	public end: Vector2;
+
+	public splineStart: number;
+	public splineEnd: number;
+
+	public otherStart: number;
+	public otherEnd: number;
+
 	constructor (
 		public spline: AbstractSpline,
 		public otherSpline: AbstractSpline,
@@ -14,4 +25,5 @@ export class SplineIntersection {
 		public angle?: number
 	) {
 	}
+
 }
