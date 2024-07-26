@@ -849,7 +849,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( type == TvRoadLinkType.ROAD ) {
 
-			return this.map.getRoadById( elementId );
+			return this.findRoad( elementId );
 
 		} else if ( type == TvRoadLinkType.JUNCTION ) {
 
@@ -1086,15 +1086,15 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const jointLaneStartId = parseInt( xml.attr_jointLaneStart );
 		const jointLaneEndId = parseInt( xml.attr_jointLaneEnd );
 
-		const road = this.map.getRoadById( roadId );
+		const road = this.findRoad( roadId );
 
 		if ( !road ) {
-			TvConsole.error( 'road not found with id:' + roadId );
+			Log.error( 'parseJointBoundarySegment Road not found with id:' + roadId );
 			return;
 		}
 
 		if ( !contactPoint ) {
-			TvConsole.error( 'contact point not found' );
+			Log.error( 'parseJointBoundarySegment contact point not found' );
 			return;
 		}
 
@@ -1135,9 +1135,10 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const sStart = parseFloat( xml.attr_sStart );
 		const sEnd = parseFloat( xml.attr_sEnd );
 
-		const road = this.map.getRoadById( roadId );
+		const road = this.findRoad( roadId );
+
 		if ( !road ) {
-			TvConsole.error( 'road not found with id:' + roadId );
+			TvConsole.error( 'parseLaneBoundarySegment road not found with id:' + roadId );
 			return;
 		}
 
@@ -1165,16 +1166,20 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
 		if ( !contactPoint ) {
-			Log.error( 'Contact point cannot be null', junction );
+			Log.error( 'Contact point cannot be null', 'junction:', junction.toString() );
 			return;
 		}
 
-		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoadById( incomingRoadId ) : null;
-		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoadById( connectingRoadId ) : null;
+		const incomingRoad = !isNaN( incomingRoadId ) ? this.findRoad( incomingRoadId ) : null;
+		const connectingRoad = !isNaN( connectingRoadId ) ? this.findRoad( connectingRoadId ) : null;
 
+		if ( !incomingRoad ) {
+			Log.error( 'incomingRoad not found with id:' + incomingRoadId, 'junction:', junction.toString() );
+			return;
+		}
 
 		if ( !connectingRoad ) {
-			console.error( 'connectingRoad not found with id:' + connectingRoadId );
+			Log.error( 'connectingRoad not found with id:' + connectingRoadId, 'junction:', junction.toString() );
 			return;
 		}
 
