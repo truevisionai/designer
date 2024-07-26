@@ -197,3 +197,123 @@ public parseHeader(xmlElement: XmlElement): TvMapHeader {
 - **Throw exceptions** when encountering critical, unexpected errors that prevent the continuation of normal execution.
 - **Handle errors directly** when dealing with expected, manageable issues that you can work around without disrupting the overall process.
 - **Document your error handling strategy** to ensure consistency and clarity across your codebase.
+
+In your application, you have a service method (`getRoad`) that throws an exception if the road ID is not found. The challenge is determining where to handle this exception effectively: in the service, the tool, or both.
+
+### Recommended Approach: Centralized Error Handling in the Service
+
+**Pros:**
+1. **Consistency**: Centralizing error handling in the service ensures a consistent response to errors across all tools.
+2. **Code Reusability**: You avoid duplicating error handling code in each tool class.
+3. **Maintainability**: Easier to maintain and update error handling logic in one place rather than multiple places.
+
+**Cons:**
+1. **Granularity**: Handling exceptions at the service level may not provide the specific context needed by different tools. However, this can be mitigated by providing detailed error information in the exception.
+
+### Implementation in Service
+
+Modify the `getRoad` method in your `RoadService` to handle the exception and return a meaningful result (e.g., `null`):
+
+```typescript
+getRoad(roadId: number): TvRoad | null {
+  try {
+    return this.mapService.map.getRoadById(roadId);
+  } catch (error) {
+    if (error instanceof ModelNotFoundException) {
+      Log.error(`Road with ID ${roadId} not found.`);
+      return null; // Handle the error by returning null
+    } else {
+      throw error; // Re-throw unexpected errors
+    }
+  }
+}
+```
+
+### Usage in Tool
+
+Update the `RoadSignlTool` to handle the `null` value returned by the `getRoad` method:
+
+```typescript
+onPointerMoved(pointerEventData: PointerEventData): void {
+  this.highlight(pointerEventData);
+
+  if (!this.isPointerDown) return;
+
+  if (!this.currentSelectedObject) return;
+
+  const road = this.tool.roadService.getRoad(this.currentSelectedObject.roadId);
+
+  if (!road) {
+    Log.error(`Road with ID ${this.currentSelectedObject.roadId} could not be retrieved.`);
+    return;
+  }
+
+  const position = this.tool.roadService.findRoadCoord(pointerEventData.point);
+
+  if (!position) return;
+
+  this.currentSelectedObject.s = position.s;
+
+  this.updateRoadSignal(road, this.currentSelectedObject);
+
+  this.currentSelectedPointMoved = true;
+}
+```
+
+### Advantages of This Approach
+
+1. **Centralized Error Handling**: By handling the error in the service, you ensure that all tools using `getRoad` benefit from consistent error handling.
+2. **Simplified Tool Logic**: Tool classes do not need to implement repetitive error handling logic, making them simpler and easier to maintain.
+3. **Clear Separation of Concerns**: The service is responsible for data retrieval and error handling, while the tools focus on user interactions and application logic.
+
+### Handling in Tools Separately (Alternative Approach)
+
+If you prefer to handle exceptions in each tool separately, the pros and cons are as follows:
+
+**Pros:**
+1. **Context-Specific Handling**: Each tool can handle the error in a way that makes sense for its specific context.
+2. **Granularity**: Tools can provide more detailed and specific error messages to the user.
+
+**Cons:**
+1. **Repetition**: You will need to duplicate error handling code across multiple tools.
+2. **Inconsistency**: Different tools might handle the same error in different ways, leading to inconsistent user experiences.
+3. **Maintenance**: More places to update if error handling logic changes.
+
+### Implementation in Tools Separately
+
+Each tool class would need to implement try-catch blocks around the `getRoad` call:
+
+```typescript
+onPointerMoved(pointerEventData: PointerEventData): void {
+  this.highlight(pointerEventData);
+
+  if (!this.isPointerDown) return;
+
+  if (!this.currentSelectedObject) return;
+
+  try {
+    const road = this.tool.roadService.getRoad(this.currentSelectedObject.roadId);
+    if (!road) return; // Optionally handle null if service returns it instead of throwing
+
+    const position = this.tool.roadService.findRoadCoord(pointerEventData.point);
+
+    if (!position) return;
+
+    this.currentSelectedObject.s = position.s;
+
+    this.updateRoadSignal(road, this.currentSelectedObject);
+
+    this.currentSelectedPointMoved = true;
+  } catch (error) {
+    if (error instanceof ModelNotFoundException) {
+      Log.error(`Road with ID ${this.currentSelectedObject.roadId} not found.`);
+    } else {
+      Log.error('Unexpected error: ' + error.message);
+    }
+  }
+}
+```
+
+### Conclusion
+
+The recommended approach is to handle the exception in the service (`RoadService`) to maintain consistency, reduce code duplication, and simplify the tool classes. This approach centralizes error handling and makes the application more maintainable. If more context-specific handling is needed, consider providing additional information in the exceptions or using a combination of both approaches.
