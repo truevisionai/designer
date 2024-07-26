@@ -65,6 +65,54 @@ export class TvJunctionBoundaryBuilder {
 
 	}
 
+	getBufferGeometry ( boundary: TvJunctionBoundary, via: 'shape' | 'delaunay' ): BufferGeometry {
+
+		let geometry: BufferGeometry = null;
+
+		if ( via == 'shape' ) {
+			geometry = this.getShapeGeometry( boundary );
+		} else if ( via == 'delaunay' ) {
+			geometry = this.getDeluanayGeometry( boundary );
+		}
+
+		return geometry;
+	}
+
+	private getShapeGeometry ( boundary: TvJunctionBoundary ): ShapeGeometry {
+
+		const shape = this.convertBoundaryToShape( boundary );
+
+		return new ShapeGeometry( shape );
+
+
+	}
+
+	private getDeluanayGeometry ( boundary: TvJunctionBoundary ): BufferGeometry {
+
+		const points = this.convertBoundaryToPositions( boundary );
+
+		// Convert points to a flat array for Delaunator
+		const vertices = points.reduce( ( acc, point ) => acc.concat( [ point.x, point.y ] ), [] );
+
+		// Perform Delaunay triangulation
+		const delaunay = new Delaunator( vertices );
+		const triangles: Uint32Array = delaunay.triangles;
+
+		// Create geometry
+		const geometry = new BufferGeometry();
+		const verticesArray = new Float32Array( points.length * 3 );
+		for ( let i = 0; i < points.length; i++ ) {
+			verticesArray[ i * 3 ] = points[ i ].x;
+			verticesArray[ i * 3 + 1 ] = points[ i ].y;
+			verticesArray[ i * 3 + 2 ] = 0; // Z-coordinate
+		}
+
+		geometry.setAttribute( 'position', new BufferAttribute( verticesArray, 3 ) );
+		geometry.setIndex( new BufferAttribute( triangles, 1 ) );
+
+		return geometry;
+	}
+
 	buildViaShape ( boundary: TvJunctionBoundary ): Mesh {
 
 		const points = this.convertBoundaryToPositions( boundary );
@@ -73,6 +121,9 @@ export class TvJunctionBoundaryBuilder {
 			console.error( 'Invalid boundary points', boundary, points.length );
 			return new Mesh();
 		}
+
+		// Debug
+		this.debugDrawBoundary( boundary );
 
 		const shape = new Shape( points.map( p => new Vector2( p.x, p.y ) ) );
 

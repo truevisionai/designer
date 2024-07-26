@@ -146,6 +146,10 @@ export class TvMap {
 
 	public getJunctionById ( id: number ): TvJunction {
 
+		if ( !this.junctions.has( id ) ) {
+			throw new ModelNotFoundException( `Junction with id ${ id } not found` );
+		}
+
 		return this.junctions.get( id );
 
 	}

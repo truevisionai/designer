@@ -76,6 +76,7 @@ import {
 	TvLaneBoundary
 } from '../junction-boundary/tv-junction-boundary';
 import { Log } from 'app/core/utils/log';
+import { InvalidTypeException } from 'app/exceptions/exceptions';
 
 @Injectable( {
 	providedIn: 'root'
@@ -320,12 +321,19 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const length = parseFloat( xml.attr_length );
 		const id = parseInt( xml.attr_id );
 
-		const junctionId = parseInt( xml.attr_junction ) || -1;
-		const junction = this.map.getJunctionById( junctionId );
+		let junction: TvJunction;
 
-		if ( junctionId >= 0 && !junction ) {
-			TvConsole.error( `Junction:${ junctionId } not found for ConnectingRoad:` + id );
+		try {
+
+			const junctionId = parseInt( xml.attr_junction ) || -1;
+
+			junction = junctionId > 0 ? this.map.getJunctionById( junctionId ) : null;
+
+		} catch ( error ) {
+
+			TvConsole.error( 'Junction not found' );
 			return;
+
 		}
 
 		const road = new TvRoad( name, length, id, junction );
@@ -721,50 +729,50 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const elementId = parseFloat( xml.attr_elementId );
 		const contactPoint = this.parseContactPoint( xml.attr_contactPoint );
 
-		let element: TvRoad | TvJunction;
+		try {
 
-		if ( elementType == TvRoadLinkType.ROAD ) {
+			if ( elementType == TvRoadLinkType.ROAD && contactPoint == null ) {
+				Log.warn( 'Unknown contact point of link for road:' + road.toString() );
+				return;
+			}
 
-			element = this.map.getRoadById( elementId );
+			const element = this.findElement( elementType, elementId );
 
-		} else if ( elementType == TvRoadLinkType.JUNCTION ) {
+			if ( type === 0 ) {
 
-			element = this.map.getJunctionById( elementId );
+				road.setPredecessor( elementType, element, contactPoint );
+
+			} else if ( type === 1 ) {
+
+				road.setSuccessor( elementType, element, contactPoint );
+
+			} else if ( type === 2 ) {
+
+				Log.error( 'neighbour not supported' );
+
+			}
+
+		} catch ( error ) {
+
+			// Log.error( 'element not found', xml );
+
+		}
+
+	}
+
+	private findElement ( type: TvRoadLinkType, elementId: number ) {
+
+		if ( type == TvRoadLinkType.ROAD ) {
+
+			return this.map.getRoadById( elementId );
+
+		} else if ( type == TvRoadLinkType.JUNCTION ) {
+
+			return this.map.getJunctionById( elementId );
 
 		} else {
 
-			Log.error( 'unknown element type', elementType );
-			return;
-
-		}
-
-		if ( !element ) {
-			Log.error( 'element not found', xml );
-			return;
-		}
-
-		if ( element instanceof TvRoad && !contactPoint ) {
-			Log.error( 'unknown contact point of link for road:' + road.toString(), xml );
-			return;
-		}
-
-		if ( type === 0 ) {
-
-			road.setPredecessor( elementType, element, contactPoint );
-
-		} else if ( type === 1 ) {
-
-			road.setSuccessor( elementType, element, contactPoint );
-
-		} else if ( type === 2 ) {
-
-			Log.error( 'neighbour not supported' );
-
-			// const side = xmlElement.attr_side;
-			// const elementId = xmlElement.attr_elementId;
-			// const direction = xmlElement.attr_direction;
-			//
-			// road.setNeighbor( side, elementId, direction );
+			throw new InvalidTypeException( 'Unknown element type' );
 
 		}
 

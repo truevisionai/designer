@@ -32,6 +32,7 @@ import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
 import { TvRoadCoord } from "./TvRoadCoord";
+import { InvalidArgumentException, ModelNotFoundException } from 'app/exceptions/exceptions';
 
 export class TvRoad {
 
@@ -452,16 +453,19 @@ export class TvRoad {
 	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
 
 		if ( s == null ) {
+			throw new InvalidArgumentException( 's is null' );
 			TvConsole.error( 's is undefined' );
 			s = 0;
 		}
 
 		if ( s > this.length ) {
+			throw new InvalidArgumentException( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
 			console.error( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
 			s = this.length;
 		}
 
 		if ( s < 0 ) {
+			throw new InvalidArgumentException( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
 			TvConsole.error( 's is less than 0' );
 			console.error( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
 			s = 0;
@@ -470,7 +474,9 @@ export class TvRoad {
 		const geometry = this.getGeometryAt( s );
 
 		if ( !geometry ) {
-			TvConsole.error( `GeometryNotFoundAt S:${ s } ${ this.toString() } length: ${ this.length }` );
+			throw new ModelNotFoundException( `GeometryNotFoundAt S:${ s } ${ this.toString() } length: ${ this.length }` );
+			// TvConsole.error( `GeometryNotFoundAt S:${ s } ${ this.toString() } length: ${ this.length }` );
+			// return new TvPosTheta( Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0, 0 );
 		}
 
 		const odPosTheta = geometry.getRoadCoord( s );
@@ -1107,6 +1113,7 @@ export class TvRoad {
 		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
 
 		if ( geometry == null ) {
+			throw new ModelNotFoundException( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
 			console.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
 			return;
 		}

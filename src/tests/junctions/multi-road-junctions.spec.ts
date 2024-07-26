@@ -46,7 +46,7 @@ describe( 'Multi-RoadJunctionTests', () => {
 
 		expect( mapService.junctions.length ).toBe( 1 );
 
-		const junction = mapService.getJunction( 1 );
+		const junction = mapService.findJunction( 1 );
 
 		expect( junction ).toBeDefined();
 		expect( junction.connections.size ).toBe( 30 );

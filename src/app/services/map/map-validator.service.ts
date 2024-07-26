@@ -23,6 +23,8 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvElectronService } from '../tv-electron.service';
 import { RoadService } from '../road/road.service';
 import { LaneUtils } from 'app/utils/lane.utils';
+import { Log } from 'app/core/utils/log';
+import { ModelNotFoundException } from 'app/exceptions/exceptions';
 
 const SPHERE_SIZE = 0.1;
 
@@ -121,8 +123,7 @@ export class MapValidatorService {
 
 			} else {
 
-				console.warn( 'MapValidationFailed', this.errors[ i ] );
-				TvConsole.warn( 'MapValidationFailed: ' + this.errors[ i ] );
+				Log.warn( this.errors[ i ] );
 
 			}
 
@@ -347,17 +348,9 @@ export class MapValidatorService {
 
 	validateRoadLinks ( roadA: TvRoad ) {
 
-		if ( roadA.successor ) {
+		if ( roadA.successor ) this.validateSuccessor( roadA, roadA.successor );
 
-			this.validateSuccessor( roadA, roadA.successor );
-
-		}
-
-		if ( roadA.predecessor ) {
-
-			this.validatePredecessor( roadA, roadA.predecessor );
-
-		}
+		if ( roadA.predecessor ) this.validatePredecessor( roadA, roadA.predecessor );
 
 	}
 
@@ -400,7 +393,7 @@ export class MapValidatorService {
 
 			this.errors.push( linkType + ' not found ' + link.toString() + ' for road ' + roadA.id );
 
-			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE*10, COLOR.MAGENTA );
+			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE * 10, COLOR.MAGENTA );
 			this.debugObjects.add( sphere1, sphere1 );
 
 			return;
@@ -512,27 +505,31 @@ export class MapValidatorService {
 
 	validateJunctionLink ( road: TvRoad, link: TvRoadLink, linkType: 'successor' | 'predecessor' ) {
 
-		const junction = this.map.getJunctionById( link.id );
+		try {
 
-		if ( !junction ) {
+			const junction = this.map.getJunctionById( link.id );
 
-			this.errors.push( 'validateJunctionLink: ' + linkType + ' not found ' + link.toString() + ' for road ' + road.id );
+			if ( !junction.getIncomingRoads().includes( road ) ) {
 
-			const sphere1 = this.debugDraw.createSphere( road.getEndPosTheta().position, SPHERE_SIZE, COLOR.MAGENTA );
-			this.debugObjects.add( sphere1, sphere1 );
+				this.errors.push( 'Incomging road does not have connections ' + road.toString() );
 
-			return;
-		}
+			}
 
-		const incomingContact = linkType == 'successor' ? TvContactPoint.END : TvContactPoint.START;
+		} catch ( error ) {
 
-		const pointA = linkType == 'successor' ? road.getEndPosTheta() : road.getStartPosTheta();
+			if ( error instanceof ModelNotFoundException ) {
 
-		const incomingConnections = junction.getConnections().filter( c => c.incomingRoad == road );
+				this.errors.push( 'validateJunctionLink: ' + linkType + ' not found ' + link.toString() + ' for road ' + road.id );
 
-		for ( let i = 0; i < incomingConnections.length; i++ ) {
+				const sphere1 = this.debugDraw.createSphere( road.getEndPosTheta().position, SPHERE_SIZE, COLOR.MAGENTA );
 
-			this.validateConnection( incomingConnections[ i ], incomingContact );
+				this.debugObjects.add( sphere1, sphere1 );
+
+			} else {
+
+				Log.error( 'An unexpected error occurred:', error.message );
+
+			}
 
 		}
 
@@ -540,8 +537,8 @@ export class MapValidatorService {
 
 	validateConnection ( connection: TvJunctionConnection, incomingContact: TvContactPoint ) {
 
-		this.validateRoadId( connection.incomingRoadId, connection );
-		this.validateRoadId( connection.connectingRoadId, connection );
+		this.validateConnectionAndRoad( connection.incomingRoadId, connection );
+		this.validateConnectionAndRoad( connection.connectingRoadId, connection );
 
 		connection.laneLink.forEach( link => {
 
@@ -572,54 +569,63 @@ export class MapValidatorService {
 		} );
 	}
 
-	validateOutgoingLink ( connection: TvJunctionConnection, outgoingContact: TvContactPoint ) {
+	validateConnectingRoad ( connection: TvJunctionConnection ) {
 
-		this.validateRoadId( connection.incomingRoadId, connection );
-		this.validateRoadId( connection.connectingRoadId, connection );
+		this.validateConnectionAndRoad( connection.incomingRoadId, connection );
+		this.validateConnectionAndRoad( connection.connectingRoadId, connection );
 
-		// for outoing link we need the opposite side of connecting road
-		const connectingRoadEndContact = connection.contactPoint == TvContactPoint.START ? TvContactPoint.END : TvContactPoint.START;
+		this.validateRoadLinks( connection.connectingRoad );
 
-		connection.laneLink.forEach( link => {
+		// connection.laneLink.forEach( link => {
 
-			const connectingLaneSection = link.connectingRoad.getLaneSectionAtContact( connectingRoadEndContact );
-			const connectingSOffset = connectingRoadEndContact == TvContactPoint.START ? 0 : link.connectingRoad.length;
-			const connectingPosition = this.roadService.findLaneStartPosition( link.connectingRoad, connectingLaneSection, link.connectingLane, connectingSOffset );
+		// 	// const incomingLaneSection = connection.incomingRoad.getLaneSectionAtContact( link.incomingContactPoint );
+		// 	// const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;
+		// 	// const incomingPosition = this.roadService.findLaneStartPosition( link.incomingRoad, incomingLaneSection, link.incomingLane, incomingSOffset );
 
-			const outgoingRoad = connection.connectingRoad.successor.getElement<TvRoad>();
-			const outgoingLaneSection = outgoingRoad.getLaneSectionAtContact( outgoingContact );
-			const outgoingLane = outgoingLaneSection.getLaneById( link.connectingLane.successorId );
-			const outgoingSOffset = outgoingContact == TvContactPoint.START ? 0 : outgoingRoad.length;
-			const outgoingPosition = this.roadService.findLaneStartPosition( outgoingRoad, outgoingLaneSection, outgoingLane, outgoingSOffset );
+		// 	// const connectingLaneSection = link.connectingRoad.getLaneSectionAtContact( link.connectingContactPoint );
+		// 	// const connectingSOffset = link.connectingContactPoint == TvContactPoint.START ? 0 : link.connectingRoad.length;
+		// 	// const connectingPosition = this.roadService.findLaneStartPosition( link.connectingRoad, connectingLaneSection, link.connectingLane, connectingSOffset );
 
-			const distance = outgoingPosition.position.distanceTo( connectingPosition.position );
+		// 	// const distance = incomingPosition.position.distanceTo( connectingPosition.position );
 
-			if ( distance > 0.01 ) {
+		// 	// if ( distance > 0.01 ) {
 
-				this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + outgoingContact + ' distance:' + distance );
+		// 	// 	this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + incomingContact + ' distance:' + distance );
 
-				const sphere1 = this.debugDraw.createSphere( outgoingPosition.position, SPHERE_SIZE, COLOR.BLUE );
-				this.debugObjects.add( sphere1, sphere1 );
+		// 	// 	const sphere1 = this.debugDraw.createSphere( incomingPosition.position, SPHERE_SIZE, COLOR.BLUE );
+		// 	// 	this.debugObjects.add( sphere1, sphere1 );
 
-				const sphere2 = this.debugDraw.createSphere( connectingPosition.position, SPHERE_SIZE, COLOR.GREEN );
-				this.debugObjects.add( sphere2, sphere2 );
+		// 	// 	const sphere2 = this.debugDraw.createSphere( connectingPosition.position, SPHERE_SIZE, COLOR.GREEN );
+		// 	// 	this.debugObjects.add( sphere2, sphere2 );
 
-				const line = this.debugDraw.createLine( [ connectingPosition.position, outgoingPosition.position ], COLOR.GREEN );
-				this.debugObjects.add( line, line );
+		// 	// 	const line = this.debugDraw.createLine( [ incomingPosition.position, connectingPosition.position ], COLOR.ORANGE );
+		// 	// 	this.debugObjects.add( line, line );
+		// 	// }
+
+		// } );
+
+	}
+
+	validateConnectionAndRoad ( id: number, connection: TvJunctionConnection ) {
+
+		try {
+
+			this.map.getRoadById( id );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				this.errors.push( 'Road:' + id + ' not found. ' + connection.toString() );
+
+			} else {
+
+				Log.error( 'An unexpected error occurred:', error.message );
+
 			}
 
-		} );
-
-	}
-
-	validateRoadId ( id: number, connection: TvJunctionConnection ) {
-
-		const road = this.map.getRoadById( id );
-
-		if ( !road ) {
-
-			this.errors.push( 'Linked Road:' + id + ' not found. ' + connection.toString() );
-
 		}
+
 	}
+
 }

@@ -19,6 +19,7 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { DebugState } from 'app/services/debug/debug-state';
 import { CopyPositionCommand } from "../../commands/copy-position-command";
 import { CommandHistory } from "../../services/command-history";
+import { Log } from 'app/core/utils/log';
 
 export class RoadSignTool extends BaseTool<any> {
 
@@ -113,11 +114,17 @@ export class RoadSignTool extends BaseTool<any> {
 
 		const road = this.tool.roadService.getRoad( this.currentSelectedObject.roadId );
 
-		if ( !road ) return;
+		if ( !road ) {
+			Log.error( `Road with ID ${ this.currentSelectedObject.roadId } could not be retrieved.` );
+			return;
+		}
 
 		const position = this.tool.roadService.findRoadCoord( pointerEventData.point );
 
-		if ( !position ) return;
+		if ( !position ) {
+			this.setHint( 'Drag signal on a road or lane' );
+			return;
+		}
 
 		this.currentSelectedObject.s = position.s;
 

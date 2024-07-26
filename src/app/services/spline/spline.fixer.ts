@@ -18,6 +18,8 @@ export class SplineFixerService {
 
 	private debug = true;
 
+	private enabled = true;
+
 	constructor (
 		private mapService: MapService,
 		private roadFactory: RoadFactory,
@@ -28,6 +30,8 @@ export class SplineFixerService {
 
 	fix ( spline: AbstractSpline ) {
 
+		if ( !this.enabled ) return;
+
 		if ( spline.controlPoints.length < 2 ) return;
 
 		this.fixMinSegmentCount( spline );
@@ -36,9 +40,9 @@ export class SplineFixerService {
 
 		this.fixEachSegmentStart( spline );
 
-		this.fixDuplicateSegments( spline );
+		// this.fixDuplicateSegments( spline );
 
-		this.fixUnLinkedSegments( spline );
+		// this.fixUnLinkedSegments( spline );
 
 	}
 
@@ -80,9 +84,12 @@ export class SplineFixerService {
 
 			if ( !Maths.approxEquals( firstKey, 0 ) ) {
 
+				if ( this.debug ) Log.warn( "Fixing sStart is not equal to 0", segment.toString() );
+
+				SplineUtils.removeSegment( spline, segment );
+
 				SplineUtils.addSegment( spline, 0, segment );
 
-				if ( this.debug ) Log.warn( "Fixing sStart is not equal to 0", segment.toString() );
 			}
 		}
 
