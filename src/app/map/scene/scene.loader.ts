@@ -76,7 +76,7 @@ import {
 	TvLaneBoundary
 } from '../junction-boundary/tv-junction-boundary';
 import { Log } from 'app/core/utils/log';
-import { InvalidTypeException } from 'app/exceptions/exceptions';
+import { InvalidTypeException, ModelNotFoundException } from 'app/exceptions/exceptions';
 
 @Injectable( {
 	providedIn: 'root'
@@ -474,7 +474,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const spline = new AutoSplineV2();
 
-		if ( xml.attr_uuid ) spline.uuid;
+		if ( xml.attr_uuid ) {
+			spline.uuid = xml.attr_uuid;
+		}
 
 		this.readAsOptionalArray( xml.point, xml => {
 
@@ -488,6 +490,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} );
 
+		let isValid = true;
+
 		this.readAsOptionalArray( xml.roadSegment, xml => {
 
 			const start = parseFloat( xml.attr_start );
@@ -497,38 +501,119 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( type == SplineSegmentType.ROAD ) {
 
-				const road = this.map.getRoadById( id );
+				const road = this.findRoad( id );
 
 				if ( road ) {
+
 					spline.segmentMap.set( start, road );
+
+				} else {
+
+					isValid = false;
+
+					Log.error( 'Road not found with id:' + id );
+
 				}
 
 			} else if ( type == SplineSegmentType.JUNCTION ) {
 
-				const junction = this.map.getJunctionById( id );
+				const junction = this.findJunction( id );
 
-				if ( junction ) {
-					junction.auto = true;
+				if ( !junction ) {
+
+					isValid = false;
+
+					Log.error( 'Junction not found with id:' + id );
+
 				}
+
+				junction.auto = true;
 
 				spline.segmentMap.set( start, junction );
 
 			} else {
 
-				if ( isNaN( id ) ) return;
+				if ( isNaN( id ) ) {
+
+					isValid = false;
+
+					return;
+				}
 
 				// to support old files
 				if ( id > 0 ) {
-					const road = this.map.getRoadById( id );
-					if ( !road ) return;
+
+					const road = this.findRoad( id );
+
+					if ( !road ) {
+
+						isValid = false;
+
+						return
+					}
+
 					spline.segmentMap.set( start, road );
+
 				}
 
 			}
 
 		} );
 
+		if ( !isValid ) {
+			Log.error( 'Invalid spline', spline );
+			return;
+		}
+
+		if ( spline.controlPoints.length < 2 ) {
+			Log.error( 'Spline must have at least 2 control points', spline );
+			return;
+		}
+
 		return spline;
+	}
+
+
+	findRoad ( id: number ) {
+
+		try {
+
+			return this.map.getRoadById( id );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( 'Road not found with id:' + id );
+
+			} else {
+
+				Log.error( 'Unknown error', error.message );
+			}
+
+		}
+
+	}
+
+	findJunction ( id: number ) {
+
+		try {
+
+			return this.map.getJunctionById( id );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( 'Junction not found with id:' + id );
+
+			} else {
+
+				Log.error( 'Unknown error', error.message );
+			}
+
+		}
+
 	}
 
 	private importCatmullSpline ( xml: XmlElement, mainObject?: any ): CatmullRomSpline {
