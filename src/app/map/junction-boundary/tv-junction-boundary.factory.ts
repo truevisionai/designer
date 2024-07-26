@@ -6,6 +6,7 @@ import { LaneUtils } from "../../utils/lane.utils";
 import { TvRoadCoord } from "../models/TvRoadCoord";
 import { TvRoad } from "../models/tv-road.model";
 import { TvLane } from "../models/tv-lane";
+import { TvContactPoint } from "../models/tv-common";
 
 @Injectable( {
 	providedIn: 'root'
@@ -76,9 +77,17 @@ export class TvJunctionBoundaryFactory {
 
 		boundary.contactPoint = roadCoord.contact;
 
-		boundary.jointLaneStart = roadCoord.laneSection.getLeftMostLane();
+		if ( roadCoord.contact == TvContactPoint.END ) {
 
-		boundary.jointLaneEnd = roadCoord.laneSection.getRightMostLane();
+			boundary.jointLaneStart = roadCoord.laneSection.getLeftMostLane();
+			boundary.jointLaneEnd = roadCoord.laneSection.getRightMostLane();
+
+		} else {
+
+			boundary.jointLaneStart = roadCoord.laneSection.getRightMostLane();
+			boundary.jointLaneEnd = roadCoord.laneSection.getLeftMostLane();
+
+		}
 
 		return boundary;
 
