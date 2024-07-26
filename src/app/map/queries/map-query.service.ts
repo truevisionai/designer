@@ -89,8 +89,6 @@ export class MapQueryService {
 
 			for ( const connection of junction.getConnections() ) {
 
-				if ( connection.outgoingRoad != road ) continue;
-
 				for ( const laneLink of connection.laneLink ) {
 
 					const connectingLane = connection.connectingLaneSection.getLaneById( laneLink.to );
@@ -156,8 +154,6 @@ export class MapQueryService {
 
 			for ( const connection of junction.getConnections() ) {
 
-				if ( connection.outgoingRoad != road ) continue;
-
 				for ( const laneLink of connection.laneLink ) {
 
 					const connectingLane = connection.connectingLaneSection.getLaneById( laneLink.to );
@@ -213,6 +209,30 @@ export class MapQueryService {
 	 * @param sOffset s offset is relative to lane section
 	 * @returns
 	 */
+	findLaneCenterPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
+
+		const t = this.findWidthUptoCenter( road, laneSection, lane, sOffset );
+
+		const sign = lane.id >= 0 ? 1 : -1;
+
+		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
+
+		if ( withLaneHeight ) {
+			const laneHeight = lane.getHeightValue( sOffset );
+			posTheta.z += laneHeight.getLinearValue( 1 );
+		}
+
+		return posTheta;
+	}
+
+	/**
+	 *
+	 * @param road
+	 * @param laneSection
+	 * @param lane
+	 * @param sOffset s offset is relative to lane section
+	 * @returns
+	 */
 	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
 
 		if ( lane.side == TvLaneSide.CENTER ) return 0;
@@ -231,5 +251,32 @@ export class MapQueryService {
 		}
 
 		return width;
+	}
+
+	findWidthUptoCenter ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		if ( lane.side == TvLaneSide.CENTER ) return 0;
+
+		let totalWidth = 0;
+
+		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
+
+		for ( let i = 0; i < lanes.length; i++ ) {
+
+			const currentLane = lanes[ i ];
+
+			const laneWidth = currentLane.getWidthValue( sOffset );
+
+			totalWidth += laneWidth;
+
+			if ( currentLane.id == lane.id ) {
+
+				totalWidth -= laneWidth / 2;
+				break;
+			}
+		}
+
+		return totalWidth;
+
 	}
 }

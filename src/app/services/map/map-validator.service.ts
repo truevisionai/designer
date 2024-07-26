@@ -386,7 +386,31 @@ export class MapValidatorService {
 
 		if ( !link.isRoad ) return;
 
-		const roadB = this.map.getRoadById( link.id );
+		let roadB: TvRoad;
+
+		try {
+
+			roadB = this.map.getRoadById( link.id );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				this.errors.push( linkType + ' not found for road ' + roadA.toString() + ' link: ' + link.toString() );
+
+				const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE * 10, COLOR.MAGENTA );
+				this.debugObjects.add( sphere1, sphere1 );
+
+				return;
+
+			} else {
+
+				Log.error( 'An unexpected error occurred:', error.message );
+
+			}
+
+		}
+
 		const label = roadA.isJunction ? 'ConnectingRoad' : 'Road';
 
 		if ( !roadB ) {

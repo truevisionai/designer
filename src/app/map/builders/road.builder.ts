@@ -33,7 +33,7 @@ import { Log } from "../../core/utils/log";
 } )
 export class RoadBuilder {
 
-	private debug = true;
+	private debug = false;
 
 	constructor (
 		private roadMarkBuilder: LaneRoadMarkBuilder,
