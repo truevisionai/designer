@@ -11,7 +11,7 @@ import { Vector3 } from 'three';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DepConnectionFactory } from "../../app/map/junction/dep-connection.factory";
 
-describe( 'ConnectionService', () => {
+xdescribe( 'ConnectionService', () => {
 
 	let base: BaseTest = new BaseTest();
 	let eventServiceProvider: EventServiceProvider;

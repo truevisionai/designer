@@ -9,11 +9,14 @@ import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { BaseTest } from 'tests/base-test.spec';
 import { Vector2 } from 'three';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
 
 describe( 'RoadTool: Connecting Roads', () => {
 
 	let tool: RoadTool;
 	let base: BaseTest = new BaseTest;
+	let toolHelper: RoadToolHelper;
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -23,7 +26,10 @@ describe( 'RoadTool: Connecting Roads', () => {
 		} );
 
 		tool = new RoadTool( TestBed.inject( RoadToolHelper ) )
+		toolHelper = TestBed.inject( RoadToolHelper );
 
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		eventServiceProvider.init();
 	} );
 
 	it( 'should ...', inject( [ RoadService ], ( roadService: RoadService ) => {
@@ -32,15 +38,15 @@ describe( 'RoadTool: Connecting Roads', () => {
 
 	} ) );
 
-	it( 'should connect roads', inject( [ RoadToolHelper ], ( roadToolService: RoadToolHelper ) => {
+	it( 'should connect roads', () => {
 
-		const leftRoad = base.createDefaultRoad( roadToolService.roadService, [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
-		const rightRoad = base.createDefaultRoad( roadToolService.roadService, [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
+		const leftRoad = base.createDefaultRoad( toolHelper.roadService, [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
+		const rightRoad = base.createDefaultRoad( toolHelper.roadService, [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
 
 		const leftNode = new RoadNode( leftRoad, TvContactPoint.END );
 		const rightNode = new RoadNode( rightRoad, TvContactPoint.START );
 
-		const joiningRoad = roadToolService.createJoiningRoad( leftNode, rightNode );
+		const joiningRoad = toolHelper.createJoiningRoad( leftNode, rightNode );
 
 		expect( joiningRoad ).toBeDefined();
 		expect( joiningRoad.spline.controlPoints.length ).toBe( 4 );
@@ -64,9 +70,6 @@ describe( 'RoadTool: Connecting Roads', () => {
 		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 		expect( rightRoad.successor ).toBeUndefined();
 
-	} ) );
-
-
-
+	} );
 
 } );

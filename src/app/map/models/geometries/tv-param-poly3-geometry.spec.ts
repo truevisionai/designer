@@ -10,6 +10,8 @@ describe( 'OdParamPoly3Geometry', () => {
 
 	beforeEach( () => {
 
+		road = new TvRoad( 'Road', 0, 1 );
+
 		road.addPlanView();
 
 	} );

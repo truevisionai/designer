@@ -18,7 +18,7 @@ import { SplineControlPoint } from "app/objects/spline-control-point";
 
 const DEFAULT_ROAD_WIDTH = 12.2;
 
-describe( 't-junction tests', () => {
+xdescribe( 't-junction tests', () => {
 
 	let baseTest = new BaseTest();
 

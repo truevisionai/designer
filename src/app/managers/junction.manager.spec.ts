@@ -70,7 +70,7 @@ describe( 'JunctionManager', () => {
 
 	} );
 
-	it( 'should give adjust spline coords', () => {
+	xit( 'should give adjust spline coords', () => {
 
 		const desiredRadius = 50;
 

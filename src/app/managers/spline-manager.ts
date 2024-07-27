@@ -129,7 +129,9 @@ export class SplineManager {
 
 			console.debug( "successor is road", splineSuccessor.toString(), spline.uuid );
 
-			this.syncRoadSuccessorSpline( splineSuccessor );
+			const lastRoad = spline.segmentMap.getLast() instanceof TvRoad ? spline.segmentMap.getLast() as TvRoad : null;
+
+			if ( lastRoad ) this.syncRoadSuccessorSpline( lastRoad );
 
 		} else if ( splineSuccessor instanceof TvJunction ) {
 
@@ -168,7 +170,9 @@ export class SplineManager {
 
 			console.debug( "predecessor is road", splinePredecessor.toString(), spline.uuid );
 
-			this.syncRoadPredecessorrSpline( splinePredecessor );
+			const firstRoad = spline.segmentMap.getFirst() instanceof TvRoad ? spline.segmentMap.getFirst() as TvRoad : null;
+
+			if ( firstRoad ) this.syncRoadSuccessorSpline( firstRoad );
 
 		} else if ( splinePredecessor instanceof TvJunction ) {
 

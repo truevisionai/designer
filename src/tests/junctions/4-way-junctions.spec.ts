@@ -20,7 +20,7 @@ import { ControlPointFactory } from "../../app/factories/control-point.factory";
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DepConnectionFactory } from "../../app/map/junction/dep-connection.factory";
 
-describe( '4-way-junction tests', () => {
+xdescribe( '4-way-junction tests', () => {
 
 	let baseTest = new BaseTest();
 

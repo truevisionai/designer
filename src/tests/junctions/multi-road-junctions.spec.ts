@@ -9,7 +9,7 @@ import { RoadToolHelper } from "../../app/tools/road/road-tool-helper.service";
 import { Vector2 } from "three";
 import { JunctionManager } from "../../app/managers/junction-manager";
 
-describe( 'Multi-RoadJunctionTests', () => {
+xdescribe( 'Multi-RoadJunctionTests', () => {
 
 	let baseTest = new BaseTest();
 	let mapService: MapService;

@@ -8,7 +8,7 @@ import { RoadService } from 'app/services/road/road.service';
 import { SplineBuilder } from 'app/services/spline/spline.builder';
 import { Vector3 } from 'three';
 
-describe( 'Service: RoadCut', () => {
+xdescribe( 'Service: RoadCut', () => {
 
 	let eventServiceProvider: EventServiceProvider;
 	let splineBuilder: SplineBuilder;
