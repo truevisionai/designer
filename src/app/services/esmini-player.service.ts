@@ -69,7 +69,7 @@ export class EsminiPlayerService {
 
 		if ( !binPath || binPath == '' ) return;
 
-		const args = [ '--window', '60', '60', '800', '400', '--odr', xodr, '--path', path ];
+		const args = [ '--window', '60', '60', '800', '400', '--odr', xodr, '--path', path, '--density', '7', '--road_features' ];
 
 		TvConsole.info( 'Starting odrviewer...' );
 

@@ -15,6 +15,7 @@ import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
+import { Log } from 'app/core/utils/log';
 
 export class ManeuverTool extends BaseTool<any> {
 
@@ -85,6 +86,16 @@ export class ManeuverTool extends BaseTool<any> {
 		//
 		// }
 
+		if ( object instanceof ManeuverMesh ) {
+
+			this.addManeuver( object.junction, object.connection, object.link );
+
+		} else {
+
+			Log.error( 'Invalid object added', object );
+
+		}
+
 	}
 
 	onObjectRemoved ( object: any ): void {
@@ -95,7 +106,17 @@ export class ManeuverTool extends BaseTool<any> {
 
 		} else {
 
+			Log.error( 'Invalid object removed', object );
+
 		}
+
+	}
+
+	addManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+
+		this.tool.connectionService.addLink( junction, connection, link );
+
+		this.tool.junctionDebugger.updateDebugState( junction, DebugState.SELECTED );
 
 	}
 
@@ -103,7 +124,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		this.tool.connectionService.removeLink( junction, connection, link );
 
-		this.tool.junctionDebugger.updateDebugState( junction, DebugState.SELECTED );
+		this.tool.junctionDebugger.updateDebugState( junction, DebugState.DEFAULT );
 
 	}
 
@@ -191,7 +212,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 			connection.laneLink.forEach( laneLink => {
 
-				laneLink.modified = false;
+				laneLink.dirty = true;
 
 			} );
 

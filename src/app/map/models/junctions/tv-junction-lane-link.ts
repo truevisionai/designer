@@ -20,7 +20,7 @@ export class TvJunctionLaneLink {
 	 * can be useful to track if the link is modified
 	 * for exporting as link connection or different
 	 */
-	public modified: boolean = true;
+	public dirty: boolean = false;
 
 	public turnType: TurnType;
 
