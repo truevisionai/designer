@@ -19,6 +19,12 @@ export class GeometryUtils {
 		return center;
 	}
 
+	static getAngle ( centroid: Vector3, point: Vector3 ): number {
+
+		return Math.atan2( point.y - centroid.y, point.x - centroid.x );
+
+	}
+
 	static sortByAngle ( points: Vector3[], center?: Vector3, clockwise: boolean = false ): Vector3[] {
 
 		const centroid = center || GeometryUtils.getCentroid( points );

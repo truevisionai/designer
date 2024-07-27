@@ -30,13 +30,15 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import Delaunator from 'delaunator';
 import { Maths } from 'app/utils/maths';
+import { JunctionUtils } from 'app/utils/junction.utils';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class TvJunctionBoundaryBuilder {
 
-	constructor () { }
+	constructor () {
+	}
 
 	/**
 	 * Useful for debugging the boundary
@@ -80,7 +82,17 @@ export class TvJunctionBoundaryBuilder {
 
 	private getShapeGeometry ( boundary: TvJunctionBoundary ): ShapeGeometry {
 
-		const shape = this.convertBoundaryToShape( boundary );
+		// const shape = this.convertBoundaryToShape( boundary );
+		// const shape = this.convertBoundaryToShapeSimple( boundary );
+
+		const points = this.convertBoundaryToPositions( boundary );
+
+		if ( points.length < 3 ) {
+			console.error( 'Invalid boundary points', boundary, points.length );
+			return new ShapeGeometry( new Shape() );
+		}
+
+		const shape = new Shape( points.map( p => new Vector2( p.x, p.y ) ) );
 
 		return new ShapeGeometry( shape );
 
@@ -115,23 +127,10 @@ export class TvJunctionBoundaryBuilder {
 
 	buildViaShape ( boundary: TvJunctionBoundary ): Mesh {
 
-		const points = this.convertBoundaryToPositions( boundary );
+		const geometry = this.getBufferGeometry( boundary, 'shape' );
 
-		if ( points.length < 3 ) {
-			console.error( 'Invalid boundary points', boundary, points.length );
-			return new Mesh();
-		}
+		return new Mesh( geometry, new MeshBasicMaterial( { color: 0x00ff00, side: FrontSide } ) );
 
-		// Debug
-		this.debugDrawBoundary( boundary );
-
-		const shape = new Shape( points.map( p => new Vector2( p.x, p.y ) ) );
-
-		const geometry = new ShapeGeometry( shape );
-
-		const mesh = new Mesh( geometry, new MeshBasicMaterial( { color: 0x00ff00, side: FrontSide } ) );
-
-		return mesh;
 	}
 
 	// buildViaPoly2Tri ( boundary: TvJunctionBoundary ): Mesh {
@@ -519,11 +518,11 @@ export class TvJunctionBoundaryBuilder {
 	private createBoundaryPositions ( boundary: TvJunctionSegmentBoundary ): Vector3[] {
 
 		if ( boundary.type == TvBoundarySegmentType.JOINT ) {
-			return this.convertJointToPositions( boundary as TvJointBoundary );
+			return JunctionUtils.convertJointToPositions( boundary as TvJointBoundary );
 		}
 
 		if ( boundary.type == TvBoundarySegmentType.LANE ) {
-			return this.convertLaneToPositions( boundary as TvLaneBoundary );
+			return JunctionUtils.convertLaneToPositions( boundary as TvLaneBoundary );
 		}
 
 		console.error( 'Unknown boundary type', boundary );
@@ -531,85 +530,6 @@ export class TvJunctionBoundaryBuilder {
 		return [];
 	}
 
-	private convertJointToPositions ( joint: TvJointBoundary ): Vector3[] {
-
-		const posTheta = joint.road.getPosThetaByContact( joint.contactPoint );
-		const roadWidth = joint.road.getRoadWidthAt( posTheta.s );
-		const t = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
-
-		const points: Vector3[] = []
-
-		for ( let t = 0; t < roadWidth.leftSideWidth; t++ ) {
-
-			const point = joint.road.getPosThetaAt( posTheta.s, roadWidth.leftSideWidth - t ).toVector3();
-
-			points.push( point );
-
-		}
-
-		for ( let t = 0; t < roadWidth.rightSideWidth; t++ ) {
-
-			const point = joint.road.getPosThetaAt( posTheta.s, -1 * t ).toVector3();
-
-			points.push( point );
-
-		}
-
-		// // return only 2 points for joint boundary
-		// const start = joint.road.getLaneEndPosition( joint.jointLaneStart, posTheta.s ).toVector3();
-		// const mid = joint.road.getPosThetaAt( posTheta.s, t * 0.5 ).toVector3();
-		// const end = joint.road.getLaneEndPosition( joint.jointLaneEnd, posTheta.s ).toVector3();
-		// // return [ start, mid, end ];
-
-		return points;
-	}
-
-	private convertLaneToPositions ( lane: TvLaneBoundary ): Vector3[] {
-
-		const positions: Vector3[] = [];
-
-		const start = this.findPosition( lane.road, lane.sStart );
-
-		const end = this.findPosition( lane.road, lane.sEnd );
-
-		// push first point
-		positions.push( lane.road.getLaneEndPosition( lane.boundaryLane, start.s + Maths.Epsilon ).toVector3() );
-
-		for ( let s = start.s; s <= end.s; s += 1 ) {
-
-			const posTheta = lane.road.getPosThetaAt( s );
-
-			const position = lane.road.getLaneEndPosition( lane.boundaryLane, posTheta.s ).toVector3();
-
-			positions.push( position );
-
-		}
-
-		// push last point
-		positions.push( lane.road.getLaneEndPosition( lane.boundaryLane, end.s - Maths.Epsilon ).toVector3() );
-
-		return positions;
-
-
-	}
-
-	private findPosition ( road: TvRoad, value: number | TvContactPoint ) {
-
-		if ( typeof value == 'number' ) {
-
-			return road.getPosThetaAt( value );
-
-		} else if ( value == TvContactPoint.START ) {
-
-			return road.getPosThetaAt( 0 );
-
-		} else if ( value == TvContactPoint.END ) {
-
-			return road.getPosThetaAt( road.length );
-
-		}
-
-	}
 
 	convertBoundaryToShapeSimple ( boundary: TvJunctionBoundary ) {
 
