@@ -20,6 +20,9 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 	private showBoundingBox = false;
 	private showRoadNodes = !Environment.production;
 
+	// NOTE: ONLY FOR DEBUGGING
+	private showRoadBounds = false;
+
 	constructor (
 		private splineDebugger: SplineDebugService,
 	) {
@@ -42,6 +45,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.showBorder( spline );
 
 		if ( this.showRoadNodes ) this.splineDebugger.showNodes( spline );
+		if ( this.showRoadBounds ) this.splineDebugger.showBoundPoints( spline );
 		if ( this.showBoundingBox ) this.splineDebugger.showBoundingBox( spline );
 
 	}
@@ -50,6 +54,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 		this.splineDebugger.removeBorder( spline );
 		this.splineDebugger.removeNodes( spline );
+		this.splineDebugger.removeBoundPoints( spline );
 
 		if ( spline.controlPoints.length < 2 ) return;
 
@@ -57,6 +62,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.showArrows( spline );
 
 		if ( this.showRoadNodes ) this.splineDebugger.showNodes( spline );
+		if ( this.showRoadBounds ) this.splineDebugger.showBoundPoints( spline );
 		if ( this.showBoundingBox ) this.splineDebugger.showBoundingBox( spline );
 
 	}
@@ -79,6 +85,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.removeBorder( spline );
 		this.splineDebugger.removeArrows( spline );
 		this.splineDebugger.removeNodes( spline );
+		this.splineDebugger.removeBoundPoints( spline );
 
 		this.splineDebugger.showBorder( spline, LINE_WIDTH, COLOR.RED );
 		this.splineDebugger.showArrows( spline );
@@ -88,6 +95,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.showControlPoints( spline );
 
 		if ( this.showRoadNodes ) this.splineDebugger.showNodes( spline );
+		if ( this.showRoadBounds ) this.splineDebugger.showBoundPoints( spline );
 		if ( this.showBoundingBox ) this.splineDebugger.showBoundingBox( spline );
 
 	}
@@ -112,6 +120,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.removePolyline( spline );
 		this.splineDebugger.removeControlPoints( spline );
 		this.splineDebugger.removeNodes( spline );
+		this.splineDebugger.removeBoundPoints( spline );
 		this.splineDebugger.removeBoundingBox( spline );
 
 		this.highlighted.delete( spline );
