@@ -35,6 +35,7 @@ import { TvJunctionBoundaryManager } from "../map/junction-boundary/tv-junction-
 import { SplineUtils } from "app/utils/spline.utils";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { JunctionUtils } from "app/utils/junction.utils";
+import { OrderedMap } from "app/core/models/ordered-map";
 
 const JUNCTION_WIDTH = 10;
 
@@ -500,6 +501,57 @@ export class JunctionManager {
 
 	}
 
+	insertJunctionClaude ( spline: AbstractSpline, junctionStart: number, junctionEnd: number, junction: TvJunction ) {
+
+		const map = new OrderedMap<NewSegment>();
+		let inserted = false;
+		let currentS = 0;
+
+		spline.segmentMap.forEach( ( segment, sOffset ) => {
+			if ( !inserted && sOffset >= junctionStart ) {
+				map.set( junctionStart, junction );
+				inserted = true;
+				currentS = junctionEnd;
+			}
+
+			if ( sOffset >= junctionEnd ) {
+				map.set( currentS, segment );
+				currentS += ( spline.segmentMap.getNextKey( segment ) || spline.getLength() ) - sOffset;
+			} else if ( !inserted ) {
+				map.set( sOffset, segment );
+				currentS = Math.max( currentS, sOffset );
+			}
+		} );
+
+		if ( !inserted ) {
+			map.set( junctionStart, junction );
+
+			if ( spline.getLength() > junctionEnd ) {
+				const nextSegment = spline.segmentMap.getLast();
+				if ( nextSegment instanceof TvRoad ) {
+					map.set( junctionEnd, nextSegment );
+				} else {
+					const road = this.splineService.findFirstRoad( spline );
+					const nextRoad = this.roadService.clone( road, 0 );
+					map.set( junctionEnd, nextRoad );
+					this.mapService.map.addRoad( nextRoad );
+				}
+			}
+		}
+
+		// Update connections
+		const prevSegment = map.getPrevious( junction );
+		const nextSegment = map.getNext( junction );
+
+		// if ( prevSegment ) this.updateConnections( prevSegment, junction );
+		// if ( nextSegment ) this.updateConnections( junction, nextSegment );
+
+		spline.segmentMap = map;
+
+		Log.info( 'Updated spline segments', spline.segmentMap );
+	}
+
+
 	updateSplineLinks ( spline: AbstractSpline ) {
 
 		spline.segmentMap.forEach( ( segment, sOffset ) => {
@@ -874,7 +926,7 @@ export class JunctionManager {
 			Log.debug( 'different roads', startSegment, endSegment );
 
 			SplineUtils.removeSegment( spline, junction );
-			SplineUtils.addSegment( spline, sStart - 5, junction );
+			SplineUtils.addSegment( spline, sStart, junction );
 
 			if ( startSegment instanceof TvRoad ) {
 
