@@ -30,6 +30,7 @@ import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { SplineService } from "./spline.service";
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { Log } from 'app/core/utils/log';
 
 function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
@@ -378,72 +379,105 @@ export class SplineBuilder {
 
 		let roadWidth: { leftSideWidth: number, rightSideWidth: number, totalWidth: number };
 
-		spline.segmentMap.forEach( ( segment, sStart ) => {
+		const firstRoad = this.splineService.findFirstRoad( spline );
+
+		if ( firstRoad ) {
+			roadWidth = firstRoad.getRoadWidthAt( 0 );
+		}
+
+		for ( let s = 0; s < spline.getLength(); s++ ) {
+
+			const segment = spline.segmentMap.findAt( s );
 
 			if ( segment instanceof TvRoad ) {
-
-				for ( let s = 0; s < segment.length; s++ ) {
-
-					roadWidth = segment.getRoadWidthAt( s );
-
-					const center = segment.getPosThetaAt( s );
-					const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
-					const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
-
-					const centerPoint = new SimpleControlPoint( null, center.position );
-					const leftPoint = new SimpleControlPoint( null, left.position );
-					const rightPoint = new SimpleControlPoint( null, right.position );
-
-					spline.leftPoints.push( leftPoint );
-					spline.centerPoints.push( centerPoint );
-					spline.rightPoints.push( rightPoint );
-
-				}
-
+				roadWidth = segment.getRoadWidthAt( s - segment.sStart );
 			}
 
-			if ( segment instanceof TvJunction ) {
-
-				const previous = spline.segmentMap.getPrevious( segment );
-				const next = spline.segmentMap.getNext( segment );
-				const sEnd = spline.segmentMap.getNextKey( segment ) ?? spline.getLength();
-
-				if ( !roadWidth && next instanceof TvRoad ) {
-					roadWidth = next.getRoadWidthAt( 0 );
-				}
-
-				if ( !roadWidth && previous instanceof TvRoad ) {
-					roadWidth = previous.getRoadWidthAt( previous.length );
-				}
-
-				if ( !roadWidth ) {
-					const road = this.splineService.findFirstRoad( spline );
-					roadWidth = road.getRoadWidthAt( 0 );
-				}
-
-				if ( !roadWidth ) {
-					roadWidth = { leftSideWidth: 6, rightSideWidth: 6, totalWidth: 12 };
-				}
-
-				for ( let s = sStart; s < sEnd; s++ ) {
-
-					const center = this.splineService.getCoordAtOffset( spline, s );
-					const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
-					const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
-
-					const centerPoint = new SimpleControlPoint( null, center.position );
-					const leftPoint = new SimpleControlPoint( null, left.position );
-					const rightPoint = new SimpleControlPoint( null, right.position );
-
-					spline.leftPoints.push( leftPoint );
-					spline.centerPoints.push( centerPoint );
-					spline.rightPoints.push( rightPoint );
-
-				}
-
+			if ( !roadWidth ) {
+				Log.error( 'Road width not found at ', s, spline.toString() );
+				continue;
 			}
 
-		} );
+			const center = this.splineService.getCoordAtOffset( spline, s );
+			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
+			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
+
+			const centerPoint = new SimpleControlPoint( null, center.position );
+			const leftPoint = new SimpleControlPoint( null, left.position );
+			const rightPoint = new SimpleControlPoint( null, right.position );
+
+			spline.leftPoints.push( leftPoint );
+			spline.centerPoints.push( centerPoint );
+			spline.rightPoints.push( rightPoint );
+
+		}
+
+		// spline.segmentMap.forEach( ( segment, sStart ) => {
+
+		// 	if ( segment instanceof TvRoad ) {
+
+		// 		for ( let s = 0; s < segment.length; s++ ) {
+
+		// 			roadWidth = segment.getRoadWidthAt( s );
+
+		// 			const center = segment.getPosThetaAt( s );
+		// 			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
+		// 			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
+
+		// 			const centerPoint = new SimpleControlPoint( null, center.position );
+		// 			const leftPoint = new SimpleControlPoint( null, left.position );
+		// 			const rightPoint = new SimpleControlPoint( null, right.position );
+
+		// 			spline.leftPoints.push( leftPoint );
+		// 			spline.centerPoints.push( centerPoint );
+		// 			spline.rightPoints.push( rightPoint );
+
+		// 		}
+
+		// 	}
+
+		// 	if ( segment instanceof TvJunction ) {
+
+		// 		const previous = spline.segmentMap.getPrevious( segment );
+		// 		const next = spline.segmentMap.getNext( segment );
+		// 		const sEnd = spline.segmentMap.getNextKey( segment ) ?? spline.getLength();
+
+		// 		if ( !roadWidth && next instanceof TvRoad ) {
+		// 			roadWidth = next.getRoadWidthAt( 0 );
+		// 		}
+
+		// 		if ( !roadWidth && previous instanceof TvRoad ) {
+		// 			roadWidth = previous.getRoadWidthAt( previous.length );
+		// 		}
+
+		// 		if ( !roadWidth ) {
+		// 			const road = this.splineService.findFirstRoad( spline );
+		// 			roadWidth = road.getRoadWidthAt( 0 );
+		// 		}
+
+		// 		if ( !roadWidth ) {
+		// 			roadWidth = { leftSideWidth: 6, rightSideWidth: 6, totalWidth: 12 };
+		// 		}
+
+		// 		for ( let s = sStart; s < sEnd; s++ ) {
+
+		// 			const center = this.splineService.getCoordAtOffset( spline, s );
+		// 			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
+		// 			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
+
+		// 			const centerPoint = new SimpleControlPoint( null, center.position );
+		// 			const leftPoint = new SimpleControlPoint( null, left.position );
+		// 			const rightPoint = new SimpleControlPoint( null, right.position );
+
+		// 			spline.leftPoints.push( leftPoint );
+		// 			spline.centerPoints.push( centerPoint );
+		// 			spline.rightPoints.push( rightPoint );
+
+		// 		}
+
+		// 	}
+
+		// } );
 
 	}
 }
