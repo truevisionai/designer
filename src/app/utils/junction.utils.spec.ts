@@ -1,0 +1,83 @@
+import { EventServiceProvider } from "../listeners/event-service-provider";
+import { SplineTestHelper } from "../services/spline/spline-test-helper.service";
+import { TestBed } from "@angular/core/testing";
+import { HttpClientModule } from "@angular/common/http";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { RoadToolHelper } from "../tools/road/road-tool-helper.service";
+import { JunctionUtils } from "./junction.utils";
+import { JunctionService } from "../services/junction/junction.service";
+
+describe( 'JunctionUtils', () => {
+
+	let eventServiceProvider: EventServiceProvider;
+	let splineTestHelper: SplineTestHelper;
+	let junctionService: JunctionService;
+
+	beforeEach( () => {
+
+		TestBed.configureTestingModule( {
+			imports: [ HttpClientModule, MatSnackBarModule ],
+			providers: []
+		} );
+
+		splineTestHelper = TestBed.inject( SplineTestHelper );
+		junctionService = TestBed.inject( JunctionService );
+
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		eventServiceProvider.init();
+
+	} );
+
+	it( 'should give successors correctly', () => {
+
+		splineTestHelper.addDefaultJunction();
+
+		const junction = junctionService.mapService.findJunction( 1 );
+
+		const incomingRoad = junctionService.mapService.findRoad( 1 );
+		const incomingLaneSection = incomingRoad.laneSections[ 0 ];
+		const incomingLeftLane = incomingLaneSection.getLaneById( 1 );
+		const incomingRightLane = incomingLaneSection.getLaneById( -1 );
+
+		const outgoingRoad = junctionService.mapService.findRoad( 4 );
+		const outgoingLaneSection = outgoingRoad.laneSections[ 0 ];
+		const outgoingLeftLane = outgoingLaneSection.getLaneById( 1 );
+		const outgoingRightLane = outgoingLaneSection.getLaneById( -1 );
+
+		// incoming road lane:1 must have 3 predecessors
+		expect( JunctionUtils.findPredecessors( incomingRoad, incomingLeftLane, incomingRoad.successor ).length ).toBe( 3 );
+		// incoming road lane:-1 must have 3 successors
+		expect( JunctionUtils.findSuccessors( incomingRoad, incomingRightLane, incomingRoad.successor ).length ).toBe( 3 );
+		// sidewalk should have only 1 successor
+		expect( JunctionUtils.findSuccessors( incomingRoad, incomingLaneSection.lanes.get( -2 ), incomingRoad.successor ).length ).toBe( 1 );
+
+		// outgoing road lane:1 must have 3 predecessors
+		expect( JunctionUtils.findPredecessors( outgoingRoad, outgoingLeftLane, outgoingRoad.predecessor ).length ).toBe( 3 );
+		// outgoing road lane:-1 must have 3 successors
+		expect( JunctionUtils.findSuccessors( outgoingRoad, outgoingRightLane, outgoingRoad.predecessor ).length ).toBe( 3 );
+		// sidewalk should have only 1 successor
+		expect( JunctionUtils.findSuccessors( outgoingRoad, outgoingLaneSection.lanes.get( -2 ), outgoingRoad.predecessor ).length ).toBe( 1 );
+
+
+	} );
+
+	// it( 'should work with router graph', () => {
+
+	// 	splineTestHelper.addDefaultJunction();
+
+	// 	const incomingRoad = junctionService.mapService.findRoad( 1 );
+	// 	const incomingLeftLane = incomingRoad.laneSections[ 0 ].getLaneById( 1 );
+	// 	const incomingRightLane = incomingRoad.laneSections[ 0 ].getLaneById( -1 );
+
+	// 	// const currentMap = junctionService.mapService.map;
+	// 	// const routeMap = new OpenDriveMap( currentMap.roads.toArray(), currentMap.junctions.toArray() );
+
+	// 	// const graph = routeMap.getRoutingGraph();
+	// 	// const laneKey = new LaneKey( incomingRoad.id, incomingRightLane.laneSection.s, incomingLeftLane.id );
+	// 	// const successors = graph.getLaneSuccessors( laneKey );
+
+	// 	// expect( successors.length ).toBe( 30 );
+
+	// } );
+
+} );

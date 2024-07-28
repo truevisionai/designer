@@ -65,7 +65,7 @@ export class DebugDrawService {
 
 	drawText ( text: string, position: Vector3, size = 1, color = COLOR.WHITE ) {
 
-		const textObject = this.textService.createFromText( text, size );
+		const textObject = this.textService.createFromText( text, size, color );
 
 		textObject.position.copy( position );
 

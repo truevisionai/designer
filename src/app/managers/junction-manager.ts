@@ -119,7 +119,7 @@ export class JunctionManager {
 
 	}
 
-	removeJunction ( junction: TvJunction, spline?: AbstractSpline ) {
+	removeJunction ( junction: TvJunction, spline?: AbstractSpline, processOthers = false ) {
 
 		if ( this.debug ) Log.debug( 'removeJunction', junction.toString() );
 
@@ -143,7 +143,7 @@ export class JunctionManager {
 
 		this.removeMesh( junction );
 
-		if ( splines.length > 2 && spline ) {
+		if ( splines.length > 2 && spline && processOthers ) {
 
 			const other = splines.find( s => s != spline );
 
@@ -752,11 +752,53 @@ export class JunctionManager {
 
 			group.centroid = group.getRepresentativePosition();
 
+			this.reComputeJunctionOffsets( group );
+
 			groups.push( group );
 
 		}
 
+
+
 		return groups;
+	}
+
+	reComputeJunctionOffsets ( group: IntersectionGroup, force = false ) {
+
+		if ( !force && group.getSplines().length < 2 ) return;
+
+		// if group has more than 2 spline we should recalculate junctions regions
+		// for each of them to update their start/end positions
+		const splines = group.getSplines();
+
+		for ( let a = 0; a < splines.length; a++ ) {
+
+			const spline = splines[ a ];
+
+			for ( let b = a + 1; b < splines.length; b++ ) {
+
+				const element = splines[ b ];
+
+				const intersections = this.splineService.findIntersectionsViaBox2D( spline, element );
+
+				intersections.forEach( i => group.addSplineIntersection( i ) );
+
+			}
+
+		}
+
+		// group.getSplines().forEach( spline => {
+
+		// const offset = group.getOffset( spline );
+
+		// this.createRoadCoordNew( spline, offset.sStart, offset.sEnd, junction, group ).forEach( c => coords.push( c ) );
+
+		// this.splineBuilder.buildGeometry( spline );
+
+		// } );
+
+		// DebugDrawService.instance.drawBox2D( group.area, COLOR.WHITE );
+
 	}
 
 	createJunctionFromGroup ( group: IntersectionGroup ): void {
@@ -923,7 +965,7 @@ export class JunctionManager {
 		if ( differentRoads ) {
 
 			// Handle junction segment for different roads
-			Log.debug( 'different roads', startSegment, endSegment );
+			Log.debug( 'different roads', startSegment?.toString(), endSegment?.toString() );
 
 			SplineUtils.removeSegment( spline, junction );
 			SplineUtils.addSegment( spline, sStart, junction );
@@ -1176,21 +1218,36 @@ export class JunctionManager {
 
 		const segment = spline.segmentMap.findAt( sStart );
 
-		if ( !( segment instanceof TvRoad ) ) {
-			console.error( 'startSegment is not a road', segment, sStart, sEnd );
-			return [];
+		if ( segment instanceof TvRoad ) {
+
+			const newRoad = this.createNewRoadSegment( spline, segment, junction, sStart, sEnd );
+
+			Log.debug( 'created new segment', newRoad.toString(), segment.toString(), junction.toString(), sStart, sEnd );
+
+			return [
+				new TvRoadLink( TvRoadLinkType.ROAD, segment, TvContactPoint.END ),
+				new TvRoadLink( TvRoadLinkType.ROAD, newRoad, TvContactPoint.START )
+			];
+
+		} else if ( segment instanceof TvJunction ) {
+
+			Log.debug( 'Middle segment is junction', segment.toString(), spline.toString() );
+
+			const prev = spline.segmentMap.getPrevious( segment );
+			const next = spline.segmentMap.getNext( segment );
+
+			return [
+				new TvRoadLink( TvRoadLinkType.ROAD, prev, TvContactPoint.END ),
+				new TvRoadLink( TvRoadLinkType.ROAD, next, TvContactPoint.START )
+			];
+
+		} else {
+
+			throw new Error( 'Invalid segment' );
+
 		}
 
-		const mainRoad = segment as TvRoad;
 
-		const newRoad = this.createNewRoadSegment( spline, mainRoad, junction, sStart, sEnd );
-
-		Log.debug( 'created new segment', newRoad.toString(), mainRoad.toString(), junction.toString(), sStart, sEnd );
-
-		return [
-			new TvRoadLink( TvRoadLinkType.ROAD, mainRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, newRoad, TvContactPoint.START )
-		];
 	}
 
 	createNewRoadSegment ( spline: AbstractSpline, oldRoad: TvRoad, junction: TvJunction, sStart: number, sEnd: number ): TvRoad {

@@ -96,20 +96,6 @@ export class LaneUtils {
 
 	}
 
-	static getNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ): TvLaneSection | null {
-
-		const index = road.laneSections.indexOf( laneSection );
-
-		if ( index == road.laneSections.length - 1 ) {
-
-			return null;
-
-		}
-
-		return road.laneSections[ index + 1 ];
-
-	}
-
 	static inRoadDirection ( road: TvRoad, lane: TvLane ): boolean {
 
 		if ( road.trafficRule == TrafficRule.RHT ) {

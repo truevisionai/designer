@@ -10,7 +10,7 @@ import { SurfaceToolService } from "./surface/surface-tool.service";
 import { PropPointService } from "../map/prop-point/prop-point.service";
 import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
 import { RoadElevationToolService } from "./road-elevation/road-elevation-tool.service";
-import { ManeuverToolService } from "./maneuver/maneuver-tool.service";
+import { ManeuverToolHelper } from "./maneuver/maneuver-tool-helper.service";
 import { LaneWidthToolService } from "./lane-width/lane-width-tool.service";
 import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service";
 import { LaneToolService } from "./lane/lane-tool.service";
@@ -101,7 +101,7 @@ export class ToolFactory {
 		private propPointService: PropPointService,
 		private roadCircleService: RoadCircleToolService,
 		private roadElevationService: RoadElevationToolService,
-		private maneuverToolService: ManeuverToolService,
+		private maneuverToolService: ManeuverToolHelper,
 		private laneWidthService: LaneWidthToolService,
 		private laneMarkingService: LaneMarkingToolService,
 		private laneToolService: LaneToolService,
@@ -295,23 +295,6 @@ export class ToolFactory {
 			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
 			this.selectionService.registerStrategy( Surface.name, new ObjectUserDataStrategy( Surface.tag, 'surface' ) );
 			tool.setTypeName( Surface.name );
-		}
-
-		if ( type == ToolType.Maneuver ) {
-
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-			this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( 'link' ) );
-			this.selectionService.registerStrategy( TvJunction.name, new ObjectUserDataStrategy( 'junction', 'junction' ) );
-
-			this.selectionService.registerTag( SimpleControlPoint.name, SimpleControlPoint.name );
-			this.selectionService.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
-			this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
-			this.selectionService.registerTag( TvJunction.name, TvJunction.name );
-
-			this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
-
-			tool.setTypeName( TvJunction.name );
-
 		}
 
 		if ( type == ToolType.TrafficLight ) {

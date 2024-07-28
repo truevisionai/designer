@@ -752,9 +752,11 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 	removeSpline ( spline: AbstractSpline ) {
 
+		this.selectionService.clearSelection();
+
 		this.tool.splineService.remove( spline );
 
-		this.debugService.setDebugState( spline, DebugState.REMOVED );
+		this.debugService.updateDebugState( spline, DebugState.REMOVED );
 
 	}
 

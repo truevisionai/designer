@@ -6,6 +6,8 @@ import { TvRoadLink } from "app/map/models/tv-road-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Maths } from "../../utils/maths";
 import { Log } from "../../core/utils/log";
+import { MapEvents } from "app/events/map-events";
+import { SplineUpdatedEvent } from "app/events/spline/spline-updated-event";
 
 @Injectable( {
 	providedIn: 'root'
@@ -62,10 +64,23 @@ export class MapFixer {
 
 			const junction = link.element as TvJunction
 
-			const connections = junction.getConnections().filter( connection => connection.incomingRoad = predecessor );
+			const connections = junction.getConnections().filter( connection => connection.incomingRoad === predecessor );
 
 			if ( connections.length == 0 ) {
-				Log.error( 'No connections found for road ' + predecessor.id );
+
+				Log.warn( 'No Connections With Junction', predecessor.toString(), link.toString() );
+
+				predecessor.successor = null;
+
+				Log.warn( 'Trying to fix road', predecessor.toString() );
+
+				setTimeout( () => {
+
+					// Trigger auto update
+					MapEvents.splineUpdated.emit( new SplineUpdatedEvent( predecessor.spline ) );
+
+				}, 1000 + Math.random() * 1000 );
+
 			}
 
 			return;
@@ -101,10 +116,23 @@ export class MapFixer {
 
 			const junction = link.element as TvJunction
 
-			const connections = junction.getConnections().filter( connection => connection.incomingRoad = successor );
+			const connections = junction.getConnections().filter( connection => connection.incomingRoad === successor );
 
 			if ( connections.length == 0 ) {
-				Log.error( 'No connections found for road ' + successor.id );
+
+				Log.warn( 'No Connections With Junction', successor.toString(), link.toString() );
+
+				successor.predecessor = null
+
+				Log.warn( 'Trying to fix road', successor.toString() );
+
+				setTimeout( () => {
+
+					// Trigger auto update
+					MapEvents.splineUpdated.emit( new SplineUpdatedEvent( successor.spline ) );
+
+				}, 1000 + Math.random() * 1000 );
+
 			}
 
 			return;

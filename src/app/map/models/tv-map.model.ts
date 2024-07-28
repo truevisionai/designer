@@ -17,7 +17,7 @@ import { Object3D, Vector2 } from 'three';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { IDService } from 'app/factories/id.service';
 import { ManagedMap } from "../../core/models/managed-map";
-import { ModelNotFoundException } from 'app/exceptions/exceptions';
+import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 
 export class TvMap {
 
@@ -113,8 +113,11 @@ export class TvMap {
 
 	addRoad ( road: TvRoad ) {
 
-		this.roads.set( road.id, road );
+		if ( this.roads.has( road.id ) ) {
+			throw new DuplicateKeyException( `Road with id ${ road.id } already exists` );
+		}
 
+		this.roads.set( road.id, road );
 	}
 
 	getSurfaces () {
@@ -123,7 +126,11 @@ export class TvMap {
 
 	}
 
-	public removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ) {
+
+		if ( !this.roads.has( road.id ) ) {
+			throw new ModelNotFoundException( `Road with id ${ road.id } not found` );
+		}
 
 		this.roads.delete( road.id );
 

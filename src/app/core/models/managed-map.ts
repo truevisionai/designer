@@ -28,6 +28,9 @@ export class ManagedMap<V> extends Map<number, V> {
 
 	has ( id: number ): boolean {
 
+		return super.has( id );
+
+		// used set is not required as we are using map
 		return this.used.has( id ) || super.has( id );
 
 	}

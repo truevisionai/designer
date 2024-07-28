@@ -4,7 +4,7 @@
 
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
-import { Vector3, BufferGeometry, BufferAttribute, Box2, Vector2 } from "three";
+import { Vector3, BufferGeometry, BufferAttribute, Box2, Vector2, CatmullRomCurve3, ExtrudeGeometry, Shape } from "three";
 
 import earcut from 'earcut';
 
@@ -244,5 +244,29 @@ export class GeometryUtils {
 			}
 		}
 		return points;
+	}
+
+	static createExtrudeGeometry ( points: Vector3[], width = 1.0, height = 0.1 ): BufferGeometry {
+
+		// Create a CatmullRomCurve3 spline
+		const spline = new CatmullRomCurve3( points );
+
+		// Define the shape to be extruded (a simple rectangle in this case)
+		const shape = new Shape();
+		shape.moveTo( -height / 2, -width / 2 );
+		shape.lineTo( height / 2, -width / 2 );
+		shape.lineTo( height / 2, width / 2 );
+		shape.lineTo( -height / 2, width / 2 );
+		shape.lineTo( -height / 2, -width / 2 );
+
+		// Define the extrusion settings
+		const extrudeSettings = {
+			steps: 200,  // Number of points used for the extrude path
+			bevelEnabled: false,  // Disable bevels
+			extrudePath: spline  // Use the spline as the extrude path
+		};
+
+		// Create the extrude geometry
+		return new ExtrudeGeometry( shape, extrudeSettings );
 	}
 }

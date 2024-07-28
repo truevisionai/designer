@@ -132,7 +132,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const guid = scene.guid;
 
 		if ( !version ) this.snackBar.error( 'Cannot read scene version. Please check scene file before importing', 'OK', 5000 );
-		if ( !version ) console.error( 'Cannot read scene version', scene );
+		if ( !version ) Log.error( 'Cannot read scene version', scene );
 		if ( !version ) return;
 
 		this.importScene( scene );
@@ -154,7 +154,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			const junction = this.map.getJunctionById( junctionId );
 
 			if ( !junction ) {
-				TvConsole.error( 'Junction not found junction:' + junctionId );
+				Log.warn( 'Junction not found junction:' + junctionId );
 				return;
 			}
 
@@ -282,7 +282,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
-		TvConsole.error( 'unknown spline type:' + xml?.attr_type );
+		Log.warn( 'unknown spline type:' + xml?.attr_type );
 	}
 
 	private readEnvironment ( xml: XmlElement ) {
@@ -331,7 +331,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} catch ( error ) {
 
-			TvConsole.error( 'Junction not found' );
+			Log.warn( 'Junction not found' );
 			return;
 
 		}
@@ -426,7 +426,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
-		console.error( 'unknown spline type', type );
+		Log.error( 'unknown spline type', type );
 	}
 
 	private importExplicitSpline ( xml: XmlElement, road?: TvRoad ): ExplicitSpline {
@@ -521,15 +521,15 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 				if ( !junction ) {
 
-					isValid = false;
-
 					Log.error( 'Junction not found with id:' + id );
 
+				} else {
+
+					junction.auto = true;
+
+					spline.segmentMap.set( start, junction );
+
 				}
-
-				junction.auto = true;
-
-				spline.segmentMap.set( start, junction );
 
 			} else {
 
@@ -561,12 +561,17 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		} );
 
 		if ( !isValid ) {
-			Log.error( 'Invalid spline', spline );
+			Log.error( 'Invalid spline', spline.toString() );
 			return;
 		}
 
 		if ( spline.controlPoints.length < 2 ) {
-			Log.error( 'Spline must have at least 2 control points', spline );
+			Log.error( 'Spline must have at least 2 control points', spline.toString() );
+			return;
+		}
+
+		if ( spline.segmentMap.length == 0 ) {
+			Log.error( 'Spline must have at least 1 segment', spline.toString() );
 			return;
 		}
 
@@ -743,7 +748,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const instance = AssetDatabase.getPropObject( xml.attr_guid );
 
-		if ( !instance ) TvConsole.error( `Object not found` );
+		if ( !instance ) Log.warn( `Object not found` );
 
 		if ( !instance ) return;
 
@@ -995,7 +1000,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} else {
 
-			console.error( 'unknown geometry type', xml );
+			Log.error( 'unknown geometry type', xml );
 
 		}
 
@@ -1076,7 +1081,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			return this.parseJointBoundarySegment( xml );
 		}
 
-		TvConsole.error( 'unknown segment type' );
+		Log.warn( 'unknown segment type' );
 	}
 
 	parseJointBoundarySegment ( xml: XmlElement ): TvJunctionSegmentBoundary {
@@ -1103,17 +1108,17 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const jointLaneEnd = laneSection.getLaneById( jointLaneEndId );
 
 		if ( !laneSection ) {
-			TvConsole.error( 'lane section not found' );
+			Log.warn( 'lane section not found' );
 			return;
 		}
 
 		if ( !jointLaneStart ) {
-			TvConsole.error( 'jointLaneStart not found' );
+			Log.warn( 'jointLaneStart not found' );
 			return;
 		}
 
 		if ( !jointLaneEnd ) {
-			TvConsole.error( 'jointLaneEnd not found' );
+			Log.warn( 'jointLaneEnd not found' );
 			return;
 		}
 
@@ -1138,13 +1143,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const road = this.findRoad( roadId );
 
 		if ( !road ) {
-			TvConsole.error( 'parseLaneBoundarySegment road not found with id:' + roadId );
+			Log.warn( 'parseLaneBoundarySegment road not found with id:' + roadId );
 			return;
 		}
 
 		const lane = road.laneSections[ 0 ]?.getLaneById( boundaryLane );
 		if ( !lane ) {
-			TvConsole.error( 'lane not found with id:' + boundaryLane );
+			Log.warn( 'lane not found with id:' + boundaryLane );
 			return;
 		}
 
@@ -1226,8 +1231,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const incomingContactPoint = findContactPoint( connection.incomingRoad );
 
 		if ( !incomingContactPoint ) {
-			TvConsole.error( 'contact point not found' );
-			console.error( 'contact point not found', xmlElement, connection );
+			Log.warn( 'contact point not found' );
+			Log.error( 'contact point not found', xmlElement, connection );
 			return;
 		}
 
@@ -1235,14 +1240,14 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const connectionLaneSection = connection.connectingRoad.getLaneSectionAtContact( connection.contactPoint );
 
 		if ( !incomingLaneSection ) {
-			TvConsole.error( 'incoming lane section not found' );
-			console.error( 'contact point not found', xmlElement, connection );
+			Log.warn( 'incoming lane section not found' );
+			Log.error( 'contact point not found', xmlElement, connection );
 			return;
 		}
 
 		if ( !connectionLaneSection ) {
-			TvConsole.error( 'connection lane section not found' );
-			console.error( 'contact point not found', xmlElement, connection );
+			Log.warn( 'connection lane section not found' );
+			Log.error( 'contact point not found', xmlElement, connection );
 			return;
 		}
 
@@ -1250,14 +1255,14 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const toLane = connectionLaneSection.getLaneById( toLaneId );
 
 		if ( !fromLane ) {
-			TvConsole.error( 'from lane not found' );
-			console.error( 'from lane not found', xmlElement, connection );
+			Log.warn( 'from lane not found' );
+			Log.error( 'from lane not found', xmlElement, connection );
 			return;
 		}
 
 		if ( !toLane ) {
-			TvConsole.error( 'to lane not found' );
-			console.error( 'to lane not found', xmlElement, connection );
+			Log.warn( 'to lane not found' );
+			Log.error( 'to lane not found', xmlElement, connection );
 			return;
 		}
 
@@ -1591,7 +1596,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( road.signals.has( id ) ) {
 			// TEMP FIX
-			TvConsole.warn( `Signal with id ${ id } already exists, incrementing id to add it ` + road.toString() );
+			Log.warn( `Signal with id ${ id } already exists, incrementing id to add it ` + road.toString() );
 			id = findAvailableId( id, road );
 		}
 

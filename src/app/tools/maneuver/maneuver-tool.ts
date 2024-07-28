@@ -4,7 +4,7 @@
 
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { ManeuverToolService } from 'app/tools/maneuver/maneuver-tool.service';
+import { ManeuverToolHelper } from 'app/tools/maneuver/maneuver-tool-helper.service';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DebugState } from "../../services/debug/debug-state";
@@ -16,6 +16,10 @@ import { TvRoad } from "../../map/models/tv-road.model";
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { Log } from 'app/core/utils/log';
+import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { ControlPointStrategy } from "../../core/strategies/select-strategies/control-point-strategy";
+import { ObjectTagStrategy, ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
+import { FollowHeadingMovingStrategy } from "../../core/strategies/move-strategies/follow-heading-moving-strategy";
 
 export class ManeuverTool extends BaseTool<any> {
 
@@ -23,13 +27,32 @@ export class ManeuverTool extends BaseTool<any> {
 
 	toolType = ToolType.Maneuver;
 
-	constructor ( private tool: ManeuverToolService ) {
+	debug = true;
+
+	constructor ( public helper: ManeuverToolHelper ) {
 
 		super();
 
 	}
 
 	init () {
+
+		this.selectionService = this.helper.base.selection;
+
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( 'link' ) );
+		this.selectionService.registerStrategy( TvJunction.name, new ObjectUserDataStrategy( 'junction', 'junction' ) );
+
+		this.selectionService.registerTag( SimpleControlPoint.name, SimpleControlPoint.name );
+		this.selectionService.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
+		this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
+		this.selectionService.registerTag( TvJunction.name, TvJunction.name );
+
+		this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
+
+		this.setTypeName( TvJunction.name );
+		this.setDebugService( this.helper.junctionDebugger );
+		this.setDataService( this.helper.junctionService );
 
 		super.init();
 
@@ -45,8 +68,8 @@ export class ManeuverTool extends BaseTool<any> {
 
 		super.disable();
 
-		this.tool.junctionDebugger.clear();
-		this.tool.maneuverDebugger.clear();
+		this.helper.junctionDebugger.clear();
+		this.helper.maneuverDebugger.clear();
 
 	}
 
@@ -70,7 +93,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
-		this.selectionService?.handleSelection( e );
+		this.selectionService.handleSelection( e );
 
 	}
 
@@ -114,27 +137,29 @@ export class ManeuverTool extends BaseTool<any> {
 
 	addManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
 
-		this.tool.connectionService.addLink( junction, connection, link );
+		this.helper.connectionService.addLink( junction, connection, link );
 
-		this.tool.junctionDebugger.updateDebugState( junction, DebugState.SELECTED );
+		this.helper.junctionDebugger.updateDebugState( junction, DebugState.SELECTED );
 
 	}
 
 	removeManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
 
-		this.tool.connectionService.removeLink( junction, connection, link );
+		this.helper.connectionService.removeLink( junction, connection, link );
 
-		this.tool.junctionDebugger.updateDebugState( junction, DebugState.DEFAULT );
+		this.helper.junctionDebugger.updateDebugState( junction, DebugState.DEFAULT );
 
 	}
 
 	onObjectSelected ( object: any ): void {
 
+		if ( this.debug ) Log.debug( 'ManeuverTool.onObjectSelected', object?.toString() );
+
 		if ( object instanceof ManeuverMesh ) {
 
 			this.setInspector( new ManeuverInspector( object ) );
 
-			this.tool.maneuverDebugger.updateDebugState( object, DebugState.SELECTED );
+			this.helper.maneuverDebugger.updateDebugState( object, DebugState.SELECTED );
 
 		} else if ( object instanceof SplineControlPoint ) {
 
@@ -142,7 +167,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		} else if ( object instanceof TvJunction ) {
 
-			this.tool.junctionDebugger.updateDebugState( object, DebugState.SELECTED );
+			this.helper.junctionDebugger.updateDebugState( object, DebugState.SELECTED );
 
 		} else if ( object instanceof Array ) {
 
@@ -158,7 +183,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 			this.clearInspector();
 
-			this.tool.maneuverDebugger.updateDebugState( object, DebugState.REMOVED );
+			this.helper.maneuverDebugger.updateDebugState( object, DebugState.REMOVED );
 
 		} else if ( object instanceof SplineControlPoint ) {
 
@@ -166,7 +191,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		} else if ( object instanceof TvJunction ) {
 
-			this.tool.junctionDebugger.updateDebugState( object, DebugState.DEFAULT );
+			this.helper.junctionDebugger.updateDebugState( object, DebugState.DEFAULT );
 
 		} else if ( object instanceof Array ) {
 
@@ -180,13 +205,13 @@ export class ManeuverTool extends BaseTool<any> {
 
 		if ( object instanceof SplineControlPoint ) {
 
-			this.tool.splineService.update( object.spline );
+			this.helper.splineService.update( object.spline );
 
 			const connectingRoad = this.findConnectingRoad( object.spline );
 
 			if ( !connectingRoad ) return;
 
-			this.tool.junctionDebugger.updateDebugState( connectingRoad.junction, DebugState.SELECTED );
+			this.helper.junctionDebugger.updateDebugState( connectingRoad.junction, DebugState.SELECTED );
 
 			this.markAsDirty( connectingRoad.junction, connectingRoad );
 
@@ -222,7 +247,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 	private findConnectingRoad ( spline: AbstractSpline ): TvRoad {
 
-		const road = this.tool.splineService.findFirstRoad( spline );
+		const road = this.helper.splineService.findFirstRoad( spline );
 
 		if ( road.isJunction ) return;
 

@@ -14,6 +14,9 @@ import { Injectable } from "@angular/core";
 import { MapQueryService } from "../../map/queries/map-query.service";
 import { TvLaneCoord } from "../../map/models/tv-lane-coord";
 import { Vector2 } from "three";
+import { JunctionUtils } from "../../utils/junction.utils";
+import { DebugDrawService } from 'app/services/debug/debug-draw.service';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -51,6 +54,26 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 		this.setDebugService( this.tool.toolDebugger );
 
+		this.tool.mapService.nonJunctionRoads.forEach( road => {
+
+			// show road id in middle of the road
+
+			const width = road.getRoadWidthAt( road.length * 0.5 );
+
+			if ( !width ) return;
+
+			const t = width.leftSideWidth - width.rightSideWidth;
+
+			const position = road.getPosThetaAt( road.length * 0.5, t * 0.5 )?.position;
+
+			if ( !position ) return;
+
+			position.z += 0.01;
+
+			DebugDrawService.instance.drawText( road.id.toString(), position, 2, COLOR.RED );
+
+		} );
+
 		this.tool.mapService.nonJunctionSplines.forEach( spline => {
 
 			this.tool.toolDebugger.roadToolDebugger.onDefault( spline );
@@ -68,6 +91,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 			this.toolTip = null;
 		}
 
+		DebugDrawService.instance.clear();
 	}
 
 	onPointerDown ( pointerEventData: PointerEventData ): void {
@@ -145,12 +169,15 @@ export class DebugConnectionTool extends BaseTool<any> {
 		}
 
 		contents += '<br/>Successors Lanes:<br/>';
-		this.tool.queryService.findLaneSuccessors( coord.road, coord.laneSection, coord.lane ).forEach( lane => {
+		const successors = JunctionUtils.findSuccessors( coord.road, coord.lane, coord.road.successor );
+		successors.forEach( lane => {
 			contents += `Successor: ${ lane.id }<br/>`;
 		} );
 
 		contents += '<br/>Predecessors Lanes:<br/>';
-		this.tool.queryService.findLanePredecessors( coord.road, coord.laneSection, coord.lane ).forEach( lane => {
+		const predecessors = JunctionUtils.findPredecessors( coord.road, coord.lane, coord.road.predecessor );
+
+		predecessors.forEach( lane => {
 			contents += `Predecessor: ${ lane.id }<br/>`;
 		} );
 

@@ -124,7 +124,7 @@ export class RoadUtils {
 
 	}
 
-	static unlinkSuccessor ( road: TvRoad ) {
+	static unlinkSuccessor ( road: TvRoad, updateMe = true ) {
 
 		if ( !road.successor ) return;
 
@@ -142,10 +142,10 @@ export class RoadUtils {
 
 		}
 
-		road.successor = null;
+		if ( updateMe ) road.successor = null;
 	}
 
-	static unlinkPredecessor ( road: TvRoad ) {
+	static unlinkPredecessor ( road: TvRoad, updateMe = true ) {
 
 		if ( !road.predecessor ) return;
 
@@ -163,7 +163,7 @@ export class RoadUtils {
 
 		}
 
-		road.predecessor = null;
+		if ( updateMe ) road.predecessor = null;
 	}
 
 }

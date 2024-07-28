@@ -34,7 +34,7 @@ import { DebugDrawService } from '../debug/debug-draw.service';
 export class SplineService extends BaseDataService<AbstractSpline> {
 
 	constructor (
-		private mapService: MapService,
+		public mapService: MapService,
 	) {
 		super();
 	}

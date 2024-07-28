@@ -72,11 +72,11 @@ export class ThemeService {
 
 	// *********** ONLY FOR DEMO **********
 	setThemeFromQuery () {
-		let themeStr = getQueryParam( 'theme' );
-		try {
-			this.activatedTheme = JSON.parse( themeStr );
-			this.flipActiveFlag( this.activatedTheme.name );
-		} catch ( e ) {
-		}
+		// let themeStr = getQueryParam( 'theme' );
+		// try {
+		// 	this.activatedTheme = JSON.parse( themeStr );
+		// 	this.flipActiveFlag( this.activatedTheme.name );
+		// } catch ( e ) {
+		// }
 	}
 }

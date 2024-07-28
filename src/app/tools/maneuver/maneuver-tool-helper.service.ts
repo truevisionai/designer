@@ -10,13 +10,15 @@ import { JunctionService } from "../../services/junction/junction.service";
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { ConnectionService } from 'app/map/junction/connection.service';
+import { BaseToolService } from "../base-tool.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverToolService {
+export class ManeuverToolHelper {
 
 	constructor (
+		public base: BaseToolService,
 		public splineService: SplineService,
 		public junctionService: JunctionService,
 		public maneuverDebugger: ManeuverRoadDebugger,

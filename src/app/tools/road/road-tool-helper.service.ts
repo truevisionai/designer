@@ -17,6 +17,7 @@ import { RoadToolDebugger } from "./road-tool.debugger";
 import { TvRoadLink } from 'app/map/models/tv-road-link';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineBuilder } from 'app/services/spline/spline.builder';
+import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,6 +34,7 @@ export class RoadToolHelper {
 		public toolDebugger: RoadToolDebugger,
 		public roadFactory: RoadFactory,
 		public splineBuilder: SplineBuilder,
+		public splineTestHelper: SplineTestHelper
 	) {
 	}
 

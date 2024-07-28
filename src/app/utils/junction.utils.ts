@@ -1,13 +1,294 @@
 import { IntersectionGroup } from "app/managers/Intersection-group";
-import { TvJointBoundary, TvJunctionSegmentBoundary, TvLaneBoundary } from "app/map/junction-boundary/tv-junction-boundary";
+import {
+	TvJointBoundary,
+	TvJunctionSegmentBoundary,
+	TvLaneBoundary
+} from "app/map/junction-boundary/tv-junction-boundary";
 import { TvJunctionBoundaryBuilder } from "app/map/junction-boundary/tv-junction-boundary.builder";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Vector3 } from "three";
 import { Maths } from "./maths";
+import { TvJunctionConnection } from "../map/models/junctions/tv-junction-connection";
+import { TvJunctionLaneLink } from "../map/models/junctions/tv-junction-lane-link";
+import { TvRoadLink } from "../map/models/tv-road-link";
+import { TvLane } from "app/map/models/tv-lane";
+import { LaneUtils } from "./lane.utils";
 
 export class JunctionUtils {
+
+	private static findConnectionsOf ( junction: TvJunction, road: TvRoad ) {
+
+		const connections: TvJunctionConnection[] = [];
+
+		for ( const connection of junction.getConnections() ) {
+
+			if ( connection.incomingRoad == road ) {
+
+				connections.push( connection );
+
+			} else {
+
+				const link = connection.contactPoint == TvContactPoint.START ?
+					connection.connectingRoad.successor :
+					connection.connectingRoad.predecessor;
+
+				if ( link && link.element == road ) {
+
+					connections.push( connection );
+
+				}
+
+			}
+
+		}
+
+		return connections
+
+	}
+
+	private static findConnectionsFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ) {
+
+		const connections: TvJunctionConnection[] = [];
+
+		for ( const connection of junction.getConnections() ) {
+
+			if ( connection.incomingRoad == from ) {
+
+				const link = connection.contactPoint == TvContactPoint.START ?
+					connection.connectingRoad.successor :
+					connection.connectingRoad.predecessor;
+
+				if ( link && link.element == to ) {
+
+					connections.push( connection );
+
+				}
+
+			}
+
+		}
+
+		return connections;
+
+	}
+
+	private static findConnectionsBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ) {
+
+		const connections: TvJunctionConnection[] = [];
+
+		for ( const connection of junction.getConnections() ) {
+
+			if ( connection.incomingRoad == incoming ) {
+
+				const link = connection.contactPoint == TvContactPoint.START ?
+					connection.connectingRoad.successor :
+					connection.connectingRoad.predecessor;
+
+				if ( link && link.element == outgoing ) {
+
+					connections.push( connection );
+
+				}
+
+			} else if ( connection.incomingRoad == outgoing ) {
+
+				const link = connection.contactPoint == TvContactPoint.START ?
+					connection.connectingRoad.successor :
+					connection.connectingRoad.predecessor;
+
+				if ( link && link.element == incoming ) {
+
+					connections.push( connection );
+
+				}
+
+			}
+
+		}
+
+		return connections;
+
+	}
+
+	static getLaneLinks ( junction: TvJunction ) {
+
+		const links: TvJunctionLaneLink[] = [];
+
+		for ( const connection of junction.getConnections() ) {
+
+			for ( const laneLink of connection.laneLink ) {
+
+				links.push( laneLink );
+
+			}
+
+		}
+
+		return links;
+
+	}
+
+	static findLinksBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ) {
+
+		const links: TvJunctionLaneLink[] = [];
+
+		const connections = this.findConnectionsBetween( junction, incoming, outgoing );
+
+		for ( const connection of connections ) {
+
+			for ( const laneLink of connection.laneLink ) {
+
+				links.push( laneLink );
+
+			}
+
+		}
+
+		return links;
+	}
+
+	static findLinksFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ) {
+
+		const links: TvJunctionLaneLink[] = [];
+
+		const connections = this.findConnectionsFrom( junction, from, to );
+
+		for ( const connection of connections ) {
+
+			for ( const laneLink of connection.laneLink ) {
+
+				links.push( laneLink );
+
+			}
+
+		}
+
+		return links;
+	}
+
+	static findSuccessors ( road: TvRoad, targetLane: TvLane, link: TvRoadLink ) {
+
+		if ( !link ) return [];
+
+		const successors: TvLane[] = []
+
+		if ( link.element instanceof TvJunction ) {
+
+			const connections = this.findConnectionsOf( link.element, road );
+
+			for ( const connection of connections ) {
+
+				for ( const laneLink of connection.laneLink ) {
+
+					if ( laneLink.incomingLane.uuid == targetLane.uuid ) {
+
+						successors.push( laneLink.connectingLane );
+
+					} else {
+
+						if ( laneLink.connectingLane.successorUUID == targetLane.uuid ) {
+
+							successors.push( laneLink.connectingLane );
+
+						} else if ( laneLink.connectingLane.predecessorUUID == targetLane.uuid ) {
+
+							successors.push( laneLink.connectingLane );
+
+						}
+
+					}
+
+				}
+
+			}
+
+		} else if ( link.element instanceof TvRoad ) {
+
+			if ( targetLane.successorExists ) {
+
+				const laneSection = road.getLastLaneSection();
+
+				const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
+
+				if ( !nextLaneSection ) return [];
+
+				const nextLane = nextLaneSection.getLaneById( targetLane.successorId );
+
+				if ( nextLane ) {
+					successors.push( nextLane );
+				}
+
+				return successors;
+			}
+
+		}
+
+		return successors;
+
+	}
+
+	static findPredecessors ( road: TvRoad, targetLane: TvLane, link: TvRoadLink ) {
+
+		if ( !link ) return [];
+
+		const predecessors: TvLane[] = []
+
+		if ( link.element instanceof TvJunction ) {
+
+			const connections = this.findConnectionsOf( link.element, road );
+
+			for ( const connection of connections ) {
+
+				for ( const laneLink of connection.laneLink ) {
+
+					if ( laneLink.incomingLane.uuid == targetLane.uuid ) {
+
+						predecessors.push( laneLink.connectingLane );
+
+					} else {
+
+						if ( laneLink.connectingLane.successorUUID == targetLane.uuid ) {
+
+							predecessors.push( laneLink.connectingLane );
+
+						} else if ( laneLink.connectingLane.predecessorUUID == targetLane.uuid ) {
+
+							predecessors.push( laneLink.connectingLane );
+
+						}
+
+					}
+
+				}
+
+			}
+
+		} else if ( link.element instanceof TvRoad ) {
+
+			if ( targetLane.predecessorExists ) {
+
+				const laneSection = road.getFirstLaneSection();
+
+				const prevLaneSection = LaneUtils.findPreviousLaneSection( road, laneSection );
+
+				if ( !prevLaneSection ) return [];
+
+				const prevLane = prevLaneSection.getLaneById( targetLane.predecessorId );
+
+				if ( prevLane ) {
+					predecessors.push( prevLane );
+				}
+
+				return predecessors;
+			}
+
+		}
+
+		return predecessors;
+
+	}
 
 	static generateJunctionHash ( junction: TvJunction ) {
 
@@ -122,5 +403,22 @@ export class JunctionUtils {
 
 	}
 
+	static findConnectionFromLink ( junction: TvJunction, link: TvJunctionLaneLink ) {
 
+		for ( const connection of junction.getConnections() ) {
+
+			for ( const laneLink of connection.laneLink ) {
+
+				if ( laneLink == link ) {
+
+					return connection;
+
+				}
+
+			}
+
+		}
+
+		return null;
+	}
 }

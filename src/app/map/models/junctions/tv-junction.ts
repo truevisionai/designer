@@ -41,7 +41,7 @@ export class TvJunction {
 	}
 
 	toString () {
-		return `Junction:${ this.id }`;
+		return `Junction:${ this.id } Connections:${ this.connections.size }`;
 	}
 
 	getConnections (): TvJunctionConnection[] {

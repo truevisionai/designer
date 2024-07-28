@@ -71,11 +71,11 @@ export class SplineFixerService {
 
 		if ( spline.segmentMap.length >= 1 ) {
 
-			const segment = this.splineService.findFirstRoad( spline );
+			const firstSegment = spline.segmentMap.getFirst();
 
-			if ( segment ) {
+			if ( firstSegment instanceof TvRoad ) {
 
-				segment.sStart = 0;
+				firstSegment.sStart = 0;
 
 			}
 
@@ -84,11 +84,11 @@ export class SplineFixerService {
 
 			if ( !Maths.approxEquals( firstKey, 0 ) ) {
 
-				if ( this.debug ) Log.warn( "Fixing sStart is not equal to 0", segment.toString() );
+				if ( this.debug ) Log.warn( "Fixing sStart is not equal to 0", firstSegment.toString() );
 
-				SplineUtils.removeSegment( spline, segment );
+				SplineUtils.removeSegment( spline, firstSegment );
 
-				SplineUtils.addSegment( spline, 0, segment );
+				SplineUtils.addSegment( spline, 0, firstSegment );
 
 			}
 		}

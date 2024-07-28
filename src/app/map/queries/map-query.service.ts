@@ -67,7 +67,7 @@ export class MapQueryService {
 
 			for ( const connection of junction.getConnections() ) {
 
-				if ( connection.incomingRoad != road ) continue;
+				if ( connection.incomingRoad !== road ) continue;
 
 				for ( const laneLink of connection.laneLink ) {
 
@@ -132,7 +132,7 @@ export class MapQueryService {
 
 			for ( const connection of junction.getConnections() ) {
 
-				if ( connection.incomingRoad != road ) continue;
+				if ( connection.incomingRoad !== road ) continue;
 
 				for ( const laneLink of connection.laneLink ) {
 

@@ -432,9 +432,18 @@ export class MapValidatorService {
 			headingShouldBeSame = true;
 		}
 
+		function approxEquals ( angle1, angle2, tolerance = 1e-10 ) {
+			// Normalize angles to the range [0, 2π)
+			angle1 = ( angle1 + Math.PI * 2 ) % ( Math.PI * 2 );
+			angle2 = ( angle2 + Math.PI * 2 ) % ( Math.PI * 2 );
+
+			// Check if the difference is within the tolerance
+			return Math.abs( angle1 - angle2 ) < tolerance;
+		}
+
 		if ( headingShouldBeSame ) {
 
-			if ( !Maths.approxEquals( pointA.normalizedHdg, pointB.normalizedHdg ) ) {
+			if ( !approxEquals( pointA.normalizedHdg, pointB.normalizedHdg ) ) {
 
 				this.errors.push( label + ':' + roadA.id + ' invalid hdg, should be same ' + linkType + ':' + link.toString() + ' ' + pointA.normalizedHdg + ' ' + pointB.normalizedHdg );
 
@@ -534,9 +543,7 @@ export class MapValidatorService {
 			const junction = this.map.getJunctionById( link.id );
 
 			if ( !junction.getIncomingRoads().includes( road ) ) {
-
-				this.errors.push( 'Incomging road does not have connections ' + road.toString() );
-
+				Log.warn( 'No Connections With Junction', road.toString(), link.toString() );
 			}
 
 		} catch ( error ) {

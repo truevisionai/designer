@@ -1096,6 +1096,12 @@ export class TvRoad {
 
 	}
 
+	getLaneSectionLength ( laneSection: TvLaneSection ) {
+
+		return laneSection.length;
+
+	}
+
 	static ruleToString ( rule: TrafficRule ): string {
 
 		return rule === TrafficRule.LHT ? 'LHT' : 'RHT';

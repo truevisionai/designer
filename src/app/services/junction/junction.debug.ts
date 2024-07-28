@@ -33,12 +33,14 @@ import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { Highlightable, ISelectable } from "../../objects/i-selectable";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { DebugDrawService } from '../debug/debug-draw.service';
-import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { MapService } from '../map/map.service';
 import { JunctionManager } from 'app/managers/junction-manager';
+import { GeometryUtils } from '../surface/geometry-utils';
+import { MapQueryService } from 'app/map/queries/map-query.service';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -63,7 +65,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		private junctionService: JunctionService,
 		private debug: DebugDrawService,
 		private mapService: MapService,
-		private junctionManager: JunctionManager
+		private junctionManager: JunctionManager,
+		private queryService: MapQueryService,
 	) {
 		super();
 	}
@@ -339,11 +342,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( link.connectingLane.id < 0 ) offset *= -1;
 
-		const positions = connection.connectingRoad.getReferenceLinePoints( 1, offset );
-
-		if ( positions.length < 2 ) return;
-
-		const mesh = this.createMesh( junction, connection, link, positions );
+		const mesh = this.createMesh( junction, connection, link );
 
 		mesh[ 'tag' ] = 'link';
 
@@ -359,10 +358,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	private createMesh ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink, directedPoints: TvPosTheta[], width = 1.0 ) {
-
-		// Early return if not enough positions
-		if ( directedPoints.length < 2 ) return;
+	private createMesh ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
 
 		const material = new MeshBasicMaterial( {
 			color: 0x00ff00,
@@ -372,7 +368,24 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			depthWrite: false
 		} );
 
-		const geometry: BufferGeometry = this.makeManeuverGeometry( directedPoints, width );
+		const points: Vector3[] = [];
+
+		for ( let s = 0; s <= connection.connectingRoad.length; s += 0.1 ) {
+
+			const laneSection = connection.connectingRoad.getLaneSectionAt( s );
+
+			const position = this.queryService.findLaneCenterPosition( connection.connectingRoad, laneSection, link.connectingLane, s );
+
+			points.push( position.position );
+
+		}
+
+		if ( points.length < 2 ) {
+			Log.error( 'Not enough points to create maneuver mesh', link.toString() );
+			return new ManeuverMesh( junction, connection, link, new BufferGeometry(), material );
+		}
+
+		const geometry: BufferGeometry = GeometryUtils.createExtrudeGeometry( points );
 
 		return new ManeuverMesh( junction, connection, link, geometry, material );
 	}
