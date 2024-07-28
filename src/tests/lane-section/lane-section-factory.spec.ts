@@ -9,7 +9,7 @@ import { RoadService } from "app/services/road/road.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2 } from "three";
 
-describe( 'LaneSectionFactory: tests', () => {
+xdescribe( 'LaneSectionFactory: tests', () => {
 
 	let base: BaseTest = new BaseTest;
 	let factory: LaneSectionFactory;

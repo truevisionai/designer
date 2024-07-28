@@ -119,6 +119,8 @@ export class RoadSignalBuilder {
 
 	private buildTextRoadMark ( road: TvRoad, signal: TvRoadSignal ): Object3D {
 
+		signal.s = Maths.clamp( signal.s, 0, road.length );
+
 		const position = this.roadService.STtoXYZ( road, signal.s, signal.t );
 
 		const textObject3d = this.textService.createFromText( signal.text, signal.value );

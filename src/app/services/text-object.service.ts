@@ -4,6 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { TextObject3d } from 'app/objects/text-object';
+import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, FrontSide, MeshBasicMaterial, ShapeGeometry } from 'three';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
@@ -29,11 +30,16 @@ export class TextObjectService {
 
 	}
 
-	createFromText ( text: string, size: number = 1 ): TextObject3d {
+	createFromText ( text: string, size: number = 1, color = COLOR.WHITE ): TextObject3d {
 
 		const geometry = this.createTextGeometry( text, size );
 
-		return this.createTextObject( text, size, geometry, this.defaultMaterial );
+		const material = new MeshBasicMaterial( {
+			color: color,
+			side: FrontSide
+		} );
+
+		return this.createTextObject( text, size, geometry, material );
 
 	}
 

@@ -15,6 +15,7 @@ import { TvJunction } from "../map/models/junctions/tv-junction";
 import { SplineUtils } from "app/utils/spline.utils";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { Log } from "app/core/utils/log";
+import { RoadUtils } from "app/utils/road.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,6 +40,10 @@ export class SplineManager {
 
 		this.splineValidator.fix( spline );
 
+		this.addSegments( spline );
+
+		this.linkSpline( spline );
+
 		this.splineBuilder.buildGeometry( spline );
 
 		this.splineBuilder.buildSegments( spline );
@@ -46,6 +51,27 @@ export class SplineManager {
 		this.splineBuilder.buildBoundingBox( spline );
 
 		this.junctionManager.updateJunctions( spline );
+
+	}
+
+	addSegments ( spline: AbstractSpline ) {
+
+		for ( const segment of spline.segmentMap.toArray() ) {
+
+			if ( segment instanceof TvRoad ) {
+
+				if ( this.mapService.map.roads.has( segment.id ) ) {
+
+					Log.warn( "Road already exists", segment.toString() );
+
+				} else {
+
+					this.mapService.map.addRoad( segment );
+				}
+
+			}
+
+		}
 
 	}
 
@@ -83,23 +109,65 @@ export class SplineManager {
 
 			if ( segment instanceof TvJunction ) {
 
-				this.junctionManager.removeJunction( segment, spline );
+				this.junctionManager.removeJunction( segment, spline, true );
 
 			}
 
 		}
+
+		this.unlinkSpline( spline );
+
+		this.removeMesh( spline );
+
+		this.mapService.map.removeSpline( spline );
+
+	}
+
+	unlinkSpline ( spline: AbstractSpline ) {
+
+		const firstSegment = spline.segmentMap.getFirst();
+		const lastSegment = spline.segmentMap.getLast();
+
+		if ( firstSegment instanceof TvRoad ) {
+			RoadUtils.unlinkPredecessor( firstSegment, false );
+		}
+
+		if ( lastSegment instanceof TvRoad ) {
+			RoadUtils.unlinkSuccessor( lastSegment, false );
+		}
+
+	}
+
+	linkSpline ( spline: AbstractSpline ) {
+
+		const firstSegment = spline.segmentMap.getFirst();
+		const lastSegment = spline.segmentMap.getLast();
+
+		if ( firstSegment instanceof TvRoad ) {
+			if ( firstSegment.predecessor?.element instanceof TvRoad ) {
+				RoadUtils.linkPredecessor( firstSegment, firstSegment.predecessor.element, firstSegment.predecessor.contactPoint );
+			}
+		}
+
+		if ( lastSegment instanceof TvRoad ) {
+			if ( lastSegment.successor?.element instanceof TvRoad ) {
+				RoadUtils.linkSuccessor( lastSegment, lastSegment.successor.element, lastSegment.successor.contactPoint );
+			}
+		}
+
+	}
+
+	removeMesh ( spline: AbstractSpline ) {
 
 		for ( const segment of spline.segmentMap.toArray() ) {
 
 			if ( segment instanceof TvRoad ) {
 
-				this.roadManager.removeRoad( segment );
+				this.roadManager.removeMesh( segment );
 
 			}
 
 		}
-
-		this.mapService.map.removeSpline( spline );
 
 	}
 
@@ -111,23 +179,27 @@ export class SplineManager {
 
 		const lastSegment = spline.segmentMap.getLast();
 
-		if ( lastSegment instanceof TvRoad ) {
-
-			this.syncRoadSuccessorSpline( lastSegment );
-
-		} else if ( lastSegment instanceof TvJunction ) {
-
-			console.debug( "last segment is junction", lastSegment.toString(), spline.uuid );
-
-		}
-
 		const splineSuccessor = SplineUtils.findSuccessor( spline );
+
+		// TODO: check this flow
+
+		// if ( lastSegment instanceof TvRoad ) {
+
+		// 	this.syncRoadSuccessorSpline( lastSegment );
+
+		// } else if ( lastSegment instanceof TvJunction ) {
+
+		// 	console.debug( "last segment is junction", lastSegment.toString(), spline.uuid );
+
+		// }
 
 		if ( splineSuccessor instanceof TvRoad ) {
 
 			console.debug( "successor is road", splineSuccessor.toString(), spline.uuid );
 
-			this.syncRoadSuccessorSpline( splineSuccessor );
+			const lastRoad = spline.segmentMap.getLast() instanceof TvRoad ? spline.segmentMap.getLast() as TvRoad : null;
+
+			if ( lastRoad ) this.syncRoadSuccessorSpline( lastRoad );
 
 		} else if ( splineSuccessor instanceof TvJunction ) {
 
@@ -145,17 +217,20 @@ export class SplineManager {
 
 		if ( spline.type === SplineType.EXPLICIT ) return;
 
-		const firstSegment = spline.segmentMap.getFirst();
+		// TODO: check this flow
 
-		if ( firstSegment instanceof TvRoad ) {
 
-			this.syncRoadPredecessorrSpline( firstSegment );
+		// const firstSegment = spline.segmentMap.getFirst();
 
-		} else if ( firstSegment instanceof TvJunction ) {
+		// if ( firstSegment instanceof TvRoad ) {
 
-			console.debug( "first segment is junction", firstSegment.toString(), spline.uuid );
+		// 	this.syncRoadPredecessorrSpline( firstSegment );
 
-		}
+		// } else if ( firstSegment instanceof TvJunction ) {
+
+		// 	console.debug( "first segment is junction", firstSegment.toString(), spline.uuid );
+
+		// }
 
 		const splinePredecessor = SplineUtils.findPredecessor( spline );
 
@@ -163,7 +238,9 @@ export class SplineManager {
 
 			console.debug( "predecessor is road", splinePredecessor.toString(), spline.uuid );
 
-			this.syncRoadPredecessorrSpline( splinePredecessor );
+			const firstRoad = spline.segmentMap.getFirst() instanceof TvRoad ? spline.segmentMap.getFirst() as TvRoad : null;
+
+			if ( firstRoad ) this.syncRoadSuccessorSpline( firstRoad );
 
 		} else if ( splinePredecessor instanceof TvJunction ) {
 

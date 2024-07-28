@@ -59,10 +59,6 @@ export class DebugServiceProvider {
 
 			debugService = this.injector.get( LaneHeightDebugService );
 
-		} if ( type === ToolType.Maneuver ) {
-
-			debugService = this.injector.get( JunctionDebugService );
-
 		} else if ( type === ToolType.TrafficLight ) {
 
 			debugService = this.injector.get( JunctionDebugService );

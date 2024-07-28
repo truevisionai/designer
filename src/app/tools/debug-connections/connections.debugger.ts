@@ -8,10 +8,10 @@ import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { DebugState } from "../../services/debug/debug-state";
 import { TvLane } from "../../map/models/tv-lane";
 import { Material, MeshBasicMaterial } from "three";
-import { MapQueryService } from "../../map/queries/map-query.service";
 import { LaneDebugService } from "../../services/debug/lane-debug.service";
 import { COLOR } from "../../views/shared/utils/colors.service";
 import { RoadToolDebugger } from "../road/road-tool.debugger";
+import { JunctionUtils } from "app/utils/junction.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,7 +21,6 @@ export class ConnectionsDebugger extends BaseDebugger<TvLaneCoord> {
 	highlightedLanes = new Map<TvLane, Material | Material[]>();
 
 	constructor (
-		private queryService: MapQueryService,
 		private laneDebugService: LaneDebugService,
 		public roadToolDebugger: RoadToolDebugger,
 	) {
@@ -53,12 +52,10 @@ export class ConnectionsDebugger extends BaseDebugger<TvLaneCoord> {
 
 		highlight( coord.lane, COLOR.MBLUE );
 
-		const successors = this.queryService.findLaneSuccessors( coord.road, coord.laneSection, coord.lane );
-
+		const successors = JunctionUtils.findSuccessors( coord.road, coord.lane, coord.road.successor );
 		successors.forEach( lane => highlight( lane, COLOR.MGREEN ) );
 
-		const predecessors = this.queryService.findLanePredecessors( coord.road, coord.laneSection, coord.lane );
-
+		const predecessors = JunctionUtils.findPredecessors( coord.road, coord.lane, coord.road.predecessor );
 		predecessors.forEach( lane => highlight( lane, COLOR.MRED ) );
 
 	}

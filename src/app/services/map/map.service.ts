@@ -9,6 +9,8 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvMapInstance } from 'app/map/services/tv-map-instance';
 import { Material, Mesh } from 'three';
 import { PropPolygon } from "../../map/prop-polygon/prop-polygon.model";
+import { ModelNotFoundException } from 'app/exceptions/exceptions';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -62,12 +64,54 @@ export class MapService {
 		} )?.id;
 	}
 
-	getRoad ( id: number ) {
-		return this.map.getRoadById( id );
+	getRoad ( id: number ): TvRoad | undefined {
+
+		return this.findRoad( id );
+
 	}
 
-	getJunction ( id: number ) {
-		return this.map.getJunctionById( id );
+	findRoad ( id: number ) {
+
+		try {
+
+			return this.map.getRoadById( id );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( "Road not found", id );
+
+			} else {
+
+				Log.error( error );
+
+			}
+
+		}
+
+	}
+
+	findJunction ( id: number ) {
+
+		try {
+
+			return this.map.getJunctionById( id );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( "Junction not found", id );
+
+			} else {
+
+				Log.error( error );
+
+			}
+
+		}
+
 	}
 
 	setOpacityLevel ( opacity: number ) {

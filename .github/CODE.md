@@ -74,9 +74,6 @@ Mesh Builders are responsible for building 3d objects based on map/data layer
 ### Documentation
 - Provide thorough documentation for each component, including its role, examples, and standards.
 
-### Error Handling
-- Implement consistent error and exception handling, especially for IO operations.
-
 ### Testing
 - Establish guidelines for testing all components to ensure independent functionality and correct interactions.
 
@@ -101,3 +98,222 @@ Must Have (M): These are the requirements needed for the project's success.
 Should Have (S): These are important requirements for the project but not necessary.
 Could Have (C ):  These requirements are “nice to have.” But don’t have as much impact as the others. 
 Will Not Have (W): These requirements aren’t a priority for the project.
+
+
+# Error Management
+
+When dealing with data parsing within the same file, it’s essential to balance between handling errors directly and throwing exceptions. The general rule of thumb is:
+
+- **Throw exceptions** for errors that are truly exceptional and unexpected, such as invalid data formats, missing critical elements, or data that violates your application's constraints.
+- **Handle errors directly** for expected and manageable issues, such as optional fields or non-critical missing data, where you can provide a fallback value or skip the problematic part without impacting the overall functionality.
+
+### Where to Throw Exceptions
+
+Throw exceptions when:
+1. **Critical Data Missing**: When a critical piece of data is missing, and you cannot proceed without it.
+2. **Invalid Data**: When the data format is incorrect or doesn’t meet the required specifications.
+3. **Violates Business Logic**: When the data violates the core business logic or constraints of your application.
+
+### Where to Handle Errors Directly
+
+Handle errors directly when:
+1. **Optional Data Missing**: When optional data is missing, and you can proceed without it or use a default value.
+2. **Minor Data Issues**: When there are minor data issues that do not impact the overall functionality of your application.
+3. **Recoverable Errors**: When you can recover from the error without significant consequences.
+
+### Example Implementation
+
+Here's how you can refactor your code with this approach in mind:
+
+#### Define Custom Exceptions
+
+```typescript
+export class ModelNotFoundException extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ModelNotFoundException';
+  }
+}
+
+export class InvalidDataException extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidDataException';
+  }
+}
+```
+
+#### Example Methods
+
+1. **Method that Throws Exceptions for Critical Errors**
+
+```typescript
+public importJunctions(openDRIVE: XmlElement) {
+  readXmlArray(openDRIVE?.junction, (xml) => {
+    try {
+      const junction = this.map.getJunctionById(parseInt(xml.attr_id));
+      if (!junction) {
+        throw new ModelNotFoundException(`Junction with ID ${xml.attr_id} not found.`);
+      }
+      this.parseJunctionConnections(junction, xml);
+      this.parseJunctionPriorities(junction, xml);
+      this.parseJunctionControllers(junction, xml);
+    } catch (error) {
+      if (error instanceof ModelNotFoundException) {
+        Log.error('Junction not found');
+      } else {
+        Log.error('Unknown error: ' + error.message);
+      }
+    }
+  });
+}
+```
+
+2. **Method that Handles Errors Directly**
+
+```typescript
+public parseHeader(xmlElement: XmlElement): TvMapHeader {
+  const revMajor = parseFloat(xmlElement.attr_revMajor);
+  const revMinor = parseFloat(xmlElement.attr_revMinor);
+  const name = xmlElement.attr_name || 'Unnamed'; // Handle missing name directly
+  const version = parseFloat(xmlElement.attr_version) || 1.0; // Provide default version
+  const date = xmlElement.attr_date || new Date().toISOString(); // Use current date if missing
+  const north = parseFloat(xmlElement.attr_north);
+  const south = parseFloat(xmlElement.attr_south);
+  const east = parseFloat(xmlElement.attr_east);
+  const west = parseFloat(xmlElement.attr_west);
+  const vendor = xmlElement.attr_vendor || 'Unknown'; // Handle missing vendor directly
+
+  if (isNaN(north) || isNaN(south) || isNaN(east) || isNaN(west)) {
+    throw new InvalidDataException('Invalid geographical bounds in map header.');
+  }
+
+  return new TvMapHeader(revMajor, revMinor, name, version, date, north, south, east, west, vendor);
+}
+```
+
+### Summary of Best Practices
+
+- **Throw exceptions** when encountering critical, unexpected errors that prevent the continuation of normal execution.
+- **Handle errors directly** when dealing with expected, manageable issues that you can work around without disrupting the overall process.
+- **Document your error handling strategy** to ensure consistency and clarity across your codebase.
+
+In your application, you have a service method (`getRoad`) that throws an exception if the road ID is not found. The challenge is determining where to handle this exception effectively: in the service, the tool, or both.
+
+### Recommended Approach: Centralized Error Handling in the Service
+
+**Pros:**
+1. **Consistency**: Centralizing error handling in the service ensures a consistent response to errors across all tools.
+2. **Code Reusability**: You avoid duplicating error handling code in each tool class.
+3. **Maintainability**: Easier to maintain and update error handling logic in one place rather than multiple places.
+
+**Cons:**
+1. **Granularity**: Handling exceptions at the service level may not provide the specific context needed by different tools. However, this can be mitigated by providing detailed error information in the exception.
+
+### Implementation in Service
+
+Modify the `getRoad` method in your `RoadService` to handle the exception and return a meaningful result (e.g., `null`):
+
+```typescript
+getRoad(roadId: number): TvRoad | null {
+  try {
+    return this.mapService.map.getRoadById(roadId);
+  } catch (error) {
+    if (error instanceof ModelNotFoundException) {
+      Log.error(`Road with ID ${roadId} not found.`);
+      return null; // Handle the error by returning null
+    } else {
+      throw error; // Re-throw unexpected errors
+    }
+  }
+}
+```
+
+### Usage in Tool
+
+Update the `RoadSignlTool` to handle the `null` value returned by the `getRoad` method:
+
+```typescript
+onPointerMoved(pointerEventData: PointerEventData): void {
+  this.highlight(pointerEventData);
+
+  if (!this.isPointerDown) return;
+
+  if (!this.currentSelectedObject) return;
+
+  const road = this.tool.roadService.getRoad(this.currentSelectedObject.roadId);
+
+  if (!road) {
+    Log.error(`Road with ID ${this.currentSelectedObject.roadId} could not be retrieved.`);
+    return;
+  }
+
+  const position = this.tool.roadService.findRoadCoord(pointerEventData.point);
+
+  if (!position) return;
+
+  this.currentSelectedObject.s = position.s;
+
+  this.updateRoadSignal(road, this.currentSelectedObject);
+
+  this.currentSelectedPointMoved = true;
+}
+```
+
+### Advantages of This Approach
+
+1. **Centralized Error Handling**: By handling the error in the service, you ensure that all tools using `getRoad` benefit from consistent error handling.
+2. **Simplified Tool Logic**: Tool classes do not need to implement repetitive error handling logic, making them simpler and easier to maintain.
+3. **Clear Separation of Concerns**: The service is responsible for data retrieval and error handling, while the tools focus on user interactions and application logic.
+
+### Handling in Tools Separately (Alternative Approach)
+
+If you prefer to handle exceptions in each tool separately, the pros and cons are as follows:
+
+**Pros:**
+1. **Context-Specific Handling**: Each tool can handle the error in a way that makes sense for its specific context.
+2. **Granularity**: Tools can provide more detailed and specific error messages to the user.
+
+**Cons:**
+1. **Repetition**: You will need to duplicate error handling code across multiple tools.
+2. **Inconsistency**: Different tools might handle the same error in different ways, leading to inconsistent user experiences.
+3. **Maintenance**: More places to update if error handling logic changes.
+
+### Implementation in Tools Separately
+
+Each tool class would need to implement try-catch blocks around the `getRoad` call:
+
+```typescript
+onPointerMoved(pointerEventData: PointerEventData): void {
+  this.highlight(pointerEventData);
+
+  if (!this.isPointerDown) return;
+
+  if (!this.currentSelectedObject) return;
+
+  try {
+    const road = this.tool.roadService.getRoad(this.currentSelectedObject.roadId);
+    if (!road) return; // Optionally handle null if service returns it instead of throwing
+
+    const position = this.tool.roadService.findRoadCoord(pointerEventData.point);
+
+    if (!position) return;
+
+    this.currentSelectedObject.s = position.s;
+
+    this.updateRoadSignal(road, this.currentSelectedObject);
+
+    this.currentSelectedPointMoved = true;
+  } catch (error) {
+    if (error instanceof ModelNotFoundException) {
+      Log.error(`Road with ID ${this.currentSelectedObject.roadId} not found.`);
+    } else {
+      Log.error('Unexpected error: ' + error.message);
+    }
+  }
+}
+```
+
+### Conclusion
+
+The recommended approach is to handle the exception in the service (`RoadService`) to maintain consistency, reduce code duplication, and simplify the tool classes. This approach centralizes error handling and makes the application more maintainable. If more context-specific handling is needed, consider providing additional information in the exceptions or using a combination of both approaches.

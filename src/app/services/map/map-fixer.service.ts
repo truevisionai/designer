@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { TvConsole } from "app/core/utils/console";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvMap } from "app/map/models/tv-map.model";
@@ -7,13 +6,19 @@ import { TvRoadLink } from "app/map/models/tv-road-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Maths } from "../../utils/maths";
 import { Log } from "../../core/utils/log";
+import { MapEvents } from "app/events/map-events";
+import { SplineUpdatedEvent } from "app/events/spline/spline-updated-event";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class MapFixer {
 
+	private enabled = true;
+
 	fixMap ( map: TvMap ) {
+
+		if ( !this.enabled ) return;
 
 		map.getRoads().forEach( road => {
 
@@ -37,7 +42,7 @@ export class MapFixer {
 
 	}
 
-	fixRoad ( road: TvRoad ) {
+	private fixRoad ( road: TvRoad ) {
 
 		if ( road.successor ) {
 
@@ -53,16 +58,29 @@ export class MapFixer {
 
 	}
 
-	fixSuccessor ( predecessor: TvRoad, link: TvRoadLink ) {
+	private fixSuccessor ( predecessor: TvRoad, link: TvRoadLink ) {
 
 		if ( link.isJunction ) {
 
 			const junction = link.element as TvJunction
 
-			const connections = junction.getConnections().filter( connection => connection.incomingRoad = predecessor );
+			const connections = junction.getConnections().filter( connection => connection.incomingRoad === predecessor );
 
 			if ( connections.length == 0 ) {
-				console.error( 'No connections found for road ' + predecessor.id );
+
+				Log.warn( 'No Connections With Junction', predecessor.toString(), link.toString() );
+
+				predecessor.successor = null;
+
+				Log.warn( 'Trying to fix road', predecessor.toString() );
+
+				setTimeout( () => {
+
+					// Trigger auto update
+					MapEvents.splineUpdated.emit( new SplineUpdatedEvent( predecessor.spline ) );
+
+				}, 1000 + Math.random() * 1000 );
+
 			}
 
 			return;
@@ -74,34 +92,47 @@ export class MapFixer {
 
 			const [ successorContact, predecessorContact ] = this.findContacts( successor, predecessor );
 
-			TvConsole.warn( `Fixed successor road ${ successor.id } for road ${ predecessor.id }` );
+			Log.warn( `Fixed successor road ${ successor.id } for road ${ predecessor.id }` );
 
-			console.log( 'fixing successor', this.findContacts( successor, predecessor ) );
+			Log.warn( 'fixing successor', this.findContacts( successor, predecessor ) );
 
-			if ( successorContact === TvContactPoint.END ) {
-
-				successor.setPredecessorRoad( predecessor, TvContactPoint.START );
-
-			} else if ( successorContact === TvContactPoint.START ) {
-
-				successor.setPredecessorRoad( predecessor, TvContactPoint.END );
-
-			}
+			// if ( successorContact === TvContactPoint.END ) {
+			//
+			// 	successor.setPredecessorRoad( predecessor, TvContactPoint.START );
+			//
+			// } else if ( successorContact === TvContactPoint.START ) {
+			//
+			// 	successor.setPredecessorRoad( predecessor, TvContactPoint.END );
+			//
+			// }
 
 		}
 
 	}
 
-	fixPredecessor ( successor: TvRoad, link: TvRoadLink ) {
+	private fixPredecessor ( successor: TvRoad, link: TvRoadLink ) {
 
 		if ( link.isJunction ) {
 
 			const junction = link.element as TvJunction
 
-			const connections = junction.getConnections().filter( connection => connection.incomingRoad = successor );
+			const connections = junction.getConnections().filter( connection => connection.incomingRoad === successor );
 
 			if ( connections.length == 0 ) {
-				console.error( 'No connections found for road ' + successor.id );
+
+				Log.warn( 'No Connections With Junction', successor.toString(), link.toString() );
+
+				successor.predecessor = null
+
+				Log.warn( 'Trying to fix road', successor.toString() );
+
+				setTimeout( () => {
+
+					// Trigger auto update
+					MapEvents.splineUpdated.emit( new SplineUpdatedEvent( successor.spline ) );
+
+				}, 1000 + Math.random() * 1000 );
+
 			}
 
 			return;
@@ -113,36 +144,36 @@ export class MapFixer {
 
 			const [ successorContact, predecessorContact ] = this.findContacts( successor, predecessor );
 
-			TvConsole.warn( `Fixed predecessor road ${ predecessor.id } for road ${ successor.id }` );
+			Log.warn( `Fixed predecessor road ${ predecessor.id } for road ${ successor.id }` );
 
-			console.log( 'fixing predecessor', this.findContacts( successor, predecessor ) );
+			Log.warn( 'fixing predecessor', this.findContacts( successor, predecessor ) );
 
-			if ( predecessorContact === TvContactPoint.END ) {
-
-				predecessor.setSuccessorRoad( successor, TvContactPoint.START );
-
-			} else if ( predecessorContact === TvContactPoint.START ) {
-
-				predecessor.setSuccessorRoad( successor, TvContactPoint.END );
-
-			}
+			// if ( predecessorContact === TvContactPoint.END ) {
+			//
+			// 	predecessor.setSuccessorRoad( successor, TvContactPoint.START );
+			//
+			// } else if ( predecessorContact === TvContactPoint.START ) {
+			//
+			// 	predecessor.setSuccessorRoad( successor, TvContactPoint.END );
+			//
+			// }
 
 		}
 
 	}
 
-	fixConnectingRoad ( road: TvRoad ) {
+	private fixConnectingRoad ( road: TvRoad ) {
 
 		// this.checkIfJunctionExists( road.junction );
 
 	}
 
-	fixJunction ( junction: TvJunction ) {
+	private fixJunction ( junction: TvJunction ) {
 
 
 	}
 
-	findContacts ( a: TvRoad, b: TvRoad ): TvContactPoint[] {
+	private findContacts ( a: TvRoad, b: TvRoad ): TvContactPoint[] {
 
 		const aStart = a.getStartPosTheta();
 		const aEnd = a.getEndPosTheta();
@@ -170,6 +201,5 @@ export class MapFixer {
 
 		return [ null, null ];
 	}
-
 
 }

@@ -74,8 +74,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	public roadId: number;
 
 	public successorId: number;
+	public successorUUID: string;
 
 	public predecessorId: number;
+	public predecessorUUID: string;
 
 	get successorExists (): boolean {
 		return this.successorId !== undefined && this.successorId !== null;

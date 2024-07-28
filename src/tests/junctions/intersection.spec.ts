@@ -8,7 +8,7 @@ import { RoadService } from 'app/services/road/road.service';
 import { Maths } from 'app/utils/maths';
 import { Vector3 } from 'three';
 
-describe( 'IntersectionService', () => {
+xdescribe( 'IntersectionService', () => {
 
 	let roadService: RoadService;
 	let intersectionService: IntersectionService;

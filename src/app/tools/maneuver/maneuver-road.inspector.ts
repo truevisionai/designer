@@ -4,12 +4,12 @@
 
 import { SerializedField } from "app/core/components/serialization";
 import { ManeuverMesh } from "app/services/junction/junction.debug";
-import { ManeuverToolService } from "app/tools/maneuver/maneuver-tool.service";
+import { ManeuverToolHelper } from "app/tools/maneuver/maneuver-tool-helper.service";
 
 export class ManeuverRoadInspector {
 
 	constructor (
-		private maneuverService: ManeuverToolService,
+		private maneuverService: ManeuverToolHelper,
 		private mesh: ManeuverMesh
 	) {
 	}

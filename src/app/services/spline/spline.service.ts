@@ -34,7 +34,7 @@ import { DebugDrawService } from '../debug/debug-draw.service';
 export class SplineService extends BaseDataService<AbstractSpline> {
 
 	constructor (
-		private mapService: MapService,
+		public mapService: MapService,
 	) {
 		super();
 	}
@@ -94,13 +94,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			if ( otherSpline == predecessorSpline ) continue;
 
 			// const intersection = this.getSplineIntersectionPoint( spline, otherSpline );
-			const intersection = this.findIntersectionsViaBox2D( spline, otherSpline );
 			// const intersection = this.findClosestIntersection( spline, otherSpline );
 			// const intersection = this.getSplineIntersectionPointViaBoundsv2( spline, otherSpline );
+			// if ( !intersection ) continue;
 
-			if ( !intersection ) continue;
-
-			intersections.push( intersection );
+			this.findIntersectionsViaBox2D( spline, otherSpline ).forEach( intersection => {
+				intersections.push( intersection );
+			} );
 		}
 
 		return intersections;
@@ -189,7 +189,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): SplineIntersection | null {
+	findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): SplineIntersection[] | null {
+
+		let intersections: SplineIntersection[] = [];
+		let startPoint: Vector2 = null;
+		let endPoint: Vector2 = null;
+		let lastIntersection = false;
+		let currentIntersectionBox = new Box2(); // To track the intersection area
 
 		function getAveragePoint ( box: Box2 ) {
 			const center = box.getCenter( new Vector2() );
@@ -209,15 +215,9 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			return new Box2().setFromPoints( points );
 		}
 
-		if ( splineA == splineB ) return;
+		if ( splineA == splineB ) return intersections;
 
-		if ( !this.intersectsSplineBox( splineA, splineB ) ) return;
-
-		let intersections: SplineIntersection[] = [];
-		let startPoint: Vector2 = null;
-		let endPoint: Vector2 = null;
-		let lastIntersection = false;
-		let currentIntersectionBox = new Box2(); // To track the intersection area
+		if ( !this.intersectsSplineBox( splineA, splineB ) ) return intersections;
 
 		for ( let i = 0; i < splineA.centerPoints.length - 1; i++ ) {
 
@@ -312,11 +312,10 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 			} )
 
-			// TODO: support multiple junctions per spline
-			// for now return the first intersection
-			return intersections[ 0 ];
+
 		}
 
+		return intersections;
 	}
 
 	computeOffsets ( intersection: SplineIntersection ) {

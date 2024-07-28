@@ -2,6 +2,7 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Log } from "../core/utils/log";
+import { DuplicateKeyException, DuplicateModelException, InvalidArgumentException } from "app/exceptions/exceptions";
 
 export class SplineUtils {
 
@@ -29,33 +30,27 @@ export class SplineUtils {
 	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ) {
 
 		if ( !spline ) {
-			Log.error( 'Spline is null', sOffset, segment?.toString() );
-			return;
+			throw new InvalidArgumentException( `Spline is null: ${ sOffset }, ${ segment?.toString() }` );
 		}
 
 		if ( sOffset > spline.getLength() ) {
-			Log.error( 'sOffset must be less than end', sOffset, spline.toString(), spline?.toString() );
-			return;
+			throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ spline.toString() }` );
 		}
 
 		if ( sOffset < 0 ) {
-			Log.error( 'sOffset must be greater than 0', sOffset, spline.toString(), spline?.toString() );
-			return;
+			throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ spline.toString() }` );
 		}
 
 		if ( sOffset == null ) {
-			Log.error( 'sOffset is null', sOffset, spline.toString(), segment?.toString() );
-			return;
+			throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ spline.toString() }, ${ segment?.toString() }` );
 		}
 
 		if ( this.hasSegment( spline, segment ) ) {
-			Log.error( 'Segment already exists, avoid adding again', sOffset, segment?.toString() );
-			return;
+			throw new DuplicateModelException( `Segment already exists, avoid adding again: ${ sOffset }, ${ segment?.toString() }` );
 		}
 
 		if ( spline.segmentMap.hasKey( sOffset ) ) {
-			Log.error( 'sOffset already occupied', sOffset, segment?.toString(), spline.segmentMap.keys() );
-			return;
+			throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ spline.segmentMap.keys() }` );
 		}
 
 		spline.segmentMap.remove( segment );

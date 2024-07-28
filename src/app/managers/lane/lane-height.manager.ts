@@ -95,7 +95,7 @@ export class LaneHeightManager {
 
 	private ensureMinimumTwoNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
-		const nextLaneSection = LaneUtils.getNextLaneSection( road, laneSection );
+		const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
 
 		const sEnd = nextLaneSection ? nextLaneSection.s - laneSection.s : road.length - laneSection.s;
 

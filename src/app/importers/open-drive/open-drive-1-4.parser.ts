@@ -43,6 +43,8 @@ import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { TvRoadLaneOffset } from "../../map/models/tv-road-lane-offset";
 import { SplineFactory } from 'app/services/spline/spline.factory';
+import { ModelNotFoundException } from 'app/exceptions/exceptions';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -89,39 +91,72 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		} );
 
+		this.importRoads( openDRIVE );
+
+		this.importJunctions( openDRIVE );
+
+		return this.map;
+
+	}
+
+	importRoads ( openDRIVE: XmlElement ) {
+
 		readXmlArray( openDRIVE?.road, ( xml ) => {
 
-			const road = this.map.getRoadById( parseInt( xml.attr_id ) );
+			try {
 
-			if ( road ) {
+				const road = this.map.getRoadById( parseInt( xml.attr_id ) );
 
 				this.parseRoadLinks( road, xml.link );
 
-			} else {
+			} catch ( error ) {
 
-				console.error( 'road not found', xml );
+				if ( error instanceof ModelNotFoundException ) {
+
+					Log.error( 'Road not found' );
+
+				} else {
+
+					Log.error( 'Unknown error : ' + error.message );
+
+				}
 
 			}
 
 		} );
 
+	}
+
+	importJunctions ( openDRIVE: XmlElement ) {
+
 		readXmlArray( openDRIVE?.junction, ( xml ) => {
 
-			const junctionId = parseInt( xml.attr_id );
+			try {
 
-			const junction = this.map.getJunctionById( junctionId )
+				const junction = this.map.getJunctionById( parseInt( xml.attr_id ) );
 
-			if ( !junction ) return;
+				this.parseJunctionConnections( junction, xml );
 
-			this.parseJunctionConnections( junction, xml );
+				this.parseJunctionPriorities( junction, xml );
 
-			this.parseJunctionPriorities( junction, xml );
+				this.parseJunctionControllers( junction, xml );
 
-			this.parseJunctionControllers( junction, xml );
+			} catch ( error ) {
+
+				if ( error instanceof ModelNotFoundException ) {
+
+					Log.error( 'Junction not found' );
+
+				} else {
+
+					Log.error( 'Unknown error : ' + error.message );
+
+				}
+
+			}
 
 		} );
 
-		return this.map;
 	}
 
 	public parseHeader ( xmlElement: XmlElement ): TvMapHeader {
@@ -140,14 +175,58 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		return new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
 	}
 
+	private parseJunctionId ( value: any ) {
+
+		try {
+
+			const id = parseInt( value ) || -1;
+
+			return id > 0 ? this.map.getJunctionById( id ) : null;
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( 'Junction not found' );
+
+			} else {
+
+				Log.error( 'Unknown error : ' + error.message );
+
+			}
+
+		}
+	}
+
+	private parseRoadId ( value: any ): TvRoad | null {
+
+		try {
+
+			const id = parseInt( value ) || -1;
+
+			return id > 0 ? this.map.getRoadById( id ) : null;
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( 'Road not found' );
+
+			} else {
+
+				Log.error( 'Unknown error : ' + error.message );
+
+			}
+
+		}
+	}
+
 	public parseRoad ( xml: XmlElement ) {
 
 		const name = xml.attr_name;
 		const length = parseFloat( xml.attr_length );
 		const id = parseInt( xml.attr_id, 10 );
-
-		const junctionId = parseInt( xml.attr_junction ) || -1;
-		const junction = this.map.getJunctionById( junctionId );
+		const junction = this.parseJunctionId( xml.attr_junction );
 
 		const road = new TvRoad( name, length, id, junction );
 
@@ -222,6 +301,49 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			console.error( 'neighbour not supported' );
 
 		}
+
+	}
+
+	public findRoad ( id: number ): TvRoad | null {
+
+		try {
+
+			return this.map.getRoadById( id );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( 'Road not found : ' + id );
+
+			} else {
+
+				Log.error( 'Unknown error : ' + error.message );
+			}
+
+		}
+
+	}
+
+	public findJunction ( id: number ): TvJunction | null {
+
+		try {
+
+			return this.map.getJunctionById( id );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( 'Junction not found : ' + id );
+
+			} else {
+
+				Log.error( 'Unknown error : ' + error.message );
+			}
+
+		}
+
 	}
 
 	public parseRoadLinkChild ( xmlElement: XmlElement ): TvRoadLink {
@@ -233,17 +355,20 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const elementS = xmlElement.attr_elementS ? parseFloat( xmlElement.attr_elementS ) : null;
 		const elementDir: TvOrientation = xmlElement.attr_elementDir ? this.parseOrientation( xmlElement.attr_elementDir ) : null;
 
+		if ( elementType == TvRoadLinkType.ROAD && contactPoint == null ) {
+			Log.error( 'No contact point found for link', xmlElement );
+			return;
+		}
+
 		let element = null;
 
 		if ( elementType == TvRoadLinkType.ROAD ) {
 
-			if ( !contactPoint ) TvConsole.error( 'no contact point found' );
-
-			element = this.map.getRoadById( elementId );
+			element = this.findRoad( elementId );
 
 		} else if ( elementType == TvRoadLinkType.JUNCTION ) {
 
-			element = this.map.getJunctionById( elementId );
+			element = this.findJunction( elementId );
 
 		} else {
 

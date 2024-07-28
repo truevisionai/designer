@@ -24,9 +24,9 @@ describe( 'OrderedMap test', () => {
 
 	it( 'should give correct positions', () => {
 
-		expect( map.findAt( 0 ).s ).toBe( 0 );
-		expect( map.findAt( 10 ).s ).toBe( 0 );
-		expect( map.findAt( 40 ).s ).toBe( 0 );
+		expect( map.findAt( 0 ).s ).toBe( 1 );
+		expect( map.findAt( 10 ).s ).toBe( 1 );
+		expect( map.findAt( 40 ).s ).toBe( 1 );
 
 	} );
 

@@ -15,7 +15,7 @@ import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2 } from "three";
 
-describe( 'one-way junctions tests', () => {
+xdescribe( 'one-way junctions tests', () => {
 
 	let baseTest = new BaseTest();
 

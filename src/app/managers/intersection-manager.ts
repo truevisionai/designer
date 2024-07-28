@@ -74,7 +74,7 @@ export class IntersectionManager {
 
 		for ( let i = 0; i < junctions.length; i++ ) {
 
-			this.removeJunction( junctions[ i ] );
+			// this.removeJunction( junctions[ i ] );
 
 		}
 
@@ -82,9 +82,9 @@ export class IntersectionManager {
 
 	removeJunction ( junction: TvJunction ) {
 
-		this.junctionManager.removeJunction( junction );
+		// this.junctionManager.removeJunction( junction );
 
-		this.mapService.map.removeJunction( junction );
+		// this.mapService.map.removeJunction( junction );
 
 	}
 

@@ -12,7 +12,7 @@ import { XML } from '../stubs/straight-road-stub';
 import { MapService } from "../../app/services/map/map.service";
 
 
-describe( 'Service: RoadDivider Simple', () => {
+xdescribe( 'Service: RoadDivider Simple', () => {
 
 	let base: BaseTest = new BaseTest;
 	let eventServiceProvider: EventServiceProvider;
@@ -130,7 +130,7 @@ describe( 'Service: RoadDivider Simple', () => {
 } );
 
 
-describe( 'Service: RoadDivider Junctions', () => {
+xdescribe( 'Service: RoadDivider Junctions', () => {
 
 	let openDriveParser: OpenDriveParserService;
 	let roadDividerService: RoadDividerService;

@@ -5,7 +5,7 @@
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
-import { Vector3 } from "three";
+import { Box2, Vector3 } from "three";
 
 export class IntersectionGroup {
 
@@ -13,7 +13,8 @@ export class IntersectionGroup {
 	/**
 	 * Positions of intersections in this group
 	 */
-	public intersections: SplineIntersection[] = [];
+	// public intersections: SplineIntersection[] = [];
+	public intersections: Map<string, SplineIntersection> = new Map();
 
 	/**
 	 * Unique splines involved in the intersections of this group
@@ -22,7 +23,11 @@ export class IntersectionGroup {
 
 	public centroid: Vector3;
 
+	public area: Box2;
+
 	constructor ( i: SplineIntersection ) {
+
+		this.area = new Box2();
 
 		this.addSplineIntersection( i );
 
@@ -30,12 +35,16 @@ export class IntersectionGroup {
 
 	addSplineIntersection ( i: SplineIntersection ) {
 
-		this.intersections.push( i );
+		if ( !this.intersections.has( i.key() ) ) {
+			this.intersections.set( i.key(), i );
+		}
 
 		this.splines.add( i.spline );
-
 		this.splines.add( i.otherSpline );
 
+		// Expand the group area to include the new intersection area
+		this.area.expandByPoint( i.area.min );
+		this.area.expandByPoint( i.area.max );
 	}
 
 	/**
@@ -58,7 +67,7 @@ export class IntersectionGroup {
 
 		} );
 
-		const count = this.intersections.length;
+		const count = this.intersections.size;
 
 		return new Vector3( x / count, y / count, z / count );
 	}
@@ -69,17 +78,40 @@ export class IntersectionGroup {
 
 	}
 
-	getApproachingAngle ( spline: AbstractSpline ) {
+	getOffset ( spline: AbstractSpline ) {
 
-		const intersection = this.intersections.find( i => i.spline === spline );
+		let sStart = Number.MAX_VALUE;
+		let sEnd = Number.MIN_VALUE;
 
-		if ( intersection ) {
+		this.intersections.forEach( intersection => {
 
-			return intersection.angle;
+			if ( intersection.spline === spline ) {
 
-		}
+				if ( intersection.splineStart < sStart ) {
+					sStart = intersection.splineStart;
+				}
 
-		return 0;
+				if ( intersection.splineEnd > sEnd ) {
+					sEnd = intersection.splineEnd;
+				}
+
+			}
+
+			if ( intersection.otherSpline === spline ) {
+
+				if ( intersection.otherStart < sStart ) {
+					sStart = intersection.otherStart;
+				}
+
+				if ( intersection.otherEnd > sEnd ) {
+					sEnd = intersection.otherEnd;
+				}
+
+			}
+
+		} );
+
+		return { sStart, sEnd };
 	}
 
 }

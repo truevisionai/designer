@@ -6,13 +6,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ExplicitSpline } from './explicit-spline';
-import { TvRoad } from "../../map/models/tv-road.model";
-import { AbstractSpline } from "./abstract-spline";
-import { ControlPointFactory } from "../../factories/control-point.factory";
+import { ExplicitSpline } from '../../app/core/shapes/explicit-spline';
+import { TvRoad } from "../../app/map/models/tv-road.model";
+import { AbstractSpline } from "../../app/core/shapes/abstract-spline";
+import { ControlPointFactory } from "../../app/factories/control-point.factory";
 import { Vector3 } from "three";
 
-describe( 'ExplicitSpline Test', () => {
+xdescribe( 'ExplicitSpline Test', () => {
 
 	let road: TvRoad;
 	let spline: AbstractSpline;

@@ -29,6 +29,8 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { RoadUtils } from 'app/utils/road.utils';
 import { GeometryUtils } from '../surface/geometry-utils';
 import { MapQueryService } from 'app/map/queries/map-query.service';
+import { Log } from 'app/core/utils/log';
+import { ModelNotFoundException } from 'app/exceptions/exceptions';
 
 @Injectable( {
 	providedIn: 'root'
@@ -83,9 +85,27 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	getRoad ( roadId: number ) {
+	getRoad ( roadId: number ): TvRoad | null {
 
-		return this.mapService.map.getRoadById( roadId );
+		try {
+
+			return this.mapService.map.getRoadById( roadId );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( `Road with ID ${ roadId } not found.` );
+
+				return null; // Handle the error by returning null
+
+			} else {
+
+				throw error; // Re-throw unexpected errors
+
+			}
+
+		}
 
 	}
 
@@ -199,7 +219,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
-		this.mapService.map.removeRoad( road );
+		// this.mapService.map.removeRoad( road );
 
 	}
 

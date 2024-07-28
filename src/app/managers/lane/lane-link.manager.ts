@@ -16,6 +16,9 @@ export class LaneLinkManager {
 
 	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
+		// for connections we dont want to manage links forn
+		if ( road.isJunction ) return;
+
 		const prevLaneSection = road.getPredecessorLaneSection( laneSection );
 		const nextLaneSection = road.getSuccessorLaneSection( laneSection );
 

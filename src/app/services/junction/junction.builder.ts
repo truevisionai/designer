@@ -30,6 +30,10 @@ import { RoadService } from '../road/road.service';
 import { TvLaneType } from 'app/map/models/tv-common';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { SplineBuilder } from '../spline/spline.builder';
+import { SplineType } from 'app/core/shapes/abstract-spline';
+import { TvMaterialService } from 'app/graphics/material/tv-material.service';
+
+const ASPHALT_GUID = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
 @Injectable( {
 	providedIn: 'root'
@@ -41,12 +45,15 @@ export class JunctionBuilder {
 		public roadBuilder: RoadBuilder,
 		public boundaryBuilder: TvJunctionBoundaryBuilder,
 		public splineBuilder: SplineBuilder,
+		public materialService: TvMaterialService,
 	) {
 	}
 
 	build ( junction: TvJunction ) {
 
-		return this.buildFromConnectionV2( junction );
+		const geometry = this.boundaryBuilder.getBufferGeometry( junction.boundary, 'shape' );
+
+		return new Mesh( geometry, this.junctionMaterial );
 
 	}
 
@@ -58,6 +65,8 @@ export class JunctionBuilder {
 
 	buildFromConnectionV2 ( junction: TvJunction ): Mesh {
 
+		// return new Mesh();
+
 		// NOTE: This is a temporary implementation to visualize the junction
 		// NOTE: This does not work
 
@@ -68,6 +77,8 @@ export class JunctionBuilder {
 		const connectingRoads = connnections.map( connection => connection.connectingRoad );
 
 		const addRoadGeometries = ( road: TvRoad ) => {
+
+			// if ( road.spline.type === SplineType.EXPLICIT ) return;
 
 			road.laneSections.forEach( laneSection =>
 
@@ -90,6 +101,8 @@ export class JunctionBuilder {
 		};
 
 		junction.corners.map( corner => {
+
+			// if ( corner.connectingRoad.spline.type === SplineType.EXPLICIT ) return;
 
 			corner.connectingRoad.gameObject = this.roadBuilder.buildRoad( corner.connectingRoad );
 
@@ -352,6 +365,12 @@ export class JunctionBuilder {
 	}
 
 	private get junctionMaterial () {
+
+		const asphalt = this.materialService.getMaterial( ASPHALT_GUID )
+
+		if ( asphalt ) {
+			return asphalt.material;
+		}
 
 		const map = this.getJunctionTexture();
 

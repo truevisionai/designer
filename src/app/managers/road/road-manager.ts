@@ -18,6 +18,7 @@ import { TvRoadLink } from "app/map/models/tv-road-link";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Log } from "app/core/utils/log";
 import { RoadFixerService } from "./road-fixer.service";
+import { LinkUtils } from "app/utils/link.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,6 +53,8 @@ export class RoadManager {
 				this.laneManager.onLaneCreated( lane );
 			}
 		}
+
+		LinkUtils.updateLaneUuidLinks( road );
 
 		this.roadElevationManager.onRoadCreated( road );
 
@@ -97,11 +100,17 @@ export class RoadManager {
 
 		}
 
-		if ( road.spline?.segmentMap.length > 0 ) {
+		if ( !road.isJunction && road.spline?.segmentMap.length > 0 ) {
 
 			this.splineBuilder.buildSpline( road.spline );
 
 		}
+
+		this.removeMesh( road );
+
+	}
+
+	removeMesh ( road: TvRoad ) {
 
 		road.objects.object.forEach( object => {
 
@@ -135,6 +144,7 @@ export class RoadManager {
 
 		this.mapService.setRoadOpacity( road );
 
+		LinkUtils.updateLaneUuidLinks( road );
 	}
 
 	private updateRoadObjects ( road: TvRoad ): void {

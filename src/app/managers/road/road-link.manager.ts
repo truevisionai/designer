@@ -39,7 +39,7 @@ export class RoadLinkManager {
 
 		const predecessorRoad = road.predecessor?.isRoad ? road.predecessor.getElement<TvRoad>() : null;
 
-		if ( successorRoad && predecessorRoad ) {
+		if ( successorRoad && predecessorRoad && successorRoad !== predecessorRoad && successorRoad.spline === predecessorRoad.spline ) {
 
 			if ( road.successor.contactPoint === TvContactPoint.START ) {
 
@@ -61,15 +61,37 @@ export class RoadLinkManager {
 
 			}
 
+		} else {
+
+			if ( road.successor?.contactPoint === TvContactPoint.START ) {
+
+				successorRoad.predecessor = null;
+
+			} else if ( road.successor?.contactPoint === TvContactPoint.END ) {
+
+				successorRoad.successor = null;
+
+			}
+
+			if ( road.predecessor?.contactPoint === TvContactPoint.START ) {
+
+				predecessorRoad.predecessor = null;
+
+			} else if ( road.predecessor?.contactPoint === TvContactPoint.END ) {
+
+				predecessorRoad.successor = null;
+
+			}
+
 		}
 
 		if ( !predecessorRoad && road.successor?.isRoad && successorRoad ) {
 
-			if ( road.successor.contactPoint === TvContactPoint.START ) {
+			if ( road.successor?.contactPoint === TvContactPoint.START ) {
 
 				successorRoad.predecessor = null;
 
-			} else if ( road.successor.contactPoint === TvContactPoint.END ) {
+			} else if ( road.successor?.contactPoint === TvContactPoint.END ) {
 
 				successorRoad.successor = null;
 
@@ -79,11 +101,11 @@ export class RoadLinkManager {
 
 		if ( !successorRoad && road.predecessor?.isRoad && predecessorRoad ) {
 
-			if ( road.predecessor.contactPoint === TvContactPoint.START ) {
+			if ( road.predecessor?.contactPoint === TvContactPoint.START ) {
 
 				predecessorRoad.predecessor = null;
 
-			} else if ( road.predecessor.contactPoint === TvContactPoint.END ) {
+			} else if ( road.predecessor?.contactPoint === TvContactPoint.END ) {
 
 				predecessorRoad.successor = null;
 

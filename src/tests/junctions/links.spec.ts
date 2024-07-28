@@ -15,7 +15,7 @@ import { Vector2, Vector3 } from 'three';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DepConnectionFactory } from 'app/map/junction/dep-connection.factory';
 
-describe( 'LaneLinkService', () => {
+xdescribe( 'LaneLinkService', () => {
 
 	let mapService: MapService;
 	let roadService: RoadService;

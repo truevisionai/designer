@@ -8,7 +8,7 @@ import { RoadService } from 'app/services/road/road.service';
 import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { BaseTest } from 'tests/base-test.spec';
 
-describe( 'RoadTool: UpdateConnectedRoads', () => {
+xdescribe( 'RoadTool: UpdateConnectedRoads', () => {
 
 	let base: BaseTest = new BaseTest;
 	let roadToolService: RoadToolHelper

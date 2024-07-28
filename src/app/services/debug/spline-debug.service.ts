@@ -267,27 +267,41 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
 
-		const add = ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) => {
+		// const add = ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) => {
 
-			const points = this.debugService.getPositions( road, laneSection, lane, 0, laneSection.length, LINE_STEP );
+		// 	const points = this.debugService.getPositions( road, laneSection, lane, 0, laneSection.length, LINE_STEP );
+
+		// 	const positions = points.map( point => point.position );
+
+		// 	const line = this.debugService.createDebugLine( road, positions, lineWidth, color );
+
+		// 	this.borders.addItem( spline, line );
+		// }
+
+		// this.splineService.getRoads( spline ).forEach( road => {
+
+		// 	road.laneSections?.forEach( laneSection => {
+
+		// 		add( road, laneSection, laneSection.getRightMostLane() );
+
+		// 		add( road, laneSection, laneSection.getLeftMostLane() );
+
+		// 	} )
+		// } )
+
+
+		const add = ( points: AbstractControlPoint[] ) => {
 
 			const positions = points.map( point => point.position );
 
-			const line = this.debugService.createDebugLine( road, positions, lineWidth, color );
+			const line = this.debugService.createDebugLine( spline, positions, lineWidth, color );
 
 			this.borders.addItem( spline, line );
+
 		}
 
-		this.splineService.getRoads( spline ).forEach( road => {
-
-			road.laneSections?.forEach( laneSection => {
-
-				add( road, laneSection, laneSection.getRightMostLane() );
-
-				add( road, laneSection, laneSection.getLeftMostLane() );
-
-			} )
-		} )
+		add( spline.leftPoints );
+		add( spline.rightPoints );
 
 	}
 
@@ -471,6 +485,19 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 	removeNodes ( spline: AbstractSpline ) {
 
 		this.nodes.removeKey( spline );
+
+	}
+
+	showBoundPoints ( spline: AbstractSpline ) {
+
+		spline.leftPoints.forEach( point => this.points.addItem( spline, point ) );
+		spline.rightPoints.forEach( point => this.points.addItem( spline, point ) );
+
+	}
+
+	removeBoundPoints ( spline: AbstractSpline ) {
+
+		this.points.removeKey( spline );
 
 	}
 

@@ -27,6 +27,7 @@ import { JunctionManager } from 'app/managers/junction-manager';
 import { TvJunctionBoundaryFactory } from "../map/junction-boundary/tv-junction-boundary.factory";
 import { ConnectionFactory } from 'app/factories/connection.factory';
 import { SplineUtils } from "../utils/spline.utils";
+import { LinkUtils } from 'app/utils/link.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -126,6 +127,8 @@ export class SceneBuilderService {
 	}
 
 	buildRoad ( map: TvMap, road: TvRoad ): void {
+
+		LinkUtils.updateLaneUuidLinks( road );
 
 		const spline = this.findSpline( map, road ) || road.spline;
 

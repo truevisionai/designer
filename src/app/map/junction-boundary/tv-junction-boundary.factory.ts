@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import { TvJunction } from "../models/junctions/tv-junction";
-import { TvJointBoundary, TvJunctionBoundary, TvLaneBoundary } from "./tv-junction-boundary";
+import { TvBoundarySegmentType, TvJointBoundary, TvJunctionBoundary, TvLaneBoundary } from "./tv-junction-boundary";
 import { GeometryUtils } from "../../services/surface/geometry-utils";
 import { LaneUtils } from "../../utils/lane.utils";
 import { TvRoadCoord } from "../models/TvRoadCoord";
 import { TvRoad } from "../models/tv-road.model";
 import { TvLane } from "../models/tv-lane";
+import { TvContactPoint } from "../models/tv-common";
+import { JunctionUtils } from "app/utils/junction.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,6 +67,8 @@ export class TvJunctionBoundaryFactory {
 
 		} );
 
+		this.sortBoundarySegments( boundary );
+
 		return boundary;
 	}
 
@@ -76,9 +80,17 @@ export class TvJunctionBoundaryFactory {
 
 		boundary.contactPoint = roadCoord.contact;
 
-		boundary.jointLaneStart = roadCoord.laneSection.getLeftMostLane();
+		if ( roadCoord.contact == TvContactPoint.END ) {
 
-		boundary.jointLaneEnd = roadCoord.laneSection.getRightMostLane();
+			boundary.jointLaneStart = roadCoord.laneSection.getLeftMostLane();
+			boundary.jointLaneEnd = roadCoord.laneSection.getRightMostLane();
+
+		} else {
+
+			boundary.jointLaneStart = roadCoord.laneSection.getRightMostLane();
+			boundary.jointLaneEnd = roadCoord.laneSection.getLeftMostLane();
+
+		}
 
 		return boundary;
 
@@ -97,6 +109,35 @@ export class TvJunctionBoundaryFactory {
 		boundary.sEnd = connectingRoad.length;
 
 		return boundary;
+
+	}
+
+	static sortBoundarySegments ( boundary: TvJunctionBoundary ) {
+
+		const segments = boundary.segments;
+
+		const points = segments.map( segment => {
+
+			const position = JunctionUtils.convetToPositions( segment )[ 0 ];
+
+			return { position, segment };
+
+		} );
+
+		const centroid = GeometryUtils.getCentroid( points.map( p => p.position ) );
+
+		points.sort( ( a, b ) => {
+
+			const angleA = GeometryUtils.getAngle( centroid, a.position );
+			const angleB = GeometryUtils.getAngle( centroid, b.position );
+
+			return angleA - angleB;
+
+		} );
+
+
+		boundary.segments = [];
+		boundary.segments = points.map( p => p.segment );
 
 	}
 

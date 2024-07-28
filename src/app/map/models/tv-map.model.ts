@@ -17,6 +17,7 @@ import { Object3D, Vector2 } from 'three';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { IDService } from 'app/factories/id.service';
 import { ManagedMap } from "../../core/models/managed-map";
+import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 
 export class TvMap {
 
@@ -112,8 +113,11 @@ export class TvMap {
 
 	addRoad ( road: TvRoad ) {
 
-		this.roads.set( road.id, road );
+		if ( this.roads.has( road.id ) ) {
+			throw new DuplicateKeyException( `Road with id ${ road.id } already exists` );
+		}
 
+		this.roads.set( road.id, road );
 	}
 
 	getSurfaces () {
@@ -122,7 +126,11 @@ export class TvMap {
 
 	}
 
-	public removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ) {
+
+		if ( !this.roads.has( road.id ) ) {
+			throw new ModelNotFoundException( `Road with id ${ road.id } not found` );
+		}
 
 		this.roads.delete( road.id );
 
@@ -130,18 +138,11 @@ export class TvMap {
 
 	getRoadById ( roadId: number ): TvRoad {
 
-		if ( this.roads.has( roadId ) ) {
-
-			return this.roads.get( roadId );
-
-		} else {
-
-			TvConsole.error( `${ roadId } road-id not found` );
-
-			console.error( `${ roadId } road-id not found` );
-
+		if ( !this.roads.has( roadId ) ) {
+			throw new ModelNotFoundException( `Road with id ${ roadId } not found` );
 		}
 
+		return this.roads.get( roadId );
 	}
 
 	public getRoadCount (): number {
@@ -151,6 +152,10 @@ export class TvMap {
 	}
 
 	public getJunctionById ( id: number ): TvJunction {
+
+		if ( !this.junctions.has( id ) ) {
+			throw new ModelNotFoundException( `Junction with id ${ id } not found` );
+		}
 
 		return this.junctions.get( id );
 

@@ -26,4 +26,8 @@ export class SplineIntersection {
 	) {
 	}
 
+	key (): string {
+		return `${ this.spline.uuid }_${ this.otherSpline.uuid }`;
+	}
+
 }

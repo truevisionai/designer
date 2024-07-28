@@ -20,7 +20,7 @@ export class TvJunctionLaneLink {
 	 * can be useful to track if the link is modified
 	 * for exporting as link connection or different
 	 */
-	public modified: boolean = true;
+	public dirty: boolean = false;
 
 	public turnType: TurnType;
 
@@ -53,6 +53,10 @@ export class TvJunctionLaneLink {
 
 		return link;
 
+	}
+
+	toString() {
+		return `Incoming: ${this.incomingRoad?.id} Lane: ${this.incomingLane?.id} Connecting: ${this.connectingRoad?.id} Lane: ${this.connectingLane?.id} Turn: ${this.turnType}`;
 	}
 
 }

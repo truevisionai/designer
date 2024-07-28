@@ -100,12 +100,12 @@ export class LayoutService {
 	}
 
 	setLayoutFromQuery () {
-		let layoutConfString = getQueryParam( 'layout' );
-		try {
-			this.layoutConf = JSON.parse( layoutConfString );
-			// this.publishLayoutChange(this.layoutConf);
-		} catch ( e ) {
-		}
+		// let layoutConfString = getQueryParam( 'layout' );
+		// try {
+		// 	this.layoutConf = JSON.parse( layoutConfString );
+		// 	// this.publishLayoutChange(this.layoutConf);
+		// } catch ( e ) {
+		// }
 	}
 
 	adjustLayout ( options: IAdjustScreenOptions = {} ) {
