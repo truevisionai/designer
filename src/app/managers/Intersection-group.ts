@@ -78,6 +78,12 @@ export class IntersectionGroup {
 
 	}
 
+	hasSpline ( spline: AbstractSpline ) {
+
+		return this.splines.has( spline );
+
+	}
+
 	getOffset ( spline: AbstractSpline ) {
 
 		let sStart = Number.MAX_VALUE;
@@ -114,4 +120,21 @@ export class IntersectionGroup {
 		return { sStart, sEnd };
 	}
 
+	merge ( otherGroup: IntersectionGroup ) {
+
+		otherGroup.intersections.forEach( intersection => {
+
+			this.addSplineIntersection( intersection );
+
+		} );
+
+	}
+
+	toString () {
+
+		const splines = Array.from( this.splines ).map( s => s.id ).join( ',' );
+
+		return `IntersectionGroup: ${ this.intersections.size } Splines:${ splines } Center:${ this.centroid.x.toFixed( 2 ) },${ this.centroid.y.toFixed( 2 ) }`;
+
+	}
 }

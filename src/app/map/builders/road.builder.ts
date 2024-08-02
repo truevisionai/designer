@@ -141,6 +141,8 @@ export class RoadBuilder {
 
 	private shouldBuild ( road: TvRoad ): boolean {
 
+		if ( !OdBuilderConfig.BUILD_MESH ) return false;
+
 		const hasGeomtry = road.geometries.length > 0;
 
 		if ( !hasGeomtry ) return false;

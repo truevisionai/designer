@@ -84,11 +84,12 @@ export class JunctionToolHelper {
 				this.junctionManager.setLink( linkA.element, linkA.contactPoint, junction );
 				this.junctionManager.setLink( linkB.element, linkB.contactPoint, junction );
 
-				this.connectionFactory.createConnections( junction, linkA.toRoadCoord(), linkB.toRoadCoord(), !rightConnectionCreated );
-				this.connectionFactory.createConnections( junction, linkB.toRoadCoord(), linkA.toRoadCoord(), isFirstAndLast );
+				this.connectionFactory.addConnections( junction, linkA.toRoadCoord(), linkB.toRoadCoord(), !rightConnectionCreated );
+				this.connectionFactory.addConnections( junction, linkB.toRoadCoord(), linkA.toRoadCoord(), isFirstAndLast );
 
 				if ( !rightConnectionCreated || isFirstAndLast ) {
-					this.connectionFactory.createCornerConnections( junction, linkA.toRoadCoord(), linkB.toRoadCoord() );
+					// TODO: check if this is necessary
+					// this.connectionFactory.createFakeCorners( junction, linkA.toRoadCoord(), linkB.toRoadCoord() );
 				}
 
 				rightConnectionCreated = true;

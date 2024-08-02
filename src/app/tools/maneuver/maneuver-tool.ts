@@ -115,7 +115,8 @@ export class ManeuverTool extends BaseTool<any> {
 
 		} else {
 
-			Log.error( 'Invalid object added', object );
+			Log.error( 'Invalid object added' );
+			console.error( 'Invalid object added', object );
 
 		}
 
@@ -129,8 +130,8 @@ export class ManeuverTool extends BaseTool<any> {
 
 		} else {
 
-			Log.error( 'Invalid object removed', object );
-
+			Log.error( 'Invalid object removed' );
+			console.error( 'Invalid object removed', object );
 		}
 
 	}

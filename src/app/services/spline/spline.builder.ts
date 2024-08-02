@@ -7,7 +7,7 @@ import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { TvRoad } from "../../map/models/tv-road.model";
 import { AutoSplineV2 } from "../../core/shapes/auto-spline-v2";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { Box3, CatmullRomCurve3, Vector2, Vector3 } from "three";
+import { Box2, CatmullRomCurve3, Vector2, Vector3 } from "three";
 import { TvAbstractRoadGeometry } from "../../map/models/geometries/tv-abstract-road-geometry";
 import { TvLineGeometry } from "../../map/models/geometries/tv-line-geometry";
 import { TvArcGeometry } from "../../map/models/geometries/tv-arc-geometry";
@@ -29,8 +29,8 @@ import { MapEvents } from "../../events/map-events";
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { SplineService } from "./spline.service";
-import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { Log } from 'app/core/utils/log';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
@@ -140,6 +140,11 @@ export class SplineBuilder {
 
 	build ( spline: AbstractSpline ) {
 
+		if ( spline.controlPoints.length < 2 ) {
+			Log.warn( 'No control points found in spline', spline?.toString() );
+			return;
+		}
+
 		this.buildGeometry( spline );
 
 		this.buildSegments( spline );
@@ -149,6 +154,11 @@ export class SplineBuilder {
 	}
 
 	buildGeometry ( spline: AbstractSpline ) {
+
+		if ( spline.controlPoints.length < 2 ) {
+			Log.warn( 'No control points found in spline', spline?.toString() );
+			return;
+		}
 
 		if ( spline instanceof AutoSplineV2 ) {
 
@@ -193,56 +203,11 @@ export class SplineBuilder {
 
 	buildBoundingBox ( spline: AbstractSpline ) {
 
-		function updateBoundingBox () {
-
-			if ( spline.controlPoints.length < 2 ) return;
-
-			let boundingBox = new Box3();
-
-			const segments = spline.segmentMap.toArray();
-
-			for ( let i = 0; i < segments.length; i++ ) {
-
-				const segment = segments[ i ];
-
-				if ( segment instanceof TvRoad ) {
-
-					if ( segment.boundingBox ) {
-
-						boundingBox.union( segment.boundingBox );
-
-					} else {
-
-						segment.computeBoundingBox();
-
-						if ( segment.boundingBox ) {
-
-							boundingBox.union( segment.boundingBox );
-
-						} else {
-
-							boundingBox = null;
-
-						}
-					}
-				}
-			}
-
-			if ( !boundingBox ) {
-				console.error( "boundingBox is null", this );
-				return;
-			}
-
-			spline.boundingBox = boundingBox;
-		}
-
 		this.updateWidthCache( spline );
 
 		this.updateWaypoints( spline );
 
 		this.updateBoundPoints( spline );
-
-		updateBoundingBox();
 
 	}
 
@@ -373,6 +338,16 @@ export class SplineBuilder {
 
 	private updateBoundPoints ( spline: AbstractSpline ) {
 
+		if ( spline.segmentMap.length == 0 ) {
+			Log.warn( 'No segments found in spline', spline?.toString() );
+			return;
+		}
+
+		// this buffer is added to left/right and center points to create a bounding box
+		// to explain the width of the road
+		// helps in intersection
+		const BUFFER = 1;
+
 		spline.leftPoints = [];
 		spline.rightPoints = [];
 		spline.centerPoints = [];
@@ -385,7 +360,12 @@ export class SplineBuilder {
 			roadWidth = firstRoad.getRoadWidthAt( 0 );
 		}
 
-		for ( let s = 0; s < spline.getLength(); s++ ) {
+		const boundingBox = new Box2();
+
+		let startPoints: { center: TvPosTheta, left: TvPosTheta, right: TvPosTheta };
+		let endPoints: { center: TvPosTheta, left: TvPosTheta, right: TvPosTheta };
+
+		for ( let s = 0; s <= spline.getLength(); s++ ) {
 
 			const segment = spline.segmentMap.findAt( s );
 
@@ -399,8 +379,8 @@ export class SplineBuilder {
 			}
 
 			const center = this.splineService.getCoordAtOffset( spline, s );
-			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
-			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
+			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth + BUFFER );
+			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth - BUFFER );
 
 			const centerPoint = new SimpleControlPoint( null, center.position );
 			const leftPoint = new SimpleControlPoint( null, left.position );
@@ -410,76 +390,123 @@ export class SplineBuilder {
 			spline.centerPoints.push( centerPoint );
 			spline.rightPoints.push( rightPoint );
 
+			if ( startPoints === null ) {
+				startPoints = { center, left, right };
+			}
+
+			endPoints = { center, left, right };
+
+			boundingBox.expandByPoint( center.toVector2() );
+			boundingBox.expandByPoint( left.toVector2() );
+			boundingBox.expandByPoint( right.toVector2() );
+
 		}
 
-		// spline.segmentMap.forEach( ( segment, sStart ) => {
+		if ( startPoints ) {
 
-		// 	if ( segment instanceof TvRoad ) {
+			const direction = startPoints.center.toDirectionVector().normalize().negate();
+			const extenedPoint = startPoints.center.position.add( direction.multiplyScalar( BUFFER ) );
+			const extenedLeft = startPoints.left.position.add( direction.multiplyScalar( BUFFER ) );
+			const extenedRight = startPoints.right.position.add( direction.multiplyScalar( BUFFER ) );
 
-		// 		for ( let s = 0; s < segment.length; s++ ) {
+			// add points at start of array
+			spline.leftPoints.unshift( new SimpleControlPoint( null, extenedLeft ) );
+			spline.centerPoints.unshift( new SimpleControlPoint( null, extenedPoint ) );
+			spline.rightPoints.unshift( new SimpleControlPoint( null, extenedRight ) );
 
-		// 			roadWidth = segment.getRoadWidthAt( s );
+			boundingBox.expandByPoint( new Vector2( extenedPoint.x, extenedPoint.y ) );
+			boundingBox.expandByPoint( new Vector2( extenedLeft.x, extenedLeft.y ) );
+			boundingBox.expandByPoint( new Vector2( extenedRight.x, extenedRight.y ) );
 
-		// 			const center = segment.getPosThetaAt( s );
-		// 			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
-		// 			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
+		}
 
-		// 			const centerPoint = new SimpleControlPoint( null, center.position );
-		// 			const leftPoint = new SimpleControlPoint( null, left.position );
-		// 			const rightPoint = new SimpleControlPoint( null, right.position );
+		if ( endPoints ) {
 
-		// 			spline.leftPoints.push( leftPoint );
-		// 			spline.centerPoints.push( centerPoint );
-		// 			spline.rightPoints.push( rightPoint );
+			const direction = endPoints.center.toDirectionVector().normalize();
+			const extenedPoint = endPoints.center.position.add( direction.multiplyScalar( BUFFER ) );
+			const extenedLeft = endPoints.left.position.add( direction.multiplyScalar( BUFFER ) );
+			const extenedRight = endPoints.right.position.add( direction.multiplyScalar( BUFFER ) );
 
-		// 		}
+			// add points at end of array
+			spline.leftPoints.push( new SimpleControlPoint( null, extenedLeft ) );
+			spline.centerPoints.push( new SimpleControlPoint( null, extenedPoint ) );
+			spline.rightPoints.push( new SimpleControlPoint( null, extenedRight ) );
 
-		// 	}
+			boundingBox.expandByPoint( new Vector2( extenedPoint.x, extenedPoint.y ) );
+			boundingBox.expandByPoint( new Vector2( extenedLeft.x, extenedLeft.y ) );
+			boundingBox.expandByPoint( new Vector2( extenedRight.x, extenedRight.y ) );
+		}
 
-		// 	if ( segment instanceof TvJunction ) {
-
-		// 		const previous = spline.segmentMap.getPrevious( segment );
-		// 		const next = spline.segmentMap.getNext( segment );
-		// 		const sEnd = spline.segmentMap.getNextKey( segment ) ?? spline.getLength();
-
-		// 		if ( !roadWidth && next instanceof TvRoad ) {
-		// 			roadWidth = next.getRoadWidthAt( 0 );
-		// 		}
-
-		// 		if ( !roadWidth && previous instanceof TvRoad ) {
-		// 			roadWidth = previous.getRoadWidthAt( previous.length );
-		// 		}
-
-		// 		if ( !roadWidth ) {
-		// 			const road = this.splineService.findFirstRoad( spline );
-		// 			roadWidth = road.getRoadWidthAt( 0 );
-		// 		}
-
-		// 		if ( !roadWidth ) {
-		// 			roadWidth = { leftSideWidth: 6, rightSideWidth: 6, totalWidth: 12 };
-		// 		}
-
-		// 		for ( let s = sStart; s < sEnd; s++ ) {
-
-		// 			const center = this.splineService.getCoordAtOffset( spline, s );
-		// 			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
-		// 			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
-
-		// 			const centerPoint = new SimpleControlPoint( null, center.position );
-		// 			const leftPoint = new SimpleControlPoint( null, left.position );
-		// 			const rightPoint = new SimpleControlPoint( null, right.position );
-
-		// 			spline.leftPoints.push( leftPoint );
-		// 			spline.centerPoints.push( centerPoint );
-		// 			spline.rightPoints.push( rightPoint );
-
-		// 		}
-
-		// 	}
-
-		// } );
+		spline.boundingBox.copy( boundingBox );
 
 	}
+
+	// spline.segmentMap.forEach( ( segment, sStart ) => {
+
+	// 	if ( segment instanceof TvRoad ) {
+
+	// 		for ( let s = 0; s < segment.length; s++ ) {
+
+	// 			roadWidth = segment.getRoadWidthAt( s );
+
+	// 			const center = segment.getPosThetaAt( s );
+	// 			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
+	// 			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
+
+	// 			const centerPoint = new SimpleControlPoint( null, center.position );
+	// 			const leftPoint = new SimpleControlPoint( null, left.position );
+	// 			const rightPoint = new SimpleControlPoint( null, right.position );
+
+	// 			spline.leftPoints.push( leftPoint );
+	// 			spline.centerPoints.push( centerPoint );
+	// 			spline.rightPoints.push( rightPoint );
+
+	// 		}
+
+	// 	}
+
+	// 	if ( segment instanceof TvJunction ) {
+
+	// 		const previous = spline.segmentMap.getPrevious( segment );
+	// 		const next = spline.segmentMap.getNext( segment );
+	// 		const sEnd = spline.segmentMap.getNextKey( segment ) ?? spline.getLength();
+
+	// 		if ( !roadWidth && next instanceof TvRoad ) {
+	// 			roadWidth = next.getRoadWidthAt( 0 );
+	// 		}
+
+	// 		if ( !roadWidth && previous instanceof TvRoad ) {
+	// 			roadWidth = previous.getRoadWidthAt( previous.length );
+	// 		}
+
+	// 		if ( !roadWidth ) {
+	// 			const road = this.splineService.findFirstRoad( spline );
+	// 			roadWidth = road.getRoadWidthAt( 0 );
+	// 		}
+
+	// 		if ( !roadWidth ) {
+	// 			roadWidth = { leftSideWidth: 6, rightSideWidth: 6, totalWidth: 12 };
+	// 		}
+
+	// 		for ( let s = sStart; s < sEnd; s++ ) {
+
+	// 			const center = this.splineService.getCoordAtOffset( spline, s );
+	// 			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
+	// 			const right = center.clone().addLateralOffset( -roadWidth.rightSideWidth );
+
+	// 			const centerPoint = new SimpleControlPoint( null, center.position );
+	// 			const leftPoint = new SimpleControlPoint( null, left.position );
+	// 			const rightPoint = new SimpleControlPoint( null, right.position );
+
+	// 			spline.leftPoints.push( leftPoint );
+	// 			spline.centerPoints.push( centerPoint );
+	// 			spline.rightPoints.push( rightPoint );
+
+	// 		}
+
+	// 	}
+
+	// } );
 }
 
 

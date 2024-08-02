@@ -11,7 +11,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
-import { Object3D } from 'three';
+import { Object3D, Vector2, Vector3 } from 'three';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugTextService } from '../debug/debug-text.service';
 import { Environment } from 'app/core/utils/environment';
@@ -25,8 +25,42 @@ import { RoadService } from '../road/road.service';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Log } from 'app/core/utils/log';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
+import { SplineUtils } from 'app/utils/spline.utils';
+import { RoadUtils } from 'app/utils/road.utils';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 const SPHERE_SIZE = 0.1;
+
+function expectCorrectSegmentOrder ( spline: AbstractSpline ) {
+	if ( !SplineUtils.areLinksCorrect( spline ) ) {
+		throw new Error( 'Incorrect segment order' );
+	}
+}
+
+function expectLinkDistanceToBeZero ( road: TvRoad ) {
+	if ( road.successor ) {
+		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
+		if ( !Maths.approxEquals( distance, 0 ) ) {
+			throw new Error( `InvalidSuccessorDistance:${ distance } ` + road.toString() + ' ' + road.successor.toString() );
+		}
+	}
+	if ( road.predecessor ) {
+		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor )
+		if ( !Maths.approxEquals( distance, 0 ) ) {
+			throw new Error( `InvalidPredecessorDistance:${ distance } ` + road.toString() + ' ' + road.predecessor.toString() );
+		}
+	}
+}
+
+function expectValidMap ( mapService: MapService ) {
+	mapService.nonJunctionRoads.forEach( road => {
+		expectLinkDistanceToBeZero( road );
+	} );
+
+	mapService.nonJunctionSplines.forEach( spline => {
+		expectCorrectSegmentOrder( spline );
+	} );
+}
 
 @Injectable( {
 	providedIn: 'root'
@@ -114,6 +148,8 @@ export class MapValidatorService {
 			this.validateRoad( roads[ i ] );
 
 		}
+
+		expectValidMap( this.mapService );
 
 		for ( let i = 0; i < this.errors.length; i++ ) {
 
@@ -542,9 +578,17 @@ export class MapValidatorService {
 
 			const junction = this.map.getJunctionById( link.id );
 
+			const contactPoint = linkType == 'successor' ? road.getEndPosTheta() : road.getStartPosTheta();
+			const distanceFromJunction = junction.boundingBox.distanceToPoint( new Vector2( contactPoint.position.x, contactPoint.position.y ) );
+
 			if ( !junction.getIncomingRoads().includes( road ) ) {
 				Log.warn( 'No Connections With Junction', road.toString(), link.toString() );
 			}
+
+			if ( !Maths.approxEquals( distanceFromJunction, 0 ) ) {
+				Log.warn( 'Contact Point Outside Junction', road.toString(), link.toString() );
+			}
+
 
 		} catch ( error ) {
 
@@ -573,29 +617,29 @@ export class MapValidatorService {
 
 		connection.laneLink.forEach( link => {
 
-			const incomingLaneSection = link.incomingRoad.getLaneSectionAtContact( link.incomingContactPoint );
-			const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;
-			const incomingPosition = this.roadService.findLaneStartPosition( link.incomingRoad, incomingLaneSection, link.incomingLane, incomingSOffset );
-
-			const connectingLaneSection = link.connectingRoad.getLaneSectionAtContact( link.connectingContactPoint );
-			const connectingSOffset = link.connectingContactPoint == TvContactPoint.START ? 0 : link.connectingRoad.length;
-			const connectingPosition = this.roadService.findLaneStartPosition( link.connectingRoad, connectingLaneSection, link.connectingLane, connectingSOffset );
-
-			const distance = incomingPosition.position.distanceTo( connectingPosition.position );
-
-			if ( distance > 0.01 ) {
-
-				this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + incomingContact + ' distance:' + distance );
-
-				const sphere1 = this.debugDraw.createSphere( incomingPosition.position, SPHERE_SIZE, COLOR.BLUE );
-				this.debugObjects.add( sphere1, sphere1 );
-
-				const sphere2 = this.debugDraw.createSphere( connectingPosition.position, SPHERE_SIZE, COLOR.GREEN );
-				this.debugObjects.add( sphere2, sphere2 );
-
-				const line = this.debugDraw.createLine( [ incomingPosition.position, connectingPosition.position ], COLOR.ORANGE );
-				this.debugObjects.add( line, line );
-			}
+			// const incomingLaneSection = link.incomingRoad.getLaneSectionAtContact( link.incomingContactPoint );
+			// const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;
+			// const incomingPosition = this.roadService.findLaneStartPosition( link.incomingRoad, incomingLaneSection, link.incomingLane, incomingSOffset );
+			//
+			// const connectingLaneSection = link.connectingRoad.getLaneSectionAtContact( link.connectingContactPoint );
+			// const connectingSOffset = link.connectingContactPoint == TvContactPoint.START ? 0 : link.connectingRoad.length;
+			// const connectingPosition = this.roadService.findLaneStartPosition( link.connectingRoad, connectingLaneSection, link.connectingLane, connectingSOffset );
+			//
+			// const distance = incomingPosition.position.distanceTo( connectingPosition.position );
+			//
+			// if ( distance > 0.01 ) {
+			//
+			// 	this.errors.push( connection.toString() + ' has invalid distance with incoming road ' + connection.incomingRoad.toString() + ' contactPoint:' + incomingContact + ' distance:' + distance );
+			//
+			// 	const sphere1 = this.debugDraw.createSphere( incomingPosition.position, SPHERE_SIZE, COLOR.BLUE );
+			// 	this.debugObjects.add( sphere1, sphere1 );
+			//
+			// 	const sphere2 = this.debugDraw.createSphere( connectingPosition.position, SPHERE_SIZE, COLOR.GREEN );
+			// 	this.debugObjects.add( sphere2, sphere2 );
+			//
+			// 	const line = this.debugDraw.createLine( [ incomingPosition.position, connectingPosition.position ], COLOR.ORANGE );
+			// 	this.debugObjects.add( line, line );
+			// }
 
 		} );
 	}

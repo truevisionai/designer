@@ -27,6 +27,7 @@ import { RoadService } from 'app/services/road/road.service';
 import { SplineService } from "../../services/spline/spline.service";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { SplineBuilder } from "../../services/spline/spline.builder";
+import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 
 @Injectable( {
 	providedIn: 'root'
@@ -233,5 +234,43 @@ export class RoadCircleToolService {
 		}
 
 		return roads;
+	}
+
+	createCirclePoints ( centre: Vector3, end: Vector3, radius: number ): Vector3[] {
+
+		const p1 = new Vector2( centre.x, centre.y );
+		const p2 = new Vector2( end.x, end.y );
+
+		let start = end.clone();
+		let hdg = new Vector2().subVectors( p2, p1 ).angle() + Math.PI / 2;
+
+		const circumference = 2 * Math.PI * radius;
+		const arcLength = circumference * 0.25;
+		const curvature = 1 / radius;
+
+		const points: Vector3[] = [];
+
+		for ( let i = 0; i < 4; i++ ) {
+
+			const arc = new TvArcGeometry( 0, start.x, start.y, hdg, arcLength, curvature );
+
+			const startPosTheta = arc.getRoadCoord( 0 );
+			const endPosTheta = arc.getRoadCoord( arcLength );
+
+			const distance = start.distanceTo( arc.endV3 ) * 0.3;
+
+			let a2 = startPosTheta.moveForward( +distance );
+			let b2 = endPosTheta.moveForward( -distance );
+
+			points.push( start.clone() );
+			points.push( a2.toVector3() );
+			points.push( b2.toVector3() );
+			points.push( arc.endV3.clone() );
+
+			start = arc.endV3.clone();
+			hdg += Math.PI / 2;
+		}
+
+		return points;
 	}
 }

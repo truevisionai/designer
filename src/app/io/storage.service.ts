@@ -31,6 +31,8 @@ export interface IStorageProvider {
 } )
 export class StorageService {
 
+	public static instance?: StorageService;
+
 	private storageProvider: IStorageProvider;
 
 	constructor ( electron: TvElectronService, private fileService: FileService ) {
@@ -39,7 +41,19 @@ export class StorageService {
 
 			this.storageProvider = new ElectronStorageProvider( fileService );
 
+			StorageService.instance = this;
+
+		} else {
+
+			// console.error( 'StorageService is only available in Electron' );
+
 		}
+
+	}
+
+	appendFileSync ( path: string, contents: string, options?: any ) {
+
+		return this.fileService.fs.appendFileSync( path, contents, options );
 
 	}
 

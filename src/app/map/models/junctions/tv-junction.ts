@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Box3, Mesh, Vector3 } from 'three';
+import { Box2, Box3, Mesh, Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvJunctionConnection } from './tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
@@ -11,9 +11,10 @@ import { TvRoad } from '../tv-road.model';
 import { TvJunctionType } from './tv-junction-type';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvContactPoint } from '../tv-common';
-import { TvRoadCoord } from "../TvRoadCoord";
 import { TvRoadLink, TvRoadLinkType } from "../tv-road-link";
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
+import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
+import { TvJunctionLaneLink } from './tv-junction-lane-link';
 
 export class TvJunction {
 
@@ -25,19 +26,26 @@ export class TvJunction {
 
 	public corners: TvJunctionConnection[] = [];
 
-	public position?: Vector3;
+	public centroid?: Vector3;
 
 	public type: TvJunctionType = TvJunctionType.DEFAULT;
 
 	public mesh: Mesh;
 
-	public boundingBox: Box3;
+	public depBoundingBox: Box3;
+
+	public boundingBox: Box2;
 
 	public boundary: TvJunctionBoundary;
 
 	public auto: boolean = true;
 
+	public needsUpdate: boolean = false;
+
 	constructor ( public name: string, public id: number ) {
+
+		// this.boundingBox = new Box2();
+
 	}
 
 	toString () {
@@ -48,30 +56,13 @@ export class TvJunction {
 		return Array.from( this.connections.values() );
 	}
 
-	removeConnectingRoad ( road: TvRoad ): void {
-
-		this.connections.forEach( connection => {
-
-			if ( connection.connectingRoadId === road.id ) {
-
-				this.connections.delete( connection.id );
-			}
-
-		} );
-
-	}
-
 	getConnectingRoads (): TvRoad[] {
 
 		const connectingRoads: TvRoad[] = [];
 
 		this.connections.forEach( connection => {
 
-			if ( connection.connectingRoad ) {
-
-				connectingRoads.push( connection.connectingRoad );
-
-			}
+			connectingRoads.push( connection.connectingRoad );
 
 		} );
 
@@ -106,6 +97,7 @@ export class TvJunction {
 		this.getIncomingRoads().forEach( road => splines.add( road.spline ) );
 
 		return [ ...splines ];
+
 	}
 
 	getRoads (): TvRoad[] {
@@ -183,13 +175,63 @@ export class TvJunction {
 
 	addConnection ( connection: TvJunctionConnection ) {
 
+		if ( this.connections.has( connection.id ) ) {
+			throw new DuplicateKeyException( `Connection with id ${ connection.id } already exists in junction ${ this.id }` );
+		}
+
 		this.connections.set( connection.id, connection );
+
+	}
+
+	removeConnection ( connection: TvJunctionConnection ) {
+
+		if ( !this.connections.has( connection.id ) ) {
+			throw new ModelNotFoundException( `Connection with id ${ connection.id } not found in junction ${ this.id }` );
+		}
+
+		this.connections.delete( connection.id );
+
+	}
+
+	getConnectionCount (): number {
+
+		return this.connections.size;
+
+	}
+
+	getLaneLinkCount (): number {
+
+		return this.getLaneLinks().length;
+
+	}
+
+	getLaneLinks (): TvJunctionLaneLink[] {
+
+		const links: TvJunctionLaneLink[] = [];
+
+		for ( const connection of this.getConnections() ) {
+
+			for ( const laneLink of connection.laneLink ) {
+
+				links.push( laneLink );
+
+			}
+
+		}
+
+		return links;
 
 	}
 
 	addPriority ( priority: TvJunctionPriority ) {
 
 		this.priorities.push( priority );
+
+	}
+
+	containsPoint ( position: Vector3 ): boolean {
+
+		return this.boundingBox.containsPoint( new Vector2( position.x, position.z ) );
 
 	}
 

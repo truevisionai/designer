@@ -196,5 +196,20 @@ export class TvJunctionConnection {
 
 	}
 
+	getHash (): string {
+
+		let hash = this.incomingRoadId + '_';
+
+		this.laneLink.forEach( link => {
+
+			hash += '_' + link.incomingLane.id;
+			hash += '_' + link.connectingRoad.successor.id;
+			hash += '_' + link.connectingLane.successorId;
+
+		} );
+
+		return hash;
+	}
+
 }
 

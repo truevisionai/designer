@@ -3,17 +3,26 @@
  */
 
 import { HttpClientModule } from "@angular/common/http";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { JunctionManager } from "./junction-manager";
 import { SplineFactory } from "../services/spline/spline.factory";
 import { Vector3 } from "three";
 import { TvPosTheta } from "../map/models/tv-pos-theta";
 import { Maths } from "../utils/maths";
+import { EventServiceProvider } from "app/listeners/event-service-provider";
+import { MapService } from "app/services/map/map.service";
+import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
+import { SplineManager } from "./spline-manager";
+import { disableMeshBuilding } from "app/map/builders/od-builder-config";
 
 describe( 'JunctionManager', () => {
 
-	let manager: JunctionManager;
+	let splineTestHelper: SplineTestHelper;
+	let eventServiceProvider: EventServiceProvider;
+	let mapService: MapService;
+	let junctionManager: JunctionManager;
+	let splineManager: SplineManager;
 
 	beforeEach( () => {
 
@@ -22,11 +31,18 @@ describe( 'JunctionManager', () => {
 			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
-		manager = TestBed.inject( JunctionManager );
+		splineTestHelper = TestBed.inject( SplineTestHelper );
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		mapService = TestBed.inject( MapService );
+		junctionManager = TestBed.inject( JunctionManager );
+		splineManager = TestBed.inject( SplineManager );
+
+		disableMeshBuilding();
+
 	} );
 
 	it( 'should create correctly', () => {
-		expect( manager ).toBeTruthy();
+		expect( junctionManager ).toBeTruthy();
 	} );
 
 	it( 'should give correct output for getCoordAtOffset', () => {
@@ -34,15 +50,15 @@ describe( 'JunctionManager', () => {
 		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 200 );
 		const splineB = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 200, 90 );
 
-		manager.splineBuilder.buildSpline( splineA );
-		manager.splineBuilder.buildSpline( splineB );
+		junctionManager.splineBuilder.buildSpline( splineA );
+		junctionManager.splineBuilder.buildSpline( splineB );
 
 		const coords: TvPosTheta[] = [];
 
-		const entryA = manager.splineService.getCoordAtOffset( splineA, 90 );
-		const exitA = manager.splineService.getCoordAtOffset( splineA, 110 );
-		const entryB = manager.splineService.getCoordAtOffset( splineB, 90 );
-		const exitB = manager.splineService.getCoordAtOffset( splineB, 110 );
+		const entryA = junctionManager.splineService.getCoordAtOffset( splineA, 90 );
+		const exitA = junctionManager.splineService.getCoordAtOffset( splineA, 110 );
+		const entryB = junctionManager.splineService.getCoordAtOffset( splineB, 90 );
+		const exitB = junctionManager.splineService.getCoordAtOffset( splineB, 110 );
 
 		coords.push( entryA );
 		coords.push( exitA );
@@ -87,5 +103,162 @@ describe( 'JunctionManager', () => {
 		expect( distance135 ).toBeCloseTo( 20.7 );
 
 	} );
+
+	it( 'should convert 2-spline-junction into 1 intersection', fakeAsync( () => {
+
+		eventServiceProvider.init();
+
+		splineTestHelper.createXJunctionWithTwoRoads( false );
+
+		tick( 1000 );
+
+		const intersections = junctionManager.getJunctionIntersections( mapService.findJunction( 1 ) );
+
+		expect( intersections.length ).toBe( 1 );
+
+	} ) );
+
+	it( 'should convert 3-spline-junction into 3 intersections', fakeAsync( () => {
+
+		eventServiceProvider.init();
+
+		splineTestHelper.createTJunctionWith3Roads( false );
+
+		tick( 1000 );
+
+		const intersections = junctionManager.getJunctionIntersections( mapService.findJunction( 1 ) );
+
+		expect( intersections.length ).toBe( 3 );
+
+	} ) );
+
+	it( 'should convert 4-spline-junction into 6 intersections', fakeAsync( () => {
+
+		eventServiceProvider.init();
+
+		splineTestHelper.createXJunctionWithFourRoads( false );
+
+		tick( 1000 );
+
+		const intersections = junctionManager.getJunctionIntersections( mapService.findJunction( 1 ) );
+
+		expect( intersections.length ).toBe( 6 );
+
+	} ) );
+
+	it( 'should detect no new intersections when spline is updated', fakeAsync( () => {
+
+		eventServiceProvider.init();
+
+		splineTestHelper.createXJunctionWithTwoRoads( false );
+
+		tick( 1000 );
+
+		const spline = mapService.splines[ 0 ];
+
+		const newIntersections = junctionManager.findNewIntersections( spline );
+
+		expect( newIntersections.length ).toBe( 0 );
+
+	} ) );
+
+	it( 'should detect new intersections when new spline is added into junction', fakeAsync( () => {
+
+		eventServiceProvider.init();
+
+		splineTestHelper.createXJunctionWithTwoRoads( false );
+
+		tick( 1000 );
+
+		const spline = SplineFactory.createStraight( new Vector3( -100, -100, 0 ), 200, 45 );
+
+		splineManager.addSpline( spline, false );
+
+		const newIntersections = junctionManager.findNewIntersections( spline );
+
+		expect( newIntersections.length ).toBe( 2 );
+
+	} ) );
+
+	it( 'should remove old junction and detect new intersction', fakeAsync( () => {
+
+		eventServiceProvider.init();
+
+		splineTestHelper.createXJunctionWithTwoRoads( false );
+
+		tick( 1000 );
+
+		// create new vertical spline
+		const spline = SplineFactory.createStraight( new Vector3( 500, -100, 0 ), 200, 90 );
+		splineManager.addSpline( spline, false );
+
+		// then move old vertical spline
+		mapService.splines[ 1 ].controlPoints.forEach( cp => cp.position.x += 500 );
+
+		splineManager.updateSpline( mapService.splines[ 1 ], false );
+
+		expect( junctionManager.findNewIntersections( spline ).length ).toBe( 1 );
+
+		expect( junctionManager.findNewIntersections( mapService.splines[ 1 ] ).length ).toBe( 1 );
+
+	} ) );
+
+	xit( 'should categorise junctions correctly for x-junction', fakeAsync( () => {
+
+		// not in use
+
+		eventServiceProvider.init();
+
+		splineTestHelper.createXJunctionWithTwoRoads( false );
+
+		tick( 1000 );
+
+		const spline = SplineFactory.createStraight( new Vector3( 50, -100, 0 ), 200, 90 );
+
+		splineManager.addSpline( spline, false );
+
+		const junctions = junctionManager.splineService.getJunctions( spline );
+		const intersections = junctionManager.splineService.findIntersections( spline );
+		const result = junctionManager.categorizeJunctions( junctions, intersections );
+
+		expect( result.junctionsToCreate.length ).toBe( 1 );
+		expect( result.junctionsToUpdate.length ).toBe( 0 );
+		expect( result.junctionsToRemove.length ).toBe( 0 );
+
+		junctionManager.updateJunctions( spline );
+
+		{
+			const horizontal = mapService.splines[ 0 ];
+			const junctions = junctionManager.splineService.getJunctions( horizontal );
+			const intersections = junctionManager.splineService.findIntersections( horizontal );
+			const result = junctionManager.categorizeJunctions( junctions, intersections );
+			expect( result.junctionsToCreate.length ).toBe( 0 );
+			expect( result.junctionsToUpdate.length ).toBe( 2 );
+			expect( result.junctionsToRemove.length ).toBe( 0 );
+		}
+
+	} ) );
+
+	xit( 'should categorise junctions correctly for t-junction', fakeAsync( () => {
+
+		// not in use
+
+		eventServiceProvider.init();
+
+		splineTestHelper.createTJunctionWith3Roads( false );
+
+		tick( 1000 );
+
+		const spline = mapService.splines[ 0 ];
+
+		const junctions = junctionManager.splineService.getJunctions( spline );
+		const intersections = junctionManager.splineService.findIntersections( spline );
+		const result = junctionManager.categorizeJunctions( junctions, intersections );
+
+		expect( result.junctionsToCreate.length ).toBe( 0 );
+		expect( result.junctionsToUpdate.length ).toBe( 1 );
+		expect( result.junctionsToRemove.length ).toBe( 0 );
+
+	} ) );
 
 } );

@@ -18,6 +18,8 @@ import { EntityManager } from "../scenario/entity/entity.manager";
 } )
 export class EventServiceProvider {
 
+	private static initialized = false;
+
 	constructor (
 		private roadEventListener: RoadEventListener,
 		private trafficManager: TrafficManager,
@@ -33,6 +35,8 @@ export class EventServiceProvider {
 
 	init () {
 
+		if ( EventServiceProvider.initialized ) return;
+
 		this.roadEventListener.init();
 		this.trafficManager.init();
 		this.spineEventListener.init();
@@ -43,6 +47,7 @@ export class EventServiceProvider {
 		this.mapManager.init();
 		this.entityManager.init();
 
+		EventServiceProvider.initialized = true;
 	}
 
 }

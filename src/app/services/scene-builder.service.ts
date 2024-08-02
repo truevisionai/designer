@@ -28,6 +28,7 @@ import { TvJunctionBoundaryFactory } from "../map/junction-boundary/tv-junction-
 import { ConnectionFactory } from 'app/factories/connection.factory';
 import { SplineUtils } from "../utils/spline.utils";
 import { LinkUtils } from 'app/utils/link.utils';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -73,7 +74,7 @@ export class SceneBuilderService {
 			surface.mesh = this.surfaceBuilder.build( surface );
 
 			if ( !surface.mesh ) {
-				TvConsole.error( 'Error building surface mesh for surface id ' + surface.uuid );
+				Log.error( 'Error building surface mesh for surface id ' + surface.uuid );
 				return;
 			}
 
@@ -120,6 +121,8 @@ export class SceneBuilderService {
 
 		}
 
+		junction.boundingBox = this.junctionBuilder.buildBoundingBox( junction );
+
 		junction.mesh = this.junctionBuilder.build( junction );
 
 		map.gameObject?.add( junction.mesh );
@@ -134,7 +137,7 @@ export class SceneBuilderService {
 
 		if ( !spline ) {
 			map.removeRoad( road );
-			TvConsole.error( 'Road spline not found for road id ' + road.id );
+			Log.error( 'Road spline not found for road id ' + road.id );
 			return;
 		}
 
@@ -161,7 +164,7 @@ export class SceneBuilderService {
 		} else {
 
 			map.removeRoad( road );
-			TvConsole.error( 'Road spline not found for road id ' + road.id );
+			Log.error( 'Road spline not found for road id ' + road.id );
 			return;
 
 		}

@@ -81,7 +81,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		readXmlArray( openDRIVE?.junction, ( xml ) => {
 
-			this.map.addJunctionInstance( this.parseJunction( xml ) );
+			this.map.addJunction( this.parseJunction( xml ) );
 
 		} );
 
@@ -791,11 +791,8 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const link = new TvJunctionLaneLink( fromLane, toLane );
 
-		link.incomingRoad = connection.incomingRoad;
-		link.incomingContactPoint = incomingContactPoint;
-
 		link.connectingRoad = connection.connectingRoad;
-		link.connectingContactPoint = connection.contactPoint;
+		link.incomingRoad = connection.incomingRoad;
 
 		return link;
 	}

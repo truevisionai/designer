@@ -131,13 +131,16 @@ export class TvRoad {
 		return this.type.length > 0;
 	}
 
+	getLength (): number { return this.length; }
+
 	toString () {
 
 		if ( this.isJunction ) {
 			return `ConnectingRoad:${ this.id } Junction:${ this.junctionId } Successor:${ this.successor?.element.id } Predecessor:${ this.predecessor?.element.id }`;
 		}
 
-		return `Road:${ this.id } Successor:${ this.successor?.type }:${ this.successor?.element.id } Predecessor:${ this.predecessor?.type }:${ this.predecessor?.element.id }`;
+		// return `Road:${ this.id } Successor:${ this.successor?.type }:${ this.successor?.element.id } Predecessor:${ this.predecessor?.type }:${ this.predecessor?.element.id }`;
+		return `Road:${ this.id }`;
 
 	}
 

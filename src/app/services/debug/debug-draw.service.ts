@@ -81,17 +81,25 @@ export class DebugDrawService {
 
 	}
 
-	drawBox2D ( box: Box2, color = COLOR.WHITE ) {
+	drawBox2D ( box: Box2, color = COLOR.WHITE, opacity = 1 ) {
+
+		const mesh = this.createBox2D( box, color, opacity );
+
+		this.group.add( mesh );
+
+	}
+
+	createBox2D ( box: Box2, color = COLOR.WHITE, opacity = 1 ) {
 
 		const geometry = new PlaneGeometry( box.getSize( new Vector2() ).x, box.getSize( new Vector2() ).y );
 
-		const material = new MeshBasicMaterial( { color: color, side: 2 } );
+		const material = new MeshBasicMaterial( { color: color, side: 2, transparent: true, opacity: opacity } );
 
 		const mesh = new Mesh( geometry, material );
 
 		mesh.position.set( box.getCenter( new Vector2() ).x, box.getCenter( new Vector2() ).y, 0 );
 
-		this.group.add( mesh );
+		return mesh;
 
 	}
 

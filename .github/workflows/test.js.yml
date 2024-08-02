@@ -2,9 +2,9 @@ name: tests
 
 on:
   push:
-    branches: [ "production" ]
+    branches: [ "production", "master" ]
   pull_request:
-    branches: [ "production" ]
+    branches: [ "production", "master" ]
 jobs:
   tests:
     runs-on: ubuntu-latest

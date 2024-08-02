@@ -394,7 +394,8 @@ export class IntersectionService {
 
 	private intersectsSplineBox ( splineA: AbstractSpline, splineB: AbstractSpline ): boolean {
 
-		return this.intersectsBox( splineA.boundingBox, splineB.boundingBox );
+		return false;
+		// return this.intersectsBox( splineA.boundingBox, splineB.boundingBox );
 
 	}
 

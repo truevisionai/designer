@@ -4,6 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import {
+	Box2,
 	BufferAttribute,
 	BufferGeometry,
 	DoubleSide,
@@ -32,6 +33,7 @@ import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUti
 import { SplineBuilder } from '../spline/spline.builder';
 import { SplineType } from 'app/core/shapes/abstract-spline';
 import { TvMaterialService } from 'app/graphics/material/tv-material.service';
+import { Log } from 'app/core/utils/log';
 
 const ASPHALT_GUID = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
@@ -47,6 +49,23 @@ export class JunctionBuilder {
 		public splineBuilder: SplineBuilder,
 		public materialService: TvMaterialService,
 	) {
+	}
+
+	buildBoundingBox ( junction: TvJunction ): Box2 {
+
+		const points = this.boundaryBuilder.convertBoundaryToPositions( junction.boundary );
+
+		if ( points.length < 2 ) {
+			Log.error( 'JunctionBuilder.buildBoundingBox: Invalid boundary points', junction.toString() );
+			return new Box2();
+		}
+
+		const box = new Box2();
+
+		box.setFromPoints( points.map( p => new Vector2( p.x, p.y ) ) );
+
+		return box;
+
 	}
 
 	build ( junction: TvJunction ) {

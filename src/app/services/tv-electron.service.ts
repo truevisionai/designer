@@ -11,6 +11,10 @@ declare const command: any;
 @Injectable( { providedIn: 'root' } )
 export class TvElectronService {
 
+	static get isElectronApp (): boolean {
+		return !!window.navigator.userAgent.match( /Electron/ );
+	}
+
 	constructor () {
 		if ( this.isElectronApp ) {
 			this._electron = window.require( 'electron' );

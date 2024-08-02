@@ -92,8 +92,6 @@ export class RoadManager {
 
 			this.mapService.map.removeSpline( road.spline );
 
-			road.junction?.removeConnectingRoad( road );
-
 		} else {
 
 			road.spline?.segmentMap.remove( road );
@@ -120,7 +118,15 @@ export class RoadManager {
 
 		this.mapService.map.gameObject.remove( road.gameObject );
 
-		this.mapService.map.removeRoad( road );
+		if ( this.mapService.hasRoad( road ) ) {
+
+			this.mapService.map.removeRoad( road );
+
+		} else {
+
+			Log.error( 'Road not found in map', road.toString() );
+
+		}
 
 	}
 

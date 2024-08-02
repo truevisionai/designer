@@ -1,11 +1,12 @@
 import { EventServiceProvider } from "../listeners/event-service-provider";
 import { SplineTestHelper } from "../services/spline/spline-test-helper.service";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { RoadToolHelper } from "../tools/road/road-tool-helper.service";
 import { JunctionUtils } from "./junction.utils";
 import { JunctionService } from "../services/junction/junction.service";
+import { disableMeshBuilding } from "app/map/builders/od-builder-config";
 
 describe( 'JunctionUtils', () => {
 
@@ -26,11 +27,15 @@ describe( 'JunctionUtils', () => {
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		eventServiceProvider.init();
 
+		disableMeshBuilding();
+
 	} );
 
-	it( 'should give successors correctly', () => {
+	it( 'should give successors correctly', fakeAsync( () => {
 
 		splineTestHelper.addDefaultJunction();
+
+		tick( 1000 );
 
 		const junction = junctionService.mapService.findJunction( 1 );
 
@@ -59,7 +64,7 @@ describe( 'JunctionUtils', () => {
 		expect( JunctionUtils.findSuccessors( outgoingRoad, outgoingLaneSection.lanes.get( -2 ), outgoingRoad.predecessor ).length ).toBe( 1 );
 
 
-	} );
+	} ) );
 
 	// it( 'should work with router graph', () => {
 

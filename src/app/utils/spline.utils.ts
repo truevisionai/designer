@@ -1,14 +1,30 @@
-import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { AbstractSpline, NewSegment } from "app/core/shapes/abstract-spline";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Log } from "../core/utils/log";
-import { DuplicateKeyException, DuplicateModelException, InvalidArgumentException } from "app/exceptions/exceptions";
+import {
+	DuplicateKeyException,
+	DuplicateModelException,
+	InvalidArgumentException,
+	ModelNotFoundException
+} from "app/exceptions/exceptions";
+import { RoadUtils } from "./road.utils";
 
 export class SplineUtils {
 
+	static updateSegment ( spline: AbstractSpline, sOffset: number, segment: NewSegment ): void {
+
+		this.removeSegment( spline, segment );
+
+		this.addSegment( spline, sOffset, segment );
+
+	}
+
 	static removeSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction ): boolean {
 
-		if ( !this.hasSegment( spline, segment ) ) return false;
+		if ( !this.hasSegment( spline, segment ) ) {
+			throw new ModelNotFoundException( `Segment not found: ${ segment?.toString() }` );
+		}
 
 		spline.segmentMap.remove( segment );
 
@@ -165,6 +181,49 @@ export class SplineUtils {
 		const predecessorRoad = road.predecessor.element as TvRoad;
 
 		return predecessorRoad.spline;
+
+	}
+
+	static areLinksCorrect ( spline: AbstractSpline ): boolean {
+
+		const segments = spline.segmentMap.toArray();
+
+		if ( segments.length == 0 ) return true;
+
+		if ( segments.length == 1 ) return true;
+
+		return segments.every( ( segment, index ) => {
+
+			const isFirst = index == 0;
+			const isLast = index == segments.length - 1;
+
+			if ( segment instanceof TvRoad ) {
+
+				let nextCorrect: boolean
+				let prevCorrect: boolean;
+
+				if ( !isLast ) {
+					nextCorrect = RoadUtils.isSuccessor( segment, segments[ index + 1 ] );
+				} else {
+					nextCorrect = true;
+				}
+
+				if ( !isFirst ) {
+					prevCorrect = RoadUtils.isPredecessor( segment, segments[ index - 1 ] );
+				} else {
+					prevCorrect = true;
+				}
+
+				return nextCorrect && prevCorrect;
+			}
+
+			if ( segment instanceof TvJunction ) {
+				return true;
+			}
+
+			return false;
+
+		} )
 
 	}
 }

@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { MapService } from "../map/map.service";
-import { SplineService } from "./spline.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Maths } from "app/utils/maths";
 import { RoadManager } from "app/managers/road/road-manager";
@@ -10,6 +9,8 @@ import { Log } from "app/core/utils/log";
 import { RoadUtils } from "app/utils/road.utils";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { SplineUtils } from "app/utils/spline.utils";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
+import { TvRoadLinkType } from "app/map/models/tv-road-link";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +24,6 @@ export class SplineFixerService {
 	constructor (
 		private mapService: MapService,
 		private roadFactory: RoadFactory,
-		private splineService: SplineService,
 		private roadManager: RoadManager,
 	) {
 	}
@@ -33,6 +33,11 @@ export class SplineFixerService {
 		if ( !this.enabled ) return;
 
 		if ( spline.controlPoints.length < 2 ) return;
+
+		if ( !SplineUtils.areLinksCorrect( spline ) ) {
+			console.log( "Links are not correct", spline );
+			Log.error( "Links are not correct", spline?.toString() );
+		}
 
 		this.fixMinSegmentCount( spline );
 
@@ -44,6 +49,7 @@ export class SplineFixerService {
 
 		// this.fixUnLinkedSegments( spline );
 
+		this.fixInternalLinks( spline );
 	}
 
 	private fixMinSegmentCount ( spline: AbstractSpline ) {
@@ -181,5 +187,69 @@ export class SplineFixerService {
 
 	}
 
+	public fixInternalLinks ( spline: AbstractSpline, setNull = false ) {
 
+		// TODO: we need to check
+		// const predecessor = SplineUtils.findPredecessor( spline );
+		// const successor = SplineUtils.findSuccessor( spline );
+
+		spline.segmentMap.forEach( ( segment, sOffset ) => {
+
+			const prevSegment = spline.segmentMap.getPrevious( segment );
+			const nextSegment = spline.segmentMap.getNext( segment );
+
+			if ( segment instanceof TvRoad ) {
+
+				if ( nextSegment instanceof TvRoad ) {
+
+					segment.setSuccessorRoad( nextSegment, TvContactPoint.START );
+
+				} else if ( nextSegment instanceof TvJunction ) {
+
+					segment.setSuccessor( TvRoadLinkType.JUNCTION, nextSegment );
+
+				} else {
+
+					if ( setNull ) segment.successor = null;
+
+				}
+
+				if ( prevSegment instanceof TvRoad ) {
+
+					segment.setPredecessorRoad( prevSegment, TvContactPoint.END );
+
+				} else if ( prevSegment instanceof TvJunction ) {
+
+					segment.setPredecessor( TvRoadLinkType.JUNCTION, prevSegment );
+
+				} else {
+
+					if ( setNull ) segment.predecessor = null;
+
+				}
+
+			}
+
+		} );
+
+	}
+
+	public fixExternalLinks ( spline: AbstractSpline ) {
+
+		const firstSegment = spline.segmentMap.getFirst();
+		const lastSegment = spline.segmentMap.getLast();
+
+		if ( firstSegment instanceof TvRoad ) {
+			if ( firstSegment.predecessor?.element instanceof TvRoad ) {
+				RoadUtils.linkPredecessor( firstSegment, firstSegment.predecessor.element, firstSegment.predecessor.contactPoint );
+			}
+		}
+
+		if ( lastSegment instanceof TvRoad ) {
+			if ( lastSegment.successor?.element instanceof TvRoad ) {
+				RoadUtils.linkSuccessor( lastSegment, lastSegment.successor.element, lastSegment.successor.contactPoint );
+			}
+		}
+
+	}
 }

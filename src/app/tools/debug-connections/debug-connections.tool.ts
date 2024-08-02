@@ -17,6 +17,7 @@ import { Vector2 } from "three";
 import { JunctionUtils } from "../../utils/junction.utils";
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -71,6 +72,19 @@ export class DebugConnectionTool extends BaseTool<any> {
 			position.z += 0.01;
 
 			DebugDrawService.instance.drawText( road.id.toString(), position, 2, COLOR.RED );
+
+		} );
+
+		this.tool.mapService.junctions.forEach( junction => {
+
+			if ( !junction.centroid ) {
+				Log.error( 'Junction position is not set', junction?.toString() );
+				return;
+			}
+
+			DebugDrawService.instance.drawText( 'J:' + junction.id.toString(), junction.centroid, 2, COLOR.RED );
+
+			DebugDrawService.instance.drawBox2D( junction.boundingBox, COLOR.WHITE, 0.5 );
 
 		} );
 

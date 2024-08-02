@@ -187,7 +187,11 @@ export class TvMap {
 		this.splines.splice( 0, this.splines.length );
 	}
 
-	addJunctionInstance ( junction: TvJunction ) {
+	addJunction ( junction: TvJunction ) {
+
+		if ( this.junctions.has( junction.id ) ) {
+			throw new DuplicateKeyException( `Junction with id ${ junction.id } already exists` );
+		}
 
 		this.junctions.set( junction.id, junction );
 

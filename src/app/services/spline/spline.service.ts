@@ -27,6 +27,8 @@ import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
 import { SimpleControlPoint } from 'app/objects/simple-control-point';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { DebugDrawService } from '../debug/debug-draw.service';
+import { RoadFactory } from 'app/factories/road-factory.service';
+import { RoadService } from '../road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -35,6 +37,8 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	constructor (
 		public mapService: MapService,
+		public roadFactory: RoadFactory,
+		public roadService: RoadService,
 	) {
 		super();
 	}
@@ -49,7 +53,24 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
+	findById ( id: number ) {
+
+		return this.mapService.findSplineById( id );
+
+	}
+
 	add ( spline: AbstractSpline ) {
+
+		if ( spline.segmentMap.length == 0 ) {
+
+			const road = this.roadFactory.createDefaultRoad();
+
+			road.spline = spline;
+
+			spline.segmentMap.set( 0, road );
+
+			this.mapService.addRoad( road );
+		}
 
 		this.mapService.map.addSpline( spline );
 
@@ -194,7 +215,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		let intersections: SplineIntersection[] = [];
 		let startPoint: Vector2 = null;
 		let endPoint: Vector2 = null;
-		let lastIntersection = false;
+		let isIntersecting = false;
 		let currentIntersectionBox = new Box2(); // To track the intersection area
 
 		function getAveragePoint ( box: Box2 ) {
@@ -217,7 +238,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		if ( splineA == splineB ) return intersections;
 
-		if ( !this.intersectsSplineBox( splineA, splineB ) ) return intersections;
+		if ( !splineA.boundingBox.intersectsBox( splineB.boundingBox ) ) return intersections;
 
 		for ( let i = 0; i < splineA.centerPoints.length - 1; i++ ) {
 
@@ -248,7 +269,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 					const intersection = boxA.clone().intersect( boxB );
 
-					if ( !lastIntersection ) {
+					if ( !isIntersecting ) {
 
 						startPoint = getAveragePoint( intersection );
 
@@ -262,7 +283,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 					endPoint = getAveragePoint( intersection );
 
-					lastIntersection = true;
+					isIntersecting = true;
 
 					currentIntersection = true;
 
@@ -270,7 +291,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 			}
 
-			if ( lastIntersection && !currentIntersection ) {
+			if ( isIntersecting && !currentIntersection ) {
 
 				const average = getAveragePoint( currentIntersectionBox )
 				const center = new Vector3( average.x, average.y, 0 );
@@ -282,7 +303,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 				intersections.push( intersection );
 
-				lastIntersection = false; // Reset intersection tracking
+				isIntersecting = false; // Reset intersection tracking
 
 				currentIntersectionBox.makeEmpty(); // Reset the intersection box
 
@@ -290,7 +311,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		}
 
-		if ( lastIntersection ) {
+		if ( isIntersecting ) {
 
 			const average = getAveragePoint( currentIntersectionBox )
 			const center = new Vector3( average.x, average.y, 0 );
@@ -304,16 +325,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		}
 
-		if ( intersections.length > 0 ) {
-
-			intersections.forEach( intersection => {
-
-				this.computeOffsets( intersection );
-
-			} )
-
-
-		}
+		intersections.forEach( intersection => this.computeOffsets( intersection ) );
 
 		return intersections;
 	}
@@ -350,6 +362,23 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		intersection.otherStart = Math.max( bMin.s - BUFFER, 0 );
 		intersection.otherEnd = Math.min( bMax.s + BUFFER, intersection.otherSpline.getLength() );
 
+		// TEMP: hack to fix the offset issue at ends
+
+		if ( intersection.otherStart == 0 ) {
+			intersection.otherEnd += 5;
+		}
+
+		if ( intersection.splineStart == 0 ) {
+			intersection.splineEnd += 5;
+		}
+
+		if ( intersection.otherEnd == intersection.otherSpline.getLength() ) {
+			intersection.otherStart -= 5;
+		}
+
+		if ( intersection.splineEnd == intersection.spline.getLength() ) {
+			intersection.splineStart -= 5;
+		}
 	}
 
 	findClosestIntersection ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): SplineIntersection | null {
@@ -493,7 +522,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	private intersectsSplineBox ( splineA: AbstractSpline, splineB: AbstractSpline ): boolean {
 
-		return this.intersectsBox( splineA.boundingBox, splineB.boundingBox );
+		return this.intersectsBox( splineA.depBoundingBox, splineB.depBoundingBox );
 
 	}
 

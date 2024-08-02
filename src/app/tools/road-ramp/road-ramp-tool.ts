@@ -281,29 +281,21 @@ export class RoadRampTool extends BaseTool<any> {
 
 	private addRampRoad ( spline: AbstractSpline ): void {
 
-		const startCoord = this.helper.roadService.findLaneCoord( spline.getFirstPoint()?.position );
-
-		let road: TvRoad
-
 		if ( spline.segmentMap.length === 0 ) {
 
-			this.helper.roadFactory.createNewRoad();
+			throw new Error( 'Ramp road should have atleast one segment' );
 
-			road.spline = spline;
+			// this.helper.roadFactory.createNewRoad();
 
-			this.helper.addLaneSection( startCoord, null, road );
+			// road.spline = spline;
 
-			this.adjustSpline( road, spline );
+			// this.helper.addLaneSection( startCoord, null, road );
 
-			road.spline.segmentMap.set( 0, road );
+			// this.adjustSpline( road, spline );
 
-		} else {
-
-			road = spline.segmentMap.getFirst() as TvRoad;
+			// road.spline.segmentMap.set( 0, road );
 
 		}
-
-		this.helper.mapService.map.addRoad( road );
 
 		this.helper.splineService.add( spline );
 

@@ -3,7 +3,7 @@
  */
 
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
-import { Box3, MathUtils, Vector3 } from 'three';
+import { Box2, Box3, MathUtils, Vector3 } from 'three';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
@@ -23,9 +23,16 @@ export abstract class AbstractSpline {
 
 	public abstract type: SplineType;
 
+	public readonly id: number;
+
 	public uuid: string;
 
-	public boundingBox: Box3;
+	/**
+	 * @deprecated dont use this property
+	 */
+	public depBoundingBox: Box3;
+
+	public boundingBox: Box2;
 
 	public controlPoints: AbstractControlPoint[] = [];
 
@@ -45,13 +52,23 @@ export abstract class AbstractSpline {
 
 	public tension: number;
 
+	private static idCounter = 1;
+
+	static reset () {
+		this.idCounter = 1;
+	}
+
 	protected constructor ( closed?: boolean, tension?: number ) {
+
+		this.id = AbstractSpline.idCounter++;
 
 		this.uuid = MathUtils.generateUUID();
 
 		this.closed = closed || false;
 
 		this.tension = tension || 0.5;
+
+		this.boundingBox = new Box2();
 
 	}
 
@@ -89,7 +106,7 @@ export abstract class AbstractSpline {
 	}
 
 	toString () {
-		return `Spline Type:${ this.type } Segments:${ this.segmentMap.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
+		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segmentMap.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
 	}
 
 }

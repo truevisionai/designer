@@ -336,6 +336,20 @@ export class RoadFactory {
 
 	}
 
+	createFakeRoad ( name?: string, length?: number, junction?: TvJunction ): TvRoad {
+
+		const roadId = -1;
+
+		const roadName = name || `Road${ roadId }`;
+
+		const road = new TvRoad( roadName, length || 0, roadId, junction );
+
+		road.sStart = 0;
+
+		return road;
+
+	}
+
 	createConnectingRoad ( junction: TvJunction, entry: TvLaneCoord, exit: TvLaneCoord ): TvRoad {
 
 		const road = this.createNewRoad();

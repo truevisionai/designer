@@ -3,7 +3,7 @@
  */
 
 import { TurnType, TvLaneSide, TvSide } from 'app/map/models/tv-common';
-import { MathUtils, Vector2, Vector3 } from 'three';
+import { Box2, Box3, MathUtils, Vector2, Vector3 } from 'three';
 import { TvPosTheta } from "../map/models/tv-pos-theta";
 
 export class Maths {
@@ -765,5 +765,15 @@ export class Maths {
 			return TurnType.RIGHT;
 
 		}
+	}
+
+	static convertToBox3d ( box: Box2 ) {
+
+		// Convert Box2 to Box3
+		let min = new Vector3( box.min.x, box.min.y, 0 );
+		let max = new Vector3( box.max.x, box.max.y, 0 );
+
+		return new Box3( min, max );
+
 	}
 }

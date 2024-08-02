@@ -15,7 +15,7 @@ export class ConnectionService {
 	addConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
 
 		if ( junction.connections.has( connection.id ) ) {
-			Log.error( 'Connection already exists', connection );
+			Log.error( 'Connection already exists', connection?.toString() );
 			return;
 		}
 
@@ -28,7 +28,7 @@ export class ConnectionService {
 	removeConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
 
 		if ( !junction.connections.has( connection.id ) ) {
-			Log.error( 'Connection does not exist', connection );
+			Log.error( 'Connection does not exist', connection?.toString() );
 			return;
 		}
 

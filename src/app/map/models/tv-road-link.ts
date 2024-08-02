@@ -188,4 +188,9 @@ export class TvRoadLink {
 
 	}
 
+	matches ( link: TvRoadLink ): boolean {
+
+		return this.element === link.element && this.contactPoint === link.contactPoint;
+
+	}
 }

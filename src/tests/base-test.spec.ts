@@ -7,6 +7,88 @@ import { RoadNode } from "app/objects/road-node";
 import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
 import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { SplineControlPoint } from "app/objects/spline-control-point";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { SplineUtils } from "../app/utils/spline.utils";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { RoadUtils } from "app/utils/road.utils";
+import { MapService } from "app/services/map/map.service";
+import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
+import { Maths } from "app/utils/maths";
+
+function formatMessage ( road: TvRoad, link: TvRoadLink ) {
+
+	return 'Invalid Distance ' + road.toString() + ' ' + link.toString();
+
+}
+
+export function expectCorrectSegmentOrder ( spline: AbstractSpline ) {
+
+	expect( SplineUtils.areLinksCorrect( spline ) ).toBe( true );
+
+}
+
+export function expectLinkDistanceToBeZero ( road: TvRoad ) {
+
+	if ( road.successor ) {
+
+		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
+
+		expect( distance ).toBeCloseTo( 0, Maths.Epsilon, 'Successor' + formatMessage( road, road.successor ) );
+	}
+
+	if ( road.predecessor ) {
+
+		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor );
+
+		expect( distance ).toBeCloseTo( 0, Maths.Epsilon, 'Predecessor' + formatMessage( road, road.predecessor ) );
+
+	}
+
+}
+
+export function expectToHaveJunctionConnections ( road: TvRoad ) {
+
+	if ( road.successor?.element instanceof TvJunction ) {
+
+		const hasConnection = road.successor.element.getIncomingRoads().includes( road );
+
+		expect( hasConnection ).toBe( true, 'Successor' + formatMessage( road, road.successor ) );
+
+	}
+
+	if ( road.predecessor?.element instanceof TvJunction ) {
+
+		const hasConnection = road.predecessor.element.getIncomingRoads().includes( road );
+
+		expect( hasConnection ).toBe( true, 'Predecessor' + formatMessage( road, road.predecessor ) );
+
+	}
+}
+
+export function expectValidLinks ( road: TvRoad ) {
+
+	expectLinkDistanceToBeZero( road );
+
+	expectToHaveJunctionConnections( road );
+
+}
+
+export function expectValidMap ( mapService: MapService ) {
+
+	mapService.nonJunctionRoads.forEach( road => {
+
+		expectValidLinks( road );
+
+	} );
+
+	mapService.nonJunctionSplines.forEach( spline => {
+
+		expectCorrectSegmentOrder( spline );
+
+	} );
+
+}
 
 export class BaseTest {
 

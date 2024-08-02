@@ -518,10 +518,7 @@ export class DepConnectionFactory {
 		const link = new TvJunctionLaneLink( from, to );
 
 		link.incomingRoad = incoming.road;
-		link.incomingContactPoint = incoming.contact;
-
 		link.connectingRoad = connectingRoad;
-		link.connectingContactPoint = TvContactPoint.START;
 
 		return link;
 

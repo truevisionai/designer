@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { EventServiceProvider } from "../../app/listeners/event-service-provider";
 import { HttpClientModule } from "@angular/common/http";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
@@ -6,8 +6,9 @@ import { ManeuverTool } from "../../app/tools/maneuver/maneuver-tool";
 import { ManeuverToolHelper } from "../../app/tools/maneuver/maneuver-tool-helper.service";
 import { SplineTestHelper } from "../../app/services/spline/spline-test-helper.service";
 import { JunctionUtils } from "../../app/utils/junction.utils";
+import { disableMeshBuilding } from "app/map/builders/od-builder-config";
 
-xdescribe( 'ManeuverTool', () => {
+describe( 'ManeuverTool', () => {
 
 	let tool: ManeuverTool;
 	let eventServiceProvider: EventServiceProvider;
@@ -24,6 +25,8 @@ xdescribe( 'ManeuverTool', () => {
 		splineTestHelper = TestBed.inject( SplineTestHelper );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 
+		disableMeshBuilding();
+
 	} );
 
 	it( 'should create maneuver tool correctly', () => {
@@ -32,7 +35,7 @@ xdescribe( 'ManeuverTool', () => {
 
 	} )
 
-	it( 'should remove and add connection correctly', () => {
+	it( 'should remove and add connection correctly', fakeAsync( () => {
 
 		// NOTE: this test works but intermittently fails
 
@@ -43,6 +46,8 @@ xdescribe( 'ManeuverTool', () => {
 		tool.enable();
 
 		splineTestHelper.addDefaultJunction();
+
+		tick( 1000 );
 
 		const leftRoad = tool.helper.junctionService.mapService.findRoad( 1 );
 		const rightRoad = tool.helper.junctionService.mapService.findRoad( 4 );
@@ -75,7 +80,7 @@ xdescribe( 'ManeuverTool', () => {
 		expect( JunctionUtils.findLinksFrom( junction, rightRoad, leftRoad ).length ).toBe( 1 );
 		expect( tool.helper.junctionService.mapService.findRoad( leftToRightConnection.connectingRoad.id ) ).toBeDefined();
 
-	} );
+	} ) );
 
 
 } );

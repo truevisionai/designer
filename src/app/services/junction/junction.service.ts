@@ -106,7 +106,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	addJunction ( junction: TvJunction ) {
 
-		this.mapService.map.addJunctionInstance( junction );
+		this.mapService.map.addJunction( junction );
 
 		MapEvents.junctionCreated.emit( new JunctionCreatedEvent( junction ) );
 

@@ -1,8 +1,83 @@
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
 import { TvRoad } from "app/map/models/tv-road.model";
+import { TvJunction } from "../map/models/junctions/tv-junction";
+import { Vector2 } from "three";
 
 export class RoadUtils {
+
+	static distanceFromSuccessor ( road: TvRoad, link: TvRoadLink ): number {
+
+		const end = road.getEndPosTheta();
+
+		if ( link.element instanceof TvRoad ) {
+
+			const position = link.contactPoint === TvContactPoint.START ? link.element.getStartPosTheta() : link.element.getEndPosTheta();
+
+			return end.distanceTo( position );
+
+		} else if ( link.element instanceof TvJunction ) {
+
+			const point = new Vector2( end.position.x, end.position.y );
+
+			return link.element.boundingBox.distanceToPoint( point );
+
+		}
+
+	}
+
+	static distanceFromPredecessor ( road: TvRoad, link: TvRoadLink ): number {
+
+		const start = road.getStartPosTheta();
+
+		if ( link.element instanceof TvRoad ) {
+
+			const position = link.contactPoint === TvContactPoint.START ? link.element.getStartPosTheta() : link.element.getEndPosTheta();
+
+			return start.distanceTo( position );
+
+		} else if ( link.element instanceof TvJunction ) {
+
+			const point = new Vector2( start.position.x, start.position.y );
+
+			return link.element.boundingBox.distanceToPoint( point );
+		}
+
+	}
+
+	static isSuccessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ) {
+
+		if ( !segment.successor ) return false;
+
+		if ( segment.successor.element != nextSegment ) return false;
+
+		return true;
+
+	}
+
+	static isPredecessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ) {
+
+		if ( !segment.predecessor ) return false;
+
+		if ( segment.predecessor.element != nextSegment ) return false;
+
+		return true;
+
+	}
+
+	static isRoadLinked ( prev: TvRoad, next: TvRoad ): boolean {
+
+		if ( !prev.successor ) return false;
+
+		if ( !next.predecessor ) return false;
+
+		if ( prev.successor.element != next ) return false;
+
+		if ( next.predecessor.element != prev ) return false;
+
+		return true;
+
+	}
 
 	static divideRoad ( parent: TvRoad, s: number, newRoadId: number ): TvRoad {
 
@@ -91,11 +166,11 @@ export class RoadUtils {
 
 		if ( successorContact === TvContactPoint.START ) {
 
-			successor.setPredecessorRoad( road, TvContactPoint.START );
+			successor.setPredecessorRoad( road, TvContactPoint.END );
 
 		} else if ( successorContact === TvContactPoint.END ) {
 
-			successor.setPredecessorRoad( road, TvContactPoint.END );
+			successor.setSuccessorRoad( road, TvContactPoint.END );
 
 		} else {
 
@@ -110,13 +185,13 @@ export class RoadUtils {
 
 		if ( road.predecessor ) this.unlinkPredecessor( road );
 
-		if ( predecessorContact === TvContactPoint.START ) {
+		if ( predecessorContact === TvContactPoint.END ) {
 
 			predecessor.setSuccessorRoad( road, TvContactPoint.START );
 
 		} else {
 
-			predecessor.setSuccessorRoad( road, TvContactPoint.END );
+			predecessor.setPredecessorRoad( road, TvContactPoint.START );
 
 		}
 

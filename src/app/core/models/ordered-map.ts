@@ -16,6 +16,10 @@ export class OrderedMap<T> {
 		return this.internalMap.size;
 	}
 
+	entries () {
+		return this.internalMap.entries();
+	}
+
 	keys () {
 		return this.internalMap.keys();
 	}

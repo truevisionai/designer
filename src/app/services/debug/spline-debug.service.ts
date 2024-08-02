@@ -18,8 +18,6 @@ import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { Maths } from 'app/utils/maths';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { TvRoad } from "../../map/models/tv-road.model";
-import { TvLane } from "../../map/models/tv-lane";
-import { TvLaneSection } from "../../map/models/tv-lane-section";
 import { SplineService } from "../spline/spline.service";
 import { RoadDebugService } from './road-debug.service';
 import { RoadNode } from 'app/objects/road-node';
@@ -292,6 +290,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const add = ( points: AbstractControlPoint[] ) => {
 
+			if ( points.length < 2 ) return;
+
 			const positions = points.map( point => point.position );
 
 			const line = this.debugService.createDebugLine( spline, positions, lineWidth, color );
@@ -336,8 +336,11 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showBoundingBox ( spline: AbstractSpline ) {
 
+		const box = new Box3Helper( Maths.convertToBox3d( spline.boundingBox ) );
+
 		this.removeBoundingBox( spline );
-		this.boundingBoxes.addItem( spline, new Box3Helper( spline.boundingBox ) );
+
+		this.boundingBoxes.addItem( spline, box );
 
 	}
 

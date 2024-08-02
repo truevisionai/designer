@@ -19,6 +19,7 @@ import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-ro
 import { RoadControlPoint } from 'app/objects/road-control-point';
 import { TvRoadLink } from 'app/map/models/tv-road-link';
 import { DebugDrawService } from '../debug/debug-draw.service';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 @Injectable( {
 	providedIn: 'root'
@@ -301,6 +302,16 @@ export class SplineFactory {
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, secondPoint ) );
 
 		return spline;
+	}
+
+	static createFromPoints ( points: AbstractControlPoint[] ) {
+
+		const spline = new AutoSplineV2();
+
+		points.forEach( point => spline.controlPoints.push( point ) );
+
+		return spline;
+
 	}
 
 	static createExplicitSpline ( geometries: TvAbstractRoadGeometry[], road: TvRoad ): ExplicitSpline {

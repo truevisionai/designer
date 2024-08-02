@@ -345,9 +345,9 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			attr_name: junction.name,
 			attr_auto: junction.auto ? 'true' : 'false',
 			position: {
-				attr_x: junction.position ? junction.position.x : 0,
-				attr_y: junction.position ? junction.position.y : 0,
-				attr_z: junction.position ? junction.position.z : 0,
+				attr_x: junction.centroid ? junction.centroid.x : 0,
+				attr_y: junction.centroid ? junction.centroid.y : 0,
+				attr_z: junction.centroid ? junction.centroid.z : 0,
 			},
 			connection: junction.getConnections().map( connection => this.exportJunctionConnection( connection ) ),
 			priority: [],

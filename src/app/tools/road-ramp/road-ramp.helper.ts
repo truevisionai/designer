@@ -83,9 +83,9 @@ export class RampToolHelper {
 
 		if ( startCoord instanceof TvLaneCoord ) {
 
-			startCoord.road.neighbors.push( new TvRoadLinkNeighbor( rampRoad, TvContactPoint.START ) );
+			// startCoord.road.neighbors.push( new TvRoadLinkNeighbor( rampRoad, TvContactPoint.START ) );
 
-			rampRoad.neighbors.push( new TvRoadLinkNeighbor( startCoord.road, null ) );
+			// rampRoad.neighbors.push( new TvRoadLinkNeighbor( startCoord.road, null ) );
 
 		}
 

@@ -255,14 +255,14 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( xml.position ) {
 
-				junction.position = new Vector3(
+				junction.centroid = new Vector3(
 					parseFloat( xml.position.attr_x ),
 					parseFloat( xml.position.attr_y ),
 					parseFloat( xml.position.attr_z ),
 				);
 			}
 
-			map.addJunctionInstance( junction );
+			map.addJunction( junction );
 
 		} );
 
@@ -1027,7 +1027,10 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const connection = this.parseJunctionConnection( xml, junction );
 
-			if ( !connection ) return;
+			if ( !connection ) {
+				Log.error( 'Connection Parsing failed', xml, junction.toString() );
+				return;
+			}
 
 			junction.addConnection( connection );
 
@@ -1196,11 +1199,20 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const laneLink = this.parseJunctionConnectionLaneLink( xml, junction, connection );
 
-			if ( !laneLink ) return;
+			if ( !laneLink ) {
+				Log.warn( 'Link Parsing failed', xml, connection.toString() );
+				return;
+			};
 
 			connection.addLaneLink( laneLink );
 
 		} );
+
+		if ( connection.laneLink.length == 0 ) {
+			Log.error( 'Removing InvalidConnection with 0 links', connection.toString() );
+			this.map.removeRoad( connectingRoad );
+			return;
+		}
 
 		return connection;
 	}
@@ -1224,6 +1236,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 
 		if ( !connection.incomingRoad ) {
+			Log.error( 'incoming road not found Road:', connection.incomingRoad );
 			return;
 		}
 
@@ -1231,8 +1244,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const incomingContactPoint = findContactPoint( connection.incomingRoad );
 
 		if ( !incomingContactPoint ) {
-			Log.warn( 'contact point not found' );
-			Log.error( 'contact point not found', xmlElement, connection );
+			Log.error( 'contact point not found', connection?.toString(), junction.toString() );
 			return;
 		}
 
@@ -1240,14 +1252,12 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const connectionLaneSection = connection.connectingRoad.getLaneSectionAtContact( connection.contactPoint );
 
 		if ( !incomingLaneSection ) {
-			Log.warn( 'incoming lane section not found' );
-			Log.error( 'contact point not found', xmlElement, connection );
+			Log.error( 'incoming lane section not found', connection?.toString() );
 			return;
 		}
 
 		if ( !connectionLaneSection ) {
-			Log.warn( 'connection lane section not found' );
-			Log.error( 'contact point not found', xmlElement, connection );
+			Log.error( 'connection lane section not found', xmlElement, connection?.toString() );
 			return;
 		}
 
@@ -1255,24 +1265,19 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const toLane = connectionLaneSection.getLaneById( toLaneId );
 
 		if ( !fromLane ) {
-			Log.warn( 'from lane not found' );
-			Log.error( 'from lane not found', xmlElement, connection );
+			Log.error( 'from lane not found', xmlElement, connection?.toString() );
 			return;
 		}
 
 		if ( !toLane ) {
-			Log.warn( 'to lane not found' );
-			Log.error( 'to lane not found', xmlElement, connection );
+			Log.error( 'to lane not found', xmlElement, connection?.toString() );
 			return;
 		}
 
 		const link = new TvJunctionLaneLink( fromLane, toLane );
 
 		link.incomingRoad = connection.incomingRoad;
-		link.incomingContactPoint = incomingContactPoint;
-
 		link.connectingRoad = connection.connectingRoad;
-		link.connectingContactPoint = connection.contactPoint;
 
 		return link;
 

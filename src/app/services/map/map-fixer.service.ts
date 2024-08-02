@@ -14,7 +14,8 @@ import { SplineUpdatedEvent } from "app/events/spline/spline-updated-event";
 } )
 export class MapFixer {
 
-	private enabled = true;
+	// disabling as it is creating issues
+	private enabled = false;
 
 	fixMap ( map: TvMap ) {
 

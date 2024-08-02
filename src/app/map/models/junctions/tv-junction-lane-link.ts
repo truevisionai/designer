@@ -10,11 +10,9 @@ export class TvJunctionLaneLink {
 
 	public incomingLane: TvLane;
 	public incomingRoad?: TvRoad;
-	public incomingContactPoint?: TvContactPoint;
 
 	public connectingLane: TvLane;
 	public connectingRoad?: TvRoad;
-	public connectingContactPoint?: TvContactPoint;
 
 	/**
 	 * can be useful to track if the link is modified
@@ -48,15 +46,13 @@ export class TvJunctionLaneLink {
 
 		link.incomingRoad = this.incomingRoad;
 		link.connectingRoad = this.connectingRoad;
-		link.incomingContactPoint = this.incomingContactPoint;
-		link.connectingContactPoint = this.connectingContactPoint;
 
 		return link;
 
 	}
 
-	toString() {
-		return `Incoming: ${this.incomingRoad?.id} Lane: ${this.incomingLane?.id} Connecting: ${this.connectingRoad?.id} Lane: ${this.connectingLane?.id} Turn: ${this.turnType}`;
+	toString () {
+		return `Incoming: ${ this.incomingRoad?.id } Lane: ${ this.incomingLane?.id } Connecting: ${ this.connectingRoad?.id } Lane: ${ this.connectingLane?.id } Turn: ${ this.turnType }`;
 	}
 
 }

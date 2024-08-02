@@ -2,7 +2,18 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+export function disableMeshBuilding () {
+	OdBuilderConfig.BUILD_MESH = false;
+}
+
+
+export function enableMeshBuilding () {
+	OdBuilderConfig.BUILD_MESH = true;
+}
+
 export class OdBuilderConfig {
+
+	public static BUILD_MESH = true;
 
 	public static BUILD_CONNECTING_ROADS = true;
 

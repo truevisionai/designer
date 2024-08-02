@@ -70,6 +70,18 @@ export class MapService {
 
 	}
 
+	hasRoad ( road: TvRoad ) {
+
+		return this.map.roads.has( road.id );
+
+	}
+
+	addRoad ( road: TvRoad ) {
+
+		this.map.addRoad( road );
+
+	}
+
 	findRoad ( id: number ) {
 
 		try {
@@ -89,6 +101,18 @@ export class MapService {
 			}
 
 		}
+
+	}
+
+	findSplineById ( id: number ) {
+
+		const spline = this.map.getSplines().find( s => s.id === id );
+
+		if ( !spline ) {
+			throw new Error( `Spline with id ${ id } not found` );
+		}
+
+		return spline;
 
 	}
 

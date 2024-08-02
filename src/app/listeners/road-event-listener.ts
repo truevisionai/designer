@@ -56,7 +56,7 @@ export class RoadEventListener {
 
 		if ( !road.junction ) return;
 
-		road.junction.boundingBox = this.junctionService.computeBoundingBox( road.junction );
+		road.junction.depBoundingBox = this.junctionService.computeBoundingBox( road.junction );
 
 	}
 

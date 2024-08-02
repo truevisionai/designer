@@ -2,16 +2,19 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { StorageService } from 'app/io/storage.service';
 import { Environment } from './environment';
+import { TvElectronService } from 'app/services/tv-electron.service';
+
+declare const electronFs;
+
+const MAX_LENGTH = 1000;
+const MAX_DEPTH = 1;
 
 export class Log {
 
-	// private static logFilePath = path.join( __dirname, 'application.log' );
-
-	// static info ( ...message: any ) {
-	// 	if ( Environment.production ) return;
-	// 	console.log( ...message );
-	// }
+	private static logging = true;
+	private static isElectron = TvElectronService.isElectronApp;
 
 	static log ( message: string, ...optionalParams: any[] ): void {
 		this.writeLog( 'LOG', message, optionalParams );
@@ -80,10 +83,10 @@ export class Log {
 		const callerInfo = this.getCallerInfo();
 
 		// user friendly timestamp
-		//const timestamp = new Date().toISOString();
-		const timestamp = new Date().toLocaleTimeString();
+		// const timestamp = new Date().toISOString();
+		const timestamp = new Date().toLocaleString();
 
-		const logMessage = `[${ timestamp }] [${ level }] ${ callerInfo } ${ message }`;
+		let logMessage = `[${ timestamp }][${ level }]: ${ callerInfo } ${ message }` + ' ';
 
 		switch ( level ) {
 			case 'ERROR':
@@ -97,15 +100,125 @@ export class Log {
 				break;
 		}
 
-		// Write to log file
-		// fs.appendFileSync( this.logFilePath, logMessage + '\n' );
-		// optionalParams.forEach( param => {
-		// 	if ( typeof param === 'object' ) {
-		// 		fs.appendFileSync( this.logFilePath, JSON.stringify( param, null, 2 ) + '\n' );
-		// 	} else {
-		// 		fs.appendFileSync( this.logFilePath, param + '\n' );
-		// 	}
-		// } );
+		if ( this.logging && this.isElectron ) {
+
+			if ( Environment.production ) return;
+
+			if ( this.logging ) {
+
+				optionalParams.forEach( param => {
+
+					let paramStr = '';
+
+					if ( typeof param === 'object' ) {
+
+						try {
+
+							// paramStr = JSON.stringify( param, null, 2 );
+							paramStr = param.toString();
+
+						} catch ( error ) {
+
+							paramStr = String( param );
+
+							console.error( error );
+							console.error( param );
+
+						}
+
+					} else {
+
+						paramStr = String( param );
+
+					}
+
+					if ( paramStr.length > MAX_LENGTH ) {
+						paramStr = paramStr.slice( 0, MAX_LENGTH ) + '... [truncated]';
+					}
+
+					logMessage += paramStr + '\n';
+
+				} );
+
+			}
+
+			// Include stack trace for error and warn levels
+			if ( level === 'ERROR' || level === 'WARN' ) {
+				const error = new Error( message );
+				logMessage += `Stack Trace:\n${ error.stack }`;
+			}
+
+			this.writeToFile( logMessage );
+		}
+
 	}
 
+	private static writeToFile ( message: string ): void {
+
+		const filePath = this.getFilePath();
+
+		try {
+
+			StorageService.instance.appendFileSync( filePath, message + '\n' );
+
+		} catch ( error ) {
+
+			console.error( 'Error writing log to file:', error );
+
+		}
+
+	}
+
+	private static getFilePath (): string {
+
+		return electronFs.currentDirectory + '/logs/' + this.generateFilename();
+
+	}
+
+	private static generateFilename (): string {
+
+		return 'application.log';
+
+		// generaete filename by date
+		const date = new Date();
+		const year = date.getFullYear();
+		const month = ( '0' + ( date.getMonth() + 1 ) ).slice( -2 );
+		const day = ( '0' + date.getDate() ).slice( -2 );
+
+		return `${ year }-${ month }-${ day }_log.log`;
+
+	}
+
+	// private static safeJSONStringify ( obj: any, maxDepth: number ): string {
+	// 	const seen = new WeakSet();
+	// 	function depthLimitedReplacer ( depth: number ) {
+	// 		return ( key, value ) => {
+	// 			if ( depth > maxDepth ) return '[Max Depth Reached]';
+	// 			if ( typeof value === "object" && value !== null ) {
+	// 				if ( seen.has( value ) ) return '[Circular]';
+	// 				seen.add( value );
+	// 			}
+	// 			return value;
+	// 		};
+	// 	}
+
+	// 	try {
+	// 		return JSON.stringify( obj, depthLimitedReplacer( 0 ), 2 );
+	// 	} catch ( error ) {
+	// 		return `[Stringification Error: ${ error.message }]`;
+	// 	}
+	// }
+
+	// private static getCircularReplacer () {
+	// 	const seen = new WeakSet();
+	// 	return ( key, value ) => {
+	// 		if ( typeof value === "object" && value !== null ) {
+	// 			if ( seen.has( value ) ) {
+	// 				return undefined; // Remove circular reference
+	// 			}
+	// 			seen.add( value );
+	// 		}
+	// 		return value;
+	// 	};
+	// }
 }

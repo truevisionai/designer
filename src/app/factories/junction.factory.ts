@@ -13,6 +13,7 @@ import { AbstractFactory } from "../core/interfaces/abstract-factory";
 import { Vector3 } from 'three';
 import { Asset } from 'app/core/asset/asset.model';
 import { MapService } from 'app/services/map/map.service';
+import { InvalidArgumentException } from 'app/exceptions/exceptions';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,9 +24,21 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 		super();
 	}
 
+	static create () {
+
+		return new TvJunction( 'Junction', 0 );
+
+	}
+
 	createFromPosition ( position: Vector3 ): TvJunction {
 
-		return this.createJunction();
+		// if ( !position ) throw new InvalidArgumentException( 'Position is required' );
+
+		const junction = this.createJunction();
+
+		junction.centroid = position;
+
+		return junction;
 
 	}
 
