@@ -46,7 +46,7 @@ export class SplineManager {
 
 		this.splineBuilder.build( spline );
 
-		if ( updateJunctions ) this.junctionManager.updateJunctions( spline );
+		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
 
 	}
 
@@ -99,7 +99,7 @@ export class SplineManager {
 
 		this.syncPredecessorSpline( spline );
 
-		if ( updateJunctions ) this.junctionManager.updateJunctions( spline );
+		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
 
 	}
 

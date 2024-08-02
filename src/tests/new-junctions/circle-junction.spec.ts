@@ -121,7 +121,7 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		splineManager.addSpline( horizontal, false );
 
-		junctionManager.updateJunctions( horizontal );
+		junctionManager.detectJunctions( horizontal );
 
 		expect( mapService.junctions.length ).toBe( 1 );
 		expect( JunctionUtils.getLaneLinks( mapService.findJunction( 1 ) ).length ).toBe( 12 );

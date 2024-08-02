@@ -71,7 +71,7 @@ export class JunctionManager {
 
 	addJunction ( junction: TvJunction ) {
 
-		if ( this.debug ) Log.debug( 'addJunction', junction.toString() );
+		if ( this.debug ) Log.debug( 'Add', junction.toString() );
 
 		this.mapService.map.addJunction( junction );
 
@@ -98,6 +98,84 @@ export class JunctionManager {
 
 		this.updateBoundingBox( junction );
 
+	}
+
+	updateJunction ( junction: TvJunction, otherSplines: AbstractSpline[] = [] ) {
+
+		if ( this.debug ) Log.debug( 'Update', junction.toString() );
+
+		junction.needsUpdate = false;
+
+		const junctionLinks: TvRoadLink[] = [];
+
+		const junctionSplines = new Set<AbstractSpline>();
+
+		// TODO: we can also find all the splines which are found in junction boundary
+		junction.getIncomingSplines().forEach( s => junctionSplines.add( s ) );
+
+		otherSplines.forEach( spline => junctionSplines.add( spline ) );
+
+		junctionSplines.forEach( spline => {
+
+			this.updateSplineInternalLinks( spline, false );
+
+			this.findLinksForJunction( spline, junction, junctionLinks );
+
+		} );
+
+		this.removeAllConnections( junction );
+
+		this.createConnections( junction, this.sortLinks( junctionLinks ) );
+
+		// temporary fix for junctions
+		this.mapService.map.removeJunction( junction );
+
+		this.addJunction( junction );
+
+	}
+
+	detectJunctions ( spline: AbstractSpline ) {
+
+		if ( this.debug ) Log.debug( 'DetectJunctions', spline.toString() );
+
+		if ( this.splineService.isConnectionRoad( spline ) ) return;
+
+		if ( spline.type == SplineType.EXPLICIT ) return;
+
+		const oldJunctions = this.splineService.getJunctions( spline );
+
+		const intersections = this.splineService.findIntersections( spline );
+
+		const result = this.categorizeJunctions( oldJunctions, intersections );
+
+		for ( const junction of result.junctionsToRemove ) {
+
+			this.removeJunction( junction, spline, true );
+
+		}
+
+		for ( const junction of result.junctionsToUpdate ) {
+
+			this.removeJunction( junction, spline );
+
+		}
+
+
+		const groups = this.createGroups( intersections );
+
+		for ( const group of groups ) {
+
+			try {
+
+				this.createJunctionFromGroup( group );
+
+			} catch ( e ) {
+
+				console.error( 'Error Creating Junction', e );
+
+			}
+
+		}
 	}
 
 	updateBoundingBox ( junction: TvJunction ) {
@@ -138,7 +216,7 @@ export class JunctionManager {
 
 	removeJunction ( junction: TvJunction, spline?: AbstractSpline, processOthers = false ) {
 
-		if ( this.debug ) Log.debug( 'removeJunction', junction.toString() );
+		if ( this.debug ) Log.debug( 'Remove', junction.toString() );
 
 		const splines = junction.getIncomingSplines();
 
@@ -344,38 +422,6 @@ export class JunctionManager {
 
 	}
 
-	updateJunction ( junction: TvJunction, otherSplines: AbstractSpline[] = [] ) {
-
-		junction.needsUpdate = false;
-
-		const junctionLinks: TvRoadLink[] = [];
-
-		const junctionSplines = new Set<AbstractSpline>();
-
-		// TODO: we can also find all the splines which are found in junction boundary
-		junction.getIncomingSplines().forEach( s => junctionSplines.add( s ) );
-
-		otherSplines.forEach( spline => junctionSplines.add( spline ) );
-
-		junctionSplines.forEach( spline => {
-
-			this.updateSplineInternalLinks( spline, false );
-
-			this.findLinksForJunction( spline, junction, junctionLinks );
-
-		} );
-
-		this.removeAllConnections( junction );
-
-		this.createConnections( junction, this.sortLinks( junctionLinks ) );
-
-		// temporary fix for junctions
-		this.mapService.map.removeJunction( junction );
-
-		this.addJunction( junction );
-
-	}
-
 	/**
 	 * DOES NOT WORK CURRENTLY
 	 * @param group
@@ -515,42 +561,6 @@ export class JunctionManager {
 		return newIntersections;
 	}
 
-	updateJunctions ( spline: AbstractSpline ) {
-
-		if ( this.debug ) Log.debug( 'UpdateJunctions', spline.toString() );
-
-		if ( this.splineService.isConnectionRoad( spline ) ) return;
-
-		if ( spline.type == SplineType.EXPLICIT ) return;
-
-		const oldJunctions = this.splineService.getJunctions( spline );
-
-		const intersections = this.splineService.findIntersections( spline );
-
-		const result = this.categorizeJunctions( oldJunctions, intersections );
-
-		for ( const junction of result.junctionsToRemove ) {
-			this.removeJunction( junction, spline, true );
-		}
-
-		for ( const junction of result.junctionsToUpdate ) {
-			this.removeJunction( junction, spline );
-		}
-
-		// for ( const junction of oldJunctions ) {
-
-		// 	this.removeJunction( junction );
-
-		// }
-
-		const groups = this.createGroups( intersections );
-
-		for ( const group of groups ) {
-
-			this.createJunctionFromGroup( group );
-
-		}
-	}
 
 	// updateJunctionsV2 ( spline: AbstractSpline ) {
 

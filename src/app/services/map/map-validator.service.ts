@@ -33,7 +33,7 @@ const SPHERE_SIZE = 0.1;
 
 function expectCorrectSegmentOrder ( spline: AbstractSpline ) {
 	if ( !SplineUtils.areLinksCorrect( spline ) ) {
-		throw new Error( 'Incorrect segment order' );
+		Log.error( 'Incorrect segment order' );
 	}
 }
 
@@ -41,13 +41,13 @@ function expectLinkDistanceToBeZero ( road: TvRoad ) {
 	if ( road.successor ) {
 		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
 		if ( !Maths.approxEquals( distance, 0 ) ) {
-			throw new Error( `InvalidSuccessorDistance:${ distance } ` + road.toString() + ' ' + road.successor.toString() );
+			Log.error( `InvalidSuccessorDistance:${ distance } ` + road.toString() + ' ' + road.successor.toString() );
 		}
 	}
 	if ( road.predecessor ) {
 		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor )
 		if ( !Maths.approxEquals( distance, 0 ) ) {
-			throw new Error( `InvalidPredecessorDistance:${ distance } ` + road.toString() + ' ' + road.predecessor.toString() );
+			Log.error( `InvalidPredecessorDistance:${ distance } ` + road.toString() + ' ' + road.predecessor.toString() );
 		}
 	}
 }

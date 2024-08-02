@@ -225,7 +225,7 @@ describe( 'JunctionManager', () => {
 		expect( result.junctionsToUpdate.length ).toBe( 0 );
 		expect( result.junctionsToRemove.length ).toBe( 0 );
 
-		junctionManager.updateJunctions( spline );
+		junctionManager.detectJunctions( spline );
 
 		{
 			const horizontal = mapService.splines[ 0 ];
