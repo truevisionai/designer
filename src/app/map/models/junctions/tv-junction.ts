@@ -298,4 +298,35 @@ export class TvJunction {
 
 	}
 
+	clone () {
+
+		const junction = new TvJunction( this.name, this.id );
+
+		junction.type = this.type;
+
+		junction.auto = this.auto;
+
+		junction.needsUpdate = this.needsUpdate;
+
+		junction.centroid = this.centroid?.clone();
+
+		junction.mesh = this.mesh.clone();
+
+		junction.depBoundingBox = this.depBoundingBox.clone();
+
+		junction.boundingBox = this.boundingBox.clone();
+
+		junction.outerBoundary = this.outerBoundary.clone();
+
+		junction.innerBoundary = this.innerBoundary.clone();
+
+		this.priorities.forEach( priority => junction.addPriority( priority.clone() ) );
+
+		this.controllers.forEach( controller => junction.controllers.push( controller.clone() ) );
+
+		this.connections.forEach( connection => junction.connections.set( connection.id, connection.clone() ) );
+
+		return junction;
+
+	}
 }

@@ -18,4 +18,7 @@ export class TvJunctionController {
 	) {
 	}
 
+	clone () {
+		return new TvJunctionController( this.id, this.type, this.sequence );
+	}
 }

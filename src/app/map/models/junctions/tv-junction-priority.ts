@@ -27,4 +27,8 @@ export class TvJunctionPriority {
 	set low ( value: number ) {
 		this.attr_low = value;
 	}
+
+	clone () {
+		return new TvJunctionPriority( this.attr_high, this.attr_low );
+	}
 }

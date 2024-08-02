@@ -13,8 +13,8 @@ export enum TurnType {
 }
 
 export enum TvElementType {
-	road = 'road',
-	junction = 'junction'
+	ROAD = 'road',
+	JUNCTION = 'junction'
 }
 
 export enum TvLaneType {

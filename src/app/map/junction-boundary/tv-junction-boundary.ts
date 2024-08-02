@@ -13,10 +13,18 @@ export enum TvBoundarySegmentType {
 
 export class TvJunctionBoundary {
 	segments: TvJunctionSegmentBoundary[] = [];
+
+	clone () {
+		const boundary = new TvJunctionBoundary();
+		boundary.segments = this.segments.map( s => s.clone() );
+		return boundary;
+	}
 }
 
 export interface TvJunctionSegmentBoundary {
 	type: TvBoundarySegmentType;
+
+	clone (): TvJunctionSegmentBoundary;
 }
 
 // roadId="2" contactPoint="end" jointLaneStart="2" jointLaneEnd="-1"
@@ -48,6 +56,15 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 	toString () {
 		return `JointBoundary: roadId=${ this.road.id } contactPoint=${ this.contactPoint } jointLaneStart=${ this.jointLaneStart?.id } jointLaneEnd=${ this.jointLaneEnd?.id }`;
 	}
+
+	clone () {
+		const joint = new TvJointBoundary();
+		joint.road = this.road;
+		joint.contactPoint = this.contactPoint;
+		joint.jointLaneStart = this.jointLaneStart;
+		joint.jointLaneEnd = this.jointLaneEnd;
+		return joint;
+	}
 }
 
 // roadId="8" boundaryLane="-2" sStart="begin" sEnd="end"
@@ -62,5 +79,14 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 
 	toString () {
 		return `LaneBoundary: roadId=${ this.road.id } boundaryLane=${ this.boundaryLane.id } sStart=${ this.sStart } sEnd=${ this.sEnd }`;
+	}
+
+	clone () {
+		const lane = new TvLaneBoundary();
+		lane.road = this.road;
+		lane.boundaryLane = this.boundaryLane;
+		lane.sStart = this.sStart;
+		lane.sEnd = this.sEnd;
+		return lane;
 	}
 }
