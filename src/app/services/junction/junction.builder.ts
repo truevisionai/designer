@@ -53,7 +53,7 @@ export class JunctionBuilder {
 
 	buildBoundingBox ( junction: TvJunction ): Box2 {
 
-		const points = this.boundaryBuilder.convertBoundaryToPositions( junction.boundary );
+		const points = this.boundaryBuilder.convertBoundaryToPositions( junction.outerBoundary );
 
 		if ( points.length < 2 ) {
 			Log.error( 'JunctionBuilder.buildBoundingBox: Invalid boundary points', junction.toString() );
@@ -70,7 +70,7 @@ export class JunctionBuilder {
 
 	build ( junction: TvJunction ) {
 
-		const geometry = this.boundaryBuilder.getBufferGeometry( junction.boundary, 'shape' );
+		const geometry = this.boundaryBuilder.getBufferGeometry( junction.innerBoundary, 'shape' );
 
 		return new Mesh( geometry, this.junctionMaterial );
 
@@ -78,7 +78,7 @@ export class JunctionBuilder {
 
 	buildFromBoundary ( junction: TvJunction ): Mesh {
 
-		return this.boundaryBuilder.buildViaShape( junction.boundary );
+		return this.boundaryBuilder.buildViaShape( junction.innerBoundary );
 
 	}
 

@@ -168,7 +168,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 				const boundary = this.parseJunctionBoundary( xml.boundary );
 
-				if ( boundary ) junction.boundary = boundary;
+				if ( boundary ) junction.outerBoundary = boundary;
 
 			}
 

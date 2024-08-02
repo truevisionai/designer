@@ -109,6 +109,8 @@ export class SplineManager {
 
 		this.mapService.map.removeSpline( spline );
 
+		this.mapService.map.removeSpline( spline );
+
 		if ( SplineUtils.isConnection( spline ) ) return;
 
 		for ( const segment of spline.segmentMap.toArray() ) {

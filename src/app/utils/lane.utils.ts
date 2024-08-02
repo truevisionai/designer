@@ -247,6 +247,32 @@ export class LaneUtils {
 
 	}
 
+	static findLowestCarriageWayLane ( laneSection: TvLaneSection ) {
+
+		const lanes = laneSection.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => this.isCarriageWayLane( lane ) );
+
+		return this.findLowest( lanes );
+
+	}
+
+	static findHighestCarriageWayLane ( laneSection: TvLaneSection ) {
+
+		const lanes = laneSection.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => this.isCarriageWayLane( lane ) );
+
+		return this.findHighest( lanes );
+
+	}
+
+	static isCarriageWayLane ( lane: TvLane ) {
+
+		return lane.type != TvLaneType.sidewalk && lane.type != TvLaneType.curb;
+
+	}
+
 	static findLowest ( lanes: TvLane[], type?: TvLaneType ) {
 
 		if ( lanes.length === 0 ) return null;

@@ -36,7 +36,9 @@ export class TvJunction {
 
 	public boundingBox: Box2;
 
-	public boundary: TvJunctionBoundary;
+	public outerBoundary: TvJunctionBoundary;
+
+	public innerBoundary: TvJunctionBoundary;
 
 	public auto: boolean = true;
 

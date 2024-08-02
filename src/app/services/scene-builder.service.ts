@@ -107,11 +107,19 @@ export class SceneBuilderService {
 			return;
 		}
 
-		if ( !junction.boundary || junction.boundary.segments.length == 0 ) {
+		if ( !junction.outerBoundary || junction.outerBoundary.segments.length == 0 ) {
 
-			TvConsole.warn( 'Re-building boundary for junction:' + junction.id );
+			Log.info( 'Creating OuterBoundary', junction.toString() );
 
-			junction.boundary = TvJunctionBoundaryFactory.createFromJunction( junction );
+			junction.outerBoundary = TvJunctionBoundaryFactory.createOuterBoundary( junction );
+
+		}
+
+		if ( !junction.innerBoundary || junction.innerBoundary.segments.length == 0 ) {
+
+			Log.info( 'Creating InnerBoundary', junction.toString() );
+
+			junction.innerBoundary = TvJunctionBoundaryFactory.createInnerBoundary( junction );
 
 		}
 

@@ -14,13 +14,60 @@ import { JunctionUtils } from "app/utils/junction.utils";
 } )
 export class TvJunctionBoundaryFactory {
 
-	static createFromJunction ( junction: TvJunction ): TvJunctionBoundary {
+	static createInnerBoundary ( junction: TvJunction ): TvJunctionBoundary {
 
-		return this.createJunctionBoundary( junction );
+		const boundary = new TvJunctionBoundary();
+
+		const coords = GeometryUtils.sortCoordsByAngle( junction.getRoadCoords() );
+
+		coords.forEach( coord => {
+
+			// NOTE: Sequence of the following code is important
+
+			const lowestLane = LaneUtils.findLowestCarriageWayLane( coord.laneSection );
+
+			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+
+				const link = connection.laneLink.find( link => link.incomingLane == lowestLane );
+
+				if ( link ) {
+
+					const segment = this.createLaneSegment( connection.connectingRoad, link.connectingLane );
+
+					boundary.segments.push( segment );
+
+				}
+
+			} );
+
+			const segment = this.createInnerJointSegment( coord );
+
+			boundary.segments.push( segment );
+
+			const highestLane = LaneUtils.findHighestCarriageWayLane( coord.laneSection );
+
+			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+
+				const link = connection.laneLink.find( link => link.incomingLane == highestLane );
+
+				if ( link ) {
+
+					const segment = this.createLaneSegment( connection.connectingRoad, link.connectingLane );
+
+					boundary.segments.push( segment );
+				}
+
+			} );
+
+		} );
+
+		this.sortBoundarySegments( boundary );
+
+		return boundary;
 
 	}
 
-	private static createJunctionBoundary ( junction: TvJunction ): TvJunctionBoundary {
+	static createOuterBoundary ( junction: TvJunction ): TvJunctionBoundary {
 
 		const boundary = new TvJunctionBoundary();
 
@@ -46,7 +93,7 @@ export class TvJunctionBoundaryFactory {
 
 			} );
 
-			const segment = this.createJointSegment( coord );
+			const segment = this.createOuterJointSegment( coord );
 
 			boundary.segments.push( segment );
 
@@ -72,7 +119,7 @@ export class TvJunctionBoundaryFactory {
 		return boundary;
 	}
 
-	private static createJointSegment ( roadCoord: TvRoadCoord ) {
+	private static createOuterJointSegment ( roadCoord: TvRoadCoord ) {
 
 		const boundary = new TvJointBoundary();
 
@@ -89,6 +136,30 @@ export class TvJunctionBoundaryFactory {
 
 			boundary.jointLaneStart = roadCoord.laneSection.getRightMostLane();
 			boundary.jointLaneEnd = roadCoord.laneSection.getLeftMostLane();
+
+		}
+
+		return boundary;
+
+	}
+
+	private static createInnerJointSegment ( roadCoord: TvRoadCoord ) {
+
+		const boundary = new TvJointBoundary();
+
+		boundary.road = roadCoord.road;
+
+		boundary.contactPoint = roadCoord.contact;
+
+		if ( roadCoord.contact == TvContactPoint.END ) {
+
+			boundary.jointLaneStart = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
+			boundary.jointLaneEnd = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
+
+		} else {
+
+			boundary.jointLaneStart = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
+			boundary.jointLaneEnd = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
 
 		}
 

@@ -17,9 +17,8 @@ export class TvJunctionBoundaryManager {
 
 	update ( junction: TvJunction ) {
 
-		junction.boundary = TvJunctionBoundaryFactory.createFromJunction( junction );
-
-		// this.getOutermostCornerConnections( junction );
+		junction.outerBoundary = TvJunctionBoundaryFactory.createOuterBoundary( junction );
+		junction.innerBoundary = TvJunctionBoundaryFactory.createInnerBoundary( junction );
 
 	}
 

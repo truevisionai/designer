@@ -353,7 +353,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			priority: [],
 			controller: [],
 			boundary: {
-				segment: junction.boundary?.segments.map( segment => this.exportBoundarySegment( segment ) )
+				segment: junction.outerBoundary?.segments.map( segment => this.exportBoundarySegment( segment ) )
 			},
 		};
 

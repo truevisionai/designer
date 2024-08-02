@@ -31,6 +31,7 @@ import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import Delaunator from 'delaunator';
 import { Maths } from 'app/utils/maths';
 import { JunctionUtils } from 'app/utils/junction.utils';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -88,11 +89,12 @@ export class TvJunctionBoundaryBuilder {
 		const points = this.convertBoundaryToPositions( boundary );
 
 		if ( points.length < 3 ) {
-			console.error( 'Invalid boundary points', boundary, points.length );
+			Log.error( 'Invalid boundary points', points.length );
 			return new ShapeGeometry( new Shape() );
 		}
 
-		const shape = new Shape( points.map( p => new Vector2( p.x, p.y ) ) );
+		const shape = this.convertBoundaryToShapeSimple( boundary );
+		// const shape = new Shape( points.map( p => new Vector2( p.x, p.y ) ) );
 
 		return new ShapeGeometry( shape );
 
@@ -533,11 +535,7 @@ export class TvJunctionBoundaryBuilder {
 
 	convertBoundaryToShapeSimple ( boundary: TvJunctionBoundary ) {
 
-		// NOTE: THIS NOT WORKING
-
-		// if ( !junction.boundary ) junction.boundary = this.createJunctionBoundary( junction );
-
-		// junction.boundary.segments.forEach( segment => console.debug( segment.toString() ) );
+		// NOTE: THIS NOT WORKING PROPERLY
 
 		const shape = new Shape();
 
@@ -545,14 +543,13 @@ export class TvJunctionBoundaryBuilder {
 
 			const positions = this.createBoundaryPositions( segment );
 
-			// isFirstPoint
 			if ( i == 0 ) {
 				shape.moveTo( positions[ 0 ].x, positions[ 0 ].y );
 			}
 
-			DebugDrawService.instance.drawText( i.toString(), positions[ 0 ].clone().addScalar( 0.5 ) );
+			// DebugDrawService.instance.drawText( i.toString(), positions[ 0 ].clone().addScalar( 0.5 ) );
 
-			console.log( 'Segment', i, segment.toString() );
+			Log.info( 'Segment', i, segment.toString() );
 
 			if ( segment.type == TvBoundarySegmentType.JOINT ) {
 
@@ -560,13 +557,11 @@ export class TvJunctionBoundaryBuilder {
 
 			} else if ( segment.type == TvBoundarySegmentType.LANE ) {
 
-				// positions.forEach( pos => shape.lineTo( pos.x, pos.y ) );
-
 				shape.splineThru( positions.map( pos => new Vector2( pos.x, pos.y ) ) );
 
 			} else {
 
-				console.error( 'Unknown segment type', segment );
+				Log.error( 'Unknown segment type', segment?.toString() );
 			}
 
 		} );
@@ -608,7 +603,7 @@ export class TvJunctionBoundaryBuilder {
 					} );
 				}
 			} else {
-				console.error( 'Unknown segment type', segment );
+				Log.error( 'Unknown segment type', segment?.toString() );
 			}
 		} );
 

@@ -131,11 +131,12 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	createJunctionOutline ( junction: TvJunction ): Object3D {
 
-		if ( !junction.boundary ) {
+		if ( !junction.outerBoundary ) {
+			Log.warn( 'OuterBoundaryMissing', junction?.toString() );
 			this.junctionManager.boundaryManager.update( junction );
 		}
 
-		const positions = this.junctionService.junctionBuilder.boundaryBuilder.convertBoundaryToPositions( junction.boundary );
+		const positions = this.junctionService.junctionBuilder.boundaryBuilder.convertBoundaryToPositions( junction.outerBoundary );
 
 		if ( positions.length < 2 ) return;
 
@@ -154,7 +155,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	createJunctionMesh ( junction: TvJunction ) {
 
-		if ( !junction.boundary ) {
+		if ( !junction.innerBoundary ) {
+			Log.warn( 'InnerBoundaryMissing', junction?.toString() );
 			this.junctionManager.boundaryManager.update( junction );
 		}
 

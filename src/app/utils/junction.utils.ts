@@ -6,7 +6,7 @@ import {
 } from "app/map/junction-boundary/tv-junction-boundary";
 import { TvJunctionBoundaryBuilder } from "app/map/junction-boundary/tv-junction-boundary.builder";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvContactPoint } from "app/map/models/tv-common";
+import { TvContactPoint, TvLaneSide } from "app/map/models/tv-common";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Vector3 } from "three";
 import { Maths } from "./maths";
@@ -330,9 +330,41 @@ export class JunctionUtils {
 		const t = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
 
 		// return only 2 points for joint boundary
-		const start = joint.road.getLaneEndPosition( joint.jointLaneStart, posTheta.s ).toVector3();
+
+		let start: Vector3;
+
+		if ( joint.contactPoint == TvContactPoint.START ) {
+
+			start = joint.jointLaneStart.side == TvLaneSide.RIGHT ?
+				joint.road.getLaneEndPosition( joint.jointLaneStart, posTheta.s ).toVector3() :
+				joint.road.getLaneStartPosition( joint.jointLaneStart, posTheta.s ).toVector3();
+
+		} else if ( joint.contactPoint == TvContactPoint.END ) {
+
+			start = joint.jointLaneStart.side == TvLaneSide.RIGHT ?
+				joint.road.getLaneStartPosition( joint.jointLaneStart, posTheta.s ).toVector3() :
+				joint.road.getLaneEndPosition( joint.jointLaneStart, posTheta.s ).toVector3();
+
+		}
+
 		const mid = joint.road.getPosThetaAt( posTheta.s, t * 0.5 ).toVector3();
-		const end = joint.road.getLaneEndPosition( joint.jointLaneEnd, posTheta.s ).toVector3();
+
+		let end: Vector3;
+
+		if ( joint.contactPoint == TvContactPoint.START ) {
+
+			end = joint.jointLaneEnd.side == TvLaneSide.RIGHT ?
+				joint.road.getLaneStartPosition( joint.jointLaneEnd, posTheta.s ).toVector3() :
+				joint.road.getLaneEndPosition( joint.jointLaneEnd, posTheta.s ).toVector3();
+
+		} else if ( joint.contactPoint == TvContactPoint.END ) {
+
+			end = joint.jointLaneEnd.side == TvLaneSide.RIGHT ?
+				joint.road.getLaneEndPosition( joint.jointLaneEnd, posTheta.s ).toVector3() :
+				joint.road.getLaneStartPosition( joint.jointLaneEnd, posTheta.s ).toVector3();
+
+		}
+
 		return [ start, mid, end ];
 
 		// const points: Vector3[] = []
