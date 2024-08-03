@@ -52,10 +52,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	readonly extension = 'scene';
 
-	get map (): TvMap {
-		return this.mapService.map;
-	}
-
 	constructor (
 		private fileService: FileService,
 		private electron: TvElectronService,
@@ -99,7 +95,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		const builder = new XMLBuilder( defaultOptions );
 
-		const scene = this.exportAsJSON( map || this.map );
+		const scene = this.exportAsJSON( map || this.mapService.map );
 
 		const xmlDocument = builder.build( scene );
 
@@ -127,12 +123,12 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		return {
 			version: 0.1,
-			road: this.exportRoads( [ ...this.map.roads.values() ] ),
+			road: map.getRoads().map( road => this.exportRoad( road ) ),
 			prop: this.exportProps( map.props ),
 			propCurve: this.exportPropCurves( map.propCurves ),
 			propPolygon: this.exportPropPolygons( map.propPolygons ),
 			surface: this.exportSurfaces( map.surfaces ),
-			spline: this.map.getSplines().map( spline => this.exportSpline( spline ) ),
+			spline: map.getSplines().map( spline => this.exportSpline( spline ) ),
 			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
 			environment: this.threeService.environment.export()
 		};
@@ -213,12 +209,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		}
 
 		this.snackBar.error( 'Not able to export this spline type' );
-
-	}
-
-	exportRoads ( roads: TvRoad[] ) {
-
-		return roads.map( road => this.exportRoad( road ) );
 
 	}
 
