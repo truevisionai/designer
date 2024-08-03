@@ -182,4 +182,33 @@ describe( 'CustomJunction: Tests', () => {
 
 	} );
 
+	it( 'should unlink roads when 3-road-junction is removed', () => {
+
+		addThreeRoadCustomJunction();
+
+		const junction = testHelper.mapService.findJunction( 1 );
+
+		testHelper.junctionService.removeJunction( junction );
+
+		expectValidMap( testHelper.mapService );
+
+		const leftRoad = testHelper.mapService.findRoad( 1 );
+		const rightRoad = testHelper.mapService.findRoad( 2 );
+		const bottomRoad = testHelper.mapService.findRoad( 3 );
+
+		expect( leftRoad.successor ).toBeNull();
+		expect( rightRoad.predecessor ).toBeNull();
+		expect( bottomRoad.successor ).toBeNull();
+
+		expect( testHelper.mapService.findRoad( 1 ) ).toBeDefined();
+		expect( testHelper.mapService.findRoad( 2 ) ).toBeDefined();
+		expect( testHelper.mapService.findRoad( 3 ) ).toBeDefined();
+
+		expect( testHelper.mapService.findJunction( 1 ) ).toBeUndefined();
+		expect( testHelper.mapService.getJunctionCount() ).toBe( 0 );
+		expect( testHelper.mapService.getRoadCount() ).toBe( 3 );
+		expect( testHelper.mapService.getSplineCount() ).toBe( 3 );
+
+	} );
+
 } );
