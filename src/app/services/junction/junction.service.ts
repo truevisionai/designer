@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Box3, Object3D } from 'three';
+import { Box3, Object3D, Vector3 } from 'three';
 import { RoadDividerService } from '../road/road-divider.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { JunctionBuilder } from './junction.builder';
@@ -49,55 +49,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		return this.mapService.map.getJunctions();
 
-	}
-
-	createFromCoords ( coords: TvRoadCoord[] ): TvJunction {
-
-		let junction: TvJunction;
-
-		junction = this.createCustomJunction();
-
-		for ( let i = 0; i < coords.length; i++ ) {
-
-			const coordA = coords[ i ];
-
-			for ( let j = i + 1; j < coords.length; j++ ) {
-
-				const coordB = coords[ j ];
-
-				// if roads are same
-				if ( coordA.road === coordB.road ) {
-
-					const high = coordA.s > coordB.s ? coordA : coordB;
-
-					const low = coordA.s < coordB.s ? coordA : coordB;
-
-					const newRoadCoord = this.dividerService.cutRoadForJunctionFromTo( high, junction, low.s, high.s );
-
-					this.addConnectionsFromContact(
-						junction,
-						coordA.road,
-						TvContactPoint.END,
-						newRoadCoord.road,
-						TvContactPoint.START
-					);
-
-				} else {
-
-					this.addConnectionsFromContact(
-						junction,
-						coordA.road,
-						coordA.contact,
-						coordB.road,
-						coordB.contact
-					);
-				}
-			}
-		}
-
-		this.connectionService.postProcessJunction( junction );
-
-		return junction;
 	}
 
 	getJunctionById ( id: number ) {
@@ -200,15 +151,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		return this.factory.createJunction();
 
-	}
-
-	createCustomJunction () {
-
-		const junction = this.factory.createJunction();
-
-		junction.auto = false;
-
-		return junction;
 	}
 
 	//createVirtualJunction ( road: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {

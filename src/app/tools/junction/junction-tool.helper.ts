@@ -8,7 +8,6 @@ import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { BaseToolService } from '../base-tool.service';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { JunctionDebugService } from "../../services/junction/junction.debug";
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
@@ -17,6 +16,7 @@ import { TvRoadLink } from 'app/map/models/tv-road-link';
 import { Log } from 'app/core/utils/log';
 import { RoadService } from 'app/services/road/road.service';
 import { ConnectionFactory } from 'app/factories/connection.factory';
+import { JunctionFactory } from "../../factories/junction.factory";
 
 @Injectable( {
 	providedIn: 'root'
@@ -34,6 +34,7 @@ export class JunctionToolHelper {
 		public mapService: MapService,
 		public roadService: RoadService,
 		public connectionFactory: ConnectionFactory,
+		public junctionFactory: JunctionFactory,
 	) {
 	}
 
@@ -49,17 +50,13 @@ export class JunctionToolHelper {
 
 	}
 
-	createJunctionFromCoords ( coords: TvRoadCoord[] ): TvJunction {
-
-		return this.junctionService.createFromCoords( coords );
-
-	}
-
 	createCustomJunction ( roadLinks: TvRoadLink[] ): TvJunction {
 
-		const junction = this.junctionService.createCustomJunction();
+		const sortedLinks: TvRoadLink[] = this.roadService.sortLinks( roadLinks );
 
-		const sortedLinks: TvRoadLink[] = this.junctionManager.sortLinks( roadLinks );
+		const centroid = this.roadService.findCentroid( sortedLinks );
+
+		const junction = this.junctionFactory.createCustomJunction( centroid );
 
 		if ( this.debug ) Log.info( 'coords', sortedLinks.length, sortedLinks );
 
@@ -99,23 +96,5 @@ export class JunctionToolHelper {
 		}
 
 		return junction;
-
 	}
-
-	addConnectionsFromContact (
-		junction: TvJunction,
-		roadA: TvRoad, contactA: TvContactPoint,
-		roadB: TvRoad, contactB: TvContactPoint
-	): TvJunction {
-
-		return this.junctionService.addConnectionsFromContact(
-			junction,
-			roadA,
-			contactA,
-			roadB,
-			contactB
-		);
-
-	}
-
 }

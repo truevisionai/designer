@@ -640,4 +640,11 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
+	findCentroid ( links: TvRoadLink[] ) {
+
+		const points = links.map( link => this.findLinkPosition( link ).position );
+
+		return GeometryUtils.getCentroid( points );
+
+	}
 }

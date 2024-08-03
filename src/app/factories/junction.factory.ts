@@ -68,4 +68,14 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
+	createCustomJunction ( position: Vector3 ) {
+
+		const junction = this.createJunction();
+
+		junction.centroid = position;
+
+		junction.auto = false;
+
+		return junction;
+	}
 }
