@@ -34,11 +34,6 @@ export class SplineFixerService {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
-		if ( !SplineUtils.areLinksCorrect( spline ) ) {
-			console.log( "Links are not correct", spline );
-			Log.error( "Links are not correct", spline?.toString() );
-		}
-
 		this.fixMinSegmentCount( spline );
 
 		this.fixFirstSegment( spline );
@@ -192,6 +187,10 @@ export class SplineFixerService {
 		// TODO: we need to check
 		// const predecessor = SplineUtils.findPredecessor( spline );
 		// const successor = SplineUtils.findSuccessor( spline );
+
+		if ( !SplineUtils.areLinksCorrect( spline ) ) {
+			Log.warn( "Fixing incorrect links", spline?.toString() );
+		}
 
 		spline.segmentMap.forEach( ( segment, sOffset ) => {
 
