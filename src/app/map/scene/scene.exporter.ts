@@ -44,6 +44,7 @@ import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 import { TvJointBoundary, TvJunctionSegmentBoundary, TvLaneBoundary } from '../junction-boundary/tv-junction-boundary';
+import { TvRoadLaneOffset } from "../models/tv-road-lane-offset";
 
 @Injectable( {
 	providedIn: 'root'
@@ -628,41 +629,31 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	writeLanes ( xmlNode, road: TvRoad ) {
 
+		// add default lane offset if not present
+		if ( road.laneOffsets.length == 0 ) {
+			road.addLaneOffset( 0, 0, 0, 0, 0 );
+		}
+
 		xmlNode.lanes = {
-			laneOffset: [],
+			laneOffset: road.getLaneOffsets().map( laneOffset => this.writeLaneOffset( laneOffset ) ),
 			laneSection: []
 		};
-
-		this.writeLaneOffset( xmlNode.lanes, road );
 
 		for ( let i = 0; i < road.getLaneSectionCount(); i++ ) {
 			this.writeLaneSections( xmlNode.lanes, road.getLaneSection( i ) );
 		}
 	}
 
-	writeLaneOffset ( xmlNode, road: TvRoad ) {
+	writeLaneOffset ( laneOffset: TvRoadLaneOffset ) {
 
-		const laneOffsets = road.getLaneOffsets();
+		return {
+			attr_s: laneOffset.s,
+			attr_a: laneOffset.a,
+			attr_b: laneOffset.b,
+			attr_c: laneOffset.c,
+			attr_d: laneOffset.d,
+		};
 
-		if ( laneOffsets.length === 0 ) road.addLaneOffset( 0, 0, 0, 0, 0 );
-
-		if ( laneOffsets != null ) {
-
-			xmlNode.laneOffset = [];
-
-			laneOffsets.forEach( laneOffset => {
-
-				xmlNode.laneOffset.push( {
-					attr_s: laneOffset.s,
-					attr_a: laneOffset.a,
-					attr_b: laneOffset.b,
-					attr_c: laneOffset.c,
-					attr_d: laneOffset.d,
-				} );
-
-			} );
-
-		}
 	}
 
 	writeLaneSections ( xmlNode, laneSection: TvLaneSection ) {
