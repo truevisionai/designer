@@ -82,8 +82,6 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		MapEvents.splineRemoved.emit( new SplineRemovedEvent( spline ) );
 
-		this.mapService.map.removeSpline( spline );
-
 	}
 
 	update ( spline: AbstractSpline ): void {

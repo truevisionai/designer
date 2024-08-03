@@ -138,6 +138,28 @@ export class MapService {
 
 	}
 
+	removeJunction ( junction: TvJunction ) {
+
+		try {
+
+			this.map.removeJunction( junction );
+
+		} catch ( error ) {
+
+			if ( error instanceof ModelNotFoundException ) {
+
+				Log.error( "Junction not found", junction );
+
+			} else {
+
+				Log.error( error );
+
+			}
+
+		}
+
+	}
+
 	setOpacityLevel ( opacity: number ) {
 
 		this.resetMapOpacity();
@@ -274,6 +296,24 @@ export class MapService {
 		}
 
 		return meshes;
+
+	}
+
+	getJunctionCount () {
+
+		return this.junctions.length;
+
+	}
+
+	getRoadCount () {
+
+		return this.roads.length;
+
+	}
+
+	getSplineCount () {
+
+		return this.splines.length;
 
 	}
 }

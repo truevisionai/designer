@@ -39,6 +39,8 @@ import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { JunctionUtils } from "app/utils/junction.utils";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
+import { ConnectionManager } from "../map/junction/connection.manager";
+import { JunctionGeometryService } from "../services/junction/junction-geometry.service";
 
 const JUNCTION_WIDTH = 10;
 
@@ -59,6 +61,7 @@ export class JunctionManager {
 		public junctionFactory: JunctionFactory,
 		public linkService: RoadLinkService,
 		public junctionService: JunctionService,
+		public junctionGeometryService: JunctionGeometryService,
 		public junctionRoadService: JunctionRoadService,
 		public roadDividerService: RoadDividerService,
 		public splineService: SplineService,
@@ -68,6 +71,7 @@ export class JunctionManager {
 		public splineFactory: SplineFactory,
 		public roadFactory: RoadFactory,
 		public splineFixer: SplineFixerService,
+		public connectionManager: ConnectionManager,
 	) {
 	}
 
@@ -108,26 +112,32 @@ export class JunctionManager {
 
 		junction.needsUpdate = false;
 
-		const junctionLinks: TvRoadLink[] = [];
+		// const junctionLinks: TvRoadLink[] = [];
 
-		const junctionSplines = new Set<AbstractSpline>();
+		// const junctionSplines = new Set<AbstractSpline>();
 
-		// TODO: we can also find all the splines which are found in junction boundary
-		this.junctionRoadService.getIncomingSplines( junction ).forEach( s => junctionSplines.add( s ) );
+		// // TODO: we can also find all the splines which are found in junction boundary
+		// this.junctionRoadService.getIncomingSplines( junction ).forEach( s => junctionSplines.add( s ) );
 
-		otherSplines.forEach( spline => junctionSplines.add( spline ) );
+		// otherSplines.forEach( spline => junctionSplines.add( spline ) );
 
-		junctionSplines.forEach( spline => {
+		// junctionSplines.forEach( spline => {
 
-			this.updateSplineInternalLinks( spline, false );
+		// 	this.updateSplineInternalLinks( spline, false );
 
-			this.findLinksForJunction( spline, junction, junctionLinks );
+		// 	this.findLinksForJunction( spline, junction, junctionLinks );
 
-		} );
+		// } );
 
-		this.removeAllConnections( junction );
+		// this.connectionManager.removeAllConnections( junction );
 
-		this.createConnections( junction, this.sortLinks( junctionLinks ) );
+		// this.createConnections( junction, this.sortLinks( junctionLinks ) );
+
+		const links = [];
+
+		otherSplines.forEach( s => this.findLinksForJunction( s, junction, links ) );
+
+		this.connectionManager.generateConnections( junction, links );
 
 		// temporary fix for junctions
 		this.mapService.map.removeJunction( junction );
@@ -180,6 +190,16 @@ export class JunctionManager {
 		}
 	}
 
+	addLink ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ) {
+
+		this.connectionManager.addConnectionsForRoad( junction, road, contact );
+
+		this.mapService.removeJunction( junction );
+
+		this.addJunction( junction );
+
+	}
+
 	updateBoundingBox ( junction: TvJunction ) {
 
 		junction.boundingBox = this.junctionBuilder.buildBoundingBox( junction );
@@ -212,7 +232,7 @@ export class JunctionManager {
 
 		this.boundaryManager.update( junction );
 
-		junction.depBoundingBox = this.junctionService.computeBoundingBox( junction );
+		// junction.depBoundingBox = this.junctionService.computeBoundingBox( junction );
 
 	}
 
@@ -555,240 +575,147 @@ export class JunctionManager {
 		return newIntersections;
 	}
 
-
-	// updateJunctionsV2 ( spline: AbstractSpline ) {
-
-	// 	if ( this.debug ) Log.debug( 'update', spline.toString() );
-
-	// 	if ( this.splineService.isConnectionRoad( spline ) ) return;
-
-	// 	if ( spline.type == SplineType.EXPLICIT ) return;
-
-	// 	const junctions = this.splineService.getJunctions( spline );
-
-	// 	const intersections = this.splineService.findIntersections( spline );
-
-	// 	const result = this.categorizeJunctions( junctions, intersections );
-
-	// 	Log.debug( 'New Intersections', result.junctionsToCreate.length );
-
-	// 	const groups = this.createGroups( result.junctionsToCreate );
-
-	// 	for ( const group of groups ) {
-
-	// 		Log.info( 'Creating Junction From Group', group.toString() );
-
-	// 		this.createJunctionFromGroup( group );
-
+	// updateSegmentSections ( junction: TvJunction, intersections: SplineIntersection[] ) {
+	//
+	// 	const junctionArea = new Box2();
+	//
+	// 	const computeOffsets = ( spline: AbstractSpline ) => {
+	//
+	// 		const BUFFER = 2;
+	//
+	// 		const corners = [
+	// 			new Vector3( junctionArea.min.x, junctionArea.min.y, 0 ),
+	// 			new Vector3( junctionArea.max.x, junctionArea.min.y, 0 ),
+	// 			new Vector3( junctionArea.max.x, junctionArea.max.y, 0 ),
+	// 			new Vector3( junctionArea.min.x, junctionArea.max.y, 0 )
+	// 		];
+	//
+	// 		const splineACoords = corners.map( corner => this.splineService.getCoordAt( spline, corner ) ).sort( ( a, b ) => a.s - b.s );
+	//
+	// 		const aMin = splineACoords[ 0 ];
+	// 		const aMax = splineACoords[ splineACoords.length - 1 ];
+	//
+	// 		let splineStart = Math.max( aMin.s - BUFFER, 0 );
+	// 		let splineEnd = Math.min( aMax.s + BUFFER, spline.getLength() );
+	//
+	// 		// TEMP: hack to fix the offset issue at ends
+	//
+	// 		if ( splineStart == 0 ) {
+	// 			splineEnd += 5;
+	// 		}
+	//
+	// 		if ( splineEnd == spline.getLength() ) {
+	// 			splineStart -= 5;
+	// 		}
+	//
+	// 		return { splineStart, splineEnd };
 	// 	}
-
-	// 	result.junctionsToUpdate.forEach( junction => {
-
-	// 		this.removeJunction( junction, spline );
-
-	// 		this.createConnections( junction, this.findRoadLinks( spline, junction ) );
-
-	// 		// Log.info( 'Updating Junction', junction.toString() );
-
-	// 		// const newIntersections = this.splineService.findIntersections( spline, junction.getIncomingSplines() );
-
-	// 		// this.updateSegmentSections( junction, newIntersections );
-
-	// 		// this.updateConnections( junction, spline );
-
-	// 		// this.updateBoundary( junction );
-
-	// 		// this.updateMesh( junction );
-
-	// 		// this.updateBoundingBox( junction );
-
+	//
+	// 	intersections.forEach( intersection => junctionArea.union( intersection.area ) );
+	//
+	// 	const splines = new Set<AbstractSpline>();
+	//
+	// 	intersections.forEach( intersection => {
+	// 		splines.add( intersection.spline );
+	// 		splines.add( intersection.otherSpline );
 	// 	} );
-
-	// 	result.junctionsToRemove.forEach( junction => {
-
-	// 		Log.info( 'Removing Junction', junction.toString() );
-
-	// 		this.removeJunction( junction, spline, true );
-
+	//
+	// 	splines.forEach( spline => {
+	//
+	// 		const { splineStart, splineEnd } = computeOffsets( spline );
+	//
+	// 		if ( SplineUtils.hasSegment( spline, junction ) ) {
+	// 			SplineUtils.removeSegment( spline, junction );
+	// 		}
+	//
+	// 		SplineUtils.addSegment( spline, splineStart, junction );
+	//
+	// 		const next = spline.segmentMap.getNext( junction );
+	//
+	// 		if ( next ) {
+	// 			SplineUtils.removeSegment( spline, next );
+	// 			SplineUtils.addSegment( spline, splineEnd, next );
+	// 		}
+	//
 	// 	} );
-
+	//
+	// 	splines.forEach( spline => this.splineBuilder.build( spline ) );
+	//
+	// 	this.removeAllConnections( junction );
+	//
+	// 	const links = [];
+	//
+	// 	splines.forEach( s => links.push( ...this.findRoadLinks( s, junction ) ) );
+	//
+	// 	const sorted = this.sortLinks( links );
+	//
+	// 	this.createConnections( junction, sorted );
+	//
+	// 	this.clearInvalidLaneLinks( junction );
+	//
 	// }
 
-	updateSegmentSections ( junction: TvJunction, intersections: SplineIntersection[] ) {
-
-		const junctionArea = new Box2();
-
-		const computeOffsets = ( spline: AbstractSpline ) => {
-
-			const BUFFER = 2;
-
-			const corners = [
-				new Vector3( junctionArea.min.x, junctionArea.min.y, 0 ),
-				new Vector3( junctionArea.max.x, junctionArea.min.y, 0 ),
-				new Vector3( junctionArea.max.x, junctionArea.max.y, 0 ),
-				new Vector3( junctionArea.min.x, junctionArea.max.y, 0 )
-			];
-
-			const splineACoords = corners.map( corner => this.splineService.getCoordAt( spline, corner ) ).sort( ( a, b ) => a.s - b.s );
-
-			const aMin = splineACoords[ 0 ];
-			const aMax = splineACoords[ splineACoords.length - 1 ];
-
-			let splineStart = Math.max( aMin.s - BUFFER, 0 );
-			let splineEnd = Math.min( aMax.s + BUFFER, spline.getLength() );
-
-			// TEMP: hack to fix the offset issue at ends
-
-			if ( splineStart == 0 ) {
-				splineEnd += 5;
-			}
-
-			if ( splineEnd == spline.getLength() ) {
-				splineStart -= 5;
-			}
-
-			return { splineStart, splineEnd };
-		}
-
-		intersections.forEach( intersection => junctionArea.union( intersection.area ) );
-
-		const splines = new Set<AbstractSpline>();
-
-		intersections.forEach( intersection => {
-			splines.add( intersection.spline );
-			splines.add( intersection.otherSpline );
-		} );
-
-		splines.forEach( spline => {
-
-			const { splineStart, splineEnd } = computeOffsets( spline );
-
-			if ( SplineUtils.hasSegment( spline, junction ) ) {
-				SplineUtils.removeSegment( spline, junction );
-			}
-
-			SplineUtils.addSegment( spline, splineStart, junction );
-
-			const next = spline.segmentMap.getNext( junction );
-
-			if ( next ) {
-				SplineUtils.removeSegment( spline, next );
-				SplineUtils.addSegment( spline, splineEnd, next );
-			}
-
-		} );
-
-		splines.forEach( spline => this.splineBuilder.build( spline ) );
-
-		this.removeAllConnections( junction );
-
-		const links = [];
-
-		splines.forEach( s => links.push( ...this.findRoadLinks( s, junction ) ) );
-
-		const sorted = this.sortLinks( links );
-
-		this.createConnections( junction, sorted );
-
-		this.clearInvalidLaneLinks( junction );
-
-	}
-
-	clearInvalidLaneLinks ( junction: TvJunction ) {
-
-		// we want to remove non-carriage way links
-		// if we have driving lanes intersecting with
-		const links = JunctionUtils.getLaneLinks( junction );
-
-		const drivingLinks = links.filter( link => link.connectingLane.type === TvLaneType.driving );
-
-		const nonDrivingLinks = links.filter( link => link.connectingLane.type !== TvLaneType.driving );
-
-		const removedLinks = new Set<TvJunctionLaneLink>();
-
-		for ( const drivingLink of drivingLinks ) {
-
-			for ( const nonDrivingLink of nonDrivingLinks ) {
-
-				if ( removedLinks.has( nonDrivingLink ) ) continue
-
-				const drivingConnnection = JunctionUtils.findConnectionFromLink( junction, drivingLink );
-				const nonDrivingConnection = JunctionUtils.findConnectionFromLink( junction, nonDrivingLink );
-
-				if ( !drivingConnnection ) {
-					Log.error( 'Driving Connection not found' );
-					continue;
-				}
-
-				if ( !nonDrivingConnection ) {
-					Log.error( 'Sidewalk Connection not found' );
-					continue;
-				}
-
-				const intersect = this.splineService.findIntersection(
-					drivingConnnection.connectingRoad.spline,
-					nonDrivingConnection.connectingRoad.spline
-				);
-
-				if ( intersect ) {
-
-					this.roadManager.removeRoad( nonDrivingConnection.connectingRoad );
-
-					junction.removeConnection( nonDrivingConnection );
-
-					removedLinks.add( nonDrivingLink );
-
-				}
-
-			}
-
-		}
-
-	}
+	// clearInvalidLaneLinks ( junction: TvJunction ) {
+	//
+	// 	// we want to remove non-carriage way links
+	// 	// if we have driving lanes intersecting with
+	// 	const links = JunctionUtils.getLaneLinks( junction );
+	//
+	// 	const drivingLinks = links.filter( link => link.connectingLane.type === TvLaneType.driving );
+	//
+	// 	const nonDrivingLinks = links.filter( link => link.connectingLane.type !== TvLaneType.driving );
+	//
+	// 	const removedLinks = new Set<TvJunctionLaneLink>();
+	//
+	// 	for ( const drivingLink of drivingLinks ) {
+	//
+	// 		for ( const nonDrivingLink of nonDrivingLinks ) {
+	//
+	// 			if ( removedLinks.has( nonDrivingLink ) ) continue
+	//
+	// 			const drivingConnnection = JunctionUtils.findConnectionFromLink( junction, drivingLink );
+	// 			const nonDrivingConnection = JunctionUtils.findConnectionFromLink( junction, nonDrivingLink );
+	//
+	// 			if ( !drivingConnnection ) {
+	// 				Log.error( 'Driving Connection not found' );
+	// 				continue;
+	// 			}
+	//
+	// 			if ( !nonDrivingConnection ) {
+	// 				Log.error( 'Sidewalk Connection not found' );
+	// 				continue;
+	// 			}
+	//
+	// 			const intersect = this.splineService.findIntersection(
+	// 				drivingConnnection.connectingRoad.spline,
+	// 				nonDrivingConnection.connectingRoad.spline
+	// 			);
+	//
+	// 			if ( intersect ) {
+	//
+	// 				this.roadManager.removeRoad( nonDrivingConnection.connectingRoad );
+	//
+	// 				junction.removeConnection( nonDrivingConnection );
+	//
+	// 				removedLinks.add( nonDrivingLink );
+	//
+	// 			}
+	//
+	// 		}
+	//
+	// 	}
+	//
+	// }
 
 	removeConnections ( junction: TvJunction, incomingRoad: TvRoad ) {
 
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			// this completely remove all incoming and outoing connections
-
-			if ( connection.incomingRoad === incomingRoad ) {
-
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			} else if ( connection.connectingRoad.successor?.element == incomingRoad ) {
-
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			} else if ( connection.connectingRoad.predecessor?.element == incomingRoad ) {
-
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			}
-
-		}
+		this.connectionManager.removeConnections( junction, incomingRoad );
 
 	}
 
 	removeAllConnections ( junction: TvJunction ) {
 
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			this.roadManager.removeRoad( connection.connectingRoad );
-
-			junction.removeConnection( connection );
-
-		}
+		this.connectionManager.removeAllConnections( junction );
 
 	}
 
@@ -837,8 +764,13 @@ export class JunctionManager {
 
 					// we need to disconnect the previous road with current segment junction
 					if ( previousSegment instanceof TvRoad && currentSegment instanceof TvJunction ) {
+
 						this.removeConnections( currentSegment, previousSegment );
+
+						this.junctionRoadService.removeLink( currentSegment, previousSegment );
+
 						currentSegment.needsUpdate = true;
+
 					}
 
 					// also for new road we need to add connections
@@ -957,9 +889,13 @@ export class JunctionManager {
 
 				if ( segment instanceof TvJunction ) {
 
-					const boundingBox = segment.depBoundingBox || this.junctionService.computeBoundingBox( segment );
+					// this.junctionGeometryService.updateBoundingBox( segment );
 
-					const distance = boundingBox.distanceToPoint( group.getRepresentativePosition() ) ?? Number.MAX_VALUE;
+					// const boundingBox = segment.depBoundingBox || this.junctionService.computeBoundingBox( segment );
+
+					const groupPosition = new Vector2( group.centroid.x, group.centroid.y );
+
+					const distance = segment.boundingBox.distanceToPoint( groupPosition );
 
 					if ( distance < 10 ) {
 
@@ -991,93 +927,17 @@ export class JunctionManager {
 		// we will regenerate splines for each connecting road
 		// no other modification is needed
 
-		const connections = junction.getConnections();
+		this.connectionManager.updateGeometries( junction );
 
-		for ( const connection of connections ) {
+		this.boundaryManager.update( junction );
 
-			const prevRoad = connection.connectingRoad.predecessor.element as TvRoad;
-			const prevCoord = prevRoad.getRoadCoordByContact( connection.connectingRoad.predecessor.contactPoint );
+		this.updateMesh( junction );
 
-			const nextRoad = connection.connectingRoad.successor.element as TvRoad;
-			const nextRoadCoord = nextRoad.getRoadCoordByContact( connection.connectingRoad.successor.contactPoint );
+		this.updateBoundingBox( junction );
 
-			connection.laneLink.forEach( link => {
-
-				if ( !connection.isCornerConnection ) {
-					link.connectingLane.roadMarks.clear();
-				}
-
-				const incomingLane = link.incomingLane;
-				const connectingLane = link.connectingLane;
-				const outgoingLane = nextRoad.laneSections[ 0 ].getLaneById( connectingLane.successorId );
-
-				const newSpline = SplineFactory.createManeuverSpline( prevCoord.toLaneCoord( incomingLane ), nextRoadCoord.toLaneCoord( outgoingLane ) );
-
-				connection.connectingRoad.spline.controlPoints = newSpline.controlPoints;
-
-				this.splineBuilder.buildSpline( connection.connectingRoad.spline );
-
-				if ( connection.connectingRoad.length > 1 ) {
-
-					this.splineBuilder.buildSegments( connection.connectingRoad.spline );
-
-				} else {
-
-					this.roadManager.removeRoad( connection.connectingRoad );
-
-					junction.removeConnection( connection );
-
-				}
-
-			} )
-
-		}
+		this.updateBoundary( junction );
 
 	}
-
-	updateCustomJunctionConnections ( junction: TvJunction ) {
-
-		// we will regenerate splines for each connecting road
-		// no other modification is needed
-
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			const connectingRoad = connection.connectingRoad;
-
-			const prevLink = connectingRoad.predecessor.toRoadCoord();
-
-			const nextLink = connectingRoad.successor.toRoadCoord();
-
-			connectingRoad.spline = this.splineFactory.createConnectingRoadSpline( connectingRoad, prevLink, nextLink );
-
-			this.splineBuilder.build( connectingRoad.spline );
-
-		}
-
-	}
-
-	// checkSplineIntersections ( spline: AbstractSpline ) {
-	//
-	// 	const splines = this.mapService.nonJunctionSplines;
-	// 	const splineCount = splines.length;
-	//
-	// 	for ( let i = 0; i < splineCount; i++ ) {
-	//
-	// 		const otherSpline = splines[ i ];
-	//
-	// 		const intersection = this.splineService.findIntersection( spline, otherSpline );
-	//
-	// 		if ( !intersection ) continue;
-	//
-	// 		const junction = this.createJunction( spline, otherSpline, intersection );
-	//
-	// 		this.junctionService.addJunction( junction );
-	//
-	// 	}
-	//
-	// }
 
 	createGroups ( intersections: SplineIntersection[], thresholdDistance = 10 ): IntersectionGroup[] {
 
@@ -1340,11 +1200,11 @@ export class JunctionManager {
 
 		splines.forEach( spline => this.splineService.getJunctions( spline ).forEach( junction => {
 
-			const groupPosition = group.getRepresentativePosition();
+			const groupPosition = new Vector2( group.centroid.x, group.centroid.y )
 
-			const bbox = junction.depBoundingBox || this.junctionService.computeBoundingBox( junction );
+			// const bbox = junction.depBoundingBox || this.junctionService.computeBoundingBox( junction );
 
-			if ( bbox.distanceToPoint( groupPosition ) < 10 ) {
+			if ( junction.boundingBox.distanceToPoint( groupPosition ) < 10 ) {
 
 				junctions.add( junction )
 

@@ -16,6 +16,7 @@ import { SplineUtils } from "app/utils/spline.utils";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { Log } from "app/core/utils/log";
 import { RoadUtils } from "app/utils/road.utils";
+import { ConnectionManager } from "../map/junction/connection.manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,7 +31,8 @@ export class SplineManager {
 		private splineBuilder: SplineBuilder,
 		private junctionManager: JunctionManager,
 		private splineService: SplineService,
-		private fixer: SplineFixerService
+		private fixer: SplineFixerService,
+		private connectionManager: ConnectionManager,
 	) {
 	}
 
@@ -45,6 +47,20 @@ export class SplineManager {
 		this.addSegments( spline );
 
 		this.splineBuilder.build( spline );
+
+		const lastSegment = spline.segmentMap.getLast();
+		const successor = SplineUtils.findSuccessor( spline );
+
+		if ( successor instanceof TvJunction && lastSegment instanceof TvRoad ) {
+			this.junctionManager.addLink( successor as TvJunction, lastSegment, TvContactPoint.END );
+		}
+
+		const firstSegment = spline.segmentMap.getFirst();
+		const predecessor = SplineUtils.findPredecessor( spline );
+
+		if ( predecessor instanceof TvJunction && firstSegment instanceof TvRoad ) {
+			this.junctionManager.addLink( predecessor as TvJunction, firstSegment, TvContactPoint.START );
+		}
 
 		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
 
@@ -107,25 +123,38 @@ export class SplineManager {
 
 		if ( this.debug ) Log.debug( "Remove", spline.toString() );
 
-		this.mapService.map.removeSpline( spline );
+		if ( SplineUtils.isConnection( spline ) ) {
+			this.mapService.map.removeSpline( spline );
+			return;
+		}
 
-		this.mapService.map.removeSpline( spline );
+		const lastSegment = spline.segmentMap.getLast();
+		const successor = SplineUtils.findSuccessor( spline );
 
-		if ( SplineUtils.isConnection( spline ) ) return;
+		if ( successor instanceof TvJunction && lastSegment instanceof TvRoad ) {
+			this.connectionManager.removeConnections( successor, lastSegment );
+			this.junctionManager.updateJunction( successor );
+		}
+
+		const firstSegment = spline.segmentMap.getFirst();
+		const predecessor = SplineUtils.findPredecessor( spline );
+
+		if ( predecessor instanceof TvJunction && firstSegment instanceof TvRoad ) {
+			this.connectionManager.removeConnections( predecessor, firstSegment );
+			this.junctionManager.updateJunction( predecessor );
+		}
 
 		for ( const segment of spline.segmentMap.toArray() ) {
-
 			if ( segment instanceof TvJunction ) {
-
 				this.junctionManager.removeJunction( segment, spline, true );
-
 			}
-
 		}
 
 		this.unlinkSpline( spline );
 
 		this.removeMesh( spline );
+
+		this.mapService.map.removeSpline( spline );
 
 	}
 
@@ -176,13 +205,13 @@ export class SplineManager {
 
 		// } else if ( lastSegment instanceof TvJunction ) {
 
-		// 	console.debug( "last segment is junction", lastSegment.toString(), spline.uuid );
+		// 	Log.debug( "last segment is junction", lastSegment.toString(), spline.uuid );
 
 		// }
 
 		if ( splineSuccessor instanceof TvRoad ) {
 
-			console.debug( "successor is road", splineSuccessor.toString(), spline.uuid );
+			Log.debug( "successor is road", splineSuccessor.toString(), spline.uuid );
 
 			const lastRoad = spline.segmentMap.getLast() instanceof TvRoad ? spline.segmentMap.getLast() as TvRoad : null;
 
@@ -190,9 +219,9 @@ export class SplineManager {
 
 		} else if ( splineSuccessor instanceof TvJunction ) {
 
-			console.debug( "successor is junction", splineSuccessor.toString(), spline.uuid );
+			Log.debug( "successor is junction", splineSuccessor.toString(), spline.uuid );
 
-			this.junctionManager.updateCustomJunctionConnections( splineSuccessor );
+			this.junctionManager.updateConnections( splineSuccessor );
 
 		}
 
@@ -215,7 +244,7 @@ export class SplineManager {
 
 		// } else if ( firstSegment instanceof TvJunction ) {
 
-		// 	console.debug( "first segment is junction", firstSegment.toString(), spline.uuid );
+		// 	Log.debug( "first segment is junction", firstSegment.toString(), spline.uuid );
 
 		// }
 
@@ -223,7 +252,7 @@ export class SplineManager {
 
 		if ( splinePredecessor instanceof TvRoad ) {
 
-			console.debug( "predecessor is road", splinePredecessor.toString(), spline.uuid );
+			Log.debug( "predecessor is road", splinePredecessor.toString(), spline.uuid );
 
 			const firstRoad = spline.segmentMap.getFirst() instanceof TvRoad ? spline.segmentMap.getFirst() as TvRoad : null;
 
@@ -231,9 +260,9 @@ export class SplineManager {
 
 		} else if ( splinePredecessor instanceof TvJunction ) {
 
-			console.debug( "predecessor is junction", splinePredecessor.toString(), spline.uuid );
+			Log.debug( "predecessor is junction", splinePredecessor.toString(), spline.uuid );
 
-			this.junctionManager.updateCustomJunctionConnections( splinePredecessor );
+			this.junctionManager.updateConnections( splinePredecessor );
 
 		}
 	}

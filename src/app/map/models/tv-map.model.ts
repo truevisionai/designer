@@ -76,13 +76,21 @@ export class TvMap {
 	}
 
 	addSpline ( spline: AbstractSpline ): void {
-		if ( this.splines.find( s => s.uuid == spline.uuid ) ) return;
+		if ( this.splines.find( s => s.uuid == spline.uuid ) ) {
+			throw new DuplicateKeyException( `Spline with uuid ${ spline.uuid } already exists` );
+		}
 		this.splines.push( spline );
 	}
 
 	removeSpline ( spline: AbstractSpline ): void {
-		if ( !this.splines.find( s => s.uuid == spline.uuid ) ) return;
+		if ( !this.splines.find( s => s.uuid == spline.uuid ) ) {
+			throw new ModelNotFoundException( `Spline with uuid ${ spline.uuid } not found` );
+		}
 		this.splines.splice( this.splines.indexOf( spline ), 1 );
+	}
+
+	hasSpline ( spline: AbstractSpline ) {
+		return this.splines.find( s => s.uuid == spline.uuid );
 	}
 
 	getSplines (): AbstractSpline[] {

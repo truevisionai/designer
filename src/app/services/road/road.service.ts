@@ -219,8 +219,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
-		// this.mapService.map.removeRoad( road );
-
 	}
 
 	duplicateRoad ( road: TvRoad ) {

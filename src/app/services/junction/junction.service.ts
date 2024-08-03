@@ -24,6 +24,7 @@ import { BaseDataService } from "../../core/interfaces/data.service";
 import { TrafficRule } from 'app/map/models/traffic-rule';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { JunctionRoadService } from './junction-road.service';
+import { JunctionGeometryService } from "./junction-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -40,7 +41,8 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		public debug: DebugDrawService,
 		public base: BaseToolService,
 		public mapService: MapService,
-		public junctionRoadService: JunctionRoadService
+		public junctionRoadService: JunctionRoadService,
+		public junctionGeometryService: JunctionGeometryService,
 	) {
 		super();
 	}
@@ -205,30 +207,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		}
 
 	}
-
-	computeBoundingBox ( junction: TvJunction ): Box3 {
-
-		const boundingBox = new Box3();
-
-		const connectingRoads = this.junctionRoadService.getConnectingRoads( junction );
-
-		for ( let i = 0; i < connectingRoads.length; i++ ) {
-
-			const connectingRoad = connectingRoads[ i ];
-
-			if ( !connectingRoad.boundingBox ) {
-				connectingRoad.computeBoundingBox();
-			}
-
-			if ( connectingRoad.boundingBox ) {
-				boundingBox.union( connectingRoad.boundingBox );
-			}
-
-		}
-
-		return boundingBox;
-	}
-
 	add ( object: TvJunction ): void {
 
 		this.addJunction( object );

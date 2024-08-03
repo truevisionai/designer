@@ -10,6 +10,7 @@ import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { MapService } from '../map/map.service';
+import { RoadService } from "../road/road.service";
 
 
 @Injectable( {
@@ -20,6 +21,7 @@ export class SplineTestHelper {
 	constructor (
 		public mapService: MapService,
 		public splineService: SplineService,
+		public roadService: RoadService,
 		public roadFactory: RoadFactory,
 		public junctionFactory: JunctionFactory,
 		public cirleToolService: RoadCircleToolService,
@@ -237,4 +239,29 @@ export class SplineTestHelper {
 
 	}
 
+	create2RoadsForCustomJunction () {
+
+		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
+		const right = SplineFactory.createStraight( new Vector3( 20, 0, 0 ), 100 );
+
+		this.splineService.add( left );
+		this.splineService.add( right );
+
+		return { left, right };
+
+	}
+
+	create3RoadsForCustomJunction () {
+
+		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
+		const right = SplineFactory.createStraight( new Vector3( 20, 0, 0 ), 100 );
+		const bottom = SplineFactory.createStraight( new Vector3( 0, -1200, 0 ), 100, 90 );
+
+		this.splineService.add( left );
+		this.splineService.add( right );
+		this.splineService.add( bottom );
+
+		return { left, right, bottom };
+
+	}
 }

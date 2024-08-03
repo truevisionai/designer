@@ -85,15 +85,15 @@ export class SplineUtils {
 
 	static findSuccessor ( spline: AbstractSpline ): TvRoad | TvJunction | null {
 
-		const segment = spline.segmentMap.getLast();
+		const lastSegment = spline.segmentMap.getLast();
 
-		if ( !segment ) return;
+		if ( !lastSegment ) return;
 
-		if ( !( segment instanceof TvRoad ) ) return;
+		if ( !( lastSegment instanceof TvRoad ) ) return;
 
-		if ( !segment.successor ) return;
+		if ( !lastSegment.successor ) return;
 
-		return segment.successor.element;
+		return lastSegment.successor.element;
 
 	}
 
