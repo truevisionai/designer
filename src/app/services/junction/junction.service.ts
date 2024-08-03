@@ -23,6 +23,7 @@ import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event
 import { BaseDataService } from "../../core/interfaces/data.service";
 import { TrafficRule } from 'app/map/models/traffic-rule';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { JunctionRoadService } from './junction-road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,6 +40,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		public debug: DebugDrawService,
 		public base: BaseToolService,
 		public mapService: MapService,
+		public junctionRoadService: JunctionRoadService
 	) {
 		super();
 	}
@@ -106,17 +108,11 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	addJunction ( junction: TvJunction ) {
 
-		this.mapService.map.addJunction( junction );
-
 		MapEvents.junctionCreated.emit( new JunctionCreatedEvent( junction ) );
 
 	}
 
 	removeJunction ( junction: TvJunction ) {
-
-		this.mapService.map.removeJunction( junction );
-
-		this.removeJunctionMesh( junction );
 
 		MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction ) );
 
@@ -200,42 +196,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	findJunctionForRoads ( incoming: TvRoad, outgoing: TvRoad ): TvJunction {
-
-		let finalJunction: TvJunction = null;
-
-		for ( const junction of this.mapService.map.getJunctions() ) {
-
-			const connections = junction.getConnections();
-
-			for ( let i = 0; i < connections.length; i++ ) {
-
-				const connection = connections[ i ];
-				const connectingRoad = connection.connectingRoad;
-
-				if ( connection.incomingRoadId === incoming.id || connection.incomingRoadId === outgoing.id ) {
-					finalJunction = junction;
-					break;
-				}
-
-				if ( connectingRoad?.predecessor.id === incoming.id ) {
-					finalJunction = junction;
-					break;
-				}
-
-				if ( connectingRoad?.successor.id === outgoing.id ) {
-					finalJunction = junction;
-					break;
-				}
-			}
-
-			if ( finalJunction ) break;
-		}
-
-		return finalJunction;
-
-	}
-
 	createNewJunction () {
 
 		return this.factory.createJunction();
@@ -308,7 +268,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		const boundingBox = new Box3();
 
-		const connectingRoads = junction.getConnectingRoads();
+		const connectingRoads = this.junctionRoadService.getConnectingRoads( junction );
 
 		for ( let i = 0; i < connectingRoads.length; i++ ) {
 

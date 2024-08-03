@@ -217,6 +217,10 @@ export class TvMap {
 
 	removeJunction ( junction: TvJunction ) {
 
+		if ( !this.junctions.has( junction.id ) ) {
+			throw new ModelNotFoundException( `Junction with id ${ junction.id } not found` );
+		}
+
 		this.junctions.delete( junction.id );
 
 	}

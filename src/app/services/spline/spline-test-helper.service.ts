@@ -9,6 +9,7 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { JunctionFactory } from 'app/factories/junction.factory';
+import { MapService } from '../map/map.service';
 
 
 @Injectable( {
@@ -17,6 +18,7 @@ import { JunctionFactory } from 'app/factories/junction.factory';
 export class SplineTestHelper {
 
 	constructor (
+		public mapService: MapService,
 		public splineService: SplineService,
 		public roadFactory: RoadFactory,
 		public junctionFactory: JunctionFactory,

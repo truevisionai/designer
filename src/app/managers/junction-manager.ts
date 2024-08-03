@@ -38,6 +38,7 @@ import { OrderedMap } from "app/core/models/ordered-map";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { JunctionUtils } from "app/utils/junction.utils";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
+import { JunctionRoadService } from "app/services/junction/junction-road.service";
 
 const JUNCTION_WIDTH = 10;
 
@@ -58,6 +59,7 @@ export class JunctionManager {
 		public junctionFactory: JunctionFactory,
 		public linkService: RoadLinkService,
 		public junctionService: JunctionService,
+		public junctionRoadService: JunctionRoadService,
 		public roadDividerService: RoadDividerService,
 		public splineService: SplineService,
 		public boundaryManager: TvJunctionBoundaryManager,
@@ -111,7 +113,7 @@ export class JunctionManager {
 		const junctionSplines = new Set<AbstractSpline>();
 
 		// TODO: we can also find all the splines which are found in junction boundary
-		junction.getIncomingSplines().forEach( s => junctionSplines.add( s ) );
+		this.junctionRoadService.getIncomingSplines( junction ).forEach( s => junctionSplines.add( s ) );
 
 		otherSplines.forEach( spline => junctionSplines.add( spline ) );
 
@@ -218,36 +220,15 @@ export class JunctionManager {
 
 		if ( this.debug ) Log.debug( 'Remove', junction.toString() );
 
-		const splines = junction.getIncomingSplines();
+		const splines = this.junctionRoadService.getIncomingSplines( junction );
 
-		// for ( let i = 0; i < splines.length; i++ ) {
+		const removeSegment = ( spline: AbstractSpline ) => {
 
-		// 	this.handleNextSegment( splines[ i ], junction );
+			// if junction is not auto then we should not remove the segment
+			if ( !junction.auto ) return;
 
-		// 	this.splineFixer.fix( splines[ i ] );
-
-		// }
-
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			this.roadManager.removeRoad( connection.connectingRoad );
-
-			junction.removeConnection( connection );
-
-		}
-
-		this.mapService.map.removeJunction( junction );
-
-		this.removeMesh( junction );
-
-		for ( let i = 0; i < splines.length; i++ ) {
-
-			const incomingSpline = splines[ i ];
-
-			const prev = incomingSpline.segmentMap.getPrevious( junction );
-			const next = incomingSpline.segmentMap.getNext( junction );
+			const prev = spline.segmentMap.getPrevious( junction );
+			const next = spline.segmentMap.getNext( junction );
 
 			if ( prev instanceof TvRoad ) {
 				this.removeConnections( junction, prev );
@@ -259,13 +240,28 @@ export class JunctionManager {
 				next.predecessor = null;
 			}
 
-			SplineUtils.removeSegment( incomingSpline, junction );
+			SplineUtils.removeSegment( spline, junction );
 
-			this.splineFixer.fix( incomingSpline );
+			this.splineFixer.fix( spline );
 
-			this.splineBuilder.build( incomingSpline );
+			this.splineBuilder.build( spline );
+
+		};
+
+		this.junctionRoadService.removeLinks( junction );
+
+		for ( let i = 0; i < splines.length; i++ ) {
+
+			removeSegment( splines[ i ] );
 
 		}
+
+		this.removeAllConnections( junction );
+
+		this.mapService.map.removeJunction( junction );
+
+		this.removeMesh( junction );
+
 		// TODO: we should check the remaing spline count instead of initial
 		if ( splines.length > 2 && spline && processOthers ) {
 
@@ -280,10 +276,6 @@ export class JunctionManager {
 				this.createJunctionFromGroup( group );
 
 			}
-
-		} else {
-
-			spline?.segmentMap.remove( junction );
 
 		}
 
@@ -457,7 +449,9 @@ export class JunctionManager {
 
 		junction.connections.clear();
 
-		const sorted = this.sortLinks( junction.getLinks() );
+		const links = this.junctionRoadService.getRoadLinks( junction );
+
+		const sorted = this.sortLinks( links );
 
 		this.createConnections( junction, sorted );
 
@@ -473,7 +467,7 @@ export class JunctionManager {
 
 		const intersections: SplineIntersection[] = [];
 
-		const splines = junction.getIncomingSplines();
+		const splines = this.junctionRoadService.getIncomingSplines( junction );
 
 		for ( let i = 0; i < splines.length; i++ ) {
 
@@ -506,7 +500,7 @@ export class JunctionManager {
 	 */
 	isJunctionMatchingIntersections ( junction: TvJunction, intersections: SplineIntersection[] ): boolean {
 
-		const junctionSplines = junction.getIncomingSplines();
+		const junctionSplines = this.junctionRoadService.getIncomingSplines( junction );
 
 		const junctionUuids = junctionSplines.map( s => s.uuid );
 
@@ -971,11 +965,15 @@ export class JunctionManager {
 
 						if ( this.debug ) Log.debug( 'Merging Junction Into Group', segment.toString() );
 
-						segment.getIncomingSplines().forEach( incomingSpline => group.addSplineIntersection( new SplineIntersection(
-							incomingSpline,
-							spline,
-							group.getRepresentativePosition()
-						) ) );
+						const incomingSplines = this.junctionRoadService.getIncomingSplines( segment );
+
+						incomingSplines.forEach( incomingSpline => {
+
+							const i = new SplineIntersection( incomingSpline, spline, group.getRepresentativePosition() );
+
+							group.addSplineIntersection( i );
+
+						} );
 
 						this.removeJunction( segment );
 
@@ -1416,19 +1414,17 @@ export class JunctionManager {
 
 			if ( segment instanceof TvJunction && segment.needsUpdate ) {
 
-				if ( junctions.has( segment ) ) {
+				if ( !junctions.has( segment ) ) {
 
-					junctions.get( segment ).add( spline );
-
-					segment.getIncomingSplines().forEach( inSpline => junctions.get( segment ).add( inSpline ) );
-
-				} else {
-
-					junctions.set( segment, new Set<AbstractSpline>( [ spline ] ) );
-
-					segment.getIncomingSplines().forEach( inSpline => junctions.get( segment ).add( inSpline ) );
+					junctions.set( segment, new Set<AbstractSpline>( [] ) );
 
 				}
+
+				junctions.get( segment ).add( spline );
+
+				const incomingSplines = this.junctionRoadService.getIncomingSplines( segment );
+
+				incomingSplines.forEach( inSpline => junctions.get( segment ).add( inSpline ) );
 
 			}
 

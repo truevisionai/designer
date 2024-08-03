@@ -58,20 +58,9 @@ export class TvJunction {
 		return Array.from( this.connections.values() );
 	}
 
-	getConnectingRoads (): TvRoad[] {
-
-		const connectingRoads: TvRoad[] = [];
-
-		this.connections.forEach( connection => {
-
-			connectingRoads.push( connection.connectingRoad );
-
-		} );
-
-		return connectingRoads;
-
-	}
-
+	/**
+	 * @deprecated use JunctionRoadService
+	 */
 	getIncomingRoads (): TvRoad[] {
 
 		const roads = new Set<TvRoad>();
@@ -92,6 +81,9 @@ export class TvJunction {
 
 	}
 
+	/**
+	 * @deprecated use JunctionRoadService
+	 */
 	getIncomingSplines (): AbstractSpline[] {
 
 		const splines = new Set<AbstractSpline>();
@@ -102,18 +94,27 @@ export class TvJunction {
 
 	}
 
+	/**
+	 * @deprecated use JunctionRoadService
+	 */
 	getRoads (): TvRoad[] {
 
 		return this.getIncomingRoads();
 
 	}
 
+	/**
+	 * @deprecated use JunctionRoadService
+	 */
 	getRoadCoords () {
 
 		return this.getLinks().map( link => link.toRoadCoord() );
 
 	}
 
+	/**
+	 * @deprecated use JunctionRoadService
+	 */
 	getLinks (): TvRoadLink[] {
 
 		const edges: TvRoadLink[] = [];
