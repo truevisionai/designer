@@ -32,15 +32,11 @@ export class JunctionEventListener {
 
 	onJunctionCreated ( e: JunctionCreatedEvent ): void {
 
-		if ( this.debug ) console.trace( e );
-
 		this.junctionManager.addJunction( e.junction );
 
 	}
 
 	onJunctionRemoved ( event: JunctionRemovedEvent ): void {
-
-		if ( this.debug ) console.trace( event );
 
 		this.junctionManager.removeJunction( event.junction );
 

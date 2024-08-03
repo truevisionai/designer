@@ -126,7 +126,6 @@ export class ConnectionManager {
 
 		}
 
-
 	}
 
 	updateGeometries ( junction: TvJunction ) {

@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { JunctionManager } from "../../app/managers/junction-manager";
 import { SplineTestHelper } from "../../app/services/spline/spline-test-helper.service";
 import { JunctionToolHelper } from "../../app/tools/junction/junction-tool.helper";
 import { TvRoadLink, TvRoadLinkType } from "../../app/map/models/tv-road-link";
@@ -12,7 +11,6 @@ import { expectValidMap } from "../base-test.spec";
 describe( 'CustomJunction: Tests', () => {
 
 	let eventServiceProvider: EventServiceProvider;
-	let junctionManager: JunctionManager;
 	let testHelper: SplineTestHelper;
 	let juctionToolHelper: JunctionToolHelper;
 
@@ -23,17 +21,10 @@ describe( 'CustomJunction: Tests', () => {
 		} );
 
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
-		junctionManager = TestBed.inject( JunctionManager );
 		testHelper = TestBed.inject( SplineTestHelper );
 		juctionToolHelper = TestBed.inject( JunctionToolHelper );
 
 		eventServiceProvider.init();
-
-	} );
-
-	it( 'should create correctly', () => {
-
-		expect( junctionManager ).toBeTruthy();
 
 	} );
 
@@ -51,7 +42,7 @@ describe( 'CustomJunction: Tests', () => {
 
 		const junction = juctionToolHelper.createCustomJunction( links );
 
-		junctionManager.addJunction( junction );
+		testHelper.junctionService.addJunction( junction );
 
 	}
 
@@ -71,7 +62,7 @@ describe( 'CustomJunction: Tests', () => {
 
 		const junction = juctionToolHelper.createCustomJunction( links );
 
-		junctionManager.addJunction( junction );
+		testHelper.junctionService.addJunction( junction );
 
 	}
 
@@ -105,7 +96,9 @@ describe( 'CustomJunction: Tests', () => {
 
 		const junction = testHelper.mapService.findJunction( 1 );
 
-		junctionManager.removeJunction( junction );
+		testHelper.junctionService.removeJunction( junction );
+
+		expectValidMap( testHelper.mapService );
 
 		const leftRoad = testHelper.mapService.findRoad( 1 );
 		const rightRoad = testHelper.mapService.findRoad( 2 );
@@ -117,6 +110,22 @@ describe( 'CustomJunction: Tests', () => {
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 0 );
 		expect( testHelper.mapService.getRoadCount() ).toBe( 2 );
 		expect( testHelper.mapService.getSplineCount() ).toBe( 2 );
+
+		// now lets undo
+		// junction model itself should not lose any data
+		expect( junction.getConnectionCount() ).toBe( 6 );
+
+		testHelper.junctionService.addJunction( junction );
+
+		expect( leftRoad.successor.element ).toBe( junction );
+		expect( rightRoad.predecessor.element ).toBe( junction );
+
+		expect( testHelper.mapService.findJunction( 1 ) ).toBe( junction );
+		expect( testHelper.mapService.getJunctionCount() ).toBe( 1 );
+		expect( testHelper.mapService.getRoadCount() ).toBe( 8 );
+		expect( testHelper.mapService.getSplineCount() ).toBe( 8 );
+
+		expectValidMap( testHelper.mapService );
 
 	} );
 
@@ -154,6 +163,8 @@ describe( 'CustomJunction: Tests', () => {
 		const bottomRoad = testHelper.mapService.findRoad( 3 );
 
 		testHelper.splineService.remove( bottomRoad.spline );
+
+		expectValidMap( testHelper.mapService );
 
 		const leftRoad = testHelper.mapService.findRoad( 1 );
 		const rightRoad = testHelper.mapService.findRoad( 2 );

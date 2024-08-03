@@ -27,8 +27,6 @@ import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { RoadUtils } from "../utils/road.utils";
 import { Box2, MathUtils, Vector2, Vector3 } from "three";
-import { DebugDrawService } from "../services/debug/debug-draw.service";
-import { COLOR } from "../views/shared/utils/colors.service";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { Log } from "app/core/utils/log";
 import { TvJunctionBoundaryManager } from "../map/junction-boundary/tv-junction-boundary.manager";
@@ -36,8 +34,6 @@ import { SplineUtils } from "app/utils/spline.utils";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { OrderedMap } from "app/core/models/ordered-map";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
-import { JunctionUtils } from "app/utils/junction.utils";
-import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { ConnectionManager } from "../map/junction/connection.manager";
 import { JunctionGeometryService } from "../services/junction/junction-geometry.service";
@@ -97,6 +93,8 @@ export class JunctionManager {
 			}
 
 		}
+
+		this.junctionRoadService.linkRoads( junction );
 
 		this.updateBoundary( junction );
 
@@ -171,7 +169,6 @@ export class JunctionManager {
 			this.removeJunction( junction, spline );
 
 		}
-
 
 		const groups = this.createGroups( intersections );
 
@@ -251,12 +248,10 @@ export class JunctionManager {
 			const next = spline.segmentMap.getNext( junction );
 
 			if ( prev instanceof TvRoad ) {
-				this.removeConnections( junction, prev );
 				prev.successor = null;
 			}
 
 			if ( next instanceof TvRoad ) {
-				this.removeConnections( junction, next );
 				next.predecessor = null;
 			}
 
@@ -276,7 +271,7 @@ export class JunctionManager {
 
 		}
 
-		this.removeAllConnections( junction );
+		this.junctionRoadService.removeAll( junction );
 
 		this.mapService.map.removeJunction( junction );
 

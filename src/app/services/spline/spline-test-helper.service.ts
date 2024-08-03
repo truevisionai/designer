@@ -11,6 +11,7 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { MapService } from '../map/map.service';
 import { RoadService } from "../road/road.service";
+import { JunctionService } from '../junction/junction.service';
 
 
 @Injectable( {
@@ -23,6 +24,7 @@ export class SplineTestHelper {
 		public splineService: SplineService,
 		public roadService: RoadService,
 		public roadFactory: RoadFactory,
+		public junctionService: JunctionService,
 		public junctionFactory: JunctionFactory,
 		public cirleToolService: RoadCircleToolService,
 	) {
