@@ -12,6 +12,11 @@ import { JunctionFactory } from 'app/factories/junction.factory';
 import { MapService } from '../map/map.service';
 import { RoadService } from "../road/road.service";
 import { JunctionService } from '../junction/junction.service';
+import { SplineLinkService } from 'app/managers/spline-link.service';
+import { TvContactPoint } from 'app/map/models/tv-common';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { JunctionToolHelper } from 'app/tools/junction/junction-tool.helper';
 
 
 @Injectable( {
@@ -27,6 +32,8 @@ export class SplineTestHelper {
 		public junctionService: JunctionService,
 		public junctionFactory: JunctionFactory,
 		public cirleToolService: RoadCircleToolService,
+		public splineLinkService: SplineLinkService,
+		public junctionToolHelper: JunctionToolHelper,
 	) {
 	}
 
@@ -241,6 +248,25 @@ export class SplineTestHelper {
 
 	}
 
+	createCustomJunctionWith2Roads () {
+
+		this.create2RoadsForCustomJunction();
+
+		const leftRoad = this.mapService.findRoad( 1 );
+		const rightRoad = this.mapService.findRoad( 2 );
+
+		const links = [
+			new TvRoadLink( TvRoadLinkType.ROAD, leftRoad, TvContactPoint.END ),
+			new TvRoadLink( TvRoadLinkType.ROAD, rightRoad, TvContactPoint.START )
+		]
+
+		// TODO: use service or factory to create junction
+		const junction = this.junctionToolHelper.createCustomJunction( links );
+
+		this.junctionService.addJunction( junction );
+
+	}
+
 	create2RoadsForCustomJunction () {
 
 		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
@@ -265,5 +291,82 @@ export class SplineTestHelper {
 
 		return { left, right, bottom };
 
+	}
+
+	add3ConnectedSplines () {
+
+		/**
+
+		 * -------------------------------
+		 *  	1 	=> 	|	  2	 => 	| 	=>	3
+		 * -------------------------------
+
+		 */
+
+		const left = this.createStraightSpline( new Vector3( -100, 0, 0 ), 100 );
+		const middle = this.createStraightSpline( new Vector3( 0, 0, 0 ), 100 );
+		const right = this.createStraightSpline( new Vector3( 100, 0, 0 ), 100 );
+
+		const leftRoad = this.roadFactory.createDefaultRoad();
+		const middleRoad = this.roadFactory.createDefaultRoad();
+		const rightRoad = this.roadFactory.createDefaultRoad();
+
+		left.segmentMap.set( 0, leftRoad );
+		middle.segmentMap.set( 0, middleRoad );
+		right.segmentMap.set( 0, rightRoad );
+
+		leftRoad.spline = left;
+		middleRoad.spline = middle;
+		rightRoad.spline = right;
+
+		leftRoad.setSuccessorRoad( middleRoad, TvContactPoint.START );
+		middleRoad.setPredecessorRoad( leftRoad, TvContactPoint.END );
+		middleRoad.setSuccessorRoad( rightRoad, TvContactPoint.START );
+		rightRoad.setPredecessorRoad( middleRoad, TvContactPoint.END );
+
+		this.splineService.add( left );
+		this.splineService.add( middle );
+		this.splineService.add( right );
+
+
+		return { left, middle, right };
+	}
+
+	add3ConnectedSplinesv2 () {
+
+		/**
+
+		 * -------------------------------
+		 *  	1  =>	|	<=  2	 	| => 3
+		 * -------------------------------
+
+		 */
+		const left = this.createStraightSpline( new Vector3( -100, 0, 0 ), 100 );
+		const middle = this.createStraightSpline( new Vector3( 100, 0, 0 ), 100, 180 );
+		const right = this.createStraightSpline( new Vector3( 100, 0, 0 ), 100 );
+
+		const leftRoad = this.roadFactory.createDefaultRoad();
+		const middleRoad = this.roadFactory.createDefaultRoad();
+		const rightRoad = this.roadFactory.createDefaultRoad();
+
+		left.segmentMap.set( 0, leftRoad );
+		middle.segmentMap.set( 0, middleRoad );
+		right.segmentMap.set( 0, rightRoad );
+
+		leftRoad.spline = left;
+		middleRoad.spline = middle;
+		rightRoad.spline = right;
+
+		leftRoad.setSuccessorRoad( middleRoad, TvContactPoint.END );
+		middleRoad.setSuccessorRoad( leftRoad, TvContactPoint.END );
+		middleRoad.setPredecessorRoad( rightRoad, TvContactPoint.START );
+		rightRoad.setPredecessorRoad( middleRoad, TvContactPoint.START );
+
+		this.splineService.add( left );
+		this.splineService.add( middle );
+		this.splineService.add( right );
+
+
+		return { left, middle, right };
 	}
 }

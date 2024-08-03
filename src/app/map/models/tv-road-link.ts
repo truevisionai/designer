@@ -143,7 +143,7 @@ export class TvRoadLink {
 
 		if ( this.type == TvRoadLinkType.ROAD ) {
 
-			return `Link: Contact:${ this.contactPoint } ${ this.element.toString() }`;
+			return `Link: ${ this.element.toString() }:${ this.contactPoint }`;
 
 		} else {
 

@@ -34,12 +34,22 @@ export function expectLinkDistanceToBeZero ( road: TvRoad ) {
 
 		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
 
+		if ( distance > 10 ) {
+			// only for debugging
+			// throw new Error( 'distance from successor is greater than 1' );
+		}
+
 		expect( distance ).toBeCloseTo( 0, Maths.Epsilon, 'Successor' + formatMessage( road, road.successor ) );
 	}
 
 	if ( road.predecessor ) {
 
 		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor );
+
+		if ( distance > 10 ) {
+			// only for debugging
+			// throw new Error( 'distance from predecessor is greater than 1' );
+		}
 
 		expect( distance ).toBeCloseTo( 0, Maths.Epsilon, 'Predecessor' + formatMessage( road, road.predecessor ) );
 

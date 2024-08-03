@@ -1,0 +1,232 @@
+import { HttpClientModule } from '@angular/common/http';
+import { TestBed, inject } from '@angular/core/testing';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { EventServiceProvider } from 'app/listeners/event-service-provider';
+import { SplineLinkService } from 'app/managers/spline-link.service';
+import { MapService } from 'app/services/map/map.service';
+import { RoadService } from 'app/services/road/road.service';
+import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
+import { expectValidMap } from 'tests/base-test.spec';
+import { Vector3 } from 'three';
+
+fdescribe( 'SplineLinkService: Tests', () => {
+
+	let testHelper: SplineTestHelper;
+	let mapService: MapService;
+	let eventServiceProvider: EventServiceProvider;
+	let splineLinkService: SplineLinkService;
+
+	beforeEach( () => {
+
+		TestBed.configureTestingModule( {
+			providers: [ RoadService, MatSnackBar ],
+			imports: [ HttpClientModule, MatSnackBarModule ]
+		} );
+
+		splineLinkService = TestBed.inject( SplineLinkService );
+		testHelper = TestBed.inject( SplineTestHelper );
+		mapService = TestBed.inject( MapService );
+		eventServiceProvider = TestBed.inject( EventServiceProvider );
+
+		eventServiceProvider.init();
+
+	} );
+
+	it( 'should update simple connected splines', () => {
+
+		/**
+		 * -------------------------------
+		 *  	R1 	=> 	|	  R2	 => 	| 	=>	R3
+		 * -------------------------------
+		 */
+
+		testHelper.add3ConnectedSplines();
+
+		const R1 = mapService.getRoad( 1 );
+		const R2 = mapService.getRoad( 2 );
+		const R3 = mapService.getRoad( 3 );
+
+		expect( splineLinkService.getSuccessor( R1.spline ) ).toBe( R2.spline );
+		expect( splineLinkService.getPredecessor( R2.spline ) ).toBe( R1.spline );
+		expect( splineLinkService.getSuccessor( R2.spline ) ).toBe( R3.spline );
+		expect( splineLinkService.getPredecessor( R3.spline ) ).toBe( R2.spline );
+
+		expect( R1.successor.element ).toBe( R2 );
+		expect( R2.predecessor.element ).toBe( R1 );
+		expect( R2.successor.element ).toBe( R3 );
+		expect( R3.predecessor.element ).toBe( R2 );
+
+		expectValidMap( mapService );
+
+		// update middle spline
+		R2.spline.controlPoints.forEach( point => point.position.y = 1 );
+
+		testHelper.splineService.update( R2.spline );
+
+		R1.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 1 ) );
+		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 1 ) );
+		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 1 ) );
+
+		// ensue even after update, the connections are still valid
+		expect( splineLinkService.getSuccessor( R1.spline ) ).toBe( R2.spline );
+		expect( splineLinkService.getPredecessor( R2.spline ) ).toBe( R1.spline );
+		expect( splineLinkService.getSuccessor( R2.spline ) ).toBe( R3.spline );
+		expect( splineLinkService.getPredecessor( R3.spline ) ).toBe( R2.spline );
+
+		expectValidMap( mapService );
+
+		// update middle spline again
+		R2.spline.controlPoints.forEach( point => point.position.y += 1 );
+
+		testHelper.splineService.update( R2.spline );
+
+		R1.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 2 ) );
+		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 2 ) );
+		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 2 ) );
+
+		// ensue even after update, the connections are still valid
+		expect( splineLinkService.getSuccessor( R1.spline ) ).toBe( R2.spline );
+		expect( splineLinkService.getPredecessor( R2.spline ) ).toBe( R1.spline );
+		expect( splineLinkService.getSuccessor( R2.spline ) ).toBe( R3.spline );
+		expect( splineLinkService.getPredecessor( R3.spline ) ).toBe( R2.spline );
+
+		expectValidMap( mapService );
+
+
+	} );
+
+	it( 'should update complex connected splines', () => {
+
+		/**
+		 * --------------------------------------------
+		 *  	R1  =>	|	<=  R2	 	| => R3
+		 * --------------------------------------------
+		 */
+
+		testHelper.add3ConnectedSplinesv2();
+
+		const R1 = mapService.getRoad( 1 );
+		const R2 = mapService.getRoad( 2 );
+		const R3 = mapService.getRoad( 3 );
+
+		expect( splineLinkService.getSuccessor( R1.spline ) ).toBe( R2.spline );
+		expect( splineLinkService.getPredecessor( R2.spline ) ).toBe( R3.spline );
+		expect( splineLinkService.getSuccessor( R2.spline ) ).toBe( R1.spline );
+		expect( splineLinkService.getPredecessor( R3.spline ) ).toBe( R2.spline );
+
+		expect( R1.successor.element ).toBe( R2 );
+		expect( R2.predecessor.element ).toBe( R3 );
+		expect( R2.successor.element ).toBe( R1 );
+		expect( R3.predecessor.element ).toBe( R2 );
+
+		expect( R1.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( -100 );
+		expect( R1.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 0 );
+
+		expect( R2.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( 100 )
+		expect( R2.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 0 )
+
+		expect( R3.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( 100 )
+		expect( R3.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 200 )
+
+		expectValidMap( mapService );
+
+		// update middle spline
+		R2.spline.controlPoints.forEach( point => point.position.y += 1 );
+
+		testHelper.splineService.update( R2.spline );
+
+		R1.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
+		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
+		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
+
+		expect( splineLinkService.getSuccessor( R1.spline ) ).toBe( R2.spline );
+		expect( splineLinkService.getSuccessor( R2.spline ) ).toBe( R1.spline );
+		expect( splineLinkService.getPredecessor( R2.spline ) ).toBe( R3.spline );
+		expect( splineLinkService.getPredecessor( R3.spline ) ).toBe( R2.spline );
+
+		expect( R1.successor.element ).toBe( R2 );
+		expect( R2.predecessor.element ).toBe( R3 );
+		expect( R2.successor.element ).toBe( R1 );
+		expect( R3.predecessor.element ).toBe( R2 );
+
+		expect( R1.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( -100 );
+		expect( R1.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 0 );
+
+		expect( R2.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( 100 )
+		expect( R2.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 0 )
+
+		expect( R3.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( 100 )
+		expect( R3.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 200 )
+
+		expectValidMap( mapService );
+
+		// update middle spline
+		R2.spline.controlPoints.forEach( point => point.position.y += 1 );
+
+		testHelper.splineService.update( R2.spline );
+
+		R1.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
+		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
+		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
+
+		expect( splineLinkService.getSuccessor( R1.spline ) ).toBe( R2.spline );
+		expect( splineLinkService.getSuccessor( R2.spline ) ).toBe( R1.spline );
+		expect( splineLinkService.getPredecessor( R2.spline ) ).toBe( R3.spline );
+		expect( splineLinkService.getPredecessor( R3.spline ) ).toBe( R2.spline );
+
+		expect( R1.successor.element ).toBe( R2 );
+		expect( R2.predecessor.element ).toBe( R3 );
+		expect( R2.successor.element ).toBe( R1 );
+		expect( R3.predecessor.element ).toBe( R2 );
+
+		expect( R1.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( -100, 1 );	// low precision
+		expect( R1.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 0 );
+
+		expect( R2.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( 100 );
+		expect( R2.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 0 );
+
+		expect( R3.spline.controlPointPositions[ 0 ].x ).toBeCloseTo( 100 )
+		expect( R3.spline.controlPointPositions[ 1 ].x ).toBeCloseTo( 200, 1 );		// low precision
+
+		expectValidMap( mapService );
+
+
+	} );
+
+	it( 'should update connected splines with junction at end', () => {
+
+		AbstractSpline.reset();
+
+		testHelper.createCustomJunctionWith2Roads();
+
+		testHelper.addStraightRoadSpline( new Vector3( 100, -50, 0 ), 100, 90 );
+
+		expect( true ).toBe( false );
+
+		expect( mapService.getJunctionCount() ).toBe( 2 );
+		expect( mapService.findJunction( 1 ).auto ).toBe( false );
+		expect( mapService.findJunction( 2 ).auto ).toBe( true );
+
+		const spline = mapService.findSplineById( 2 );
+
+		expect( spline ).toBeDefined();
+		expect( spline.controlPoints.length ).toBe( 2 );
+
+		spline.controlPoints.forEach( point => point.position.y += 1 );
+
+	} );
+
+	it( 'should update connected splines with junction at start', () => {
+
+		expect( true ).toBe( false );
+
+	} );
+
+	it( 'should update connected splines with junction in the middle', () => {
+
+		expect( true ).toBe( false );
+
+	} );
+
+} );

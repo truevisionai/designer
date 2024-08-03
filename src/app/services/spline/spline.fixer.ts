@@ -232,23 +232,4 @@ export class SplineFixerService {
 		} );
 
 	}
-
-	public fixExternalLinks ( spline: AbstractSpline ) {
-
-		const firstSegment = spline.segmentMap.getFirst();
-		const lastSegment = spline.segmentMap.getLast();
-
-		if ( firstSegment instanceof TvRoad ) {
-			if ( firstSegment.predecessor?.element instanceof TvRoad ) {
-				RoadUtils.linkPredecessor( firstSegment, firstSegment.predecessor.element, firstSegment.predecessor.contactPoint );
-			}
-		}
-
-		if ( lastSegment instanceof TvRoad ) {
-			if ( lastSegment.successor?.element instanceof TvRoad ) {
-				RoadUtils.linkSuccessor( lastSegment, lastSegment.successor.element, lastSegment.successor.contactPoint );
-			}
-		}
-
-	}
 }
