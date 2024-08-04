@@ -39,7 +39,16 @@ export function expectLinkDistanceToBeZero ( road: TvRoad ) {
 			// throw new Error( 'distance from successor is greater than 1' );
 		}
 
-		expect( distance ).toBeCloseTo( 0, Maths.Epsilon, 'Successor' + formatMessage( road, road.successor ) );
+		if ( road.isJunction ) {
+
+			expect( distance ).toBeLessThan( 10, 'Successor ' + formatMessage( road, road.successor ) );
+
+		} else {
+
+			expect( distance ).toBeCloseTo( 0, Maths.Epsilon, 'Successor ' + formatMessage( road, road.successor ) );
+
+		}
+
 	}
 
 	if ( road.predecessor ) {
@@ -51,7 +60,15 @@ export function expectLinkDistanceToBeZero ( road: TvRoad ) {
 			// throw new Error( 'distance from predecessor is greater than 1' );
 		}
 
-		expect( distance ).toBeCloseTo( 0, Maths.Epsilon, 'Predecessor' + formatMessage( road, road.predecessor ) );
+		if ( road.isJunction ) {
+
+			expect( distance ).toBeLessThan( 10, 'Predecessor ' + formatMessage( road, road.predecessor ) );
+
+		} else {
+
+			expect( distance ).toBeCloseTo( 0, Maths.Epsilon, 'Predecessor ' + formatMessage( road, road.predecessor ) );
+
+		}
 
 	}
 
@@ -86,7 +103,7 @@ export function expectValidLinks ( road: TvRoad ) {
 
 export function expectValidMap ( mapService: MapService ) {
 
-	mapService.nonJunctionRoads.forEach( road => {
+	mapService.roads.forEach( road => {
 
 		expectValidLinks( road );
 

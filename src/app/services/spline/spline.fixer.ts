@@ -192,6 +192,45 @@ export class SplineFixerService {
 			Log.warn( "Fixing incorrect links", spline?.toString() );
 		}
 
+		const fixSuccessor = ( road: TvRoad, nextSegment: TvRoad | TvJunction ) => {
+
+			if ( nextSegment instanceof TvRoad ) {
+
+				road.setSuccessorRoad( nextSegment, TvContactPoint.START );
+
+			} else if ( nextSegment instanceof TvJunction ) {
+
+				road.setSuccessor( TvRoadLinkType.JUNCTION, nextSegment );
+
+			} else {
+
+				// if ( setNull ) segment.successor = null;
+
+			}
+
+		}
+
+		const fixPredecessor = ( road: TvRoad, prevSegment: TvRoad | TvJunction ) => {
+
+			if ( prevSegment instanceof TvRoad ) {
+
+				road.setPredecessorRoad( prevSegment, TvContactPoint.END );
+
+			} else if ( prevSegment instanceof TvJunction ) {
+
+				road.setPredecessor( TvRoadLinkType.JUNCTION, prevSegment );
+
+			} else {
+
+				// if ( setNull ) segment.predecessor = null;
+
+			}
+
+		}
+
+
+		let index = 0;
+
 		spline.segmentMap.forEach( ( segment, sOffset ) => {
 
 			const prevSegment = spline.segmentMap.getPrevious( segment );
@@ -199,35 +238,13 @@ export class SplineFixerService {
 
 			if ( segment instanceof TvRoad ) {
 
-				if ( nextSegment instanceof TvRoad ) {
+				fixSuccessor( segment, nextSegment );
 
-					segment.setSuccessorRoad( nextSegment, TvContactPoint.START );
-
-				} else if ( nextSegment instanceof TvJunction ) {
-
-					segment.setSuccessor( TvRoadLinkType.JUNCTION, nextSegment );
-
-				} else {
-
-					if ( setNull ) segment.successor = null;
-
-				}
-
-				if ( prevSegment instanceof TvRoad ) {
-
-					segment.setPredecessorRoad( prevSegment, TvContactPoint.END );
-
-				} else if ( prevSegment instanceof TvJunction ) {
-
-					segment.setPredecessor( TvRoadLinkType.JUNCTION, prevSegment );
-
-				} else {
-
-					if ( setNull ) segment.predecessor = null;
-
-				}
+				fixPredecessor( segment, prevSegment );
 
 			}
+
+			index++;
 
 		} );
 

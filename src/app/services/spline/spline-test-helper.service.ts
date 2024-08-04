@@ -17,6 +17,7 @@ import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { JunctionToolHelper } from 'app/tools/junction/junction-tool.helper';
+import { MapValidatorService } from '../map/map-validator.service';
 
 
 @Injectable( {
@@ -34,6 +35,7 @@ export class SplineTestHelper {
 		public cirleToolService: RoadCircleToolService,
 		public splineLinkService: SplineLinkService,
 		public junctionToolHelper: JunctionToolHelper,
+		public mapValidator: MapValidatorService,
 	) {
 	}
 
@@ -267,6 +269,36 @@ export class SplineTestHelper {
 
 	}
 
+	create2CustomJunctionWith3Roads () {
+
+		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
+		const middle = SplineFactory.createStraight( new Vector3( 0, 0, 0 ), 100 );
+		const right = SplineFactory.createStraight( new Vector3( 120, 0, 0 ), 100 );
+
+		this.splineService.add( left );
+		this.splineService.add( middle );
+		this.splineService.add( right );
+
+		const leftRoad = this.mapService.findRoad( 1 );
+		const middleRoad = this.mapService.findRoad( 2 );
+		const rightRoad = this.mapService.findRoad( 3 );
+
+		const junction1 = this.junctionToolHelper.createCustomJunction( [
+			new TvRoadLink( TvRoadLinkType.ROAD, leftRoad, TvContactPoint.END ),
+			new TvRoadLink( TvRoadLinkType.ROAD, middleRoad, TvContactPoint.START ),
+		] );
+
+		const junction2 = this.junctionToolHelper.createCustomJunction( [
+			new TvRoadLink( TvRoadLinkType.ROAD, middleRoad, TvContactPoint.END ),
+			new TvRoadLink( TvRoadLinkType.ROAD, rightRoad, TvContactPoint.START )
+		] );
+
+
+		this.junctionService.addJunction( junction1 );
+		this.junctionService.addJunction( junction2 );
+
+	}
+
 	create2RoadsForCustomJunction () {
 
 		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
@@ -283,7 +315,7 @@ export class SplineTestHelper {
 
 		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
 		const right = SplineFactory.createStraight( new Vector3( 20, 0, 0 ), 100 );
-		const bottom = SplineFactory.createStraight( new Vector3( 0, -1200, 0 ), 100, 90 );
+		const bottom = SplineFactory.createStraight( new Vector3( 0, -120, 0 ), 100, 90 );
 
 		this.splineService.add( left );
 		this.splineService.add( right );

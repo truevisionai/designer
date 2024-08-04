@@ -128,6 +128,18 @@ export class OrderedMap<T> {
 
 	}
 
+	getPeviousKey ( value: T ) {
+
+		const previous = this.getPrevious( value );
+
+		if ( previous === null ) {
+			return null;
+		}
+
+		return this.findKey( previous );
+
+	}
+
 	getLast () {
 
 		const values = this.toArray();

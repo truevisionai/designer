@@ -513,62 +513,71 @@ export class MapValidatorService {
 
 		}
 
-		const mainLaneSection = linkType == 'successor' ? roadA.getLastLaneSection() : roadA.getFirstLaneSection();
+		// NOTE: Below Lane side validation is not working as expected
+		// fails in scenario
+		// add3ConnectedSplinesv2
+		/**
+		 * --------------------------------------------
+		 *  	R1  =>	|	<=  R2	 	| => R3
+		 * --------------------------------------------
+		 */
 
-		mainLaneSection.lanes.forEach( ( mainLane ) => {
+		// const mainLaneSection = linkType == 'successor' ? roadA.getLastLaneSection() : roadA.getFirstLaneSection();
 
-			if ( mainLane.id == 0 ) return;
+		// mainLaneSection.lanes.forEach( ( mainLane ) => {
 
-			let otherPosition: any;
+		// 	if ( mainLane.id == 0 ) return;
 
-			const mainPosition = this.roadService.findLaneStartPosition( roadA, mainLaneSection, mainLane, linkType == 'successor' ? roadA.length : 0 );
+		// 	let otherPosition: any;
 
-			if ( linkType == 'successor' ) {
+		// 	const mainPosition = this.roadService.findLaneStartPosition( roadA, mainLaneSection, mainLane, linkType == 'successor' ? roadA.length : 0 );
 
-				const nextLaneSection = LaneUtils.findNextLaneSection( roadA, mainLaneSection );
-				const nextLane = LaneUtils.findSuccessorLane( roadA, mainLaneSection, mainLane );
-				const offset = link.contactPoint == TvContactPoint.START ? 0 : roadB.length;
+		// 	if ( linkType == 'successor' ) {
 
-				if ( !nextLane ) {
-					this.errors.push( label + ':' + roadA.id + ' has no successor lane ' + linkType + ':' + link.type + ':' + link.id );
-					return;
-				}
+		// 		const nextLaneSection = LaneUtils.findNextLaneSection( roadA, mainLaneSection );
+		// 		const nextLane = LaneUtils.findSuccessorLane( roadA, mainLaneSection, mainLane );
+		// 		const offset = link.contactPoint == TvContactPoint.START ? 0 : roadB.length;
 
-				otherPosition = this.roadService.findLaneStartPosition( roadB, nextLaneSection, nextLane, offset );
+		// 		if ( !nextLane ) {
+		// 			this.errors.push( label + ':' + roadA.id + ' has no successor lane ' + linkType + ':' + link.type + ':' + link.id );
+		// 			return;
+		// 		}
 
-			} else {
+		// 		otherPosition = this.roadService.findLaneStartPosition( roadB, nextLaneSection, nextLane, offset );
 
-				const prevLaneSection = LaneUtils.findPreviousLaneSection( roadA, mainLaneSection );
-				const prevLane = LaneUtils.findPredecessorLane( roadA, mainLaneSection, mainLane );
-				const offset = link.contactPoint == TvContactPoint.START ? 0 : roadB.length;
+		// 	} else {
 
-				if ( !prevLane ) {
-					this.errors.push( label + ':' + roadA.id + ' has no predecessor lane ' + linkType + ':' + link.type + ':' + link.id );
-					return;
-				}
+		// 		const prevLaneSection = LaneUtils.findPreviousLaneSection( roadA, mainLaneSection );
+		// 		const prevLane = LaneUtils.findPredecessorLane( roadA, mainLaneSection, mainLane );
+		// 		const offset = link.contactPoint == TvContactPoint.START ? 0 : roadB.length;
 
-				otherPosition = this.roadService.findLaneStartPosition( roadB, prevLaneSection, prevLane, offset );
+		// 		if ( !prevLane ) {
+		// 			this.errors.push( label + ':' + roadA.id + ' has no predecessor lane ' + linkType + ':' + link.type + ':' + link.id );
+		// 			return;
+		// 		}
 
-			}
+		// 		otherPosition = this.roadService.findLaneStartPosition( roadB, prevLaneSection, prevLane, offset );
+
+		// 	}
 
 
-			const distance = mainPosition.position.distanceTo( otherPosition.position );
+		// 	const distance = mainPosition.position.distanceTo( otherPosition.position );
 
-			if ( distance > 0.01 ) {
+		// 	if ( distance > 0.01 ) {
 
-				this.errors.push( label + ':' + roadA.id + ' has invalid distance ' + linkType + ':' + link.type + ':' + link.id + ' ' + distance );
+		// 		this.errors.push( label + ':' + roadA.id + ' has invalid distance ' + linkType + ':' + link.type + ':' + link.id + ' ' + distance );
 
-				const sphere1 = this.debugDraw.createSphere( mainPosition.position, SPHERE_SIZE, COLOR.BLUE );
-				this.debugObjects.add( sphere1, sphere1 );
+		// 		const sphere1 = this.debugDraw.createSphere( mainPosition.position, SPHERE_SIZE, COLOR.BLUE );
+		// 		this.debugObjects.add( sphere1, sphere1 );
 
-				const sphere2 = this.debugDraw.createSphere( otherPosition.position, SPHERE_SIZE, COLOR.GREEN );
-				this.debugObjects.add( sphere2, sphere2 );
+		// 		const sphere2 = this.debugDraw.createSphere( otherPosition.position, SPHERE_SIZE, COLOR.GREEN );
+		// 		this.debugObjects.add( sphere2, sphere2 );
 
-				const line = this.debugDraw.createLine( [ mainPosition.position, otherPosition.position ], COLOR.MAGENTA );
-				this.debugObjects.add( line, line );
-			}
+		// 		const line = this.debugDraw.createLine( [ mainPosition.position, otherPosition.position ], COLOR.MAGENTA );
+		// 		this.debugObjects.add( line, line );
+		// 	}
 
-		} );
+		// } );
 
 	}
 

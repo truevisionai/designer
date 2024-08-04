@@ -820,8 +820,39 @@ export class JunctionManager {
 
 			// Create a new road after the junction if needed
 			if ( junctionEnd < spline.getLength() ) {
-				temp.set( junctionEnd, this.createNewRoad( spline, junctionEnd ) );
+
+				const previousKey = temp.getPeviousKey( newJunction );
+
+				const previousSegment = temp.getPrevious( newJunction );
+
+				const successor = SplineUtils.findSuccessor( spline );
+
+				// we need to disconnect the previous road with current segment junction
+				if ( previousSegment instanceof TvRoad && successor instanceof TvJunction ) {
+
+					successor.needsUpdate = true;
+
+					const newRoad = this.createNewRoad( spline, junctionEnd );
+
+					// new segmetn will be shiflted left
+					temp.set( previousKey, newRoad );
+
+					// and previous segment will be shifted right
+					temp.set( junctionEnd, previousSegment );
+
+					// swap the connection if previous segment predecessor is junction
+					if ( previousSegment.predecessor?.element instanceof TvJunction ) {
+						this.replaceConnections( previousSegment.predecessor.element, previousSegment, newRoad, TvContactPoint.START );
+					}
+
+				} else {
+
+					temp.set( junctionEnd, this.createNewRoad( spline, junctionEnd ) );
+
+				}
+
 			}
+
 		}
 
 		spline.segmentMap.forEach( ( segment, sOffset ) => {
@@ -1227,33 +1258,33 @@ export class JunctionManager {
 
 		const coords: TvRoadLink[] = [];
 
-		const processed = new Set<AbstractSpline>();
+		const splines = new Set<AbstractSpline>();
 
 		group.intersections.forEach( i => {
 
-			if ( !processed.has( i.spline ) ) {
+			if ( !splines.has( i.spline ) ) {
 
 				this.insertJunction( i.spline, i.splineStart, i.splineEnd, junction );
 
 				this.splineBuilder.buildGeometry( i.spline );
 
-				processed.add( i.spline );
+				splines.add( i.spline );
 
 			}
 
-			if ( !processed.has( i.otherSpline ) ) {
+			if ( !splines.has( i.otherSpline ) ) {
 
 				this.insertJunction( i.otherSpline, i.otherStart, i.otherEnd, junction );
 
 				this.splineBuilder.buildGeometry( i.otherSpline );
 
-				processed.add( i.otherSpline );
+				splines.add( i.otherSpline );
 
 			}
 
 		} );
 
-		processed.forEach( spline => {
+		splines.forEach( spline => {
 
 			this.updateSplineInternalLinks( spline );
 
@@ -1265,29 +1296,45 @@ export class JunctionManager {
 
 		const junctions = new Map<TvJunction, Set<AbstractSpline>>();
 
-		processed.forEach( spline => spline.segmentMap.forEach( segment => {
+		splines.forEach( spline => {
 
-			if ( segment instanceof TvJunction && segment.needsUpdate ) {
+			spline.segmentMap.forEach( segment => {
 
-				if ( !junctions.has( segment ) ) {
+				if ( segment instanceof TvJunction && segment.needsUpdate ) {
 
-					junctions.set( segment, new Set<AbstractSpline>( [] ) );
+					if ( !junctions.has( segment ) ) {
+
+						junctions.set( segment, new Set<AbstractSpline>( [] ) );
+
+					}
+
+					junctions.get( segment ).add( spline );
+
+					const incomingSplines = this.junctionRoadService.getIncomingSplines( segment );
+
+					incomingSplines.forEach( inSpline => junctions.get( segment ).add( inSpline ) );
 
 				}
 
-				junctions.get( segment ).add( spline );
+			} );
 
-				const incomingSplines = this.junctionRoadService.getIncomingSplines( segment );
+			const predecessor = SplineUtils.findPredecessor( spline );
 
-				incomingSplines.forEach( inSpline => junctions.get( segment ).add( inSpline ) );
+			const successor = SplineUtils.findSuccessor( spline );
 
+			if ( predecessor instanceof TvJunction && !predecessor.auto ) {
+				Log.error( 'Predecessor is not a road' );
 			}
 
-		} ) );
+			if ( successor instanceof TvJunction && !successor.auto ) {
+				Log.error( 'Successor is not a road' );
+			}
 
-		junctions.forEach( ( splines, junction ) => {
+		} );
 
-			this.updateJunction( junction, [ ...splines ] );
+		junctions.forEach( ( lines, junction ) => {
+
+			this.updateJunction( junction, [ ...lines ] );
 
 		} );
 

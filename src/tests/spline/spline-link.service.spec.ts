@@ -10,7 +10,7 @@ import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service
 import { expectValidMap } from 'tests/base-test.spec';
 import { Vector3 } from 'three';
 
-fdescribe( 'SplineLinkService: Tests', () => {
+describe( 'SplineLinkService: Tests', () => {
 
 	let testHelper: SplineTestHelper;
 	let mapService: MapService;
@@ -96,7 +96,7 @@ fdescribe( 'SplineLinkService: Tests', () => {
 
 	} );
 
-	it( 'should update complex connected splines', () => {
+	fit( 'should update complex connected splines', () => {
 
 		/**
 		 * --------------------------------------------
@@ -191,6 +191,7 @@ fdescribe( 'SplineLinkService: Tests', () => {
 
 		expectValidMap( mapService );
 
+		testHelper.mapValidator.validateMap( mapService.map, true );
 
 	} );
 
@@ -201,8 +202,6 @@ fdescribe( 'SplineLinkService: Tests', () => {
 		testHelper.createCustomJunctionWith2Roads();
 
 		testHelper.addStraightRoadSpline( new Vector3( 100, -50, 0 ), 100, 90 );
-
-		expect( true ).toBe( false );
 
 		expect( mapService.getJunctionCount() ).toBe( 2 );
 		expect( mapService.findJunction( 1 ).auto ).toBe( false );
@@ -215,17 +214,76 @@ fdescribe( 'SplineLinkService: Tests', () => {
 
 		spline.controlPoints.forEach( point => point.position.y += 1 );
 
+		testHelper.splineService.update( spline );
+
+		expectValidMap( mapService );
+
+		testHelper.mapValidator.validateMap( mapService.map, true );
+
 	} );
 
 	it( 'should update connected splines with junction at start', () => {
 
-		expect( true ).toBe( false );
+		AbstractSpline.reset();
+
+		testHelper.createCustomJunctionWith2Roads();
+
+		testHelper.addStraightRoadSpline( new Vector3( -60, -50, 0 ), 100, 90 );
+
+		expect( mapService.getJunctionCount() ).toBe( 2 );
+		expect( mapService.findJunction( 1 ).auto ).toBe( false );
+		expect( mapService.findJunction( 2 ).auto ).toBe( true );
+
+		const spline = mapService.findSplineById( 1 );
+
+		expect( spline ).toBeDefined();
+		expect( spline.controlPoints.length ).toBe( 2 );
+
+		spline.controlPoints.forEach( point => point.position.y += 1 );
+
+		testHelper.splineService.update( spline );
+
+		expectValidMap( mapService );
+
+		expect( spline.segmentMap.length ).toBe( 3 );
+
+		testHelper.mapValidator.validateMap( mapService.map, true );
 
 	} );
 
 	it( 'should update connected splines with junction in the middle', () => {
 
-		expect( true ).toBe( false );
+		AbstractSpline.reset();
+
+		testHelper.create2CustomJunctionWith3Roads();
+
+		expect( mapService.getJunctionCount() ).toBe( 2 );
+		expect( mapService.findJunction( 1 ).auto ).toBe( false );
+		expect( mapService.findJunction( 2 ).auto ).toBe( false );
+
+		const R1 = mapService.getRoad( 1 );
+		const R2 = mapService.getRoad( 2 );
+		const R3 = mapService.getRoad( 3 );
+		const J1 = mapService.findJunction( 1 );
+		const J2 = mapService.findJunction( 2 );
+
+		expect( R1.successor.element ).toBe( J1 );
+		expect( R2.predecessor.element ).toBe( J1 );
+		expect( R2.successor.element ).toBe( J2 );
+		expect( R3.predecessor.element ).toBe( J2 );
+
+		testHelper.addStraightRoadSpline( new Vector3( 50, -50, 0 ), 100, 90 );
+
+		const J3 = mapService.findJunction( 3 );
+
+		expect( R1.successor.element ).toBe( J1 );
+		expect( R2.predecessor.element ).toBe( J3 );
+		expect( R2.successor.element ).toBe( J2 );
+		expect( R3.predecessor.element ).toBe( J2 );
+
+		expectValidMap( mapService );
+
+		testHelper.mapValidator.validateMap( mapService.map, true );
 
 	} );
 
