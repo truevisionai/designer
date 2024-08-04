@@ -96,7 +96,7 @@ describe( 'SplineLinkService: Tests', () => {
 
 	} );
 
-	fit( 'should update complex connected splines', () => {
+	it( 'should update complex connected splines', () => {
 
 		/**
 		 * --------------------------------------------
