@@ -15,6 +15,7 @@ import { IDService } from 'app/factories/id.service';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvObjectRepeat } from 'app/map/models/objects/tv-object-repeat';
 import { CornerRoadFactory } from 'app/services/road-object/corner-road.factory';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -99,15 +100,16 @@ export class RoadObjectService {
 
 	addRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		if ( road.objects.object.find( object => object.attr_id === roadObject.attr_id ) ) return;
+		if ( road.hasRoadObject( roadObject ) ) {
+			Log.warn( 'Road object already exists in road' );
+			return;
+		}
 
 		const mesh = this.buildRoadObject( road, roadObject );
 
-		if ( !mesh ) return;
+		road.objectGroup.add( mesh );
 
-		road.objectGroup?.add( mesh );
-
-		road.addRoadObjectInstance( roadObject );
+		road.addRoadObject( roadObject );
 
 		this.showRoadObjectCorners( roadObject );
 

@@ -36,6 +36,7 @@ import { AssetType } from "../../core/asset/asset.model";
 import { COLOR } from "../../views/shared/utils/colors.service";
 import { TvObjectRepeat } from "../models/objects/tv-object-repeat";
 import { RoadService } from 'app/services/road/road.service';
+import { Log } from "../../core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -440,15 +441,24 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	private buildCrosswalkObject ( road: TvRoad, roadObject: TvRoadObject ): Object3D {
 
-		if ( roadObject.markings.length < 1 ) return;
-
-		if ( roadObject.outlines.length < 1 ) return;
-
-		if ( roadObject.markings[ 0 ].cornerReferences.length < 2 ) return;
-
 		const roadObjectMesh = new Object3D();
 
 		roadObjectMesh.name = 'object:' + roadObject.attr_type;
+
+		if ( roadObject.markings.length < 1 ) {
+			Log.warn( 'RoadObjectBuilder', 'buildCrosswalkObject', 'No markings found' );
+			return roadObjectMesh;
+		}
+
+		if ( roadObject.outlines.length < 1 ) {
+			Log.warn( 'RoadObjectBuilder', 'buildCrosswalkObject', 'No outlines found' );
+			return roadObjectMesh;
+		}
+
+		if ( roadObject.markings[ 0 ].cornerReferences.length < 2 ) {
+			Log.warn( 'RoadObjectBuilder', 'buildCrosswalkObject', 'Need minimum 2 corner references' );
+			return roadObjectMesh;
+		}
 
 		// const posTheta = road.getPositionAt( roadObject.s, roadObject.t );
 

@@ -8,24 +8,28 @@ import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
-import { ControlPointFactory } from "../../factories/control-point.factory";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { Object3D } from "three";
 import { TvCornerRoad } from "../../map/models/objects/tv-corner-road";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { Log } from "../../core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
-	private nodes = new Object3DArrayMap<TvRoad, Object3D[]>();
+	private nodes: Object3DArrayMap<TvRoad, Object3D[]>;
 
-	private nodeCache = new Map<TvCornerRoad, CornerControlPoint>();
+	private nodeCache: Map<TvCornerRoad, CornerControlPoint>;
 
-	constructor ( private roadDebugger: RoadDebugService, private pointFactory: ControlPointFactory ) {
+	constructor ( private roadDebugger: RoadDebugService ) {
 
 		super();
+
+		this.nodes = new Object3DArrayMap();
+
+		this.nodeCache = new Map();
 
 	}
 
@@ -95,6 +99,11 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 		const position = road.getPosThetaAt( corner.s, corner.t )
 
+		if ( !position ) {
+			Log.error( 'CrosswalkToolDebugger', 'createNode', 'Position not found' );
+			return;
+		}
+
 		let node: CornerControlPoint;
 
 		if ( this.nodeCache.has( corner ) ) {
@@ -109,7 +118,7 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 		}
 
-		node.position.copy( position?.position );
+		node.position.copy( position.position );
 
 		return node;
 	}

@@ -18,13 +18,14 @@ import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
-import { CrosswalkToolService } from "./crosswalk-tool.service";
+import { CrosswalkToolHelper } from "./crosswalk-tool.helper";
 import { CrosswalkInspector } from './crosswalk.inspector';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
 import { DebugState } from "../../services/debug/debug-state";
 import { CornerControlPoint } from './crosswalk-tool-debugger';
 import { TvConsole } from 'app/core/utils/console';
+import { Log } from "../../core/utils/log";
 
 export class CrosswalkTool extends BaseTool<any> {
 
@@ -33,6 +34,11 @@ export class CrosswalkTool extends BaseTool<any> {
 	toolType = ToolType.Crosswalk;
 
 	get selectedCrosswalk (): TvRoadObject {
+
+		if ( this.selectedPoint?.roadObject?.attr_type == TvRoadObjectType.crosswalk ) {
+			return this.selectedPoint.roadObject;
+		}
+
 		return this.selectionService.getLastSelected<TvRoadObject>( TvRoadObject.name );
 	}
 
@@ -46,7 +52,7 @@ export class CrosswalkTool extends BaseTool<any> {
 
 	private pointMoved: boolean;
 
-	constructor ( private tool: CrosswalkToolService ) {
+	constructor ( private tool: CrosswalkToolHelper ) {
 
 		super();
 
@@ -94,10 +100,10 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		if ( !this.selectedRoad ) return;
 
-		const roadCoord = this.tool.roadService.findRoadCoord( e.point );
+		const roadCoord = this.tool.roadService.findRoadCoord( e.point, false );
 
 		if ( !roadCoord ) {
-			this.setHint( 'Click on a road to create a crosswalk' );
+			this.setHint( 'Click on a non-junction road to create a crosswalk' );
 			return;
 		}
 
@@ -136,11 +142,30 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		if ( !this.selectedPoint.isSelected ) return;
 
-		this.tool.base.handleTargetMovement( pointerEventData, this.selectedRoad, position => {
+		// this.tool.base.handleTargetMovement( pointerEventData, this.selectedRoad, position => {
 
-			this.selectedPoint?.copyPosition( position.position );
+		// 	this.selectedPoint.copyPosition( position.position );
 
-		} );
+		// } );
+
+		const roadCoord = this.tool.roadService.findRoadCoord( pointerEventData.point, false );
+
+		if ( !roadCoord ) {
+			this.setHint( 'Click on a non-junction road to create a crosswalk' );
+			return;
+		}
+
+		if ( roadCoord.road.isJunction ) {
+			this.setHint( 'Cannot create crosswalk on junction road' );
+			return;
+		}
+
+		if ( roadCoord.road != this.selectedRoad ) {
+			this.setHint( 'Click on the selected road to move the crosswalk' );
+			return;
+		}
+
+		this.selectedPoint.position.copy( roadCoord.position );
 
 		this.pointMoved = true;
 	}
@@ -185,6 +210,8 @@ export class CrosswalkTool extends BaseTool<any> {
 
 	onObjectAdded ( object: any ): void {
 
+		Log.info( 'CrosswalkTool.onObjectAdded', object.toString() );
+
 		if ( object instanceof TvRoadObject ) {
 
 			this.addCrosswalk( object.road || this.selectedRoad, object );
@@ -202,6 +229,8 @@ export class CrosswalkTool extends BaseTool<any> {
 	}
 
 	onObjectUpdated ( object: any ): void {
+
+		Log.info( 'CrosswalkTool.onObjectUpdated', object.toString() );
 
 		if ( object instanceof TvRoadObject ) {
 
@@ -236,6 +265,8 @@ export class CrosswalkTool extends BaseTool<any> {
 
 	onObjectRemoved ( object: any ): void {
 
+		Log.info( 'CrosswalkTool.onObjectRemoved', object.toString() );
+
 		if ( object instanceof TvRoadObject ) {
 
 			this.removeCrosswalk( object.road, object );
@@ -253,6 +284,8 @@ export class CrosswalkTool extends BaseTool<any> {
 	}
 
 	onObjectSelected ( object: any ): void {
+
+		Log.info( 'CrosswalkTool.onObjectSelected', object.toString() );
 
 		if ( object instanceof TvRoad ) {
 
@@ -272,6 +305,8 @@ export class CrosswalkTool extends BaseTool<any> {
 
 	onObjectUnselected ( object: any ): void {
 
+		Log.info( 'CrosswalkTool.onObjectUnselected', object.toString() );
+
 		if ( object instanceof TvRoad ) {
 
 			this.onRoadUnselected( object );
@@ -290,21 +325,27 @@ export class CrosswalkTool extends BaseTool<any> {
 
 	onRoadSelected ( road: TvRoad ): void {
 
+		Log.info( 'CrosswalkTool.onRoadSelected', road.toString() );
+
 		this.selectedPoint?.unselect();
 
-		this.debugService?.updateDebugState( road, DebugState.SELECTED );
+		this.debugService.updateDebugState( road, DebugState.SELECTED );
 
 		this.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 	}
 
 	onRoadUnselected ( road: TvRoad ): void {
 
-		this.debugService?.updateDebugState( road, DebugState.DEFAULT );
+		Log.info( 'CrosswalkTool.onRoadUnselected', road.toString() );
+
+		this.debugService.updateDebugState( road, DebugState.DEFAULT );
 
 		this.setHint( 'Use LEFT CLICK to select a road' );
 	}
 
 	onCrosswalkSelected ( roadObject: TvRoadObject ) {
+
+		Log.info( 'CrosswalkTool.onCrosswalkSelected', roadObject.toString() );
 
 		const marking = roadObject.markings[ 0 ];
 
@@ -318,13 +359,19 @@ export class CrosswalkTool extends BaseTool<any> {
 
 	onCrosswalkUnselected ( roadObject: TvRoadObject ) {
 
+		Log.info( 'CrosswalkTool.onCrosswalkUnselected', roadObject.toString() );
+
 		AppInspector.clear();
 
 		this.setHint( 'Use SHIFT + LEFT CLICK to create a crosswalk' );
 
+		this.debugService.updateDebugState( roadObject.road, DebugState.REMOVED );
+
 	}
 
 	onCornerRoadSelected ( point: CornerControlPoint ) {
+
+		Log.info( 'CrosswalkTool.onCornerRoadSelected', point.toString() );
 
 		const marking = this.tool.objectService.findMarkingByCornerRoad( point.roadObject, point.corner );
 
@@ -339,6 +386,8 @@ export class CrosswalkTool extends BaseTool<any> {
 	}
 
 	onCornerRoadUnselected ( point: CornerControlPoint ) {
+
+		Log.info( 'CrosswalkTool.onCornerRoadUnselected', point.toString() );
 
 		AppInspector.clear();
 
@@ -381,7 +430,7 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		this.tool.objectService.addRoadObject( road, object );
 
-		this.debugService?.updateDebugState( road, DebugState.SELECTED );
+		this.debugService.updateDebugState( road, DebugState.SELECTED );
 
 	}
 
@@ -389,7 +438,7 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		this.tool.objectService.updateRoadObject( road, object );
 
-		this.debugService?.updateDebugState( road, DebugState.SELECTED );
+		this.debugService.updateDebugState( road, DebugState.SELECTED );
 
 	}
 
@@ -405,13 +454,14 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		this.onCrosswalkUnselected( object );
 
+		this.debugService.updateDebugState( road, DebugState.REMOVED );
 	}
 
 	addCornerRoad ( road: TvRoad, roadObject: TvRoadObject, point: CornerControlPoint ) {
 
 		this.tool.objectService.addCornerRoad( roadObject, point.mainObject );
 
-		this.debugService?.updateDebugState( road, DebugState.SELECTED );
+		this.debugService.updateDebugState( road, DebugState.SELECTED );
 
 	}
 
@@ -419,7 +469,7 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		this.tool.objectService.removeCornerRoad( roadObject, point.object );
 
-		this.debugService?.updateDebugState( roadObject.road, DebugState.SELECTED );
+		this.debugService.updateDebugState( roadObject.road, DebugState.SELECTED );
 
 	}
 

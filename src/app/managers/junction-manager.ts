@@ -269,6 +269,8 @@ export class JunctionManager {
 
 			removeSegment( splines[ i ] );
 
+			this.splineFixer.fix( splines[ i ] );
+
 		}
 
 		this.junctionRoadService.removeAll( junction );

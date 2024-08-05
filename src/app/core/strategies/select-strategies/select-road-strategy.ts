@@ -28,7 +28,7 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 
 	onPointerDown ( pointerEventData: PointerEventData ): TvRoad {
 
-		const coord = this.onRoadGeometry( pointerEventData );
+		const coord = this.includeJunctionRoads ? this.onRoadGeometry( pointerEventData ) : this.onNonJunctionRoadGeometry( pointerEventData );
 
 		if ( !coord ) return;
 
@@ -45,7 +45,7 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 			this.debugger?.onUnhighlight( this.road );
 		}
 
-		const coord = this.onRoadGeometry( pointerEventData );
+		const coord = this.includeJunctionRoads ? this.onRoadGeometry( pointerEventData ) : this.onNonJunctionRoadGeometry( pointerEventData );
 
 		if ( !coord ) return;
 
@@ -65,7 +65,7 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 
 	onPointerUp ( pointerEventData: PointerEventData ): TvRoad {
 
-		const coord = this.onRoadGeometry( pointerEventData );
+		const coord = this.includeJunctionRoads ? this.onRoadGeometry( pointerEventData ) : this.onNonJunctionRoadGeometry( pointerEventData );
 
 		if ( !coord ) return;
 

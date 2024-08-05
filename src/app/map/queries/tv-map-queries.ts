@@ -48,6 +48,17 @@ export class TvMapQueries extends TvBaseQueries {
 		return posTheta.toRoadCoord( road );
 	}
 
+	static findNonJunctionRoadCoord ( position: Vector3 ): TvRoadCoord {
+
+		const posTheta = new TvPosTheta();
+
+		const road = this.getNonJunctionRoadByCoords( position.x, position.y, posTheta );
+
+		if ( !road ) return null;
+
+		return posTheta.toRoadCoord( road );
+	}
+
 	/**
 	 * use RoadService.findNearestRoad
 	 *
@@ -81,6 +92,68 @@ export class TvMapQueries extends TvBaseQueries {
 		for ( const keyValue of this.roads ) {
 
 			road = keyValue[ 1 ];
+
+			if ( roadIdsToIgnore.includes( road.id ) ) continue;
+
+			for ( const geometry of road.geometries ) {
+
+				const nearestPoint = geometry.getNearestPointFrom( x, y, tmpPosTheta );
+
+				const distance = point.distanceTo( nearestPoint );
+
+				if ( distance < minDistance ) {
+
+					minDistance = distance;
+					nearestRoad = road;
+					nearestGeometry = geometry;
+					nearestPosition = nearestPoint;
+
+					if ( posTheta ) posTheta.copy( tmpPosTheta );
+				}
+			}
+		}
+
+		// console.timeEnd( 'get-road' );
+
+		return nearestRoad;
+
+	}
+
+	/**
+	 * use RoadService.findNearestRoad
+	 *
+	 * @param x
+	 * @param y
+	 * @param posTheta
+	 * @param roadIdsToIgnore
+	 * @returns
+	 * @deprecated use RoadService.findNearestRoad
+	 */
+	static getNonJunctionRoadByCoords ( x: number, y: number, posTheta?: TvPosTheta, ...roadIdsToIgnore ): TvRoad {
+
+		// console.time( 'get-road' );
+
+		const tmpPosTheta = new TvPosTheta();
+
+		let nearestRoad: TvRoad = null;
+
+		let nearestGeometry: TvAbstractRoadGeometry = null;
+
+		let nearestPosition: Vector2 = null;
+
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		const point = new Vector2( x, y );
+
+		const roadCount = this.roads.size;
+
+		let road: TvRoad;
+
+		for ( const keyValue of this.roads ) {
+
+			road = keyValue[ 1 ];
+
+			if ( road.isJunction ) continue;
 
 			if ( roadIdsToIgnore.includes( road.id ) ) continue;
 

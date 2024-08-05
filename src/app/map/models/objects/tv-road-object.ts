@@ -389,6 +389,10 @@ export class TvRoadObject {
 
 	}
 
+	toString (): string {
+		return `RoadObject:${ this.attr_id } Name:${ this.name }  Type:${ this.attr_type } S:${ this.s } T:${ this.t }`;
+	}
+
 	static typeToString ( type: TvRoadObjectType ): string {
 
 		switch ( type ) {

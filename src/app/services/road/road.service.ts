@@ -258,11 +258,11 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	findRoadCoord ( position: Vector3 ): TvRoadCoord | null {
+	findRoadCoord ( position: Vector3, junctions = true ): TvRoadCoord | null {
 
 		const posTheta = new TvPosTheta();
 
-		const road = this.findNearestRoad( position, posTheta );
+		const road = junctions ? this.findNearestRoad( position, posTheta ) : this.findNearestNonJunctionRoad( position, posTheta );
 
 		if ( !road ) {
 			return;
@@ -369,6 +369,38 @@ export class RoadService extends BaseDataService<TvRoad> {
 		let minDistance = Number.MAX_SAFE_INTEGER;
 
 		for ( const road of this.roads ) {
+
+			if ( roadIdsToIgnore.includes( road.id ) ) continue;
+
+			for ( const geometry of road.geometries ) {
+
+				const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+
+				const distance = point.distanceTo( nearestPoint );
+
+				if ( distance < minDistance ) {
+
+					minDistance = distance;
+					nearestRoad = road;
+
+					if ( posTheta ) posTheta.copy( temp );
+				}
+			}
+		}
+
+		return nearestRoad;
+
+	}
+
+	findNearestNonJunctionRoad ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): TvRoad {
+
+		const point = new Vector2( position.x, position.y );
+		const temp = new TvPosTheta();
+
+		let nearestRoad: TvRoad = null;
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		for ( const road of this.nonJunctionRoads ) {
 
 			if ( roadIdsToIgnore.includes( road.id ) ) continue;
 

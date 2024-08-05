@@ -39,6 +39,22 @@ export abstract class SelectStrategy<T> {
 
 	}
 
+	protected onNonJunctionRoadGeometry ( pointerEventData: PointerEventData ): TvRoadCoord {
+
+		const roadCoord = TvMapQueries.findNonJunctionRoadCoord( pointerEventData.point );
+
+		if ( !roadCoord ) return;
+
+		const width = roadCoord.t > 0 ? roadCoord.road.getLeftSideWidth( roadCoord.s ) : roadCoord.road.getRightsideWidth( roadCoord.s );
+
+		if ( Math.abs( roadCoord.t ) > width ) return;
+
+		if ( Math.abs( roadCoord.s ) < 0.01 ) return;
+
+		return roadCoord;
+
+	}
+
 	protected onLaneGeometry ( pointerEventData: PointerEventData ): TvLane {
 
 		const roadCoord = this.onRoadGeometry( pointerEventData );

@@ -93,7 +93,6 @@ export class SplineManager {
 		this.removeMesh( spline );
 
 		this.mapService.map.removeSpline( spline );
-
 	}
 
 	private removeMesh ( spline: AbstractSpline ) {

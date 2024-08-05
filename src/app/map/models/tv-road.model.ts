@@ -27,12 +27,11 @@ import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvUtils } from './tv-utils';
 import { RoadStyle } from "../../graphics/road-style/road-style.model";
-import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
 import { TvRoadCoord } from "./TvRoadCoord";
-import { InvalidArgumentException, ModelNotFoundException } from 'app/exceptions/exceptions';
+import { DuplicateModelException, InvalidArgumentException, ModelNotFoundException } from 'app/exceptions/exceptions';
 
 export class TvRoad {
 
@@ -550,6 +549,24 @@ export class TvRoad {
 		this.signals.set( signal.id, signal );
 
 		return signal;
+	}
+
+	addRoadObject ( object: TvRoadObject ) {
+
+		if ( this.hasRoadObject( object ) ) {
+			throw new DuplicateModelException( `RoadObject ${ object.attr_id } already exists in ${ this.toString() }` );
+		}
+
+		object.road = this;
+
+		this.objects.object.push( object );
+
+	}
+
+	hasRoadObject ( roadObject: TvRoadObject ) {
+
+		return this.objects.object.includes( roadObject );
+
 	}
 
 	addRoadObjectInstance ( roadObject: TvRoadObject ) {
