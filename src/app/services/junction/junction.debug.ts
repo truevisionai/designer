@@ -51,7 +51,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	private meshes = new Object3DArrayMap<TvJunction, Object3D[]>();
 
-	private entries = new Object3DArrayMap<TvJunction, Object3D[]>();
+	private gates = new Object3DArrayMap<TvJunction, Object3D[]>();
 
 	private maneuvers = new Object3DArrayMap<TvJunction, ManeuverMesh[]>();
 
@@ -89,6 +89,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
+	addManeuver ( junction: TvJunction, maneuver: ManeuverMesh ) {
+
+		this.maneuvers.addItem( junction, maneuver );
+
+	}
 
 	setDebugState ( junction: TvJunction, state: DebugState ): void {
 
@@ -111,7 +116,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	onSelected ( object: TvJunction ): void {
 
-		this.entries.removeKey( object );
+		this.gates.removeKey( object );
 		this.maneuvers.removeKey( object );
 
 		this.showEntries( object );
@@ -121,7 +126,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	onUnselected ( junction: TvJunction ): void {
 
-		this.entries.removeKey( junction );
+		this.gates.removeKey( junction );
 		this.maneuvers.removeKey( junction );
 
 	}
@@ -188,7 +193,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	onRemoved ( junction: TvJunction ): void {
 
 		this.meshes.removeKey( junction );
-		this.entries.removeKey( junction );
+		this.gates.removeKey( junction );
 		this.maneuvers.removeKey( junction );
 
 	}
@@ -222,6 +227,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	}
 
 	showNodes ( road: TvRoad ) {
+
+		return;
 
 		if ( road.isJunction ) return;
 
@@ -287,19 +294,23 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		const processFirstSection = ( road: TvRoad, laneSection: TvLaneSection ) => {
 
+			if ( !road.predecessor ) return;
+
+			if ( road.predecessor.element != junction ) return;
+
 			const drivingLanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
 
 			for ( const lane of drivingLanes ) {
 
-				const laneWidth = lane.getWidthValue( laneSection.s );
+				// const laneWidth = lane.getWidthValue( laneSection.s );
 
-				const posTheta = road.getLaneCenterPosition( lane, laneSection.s );
+				const posTheta = road.getLaneCenterPosition( lane, laneSection.s + 1 );
 
-				if ( lane.isLeft ) posTheta.hdg += Math.PI;
+				// if ( lane.isLeft ) posTheta.hdg += Math.PI;
 
-				const mesh1 = this.debug.createEntryExitBoxMesh( posTheta.toVector3(), posTheta.hdg, laneWidth );
+				const gate = this.debug.createJunctionGate( road, laneSection, lane, TvContactPoint.START, posTheta.toVector3() );
 
-				this.entries.addItem( junction, mesh1 );
+				this.gates.addItem( junction, gate );
 
 			}
 
@@ -307,19 +318,23 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		const processLastSection = ( road: TvRoad, laneSection: TvLaneSection ) => {
 
+			if ( !road.successor ) return;
+
+			if ( road.successor.element != junction ) return;
+
 			const drivingLanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
 
 			for ( const lane of drivingLanes ) {
 
-				const laneWidth = lane.getWidthValue( laneSection.endS );
+				// const laneWidth = lane.getWidthValue( laneSection.endS );
 
-				const posTheta = road.getLaneCenterPosition( lane, laneSection.endS, 0 );
+				const posTheta = road.getLaneCenterPosition( lane, laneSection.endS - 1, 0 );
 
-				if ( lane.isLeft ) posTheta.hdg += Math.PI;
+				// if ( lane.isLeft ) posTheta.hdg += Math.PI;
 
-				const mesh2 = this.debug.createEntryExitBoxMesh( posTheta.toVector3(), posTheta.hdg, laneWidth );
+				const gate = this.debug.createJunctionGate( road, laneSection, lane, TvContactPoint.END, posTheta.toVector3() );
 
-				this.entries.addItem( junction, mesh2 );
+				this.gates.addItem( junction, gate );
 
 			}
 
@@ -347,7 +362,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	private createManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+	createManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
 
 		const width = connection.connectingRoad.getFirstLaneSection().getWidthUptoCenter( link.connectingLane, 0 );
 
@@ -444,7 +459,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		this.meshes.clear();
 
-		this.entries.clear();
+		this.gates.clear();
 
 		this.maneuvers.clear();
 

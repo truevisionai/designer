@@ -442,4 +442,33 @@ export class LaneUtils {
 		return null;
 	}
 
+	static isEntry ( lane: TvLane, contact: TvContactPoint ): boolean {
+
+		return ( lane.direction === TravelDirection.forward && contact === TvContactPoint.END ) ||
+			( lane.direction === TravelDirection.backward && contact === TvContactPoint.START );
+
+	}
+
+
+	static isExit ( lane: TvLane, contact: TvContactPoint ): boolean {
+
+		return ( lane.direction === TravelDirection.forward && contact === TvContactPoint.START ) ||
+			( lane.direction === TravelDirection.backward && contact === TvContactPoint.END );
+
+	}
+
+	static canConnect ( left: TvLaneCoord, right: TvLaneCoord ): boolean {
+
+		if ( left.road.id === right.road.id ) return false;
+
+		if ( left.lane.type !== right.lane.type ) return false;
+
+		// don't merge if both are entries
+		if ( this.isEntry( left.lane, left.contact ) && this.isEntry( right.lane, right.contact ) ) return false;
+
+		// don't merge if both are exits
+		if ( this.isExit( left.lane, left.contact ) && this.isExit( right.lane, right.contact ) ) return false;
+
+		return true;
+	}
 }

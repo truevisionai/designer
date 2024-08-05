@@ -11,6 +11,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { ConnectionService } from 'app/map/junction/connection.service';
 import { BaseToolService } from "../base-tool.service";
+import { ConnectionFactory } from 'app/factories/connection.factory';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +24,8 @@ export class ManeuverToolHelper {
 		public junctionService: JunctionService,
 		public maneuverDebugger: ManeuverRoadDebugger,
 		public junctionDebugger: JunctionDebugService,
-		public connectionService: ConnectionService
+		public connectionService: ConnectionService,
+		public connectionFactory: ConnectionFactory,
 	) { }
 
 	addControlPoint ( spline: AbstractSpline, point: SplineControlPoint ) {

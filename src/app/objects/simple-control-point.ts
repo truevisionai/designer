@@ -3,10 +3,11 @@
  */
 
 import { AbstractControlPoint } from "./abstract-control-point";
-import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from "three";
+import { BufferAttribute, BufferGeometry, Material, PointsMaterial, SpriteMaterial, Vector3 } from "three";
 import { OdTextures } from "../deprecated/od.textures";
 import { COLOR } from "../views/shared/utils/colors.service";
 import { SerializedField } from "../core/components/serialization";
+import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 
 export class SimpleControlPoint<T> extends AbstractControlPoint {
 
@@ -69,6 +70,35 @@ export class SimpleControlPoint<T> extends AbstractControlPoint {
 
 		super.copyPosition( position );
 
+	}
+
+}
+
+export class JunctionGatePoint extends AbstractControlPoint {
+
+	constructor ( public coord: TvLaneCoord, geometry: BufferGeometry, material: Material ) {
+
+		super( geometry, material );
+
+	}
+
+	static create ( coord: TvLaneCoord ) {
+
+		const geometry = new BufferGeometry();
+
+		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
+
+		const material = new PointsMaterial( {
+			size: 50,
+			sizeAttenuation: false,
+			map: OdTextures.point,
+			alphaTest: 0.5,
+			transparent: true,
+			color: COLOR.CYAN,
+			depthTest: false
+		} );
+
+		return new JunctionGatePoint( coord, geometry, material );
 	}
 
 }

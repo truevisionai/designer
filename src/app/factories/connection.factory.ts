@@ -131,6 +131,20 @@ export class ConnectionFactory {
 
 	}
 
+	public createSingleConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ): TvJunctionConnection {
+
+		const turnType = LaneUtils.determineTurnType( incoming, outgoing );
+
+		if ( this.debug ) Log.debug( 'turnType', turnType, incoming.toString(), outgoing.toString() );
+
+		const connection = this.createConnection( junction, incoming, outgoing, false );
+
+		if ( this.hasConnection( junction, connection ) ) return;
+
+		return connection;
+
+	}
+
 	private createCornerConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner: boolean ) {
 
 		let rightLane: TvLane;

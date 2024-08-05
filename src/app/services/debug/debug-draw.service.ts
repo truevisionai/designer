@@ -18,6 +18,7 @@ import {
 	Mesh,
 	MeshBasicMaterial,
 	MeshStandardMaterial,
+	Object3D,
 	PlaneGeometry,
 	PointsMaterial,
 	SphereGeometry,
@@ -31,7 +32,7 @@ import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
 import { SharpArrowObject, SimpleArrowObject } from 'app/objects/lane-arrow-object';
 import { DebugLine } from '../../objects/debug-line';
-import { TravelDirection, TvLaneSide } from 'app/map/models/tv-common';
+import { TravelDirection, TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
 import { Maths } from 'app/utils/maths';
@@ -39,7 +40,7 @@ import { HasDistanceValue } from 'app/core/interfaces/has-distance-value';
 import { LanePointNode, LaneSpanNode } from "../../objects/lane-node";
 import { SceneService } from '../scene.service';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
-import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { JunctionGatePoint, SimpleControlPoint } from "../../objects/simple-control-point";
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TextObjectService } from '../text-object.service';
 import { MapQueryService } from 'app/map/queries/map-query.service';
@@ -128,6 +129,14 @@ export class DebugDrawService {
 		const line = this.createLine( positions, color, lineWidth );
 
 		this.group.add( line );
+
+		return line;
+
+	}
+
+	removeLine ( line: Line2 ) {
+
+		this.group.remove( line );
 
 	}
 
@@ -370,7 +379,7 @@ export class DebugDrawService {
 
 	}
 
-	updateDebugLine<T> ( line: DebugLine<T>, points: Vector3[] ): DebugLine<T> {
+	updateDebugLine<T> ( line: Line2, points: Vector3[] ): Line2 {
 
 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
@@ -625,7 +634,7 @@ export class DebugDrawService {
 
 	}
 
-	createEntryExitBoxMesh ( position: Vector3, hdg = 0, width = 3.6 ) {
+	createEntryExitBoxMesh ( position: Vector3, hdg = 0, width = 3.6 ): Mesh {
 
 		const texture = OdTextures.arrowCircle();
 
@@ -653,10 +662,26 @@ export class DebugDrawService {
 		mesh.quaternion.setFromUnitVectors( new Vector3( 0, 1, 0 ), direction );
 
 		const boxLine = new BoxGeometry( width, 0.5, 0.01 );
+
 		const meshLine = new Mesh( boxLine, new MeshBasicMaterial( { color: COLOR.GREEN } ) );
 
 		mesh.add( meshLine );
 
 		return mesh;
 	}
+
+	createJunctionGate ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, contact: TvContactPoint, position: Vector3 ): Object3D {
+
+		const s = contact === TvContactPoint.START ? 0 : road.length;
+
+		const coord = new TvLaneCoord( road, laneSection, lane, s, 0 );
+
+		const point = JunctionGatePoint.create( coord );
+
+		point.position.copy( position );
+
+		return point;
+
+	}
+
 }
