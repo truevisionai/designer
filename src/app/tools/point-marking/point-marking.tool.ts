@@ -187,7 +187,13 @@ export class PointMarkingTool extends BaseTool<any> {
 
 	onAssetDropped ( asset: Asset, position: Vector3 ): void {
 
-		this.createPointMarking( asset, position );
+		const roadObject = this.createPointMarking( asset, position );
+
+		if ( !roadObject ) return;
+
+		const node = this.tool.toolDebugger.createNode( roadObject.road, roadObject );
+
+		this.executeAddAndSelect( node, this.currentSelectedPoint );
 
 	}
 

@@ -312,6 +312,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Point Marking Tool',
 			click: () => this.setToolType( ToolType.PointMarkingTool ),
+			enabled: true,
 		},
 		{
 			id: 'showTextMarkingTool',
