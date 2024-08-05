@@ -160,6 +160,11 @@ export class JunctionManager {
 
 		for ( const junction of result.junctionsToRemove ) {
 
+			// NOTE: to avoid removing same junction twice
+			if ( result.junctionsToUpdate.includes( junction ) ) {
+				continue;
+			}
+
 			this.removeJunction( junction, spline, true );
 
 		}
@@ -180,7 +185,7 @@ export class JunctionManager {
 
 			} catch ( e ) {
 
-				console.error( 'Error Creating Junction', e );
+				Log.error( 'Error Creating Junction', e );
 
 			}
 
@@ -255,7 +260,11 @@ export class JunctionManager {
 				next.predecessor = null;
 			}
 
-			SplineUtils.removeSegment( spline, junction );
+			if ( SplineUtils.hasSegment( spline, junction ) ) {
+				SplineUtils.removeSegment( spline, junction );
+			} else {
+				Log.warn( 'Segment not found in spline', junction.toString(), spline?.toString() );
+			}
 
 			this.splineFixer.fix( spline );
 
@@ -301,7 +310,7 @@ export class JunctionManager {
 	handleNextSegment ( spline: AbstractSpline, junction: TvJunction ) {
 
 		if ( spline.segmentMap.length < 2 ) {
-			if ( this.debug ) console.info( 'Spline has less than 2 segments' );
+			Log.warn( 'Spline has less than 2 segments' );
 			return;
 		}
 
@@ -1160,8 +1169,17 @@ export class JunctionManager {
 
 		this.createConnections( junction, links );
 
-		this.addJunction( junction );
+		if ( this.mapService.hasJunction( junction ) ) {
 
+			this.mapService.removeJunction( junction );
+
+			this.addJunction( junction );
+
+		} else {
+
+			this.addJunction( junction );
+
+		}
 	}
 
 	createConnections ( junction: TvJunction, links: TvRoadLink[] ) {
@@ -1427,7 +1445,7 @@ export class JunctionManager {
 
 			} else {
 
-				console.error( spline, startSegment, endSegment );
+				Log.error( spline?.toString(), startSegment?.toString(), endSegment?.toString() );
 
 			}
 
@@ -1610,7 +1628,7 @@ export class JunctionManager {
 
 			if ( hasSuccessor ) {
 
-				console.warn( 'hasSuccessor', mainRoad.toString() );
+				Log.warn( 'hasSuccessor', mainRoad.toString() );
 
 				const nextLink = mainRoad.successor?.clone();
 
@@ -1623,7 +1641,7 @@ export class JunctionManager {
 
 				} else {
 
-					console.warn( 'nextLink is not a road', nextLink );
+					Log.warn( 'nextLink is not a road', nextLink?.toString() );
 
 				}
 

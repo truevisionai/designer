@@ -116,6 +116,12 @@ export class MapService {
 
 	}
 
+	hasJunction ( junction: TvJunction ) {
+
+		return this.map.junctions.has( junction.id );
+
+	}
+
 	findJunction ( id: number ) {
 
 		try {

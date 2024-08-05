@@ -8,13 +8,17 @@ import { TvContactPoint } from 'app/map/models/tv-common';
 import { RoadService } from '../road/road.service';
 import { Maths } from 'app/utils/maths';
 import { Vector2 } from 'three';
+import { MapService } from '../map/map.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class JunctionRoadService {
 
-	constructor ( private roadService: RoadService ) { }
+	constructor (
+		private roadService: RoadService,
+		private mapService: MapService
+	) { }
 
 	getRoadLinks ( junction: TvJunction ): TvRoadLink[] {
 
@@ -193,7 +197,15 @@ export class JunctionRoadService {
 
 		for ( const connection of connections ) {
 
-			this.roadService.remove( connection.connectingRoad );
+			if ( this.mapService.hasRoad( connection.connectingRoad ) ) {
+
+				this.roadService.remove( connection.connectingRoad );
+
+			} else {
+
+				Log.warn( 'Road already removed', connection.connectingRoad.toString() );
+
+			}
 
 		}
 
