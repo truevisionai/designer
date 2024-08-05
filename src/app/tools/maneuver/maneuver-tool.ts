@@ -99,6 +99,8 @@ export class ManeuverTool extends BaseTool<any> {
 
 	onObjectAdded ( object: any ): void {
 
+		Log.debug( 'ManeuverTool.onObjectAdded', object?.toString() );
+
 		// if ( object instanceof SplineControlPoint ) {
 		//
 		// 	this.tool.addControlPoint( object.spline, object );
@@ -123,6 +125,8 @@ export class ManeuverTool extends BaseTool<any> {
 	}
 
 	onObjectRemoved ( object: any ): void {
+
+		Log.debug( 'ManeuverTool.onObjectRemoved', object?.toString() );
 
 		if ( object instanceof ManeuverMesh ) {
 
@@ -180,6 +184,8 @@ export class ManeuverTool extends BaseTool<any> {
 
 	onObjectUnselected ( object: any ) {
 
+		Log.debug( 'ManeuverTool.onObjectUnselected', object?.toString() );
+
 		if ( object instanceof ManeuverMesh ) {
 
 			this.clearInspector();
@@ -204,17 +210,31 @@ export class ManeuverTool extends BaseTool<any> {
 
 	onObjectUpdated ( object: any ): void {
 
-		if ( object instanceof SplineControlPoint ) {
+		Log.debug( 'ManeuverTool.onObjectUpdated', object?.toString() );
 
-			this.helper.splineService.update( object.spline );
+		if ( object instanceof SplineControlPoint ) {
 
 			const connectingRoad = this.findConnectingRoad( object.spline );
 
-			if ( !connectingRoad ) return;
+			if ( !connectingRoad ) {
+				Log.error( 'Connecting road not found' );
+				return;
+			}
+
+			this.helper.splineService.update( object.spline );
 
 			this.helper.junctionDebugger.updateDebugState( connectingRoad.junction, DebugState.SELECTED );
 
 			this.markAsDirty( connectingRoad.junction, connectingRoad );
+
+			const mesh = this.helper.junctionDebugger.findMesh( connectingRoad.junction, connectingRoad );
+
+			if ( !mesh ) {
+				Log.error( 'ManeuverMesh not found' );
+				return;
+			}
+
+			mesh.select();
 
 		} else {
 
@@ -250,9 +270,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		const road = this.helper.splineService.findFirstRoad( spline );
 
-		if ( road.isJunction ) return;
-
-		if ( !road.junction ) return;
+		if ( !road.isJunction ) return;
 
 		return road;
 	}

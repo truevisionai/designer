@@ -53,7 +53,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	private entries = new Object3DArrayMap<TvJunction, Object3D[]>();
 
-	private maneuvers = new Object3DArrayMap<TvJunction, Object3D[]>();
+	private maneuvers = new Object3DArrayMap<TvJunction, ManeuverMesh[]>();
 
 	public shouldShowManeuvers = true;
 
@@ -78,6 +78,17 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		this.mapService.nonJunctionRoads.forEach( road => this.showNodes( road ) );
 
 	}
+
+	findMesh ( junction: TvJunction, connectingRoad: TvRoad ): ManeuverMesh | undefined {
+
+		const maneuvers = this.maneuvers.getItems( junction ) as ManeuverMesh[];
+
+		if ( !maneuvers ) return;
+
+		return maneuvers.find( maneuver => maneuver.connection.connectingRoad === connectingRoad );
+
+	}
+
 
 	setDebugState ( junction: TvJunction, state: DebugState ): void {
 
