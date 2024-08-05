@@ -93,12 +93,10 @@ export class TvJunctionBoundaryBuilder {
 			return new ShapeGeometry( new Shape() );
 		}
 
-		const shape = this.convertBoundaryToShapeSimple( boundary );
-		// const shape = new Shape( points.map( p => new Vector2( p.x, p.y ) ) );
+		// const shape = this.convertBoundaryToShapeSimple( boundary );
+		const shape = this.convertBoundaryToShapeComplex( boundary );
 
 		return new ShapeGeometry( shape );
-
-
 	}
 
 	private getDeluanayGeometry ( boundary: TvJunctionBoundary ): BufferGeometry {
@@ -533,7 +531,7 @@ export class TvJunctionBoundaryBuilder {
 	}
 
 
-	convertBoundaryToShapeSimple ( boundary: TvJunctionBoundary ) {
+	convertBoundaryToShapeComplex ( boundary: TvJunctionBoundary ) {
 
 		// NOTE: THIS NOT WORKING PROPERLY
 
@@ -565,6 +563,27 @@ export class TvJunctionBoundaryBuilder {
 			}
 
 		} );
+
+		return shape;
+	}
+
+	convertBoundaryToShapeSimple ( boundary: TvJunctionBoundary ) {
+
+		const positions = this.convertBoundaryToPositions( boundary );
+
+		const centroid = GeometryUtils.getCentroid( positions );
+
+		const points = positions.map( p => new Vector2( p.x, p.y ) );
+
+		const shape = new Shape();
+
+		// Draw the
+		shape.moveTo( points[ 0 ].x, points[ 0 ].y );
+
+		points.forEach( p => shape.lineTo( p.x, p.y ) );
+
+		// Close the shape
+		shape.lineTo( points[ 0 ].x, points[ 0 ].y );
 
 		return shape;
 	}

@@ -142,6 +142,15 @@ export class SplineTestHelper {
 		this.splineService.add( splineB );
 	}
 
+	createAngleT2RoadJunction () {
+
+		const splineA = SplineFactory.createStraight( new Vector3( 0, 0, 0 ), 100, 90 );
+		const splineB = SplineFactory.createStraight( new Vector3( 100, 0, 0 ), 135, 135 );
+
+		this.splineService.add( splineA );
+		this.splineService.add( splineB );
+	}
+
 	async createAJunction ( random = false ) {
 
 		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 200 );

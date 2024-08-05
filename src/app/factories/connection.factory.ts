@@ -91,18 +91,18 @@ export class ConnectionFactory {
 
 				const turnType = LaneUtils.determineTurnType( incomingCoord, outgoingCoord );
 
-				if ( turnType == TurnType.LEFT ) {
-					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id < lowest?.id ) {
-						continue;
-					}
-					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id > lowest?.id ) {
-						continue;
-					}
-				} else if ( turnType == TurnType.RIGHT || corner ) {
+				if ( turnType == TurnType.RIGHT || corner ) {
 					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id > highest?.id ) {
 						continue;
 					}
 					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id < highest?.id ) {
+						continue;
+					}
+				} else if ( turnType == TurnType.LEFT ) {
+					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id < lowest?.id ) {
+						continue;
+					}
+					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id > lowest?.id ) {
 						continue;
 					}
 				}
