@@ -138,23 +138,9 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		if ( !this.selectedLane ) return;
+		const node = this.tool.createNode( e.point );
 
-		const roadCoord = this.selectedRoad.getPosThetaByPosition( e.point );
-
-		const s = Maths.clamp( roadCoord.s - this.selectedLane.laneSection.s, 0, this.selectedLane.laneSection.length );
-
-		let marking = this.selectedLane.getRoadMarkAt( s )?.clone( s );
-
-		if ( !marking ) {
-			marking = TvLaneRoadMark.createSolid( this.selectedLane, s );
-		}
-
-		const road = this.selectedLane.laneSection.road;
-
-		const laneSection = this.selectedLane.laneSection;
-
-		const node = this.tool.toolDebugger.createNode( road, laneSection, this.selectedLane, marking );
+		if ( !node ) return;
 
 		const addCommand = new AddObjectCommand( node );
 
