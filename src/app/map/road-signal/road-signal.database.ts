@@ -4,6 +4,14 @@
 
 import { TvRoadSignal } from "./tv-road-signal.model";
 
+export const OpenDriveSignals = {
+	TRAFFIC_LIGHT: '1000001',
+	STOP_SIGN: '205',
+	YIELD_SIGN: '206',
+	NO_PARKING_SIGN: '272',
+	STOP_LINE: '294',
+};
+
 export class SignalDatabase {
 
 	static models = [

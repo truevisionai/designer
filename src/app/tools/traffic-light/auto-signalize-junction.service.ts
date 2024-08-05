@@ -17,6 +17,8 @@ import { TvSignalControllerService } from "../../map/signal-controller/tv-signal
 import { TvJunctionController } from "../../map/models/junctions/tv-junction-controller";
 import { RoadSignalService } from "../../map/road-signal/road-signal.service";
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { LaneUtils } from 'app/utils/lane.utils';
+import { Log } from 'app/core/utils/log';
 
 export enum AutoSignalizationType {
 	ALL_GO,
@@ -53,13 +55,19 @@ export class AutoSignalizeJunctionService {
 
 		this.removeControllers( junction );
 
+		// TODO: instead of incoming roads, we need connecting road to have junctions
+		// currenlty we are using incoming roads
+		// because connecting roads are automatically created by the junction
 		for ( const road of junction.getIncomingRoads() ) {
 
 			const signals: TvRoadSignal[] = [];
 
-			const signal = this.getSignalByType( road, type );
+			const signal = this.getSignalByType( road, type, junction );
 
-			if ( !signal ) continue;
+			if ( !signal ) {
+				Log.error( 'No signal created for road:' + road.id );
+				continue;
+			}
 
 			signals.push( signal );
 
@@ -67,7 +75,7 @@ export class AutoSignalizeJunctionService {
 
 			if ( stopLine ) {
 
-				this.updateValidLanes( stopLine, road, stopLine.s );
+				this.updateValidLanes( stopLine, road, stopLine.s, junction );
 
 				signals.push( stopLine );
 
@@ -92,9 +100,9 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	private getSignalByType ( road: TvRoad, type: AutoSignalizationType ) {
+	private getSignalByType ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ) {
 
-		const roadCoord = this.findSignalPosition( road, type );
+		const roadCoord = this.findSignalPosition( road, type, junction );
 
 		let signal: TvRoadSignal;
 
@@ -117,6 +125,7 @@ export class AutoSignalizeJunctionService {
 				break;
 
 			default:
+				Log.error( 'Invalid signal type' );
 				return;
 		}
 
@@ -130,13 +139,13 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	findSignalPosition ( road: TvRoad, type: AutoSignalizationType ): TvRoadCoord {
+	findSignalPosition ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ): TvRoadCoord {
 
-		const lane = this.findPlacementLane( road );
+		const lane = this.findPlacementLane( road, junction );
 
 		if ( !lane ) {
+			Log.error( 'No suitable lane found for road:' + road.id );
 			TvConsole.error( 'No suitable lane found for road:' + road.id );
-			console.error( 'No suitable lane found for road', road.laneSections );
 			return;
 		}
 
@@ -170,13 +179,46 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	private findPlacementLane ( road: TvRoad ): TvLane | undefined {
+	private findPlacementLane ( road: TvRoad, junction: TvJunction ): TvLane | undefined {
 
-		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
+		const sidewalk = this.getLane( road, junction, TvLaneType.sidewalk );
+		if ( sidewalk ) return sidewalk;
+
+		const curb = this.getLane( road, junction, TvLaneType.curb );
+		if ( curb ) return curb;
+
+		const shoulder = this.getLane( road, junction, TvLaneType.shoulder );
+		if ( shoulder ) return shoulder;
+
+	}
+
+	private getLane ( road: TvRoad, junction: TvJunction, laneType: TvLaneType ): TvLane {
+
+		const contactPoint = road.successor?.element == junction ? TvContactPoint.END : TvContactPoint.START;
 
 		const s = contactPoint == TvContactPoint.START ? 0 : road.length;
 
 		const laneSection = road.getLaneSectionAt( s );
+
+		const side = this.getForwardSide( road, contactPoint );
+
+		if ( side == TvLaneSide.LEFT ) {
+
+			return LaneUtils.findHighest( laneSection.getLaneArray(), laneType );
+
+		} else if ( side == TvLaneSide.RIGHT ) {
+
+			return LaneUtils.findLowest( laneSection.getLaneArray(), laneType );
+
+		} else {
+
+			Log.error( 'Invalid contact point' );
+
+		}
+
+	}
+
+	private getForwardSide ( road: TvRoad, contactPoint: TvContactPoint ): TvLaneSide {
 
 		let side = road.trafficRule == TrafficRule.LHT ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
 
@@ -187,14 +229,7 @@ export class AutoSignalizeJunctionService {
 
 		}
 
-		const sidewalk = laneSection.getLaneArray().find( lane => lane.side == side && lane.type == TvLaneType.sidewalk );
-
-		if ( sidewalk ) return sidewalk;
-
-		const curb = laneSection.getLaneArray().find( lane => lane.type == TvLaneType.curb );
-
-		if ( curb ) return curb;
-
+		return side;
 	}
 
 	private findOrientation ( contact: TvContactPoint ): TvOrientation {
@@ -207,19 +242,36 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	private updateValidLanes ( signal: TvRoadSignal, road: TvRoad, s: number ) {
+	private updateValidLanes ( signal: TvRoadSignal, road: TvRoad, s: number, junction: TvJunction ) {
+
+		/**
+		Rules
+		The following rules apply to validity elements:
+		A signal may be valid for one or more lanes.
+		The range given by all <validity> elements shall be a subset of the parent’s @orientation attribute:
+
+		For right-hand traffic, @orientation="+" implies that the <validity> element shall only span negative lane ids,
+		while @orientation="-" implies that the <validity> element shall only span positive lane ids.
+		If the given <validity> elements span both, positive and negative lane ids, @orientation="none" shall be used.
+
+		For left-hand-traffic, @orientation="-" implies that the <validity> element shall only span negative lane ids,
+		while @orientation="+" implies that the <validity> element shall only span positive lane ids.
+		If the given <validity> elements span both, positive and negative lane ids, @orientation="none" shall be used.
+
+		The value of the @fromLane attribute shall be lower than or equal to the value of the @toLane attribute.
+		**/
+
+		const contactPoint = road.successor?.element == junction ? TvContactPoint.END : TvContactPoint.START;
+
+		const side = this.getForwardSide( road, contactPoint );
 
 		const laneSection = road.getLaneSectionAt( s );
 
-		const lanes = laneSection.getLaneArray();
+		const drivingLanes = laneSection.getLaneArray().filter( lane => lane.type == TvLaneType.driving && lane.side == side ).map( lane => lane.id );
 
-		const nonDrivingLanes = lanes.filter( lane => lane.type == TvLaneType.sidewalk || lane.type == TvLaneType.curb );
-
-		const laneIds = nonDrivingLanes.map( lane => lane.id );
-
-		const minLaneId = Math.min( ...laneIds );
-
-		const maxLaneId = Math.max( ...laneIds );
+		// TODO: this is not correct, we need to find the lane with the signal
+		const minLaneId = Math.min( ...drivingLanes );
+		const maxLaneId = Math.max( ...drivingLanes );
 
 		signal.addValidity( minLaneId, maxLaneId );
 	}
@@ -248,7 +300,9 @@ export class AutoSignalizeJunctionService {
 
 		this.controllerService.addController( controller );
 
-		junction.controllers.push( new TvJunctionController( controller.id, controller.name ) );
+		const junctionController = new TvJunctionController( controller.id, controller.name );
+
+		junction.addController( junctionController );
 
 	}
 

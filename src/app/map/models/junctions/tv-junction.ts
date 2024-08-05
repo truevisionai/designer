@@ -15,6 +15,7 @@ import { TvRoadLink, TvRoadLinkType } from "../tv-road-link";
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
+import { Log } from 'app/core/utils/log';
 
 export class TvJunction {
 
@@ -165,12 +166,23 @@ export class TvJunction {
 		return null;
 	}
 
+	addController ( controller: TvJunctionController ) {
+
+		if ( this.controllers.find( c => c.id === controller.id ) ) {
+			Log.error( `Controller with id ${ controller.id } already exists in junction ${ this.id }` );
+		}
+
+		while ( this.controllers.find( c => c.sequence === controller.sequence ) ) {
+			controller.sequence++;
+		}
+
+		this.controllers.push( controller );
+	}
+
 	getJunctionController ( index: number ) {
 
 		if ( index < this.controllers.length && this.controllers.length > 0 ) {
-
 			return this.controllers[ index ];
-
 		}
 
 		return null;
@@ -179,7 +191,11 @@ export class TvJunction {
 	addConnection ( connection: TvJunctionConnection ) {
 
 		if ( this.connections.has( connection.id ) ) {
-			throw new DuplicateKeyException( `Connection with id ${ connection.id } already exists in junction ${ this.id }` );
+			Log.error( `Connection with id ${ connection.id } already exists in junction ${ this.id }` );
+		}
+
+		while ( this.connections.has( connection.id ) ) {
+			connection.id++;
 		}
 
 		this.connections.set( connection.id, connection );

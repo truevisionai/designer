@@ -416,9 +416,15 @@ export class TvRoad {
 
 	}
 
+	getSignalCount (): any {
+
+		return this.signals.size;
+
+	}
+
 	getRoadSignals (): TvRoadSignal[] {
 
-		return [ ...this.signals.values() ];
+		return Array.from( this.signals.values() );
 
 	}
 

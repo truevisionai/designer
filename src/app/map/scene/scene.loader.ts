@@ -1052,7 +1052,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		readXmlArray( xmlElement.controller, xml => {
 
-			junction.controllers.push( this.parseJunctionController( xml ) );
+			const controller = this.parseJunctionController( xml );
+
+			if ( !controller ) return;
+
+			junction.addController( controller );
 
 		} );
 
