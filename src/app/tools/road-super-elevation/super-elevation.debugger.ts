@@ -14,6 +14,7 @@ import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { DebugLine } from "../../objects/debug-line";
 import { DebugDrawService } from "../../services/debug/debug-draw.service";
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
+import { Log } from 'app/core/utils/log';
 
 
 @Injectable( {
@@ -107,7 +108,12 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 
 	createNode ( road: TvRoad, superElevation: TvSuperElevation ) {
 
-		const position = road.getPosThetaAt( superElevation.s )?.toVector3() || new Vector3();
+		const posTheta = road.getPosThetaAt( superElevation.s );
+
+		if ( !posTheta ) {
+			Log.error( 'SuperElevationDebugger', 'createNode', 'posTheta is undefined' );
+			return ControlPointFactory.createSimpleControlPoint( superElevation, new Vector3() );
+		}
 
 		let point: SimpleControlPoint<TvSuperElevation>;
 
@@ -115,11 +121,11 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 
 			point = this.pointCache.get( superElevation );
 
-			point.position.copy( position );
+			point.position.copy( posTheta.position );
 
 		} else {
 
-			point = ControlPointFactory.createSimpleControlPoint( superElevation, position );
+			point = ControlPointFactory.createSimpleControlPoint( superElevation, posTheta.position );
 
 			this.pointCache.set( superElevation, point );
 

@@ -228,8 +228,6 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	showNodes ( road: TvRoad ) {
 
-		return;
-
 		if ( road.isJunction ) return;
 
 		if ( !road.predecessor || road.predecessor.isJunction ) {
