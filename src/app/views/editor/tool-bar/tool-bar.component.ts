@@ -122,7 +122,8 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			action: 'ramp-tool',
 			icon: 'fork_right', // fork_right, call_split
 			track: 'menu',
-			tooltip: 'Ramp Tool',
+			title: 'RAMP-TOOL-TITLE',
+			description: 'RAMP-TOOL-DESCRIPTION',
 			click: () => this.setToolType( ToolType.RoadRampTool ),
 			enabled: true,
 		},

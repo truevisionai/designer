@@ -82,6 +82,8 @@
 	"RADIO": "Radio",
 	"ROAD-CIRCLE-DESCRIPTION": "Tool to create circular road. <br />  Use SHIFT + LEFT CLICK then drag to control circle size. <br/> Use Road Tool to modify shape of the circle <br/><br/> <img src='assets/Road-Circle-Tool.gif'/>",
 	"ROAD-CIRCLE-TITLE": "Road Circle Tool",
+	"RAMP-TOOL-DESCRIPTION": "Create entry/exit ramps for highways and other roads. <br/> Use SHIFT + LEFT CLICK on existing road to start the ramp. <br/> Click outside the road to create the ramp. <br/><br/> <img src='assets/Ramp-Tool.gif'/>",
+	"RAMP-TOOL-TITLE": "Ramp Tool",
 	"ROAD-DIVIDER-DESCRIPTION": "Tool to divide road in multiple segments. <br />  Use SHIFT + LEFT CLICK to divide a road. <br/><br/> <img src='assets/Road-Divider-Tool.gif'/>",
 	"ROAD-DIVIDER-TITLE": "Road Divider Tool",
 	"ROAD-ELEVATION-DESCRIPTION": "Tool to edit road elevation. <br />  Use SHIFT + LEFT CLICK to a node. <br/><br/> <img src='assets/Road-Elevation-Tool.gif'/>",
