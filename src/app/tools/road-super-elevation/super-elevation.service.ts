@@ -18,7 +18,7 @@ export class SuperElevationService {
 	) {
 	}
 
-	add ( road: TvRoad, superElevation: TvSuperElevation ) {
+	validate ( road: TvRoad, superElevation: TvSuperElevation ): boolean {
 
 		if ( superElevation.s < 0 ) {
 			superElevation.s = 0;
@@ -29,6 +29,13 @@ export class SuperElevationService {
 			superElevation.s = road.length;
 			Log.warn( 'SuperElevationService', 'Super Elevation s value is greater than road length. Setting s to road length' );
 		}
+
+		return true;
+	}
+
+	add ( road: TvRoad, superElevation: TvSuperElevation ) {
+
+		this.validate( road, superElevation );
 
 		road.lateralProfile.superElevations.set( superElevation.s, superElevation );
 
@@ -40,15 +47,7 @@ export class SuperElevationService {
 
 	update ( road: TvRoad, superElevation: TvSuperElevation ) {
 
-		if ( superElevation.s < 0 ) {
-			superElevation.s = 0;
-			Log.warn( 'SuperElevationService', 'Super Elevation s value is less than 0. Setting s to 0' );
-		}
-
-		if ( superElevation.s > road.length ) {
-			superElevation.s = road.length;
-			Log.warn( 'SuperElevationService', 'Super Elevation s value is greater than road length. Setting s to road length' );
-		}
+		this.validate( road, superElevation );
 
 		road.lateralProfile.superElevations.computeCoefficients( road.length );
 
