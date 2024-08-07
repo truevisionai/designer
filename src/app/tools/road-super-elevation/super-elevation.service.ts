@@ -6,6 +6,7 @@ import { Injectable } from "@angular/core";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { TvSuperElevation } from "../../map/models/tv-lateral.profile";
 import { RoadService } from "app/services/road/road.service";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,6 +20,16 @@ export class SuperElevationService {
 
 	add ( road: TvRoad, superElevation: TvSuperElevation ) {
 
+		if ( superElevation.s < 0 ) {
+			superElevation.s = 0;
+			Log.warn( 'SuperElevationService', 'Super Elevation s value is less than 0. Setting s to 0' );
+		}
+
+		if ( superElevation.s > road.length ) {
+			superElevation.s = road.length;
+			Log.warn( 'SuperElevationService', 'Super Elevation s value is greater than road length. Setting s to road length' );
+		}
+
 		road.lateralProfile.superElevations.set( superElevation.s, superElevation );
 
 		road.lateralProfile.superElevations.computeCoefficients( road.length );
@@ -28,6 +39,16 @@ export class SuperElevationService {
 	}
 
 	update ( road: TvRoad, superElevation: TvSuperElevation ) {
+
+		if ( superElevation.s < 0 ) {
+			superElevation.s = 0;
+			Log.warn( 'SuperElevationService', 'Super Elevation s value is less than 0. Setting s to 0' );
+		}
+
+		if ( superElevation.s > road.length ) {
+			superElevation.s = road.length;
+			Log.warn( 'SuperElevationService', 'Super Elevation s value is greater than road length. Setting s to road length' );
+		}
 
 		road.lateralProfile.superElevations.computeCoefficients( road.length );
 
