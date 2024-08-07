@@ -15,6 +15,7 @@ import { DebugLine } from "../../objects/debug-line";
 import { DebugDrawService } from "../../services/debug/debug-draw.service";
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
 import { Log } from 'app/core/utils/log';
+import { SuperElevationService } from './super-elevation.service';
 
 
 @Injectable( {
@@ -34,6 +35,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 	constructor (
 		private debugService: DebugDrawService,
 		private roadDebugger: RoadDebugService,
+		private superElevationService: SuperElevationService
 	) {
 
 		super();
@@ -107,6 +109,8 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 	}
 
 	createNode ( road: TvRoad, superElevation: TvSuperElevation ) {
+
+		this.superElevationService.validate( road, superElevation );
 
 		const posTheta = road.getPosThetaAt( superElevation.s );
 

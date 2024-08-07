@@ -42,6 +42,8 @@ export class RoadElevationToolService {
 
 		road.getElevationProfile().getElevations().forEach( elevation => {
 
+			this.elevationService.validate( road, elevation );
+
 			this.nodes.add( elevation, this.createElevationNode( road, elevation ) );
 
 			this.lines.add( elevation, this.createElevationLine( road, elevation ) );
