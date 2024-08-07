@@ -52,7 +52,7 @@
 	"LISTS": "Lists",
 	"LOADER": "Loader",
 	"LOCKSCREEN": "Lockscreen",
-	"MANEUVER-DESCRIPTION": "Edit Junction maneuvers <br/>  Drag maneuver control points. <br/><br/> <img src='assets/ManeuverTool.gif'/>",
+	"MANEUVER-DESCRIPTION": "Edit/Create Junction Maneuvers/Connections <br/> Select entry/exit points to create custom connections. <br/> Drag control points to modify the shape. <br/><br/> <img src='assets/Maneuver-Tool.gif'/>",
 	"MANEUVER-TITLE": "Maneuver Tool",
 	"MAP": "Map",
 	"MATERIAL": "Material",
