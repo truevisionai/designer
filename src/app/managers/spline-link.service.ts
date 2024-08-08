@@ -13,6 +13,7 @@ import { SplineBuilder } from "app/services/spline/spline.builder";
 import { RoadUtils } from "app/utils/road.utils";
 import { SplineUtils } from "app/utils/spline.utils";
 import { JunctionManager } from "./junction-manager";
+import { MapService } from "app/services/map/map.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +24,7 @@ export class SplineLinkService {
 		private junctionManager: JunctionManager,
 		private connectionManager: ConnectionManager,
 		private splineBuilder: SplineBuilder,
+		private mapService: MapService,
 	) { }
 
 	getSuccessor ( spline: AbstractSpline ): AbstractSpline | undefined {
@@ -83,9 +85,21 @@ export class SplineLinkService {
 		}
 
 		for ( const segment of spline.segmentMap.toArray() ) {
+
 			if ( segment instanceof TvJunction ) {
-				this.junctionManager.removeJunction( segment, spline, true );
+
+				if ( this.mapService.hasJunction( segment ) ) {
+
+					this.junctionManager.removeJunction( segment, spline, true );
+
+				} else {
+
+					Log.warn( "Junction already removed", segment.toString() );
+
+				}
+
 			}
+
 		}
 
 		this.unlinkSpline( spline );
