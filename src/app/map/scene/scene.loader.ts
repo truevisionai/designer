@@ -492,6 +492,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		let isValid = true;
 
+		if ( spline.controlPoints.length < 2 ) {
+			Log.error( 'Spline must have at least 2 control points', spline.toString() );
+			return;
+		}
+
 		this.readAsOptionalArray( xml.roadSegment, xml => {
 
 			const start = parseFloat( xml.attr_start );
@@ -562,11 +567,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( !isValid ) {
 			Log.error( 'Invalid spline', spline.toString() );
-			return;
-		}
-
-		if ( spline.controlPoints.length < 2 ) {
-			Log.error( 'Spline must have at least 2 control points', spline.toString() );
 			return;
 		}
 
@@ -827,6 +827,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			}
 
 			const element = this.findElement( elementType, elementId );
+
+			if ( !element ) {
+				Log.error( 'element not found', xml );
+				return;
+			}
 
 			if ( type === 0 ) {
 

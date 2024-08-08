@@ -343,6 +343,21 @@ export class SplineBuilder {
 			return;
 		}
 
+		if ( spline.controlPoints.length < 2 ) {
+			Log.warn( 'No control points found in spline', spline?.toString() );
+			return;
+		}
+
+		if ( spline.geometries.length == 0 ) {
+			Log.warn( 'No geometries found in spline', spline?.toString() );
+			return;
+		}
+
+		if ( spline.getLength() < 1 ) {
+			Log.warn( 'No geometries found in spline', spline?.toString() );
+			return;
+		}
+
 		// this buffer is added to left/right and center points to create a bounding box
 		// to explain the width of the road
 		// helps in intersection
