@@ -284,7 +284,11 @@ export class JunctionManager {
 
 		this.junctionRoadService.removeAll( junction );
 
-		this.mapService.map.removeJunction( junction );
+		if ( this.mapService.hasJunction( junction ) ) {
+			this.mapService.map.removeJunction( junction );
+		} else {
+			Log.warn( 'Junction already removed', junction.toString() );
+		}
 
 		this.removeMesh( junction );
 
