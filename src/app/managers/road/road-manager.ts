@@ -66,10 +66,20 @@ export class RoadManager {
 
 		this.rebuildRoad( road );
 
-		this.mapService.map.addSpline( road.spline );
+		if ( !this.mapService.hasSpline( road.spline ) ) {
+
+			this.mapService.addSpline( road.spline );
+
+		} else {
+
+			Log.warn( 'Spline already exists', road.spline.toString() );
+
+		}
 
 		if ( road.gameObject ) {
+
 			this.mapService.map.gameObject.add( road.gameObject );
+
 		}
 
 	}
@@ -90,7 +100,15 @@ export class RoadManager {
 
 		if ( road.isJunction ) {
 
-			this.mapService.map.removeSpline( road.spline );
+			if ( this.mapService.map.hasSpline( road.spline ) ) {
+
+				this.mapService.map.removeSpline( road.spline );
+
+			} else {
+
+				Log.warn( 'Spline already removed', road.spline.toString() );
+
+			}
 
 		} else {
 

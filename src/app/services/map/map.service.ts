@@ -11,6 +11,7 @@ import { Material, Mesh } from 'three';
 import { PropPolygon } from "../../map/prop-polygon/prop-polygon.model";
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Log } from 'app/core/utils/log';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 @Injectable( {
 	providedIn: 'root'
@@ -101,6 +102,18 @@ export class MapService {
 			}
 
 		}
+
+	}
+
+	addSpline ( spline: AbstractSpline ) {
+
+		this.map.addSpline( spline );
+
+	}
+
+	hasSpline ( spline: AbstractSpline ) {
+
+		return this.map.getSplines().find( s => s.uuid === spline.uuid ) !== undefined;
 
 	}
 
