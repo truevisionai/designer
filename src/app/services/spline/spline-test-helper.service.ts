@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { Vector3 } from "three";
 import { AbstractSpline, SplineType } from "../../core/shapes/abstract-spline";

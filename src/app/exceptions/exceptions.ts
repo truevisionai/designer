@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 export class ModelNotFoundException extends Error {
 	constructor ( message: string ) {
 		super( message );

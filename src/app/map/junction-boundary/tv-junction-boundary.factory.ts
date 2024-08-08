@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvBoundarySegmentType, TvJointBoundary, TvJunctionBoundary, TvLaneBoundary } from "./tv-junction-boundary";

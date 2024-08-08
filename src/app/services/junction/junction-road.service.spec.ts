@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';

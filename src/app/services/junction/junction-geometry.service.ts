@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { Box2, Box3, Vector2 } from "three";

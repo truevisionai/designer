@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { IntersectionGroup } from "./Intersection-group";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { Vector3 } from "three";

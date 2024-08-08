@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { IntersectionGroup } from "app/managers/Intersection-group";
 import {
 	TvJointBoundary,

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { EventServiceProvider } from "../listeners/event-service-provider";
 import { SplineTestHelper } from "../services/spline/spline-test-helper.service";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";

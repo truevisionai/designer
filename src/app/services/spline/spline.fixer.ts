@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
 import { RoadFactory } from "app/factories/road-factory.service";

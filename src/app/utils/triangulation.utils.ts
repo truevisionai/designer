@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 
 export function removeDuplicates ( vertices: number[], edges: number[] ): { vertices: number[], edges: number[] } {
 	const uniqueVertices = [];

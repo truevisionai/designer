@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvRoad } from "app/map/models/tv-road.model";
 import { LaneUtils } from "./lane.utils";
 

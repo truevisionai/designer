@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { Log } from 'app/core/utils/log';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';

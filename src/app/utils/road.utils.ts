@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
 import { TvRoad } from "app/map/models/tv-road.model";
