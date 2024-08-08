@@ -15,6 +15,7 @@ import { TvJunctionLaneLink } from "../map/models/junctions/tv-junction-lane-lin
 import { TvRoadLink } from "../map/models/tv-road-link";
 import { TvLane } from "app/map/models/tv-lane";
 import { LaneUtils } from "./lane.utils";
+import { Log } from "app/core/utils/log";
 
 export class JunctionUtils {
 
@@ -325,6 +326,16 @@ export class JunctionUtils {
 
 	static convertJointToPositions ( joint: TvJointBoundary ): Vector3[] {
 
+		if ( joint.road.geometries.length == 0 ) {
+			Log.warn( 'Road has no geometries', joint.road.toString() );
+			return [];
+		}
+
+		if ( joint.road.length == 0 ) {
+			Log.warn( 'Road has no length', joint.road.toString() );
+			return [];
+		}
+
 		const posTheta = joint.road.getPosThetaByContact( joint.contactPoint );
 		const roadWidth = joint.road.getRoadWidthAt( posTheta.s );
 		const t = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
@@ -391,6 +402,16 @@ export class JunctionUtils {
 	static convertLaneToPositions ( lane: TvLaneBoundary ): Vector3[] {
 
 		const positions: Vector3[] = [];
+
+		if ( lane.road.geometries.length == 0 ) {
+			Log.warn( 'Road has no geometries', lane.road.toString() );
+			return positions;
+		}
+
+		if ( lane.road.length == 0 ) {
+			Log.warn( 'Road has no length', lane.road.toString() );
+			return positions;
+		}
 
 		const start = this.findPosition( lane.road, lane.sStart );
 

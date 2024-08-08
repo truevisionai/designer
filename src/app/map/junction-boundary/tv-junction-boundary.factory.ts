@@ -8,6 +8,8 @@ import { TvRoad } from "../models/tv-road.model";
 import { TvLane } from "../models/tv-lane";
 import { TvContactPoint } from "../models/tv-common";
 import { JunctionUtils } from "app/utils/junction.utils";
+import { Log } from "app/core/utils/log";
+import { Vector3 } from "three";
 
 @Injectable( {
 	providedIn: 'root'
@@ -185,13 +187,23 @@ export class TvJunctionBoundaryFactory {
 
 	static sortBoundarySegments ( boundary: TvJunctionBoundary ) {
 
+		if ( boundary.segments.length == 0 ) {
+			Log.error( 'No segments found in boundary' );
+			return
+		}
+
 		const segments = boundary.segments;
 
 		const points = segments.map( segment => {
 
-			const position = JunctionUtils.convetToPositions( segment )[ 0 ];
+			const positions = JunctionUtils.convetToPositions( segment );
 
-			return { position, segment };
+			if ( positions.length == 0 ) {
+				Log.error( 'No positions found in segment' );
+				return { position: new Vector3(), segment };
+			}
+
+			return { position: positions[ 0 ], segment };
 
 		} );
 
