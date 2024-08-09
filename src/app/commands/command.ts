@@ -11,13 +11,3 @@ export interface ICommand {
 	redo (): void;
 
 }
-
-export interface ICommandCallback {
-
-	onExecute (): void;
-
-	onUndo (): void;
-
-	onRedo (): void;
-
-}

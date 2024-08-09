@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { RoadDividerTool } from './road-divider-tool';
 import { RoadDividerToolService } from './road-divider-tool.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
