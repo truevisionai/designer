@@ -23,8 +23,6 @@ import {
 	ISerializedFieldSetting
 } from 'app/core/components/serialization';
 import { IComponent } from 'app/objects/game-object';
-import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/commands/command-history';
 import { BooleanFieldComponent } from 'app/views/shared/fields/boolean-field/boolean-field.component';
 import { ColorFieldComponent } from 'app/views/shared/fields/color-field/color-field.component';
 import { DoubleFieldComponent } from 'app/views/shared/fields/double-field/double-field.component';
@@ -38,6 +36,7 @@ import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/gam
 import { MaterialFieldComponent } from 'app/views/fields/material-field/material-field.component';
 import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-field.component';
 import { Subscription } from 'rxjs';
+import { Commands } from 'app/commands/commands';
 
 @Directive( {
 	selector: '[app-field-host]',
@@ -191,13 +190,13 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 		componentRef.instance.changed?.subscribe( ( value ) => {
 
-			CommandHistory.execute( new SetValueCommand( data, item.field, value ) );
+			Commands.SetValue( data, item.field, value );
 
 		} );
 
 		componentRef.instance.clicked?.subscribe( ( value ) => {
 
-			CommandHistory.execute( new SetValueCommand( data, item.field, value ) );
+			Commands.SetValue( data, item.field, value );
 
 		} );
 

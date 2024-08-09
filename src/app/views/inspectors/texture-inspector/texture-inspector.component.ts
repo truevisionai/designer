@@ -4,11 +4,10 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/objects/game-object';
-import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/commands/command-history';
 import { Asset } from 'app/core/asset/asset.model';
 import { TvTexture } from "../../../graphics/texture/tv-texture.model";
 import { TvTextureService } from "../../../graphics/texture/tv-texture.service";
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-texture-inspector',
@@ -56,7 +55,7 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 		if ( !this.texture ) return;
 
-		CommandHistory.execute( new SetValueCommand( this.texture, property, $newValue ) );
+		Commands.SetValue( this.texture, property, $newValue );
 
 		this.texture.needsUpdate = true;
 

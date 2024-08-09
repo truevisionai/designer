@@ -4,9 +4,8 @@
 
 import { Component, Input } from '@angular/core';
 import { TraveledDistanceCondition } from 'app/scenario/models/conditions/tv-traveled-distance-condition';
-import { CommandHistory } from '../../../../commands/command-history';
-import { SetValueCommand } from '../../../../commands/set-value-command';
 import { Condition } from '../../../models/conditions/tv-condition';
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-traveled-distance-condition-editor',
@@ -23,9 +22,7 @@ export class TraveledDistanceConditionEditorComponent {
 
 	onDistanceValueChanged ( value: number ) {
 
-		CommandHistory.execute(
-			new SetValueCommand( this.distanceCondition, 'value', value )
-		);
+		Commands.SetValue( this.distanceCondition, 'value', value );
 
 	}
 }

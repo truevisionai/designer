@@ -16,7 +16,6 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { EndLaneMovingStrategy } from 'app/core/strategies/move-strategies/end-lane.moving.strategy';
-import { SetValueCommand } from 'app/commands/set-value-command';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
@@ -25,6 +24,7 @@ import { LaneMarkingInspector } from './lane-marking.inspector';
 import { DebugState } from 'app/services/debug/debug-state';
 import { Maths } from 'app/utils/maths';
 import { NewLanePosition } from 'app/scenario/models/positions/tv-lane-position';
+import { Commands } from 'app/commands/commands';
 
 export class LaneMarkingTool extends BaseTool<any> {
 
@@ -168,7 +168,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 		const newRoadCoord = this.tool.roadService.findRoadCoordAtPosition( newPosition );
 		const newOffset = Maths.clamp( newRoadCoord.s - laneSection.s, 0, laneSection.length );
 
-		CommandHistory.execute( new SetValueCommand( this.selectedNode, 's', newOffset, oldOffset ) );
+		Commands.SetValue( this.selectedNode, 's', newOffset, oldOffset );
 
 		this.nodeMoved = false;
 

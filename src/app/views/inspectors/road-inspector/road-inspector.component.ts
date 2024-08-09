@@ -4,7 +4,6 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
-import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadNode } from 'app/objects/road-node';
 import { CommandHistory } from 'app/commands/command-history';
 import { Vector2, Vector3 } from 'three';
@@ -21,6 +20,7 @@ import { UpdatePositionCommand } from "../../../commands/update-position-command
 import { Environment } from 'app/core/utils/environment';
 import { TvConsole } from "../../../core/utils/console";
 import { RoadControlPoint } from 'app/objects/road-control-point';
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -123,37 +123,37 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	onRoadSpeedChanged ( $value: number ) {
 
-		CommandHistory.execute( new SetValueCommand( this.roadType.speed, 'max', $value ) );
+		Commands.SetValue( this.roadType.speed, 'max', $value );
 
 	}
 
 	onRoadTypeChanged ( $value: any ) {
 
-		CommandHistory.execute( new SetValueCommand( this.roadType, 'type', $value ) );
+		Commands.SetValue( this.roadType, 'type', $value );
 
 	}
 
 	onDrivingMaterialChanged ( $guid: string ) {
 
-		CommandHistory.execute( new SetValueCommand( this.road, 'drivingMaterialGuid', $guid ) );
+		Commands.SetValue( this.road, 'drivingMaterialGuid', $guid );
 
 	}
 
 	onSidewalkMaterialChanged ( $guid: string ) {
 
-		CommandHistory.execute( new SetValueCommand( this.road, 'sidewalkMaterialGuid', $guid ) );
+		Commands.SetValue( this.road, 'sidewalkMaterialGuid', $guid );
 
 	}
 
 	onBorderMaterialChanged ( $guid: string ) {
 
-		CommandHistory.execute( new SetValueCommand( this.road, 'borderMaterialGuid', $guid ) );
+		Commands.SetValue( this.road, 'borderMaterialGuid', $guid );
 
 	}
 
 	onShoulderMaterialChanged ( $guid: string ) {
 
-		CommandHistory.execute( new SetValueCommand( this.road, 'shoulderMaterialGuid', $guid ) );
+		Commands.SetValue( this.road, 'shoulderMaterialGuid', $guid );
 
 	}
 

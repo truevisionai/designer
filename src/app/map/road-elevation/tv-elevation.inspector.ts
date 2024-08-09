@@ -2,13 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { CommandHistory } from "app/commands/command-history";
+import { Commands } from "app/commands/commands";
+import { RemoveObjectCommand } from "app/commands/remove-object-command";
+import { SerializedField, SerializedAction } from "app/core/components/serialization";
+import { Maths } from "app/utils/maths";
 import { TvRoad } from "../models/tv-road.model";
 import { TvElevation } from "./tv-elevation.model";
-import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "../../commands/command-history";
-import { SetValueCommand } from "../../commands/set-value-command";
-import { Maths } from "../../utils/maths";
-import { RemoveObjectCommand } from "../../commands/remove-object-command";
 
 export class TvElevationInspector {
 
@@ -51,7 +51,7 @@ export class TvElevationInspector {
 
 		const oldValue = this.elevation.a;
 
-		CommandHistory.execute( new SetValueCommand( this.elevation, 'a', newValue, oldValue ) );
+		Commands.SetValue( this.elevation, 'a', newValue, oldValue );
 
 	}
 
@@ -62,7 +62,7 @@ export class TvElevationInspector {
 
 		const oldValue = this.elevation.a;
 
-		CommandHistory.execute( new SetValueCommand( this.elevation, 'a', newValue, oldValue ) );
+		Commands.SetValue( this.elevation, 'a', newValue, oldValue );
 
 	}
 
@@ -75,7 +75,8 @@ export class TvElevationInspector {
 
 		} else {
 
-			CommandHistory.execute( new RemoveObjectCommand( this.elevation ) );
+			Commands.RemoveObject( this.elevation );
+
 		}
 	}
 

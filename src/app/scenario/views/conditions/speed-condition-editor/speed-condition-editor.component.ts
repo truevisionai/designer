@@ -4,11 +4,10 @@
 
 import { Component, Input } from '@angular/core';
 import { SpeedCondition } from 'app/scenario/models/conditions/tv-speed-condition';
-import { CommandHistory } from '../../../../commands/command-history';
-import { SetValueCommand } from '../../../../commands/set-value-command';
 import { Condition } from '../../../models/conditions/tv-condition';
 import { Rule } from '../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-speed-condition-editor',
@@ -34,17 +33,13 @@ export class SpeedConditionEditorComponent extends BaseConditionEditorComponent 
 
 	onSpeedChanged ( $value: number ) {
 
-		CommandHistory.execute(
-			new SetValueCommand( this.speedCondition, 'value', $value )
-		);
+		Commands.SetValue( this.speedCondition, 'value', $value );
 
 	}
 
 	onRuleChanged ( $rule: Rule ) {
 
-		CommandHistory.execute(
-			new SetValueCommand( this.speedCondition, 'rule', $rule )
-		);
+		Commands.SetValue( this.speedCondition, 'rule', $rule );
 
 	}
 }

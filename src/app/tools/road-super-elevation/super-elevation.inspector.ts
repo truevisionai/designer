@@ -6,11 +6,9 @@
 import { TvRoad } from "../../map/models/tv-road.model";
 import { TvSuperElevation } from "../../map/models/tv-lateral.profile";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "../../commands/command-history";
-import { SetValueCommand } from "../../commands/set-value-command";
 import { Maths } from "../../utils/maths";
-import { RemoveObjectCommand } from "../../commands/remove-object-command";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { Commands } from "app/commands/commands";
 
 const ANGLE_DESCRIPTION = 'Angle of super elevation (radians). Positive values for roads falling to the right side & negative values for roads falling to the left side.';
 
@@ -32,7 +30,7 @@ export class SuperElevationInspector {
 	@SerializedField( {
 		type: 'int',
 		description: 'Distance from the start of the road'
-	 } )
+	} )
 	get distance (): number {
 		return this.elevation.s;
 	}
@@ -60,7 +58,7 @@ export class SuperElevationInspector {
 
 		const oldValue = this.elevation.a;
 
-		CommandHistory.execute( new SetValueCommand( this, 'angle', newValue, oldValue ) );
+		Commands.SetValue( this, 'angle', newValue, oldValue );
 
 	}
 
@@ -71,7 +69,7 @@ export class SuperElevationInspector {
 
 		const oldValue = this.elevation.a;
 
-		CommandHistory.execute( new SetValueCommand( this, 'angle', newValue, oldValue ) );
+		Commands.SetValue( this, 'angle', newValue, oldValue );
 
 	}
 
@@ -84,8 +82,9 @@ export class SuperElevationInspector {
 
 		} else {
 
-			CommandHistory.execute( new RemoveObjectCommand( this.node ) );
+			Commands.RemoveObject( this.node );
 		}
+
 	}
 
 }

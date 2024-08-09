@@ -12,7 +12,6 @@ import { LaneWidthToolService } from './lane-width-tool.service';
 import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
-import { SetValueCommand } from 'app/commands/set-value-command';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { DebugState } from "../../services/debug/debug-state";
@@ -22,6 +21,7 @@ import { LaneWidthNodeInspector } from "./lane-width-node-inspector";
 import { Vector3 } from "three";
 import { TvLaneWidth } from "../../map/models/tv-lane-width";
 import { TvRoad } from "../../map/models/tv-road.model";
+import { Commands } from 'app/commands/commands';
 
 export class LaneWidthTool extends BaseTool<any> {
 
@@ -127,9 +127,7 @@ export class LaneWidthTool extends BaseTool<any> {
 
 		const oldValue = this.oldValue;
 
-		const setValueCommand = new SetValueCommand( this.selectedNode, 's', newValue, oldValue );
-
-		CommandHistory.execute( setValueCommand );
+		Commands.SetValue( this.selectedNode.laneWidth, 's', newValue, oldValue );
 
 		this.nodeChanged = false;
 

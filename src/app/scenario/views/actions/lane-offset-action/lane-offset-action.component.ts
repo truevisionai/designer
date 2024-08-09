@@ -4,11 +4,10 @@
 
 import { Component, Input } from '@angular/core';
 import { LaneOffsetAction } from 'app/scenario/models/actions/tv-lane-offset-action';
-import { CommandHistory } from '../../../../commands/command-history';
-import { SetValueCommand } from '../../../../commands/set-value-command';
 import { Target } from '../../../models/actions/target';
 import { PrivateAction } from '../../../models/private-action';
 import { DynamicsShape } from '../../../models/tv-enums';
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-lane-offset-action',
@@ -29,14 +28,13 @@ export class LaneOffsetActionComponent {
 
 	onShapeChanged ( $event: DynamicsShape ) {
 
-		CommandHistory.execute( new SetValueCommand( this.laneOffsetAction, 'dynamicsShape', $event ) );
+		Commands.SetValue( this.laneOffsetAction, 'dynamicsShape', $event );
 
 	}
 
 	onMaxAccelChanged ( $maxLateralAcc: number ) {
 
-		CommandHistory.execute( new SetValueCommand( this.laneOffsetAction, 'maxLateralAcc', $maxLateralAcc ) );
-
+		Commands.SetValue( this.laneOffsetAction, 'maxLateralAcc', $maxLateralAcc );
 
 	}
 

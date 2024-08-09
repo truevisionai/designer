@@ -5,8 +5,7 @@
 import { Component, Input } from '@angular/core';
 import { Condition } from 'app/scenario/models/conditions/tv-condition';
 import { OffRoadCondition } from 'app/scenario/models/conditions/tv-off-road-condition';
-import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/commands/command-history';
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-off-road-condition-editor',
@@ -25,7 +24,7 @@ export class OffRoadConditionEditorComponent {
 
 	onDurationChanged ( $duration: number ) {
 
-		CommandHistory.execute( new SetValueCommand( this.offRoadCondition, 'duration', $duration ) );
+		Commands.SetValue( this.offRoadCondition, 'duration', $duration );
 
 	}
 

@@ -5,8 +5,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Condition } from 'app/scenario/models/conditions/tv-condition';
 import { EndOfRoadCondition } from 'app/scenario/models/conditions/tv-end-of-road-condition';
-import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/commands/command-history';
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-end-of-road-condition',
@@ -31,9 +30,7 @@ export class EndOfRoadConditionComponent implements OnInit {
 
 	onDurationChanged ( $duration: number ) {
 
-		CommandHistory.execute(
-			new SetValueCommand( this.endOfRoadCondition, 'duration', $duration )
-		);
+		Commands.SetValue( this.endOfRoadCondition, 'duration', $duration );
 
 	}
 

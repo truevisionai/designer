@@ -11,10 +11,9 @@ import { LaneHeightToolService } from "./lane-height-tool.service";
 import { DebugState } from "app/services/debug/debug-state";
 import { AppInspector } from "app/core/inspector";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { CommandHistory } from "app/commands/command-history";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
-import { SetValueCommand } from "app/commands/set-value-command";
 import { TvLane } from "app/map/models/tv-lane";
+import { Commands } from "app/commands/commands";
 
 export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
@@ -56,9 +55,7 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 		const oldSOffset = oldPosition.s - this.laneSpanNode.lane.laneSection.s;
 
-		const command = new SetValueCommand( this.laneSpanNode, 's', newSOffset, oldSOffset );
-
-		CommandHistory.execute( command );
+		Commands.SetValue( this.laneSpanNode, 's', newSOffset, oldSOffset );
 
 		this.nodeChanged = false;
 

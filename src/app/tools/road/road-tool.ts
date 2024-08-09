@@ -25,7 +25,6 @@ import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { OnRoadMovingStrategy } from "../../core/strategies/move-strategies/on-road-moving.strategy";
 import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { RoadStyle } from 'app/graphics/road-style/road-style.model';
-import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugState } from '../../services/debug/debug-state';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { UpdatePositionCommand } from "../../commands/update-position-command";
@@ -35,6 +34,7 @@ import { ControlPointFactory } from "../../factories/control-point.factory";
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { SelectObjectCommand } from 'app/commands/select-object-command';
 import { SplineUtils } from 'app/utils/spline.utils';
+import { Commands } from 'app/commands/commands';
 
 export class RoadTool extends BaseTool<AbstractSpline> {
 
@@ -157,7 +157,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		const newValue = roadStyle.clone( null );
 
-		CommandHistory.execute( new SetValueCommand( road, 'roadStyle', newValue, oldValue ) );
+		Commands.SetValue( road, 'roadStyle', newValue, oldValue );
 
 	}
 

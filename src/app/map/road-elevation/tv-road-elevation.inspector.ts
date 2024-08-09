@@ -4,8 +4,7 @@
 
 import { TvRoad } from "../models/tv-road.model";
 import { SerializedAction } from "../../core/components/serialization";
-import { CommandHistory } from "../../commands/command-history";
-import { SetValueCommand } from "../../commands/set-value-command";
+import { Commands } from "app/commands/commands";
 
 export class TvRoadElevationInspector {
 
@@ -23,7 +22,7 @@ export class TvRoadElevationInspector {
 
 			const oldValue = elevation.a;
 
-			CommandHistory.execute( new SetValueCommand( elevation, 'a', newValue, oldValue ) );
+			Commands.SetValue( elevation, 'a', newValue, oldValue );
 
 		} );
 
@@ -38,7 +37,7 @@ export class TvRoadElevationInspector {
 
 			const oldValue = elevation.a;
 
-			CommandHistory.execute( new SetValueCommand( elevation, 'a', newValue, oldValue ) );
+			Commands.SetValue( elevation, 'a', newValue, oldValue );
 
 		} );
 

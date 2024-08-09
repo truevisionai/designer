@@ -4,12 +4,11 @@
 
 import { Component, Input } from '@angular/core';
 import { DistanceCondition } from 'app/scenario/models/conditions/tv-distance-condition';
-import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from '../../../../commands/command-history';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { Position } from '../../../models/position';
 import { Rule } from '../../../models/tv-enums';
 import { BaseConditionEditorComponent } from '../base-condition-editor-component';
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-distance-condition',
@@ -36,9 +35,7 @@ export class DistanceConditionComponent extends BaseConditionEditorComponent {
 
 	onPositionChanged ( position: Position ) {
 
-		CommandHistory.execute(
-			new SetValueCommand( this.distanceCondition, 'position', position )
-		);
+		Commands.SetValue( this.distanceCondition, 'position', position );
 
 	}
 
