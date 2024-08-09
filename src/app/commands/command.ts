@@ -4,8 +4,6 @@
 
 export interface ICommand {
 
-	callbacks?: ICommandCallback;
-
 	execute (): void;
 
 	undo (): void;

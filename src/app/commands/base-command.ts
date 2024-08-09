@@ -7,8 +7,6 @@ import { ICommand, ICommandCallback } from './command';
 
 export abstract class BaseCommand implements ICommand {
 
-	callbacks?: ICommandCallback;
-
 	abstract execute (): void;
 
 	abstract undo (): void;

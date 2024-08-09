@@ -33,8 +33,6 @@ export class CommandHistory {
 
 		cmd.execute();
 
-		cmd.callbacks ? cmd.callbacks.onExecute() : null;
-
 		// clear all redos on a new action
 		this.redos.splice( 0, this.redos.length );
 
@@ -62,8 +60,6 @@ export class CommandHistory {
 
 			cmd.undo();
 
-			cmd.callbacks ? cmd.callbacks.onUndo() : null;
-
 			this.redos.push( cmd );
 
 
@@ -84,8 +80,6 @@ export class CommandHistory {
 			if ( this.debug ) console.debug( 'redo ', cmd );
 
 			cmd.redo();
-
-			cmd.callbacks ? cmd.callbacks.onRedo() : null;
 
 			this.undos.push( cmd );
 
