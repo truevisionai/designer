@@ -5,7 +5,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/objects/game-object';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import {
 	MeshBasicMaterial,
 	MeshLambertMaterial,

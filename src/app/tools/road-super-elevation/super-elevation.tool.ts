@@ -18,7 +18,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SuperElevationService } from './super-elevation.service';
 import { BaseToolService } from '../base-tool.service';
 import { CopyPositionCommand } from 'app/commands/copy-position-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 
 @Injectable( {
 	providedIn: 'root'

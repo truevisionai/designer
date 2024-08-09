@@ -11,7 +11,7 @@ import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { DebugLine } from 'app/objects/debug-line';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';

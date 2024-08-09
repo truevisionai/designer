@@ -13,7 +13,7 @@ import { TeleportAction } from 'app/scenario/models/actions/tv-teleport-action';
 import { ScenarioEntity } from 'app/scenario/models/entities/scenario-entity';
 import { DynamicControlPoint } from 'app/objects/dynamic-control-point';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { VehicleEntity } from '../../scenario/models/entities/vehicle-entity';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';

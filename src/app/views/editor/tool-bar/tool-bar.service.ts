@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { SetToolCommand } from 'app/commands/set-tool-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { ToolManager } from 'app/managers/tool-manager';
 import { ToolFactory } from "../../../tools/tool.factory";

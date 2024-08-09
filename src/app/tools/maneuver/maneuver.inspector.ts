@@ -3,7 +3,7 @@
  */
 
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "../../services/command-history";
+import { CommandHistory } from "../../commands/command-history";
 import { RemoveObjectCommand } from "../../commands/remove-object-command";
 import { ManeuverMesh } from "app/services/junction/junction.debug";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";

@@ -4,7 +4,7 @@
 
 import { TvRoad } from "../models/tv-road.model";
 import { SerializedAction } from "../../core/components/serialization";
-import { CommandHistory } from "../../services/command-history";
+import { CommandHistory } from "../../commands/command-history";
 import { SetValueCommand } from "../../commands/set-value-command";
 
 export class TvRoadElevationInspector {

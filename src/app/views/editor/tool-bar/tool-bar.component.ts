@@ -5,7 +5,7 @@
 import { AfterViewInit, Component, Host, HostBinding, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { SatPopover } from '@ncstate/sat-popover';
 import { ToolType } from 'app/tools/tool-types.enum';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { ToolManager } from '../../../managers/tool-manager';
 import { ThreeService } from '../../../renderer/three.service';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';

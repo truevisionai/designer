@@ -4,7 +4,7 @@
 
 import { TvRoadSignal } from "app/map/road-signal/tv-road-signal.model";
 import { SerializedAction, SerializedField } from "app/core/components/serialization";
-import { CommandHistory } from "app/services/command-history";
+import { CommandHistory } from "app/commands/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { TvOrientation } from "app/map/models/tv-common";
 

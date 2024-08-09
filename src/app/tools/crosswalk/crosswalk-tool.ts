@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { ToolType } from '../tool-types.enum';

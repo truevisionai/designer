@@ -5,7 +5,7 @@
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { TvObjectRepeat } from "../../map/models/objects/tv-object-repeat";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "../../services/command-history";
+import { CommandHistory } from "../../commands/command-history";
 import { RemoveObjectCommand } from "../../commands/remove-object-command";
 
 export class PropSpanInspector {

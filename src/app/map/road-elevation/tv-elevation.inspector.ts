@@ -5,7 +5,7 @@
 import { TvRoad } from "../models/tv-road.model";
 import { TvElevation } from "./tv-elevation.model";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "../../services/command-history";
+import { CommandHistory } from "../../commands/command-history";
 import { SetValueCommand } from "../../commands/set-value-command";
 import { Maths } from "../../utils/maths";
 import { RemoveObjectCommand } from "../../commands/remove-object-command";

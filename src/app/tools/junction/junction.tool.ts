@@ -5,7 +5,7 @@
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { JunctionToolHelper } from './junction-tool.helper';

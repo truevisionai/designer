@@ -13,7 +13,7 @@ import { ScenarioService } from 'app/scenario/services/scenario.service';
 import { TvCarlaExporter } from 'app/map/services/tv-carla-exporter';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { FileService } from '../io/file.service';
-import { CommandHistory } from './command-history';
+import { CommandHistory } from '../commands/command-history';
 import { SnackBar } from './snack-bar.service';
 import { CoordinateSystem } from './CoordinateSystem';
 import { MapService } from './map/map.service';

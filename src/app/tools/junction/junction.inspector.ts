@@ -5,7 +5,7 @@
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { CommandHistory } from "app/services/command-history";
+import { CommandHistory } from "app/commands/command-history";
 
 export class JunctionInspector {
 

@@ -4,7 +4,7 @@
 
 import { LaneWidthNode } from "../../objects/lane-width-node";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "../../services/command-history";
+import { CommandHistory } from "../../commands/command-history";
 import { RemoveObjectCommand } from "../../commands/remove-object-command";
 
 export class LaneWidthNodeInspector {

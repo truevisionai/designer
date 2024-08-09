@@ -11,7 +11,7 @@ import { LaneHeightToolService } from "./lane-height-tool.service";
 import { DebugState } from "app/services/debug/debug-state";
 import { AppInspector } from "app/core/inspector";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { CommandHistory } from "app/services/command-history";
+import { CommandHistory } from "app/commands/command-history";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { SetValueCommand } from "app/commands/set-value-command";
 import { TvLane } from "app/map/models/tv-lane";

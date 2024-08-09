@@ -20,7 +20,7 @@ import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { PropSpanInspector } from "./prop-span-inspector";
 import { DebugState } from "../../services/debug/debug-state";
-import { CommandHistory } from "../../services/command-history";
+import { CommandHistory } from "../../commands/command-history";
 import { UpdatePositionCommand } from "../../commands/update-position-command";
 import { Vector3 } from "three";
 

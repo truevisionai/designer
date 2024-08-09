@@ -4,7 +4,7 @@
 
 import { IHasCopyUpdate } from "../commands/copy-position-command";
 import { PointerEventData } from "../events/pointer-event-data";
-import { CommandHistory } from "../services/command-history";
+import { CommandHistory } from "../commands/command-history";
 import { AddObjectCommand } from "../commands/add-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { DebugState } from "../services/debug/debug-state";

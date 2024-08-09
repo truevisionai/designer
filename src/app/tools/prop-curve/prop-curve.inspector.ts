@@ -6,7 +6,7 @@ import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 
 export class PropCurveInspector {
 

@@ -4,7 +4,7 @@
 
 import { Component, Input } from '@angular/core';
 import { LaneOffsetAction } from 'app/scenario/models/actions/tv-lane-offset-action';
-import { CommandHistory } from '../../../../services/command-history';
+import { CommandHistory } from '../../../../commands/command-history';
 import { SetValueCommand } from '../../../../commands/set-value-command';
 import { Target } from '../../../models/actions/target';
 import { PrivateAction } from '../../../models/private-action';

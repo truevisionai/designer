@@ -23,7 +23,7 @@ import { AnyLaneMovingStrategy } from "app/core/strategies/move-strategies/any-l
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { NewLanePosition } from "app/scenario/models/positions/tv-lane-position";
 import { SetValueCommand } from "app/commands/set-value-command";
-import { CommandHistory } from "app/services/command-history";
+import { CommandHistory } from "app/commands/command-history";
 import { Maths } from "app/utils/maths";
 import { UpdatePositionCommand } from "app/commands/update-position-command";
 import { CopyPositionCommand } from "app/commands/copy-position-command";

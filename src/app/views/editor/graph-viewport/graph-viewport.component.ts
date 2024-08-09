@@ -27,7 +27,7 @@ import { SelectionService } from "../../../tools/selection.service";
 import { ControlPointStrategy } from "../../../core/strategies/select-strategies/control-point-strategy";
 import { TvElevationService } from "../../../map/road-elevation/tv-elevation.service";
 import { KeyboardEvents } from 'app/events/keyboard-events';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { ToolBarService } from '../tool-bar/tool-bar.service';
 import { ToolType } from 'app/tools/tool-types.enum';

@@ -6,7 +6,7 @@ import { ToolType } from 'app/tools/tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ElevationControlPoint } from 'app/map/road-elevation/tv-elevation.object';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { BaseTool } from '../base-tool'
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';

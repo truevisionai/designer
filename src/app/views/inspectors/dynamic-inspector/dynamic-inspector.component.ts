@@ -24,7 +24,7 @@ import {
 } from 'app/core/components/serialization';
 import { IComponent } from 'app/objects/game-object';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { BooleanFieldComponent } from 'app/views/shared/fields/boolean-field/boolean-field.component';
 import { ColorFieldComponent } from 'app/views/shared/fields/color-field/color-field.component';
 import { DoubleFieldComponent } from 'app/views/shared/fields/double-field/double-field.component';

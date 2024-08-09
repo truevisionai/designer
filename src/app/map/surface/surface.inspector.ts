@@ -5,7 +5,7 @@
 import { Surface } from 'app/map/surface/surface.model';
 import { SurfaceToolService } from '../../tools/surface/surface-tool.service';
 import { Mesh } from 'three';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';

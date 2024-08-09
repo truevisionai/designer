@@ -18,7 +18,7 @@ import { RoadSignalInspector } from '../../map/road-signal/road-signal.inspector
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { DebugState } from 'app/services/debug/debug-state';
 import { CopyPositionCommand } from "../../commands/copy-position-command";
-import { CommandHistory } from "../../services/command-history";
+import { CommandHistory } from "../../commands/command-history";
 import { Log } from 'app/core/utils/log';
 
 export class RoadSignTool extends BaseTool<any> {

@@ -17,7 +17,7 @@ import { AppInputDialogService } from 'app/views/shared/dialogs/app-input-dialog
 import { AppService } from '../../../services/app.service';
 import { OpenDriveService } from '../../../map/services/open-drive.service';
 import { AppLinks } from '../../../services/app-links';
-import { CommandHistory } from '../../../services/command-history';
+import { CommandHistory } from '../../../commands/command-history';
 import { ExportGlbDialog } from '../dialogs/export-glb-dialog/export-glb-dialog.component';
 import { TutorialsDialogComponent } from '../dialogs/tutorials-dialog/tutorials-dialog.component';
 import { ProjectService } from 'app/services/editor/project.service';

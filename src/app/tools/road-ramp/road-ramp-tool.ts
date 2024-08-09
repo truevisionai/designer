@@ -11,7 +11,7 @@ import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LaneCoordStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { SceneService } from 'app/services/scene.service';
 import { AddObjectCommand } from 'app/commands/add-object-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Log } from 'app/core/utils/log';
 import { TvLaneType } from "../../map/models/tv-common";

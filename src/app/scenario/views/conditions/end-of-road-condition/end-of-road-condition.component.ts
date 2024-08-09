@@ -6,7 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Condition } from 'app/scenario/models/conditions/tv-condition';
 import { EndOfRoadCondition } from 'app/scenario/models/conditions/tv-end-of-road-condition';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 
 @Component( {
 	selector: 'app-end-of-road-condition',

@@ -9,7 +9,7 @@ import { Vector3 } from 'three';
 import { ViewportEventSubscriber } from './viewport-event-subscriber';
 import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { AddObjectCommand } from "../commands/add-object-command";
 import { RemoveObjectCommand } from "../commands/remove-object-command";
 import { UnselectObjectCommand } from "../commands/unselect-object-command";

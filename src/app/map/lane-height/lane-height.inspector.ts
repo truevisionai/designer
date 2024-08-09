@@ -4,7 +4,7 @@
 
 import { TvLaneHeight } from "./lane-height.model";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "app/services/command-history";
+import { CommandHistory } from "app/commands/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { TvLane } from "../models/tv-lane";
 

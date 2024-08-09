@@ -18,7 +18,7 @@ import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { SelectObjectCommand } from "app/commands/select-object-command";
 import { UnselectObjectCommand } from "app/commands/unselect-object-command";
 import { AppInspector } from "app/core/inspector";
-import { CommandHistory } from "app/services/command-history";
+import { CommandHistory } from "app/commands/command-history";
 import { StatusBarService } from "app/services/status-bar.service";
 import { DebugState } from "app/services/debug/debug-state";
 import { KeyboardEvents } from "app/events/keyboard-events";

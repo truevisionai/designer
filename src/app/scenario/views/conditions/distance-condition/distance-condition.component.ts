@@ -5,7 +5,7 @@
 import { Component, Input } from '@angular/core';
 import { DistanceCondition } from 'app/scenario/models/conditions/tv-distance-condition';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from '../../../../services/command-history';
+import { CommandHistory } from '../../../../commands/command-history';
 import { EntityCondition } from '../../../models/conditions/entity-condition';
 import { Position } from '../../../models/position';
 import { Rule } from '../../../models/tv-enums';

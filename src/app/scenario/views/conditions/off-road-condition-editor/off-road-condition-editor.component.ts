@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
 import { Condition } from 'app/scenario/models/conditions/tv-condition';
 import { OffRoadCondition } from 'app/scenario/models/conditions/tv-off-road-condition';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 
 @Component( {
 	selector: 'app-off-road-condition-editor',

@@ -6,7 +6,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { RoadNode } from 'app/objects/road-node';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { Vector2, Vector3 } from 'three';
 import { IComponent } from '../../../objects/game-object';
 import { TvGeometryType, TvRoadType } from '../../../map/models/tv-common';

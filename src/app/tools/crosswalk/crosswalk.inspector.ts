@@ -5,7 +5,7 @@
 import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { TvObjectMarking } from "../../map/models/tv-object-marking";
-import { CommandHistory } from "app/services/command-history";
+import { CommandHistory } from "app/commands/command-history";
 import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { TvColors, TvRoadMarkWeights } from "../../map/models/tv-common";
 import { COLOR } from "app/views/shared/utils/colors.service";

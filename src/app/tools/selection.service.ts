@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { MapEvents } from 'app/events/map-events';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { IMovingStrategy } from "../core/strategies/move-strategies/move-strategy";

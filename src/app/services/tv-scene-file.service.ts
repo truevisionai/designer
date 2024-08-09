@@ -11,7 +11,7 @@ import { ThreeService } from 'app/renderer/three.service';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvMapInstance } from 'app/map/services/tv-map-instance';
 import { ScenarioService } from '../scenario/services/scenario.service';
-import { CommandHistory } from './command-history';
+import { CommandHistory } from '../commands/command-history';
 import { SceneLoader } from '../map/scene/scene.loader';
 import { SnackBar } from './snack-bar.service';
 import { TvElectronService } from './tv-electron.service';

@@ -3,7 +3,7 @@
  */
 
 import { TvLane } from '../../map/models/tv-lane';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights, TvSupporteRoadMarkTypes } from 'app/map/models/tv-common';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';

@@ -5,7 +5,7 @@
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { PropPolygon } from "./prop-polygon.model";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { CommandHistory } from "../../services/command-history";
+import { CommandHistory } from "../../commands/command-history";
 import { RemoveObjectCommand } from "../../commands/remove-object-command";
 import { Vector3 } from "three";
 

@@ -4,7 +4,7 @@
 
 import { Component, Input } from '@angular/core';
 import { SpeedCondition } from 'app/scenario/models/conditions/tv-speed-condition';
-import { CommandHistory } from '../../../../services/command-history';
+import { CommandHistory } from '../../../../commands/command-history';
 import { SetValueCommand } from '../../../../commands/set-value-command';
 import { Condition } from '../../../models/conditions/tv-condition';
 import { Rule } from '../../../models/tv-enums';

@@ -8,7 +8,7 @@ import { TvLane } from '../../map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { LaneMarkingToolService } from './lane-marking-tool.service';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';

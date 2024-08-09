@@ -5,7 +5,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/objects/game-object';
 import { SetValueCommand } from 'app/commands/set-value-command';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { Asset } from 'app/core/asset/asset.model';
 import { TvTexture } from "../../../graphics/texture/tv-texture.model";
 import { TvTextureService } from "../../../graphics/texture/tv-texture.service";

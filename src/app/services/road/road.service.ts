@@ -10,7 +10,7 @@ import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map/map.service';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvLane } from 'app/map/models/tv-lane';
-import { CommandHistory } from '../command-history';
+import { CommandHistory } from '../../commands/command-history';
 import { AddObjectCommand } from 'app/commands/add-object-command';
 import { Vector2, Vector3 } from 'three';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';

@@ -4,7 +4,7 @@
 
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { CommandHistory } from 'app/services/command-history';
+import { CommandHistory } from 'app/commands/command-history';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
