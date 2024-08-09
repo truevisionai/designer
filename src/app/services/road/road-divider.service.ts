@@ -14,6 +14,7 @@ import { RoadLinkService } from "./road-link.service";
 import { RoadManager } from "../../managers/road/road-manager";
 import { MapService } from "../map/map.service";
 import { SplineUtils } from "../../utils/spline.utils";
+import { SplineSegmentService } from '../spline/spline-segment.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -26,6 +27,7 @@ export class RoadDividerService {
 		private roadService: RoadService,
 		private splineService: SplineService,
 		private linkService: RoadLinkService,
+		private segmentService: SplineSegmentService,
 	) {
 	}
 
@@ -33,19 +35,7 @@ export class RoadDividerService {
 
 		const newRoad = this.roadService.divideRoad( road, s );
 
-		SplineUtils.addSegment( road.spline, newRoad.sStart, newRoad );
-
-		return newRoad
-
-	}
-
-	clone ( road: TvRoad, s: number ) {
-
-		const newRoad = this.roadService.clone( road, s );
-
-		newRoad.sStart = road.sStart + s;
-
-		SplineUtils.addSegment( road.spline, newRoad.sStart, newRoad );
+		this.segmentService.addSegment( road.spline, road.sStart + s, newRoad );
 
 		return newRoad
 

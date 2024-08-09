@@ -13,6 +13,8 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { SplineService } from "../spline/spline.service";
+import { JunctionLinkService } from '../junction/junction-link.service';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,7 +24,48 @@ export class RoadLinkService {
 	constructor (
 		private splineDebugService: AbstractSplineDebugService,
 		private splineService: SplineService,
+		private junctionLinkService: JunctionLinkService,
 	) {
+	}
+
+	setSuccessor ( prev: TvRoad, next: TvRoad, nextContact: TvContactPoint ) {
+
+		if ( prev.successor?.element instanceof TvRoad ) {
+
+			prev.successor.element.setPredecessorRoad( next, TvContactPoint.END );
+
+		} else if ( prev.successor?.element instanceof TvJunction ) {
+
+			this.replaceJunctionLinks( prev.successor.element as TvJunction, prev, next, TvContactPoint.END );
+
+		}
+
+		if ( nextContact === TvContactPoint.START ) {
+
+			next.successor = prev.successor?.clone();
+
+			next.setPredecessorRoad( prev, TvContactPoint.END );
+
+		} else {
+
+			next.predecessor = prev.successor?.clone();
+
+			next.setSuccessorRoad( prev, TvContactPoint.END );
+
+		}
+
+		prev.setSuccessorRoad( next, TvContactPoint.START );
+
+		this.linkSuccessorLanes( prev, prev.successor );
+
+		this.linkPredecessorLanes( next, next.predecessor );
+
+	}
+
+	replaceJunctionLinks ( junction: TvJunction, oldRoad: TvRoad, newRoad: TvRoad, contactPoint: TvContactPoint ) {
+
+		this.junctionLinkService.replaceIncomingRoad( junction, oldRoad, newRoad, contactPoint );
+
 	}
 
 	updateSuccessorRelationWhileCut ( newRoad: TvRoad, link: TvRoadLink, oldRoad: TvRoad, removed = false ) {
@@ -611,4 +654,84 @@ export class RoadLinkService {
 		// road.predecessor = null;
 	}
 
+	private linkSuccessorLanes ( road: TvRoad, link: TvRoadLink ) {
+
+		if ( !link ) {
+			Log.warn( "link is null", road.toString() );
+			return
+		}
+
+		if ( link.isJunction ) return;
+
+		const laneSection = road.getLastLaneSection();
+
+		const otherLaneSection = this.getLaneSection( link.element as TvRoad, link.contactPoint );
+
+		if ( !laneSection.isMatching( otherLaneSection ) ) {
+			return;
+		}
+
+		const sign = link.contactPoint == TvContactPoint.START ? 1 : -1;
+
+		laneSection.lanes.forEach( lane => {
+
+			const otherLane = otherLaneSection.getLaneById( lane.id * sign );
+
+			if ( otherLane ) {
+
+				lane.successorId = otherLane.id;
+
+				lane.successorUUID = otherLane.uuid;
+
+			} else {
+
+				lane.successorId == null;
+
+				lane.successorUUID = null;
+
+			}
+
+		} );
+
+	}
+
+	private linkPredecessorLanes ( road: TvRoad, link: TvRoadLink ) {
+
+		if ( !link ) {
+			Log.warn( "link is null", road.toString() );
+			return
+		}
+
+		if ( link.isJunction ) return;
+
+		const laneSection = road.getFirstLaneSection();
+
+		const otherLaneSection = this.getLaneSection( link.element as TvRoad, link.contactPoint );
+
+		if ( !laneSection.isMatching( otherLaneSection ) ) {
+			return;
+		}
+
+		const sign = link.contactPoint == TvContactPoint.END ? 1 : -1;
+
+		laneSection.lanes.forEach( lane => {
+
+			const otherLane = otherLaneSection.getLaneById( lane.id * sign );
+
+			if ( otherLane ) {
+
+				lane.predecessorId = otherLane.id;
+
+				lane.predecessorUUID = otherLane.uuid;
+
+			} else {
+
+				lane.predecessorId == null;
+
+				lane.predecessorUUID = null;
+
+			}
+
+		} );
+	}
 }

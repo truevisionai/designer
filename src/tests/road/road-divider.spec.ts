@@ -10,14 +10,18 @@ import { Vector2, Vector3 } from 'three';
 import { OpenDriveParserService } from "../../app/importers/open-drive/open-drive-parser.service";
 import { XML } from '../stubs/straight-road-stub';
 import { MapService } from "../../app/services/map/map.service";
+import { SplineService } from 'app/services/spline/spline.service';
+import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 
 
-xdescribe( 'Service: RoadDivider Simple', () => {
+describe( 'Service: RoadDivider Simple', () => {
 
 	let base: BaseTest = new BaseTest;
 	let eventServiceProvider: EventServiceProvider;
 	let roadService: RoadService;
 	let roadDividerService: RoadDividerService;
+	let splineService: SplineService;
+	let testHelper: SplineTestHelper;
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
@@ -30,6 +34,8 @@ xdescribe( 'Service: RoadDivider Simple', () => {
 
 		roadService = TestBed.get( RoadService );
 		roadDividerService = TestBed.get( RoadDividerService );
+		splineService = TestBed.get( SplineService );
+		testHelper = TestBed.get( SplineTestHelper );
 
 	} );
 
@@ -53,7 +59,7 @@ xdescribe( 'Service: RoadDivider Simple', () => {
 
 		const newRoad = roadDividerService.divideRoadAt( road, S_OFFSET );
 
-		roadService.add( newRoad );
+		splineService.update( road.spline );
 
 		expect( newRoad ).toBeDefined();
 		expect( newRoad.sStart ).toBe( S_OFFSET );
@@ -99,18 +105,15 @@ xdescribe( 'Service: RoadDivider Simple', () => {
 
 	it( 'should divide straight road multiple times', () => {
 
-		const road1 = base.createDefaultRoad( roadService, [
-			new Vector2( 0, 0 ),
-			new Vector2( 500, 0 ),
-		] );
+		const road1 = testHelper.addStraightRoad( new Vector3(), 500 );
 
 		expect( road1.length ).toBe( 500 );
 
 		const road2 = roadDividerService.divideRoadAt( road1, 300 );
-		roadService.add( road2 );
+		splineService.update( road1.spline );
 
 		const road3 = roadDividerService.divideRoadAt( road1, 100 );
-		roadService.add( road3 );
+		splineService.update( road1.spline );
 
 		expect( road1.successor.element ).toBe( road3 )
 		expect( road1.successor.contactPoint ).toBe( TvContactPoint.START );
@@ -130,11 +133,13 @@ xdescribe( 'Service: RoadDivider Simple', () => {
 } );
 
 
-xdescribe( 'Service: RoadDivider Junctions', () => {
+describe( 'Service: RoadDivider Junctions', () => {
 
 	let openDriveParser: OpenDriveParserService;
 	let roadDividerService: RoadDividerService;
 	let mapService: MapService;
+	let splineService: SplineService;
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -143,9 +148,13 @@ xdescribe( 'Service: RoadDivider Junctions', () => {
 			imports: [ HttpClientModule, MatSnackBarModule ]
 		} );
 
+		eventServiceProvider = TestBed.get( EventServiceProvider );
+		eventServiceProvider.init();
+
 		openDriveParser = TestBed.get( OpenDriveParserService );
 		roadDividerService = TestBed.get( RoadDividerService );
 		mapService = TestBed.get( MapService );
+		splineService = TestBed.get( SplineService );
 
 	} );
 
@@ -159,15 +168,17 @@ xdescribe( 'Service: RoadDivider Junctions', () => {
 
 		expect( mapService.map.roads.size ).toBe( 1 );
 
-		expect( road.length ).toBe( 100 );
+		expect( road.length ).toBe( 200 );
 
 		const oldLaneSection = road.getLaneSectionAt( S_OFFSET );
 
 		const newRoad = roadDividerService.divideRoadAt( road, S_OFFSET );
 
+		splineService.update( newRoad.spline );
+
 		expect( newRoad ).toBeDefined();
 		expect( newRoad.sStart ).toBe( S_OFFSET );
-		expect( newRoad.length ).toBe( 100 - S_OFFSET );
+		expect( newRoad.length ).toBe( 200 - S_OFFSET ); //
 
 		expect( road ).toBeDefined();
 		expect( road.sStart ).toBe( 0 );
@@ -175,13 +186,13 @@ xdescribe( 'Service: RoadDivider Junctions', () => {
 
 		expect( newRoad.geometries.length ).toBe( 1 );
 		expect( newRoad.geometries[ 0 ].s ).toBe( 0 );
-		expect( newRoad.geometries[ 0 ].x ).toBe( 0 );
-		expect( newRoad.geometries[ 0 ].y ).toBe( 0 );
-		expect( newRoad.geometries[ 0 ].length ).toBe( 50 );
+		expect( newRoad.geometries[ 0 ].x ).toBeCloseTo( 0 );
+		expect( newRoad.geometries[ 0 ].y ).toBe( 50 );
+		expect( newRoad.geometries[ 0 ].length ).toBe( 150 );//
 
 		expect( road.geometries.length ).toBe( 1 );
 		expect( road.geometries[ 0 ].s ).toBe( 0 );
-		expect( road.geometries[ 0 ].x ).toBe( -50 );
+		expect( road.geometries[ 0 ].x ).toBe( 0 );
 		expect( road.geometries[ 0 ].y ).toBe( 0 );
 		expect( road.geometries[ 0 ].length ).toBe( 50 );
 

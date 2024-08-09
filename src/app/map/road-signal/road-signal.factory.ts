@@ -23,6 +23,12 @@ export class RoadSignalFactory {
 	) {
 	}
 
+	static createMockRoadSignal (): TvRoadSignal {
+
+		return new TvRoadSignal( 0, 0, 0, '' );
+
+	}
+
 	createTrafficLight ( roadCoord: TvRoadCoord, name: string, type: string, subType: string ) {
 
 		const signal = this.createRoadSignal( roadCoord, name, type, subType );

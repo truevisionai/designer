@@ -11,6 +11,7 @@ import { MapService } from 'app/services/map/map.service';
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineBuilder } from 'app/services/spline/spline.builder';
+import { SplineSegmentService } from 'app/services/spline/spline-segment.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,6 +26,8 @@ export class RoadDividerToolService {
 		public roadService: RoadService,
 		public splineService: SplineService,
 		public splineBuilder: SplineBuilder,
+		public mapService: MapService,
+		public segmentService: SplineSegmentService,
 	) { }
 
 }

@@ -37,6 +37,7 @@ import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { ConnectionManager } from "../map/junction/connection.manager";
 import { JunctionGeometryService } from "../services/junction/junction-geometry.service";
+import { JunctionLinkService } from "app/services/junction/junction-link.service";
 
 const JUNCTION_WIDTH = 10;
 
@@ -68,6 +69,7 @@ export class JunctionManager {
 		public roadFactory: RoadFactory,
 		public splineFixer: SplineFixerService,
 		public connectionManager: ConnectionManager,
+		public junctionLinkService: JunctionLinkService,
 	) {
 	}
 
@@ -266,7 +268,7 @@ export class JunctionManager {
 				Log.warn( 'Segment not found in spline', junction.toString(), spline?.toString() );
 			}
 
-			this.splineFixer.fix( spline );
+			this.splineFixer.setInternalLinks( spline );
 
 			this.splineBuilder.build( spline );
 
@@ -888,7 +890,7 @@ export class JunctionManager {
 
 	updateSplineInternalLinks ( spline: AbstractSpline, setNull = true ) {
 
-		this.splineFixer.fixInternalLinks( spline, setNull );
+		this.splineFixer.setInternalLinks( spline );
 
 	}
 
@@ -2302,21 +2304,7 @@ export class JunctionManager {
 
 	private replaceConnections ( junction: TvJunction, oldRoad: TvRoad, newRoad: TvRoad, contact: TvContactPoint ) {
 
-		for ( const connection of junction.getConnections() ) {
-
-			if ( connection.connectingRoad.predecessor?.element == oldRoad ) {
-
-				connection.connectingRoad.setPredecessorRoad( newRoad, contact );
-
-			}
-
-			if ( connection.connectingRoad.successor?.element == oldRoad ) {
-
-				connection.connectingRoad.setSuccessorRoad( newRoad, contact );
-
-			}
-
-		}
+		this.junctionLinkService.replaceIncomingRoad( junction, oldRoad, newRoad, contact );
 
 	}
 

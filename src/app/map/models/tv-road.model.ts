@@ -428,6 +428,12 @@ export class TvRoad {
 
 	}
 
+	clearSignals () {
+
+		this.signals.clear();
+
+	}
+
 	getRoadSignalById ( id: number ): TvRoadSignal {
 
 		return this.signals.get( id );
@@ -572,6 +578,12 @@ export class TvRoad {
 	hasRoadObject ( roadObject: TvRoadObject ) {
 
 		return this.objects.object.includes( roadObject );
+
+	}
+
+	getRoadObjectCount() {
+
+		return this.objects.object.length;
 
 	}
 

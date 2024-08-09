@@ -83,6 +83,12 @@ export class MapService {
 
 	}
 
+	removeRoad ( road: TvRoad ) {
+
+		this.map.removeRoad( road );
+
+	}
+
 	findRoad ( id: number ) {
 
 		try {

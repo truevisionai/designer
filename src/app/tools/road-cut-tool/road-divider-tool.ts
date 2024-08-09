@@ -90,6 +90,8 @@ export class RoadDividerTool extends BaseTool<any> {
 
 		this.setHint( "Modify the new road from Road Tool" );
 
+		return clone;
+
 	}
 
 	onPointerMoved ( e: PointerEventData ): void {
@@ -114,9 +116,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.roadService.add( object );
-
-			this.tool.splineBuilder.build( object.spline );
+			this.tool.splineService.update( object.spline );
 
 		}
 
@@ -129,9 +129,9 @@ export class RoadDividerTool extends BaseTool<any> {
 
 		if ( object instanceof TvRoad ) {
 
-			this.tool.roadService.remove( object );
+			this.tool.segmentService.removeSegment( object.spline, object );
 
-			this.tool.splineBuilder.build( object.spline );
+			this.tool.splineService.update( object.spline );
 
 		}
 

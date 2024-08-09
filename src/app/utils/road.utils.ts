@@ -85,25 +85,11 @@ export class RoadUtils {
 
 	static divideRoad ( parent: TvRoad, s: number, newRoadId: number ): TvRoad {
 
-		const oldSuccessor = parent.successor;
-
 		const clone = this.clone( parent, s );
 
 		clone.id = newRoadId;
 
 		clone.name = `Road ${ newRoadId }`;
-
-		if ( oldSuccessor?.isRoad ) {
-
-			const nextRoad = oldSuccessor.getElement<TvRoad>();
-
-			nextRoad.setPredecessorRoad( clone, TvContactPoint.END );
-
-		}
-
-		clone.successor = oldSuccessor;
-
-		clone.setPredecessorRoad( parent, TvContactPoint.END );
 
 		this.divideObjects( parent, s, clone );
 
@@ -116,12 +102,7 @@ export class RoadUtils {
 
 		const clone = road.clone( s );
 
-		// clone will have same id as the original road
-		// clone.id = this.roadFactory.getNextRoadId();
-
 		clone.name = `Road ${ clone.id }`;
-
-		// clone.objects.object.forEach( object => object.road = clone );
 
 		clone.sStart = road.sStart + s;
 
@@ -129,38 +110,29 @@ export class RoadUtils {
 
 	}
 
-	static divideObjects ( oldRoad: TvRoad, s: number, newRoad: TvRoad ) {
+	static divideObjects ( oldRoad: TvRoad, sOffset: number, newRoad: TvRoad ) {
 
-		const objects = oldRoad.objects.object.filter( object => object.s > s );
+		newRoad.objects.object = oldRoad.objects.object.filter( object => object.s >= sOffset );
 
-		objects.forEach( object => {
+		oldRoad.objects.object = oldRoad.objects.object.filter( object => object.s < sOffset );
 
-			object.road = newRoad;
+		newRoad.objects.object.forEach( object => object.road = newRoad );
 
-			object.s -= s;
+		newRoad.objects.object.forEach( object => object.s = object.s - sOffset );
 
-			newRoad.objects.object.push( object );
-
-		} );
-
-		oldRoad.objects.object = oldRoad.objects.object.filter( object => object.s <= s );
 	}
 
-	static divideSignals ( oldRoad: TvRoad, s: number, newRoad: TvRoad ) {
+	static divideSignals ( oldRoad: TvRoad, sOffset: number, newRoad: TvRoad ) {
 
-		const signals = oldRoad.getRoadSignals().filter( signal => signal.s > s );
+		const signals = oldRoad.getRoadSignals();
 
-		signals.forEach( signal => {
+		oldRoad.clearSignals();
 
-			signal.roadId = newRoad.id;
+		signals.filter( object => object.s >= sOffset ).forEach( signal => newRoad.addSignal( signal ) );
 
-			signal.s -= s;
+		signals.filter( object => object.s < sOffset ).forEach( signal => oldRoad.addSignal( signal ) );
 
-			newRoad.addSignal( signal );
-
-			oldRoad.signals.delete( signal.id );
-
-		} );
+		newRoad.getRoadSignals().forEach( signal => signal.s -= sOffset );
 
 	}
 

@@ -3,7 +3,7 @@ export const XML = `<OpenDRIVE>
 <road name="3-lane-highway" length="200" id="1" junction="-1">
   <link/>
   <planView>
-	<geometry s="0" x="0" y="0" hdg="1.5707963267948966" length="100">
+	<geometry s="0" x="0" y="0" hdg="1.5707963267948966" length="200">
 	  <line/>
 	</geometry>
   </planView>

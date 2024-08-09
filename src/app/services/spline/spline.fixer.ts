@@ -32,13 +32,13 @@ export class SplineFixerService {
 	) {
 	}
 
-	fix ( spline: AbstractSpline ) {
+	fix ( spline: AbstractSpline, log = true ) {
 
 		if ( !this.enabled ) return;
 
 		if ( spline.controlPoints.length < 2 ) return;
 
-		if ( !SplineUtils.areLinksCorrect( spline ) ) {
+		if ( !SplineUtils.areLinksCorrect( spline ) && log ) {
 			console.log( "Links are not correct", spline );
 			Log.error( "Links are not correct", spline?.toString() );
 		}
@@ -200,6 +200,12 @@ export class SplineFixerService {
 		if ( !SplineUtils.areLinksCorrect( spline ) ) {
 			Log.warn( "Fixing incorrect links", spline?.toString() );
 		}
+
+		this.setInternalLinks( spline );
+
+	}
+
+	public setInternalLinks ( spline: AbstractSpline ) {
 
 		const fixSuccessor = ( road: TvRoad, nextSegment: TvRoad | TvJunction ) => {
 

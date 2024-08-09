@@ -18,6 +18,12 @@ export class RoadObjectFactory {
 		private cornerFactory: CornerRoadFactory
 	) { }
 
+	static createMockRoadObject (): TvRoadObject {
+
+		return new TvRoadObject( TvRoadObjectType.none, 'none', TvRoadObject.counter++, 0, 0 );
+
+	}
+
 	createRoadObject ( roadCoord: TvRoadCoord, type: TvRoadObjectType ): TvRoadObject | null {
 
 		switch ( type ) {
