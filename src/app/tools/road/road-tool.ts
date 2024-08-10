@@ -368,9 +368,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 			const newPosition = this.currentPoint.position.clone();
 
-			const updateCommand = new UpdatePositionCommand( this.currentPoint, newPosition, oldPosition );
-
-			CommandHistory.execute( updateCommand );
+			Commands.UpdatePosition( this.currentPoint, newPosition, oldPosition );
 
 			if ( this.selectedRoad ) this.tool.hideLinks( this.selectedRoad );
 

@@ -24,7 +24,6 @@ import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { NewLanePosition } from "app/scenario/models/positions/tv-lane-position";
 import { CommandHistory } from "app/commands/command-history";
 import { Maths } from "app/utils/maths";
-import { UpdatePositionCommand } from "app/commands/update-position-command";
 import { Commands } from "app/commands/commands";
 
 export class TextMarkingTool extends BaseTool<TvRoadSignal> {

@@ -16,7 +16,6 @@ import { DialogService } from 'app/services/dialog/dialog.service';
 import { RoadStyle } from 'app/graphics/road-style/road-style.model';
 import { AssetService } from 'app/core/asset/asset.service';
 import { RoadService } from 'app/services/road/road.service';
-import { UpdatePositionCommand } from "../../../commands/update-position-command";
 import { Environment } from 'app/core/utils/environment';
 import { TvConsole } from "../../../core/utils/console";
 import { RoadControlPoint } from 'app/objects/road-control-point';
@@ -163,9 +162,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 		const oldPosition = this.controlPoint.position.clone();
 
-		const updateCommand = new UpdatePositionCommand( this.controlPoint, newPosition, oldPosition );
-
-		CommandHistory.execute( updateCommand );
+		Commands.UpdatePosition( this.controlPoint, newPosition, oldPosition );
 
 	}
 

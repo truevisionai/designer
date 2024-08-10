@@ -21,11 +21,11 @@ import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { CrosswalkToolHelper } from "./crosswalk-tool.helper";
 import { CrosswalkInspector } from './crosswalk.inspector';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
-import { UpdatePositionCommand } from "../../commands/update-position-command";
 import { DebugState } from "../../services/debug/debug-state";
 import { CornerControlPoint } from './crosswalk-tool-debugger';
 import { TvConsole } from 'app/core/utils/console';
 import { Log } from "../../core/utils/log";
+import { Commands } from 'app/commands/commands';
 
 export class CrosswalkTool extends BaseTool<any> {
 
@@ -186,9 +186,7 @@ export class CrosswalkTool extends BaseTool<any> {
 
 		if ( newPosition.distanceTo( this.pointerDownAt ) < 0.1 ) return;
 
-		const updateCommand = new UpdatePositionCommand( this.selectedPoint, newPosition, oldPosition );
-
-		CommandHistory.execute( updateCommand );
+		Commands.UpdatePosition( this.selectedPoint, newPosition, oldPosition );
 
 		this.pointMoved = false;
 

@@ -24,7 +24,6 @@ import { ILaneNodeFactory } from "app/core/interfaces/lane-element.factory";
 import { HasDistanceValue } from "app/core/interfaces/has-distance-value";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { LanePointNode } from "../objects/lane-node";
-import { UpdatePositionCommand } from "app/commands/update-position-command";
 import { Commands } from "app/commands/commands";
 
 export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportEventSubscriber implements Tool {
@@ -125,9 +124,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 		const oldPosition = this.pointerDownAt.clone();
 
-		const updateCommand = new UpdatePositionCommand( this.selectedNode, newPosition, oldPosition );
-
-		CommandHistory.execute( updateCommand );
+		Commands.UpdatePosition( this.selectedNode, newPosition, oldPosition );
 
 		this.nodeChanged = false;
 	}

@@ -21,7 +21,6 @@ import { AbstractFactory } from 'app/core/interfaces/abstract-factory';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { ToolHints } from "../core/interfaces/tool.hints";
-import { UpdatePositionCommand } from "../commands/update-position-command";
 import { Tool } from "./tool";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { Commands } from 'app/commands/commands';
@@ -185,9 +184,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		const newPosition = this.currentSelectedPoint.position.clone();
 
-		const updateCommand = new UpdatePositionCommand( this.currentSelectedPoint, newPosition, oldPosition );
-
-		CommandHistory.execute( updateCommand );
+		Commands.UpdatePosition( this.currentSelectedPoint, newPosition, oldPosition );
 
 		this.currentSelectedPointMoved = false;
 

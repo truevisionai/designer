@@ -20,9 +20,8 @@ import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { PropSpanInspector } from "./prop-span-inspector";
 import { DebugState } from "../../services/debug/debug-state";
-import { CommandHistory } from "../../commands/command-history";
-import { UpdatePositionCommand } from "../../commands/update-position-command";
 import { Vector3 } from "three";
+import { Commands } from "app/commands/commands";
 
 export class PropSpanTool extends BaseTool<any> {
 
@@ -156,7 +155,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 		const oldPosition = this.tool.roadService.findRoadCoordAtPosition( this.pointerDownAt );
 
-		CommandHistory.execute( new UpdatePositionCommand( this.point, newPosition.position, oldPosition.position ) );
+		Commands.UpdatePosition( this.point, newPosition.position, oldPosition.position );
 
 		this.pointMoved = false;
 

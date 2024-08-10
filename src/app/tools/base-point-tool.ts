@@ -9,7 +9,7 @@ import { AddObjectCommand } from "../commands/add-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { DebugState } from "../services/debug/debug-state";
 import { BaseTool } from "./base-tool";
-import { UpdatePositionCommand } from "../commands/update-position-command";
+import { Commands } from "app/commands/commands";
 
 export abstract class BasePointTool<T extends IHasCopyUpdate> extends BaseTool<T> {
 
@@ -33,9 +33,7 @@ export abstract class BasePointTool<T extends IHasCopyUpdate> extends BaseTool<T
 
 		const newPosition = this.currentSelectedPoint.position.clone();
 
-		const updateCommand = new UpdatePositionCommand( this.currentSelectedObject, newPosition, oldPosition );
-
-		CommandHistory.execute( updateCommand );
+		Commands.UpdatePosition( this.currentSelectedObject, newPosition, oldPosition );
 
 		this.currentSelectedPointMoved = false;
 
