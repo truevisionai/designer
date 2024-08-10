@@ -10,14 +10,13 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LaneCoordStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { SceneService } from 'app/services/scene.service';
-import { AddObjectCommand } from 'app/commands/add-object-command';
-import { CommandHistory } from 'app/commands/command-history';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Log } from 'app/core/utils/log';
 import { TvLaneType } from "../../map/models/tv-common";
 import { RampToolHelper } from './road-ramp.helper';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { Commands } from 'app/commands/commands';
 
 export class RoadRampTool extends BaseTool<any> {
 
@@ -204,9 +203,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 			const road = this.helper.createRampRoad( startCoord, endCoord );
 
-			const addComand = new AddObjectCommand( road.spline );
-
-			CommandHistory.execute( addComand );
+			Commands.AddObject( road.spline );
 
 		}
 

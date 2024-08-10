@@ -13,8 +13,7 @@ import { SceneService } from 'app/services/scene.service';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { RoadDividerToolService } from './road-divider-tool.service';
-import { CommandHistory } from 'app/commands/command-history';
-import { AddObjectCommand } from "../../commands/add-object-command";
+import { Commands } from 'app/commands/commands';
 
 
 export class RoadDividerTool extends BaseTool<any> {
@@ -84,9 +83,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 		const clone = this.tool.dividerService.divideRoadAt( roadCoord.road, roadCoord.s );
 
-		const addCommand = new AddObjectCommand( clone );
-
-		CommandHistory.executeMany( addCommand );
+		Commands.AddObject( clone );
 
 		this.setHint( "Modify the new road from Road Tool" );
 

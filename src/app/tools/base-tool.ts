@@ -11,8 +11,6 @@ import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
 import { CommandHistory } from 'app/commands/command-history';
 import { AddObjectCommand } from "../commands/add-object-command";
-import { RemoveObjectCommand } from "../commands/remove-object-command";
-import { UnselectObjectCommand } from "../commands/unselect-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
 import { Asset } from 'app/core/asset/asset.model';
 import { IDebugger } from "../core/interfaces/debug.service";
@@ -26,6 +24,7 @@ import { ToolHints } from "../core/interfaces/tool.hints";
 import { UpdatePositionCommand } from "../commands/update-position-command";
 import { Tool } from "./tool";
 import { SimpleControlPoint } from "../objects/simple-control-point";
+import { Commands } from 'app/commands/commands';
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -445,19 +444,19 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected selectObject ( object: any, previousObject: any ) {
 
-		CommandHistory.execute( new SelectObjectCommand( object, previousObject ) );
+		Commands.Select( object, previousObject );
 
 	}
 
 	protected unselectObject ( object: any ) {
 
-		CommandHistory.execute( new UnselectObjectCommand( object ) );
+		Commands.Unselect( object );
 
 	}
 
 	protected executeAddObject ( object: any ) {
 
-		CommandHistory.execute( new AddObjectCommand( object ) );
+		Commands.AddObject( object );
 
 	}
 
@@ -469,7 +468,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected executeRemoveObject ( object: any ) {
 
-		CommandHistory.execute( new RemoveObjectCommand( object ) );
+		Commands.RemoveObject( object );
 
 	}
 

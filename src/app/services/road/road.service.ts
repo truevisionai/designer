@@ -10,8 +10,6 @@ import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map/map.service';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvLane } from 'app/map/models/tv-lane';
-import { CommandHistory } from '../../commands/command-history';
-import { AddObjectCommand } from 'app/commands/add-object-command';
 import { Vector2, Vector3 } from 'three';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
@@ -31,6 +29,7 @@ import { GeometryUtils } from '../surface/geometry-utils';
 import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
+import { Commands } from 'app/commands/commands';
 
 @Injectable( {
 	providedIn: 'root'
@@ -229,7 +228,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		this.shiftRoad( clone, roadWidth.totalWidth, 0 );
 
-		CommandHistory.execute( new AddObjectCommand( clone ) );
+		Commands.AddObject( clone );
 
 	}
 

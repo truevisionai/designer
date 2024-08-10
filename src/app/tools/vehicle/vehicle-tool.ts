@@ -18,8 +18,8 @@ import { VehicleEntity } from '../../scenario/models/entities/vehicle-entity';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { EntityService } from "../../scenario/entity/entity.service";
-import { AddObjectCommand } from 'app/commands/add-object-command';
 import { PickingHelper } from "../../services/picking-helper.service";
+import { Commands } from 'app/commands/commands';
 
 export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
@@ -103,7 +103,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 		// const point = this.createControlPoint( vehicleEntity );
 
-		CommandHistory.execute( new AddObjectCommand( vehicleEntity ) );
+		Commands.AddObject( vehicleEntity );
 
 	}
 

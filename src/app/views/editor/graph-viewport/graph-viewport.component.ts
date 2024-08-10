@@ -28,13 +28,13 @@ import { ControlPointStrategy } from "../../../core/strategies/select-strategies
 import { TvElevationService } from "../../../map/road-elevation/tv-elevation.service";
 import { KeyboardEvents } from 'app/events/keyboard-events';
 import { CommandHistory } from 'app/commands/command-history';
-import { AddObjectCommand } from 'app/commands/add-object-command';
 import { ToolBarService } from '../tool-bar/tool-bar.service';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { SetValueCommand } from 'app/commands/set-value-command';
 import { DebugDrawService } from "../../../services/debug/debug-draw.service";
 import { Line2 } from "three/examples/jsm/lines/Line2";
 import { SimpleControlPoint } from "../../../objects/simple-control-point";
+import { Commands } from 'app/commands/commands';
 
 @Component( {
 	selector: 'app-graph-viewport',
@@ -266,7 +266,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		this.nodes.add( point );
 
-		CommandHistory.execute( new AddObjectCommand( elevation ) );
+		Commands.AddObject( elevation );
 
 		return;
 

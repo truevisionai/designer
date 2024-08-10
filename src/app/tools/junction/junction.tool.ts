@@ -5,15 +5,14 @@
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { CommandHistory } from 'app/commands/command-history';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { AddObjectCommand } from "../../commands/add-object-command";
 import { JunctionToolHelper } from './junction-tool.helper';
 import { JunctionNode } from 'app/services/junction/junction.debug';
 import { ObjectTagStrategy, ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
 import { JunctionInspector } from './junction.inspector';
 import { DebugState } from 'app/services/debug/debug-state';
 import { Log } from 'app/core/utils/log';
+import { Commands } from 'app/commands/commands';
 
 export class JunctionTool extends BaseTool<any> {
 
@@ -191,9 +190,8 @@ export class JunctionTool extends BaseTool<any> {
 
 		const junction = this.helper.createCustomJunction( links );
 
-		const addCommand = new AddObjectCommand( junction );
+		Commands.AddObject( junction );
 
-		CommandHistory.execute( addCommand );
 	}
 
 	onObjectAdded ( object: any ): void {

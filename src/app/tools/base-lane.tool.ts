@@ -14,9 +14,7 @@ import { Vector3 } from "three";
 import { IDebugger } from "app/core/interfaces/debug.service";
 import { ToolHints } from "app/core/interfaces/tool.hints";
 import { AddObjectCommand } from "app/commands/add-object-command";
-import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { SelectObjectCommand } from "app/commands/select-object-command";
-import { UnselectObjectCommand } from "app/commands/unselect-object-command";
 import { AppInspector } from "app/core/inspector";
 import { CommandHistory } from "app/commands/command-history";
 import { StatusBarService } from "app/services/status-bar.service";
@@ -27,6 +25,7 @@ import { HasDistanceValue } from "app/core/interfaces/has-distance-value";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { LanePointNode } from "../objects/lane-node";
 import { UpdatePositionCommand } from "app/commands/update-position-command";
+import { Commands } from "app/commands/commands";
 
 export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportEventSubscriber implements Tool {
 
@@ -290,19 +289,19 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	protected selectObject ( object: any, previousObject: any ) {
 
-		CommandHistory.execute( new SelectObjectCommand( object, previousObject ) );
+		Commands.Select( object, previousObject );
 
 	}
 
 	protected unselectObject ( object: any ) {
 
-		CommandHistory.execute( new UnselectObjectCommand( object ) );
+		Commands.Unselect( object );
 
 	}
 
 	protected executeAddObject ( object: any ) {
 
-		CommandHistory.execute( new AddObjectCommand( object ) );
+		Commands.AddObject( object );
 
 	}
 
@@ -314,7 +313,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	protected executeRemoveObject ( object: any ) {
 
-		CommandHistory.execute( new RemoveObjectCommand( object ) );
+		Commands.RemoveObject( object );
 
 	}
 

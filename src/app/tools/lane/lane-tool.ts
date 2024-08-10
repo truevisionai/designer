@@ -13,11 +13,11 @@ import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspecto
 import { DebugLine } from 'app/objects/debug-line';
 import { CommandHistory } from 'app/commands/command-history';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
-import { AddObjectCommand } from 'app/commands/add-object-command';
 import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { TvLaneType, TravelDirection } from 'app/map/models/tv-common';
 import { LaneToolService } from './lane-tool.service';
 import { LaneService } from 'app/services/lane/lane.service';
+import { Commands } from 'app/commands/commands';
 
 export class LaneTool extends BaseTool<any>{
 
@@ -232,9 +232,7 @@ export class TvLaneObject {
 
 		const newLane = this.lane.clone( newId );
 
-		const command = new AddObjectCommand( newLane );
-
-		CommandHistory.execute( command );
+		Commands.AddObject( newLane );
 
 	}
 
