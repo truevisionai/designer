@@ -26,6 +26,7 @@ import { ExporterFactory } from 'app/factories/exporter.factory';
 
 import { saveAs } from 'file-saver';
 import { cloneDeep } from 'lodash';
+import { Commands } from 'app/commands/commands';
 
 @Injectable( {
 	providedIn: 'root'
@@ -161,7 +162,7 @@ export class ExporterService {
 
 	private clearTool () {
 
-		CommandHistory.execute( new SetToolCommand( null ) );
+		Commands.SetTool( null );
 
 	}
 }

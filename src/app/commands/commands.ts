@@ -12,8 +12,16 @@ import { UnselectObjectCommand } from "./unselect-object-command";
 import { IHasPosition } from "app/objects/i-has-position";
 import { CopyPositionCommand, IHasCopyUpdate } from "./copy-position-command";
 import { UpdatePositionCommand } from "./update-position-command";
+import { Tool } from "app/tools/tool";
+import { SetToolCommand } from "./set-tool-command";
 
 export abstract class Commands {
+
+	static SetTool ( tool: Tool  ) {
+
+		CommandHistory.execute( new SetToolCommand( tool ) );
+
+	}
 
 	static SetValue<T, K extends keyof T> ( object: T, attributeName: K, newValue: T[ K ], oldValue?: T[ K ] ) {
 
