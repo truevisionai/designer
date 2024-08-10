@@ -11,9 +11,7 @@ import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { DebugLine } from 'app/objects/debug-line';
-import { CommandHistory } from 'app/commands/command-history';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { TvLaneType, TravelDirection } from 'app/map/models/tv-common';
 import { LaneToolService } from './lane-tool.service';
 import { LaneService } from 'app/services/lane/lane.service';
@@ -239,7 +237,7 @@ export class TvLaneObject {
 	@SerializedAction()
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.lane ) );
+		Commands.RemoveObject( this.lane );
 
 	}
 

@@ -4,8 +4,7 @@
 
 import { LaneWidthNode } from "../../objects/lane-width-node";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "../../commands/command-history";
-import { RemoveObjectCommand } from "../../commands/remove-object-command";
+import { Commands } from "app/commands/commands";
 
 export class LaneWidthNodeInspector {
 
@@ -48,7 +47,7 @@ export class LaneWidthNodeInspector {
 
 	@SerializedAction( { label: 'Delete' } )
 	delete ( value: number ) {
-		CommandHistory.execute( new RemoveObjectCommand( this.node ) );
+		Commands.RemoveObject( this.node );
 	}
 
 

@@ -5,12 +5,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
 import { RoadNode } from 'app/objects/road-node';
-import { CommandHistory } from 'app/commands/command-history';
 import { Vector2, Vector3 } from 'three';
 import { IComponent } from '../../../objects/game-object';
 import { TvGeometryType, TvRoadType } from '../../../map/models/tv-common';
 import { TvRoad } from '../../../map/models/tv-road.model';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { DialogService } from 'app/services/dialog/dialog.service';
 import { RoadStyle } from 'app/graphics/road-style/road-style.model';
@@ -186,7 +184,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 		if ( !this.data?.controlPoint ) return;
 
-		CommandHistory.execute( new RemoveObjectCommand( this.data.controlPoint ) );
+		Commands.RemoveObject( this.data.controlPoint );
 
 	}
 
@@ -195,7 +193,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 		if ( !this.data?.road ) return;
 
-		CommandHistory.execute( new RemoveObjectCommand( this.data.road.spline ) );
+		Commands.RemoveObject( this.data.road.spline );
 
 	}
 

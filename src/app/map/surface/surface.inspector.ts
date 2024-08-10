@@ -5,11 +5,10 @@
 import { Surface } from 'app/map/surface/surface.model';
 import { SurfaceToolService } from '../../tools/surface/surface-tool.service';
 import { Mesh } from 'three';
-import { CommandHistory } from 'app/commands/command-history';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { Commands } from 'app/commands/commands';
 
 export class TvSurfaceInspector {
 
@@ -146,19 +145,19 @@ export class TvSurfaceInspector {
 	@SerializedAction( { label: 'Delete' } )
 	deleteSurface () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.surface ) );
+		Commands.RemoveObject( this.surface );
 
 	}
 
 	@SerializedAction( {
 		label: 'Delete Control Point',
-		validate: function() { return this.controlPoint !== undefined; } // Using the validation method
-	})
+		validate: function () { return this.controlPoint !== undefined; } // Using the validation method
+	} )
 	deleteControlPoint () {
 
 		if ( !this.controlPoint ) return;
 
-		CommandHistory.execute( new RemoveObjectCommand( this.controlPoint ) );
+		Commands.RemoveObject( this.controlPoint );
 
 	}
 

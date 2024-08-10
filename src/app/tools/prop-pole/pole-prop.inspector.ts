@@ -4,10 +4,9 @@
 
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { SerializedAction, SerializedField } from "app/core/components/serialization";
-import { RemoveObjectCommand } from "app/commands/remove-object-command";
-import { CommandHistory } from "app/commands/command-history";
 import { TvObjectVertexRoad } from "../../map/models/objects/tv-object-vertex-road";
 import { TvObjectVertexLocal } from "../../map/models/objects/tv-object-vertex-local";
+import { Commands } from "app/commands/commands";
 
 export class PolePropInspector {
 
@@ -116,7 +115,7 @@ export class PolePropInspector {
 	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.roadObject ) );
+		Commands.RemoveObject( this.roadObject );
 
 	}
 

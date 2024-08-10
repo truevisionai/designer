@@ -3,11 +3,10 @@
  */
 
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "../../commands/command-history";
-import { RemoveObjectCommand } from "../../commands/remove-object-command";
 import { ManeuverMesh } from "app/services/junction/junction.debug";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { Vector2 } from "three";
+import { Commands } from "app/commands/commands";
 
 export class ManeuverInspector {
 
@@ -18,7 +17,7 @@ export class ManeuverInspector {
 
 	@SerializedAction( { label: 'Delete' } )
 	deleteManeuver () {
-		CommandHistory.execute( new RemoveObjectCommand( this.maneuver ) );
+		Commands.RemoveObject( this.maneuver );
 	}
 
 }

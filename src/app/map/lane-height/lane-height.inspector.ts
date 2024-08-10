@@ -4,9 +4,8 @@
 
 import { TvLaneHeight } from "./lane-height.model";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { CommandHistory } from "app/commands/command-history";
-import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { TvLane } from "../models/tv-lane";
+import { Commands } from "app/commands/commands";
 
 export class LaneHeightInspector {
 
@@ -45,6 +44,6 @@ export class LaneHeightInspector {
 
 	@SerializedAction( { label: 'Delete' } )
 	delete () {
-		CommandHistory.execute( new RemoveObjectCommand( this ) );
+		Commands.RemoveObject( this );
 	}
 }

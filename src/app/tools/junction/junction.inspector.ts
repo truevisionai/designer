@@ -2,10 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { CommandHistory } from "app/commands/command-history";
+import { Commands } from "app/commands/commands";
 
 export class JunctionInspector {
 
@@ -52,7 +51,7 @@ export class JunctionInspector {
 		description: 'You can only delete junctions that are not automatic',
 	} )
 	deleteManeuver () {
-		CommandHistory.execute( new RemoveObjectCommand( this.junction ) );
+		Commands.RemoveObject( this.junction );
 	}
 
 }

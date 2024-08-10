@@ -2,9 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CommandHistory } from "app/commands/command-history";
 import { Commands } from "app/commands/commands";
-import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { SerializedField, SerializedAction } from "app/core/components/serialization";
 import { Maths } from "app/utils/maths";
 import { TvRoad } from "../models/tv-road.model";

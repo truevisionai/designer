@@ -5,8 +5,7 @@
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { CommandHistory } from 'app/commands/command-history';
+import { Commands } from 'app/commands/commands';
 
 export class PropCurveInspector {
 
@@ -54,7 +53,7 @@ export class PropCurveInspector {
 
 	@SerializedAction( { label: 'Delete Curve' } )
 	delete () {
-		CommandHistory.execute( new RemoveObjectCommand( this.curve ) );
+		Commands.RemoveObject( this.curve );
 	}
 
 }

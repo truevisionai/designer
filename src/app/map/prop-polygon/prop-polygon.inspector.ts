@@ -5,9 +5,8 @@
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { PropPolygon } from "./prop-polygon.model";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { CommandHistory } from "../../commands/command-history";
-import { RemoveObjectCommand } from "../../commands/remove-object-command";
 import { Vector3 } from "three";
+import { Commands } from "app/commands/commands";
 
 export class PropPolygonInspector {
 
@@ -38,7 +37,7 @@ export class PropPolygonInspector {
 	@SerializedAction( { label: 'Delete Polygon' } )
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.polygon ) );
+		Commands.RemoveObject( this.polygon );
 
 	}
 }

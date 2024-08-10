@@ -3,12 +3,11 @@
  */
 
 import { TvLane } from '../../map/models/tv-lane';
-import { CommandHistory } from 'app/commands/command-history';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights, TvSupporteRoadMarkTypes } from 'app/map/models/tv-common';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { Maths } from 'app/utils/maths';
+import { Commands } from 'app/commands/commands';
 
 
 export class LaneMarkingInspector {
@@ -97,7 +96,7 @@ export class LaneMarkingInspector {
 	@SerializedAction()
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this ) );
+		Commands.RemoveObject( this );
 
 	}
 

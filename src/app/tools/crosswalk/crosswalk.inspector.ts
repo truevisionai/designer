@@ -5,11 +5,10 @@
 import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { TvObjectMarking } from "../../map/models/tv-object-marking";
-import { CommandHistory } from "app/commands/command-history";
-import { RemoveObjectCommand } from "app/commands/remove-object-command";
 import { TvColors, TvRoadMarkWeights } from "../../map/models/tv-common";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { AssetDatabase } from "app/core/asset/asset-database";
+import { Commands } from "app/commands/commands";
 
 export class CrosswalkInspector {
 
@@ -112,7 +111,7 @@ export class CrosswalkInspector {
 	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this ) );
+		Commands.RemoveObject( this.roadObject );
 
 	}
 }

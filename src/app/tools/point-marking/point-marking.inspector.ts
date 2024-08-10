@@ -4,9 +4,8 @@
 
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
-import { CommandHistory } from 'app/commands/command-history';
 import { SimpleControlPoint } from 'app/objects/simple-control-point';
+import { Commands } from 'app/commands/commands';
 
 
 export class PointMarkingInspector {
@@ -128,7 +127,7 @@ export class PointMarkingInspector {
 	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
-		CommandHistory.execute( new RemoveObjectCommand( this.points ) );
+		Commands.RemoveObject( this.points );
 
 	}
 

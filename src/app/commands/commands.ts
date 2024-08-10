@@ -17,7 +17,7 @@ import { SetToolCommand } from "./set-tool-command";
 
 export abstract class Commands {
 
-	static SetTool ( tool: Tool  ) {
+	static SetTool ( tool: Tool ) {
 
 		CommandHistory.execute( new SetToolCommand( tool ) );
 
@@ -29,7 +29,7 @@ export abstract class Commands {
 
 	}
 
-	static RemoveObject ( object: Object ) {
+	static RemoveObject ( object: any | any[] ) {
 
 		CommandHistory.execute( new RemoveObjectCommand( object ) );
 
