@@ -448,7 +448,7 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		if ( object instanceof TvRoad ) {
 
-			this.updateRoad( object );
+			this.updateSpline( object.spline );
 
 		} else if ( object instanceof AbstractControlPoint ) {
 
