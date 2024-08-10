@@ -18,9 +18,7 @@ import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { PointMarkingInspector } from './point-marking.inspector';
 import { DebugState } from "../../services/debug/debug-state";
-import { CopyPositionCommand } from 'app/commands/copy-position-command';
-import { CommandHistory } from 'app/commands/command-history';
-import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { Commands } from 'app/commands/commands';
 
 export class PointMarkingTool extends BaseTool<any> {
 
@@ -145,9 +143,7 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		const oldPosition = this.pointerDownAt.clone();
 
-		const command = new CopyPositionCommand( this.currentSelectedPoint, newPosition, oldPosition );
-
-		CommandHistory.execute( command );
+		Commands.CopyPosition( this.currentSelectedPoint, newPosition, oldPosition );
 
 		this.currentSelectedPointMoved = false;
 

@@ -17,9 +17,8 @@ import { AppInspector } from 'app/core/inspector';
 import { RoadSignalInspector } from '../../map/road-signal/road-signal.inspector';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { DebugState } from 'app/services/debug/debug-state';
-import { CopyPositionCommand } from "../../commands/copy-position-command";
-import { CommandHistory } from "../../commands/command-history";
 import { Log } from 'app/core/utils/log';
+import { Commands } from 'app/commands/commands';
 
 export class RoadSignTool extends BaseTool<any> {
 
@@ -96,9 +95,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 		if ( !this.pointerDownAt ) return;
 
-		const command = new CopyPositionCommand( this.currentSelectedPoint, this.currentSelectedPoint.position, this.pointerDownAt );
-
-		CommandHistory.execute( command );
+		Commands.CopyPosition( this.currentSelectedPoint, this.currentSelectedPoint.position, this.pointerDownAt );
 
 		this.currentSelectedPointMoved = false;
 

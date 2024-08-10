@@ -6,7 +6,6 @@ import { ToolType } from 'app/tools/tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { ElevationControlPoint } from 'app/map/road-elevation/tv-elevation.object';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { CommandHistory } from 'app/commands/command-history';
 import { BaseTool } from '../base-tool'
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
@@ -16,10 +15,10 @@ import { ControlPointStrategy } from 'app/core/strategies/select-strategies/cont
 import { RoadElevationToolService } from './road-elevation-tool.service';
 import { RoadLineMovingStrategy } from 'app/core/strategies/move-strategies/road-line-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
-import { CopyPositionCommand } from 'app/commands/copy-position-command';
 import { TvRoadElevationInspector } from "../../map/road-elevation/tv-road-elevation.inspector";
 import { TvElevationInspector } from "../../map/road-elevation/tv-elevation.inspector";
 import { Log } from 'app/core/utils/log';
+import { Commands } from 'app/commands/commands';
 
 export class RoadElevationTool extends BaseTool<any> {
 
@@ -123,9 +122,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 		const oldPosition = this.pointerDownAt.clone();
 
-		const updateCommand = new CopyPositionCommand( this.selectedNode, newPosition, oldPosition );
-
-		CommandHistory.execute( updateCommand );
+		Commands.CopyPosition( this.selectedNode, newPosition, oldPosition );
 
 		this.nodeChanged = false;
 	}

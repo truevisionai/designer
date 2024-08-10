@@ -25,7 +25,7 @@ import { NewLanePosition } from "app/scenario/models/positions/tv-lane-position"
 import { CommandHistory } from "app/commands/command-history";
 import { Maths } from "app/utils/maths";
 import { UpdatePositionCommand } from "app/commands/update-position-command";
-import { CopyPositionCommand } from "app/commands/copy-position-command";
+import { Commands } from "app/commands/commands";
 
 export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
@@ -112,9 +112,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		if ( !this.pointerDownAt ) return;
 
-		const command = new CopyPositionCommand( this.currentSelectedPoint, this.currentSelectedPoint.position, this.pointerDownAt );
-
-		CommandHistory.execute( command );
+		Commands.CopyPosition( this.currentSelectedPoint, this.currentSelectedPoint.position, this.pointerDownAt );
 
 		this.currentSelectedPointMoved = false;
 

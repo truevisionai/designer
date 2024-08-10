@@ -17,8 +17,7 @@ import { RoadService } from "../../services/road/road.service";
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SuperElevationService } from './super-elevation.service';
 import { BaseToolService } from '../base-tool.service';
-import { CopyPositionCommand } from 'app/commands/copy-position-command';
-import { CommandHistory } from 'app/commands/command-history';
+import { Commands } from 'app/commands/commands';
 
 @Injectable( {
 	providedIn: 'root'
@@ -105,9 +104,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 		if ( oldPosition.distanceTo( newPosition ) < 0.1 ) return;
 
-		const command = new CopyPositionCommand( this.currentSelectedPoint, newPosition, oldPosition );
-
-		CommandHistory.execute( command );
+		Commands.CopyPosition( this.currentSelectedPoint, newPosition, oldPosition );
 
 		this.currentSelectedPointMoved = false;
 
