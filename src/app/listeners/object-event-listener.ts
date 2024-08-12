@@ -77,7 +77,7 @@ export class ObjectEventListener {
 
 	}
 
-	onObjectUpdated ( object: Object ): void {
+	onObjectUpdated ( object: object ): void {
 
 		if ( this.debug ) console.debug( 'onObjectUpdated', object );
 
@@ -97,7 +97,7 @@ export class ObjectEventListener {
 
 	}
 
-	onObjectRemoved ( object: Object ): void {
+	onObjectRemoved ( object: object ): void {
 
 		if ( this.debug ) console.debug( 'onObjectRemoved', object );
 
@@ -105,7 +105,7 @@ export class ObjectEventListener {
 
 	}
 
-	onObjectAdded ( object: Object ): void {
+	onObjectAdded ( object: object ): void {
 
 		if ( this.debug ) console.debug( 'onObjectAdded', object );
 
@@ -113,7 +113,7 @@ export class ObjectEventListener {
 
 	}
 
-	onObjectUnselected ( object: Object ): void {
+	onObjectUnselected ( object: object ): void {
 
 		if ( this.debug ) console.debug( 'onObjectUnselected', object );
 
@@ -121,7 +121,7 @@ export class ObjectEventListener {
 
 	}
 
-	onObjectSelected ( object: Object ): void {
+	onObjectSelected ( object: object ): void {
 
 		if ( this.debug ) console.debug( 'onObjectSelected', object );
 
@@ -142,9 +142,11 @@ export class ObjectEventListener {
 		}
 	}
 
-	private updateAsset ( object: Object ) {
+	private updateAsset ( object: object ) {
 
 		if ( object instanceof MaterialAsset ) {
+
+			// do nothing
 
 		}
 

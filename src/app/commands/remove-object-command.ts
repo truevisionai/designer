@@ -7,7 +7,7 @@ import { MapEvents } from "../events/map-events";
 
 export class RemoveObjectCommand extends BaseCommand {
 
-    constructor ( private object: any ) {
+    constructor ( private object: object | object[] ) {
         super();
     }
 

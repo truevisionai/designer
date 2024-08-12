@@ -29,25 +29,25 @@ export abstract class Commands {
 
 	}
 
-	static RemoveObject ( object: any | any[] ) {
+	static RemoveObject ( object: object | object[] ) {
 
 		CommandHistory.execute( new RemoveObjectCommand( object ) );
 
 	}
 
-	static AddObject ( object: any | any[] ) {
+	static AddObject ( object: object | object[] ) {
 
 		CommandHistory.execute( new AddObjectCommand( object ) );
 
 	}
 
-	static Select ( object: any | any[], previousObject?: any | any[] ) {
+	static Select ( object: object | object[], previousObject?: object | object[] ) {
 
 		CommandHistory.execute( new SelectObjectCommand( object, previousObject ) );
 
 	}
 
-	static Unselect ( object: any | any[] ) {
+	static Unselect ( object: object | object[] ) {
 
 		CommandHistory.execute( new UnselectObjectCommand( object ) );
 
