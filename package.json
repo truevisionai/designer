@@ -80,14 +80,19 @@
 		"@angular-devkit/build-angular": "~12.1.1",
 		"@angular/cli": "~12.1.1",
 		"@angular/compiler-cli": "~12.1.1",
+		"@eslint/js": "^9.9.0",
 		"@types/electron": "^1.6.10",
 		"@types/jasmine": "~3.6.0",
 		"@types/node": "^12.11.1",
 		"@types/three": "^0.157.0",
 		"@types/webxr": "^0.5.0",
+		"@typescript-eslint/eslint-plugin": "^8.0.1",
+		"@typescript-eslint/parser": "^8.0.1",
 		"circular-dependency-plugin": "^5.2.2",
 		"electron": "^19.1.1",
 		"electron-builder": "^23.6.0",
+		"eslint": "^9.9.0",
+		"globals": "^15.9.0",
 		"husky": "^8.0.3",
 		"jasmine-core": "^4.6.0",
 		"karma": "~6.3.0",
@@ -96,7 +101,8 @@
 		"karma-jasmine": "~4.0.0",
 		"karma-jasmine-html-reporter": "^1.5.0",
 		"karma-spec-reporter": "0.0.36",
-		"typescript": "~4.3.2"
+		"typescript": "~4.3.2",
+		"typescript-eslint": "^8.0.1"
 	},
 	"engines": {
 		"node": ">= 14.15.0"

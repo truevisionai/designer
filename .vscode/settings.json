@@ -44,4 +44,11 @@
 	"html.format.wrapLineLength": 140,
 	"editor.indentSize": 4,
 	"editor.insertSpaces": false,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "always"
+	},
+	"eslint.validate": [
+		"javascript",
+		"typescript"
+	]
 }
