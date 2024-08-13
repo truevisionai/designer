@@ -29,6 +29,7 @@ import { ConnectionFactory } from 'app/factories/connection.factory';
 import { SplineUtils } from "../utils/spline.utils";
 import { LinkUtils } from 'app/utils/link.utils';
 import { Log } from 'app/core/utils/log';
+import { Maths } from 'app/utils/maths';
 
 @Injectable( {
 	providedIn: 'root'
@@ -151,23 +152,13 @@ export class SceneBuilderService {
 
 		if ( spline.type === SplineType.AUTO || spline.type == SplineType.AUTOV2 ) {
 
-			road.spline = spline;
-
-			road.gameObject = this.roadBuilder.buildRoad( road );
-
-			map.gameObject.add( road.gameObject );
+			this.buildRoadMesh( map, road, spline );
 
 		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
 
 			road.sStart = 0;
 
-			if ( road.spline.segmentMap.length == 0 ) {
-				road.spline.segmentMap.set( 0, road );
-			}
-
-			road.gameObject = this.roadBuilder.buildRoad( road );
-
-			map.gameObject.add( road.gameObject );
+			this.buildRoadMesh( map, road, road.spline );
 
 		} else {
 
@@ -176,6 +167,33 @@ export class SceneBuilderService {
 			return;
 
 		}
+
+	}
+
+	buildRoadMesh ( map: TvMap, road: TvRoad, spline: AbstractSpline ): void {
+
+		road.spline = spline;
+
+		if ( spline.segmentMap.length == 0 ) {
+			Log.warn( `No segments found for road id ${ road.id }` );
+			spline.segmentMap.set( 0, road );
+		}
+
+		road.gameObject = this.roadBuilder.buildRoad( road );
+
+		if ( road.getPlanView().getGeometryCount() < 1 ) {
+			Log.warn( `No geometry found for road id ${ road.id }` );
+			map.removeRoad( road );
+			return;
+		}
+
+		if ( Maths.approxEquals( road.getLength(), 0 ) ) {
+			map.removeRoad( road );
+			Log.warn( `Road length is 0 for road id ${ road.id }` );
+			return;
+		}
+
+		map.gameObject.add( road.gameObject );
 
 	}
 
