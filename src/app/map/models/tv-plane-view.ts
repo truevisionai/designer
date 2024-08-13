@@ -17,8 +17,13 @@ export class TvPlaneView {
 
 	public geometries: TvAbstractRoadGeometry[] = [];
 
-
 	constructor () {
+
+	}
+
+	getGeometryCount (): number {
+
+		return this.geometries.length;
 
 	}
 
@@ -66,7 +71,7 @@ export class TvPlaneView {
 
 	}
 
-	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange? ) {
+	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?) {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
