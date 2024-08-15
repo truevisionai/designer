@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoad } from 'app/map/models/tv-road.model';
+import { LaneUtils } from 'app/utils/lane.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,8 +20,8 @@ export class LaneLinkManager {
 		// for connections we dont want to manage links forn
 		if ( road.isJunction ) return;
 
-		const prevLaneSection = road.getPredecessorLaneSection( laneSection );
-		const nextLaneSection = road.getSuccessorLaneSection( laneSection );
+		const prevLaneSection = LaneUtils.findPreviousLaneSection( road, laneSection );
+		const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
 
 		if ( !lane.predecessorExists && prevLaneSection ) {
 			lane.predecessorId = ( prevLaneSection.getNearestLane( lane )?.id );

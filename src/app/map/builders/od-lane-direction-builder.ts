@@ -31,9 +31,9 @@ export class OdLaneDirectionBuilder {
 
 		this.road.computeLaneSectionCoordinates();
 
-		for ( let i = 0; i < this.road.getLaneSections().length; i++ ) {
+		for ( let i = 0; i < this.road.getLaneProfile().getLaneSections().length; i++ ) {
 
-			const laneSection = this.road.getLaneSections()[ i ];
+			const laneSection = this.road.getLaneProfile().getLaneSections()[ i ];
 
 			laneSection.getLeftLanes().forEach( lane => this.drawLane( lane, laneSection ) );
 
@@ -52,9 +52,9 @@ export class OdLaneDirectionBuilder {
 
 		this.road = road;
 
-		for ( let i = 0; i < this.road.getLaneSections().length; i++ ) {
+		for ( let i = 0; i < this.road.getLaneProfile().getLaneSections().length; i++ ) {
 
-			const laneSection = this.road.getLaneSections()[ i ];
+			const laneSection = this.road.getLaneProfile().getLaneSections()[ i ];
 
 			this.drawLane( lane, laneSection );
 		}

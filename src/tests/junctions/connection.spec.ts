@@ -50,8 +50,8 @@ xdescribe( 'ConnectionService', () => {
 		roadService.add( leftRoad );
 		roadService.add( rightRoad );
 
-		expect( leftRoad.getFirstLaneSection().getLaneCount() ).toBe( 7 );
-		expect( rightRoad.getFirstLaneSection().getLaneCount() ).toBe( 7 );
+		expect( leftRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 7 );
+		expect( rightRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 7 );
 
 		expect( leftRoad.length ).toBe( 40 );
 		expect( rightRoad.length ).toBe( 40 );
@@ -113,8 +113,8 @@ xdescribe( 'ConnectionService', () => {
 		roadService.add( leftRoad );
 		roadService.add( rightRoad );
 
-		expect( leftRoad.getFirstLaneSection().getLaneCount() ).toBe( 7 );
-		expect( rightRoad.getFirstLaneSection().getLaneCount() ).toBe( 7 );
+		expect( leftRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 7 );
+		expect( rightRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 7 );
 
 		expect( leftRoad.length ).toBe( 40 );
 		expect( rightRoad.length ).toBe( 40 );

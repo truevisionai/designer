@@ -135,11 +135,11 @@
 //
 //			} );
 //
-//			if ( connection.outgoingRoad.getFirstLaneSection().getLaneArray().find( i => i.uuid == this.lane.uuid ) ) {
+//			if ( connection.outgoingRoad.getLaneProfile().getFirstLaneSection().getLaneArray().find( i => i.uuid == this.lane.uuid ) ) {
 //
 //				results.push( {} );
 //
-//			} else if ( connection.outgoingRoad.getLastLaneSection().getLaneArray().find( i => i.uuid == this.lane.uuid ) ) {
+//			} else if ( connection.outgoingRoad.getLaneProfile().getLaseLaneSection().getLaneArray().find( i => i.uuid == this.lane.uuid ) ) {
 //
 //				results.push( {} );
 //

@@ -92,7 +92,7 @@ export class ParkingRoadToolService {
 
 		const road = this.roadService.createParkingRoad();
 
-		road.getFirstLaneSection().removeRightLanes()
+		road.getLaneProfile().getFirstLaneSection().removeRightLanes()
 
 		for ( let i = 0; i < points.length; i++ ) {
 
@@ -109,7 +109,7 @@ export class ParkingRoadToolService {
 
 		const road = this.roadService.createParkingRoad();
 
-		road.getFirstLaneSection().removeLeftLanes()
+		road.getLaneProfile().getFirstLaneSection().removeLeftLanes()
 
 		for ( let i = 0; i < points.length; i++ ) {
 
@@ -126,7 +126,7 @@ export class ParkingRoadToolService {
 
 		this.roadService.add( road );
 
-		road.getFirstLaneSection().getLaneArray().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
+		road.getLaneProfile().getFirstLaneSection().getLaneArray().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
 
 			this.addRepeatedParkingObject( road, lane );
 
@@ -204,7 +204,7 @@ export class ParkingRoadToolService {
 
 		const laneWidth = lane.getWidthValue( s );
 
-		let t = road.getFirstLaneSection().getWidthUptoCenter( lane, s );
+		let t = road.getLaneProfile().getFirstLaneSection().getWidthUptoCenter( lane, s );
 
 		if ( lane.side == TvLaneSide.RIGHT ) t *= -1;
 
@@ -491,7 +491,7 @@ export class ParkingRoadToolService {
 
 		const road = this.roadService.createSingleLaneRoad( 3.2 );
 
-		road.getFirstLaneSection().removeLeftLanes()
+		road.getLaneProfile().getFirstLaneSection().removeLeftLanes()
 
 		for ( let i = 0; i < points.length; i++ ) {
 
@@ -511,7 +511,7 @@ export class ParkingRoadToolService {
 
 		const road = this.roadService.createSingleLaneRoad( 3.2 );
 
-		road.getFirstLaneSection().removeLeftLanes()
+		road.getLaneProfile().getFirstLaneSection().removeLeftLanes()
 
 		for ( let i = 0; i < points.length; i++ ) {
 

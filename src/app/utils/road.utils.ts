@@ -6,7 +6,7 @@ import { TvContactPoint } from "app/map/models/tv-common";
 import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "../map/models/junctions/tv-junction";
-import { Vector2 } from "three";
+import { Vector2, Vector3 } from "three";
 
 export class RoadUtils {
 
@@ -217,4 +217,20 @@ export class RoadUtils {
 		if ( updateMe ) road.predecessor = null;
 	}
 
+	static getContactByPosition ( road: TvRoad, position: Vector3 ): TvContactPoint {
+
+		const startDistance = road.getPosThetaAt( 0 ).position.distanceTo( position );
+		const endDistance = road.getPosThetaAt( this.length ).position.distanceTo( position );
+
+		if ( startDistance < endDistance ) {
+
+			return TvContactPoint.START;
+
+		} else {
+
+			return TvContactPoint.END;
+
+		}
+
+	}
 }

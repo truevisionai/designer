@@ -51,50 +51,50 @@ describe( 'OdRoad', () => {
 
 	it( 'should give correct lane section', () => {
 
-		road.addLaneSection( 0, false );
-		road.addLaneSection( 10, false );
-		road.addLaneSection( 20, false );
+		road.getLaneProfile().addLaneSection( 0, false );
+		road.getLaneProfile().addLaneSection( 10, false );
+		road.getLaneProfile().addLaneSection( 20, false );
 
 
-		expect( road.getLaneSectionAt( 0 ).s ).toBe( 0 );
-		expect( road.getLaneSectionAt( 9 ).s ).toBe( 0 );
-		expect( road.getLaneSectionAt( 10 ).s ).toBe( 10 );
-		expect( road.getLaneSectionAt( 11 ).s ).toBe( 10 );
-		expect( road.getLaneSectionAt( 20 ).s ).toBe( 20 );
-		expect( road.getLaneSectionAt( 21 ).s ).toBe( 20 );
-		expect( road.getLaneSectionAt( 30 ).s ).toBe( 20 );
+		expect( road.getLaneProfile().getLaneSectionAt( 0 ).s ).toBe( 0 );
+		expect( road.getLaneProfile().getLaneSectionAt( 9 ).s ).toBe( 0 );
+		expect( road.getLaneProfile().getLaneSectionAt( 10 ).s ).toBe( 10 );
+		expect( road.getLaneProfile().getLaneSectionAt( 11 ).s ).toBe( 10 );
+		expect( road.getLaneProfile().getLaneSectionAt( 20 ).s ).toBe( 20 );
+		expect( road.getLaneProfile().getLaneSectionAt( 21 ).s ).toBe( 20 );
+		expect( road.getLaneProfile().getLaneSectionAt( 30 ).s ).toBe( 20 );
 
 	} );
 
 
 	it( 'should give correct lane offset', () => {
 
-		road.addLaneOffset( 0, 0, 0, 0, 0 );
-		road.addLaneOffset( 10, 10, 0, 0, 0 );
-		road.addLaneOffset( 20, 20, 0, 0, 0 );
+		road.getLaneProfile().addLaneOffset( 0, 0, 0, 0, 0 );
+		road.getLaneProfile().addLaneOffset( 10, 10, 0, 0, 0 );
+		road.getLaneProfile().addLaneOffset( 20, 20, 0, 0, 0 );
 
-		expect( road.getLaneOffsetAt( 0 ).a ).toBe( 0 );
-		expect( road.getLaneOffsetAt( 1 ).a ).toBe( 0 );
-		expect( road.getLaneOffsetAt( 9 ).a ).toBe( 0 );
-		expect( road.getLaneOffsetAt( 10 ).a ).toBe( 10 );
-		expect( road.getLaneOffsetAt( 11 ).a ).toBe( 10 );
-		expect( road.getLaneOffsetAt( 20 ).a ).toBe( 20 );
+		expect( road.getLaneProfile().getLaneOffsetAt( 0 ).a ).toBe( 0 );
+		expect( road.getLaneProfile().getLaneOffsetAt( 1 ).a ).toBe( 0 );
+		expect( road.getLaneProfile().getLaneOffsetAt( 9 ).a ).toBe( 0 );
+		expect( road.getLaneProfile().getLaneOffsetAt( 10 ).a ).toBe( 10 );
+		expect( road.getLaneProfile().getLaneOffsetAt( 11 ).a ).toBe( 10 );
+		expect( road.getLaneProfile().getLaneOffsetAt( 20 ).a ).toBe( 20 );
 
 	} );
 
 
 	it( 'should give correct lane offset value', () => {
 
-		road.addLaneOffset( 0, 0, 0, 0, 0 );
-		road.addLaneOffset( 10, 10, 0, 0, 0 );
-		road.addLaneOffset( 20, 20, 0, 0, 0 );
+		road.getLaneProfile().addLaneOffset( 0, 0, 0, 0, 0 );
+		road.getLaneProfile().addLaneOffset( 10, 10, 0, 0, 0 );
+		road.getLaneProfile().addLaneOffset( 20, 20, 0, 0, 0 );
 
-		expect( road.getLaneOffsetValue( 0 ) ).toBe( 0 );
-		expect( road.getLaneOffsetValue( 1 ) ).toBe( 0 );
-		expect( road.getLaneOffsetValue( 9 ) ).toBe( 0 );
-		expect( road.getLaneOffsetValue( 10 ) ).toBe( 10 );
-		expect( road.getLaneOffsetValue( 11 ) ).toBe( 10 );
-		expect( road.getLaneOffsetValue( 20 ) ).toBe( 20 );
+		expect( road.getLaneProfile().getLaneOffsetValue( 0 ) ).toBe( 0 );
+		expect( road.getLaneProfile().getLaneOffsetValue( 1 ) ).toBe( 0 );
+		expect( road.getLaneProfile().getLaneOffsetValue( 9 ) ).toBe( 0 );
+		expect( road.getLaneProfile().getLaneOffsetValue( 10 ) ).toBe( 10 );
+		expect( road.getLaneProfile().getLaneOffsetValue( 11 ) ).toBe( 10 );
+		expect( road.getLaneProfile().getLaneOffsetValue( 20 ) ).toBe( 20 );
 
 	} );
 

@@ -224,7 +224,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const clone = this.clone( road );
 
-		const roadWidth = road.getRoadWidthAt( 0 );
+		const roadWidth = road.getLaneProfile().getRoadWidthAt( 0 );
 
 		this.shiftRoad( clone, roadWidth.totalWidth, 0 );
 
@@ -273,7 +273,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 			return;
 		}
 
-		const width = roadCoord.t > 0 ? road.getLeftSideWidth( roadCoord.s ) : road.getRightsideWidth( roadCoord.s );
+		const width = roadCoord.t > 0 ? road.getLaneProfile().getLeftSideWidth( roadCoord.s ) : road.getLaneProfile().getRightsideWidth( roadCoord.s );
 
 		if ( Math.abs( roadCoord.t ) > width ) {
 			return;
@@ -288,7 +288,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		if ( !roadCoord ) return;
 
-		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
+		const laneSection = roadCoord.road.getLaneProfile().getLaneSectionAt( roadCoord.s );
 
 		const t = roadCoord.t;
 

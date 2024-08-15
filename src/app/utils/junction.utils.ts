@@ -213,7 +213,7 @@ export class JunctionUtils {
 
 			if ( targetLane.successorExists ) {
 
-				const laneSection = road.getLastLaneSection();
+				const laneSection = road.getLaneProfile().getLastLaneSection();
 
 				const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
 
@@ -274,7 +274,7 @@ export class JunctionUtils {
 
 			if ( targetLane.predecessorExists ) {
 
-				const laneSection = road.getFirstLaneSection();
+				const laneSection = road.getLaneProfile().getFirstLaneSection();
 
 				const prevLaneSection = LaneUtils.findPreviousLaneSection( road, laneSection );
 
@@ -341,7 +341,7 @@ export class JunctionUtils {
 		}
 
 		const posTheta = joint.road.getPosThetaByContact( joint.contactPoint );
-		const roadWidth = joint.road.getRoadWidthAt( posTheta.s );
+		const roadWidth = joint.road.getLaneProfile().getRoadWidthAt( posTheta.s );
 		const t = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
 
 		// return only 2 points for joint boundary

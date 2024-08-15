@@ -55,7 +55,7 @@ describe( 'Service: RoadDivider Simple', () => {
 
 		expect( road.length ).toBe( 100 );
 
-		const oldLaneSection = road.getLaneSectionAt( S_OFFSET );
+		const oldLaneSection = road.getLaneProfile().getLaneSectionAt( S_OFFSET );
 
 		const newRoad = roadDividerService.divideRoadAt( road, S_OFFSET );
 
@@ -170,7 +170,7 @@ describe( 'Service: RoadDivider Junctions', () => {
 
 		expect( road.length ).toBe( 200 );
 
-		const oldLaneSection = road.getLaneSectionAt( S_OFFSET );
+		const oldLaneSection = road.getLaneProfile().getLaneSectionAt( S_OFFSET );
 
 		const newRoad = roadDividerService.divideRoadAt( road, S_OFFSET );
 

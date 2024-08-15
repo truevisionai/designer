@@ -425,16 +425,16 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		this.writeLaneOffset( xmlNode.lanes, road );
 
-		road.getLaneSections().forEach( laneSection => {
+		road.getLaneProfile().getLaneSections().forEach( laneSection => {
 			this.writeLaneSections( xmlNode.lanes, laneSection );
 		} )
 	}
 
 	public writeLaneOffset ( xmlNode, road: TvRoad ) {
 
-		const laneOffsets = road.getLaneOffsets();
+		const laneOffsets = road.getLaneProfile().getLaneOffsets();
 
-		if ( laneOffsets.length === 0 ) road.addLaneOffset( 0, 0, 0, 0, 0 );
+		if ( laneOffsets.length === 0 ) road.getLaneProfile().addLaneOffset( 0, 0, 0, 0, 0 );
 
 		if ( laneOffsets != null ) {
 

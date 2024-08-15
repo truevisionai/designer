@@ -59,7 +59,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 			// show road id in middle of the road
 
-			const width = road.getRoadWidthAt( road.length * 0.5 );
+			const width = road.getLaneProfile().getRoadWidthAt( road.length * 0.5 );
 
 			if ( !width ) return;
 

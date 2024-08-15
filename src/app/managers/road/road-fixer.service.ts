@@ -49,7 +49,7 @@ export class RoadFixerService {
 		const laneSection = road.laneSections[ road.laneSections.length - 1 ];
 
 		const nextRoad = link.element as TvRoad;
-		const nextLaneSection = nextRoad.getLaneSectionAtContact( link.contact );
+		const nextLaneSection = nextRoad.getLaneProfile().getLaneSectionAtContact( link.contact );
 
 		const currentLanes = laneSection.getLaneArray();
 		const nextLanes = nextLaneSection.getLaneArray();
@@ -211,7 +211,7 @@ export class RoadFixerService {
 		const validate = ( predecessor: TvRoad, successor: TvRoad, contact: TvContactPoint ) => {
 
 			const predecessorLaneSection = predecessor.laneSections[ predecessor.laneSections.length - 1 ];
-			const successorLaneSection = successor.getLaneSectionAtContact( contact );
+			const successorLaneSection = successor.getLaneProfile().getLaneSectionAtContact( contact );
 
 			predecessorLaneSection.lanes.forEach( lane => {
 

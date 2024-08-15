@@ -35,7 +35,7 @@ export class LaneRoadMarkBuilder {
 
 	public buildRoad ( road: TvRoad ): void {
 
-		const laneSections = road.getLaneSections();
+		const laneSections = road.getLaneProfile().getLaneSections();
 
 		for ( let i = 0; i < laneSections.length; i++ ) {
 

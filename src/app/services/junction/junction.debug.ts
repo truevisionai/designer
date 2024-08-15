@@ -252,7 +252,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		const roadCoord = link.toRoadCoord();
 
-		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
+		const result = roadCoord.road.getLaneProfile().getRoadWidthAt( roadCoord.s );
 
 		const start = roadCoord.road.getPosThetaAt( roadCoord.s, result.leftSideWidth );
 
@@ -346,13 +346,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			if ( road.predecessor?.type == TvRoadLinkType.JUNCTION ) {
 
-				processFirstSection( road, road.getFirstLaneSection() );
+				processFirstSection( road, road.getLaneProfile().getFirstLaneSection() );
 
 			}
 
 			if ( road.successor?.type == TvRoadLinkType.JUNCTION ) {
 
-				processLastSection( road, road.getLastLaneSection() );
+				processLastSection( road, road.getLaneProfile().getLastLaneSection() );
 
 			}
 
@@ -362,7 +362,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	createManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
 
-		const width = connection.connectingRoad.getFirstLaneSection().getWidthUptoCenter( link.connectingLane, 0 );
+		const width = connection.connectingRoad.getLaneProfile().getFirstLaneSection().getWidthUptoCenter( link.connectingLane, 0 );
 
 		let offset = width;
 
@@ -398,7 +398,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		for ( let s = 0; s <= connection.connectingRoad.length; s += 0.1 ) {
 
-			const laneSection = connection.connectingRoad.getLaneSectionAt( s );
+			const laneSection = connection.connectingRoad.getLaneProfile().getLaneSectionAt( s );
 
 			const position = this.queryService.findLaneCenterPosition( connection.connectingRoad, laneSection, link.connectingLane, s );
 

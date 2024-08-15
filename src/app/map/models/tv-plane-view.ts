@@ -21,6 +21,12 @@ export class TvPlaneView {
 
 	}
 
+	getGeomtries (): TvAbstractRoadGeometry[] {
+
+		return this.geometries;
+
+	}
+
 	getGeometryCount (): number {
 
 		return this.geometries.length;

@@ -52,7 +52,7 @@ export class DefaultVehicleController extends AbstractController {
 		const roads = this.map.roads;
 
 		const currentRoad = roads.get( entity.roadId );
-		const currentLaneSection = currentRoad.getLaneSectionById( entity.laneSectionId );
+		const currentLaneSection = currentRoad.getLaneProfile().getLaneSectionById( entity.laneSectionId );
 		const currentLaneId = entity.laneId;
 		const currentLane = currentLaneSection.getLaneById( currentLaneId );
 
@@ -113,7 +113,7 @@ export class DefaultVehicleController extends AbstractController {
 					}
 
 					// find laneSection
-					const nextLaneSection = nextRoad.getLaneSectionAt( entity.sCoordinate );
+					const nextLaneSection = nextRoad.getLaneProfile().getLaneSectionAt( entity.sCoordinate );
 
 					// find lane
 					nextLane = nextLaneSection.getLaneById( nextLaneId );
@@ -172,7 +172,7 @@ export class DefaultVehicleController extends AbstractController {
 				}
 
 				// find laneSection
-				const nextLaneSection = nextRoad.getLaneSectionAt( entity.sCoordinate );
+				const nextLaneSection = nextRoad.getLaneProfile().getLaneSectionAt( entity.sCoordinate );
 
 				try {
 

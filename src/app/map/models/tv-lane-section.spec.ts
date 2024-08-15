@@ -132,9 +132,9 @@
 
 // 		const road = TvMapInstance.models.addNewRoad( '', 100, 1, -1 );
 
-// 		const section1 = road.addGetLaneSection( 0, false );
-// 		const section2 = road.addGetLaneSection( 40, false );
-// 		const section3 = road.addGetLaneSection( 50, false );
+// 		const section1 = road.getLaneProfile().addGetLaneSection( 0, false );
+// 		const section2 = road.getLaneProfile().addGetLaneSection( 40, false );
+// 		const section3 = road.getLaneProfile().addGetLaneSection( 50, false );
 
 // 		expect( section1.roadId ).toBe( 1 );
 // 		expect( section2.roadId ).toBe( 1 );

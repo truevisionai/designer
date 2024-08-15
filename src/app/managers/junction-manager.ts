@@ -354,8 +354,8 @@ export class JunctionManager {
 
 			// if ( previousSegment instanceof TvRoad && nextSegment instanceof TvRoad ) {
 			// 	// check if they have same lansection or not
-			// 	const laneSectionA = previousSegment.getLastLaneSection();
-			// 	const laneSectionB = nextSegment.getFirstLaneSection();
+			// 	const laneSectionA = previousSegment.getLaneProfile().getLaseLaneSection();
+			// 	const laneSectionB = nextSegment.getLaneProfile().getFirstLaneSection();
 			// 	laneSectionMatches = laneSectionA.isMatching( laneSectionB );
 			// }
 
@@ -2233,7 +2233,7 @@ export class JunctionManager {
 
 			if ( segment instanceof TvRoad ) {
 
-				const width = segment.getRoadWidthAt( posTheta.s - segment.sStart )?.totalWidth;
+				const width = segment.getLaneProfile().getRoadWidthAt( posTheta.s - segment.sStart )?.totalWidth;
 
 				if ( width && width > maxWidth ) {
 
@@ -2247,7 +2247,7 @@ export class JunctionManager {
 
 				if ( prev instanceof TvRoad ) {
 
-					const width = prev.getRoadWidthAt( posTheta.s - prev.sStart )?.totalWidth;
+					const width = prev.getLaneProfile().getRoadWidthAt( posTheta.s - prev.sStart )?.totalWidth;
 
 					if ( width && width > maxWidth ) {
 
@@ -2314,8 +2314,8 @@ export class JunctionManager {
 			const leftRoad = leftLink.element as TvRoad;
 			const rightRoad = rightLink.element as TvRoad;
 
-			const leftRoadSize = leftRoad.getRoadWidthAt( leftRoad.sStart )
-			const rightRoadSize = rightRoad.getRoadWidthAt( rightRoad.sStart );
+			const leftRoadSize = leftRoad.getLaneProfile().getRoadWidthAt( leftRoad.sStart )
+			const rightRoadSize = rightRoad.getLaneProfile().getRoadWidthAt( rightRoad.sStart );
 
 			// const center = this.computeJunctionCenter( leftLink, rightLink );
 			// const center = group.getRepresentativePosition();
@@ -2385,8 +2385,8 @@ export class JunctionManager {
 		const leftRoad = leftLink.element as TvRoad;
 		const rightRoad = rightLink.element as TvRoad;
 
-		const leftRoadSize = leftRoad.getRoadWidthAt( leftRoad.sStart );
-		const rightRoadSize = rightRoad.getRoadWidthAt( rightRoad.sStart );
+		const leftRoadSize = leftRoad.getLaneProfile().getRoadWidthAt( leftRoad.sStart );
+		const rightRoadSize = rightRoad.getLaneProfile().getRoadWidthAt( rightRoad.sStart );
 
 		const leftT = leftLink.contactPoint == TvContactPoint.END ? -1 : 1;
 		const rightT = rightLink.contactPoint == TvContactPoint.END ? -1 : 1;
@@ -2426,8 +2426,8 @@ export class JunctionManager {
 		const leftRoad = leftLink.element as TvRoad;
 		const rightRoad = rightLink.element as TvRoad;
 
-		const leftRoadSize = leftRoad.getRoadWidthAt( leftRoad.sStart );
-		const rightRoadSize = rightRoad.getRoadWidthAt( rightRoad.sStart );
+		const leftRoadSize = leftRoad.getLaneProfile().getRoadWidthAt( leftRoad.sStart );
+		const rightRoadSize = rightRoad.getLaneProfile().getRoadWidthAt( rightRoad.sStart );
 
 		const leftCenterT = leftRoadSize.leftSideWidth - leftRoadSize.rightSideWidth;
 		const rightCenterT = rightRoadSize.leftSideWidth - rightRoadSize.rightSideWidth;
@@ -2456,7 +2456,7 @@ export class JunctionManager {
 
 			if ( segment instanceof TvRoad ) {
 
-				const size = segment.getRoadWidthAt( coord.s );
+				const size = segment.getLaneProfile().getRoadWidthAt( coord.s );
 
 				const t = size.leftSideWidth - size.rightSideWidth;
 

@@ -225,7 +225,7 @@ export class RoadDebugService {
 
 	createRoadNode<T> ( road: TvRoad, target: T, s: number, width = 2, color = COLOR.CYAN ): DebugLine<T> {
 
-		const result = road.getRoadWidthAt( s );
+		const result = road.getLaneProfile().getRoadWidthAt( s );
 
 		const start = road.getPosThetaAt( s, result.leftSideWidth );
 		const end = road.getPosThetaAt( s, -result.rightSideWidth );
@@ -249,8 +249,8 @@ export class RoadDebugService {
 
 	// createCornerPoint ( road: TvRoad, coord: TvPosTheta ) {
 
-	// 	const rightT = road.getRightsideWidth( coord.s );
-	// 	const leftT = road.getLeftSideWidth( coord.s );
+	// 	const rightT = road.getLaneProfile().getRightsideWidth( coord.s );
+	// 	const leftT = road.getLaneProfile().getLeftSideWidth( coord.s );
 
 	// 	const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
 	// 	const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();

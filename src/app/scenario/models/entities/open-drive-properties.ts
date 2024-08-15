@@ -40,7 +40,7 @@ export class OpenDriveProperties {
 	isOffRoad () {
 		// TODO can be imrpved
 		const road = TvMapInstance.map.getRoadById( this.roadId );
-		const laneSection = road.getLaneSectionById( this.laneSectionId );
+		const laneSection = road.getLaneProfile().getLaneSectionById( this.laneSectionId );
 		const lane = laneSection.getLaneById( this.laneId );
 
 		if (

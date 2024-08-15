@@ -66,6 +66,19 @@ export class LaneUtils {
 
 		return road.laneSections[ index - 1 ];
 
+		// getPredecessorLaneSection ( laneSection: TvLaneSection ) {
+
+		// 	const index = this.laneSections.findIndex( ls => ls == laneSection );
+
+		// 	if ( index > 0 ) return this.laneSections[ index - 1 ];
+
+		// 	if ( !this.predecessor ) return;
+
+		// 	return this.predecessor.laneSection;
+
+		// }
+
+
 	}
 
 	static findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
@@ -93,6 +106,19 @@ export class LaneUtils {
 		}
 
 		return road.laneSections[ index + 1 ];
+
+
+		// getSuccessorLaneSection ( laneSection: TvLaneSection ): TvLaneSection {
+
+		// 	const nextLaneSection = this.laneSections.find( ls => ls.s > laneSection.s );
+
+		// 	if ( nextLaneSection ) return nextLaneSection;
+
+		// 	if ( !this.successor ) return;
+
+		// 	return this.successor.laneSection
+
+		// }
 
 	}
 

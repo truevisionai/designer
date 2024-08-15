@@ -198,7 +198,7 @@ export class AutoSignalizeJunctionService {
 
 		const s = contactPoint == TvContactPoint.START ? 0 : road.length;
 
-		const laneSection = road.getLaneSectionAt( s );
+		const laneSection = road.getLaneProfile().getLaneSectionAt( s );
 
 		const side = this.getForwardSide( road, contactPoint );
 
@@ -265,7 +265,7 @@ export class AutoSignalizeJunctionService {
 
 		const side = this.getForwardSide( road, contactPoint );
 
-		const laneSection = road.getLaneSectionAt( s );
+		const laneSection = road.getLaneProfile().getLaneSectionAt( s );
 
 		const drivingLanes = laneSection.getLaneArray().filter( lane => lane.type == TvLaneType.driving && lane.side == side ).map( lane => lane.id );
 

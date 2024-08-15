@@ -66,7 +66,7 @@ describe( 'OpenDrive Model', () => {
 
 		laneSection = new TvLaneSection( 1, 0, true, road );
 
-		road.getLaneSections().push( laneSection );
+		road.getLaneProfile().getLaneSections().push( laneSection );
 
 		laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true );
 		leftTwo = laneSection.getLastAddedLane();

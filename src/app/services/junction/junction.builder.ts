@@ -378,8 +378,8 @@ export class JunctionBuilder {
 
 			const s = roadCoord.s;
 
-			const rightT = roadCoord.road.getRightsideWidth( s );
-			const leftT = roadCoord.road.getLeftSideWidth( s );
+			const rightT = roadCoord.road.getLaneProfile().getRightsideWidth( s );
+			const leftT = roadCoord.road.getLaneProfile().getLeftSideWidth( s );
 
 			const leftPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
 			const rightPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );

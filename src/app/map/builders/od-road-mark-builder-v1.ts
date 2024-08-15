@@ -44,9 +44,9 @@ export class OdRoadMarkBuilderV1 {
 
 	public buildRoad ( road: TvRoad ): void {
 
-		for ( let i = 0; i < road.getLaneSections().length; i++ ) {
+		for ( let i = 0; i < road.getLaneProfile().getLaneSections().length; i++ ) {
 
-			const laneSection = road.getLaneSections()[ i ];
+			const laneSection = road.getLaneProfile().getLaneSections()[ i ];
 
 			const lanes = laneSection.getLaneArray();
 
@@ -61,7 +61,7 @@ export class OdRoadMarkBuilderV1 {
 
 	public buildLane ( road: TvRoad, lane: TvLane ): void {
 
-		const laneSection = road.getLaneSectionById( lane.laneSectionId );
+		const laneSection = road.getLaneProfile().getLaneSectionById( lane.laneSectionId );
 
 		this.processLane( laneSection, lane );
 

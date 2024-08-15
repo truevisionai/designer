@@ -49,7 +49,7 @@ export class DepConnectionFactory {
 
 		const connectingRoad = this.roadService.createConnectionRoad( junction, incoming, outgoing );
 
-		const laneSection = connectingRoad.addGetLaneSection( 0 );
+		const laneSection = connectingRoad.getLaneProfile().addGetLaneSection( 0 );
 
 		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
 
@@ -407,7 +407,7 @@ export class DepConnectionFactory {
 
 				const previousLaneId = lane.predecessorId || lane.id;
 
-				const previousLane = connection.incomingRoad.getLastLaneSection().getLaneById( previousLaneId );
+				const previousLane = connection.incomingRoad.getLaneProfile().getLastLaneSection().getLaneById( previousLaneId );
 
 				if ( previousLane ) {
 

@@ -173,16 +173,16 @@ export class ConnectionFactory {
 
 		if ( incoming.contact == TvContactPoint.START ) {
 			const width = rightLane.getWidthValue( 0 );
-			connection.connectingRoad.addLaneOffset( 0, width, 0, 0, 0 );
+			connection.connectingRoad.getLaneProfile().addLaneOffset( 0, width, 0, 0, 0 );
 		} else {
-			connection.connectingRoad.addLaneOffset( 0, 0, 0, 0, 0 );
+			connection.connectingRoad.getLaneProfile().addLaneOffset( 0, 0, 0, 0, 0 );
 		}
 
 		if ( outgoing.contact == TvContactPoint.END ) {
 			const width = leftLane.getWidthValue( 0 );
-			connection.connectingRoad.addLaneOffset( connection.connectingRoad.length, width, 0, 0, 0 );
+			connection.connectingRoad.getLaneProfile().addLaneOffset( connection.connectingRoad.length, width, 0, 0, 0 );
 		} else {
-			connection.connectingRoad.addLaneOffset( connection.connectingRoad.length, 0, 0, 0, 0 );
+			connection.connectingRoad.getLaneProfile().addLaneOffset( connection.connectingRoad.length, 0, 0, 0, 0 );
 		}
 
 		TvUtils.computeCoefficients( connection.connectingRoad.laneOffsets, connection.connectingRoad.length );
@@ -208,7 +208,7 @@ export class ConnectionFactory {
 		const connection = this.createFakeConnection( junction, incomingCoord, outgoingCoord, true );
 		connection.connectingRoad.laneSections.splice( 0, 1 );
 		const clone = incoming.laneSection.cloneAtS( 0, 0, false, connection.connectingRoad );
-		connection.connectingRoad.addLaneSectionInstance( clone );
+		connection.connectingRoad.getLaneProfile().addLaneSectionInstance( clone );
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
 			laneSection.lanes.forEach( lane => {
@@ -218,7 +218,7 @@ export class ConnectionFactory {
 
 		if ( incoming.contact == TvContactPoint.START ) {
 
-			const size = incoming.road.getRoadWidthAt( incoming.s );
+			const size = incoming.road.getLaneProfile().getRoadWidthAt( incoming.s );
 
 			const diff = size.rightSideWidth - size.leftSideWidth;
 
@@ -226,11 +226,11 @@ export class ConnectionFactory {
 
 			const offset = Maths.approxEquals( diff, 0 ) ? widthUpto - rightLane.getWidthValue( incoming.s ) : diff;
 
-			connection.connectingRoad.addLaneOffset( 0, offset, 0, 0, 0 );
+			connection.connectingRoad.getLaneProfile().addLaneOffset( 0, offset, 0, 0, 0 );
 
 		} else {
 
-			const size = incoming.road.getRoadWidthAt( incoming.s );
+			const size = incoming.road.getLaneProfile().getRoadWidthAt( incoming.s );
 
 			const diff = size.rightSideWidth - size.leftSideWidth;
 
@@ -239,12 +239,12 @@ export class ConnectionFactory {
 			// const offset = Maths.approxEquals( diff, 0 ) ? widthUpto - rightLane.getWidthValue( incoming.s ) : diff - rightLane.getWidthValue( incoming.s );
 			const offset = widthUpto - rightLane.getWidthValue( incoming.s );
 
-			connection.connectingRoad.addLaneOffset( 0, offset, 0, 0, 0 );
+			connection.connectingRoad.getLaneProfile().addLaneOffset( 0, offset, 0, 0, 0 );
 		}
 
 		if ( outgoing.contact == TvContactPoint.END ) {
 
-			const size = outgoing.road.getRoadWidthAt( 0 );
+			const size = outgoing.road.getLaneProfile().getRoadWidthAt( 0 );
 
 			const diff = size.rightSideWidth - size.leftSideWidth;
 
@@ -252,17 +252,17 @@ export class ConnectionFactory {
 
 			const offset = Maths.approxEquals( diff, 0 ) ? widthUpto - leftLane.getWidthValue( 0 ) : diff + widthUpto - leftLane.getWidthValue( 0 );
 
-			connection.connectingRoad.addLaneOffset( connection.connectingRoad.length, offset, 0, 0, 0 );
+			connection.connectingRoad.getLaneProfile().addLaneOffset( connection.connectingRoad.length, offset, 0, 0, 0 );
 
 		} else {
 
-			const size = incoming.road.getRoadWidthAt( 0 );
+			const size = incoming.road.getLaneProfile().getRoadWidthAt( 0 );
 
 			const diff = size.rightSideWidth - size.leftSideWidth;
 
 			const offset = size.rightSideWidth - leftLane.getWidthValue( 0 );
 
-			connection.connectingRoad.addLaneOffset( connection.connectingRoad.length, offset, 0, 0, 0 );
+			connection.connectingRoad.getLaneProfile().addLaneOffset( connection.connectingRoad.length, offset, 0, 0, 0 );
 
 		}
 
@@ -348,9 +348,9 @@ export class ConnectionFactory {
 
 	// 	// const laneSections = this.laneSectionFactory.createFromRoadLink( road, leftLink, rightLink );
 
-	// 	// laneSections.forEach( laneSection => road.addLaneSectionInstance( laneSection ) );
+	// 	// laneSections.forEach( laneSection => road.getLaneProfile().addLaneSectionInstance( laneSection ) );
 
-	// 	road.addLaneSectionInstance( incoming.laneSection.cloneAtS( 0, 0, false, road ) );
+	// 	road.getLaneProfile().addLaneSectionInstance( incoming.laneSection.cloneAtS( 0, 0, false, road ) );
 
 	// 	road.laneSections.forEach( laneSection => {
 	// 		laneSection.lanes.forEach( lane => {
@@ -444,7 +444,7 @@ export class ConnectionFactory {
 
 	private createConnectingLane ( connectingRoad: TvRoad, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvLane {
 
-		const laneSection = connectingRoad.addGetLaneSection( 0 );
+		const laneSection = connectingRoad.getLaneProfile().addGetLaneSection( 0 );
 
 		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
 

@@ -154,7 +154,7 @@ export class RampToolHelper {
 
 		}
 
-		road.addLaneSectionInstance( connectingLaneSection );
+		road.getLaneProfile().addLaneSectionInstance( connectingLaneSection );
 
 	}
 

@@ -29,7 +29,7 @@
 
 // 	it( 'should give correct left side width of road', () => {
 
-// 		const result = TvMapQueries.getRoadWidthAt( road.id, 0 );
+// 		const result = TvMapQueries.getLaneProfile().getRoadWidthAt( road.id, 0 );
 
 // 		expect( result.totalWidth ).toBe( 12.2 );
 
@@ -45,9 +45,9 @@
 // 		const s = 0;
 
 // 		// add left lane with 2 width
-// 		road.getLaneSectionAt( 0 ).addLane( TvLaneSide.LEFT, 4, TvLaneType.driving, false, true ).addWidthRecord( 0, 2, 0, 0, 0 );
+// 		road.getLaneProfile().getLaneSectionAt( 0 ).addLane( TvLaneSide.LEFT, 4, TvLaneType.driving, false, true ).addWidthRecord( 0, 2, 0, 0, 0 );
 
-// 		const result = TvMapQueries.getRoadWidthAt( road.id, s );
+// 		const result = TvMapQueries.getLaneProfile().getRoadWidthAt( road.id, s );
 
 // 		const start = TvMapQueries.getRoadPosition( road.id, s, -result.leftSideWidth );
 // 		const end = TvMapQueries.getRoadPosition( road.id, s, result.rightSideWidth );

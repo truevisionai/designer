@@ -107,8 +107,8 @@ export class JunctionService extends BaseDataService<TvJunction> {
 	//
 	//		const s = roadCoord.s;
 	//
-	//		const rightT = roadCoord.road.getRightsideWidth( s );
-	//		const leftT = roadCoord.road.getLeftSideWidth( s );
+	//		const rightT = roadCoord.road.getLaneProfile().getRightsideWidth( s );
+	//		const leftT = roadCoord.road.getLaneProfile().getLeftSideWidth( s );
 	//
 	//		const leftCorner = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
 	//		const rightCorner = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );
@@ -243,7 +243,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 			const s = contactPoint == TvContactPoint.START ? 0 : road.length;
 
-			const laneSection = road.getLaneSectionAt( s );
+			const laneSection = road.getLaneProfile().getLaneSectionAt( s );
 
 			let side = road.trafficRule == TrafficRule.LHT ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
 

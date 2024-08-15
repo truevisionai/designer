@@ -8,6 +8,7 @@ import { TvLane } from "app/map/models/tv-lane";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvUtils } from "app/map/models/tv-utils";
+import { LaneUtils } from "app/utils/lane.utils";
 import { Maths } from "app/utils/maths";
 
 /**
@@ -167,13 +168,13 @@ export class LaneWidthManager {
 
 	private previousLaneSection ( lane: TvLane ): TvLaneSection {
 
-		return lane.laneSection.road.getPredecessorLaneSection( lane.laneSection );
+		return LaneUtils.findPreviousLaneSection( lane.laneSection.road, lane.laneSection );
 
 	}
 
 	private nextLaneSection ( lane: TvLane ): TvLaneSection {
 
-		return lane.laneSection.road.getSuccessorLaneSection( lane.laneSection );
+		return LaneUtils.findNextLaneSection( lane.laneSection.road, lane.laneSection );
 
 	}
 

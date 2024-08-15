@@ -302,7 +302,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 		// HACK: to ensure ramp spline are smooth
 
-		const rightSideWidth = road.getRightsideWidth( 0 );
+		const rightSideWidth = road.getLaneProfile().getRightsideWidth( 0 );
 
 		const p1 = spline.controlPoints[ 0 ]?.position;
 		const p2 = spline.controlPoints[ 1 ]?.position;

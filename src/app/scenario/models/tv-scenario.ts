@@ -285,7 +285,7 @@ export class TvScenario {
 
 		entity.setLaneId( res.lane.id );
 
-		entity.setLaneSectionId( res.road.getLaneSectionAt( roadCoord.s ).id );
+		entity.setLaneSectionId( res.road.getLaneProfile().getLaneSectionAt( roadCoord.s ).id );
 
 		entity.setDirection( res.lane.id > 0 ? -1 : 1 );
 

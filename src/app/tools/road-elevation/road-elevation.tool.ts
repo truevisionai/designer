@@ -199,7 +199,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 		} else if ( object instanceof TvRoadElevationInspector ) {
 
-			object.road.elevationProfile.elevation.forEach( elevation => {
+			object.road.getElevationProfile().getElevations().forEach( elevation => {
 
 				this.tool.updateElevation( object.road, elevation );
 

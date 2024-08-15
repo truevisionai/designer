@@ -631,15 +631,15 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		// add default lane offset if not present
 		if ( road.laneOffsets.length == 0 ) {
-			road.addLaneOffset( 0, 0, 0, 0, 0 );
+			road.getLaneProfile().addLaneOffset( 0, 0, 0, 0, 0 );
 		}
 
 		xmlNode.lanes = {
-			laneOffset: road.getLaneOffsets().map( laneOffset => this.writeLaneOffset( laneOffset ) ),
+			laneOffset: road.getLaneProfile().getLaneOffsets().map( laneOffset => this.writeLaneOffset( laneOffset ) ),
 			laneSection: []
 		};
 
-		road.getLaneSections().forEach( laneSection => {
+		road.getLaneProfile().getLaneSections().forEach( laneSection => {
 			this.writeLaneSections( xmlNode.lanes, laneSection );
 		} );
 	}

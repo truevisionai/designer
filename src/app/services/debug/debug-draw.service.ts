@@ -180,7 +180,7 @@ export class DebugDrawService {
 
 	createRoadWidthLinev2<T> ( road: TvRoad, s: number, target?: T, width = 2 ): DebugLine<T> {
 
-		const result = road.getRoadWidthAt( s );
+		const result = road.getLaneProfile().getRoadWidthAt( s );
 
 		const start = road.getPosThetaAt( s, result.leftSideWidth );
 
@@ -192,7 +192,7 @@ export class DebugDrawService {
 
 	updateRoadWidthLine ( line: Line2, roadCoord: TvRoadCoord ): Line2 {
 
-		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
+		const result = roadCoord.road.getLaneProfile().getRoadWidthAt( roadCoord.s );
 
 		const start = roadCoord.road.getPosThetaAt( roadCoord.s, result.leftSideWidth );
 
@@ -214,7 +214,7 @@ export class DebugDrawService {
 
 	updateRoadWidthLinev2 ( line: Line2, road: TvRoad, s: number ): Line2 {
 
-		const result = road.getRoadWidthAt( s );
+		const result = road.getLaneProfile().getRoadWidthAt( s );
 
 		const start = road.getPosThetaAt( s, result.leftSideWidth );
 

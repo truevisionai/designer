@@ -71,7 +71,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 	all ( parent: TvRoad ): TvElevation[] {
 
-		return parent.elevationProfile.elevation;
+		return parent.getElevationProfile().getElevations();
 
 	}
 

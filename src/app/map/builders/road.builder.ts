@@ -79,7 +79,7 @@ export class RoadBuilder {
 
 		if ( this.debug ) Log.debug( 'building', road.toString() );
 
-		const laneSections = road.getLaneSections();
+		const laneSections = road.getLaneProfile().getLaneSections();
 
 		for ( let i = 0; i < laneSections.length; i++ ) {
 
@@ -107,7 +107,7 @@ export class RoadBuilder {
 
 	buildRoadMarkings ( road: TvRoad ) {
 
-		const laneSections = road.getLaneSections();
+		const laneSections = road.getLaneProfile().getLaneSections();
 
 		// NOTE: not using this this to support connection meshes
 		// this.roadMarkBuilder.buildRoad( road );
@@ -140,7 +140,7 @@ export class RoadBuilder {
 
 		if ( !road.isJunction ) return;
 
-		const laneSections = road.getLaneSections();
+		const laneSections = road.getLaneProfile().getLaneSections();
 
 		for ( let i = 0; i < laneSections.length; i++ ) {
 

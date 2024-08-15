@@ -213,7 +213,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const posTheta = road.getPosThetaAt( sCoordinate );
 
-		const laneSection = road.getLaneSectionAt( sCoordinate );
+		const laneSection = road.getLaneProfile().getLaneSectionAt( sCoordinate );
 
 		if ( !laneSection ) {
 			console.error( `LaneSection not found for road: ${ roadId } at ${ sCoordinate }` );
@@ -264,7 +264,7 @@ export class TvMapQueries extends TvBaseQueries {
 		const t = posTheta.t;
 
 		// find laneSection
-		const laneSections = resultRoad.getLaneSections();
+		const laneSections = resultRoad.getLaneProfile().getLaneSections();
 
 		for ( const laneSection of laneSections ) {
 
@@ -471,7 +471,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 	static getRandomLaneSection ( road: TvRoad ): TvLaneSection {
 
-		return TvUtils.getRandomArrayItem( road.getLaneSections() ) as TvLaneSection;
+		return TvUtils.getRandomArrayItem( road.getLaneProfile().getLaneSections() ) as TvLaneSection;
 
 	}
 

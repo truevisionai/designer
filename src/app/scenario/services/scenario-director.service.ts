@@ -75,7 +75,7 @@ export class ScenarioDirectorService {
 
 		obj.setLaneId( res.lane.id );
 
-		obj.setLaneSectionId( res.road.getLaneSectionAt( roadCoord.s ).id );
+		obj.setLaneSectionId( res.road.getLaneProfile().getLaneSectionAt( roadCoord.s ).id );
 
 		obj.setDirection( res.lane.id > 0 ? -1 : 1 );
 

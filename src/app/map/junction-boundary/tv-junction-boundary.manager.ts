@@ -37,7 +37,7 @@ export class TvJunctionBoundaryManager {
 
 				incomingContact = TvContactPoint.END;
 
-				return LaneUtils.findOuterMostDrivingLane( road.getLastLaneSection(), TvLaneSide.RIGHT );
+				return LaneUtils.findOuterMostDrivingLane( road.getLaneProfile().getLastLaneSection(), TvLaneSide.RIGHT );
 
 			}
 
@@ -46,7 +46,7 @@ export class TvJunctionBoundaryManager {
 
 				incomingContact = TvContactPoint.START;
 
-				return LaneUtils.findOuterMostDrivingLane( road.getLastLaneSection(), TvLaneSide.LEFT );
+				return LaneUtils.findOuterMostDrivingLane( road.getLaneProfile().getLastLaneSection(), TvLaneSide.LEFT );
 
 			}
 
@@ -87,7 +87,7 @@ export class TvJunctionBoundaryManager {
 
 			if ( cornerConnection ) {
 
-				const laneSection = cornerConnection.connectingRoad.getLaneSectionAtContact( cornerConnection.contactPoint );
+				const laneSection = cornerConnection.connectingRoad.getLaneProfile().getLaneSectionAtContact( cornerConnection.contactPoint );
 
 				const outerMostLink = cornerConnection.laneLink.find( link => link.incomingLane.id == outerLane.id );
 

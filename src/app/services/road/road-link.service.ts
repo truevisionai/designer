@@ -146,7 +146,7 @@ export class RoadLinkService {
 		// <- ->
 		const direction = link.contactPoint === TvContactPoint.END ? 1 : -1;
 
-		mainRoad.getFirstLaneSection().lanes.forEach( lane => {
+		mainRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 
@@ -213,11 +213,11 @@ export class RoadLinkService {
 
 		if ( contactPoint == TvContactPoint.START ) {
 
-			return road.getFirstLaneSection();
+			return road.getLaneProfile().getFirstLaneSection();
 
 		} else {
 
-			return road.getLastLaneSection();
+			return road.getLaneProfile().getLastLaneSection();
 		}
 
 	}
@@ -528,12 +528,12 @@ export class RoadLinkService {
 			// link will be negative as joining roaad will in opposite direction
 
 			firstRoad.setPredecessor( TvRoadLinkType.ROAD, joiningRoad, TvContactPoint.START );
-			firstRoad.getFirstLaneSection().lanes.forEach( lane => {
+			firstRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( -lane.id );
 			} );
 
 			joiningRoad.setPredecessor( TvRoadLinkType.ROAD, firstRoad, TvContactPoint.START );
-			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
+			joiningRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( -lane.id );
 			} );
 
@@ -542,12 +542,12 @@ export class RoadLinkService {
 			// links will be in same direction
 
 			firstRoad.setSuccessor( TvRoadLinkType.ROAD, joiningRoad, TvContactPoint.START );
-			firstRoad.getLastLaneSection().lanes.forEach( lane => {
+			firstRoad.getLaneProfile().getLastLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( lane.id );
 			} );
 
 			joiningRoad.setPredecessor( TvRoadLinkType.ROAD, firstRoad, TvContactPoint.END );
-			joiningRoad.getFirstLaneSection().lanes.forEach( lane => {
+			joiningRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( lane.id );
 			} );
 
@@ -556,24 +556,24 @@ export class RoadLinkService {
 		if ( secondNode.contact === TvContactPoint.START ) {
 
 			secondRoad.setPredecessor( TvRoadLinkType.ROAD, joiningRoad, TvContactPoint.END );
-			secondRoad.getFirstLaneSection().lanes.forEach( lane => {
+			secondRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( lane.id );
 			} );
 
 			joiningRoad.setSuccessor( TvRoadLinkType.ROAD, secondRoad, TvContactPoint.START );
-			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
+			joiningRoad.getLaneProfile().getLastLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( lane.id );
 			} );
 
 		} else {
 
 			secondRoad.setSuccessor( TvRoadLinkType.ROAD, joiningRoad, TvContactPoint.END );
-			secondRoad.getLastLaneSection().lanes.forEach( lane => {
+			secondRoad.getLaneProfile().getLastLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( -lane.id );
 			} );
 
 			joiningRoad.setSuccessor( TvRoadLinkType.ROAD, secondRoad, TvContactPoint.END );
-			joiningRoad.getLastLaneSection().lanes.forEach( lane => {
+			joiningRoad.getLaneProfile().getLastLaneSection().lanes.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( -lane.id );
 			} );
 
@@ -663,7 +663,7 @@ export class RoadLinkService {
 
 		if ( link.isJunction ) return;
 
-		const laneSection = road.getLastLaneSection();
+		const laneSection = road.getLaneProfile().getLastLaneSection();
 
 		const otherLaneSection = this.getLaneSection( link.element as TvRoad, link.contactPoint );
 
@@ -704,7 +704,7 @@ export class RoadLinkService {
 
 		if ( link.isJunction ) return;
 
-		const laneSection = road.getFirstLaneSection();
+		const laneSection = road.getLaneProfile().getFirstLaneSection();
 
 		const otherLaneSection = this.getLaneSection( link.element as TvRoad, link.contactPoint );
 

@@ -80,7 +80,7 @@ export class RoadDividerService {
 
 	cutRoadForJunction ( center: TvRoadCoord, junction: TvJunction ): TvRoadCoord {
 
-		const junctionWidth = center.road.getRoadWidthAt( center.s ).totalWidth;
+		const junctionWidth = center.road.getLaneProfile().getRoadWidthAt( center.s ).totalWidth;
 
 		const sStartJunction = center.road.sStart + center.s - junctionWidth;
 
@@ -92,7 +92,7 @@ export class RoadDividerService {
 
 	cutRoadForJunctionFromTo ( center: TvRoadCoord, junction: TvJunction, sStartJunction: number, sEndJunction: number ): TvRoadCoord {
 
-		const junctionWidth = center.road.getRoadWidthAt( center.s ).totalWidth;
+		const junctionWidth = center.road.getLaneProfile().getRoadWidthAt( center.s ).totalWidth;
 
 		let newRoad: TvRoad
 
@@ -147,7 +147,7 @@ export class RoadDividerService {
 
 	private cutForTJunction ( coord: TvRoadCoord, junction: TvJunction ) {
 
-		const junctionWidth = coord.road.getRoadWidthAt( coord.s ).totalWidth;
+		const junctionWidth = coord.road.getLaneProfile().getRoadWidthAt( coord.s ).totalWidth;
 
 		const atEnd = coord.s + junctionWidth >= coord.road.length;
 		const atStart = coord.s - junctionWidth <= 0;

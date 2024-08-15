@@ -522,7 +522,7 @@ export class MapValidatorService {
 		 * --------------------------------------------
 		 */
 
-		// const mainLaneSection = linkType == 'successor' ? roadA.getLastLaneSection() : roadA.getFirstLaneSection();
+		// const mainLaneSection = linkType == 'successor' ? roadA.getLaneProfile().getLaseLaneSection() : roadA.getLaneProfile().getFirstLaneSection();
 
 		// mainLaneSection.lanes.forEach( ( mainLane ) => {
 
@@ -626,11 +626,11 @@ export class MapValidatorService {
 
 		connection.laneLink.forEach( link => {
 
-			// const incomingLaneSection = link.incomingRoad.getLaneSectionAtContact( link.incomingContactPoint );
+			// const incomingLaneSection = link.incomingRoad.getLaneProfile().getLaneSectionAtContact( link.incomingContactPoint );
 			// const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;
 			// const incomingPosition = this.roadService.findLaneStartPosition( link.incomingRoad, incomingLaneSection, link.incomingLane, incomingSOffset );
 			//
-			// const connectingLaneSection = link.connectingRoad.getLaneSectionAtContact( link.connectingContactPoint );
+			// const connectingLaneSection = link.connectingRoad.getLaneProfile().getLaneSectionAtContact( link.connectingContactPoint );
 			// const connectingSOffset = link.connectingContactPoint == TvContactPoint.START ? 0 : link.connectingRoad.length;
 			// const connectingPosition = this.roadService.findLaneStartPosition( link.connectingRoad, connectingLaneSection, link.connectingLane, connectingSOffset );
 			//
@@ -662,11 +662,11 @@ export class MapValidatorService {
 
 		// connection.laneLink.forEach( link => {
 
-		// 	// const incomingLaneSection = connection.incomingRoad.getLaneSectionAtContact( link.incomingContactPoint );
+		// 	// const incomingLaneSection = connection.incomingRoad.getLaneProfile().getLaneSectionAtContact( link.incomingContactPoint );
 		// 	// const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;
 		// 	// const incomingPosition = this.roadService.findLaneStartPosition( link.incomingRoad, incomingLaneSection, link.incomingLane, incomingSOffset );
 
-		// 	// const connectingLaneSection = link.connectingRoad.getLaneSectionAtContact( link.connectingContactPoint );
+		// 	// const connectingLaneSection = link.connectingRoad.getLaneProfile().getLaneSectionAtContact( link.connectingContactPoint );
 		// 	// const connectingSOffset = link.connectingContactPoint == TvContactPoint.START ? 0 : link.connectingRoad.length;
 		// 	// const connectingPosition = this.roadService.findLaneStartPosition( link.connectingRoad, connectingLaneSection, link.connectingLane, connectingSOffset );
 

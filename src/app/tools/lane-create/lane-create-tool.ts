@@ -76,7 +76,7 @@
 
 // 			TvMapQueries.getRoadByCoords( e.point.x, e.point.y, posTheta );
 
-// 			// const laneSection = this.road.getLaneSectionAt( posTheta.s );
+// 			// const laneSection = this.road.getLaneProfile().getLaneSectionAt( posTheta.s );
 
 // 			this.endPosTheta = posTheta;
 
@@ -112,11 +112,11 @@
 
 // 	createNewLane ( lane: TvLane, road: TvRoad, startPosTheta: TvPosTheta, endPosTheta: TvPosTheta ) {
 
-// 		const currentLaneSection = road.getLaneSectionAt( startPosTheta.s );
+// 		const currentLaneSection = road.getLaneProfile().getLaneSectionAt( startPosTheta.s );
 
 // 		const newLaneSection = currentLaneSection.cloneAtS( currentLaneSection.id + 1, startPosTheta.s );
 
-// 		road.addLaneSectionInstance( newLaneSection );
+// 		road.getLaneProfile().addLaneSectionInstance( newLaneSection );
 
 // 		const newLane = lane.clone();
 
@@ -254,7 +254,7 @@
 
 // 		TvMapQueries.getRoadByCoords( e.point.x, e.point.y, posTheta );
 
-// 		const laneSection = road.getLaneSectionAt( posTheta.s );
+// 		const laneSection = road.getLaneProfile().getLaneSectionAt( posTheta.s );
 
 // 		Debug.log( 'clone lane start at ', posTheta, laneSection );
 

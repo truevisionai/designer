@@ -282,7 +282,7 @@ export class SplineBuilder {
 
 			for ( let s = 0; s <= road.length; s += 5 ) {
 
-				const width = road.getRoadWidthAt( s ).totalWidth;
+				const width = road.getLaneProfile().getRoadWidthAt( s ).totalWidth;
 
 				if ( width !== lastWidth ) {
 
@@ -386,7 +386,7 @@ export class SplineBuilder {
 		const firstRoad = this.splineService.findFirstRoad( spline );
 
 		if ( firstRoad ) {
-			roadWidth = firstRoad.getRoadWidthAt( 0 );
+			roadWidth = firstRoad.getLaneProfile().getRoadWidthAt( 0 );
 		}
 
 		const boundingBox = new Box2();
@@ -399,7 +399,7 @@ export class SplineBuilder {
 			const segment = spline.segmentMap.findAt( s );
 
 			if ( segment instanceof TvRoad ) {
-				roadWidth = segment.getRoadWidthAt( s - segment.sStart );
+				roadWidth = segment.getLaneProfile().getRoadWidthAt( s - segment.sStart );
 			}
 
 			if ( !roadWidth ) {
@@ -476,7 +476,7 @@ export class SplineBuilder {
 
 	// 		for ( let s = 0; s < segment.length; s++ ) {
 
-	// 			roadWidth = segment.getRoadWidthAt( s );
+	// 			roadWidth = segment.getLaneProfile().getRoadWidthAt( s );
 
 	// 			const center = segment.getPosThetaAt( s );
 	// 			const left = center.clone().addLateralOffset( roadWidth.leftSideWidth );
@@ -501,16 +501,16 @@ export class SplineBuilder {
 	// 		const sEnd = spline.segmentMap.getNextKey( segment ) ?? spline.getLength();
 
 	// 		if ( !roadWidth && next instanceof TvRoad ) {
-	// 			roadWidth = next.getRoadWidthAt( 0 );
+	// 			roadWidth = next.getLaneProfile().getRoadWidthAt( 0 );
 	// 		}
 
 	// 		if ( !roadWidth && previous instanceof TvRoad ) {
-	// 			roadWidth = previous.getRoadWidthAt( previous.length );
+	// 			roadWidth = previous.getLaneProfile().getRoadWidthAt( previous.length );
 	// 		}
 
 	// 		if ( !roadWidth ) {
 	// 			const road = this.splineService.findFirstRoad( spline );
-	// 			roadWidth = road.getRoadWidthAt( 0 );
+	// 			roadWidth = road.getLaneProfile().getRoadWidthAt( 0 );
 	// 		}
 
 	// 		if ( !roadWidth ) {

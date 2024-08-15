@@ -45,7 +45,7 @@ export class RoadStyle {
 
 		style.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
 
-		style.laneSection = road.getFirstLaneSection()?.cloneAtS( 0 );
+		style.laneSection = road.getLaneProfile().getFirstLaneSection()?.cloneAtS( 0 );
 
 		style.elevationProfile = road ? road.getElevationProfile().clone() : new TvElevationProfile();
 

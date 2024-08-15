@@ -107,7 +107,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		const roadCoord = this.roadService.findRoadPosition( road, object.s, object.t );
 
-		const lane = object.road.getLaneAt( object.s, object.t );
+		const lane = object.road.getLaneProfile().getLaneAt( object.s, object.t );
 
 		let geometry: BufferGeometry;
 

@@ -243,7 +243,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		if ( xml.planView ) this.parsePlanView( road, xml.planView );
 
-		road.spline = SplineFactory.createExplicitSpline( road.planView.geometries, road );
+		road.spline = SplineFactory.createExplicitSpline( road.getPlanView().getGeomtries(), road );
 
 		// road.length = 0;
 
@@ -759,8 +759,8 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			return;
 		}
 
-		const incomingLaneSection = connection.incomingRoad.getLaneSectionAtContact( incomingContactPoint );
-		const connectionLaneSection = connection.connectingRoad.getLaneSectionAtContact( connection.contactPoint );
+		const incomingLaneSection = connection.incomingRoad.getLaneProfile().getLaneSectionAtContact( incomingContactPoint );
+		const connectionLaneSection = connection.connectingRoad.getLaneProfile().getLaneSectionAtContact( connection.contactPoint );
 
 		if ( !incomingLaneSection ) {
 			TvConsole.error( 'incoming lane section not found' );
@@ -1153,7 +1153,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			} );
 		} );
 
-		road.addLaneSectionInstance( laneSection );
+		road.getLaneProfile().addLaneSectionInstance( laneSection );
 	}
 
 	public parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ): TvLane {

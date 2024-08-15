@@ -29,7 +29,7 @@ export class LaneSectionFactory {
 
 	createFromRoadNode ( joiningRoad: TvRoad, firstNode: RoadNode, secondNode: RoadNode ): TvLaneSection[] {
 
-		const laneSection = firstNode.road.getLaneSectionAtContact( firstNode.contact );
+		const laneSection = firstNode.road.getLaneProfile().getLaneSectionAtContact( firstNode.contact );
 
 		const clone = laneSection.cloneAtS( 0, 0, null, joiningRoad );
 

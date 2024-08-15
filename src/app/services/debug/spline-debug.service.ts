@@ -510,7 +510,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const sCoord = contact == TvContactPoint.START ? 0 : road.length;
 
-		const result = road.getRoadWidthAt( sCoord );
+		const result = road.getLaneProfile().getRoadWidthAt( sCoord );
 
 		const start = road.getPosThetaAt( sCoord, result.leftSideWidth );
 		const end = road.getPosThetaAt( sCoord, -result.rightSideWidth );
@@ -547,7 +547,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const sOffset = node.contact == TvContactPoint.START ? 0 : node.road.length;
 
-		const result = node.road.getRoadWidthAt( sOffset );
+		const result = node.road.getLaneProfile().getRoadWidthAt( sOffset );
 
 		const start = node.road.getPosThetaAt( sOffset, result.leftSideWidth );
 		const end = node.road.getPosThetaAt( sOffset, -result.rightSideWidth );

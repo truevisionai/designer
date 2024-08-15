@@ -51,17 +51,17 @@ export class TvRoadCoord {
 
 		if ( this.contact == TvContactPoint.START ) {
 
-			return this.road.getFirstLaneSection();
+			return this.road.getLaneProfile().getFirstLaneSection();
 
 		} else if ( this.contact == TvContactPoint.END ) {
 
-			return this.road.getLastLaneSection();
+			return this.road.getLaneProfile().getLastLaneSection();
 
 		} else {
 
 			console.error( `TvRoadCoord.laneSection: Invalid contact point ${ this.contact }` );
 
-			return this.road.getFirstLaneSection();
+			return this.road.getLaneProfile().getFirstLaneSection();
 
 		}
 

@@ -130,9 +130,9 @@ export class OdLaneReferenceLineBuilder {
 
 		this.road = road;
 
-		for ( let i = 0; i < road.getLaneSections().length; i++ ) {
+		for ( let i = 0; i < road.getLaneProfile().getLaneSections().length; i++ ) {
 
-			const laneSection = road.getLaneSections()[ i ];
+			const laneSection = road.getLaneProfile().getLaneSections()[ i ];
 
 			laneSection.lanes.forEach( lane => {
 

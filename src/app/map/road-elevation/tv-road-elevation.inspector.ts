@@ -16,7 +16,7 @@ export class TvRoadElevationInspector {
 	@SerializedAction( { label: 'Increase Elevation' } )
 	increase () {
 
-		this.road.elevationProfile.elevation.forEach( elevation => {
+		this.road.getElevationProfile().getElevations().forEach( elevation => {
 
 			const newValue = elevation.a + 1;
 
@@ -31,7 +31,7 @@ export class TvRoadElevationInspector {
 	@SerializedAction( { label: 'Decrease Elevation' } )
 	decrease () {
 
-		this.road.elevationProfile.elevation.forEach( elevation => {
+		this.road.getElevationProfile().getElevations().forEach( elevation => {
 
 			const newValue = elevation.a - 1;
 

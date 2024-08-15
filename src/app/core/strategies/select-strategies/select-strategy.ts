@@ -29,7 +29,7 @@ export abstract class SelectStrategy<T> {
 
 		if ( !roadCoord ) return;
 
-		const width = roadCoord.t > 0 ? roadCoord.road.getLeftSideWidth( roadCoord.s ) : roadCoord.road.getRightsideWidth( roadCoord.s );
+		const width = roadCoord.t > 0 ? roadCoord.road.getLaneProfile().getLeftSideWidth( roadCoord.s ) : roadCoord.road.getLaneProfile().getRightsideWidth( roadCoord.s );
 
 		if ( Math.abs( roadCoord.t ) > width ) return;
 
@@ -45,7 +45,7 @@ export abstract class SelectStrategy<T> {
 
 		if ( !roadCoord ) return;
 
-		const width = roadCoord.t > 0 ? roadCoord.road.getLeftSideWidth( roadCoord.s ) : roadCoord.road.getRightsideWidth( roadCoord.s );
+		const width = roadCoord.t > 0 ? roadCoord.road.getLaneProfile().getLeftSideWidth( roadCoord.s ) : roadCoord.road.getLaneProfile().getRightsideWidth( roadCoord.s );
 
 		if ( Math.abs( roadCoord.t ) > width ) return;
 
@@ -61,7 +61,7 @@ export abstract class SelectStrategy<T> {
 
 		if ( !roadCoord ) return;
 
-		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
+		const laneSection = roadCoord.road.getLaneProfile().getLaneSectionAt( roadCoord.s );
 
 		if ( !laneSection ) return;
 
@@ -75,7 +75,7 @@ export abstract class SelectStrategy<T> {
 
 		if ( !roadCoord ) return;
 
-		const laneSection = roadCoord.road.getLaneSectionAt( roadCoord.s );
+		const laneSection = roadCoord.road.getLaneProfile().getLaneSectionAt( roadCoord.s );
 
 		if ( !laneSection ) return;
 

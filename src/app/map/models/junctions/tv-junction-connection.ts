@@ -10,6 +10,7 @@ import { TvLane } from '../tv-lane';
 import { TvRoad } from '../tv-road.model';
 import { TvPosTheta } from '../tv-pos-theta';
 import { Log } from 'app/core/utils/log';
+import { RoadUtils } from 'app/utils/road.utils';
 
 /**
 
@@ -77,11 +78,11 @@ export class TvJunctionConnection {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
-			return this.connectingRoad.getFirstLaneSection();
+			return this.connectingRoad.getLaneProfile().getFirstLaneSection();
 
 		} else if ( this.contactPoint == TvContactPoint.END ) {
 
-			return this.connectingRoad.getLastLaneSection();
+			return this.connectingRoad.getLaneProfile().getLastLaneSection();
 
 		}
 
@@ -97,9 +98,7 @@ export class TvJunctionConnection {
 
 		const incomingPosition = this.getIncomingPosition();
 
-		const contact = this.incomingRoad.getContactByPosition( incomingPosition.position );
-
-		return contact;
+		return RoadUtils.getContactByPosition( this.incomingRoad, incomingPosition.position );
 
 	}
 
@@ -168,11 +167,11 @@ export class TvJunctionConnection {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
-			return this.incomingRoad.getFirstLaneSection();
+			return this.incomingRoad.getLaneProfile().getFirstLaneSection();
 
 		} else {
 
-			return this.incomingRoad.getLastLaneSection();
+			return this.incomingRoad.getLaneProfile().getLastLaneSection();
 
 		}
 

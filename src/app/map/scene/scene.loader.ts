@@ -1115,7 +1115,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			return;
 		}
 
-		const laneSection = road.getLaneSectionAtContact( contactPoint );
+		const laneSection = road.getLaneProfile().getLaneSectionAtContact( contactPoint );
 		const jointLaneStart = laneSection.getLaneById( jointLaneStartId );
 		const jointLaneEnd = laneSection.getLaneById( jointLaneEndId );
 
@@ -1257,8 +1257,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			return;
 		}
 
-		const incomingLaneSection = connection.incomingRoad.getLaneSectionAtContact( incomingContactPoint );
-		const connectionLaneSection = connection.connectingRoad.getLaneSectionAtContact( connection.contactPoint );
+		const incomingLaneSection = connection.incomingRoad.getLaneProfile().getLaneSectionAtContact( incomingContactPoint );
+		const connectionLaneSection = connection.connectingRoad.getLaneProfile().getLaneSectionAtContact( connection.contactPoint );
 
 		if ( !incomingLaneSection ) {
 			Log.error( 'incoming lane section not found', connection?.toString() );
@@ -1727,7 +1727,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			} );
 		} );
 
-		road.addLaneSectionInstance( laneSection );
+		road.getLaneProfile().addLaneSectionInstance( laneSection );
 	}
 
 	private parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ) {
@@ -1903,7 +1903,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const c = parseFloat( xml.attr_c );
 		const d = parseFloat( xml.attr_d );
 
-		road.addLaneOffset( s, a, b, c, d );
+		road.getLaneProfile().addLaneOffset( s, a, b, c, d );
 	}
 
 	private parseControl ( xml: XmlElement ): TvControllerControl {

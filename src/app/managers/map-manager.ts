@@ -39,7 +39,7 @@ export class MapManager {
 
 			map.gameObject.remove( road.gameObject );
 
-			road.getLaneSections().forEach( laneSection => {
+			road.getLaneProfile().getLaneSections().forEach( laneSection => {
 
 				if ( road.gameObject ) road.gameObject.remove( laneSection.gameObject );
 
