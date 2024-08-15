@@ -53,7 +53,7 @@
 //
 // 		const road = TvMapInstance.models.addRoad( '', 1000, 1, -1 );
 //
-// 		road.addGeometryLine( 0, 0, 0, 0, 1000 );
+// 		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 1000 );
 //
 // 		road.addLaneSection( 0, false );
 //

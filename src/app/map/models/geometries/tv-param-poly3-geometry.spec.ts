@@ -12,8 +12,6 @@ describe( 'OdParamPoly3Geometry', () => {
 
 		road = new TvRoad( 'Road', 0, 1 );
 
-		road.addPlanView();
-
 	} );
 
 	it( 'should give correct coordinates with 0-degree hdg', () => {
@@ -34,7 +32,7 @@ describe( 'OdParamPoly3Geometry', () => {
 		const cV = 10;
 		const dV = 0;
 
-		road.addGeometryParamPoly( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
+		road.getPlanView().addGeometryParamPoly( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
 
 		// not working
 		// pose = road.getRoadCoordAt( 0 );

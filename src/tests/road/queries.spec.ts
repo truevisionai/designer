@@ -24,7 +24,7 @@ describe( 'RoadService: Queries', () => {
 
 		laneSection = road.laneSections[ 0 ];
 
-		road.addGeometryLine( 0, 0, 0, 0, 100 );
+		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 100 );
 
 	} );
 

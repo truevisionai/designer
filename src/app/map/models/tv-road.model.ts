@@ -209,15 +209,6 @@ export class TvRoad {
 
 	}
 
-	addPlanView () {
-
-		if ( this.planView == null ) {
-
-			this.planView = new TvPlaneView();
-
-		}
-	}
-
 	setElevationProfile ( elevationProfile: TvElevationProfile ) {
 
 		this.elevationProfile = elevationProfile;
@@ -324,7 +315,7 @@ export class TvRoad {
 			s = 0;
 		}
 
-		const geometry = this.getGeometryAt( s );
+		const geometry = this.planView.getGeometryAt( s );
 
 		if ( !geometry ) {
 			throw new ModelNotFoundException( `GeometryNotFoundAt S:${ s } ${ this.toString() } length: ${ this.length }` );
@@ -351,18 +342,6 @@ export class TvRoad {
 		odPosTheta.t = t;
 
 		return odPosTheta;
-	}
-
-	getGeometryBlockCount (): number {
-
-		return this.planView.geometries.length;
-
-	}
-
-	getGeometryBlock ( i: number ): TvAbstractRoadGeometry {
-
-		return this.planView.geometries[ i ];
-
 	}
 
 	addRoadSignal (
@@ -451,61 +430,6 @@ export class TvRoad {
 		}
 	}
 
-	addGeometry ( geometry: TvAbstractRoadGeometry ) {
-
-		if ( !this.planView ) this.addPlanView();
-
-		this.geometries.push( geometry );
-
-		this.length += geometry.length;
-
-		this.getLaneProfile().computeLaneSectionLength();
-	}
-
-	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
-
-		this.length += length;
-
-		this.getLaneProfile().computeLaneSectionLength();
-
-		return this.planView.addGeometryLine( s, x, y, hdg, length );
-
-	}
-
-	addGeometryArc ( s: number, x: number, y: number, hdg: number, length: number, curvature: number ): TvArcGeometry {
-
-		this.length += length;
-
-		this.getLaneProfile().computeLaneSectionLength();
-
-		return this.planView.addGeometryArc( s, x, y, hdg, length, curvature );
-
-	}
-
-	addGeometryParamPoly (
-		s: number, x: number, y: number, hdg: number, length: number,
-		aU: number, bU: number, cU: number, dU: number,
-		aV: number, bV: number, cV: number, dV: number
-	) {
-
-		this.length += length;
-
-		this.getLaneProfile().computeLaneSectionLength();
-
-		return this.planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV );
-
-	}
-
-	addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
-
-		this.length += length;
-
-		this.getLaneProfile().computeLaneSectionLength();
-
-		return this.planView.addGeometryPoly3( s, x, y, hdg, length, a, b, c, d );
-
-	}
-
 	clearGeometries () {
 
 		this.geometries.splice( 0, this.geometries.length );
@@ -516,7 +440,7 @@ export class TvRoad {
 
 	}
 
-	public getRoadTypeAt ( s: number ): TvRoadTypeClass {
+	getRoadTypeAt ( s: number ): TvRoadTypeClass {
 
 		// add a default type if none exists
 		if ( !this.hasType ) this.setType( TvRoadType.TOWN, 40 );
@@ -738,20 +662,6 @@ export class TvRoad {
 	static stringToRule ( value: string ): TrafficRule {
 
 		return value === 'LHT' ? TrafficRule.LHT : TrafficRule.RHT;
-
-	}
-
-	private getGeometryAt ( s: number ): TvAbstractRoadGeometry {
-
-		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
-
-		if ( geometry == null ) {
-			throw new ModelNotFoundException( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
-			console.error( `GeometryNotFoundAt ${ s } RoadId:${ this.id }` );
-			return;
-		}
-
-		return geometry;
 
 	}
 

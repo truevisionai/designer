@@ -16,22 +16,20 @@ describe( 'OdRoad', () => {
 
 		road = new TvRoad( '', 30, 1 );
 
-		road.addPlanView();
-
 		// 3 straight road lines
-		road.addGeometryLine( 0, 0, 0, 0, 10 );
-		road.addGeometryLine( 10, 0, 0, 1, 10 );
-		road.addGeometryLine( 20, 0, 0, 2, 10 );
+		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
+		road.getPlanView().addGeometryLine( 10, 0, 0, 1, 10 );
+		road.getPlanView().addGeometryLine( 20, 0, 0, 2, 10 );
 
 	} );
 
 	it( 'should give correct geometry', () => {
 
-		expect( road.getGeometryBlockCount() ).toBe( 3 );
+		expect( road.getPlanView().getGeometryCount() ).toBe( 3 );
 
-		expect( road.getGeometryBlock( 0 ).hdg ).toBe( 0 );
-		expect( road.getGeometryBlock( 1 ).hdg ).toBe( 1 );
-		expect( road.getGeometryBlock( 2 ).hdg ).toBe( 2 );
+		expect( road.getPlanView().getGeometryAtIndex( 0 ).hdg ).toBe( 0 );
+		expect( road.getPlanView().getGeometryAtIndex( 1 ).hdg ).toBe( 1 );
+		expect( road.getPlanView().getGeometryAtIndex( 2 ).hdg ).toBe( 2 );
 
 
 	} );

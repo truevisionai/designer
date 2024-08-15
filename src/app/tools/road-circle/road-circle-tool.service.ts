@@ -167,7 +167,7 @@ export class RoadCircleToolService {
 
 			const road = roads[ i ] = this.roadFactory.createDefaultRoad();
 
-			const arc = road.addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
+			const arc = road.getPlanView().addGeometryArc( 0, start.x, start.y, hdg, arcLength, curvature );
 
 			const startPosTheta = arc.getRoadCoord( 0 );
 			const endPosTheta = arc.getRoadCoord( arcLength );

@@ -35,8 +35,6 @@ describe( 'TvLineGeometry', () => {
 
 		road = new TvRoad( '', 10, 1 );
 
-		road.addPlanView();
-
 	} );
 
 	beforeEach( () => {
@@ -53,7 +51,7 @@ describe( 'TvLineGeometry', () => {
 
 	it( 'should give correct coordinates with 0-degree hdg', () => {
 
-		road.addGeometryLine( 0, 0, 1, 0, 10 );
+		road.getPlanView().addGeometryLine( 0, 0, 1, 0, 10 );
 
 		let posTheta = new TvPosTheta();
 
@@ -75,7 +73,7 @@ describe( 'TvLineGeometry', () => {
 
 		const hdg = 90 * ( Math.PI / 180 );
 
-		road.addGeometryLine( 0, 1, 0, hdg, 10 );
+		road.getPlanView().addGeometryLine( 0, 1, 0, hdg, 10 );
 
 		let posTheta = new TvPosTheta();
 
@@ -97,7 +95,7 @@ describe( 'TvLineGeometry', () => {
 
 		const hdg = 180 * ( Math.PI / 180 );
 
-		road.addGeometryLine( 0, 0, 0, hdg, 10 );
+		road.getPlanView().addGeometryLine( 0, 0, 0, hdg, 10 );
 
 		let posTheta = road.getPosThetaAt( 0 );
 
@@ -123,7 +121,7 @@ describe( 'TvLineGeometry', () => {
 
 		let t = 0;
 
-		road.addGeometryLine( s, x, y, hdg, length );
+		road.getPlanView().addGeometryLine( s, x, y, hdg, length );
 
 		pose = road.getPosThetaAt( s );
 
@@ -149,7 +147,7 @@ describe( 'TvLineGeometry', () => {
 
 		let t = 0;
 
-		road.addGeometryLine( s, x, y, hdg, length );
+		road.getPlanView().addGeometryLine( s, x, y, hdg, length );
 
 		pose = road.getPosThetaAt( s );
 
@@ -174,13 +172,9 @@ describe( 'TvLineGeometry', () => {
 		const road2 = map.addNewRoad( '', 10, 2 );
 		const road3 = map.addNewRoad( '', 10, 3 );
 
-		road1.addPlanView();
-		road2.addPlanView();
-		road3.addPlanView();
-
-		road1.addGeometryLine( 0, 0, 0, 0, 10 );
-		road2.addGeometryLine( 0, 10, 0, 0, 10 );
-		road3.addGeometryLine( 0, 20, 0, 0, 10 );
+		road1.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
+		road2.getPlanView().addGeometryLine( 0, 10, 0, 0, 10 );
+		road3.getPlanView().addGeometryLine( 0, 20, 0, 0, 10 );
 
 		let roadResult = roadService.findNearestRoad( new Vector2( 0, 0 ) );
 		expect( roadResult ).not.toBeNull();
@@ -210,9 +204,9 @@ describe( 'TvLineGeometry', () => {
 
 	it( 'should cut correctly', () => {
 
-		const lineGeometry1 = road.addGeometryLine( 0, 0, 0, 0, 10 );
-		const lineGeometry2 = road.addGeometryLine( 10, 10, 0, 0, 10 );
-		const lineGeometry3 = road.addGeometryLine( 20, 20, 0, 0, 10 );
+		const lineGeometry1 = road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
+		const lineGeometry2 = road.getPlanView().addGeometryLine( 10, 10, 0, 0, 10 );
+		const lineGeometry3 = road.getPlanView().addGeometryLine( 20, 20, 0, 0, 10 );
 
 
 		const geometries = lineGeometry2.cut( 12 );
@@ -233,9 +227,9 @@ describe( 'TvLineGeometry', () => {
 
 	it( 'should cut correctly', () => {
 
-		const lineGeometry1 = road.addGeometryLine( 0, 0, 0, 0, 10 );
-		const lineGeometry2 = road.addGeometryLine( 10, 10, 0, 0, 10 );
-		const lineGeometry3 = road.addGeometryLine( 20, 20, 0, 0, 10 );
+		const lineGeometry1 = road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
+		const lineGeometry2 = road.getPlanView().addGeometryLine( 10, 10, 0, 0, 10 );
+		const lineGeometry3 = road.getPlanView().addGeometryLine( 20, 20, 0, 0, 10 );
 
 		const geometries = lineGeometry2.cut( 18 );
 

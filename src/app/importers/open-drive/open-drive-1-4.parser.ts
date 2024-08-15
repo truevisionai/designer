@@ -508,7 +508,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			this.snackBar.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
 
-			road.addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
+			road.getPlanView().addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
 
 		}
 	}
@@ -543,8 +543,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 	}
 
 	public parseGeometryBlock ( road: TvRoad, xmlElement: XmlElement, geometryType: TvGeometryType ) {
-
-		road.addPlanView();
 
 		const planView = road.getPlanView();
 

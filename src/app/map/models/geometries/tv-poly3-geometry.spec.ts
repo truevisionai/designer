@@ -16,8 +16,6 @@ describe( 'OdPoly3Geometry', () => {
 
 		road = new TvRoad( '', 100, 1);
 
-		road.addPlanView();
-
 	} );
 
 	it( 'should give correct coordinates with 0-degree hdg', () => {
@@ -33,7 +31,7 @@ describe( 'OdPoly3Geometry', () => {
 		const c = 1;
 		const d = 0;
 
-		road.addGeometryPoly( s, x, y, hdg, length, a, b, c, d );
+		road.getPlanView().addGeometryPoly( s, x, y, hdg, length, a, b, c, d );
 
 		pose = road.getPosThetaAt( 0 );
 		expect( pose.x ).toBe( 0 );

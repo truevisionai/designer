@@ -30,10 +30,10 @@ xdescribe( 'IntersectionService', () => {
 	it( 'should detect intersection', () => {
 
 		const roadA = roadService.createDefaultRoad();
-		roadA.addGeometryLine( 0, -50, 0, 0, 100 );
+		roadA.getPlanView().addGeometryLine( 0, -50, 0, 0, 100 );
 
 		const roadB = roadService.createDefaultRoad();
-		roadB.addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
+		roadB.getPlanView().addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
 
@@ -48,11 +48,11 @@ xdescribe( 'IntersectionService', () => {
 
 		const roadA = roadService.createDefaultRoad();
 		roadA.getElevationProfile().addElevation( 0, 10, 0, 0, 0 );
-		roadA.addGeometryLine( 0, -50, 0, 0, 100 );
+		roadA.getPlanView().addGeometryLine( 0, -50, 0, 0, 100 );
 
 		const roadB = roadService.createDefaultRoad();
 		roadB.getElevationProfile().addElevation( 0, 10, 0, 0, 0 );
-		roadB.addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
+		roadB.getPlanView().addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
 
@@ -66,11 +66,11 @@ xdescribe( 'IntersectionService', () => {
 	it( 'should not detect intersection if one road is elevated', () => {
 
 		const roadA = roadService.createDefaultRoad();
-		roadA.addGeometryLine( 0, -50, 0, 0, 100 );
+		roadA.getPlanView().addGeometryLine( 0, -50, 0, 0, 100 );
 
 		const roadB = roadService.createDefaultRoad();
 		roadB.getElevationProfile().addElevation( 0, 10, 0, 0, 0 );
-		roadB.addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
+		roadB.getPlanView().addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
 
@@ -82,11 +82,11 @@ xdescribe( 'IntersectionService', () => {
 
 		const roadA = roadService.createDefaultRoad();
 		roadA.getElevationProfile().addElevation( 0, 5, 0, 0, 0 );
-		roadA.addGeometryLine( 0, -50, 0, 0, 100 );
+		roadA.getPlanView().addGeometryLine( 0, -50, 0, 0, 100 );
 
 		const roadB = roadService.createDefaultRoad();
 		roadB.getElevationProfile().addElevation( 0, 10, 0, 0, 0 );
-		roadB.addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
+		roadB.getPlanView().addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
 

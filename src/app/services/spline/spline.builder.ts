@@ -646,7 +646,7 @@ export class AutoSplineBuilder {
 
 				const newGeometries = this.breakGeometries( splineGeometries, sStart, sEnd );
 
-				newGeometries.forEach( geometry => road.addGeometry( geometry ) );
+				newGeometries.forEach( geometry => road.getPlanView().addGeometry( geometry ) );
 
 			}
 
@@ -830,7 +830,7 @@ export class ExplicitSplineBuilder {
 
 				const newGeometries = breakGeometries( geometries, sStart, sEnd );
 
-				newGeometries.forEach( geometry => segment.addGeometry( geometry ) );
+				newGeometries.forEach( geometry => segment.getPlanView().addGeometry( geometry ) );
 
 			}
 

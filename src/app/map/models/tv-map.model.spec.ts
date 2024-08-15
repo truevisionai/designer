@@ -62,8 +62,6 @@ describe( 'OpenDrive Model', () => {
 
 		road = map.addNewRoad( '', 10, 1 );
 
-		road.addPlanView();
-
 		laneSection = new TvLaneSection( 1, 0, true, road );
 
 		road.getLaneProfile().getLaneSections().push( laneSection );
@@ -105,7 +103,7 @@ describe( 'OpenDrive Model', () => {
 
 	it( 'should give correct road id ', () => {
 
-		road.addGeometryLine( 0, 0, 0, 0, 10 );
+		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
 
 		const result = roadService.findNearestRoad( new Vector2( 1, 1 ) );
 
@@ -115,7 +113,7 @@ describe( 'OpenDrive Model', () => {
 
 	it( 'should give correct lane id for left lane', () => {
 
-		road.addGeometryLine( 0, 0, 0, 0, 10 );
+		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
 
 		const posTheta = new TvPosTheta();
 
@@ -133,7 +131,7 @@ describe( 'OpenDrive Model', () => {
 
 	it( 'should give correct lane id for right lane', () => {
 
-		road.addGeometryLine( 0, 0, 0, 0, 10 );
+		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
 
 		const posTheta = new TvPosTheta();
 

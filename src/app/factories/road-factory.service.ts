@@ -159,7 +159,7 @@ export class RoadFactory {
 
 		const road = this.createDefaultRoad();
 
-		road.addGeometryLine( 0, position.x, position.y, hdg, length );
+		road.getPlanView().addGeometryLine( 0, position.x, position.y, hdg, length );
 
 		return road;
 

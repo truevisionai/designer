@@ -64,13 +64,9 @@ describe( 'OdArcGeometry', () => {
 		const road2 = map.addNewRoad( '', 10, 2 );
 		const road3 = map.addNewRoad( '', 10, 3 );
 
-		road1.addPlanView();
-		road2.addPlanView();
-		road3.addPlanView();
-
-		road1.addGeometryArc( 0, 0, 0, 0, 10, 0 );
-		road2.addGeometryArc( 0, 10, 0, 0, 10, 0 );
-		road3.addGeometryArc( 0, 20, 0, 0, 10, 0 );
+		road1.getPlanView().addGeometryArc( 0, 0, 0, 0, 10, 0 );
+		road2.getPlanView().addGeometryArc( 0, 10, 0, 0, 10, 0 );
+		road3.getPlanView().addGeometryArc( 0, 20, 0, 0, 10, 0 );
 
 		let roadResult = roadService.findNearestRoad( new Vector2( 0, 0 ) );
 		expect( roadResult ).not.toBeNull();
@@ -100,9 +96,9 @@ describe( 'OdArcGeometry', () => {
 
 	it( 'should cut correctly', () => {
 
-		const geometry1 = road.addGeometryArc( 0, 0, 0, 0, 10, 0.00001 );
-		const geometry2 = road.addGeometryArc( 10, 10, 0, 0, 10, 0.00001 );
-		const geometry3 = road.addGeometryArc( 20, 20, 0, 0, 10, 0.00001 );
+		const geometry1 = road.getPlanView().addGeometryArc( 0, 0, 0, 0, 10, 0.00001 );
+		const geometry2 = road.getPlanView().addGeometryArc( 10, 10, 0, 0, 10, 0.00001 );
+		const geometry3 = road.getPlanView().addGeometryArc( 20, 20, 0, 0, 10, 0.00001 );
 
 		const newGeometry = geometry2.cut( 12 );
 
@@ -122,9 +118,9 @@ describe( 'OdArcGeometry', () => {
 
 	it( 'should cut correctly', () => {
 
-		const geometry1 = road.addGeometryArc( 0, 0, 0, 0, 10, 0.00001 );
-		const geometry2 = road.addGeometryArc( 10, 10, 0, 0, 10, 0.00001 );
-		const geometry3 = road.addGeometryArc( 20, 20, 0, 0, 10, 0.00001 );
+		const geometry1 = road.getPlanView().addGeometryArc( 0, 0, 0, 0, 10, 0.00001 );
+		const geometry2 = road.getPlanView().addGeometryArc( 10, 10, 0, 0, 10, 0.00001 );
+		const geometry3 = road.getPlanView().addGeometryArc( 20, 20, 0, 0, 10, 0.00001 );
 
 		const newGeometry = geometry2.cut( 18 );
 

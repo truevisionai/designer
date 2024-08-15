@@ -23,7 +23,7 @@
 
 // 		road = TvMapInstance.models.addDefaultRoad();
 
-// 		road.addGeometryLine( 0, 0, 0, 0, 10 );
+// 		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
 
 // 	} );
 
@@ -60,7 +60,7 @@
 
 // 		const secondRoad = TvMapInstance.models.addNewRoad( '2', 10, 2, -1 );
 
-// 		secondRoad.addGeometryLine( 0, 10, 0, 0, 10 );
+// 		secondRoad.getPlanView().addGeometryLine( 0, 10, 0, 0, 10 );
 
 // 		result = TvMapQueries.getRoadByCoords( 0, 0 );
 // 		expect( result.id ).toBe( road.id );

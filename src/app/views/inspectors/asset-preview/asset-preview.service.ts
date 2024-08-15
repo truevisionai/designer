@@ -415,7 +415,7 @@ export class AssetPreviewService {
 
 		const road = new TvRoad( '', 0, 1 );
 
-		road.addGeometryLine( 0, -250, 0, 0, 500 );
+		road.getPlanView().addGeometryLine( 0, -250, 0, 0, 500 );
 
 		road.setElevationProfile( roadStyle.elevationProfile );
 

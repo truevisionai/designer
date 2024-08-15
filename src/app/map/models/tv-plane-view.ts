@@ -10,6 +10,7 @@ import { TvParamPoly3Geometry } from './geometries/tv-param-poly3-geometry';
 import { TvPoly3Geometry } from './geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from './geometries/tv-spiral-geometry';
 import { TvUtils } from './tv-utils';
+import { ModelNotFoundException } from "../../exceptions/exceptions";
 
 export class TvPlaneView {
 
@@ -18,6 +19,12 @@ export class TvPlaneView {
 	public geometries: TvAbstractRoadGeometry[] = [];
 
 	constructor () {
+
+	}
+
+	getGeometryAtIndex ( index: number ) {
+
+		return this.geometries[ index ];
 
 	}
 
@@ -33,15 +40,13 @@ export class TvPlaneView {
 
 	}
 
-	getGeometryAt ( s: number ): TvAbstractRoadGeometry {
-
-		return TvUtils.checkIntervalArray( this.geometries, s );
-
-	}
-
 	addGeometry ( geometry: TvAbstractRoadGeometry ) {
 
 		this.geometries.push( geometry );
+
+		// this.length += geometry.length;
+
+		// this.getLaneProfile().computeLaneSectionLength();
 
 	}
 
@@ -77,7 +82,19 @@ export class TvPlaneView {
 
 	}
 
-	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?) {
+	addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
+
+		this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
+
+	}
+
+	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange? ) {
+
+		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
+
+	}
+
+	addGeometryParamPoly ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange? ) {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
@@ -150,4 +167,20 @@ export class TvPlaneView {
 
 		return [ planView1, planView2 ];
 	}
+
+	getGeometryAt ( s: number ): TvAbstractRoadGeometry {
+
+		const geometry = TvUtils.checkIntervalArray( this.geometries, s );
+
+		if ( geometry == null ) {
+			throw new ModelNotFoundException( `GeometryNotFoundAt ${ s }` );
+		}
+
+		return geometry;
+
+	}
+
+	// getGeometryAt ( s: number ): TvAbstractRoadGeometry {
+	// 	return TvUtils.checkIntervalArray( this.geometries, s );
+	// }
 }

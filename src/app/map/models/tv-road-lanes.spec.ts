@@ -16,15 +16,13 @@ describe( 'OdRoadLanes', () => {
 
 		road = new TvRoad( '', 30, 1 );
 
-		road.addPlanView();
-
 		const s = 0;
 		const x = 0;
 		const y = 0;
 		const hdg = 0;
 		const length = 30;
 
-		road.addGeometryLine( s, x, y, hdg, length );
+		road.getPlanView().addGeometryLine( s, x, y, hdg, length );
 
 	} );
 
