@@ -427,7 +427,7 @@ export class AssetPreviewService {
 
 		roadStyle.objects.forEach( obj => road.addRoadObjectInstance( obj.clone() ) );
 
-		return this.roadBuilder.rebuildRoad( road, this.mapService.map );
+		return this.roadBuilder.buildRoad( road );
 
 	}
 

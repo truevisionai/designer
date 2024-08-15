@@ -8,7 +8,6 @@ import { SceneExporter } from 'app/map/scene/scene.exporter';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { IFile } from '../../io/file';
 import { FileService } from '../../io/file.service';
-import { TvMapBuilder } from '../builders/tv-map-builder';
 import { TvMap } from '../models/tv-map.model';
 import { OpenDriveExporter } from './open-drive-exporter';
 import { OpenDriveParserService } from "../../importers/open-drive/open-drive-parser.service";
@@ -16,6 +15,7 @@ import { MapService } from 'app/services/map/map.service';
 import { StorageService } from 'app/io/storage.service';
 import { SceneService } from 'app/services/scene.service';
 import { MapEvents } from 'app/events/map-events';
+import { SceneBuilderService } from 'app/services/scene-builder.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,7 +30,7 @@ export class OpenDriveService {
 		private openDriveParserService: OpenDriveParserService,
 		private mapService: MapService,
 		private snackBar: SnackBar,
-		private mapBuilder: TvMapBuilder,
+		private sceneBuilder: SceneBuilderService,
 	) {
 
 	}
@@ -86,7 +86,7 @@ export class OpenDriveService {
 
 		SceneService.removeFromMain( old.gameObject );
 
-		map.gameObject = this.mapBuilder.build( map );
+		this.sceneBuilder.buildScene( map );
 
 		SceneService.addToMain( map.gameObject );
 

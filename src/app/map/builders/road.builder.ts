@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { GameObject } from 'app/objects/game-object';
 import * as THREE from 'three';
-import { BufferGeometry, Group, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
+import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
 import { TvRoad } from '../models/tv-road.model';
 import { LaneBufferGeometry } from './LaneBufferGeometry';
 import { TvLaneSide, TvLaneType } from '../models/tv-common';
@@ -15,7 +15,6 @@ import { TvObjectType } from '../interfaces/i-tv-object';
 import { MeshGeometryData } from '../models/mesh-geometry.data';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneSection } from '../models/tv-lane-section';
-import { TvPosTheta } from '../models/tv-pos-theta';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
@@ -25,8 +24,8 @@ import { TvRoadObjectType } from "../models/objects/tv-road-object";
 import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
 import { RoadObjectBuilder } from "../road-object/road-object.builder";
 import { RoadService } from 'app/services/road/road.service';
-import { TvConsole } from "../../core/utils/console";
 import { Log } from "../../core/utils/log";
+import { InvalidRoadLength, NoGeometriesFound } from "../../exceptions/exceptions";
 
 @Injectable( {
 	providedIn: 'root'
@@ -56,7 +55,21 @@ export class RoadBuilder {
 
 	}
 
+	validateRoad ( road: TvRoad ) {
+
+		if ( road.getPlanView().getGeometryCount() < 1 ) {
+			throw new NoGeometriesFound();
+		}
+
+		if ( Maths.approxEquals( road.getLength(), 0 ) ) {
+			throw new InvalidRoadLength();
+		}
+
+	}
+
 	buildRoad ( road: TvRoad ): GameObject {
+
+		this.validateRoad( road );
 
 		const gameObject = this.createRoadGameObject( road );
 
@@ -77,6 +90,24 @@ export class RoadBuilder {
 			gameObject.add( laneSection.gameObject );
 
 		}
+
+		this.buildRoadMarkings( road );
+
+		this.updateJunctionVisibility( road );
+
+		gameObject.add( this.buildRoadObjects( road ) );
+
+		gameObject.add( this.buildSignals( road ) );
+
+		road.computeBoundingBox();
+
+		return gameObject;
+
+	}
+
+	buildRoadMarkings ( road: TvRoad ) {
+
+		const laneSections = road.getLaneSections();
 
 		// NOTE: not using this this to support connection meshes
 		// this.roadMarkBuilder.buildRoad( road );
@@ -102,16 +133,6 @@ export class RoadBuilder {
 			}
 
 		}
-
-		this.updateJunctionVisibility( road );
-
-		gameObject.add( this.buildRoadObjects( road ) );
-
-		gameObject.add( this.buildSignals( road ) );
-
-		road.computeBoundingBox();
-
-		return gameObject;
 
 	}
 
@@ -143,10 +164,6 @@ export class RoadBuilder {
 
 		if ( !OdBuilderConfig.BUILD_MESH ) return false;
 
-		const hasGeomtry = road.geometries.length > 0;
-
-		if ( !hasGeomtry ) return false;
-
 		if ( road.isJunction ) return OdBuilderConfig.BUILD_CONNECTING_ROADS;
 
 		return true;
@@ -157,14 +174,6 @@ export class RoadBuilder {
 		const gameObject = new GameObject( 'Road:' + road.id );
 
 		gameObject.Tag = TvRoadObjectType.ROAD;
-
-		if ( road.geometries.length == 0 ) {
-
-			TvConsole.error( `${ road.toString() } has no geometries` );
-
-			road.gameObject = gameObject;
-
-		}
 
 		return gameObject;
 	}

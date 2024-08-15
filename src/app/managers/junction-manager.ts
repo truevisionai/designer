@@ -1784,11 +1784,7 @@ export class JunctionManager {
 
 	rebuildRoad ( road: TvRoad ) {
 
-		this.splineBuilder.buildSpline( road.spline );
-
-		this.splineBuilder.buildSegments( road.spline );
-
-		this.splineBuilder.buildBoundingBox( road.spline );
+		this.splineBuilder.build( road.spline );
 
 	}
 

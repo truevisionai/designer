@@ -200,7 +200,7 @@ export class RoadManager {
 		}
 	}
 
-	private rebuildRoad ( road: TvRoad ) {
+	private rebuildRoad ( road: TvRoad ): void {
 
 		if ( road.gameObject ) {
 
@@ -211,7 +211,20 @@ export class RoadManager {
 
 		}
 
-		this.roadBuilder.rebuildRoad( road, this.mapService.map );
+		try {
+
+			this.roadBuilder.rebuildRoad( road, this.mapService.map );
+
+		} catch ( error ) {
+
+			Log.error( 'Rebuild road failed', road.toString() );
+
+			Log.error( error );
+
+			this.removeRoad( road );
+
+		}
+
 	}
 
 	private removeLinks ( removedRoad: TvRoad ) {

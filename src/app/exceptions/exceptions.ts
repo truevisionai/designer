@@ -65,3 +65,19 @@ export class InvalidValueException extends Error {
 		Error.captureStackTrace( this, InvalidValueException );
 	}
 }
+
+export class NoGeometriesFound extends Error {
+	constructor ( message: string = 'NoGeometriesFound' ) {
+		super( message );
+		this.name = 'NoGeometriesFound';
+		Error.captureStackTrace( this, NoGeometriesFound );
+	}
+}
+
+export class InvalidRoadLength extends Error {
+	constructor ( message: string = 'InvalidRoadLength' ) {
+		super( message );
+		this.name = 'InvalidRoadLength';
+		Error.captureStackTrace( this, InvalidRoadLength );
+	}
+}

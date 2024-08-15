@@ -31,7 +31,6 @@ import { RoadService } from '../road/road.service';
 import { TvLaneType } from 'app/map/models/tv-common';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { SplineBuilder } from '../spline/spline.builder';
-import { SplineType } from 'app/core/shapes/abstract-spline';
 import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 import { Log } from 'app/core/utils/log';
 
@@ -79,63 +78,6 @@ export class JunctionBuilder {
 	buildFromBoundary ( junction: TvJunction ): Mesh {
 
 		return this.boundaryBuilder.buildViaShape( junction.innerBoundary );
-
-	}
-
-	buildFromConnectionV2 ( junction: TvJunction ): Mesh {
-
-		// return new Mesh();
-
-		// NOTE: This is a temporary implementation to visualize the junction
-		// NOTE: This does not work
-
-		const geometries = [];
-
-		const connnections = junction.getConnections();
-
-		const connectingRoads = connnections.map( connection => connection.connectingRoad );
-
-		const addRoadGeometries = ( road: TvRoad ) => {
-
-			// if ( road.spline.type === SplineType.EXPLICIT ) return;
-
-			road.laneSections.forEach( laneSection =>
-
-				laneSection.getLaneArray().forEach( lane => {
-
-					if ( lane.id == 0 ) return;
-
-					if ( !lane.gameObject ) return;
-
-					if ( lane.id == 0 ) return;
-
-					if ( lane.type == TvLaneType.sidewalk ) return;
-
-					geometries.push( lane.gameObject.geometry );
-
-				} )
-
-			);
-
-		};
-
-		junction.corners.map( corner => {
-
-			// if ( corner.connectingRoad.spline.type === SplineType.EXPLICIT ) return;
-
-			corner.connectingRoad.gameObject = this.roadBuilder.buildRoad( corner.connectingRoad );
-
-			addRoadGeometries( corner.connectingRoad );
-
-		} );
-
-		connectingRoads.forEach( road => addRoadGeometries( road ) );
-
-		if ( geometries.length == 0 ) return new Mesh();
-
-		const geometry = BufferGeometryUtils.mergeGeometries( geometries );
-
-		return new Mesh( geometry, this.junctionMaterial );
 
 	}
 

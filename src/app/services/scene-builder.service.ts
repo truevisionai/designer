@@ -179,21 +179,21 @@ export class SceneBuilderService {
 			spline.segmentMap.set( 0, road );
 		}
 
-		road.gameObject = this.roadBuilder.buildRoad( road );
+		try {
 
-		if ( road.getPlanView().getGeometryCount() < 1 ) {
-			Log.warn( `No geometry found for road id ${ road.id }` );
+			road.gameObject = this.roadBuilder.buildRoad( road );
+
+			map.gameObject.add( road.gameObject );
+
+		} catch ( error ) {
+
+			Log.error( error );
+
 			map.removeRoad( road );
-			return;
-		}
 
-		if ( Maths.approxEquals( road.getLength(), 0 ) ) {
-			map.removeRoad( road );
-			Log.warn( `Road length is 0 for road id ${ road.id }` );
 			return;
-		}
 
-		map.gameObject.add( road.gameObject );
+		}
 
 	}
 

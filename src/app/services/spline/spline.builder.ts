@@ -31,6 +31,7 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { SplineService } from "./spline.service";
 import { Log } from 'app/core/utils/log';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { SplineSegmentService } from './spline-segment.service';
 
 function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
@@ -131,6 +132,7 @@ export class SplineBuilder {
 
 	constructor (
 		private splineService: SplineService,
+		private segmentService: SplineSegmentService,
 		private mapService: MapService,
 		private roadBuilder: RoadBuilder,
 		private autoSplineBuilder: AutoSplineBuilder,
@@ -193,7 +195,19 @@ export class SplineBuilder {
 
 			if ( segment instanceof TvRoad ) {
 
-				this.roadBuilder.rebuildRoad( segment, this.mapService.map );
+				try {
+
+					this.roadBuilder.rebuildRoad( segment, this.mapService.map );
+
+				} catch ( error ) {
+
+					Log.error( 'Error rebuilding spline segment', segment.toString() );
+
+					Log.error( error );
+
+					this.segmentService.removeSegment( spline, segment );
+
+				}
 
 			}
 
