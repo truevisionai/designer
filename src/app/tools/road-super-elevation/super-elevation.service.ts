@@ -37,9 +37,9 @@ export class SuperElevationService {
 
 		this.validate( road, superElevation );
 
-		road.lateralProfile.superElevations.set( superElevation.s, superElevation );
+		road.getLateralProfile().addSuperElevation( superElevation );
 
-		road.lateralProfile.superElevations.computeCoefficients( road.length );
+		road.getLateralProfile().computeCoefficients( road.length );
 
 		this.roadService.update( road );
 
@@ -49,7 +49,7 @@ export class SuperElevationService {
 
 		this.validate( road, superElevation );
 
-		road.lateralProfile.superElevations.computeCoefficients( road.length );
+		road.getLateralProfile().computeCoefficients( road.length );
 
 		this.roadService.update( road );
 
@@ -57,9 +57,9 @@ export class SuperElevationService {
 
 	remove ( road: TvRoad, superElevation: TvSuperElevation ) {
 
-		road.lateralProfile.superElevations.remove( superElevation );
+		road.getLateralProfile().removeSuperElevation( superElevation );
 
-		road.lateralProfile.superElevations.computeCoefficients( road.length );
+		road.getLateralProfile().computeCoefficients( road.length );
 
 		this.roadService.update( road );
 

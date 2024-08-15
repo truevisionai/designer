@@ -53,7 +53,7 @@ import { TvLateralProfileShape, TvSuperElevation } from '../models/tv-lateral.pr
 } )
 export class OpenDriveExporter implements AssetExporter<TvMap> {
 
-	public xmlDocument: Object;
+	public xmlDocument: object;
 
 	public map: TvMap;
 
@@ -171,9 +171,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		this.writeElevationProfile( xml, road );
 
-		if ( road.lateralProfile ) {
-			xml[ 'lateralProfile' ] = this.writeLateralProfile( road );
-		}
+		xml[ 'lateralProfile' ] = this.writeLateralProfile( road );
 
 		this.writeLanes( xml, road );
 
@@ -390,8 +388,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	public writeLateralProfile ( road: TvRoad ) {
 
 		return {
-			superelevation: road.lateralProfile.superElevations.map( superElevation => this.writeSuperElevation( superElevation ) ),
-			shape: road.lateralProfile.shapes.map( shape => this.writeLateralProfileShape( shape ) ),
+			superelevation: road.getLateralProfile().getSuperElevations().map( superElevation => this.writeSuperElevation( superElevation ) ),
+			shape: road.getLateralProfile().getShapes().map( shape => this.writeLateralProfileShape( shape ) ),
 			crossSectionSurface: [],
 		}
 

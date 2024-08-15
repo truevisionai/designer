@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OrderedMap } from 'app/core/models/ordered-map';
 import { ThirdOrderPolynom } from './third-order-polynom';
 import { TvLateralProfileCrossfall } from './tv-lateral-profile-crossfall';
 import { PolynomialArray } from "../../core/models/ordered-array";
@@ -48,8 +47,48 @@ export class TvLateralProfile {
 		this.shapes = [];
 	}
 
-	addSuperElevation ( s: number, a: number, b: number, c: number, d: number ) {
+	getSuperElevationCount () {
+		return this.superElevations.length;
+	}
+
+	getFirstSuperElevation () {
+		return this.superElevations.getFirst();
+	}
+
+	getLastSuperElevation () {
+		return this.superElevations.getLast();
+	}
+
+	getSuperElevation ( s: number ) {
+		return this.superElevations.findAt( s );
+	}
+
+	getSuperElevationValue ( s: number ) {
+		return this.superElevations.findAt( s )?.getValue( s );
+	}
+
+	getSuperElevations () {
+		return this.superElevations.toArray();
+	}
+
+	getNextSuperElevation ( elevation: TvSuperElevation ): TvSuperElevation | undefined {
+		return this.superElevations.getNext( elevation );
+	}
+
+	getShapes () {
+		return this.shapes;
+	}
+
+	createSuperElevation ( s: number, a: number, b: number, c: number, d: number ) {
 		this.superElevations.set( s, new TvSuperElevation( s, a, b, c, d ) );
+	}
+
+	addSuperElevation ( elevation: TvSuperElevation ) {
+		this.superElevations.set( elevation.s, elevation );
+	}
+
+	removeSuperElevation ( superElevation: TvSuperElevation ) {
+		this.superElevations.remove( superElevation );
 	}
 
 	addCrossfall ( crossfall: TvLateralProfileCrossfall ) {
@@ -70,6 +109,12 @@ export class TvLateralProfile {
 		this.shapes.push( shape );
 
 		this.sortShapes();
+
+	}
+
+	computeCoefficients ( roadLength: number ) {
+
+		this.superElevations.computeCoefficients( roadLength );
 
 	}
 

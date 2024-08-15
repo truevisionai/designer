@@ -68,7 +68,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 
 	onSelected ( road: TvRoad ): void {
 
-		for ( const elevation of road.lateralProfile.superElevations.toArray() ) {
+		for ( const elevation of road.getLateralProfile().getSuperElevations() ) {
 
 			this.points.addItem( road, this.createNode( road, elevation ) );
 
@@ -143,7 +143,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 
 	createSpanLine ( road: TvRoad, superElevation: TvSuperElevation ) {
 
-		const next = road.lateralProfile.superElevations.getNext( superElevation );
+		const next = road.getLateralProfile().getNextSuperElevation( superElevation );
 
 		if ( !next ) return;
 

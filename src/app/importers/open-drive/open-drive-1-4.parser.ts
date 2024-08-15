@@ -259,7 +259,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
-		if ( xml.lateralProfile != null ) this.parseLateralProfile( road, xml.lateralProfile );
+		if ( xml.lateralProfile != null ) this.parseLateralProfile( road, xml );
 
 		if ( xml.lanes != null ) this.parseLanes( road, xml.lanes );
 
@@ -842,7 +842,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			const c = parseFloat( xml.attr_c ) || 0;
 			const d = parseFloat( xml.attr_d ) || 0;
 
-			road.lateralProfile.addSuperElevation( s, a, b, c, d );
+			road.getLateralProfile().createSuperElevation( s, a, b, c, d );
 
 		} );
 
@@ -855,7 +855,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			const c = parseFloat( xml.attr_c ) || 0;
 			const d = parseFloat( xml.attr_d ) || 0;
 
-			road.lateralProfile.addShape( s, t, a, b, c, d );
+			road.getLateralProfile().addShape( s, t, a, b, c, d );
 
 		} );
 

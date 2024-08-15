@@ -21,7 +21,7 @@ import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvRoadLanes } from './tv-road-lanes';
 import { TvRoadLink, TvRoadLinkType } from './tv-road-link';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
-import { TvRoadObject, TvRoadObjectType } from './objects/tv-road-object';
+import { TvRoadObject } from './objects/tv-road-object';
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvUtils } from './tv-utils';
@@ -44,7 +44,7 @@ export class TvRoad {
 
 	public elevationProfile: TvElevationProfile;
 
-	public lateralProfile: TvLateralProfile;
+	private lateralProfile: TvLateralProfile;
 
 	public drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
@@ -363,6 +363,12 @@ export class TvRoad {
 
 	}
 
+	getLateralProfile (): TvLateralProfile {
+
+		return this.lateralProfile;
+
+	}
+
 	getLaneSections (): TvLaneSection[] {
 
 		return this.lanes.laneSections;
@@ -417,7 +423,7 @@ export class TvRoad {
 		odPosTheta.z = this.getElevationProfile().getElevationValue( s );
 
 		// const e = this.getSuperelevationValue( s ); // Add this line to get the superelevation angle
-		const e = this.lateralProfile.superElevations.findAt( s )?.getValue( s );
+		const e = this.getLateralProfile().getSuperElevationValue( s );
 		if ( t > 0 || t < 0 ) odPosTheta.z += t * Math.tan( e || 0 ); // Adjust z based on superelevation
 
 		odPosTheta.t = t;
