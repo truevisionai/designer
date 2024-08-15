@@ -439,31 +439,31 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	}
 
-	protected selectObject ( object: object, previousObject: object ) {
+	protected selectObject ( object: Object, previousObject: Object ) {
 
 		Commands.Select( object, previousObject );
 
 	}
 
-	protected unselectObject ( object: object ) {
+	protected unselectObject ( object: Object ) {
 
 		Commands.Unselect( object );
 
 	}
 
-	protected executeAddObject ( object: object ) {
+	protected executeAddObject ( object: Object ) {
 
 		Commands.AddObject( object );
 
 	}
 
-	protected executeAddAndSelect ( object: object, previousObject: object ) {
+	protected executeAddAndSelect ( object: Object, previousObject: Object ) {
 
 		CommandHistory.executeMany( new AddObjectCommand( object ), new SelectObjectCommand( object, previousObject ) );
 
 	}
 
-	protected executeRemoveObject ( object: object ) {
+	protected executeRemoveObject ( object: Object ) {
 
 		Commands.RemoveObject( object );
 
