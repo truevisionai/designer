@@ -51,11 +51,11 @@ export class RoadElevationManager {
 
 			this.createDefaultNodes( predecessor );
 
-			const lastElevation = predecessor.elevationProfile.elevation[ predecessor.elevationProfile.elevation.length - 1 ];
+			const lastElevation = predecessor.getElevationProfile().getLastElevation();
 
 			lastElevation.a = road.getElevationProfile().getElevationValue( 0 );
 
-			TvUtils.computeCoefficients( predecessor.elevationProfile.elevation, predecessor.length );
+			predecessor.getElevationProfile().computeCoefficients( predecessor.length );
 
 		}
 
@@ -101,11 +101,11 @@ export class RoadElevationManager {
 
 			this.createDefaultNodes( successor );
 
-			const firstElevation = successor.elevationProfile.elevation[ 0 ];
+			const firstElevation = successor.getElevationProfile().getFirstElevation();
 
 			firstElevation.a = road.getElevationProfile().getElevationValue( road.length );
 
-			TvUtils.computeCoefficients( successor.elevationProfile.elevation, successor.length );
+			successor.getElevationProfile().computeCoefficients( successor.length );
 
 		}
 
@@ -129,7 +129,7 @@ export class RoadElevationManager {
 		// in case of junction make sure we have 0 elevation
 		if ( road.successor.isJunction ) {
 
-			// const lastElevation = road.elevationProfile.elevation[ road.elevationProfile.elevation.length - 1 ];
+			// const lastElevation = road.elevationProfile.elevation[ road.getElevationProfile().getElevationCount() - 1 ];
 
 			// lastElevation.s = road.length;
 
@@ -155,7 +155,7 @@ export class RoadElevationManager {
 
 	removeInvalidNodes ( road: TvRoad ) {
 
-		for ( const elevation of road.elevationProfile.elevation ) {
+		for ( const elevation of road.getElevationProfile().getElevations() ) {
 
 			// Remove nodes that are out of bounds
 			if ( elevation.s > road.length ) {
@@ -175,13 +175,13 @@ export class RoadElevationManager {
 	private ensureMinimumTwoNodes ( road: TvRoad ): void {
 
 		// Add two default nodes if there are no nodes
-		if ( road.elevationProfile.elevation.length === 0 ) {
+		if ( road.getElevationProfile().getElevationCount() === 0 ) {
 			this.addFirstElevationNode( road );
 			this.addLastElevationNode( road );
 		}
 
 		// Add a node at the end if there's only one node
-		if ( road.elevationProfile.elevation.length === 1 ) {
+		if ( road.getElevationProfile().getElevationCount() === 1 ) {
 			this.addLastElevationNode( road );
 		}
 
@@ -209,15 +209,10 @@ export class RoadElevationManager {
 	private updateFirstAndLastNodes ( road: TvRoad ) {
 
 		// Update the first node
-		if ( road.elevationProfile.elevation.length > 0 ) {
-			road.elevationProfile.elevation[ 0 ].s = 0;
-		}
+		road.getElevationProfile().getFirstElevation().s = 0;
 
 		// Update the last node
-		const lastIndex = road.elevationProfile.elevation.length - 1;
-		if ( lastIndex >= 0 ) {
-			road.elevationProfile.elevation[ lastIndex ].s = road.length;
-		}
+		road.getElevationProfile().getLastElevation().s = road.length;
 
 		const firstSuperElevation = road.getLateralProfile().getFirstSuperElevation();
 

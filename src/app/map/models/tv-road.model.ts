@@ -42,7 +42,7 @@ export class TvRoad {
 
 	public type: TvRoadTypeClass[] = [];
 
-	public elevationProfile: TvElevationProfile;
+	private elevationProfile: TvElevationProfile;
 
 	private lateralProfile: TvLateralProfile;
 
@@ -216,6 +216,12 @@ export class TvRoad {
 			this.planView = new TvPlaneView();
 
 		}
+	}
+
+	setElevationProfile ( elevationProfile: TvElevationProfile ) {
+
+		this.elevationProfile = elevationProfile;
+
 	}
 
 	addElevationProfile ( elevationProfile?: TvElevationProfile ) {

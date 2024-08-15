@@ -47,7 +47,7 @@ export class RoadStyle {
 
 		style.laneSection = road.getFirstLaneSection()?.cloneAtS( 0 );
 
-		style.elevationProfile = road ? road.elevationProfile.clone() : new TvElevationProfile();
+		style.elevationProfile = road ? road.getElevationProfile().clone() : new TvElevationProfile();
 
 		style.laneSection.road = road;
 

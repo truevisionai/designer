@@ -417,7 +417,7 @@ export class AssetPreviewService {
 
 		road.addGeometryLine( 0, -250, 0, 0, 500 );
 
-		road.elevationProfile = roadStyle.elevationProfile;
+		road.setElevationProfile( roadStyle.elevationProfile );
 
 		road.laneOffsets.splice( 0, road.laneOffsets.length );
 		road.laneOffsets.push( roadStyle.laneOffset );

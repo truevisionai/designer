@@ -9,6 +9,24 @@ export class TvElevationProfile {
 
 	constructor ( public elevation: TvElevation[] = [] ) { }
 
+	getFirstElevation (): TvElevation {
+
+		return this.elevation[ 0 ];
+
+	}
+
+	computeCoefficients ( length: number ) {
+
+		TvUtils.computeCoefficients( this.elevation, length );
+
+	}
+
+	getLastElevation () {
+
+		return this.elevation[ this.elevation.length - 1 ];
+
+	}
+
 	getElevations (): TvElevation[] {
 
 		return this.elevation;
