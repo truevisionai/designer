@@ -363,8 +363,8 @@ export class LaneRoadMarkBuilder {
 
 		const height = lane.getHeightValue( laneSectionS );
 
-		const elevationStart = lane.laneSection.road.getElevationValue( laneSectionS );
-		const elevationEnd = lane.laneSection.road.getElevationValue( laneSectionS + roadMark.length );
+		const elevationStart = lane.laneSection.road.getElevationProfile().getElevationValue( laneSectionS );
+		const elevationEnd = lane.laneSection.road.getElevationProfile().getElevationValue( laneSectionS + roadMark.length );
 
 		const startBorder = this.getLaneBorder( lane, laneSectionS, lane.laneSection, start );
 		const endBorder = this.getLaneBorder( lane, laneSectionS + roadMark.length, lane.laneSection, end );

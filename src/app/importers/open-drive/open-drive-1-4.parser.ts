@@ -826,7 +826,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			const c = parseFloat( xml.attr_c );
 			const d = parseFloat( xml.attr_d );
 
-			road.addElevation( s, a, b, c, d );
+			road.getElevationProfile().addElevation( s, a, b, c, d );
 
 		} );
 

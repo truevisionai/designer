@@ -53,7 +53,7 @@ export class RoadElevationManager {
 
 			const lastElevation = predecessor.elevationProfile.elevation[ predecessor.elevationProfile.elevation.length - 1 ];
 
-			lastElevation.a = road.getElevationValue( 0 );
+			lastElevation.a = road.getElevationProfile().getElevationValue( 0 );
 
 			TvUtils.computeCoefficients( predecessor.elevationProfile.elevation, predecessor.length );
 
@@ -103,7 +103,7 @@ export class RoadElevationManager {
 
 			const firstElevation = successor.elevationProfile.elevation[ 0 ];
 
-			firstElevation.a = road.getElevationValue( road.length );
+			firstElevation.a = road.getElevationProfile().getElevationValue( road.length );
 
 			TvUtils.computeCoefficients( successor.elevationProfile.elevation, successor.length );
 
@@ -159,16 +159,17 @@ export class RoadElevationManager {
 
 			// Remove nodes that are out of bounds
 			if ( elevation.s > road.length ) {
-				road.removeElevationInstance( elevation );
+				road.getElevationProfile().removeElevationInstance( elevation );
 			}
 
 			// Remove nodes that are out of bounds
 			if ( elevation.s < 0 ) {
-				road.removeElevationInstance( elevation );
+				road.getElevationProfile().removeElevationInstance( elevation );
 			}
 
 		}
 
+		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.getLength() );
 	}
 
 	private ensureMinimumTwoNodes ( road: TvRoad ): void {
@@ -198,11 +199,11 @@ export class RoadElevationManager {
 	}
 
 	addFirstElevationNode ( road: TvRoad ) {
-		road.addElevation( 0, 0, 0, 0, 0 );
+		road.getElevationProfile().addElevation( 0, 0, 0, 0, 0 );
 	}
 
 	addLastElevationNode ( road: TvRoad ) {
-		road.addElevation( road.length, 0, 0, 0, 0 );
+		road.getElevationProfile().addElevation( road.length, 0, 0, 0, 0 );
 	}
 
 	private updateFirstAndLastNodes ( road: TvRoad ) {

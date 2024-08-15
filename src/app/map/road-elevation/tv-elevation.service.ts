@@ -49,9 +49,9 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 	createElevationAt ( roadCoord: TvRoadCoord ) {
 
-		const elevation = roadCoord.road.getElevationAt( roadCoord.s ).clone( roadCoord.s );
+		const elevation = roadCoord.road.getElevationProfile().getElevationAt( roadCoord.s ).clone( roadCoord.s );
 
-		elevation.a = roadCoord.road.getElevationValue( roadCoord.s );
+		elevation.a = roadCoord.road.getElevationProfile().getElevationValue( roadCoord.s );
 
 		return elevation;
 
@@ -61,9 +61,9 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		this.validate( road, object );
 
-		road.addElevationInstance( object );
+		road.getElevationProfile().addElevationInstance( object );
 
-		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
+		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
 		this.parentService.update( road );
 
@@ -77,9 +77,9 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 	remove ( road: TvRoad, elevation: TvElevation ): void {
 
-		road.removeElevationInstance( elevation );
+		road.getElevationProfile().removeElevationInstance( elevation );
 
-		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
+		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
 		this.parentService.update( road );
 
@@ -89,7 +89,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		this.validate( road, elevation );
 
-		TvUtils.computeCoefficients( road.elevationProfile.elevation, road.length );
+		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
 		this.parentService.update( road );
 

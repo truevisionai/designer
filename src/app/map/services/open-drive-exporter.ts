@@ -367,7 +367,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 				elevation: []
 			};
 
-			if ( elevationProfile.getElevationCount() == 0 ) road.addElevation( 0, 0, 0, 0, 0 );
+			if ( elevationProfile.getElevationCount() == 0 ) road.getElevationProfile().addElevation( 0, 0, 0, 0, 0 );
 
 			for ( let i = 0; i < elevationProfile.getElevationCount(); i++ ) {
 

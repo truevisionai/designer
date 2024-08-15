@@ -345,7 +345,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		for ( let s = 0; s < road.length; s += 0.1 ) {
 
-			positions.push( new Vector3( s, road.getElevationValue( s ), 0 ) );
+			positions.push( new Vector3( s, road.getElevationProfile().getElevationValue( s ), 0 ) );
 		}
 
 		this.line.geometry.dispose();

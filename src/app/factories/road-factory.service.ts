@@ -71,7 +71,7 @@ export class RoadFactory {
 		const road = this.createNewRoad();
 
 		// FIX: minor elevation to avoid z-fighting
-		// road.addElevation( 0, 0.05, 0, 0, 0 );
+		// road.getElevationProfile().addElevation( 0, 0.05, 0, 0, 0 );
 
 		const roadStyle = this.roadStyleManager.getRampRoadStyle( road, lane );
 
@@ -305,8 +305,8 @@ export class RoadFactory {
 
 		const profile = new TvElevationProfile();
 
-		const startElevation = firstRoad.getElevationValue( firstS )
-		const endElevation = secondRoad.getElevationValue( secondS );
+		const startElevation = firstRoad.getElevationProfile().getElevationValue( firstS )
+		const endElevation = secondRoad.getElevationProfile().getElevationValue( secondS );
 
 		profile.addElevation( 0, startElevation, 0, 0, 0 );
 		profile.addElevation( roadLength, endElevation, 0, 0, 0 );

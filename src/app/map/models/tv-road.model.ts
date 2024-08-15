@@ -11,7 +11,6 @@ import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
 import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
-import { TvElevation } from '../road-elevation/tv-elevation.model';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
 import { TvLaneSection } from './tv-lane-section';
@@ -219,90 +218,6 @@ export class TvRoad {
 		}
 	}
 
-	addElevation ( s: number, a: number, b: number, c: number, d: number ) {
-
-		const index = this.checkElevationInterval( s ) + 1;
-
-		const node = new TvElevation( s, a, b, c, d );
-
-		if ( index > this.getElevationCount() ) {
-
-			this.addElevationInstance( node );
-
-		} else {
-
-			this.elevationProfile.elevation[ index ] = node;
-
-		}
-
-		return node;
-	}
-
-	addElevationInstance ( elevation: TvElevation ) {
-
-		this.elevationProfile.elevation.push( elevation );
-
-		this.elevationProfile.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
-
-		TvUtils.computeCoefficients( this.elevationProfile.elevation, this.length );
-
-	}
-
-	removeElevationInstance ( elevation: TvElevation ) {
-
-		const index = this.elevationProfile.elevation.indexOf( elevation );
-
-		if ( index > -1 ) {
-
-			this.elevationProfile.elevation.splice( index, 1 );
-
-		}
-
-		this.elevationProfile.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
-
-		TvUtils.computeCoefficients( this.elevationProfile.elevation, this.length );
-	}
-
-	checkElevationInterval ( s: number ): number {
-
-		let res = -1;
-
-		// Go through all the road type records
-		for ( let i = 0; i < this.elevationProfile.elevation.length; i++ ) {
-
-			if ( this.elevationProfile.elevation[ i ].checkInterval( s ) ) {
-
-				res = i;
-
-			} else {
-
-				break;
-
-			}
-		}
-
-		// return the result: 0 to MaxInt as the index to the
-		// record containing s_check or -1 if nothing found
-		return res;
-	}
-
-	getElevationCount () {
-
-		return this.elevationProfile.elevation.length;
-
-	}
-
-	getElevationValue ( s: number ) {
-
-		const elevation = this.getElevationAt( s );
-
-		if ( elevation == null ) return 0;
-
-		// Debug.log( value );
-
-		return elevation.getValue( s );
-	}
-
 	addElevationProfile ( elevationProfile?: TvElevationProfile ) {
 
 		if ( elevationProfile ) {
@@ -499,7 +414,7 @@ export class TvRoad {
 		// and not from lane-offset property of road
 		odPosTheta.addLateralOffset( t );
 
-		odPosTheta.z = this.getElevationValue( s );
+		odPosTheta.z = this.getElevationProfile().getElevationValue( s );
 
 		// const e = this.getSuperelevationValue( s ); // Add this line to get the superelevation angle
 		const e = this.lateralProfile.superElevations.findAt( s )?.getValue( s );
@@ -823,12 +738,6 @@ export class TvRoad {
 			leftSideWidth: leftWidth,
 			rightSideWidth: rightWidth,
 		};
-	}
-
-	getElevationAt ( s: number ): TvElevation {
-
-		return TvUtils.checkIntervalArray( this.elevationProfile.elevation, s );
-
 	}
 
 	getPosThetaByPosition ( point: Vector3 ): TvPosTheta {
