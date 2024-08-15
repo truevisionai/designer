@@ -37,7 +37,15 @@ export class MapManager {
 
 		map.roads.forEach( road => {
 
-			road.remove( map.gameObject );
+			map.gameObject.remove( road.gameObject );
+
+			road.getLaneSections().forEach( laneSection => {
+
+				if ( road.gameObject ) road.gameObject.remove( laneSection.gameObject );
+
+				if ( road.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
+
+			} );
 
 		} );
 

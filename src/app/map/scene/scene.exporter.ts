@@ -639,9 +639,9 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			laneSection: []
 		};
 
-		for ( let i = 0; i < road.getLaneSectionCount(); i++ ) {
-			this.writeLaneSections( xmlNode.lanes, road.getLaneSection( i ) );
-		}
+		road.getLaneSections().forEach( laneSection => {
+			this.writeLaneSections( xmlNode.lanes, laneSection );
+		} );
 	}
 
 	writeLaneOffset ( laneOffset: TvRoadLaneOffset ) {

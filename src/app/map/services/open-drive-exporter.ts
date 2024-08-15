@@ -427,9 +427,9 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		this.writeLaneOffset( xmlNode.lanes, road );
 
-		for ( let i = 0; i < road.getLaneSectionCount(); i++ ) {
-			this.writeLaneSections( xmlNode.lanes, road.getLaneSection( i ) );
-		}
+		road.getLaneSections().forEach( laneSection => {
+			this.writeLaneSections( xmlNode.lanes, laneSection );
+		} )
 	}
 
 	public writeLaneOffset ( xmlNode, road: TvRoad ) {

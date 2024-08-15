@@ -130,7 +130,9 @@ export class TvRoad {
 		return this.type.length > 0;
 	}
 
-	getLength (): number { return this.length; }
+	getLength (): number {
+		return this.length;
+	}
 
 	toString () {
 
@@ -398,12 +400,6 @@ export class TvRoad {
 
 	}
 
-	getLaneSection ( i: number ) {
-
-		return this.lanes.laneSections[ i ];
-
-	}
-
 	getTypes (): TvRoadTypeClass[] {
 
 		return this.type;
@@ -581,7 +577,7 @@ export class TvRoad {
 
 	}
 
-	getRoadObjectCount() {
+	getRoadObjectCount () {
 
 		return this.objects.object.length;
 
@@ -767,22 +763,6 @@ export class TvRoad {
 		return TvUtils.checkIntervalArray( this.type, s ) as TvRoadTypeClass;
 	}
 
-	/**
-	 * Remove any existing road model from the scene and its children
-	 */
-	public remove ( parent: GameObject ) {
-
-		parent.remove( this.gameObject );
-
-		this.laneSections.forEach( laneSection => {
-
-			if ( this.gameObject ) this.gameObject.remove( laneSection.gameObject );
-
-			if ( this.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
-
-		} );
-	}
-
 	getLeftSideWidth ( s: number ) {
 
 		let width = 0;
@@ -843,20 +823,6 @@ export class TvRoad {
 			leftSideWidth: leftWidth,
 			rightSideWidth: rightWidth,
 		};
-	}
-
-	getRoadWidthArray (): number[] {
-
-		const widths: number[] = [];
-
-		for ( let s = 0; s <= this.length; s++ ) {
-
-			widths.push( this.getRoadWidthAt( s ).totalWidth );
-
-		}
-
-		return widths;
-
 	}
 
 	getElevationAt ( s: number ): TvElevation {
