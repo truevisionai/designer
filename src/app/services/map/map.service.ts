@@ -71,7 +71,11 @@ export class MapService {
 
 	}
 
-	hasRoad ( road: TvRoad ) {
+	hasRoad ( road: TvRoad | number ) {
+
+		if ( typeof road === 'number' ) {
+			return this.map.roads.has( road );
+		}
 
 		return this.map.roads.has( road.id );
 
@@ -90,6 +94,8 @@ export class MapService {
 	}
 
 	findRoad ( id: number ) {
+
+		// return this.map.getRoadById( id );
 
 		try {
 
@@ -135,13 +141,19 @@ export class MapService {
 
 	}
 
-	hasJunction ( junction: TvJunction ) {
+	hasJunction ( junction: TvJunction | number ) {
+
+		if ( typeof junction === 'number' ) {
+			return this.map.junctions.has( junction );
+		}
 
 		return this.map.junctions.has( junction.id );
 
 	}
 
 	findJunction ( id: number ) {
+
+		// return this.map.getJunctionById( id );
 
 		try {
 
@@ -164,6 +176,8 @@ export class MapService {
 	}
 
 	removeJunction ( junction: TvJunction ) {
+
+		// this.map.removeJunction( junction );
 
 		try {
 
