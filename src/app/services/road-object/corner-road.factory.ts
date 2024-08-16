@@ -9,6 +9,7 @@ import { MapService } from '../map/map.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
+import { RoadService } from '../road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,12 +17,13 @@ import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 export class CornerRoadFactory {
 
 	constructor (
-		private mapService: MapService
+		private mapService: MapService,
+		private roadService: RoadService,
 	) { }
 
 	createCornerRoad ( road: TvRoad, s: number, t: number, z: number = 0 ): TvCornerRoad {
 
-		const coord = road.getRoadCoordAt( s, t );
+		const coord = this.roadService.getRoadCoordAt( road, s, t );
 
 		if ( !coord ) {
 			console.error( 'Road coord not found' );

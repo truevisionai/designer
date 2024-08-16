@@ -150,57 +150,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	createJoiningRoadFromLinks ( firstNode: TvRoadLink, secondNode: TvRoadLink ) {
-
-		const spline = this.splineFactory.createSplineFromLinks( firstNode, secondNode );
-
-		const joiningRoad = this.roadFactory.createFromLinks( spline, firstNode, secondNode );
-
-		spline.segmentMap.set( 0, joiningRoad );
-
-		joiningRoad.spline = spline;
-
-		return joiningRoad;
-
-	}
-
-	// buildRoad ( road: TvRoad ): GameObject[] {
-
-	// 	return this.buildSpline( road.spline, false );
-
-	// }
-
-	// buildSpline ( spline: AbstractSpline, showNodes = true ): GameObject[] {
-
-	// 	const gameObjects = [];
-
-	// 	if ( spline.controlPoints.length < 2 ) {
-	// 		return gameObjects;
-	// 	}
-
-	// 	spline.getSplineSegments().forEach( segment => {
-
-	// 		if ( !segment.isRoad ) return;
-
-	// 		const road = this.mapService.map.getRoadById( segment.id );
-
-	// 		road.clearGeometries();
-
-	// 		segment.geometries.forEach( geometry => road.addGeometry( geometry ) );
-
-	// 		// this.updateRoadNodes( road, showNodes );
-
-	// 		const gameObject = this.roadBuilder.buildRoad( road );
-
-	// 		road.gameObject = gameObject;
-
-	// 		gameObjects.push( gameObject );
-
-	// 	} );
-
-	// 	return gameObjects;
-	// }
-
 	add ( road: TvRoad ) {
 
 		this.mapService.map.addRoad( road );
@@ -641,6 +590,15 @@ export class RoadService extends BaseDataService<TvRoad> {
 		}
 	}
 
+	findLinkCoord ( link: TvRoadLink ): TvRoadCoord {
+
+		if ( link.type == TvRoadLinkType.JUNCTION ) {
+			throw new Error( 'Junction link does not have position' );
+		}
+
+		return this.getRoadCoordByContact( link.element as TvRoad, link.contactPoint );
+	}
+
 	sortLinks ( links: TvRoadLink[], clockwise = true ): TvRoadLink[] {
 
 		const points = links.map( coord => this.findLinkPosition( coord ) );
@@ -676,4 +634,48 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return GeometryUtils.getCentroid( points );
 
 	}
+
+	getRoadCoordByContact ( road: TvRoad, contact: TvContactPoint ): TvRoadCoord {
+
+		return this.getPosThetaByContact( road, contact ).toRoadCoord( road );
+
+	}
+
+	getPosThetaByContact ( road: TvRoad, contact: TvContactPoint ): TvPosTheta {
+
+		if ( contact === TvContactPoint.START ) {
+
+			return this.getStartPosTheta( road );
+
+		} else {
+
+			return this.getEndPosTheta( road );
+
+		}
+
+	}
+
+	getEndPosTheta ( road: TvRoad ) {
+
+		return road.getPosThetaAt( road.length - Maths.Epsilon );
+
+	}
+
+	getStartPosTheta ( road: TvRoad ) {
+
+		// helps catch bugs
+		if ( road.geometries.length == 0 ) {
+			throw new Error( 'NoGeometriesFound' );
+		}
+
+		return road.getPosThetaAt( 0 );
+
+	}
+
+	getRoadCoordAt ( road: TvRoad, s: number, t: number = 0 ) {
+
+		return road.getPosThetaAt( s, t ).toRoadCoord( road );
+
+	}
+
 }

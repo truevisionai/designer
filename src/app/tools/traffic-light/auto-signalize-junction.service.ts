@@ -165,7 +165,7 @@ export class AutoSignalizeJunctionService {
 
 		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
-		const roadCoord = road.getRoadCoordByContact( contactPoint );
+		const roadCoord = this.roadService.getRoadCoordByContact( road, contactPoint );
 
 		const stopLine = this.signalFactory.createStopLine( roadCoord, 'StopLine', '294' );
 

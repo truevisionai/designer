@@ -7,9 +7,6 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { Maths } from 'app/utils/maths';
 import { Box3, Group, MathUtils, Vector2, Vector3 } from 'three';
-import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
-import { TvArcGeometry } from './geometries/tv-arc-geometry';
-import { TvLineGeometry } from './geometries/tv-line-geometry';
 import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
@@ -28,7 +25,6 @@ import { RoadStyle } from "../../graphics/road-style/road-style.model";
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
-import { TvRoadCoord } from "./TvRoadCoord";
 import { DuplicateModelException, InvalidArgumentException, ModelNotFoundException } from 'app/exceptions/exceptions';
 
 export class TvRoad {
@@ -285,12 +281,6 @@ export class TvRoad {
 	getLateralProfile (): TvLateralProfile {
 
 		return this.lateralProfile;
-
-	}
-
-	getRoadCoordAt ( s: number, t = 0 ) {
-
-		return this.getPosThetaAt( s, t ).toRoadCoord( this );
 
 	}
 
@@ -632,12 +622,6 @@ export class TvRoad {
 			return this.getEndPosTheta()
 
 		}
-
-	}
-
-	getRoadCoordByContact ( contact: TvContactPoint ): TvRoadCoord {
-
-		return this.getPosThetaByContact( contact ).toRoadCoord( this );
 
 	}
 

@@ -114,40 +114,4 @@ export class RoadToolHelper {
 
 	}
 
-	createFromLinks ( firstNode: TvRoadLink, secondNode: TvRoadLink ) {
-
-		const spline = this.splineFactory.createSplineFromLinks( firstNode, secondNode );
-
-		this.splineBuilder.buildGeometry( spline );
-
-		const joiningRoad = this.roadFactory.createFromLinks( spline, firstNode, secondNode );
-
-		spline.segmentMap.set( 0, joiningRoad );
-
-		joiningRoad.spline = spline;
-
-		this.splineBuilder.build( spline );
-
-		return joiningRoad;
-
-	}
-
-	// addSpline ( spline: AbstractSpline ) {
-	//
-	// 	this.splineService.add( spline );
-	//
-	// }
-	//
-	// updateSpline ( spline: AbstractSpline ) {
-	//
-	// 	this.splineService.update( spline );
-	//
-	// }
-	//
-	// removeSpline ( spline: AbstractSpline ) {
-	//
-	// 	this.splineService.remove( spline );
-	//
-	// }
-
 }

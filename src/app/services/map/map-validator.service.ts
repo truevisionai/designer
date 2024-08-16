@@ -459,8 +459,9 @@ export class MapValidatorService {
 			return;
 		}
 
-		const pointA = linkType == 'successor' ? roadA.getEndPosTheta() : roadA.getStartPosTheta();
-		const pointB = roadB.getPosThetaByContact( link.contactPoint );
+		const contactA = linkType == 'successor' ? TvContactPoint.END : TvContactPoint.START;
+		const pointA = this.roadService.getPosThetaByContact( roadA, contactA )
+		const pointB = this.roadService.findLinkPosition( link );
 
 		let headingShouldBeSame: boolean = false;
 

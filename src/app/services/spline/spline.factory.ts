@@ -79,34 +79,6 @@ export class SplineFactory {
 		return this.createSpline( a, aDirection, b, bDirection );
 	}
 
-	createSplineFromLinks ( firstNode: TvRoadLink, secondNode: TvRoadLink ) {
-
-		if ( firstNode == null ) throw new Error( 'firstNode is null' );
-		if ( secondNode == null ) throw new Error( 'secondNode is null' );
-
-		const roadA = firstNode.element as TvRoad;
-		const roadB = secondNode.element as TvRoad;
-
-		const a = roadA.getRoadCoordByContact( firstNode.contactPoint );
-		const b = roadB.getRoadCoordByContact( secondNode.contactPoint );
-
-		let aDirection: Vector3, bDirection: Vector3;
-
-		if ( firstNode.contactPoint === TvContactPoint.START ) {
-			aDirection = a.toPosTheta().toDirectionVector().normalize().multiplyScalar( -1 );
-		} else {
-			aDirection = a.toPosTheta().toDirectionVector().normalize()
-		}
-
-		if ( secondNode.contactPoint === TvContactPoint.START ) {
-			bDirection = b.toPosTheta().toDirectionVector().normalize().multiplyScalar( -1 );
-		} else {
-			bDirection = b.toPosTheta().toDirectionVector().normalize();
-		}
-
-		return this.createSpline( a.position, aDirection, b.position, bDirection );
-	}
-
 	createRampRoadSpline ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide ): AbstractSpline {
 
 		if ( entry == null ) throw new Error( 'entry is null' );

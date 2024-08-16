@@ -16,10 +16,12 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { expectValidMap } from 'tests/base-test.spec';
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { RoadSignalFactory } from 'app/map/road-signal/road-signal.factory';
+import { RoadService } from 'app/services/road/road.service';
 
 describe( 'RoadDividerTool', () => {
 
 	let tool: RoadDividerTool;
+	let roadService: RoadService;
 	let testHelper: SplineTestHelper;
 	let eventServiceProvider: EventServiceProvider;
 
@@ -32,6 +34,7 @@ describe( 'RoadDividerTool', () => {
 		testHelper = TestBed.inject( SplineTestHelper );
 		tool = new RoadDividerTool( TestBed.inject( RoadDividerToolService ) );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		roadService = TestBed.inject( RoadService );
 
 		eventServiceProvider.init();
 	} );
@@ -40,7 +43,7 @@ describe( 'RoadDividerTool', () => {
 
 		const R1 = testHelper.addStraightRoad( new Vector3( 0, 0, 0 ) );
 
-		const roadCoord: TvRoadCoord = R1.getRoadCoordAt( 50 );
+		const roadCoord: TvRoadCoord = roadService.getRoadCoordAt( R1, 50 );
 
 		const clone = tool.divideRoadAt( roadCoord );
 
@@ -93,7 +96,7 @@ describe( 'RoadDividerTool', () => {
 		expect( R1.getRoadObjectCount() ).toBe( 100 );
 		expect( R1.getSignalCount() ).toBe( 100 );
 
-		const roadCoord: TvRoadCoord = R1.getRoadCoordAt( 50 );
+		const roadCoord: TvRoadCoord = roadService.getRoadCoordAt( R1, 50 );
 
 		const R2 = tool.divideRoadAt( roadCoord );
 
@@ -130,7 +133,7 @@ describe( 'RoadDividerTool', () => {
 
 		const R1Length = R1.getLength();
 
-		const newRoad = tool.divideRoadAt( R1.getRoadCoordAt( 10 ) );
+		const newRoad = tool.divideRoadAt( roadService.getRoadCoordAt( R1, 10 ) );
 
 		tool.onObjectAdded( newRoad );
 
@@ -177,7 +180,7 @@ describe( 'RoadDividerTool', () => {
 
 		const R1Length = R1.getLength();
 
-		const R5 = tool.divideRoadAt( R1.getRoadCoordAt( 10 ) );
+		const R5 = tool.divideRoadAt( roadService.getRoadCoordAt( R1, 10 ) );
 
 		tool.onObjectAdded( R5 );
 

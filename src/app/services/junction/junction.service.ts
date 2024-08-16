@@ -25,6 +25,7 @@ import { TrafficRule } from 'app/map/models/traffic-rule';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { JunctionRoadService } from './junction-road.service';
 import { JunctionGeometryService } from "./junction-geometry.service";
+import { RoadService } from '../road/road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -43,6 +44,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		public mapService: MapService,
 		public junctionRoadService: JunctionRoadService,
 		public junctionGeometryService: JunctionGeometryService,
+		public roadService: RoadService,
 	) {
 		super();
 	}
@@ -179,8 +181,8 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		roadB: TvRoad, contactB: TvContactPoint
 	): TvJunction {
 
-		const coordA = roadA.getRoadCoordByContact( contactA );
-		const coordB = roadB.getRoadCoordByContact( contactB );
+		const coordA = this.roadService.getRoadCoordByContact( roadA, contactA );
+		const coordB = this.roadService.getRoadCoordByContact( roadB, contactB );
 
 		this.setLink( roadA, contactA, junction );
 		this.setLink( roadB, contactB, junction );

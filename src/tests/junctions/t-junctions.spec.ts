@@ -71,11 +71,11 @@ xdescribe( 't-junction tests', () => {
 
 		const junction = junctionService.createNewJunction();
 
-		const coord1 = xAxisRoad.getRoadCoordAt( 100 );
+		const coord1 = roadService.getRoadCoordAt( xAxisRoad, 100 );
 		intersectionService.cutRoadForJunction( coord1, junction );
 		expect( xAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
 
-		const coord2 = yAxisRoad.getRoadCoordAt( 100 );
+		const coord2 = roadService.getRoadCoordAt( yAxisRoad, 100 );
 		intersectionService.cutRoadForJunction( coord2, junction );
 		expect( yAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
 
@@ -100,10 +100,10 @@ xdescribe( 't-junction tests', () => {
 
 		const junction = junctionService.createNewJunction();
 
-		const coord1 = xAxisRoad.getRoadCoordAt( 100 );
+		const coord1 = roadService.getRoadCoordAt( xAxisRoad, 100 );
 		intersectionService.cutRoadForJunction( coord1, junction );
 
-		const coord2 = yAxisRoad.getRoadCoordAt( 100 );
+		const coord2 = roadService.getRoadCoordAt( yAxisRoad, 100 );
 		intersectionService.cutRoadForJunction( coord2, junction );
 
 		const newYAxisRoad = roadService.getRoad( 3 );

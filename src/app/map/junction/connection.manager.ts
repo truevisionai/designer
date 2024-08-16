@@ -146,11 +146,10 @@ export class ConnectionManager {
 
 	updateConnectionGeometry ( junction: TvJunction, connection: TvJunctionConnection ) {
 
-		const prevRoad = connection.connectingRoad.predecessor.element as TvRoad;
-		const prevCoord = prevRoad.getRoadCoordByContact( connection.connectingRoad.predecessor.contactPoint );
+		const prevCoord = this.roadService.findLinkCoord( connection.connectingRoad.predecessor );
 
 		const nextRoad = connection.connectingRoad.successor.element as TvRoad;
-		const nextRoadCoord = nextRoad.getRoadCoordByContact( connection.connectingRoad.successor.contactPoint );
+		const nextRoadCoord = this.roadService.findLinkCoord( connection.connectingRoad.successor );
 
 		connection.laneLink.forEach( link => {
 
