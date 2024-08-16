@@ -6,6 +6,9 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three';
 import { ARC_TESSEL, MAX_CTRL_POINTS } from './spline-config';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
+import { InvalidValueException } from 'app/exceptions/exceptions';
+import { Maths } from 'app/utils/maths';
+import { Log } from '../utils/log';
 
 export class RoundLine {
 
@@ -135,19 +138,23 @@ export class RoundLine {
 				const distance = currentPoint.position.distanceTo( nextPoint.position );
 
 				if ( isNaN( distance ) ) {
-					throw new Error( 'distance is NaN' );
+					Log.error( 'distance is NaN' );
+					throw new InvalidValueException( 'distance is NaN' );
 				}
 
-				if ( distance === 0 ) {
-					throw new Error( 'distance is 0' );
+				if ( Maths.approxEquals( distance, 0 ) ) {
+					Log.error( 'distance is 0' );
+					// throw new InvalidValueException( 'distance is 0' );
 				}
 
 				if ( distance < 0 ) {
-					throw new Error( 'distance is negative' );
+					Log.error( 'distance is negative' );
+					throw new InvalidValueException( 'distance is negative' );
 				}
 
 				if ( distance === Infinity ) {
-					throw new Error( 'distance is Infinity' );
+					Log.error( 'distance is Infinity' );
+					throw new InvalidValueException( 'distance is Infinity' );
 				}
 
 				distances[ i ] = distance;

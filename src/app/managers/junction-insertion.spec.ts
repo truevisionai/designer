@@ -311,7 +311,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
 		] );
 
-		expect( mapService.findRoad( 2 ) ).toBeUndefined();
+		expect( mapService.hasRoad( 2 ) ).toBeFalse();
 
 	} );
 
@@ -423,7 +423,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START ),
 		] );
 
-		expect( mapService.findRoad( 1 ) ).toBeUndefined();
+		expect( mapService.hasRoad( 1 ) ).toBeFalse();
 
 	} );
 

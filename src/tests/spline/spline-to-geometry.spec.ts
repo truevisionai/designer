@@ -9,8 +9,9 @@ import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { SplineControlPoint } from "app/objects/spline-control-point";
 import { RoadService } from "app/services/road/road.service";
+import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { SplineFactory } from "app/services/spline/spline.factory";
-import { Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 
 describe( 'SplineToGeometry test', () => {
 
@@ -19,6 +20,7 @@ describe( 'SplineToGeometry test', () => {
 	let roadService: RoadService;
 	let eventServiceProvider: EventServiceProvider;
 	let splineManager: SplineManager;
+	let testHelper: SplineTestHelper;
 
 	beforeEach( () => {
 
@@ -32,6 +34,7 @@ describe( 'SplineToGeometry test', () => {
 		pointFactory = TestBed.inject( ControlPointFactory );
 		roadService = TestBed.inject( RoadService );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		testHelper = TestBed.inject( SplineTestHelper );
 
 		eventServiceProvider.init();
 
@@ -119,15 +122,9 @@ describe( 'SplineToGeometry test', () => {
 
 	it( 'should create geometries for automated junction', () => {
 
-		const vertical = roadService.createDefaultRoad()
-		vertical.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, -100, 0 ) ) );
-		vertical.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 50, 100, 0 ) ) );
-		roadService.add( vertical );
+		const vertical = testHelper.createDefaultRoad( [ new Vector2( 0, -100 ), new Vector2( 50, 100 ) ] );
 
-		const horizontal = roadService.createDefaultRoad()
-		horizontal.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -100, 0, 0 ) ) );
-		horizontal.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 100, 0, 0 ) ) );
-		roadService.add( horizontal );
+		const horizontal = testHelper.createDefaultRoad( [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ] );
 
 		splineManager.addSpline( vertical.spline );
 

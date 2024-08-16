@@ -118,8 +118,6 @@ export class RoadDividerService {
 
 			}
 
-			center.road.length = sStartJunction;
-
 			center.s -= junctionWidth;
 
 		} else {
@@ -158,8 +156,6 @@ export class RoadDividerService {
 
 			SplineUtils.addSegment( coord.road.spline, sStartJunction, junction );
 
-			coord.road.length = coord.road.length - junctionWidth;
-
 			coord.s = coord.road.length;
 
 			coord.road.setSuccessor( TvRoadLinkType.JUNCTION, junction );
@@ -176,8 +172,6 @@ export class RoadDividerService {
 			// segment.setStart( sEndJunction );
 
 			SplineUtils.addSegment( coord.road.spline, 0, junction );
-
-			coord.road.length = coord.road.length - sEndJunction;
 
 			coord.s = 0;
 

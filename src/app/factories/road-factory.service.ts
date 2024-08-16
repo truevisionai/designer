@@ -229,8 +229,6 @@ export class RoadFactory {
 
 		road.spline = spline;
 
-		road.length = spline.getLength();
-
 		road.getLaneProfile().clearLaneSections();
 
 		const laneSections = this.laneSectionFactory.createFromRoadNode( road, firstNode, secondNode );
@@ -263,8 +261,6 @@ export class RoadFactory {
 		const road = this.createDefaultRoad();
 
 		road.spline = spline;
-
-		road.length = spline.getLength();
 
 		road.getLaneProfile().clearLaneSections();
 

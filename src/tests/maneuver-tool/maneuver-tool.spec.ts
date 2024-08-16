@@ -73,7 +73,7 @@ describe( 'ManeuverTool', () => {
 		expect( JunctionUtils.findLinksBetween( junction, leftRoad, rightRoad ).length ).toBe( 1 );
 		expect( JunctionUtils.findLinksFrom( junction, leftRoad, rightRoad ).length ).toBe( 0 );
 		expect( JunctionUtils.findLinksFrom( junction, rightRoad, leftRoad ).length ).toBe( 1 );
-		expect( tool.helper.junctionService.mapService.findRoad( leftToRightConnection.connectingRoad.id ) ).toBeUndefined();
+		expect( tool.helper.junctionService.mapService.hasRoad( leftToRightConnection.connectingRoad.id ) ).toBeFalse();
 
 		tool.addManeuver( junction, leftToRightConnection, leftToRightLinks[ 0 ] );
 

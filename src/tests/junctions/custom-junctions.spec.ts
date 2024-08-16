@@ -106,7 +106,7 @@ describe( 'CustomJunction: Tests', () => {
 		expect( leftRoad.successor ).toBeNull();
 		expect( rightRoad.predecessor ).toBeNull();
 
-		expect( testHelper.mapService.findJunction( 1 ) ).toBeUndefined();
+		expect( testHelper.mapService.hasJunction( 1 ) ).toBeFalse();
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 0 );
 		expect( testHelper.mapService.getRoadCount() ).toBe( 2 );
 		expect( testHelper.mapService.getSplineCount() ).toBe( 2 );
@@ -204,7 +204,7 @@ describe( 'CustomJunction: Tests', () => {
 		expect( testHelper.mapService.findRoad( 2 ) ).toBeDefined();
 		expect( testHelper.mapService.findRoad( 3 ) ).toBeDefined();
 
-		expect( testHelper.mapService.findJunction( 1 ) ).toBeUndefined();
+		expect( testHelper.mapService.hasJunction( 1 ) ).toBeFalse();
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 0 );
 		expect( testHelper.mapService.getRoadCount() ).toBe( 3 );
 		expect( testHelper.mapService.getSplineCount() ).toBe( 3 );

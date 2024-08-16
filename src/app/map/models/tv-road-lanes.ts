@@ -8,6 +8,7 @@ import { TvRoadLaneOffset } from './tv-road-lane-offset';
 import { TvUtils } from './tv-utils';
 import { TvRoad } from './tv-road.model';
 import { TvContactPoint } from "./tv-common";
+import { Log } from 'app/core/utils/log';
 
 export class TvLaneProfile {
 
@@ -92,13 +93,11 @@ export class TvLaneProfile {
 
 	addLaneSectionInstance ( laneSection: TvLaneSection ): void {
 
-		this.laneSections.push( laneSection );
-
-		// laneSection.road = this;
+		laneSection.road = this.road;
 
 		laneSection.lanes.forEach( lane => {
 
-			// lane.roadId = this.id;
+			lane.roadId = this.road.id;
 
 			lane.laneSection = laneSection;
 
@@ -106,9 +105,9 @@ export class TvLaneProfile {
 
 		this.laneSections.push( laneSection );
 
-		// this.sortLaneSections();
+		this.sortLaneSections();
 
-		// this.computeLaneSectionLength();
+		this.computeLaneSectionCoordinates();
 
 	}
 
@@ -224,7 +223,7 @@ export class TvLaneProfile {
 
 		this.addLaneOffsetRecord( s, a, b, c, d );
 
-		this.updateLaneOffsetValues( this.road.length );
+		// this.updateLaneOffsetValues( this.road.length );
 
 	}
 
@@ -236,44 +235,36 @@ export class TvLaneProfile {
 
 	computeLaneSectionCoordinates () {
 
+		const laneSections = this.getLaneSections();
+
+		if ( laneSections.length == 0 ) {
+			Log.error( 'No lane sections found' );
+		}
+
 		// Compute lastSCoordinate for all laneSections
-		for ( let i = 0; i < this.laneSections.length; i++ ) {
+		for ( let i = 0; i < laneSections.length - 1; i++ ) {
 
-			const currentLaneSection = this.laneSections[ i ];
+			const laneSection = laneSections[ i ];
 
-			// lastSCoordinate by default is equal to road length
-			let lastSCoordinate = this.road.length;
+			const nextLaneSection = laneSections[ i + 1 ];
 
-			// if next laneSection exists let's use its sCoordinate
-			if ( i + 1 < this.laneSections.length ) {
-				lastSCoordinate = this.laneSections[ i + 1 ].s;
-			}
+			laneSection.endS = nextLaneSection ? nextLaneSection.s : this.road.length;
 
-			currentLaneSection.endS = lastSCoordinate;
-		}
-	}
+			laneSection.length = laneSection.endS - laneSection.s;
 
-	computeLaneSectionLength () {
-
-		this.computeLaneSectionCoordinates();
-
-		const sections = this.getLaneSections();
-
-		if ( sections.length == 0 ) return;
-
-		// update first, not required
-		// if ( sections.length == 1 ) sections[ 0 ].length = this.length;
-
-		for ( let i = 1; i < sections.length; i++ ) {
-
-			const current = sections[ i ];
-			const previous = sections[ i - 1 ];
-
-			previous.length = current.s - previous.s;
 		}
 
-		// update last
-		sections[ sections.length - 1 ].length = this.road.length - sections[ sections.length - 1 ].s;
+		if ( laneSections.length > 0 ) {
+
+			const lastLaneSection = laneSections[ laneSections.length - 1 ];
+
+			lastLaneSection.endS = this.road.length;
+
+			lastLaneSection.length = lastLaneSection.endS - lastLaneSection.s;
+
+		}
+
+
 	}
 
 	getLaneAt ( s: number, t: number ) {

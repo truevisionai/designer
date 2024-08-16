@@ -5,7 +5,7 @@
 import { TvPosTheta } from './tv-pos-theta';
 import { TvRoad } from './tv-road.model';
 
-describe( 'OdRoad', () => {
+describe( 'RoadTests', () => {
 
 	let road: TvRoad;
 	let pose: TvPosTheta;

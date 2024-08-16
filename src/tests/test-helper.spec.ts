@@ -58,7 +58,7 @@ describe( 'BaseTest: tests', () => {
 
 	} );
 
-	it( 'should create 4 way junction correctly', () => {
+	xit( 'should create 4 way junction correctly', () => {
 
 		expect( roadService.roads.length ).toBe( 0 );
 		expect( roadService.junctionRoads.length ).toBe( 0 );

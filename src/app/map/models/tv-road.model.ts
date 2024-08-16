@@ -71,7 +71,7 @@ export class TvRoad {
 
 	public name: string;
 
-	public length: number;
+	// public length: number;
 
 	public id: number;
 
@@ -87,7 +87,7 @@ export class TvRoad {
 
 		this.uuid = MathUtils.generateUUID();
 		this.name = name;
-		this.length = length;
+		// this.length = length;
 		this.id = id;
 		this.junction = junction;
 		this.planView = new TvPlaneView();
@@ -125,8 +125,12 @@ export class TvRoad {
 		return this.type.length > 0;
 	}
 
+	get length (): number {
+		return this.planView.getBlockLength();
+	}
+
 	getLength (): number {
-		return this.length;
+		return this.planView.getBlockLength();
 	}
 
 	toString () {
@@ -424,9 +428,9 @@ export class TvRoad {
 
 		this.geometries.splice( 0, this.geometries.length );
 
-		this.length = 0;
+		// this.length = 0;
 
-		this.getLaneProfile().computeLaneSectionLength();
+		this.getLaneProfile().computeLaneSectionCoordinates();
 
 	}
 
