@@ -3,13 +3,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 import { AbstractSpline, SplineType } from "../../core/shapes/abstract-spline";
 import { SplineService } from "./spline.service";
 import { SplineFactory } from "./spline.factory";
 import { RoadFactory } from "../../factories/road-factory.service";
 import { RoadCircleToolService } from 'app/tools/road-circle/road-circle-tool.service';
-import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { JunctionFactory } from 'app/factories/junction.factory';
@@ -41,6 +40,44 @@ export class SplineTestHelper {
 		public junctionToolHelper: JunctionToolHelper,
 		public mapValidator: MapValidatorService,
 	) {
+	}
+
+
+
+	makeDefaultRoad ( points: Vector2[] ) {
+
+		return this.roadFactory.createFromControlPoints( points );
+
+	}
+
+	makeRoad ( points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
+
+		const road = this.roadFactory.createRoadWithLaneCount( leftLaneCount, rightLaneCount, leftWidth, rightWidth );
+
+		points.forEach( point => road.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( point.x, point.y, 0 ) ) ) );
+
+		return road;
+
+	}
+
+	createRoad ( points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
+
+		const road = this.makeRoad( points, leftLaneCount, rightLaneCount, leftWidth, rightWidth );
+
+		this.splineService.add( road.spline );
+
+		return road;
+
+	}
+
+	createDefaultRoad ( points: Vector2[] ) {
+
+		const road = this.makeDefaultRoad( points );
+
+		this.splineService.add( road.spline );
+
+		return road;
+
 	}
 
 	addCircleRoad ( radius: number, center = new Vector3() ) {

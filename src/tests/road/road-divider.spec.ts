@@ -1,11 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
-import { BaseTest } from 'tests/base-test.spec';
 import { Vector2, Vector3 } from 'three';
 import { OpenDriveParserService } from "../../app/importers/open-drive/open-drive-parser.service";
 import { XML } from '../stubs/straight-road-stub';
@@ -16,9 +15,7 @@ import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service
 
 describe( 'Service: RoadDivider Simple', () => {
 
-	let base: BaseTest = new BaseTest;
 	let eventServiceProvider: EventServiceProvider;
-	let roadService: RoadService;
 	let roadDividerService: RoadDividerService;
 	let splineService: SplineService;
 	let testHelper: SplineTestHelper;
@@ -32,7 +29,6 @@ describe( 'Service: RoadDivider Simple', () => {
 		eventServiceProvider = TestBed.get( EventServiceProvider );
 		eventServiceProvider.init();
 
-		roadService = TestBed.get( RoadService );
 		roadDividerService = TestBed.get( RoadDividerService );
 		splineService = TestBed.get( SplineService );
 		testHelper = TestBed.get( SplineTestHelper );
@@ -48,7 +44,7 @@ describe( 'Service: RoadDivider Simple', () => {
 
 		const S_OFFSET = 50;
 
-		const road = base.createDefaultRoad( roadService, [
+		const road = testHelper.createDefaultRoad( [
 			new Vector2( -50, 0 ),
 			new Vector2( 50, 0 ),
 		] );

@@ -19,6 +19,7 @@ import { AutoSplineV2 } from "../../app/core/shapes/auto-spline-v2";
 import { ControlPointFactory } from "../../app/factories/control-point.factory";
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DepConnectionFactory } from "../../app/map/junction/dep-connection.factory";
+import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 
 xdescribe( '4-way-junction tests', () => {
 
@@ -32,6 +33,7 @@ xdescribe( '4-way-junction tests', () => {
 	let splineManager: SplineManager;
 	let mapValidator: MapValidatorService;
 	let splineService: SplineService;
+	let testHelper: SplineTestHelper;
 
 	beforeEach( () => {
 
@@ -46,6 +48,7 @@ xdescribe( '4-way-junction tests', () => {
 		intersectionService = TestBed.get( IntersectionService );
 		junctionService = TestBed.get( JunctionService );
 		splineManager = TestBed.get( SplineManager );
+		testHelper = TestBed.get( SplineTestHelper );
 
 		let eventServiceProvider = TestBed.get( EventServiceProvider );
 		eventServiceProvider.init();
@@ -264,8 +267,8 @@ xdescribe( '4-way-junction tests', () => {
 		 * 		 	|   |
 		 */
 
-		const leftRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 0 ), new Vector2( -50, 0 ) ] );
-		const rightRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 50, 0 ), new Vector2( 100, 0 ) ] );
+		const leftRoad = testHelper.createDefaultRoad( [ new Vector2( -100, 0 ), new Vector2( -50, 0 ) ] );
+		const rightRoad = testHelper.createDefaultRoad( [ new Vector2( 50, 0 ), new Vector2( 100, 0 ) ] );
 
 		const joiningRoad = roadToolService.createJoiningRoad(
 			new RoadNode( leftRoad, TvContactPoint.END ),
@@ -274,7 +277,7 @@ xdescribe( '4-way-junction tests', () => {
 
 		roadService.add( joiningRoad );
 
-		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ] );
+		const vertical = testHelper.createDefaultRoad( [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ] );
 
 		expect( mapService.roads.length ).toBe( 4 );
 		expect( roadService.getRoad( 1 ) ).toBe( leftRoad );
@@ -364,8 +367,8 @@ xdescribe( '4-way-junction tests', () => {
 		 * 		 	|   |
 		 */
 
-		const leftRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 0 ), new Vector2( -50, 0 ) ] );
-		const rightRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 50, 0 ), new Vector2( 100, 0 ) ] );
+		const leftRoad = testHelper.createDefaultRoad( [ new Vector2( -100, 0 ), new Vector2( -50, 0 ) ] );
+		const rightRoad = testHelper.createDefaultRoad( [ new Vector2( 50, 0 ), new Vector2( 100, 0 ) ] );
 
 		const joiningRoad = roadToolService.createJoiningRoad(
 			new RoadNode( leftRoad, TvContactPoint.END ),
@@ -374,7 +377,7 @@ xdescribe( '4-way-junction tests', () => {
 
 		roadService.add( joiningRoad );
 
-		const vertical = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ] );
+		const vertical = testHelper.createDefaultRoad( [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ] );
 
 		expect( mapService.roads.length ).toBe( 4 );
 		expect( roadService.getRoad( 1 ) ).toBe( leftRoad );
@@ -485,11 +488,11 @@ xdescribe( '4-way-junction tests', () => {
 		expect( roadService.getRoadCount() ).toBe( 0 );
 
 		// left to right
-		const horizontalBottom = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ] );
-		const horizontalTop = baseTest.createDefaultRoad( roadService, [ new Vector2( -100, 50 ), new Vector2( 100, 50 ) ] );
+		const horizontalBottom = testHelper.createDefaultRoad( [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ] );
+		const horizontalTop = testHelper.createDefaultRoad( [ new Vector2( -100, 50 ), new Vector2( 100, 50 ) ] );
 
 		// bottom to top
-		const verticalRoad = baseTest.createDefaultRoad( roadService, [ new Vector2( 0, -200 ), new Vector2( 0, 200 ) ] );
+		const verticalRoad = testHelper.createDefaultRoad( [ new Vector2( 0, -200 ), new Vector2( 0, 200 ) ] );
 
 		splineManager.updateSpline( verticalRoad.spline );
 
@@ -616,8 +619,8 @@ xdescribe( '4-way-junction tests', () => {
 
 		expect( roadService.getRoadCount() ).toBe( 0 );
 
-		const horizontal = baseTest.createDefaultRoad( roadService, [ new Vector2( -200, 0 ), new Vector2( 200, 0 ) ] );
-		const verticalRight = baseTest.createDefaultRoad( roadService, [ new Vector2( 50, -100 ), new Vector2( 50, 100 ) ] );
+		const horizontal = testHelper.createDefaultRoad( [ new Vector2( -200, 0 ), new Vector2( 200, 0 ) ] );
+		const verticalRight = testHelper.createDefaultRoad( [ new Vector2( 50, -100 ), new Vector2( 50, 100 ) ] );
 
 		// add first vertical road on right
 		splineManager.updateSpline( verticalRight.spline );
@@ -629,7 +632,7 @@ xdescribe( '4-way-junction tests', () => {
 		expect( roadService.junctionRoads.length ).toBe( 12 );					// 12 for each
 
 		// // add second vertical road on left
-		const verticalLeft = baseTest.createDefaultRoad( roadService, [ new Vector2( -50, -100 ), new Vector2( -50, 100 ) ] );
+		const verticalLeft = testHelper.createDefaultRoad( [ new Vector2( -50, -100 ), new Vector2( -50, 100 ) ] );
 
 		splineManager.updateSpline( verticalLeft.spline );
 		expect( mapService.highestestRoadId ).toBe( 31 );
@@ -744,7 +747,7 @@ xdescribe( '4-way-junction tests', () => {
 	it( 'should create t-junction between one side lane road', () => {
 
 		// 3 lane on each side
-		const horizontal = baseTest.createDefaultRoad( roadService, [
+		const horizontal = testHelper.createDefaultRoad( [
 			new Vector2( -100, 0 ),
 			new Vector2( 100, 0 )
 		] );

@@ -116,7 +116,7 @@ export class RoundLine {
 		this.radiuses = new Array( this.points.length );
 
 		// store lengths from one point to another for the whole spline
-		const lengths = new Array( this.points.length - 1 );
+		const distances = new Array( this.points.length - 1 );
 
 		let currentPoint: AbstractControlPoint = null;
 
@@ -132,7 +132,25 @@ export class RoundLine {
 
 				nextPoint = this.points[ i + 1 ];
 
-				lengths[ i ] = currentPoint.position.distanceTo( nextPoint.position );
+				const distance = currentPoint.position.distanceTo( nextPoint.position );
+
+				if ( isNaN( distance ) ) {
+					throw new Error( 'distance is NaN' );
+				}
+
+				if ( distance === 0 ) {
+					throw new Error( 'distance is 0' );
+				}
+
+				if ( distance < 0 ) {
+					throw new Error( 'distance is negative' );
+				}
+
+				if ( distance === Infinity ) {
+					throw new Error( 'distance is Infinity' );
+				}
+
+				distances[ i ] = distance;
 
 			}
 
@@ -153,7 +171,7 @@ export class RoundLine {
 		// foreach point except the first one
 		for ( let i = 1; i < this.points.length - 1; i++ ) {
 
-			this.radiuses[ i ] = Math.min( lengths[ i - 1 ], lengths[ i ] );
+			this.radiuses[ i ] = Math.min( distances[ i - 1 ], distances[ i ] );
 
 		}
 
@@ -163,9 +181,9 @@ export class RoundLine {
 
 			for ( let i = 1; i < this.points.length - 1; i++ ) {
 
-				const leftR = this.radiuses[ i - 1 ] + this.radiuses[ i ] > lengths[ i - 1 ] ? lengths[ i - 1 ] / 2 : this.radiuses[ i ];
+				const leftR = this.radiuses[ i - 1 ] + this.radiuses[ i ] > distances[ i - 1 ] ? distances[ i - 1 ] / 2 : this.radiuses[ i ];
 
-				const rightR = this.radiuses[ i + 1 ] + this.radiuses[ i ] > lengths[ i ] ? lengths[ i ] / 2 : this.radiuses[ i ];
+				const rightR = this.radiuses[ i + 1 ] + this.radiuses[ i ] > distances[ i ] ? distances[ i ] / 2 : this.radiuses[ i ];
 
 				const minR = Math.min( leftR, rightR );
 

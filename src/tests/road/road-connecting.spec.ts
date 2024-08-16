@@ -10,6 +10,7 @@ import { BaseTest } from 'tests/base-test.spec';
 import { Vector2 } from 'three';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
+import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 
 describe( 'RoadTool: Connecting Roads', () => {
 
@@ -17,6 +18,7 @@ describe( 'RoadTool: Connecting Roads', () => {
 	let base: BaseTest = new BaseTest;
 	let toolHelper: RoadToolHelper;
 	let eventServiceProvider: EventServiceProvider;
+	let splineTestHelper: SplineTestHelper;
 
 	beforeEach( () => {
 
@@ -27,6 +29,7 @@ describe( 'RoadTool: Connecting Roads', () => {
 
 		tool = new RoadTool( TestBed.inject( RoadToolHelper ) )
 		toolHelper = TestBed.inject( RoadToolHelper );
+		splineTestHelper = TestBed.inject( SplineTestHelper );
 
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		eventServiceProvider.init();
@@ -40,8 +43,8 @@ describe( 'RoadTool: Connecting Roads', () => {
 
 	it( 'should connect roads', () => {
 
-		const leftRoad = base.createDefaultRoad( toolHelper.roadService, [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
-		const rightRoad = base.createDefaultRoad( toolHelper.roadService, [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
+		const leftRoad = splineTestHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
+		const rightRoad = splineTestHelper.createDefaultRoad( [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
 
 		const leftNode = new RoadNode( leftRoad, TvContactPoint.END );
 		const rightNode = new RoadNode( rightRoad, TvContactPoint.START );

@@ -2,10 +2,12 @@ import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { LaneSectionFactory } from "app/factories/lane-section.factory";
+import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { TvLaneType } from "app/map/models/tv-common";
 import { MapValidatorService } from "app/services/map/map-validator.service";
 import { MapService } from "app/services/map/map.service";
 import { RoadService } from "app/services/road/road.service";
+import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2 } from "three";
 
@@ -16,6 +18,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 	let mapService: MapService;
 	let roadService: RoadService;
 	let mapValidator: MapValidatorService;
+	let testHelper: SplineTestHelper;
+	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
@@ -29,12 +33,15 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		roadService = TestBed.inject( RoadService );
 		mapValidator = TestBed.get( MapValidatorService );
 
+		eventServiceProvider = TestBed.get( EventServiceProvider );
+		eventServiceProvider.init();
+
 	} );
 
 
 	it( 'should find next lane correctly', () => {
 
-		const road = base.createDefaultRoad( roadService, [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
+		const road = testHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
 
 		expect( road.laneSections[ 0 ].lanes.size ).toBe( 7 );
 
@@ -56,8 +63,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		// Road directions
 		// ------>| -> |------>
 
-		const roadA = base.createDefaultRoad( roadService, [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
-		const roadB = base.createDefaultRoad( roadService, [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ] );
+		const roadA = testHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
+		const roadB = testHelper.createDefaultRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ] );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
 		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
@@ -100,8 +107,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		// Road directions
 		// ------>| -> |<------
 
-		const roadA = base.createDefaultRoad( roadService, [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
-		const roadB = base.createDefaultRoad( roadService, [ new Vector2( 200, 0 ), new Vector2( 100, 0 ) ] );
+		const roadA = testHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
+		const roadB = testHelper.createDefaultRoad( [ new Vector2( 200, 0 ), new Vector2( 100, 0 ) ] );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
 		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
@@ -144,8 +151,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		// Road directions
 		// <-----| -> |----->
 
-		const roadA = base.createDefaultRoad( roadService, [ new Vector2( 50, 0 ), new Vector2( 0, 0 ) ] );
-		const roadB = base.createDefaultRoad( roadService, [ new Vector2( 100, 0 ), new Vector2( 200, 0 ) ] );
+		const roadA = testHelper.createDefaultRoad( [ new Vector2( 50, 0 ), new Vector2( 0, 0 ) ] );
+		const roadB = testHelper.createDefaultRoad( [ new Vector2( 100, 0 ), new Vector2( 200, 0 ) ] );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
 		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
@@ -191,8 +198,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		// ------>| -> |------>
 		// ------>| ->
 
-		const roadA = base.createRoad( roadService, [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ], 2, 2 );
-		const roadB = base.createRoad( roadService, [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
+		const roadA = testHelper.createRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ], 2, 2 );
+		const roadB = testHelper.createRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
 		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 5 );
@@ -245,8 +252,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		// ------>| -> |------>
 		// 		  | -> |------>
 
-		const roadA = base.createRoad( roadService, [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ], 1, 1 );
-		const roadB = base.createRoad( roadService, [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 2, 2 );
+		const roadA = testHelper.createRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ], 1, 1 );
+		const roadB = testHelper.createRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 2, 2 );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
 		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 3 );
@@ -301,8 +308,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		// ------>| ->
 		// ------>| ->
 
-		const roadA = base.createDefaultRoad( roadService, [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
-		const roadB = base.createRoad( roadService, [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
+		const roadA = testHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
+		const roadB = testHelper.createRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
 		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
@@ -355,8 +362,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		// Road directions
 		// ------>| -> |------>
 
-		const roadA = base.createDefaultRoad( roadService, [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
-		const roadB = base.createDefaultRoad( roadService, [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ] );
+		const roadA = testHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
+		const roadB = testHelper.createDefaultRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ] );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
 		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
@@ -416,8 +423,8 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		// ------>| ->
 		// ------>| ->
 
-		const roadA = base.createDefaultRoad( roadService, [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
-		const roadB = base.createRoad( roadService, [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
+		const roadA = testHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
+		const roadB = testHelper.createRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
 		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );

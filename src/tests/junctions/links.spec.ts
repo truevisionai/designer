@@ -1,19 +1,19 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { RoadFactory } from 'app/factories/road-factory.service';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
-import { BaseTest } from "tests/base-test.spec";
 import { Vector2, Vector3 } from 'three';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DepConnectionFactory } from 'app/map/junction/dep-connection.factory';
+import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { BaseTest } from 'tests/base-test.spec';
 
 xdescribe( 'LaneLinkService', () => {
 
@@ -22,8 +22,9 @@ xdescribe( 'LaneLinkService', () => {
 	let intersectionService: IntersectionService;
 	let junctionService: JunctionService;
 	let connectionService: DepConnectionFactory;
-	let baseTest = new BaseTest();
 	let eventServiceProvider: EventServiceProvider;
+	let testHelper: SplineTestHelper;
+	let baseTest = new BaseTest();
 
 	beforeEach( () => {
 
@@ -38,6 +39,7 @@ xdescribe( 'LaneLinkService', () => {
 		junctionService = TestBed.inject( JunctionService );
 		connectionService = TestBed.inject( DepConnectionFactory );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		testHelper = TestBed.inject( SplineTestHelper );
 
 		eventServiceProvider.init();
 
@@ -58,7 +60,7 @@ xdescribe( 'LaneLinkService', () => {
 	it( 'should create simple junction between same roads', () => {
 
 		// left to right
-		const roadA = baseTest.createDefaultRoad( roadService, [
+		const roadA = testHelper.createDefaultRoad( [
 			new Vector2( -50, 0 ),
 			new Vector2( 100, 0 ),
 		] );
@@ -90,7 +92,7 @@ xdescribe( 'LaneLinkService', () => {
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
 
 		expect( leftToRight.laneSections[ 0 ].lanes.size ).toBe( 4 );
-		baseTest.expectCorrectLaneOrder( leftToRight.laneSections[ 0 ] );
+		expectCorrectLaneOrder( leftToRight.laneSections[ 0 ] );
 
 		expect( junction.connections.get( 1 ) ).toBeDefined()
 		expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB )
@@ -98,7 +100,7 @@ xdescribe( 'LaneLinkService', () => {
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
 
 		expect( rightToLeft.laneSections[ 0 ].lanes.size ).toBe( 4 );
-		baseTest.expectCorrectLaneOrder( rightToLeft.laneSections[ 0 ] );
+		expectCorrectLaneOrder( rightToLeft.laneSections[ 0 ] );
 
 	} )
 
@@ -234,3 +236,7 @@ xdescribe( 'LaneLinkService', () => {
 
 
 } );
+function expectCorrectLaneOrder ( arg0: TvLaneSection ) {
+	throw new Error( 'Function not implemented.' );
+}
+

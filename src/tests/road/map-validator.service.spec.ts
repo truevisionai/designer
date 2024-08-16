@@ -1,7 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { MapValidatorService } from '../../app/services/map/map-validator.service';
-import { BaseTest } from '../base-test.spec';
-import { RoadService } from 'app/services/road/road.service';
 import { Vector2 } from 'three';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { HttpClientModule } from '@angular/common/http';
@@ -10,15 +8,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { OpenDriveParserService } from "../../app/importers/open-drive/open-drive-parser.service";
 import { XML } from '../stubs/crossing-8-road-stub';
+import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 
 xdescribe( 'Service: MapValidator', () => {
 
-	let base = new BaseTest();
-	let roadService: RoadService;
 	let mapValidator: MapValidatorService;
 	let mapService: MapService;
 	let eventServiceProvider: EventServiceProvider;
 	let openDriveParser: OpenDriveParserService;
+	let splineTestHelper: SplineTestHelper;
 
 	beforeEach( () => {
 
@@ -27,7 +25,6 @@ xdescribe( 'Service: MapValidator', () => {
 			providers: [ MapValidatorService ]
 		} );
 
-		roadService = TestBed.inject( RoadService );
 		mapValidator = TestBed.inject( MapValidatorService );
 		mapService = TestBed.inject( MapService );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
@@ -44,12 +41,12 @@ xdescribe( 'Service: MapValidator', () => {
 
 	it( 'should fail for distant connections', () => {
 
-		const roadA = base.createDefaultRoad( roadService, [
+		const roadA = splineTestHelper.createDefaultRoad( [
 			new Vector2( 0, 0 ),
 			new Vector2( 100, 0 )
 		] );
 
-		const roadB = base.createDefaultRoad( roadService, [
+		const roadB = splineTestHelper.createDefaultRoad( [
 			new Vector2( 0, 0 ),
 			new Vector2( 500, 0 )
 		] );
@@ -63,12 +60,12 @@ xdescribe( 'Service: MapValidator', () => {
 
 	it( 'should fail for horizontal connections without lane links', () => {
 
-		const roadA = base.createDefaultRoad( roadService, [
+		const roadA = splineTestHelper.createDefaultRoad( [
 			new Vector2( 0, 0 ),
 			new Vector2( 100, 0 )
 		] );
 
-		const roadB = base.createDefaultRoad( roadService, [
+		const roadB = splineTestHelper.createDefaultRoad( [
 			new Vector2( 200, 0 ),
 			new Vector2( 100, 0 )
 		] );
@@ -82,12 +79,12 @@ xdescribe( 'Service: MapValidator', () => {
 
 	it( 'should fail for vertical connections without lane links', () => {
 
-		const roadA = base.createDefaultRoad( roadService, [
+		const roadA = splineTestHelper.createDefaultRoad( [
 			new Vector2( 0, 0 ),
 			new Vector2( 0, 100 )
 		] );
 
-		const roadB = base.createDefaultRoad( roadService, [
+		const roadB = splineTestHelper.createDefaultRoad( [
 			new Vector2( 0, 200 ),
 			new Vector2( 0, 100 )
 		] );

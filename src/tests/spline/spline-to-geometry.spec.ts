@@ -8,19 +8,15 @@ import { SplineManager } from "app/managers/spline-manager";
 import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { SplineControlPoint } from "app/objects/spline-control-point";
-import { IntersectionService } from "app/services/junction/intersection.service";
 import { RoadService } from "app/services/road/road.service";
 import { SplineFactory } from "app/services/spline/spline.factory";
-import { BaseTest } from "tests/base-test.spec";
 import { Vector3 } from "three";
 
 describe( 'SplineToGeometry test', () => {
 
-	let base: BaseTest = new BaseTest;
 	let splineFactory: SplineFactory;
 	let pointFactory: ControlPointFactory;
 	let roadService: RoadService;
-	let intersectionService: IntersectionService;
 	let eventServiceProvider: EventServiceProvider;
 	let splineManager: SplineManager;
 
@@ -35,7 +31,6 @@ describe( 'SplineToGeometry test', () => {
 		splineFactory = TestBed.inject( SplineFactory );
 		pointFactory = TestBed.inject( ControlPointFactory );
 		roadService = TestBed.inject( RoadService );
-		intersectionService = TestBed.inject( IntersectionService );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 
 		eventServiceProvider.init();
@@ -49,7 +44,7 @@ describe( 'SplineToGeometry test', () => {
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
 
-		splineManager.updateSpline( spline );
+		splineManager.addSpline( spline );
 
 		const geometry = spline.geometries[ 0 ];
 
@@ -69,7 +64,7 @@ describe( 'SplineToGeometry test', () => {
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 200, 0, 0 ) ) );
 
-		splineManager.updateSpline( spline );
+		splineManager.addSpline( spline );
 
 		const exportGeometries = spline.geometries;
 
@@ -92,7 +87,7 @@ describe( 'SplineToGeometry test', () => {
 
 		const spline = splineFactory.createSpline( v1.position, v1.toDirectionVector(), v2.position, v2.toDirectionVector() );
 
-		splineManager.updateSpline( spline );
+		splineManager.addSpline( spline );
 
 		const exportGeometries = spline.geometries;
 
@@ -134,7 +129,7 @@ describe( 'SplineToGeometry test', () => {
 		horizontal.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 100, 0, 0 ) ) );
 		roadService.add( horizontal );
 
-		splineManager.updateSpline( vertical.spline );
+		splineManager.addSpline( vertical.spline );
 
 		// expect( roadService.roads.length ).toBe( 16 );
 
