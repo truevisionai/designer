@@ -8,7 +8,6 @@ import {
 	TvJunctionSegmentBoundary,
 	TvLaneBoundary
 } from "app/map/junction-boundary/tv-junction-boundary";
-import { TvJunctionBoundaryBuilder } from "app/map/junction-boundary/tv-junction-boundary.builder";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint, TvLaneSide } from "app/map/models/tv-common";
 import { TvRoad } from "app/map/models/tv-road.model";
@@ -20,6 +19,7 @@ import { TvRoadLink } from "../map/models/tv-road-link";
 import { TvLane } from "app/map/models/tv-lane";
 import { LaneUtils } from "./lane.utils";
 import { Log } from "app/core/utils/log";
+import { RoadGeometryService } from "app/services/road/road-geometry.service";
 
 export class JunctionUtils {
 
@@ -446,15 +446,15 @@ export class JunctionUtils {
 
 		if ( typeof value == 'number' ) {
 
-			return road.getPosThetaAt( value );
+			return RoadGeometryService.instance.findRoadPosition( road, value );
 
 		} else if ( value == TvContactPoint.START ) {
 
-			return road.getPosThetaAt( 0 );
+			return RoadGeometryService.instance.findRoadPosition( road, 0 );
 
 		} else if ( value == TvContactPoint.END ) {
 
-			return road.getPosThetaAt( road.length );
+			return RoadGeometryService.instance.findRoadPosition( road, road.length );
 
 		}
 

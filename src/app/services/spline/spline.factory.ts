@@ -11,15 +11,12 @@ import { Vector3 } from 'three';
 import { RoadNode } from 'app/objects/road-node';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { ExplicitSpline } from "../../core/shapes/explicit-spline";
 import { Maths } from "../../utils/maths";
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
-import { RoadControlPoint } from 'app/objects/road-control-point';
-import { TvRoadLink } from 'app/map/models/tv-road-link';
-import { DebugDrawService } from '../debug/debug-draw.service';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { RoadGeometryService } from '../road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -40,15 +37,15 @@ export class SplineFactory {
 		let aDirection: Vector3, bDirection: Vector3;
 
 		if ( incoming.contact === TvContactPoint.START ) {
-			aDirection = incoming.toPosTheta().toDirectionVector().multiplyScalar( -1 );
+			aDirection = RoadGeometryService.instance.findCoordPosition( incoming ).toDirectionVector().multiplyScalar( -1 );
 		} else {
-			aDirection = incoming.toPosTheta().toDirectionVector();
+			aDirection = RoadGeometryService.instance.findCoordPosition( incoming ).toDirectionVector();
 		}
 
 		if ( outgoing.contact === TvContactPoint.START ) {
-			bDirection = outgoing.toPosTheta().toDirectionVector().multiplyScalar( -1 );
+			bDirection = RoadGeometryService.instance.findCoordPosition( outgoing ).toDirectionVector().multiplyScalar( -1 );
 		} else {
-			bDirection = outgoing.toPosTheta().toDirectionVector();
+			bDirection = RoadGeometryService.instance.findCoordPosition( outgoing ).toDirectionVector();
 		}
 
 		return this.createRoadSpline( road, a, aDirection, b, bDirection );

@@ -19,6 +19,7 @@ import { RoadSignalService } from "../../map/road-signal/road-signal.service";
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Log } from 'app/core/utils/log';
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 export enum AutoSignalizationType {
 	ALL_GO,
@@ -165,7 +166,7 @@ export class AutoSignalizeJunctionService {
 
 		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
-		const roadCoord = this.roadService.getRoadCoordByContact( road, contactPoint );
+		const roadCoord = RoadGeometryService.instance.findContactCoord( road, contactPoint );
 
 		const stopLine = this.signalFactory.createStopLine( roadCoord, 'StopLine', '294' );
 

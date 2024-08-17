@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { RoadNode } from 'app/objects/road-node';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineFactory } from '../spline/spline.factory';
@@ -19,10 +18,8 @@ import { RoadCreatedEvent } from 'app/events/road/road-created-event';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 import { RoadRemovedEvent } from 'app/events/road/road-removed-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
-import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from "../../map/models/tv-pos-theta";
 import { Maths } from "../../utils/maths";
-import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { RoadUtils } from 'app/utils/road.utils';
 import { GeometryUtils } from '../surface/geometry-utils';
@@ -30,6 +27,7 @@ import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Commands } from 'app/commands/commands';
+import { RoadGeometryService } from './road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -43,6 +41,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 		public mapService: MapService,
 		public roadFactory: RoadFactory,
 		public queryService: MapQueryService,
+		public roadGeometryService: RoadGeometryService
 	) {
 		super();
 		RoadService.instance = this;
@@ -277,7 +276,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		if ( !roadCoord ) return;
 
-		const posTheta = roadCoord.toPosTheta();
+		const posTheta = RoadGeometryService.instance.findCoordPosition( roadCoord );
 
 		const result = this.findNearestLane( position, posTheta );
 
@@ -436,125 +435,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	/**
-	 *
-	 * @param road
-	 * @param laneSection
-	 * @param lane
-	 * @param sOffset s offset is relative to lane section
-	 * @param tOffset
-	 * @param withLaneHeight
-	 */
-	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
-
-		return this.queryService.findLaneEndPosition( road, laneSection, lane, sOffset, tOffset, withLaneHeight );
-
-	}
-
-	/**
-	 *
-	 * @param road
-	 * @param laneSection
-	 * @param lane
-	 * @param sOffset s offset is relative to lane section
-	 * @returns
-	 */
-	findLaneCenterPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
-
-		return this.queryService.findLaneCenterPosition( road, laneSection, lane, sOffset );
-
-	}
-
-	/**
-	 *
-	 * @param road
-	 * @param laneSection
-	 * @param lane
-	 * @param sOffset s offset is relative to lane section
-	 * @param withLaneHeight
-	 * @returns
-	 */
-	findLaneStartPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
-
-		const t = this.findWidthUptoStart( road, laneSection, lane, sOffset );
-
-		const sign = lane.id >= 0 ? 1 : -1;
-
-		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
-
-		if ( !posTheta ) return;
-
-		if ( withLaneHeight ) {
-			const laneHeight = lane.getHeightValue( sOffset );
-			posTheta.z += laneHeight.getLinearValue( 0 );
-		}
-
-		return posTheta;
-
-	}
-
-	/**
-	 *
-	 * @param road
-	 * @param laneSection
-	 * @param lane
-	 * @param sOffset s offset is relative to lane section
-	 * @returns
-	 */
-	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
-
-		return this.queryService.findWidthUpto( road, laneSection, lane, sOffset );
-
-	}
-
-	findWidthUptoCenter ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
-
-		return this.queryService.findWidthUptoCenter( road, laneSection, lane, sOffset );
-
-	}
-
-	findWidthUptoStart ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
-
-		if ( lane.side == TvLaneSide.CENTER ) return 0;
-
-		let width = 0;
-
-		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
-
-		for ( let i = 0; i < lanes.length; i++ ) {
-
-			const currentLane = lanes[ i ];
-
-			if ( currentLane.id == lane.id ) break;
-
-			width += currentLane.getWidthValue( sOffset );
-
-		}
-
-		return width;
-	}
-
-	/**
-	 *
-	 * @param road
-	 * @param s
-	 * @param t
-	 */
-	findRoadPosition ( road: TvRoad, s: number, t: number = 0 ) {
-
-		return this.queryService.findRoadPosition( road, s, t );
-
-	}
-
-	findRoadPositionAt ( road: TvRoad, position: Vector3 ) {
-
-		return road.getPosThetaByPosition( position );
-
-	}
-
 	STtoXYZ ( road: TvRoad, s: number, t: number ) {
 
-		const posTheta = road.getPosThetaAt( s, t );
+		const posTheta = RoadGeometryService.instance.findRoadPosition( road, s, t );
 
 		const position = posTheta.toVector3();
 
@@ -571,37 +454,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return position;
 	}
 
-	findLinkPosition ( link: TvRoadLink ): TvPosTheta {
-
-		if ( link.type == TvRoadLinkType.JUNCTION ) {
-			throw new Error( 'Junction link does not have position' );
-		}
-
-		const road = link.element as TvRoad
-
-		if ( link.contactPoint == TvContactPoint.START ) {
-
-			return this.findRoadPosition( road, 0 );
-
-		} else {
-
-			return this.findRoadPosition( road, road.length );
-
-		}
-	}
-
-	findLinkCoord ( link: TvRoadLink ): TvRoadCoord {
-
-		if ( link.type == TvRoadLinkType.JUNCTION ) {
-			throw new Error( 'Junction link does not have position' );
-		}
-
-		return this.getRoadCoordByContact( link.element as TvRoad, link.contactPoint );
-	}
-
 	sortLinks ( links: TvRoadLink[], clockwise = true ): TvRoadLink[] {
 
-		const points = links.map( coord => this.findLinkPosition( coord ) );
+		const points = links.map( coord => RoadGeometryService.instance.findLinkPosition( coord ) );
 
 		const center = GeometryUtils.getCentroid( points.map( p => p.position ) );
 
@@ -629,53 +484,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	findCentroid ( links: TvRoadLink[] ) {
 
-		const points = links.map( link => this.findLinkPosition( link ).position );
+		const points = links.map( link => RoadGeometryService.instance.findLinkPosition( link ).position );
 
 		return GeometryUtils.getCentroid( points );
 
 	}
-
-	getRoadCoordByContact ( road: TvRoad, contact: TvContactPoint ): TvRoadCoord {
-
-		return this.getPosThetaByContact( road, contact ).toRoadCoord( road );
-
-	}
-
-	getPosThetaByContact ( road: TvRoad, contact: TvContactPoint ): TvPosTheta {
-
-		if ( contact === TvContactPoint.START ) {
-
-			return this.getStartPosTheta( road );
-
-		} else {
-
-			return this.getEndPosTheta( road );
-
-		}
-
-	}
-
-	getEndPosTheta ( road: TvRoad ) {
-
-		return road.getPosThetaAt( road.length - Maths.Epsilon );
-
-	}
-
-	getStartPosTheta ( road: TvRoad ) {
-
-		// helps catch bugs
-		if ( road.geometries.length == 0 ) {
-			throw new Error( 'NoGeometriesFound' );
-		}
-
-		return road.getPosThetaAt( 0 );
-
-	}
-
-	getRoadCoordAt ( road: TvRoad, s: number, t: number = 0 ) {
-
-		return road.getPosThetaAt( s, t ).toRoadCoord( road );
-
-	}
-
 }

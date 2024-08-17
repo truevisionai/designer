@@ -25,6 +25,7 @@ import { DebugState } from 'app/services/debug/debug-state';
 import { Maths } from 'app/utils/maths';
 import { NewLanePosition } from 'app/scenario/models/positions/tv-lane-position';
 import { Commands } from 'app/commands/commands';
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 export class LaneMarkingTool extends BaseTool<any> {
 
@@ -197,7 +198,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 				const lane = position.lane;
 
-				const location = this.tool.roadService.findLaneEndPosition( road, laneSection, lane, position.s )
+				const location = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, position.s )
 
 				this.selectedNode.position.copy( location.toVector3() );
 

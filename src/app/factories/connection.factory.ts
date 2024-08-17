@@ -21,6 +21,7 @@ import { Log } from "app/core/utils/log";
 import { Maths } from "app/utils/maths";
 import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
 import { MapQueryService } from "app/map/queries/map-query.service";
+import { RoadGeometryService } from "app/services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -222,7 +223,7 @@ export class ConnectionFactory {
 
 			const diff = size.rightSideWidth - size.leftSideWidth;
 
-			const widthUpto = this.queryService.findWidthUpto( incoming.road, incoming.laneSection, rightLane, incoming.s );
+			const widthUpto = RoadGeometryService.instance.findWidthUpto( incoming.road, incoming.laneSection, rightLane, incoming.s );
 
 			const offset = Maths.approxEquals( diff, 0 ) ? widthUpto - rightLane.getWidthValue( incoming.s ) : diff;
 
@@ -234,7 +235,7 @@ export class ConnectionFactory {
 
 			const diff = size.rightSideWidth - size.leftSideWidth;
 
-			const widthUpto = this.queryService.findWidthUpto( incoming.road, incoming.laneSection, rightLane, incoming.s );
+			const widthUpto = RoadGeometryService.instance.findWidthUpto( incoming.road, incoming.laneSection, rightLane, incoming.s );
 
 			// const offset = Maths.approxEquals( diff, 0 ) ? widthUpto - rightLane.getWidthValue( incoming.s ) : diff - rightLane.getWidthValue( incoming.s );
 			const offset = widthUpto - rightLane.getWidthValue( incoming.s );
@@ -248,7 +249,7 @@ export class ConnectionFactory {
 
 			const diff = size.rightSideWidth - size.leftSideWidth;
 
-			const widthUpto = this.queryService.findWidthUpto( outgoing.road, outgoing.laneSection, leftLane, 0 );
+			const widthUpto = RoadGeometryService.instance.findWidthUpto( outgoing.road, outgoing.laneSection, leftLane, 0 );
 
 			const offset = Maths.approxEquals( diff, 0 ) ? widthUpto - leftLane.getWidthValue( 0 ) : diff + widthUpto - leftLane.getWidthValue( 0 );
 

@@ -18,6 +18,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SuperElevationService } from './super-elevation.service';
 import { BaseToolService } from '../base-tool.service';
 import { Commands } from 'app/commands/commands';
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -126,7 +127,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 		if ( !coord || coord.road != this.selectedRoad ) return;
 
-		const position = this.helper.roadService.findRoadPosition( coord.road, coord.s );
+		const position = RoadGeometryService.instance.findRoadPosition( coord.road, coord.s );
 
 		this.currentSelectedPoint.copyPosition( position.position );
 

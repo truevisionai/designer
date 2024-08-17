@@ -11,6 +11,7 @@ import { TvRoadLink } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { MapQueryService } from 'app/map/queries/map-query.service';
 import { MapService } from 'app/services/map/map.service';
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { Maths } from 'app/utils/maths';
 import { RoadUtils } from 'app/utils/road.utils';
 
@@ -226,9 +227,9 @@ export class RoadFixerService {
 
 				const sContact = contact === TvContactPoint.START ? 0 : successor.length;
 
-				const positionA = this.queryService.findLaneCenterPosition( predecessor, predecessorLaneSection, lane, predecessor.length );
+				const positionA = RoadGeometryService.instance.findLaneCenterPosition( predecessor, predecessorLaneSection, lane, predecessor.length );
 
-				const positionB = this.queryService.findLaneCenterPosition( successor, successorLaneSection, successorLane, sContact );
+				const positionB = RoadGeometryService.instance.findLaneCenterPosition( successor, successorLaneSection, successorLane, sContact );
 
 				const distance = positionA.toVector2().distanceTo( positionB.toVector2() );
 

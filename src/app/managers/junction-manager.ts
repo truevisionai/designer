@@ -38,6 +38,7 @@ import { JunctionRoadService } from "app/services/junction/junction-road.service
 import { ConnectionManager } from "../map/junction/connection.manager";
 import { JunctionGeometryService } from "../services/junction/junction-geometry.service";
 import { JunctionLinkService } from "app/services/junction/junction-link.service";
+import { RoadGeometryService } from "../services/road/road-geometry.service";
 
 const JUNCTION_WIDTH = 10;
 
@@ -2394,8 +2395,8 @@ export class JunctionManager {
 		const leftCenterT = leftRoadSize.leftSideWidth - leftRoadSize.rightSideWidth;
 		const rightCenterT = rightRoadSize.leftSideWidth - rightRoadSize.rightSideWidth;
 
-		let leftEntry = this.roadService.findLinkPosition( leftLink ).addLateralOffset( leftCenterT * 0.5 );
-		let rightEntry = this.roadService.findLinkPosition( rightLink ).addLateralOffset( rightCenterT * 0.5 );
+		let leftEntry = RoadGeometryService.instance.findLinkPosition( leftLink ).addLateralOffset( leftCenterT * 0.5 );
+		let rightEntry = RoadGeometryService.instance.findLinkPosition( rightLink ).addLateralOffset( rightCenterT * 0.5 );
 
 		if ( leftLink.contactPoint == TvContactPoint.START ) {
 			leftEntry = leftEntry.rotateDegree( 180 );
@@ -2432,8 +2433,8 @@ export class JunctionManager {
 		const leftCenterT = leftRoadSize.leftSideWidth - leftRoadSize.rightSideWidth;
 		const rightCenterT = rightRoadSize.leftSideWidth - rightRoadSize.rightSideWidth;
 
-		let leftEntry = this.roadService.findLinkPosition( leftLink ).addLateralOffset( leftCenterT * 0.5 );
-		let rightEntry = this.roadService.findLinkPosition( rightLink ).addLateralOffset( rightCenterT * 0.5 );
+		let leftEntry = RoadGeometryService.instance.findLinkPosition( leftLink ).addLateralOffset( leftCenterT * 0.5 );
+		let rightEntry = RoadGeometryService.instance.findLinkPosition( rightLink ).addLateralOffset( rightCenterT * 0.5 );
 
 		return this.angleBetween( leftEntry.position, center, rightEntry.position );
 	}
@@ -2460,7 +2461,7 @@ export class JunctionManager {
 
 				const t = size.leftSideWidth - size.rightSideWidth;
 
-				const roadMidPosition = this.roadService.findRoadPosition( segment, coord.s, t * 0.5 );
+				const roadMidPosition = RoadGeometryService.instance.findRoadPosition( segment, coord.s, t * 0.5 );
 				// const roadLeftPosition = this.roadService.findRoadPosition( segment, coord.s, size.leftSideWidth );
 				// const roadRightPosition = this.roadService.findRoadPosition( segment, coord.s, size.rightSideWidth );
 

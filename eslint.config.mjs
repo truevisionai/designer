@@ -22,7 +22,24 @@ export default [
 				skipBlankLines: true,
 				skipComments: true
 			} ],
+			"@typescript-eslint/explicit-function-return-type": [ "warn", {
+				allowExpressions: true,
+				allowTypedFunctionExpressions: true,
+				allowHigherOrderFunctions: true,
+			} ],
 			// Add any additional TypeScript specific rules here
+			// Optional: Warn about any explicit `null` return
+			"no-restricted-syntax": [
+				"warn",
+				{
+					selector: "ReturnStatement[argument.type='Literal'][argument.value=null]",
+					message: "Avoid returning `null`. Consider returning a more meaningful value."
+				},
+				{
+					selector: "ReturnStatement[argument.type='Literal'][argument.value=undefined]",
+					message: "Avoid returning `undefined`. Consider returning a more meaningful value."
+				}
+			]
 		}
 	}
 ];

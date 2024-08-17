@@ -4,7 +4,6 @@
 
 import { GameObject } from 'app/objects/game-object';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
-import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from '../prop-curve/prop-curve.model';
 import { PropPolygon } from '../prop-polygon/prop-polygon.model';
 import { TvSignalController } from '../signal-controller/tv-signal-controller';

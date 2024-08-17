@@ -13,6 +13,7 @@ import { Object3D } from "three";
 import { TvCornerRoad } from "../../map/models/objects/tv-corner-road";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { Log } from "../../core/utils/log";
+import { RoadGeometryService } from "app/services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -97,7 +98,7 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 	createNode ( road: TvRoad, roadObject: TvRoadObject, corner: TvCornerRoad ) {
 
-		const position = road.getPosThetaAt( corner.s, corner.t )
+		const position = RoadGeometryService.instance.findRoadPosition( road, corner.s, corner.t )
 
 		if ( !position ) {
 			Log.error( 'CrosswalkToolDebugger', 'createNode', 'Position not found' );

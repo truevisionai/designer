@@ -26,6 +26,7 @@ import { AssetService } from 'app/core/asset/asset.service';
 import { AssetType } from 'app/core/asset/asset.model';
 import { SignalDatabase } from './road-signal.database';
 import { RoadService } from 'app/services/road/road.service';
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,7 +53,7 @@ export class RoadSignalBuilder {
 		// clamp signal s value if it is out of bounds
 		signal.s = Maths.clamp( signal.s, 0, road.length );
 
-		const position = this.roadService.findRoadPosition( road, signal.s, signal.t );
+		const position = RoadGeometryService.instance.findRoadPosition( road, signal.s, signal.t );
 
 		const parentObject = new Object3D();
 
@@ -275,7 +276,7 @@ export class RoadSignalBuilder {
 
 	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ) {
 
-		const roadCoord = road.getPosThetaAt( signal.s, signal.t );
+		const roadCoord = RoadGeometryService.instance.findRoadPosition(road, signal.s, signal.t );
 
 		let hdg: number;
 

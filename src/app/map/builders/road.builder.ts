@@ -26,6 +26,7 @@ import { RoadObjectBuilder } from "../road-object/road-object.builder";
 import { RoadService } from 'app/services/road/road.service';
 import { Log } from "../../core/utils/log";
 import { InvalidRoadLength, NoGeometriesFound } from "../../exceptions/exceptions";
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -55,7 +56,7 @@ export class RoadBuilder {
 
 	}
 
-	validateRoad ( road: TvRoad ) {
+	validateRoad ( road: TvRoad ): void {
 
 		if ( road.getPlanView().getGeometryCount() < 1 ) {
 			throw new NoGeometriesFound();
@@ -345,8 +346,8 @@ export class RoadBuilder {
 
 	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
 
-		const start = this.roadService.findLaneStartPosition( road, laneSection, lane, sOffset - laneSection.s, 0, false );
-		const end = this.roadService.findLaneEndPosition( road, laneSection, lane, sOffset - laneSection.s, 0, false );
+		const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, sOffset - laneSection.s, 0, false );
+		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, sOffset - laneSection.s, 0, false );
 
 		const width = lane.getWidthValue( sOffset - laneSection.s );
 		const height = lane.getHeightValue( sOffset - laneSection.s );

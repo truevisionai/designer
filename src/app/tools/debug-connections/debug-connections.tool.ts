@@ -18,6 +18,7 @@ import { JunctionUtils } from "../../utils/junction.utils";
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Log } from 'app/core/utils/log';
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,7 +66,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 			const t = width.leftSideWidth - width.rightSideWidth;
 
-			const position = road.getPosThetaAt( road.length * 0.5, t * 0.5 )?.position;
+			const position = RoadGeometryService.instance.findRoadPosition( road, road.length * 0.5, t * 0.5 )?.position;
 
 			if ( !position ) return;
 

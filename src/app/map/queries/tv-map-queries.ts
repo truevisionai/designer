@@ -17,6 +17,7 @@ import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 import { TvUtils } from '../models/tv-utils';
 import { TvMapInstance } from '../services/tv-map-instance';
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 export abstract class TvBaseQueries {
 
@@ -211,7 +212,7 @@ export class TvMapQueries extends TvBaseQueries {
 			return new Vector3();
 		}
 
-		const posTheta = road.getPosThetaAt( sCoordinate );
+		const posTheta = RoadGeometryService.instance.findRoadPosition(road, sCoordinate );
 
 		const laneSection = road.getLaneProfile().getLaneSectionAt( sCoordinate );
 

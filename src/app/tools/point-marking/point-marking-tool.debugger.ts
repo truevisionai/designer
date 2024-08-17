@@ -11,6 +11,7 @@ import { ControlPointFactory } from "../../factories/control-point.factory";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -76,7 +77,7 @@ export class PointMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	createNode ( road: TvRoad, roadObject: TvRoadObject ) {
 
-		const coord = road.getPosThetaAt( roadObject.s, roadObject.t );
+		const coord = RoadGeometryService.instance.findRoadPosition( road, roadObject.s, roadObject.t );
 
 		if ( !coord ) return;
 

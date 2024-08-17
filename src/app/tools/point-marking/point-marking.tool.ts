@@ -19,6 +19,7 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { PointMarkingInspector } from './point-marking.inspector';
 import { DebugState } from "../../services/debug/debug-state";
 import { Commands } from 'app/commands/commands';
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 export class PointMarkingTool extends BaseTool<any> {
 
@@ -309,7 +310,7 @@ export class PointMarkingTool extends BaseTool<any> {
 			return;
 		}
 
-		const posTheta = this.tool.roadService.findRoadPosition( road, s, t );
+		const posTheta = RoadGeometryService.instance.findRoadPosition( road, s, t );
 
 		if ( !posTheta ) return;
 

@@ -26,6 +26,7 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { JunctionRoadService } from './junction-road.service';
 import { JunctionGeometryService } from "./junction-geometry.service";
 import { RoadService } from '../road/road.service';
+import { RoadGeometryService } from "../road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -181,8 +182,8 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		roadB: TvRoad, contactB: TvContactPoint
 	): TvJunction {
 
-		const coordA = this.roadService.getRoadCoordByContact( roadA, contactA );
-		const coordB = this.roadService.getRoadCoordByContact( roadB, contactB );
+		const coordA = RoadGeometryService.instance.findContactCoord( roadA, contactA );
+		const coordB = RoadGeometryService.instance.findContactCoord( roadB, contactB );
 
 		this.setLink( roadA, contactA, junction );
 		this.setLink( roadB, contactB, junction );

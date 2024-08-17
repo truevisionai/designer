@@ -22,6 +22,7 @@ import { PropSpanInspector } from "./prop-span-inspector";
 import { DebugState } from "../../services/debug/debug-state";
 import { Vector3 } from "three";
 import { Commands } from "app/commands/commands";
+import { RoadGeometryService } from "app/services/road/road-geometry.service";
 
 export class PropSpanTool extends BaseTool<any> {
 
@@ -151,11 +152,13 @@ export class PropSpanTool extends BaseTool<any> {
 
 		if ( !this.pointMoved ) return;
 
-		const newPosition = this.tool.roadService.findRoadCoordAtPosition( e.point );
+		const newCoord = this.tool.roadService.findRoadCoordAtPosition( e.point );
+		const oldCoord = this.tool.roadService.findRoadCoordAtPosition( this.pointerDownAt );
 
-		const oldPosition = this.tool.roadService.findRoadCoordAtPosition( this.pointerDownAt );
+		const newPosition = RoadGeometryService.instance.findCoordPosition( newCoord ).toVector3();
+		const oldPosition = RoadGeometryService.instance.findCoordPosition( oldCoord ).toVector3();
 
-		Commands.UpdatePosition( this.point, newPosition.position, oldPosition.position );
+		Commands.UpdatePosition( this.point, newPosition, oldPosition );
 
 		this.pointMoved = false;
 

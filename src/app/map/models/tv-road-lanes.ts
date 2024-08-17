@@ -202,6 +202,12 @@ export class TvLaneProfile {
 
 			return this.getLastLaneSection();
 
+		} else {
+
+			console.error( `TvRoadCoord.laneSection: Invalid contact point ${ contactPoint }` );
+
+			return this.road.getLaneProfile().getFirstLaneSection();
+
 		}
 
 	}

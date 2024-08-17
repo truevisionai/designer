@@ -10,6 +10,7 @@ import { TvLane } from "../models/tv-lane";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvContactPoint, TvLaneSide } from "../models/tv-common";
 import { LaneUtils } from 'app/utils/lane.utils';
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,6 +19,7 @@ export class MapQueryService {
 
 	constructor (
 		private mapService: MapService,
+		private roadGeometryService: RoadGeometryService
 	) {
 	}
 
@@ -169,114 +171,6 @@ export class MapQueryService {
 		}
 
 		return predecessors;
-
-	}
-
-	findRoadPosition ( road: TvRoad, sOffset: number, t: number ) {
-		return road.getPosThetaAt( sOffset, t );
-	}
-
-	/**
-	 *
-	 * @param road
-	 * @param laneSection
-	 * @param lane
-	 * @param sOffset s offset is relative to lane section
-	 * @param tOffset
-	 * @param withLaneHeight
-	 */
-	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
-
-		const t = this.findWidthUpto( road, laneSection, lane, sOffset ) + tOffset;
-
-		const sign = lane.id > 0 ? 1 : -1;
-
-		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
-
-		if ( withLaneHeight ) {
-			const laneHeight = lane.getHeightValue( sOffset );
-			posTheta.z += laneHeight.getLinearValue( 1 );
-		}
-
-		return posTheta;
-	}
-
-	/**
-	 *
-	 * @param road
-	 * @param laneSection
-	 * @param lane
-	 * @param sOffset s offset is relative to lane section
-	 * @returns
-	 */
-	findLaneCenterPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset = 0, withLaneHeight = true ) {
-
-		const t = this.findWidthUptoCenter( road, laneSection, lane, sOffset );
-
-		const sign = lane.id >= 0 ? 1 : -1;
-
-		const posTheta = road.getPosThetaAt( laneSection.s + sOffset, t * sign );
-
-		if ( withLaneHeight ) {
-			const laneHeight = lane.getHeightValue( sOffset );
-			posTheta.z += laneHeight.getLinearValue( 1 );
-		}
-
-		return posTheta;
-	}
-
-	/**
-	 *
-	 * @param road
-	 * @param laneSection
-	 * @param lane
-	 * @param sOffset s offset is relative to lane section
-	 * @returns
-	 */
-	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
-
-		if ( lane.side == TvLaneSide.CENTER ) return 0;
-
-		let width = 0;
-
-		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
-
-		for ( let i = 0; i < lanes.length; i++ ) {
-
-			var element = lanes[ i ];
-
-			width += element.getWidthValue( sOffset );
-
-			if ( element.id == lane.id ) break;
-		}
-
-		return width;
-	}
-
-	findWidthUptoCenter ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
-
-		if ( lane.side == TvLaneSide.CENTER ) return 0;
-
-		let totalWidth = 0;
-
-		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
-
-		for ( let i = 0; i < lanes.length; i++ ) {
-
-			const currentLane = lanes[ i ];
-
-			const laneWidth = currentLane.getWidthValue( sOffset );
-
-			totalWidth += laneWidth;
-
-			if ( currentLane.id == lane.id ) {
-
-				totalWidth -= laneWidth / 2;
-				break;
-			}
-		}
-
-		return totalWidth;
 
 	}
 }

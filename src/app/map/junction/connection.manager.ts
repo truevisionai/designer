@@ -16,6 +16,7 @@ import { RoadService } from "../../services/road/road.service";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvJunctionConnection } from "../models/junctions/tv-junction-connection";
 import { TvContactPoint } from "../models/tv-common";
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -146,10 +147,10 @@ export class ConnectionManager {
 
 	updateConnectionGeometry ( junction: TvJunction, connection: TvJunctionConnection ) {
 
-		const prevCoord = this.roadService.findLinkCoord( connection.connectingRoad.predecessor );
+		const prevCoord = RoadGeometryService.instance.findLinkCoord( connection.connectingRoad.predecessor );
 
 		const nextRoad = connection.connectingRoad.successor.element as TvRoad;
-		const nextRoadCoord = this.roadService.findLinkCoord( connection.connectingRoad.successor );
+		const nextRoadCoord = RoadGeometryService.instance.findLinkCoord( connection.connectingRoad.successor );
 
 		connection.laneLink.forEach( link => {
 

@@ -28,6 +28,7 @@ import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadUtils } from 'app/utils/road.utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { RoadGeometryService } from "../road/road-geometry.service";
 
 const SPHERE_SIZE = 0.1;
 
@@ -460,8 +461,8 @@ export class MapValidatorService {
 		}
 
 		const contactA = linkType == 'successor' ? TvContactPoint.END : TvContactPoint.START;
-		const pointA = this.roadService.getPosThetaByContact( roadA, contactA )
-		const pointB = this.roadService.findLinkPosition( link );
+		const pointA = RoadGeometryService.instance.findContactPosition( roadA, contactA )
+		const pointB = RoadGeometryService.instance.findLinkPosition( link );
 
 		let headingShouldBeSame: boolean = false;
 

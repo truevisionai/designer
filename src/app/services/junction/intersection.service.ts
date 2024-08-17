@@ -357,7 +357,7 @@ export class IntersectionService {
 		// to add junction into the roads
 		// const distance = coordA.distanceTo( coordB );
 
-		if ( coordA.contactCheck == contactA && coordB.contactCheck == contactB ) {
+		if ( coordA.contact == contactA && coordB.contact == contactB ) {
 
 			const junction = this.junctionService.createNewJunction();
 
@@ -442,7 +442,7 @@ export class IntersectionService {
 
 	cutRoadForJunction ( coord: TvRoadCoord, junction: TvJunction ): TvRoadCoord {
 
-		return this.roadDividerService.cutRoadForJunction( coord, junction );
+		throw new Error( 'Method not implemented.' );
 
 	}
 

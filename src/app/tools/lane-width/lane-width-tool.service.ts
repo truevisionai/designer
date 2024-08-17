@@ -12,6 +12,7 @@ import { LaneWidthToolDebugger } from './lane-width-tool.debugger';
 import { RoadService } from "../../services/road/road.service";
 import { LaneWidthService } from "./lane-width.service";
 import { DebugState } from "../../services/debug/debug-state";
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -49,7 +50,7 @@ export class LaneWidthToolService {
 
 		const sLaneSection = roadCoord.s - node.lane.laneSection.s;
 
-		const startPosTheta = this.roadService.findLaneStartPosition( road, node.lane.laneSection, node.lane, sLaneSection );
+		const startPosTheta = RoadGeometryService.instance.findLaneStartPosition( road, node.lane.laneSection, node.lane, sLaneSection );
 
 		if ( !startPosTheta ) return;
 

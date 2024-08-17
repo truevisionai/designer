@@ -14,6 +14,7 @@ import { Vector3 } from 'three';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { Log } from 'app/core/utils/log';
 import { Maths } from 'app/utils/maths';
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -90,7 +91,7 @@ export class LaneMarkingToolService {
 
 		const laneSection = coord.laneSection;
 
-		const offset = this.roadService.findWidthUpto( laneSection.road, laneSection, coord.lane, coord.s - laneSection.s );
+		const offset = RoadGeometryService.instance.findWidthUpto( laneSection.road, laneSection, coord.lane, coord.s - laneSection.s );
 
 		const diff = Math.abs( coord.offset ) - Math.abs( offset );
 

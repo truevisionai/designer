@@ -21,6 +21,7 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvRoadObjectType } from "../models/objects/tv-road-object";
 import { RoadService } from "../../services/road/road.service";
 import { DebugDrawService } from "../../services/debug/debug-draw.service";
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -153,7 +154,7 @@ export class LaneRoadMarkBuilder {
 
 		const processStep = ( sOffset: number ) => {
 
-			const posTheta = this.roadService.findLaneEndPosition( road, laneSection, lane, sOffset, tOffset );
+			const posTheta = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, sOffset, tOffset );
 
 			const leftStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 );
 			const rightStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
@@ -176,7 +177,7 @@ export class LaneRoadMarkBuilder {
 				index = addVertex( index, rightStart.position, 0, roadMark.width );
 
 				const nextSOffset = Math.min( sOffset + roadMark.length, sEnd );
-				const nextPosTheta = this.roadService.findLaneEndPosition( road, laneSection, lane, nextSOffset, tOffset );
+				const nextPosTheta = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, nextSOffset, tOffset );
 
 				const leftEnd = nextPosTheta.clone().addLateralOffset( roadMark.width * 0.5 );
 				const rightEnd = nextPosTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
@@ -260,10 +261,10 @@ export class LaneRoadMarkBuilder {
 	//
 	// 	for ( let s = roadMark.s; s < sEnd; s += step ) {
 	//
-	// 		const posTheta = this.roadService.findLaneEndPosition( road, laneSection, lane, s );
+	// 		const posTheta = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, s );
 	//
 	// 		const nextSOffset = Math.min( s + roadMark.length, sEnd );
-	// 		const nextPosTheta = this.roadService.findLaneEndPosition( road, laneSection, lane, nextSOffset );
+	// 		const nextPosTheta = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, nextSOffset );
 	//
 	// 		const leftStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 );
 	// 		const rightStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
@@ -331,7 +332,7 @@ export class LaneRoadMarkBuilder {
 
 			posTheta.s = start + s;
 
-			posTheta = road.getPosThetaAt( start + s );
+			posTheta = RoadGeometryService.instance.findRoadPosition(road, start + s );
 
 			this.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
 

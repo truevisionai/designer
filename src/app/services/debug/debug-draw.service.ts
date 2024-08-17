@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { RoadNode } from 'app/objects/road-node';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
@@ -44,6 +43,7 @@ import { JunctionGatePoint, SimpleControlPoint } from "../../objects/simple-cont
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TextObjectService } from '../text-object.service';
 import { MapQueryService } from 'app/map/queries/map-query.service';
+import { RoadGeometryService } from '../road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -182,9 +182,9 @@ export class DebugDrawService {
 
 		const result = road.getLaneProfile().getRoadWidthAt( s );
 
-		const start = road.getPosThetaAt( s, result.leftSideWidth );
+		const start = RoadGeometryService.instance.findRoadPosition( road, s, result.leftSideWidth );
 
-		const end = road.getPosThetaAt( s, -result.rightSideWidth );
+		const end = RoadGeometryService.instance.findRoadPosition( road, s, -result.rightSideWidth );
 
 		return this.createDebugLine( target, [ start.position, end.position ], width );
 
@@ -194,9 +194,9 @@ export class DebugDrawService {
 
 		const result = roadCoord.road.getLaneProfile().getRoadWidthAt( roadCoord.s );
 
-		const start = roadCoord.road.getPosThetaAt( roadCoord.s, result.leftSideWidth );
+		const start = RoadGeometryService.instance.findRoadPosition( roadCoord.road, roadCoord.s, result.leftSideWidth );
 
-		const end = roadCoord.road.getPosThetaAt( roadCoord.s, -result.rightSideWidth );
+		const end = RoadGeometryService.instance.findRoadPosition( roadCoord.road, roadCoord.s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 
@@ -216,9 +216,9 @@ export class DebugDrawService {
 
 		const result = road.getLaneProfile().getRoadWidthAt( s );
 
-		const start = road.getPosThetaAt( s, result.leftSideWidth );
+		const start = RoadGeometryService.instance.findRoadPosition( road, s, result.leftSideWidth );
 
-		const end = road.getPosThetaAt( s, -result.rightSideWidth );
+		const end = RoadGeometryService.instance.findRoadPosition( road, s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 
@@ -540,7 +540,7 @@ export class DebugDrawService {
 			t *= -1;
 		}
 
-		const point = this.queryService.findRoadPosition( road, sOffset, t );
+		const point = RoadGeometryService.instance.findRoadPosition( road, sOffset, t );
 
 		// NOTE: this can be used if we want hdg to be adjusted with travel direction
 		if ( lane.direction == TravelDirection.backward ) {
@@ -590,11 +590,11 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			positions.push( this.queryService.findLaneEndPosition( road, laneSection, lane, s ) )
+			positions.push( RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, s ) )
 
 		}
 
-		positions.push( this.queryService.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
+		positions.push( RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
 
 		return positions;
 	}
@@ -605,7 +605,7 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			positions.push( this.queryService.findRoadPosition( road, Maths.clamp( s, 0, road.length ), 0 ) )
+			positions.push( RoadGeometryService.instance.findRoadPosition( road, Maths.clamp( s, 0, road.length ), 0 ) )
 
 		}
 
@@ -628,7 +628,7 @@ export class DebugDrawService {
 			width *= -1;
 		}
 
-		const posTheta = lane.laneSection.road.getPosThetaAt( s, width );
+		const posTheta = RoadGeometryService.instance.findRoadPosition( lane.laneSection.road, s, width );
 
 		return posTheta.toVector3();
 

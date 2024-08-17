@@ -11,8 +11,8 @@ export class CommandHistory {
 	private static undos: ICommand[] = [];
 	private static redos: ICommand[] = [];
 
-	private static get debug () {
-		return true && !Environment.production;
+	private static get debug (): boolean {
+		return !Environment.production;
 	}
 
 	static clear (): void {
@@ -44,7 +44,7 @@ export class CommandHistory {
 
 	}
 
-	static executeMany ( ...cmds: ICommand[] ) {
+	static executeMany ( ...cmds: ICommand[] ): void {
 
 		this.execute( new MultiCmdsCommand( cmds ) );
 
@@ -71,7 +71,7 @@ export class CommandHistory {
 
 	}
 
-	static redo (): any {
+	static redo (): void {
 
 		if ( this.redos.length > 0 ) {
 

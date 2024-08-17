@@ -17,6 +17,7 @@ import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { Object3D } from 'three';
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -119,9 +120,9 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 			node = this.nodeCache.get( width );
 
-			const start = this.roadService.findLaneStartPosition( road, laneSection, lane, node.laneWidth.s );
+			const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, node.laneWidth.s );
 
-			const end = this.roadService.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
+			const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
 
 			const positions = [ start.position, end.position ];
 
@@ -149,7 +150,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	createPointHead ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ) {
 
-		const end = this.roadService.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
+		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
 
 		const point = this.pointFactory.createSimpleControlPoint( node, end.position );
 
@@ -163,9 +164,9 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	createNodeLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ) {
 
-		const start = this.roadService.findLaneStartPosition( road, laneSection, lane, node.laneWidth.s );
+		const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, node.laneWidth.s );
 
-		const end = this.roadService.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
+		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
 
 		const positions = [ start.position, end.position ];
 

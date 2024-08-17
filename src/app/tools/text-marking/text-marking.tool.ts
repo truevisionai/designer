@@ -25,6 +25,7 @@ import { NewLanePosition } from "app/scenario/models/positions/tv-lane-position"
 import { CommandHistory } from "app/commands/command-history";
 import { Maths } from "app/utils/maths";
 import { Commands } from "app/commands/commands";
+import { RoadGeometryService } from "app/services/road/road-geometry.service";
 
 export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
@@ -82,7 +83,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		if ( !laneCoord ) return;
 
-		const posTheta = this.tool.roadService.findLaneCenterPosition(
+		const posTheta = RoadGeometryService.instance.findLaneCenterPosition(
 			laneCoord.road,
 			laneCoord.laneSection,
 			laneCoord.lane,

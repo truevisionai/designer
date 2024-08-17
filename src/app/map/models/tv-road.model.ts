@@ -4,7 +4,6 @@
 
 import { GameObject } from 'app/objects/game-object';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { TvConsole } from 'app/core/utils/console';
 import { Maths } from 'app/utils/maths';
 import { Box3, Group, MathUtils, Vector2, Vector3 } from 'three';
 import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
@@ -25,7 +24,8 @@ import { RoadStyle } from "../../graphics/road-style/road-style.model";
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
-import { DuplicateModelException, InvalidArgumentException, ModelNotFoundException } from 'app/exceptions/exceptions';
+import { DuplicateModelException } from 'app/exceptions/exceptions';
+import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 export class TvRoad {
 
@@ -288,54 +288,17 @@ export class TvRoad {
 
 	}
 
+
+	/**
+	 *
+	 * @param s
+	 * @param t
+	 * @deprecated
+	 */
 	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
 
-		if ( s == null ) {
-			throw new InvalidArgumentException( 's is null' );
-			TvConsole.error( 's is undefined' );
-			s = 0;
-		}
+		return RoadGeometryService.instance.findRoadPosition( this, s, t );
 
-		if ( s > this.length ) {
-			throw new InvalidArgumentException( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
-			console.error( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
-			s = this.length;
-		}
-
-		if ( s < 0 ) {
-			throw new InvalidArgumentException( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
-			TvConsole.error( 's is less than 0' );
-			console.error( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
-			s = 0;
-		}
-
-		const geometry = this.planView.getGeometryAt( s );
-
-		if ( !geometry ) {
-			throw new ModelNotFoundException( `GeometryNotFoundAt S:${ s } ${ this.toString() } length: ${ this.length }` );
-			// TvConsole.error( `GeometryNotFoundAt S:${ s } ${ this.toString() } length: ${ this.length }` );
-			// return new TvPosTheta( Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0, 0 );
-		}
-
-		const odPosTheta = geometry.getRoadCoord( s );
-
-		const laneOffset = this.getLaneProfile().getLaneOffsetValue( s );
-
-		odPosTheta.addLateralOffset( laneOffset );
-
-		// this is additonal offset passed by user
-		// and not from lane-offset property of road
-		odPosTheta.addLateralOffset( t );
-
-		odPosTheta.z = this.getElevationProfile().getElevationValue( s );
-
-		// const e = this.getSuperelevationValue( s ); // Add this line to get the superelevation angle
-		const e = this.getLateralProfile().getSuperElevationValue( s );
-		if ( t > 0 || t < 0 ) odPosTheta.z += t * Math.tan( e || 0 ); // Adjust z based on superelevation
-
-		odPosTheta.t = t;
-
-		return odPosTheta;
 	}
 
 	addRoadSignal (
@@ -465,6 +428,9 @@ export class TvRoad {
 		return coordinates;
 	}
 
+	/**
+	 * @deprecated use RoadGeometryService instead
+	 */
 	getReferenceLinePoints ( step = 1.0, t?: number ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
@@ -532,57 +498,30 @@ export class TvRoad {
 
 	}
 
+	/**
+	 * @deprecated use RoadGeometryService instead
+	 */
 	getLaneCenterPosition ( lane: TvLane, s: number, offset = 0 ) {
 
-		const laneSection = this.getLaneProfile().getLaneSectionAt( s );
-
-		const tDirection = lane.id > 0 ? 1 : -1;
-
-		const t = ( laneSection.getWidthUptoCenter( lane, s ) + offset ) * tDirection;
-
-		const posTheta = this.getPosThetaAt( s, t );
-
-		posTheta.t = t;
-
-		return posTheta;
+		return RoadGeometryService.instance.findLaneCenterPosition( this, lane.laneSection, lane, s, offset );
 	}
 
+	/**
+	 * @deprecated use RoadGeometryService instead
+	 */
 	getLaneStartPosition ( lane: TvLane, s: number, offset = 0 ) {
 
-		const posTheta = this.getPosThetaAt( s );
+		return RoadGeometryService.instance.findLaneStartPosition( this, lane.laneSection, lane, s, offset );
 
-		const laneSection = this.getLaneProfile().getLaneSectionAt( s );
-
-		const tDirection = lane.id > 0 ? 1 : -1;
-
-		const cumulativeWidth = laneSection.getWidthUptoStart( lane, s );
-
-		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
-
-		posTheta.x += cosTheta * ( cumulativeWidth + offset );
-		posTheta.y += sinTheta * ( cumulativeWidth + offset );
-
-		return posTheta;
 	}
 
+	/**
+	 * @deprecated use RoadGeometryService instead
+	 */
 	getLaneEndPosition ( lane: TvLane, s: number, offset = 0 ) {
 
-		const posTheta = this.getPosThetaAt( s );
+		return RoadGeometryService.instance.findLaneEndPosition( this, lane.laneSection, lane, s, offset );
 
-		const laneSection = this.getLaneProfile().getLaneSectionAt( s );
-
-		const tDirection = lane.id > 0 ? 1 : -1;
-
-		const cumulativeWidth = laneSection.getWidthUptoEnd( lane, s );
-
-		const cosTheta = Math.cos( posTheta.hdg + Maths.PI2 ) * tDirection;
-		const sinTheta = Math.sin( posTheta.hdg + Maths.PI2 ) * tDirection;
-
-		posTheta.x += cosTheta * ( cumulativeWidth + offset );
-		posTheta.y += sinTheta * ( cumulativeWidth + offset );
-
-		return posTheta;
 	}
 
 	computeBoundingBox (): void {
@@ -615,17 +554,12 @@ export class TvRoad {
 
 	}
 
+	/**
+	* @deprecated use RoadGeometryService instead
+	*/
 	getPosThetaByContact ( contact: TvContactPoint ): TvPosTheta {
 
-		if ( contact === TvContactPoint.START ) {
-
-			return this.getStartPosTheta()
-
-		} else {
-
-			return this.getEndPosTheta()
-
-		}
+		return RoadGeometryService.instance.findContactPosition( this, contact );
 
 	}
 

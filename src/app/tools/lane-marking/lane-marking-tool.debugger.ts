@@ -15,6 +15,7 @@ import { TvLane } from "app/map/models/tv-lane";
 import { TvLaneRoadMark } from "app/map/models/tv-lane-road-mark";
 import { RoadService } from "app/services/road/road.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
+import { RoadGeometryService } from "app/services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -148,7 +149,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 		}
 
-		const lanePosition = this.roadService.findLaneEndPosition( road, laneSection, lane, roadmark.sOffset );
+		const lanePosition = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, roadmark.sOffset );
 
 		node.position.copy( lanePosition.toVector3() );
 

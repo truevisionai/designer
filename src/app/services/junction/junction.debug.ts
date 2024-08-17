@@ -41,6 +41,7 @@ import { JunctionManager } from 'app/managers/junction-manager';
 import { GeometryUtils } from '../surface/geometry-utils';
 import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
+import { RoadGeometryService } from '../road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -400,7 +401,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			const laneSection = connection.connectingRoad.getLaneProfile().getLaneSectionAt( s );
 
-			const position = this.queryService.findLaneCenterPosition( connection.connectingRoad, laneSection, link.connectingLane, s );
+			const position = RoadGeometryService.instance.findLaneCenterPosition( connection.connectingRoad, laneSection, link.connectingLane, s );
 
 			points.push( position.position );
 

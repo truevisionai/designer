@@ -29,6 +29,7 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvRoadLinkNeighbor } from "../../map/models/tv-road-link-neighbor";
 import { SplineUtils } from "../../utils/spline.utils";
+import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -164,7 +165,7 @@ export class RampToolHelper {
 
 		if ( startPosition instanceof TvLaneCoord ) {
 
-			const position = this.roadService.findLaneStartPosition(
+			const position = RoadGeometryService.instance.findLaneStartPosition(
 				startPosition.road,
 				startPosition.laneSection,
 				startPosition.lane,
