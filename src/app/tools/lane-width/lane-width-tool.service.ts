@@ -30,17 +30,7 @@ export class LaneWidthToolService {
 
 	updateByPosition ( node: LaneWidthNode, position: Vector3 ) {
 
-		const index = node.lane.getLaneWidthVector().findIndex( i => i.uuid === node.laneWidth.uuid );
-
-		if ( index === -1 ) {
-			this.snackBar.error( 'Unexpected error. Not able to find this node' );
-			return;
-		}
-
-		if ( index === 0 ) {
-			this.snackBar.warn( 'First node cannot be edited. Please add a new node.' );
-			return;
-		}
+		if ( !this.isValid( node ) ) return;
 
 		const road = node.lane.laneSection.road;
 
@@ -67,6 +57,22 @@ export class LaneWidthToolService {
 
 	}
 
+	isValid ( node: LaneWidthNode ): boolean {
 
+		const index = node.lane.getLaneWidthVector().findIndex( i => i.uuid === node.laneWidth.uuid );
+
+		if ( index === -1 ) {
+			this.snackBar.error( 'Unexpected error. Not able to find this node' );
+			return false;
+		}
+
+		if ( index === 0 ) {
+			this.snackBar.warn( 'First node cannot be edited. Please add a new node.' );
+			return false;
+		}
+
+		return true;
+
+	}
 
 }

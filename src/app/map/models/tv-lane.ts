@@ -663,33 +663,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		};
 	}
 
-	getReferenceLinePoints ( location: 'start' | 'center' | 'end' ) {
-
-		const points = [];
-
-		const offset = this.side === TvLaneSide.LEFT ? 1 : -1;
-
-		let t = 0;
-
-		for ( let s = this.laneSection.s; s < this.laneSection.endS; s++ ) {
-
-			if ( location === 'center' ) {
-
-				t = this.laneSection.getWidthUptoCenter( this, s - this.laneSection.s );
-
-			} else if ( location === 'end' ) {
-
-				t = this.laneSection.getWidthUptoEnd( this, s - this.laneSection.s );
-
-			}
-
-			points.push( this.laneSection.road.getPosThetaAt( s, t * offset ) );
-
-		}
-
-		return points;
-	}
-
 	removeRoadMark ( roadmark: TvLaneRoadMark ) {
 
 		this.roadMarks.remove( roadmark );

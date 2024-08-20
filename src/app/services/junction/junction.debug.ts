@@ -42,6 +42,7 @@ import { GeometryUtils } from '../surface/geometry-utils';
 import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
 import { RoadGeometryService } from '../road/road-geometry.service';
+import { RoadWidthService } from '../road/road-width.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -253,7 +254,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		const roadCoord = link.toRoadCoord();
 
-		const result = roadCoord.road.getLaneProfile().getRoadWidthAt( roadCoord.s );
+		const result = RoadWidthService.instance.findRoadWidthAt( roadCoord.road, roadCoord.s );
 
 		const start = roadCoord.road.getPosThetaAt( roadCoord.s, result.leftSideWidth );
 

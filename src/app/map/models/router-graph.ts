@@ -206,11 +206,11 @@ class OpenDriveMap {
 						nextLaneSectionRoad = road;
 					}
 
-					for ( const [ laneId, lane ] of currentLaneSection.lanes ) {
+					for ( const [ laneId, lane ] of currentLaneSection.lanesMap ) {
 						const nextLaneId = isSuccessor ? lane.successorId : lane.predecessorId;
 						if ( nextLaneId === 0 ) continue;
 
-						const nextLane = nextLaneSection.lanes.get( nextLaneId );
+						const nextLane = nextLaneSection.lanesMap.get( nextLaneId );
 						if ( !nextLane ) continue;
 
 						const fromLane = isSuccessor ? lane : nextLane;
@@ -251,8 +251,8 @@ class OpenDriveMap {
 				for ( const laneLink of connection.laneLink ) {
 					if ( laneLink.from === 0 || laneLink.to === 0 ) continue;
 
-					const fromLane = incomingLaneSection.lanes.get( laneLink.from );
-					const toLane = connectingLaneSection.lanes.get( laneLink.to );
+					const fromLane = incomingLaneSection.lanesMap.get( laneLink.from );
+					const toLane = connectingLaneSection.lanesMap.get( laneLink.to );
 					if ( !fromLane || !toLane ) continue;
 
 					const from = new LaneKey( incomingRoad.id, incomingLaneSection.s, fromLane.id );

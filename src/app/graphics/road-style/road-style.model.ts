@@ -3,7 +3,7 @@
  */
 
 import { MetaImporter } from "../../core/asset/metadata.model";
-import { TvRoadLaneOffset } from "../../map/models/tv-road-lane-offset";
+import { TvLaneOffset } from "../../map/models/tv-lane-offset";
 import { TvLaneSection } from "../../map/models/tv-lane-section";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { TvElevationProfile } from "app/map/road-elevation/tv-elevation-profile.model";
@@ -16,7 +16,7 @@ export class RoadStyle {
 
 	public static importer = MetaImporter.ROAD_STYLE;
 
-	public laneOffset: TvRoadLaneOffset;
+	public laneOffset: TvLaneOffset;
 
 	public laneSection: TvLaneSection;
 
@@ -43,7 +43,7 @@ export class RoadStyle {
 
 		const style = new RoadStyle();
 
-		style.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
+		style.laneOffset = new TvLaneOffset( 0, 0, 0, 0, 0 );
 
 		style.laneSection = road.getLaneProfile().getFirstLaneSection()?.cloneAtS( 0 );
 

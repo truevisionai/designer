@@ -75,7 +75,7 @@ export class RoadFactory {
 
 		const roadStyle = this.roadStyleManager.getRampRoadStyle( road, lane );
 
-		road.getLaneProfile().addLaneOffsetInstance( roadStyle.laneOffset );
+		road.getLaneProfile().addLaneOffset( roadStyle.laneOffset );
 
 		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
 
@@ -91,7 +91,7 @@ export class RoadFactory {
 
 		const roadStyle = this.roadStyleManager.getRoadStyle( road );
 
-		road.getLaneProfile().addLaneOffsetInstance( roadStyle.laneOffset );
+		road.getLaneProfile().addLaneOffset( roadStyle.laneOffset );
 
 		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
 
@@ -109,13 +109,13 @@ export class RoadFactory {
 
 		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
-		laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 3.6, 0, 0, 0 );
-		laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-		laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-		laneSection.addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-		laneSection.addLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-		laneSection.addLane( TvLaneSide.RIGHT, -6, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+		laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 3.6, 0, 0, 0 );
+		laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+		laneSection.createLane( TvLaneSide.RIGHT, -6, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
 
 		return road;
 
@@ -129,7 +129,7 @@ export class RoadFactory {
 
 		const roadStyle = this.roadStyleManager.getParkingRoadStyle( road );
 
-		road.getLaneProfile().addLaneOffsetInstance( roadStyle.laneOffset );
+		road.getLaneProfile().addLaneOffset( roadStyle.laneOffset );
 
 		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
 
@@ -172,14 +172,14 @@ export class RoadFactory {
 		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
 
 		if ( side === TvLaneSide.LEFT ) {
-			laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+			laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
 		}
 
 		if ( side === TvLaneSide.RIGHT ) {
-			laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+			laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 		}
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
 		laneSection.getLaneArray().forEach( lane => {
 
@@ -203,7 +203,7 @@ export class RoadFactory {
 
 		for ( let i = 1; i <= leftCount; i++ ) {
 
-			const lane = laneSection.addLane( TvLaneSide.LEFT, i, TvLaneType.driving, false, true );
+			const lane = laneSection.createLane( TvLaneSide.LEFT, i, TvLaneType.driving, false, true );
 
 			lane.addWidthRecord( 0, leftWidth, 0, 0, 0 );
 
@@ -211,13 +211,13 @@ export class RoadFactory {
 
 		for ( let i = 1; i <= rightCount; i++ ) {
 
-			const lane = laneSection.addLane( TvLaneSide.RIGHT, -i, TvLaneType.driving, false, true );
+			const lane = laneSection.createLane( TvLaneSide.RIGHT, -i, TvLaneType.driving, false, true );
 
 			lane.addWidthRecord( 0, rightWidth, 0, 0, 0 );
 
 		}
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
 		return road;
 
@@ -304,8 +304,8 @@ export class RoadFactory {
 		const startElevation = firstRoad.getElevationProfile().getElevationValue( firstS )
 		const endElevation = secondRoad.getElevationProfile().getElevationValue( secondS );
 
-		profile.addElevation( 0, startElevation, 0, 0, 0 );
-		profile.addElevation( roadLength, endElevation, 0, 0, 0 );
+		profile.createAndAddElevation( 0, startElevation, 0, 0, 0 );
+		profile.createAndAddElevation( roadLength, endElevation, 0, 0, 0 );
 
 		TvUtils.computeCoefficients( profile.getElevations(), roadLength );
 

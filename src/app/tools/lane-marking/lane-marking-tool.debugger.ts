@@ -90,7 +90,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 		road.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+			laneSection.lanesMap.forEach( lane => {
 
 				lane.roadMarks.forEach( roadMark => {
 
@@ -113,7 +113,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 		road.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+			laneSection.lanesMap.forEach( lane => {
 
 				lane.roadMarks.forEach( roadMark => {
 
@@ -162,7 +162,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 		const sStart = roadmark.s;
 
-		const sEnd = nextRoadMark?.s || laneSection.length;
+		const sEnd = nextRoadMark?.s || laneSection.getLength();
 
 		const positions = this.debugService.getPositions( road, laneSection, lane, sStart, sEnd, 0.1 ).map( pos => pos.toVector3() );
 

@@ -4,7 +4,7 @@
 
 import { ThirdOrderPolynom } from './third-order-polynom';
 
-export class TvRoadLaneOffset extends ThirdOrderPolynom {
+export class TvLaneOffset extends ThirdOrderPolynom {
 
 	constructor ( s: number, a: number, b: number, c: number, d: number ) {
 
@@ -14,7 +14,7 @@ export class TvRoadLaneOffset extends ThirdOrderPolynom {
 
 	clone ( s?: number ) {
 
-		return new TvRoadLaneOffset( s || this.s, this.a, this.b, this.c, this.d );
+		return new TvLaneOffset( s || this.s, this.a, this.b, this.c, this.d );
 
 	}
 

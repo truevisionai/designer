@@ -90,14 +90,14 @@ export class LaneWidthManager {
 
 			// when widths are are different we want smooth transition
 
-			if ( lastWidthNode.s != laneSection.length ) {
+			if ( lastWidthNode.s != laneSection.getLength() ) {
 
-				lane.addWidthRecord( laneSection.length - 10, nextLaneWidth, 0, 0, 0 );
-				lane.addWidthRecord( laneSection.length, 0, 0, 0, 0 );
+				lane.addWidthRecord( laneSection.getLength() - 10, nextLaneWidth, 0, 0, 0 );
+				lane.addWidthRecord( laneSection.getLength(), 0, 0, 0, 0 );
 
 			} else {
 
-				lane.addWidthRecord( laneSection.length - 10, nextLaneWidth, 0, 0, 0 );
+				lane.addWidthRecord( laneSection.getLength() - 10, nextLaneWidth, 0, 0, 0 );
 				lastWidthNode.a = 0;
 
 			}
@@ -106,9 +106,9 @@ export class LaneWidthManager {
 
 			let nextLaneWidth = succcessor.getWidthValue( 0 );
 
-			if ( lastWidthNode.s != laneSection.length ) {
+			if ( lastWidthNode.s != laneSection.getLength() ) {
 
-				lane.addWidthRecord( laneSection.length, nextLaneWidth, 0, 0, 0 );
+				lane.addWidthRecord( laneSection.getLength(), nextLaneWidth, 0, 0, 0 );
 
 			} else {
 
@@ -118,52 +118,13 @@ export class LaneWidthManager {
 
 		}
 
-		TvUtils.computeCoefficients( lane.width, laneSection.length );
+		TvUtils.computeCoefficients( lane.width, laneSection.getLength() );
 	}
 
 	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
 
-		return;
+		// TODO: Implement this method
 
-		if ( road.isJunction ) return;
-
-		const previousLaneSection = this.previousLaneSection( lane );
-		const currentLaneSection = lane.laneSection;
-		const ds = Math.min( currentLaneSection.length * 0.2, 16 );
-
-		if ( previousLaneSection && !previousLaneSection.isMatching( currentLaneSection ) ) {
-
-			let width: number;
-
-			if ( !targetWidth && lane.predecessorId ) {
-				targetWidth = previousLaneSection.getLaneById( lane.predecessorId ).getWidthValue( 0 );
-			}
-
-			if ( targetWidth ) {
-
-				width = targetWidth;
-
-			} else if ( lane.width.length > 0 ) {
-
-				width = lane.getWidthValue( 0 );
-
-			} else {
-
-				width = this.getWidthByType( lane.type );
-
-			}
-
-			// remove first width record at s=0 if exists
-			if ( lane.width.length > 0 && lane.width[ 0 ].s == 0 ) {
-				lane.width.splice( 0, 1 );
-			}
-
-			lane.addWidthRecord( 0, 0, 0, 0, 0 );
-			lane.addWidthRecord( ds, width, 0, 0, 0 );
-
-			TvUtils.computeCoefficients( lane.width, currentLaneSection.length );
-
-		}
 	}
 
 	private previousLaneSection ( lane: TvLane ): TvLaneSection {
@@ -246,7 +207,7 @@ export class LaneWidthManager {
 			const width = lane.width[ i ];
 
 			// Remove nodes that are out of bounds
-			if ( width.s < 0 || width.s > lane.laneSection.length ) {
+			if ( width.s < 0 || width.s > lane.laneSection.getLength() ) {
 
 				lane.width.splice( i, 1 );
 

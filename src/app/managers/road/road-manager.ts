@@ -49,7 +49,7 @@ export class RoadManager {
 		this.roadFixerService.fix( road );
 
 		for ( const laneSection of road.laneSections ) {
-			for ( const [ id, lane ] of laneSection.lanes ) {
+			for ( const [ id, lane ] of laneSection.lanesMap ) {
 				this.laneManager.onLaneCreated( lane );
 			}
 		}

@@ -163,11 +163,11 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 		const oldPosition = this.pointerDownAt.clone();
 		const oldRoadCoord = this.tool.roadService.findRoadCoordAtPosition( oldPosition );
-		const oldOffset = Maths.clamp( oldRoadCoord.s - laneSection.s, 0, laneSection.length );
+		const oldOffset = Maths.clamp( oldRoadCoord.s - laneSection.s, 0, laneSection.getLength() );
 
 		const newPosition = this.selectedNode.position.clone();
 		const newRoadCoord = this.tool.roadService.findRoadCoordAtPosition( newPosition );
-		const newOffset = Maths.clamp( newRoadCoord.s - laneSection.s, 0, laneSection.length );
+		const newOffset = Maths.clamp( newRoadCoord.s - laneSection.s, 0, laneSection.getLength() );
 
 		Commands.SetValue( this.selectedNode, 's', newOffset, oldOffset );
 

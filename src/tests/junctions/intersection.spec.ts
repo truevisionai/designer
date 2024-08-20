@@ -47,11 +47,11 @@ xdescribe( 'IntersectionService', () => {
 	it( 'should detect intersection on elevated roads', () => {
 
 		const roadA = roadService.createDefaultRoad();
-		roadA.getElevationProfile().addElevation( 0, 10, 0, 0, 0 );
+		roadA.getElevationProfile().createAndAddElevation( 0, 10, 0, 0, 0 );
 		roadA.getPlanView().addGeometryLine( 0, -50, 0, 0, 100 );
 
 		const roadB = roadService.createDefaultRoad();
-		roadB.getElevationProfile().addElevation( 0, 10, 0, 0, 0 );
+		roadB.getElevationProfile().createAndAddElevation( 0, 10, 0, 0, 0 );
 		roadB.getPlanView().addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
@@ -69,7 +69,7 @@ xdescribe( 'IntersectionService', () => {
 		roadA.getPlanView().addGeometryLine( 0, -50, 0, 0, 100 );
 
 		const roadB = roadService.createDefaultRoad();
-		roadB.getElevationProfile().addElevation( 0, 10, 0, 0, 0 );
+		roadB.getElevationProfile().createAndAddElevation( 0, 10, 0, 0, 0 );
 		roadB.getPlanView().addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );
@@ -81,11 +81,11 @@ xdescribe( 'IntersectionService', () => {
 	it( 'should not detect intersection when elevation is different', () => {
 
 		const roadA = roadService.createDefaultRoad();
-		roadA.getElevationProfile().addElevation( 0, 5, 0, 0, 0 );
+		roadA.getElevationProfile().createAndAddElevation( 0, 5, 0, 0, 0 );
 		roadA.getPlanView().addGeometryLine( 0, -50, 0, 0, 100 );
 
 		const roadB = roadService.createDefaultRoad();
-		roadB.getElevationProfile().addElevation( 0, 10, 0, 0, 0 );
+		roadB.getElevationProfile().createAndAddElevation( 0, 10, 0, 0, 0 );
 		roadB.getPlanView().addGeometryLine( 0, 0, -50, Maths.PI2, 50 );
 
 		const intersection = intersectionService.getRoadIntersectionPoint( roadA, roadB );

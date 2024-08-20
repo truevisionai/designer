@@ -28,6 +28,7 @@ import { RoadControlPoint } from "../../objects/road-control-point";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadGeometryService } from '../road/road-geometry.service';
+import { RoadWidthService } from '../road/road-width.service';
 
 const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
@@ -268,7 +269,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		// const add = ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) => {
 
-		// 	const points = this.debugService.getPositions( road, laneSection, lane, 0, laneSection.length, LINE_STEP );
+		// 	const points = this.debugService.getPositions( road, laneSection, lane, 0, laneSection.getLength(), LINE_STEP );
 
 		// 	const positions = points.map( point => point.position );
 
@@ -511,10 +512,10 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const sCoord = contact == TvContactPoint.START ? 0 : road.length;
 
-		const result = road.getLaneProfile().getRoadWidthAt( sCoord );
+		const result = RoadWidthService.instance.findRoadWidthAt( road, sCoord );
 
-		const start = RoadGeometryService.instance.findRoadPosition(road, sCoord, result.leftSideWidth );
-		const end = RoadGeometryService.instance.findRoadPosition(road, sCoord, -result.rightSideWidth );
+		const start = RoadGeometryService.instance.findRoadPosition( road, sCoord, result.leftSideWidth );
+		const end = RoadGeometryService.instance.findRoadPosition( road, sCoord, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 		lineGeometry.setPositions( [
@@ -548,10 +549,10 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const sOffset = node.contact == TvContactPoint.START ? 0 : node.road.length;
 
-		const result = node.road.getLaneProfile().getRoadWidthAt( sOffset );
+		const result = RoadWidthService.instance.findRoadWidthAt( node.road, sOffset );
 
-		const start = node.road.getPosThetaAt( sOffset, result.leftSideWidth );
-		const end = node.road.getPosThetaAt( sOffset, -result.rightSideWidth );
+		const start = RoadGeometryService.instance.findRoadPosition( node.road, sOffset, result.leftSideWidth );
+		const end = RoadGeometryService.instance.findRoadPosition( node.road, sOffset, -result.rightSideWidth );
 
 		node.line.geometry.dispose();
 

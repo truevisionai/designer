@@ -117,23 +117,21 @@ export function expectValidMap ( mapService: MapService ) {
 
 }
 
+export function exportCorrectLaneOrder ( laneSection: TvLaneSection ) {
+	// 3 2 1
+	laneSection.getLeftLanes().forEach( ( lane, index, array ) => {
+		expect( lane.id ).toBe( array.length - index );
+	} );
+
+	// -1, -2, -3
+	laneSection.getRightLanes().forEach( ( lane, index ) => {
+		expect( lane.id ).toBe( -1 - index );
+	} );
+}
+
 export class BaseTest {
 
 	constructor () {
-	}
-
-	expectCorrectLaneOrder ( laneSection: TvLaneSection ) {
-
-		// 3 2 1
-		laneSection.getLeftLanes().forEach( ( lane, index, array ) => {
-			expect( lane.id ).toBe( array.length - index );
-		} );
-
-		// -1, -2, -3
-		laneSection.getRightLanes().forEach( ( lane, index ) => {
-			expect( lane.id ).toBe( -1 - index );
-		} );
-
 	}
 
 	makeRoad ( roadFactory: RoadFactory, points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
@@ -184,9 +182,9 @@ export class BaseTest {
 		// -2 - sidewalk on right
 		// --------------------------------
 
-		road.laneSections[ 0 ].lanes.get( 1 ).type = TvLaneType.sidewalk;
-		road.laneSections[ 0 ].lanes.get( -2 ).type = TvLaneType.sidewalk;
-		road.laneSections[ 0 ].lanes.get( -1 ).type = TvLaneType.driving;
+		road.laneSections[ 0 ].lanesMap.get( 1 ).type = TvLaneType.sidewalk;
+		road.laneSections[ 0 ].lanesMap.get( -2 ).type = TvLaneType.sidewalk;
+		road.laneSections[ 0 ].lanesMap.get( -1 ).type = TvLaneType.driving;
 
 		roadService.add( road );
 

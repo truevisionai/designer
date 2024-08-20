@@ -85,7 +85,7 @@ export class LaneBufferGeometry extends BufferGeometry {
 		// add last s geometry to close any gaps
 		step = Maths.clamp( laneSection.endS - Maths.Epsilon, laneSection.s, laneSection.endS );
 
-		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSection.length );
+		cumulativeWidth = laneSection.getWidthUptoStart( lane, laneSection.getLength() );
 
 		refLine = this.road.getPosThetaAt( step );
 

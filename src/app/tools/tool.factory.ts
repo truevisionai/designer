@@ -13,7 +13,7 @@ import { RoadElevationToolService } from "./road-elevation/road-elevation-tool.s
 import { ManeuverToolHelper } from "./maneuver/maneuver-tool-helper.service";
 import { LaneWidthToolService } from "./lane-width/lane-width-tool.service";
 import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service";
-import { LaneToolService } from "./lane/lane-tool.service";
+import { LaneToolHelper } from "./lane/lane-tool.helper";
 import { CrosswalkToolHelper } from "./crosswalk/crosswalk-tool.helper";
 import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.service";
 import { JunctionToolHelper } from "./junction/junction-tool.helper";
@@ -104,7 +104,7 @@ export class ToolFactory {
 		private maneuverToolService: ManeuverToolHelper,
 		private laneWidthService: LaneWidthToolService,
 		private laneMarkingService: LaneMarkingToolService,
-		private laneToolService: LaneToolService,
+		private laneToolService: LaneToolHelper,
 		private roadCutToolService: RoadDividerToolService,
 		private junctionToolService: JunctionToolHelper,
 		private propCurveService: PropCurveService,

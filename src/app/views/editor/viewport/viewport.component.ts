@@ -127,6 +127,22 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.viewControllerService.updated.subscribe( () => this.adjustRaycasterThreshold() );
 
+		this.initRaycaster();
+
+		this.render();
+
+		setTimeout( () => {
+
+			this.viewHelperService.init( this.viewHelperCanvas );
+
+			this.onWindowResized();
+
+		}, 10 );
+
+	}
+
+	initRaycaster (): void {
+
 		this.raycaster = new THREE.Raycaster();
 
 		this.raycaster.params.Points.threshold = 0.5;
@@ -139,16 +155,6 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 
 		this.raycaster.far = 10000;
-
-		this.render();
-
-		setTimeout( () => {
-
-			this.viewHelperService.init( this.viewHelperCanvas );
-
-			this.onWindowResized();
-
-		}, 10 );
 
 	}
 
@@ -619,7 +625,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster.layers.set( 0 );  // default layer
 
-		let intersections = this.raycaster.intersectObjects( this.sceneService.scene.children, recursive );
+		const intersections = this.raycaster.intersectObjects( this.sceneService.scene.children, recursive );
 
 		if ( intersections.length > 0 ) {
 

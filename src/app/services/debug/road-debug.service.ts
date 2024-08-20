@@ -15,6 +15,14 @@ import { MapService } from '../map/map.service';
 import { DynamicControlPoint } from "../../objects/dynamic-control-point";
 import { RoadNode } from 'app/objects/road-node';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { LaneWidthNode } from 'app/objects/lane-width-node';
+import { TvLaneWidth } from 'app/map/models/tv-lane-width';
+import { RoadWidthService } from '../road/road-width.service';
+import { RoadGeometryService } from '../road/road-geometry.service';
+import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { Line2 } from 'three/examples/jsm/lines/Line2';
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 
 const LINE_WIDTH = 2.0;
 const LINE_STEP = 0.1;
@@ -31,6 +39,8 @@ export class RoadDebugService {
 
 	private lines = new Object3DArrayMap<TvRoad, DebugLine<TvRoad>[]>();
 
+	private laneLines = new Object3DArrayMap<TvRoad, DebugLine<TvRoad>[]>();
+
 	private nodes = new Object3DArrayMap<number, RoadNode[]>();
 
 	private arrows = new Object3DArrayMap<TvRoad, Object3D[]>();
@@ -39,13 +49,16 @@ export class RoadDebugService {
 
 	private selectedRoads = new Set<TvRoad>();
 
+	private roadGeometryService: RoadGeometryService;
+
 	constructor (
 		private debugService: DebugDrawService,
 		private mapService: MapService,
 	) {
+		this.roadGeometryService = RoadGeometryService.instance;
 	}
 
-	showNodes () {
+	showNodes (): void {
 
 		this.mapService.nonJunctionRoads.forEach( road => {
 
@@ -55,13 +68,13 @@ export class RoadDebugService {
 
 	}
 
-	hideNodes () {
+	hideNodes (): void {
 
 		this.nodes.clear();
 
 	}
 
-	showRoadNodes ( road: TvRoad ) {
+	showRoadNodes ( road: TvRoad ): void {
 
 		const startNode = this.createRoadNode( road, road, 0, 6, COLOR.MAGENTA );
 		const endNode = this.createRoadNode( road, road, road.length, 6, COLOR.MAGENTA );
@@ -72,36 +85,24 @@ export class RoadDebugService {
 		this.nodes.addItem( road.id, endNode );
 	}
 
-	upateRoadNodes ( road: TvRoad ) {
+	upateRoadNodes ( road: TvRoad ): void {
 
 		this.removeRoadNodes( road );
 		this.showRoadNodes( road );
 
 	}
 
-	removeRoadNodes ( road: TvRoad ) {
+	removeRoadNodes ( road: TvRoad ): void {
 
 		this.nodes.removeKey( road.id );
 
 	}
 
-	// showRoadReferenceLine ( road: TvRoad ) {
-
-	// 	const points = road.getReferenceLinePoints( LINE_STEP ).models( point => point.position );
-
-	// 	points.forEach( point => point.z += LINE_ZOFFSET );
-
-	// 	const line = this.debugService.createDebugLine( road, points, LINE_WIDTH );
-
-	// 	this.lines.addItem( road, line );
-
-	// }
-
-	showRoadBorderLine ( road: TvRoad, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
+	showRoadBorderLine ( road: TvRoad, lineWidth = LINE_WIDTH, color = COLOR.CYAN ): void {
 
 		const add = ( lane: TvLane ) => {
 
-			const points = this.debugService.getPositions( road, lane.laneSection, lane, 0, lane.laneSection.length, LINE_STEP );
+			const points = this.debugService.getPositions( road, lane.laneSection, lane, 0, lane.laneSection.getLength(), LINE_STEP );
 
 			const positions = points.map( point => point.position );
 
@@ -120,13 +121,13 @@ export class RoadDebugService {
 
 	}
 
-	removeRoadBorderLine ( road: TvRoad ) {
+	removeRoadBorderLine ( road: TvRoad ): void {
 
 		this.lines.removeKey( road );
 
 	}
 
-	highlightRoad ( road: TvRoad, arrows = true ) {
+	highlightRoad ( road: TvRoad, arrows = true ): void {
 
 		if ( this.selectedRoads.has( road ) ) return;
 
@@ -142,7 +143,7 @@ export class RoadDebugService {
 
 	}
 
-	removeHighlight () {
+	removeHighlight (): void {
 
 		this.highlightedRoads.forEach( road => {
 
@@ -154,7 +155,7 @@ export class RoadDebugService {
 
 	}
 
-	unHighlightRoad ( road: TvRoad ) {
+	unHighlightRoad ( road: TvRoad ): void {
 
 		if ( this.selectedRoads.has( road ) ) return;
 
@@ -168,7 +169,7 @@ export class RoadDebugService {
 
 	}
 
-	clearLines () {
+	clearLines (): void {
 
 		this.highlightedRoads.forEach( road => {
 
@@ -184,7 +185,7 @@ export class RoadDebugService {
 
 	}
 
-	showRoadDirectionArrows ( road: TvRoad ) {
+	showRoadDirectionArrows ( road: TvRoad ): void {
 
 		this.getReferenceLinePoints( road, ARROW_STEP ).forEach( point => {
 
@@ -209,7 +210,123 @@ export class RoadDebugService {
 		return points;
 	}
 
-	clear () {
+	createRoadNode<T> ( road: TvRoad, target: T, s: number, width = 2, color = COLOR.CYAN ): DebugLine<T> {
+
+		const result = RoadWidthService.instance.findRoadWidthAt( road, s );
+
+		const start = road.getPosThetaAt( s, result.leftSideWidth );
+		const end = road.getPosThetaAt( s, -result.rightSideWidth );
+
+		return this.debugService.createDebugLine<T>( target, [ start.position, end.position ], width, color );
+
+	}
+
+	showLaneReferenceLines ( road: TvRoad, color = COLOR.CYAN ): void {
+
+		road.laneSections.forEach( section => {
+
+			section.lanesMap.forEach( lane => {
+
+				lane.width.forEach( width => {
+
+					const referenceLine = this.createLaneReferenceLine( road, section, lane, width );
+
+					this.laneLines.addItem( road, referenceLine );
+
+				} );
+
+			} );
+
+		} );
+
+	}
+
+	removeLaneReferenceLines ( road: TvRoad ): void {
+
+		this.laneLines.removeKey( road );
+
+	}
+
+	createLaneReferenceLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: TvLaneWidth ): DebugLine<TvLane> {
+
+		const i = lane.width.indexOf( node );
+
+		const next = lane.width[ i + 1 ];
+
+		const sStart = node.s;
+
+		// get s of next lane width node
+		const sEnd = next?.s || laneSection.getLength();
+
+		const points = this.debugService.getPositions( road, laneSection, lane, sStart, sEnd, 0.1 ).map( point => point.position );
+
+		return this.debugService.createDebugLine( lane, points );
+
+	}
+
+	createRoadWidthLine ( roadCoord: TvRoadCoord ): Line2 {
+
+		return this.createRoadWidthLinev2( roadCoord.road, roadCoord.s );
+
+	}
+
+	createRoadWidthLinev2<T> ( road: TvRoad, s: number, target?: T, width = 2 ): DebugLine<T> {
+
+		const result = RoadWidthService.instance.findRoadWidthAt( road, s );
+
+		const start = this.roadGeometryService.findRoadPosition( road, s, result.leftSideWidth );
+
+		const end = this.roadGeometryService.findRoadPosition( road, s, -result.rightSideWidth );
+
+		return this.debugService.createDebugLine( target, [ start.position, end.position ], width );
+
+	}
+
+	updateRoadWidthLine ( line: Line2, roadCoord: TvRoadCoord ): Line2 {
+
+		const result = RoadWidthService.instance.findRoadWidthAt( roadCoord.road, roadCoord.s );
+
+		const start = this.roadGeometryService.findRoadPosition( roadCoord.road, roadCoord.s, result.leftSideWidth );
+
+		const end = this.roadGeometryService.findRoadPosition( roadCoord.road, roadCoord.s, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z,
+			end.x, end.y, end.z
+		] );
+
+		line.geometry.dispose();
+
+		line.geometry = lineGeometry;
+
+		return line;
+	}
+
+	updateRoadWidthLinev2 ( line: Line2, road: TvRoad, s: number ): Line2 {
+
+		const result = RoadWidthService.instance.findRoadWidthAt( road, s );
+
+		const start = this.roadGeometryService.findRoadPosition( road, s, result.leftSideWidth );
+
+		const end = this.roadGeometryService.findRoadPosition( road, s, -result.rightSideWidth );
+
+		const lineGeometry = new LineGeometry();
+
+		lineGeometry.setPositions( [
+			start.x, start.y, start.z,
+			end.x, end.y, end.z
+		] );
+
+		line.geometry.dispose();
+
+		line.geometry = lineGeometry;
+
+		return line;
+	}
+
+	clear (): void {
 
 		this.lines.clear();
 
@@ -222,65 +339,5 @@ export class RoadDebugService {
 		this.nodes.clear();
 
 	}
-
-	createRoadNode<T> ( road: TvRoad, target: T, s: number, width = 2, color = COLOR.CYAN ): DebugLine<T> {
-
-		const result = road.getLaneProfile().getRoadWidthAt( s );
-
-		const start = road.getPosThetaAt( s, result.leftSideWidth );
-		const end = road.getPosThetaAt( s, -result.rightSideWidth );
-
-		return this.debugService.createDebugLine<T>( target, [ start.position, end.position ], width, color );
-
-	}
-
-	// showCornerPoints ( road: TvRoad, ) {
-
-	// 	this.createCornerPoint( road, road.getStartPosTheta() );
-	// 	this.createCornerPoint( road, road.getEndPosTheta() );
-
-	// }
-
-	// hideCornerPoints ( road: TvRoad ) {
-
-	// 	this.cornerPoints.removeKey( road );
-
-	// }
-
-	// createCornerPoint ( road: TvRoad, coord: TvPosTheta ) {
-
-	// 	const rightT = road.getLaneProfile().getRightsideWidth( coord.s );
-	// 	const leftT = road.getLaneProfile().getLeftSideWidth( coord.s );
-
-	// 	const leftPosition = coord.clone().addLateralOffset( leftT ).toVector3();
-	// 	const rightPosition = coord.clone().addLateralOffset( -rightT ).toVector3();
-
-	// 	const leftPoint = new DynamicControlPoint( road, leftPosition );
-	// 	const rightPoint = new DynamicControlPoint( road, rightPosition );
-
-	// 	this.cornerPoints.addItem( road, leftPoint );
-	// 	this.cornerPoints.addItem( road, rightPoint );
-
-	// }
-
-	// showAllCornerPoints () {
-
-	// 	this.mapService.models.getRoads().forEach( road => {
-
-	// 		this.showCornerPoints( road );
-
-	// 	} );
-
-	// }
-
-	// hideAllCornerPoints () {
-
-	// 	this.mapService.models.getRoads().forEach( road => {
-
-	// 		this.hideCornerPoints( road );
-
-	// 	} );
-
-	// }
 
 }

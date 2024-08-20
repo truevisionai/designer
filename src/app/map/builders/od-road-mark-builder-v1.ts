@@ -109,7 +109,7 @@ export class OdRoadMarkBuilderV1 {
 
 			} else {
 
-				roadMark.lastSCoordinate = laneSection.length;
+				roadMark.lastSCoordinate = laneSection.getLength();
 
 			}
 

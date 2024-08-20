@@ -28,10 +28,10 @@ describe( 'OdRoadLanes', () => {
 
 	it( 'should give correct getLaneOffsetAt s', () => {
 
-		road.getLaneProfile().addLaneSection( 0, true );
-		road.getLaneProfile().addLaneOffsetRecord( 0, 0, 0, 0, 0 );
-		road.getLaneProfile().addLaneOffsetRecord( 10, 1, 0, 0, 0 );
-		road.getLaneProfile().addLaneOffsetRecord( 20, 2, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneSection( 0, true );
+		road.getLaneProfile().createAndAddLaneOffset( 0, 0, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneOffset( 10, 1, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneOffset( 20, 2, 0, 0, 0 );
 
 		expect( road.getLaneProfile().getLaneOffsetValue( 0 ) ).toBe( 0 );
 		// expect( road.getLaneProfile().getLaneOffsetValue( 1 ) ).toBe( 0 );

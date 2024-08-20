@@ -3,7 +3,7 @@
  */
 
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
-import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
+import { TvLaneOffset } from 'app/map/models/tv-lane-offset';
 import { TvLaneSide } from '../../map/models/tv-common';
 import { TvLane } from '../../map/models/tv-lane';
 import { TvLaneRoadMark } from '../../map/models/tv-lane-road-mark';
@@ -59,7 +59,7 @@ export class RoadStyleLoader implements AssetLoader {
 
 		const roadStyle = new RoadStyle();
 
-		roadStyle.laneOffset = new TvRoadLaneOffset(
+		roadStyle.laneOffset = new TvLaneOffset(
 			json.laneOffset.attr_s || 0,
 			json.laneOffset.attr_a || 0,
 			json.laneOffset.attr_b || 0,
@@ -117,7 +117,7 @@ export class RoadStyleLoader implements AssetLoader {
 			const c = parseFloat( xml.attr_c );
 			const d = parseFloat( xml.attr_d );
 
-			elevationProfile.addElevation( s, a, b, c, d );
+			elevationProfile.createAndAddElevation( s, a, b, c, d );
 
 		} );
 
@@ -155,9 +155,7 @@ export class RoadStyleLoader implements AssetLoader {
 		const type = xmlElement.attr_type;
 		const level = xmlElement.attr_level == 'true';
 
-		laneSection.addLane( laneSide, id, type, level, false );
-
-		const lane = laneSection.getLastAddedLane();
+		const lane = laneSection.createLane( laneSide, id, type, level, false );
 
 		if ( xmlElement.link != null ) {
 

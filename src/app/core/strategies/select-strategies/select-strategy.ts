@@ -7,6 +7,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
+import { RoadWidthService } from 'app/services/road/road-width.service';
 import { Intersection, Vector3 } from "three";
 
 export abstract class SelectStrategy<T> {
@@ -29,7 +30,9 @@ export abstract class SelectStrategy<T> {
 
 		if ( !roadCoord ) return;
 
-		const width = roadCoord.t > 0 ? roadCoord.road.getLaneProfile().getLeftSideWidth( roadCoord.s ) : roadCoord.road.getLaneProfile().getRightsideWidth( roadCoord.s );
+		const width = roadCoord.t > 0 ?
+			RoadWidthService.instance.findLeftWidthAt( roadCoord.road, roadCoord.s ) :
+			RoadWidthService.instance.findRightWidthAt( roadCoord.road, roadCoord.s );
 
 		if ( Math.abs( roadCoord.t ) > width ) return;
 
@@ -45,7 +48,9 @@ export abstract class SelectStrategy<T> {
 
 		if ( !roadCoord ) return;
 
-		const width = roadCoord.t > 0 ? roadCoord.road.getLaneProfile().getLeftSideWidth( roadCoord.s ) : roadCoord.road.getLaneProfile().getRightsideWidth( roadCoord.s );
+		const width = roadCoord.t > 0 ?
+			RoadWidthService.instance.findLeftWidthAt( roadCoord.road, roadCoord.s ) :
+			RoadWidthService.instance.findRightWidthAt( roadCoord.road, roadCoord.s );
 
 		if ( Math.abs( roadCoord.t ) > width ) return;
 

@@ -29,6 +29,7 @@ import { SplineUtils } from 'app/utils/spline.utils';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { RoadService } from '../road/road.service';
+import { RoadWidthService } from '../road/road-width.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -484,13 +485,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 			const posThetaA = roadA.getPosThetaAt( i );
 
-			const widthA = ( posThetaA.t > 0 ? roadA.getLaneProfile().getLeftSideWidth( posThetaA.s ) : roadA.getLaneProfile().getRightsideWidth( posThetaA.s ) ) / 2;
+			const widthA = ( posThetaA.t > 0 ? RoadWidthService.instance.findLeftWidthAt( roadA, posThetaA.s ) : RoadWidthService.instance.findRightWidthAt( roadA, posThetaA.s ) ) / 2;
 
 			for ( let j = 0; j < roadB.length; j += stepSize ) {
 
 				const posThetaB = roadB.getPosThetaAt( j );
 
-				const widthB = ( posThetaB.t > 0 ? roadB.getLaneProfile().getLeftSideWidth( posThetaB.s ) : roadB.getLaneProfile().getRightsideWidth( posThetaB.s ) ) / 2;
+				const widthB = ( posThetaB.t > 0 ? RoadWidthService.instance.findLeftWidthAt( roadB, posThetaB.s ) : RoadWidthService.instance.findRightWidthAt( roadB, posThetaB.s ) ) / 2;
 
 				// Calculate the distance between points on roadA and roadB
 				const distance = Math.sqrt( Math.pow( posThetaA.x - posThetaB.x, 2 ) + Math.pow( posThetaA.y - posThetaB.y, 2 ) + Math.pow( posThetaA.z - posThetaB.z, 2 ) );

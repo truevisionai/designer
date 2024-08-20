@@ -43,7 +43,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 
 		const road = testHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 50, 0 ) ] );
 
-		expect( road.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( road.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		const laneSection = road.laneSections[ 0 ];
 
@@ -67,10 +67,10 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const roadB = testHelper.createDefaultRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ] );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( roadB.laneSections.length ).toBe( 1 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
@@ -78,7 +78,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const laneSections = factory.createFromRoadCoord( roadB, coordA, coordB );
 
 		expect( laneSections.length ).toBe( 1 );
-		expect( laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( laneSections[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( laneSections[ 0 ].areRightLanesInOrder() ).toBe( true );
@@ -111,10 +111,10 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const roadB = testHelper.createDefaultRoad( [ new Vector2( 200, 0 ), new Vector2( 100, 0 ) ] );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( roadB.laneSections.length ).toBe( 1 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getEndPosTheta().toRoadCoord( roadB );
@@ -122,7 +122,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const laneSections = factory.createFromRoadCoord( roadB, coordA, coordB );
 
 		expect( laneSections.length ).toBe( 1 );
-		expect( laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( laneSections[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( laneSections[ 0 ].areRightLanesInOrder() ).toBe( true );
@@ -155,10 +155,10 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const roadB = testHelper.createDefaultRoad( [ new Vector2( 100, 0 ), new Vector2( 200, 0 ) ] );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( roadB.laneSections.length ).toBe( 1 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		const coordA = roadA.getStartPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
@@ -166,7 +166,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const laneSections = factory.createFromRoadCoord( roadB, coordA, coordB );
 
 		expect( laneSections.length ).toBe( 1 );
-		expect( laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( laneSections[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( laneSections[ 0 ].areRightLanesInOrder() ).toBe( true );
@@ -202,10 +202,10 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const roadB = testHelper.createRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 5 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 5 );
 
 		expect( roadB.laneSections.length ).toBe( 1 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 3 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 3 );
 
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
@@ -217,7 +217,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		expect( laneSections[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( laneSections[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( laneSections[ 0 ].lanes.size ).toBe( 5 );
+		expect( laneSections[ 0 ].lanesMap.size ).toBe( 5 );
 		expect( laneSections[ 0 ].getLeftLaneCount() ).toBe( 2 );
 		expect( laneSections[ 0 ].getRightLaneCount() ).toBe( 2 );
 
@@ -256,10 +256,10 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const roadB = testHelper.createRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 2, 2 );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 3 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 3 );
 
 		expect( roadB.laneSections.length ).toBe( 1 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 5 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 5 );
 
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
@@ -273,7 +273,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		expect( laneSection.areLeftLanesInOrder() ).toBe( true );
 		expect( laneSection.areRightLanesInOrder() ).toBe( true );
 
-		expect( laneSection.lanes.size ).toBe( 5 );
+		expect( laneSection.lanesMap.size ).toBe( 5 );
 		expect( laneSection.getLeftLaneCount() ).toBe( 2 );
 		expect( laneSection.getRightLaneCount() ).toBe( 2 );
 
@@ -312,10 +312,10 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const roadB = testHelper.createRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( roadB.laneSections.length ).toBe( 1 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 3 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 3 );
 
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
@@ -327,7 +327,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		expect( laneSections[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( laneSections[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 		expect( laneSections[ 0 ].getLeftLaneCount() ).toBe( 3 );
 		expect( laneSections[ 0 ].getRightLaneCount() ).toBe( 3 );
 
@@ -366,10 +366,10 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const roadB = testHelper.createDefaultRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ] );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( roadB.laneSections.length ).toBe( 1 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
@@ -377,7 +377,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const leftToRight = factory.createForConnectingRoad( roadB, coordA, coordB );
 
 		expect( leftToRight.length ).toBe( 1 );
-		expect( leftToRight[ 0 ].lanes.size ).toBe( 4 );
+		expect( leftToRight[ 0 ].lanesMap.size ).toBe( 4 );
 
 		expect( leftToRight[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( leftToRight[ 0 ].areRightLanesInOrder() ).toBe( true );
@@ -395,7 +395,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const rightToLeft = factory.createForConnectingRoad( roadB, coordB, coordA );
 
 		expect( rightToLeft.length ).toBe( 1 );
-		expect( rightToLeft[ 0 ].lanes.size ).toBe( 4 );
+		expect( rightToLeft[ 0 ].lanesMap.size ).toBe( 4 );
 
 		expect( rightToLeft[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( rightToLeft[ 0 ].areRightLanesInOrder() ).toBe( true );
@@ -427,10 +427,10 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		const roadB = testHelper.createRoad( [ new Vector2( 100, 0 ), new Vector2( 150, 0 ) ], 1, 1 );
 
 		expect( roadA.laneSections.length ).toBe( 1 );
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( roadB.laneSections.length ).toBe( 1 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 3 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 3 );
 
 		const coordA = roadA.getEndPosTheta().toRoadCoord( roadA );
 		const coordB = roadB.getStartPosTheta().toRoadCoord( roadB );
@@ -442,7 +442,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		expect( leftToRight[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( leftToRight[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( leftToRight[ 0 ].lanes.size ).toBe( 2 );
+		expect( leftToRight[ 0 ].lanesMap.size ).toBe( 2 );
 		expect( leftToRight[ 0 ].getLeftLaneCount() ).toBe( 0 );
 		expect( leftToRight[ 0 ].getRightLaneCount() ).toBe( 1 );
 
@@ -468,7 +468,7 @@ xdescribe( 'LaneSectionFactory: tests', () => {
 		expect( rightToLeft[ 0 ].areLeftLanesInOrder() ).toBe( true );
 		expect( rightToLeft[ 0 ].areRightLanesInOrder() ).toBe( true );
 
-		expect( rightToLeft[ 0 ].lanes.size ).toBe( 2 );
+		expect( rightToLeft[ 0 ].lanesMap.size ).toBe( 2 );
 		expect( rightToLeft[ 0 ].getLeftLaneCount() ).toBe( 0 );
 		expect( rightToLeft[ 0 ].getRightLaneCount() ).toBe( 1 );
 

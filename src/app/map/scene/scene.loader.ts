@@ -1321,7 +1321,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			const c = parseFloat( xml.attr_c );
 			const d = parseFloat( xml.attr_d );
 
-			road.getElevationProfile().addElevation( s, a, b, c, d );
+			road.getElevationProfile().createAndAddElevation( s, a, b, c, d );
 
 		} );
 
@@ -1349,7 +1349,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		//
 		//     if ( Array.isArray( xmlElement.laneSection ) ) {
 		//
-		//         for ( let i = 0; i < xmlElement.laneSection.length; i++ ) {
+		//         for ( let i = 0; i < xmlElement.laneSection.getLength(); i++ ) {
 		//
 		//             this.parseLaneSections( road, xmlElement.laneSection[i] );
 		//
@@ -1736,7 +1736,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const type = TvLane.stringToType( xmlElement.attr_type );
 		const level = xmlElement.attr_level == 'true';
 
-		const lane = laneSection.addLane( laneSide, id, type, level, false );
+		const lane = laneSection.createLane( laneSide, id, type, level, false );
 
 		lane.threeMaterialGuid = xmlElement?.attr_materialGuid || null;
 
@@ -1903,7 +1903,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const c = parseFloat( xml.attr_c );
 		const d = parseFloat( xml.attr_d );
 
-		road.getLaneProfile().addLaneOffset( s, a, b, c, d );
+		road.getLaneProfile().createAndAddLaneOffset( s, a, b, c, d );
 	}
 
 	private parseControl ( xml: XmlElement ): TvControllerControl {

@@ -42,8 +42,6 @@ export class SplineTestHelper {
 	) {
 	}
 
-
-
 	makeDefaultRoad ( points: Vector2[] ) {
 
 		return this.roadFactory.createFromControlPoints( points );
@@ -126,7 +124,9 @@ export class SplineTestHelper {
 		return spline;
 	}
 
-	addStraightRoad ( start: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ) {
+	addStraightRoad ( start?: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ) {
+
+		start = start || new Vector3( 0, 0, 0 );
 
 		const spline = this.addStraightRoadSpline( start, length, degrees, type );
 
@@ -136,7 +136,9 @@ export class SplineTestHelper {
 
 	}
 
-	addStraightRoadSpline ( start: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ) {
+	addStraightRoadSpline ( start?: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ) {
+
+		start = start || new Vector3( 0, 0, 0 );
 
 		const spline = this.createStraightSpline( start, length, degrees, type );
 

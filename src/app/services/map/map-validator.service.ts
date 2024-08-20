@@ -214,7 +214,7 @@ export class MapValidatorService {
 				this.errors.push( 'Road:' + road.id + ' LaneSection has less than 2 lanes ' + laneSection.toString() );
 			}
 
-			for ( const [ id, lane ] of laneSection.lanes ) {
+			for ( const [ id, lane ] of laneSection.lanesMap ) {
 
 				if ( id == 0 ) continue;
 
@@ -246,7 +246,7 @@ export class MapValidatorService {
 			// Lane numbering shall be unique per lane section.
 			const laneIds = [];
 
-			for ( const [ id, lane ] of laneSection.lanes ) {
+			for ( const [ id, lane ] of laneSection.lanesMap ) {
 
 				if ( laneIds.includes( id ) ) {
 					this.errors.push( road.toString() + ' LaneSection has duplicate lane id ' + laneSection.toString() );

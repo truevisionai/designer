@@ -10,6 +10,22 @@ export class ModelNotFoundException extends Error {
 	}
 }
 
+export class LaneSectionNotFound extends ModelNotFoundException {
+	constructor ( message: string = 'LaneSectionNotFound' ) {
+		super( message );
+		this.name = 'LaneSectionNotFound';
+		Error.captureStackTrace( this, LaneSectionNotFound );
+	}
+}
+
+export class LaneNotFound extends ModelNotFoundException {
+	constructor ( message: string = 'LaneNotFound' ) {
+		super( message );
+		this.name = 'LaneNotFound';
+		Error.captureStackTrace( this, LaneNotFound );
+	}
+}
+
 export class InvalidArgumentException extends Error {
 	constructor ( message: string ) {
 		super( message );

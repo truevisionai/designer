@@ -45,10 +45,29 @@
 	"editor.indentSize": 4,
 	"editor.insertSpaces": false,
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": "always"
+		"source.fixAll.eslint": "never"
 	},
 	"eslint.validate": [
 		"javascript",
 		"typescript"
+	],
+	"eslint.rules.customizations": [
+		{
+			"rule": "no-*",
+			"severity": "info"
+		},
+		{
+			"rule": "!no-*",
+			"severity": "downgrade"
+		},
+		{
+			"rule": "radix",
+			"severity": "default"
+		},
+		{
+			"rule": "*",
+			"fixable": true,
+			"severity": "info"
+		}
 	]
 }

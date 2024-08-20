@@ -51,7 +51,7 @@ export class DepConnectionFactory {
 
 		const laneSection = connectingRoad.getLaneProfile().addGetLaneSection( 0 );
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
 
 		const connection = new TvJunctionConnection(
 			junction.connections.size,
@@ -268,7 +268,7 @@ export class DepConnectionFactory {
 
 				if ( lane.id != -i ) {
 
-					const newLane = connection.connectingLaneSection.addLane( TvLaneSide.RIGHT, -i, TvLaneType.none, false, true );
+					const newLane = connection.connectingLaneSection.createLane( TvLaneSide.RIGHT, -i, TvLaneType.none, false, true );
 
 					const incoming = connection.getIncomingPosition();
 					const laneSection = connection.getIncomingLaneSection();
@@ -401,7 +401,7 @@ export class DepConnectionFactory {
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+			laneSection.lanesMap.forEach( lane => {
 
 				if ( lane.side == TvLaneSide.CENTER ) return;
 
@@ -489,9 +489,9 @@ export class DepConnectionFactory {
 		const newLaneId = -Math.abs( incoming.lane.id );
 
 		// avoids adding the same lane twice
-		if ( connection.connectingLaneSection.hasLaneId( newLaneId ) ) return;
+		if ( connection.connectingLaneSection.hasLane( newLaneId ) ) return;
 
-		const connectionLane = connection.connectingLaneSection.addLane(
+		const connectionLane = connection.connectingLaneSection.createLane(
 			TvLaneSide.RIGHT,
 			newLaneId,
 			incoming.lane.type,

@@ -92,7 +92,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 		road.laneSections.forEach( section => {
 
-			section.lanes.forEach( lane => {
+			section.lanesMap.forEach( lane => {
 
 				lane.width.forEach( width => {
 
@@ -187,7 +187,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 		const sStart = node.laneWidth.s;
 
 		// get s of next lane width node
-		const sEnd = next?.s || laneSection.length;
+		const sEnd = next?.s || laneSection.getLength();
 
 		const points = this.debugService.getPositions( road, laneSection, lane, sStart, sEnd, 0.1 ).map( point => point.position );
 

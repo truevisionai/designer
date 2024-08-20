@@ -32,6 +32,7 @@ import { SplineService } from "./spline.service";
 import { Log } from 'app/core/utils/log';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { SplineSegmentService } from './spline-segment.service';
+import { RoadWidthService } from '../road/road-width.service';
 
 function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
@@ -282,7 +283,7 @@ export class SplineBuilder {
 
 			for ( let s = 0; s <= road.length; s += 5 ) {
 
-				const width = road.getLaneProfile().getRoadWidthAt( s ).totalWidth;
+				const width = RoadWidthService.instance.findTotalWidthAt( road, s );
 
 				if ( width !== lastWidth ) {
 
@@ -386,7 +387,7 @@ export class SplineBuilder {
 		const firstRoad = this.splineService.findFirstRoad( spline );
 
 		if ( firstRoad ) {
-			roadWidth = firstRoad.getLaneProfile().getRoadWidthAt( 0 );
+			roadWidth = RoadWidthService.instance.findRoadWidthAt( firstRoad, 0 );
 		}
 
 		const boundingBox = new Box2();
@@ -399,7 +400,7 @@ export class SplineBuilder {
 			const segment = spline.segmentMap.findAt( s );
 
 			if ( segment instanceof TvRoad ) {
-				roadWidth = segment.getLaneProfile().getRoadWidthAt( s - segment.sStart );
+				roadWidth = RoadWidthService.instance.findRoadWidthAt( segment, s - segment.sStart );
 			}
 
 			if ( !roadWidth ) {

@@ -224,6 +224,12 @@ export enum TvLaneSide {
 	RIGHT
 }
 
+export enum TvLaneLocation{
+	START,
+	CENTER,
+	END
+}
+
 export enum ObjectFillType {
 	grass = 'grass',
 	concrete = 'concrete',

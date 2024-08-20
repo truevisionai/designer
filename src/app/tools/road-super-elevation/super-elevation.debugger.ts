@@ -185,11 +185,11 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 
 			line = this.nodeCache.get( superElevation );
 
-			this.debugService.updateRoadWidthLinev2( line, road, superElevation.s );
+			this.roadDebugger.updateRoadWidthLinev2( line, road, superElevation.s );
 
 		} else {
 
-			line = this.debugService.createRoadWidthLinev2( road, superElevation.s, superElevation, 4 );
+			line = this.roadDebugger.createRoadWidthLinev2( road, superElevation.s, superElevation, 4 );
 
 			this.nodeCache.set( superElevation, line );
 

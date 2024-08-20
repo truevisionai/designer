@@ -13,7 +13,7 @@ import { TvLaneSection } from './tv-lane-section';
 import { TvLateralProfile } from './tv-lateral.profile';
 import { TvPlaneView } from './tv-plane-view';
 import { TvPosTheta } from './tv-pos-theta';
-import { TvLaneProfile } from './tv-road-lanes';
+import { TvLaneProfile } from './tv-lane-profile';
 import { TvRoadLink, TvRoadLinkType } from './tv-road-link';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvRoadObject } from './objects/tv-road-object';
@@ -114,11 +114,11 @@ export class TvRoad {
 	}
 
 	get laneSections () {
-		return this.laneProfile.laneSections;
+		return this.laneProfile.getLaneSections();
 	}
 
 	get laneOffsets () {
-		return this.laneProfile.laneOffsets;
+		return this.laneProfile.getLaneOffsets();
 	}
 
 	get hasType (): boolean {
@@ -126,7 +126,7 @@ export class TvRoad {
 	}
 
 	get length (): number {
-		return this.planView.getBlockLength();
+		return this.getLength();
 	}
 
 	getLength (): number {
@@ -456,7 +456,7 @@ export class TvRoad {
 
 		this.laneProfile.clear();
 
-		this.getLaneProfile().addLaneOffsetInstance( roadStyle.laneOffset.clone() );
+		this.getLaneProfile().addLaneOffset( roadStyle.laneOffset.clone() );
 
 		this.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
 
@@ -528,9 +528,9 @@ export class TvRoad {
 
 		let boundingBox: Box3;
 
-		this.laneProfile.laneSections.map( laneSection => {
+		this.laneProfile.getLaneSections().map( laneSection => {
 
-			laneSection.lanes.forEach( lane => {
+			laneSection.lanesMap.forEach( lane => {
 
 				if ( lane.id == 0 ) return;
 
@@ -571,7 +571,7 @@ export class TvRoad {
 
 	getLaneSectionLength ( laneSection: TvLaneSection ) {
 
-		return laneSection.length;
+		return laneSection.getLength();
 
 	}
 

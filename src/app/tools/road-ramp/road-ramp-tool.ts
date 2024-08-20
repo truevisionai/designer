@@ -282,42 +282,9 @@ export class RoadRampTool extends BaseTool<any> {
 
 			throw new Error( 'Ramp road should have atleast one segment' );
 
-			// this.helper.roadFactory.createNewRoad();
-
-			// road.spline = spline;
-
-			// this.helper.addLaneSection( startCoord, null, road );
-
-			// this.adjustSpline( road, spline );
-
-			// road.spline.segmentMap.set( 0, road );
-
 		}
 
 		this.helper.splineService.add( spline );
-
-	}
-
-	private adjustSpline ( road: TvRoad, spline: AbstractSpline ) {
-
-		// HACK: to ensure ramp spline are smooth
-
-		const rightSideWidth = road.getLaneProfile().getRightsideWidth( 0 );
-
-		const p1 = spline.controlPoints[ 0 ]?.position;
-		const p2 = spline.controlPoints[ 1 ]?.position;
-
-		if ( !p1 || !p2 ) return;
-
-		const d1 = p1.clone().sub( p2 ).normalize();
-
-		const perpendicularDirection = new Vector3( d1.y, -d1.x, 0 );
-
-		const offset = perpendicularDirection.multiplyScalar( rightSideWidth * 2 );
-
-		const newEnd = p2.clone().sub( offset );
-
-		spline.controlPoints[ 1 ].position.copy( newEnd );
 
 	}
 

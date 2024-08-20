@@ -3,13 +3,12 @@
  */
 
 import { GameObject } from 'app/objects/game-object';
-import { Log } from 'app/core/utils/log';
 import { MathUtils } from 'three';
 import { TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
-import { TvUtils } from './tv-utils';
 import { Maths } from "../../utils/maths";
+import { LaneNotFound } from 'app/exceptions/exceptions';
 
 export class TvLaneSection {
 
@@ -19,77 +18,51 @@ export class TvLaneSection {
 
 	public gameObject: GameObject;
 
-	public attr_s: number;
+	public readonly s: number;
 
-	public attr_singleSide: boolean;
+	private singleSide: boolean;
 
 	// old property
 	public endS: number;
 
-	// public left: OdRoadLaneSectionContainer;
-	// public center: OdRoadLaneSectionContainer;
-	// public right: OdRoadLaneSectionContainer;
-	private lastAddedLaneIndex: number;
+	private lanes: Map<number, TvLane> = new Map<number, TvLane>();
 
-	private _laneMap: Map<number, TvLane> = new Map<number, TvLane>();
-
-	private _length: number;
+	private length: number;
 
 	constructor ( id: number, s: number, singleSide: boolean, public road: TvRoad ) {
 		this.uuid = MathUtils.generateUUID();
 		this.id = id;
-		this.attr_s = s;
-		this.attr_singleSide = singleSide;
+		this.s = s;
+		this.singleSide = singleSide;
 	}
 
-	get laneMap (): Map<number, TvLane> {
-		return this._laneMap;
+	getLength (): number {
+		return this.length;
 	}
 
-	set laneMap ( value: Map<number, TvLane> ) {
-		this._laneMap = value;
-	}
-
-	get length () {
-		return this._length;
-		// return this.lastSCoordinate - this.s;
-	}
-
-	set length ( value: number ) {
-		this._length = value;
+	setLength ( value: number ): void {
+		this.length = value;
 	}
 
 	get roadId () {
-		return this.road?.id;
+		return this.road.id;
 	}
 
-	public get lanes () {
-		return this.laneMap;
+	get lanesMap () {
+		return this.lanes;
 	}
 
-	get s () {
-		return this.attr_s;
-	}
-
-	// private laneVector: OdLane[] = [];
 	private get laneArray (): TvLane[] {
-		return [ ...this.laneMap.values() ];
+		return [ ...this.lanes.values() ];
 	}
 
-	hasLaneId ( laneId: number ) {
+	hasLane ( lane: TvLane | number ): boolean {
 
-		return this.laneMap.has( laneId );
+		if ( typeof lane === 'number' ) {
+			return this.lanes.has( lane );
+		}
 
-	}
-
-	updateMeshGeometry ( offset: number ): any {
-
-		this.getLeftLanes().reverse().forEach( ( lane, i ) => {
-
-			Log.info( i, lane );
-
-		} );
-
+		return this.lanes.has( lane.id );
 	}
 
 	/**
@@ -217,7 +190,7 @@ export class TvLaneSection {
 	 * @param {boolean} level Level parameter of the road
 	 * @param {boolean} sort Defines if the lanes should be sorted when added. True by default
 	 */
-	addLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
+	createLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
 
 		const newLane = new TvLane( laneSide, id, type, level, this.road?.id, this );
 
@@ -226,104 +199,7 @@ export class TvLaneSection {
 		return newLane;
 	}
 
-	/**
-	 * Delete the outside left lane
-	 */
-	deleteLeftLane () {
-
-		// Remove first element of array
-		this.laneArray.shift();
-
-		return this;
-	}
-
-	/**
-	 * Delete the outside right lane
-	 */
-	deleteRightLane () {
-
-		// Remove last element of array
-		this.laneArray.pop();
-
-		return this;
-	}
-
-	getLastLane (): TvLane {
-
-		if ( this.laneArray.length > 0 ) {
-			return this.laneArray[ this.laneArray.length - 1 ];
-		}
-
-		return null;
-	}
-
-	getLastAddedLane (): TvLane {
-
-		if ( this.laneMap.has( this.lastAddedLaneIndex ) ) {
-			return this.laneMap.get( this.lastAddedLaneIndex );
-		}
-
-		// TODO : remove this
-		if ( this.lastAddedLaneIndex < this.laneArray.length ) {
-			return this.laneArray[ this.lastAddedLaneIndex ];
-		}
-
-		return null;
-	}
-
-	getLastLeftLane (): TvLane {
-
-		if ( this.laneArray.length > 0 ) {
-
-			if ( this.laneArray[ 0 ].side === TvLaneSide.LEFT ) {
-
-				return this.laneArray[ 0 ];
-
-			} else {
-
-				return null;
-			}
-		}
-
-		return null;
-	}
-
-	getLastRightLane (): TvLane {
-
-		if ( this.laneArray.length > 0 ) {
-
-			const index = this.laneArray.length - 1;
-
-			if ( this.laneArray[ index ].side === TvLaneSide.RIGHT ) {
-
-				return this.laneArray[ index ];
-
-			} else {
-
-				return null;
-			}
-		}
-
-		return null;
-	}
-
-	getLastCenterLane (): TvLane {
-
-		const size = this.getLaneCount();
-
-		for ( let i = 0; i < size; i++ ) {
-
-			if ( this.laneArray[ i ].side === TvLaneSide.CENTER ) {
-
-				return this.laneArray[ i ];
-
-			}
-		}
-
-		return null;
-	}
-
-	getLane ( index ): TvLane {
+	getLaneAtIndex ( index: number ): TvLane {
 
 		if ( this.laneArray.length > 0 && index < this.laneArray.length ) {
 			return this.laneArray[ index ];
@@ -332,12 +208,16 @@ export class TvLaneSection {
 		return null;
 	}
 
-	getLaneCount () {
+	getLaneCount (): number {
+
 		return this.laneArray.length;
+
 	}
 
-	getLaneArray () {
+	getLaneArray (): TvLane[] {
+
 		return this.laneArray;
+
 	}
 
 	/**
@@ -347,55 +227,23 @@ export class TvLaneSection {
 	 */
 	checkInterval ( sCheck ): boolean {
 
-		if ( sCheck >= this.attr_s ) {
+		if ( sCheck >= this.s ) {
 			return true;
 		}
 
 		return false;
 	}
 
-	getLeftLaneCount () {
+	getLeftLaneCount (): number {
 
-		const idGreaterThanZero = ( a, b ) => a[ 0 ] > 0;
+		return this.laneArray.filter( lane => lane.side === TvLaneSide.LEFT ).length;
 
-		const leftLanes = new Map( [ ...this.laneMap.entries() ].filter( idGreaterThanZero ) );
-
-		return leftLanes.size;
-
-		// let count = 0;
-		//
-		// for ( let i = 0; i < this.getLaneCount(); i++ ) {
-		//
-		//     if ( this.laneVector[ i ].side === LaneSide.LEFT ) {
-		//
-		//         count++;
-		//
-		//     }
-		// }
-		//
-		// return count;
 	}
 
 	getLeftLanes (): TvLane[] {
 
-		const idGreaterThanZero = ( a, b ) => a[ 0 ] > 0;
+		return this.laneArray.filter( lane => lane.side === TvLaneSide.LEFT );
 
-		const leftLanes = new Map( [ ...this.laneMap.entries() ].filter( idGreaterThanZero ) );
-
-		return [ ...leftLanes.values() ];
-
-		// const lanes = [];
-		//
-		// for ( let i = 0; i < this.getLaneCount(); i++ ) {
-		//
-		//     if ( this.laneVector[ i ].side === LaneSide.LEFT ) {
-		//
-		//         lanes.push( this.laneVector[ i ] );
-		//
-		//     }
-		// }
-		//
-		// return lanes;
 	}
 
 	areLeftLanesInOrder (): boolean {
@@ -440,122 +288,37 @@ export class TvLaneSection {
 		return true;
 	}
 
-	getCenterLaneCount () {
-
-		let count = 0;
-
-		for ( let i = 0; i < this.getLaneCount(); i++ ) {
-
-			if ( this.laneArray[ i ].side === TvLaneSide.CENTER ) {
-
-				count++;
-
-			}
-		}
-
-		return count;
-	}
-
-	getCenterLanes () {
+	getCenterLanes (): TvLane[] {
 
 		return this.laneArray.filter( lane => lane.side === TvLaneSide.CENTER );
 
 	}
 
-	getRightLaneCount () {
+	getRightLaneCount (): number {
 
-		const idLessThanZero = ( a, b ) => a[ 0 ] < 0;
+		return this.laneArray.filter( lane => lane.side === TvLaneSide.RIGHT ).length;
 
-		const rightLanes = new Map( [ ...this.laneMap.entries() ].filter( idLessThanZero ) );
-
-		return rightLanes.size;
-
-		// let count = 0;
-		//
-		// for ( let i = 0; i < this.getLaneCount(); i++ ) {
-		//
-		//     if ( this.laneVector[ i ].side === LaneSide.RIGHT ) {
-		//
-		//         count++;
-		//
-		//     }
-		// }
-		//
-		// return count;
 	}
 
 	getRightLanes (): TvLane[] {
 
-		const idLessThanZero = ( a, b ) => a[ 0 ] < 0;
+		return this.laneArray.filter( lane => lane.side === TvLaneSide.RIGHT );
 
-		const rightLanes = new Map( [ ...this.laneMap.entries() ].filter( idLessThanZero ) );
-
-		return [ ...rightLanes.values() ];
-
-		// const lanes = [];
-		//
-		// for ( let i = 0; i < this.getLaneCount(); i++ ) {
-		//
-		//     if ( this.laneVector[ i ].side === LaneSide.RIGHT ) {
-		//
-		//         lanes.push( this.laneVector[ i ] );
-		//
-		//     }
-		// }
-		//
-		// return lanes;
-	}
-
-	getLaneOffset ( lane: TvLane ) {
-
-		let offsetFromCenter = 0;
-
-		if ( this.laneArray.length > 0 ) {
-
-			for ( let i = 0; i < this.laneArray.length; i++ ) {
-
-				const element = this.laneArray[ i ];
-
-				if ( element.side === lane.side ) {
-
-					offsetFromCenter += element.getWidthValue( 0 );
-
-				}
-			}
-		}
-
-		return offsetFromCenter;
 	}
 
 	getLaneById ( laneId: number ): TvLane {
 
-		let lane = null;
+		return this.lanes.get( laneId );
 
-		if ( this.laneArray.length > 0 ) {
-
-			for ( let i = 0; i < this.laneArray.length; i++ ) {
-
-				const element = this.laneArray[ i ];
-
-				if ( element.id === laneId ) {
-
-					lane = element;
-					break;
-
-				}
-			}
-		}
-
-		return lane;
 	}
 
 	addLaneInstance ( newLane: TvLane, sort: boolean = true ): void {
 
-		if ( this.laneMap.has( newLane.id ) ) {
+		if ( this.lanes.has( newLane.id ) ) {
 
-			const lanes = [ ...this.laneMap.entries() ];
+			const lanes = [ ...this.lanes.entries() ];
 
-			this.laneMap.clear();
+			this.lanes.clear();
 
 			for ( let [ id, lane ] of lanes ) {
 
@@ -565,24 +328,22 @@ export class TvLaneSection {
 				// shift right lanes
 				if ( id <= newLane.id && newLane.id < 0 ) lane.id = ( lane.id - 1 );
 
-				this.laneMap.set( lane.id, lane );
+				this.lanes.set( lane.id, lane );
 
 			}
 
 		}
 
-		this.laneMap.set( newLane.id, newLane );
-
-		this.lastAddedLaneIndex = newLane.id;
+		this.lanes.set( newLane.id, newLane );
 
 		if ( sort ) this.sortLanes();
 	}
 
-	sortLanes () {
+	sortLanes (): void {
 
 		const inDescOrder = ( a: [ number, TvLane ], b: [ number, TvLane ] ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
 
-		this.laneMap = new Map( [ ...this.laneMap.entries() ].sort( inDescOrder ) );
+		this.lanes = new Map( [ ...this.lanes.entries() ].sort( inDescOrder ) );
 
 	}
 
@@ -598,18 +359,17 @@ export class TvLaneSection {
 
 	}
 
-	removeLane ( deletedLane: TvLane ) {
+	removeLane ( deletedLane: TvLane ): void {
 
-		if ( !this.laneMap.has( deletedLane.id ) ) {
-			console.warn( 'Lane not found' );
-			return;
+		if ( !this.hasLane( deletedLane.id ) ) {
+			throw new LaneNotFound();
 		}
 
-		this.laneMap.delete( deletedLane.id );
+		this.lanes.delete( deletedLane.id );
 
-		const lanes = [ ...deletedLane.laneSection.laneMap.entries() ];
+		const lanes = [ ...deletedLane.laneSection.lanes.entries() ];
 
-		this.laneMap.clear();
+		this.lanes.clear();
 
 		// create a new models
 		let newLaneMap = new Map<number, TvLane>();
@@ -627,18 +387,9 @@ export class TvLaneSection {
 
 		}
 
-		this.laneMap = newLaneMap;
+		this.lanes = newLaneMap;
 
 		this.sortLanes()
-
-	}
-
-	updateLaneWidthValues ( lane: TvLane ): void {
-
-		// TODO: Check if this is correct
-		// this.length = lane.s - this.s;
-		// this.length - lane.s;
-		TvUtils.computeCoefficients( lane.getLaneWidthVector(), this.length );
 
 	}
 
@@ -646,7 +397,7 @@ export class TvLaneSection {
 
 		const lanes = t > 0 ? this.getLeftLanes() : this.getRightLanes();
 
-		if ( this.laneMap.has( 0 ) ) lanes.push( this.laneMap.get( 0 ) );
+		if ( this.lanes.has( 0 ) ) lanes.push( this.lanes.get( 0 ) );
 
 		// we need to find the lane which is closest to the pointer
 		const THRESHOLD = 0.5;
@@ -685,7 +436,7 @@ export class TvLaneSection {
 
 	getLaneAt ( s: number, t: number ): TvLane {
 
-		const lanes = this.lanes;
+		const lanes = this.lanesMap;
 
 		const isLeft = t > 0;
 		const isRight = t < 0;
@@ -712,42 +463,30 @@ export class TvLaneSection {
 
 	cloneAtS ( id?: number, s?: number, side?: boolean, road?: TvRoad ): TvLaneSection {
 
-		const laneSection = new TvLaneSection( id || 0, s || this.s, side || this.attr_singleSide, road || this.road );
+		const clone = new TvLaneSection( id || 0, s || this.s, side || this.singleSide, road || this.road );
 
-		this.laneMap.forEach( lane => {
+		this.lanes.forEach( lane => {
 
-			laneSection.laneMap.set( lane.id, lane.cloneAtS( lane.id, s || 0 ) );
-
-		} );
-
-		return laneSection;
-	}
-
-	removeLeftLanes () {
-
-		const lanes = this.getLeftLanes();
-
-		lanes.forEach( lane => {
-
-			this.removeLane( lane );
+			clone.lanes.set( lane.id, lane.cloneAtS( lane.id, s || 0 ) );
 
 		} );
 
+		return clone;
 	}
 
-	removeRightLanes () {
+	removeLeftLanes (): void {
 
-		const lanes = this.getRightLanes();
-
-		lanes.forEach( lane => {
-
-			this.removeLane( lane );
-
-		} );
+		this.getLeftLanes().forEach( lane => this.lanes.delete( lane.id ) );
 
 	}
 
-	toString () {
+	removeRightLanes (): void {
+
+		this.getRightLanes().forEach( lane => this.lanes.delete( lane.id ) );
+
+	}
+
+	toString (): string {
 
 		return `LaneSection: id: ${ this.id } s: ${ this.s } laneCount: ${ this.getLaneCount() }`;
 
@@ -755,9 +494,9 @@ export class TvLaneSection {
 
 	isMatching ( other: TvLaneSection ): boolean {
 
-		if ( this.lanes.size !== other.lanes.size ) return false;
+		if ( this.lanesMap.size !== other.lanesMap.size ) return false;
 
-		for ( let [ id, laneA ] of this.lanes ) {
+		for ( let [ id, laneA ] of this.lanesMap ) {
 
 			const laneB = other.getLaneById( id );
 
@@ -777,9 +516,9 @@ export class TvLaneSection {
 
 	isHeightMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
 
-		if ( this.lanes.size !== other.lanes.size ) return false;
+		if ( this.lanesMap.size !== other.lanesMap.size ) return false;
 
-		for ( let [ id, laneA ] of this.lanes ) {
+		for ( let [ id, laneA ] of this.lanesMap ) {
 
 			const laneB = other.getLaneById( id );
 
@@ -798,9 +537,9 @@ export class TvLaneSection {
 
 	isWidthMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
 
-		if ( this.lanes.size !== other.lanes.size ) return false;
+		if ( this.lanesMap.size !== other.lanesMap.size ) return false;
 
-		for ( let [ id, laneA ] of this.lanes ) {
+		for ( let [ id, laneA ] of this.lanesMap ) {
 
 			const laneB = other.getLaneById( id );
 
@@ -816,18 +555,19 @@ export class TvLaneSection {
 		return true;
 	}
 
-	isMarkingMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isMarkingMatching ( otherLaneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
 
-		if ( this.lanes.size !== other.lanes.size ) return false;
+		if ( this.lanesMap.size !== otherLaneSection.lanesMap.size ) return false;
 
-		for ( let [ id, laneA ] of this.lanes ) {
+		for ( let [ id, lane ] of this.lanesMap ) {
 
-			const laneB = other.getLaneById( id );
+			const otherLane = otherLaneSection.getLaneById( id );
 
-			if ( !laneB ) return false;
+			if ( !otherLane ) return false;
 
-			const roadMarkA = laneA.getRoadMarkAt( sOffset );
-			const roadMarkB = laneB.getRoadMarkAt( otherSOffset );
+			const roadMarkA = lane.getRoadMarkAt( sOffset );
+
+			const roadMarkB = otherLane.getRoadMarkAt( otherSOffset );
 
 			if ( !roadMarkA && !roadMarkB ) continue;
 

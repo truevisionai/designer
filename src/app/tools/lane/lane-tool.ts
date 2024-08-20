@@ -5,41 +5,57 @@
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvLane } from '../../map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
-import { BaseTool } from '../base-tool';
-import { SelectLaneStrategy } from "../../core/strategies/select-strategies/on-lane-strategy";
-import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
-import { AppInspector } from 'app/core/inspector';
-import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { DebugLine } from 'app/objects/debug-line';
-import { SerializedAction, SerializedField } from 'app/core/components/serialization';
-import { TvLaneType, TravelDirection } from 'app/map/models/tv-common';
-import { LaneToolService } from './lane-tool.service';
-import { LaneService } from 'app/services/lane/lane.service';
+import { LaneToolHelper } from './lane-tool.helper';
+import { ToolWithHandler } from '../base-tool-v2';
+import { Vector3 } from 'three';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { Commands } from 'app/commands/commands';
+import { LaneFactory } from 'app/services/lane/lane.factory';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { LaneOverlayHandler } from 'app/core/overlay-handlers/lane-overlay-handler.service';
+import { LaneToolOverlayHandler } from 'app/core/overlay-handlers/lane-tool.overlay';
+import { ObjectUserDataStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
+import { LaneObjectHandler } from 'app/core/object-handlers/lane-object-handler';
+import { RoadObjectHandler } from 'app/core/object-handlers/road-object-handler';
 
-export class LaneTool extends BaseTool<any>{
+export class LaneTool extends ToolWithHandler<TvLane> {
 
 	public name: string = 'LaneTool';
 
 	public toolType = ToolType.Lane;
 
-	get selectedLane () {
-		return this.selectionService.getLastSelected<TvLane>( TvLane.name );
-	}
+	private startLaneCoord: TvLaneCoord;
 
 	constructor (
-		private tool: LaneToolService
+		private helper: LaneToolHelper
 	) {
 		super();
+
+		this.objectHandlers = new Map();
+
+		this.objectHandlers.set( TvLane.name, helper.base.injector.get( LaneObjectHandler ) );
+
+		this.objectHandlers.set( TvRoad.name, helper.base.injector.get( RoadObjectHandler ) );
+
+		this.overlayHandlers = new Map();
+
+		this.overlayHandlers.set( TvRoad.name, helper.base.injector.get( LaneToolOverlayHandler ) );
+
+		this.overlayHandlers.set( TvLane.name, helper.base.injector.get( LaneOverlayHandler ) );
+
 	}
 
 	init (): void {
 
-		this.tool.base.reset();
+		this.overlayHandlers.forEach( handler => handler.enable() );
 
-		this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
+		this.helper.base.reset();
 
-		this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
+		this.selectionService.registerStrategy( TvLane.name, new ObjectUserDataStrategy( 'lane-overlay', 'lane' ) );
+
+		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
 		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
@@ -49,11 +65,9 @@ export class LaneTool extends BaseTool<any>{
 
 		super.disable();
 
-		this.tool.base.reset();
+		this.helper.base.reset();
 
-		if ( this.selectedLane ) this.onLaneUnselected( this.selectedLane );
-
-		this.tool.laneDebug.clear();
+		this.helper.laneDebug.clear();
 
 	}
 
@@ -65,11 +79,13 @@ export class LaneTool extends BaseTool<any>{
 
 	onPointerDownCreate ( e: PointerEventData ): void {
 
-		this.tool.base.selection.handleCreation( e, ( object ) => {
+		this.helper.base.selection.handleCreation( e, ( object ) => {
 
 			if ( object instanceof TvLane ) {
 
-				// object.duplicate();
+				this.startCreation( object, e.point );
+
+				this.helper.base.disableControls();
 
 			}
 
@@ -79,166 +95,76 @@ export class LaneTool extends BaseTool<any>{
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		this.tool.laneDebug.removeHighlight();
+		this.highlight( e );
 
-		this.tool.base.selection.handleHighlight( e, ( object ) => {
+		if ( !this.startLaneCoord ) return;
 
-			if ( object instanceof TvLane ) {
+		// const clone: TvRoad = this.startLaneCoord.lane.laneSection.road.clone( 0 );
 
-				this.tool.laneDebug.higlightLane( object );
+		// console.log( clone );
 
-			}
-
-		} );
+		// this.overlayHandlers?.get( TvRoad.name )?.onUpdated( clone );
 
 	}
 
-	onObjectAdded ( object: any ): void {
+	onPointerUp ( e: PointerEventData ): void {
 
-		if ( object instanceof TvLane ) {
+		this.helper.base.enableControls();
 
-			this.onLaneAdded( object );
+		if ( !this.startLaneCoord ) return;
 
-		}
-
-	}
-
-	onObjectUpdated ( object: any ): void {
-
-		if ( object instanceof TvLane ) {
-
-			this.tool.updateLane( object );
-
-		} else if ( object instanceof TvLaneObject ) {
-
-			this.tool.updateLane( object.lane );
-
-		}
-
-	}
-
-	onObjectRemoved ( object: any ): void {
-
-		if ( object instanceof TvLane ) {
-
-			this.onLaneRemoved( object );
-
-		}
-
-	}
-
-	onLaneRemoved ( lane: TvLane ) {
-
-		this.tool.removeLane( lane );
-
-	}
-
-	onLaneAdded ( lane: TvLane ) {
-
-		this.tool.addLane( lane );
-
-	}
-
-	onObjectSelected ( object: any ): void {
-
-		if ( object instanceof TvLane ) {
-
-			this.onLaneSelected( object );
-
-		}
-
-	}
-
-	onObjectUnselected ( object: any ): void {
-
-		if ( object instanceof TvLane ) {
-
-			this.onLaneUnselected( object );
-
-		}
-
-	}
-
-	onLaneSelected ( object: TvLane ) {
-
-		this.tool.laneDebug.selectLane( object );
-
-		const inspector = new TvLaneObject( object, this.tool.laneService );
-
-		AppInspector.setInspector( DynamicInspectorComponent, inspector );
-
-		this.setHint( 'use SHIFT + LEFT CLICK to duplicate a lane' );
-
-	}
-
-	onLaneUnselected ( object: TvLane ) {
-
-		this.tool.laneDebug.unselectLane( object );
-
-		AppInspector.clear();
-
-		this.setHint( 'use LEFT CLICK to select a road/lane' );
-	}
-}
-
-
-
-export class TvLaneObject {
-
-	constructor ( public lane: TvLane, private laneService: LaneService ) { }
-
-	@SerializedField( { label: 'Lane Id', type: 'int', disabled: true } )
-	get laneId (): number {
-		return Number( this.lane.id );
-	}
-
-	set laneId ( value: number ) {
-		this.lane.id = value;
-	}
-
-	@SerializedField( { type: 'enum', enum: TvLaneType } )
-	get type (): TvLaneType {
-		return this.lane.type;
-	}
-
-	set type ( value: TvLaneType ) {
-		this.laneService.setLaneType( this.lane, value );
-	}
-
-	@SerializedField( { type: 'boolean' } )
-	get level (): boolean {
-		return this.lane.level;
-	}
-
-	set level ( value ) {
-		this.lane.level = value;
-	}
-
-	@SerializedField( { type: 'enum', enum: TravelDirection } )
-	get direction () {
-		return this.lane.direction;
-	}
-
-	set direction ( value: TravelDirection ) {
-		this.lane.direction = value;
-	}
-
-	@SerializedAction()
-	duplicate () {
-
-		const newId = this.lane.isLeft ? this.lane.id + 1 : this.lane.id - 1;
-
-		const newLane = this.lane.clone( newId );
+		const newLane = this.stopCreation( this.startLaneCoord, e.point );
 
 		Commands.AddObject( newLane );
 
+		this.startLaneCoord = null;
+
 	}
 
-	@SerializedAction()
-	delete () {
+	startCreation ( object: TvLane, start: Vector3 ): void {
 
-		Commands.RemoveObject( this.lane );
+		const laneCoord = this.helper.roadService.findLaneCoord( start );
+
+		if ( !laneCoord ) return;
+
+		this.startLaneCoord = laneCoord;
+
+	}
+
+	stopCreation ( laneCoord: TvLaneCoord, end: Vector3 ): TvLane {
+
+		const width = this.calculateLaneWidth( laneCoord, end );
+
+		const lane = LaneFactory.createDuplicate( laneCoord.lane );
+
+		lane.width.splice( 0, lane.width.length );
+
+		lane.width.push( new TvLaneWidth( 0, width, 0, 0, 0, lane ) );
+
+		return lane;
+
+	}
+
+	calculateLaneWidth ( laneCoord: TvLaneCoord, currentPoint: Vector3 ): number {
+
+		const start = this.pointerDownAt.clone();
+
+		const direction = laneCoord.posTheta.toDirectionVector().normalize();
+
+		// Calculate the vector from startPosition to the current drag point
+		const offsetVector = currentPoint.clone().sub( start );
+
+		// Calculate the right vector (perpendicular to the lane direction)
+		const rightVector = direction.clone().cross( new Vector3( 0, 0, 1 ) ).normalize();
+
+		// Project the toDragPoint vector onto the rightVector to get the lateral distance
+		const lateralDistance = offsetVector.dot( rightVector );
+
+		// You can return the lane width or store it as needed
+		return Math.max( Math.abs( lateralDistance ), 0.1 );
 
 	}
 
 }
+
+

@@ -348,6 +348,14 @@ onPointerMoved(pointerEventData: PointerEventData): void {
 }
 ```
 
+### Code Smells & Tips
+
+#### G36: Avoid Transitive Navigation - Writing Shy Code
+- Avoid `a.getB().getC().doSomething();` 
+- Use myCollaborator.doSomething()
+
+#### J2: Don’t Inherit Constants
+
 ### Conclusion
 
 The recommended approach is to handle the exception in the service (`RoadService`) to maintain consistency, reduce code duplication, and simplify the tool classes. This approach centralizes error handling and makes the application more maintainable. If more context-specific handling is needed, consider providing additional information in the exceptions or using a combination of both approaches.

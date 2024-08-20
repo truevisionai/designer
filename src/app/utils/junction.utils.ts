@@ -20,6 +20,7 @@ import { TvLane } from "app/map/models/tv-lane";
 import { LaneUtils } from "./lane.utils";
 import { Log } from "app/core/utils/log";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
+import { RoadWidthService } from "app/services/road/road-width.service";
 
 export class JunctionUtils {
 
@@ -341,7 +342,7 @@ export class JunctionUtils {
 		}
 
 		const posTheta = joint.road.getPosThetaByContact( joint.contactPoint );
-		const roadWidth = joint.road.getLaneProfile().getRoadWidthAt( posTheta.s );
+		const roadWidth = RoadWidthService.instance.findRoadWidthAt( joint.road, posTheta.s );
 		const t = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
 
 		// return only 2 points for joint boundary

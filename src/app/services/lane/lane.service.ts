@@ -3,12 +3,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BaseToolService } from '../../tools/base-tool.service';
 import { TvLane } from 'app/map/models/tv-lane';
 import { MapEvents } from 'app/events/map-events';
 import { TvLaneType } from 'app/map/models/tv-common';
 import { LaneTypeChangedEvent } from 'app/events/lane/lane-type-changed.event';
 import { BaseDataService } from "../../core/interfaces/data.service";
+import { BaseToolService } from 'app/tools/base-tool.service';
 
 @Injectable( {
 	providedIn: 'root'

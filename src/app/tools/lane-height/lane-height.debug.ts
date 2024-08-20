@@ -64,7 +64,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	onSelected ( lane: TvLane ): void {
 
-		lane.laneSection.lanes.forEach( item => {
+		lane.laneSection.lanesMap.forEach( item => {
 
 			this.showHeightNodes( item );
 
@@ -77,7 +77,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	onUnselected ( lane: TvLane ): void {
 
-		lane.laneSection.lanes.forEach( item => {
+		lane.laneSection.lanesMap.forEach( item => {
 
 			this.nodes.removeKey( item );
 
@@ -96,7 +96,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	onRemoved ( lane: TvLane ): void {
 
-		lane.laneSection.lanes.forEach( item => {
+		lane.laneSection.lanesMap.forEach( item => {
 
 			this.nodes.removeKey( item );
 
@@ -174,7 +174,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 			const next = lane.height[ i + 1 ];
 
-			const sEnd = ( next?.sOffset || lane.laneSection.length ) + lane.laneSection.s;
+			const sEnd = ( next?.sOffset || lane.laneSection.getLength() ) + lane.laneSection.s;
 
 			let line: DebugLine<any>;
 
@@ -202,7 +202,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 			const sStart = lane.laneSection.s;
 
-			const sEnd = lane.laneSection.s + lane.laneSection.length;
+			const sEnd = lane.laneSection.s + lane.laneSection.getLength();
 
 			const line = this.createDashedLine( lane, lane, sStart, sEnd );
 

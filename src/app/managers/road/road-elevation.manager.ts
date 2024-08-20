@@ -159,12 +159,12 @@ export class RoadElevationManager {
 
 			// Remove nodes that are out of bounds
 			if ( elevation.s > road.length ) {
-				road.getElevationProfile().removeElevationInstance( elevation );
+				road.getElevationProfile().removeElevation( elevation );
 			}
 
 			// Remove nodes that are out of bounds
 			if ( elevation.s < 0 ) {
-				road.getElevationProfile().removeElevationInstance( elevation );
+				road.getElevationProfile().removeElevation( elevation );
 			}
 
 		}
@@ -199,11 +199,11 @@ export class RoadElevationManager {
 	}
 
 	addFirstElevationNode ( road: TvRoad ) {
-		road.getElevationProfile().addElevation( 0, 0, 0, 0, 0 );
+		road.getElevationProfile().createAndAddElevation( 0, 0, 0, 0, 0 );
 	}
 
 	addLastElevationNode ( road: TvRoad ) {
-		road.getElevationProfile().addElevation( road.length, 0, 0, 0, 0 );
+		road.getElevationProfile().createAndAddElevation( road.length, 0, 0, 0, 0 );
 	}
 
 	private updateFirstAndLastNodes ( road: TvRoad ) {

@@ -7,55 +7,55 @@ import { TvElevation } from './tv-elevation.model';
 
 export class TvElevationProfile {
 
-	constructor ( public elevation: TvElevation[] = [] ) { }
+	private elevations: TvElevation[];
+
+	constructor () {
+
+		this.elevations = [];
+
+	}
 
 	getFirstElevation (): TvElevation {
 
-		return this.elevation[ 0 ];
+		return this.elevations[ 0 ];
 
 	}
 
-	computeCoefficients ( length: number ) {
+	computeCoefficients ( length: number ): void {
 
-		TvUtils.computeCoefficients( this.elevation, length );
+		TvUtils.computeCoefficients( this.elevations, length );
 
 	}
 
-	getLastElevation () {
+	getLastElevation (): TvElevation {
 
-		return this.elevation[ this.elevation.length - 1 ];
+		return this.elevations[ this.elevations.length - 1 ];
 
 	}
 
 	getElevations (): TvElevation[] {
 
-		return this.elevation;
-
-	}
-
-	getElevation ( i: number ): TvElevation {
-
-		return this.elevation[ i ];
+		return this.elevations;
 
 	}
 
 	getElevationCount (): number {
 
-		return this.elevation.length;
+		return this.elevations.length;
 
 	}
 
-	addElevation ( s: number, a: number, b: number, c: number, d: number ) {
+	createAndAddElevation ( s: number, a: number, b: number, c: number, d: number ) {
 
-		this.elevation.push( new TvElevation( s, a, b, c, d ) );
+		this.elevations.push( new TvElevation( s, a, b, c, d ) );
 
 	}
 
-	addElevationInstance ( elevation: TvElevation ) {
+	addElevation ( elevation: TvElevation ) {
 
-		this.elevation.push( elevation );
+		this.elevations.push( elevation );
 
-		this.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.elevations.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
 	}
 
@@ -70,21 +70,21 @@ export class TvElevationProfile {
 
 	getElevationAt ( s: number ): TvElevation {
 
-		return TvUtils.checkIntervalArray( this.elevation, s );
+		return TvUtils.checkIntervalArray( this.elevations, s );
 
 	}
 
-	removeElevationInstance ( elevation: TvElevation ) {
+	removeElevation ( elevation: TvElevation ) {
 
-		const index = this.elevation.indexOf( elevation );
+		const index = this.elevations.indexOf( elevation );
 
 		if ( index > -1 ) {
 
-			this.elevation.splice( index, 1 );
+			this.elevations.splice( index, 1 );
 
 		}
 
-		this.elevation.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.elevations.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
 		// TvUtils.computeCoefficients( this.elevation, this.length );
 
@@ -94,7 +94,7 @@ export class TvElevationProfile {
 
 		const profile = new TvElevationProfile();
 
-		profile.elevation = this.elevation.map( elevation => elevation.clone( elevation.s ) );
+		profile.elevations = this.elevations.map( elevation => elevation.clone( elevation.s ) );
 
 		return profile;
 	}

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { IMovingStrategy } from 'app/core/strategies/move-strategies/move-strategy';
 import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
@@ -24,6 +24,7 @@ export class BaseToolService {
 	private movingStrategies: IMovingStrategy[] = [];
 
 	constructor (
+		public injector: Injector,
 		public selection: SelectionService,
 		private viewController: ViewControllerService,
 		private cursorService: CursorService,

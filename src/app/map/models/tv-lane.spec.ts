@@ -22,28 +22,21 @@ describe( 'OpenDrive LaneSection', () => {
 
 		laneSection = new TvLaneSection( 1, 0, true, null );
 
-		laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true );
-		leftTwo = laneSection.getLastAddedLane();
+		leftTwo = laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true );
-		leftThree = laneSection.getLastAddedLane();
+		leftThree = laneSection.createLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
-		leftOne = laneSection.getLastAddedLane();
+		leftOne = laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
-		rightOne = laneSection.getLastAddedLane();
+		rightOne = laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true );
-		rightThree = laneSection.getLastAddedLane();
+		rightThree = laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true );
-		rightTwo = laneSection.getLastAddedLane();
+		rightTwo = laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true );
-		rightFour = laneSection.getLastAddedLane();
+		rightFour = laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true );
 
 		laneSection.getLaneArray().forEach( lane => {
 
@@ -59,36 +52,36 @@ describe( 'OpenDrive LaneSection', () => {
 
 	it( 'should add right lane correcty', () => {
 
-		expect( laneSection.lanes.size ).toBe( 8 );
+		expect( laneSection.lanesMap.size ).toBe( 8 );
 
-		const clone = laneSection.lanes.get( -2 ).clone();
+		const clone = laneSection.lanesMap.get( -2 ).clone();
 
 		laneSection.addLaneInstance( clone );
 
-		expect( laneSection.lanes.size ).toBe( 9 );
+		expect( laneSection.lanesMap.size ).toBe( 9 );
 		// expecttCorrectOrderOfLanes( laneSection );
 
 		laneSection.removeLane( clone );
 
-		expect( laneSection.lanes.size ).toBe( 8 );
+		expect( laneSection.lanesMap.size ).toBe( 8 );
 		// expecttCorrectOrderOfLanes( laneSection );
 
 	} );
 
 	it( 'should add right lane correcty', () => {
 
-		expect( laneSection.lanes.size ).toBe( 8 );
+		expect( laneSection.lanesMap.size ).toBe( 8 );
 
-		const clone = laneSection.lanes.get( -2 ).clone( -3 );
+		const clone = laneSection.lanesMap.get( -2 ).clone( -3 );
 
 		laneSection.addLaneInstance( clone );
 
-		expect( laneSection.lanes.size ).toBe( 9 );
+		expect( laneSection.lanesMap.size ).toBe( 9 );
 		// expecttCorrectOrderOfLanes( laneSection );
 
 		laneSection.removeLane( clone );
 
-		expect( laneSection.lanes.size ).toBe( 8 );
+		expect( laneSection.lanesMap.size ).toBe( 8 );
 		// expecttCorrectOrderOfLanes( laneSection );
 
 	} );

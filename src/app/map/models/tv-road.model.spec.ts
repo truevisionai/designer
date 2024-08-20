@@ -50,9 +50,9 @@ describe( 'RoadTests', () => {
 
 	it( 'should give correct lane section', () => {
 
-		road.getLaneProfile().addLaneSection( 0, false );
-		road.getLaneProfile().addLaneSection( 10, false );
-		road.getLaneProfile().addLaneSection( 20, false );
+		road.getLaneProfile().createAndAddLaneSection( 0, false );
+		road.getLaneProfile().createAndAddLaneSection( 10, false );
+		road.getLaneProfile().createAndAddLaneSection( 20, false );
 
 
 		expect( road.getLaneProfile().getLaneSectionAt( 0 ).s ).toBe( 0 );
@@ -68,9 +68,9 @@ describe( 'RoadTests', () => {
 
 	it( 'should give correct lane offset', () => {
 
-		road.getLaneProfile().addLaneOffset( 0, 0, 0, 0, 0 );
-		road.getLaneProfile().addLaneOffset( 10, 10, 0, 0, 0 );
-		road.getLaneProfile().addLaneOffset( 20, 20, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneOffset( 0, 0, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneOffset( 10, 10, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneOffset( 20, 20, 0, 0, 0 );
 
 		expect( road.getLaneProfile().getLaneOffsetAt( 0 ).a ).toBe( 0 );
 		expect( road.getLaneProfile().getLaneOffsetAt( 1 ).a ).toBe( 0 );
@@ -84,9 +84,9 @@ describe( 'RoadTests', () => {
 
 	it( 'should give correct lane offset value', () => {
 
-		road.getLaneProfile().addLaneOffset( 0, 0, 0, 0, 0 );
-		road.getLaneProfile().addLaneOffset( 10, 10, 0, 0, 0 );
-		road.getLaneProfile().addLaneOffset( 20, 20, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneOffset( 0, 0, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneOffset( 10, 10, 0, 0, 0 );
+		road.getLaneProfile().createAndAddLaneOffset( 20, 20, 0, 0, 0 );
 
 		expect( road.getLaneProfile().getLaneOffsetValue( 0 ) ).toBe( 0 );
 		expect( road.getLaneProfile().getLaneOffsetValue( 1 ) ).toBe( 0 );

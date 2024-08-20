@@ -13,7 +13,9 @@ import {
 	Box3,
 	Box3Helper,
 	BoxGeometry,
+	BufferGeometry,
 	Color,
+	EdgesGeometry,
 	Mesh,
 	MeshBasicMaterial,
 	MeshStandardMaterial,
@@ -31,7 +33,7 @@ import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
 import { SharpArrowObject, SimpleArrowObject } from 'app/objects/lane-arrow-object';
 import { DebugLine } from '../../objects/debug-line';
-import { TravelDirection, TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
+import { TravelDirection, TvContactPoint, TvLaneLocation, TvLaneSide } from 'app/map/models/tv-common';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLaneHeight } from 'app/map/lane-height/lane-height.model';
 import { Maths } from 'app/utils/maths';
@@ -42,8 +44,11 @@ import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { JunctionGatePoint, SimpleControlPoint } from "../../objects/simple-control-point";
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TextObjectService } from '../text-object.service';
-import { MapQueryService } from 'app/map/queries/map-query.service';
 import { RoadGeometryService } from '../road/road-geometry.service';
+import { LanePositionService } from '../lane/lane-position.service';
+import { RoadWidthService } from '../road/road-width.service';
+
+const LINE_WIDTH = 3;
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,9 +63,13 @@ export class DebugDrawService {
 		return this._instance;
 	}
 
-	constructor ( private queryService: MapQueryService, private textService: TextObjectService ) {
+	private roadGeometryService: RoadGeometryService;
+
+	constructor ( private textService: TextObjectService ) {
 
 		DebugDrawService._instance = this;
+
+		this.roadGeometryService = RoadGeometryService.instance;
 
 	}
 
@@ -172,68 +181,6 @@ export class DebugDrawService {
 
 	}
 
-	createRoadWidthLine ( roadCoord: TvRoadCoord ): Line2 {
-
-		return this.createRoadWidthLinev2( roadCoord.road, roadCoord.s );
-
-	}
-
-	createRoadWidthLinev2<T> ( road: TvRoad, s: number, target?: T, width = 2 ): DebugLine<T> {
-
-		const result = road.getLaneProfile().getRoadWidthAt( s );
-
-		const start = RoadGeometryService.instance.findRoadPosition( road, s, result.leftSideWidth );
-
-		const end = RoadGeometryService.instance.findRoadPosition( road, s, -result.rightSideWidth );
-
-		return this.createDebugLine( target, [ start.position, end.position ], width );
-
-	}
-
-	updateRoadWidthLine ( line: Line2, roadCoord: TvRoadCoord ): Line2 {
-
-		const result = roadCoord.road.getLaneProfile().getRoadWidthAt( roadCoord.s );
-
-		const start = RoadGeometryService.instance.findRoadPosition( roadCoord.road, roadCoord.s, result.leftSideWidth );
-
-		const end = RoadGeometryService.instance.findRoadPosition( roadCoord.road, roadCoord.s, -result.rightSideWidth );
-
-		const lineGeometry = new LineGeometry();
-
-		lineGeometry.setPositions( [
-			start.x, start.y, start.z,
-			end.x, end.y, end.z
-		] );
-
-		line.geometry.dispose();
-
-		line.geometry = lineGeometry;
-
-		return line;
-	}
-
-	updateRoadWidthLinev2 ( line: Line2, road: TvRoad, s: number ): Line2 {
-
-		const result = road.getLaneProfile().getRoadWidthAt( s );
-
-		const start = RoadGeometryService.instance.findRoadPosition( road, s, result.leftSideWidth );
-
-		const end = RoadGeometryService.instance.findRoadPosition( road, s, -result.rightSideWidth );
-
-		const lineGeometry = new LineGeometry();
-
-		lineGeometry.setPositions( [
-			start.x, start.y, start.z,
-			end.x, end.y, end.z
-		] );
-
-		line.geometry.dispose();
-
-		line.geometry = lineGeometry;
-
-		return line;
-	}
-
 	createLaneHeightNode ( road: TvRoad, lane: TvLane, height: TvLaneHeight ): Line2 {
 
 		const lineGeometry = this.createLaneWidthLineGeometry( height.sOffset, road, lane );
@@ -250,25 +197,13 @@ export class DebugDrawService {
 		return new DebugLine( height, lineGeometry, material );
 	}
 
-	createLaneNode<T extends HasDistanceValue> ( road: TvRoad, lane: TvLane, target: T, side: 'start' | 'center' | 'end' = 'center' ) {
+	createLaneNode<T extends HasDistanceValue> ( road: TvRoad, lane: TvLane, target: T, location?: TvLaneLocation ) {
+
+		location = location || TvLaneLocation.CENTER;
 
 		const s = lane.laneSection.s + target.s;
 
-		let posTheta: TvPosTheta;
-
-		if ( side === 'center' ) {
-
-			posTheta = road.getLaneCenterPosition( lane, s );
-
-		} else if ( side == 'start' ) {
-
-			posTheta = road.getLaneStartPosition( lane, s );
-
-		} else if ( side == 'end' ) {
-
-			posTheta = road.getLaneEndPosition( lane, s );
-
-		}
+		const posTheta: TvPosTheta = LanePositionService.instance.findLanePosition( road, lane.laneSection, lane, s, location );
 
 		return new LanePointNode( road, lane, target, posTheta.position );
 
@@ -442,60 +377,13 @@ export class DebugDrawService {
 
 	}
 
-	private createLineSegment ( start: Vector3, end: Vector3 ): LineSegments2 {
-
-		const geometry = new LineSegmentsGeometry().setPositions( [
-			start.x, start.y, start.z, end.x, end.y, end.z
-		] );
-
-		const material = new LineMaterial( {
-			color: 0xffffff,
-			linewidth: 1, // in world units with size attenuation, pixels otherwise
-			resolution: new Vector2( window.innerWidth, window.innerHeight ),
-		} );
-
-		const line = new LineSegments2( geometry, material );
-
-		line.computeLineDistances();
-
-		return line;
-	}
-
-	createLaneReferenceLine ( lane: TvLane, location: 'start' | 'center' | 'end', color = 0xffffff ): Line2 {
-
-		const positions = lane.getReferenceLinePoints( location ).map( ( point ) => point.toVector3() );
-
-		return this.createLine( positions, color );
-	}
-
-	updateLaneReferenceLine ( line: Line2, laneCoord: TvLaneCoord, location: 'start' | 'center' | 'end' ): Line2 {
-
-		const positions = laneCoord.lane.getReferenceLinePoints( location ).map( ( point ) => point.toVector3() );
-
-		const geometry = new LineGeometry();
-
-		const positionsArray = [];
-
-		positions.forEach( ( position ) => {
-			positionsArray.push( position.x, position.y, position.z );
-		} );
-
-		geometry.setPositions( positionsArray );
-
-		line.geometry.dispose();
-
-		line.geometry = geometry;
-
-		return line;
-	}
-
 	getDirectedPoints ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, side: TvLaneSide, stepSize = 1.0 ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
 		const nextLaneSection = road.laneSections.find( i => i.s > laneSection.s );
 
-		const sEnd = nextLaneSection?.s || laneSection.length;
+		const sEnd = nextLaneSection?.s || laneSection.getLength();
 
 		for ( let sOffset = laneSection.s; sOffset < sEnd; sOffset += stepSize ) {
 
@@ -540,7 +428,7 @@ export class DebugDrawService {
 			t *= -1;
 		}
 
-		const point = RoadGeometryService.instance.findRoadPosition( road, sOffset, t );
+		const point = this.roadGeometryService.findRoadPosition( road, sOffset, t );
 
 		// NOTE: this can be used if we want hdg to be adjusted with travel direction
 		if ( lane.direction == TravelDirection.backward ) {
@@ -590,11 +478,11 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			positions.push( RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, s ) )
+			positions.push( this.roadGeometryService.findLaneEndPosition( road, laneSection, lane, s ) )
 
 		}
 
-		positions.push( RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
+		positions.push( this.roadGeometryService.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
 
 		return positions;
 	}
@@ -605,7 +493,7 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			positions.push( RoadGeometryService.instance.findRoadPosition( road, Maths.clamp( s, 0, road.length ), 0 ) )
+			positions.push( this.roadGeometryService.findRoadPosition( road, Maths.clamp( s, 0, road.length ), 0 ) )
 
 		}
 
@@ -628,7 +516,7 @@ export class DebugDrawService {
 			width *= -1;
 		}
 
-		const posTheta = RoadGeometryService.instance.findRoadPosition( lane.laneSection.road, s, width );
+		const posTheta = this.roadGeometryService.findRoadPosition( lane.laneSection.road, s, width );
 
 		return posTheta.toVector3();
 
@@ -681,6 +569,25 @@ export class DebugDrawService {
 		point.position.copy( position );
 
 		return point;
+
+	}
+
+	createOutlineFromGeometry ( geometry: BufferGeometry, width = LINE_WIDTH, color = COLOR.CYAN ): LineSegments2 {
+
+		const edges = new EdgesGeometry( geometry );
+
+		const lineSegmentGeometry = new LineSegmentsGeometry().fromEdgesGeometry( edges );
+
+		const lineMaterial = new LineMaterial( {
+			color: color,
+			linewidth: width,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+			depthTest: false,
+			depthWrite: false,
+			transparent: true
+		} );
+
+		return new LineSegments2( lineSegmentGeometry, lineMaterial );
 
 	}
 

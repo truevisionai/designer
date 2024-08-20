@@ -23,7 +23,7 @@ export class LaneWidthService {
 
 		lane.addWidthRecordInstance( laneWidth );
 
-		TvUtils.computeCoefficients( lane.width, laneSection.length );
+		TvUtils.computeCoefficients( lane.width, laneSection.getLength() );
 
 		this.laneService.updateLane( lane );
 	}
@@ -32,14 +32,14 @@ export class LaneWidthService {
 
 		lane.removeWidthRecordInstance( laneWidth );
 
-		TvUtils.computeCoefficients( lane.width, laneSection.length );
+		TvUtils.computeCoefficients( lane.width, laneSection.getLength() );
 
 		this.laneService.updateLane( lane );
 	}
 
 	updateLaneWidth ( laneSection: TvLaneSection, lane: TvLane, laneWidth: TvLaneWidth ) {
 
-		TvUtils.computeCoefficients( lane.width, laneSection.length );
+		TvUtils.computeCoefficients( lane.width, laneSection.getLength() );
 
 		this.laneService.updateLane( lane );
 

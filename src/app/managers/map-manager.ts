@@ -43,7 +43,7 @@ export class MapManager {
 
 				if ( road.gameObject ) road.gameObject.remove( laneSection.gameObject );
 
-				if ( road.gameObject ) laneSection.lanes.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
+				if ( road.gameObject ) laneSection.lanesMap.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
 
 			} );
 

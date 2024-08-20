@@ -95,8 +95,8 @@ export class LaneSectionFactory {
 			const nextLanes = next.laneSection.getLaneArray();
 
 			const laneCount = Math.max(
-				previous.laneSection.lanes.size,
-				next.laneSection.lanes.size
+				previous.laneSection.lanesMap.size,
+				next.laneSection.lanesMap.size
 			);
 
 			const leftLanes = previous.laneSection.getLeftLaneCount() >= next.laneSection.getLeftLaneCount() ?
@@ -107,23 +107,23 @@ export class LaneSectionFactory {
 				previous.laneSection.getRightLanes() :
 				next.laneSection.getRightLanes();
 
-			laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+			laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
 
 			for ( let i = 0; i < leftLanes.length; i++ ) {
 
-				laneSection.addLane( TvLaneSide.LEFT, leftLanes[ i ].id, leftLanes[ i ].type, false, false );
+				laneSection.createLane( TvLaneSide.LEFT, leftLanes[ i ].id, leftLanes[ i ].type, false, false );
 
 			}
 
 			for ( let i = 0; i < rightLanes.length; i++ ) {
 
-				laneSection.addLane( TvLaneSide.RIGHT, rightLanes[ i ].id, rightLanes[ i ].type, false, false );
+				laneSection.createLane( TvLaneSide.RIGHT, rightLanes[ i ].id, rightLanes[ i ].type, false, false );
 
 			}
 
 			laneSection.sortLanes();
 
-			for ( const lane of laneSection.lanes.values() ) {
+			for ( const lane of laneSection.lanesMap.values() ) {
 
 				if ( lane.id == 0 ) continue;
 
@@ -192,7 +192,7 @@ export class LaneSectionFactory {
 			.filter( lane => lane.direction === outgoingDirection )
 			.map( lane => successor.toLaneCoord( lane ) )
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
 
 		const coords = incomingLaneCoords.length >= outgoingLaneCoords.length ?
 			incomingLaneCoords :
@@ -218,7 +218,7 @@ export class LaneSectionFactory {
 
 				id++;
 
-				const lane = laneSection.addLane(
+				const lane = laneSection.createLane(
 					TvLaneSide.RIGHT,
 					-id,
 					coord.lane.type,
@@ -273,9 +273,9 @@ export class LaneSectionFactory {
 
 		const laneSection = this.createLaneSection( connection.connectingRoad );
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
 
-		const maneuverLane = laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.none, false, false );
+		const maneuverLane = laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.none, false, false );
 
 		const predecessorLane = predecessor.laneSection.getNearestLane( maneuverLane );
 		const successorLane = successor.laneSection.getNearestLane( maneuverLane );
@@ -300,7 +300,7 @@ export class LaneSectionFactory {
 
 		const laneSection = this.createLaneSection( joiningRoad );
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
 
 		// this.createBothSides( laneSection, joiningRoad, predecessor, successor );
 		// this.createRightSide( laneSection, joiningRoad, successor, predecessor );
@@ -335,7 +335,7 @@ export class LaneSectionFactory {
 				if ( processed.has( outgoing.lane ) ) continue;
 				if ( outgoing.lane.type != incoming.lane.type ) continue;
 
-				const lane = laneSection.addLane( incoming.lane.side, incoming.lane.id, incoming.lane.type, true, true );
+				const lane = laneSection.createLane( incoming.lane.side, incoming.lane.id, incoming.lane.type, true, true );
 				lane.predecessorId = incoming.lane.id;
 				lane.successorId = outgoing.lane.id;
 
@@ -359,7 +359,7 @@ export class LaneSectionFactory {
 
 			const leftLane = leftLanes[ i ];
 
-			const lane = laneSection.addLane( leftLane.side, leftLane.id, leftLane.type, true, true );
+			const lane = laneSection.createLane( leftLane.side, leftLane.id, leftLane.type, true, true );
 
 			lane.predecessorId = leftLane.id;
 
@@ -371,7 +371,7 @@ export class LaneSectionFactory {
 
 			const rightLane = rightLanes[ i ];
 
-			const lane = laneSection.addLane( rightLane.side, rightLane.id, rightLane.type, true, true );
+			const lane = laneSection.createLane( rightLane.side, rightLane.id, rightLane.type, true, true );
 
 			lane.predecessorId = rightLane.id;
 

@@ -24,7 +24,7 @@ export class LaneMarkingInspector {
 	}
 
 	set s ( value: number ) {
-		this.roadmark.sOffset = Maths.clamp( value - this.lane.laneSection.s, 0, this.lane.laneSection.length );
+		this.roadmark.sOffset = Maths.clamp( value - this.lane.laneSection.s, 0, this.lane.laneSection.getLength() );
 	}
 
 	@SerializedField( { type: 'float' } )

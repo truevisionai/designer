@@ -33,6 +33,7 @@ import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUti
 import { SplineBuilder } from '../spline/spline.builder';
 import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 import { Log } from 'app/core/utils/log';
+import { RoadWidthService } from '../road/road-width.service';
 
 const ASPHALT_GUID = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
@@ -378,8 +379,8 @@ export class JunctionBuilder {
 
 			const s = roadCoord.s;
 
-			const rightT = roadCoord.road.getLaneProfile().getRightsideWidth( s );
-			const leftT = roadCoord.road.getLaneProfile().getLeftSideWidth( s );
+			const rightT = RoadWidthService.instance.findRightWidthAt( roadCoord.road, s );
+			const leftT = RoadWidthService.instance.findLeftWidthAt( roadCoord.road, s );
 
 			const leftPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( leftT );
 			const rightPosition = roadCoord.road.getPosThetaAt( s ).addLateralOffset( -rightT );

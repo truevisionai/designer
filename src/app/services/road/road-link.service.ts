@@ -146,7 +146,7 @@ export class RoadLinkService {
 		// <- ->
 		const direction = link.contactPoint === TvContactPoint.END ? 1 : -1;
 
-		mainRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
+		mainRoad.getLaneProfile().getFirstLaneSection().lanesMap.forEach( lane => {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 
@@ -164,7 +164,7 @@ export class RoadLinkService {
 
 			linkedRoad.setPredecessor( TvRoadLinkType.ROAD, mainRoad, TvContactPoint.START );
 
-			linkedLaneSection.lanes.forEach( lane => {
+			linkedLaneSection.lanesMap.forEach( lane => {
 
 				if ( lane.side !== TvLaneSide.CENTER ) {
 
@@ -178,7 +178,7 @@ export class RoadLinkService {
 
 			linkedRoad.setSuccessor( TvRoadLinkType.ROAD, mainRoad, TvContactPoint.START );
 
-			linkedLaneSection.lanes.forEach( lane => {
+			linkedLaneSection.lanesMap.forEach( lane => {
 
 				if ( lane.side !== TvLaneSide.CENTER ) {
 
@@ -528,12 +528,12 @@ export class RoadLinkService {
 			// link will be negative as joining roaad will in opposite direction
 
 			firstRoad.setPredecessor( TvRoadLinkType.ROAD, joiningRoad, TvContactPoint.START );
-			firstRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
+			firstRoad.getLaneProfile().getFirstLaneSection().lanesMap.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( -lane.id );
 			} );
 
 			joiningRoad.setPredecessor( TvRoadLinkType.ROAD, firstRoad, TvContactPoint.START );
-			joiningRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
+			joiningRoad.getLaneProfile().getFirstLaneSection().lanesMap.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( -lane.id );
 			} );
 
@@ -542,12 +542,12 @@ export class RoadLinkService {
 			// links will be in same direction
 
 			firstRoad.setSuccessor( TvRoadLinkType.ROAD, joiningRoad, TvContactPoint.START );
-			firstRoad.getLaneProfile().getLastLaneSection().lanes.forEach( lane => {
+			firstRoad.getLaneProfile().getLastLaneSection().lanesMap.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( lane.id );
 			} );
 
 			joiningRoad.setPredecessor( TvRoadLinkType.ROAD, firstRoad, TvContactPoint.END );
-			joiningRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
+			joiningRoad.getLaneProfile().getFirstLaneSection().lanesMap.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( lane.id );
 			} );
 
@@ -556,24 +556,24 @@ export class RoadLinkService {
 		if ( secondNode.contact === TvContactPoint.START ) {
 
 			secondRoad.setPredecessor( TvRoadLinkType.ROAD, joiningRoad, TvContactPoint.END );
-			secondRoad.getLaneProfile().getFirstLaneSection().lanes.forEach( lane => {
+			secondRoad.getLaneProfile().getFirstLaneSection().lanesMap.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.predecessorId = ( lane.id );
 			} );
 
 			joiningRoad.setSuccessor( TvRoadLinkType.ROAD, secondRoad, TvContactPoint.START );
-			joiningRoad.getLaneProfile().getLastLaneSection().lanes.forEach( lane => {
+			joiningRoad.getLaneProfile().getLastLaneSection().lanesMap.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( lane.id );
 			} );
 
 		} else {
 
 			secondRoad.setSuccessor( TvRoadLinkType.ROAD, joiningRoad, TvContactPoint.END );
-			secondRoad.getLaneProfile().getLastLaneSection().lanes.forEach( lane => {
+			secondRoad.getLaneProfile().getLastLaneSection().lanesMap.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( -lane.id );
 			} );
 
 			joiningRoad.setSuccessor( TvRoadLinkType.ROAD, secondRoad, TvContactPoint.END );
-			joiningRoad.getLaneProfile().getLastLaneSection().lanes.forEach( lane => {
+			joiningRoad.getLaneProfile().getLastLaneSection().lanesMap.forEach( lane => {
 				if ( lane.side !== TvLaneSide.CENTER ) lane.successorId = ( -lane.id );
 			} );
 
@@ -673,7 +673,7 @@ export class RoadLinkService {
 
 		const sign = link.contactPoint == TvContactPoint.START ? 1 : -1;
 
-		laneSection.lanes.forEach( lane => {
+		laneSection.lanesMap.forEach( lane => {
 
 			const otherLane = otherLaneSection.getLaneById( lane.id * sign );
 
@@ -714,7 +714,7 @@ export class RoadLinkService {
 
 		const sign = link.contactPoint == TvContactPoint.END ? 1 : -1;
 
-		laneSection.lanes.forEach( lane => {
+		laneSection.lanesMap.forEach( lane => {
 
 			const otherLane = otherLaneSection.getLaneById( lane.id * sign );
 

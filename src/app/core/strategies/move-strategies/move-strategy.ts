@@ -3,12 +3,11 @@
  */
 
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { Vector3 } from 'three';
-import { TvPosTheta } from '../../../map/models/tv-pos-theta';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { Position } from 'app/scenario/models/position';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
+import { RoadWidthService } from 'app/services/road/road-width.service';
 
 export interface IMovingStrategy {
 
@@ -52,7 +51,9 @@ export abstract class MovingStrategy<T> implements IMovingStrategy {
 
 		if ( !roadCoord ) return;
 
-		const width = roadCoord.t > 0 ? roadCoord.road.getLaneProfile().getLeftSideWidth( roadCoord.s ) : roadCoord.road.getLaneProfile().getRightsideWidth( roadCoord.s );
+		const width = roadCoord.t > 0 ?
+			RoadWidthService.instance.findLeftWidthAt( roadCoord.road, roadCoord.s ) :
+			RoadWidthService.instance.findRightWidthAt( roadCoord.road, roadCoord.s );
 
 		if ( Math.abs( roadCoord.t ) > width ) return;
 
@@ -72,7 +73,7 @@ export abstract class MovingStrategy<T> implements IMovingStrategy {
 
 		const t = roadCoord.t;
 
-		const lanes = laneSection.lanes;
+		const lanes = laneSection.lanesMap;
 
 		const isLeft = t > 0;
 		const isRight = t < 0;

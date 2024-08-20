@@ -47,6 +47,18 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	}
 
+	getKeys (): IterableIterator<K> {
+
+		return this.map.keys();
+
+	}
+
+	forEachKey ( callback: ( key: K, objects: T ) => void ): void {
+
+		this.map.forEach( ( objects, key ) => callback( key, objects as T ) );
+
+	}
+
 	has ( key: K ) {
 
 		return this.map.has( key );

@@ -5,6 +5,7 @@ import tsParser from "@typescript-eslint/parser";
 
 export default [
 	{
+		ignores: [ "**/*.spec.ts" ],
 		files: [ "**/*.{js,mjs,cjs,ts}" ],
 		languageOptions: {
 			parser: tsParser,
@@ -22,10 +23,24 @@ export default [
 				skipBlankLines: true,
 				skipComments: true
 			} ],
+			"no-console": "warn",
+			"no-var": "warn",
+			"prefer-const": "warn",
+			"prefer-template": "warn",
+			"sort-imports": [ "warn", {
+				ignoreCase: true,
+				ignoreDeclarationSort: true,
+				ignoreMemberSort: false,
+				memberSyntaxSortOrder: [ "none", "all", "multiple", "single" ]
+			} ],
+			"strict": [ "warn", "global" ],
+			"valid-typeof": "warn",
 			"@typescript-eslint/explicit-function-return-type": [ "warn", {
 				allowExpressions: true,
 				allowTypedFunctionExpressions: true,
 				allowHigherOrderFunctions: true,
+				allowDirectConstAssertionInArrowFunctions: true,
+				allowConciseArrowFunctionExpressionsStartingWithVoid: true,
 			} ],
 			// Add any additional TypeScript specific rules here
 			// Optional: Warn about any explicit `null` return

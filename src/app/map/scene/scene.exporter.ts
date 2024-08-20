@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { IFile } from 'app/io/file';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
 import { AutoSpline } from 'app/core/shapes/auto-spline';
@@ -14,7 +13,6 @@ import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvMap } from 'app/map/models/tv-map.model';
-import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Surface } from 'app/map/surface/surface.model';
 import { XMLBuilder } from 'fast-xml-parser';
@@ -37,14 +35,13 @@ import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
 import { XmlElement } from "../../importers/xml.element";
 import { MapService } from "../../services/map/map.service";
-import { TvMapInstance } from 'app/map/services/tv-map-instance';
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { TvTransform } from 'app/map/models/tv-transform';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { SplineSegmentType } from 'app/core/shapes/spline-segment';
 import { TvJointBoundary, TvJunctionSegmentBoundary, TvLaneBoundary } from '../junction-boundary/tv-junction-boundary';
-import { TvRoadLaneOffset } from "../models/tv-road-lane-offset";
+import { TvLaneOffset } from "../models/tv-lane-offset";
 
 @Injectable( {
 	providedIn: 'root'
@@ -63,9 +60,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 	) {
 	}
 
-	get currentFile (): IFile {
-		return TvMapInstance.currentFile;
-	}
 
 	exportJunctionConnection ( connection: TvJunctionConnection ) {
 		return {
@@ -101,23 +95,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		const xmlDocument = builder.build( scene );
 
 		return xmlDocument;
-	}
-
-	saveAs () {
-
-		const contents = this.exportAsString();
-
-		const folder = this.fileService.projectFolder;
-
-		this.fileService.saveFileWithExtension( folder, contents, this.extension, ( file: IFile ) => {
-
-			this.currentFile.path = file.path;
-			this.currentFile.name = file.name;
-
-			this.electron.setTitle( file.name, file.path );
-
-		} );
-
 	}
 
 	exportAsJSON ( map: TvMap ) {
@@ -242,9 +219,9 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		this.writeRoadType( xml, road );
 
-		this.writeElevationProfile( xml, road );
+		xml[ 'elevationProfile' ] = this.openDrive.writeElevationProfile( road.getElevationProfile() );
 
-		this.writeLateralProfile( xml, road );
+		xml[ 'lateralProfile' ] = this.openDrive.writeLateralProfile( road.getLateralProfile() );
 
 		this.writeLanes( xml, road );
 
@@ -303,29 +280,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		}
 
 		this.snackBar.error( 'Not able to export this spline type' );
-
-	}
-
-	exportTypes ( types: TvRoadTypeClass[] ) {
-
-		return types.map( type => {
-
-			return {
-				attr_s: type.s,
-				attr_type: type.type,
-				speed: {
-					attr_max: type.speed.max,
-					attr_unit: type.speed.unit
-				},
-			};
-
-		} );
-
-	}
-
-	exportJunctions ( junctions: TvJunction[] ) {
-
-		return junctions.map( junction => this.exportJunction( junction ) );
 
 	}
 
@@ -594,44 +548,11 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeElevationProfile ( xmlNode, road: TvRoad ) {
-
-		const elevationProfile = road.getElevationProfile();
-
-		if ( elevationProfile != null ) {
-
-			xmlNode.elevationProfile = {
-				elevation: []
-			};
-
-			if ( elevationProfile.getElevationCount() == 0 ) road.getElevationProfile().addElevation( 0, 0, 0, 0, 0 );
-
-			for ( let i = 0; i < elevationProfile.getElevationCount(); i++ ) {
-
-				const element = elevationProfile.getElevation( i );
-
-				xmlNode.elevationProfile.elevation.push( {
-					attr_s: element.s,
-					attr_a: element.a,
-					attr_b: element.b,
-					attr_c: element.c,
-					attr_d: element.d,
-				} );
-
-			}
-
-		}
-
-	}
-
-	writeLateralProfile ( xmlNode, road: TvRoad ) {
-	}
-
 	writeLanes ( xmlNode, road: TvRoad ) {
 
 		// add default lane offset if not present
 		if ( road.laneOffsets.length == 0 ) {
-			road.getLaneProfile().addLaneOffset( 0, 0, 0, 0, 0 );
+			road.getLaneProfile().createAndAddLaneOffset( 0, 0, 0, 0, 0 );
 		}
 
 		xmlNode.lanes = {
@@ -644,7 +565,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	writeLaneOffset ( laneOffset: TvRoadLaneOffset ) {
+	writeLaneOffset ( laneOffset: TvLaneOffset ) {
 
 		return {
 			attr_s: laneOffset.s,
@@ -670,7 +591,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		for ( let i = 0; i < laneSection.getLaneCount(); i++ ) {
 
-			const lane = laneSection.getLane( i );
+			const lane = laneSection.getLaneAtIndex( i );
 
 			if ( lane.side === TvLaneSide.LEFT ) {
 
@@ -832,107 +753,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		return xml
 	}
 
-	//writeObjectOutlineV2 ( objectOutline: TvObjectOutline ): XmlElement {
-	//
-	//	return {
-	//		attr_id: objectOutline.id,
-	//		attr_fillType: objectOutline.fillType,
-	//		attr_outer: objectOutline.outer,
-	//		attr_closed: objectOutline.closed,
-	//		attr_laneType: objectOutline.laneType,
-	//		cornerRoad: objectOutline?.cornerRoad.models(
-	//			cornerRoad => this.writeObjectCornerRoad( cornerRoad )
-	//		),
-	//		cornerLocal: objectOutline?.cornerLocal.models(
-	//			cornerLocal => this.writeObjectCornerLocal( cornerLocal )
-	//		),
-	//	};
-	//
-	//}
-
-	//writeObjectCornerLocal ( cornerLocal: TvCornerLocal ): XmlElement {
-	//
-	//	return {
-	//		attr_u: cornerLocal.attr_u,
-	//		attr_v: cornerLocal.attr_v,
-	//		attr_z: cornerLocal.attr_z,
-	//		attr_height: cornerLocal.attr_height,
-	//	};
-	//
-	//}
-
-	//writeObjectCornerRoad ( cornerRoad: TvCornerRoad ): XmlElement {
-	//
-	//	return {
-	//		attr_id: cornerRoad.attr_id,
-	//		// attr_roadId: cornerRoad.roadId, // roadId is not part of the OpenDRIVE standard
-	//		attr_s: cornerRoad.s,
-	//		attr_t: cornerRoad.t,
-	//		attr_dz: cornerRoad.dz,
-	//		attr_height: cornerRoad.height,
-	//	};
-	//
-	//}
-
-	//writeObjectMaterial ( xmlNode, roadObject: TvRoadObject ) {
-	//
-	//	if ( roadObject.material != null ) {
-	//
-	//		xmlNode[ 'material' ] = {};
-	//
-	//		// TODO: ACCESS VIA GETTERS & SETTERS
-	//		xmlNode.material = {
-	//			attr_surface: roadObject.material.attr_surface,
-	//			attr_friction: roadObject.material.attr_friction,
-	//			attr_roughness: roadObject.material.attr_roughness,
-	//		};
-	//	}
-	//}
-
-	//writeObjectValidity ( xmlNode, roadObject: TvRoadObject ) {
-	//
-	//	xmlNode.validity = [];
-	//
-	//	for ( let i = 0; i < roadObject.getValidityCount(); i++ ) {
-	//
-	//		const validity = roadObject.getValidity( i );
-	//
-	//		// TODO: ACCESS VIA GETTERS & SETTER
-	//		xmlNode.validity.push( {
-	//			attr_fromLane: validity.attr_fromLane,
-	//			attr_toLane: validity.attr_toLane
-	//		} );
-	//	}
-	//}
-
-	//writeObjectParkingSpace ( xmlNode, roadObject: TvRoadObject ) {
-	//
-	//	if ( roadObject.parkingSpace != null ) {
-	//
-	//		xmlNode[ 'parkingSpace' ] = {};
-	//
-	//		// TODO: ACCESS VIA GETTERS & SETTERS
-	//		xmlNode.parkingSpace = {
-	//			attr_access: roadObject.parkingSpace.attr_access,
-	//			attr_restriction: roadObject.parkingSpace.attr_restriction,
-	//			marking: []
-	//		};
-	//
-	//		for ( let i = 0; i < roadObject.parkingSpace.getMarkingCount(); i++ ) {
-	//
-	//			const marking = roadObject.parkingSpace.getMarking( i );
-	//
-	//			// TODO: ACCESS VIA GETTERS & SETTERS
-	//			xmlNode.parkingSpace.marking.push( {
-	//				attr_side: marking.attr_side,
-	//				attr_type: marking.attr_type,
-	//				attr_width: marking.attr_width,
-	//				attr_color: marking.attr_color,
-	//			} );
-	//		}
-	//	}
-	//}
-
 	writeSignals ( xmlNode: XmlElement, road: TvRoad ) {
 
 		if ( road.signals.size === 0 ) return;
@@ -943,7 +763,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeSignal ( signal: TvRoadSignal ) {
+	writeSignal ( signal: TvRoadSignal ) {
 
 		const xml = this.openDrive.writeSignal( signal );
 
@@ -953,121 +773,4 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	//writeSurface ( xmlNode, road: TvRoad ) {}
-
-	//writeControllers ( xmlNode ) {
-	//
-	//	xmlNode.controller = [];
-	//
-	//	this.models.controllers.forEach( controller => {
-	//
-	//		const nodeController = {
-	//			attr_id: controller.id,
-	//			attr_name: controller.name,
-	//			control: []
-	//		};
-	//
-	//		if ( controller.sequence ) {
-	//			nodeController[ 'attr_sequence' ] = controller.sequence;
-	//		}
-	//
-	//		controller.controls.forEach( control => {
-	//
-	//			nodeController.control.push( {
-	//				attr_signalId: control.signalId,
-	//				attr_type: control.type
-	//			} );
-	//
-	//		} );
-	//
-	//		xmlNode.controller.push( nodeController );
-	//
-	//	} );
-	//}
-
-	writeJunction ( xmlNode, junction: TvJunction ) {
-
-		if ( junction.connections.size === 0 ) return;
-
-		const nodeJunction = {
-			attr_id: junction.id,
-			attr_name: junction.name,
-			connection: [],
-			priority: [],
-			controller: []
-		};
-
-		this.writeJunctionConnection( nodeJunction, junction );
-
-		this.writeJunctionPriority( nodeJunction, junction );
-
-		this.writeJunctionController( nodeJunction, junction );
-
-		xmlNode.junction.push( nodeJunction );
-	}
-
-	writeJunctionConnection ( xmlNode, junction: TvJunction ) {
-
-		junction.connections.forEach( connection => {
-
-			const nodeConnection = {
-				attr_id: connection.id,
-				attr_incomingRoad: connection.incomingRoadId,
-				attr_connectingRoad: connection.connectingRoadId,
-				laneLink: []
-			};
-
-			if ( connection.contactPoint != null ) {
-
-				nodeConnection[ 'attr_contactPoint' ] = connection.contactPoint;
-
-			}
-
-			this.writeJunctionConnectionLaneLink( nodeConnection, connection );
-
-			xmlNode.connection.push( nodeConnection );
-
-		} );
-
-	}
-
-	writeJunctionConnectionLaneLink ( xmlNode, junctionConnection: TvJunctionConnection ) {
-
-		for ( let i = 0; i < junctionConnection.getJunctionLaneLinkCount(); i++ ) {
-
-			const laneLink = junctionConnection.getJunctionLaneLink( i );
-
-			xmlNode.laneLink.push( {
-				attr_from: laneLink.from,
-				attr_to: laneLink.to,
-			} );
-		}
-	}
-
-	writeJunctionPriority ( xmlNode, junction: TvJunction ) {
-
-		for ( let i = 0; i < junction.getJunctionPriorityCount(); i++ ) {
-
-			const priority = junction.getJunctionPriority( i );
-
-			xmlNode.priority.push( {
-				attr_high: priority.high,
-				attr_low: priority.low,
-			} );
-		}
-	}
-
-	writeJunctionController ( xmlNode, junction: TvJunction ) {
-
-		for ( let i = 0; i < junction.getJunctionControllerCount(); i++ ) {
-
-			const controller = junction.getJunctionController( i );
-
-			xmlNode.priority.push( {
-				attr_id: controller.id,
-				attr_type: controller.type,
-				attr_sequence: controller.sequence,
-			} );
-		}
-	}
 }

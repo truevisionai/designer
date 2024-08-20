@@ -91,7 +91,7 @@ xdescribe( 'LaneLinkService', () => {
 		expect( junction.connections.get( 0 ).connectingRoad.id ).toBe( leftToRight.id )
 		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
 
-		expect( leftToRight.laneSections[ 0 ].lanes.size ).toBe( 4 );
+		expect( leftToRight.laneSections[ 0 ].lanesMap.size ).toBe( 4 );
 		expectCorrectLaneOrder( leftToRight.laneSections[ 0 ] );
 
 		expect( junction.connections.get( 1 ) ).toBeDefined()
@@ -99,7 +99,7 @@ xdescribe( 'LaneLinkService', () => {
 		expect( junction.connections.get( 1 ).connectingRoad ).toBe( rightToLeft )
 		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
 
-		expect( rightToLeft.laneSections[ 0 ].lanes.size ).toBe( 4 );
+		expect( rightToLeft.laneSections[ 0 ].lanesMap.size ).toBe( 4 );
 		expectCorrectLaneOrder( rightToLeft.laneSections[ 0 ] );
 
 	} )

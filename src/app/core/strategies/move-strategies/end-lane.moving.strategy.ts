@@ -18,7 +18,7 @@ export class EndLaneMovingStrategy extends MovingStrategy<TvLane> {
 
 		const roadCoord = target.laneSection.road.getPosThetaByPosition( event.point );
 
-		const s = Maths.clamp( roadCoord.s - target.laneSection.s, 0, target.laneSection.length );
+		const s = Maths.clamp( roadCoord.s - target.laneSection.s, 0, target.laneSection.getLength() );
 
 		return new NewLanePosition( target.laneSection.road, target.laneSection, target, s, 0 );
 	}

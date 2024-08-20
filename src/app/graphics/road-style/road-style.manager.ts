@@ -5,7 +5,7 @@
 import { TvLaneSide, TvLaneType, TvRoadMarkTypes } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
-import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
+import { TvLaneOffset } from 'app/map/models/tv-lane-offset';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadStyle } from "./road-style.model";
 import { Injectable } from "@angular/core";
@@ -37,11 +37,11 @@ export class RoadStyleManager {
 
 		const roadStyle = new RoadStyle();
 
-		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
+		roadStyle.laneOffset = new TvLaneOffset( 0, 0, 0, 0, 0 );
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 
-		roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		roadStyle.laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
 		if ( lane ) {
 
@@ -49,7 +49,7 @@ export class RoadStyleManager {
 
 		} else {
 
-			roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+			roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 
 			roadStyle.laneSection.getLaneArray().filter( lane => lane.side !== TvLaneSide.CENTER ).forEach( lane => {
 
@@ -69,19 +69,19 @@ export class RoadStyleManager {
 
 		const roadStyle = new RoadStyle();
 
-		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
+		roadStyle.laneOffset = new TvLaneOffset( 0, 0, 0, 0, 0 );
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 
 		roadStyle.setRoad( road );
 
-		const leftLane3 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
-		const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
-		const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
-		const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
-		const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
-		const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
-		const rightLane3 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
+		const leftLane3 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
+		const leftLane2 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
+		const leftLane1 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+		const centerLane = roadStyle.laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		const rightLane1 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+		const rightLane2 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
+		const rightLane3 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
 
 		leftLane1.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
 		centerLane.addRoadMarkOfType( 0, TvRoadMarkTypes.BROKEN );
@@ -110,17 +110,17 @@ export class RoadStyleManager {
 
 		const roadStyle = new RoadStyle();
 
-		roadStyle.laneOffset = new TvRoadLaneOffset( 0, 0, 0, 0, 0 );
+		roadStyle.laneOffset = new TvLaneOffset( 0, 0, 0, 0, 0 );
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 
 		roadStyle.setRoad( road );
 
-		const leftLane2 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.parking, true, true );
-		const leftLane1 = roadStyle.laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
-		const centerLane = roadStyle.laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
-		const rightLane1 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
-		const rightLane2 = roadStyle.laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.parking, true, true );
+		const leftLane2 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.parking, true, true );
+		const leftLane1 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+		const centerLane = roadStyle.laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		const rightLane1 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+		const rightLane2 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.parking, true, true );
 
 		leftLane2.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID )
 		leftLane1.addNoneRoadMark();

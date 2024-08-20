@@ -478,7 +478,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 	static getRandomLane ( laneSection: TvLaneSection, laneType: TvLaneType ): TvLane {
 
-		const lanes = [ ...laneSection.lanes.values() ];
+		const lanes = [ ...laneSection.lanesMap.values() ];
 
 		const filteredLanes = lanes.filter( lane => {
 			if ( lane.type === laneType && lane.side !== TvLaneSide.CENTER ) return true;

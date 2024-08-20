@@ -19,6 +19,7 @@ import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Log } from 'app/core/utils/log';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
+import { RoadWidthService } from 'app/services/road/road-width.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -60,7 +61,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 			// show road id in middle of the road
 
-			const width = road.getLaneProfile().getRoadWidthAt( road.length * 0.5 );
+			const width = RoadWidthService.instance.findRoadWidthAt( road, road.length * 0.5 );
 
 			if ( !width ) return;
 

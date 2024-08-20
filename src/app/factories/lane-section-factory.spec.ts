@@ -44,11 +44,11 @@ describe( 'LaneSectionFactory', () => {
 
 		// both roads have 7 lanes
 		// 3 on each side and 1 center lane
-		expect( roadA.laneSections[ 0 ].lanes.size ).toBe( 7 );
-		expect( roadB.laneSections[ 0 ].lanes.size ).toBe( 7 );
+		expect( roadA.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
+		expect( roadB.laneSections[ 0 ].lanesMap.size ).toBe( 7 );
 
 		expect( laneSection ).toBeDefined();
-		expect( laneSection.lanes.size ).toBe( 7 );
+		expect( laneSection.lanesMap.size ).toBe( 7 );
 		expect( laneSection.areLeftLanesInOrder() ).toBeTrue();
 		expect( laneSection.areRightLanesInOrder() ).toBeTrue();
 		expect( roadA.laneSections[ 0 ].isMatching( laneSection ) );

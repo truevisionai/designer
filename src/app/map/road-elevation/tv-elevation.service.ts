@@ -61,7 +61,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		this.validate( road, object );
 
-		road.getElevationProfile().addElevationInstance( object );
+		road.getElevationProfile().addElevation( object );
 
 		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
@@ -77,7 +77,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 	remove ( road: TvRoad, elevation: TvElevation ): void {
 
-		road.getElevationProfile().removeElevationInstance( elevation );
+		road.getElevationProfile().removeElevation( elevation );
 
 		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 

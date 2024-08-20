@@ -20,7 +20,7 @@ export class LinkUtils {
 
 			const laneSection = road.laneSections[ i ];
 
-			for ( const [ laneId, currentLane ] of laneSection.lanes ) {
+			for ( const [ laneId, currentLane ] of laneSection.lanesMap ) {
 
 				// Update successor
 				if ( i < road.laneSections.length - 1 ) {
@@ -31,7 +31,7 @@ export class LinkUtils {
 
 					const id = currentLane.successorId !== null ? currentLane.successorId : currentLane.id;
 
-					const successorLane = nextLaneSection.lanes.get( id );
+					const successorLane = nextLaneSection.lanesMap.get( id );
 
 					if ( successorLane ) {
 
@@ -48,7 +48,7 @@ export class LinkUtils {
 
 						const id = currentLane.successorId !== null ? currentLane.successorId : currentLane.id;
 
-						const successorLane = nextLaneSection.lanes.get( id );
+						const successorLane = nextLaneSection.lanesMap.get( id );
 
 						if ( successorLane ) {
 
@@ -68,7 +68,7 @@ export class LinkUtils {
 
 					const id = currentLane.predecessorId !== null ? currentLane.predecessorId : currentLane.id;
 
-					const predecessorLane = prevLaneSection.lanes.get( id );
+					const predecessorLane = prevLaneSection.lanesMap.get( id );
 
 					if ( predecessorLane ) {
 
@@ -85,7 +85,7 @@ export class LinkUtils {
 
 						const id = currentLane.predecessorId !== null ? currentLane.predecessorId : currentLane.id;
 
-						const predecessorLane = prevLaneSection.lanes.get( id );
+						const predecessorLane = prevLaneSection.lanesMap.get( id );
 
 						if ( predecessorLane ) {
 

@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Log } from 'app/core/utils/log';
 import { MathUtils } from 'three';
 
 export class ThirdOrderPolynom {
@@ -78,17 +79,6 @@ export class ThirdOrderPolynom {
 		this._d = value;
 	}
 
-	setValues ( s, a, b, c, d ) {
-
-		this.s = s;
-		this.a = a;
-		this.b = b;
-		this.c = c;
-		this.d = d;
-
-	}
-
-
 	/**
 	 * Method to check if sample S is inside the record interval
 	 *
@@ -101,28 +91,22 @@ export class ThirdOrderPolynom {
 
 	}
 
-	/**
-	 * Returns the value at sample S
-	 *
-	 * @param sCheck
-	 * @returns {number}
-	 */
-	getValue ( sCheck: number ): number {
+	getValue ( sOffset: number ): number {
 
-		if ( isNaN( sCheck ) ) {
-			console.error( 's in not a number' );
+		if ( isNaN( sOffset ) ) {
+			Log.error( 's in not a number' );
 			return 0;
 		}
 
-		const ds = sCheck - this._s;
+		const ds = sOffset - this.s;
 
-		return ( this._a ) +
-			( this._b * ds ) +
-			( this._c * ds * ds ) +
-			( this._d * ds * ds * ds );
+		return ( this.a ) +
+			( this.b * ds ) +
+			( this.c * ds * ds ) +
+			( this.d * ds * ds * ds );
 	}
 
-	toString () {
+	toString (): string {
 
 		return `s: ${ this.s }, a: ${ this.a }, b: ${ this.b }, c: ${ this.c }, d: ${ this.d }`;
 

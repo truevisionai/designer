@@ -132,7 +132,7 @@ export class LaneRoadMarkBuilder {
 		const indices: number[] = [];
 
 		const nextRoadMark = lane.roadMarks.getNext( roadMark );
-		const sEnd = nextRoadMark?.s || laneSection.length;
+		const sEnd = nextRoadMark?.s || laneSection.getLength();
 
 		// Determine step size and vertex count based on road mark type
 		let step = type === TvRoadMarkTypes.SOLID ? 1 : roadMark.length + roadMark.space;
@@ -241,7 +241,7 @@ export class LaneRoadMarkBuilder {
 	//
 	// 	const geometry = new BufferGeometry();
 	// 	const nextRoadMark = lane.roadMarks.find( i => i.s > roadMark.s );
-	// 	const sEnd = nextRoadMark?.s || laneSection.length;
+	// 	const sEnd = nextRoadMark?.s || laneSection.getLength();
 	//
 	// 	// Calculate the number of vertices
 	// 	const vertexCount = Math.ceil( ( sEnd - roadMark.s ) / roadMark.length ) * 4; // Four vertices per step
@@ -314,7 +314,7 @@ export class LaneRoadMarkBuilder {
 
 		} else {
 
-			nextS = laneSection.length;
+			nextS = laneSection.getLength();
 
 		}
 

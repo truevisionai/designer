@@ -9,7 +9,7 @@ import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { RoadStyle } from "./road-style.model";
-import { TvRoadLaneOffset } from 'app/map/models/tv-road-lane-offset';
+import { TvLaneOffset } from 'app/map/models/tv-lane-offset';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { SceneExporter } from 'app/map/scene/scene.exporter';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
@@ -84,7 +84,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 
 		for ( let i = 0; i < laneSection.getLaneCount(); i++ ) {
 
-			const lane = laneSection.getLane( i );
+			const lane = laneSection.getLaneAtIndex( i );
 
 			if ( lane.side === TvLaneSide.LEFT ) {
 
@@ -165,7 +165,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 		return laneNode;
 	}
 
-	private writeLaneOffset ( xmlNode, laneOffset: TvRoadLaneOffset ) {
+	private writeLaneOffset ( xmlNode, laneOffset: TvLaneOffset ) {
 
 		xmlNode.laneOffset = {
 			attr_s: laneOffset.s,

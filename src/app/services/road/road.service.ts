@@ -28,6 +28,7 @@ import { Log } from 'app/core/utils/log';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Commands } from 'app/commands/commands';
 import { RoadGeometryService } from './road-geometry.service';
+import { RoadWidthService } from './road-width.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -172,7 +173,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const clone = this.clone( road );
 
-		const roadWidth = road.getLaneProfile().getRoadWidthAt( 0 );
+		const roadWidth = RoadWidthService.instance.findRoadWidthAt( road, 0 );
 
 		this.shiftRoad( clone, roadWidth.totalWidth, 0 );
 
@@ -221,7 +222,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 			return;
 		}
 
-		const width = roadCoord.t > 0 ? road.getLaneProfile().getLeftSideWidth( roadCoord.s ) : road.getLaneProfile().getRightsideWidth( roadCoord.s );
+		const width = roadCoord.t > 0 ?
+			RoadWidthService.instance.findLeftWidthAt( roadCoord.road, roadCoord.s ) :
+			RoadWidthService.instance.findRightWidthAt( roadCoord.road, roadCoord.s );
 
 		if ( Math.abs( roadCoord.t ) > width ) {
 			return;
@@ -240,7 +243,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const t = roadCoord.t;
 
-		const lanes = laneSection.lanes;
+		const lanes = laneSection.lanesMap;
 
 		let targetLane: TvLane;
 

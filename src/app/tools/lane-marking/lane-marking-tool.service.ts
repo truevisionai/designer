@@ -123,7 +123,7 @@ export class LaneMarkingToolService {
 			return;
 		}
 
-		const sOffset = Maths.clamp( laneCoord.s - lane.laneSection.s, 0, lane.laneSection.length );
+		const sOffset = Maths.clamp( laneCoord.s - lane.laneSection.s, 0, lane.laneSection.getLength() );
 
 		let marking = lane.getRoadMarkAt( sOffset )?.clone( sOffset );
 

@@ -66,28 +66,21 @@ describe( 'OpenDrive Model', () => {
 
 		road.getLaneProfile().getLaneSections().push( laneSection );
 
-		laneSection.addLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true );
-		leftTwo = laneSection.getLastAddedLane();
+		leftTwo = laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true );
-		leftThree = laneSection.getLastAddedLane();
+		leftThree = laneSection.createLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
-		leftOne = laneSection.getLastAddedLane();
+		leftOne = laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
-		rightOne = laneSection.getLastAddedLane();
+		rightOne = laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true );
-		rightThree = laneSection.getLastAddedLane();
+		rightThree = laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true );
-		rightTwo = laneSection.getLastAddedLane();
+		rightTwo = laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true );
 
-		laneSection.addLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true );
-		rightFour = laneSection.getLastAddedLane();
+		rightFour = laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true );
 
 		laneSection.getLaneArray().forEach( lane => {
 

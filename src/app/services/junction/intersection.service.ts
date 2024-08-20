@@ -70,41 +70,6 @@ export class IntersectionService {
 
 	}
 
-	getRoadIntersectionByBounds ( roadA: TvRoad, roadB: TvRoad, stepSize = 1, thresholdDistance = 1 ): Vector3 | null {
-
-		if ( roadA.id == roadB.id ) return;
-
-		if ( !this.intersectsRoadBox( roadA, roadB ) ) return;
-
-		for ( let i = 0; i < roadA.length; i += stepSize ) {
-
-			const posThetaA = roadA.getPosThetaAt( i );
-
-			const widthA = ( posThetaA.t > 0 ? roadA.getLaneProfile().getLeftSideWidth( posThetaA.s ) : roadA.getLaneProfile().getRightsideWidth( posThetaA.s ) ) / 2;
-
-			for ( let j = 0; j < roadB.length; j += stepSize ) {
-
-				const posThetaB = roadB.getPosThetaAt( j );
-
-				const widthB = ( posThetaB.t > 0 ? roadB.getLaneProfile().getLeftSideWidth( posThetaB.s ) : roadB.getLaneProfile().getRightsideWidth( posThetaB.s ) ) / 2;
-
-				// Calculate the distance between points on roadA and roadB
-				const distance = Math.sqrt( Math.pow( posThetaA.x - posThetaB.x, 2 ) + Math.pow( posThetaA.y - posThetaB.y, 2 ) + Math.pow( posThetaA.z - posThetaB.z, 2 ) );
-
-				// Adjust the threshold distance by the widths of the roads
-				const totalWidth = widthA + widthB;
-
-				const adjustedThreshold = thresholdDistance + totalWidth;
-
-				// If distance is within the adjusted threshold, we consider it an intersection
-				if ( distance <= adjustedThreshold ) {
-					return new Vector3( posThetaA.x, posThetaA.y, posThetaA.z ); // or return any relevant intersection point details
-				}
-			}
-		}
-
-	}
-
 	getSplineIntersectionPoint ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): Vector3 | null {
 
 		if ( splineA == splineB ) return;

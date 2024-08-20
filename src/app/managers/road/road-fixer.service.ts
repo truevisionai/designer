@@ -214,7 +214,7 @@ export class RoadFixerService {
 			const predecessorLaneSection = predecessor.laneSections[ predecessor.laneSections.length - 1 ];
 			const successorLaneSection = successor.getLaneProfile().getLaneSectionAtContact( contact );
 
-			predecessorLaneSection.lanes.forEach( lane => {
+			predecessorLaneSection.lanesMap.forEach( lane => {
 
 				if ( lane.side == TvLaneSide.CENTER ) return;
 

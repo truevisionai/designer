@@ -142,7 +142,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 		if ( !this.debugLine ) {
 
-			this.debugLine = this.tool.debugService.createRoadWidthLinev2( position.road, position.s );
+			this.debugLine = this.tool.roadDebug.createRoadWidthLinev2( position.road, position.s );
 
 			SceneService.addToolObject( this.debugLine );
 
@@ -150,7 +150,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 		this.debugLine.visible = true;
 
-		this.debugLine = this.tool.debugService.updateRoadWidthLinev2( this.debugLine, position.road, position.s );
+		this.debugLine = this.tool.roadDebug.updateRoadWidthLinev2( this.debugLine, position.road, position.s );
 
 	}
 

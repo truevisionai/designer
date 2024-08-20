@@ -41,7 +41,7 @@ import { XmlElement } from "../xml.element";
 import { IOpenDriveParser } from "./i-open-drive.parser";
 import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
-import { TvRoadLaneOffset } from "../../map/models/tv-road-lane-offset";
+import { TvLaneOffset } from "../../map/models/tv-lane-offset";
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Log } from 'app/core/utils/log';
@@ -824,7 +824,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			const c = parseFloat( xml.attr_c );
 			const d = parseFloat( xml.attr_d );
 
-			road.getElevationProfile().addElevation( s, a, b, c, d );
+			road.getElevationProfile().createAndAddElevation( s, a, b, c, d );
 
 		} );
 
@@ -873,22 +873,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		} );
 
-		// if ( xmlElement.laneSection != null ) {
-		//
-		//     if ( Array.isArray( xmlElement.laneSection ) ) {
-		//
-		//         for ( let i = 0; i < xmlElement.laneSection.length; i++ ) {
-		//
-		//             this.parseLaneSections( road, xmlElement.laneSection[i] );
-		//
-		//         }
-		//
-		//     } else {
-		//
-		//         this.parseLaneSections( road, xmlElement.laneSection );
-		//
-		//     }
-		// }
 	}
 
 	public parseRoadObject ( road: TvRoad, xmlElement: XmlElement ): TvRoadObject {
@@ -1160,9 +1144,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const type = TvLane.stringToType( xmlElement.attr_type );
 		const level = xmlElement.attr_level == 'true';
 
-		laneSection.addLane( laneSide, id, type, level, false );
-
-		const lane = laneSection.getLastAddedLane();
+		const lane = laneSection.createLane( laneSide, id, type, level, false );
 
 		if ( xmlElement.link != null ) {
 
@@ -1307,7 +1289,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const c = parseFloat( xml.attr_c );
 		const d = parseFloat( xml.attr_d );
 
-		return new TvRoadLaneOffset( s, a, b, c, d );
+		return new TvLaneOffset( s, a, b, c, d );
 	}
 
 	public parseControl ( xml: XmlElement ): TvControllerControl {
