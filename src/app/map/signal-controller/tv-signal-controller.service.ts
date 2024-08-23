@@ -16,9 +16,7 @@ export class TvSignalControllerService {
 
 	removeController ( id: number ) {
 
-		this.mapService.map.controllers.delete( id );
-
-		this.mapService.map.controllerIds.remove( id );
+		this.mapService.map.removeController( id );
 
 	}
 

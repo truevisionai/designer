@@ -60,8 +60,6 @@ export class LaneTool extends ToolWithHandler<TvLane> {
 
 		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
 
-		this.setHint( 'use LEFT CLICK to select a road/lane' );
-
 	}
 
 	disable (): void {

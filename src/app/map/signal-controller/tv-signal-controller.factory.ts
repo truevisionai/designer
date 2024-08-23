@@ -15,7 +15,7 @@ export class TvSignalControllerFactory {
 
 	createNewController () {
 
-		const id = this.mapService.map.controllerIds.getNextId();
+		const id = this.mapService.map.getControllerCount();
 
 		const name = `Controller${ id }`;
 

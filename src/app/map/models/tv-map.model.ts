@@ -40,9 +40,7 @@ export class TvMap {
 
 	public header: TvMapHeader;
 
-	public controllers: Map<number, TvSignalController> = new Map<number, TvSignalController>();
-
-	public controllerIds = new IDService();
+	private controllers = new ManagedMap<TvSignalController>();
 
 	public roads = new ManagedMap<TvRoad>();
 
@@ -72,6 +70,26 @@ export class TvMap {
 
 	getControllers () {
 		return Array.from( this.controllers.values() );
+	}
+
+	getControllerCount (): number {
+		return this.controllers.size;
+	}
+
+	getNextControllerId (): number {
+		return this.controllers.next();
+	}
+
+	addController ( controller: TvSignalController ) {
+		this.controllers.set( controller.id, controller );
+	}
+
+	removeController ( controller: number | TvSignalController ): void {
+		if ( typeof controller === 'number' ) {
+			this.controllers.delete( controller );
+		} else {
+			this.controllers.delete( controller.id );
+		}
 	}
 
 	addSpline ( spline: AbstractSpline ): void {
@@ -201,12 +219,6 @@ export class TvMap {
 		}
 
 		this.junctions.set( junction.id, junction );
-
-	}
-
-	addController ( controller: TvSignalController ) {
-
-		this.controllers.set( controller.id, controller );
 
 	}
 
