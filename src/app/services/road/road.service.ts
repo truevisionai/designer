@@ -110,11 +110,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	clone ( road: TvRoad, s = 0 ) {
 
-		const clone = RoadUtils.clone( road, s );
+		const id = this.roadFactory.getNextRoadId();
 
-		clone.id = this.roadFactory.getNextRoadId();
-
-		clone.name = `Road ${ clone.id }`;
+		const clone = RoadUtils.clone( road, s, id );
 
 		return clone;
 

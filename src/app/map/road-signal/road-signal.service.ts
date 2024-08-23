@@ -31,7 +31,7 @@ export class RoadSignalService {
 
 	addSignal ( road: TvRoad, signal: TvRoadSignal, object: Object3D ) {
 
-		road.signals.set( signal.id, signal );
+		road.addRoadSignalInstance( signal );
 
 		road.signalGroup?.add( object );
 
@@ -51,7 +51,7 @@ export class RoadSignalService {
 
 	removeSignal ( road: TvRoad, signal: TvRoadSignal ) {
 
-		road.signals.delete( signal.id );
+		road.removeRoadSignal( signal );
 
 		this.signalIdService.remove( signal.id );
 

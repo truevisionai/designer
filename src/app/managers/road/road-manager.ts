@@ -128,7 +128,7 @@ export class RoadManager {
 
 	removeMesh ( road: TvRoad ) {
 
-		road.objects.object.forEach( object => {
+		road.getRoadObjects().forEach( object => {
 
 			this.roadObjectService.removeObject3d( road, object );
 

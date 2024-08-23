@@ -103,14 +103,14 @@ describe( 'RoadDividerTool', () => {
 
 		tool.onObjectAdded( R2 );
 
-		expect( R1.length ).toBe( 50 );
+		expect( R1.getLength() ).toBe( 50 );
 		expect( R1.predecessor ).toBeUndefined();
 		expect( R1.successor.element ).toBe( R2 );
 		expect( R1.successor.contact ).toBe( TvContactPoint.START );
 		expect( R1.getRoadObjectCount() ).toBe( 50 );
 		expect( R1.getSignalCount() ).toBe( 50 );
 
-		expect( R2.length ).toBe( 50 );
+		expect( R2.getLength() ).toBe( 50 );
 		expect( R2.predecessor.element ).toBe( R1 );
 		expect( R2.predecessor.contact ).toBe( TvContactPoint.END );
 		expect( R2.getRoadObjectCount() ).toBe( 50 );

@@ -51,7 +51,7 @@ export class RoadStyle {
 
 		style.laneSection.road = road;
 
-		road.objects.object.forEach( object => {
+		road.getRoadObjects().forEach( object => {
 
 			const clone = object.clone();
 

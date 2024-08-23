@@ -13,7 +13,7 @@ import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
 import { TvLane } from '../tv-lane';
 import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
-import { Euler, Object3D, Vector3 } from 'three';
+import { Euler, MathUtils, Object3D, Vector3 } from 'three';
 
 export enum TvRoadObjectType {
 
@@ -105,6 +105,10 @@ export class TvRoadObject {
 
 	public static counter = 1;
 
+	public readonly id: number;
+
+	public readonly uuid: string;
+
 	public road: TvRoad;
 
 	public mesh: Object3D;
@@ -165,7 +169,7 @@ export class TvRoadObject {
 	 *
 	 * @param type
 	 * @param name
-	 * @param attr_id
+	 * @param id
 	 * @param s
 	 * @param t
 	 * @param zOffset z-offset of object’s origin relative to the elevation of the road reference line
@@ -182,7 +186,7 @@ export class TvRoadObject {
 	constructor (
 		type: TvRoadObjectType,
 		name: string,
-		public attr_id: number,
+		id: number,
 		s: number,
 		t: number,
 		zOffset: number = 0,
@@ -196,8 +200,9 @@ export class TvRoadObject {
 		pitch: number = null,
 		roll: number = null
 	) {
-		// super();
 		TvRoadObject.counter++;
+		this.uuid = MathUtils.generateUUID();
+		this.id = id;
 		this.attr_type = type;
 		this.name = name;
 		this.s = s;
@@ -358,7 +363,7 @@ export class TvRoadObject {
 		const object = new TvRoadObject(
 			this.attr_type,
 			this.name,
-			id || this.attr_id,
+			id || this.id,
 			this.s,
 			this.t,
 			this.zOffset,
@@ -390,7 +395,7 @@ export class TvRoadObject {
 	}
 
 	toString (): string {
-		return `RoadObject:${ this.attr_id } Name:${ this.name }  Type:${ this.attr_type } S:${ this.s } T:${ this.t }`;
+		return `RoadObject:${ this.id } Name:${ this.name }  Type:${ this.attr_type } S:${ this.s } T:${ this.t }`;
 	}
 
 	static typeToString ( type: TvRoadObjectType ): string {

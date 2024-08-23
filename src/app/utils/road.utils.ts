@@ -86,11 +86,7 @@ export class RoadUtils {
 
 	static divideRoad ( parent: TvRoad, s: number, newRoadId: number ): TvRoad {
 
-		const clone = this.clone( parent, s );
-
-		clone.id = newRoadId;
-
-		clone.name = `Road ${ newRoadId }`;
+		const clone = this.clone( parent, s, newRoadId );
 
 		this.divideObjects( parent, s, clone );
 
@@ -99,11 +95,9 @@ export class RoadUtils {
 		return clone;
 	}
 
-	static clone ( road: TvRoad, s: number ): TvRoad {
+	static clone ( road: TvRoad, s: number, id: number ): TvRoad {
 
-		const clone = road.clone( s );
-
-		clone.name = `Road ${ clone.id }`;
+		const clone = road.clone( s, id );
 
 		clone.sStart = road.sStart + s;
 
@@ -111,23 +105,29 @@ export class RoadUtils {
 
 	}
 
-	static divideObjects ( oldRoad: TvRoad, sOffset: number, newRoad: TvRoad ) {
+	static divideObjects ( oldRoad: TvRoad, sOffset: number, newRoad: TvRoad ): void {
 
-		newRoad.objects.object = oldRoad.objects.object.filter( object => object.s >= sOffset );
+		const objects = oldRoad.getRoadObjects();
 
-		oldRoad.objects.object = oldRoad.objects.object.filter( object => object.s < sOffset );
+		oldRoad.clearRoadObjects();
 
-		newRoad.objects.object.forEach( object => object.road = newRoad );
+		newRoad.clearRoadObjects();
 
-		newRoad.objects.object.forEach( object => object.s = object.s - sOffset );
+		objects.filter( object => object.s >= sOffset ).forEach( object => newRoad.addRoadObject( object ) );
+
+		objects.filter( object => object.s < sOffset ).forEach( object => oldRoad.addRoadObject( object ) );
+
+		newRoad.getRoadObjects().forEach( object => object.s = object.s - sOffset );
 
 	}
 
-	static divideSignals ( oldRoad: TvRoad, sOffset: number, newRoad: TvRoad ) {
+	static divideSignals ( oldRoad: TvRoad, sOffset: number, newRoad: TvRoad ): void {
 
 		const signals = oldRoad.getRoadSignals();
 
 		oldRoad.clearSignals();
+
+		newRoad.clearSignals();
 
 		signals.filter( object => object.s >= sOffset ).forEach( signal => newRoad.addSignal( signal ) );
 

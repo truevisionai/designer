@@ -184,7 +184,7 @@ export class ParkingRoadToolService {
 
 	removeRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
 
-		road.objects.object
+		road.getRoadObjects()
 			.filter( roadObject => roadObject.getRepeatList().find( repeat => repeat.targetLane == lane ) )
 			.forEach( roadObject => {
 

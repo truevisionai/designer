@@ -54,7 +54,7 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 	onSelected ( road: TvRoad ): void {
 
-		for ( const roadObject of road.objects.object ) {
+		for ( const roadObject of road.getRoadObjects() ) {
 
 			this.showRoadObject( road, roadObject );
 

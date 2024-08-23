@@ -69,9 +69,9 @@ export class RoadObjectService {
 
 			this.ids.set( road, new IDService() );
 
-			road.objects.object.forEach( object => {
+			road.getRoadObjects().forEach( object => {
 
-				this.ids.get( road ).getNextId( object.attr_id );
+				this.ids.get( road ).getNextId( object.id );
 
 			} )
 
@@ -145,7 +145,7 @@ export class RoadObjectService {
 
 		this.hideRoadObjectCorners( roadObject );
 
-		road?.removeRoadObjectById( roadObject.attr_id );
+		road?.removeRoadObjectById( roadObject.id );
 
 	}
 

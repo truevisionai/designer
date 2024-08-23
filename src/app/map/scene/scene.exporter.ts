@@ -226,7 +226,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		this.writeLanes( xml, road );
 
 		xml[ 'objects' ] = {
-			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject ) )
+			object: road.getRoadObjects().map( roadObject => this.writeRoadObject( roadObject ) )
 		};
 
 		// TODO: maybe not required here
@@ -755,7 +755,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	writeSignals ( xmlNode: XmlElement, road: TvRoad ) {
 
-		if ( road.signals.size === 0 ) return;
+		if ( road.getSignalCount() === 0 ) return;
 
 		xmlNode.signals = {
 			signal: road.getRoadSignals().map( signal => this.writeSignal( signal ) )

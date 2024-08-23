@@ -49,7 +49,7 @@ export class TvRoad {
 
 	public shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
-	public trafficRule = TrafficRule.RHT;
+	private _trafficRule = TrafficRule.RHT;
 
 	public boundingBox: Box3;
 
@@ -63,25 +63,23 @@ export class TvRoad {
 
 	public objects: TvObjectContainer;
 
-	public signals: Map<number, TvRoadSignal>;
+	private signals: Map<number, TvRoadSignal>;
 
 	private planView: TvPlaneView;
 
-	public neighbors: TvRoadLinkNeighbor[] = [];
+	private neighbors: TvRoadLinkNeighbor[] = [];
 
-	public name: string;
+	public readonly name: string;
 
-	// public length: number;
+	public readonly id: number;
 
-	public id: number;
+	private _junction: TvJunction;
 
-	public junction: TvJunction;
+	private _successor?: TvRoadLink;
 
-	public successor?: TvRoadLink;
+	private _predecessor?: TvRoadLink;
 
-	public predecessor?: TvRoadLink;
-
-	public cornerRoad: boolean = false;
+	private cornerRoad: boolean = false;
 
 	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
 
@@ -89,20 +87,52 @@ export class TvRoad {
 		this.name = name;
 		// this.length = length;
 		this.id = id;
-		this.junction = junction;
+		this._junction = junction;
 		this.planView = new TvPlaneView();
 		this.laneProfile = new TvLaneProfile( this );
 		this.elevationProfile = new TvElevationProfile();
 		this.lateralProfile = new TvLateralProfile();
 		this.objects = new TvObjectContainer();
-		this.signals = new Map<number, TvRoadSignal>();
+		this.signals = new Map();
 
 		this.signalGroup.name = 'SignalGroup';
 		this.objectGroup.name = 'ObjectGroup';
 	}
 
+	get trafficRule (): TrafficRule {
+		return this._trafficRule;
+	}
+
+	set trafficRule ( value ) {
+		this._trafficRule = value;
+	}
+
+	get junction (): TvJunction {
+		return this._junction;
+	}
+
+	set junction ( value: TvJunction ) {
+		this._junction = value;
+	}
+
+	get successor (): TvRoadLink {
+		return this._successor;
+	}
+
+	set successor ( value: TvRoadLink ) {
+		this._successor = value;
+	}
+
+	get predecessor (): TvRoadLink {
+		return this._predecessor;
+	}
+
+	set predecessor ( value: TvRoadLink ) {
+		this._predecessor = value;
+	}
+
 	get junctionId (): number {
-		return this.junction?.id ?? -1;
+		return this._junction?.id ?? -1;
 	}
 
 	get isJunction (): boolean {
@@ -242,6 +272,8 @@ export class TvRoad {
 
 	addSignal ( signal: TvRoadSignal ): void {
 
+		signal.roadId = this.id;
+
 		this.signals.set( signal.id, signal );
 
 	}
@@ -272,7 +304,7 @@ export class TvRoad {
 
 	getRoadObjects (): TvRoadObject[] {
 
-		return this.objects.object;
+		return Array.from( this.objects.object.values() );
 
 	}
 
@@ -338,60 +370,64 @@ export class TvRoad {
 		return signal;
 	}
 
-	addRoadObject ( object: TvRoadObject ) {
+	addRoadSignalInstance ( signal: TvRoadSignal ): void {
+
+		this.signals.set( signal.id, signal );
+
+	}
+
+	removeRoadSignal ( signal: TvRoadSignal ): void {
+
+		this.signals.delete( signal.id );
+
+	}
+
+	hasRoadSignal ( signal: number | TvRoadSignal ): boolean {
+
+		const id = typeof signal === 'number' ? signal : signal.id;
+
+		return this.signals.has( id );
+	}
+
+	addRoadObject ( object: TvRoadObject ): void {
 
 		if ( this.hasRoadObject( object ) ) {
-			throw new DuplicateModelException( `RoadObject ${ object.attr_id } already exists in ${ this.toString() }` );
+			throw new DuplicateModelException( `RoadObject ${ object.id } already exists in ${ this.toString() }` );
 		}
 
 		object.road = this;
 
-		this.objects.object.push( object );
+		this.objects.object.set( object.id, object );
 
 	}
 
-	hasRoadObject ( roadObject: TvRoadObject ) {
+	hasRoadObject ( roadObject: TvRoadObject ): boolean {
 
-		return this.objects.object.includes( roadObject );
-
-	}
-
-	getRoadObjectCount () {
-
-		return this.objects.object.length;
+		return this.objects.object.has( roadObject.id );
 
 	}
 
-	addRoadObjectInstance ( roadObject: TvRoadObject ) {
+	clearRoadObjects (): void {
 
-		if ( this.objects.object.includes( roadObject ) ) return;
-
-		roadObject.road = this;
-
-		this.objects.object.push( roadObject );
+		this.objects.object.clear();
 
 	}
 
-	removeRoadObjectById ( id: number ) {
+	getRoadObjectCount (): number {
 
-		for ( let i = 0; i < this.objects.object.length; i++ ) {
+		return this.objects.object.size;
 
-			const element = this.objects.object[ i ];
-
-			if ( element.attr_id == id ) {
-
-				this.objects.object.splice( i, 1 );
-				break;
-
-			}
-		}
 	}
 
-	clearGeometries () {
+	removeRoadObjectById ( id: number ): void {
+
+		this.objects.object.delete( id );
+
+	}
+
+	clearGeometries (): void {
 
 		this.geometries.splice( 0, this.geometries.length );
-
-		// this.length = 0;
 
 		this.getLaneProfile().computeLaneSectionCoordinates();
 
@@ -462,9 +498,9 @@ export class TvRoad {
 
 		this.elevationProfile = roadStyle.elevationProfile.clone();
 
-		this.objects.object = [];
+		this.clearRoadObjects();
 
-		roadStyle.objects.map( obj => this.addRoadObjectInstance( obj.clone() ) );
+		roadStyle.objects.map( obj => this.addRoadObject( obj.clone() ) );
 
 	}
 
@@ -474,9 +510,11 @@ export class TvRoad {
 
 	}
 
-	clone ( s: number ): TvRoad {
+	clone ( s: number, id?: number ): TvRoad {
 
-		const road = new TvRoad( this.name, this.length, this.id, this.junction );
+		const name = `Road ${ id || this.id }`
+
+		const road = new TvRoad( name, this.length, id || this.id, this._junction );
 
 		road.spline = this.spline;
 		road.type = this.type.map( type => type.clone() );
@@ -492,7 +530,7 @@ export class TvRoad {
 
 		road.getLaneProfile().addLaneSectionInstance( this.getLaneProfile().getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
 
-		road.objects.object = this.objects.object.map( obj => obj.clone() );
+		this.getRoadObjects().forEach( obj => road.addRoadObject( obj.clone() ) );
 
 		return road;
 
@@ -555,8 +593,8 @@ export class TvRoad {
 	}
 
 	/**
-	* @deprecated use RoadGeometryService instead
-	*/
+	 * @deprecated use RoadGeometryService instead
+	 */
 	getPosThetaByContact ( contact: TvContactPoint ): TvPosTheta {
 
 		return RoadGeometryService.instance.findContactPosition( this, contact );

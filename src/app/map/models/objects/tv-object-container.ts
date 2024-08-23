@@ -8,7 +8,7 @@ import { TvRoadBridge } from "./tv-road-bridge";
 import { TvRoadObject } from "./tv-road-object";
 
 export class TvObjectContainer {
-	public object: TvRoadObject[] = [];
+	public object = new Map<number, TvRoadObject>();
 	public objectReference: TvRoadObjectReference[] = [];
 	public tunnel: TvRoadTunnel[] = [];
 	public bridge: TvRoadBridge[] = [];

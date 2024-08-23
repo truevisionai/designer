@@ -1372,12 +1372,12 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 				for ( let i = 0; i < xmlElement.object.length; i++ ) {
 
-					road.addRoadObjectInstance( this.parseObject( road, xmlElement.object[ i ] ) );
+					road.addRoadObject( this.parseObject( road, xmlElement.object[ i ] ) );
 
 				}
 			} else {
 
-				road.addRoadObjectInstance( this.parseObject( road, xmlElement.object ) );
+				road.addRoadObject( this.parseObject( road, xmlElement.object ) );
 
 			}
 		}
@@ -1580,7 +1580,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		function findAvailableId ( id: number, road: TvRoad ) {
 
-			while ( road.signals.has( id ) ) {
+			while ( road.hasRoadSignal( id ) ) {
 				id++;
 			}
 
@@ -1588,7 +1588,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
-		let id = parseFloat( xmlElement.attr_id ) || road.signals.size;
+		let id = parseFloat( xmlElement.attr_id ) || road.getSignalCount();
 
 		const s = parseFloat( xmlElement.attr_s ) || 0;
 		const t = parseFloat( xmlElement.attr_t ) || 0;
@@ -1608,7 +1608,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const pitch = parseFloat( xmlElement.attr_pitch ) || 0;
 		const roll = parseFloat( xmlElement.attr_roll ) || 0;
 
-		if ( road.signals.has( id ) ) {
+		if ( road.hasRoadSignal( id ) ) {
 			// TEMP FIX
 			Log.warn( `Signal with id ${ id } already exists, incrementing id to add it ` + road.toString() );
 			id = findAvailableId( id, road );

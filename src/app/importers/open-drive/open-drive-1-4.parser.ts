@@ -264,7 +264,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		if ( xml.lanes != null ) this.parseLanes( road, xml.lanes );
 
 		readXmlArray( xml.objects?.object, xml => {
-			road.addRoadObjectInstance( this.parseRoadObject( road, xml ) );
+			road.addRoadObject( this.parseRoadObject( road, xml ) );
 		} );
 
 		if ( xml.signals ) this.parseSignals( road, xml.signals );

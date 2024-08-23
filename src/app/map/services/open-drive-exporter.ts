@@ -179,10 +179,10 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		this.writeLanes( xml, road.getLaneProfile() );
 
 		xml[ 'objects' ] = {
-			object: road.objects.object.map( roadObject => this.writeRoadObject( roadObject, road ) )
+			object: road.getRoadObjects().map( roadObject => this.writeRoadObject( roadObject, road ) )
 		};
 
-		if ( road.signals.size > 0 ) {
+		if ( road.getSignalCount() > 0 ) {
 			xml[ 'signals' ] = this.writeSignals( road );
 		}
 	}
@@ -608,7 +608,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		const xml = {
 			attr_type: roadObject.attr_type,
 			attr_name: roadObject.name,
-			attr_id: roadObject.attr_id,
+			attr_id: roadObject.id,
 			attr_s: roadObject.s,
 			attr_t: roadObject.t
 		};
