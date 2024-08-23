@@ -8,7 +8,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvCornerRoad } from "../models/objects/tv-corner-road";
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { RoadObjectBuilder } from 'app/map/road-object/road-object.builder';
-import { Group } from 'three';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { TvColors, TvRoadMarkWeights } from 'app/map/models/tv-common';
 import { IDService } from 'app/factories/id.service';
@@ -145,7 +144,7 @@ export class RoadObjectService {
 
 		this.hideRoadObjectCorners( roadObject );
 
-		road?.removeRoadObjectById( roadObject.id );
+		road?.removeRoadObject( roadObject.id );
 
 	}
 

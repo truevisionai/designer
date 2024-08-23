@@ -24,16 +24,15 @@ import { RoadStyle } from "../../graphics/road-style/road-style.model";
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
-import { DuplicateModelException } from 'app/exceptions/exceptions';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 export class TvRoad {
 
 	public readonly uuid: string;
 
-	public spline: AbstractSpline;
+	private _spline: AbstractSpline;
 
-	public sStart: number;
+	private _sStart: number;
 
 	public type: TvRoadTypeClass[] = [];
 
@@ -61,7 +60,7 @@ export class TvRoad {
 
 	private laneProfile: TvLaneProfile;
 
-	public objects: TvObjectContainer;
+	private objectContainer: TvObjectContainer;
 
 	private signals: Map<number, TvRoadSignal>;
 
@@ -85,18 +84,25 @@ export class TvRoad {
 
 		this.uuid = MathUtils.generateUUID();
 		this.name = name;
-		// this.length = length;
 		this.id = id;
 		this._junction = junction;
 		this.planView = new TvPlaneView();
 		this.laneProfile = new TvLaneProfile( this );
 		this.elevationProfile = new TvElevationProfile();
 		this.lateralProfile = new TvLateralProfile();
-		this.objects = new TvObjectContainer();
+		this.objectContainer = new TvObjectContainer( this );
 		this.signals = new Map();
 
 		this.signalGroup.name = 'SignalGroup';
 		this.objectGroup.name = 'ObjectGroup';
+	}
+
+	get sStart (): number {
+		return this._sStart;
+	}
+
+	set sStart ( value: number ) {
+		this._sStart = value;
 	}
 
 	get trafficRule (): TrafficRule {
@@ -105,6 +111,14 @@ export class TvRoad {
 
 	set trafficRule ( value ) {
 		this._trafficRule = value;
+	}
+
+	get spline (): AbstractSpline {
+		return this._spline;
+	}
+
+	set spline ( value: AbstractSpline ) {
+		this._spline = value;
 	}
 
 	get junction (): TvJunction {
@@ -304,7 +318,7 @@ export class TvRoad {
 
 	getRoadObjects (): TvRoadObject[] {
 
-		return Array.from( this.objects.object.values() );
+		return this.objectContainer.getRoadObjects();
 
 	}
 
@@ -391,37 +405,33 @@ export class TvRoad {
 
 	addRoadObject ( object: TvRoadObject ): void {
 
-		if ( this.hasRoadObject( object ) ) {
-			throw new DuplicateModelException( `RoadObject ${ object.id } already exists in ${ this.toString() }` );
-		}
-
 		object.road = this;
 
-		this.objects.object.set( object.id, object );
+		this.objectContainer.addRoadObject( object );
 
 	}
 
 	hasRoadObject ( roadObject: TvRoadObject ): boolean {
 
-		return this.objects.object.has( roadObject.id );
+		return this.objectContainer.hasRoadObject( roadObject );
 
 	}
 
 	clearRoadObjects (): void {
 
-		this.objects.object.clear();
+		this.objectContainer.clearRoadObjects();
 
 	}
 
 	getRoadObjectCount (): number {
 
-		return this.objects.object.size;
+		return this.objectContainer.getRoadObjectCount();
 
 	}
 
-	removeRoadObjectById ( id: number ): void {
+	removeRoadObject ( roadObject: TvRoadObject | number ): void {
 
-		this.objects.object.delete( id );
+		this.objectContainer.removeRoadObject( roadObject );
 
 	}
 
