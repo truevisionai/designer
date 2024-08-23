@@ -204,7 +204,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		this.readAsOptionalArray( xml.surface, xml => {
 
-			this.map.surfaces.push( this.importSurface( xml ) );
+			this.map.addSurface( this.importSurface( xml ) );
 
 		} );
 
@@ -309,7 +309,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const propInstance = new PropInstance( xml.attr_guid, propObject );
 
-		this.map.props.push( propInstance );
+		this.map.addProp( propInstance );
 
 	}
 

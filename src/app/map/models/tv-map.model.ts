@@ -20,13 +20,13 @@ import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/ex
 
 export class TvMap {
 
-	public props: PropInstance[] = [];
+	private props: PropInstance[] = [];
 
 	public propCurves: PropCurve[] = [];
 
 	public propPolygons: PropPolygon[] = [];
 
-	public surfaces: Surface[] = [];
+	private surfaces: Surface[] = [];
 
 	public gameObject: GameObject = new GameObject( 'OpenDrive' );
 
@@ -239,6 +239,18 @@ export class TvMap {
 
 		this.surfaces.push( surface );
 
+	}
+
+	getProps () {
+		return this.props;
+	}
+
+	addProp ( prop: PropInstance ) {
+		this.props.push( prop );
+	}
+
+	removeProp ( prop: PropInstance ) {
+		this.props.splice( this.props.indexOf( prop ), 1 );
 	}
 
 	destroy () {

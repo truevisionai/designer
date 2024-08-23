@@ -102,10 +102,10 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		return {
 			version: 0.1,
 			road: map.getRoads().map( road => this.exportRoad( road ) ),
-			prop: this.exportProps( map.props ),
+			prop: map.getProps().map( prop => this.exportProp( prop ) ),
 			propCurve: this.exportPropCurves( map.propCurves ),
 			propPolygon: this.exportPropPolygons( map.propPolygons ),
-			surface: this.exportSurfaces( map.surfaces ),
+			surface: map.getSurfaces().map( surface => this.exportSurface( surface ) ),
 			spline: map.getSplines().map( spline => this.exportSpline( spline ) ),
 			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
 			environment: this.threeService.environment.export()
@@ -337,12 +337,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportProps ( props: PropInstance[] ) {
-
-		return props.map( prop => this.exportProp( prop ) );
-
-	}
-
 	exportProp ( prop: PropInstance ) {
 
 		return {
@@ -462,12 +456,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 				attr_z: transform.scale?.z || 1,
 			}
 		};
-
-	}
-
-	exportSurfaces ( surfaces: Surface[] ) {
-
-		return surfaces.map( surface => this.exportSurface( surface ) );
 
 	}
 

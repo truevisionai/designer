@@ -25,7 +25,7 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 	all (): Surface[] {
 
-		return this.mapService.map.surfaces;
+		return this.mapService.map.getSurfaces();
 
 	}
 

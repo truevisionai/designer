@@ -61,7 +61,7 @@ export class MapManager {
 
 		} );
 
-		map.props.forEach( prop => {
+		map.getProps().forEach( prop => {
 
 			// SceneService.remove( prop.object );
 			SceneService.removeFromMain( prop );

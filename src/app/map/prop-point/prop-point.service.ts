@@ -21,13 +21,13 @@ export class PropPointService extends BaseDataService<PropInstance> {
 
 	all (): PropInstance[] {
 
-		return this.mapService.map.props;
+		return this.mapService.map.getProps();
 
 	}
 
 	remove ( prop: PropInstance ) {
 
-		this.mapService.map.props = this.mapService.map.props.filter( prop => prop !== prop );
+		this.mapService.map.removeProp( prop );
 
 		this.mapService.map.propsGroup.remove( prop );
 
@@ -35,7 +35,7 @@ export class PropPointService extends BaseDataService<PropInstance> {
 
 	add ( prop: PropInstance ) {
 
-		this.mapService.map.props.push( prop );
+		this.mapService.map.addProp( prop );
 
 		this.mapService.map.propsGroup.add( prop, prop );
 

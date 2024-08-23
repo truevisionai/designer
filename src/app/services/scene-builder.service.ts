@@ -83,7 +83,7 @@ export class SceneBuilderService {
 
 		} );
 
-		map.props.forEach( prop => {
+		map.getProps().forEach( prop => {
 
 			map.propsGroup.add( prop, prop.object );
 
