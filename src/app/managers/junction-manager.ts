@@ -479,7 +479,7 @@ export class JunctionManager {
 
 		} );
 
-		junction.connections.clear();
+		junction.clearConnections();
 
 		const links = this.junctionRoadService.getRoadLinks( junction );
 

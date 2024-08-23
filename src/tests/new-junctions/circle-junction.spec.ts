@@ -101,9 +101,9 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		mapService.junctions.forEach( junction => {
 			if ( junction.id == 5 ) {
-				expect( junction.connections.size ).toBe( 20 );
+				expect( junction.getConnectionCount() ).toBe( 20 );
 			} else {
-				expect( junction.connections.size ).toBe( 12 );
+				expect( junction.getConnectionCount() ).toBe( 12 );
 			}
 		} );
 

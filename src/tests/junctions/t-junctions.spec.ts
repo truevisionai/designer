@@ -142,7 +142,7 @@ xdescribe( 't-junction tests', () => {
 
 		const junction = junctionService.getJunctionById( 1 );
 
-		expect( junction.connections.size ).toBe( 6 );
+		expect( junction.getConnectionCount() ).toBe( 6 );
 		expect( roadService.getRoadCount() ).toBe( 9 );
 
 	} );
@@ -159,7 +159,7 @@ xdescribe( 't-junction tests', () => {
 
 		const junction = junctionService.getJunctionById( 1 );
 
-		expect( junction.connections.size ).toBe( 6 );
+		expect( junction.getConnectionCount() ).toBe( 6 );
 		expect( roadService.getRoadCount() ).toBe( 9 );
 
 	} );
@@ -255,7 +255,7 @@ xdescribe( 't-junction tests', () => {
 		const junction = junctionService.getJunctionById( 1 );
 
 		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 6 );
+		expect( junction.getConnectionCount() ).toBe( 6 );
 
 		expect( roadService.getRoad( 1 ).predecessor ).toBeUndefined();
 		expect( roadService.getRoad( 1 ).successor.element ).toBe( roadService.getRoad( 3 ) );
@@ -274,17 +274,17 @@ xdescribe( 't-junction tests', () => {
 
 		// VALIDATE CONNECTIONS
 
-		expect( junction.connections.get( 0 ).incomingRoadId ).toBe( 4 );
-		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
-		expect( junction.connections.get( 0 ).isCornerConnection ).toBe( true );
-		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
-		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.id ).toBe( -1 );
-		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.predecessorId ).toBe( -1 );
-		expect( junction.connections.get( 0 ).laneLink[ 0 ].connectingLane.successorId ).toBe( -1 );
-		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.type ).toBe( TvLaneType.shoulder );
-		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.id ).toBe( -2 );
-		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.predecessorId ).toBe( -2 );
-		expect( junction.connections.get( 0 ).laneLink[ 1 ].connectingLane.successorId ).toBe( -2 );
+		expect( junction.getConnection( 0 ).incomingRoadId ).toBe( 4 );
+		expect( junction.getConnection( 0 ).laneLink.length ).toBe( 3 );
+		expect( junction.getConnection( 0 ).isCornerConnection ).toBe( true );
+		expect( junction.getConnection( 0 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
+		expect( junction.getConnection( 0 ).laneLink[ 0 ].connectingLane.id ).toBe( -1 );
+		expect( junction.getConnection( 0 ).laneLink[ 0 ].connectingLane.predecessorId ).toBe( -1 );
+		expect( junction.getConnection( 0 ).laneLink[ 0 ].connectingLane.successorId ).toBe( -1 );
+		expect( junction.getConnection( 0 ).laneLink[ 1 ].connectingLane.type ).toBe( TvLaneType.shoulder );
+		expect( junction.getConnection( 0 ).laneLink[ 1 ].connectingLane.id ).toBe( -2 );
+		expect( junction.getConnection( 0 ).laneLink[ 1 ].connectingLane.predecessorId ).toBe( -2 );
+		expect( junction.getConnection( 0 ).laneLink[ 1 ].connectingLane.successorId ).toBe( -2 );
 
 	} );
 

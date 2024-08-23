@@ -77,9 +77,9 @@ export class TvRoad {
 
 	public junction: TvJunction;
 
-	public successor: TvRoadLink;
+	public successor?: TvRoadLink;
 
-	public predecessor: TvRoadLink;
+	public predecessor?: TvRoadLink;
 
 	public cornerRoad: boolean = false;
 

@@ -79,25 +79,25 @@ xdescribe( 'LaneLinkService', () => {
 
 		expect( roadService.getRoadCount() ).toBe( 4 );
 		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 2 );
+		expect( junction.getConnectionCount() ).toBe( 2 );
 
 		const roadB = roadService.getRoad( 2 );
 		const leftToRight = roadService.getRoad( 3 );
 		const rightToLeft = roadService.getRoad( 4 );
 
 
-		expect( junction.connections.get( 0 ) ).toBeDefined()
-		expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( roadA.id )
-		expect( junction.connections.get( 0 ).connectingRoad.id ).toBe( leftToRight.id )
-		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
+		expect( junction.getConnection( 0 ) ).toBeDefined()
+		expect( junction.getConnection( 0 ).incomingRoad.id ).toBe( roadA.id )
+		expect( junction.getConnection( 0 ).connectingRoad.id ).toBe( leftToRight.id )
+		expect( junction.getConnection( 0 ).laneLink.length ).toBe( 3 );
 
 		expect( leftToRight.laneSections[ 0 ].lanesMap.size ).toBe( 4 );
 		expectCorrectLaneOrder( leftToRight.laneSections[ 0 ] );
 
-		expect( junction.connections.get( 1 ) ).toBeDefined()
-		expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB )
-		expect( junction.connections.get( 1 ).connectingRoad ).toBe( rightToLeft )
-		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
+		expect( junction.getConnection( 1 ) ).toBeDefined()
+		expect( junction.getConnection( 1 ).incomingRoad ).toBe( roadB )
+		expect( junction.getConnection( 1 ).connectingRoad ).toBe( rightToLeft )
+		expect( junction.getConnection( 1 ).laneLink.length ).toBe( 3 );
 
 		expect( rightToLeft.laneSections[ 0 ].lanesMap.size ).toBe( 4 );
 		expectCorrectLaneOrder( rightToLeft.laneSections[ 0 ] );

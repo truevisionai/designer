@@ -4,7 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { DebugState } from "../../services/debug/debug-state";
-import { ManeuverMesh } from "../../services/junction/junction.debug";
+import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { SplineDebugService } from "../../services/debug/spline-debug.service";
 

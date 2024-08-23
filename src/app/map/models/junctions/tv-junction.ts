@@ -23,8 +23,6 @@ export class TvJunction {
 
 	public controllers: TvJunctionController[] = [];
 
-	public connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
-
 	public corners: TvJunctionConnection[] = [];
 
 	public centroid?: Vector3;
@@ -44,6 +42,8 @@ export class TvJunction {
 	public auto: boolean = true;
 
 	public needsUpdate: boolean = false;
+
+	private connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
 	constructor ( public name: string, public id: number ) {
 
@@ -188,13 +188,35 @@ export class TvJunction {
 		return null;
 	}
 
-	addConnection ( connection: TvJunctionConnection ) {
+	clearConnections (): void {
 
-		if ( this.connections.has( connection.id ) ) {
+		this.connections.clear();
+
+	}
+
+	getConnection ( id: number ): TvJunctionConnection {
+
+		return this.connections.get( id );
+
+	}
+
+	hasConnection ( connection: TvJunctionConnection | number ): boolean {
+
+		if ( typeof connection === 'number' ) {
+			return this.connections.has( connection );
+		}
+
+		return this.connections.has( connection.id );
+
+	}
+
+	addConnection ( connection: TvJunctionConnection ): void {
+
+		if ( this.hasConnection( connection ) ) {
 			Log.error( `Connection with id ${ connection.id } already exists in junction ${ this.id }` );
 		}
 
-		while ( this.connections.has( connection.id ) ) {
+		while ( this.hasConnection( connection ) ) {
 			connection.id++;
 		}
 
@@ -202,9 +224,9 @@ export class TvJunction {
 
 	}
 
-	removeConnection ( connection: TvJunctionConnection ) {
+	removeConnection ( connection: TvJunctionConnection ): void {
 
-		if ( !this.connections.has( connection.id ) ) {
+		if ( !this.hasConnection( connection ) ) {
 			throw new ModelNotFoundException( `Connection with id ${ connection.id } not found in junction ${ this.id }` );
 		}
 

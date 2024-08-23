@@ -16,9 +16,10 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { LaneOverlayHandler } from 'app/core/overlay-handlers/lane-overlay-handler.service';
 import { LaneToolOverlayHandler } from 'app/core/overlay-handlers/lane-tool.overlay';
-import { ObjectUserDataStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
 import { LaneObjectHandler } from 'app/core/object-handlers/lane-object-handler';
 import { RoadObjectHandler } from 'app/core/object-handlers/road-object-handler';
+import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
+import { laneToolHints } from './lane-tool.hints';
 
 export class LaneTool extends ToolWithHandler<TvLane> {
 
@@ -44,6 +45,8 @@ export class LaneTool extends ToolWithHandler<TvLane> {
 		this.overlayHandlers.set( TvRoad.name, helper.base.injector.get( LaneToolOverlayHandler ) );
 
 		this.overlayHandlers.set( TvLane.name, helper.base.injector.get( LaneOverlayHandler ) );
+
+		this.setHintConfig( laneToolHints );
 
 	}
 

@@ -32,7 +32,7 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 			this.selected?.unselect();
 		}
 
-		this.selected = this.filterByType( pointerEventData.intersections, DebugLine );
+		this.selected = this.findByType( pointerEventData.intersections, DebugLine ) as any;
 
 		if ( this.options?.higlightOnSelect ) {
 			this.selected?.select();
@@ -54,7 +54,7 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 
 		if ( !this.current?.isSelected ) this.current?.onMouseOut();
 
-		this.current = this.filterByType( pointerEventData.intersections, DebugLine );
+		this.current = this.findByType( pointerEventData.intersections, DebugLine ) as any;
 
 		if ( !this.current ) return;
 
@@ -67,7 +67,7 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 
 	onPointerUp ( pointerEventData: PointerEventData ): T {
 
-		const object = this.filterByType( pointerEventData.intersections, DebugLine );
+		const object = this.findByType( pointerEventData.intersections, DebugLine ) as any;
 
 		if ( !object ) return;
 

@@ -55,14 +55,13 @@ import { ParkingLotTool } from "./parking/parking-lot.tool";
 import { ControlPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
 import { SelectionService } from "./selection.service";
 import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
-import { ObjectTagStrategy, ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-tag-strategy";
+import { ObjectTagStrategy } from "../core/strategies/select-strategies/object-tag-strategy";
 import { Surface } from 'app/map/surface/surface.model';
 import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
 import { ControlPointFactory } from "../factories/control-point.factory";
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { DataServiceProvider } from "./data-service-provider.service";
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
-import { ToolHintsProvider } from "../core/providers/tool-hints.provider";
 import { Tool } from "./tool";
 import { LaneHeightTool } from './lane-height/lane-height.tool';
 import { BaseLaneTool } from "./base-lane.tool";
@@ -77,7 +76,7 @@ import { LanePointNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
-import { ManeuverMesh } from 'app/services/junction/junction.debug';
+import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { TrafficLightTool } from './traffic-light/traffic-light.tool';
 import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';
 import { EntityService } from "../scenario/entity/entity.service";
@@ -87,6 +86,7 @@ import {
 	SuperElevationTool,
 	SuperElevationToolHelper
 } from "./road-super-elevation/super-elevation.tool";
+import { ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-user-data-strategy";
 
 @Injectable( {
 	providedIn: 'root'
@@ -120,7 +120,6 @@ export class ToolFactory {
 		private factoryProvider: FactoryServiceProvider,
 		private pointFactory: ControlPointFactory,
 		private dataServiceProvider: DataServiceProvider,
-		private toolHintsProvider: ToolHintsProvider,
 		private laneHeightService: LaneHeightService,
 		private trafficLightToolService: TrafficLightToolService,
 	) {
@@ -233,8 +232,6 @@ export class ToolFactory {
 
 			tool.setPointFactory( this.pointFactory );
 
-			tool.setHints( this.toolHintsProvider.createFromToolType( type ) );
-
 			this.setSelectionStrategies( tool, type );
 
 		} else if ( tool instanceof BaseLaneTool ) {
@@ -244,8 +241,6 @@ export class ToolFactory {
 			tool.data = this.dataServiceProvider.createLinkedDataService( type );
 
 			tool.factory = this.factoryProvider.createForLaneTool( type );
-
-			tool.hints = this.toolHintsProvider.createFromToolType( type );
 
 			tool.debugDrawService = this.debugFactory.debugDrawService;
 

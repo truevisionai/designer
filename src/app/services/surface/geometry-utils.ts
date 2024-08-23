@@ -5,6 +5,7 @@
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { Vector3, BufferGeometry, BufferAttribute, Box2, Vector2, CatmullRomCurve3, ExtrudeGeometry, Shape } from "three";
+import { Log } from "app/core/utils/log";
 
 import earcut from 'earcut';
 
@@ -247,6 +248,11 @@ export class GeometryUtils {
 	}
 
 	static createExtrudeGeometry ( points: Vector3[], width = 1.0, height = 0.1 ): BufferGeometry {
+
+		if ( points.length < 2 ) {
+			Log.error( 'Not enough points to create extrude geometry' );
+			return new BufferGeometry();
+		}
 
 		// Create a CatmullRomCurve3 spline
 		const spline = new CatmullRomCurve3( points );

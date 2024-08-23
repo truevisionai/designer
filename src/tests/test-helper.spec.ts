@@ -91,7 +91,7 @@ describe( 'BaseTest: tests', () => {
 		expect( roadB.spline.getLength() ).toBe( 200 );
 
 		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 12 );
+		expect( junction.getConnectionCount() ).toBe( 12 );
 
 	} );
 
@@ -120,7 +120,7 @@ describe( 'BaseTest: tests', () => {
 		expect( mapService.map.getSplineCount() ).toBe( 2 + 6 );
 
 		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 6 );
+		expect( junction.getConnectionCount() ).toBe( 6 );
 
 	} );
 

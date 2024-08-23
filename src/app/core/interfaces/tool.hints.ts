@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export interface ToolHints<T> {
+interface ToolHints<T> {
 	toolOpened: () => string;
 	toolClosed: () => string;
 	objectAdded: ( object: T ) => string;
@@ -16,4 +16,18 @@ export interface ToolHints<T> {
 	pointSelected: ( object: T ) => string;
 	pointUnselected: () => string;
 	assetDropped: () => string;
+}
+
+export interface ObjectHintConfig {
+	onSelected: string,
+	onUnselected: string,
+	onAdded?: string,
+}
+
+export interface ToolHintConfig {
+	objects: {
+		[ key: string ]: ObjectHintConfig;
+	}
+	toolOpened: string;
+	toolClosed: string;
 }

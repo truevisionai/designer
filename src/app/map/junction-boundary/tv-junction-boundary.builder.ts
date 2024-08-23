@@ -32,13 +32,23 @@ import Delaunator from 'delaunator';
 import { Maths } from 'app/utils/maths';
 import { JunctionUtils } from 'app/utils/junction.utils';
 import { Log } from 'app/core/utils/log';
+import { TvJunction } from '../models/junctions/tv-junction';
+import { JunctionOverlay } from 'app/services/junction/junction-overlay';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class TvJunctionBoundaryBuilder {
 
-	constructor () {
+	private static _instance: TvJunctionBoundaryBuilder;
+
+	static get instance (): TvJunctionBoundaryBuilder {
+
+		if ( !TvJunctionBoundaryBuilder._instance ) {
+			TvJunctionBoundaryBuilder._instance = new TvJunctionBoundaryBuilder();
+		}
+
+		return TvJunctionBoundaryBuilder._instance;
 	}
 
 	/**
@@ -125,12 +135,19 @@ export class TvJunctionBoundaryBuilder {
 		return geometry;
 	}
 
-	buildViaShape ( boundary: TvJunctionBoundary ): Mesh {
+	buildViaShape ( junction: TvJunction, boundary: TvJunctionBoundary ): Mesh {
 
 		const geometry = this.getBufferGeometry( boundary, 'shape' );
 
-		return new Mesh( geometry, new MeshBasicMaterial( { color: 0x00ff00, side: FrontSide } ) );
+		const material = new MeshBasicMaterial( {
+			color: COLOR.CYAN,
+			side: FrontSide,
+			depthTest: false,
+			transparent: true,
+			opacity: 0.2
+		} );
 
+		return new JunctionOverlay( junction, geometry, material );
 	}
 
 	// buildViaPoly2Tri ( boundary: TvJunctionBoundary ): Mesh {

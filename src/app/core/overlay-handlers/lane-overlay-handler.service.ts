@@ -44,15 +44,11 @@ export class LaneOverlayHandler extends BaseOverlayHandler<TvLane> {
 
 		this.laneDebugger.showDirectionalArrows( object );
 
-		this.highlighted.add( object );
-
 	}
 
 	onDefault ( object: TvLane ): void {
 
 		this.laneDebugger.removeDirectionalArrows( object );
-
-		this.highlighted.delete( object );
 
 	}
 
@@ -75,8 +71,6 @@ export class LaneOverlayHandler extends BaseOverlayHandler<TvLane> {
 		this.laneDebugger.removeLaneOutline( object );
 
 		this.laneDebugger.removeDirectionalArrows( object );
-
-		this.highlighted.delete( object );
 
 	}
 

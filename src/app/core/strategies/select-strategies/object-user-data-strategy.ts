@@ -1,17 +1,11 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
+import { SelectStrategy } from "./select-strategy";
+import { PointerEventData } from "../../../events/pointer-event-data";
+import { Intersection, Object3D } from "three";
 
-import { Intersection } from 'three';
-import { PointerEventData } from '../../../events/pointer-event-data';
-import { SelectStrategy } from './select-strategy';
+export class ObjectUserDataStrategy<T> extends SelectStrategy<T> {
 
-export class ObjectTagStrategy<T> extends SelectStrategy<T> {
-
-	constructor ( private tag: string, private attributeName?: keyof T ) {
-
+	constructor ( private tag: string, private key: string ) {
 		super();
-
 	}
 
 	onPointerDown ( pointerEventData: PointerEventData ): T {
@@ -40,9 +34,9 @@ export class ObjectTagStrategy<T> extends SelectStrategy<T> {
 
 	}
 
-	private getAttribute ( object: any ): T {
+	private getAttribute ( object: Object3D ): T {
 
-		return this.attributeName ? object[ this.attributeName ] : object;
+		return this.key ? object.userData[ this.key ] : object;
 
 	}
 
@@ -53,4 +47,3 @@ export class ObjectTagStrategy<T> extends SelectStrategy<T> {
 	}
 
 }
-

@@ -99,7 +99,7 @@ export class SceneBuilderService {
 
 	buildJunction ( map: TvMap, junction: TvJunction ): void {
 
-		if ( junction.connections.size == 0 ) {
+		if ( junction.getConnectionCount() == 0 ) {
 
 			TvConsole.warn( 'Removing junction with no connections ' + junction.id );
 

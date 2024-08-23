@@ -25,8 +25,6 @@ export class LaneObjectHandler extends BaseObjectHandler<TvLane> {
 
 		this.setInspector( new LaneInspector( object, this.laneService ) );
 
-		this.setHint( 'use SHIFT + LEFT CLICK to duplicate a lane' );
-
 		this.selected.add( object );
 
 	}
@@ -34,8 +32,6 @@ export class LaneObjectHandler extends BaseObjectHandler<TvLane> {
 	onUnselected ( object: TvLane ): void {
 
 		this.clearInspector();
-
-		this.setHint( 'use LEFT CLICK to select a road/lane' );
 
 		this.selected.delete( object );
 

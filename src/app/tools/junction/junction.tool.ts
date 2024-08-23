@@ -7,12 +7,13 @@ import { BaseTool } from '../base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionToolHelper } from './junction-tool.helper';
-import { JunctionNode } from 'app/services/junction/junction.debug';
-import { ObjectTagStrategy, ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
+import { JunctionNode } from 'app/services/junction/junction-node';
+import { ObjectTagStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
 import { JunctionInspector } from './junction.inspector';
 import { DebugState } from 'app/services/debug/debug-state';
 import { Log } from 'app/core/utils/log';
 import { Commands } from 'app/commands/commands';
+import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
 
 export class JunctionTool extends BaseTool<any> {
 

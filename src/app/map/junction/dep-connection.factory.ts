@@ -54,7 +54,7 @@ export class DepConnectionFactory {
 		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
 
 		const connection = new TvJunctionConnection(
-			junction.connections.size,
+			junction.getConnectionCount(),
 			incoming.road,
 			connectingRoad,
 			TvContactPoint.START,
@@ -84,7 +84,7 @@ export class DepConnectionFactory {
 
 	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint ) {
 
-		const id = junction.connections.size + 1;
+		const id = junction.getConnectionCount() + 1;
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact );
 

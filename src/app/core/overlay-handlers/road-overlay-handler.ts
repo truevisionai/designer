@@ -53,23 +53,17 @@ export class RoadOverlayHandler extends BaseOverlayHandler<TvRoad> {
 
 		this.roadDebug.showRoadBorderLine( object );
 
-		this.highlighted.add( object );
-
 	}
 
 	onDefault ( object: TvRoad ): void {
 
 		this.roadDebug.removeRoadBorderLine( object );
 
-		this.highlighted.delete( object );
-
 	}
 
 	onSelected ( object: TvRoad ): void {
 
 		this.roadDebug.showRoadBorderLine( object, 3, COLOR.RED );
-
-		this.highlighted.delete( object );
 
 	}
 
@@ -82,8 +76,6 @@ export class RoadOverlayHandler extends BaseOverlayHandler<TvRoad> {
 	onRemoved ( object: TvRoad ): void {
 
 		this.roadDebug.removeRoadBorderLine( object );
-
-		this.highlighted.delete( object );
 
 	}
 

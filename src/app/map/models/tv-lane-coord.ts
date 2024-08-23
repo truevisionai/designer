@@ -10,6 +10,7 @@ import { TvContactPoint } from './tv-common';
 import { Maths } from 'app/utils/maths';
 import { Orientation } from 'app/scenario/models/tv-orientation';
 import { LaneUtils } from "../../utils/lane.utils";
+import { TvRoadLink } from './tv-road-link';
 
 export class TvLaneCoord {
 
@@ -25,6 +26,16 @@ export class TvLaneCoord {
 
 	toString () {
 		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.s } offset:${ this.offset }`;
+	}
+
+	getLink (): TvRoadLink {
+		if ( this.contact == TvContactPoint.START ) {
+			return this.road.predecessor;
+		} else if ( this.contact == TvContactPoint.END ) {
+			return this.road.successor;
+		} else {
+			throw new Error( 'Invalid contact point' );
+		}
 	}
 
 	get contact (): TvContactPoint {

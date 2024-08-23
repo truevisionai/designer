@@ -13,7 +13,7 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvJunctionSignalizationInspector } from './tv-junction-signalization.inspector';
 import { DebugLine } from "../../objects/debug-line";
 import { JunctionGateInspector } from "./junction-gate-inspector";
-import { ManeuverMesh } from "../../services/junction/junction.debug";
+import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { ManeuverSignalizationInspector } from "./maneuver-signalization.inspector";
 import { TvLaneCoord } from "../../map/models/tv-lane-coord";
 import { Maths } from "../../utils/maths";

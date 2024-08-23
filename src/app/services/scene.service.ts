@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { Group, Material, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, Object3D } from 'three';
 import { GameObject } from '../objects/game-object';
 import { XmlElement } from "../importers/xml.element";
+import { ManeuverMesh } from './junction/maneuver-mesh';
 
 @Injectable( {
 	providedIn: 'root'
@@ -167,6 +168,17 @@ export class SceneService {
 
 		this.changed.emit();
 	}
+
+	static removeChildren ( mesh: Object3D ) {
+
+		// Remove children
+		while ( mesh.children.length > 0 ) {
+			const child = mesh.children[ 0 ];
+			this.disposeNode( child );
+		}
+
+	}
+
 
 	private static disposeHierarchy ( node, callback ) {
 

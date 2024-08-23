@@ -8,6 +8,10 @@ export interface OverlayHandler<T> {
 
 	onHighlight ( object: T ): void;
 
+	addToHighlighted ( object: T ): void;
+
+	removeFromHighlighted ( object: T ): void;
+
 	onDefault ( object: T ): void;
 
 	onSelected ( object: T ): void;
@@ -37,18 +41,6 @@ export abstract class BaseOverlayHandler<T> implements OverlayHandler<T> {
 
 	protected highlighted: Set<T>;
 
-	getHighlighted (): T[] {
-		return Array.from( this.highlighted );
-	}
-
-	enable (): void {
-		this.isEnabled = true;
-	}
-
-	disable (): void {
-		this.isEnabled = false;
-	}
-
 	abstract onHighlight ( object: T ): void;
 
 	abstract onSelected ( object: T ): void;
@@ -73,4 +65,23 @@ export abstract class BaseOverlayHandler<T> implements OverlayHandler<T> {
 
 	}
 
+	getHighlighted (): T[] {
+		return Array.from( this.highlighted );
+	}
+
+	enable (): void {
+		this.isEnabled = true;
+	}
+
+	disable (): void {
+		this.isEnabled = false;
+	}
+
+	addToHighlighted ( object: T ): void {
+		this.highlighted.add( object );
+	}
+
+	removeFromHighlighted ( object: T ): void {
+		this.highlighted.delete( object );
+	}
 }

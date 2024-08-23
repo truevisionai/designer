@@ -46,11 +46,11 @@ export class ControlPointStrategy<T extends AbstractControlPoint> extends Select
 			.filter( i => i.object.visible )
 			.filter( i => i.object.type === 'Points' );
 
-		const intersection = this.findNearestIntersection( pointerEventData.point, intersections );
+		const nearest = this.findNearestObject( pointerEventData.point, intersections );
 
-		if ( !intersection ) return;
+		if ( !nearest ) return;
 
-		this.selected = intersection.object as any;
+		this.selected = nearest as any;
 
 		if ( this.options?.higlightOnSelect ) {
 			this.selected?.select();
@@ -76,11 +76,11 @@ export class ControlPointStrategy<T extends AbstractControlPoint> extends Select
 			.filter( i => i.object.visible )
 			.filter( i => i.object.type === 'Points' );
 
-		const intersection = this.findNearestIntersection( pointerEventData.point, intersections );
+		const nearest = this.findNearestObject( pointerEventData.point, intersections );
 
-		if ( !intersection ) return;
+		if ( !nearest ) return;
 
-		this.current = intersection.object as any;
+		this.current = nearest as any;
 
 		if ( !this.current?.isSelected ) this.current?.onMouseOver();
 
@@ -105,4 +105,18 @@ export class ControlPointStrategy<T extends AbstractControlPoint> extends Select
 
 }
 
+export class ControlPointStrategyV2 extends ControlPointStrategy<AbstractControlPoint> {
+
+	constructor ( options?: StrategySettings ) {
+
+		super( {
+			higlightOnHover: options?.higlightOnHover || false,
+			higlightOnSelect: options?.higlightOnSelect || false,
+			tag: options?.tag || null,
+			returnParent: options?.returnParent || false,
+		} );
+
+	}
+
+}
 

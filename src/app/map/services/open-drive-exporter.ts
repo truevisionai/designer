@@ -1004,7 +1004,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	public writeJunction ( junction: TvJunction ) {
 
-		if ( junction.connections.size === 0 ) return;
+		if ( junction.getConnectionCount() === 0 ) return;
 
 		let xml: XmlElement = {
 			attr_id: junction.id,
@@ -1075,7 +1075,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 			if ( cornerConnections.length > 0 ) {
 
-				const id = junction.connections.size;
+				const id = junction.getConnectionCount();
 				const incomingRoad = cornerConnections[ 0 ].incomingRoad;
 				const connectingRoad = cornerConnections[ 0 ].connectingRoad;
 				const contactPoint = cornerConnections[ 0 ].contactPoint;

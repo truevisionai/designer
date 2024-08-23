@@ -20,10 +20,12 @@ import { SelectionService } from "./selection.service";
 import { AbstractFactory } from 'app/core/interfaces/abstract-factory';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { ToolHints } from "../core/interfaces/tool.hints";
 import { Tool } from "./tool";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { Commands } from 'app/commands/commands';
+import { ObjectHandler } from "../core/object-handlers/object-handler";
+import { OverlayHandler } from "../core/overlay-handlers/overlay-handler";
+import { ToolHintConfig } from 'app/core/interfaces/tool.hints';
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -45,11 +47,15 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected currentSelectedPointMoved: boolean;
 
-	protected hints: ToolHints<T>;
+	protected objectHandlers: Map<string, ObjectHandler<Object>>;
+
+	protected overlayHandlers: Map<string, OverlayHandler<Object>>;
 
 	protected get currentSelectedPoint (): SimpleControlPoint<T> {
 		return this.selectionService?.getLastSelected<SimpleControlPoint<T>>( SimpleControlPoint.name );
 	}
+
+	private hintConfig: ToolHintConfig;
 
 	protected get currentSelectedObject (): T {
 
@@ -69,11 +75,31 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		this.clearInspector();
 
+		this.objectHandlers = new Map();
+
+		this.overlayHandlers = new Map();
+
+	}
+
+	setHintConfig ( config: ToolHintConfig ): void {
+		this.hintConfig = config;
+	}
+
+	getHintConfig (): ToolHintConfig {
+		return this.hintConfig;
+	}
+
+	getObjectHint ( objectName: string, action: 'onAdded' | 'onUpdated' | 'onRemoved' | 'onSelected' | 'onUnselected' ): string {
+		return this.hintConfig?.objects[ objectName ]?.[ action ];
+	}
+
+	setObjectHint ( object: Object, action: 'onAdded' | 'onUpdated' | 'onRemoved' | 'onSelected' | 'onUnselected' ): void {
+		this.setHint( this.getObjectHint( object.constructor.name, action ) );
 	}
 
 	init (): void {
 
-		this.setHint( this.hints?.toolOpened() );
+		this.setHint( this.hintConfig?.toolOpened );
 
 	}
 
@@ -97,6 +123,10 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 			this.debugService?.setDebugState( object, DebugState.REMOVED );
 
 		} );
+
+		this.overlayHandlers.forEach( handler => handler.clear() );
+
+		this.overlayHandlers.forEach( handler => handler.disable() );
 
 		this.debugService?.clear();
 
@@ -253,13 +283,19 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	onObjectSelected ( object: T ): void {
 
+		if ( this.objectHasHandlers( object ) ) {
+
+			this.handleSelectionWithHandlers( object );
+
+			return;
+
+		}
+
 		if ( object.constructor.name === this.typeName ) {
 
 			this.debugService.setDebugState( object, DebugState.SELECTED );
 
 			this.onShowInspector( object );
-
-			this.setHint( this.hints?.objectSelected( object ) );
 
 		} else if ( object instanceof SimpleControlPoint ) {
 
@@ -268,21 +304,25 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 			this.onShowInspector( object.mainObject, object );
 
 			this.debugService.setDebugState( object.mainObject, DebugState.SELECTED );
-
-			this.setHint( this.hints?.pointSelected( object.mainObject ) );
 		}
 
 	}
 
 	onObjectUnselected ( object: T ): void {
 
+		if ( this.objectHasHandlers( object ) ) {
+
+			this.handleUnselectionWithHandlers( object );
+
+			return;
+
+		}
+
 		if ( object.constructor.name === this.typeName ) {
 
 			this.debugService.setDebugState( object, DebugState.DEFAULT );
 
 			AppInspector.clear();
-
-			this.setHint( this.hints?.objectUnselected( object ) );
 
 		} else if ( object instanceof SimpleControlPoint ) {
 
@@ -291,8 +331,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 			AppInspector.clear();
 
 			this.debugService.setDebugState( object.mainObject, DebugState.DEFAULT );
-
-			this.setHint( this.hints?.pointUnselected() );
 
 		}
 
@@ -306,15 +344,12 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 			this.debugService.setDebugState( object, DebugState.SELECTED );
 
-			this.setHint( this.hints?.objectAdded( object ) );
-
 		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.dataService.addPoint( object.mainObject, object );
 
 			this.debugService.setDebugState( object.mainObject, DebugState.SELECTED );
 
-			this.setHint( this.hints?.pointAdded() );
 		}
 
 	}
@@ -327,15 +362,11 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 			this.debugService.setDebugState( object, DebugState.SELECTED );
 
-			this.setHint( this.hints?.objectUpdated( object ) );
-
 		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.dataService.update( object.mainObject );
 
 			this.debugService.setDebugState( object.mainObject, DebugState.SELECTED );
-
-			this.setHint( this.hints?.pointUpdated() );
 
 		}
 
@@ -353,8 +384,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 			this.selectionService?.clearSelection();
 
-			this.setHint( this.hints?.objectRemoved( object ) );
-
 		} else if ( object instanceof SimpleControlPoint ) {
 
 			this.dataService.removePoint( object.mainObject, object );
@@ -362,8 +391,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 			this.debugService.setDebugState( object.mainObject, DebugState.DEFAULT );
 
 			this.onShowInspector( object.mainObject );
-
-			this.setHint( this.hints?.pointRemoved() );
 
 		}
 
@@ -424,12 +451,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 	setPointFactory ( controlPointFactory: ControlPointFactory ) {
 
 		this.pointFactory = controlPointFactory;
-
-	}
-
-	setHints ( hints: ToolHints<T> ) {
-
-		this.hints = hints;
 
 	}
 
@@ -499,6 +520,137 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 	}
 
 	protected onShowInspector ( object: T, controlPoint?: AbstractControlPoint ): void {
+
+	}
+
+	protected highlightWithHandlers ( e: PointerEventData ): void {
+
+		this.resetHighlightedObjects();
+
+		const objectToHighlight = this.selectionService.highlight( e );
+
+		if ( !objectToHighlight ) return;
+
+		const objectHandler = this.objectHandlers.get( objectToHighlight.constructor.name );
+
+		const overlayHandler = this.overlayHandlers.get( objectToHighlight.constructor.name );
+
+		if ( !objectHandler || !overlayHandler ) {
+			console.warn( `No handler found for ${ objectToHighlight.constructor.name }` );
+			return;
+		}
+
+		// If the object is already selected, don't highlight it
+		if ( objectHandler.isSelected( objectToHighlight ) ) return;
+
+		overlayHandler.onHighlight( objectToHighlight );
+
+		overlayHandler.addToHighlighted( objectToHighlight );
+
+	}
+
+	resetHighlightedObjects (): void {
+
+		this.overlayHandlers.forEach( ( overlayHandler, name ) => {
+
+			const selected = this.objectHandlers.get( name ).getSelected();
+
+			overlayHandler.getHighlighted().forEach( highlightedObject => {
+
+				if ( selected.includes( highlightedObject ) ) return;
+
+				overlayHandler.onDefault( highlightedObject );
+
+				overlayHandler.removeFromHighlighted( highlightedObject );
+
+			} );
+
+		} );
+
+	}
+
+	protected handleSelectionWithHandlers ( object: Object ): void {
+
+		const handle = ( item ) => {
+
+			const objectHandler = this.objectHandlers.get( item.constructor.name );
+
+			const overlayHandler = this.overlayHandlers.get( item.constructor.name );
+
+			objectHandler.select( item );
+
+			overlayHandler.onSelected( item );
+
+			this.setObjectHint( item, 'onSelected' );
+
+		}
+
+		if ( Array.isArray( object ) ) {
+
+			object.forEach( handle );
+
+		} else {
+
+			handle( object );
+
+		}
+
+	}
+
+	protected objectHasHandlers ( object: Object ): boolean {
+
+		const objectHandler = this.objectHandlers.get( object.constructor.name );
+
+		const overlayHandler = this.overlayHandlers.get( object.constructor.name );
+
+		return objectHandler != undefined && overlayHandler != undefined;
+
+	}
+
+	protected handleUnselectionWithHandlers ( object: Object ): void {
+
+		const handle = ( item ) => {
+
+			const objectHandler = this.objectHandlers.get( item.constructor.name );
+
+			const overlayHandler = this.overlayHandlers.get( item.constructor.name );
+
+			objectHandler.unselect( item );
+
+			overlayHandler.onUnselected( item );
+
+			this.setObjectHint( item, 'onUnselected' );
+
+		}
+
+		if ( Array.isArray( object ) ) {
+
+			object.forEach( handle );
+
+		} else {
+
+			handle( object );
+
+		}
+
+	}
+
+	protected handleAction ( object: Object, action: 'onAdded' | 'onUpdated' | 'onRemoved' ): void {
+
+		const objectHandler = this.objectHandlers.get( object.constructor.name );
+		const overlayHandler = this.overlayHandlers.get( object.constructor.name );
+
+		if ( objectHandler && typeof objectHandler[ action ] === 'function' ) {
+			objectHandler[ action ]( object );
+		} else {
+			console.warn( 'Invalid selection handler for object type', object );
+		}
+
+		if ( overlayHandler && typeof overlayHandler[ action ] === 'function' ) {
+			overlayHandler[ action ]( object );
+		} else {
+			console.warn( 'Invalid debugger handler for object type', object );
+		}
 
 	}
 

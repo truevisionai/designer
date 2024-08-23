@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { TvLaneLocation, TvLaneSide } from 'app/map/models/tv-common';
+import { TvLaneLocation } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadGeometryService } from '../road/road-geometry.service';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -53,6 +54,26 @@ export class LanePositionService {
 		return this.getLanePoints( road, laneSection, lane, location );
 	}
 
+	getLanePointsById ( road: TvRoad, laneId: number, location: TvLaneLocation ): TvPosTheta[] {
+
+		const points: TvPosTheta[] = [];
+
+		road.getLaneProfile().getLaneSections().forEach( laneSection => {
+
+			const lane = laneSection.getLaneById( laneId );
+
+			if ( !lane ) {
+				Log.warn( `Lane with id ${ laneId } not found in lane section ${ laneSection.id }` );
+				return;
+			}
+
+			points.push( ...this.getPoints( road, laneSection, lane, location ) );
+
+		} );
+
+		return points;
+	}
+
 	findLaneStartPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): TvPosTheta {
 		return this.getLaneStartPoint( road, laneSection, lane, sOffset );
 	}
@@ -93,6 +114,9 @@ export class LanePositionService {
 			points.push( this.findLanePosition( road, laneSection, lane, s, location ) );
 
 		}
+
+		// last point
+		points.push( this.findLanePosition( road, laneSection, lane, laneSection.endS, location ) );
 
 		return points;
 	}

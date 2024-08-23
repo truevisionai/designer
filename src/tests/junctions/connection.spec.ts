@@ -62,7 +62,7 @@ xdescribe( 'ConnectionService', () => {
 		);
 
 		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 2 );
+		expect( junction.getConnectionCount() ).toBe( 2 );
 
 		expect( leftRoad.predecessor ).toBeUndefined();
 		expect( leftRoad.successor ).toBeDefined()
@@ -72,27 +72,27 @@ xdescribe( 'ConnectionService', () => {
 		expect( rightRoad.predecessor ).toBeDefined()
 		expect( rightRoad.predecessor.id ).toBe( junction.id );
 
-		// expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( leftRoad.id );
-		// expect( junction.connections.get( 0 ).outgoingRoad.id ).toBe( rightRoad.id );
-		// expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
+		// expect( junction.getConnection( 0 ).incomingRoad.id ).toBe( leftRoad.id );
+		// expect( junction.getConnection( 0 ).outgoingRoad.id ).toBe( rightRoad.id );
+		// expect( junction.getConnection( 0 ).laneLink.length ).toBe( 3 );
 
-		// expect( junction.connections.get( 0 ).laneLink[ 0 ].from ).toBe( -1 );
-		// expect( junction.connections.get( 0 ).laneLink[ 0 ].to ).toBe( -1 );
-		// expect( junction.connections.get( 0 ).laneLink[ 1 ].from ).toBe( -2 );
-		// expect( junction.connections.get( 0 ).laneLink[ 1 ].to ).toBe( -2 );
-		// expect( junction.connections.get( 0 ).laneLink[ 2 ].from ).toBe( -3 );
-		// expect( junction.connections.get( 0 ).laneLink[ 2 ].to ).toBe( -3 );
+		// expect( junction.getConnection( 0 ).laneLink[ 0 ].from ).toBe( -1 );
+		// expect( junction.getConnection( 0 ).laneLink[ 0 ].to ).toBe( -1 );
+		// expect( junction.getConnection( 0 ).laneLink[ 1 ].from ).toBe( -2 );
+		// expect( junction.getConnection( 0 ).laneLink[ 1 ].to ).toBe( -2 );
+		// expect( junction.getConnection( 0 ).laneLink[ 2 ].from ).toBe( -3 );
+		// expect( junction.getConnection( 0 ).laneLink[ 2 ].to ).toBe( -3 );
 
-		// expect( junction.connections.get( 1 ).incomingRoad.id ).toBe( rightRoad.id );
-		// expect( junction.connections.get( 1 ).outgoingRoad.id ).toBe( leftRoad.id );
-		// expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
+		// expect( junction.getConnection( 1 ).incomingRoad.id ).toBe( rightRoad.id );
+		// expect( junction.getConnection( 1 ).outgoingRoad.id ).toBe( leftRoad.id );
+		// expect( junction.getConnection( 1 ).laneLink.length ).toBe( 3 );
 
-		// expect( junction.connections.get( 1 ).laneLink[ 0 ].from ).toBe( -1 );
-		// expect( junction.connections.get( 1 ).laneLink[ 0 ].to ).toBe( -1 );
-		// expect( junction.connections.get( 1 ).laneLink[ 1 ].from ).toBe( -2 );
-		// expect( junction.connections.get( 1 ).laneLink[ 1 ].to ).toBe( -2 );
-		// expect( junction.connections.get( 1 ).laneLink[ 2 ].from ).toBe( -3 );
-		// expect( junction.connections.get( 1 ).laneLink[ 2 ].to ).toBe( -3 );
+		// expect( junction.getConnection( 1 ).laneLink[ 0 ].from ).toBe( -1 );
+		// expect( junction.getConnection( 1 ).laneLink[ 0 ].to ).toBe( -1 );
+		// expect( junction.getConnection( 1 ).laneLink[ 1 ].from ).toBe( -2 );
+		// expect( junction.getConnection( 1 ).laneLink[ 1 ].to ).toBe( -2 );
+		// expect( junction.getConnection( 1 ).laneLink[ 2 ].from ).toBe( -3 );
+		// expect( junction.getConnection( 1 ).laneLink[ 2 ].to ).toBe( -3 );
 
 	} ) );
 
@@ -170,24 +170,24 @@ xdescribe( 'ConnectionService', () => {
 
 		expect( roadService.roads.length ).toBe( 4 + 12 );
 
-		expect( junction.connections.size ).toBe( 12 );
+		expect( junction.getConnectionCount() ).toBe( 12 );
 
-		expect( junction.connections.get( 0 ).contactPoint ).toBe( TvContactPoint.START );
-		expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( bottom.id );
-		expect( junction.connections.get( 0 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.getConnection( 0 ).contactPoint ).toBe( TvContactPoint.START );
+		expect( junction.getConnection( 0 ).incomingRoad.id ).toBe( bottom.id );
+		expect( junction.getConnection( 0 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
 
 
-		expect( junction.connections.get( 1 ).contactPoint ).toBe( TvContactPoint.START );
-		expect( junction.connections.get( 1 ).incomingRoad.id ).toBe( left.id );
-		expect( junction.connections.get( 1 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.getConnection( 1 ).contactPoint ).toBe( TvContactPoint.START );
+		expect( junction.getConnection( 1 ).incomingRoad.id ).toBe( left.id );
+		expect( junction.getConnection( 1 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
 
-		expect( junction.connections.get( 2 ).contactPoint ).toBe( TvContactPoint.START );
-		expect( junction.connections.get( 2 ).incomingRoad.id ).toBe( bottom.id );
-		expect( junction.connections.get( 2 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.getConnection( 2 ).contactPoint ).toBe( TvContactPoint.START );
+		expect( junction.getConnection( 2 ).incomingRoad.id ).toBe( bottom.id );
+		expect( junction.getConnection( 2 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
 
-		expect( junction.connections.get( 3 ).contactPoint ).toBe( TvContactPoint.START );
-		expect( junction.connections.get( 3 ).incomingRoad.id ).toBe( top.id );
-		expect( junction.connections.get( 3 ).getIncomingContactPoint() ).toBe( TvContactPoint.START );
+		expect( junction.getConnection( 3 ).contactPoint ).toBe( TvContactPoint.START );
+		expect( junction.getConnection( 3 ).incomingRoad.id ).toBe( top.id );
+		expect( junction.getConnection( 3 ).getIncomingContactPoint() ).toBe( TvContactPoint.START );
 
 		// TODO: add more tests for rest of the connections
 

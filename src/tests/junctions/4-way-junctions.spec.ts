@@ -89,15 +89,15 @@ xdescribe( '4-way-junction tests', () => {
 		expect( roadService.roads.length ).toBe( 4 );
 
 		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 2 );
+		expect( junction.getConnectionCount() ).toBe( 2 );
 
-		expect( junction.connections.get( 0 ) ).toBeDefined()
-		expect( junction.connections.get( 0 ).incomingRoad ).toBe( roadA );
-		expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
+		expect( junction.getConnection( 0 ) ).toBeDefined()
+		expect( junction.getConnection( 0 ).incomingRoad ).toBe( roadA );
+		expect( junction.getConnection( 0 ).laneLink.length ).toBe( 3 );
 
-		expect( junction.connections.get( 1 ) ).toBeDefined()
-		expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB );
-		expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
+		expect( junction.getConnection( 1 ) ).toBeDefined()
+		expect( junction.getConnection( 1 ).incomingRoad ).toBe( roadB );
+		expect( junction.getConnection( 1 ).laneLink.length ).toBe( 3 );
 
 		mapValidator.validateMap( mapService.map, true );
 	} )
@@ -126,17 +126,17 @@ xdescribe( '4-way-junction tests', () => {
 		expect( roadService.roads.length ).toBe( 4 );
 
 		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 2 );
+		expect( junction.getConnectionCount() ).toBe( 2 );
 
-		// expect( junction.connections.get( 0 ) ).toBeDefined()
-		// expect( junction.connections.get( 0 ).incomingRoad ).toBe( roadA );
-		// expect( junction.connections.get( 0 ).outgoingRoad ).toBe( roadB );
-		// expect( junction.connections.get( 0 ).laneLink.length ).toBe( 3 );
+		// expect( junction.getConnection( 0 ) ).toBeDefined()
+		// expect( junction.getConnection( 0 ).incomingRoad ).toBe( roadA );
+		// expect( junction.getConnection( 0 ).outgoingRoad ).toBe( roadB );
+		// expect( junction.getConnection( 0 ).laneLink.length ).toBe( 3 );
 
-		// expect( junction.connections.get( 1 ) ).toBeDefined()
-		// expect( junction.connections.get( 1 ).incomingRoad ).toBe( roadB );
-		// expect( junction.connections.get( 1 ).outgoingRoad ).toBe( roadA );
-		// expect( junction.connections.get( 1 ).laneLink.length ).toBe( 3 );
+		// expect( junction.getConnection( 1 ) ).toBeDefined()
+		// expect( junction.getConnection( 1 ).incomingRoad ).toBe( roadB );
+		// expect( junction.getConnection( 1 ).outgoingRoad ).toBe( roadA );
+		// expect( junction.getConnection( 1 ).laneLink.length ).toBe( 3 );
 
 		expect( mapService.highestestRoadId ).toBe( 4 );
 		mapValidator.validateMap( mapService.map, true );
@@ -218,25 +218,25 @@ xdescribe( '4-way-junction tests', () => {
 
 		for ( let i = 0; i < connections.length; i++ ) {
 
-			expect( junction.connections.get( i ) ).toBeDefined();
-			expect( junction.connections.get( i ).connectingRoad.spline.controlPoints.length ).toBe( 4 );
+			expect( junction.getConnection( i ) ).toBeDefined();
+			expect( junction.getConnection( i ).connectingRoad.spline.controlPoints.length ).toBe( 4 );
 
 		}
 
-		expect( junction.connections.get( 0 ).connectingRoad.id ).toBe( 5 );
-		expect( junction.connections.get( 0 ).incomingRoad.id ).toBe( bottomRoad.id );
+		expect( junction.getConnection( 0 ).connectingRoad.id ).toBe( 5 );
+		expect( junction.getConnection( 0 ).incomingRoad.id ).toBe( bottomRoad.id );
 
-		expect( junction.connections.get( 1 ).connectingRoad.id ).toBe( 6 );
-		expect( junction.connections.get( 1 ).incomingRoad.id ).toBe( leftRoad.id );
+		expect( junction.getConnection( 1 ).connectingRoad.id ).toBe( 6 );
+		expect( junction.getConnection( 1 ).incomingRoad.id ).toBe( leftRoad.id );
 
-		expect( junction.connections.get( 2 ).connectingRoad.id ).toBe( 7 );
-		expect( junction.connections.get( 2 ).incomingRoad.id ).toBe( bottomRoad.id );
+		expect( junction.getConnection( 2 ).connectingRoad.id ).toBe( 7 );
+		expect( junction.getConnection( 2 ).incomingRoad.id ).toBe( bottomRoad.id );
 
-		expect( junction.connections.get( 3 ).connectingRoad.id ).toBe( 8 );
-		expect( junction.connections.get( 3 ).incomingRoad.id ).toBe( topRoad.id );
+		expect( junction.getConnection( 3 ).connectingRoad.id ).toBe( 8 );
+		expect( junction.getConnection( 3 ).incomingRoad.id ).toBe( topRoad.id );
 
-		expect( junction.connections.get( 4 ).connectingRoad.id ).toBe( 9 );
-		expect( junction.connections.get( 4 ).incomingRoad.id ).toBe( leftRoad.id );
+		expect( junction.getConnection( 4 ).connectingRoad.id ).toBe( 9 );
+		expect( junction.getConnection( 4 ).incomingRoad.id ).toBe( leftRoad.id );
 
 		expect( mapService.highestestRoadId ).toBe( 16 );
 		mapValidator.validateMap( mapService.map, true );
@@ -583,8 +583,8 @@ xdescribe( '4-way-junction tests', () => {
 			const rightJunction = junctionService.getJunctionById( 1 );
 			const leftJunction = junctionService.getJunctionById( 2 )
 
-			expect( rightJunction.connections.size ).toBe( 12 );
-			expect( leftJunction.connections.size ).toBe( 12 );
+			expect( rightJunction.getConnectionCount() ).toBe( 12 );
+			expect( leftJunction.getConnectionCount() ).toBe( 12 );
 
 			expect( roadService.getRoad( 1 ) ).toBe( horizontal );
 			expect( roadService.getRoad( 2 ) ).toBe( verticalRight );
@@ -765,7 +765,7 @@ xdescribe( '4-way-junction tests', () => {
 		const junction = mapService.findJunction( 1 );
 
 		expect( junction ).toBeDefined();
-		expect( junction.connections.size ).toBe( 6 );
+		expect( junction.getConnectionCount() ).toBe( 6 );
 		expect( roadService.roads.length ).toBe( 9 );
 		expect( roadService.junctionRoads.length ).toBe( 6 );
 		expect( junctionService.junctions.length ).toBe( 1 );

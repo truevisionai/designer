@@ -165,6 +165,12 @@ export class SelectionService {
 
 	}
 
+	unselectObjectsOfType ( type: string ): void {
+
+		this.selectedObjects.delete( type );
+
+	}
+
 	private handleDeselection (): void {
 
 		for ( const [ type, strategy ] of this.strategies ) {

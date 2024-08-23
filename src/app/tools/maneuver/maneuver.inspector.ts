@@ -3,7 +3,7 @@
  */
 
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
-import { ManeuverMesh } from "app/services/junction/junction.debug";
+import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { Vector2 } from "three";
 import { Commands } from "app/commands/commands";

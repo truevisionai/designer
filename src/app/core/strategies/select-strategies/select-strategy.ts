@@ -8,7 +8,7 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { RoadWidthService } from 'app/services/road/road-width.service';
-import { Intersection, Vector3 } from "three";
+import { Intersection, Object3D, Vector3 } from "three";
 
 export abstract class SelectStrategy<T> {
 
@@ -120,32 +120,65 @@ export abstract class SelectStrategy<T> {
 		// }
 	}
 
-	protected findNearestIntersection ( point: Vector3, intersections: Intersection[] ) {
+	protected findNearestObject ( point: Vector3, intersections: Intersection[] ): Object3D | undefined {
+
+		const nearestIntersection = this.findNearestIntersection( point, intersections );
+
+		if ( !nearestIntersection ) return;
+
+		return nearestIntersection.object;
+
+	}
+
+	protected findNearestIntersection ( point: Vector3, intersections: Intersection[] ): Intersection | undefined {
 
 		if ( intersections.length === 0 ) return;
 
-		let intersection = intersections[ 0 ];
+		let nearestIntersection = intersections[ 0 ];
 
 		for ( let i = 1; i < intersections.length; i++ ) {
 
-			const currentDistance = intersection.object.position.distanceTo( point );
-
+			const currentDistance = nearestIntersection.object.position.distanceTo( point );
 			const newDistance = intersections[ i ].object.position.distanceTo( point );
 
 			if ( newDistance < currentDistance ) {
 
-				intersection = intersections[ i ];
+				nearestIntersection = intersections[ i ];
 
 			}
 
 		}
 
-		return intersection;
+		return nearestIntersection;
+
 	}
 
-	protected filterByType ( intersections: Intersection[], type: any ): any {
+	protected findPoints ( intersections: Intersection[] ): Object3D[] {
 
-		return intersections.filter( i => i.object.visible == true ).find( i => i.object instanceof type )?.object;
+		return intersections
+			.filter( i => i.object.visible )
+			.filter( i => i.object.type === 'Points' )
+			.map( i => i.object );
+
+	}
+
+	protected findByType ( intersections: Intersection[], type: any ): Object3D | undefined {
+
+		const objects = intersections
+			.filter( i => i.object.visible == true )
+			.map( i => i.object );
+
+		return objects.find( o => o instanceof type );
+
+	}
+
+	protected findByTag ( tag: string, intersections: Intersection[] ): Object3D | undefined {
+
+		const objects = intersections
+			.filter( intersection => intersection.object !== undefined )
+			.map( intersection => intersection.object );
+
+		return objects.find( ( object: Object3D ) => object[ 'tag' ] === tag );
 
 	}
 }

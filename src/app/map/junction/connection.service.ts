@@ -18,12 +18,12 @@ export class ConnectionService {
 
 	addConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
 
-		if ( junction.connections.has( connection.id ) ) {
+		if ( junction.hasConnection( connection ) ) {
 			Log.error( 'Connection already exists', connection?.toString() );
 			return;
 		}
 
-		junction.connections.set( connection.id, connection );
+		junction.addConnection( connection );
 
 		this.roadService.add( connection.connectingRoad );
 
@@ -31,12 +31,12 @@ export class ConnectionService {
 
 	removeConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
 
-		if ( !junction.connections.has( connection.id ) ) {
+		if ( !junction.hasConnection( connection ) ) {
 			Log.error( 'Connection does not exist', connection?.toString() );
 			return;
 		}
 
-		junction.connections.delete( connection.id );
+		junction.removeConnection( connection );
 
 		this.roadService.remove( connection.connectingRoad );
 
@@ -44,7 +44,7 @@ export class ConnectionService {
 
 	addLink ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
 
-		if ( !junction.connections.has( connection.id ) ) {
+		if ( !junction.hasConnection( connection ) ) {
 			this.addConnection( junction, connection );
 		}
 

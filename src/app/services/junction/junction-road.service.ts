@@ -162,7 +162,7 @@ export class JunctionRoadService {
 
 		const roads: TvRoad[] = [];
 
-		junction.connections.forEach( connection => {
+		junction.getConnections().forEach( connection => {
 
 			roads.push( connection.connectingRoad );
 

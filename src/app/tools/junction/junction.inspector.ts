@@ -33,7 +33,7 @@ export class JunctionInspector {
 		description: 'The number of connections in the junction'
 	} )
 	get totalConnections () {
-		return this.junction.connections.size;
+		return this.junction.getConnectionCount();
 	}
 
 	@SerializedField( {

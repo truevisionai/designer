@@ -232,7 +232,7 @@ class OpenDriveMap {
 
 		// Parse junctions
 		for ( const [ junctionId, junction ] of this.junctionMap ) {
-			for ( const [ connectionId, connection ] of junction.connections ) {
+			for ( const connection of junction.getConnections() ) {
 				const incomingRoad = this.roadMap.get( connection.incomingRoad.id );
 				const connectingRoad = this.roadMap.get( connection.connectingRoad.id );
 				if ( !incomingRoad || !connectingRoad ) continue;

@@ -12,7 +12,6 @@ import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
 import { Asset } from "app/core/asset/asset.model";
 import { Vector3 } from "three";
 import { IDebugger } from "app/core/interfaces/debug.service";
-import { ToolHints } from "app/core/interfaces/tool.hints";
 import { AddObjectCommand } from "app/commands/add-object-command";
 import { SelectObjectCommand } from "app/commands/select-object-command";
 import { AppInspector } from "app/core/inspector";
@@ -37,8 +36,6 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 	public data: LinkedDataService<TvLane, T>;
 
 	public debugger: IDebugger<TvLane, LanePointNode<T>>;
-
-	public hints: ToolHints<T>;
 
 	public selection: SelectionService;
 
@@ -74,7 +71,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	init (): void {
 
-		this.setHint( this.hints?.toolOpened() );
+		//
 
 	}
 
@@ -237,8 +234,6 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 			this.data.update( this.selectedLane, object );
 
 			this.debugger.updateDebugState( this.selectedLane, DebugState.SELECTED );
-
-			this.setHint( this.hints?.objectUpdated( object ) );
 
 		}
 

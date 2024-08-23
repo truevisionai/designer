@@ -3,7 +3,7 @@
  */
 
 import { SerializedField } from "../../core/components/serialization";
-import { ManeuverMesh } from "../../services/junction/junction.debug";
+import { ManeuverMesh } from "app/services/junction/maneuver-mesh";
 
 export class ManeuverSignalizationInspector {
 

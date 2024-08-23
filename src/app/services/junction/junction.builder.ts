@@ -78,7 +78,7 @@ export class JunctionBuilder {
 
 	buildFromBoundary ( junction: TvJunction ): Mesh {
 
-		return this.boundaryBuilder.buildViaShape( junction.innerBoundary );
+		return this.boundaryBuilder.buildViaShape( junction, junction.innerBoundary );
 
 	}
 

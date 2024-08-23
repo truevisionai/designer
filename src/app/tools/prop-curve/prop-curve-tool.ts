@@ -16,9 +16,9 @@ import { PropCurve } from "../../map/prop-curve/prop-curve.model";
 import { PropCurveService } from "../../map/prop-curve/prop-curve.service";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { ControlPointStrategy } from "../../core/strategies/select-strategies/control-point-strategy";
-import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
 import { DebugState } from "../../services/debug/debug-state";
 import { SplineService } from "../../services/spline/spline.service";
+import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
 
 @Injectable( {
 	providedIn: 'root'

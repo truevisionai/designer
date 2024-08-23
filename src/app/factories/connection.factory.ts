@@ -373,7 +373,7 @@ export class ConnectionFactory {
 
 		const connectingLane = this.createConnectingLane( connectingRoad, incoming, outgoing, corner );
 
-		const connection = new TvJunctionConnection( junction.connections.size, incoming.road, connectingRoad, TvContactPoint.START );
+		const connection = new TvJunctionConnection( junction.getConnectionCount(), incoming.road, connectingRoad, TvContactPoint.START );
 
 		this.createLink( incoming, connectingLane, connectingRoad, connection );
 
@@ -408,7 +408,7 @@ export class ConnectionFactory {
 
 		const connectingLane = this.createConnectingLane( connectingRoad, incoming, outgoing, corner );
 
-		const connection = new TvJunctionConnection( junction.connections.size, incoming.road, connectingRoad, TvContactPoint.START );
+		const connection = new TvJunctionConnection( junction.getConnectionCount(), incoming.road, connectingRoad, TvContactPoint.START );
 
 		this.createLink( incoming, connectingLane, connectingRoad, connection );
 

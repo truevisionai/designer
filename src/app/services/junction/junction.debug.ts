@@ -9,10 +9,7 @@ import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
 import {
 	BoxGeometry,
 	BufferGeometry,
-	Color,
 	Float32BufferAttribute,
-	Material,
-	Mesh,
 	MeshBasicMaterial,
 	MeshStandardMaterial,
 	Object3D,
@@ -30,10 +27,8 @@ import { LaneDirectionHelper } from 'app/map/builders/od-lane-direction-builder'
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
-import { Highlightable, ISelectable } from "../../objects/i-selectable";
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { DebugDrawService } from '../debug/debug-draw.service';
-import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { MapService } from '../map/map.service';
@@ -43,6 +38,11 @@ import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
 import { RoadGeometryService } from '../road/road-geometry.service';
 import { RoadWidthService } from '../road/road-width.service';
+import { SceneService } from '../scene.service';
+import { JunctionFactory } from 'app/factories/junction.factory';
+import { JunctionDebugFactory } from './junction-debug.factory';
+import { ManeuverMesh } from './maneuver-mesh';
+import { JunctionNode } from './junction-node';
 
 @Injectable( {
 	providedIn: 'root'
@@ -94,6 +94,12 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	addManeuver ( junction: TvJunction, maneuver: ManeuverMesh ) {
 
 		this.maneuvers.addItem( junction, maneuver );
+
+	}
+
+	removeManeuver ( junction: TvJunction, maneuver: ManeuverMesh ) {
+
+		this.maneuvers.removeItem( junction, maneuver );
 
 	}
 
@@ -178,18 +184,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.junctionManager.boundaryManager.update( junction );
 		}
 
-		const mesh = this.junctionService.junctionBuilder.buildFromBoundary( junction );
+		return this.junctionService.junctionBuilder.buildFromBoundary( junction );
 
-		( mesh.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
-		( mesh.material as MeshBasicMaterial ).depthTest = false;
-		( mesh.material as MeshBasicMaterial ).transparent = true;
-		( mesh.material as MeshBasicMaterial ).opacity = 0.2;
-		( mesh.material as MeshBasicMaterial ).needsUpdate = true;
-
-		mesh[ 'tag' ] = 'junction';
-		mesh.userData.junction = junction;
-
-		return mesh;
 	}
 
 	onRemoved ( junction: TvJunction ): void {
@@ -204,7 +200,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !this.shouldShowManeuvers ) return;
 
-		junction.connections.forEach( connection => {
+		junction.getConnections().forEach( connection => {
 
 			connection.laneLink.forEach( link => {
 
@@ -304,7 +300,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 				// const laneWidth = lane.getWidthValue( laneSection.s );
 
-				const posTheta = road.getLaneCenterPosition( lane, laneSection.s + 1 );
+				const posTheta = road.getLaneCenterPosition( lane, laneSection.s + 2 );
 
 				// if ( lane.isLeft ) posTheta.hdg += Math.PI;
 
@@ -328,7 +324,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 				// const laneWidth = lane.getWidthValue( laneSection.endS );
 
-				const posTheta = road.getLaneCenterPosition( lane, laneSection.endS - 1, 0 );
+				const posTheta = road.getLaneCenterPosition( lane, laneSection.endS - 2, 0 );
 
 				// if ( lane.isLeft ) posTheta.hdg += Math.PI;
 
@@ -362,95 +358,16 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	createManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+	createManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): ManeuverMesh {
 
-		const width = connection.connectingRoad.getLaneProfile().getFirstLaneSection().getWidthUptoCenter( link.connectingLane, 0 );
-
-		let offset = width;
-
-		if ( link.connectingLane.id < 0 ) offset *= -1;
-
-		const mesh = this.createMesh( junction, connection, link );
-
-		mesh[ 'tag' ] = 'link';
-
-		mesh.userData.link = link;
-
-		const distance = connection.connectingRoad.length / 5;
-
-		const arrows = LaneDirectionHelper.drawSingleLane( link.connectingLane, distance, 0.25 );
-
-		arrows.forEach( arrow => mesh.add( arrow ) );
-
-		return mesh;
+		return JunctionDebugFactory.instance.createManeuverMesh( junction, connection, link );
 
 	}
 
-	private createMesh ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+	updateManeuver ( mesh: ManeuverMesh ): void {
 
-		const material = new MeshBasicMaterial( {
-			color: 0x00ff00,
-			opacity: 0.2,
-			transparent: true,
-			depthTest: false,
-			depthWrite: false
-		} );
+		JunctionDebugFactory.instance.updateManeuverMesh( mesh );
 
-		const points: Vector3[] = [];
-
-		for ( let s = 0; s <= connection.connectingRoad.length; s += 0.1 ) {
-
-			const laneSection = connection.connectingRoad.getLaneProfile().getLaneSectionAt( s );
-
-			const position = RoadGeometryService.instance.findLaneCenterPosition( connection.connectingRoad, laneSection, link.connectingLane, s );
-
-			points.push( position.position );
-
-		}
-
-		if ( points.length < 2 ) {
-			Log.error( 'Not enough points to create maneuver mesh', link.toString() );
-			return new ManeuverMesh( junction, connection, link, new BufferGeometry(), material );
-		}
-
-		const geometry: BufferGeometry = GeometryUtils.createExtrudeGeometry( points );
-
-		return new ManeuverMesh( junction, connection, link, geometry, material );
-	}
-
-	makeManeuverGeometry ( directedPoints: TvPosTheta[], width: number ): BufferGeometry {
-
-		// Calculate width offset based on lane ID
-		let offset = width * 0.5;
-
-		// Create vertices array
-		const vertices = [];
-		const indices = []; // For faces
-
-		directedPoints.forEach( point => {
-
-			const left = point.clone().addLateralOffset( -offset );
-			const right = point.clone().addLateralOffset( offset );
-
-			// Push vertices for both left and right positions
-			vertices.push( left.x, left.y, left.z + 0.1 );
-			vertices.push( right.x, right.y, right.z + 0.1 );
-
-		} );
-
-		for ( let i = 0; i < vertices.length / 3 - 2; i += 2 ) {
-			/// First triangle (reversed winding order)
-			indices.push( i, i + 2, i + 1 );
-			// Second triangle (reversed winding order)
-			indices.push( i + 1, i + 2, i + 3 );
-		}
-
-		const geometry = new BufferGeometry();
-
-		geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-		geometry.setIndex( indices );
-
-		return geometry;
 	}
 
 	clear () {
@@ -465,68 +382,5 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		this.nodes.clear();
 
-	}
-}
-
-export class ManeuverMesh extends Mesh implements ISelectable {
-
-	isSelected: boolean;
-
-	tag = 'link';
-
-	constructor (
-		public junction: TvJunction,
-		public connection: TvJunctionConnection,
-		public link: TvJunctionLaneLink,
-		geometry: BufferGeometry,
-		material: Material
-	) {
-		super( geometry, material );
-	}
-
-	select (): void {
-		this.material[ 'color' ].set( COLOR.RED );
-	}
-
-	unselect (): void {
-		this.material[ 'color' ].set( COLOR.GREEN );
-	}
-
-}
-
-
-export class JunctionNode extends Line2 implements ISelectable, Highlightable {
-
-	static tag = 'JunctionNode'
-	tag = 'JunctionNode'
-	isSelected: boolean;
-	defaulColor = COLOR.CYAN;
-
-	constructor ( public link: TvRoadLink, geometry?: LineGeometry, material?: LineMaterial ) {
-		super( geometry, material );
-	}
-
-	select () {
-		this.isSelected = true;
-		this.material.color = new Color( COLOR.RED );
-		this.renderOrder = 5;
-	}
-
-	unselect () {
-		this.isSelected = false;
-		this.material.color = new Color( this.defaulColor );
-		this.renderOrder = 3;
-	}
-
-	onMouseOver () {
-		if ( this.isSelected ) return;
-		this.material.color = new Color( COLOR.YELLOW );
-		this.material.needsUpdate = true;
-	}
-
-	onMouseOut () {
-		if ( this.isSelected ) return;
-		this.material.color = new Color( this.defaulColor );
-		this.material.needsUpdate = true;
 	}
 }

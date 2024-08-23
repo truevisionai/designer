@@ -8,7 +8,7 @@ import { ManeuverToolHelper } from 'app/tools/maneuver/maneuver-tool-helper.serv
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DebugState } from "../../services/debug/debug-state";
-import { ManeuverMesh } from 'app/services/junction/junction.debug';
+import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { ManeuverControlPointInspector, ManeuverInspector } from './maneuver.inspector';
 import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
@@ -16,14 +16,25 @@ import { TvRoad } from "../../map/models/tv-road.model";
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { Log } from 'app/core/utils/log';
-import { JunctionGatePoint, SimpleControlPoint } from "../../objects/simple-control-point";
-import { ControlPointStrategy } from "../../core/strategies/select-strategies/control-point-strategy";
-import { ObjectTagStrategy, ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
+import { JunctionGatePoint } from "app/objects/junction-gate-point";
+import { ControlPointStrategyV2 } from "../../core/strategies/select-strategies/control-point-strategy";
+import { ObjectTagStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
 import { FollowHeadingMovingStrategy } from "../../core/strategies/move-strategies/follow-heading-moving-strategy";
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
+import { JunctionOverlay } from 'app/services/junction/junction-overlay';
+import { ManeuverOverlayHandler } from './maneuver-overlay-handler.service';
+import { ManeuverObjectHandler } from './maneuver-object-handler.service';
+import { ControlPointOverlayHandler, ManeuverControlPointHandler } from './control-point-object-handler';
+import { JunctionGateHandler, JunctionGateOverlayHandler } from './junction-gate-object-handler';
+import { maneuverToolHints } from './maneuver-tool.hints';
+
+export enum ManeuverToolState {
+	DEFAULT,
+	ADD
+}
 
 export class ManeuverTool extends BaseTool<any> {
 
@@ -33,12 +44,22 @@ export class ManeuverTool extends BaseTool<any> {
 
 	debug = true;
 
+	private toolState: ManeuverToolState = ManeuverToolState.DEFAULT;
+
 	private lastGate: JunctionGatePoint;
 
 	private line: Line2;
 
 	protected get currentJunction (): TvJunction {
-		return this.selectionService?.getLastSelected<TvJunction>( TvJunction.name );
+		return this.selectionService.getLastSelected<TvJunction>( TvJunction.name );
+	}
+
+	protected get currentGate (): JunctionGatePoint {
+		return this.selectionService.getLastSelected<JunctionGatePoint>( JunctionGatePoint.name );
+	}
+
+	protected get currentSelectedPoint (): SplineControlPoint {
+		return this.selectionService?.getLastSelected<SplineControlPoint>( SplineControlPoint.name );
 	}
 
 	constructor ( public helper: ManeuverToolHelper ) {
@@ -51,12 +72,12 @@ export class ManeuverTool extends BaseTool<any> {
 
 		this.selectionService = this.helper.base.selection;
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-		this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( 'link' ) );
-		this.selectionService.registerStrategy( TvJunction.name, new ObjectUserDataStrategy( 'junction', 'junction' ) );
+		this.selectionService.registerStrategy( JunctionGatePoint.name, new ObjectTagStrategy( JunctionGatePoint.tag ) );
+		this.selectionService.registerStrategy( SplineControlPoint.name, new ControlPointStrategyV2() );
+		this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( ManeuverMesh.tag ) );
+		this.selectionService.registerStrategy( TvJunction.name, new ObjectTagStrategy<JunctionOverlay>( JunctionOverlay.tag, 'junction' ) );
 
-		this.selectionService.registerTag( SimpleControlPoint.name, SimpleControlPoint.name );
-		this.selectionService.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
+		this.selectionService.registerTag( SplineControlPoint.name, SplineControlPoint.name );
 		this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
 		this.selectionService.registerTag( TvJunction.name, TvJunction.name );
 
@@ -65,6 +86,16 @@ export class ManeuverTool extends BaseTool<any> {
 		this.setTypeName( TvJunction.name );
 		this.setDebugService( this.helper.junctionDebugger );
 		this.setDataService( this.helper.junctionService );
+
+		this.objectHandlers.set( SplineControlPoint.name, this.helper.base.injector.get( ManeuverControlPointHandler ) );
+		this.objectHandlers.set( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateHandler ) );
+		this.objectHandlers.set( ManeuverMesh.name, this.helper.base.injector.get( ManeuverObjectHandler ) );
+
+		this.overlayHandlers.set( SplineControlPoint.name, this.helper.base.injector.get( ControlPointOverlayHandler ) );
+		this.overlayHandlers.set( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateOverlayHandler ) );
+		this.overlayHandlers.set( ManeuverMesh.name, this.helper.base.injector.get( ManeuverOverlayHandler ) );
+
+		this.setHintConfig( maneuverToolHints );
 
 		super.init();
 
@@ -85,21 +116,29 @@ export class ManeuverTool extends BaseTool<any> {
 
 	}
 
-	onPointerMoved ( e: PointerEventData ) {
+	getToolState (): ManeuverToolState {
 
-		this.highlight( e );
+		return this.toolState;
 
-		if ( this.lastGate ) {
+	}
 
-			const positions = [ this.lastGate.position, e.point ];
+	setToolState ( state: ManeuverToolState ): void {
 
-			if ( this.line ) {
+		this.toolState = state;
 
-				DebugDrawService.instance.updateDebugLine( this.line, positions );
+	}
 
-			}
+	onPointerMoved ( e: PointerEventData ): void {
 
-		}
+		this.highlightWithHandlers( e );
+
+		this.updateDebugLine( e );
+
+		this.updateControlPointIfSelected( e );
+
+	}
+
+	updateControlPointIfSelected ( e: PointerEventData ): void {
 
 		if ( !this.isPointerDown ) return;
 
@@ -107,13 +146,23 @@ export class ManeuverTool extends BaseTool<any> {
 
 		if ( !this.currentSelectedPoint.isSelected ) return;
 
-		if ( this.currentSelectedPoint instanceof JunctionGatePoint ) return;
-
 		const newPosition = this.selectionService.handleTargetMovement( e, this.currentSelectedPoint );
 
 		this.currentSelectedPoint.copyPosition( newPosition.position );
 
 		this.currentSelectedPointMoved = true;
+
+	}
+
+	updateDebugLine ( e: PointerEventData ): void {
+
+		if ( !this.line || !this.lastGate ) return;
+
+		if ( this.toolState != ManeuverToolState.ADD ) return;
+
+		const positions = [ this.lastGate.position, e.point ];
+
+		DebugDrawService.instance.updateDebugLine( this.line, positions );
 
 	}
 
@@ -127,15 +176,10 @@ export class ManeuverTool extends BaseTool<any> {
 
 		Log.debug( 'ManeuverTool.onObjectAdded', object?.toString() );
 
-		// if ( object instanceof SplineControlPoint ) {
-		//
-		// 	this.tool.addControlPoint( object.spline, object );
-		//
-		// } else {
-		//
-		// 	super.onObjectAdded( object );
-		//
-		// }
+		if ( this.objectHasHandlers( object ) ) {
+			this.handleAction( object, 'onAdded' );
+			return;
+		}
 
 		if ( object instanceof ManeuverMesh ) {
 
@@ -154,6 +198,11 @@ export class ManeuverTool extends BaseTool<any> {
 
 		Log.debug( 'ManeuverTool.onObjectRemoved', object?.toString() );
 
+		if ( this.objectHasHandlers( object ) ) {
+			this.handleAction( object, 'onRemoved' );
+			return;
+		}
+
 		if ( object instanceof ManeuverMesh ) {
 
 			this.removeManeuver( object.junction, object.connection, object.link );
@@ -166,7 +215,33 @@ export class ManeuverTool extends BaseTool<any> {
 
 	}
 
-	createManever ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ) {
+	addConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ): void {
+
+		const connection = this.createConnection( junction, incoming, outgoing );
+
+		if ( !connection || connection.laneLink.length === 0 ) {
+			Log.error( 'Unable to create connection or link' );
+			return;
+		}
+
+		const link = connection.laneLink[ 0 ];
+
+		while ( junction.hasConnection( connection.id ) ) {
+			connection.id = connection.id + 1;
+		}
+
+		const mesh = this.helper.junctionDebugger.createManeuver( junction, connection, link );
+
+		if ( !mesh ) {
+			Log.error( 'Unable to create maneuver mesh' );
+			return;
+		}
+
+		this.executeAddObject( mesh );
+
+	}
+
+	createConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ): TvJunctionConnection | undefined {
 
 		if ( !LaneUtils.canConnect( incoming, outgoing ) ) {
 			Log.error( 'Invalid lane directions' );
@@ -188,29 +263,10 @@ export class ManeuverTool extends BaseTool<any> {
 			return;
 		}
 
-		const link = connection.laneLink[ 0 ];
-
-		if ( !link ) {
-			Log.error( 'Unable to create link' );
-			return;
-		}
-
-		while ( junction.connections.has( connection.id ) ) {
-			connection.id = connection.id + 1;
-		}
-
-		const mesh = this.helper.junctionDebugger.createManeuver( junction, connection, link );
-
-		if ( !mesh ) {
-			Log.error( 'Unable to create maneuver mesh' );
-			return;
-		}
-
-		this.executeAddAndSelect( mesh, null );
-
+		return connection;
 	}
 
-	addManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+	addManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): void {
 
 		this.helper.connectionService.addLink( junction, connection, link );
 
@@ -218,7 +274,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 	}
 
-	removeManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+	removeManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): void {
 
 		const mesh = this.helper.junctionDebugger.findMesh( junction, connection.connectingRoad );
 
@@ -243,6 +299,20 @@ export class ManeuverTool extends BaseTool<any> {
 
 		if ( this.debug ) Log.debug( 'ManeuverTool.onObjectSelected', object?.toString() );
 
+		if ( this.objectHasHandlers( object ) ) {
+			this.handleSelectionWithHandlers( object );
+			return;
+		}
+
+		if ( object instanceof JunctionGatePoint ) {
+
+			this.onJunctionGateSelected( object );
+
+			return;
+		}
+
+		if ( this.lastGate ) this.onJunctionGateUnselected( this.lastGate );
+
 		if ( object instanceof ManeuverMesh ) {
 
 			this.setInspector( new ManeuverInspector( object ) );
@@ -261,52 +331,29 @@ export class ManeuverTool extends BaseTool<any> {
 
 			object.forEach( obj => this.onObjectSelected( obj ) );
 
-		} else if ( object instanceof JunctionGatePoint ) {
-
-			if ( !this.lastGate ) {
-				this.lastGate = object;
-				const positions = [ object.position, object.position.addScalar( 0.1 ) ];
-				this.line = DebugDrawService.instance.drawLine( positions );
-				return;
-			}
-
-			if ( object.coord.road == this.lastGate.coord.road ) {
-				Log.error( 'Cannot connect gates from same roads' );
-				DebugDrawService.instance.removeLine( this.line );
-				this.lastGate = null;
-				return;
-			}
-
-			if ( !this.currentJunction ) {
-				Log.error( 'No junction selected' );
-				DebugDrawService.instance.removeLine( this.line );
-				this.lastGate = null;
-				return;
-			}
-
-			const incoming = this.lastGate.coord;
-			const outgoing = object.coord;
-
-			if ( !incoming || !outgoing ) {
-				Log.error( 'Invalid lane coords' );
-				return;
-			}
-
-			this.createManever( this.currentJunction, incoming, outgoing );
-
-			DebugDrawService.instance.removeLine( this.line );
-
-			this.lastGate = null;
-
-			this.line = null;
-
 		}
 
 	}
 
-	onObjectUnselected ( object: any ) {
+	onObjectUnselected ( object: any ): void {
 
 		Log.debug( 'ManeuverTool.onObjectUnselected', object?.toString() );
+
+		if ( this.objectHasHandlers( object ) ) {
+
+			this.handleUnselectionWithHandlers( object );
+
+			return;
+		}
+
+		if ( object instanceof JunctionGatePoint ) {
+
+			this.onJunctionGateUnselected( object );
+
+			return;
+		}
+
+		if ( this.lastGate ) this.onJunctionGateUnselected( this.lastGate );
 
 		if ( object instanceof ManeuverMesh ) {
 
@@ -322,19 +369,6 @@ export class ManeuverTool extends BaseTool<any> {
 
 			this.helper.junctionDebugger.updateDebugState( object, DebugState.DEFAULT );
 
-		} else if ( object instanceof JunctionGatePoint ) {
-
-			if ( !this.lastGate ) return;
-
-			if ( this.lastGate != object ) return;
-
-			// HACK: to unset the last selected gate after selecting a new one
-			setTimeout( () => {
-
-				this.lastGate = null;
-
-			}, 100 );
-
 		} else if ( object instanceof Array ) {
 
 			object.forEach( obj => this.onObjectUnselected( obj ) );
@@ -347,29 +381,14 @@ export class ManeuverTool extends BaseTool<any> {
 
 		Log.debug( 'ManeuverTool.onObjectUpdated', object?.toString() );
 
+		if ( this.objectHasHandlers( object ) ) {
+			this.handleAction( object, 'onUpdated' );
+			return;
+		}
+
 		if ( object instanceof SplineControlPoint ) {
 
-			const connectingRoad = this.findConnectingRoad( object.spline );
-
-			if ( !connectingRoad ) {
-				Log.error( 'Connecting road not found' );
-				return;
-			}
-
-			this.helper.splineService.update( object.spline );
-
-			this.helper.junctionDebugger.updateDebugState( connectingRoad.junction, DebugState.SELECTED );
-
-			this.markAsDirty( connectingRoad.junction, connectingRoad );
-
-			const mesh = this.helper.junctionDebugger.findMesh( connectingRoad.junction, connectingRoad );
-
-			if ( !mesh ) {
-				Log.error( 'ManeuverMesh not found' );
-				return;
-			}
-
-			mesh.select();
+			this.onControlPointUpdated( object );
 
 		} else {
 
@@ -379,13 +398,40 @@ export class ManeuverTool extends BaseTool<any> {
 
 	}
 
-	onDeleteKeyDown () {
+	onControlPointUpdated ( object: SplineControlPoint ): void {
+
+		const connectingRoad = this.findConnectingRoad( object.spline );
+
+		if ( !connectingRoad ) {
+			Log.error( 'Connecting road not found' );
+			return;
+		}
+
+		this.helper.splineService.update( object.spline );
+
+		// this.helper.junctionDebugger.updateDebugState( connectingRoad.junction, DebugState.SELECTED );
+
+		this.markAsDirty( connectingRoad.junction, connectingRoad );
+
+		const mesh = this.helper.junctionDebugger.findMesh( connectingRoad.junction, connectingRoad );
+
+
+		if ( !mesh ) {
+			Log.error( 'ManeuverMesh not found' );
+			return;
+		}
+
+		this.onObjectUpdated( mesh );
+
+	}
+
+	onDeleteKeyDown (): void {
 
 		// dont delete anything via keyboard for now
 
 	}
 
-	private markAsDirty ( junction: TvJunction, connectingRoad: TvRoad ) {
+	private markAsDirty ( junction: TvJunction, connectingRoad: TvRoad ): void {
 
 		const connection = junction.getConnections().find( c => c.connectingRoad === connectingRoad );
 
@@ -409,5 +455,120 @@ export class ManeuverTool extends BaseTool<any> {
 
 		return road;
 	}
+
+	private onJunctionGateUnselected ( object: JunctionGatePoint ): void {
+
+		if ( !this.lastGate ) return;
+
+		if ( this.lastGate != object ) return;
+
+		// HACK: to unset the last selected gate after selecting a new one
+		setTimeout( () => {
+
+			this.resetGateSelection( object );
+
+		}, 100 );
+
+	}
+
+	private resetGateSelection ( second: JunctionGatePoint ): void {
+
+		this.lastGate?.unselect();
+
+		second?.unselect();
+
+		DebugDrawService.instance.removeLine( this.line );
+
+		this.lastGate = null;
+
+		this.line = null;
+
+		this.setToolState( ManeuverToolState.DEFAULT );
+
+		this.selectionService.unselectObjectsOfType( JunctionGatePoint.name );
+
+	}
+
+	private onJunctionGateSelected ( object: JunctionGatePoint ): void {
+
+		object.select();
+
+		if ( this.isFirstGate() ) {
+
+			this.handleFirstGateSelection( object );
+
+			this.setToolState( ManeuverToolState.ADD );
+
+		} else {
+
+			this.handleSecondGateSelection( this.lastGate, object );
+
+			this.resetGateSelection( object );
+
+		}
+
+	}
+
+	private isFirstGate (): boolean {
+
+		return !this.lastGate;
+
+	}
+
+	private handleFirstGateSelection ( object: JunctionGatePoint ): void {
+
+		this.lastGate = object;
+
+		const position = object.position.clone();
+
+		this.line = DebugDrawService.instance.drawLine( [ position, position.addScalar( 0.1 ) ] );
+
+	}
+
+	private handleSecondGateSelection ( first: JunctionGatePoint, second: JunctionGatePoint ): void {
+
+		if ( !this.isValidForConnection( first, second ) ) {
+			return;
+		}
+
+		this.addConnection( this.currentJunction, first.coord, second.coord );
+
+	}
+
+	private isValidForConnection ( first: JunctionGatePoint, second: JunctionGatePoint ): boolean {
+
+		if ( !LaneUtils.canConnect( first.coord, second.coord ) ) {
+
+			this.setHint( 'Cannot connect gates with invalid lane directions' );
+
+			Log.error( 'Invalid lane directions' );
+
+			return;
+		}
+
+		if ( first.coord.road == second.coord.road ) {
+
+			this.setHint( 'Cannot connect gates from same roads' );
+
+			Log.error( 'Cannot connect gates from same roads' );
+
+			return false;
+
+		}
+
+		if ( !this.currentJunction ) {
+
+			this.setHint( 'No junction selected' );
+
+			Log.error( 'No junction selected' );
+
+			return false;
+
+		}
+
+		return true;
+
+	}
+
 
 }
