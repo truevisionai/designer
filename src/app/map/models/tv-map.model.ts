@@ -44,7 +44,7 @@ export class TvMap {
 
 	public roads = new ManagedMap<TvRoad>();
 
-	public junctions = new ManagedMap<TvJunction>();
+	private junctions = new ManagedMap<TvJunction>();
 
 	public offset = new Vector2();
 
@@ -170,13 +170,13 @@ export class TvMap {
 		return this.roads.get( roadId );
 	}
 
-	public getRoadCount (): number {
+	getRoadCount (): number {
 
 		return this.roads.size;
 
 	}
 
-	public getJunctionById ( id: number ): TvJunction {
+	getJunctionById ( id: number ): TvJunction {
 
 		if ( !this.junctions.has( id ) ) {
 			throw new ModelNotFoundException( `Junction with id ${ id } not found` );
@@ -186,30 +186,14 @@ export class TvMap {
 
 	}
 
-	public getJunctionCount (): number {
+	getNextJunctionId (): number {
+		return this.junctions.next();
+	}
+
+	getJunctionCount (): number {
 
 		return this.junctions.size;
 
-	}
-
-	/**
-	 * Clears the OpenDrive structure, could be used to start a new document
-	 */
-	public clear () {
-
-		this.roads.clear();
-
-		this.junctions.clear();
-
-		this.props.splice( 0, this.props.length );
-
-		this.propCurves.splice( 0, this.propCurves.length );
-
-		this.propPolygons.splice( 0, this.propPolygons.length );
-
-		this.surfaces.splice( 0, this.surfaces.length );
-
-		this.splines.splice( 0, this.splines.length );
 	}
 
 	addJunction ( junction: TvJunction ) {
@@ -222,10 +206,11 @@ export class TvMap {
 
 	}
 
-	destroy () {
-
-		this.clear();
-
+	hasJunction ( junction: TvJunction | number ): boolean {
+		if ( typeof junction === 'number' ) {
+			return this.junctions.has( junction );
+		}
+		return this.junctions.has( junction.id );
 	}
 
 	getJunctions () {
@@ -256,4 +241,29 @@ export class TvMap {
 
 	}
 
+	destroy () {
+
+		this.clear();
+
+	}
+
+	/**
+	 * Clears the OpenDrive structure, could be used to start a new document
+	 */
+	clear () {
+
+		this.roads.clear();
+
+		this.junctions.clear();
+
+		this.props.splice( 0, this.props.length );
+
+		this.propCurves.splice( 0, this.propCurves.length );
+
+		this.propPolygons.splice( 0, this.propPolygons.length );
+
+		this.surfaces.splice( 0, this.surfaces.length );
+
+		this.splines.splice( 0, this.splines.length );
+	}
 }

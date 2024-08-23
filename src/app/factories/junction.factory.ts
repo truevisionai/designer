@@ -50,7 +50,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	createJunction (): TvJunction {
 
-		const id = this.mapService.map.junctions.next();
+		const id = this.mapService.map.getNextJunctionId();
 
 		const name = `Junction${ id }`;
 
@@ -60,7 +60,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	createVirtualJunction ( mainRoad: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
 
-		const id = this.mapService.map.junctions.next();
+		const id = this.mapService.map.getNextJunctionId();
 
 		const name = `VirtualJunction${ id }`;
 

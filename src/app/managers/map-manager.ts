@@ -71,17 +71,7 @@ export class MapManager {
 
 		} );
 
-		map.roads.clear();
-
-		map.junctions.clear();
-
-		map.props.splice( 0, map.props.length );
-
-		map.propCurves.splice( 0, map.propCurves.length );
-
-		map.propPolygons.splice( 0, map.propPolygons.length );
-
-		map.surfaces.splice( 0, map.surfaces.length );
+		map.clear();
 
 	}
 

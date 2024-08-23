@@ -143,11 +143,7 @@ export class MapService {
 
 	hasJunction ( junction: TvJunction | number ) {
 
-		if ( typeof junction === 'number' ) {
-			return this.map.junctions.has( junction );
-		}
-
-		return this.map.junctions.has( junction.id );
+		return this.map.hasJunction( junction );
 
 	}
 
