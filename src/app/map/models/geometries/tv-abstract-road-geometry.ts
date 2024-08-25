@@ -10,6 +10,16 @@ export abstract class TvAbstractRoadGeometry {
 
 	public readonly uuid: string;
 
+	public s: number;
+
+	public x: number;
+
+	public y: number;
+
+	public hdg: number;
+
+	public length: number;
+
 	public abstract geometryType: TvGeometryType;
 
 	public abstract getRoadCoord ( s: number ): TvPosTheta;
@@ -20,87 +30,14 @@ export abstract class TvAbstractRoadGeometry {
 
 	public abstract clone (): TvAbstractRoadGeometry;
 
-	private _s: number;
+	protected constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
 
-	private _x: number;
-
-	private _y: number;
-
-	private _hdg: number;
-
-	private _length: number;
-
-	constructor ( s: number, x: number, y: number, hdg: number, length: number ) {
-
-		this._s = s;
-		this._x = x;
-		this._y = y;
-		this._hdg = hdg;
-		this._length = length;
+		this.s = s;
+		this.x = x;
+		this.y = y;
+		this.hdg = hdg;
+		this.length = length;
 		this.uuid = MathUtils.generateUUID();
-	}
-
-
-	get s () {
-
-		return this._s;
-
-	}
-
-	set s ( value: number ) {
-
-		this._s = value;
-
-	}
-
-	get x () {
-
-		return this._x;
-
-	}
-
-	set x ( value: number ) {
-
-		this._x = value;
-
-	}
-
-	get y () {
-
-		return this._y;
-
-	}
-
-	set y ( value: number ) {
-
-		this._y = value;
-
-	}
-
-	get hdg () {
-
-		return this._hdg;
-
-	}
-
-	set hdg ( value: number ) {
-
-		this._hdg = value;
-
-		this.computeVars();
-	}
-
-	get length () {
-
-		return this._length;
-
-	}
-
-	set length ( value: number ) {
-
-		this._length = value;
-
-		this.computeVars();
 	}
 
 	get endS () {
@@ -139,30 +76,6 @@ export abstract class TvAbstractRoadGeometry {
 
 		}
 
-	}
-
-	setBase ( s: number, x: number, y: number, hdg: number, length: number, recalculate: boolean ) {
-
-		this._s = s;
-		this._x = x;
-		this._y = y;
-		this._hdg = hdg;
-		this._length = length;
-
-		if ( recalculate ) {
-			this.computeVars();
-		}
-	}
-
-	checkInterval ( sCheck: number ): boolean {
-
-		if ( ( sCheck >= this._s ) && ( sCheck <= this.endS ) ) {
-
-			return true;
-
-		}
-
-		return false;
 	}
 
 	/**

@@ -40,6 +40,7 @@ import { RoadInspector } from '../views/inspectors/road-inspector/road-inspector
 import { TextureInspector } from '../views/inspectors/texture-inspector/texture-inspector.component';
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/asset-inspector.component';
+import { WorldSettingInspectorComponent } from 'app/views/inspectors/world-setting-inspector/world-setting-inspector.component';
 
 
 @NgModule( {
@@ -56,6 +57,7 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		DynamicArrayInspectorComponent,
 		FieldHostDirective,
 		EnvironmentInspectorComponent,
+		WorldSettingInspectorComponent,
 		AssetInspectorComponent,
 	],
 	imports: [
@@ -100,6 +102,7 @@ import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/as
 		AssetInspectorComponent,
 		DynamicArrayInspectorComponent,
 		EnvironmentInspectorComponent,
+		WorldSettingInspectorComponent,
 	]
 } )
 export class TvMapModule {

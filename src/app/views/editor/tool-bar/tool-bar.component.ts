@@ -16,6 +16,7 @@ import { Environment } from 'app/core/utils/environment';
 import { ToolBarService } from './tool-bar.service';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Tool } from "../../../tools/tool";
+import { WorldSettingInspectorComponent } from 'app/views/inspectors/world-setting-inspector/world-setting-inspector.component';
 
 class IToolMenu {
 	id: string;
@@ -466,6 +467,19 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			enabled: Environment.experimentalTools && Environment.oscEnabled,
 		},
 		{
+			id: 'world',
+			label: 'World',
+			class: 'toolbar-button',
+			toolType: ToolType.WorldSetting,
+			action: 'world-setting-tool',
+			icon: 'public',
+			track: 'menu',
+			title: 'World Settings Tool',
+			description: 'World Settings Tool is used to set the projection, latitude, longitude, and other world settings',
+			click: () => this.toolBarService.setWorldInspector(),
+			enabled: true,
+		},
+		{
 			id: 'environment',
 			label: 'Environment',
 			class: 'toolbar-button',
@@ -474,15 +488,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			icon: 'light_mode',
 			track: 'menu',
 			tooltip: 'Environment',
-			click: () => {
-
-				const environment = this.threeService.environment;
-
-				const command = new SetInspectorCommand( EnvironmentInspectorComponent, environment )
-
-				CommandHistory.execute( command );
-
-			},
+			click: () => this.toolBarService.setEnvironmentInspector(),
 			enabled: Environment.experimentalTools && Environment.oscEnabled,
 		},
 		// add more tools here...

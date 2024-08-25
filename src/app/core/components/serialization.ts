@@ -5,7 +5,7 @@
 import 'reflect-metadata';
 
 export interface ISerializedFieldSetting {
-	type?: 'int' | 'float' | 'string' | 'boolean' | 'enum' | 'array' | 'vector2' | 'vector3' | 'road' | 'entity' | 'gameobject' | 'color' | 'texture' | 'object' | 'material';
+	type?: 'int' | 'float' | 'string' | 'textarea' | 'boolean' | 'enum' | 'array' | 'vector2' | 'vector3' | 'road' | 'entity' | 'gameobject' | 'color' | 'texture' | 'object' | 'material';
 	disabled?: boolean;
 	label?: string;
 	description?: string;

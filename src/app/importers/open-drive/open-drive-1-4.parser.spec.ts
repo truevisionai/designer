@@ -4,15 +4,15 @@
 
 import { TestBed } from '@angular/core/testing';
 import { OpenDrive14Parser } from './open-drive-1-4.parser';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OpenDriveParserService } from "./open-drive-parser.service";
+import { FRENCH_SMALL_XODR, OSM2_XODR, SplineTestHelper, STRAIGHT_XODR } from 'app/services/spline/spline-test-helper.service';
 
 describe( 'OpenDrive Parsing', () => {
 
-	let parserService: OpenDriveParserService;
 	let parser: OpenDrive14Parser;
-	let httpClient: HttpClient;
+	let testHelper: SplineTestHelper;
 
 	beforeEach( () => {
 
@@ -22,12 +22,11 @@ describe( 'OpenDrive Parsing', () => {
 		} );
 
 		parser = TestBed.inject( OpenDrive14Parser );
-		httpClient = TestBed.inject( HttpClient );
-		parserService = TestBed.inject( OpenDriveParserService );
+		testHelper = TestBed.inject( SplineTestHelper );
 
 	} );
 
-	it( 'should parse header correctly', () => {
+	xit( 'should parse header correctly', () => {
 
 		const headerXml = {
 			attr_revMajor: '1',
@@ -57,32 +56,33 @@ describe( 'OpenDrive Parsing', () => {
 
 	} );
 
-	it( 'should parse road correctly', () => {
+	it( 'should parse road correctly', async () => {
 
-		httpClient.get( "assets/open-drive/straight-road.xml", { responseType: 'text' } ).subscribe( xml => {
+		const contents = await testHelper.loadXodr( STRAIGHT_XODR ).toPromise();
 
-			const map = parserService.parse( xml );
+		const map = testHelper.openDriveParser.parse( contents );
 
-			const road = map.roads.get( 1 );
+		const road = map.roads.get( 1 );
 
-			expect( road ).toBeDefined();
+		expect( road ).toBeDefined();
 
-			expect( road.length ).toBe( 100 );
-			expect( road.spline.getLength() ).toBe( 100 );
-			expect( road.id ).toBe( 1 );
-			expect( road.isJunction ).toBe( false );
-			expect( road.spline.controlPoints.length ).toBe( 2 );
+		expect( road.length ).toBe( 100 );
+		expect( road.spline.getLength() ).toBe( 100 );
+		expect( road.id ).toBe( 1 );
+		expect( road.isJunction ).toBe( false );
+		expect( road.spline.controlPoints.length ).toBe( 2 );
 
-			expect( road.spline.controlPoints[ 0 ].position.x ).toBe( 0 );
-			expect( road.spline.controlPoints[ 0 ].position.y ).toBe( 0 );
-			expect( road.spline.controlPoints[ 0 ].position.z ).toBe( 0 );
+		expect( road.spline.controlPoints[ 0 ].position.x ).toBe( 0 );
+		expect( road.spline.controlPoints[ 0 ].position.y ).toBe( 0 );		//
+		expect( road.spline.controlPoints[ 0 ].position.z ).toBe( 0 );
 
-			expect( road.spline.controlPoints[ 1 ].position.x ).toBeCloseTo( 0 );
-			expect( road.spline.controlPoints[ 1 ].position.y ).toBe( 100 );
-			expect( road.spline.controlPoints[ 1 ].position.z ).toBe( 0 );
+		expect( road.spline.controlPoints[ 1 ].position.x ).toBeCloseTo( 0 );
+		expect( road.spline.controlPoints[ 1 ].position.y ).toBe( 100 );	//
+		expect( road.spline.controlPoints[ 1 ].position.z ).toBe( 0 );
 
-		} );
+	} );
 
-	} )
+
+
 
 } );

@@ -1,0 +1,17 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div align="left"
+	class="tv-field">
+	<label class="tv-field-label">{{ label }}</label>
+	<div class="tv-field-text-area">
+		<textarea (ngModelChange)="onModelChanged($event)"
+			[(ngModel)]="value"
+			[disabled]="disabled"
+			[placeholder]="label"
+			[value]="value"
+			style="height: 80px;">
+		</textarea>
+	</div>
+</div>

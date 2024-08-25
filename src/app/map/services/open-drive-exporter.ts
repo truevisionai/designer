@@ -73,6 +73,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			ignoreAttributes: false,
 			suppressBooleanAttributes: false,
 			format: true,
+			cdataPropName: '#cdata',
 		};
 
 		const builder = new XMLBuilder( defaultOptions );
@@ -140,7 +141,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	 */
 	public writeHeader ( header: TvMapHeader ) {
 
-		return {
+		const xml = {
 			attr_revMajor: header.revMajor,
 			attr_revMinor: header.revMinor,
 			attr_name: header.name,
@@ -153,6 +154,17 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			attr_vendor: header.vendor,
 		};
 
+		if ( header.geoReference ) {
+			// <geoReference>
+			// <![CDATA[+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs]]>
+			// </geoReference>
+			// output as CDATA
+			xml[ 'geoReference' ] = {
+				'#cdata': header.geoReference
+			}
+		}
+
+		return xml;
 	}
 
 	public writeRoad ( xmlNode, road: TvRoad ) {

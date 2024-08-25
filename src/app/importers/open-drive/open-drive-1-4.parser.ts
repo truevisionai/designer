@@ -46,6 +46,7 @@ import { SplineFactory } from 'app/services/spline/spline.factory';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Log } from 'app/core/utils/log';
 
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -57,7 +58,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	parse ( xml: XmlElement ) {
+	public parse ( xml: XmlElement ) {
 
 		this.map = new TvMap();
 
@@ -94,6 +95,12 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		this.importRoads( openDRIVE );
 
 		this.importJunctions( openDRIVE );
+
+		this.map.roads.forEach( road => {
+
+			road.spline = SplineFactory.createExplicitSpline( road.getPlanView().getGeomtries(), road );
+
+		} )
 
 		return this.map;
 
@@ -172,7 +179,20 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const west = parseFloat( xmlElement.attr_west );
 		const vendor = xmlElement.attr_vendor;
 
-		return new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
+		const header = new TvMapHeader( revMajor, revMinor, name, version, date, north, south, east, west, vendor );
+
+		if ( xmlElement.offset ) {
+			header.positionOffset.x = parseFloat( xmlElement.offset.attr_x ) || 0;
+			header.positionOffset.y = parseFloat( xmlElement.offset.attr_y ) || 0;
+			header.positionOffset.z = parseFloat( xmlElement.offset.attr_z ) || 0;
+			header.headingOffset = parseFloat( xmlElement.offset.attr_h ) || 0;
+		}
+
+		if ( xmlElement.geoReference ) {
+			header.geoReference = xmlElement.geoReference;
+		}
+
+		return header;
 	}
 
 	private parseJunctionId ( value: any ) {

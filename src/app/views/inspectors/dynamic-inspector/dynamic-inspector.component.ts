@@ -36,6 +36,7 @@ import { GameObjectFieldComponent } from 'app/views/fields/game-object-field/gam
 import { MaterialFieldComponent } from 'app/views/fields/material-field/material-field.component';
 import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-field.component';
 import { Subscription } from 'rxjs';
+import { TextareaFieldComponent } from 'app/views/shared/fields/textarea-field/textarea-field.component';
 import { Commands } from 'app/commands/commands';
 
 @Directive( {
@@ -76,6 +77,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		'int': DoubleFieldComponent,
 		'number': DoubleFieldComponent,
 		'string': StringFieldComponent,
+		'textarea': TextareaFieldComponent,
 		'boolean': BooleanFieldComponent,
 		'enum': EnumFieldComponent,
 		'vector2': Vector2FieldComponent,

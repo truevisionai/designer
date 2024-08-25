@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenDRIVE>
+	<header revMajor="1" revMinor="4" name="" version="1.00" date="Thu Jul  4 17:13:19 2024" north="99187.30" south="-229002.56" east="2719.71" west="-711260.48">
+		<geoReference>
+			<![CDATA[
+ +proj=tmerc +lon_0=-71.05785369873047 +lat_0=42.336849169438615
+]]>
+		</geoReference>
+	</header>
+	<road name="Summer Street" length="6.30498600" id="3690" junction="-1">
+		<link></link>
+		<type s="0" type="town"/>
+		<planView>
+			<geometry s="0.00000000" x="1835.70381985" y="476.48204343" hdg="-1.55476806" length="6.30498600">
+				<line/>
+			</geometry>
+		</planView>
+		<elevationProfile>
+			<elevation s="0" a="0.00" b="0" c="0" d="0"/>
+		</elevationProfile>
+		<lateralProfile/>
+		<lanes>
+			<laneSection s="0">
+				<center>
+					<lane id="0" type="none" level="true">
+						<link/>
+						<roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.13" laneChange="none"/>
+					</lane>
+				</center>
+				<right>
+					<lane id="-1" type="driving" level="true">
+						<link/>
+						<width sOffset="0" a="3.35" b="0" c="0" d="0"/>
+						<roadMark sOffset="0" type="broken" weight="standard" color="standard" width="0.13" laneChange="both"/>
+						<speed sOffset="0" max="27.78"/>
+					</lane>
+					<lane id="-2" type="driving" level="true">
+						<link/>
+						<width sOffset="0" a="3.35" b="0" c="0" d="0"/>
+						<roadMark sOffset="0" type="broken" weight="standard" color="standard" width="0.13" laneChange="both"/>
+						<speed sOffset="0" max="27.78"/>
+					</lane>
+					<lane id="-3" type="driving" level="true">
+						<link/>
+						<width sOffset="0" a="3.35" b="0" c="0" d="0"/>
+						<roadMark sOffset="0" type="solid" weight="standard" color="standard" width="0.13" laneChange="none"/>
+						<speed sOffset="0" max="27.78"/>
+					</lane>
+				</right>
+			</laneSection>
+		</lanes>
+		<objects/>
+	</road>
+</OpenDRIVE>

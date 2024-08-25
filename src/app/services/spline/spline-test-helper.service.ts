@@ -21,7 +21,16 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { JunctionToolHelper } from 'app/tools/junction/junction-tool.helper';
 import { MapValidatorService } from '../map/map-validator.service';
+import { HttpClient } from '@angular/common/http';
+import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
 
+export const STRAIGHT_XODR = 'assets/open-drive/straight-road.xml';
+export const ROUNDABOUT_XODR = 'assets/open-drive/roundabout-8-course.xodr';
+export const CROSSING8_XODR = 'assets/open-drive/crossing-8-course.xodr';
+export const CROSSING8_COMPLEX_XODR = 'assets/open-drive/crossing-8-course.xodr';
+
+export const FRENCH_SMALL_XODR = 'assets/stubs/french-small.xodr';
+export const OSM2_XODR = 'assets/stubs/osm-2-xodr-small.xodr';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,7 +48,22 @@ export class SplineTestHelper {
 		public splineLinkService: SplineLinkService,
 		public junctionToolHelper: JunctionToolHelper,
 		public mapValidator: MapValidatorService,
+		public httpClient: HttpClient,
+		public openDriveParser: OpenDriveParserService
 	) {
+	}
+
+	async loadStraightXodr () {
+
+		const xml = await this.loadXodr( STRAIGHT_XODR ).toPromise();
+
+		return this.openDriveParser.parse( xml );
+	}
+
+	loadXodr ( path: string ) {
+
+		return this.httpClient.get( path, { responseType: 'text' } );
+
 	}
 
 	makeDefaultRoad ( points: Vector2[] ) {

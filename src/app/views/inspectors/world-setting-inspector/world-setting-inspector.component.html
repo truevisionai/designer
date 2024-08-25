@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+
+<mat-toolbar class="native-border inspector-toolbar">
+	<button (click)="isOpen=!isOpen"
+		class="inspector-toolbar-icon"
+		mat-icon-button>
+		<mat-icon *ngIf="!isOpen">chevron_right</mat-icon>
+		<mat-icon *ngIf="isOpen">expand_more</mat-icon>
+	</button>
+	<span>World Settings</span>
+</mat-toolbar>
+
+<div *ngIf="isOpen "
+	class="inspector-editor-padding">
+
+	<app-textarea-field [value]="projString"
+		label="Projection (Proj)">
+	</app-textarea-field>
+
+	<app-button-field matTooltipPosition="left" (clicked)="clearProjection()"
+		label="Clear Projection">
+	</app-button-field>
+
+	<app-double-field (changed)="onLatChanged($event)"
+		[value]="data.origin.x"
+		label="Latitude"
+		max="85"
+		min="-85">
+	</app-double-field>
+
+	<app-double-field (changed)="onLongChanged($event)"
+		[value]="data.origin.y"
+		label="Longitude"
+		max="180"
+		min="-180">
+	</app-double-field>
+
+	<app-vector2-field (changed)="onOffsetChanged($event)"
+		[value]="data.positionOffset"
+		label="Offset From Center">
+	</app-vector2-field>
+
+	<app-double-field (changed)="onHeadingOffsetChanged($event)"
+		[value]="data.headingOffset"
+		label="Heading Offset">
+	</app-double-field>
+
+
+</div>

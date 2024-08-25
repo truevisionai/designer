@@ -24,11 +24,12 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 		this.curvStart = curvStart;
 		this.curvEnd = curvEnd;
 
-		this.curve = this.getCurve();
-
 	}
 
 	computeVars () {
+
+		this.curve = this.getCurve();
+
 	}
 
 	/**

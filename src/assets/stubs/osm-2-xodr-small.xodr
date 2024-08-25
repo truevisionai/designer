@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenDRIVE>
+	<header revMajor="1" revMinor="4" name="" version="1" date="2019-02-18T13:36:12" north="321.28688611844495" south="0.0" east="475.4017417990752" west="0.0">
+		<geoReference>
+			<![CDATA[+proj=tmerc +lat_0=51.2377326 +lon_0=7.1584828 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs]]>
+		</geoReference>
+	</header>
+	<road name="Road 1" length="39.89080433589253" id="1" junction="-1">
+		<link></link>
+		<type s="0.0" type="town">
+			<speed max="20" unit="mph"/>
+		</type>
+		<planView>
+			<geometry s="0" x="368.497208909269" y="220.97102796206613" hdg="5.735149964087597" length="8.708660780929344">
+				<arc curvature="-0.05455133174054588"/>
+			</geometry>
+			<geometry s="8.708660780929344" x="374.59636964128157" y="214.86977240229592" hdg="5.260080920811239" length="31.18214355496319">
+				<line/>
+			</geometry>
+		</planView>
+		<elevationProfile>
+			<elevation s="0" a="189.25244525825894" b="-0.2247451141867424" c="0.0" d="0.0"/>
+			<elevation s="8.708660780929344" a="187.29521629663537" b="0.05375621693362069" c="0.0" d="0.0"/>
+		</elevationProfile>
+		<lanes>
+			<laneOffset s="0.0" a="0.0" b="0.0" c="0.0" d="0.0"/>
+			<laneSection s="0.0">
+				<left>
+					<lane id="1" type="driving" level="false">
+						<link>
+						</link>
+						<width sOffset="0.0" a="4.00e+00" b="0.0" c="0.00" d="0.00"/>
+						<roadMark sOffset="0.00" type="solid" material="standard" color="white" laneChange="none"/>
+					</lane>
+				</left>
+				<center>
+					<lane id="0" type="none" level="false">
+						<roadMark sOffset="0.00" type="broken" material="standard" color="white" width="1.2500000000000000e-1" laneChange="none"/>
+					</lane>
+				</center>
+				<right>
+					<lane id="-1" type="driving" level="false">
+						<link>
+						</link>
+						<width sOffset="0.0" a="4.00e+00" b="0.0" c="0.00" d="0.00"/>
+						<roadMark sOffset="0.00" type="solid" material="standard" color="white" laneChange="none"/>
+					</lane>
+				</right>
+			</laneSection>
+		</lanes>
+	</road>
+</OpenDRIVE>

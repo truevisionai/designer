@@ -116,6 +116,8 @@ function breakGeometries ( geometries: TvAbstractRoadGeometry[], sStart: number,
 
 		}
 
+		newGeometry.computeVars();
+
 		newGeometries.push( newGeometry );
 
 		currentS += newGeometry.length;

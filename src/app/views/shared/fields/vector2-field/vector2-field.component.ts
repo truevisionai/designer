@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Vector2 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { AbstractFieldComponent } from '../abstract-field.component';
 import { Maths } from '../../../../utils/maths';
 
@@ -14,7 +14,7 @@ import { Maths } from '../../../../utils/maths';
 } )
 export class Vector2FieldComponent extends AbstractFieldComponent implements OnInit {
 
-	@Input() value: Vector2;
+	@Input() value: Vector2 | Vector3;
 
 	@Input() label: string;
 

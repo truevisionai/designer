@@ -30,6 +30,7 @@ export enum ToolType {
 	RoadSignTool,
 	Crosswalk,
 	Environment,
+	WorldSetting,
 	TrafficLight,
 	Parking,
 	ParkingLot,
