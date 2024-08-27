@@ -62,7 +62,7 @@ export class SceneBuilderService {
 
 		map.getRoads().forEach( road => this.buildRoad( map, road ) );
 
-		map.getSplines().forEach( spline => this.splineBuilder.buildBoundingBox( spline ) );
+		map.getSplines().forEach( spline => this.splineBuilder.updateBounds( spline ) );
 
 		map.getJunctions().forEach( junction => this.buildJunction( map, junction ) );
 

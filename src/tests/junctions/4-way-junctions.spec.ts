@@ -15,7 +15,7 @@ import { SplineManager } from 'app/managers/spline-manager';
 import { MapValidatorService } from 'app/services/map/map-validator.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineService } from "../../app/services/spline/spline.service";
-import { AutoSplineV2 } from "../../app/core/shapes/auto-spline-v2";
+import { AutoSpline } from "../../app/core/shapes/auto-spline-v2";
 import { ControlPointFactory } from "../../app/factories/control-point.factory";
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { DepConnectionFactory } from "../../app/map/junction/dep-connection.factory";
@@ -146,12 +146,12 @@ xdescribe( '4-way-junction tests', () => {
 	it( 'should create 4-way junction', () => {
 
 		// left to right
-		const spline = new AutoSplineV2();
+		const spline = new AutoSpline();
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, new Vector3( -50, 0, 0 ) ) );
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, new Vector3( 50, 0, 0 ) ) );
 
 		// bottom to top
-		const spline2 = new AutoSplineV2();
+		const spline2 = new AutoSpline();
 		spline2.controlPoints.push( ControlPointFactory.createControl( spline2, new Vector3( 0, -50, 0 ) ) );
 		spline2.controlPoints.push( ControlPointFactory.createControl( spline2, new Vector3( 0, 50, 0 ) ) );
 

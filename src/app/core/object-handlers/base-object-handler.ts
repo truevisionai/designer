@@ -5,20 +5,21 @@
 import { AppInspector } from "../inspector";
 import { StatusBarService } from "../../services/status-bar.service";
 import { ObjectHandler } from "./object-handler";
+import { PointerEventData } from "app/events/pointer-event-data";
 
 export abstract class BaseObjectHandler<T> implements ObjectHandler<T> {
 
 	protected selected = new Set<T>();
-
-	abstract onSelected ( object: T ): void;
-
-	abstract onUnselected ( object: T ): void;
 
 	abstract onAdded ( object: T ): void;
 
 	abstract onUpdated ( object: T ): void;
 
 	abstract onRemoved ( object: T ): void;
+
+	abstract onDrag ( object: T, e: PointerEventData ): void;
+
+	abstract onDragEnd ( object: T, e: PointerEventData ): void;
 
 	isSelected ( object: T ): boolean {
 
@@ -40,11 +41,23 @@ export abstract class BaseObjectHandler<T> implements ObjectHandler<T> {
 
 	}
 
+	onSelected ( object: T ): void {
+
+		// Do nothing by default
+
+	}
+
 	unselect ( object: T ): void {
 
 		this.selected.delete( object );
 
 		this.onUnselected( object );
+
+	}
+
+	onUnselected ( object: T ): void {
+
+		// Do nothing by default
 
 	}
 

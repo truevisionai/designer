@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Mesh, BufferGeometry, Material } from "three";
 

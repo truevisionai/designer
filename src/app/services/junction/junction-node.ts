@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvRoadLink } from "app/map/models/tv-road-link";
 import { ISelectable, Highlightable } from "app/objects/i-selectable";
 import { COLOR } from "app/views/shared/utils/colors.service";

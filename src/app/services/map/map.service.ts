@@ -351,4 +351,10 @@ export class MapService {
 		return this.splines.length;
 
 	}
+
+	getSplines (): AbstractSpline[] {
+
+		return this.splines;
+
+	}
 }

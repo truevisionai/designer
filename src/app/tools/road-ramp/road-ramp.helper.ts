@@ -24,7 +24,7 @@ import { SplineBuilder } from 'app/services/spline/spline.builder';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
 import { LaneUtils } from 'app/utils/lane.utils';
-import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { TvRoadLinkNeighbor } from "../../map/models/tv-road-link-neighbor";
@@ -225,7 +225,7 @@ export class RampToolHelper {
 		const d2 = d1.applyAxisAngle( new Vector3( 0, 0, 1 ), -Math.PI / 2 );
 		const p2 = p1.clone().add( d2.clone().multiplyScalar( start.distanceTo( p1 ) * 2 ) );
 
-		const spline = new AutoSplineV2();
+		const spline = new AutoSpline();
 
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, start ) );
 		// spline.controlPoints.push( ControlPointFactory.createControl( spline, p1 ) );

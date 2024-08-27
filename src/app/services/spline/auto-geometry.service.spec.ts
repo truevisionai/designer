@@ -3,20 +3,21 @@
  */
 
 import { TestBed, async, inject } from '@angular/core/testing';
-import { AutoSplineBuilder, SplineBuilder } from "./spline.builder";
+import { SplineBuilder } from "./spline.builder";
 import { TvLineGeometry } from "../../map/models/geometries/tv-line-geometry";
+import { AutoGeometryService } from "./auto-geometry.service";
 
-describe( 'Service: SplineBuilder', () => {
+describe( 'AutoGeometryService', () => {
 
-	let splineBuilder: AutoSplineBuilder;
+	let splineBuilder: AutoGeometryService;
 
 	beforeEach( () => {
 
 		TestBed.configureTestingModule( {
-			providers: [ AutoSplineBuilder ]
+			providers: [ AutoGeometryService ]
 		} );
 
-		splineBuilder = TestBed.get( AutoSplineBuilder );
+		splineBuilder = TestBed.get( AutoGeometryService );
 
 	} );
 

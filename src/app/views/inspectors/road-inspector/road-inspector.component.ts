@@ -16,8 +16,15 @@ import { AssetService } from 'app/core/asset/asset.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Environment } from 'app/core/utils/environment';
 import { TvConsole } from "../../../core/utils/console";
-import { RoadControlPoint } from 'app/objects/road-control-point';
 import { Commands } from 'app/commands/commands';
+import { AbstractSpline } from "../../../core/shapes/abstract-spline";
+import { TvRoadTypeClass } from "../../../map/models/tv-road-type.class";
+
+export class RoadInspectorData {
+	spline: AbstractSpline;
+	controlPoint?: AbstractControlPoint;
+	node?: RoadNode;
+}
 
 @Component( {
 	selector: 'app-road-inspector',
@@ -26,17 +33,27 @@ import { Commands } from 'app/commands/commands';
 } )
 export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, IComponent {
 
-	data: {
-		road: TvRoad,
-		controlPoint: AbstractControlPoint,
-		node: RoadNode,
-	};
+	data: RoadInspectorData;
 
 	isOpen: boolean = true;
 
 	isProduction = Environment.production;
 
 	segmentTypes = TvGeometryType;
+
+	road: TvRoad;
+
+	roadTypesEnum = TvRoadType;
+
+	roadType?: TvRoadTypeClass;
+
+	type?: TvRoadType;
+
+	controlPoint?: AbstractControlPoint;
+
+	segmentType?: TvGeometryType;
+
+	roadSpeed?: number;
 
 	constructor (
 		private dialogService: DialogService,
@@ -46,54 +63,27 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 		super();
 	}
 
-	get segmentType (): TvGeometryType {
-		if ( this.controlPoint instanceof RoadControlPoint ) {
-			return this.controlPoint.segmentType;
+	ngOnInit (): void {
+
+		if ( this.data.spline.getRoadSegments().length == 0 ) {
+			throw new Error( 'Road Inspector: No road segments found' );
 		}
-	}
 
-	get road (): TvRoad {
-		return this.data.road;
-	}
+		this.road = this.data.spline.getRoadSegments()[ 0 ];
 
-	get splineType () {
-		return this.road?.spline?.type;
-	}
+		this.roadType = this.road?.type.length > 0 ? this.road.type[ 0 ] : null;
 
-	get controlPoint (): AbstractControlPoint {
-		return this.data.controlPoint;
-	}
+		this.type = this.roadType ? this.roadType.type : null;
 
-	get controlPointPosition (): Vector2 {
-		return new Vector2( this.controlPoint?.position.x || 0, this.controlPoint?.position.y || 0 );
-	}
+		this.roadSpeed = this.roadType ? this.roadType.speed.max : 0;
 
-	get node (): RoadNode {
-		return this.data.node;
-	}
+		this.controlPoint = this.data.controlPoint;
 
-	get roadSpeed () {
-		return this.roadType ? this.roadType.speed.max : null;
-	}
-
-	get roadTypesEnum () {
-		return TvRoadType;
-	}
-
-	get type () {
-		return this.roadType ? this.roadType.type : null;
-	}
-
-	get roadType () {
-		return this.road?.type.length > 0 ? this.road.type[ 0 ] : null;
-	}
-
-	ngOnInit () {
-
+		this.segmentType = this.controlPoint ? this.controlPoint[ 'segmentType' ] : null;
 
 	}
 
-	ngOnDestroy () {
+	ngOnDestroy (): void {
 
 
 	}
@@ -108,92 +98,77 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 		this.assetService.createRoadStyleAsset( saved.directory, style, saved.filename );
 
-		TvConsole.info( 'Exporting road style to: ' + saved.filePath );
+		TvConsole.info( `Exporting road style to: ${ saved.filePath }` );
 
 	}
 
-	async duplicateRoad () {
+	duplicateRoad (): void {
 
 		this.roadService.duplicateRoad( this.road );
 
 	}
 
-	onRoadSpeedChanged ( $value: number ) {
+	onRoadSpeedChanged ( $value: number ): void {
 
 		Commands.SetValue( this.roadType.speed, 'max', $value );
 
 	}
 
-	onRoadTypeChanged ( $value: any ) {
+	onRoadTypeChanged ( $value: any ): void {
 
 		Commands.SetValue( this.roadType, 'type', $value );
 
 	}
 
-	onDrivingMaterialChanged ( $guid: string ) {
+	onDrivingMaterialChanged ( $guid: string ): void {
 
 		Commands.SetValue( this.road, 'drivingMaterialGuid', $guid );
 
 	}
 
-	onSidewalkMaterialChanged ( $guid: string ) {
+	onSidewalkMaterialChanged ( $guid: string ): void {
 
 		Commands.SetValue( this.road, 'sidewalkMaterialGuid', $guid );
 
 	}
 
-	onBorderMaterialChanged ( $guid: string ) {
+	onBorderMaterialChanged ( $guid: string ): void {
 
 		Commands.SetValue( this.road, 'borderMaterialGuid', $guid );
 
 	}
 
-	onShoulderMaterialChanged ( $guid: string ) {
+	onShoulderMaterialChanged ( $guid: string ): void {
 
 		Commands.SetValue( this.road, 'shoulderMaterialGuid', $guid );
 
 	}
 
-	onControlPointChanged ( $position: Vector2 ) {
+	onControlPointChanged ( $position: Vector2 ): void {
 
 		const newPosition = new Vector3( $position.x, $position.y, 0 );
 
-		const oldPosition = this.controlPoint.position.clone();
+		const oldPosition = this.data.controlPoint.position.clone();
 
-		Commands.UpdatePosition( this.controlPoint, newPosition, oldPosition );
+		Commands.UpdatePosition( this.data.controlPoint, newPosition, oldPosition );
 
 	}
 
 	onDelete (): void {
 
-		if ( this.data?.controlPoint ) {
-
-			this.onDeleteControlPoint();
-
-		} else if ( this.data?.node ) {
-
-		} else if ( this.data?.road ) {
-
-			this.onDeleteSpline();
-
-		}
+		// dont need this callback as tool class had onKeydown method
 
 	}
 
-	onDeleteControlPoint () {
+	deleteControlPoint ( point: AbstractControlPoint ): void {
 
-		if ( !this.data?.controlPoint ) return;
-
-		Commands.RemoveObject( this.data.controlPoint );
+		Commands.RemoveObject( point );
 
 	}
 
+	deleteSpline ( spline: AbstractSpline ): void {
 
-	onDeleteSpline () {
-
-		if ( !this.data?.road ) return;
-
-		Commands.RemoveObject( this.data.road.spline );
+		Commands.RemoveObject( spline );
 
 	}
 

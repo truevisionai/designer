@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
-import { BaseOverlayHandler } from "./overlay-handler";
+import { BaseOverlayHandler } from "./base-overlay-handler";
 import { LaneDebugService } from "../../services/debug/lane-debug.service";
 import { TvLane } from "app/map/models/tv-lane";
 

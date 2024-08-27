@@ -1,7 +1,10 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { Commands } from "app/commands/commands";
 import { BaseObjectHandler } from "app/core/object-handlers/base-object-handler";
-import { BaseOverlayHandler } from "app/core/overlay-handlers/overlay-handler";
 import { Log } from "app/core/utils/log";
 import { ConnectionFactory } from "app/factories/connection.factory";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
@@ -76,6 +79,18 @@ export class JunctionGateHandler extends BaseObjectHandler<JunctionGatePoint> {
 	}
 
 	onRemoved ( object: JunctionGatePoint ): void {
+
+		//
+
+	}
+
+	onDrag ( object: JunctionGatePoint ): void {
+
+		//
+
+	}
+
+	onDragEnd ( object: JunctionGatePoint ): void {
 
 		//
 
@@ -165,72 +180,4 @@ export class JunctionGateHandler extends BaseObjectHandler<JunctionGatePoint> {
 	}
 
 }
-
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class JunctionGateOverlayHandler extends BaseOverlayHandler<JunctionGatePoint> {
-
-	constructor () {
-		super();
-	}
-
-	onHighlight ( object: JunctionGatePoint ): void {
-
-		object.highlight();
-
-	}
-
-	onSelected ( object: JunctionGatePoint ): void {
-
-		object.select();
-
-	}
-
-	onDefault ( object: JunctionGatePoint ): void {
-
-		object.unselect();
-
-	}
-
-	onUnselected ( object: JunctionGatePoint ): void {
-
-		object.unselect();
-
-	}
-
-	onAdded ( object: JunctionGatePoint ): void {
-
-		//
-
-	}
-
-	onUpdated ( object: JunctionGatePoint ): void {
-
-		//
-
-	}
-
-	onRemoved ( object: JunctionGatePoint ): void {
-
-		//
-
-	}
-
-	onClearHighlight (): void {
-
-		//
-
-	}
-
-	clear (): void {
-
-		//
-
-	}
-
-
-}
-
 

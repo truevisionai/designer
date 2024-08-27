@@ -5,7 +5,6 @@
 import { BufferGeometry, Color, Material, Points, PointsMaterial, Vector3 } from "three";
 import { ISelectable } from "./i-selectable";
 import { IHasPosition } from "./i-has-position";
-import { EventEmitter } from "@angular/core";
 import { COLOR } from "../views/shared/utils/colors.service";
 
 const DEFAULT_COLOR = COLOR.CYAN;
@@ -19,7 +18,6 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 	public tag: string;
 	public tagindex: number;
 
-	public updated = new EventEmitter<AbstractControlPoint>();
 	public isSelected: boolean;
 
 	get target (): any {
@@ -42,7 +40,6 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 		this.position.copy( position );
 
-		this.updated.emit( this );
 	}
 
 	copyPosition ( position: Vector3 ) {

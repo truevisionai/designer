@@ -25,15 +25,11 @@ export class LaneObjectHandler extends BaseObjectHandler<TvLane> {
 
 		this.setInspector( new LaneInspector( object, this.laneService ) );
 
-		this.selected.add( object );
-
 	}
 
 	onUnselected ( object: TvLane ): void {
 
 		this.clearInspector();
-
-		this.selected.delete( object );
 
 	}
 
@@ -41,15 +37,11 @@ export class LaneObjectHandler extends BaseObjectHandler<TvLane> {
 
 		this.laneService.addLane( object );
 
-		this.onSelected( object );
-
 	}
 
 	onUpdated ( object: TvLane ): void {
 
 		this.laneService.updateLane( object );
-
-		this.onSelected( object );
 
 	}
 
@@ -57,8 +49,20 @@ export class LaneObjectHandler extends BaseObjectHandler<TvLane> {
 
 		this.laneService.removeLane( object );
 
-		this.onUnselected( object );
+	}
+
+	onDrag ( object: TvLane ): void {
+
+		// throw new Error( "Method not implemented." );
 
 	}
+
+	onDragEnd ( object: TvLane ): void {
+
+		// throw new Error( "Method not implemented." );
+
+	}
+
+
 
 }

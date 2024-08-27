@@ -201,7 +201,7 @@ export class PropCurveTool extends BaseTool<PropCurve> {
 
 	private addPoint ( curve: PropCurve, point: SimpleControlPoint<PropCurve> ) {
 
-		this.tool.splineService.addControlPoint( curve.spline, point );
+		this.tool.splineService.addPointAndUpdateSpline( curve.spline, point );
 
 		this.tool.service.update( curve );
 
@@ -211,7 +211,7 @@ export class PropCurveTool extends BaseTool<PropCurve> {
 
 	private removePoint ( curve: PropCurve, point: SimpleControlPoint<PropCurve> ) {
 
-		this.tool.splineService.removeControlPoint( curve.spline, point );
+		this.tool.splineService.removePointAndUpdateSpline( curve.spline, point );
 
 		this.tool.service.update( curve );
 

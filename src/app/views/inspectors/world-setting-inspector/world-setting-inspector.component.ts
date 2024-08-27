@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { CommandHistory } from 'app/commands/command-history';
 import { SetValueCommand } from 'app/commands/set-value-command';

@@ -29,11 +29,11 @@ export class ManeuverToolHelper {
 	) { }
 
 	addControlPoint ( spline: AbstractSpline, point: SplineControlPoint ) {
-		this.splineService.addControlPoint( spline, point );
+		this.splineService.addPointAndUpdateSpline( spline, point );
 	}
 
 	removeControlPoint ( spline: AbstractSpline, point: SplineControlPoint ) {
-		this.splineService.removeControlPoint( spline, point );
+		this.splineService.removePointAndUpdateSpline( spline, point );
 	}
 
 }

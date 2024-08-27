@@ -5,7 +5,7 @@
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
-import { BaseOverlayHandler } from "./overlay-handler";
+import { BaseOverlayHandler } from "./base-overlay-handler";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { MapEvents } from "app/events/map-events";
 
@@ -88,5 +88,6 @@ export class RoadOverlayHandler extends BaseOverlayHandler<TvRoad> {
 	}
 
 }
+
 
 

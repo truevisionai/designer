@@ -62,6 +62,10 @@ export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate
 		this.layers.enable( 31 );
 	}
 
+	get spline () {
+		return this.road.spline;
+	}
+
 	private get index () {
 		return this.road.spline?.controlPoints.indexOf( this );
 	}

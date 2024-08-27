@@ -149,11 +149,11 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		this.texts.removeKey( spline );
 
-		for ( const road of this.splineService.getRoads( spline ) ) {
+		for ( const road of spline.getRoadSegments() ) {
 
-			road.geometries.filter( g => g.geometryType == TvGeometryType.ARC ).forEach( ( geometry: TvArcGeometry ) => {
+			road.getPlanView().getGeomtries().filter( g => g.geometryType == TvGeometryType.ARC ).forEach( ( geometry: TvArcGeometry ) => {
 
-				let text = `Radius: ` + Maths.round( geometry.radius ) + ' m';
+				const text = `Radius: ${ Maths.round( geometry.radius ) } m`;
 
 				// Calculate the central angle of the arc
 				// const centralAngle = ( geometry.length / geometry.radius ) * Maths.Rad2Deg;
@@ -267,28 +267,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
 
-		// const add = ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) => {
-
-		// 	const points = this.debugService.getPositions( road, laneSection, lane, 0, laneSection.getLength(), LINE_STEP );
-
-		// 	const positions = points.map( point => point.position );
-
-		// 	const line = this.debugService.createDebugLine( road, positions, lineWidth, color );
-
-		// 	this.borders.addItem( spline, line );
-		// }
-
-		// this.splineService.getRoads( spline ).forEach( road => {
-
-		// 	road.laneSections?.forEach( laneSection => {
-
-		// 		add( road, laneSection, laneSection.getRightMostLane() );
-
-		// 		add( road, laneSection, laneSection.getLeftMostLane() );
-
-		// 	} )
-		// } )
-
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		const add = ( points: AbstractControlPoint[] ) => {
 
@@ -376,7 +355,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	showControlPoints ( spline: AbstractSpline ) {
+	showControlPoints ( spline: AbstractSpline ): void {
 
 		for ( let i = 0; i < spline.controlPoints.length; i++ ) {
 
@@ -402,7 +381,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	showTangents ( spline: AbstractSpline, point: AbstractControlPoint ) {
+	showTangents ( spline: AbstractSpline, point: AbstractControlPoint ): void {
 
 		if ( point instanceof RoadControlPoint ) {
 
@@ -447,7 +426,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showPolyline ( spline: AbstractSpline ) {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		if ( spline.type == SplineType.EXPLICIT ) return;
 
@@ -457,7 +436,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 			points.push( points[ 0 ] );
 		}
 
-		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH );
+		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH, COLOR.WHITE );
 
 		this.polylines.addItem( spline, line );
 

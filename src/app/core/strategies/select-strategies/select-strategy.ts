@@ -2,9 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { RoadWidthService } from 'app/services/road/road-width.service';
@@ -12,13 +14,13 @@ import { Intersection, Object3D, Vector3 } from "three";
 
 export abstract class SelectStrategy<T> {
 
-	abstract onPointerDown ( pointerEventData: PointerEventData ): T;
+	abstract onPointerDown ( pointerEventData: PointerEventData ): T | undefined;
 
-	abstract onPointerMoved ( pointerEventData: PointerEventData ): T;
+	abstract onPointerMoved ( pointerEventData: PointerEventData ): T | undefined;
 
-	abstract onPointerUp ( pointerEventData: PointerEventData ): T;
+	abstract onPointerUp ( pointerEventData: PointerEventData ): T | undefined;
 
-	select ( e: PointerEventData ): T {
+	select ( e: PointerEventData ): T | undefined {
 		return this.onPointerDown( e );
 	}
 
@@ -179,6 +181,32 @@ export abstract class SelectStrategy<T> {
 			.map( intersection => intersection.object );
 
 		return objects.find( ( object: Object3D ) => object[ 'tag' ] === tag );
+
+	}
+
+	protected findRoad ( pointerEventData: PointerEventData, includeJunctionRoads: boolean ): TvRoad | undefined {
+
+		const coord = includeJunctionRoads ?
+			this.onRoadGeometry( pointerEventData ) :
+			this.onNonJunctionRoadGeometry( pointerEventData );
+
+		if ( !coord ) return;
+
+		if ( coord.road.isJunction && !includeJunctionRoads ) {
+			return;
+		}
+
+		return coord.road;
+
+	}
+
+	protected findSpline ( pointerEventData: PointerEventData, includeJunctionRoads: boolean ): AbstractSpline | undefined {
+
+		const road = this.findRoad( pointerEventData, includeJunctionRoads );
+
+		if ( !road ) return;
+
+		return road.spline;
 
 	}
 }

@@ -10,7 +10,11 @@ import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 
-export class AutoSpline extends AbstractSpline {
+
+/**
+ * @deprecated
+ */
+export class DepAutoSpline extends AbstractSpline {
 
 	public type: SplineType = SplineType.AUTO;
 

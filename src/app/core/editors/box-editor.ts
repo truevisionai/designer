@@ -101,17 +101,6 @@ export class BoxEditor extends AbstractShapeEditor {
 			length: this.width,
 		} );
 
-		cp.updated.subscribe( e => {
-
-			box.position.copy( e.position );
-
-		} );
-
-		this.controlPointSelected.subscribe( e => {
-
-
-		} );
-
 	}
 
 	onPointerMoved ( e: PointerMoveData ) {

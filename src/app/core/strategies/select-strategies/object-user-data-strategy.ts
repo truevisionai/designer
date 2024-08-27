@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SelectStrategy } from "./select-strategy";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { Intersection, Object3D } from "three";

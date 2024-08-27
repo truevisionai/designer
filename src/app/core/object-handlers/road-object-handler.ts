@@ -8,7 +8,6 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { Injectable } from "@angular/core";
 import { BaseObjectHandler } from "./base-object-handler";
 
-
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -35,20 +34,34 @@ export class RoadObjectHandler extends BaseObjectHandler<TvRoad> {
 
 	onAdded ( object: TvRoad ): void {
 
-		throw new Error( "Method not implemented." );
+		// throw new Error( "Method not implemented." );
 
 	}
 
 	onUpdated ( object: TvRoad ): void {
 
-		throw new Error( "Method not implemented." );
+		// throw new Error( "Method not implemented." );
 
 	}
 
 	onRemoved ( object: TvRoad ): void {
 
-		throw new Error( "Method not implemented." );
+		// throw new Error( "Method not implemented." );
+
+	}
+
+	onDrag ( object: TvRoad ): void {
+
+		// throw new Error( "Method not implemented." );
+
+	}
+
+	onDragEnd ( object: TvRoad ): void {
+
+		// throw new Error( "Method not implemented." );
 
 	}
 
 }
+
+

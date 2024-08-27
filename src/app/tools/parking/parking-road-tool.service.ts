@@ -81,7 +81,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			this.splineService.addControlPoint( road.spline, point );
+			this.splineService.addPointAndUpdateSpline( road.spline, point );
 
 		}
 
@@ -98,7 +98,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			this.splineService.addControlPoint( road.spline, point );
+			this.splineService.addPointAndUpdateSpline( road.spline, point );
 
 		}
 
@@ -115,7 +115,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			this.splineService.addControlPoint( road.spline, point );
+			this.splineService.addPointAndUpdateSpline( road.spline, point );
 
 		}
 
@@ -497,7 +497,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			this.splineService.addControlPoint( road.spline, point );
+			this.splineService.addPointAndUpdateSpline( road.spline, point );
 
 		}
 
@@ -517,7 +517,7 @@ export class ParkingRoadToolService {
 
 			const point = this.controlPointFactory.createSplineControlPoint( road.spline, points[ i ] );
 
-			this.splineService.addControlPoint( road.spline, point );
+			this.splineService.addPointAndUpdateSpline( road.spline, point );
 
 		}
 

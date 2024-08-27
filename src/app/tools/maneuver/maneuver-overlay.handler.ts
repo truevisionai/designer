@@ -1,5 +1,9 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
-import { BaseOverlayHandler } from "../../core/overlay-handlers/overlay-handler";
+import { BaseOverlayHandler } from "app/core/overlay-handlers/base-overlay-handler";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { SplineDebugService } from "app/services/debug/spline-debug.service";

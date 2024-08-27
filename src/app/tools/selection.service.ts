@@ -32,9 +32,9 @@ export class SelectionService {
 
 	constructor () {
 
-		MapEvents.objectSelected.subscribe( object => this.onObjectSelected( object ) );
+		MapEvents.objectSelected.subscribe( object => this.addToSelected( object ) );
 
-		MapEvents.objectUnselected.subscribe( object => this.onObjectUnselected( object ) );
+		MapEvents.objectUnselected.subscribe( object => this.removeFromSelected( object ) );
 
 	}
 
@@ -140,9 +140,11 @@ export class SelectionService {
 	}
 
 	getSelectedObjects () {
-
 		return Array.from( this.selectedObjects.values() );
+	}
 
+	getSelectedObjectCount (): number {
+		return this.selectedObjects.size;
 	}
 
 	reset () {
@@ -168,6 +170,14 @@ export class SelectionService {
 	unselectObjectsOfType ( type: string ): void {
 
 		this.selectedObjects.delete( type );
+
+	}
+
+	addSelectedObject ( object: any ): void {
+
+		const tag = this.getTag( object );
+
+		this.selectedObjects.set( tag, object );
 
 	}
 
@@ -219,7 +229,7 @@ export class SelectionService {
 
 	}
 
-	private onObjectSelected ( object: Object ): void {
+	addToSelected ( object: Object ): void {
 
 		if ( object == null ) return;
 
@@ -243,7 +253,7 @@ export class SelectionService {
 
 	}
 
-	private onObjectUnselected ( object: any ): void {
+	removeFromSelected ( object: any ): void {
 
 		const tag = this.getTag( object );
 
@@ -308,4 +318,11 @@ export class SelectionService {
 		}
 
 	}
+
+	hasSelectionStrategyFor ( name: string ): boolean {
+
+		return this.strategies.has( name );
+
+	}
+
 }

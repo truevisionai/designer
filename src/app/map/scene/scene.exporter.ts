@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
-import { AutoSpline } from 'app/core/shapes/auto-spline';
+import { DepAutoSpline } from 'app/core/shapes/auto-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { RoadControlPoint } from 'app/objects/road-control-point';
@@ -32,7 +32,7 @@ import { TvLaneSpeed } from 'app/map/models/tv-lane-speed';
 import { TvLaneVisibility } from 'app/map/models/tv-lane-visibility';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
-import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { XmlElement } from "../../importers/xml.element";
 import { MapService } from "../../services/map/map.service";
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
@@ -125,7 +125,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			}
 		}
 
-		if ( spline instanceof AutoSpline ) {
+		if ( spline instanceof DepAutoSpline ) {
 
 			return {
 				attr_uuid: spline.uuid,
@@ -146,7 +146,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		}
 
-		if ( spline instanceof AutoSplineV2 ) {
+		if ( spline instanceof AutoSpline ) {
 
 			return {
 				attr_uuid: spline.uuid,
@@ -237,7 +237,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	exportRoadSpline ( spline: AbstractSpline ) {
 
-		if ( spline instanceof AutoSpline ) {
+		if ( spline instanceof DepAutoSpline ) {
 
 			return {
 				attr_type: spline.type,
@@ -250,7 +250,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		}
 
-		if ( spline instanceof AutoSplineV2 ) {
+		if ( spline instanceof AutoSpline ) {
 
 			return {
 				attr_type: spline.type,

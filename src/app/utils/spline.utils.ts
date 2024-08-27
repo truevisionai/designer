@@ -13,6 +13,101 @@ import {
 	ModelNotFoundException
 } from "app/exceptions/exceptions";
 import { RoadUtils } from "./road.utils";
+import { Vector2 } from "three";
+import { TvAbstractRoadGeometry } from "../map/models/geometries/tv-abstract-road-geometry";
+
+export function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
+
+	const distance = p1.distanceTo( p2 );
+
+	const normalisedDotProduct = new Vector2()
+		.copy( dir1 )
+		.normalize()
+		.dot( new Vector2().copy( dir2 ).normalize() );
+
+	const alpha = Math.acos( normalisedDotProduct );
+
+	const r = distance / 2 / Math.sin( alpha / 2 );
+
+	const length = r * alpha;
+
+	const ma = dir1.x, mb = dir1.y, mc = -mb, md = ma;
+
+	const det = 1 / ( ma * md - mb * mc );
+
+	const mia = det * md, mib = -mb * det, mic = -mc * det, mid = ma * det;
+
+	const p2proj = new Vector2().subVectors( p2, p1 );
+
+	p2proj.set( p2proj.x * mia + p2proj.y * mic, p2proj.x * mib + p2proj.y * mid );
+
+	return [ r, alpha, length, Math.sign( p2proj.y ) ];
+}
+
+export function breakGeometries ( geometries: TvAbstractRoadGeometry[], sStart: number, sEnd: number | null ): TvAbstractRoadGeometry[] {
+
+	const newGeometries: TvAbstractRoadGeometry[] = [];
+
+	let currentS = 0;
+
+	for ( const geometry of geometries ) {
+
+		const effectiveSEnd = sEnd !== null ? sEnd : Infinity;
+
+		if ( geometry.endS <= sStart || geometry.s >= effectiveSEnd ) continue; // Skip if geometry is completely out of bounds
+
+		const newGeometry = geometry.clone();
+
+		newGeometry.s = currentS;
+
+		if ( geometry.s < sStart && geometry.endS > sStart ) {
+
+			const posTheta = geometry.getRoadCoord( sStart );
+
+			newGeometry.x = posTheta.x;
+
+			newGeometry.y = posTheta.y;
+
+			newGeometry.hdg = posTheta.hdg;
+
+			newGeometry.length = Math.min( geometry.endS, effectiveSEnd ) - sStart;
+
+		} else if ( geometry.endS > effectiveSEnd ) {
+
+			const posTheta = geometry.getRoadCoord( geometry.s );
+
+			newGeometry.x = posTheta.x;
+
+			newGeometry.y = posTheta.y;
+
+			newGeometry.hdg = posTheta.hdg;
+
+			newGeometry.length = effectiveSEnd - geometry.s;
+
+		} else {
+
+			const posTheta = geometry.getRoadCoord( geometry.s );
+
+			newGeometry.x = posTheta.x;
+
+			newGeometry.y = posTheta.y;
+
+			newGeometry.hdg = posTheta.hdg;
+
+			newGeometry.length = geometry.length;
+
+		}
+
+		newGeometries.push( newGeometry );
+
+		currentS += newGeometry.length;
+
+	}
+
+	return newGeometries;
+
+}
+
 
 export class SplineUtils {
 

@@ -47,7 +47,7 @@ import { AssetDatabase } from '../../core/asset/asset-database';
 import { TvConsole } from '../../core/utils/console';
 import { SnackBar } from '../../services/snack-bar.service';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
-import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { TvCornerRoad } from "../models/objects/tv-corner-road";
 import { TvObjectOutline } from "../models/objects/tv-object-outline";
 import { XmlElement } from "../../importers/xml.element";
@@ -450,7 +450,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private importAutoSpline ( xml: XmlElement ): AbstractSpline {
 
-		const spline = new AutoSplineV2();
+		const spline = new AutoSpline();
 
 		this.readAsOptionalArray( xml.point, xml => {
 
@@ -470,9 +470,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private importAutoSplineV2 ( xml: XmlElement ): AutoSplineV2 {
+	private importAutoSplineV2 ( xml: XmlElement ): AutoSpline {
 
-		const spline = new AutoSplineV2();
+		const spline = new AutoSpline();
 
 		if ( xml.attr_uuid ) {
 			spline.uuid = xml.attr_uuid;

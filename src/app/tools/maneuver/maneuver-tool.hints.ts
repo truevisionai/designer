@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ToolHintConfig } from "app/core/interfaces/tool.hints";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { JunctionGatePoint } from "app/objects/junction-gate-point";

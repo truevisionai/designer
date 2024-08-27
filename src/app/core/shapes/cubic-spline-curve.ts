@@ -3,8 +3,6 @@
  */
 
 import { CatmullRomCurve3, Curve, CurvePath, CurveType, Vector3 } from 'three';
-import { AutoSpline } from './auto-spline';
-import { ExplicitSpline } from './explicit-spline';
 import { AnyControlPoint } from "../../objects/any-control-point";
 
 

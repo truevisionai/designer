@@ -8,6 +8,7 @@ import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { OrderedMap } from "../models/ordered-map";
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -76,6 +77,26 @@ export abstract class AbstractSpline {
 		return this.controlPoints.map( point => point.position );
 	}
 
+	getControlPoints (): AbstractControlPoint[] {
+		return this.controlPoints;
+	}
+
+	addControlPoint ( point: AbstractControlPoint ): void {
+		this.controlPoints.push( point );
+	}
+
+	addControlPoints ( points: AbstractControlPoint[] ): void {
+		this.controlPoints.push( ...points );
+	}
+
+	getControlPointCount (): number {
+		return this.controlPoints.length;
+	}
+
+	getPositions (): Vector3[] {
+		return this.controlPoints.map( point => point.position.clone() );
+	}
+
 	getFirstPoint (): AbstractControlPoint | null {
 		return this.controlPoints.length >= 1 ? this.controlPoints[ 0 ] : null;
 	}
@@ -105,8 +126,52 @@ export abstract class AbstractSpline {
 
 	}
 
+	updateIndexes (): void {
+		this.controlPoints.forEach( ( point, index ) => point.tagindex = index );
+	}
+
 	toString () {
 		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segmentMap.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
+	}
+
+	clearGeometries (): void {
+		this.geometries = [];
+	}
+
+	clearSegmentGeometries (): void {
+		this.getRoadSegments().forEach( segment => segment.clearGeometries() );
+	}
+
+	addGeometry ( geometry: TvAbstractRoadGeometry ): void {
+		this.geometries.push( geometry );
+	}
+
+	getGeometryCount (): number {
+		return this.geometries.length;
+	}
+
+	getSegments (): NewSegment[] {
+		return Array.from( this.segmentMap.values() );
+	}
+
+	getSegmentCount (): number {
+		return this.segmentMap.length;
+	}
+
+	getRoadSegments (): TvRoad[] {
+		return this.getSegments().filter( segment => segment instanceof TvRoad ) as TvRoad[];
+	}
+
+	getJunctionSegments (): TvJunction[] {
+		return this.getSegments().filter( segment => segment instanceof TvJunction ) as TvJunction[];
+	}
+
+	getCoordAtOffset ( sOffset: number ): TvPosTheta {
+		for ( const geometry of this.geometries ) {
+			if ( sOffset >= geometry.s && sOffset <= geometry.endS ) {
+				return geometry.getRoadCoord( sOffset );
+			}
+		}
 	}
 
 }

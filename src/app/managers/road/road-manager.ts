@@ -124,6 +124,16 @@ export class RoadManager {
 
 		this.removeMesh( road );
 
+		if ( this.mapService.hasRoad( road ) ) {
+
+			this.mapService.map.removeRoad( road );
+
+		} else {
+
+			Log.error( 'Road not found in map', road.toString() );
+
+		}
+
 	}
 
 	removeMesh ( road: TvRoad ) {
@@ -135,16 +145,6 @@ export class RoadManager {
 		} );
 
 		this.mapService.map.gameObject.remove( road.gameObject );
-
-		if ( this.mapService.hasRoad( road ) ) {
-
-			this.mapService.map.removeRoad( road );
-
-		} else {
-
-			Log.error( 'Road not found in map', road.toString() );
-
-		}
 
 	}
 

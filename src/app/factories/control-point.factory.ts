@@ -40,7 +40,7 @@ export class ControlPointFactory {
 
 			if ( road instanceof TvRoad ) {
 
-				const pointIndex = index || spline.controlPoints.length - 1;
+				const pointIndex = index || spline.controlPoints.length;
 
 				const geometry = spline.geometries[ pointIndex - 1 ];
 

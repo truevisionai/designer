@@ -34,17 +34,11 @@ export class LaneTool extends ToolWithHandler<TvLane> {
 	) {
 		super();
 
-		this.objectHandlers = new Map();
+		this.addObjectHandler( TvLane.name, helper.base.injector.get( LaneObjectHandler ) );
+		this.addObjectHandler( TvRoad.name, helper.base.injector.get( RoadObjectHandler ) );
 
-		this.objectHandlers.set( TvLane.name, helper.base.injector.get( LaneObjectHandler ) );
-
-		this.objectHandlers.set( TvRoad.name, helper.base.injector.get( RoadObjectHandler ) );
-
-		this.overlayHandlers = new Map();
-
-		this.overlayHandlers.set( TvRoad.name, helper.base.injector.get( LaneToolOverlayHandler ) );
-
-		this.overlayHandlers.set( TvLane.name, helper.base.injector.get( LaneOverlayHandler ) );
+		this.addOverlayHandler( TvRoad.name, helper.base.injector.get( LaneToolOverlayHandler ) );
+		this.addOverlayHandler( TvLane.name, helper.base.injector.get( LaneOverlayHandler ) );
 
 		this.setHintConfig( laneToolHints );
 
@@ -52,7 +46,7 @@ export class LaneTool extends ToolWithHandler<TvLane> {
 
 	init (): void {
 
-		this.overlayHandlers.forEach( handler => handler.enable() );
+		super.init();
 
 		this.helper.base.reset();
 

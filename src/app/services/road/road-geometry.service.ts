@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { TvRoad } from "../../map/models/tv-road.model";
 import { TvLane } from 'app/map/models/tv-lane';

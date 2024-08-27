@@ -25,10 +25,12 @@ import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { JunctionOverlay } from 'app/services/junction/junction-overlay';
-import { ManeuverOverlayHandler } from './maneuver-overlay-handler.service';
-import { ManeuverObjectHandler } from './maneuver-object-handler.service';
-import { ControlPointOverlayHandler, ManeuverControlPointHandler } from './control-point-object-handler';
-import { JunctionGateHandler, JunctionGateOverlayHandler } from './junction-gate-object-handler';
+import { ManeuverOverlayHandler } from './maneuver-overlay.handler';
+import { ManeuverObjectHandler } from './maneuver-object.handler';
+import { ManeuverPointHandler } from './maneuver-point.handler';
+import { PointOverlayHandler } from "./point-overlay.handler";
+import { JunctionGateHandler } from './junction-gate-object-handler';
+import { JunctionGateOverlayHandler } from "./junction-gate-overlay-handler";
 import { maneuverToolHints } from './maneuver-tool.hints';
 
 export enum ManeuverToolState {
@@ -87,13 +89,13 @@ export class ManeuverTool extends BaseTool<any> {
 		this.setDebugService( this.helper.junctionDebugger );
 		this.setDataService( this.helper.junctionService );
 
-		this.objectHandlers.set( SplineControlPoint.name, this.helper.base.injector.get( ManeuverControlPointHandler ) );
-		this.objectHandlers.set( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateHandler ) );
-		this.objectHandlers.set( ManeuverMesh.name, this.helper.base.injector.get( ManeuverObjectHandler ) );
+		this.addObjectHandler( SplineControlPoint.name, this.helper.base.injector.get( ManeuverPointHandler ) );
+		this.addObjectHandler( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateHandler ) );
+		this.addObjectHandler( ManeuverMesh.name, this.helper.base.injector.get( ManeuverObjectHandler ) );
 
-		this.overlayHandlers.set( SplineControlPoint.name, this.helper.base.injector.get( ControlPointOverlayHandler ) );
-		this.overlayHandlers.set( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateOverlayHandler ) );
-		this.overlayHandlers.set( ManeuverMesh.name, this.helper.base.injector.get( ManeuverOverlayHandler ) );
+		this.addOverlayHandler( SplineControlPoint.name, this.helper.base.injector.get( PointOverlayHandler ) );
+		this.addOverlayHandler( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateOverlayHandler ) );
+		this.addOverlayHandler( ManeuverMesh.name, this.helper.base.injector.get( ManeuverOverlayHandler ) );
 
 		this.setHintConfig( maneuverToolHints );
 
@@ -176,7 +178,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		Log.debug( 'ManeuverTool.onObjectAdded', object?.toString() );
 
-		if ( this.objectHasHandlers( object ) ) {
+		if ( this.hasHandlersFor( object ) ) {
 			this.handleAction( object, 'onAdded' );
 			return;
 		}
@@ -198,7 +200,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		Log.debug( 'ManeuverTool.onObjectRemoved', object?.toString() );
 
-		if ( this.objectHasHandlers( object ) ) {
+		if ( this.hasHandlersFor( object ) ) {
 			this.handleAction( object, 'onRemoved' );
 			return;
 		}
@@ -299,7 +301,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		if ( this.debug ) Log.debug( 'ManeuverTool.onObjectSelected', object?.toString() );
 
-		if ( this.objectHasHandlers( object ) ) {
+		if ( this.hasHandlersFor( object ) ) {
 			this.handleSelectionWithHandlers( object );
 			return;
 		}
@@ -339,7 +341,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		Log.debug( 'ManeuverTool.onObjectUnselected', object?.toString() );
 
-		if ( this.objectHasHandlers( object ) ) {
+		if ( this.hasHandlersFor( object ) ) {
 
 			this.handleUnselectionWithHandlers( object );
 
@@ -381,7 +383,7 @@ export class ManeuverTool extends BaseTool<any> {
 
 		Log.debug( 'ManeuverTool.onObjectUpdated', object?.toString() );
 
-		if ( this.objectHasHandlers( object ) ) {
+		if ( this.hasHandlersFor( object ) ) {
 			this.handleAction( object, 'onUpdated' );
 			return;
 		}

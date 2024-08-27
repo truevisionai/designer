@@ -3,17 +3,18 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map/map.service";
 import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { JunctionManager } from "./junction-manager";
-import { SplineService } from "../services/spline/spline.service";
 import { SplineUtils } from "app/utils/spline.utils";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { Log } from "app/core/utils/log";
 import { SplineLinkService } from "./spline-link.service";
+import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
+import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -27,9 +28,10 @@ export class SplineManager {
 		private roadManager: RoadManager,
 		private splineBuilder: SplineBuilder,
 		private junctionManager: JunctionManager,
-		private splineService: SplineService,
 		private fixer: SplineFixerService,
 		private splineLinkManager: SplineLinkService,
+		private splineGeometryService: SplineGeometryService,
+		private segmentService: SplineSegmentService,
 	) {
 	}
 
@@ -61,17 +63,19 @@ export class SplineManager {
 
 		this.fixer.fix( spline );
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) {
 
-		this.splineBuilder.buildGeometry( spline );
+			this.removeMesh( spline );
 
-		for ( const road of this.splineService.getRoads( spline ) ) {
+		}
+
+		this.splineGeometryService.updateGeometryAndBounds( spline );
+
+		for ( const road of spline.getRoadSegments() ) {
 
 			this.roadManager.updateRoad( road );
 
 		}
-
-		this.splineBuilder.buildBoundingBox( spline );
 
 		this.splineLinkManager.onSplineUpdated( spline );
 
@@ -79,7 +83,7 @@ export class SplineManager {
 
 	}
 
-	removeSpline ( spline: AbstractSpline ) {
+	removeSpline ( spline: AbstractSpline ): void {
 
 		if ( this.debug ) Log.debug( "Remove", spline.toString() );
 
@@ -93,9 +97,12 @@ export class SplineManager {
 		this.removeMesh( spline );
 
 		this.mapService.map.removeSpline( spline );
+
+		this.segmentService.removeSegments( spline );
+
 	}
 
-	private removeMesh ( spline: AbstractSpline ) {
+	private removeMesh ( spline: AbstractSpline ): void {
 
 		for ( const segment of spline.segmentMap.toArray() ) {
 
@@ -109,7 +116,7 @@ export class SplineManager {
 
 	}
 
-	private addSegments ( spline: AbstractSpline ) {
+	private addSegments ( spline: AbstractSpline ): void {
 
 		for ( const segment of spline.segmentMap.toArray() ) {
 

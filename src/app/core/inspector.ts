@@ -53,6 +53,18 @@ export class AppInspector {
 
 	}
 
+	public static getCurrentInspector (): Type<IComponent> {
+
+		return this.currentInspector;
+
+	}
+
+	public static getInspectorData (): any {
+
+		return this.currentInspectorData;
+
+	}
+
 	static clear () {
 
 		this.currentInspector = null;

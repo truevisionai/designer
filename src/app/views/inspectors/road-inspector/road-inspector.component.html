@@ -34,7 +34,7 @@
 		label="Road Type"></app-enum-field>
 
 	<app-string-field [disabled]="true"
-		[value]="splineType"
+		[value]="data.spline.type"
 		label="Spline"></app-string-field>
 
 </div>
@@ -60,7 +60,7 @@
 	<div *ngIf="controlPoint"
 		class="inspector-editor-padding">
 		<app-vector2-field (changed)="onControlPointChanged($event)"
-			[value]="controlPointPosition"
+			[value]="controlPoint.position"
 			label="Control Point"></app-vector2-field>
 		<app-enum-field [disabled]="true"
 			*ngIf="segmentType"
@@ -85,12 +85,12 @@
 		<!-- style="width: 100%;">Duplicate -->
 	<!-- </button> -->
 
-	<button *ngIf="data?.controlPoint" (click)="onDeleteControlPoint()"
+	<button *ngIf="controlPoint" (click)="deleteControlPoint(controlPoint)"
 		mat-stroked-button
 		style="width: 100%;">Delete Control Point
 	</button>
 
-	<button (click)="onDeleteSpline()"
+	<button *ngIf="data.spline" (click)="deleteSpline(data.spline)"
 		mat-stroked-button
 		style="width: 100%;">Delete Spline
 	</button>

@@ -11,6 +11,7 @@ import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMateria
 import { RoadTangentPoint } from './road-tangent-point';
 import { AbstractControlPoint } from "./abstract-control-point";
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { Log } from 'app/core/utils/log';
 
 /**
  * @deprecated
@@ -67,7 +68,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 			depthTest: false
 		} );
 
-		if ( position ) this.initPosition( position );
+		if ( position ) this.position.copy( position );
 
 		this.name = 'road-control-point';
 
@@ -83,20 +84,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 	}
 
 	get spline () {
-		return this.road?.spline;
-	}
-
-	private get index () {
-		return this.road.spline?.controlPoints.indexOf( this );
-	}
-
-	private get shouldUpdatePredecessor () {
-		return this.index === 0 || this.index === 1;
-	}
-
-	private get shouldUpdateSuccessor () {
-		const controlPoints = this.road.spline.controlPoints;
-		return this.index === controlPoints.length - 1 || this.index === controlPoints.length - 2;
+		return this.road.spline;
 	}
 
 	copyPosition ( position: Vector3 ) {
@@ -105,8 +93,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 		super.copyPosition( position );
 
-		// NOTE: we need to ensure if position is update th
-		this.segmentType = TvGeometryType.SPIRAL;
+		this.update();
 
 	}
 
@@ -116,8 +103,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 		super.setPosition( position );
 
-		// NOTE: we need to ensure if position is update th
-		this.segmentType = TvGeometryType.SPIRAL;
+		this.update();
 
 	}
 
@@ -125,6 +111,12 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 		// NOTE: we need to ensure if position is update th
 		this.segmentType = TvGeometryType.SPIRAL;
+
+		this.updateFrontTangent();
+
+		this.updateBackTangent();
+
+		this.updateTangentLineGeometry();
 
 	}
 
@@ -179,12 +171,6 @@ export class RoadControlPoint extends AbstractControlPoint {
 			this,
 		);
 
-		// TODO: move this maybe somewhere else
-
-		// SceneService.addToMain( this.frontTangent );
-
-		// SceneService.addToMain( this.backTangent );
-
 		this.tangentLineGeometry = new BufferGeometry().setFromPoints( [ this.frontTangent.position, this.backTangent.position ] );
 
 		this.tangentLine = new Line( this.tangentLineGeometry, this.tangentLineMaterial );
@@ -197,33 +183,57 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 		this.tangentLine.frustumCulled = false;
 
-		// SceneService.addToMain( this.tangentLine );
 	}
 
-	// removeTangents () {
-	//
-	// 	SceneService.removeFromMain( this.frontTangent );
-	//
-	// 	SceneService.removeFromMain( this.backTangent );
-	//
-	// 	SceneService.removeFromMain( this.tangentLine );
-	//
-	// }
-	//
-	// moveForward ( s: number ): RoadControlPoint {
-	//
-	// 	const x = this.position.x + Math.cos( this.hdg ) * s;
-	// 	const y = this.position.y + Math.sin( this.hdg ) * s;
-	//
-	// 	return new RoadControlPoint( this.road, new Vector3( x, y, 0 ), this.tag, this.tagindex, this.tagindex );
-	// }
+	private updateTangentLineGeometry (): void {
 
-	private initPosition ( position: Vector3 ) {
+		if ( !this.frontTangent || !this.backTangent ) {
+			Log.error( 'Front or back tangent not found' );
+			return;
+		}
 
-		if ( !this.allowChange ) return;
+		if ( !this.tangentLine ) {
+			Log.error( 'Tangent line not found' );
+			return;
+		}
 
-		super.copyPosition( position );
+		const buffer = this.tangentLineGeometry.attributes.position as BufferAttribute;
+
+		buffer.setXYZ( 0, this.frontTangent.position.x, this.frontTangent.position.y, this.frontTangent.position.z );
+
+		buffer.setXYZ( 1, this.backTangent.position.x, this.backTangent.position.y, this.backTangent.position.z );
+
+		buffer.needsUpdate = true;
 
 	}
 
+	private updateFrontTangent (): void {
+
+		this.updateTangent( this.frontTangent, 'front' );
+
+	}
+
+	private updateBackTangent (): void {
+
+		this.updateTangent( this.backTangent, 'back' );
+
+	}
+
+	private updateTangent ( tangentPoint: RoadTangentPoint, location: 'front' | 'back' ): void {
+
+		if ( !tangentPoint ) {
+			Log.error( 'Tangent not found', location );
+			return;
+		}
+
+		const sign = location === 'front' ? 1 : -1;
+
+		const position = new Vector3( Math.cos( this.hdg ), Math.sin( this.hdg ), CURVE_Y )
+			.multiplyScalar( tangentPoint.length * sign )
+			.add( this.position );
+
+		tangentPoint.copyPosition( position );
+
+		tangentPoint?.updateTangents();
+	}
 }

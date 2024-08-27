@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { BaseObjectHandler } from "../../core/object-handlers/base-object-handler";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
@@ -15,18 +19,6 @@ export class ManeuverObjectHandler extends BaseObjectHandler<ManeuverMesh> {
 		super();
 	}
 
-	onSelected ( object: ManeuverMesh ): void {
-
-		this.selected.add( object );
-
-	}
-
-	onUnselected ( object: ManeuverMesh ): void {
-
-		this.selected.delete( object );
-
-	}
-
 	onAdded ( object: ManeuverMesh ): void {
 
 		this.connectionService.addLink( object.junction, object.connection, object.link );
@@ -42,6 +34,18 @@ export class ManeuverObjectHandler extends BaseObjectHandler<ManeuverMesh> {
 	onRemoved ( object: ManeuverMesh ): void {
 
 		this.connectionService.removeLink( object.junction, object.connection, object.link );
+
+	}
+
+	onDrag ( object: ManeuverMesh ): void {
+
+		//
+
+	}
+
+	onDragEnd ( object: ManeuverMesh ): void {
+
+		//
 
 	}
 

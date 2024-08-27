@@ -87,6 +87,12 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	update ( spline: AbstractSpline ): void {
 
+		this.updateSpline( spline );
+
+	}
+
+	updateSpline ( spline: AbstractSpline ): void {
+
 		MapEvents.splineUpdated.emit( new SplineUpdatedEvent( spline ) );
 
 	}
@@ -536,7 +542,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	removeControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
+	removePoint ( spline: AbstractSpline, point: AbstractControlPoint ): void {
 
 		const index = spline.controlPoints.findIndex( p => p.id === point.id );
 
@@ -546,21 +552,41 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		this.updateIndexes( spline );
 
+	}
+
+	removePointAndUpdateSpline ( spline: AbstractSpline, point: AbstractControlPoint ): void {
+
+		this.removePoint( spline, point );
+
 		this.update( spline );
 
 	}
 
-	insertControlPoint ( spline: AbstractSpline, point: AbstractControlPoint ) {
+	addOrInsertPoint ( spline: AbstractSpline, point: AbstractControlPoint ): void {
 
-		const index = this.findIndex( spline, point.position );
+		if ( point.userData.insert ) {
 
-		this.addControlPoint( spline, point, index );
+			this.insertPointAndUpdateSpline( spline, point );
+
+		} else {
+
+			this.addPointAndUpdateSpline( spline, point, point.tagindex );
+
+		}
 
 	}
 
-	addControlPoint ( spline: AbstractSpline, point: AbstractControlPoint, index?: number ) {
+	insertPointAndUpdateSpline ( spline: AbstractSpline, point: AbstractControlPoint ): void {
 
-		index = index || spline.controlPoints.length;
+		const index = this.findIndex( spline, point.position );
+
+		this.addPointAndUpdateSpline( spline, point, index );
+
+	}
+
+	addPointAndUpdateSpline ( spline: AbstractSpline, point: AbstractControlPoint, index?: number ): void {
+
+		index = index ?? spline.controlPoints.length;
 
 		spline.controlPoints.splice( index, 0, point );
 
@@ -572,7 +598,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	updatePointHeading ( spline: AbstractSpline, point: AbstractControlPoint, index: number ) {
+	updatePointHeading ( spline: AbstractSpline, point: AbstractControlPoint, index: number ): void {
 
 		if ( index == 0 ) return;
 
@@ -782,11 +808,11 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	updateIndexes ( spline: AbstractSpline ) {
 
-		spline.controlPoints.forEach( ( point, index ) => point.tagindex = index );
+		spline.updateIndexes();
 
 	}
 
-	findIndex ( spline: AbstractSpline, position: Vector3 ) {
+	findIndex ( spline: AbstractSpline, position: Vector3 ): number {
 
 		let minDistance = Infinity;
 		let index = spline.controlPoints.length; // insert at the end by default
@@ -875,21 +901,17 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		if ( point instanceof SplineControlPoint ) {
 
-			this.updateSplineControlPoint( point );
-
-			this.update( point.spline );
+			point.update();
 
 		} else if ( point instanceof RoadControlPoint ) {
 
-			this.updateRoadControlPoint( point );
-
-			this.update( point.spline );
+			point.update();
 
 		} else if ( point instanceof RoadTangentPoint ) {
 
-			this.updateRoadTangentPoint( point );
+			point.update();
 
-			this.update( point.road.spline );
+			point.controlPoint.update();
 
 		} else {
 
@@ -897,78 +919,6 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		}
 
-	}
-
-	private updateSplineControlPoint ( point: SplineControlPoint ) {
-
-	}
-
-	private updateRoadControlPoint ( point: RoadControlPoint ) {
-
-		this.updateTangentLine( point );
-
-	}
-
-	private updateTangentLine ( point: RoadControlPoint ) {
-
-		if ( point.frontTangent ) {
-
-			point.segmentType = TvGeometryType.SPIRAL;
-
-			const frontPosition = new Vector3( Math.cos( point.hdg ), Math.sin( point.hdg ), CURVE_Y )
-				.multiplyScalar( point.frontTangent.length )
-				.add( point.position );
-
-			point.frontTangent.copyPosition( frontPosition );
-
-		}
-
-		if ( point.backTangent ) {
-
-			point.segmentType = TvGeometryType.SPIRAL;
-
-			const backPosition = new Vector3( Math.cos( point.hdg ), Math.sin( point.hdg ), CURVE_Y )
-				.multiplyScalar( -point.backTangent.length )
-				.add( point.position );
-
-			point.backTangent.copyPosition( backPosition );
-
-		}
-
-		point.frontTangent?.updateTangents();
-
-		point.backTangent?.updateTangents();
-
-		if ( point.frontTangent || point.backTangent ) {
-
-			if ( point.tangentLine && point.backTangent ) {
-
-				const buffer = point.tangentLineGeometry.attributes.position as BufferAttribute;
-
-				buffer.setXYZ( 0, point.frontTangent.position.x, point.frontTangent.position.y, point.frontTangent.position.z );
-
-				buffer.setXYZ( 1, point.backTangent.position.x, point.backTangent.position.y, point.backTangent.position.z );
-
-				buffer.needsUpdate = true;
-			}
-
-		}
-
-	}
-
-	private updateRoadTangentPoint ( point: RoadTangentPoint ) {
-
-		// point.controlPoint.update();
-
-		point.updateTangents();
-
-		this.updateTangentLine( point.controlPoint );
-
-		// point.road.update();
-
-		// point.updateSuccessor();
-
-		// point.updatePredecessor();
 	}
 
 }

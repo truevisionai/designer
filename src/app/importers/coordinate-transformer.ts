@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvMap } from 'app/map/models/tv-map.model';
 import { Vector2 } from 'three';
 import { Log } from 'app/core/utils/log';

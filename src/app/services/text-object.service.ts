@@ -7,6 +7,7 @@ import { TextObject3d } from 'app/objects/text-object';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferGeometry, FrontSide, MeshBasicMaterial, ShapeGeometry } from 'three';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { Log } from "../core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -66,6 +67,11 @@ export class TextObjectService {
 	}
 
 	private createTextGeometry ( text: string, size: number = 1 ): BufferGeometry {
+
+		if ( !this.font ) {
+			Log.error( 'Font not loaded' );
+			return new BufferGeometry();
+		}
 
 		const shapes = this.font.generateShapes( text, size );
 

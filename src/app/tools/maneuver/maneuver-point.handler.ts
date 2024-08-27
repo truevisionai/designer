@@ -1,11 +1,13 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { BaseObjectHandler } from "app/core/object-handlers/base-object-handler";
-import { BaseOverlayHandler } from "app/core/overlay-handlers/overlay-handler";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { Log } from "app/core/utils/log";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { SplineControlPoint } from "app/objects/spline-control-point";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
 import { SplineService } from "app/services/spline/spline.service";
@@ -14,25 +16,13 @@ import { SplineService } from "app/services/spline/spline.service";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverControlPointHandler extends BaseObjectHandler<SplineControlPoint> {
+export class ManeuverPointHandler extends BaseObjectHandler<SplineControlPoint> {
 
 	constructor (
 		private splineService: SplineService,
 		private junctionDebugger: JunctionDebugService,
 	) {
 		super();
-	}
-
-	onSelected ( object: SplineControlPoint ): void {
-
-		object.select();
-
-	}
-
-	onUnselected ( object: SplineControlPoint ): void {
-
-		object.unselect();
-
 	}
 
 	onAdded ( object: SplineControlPoint ): void {
@@ -70,6 +60,18 @@ export class ManeuverControlPointHandler extends BaseObjectHandler<SplineControl
 
 	}
 
+	onDrag ( object: SplineControlPoint ): void {
+
+		Log.warn( 'onDrag not implemented' );
+
+	}
+
+	onDragEnd ( object: SplineControlPoint ): void {
+
+		Log.warn( 'onDragEnd not implemented' );
+
+	}
+
 	private findConnectingRoad ( spline: AbstractSpline ): TvRoad {
 
 		const road = this.splineService.findFirstRoad( spline );
@@ -92,72 +94,6 @@ export class ManeuverControlPointHandler extends BaseObjectHandler<SplineControl
 			} );
 
 		}
-
-	}
-
-}
-
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class ControlPointOverlayHandler extends BaseOverlayHandler<AbstractControlPoint> {
-
-	constructor () {
-		super();
-	}
-
-	onHighlight ( object: AbstractControlPoint ): void {
-
-		object.onMouseOver();
-
-	}
-
-	onSelected ( object: AbstractControlPoint ): void {
-
-		object.select();
-
-	}
-
-	onDefault ( object: AbstractControlPoint ): void {
-
-		object.unselect();
-
-	}
-
-	onUnselected ( object: AbstractControlPoint ): void {
-
-		object.unselect();
-
-	}
-
-	onAdded ( object: AbstractControlPoint ): void {
-
-		//
-
-	}
-
-	onUpdated ( object: AbstractControlPoint ): void {
-
-		//
-
-	}
-
-	onRemoved ( object: AbstractControlPoint ): void {
-
-		//
-
-	}
-
-	onClearHighlight (): void {
-
-		//
-
-	}
-
-	clear (): void {
-
-		//
 
 	}
 

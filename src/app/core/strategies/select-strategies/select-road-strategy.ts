@@ -12,7 +12,7 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 
 	public debugger: IDebugger<TvRoad, any>;
 
-	private road: TvRoad;
+	private road?: TvRoad;
 
 	private highlight = true;
 
@@ -26,34 +26,19 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 
 	}
 
-	onPointerDown ( pointerEventData: PointerEventData ): TvRoad {
+	onPointerDown ( pointerEventData: PointerEventData ): TvRoad | undefined {
 
-		const coord = this.includeJunctionRoads ? this.onRoadGeometry( pointerEventData ) : this.onNonJunctionRoadGeometry( pointerEventData );
+		return this.findRoad( pointerEventData, this.includeJunctionRoads );
 
-		if ( !coord ) return;
-
-		if ( coord.road.isJunction && !this.includeJunctionRoads ) {
-			return;
-		}
-
-		return coord.road;
 	}
 
-	onPointerMoved ( pointerEventData: PointerEventData ): TvRoad {
+	onPointerMoved ( pointerEventData: PointerEventData ): TvRoad | undefined {
 
 		if ( this.highlight && this.road ) {
 			this.debugger?.onUnhighlight( this.road );
 		}
 
-		const coord = this.includeJunctionRoads ? this.onRoadGeometry( pointerEventData ) : this.onNonJunctionRoadGeometry( pointerEventData );
-
-		if ( !coord ) return;
-
-		this.road = coord.road;
-
-		if ( this.road.isJunction && !this.includeJunctionRoads ) {
-			return;
-		}
+		this.road = this.findRoad( pointerEventData, this.includeJunctionRoads );
 
 		if ( this.highlight && this.road ) {
 			this.debugger?.onHighlight( this.road );
@@ -63,17 +48,9 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 
 	}
 
-	onPointerUp ( pointerEventData: PointerEventData ): TvRoad {
+	onPointerUp ( pointerEventData: PointerEventData ): TvRoad | undefined {
 
-		const coord = this.includeJunctionRoads ? this.onRoadGeometry( pointerEventData ) : this.onNonJunctionRoadGeometry( pointerEventData );
-
-		if ( !coord ) return;
-
-		if ( coord.road.isJunction && !this.includeJunctionRoads ) {
-			return;
-		}
-
-		return coord.road;
+		return this.findRoad( pointerEventData, this.includeJunctionRoads );
 
 	}
 

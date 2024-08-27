@@ -115,7 +115,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOverlay ( lane: TvLane, color: number ): void {
+	showLaneOverlay ( lane: TvLane, color = COLOR.CYAN ): void {
 
 		if ( lane.id == 0 ) return;
 
@@ -126,7 +126,7 @@ export class LaneDebugService {
 		const material = new MeshBasicMaterial( {
 			color: color,
 			transparent: true,
-			opacity: 0.1,
+			opacity: 0.01,
 		} );
 
 		const overlay = new LaneOverlay( lane, geometry, material );

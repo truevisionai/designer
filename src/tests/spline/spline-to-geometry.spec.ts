@@ -1,7 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { AutoSplineV2 } from "app/core/shapes/auto-spline-v2";
+import { AutoSpline } from "app/core/shapes/auto-spline-v2";
 import { ControlPointFactory } from "app/factories/control-point.factory";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineManager } from "app/managers/spline-manager";
@@ -42,7 +42,7 @@ describe( 'SplineToGeometry test', () => {
 
 	it( 'should create line geometry from a spline with 2 points', () => {
 
-		const spline = new AutoSplineV2();
+		const spline = new AutoSpline();
 
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
@@ -61,7 +61,7 @@ describe( 'SplineToGeometry test', () => {
 
 	it( 'should create line geometry from a spline with 3 points', () => {
 
-		const spline = new AutoSplineV2();
+		const spline = new AutoSpline();
 
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );

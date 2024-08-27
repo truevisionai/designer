@@ -11,6 +11,7 @@ import { RoadLinkService } from '../road/road-link.service';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,7 +23,51 @@ export class SplineSegmentService {
 		private linkService: RoadLinkService,
 	) { }
 
-	addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction ) {
+	removeSegments ( spline: AbstractSpline ): void {
+
+		this.removeRoadSegments( spline );
+
+		this.removeJunctionSegments( spline );
+
+	}
+
+	removeJunctionSegments ( spline: AbstractSpline ): void {
+
+		spline.getJunctionSegments().forEach( junction => {
+
+			if ( this.mapService.hasJunction( junction ) ) {
+
+				this.mapService.removeJunction( junction );
+
+			} else {
+
+				Log.warn( "Junction already removed", junction.toString() );
+
+			}
+
+		} );
+
+	}
+
+	removeRoadSegments ( spline: AbstractSpline ): void {
+
+		spline.getRoadSegments().forEach( road => {
+
+			if ( this.mapService.hasRoad( road ) ) {
+
+				this.mapService.removeRoad( road );
+
+			} else {
+
+				Log.warn( "Road already removed", road.toString() );
+
+			}
+
+		} );
+
+	}
+
+	addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction ): void {
 
 		if ( segment instanceof TvRoad ) {
 
@@ -40,7 +85,7 @@ export class SplineSegmentService {
 
 	}
 
-	removeSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction ) {
+	removeSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction ): void {
 
 		if ( segment instanceof TvRoad ) {
 

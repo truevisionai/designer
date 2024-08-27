@@ -8,7 +8,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadStyleManager } from 'app/graphics/road-style/road-style.manager';
 import { Vector2, Vector3 } from 'three';
-import { AutoSplineV2 } from 'app/core/shapes/auto-spline-v2';
+import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
 import { TvJunction } from "../map/models/junctions/tv-junction";
 import { TvElevationProfile } from 'app/map/road-elevation/tv-elevation-profile.model';
@@ -322,7 +322,7 @@ export class RoadFactory {
 
 		road.sStart = 0;
 
-		const spline = new AutoSplineV2();
+		const spline = new AutoSpline();
 
 		spline.segmentMap.set( 0, road );
 
