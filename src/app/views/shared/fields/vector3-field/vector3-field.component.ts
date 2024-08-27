@@ -33,52 +33,58 @@ export class Vector3FieldComponent extends AbstractFieldComponent implements OnI
 	ngOnInit () {
 	}
 
-	onXChanged ( $event: any ) {
+	onXChanged ( $value: any ): void {
 
-		if ( this.disabled ) return;
-
-		this.value.x = parseFloat( $event );
-
-		if ( Number.isNaN( this.value ) ) this.value.x = 0;
-
-		this.value.x = Maths.clamp( this.value.x, this.min, this.max );
-
-		this.valueChanged.emit( this.value );
-
-		this.changed.emit( this.value );
+		this.onAxisChanged( $value, 'x' );
 
 	}
 
-	onYChanged ( $event: any ) {
+	onYChanged ( $value: any ): void {
 
-		if ( this.disabled ) return;
-
-		this.value.y = parseFloat( $event );
-
-		if ( Number.isNaN( this.value ) ) this.value.y = 0;
-
-		this.value.y = Maths.clamp( this.value.y, this.min, this.max );
-
-		this.valueChanged.emit( this.value );
-
-		this.changed.emit( this.value );
+		this.onAxisChanged( $value, 'y' );
 	}
 
-	onZChanged ( $event: any ) {
-
-		if ( this.disabled ) return;
+	onZChanged ( $value: any ): void {
 
 		if ( !this.z ) return;
 
-		this.value.z = parseFloat( $event );
+		this.onAxisChanged( $value, 'z' );
 
-		if ( Number.isNaN( this.value ) ) this.value.z = 0;
+	}
 
-		this.value.z = Maths.clamp( this.value.z, this.min, this.max );
+	private onAxisChanged ( value: any, axis: 'x' | 'y' | 'z' ): void {
+
+		if ( this.disabled ) return;
+
+		const newValue = this.parseAndClampValue( value );
+
+		this.updateAxisValue( axis, newValue );
+
+		this.emitChanges();
+
+	}
+
+	private parseAndClampValue ( value: any ): number {
+
+		let parsedValue = parseFloat( value );
+
+		if ( Number.isNaN( parsedValue ) ) parsedValue = 0;
+
+		return Maths.clamp( parsedValue, this.min, this.max );
+
+	}
+
+	private updateAxisValue ( axis: 'x' | 'y' | 'z', newValue: number ): void {
+
+		this.value[ axis ] = newValue;
+
+	}
+
+	private emitChanges (): void {
 
 		this.valueChanged.emit( this.value );
 
 		this.changed.emit( this.value );
-
 	}
+
 }
