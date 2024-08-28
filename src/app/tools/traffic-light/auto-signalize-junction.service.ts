@@ -12,7 +12,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSignalFactory } from 'app/map/road-signal/road-signal.factory';
 import { TvReferenceElementType, TvRoadSignal, TvSignalDependencyType } from 'app/map/road-signal/tv-road-signal.model';
 import { TvSignalControllerFactory } from 'app/map/signal-controller/tv-signal-controller.factory';
-import { RoadService } from 'app/services/road/road.service';
 import { TvSignalControllerService } from "../../map/signal-controller/tv-signal-controller.service";
 import { TvJunctionController } from "../../map/models/junctions/tv-junction-controller";
 import { RoadSignalService } from "../../map/road-signal/road-signal.service";
@@ -50,7 +49,6 @@ export class AutoSignalizeJunctionService {
 		private junctionRoadService: JunctionRoadService,
 		private signalFactory: RoadSignalFactory,
 		private signalService: RoadSignalService,
-		private roadService: RoadService,
 		private controllerService: TvSignalControllerService,
 		private controllerFactory: TvSignalControllerFactory
 	) {
@@ -120,7 +118,16 @@ export class AutoSignalizeJunctionService {
 
 		this.addControllers( type, junction, signals );
 
-		this.roadService.update( road );
+		signals.forEach( signal => this.buildAndAddSignal( road, signal ) );
+
+	}
+
+	buildAndAddSignal ( road: TvRoad, signal: TvRoadSignal ): void {
+
+		const mesh = this.signalService.buildSignal( road, signal );
+
+		this.signalService.addSignal( road, signal, mesh );
+
 	}
 
 	// eslint-disable-next-line max-lines-per-function
@@ -330,19 +337,17 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	private removeSignals ( junction: TvJunction ) {
+	private removeSignals ( junction: TvJunction ): void {
 
-		for ( const road of junction.getIncomingRoads() ) {
+		for ( const incomingRoad of this.junctionRoadService.getIncomingRoads( junction ) ) {
 
-			const signals = this.signalService.findSignalsByType( road, [ '206', '205', '294', '1000001' ] );
+			const signals = this.signalService.findSignalsByType( incomingRoad, [ '206', '205', '294', '1000001' ] );
 
 			for ( const signal of signals ) {
 
-				this.signalService.removeSignal( road, signal );
+				this.signalService.removeSignal( incomingRoad, signal );
 
 			}
-
-			this.roadService.update( road );
 		}
 
 	}

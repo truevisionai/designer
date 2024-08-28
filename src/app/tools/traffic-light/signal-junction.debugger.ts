@@ -6,9 +6,9 @@ import { Injectable } from "@angular/core";
 import { DebugState } from "../../services/debug/debug-state";
 import { BaseDebugger } from "app/core/interfaces/base-debugger";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { JunctionService } from "app/services/junction/junction.service";
 import { JunctionGateBuilder } from "./junction-gate.builder";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
+import { JunctionRoadService } from "app/services/junction/junction-road.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,7 +18,7 @@ export class SignalJunctionDebugger extends BaseDebugger<TvJunction> {
 	private gates = new Object3DArrayMap<any, any>();
 
 	constructor (
-		private junctionService: JunctionService,
+		private junctionRoadService: JunctionRoadService,
 		private junctionGateBuilder: JunctionGateBuilder,
 	) {
 		super();
@@ -44,7 +44,7 @@ export class SignalJunctionDebugger extends BaseDebugger<TvJunction> {
 
 	onSelected ( object: TvJunction ): void {
 
-		for ( const laneCoord of this.junctionService.getJunctionGates( object ) ) {
+		for ( const laneCoord of this.junctionRoadService.getJunctionGates( object ) ) {
 
 			this.gates.addItem( object, this.junctionGateBuilder.build( laneCoord ) );
 

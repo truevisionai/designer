@@ -15,7 +15,7 @@ import { disableMeshBuilding } from "app/map/builders/od-builder-config";
 describe( 'JunctionUtils', () => {
 
 	let eventServiceProvider: EventServiceProvider;
-	let splineTestHelper: SplineTestHelper;
+	let helper: SplineTestHelper;
 	let junctionService: JunctionService;
 
 	beforeEach( () => {
@@ -25,7 +25,7 @@ describe( 'JunctionUtils', () => {
 			providers: []
 		} );
 
-		splineTestHelper = TestBed.inject( SplineTestHelper );
+		helper = TestBed.inject( SplineTestHelper );
 		junctionService = TestBed.inject( JunctionService );
 
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
@@ -37,18 +37,18 @@ describe( 'JunctionUtils', () => {
 
 	it( 'should give successors correctly', fakeAsync( () => {
 
-		splineTestHelper.addDefaultJunction();
+		helper.addDefaultJunction();
 
 		tick( 1000 );
 
-		const junction = junctionService.mapService.findJunction( 1 );
+		const junction = helper.mapService.findJunction( 1 );
 
-		const incomingRoad = junctionService.mapService.findRoad( 1 );
+		const incomingRoad = helper.mapService.findRoad( 1 );
 		const incomingLaneSection = incomingRoad.laneSections[ 0 ];
 		const incomingLeftLane = incomingLaneSection.getLaneById( 1 );
 		const incomingRightLane = incomingLaneSection.getLaneById( -1 );
 
-		const outgoingRoad = junctionService.mapService.findRoad( 4 );
+		const outgoingRoad = helper.mapService.findRoad( 4 );
 		const outgoingLaneSection = outgoingRoad.laneSections[ 0 ];
 		const outgoingLeftLane = outgoingLaneSection.getLaneById( 1 );
 		const outgoingRightLane = outgoingLaneSection.getLaneById( -1 );
@@ -74,11 +74,11 @@ describe( 'JunctionUtils', () => {
 
 	// 	splineTestHelper.addDefaultJunction();
 
-	// 	const incomingRoad = junctionService.mapService.findRoad( 1 );
+	// 	const incomingRoad = helper.mapService.findRoad( 1 );
 	// 	const incomingLeftLane = incomingRoad.laneSections[ 0 ].getLaneById( 1 );
 	// 	const incomingRightLane = incomingRoad.laneSections[ 0 ].getLaneById( -1 );
 
-	// 	// const currentMap = junctionService.mapService.map;
+	// 	// const currentMap = helper.mapService.map;
 	// 	// const routeMap = new OpenDriveMap( currentMap.roads.toArray(), currentMap.junctions.toArray() );
 
 	// 	// const graph = routeMap.getRoutingGraph();

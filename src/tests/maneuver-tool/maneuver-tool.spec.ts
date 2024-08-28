@@ -15,7 +15,7 @@ describe( 'ManeuverTool', () => {
 
 	let tool: ManeuverTool;
 	let eventServiceProvider: EventServiceProvider;
-	let splineTestHelper: SplineTestHelper;
+	let helper: SplineTestHelper;
 
 	beforeEach( () => {
 
@@ -25,7 +25,7 @@ describe( 'ManeuverTool', () => {
 		} );
 
 		tool = new ManeuverTool( TestBed.inject( ManeuverToolHelper ) )
-		splineTestHelper = TestBed.inject( SplineTestHelper );
+		helper = TestBed.inject( SplineTestHelper );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 
 		disableMeshBuilding();
@@ -48,13 +48,13 @@ describe( 'ManeuverTool', () => {
 
 		tool.enable();
 
-		splineTestHelper.addDefaultJunction();
+		helper.addDefaultJunction();
 
 		tick( 1000 );
 
-		const leftRoad = tool.helper.junctionService.mapService.findRoad( 1 );
-		const rightRoad = tool.helper.junctionService.mapService.findRoad( 4 );
-		const junction = tool.helper.junctionService.mapService.findJunction( 1 );
+		const leftRoad = helper.mapService.findRoad( 1 );
+		const rightRoad = helper.mapService.findRoad( 4 );
+		const junction = helper.mapService.findJunction( 1 );
 		const leftToRightLinks = JunctionUtils.findLinksFrom( junction, leftRoad, rightRoad );
 		const leftToRightConnection = JunctionUtils.findConnectionFromLink( junction, leftToRightLinks[ 0 ] );
 
@@ -73,7 +73,7 @@ describe( 'ManeuverTool', () => {
 		expect( JunctionUtils.findLinksBetween( junction, leftRoad, rightRoad ).length ).toBe( 1 );
 		expect( JunctionUtils.findLinksFrom( junction, leftRoad, rightRoad ).length ).toBe( 0 );
 		expect( JunctionUtils.findLinksFrom( junction, rightRoad, leftRoad ).length ).toBe( 1 );
-		expect( tool.helper.junctionService.mapService.hasRoad( leftToRightConnection.connectingRoad.id ) ).toBeFalse();
+		expect( helper.mapService.hasRoad( leftToRightConnection.connectingRoad.id ) ).toBeFalse();
 
 		tool.addManeuver( junction, leftToRightConnection, leftToRightLinks[ 0 ] );
 
@@ -81,7 +81,7 @@ describe( 'ManeuverTool', () => {
 		expect( JunctionUtils.findLinksBetween( junction, leftRoad, rightRoad ).length ).toBe( 2 );
 		expect( JunctionUtils.findLinksFrom( junction, leftRoad, rightRoad ).length ).toBe( 1 );
 		expect( JunctionUtils.findLinksFrom( junction, rightRoad, leftRoad ).length ).toBe( 1 );
-		expect( tool.helper.junctionService.mapService.findRoad( leftToRightConnection.connectingRoad.id ) ).toBeDefined();
+		expect( helper.mapService.findRoad( leftToRightConnection.connectingRoad.id ) ).toBeDefined();
 
 	} ) );
 
@@ -89,12 +89,12 @@ describe( 'ManeuverTool', () => {
 
 		AbstractSpline.reset();
 
-		splineTestHelper.addDefaultJunction();
+		helper.addDefaultJunction();
 
 		tick( 1000 );
 
-		const leftRoad = tool.helper.junctionService.mapService.findRoad( 1 );
-		const rightRoad = tool.helper.junctionService.mapService.findRoad( 4 );
+		const leftRoad = helper.mapService.findRoad( 1 );
+		const rightRoad = helper.mapService.findRoad( 4 );
 
 		const entryR1 = new TvLaneCoord( leftRoad, leftRoad.laneSections[ 0 ], leftRoad.laneSections[ 0 ].getLaneById( -1 ), leftRoad.length, 0 );
 		expect( LaneUtils.canConnect( entryR1, entryR1 ) ).toBe( false );

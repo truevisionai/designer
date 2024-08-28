@@ -6,44 +6,29 @@ import { Injectable } from '@angular/core';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { DebugState } from '../debug/debug-state';
 import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
-import {
-	BoxGeometry,
-	BufferGeometry,
-	Float32BufferAttribute,
-	MeshBasicMaterial,
-	MeshStandardMaterial,
-	Object3D,
-	PlaneGeometry,
-	Vector2,
-	Vector3
-} from 'three';
+import { Object3D, Vector2 } from 'three';
 import { JunctionService } from './junction.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { LaneDirectionHelper } from 'app/map/builders/od-lane-direction-builder';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
-import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { MapService } from '../map/map.service';
 import { JunctionManager } from 'app/managers/junction-manager';
-import { GeometryUtils } from '../surface/geometry-utils';
 import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
-import { RoadGeometryService } from '../road/road-geometry.service';
 import { RoadWidthService } from '../road/road-width.service';
-import { SceneService } from '../scene.service';
-import { JunctionFactory } from 'app/factories/junction.factory';
 import { JunctionDebugFactory } from './junction-debug.factory';
 import { ManeuverMesh } from './maneuver-mesh';
 import { JunctionNode } from './junction-node';
 import { JunctionRoadService } from './junction-road.service';
+import { JunctionBuilder } from './junction.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,6 +50,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	public shouldShowOutline = false;
 
 	constructor (
+		private junctionBuilder: JunctionBuilder,
 		private junctionService: JunctionService,
 		private debug: DebugDrawService,
 		private mapService: MapService,
@@ -162,7 +148,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.junctionManager.boundaryManager.update( junction );
 		}
 
-		const positions = this.junctionService.junctionBuilder.boundaryBuilder.convertBoundaryToPositions( junction.outerBoundary );
+		const positions = this.junctionBuilder.boundaryBuilder.convertBoundaryToPositions( junction.outerBoundary );
 
 		if ( positions.length < 2 ) return;
 
@@ -186,7 +172,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.junctionManager.boundaryManager.update( junction );
 		}
 
-		return this.junctionService.junctionBuilder.buildFromBoundary( junction );
+		return this.junctionBuilder.buildFromBoundary( junction );
 
 	}
 
