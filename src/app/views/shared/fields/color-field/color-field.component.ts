@@ -11,7 +11,7 @@ import { Color } from 'three';
 	templateUrl: './color-field.component.html',
 	styleUrls: [ './color-field.component.css' ]
 } )
-export class ColorFieldComponent extends AbstractFieldComponent implements OnInit {
+export class ColorFieldComponent extends AbstractFieldComponent<Color> implements OnInit {
 
 	/**
 	 * This is the toogle button elemenbt, look at HTML and see its defination

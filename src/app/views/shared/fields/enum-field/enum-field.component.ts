@@ -10,7 +10,7 @@ import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.c
 	templateUrl: './enum-field.component.html',
 	styleUrls: [ './enum-field.component.css' ]
 } )
-export class EnumFieldComponent extends AbstractFieldComponent implements OnInit {
+export class EnumFieldComponent extends AbstractFieldComponent<any> implements OnInit {
 
 	@Input() value: any;
 

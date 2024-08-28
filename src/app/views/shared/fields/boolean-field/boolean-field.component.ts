@@ -10,7 +10,7 @@ import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.c
 	templateUrl: './boolean-field.component.html',
 	styleUrls: [ './boolean-field.component.scss' ]
 } )
-export class BooleanFieldComponent extends AbstractFieldComponent {
+export class BooleanFieldComponent extends AbstractFieldComponent<boolean> {
 
 	@Input() value: boolean;
 

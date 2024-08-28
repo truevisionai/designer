@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { Metadata } from 'app/core/asset/metadata.model';
 import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
 import { SnackBar } from 'app/services/snack-bar.service';
@@ -16,9 +16,7 @@ import { AssetType } from "../../../core/asset/asset.model";
 	templateUrl: './texture-field.component.html',
 	styleUrls: [ './texture-field.component.css' ]
 } )
-export class TextureFieldComponent extends AbstractFieldComponent implements OnInit {
-
-	@Output() changed = new EventEmitter<string>();
+export class TextureFieldComponent extends AbstractFieldComponent<string> implements OnInit {
 
 	@Input() value: string;
 

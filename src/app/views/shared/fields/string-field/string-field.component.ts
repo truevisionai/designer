@@ -9,9 +9,9 @@ import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.c
 	selector: 'app-string-field',
 	templateUrl: './string-field.component.html',
 } )
-export class StringFieldComponent extends AbstractFieldComponent {
+export class StringFieldComponent extends AbstractFieldComponent<string> {
 
-	@Input() value: any;
+	@Input() value: string;
 
 	constructor () {
 

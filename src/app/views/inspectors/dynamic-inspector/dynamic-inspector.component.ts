@@ -68,7 +68,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	@ViewChildren( FieldHostDirective ) fieldHosts: QueryList<FieldHostDirective>;
 
-	fieldComponents = new Map<string, ComponentRef<AbstractFieldComponent>>();
+	fieldComponents = new Map<string, ComponentRef<AbstractFieldComponent<any>>>();
 
 	updateSub?: Subscription;
 
@@ -178,7 +178,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 		const component = this.COMPONENTS[ fieldType ];
 
-		const componentFactory = this.componentFactoryResolver.resolveComponentFactory<AbstractFieldComponent>( component );
+		const componentFactory = this.componentFactoryResolver.resolveComponentFactory<AbstractFieldComponent<any>>( component );
 
 		const componentRef = fieldHost.viewContainerRef.createComponent( componentFactory );
 
@@ -210,7 +210,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	applyComponentSettings ( component: AbstractFieldComponent, settings: ISerializedFieldSetting ) {
+	applyComponentSettings ( component: AbstractFieldComponent<any>, settings: ISerializedFieldSetting ) {
 
 		if ( component instanceof DoubleFieldComponent ) {
 

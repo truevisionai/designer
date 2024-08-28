@@ -9,7 +9,7 @@ import { AbstractFieldComponent } from '../abstract-field.component';
 	selector: 'app-textarea-field',
 	templateUrl: './textarea-field.component.html',
 } )
-export class TextareaFieldComponent extends AbstractFieldComponent {
+export class TextareaFieldComponent extends AbstractFieldComponent<string> {
 
 	@Input() value: string;
 

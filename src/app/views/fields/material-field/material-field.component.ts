@@ -17,7 +17,7 @@ import { TvConsole } from 'app/core/utils/console';
 	templateUrl: './material-field.component.html',
 	styleUrls: [ './material-field.component.css' ]
 } )
-export class MaterialFieldComponent extends AbstractFieldComponent implements OnInit {
+export class MaterialFieldComponent extends AbstractFieldComponent<string> implements OnInit {
 
 	// we will either receieve a guid or a value
 	// value is also a guid

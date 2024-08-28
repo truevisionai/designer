@@ -11,7 +11,7 @@ import { EntityService } from "../../../../scenario/entity/entity.service";
 	templateUrl: './select-entity-field.component.html',
 	styleUrls: [ './select-entity-field.component.scss' ]
 } )
-export class SelectEntityFieldComponent extends AbstractFieldComponent implements OnInit {
+export class SelectEntityFieldComponent extends AbstractFieldComponent<string> implements OnInit {
 
 	@Input() value: string;
 

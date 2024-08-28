@@ -12,7 +12,7 @@ import { Maths } from '../../../../utils/maths';
 	templateUrl: './vector3-field.component.html',
 	styleUrls: [ './vector3-field.component.scss' ]
 } )
-export class Vector3FieldComponent extends AbstractFieldComponent implements OnInit {
+export class Vector3FieldComponent extends AbstractFieldComponent<Vector3> implements OnInit {
 
 	@Input() value: Vector3;
 
@@ -56,21 +56,11 @@ export class Vector3FieldComponent extends AbstractFieldComponent implements OnI
 
 		if ( this.disabled ) return;
 
-		const newValue = this.parseAndClampValue( value );
+		const newValue = this.parseFloat( value, this.min, this.max );
 
 		this.updateAxisValue( axis, newValue );
 
-		this.emitChanges();
-
-	}
-
-	private parseAndClampValue ( value: any ): number {
-
-		let parsedValue = parseFloat( value );
-
-		if ( Number.isNaN( parsedValue ) ) parsedValue = 0;
-
-		return Maths.clamp( parsedValue, this.min, this.max );
+		this.emitChanges( this.value );
 
 	}
 
@@ -78,13 +68,6 @@ export class Vector3FieldComponent extends AbstractFieldComponent implements OnI
 
 		this.value[ axis ] = newValue;
 
-	}
-
-	private emitChanges (): void {
-
-		this.valueChanged.emit( this.value );
-
-		this.changed.emit( this.value );
 	}
 
 }

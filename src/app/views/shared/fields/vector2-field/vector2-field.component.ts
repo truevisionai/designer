@@ -5,14 +5,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Vector2, Vector3 } from 'three';
 import { AbstractFieldComponent } from '../abstract-field.component';
-import { Maths } from '../../../../utils/maths';
 
 @Component( {
 	selector: 'app-vector2-field',
 	templateUrl: './vector2-field.component.html',
 	styleUrls: [ './vector2-field.component.scss' ]
 } )
-export class Vector2FieldComponent extends AbstractFieldComponent implements OnInit {
+export class Vector2FieldComponent extends AbstractFieldComponent<Vector2 | Vector3> implements OnInit {
 
 	@Input() value: Vector2 | Vector3;
 
@@ -24,8 +23,6 @@ export class Vector2FieldComponent extends AbstractFieldComponent implements OnI
 
 	@Input() step: number = 0.1;
 
-	@Input() z: boolean = true;
-
 	constructor () {
 		super();
 	}
@@ -33,35 +30,34 @@ export class Vector2FieldComponent extends AbstractFieldComponent implements OnI
 	ngOnInit () {
 	}
 
-	onXChanged ( $event: any ) {
+	onXChanged ( $value: any ): void {
 
-		if ( this.disabled ) return;
-
-		this.value.x = parseFloat( $event );
-
-		if ( Number.isNaN( this.value ) ) this.value.x = 0;
-
-		this.value.x = Maths.clamp( this.value.x, this.min, this.max );
-
-		this.valueChanged.emit( this.value );
-
-		this.changed.emit( this.value );
+		this.onAxisChanged( $value, 'x' );
 
 	}
 
-	onYChanged ( $event: any ) {
+	onYChanged ( $value: any ): void {
+
+		this.onAxisChanged( $value, 'y' );
+
+	}
+
+	private onAxisChanged ( value: any, axis: 'x' | 'y' ): void {
 
 		if ( this.disabled ) return;
 
-		this.value.y = parseFloat( $event );
+		const newValue = this.parseFloat( value, this.min, this.max );
 
-		if ( Number.isNaN( this.value ) ) this.value.y = 0;
+		this.updateAxisValue( axis, newValue );
 
-		this.value.y = Maths.clamp( this.value.y, this.min, this.max );
+		this.emitChanges( this.value );
 
-		this.valueChanged.emit( this.value );
+	}
 
-		this.changed.emit( this.value );
+	private updateAxisValue ( axis: 'x' | 'y', newValue: number ): void {
+
+		this.value[ axis ] = newValue;
+
 	}
 
 }

@@ -11,7 +11,7 @@ import { RoadService } from "../../../../services/road/road.service";
 	templateUrl: './road-id-field.component.html',
 	styleUrls: [ './road-id-field.component.scss' ]
 } )
-export class RoadIdFieldComponent extends AbstractFieldComponent {
+export class RoadIdFieldComponent extends AbstractFieldComponent<number> {
 
 	@Input() value: number;
 

@@ -12,7 +12,7 @@ import { Log } from 'app/core/utils/log';
 	templateUrl: './double-field.component.html',
 	styleUrls: [ './double-field.component.css' ]
 } )
-export class DoubleFieldComponent extends AbstractFieldComponent implements OnInit {
+export class DoubleFieldComponent extends AbstractFieldComponent<number> implements OnInit {
 
 	@Input() value: any;
 
