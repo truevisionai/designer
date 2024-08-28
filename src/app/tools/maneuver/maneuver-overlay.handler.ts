@@ -4,6 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { BaseOverlayHandler } from "app/core/overlay-handlers/base-overlay-handler";
+import { NodeOverlayHandler } from "app/core/overlay-handlers/node-overlay-handler";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { SplineDebugService } from "app/services/debug/spline-debug.service";
@@ -11,7 +12,7 @@ import { SplineDebugService } from "app/services/debug/spline-debug.service";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverOverlayHandler extends BaseOverlayHandler<ManeuverMesh> {
+export class ManeuverOverlayHandler extends NodeOverlayHandler<ManeuverMesh> {
 
 	constructor (
 		private junctionDebugService: JunctionDebugService,
@@ -20,16 +21,9 @@ export class ManeuverOverlayHandler extends BaseOverlayHandler<ManeuverMesh> {
 		super();
 	}
 
-	onHighlight ( object: ManeuverMesh ): void {
-
-		object.highlight();
-
-
-	}
-
 	onSelected ( object: ManeuverMesh ): void {
 
-		object.select();
+		super.onSelected( object );
 
 		this.splineDebugService.showControlPoints( object.connection.connectingRoad.spline );
 
@@ -37,7 +31,7 @@ export class ManeuverOverlayHandler extends BaseOverlayHandler<ManeuverMesh> {
 
 	onDefault ( object: ManeuverMesh ): void {
 
-		object.unselect();
+		super.onDefault( object );
 
 		this.splineDebugService.removeControlPoints( object.connection.connectingRoad.spline );
 
@@ -45,7 +39,7 @@ export class ManeuverOverlayHandler extends BaseOverlayHandler<ManeuverMesh> {
 
 	onUnselected ( object: ManeuverMesh ): void {
 
-		object.unselect();
+		super.onUnselected( object );
 
 		this.splineDebugService.removeControlPoints( object.connection.connectingRoad.spline );
 
@@ -65,7 +59,7 @@ export class ManeuverOverlayHandler extends BaseOverlayHandler<ManeuverMesh> {
 
 	onRemoved ( object: ManeuverMesh ): void {
 
-		object.unselect();
+		super.onRemoved( object );
 
 		this.splineDebugService.removeControlPoints( object.connection.connectingRoad.spline );
 

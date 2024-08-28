@@ -5,7 +5,6 @@
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { ToolType } from '../tool-types.enum';
-import { BaseTool } from '../base-tool';
 import { RoadToolHelper } from './road-tool-helper.service';
 import { RoadNode } from 'app/objects/road-node';
 import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
@@ -29,18 +28,16 @@ import { SelectSplineStrategy } from "../../core/strategies/select-strategies/se
 import { AppInspector } from 'app/core/inspector';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { SplineFactory } from "../../services/spline/spline.factory";
-import { Log } from 'app/core/utils/log';
 import { RoadTangentPointHandler } from "../../core/object-handlers/road-tangent-point-handler";
 import { RoadControlPointHandler } from "../../core/object-handlers/road-control-point-handler";
 import { SplineControlPointHandler } from "../../core/object-handlers/spline-control-point-handler";
+import { ToolWithHandler } from '../base-tool-v2';
 
-export class RoadTool extends BaseTool<AbstractSpline> {
+export class RoadTool extends ToolWithHandler<AbstractSpline> {
 
 	public name: string = 'Road Tool';
 
 	public toolType: ToolType = ToolType.Road;
-
-	private controlPointMoved: boolean;
 
 	private selectedNode: RoadNode;
 
@@ -239,136 +236,6 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 		point.userData.insert = clickedSameRoad;
 
 		this.executeAddAndSelect( point, this.currentPoint );
-
-	}
-
-	onPointerDownSelect ( e: PointerEventData ): void {
-
-		this.selectionService.handleSelection( e );
-
-	}
-
-	onPointerMoved ( e: PointerEventData ): void {
-
-		this.highlightWithHandlers( e );
-
-		if ( !this.isPointerDown ) return;
-
-		for ( const [ name, handler ] of this.getObjectHandlers() ) {
-
-			const selected = handler.getSelected();
-
-			if ( selected.length > 0 ) {
-
-				this.tool.base.disableControls();
-
-				selected.forEach( object => handler.onDrag( object, e ) );
-
-				this.controlPointMoved = true;
-
-				break;
-
-			}
-
-		}
-
-	}
-
-	onPointerUp ( e: PointerEventData ): void {
-
-		this.tool.base.enableControls();
-
-		if ( !this.controlPointMoved ) return;
-
-		for ( const [ name, handler ] of this.getObjectHandlers() ) {
-
-			const selected = handler.getSelected();
-
-			if ( selected.length > 0 ) {
-
-				selected.forEach( object => handler.onDragEnd( object, e ) );
-
-				break;
-
-			}
-
-		}
-
-		this.controlPointMoved = false;
-
-	}
-
-	onObjectAdded ( object: any ): void {
-
-		if ( this.hasHandlersFor( object ) ) {
-
-			this.handleAction( object, 'onAdded' );
-
-		} else {
-
-			Log.error( 'Unknown object added', object.constructor.name );
-
-		}
-
-	}
-
-	onObjectRemoved ( object: any ): void {
-
-		if ( this.hasHandlersFor( object ) ) {
-
-			this.handleAction( object, 'onRemoved' );
-
-		} else {
-
-			Log.error( 'Unknown object removed', object.constructor.name );
-
-		}
-
-	}
-
-	onObjectUpdated ( object: any ): void {
-
-		if ( this.hasHandlersFor( object ) ) {
-
-			this.handleAction( object, 'onUpdated' );
-
-		} else {
-
-			Log.error( 'Unknown object updated', object.constructor.name );
-
-		}
-
-	}
-
-	onObjectSelected ( object: Object ): void {
-
-		if ( this.hasHandlersFor( object ) ) {
-
-			this.handleSelectionWithHandlers( object );
-
-		} else {
-
-			Log.error( 'Unknown object selected', object.constructor.name );
-
-		}
-
-		this.showObjectInspector( object );
-
-	}
-
-	onObjectUnselected ( object: Object ): void {
-
-		if ( this.hasHandlersFor( object ) ) {
-
-			this.handleUnselectionWithHandlers( object );
-
-		} else {
-
-			Log.error( 'Unknown object unselected', object.constructor.name );
-
-		}
-
-		AppInspector.clear();
 
 	}
 

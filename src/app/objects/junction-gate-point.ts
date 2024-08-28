@@ -5,10 +5,10 @@
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { Mesh, BufferGeometry, Material, MeshBasicMaterial, SphereGeometry } from "three";
-import { ISelectable } from "./i-selectable";
+import { INode } from "./i-selectable";
 
 
-export class JunctionGatePoint extends Mesh implements ISelectable {
+export class JunctionGatePoint extends Mesh implements INode {
 
 	static tag = 'JunctionGatePoint';
 
@@ -42,7 +42,7 @@ export class JunctionGatePoint extends Mesh implements ISelectable {
 
 	}
 
-	highlight (): void {
+	onMouseOver (): void {
 
 		( this.material as MeshBasicMaterial ).color.set( COLOR.YELLOW );
 
@@ -50,7 +50,7 @@ export class JunctionGatePoint extends Mesh implements ISelectable {
 
 	}
 
-	removeHighlight (): void {
+	onMouseOut (): void {
 
 		( this.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
 

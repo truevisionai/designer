@@ -5,7 +5,6 @@
 import { Injectable } from "@angular/core";
 import { BaseObjectHandler } from "./base-object-handler";
 import { AutoSpline } from "../shapes/auto-spline-v2";
-import { Vector3 } from "three";
 import { SplineService } from "../../services/spline/spline.service";
 import { PointerEventData } from "../../events/pointer-event-data";
 import { SplineUtils } from "../../utils/spline.utils";
@@ -18,15 +17,17 @@ import { ToolManager } from "app/managers/tool-manager";
 } )
 export class SplineHandler extends BaseObjectHandler<AutoSpline> {
 
-	private dragStartPosition: Vector3;
-
-	private dragLastPosition: Vector3;
-
 	constructor (
 		private splineService: SplineService,
 		private splineGeometryService: SplineGeometryService
 	) {
 		super();
+	}
+
+	isDraggingSupported (): boolean {
+
+		return true;
+
 	}
 
 	onAdded ( object: AutoSpline ): void {
@@ -54,20 +55,13 @@ export class SplineHandler extends BaseObjectHandler<AutoSpline> {
 			return;
 		}
 
-		if ( !this.dragStartPosition ) this.dragStartPosition = e.point.clone();
-
-		if ( !this.dragLastPosition ) this.dragLastPosition = e.point.clone();
-
-		const delta = e.point.clone().sub( this.dragLastPosition );
+		// const delta = e.point.clone().sub( this.currentDragPosition );
 
 		object.getControlPoints().forEach( point => {
 
-			point.position.add( delta );
+			point.position.add( this.dragDelta );
 
 		} );
-
-		// Update the start position for the next drag event
-		this.dragLastPosition.copy( e.point );
 
 		this.splineGeometryService.updateGeometryAndBounds( object );
 
@@ -77,13 +71,9 @@ export class SplineHandler extends BaseObjectHandler<AutoSpline> {
 
 	onDragEnd ( object: AutoSpline, e: PointerEventData ): void {
 
-		if ( !this.dragStartPosition || !this.dragLastPosition ) return;
-
-		const delta = this.dragStartPosition.clone().sub( this.dragLastPosition );
+		const delta = this.dragStartPosition.clone().sub( this.dragEndPosition );
 
 		Commands.DragSpline( object, delta );
-
-		this.dragLastPosition = this.dragStartPosition = null;
 
 	}
 

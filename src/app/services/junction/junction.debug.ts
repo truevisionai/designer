@@ -43,6 +43,7 @@ import { JunctionFactory } from 'app/factories/junction.factory';
 import { JunctionDebugFactory } from './junction-debug.factory';
 import { ManeuverMesh } from './maneuver-mesh';
 import { JunctionNode } from './junction-node';
+import { JunctionRoadService } from './junction-road.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -69,6 +70,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		private mapService: MapService,
 		private junctionManager: JunctionManager,
 		private queryService: MapQueryService,
+		private junctionRoadService: JunctionRoadService,
 	) {
 		super();
 	}
@@ -196,7 +198,25 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	showManeuvers ( junction: TvJunction ) {
+	showGateLines ( junction: TvJunction ): void {
+
+		for ( const laneCoord of this.junctionRoadService.getJunctionGates( junction ) ) {
+
+			const line = JunctionDebugFactory.instance.createJunctionGateLine( junction, laneCoord );
+
+			this.gates.addItem( junction, line );
+
+		}
+
+	}
+
+	removeGateLines ( junction: TvJunction ): void {
+
+		this.gates.removeKey( junction );
+
+	}
+
+	showManeuvers ( junction: TvJunction ): void {
 
 		if ( !this.shouldShowManeuvers ) return;
 
@@ -213,6 +233,12 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			} );
 
 		} );
+
+	}
+
+	removeManeuvers ( junction: TvJunction ): void {
+
+		this.maneuvers.removeKey( junction );
 
 	}
 

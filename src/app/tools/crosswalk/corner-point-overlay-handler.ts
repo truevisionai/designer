@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
 import { CornerControlPoint } from "./crosswalk-tool-debugger";
-import { PointOverlayHandler } from "../maneuver/point-overlay.handler";
+import { NodeOverlayHandler } from "app/core/overlay-handlers/node-overlay-handler";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class CornerPointOverlayHandler extends PointOverlayHandler<CornerControlPoint> {
+export class CornerPointOverlayHandler extends NodeOverlayHandler<CornerControlPoint> {
 
 	onAdded ( object: CornerControlPoint ): void {
 
-		object.select();
+		super.onAdded( object );
 
 		this.updateOverlay( object.roadObject );
 
@@ -17,7 +17,7 @@ export class CornerPointOverlayHandler extends PointOverlayHandler<CornerControl
 
 	onUpdated ( object: CornerControlPoint ): void {
 
-		object.select();
+		super.onUpdated( object );
 
 		this.updateOverlay( object.roadObject );
 
@@ -25,7 +25,7 @@ export class CornerPointOverlayHandler extends PointOverlayHandler<CornerControl
 
 	onRemoved ( object: CornerControlPoint ): void {
 
-		object.unselect();
+		super.onRemoved( object );
 
 		this.updateOverlay( object.roadObject );
 

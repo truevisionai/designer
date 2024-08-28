@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CommandHistory } from 'app/commands/command-history';
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { ToolType } from '../tool-types.enum';
@@ -11,8 +10,6 @@ import { RoadCoordStrategy } from '../../core/strategies/select-strategies/road-
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
-import { AddObjectCommand } from "../../commands/add-object-command";
-import { SelectObjectCommand } from "../../commands/select-object-command";
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { CrosswalkToolHelper } from "./crosswalk-tool.helper";
 import { CrosswalkInspector } from './crosswalk.inspector';
@@ -26,6 +23,7 @@ import { CornerControlPointHandler } from './corner-point-handler';
 import { CrosswalkOverlayHandler } from './crosswalk-overlay-handler';
 import { CrosswalkHandler } from "./crosswalk-handler";
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
+import { Commands } from 'app/commands/commands';
 
 export class CrosswalkTool extends ToolWithHandler<any> {
 
@@ -124,62 +122,6 @@ export class CrosswalkTool extends ToolWithHandler<any> {
 
 	}
 
-	onPointerDownSelect ( pointerEventData: PointerEventData ): void {
-
-		this.selectionService.handleSelection( pointerEventData );
-
-	}
-
-	onPointerMoved ( pointerEventData: PointerEventData ): void {
-
-		this.highlightWithHandlers( pointerEventData );
-
-		if ( !this.isPointerDown ) return;
-
-		for ( const [ name, handler ] of this.getObjectHandlers() ) {
-
-			const selected = handler.getSelected();
-
-			if ( selected.length > 0 ) {
-
-				this.tool.base.disableControls();
-
-				selected.forEach( object => handler.onDrag( object, pointerEventData ) );
-
-				this.pointMoved = true;
-
-				break;
-
-			}
-
-		}
-
-	}
-
-	onPointerUp ( pointerEventData: PointerEventData ): void {
-
-		this.tool.base.enableControls();
-
-		if ( !this.pointMoved ) return;
-
-		for ( const [ name, handler ] of this.getObjectHandlers() ) {
-
-			const selected = handler.getSelected();
-
-			if ( selected.length > 0 ) {
-
-				selected.forEach( object => handler.onDragEnd( object, pointerEventData ) );
-
-				break;
-
-			}
-
-		}
-
-		this.pointMoved = false;
-
-	}
-
 	onObjectUpdated ( object: object ): void {
 
 		if ( object instanceof CrosswalkInspector ) {
@@ -196,7 +138,10 @@ export class CrosswalkTool extends ToolWithHandler<any> {
 
 	createCornerRoad ( roadObject: TvRoadObject, roadCoord: TvRoadCoord ): void {
 
-		if ( roadCoord.roadId != roadObject.road.id ) return;
+		if ( roadCoord.roadId != roadObject.road.id ) {
+			this.setHint( 'Road should be same to create crosswalk' );
+			return;
+		}
 
 		const id = this.selectedCrosswalk.outlines[ 0 ].cornerRoads.length;
 
@@ -204,11 +149,7 @@ export class CrosswalkTool extends ToolWithHandler<any> {
 
 		const point = this.tool.toolDebugger.createNode( roadCoord.road, roadObject, corner );
 
-		const addCommand = new AddObjectCommand( point );
-
-		const selectCommand = new SelectObjectCommand( point, this.selectedPoint );
-
-		CommandHistory.executeMany( addCommand, selectCommand );
+		Commands.AddSelect( point, this.selectedPoint );
 
 	}
 
@@ -216,11 +157,7 @@ export class CrosswalkTool extends ToolWithHandler<any> {
 
 		const crosswalk = RoadObjectFactory.createRoadObject( TvRoadObjectType.crosswalk, roadCoord );
 
-		const addCommand = new AddObjectCommand( crosswalk );
-
-		const selectCommand = new SelectObjectCommand( crosswalk );
-
-		CommandHistory.executeMany( addCommand, selectCommand );
+		Commands.AddSelect( crosswalk, this.selectedCrosswalk );
 
 	}
 

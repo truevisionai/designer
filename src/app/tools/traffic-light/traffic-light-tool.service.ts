@@ -10,6 +10,7 @@ import { AutoSignalizeJunctionService } from './auto-signalize-junction.service'
 import { SignalJunctionDebugger } from './signal-junction.debugger';
 import { JunctionGateDebugger } from "./junction-gate.debugger";
 import { JunctionManeuverDebugger } from "./junction-maneuver.debugger";
+import { BaseToolService } from '../base-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -17,6 +18,7 @@ import { JunctionManeuverDebugger } from "./junction-maneuver.debugger";
 export class TrafficLightToolService {
 
 	constructor (
+		public base: BaseToolService,
 		public junctionService: JunctionService,
 		public autoSignalService: AutoSignalizeJunctionService,
 		public defaultDebugger: JunctionDebugService,

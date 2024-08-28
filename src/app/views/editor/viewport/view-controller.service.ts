@@ -14,6 +14,8 @@ import { IViewportController } from "../../../objects/i-viewport-controller";
 } )
 export class ViewControllerService {
 
+	static instance: ViewControllerService;
+
 	@Output() updated = new EventEmitter<any>();
 
 	private controls: IViewportController;
@@ -23,6 +25,7 @@ export class ViewControllerService {
 	constructor (
 		private cameraService: CameraService
 	) {
+		ViewControllerService.instance = this;
 		this.cameraService.cameraChanged.subscribe( ( camera ) => this.onCameraChanged( camera ) );
 	}
 

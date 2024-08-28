@@ -20,6 +20,9 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Log } from 'app/core/utils/log';
 import { RoadGeometryService } from "../../services/road/road-geometry.service";
+import { EmptyObjectHandler } from 'app/core/object-handlers/empty-object-handler';
+import { EmptyOverlayHandler } from "app/core/overlay-handlers/empty-overlay-handler";
+import { JunctionRoadService } from 'app/services/junction/junction-road.service';
 
 export enum AutoSignalizationType {
 	ALL_GO,
@@ -30,12 +33,21 @@ export enum AutoSignalizationType {
 	PERMITTED_LEFT,
 }
 
+export class JunctionSignaliztion {
+	constructor (
+		public junction: TvJunction,
+		public type: AutoSignalizationType,
+		public useProps = false
+	) { }
+}
+
 @Injectable( {
 	providedIn: 'root'
 } )
 export class AutoSignalizeJunctionService {
 
 	constructor (
+		private junctionRoadService: JunctionRoadService,
 		private signalFactory: RoadSignalFactory,
 		private signalService: RoadSignalService,
 		private roadService: RoadService,
@@ -44,7 +56,7 @@ export class AutoSignalizeJunctionService {
 	) {
 	}
 
-	removeSignalization ( junction: TvJunction ) {
+	removeSignalization ( junction: TvJunction ): void {
 
 		this.removeControllers( junction );
 
@@ -52,56 +64,67 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	addSignalization ( junction: TvJunction, type: AutoSignalizationType, useProps = false ) {
+	addSignalization ( junction: TvJunction, type: AutoSignalizationType, useProps = false ): void {
 
 		this.removeControllers( junction );
+
+		// all go signalization is not needed
+		if ( type == AutoSignalizationType.ALL_GO ) return;
 
 		// TODO: instead of incoming roads, we need connecting road to have junctions
 		// currenlty we are using incoming roads
 		// because connecting roads are automatically created by the junction
-		for ( const road of junction.getIncomingRoads() ) {
+		for ( const road of this.junctionRoadService.getIncomingRoads( junction ) ) {
 
-			const signals: TvRoadSignal[] = [];
+			this.addSignalizationToRoad( road, type, junction );
 
-			const signal = this.getSignalByType( road, type, junction );
-
-			if ( !signal ) {
-				Log.error( 'No signal created for road:' + road.id );
-				continue;
-			}
-
-			signals.push( signal );
-
-			const stopLine = this.createStopLine( road, signal );
-
-			if ( stopLine ) {
-
-				this.updateValidLanes( stopLine, road, stopLine.s, junction );
-
-				signals.push( stopLine );
-
-			}
-
-			signals.forEach( signal => {
-
-				const existingSignal = this.signalService.findSignal( road, signal );
-
-				if ( existingSignal ) {
-					this.signalService.removeSignal( road, existingSignal );
-				}
-
-				road.addSignal( signal );
-
-			} );
-
-			this.addControllers( type, junction, signals );
-
-			this.roadService.update( road );
 		}
 
 	}
 
-	private getSignalByType ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ) {
+	// eslint-disable-next-line max-lines-per-function
+	addSignalizationToRoad ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ): void {
+
+		const signals: TvRoadSignal[] = [];
+
+		const signal = this.getSignalByType( road, type, junction );
+
+		if ( !signal ) {
+			Log.error( `No signal created for road:${ road.id }` );
+			return;
+		}
+
+		signals.push( signal );
+
+		const stopLine = this.createStopLine( road, signal );
+
+		if ( stopLine ) {
+
+			this.updateValidLanes( stopLine, road, stopLine.s, junction );
+
+			signals.push( stopLine );
+
+		}
+
+		signals.forEach( signal => {
+
+			const existingSignal = this.signalService.findSignal( road, signal );
+
+			if ( existingSignal ) {
+				this.signalService.removeSignal( road, existingSignal );
+			}
+
+			road.addSignal( signal );
+
+		} );
+
+		this.addControllers( type, junction, signals );
+
+		this.roadService.update( road );
+	}
+
+	// eslint-disable-next-line max-lines-per-function
+	private getSignalByType ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ): TvRoadSignal {
 
 		const roadCoord = this.findSignalPosition( road, type, junction );
 
@@ -140,7 +163,7 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	findSignalPosition ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ): TvRoadCoord {
+	private findSignalPosition ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ): TvRoadCoord {
 
 		const lane = this.findPlacementLane( road, junction );
 
@@ -162,7 +185,7 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	createStopLine ( road: TvRoad, trafficSignal: TvRoadSignal ) {
+	private createStopLine ( road: TvRoad, trafficSignal: TvRoadSignal ): TvRoadSignal {
 
 		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
@@ -324,3 +347,29 @@ export class AutoSignalizeJunctionService {
 
 	}
 }
+
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class JunctionSignaliztionHandler extends EmptyObjectHandler<JunctionSignaliztion> {
+
+	constructor ( private service: AutoSignalizeJunctionService ) {
+		super();
+	}
+
+	onAdded ( object: JunctionSignaliztion ): void {
+		this.service.addSignalization( object.junction, object.type, object.useProps );
+	}
+
+	onRemoved ( object: JunctionSignaliztion ): void {
+		this.service.removeSignalization( object.junction );
+	}
+
+}
+
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class JunctionSignaliztionOverlayHandler extends EmptyOverlayHandler<JunctionSignaliztion> { }

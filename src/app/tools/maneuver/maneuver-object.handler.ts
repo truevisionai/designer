@@ -27,7 +27,7 @@ export class ManeuverObjectHandler extends BaseObjectHandler<ManeuverMesh> {
 
 	onUpdated ( object: ManeuverMesh ): void {
 
-		Log.info( 'Maneuver updated' );
+		// Log.info( 'Maneuver updated' );
 
 	}
 

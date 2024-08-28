@@ -31,7 +31,15 @@ export class CrosswalkOverlayHandler extends BaseOverlayHandler<TvRoadObject> {
 	}
 
 	onAdded ( object: TvRoadObject ): void {
+
 		this.crosswalkDebugService.addGizmo( object.road, object );
+
+		const firstPoint = this.crosswalkDebugService.getNodes( object )[ 0 ];
+
+		if ( firstPoint ) {
+			firstPoint.select();
+		}
+
 	}
 
 	onUpdated ( object: TvRoadObject ): void {

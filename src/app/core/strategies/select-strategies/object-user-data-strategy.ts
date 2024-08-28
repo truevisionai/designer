@@ -8,7 +8,7 @@ import { Intersection, Object3D } from "three";
 
 export class ObjectUserDataStrategy<T> extends SelectStrategy<T> {
 
-	constructor ( private tag: string, private key: string ) {
+	constructor ( private tag: string, private key?: string ) {
 		super();
 	}
 

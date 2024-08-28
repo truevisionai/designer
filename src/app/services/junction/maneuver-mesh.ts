@@ -5,12 +5,12 @@
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
-import { ISelectable } from "app/objects/i-selectable";
+import { INode } from "app/objects/i-selectable";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { BufferGeometry, Mesh, MeshBasicMaterial } from "three";
 
 
-export class ManeuverMesh extends Mesh implements ISelectable {
+export class ManeuverMesh extends Mesh implements INode {
 
 	static defaultColor = COLOR.GREEN;
 
@@ -40,12 +40,12 @@ export class ManeuverMesh extends Mesh implements ISelectable {
 		this.material.needsUpdate = true;
 	}
 
-	highlight (): void {
+	onMouseOver (): void {
 		this.material.color.set( COLOR.YELLOW );
 		this.material.needsUpdate = true;
 	}
 
-	unhighlight (): void {
+	onMouseOut (): void {
 		this.material.color.set( ManeuverMesh.defaultColor );
 		this.material.needsUpdate = true;
 	}

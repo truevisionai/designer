@@ -25,12 +25,6 @@ export class RoadTangentPointHandler extends BasePointHandler<RoadTangentPoint> 
 		super();
 	}
 
-	onAdded ( point: RoadTangentPoint ): void {
-
-		// not applicable
-
-	}
-
 	onUpdated ( point: RoadTangentPoint ): void {
 
 		this.splineService.updateControlPoint( point );
@@ -39,15 +33,7 @@ export class RoadTangentPointHandler extends BasePointHandler<RoadTangentPoint> 
 
 	}
 
-	onRemoved ( point: RoadTangentPoint ): void {
-
-		// not applicable
-
-	}
-
 	onDrag ( point: RoadTangentPoint, e: PointerEventData ): void {
-
-		this.oldPosition = this.oldPosition || e.point;
 
 		point.setPosition( e.point );
 
@@ -63,9 +49,7 @@ export class RoadTangentPointHandler extends BasePointHandler<RoadTangentPoint> 
 
 	onDragEnd ( point: RoadTangentPoint, e: PointerEventData ): void {
 
-		Commands.SetPointPosition( point.spline, point, e.point, this.oldPosition );
-
-		this.oldPosition = null;
+		Commands.SetPointPosition( point.spline, point, e.point, this.dragStartPosition );
 
 	}
 

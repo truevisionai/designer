@@ -69,7 +69,7 @@ export class RoadOverlayHandler extends BaseOverlayHandler<TvRoad> {
 
 	onUnselected ( object: TvRoad ): void {
 
-		this.onRemoved( object );
+		this.roadDebug.removeRoadBorderLine( object );
 
 	}
 

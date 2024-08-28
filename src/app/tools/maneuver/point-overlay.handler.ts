@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseOverlayHandler } from "app/core/overlay-handlers/base-overlay-handler";
+import { NodeOverlayHandler } from "app/core/overlay-handlers/node-overlay-handler";
 import { Log } from "app/core/utils/log";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { RoadControlPoint } from "app/objects/road-control-point";
@@ -13,31 +13,7 @@ import { SplineControlPoint } from "app/objects/spline-control-point";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PointOverlayHandler<T extends AbstractControlPoint> extends BaseOverlayHandler<T> {
-
-	onHighlight ( object: AbstractControlPoint ): void {
-
-		object.onMouseOver();
-
-	}
-
-	onSelected ( object: AbstractControlPoint ): void {
-
-		object.select();
-
-	}
-
-	onDefault ( object: AbstractControlPoint ): void {
-
-		object.unselect();
-
-	}
-
-	onUnselected ( object: AbstractControlPoint ): void {
-
-		object.unselect();
-
-	}
+export class PointOverlayHandler<T extends AbstractControlPoint> extends NodeOverlayHandler<T> {
 
 	onAdded ( object: AbstractControlPoint ): void {
 
@@ -54,18 +30,6 @@ export class PointOverlayHandler<T extends AbstractControlPoint> extends BaseOve
 	onRemoved ( object: AbstractControlPoint ): void {
 
 		this.updateSpline( object );
-
-	}
-
-	onClearHighlight (): void {
-
-		//
-
-	}
-
-	clear (): void {
-
-		//
 
 	}
 

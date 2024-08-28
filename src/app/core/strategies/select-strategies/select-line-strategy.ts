@@ -4,7 +4,6 @@
 
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { SelectStrategy } from './select-strategy';
-import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { DebugLine } from 'app/objects/debug-line';
 import { StrategySettings } from './control-point-strategy';
 
@@ -57,8 +56,6 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 		this.current = this.findByType( pointerEventData.intersections, DebugLine ) as any;
 
 		if ( !this.current ) return;
-
-		console.log( this.current );
 
 		if ( !this.current.isSelected ) this.current.onMouseOver();
 

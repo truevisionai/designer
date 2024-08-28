@@ -4,7 +4,6 @@
 
 import { BaseCommand } from "./base-command";
 import { MapEvents } from "../events/map-events";
-import { TvConsole } from "app/core/utils/console";
 
 export class AddObjectCommand extends BaseCommand {
 
@@ -12,7 +11,6 @@ export class AddObjectCommand extends BaseCommand {
 
 		super();
 
-		if ( object == null ) TvConsole.warn( 'object cannot be null' );
 	}
 
 	execute (): void {

@@ -47,7 +47,6 @@ import { OdTextures } from 'app/deprecated/od.textures';
 import { TextObjectService } from '../text-object.service';
 import { RoadGeometryService } from '../road/road-geometry.service';
 import { LanePositionService } from '../lane/lane-position.service';
-import { RoadWidthService } from '../road/road-width.service';
 
 const LINE_WIDTH = 3;
 
@@ -296,9 +295,27 @@ export class DebugDrawService {
 
 	createDebugLine<T> ( target: T, points: Vector3[], lineWidth = 2, color = COLOR.CYAN ): DebugLine<T> {
 
-		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
+		const geometry = this.createDebugLineGeometry( points );
 
-		const material = new LineMaterial( {
+		const material = this.createDebugLineMaterial( color, lineWidth );
+
+		const line = new DebugLine( target, geometry, material );
+
+		line.renderOrder = 999;
+
+		return line;
+
+	}
+
+	createDebugLineGeometry ( points: Vector3[] ): LineGeometry {
+
+		return new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
+
+	}
+
+	createDebugLineMaterial ( color = COLOR.CYAN, lineWidth = 2 ): LineMaterial {
+
+		return new LineMaterial( {
 			color: color,
 			linewidth: lineWidth,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ),
@@ -306,12 +323,6 @@ export class DebugDrawService {
 			depthWrite: false,
 			transparent: true,
 		} );
-
-		const line = new DebugLine( target, geometry, material );
-
-		line.renderOrder = 999;
-
-		return line;
 
 	}
 
@@ -593,3 +604,4 @@ export class DebugDrawService {
 	}
 
 }
+

@@ -27,6 +27,8 @@ import { ObjectHandler } from "../core/object-handlers/object-handler";
 import { OverlayHandler } from "../core/overlay-handlers/overlay-handler";
 import { ToolHintConfig } from 'app/core/interfaces/tool.hints';
 import { Log } from 'app/core/utils/log';
+import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';
+import { BaseObjectHandler } from 'app/core/object-handlers/base-object-handler';
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -48,7 +50,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected currentSelectedPointMoved: boolean;
 
-	protected objectHandlers: Map<string, ObjectHandler<Object>>;
+	protected objectHandlers: Map<string, BaseObjectHandler<Object>>;
 
 	protected overlayHandlers: Map<string, OverlayHandler<Object>>;
 
@@ -98,11 +100,11 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		this.setHint( this.getObjectHint( object.constructor.name, action ) );
 	}
 
-	addObjectHandler ( objectName: string, handler: ObjectHandler<Object> ): void {
+	addObjectHandler ( objectName: string, handler: BaseObjectHandler<Object> ): void {
 		this.objectHandlers.set( objectName, handler );
 	}
 
-	getObjectHandlers (): Map<string, ObjectHandler<Object>> {
+	getObjectHandlers (): Map<string, BaseObjectHandler<Object>> {
 		return this.objectHandlers;
 	}
 
@@ -704,6 +706,8 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 			this.setObjectHint( item, 'onUnselected' );
 
+			this.selectionService.removeFromSelected( item );
+
 		}
 
 		if ( Array.isArray( object ) ) {
@@ -745,5 +749,12 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		return this.selectionService.getSelectedObjectCount();
 	}
 
+	protected enableControls (): void {
+		ViewControllerService.instance?.enableControls();
+	}
+
+	protected disableControls (): void {
+		ViewControllerService.instance?.disableControls();
+	}
 }
 

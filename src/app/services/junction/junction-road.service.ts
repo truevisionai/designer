@@ -8,11 +8,11 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Log } from 'app/core/utils/log';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
-import { TvContactPoint } from 'app/map/models/tv-common';
+import { TvContactPoint, TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
 import { RoadService } from '../road/road.service';
-import { Maths } from 'app/utils/maths';
-import { Vector2 } from 'three';
 import { MapService } from '../map/map.service';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { TrafficRule } from 'app/map/models/traffic-rule';
 
 @Injectable( {
 	providedIn: 'root'
@@ -212,6 +212,45 @@ export class JunctionRoadService {
 			}
 
 		}
+
+	}
+
+	getJunctionGates ( junction: TvJunction ): TvLaneCoord[] {
+
+		const coords: TvLaneCoord[] = [];
+
+		const incomingRoads = this.getIncomingRoads( junction );
+
+		for ( const incomingRoad of incomingRoads ) {
+
+			const contactPoint = incomingRoad.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
+
+			const s = contactPoint == TvContactPoint.START ? 0 : incomingRoad.length;
+
+			const laneSection = incomingRoad.getLaneProfile().getLaneSectionAt( s );
+
+			let side = incomingRoad.trafficRule == TrafficRule.LHT ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
+
+			// if road contact is start then reverse the side
+			if ( contactPoint == TvContactPoint.START ) {
+
+				side = side == TvLaneSide.LEFT ? TvLaneSide.RIGHT : TvLaneSide.LEFT;
+
+			}
+
+			const lanes = side == TvLaneSide.LEFT ? laneSection.getLeftLanes() : laneSection.getRightLanes();
+
+			for ( const lane of lanes ) {
+
+				if ( lane.type != TvLaneType.driving ) continue;
+
+				coords.push( new TvLaneCoord( incomingRoad, laneSection, lane, s, 0 ) );
+
+			}
+
+		}
+
+		return coords;
 
 	}
 

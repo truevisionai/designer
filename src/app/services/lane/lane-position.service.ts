@@ -86,6 +86,10 @@ export class LanePositionService {
 		return this.getLaneCenterPoint( road, laneSection, lane, sOffset );
 	}
 
+	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): TvPosTheta {
+		return this.getLaneEndPoint( road, laneSection, lane, sOffset );
+	}
+
 	/**
 	 * Find the position of the lane at the given s and location
 	 * @param road

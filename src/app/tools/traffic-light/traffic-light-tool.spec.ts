@@ -8,9 +8,19 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { disableMeshBuilding } from "app/map/builders/od-builder-config";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
-import { AutoSignalizationType, AutoSignalizeJunctionService } from "./auto-signalize-junction.service";
+import { AutoSignalizationType, AutoSignalizeJunctionService, JunctionSignaliztion } from "./auto-signalize-junction.service";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { OpenDriveSignals, SignalDatabase } from "app/map/road-signal/road-signal.database";
+import { ToolManager } from "app/managers/tool-manager";
+import { ToolBarService } from "app/views/editor/tool-bar/tool-bar.service";
+import { BaseTool } from "../base-tool";
+import { ToolType } from "../tool-types.enum";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
+import { SimpleControlPoint } from "app/objects/simple-control-point";
+import { DebugLine } from "app/objects/debug-line";
+import { ManeuverMesh } from "app/services/junction/maneuver-mesh";
+import { JunctionGateLine } from "app/services/junction/junction-gate-line";
+import { JunctionOverlay } from "app/services/junction/junction-overlay";
 
 describe( 'TrafficLightTool', () => {
 
@@ -146,7 +156,6 @@ describe( 'TrafficLightTool', () => {
 
 	} ) );
 
-
 	it( 'should signalize junction with sidewalk', fakeAsync( () => {
 
 		// expect( true ).toBe( false )
@@ -164,5 +173,76 @@ describe( 'TrafficLightTool', () => {
 		// expect( true ).toBe( false )
 
 	} ) );
+
+} );
+
+describe( 'TrafficLightTool: Handlers', () => {
+
+	let tool: BaseTool<any>;
+
+	let testHelper: SplineTestHelper;
+
+	beforeEach( () => {
+
+		TestBed.configureTestingModule( {
+			imports: [ HttpClientModule, MatSnackBarModule ],
+		} );
+
+		TestBed.inject( EventServiceProvider ).init();
+
+		ToolManager.clear();
+
+		TestBed.inject( ToolBarService ).setToolByType( ToolType.TrafficLight );
+
+		tool = ToolManager.getTool();
+
+		testHelper = TestBed.inject( SplineTestHelper );
+
+	} );
+
+	beforeEach( fakeAsync( () => {
+
+		testHelper.addDefaultJunction();
+
+		tick( 1000 );
+
+	} ) );
+
+	it( 'should setup tool', () => {
+
+		expect( tool ).toBeDefined();
+
+	} );
+
+	it( 'should set hint', () => {
+
+		spyOn( tool, 'setHint' );
+
+		tool.init();
+
+		expect( tool.setHint ).toHaveBeenCalled();
+
+	} );
+
+	it( 'should have object handlers', () => {
+
+		tool.init();
+
+		expect( tool.hasHandlersFor( JunctionSignaliztion.name ) ).toBeTrue();
+		expect( tool.hasHandlersFor( JunctionGateLine.name ) ).toBeTrue();
+		expect( tool.hasHandlersFor( ManeuverMesh.name ) ).toBeTrue();
+		expect( tool.hasHandlersFor( JunctionOverlay.name ) ).toBeTrue();
+
+	} );
+
+	it( 'should have selection strategies', () => {
+
+		tool.init();
+
+		expect( tool.hasSelectionStrategy( JunctionGateLine.name ) ).toBeTrue();
+		expect( tool.hasSelectionStrategy( ManeuverMesh.name ) ).toBeTrue();
+		expect( tool.hasSelectionStrategy( JunctionOverlay.name ) ).toBeTrue();
+
+	} );
 
 } );

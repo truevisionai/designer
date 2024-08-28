@@ -53,11 +53,7 @@ export class CornerControlPointHandler extends BasePointHandler<CornerControlPoi
 
 	}
 
-	private lastPosition: Vector3;
-
 	onDrag ( point: CornerControlPoint, e: PointerEventData ): void {
-
-		this.oldPosition = this.oldPosition || e.point;
 
 		const roadCoord = this.roadGeometryService.findRoadCoordStrict( point.road, e.point );
 
@@ -78,15 +74,17 @@ export class CornerControlPointHandler extends BasePointHandler<CornerControlPoi
 
 		point.setPosition( roadCoord.position );
 
-		this.lastPosition = roadCoord.position;
+		this.dragEndPosition = roadCoord.position;
 
 	}
 
 	onDragEnd ( point: CornerControlPoint, e: PointerEventData ): void {
 
-		Commands.UpdatePosition( point, this.lastPosition, this.oldPosition );
+		if ( this.dragStartPosition.distanceTo( this.dragEndPosition ) < 0.1 ) {
+			return;
+		}
 
-		this.oldPosition = this.lastPosition = null;
+		Commands.UpdatePosition( point, point.position, this.dragStartPosition );
 
 	}
 

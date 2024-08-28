@@ -22,7 +22,7 @@ import { Object3DMap } from "app/core/models/object3d-map";
 } )
 export class CrosswalkToolDebugger {
 
-	private nodes: Object3DArrayMap<TvRoadObject, Object3D[]>;
+	private nodes: Object3DArrayMap<TvRoadObject, CornerControlPoint[]>;
 
 	private lines: Object3DMap<TvRoadObject, Object3D>;
 
@@ -63,6 +63,12 @@ export class CrosswalkToolDebugger {
 			}
 
 		}
+
+	}
+
+	getNodes ( roadObject: TvRoadObject ): CornerControlPoint[] {
+
+		return this.nodes.getItems( roadObject );
 
 	}
 

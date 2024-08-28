@@ -41,9 +41,9 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	}
 
-	getItems  ( key: K ) {
+	getItems  ( key: K ): T {
 
-		return this.map.get( key );
+		return this.map.get( key ) as T;
 
 	}
 

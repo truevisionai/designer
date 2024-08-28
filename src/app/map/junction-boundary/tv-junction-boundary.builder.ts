@@ -139,15 +139,8 @@ export class TvJunctionBoundaryBuilder {
 
 		const geometry = this.getBufferGeometry( boundary, 'shape' );
 
-		const material = new MeshBasicMaterial( {
-			color: COLOR.CYAN,
-			side: FrontSide,
-			depthTest: false,
-			transparent: true,
-			opacity: 0.2
-		} );
+		return JunctionOverlay.create( junction, geometry );
 
-		return new JunctionOverlay( junction, geometry, material );
 	}
 
 	// buildViaPoly2Tri ( boundary: TvJunctionBoundary ): Mesh {

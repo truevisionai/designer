@@ -291,24 +291,6 @@ export class ToolFactory {
 			tool.setTypeName( Surface.name );
 		}
 
-		if ( type == ToolType.TrafficLight ) {
-
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-			this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
-			this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( 'link' ) );
-			this.selectionService.registerStrategy( TvJunction.name, new ObjectUserDataStrategy( 'junction', 'junction' ) );
-
-			this.selectionService.registerTag( SimpleControlPoint.name, SimpleControlPoint.name );
-			this.selectionService.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
-			this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
-			this.selectionService.registerTag( TvJunction.name, TvJunction.name );
-
-			this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
-
-			tool.setTypeName( TvJunction.name );
-
-		}
-
 		tool.setSelectionService( this.selectionService );
 
 	}

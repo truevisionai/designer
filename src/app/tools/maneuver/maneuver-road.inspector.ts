@@ -3,7 +3,7 @@
  */
 
 import { SerializedField } from "app/core/components/serialization";
-import { ManeuverMesh } from 'app/services/junction/ManeuverMesh';
+import { ManeuverMesh } from "app/services/junction/maneuver-mesh";
 import { ManeuverToolHelper } from "app/tools/maneuver/maneuver-tool-helper.service";
 
 export class ManeuverRoadInspector {

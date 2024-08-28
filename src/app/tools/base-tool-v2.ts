@@ -6,8 +6,100 @@
 import { BaseTool } from './base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Log } from "../core/utils/log";
+import { ObjectHandler } from 'app/core/object-handlers/object-handler';
+import { BaseObjectHandler } from 'app/core/object-handlers/base-object-handler';
 
 export abstract class ToolWithHandler<T> extends BaseTool<T> {
+
+	onPointerDownSelect ( e: PointerEventData ): void {
+
+		this.selectionService.handleSelection( e );
+
+	}
+
+	onPointerMoved ( e: PointerEventData ): void {
+
+		this.highlightWithHandlers( e );
+
+		if ( !this.isPointerDown ) return;
+
+		for ( const [ name, handler ] of this.getObjectHandlers() ) {
+
+			const selected = handler.getSelected();
+
+			if ( selected.length == 0 ) continue;
+
+			selected.forEach( object => this.dragObject( handler, object, e ) );
+
+			this.currentSelectedPointMoved = true;
+
+			break;
+
+		}
+
+	}
+
+	dragObject<T> ( handler: BaseObjectHandler<T>, object: T, e: PointerEventData ): void {
+
+		if ( !handler.isDraggingSupported() ) {
+			return;
+		}
+
+		this.disableControls();
+
+		if ( !handler.getDragStartPosition() ) {
+			handler.setDragStartPosition( e.point );
+		}
+
+		handler.updateDragDelta( e.point );
+
+		handler.setCurrentDragPosition( e.point );
+
+		handler.onDrag( object, e );
+
+	}
+
+	onPointerUp ( e: PointerEventData ): void {
+
+		this.enableControls();
+
+		if ( !this.currentSelectedPointMoved ) return;
+
+		for ( const [ name, handler ] of this.getObjectHandlers() ) {
+
+			const selected = handler.getSelected();
+
+			if ( selected.length > 0 ) {
+
+				selected.forEach( object => this.dragEndObject( handler, object, e ) );
+
+				break;
+
+			}
+
+		}
+
+		this.currentSelectedPointMoved = false;
+
+	}
+
+	dragEndObject<T> ( handler: BaseObjectHandler<T>, object: T, e: PointerEventData ): void {
+
+		if ( !handler.isDraggingSupported() ) {
+			return;
+		}
+
+		handler.setDragEndPosition( e.point );
+
+		handler.onDragEnd( object, e );
+
+		handler.setDragStartPosition( undefined );
+
+		handler.setCurrentDragPosition( undefined );
+
+		handler.setDragEndPosition( undefined );
+
+	}
 
 	override onDeleteKeyDown (): void {
 

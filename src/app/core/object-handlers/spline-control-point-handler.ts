@@ -51,8 +51,6 @@ export class SplineControlPointHandler extends BasePointHandler<SplineControlPoi
 
 	onDrag ( point: SplineControlPoint, e: PointerEventData ): void {
 
-		this.oldPosition = this.oldPosition || e.point;
-
 		point.setPosition( e.point );
 
 		this.splineGeometryService.updateGeometryAndBounds( point.spline );
@@ -63,9 +61,7 @@ export class SplineControlPointHandler extends BasePointHandler<SplineControlPoi
 
 	onDragEnd ( point: SplineControlPoint, e: PointerEventData ): void {
 
-		Commands.SetPointPosition( point.spline, point, e.point, this.oldPosition );
-
-		this.oldPosition = null;
+		Commands.SetPointPosition( point.spline, point, e.point, this.dragStartPosition );
 
 	}
 

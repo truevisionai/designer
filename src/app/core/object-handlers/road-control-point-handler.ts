@@ -47,8 +47,6 @@ export class RoadControlPointHandler extends BasePointHandler<RoadControlPoint> 
 
 	onDrag ( point: RoadControlPoint, e: PointerEventData ): void {
 
-		this.oldPosition = this.oldPosition || e.point;
-
 		point.setPosition( e.point );
 
 		this.splineGeometryService.updateGeometryAndBounds( point.spline );
@@ -59,9 +57,7 @@ export class RoadControlPointHandler extends BasePointHandler<RoadControlPoint> 
 
 	onDragEnd ( point: RoadControlPoint, e: PointerEventData ): void {
 
-		Commands.SetPointPosition( point.spline, point, e.point, this.oldPosition );
-
-		this.oldPosition = null;
+		Commands.SetPointPosition( point.spline, point, e.point, this.dragStartPosition );
 
 	}
 
