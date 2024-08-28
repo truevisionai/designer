@@ -19,13 +19,7 @@ export class Object3DMap<K, T extends Object3D> {
 
 	}
 
-	setParent ( parent: Object3D ) {
-
-		this.parent = parent;
-
-	}
-
-	add ( key: K, value: T ) {
+	add ( key: K, value: T ): void {
 
 		if ( this.map.has( key ) ) {
 
@@ -39,7 +33,7 @@ export class Object3DMap<K, T extends Object3D> {
 
 	}
 
-	remove ( key: K ) {
+	remove ( key: K ): void {
 
 		this.parent.remove( this.map.get( key ) );
 
@@ -58,19 +52,25 @@ export class Object3DMap<K, T extends Object3D> {
 
 	}
 
-	values () {
+	entries (): IterableIterator<[ K, T ]> {
+
+		return this.map.entries();
+
+	}
+
+	values (): IterableIterator<T> {
 
 		return this.map.values();
 
 	}
 
-	keys () {
+	keys (): IterableIterator<K> {
 
 		return this.map.keys();
 
 	}
 
-	clear () {
+	clear (): void {
 
 		this.map.forEach( value => {
 

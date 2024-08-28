@@ -109,9 +109,9 @@ export class CrosswalkInspector {
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	delete () {
+	delete (): void {
 
-		Commands.RemoveObject( this.roadObject );
+		Commands.RemoveObject( this.roadObject, true );
 
 	}
 }

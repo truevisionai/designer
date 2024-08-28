@@ -5,61 +5,123 @@
 import { TvCornerRoad } from "./tv-corner-road";
 import { TvCornerLocal } from "./tv-corner-local";
 import { ObjectFillType, TvLaneType } from "../tv-common";
-import { TvRoad } from "../tv-road.model";
 
 export class TvObjectOutline {
 
-	public cornerRoad: TvCornerRoad[] = [];
-	public cornerLocal: TvCornerLocal[] = [];
+	public readonly id: number;
 
-	public id: number;
+	private _cornerRoad: TvCornerRoad[] = [];
+
+	private _cornerLocal: TvCornerLocal[] = [];
+
+	private _fillType: ObjectFillType = ObjectFillType.none;
+
+	private _outer: boolean;
+
+	private _closed: boolean;
+
+	private _laneType: TvLaneType;
 
 	constructor (
-		public fillType: ObjectFillType = ObjectFillType.none,
-		public outer: boolean = false,
-		public closed: boolean = false,
-		public laneType: TvLaneType = TvLaneType.none,
+		id: number,
+		fillType: ObjectFillType = ObjectFillType.none,
+		outer: boolean = false,
+		closed: boolean = false,
+		laneType: TvLaneType = TvLaneType.none,
 	) {
+		this.id = id;
+		this._fillType = fillType;
+		this._outer = outer;
+		this._closed = closed;
+		this._laneType = laneType;
+	}
+
+	get cornerRoads (): TvCornerRoad[] {
+		return this._cornerRoad;
+	}
+
+	set cornerRoads ( value: TvCornerRoad[] ) {
+		this._cornerRoad = value;
+	}
+
+	get cornerLocals (): TvCornerLocal[] {
+		return this._cornerLocal;
+	}
+
+	set cornerLocals ( value: TvCornerLocal[] ) {
+		this._cornerLocal = value;
+	}
+
+	get fillType (): ObjectFillType {
+		return this._fillType;
+	}
+
+	set fillType ( value: ObjectFillType ) {
+		this._fillType = value;
+	}
+
+	get outer (): boolean {
+		return this._outer;
+	}
+
+	set outer ( value: boolean ) {
+		this._outer = value;
+	}
+
+	get closed (): boolean {
+		return this._closed;
+	}
+
+	set closed ( value: boolean ) {
+		this._closed = value;
+	}
+
+	get laneType (): TvLaneType {
+		return this._laneType;
+	}
+
+	set laneType ( value: TvLaneType ) {
+		this._laneType = value;
 	}
 
 	getCornerLocal ( i: number ): TvCornerLocal {
-		return this.cornerLocal[ i ];
+		return this.cornerLocals[ i ];
 	}
 
 	getCornerLocalCount (): number {
-		return this.cornerLocal.length;
+		return this.cornerLocals.length;
 	}
 
 	getCornerRoad ( i: number ): TvCornerRoad {
-		return this.cornerRoad[ i ];
+		return this.cornerRoads[ i ];
 	}
 
 	getCornerRoadCount (): number {
-		return this.cornerRoad.length;
+		return this.cornerRoads.length;
 	}
 
 	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
 
-		const index = this.cornerRoad.indexOf( tvCornerRoad );
+		const index = this.cornerRoads.indexOf( tvCornerRoad );
 
 		if ( index > -1 ) {
-			this.cornerRoad.splice( index, 1 );
+			this.cornerRoads.splice( index, 1 );
 		}
 	}
 
 	clone (): TvObjectOutline {
 
-		const clone = new TvObjectOutline( this.fillType, this.outer, this.closed, this.laneType );
+		const clone = new TvObjectOutline( this.id, this.fillType, this.outer, this.closed, this.laneType );
 
-		this.cornerRoad.forEach( cornerRoad => {
+		this.cornerRoads.forEach( cornerRoad => {
 
-			clone.cornerRoad.push( cornerRoad.clone() );
+			clone.cornerRoads.push( cornerRoad.clone() );
 
 		} );
 
-		this.cornerLocal.forEach( cornerLocal => {
+		this.cornerLocals.forEach( cornerLocal => {
 
-			clone.cornerLocal.push( cornerLocal.clone() );
+			clone.cornerLocals.push( cornerLocal.clone() );
 
 		} );
 

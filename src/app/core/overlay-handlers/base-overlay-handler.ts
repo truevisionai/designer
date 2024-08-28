@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { ToolManager } from "app/managers/tool-manager";
 import { OverlayHandler } from "./overlay-handler";
 
 export abstract class BaseOverlayHandler<T> implements OverlayHandler<T> {
@@ -52,5 +53,9 @@ export abstract class BaseOverlayHandler<T> implements OverlayHandler<T> {
 
 	removeFromHighlighted ( object: T ): void {
 		this.highlighted.delete( object );
+	}
+
+	updateOverlay ( object: object ): void {
+		ToolManager.getTool()?.onUpdateOverlay( object );
 	}
 }

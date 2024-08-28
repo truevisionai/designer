@@ -507,9 +507,9 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 			roadObject.outlines.forEach( outline => {
 
-				if ( outline.cornerRoad.length >= 2 ) {
+				if ( outline.cornerRoads.length >= 2 ) {
 
-					outline.cornerRoad.forEach( cornerRoad => {
+					outline.cornerRoads.forEach( cornerRoad => {
 
 						if ( marking.cornerReferences.includes( cornerRoad.attr_id ) ) {
 
@@ -521,9 +521,9 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 					} );
 
-				} else if ( outline.cornerLocal.length >= 2 ) {
+				} else if ( outline.cornerLocals.length >= 2 ) {
 
-					outline.cornerLocal.forEach( cornerLocal => {
+					outline.cornerLocals.forEach( cornerLocal => {
 
 						if ( marking.cornerReferences.includes( cornerLocal.attr_id ) ) {
 

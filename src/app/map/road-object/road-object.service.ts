@@ -26,7 +26,6 @@ export class RoadObjectService {
 	constructor (
 		private map: MapService,
 		private builder: RoadObjectBuilder,
-		private cornerFactory: CornerRoadFactory,
 	) {
 	}
 
@@ -110,8 +109,6 @@ export class RoadObjectService {
 
 		road.addRoadObject( roadObject );
 
-		this.showRoadObjectCorners( roadObject );
-
 	}
 
 	addRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
@@ -142,8 +139,6 @@ export class RoadObjectService {
 
 		this.removeObject3d( road, roadObject );
 
-		this.hideRoadObjectCorners( roadObject );
-
 		road?.removeRoadObject( roadObject.id );
 
 	}
@@ -168,7 +163,7 @@ export class RoadObjectService {
 
 	}
 
-	addCornerRoad ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {
+	addCornerAndUpdateObject ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {
 
 		if ( roadObject.markings.length == 0 ) {
 			roadObject.markings.push( this.createMarking() );
@@ -180,75 +175,31 @@ export class RoadObjectService {
 
 		roadObject.markings[ 0 ]?.addCornerRoad( cornerRoad );
 
-		roadObject.outlines[ 0 ]?.cornerRoad.push( cornerRoad );
+		roadObject.outlines[ 0 ]?.cornerRoads.push( cornerRoad );
 
 		this.updateRoadObject( roadObject.road, roadObject );
 
 	}
 
-	removeCornerRoad ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {
+	removeCornerAndUpdateObject ( roadObject: TvRoadObject, cornerRoad: TvCornerRoad ): void {
 
 		roadObject.markings[ 0 ]?.removeCornerRoad( cornerRoad );
 
-		const index = roadObject.outlines[ 0 ]?.cornerRoad.indexOf( cornerRoad );
+		const index = roadObject.outlines[ 0 ]?.cornerRoads.indexOf( cornerRoad );
 
 		if ( index > -1 ) {
-			roadObject.outlines[ 0 ]?.cornerRoad.splice( index, 1 );
+			roadObject.outlines[ 0 ]?.cornerRoads.splice( index, 1 );
 		}
 
 		this.updateRoadObject( roadObject.road, roadObject );
 
 	}
 
-	showRoad ( road: TvRoad ): void {
-
-		road.getRoadObjects().forEach( object => {
-
-			this.showRoadObjectCorners( object );
-
-		} );
-
-	}
-
-	showRoadObjectCorners ( roadObject: TvRoadObject ): void {
-
-		roadObject.outlines.forEach( outline => {
-
-			outline.cornerRoad.forEach( corner => {
-
-			} );
-
-		} );
-
-	}
-
-	hideRoad ( road: TvRoad ): void {
-
-		road.getRoadObjects().forEach( object => {
-
-			this.hideRoadObjectCorners( object );
-
-		} );
-
-	}
-
-	hideRoadObjectCorners ( object: TvRoadObject ) {
-
-		object.outlines.forEach( outline => {
-
-			outline.cornerRoad.forEach( corner => {
-
-			} );
-
-		} );
-
-	}
-
 	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ) {
 
-		const cornerLocal = this.cornerFactory.createCornerLocalOutline( outline, u, v, z, height );
+		const cornerLocal = CornerRoadFactory.createCornerLocalOutline( outline, u, v, z, height );
 
-		outline.cornerLocal.push( cornerLocal );
+		outline.cornerLocals.push( cornerLocal );
 
 		return cornerLocal;
 
@@ -256,38 +207,15 @@ export class RoadObjectService {
 
 	createOutline ( roadObject: TvRoadObject ): TvObjectOutline {
 
-		const outline = new TvObjectOutline();
+		return new TvObjectOutline( roadObject.outlines.length );
 
-		outline.id = roadObject.outlines.length;
-
-		return outline;
-
-	}
-
-	showMarkingObjects (): void {
-
-		this.map.map.getRoads().forEach( road => {
-
-			this.showRoad( road );
-
-		} );
-
-	}
-
-	hideMarkingObjects (): void {
-
-		this.map.map.getRoads().forEach( road => {
-
-			this.hideRoad( road );
-
-		} );
 	}
 
 	findByCornerRoad ( road: TvRoad, corner: TvCornerRoad ): TvRoadObject {
 
 		return road.getRoadObjects()
 			.find( roadObject => roadObject.outlines
-				.find( outline => outline.cornerRoad.includes( corner ) ) );
+				.find( outline => outline.cornerRoads.includes( corner ) ) );
 
 	}
 

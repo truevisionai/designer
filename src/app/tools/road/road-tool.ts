@@ -354,7 +354,6 @@ export class RoadTool extends BaseTool<AbstractSpline> {
 
 		this.showObjectInspector( object );
 
-
 	}
 
 	onObjectUnselected ( object: Object ): void {

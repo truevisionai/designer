@@ -1525,12 +1525,10 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private parseObjectOutline ( xml: XmlElement, road: TvRoad ): TvObjectOutline {
 
-		const outline = new TvObjectOutline();
-
-		outline.id = parseFloat( xml.attr_id ) || 0;
+		const outline = new TvObjectOutline( parseInt( xml.attr_id ) ?? 0 );
 
 		readXmlArray( xml.cornerRoad, xml =>
-			outline.cornerRoad.push( this.parseCornerRoad( xml, road ) )
+			outline.cornerRoads.push( this.parseCornerRoad( xml, road ) )
 		);
 
 		return outline;

@@ -14,6 +14,7 @@ import { InvalidArgumentException, NoGeometriesFound } from 'app/exceptions/exce
 import { TvRoadLink } from "../../map/models/tv-road-link";
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
+import { RoadWidthService } from './road-width.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -90,6 +91,30 @@ export class RoadGeometryService {
 	findRoadPositionAt ( road: TvRoad, position: Vector3 ): TvPosTheta {
 
 		return road.getPosThetaByPosition( position );
+
+	}
+
+	findRoadCoordAt ( road: TvRoad, position: Vector3 ): TvRoadCoord {
+
+		return this.findRoadPositionAt( road, position ).toRoadCoord( road );
+
+	}
+
+	findRoadCoordStrict ( road: TvRoad, position: Vector3 ): TvRoadCoord | undefined {
+
+		const roadCoord = this.findRoadCoordAt( road, position );
+
+		const width = roadCoord.t > 0 ?
+			RoadWidthService.instance.findLeftWidthAt( roadCoord.road, roadCoord.s ) :
+			RoadWidthService.instance.findRightWidthAt( roadCoord.road, roadCoord.s );
+
+		if ( Math.abs( roadCoord.t ) > width ) return;
+
+		if ( Math.abs( roadCoord.s ) < 0.01 ) return;
+
+		if ( Math.abs( roadCoord.s ) > road.getLength() ) return;
+
+		return roadCoord;
 
 	}
 

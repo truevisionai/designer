@@ -769,18 +769,18 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	public writeObjectOutlineV2 ( objectOutline: TvObjectOutline ): XmlElement {
+	public writeObjectOutlineV2 ( outline: TvObjectOutline ): XmlElement {
 
 		return {
-			attr_id: objectOutline.id,
-			attr_fillType: objectOutline.fillType,
-			attr_outer: objectOutline.outer,
-			attr_closed: objectOutline.closed,
-			attr_laneType: objectOutline.laneType,
-			cornerRoad: objectOutline?.cornerRoad.map(
+			attr_id: outline.id,
+			attr_fillType: outline.fillType,
+			attr_outer: outline.outer,
+			attr_closed: outline.closed,
+			attr_laneType: outline.laneType,
+			cornerRoad: outline.cornerRoads.map(
 				cornerRoad => this.writeObjectCornerRoad( cornerRoad )
 			),
-			cornerLocal: objectOutline?.cornerLocal.map(
+			cornerLocal: outline.cornerLocals.map(
 				cornerLocal => this.writeObjectCornerLocal( cornerLocal )
 			),
 		};

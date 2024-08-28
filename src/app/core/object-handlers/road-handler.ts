@@ -11,7 +11,7 @@ import { BaseObjectHandler } from "./base-object-handler";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadObjectHandler extends BaseObjectHandler<TvRoad> {
+export class RoadHandler extends BaseObjectHandler<TvRoad> {
 
 	constructor (
 		public roadService: RoadService,
@@ -22,43 +22,43 @@ export class RoadObjectHandler extends BaseObjectHandler<TvRoad> {
 
 	onSelected ( road: TvRoad ): void {
 
-		this.roadDebugService.showRoadBorderLine( road );
+		// TODO: implement this
 
 	}
 
 	onUnselected ( road: TvRoad ): void {
 
-		this.roadDebugService.removeRoadBorderLine( road );
+		// TODO: implement this
 
 	}
 
 	onAdded ( object: TvRoad ): void {
 
-		// throw new Error( "Method not implemented." );
+		// TODO: implement this
 
 	}
 
 	onUpdated ( object: TvRoad ): void {
 
-		// throw new Error( "Method not implemented." );
+		// TODO: implement this
 
 	}
 
 	onRemoved ( object: TvRoad ): void {
 
-		// throw new Error( "Method not implemented." );
+		// TODO: implement this
 
 	}
 
 	onDrag ( object: TvRoad ): void {
 
-		// throw new Error( "Method not implemented." );
+		// TODO: implement this
 
 	}
 
 	onDragEnd ( object: TvRoad ): void {
 
-		// throw new Error( "Method not implemented." );
+		// TODO: implement this
 
 	}
 

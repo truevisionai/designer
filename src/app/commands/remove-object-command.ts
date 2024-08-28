@@ -7,26 +7,34 @@ import { MapEvents } from "../events/map-events";
 
 export class RemoveObjectCommand extends BaseCommand {
 
-    constructor ( private object: object | object[] ) {
-        super();
-    }
+	constructor ( private object: object | object[], private fireUnselectEvent = false ) {
+		super();
+	}
 
-    execute () {
+	execute (): void {
 
-        MapEvents.objectRemoved.emit( this.object );
+		if ( this.fireUnselectEvent ) {
+			MapEvents.objectUnselected.emit( this.object );
+		}
 
-    }
+		MapEvents.objectRemoved.emit( this.object );
 
-    undo (): void {
+	}
 
-        MapEvents.objectAdded.emit( this.object );
+	undo (): void {
 
-    }
+		MapEvents.objectAdded.emit( this.object );
 
-    redo (): void {
+		if ( this.fireUnselectEvent ) {
+			MapEvents.objectSelected.emit( this.object );
+		}
 
-        this.execute();
+	}
 
-    }
+	redo (): void {
+
+		this.execute();
+
+	}
 
 }

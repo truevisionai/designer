@@ -959,16 +959,14 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	public parseObjectOutline ( xml: XmlElement, road: TvRoad ): TvObjectOutline {
 
-		const outline = new TvObjectOutline();
-
-		outline.id = parseFloat( xml.attr_id );
+		const outline = new TvObjectOutline( parseInt( xml.attr_id ) );
 
 		readXmlArray( xml.cornerRoad, xml =>
-			outline.cornerRoad.push( this.parseCornerRoad( xml, road ) )
+			outline.cornerRoads.push( this.parseCornerRoad( xml, road ) )
 		);
 
 		readXmlArray( xml.cornerLocal, xml =>
-			outline.cornerLocal.push( this.parseCornerLocal( xml ) )
+			outline.cornerLocals.push( this.parseCornerLocal( xml ) )
 		);
 
 		return outline;

@@ -255,6 +255,14 @@ export class TvRoadObject {
 		return this.repeat[ i ];
 	}
 
+	getOutlineCount (): number {
+		return this.outlines.length;
+	}
+
+	getOutlines (): TvObjectOutline[] {
+		return this.outlines;
+	}
+
 	addRepeat (
 		s: number,
 		length: number,
@@ -310,7 +318,7 @@ export class TvRoadObject {
 
 	findCornerRoadById ( id: number ) {
 		for ( const outline of this.outlines ) {
-			for ( const corner of outline.cornerRoad ) {
+			for ( const corner of outline.cornerRoads ) {
 				if ( corner.attr_id == id ) {
 					return corner;
 				}

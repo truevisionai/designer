@@ -59,6 +59,12 @@ export class AppInspector {
 
 	}
 
+	public static getCurrentInspectorName (): string {
+
+		return this.currentInspector ? this.currentInspector.name : '';
+
+	}
+
 	public static getInspectorData (): any {
 
 		return this.currentInspectorData;

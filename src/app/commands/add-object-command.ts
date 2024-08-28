@@ -15,22 +15,22 @@ export class AddObjectCommand extends BaseCommand {
 		if ( object == null ) TvConsole.warn( 'object cannot be null' );
 	}
 
-    execute () {
+	execute (): void {
 
-        MapEvents.objectAdded.emit( this.object );
+		MapEvents.objectAdded.emit( this.object );
 
-    }
+	}
 
-    undo (): void {
+	undo (): void {
 
-        MapEvents.objectRemoved.emit( this.object );
+		MapEvents.objectRemoved.emit( this.object );
 
-    }
+	}
 
-    redo (): void {
+	redo (): void {
 
-        this.execute();
+		this.execute();
 
-    }
+	}
 
 }

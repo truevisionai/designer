@@ -14,17 +14,13 @@ import { CornerRoadFactory } from './corner-road.factory';
 } )
 export class RoadObjectFactory {
 
-	constructor (
-		private cornerFactory: CornerRoadFactory
-	) { }
-
 	static createMockRoadObject (): TvRoadObject {
 
 		return new TvRoadObject( TvRoadObjectType.none, 'none', TvRoadObject.counter++, 0, 0 );
 
 	}
 
-	createRoadObject ( roadCoord: TvRoadCoord, type: TvRoadObjectType ): TvRoadObject | null {
+	static createRoadObject ( type: TvRoadObjectType, roadCoord: TvRoadCoord ): TvRoadObject | null {
 
 		switch ( type ) {
 
@@ -37,17 +33,17 @@ export class RoadObjectFactory {
 
 	}
 
-	private createCrosswalkObject ( roadCoord: TvRoadCoord ): TvRoadObject {
+	private static createCrosswalkObject ( roadCoord: TvRoadCoord ): TvRoadObject {
 
-		const point = this.cornerFactory.createFromCoord( roadCoord );
+		const point = CornerRoadFactory.createFromCoord( roadCoord );
 
 		const marking = new TvObjectMarking();
 
 		marking.addCornerRoad( point );
 
-		const outline = new TvObjectOutline();
+		const outline = new TvObjectOutline( 0 );
 
-		outline.cornerRoad.push( point );
+		outline.cornerRoads.push( point );
 
 		const crosswalk = new TvRoadObject( TvRoadObjectType.crosswalk, 'crosswalk', TvRoadObject.counter++, roadCoord.s, roadCoord.t );
 

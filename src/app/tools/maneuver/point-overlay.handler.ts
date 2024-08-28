@@ -5,7 +5,6 @@
 import { Injectable } from "@angular/core";
 import { BaseOverlayHandler } from "app/core/overlay-handlers/base-overlay-handler";
 import { Log } from "app/core/utils/log";
-import { ToolManager } from "app/managers/tool-manager";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { RoadControlPoint } from "app/objects/road-control-point";
 import { RoadTangentPoint } from "app/objects/road-tangent-point";
@@ -14,11 +13,7 @@ import { SplineControlPoint } from "app/objects/spline-control-point";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PointOverlayHandler extends BaseOverlayHandler<AbstractControlPoint> {
-
-	constructor () {
-		super();
-	}
+export class PointOverlayHandler<T extends AbstractControlPoint> extends BaseOverlayHandler<T> {
 
 	onHighlight ( object: AbstractControlPoint ): void {
 
@@ -78,15 +73,15 @@ export class PointOverlayHandler extends BaseOverlayHandler<AbstractControlPoint
 
 		if ( object instanceof SplineControlPoint ) {
 
-			ToolManager.getTool()?.onUpdateOverlay( object.spline );
+			this.updateOverlay( object.spline );
 
 		} else if ( object instanceof RoadControlPoint ) {
 
-			ToolManager.getTool()?.onUpdateOverlay( object.spline );
+			this.updateOverlay( object.spline );
 
 		} else if ( object instanceof RoadTangentPoint ) {
 
-			ToolManager.getTool()?.onUpdateOverlay( object.spline );
+			this.updateOverlay( object.spline );
 
 		} else {
 

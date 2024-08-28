@@ -17,7 +17,7 @@ import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select
 import { LaneOverlayHandler } from 'app/core/overlay-handlers/lane-overlay-handler.service';
 import { LaneToolOverlayHandler } from 'app/core/overlay-handlers/lane-tool.overlay';
 import { LaneObjectHandler } from 'app/core/object-handlers/lane-object-handler';
-import { RoadObjectHandler } from 'app/core/object-handlers/road-object-handler';
+import { RoadHandler } from 'app/core/object-handlers/road-handler';
 import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
 import { laneToolHints } from './lane-tool.hints';
 
@@ -35,7 +35,7 @@ export class LaneTool extends ToolWithHandler<TvLane> {
 		super();
 
 		this.addObjectHandler( TvLane.name, helper.base.injector.get( LaneObjectHandler ) );
-		this.addObjectHandler( TvRoad.name, helper.base.injector.get( RoadObjectHandler ) );
+		this.addObjectHandler( TvRoad.name, helper.base.injector.get( RoadHandler ) );
 
 		this.addOverlayHandler( TvRoad.name, helper.base.injector.get( LaneToolOverlayHandler ) );
 		this.addOverlayHandler( TvLane.name, helper.base.injector.get( LaneOverlayHandler ) );

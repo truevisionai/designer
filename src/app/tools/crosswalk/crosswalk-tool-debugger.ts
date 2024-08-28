@@ -3,8 +3,6 @@
  */
 
 import { Injectable } from "@angular/core";
-import { DebugState } from "app/services/debug/debug-state";
-import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
@@ -14,81 +12,53 @@ import { TvCornerRoad } from "../../map/models/objects/tv-corner-road";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { Log } from "../../core/utils/log";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
+import { DebugDrawService } from "app/services/debug/debug-draw.service";
+import { TvObjectOutline } from "app/map/models/objects/tv-object-outline";
+import { DebugLine } from "app/objects/debug-line";
+import { Object3DMap } from "app/core/models/object3d-map";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
+export class CrosswalkToolDebugger {
 
-	private nodes: Object3DArrayMap<TvRoad, Object3D[]>;
+	private nodes: Object3DArrayMap<TvRoadObject, Object3D[]>;
+
+	private lines: Object3DMap<TvRoadObject, Object3D>;
 
 	private nodeCache: Map<TvCornerRoad, CornerControlPoint>;
 
-	constructor ( private roadDebugger: RoadDebugService ) {
+	private lineCache: Map<TvRoadObject, DebugLine<any>>;
 
-		super();
-
-		this.nodes = new Object3DArrayMap();
+	constructor ( private roadDebugger: RoadDebugService, private debugService: DebugDrawService ) {
 
 		this.nodeCache = new Map();
 
-	}
+		this.lineCache = new Map();
 
-	setDebugState ( road: TvRoad, state: DebugState ): void {
+		this.nodes = new Object3DArrayMap();
 
-		this.setBaseState( road, state );
-
-	}
-
-	onHighlight ( road: TvRoad ): void {
-
-		this.roadDebugger.showRoadBorderLine( road );
+		this.lines = new Object3DMap();
 
 	}
 
-	onUnhighlight ( road: TvRoad ): void {
-
-		this.roadDebugger.removeRoadBorderLine( road );
-
-	}
-
-	onSelected ( road: TvRoad ): void {
-
-		for ( const roadObject of road.getRoadObjects() ) {
-
-			this.showRoadObject( road, roadObject );
-
-		}
-
-	}
-
-	onUnselected ( road: TvRoad ): void {
-
-		this.nodes.removeKey( road );
-
-	}
-
-	onDefault ( road: TvRoad ): void {
-
-		this.nodes.removeKey( road );
-
-	}
-
-	onRemoved ( road: TvRoad ): void {
-
-		this.nodes.removeKey( road );
-
-	}
-
-	showRoadObject ( road: TvRoad, roadObject: TvRoadObject ) {
+	addGizmo ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		for ( const outline of roadObject.outlines ) {
 
-			for ( const corner of outline.cornerRoad ) {
+			for ( const corner of outline.cornerRoads ) {
 
 				const node = this.createNode( road, roadObject, corner );
 
-				this.nodes.addItem( road, node );
+				this.nodes.addItem( roadObject, node );
+
+			}
+
+			if ( outline.getCornerRoadCount() > 1 ) {
+
+				const line = this.createLine( road, roadObject, outline );
+
+				this.lines.add( roadObject, line );
 
 			}
 
@@ -96,7 +66,29 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNode ( road: TvRoad, roadObject: TvRoadObject, corner: TvCornerRoad ) {
+	removeGizmo ( roadObject: TvRoadObject ): void {
+
+		this.nodes.removeKey( roadObject );
+
+		this.lines.remove( roadObject );
+
+	}
+
+	removeAll ( road: TvRoad ): void {
+
+		this.nodes.forEachKey( ( roadObject: TvRoadObject ) => {
+
+			if ( roadObject.road == road ) {
+
+				this.removeGizmo( roadObject );
+
+			}
+
+		} );
+
+	}
+
+	createNode ( road: TvRoad, roadObject: TvRoadObject, corner: TvCornerRoad ): CornerControlPoint {
 
 		const position = RoadGeometryService.instance.findRoadPosition( road, corner.s, corner.t )
 
@@ -122,15 +114,40 @@ export class CrosswalkToolDebugger extends BaseDebugger<TvRoad> {
 		node.position.copy( position.position );
 
 		return node;
+
+	}
+
+	createLine ( road: TvRoad, roadObject: TvRoadObject, outline: TvObjectOutline ): DebugLine<TvRoadObject> {
+
+		const points = outline.cornerRoads.map( corner => RoadGeometryService.instance.findRoadPosition( road, corner.s, corner.t ) );
+
+		let line: DebugLine<TvRoadObject>;
+
+		if ( this.lineCache.has( roadObject ) ) {
+
+			line = this.lineCache.get( roadObject );
+
+			this.debugService.updateDebugLine( line, points.map( point => point.position ) )
+
+		} else {
+
+			line = this.debugService.createDebugLine( roadObject, points.map( point => point.position ) );
+
+			this.lineCache.set( roadObject, line );
+
+		}
+
+		return line;
+
 	}
 
 	clear (): void {
 
 		this.nodes.clear();
 
-		this.roadDebugger.clear();
+		this.lines.clear();
 
-		super.clear();
+		this.roadDebugger.clear();
 
 	}
 }

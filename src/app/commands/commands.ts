@@ -4,6 +4,7 @@
 
 import { Vector3 } from "three";
 import { AddObjectCommand } from "./add-object-command";
+import { AddSelectCommand } from "./add-select-command";
 import { CommandHistory } from "./command-history";
 import { RemoveObjectCommand } from "./remove-object-command";
 import { SelectObjectCommand } from "./select-object-command";
@@ -34,15 +35,21 @@ export abstract class Commands {
 
 	}
 
-	static RemoveObject ( object: object | object[] ): void {
+	static RemoveObject ( object: object | object[], fireUnselectEvent = false ): void {
 
-		CommandHistory.execute( new RemoveObjectCommand( object ) );
+		CommandHistory.execute( new RemoveObjectCommand( object, fireUnselectEvent ) );
 
 	}
 
 	static AddObject ( object: object | object[] ): void {
 
 		CommandHistory.execute( new AddObjectCommand( object ) );
+
+	}
+
+	static AddSelect ( object: object | object[], previousObject: object | object[] ): void {
+
+		CommandHistory.execute( new AddSelectCommand( object, previousObject ) );
 
 	}
 

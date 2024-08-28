@@ -55,7 +55,7 @@ export class MarkingObjectBuilder {
 
 		roadObject.outlines.forEach( outline => {
 
-			outline.cornerRoad.forEach( cornerRoad => {
+			outline.cornerRoads.forEach( cornerRoad => {
 
 				if ( marking.cornerReferences.includes( cornerRoad.attr_id ) ) {
 
