@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Vector2FieldComponent } from './vector2-field.component';
-import { Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 
 describe( 'Vector2FieldComponent', () => {
 
@@ -16,7 +16,7 @@ describe( 'Vector2FieldComponent', () => {
 	beforeEach( () => {
 		fixture = TestBed.createComponent( Vector2FieldComponent );
 		component = fixture.componentInstance;
-		component.value = new Vector3();
+		component.value = new Vector2();
 		fixture.detectChanges();
 	} );
 
