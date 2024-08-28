@@ -144,7 +144,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	}
 
-	onControlPointChanged ( $position: Vector2 ): void {
+	onControlPointChanged ( $position: Vector3 ): void {
 
 		const newPosition = new Vector3( $position.x, $position.y, 0 );
 

@@ -7,13 +7,13 @@
 	[value]="timeHeadwayCondition.value"
 	label="Value"></app-double-field>
 
-<app-string-field (changed)="onFreespaceChanged($event)"
+<app-boolean-field (changed)="onFreespaceChanged($event)"
 	[value]="timeHeadwayCondition.freespace"
-	label="Freespace"></app-string-field>
+	label="Freespace"></app-boolean-field>
 
-<app-string-field (changed)="onAlongRouteChanged($event)"
+<app-boolean-field (changed)="onAlongRouteChanged($event)"
 	[value]="timeHeadwayCondition.alongRoute"
-	label="Along Route"></app-string-field>
+	label="Along Route"></app-boolean-field>
 
 <app-enum-field (changed)="onRuleChanged($event)"
 	[enum]="rules"

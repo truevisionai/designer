@@ -16,10 +16,10 @@
 		label="Date"></app-string-field>
 	<app-string-field [value]="scenario.fileHeader.description"
 		label="Description"></app-string-field>
-	<app-string-field [value]="scenario.fileHeader.revMajor"
-		label="Version Major"></app-string-field>
-	<app-string-field [value]="scenario.fileHeader.revMinor"
-		label="Version Minor"></app-string-field>
+	<app-double-field [value]="scenario.fileHeader.revMajor"
+		label="Version Major"></app-double-field>
+	<app-double-field [value]="scenario.fileHeader.revMinor"
+		label="Version Minor"></app-double-field>
 
 	<br />
 	<app-string-field [value]="scenario.roadNetwork.logics?.filepath"

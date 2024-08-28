@@ -59,9 +59,10 @@
 
 	<div *ngIf="controlPoint"
 		class="inspector-editor-padding">
-		<app-vector2-field (changed)="onControlPointChanged($event)"
+		<app-vector3-field (changed)="onControlPointChanged($event)"
 			[value]="controlPoint.position"
-			label="Control Point"></app-vector2-field>
+			[z]="false"
+			label="Control Point"></app-vector3-field>
 		<app-enum-field [disabled]="true"
 			*ngIf="segmentType"
 			[enum]="segmentTypes"

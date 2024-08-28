@@ -7,11 +7,11 @@
 	[value]="distanceCondition.rule"
 	label="Rule"></app-enum-field>
 
-<app-string-field [value]="distanceCondition.freespace"
-	label="Freespace"></app-string-field>
+<app-boolean-field [value]="distanceCondition.freespace"
+	label="Freespace"></app-boolean-field>
 
-<app-string-field [value]="distanceCondition.alongRoute"
-	label="Along route"></app-string-field>
+<app-boolean-field [value]="distanceCondition.alongRoute"
+	label="Along route"></app-boolean-field>
 
 <app-position-editor (positionChanged)="onPositionChanged($event)"
 	[position]="distanceCondition.position">

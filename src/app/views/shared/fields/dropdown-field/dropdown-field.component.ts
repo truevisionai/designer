@@ -12,7 +12,7 @@ import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.c
 	styleUrls: [ './dropdown-field.component.css' ],
 	providers: [ TitleCasePipe ]
 } )
-export class DropdownFieldComponent extends AbstractFieldComponent implements OnInit {
+export class DropdownFieldComponent extends AbstractFieldComponent<any> implements OnInit {
 
 	@Input() value: any;
 

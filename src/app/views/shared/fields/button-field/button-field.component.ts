@@ -10,7 +10,7 @@ import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.c
 	templateUrl: './button-field.component.html',
 	styleUrls: [ './button-field.component.scss' ]
 } )
-export class ButtonFieldComponent extends AbstractFieldComponent {
+export class ButtonFieldComponent extends AbstractFieldComponent<any> {
 
 	@Input() value: any;
 

@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Vector2, Vector3 } from 'three';
+import { Vector2 } from 'three';
 import { AbstractFieldComponent } from '../abstract-field.component';
 
 @Component( {
@@ -11,9 +11,9 @@ import { AbstractFieldComponent } from '../abstract-field.component';
 	templateUrl: './vector2-field.component.html',
 	styleUrls: [ './vector2-field.component.scss' ]
 } )
-export class Vector2FieldComponent extends AbstractFieldComponent<Vector2 | Vector3> implements OnInit {
+export class Vector2FieldComponent extends AbstractFieldComponent<Vector2> implements OnInit {
 
-	@Input() value: Vector2 | Vector3;
+	@Input() value: Vector2;
 
 	@Input() label: string;
 

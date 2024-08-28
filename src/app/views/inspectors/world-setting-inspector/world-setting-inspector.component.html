@@ -38,10 +38,10 @@
 		min="-180">
 	</app-double-field>
 
-	<app-vector2-field (changed)="onOffsetChanged($event)"
+	<app-vector3-field (changed)="onOffsetChanged($event)"
 		[value]="data.positionOffset"
 		label="Offset From Center">
-	</app-vector2-field>
+	</app-vector3-field>
 
 	<app-double-field (changed)="onHeadingOffsetChanged($event)"
 		[value]="data.headingOffset"
