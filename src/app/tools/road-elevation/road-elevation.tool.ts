@@ -9,9 +9,9 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { BaseTool } from '../base-tool'
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { DepSelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
-import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { RoadElevationToolService } from './road-elevation-tool.service';
 import { RoadLineMovingStrategy } from 'app/core/strategies/move-strategies/road-line-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
@@ -52,9 +52,9 @@ export class RoadElevationTool extends BaseTool<any> {
 
 		this.setHint( 'use LEFT CLICK to select a road' );
 
-		this.selectionService.registerStrategy( ElevationControlPoint.name, new ControlPointStrategy<ElevationControlPoint>() );
+		this.selectionService.registerStrategy( ElevationControlPoint.name, new DepPointStrategy<ElevationControlPoint>() );
 
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new DepSelectRoadStrategy() );
 
 		this.tool.base.addMovingStrategy( new RoadLineMovingStrategy() );
 

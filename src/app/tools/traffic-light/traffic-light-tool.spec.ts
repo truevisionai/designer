@@ -228,10 +228,9 @@ describe( 'TrafficLightTool: Handlers', () => {
 
 		tool.init();
 
-		expect( tool.hasHandlersFor( JunctionSignaliztion.name ) ).toBeTrue();
-		expect( tool.hasHandlersFor( JunctionGateLine.name ) ).toBeTrue();
-		expect( tool.hasHandlersFor( ManeuverMesh.name ) ).toBeTrue();
-		expect( tool.hasHandlersFor( JunctionOverlay.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( JunctionSignaliztion.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( JunctionGateLine.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( JunctionOverlay.name ) ).toBeTrue();
 
 	} );
 
@@ -240,7 +239,6 @@ describe( 'TrafficLightTool: Handlers', () => {
 		tool.init();
 
 		expect( tool.hasSelectionStrategy( JunctionGateLine.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( ManeuverMesh.name ) ).toBeTrue();
 		expect( tool.hasSelectionStrategy( JunctionOverlay.name ) ).toBeTrue();
 
 	} );

@@ -36,6 +36,10 @@ export class TvLaneSection {
 		this.singleSide = singleSide;
 	}
 
+	getRoad (): TvRoad {
+		return this.road;
+	}
+
 	getLength (): number {
 		return this.length;
 	}

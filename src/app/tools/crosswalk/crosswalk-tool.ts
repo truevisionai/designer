@@ -5,27 +5,27 @@
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { ToolType } from '../tool-types.enum';
-import { ControlPointStrategy } from '../../core/strategies/select-strategies/control-point-strategy';
+import { DepPointStrategy } from '../../core/strategies/select-strategies/control-point-strategy';
 import { RoadCoordStrategy } from '../../core/strategies/select-strategies/road-coord-strategy';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { CrosswalkToolHelper } from "./crosswalk-tool.helper";
 import { CrosswalkInspector } from './crosswalk.inspector';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { CornerControlPoint } from './crosswalk-tool-debugger';
-import { CornerPointOverlayHandler } from "./corner-point-overlay-handler";
-import { RoadHandler } from "../../core/object-handlers/road-handler";
+import { CornerPointVisualizer } from "./corner-point-visualizer";
+import { RoadController } from "../../core/object-handlers/road-handler";
 import { ToolWithHandler } from "../base-tool-v2";
-import { CrosswalkToolOverlayHandler } from "./crosswalk-tool-overlay-handler";
-import { CornerControlPointHandler } from './corner-point-handler';
-import { CrosswalkOverlayHandler } from './crosswalk-overlay-handler';
-import { CrosswalkHandler } from "./crosswalk-handler";
+import { CrosswalkToolRoadVisualizer } from "./crosswalk-tool-overlay-handler";
+import { CornerControlPointController } from './corner-point-controller';
+import { CrosswalkVisualizer } from './crosswalk-visualizer';
+import { CrosswalkController } from "./crosswalk-controller";
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { Commands } from 'app/commands/commands';
 
-export class CrosswalkTool extends ToolWithHandler<any> {
+export class CrosswalkTool extends ToolWithHandler {
 
 	name: string = 'CrosswalkTool';
 
@@ -62,9 +62,9 @@ export class CrosswalkTool extends ToolWithHandler<any> {
 
 		this.tool.base.reset();
 
-		this.selectionService.registerStrategy( CornerControlPoint.name, new ControlPointStrategy() );
-		this.selectionService.registerStrategy( TvRoadObject.name, new ControlPointStrategy() );
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy( false ) );
+		this.selectionService.registerStrategy( CornerControlPoint.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( TvRoadObject.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new RoadSelectionStrategy() );
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
@@ -76,13 +76,13 @@ export class CrosswalkTool extends ToolWithHandler<any> {
 
 	private addHandlers (): void {
 
-		this.addObjectHandler( CornerControlPoint.name, this.tool.base.injector.get( CornerControlPointHandler ) );
-		this.addObjectHandler( TvRoadObject.name, this.tool.base.injector.get( CrosswalkHandler ) );
-		this.addObjectHandler( TvRoad.name, this.tool.base.injector.get( RoadHandler ) );
+		this.addController( CornerControlPoint.name, this.tool.base.injector.get( CornerControlPointController ) );
+		this.addController( TvRoadObject.name, this.tool.base.injector.get( CrosswalkController ) );
+		this.addController( TvRoad.name, this.tool.base.injector.get( RoadController ) );
 
-		this.addOverlayHandler( CornerControlPoint.name, this.tool.base.injector.get( CornerPointOverlayHandler ) );
-		this.addOverlayHandler( TvRoadObject.name, this.tool.base.injector.get( CrosswalkOverlayHandler ) );
-		this.addOverlayHandler( TvRoad.name, this.tool.base.injector.get( CrosswalkToolOverlayHandler ) );
+		this.addVisualizer( CornerControlPoint.name, this.tool.base.injector.get( CornerPointVisualizer ) );
+		this.addVisualizer( TvRoadObject.name, this.tool.base.injector.get( CrosswalkVisualizer ) );
+		this.addVisualizer( TvRoad.name, this.tool.base.injector.get( CrosswalkToolRoadVisualizer ) );
 
 	}
 
@@ -161,18 +161,5 @@ export class CrosswalkTool extends ToolWithHandler<any> {
 
 	}
 
-	showObjectInspector ( object: object ): void {
-
-		if ( object instanceof CornerControlPoint ) {
-
-			this.setInspector( new CrosswalkInspector( object.roadObject, object.roadObject.markings[ 0 ] ) );
-
-		} else if ( object instanceof TvRoadObject ) {
-
-			this.setInspector( new CrosswalkInspector( object, object.markings[ 0 ] ) );
-
-		}
-
-	}
 
 }

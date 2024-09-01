@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseOverlayHandler } from "./base-overlay-handler";
+import { BaseVisualizer } from "./base-visualizer";
 import { AbstractSpline } from "../shapes/abstract-spline";
 import { SplineDebugService } from "../../services/debug/spline-debug.service";
 import { COLOR } from "../../views/shared/utils/colors.service";
@@ -11,7 +11,7 @@ import { COLOR } from "../../views/shared/utils/colors.service";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineOverlayHandler extends BaseOverlayHandler<AbstractSpline> {
+export abstract class SplineVisualizer<T extends AbstractSpline> extends BaseVisualizer<T> {
 
 	constructor (
 		private splineDebugService: SplineDebugService,
@@ -105,5 +105,23 @@ export class SplineOverlayHandler extends BaseOverlayHandler<AbstractSpline> {
 		this.highlighted.clear();
 
 	}
+
+}
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class AutoSplineVisualizer extends SplineVisualizer<AbstractSpline> {
+
+	// NOTE: Need separate visualizer to avoid highlighting bugs
+
+}
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ExplicitSplineVisualizer extends SplineVisualizer<AbstractSpline> {
+
+	// NOTE: Need separate visualizer to avoid highlighting bugs
 
 }

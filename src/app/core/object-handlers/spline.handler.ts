@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseObjectHandler } from "./base-object-handler";
+import { BaseController } from "./base-controller";
 import { AutoSpline } from "../shapes/auto-spline-v2";
 import { SplineService } from "../../services/spline/spline.service";
 import { PointerEventData } from "../../events/pointer-event-data";
@@ -11,15 +11,17 @@ import { SplineUtils } from "../../utils/spline.utils";
 import { Commands } from "../../commands/commands";
 import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
 import { ToolManager } from "app/managers/tool-manager";
+import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
+import { AppInspector } from "../inspector";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineHandler extends BaseObjectHandler<AutoSpline> {
+export abstract class SplineController extends BaseController<AutoSpline> {
 
 	constructor (
 		private splineService: SplineService,
-		private splineGeometryService: SplineGeometryService
+		private splineGeometryService: SplineGeometryService,
 	) {
 		super();
 	}
@@ -38,7 +40,7 @@ export class SplineHandler extends BaseObjectHandler<AutoSpline> {
 
 	onUpdated ( object: AutoSpline ): void {
 
-		this.splineService.update( object );
+		this.splineService.updateSpline( object );
 
 	}
 
@@ -55,8 +57,6 @@ export class SplineHandler extends BaseObjectHandler<AutoSpline> {
 			return;
 		}
 
-		// const delta = e.point.clone().sub( this.currentDragPosition );
-
 		object.getControlPoints().forEach( point => {
 
 			point.position.add( this.dragDelta );
@@ -65,7 +65,7 @@ export class SplineHandler extends BaseObjectHandler<AutoSpline> {
 
 		this.splineGeometryService.updateGeometryAndBounds( object );
 
-		ToolManager.getTool().onUpdateOverlay( object );
+		ToolManager.getTool().updateVisuals( object );
 
 	}
 
@@ -75,6 +75,31 @@ export class SplineHandler extends BaseObjectHandler<AutoSpline> {
 
 		Commands.DragSpline( object, delta );
 
+	}
+
+}
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class AutoSplineController extends SplineController {
+
+	showInspector ( object: AutoSpline ): void {
+		AppInspector.setInspector( RoadInspector, { spline: object } );
+	}
+
+}
+
+
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ExplicitSplineController extends SplineController {
+
+
+	showInspector ( object: AutoSpline ): void {
+		AppInspector.setInspector( RoadInspector, { spline: object } );
 	}
 
 }

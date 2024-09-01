@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { DebugState } from '../debug/debug-state';
 import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
-import { Object3D, Vector2 } from 'three';
+import { Mesh, MeshBasicMaterial, Object3D, Vector2 } from 'three';
 import { JunctionService } from './junction.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
@@ -29,6 +29,7 @@ import { ManeuverMesh } from './maneuver-mesh';
 import { JunctionNode } from './junction-node';
 import { JunctionRoadService } from './junction-road.service';
 import { JunctionBuilder } from './junction.builder';
+import { JunctionOverlay } from './junction-overlay';
 
 @Injectable( {
 	providedIn: 'root'
@@ -148,14 +149,9 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.junctionManager.boundaryManager.update( junction );
 		}
 
-		const positions = this.junctionBuilder.boundaryBuilder.convertBoundaryToPositions( junction.outerBoundary );
+		const geometry = this.junctionBuilder.getJunctionGeometry( junction );
 
-		if ( positions.length < 2 ) return;
-
-		// add first point to close the loop
-		positions.push( positions[ 0 ].clone() );
-
-		const mesh = this.debug.createLine( positions, COLOR.CYAN );
+		const mesh = new Mesh( geometry, new MeshBasicMaterial( { color: COLOR.YELLOW } ) );
 
 		mesh[ 'tag' ] = 'junction';
 
@@ -163,16 +159,19 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		return mesh;
 
+
 	}
 
-	createJunctionMesh ( junction: TvJunction ) {
+	createJunctionMesh ( junction: TvJunction ): JunctionOverlay {
 
 		if ( !junction.innerBoundary ) {
 			Log.warn( 'InnerBoundaryMissing', junction?.toString() );
 			this.junctionManager.boundaryManager.update( junction );
 		}
 
-		return this.junctionBuilder.buildFromBoundary( junction );
+		const geometry = this.junctionBuilder.getJunctionGeometry( junction );
+
+		return JunctionOverlay.create( junction, geometry );
 
 	}
 
@@ -258,7 +257,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	private createJunctionNode ( link: TvRoadLink ): JunctionNode {
+	createJunctionNode ( link: TvRoadLink ): JunctionNode {
 
 		const roadCoord = link.toRoadCoord();
 
@@ -294,7 +293,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		return junctionNode;
 	}
 
-	private showEntries ( junction: TvJunction ): void {
+	showEntries ( junction: TvJunction ): void {
 
 		if ( !this.shouldShowEntries ) return;
 
@@ -367,6 +366,12 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			}
 
 		}
+
+	}
+
+	removeEntries ( junction: TvJunction ): void {
+
+		this.gates.removeKey( junction );
 
 	}
 

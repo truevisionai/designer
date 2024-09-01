@@ -4,7 +4,7 @@
 
 import { PointerEventData } from "app/events/pointer-event-data";
 
-export interface ObjectHandler<T> {
+export interface Controller<T> {
 
 	// isDraggingSupported (): boolean;
 
@@ -31,6 +31,8 @@ export interface ObjectHandler<T> {
 	getSelected (): T[];
 
 	select ( object: T ): void;
+
+	showInspector ( object: T ): void;
 
 	onSelected ( object: T ): void;
 

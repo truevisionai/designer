@@ -20,6 +20,7 @@ import { TvLaneWidth } from './tv-lane-width';
 import { TvUtils } from './tv-utils';
 import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { OrderedMap } from "../../core/models/ordered-map";
+import { TvRoad } from './tv-road.model';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -110,6 +111,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 			this.direction = TravelDirection.undirected;
 		}
 
+	}
+
+	getRoad (): TvRoad {
+		return this.laneSection.getRoad();
 	}
 
 	toString () {
@@ -654,7 +659,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties? (): Object {
+	copyProperties?(): Object {
 
 		return {
 			travelDirection: this.direction,

@@ -2,20 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { LaneWidthNode } from "../../objects/lane-width-node";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { Commands } from "app/commands/commands";
+import { LaneWidthPoint } from "app/objects/simple-control-point";
 
-export class LaneWidthNodeInspector {
+export class LaneWidthPointInspector {
 
 	constructor (
-		public node: LaneWidthNode
+		public node: LaneWidthPoint
 	) {
 	}
 
 	@SerializedField( { type: 'int' } )
 	get s (): number {
-		return this.node.laneWidth.s;
+		return this.node.width.s;
 	}
 
 	set s ( value: number ) {
@@ -25,13 +25,13 @@ export class LaneWidthNodeInspector {
 			return;
 		}
 
-		this.node.laneWidth.s = value;
+		this.node.width.s = value;
 
 	}
 
 	@SerializedField( { type: 'int' } )
 	get width (): number {
-		return this.node.laneWidth.a;
+		return this.node.width.a;
 	}
 
 	set width ( value: number ) {
@@ -41,12 +41,12 @@ export class LaneWidthNodeInspector {
 			return;
 		}
 
-		this.node.laneWidth.a = value;
+		this.node.width.a = value;
 
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	delete ( value: number ) {
+	delete (): void {
 		Commands.RemoveObject( this.node );
 	}
 

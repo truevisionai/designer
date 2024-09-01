@@ -24,7 +24,7 @@ import * as THREE from "three";
 import { Maths } from "../../../utils/maths";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { SelectionService } from "../../../tools/selection.service";
-import { ControlPointStrategy } from "../../../core/strategies/select-strategies/control-point-strategy";
+import { DepPointStrategy } from "../../../core/strategies/select-strategies/control-point-strategy";
 import { TvElevationService } from "../../../map/road-elevation/tv-elevation.service";
 import { KeyboardEvents } from 'app/events/keyboard-events';
 import { CommandHistory } from 'app/commands/command-history';
@@ -86,7 +86,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		this.selectionService = new SelectionService();
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
 
 		this.config.showStats = false;
 

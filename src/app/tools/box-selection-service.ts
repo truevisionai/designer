@@ -7,7 +7,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper';
 import { Camera, Mesh } from 'three';
-import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { RendererService } from 'app/renderer/renderer.service';
 import { CameraService } from 'app/renderer/camera.service';
@@ -24,7 +24,7 @@ export class BoxSelectionService {
 
 	private box: SelectionBox;
 
-	private selectStrategy: SelectStrategy<any>;
+	private selectStrategy: SelectionStrategy<any>;
 
 	private filteredCollection = [];
 
@@ -42,13 +42,13 @@ export class BoxSelectionService {
 
 	}
 
-	setStrategy ( strategy: SelectStrategy<any> ) {
+	setStrategy ( strategy: SelectionStrategy<any> ) {
 
 		this.selectStrategy = strategy;
 
 	}
 
-	init ( strategy?: SelectStrategy<any> ) {
+	init ( strategy?: SelectionStrategy<any> ) {
 
 		if ( strategy ) this.setStrategy( strategy );
 
@@ -154,7 +154,7 @@ export class BoxSelectionService {
 
 			pointerEvent.intersections.forEach( i => i.object = object );
 
-			if ( this.selectStrategy?.select( pointerEvent ) ) {
+			if ( this.selectStrategy?.handleSelection( pointerEvent ) ) {
 
 				filtered.push( object );
 

@@ -3,9 +3,9 @@
  */
 
 import { ToolManager } from "app/managers/tool-manager";
-import { OverlayHandler } from "./overlay-handler";
+import { Visualizer } from "./visualizer";
 
-export abstract class BaseOverlayHandler<T> implements OverlayHandler<T> {
+export abstract class BaseVisualizer<T> implements Visualizer<T> {
 
 	protected isEnabled = true;
 
@@ -55,7 +55,7 @@ export abstract class BaseOverlayHandler<T> implements OverlayHandler<T> {
 		this.highlighted.delete( object );
 	}
 
-	updateOverlay ( object: object ): void {
-		ToolManager.getTool()?.onUpdateOverlay( object );
+	updateVisuals ( object: object ): void {
+		ToolManager.getTool()?.updateVisuals( object );
 	}
 }

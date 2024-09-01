@@ -4,8 +4,9 @@
 
 import { Points } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { SelectStrategy } from './select-strategy';
+import { SelectionStrategy } from './select-strategy';
 import { AbstractControlPoint } from "../../../objects/abstract-control-point";
+import { LaneWidthNode } from 'app/objects/lane-width-node';
 
 export interface StrategySettings {
 	higlightOnHover?: boolean;
@@ -15,7 +16,10 @@ export interface StrategySettings {
 	returnTarget?: boolean;
 }
 
-export class ControlPointStrategy<T extends AbstractControlPoint> extends SelectStrategy<T> {
+/**
+ * @deprecated
+ */
+export class DepPointStrategy<T extends AbstractControlPoint> extends SelectionStrategy<T> {
 
 	private current: T = null;
 
@@ -105,7 +109,7 @@ export class ControlPointStrategy<T extends AbstractControlPoint> extends Select
 
 }
 
-export class ControlPointStrategyV2 extends ControlPointStrategy<AbstractControlPoint> {
+export class PointSelectionStrategy extends DepPointStrategy<AbstractControlPoint> {
 
 	constructor ( options?: StrategySettings ) {
 
@@ -120,3 +124,17 @@ export class ControlPointStrategyV2 extends ControlPointStrategy<AbstractControl
 
 }
 
+export class LaneWidthPointSelectionStrategy extends PointSelectionStrategy {
+
+	constructor () {
+
+		super( {
+			higlightOnHover: false,
+			higlightOnSelect: false,
+			tag: LaneWidthNode.pointTag,
+			returnParent: false,
+		} );
+
+	}
+
+}

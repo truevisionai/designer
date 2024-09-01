@@ -4,8 +4,9 @@
 
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
-import { Vector3, BufferGeometry, BufferAttribute, Box2, Vector2, CatmullRomCurve3, ExtrudeGeometry, Shape } from "three";
+import { Vector3, BufferGeometry, BufferAttribute, Box2, Vector2, CatmullRomCurve3, ExtrudeGeometry, Shape, MeshBasicMaterial, Mesh } from "three";
 import { Log } from "app/core/utils/log";
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
 
 import earcut from 'earcut';
 
@@ -275,4 +276,17 @@ export class GeometryUtils {
 		// Create the extrude geometry
 		return new ExtrudeGeometry( shape, extrudeSettings );
 	}
+
+	static mergeGeometries ( geometries: BufferGeometry[], useGroups = false ): BufferGeometry {
+
+		return BufferGeometryUtils.mergeGeometries( geometries, useGroups );
+
+	}
+
+	static mergeVertices ( geometry: BufferGeometry, tolerance?: number ): BufferGeometry {
+
+		return BufferGeometryUtils.mergeVertices( geometry, tolerance );
+
+	}
+
 }

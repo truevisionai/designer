@@ -41,7 +41,7 @@ export interface Tool {
 
 	onObjectUpdated ( object: any ): void;
 
-	onUpdateOverlay ( object: any ): void;
+	updateVisuals ( object: any ): void;
 
 	onObjectRemoved ( object: any ): void;
 

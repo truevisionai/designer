@@ -3,18 +3,20 @@
  */
 
 import { Injectable } from "@angular/core";
-import { RoadControlPoint } from "../../objects/road-control-point";
+import { SplineControlPoint } from "../../objects/spline-control-point";
 import { SplineService } from "../../services/spline/spline.service";
 import { SplineGeometryService } from "../../services/spline/spline-geometry.service";
 import { PointerEventData } from "../../events/pointer-event-data";
 import { ToolManager } from "../../managers/tool-manager";
 import { Commands } from "../../commands/commands";
-import { BasePointHandler } from "./base-point-handler";
+import { PointController } from "./point-controller";
+import { AppInspector } from "../inspector";
+import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadControlPointHandler extends BasePointHandler<RoadControlPoint> {
+export class SplinePointController extends PointController<SplineControlPoint> {
 
 	constructor (
 		private splineService: SplineService,
@@ -23,13 +25,19 @@ export class RoadControlPointHandler extends BasePointHandler<RoadControlPoint> 
 		super();
 	}
 
-	onAdded ( point: RoadControlPoint ): void {
+	showInspector ( object: SplineControlPoint ): void {
+
+		AppInspector.setInspector( RoadInspector, { spline: object.spline, controlPoint: object } );
+
+	}
+
+	onAdded ( point: SplineControlPoint ): void {
 
 		this.splineService.addOrInsertPoint( point.spline, point );
 
 	}
 
-	onUpdated ( point: RoadControlPoint ): void {
+	onUpdated ( point: SplineControlPoint ): void {
 
 		this.splineService.updateControlPoint( point );
 
@@ -37,25 +45,25 @@ export class RoadControlPointHandler extends BasePointHandler<RoadControlPoint> 
 
 	}
 
-	onRemoved ( point: RoadControlPoint ): void {
+	onRemoved ( point: SplineControlPoint ): void {
 
-		this.splineService.removePoint( point.road.spline, point );
+		this.splineService.removePoint( point.spline, point );
 
 		this.splineService.updateSpline( point.spline );
 
 	}
 
-	onDrag ( point: RoadControlPoint, e: PointerEventData ): void {
+	onDrag ( point: SplineControlPoint, e: PointerEventData ): void {
 
 		point.setPosition( e.point );
 
 		this.splineGeometryService.updateGeometryAndBounds( point.spline );
 
-		ToolManager.getTool().onUpdateOverlay( point.spline );
+		ToolManager.getTool().updateVisuals( point.spline );
 
 	}
 
-	onDragEnd ( point: RoadControlPoint, e: PointerEventData ): void {
+	onDragEnd ( point: SplineControlPoint, e: PointerEventData ): void {
 
 		Commands.SetPointPosition( point.spline, point, e.point, this.dragStartPosition );
 

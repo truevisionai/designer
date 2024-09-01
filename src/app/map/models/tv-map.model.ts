@@ -14,7 +14,6 @@ import { Surface } from '../surface/surface.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Object3D, Vector2 } from 'three';
 import { Object3DMap } from 'app/core/models/object3d-map';
-import { IDService } from 'app/factories/id.service';
 import { ManagedMap } from "../../core/models/managed-map";
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 
@@ -116,6 +115,10 @@ export class TvMap {
 
 	getSplineCount (): number {
 		return this.splines.length;
+	}
+
+	findSplineBySegment ( segment: TvRoad | TvJunction ): AbstractSpline | undefined {
+		return this.splines.find( spline => spline.hasSegment( segment ) );
 	}
 
 	/**

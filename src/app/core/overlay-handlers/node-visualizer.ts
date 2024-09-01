@@ -1,25 +1,26 @@
 import { Injectable } from "@angular/core";
-import { BaseOverlayHandler } from "./base-overlay-handler";
+import { INode } from "app/objects/i-selectable";
+import { BaseVisualizer } from "./base-visualizer";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class EmptyOverlayHandler<T> extends BaseOverlayHandler<T> {
+export class NodeVisualizer<T extends INode> extends BaseVisualizer<T> {
 
 	onHighlight ( object: T ): void {
-		//
+		object.onMouseOver();
 	}
 
 	onSelected ( object: T ): void {
-		//
+		object.select();
 	}
 
 	onDefault ( object: T ): void {
-		//
+		object.onMouseOut();
 	}
 
 	onUnselected ( object: T ): void {
-		//
+		object.unselect();
 	}
 
 	onAdded ( object: T ): void {
@@ -31,7 +32,7 @@ export class EmptyOverlayHandler<T> extends BaseOverlayHandler<T> {
 	}
 
 	onRemoved ( object: T ): void {
-		//
+		object.unselect();
 	}
 
 	onClearHighlight (): void {

@@ -4,7 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { Commands } from "app/commands/commands";
-import { EmptyObjectHandler } from "app/core/object-handlers/empty-object-handler";
+import { EmptyController } from "app/core/object-handlers/empty-controller";
 import { Log } from "app/core/utils/log";
 import { ConnectionFactory } from "app/factories/connection.factory";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
@@ -17,7 +17,7 @@ import { LaneUtils } from "app/utils/lane.utils";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionGateHandler extends EmptyObjectHandler<JunctionGatePoint> {
+export class JunctionGateController extends EmptyController<JunctionGatePoint> {
 
 	private lastSelected?: JunctionGatePoint;
 
@@ -26,6 +26,12 @@ export class JunctionGateHandler extends EmptyObjectHandler<JunctionGatePoint> {
 		private connectionFactory: ConnectionFactory
 	) {
 		super();
+	}
+
+	showInspector ( object: JunctionGatePoint ): void {
+
+		// show inspector
+
 	}
 
 	onSelected ( object: JunctionGatePoint ): void {

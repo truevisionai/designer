@@ -4,9 +4,9 @@
 
 import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-command';
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
-import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { EntityInspector } from 'app/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { TeleportAction } from 'app/scenario/models/actions/tv-teleport-action';
@@ -27,9 +27,9 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	public toolType = ToolType.Vehicle;
 
-	private movingStrategy: SelectStrategy<TvRoadCoord>;
+	private movingStrategy: SelectionStrategy<TvRoadCoord>;
 
-	private controlPointStrategy: SelectStrategy<DynamicControlPoint<ScenarioEntity>>;
+	private controlPointStrategy: SelectionStrategy<DynamicControlPoint<ScenarioEntity>>;
 
 	private points: DynamicControlPoint<ScenarioEntity>[] = [];
 
@@ -40,7 +40,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 		super();
 
 		this.movingStrategy = new RoadCoordStrategy();
-		this.controlPointStrategy = new ControlPointStrategy<DynamicControlPoint<ScenarioEntity>>();
+		this.controlPointStrategy = new DepPointStrategy<DynamicControlPoint<ScenarioEntity>>();
 	}
 
 	setPoint ( value: DynamicControlPoint<ScenarioEntity> ): void {

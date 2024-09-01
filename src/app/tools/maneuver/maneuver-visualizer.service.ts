@@ -3,16 +3,16 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseOverlayHandler } from "app/core/overlay-handlers/base-overlay-handler";
-import { NodeOverlayHandler } from "app/core/overlay-handlers/node-overlay-handler";
+import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { SplineDebugService } from "app/services/debug/spline-debug.service";
+import { EmptyVisualizer } from "app/core/overlay-handlers/empty-visualizer";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverOverlayHandler extends NodeOverlayHandler<ManeuverMesh> {
+export class ManeuverVisualizer extends NodeVisualizer<ManeuverMesh> {
 
 	constructor (
 		private junctionDebugService: JunctionDebugService,
@@ -49,6 +49,8 @@ export class ManeuverOverlayHandler extends NodeOverlayHandler<ManeuverMesh> {
 
 		this.junctionDebugService.addManeuver( object.junction, object );
 
+		this.updateVisuals( object.junction );
+
 	}
 
 	onUpdated ( object: ManeuverMesh ): void {
@@ -81,6 +83,16 @@ export class ManeuverOverlayHandler extends NodeOverlayHandler<ManeuverMesh> {
 
 		this.splineDebugService.clear();
 
+		this.junctionDebugService.clear();
+
 	}
+
+}
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ManeuverVisualizerTrafficLight extends EmptyVisualizer<ManeuverMesh> {
+
 
 }

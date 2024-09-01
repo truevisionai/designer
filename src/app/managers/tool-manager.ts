@@ -3,8 +3,8 @@
  */
 
 import { EventEmitter } from '@angular/core';
-
 import { Tool } from "../tools/tool";
+import { ToolType } from 'app/tools/tool-types.enum';
 
 export class ToolManager {
 
@@ -49,26 +49,32 @@ export class ToolManager {
 
 	}
 
-	static clear () {
+	static getToolType (): ToolType | undefined {
+
+		return this.tool?.toolType;
+
+	}
+
+	static clear (): void {
 
 		this.destroyPreviousState();
 
 		this.toolChanged.emit( null );
 	}
 
-	static disable () {
+	static disable (): void {
 
-		if ( this.tool != null ) this.tool.disable();
-
-	}
-
-	static enable () {
-
-		if ( this.tool != null ) this.tool.enable();
+		this.tool?.disable();
 
 	}
 
-	private static destroyPreviousState () {
+	static enable (): void {
+
+		this.tool?.enable();
+
+	}
+
+	private static destroyPreviousState (): void {
 
 		this.disable();
 

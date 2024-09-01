@@ -69,7 +69,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	}
 
-	onUpdateOverlay ( object: any ): void {
+	updateVisuals ( object: any ): void {
 
 		// throw new Error( "Method not implemented." );
 

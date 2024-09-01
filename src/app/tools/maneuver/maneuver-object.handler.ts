@@ -3,15 +3,16 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseObjectHandler } from "../../core/object-handlers/base-object-handler";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { ConnectionService } from "app/map/junction/connection.service";
-import { Log } from "app/core/utils/log";
+import { ManeuverInspector } from "./maneuver.inspector";
+import { EmptyController } from "app/core/object-handlers/empty-controller";
+import { ManeuverSignalizationInspector } from "../traffic-light/maneuver-signalization.inspector";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverObjectHandler extends BaseObjectHandler<ManeuverMesh> {
+export class ManeuverToolManeuverMeshController extends EmptyController<ManeuverMesh> {
 
 	constructor (
 		private connectionService: ConnectionService
@@ -19,33 +20,35 @@ export class ManeuverObjectHandler extends BaseObjectHandler<ManeuverMesh> {
 		super();
 	}
 
-	onAdded ( object: ManeuverMesh ): void {
+	showInspector ( object: ManeuverMesh ): void {
 
-		this.connectionService.addLink( object.junction, object.connection, object.link );
-
-	}
-
-	onUpdated ( object: ManeuverMesh ): void {
-
-		// Log.info( 'Maneuver updated' );
+		this.setInspector( new ManeuverInspector( object ) );
 
 	}
 
-	onRemoved ( object: ManeuverMesh ): void {
+	// onAdded ( object: ManeuverMesh ): void {
 
-		this.connectionService.removeLink( object.junction, object.connection, object.link );
+	// 	this.connectionService.addLink( object.junction, object.connection, object.link );
 
-	}
+	// }
 
-	onDrag ( object: ManeuverMesh ): void {
+	// onRemoved ( object: ManeuverMesh ): void {
 
-		//
+	// 	this.connectionService.removeLink( object.junction, object.connection, object.link );
 
-	}
+	// }
 
-	onDragEnd ( object: ManeuverMesh ): void {
+}
 
-		//
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class TrafficLightManeuverMeshController extends EmptyController<ManeuverMesh> {
+
+	showInspector ( object: ManeuverMesh ): void {
+
+		this.setInspector( new ManeuverSignalizationInspector( object ) );
 
 	}
 

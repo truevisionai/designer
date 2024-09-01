@@ -25,6 +25,7 @@ import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
+import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 
 export class TvRoad {
 
@@ -253,6 +254,14 @@ export class TvRoad {
 
 	}
 
+	addGeometryAndUpdateCoords ( geometry: TvAbstractRoadGeometry ): void {
+
+		this.planView.addGeometry( geometry );
+
+		this.computeLaneSectionCoordinates();
+
+	}
+
 	setElevationProfile ( elevationProfile: TvElevationProfile ) {
 
 		this.elevationProfile = elevationProfile;
@@ -435,7 +444,7 @@ export class TvRoad {
 
 	}
 
-	clearGeometries (): void {
+	clearGeometryAndUpdateCoords (): void {
 
 		this.geometries.splice( 0, this.geometries.length );
 

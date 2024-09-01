@@ -16,7 +16,6 @@ import { DynamicControlPoint } from "../../objects/dynamic-control-point";
 import { RoadNode } from 'app/objects/road-node';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
-import { LaneWidthNode } from 'app/objects/lane-width-node';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { RoadWidthService } from '../road/road-width.service';
 import { RoadGeometryService } from '../road/road-geometry.service';

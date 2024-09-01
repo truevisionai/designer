@@ -353,6 +353,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		this.roadDebugger.clear();
 
+		this.points.clear();
+
 	}
 
 	showControlPoints ( spline: AbstractSpline ): void {

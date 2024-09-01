@@ -8,12 +8,12 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionToolHelper } from './junction-tool.helper';
 import { JunctionNode } from 'app/services/junction/junction-node';
-import { ObjectTagStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
+import { JunctionNodeSelectionStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
 import { JunctionInspector } from './junction.inspector';
 import { DebugState } from 'app/services/debug/debug-state';
 import { Log } from 'app/core/utils/log';
 import { Commands } from 'app/commands/commands';
-import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
+import { JunctionSelectionStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
 
 export class JunctionTool extends BaseTool<any> {
 
@@ -37,16 +37,8 @@ export class JunctionTool extends BaseTool<any> {
 
 		this.setHint( 'Click on a road to create a junction' );
 
-		const options = {
-			higlightOnHover: true,
-			higlightOnSelect: false,
-			tag: JunctionNode.tag,
-			returnParent: false,
-			returnTarget: false,
-		};
-
-		this.helper.base.addSelectionStrategy( new ObjectTagStrategy( JunctionNode.tag ) );
-		this.helper.base.addSelectionStrategy( new ObjectUserDataStrategy( 'junction', 'junction' ) );
+		this.helper.base.addSelectionStrategy( new JunctionNodeSelectionStrategy() );
+		this.helper.base.addSelectionStrategy( new JunctionSelectionStrategy() );
 
 		this.setDebugService( this.helper.junctionDebugger );
 		this.setDataService( this.helper.junctionService );

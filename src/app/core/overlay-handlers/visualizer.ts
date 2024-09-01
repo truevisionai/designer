@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export interface OverlayHandler<T> {
+export interface Visualizer<T> {
 
 	getHighlighted (): T[];
 

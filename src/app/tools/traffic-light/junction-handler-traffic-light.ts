@@ -1,20 +1,27 @@
 import { Injectable } from "@angular/core";
-import { EmptyObjectHandler } from "app/core/object-handlers/empty-object-handler";
-import { NodeOverlayHandler } from "app/core/overlay-handlers/node-overlay-handler";
+import { EmptyController } from "app/core/object-handlers/empty-controller";
+import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
 import { JunctionOverlay } from "app/services/junction/junction-overlay";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
+import { TvJunctionSignalizationInspector } from "./tv-junction-signalization.inspector";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionHandlerTrafficLight extends EmptyObjectHandler<JunctionOverlay> {
+export class TrafficLightJunctionController extends EmptyController<JunctionOverlay> {
+
+	showInspector ( object: JunctionOverlay ): void {
+
+		this.setInspector( new TvJunctionSignalizationInspector( object.junction ) );
+
+	}
 
 }
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionOverlayHandlerTrafficLight extends NodeOverlayHandler<JunctionOverlay> {
+export class TrafficLightJunctionVisualizer extends NodeVisualizer<JunctionOverlay> {
 
 	constructor (
 		private junctionDebugService: JunctionDebugService

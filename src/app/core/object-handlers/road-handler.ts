@@ -4,12 +4,12 @@
 
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Injectable } from "@angular/core";
-import { EmptyObjectHandler } from "./empty-object-handler";
+import { EmptyController } from "./empty-controller";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadHandler extends EmptyObjectHandler<TvRoad> {
+export class RoadController extends EmptyController<TvRoad> {
 
 }
 

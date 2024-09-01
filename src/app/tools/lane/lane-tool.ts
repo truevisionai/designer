@@ -13,15 +13,15 @@ import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { Commands } from 'app/commands/commands';
 import { LaneFactory } from 'app/services/lane/lane.factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
-import { LaneOverlayHandler } from 'app/core/overlay-handlers/lane-overlay-handler.service';
-import { LaneToolOverlayHandler } from 'app/core/overlay-handlers/lane-tool.overlay';
-import { LaneObjectHandler } from 'app/core/object-handlers/lane-object-handler';
-import { RoadHandler } from 'app/core/object-handlers/road-handler';
-import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
+import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { LaneVisualizerWithArrows } from 'app/core/overlay-handlers/lane-visualizer';
+import { LaneController } from 'app/core/object-handlers/lane-controller.service';
+import { RoadController } from 'app/core/object-handlers/road-handler';
+import { SelectLaneOverlayStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
 import { laneToolHints } from './lane-tool.hints';
+import { RoadVisualizerLaneTool } from 'app/core/overlay-handlers/road-visualizer';
 
-export class LaneTool extends ToolWithHandler<TvLane> {
+export class LaneTool extends ToolWithHandler {
 
 	public name: string = 'LaneTool';
 
@@ -34,11 +34,11 @@ export class LaneTool extends ToolWithHandler<TvLane> {
 	) {
 		super();
 
-		this.addObjectHandler( TvLane.name, helper.base.injector.get( LaneObjectHandler ) );
-		this.addObjectHandler( TvRoad.name, helper.base.injector.get( RoadHandler ) );
+		this.addController( TvLane.name, helper.base.injector.get( LaneController ) );
+		this.addController( TvRoad.name, helper.base.injector.get( RoadController ) );
 
-		this.addOverlayHandler( TvRoad.name, helper.base.injector.get( LaneToolOverlayHandler ) );
-		this.addOverlayHandler( TvLane.name, helper.base.injector.get( LaneOverlayHandler ) );
+		this.addVisualizer( TvRoad.name, helper.base.injector.get( RoadVisualizerLaneTool ) );
+		this.addVisualizer( TvLane.name, helper.base.injector.get( LaneVisualizerWithArrows ) );
 
 		this.setHintConfig( laneToolHints );
 
@@ -50,9 +50,9 @@ export class LaneTool extends ToolWithHandler<TvLane> {
 
 		this.helper.base.reset();
 
-		this.selectionService.registerStrategy( TvLane.name, new ObjectUserDataStrategy( 'lane-overlay', 'lane' ) );
+		this.selectionService.registerStrategy( TvLane.name, new SelectLaneOverlayStrategy() );
 
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new RoadSelectionStrategy() );
 
 	}
 

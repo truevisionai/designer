@@ -1,17 +1,22 @@
 import { Injectable } from "@angular/core";
-import { BaseObjectHandler } from "app/core/object-handlers/base-object-handler";
+import { BaseController } from "app/core/object-handlers/base-controller";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
+import { CrosswalkInspector } from "./crosswalk.inspector";
 
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class CrosswalkHandler extends BaseObjectHandler<TvRoadObject> {
+export class CrosswalkController extends BaseController<TvRoadObject> {
 
 	constructor ( private roadObjectService: RoadObjectService ) {
 		super();
+	}
+
+	showInspector ( object: TvRoadObject ): void {
+		this.setInspector( new CrosswalkInspector( object, object.markings[ 0 ] ) );
 	}
 
 	onAdded ( object: TvRoadObject ): void {

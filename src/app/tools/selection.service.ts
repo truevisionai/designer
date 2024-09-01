@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { MapEvents } from 'app/events/map-events';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { CommandHistory } from 'app/commands/command-history';
@@ -20,7 +20,7 @@ export class SelectionService {
 
 	private movingStrategies: IMovingStrategy[] = [];
 
-	private strategies = new Map<string, SelectStrategy<any>>();
+	private strategies = new Map<string, SelectionStrategy<any>>();
 
 	private selectedObjects = new Map<string, any>();
 
@@ -38,13 +38,13 @@ export class SelectionService {
 
 	}
 
-	getStrategies (): SelectStrategy<any>[] {
+	getStrategies (): SelectionStrategy<any>[] {
 
 		return Array.from( this.strategies.values() );
 
 	}
 
-	registerStrategy ( type: string, strategy: SelectStrategy<any> ): void {
+	registerStrategy ( type: string, strategy: SelectionStrategy<any> ): void {
 
 		this.strategies.set( type, strategy );
 
@@ -62,7 +62,7 @@ export class SelectionService {
 
 		for ( const [ type, strategy ] of this.strategies ) {
 
-			const object = strategy.select( e );
+			const object = strategy.handleSelection( e );
 
 			if ( !object ) continue;
 
@@ -92,7 +92,7 @@ export class SelectionService {
 
 		for ( const [ type, strategy ] of this.strategies ) {
 
-			const object = strategy.select( e );
+			const object = strategy.handleSelection( e );
 
 			if ( !object ) continue;
 
@@ -114,7 +114,7 @@ export class SelectionService {
 
 		for ( const [ type, strategy ] of this.strategies ) {
 
-			const object = strategy.select( e );
+			const object = strategy.handleSelection( e );
 
 			if ( !object ) continue;
 

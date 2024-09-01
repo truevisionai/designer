@@ -5,14 +5,14 @@
 import { Injectable } from "@angular/core";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { TvRoad } from "../../map/models/tv-road.model";
-import { RoadOverlayHandler } from "../../core/overlay-handlers/road-overlay-handler";
+import { RoadVisualizer } from "../../core/overlay-handlers/road-visualizer";
 import { CrosswalkToolDebugger } from "./crosswalk-tool-debugger";
 import { TvRoadObjectType } from "app/map/models/objects/tv-road-object";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class CrosswalkToolOverlayHandler extends RoadOverlayHandler {
+export class CrosswalkToolRoadVisualizer extends RoadVisualizer {
 
 	constructor ( private crosswalkDebugService: CrosswalkToolDebugger, roadDebug: RoadDebugService ) {
 

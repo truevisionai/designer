@@ -5,10 +5,10 @@
 import { Group, Vector3 } from 'three';
 import { TvLaneWidth } from '../map/models/tv-lane-width';
 import { INode } from './i-selectable';
-import { AnyControlPoint } from "./any-control-point";
 import { IHasCopyUpdate } from 'app/commands/copy-position-command';
 import { DebugLine } from 'app/objects/debug-line';
 import { TvLane } from "../map/models/tv-lane";
+import { LaneWidthPoint } from './simple-control-point';
 
 export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
@@ -18,7 +18,7 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
 	public line: DebugLine<LaneWidthNode>;
 
-	public point: AnyControlPoint;
+	public point: LaneWidthPoint;
 
 	public isSelected: boolean = false;
 

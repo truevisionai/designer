@@ -13,9 +13,6 @@ import { AbstractControlPoint } from "./abstract-control-point";
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { Log } from 'app/core/utils/log';
 
-/**
- * @deprecated
- */
 export class RoadControlPoint extends AbstractControlPoint {
 
 	public static readonly tag = 'road-control-point';

@@ -7,27 +7,18 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { DebugState } from "../../services/debug/debug-state";
 import { TrafficLightToolService } from './traffic-light-tool.service';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvJunctionSignalizationInspector } from './tv-junction-signalization.inspector';
-import { DebugLine } from "../../objects/debug-line";
-import { JunctionGateInspector } from "./junction-gate-inspector";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
-import { ManeuverSignalizationInspector } from "./maneuver-signalization.inspector";
-import { TvLaneCoord } from "../../map/models/tv-lane-coord";
-import { Maths } from "../../utils/maths";
-import { TvRoadSignal } from "../../map/road-signal/tv-road-signal.model";
 import { ToolWithHandler } from '../base-tool-v2';
 import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies/follow-heading-moving-strategy';
-import { ObjectTagStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
-import { ObjectUserDataStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
-import { ManeuverObjectHandler } from '../maneuver/maneuver-object.handler';
-import { ManeuverOverlayHandler } from '../maneuver/maneuver-overlay.handler';
+import { JunctionGateLineSelectionStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
+import { JunctionOverlaySelectionStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
 import { JunctionOverlay } from 'app/services/junction/junction-overlay';
-import { JunctionHandlerTrafficLight, JunctionOverlayHandlerTrafficLight } from './junction-handler-traffic-light';
-import { JunctionGateLineHandler, JunctionGateLineOverlayHandler } from './junction-gate-line-handlers';
+import { TrafficLightJunctionController, TrafficLightJunctionVisualizer } from './junction-handler-traffic-light';
+import { JunctionGateLineController, JunctionGateLineVisualizer } from './junction-gate-line-handlers';
 import { JunctionGateLine } from 'app/services/junction/junction-gate-line';
-import { JunctionSignaliztion, JunctionSignaliztionHandler, JunctionSignaliztionOverlayHandler } from './auto-signalize-junction.service';
+import { JunctionSignaliztion, JunctionSignaliztionController, JunctionSignaliztionVisualizer } from './auto-signalize-junction.service';
 
-export class TrafficLightTool extends ToolWithHandler<any> {
+export class TrafficLightTool extends ToolWithHandler {
 
 	name: string = 'TrafficLightTool';
 
@@ -63,13 +54,10 @@ export class TrafficLightTool extends ToolWithHandler<any> {
 
 	registerStrategies (): void {
 
-		// this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-		this.selectionService.registerStrategy( JunctionGateLine.name, new ObjectTagStrategy( JunctionGateLine.tag ) );
-		this.selectionService.registerStrategy( ManeuverMesh.name, new ObjectTagStrategy( 'link' ) );
-		this.selectionService.registerStrategy( JunctionOverlay.name, new ObjectUserDataStrategy( 'junction' ) );
+		this.selectionService.registerStrategy( JunctionGateLine.name, new JunctionGateLineSelectionStrategy() );
+		// this.selectionService.registerStrategy( ManeuverMesh.name, new ManeuverMeshSelectionStrategy() );
+		this.selectionService.registerStrategy( JunctionOverlay.name, new JunctionOverlaySelectionStrategy() );
 
-		// this.selectionService.registerTag( SimpleControlPoint.name, SimpleControlPoint.name );
-		// this.selectionService.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
 		this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
 		this.selectionService.registerTag( JunctionOverlay.name, JunctionOverlay.name );
 
@@ -81,19 +69,18 @@ export class TrafficLightTool extends ToolWithHandler<any> {
 
 	registerHandlers (): void {
 
-		// this.addObjectHandler( SplineControlPoint.name, this.tool.base.injector.get( ManeuverPointHandler ) );
-		// this.addObjectHandler( JunctionGatePoint.name, this.tool.base.injector.get( JunctionGateHandler ) );
-		this.addObjectHandler( JunctionSignaliztion.name, this.tool.base.injector.get( JunctionSignaliztionHandler ) );
-		this.addObjectHandler( ManeuverMesh.name, this.tool.base.injector.get( ManeuverObjectHandler ) );
-		this.addObjectHandler( JunctionOverlay.name, this.tool.base.injector.get( JunctionHandlerTrafficLight ) );
-		this.addObjectHandler( JunctionGateLine.name, this.tool.base.injector.get( JunctionGateLineHandler ) );
+		this.addController( JunctionSignaliztion.name, this.tool.base.injector.get( JunctionSignaliztionController ) );
+		this.addVisualizer( JunctionSignaliztion.name, this.tool.base.injector.get( JunctionSignaliztionVisualizer ) );
 
-		// this.addOverlayHandler( SplineControlPoint.name, this.tool.base.injector.get( PointOverlayHandler ) );
-		// this.addOverlayHandler( JunctionGatePoint.name, this.tool.base.injector.get( JunctionGateOverlayHandler ) );
-		this.addOverlayHandler( JunctionSignaliztion.name, this.tool.base.injector.get( JunctionSignaliztionOverlayHandler ) );
-		this.addOverlayHandler( ManeuverMesh.name, this.tool.base.injector.get( ManeuverOverlayHandler ) );
-		this.addOverlayHandler( JunctionOverlay.name, this.tool.base.injector.get( JunctionOverlayHandlerTrafficLight ) );
-		this.addOverlayHandler( JunctionGateLine.name, this.tool.base.injector.get( JunctionGateLineOverlayHandler ) );
+		// NOTE: not used
+		// this.addObjectHandler( ManeuverMesh.name, this.tool.base.injector.get( ManeuverMeshHandlerTrafficLight ) );
+		// this.addOverlayHandler( ManeuverMesh.name, this.tool.base.injector.get( ManeuverOverlayHandlerTrafficLight ) );
+
+		this.addController( JunctionOverlay.name, this.tool.base.injector.get( TrafficLightJunctionController ) );
+		this.addVisualizer( JunctionOverlay.name, this.tool.base.injector.get( TrafficLightJunctionVisualizer ) );
+
+		this.addController( JunctionGateLine.name, this.tool.base.injector.get( JunctionGateLineController ) );
+		this.addVisualizer( JunctionGateLine.name, this.tool.base.injector.get( JunctionGateLineVisualizer ) );
 
 	}
 
@@ -129,41 +116,4 @@ export class TrafficLightTool extends ToolWithHandler<any> {
 
 	}
 
-	showObjectInspector ( object: object ): void {
-
-		if ( object instanceof TvJunction ) {
-
-			// this.tool.junctionDebugger.onSelected( object );
-
-			this.setInspector( new TvJunctionSignalizationInspector( object ) );
-
-		} else if ( object instanceof JunctionGateLine ) {
-
-			// const signal = this.findSignal( object );
-
-			// if ( !signal ) return;
-
-			// this.tool.junctionGateDebugger.onSelected( signal );
-
-			this.setInspector( new JunctionGateInspector() );
-
-		} else if ( object instanceof ManeuverMesh ) {
-
-			// this.tool.junctionManeuverDebugger.onSelected( object );
-
-			this.setInspector( new ManeuverSignalizationInspector( object ) );
-
-		} else if ( object instanceof JunctionOverlay ) {
-
-			this.setInspector( new TvJunctionSignalizationInspector( object.junction ) );
-
-		}
-
-	}
-
-	private findSignal ( object: DebugLine<TvLaneCoord> ): TvRoadSignal | undefined {
-
-		return object.target.road.getRoadSignals().find( signal => signal.type == "294" && Maths.approxEquals( signal.s, object.target.s ) );
-
-	}
 }

@@ -15,7 +15,7 @@ import { PropCurveToolDebugger } from "./prop-curve-tool.debugger";
 import { PropCurve } from "../../map/prop-curve/prop-curve.model";
 import { PropCurveService } from "../../map/prop-curve/prop-curve.service";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
-import { ControlPointStrategy } from "../../core/strategies/select-strategies/control-point-strategy";
+import { DepPointStrategy } from "../../core/strategies/select-strategies/control-point-strategy";
 import { DebugState } from "../../services/debug/debug-state";
 import { SplineService } from "../../services/spline/spline.service";
 import { ObjectUserDataStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
@@ -51,7 +51,7 @@ export class PropCurveTool extends BaseTool<PropCurve> {
 
 		this.setDebugService( this.tool.toolDebugger );
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
 
 		this.selectionService.registerStrategy( PropCurve.name, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
 

@@ -29,7 +29,7 @@ export class SplineManager {
 		private splineBuilder: SplineBuilder,
 		private junctionManager: JunctionManager,
 		private fixer: SplineFixerService,
-		private splineLinkManager: SplineLinkService,
+		private splineLinkService: SplineLinkService,
 		private splineGeometryService: SplineGeometryService,
 		private segmentService: SplineSegmentService,
 	) {
@@ -41,7 +41,7 @@ export class SplineManager {
 
 		this.fixer.fix( spline );
 
-		this.splineLinkManager.onSplineAdded( spline );
+		this.splineLinkService.onSplineAdded( spline );
 
 		this.splineBuilder.build( spline );
 
@@ -77,9 +77,21 @@ export class SplineManager {
 
 		}
 
-		this.splineLinkManager.onSplineUpdated( spline );
+		this.splineLinkService.updateLinkedSplines( spline );
+
+		this.buildLinkedSplines( spline );
 
 		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
+
+	}
+
+	buildLinkedSplines ( spline: AbstractSpline ): void {
+
+		this.splineLinkService.getLinkedSplines( spline ).forEach( linkedSpline => {
+
+			this.buildSpline( linkedSpline );
+
+		} );
 
 	}
 
@@ -92,7 +104,7 @@ export class SplineManager {
 			return;
 		}
 
-		this.splineLinkManager.onSplineRemoved( spline );
+		this.splineLinkService.onSplineRemoved( spline );
 
 		this.removeMesh( spline );
 

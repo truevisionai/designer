@@ -63,7 +63,7 @@ export class OrderedMap<T> {
 
 	}
 
-	contains ( value: T ) {
+	contains ( value: T ): boolean {
 
 		return this.toArray().includes( value );
 

@@ -7,12 +7,12 @@ import { LaneService } from "../../services/lane/lane.service";
 import { LaneDebugService } from "../../services/debug/lane-debug.service";
 import { LaneInspector } from "../../tools/lane/lane-inspector";
 import { Injectable } from "@angular/core";
-import { BaseObjectHandler } from "./base-object-handler";
+import { BaseController } from "./base-controller";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class LaneObjectHandler extends BaseObjectHandler<TvLane> {
+export class LaneController extends BaseController<TvLane> {
 
 	constructor (
 		public laneService: LaneService,
@@ -21,15 +21,9 @@ export class LaneObjectHandler extends BaseObjectHandler<TvLane> {
 		super();
 	}
 
-	onSelected ( object: TvLane ): void {
+	showInspector ( object: TvLane ): void {
 
 		this.setInspector( new LaneInspector( object, this.laneService ) );
-
-	}
-
-	onUnselected ( object: TvLane ): void {
-
-		this.clearInspector();
 
 	}
 

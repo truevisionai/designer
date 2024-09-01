@@ -10,11 +10,11 @@ import { BaseTool } from '../base-tool';
 import { LaneMarkingToolService } from './lane-marking-tool.service';
 import { CommandHistory } from 'app/commands/command-history';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
-import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
+import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { DepSelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
-import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
+import { DepSelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { EndLaneMovingStrategy } from 'app/core/strategies/move-strategies/end-lane.moving.strategy';
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
@@ -53,13 +53,13 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 		this.tool.base.reset();
 
-		this.tool.base.addSelectionStrategy( new ControlPointStrategy( {
+		this.tool.base.addSelectionStrategy( new DepPointStrategy( {
 			higlightOnHover: true,
 			higlightOnSelect: false,
 			returnParent: false,
 		} ) );
 
-		this.tool.base.addSelectionStrategy( new SelectLineStrategy( {
+		this.tool.base.addSelectionStrategy( new DepSelectLineStrategy( {
 			higlightOnHover: true,
 			higlightOnSelect: true,
 			tag: null,
@@ -67,7 +67,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 			returnTarget: true,
 		} ) );
 
-		const laneStrategy = new SelectLaneStrategy( true );
+		const laneStrategy = new DepSelectLaneStrategy( true );
 
 		laneStrategy.debugger = this.tool.toolDebugger;
 

@@ -18,6 +18,7 @@ import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { Object3D } from 'three';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
+import { LaneWidthPoint } from 'app/objects/simple-control-point';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,6 +26,8 @@ import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	private items = new Object3DArrayMap<TvRoad, Object3D[]>();
+
+	private nodes = new Object3DArrayMap<TvRoad, LaneWidthNode[]>();
 
 	private nodeCache = new Map<TvLaneWidth, LaneWidthNode>();
 
@@ -66,49 +69,65 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	onSelected ( road: TvRoad ): void {
 
-		this.showNodes( road );
+		this.showRoad( road );
 
 	}
 
 	onUnselected ( road: TvRoad ): void {
 
 		this.items.removeKey( road );
+		this.nodes.removeKey( road );
 
 	}
 
 	onDefault ( road: TvRoad ): void {
 
 		this.items.removeKey( road );
+		this.nodes.removeKey( road );
 
 	}
 
 	onRemoved ( road: TvRoad ): void {
 
 		this.items.removeKey( road );
+		this.nodes.removeKey( road );
 
 	}
 
-	showNodes ( road: TvRoad ) {
+	showRoad ( road: TvRoad ): void {
 
 		road.laneSections.forEach( section => {
 
 			section.lanesMap.forEach( lane => {
 
-				lane.width.forEach( width => {
-
-					const node = this.createNode( road, section, lane, width );
-
-					const spanLine = this.createSpanLine( road, section, lane, node );
-
-					this.items.addItem( road, node );
-
-					this.items.addItem( road, spanLine );
-
-				} );
+				this.showLane( road, section, lane );
 
 			} );
 
 		} );
+
+	}
+
+	showLane ( road: TvRoad, section: TvLaneSection, lane: TvLane ): void {
+
+		lane.width.forEach( width => {
+
+			const node = this.createNode( road, section, lane, width );
+
+			const spanLine = this.createSpanLine( road, section, lane, node );
+
+			this.nodes.addItem( road, node );
+
+			this.items.addItem( road, spanLine );
+
+		} );
+
+	}
+
+	hideRoad ( road: TvRoad ): void {
+
+		this.items.removeKey( road );
+		this.nodes.removeKey( road );
 
 	}
 
@@ -128,7 +147,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 			this.debugService.updateDebugLine( node.line, positions );
 
-			node.point.copyPosition( end.position );
+			node.point.setPosition( end.position );
 
 		} else {
 
@@ -148,13 +167,13 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createPointHead ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ) {
+	createPointHead ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ): LaneWidthPoint {
 
 		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
 
-		const point = this.pointFactory.createSimpleControlPoint( node, end.position );
+		const point = new LaneWidthPoint( road, laneSection, lane, node.laneWidth );
 
-		point.tag = LaneWidthNode.pointTag;
+		point.setPosition( end.position );
 
 		node.add( point );
 
@@ -162,7 +181,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNodeLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ) {
+	createNodeLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ): DebugLine<LaneWidthNode> {
 
 		const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, node.laneWidth.s );
 
@@ -214,6 +233,8 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 	clear (): void {
 
 		this.items.clear();
+
+		this.nodes.clear();
 
 		super.clear();
 

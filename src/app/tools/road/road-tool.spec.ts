@@ -67,11 +67,11 @@ describe( 'RoadTool', () => {
 
 		tool.init();
 
-		expect( tool.hasHandlersFor( AutoSpline.name ) ).toBeTrue();
-		expect( tool.hasHandlersFor( ExplicitSpline.name ) ).toBeTrue();
-		expect( tool.hasHandlersFor( SplineControlPoint.name ) ).toBeTrue();
-		expect( tool.hasHandlersFor( RoadControlPoint.name ) ).toBeTrue();
-		expect( tool.hasHandlersFor( RoadTangentPoint.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( AutoSpline.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( ExplicitSpline.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( SplineControlPoint.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( RoadControlPoint.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( RoadTangentPoint.name ) ).toBeTrue();
 
 		// TODO: add support for this
 		// expect( tool.hasHandlersFor( RoadNode.name ) ).toBeTrue();

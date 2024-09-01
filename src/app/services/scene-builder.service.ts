@@ -30,6 +30,7 @@ import { SplineUtils } from "../utils/spline.utils";
 import { LinkUtils } from 'app/utils/link.utils';
 import { Log } from 'app/core/utils/log';
 import { Maths } from 'app/utils/maths';
+import { Surface } from 'app/map/surface/surface.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,30 +59,11 @@ export class SceneBuilderService {
 
 		SceneService.removeFromMain( map.gameObject );
 
-		map.getSplines().forEach( spline => this.splineBuilder.buildGeometry( spline ) );
-
-		map.getRoads().forEach( road => this.buildRoad( map, road ) );
-
-		map.getSplines().forEach( spline => this.splineBuilder.updateBounds( spline ) );
+		this.buildSplineAndRoads( map );
 
 		map.getJunctions().forEach( junction => this.buildJunction( map, junction ) );
 
-		// NOTE: note needed as road builder already is building these
-		// map.getRoads().forEach( road => this.roadObjectService.buildRoadObjects( road ) );
-		// map.getRoads().forEach( road => this.roadSignalService.buildSignals( road ) );
-
-		map.getSurfaces().forEach( surface => {
-
-			surface.mesh = this.surfaceBuilder.build( surface );
-
-			if ( !surface.mesh ) {
-				Log.error( 'Error building surface mesh for surface id ' + surface.uuid );
-				return;
-			}
-
-			map.surfaceGroup.add( surface, surface.mesh );
-
-		} );
+		map.getSurfaces().forEach( surface => this.buildSurface( map, surface ) );
 
 		map.getProps().forEach( prop => {
 
@@ -94,6 +76,28 @@ export class SceneBuilderService {
 		map.propPolygons.forEach( propPolygon => this.buildPropPolygon( map, propPolygon ) );
 
 		SceneService.addToMain( map.gameObject );
+
+	}
+
+	buildSplineAndRoads ( map: TvMap ): void {
+
+		// NOTE: sequence spline & road building is important
+		map.getSplines().forEach( spline => this.splineBuilder.buildGeometry( spline ) );
+		map.getRoads().forEach( road => this.buildRoad( map, road ) );
+		map.getSplines().forEach( spline => this.splineBuilder.updateBounds( spline ) );
+
+	}
+
+	buildSurface ( map: TvMap, surface: Surface ): void {
+
+		surface.mesh = this.surfaceBuilder.build( surface );
+
+		if ( !surface.mesh ) {
+			Log.error( `Error building surface mesh for surface id ${ surface.uuid }` );
+			return;
+		}
+
+		map.surfaceGroup.add( surface, surface.mesh );
 
 	}
 
@@ -132,7 +136,7 @@ export class SceneBuilderService {
 
 		junction.boundingBox = this.junctionBuilder.buildBoundingBox( junction );
 
-		junction.mesh = this.junctionBuilder.build( junction );
+		junction.mesh = this.junctionBuilder.buildJunction( junction );
 
 		map.gameObject?.add( junction.mesh );
 
@@ -142,11 +146,11 @@ export class SceneBuilderService {
 
 		LinkUtils.updateLaneUuidLinks( road );
 
-		const spline = this.findSpline( map, road ) || road.spline;
+		const spline = map.findSplineBySegment( road ) || road.spline;
 
 		if ( !spline ) {
 			map.removeRoad( road );
-			Log.error( 'Road spline not found for road id ' + road.id );
+			Log.error( `Road spline not found for road id ${ road.id }` );
 			return;
 		}
 
@@ -156,17 +160,26 @@ export class SceneBuilderService {
 
 		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
 
-			road.sStart = 0;
-
-			this.buildRoadMesh( map, road, road.spline );
+			this.buildRoadWithExplicitSpline( map, road );
 
 		} else {
 
 			map.removeRoad( road );
-			Log.error( 'Road spline not found for road id ' + road.id );
+			Log.error( `Road spline not found for road id ${ road.id }` );
 			return;
 
 		}
+
+	}
+	buildRoadWithExplicitSpline ( map: TvMap, road: TvRoad ): void {
+
+		road.sStart = 0;
+
+		road.clearGeometryAndUpdateCoords();
+
+		road.spline.getGeometries().forEach( geometry => road.addGeometryAndUpdateCoords( geometry ) );
+
+		this.buildRoadMesh( map, road, road.spline );
 
 	}
 
@@ -194,12 +207,6 @@ export class SceneBuilderService {
 			return;
 
 		}
-
-	}
-
-	findSpline ( scene: TvMap, road: TvRoad ): AbstractSpline {
-
-		return scene.getSplines().find( spline => SplineUtils.hasSegment( spline, road ) );
 
 	}
 

@@ -220,7 +220,7 @@ export class JunctionManager {
 
 		if ( junction.mesh ) this.mapService.map.gameObject.remove( junction.mesh );
 
-		junction.mesh = this.junctionBuilder.build( junction );
+		junction.mesh = this.junctionBuilder.buildJunction( junction );
 
 		this.mapService.map.gameObject.add( junction.mesh );
 

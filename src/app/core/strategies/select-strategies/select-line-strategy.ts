@@ -3,11 +3,14 @@
  */
 
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { SelectStrategy } from './select-strategy';
+import { SelectionStrategy } from './select-strategy';
 import { DebugLine } from 'app/objects/debug-line';
 import { StrategySettings } from './control-point-strategy';
 
-export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy<T> {
+/**
+ * @deprecated
+ */
+export class DepSelectLineStrategy<T extends DebugLine<any>> extends SelectionStrategy<T> {
 
 	private current: T = null;
 	private selected: T = null;
@@ -82,6 +85,57 @@ export class SelectLineStrategy<T extends DebugLine<any>> extends SelectStrategy
 	dispose (): void {
 		// this.current?.onMouseOut();
 		// this.selected?.unselect();
+	}
+
+}
+
+export class SelectLineStrategy<T extends DebugLine<any>> extends SelectionStrategy<T> {
+
+	private options: StrategySettings = {};
+
+	constructor ( options?: StrategySettings ) {
+
+		super();
+
+		this.options.tag = options?.tag ?? null;
+		this.options.returnParent = options?.returnParent ?? false;
+		this.options.returnTarget = options?.returnTarget ?? false;
+
+	}
+
+	onPointerDown ( pointerEventData: PointerEventData ): T {
+
+		const line = this.findByType( pointerEventData.intersections, DebugLine ) as any;
+
+		if ( !line ) return;
+
+		if ( this.options.returnParent ) {
+			return line.parent as any;
+		}
+
+		if ( this.options.returnTarget ) {
+			return line?.target as T;
+		}
+
+		return line;
+
+	}
+
+	onPointerMoved ( pointerEventData: PointerEventData ): T {
+
+		return this.onPointerDown( pointerEventData );
+
+	}
+
+	onPointerUp ( pointerEventData: PointerEventData ): T {
+
+		return this.onPointerDown( pointerEventData );
+	}
+
+	dispose (): void {
+
+		// not needed
+
 	}
 
 }

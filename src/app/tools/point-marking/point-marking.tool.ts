@@ -9,9 +9,9 @@ import { PointMarkingToolService } from './point-marking-tool.service';
 import { AppInspector } from 'app/core/inspector';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { DepSelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { Vector3 } from 'three';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { RoadPosition } from 'app/scenario/models/positions/tv-road-position';
@@ -47,9 +47,9 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		super.init();
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
 
-		const selectRoadStrategy = new SelectRoadStrategy( false, true );
+		const selectRoadStrategy = new DepSelectRoadStrategy( false, true );
 
 		selectRoadStrategy.debugger = this.tool.toolDebugger;
 

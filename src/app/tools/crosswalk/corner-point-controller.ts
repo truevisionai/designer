@@ -5,23 +5,29 @@
 import { Injectable } from "@angular/core";
 import { PointerEventData } from "../../events/pointer-event-data";
 import { CornerControlPoint } from "./crosswalk-tool-debugger";
-import { BasePointHandler } from "app/core/object-handlers/base-point-handler";
+import { PointController } from "app/core/object-handlers/point-controller";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { Log } from "app/core/utils/log";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { Commands } from "app/commands/commands";
-import { Vector3 } from "three";
+import { CrosswalkInspector } from "./crosswalk.inspector";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class CornerControlPointHandler extends BasePointHandler<CornerControlPoint> {
+export class CornerControlPointController extends PointController<CornerControlPoint> {
 
 	constructor (
 		private roadObjectService: RoadObjectService,
 		private roadGeometryService: RoadGeometryService
 	) {
 		super();
+	}
+
+	showInspector ( object: CornerControlPoint ): void {
+
+		this.setInspector( new CrosswalkInspector( object.roadObject, object.roadObject.markings[ 0 ] ) );
+
 	}
 
 	onAdded ( point: CornerControlPoint ): void {

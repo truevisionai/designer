@@ -4,11 +4,13 @@
 
 import { IDebugger } from 'app/core/interfaces/debug.service';
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { SelectStrategy } from './select-strategy';
+import { SelectionStrategy, NewSelectionStrategy } from './select-strategy';
 import { TvRoad } from 'app/map/models/tv-road.model';
 
-
-export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
+/**
+ * @deprecated
+ */
+export class DepSelectRoadStrategy extends SelectionStrategy<TvRoad> {
 
 	public debugger: IDebugger<TvRoad, any>;
 
@@ -57,6 +59,22 @@ export class SelectRoadStrategy extends SelectStrategy<TvRoad> {
 	dispose (): void {
 
 		// nothing to dispose
+
+	}
+
+}
+
+export class RoadSelectionStrategy extends NewSelectionStrategy<TvRoad> {
+
+	constructor ( private includeJunctionRoads = false ) {
+
+		super();
+
+	}
+
+	handleSelection ( e: PointerEventData ): TvRoad {
+
+		return this.findRoad( e, this.includeJunctionRoads );
 
 	}
 

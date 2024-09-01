@@ -5,8 +5,8 @@
 import { ToolType } from 'app/tools/tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { Injectable } from "@angular/core";
-import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
-import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { DepSelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SimpleControlPoint } from 'app/objects/simple-control-point';
 import { DebugState } from "../../services/debug/debug-state";
@@ -55,9 +55,9 @@ export class SuperElevationTool extends BaseTool<any> {
 
 		this.setDebugService( this.helper.toolDebugger );
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
 
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy( false, true, this.helper.toolDebugger ) );
+		this.selectionService.registerStrategy( TvRoad.name, new DepSelectRoadStrategy( false, true, this.helper.toolDebugger ) );
 
 		// this.base.addMovingStrategy( new RoadLineMovingStrategy() );
 

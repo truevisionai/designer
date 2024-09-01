@@ -12,7 +12,7 @@ import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { RoadWidthService } from 'app/services/road/road-width.service';
 import { Intersection, Object3D, Vector3 } from "three";
 
-export abstract class SelectStrategy<T> {
+export abstract class SelectionStrategy<T> {
 
 	abstract onPointerDown ( pointerEventData: PointerEventData ): T | undefined;
 
@@ -20,7 +20,7 @@ export abstract class SelectStrategy<T> {
 
 	abstract onPointerUp ( pointerEventData: PointerEventData ): T | undefined;
 
-	select ( e: PointerEventData ): T | undefined {
+	handleSelection ( e: PointerEventData ): T | undefined {
 		return this.onPointerDown( e );
 	}
 
@@ -62,7 +62,7 @@ export abstract class SelectStrategy<T> {
 
 	}
 
-	protected onLaneGeometry ( pointerEventData: PointerEventData ): TvLane {
+	protected onLaneGeometry ( pointerEventData: PointerEventData ): TvLane | undefined {
 
 		const roadCoord = this.onRoadGeometry( pointerEventData );
 
@@ -76,7 +76,7 @@ export abstract class SelectStrategy<T> {
 
 	}
 
-	protected onLaneCoord ( pointerEventData: PointerEventData ): TvLaneCoord {
+	protected onLaneCoord ( pointerEventData: PointerEventData ): TvLaneCoord | undefined {
 
 		const roadCoord = this.onRoadGeometry( pointerEventData );
 
@@ -209,5 +209,27 @@ export abstract class SelectStrategy<T> {
 		return road.spline;
 
 	}
+}
+
+export abstract class NewSelectionStrategy<T> extends SelectionStrategy<T> {
+
+	abstract handleSelection ( e: PointerEventData ): T;
+
+	onPointerDown ( pointerEventData: PointerEventData ): T {
+		return this.handleSelection( pointerEventData );
+	}
+
+	onPointerMoved ( pointerEventData: PointerEventData ): T {
+		return this.handleSelection( pointerEventData );
+	}
+
+	onPointerUp ( pointerEventData: PointerEventData ): T {
+		return this.handleSelection( pointerEventData );
+	}
+
+	dispose (): void {
+
+	}
+
 }
 

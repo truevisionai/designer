@@ -40,13 +40,9 @@ export class TvPlaneView {
 
 	}
 
-	addGeometry ( geometry: TvAbstractRoadGeometry ) {
+	addGeometry ( geometry: TvAbstractRoadGeometry ): void {
 
 		this.geometries.push( geometry );
-
-		// this.length += geometry.length;
-
-		// this.getLaneProfile().computeLaneSectionLength();
 
 	}
 
@@ -88,13 +84,13 @@ export class TvPlaneView {
 
 	}
 
-	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange? ) {
+	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?) {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
 	}
 
-	addGeometryParamPoly ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange? ) {
+	addGeometryParamPoly ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?) {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 

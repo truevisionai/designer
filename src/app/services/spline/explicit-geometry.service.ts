@@ -26,7 +26,7 @@ export class ExplicitGeometryService {
 
 		spline.getRoadSegments().forEach( road => {
 
-			road.clearGeometries();
+			road.clearGeometryAndUpdateCoords();
 
 			const sStart = road.sStart;
 

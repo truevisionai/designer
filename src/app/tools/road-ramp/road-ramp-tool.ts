@@ -8,7 +8,7 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
-import { LaneCoordStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
+import { DepLaneCoordStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { SceneService } from 'app/services/scene.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Log } from 'app/core/utils/log';
@@ -42,9 +42,9 @@ export class RoadRampTool extends BaseTool<any> {
 
 		this.helper.base.reset();
 
-		this.helper.base.addCreationStrategy( new LaneCoordStrategy() );
+		this.helper.base.addCreationStrategy( new DepLaneCoordStrategy() );
 
-		this.helper.base.addSelectionStrategy( new LaneCoordStrategy() );
+		this.helper.base.addSelectionStrategy( new DepLaneCoordStrategy() );
 
 	}
 

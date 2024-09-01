@@ -139,7 +139,7 @@ export abstract class AbstractSpline {
 	}
 
 	clearSegmentGeometries (): void {
-		this.getRoadSegments().forEach( segment => segment.clearGeometries() );
+		this.getRoadSegments().forEach( segment => segment.clearGeometryAndUpdateCoords() );
 	}
 
 	addGeometry ( geometry: TvAbstractRoadGeometry ): void {
@@ -148,6 +148,10 @@ export abstract class AbstractSpline {
 
 	getGeometryCount (): number {
 		return this.geometries.length;
+	}
+
+	getGeometries (): TvAbstractRoadGeometry[] {
+		return this.geometries;
 	}
 
 	getSegments (): NewSegment[] {
@@ -164,6 +168,10 @@ export abstract class AbstractSpline {
 
 	getJunctionSegments (): TvJunction[] {
 		return this.getSegments().filter( segment => segment instanceof TvJunction ) as TvJunction[];
+	}
+
+	hasSegment ( segment: TvJunction | TvRoad ): boolean {
+		return this.segmentMap.contains( segment );
 	}
 
 	getCoordAtOffset ( sOffset: number ): TvPosTheta {

@@ -27,15 +27,31 @@ export class SplineLinkService {
 		private mapService: MapService,
 	) { }
 
-	getSuccessor ( spline: AbstractSpline ): AbstractSpline | undefined {
+	getSuccessorSpline ( spline: AbstractSpline ): AbstractSpline | undefined {
 
 		return SplineUtils.getSuccessorSpline( spline );
 
 	}
 
-	getPredecessor ( spline: AbstractSpline ): AbstractSpline | undefined {
+	getPredecessorSpline ( spline: AbstractSpline ): AbstractSpline | undefined {
 
 		return SplineUtils.getPredecessorSpline( spline );
+
+	}
+
+	getLinkedSplines ( spline: AbstractSpline ): AbstractSpline[] {
+
+		const linkedSplines = new Set<AbstractSpline>();
+
+		const next = this.getSuccessorSpline( spline );
+
+		const previous = this.getPredecessorSpline( spline );
+
+		if ( next ) linkedSplines.add( next );
+
+		if ( previous ) linkedSplines.add( previous );
+
+		return [ ...linkedSplines ];
 
 	}
 
@@ -57,7 +73,7 @@ export class SplineLinkService {
 
 	}
 
-	onSplineUpdated ( spline: AbstractSpline ) {
+	updateLinkedSplines ( spline: AbstractSpline ): void {
 
 		this.syncSuccessorSpline( spline );
 

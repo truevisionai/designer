@@ -77,8 +77,8 @@ describe( 'CrosswalkTool', () => {
 
 		tool.init();
 
-		expect( tool.hasHandlersFor( TvRoad.name ) ).toBeTrue();
-		expect( tool.hasHandlersFor( CornerControlPoint.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( TvRoad.name ) ).toBeTrue();
+		expect( tool.hasHandlersForName( CornerControlPoint.name ) ).toBeTrue();
 		// expect( tool.hasHandlersFor( CrosswalkInspector.name ) ).toBeTrue();
 		// expect( tool.hasHandlersFor( TvObjectMarking.name ) ).toBeTrue();
 		// expect( tool.hasHandlersFor( TvRoad.name ) ).toBeTrue();

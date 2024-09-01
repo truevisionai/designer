@@ -10,12 +10,14 @@ import { SplineGeometryService } from "../../services/spline/spline-geometry.ser
 import { PointerEventData } from "../../events/pointer-event-data";
 import { ToolManager } from "../../managers/tool-manager";
 import { Commands } from "../../commands/commands";
-import { BasePointHandler } from "./base-point-handler";
+import { PointController } from "./point-controller";
+import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
+import { AppInspector } from "../inspector";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class RoadTangentPointHandler extends BasePointHandler<RoadTangentPoint> {
+export class RoadTangentPointController extends PointController<RoadTangentPoint> {
 
 	constructor (
 		private splineService: SplineService,
@@ -24,6 +26,16 @@ export class RoadTangentPointHandler extends BasePointHandler<RoadTangentPoint> 
 	) {
 		super();
 	}
+
+	showInspector ( object: RoadTangentPoint ): void {
+
+		AppInspector.setInspector( RoadInspector, { spline: object.spline, controlPoint: object } );
+
+	}
+
+	onAdded ( object: RoadTangentPoint ): void { }
+
+	onRemoved ( object: RoadTangentPoint ): void { }
 
 	onUpdated ( point: RoadTangentPoint ): void {
 
@@ -43,7 +55,7 @@ export class RoadTangentPointHandler extends BasePointHandler<RoadTangentPoint> 
 
 		this.splineGeometryService.updateGeometryAndBounds( point.spline );
 
-		ToolManager.getTool().onUpdateOverlay( point.spline );
+		ToolManager.getTool().updateVisuals( point.spline );
 
 	}
 

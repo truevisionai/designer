@@ -10,8 +10,8 @@ import { BaseTool } from '../base-tool';
 import { RoadSignToolService } from './road-sign-tool.service';
 import { Asset, AssetType } from 'app/core/asset/asset.model';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
-import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
-import { SelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { DepSelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
 import { AppInspector } from 'app/core/inspector';
 import { RoadSignalInspector } from '../../map/road-signal/road-signal.inspector';
@@ -44,9 +44,9 @@ export class RoadSignTool extends BaseTool<any> {
 
 		super.init();
 
-		this.tool.base.addSelectionStrategy( new ControlPointStrategy() );
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
-		this.selectionService.registerStrategy( TvRoad.name, new SelectRoadStrategy( true, true, this.tool.toolDebugger ) );
+		this.tool.base.addSelectionStrategy( new DepPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( TvRoad.name, new DepSelectRoadStrategy( true, true, this.tool.toolDebugger ) );
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 

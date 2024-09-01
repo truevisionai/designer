@@ -6,10 +6,9 @@
 import { BaseTool } from './base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Log } from "../core/utils/log";
-import { ObjectHandler } from 'app/core/object-handlers/object-handler';
-import { BaseObjectHandler } from 'app/core/object-handlers/base-object-handler';
+import { BaseController } from 'app/core/object-handlers/base-controller';
 
-export abstract class ToolWithHandler<T> extends BaseTool<T> {
+export abstract class ToolWithHandler extends BaseTool<any> {
 
 	onPointerDownSelect ( e: PointerEventData ): void {
 
@@ -19,11 +18,11 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	onPointerMoved ( e: PointerEventData ): void {
 
-		this.highlightWithHandlers( e );
+		this.handlers.handleHighlight( e );
 
 		if ( !this.isPointerDown ) return;
 
-		for ( const [ name, handler ] of this.getObjectHandlers() ) {
+		for ( const [ name, handler ] of this.getControllers() ) {
 
 			const selected = handler.getSelected();
 
@@ -39,7 +38,7 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	}
 
-	dragObject<T> ( handler: BaseObjectHandler<T>, object: T, e: PointerEventData ): void {
+	dragObject<T> ( handler: BaseController<T>, object: T, e: PointerEventData ): void {
 
 		if ( !handler.isDraggingSupported() ) {
 			return;
@@ -65,7 +64,7 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 		if ( !this.currentSelectedPointMoved ) return;
 
-		for ( const [ name, handler ] of this.getObjectHandlers() ) {
+		for ( const [ name, handler ] of this.getControllers() ) {
 
 			const selected = handler.getSelected();
 
@@ -83,7 +82,7 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	}
 
-	dragEndObject<T> ( handler: BaseObjectHandler<T>, object: T, e: PointerEventData ): void {
+	dragEndObject<T> ( handler: BaseController<T>, object: T, e: PointerEventData ): void {
 
 		if ( !handler.isDraggingSupported() ) {
 			return;
@@ -103,9 +102,9 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	override onDeleteKeyDown (): void {
 
-		if ( this.getObjectHandlerCount() > 0 ) {
+		if ( this.getControllerCount() > 0 ) {
 
-			for ( const [ name, handler ] of this.getObjectHandlers() ) {
+			for ( const [ name, handler ] of this.getControllers() ) {
 
 				if ( handler.getSelected().length > 0 ) {
 
@@ -123,29 +122,28 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	override onObjectAdded ( object: Object ): void {
 
-		const objectHandler = this.objectHandlers.get( object.constructor.name );
+		if ( this.hasHandlersForObject( object ) ) {
 
-		objectHandler.getSelected().forEach( selected => this.onObjectUnselected( selected ) );
+			this.handlers.addObject( object );
 
-		const overlayHandler = this.overlayHandlers.get( object.constructor.name );
+		} else {
 
-		objectHandler.onAdded( object );
+			Log.error( `unknown object updated: ${ object.constructor.name }` );
 
-		overlayHandler.onAdded( object );
+		}
 
 		this.setObjectHint( object, 'onAdded' );
-
 	}
 
 	override onObjectUpdated ( object: Object ): void {
 
-		if ( this.hasHandlersFor( object ) ) {
+		if ( this.hasHandlersForObject( object ) ) {
 
-			this.handleAction( object, 'onUpdated' );
+			this.handlers.updateObject( object );
 
 		} else {
 
-			Log.error( 'unknown object updated: ' + object.constructor.name );
+			Log.error( `unknown object updated: ${ object.constructor.name }` );
 
 		}
 
@@ -153,13 +151,13 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	override onObjectRemoved ( object: Object ): void {
 
-		if ( this.hasHandlersFor( object ) ) {
+		if ( this.hasHandlersForObject( object ) ) {
 
-			this.handleAction( object, 'onRemoved' );
+			this.handlers.removeObject( object );
 
 		} else {
 
-			Log.error( 'unknown object removed: ' + object.constructor.name );
+			Log.error( `unknown object removed: ${ object.constructor.name }` );
 
 		}
 
@@ -167,13 +165,13 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	override onObjectSelected ( object: Object ): void {
 
-		if ( this.hasHandlersFor( object ) ) {
+		if ( this.hasHandlersForObject( object ) ) {
 
-			this.handleSelectionWithHandlers( object );
+			this.handlers.handleSelection( object );
 
 		} else {
 
-			Log.error( 'unknown object selected: ' + object.constructor.name );
+			Log.error( `unknown object selected: ${ object.constructor.name }` );
 
 		}
 
@@ -185,13 +183,13 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	override onObjectUnselected ( object: Object ): void {
 
-		if ( this.hasHandlersFor( object ) ) {
+		if ( this.hasHandlersForObject( object ) ) {
 
-			this.handleUnselectionWithHandlers( object );
+			this.handleDeselection( object );
 
 		} else {
 
-			Log.error( 'unknown object unselected: ' + object.constructor.name );
+			Log.error( `unknown object unselected: ${ object.constructor.name }` );
 
 		}
 
@@ -207,11 +205,18 @@ export abstract class ToolWithHandler<T> extends BaseTool<T> {
 
 	}
 
-	showObjectInspector ( object: object ): void {
+	private showObjectInspector ( object: object ): void {
 
-		// should be implemented by the tool class
+		if ( this.hasHandlersForObject( object ) ) {
+
+			this.handlers.showInspector( object );
+
+		} else {
+
+			Log.error( `unknown object inspector: ${ object.constructor.name }` );
+
+		}
 
 	}
 
 }
-

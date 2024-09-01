@@ -4,11 +4,11 @@
 
 import { AppInspector } from "../inspector";
 import { StatusBarService } from "../../services/status-bar.service";
-import { ObjectHandler } from "./object-handler";
+import { Controller } from "./controller";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { Vector3 } from "three";
 
-export abstract class BaseObjectHandler<T> implements ObjectHandler<T> {
+export abstract class BaseController<T> implements Controller<T> {
 
 	protected dragStartPosition: Vector3;
 
@@ -25,6 +25,8 @@ export abstract class BaseObjectHandler<T> implements ObjectHandler<T> {
 	abstract onUpdated ( object: T ): void;
 
 	abstract onRemoved ( object: T ): void;
+
+	abstract showInspector ( object: T ): void;
 
 	abstract onDrag ( object: T, e: PointerEventData ): void;
 

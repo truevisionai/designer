@@ -88,7 +88,7 @@ export class AutoGeometryService {
 
 			if ( road instanceof TvRoad ) {
 
-				road.clearGeometries();
+				road.clearGeometryAndUpdateCoords();
 
 				const sStart = road.sStart;
 

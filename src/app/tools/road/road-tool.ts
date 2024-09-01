@@ -7,7 +7,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { ToolType } from '../tool-types.enum';
 import { RoadToolHelper } from './road-tool-helper.service';
 import { RoadNode } from 'app/objects/road-node';
-import { ControlPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { PointSelectionStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { SplineControlPoint } from 'app/objects/spline-control-point';
 import { NodeStrategy } from 'app/core/strategies/select-strategies/node-strategy';
 import { RoadControlPoint } from 'app/objects/road-control-point';
@@ -20,20 +20,18 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { Commands } from 'app/commands/commands';
 import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
-import { PointOverlayHandler } from "../maneuver/point-overlay.handler";
+import { PointVisualizer } from "../maneuver/point-visualizer";
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { SplineHandler } from "../../core/object-handlers/spline.handler";
-import { SplineOverlayHandler } from "../../core/overlay-handlers/spline-overlay.handler";
-import { SelectSplineStrategy } from "../../core/strategies/select-strategies/select-spline-strategy";
-import { AppInspector } from 'app/core/inspector';
-import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
+import { AutoSplineController, ExplicitSplineController } from "../../core/object-handlers/spline.handler";
+import { AutoSplineVisualizer, ExplicitSplineVisualizer } from "../../core/overlay-handlers/spline-visualizer";
+import { AutoSplineSelectionStrategy, ExplicitSplineSelectionStrategy } from "../../core/strategies/select-strategies/select-spline-strategy";
 import { SplineFactory } from "../../services/spline/spline.factory";
-import { RoadTangentPointHandler } from "../../core/object-handlers/road-tangent-point-handler";
-import { RoadControlPointHandler } from "../../core/object-handlers/road-control-point-handler";
-import { SplineControlPointHandler } from "../../core/object-handlers/spline-control-point-handler";
+import { RoadTangentPointController } from "../../core/object-handlers/road-tangent-point-controller";
+import { RoadControlPointController } from "../../core/object-handlers/road-control-point-controller";
+import { SplinePointController } from "../../core/object-handlers/spline-point-controller";
 import { ToolWithHandler } from '../base-tool-v2';
 
-export class RoadTool extends ToolWithHandler<AbstractSpline> {
+export class RoadTool extends ToolWithHandler {
 
 	public name: string = 'Road Tool';
 
@@ -53,7 +51,16 @@ export class RoadTool extends ToolWithHandler<AbstractSpline> {
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	private get selectedSpline (): AbstractSpline {
+
+		if ( this.selectionService.getLastSelected( AutoSpline.name ) ) {
+			return this.selectionService.getLastSelected<AbstractSpline>( AutoSpline.name );
+		}
+
+		if ( this.selectionService.getLastSelected( ExplicitSpline.name ) ) {
+			return this.selectionService.getLastSelected<AbstractSpline>( ExplicitSpline.name );
+		}
 
 		if ( this.currentPoint instanceof SimpleControlPoint ) {
 
@@ -73,8 +80,13 @@ export class RoadTool extends ToolWithHandler<AbstractSpline> {
 
 		} else {
 
-			return this.objectHandlers.get( AutoSpline.name ).getSelected()[ 0 ] as AbstractSpline;
+			// if ( this.controllers.get( AutoSpline.name ).getSelected().length > 0 ) {
+			// 	return this.controllers.get( AutoSpline.name ).getSelected()[ 0 ] as AbstractSpline;
+			// }
 
+			// if ( this.controllers.get( ExplicitSpline.name ).getSelected().length > 0 ) {
+			// 	return this.controllers.get( ExplicitSpline.name ).getSelected()[ 0 ] as AbstractSpline;
+			// }
 		}
 
 	}
@@ -89,16 +101,17 @@ export class RoadTool extends ToolWithHandler<AbstractSpline> {
 
 		this.tool.base.reset();
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint.name, new PointSelectionStrategy() );
 		this.selectionService.registerStrategy( RoadNode.name, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
-		this.selectionService.registerStrategy( AutoSpline.name, new SelectSplineStrategy() );
+		this.selectionService.registerStrategy( AutoSpline.name, new AutoSplineSelectionStrategy() );
+		this.selectionService.registerStrategy( ExplicitSpline.name, new ExplicitSplineSelectionStrategy() );
 
 		// we want all points to be selectable and use 1 point at a time
 		this.tool.base.selection.registerTag( SplineControlPoint.name, SimpleControlPoint.name );
 		this.tool.base.selection.registerTag( RoadControlPoint.name, SimpleControlPoint.name );
 		this.tool.base.selection.registerTag( RoadTangentPoint.name, SimpleControlPoint.name );
 		this.tool.base.selection.registerTag( AutoSpline.name, AutoSpline.name );
-		this.tool.base.selection.registerTag( ExplicitSpline.name, AutoSpline.name );
+		this.tool.base.selection.registerTag( ExplicitSpline.name, ExplicitSpline.name );
 
 		this.setDebugService( this.tool.toolDebugger );
 
@@ -110,17 +123,17 @@ export class RoadTool extends ToolWithHandler<AbstractSpline> {
 
 	addHandlers (): void {
 
-		this.addObjectHandler( SplineControlPoint.name, this.tool.base.injector.get( SplineControlPointHandler ) );
-		this.addObjectHandler( RoadControlPoint.name, this.tool.base.injector.get( RoadControlPointHandler ) );
-		this.addObjectHandler( RoadTangentPoint.name, this.tool.base.injector.get( RoadTangentPointHandler ) );
-		this.addObjectHandler( AutoSpline.name, this.tool.base.injector.get( SplineHandler ) );
-		this.addObjectHandler( ExplicitSpline.name, this.tool.base.injector.get( SplineHandler ) );
+		this.addController( SplineControlPoint.name, this.tool.base.injector.get( SplinePointController ) );
+		this.addController( RoadControlPoint.name, this.tool.base.injector.get( RoadControlPointController ) );
+		this.addController( RoadTangentPoint.name, this.tool.base.injector.get( RoadTangentPointController ) );
+		this.addController( AutoSpline.name, this.tool.base.injector.get( AutoSplineController ) );
+		this.addController( ExplicitSpline.name, this.tool.base.injector.get( ExplicitSplineController ) );
 
-		this.addOverlayHandler( SplineControlPoint.name, this.tool.base.injector.get( PointOverlayHandler ) );
-		this.addOverlayHandler( RoadControlPoint.name, this.tool.base.injector.get( PointOverlayHandler ) );
-		this.addOverlayHandler( RoadTangentPoint.name, this.tool.base.injector.get( PointOverlayHandler ) );
-		this.addOverlayHandler( AutoSpline.name, this.tool.base.injector.get( SplineOverlayHandler ) );
-		this.addOverlayHandler( ExplicitSpline.name, this.tool.base.injector.get( SplineOverlayHandler ) );
+		this.addVisualizer( SplineControlPoint.name, this.tool.base.injector.get( PointVisualizer ) );
+		this.addVisualizer( RoadControlPoint.name, this.tool.base.injector.get( PointVisualizer ) );
+		this.addVisualizer( RoadTangentPoint.name, this.tool.base.injector.get( PointVisualizer ) );
+		this.addVisualizer( AutoSpline.name, this.tool.base.injector.get( AutoSplineVisualizer ) );
+		this.addVisualizer( ExplicitSpline.name, this.tool.base.injector.get( ExplicitSplineVisualizer ) );
 
 	}
 
@@ -323,32 +336,6 @@ export class RoadTool extends ToolWithHandler<AbstractSpline> {
 		this.executeAddObject( road );
 
 		this.setHint( 'Modify the new road or select another node to connect' );
-
-	}
-
-	showObjectInspector ( object: object ): void {
-
-		if ( object instanceof SplineControlPoint ) {
-
-			AppInspector.setInspector( RoadInspector, { spline: object.spline, controlPoint: object } );
-
-		} else if ( object instanceof RoadControlPoint ) {
-
-			AppInspector.setInspector( RoadInspector, { spline: object.spline, controlPoint: object } );
-
-		} else if ( object instanceof RoadTangentPoint ) {
-
-			AppInspector.setInspector( RoadInspector, { spline: object.spline, controlPoint: object } );
-
-		} else if ( object instanceof AutoSpline ) {
-
-			AppInspector.setInspector( RoadInspector, { spline: object } );
-
-		} else if ( object instanceof ExplicitSpline ) {
-
-			AppInspector.setInspector( RoadInspector, { spline: object } );
-
-		}
 
 	}
 

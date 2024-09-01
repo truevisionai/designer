@@ -2,14 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SelectStrategy } from "./select-strategy";
+import { SelectionStrategy } from "./select-strategy";
 import { TvLane } from "../../../map/models/tv-lane";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { TvLaneCoord } from "../../../map/models/tv-lane-coord";
 import { IDebugger } from "app/core/interfaces/debug.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 
-export class SelectLaneStrategy extends SelectStrategy<TvLane> {
+/**
+ * @deprecated
+ */
+export class DepSelectLaneStrategy extends SelectionStrategy<TvLane> {
 
 	private lane: TvLane;
 	private selected: TvLane;
@@ -62,7 +65,42 @@ export class SelectLaneStrategy extends SelectStrategy<TvLane> {
 
 }
 
-export class LaneCoordStrategy extends SelectStrategy<TvLaneCoord> {
+export class SelectLaneStrategy extends SelectionStrategy<TvLane> {
+
+	constructor () {
+		super();
+	}
+
+	onPointerDown ( pointerEventData: PointerEventData ): TvLane {
+
+		return this.onLaneGeometry( pointerEventData );
+
+	}
+
+	onPointerMoved ( pointerEventData: PointerEventData ): TvLane {
+
+		return this.onLaneGeometry( pointerEventData );
+	}
+
+	onPointerUp ( pointerEventData: PointerEventData ): TvLane {
+
+		return this.onLaneGeometry( pointerEventData );
+
+	}
+
+	dispose (): void {
+
+		// not needed
+
+	}
+
+}
+
+
+/**
+ * @deprecated
+ */
+export class DepLaneCoordStrategy extends SelectionStrategy<TvLaneCoord> {
 
 	private lane: TvLane;
 	private selectedLane: TvLane;
@@ -108,6 +146,38 @@ export class LaneCoordStrategy extends SelectStrategy<TvLaneCoord> {
 
 		this.lane?.unhighlight();
 		this.selectedLane?.unselect();
+
+	}
+
+}
+
+
+export class LaneCoordStrategy extends SelectionStrategy<TvLaneCoord> {
+
+	constructor () {
+		super();
+	}
+
+	onPointerDown ( pointerEventData: PointerEventData ): TvLaneCoord | undefined {
+
+		return this.onLaneCoord( pointerEventData );
+
+	}
+
+	onPointerMoved ( pointerEventData: PointerEventData ): TvLaneCoord | undefined {
+
+		return this.onLaneCoord( pointerEventData );
+	}
+
+	onPointerUp ( pointerEventData: PointerEventData ): TvLaneCoord | undefined {
+
+		return this.onLaneCoord( pointerEventData );
+
+	}
+
+	dispose (): void {
+
+		// not needed
 
 	}
 

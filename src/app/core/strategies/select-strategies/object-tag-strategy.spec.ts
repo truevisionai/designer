@@ -40,7 +40,7 @@ describe( 'ObjectTagStrategy', () => {
 
 	it( 'should return the object when pointer is down', () => {
 
-		const result = strategy.onPointerDown( { intersections } as PointerEventData );
+		const result = strategy.handleSelection( { intersections } as PointerEventData );
 
 		expect( result ).toBe( object );
 
@@ -66,7 +66,7 @@ describe( 'ObjectTagStrategy', () => {
 
 		intersections = [];
 
-		const result = strategy.onPointerDown( { intersections } as PointerEventData );
+		const result = strategy.handleSelection( { intersections } as PointerEventData );
 
 		expect( result ).toBeNull();
 
@@ -76,7 +76,7 @@ describe( 'ObjectTagStrategy', () => {
 
 		const strategy2 = new ObjectTagStrategy( 'tag', 'attributeName' );
 
-		const result = strategy2.onPointerDown( { intersections } as PointerEventData );
+		const result = strategy2.handleSelection( { intersections } as PointerEventData );
 
 		expect( result ).toBe( object[ 'attributeName' ] );
 

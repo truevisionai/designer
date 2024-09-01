@@ -23,12 +23,11 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { Tool } from "./tool";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { Commands } from 'app/commands/commands';
-import { ObjectHandler } from "../core/object-handlers/object-handler";
-import { OverlayHandler } from "../core/overlay-handlers/overlay-handler";
+import { Visualizer } from "../core/overlay-handlers/visualizer";
 import { ToolHintConfig } from 'app/core/interfaces/tool.hints';
-import { Log } from 'app/core/utils/log';
 import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';
-import { BaseObjectHandler } from 'app/core/object-handlers/base-object-handler';
+import { BaseController } from 'app/core/object-handlers/base-controller';
+import { ToolHandlers } from './tool-handlers';
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -50,9 +49,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected currentSelectedPointMoved: boolean;
 
-	protected objectHandlers: Map<string, BaseObjectHandler<Object>>;
-
-	protected overlayHandlers: Map<string, OverlayHandler<Object>>;
+	protected handlers: ToolHandlers;
 
 	protected get currentSelectedPoint (): SimpleControlPoint<T> {
 		return this.selectionService?.getLastSelected<SimpleControlPoint<T>>( SimpleControlPoint.name );
@@ -78,9 +75,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		this.clearInspector();
 
-		this.objectHandlers = new Map();
-
-		this.overlayHandlers = new Map();
+		this.handlers = new ToolHandlers( this.selectionService );
 
 	}
 
@@ -100,37 +95,28 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		this.setHint( this.getObjectHint( object.constructor.name, action ) );
 	}
 
-	addObjectHandler ( objectName: string, handler: BaseObjectHandler<Object> ): void {
-		this.objectHandlers.set( objectName, handler );
+	addController ( objectName: string, controller: BaseController<Object> ): void {
+		this.handlers.addController( objectName, controller );
 	}
 
-	getObjectHandlers (): Map<string, BaseObjectHandler<Object>> {
-		return this.objectHandlers;
+	getControllers (): Map<string, BaseController<Object>> {
+		return this.handlers.getControllers();
 	}
 
-	getObjectHandlerCount (): number {
-		return this.objectHandlers.size;
+	getController ( objectName: string ): BaseController<Object> {
+		return this.handlers.getController( objectName );
 	}
 
-	addOverlayHandler ( objectName: string, handler: OverlayHandler<Object> ): void {
-		this.overlayHandlers.set( objectName, handler );
+	getControllerCount (): number {
+		return this.handlers.getControllerCount();
 	}
 
-	getOverlayHandlers (): Map<string, OverlayHandler<Object>> {
-		return this.overlayHandlers;
+	addVisualizer ( objectName: string, visualizer: Visualizer<Object> ): void {
+		this.handlers.addVisualizer( objectName, visualizer );
 	}
 
-	getOverlayHandlerCount (): number {
-		return this.overlayHandlers.size;
-	}
-
-	onUpdateOverlay ( object: any ): void {
-		if ( this.overlayHandlers.has( object.constructor.name ) ) {
-			this.overlayHandlers.get( object.constructor.name ).onUpdated( object );
-		} else {
-			Log.error( `No overlay handler found for ${ object.constructor.name }` );
-		}
-
+	updateVisuals ( object: any ): void {
+		this.handlers.updateVisuals( object );
 	}
 
 	init (): void {
@@ -151,7 +137,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		this.debugService?.enable();
 
-		this.overlayHandlers.forEach( handler => handler.enable() );
+		this.handlers.enable();
 
 	}
 
@@ -163,15 +149,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		} );
 
-		this.overlayHandlers.forEach( handler => handler.clear() );
-
-		this.overlayHandlers.forEach( handler => handler.disable() );
-
-		this.objectHandlers.forEach( handler => {
-
-			handler.getSelected().forEach( selected => handler.unselect( selected ) );
-
-		} );
+		this.handlers.disable()
 
 		this.debugService?.clear();
 
@@ -311,9 +289,9 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	onDeleteKeyDown (): void {
 
-		if ( this.getObjectHandlerCount() > 0 ) {
+		if ( this.getControllerCount() > 0 ) {
 
-			for ( const [ name, handler ] of this.getObjectHandlers() ) {
+			for ( const [ name, handler ] of this.getControllers() ) {
 
 				if ( handler.getSelected().length > 0 ) {
 
@@ -342,7 +320,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	onObjectSelected ( object: T ): void {
 
-		if ( this.hasHandlersFor( object ) ) {
+		if ( this.hasHandlersForObject( object ) ) {
 
 			this.handleSelectionWithHandlers( object );
 
@@ -369,9 +347,9 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	onObjectUnselected ( object: T ): void {
 
-		if ( this.hasHandlersFor( object ) ) {
+		if ( this.hasHandlersForObject( object ) ) {
 
-			this.handleUnselectionWithHandlers( object );
+			this.handleDeselection( object );
 
 			return;
 
@@ -493,6 +471,8 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		this.selectionService = selectionService;
 
+		this.handlers.setSelectionService( selectionService );
+
 	}
 
 	setTypeName ( typeName: string ) {
@@ -584,161 +564,43 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected highlightWithHandlers ( e: PointerEventData ): void {
 
-		this.resetHighlightedObjects();
-
-		const objectToHighlight = this.selectionService.highlight( e );
-
-		if ( !objectToHighlight ) return;
-
-		const objectHandler = this.objectHandlers.get( objectToHighlight.constructor.name );
-
-		const overlayHandler = this.overlayHandlers.get( objectToHighlight.constructor.name );
-
-		if ( !objectHandler || !overlayHandler ) {
-			console.warn( `No handler found for ${ objectToHighlight.constructor.name }` );
-			return;
-		}
-
-		// If the object is already selected, don't highlight it
-		if ( objectHandler.isSelected( objectToHighlight ) ) return;
-
-		overlayHandler.onHighlight( objectToHighlight );
-
-		overlayHandler.addToHighlighted( objectToHighlight );
+		this.handlers.handleHighlight( e );
 
 	}
 
-	resetHighlightedObjects (): void {
-
-		this.overlayHandlers.forEach( ( overlayHandler, name ) => {
-
-			const selected = this.objectHandlers.get( name ).getSelected();
-
-			overlayHandler.getHighlighted().forEach( highlightedObject => {
-
-				if ( selected.includes( highlightedObject ) ) return;
-
-				overlayHandler.onDefault( highlightedObject );
-
-				overlayHandler.removeFromHighlighted( highlightedObject );
-
-			} );
-
-		} );
-
-	}
 
 	protected handleSelectionWithHandlers ( object: Object ): void {
-
-		const handle = ( item ) => {
-
-			const objectHandler = this.objectHandlers.get( item.constructor.name );
-
-			const overlayHandler = this.overlayHandlers.get( item.constructor.name );
-
-			this.selectionService.addToSelected( item );
-
-			objectHandler.select( item );
-
-			overlayHandler.onSelected( item );
-
-			this.setObjectHint( item, 'onSelected' );
-
-		}
-
-		if ( Array.isArray( object ) ) {
-
-			object.forEach( handle );
-
-		} else {
-
-			handle( object );
-
-		}
-
+		this.handlers.handleSelection( object );
 	}
 
-	hasHandlersFor ( object: Object ): boolean {
+	hasHandlersForName ( objectName: string ): boolean {
+		return this.handlers.hasHandlersForName( objectName );
+	}
 
-		const objectHasHandlers = ( objectName: string ) => {
-
-			const objectHandler = this.objectHandlers.get( objectName );
-
-			const overlayHandler = this.overlayHandlers.get( objectName );
-
-			return objectHandler != undefined && overlayHandler != undefined;
-
-		}
-
-		if ( Array.isArray( object ) ) {
-
-			return object.every( object => objectHasHandlers( object.constructor.name ) );
-
-		} else if ( typeof object === 'string' ) {
-
-			return objectHasHandlers( object );
-
-		} else {
-
-			return objectHasHandlers( object.constructor.name );
-
-		}
-
+	hasHandlersForObject ( object: Object ): boolean {
+		return this.handlers.hasHandlersFor( object );
 	}
 
 	hasSelectionStrategy ( name: string ): boolean {
-
 		return this.selectionService.hasSelectionStrategyFor( name );
-
 	}
 
-	protected handleUnselectionWithHandlers ( object: Object ): void {
+	protected handleDeselection ( ...objects: any ): void {
 
-		const handle = ( item ) => {
+		objects.forEach( item => {
 
-			const objectHandler = this.objectHandlers.get( item.constructor.name );
-
-			const overlayHandler = this.overlayHandlers.get( item.constructor.name );
-
-			objectHandler.unselect( item );
-
-			overlayHandler.onUnselected( item );
+			this.handlers.handleDeselection( item );
 
 			this.setObjectHint( item, 'onUnselected' );
 
 			this.selectionService.removeFromSelected( item );
 
-		}
-
-		if ( Array.isArray( object ) ) {
-
-			object.forEach( handle );
-
-		} else {
-
-			handle( object );
-
-		}
+		} );
 
 	}
 
 	protected handleAction ( object: Object, action: 'onAdded' | 'onUpdated' | 'onRemoved' ): void {
-
-		const objectHandler = this.objectHandlers.get( object.constructor.name );
-		const overlayHandler = this.overlayHandlers.get( object.constructor.name );
-
-		if ( objectHandler && typeof objectHandler[ action ] === 'function' ) {
-			objectHandler[ action ]( object );
-		} else {
-			console.warn( 'Invalid selection handler for object type', object );
-		}
-
-		if ( overlayHandler && typeof overlayHandler[ action ] === 'function' ) {
-			overlayHandler[ action ]( object );
-		} else {
-			console.warn( 'Invalid debugger handler for object type', object );
-		}
-
+		this.handlers.handleAction( object, action );
 	}
 
 	public getSelectedObjects (): any[] {
@@ -757,4 +619,3 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		ViewControllerService.instance?.disableControls();
 	}
 }
-

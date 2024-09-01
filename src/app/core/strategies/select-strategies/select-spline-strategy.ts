@@ -2,40 +2,47 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SelectStrategy } from "./select-strategy";
-import { AbstractSpline } from "../../shapes/abstract-spline";
+import { NewSelectionStrategy } from "./select-strategy";
+import { AbstractSpline, SplineType } from "../../shapes/abstract-spline";
 import { PointerEventData } from "../../../events/pointer-event-data";
+import { AutoSpline } from "app/core/shapes/auto-spline-v2";
+import { ExplicitSpline } from "app/core/shapes/explicit-spline";
 
-export class SelectSplineStrategy extends SelectStrategy<AbstractSpline> {
+abstract class SplineSelectionStrategy<T extends AbstractSpline> extends NewSelectionStrategy<T> {
 
-	constructor ( private includeJunctionRoads = false ) {
-
+	constructor ( protected includeJunctionRoads = false ) {
 		super();
-
 	}
 
-	onPointerDown ( pointerEventData: PointerEventData ): AbstractSpline {
+}
 
-		return this.findSpline( pointerEventData, this.includeJunctionRoads );
+export class AutoSplineSelectionStrategy extends SplineSelectionStrategy<AutoSpline> {
 
-	}
+	handleSelection ( e: PointerEventData ): AutoSpline | undefined {
 
-	onPointerMoved ( pointerEventData: PointerEventData ): AbstractSpline {
+		const spline = this.findSpline( e, this.includeJunctionRoads );
 
-		return this.findSpline( pointerEventData, this.includeJunctionRoads );
+		if ( spline && spline.type === SplineType.AUTO ) {
+			return spline as AutoSpline;
+		}
 
-	}
-
-	onPointerUp ( pointerEventData: PointerEventData ): AbstractSpline {
-
-		return this.findSpline( pointerEventData, this.includeJunctionRoads );
-
-	}
-
-	dispose (): void {
-
-		// nothing to dispose
+		if ( spline && spline.type === SplineType.AUTOV2 ) {
+			return spline as AutoSpline;
+		}
 
 	}
+}
 
+
+export class ExplicitSplineSelectionStrategy extends SplineSelectionStrategy<ExplicitSpline> {
+
+	handleSelection ( e: PointerEventData ): ExplicitSpline | undefined {
+
+		const spline = this.findSpline( e, this.includeJunctionRoads );
+
+		if ( spline && spline.type === SplineType.EXPLICIT ) {
+			return spline as ExplicitSpline;
+		}
+
+	}
 }

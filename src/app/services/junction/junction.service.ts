@@ -59,12 +59,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	buildJunctionMesh ( junction: TvJunction ) {
-
-		return this.junctionBuilder.buildFromBoundary( junction );
-
-	}
-
 	removeJunctionMesh ( junction: TvJunction ) {
 
 		this.objectMap.remove( junction );

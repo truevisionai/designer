@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
-import { BaseOverlayHandler } from "app/core/overlay-handlers/base-overlay-handler";
+import { BaseVisualizer } from "app/core/overlay-handlers/base-visualizer";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { CrosswalkToolDebugger } from "./crosswalk-tool-debugger";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class CrosswalkOverlayHandler extends BaseOverlayHandler<TvRoadObject> {
+export class CrosswalkVisualizer extends BaseVisualizer<TvRoadObject> {
 
 	constructor (
 		private crosswalkDebugService: CrosswalkToolDebugger

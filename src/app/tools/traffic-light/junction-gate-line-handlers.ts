@@ -1,17 +1,26 @@
 import { Injectable } from "@angular/core";
-import { EmptyObjectHandler } from "app/core/object-handlers/empty-object-handler";
-import { NodeOverlayHandler } from "app/core/overlay-handlers/node-overlay-handler";
+import { EmptyController } from "app/core/object-handlers/empty-controller";
+import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
 import { JunctionGateLine } from "app/services/junction/junction-gate-line";
+import { JunctionGateInspector } from "./junction-gate-inspector";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionGateLineHandler extends EmptyObjectHandler<JunctionGateLine> { }
+export class JunctionGateLineController extends EmptyController<JunctionGateLine> {
+
+	showInspector ( object: JunctionGateLine ): void {
+
+		this.setInspector( new JunctionGateInspector() );
+
+	}
+
+}
 
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionGateLineOverlayHandler extends NodeOverlayHandler<JunctionGateLine> {
+export class JunctionGateLineVisualizer extends NodeVisualizer<JunctionGateLine> {
 
 }

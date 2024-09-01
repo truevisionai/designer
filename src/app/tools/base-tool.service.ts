@@ -4,7 +4,7 @@
 
 import { Injectable, Injector } from '@angular/core';
 import { IMovingStrategy } from 'app/core/strategies/move-strategies/move-strategy';
-import { SelectStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/scenario/models/position';
 import { SelectionService } from './selection.service';
@@ -17,9 +17,9 @@ import { CursorService } from 'app/services/editor/cursor.service';
 } )
 export class BaseToolService {
 
-	private creationStrategies: SelectStrategy<any>[] = [];
+	private creationStrategies: SelectionStrategy<any>[] = [];
 
-	private selectionStrategies: SelectStrategy<any>[] = [];
+	private selectionStrategies: SelectionStrategy<any>[] = [];
 
 	private movingStrategies: IMovingStrategy[] = [];
 
@@ -31,13 +31,13 @@ export class BaseToolService {
 	) {
 	}
 
-	addSelectionStrategy ( strategy: SelectStrategy<any> ) {
+	addSelectionStrategy ( strategy: SelectionStrategy<any> ) {
 
 		this.selectionStrategies.push( strategy );
 
 	}
 
-	addCreationStrategy ( strategy: SelectStrategy<any> ) {
+	addCreationStrategy ( strategy: SelectionStrategy<any> ) {
 
 		this.creationStrategies.push( strategy );
 
@@ -60,7 +60,7 @@ export class BaseToolService {
 
 			const element = this.selectionStrategies[ i ];
 
-			const result = element.select( e );
+			const result = element.handleSelection( e );
 
 			if ( result ) {
 
@@ -81,7 +81,7 @@ export class BaseToolService {
 
 			const element = this.creationStrategies[ i ];
 
-			const result = element.select( e );
+			const result = element.handleSelection( e );
 
 			if ( result ) {
 
@@ -102,7 +102,7 @@ export class BaseToolService {
 
 			const element = this.selectionStrategies[ i ];
 
-			const result = element.select( e );
+			const result = element.handleSelection( e );
 
 			if ( result ) return result;
 

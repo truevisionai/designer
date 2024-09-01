@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { NodeOverlayHandler } from "app/core/overlay-handlers/node-overlay-handler";
+import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
 import { Log } from "app/core/utils/log";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { RoadControlPoint } from "app/objects/road-control-point";
@@ -13,7 +13,7 @@ import { SplineControlPoint } from "app/objects/spline-control-point";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PointOverlayHandler<T extends AbstractControlPoint> extends NodeOverlayHandler<T> {
+export class PointVisualizer<T extends AbstractControlPoint> extends NodeVisualizer<T> {
 
 	onAdded ( object: AbstractControlPoint ): void {
 
@@ -33,19 +33,19 @@ export class PointOverlayHandler<T extends AbstractControlPoint> extends NodeOve
 
 	}
 
-	private updateSpline ( object: AbstractControlPoint ): void {
+	protected updateSpline ( object: AbstractControlPoint ): void {
 
 		if ( object instanceof SplineControlPoint ) {
 
-			this.updateOverlay( object.spline );
+			this.updateVisuals( object.spline );
 
 		} else if ( object instanceof RoadControlPoint ) {
 
-			this.updateOverlay( object.spline );
+			this.updateVisuals( object.spline );
 
 		} else if ( object instanceof RoadTangentPoint ) {
 
-			this.updateOverlay( object.spline );
+			this.updateVisuals( object.spline );
 
 		} else {
 
@@ -53,6 +53,17 @@ export class PointOverlayHandler<T extends AbstractControlPoint> extends NodeOve
 
 		}
 
+	}
+
+}
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ManeuverPointVisualizer extends PointVisualizer<AbstractControlPoint> {
+
+	protected updateSpline ( object: AbstractControlPoint ): void {
+		// do nothing
 	}
 
 }

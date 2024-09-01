@@ -52,10 +52,9 @@ import { RoadRampTool } from "./road-ramp/road-ramp-tool";
 import { RoadDividerTool } from "./road-cut-tool/road-divider-tool";
 import { ParkingRoadTool } from "./parking/parking-road-tool";
 import { ParkingLotTool } from "./parking/parking-lot.tool";
-import { ControlPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
+import { DepPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
 import { SelectionService } from "./selection.service";
 import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
-import { ObjectTagStrategy } from "../core/strategies/select-strategies/object-tag-strategy";
 import { Surface } from 'app/map/surface/surface.model';
 import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
 import { ControlPointFactory } from "../factories/control-point.factory";
@@ -65,11 +64,11 @@ import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { Tool } from "./tool";
 import { LaneHeightTool } from './lane-height/lane-height.tool';
 import { BaseLaneTool } from "./base-lane.tool";
-import { SelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
+import { DepSelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { TvLane } from 'app/map/models/tv-lane';
 import { LaneHeightService } from 'app/map/lane-height/lane-height.service';
 import { DebugLine } from 'app/objects/debug-line';
-import { SelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
+import { DepSelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { MidLaneMovingStrategy, } from "../core/strategies/move-strategies/end-lane.moving.strategy";
 import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies/follow-heading-moving-strategy';
 import { LanePointNode } from "../objects/lane-node";
@@ -248,11 +247,11 @@ export class ToolFactory {
 
 			if ( type == ToolType.LaneHeight ) {
 
-				this.selectionService.registerStrategy( LanePointNode.name, new ControlPointStrategy() );
+				this.selectionService.registerStrategy( LanePointNode.name, new DepPointStrategy() );
 
-				this.selectionService.registerStrategy( DebugLine.name, new SelectLineStrategy() );
+				this.selectionService.registerStrategy( DebugLine.name, new DepSelectLineStrategy() );
 
-				this.selectionService.registerStrategy( TvLane.name, new SelectLaneStrategy() );
+				this.selectionService.registerStrategy( TvLane.name, new DepSelectLaneStrategy() );
 
 				this.selectionService.addMovingStrategy( new MidLaneMovingStrategy() );
 
@@ -269,24 +268,24 @@ export class ToolFactory {
 		this.selectionService.reset();
 
 		if ( type == ToolType.PropPolygon ) {
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
 			this.selectionService.registerStrategy( PropPolygon.name, new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' ) );
 			tool.setTypeName( PropPolygon.name );
 		}
 
 		if ( type == ToolType.PropCurve ) {
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
 			this.selectionService.registerStrategy( PropCurve.name, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
 			tool.setTypeName( PropCurve.name );
 		}
 
 		if ( type == ToolType.PropPoint ) {
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
 			tool.setTypeName( PropInstance.name );
 		}
 
 		if ( type == ToolType.Surface ) {
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new ControlPointStrategy() );
+			this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
 			this.selectionService.registerStrategy( Surface.name, new ObjectUserDataStrategy( Surface.tag, 'surface' ) );
 			tool.setTypeName( Surface.name );
 		}
