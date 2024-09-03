@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from "@angular/core";
-import { TvRoad } from "../../map/models/tv-road.model";
-import { RoadVisualizer } from "../../core/overlay-handlers/road-visualizer";
-import { CrosswalkToolDebugger } from "./crosswalk-tool-debugger";
+import { TvRoad } from "../../../map/models/tv-road.model";
+import { RoadVisualizer } from "../../../core/overlay-handlers/road-visualizer";
+import { CrosswalkToolDebugger } from "../crosswalk-tool-debugger";
 import { TvRoadObjectType } from "app/map/models/objects/tv-road-object";
 import { BaseVisualizer } from "app/core/overlay-handlers/base-visualizer";
 

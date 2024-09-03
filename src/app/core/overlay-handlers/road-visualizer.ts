@@ -56,11 +56,15 @@ export class RoadVisualizer extends BaseVisualizer<TvRoad> {
 
 	onDefault ( object: TvRoad ): void {
 
+		this.laneDebugger.removeLaneOverlays( object.getLaneProfile() );
+
 		this.roadDebug.removeRoadBorderLine( object );
 
 	}
 
 	onSelected ( object: TvRoad ): void {
+
+		this.laneDebugger.removeLaneOverlays( object.getLaneProfile() );
 
 		this.roadDebug.showRoadBorderLine( object, 3, COLOR.RED );
 

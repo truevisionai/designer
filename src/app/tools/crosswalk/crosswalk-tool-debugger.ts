@@ -7,15 +7,14 @@ import { TvRoad } from "../../map/models/tv-road.model";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
-import { Object3D } from "three";
 import { TvCornerRoad } from "../../map/models/objects/tv-corner-road";
-import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { Log } from "../../core/utils/log";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { TvObjectOutline } from "app/map/models/objects/tv-object-outline";
 import { DebugLine } from "app/objects/debug-line";
 import { Object3DMap } from "app/core/models/object3d-map";
+import { CornerControlPoint } from "./objects/corner-control-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,7 +23,7 @@ export class CrosswalkToolDebugger {
 
 	private nodes: Object3DArrayMap<TvRoadObject, CornerControlPoint[]>;
 
-	private lines: Object3DMap<TvRoadObject, Object3D>;
+	private lines: Object3DMap<TvRoadObject, DebugLine<TvRoadObject>>;
 
 	private nodeCache: Map<TvCornerRoad, CornerControlPoint>;
 
@@ -50,15 +49,47 @@ export class CrosswalkToolDebugger {
 
 				const node = this.createNode( road, roadObject, corner );
 
-				this.nodes.addItem( roadObject, node );
+				this.addPoint( roadObject, node );
 
 			}
 
 			if ( outline.getCornerRoadCount() > 1 ) {
 
-				const line = this.createLine( road, roadObject, outline );
+				const line = this.createOrUpdateLine( road, roadObject, outline );
 
 				this.lines.add( roadObject, line );
+
+			}
+
+		}
+
+	}
+
+	addPoint ( roadObject: TvRoadObject, point: CornerControlPoint ): void {
+
+		this.nodes.addItem( roadObject, point );
+
+	}
+
+	removePoint ( roadObject: TvRoadObject, point: CornerControlPoint ): void {
+
+		this.nodes.removeItem( roadObject, point );
+
+	}
+
+	updateGizmo ( road: TvRoad, roadObject: TvRoadObject ): void {
+
+		for ( const outline of roadObject.outlines ) {
+
+			if ( outline.getCornerRoadCount() > 1 ) {
+
+				const line = this.createOrUpdateLine( road, roadObject, outline );
+
+				if ( !this.lines.has( roadObject ) ) {
+
+					this.lines.add( roadObject, line );
+
+				}
 
 			}
 
@@ -123,7 +154,7 @@ export class CrosswalkToolDebugger {
 
 	}
 
-	createLine ( road: TvRoad, roadObject: TvRoadObject, outline: TvObjectOutline ): DebugLine<TvRoadObject> {
+	createOrUpdateLine ( road: TvRoad, roadObject: TvRoadObject, outline: TvObjectOutline ): DebugLine<TvRoadObject> {
 
 		const points = outline.cornerRoads.map( corner => RoadGeometryService.instance.findRoadPosition( road, corner.s, corner.t ) );
 
@@ -158,16 +189,3 @@ export class CrosswalkToolDebugger {
 	}
 }
 
-export class CornerControlPoint extends SimpleControlPoint<TvCornerRoad> {
-
-	public corner: TvCornerRoad;
-
-	constructor ( public road: TvRoad, public roadObject: TvRoadObject, cornerRoad: TvCornerRoad, ) {
-
-		super( cornerRoad );
-
-		this.corner = cornerRoad
-
-	}
-
-}

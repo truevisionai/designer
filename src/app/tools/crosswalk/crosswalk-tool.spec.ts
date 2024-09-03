@@ -10,7 +10,6 @@ import { ToolType } from '../tool-types.enum';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { CornerControlPoint } from './crosswalk-tool-debugger';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { ToolManager } from 'app/managers/tool-manager';
 import { ToolBarService } from 'app/views/editor/tool-bar/tool-bar.service';
@@ -21,6 +20,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { CommandHistory } from 'app/commands/command-history';
+import { CornerControlPoint } from "./objects/corner-control-point";
 
 describe( 'CrosswalkTool', () => {
 

@@ -3,14 +3,14 @@
  */
 
 import { Injectable } from "@angular/core";
-import { PointerEventData } from "../../events/pointer-event-data";
-import { CornerControlPoint } from "./crosswalk-tool-debugger";
+import { PointerEventData } from "../../../events/pointer-event-data";
 import { PointController } from "app/core/object-handlers/point-controller";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { Log } from "app/core/utils/log";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { Commands } from "app/commands/commands";
-import { CrosswalkInspector } from "./crosswalk.inspector";
+import { CrosswalkInspector } from "../crosswalk.inspector";
+import { CornerControlPoint } from "../objects/corner-control-point";
 
 @Injectable( {
 	providedIn: 'root'

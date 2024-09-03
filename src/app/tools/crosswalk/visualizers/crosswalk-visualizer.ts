@@ -5,7 +5,7 @@
 import { Injectable } from "@angular/core";
 import { BaseVisualizer } from "app/core/overlay-handlers/base-visualizer";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
-import { CrosswalkToolDebugger } from "./crosswalk-tool-debugger";
+import { CrosswalkToolDebugger } from "../crosswalk-tool-debugger";
 
 @Injectable( {
 	providedIn: 'root'
@@ -47,8 +47,7 @@ export class CrosswalkVisualizer extends BaseVisualizer<TvRoadObject> {
 	}
 
 	onUpdated ( object: TvRoadObject ): void {
-		this.crosswalkDebugService.removeGizmo( object );
-		this.crosswalkDebugService.addGizmo( object.road, object );
+		this.crosswalkDebugService.updateGizmo( object.road, object );
 	}
 
 	onRemoved ( object: TvRoadObject ): void {

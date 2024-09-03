@@ -5,7 +5,10 @@
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { ToolType } from '../tool-types.enum';
-import { DepPointStrategy } from '../../core/strategies/select-strategies/control-point-strategy';
+import {
+	DepPointStrategy,
+	PointSelectionStrategy
+} from '../../core/strategies/select-strategies/control-point-strategy';
 import { RoadCoordStrategy } from '../../core/strategies/select-strategies/road-coord-strategy';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
@@ -14,16 +17,16 @@ import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-o
 import { CrosswalkToolHelper } from "./crosswalk-tool.helper";
 import { CrosswalkInspector } from './crosswalk.inspector';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
-import { CornerControlPoint } from './crosswalk-tool-debugger';
-import { CornerPointVisualizer } from "./corner-point-visualizer";
+import { CornerPointVisualizer } from "./visualizers/corner-point-visualizer";
 import { RoadController } from "../../core/object-handlers/road-handler";
 import { ToolWithHandler } from "../base-tool-v2";
-import { CrosswalkToolRoadVisualizer } from "./crosswalk-tool-overlay-handler";
-import { CornerControlPointController } from './corner-point-controller';
-import { CrosswalkVisualizer } from './crosswalk-visualizer';
-import { CrosswalkController } from "./crosswalk-controller";
+import { CrosswalkToolRoadVisualizer } from "./visualizers/crosswalk-tool-road-visualizer";
+import { CornerControlPointController } from './controllers/corner-point-controller';
+import { CrosswalkVisualizer } from './visualizers/crosswalk-visualizer';
+import { CrosswalkController } from "./controllers/crosswalk-controller";
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { Commands } from 'app/commands/commands';
+import { CornerControlPoint } from "./objects/corner-control-point";
 
 export class CrosswalkTool extends ToolWithHandler {
 
@@ -62,8 +65,8 @@ export class CrosswalkTool extends ToolWithHandler {
 
 		this.tool.base.reset();
 
-		this.selectionService.registerStrategy( CornerControlPoint.name, new DepPointStrategy() );
-		this.selectionService.registerStrategy( TvRoadObject.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( CornerControlPoint.name, new PointSelectionStrategy() );
+		this.selectionService.registerStrategy( TvRoadObject.name, new PointSelectionStrategy() );
 		this.selectionService.registerStrategy( TvRoad.name, new RoadSelectionStrategy() );
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );

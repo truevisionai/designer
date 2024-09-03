@@ -7,7 +7,7 @@ import { BaseController } from "app/core/object-handlers/base-controller";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
-import { CrosswalkInspector } from "./crosswalk.inspector";
+import { CrosswalkInspector } from "../crosswalk.inspector";
 
 
 @Injectable( {

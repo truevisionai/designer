@@ -21,7 +21,6 @@ export class LaneToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 	onSelected ( road: TvRoad ): void {
 
 		this.laneDebugger.showLaneOutlines( road.getLaneProfile() );
-		this.laneDebugger.showLaneOverlays( road.getLaneProfile() );
 
 		this.roadVisualizer.onSelected( road );
 
@@ -30,7 +29,6 @@ export class LaneToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 	onUpdated ( road: TvRoad ): void {
 
 		this.laneDebugger.removeLaneOutlines( road.getLaneProfile() );
-		this.laneDebugger.removeLaneOverlays( road.getLaneProfile() );
 
 		this.roadVisualizer.onUpdated( road );
 
@@ -39,7 +37,6 @@ export class LaneToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 	onUnselected ( road: TvRoad ): void {
 
 		this.laneDebugger.removeLaneOutlines( road.getLaneProfile() );
-		this.laneDebugger.removeLaneOverlays( road.getLaneProfile() );
 
 		this.roadVisualizer.onUnselected( road );
 
@@ -48,7 +45,6 @@ export class LaneToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 	onRemoved ( road: TvRoad ): void {
 
 		this.laneDebugger.removeLaneOutlines( road.getLaneProfile() );
-		this.laneDebugger.removeLaneOverlays( road.getLaneProfile() );
 
 		this.roadVisualizer.onRemoved( road );
 
