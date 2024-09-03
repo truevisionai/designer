@@ -57,7 +57,7 @@ export class SplineManager {
 
 	}
 
-	updateSpline ( spline: AbstractSpline, updateJunctions = true ) {
+	updateSpline ( spline: AbstractSpline, updateJunctions = true ): void {
 
 		if ( this.debug ) Log.debug( "Update", spline.toString() );
 
@@ -71,21 +71,21 @@ export class SplineManager {
 
 		this.splineGeometryService.updateGeometryAndBounds( spline );
 
+		this.updateAndBuildLinkedSplines( spline );
+
 		for ( const road of spline.getRoadSegments() ) {
 
 			this.roadManager.updateRoad( road );
 
 		}
 
-		this.splineLinkService.updateLinkedSplines( spline );
-
-		this.buildLinkedSplines( spline );
-
 		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
 
 	}
 
-	buildLinkedSplines ( spline: AbstractSpline ): void {
+	updateAndBuildLinkedSplines ( spline: AbstractSpline ): void {
+
+		this.splineLinkService.updateLinkedSplines( spline );
 
 		this.splineLinkService.getLinkedSplines( spline ).forEach( linkedSpline => {
 

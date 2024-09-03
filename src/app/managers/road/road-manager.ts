@@ -17,7 +17,7 @@ import { TvContactPoint } from "app/map/models/tv-common";
 import { TvRoadLink } from "app/map/models/tv-road-link";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Log } from "app/core/utils/log";
-import { RoadFixerService } from "./road-fixer.service";
+import { RoadValidator } from "./road-validator";
 import { LinkUtils } from "app/utils/link.utils";
 
 @Injectable( {
@@ -36,7 +36,7 @@ export class RoadManager {
 		private splineBuilder: SplineBuilder,
 		private roadLinkManager: RoadLinkManager,
 		private splineService: SplineService,
-		private roadFixerService: RoadFixerService
+		private roadValidator: RoadValidator
 	) {
 	}
 
@@ -45,8 +45,6 @@ export class RoadManager {
 		if ( this.debug ) Log.debug( 'Add', road.toString() );
 
 		this.roadLinkManager.onRoadCreated( road );
-
-		this.roadFixerService.fix( road );
 
 		for ( const laneSection of road.laneSections ) {
 			for ( const [ id, lane ] of laneSection.lanesMap ) {
@@ -81,6 +79,8 @@ export class RoadManager {
 			this.mapService.map.gameObject.add( road.gameObject );
 
 		}
+
+		this.roadValidator.validateRoad( road );
 
 	}
 
@@ -152,8 +152,6 @@ export class RoadManager {
 
 		if ( this.debug ) Log.debug( 'Update', road.toString() );
 
-		this.roadFixerService.fix( road );
-
 		this.mapService.map.gameObject.remove( road.gameObject );
 
 		if ( road.spline.controlPoints.length < 2 ) return;
@@ -169,6 +167,8 @@ export class RoadManager {
 		this.mapService.setRoadOpacity( road );
 
 		LinkUtils.updateLaneUuidLinks( road );
+
+		this.roadValidator.validateRoad( road );
 	}
 
 	private updateRoadObjects ( road: TvRoad ): void {
