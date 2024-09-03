@@ -12,6 +12,8 @@ import { StatusBarService } from "app/services/status-bar.service";
 
 export class ToolHandlers {
 
+	private debug = false;
+
 	private controllers: Map<string, BaseController<object>>;
 	private visualizers: Map<string, Visualizer<object>>;
 
@@ -189,6 +191,8 @@ export class ToolHandlers {
 		// If the object is already selected, don't highlight it
 		if ( controller.isSelected( objectToHighlight ) ) return;
 
+		if ( this.debug ) Log.info( 'highlighting object', objectToHighlight.toString() );
+
 		visualizer.onHighlight( objectToHighlight );
 
 		visualizer.addToHighlighted( objectToHighlight );
@@ -264,6 +268,8 @@ export class ToolHandlers {
 
 	private resetHighlightedObjects (): void {
 
+		if ( this.debug ) Log.info( 'resetting highlighted objects' );
+
 		this.visualizers.forEach( ( visualizer, name ) => {
 
 			const selected = this.controllers.get( name ).getSelected();
@@ -271,6 +277,8 @@ export class ToolHandlers {
 			visualizer.getHighlighted().forEach( highlightedObject => {
 
 				if ( selected.includes( highlightedObject ) ) return;
+
+				if ( this.debug ) Log.info( 'resetting highlighted object', highlightedObject.toString() );
 
 				visualizer.onDefault( highlightedObject );
 

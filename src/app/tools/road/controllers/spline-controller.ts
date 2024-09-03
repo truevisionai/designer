@@ -3,7 +3,6 @@ import { Commands } from "app/commands/commands";
 import { BaseController } from "app/core/controllers/base-controller";
 import { AutoSpline } from "app/core/shapes/auto-spline-v2";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { ToolManager } from "app/managers/tool-manager";
 import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
 import { SplineService } from "app/services/spline/spline.service";
 import { SplineUtils } from "app/utils/spline.utils";

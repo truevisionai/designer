@@ -8,7 +8,6 @@ import { SplineService } from "../../../services/spline/spline.service";
 import { RoadLinkService } from "../../../services/road/road-link.service";
 import { SplineGeometryService } from "../../../services/spline/spline-geometry.service";
 import { PointerEventData } from "../../../events/pointer-event-data";
-import { ToolManager } from "../../../managers/tool-manager";
 import { Commands } from "../../../commands/commands";
 import { PointController } from "../../../core/controllers/point-controller";
 import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
@@ -54,8 +53,6 @@ export class RoadTangentPointController extends PointController<RoadTangentPoint
 		point.controlPoint.update();
 
 		this.splineGeometryService.updateGeometryAndBounds( point.spline );
-
-		ToolManager.getTool().updateVisuals( point.spline );
 
 	}
 

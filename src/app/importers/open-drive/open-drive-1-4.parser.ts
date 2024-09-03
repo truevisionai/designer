@@ -58,55 +58,62 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parse ( xml: XmlElement ) {
+	public parse ( xml: XmlElement ): TvMap {
 
 		this.map = new TvMap();
 
 		const openDRIVE: XmlElement = xml.OpenDRIVE;
 
 		if ( !openDRIVE ) TvConsole.error( 'No OpenDRIVE tag found. Import Failed' );
-		if ( !openDRIVE ) this.snackBar.warn( 'No OpenDRIVE tag found. Import Failed' );
 		if ( !openDRIVE ) return;
-
-		if ( !openDRIVE?.road ) TvConsole.error( 'No road tag found. Import Failed' );
-		if ( !openDRIVE?.road ) this.snackBar.warn( 'No road tag found' );
-		if ( !openDRIVE?.road ) return;
 
 		this.map.header = this.parseHeader( openDRIVE?.header );
 
-		readXmlArray( openDRIVE?.controller, xml => {
+		readXmlArray( openDRIVE.controller, xml => {
 
 			this.map.addController( this.parseController( xml ) );
 
 		} );
 
-		readXmlArray( openDRIVE?.junction, ( xml ) => {
+		readXmlArray( openDRIVE.junction, ( xml ) => {
 
 			this.map.addJunction( this.parseJunction( xml ) );
 
 		} );
 
-		readXmlArray( openDRIVE?.road, ( xml ) => {
+		this.parseRoadsAndAddSplines( openDRIVE );
 
-			this.map.addRoad( this.parseRoad( xml ) );
+		this.parseRoadLinksAndConnect( openDRIVE );
 
-		} );
-
-		this.importRoads( openDRIVE );
-
-		this.importJunctions( openDRIVE );
-
-		this.map.roads.forEach( road => {
-
-			road.spline = SplineFactory.createExplicitSpline( road.getPlanView().getGeomtries(), road );
-
-		} )
+		this.parseJunctionElements( openDRIVE );
 
 		return this.map;
 
 	}
 
-	importRoads ( openDRIVE: XmlElement ) {
+	parseRoadsAndAddSplines ( openDRIVE: XmlElement ): void {
+
+		readXmlArray( openDRIVE?.road, ( xml ) => {
+
+			const road = this.parseRoad( xml );
+
+			this.map.addRoad( road );
+
+			if ( road.spline ) {
+
+				this.map.addSpline( road.spline );
+
+			} else {
+
+				Log.error( 'Spline not found for road', road.toString() );
+
+			}
+
+		} );
+
+	}
+
+	parseRoadLinksAndConnect ( openDRIVE: XmlElement ): void {
 
 		readXmlArray( openDRIVE?.road, ( xml ) => {
 
@@ -134,7 +141,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	importJunctions ( openDRIVE: XmlElement ) {
+	parseJunctionElements ( openDRIVE: XmlElement ): void {
 
 		readXmlArray( openDRIVE?.junction, ( xml ) => {
 
@@ -156,7 +163,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 				} else {
 
-					Log.error( 'Unknown error : ' + error.message );
+					Log.error( `Unknown error : ${ error.message }` );
 
 				}
 
@@ -211,37 +218,14 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			} else {
 
-				Log.error( 'Unknown error : ' + error.message );
+				Log.error( `Unknown error : ${ error.message }` );
 
 			}
 
 		}
 	}
 
-	private parseRoadId ( value: any ): TvRoad | null {
-
-		try {
-
-			const id = parseInt( value ) || -1;
-
-			return id > 0 ? this.map.getRoadById( id ) : null;
-
-		} catch ( error ) {
-
-			if ( error instanceof ModelNotFoundException ) {
-
-				Log.error( 'Road not found' );
-
-			} else {
-
-				Log.error( 'Unknown error : ' + error.message );
-
-			}
-
-		}
-	}
-
-	public parseRoad ( xml: XmlElement ) {
+	public parseRoad ( xml: XmlElement ): TvRoad {
 
 		const name = xml.attr_name;
 		const length = parseFloat( xml.attr_length );
@@ -252,30 +236,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		road.trafficRule = TvRoad.stringToRule( xml.attr_trafficRule );
 
-		// Get type
 		this.parseRoadTypes( road, xml );
-
-		// if ( !xml.planView ) this.snackBar.error( 'no planView found, skipping road import' );
-		// if ( !xml.planView ) return;
-
-		// if ( !xml.planView?.geometry ) this.snackBar.error( 'no geometry found, skipping road import' );
-		// if ( !xml.planView?.geometry ) return;
 
 		if ( xml.planView ) this.parsePlanView( road, xml.planView );
 
 		road.spline = SplineFactory.createExplicitSpline( road.getPlanView().getGeomtries(), road );
-
-		// road.length = 0;
-
-		// road.spline.update();
-
-		// road.clearGeometries();
-
-		// road.spline.exportGeometries( true ).forEach( geometry => {
-		//
-		// 	road.addGeometry( geometry );
-		//
-		// } );
 
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
@@ -294,13 +259,13 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		return road;
 	}
 
-	public parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ) {
+	public parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		if ( xmlElement?.predecessor != null ) {
 
 			const link = this.parseRoadLinkChild( xmlElement.predecessor );
 
-			if ( !link ) TvConsole.error( 'Predecessor not found for ' + road.toString() );
+			if ( !link ) TvConsole.error( `Predecessor not found for ${ road.toString() }` );
 
 			road.predecessor = link;
 
@@ -310,7 +275,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			const link = this.parseRoadLinkChild( xmlElement.successor );
 
-			if ( !link ) TvConsole.error( 'Successor not found for ' + road.toString() );
+			if ( !link ) TvConsole.error( `Successor not found for ${ road.toString() }` );
 
 			road.successor = link;
 
@@ -318,7 +283,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		if ( xmlElement?.neighbor != null ) {
 
-			console.error( 'neighbour not supported' );
+			Log.error( 'neighbour not supported' );
 
 		}
 
@@ -334,11 +299,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			if ( error instanceof ModelNotFoundException ) {
 
-				Log.error( 'Road not found : ' + id );
+				Log.error( `Road not found : ${ id }` );
 
 			} else {
 
-				Log.error( 'Unknown error : ' + error.message );
+				Log.error( `Unknown error : ${ error.message }` );
 			}
 
 		}
