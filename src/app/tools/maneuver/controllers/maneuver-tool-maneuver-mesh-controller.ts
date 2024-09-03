@@ -27,13 +27,13 @@ export class ManeuverToolManeuverMeshController extends EmptyController<Maneuver
 
 	onAdded ( object: ManeuverMesh ): void {
 
-		this.connectionService.addLink( object.junction, object.connection, object.link );
+		this.connectionService.addConnection( object.junction, object.connection );
 
 	}
 
 	onRemoved ( object: ManeuverMesh ): void {
 
-		this.connectionService.removeLink( object.junction, object.connection, object.link );
+		this.connectionService.removeConnection( object.junction, object.connection );
 
 	}
 

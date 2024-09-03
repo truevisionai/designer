@@ -213,7 +213,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 				const maneuverMesh = this.createManeuver( junction, connection, link );
 
-				this.maneuvers.addItem( junction, maneuverMesh );
+				this.addManeuver( junction, maneuverMesh );
 
 			} );
 

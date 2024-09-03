@@ -47,13 +47,15 @@ export class ManeuverVisualizer extends NodeVisualizer<ManeuverMesh> {
 
 	onAdded ( object: ManeuverMesh ): void {
 
-		this.junctionDebugService.addManeuver( object.junction, object );
+		super.onAdded( object );
 
-		this.updateVisuals( object.junction );
+		this.junctionDebugService.addManeuver( object.junction, object );
 
 	}
 
 	onUpdated ( object: ManeuverMesh ): void {
+
+		super.onUpdated( object );
 
 		this.junctionDebugService.updateManeuver( object );
 

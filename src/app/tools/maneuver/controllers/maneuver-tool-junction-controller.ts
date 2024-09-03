@@ -4,17 +4,17 @@
 
 import { Injectable } from "@angular/core";
 import { EmptyController } from "../../../core/object-handlers/empty-controller";
-import { TvJunction } from "../../../map/models/junctions/tv-junction";
 import { TvJunctionSignalizationInspector } from "../../traffic-light/tv-junction-signalization.inspector";
+import { JunctionOverlay } from "app/services/junction/junction-overlay";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverToolJunctionController extends EmptyController<TvJunction> {
+export class ManeuverToolJunctionOverlayController extends EmptyController<JunctionOverlay> {
 
-	showInspector ( object: TvJunction ): void {
+	showInspector ( object: JunctionOverlay ): void {
 
-		this.setInspector( new TvJunctionSignalizationInspector( object ) );
+		this.setInspector( new TvJunctionSignalizationInspector( object.junction ) );
 
 	}
 

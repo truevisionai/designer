@@ -3,14 +3,14 @@
  */
 
 import { Injectable } from "@angular/core";
-import { EmptyVisualizer } from "../../../core/overlay-handlers/empty-visualizer";
-import { TvJunction } from "../../../map/models/junctions/tv-junction";
 import { JunctionDebugService } from "../../../services/junction/junction.debug";
+import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
+import { JunctionOverlay } from "app/services/junction/junction-overlay";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverToolJunctionVisualizer extends EmptyVisualizer<TvJunction> {
+export class ManeuverToolJunctionOverlayVisualizer extends NodeVisualizer<JunctionOverlay> {
 
 	constructor (
 		private junctionDebugService: JunctionDebugService,
@@ -18,24 +18,30 @@ export class ManeuverToolJunctionVisualizer extends EmptyVisualizer<TvJunction> 
 		super();
 	}
 
-	onSelected ( object: TvJunction ): void {
+	onSelected ( object: JunctionOverlay ): void {
 
-		this.junctionDebugService.removeEntries( object );
-		this.junctionDebugService.removeManeuvers( object );
+		super.onSelected( object );
 
-		this.junctionDebugService.showManeuvers( object );
-		this.junctionDebugService.showEntries( object );
+		this.junctionDebugService.removeEntries( object.junction );
+		this.junctionDebugService.removeManeuvers( object.junction );
+
+		this.junctionDebugService.showManeuvers( object.junction );
+		this.junctionDebugService.showEntries( object.junction );
 
 	}
 
-	onUnselected ( object: TvJunction ): void {
+	onUnselected ( object: JunctionOverlay ): void {
 
-		this.junctionDebugService.removeManeuvers( object );
-		this.junctionDebugService.removeEntries( object );
+		super.onUnselected( object );
+
+		this.junctionDebugService.removeManeuvers( object.junction );
+		this.junctionDebugService.removeEntries( object.junction );
 
 	}
 
 	clear (): void {
+
+		super.clear();
 
 		this.junctionDebugService.clear();
 

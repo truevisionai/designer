@@ -6,7 +6,6 @@ import { ToolType } from '../tool-types.enum';
 import { ManeuverToolHelper } from 'app/tools/maneuver/maneuver-tool-helper.service';
 import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
-import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { JunctionGatePoint } from "app/objects/junctions/junction-gate-point";
 import { PointSelectionStrategy } from "../../core/strategies/select-strategies/control-point-strategy";
 import { JunctionGatePointSelectionStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
@@ -17,11 +16,12 @@ import { ManeuverPointController } from './controllers/maneuver-point.controller
 import { JunctionGateController } from './controllers/junction-gate-point-controller';
 import { JunctionGateVisualizer } from "./visualizers/junction-gate-visualizer";
 import { maneuverToolHints } from './maneuver-tool.hints';
-import { JunctionSelectionStrategy, ManeuverMeshSelectionStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
+import { JunctionOverlaySelectionStrategy, ManeuverMeshSelectionStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
 import { ToolWithHandler } from '../base-tool-v2';
-import { ManeuverToolJunctionController } from "./controllers/maneuver-tool-junction-controller";
-import { ManeuverToolJunctionVisualizer } from "./visualizers/maneuver-tool-junction-visualizer";
+import { ManeuverToolJunctionOverlayController } from "./controllers/maneuver-tool-junction-controller";
+import { ManeuverToolJunctionOverlayVisualizer } from "./visualizers/maneuver-tool-junction-visualizer";
 import { ManeuverPointVisualizer } from "./visualizers/maneuver-point-visualizer";
+import { JunctionOverlay } from 'app/services/junction/junction-overlay';
 
 export class ManeuverTool extends ToolWithHandler {
 
@@ -58,11 +58,9 @@ export class ManeuverTool extends ToolWithHandler {
 		this.selectionService.registerStrategy( JunctionGatePoint.name, new JunctionGatePointSelectionStrategy() );
 		this.selectionService.registerStrategy( SplineControlPoint.name, new PointSelectionStrategy() );
 		this.selectionService.registerStrategy( ManeuverMesh.name, new ManeuverMeshSelectionStrategy() );
-		this.selectionService.registerStrategy( TvJunction.name, new JunctionSelectionStrategy() );
+		this.selectionService.registerStrategy( JunctionOverlay.name, new JunctionOverlaySelectionStrategy() );
 
 		this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
-
-		this.setTypeName( TvJunction.name );
 
 	}
 
@@ -71,12 +69,12 @@ export class ManeuverTool extends ToolWithHandler {
 		this.addController( SplineControlPoint.name, this.helper.base.injector.get( ManeuverPointController ) );
 		this.addController( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateController ) );
 		this.addController( ManeuverMesh.name, this.helper.base.injector.get( ManeuverToolManeuverMeshController ) );
-		this.addController( TvJunction.name, this.helper.base.injector.get( ManeuverToolJunctionController ) );
+		this.addController( JunctionOverlay.name, this.helper.base.injector.get( ManeuverToolJunctionOverlayController ) );
 
 		this.addVisualizer( SplineControlPoint.name, this.helper.base.injector.get( ManeuverPointVisualizer ) );
 		this.addVisualizer( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateVisualizer ) );
 		this.addVisualizer( ManeuverMesh.name, this.helper.base.injector.get( ManeuverVisualizer ) );
-		this.addVisualizer( TvJunction.name, this.helper.base.injector.get( ManeuverToolJunctionVisualizer ) );
+		this.addVisualizer( JunctionOverlay.name, this.helper.base.injector.get( ManeuverToolJunctionOverlayVisualizer ) );
 
 	}
 

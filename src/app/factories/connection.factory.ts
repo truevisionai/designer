@@ -464,6 +464,8 @@ export class ConnectionFactory {
 
 		this.splineBuilder.buildGeometry( connectingRoad.spline );
 
+		connectingRoad.computeLaneSectionCoordinates();
+
 		return connectingLane;
 
 	}
