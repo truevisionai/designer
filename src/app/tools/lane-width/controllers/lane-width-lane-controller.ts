@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { EmptyController } from "app/core/object-handlers/empty-controller";
+import { EmptyController } from "app/core/controllers/empty-controller";
 import { TvLane } from "app/map/models/tv-lane";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";

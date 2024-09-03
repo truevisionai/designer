@@ -19,8 +19,8 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Log } from 'app/core/utils/log';
 import { RoadGeometryService } from "../../services/road/road-geometry.service";
-import { EmptyController } from 'app/core/object-handlers/empty-controller';
-import { EmptyVisualizer } from "app/core/overlay-handlers/empty-visualizer";
+import { EmptyController } from 'app/core/controllers/empty-controller';
+import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
 import { JunctionRoadService } from 'app/services/junction/junction-road.service';
 
 export enum AutoSignalizationType {

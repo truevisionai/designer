@@ -4,7 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { Commands } from "app/commands/commands";
-import { EmptyController } from "app/core/object-handlers/empty-controller";
+import { EmptyController } from "app/core/controllers/empty-controller";
 import { Log } from "app/core/utils/log";
 import { ConnectionFactory } from "app/factories/connection.factory";
 import { TvJunction } from "app/map/models/junctions/tv-junction";

@@ -4,7 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { PointerEventData } from "../../../events/pointer-event-data";
-import { PointController } from "app/core/object-handlers/point-controller";
+import { PointController } from "app/core/controllers/point-controller";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { Log } from "app/core/utils/log";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";

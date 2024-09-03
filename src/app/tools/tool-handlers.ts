@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseController } from "app/core/object-handlers/base-controller";
-import { Visualizer } from "app/core/overlay-handlers/visualizer";
+import { BaseController } from "app/core/controllers/base-controller";
+import { Visualizer } from "app/core/visualizers/visualizer";
 import { Log } from "app/core/utils/log";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { SelectionService } from "./selection.service";

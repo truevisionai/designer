@@ -23,10 +23,10 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { Tool } from "./tool";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { Commands } from 'app/commands/commands';
-import { Visualizer } from "../core/overlay-handlers/visualizer";
+import { Visualizer } from "../core/visualizers/visualizer";
 import { ToolHintConfig } from 'app/core/interfaces/tool.hints';
 import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';
-import { BaseController } from 'app/core/object-handlers/base-controller';
+import { BaseController } from 'app/core/controllers/base-controller';
 import { ToolHandlers } from './tool-handlers';
 import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 

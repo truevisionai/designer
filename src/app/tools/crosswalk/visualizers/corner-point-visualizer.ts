@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
+import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { CornerControlPoint } from "../objects/corner-control-point";
 import { CrosswalkToolDebugger } from "../crosswalk-tool-debugger";
 

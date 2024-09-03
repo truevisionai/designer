@@ -5,8 +5,8 @@
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../../../map/models/tv-road.model";
 import { LaneWidthToolDebugger } from "../lane-width-tool.debugger";
-import { RoadVisualizer } from "../../../core/overlay-handlers/road-visualizer";
-import { BaseVisualizer } from "app/core/overlay-handlers/base-visualizer";
+import { RoadVisualizer } from "../../../core/visualizers/road-visualizer";
+import { BaseVisualizer } from "app/core/visualizers/base-visualizer";
 
 @Injectable( {
 	providedIn: 'root'

@@ -6,7 +6,7 @@
 import { BaseTool } from './base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Log } from "../core/utils/log";
-import { BaseController } from 'app/core/object-handlers/base-controller';
+import { BaseController } from 'app/core/controllers/base-controller';
 import { ToolTipService } from 'app/services/debug/tool-tip.service';
 import { KeyboardEvents } from 'app/events/keyboard-events';
 

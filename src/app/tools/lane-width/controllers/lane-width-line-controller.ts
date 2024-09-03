@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { LineController } from "../../../core/object-handlers/line-controller";
+import { LineController } from "../../../core/controllers/line-controller";
 import { LaneWidthService } from "../lane-width.service";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { RoadGeometryService } from "../../../services/road/road-geometry.service";

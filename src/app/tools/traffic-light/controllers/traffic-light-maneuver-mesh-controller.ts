@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { EmptyController } from "../../../core/object-handlers/empty-controller";
+import { EmptyController } from "../../../core/controllers/empty-controller";
 import { ManeuverMesh } from "../../../services/junction/maneuver-mesh";
 import { ManeuverSignalizationInspector } from "../maneuver-signalization.inspector";
 

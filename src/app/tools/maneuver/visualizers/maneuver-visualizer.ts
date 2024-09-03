@@ -3,11 +3,11 @@
  */
 
 import { Injectable } from "@angular/core";
-import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
+import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { SplineDebugService } from "app/services/debug/spline-debug.service";
-import { EmptyVisualizer } from "app/core/overlay-handlers/empty-visualizer";
+import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
 
 @Injectable( {
 	providedIn: 'root'

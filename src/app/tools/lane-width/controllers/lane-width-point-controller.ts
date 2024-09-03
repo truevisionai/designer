@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { PointController } from "../../../core/object-handlers/point-controller";
+import { PointController } from "../../../core/controllers/point-controller";
 import { LaneWidthService } from "../lane-width.service";
 import { LaneWidthInspector } from "../lane-width-node-inspector";
 import { PointerEventData } from "../../../events/pointer-event-data";

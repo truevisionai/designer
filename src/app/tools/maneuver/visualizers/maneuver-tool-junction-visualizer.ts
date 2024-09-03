@@ -4,7 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { JunctionDebugService } from "../../../services/junction/junction.debug";
-import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
+import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { JunctionOverlay } from "app/services/junction/junction-overlay";
 
 @Injectable( {

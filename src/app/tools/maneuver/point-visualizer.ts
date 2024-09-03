@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
+import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { Log } from "app/core/utils/log";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { RoadControlPoint } from "app/objects/road/road-control-point";

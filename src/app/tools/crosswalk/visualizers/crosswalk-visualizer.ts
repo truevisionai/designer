@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseVisualizer } from "app/core/overlay-handlers/base-visualizer";
+import { BaseVisualizer } from "app/core/visualizers/base-visualizer";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { CrosswalkToolDebugger } from "../crosswalk-tool-debugger";
 

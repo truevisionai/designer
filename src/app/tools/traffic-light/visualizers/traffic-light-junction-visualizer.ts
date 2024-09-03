@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { NodeVisualizer } from "../../../core/overlay-handlers/node-visualizer";
+import { NodeVisualizer } from "../../../core/visualizers/node-visualizer";
 import { JunctionOverlay } from "../../../services/junction/junction-overlay";
 import { JunctionDebugService } from "../../../services/junction/junction.debug";
 

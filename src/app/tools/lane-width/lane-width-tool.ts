@@ -10,7 +10,7 @@ import { TvRoad } from "../../map/models/tv-road.model";
 import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { ToolWithHandler } from '../base-tool-v2';
 import { SelectLaneOverlayStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
-import { EmptyVisualizer } from 'app/core/overlay-handlers/empty-visualizer';
+import { EmptyVisualizer } from 'app/core/visualizers/empty-visualizer';
 import { LaneWidthInspector } from './lane-width-node-inspector';
 import { LaneWidthLineSelectionStrategy } from 'app/core/strategies/select-strategies/object-name-strategy';
 import { LaneWidthLineController } from "./controllers/lane-width-line-controller";

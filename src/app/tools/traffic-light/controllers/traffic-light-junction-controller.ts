@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { EmptyController } from "../../../core/object-handlers/empty-controller";
+import { EmptyController } from "../../../core/controllers/empty-controller";
 import { JunctionOverlay } from "../../../services/junction/junction-overlay";
 import { TvJunctionSignalizationInspector } from "../tv-junction-signalization.inspector";
 

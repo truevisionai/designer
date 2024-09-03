@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { ConnectionService } from "app/map/junction/connection.service";
 import { ManeuverInspector } from "../maneuver.inspector";
-import { EmptyController } from "app/core/object-handlers/empty-controller";
+import { EmptyController } from "app/core/controllers/empty-controller";
 
 @Injectable( {
 	providedIn: 'root'

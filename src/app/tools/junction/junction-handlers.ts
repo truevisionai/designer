@@ -3,8 +3,8 @@
  */
 
 import { Injectable } from "@angular/core";
-import { EmptyController } from "app/core/object-handlers/empty-controller";
-import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
+import { EmptyController } from "app/core/controllers/empty-controller";
+import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { JunctionNode } from "app/services/junction/junction-node";
 import { JunctionOverlay } from "app/services/junction/junction-overlay";
 

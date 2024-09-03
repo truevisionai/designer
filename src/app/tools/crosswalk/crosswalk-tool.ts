@@ -18,7 +18,7 @@ import { CrosswalkToolHelper } from "./crosswalk-tool.helper";
 import { CrosswalkInspector } from './crosswalk.inspector';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { CornerPointVisualizer } from "./visualizers/corner-point-visualizer";
-import { RoadController } from "../../core/object-handlers/road-handler";
+import { RoadController } from "../../core/controllers/road-handler";
 import { ToolWithHandler } from "../base-tool-v2";
 import { CrosswalkToolRoadVisualizer } from "./visualizers/crosswalk-tool-road-visualizer";
 import { CornerControlPointController } from './controllers/corner-point-controller';

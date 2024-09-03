@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseController } from "app/core/object-handlers/base-controller";
+import { BaseController } from "app/core/controllers/base-controller";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { Log } from "app/core/utils/log";
 import { TvJunction } from "app/map/models/junctions/tv-junction";

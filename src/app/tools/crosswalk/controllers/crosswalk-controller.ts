@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseController } from "app/core/object-handlers/base-controller";
+import { BaseController } from "app/core/controllers/base-controller";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
