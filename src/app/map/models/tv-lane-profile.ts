@@ -213,9 +213,9 @@ export class TvLaneProfile {
 
 		const laneSections = this.getLaneSections();
 
-		if ( laneSections.length == 0 ) {
-			Log.error( 'No lane sections found' );
-		}
+		// if ( laneSections.length == 0 ) {
+		// 	Log.error( 'No lane sections found' );
+		// }
 
 		// Compute lastSCoordinate for all laneSections
 		for ( let i = 0; i < laneSections.length - 1; i++ ) {

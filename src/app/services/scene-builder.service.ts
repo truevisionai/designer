@@ -122,7 +122,7 @@ export class SceneBuilderService {
 
 		if ( !junction.innerBoundary || junction.innerBoundary.segments.length == 0 ) {
 
-			Log.info( 'Creating InnerBoundary', junction.toString() );
+			// Log.info( 'Creating InnerBoundary', junction.toString() );
 
 			junction.innerBoundary = TvJunctionBoundaryFactory.createInnerBoundary( junction );
 
