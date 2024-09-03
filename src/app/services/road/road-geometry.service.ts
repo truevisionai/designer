@@ -309,21 +309,14 @@ export class RoadGeometryService {
 
 		if ( s == null ) {
 			throw new InvalidArgumentException( 's is null' );
-			// TvConsole.error( 's is undefined' );
-			// s = 0;
 		}
 
 		if ( s > road.length ) {
-			throw new InvalidArgumentException( `s: ${ s } is greater than ${ this.toString() } length: ${ road.length }` );
-			// console.error( `s: ${ s } is greater than ${ this.toString() } length: ${ this.length }` );
-			// s = this.length;
+			throw new InvalidArgumentException( `s: ${ s } is greater than ${ road.toString() } length: ${ road.length }` );
 		}
 
 		if ( s < 0 ) {
-			throw new InvalidArgumentException( `s: ${ s } is less than 0, ${ this.toString() } length: ${ road.length }` );
-			// TvConsole.error( 's is less than 0' );
-			// console.error( `s: ${ s } is less than 0, ${ this.toString() } length: ${ this.length }` );
-			// s = 0;
+			throw new InvalidArgumentException( `s: ${ s } is less than 0, ${ road.toString() } length: ${ road.length }` );
 		}
 
 	}

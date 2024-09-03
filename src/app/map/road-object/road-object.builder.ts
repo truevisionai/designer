@@ -35,7 +35,6 @@ import { TvTextureService } from "../../graphics/texture/tv-texture.service";
 import { AssetType } from "../../core/asset/asset.model";
 import { COLOR } from "../../views/shared/utils/colors.service";
 import { TvObjectRepeat } from "../models/objects/tv-object-repeat";
-import { RoadService } from 'app/services/road/road.service';
 import { Log } from "../../core/utils/log";
 import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
@@ -49,18 +48,13 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 		private assetService: AssetService,
 		private materialService: TvMaterialService,
 		private textureService: TvTextureService,
-		private roadService: RoadService,
 	) {
 		super();
 	}
 
 	build ( object: TvRoadObject ): Object3D {
 
-		if ( object.road ) {
-
-			return this.buildRoadObject( object.road, object );
-
-		}
+		return this.buildRoadObject( object.road, object );
 
 	}
 
@@ -152,7 +146,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		object3D.name = 'object:' + roadObject.attr_type;
 
-		const position = RoadGeometryService.instance.findRoadPosition(road, roadObject.s, roadObject.t );
+		const position = RoadGeometryService.instance.findRoadPosition( road, roadObject.s, roadObject.t );
 
 		if ( roadObject.skeleton?.polylines.length > 0 ) {
 
@@ -197,7 +191,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 				const length = repeat.lengthStart && repeat.lengthEnd ?
 					Maths.linearInterpolation( repeat.lengthStart, repeat.lengthEnd, fraction ) : roadObject.length;
 
-				const posTheta = RoadGeometryService.instance.findRoadPosition(road, s, t );
+				const posTheta = RoadGeometryService.instance.findRoadPosition( road, s, t );
 
 				const repeatMesh = new Object3D();
 
@@ -251,7 +245,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	private calculateHeading ( road: TvRoad, roadObject: TvRoadObject ) {
 
-		const roadCoord = RoadGeometryService.instance.findRoadPosition(road, roadObject.s, roadObject.t );
+		const roadCoord = RoadGeometryService.instance.findRoadPosition( road, roadObject.s, roadObject.t );
 
 		let hdg: number;
 
@@ -315,7 +309,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 				const t = repeat.tStart && repeat.tEnd ?
 					Maths.linearInterpolation( repeat.tStart, repeat.tEnd, fraction ) : roadObject.t;
 
-				const posTheta = RoadGeometryService.instance.findRoadPosition(road, s, t );
+				const posTheta = RoadGeometryService.instance.findRoadPosition( road, s, t );
 
 				const objectInstance = this.getObject3dInstance( roadObject.assetGuid );
 
@@ -404,7 +398,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 				const t = repeat.tStart && repeat.tEnd ?
 					Maths.linearInterpolation( repeat.tStart, repeat.tEnd, fraction ) : roadObject.t;
 
-				const posTheta = RoadGeometryService.instance.findRoadPosition(road, s, t );
+				const posTheta = RoadGeometryService.instance.findRoadPosition( road, s, t );
 
 				const repeatMesh = new Object3D();
 
@@ -565,7 +559,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 		// v is positive to the top
 		const t = roadObject.t - cornerLocal.attr_u;
 
-		const position = RoadGeometryService.instance.findRoadPosition(road, s, t );
+		const position = RoadGeometryService.instance.findRoadPosition( road, s, t );
 
 		return position.position;
 	}

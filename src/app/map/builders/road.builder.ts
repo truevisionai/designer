@@ -20,13 +20,14 @@ import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
 import { TvMap } from '../models/tv-map.model';
 import { TvMaterialService } from 'app/graphics/material/tv-material.service';
-import { TvRoadObjectType } from "../models/objects/tv-road-object";
+import { TvRoadObject, TvRoadObjectType } from "../models/objects/tv-road-object";
 import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
 import { RoadObjectBuilder } from "../road-object/road-object.builder";
 import { RoadService } from 'app/services/road/road.service';
 import { Log } from "../../core/utils/log";
-import { InvalidRoadLength, NoGeometriesFound } from "../../exceptions/exceptions";
+import { InvalidRoadLength, NoGeometriesFound, ValidationException } from "../../exceptions/exceptions";
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
+import { RoadObjectValidator } from '../road-object/road-object-validator';
 
 @Injectable( {
 	providedIn: 'root'
@@ -39,7 +40,7 @@ export class RoadBuilder {
 		private roadMarkBuilder: LaneRoadMarkBuilder,
 		private materialService: TvMaterialService,
 		private signalBuilder: RoadSignalBuilder,
-		private objectBuilder: RoadObjectBuilder,
+		private roadObjectBuilder: RoadObjectBuilder,
 		private roadService: RoadService,
 	) {
 	}
@@ -480,21 +481,45 @@ export class RoadBuilder {
 		return road.signalGroup;
 	}
 
-	private buildRoadObjects ( road: TvRoad ) {
+	private buildRoadObjects ( road: TvRoad ): THREE.Group {
 
 		road.objectGroup?.clear();
 
 		for ( const roadObject of road.getRoadObjects() ) {
 
-			roadObject.mesh = this.objectBuilder.buildRoadObject( road, roadObject )
-
-			if ( !roadObject.mesh ) continue;
-
-			road.objectGroup?.add( roadObject.mesh );
+			this.buildAndAddRoadObject( road, roadObject );
 
 		}
 
 		return road.objectGroup;
 
+	}
+
+	buildAndAddRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
+
+		try {
+
+			roadObject.road = road;
+
+			RoadObjectValidator.validateRoadObject( roadObject );
+
+			roadObject.mesh = this.roadObjectBuilder.build( roadObject );
+
+			road.objectGroup.add( roadObject.mesh );
+
+		} catch ( error ) {
+
+			if ( error instanceof ValidationException ) {
+
+				Log.error( 'ValidationException road object', error.message );
+
+			} else {
+
+				Log.error( 'Failed to build road object', error.message );
+
+			}
+
+			road.removeRoadObject( roadObject );
+		}
 	}
 }

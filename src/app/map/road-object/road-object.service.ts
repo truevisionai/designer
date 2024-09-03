@@ -15,6 +15,8 @@ import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvObjectRepeat } from 'app/map/models/objects/tv-object-repeat';
 import { CornerRoadFactory } from 'app/services/road-object/corner-road.factory';
 import { Log } from 'app/core/utils/log';
+import { ValidationException } from "../../exceptions/exceptions";
+import { RoadObjectValidator } from "./road-object-validator";
 
 @Injectable( {
 	providedIn: 'root'
@@ -27,16 +29,6 @@ export class RoadObjectService {
 		private map: MapService,
 		private builder: RoadObjectBuilder,
 	) {
-	}
-
-	removeObjectsByRoad ( road: TvRoad ) {
-
-		road.getRoadObjects().forEach( object => {
-
-			this.removeRoadObject( road, object );
-
-		} );
-
 	}
 
 	clone ( roadObject: TvRoadObject ): TvRoadObject {
@@ -151,15 +143,31 @@ export class RoadObjectService {
 
 	updateRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		// this.removeRoadObject( road, roadObject );
-
-		// this.addRoadObject( road, roadObject );
-
 		road.objectGroup.remove( roadObject.mesh );
 
-		roadObject.mesh = this.builder.build( roadObject );
+		try {
 
-		road.objectGroup.add( roadObject.mesh );
+			RoadObjectValidator.validateRoadObject( roadObject );
+
+			roadObject.mesh = this.builder.build( roadObject );
+
+			road.objectGroup.add( roadObject.mesh );
+
+		} catch ( error ) {
+
+			if ( error instanceof ValidationException ) {
+
+				Log.error( 'Validation error updating road object:', error );
+
+			} else {
+
+				Log.error( 'Error updating road object:', error );
+
+			}
+
+			road.removeRoadObject( roadObject );
+
+		}
 
 	}
 
