@@ -1804,7 +1804,7 @@ export class JunctionManager {
 
 		this.junctionService.junctions.forEach( junction => {
 
-			const distance = junction.centroid.distanceTo( point );
+			const distance = junction.centroid?.distanceTo( point ) || Number.MAX_SAFE_INTEGER;
 
 			if ( distance > 10 ) return;
 

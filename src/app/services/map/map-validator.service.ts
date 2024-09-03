@@ -29,31 +29,17 @@ import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadUtils } from 'app/utils/road.utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadGeometryService } from "../road/road-geometry.service";
+import { expectLinkDistanceToBeZero } from 'app/managers/road/road-validator';
 
 const SPHERE_SIZE = 0.1;
 
-function expectCorrectSegmentOrder ( spline: AbstractSpline ) {
+function expectCorrectSegmentOrder ( spline: AbstractSpline ): void {
 	if ( !SplineUtils.areLinksCorrect( spline ) ) {
 		Log.error( 'Incorrect segment order' );
 	}
 }
 
-function expectLinkDistanceToBeZero ( road: TvRoad ) {
-	if ( road.successor ) {
-		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
-		if ( !Maths.approxEquals( distance, 0 ) ) {
-			Log.error( `InvalidSuccessorDistance:${ distance } ` + road.toString() + ' ' + road.successor.toString() );
-		}
-	}
-	if ( road.predecessor ) {
-		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor )
-		if ( !Maths.approxEquals( distance, 0 ) ) {
-			Log.error( `InvalidPredecessorDistance:${ distance } ` + road.toString() + ' ' + road.predecessor.toString() );
-		}
-	}
-}
-
-function expectValidMap ( mapService: MapService ) {
+function expectValidMap ( mapService: MapService ): void {
 	mapService.nonJunctionRoads.forEach( road => {
 		expectLinkDistanceToBeZero( road );
 	} );

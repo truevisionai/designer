@@ -19,7 +19,7 @@ export class RoadUtils {
 
 			const position = link.contactPoint === TvContactPoint.START ? link.element.getStartPosTheta() : link.element.getEndPosTheta();
 
-			return end.distanceTo( position );
+			return end.toVector2().distanceTo( position.toVector2() );
 
 		} else if ( link.element instanceof TvJunction ) {
 
@@ -39,7 +39,7 @@ export class RoadUtils {
 
 			const position = link.contactPoint === TvContactPoint.START ? link.element.getStartPosTheta() : link.element.getEndPosTheta();
 
-			return start.distanceTo( position );
+			return start.toVector2().distanceTo( position.toVector2() );
 
 		} else if ( link.element instanceof TvJunction ) {
 
