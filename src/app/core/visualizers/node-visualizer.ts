@@ -9,7 +9,7 @@ import { BaseVisualizer } from "./base-visualizer";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class NodeVisualizer<T extends INode> extends BaseVisualizer<T> {
+export abstract class NodeVisualizer<T extends INode> extends BaseVisualizer<T> {
 
 	onHighlight ( object: T ): void {
 		object.onMouseOver();

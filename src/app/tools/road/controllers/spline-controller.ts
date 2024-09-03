@@ -1,18 +1,12 @@
-/*
- * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
- */
-
 import { Injectable } from "@angular/core";
-import { BaseController } from "./base-controller";
-import { AutoSpline } from "../shapes/auto-spline-v2";
-import { SplineService } from "../../services/spline/spline.service";
-import { PointerEventData } from "../../events/pointer-event-data";
-import { SplineUtils } from "../../utils/spline.utils";
-import { Commands } from "../../commands/commands";
-import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
+import { Commands } from "app/commands/commands";
+import { BaseController } from "app/core/controllers/base-controller";
+import { AutoSpline } from "app/core/shapes/auto-spline-v2";
+import { PointerEventData } from "app/events/pointer-event-data";
 import { ToolManager } from "app/managers/tool-manager";
-import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
-import { AppInspector } from "../inspector";
+import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
+import { SplineService } from "app/services/spline/spline.service";
+import { SplineUtils } from "app/utils/spline.utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,8 +59,6 @@ export abstract class SplineController extends BaseController<AutoSpline> {
 
 		this.splineGeometryService.updateGeometryAndBounds( object );
 
-		ToolManager.getTool().updateVisuals( object );
-
 	}
 
 	onDragEnd ( object: AutoSpline, e: PointerEventData ): void {
@@ -75,31 +67,6 @@ export abstract class SplineController extends BaseController<AutoSpline> {
 
 		Commands.DragSpline( object, delta );
 
-	}
-
-}
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class AutoSplineController extends SplineController {
-
-	showInspector ( object: AutoSpline ): void {
-		AppInspector.setInspector( RoadInspector, { spline: object } );
-	}
-
-}
-
-
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class ExplicitSplineController extends SplineController {
-
-
-	showInspector ( object: AutoSpline ): void {
-		AppInspector.setInspector( RoadInspector, { spline: object } );
 	}
 
 }

@@ -3,14 +3,14 @@
  */
 
 import { Injectable } from "@angular/core";
-import { SplineControlPoint } from "../../objects/road/spline-control-point";
-import { SplineService } from "../../services/spline/spline.service";
-import { SplineGeometryService } from "../../services/spline/spline-geometry.service";
-import { PointerEventData } from "../../events/pointer-event-data";
-import { ToolManager } from "../../managers/tool-manager";
-import { Commands } from "../../commands/commands";
-import { PointController } from "./point-controller";
-import { AppInspector } from "../inspector";
+import { Commands } from "app/commands/commands";
+import { PointController } from "app/core/controllers/point-controller";
+import { AppInspector } from "app/core/inspector";
+import { PointerEventData } from "app/events/pointer-event-data";
+import { ToolManager } from "app/managers/tool-manager";
+import { SplineControlPoint } from "app/objects/road/spline-control-point";
+import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
+import { SplineService } from "app/services/spline/spline.service";
 import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
 
 @Injectable( {
@@ -58,8 +58,6 @@ export class SplinePointController extends PointController<SplineControlPoint> {
 		point.setPosition( e.point );
 
 		this.splineGeometryService.updateGeometryAndBounds( point.spline );
-
-		ToolManager.getTool().updateVisuals( point.spline );
 
 	}
 

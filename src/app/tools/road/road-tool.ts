@@ -22,14 +22,15 @@ import { Commands } from 'app/commands/commands';
 import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { PointVisualizer } from "../maneuver/point-visualizer";
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { AutoSplineController, ExplicitSplineController } from "../../core/controllers/spline.handler";
 import { AutoSplineVisualizer, ExplicitSplineVisualizer } from "../../core/visualizers/spline-visualizer";
 import { AutoSplineSelectionStrategy, ExplicitSplineSelectionStrategy } from "../../core/strategies/select-strategies/select-spline-strategy";
 import { SplineFactory } from "../../services/spline/spline.factory";
-import { RoadTangentPointController } from "../../core/controllers/road-tangent-point-controller";
-import { RoadControlPointController } from "../../core/controllers/road-control-point-controller";
-import { SplinePointController } from "../../core/controllers/spline-point-controller";
+import { RoadTangentPointController } from "./controllers/road-tangent-point-controller";
+import { RoadControlPointController } from "./controllers/road-control-point-controller";
+import { SplinePointController } from "./controllers/spline-point-controller";
 import { ToolWithHandler } from '../base-tool-v2';
+import { ExplicitSplineController } from "./controllers/explicit-spline-controller";
+import { AutoSplineController } from "./controllers/auto-spline-controller";
 
 export class RoadTool extends ToolWithHandler {
 
