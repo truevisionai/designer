@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { INode } from "app/objects/i-selectable";
 import { BaseVisualizer } from "./base-visualizer";
@@ -24,11 +28,11 @@ export class NodeVisualizer<T extends INode> extends BaseVisualizer<T> {
 	}
 
 	onAdded ( object: T ): void {
-		//
+		object.select();
 	}
 
 	onUpdated ( object: T ): void {
-		//
+		object.select();
 	}
 
 	onRemoved ( object: T ): void {

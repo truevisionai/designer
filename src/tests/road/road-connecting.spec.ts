@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
-import { RoadNode } from 'app/objects/road-node';
+import { RoadNode } from 'app/objects/road/road-node';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { RoadService } from 'app/services/road/road.service';

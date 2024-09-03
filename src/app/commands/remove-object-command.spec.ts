@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MapEvents } from 'app/events/map-events';
 import { RemoveObjectCommand } from './remove-object-command';
 

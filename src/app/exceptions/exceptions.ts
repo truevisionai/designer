@@ -97,3 +97,12 @@ export class InvalidRoadLength extends Error {
 		Error.captureStackTrace( this, InvalidRoadLength );
 	}
 }
+
+
+export class ValidationException extends Error {
+	constructor ( message: string = 'ValidationException' ) {
+		super( message );
+		this.name = 'ValidationException';
+		Error.captureStackTrace( this, ValidationException );
+	}
+}

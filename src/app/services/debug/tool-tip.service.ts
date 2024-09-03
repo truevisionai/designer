@@ -18,16 +18,21 @@ export interface TooltipInterface {
 } )
 export class ToolTipService {
 
+	static instance: ToolTipService;
+
 	public tooltipAdded = new EventEmitter<TooltipInterface>();
 	public tooltipUpdated = new EventEmitter<TooltipInterface>();
 	public tooltipRemoved = new EventEmitter<TooltipInterface>();
 
 	private tooltips = new Map<number, TooltipInterface>();
 
+	private lastTooltip: TooltipInterface;
+
 	constructor (
 		private canvasService: CanvasService,
 		private cameraService: CameraService
 	) {
+		ToolTipService.instance = this;
 	}
 
 	createFrom3D ( text: string, position: Vector2 | Vector3 ) {
@@ -37,6 +42,32 @@ export class ToolTipService {
 		const position2D = position instanceof Vector2 ? position : this.get2DPosition( position );
 
 		return this.createTooltip( id, text, position2D );
+
+	}
+
+	createOrUpdate ( text: string, position: Vector2 | Vector3 ): void {
+
+		if ( !this.lastTooltip ) {
+
+			this.lastTooltip = this.createFrom3D( text, position );
+
+		} else {
+
+			this.updateTooltipContent( this.lastTooltip.id, text );
+
+			this.updateTooltipPosition( this.lastTooltip.id, position );
+
+		}
+
+	}
+
+	removeLastTooltip (): void {
+
+		if ( this.lastTooltip ) {
+			this.removeToolTip( this.lastTooltip );
+		}
+
+		this.lastTooltip = null;
 
 	}
 

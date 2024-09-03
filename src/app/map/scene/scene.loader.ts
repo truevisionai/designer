@@ -61,7 +61,7 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { StorageService } from "../../io/storage.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
 import { Asset } from 'app/core/asset/asset.model';
-import { SplineControlPoint } from "../../objects/spline-control-point";
+import { SplineControlPoint } from "../../objects/road/spline-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { TvLineGeometry } from '../models/geometries/tv-line-geometry';
 import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadNode } from 'app/objects/road-node';
+import { RoadNode } from 'app/objects/road/road-node';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { Maths } from 'app/utils/maths';
 import { Vector2, Vector3 } from 'three';

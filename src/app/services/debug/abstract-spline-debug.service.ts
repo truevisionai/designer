@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { RoadControlPoint } from 'app/objects/road-control-point';
+import { RoadControlPoint } from 'app/objects/road/road-control-point';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { BufferGeometry, Line, LineBasicMaterial, LineLoop, Object3D } from "three";

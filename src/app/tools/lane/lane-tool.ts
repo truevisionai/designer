@@ -15,11 +15,11 @@ import { LaneFactory } from 'app/services/lane/lane.factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { LaneVisualizerWithArrows } from 'app/core/overlay-handlers/lane-visualizer';
-import { LaneController } from 'app/core/object-handlers/lane-controller.service';
+import { LaneController } from 'app/core/object-handlers/lane-controller';
 import { RoadController } from 'app/core/object-handlers/road-handler';
 import { SelectLaneOverlayStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
 import { laneToolHints } from './lane-tool.hints';
-import { RoadVisualizerLaneTool } from 'app/core/overlay-handlers/road-visualizer';
+import { LaneToolRoadVisualizer } from "./lane-tool-road-visualizer";
 
 export class LaneTool extends ToolWithHandler {
 
@@ -37,7 +37,7 @@ export class LaneTool extends ToolWithHandler {
 		this.addController( TvLane.name, helper.base.injector.get( LaneController ) );
 		this.addController( TvRoad.name, helper.base.injector.get( RoadController ) );
 
-		this.addVisualizer( TvRoad.name, helper.base.injector.get( RoadVisualizerLaneTool ) );
+		this.addVisualizer( TvRoad.name, helper.base.injector.get( LaneToolRoadVisualizer ) );
 		this.addVisualizer( TvLane.name, helper.base.injector.get( LaneVisualizerWithArrows ) );
 
 		this.setHintConfig( laneToolHints );

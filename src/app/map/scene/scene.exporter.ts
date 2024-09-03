@@ -8,7 +8,7 @@ import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
 import { DepAutoSpline } from 'app/core/shapes/auto-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
-import { RoadControlPoint } from 'app/objects/road-control-point';
+import { RoadControlPoint } from 'app/objects/road/road-control-point';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';

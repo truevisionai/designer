@@ -8,7 +8,7 @@ import { ManeuverRoadDebugger } from "../../map/maneuver-road/maneuver-road.debu
 import { JunctionDebugService } from "../../services/junction/junction.debug";
 import { JunctionService } from "../../services/junction/junction.service";
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { ConnectionService } from 'app/map/junction/connection.service';
 import { BaseToolService } from "../base-tool.service";
 import { ConnectionFactory } from 'app/factories/connection.factory';

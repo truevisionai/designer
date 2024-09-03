@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { DebugLine } from "app/objects/debug-line";

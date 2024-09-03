@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Vector2FieldComponent } from './vector2-field.component';
 import { Vector2, Vector3 } from 'three';

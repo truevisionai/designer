@@ -4,7 +4,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineEventListener } from "app/listeners/spline-event-listener";
 import { SplineManager } from "app/managers/spline-manager";
-import { RoadNode } from "app/objects/road-node";
+import { RoadNode } from "app/objects/road/road-node";
 import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
 import { IntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
@@ -14,7 +14,7 @@ import { RoadService } from "app/services/road/road.service";
 import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2, Vector3 } from "three";
-import { SplineControlPoint } from "app/objects/spline-control-point";
+import { SplineControlPoint } from "app/objects/road/spline-control-point";
 import { RoadGeometryService } from "../../app/services/road/road-geometry.service";
 
 const DEFAULT_ROAD_WIDTH = 12.2;

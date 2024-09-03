@@ -9,7 +9,7 @@ import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { Vector2, Vector3 } from 'three';
-import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { DepConnectionFactory } from 'app/map/junction/dep-connection.factory';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';

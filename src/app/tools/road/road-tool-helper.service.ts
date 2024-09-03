@@ -9,7 +9,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadLinkService } from 'app/services/road/road-link.service';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { RoadNode } from 'app/objects/road-node';
+import { RoadNode } from 'app/objects/road/road-node';
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { AssetService } from 'app/core/asset/asset.service';

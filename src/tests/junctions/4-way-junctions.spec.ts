@@ -9,7 +9,7 @@ import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { Vector2, Vector3 } from 'three';
 import { BaseTest } from 'tests/base-test.spec';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { RoadNode } from 'app/objects/road-node';
+import { RoadNode } from 'app/objects/road/road-node';
 import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { SplineManager } from 'app/managers/spline-manager';
 import { MapValidatorService } from 'app/services/map/map-validator.service';
@@ -17,7 +17,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineService } from "../../app/services/spline/spline.service";
 import { AutoSpline } from "../../app/core/shapes/auto-spline-v2";
 import { ControlPointFactory } from "../../app/factories/control-point.factory";
-import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { DepConnectionFactory } from "../../app/map/junction/dep-connection.factory";
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 

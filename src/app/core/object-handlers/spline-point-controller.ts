@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { SplineControlPoint } from "../../objects/spline-control-point";
+import { SplineControlPoint } from "../../objects/road/spline-control-point";
 import { SplineService } from "../../services/spline/spline.service";
 import { SplineGeometryService } from "../../services/spline/spline-geometry.service";
 import { PointerEventData } from "../../events/pointer-event-data";

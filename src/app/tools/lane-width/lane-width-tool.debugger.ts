@@ -8,7 +8,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { LaneWidthNode } from 'app/objects/lane-width-node';
+import { LaneWidthNode } from 'app/tools/lane-width/objects/lane-width-node';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { DebugState } from 'app/services/debug/debug-state';
 import { RoadService } from 'app/services/road/road.service';
@@ -18,7 +18,8 @@ import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { Object3D } from 'three';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
-import { LaneWidthPoint } from 'app/objects/simple-control-point';
+import { LaneWidthLine } from "./objects/lane-width-line";
+import { LaneWidthPoint } from "./objects/lane-width-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -181,7 +182,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNodeLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ): DebugLine<LaneWidthNode> {
+	createNodeLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ): LaneWidthLine {
 
 		const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, node.laneWidth.s );
 
@@ -189,11 +190,11 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 		const positions = [ start.position, end.position ];
 
-		const line = this.debugService.createDebugLine( node, positions );
+		const geometry = this.debugService.createDebugLineGeometry( positions );
 
-		line.tag = LaneWidthNode.lineTag;
+		const material = this.debugService.createDebugLineMaterial();
 
-		return line;
+		return new LaneWidthLine( road, laneSection, lane, node.laneWidth, geometry, material );
 
 	}
 

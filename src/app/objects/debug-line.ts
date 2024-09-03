@@ -4,7 +4,7 @@
 
 import { INode } from 'app/objects/i-selectable';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Color } from 'three';
+import { Color, Vector3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
@@ -62,4 +62,9 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
+	updateGeometry ( positions: Vector3[] ): void {
+
+		this.geometry.setPositions( positions.flatMap( p => [ p.x, p.y, p.z ] ) );
+
+	}
 }

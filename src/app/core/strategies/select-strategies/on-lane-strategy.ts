@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SelectionStrategy } from "./select-strategy";
+import { NewSelectionStrategy, SelectionStrategy } from "./select-strategy";
 import { TvLane } from "../../../map/models/tv-lane";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { TvLaneCoord } from "../../../map/models/tv-lane-coord";
@@ -152,32 +152,15 @@ export class DepLaneCoordStrategy extends SelectionStrategy<TvLaneCoord> {
 }
 
 
-export class LaneCoordStrategy extends SelectionStrategy<TvLaneCoord> {
+export class LaneCoordStrategy extends NewSelectionStrategy<TvLaneCoord> {
 
 	constructor () {
 		super();
 	}
 
-	onPointerDown ( pointerEventData: PointerEventData ): TvLaneCoord | undefined {
+	handleSelection ( e: PointerEventData ): TvLaneCoord {
 
-		return this.onLaneCoord( pointerEventData );
-
-	}
-
-	onPointerMoved ( pointerEventData: PointerEventData ): TvLaneCoord | undefined {
-
-		return this.onLaneCoord( pointerEventData );
-	}
-
-	onPointerUp ( pointerEventData: PointerEventData ): TvLaneCoord | undefined {
-
-		return this.onLaneCoord( pointerEventData );
-
-	}
-
-	dispose (): void {
-
-		// not needed
+		return this.onLaneCoord( e );
 
 	}
 

@@ -10,7 +10,7 @@ import { TvLineGeometry } from "app/map/models/geometries/tv-line-geometry";
 import { TvParamPoly3Geometry } from "app/map/models/geometries/tv-param-poly3-geometry";
 import { TvSpiralGeometry } from "app/map/models/geometries/tv-spiral-geometry";
 import { TvGeometryType } from "app/map/models/tv-common";
-import { RoadControlPoint } from "app/objects/road-control-point";
+import { RoadControlPoint } from "app/objects/road/road-control-point";
 import { Maths } from "app/utils/maths";
 import { getArcParams } from "app/utils/spline.utils";
 import { Vector2 } from "three";

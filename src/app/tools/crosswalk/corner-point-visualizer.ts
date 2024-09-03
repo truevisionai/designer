@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { CornerControlPoint } from "./crosswalk-tool-debugger";
 import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";

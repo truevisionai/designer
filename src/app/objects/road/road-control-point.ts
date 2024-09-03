@@ -9,7 +9,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, PointsMaterial, Vector3 } from 'three';
 import { RoadTangentPoint } from './road-tangent-point';
-import { AbstractControlPoint } from "./abstract-control-point";
+import { AbstractControlPoint } from "../abstract-control-point";
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { Log } from 'app/core/utils/log';
 

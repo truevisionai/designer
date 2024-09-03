@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { BaseController } from "app/core/object-handlers/base-controller";
 import { PointerEventData } from "app/events/pointer-event-data";

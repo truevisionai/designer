@@ -6,7 +6,7 @@ import { Points } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { SelectionStrategy } from './select-strategy';
 import { AbstractControlPoint } from "../../../objects/abstract-control-point";
-import { LaneWidthNode } from 'app/objects/lane-width-node';
+import { LaneWidthNode } from 'app/tools/lane-width/objects/lane-width-node';
 
 export interface StrategySettings {
 	higlightOnHover?: boolean;

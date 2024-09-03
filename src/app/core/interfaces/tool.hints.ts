@@ -20,7 +20,7 @@ interface ToolHints<T> {
 
 export interface ObjectHintConfig {
 	onSelected: string,
-	onUnselected: string,
+	onUnselected?: string,
 	onAdded?: string,
 }
 

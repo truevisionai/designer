@@ -5,7 +5,7 @@
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { Mesh, BufferGeometry, Material, MeshBasicMaterial, SphereGeometry } from "three";
-import { INode } from "./i-selectable";
+import { INode } from "../i-selectable";
 
 
 export class JunctionGatePoint extends Mesh implements INode {

@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { IntersectionService } from 'app/services/junction/intersection.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Maths } from 'app/utils/maths';

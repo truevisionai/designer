@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { LaneWidthNode } from 'app/objects/lane-width-node';
+import { LaneWidthNode } from 'app/tools/lane-width/objects/lane-width-node';
 import { Vector3 } from 'three';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { SnackBar } from 'app/services/snack-bar.service';

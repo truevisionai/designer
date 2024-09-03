@@ -13,10 +13,16 @@ import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies
 import { JunctionGateLineSelectionStrategy } from 'app/core/strategies/select-strategies/object-tag-strategy';
 import { JunctionOverlaySelectionStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
 import { JunctionOverlay } from 'app/services/junction/junction-overlay';
-import { TrafficLightJunctionController, TrafficLightJunctionVisualizer } from './junction-handler-traffic-light';
-import { JunctionGateLineController, JunctionGateLineVisualizer } from './junction-gate-line-handlers';
 import { JunctionGateLine } from 'app/services/junction/junction-gate-line';
-import { JunctionSignaliztion, JunctionSignaliztionController, JunctionSignaliztionVisualizer } from './auto-signalize-junction.service';
+import {
+	JunctionSignaliztion,
+	JunctionSignaliztionController,
+	JunctionSignaliztionVisualizer
+} from './auto-signalize-junction.service';
+import { JunctionGateLineVisualizer } from "./visualizers/junction-gate-line-visualizer";
+import { JunctionGateLineController } from "./controllers/junction-gate-line-controller";
+import { TrafficLightJunctionVisualizer } from "./visualizers/traffic-light-junction-visualizer";
+import { TrafficLightJunctionController } from "./controllers/traffic-light-junction-controller";
 
 export class TrafficLightTool extends ToolWithHandler {
 

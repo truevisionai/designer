@@ -7,7 +7,7 @@ import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineManager } from "app/managers/spline-manager";
 import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
-import { SplineControlPoint } from "app/objects/spline-control-point";
+import { SplineControlPoint } from "app/objects/road/spline-control-point";
 import { RoadService } from "app/services/road/road.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { SplineFactory } from "app/services/spline/spline.factory";

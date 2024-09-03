@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BufferAttribute, BufferGeometry, Vector2, Vector3 } from "three";
 import Delaunator from 'delaunator';
 

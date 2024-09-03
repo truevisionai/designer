@@ -3,64 +3,85 @@
  */
 
 import { Injectable } from "@angular/core";
-import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { RoadVisualizer } from "../../core/overlay-handlers/road-visualizer";
 import { CrosswalkToolDebugger } from "./crosswalk-tool-debugger";
 import { TvRoadObjectType } from "app/map/models/objects/tv-road-object";
+import { BaseVisualizer } from "app/core/overlay-handlers/base-visualizer";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class CrosswalkToolRoadVisualizer extends RoadVisualizer {
+export class CrosswalkToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 
-	constructor ( private crosswalkDebugService: CrosswalkToolDebugger, roadDebug: RoadDebugService ) {
+	constructor (
+		private crosswalkDebugService: CrosswalkToolDebugger,
+		private roadVisualizer: RoadVisualizer,
+	) {
+		super();
+	}
 
-		super( roadDebug );
+	onHighlight ( object: TvRoad ): void {
+
+		this.roadVisualizer.onHighlight( object );
+
+	}
+	onSelected ( object: TvRoad ): void {
+
+		this.roadVisualizer.onSelected( object );
+
+		this.showCrosswalks( object );
 
 	}
 
-	override onSelected ( road: TvRoad ): void {
+	onDefault ( object: TvRoad ): void {
 
-		super.onSelected( road );
+		this.roadVisualizer.onDefault( object );
 
-		this.crosswalkDebugService.removeAll( road );
-
-		this.showCrosswalks( road );
+		this.crosswalkDebugService.removeAll( object );
 
 	}
 
-	override onUnselected ( road: TvRoad ): void {
+	onUnselected ( object: TvRoad ): void {
 
-		super.onUnselected( road );
+		this.roadVisualizer.onUnselected( object );
 
-		this.crosswalkDebugService.removeAll( road );
-
-	}
-
-	override onUpdated ( road: TvRoad ): void {
-
-		super.onUpdated( road );
-
-		this.crosswalkDebugService.removeAll( road );
-
-		this.showCrosswalks( road );
+		this.crosswalkDebugService.removeAll( object );
 
 	}
 
-	override onRemoved ( road: TvRoad ): void {
+	onAdded ( object: TvRoad ): void {
 
-		super.onRemoved( road );
+		this.roadVisualizer.onAdded( object );
 
-		this.crosswalkDebugService.removeAll( road );
-
-		this.showCrosswalks( road );
+		this.showCrosswalks( object );
 
 	}
 
-	override clear (): void {
+	onUpdated ( object: TvRoad ): void {
 
-		super.clear();
+		this.roadVisualizer.onUpdated( object );
+
+		this.showCrosswalks( object );
+
+	}
+
+	onRemoved ( object: TvRoad ): void {
+
+		this.roadVisualizer.onRemoved( object );
+
+		this.crosswalkDebugService.removeAll( object );
+
+	}
+
+	onClearHighlight (): void {
+
+		this.highlighted.forEach( road => this.onDefault( road ) );
+	}
+
+	clear (): void {
+
+		this.roadVisualizer.clear();
 
 		this.crosswalkDebugService.clear();
 

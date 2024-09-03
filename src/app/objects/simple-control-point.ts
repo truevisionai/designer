@@ -7,11 +7,6 @@ import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from "three"
 import { OdTextures } from "../deprecated/od.textures";
 import { COLOR } from "../views/shared/utils/colors.service";
 import { SerializedField } from "../core/components/serialization";
-import { TvLane } from "app/map/models/tv-lane";
-import { TvLaneWidth } from "app/map/models/tv-lane-width";
-import { TvLaneSection } from "app/map/models/tv-lane-section";
-import { TvRoad } from "app/map/models/tv-road.model";
-import { LaneWidthNode } from "./lane-width-node";
 
 export class SimpleControlPoint<T> extends AbstractControlPoint {
 
@@ -79,17 +74,3 @@ export class SimpleControlPoint<T> extends AbstractControlPoint {
 }
 
 
-export class LaneWidthPoint extends SimpleControlPoint<TvLaneWidth> {
-
-	tag = LaneWidthNode.pointTag;
-
-	constructor (
-		public road: TvRoad,
-		public laneSection: TvLaneSection,
-		public lane: TvLane,
-		public width: TvLaneWidth
-	) {
-		super( width );
-	}
-
-}

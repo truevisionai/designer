@@ -28,6 +28,7 @@ import { ToolHintConfig } from 'app/core/interfaces/tool.hints';
 import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';
 import { BaseController } from 'app/core/object-handlers/base-controller';
 import { ToolHandlers } from './tool-handlers';
+import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -117,6 +118,10 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	updateVisuals ( object: any ): void {
 		this.handlers.updateVisuals( object );
+	}
+
+	addSelectionStrategy ( objectName: string, strategy: SelectionStrategy<T> ): void {
+		this.selectionService.registerStrategy( objectName, strategy );
 	}
 
 	init (): void {
@@ -599,8 +604,12 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	}
 
-	protected handleAction ( object: Object, action: 'onAdded' | 'onUpdated' | 'onRemoved' ): void {
+	protected handleAction ( object: Object, action: 'onAdded' | 'onRemoved' ): void {
 		this.handlers.handleAction( object, action );
+	}
+
+	public getSelectionService (): SelectionService {
+		return this.selectionService;
 	}
 
 	public getSelectedObjects (): any[] {

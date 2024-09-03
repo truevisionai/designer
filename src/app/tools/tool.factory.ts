@@ -74,7 +74,7 @@ import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies
 import { LanePointNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { TrafficLightTool } from './traffic-light/traffic-light.tool';
 import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';

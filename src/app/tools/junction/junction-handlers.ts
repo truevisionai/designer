@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { EmptyController } from "app/core/object-handlers/empty-controller";
 import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";

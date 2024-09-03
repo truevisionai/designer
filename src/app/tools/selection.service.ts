@@ -46,6 +46,8 @@ export class SelectionService {
 
 	registerStrategy ( type: string, strategy: SelectionStrategy<any> ): void {
 
+		if ( this.debug ) Log.log( 'Registering strategy', type, strategy );
+
 		this.strategies.set( type, strategy );
 
 		this.priority.set( type, this.strategies.size );
@@ -53,6 +55,8 @@ export class SelectionService {
 	}
 
 	registerTag ( type: string, tag: any ): void {
+
+		if ( this.debug ) Log.log( 'Registering tag', type, tag );
 
 		this.tags.set( type, tag );
 
@@ -107,6 +111,20 @@ export class SelectionService {
 		if ( unselected ) unselected();
 
 		this.handleDeselection();
+
+	}
+
+	getSelectionStrategyResult ( e: PointerEventData ): any {
+
+		for ( const [ type, strategy ] of this.strategies ) {
+
+			const object = strategy.handleSelection( e );
+
+			if ( !object ) continue;
+
+			return object;
+
+		}
 
 	}
 
@@ -227,6 +245,8 @@ export class SelectionService {
 
 		CommandHistory.execute( new SelectObjectCommand( newSelected, unselectObjects ) );
 
+		if ( this.debug ) Log.info( 'SelectObjectCommand fired', selectedType, newSelected, this.selectedObjects );
+
 	}
 
 	addToSelected ( object: Object ): void {
@@ -239,7 +259,7 @@ export class SelectionService {
 
 		this.selectedObjects.set( tag, object );
 
-		if ( this.debug ) Log.info( 'selected', tag, object, this.selectedObjects );
+		if ( this.debug ) Log.info( 'addToSelected', tag, object, this.getSelectedObjects() );
 
 	}
 
@@ -251,6 +271,8 @@ export class SelectionService {
 
 		CommandHistory.execute( deselectCommand );
 
+		if ( this.debug ) Log.info( 'UnselectObjectCommand fired', type, object, this.selectedObjects );
+
 	}
 
 	removeFromSelected ( object: any ): void {
@@ -259,7 +281,8 @@ export class SelectionService {
 
 		this.selectedObjects.delete( tag );
 
-		if ( this.debug ) Log.info( 'unselected', tag, object, this.selectedObjects );
+		if ( this.debug ) Log.info( 'removeFromSelected', tag, object, this.selectedObjects );
+
 	}
 
 	private getTag ( object: Object ): string {

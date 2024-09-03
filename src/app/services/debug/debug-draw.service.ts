@@ -42,7 +42,7 @@ import { LanePointNode, LaneSpanNode } from "../../objects/lane-node";
 import { SceneService } from '../scene.service';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
-import { JunctionGatePoint } from "app/objects/junction-gate-point";
+import { JunctionGatePoint } from "app/objects/junctions/junction-gate-point";
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TextObjectService } from '../text-object.service';
 import { RoadGeometryService } from '../road/road-geometry.service';

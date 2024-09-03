@@ -9,7 +9,7 @@ import { SplineService } from "./spline.service";
 import { SplineFactory } from "./spline.factory";
 import { RoadFactory } from "../../factories/road-factory.service";
 import { RoadCircleToolService } from 'app/tools/road-circle/road-circle-tool.service';
-import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { MapService } from '../map/map.service';

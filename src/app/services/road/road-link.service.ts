@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { RoadNode } from 'app/objects/road-node';
+import { RoadNode } from 'app/objects/road/road-node';
 import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { AbstractSplineDebugService } from '../debug/abstract-spline-debug.service';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';

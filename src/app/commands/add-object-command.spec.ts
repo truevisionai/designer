@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AddObjectCommand } from "./add-object-command";
 import { MapEvents } from "../events/map-events";
 import { ICommand } from "./command";

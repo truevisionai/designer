@@ -13,7 +13,7 @@ import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { DebugLine } from '../../objects/debug-line';
 import { MapService } from '../map/map.service';
 import { DynamicControlPoint } from "../../objects/dynamic-control-point";
-import { RoadNode } from 'app/objects/road-node';
+import { RoadNode } from 'app/objects/road/road-node';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';

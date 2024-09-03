@@ -4,7 +4,7 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseInspector } from 'app/core/components/base-inspector.component';
-import { RoadNode } from 'app/objects/road-node';
+import { RoadNode } from 'app/objects/road/road-node';
 import { Vector2, Vector3 } from 'three';
 import { IComponent } from '../../../objects/game-object';
 import { TvGeometryType, TvRoadType } from '../../../map/models/tv-common';

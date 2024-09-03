@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AddSplineCommand } from "./add-spline-command";
 import { MapEvents } from "../events/map-events";
 import { AbstractSpline } from "../core/shapes/abstract-spline";

@@ -8,9 +8,9 @@ import { TvContactPoint, TvGeometryType } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
-import { IHasUpdate } from '../commands/set-value-command';
+import { IHasUpdate } from '../../commands/set-value-command';
 import { RoadControlPoint } from './road-control-point';
-import { AbstractControlPoint } from "./abstract-control-point";
+import { AbstractControlPoint } from "../abstract-control-point";
 import { SplineType } from 'app/core/shapes/abstract-spline';
 
 export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate {

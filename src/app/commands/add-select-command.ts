@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AddObjectCommand } from "./add-object-command";
 import { BaseCommand } from "./base-command";
 import { ICommand } from "./command";

@@ -7,7 +7,7 @@ import { PointerEventData } from '../../../events/pointer-event-data';
 import { SelectionStrategy } from './select-strategy';
 import { JunctionNode } from 'app/services/junction/junction-node';
 import { JunctionGateLine } from 'app/services/junction/junction-gate-line';
-import { JunctionGatePoint } from 'app/objects/junction-gate-point';
+import { JunctionGatePoint } from 'app/objects/junctions/junction-gate-point';
 
 export class ObjectTagStrategy<T> extends SelectionStrategy<T> {
 

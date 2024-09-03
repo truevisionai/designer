@@ -6,9 +6,9 @@ import { Injectable } from "@angular/core";
 import { NodeVisualizer } from "app/core/overlay-handlers/node-visualizer";
 import { Log } from "app/core/utils/log";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
-import { RoadControlPoint } from "app/objects/road-control-point";
-import { RoadTangentPoint } from "app/objects/road-tangent-point";
-import { SplineControlPoint } from "app/objects/spline-control-point";
+import { RoadControlPoint } from "app/objects/road/road-control-point";
+import { RoadTangentPoint } from "app/objects/road/road-tangent-point";
+import { SplineControlPoint } from "app/objects/road/spline-control-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -57,13 +57,3 @@ export class PointVisualizer<T extends AbstractControlPoint> extends NodeVisuali
 
 }
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class ManeuverPointVisualizer extends PointVisualizer<AbstractControlPoint> {
-
-	protected updateSpline ( object: AbstractControlPoint ): void {
-		// do nothing
-	}
-
-}

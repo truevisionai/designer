@@ -8,7 +8,7 @@ import { JunctionService } from 'app/services/junction/junction.service';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseTest } from 'tests/base-test.spec';
 import { Vector3 } from 'three';
-import { SplineControlPoint } from 'app/objects/spline-control-point';
+import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { DepConnectionFactory } from "../../app/map/junction/dep-connection.factory";
 
 xdescribe( 'ConnectionService', () => {

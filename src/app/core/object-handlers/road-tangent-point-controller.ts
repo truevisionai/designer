@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { RoadTangentPoint } from "../../objects/road-tangent-point";
+import { RoadTangentPoint } from "../../objects/road/road-tangent-point";
 import { SplineService } from "../../services/spline/spline.service";
 import { RoadLinkService } from "../../services/road/road-link.service";
 import { SplineGeometryService } from "../../services/spline/spline-geometry.service";

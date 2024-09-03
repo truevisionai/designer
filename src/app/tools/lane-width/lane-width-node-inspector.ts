@@ -4,12 +4,13 @@
 
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { Commands } from "app/commands/commands";
-import { LaneWidthPoint } from "app/objects/simple-control-point";
+import { LaneWidthPoint } from "./objects/lane-width-point";
+import { LaneWidthLine } from "app/tools/lane-width/objects/lane-width-line";
 
-export class LaneWidthPointInspector {
+export class LaneWidthInspector {
 
 	constructor (
-		public node: LaneWidthPoint
+		public node: LaneWidthPoint|LaneWidthLine
 	) {
 	}
 

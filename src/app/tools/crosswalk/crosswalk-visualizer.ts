@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { BaseVisualizer } from "app/core/overlay-handlers/base-visualizer";
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";

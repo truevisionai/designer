@@ -9,15 +9,13 @@ import { BaseVisualizer } from "./base-visualizer";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { MapEvents } from "app/events/map-events";
 import { LaneDebugService } from "app/services/debug/lane-debug.service";
-import { LaneWidthToolDebugger } from "app/tools/lane-width/lane-width-tool.debugger";
-import { EmptyVisualizer } from "./empty-visualizer";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadVisualizer extends BaseVisualizer<TvRoad> {
 
-	constructor ( private roadDebug: RoadDebugService ) {
+	constructor ( private roadDebug: RoadDebugService, protected laneDebugger: LaneDebugService ) {
 
 		super();
 
@@ -37,8 +35,6 @@ export class RoadVisualizer extends BaseVisualizer<TvRoad> {
 	onUpdated ( object: TvRoad ): void {
 
 		this.roadDebug.removeRoadBorderLine( object );
-
-		this.onSelected( object );
 
 	}
 
@@ -68,17 +64,23 @@ export class RoadVisualizer extends BaseVisualizer<TvRoad> {
 
 		this.roadDebug.showRoadBorderLine( object, 3, COLOR.RED );
 
+		this.laneDebugger.showLaneOverlays( object.getLaneProfile() );
+
 	}
 
 	onUnselected ( object: TvRoad ): void {
 
 		this.roadDebug.removeRoadBorderLine( object );
 
+		this.laneDebugger.removeLaneOverlays( object.getLaneProfile() );
+
 	}
 
 	onRemoved ( object: TvRoad ): void {
 
 		this.roadDebug.removeRoadBorderLine( object );
+
+		this.laneDebugger.removeLaneOverlays( object.getLaneProfile() );
 
 	}
 
@@ -88,103 +90,10 @@ export class RoadVisualizer extends BaseVisualizer<TvRoad> {
 
 		this.highlighted.clear();
 
-	}
-
-}
-
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class RoadVisualizerLaneTool extends RoadVisualizer {
-
-	constructor ( roadDebug: RoadDebugService, private laneDebugger: LaneDebugService ) {
-
-		super( roadDebug );
-
-	}
-
-	override onSelected ( road: TvRoad ): void {
-
-		this.laneDebugger.showLaneOutlines( road.getLaneProfile() );
-		this.laneDebugger.showLaneOverlays( road.getLaneProfile() );
-
-		super.onSelected( road );
-
-	}
-
-	override onUpdated ( road: TvRoad ): void {
-
-		this.laneDebugger.removeLaneOutlines( road.getLaneProfile() );
-		this.laneDebugger.removeLaneOverlays( road.getLaneProfile() );
-
-		super.onUpdated( road );
-
-	}
-
-	override onUnselected ( road: TvRoad ): void {
-
-		this.laneDebugger.removeLaneOutlines( road.getLaneProfile() );
-		this.laneDebugger.removeLaneOverlays( road.getLaneProfile() );
-
-		super.onUnselected( road );
-
-	}
-
-	override onRemoved ( road: TvRoad ): void {
-
-		this.laneDebugger.removeLaneOutlines( road.getLaneProfile() );
-		this.laneDebugger.removeLaneOverlays( road.getLaneProfile() );
-
-		super.onRemoved( road );
+		this.laneDebugger.clear();
 
 	}
 
 }
 
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class LaneWidthRoadVisualizer extends EmptyVisualizer<TvRoad> {
-
-	constructor ( private baseLaneToolDebugger: RoadVisualizerLaneTool, private widthDebugger: LaneWidthToolDebugger ) {
-
-		super()
-
-	}
-
-	override onSelected ( road: TvRoad ): void {
-
-		this.baseLaneToolDebugger.onSelected( road );
-
-		this.widthDebugger.showRoad( road );
-
-	}
-
-	override onUpdated ( road: TvRoad ): void {
-
-		this.baseLaneToolDebugger.onUpdated( road );
-
-		// this.widthDebugger.showRoad( road );
-
-	}
-
-	override onUnselected ( road: TvRoad ): void {
-
-		this.baseLaneToolDebugger.onUnselected( road );
-
-		this.widthDebugger.hideRoad( road );
-
-	}
-
-	override onRemoved ( road: TvRoad ): void {
-
-		this.baseLaneToolDebugger.onRemoved( road );
-
-		this.widthDebugger.hideRoad( road );
-
-	}
-
-}
 

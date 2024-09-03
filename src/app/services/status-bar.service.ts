@@ -108,6 +108,14 @@ export class StatusBarService {
 		// }
 	}
 
+	static setError ( msg: string ): void {
+
+		if ( msg == '' || msg == null ) return;
+
+		this.setMessage( `Error: ${ msg }`, true );
+
+	}
+
 	static setMessage ( msg: string, force = false ) {
 
 		if ( !force && this.message === msg ) return;

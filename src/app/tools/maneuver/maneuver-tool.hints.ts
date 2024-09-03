@@ -4,7 +4,7 @@
 
 import { ToolHintConfig } from "app/core/interfaces/tool.hints";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { JunctionGatePoint } from "app/objects/junction-gate-point";
+import { JunctionGatePoint } from "app/objects/junctions/junction-gate-point";
 import { ManeuverMesh } from "app/services/junction/maneuver-mesh";
 
 export const maneuverToolHints: ToolHintConfig = {

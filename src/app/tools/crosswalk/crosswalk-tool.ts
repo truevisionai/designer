@@ -126,7 +126,7 @@ export class CrosswalkTool extends ToolWithHandler {
 
 		if ( object instanceof CrosswalkInspector ) {
 
-			super.handleAction( object.roadObject, 'onUpdated' );
+			super.onObjectUpdated( object.roadObject );
 
 		} else {
 

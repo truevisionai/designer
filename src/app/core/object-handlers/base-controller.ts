@@ -128,4 +128,22 @@ export abstract class BaseController<T> implements Controller<T> {
 
 	}
 
+	validate ( object: T ): void {
+
+		// Do nothing by default
+
+	}
+
+	createAt ( object: T, e: PointerEventData ): any | undefined {
+
+		// Do nothing by default
+
+	}
+
+	getDragTip ( object: T ): string | null {
+
+		return;
+
+	}
+
 }

@@ -1,8 +1,14 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseController } from "app/core/object-handlers/base-controller";
 import { Visualizer } from "app/core/overlay-handlers/visualizer";
 import { Log } from "app/core/utils/log";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { SelectionService } from "./selection.service";
+import { ValidationException } from "app/exceptions/exceptions";
+import { StatusBarService } from "app/services/status-bar.service";
 
 export class ToolHandlers {
 
@@ -53,7 +59,7 @@ export class ToolHandlers {
 		return this.visualizers;
 	}
 
-	handleAction ( object: object, action: 'onAdded' | 'onUpdated' | 'onRemoved' ): void {
+	handleAction ( object: object, action: 'onAdded' | 'onRemoved' ): void {
 
 		const controller = this.controllers.get( object.constructor.name );
 		const visualizer = this.visualizers.get( object.constructor.name );
@@ -147,12 +153,20 @@ export class ToolHandlers {
 		}
 	}
 
-	hasHandlersFor ( ...objects: object[] ): boolean {
-		return objects.every( object => this.controllers.has( object.constructor.name ) && this.visualizers.has( object.constructor.name ) );
+	hasHandlersFor ( object: object ): boolean {
+
+		if ( Array.isArray( object ) ) {
+			return object.every( item => this.hasHandlersForName( item.constructor.name ) );
+		}
+
+		return this.hasHandlersForName( object.constructor.name );
+
 	}
 
 	hasHandlersForName ( objectName: string ): boolean {
+
 		return this.controllers.has( objectName ) && this.visualizers.has( objectName );
+
 	}
 
 	handleHighlight ( e: PointerEventData ): void {
@@ -214,15 +228,38 @@ export class ToolHandlers {
 
 	updateObject ( object: object ): void {
 
-		if ( this.hasHandlersFor( object ) ) {
-
-			this.handleAction( object, 'onUpdated' );
-
-		} else {
-
+		if ( !this.hasHandlersFor( object ) ) {
 			Log.error( `unknown object updated: ${ object.constructor.name }` );
+			return;
+		}
+
+		const controller = this.controllers.get( object.constructor.name );
+		const visualizer = this.visualizers.get( object.constructor.name );
+
+		try {
+
+			controller.validate( object );
+
+		} catch ( error ) {
+
+			if ( error instanceof ValidationException ) {
+
+				StatusBarService.setError( error.message );
+
+			} else {
+
+				// log unexpected error and return
+				Log.error( error );
+				return;
+
+			}
 
 		}
+
+		controller.onUpdated( object );
+
+		visualizer.onUpdated( object );
+
 	}
 
 	private resetHighlightedObjects (): void {
