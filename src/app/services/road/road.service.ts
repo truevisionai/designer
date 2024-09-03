@@ -152,7 +152,14 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		this.mapService.map.addRoad( road );
 
+		this.fireCreatedEvent( road );
+
+	}
+
+	fireCreatedEvent ( road: TvRoad ): void {
+
 		MapEvents.roadCreated.emit( new RoadCreatedEvent( road ) );
+
 	}
 
 	update ( road: TvRoad ) {

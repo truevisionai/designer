@@ -8,12 +8,11 @@ import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadCircleToolService } from "./road-circle-tool.service";
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Environment } from 'app/core/utils/environment';
 import { DebugState } from 'app/services/debug/debug-state';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Log } from 'app/core/utils/log';
 
-export class RoadCircleTool extends BaseTool<AbstractSpline>{
+export class RoadCircleTool extends BaseTool<AbstractSpline> {
 
 	public name: string = 'RoadCircleTool';
 
@@ -86,19 +85,33 @@ export class RoadCircleTool extends BaseTool<AbstractSpline>{
 
 	}
 
-	onRoadAdded ( road: TvRoad ) {
+	private tempRoads: TvRoad[] = [];
 
-		this.tool.addRoad( road );
+	onRoadAdded ( newRoad: TvRoad ): void {
 
-		this.tool.splineBuilder.build( road.spline );
+		// HACK: tempRoads workaround to avoid warning
 
-		this.debugService.setDebugState( road.spline, DebugState.DEFAULT );
+		this.tempRoads.push( newRoad );
+
+		if ( this.tempRoads.length == 4 ) {
+
+			this.tempRoads.forEach( road => this.tool.roadService.mapService.addRoad( road ) );
+
+			this.tempRoads.forEach( road => this.tool.splineBuilder.build( road.spline ) );
+
+			this.tempRoads.forEach( road => this.tool.roadService.fireCreatedEvent( road ) );
+
+			this.tempRoads.forEach( road => this.debugService.setDebugState( road.spline, DebugState.DEFAULT ) );
+
+			this.tempRoads = [];
+
+		}
 
 	}
 
-	onRoadRemoved ( road: TvRoad ) {
+	onRoadRemoved ( road: TvRoad ): void {
 
-		this.tool.removeRoad( road );
+		this.tool.splineService.remove( road.spline );
 
 		this.debugService.setDebugState( road.spline, DebugState.REMOVED );
 

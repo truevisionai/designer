@@ -17,8 +17,7 @@ import { TextObject3d } from 'app/objects/text-object';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
-import { TravelDirection, TvContactPoint } from 'app/map/models/tv-common';
-import { SplineControlPoint } from "../../objects/road/spline-control-point";
+import { TvContactPoint } from 'app/map/models/tv-common';
 import { Injectable } from '@angular/core';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
@@ -28,6 +27,7 @@ import { SplineService } from "../../services/spline/spline.service";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { SplineBuilder } from "../../services/spline/spline.builder";
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 @Injectable( {
 	providedIn: 'root'
@@ -174,8 +174,8 @@ export class RoadCircleToolService {
 
 			const distance = start.distanceTo( arc.endV3 ) * 0.3;
 
-			let a2 = startPosTheta.moveForward( +distance );
-			let b2 = endPosTheta.moveForward( -distance );
+			const a2 = startPosTheta.moveForward( +distance );
+			const b2 = endPosTheta.moveForward( -distance );
 
 			points.push( ControlPointFactory.createControl( road.spline, start ) );
 			points.push( ControlPointFactory.createControl( road.spline, a2.toVector3() ) );
@@ -188,31 +188,34 @@ export class RoadCircleToolService {
 
 		}
 
+		this.addPointToRoads( roads, points );
+
+		return roads;
+	}
+
+
+	addPointToRoads ( roads: TvRoad[], points: AbstractControlPoint[] ): void {
+
 		if ( roads.length != 4 ) {
 			console.error( 'Road count for circular road is incorrect' );
-			return [];
+			return;
 		}
 
 		if ( points.length != 16 ) {
 			console.error( 'Point count for circular road is incorrect' );
-			return [];
+			return;
 		}
 
 		for ( let j = 0; j < 4; j++ ) {
 
 			const road = roads[ j ];
 
-			// const spline = new AutoSpline( road );
-			const spline = road.spline;
+			road.spline.addControlPoint( points[ j * 4 + 0 ] );
+			road.spline.addControlPoint( points[ j * 4 + 1 ] );
+			road.spline.addControlPoint( points[ j * 4 + 2 ] );
+			road.spline.addControlPoint( points[ j * 4 + 3 ] );
 
-			spline.controlPoints.push( points[ j * 4 + 0 ] );
-			spline.controlPoints.push( points[ j * 4 + 1 ] );
-			spline.controlPoints.push( points[ j * 4 + 2 ] );
-			spline.controlPoints.push( points[ j * 4 + 3 ] );
-
-			road.spline = spline;
-
-			this.splineBuilder.buildSpline( spline );
+			this.splineBuilder.buildGeometry( road.spline );
 
 			if ( ( j + 1 ) < roads.length ) {
 
@@ -233,7 +236,6 @@ export class RoadCircleToolService {
 
 		}
 
-		return roads;
 	}
 
 	createCirclePoints ( centre: Vector3, end: Vector3, radius: number ): Vector3[] {

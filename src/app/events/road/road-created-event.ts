@@ -5,6 +5,6 @@
 import { TvRoad } from "../../map/models/tv-road.model";
 
 export class RoadCreatedEvent {
-	constructor ( public road: TvRoad, public showHelpers = false ) {
+	constructor ( public road: TvRoad ) {
 	}
 }
