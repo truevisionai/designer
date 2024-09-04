@@ -16,13 +16,13 @@ export function expectLinkDistanceToBeZero ( road: TvRoad ): void {
 	if ( road.successor ) {
 		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
 		if ( !Maths.approxEquals( distance, 0 ) ) {
-			Log.error( `InvalidSuccessorDistance: ${ distance } ${ road.toString() } ${ road.successor.toString() }` );
+			Log.warn( `InvalidSuccessorDistance: ${ distance } ${ road.toString() } ${ road.successor.toString() }` );
 		}
 	}
 	if ( road.predecessor ) {
 		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor )
 		if ( !Maths.approxEquals( distance, 0 ) ) {
-			Log.error( `InvalidPredecessorDistance: ${ distance } ${ road.toString() } ${ road.predecessor.toString() }` );
+			Log.warn( `InvalidPredecessorDistance: ${ distance } ${ road.toString() } ${ road.predecessor.toString() }` );
 		}
 	}
 }
@@ -39,9 +39,9 @@ export class RoadValidator {
 
 	validateRoad ( road: TvRoad ): void {
 
-		expectLinkDistanceToBeZero( road );
-
 		if ( !this.enabled ) return;
+
+		if ( !road.isJunction ) expectLinkDistanceToBeZero( road );
 
 		this.validateLinks( road );
 
