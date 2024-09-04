@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SimpleControlPoint } from "../../../objects/simple-control-point";
 import { TvCornerRoad } from "../../../map/models/objects/tv-corner-road";
 import { TvRoad } from "../../../map/models/tv-road.model";

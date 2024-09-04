@@ -82,9 +82,12 @@ describe( 'RoadTool', () => {
 
 		tool.init();
 
-		expect( tool.hasSelectionStrategy( SimpleControlPoint.name ) ).toBeTrue();
+		expect( tool.hasSelectionStrategy( SplineControlPoint.name ) ).toBeTrue();
+		expect( tool.hasSelectionStrategy( RoadControlPoint.name ) ).toBeTrue();
+		expect( tool.hasSelectionStrategy( RoadTangentPoint.name ) ).toBeTrue();
 		expect( tool.hasSelectionStrategy( RoadNode.name ) ).toBeTrue();
 		expect( tool.hasSelectionStrategy( AutoSpline.name ) ).toBeTrue();
+		expect( tool.hasSelectionStrategy( ExplicitSpline.name ) ).toBeTrue();
 
 	} );
 

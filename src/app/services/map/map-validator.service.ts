@@ -29,9 +29,24 @@ import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadUtils } from 'app/utils/road.utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadGeometryService } from "../road/road-geometry.service";
-import { expectLinkDistanceToBeZero } from 'app/managers/road/road-validator';
+
 
 const SPHERE_SIZE = 0.1;
+
+export function expectLinkDistanceToBeZero ( road: TvRoad ): void {
+	if ( road.successor ) {
+		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
+		if ( !Maths.approxEquals( distance, 0 ) ) {
+			Log.warn( `InvalidSuccessorDistance: ${ distance } ${ road.toString() } ${ road.successor.toString() }` );
+		}
+	}
+	if ( road.predecessor ) {
+		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor )
+		if ( !Maths.approxEquals( distance, 0 ) ) {
+			Log.warn( `InvalidPredecessorDistance: ${ distance } ${ road.toString() } ${ road.predecessor.toString() }` );
+		}
+	}
+}
 
 function expectCorrectSegmentOrder ( spline: AbstractSpline ): void {
 	if ( !SplineUtils.areLinksCorrect( spline ) ) {

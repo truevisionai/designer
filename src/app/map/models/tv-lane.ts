@@ -117,6 +117,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.laneSection.getRoad();
 	}
 
+	getLaneSection (): TvLaneSection {
+		return this.laneSection;
+	}
+
 	toString () {
 		return `Lane:${ this.id } Side:${ this.side } Type:${ this.type }`;
 	}

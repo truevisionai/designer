@@ -109,7 +109,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 
 		const selectionService = tool.getSelectionService();
 
-		spyOn( selectionService, 'getSelectionStrategyResult' ).and.returnValue( lane );
+		spyOn( selectionService, 'executeSelection' ).and.returnValue( lane );
 
 		tool.onObjectSelected( road );
 		tool.onObjectSelected( lane );
@@ -129,7 +129,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 
 		const selectionService = tool.getSelectionService();
 
-		spyOn( selectionService, 'getSelectionStrategyResult' ).and.returnValue( lane );
+		spyOn( selectionService, 'executeSelection' ).and.returnValue( lane );
 
 		tool.onObjectSelected( road );
 		tool.onObjectSelected( lane );
@@ -142,7 +142,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 		expect( selectionService.getSelectedObjects()[ 1 ] ).toBeInstanceOf( TvLane )
 		expect( selectionService.getSelectedObjects()[ 2 ] ).toBeInstanceOf( LaneWidthPoint )
 
-		const point = selectionService.getLastSelected<LaneWidthPoint>( LaneWidthPoint.name );
+		const point = selectionService.findSelectedObject<LaneWidthPoint>( LaneWidthPoint.name );
 
 		expect( point.width ).toEqual( lane.getLaneWidthVector()[ 2 ] )
 
@@ -154,7 +154,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 
 		const selectionService = tool.getSelectionService();
 
-		spyOn( selectionService, 'getSelectionStrategyResult' ).and.returnValue( lane );
+		spyOn( selectionService, 'executeSelection' ).and.returnValue( lane );
 
 		tool.onObjectSelected( road );
 		tool.onObjectSelected( lane );

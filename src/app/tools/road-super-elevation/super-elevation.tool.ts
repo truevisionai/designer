@@ -42,7 +42,7 @@ export class SuperElevationTool extends BaseTool<any> {
 	readonly toolType: ToolType = ToolType.SuperElevation;
 
 	get selectedRoad () {
-		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name )
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name )
 	}
 
 	constructor ( private helper: SuperElevationToolHelper ) {

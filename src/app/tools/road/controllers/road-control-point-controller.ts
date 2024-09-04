@@ -6,8 +6,6 @@ import { Injectable } from "@angular/core";
 import { RoadControlPoint } from "../../../objects/road/road-control-point";
 import { SplineService } from "../../../services/spline/spline.service";
 import { SplineGeometryService } from "../../../services/spline/spline-geometry.service";
-import { PointerEventData } from "../../../events/pointer-event-data";
-import { Commands } from "../../../commands/commands";
 import { PointController } from "../../../core/controllers/point-controller";
 import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
 import { AppInspector } from "../../../core/inspector";
@@ -52,18 +50,5 @@ export class RoadControlPointController extends PointController<RoadControlPoint
 
 	}
 
-	onDrag ( point: RoadControlPoint, e: PointerEventData ): void {
-
-		point.setPosition( e.point );
-
-		this.splineGeometryService.updateGeometryAndBounds( point.spline );
-
-	}
-
-	onDragEnd ( point: RoadControlPoint, e: PointerEventData ): void {
-
-		Commands.SetPointPosition( point.spline, point, e.point, this.dragStartPosition );
-
-	}
-
 }
+

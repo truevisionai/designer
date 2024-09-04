@@ -4,13 +4,12 @@
 
 import { Injectable } from "@angular/core";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { BaseController } from "./base-controller";
+import { BaseDragHandler } from "./base-drag-handler";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export abstract class PointController<T extends AbstractControlPoint> extends BaseController<T> {
+export abstract class PointDragHandler<T extends AbstractControlPoint> extends BaseDragHandler<T> {
 
 
 }
-

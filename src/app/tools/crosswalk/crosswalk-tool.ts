@@ -27,6 +27,7 @@ import { CrosswalkController } from "./controllers/crosswalk-controller";
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { Commands } from 'app/commands/commands';
 import { CornerControlPoint } from "./objects/corner-control-point";
+import { CornerControlPointDragHandler } from "./controllers/corner-control-point-drag-handler.service";
 
 export class CrosswalkTool extends ToolWithHandler {
 
@@ -40,15 +41,15 @@ export class CrosswalkTool extends ToolWithHandler {
 			return this.selectedPoint.roadObject;
 		}
 
-		return this.selectionService.getLastSelected<TvRoadObject>( TvRoadObject.name );
+		return this.selectionService.findSelectedObject<TvRoadObject>( TvRoadObject.name );
 	}
 
 	get selectedPoint (): CornerControlPoint {
-		return this.selectionService.getLastSelected<CornerControlPoint>( CornerControlPoint.name );
+		return this.selectionService.findSelectedObject<CornerControlPoint>( CornerControlPoint.name );
 	}
 
 	get selectedRoad (): TvRoad {
-		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name );
 	}
 
 	private pointMoved: boolean;
@@ -86,6 +87,8 @@ export class CrosswalkTool extends ToolWithHandler {
 		this.addVisualizer( CornerControlPoint.name, this.tool.base.injector.get( CornerPointVisualizer ) );
 		this.addVisualizer( TvRoadObject.name, this.tool.base.injector.get( CrosswalkVisualizer ) );
 		this.addVisualizer( TvRoad.name, this.tool.base.injector.get( CrosswalkToolRoadVisualizer ) );
+
+		this.addDragHandler( CornerControlPoint.name, this.tool.base.injector.get( CornerControlPointDragHandler ) );
 
 	}
 

@@ -6,8 +6,6 @@
 import { BaseTool } from './base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Log } from "../core/utils/log";
-import { BaseController } from 'app/core/controllers/base-controller';
-import { ToolTipService } from 'app/services/debug/tool-tip.service';
 import { KeyboardEvents } from 'app/events/keyboard-events';
 
 export abstract class ToolWithHandler extends BaseTool<any> {
@@ -20,24 +18,24 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 	override onPointerDownCreate ( e: PointerEventData ): void {
 
-		const newSelected = this.selectionService.getSelectionStrategyResult( e );
+		const selected = this.selectionService.executeSelection( e );
 
-		if ( !newSelected ) return;
+		if ( !selected ) return;
 
-		const controller = this.getController( newSelected.constructor.name );
+		const controller = this.getController( selected.constructor.name );
 
 		if ( !controller ) {
-			Log.warn( `No controller found for ${ newSelected.constructor.name }` );
+			Log.warn( `No controller found for ${ selected.constructor.name }` );
 			return;
 		}
 
-		const createObject = controller.createAt( newSelected, e );
+		const created = controller.createAt( selected, e );
 
-		if ( createObject ) {
+		if ( created ) {
 
-			const oldObjects = this.getController( createObject.constructor.name ).getSelected();
+			const oldObjects = this.getController( created.constructor.name ).getSelected();
 
-			this.executeAddAndSelect( createObject, oldObjects );
+			this.executeAddAndSelect( created, oldObjects );
 
 		}
 
@@ -51,54 +49,13 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 		if ( KeyboardEvents.isShiftKeyDown ) return;
 
-		for ( const [ name, controller ] of this.getControllers() ) {
+		const lastSelectedObject = this.getSelectionService().getLastSelectedObject();
 
-			const selected = controller.getSelected();
+		if ( !lastSelectedObject ) return;
 
-			if ( selected.length == 0 ) continue;
+		this.handlers.handleDrag( lastSelectedObject, e );
 
-			selected.forEach( object => this.dragObject( controller, object, e ) );
-
-			this.currentSelectedPointMoved = true;
-
-			break;
-
-		}
-
-	}
-
-	private dragObject<T> ( controller: BaseController<T>, object: T, e: PointerEventData ): void {
-
-		if ( !controller.isDraggingSupported() ) {
-			return;
-		}
-
-		this.disableControls();
-
-		if ( !controller.getDragStartPosition() ) {
-			controller.setDragStartPosition( e.point );
-		}
-
-		controller.updateDragDelta( e.point );
-
-		controller.setCurrentDragPosition( e.point );
-
-		controller.onDrag( object, e );
-
-		this.showDragToolTip( controller, object, e );
-
-		this.updateVisuals( object );
-
-	}
-
-	private showDragToolTip<T> ( controller: BaseController<T>, object: T, e: PointerEventData ): void {
-
-		const toolTip = controller.getDragTip( object );
-
-		if ( !toolTip ) return;
-
-		// add scalar 1 to move tool tip to the right and avoid collision with the object
-		ToolTipService.instance?.createOrUpdate( toolTip, e.point.clone().addScalar( 1 ) );
+		this.updateVisuals( lastSelectedObject );
 
 	}
 
@@ -106,43 +63,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 		this.enableControls();
 
-		ToolTipService.instance?.removeLastTooltip();
-
-		if ( !this.currentSelectedPointMoved ) return;
-
-		for ( const [ name, handler ] of this.getControllers() ) {
-
-			const selected = handler.getSelected();
-
-			if ( selected.length > 0 ) {
-
-				selected.forEach( object => this.dragEndObject( handler, object, e ) );
-
-				break;
-
-			}
-
-		}
-
-		this.currentSelectedPointMoved = false;
-
-	}
-
-	private dragEndObject<T> ( handler: BaseController<T>, object: T, e: PointerEventData ): void {
-
-		if ( !handler.isDraggingSupported() ) {
-			return;
-		}
-
-		handler.setDragEndPosition( e.point );
-
-		handler.onDragEnd( object, e );
-
-		handler.setDragStartPosition( undefined );
-
-		handler.setCurrentDragPosition( undefined );
-
-		handler.setDragEndPosition( undefined );
+		this.handlers.handleDragEnd( e );
 
 	}
 

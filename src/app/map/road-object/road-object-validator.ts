@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ValidationException } from "app/exceptions/exceptions";
 import { TvRoadObject } from "../models/objects/tv-road-object";
 

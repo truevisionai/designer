@@ -253,7 +253,7 @@ export class RampToolHelper {
 
 		const spline = this.createSpline( startPosition, endPosition );
 
-		this.splineBuilder.buildSpline( spline );
+		this.splineBuilder.buildGeometry( spline );
 
 		const positions = this.splineService.getPoints( spline, 0.1 );
 

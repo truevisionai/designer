@@ -23,6 +23,8 @@ import { LaneWidthLaneController } from './controllers/lane-width-lane-controlle
 import { LaneWidthRoadController } from './controllers/lane-width-road-controller';
 import { laneWidthToolHints } from './lane-width-tool-hints';
 import { LaneWidthRoadVisualizer } from "./visualizers/lane-width-road-visualizer";
+import { LaneWidthPointDragHandler } from './controllers/lane-width-point-drag-handler';
+import { LaneWidthLineDragHandler } from './controllers/lane-width-line-drag-handler';
 
 export class LaneWidthTool extends ToolWithHandler {
 
@@ -76,6 +78,9 @@ export class LaneWidthTool extends ToolWithHandler {
 		this.addController( LaneWidthPoint.name, this.tool.base.injector.get( LaneWidthPointController ) );
 		this.addController( TvLane.name, this.tool.base.injector.get( LaneWidthLaneController ) );
 		this.addController( TvRoad.name, this.tool.base.injector.get( LaneWidthRoadController ) );
+
+		this.addDragHandler( LaneWidthPoint.name, this.tool.base.injector.get( LaneWidthPointDragHandler ) );
+		this.addDragHandler( LaneWidthLine.name, this.tool.base.injector.get( LaneWidthLineDragHandler ) );
 
 	}
 

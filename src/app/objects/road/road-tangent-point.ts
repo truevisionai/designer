@@ -43,7 +43,7 @@ export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate
 			map: texture,
 			alphaTest: 0.5,
 			transparent: true,
-			color: COLOR.GREEN,
+			color: COLOR.CYAN,
 			depthTest: false
 		} );
 

@@ -30,6 +30,8 @@ export class SelectionService {
 
 	private debug = false;
 
+	private lastSelectedObject?: any;
+
 	constructor () {
 
 		MapEvents.objectSelected.subscribe( object => this.addToSelected( object ) );
@@ -78,20 +80,6 @@ export class SelectionService {
 
 	}
 
-	highlight ( e: PointerEventData ) {
-
-		for ( const strategy of this.getStrategies() ) {
-
-			const result = strategy.onPointerMoved( e );
-
-			if ( result ) {
-
-				return result;
-
-			}
-		}
-	}
-
 	handleSelection ( e: PointerEventData, selected?: ( object: any ) => void, unselected?: () => void ): void {
 
 		for ( const [ type, strategy ] of this.strategies ) {
@@ -114,7 +102,7 @@ export class SelectionService {
 
 	}
 
-	getSelectionStrategyResult ( e: PointerEventData ): any {
+	executeSelection ( e: PointerEventData ): any {
 
 		for ( const [ type, strategy ] of this.strategies ) {
 
@@ -145,20 +133,20 @@ export class SelectionService {
 		if ( none ) none();
 	}
 
-	getLastSelected<T> ( type: string ): T {
-
-		return this.selectedObjects.get( type ) as T;
-
+	findSelectedObject<T> ( objectName: string ): T | undefined {
+		return this.selectedObjects.get( objectName ) as T;
 	}
 
 	getAllSelected<T> ( cls: new ( ...args: any[] ) => T ): T[] {
-
 		return Array.from( this.selectedObjects.values() ).filter( obj => obj instanceof cls ) as T[];
-
 	}
 
 	getSelectedObjects () {
 		return Array.from( this.selectedObjects.values() );
+	}
+
+	getLastSelectedObject (): any | undefined {
+		return this.lastSelectedObject;
 	}
 
 	getSelectedObjectCount (): number {
@@ -180,23 +168,7 @@ export class SelectionService {
 	}
 
 	clearSelection (): void {
-
 		this.selectedObjects.clear();
-
-	}
-
-	unselectObjectsOfType ( type: string ): void {
-
-		this.selectedObjects.delete( type );
-
-	}
-
-	addSelectedObject ( object: any ): void {
-
-		const tag = this.getTag( object );
-
-		this.selectedObjects.set( tag, object );
-
 	}
 
 	private handleDeselection (): void {
@@ -239,7 +211,7 @@ export class SelectionService {
 
 		}
 
-		const lastSelected = this.getLastSelected( selectedType );
+		const lastSelected = this.lastSelectedObject;
 
 		if ( lastSelected && lastSelected === newSelected && unselectObjects.length === 0 ) return;
 
@@ -258,6 +230,8 @@ export class SelectionService {
 		const tag = this.getTag( object );
 
 		this.selectedObjects.set( tag, object );
+
+		this.lastSelectedObject = object;
 
 		if ( this.debug ) Log.info( 'addToSelected', tag, object, this.getSelectedObjects() );
 
@@ -280,6 +254,8 @@ export class SelectionService {
 		const tag = this.getTag( object );
 
 		this.selectedObjects.delete( tag );
+
+		this.lastSelectedObject = null;
 
 		if ( this.debug ) Log.info( 'removeFromSelected', tag, object, this.selectedObjects );
 
@@ -345,6 +321,12 @@ export class SelectionService {
 	hasSelectionStrategyFor ( name: string ): boolean {
 
 		return this.strategies.has( name );
+
+	}
+
+	isObjectSelected ( object: any ): boolean {
+
+		return this.getSelectedObjects().includes( object );
 
 	}
 

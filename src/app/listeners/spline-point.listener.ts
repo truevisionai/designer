@@ -18,8 +18,6 @@ import { SplineUpdatedEvent } from "../events/spline/spline-updated-event";
 } )
 export class SplinePointListener {
 
-	private debug = true;
-
 	constructor (
 	) {
 

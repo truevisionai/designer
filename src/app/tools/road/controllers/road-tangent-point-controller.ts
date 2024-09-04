@@ -7,8 +7,6 @@ import { RoadTangentPoint } from "../../../objects/road/road-tangent-point";
 import { SplineService } from "../../../services/spline/spline.service";
 import { RoadLinkService } from "../../../services/road/road-link.service";
 import { SplineGeometryService } from "../../../services/spline/spline-geometry.service";
-import { PointerEventData } from "../../../events/pointer-event-data";
-import { Commands } from "../../../commands/commands";
 import { PointController } from "../../../core/controllers/point-controller";
 import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
 import { AppInspector } from "../../../core/inspector";
@@ -44,22 +42,6 @@ export class RoadTangentPointController extends PointController<RoadTangentPoint
 
 	}
 
-	onDrag ( point: RoadTangentPoint, e: PointerEventData ): void {
-
-		point.setPosition( e.point );
-
-		point.update();
-
-		point.controlPoint.update();
-
-		this.splineGeometryService.updateGeometryAndBounds( point.spline );
-
-	}
-
-	onDragEnd ( point: RoadTangentPoint, e: PointerEventData ): void {
-
-		Commands.SetPointPosition( point.spline, point, e.point, this.dragStartPosition );
-
-	}
-
 }
+
+

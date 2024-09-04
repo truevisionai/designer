@@ -15,22 +15,13 @@ import { Log } from 'app/core/utils/log';
 
 export class RoadControlPoint extends AbstractControlPoint {
 
-	public static readonly tag = 'road-control-point';
-
 	public mainObject: TvRoad;
 
 	public frontTangent: RoadTangentPoint;
 
 	public backTangent: RoadTangentPoint;
 
-	public tangentLine: Line;
-
-	public tangentLineGeometry: BufferGeometry;
-
-	public tangentLineMaterial = new LineBasicMaterial( {
-		color: COLOR.CYAN,
-		linewidth: 2
-	} );
+	private _tangentLine: Line;
 
 	public hdg: number;
 
@@ -78,6 +69,14 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 		this.renderOrder = 3;
 
+	}
+
+	get tangentLine (): Line {
+		return this._tangentLine;
+	}
+
+	set tangentLine ( value: Line ) {
+		this._tangentLine = value;
 	}
 
 	get spline () {
@@ -140,7 +139,38 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 	}
 
-	addDefaultTangents ( hdg: number, frontLength: number, backLength: number ) {
+	createTangentAndLine ( hdg: number, frontLength: number, backLength: number ): void {
+
+		this.createTangents( hdg, frontLength, backLength );
+
+		this.createLine()
+
+	}
+
+	private createLine (): void {
+
+		const material = new LineBasicMaterial( {
+			color: COLOR.CYAN,
+			linewidth: 2,
+			depthTest: false,
+			depthWrite: false
+		} );
+
+		const geometry = new BufferGeometry().setFromPoints( [ this.frontTangent.position, this.backTangent.position ] );
+
+		this.tangentLine = new Line( geometry, material );
+
+		this.tangentLine.name = 'tangent-control-line';
+
+		this.tangentLine.castShadow = true;
+
+		this.tangentLine.renderOrder = 3;
+
+		this.tangentLine.frustumCulled = false;
+
+	}
+
+	private createTangents ( hdg: number, frontLength: number, backLength: number ): void {
 
 		const frontPosition = new Vector3( Math.cos( hdg ), Math.sin( hdg ), CURVE_Y )
 			.multiplyScalar( frontLength )
@@ -150,35 +180,9 @@ export class RoadControlPoint extends AbstractControlPoint {
 			.multiplyScalar( -backLength )
 			.add( this.position );
 
-		this.frontTangent = new RoadTangentPoint(
-			this.road,
-			frontPosition,
-			'tpf',
-			this.tagindex,
-			this.tagindex + 1 + this.tagindex * 2,
-			this,
-		);
+		this.frontTangent = new RoadTangentPoint( this.road, frontPosition, 'tpf', this.tagindex, this.tagindex + 1 + this.tagindex * 2, this );
 
-		this.backTangent = new RoadTangentPoint(
-			this.road,
-			backPosition,
-			'tpb',
-			this.tagindex,
-			this.tagindex + 1 + this.tagindex * 2 + 1,
-			this,
-		);
-
-		this.tangentLineGeometry = new BufferGeometry().setFromPoints( [ this.frontTangent.position, this.backTangent.position ] );
-
-		this.tangentLine = new Line( this.tangentLineGeometry, this.tangentLineMaterial );
-
-		this.tangentLine.name = 'tangent-control-line';
-
-		this.tangentLine.castShadow = true;
-
-		this.tangentLine.renderOrder = 3;
-
-		this.tangentLine.frustumCulled = false;
+		this.backTangent = new RoadTangentPoint( this.road, backPosition, 'tpb', this.tagindex, this.tagindex + 1 + this.tagindex * 2 + 1, this );
 
 	}
 
@@ -194,7 +198,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 			return;
 		}
 
-		const buffer = this.tangentLineGeometry.attributes.position as BufferAttribute;
+		const buffer = this.tangentLine.geometry.attributes.position as BufferAttribute;
 
 		buffer.setXYZ( 0, this.frontTangent.position.x, this.frontTangent.position.y, this.frontTangent.position.z );
 

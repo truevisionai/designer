@@ -388,7 +388,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 		if ( point instanceof RoadControlPoint ) {
 
 			if ( !point.frontTangent || !point.backTangent ) {
-				point.addDefaultTangents( point.hdg, 7, 7 );
+				point.createTangentAndLine( point.hdg, 7, 7 );
 			}
 
 			const index = spline.controlPoints.indexOf( point );

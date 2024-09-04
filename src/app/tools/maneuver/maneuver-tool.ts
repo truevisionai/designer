@@ -22,6 +22,10 @@ import { ManeuverToolJunctionOverlayController } from "./controllers/maneuver-to
 import { ManeuverToolJunctionOverlayVisualizer } from "./visualizers/maneuver-tool-junction-visualizer";
 import { ManeuverPointVisualizer } from "./visualizers/maneuver-point-visualizer";
 import { JunctionOverlay } from 'app/services/junction/junction-overlay';
+import { ManeuverPointDragHandler } from "./controllers/maneuver-point-drag-handler.service";
+import {
+	SplineControlPointSelectionStrategy
+} from "../../core/strategies/select-strategies/point-selection-strategies";
 
 export class ManeuverTool extends ToolWithHandler {
 
@@ -55,10 +59,10 @@ export class ManeuverTool extends ToolWithHandler {
 
 		this.selectionService = this.helper.base.selection;
 
-		this.selectionService.registerStrategy( JunctionGatePoint.name, new JunctionGatePointSelectionStrategy() );
-		this.selectionService.registerStrategy( SplineControlPoint.name, new PointSelectionStrategy() );
-		this.selectionService.registerStrategy( ManeuverMesh.name, new ManeuverMeshSelectionStrategy() );
-		this.selectionService.registerStrategy( JunctionOverlay.name, new JunctionOverlaySelectionStrategy() );
+		this.addSelectionStrategy( JunctionGatePoint.name, new JunctionGatePointSelectionStrategy() );
+		this.addSelectionStrategy( SplineControlPoint.name, new SplineControlPointSelectionStrategy() );
+		this.addSelectionStrategy( ManeuverMesh.name, new ManeuverMeshSelectionStrategy() );
+		this.addSelectionStrategy( JunctionOverlay.name, new JunctionOverlaySelectionStrategy() );
 
 		this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
 
@@ -75,6 +79,8 @@ export class ManeuverTool extends ToolWithHandler {
 		this.addVisualizer( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateVisualizer ) );
 		this.addVisualizer( ManeuverMesh.name, this.helper.base.injector.get( ManeuverVisualizer ) );
 		this.addVisualizer( JunctionOverlay.name, this.helper.base.injector.get( ManeuverToolJunctionOverlayVisualizer ) );
+
+		this.addDragHandler( SplineControlPoint.name, this.helper.base.injector.get( ManeuverPointDragHandler ) );
 
 	}
 

@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from "@angular/core";
-import { LaneDebugService } from "../../services/debug/lane-debug.service";
-import { TvRoad } from "../../map/models/tv-road.model";
-import { RoadVisualizer } from "../../core/visualizers/road-visualizer";
+import { LaneDebugService } from "../../../services/debug/lane-debug.service";
+import { TvRoad } from "../../../map/models/tv-road.model";
+import { RoadVisualizer } from "../../../core/visualizers/road-visualizer";
 import { BaseVisualizer } from "app/core/visualizers/base-visualizer";
 
 @Injectable( {
@@ -29,6 +29,8 @@ export class LaneToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 	onUpdated ( road: TvRoad ): void {
 
 		this.laneDebugger.removeLaneOutlines( road.getLaneProfile() );
+
+		this.laneDebugger.showLaneOutlines( road.getLaneProfile() );
 
 		this.roadVisualizer.onUpdated( road );
 

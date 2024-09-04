@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { AutoSpline } from "../../../core/shapes/auto-spline-v2";
 import { AppInspector } from "../../../core/inspector";

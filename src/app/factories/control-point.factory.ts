@@ -72,7 +72,7 @@ export class ControlPointFactory {
 
 		controlPoint.userData.geometry = geometry;
 
-		controlPoint.addDefaultTangents( hdg, 1, 1 );
+		controlPoint.createTangentAndLine( hdg, 1, 1 );
 
 		return controlPoint;
 	}

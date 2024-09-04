@@ -14,12 +14,13 @@ import { Commands } from 'app/commands/commands';
 import { LaneFactory } from 'app/services/lane/lane.factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
-import { LaneVisualizerWithArrows } from 'app/core/visualizers/lane-visualizer';
-import { LaneController } from 'app/core/controllers/lane-controller';
-import { RoadController } from 'app/core/controllers/road-handler';
+import { LaneToolLaneController } from 'app/tools/lane/controllers/lane-tool-lane-controller';
 import { SelectLaneOverlayStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
 import { laneToolHints } from './lane-tool.hints';
-import { LaneToolRoadVisualizer } from "./lane-tool-road-visualizer";
+import { LaneToolRoadVisualizer } from "./visualizers/lane-tool-road-visualizer";
+import { EmptyController } from "../../core/controllers/empty-controller";
+import { LaneToolLaneVisualizer } from './visualizers/lane-tool-lane-visualizer';
+import { LaneToolLaneDragHandler } from "./controllers/lane-tool-lane-drag-handler.service";
 
 export class LaneTool extends ToolWithHandler {
 
@@ -33,16 +34,8 @@ export class LaneTool extends ToolWithHandler {
 		private helper: LaneToolHelper
 	) {
 		super();
-
-		this.addController( TvLane.name, helper.base.injector.get( LaneController ) );
-		this.addController( TvRoad.name, helper.base.injector.get( RoadController ) );
-
-		this.addVisualizer( TvRoad.name, helper.base.injector.get( LaneToolRoadVisualizer ) );
-		this.addVisualizer( TvLane.name, helper.base.injector.get( LaneVisualizerWithArrows ) );
-
-		this.setHintConfig( laneToolHints );
-
 	}
+
 
 	init (): void {
 
@@ -50,9 +43,39 @@ export class LaneTool extends ToolWithHandler {
 
 		this.helper.base.reset();
 
-		this.selectionService.registerStrategy( TvLane.name, new SelectLaneOverlayStrategy() );
+		this.addSelectors();
+		this.addControllers();
+		this.addVisualizers();
+		this.addDragHandlers();
 
-		this.selectionService.registerStrategy( TvRoad.name, new RoadSelectionStrategy() );
+		this.setHintConfig( laneToolHints );
+
+	}
+
+	private addSelectors (): void {
+
+		this.addSelectionStrategy( TvLane.name, new SelectLaneOverlayStrategy() );
+		this.addSelectionStrategy( TvRoad.name, new RoadSelectionStrategy() );
+
+	}
+
+	private addControllers (): void {
+
+		this.addController( TvLane.name, this.helper.base.injector.get( LaneToolLaneController ) );
+		this.addController( TvRoad.name, this.helper.base.injector.get( EmptyController ) );
+
+	}
+
+	private addVisualizers (): void {
+
+		this.addVisualizer( TvRoad.name, this.helper.base.injector.get( LaneToolRoadVisualizer ) );
+		this.addVisualizer( TvLane.name, this.helper.base.injector.get( LaneToolLaneVisualizer ) );
+
+	}
+
+	private addDragHandlers (): void {
+
+		this.addDragHandler( TvLane.name, this.helper.base.injector.get( LaneToolLaneDragHandler ) );
 
 	}
 
@@ -66,55 +89,35 @@ export class LaneTool extends ToolWithHandler {
 
 	}
 
-	onPointerDownSelect ( e: PointerEventData ): void {
+	// onPointerDownCreate ( e: PointerEventData ): void {
+	//
+	// 	// this.helper.base.selection.handleCreation( e, ( object ) => {
+	// 	//
+	// 	// 	if ( object instanceof TvLane ) {
+	// 	//
+	// 	// 		this.startCreation( object, e.point );
+	// 	//
+	// 	// 		this.helper.base.disableControls();
+	// 	//
+	// 	// 	}
+	// 	//
+	// 	// } );
+	//
+	// }
 
-		this.selectionService.handleSelection( e );
-
-	}
-
-	onPointerDownCreate ( e: PointerEventData ): void {
-
-		this.helper.base.selection.handleCreation( e, ( object ) => {
-
-			if ( object instanceof TvLane ) {
-
-				this.startCreation( object, e.point );
-
-				this.helper.base.disableControls();
-
-			}
-
-		} );
-
-	}
-
-	onPointerMoved ( e: PointerEventData ): void {
-
-		this.highlight( e );
-
-		if ( !this.startLaneCoord ) return;
-
-		// const clone: TvRoad = this.startLaneCoord.lane.laneSection.road.clone( 0 );
-
-		// console.log( clone );
-
-		// this.overlayHandlers?.get( TvRoad.name )?.onUpdated( clone );
-
-	}
-
-	onPointerUp ( e: PointerEventData ): void {
-
-		this.helper.base.enableControls();
-
-		if ( !this.startLaneCoord ) return;
-
-		const newLane = this.stopCreation( this.startLaneCoord, e.point );
-
-		Commands.AddObject( newLane );
-
-		this.startLaneCoord = null;
-
-	}
+	// onPointerUp ( e: PointerEventData ): void {
+	//
+	// 	this.helper.base.enableControls();
+	//
+	// 	if ( !this.startLaneCoord ) return;
+	//
+	// 	const newLane = this.stopCreation( this.startLaneCoord, e.point );
+	//
+	// 	Commands.AddObject( newLane );
+	//
+	// 	this.startLaneCoord = null;
+	//
+	// }
 
 	startCreation ( object: TvLane, start: Vector3 ): void {
 

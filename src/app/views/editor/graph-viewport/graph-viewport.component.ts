@@ -68,7 +68,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 	nodeMoved: boolean;
 
 	get selectedObject (): AbstractControlPoint {
-		return this.selectionService.getLastSelected<AbstractControlPoint>( SimpleControlPoint.name );
+		return this.selectionService.findSelectedObject<AbstractControlPoint>( SimpleControlPoint.name );
 	}
 
 	constructor (
@@ -275,7 +275,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 	private onPointerMoved ( event: PointerEventData ) {
 
 		// Debug.log( 'Pointer moved', event );
-		this.selectionService.highlight( event );
+		this.selectionService.executeSelection( event );
 
 		if ( !event.pointerDown ) return;
 

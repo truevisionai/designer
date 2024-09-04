@@ -3,16 +3,14 @@
  */
 
 import { Injectable } from "@angular/core";
-import { BaseVisualizer } from "./base-visualizer";
-import { LaneDebugService } from "../../services/debug/lane-debug.service";
+import { BaseVisualizer } from "../../../core/visualizers/base-visualizer";
+import { LaneDebugService } from "../../../services/debug/lane-debug.service";
 import { TvLane } from "app/map/models/tv-lane";
-import { EmptyVisualizer } from "./empty-visualizer";
-import { COLOR } from "app/views/shared/utils/colors.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class LaneVisualizerWithArrows extends BaseVisualizer<TvLane> {
+export class LaneToolLaneVisualizer extends BaseVisualizer<TvLane> {
 
 	constructor ( private laneDebugger: LaneDebugService ) {
 
@@ -24,13 +22,15 @@ export class LaneVisualizerWithArrows extends BaseVisualizer<TvLane> {
 
 		this.laneDebugger.showLaneOutline( object );
 
-		this.onSelected( object );
+		this.laneDebugger.showDirectionalArrows( object );
+
+		this.updateVisuals( object.getRoad() );
 
 	}
 
 	onUpdated ( object: TvLane ): void {
 
-		// do nothing
+		this.updateVisuals( object.getRoad() );
 
 	}
 
@@ -42,7 +42,7 @@ export class LaneVisualizerWithArrows extends BaseVisualizer<TvLane> {
 
 			this.highlighted.delete( lane );
 
-		} )
+		} );
 
 	}
 
@@ -78,6 +78,8 @@ export class LaneVisualizerWithArrows extends BaseVisualizer<TvLane> {
 
 		this.laneDebugger.removeDirectionalArrows( object );
 
+		this.updateVisuals( object.getRoad() );
+
 	}
 
 	clear (): void {
@@ -89,51 +91,3 @@ export class LaneVisualizerWithArrows extends BaseVisualizer<TvLane> {
 	}
 
 }
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class LaneVisualizerWithLines extends EmptyVisualizer<TvLane> {
-
-	constructor ( private laneDebugger: LaneDebugService ) {
-
-		super();
-
-	}
-
-	onHighlight ( object: TvLane ): void {
-
-		this.laneDebugger.showLaneOutline( object, 3, COLOR.YELLOW );
-
-	}
-
-	onDefault ( object: TvLane ): void {
-
-		this.laneDebugger.removeLaneOutline( object );
-		this.laneDebugger.showLaneOutline( object );
-
-	}
-
-	onSelected ( object: TvLane ): void {
-
-		this.laneDebugger.showLaneOutline( object, 3, COLOR.RED );
-
-	}
-
-	onUnselected ( object: TvLane ): void {
-
-		this.laneDebugger.removeLaneOutline( object );
-		this.laneDebugger.showLaneOutline( object );
-
-	}
-
-	clear (): void {
-
-		this.laneDebugger.clear();
-
-		super.clear();
-
-	}
-
-}
-

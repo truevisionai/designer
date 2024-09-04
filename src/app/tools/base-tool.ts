@@ -29,6 +29,7 @@ import { ViewControllerService } from 'app/views/editor/viewport/view-controller
 import { BaseController } from 'app/core/controllers/base-controller';
 import { ToolHandlers } from './tool-handlers';
 import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { BaseDragHandler } from 'app/core/drag-handlers/base-drag-handler';
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -53,7 +54,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 	protected handlers: ToolHandlers;
 
 	protected get currentSelectedPoint (): SimpleControlPoint<T> {
-		return this.selectionService?.getLastSelected<SimpleControlPoint<T>>( SimpleControlPoint.name );
+		return this.selectionService?.findSelectedObject<SimpleControlPoint<T>>( SimpleControlPoint.name );
 	}
 
 	private hintConfig: ToolHintConfig;
@@ -65,7 +66,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		}
 
 		if ( this.typeName ) {
-			return this.selectionService?.getLastSelected<T>( this.typeName );
+			return this.selectionService?.findSelectedObject<T>( this.typeName );
 		}
 
 	}
@@ -104,6 +105,10 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		return this.handlers.getControllers();
 	}
 
+	getDragHandlers (): Map<string, BaseDragHandler<Object>> {
+		return this.handlers.getDragHandlers();
+	}
+
 	getController ( objectName: string ): BaseController<Object> {
 		return this.handlers.getController( objectName );
 	}
@@ -114,6 +119,10 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	addVisualizer ( objectName: string, visualizer: Visualizer<Object> ): void {
 		this.handlers.addVisualizer( objectName, visualizer );
+	}
+
+	addDragHandler ( objectName: string, dragHandler: BaseDragHandler<Object> ): void {
+		this.handlers.addDragHandler( objectName, dragHandler );
 	}
 
 	updateVisuals ( object: any ): void {
@@ -614,6 +623,10 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	public getSelectedObjects (): any[] {
 		return this.selectionService.getSelectedObjects();
+	}
+
+	public getSelectObjectByName<T> ( objectName: string ): T {
+		return this.selectionService.findSelectedObject<T>( objectName );
 	}
 
 	public getSelectedObjectCount (): number {

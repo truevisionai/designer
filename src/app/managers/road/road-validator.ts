@@ -3,83 +3,37 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Log } from 'app/core/utils/log';
-import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvRoadLink } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { MapQueryService } from 'app/map/queries/map-query.service';
-import { MapService } from 'app/services/map/map.service';
-import { Maths } from 'app/utils/maths';
-import { RoadUtils } from 'app/utils/road.utils';
-
-export function expectLinkDistanceToBeZero ( road: TvRoad ): void {
-	if ( road.successor ) {
-		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
-		if ( !Maths.approxEquals( distance, 0 ) ) {
-			Log.warn( `InvalidSuccessorDistance: ${ distance } ${ road.toString() } ${ road.successor.toString() }` );
-		}
-	}
-	if ( road.predecessor ) {
-		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor )
-		if ( !Maths.approxEquals( distance, 0 ) ) {
-			Log.warn( `InvalidPredecessorDistance: ${ distance } ${ road.toString() } ${ road.predecessor.toString() }` );
-		}
-	}
-}
+import { RoadLinkValidator } from './road-link-validator';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadValidator {
 
-	private debug = true;
 	private enabled = true;
 
-	constructor ( private map: MapService, private queryService: MapQueryService ) { }
+	constructor (
+		private roadLinkValidator: RoadLinkValidator,
+	) { }
 
 	validateRoad ( road: TvRoad ): void {
 
 		if ( !this.enabled ) return;
 
-		if ( !road.isJunction ) expectLinkDistanceToBeZero( road );
+		if ( road.isJunction ) return;
 
-		this.validateLinks( road );
+		try {
 
-	}
+			this.roadLinkValidator.validateLinks( road );
 
-	private validateLinks ( road: TvRoad ): void {
+		} catch ( e ) {
 
-		if ( road.successor ) this.validateLink( road, road.successor );
-
-		if ( road.predecessor ) this.validateLink( road, road.predecessor );
-
-	}
-
-	private validateLink ( road: TvRoad, link: TvRoadLink ): void {
-
-		let linkedElement: TvJunction | TvRoad;
-
-		if ( link.isJunction ) {
-
-			linkedElement = this.map.findJunction( link.element.id );
-
-		} else if ( link.isRoad ) {
-
-			linkedElement = this.map.getRoad( link.element.id );
-
-		} else {
-
-			Log.warn( "Invalid Link", road.toString(), link.toString() );
-
-		}
-
-		if ( !linkedElement ) {
-
-			Log.warn( "Link element not found", road.toString(), link.toString() );
+			Log.error( 'RoadValidationException', e.message );
 
 		}
 
 	}
-
 
 }

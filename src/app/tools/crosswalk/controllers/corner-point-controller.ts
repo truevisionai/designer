@@ -3,12 +3,10 @@
  */
 
 import { Injectable } from "@angular/core";
-import { PointerEventData } from "../../../events/pointer-event-data";
 import { PointController } from "app/core/controllers/point-controller";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { Log } from "app/core/utils/log";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
-import { Commands } from "app/commands/commands";
 import { CrosswalkInspector } from "../crosswalk.inspector";
 import { CornerControlPoint } from "../objects/corner-control-point";
 
@@ -59,39 +57,5 @@ export class CornerControlPointController extends PointController<CornerControlP
 
 	}
 
-	onDrag ( point: CornerControlPoint, e: PointerEventData ): void {
-
-		const roadCoord = this.roadGeometryService.findRoadCoordStrict( point.road, e.point );
-
-		if ( !roadCoord ) {
-			this.setHint( 'Cannot drag crosswalk on non-road area' );
-			return;
-		}
-
-		if ( roadCoord.road.isJunction ) {
-			this.setHint( 'Cannot drag crosswalk on junction road' );
-			return;
-		}
-
-		if ( roadCoord.road != point.road ) {
-			this.setHint( 'Cannot drag crosswalk to different road' );
-			return;
-		}
-
-		point.setPosition( roadCoord.position );
-
-		this.dragEndPosition = roadCoord.position;
-
-	}
-
-	onDragEnd ( point: CornerControlPoint, e: PointerEventData ): void {
-
-		if ( this.dragStartPosition.distanceTo( this.dragEndPosition ) < 0.1 ) {
-			return;
-		}
-
-		Commands.UpdatePosition( point, point.position, this.dragStartPosition );
-
-	}
-
 }
+

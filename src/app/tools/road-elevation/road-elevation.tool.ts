@@ -32,13 +32,13 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	get selectedRoad (): TvRoad {
 
-		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name );
 
 	}
 
 	get selectedNode (): ElevationControlPoint {
 
-		return this.selectionService.getLastSelected<ElevationControlPoint>( ElevationControlPoint.name );
+		return this.selectionService.findSelectedObject<ElevationControlPoint>( ElevationControlPoint.name );
 
 	}
 

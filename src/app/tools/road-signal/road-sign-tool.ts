@@ -33,11 +33,11 @@ export class RoadSignTool extends BaseTool<any> {
 	}
 
 	get selectedPoint (): SimpleControlPoint<TvRoadSignal> {
-		return this.selectionService.getLastSelected<SimpleControlPoint<TvRoadSignal>>( SimpleControlPoint.name );
+		return this.selectionService.findSelectedObject<SimpleControlPoint<TvRoadSignal>>( SimpleControlPoint.name );
 	}
 
 	get selectedRoad (): TvRoad {
-		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name );
 	}
 
 	init () {

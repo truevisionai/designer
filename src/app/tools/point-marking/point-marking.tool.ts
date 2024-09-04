@@ -30,11 +30,11 @@ export class PointMarkingTool extends BaseTool<any> {
 	private boxSelectionStarted: boolean = false;
 
 	get selectedRoad () {
-		return this.selectionService.getLastSelected<TvRoad>( TvRoad.name );
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name );
 	}
 
 	override get currentSelectedPoint () {
-		return this.selectionService.getLastSelected<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint.name );
+		return this.selectionService.findSelectedObject<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint.name );
 	}
 
 	constructor ( private tool: PointMarkingToolService ) {

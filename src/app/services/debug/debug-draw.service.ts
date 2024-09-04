@@ -241,21 +241,9 @@ export class DebugDrawService {
 
 		const s = lane.laneSection.s + laneS;
 
-		const laneWidth = lane.getWidthValue( s );
+		const start = LanePositionService.instance.findLaneStartPosition( road, lane.laneSection, lane, s );
 
-		const innerHeight = lane.getHeightValue( s )?.inner;
-
-		const outerHeight = lane.getHeightValue( s )?.outer;
-
-		const offset = laneWidth * 0.5;
-
-		const start = road.getLaneCenterPosition( lane, s, -offset );
-
-		if ( innerHeight ) start.z = innerHeight;
-
-		const end = road.getLaneCenterPosition( lane, s, offset );
-
-		if ( outerHeight ) end.z = outerHeight;
+		const end = LanePositionService.instance.findLaneEndPosition( road, lane.laneSection, lane, s );
 
 		return new LineGeometry().setPositions( [ start, end ].flatMap( p => [ p.x, p.y, p.z ] ) );
 

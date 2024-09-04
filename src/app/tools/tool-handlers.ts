@@ -9,6 +9,8 @@ import { PointerEventData } from "app/events/pointer-event-data";
 import { SelectionService } from "./selection.service";
 import { ValidationException } from "app/exceptions/exceptions";
 import { StatusBarService } from "app/services/status-bar.service";
+import { BaseDragHandler } from "app/core/drag-handlers/base-drag-handler";
+import { DragManager } from "./drag-manager";
 
 export class ToolHandlers {
 
@@ -16,10 +18,12 @@ export class ToolHandlers {
 
 	private controllers: Map<string, BaseController<object>>;
 	private visualizers: Map<string, Visualizer<object>>;
+	private dragManager: DragManager;
 
 	constructor ( private selectionService: SelectionService ) {
 		this.controllers = new Map();
 		this.visualizers = new Map();
+		this.dragManager = new DragManager();
 	}
 
 	disable (): void {
@@ -49,8 +53,16 @@ export class ToolHandlers {
 		this.controllers.set( objectName, controller );
 	}
 
+	getDragHandler ( objectName: string ): BaseDragHandler<object> {
+		return this.dragManager.getDragHandler( objectName );
+	}
+
 	addVisualizer ( objectName: string, visualizer: Visualizer<object> ): void {
 		this.visualizers.set( objectName, visualizer );
+	}
+
+	addDragHandler ( objectName: string, dragHandler: BaseDragHandler<object> ): void {
+		this.dragManager.addDragHandler( objectName, dragHandler );
 	}
 
 	getControllers (): Map<string, BaseController<object>> {
@@ -59,6 +71,10 @@ export class ToolHandlers {
 
 	getVisualizers (): Map<string, Visualizer<object>> {
 		return this.visualizers;
+	}
+
+	getDragHandlers (): Map<string, BaseDragHandler<object>> {
+		return this.dragManager.getDragHandlers();
 	}
 
 	handleAction ( object: object, action: 'onAdded' | 'onRemoved' ): void {
@@ -171,34 +187,6 @@ export class ToolHandlers {
 
 	}
 
-	handleHighlight ( e: PointerEventData ): void {
-
-		this.resetHighlightedObjects();
-
-		const objectToHighlight = this.selectionService.highlight( e );
-
-		if ( !objectToHighlight ) return;
-
-		const controller = this.controllers.get( objectToHighlight.constructor.name );
-
-		const visualizer = this.visualizers.get( objectToHighlight.constructor.name );
-
-		if ( !controller || !visualizer ) {
-			Log.warn( `No handler found for ${ objectToHighlight.constructor.name }` );
-			return;
-		}
-
-		// If the object is already selected, don't highlight it
-		if ( controller.isSelected( objectToHighlight ) ) return;
-
-		if ( this.debug ) Log.info( 'highlighting object', objectToHighlight.toString() );
-
-		visualizer.onHighlight( objectToHighlight );
-
-		visualizer.addToHighlighted( objectToHighlight );
-
-	}
-
 	updateVisuals ( object: object ): void {
 		if ( this.visualizers.has( object.constructor.name ) ) {
 			this.visualizers.get( object.constructor.name ).onUpdated( object );
@@ -266,19 +254,59 @@ export class ToolHandlers {
 
 	}
 
-	private resetHighlightedObjects (): void {
+	handleDrag ( object: object, e: PointerEventData ): void {
+
+		this.dragManager.handleDrag( object, e );
+
+	}
+
+	handleDragEnd ( e: PointerEventData ): void {
+
+		this.dragManager.handleDragEnd( e );
+
+	}
+
+	handleHighlight ( e: PointerEventData ): void {
+
+		this.resetHighlighted();
+
+		const object = this.selectionService.executeSelection( e );
+
+		if ( !object ) return;
+
+		if ( this.selectionService.isObjectSelected( object ) ) {
+			if ( this.debug ) Log.info( 'ignoring selected object', object.toString() );
+			return;
+		}
+
+		const visualizer = this.visualizers.get( object.constructor.name );
+
+		if ( !visualizer ) {
+			if ( this.debug ) Log.warn( `No handler found for ${ object.constructor.name }` );
+			return;
+		}
+
+		if ( this.debug ) Log.info( 'highlighting object', object.toString() );
+
+		visualizer.onHighlight( object );
+
+		visualizer.addToHighlighted( object );
+
+	}
+
+	private resetHighlighted (): void {
 
 		if ( this.debug ) Log.info( 'resetting highlighted objects' );
 
-		this.visualizers.forEach( ( visualizer, name ) => {
+		this.visualizers.forEach( ( visualizer ) => {
 
-			const selected = this.controllers.get( name ).getSelected();
+			const highlighted = visualizer.getHighlighted();
 
-			visualizer.getHighlighted().forEach( highlightedObject => {
+			highlighted.forEach( highlightedObject => {
 
-				if ( selected.includes( highlightedObject ) ) return;
-
-				if ( this.debug ) Log.info( 'resetting highlighted object', highlightedObject.toString() );
+				if ( this.selectionService.isObjectSelected( highlightedObject ) ) {
+					return;
+				}
 
 				visualizer.onDefault( highlightedObject );
 
