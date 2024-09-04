@@ -141,8 +141,15 @@ export class SelectionService {
 		return Array.from( this.selectedObjects.values() ).filter( obj => obj instanceof cls ) as T[];
 	}
 
-	getSelectedObjects () {
+	getSelectedObjects (): any[] {
 		return Array.from( this.selectedObjects.values() );
+	}
+
+	getAllSelectedObjects<T> ( objectName: string ): T[] {
+		if ( this.selectedObjects.has( objectName ) ) {
+			return [ this.selectedObjects.get( objectName ) ];
+		}
+		return [];
 	}
 
 	getLastSelectedObject (): any | undefined {

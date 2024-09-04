@@ -303,19 +303,11 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	onDeleteKeyDown (): void {
 
-		if ( this.getControllerCount() > 0 ) {
+		const lastSelectedObject = this.selectionService.getLastSelectedObject();
 
-			for ( const [ name, handler ] of this.getControllers() ) {
+		if ( lastSelectedObject ) {
 
-				if ( handler.getSelected().length > 0 ) {
-
-					handler.getSelected().forEach( object => this.executeRemoveObject( object ) );
-
-					break;
-
-				}
-
-			}
+			this.executeRemoveObject( lastSelectedObject );
 
 		} else if ( this.currentSelectedPoint ) {
 

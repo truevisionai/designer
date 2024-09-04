@@ -33,7 +33,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 		if ( created ) {
 
-			const oldObjects = this.getController( created.constructor.name ).getSelected();
+			const oldObjects = this.selectionService.getAllSelectedObjects( created.constructor.name );
 
 			this.executeAddAndSelect( created, oldObjects );
 
@@ -69,19 +69,11 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 	override onDeleteKeyDown (): void {
 
-		if ( this.getControllerCount() > 0 ) {
+		const lastSelectedObject = this.getSelectionService().getLastSelectedObject();
 
-			for ( const [ name, handler ] of this.getControllers() ) {
+		if ( lastSelectedObject ) {
 
-				if ( handler.getSelected().length > 0 ) {
-
-					handler.getSelected().forEach( object => this.executeRemoveObject( object, true ) );
-
-					break;
-
-				}
-
-			}
+			this.executeRemoveObject( lastSelectedObject, true );
 
 		}
 

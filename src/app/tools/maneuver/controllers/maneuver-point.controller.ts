@@ -26,10 +26,6 @@ export class ManeuverPointController extends BaseController<SplineControlPoint> 
 		super();
 	}
 
-	isDraggingSupported (): boolean {
-		return true
-	}
-
 	showInspector ( object: SplineControlPoint ): void {
 
 		this.setInspector( new ManeuverControlPointInspector( object ) );

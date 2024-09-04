@@ -5,9 +5,6 @@
 import { Injectable } from "@angular/core";
 import { LineController } from "../../../core/controllers/line-controller";
 import { LaneWidthService } from "../lane-width.service";
-import { PointerEventData } from "../../../events/pointer-event-data";
-import { RoadGeometryService } from "../../../services/road/road-geometry.service";
-import { Commands } from "app/commands/commands";
 import { LaneWidthLine } from "../objects/lane-width-line";
 import { LaneWidthInspector } from "../lane-width-node-inspector";
 
@@ -15,7 +12,6 @@ import { LaneWidthInspector } from "../lane-width-node-inspector";
 	providedIn: 'root'
 } )
 export class LaneWidthLineController extends LineController<LaneWidthLine> {
-
 
 	constructor ( private laneWidthService: LaneWidthService ) {
 		super()
@@ -48,40 +44,6 @@ export class LaneWidthLineController extends LineController<LaneWidthLine> {
 	onRemoved ( line: LaneWidthLine ): void {
 
 		this.laneWidthService.removeLaneWidth( line.laneSection, line.lane, line.width );
-
-	}
-
-	private initialSValue: number;
-
-	onDrag ( line: LaneWidthLine, e: PointerEventData ): void {
-
-		this.initialSValue = this.initialSValue || line.s;
-
-		const coord = RoadGeometryService.instance.findRoadCoordAt( line.road, e.point );
-
-		const sOffset = coord.s - line.laneSection.s;
-
-		line.s = sOffset;
-
-		this.laneWidthService.updateCoefficients( line.lane );
-
-	}
-
-	getDragTip ( object: LaneWidthLine ): string | null {
-
-		return `Distance: ${ object.s.toFixed( 2 ) }`;
-
-	}
-
-	onDragEnd ( line: LaneWidthLine, e: PointerEventData ): void {
-
-		const coord = RoadGeometryService.instance.findRoadCoordAt( line.road, e.point );
-
-		const sOffset = coord.s - line.laneSection.s;
-
-		Commands.SetValue( line, 's', sOffset, this.initialSValue );
-
-		this.initialSValue = null;
 
 	}
 

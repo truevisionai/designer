@@ -4,19 +4,7 @@
 
 export interface Controller<T> {
 
-	isSelected ( object: T ): boolean;
-
-	getSelected (): T[];
-
-	select ( object: T ): void;
-
 	showInspector ( object: T ): void;
-
-	onSelected ( object: T ): void;
-
-	unselect ( object: T ): void;
-
-	onUnselected ( object: T ): void;
 
 	onAdded ( object: T ): void;
 

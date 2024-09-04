@@ -14,7 +14,7 @@ import { ManeuverVisualizer } from './visualizers/maneuver-visualizer';
 import { ManeuverToolManeuverMeshController } from './controllers/maneuver-tool-maneuver-mesh-controller';
 import { ManeuverPointController } from './controllers/maneuver-point.controller';
 import { JunctionGateController } from './controllers/junction-gate-point-controller';
-import { JunctionGateVisualizer } from "./visualizers/junction-gate-visualizer";
+import { JunctionGatePointVisualizer } from "./visualizers/junction-gate-point-visualizer";
 import { maneuverToolHints } from './maneuver-tool.hints';
 import { JunctionOverlaySelectionStrategy, ManeuverMeshSelectionStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
 import { ToolWithHandler } from '../base-tool-v2';
@@ -76,7 +76,7 @@ export class ManeuverTool extends ToolWithHandler {
 		this.addController( JunctionOverlay.name, this.helper.base.injector.get( ManeuverToolJunctionOverlayController ) );
 
 		this.addVisualizer( SplineControlPoint.name, this.helper.base.injector.get( ManeuverPointVisualizer ) );
-		this.addVisualizer( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateVisualizer ) );
+		this.addVisualizer( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGatePointVisualizer ) );
 		this.addVisualizer( ManeuverMesh.name, this.helper.base.injector.get( ManeuverVisualizer ) );
 		this.addVisualizer( JunctionOverlay.name, this.helper.base.injector.get( ManeuverToolJunctionOverlayVisualizer ) );
 

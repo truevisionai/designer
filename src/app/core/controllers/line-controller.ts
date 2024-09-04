@@ -11,10 +11,4 @@ import { BaseController } from "./base-controller";
 } )
 export abstract class LineController<T extends DebugLine<any>> extends BaseController<T> {
 
-	isDraggingSupported (): boolean {
-
-		return true;
-
-	}
-
 }

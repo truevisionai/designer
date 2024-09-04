@@ -18,12 +18,6 @@ export abstract class SplineController extends BaseController<AutoSpline> {
 		super();
 	}
 
-	isDraggingSupported (): boolean {
-
-		return true;
-
-	}
-
 	onAdded ( object: AutoSpline ): void {
 
 		this.splineService.add( object );

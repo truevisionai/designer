@@ -28,12 +28,11 @@ export class ToolHandlers {
 
 	disable (): void {
 
-		this.visualizers.forEach( handler => handler.clear() );
-		this.visualizers.forEach( handler => handler.disable() );
+		this.visualizers.forEach( handle => handle.clear() );
 
-		this.controllers.forEach( handler => {
-			handler.getSelected().forEach( selected => handler.unselect( selected ) );
-		} );
+		this.visualizers.forEach( handle => handle.disable() );
+
+		this.controllers.forEach( handler => handler.disable() );
 
 	}
 
@@ -98,15 +97,12 @@ export class ToolHandlers {
 
 	addObject ( object: object ): void {
 
-		const controller = this.controllers.get( object.constructor.name );
+		// NOT NEEDED, TESTS ARE FAILING
+		// this.selectionService.getSelectedObjects().forEach( selected => this.handleDeselection( selected ) );
 
-		controller.getSelected().forEach( selected => this.handleDeselection( selected ) );
+		this.controllers.get( object.constructor.name )?.onAdded( object );
 
-		const visualizer = this.visualizers.get( object.constructor.name );
-
-		controller.onAdded( object );
-
-		visualizer.onAdded( object );
+		this.visualizers.get( object.constructor.name )?.onAdded( object );
 
 		// this.setObjectHint( object, 'onAdded' );
 
@@ -116,13 +112,9 @@ export class ToolHandlers {
 
 		const handle = ( item ) => {
 
-			const controller = this.controllers.get( item.constructor.name );
-
 			const visualizer = this.visualizers.get( item.constructor.name );
 
 			this.selectionService.addToSelected( item );
-
-			controller.select( item );
 
 			visualizer.onSelected( item );
 
@@ -146,11 +138,7 @@ export class ToolHandlers {
 
 		const handle = ( item ) => {
 
-			const controller = this.controllers.get( item.constructor.name );
-
 			const visualizer = this.visualizers.get( item.constructor.name );
-
-			controller.unselect( item );
 
 			visualizer.onUnselected( item );
 

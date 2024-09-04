@@ -14,7 +14,7 @@ export class JunctionGatePoint extends Mesh implements INode {
 
 	tag: string = JunctionGatePoint.tag;
 
-	constructor ( public coord: TvLaneCoord, geometry: BufferGeometry, material: Material ) {
+	constructor ( public coord: TvLaneCoord, geometry: BufferGeometry, public material: MeshBasicMaterial ) {
 
 		super( geometry, material );
 
@@ -26,9 +26,9 @@ export class JunctionGatePoint extends Mesh implements INode {
 
 		this.isSelected = true;
 
-		( this.material as MeshBasicMaterial ).color.set( COLOR.RED );
+		this.material.color.set( COLOR.RED );
 
-		( this.material as MeshBasicMaterial ).needsUpdate = true;
+		this.material.needsUpdate = true;
 
 	}
 
@@ -36,25 +36,25 @@ export class JunctionGatePoint extends Mesh implements INode {
 
 		this.isSelected = false;
 
-		( this.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
+		this.material.color.set( COLOR.CYAN );
 
-		( this.material as MeshBasicMaterial ).needsUpdate = true;
+		this.material.needsUpdate = true;
 
 	}
 
 	onMouseOver (): void {
 
-		( this.material as MeshBasicMaterial ).color.set( COLOR.YELLOW );
+		this.material.color.set( COLOR.YELLOW );
 
-		( this.material as MeshBasicMaterial ).needsUpdate = true;
+		this.material.needsUpdate = true;
 
 	}
 
 	onMouseOut (): void {
 
-		( this.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
+		this.material.color.set( COLOR.CYAN );
 
-		( this.material as MeshBasicMaterial ).needsUpdate = true
+		this.material.needsUpdate = true
 
 	}
 

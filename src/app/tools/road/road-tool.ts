@@ -56,8 +56,7 @@ export class RoadTool extends ToolWithHandler {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
-	private get selectedSpline (): AbstractSpline {
+	private get selectedSpline (): AbstractSpline | undefined {
 
 		if ( this.selectionService.findSelectedObject( AutoSpline.name ) ) {
 			return this.selectionService.findSelectedObject<AbstractSpline>( AutoSpline.name );
@@ -67,31 +66,8 @@ export class RoadTool extends ToolWithHandler {
 			return this.selectionService.findSelectedObject<AbstractSpline>( ExplicitSpline.name );
 		}
 
-		if ( this.currentPoint instanceof SimpleControlPoint ) {
-
-			return this.currentPoint.mainObject;
-
-		} else if ( this.currentPoint instanceof RoadControlPoint ) {
-
-			return this.currentPoint.road.spline;
-
-		} else if ( this.currentPoint instanceof SplineControlPoint ) {
-
-			return this.currentPoint.spline;
-
-		} else if ( this.selectedRoad ) {
-
+		if ( this.selectedRoad ) {
 			return this.selectedRoad.spline;
-
-		} else {
-
-			// if ( this.controllers.get( AutoSpline.name ).getSelected().length > 0 ) {
-			// 	return this.controllers.get( AutoSpline.name ).getSelected()[ 0 ] as AbstractSpline;
-			// }
-
-			// if ( this.controllers.get( ExplicitSpline.name ).getSelected().length > 0 ) {
-			// 	return this.controllers.get( ExplicitSpline.name ).getSelected()[ 0 ] as AbstractSpline;
-			// }
 		}
 
 	}
@@ -270,7 +246,9 @@ export class RoadTool extends ToolWithHandler {
 
 		point.userData.insert = clickedSameRoad;
 
-		this.executeAddAndSelect( point, this.currentPoint );
+		const oldObjects = this.selectionService.getAllSelectedObjects( point.constructor.name );
+
+		this.executeAddAndSelect( point, oldObjects );
 
 	}
 

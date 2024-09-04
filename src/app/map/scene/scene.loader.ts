@@ -77,6 +77,7 @@ import {
 } from '../junction-boundary/tv-junction-boundary';
 import { Log } from 'app/core/utils/log';
 import { InvalidTypeException, ModelNotFoundException } from 'app/exceptions/exceptions';
+import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parser';
 
 @Injectable( {
 	providedIn: 'root'
@@ -89,6 +90,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		private threeService: ThreeService,
 		private snackBar: SnackBar,
 		private storage: StorageService,
+		private openDriverParser: OpenDrive14Parser,
 	) {
 		super();
 	}
@@ -353,7 +355,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
-		if ( xml.lateralProfile != null ) this.parseLateralProfile( road, xml.lateralProfile );
+		if ( xml.lateralProfile != null ) this.openDriverParser.parseLateralProfile( road, xml.lateralProfile );
 
 		if ( xml.lanes != null ) this.parseLanes( road, xml.lanes );
 
