@@ -4,7 +4,6 @@
 
 import { Injectable } from "@angular/core";
 import { EmptyController } from "../../../core/controllers/empty-controller";
-import { TvJunctionSignalizationInspector } from "../../traffic-light/tv-junction-signalization.inspector";
 import { JunctionOverlay } from "app/services/junction/junction-overlay";
 
 @Injectable( {
@@ -12,10 +11,5 @@ import { JunctionOverlay } from "app/services/junction/junction-overlay";
 } )
 export class ManeuverToolJunctionOverlayController extends EmptyController<JunctionOverlay> {
 
-	showInspector ( object: JunctionOverlay ): void {
-
-		this.setInspector( new TvJunctionSignalizationInspector( object.junction ) );
-
-	}
 
 }
