@@ -90,7 +90,7 @@ export class SelectionService {
 
 			if ( selected ) selected( object );
 
-			this.selectObject( object, type );
+			this.selectNewObjectAndUnselectOld( object, type );
 
 			return;
 
@@ -99,6 +99,24 @@ export class SelectionService {
 		if ( unselected ) unselected();
 
 		this.handleDeselection();
+
+	}
+
+	handleSelectionWithoutDeselection ( e: PointerEventData, deselection?: () => void ): void {
+
+		for ( const [ type, strategy ] of this.strategies ) {
+
+			const object = strategy.handleSelection( e );
+
+			if ( !object ) continue;
+
+			this.selectNewObjectOnly( object, type );
+
+			return;
+
+		}
+
+		if ( deselection ) deselection();
 
 	}
 
@@ -194,7 +212,7 @@ export class SelectionService {
 
 	}
 
-	private selectObject ( newSelected: any, selectedType: string ): void {
+	private selectNewObjectAndUnselectOld ( newSelected: any, selectedType: string ): void {
 
 		const newSelectedPriority = this.priority.get( selectedType );
 
@@ -223,6 +241,18 @@ export class SelectionService {
 		if ( lastSelected && lastSelected === newSelected && unselectObjects.length === 0 ) return;
 
 		CommandHistory.execute( new SelectObjectCommand( newSelected, unselectObjects ) );
+
+		if ( this.debug ) Log.info( 'SelectObjectCommand fired', selectedType, newSelected, this.selectedObjects );
+
+	}
+
+	private selectNewObjectOnly ( newSelected: any, selectedType: string ): void {
+
+		const lastSelected = this.lastSelectedObject;
+
+		if ( lastSelected && lastSelected === newSelected ) return;
+
+		CommandHistory.execute( new SelectObjectCommand( newSelected ) );
 
 		if ( this.debug ) Log.info( 'SelectObjectCommand fired', selectedType, newSelected, this.selectedObjects );
 
