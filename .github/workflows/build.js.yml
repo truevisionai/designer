@@ -1,4 +1,4 @@
-name: Build
+name: Build and Release
 
 on:
     workflow_dispatch:
@@ -20,9 +20,7 @@ jobs:
                   node-version: 16
 
             - name: Install dependencies
-              run: |
-                  npm install
-                  cp third-party/sentry-cli ./sentry-cli
+              run: npm install
 
             - name: Create environment.ts file
               run: |
@@ -33,22 +31,23 @@ jobs:
               run: npm run build:prod
 
             - name: Sentry Inject Source Maps
-              run: sentry-cli sourcemaps inject ./dist
+              run: npm run sentry-inject
 
             - name: Sentry Upload Source Maps
-              run: |
-                  VERSION=$(node -p "require('./package.json').version")
-                  sentry-cli sourcemaps upload --use-artifact-bundle --release=$VERSION --validate ./dist
+              run: npm run sentry-upload
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
                   SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
                   SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
+            - name: Remove .map files
+              run: rm -rf dist/*.map
+
             - name: Install Electron dependencies
               run: npm install electron electron-builder --save-dev
 
-            - name: Build Electron app
-              run: electron-builder build --linux
+            - name: Build Electron app for Linux
+              run: npm run linux
               env:
                   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -85,22 +84,23 @@ jobs:
               run: npm run build:prod
 
             - name: Sentry Inject Source Maps
-              run: sentry-cli.exe sourcemaps inject ./dist
+              run: npm run sentry-inject
 
             - name: Sentry Upload Source Maps
-              run: |
-                  VERSION=$(node -p "require('./package.json').version")
-                  sentry-cli.exe sourcemaps upload --use-artifact-bundle --release=$VERSION --validate ./dist
+              run: npm run sentry-upload
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
                   SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
                   SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
+            - name: Remove .map files
+              run: del /s /q dist\*.map
+
             - name: Install Electron dependencies
               run: npm install electron electron-builder --save-dev
 
-            - name: Build Electron app
-              run: electron-builder build --windows
+            - name: Build Electron app for Windows
+              run: npm run windows
               env:
                   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -113,12 +113,13 @@ jobs:
                       release/*.yml
                       release/*.blockmap
 
-    upload:
+    release:
         name: "Create release and upload artifacts"
         needs:
             - build-linux
             - build-windows
         runs-on: ubuntu-latest
+
         steps:
             - name: Download Linux Artifacts
               uses: actions/download-artifact@v2
@@ -130,15 +131,18 @@ jobs:
               with:
                   name: windows-artifacts
 
-            - name: "Inspect directory after downloading artifacts"
+            - name: Inspect directory after downloading artifacts
               run: ls -alFR
 
             - name: Create GitHub release
-              uses: marvinpinto/action-automatic-releases@latest
+              uses: ncipollo/release-action@v1
               with:
-                  repo_token: ${{ secrets.GH_TOKEN }}
-                  automatic_release_tag: "nightly-${{ github.run_number }}"
-                  title: "Release ${{ github.ref_name }}"
-                  files: |
-                      linux-artifacts/*
-                      windows-artifacts/*
+                  token: ${{ secrets.GH_TOKEN }}
+                  tag: "nightly-${{ github.run_number }}"
+                  name: "Release ${{ github.ref_name }}"
+                  assets: |
+                      release/*.AppImage
+                      release/*.deb
+                      release/*.exe
+                      release/*.yml
+                      release/*.blockmap
