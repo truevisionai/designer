@@ -19,6 +19,8 @@ export class SetPositionCommand extends BaseCommand {
 
 		super();
 
+		this.object = object;
+
 		this.newPosition = newPosition.clone();
 
 		this.oldPosition = oldPosition?.clone() || object.getPosition().clone();
