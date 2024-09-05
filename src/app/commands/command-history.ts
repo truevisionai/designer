@@ -3,21 +3,17 @@
  */
 
 import { MultiCmdsCommand } from 'app/commands/multi-cmds-command';
-import { Environment } from 'app/core/utils/environment';
 import { ICommand } from './command';
+import { Log } from 'app/core/utils/log';
 
 export class CommandHistory {
 
 	private static undos: ICommand[] = [];
 	private static redos: ICommand[] = [];
 
-	private static get debug (): boolean {
-		return !Environment.production;
-	}
-
 	static clear (): void {
 
-		if ( this.debug ) console.debug( 'clear history' );
+		Log.info( 'clear history' );
 
 		this.undos.splice( 0, this.undos.length );
 
@@ -25,22 +21,16 @@ export class CommandHistory {
 
 	}
 
-	static execute ( cmd: ICommand ): void {
+	static execute ( command: ICommand ): void {
 
-		if ( this.debug ) console.debug( 'execute ', cmd );
+		Log.info( 'execute ', command.toString() );
 
-		this.undos.push( cmd );
+		this.undos.push( command );
 
-		cmd.execute();
+		command.execute();
 
 		// clear all redos on a new action
 		this.redos.splice( 0, this.redos.length );
-
-	}
-
-	static executeAll ( cmds: ICommand[] ): void {
-
-		this.execute( new MultiCmdsCommand( cmds ) );
 
 	}
 
@@ -54,18 +44,17 @@ export class CommandHistory {
 
 		if ( this.undos.length > 0 ) {
 
-			const cmd = this.undos.pop();
+			const command = this.undos.pop();
 
-			if ( this.debug ) console.debug( 'undo ', cmd );
+			Log.info( 'undo ', command.toString() );
 
-			cmd.undo();
+			command.undo();
 
-			this.redos.push( cmd );
-
+			this.redos.push( command );
 
 		} else {
 
-			if ( this.debug ) console.debug( 'nothing to undo ' );
+			Log.info( 'nothing to undo ' );
 
 		}
 
@@ -75,18 +64,31 @@ export class CommandHistory {
 
 		if ( this.redos.length > 0 ) {
 
-			const cmd = this.redos.pop();
+			const command = this.redos.pop();
 
-			if ( this.debug ) console.debug( 'redo ', cmd );
+			Log.info( 'redo ', command.toString() );
 
-			cmd.redo();
+			command.redo();
 
-			this.undos.push( cmd );
+			this.undos.push( command );
 
 		} else {
 
-			if ( this.debug ) console.debug( 'nothing to redo ' );
+			Log.info( 'nothing to redo ' );
 
 		}
 	}
+
+	static getUndosCount (): number {
+
+		return this.undos.length;
+
+	}
+
+	static getRedosCount (): number {
+
+		return this.redos.length;
+
+	}
+
 }
