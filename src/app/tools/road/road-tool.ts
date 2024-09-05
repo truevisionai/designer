@@ -13,7 +13,6 @@ import { RoadControlPoint } from 'app/objects/road/road-control-point';
 import { RoadTangentPoint } from 'app/objects/road/road-tangent-point';
 import { Vector3 } from 'three';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Asset, AssetType } from 'app/assets/asset.model';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { Commands } from 'app/commands/commands';
@@ -29,13 +28,16 @@ import { SplinePointController } from "./controllers/spline-point-controller";
 import { ToolWithHandler } from '../base-tool-v2';
 import { ExplicitSplineController } from "./controllers/explicit-spline-controller";
 import { AutoSplineController } from "./controllers/auto-spline-controller";
-import { RoadControlPointDragHandler } from "./drag-handlers/road-control-point-drag-handler.service";
-import { RoadTangentPointDragHandler } from "./drag-handlers/road-tangent-point-drag-handler.service";
-import { SplineDragHandler } from "./drag-handlers/spline-drag-handler.service";
-import { SplinePointDragHandler } from "./drag-handlers/spline-point-drag-handler.service";
+import { RoadControlPointDragHandler } from "./handlers/road-control-point-drag-handler.service";
+import { RoadTangentPointDragHandler } from "./handlers/road-tangent-point-drag-handler.service";
+import { SplineDragHandler } from "./handlers/spline-drag-handler.service";
+import { SplinePointDragHandler } from "./handlers/spline-point-drag-handler.service";
 import { RoadControlPointSelectionStrategy, RoadTangentPointSelectionStrategy, SplineControlPointSelectionStrategy } from 'app/core/strategies/select-strategies/point-selection-strategies';
 import { ConstructorFunction } from 'app/core/models/class-map';
-import { RoadStyle } from "../../assets/road-style/road-style.model";
+import { RoadStyleAssetDropHandler } from './handlers/road-style-asset-handler';
+import { EmptyVisualizer } from 'app/core/visualizers/empty-visualizer';
+import { RoadController } from './controllers/road-controller';
+import { RoadVisualizer } from './visualizers/road-visualizer';
 
 export class RoadTool extends ToolWithHandler {
 
@@ -113,6 +115,7 @@ export class RoadTool extends ToolWithHandler {
 		this.addVisualizer( RoadTangentPoint, this.tool.base.injector.get( PointVisualizer ) );
 		this.addVisualizer( AutoSpline, this.tool.base.injector.get( AutoSplineVisualizer ) );
 		this.addVisualizer( ExplicitSpline, this.tool.base.injector.get( ExplicitSplineVisualizer ) );
+		this.addVisualizer( TvRoad, this.tool.base.injector.get( RoadVisualizer ) );
 
 	}
 
@@ -123,6 +126,7 @@ export class RoadTool extends ToolWithHandler {
 		this.addController( RoadTangentPoint, this.tool.base.injector.get( RoadTangentPointController ) );
 		this.addController( AutoSpline, this.tool.base.injector.get( AutoSplineController ) );
 		this.addController( ExplicitSpline, this.tool.base.injector.get( ExplicitSplineController ) );
+		this.addController( TvRoad, this.tool.base.injector.get( RoadController ) );
 
 	}
 
@@ -133,6 +137,8 @@ export class RoadTool extends ToolWithHandler {
 		this.addDragHandler( RoadTangentPoint, this.tool.base.injector.get( RoadTangentPointDragHandler ) );
 		this.addDragHandler( AutoSpline, this.tool.base.injector.get( SplineDragHandler ) );
 		this.addDragHandler( ExplicitSpline, this.tool.base.injector.get( SplineDragHandler ) );
+
+		this.addAssetHandler( new RoadStyleAssetDropHandler() );
 
 	}
 
@@ -158,26 +164,6 @@ export class RoadTool extends ToolWithHandler {
 		super.disable();
 
 		this.tool.base.reset();
-
-	}
-
-	onAssetDropped ( asset: Asset, position: Vector3 ): void {
-
-		if ( asset.type != AssetType.ROAD_STYLE ) return;
-
-		const road = this.tool.roadService.findNearestRoad( position );
-
-		if ( !road ) return;
-
-		const roadStyle = this.tool.assetService.getInstance<RoadStyle>( asset.guid );
-
-		if ( !roadStyle ) return;
-
-		const oldValue = road.roadStyle.clone( null );
-
-		const newValue = roadStyle.clone( null );
-
-		Commands.SetValue( road, 'roadStyle', newValue, oldValue );
 
 	}
 

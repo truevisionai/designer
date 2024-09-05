@@ -31,6 +31,7 @@ import { ToolHandlers } from './tool-handlers';
 import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { BaseDragHandler } from 'app/core/drag-handlers/base-drag-handler';
 import { ConstructorFunction } from 'app/core/models/class-map';
+import { AssetDropHelper, AssetDropHandler } from './asset-drop-handler';
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -60,6 +61,8 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	private hintConfig: ToolHintConfig;
 
+	private assetDropHelper: AssetDropHelper;
+
 	protected get currentSelectedObject (): T {
 
 		if ( this.currentSelectedPoint ) {
@@ -76,6 +79,20 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		this.handlers = new ToolHandlers( this.selectionService );
 
+		this.assetDropHelper = new AssetDropHelper();
+
+	}
+
+	addAssetHandler ( handler: AssetDropHandler ): void {
+		this.assetDropHelper.addHandler( handler );
+	}
+
+	isAsssetSupported ( asset: Asset ): boolean {
+		return this.assetDropHelper.isAssetSupported( asset );
+	}
+
+	importAsset ( asset: Asset, position: Vector3 ): void {
+		this.assetDropHelper.importAsset( asset, position );
 	}
 
 	setHintConfig ( config: ToolHintConfig ): void {

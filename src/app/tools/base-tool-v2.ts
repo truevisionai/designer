@@ -8,8 +8,21 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { Log } from "../core/utils/log";
 import { KeyboardEvents } from 'app/events/keyboard-events';
 import { ConstructorFunction } from 'app/core/models/class-map';
+import { Asset } from 'app/assets/asset.model';
+import { Vector3 } from 'three';
 
 export abstract class ToolWithHandler extends BaseTool<any> {
+
+	override onAssetDropped ( asset: Asset, position: Vector3 ): void {
+
+		if ( !this.isAsssetSupported( asset ) ) {
+			this.setHint( `Asset type: ${ asset.getTypeAsString() } not supported in this tool` );
+			return;
+		}
+
+		this.importAsset( asset, position );
+
+	}
 
 	override onPointerDownSelect ( e: PointerEventData ): void {
 

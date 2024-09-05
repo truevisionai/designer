@@ -194,7 +194,21 @@ export class ToolHandlers {
 	}
 
 	updateVisuals ( object: object ): void {
-		this.getVisualizerByObject( object )?.onUpdated( object );
+
+		const visualizer = this.getVisualizerByObject( object );
+
+		if ( this.selectionService.isObjectSelected( object ) ) {
+
+			visualizer?.onRemoved( object );
+			visualizer?.onSelected( object );
+
+		} else {
+
+			visualizer?.onRemoved( object );
+			visualizer?.onDefault( object );
+
+		}
+
 	}
 
 	getControllerCount (): number {
