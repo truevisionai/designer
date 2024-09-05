@@ -31,7 +31,7 @@ module.exports = function ( config ) {
 			suppressAll: true // removes the duplicated traces
 		},
 		coverageReporter: {
-			dir: require('path').join(__dirname, 'coverage'),
+			dir: require( 'path' ).join( __dirname, 'coverage' ),
 			subdir: '.',
 			reporters: [
 				{ type: 'html' },
@@ -53,6 +53,9 @@ module.exports = function ( config ) {
 		autoWatch: true,
 		browsers: [ 'ChromeDebugging' ],
 		singleRun: false,
+		files: [
+			{ pattern: 'src/**/*.spec.ts', watched: true }
+		],
 		customLaunchers: {
 			ChromeDebugging: {
 				base: 'Chrome',
