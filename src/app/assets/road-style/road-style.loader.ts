@@ -11,7 +11,7 @@ import { TvLaneWidth } from '../../map/models/tv-lane-width';
 import { SnackBar } from '../../services/snack-bar.service';
 import { RoadStyle } from "./road-style.model";
 import { XmlElement } from "../../importers/xml.element";
-import { Asset } from 'app/core/asset/asset.model';
+import { Asset } from 'app/assets/asset.model';
 import { Injectable } from '@angular/core';
 import { StorageService } from 'app/io/storage.service';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';

@@ -8,7 +8,7 @@ import { Object3D } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { FileUtils } from '../../../io/file-utils';
 import { FileService } from '../../../io/file.service';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { TvConsole } from 'app/core/utils/console';
 
 export class ImportFbxDialogData {

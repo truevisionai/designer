@@ -7,10 +7,10 @@ import { AppConfig } from 'app/app.config';
 import { TvOrbitControls } from 'app/objects/tv-orbit-controls';
 import { Object3D, PerspectiveCamera, Scene, } from 'three';
 import { AssetPreviewService } from './asset-preview.service';
-import { Asset, AssetType } from "../../../core/asset/asset.model";
+import { Asset, AssetType } from "../../../assets/asset.model";
 import { IViewportController } from 'app/objects/i-viewport-controller';
-import { AssetService } from 'app/core/asset/asset.service';
-import { RoadStyle } from 'app/graphics/road-style/road-style.model';
+import { AssetService } from 'app/assets/asset.service';
+import { RoadStyle } from "../../../assets/road-style/road-style.model";
 
 @Component( {
 	selector: 'app-asset-preview',

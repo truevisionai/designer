@@ -6,8 +6,8 @@ import * as THREE from 'three';
 import { MathUtils, SRGBColorSpace, Texture } from 'three';
 import { TvLaneType } from '../map/models/tv-common';
 import { TvLane } from '../map/models/tv-lane';
-import { TvTexture } from "../graphics/texture/tv-texture.model";
 import { Maths } from "../utils/maths";
+import { TvTexture } from 'app/assets/texture/tv-texture.model';
 
 /**
  * @deprecated use TextureService instead

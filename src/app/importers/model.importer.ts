@@ -13,22 +13,22 @@ import { TvConsole } from "../core/utils/console";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { ThreeJsUtils } from "../core/utils/threejs-utils";
 import { CoordinateSystem } from "../services/CoordinateSystem";
-import { TvObjectAsset } from "../graphics/object/tv-object.asset";
 import { StorageService } from "../io/storage.service";
-import { AssetDatabase } from "../core/asset/asset-database";
-import { TvTextureLoader } from "../graphics/texture/tv-texture.loader";
-import { TvObjectExporter } from "../graphics/object/tv-object.exporter";
+import { AssetDatabase } from "../assets/asset-database";
 import { Object3D } from "three";
-import { TvTextureService } from "../graphics/texture/tv-texture.service";
-import { TvMaterialService } from "../graphics/material/tv-material.service";
-import { AssetService } from "../core/asset/asset.service";
-import { Asset, AssetType } from "../core/asset/asset.model";
+import { AssetService } from "../assets/asset.service";
+import { Asset, AssetType } from "../assets/asset.model";
 import { Importer } from "../core/interfaces/importer";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
-import { MaterialAsset } from 'app/graphics/material/tv-material.asset';
-import { TvMaterialLoader } from 'app/graphics/material/tv-material.loader';
-import { TvMaterialExporter } from "../graphics/material/tv-material.exporter";
 import { SnackBar } from 'app/services/snack-bar.service';
+import { MaterialAsset } from 'app/assets/material/tv-material.asset';
+import { TvMaterialExporter } from 'app/assets/material/tv-material.exporter';
+import { TvMaterialLoader } from 'app/assets/material/tv-material.loader';
+import { TvMaterialService } from 'app/assets/material/tv-material.service';
+import { TvObjectAsset } from 'app/assets/object/tv-object.asset';
+import { TvObjectExporter } from 'app/assets/object/tv-object.exporter';
+import { TvTextureLoader } from 'app/assets/texture/tv-texture.loader';
+import { TvTextureService } from 'app/assets/texture/tv-texture.service';
 
 @Injectable( {
 	providedIn: 'root'

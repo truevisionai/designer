@@ -11,14 +11,14 @@ import { TvGeometryType, TvRoadType } from '../../../map/models/tv-common';
 import { TvRoad } from '../../../map/models/tv-road.model';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { DialogService } from 'app/services/dialog/dialog.service';
-import { RoadStyle } from 'app/graphics/road-style/road-style.model';
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetService } from 'app/assets/asset.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Environment } from 'app/core/utils/environment';
 import { TvConsole } from "../../../core/utils/console";
 import { Commands } from 'app/commands/commands';
 import { AbstractSpline } from "../../../core/shapes/abstract-spline";
 import { TvRoadTypeClass } from "../../../map/models/tv-road-type.class";
+import { RoadStyle } from "../../../assets/road-style/road-style.model";
 
 export class RoadInspectorData {
 	spline: AbstractSpline;

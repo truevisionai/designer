@@ -4,8 +4,8 @@
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
-import { Asset, AssetType } from "../../../core/asset/asset.model";
-import { AssetService } from "../../../core/asset/asset.service";
+import { Asset, AssetType } from "../../../assets/asset.model";
+import { AssetService } from "../../../assets/asset.service";
 import { SnackBar } from "../../../services/snack-bar.service";
 
 @Component( {
@@ -110,7 +110,7 @@ export class GameObjectFieldComponent implements OnInit {
 		const asset = this.assetService.getAsset( guid );
 
 		if ( !asset ) {
-			this.snackBar.warn( 'Invalid asset. Asset not found' );
+			this.snackBar.warn( 'Invalid assets. Asset not found' );
 			return;
 		}
 
@@ -120,7 +120,7 @@ export class GameObjectFieldComponent implements OnInit {
 
 		} else {
 
-			this.snackBar.warn( 'Invalid asset type' );
+			this.snackBar.warn( 'Invalid assets type' );
 
 		}
 	}

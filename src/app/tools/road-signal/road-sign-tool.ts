@@ -8,7 +8,7 @@ import { TvRoad } from '../../map/models/tv-road.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadSignToolService } from './road-sign-tool.service';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { OnRoadMovingStrategy } from 'app/core/strategies/move-strategies/on-road-moving.strategy';
 import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { DepSelectRoadStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
@@ -288,12 +288,12 @@ export class RoadSignTool extends BaseTool<any> {
 		}
 
 		if ( !asset ) {
-			this.setHint( 'Drag a texture asset from the project browser' );
+			this.setHint( 'Drag a texture assets from the project browser' );
 			return;
 		}
 
 		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL && asset.type != AssetType.OBJECT && asset.type != AssetType.MODEL ) {
-			this.setHint( 'Drag a texture asset from the project browser' );
+			this.setHint( 'Drag a texture assets from the project browser' );
 			return;
 		}
 

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvDynamicTypes, TvOrientation, TvUnit } from 'app/map/models/tv-common';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
-import { Asset } from 'app/core/asset/asset.model';
+import { Asset } from 'app/assets/asset.model';
 import { RoadSignalIdService } from "./road-signal-id.service";
 
 const POLE_SIGN_ZOFFSET = 2.0;

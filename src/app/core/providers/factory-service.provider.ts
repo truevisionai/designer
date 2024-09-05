@@ -10,9 +10,9 @@ import { ILaneNodeFactory } from "../interfaces/lane-element.factory";
 import { PropPolygonFactory } from "../../map/prop-polygon/prop-polygon.factory";
 import { PropCurveFactory } from "../../map/prop-curve/prop-curve.factory";
 import { PropPointFactory } from "../../map/prop-point/prop-point.factory";
-import { AssetManager } from "../asset/asset.manager";
+import { AssetManager } from "../../assets/asset.manager";
 import { LaneHeightFactory } from 'app/map/lane-height/lane-height.factory';
-import { AssetService } from '../asset/asset.service';
+import { AssetService } from '../../assets/asset.service';
 
 @Injectable( {
 	providedIn: 'root'

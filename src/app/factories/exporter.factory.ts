@@ -3,17 +3,17 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Asset, AssetType } from "../core/asset/asset.model";
-import { TvMaterialExporter } from "../graphics/material/tv-material.exporter";
+import { Asset, AssetType } from "../assets/asset.model";
 import { AssetExporter } from "../core/interfaces/asset-exporter";
-import { TvGeometryExporter } from "../graphics/geometry/tv-geometry.exporter";
-import { RoadExporterService } from "../graphics/road-style/road-style.exporter";
-import { TvMeshExporter } from "../graphics/mesh/tv-mesh.exporter";
-import { TvObjectExporter } from "../graphics/object/tv-object.exporter";
 import { SceneExporter } from "../map/scene/scene.exporter";
 import { TvMap } from 'app/map/models/tv-map.model';
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { TvConsole } from 'app/core/utils/console';
+import { TvMaterialExporter } from "../assets/material/tv-material.exporter";
+import { TvObjectExporter } from "../assets/object/tv-object.exporter";
+import { TvGeometryExporter } from "../assets/geometry/tv-geometry.exporter";
+import { RoadExporterService } from "../assets/road-style/road-style.exporter";
+import { TvMeshExporter } from "../assets/mesh/tv-mesh.exporter";
 
 @Injectable( {
 	providedIn: 'root'
@@ -56,7 +56,7 @@ export class ExporterFactory {
 				return this.sceneExporter;
 
 			default:
-				TvConsole.error( 'Unknown asset type:' + Asset.getTypeAsString( type ) );
+				TvConsole.error( 'Unknown assets type:' + Asset.getTypeAsString( type ) );
 				return;
 		}
 

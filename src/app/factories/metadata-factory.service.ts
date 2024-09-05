@@ -3,16 +3,16 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetDatabase } from 'app/assets/asset-database';
 import { FileUtils } from 'app/io/file-utils';
 import { FileService } from 'app/io/file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
-import { Metadata, MetaImporter } from '../core/asset/metadata.model';
-import { RoadStyle } from "../graphics/road-style/road-style.model";
+import { Metadata, MetaImporter } from '../assets/metadata.model';
 import { TvRoadMarking } from "../deprecated/tv-road-marking";
+import { RoadStyle } from "../assets/road-style/road-style.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -141,7 +141,7 @@ export class MetadataFactory {
 
 			console.error( 'Error in writing .meta file', error );
 
-			this.snackBar?.error( 'Error in writing .meta file. Please Reimport the asset.', '', 5000 );
+			this.snackBar?.error( 'Error in writing .meta file. Please Reimport the assets.', '', 5000 );
 		}
 
 	}

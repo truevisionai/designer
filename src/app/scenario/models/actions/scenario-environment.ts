@@ -9,10 +9,10 @@ import { TvProperty } from '../tv-properties';
 import { Color, DataTexture, DirectionalLight, Vector3, WebGLCubeRenderTarget } from 'three';
 import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetDatabase } from 'app/assets/asset-database';
 import { DIRECTIONAL_LIGHT_COLOR, DIRECTIONAL_LIGHT_INTENSITY } from 'app/renderer/default.config';
 import { XmlElement } from "../../../importers/xml.element";
-import { TvTexture } from "../../../graphics/texture/tv-texture.model";
+import { TvTexture } from 'app/assets/texture/tv-texture.model';
 
 enum CloudState {
 	Cloudy = 'cloudy',

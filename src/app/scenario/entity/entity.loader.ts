@@ -9,7 +9,7 @@ import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/
 import { Vector3 } from 'three';
 import { XmlElement } from "../../importers/xml.element";
 import { Injectable } from '@angular/core';
-import { Asset } from 'app/core/asset/asset.model';
+import { Asset } from 'app/assets/asset.model';
 import { StorageService } from 'app/io/storage.service';
 
 @Injectable( {

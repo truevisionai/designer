@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 import { AbstractFactory } from "../core/interfaces/abstract-factory";
 
 import { Vector3 } from 'three';
-import { Asset } from 'app/core/asset/asset.model';
+import { Asset } from 'app/assets/asset.model';
 import { MapService } from 'app/services/map/map.service';
 import { InvalidArgumentException } from 'app/exceptions/exceptions';
 

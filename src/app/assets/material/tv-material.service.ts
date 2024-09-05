@@ -3,11 +3,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetDatabase } from "../../core/asset/asset-database";
+import { AssetDatabase } from "../../assets/asset-database";
 import { FileExtension } from "../../io/file-extension";
 import { MaterialAsset } from "./tv-material.asset";
-import { AssetService } from "../../core/asset/asset.service";
-import { Asset } from "../../core/asset/asset.model";
+import { AssetService } from "../../assets/asset.service";
+import { Asset } from "../../assets/asset.model";
 import { TvMaterialExporter } from "./tv-material.exporter";
 import { StorageService } from "../../io/storage.service";
 

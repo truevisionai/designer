@@ -3,7 +3,7 @@
  */
 
 import { Texture } from "three";
-import { MetaImporter } from "../../core/asset/metadata.model";
+import { MetaImporter } from "../../assets/metadata.model";
 import {
 	ColorSpace,
 	MagnificationTextureFilter,

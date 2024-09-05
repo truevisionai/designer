@@ -3,10 +3,10 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetService } from "../../core/asset/asset.service";
+import { AssetService } from "../../assets/asset.service";
 import { TextureAsset, TvTexture } from "./tv-texture.model";
 import { StorageService } from "../../io/storage.service";
-import { Asset } from "../../core/asset/asset.model";
+import { Asset } from "../../assets/asset.model";
 
 @Injectable( {
 	providedIn: 'root'

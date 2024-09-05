@@ -6,7 +6,7 @@ import { EventEmitter, Injectable, Output } from "@angular/core";
 import { TvLane } from "app/map/models/tv-lane";
 import { TvMap } from "app/map/models/tv-map.model";
 import { AbstractControlPoint } from "../objects/abstract-control-point";
-import { Asset } from "app/core/asset/asset.model";
+import { Asset } from "app/assets/asset.model";
 import { RoadCreatedEvent } from "./road/road-created-event";
 import { RoadUpdatedEvent } from "./road/road-updated-event";
 import { RoadRemovedEvent } from "./road/road-removed-event";

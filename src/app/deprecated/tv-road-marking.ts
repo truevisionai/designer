@@ -4,11 +4,12 @@
 
 import * as THREE from "three";
 import { Mesh, PlaneGeometry, Shape, Texture } from "three";
-import { AssetDatabase } from "../core/asset/asset-database";
+import { AssetDatabase } from "../assets/asset-database";
 import { ThreeJsUtils } from "../core/utils/threejs-utils";
 import { GameObject } from "../objects/game-object";
 import { MarkingTypes } from "../map/services/marking-manager";
-import { TvTexture } from "../graphics/texture/tv-texture.model";
+import { TvTexture } from "../assets/texture/tv-texture.model";
+
 
 /**
  * @deprecated

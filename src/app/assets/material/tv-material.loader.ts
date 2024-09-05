@@ -28,14 +28,14 @@ import {
 	Vector3,
 	Vector4
 } from 'three';
-import { Asset } from 'app/core/asset/asset.model';
+import { Asset } from 'app/assets/asset.model';
 import { StorageService } from 'app/io/storage.service';
 import { Injectable } from '@angular/core';
 import { MaterialAsset } from "./tv-material.asset";
 import { TvTextureService } from "../texture/tv-texture.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
 import { TvTexture } from '../texture/tv-texture.model';
-import { AssetService } from "../../core/asset/asset.service";
+import { AssetService } from "../../assets/asset.service";
 import { isObject } from "rxjs/internal-compatibility";
 import { COLOR } from 'app/views/shared/utils/colors.service';
 

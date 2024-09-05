@@ -43,7 +43,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Surface } from 'app/map/surface/surface.model';
 import { XMLParser } from 'fast-xml-parser';
 import { Euler, Object3D, Vector2, Vector3 } from 'three';
-import { AssetDatabase } from '../../core/asset/asset-database';
+import { AssetDatabase } from '../../assets/asset-database';
 import { TvConsole } from '../../core/utils/console';
 import { SnackBar } from '../../services/snack-bar.service';
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
@@ -60,7 +60,7 @@ import { SplineSegment, SplineSegmentType } from "../../core/shapes/spline-segme
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { StorageService } from "../../io/storage.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
-import { Asset } from 'app/core/asset/asset.model';
+import { Asset } from 'app/assets/asset.model';
 import { SplineControlPoint } from "../../objects/road/spline-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { TvLineGeometry } from '../models/geometries/tv-line-geometry';

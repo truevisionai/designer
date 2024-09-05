@@ -3,13 +3,13 @@
  */
 
 import { Injectable, Injector } from '@angular/core';
-import { AssetType } from "../core/asset/asset.model";
-import { TvMaterialLoader } from "../graphics/material/tv-material.loader";
-import { TvTextureLoader } from "../graphics/texture/tv-texture.loader";
-import { TvObjectLoader } from "../graphics/object/tv-object.loader";
+import { AssetType } from "../assets/asset.model";
 import { AssetLoader } from "../core/interfaces/asset.loader";
-import { RoadStyleLoader } from "../graphics/road-style/road-style.loader";
-import { SceneLoader } from 'app/map/scene/scene.loader';
+import { TvMaterialLoader } from "../assets/material/tv-material.loader";
+import { TvObjectLoader } from "../assets/object/tv-object.loader";
+import { SceneLoader } from "../map/scene/scene.loader";
+import { TvTextureLoader } from "../assets/texture/tv-texture.loader";
+import { RoadStyleLoader } from "../assets/road-style/road-style.loader";
 
 
 @Injectable( {
@@ -83,7 +83,7 @@ export class LoaderFactory {
 				break;
 
 			default:
-				console.error( 'Loader not found for asset type', type );
+				console.error( 'Loader not found for assets type', type );
 				break;
 
 		}

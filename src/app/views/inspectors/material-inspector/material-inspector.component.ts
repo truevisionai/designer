@@ -15,13 +15,13 @@ import {
 	MeshStandardMaterial
 } from 'three';
 import { AssetPreviewService } from '../asset-preview/asset-preview.service';
-import { AssetService } from "../../../core/asset/asset.service";
-import { TvMaterialService } from "../../../graphics/material/tv-material.service";
-import { Asset, AssetType } from 'app/core/asset/asset.model';
-import { TvStandardMaterial } from 'app/graphics/material/tv-standard-material';
+import { AssetService } from "../../../assets/asset.service";
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { MapEvents } from "../../../events/map-events";
 import { Subscription } from "rxjs";
-import { TvTextureService } from 'app/graphics/texture/tv-texture.service';
+import { TvMaterialService } from "../../../assets/material/tv-material.service";
+import { TvStandardMaterial } from "../../../assets/material/tv-standard-material";
+import { TvTextureService } from "../../../assets/texture/tv-texture.service";
 
 @Component( {
 	selector: 'app-material-inspector',

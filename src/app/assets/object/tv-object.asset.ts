@@ -3,7 +3,7 @@
  */
 
 import { Object3D } from 'three';
-import { MetaImporter } from "../../core/asset/metadata.model";
+import { MetaImporter } from "../../assets/metadata.model";
 
 export class TvObjectAsset {
 

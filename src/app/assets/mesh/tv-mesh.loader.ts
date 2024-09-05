@@ -5,7 +5,7 @@
 import { Injectable } from "@angular/core";
 import { BufferGeometry, ObjectLoader } from "three";
 import { TvMesh } from "./tv-mesh";
-import { AssetDatabase } from "../../core/asset/asset-database";
+import { AssetDatabase } from "../../assets/asset-database";
 import { TvStandardMaterial } from "../material/tv-standard-material";
 
 @Injectable( {

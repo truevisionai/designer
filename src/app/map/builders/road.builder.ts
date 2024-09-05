@@ -19,7 +19,6 @@ import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
 import { TvMap } from '../models/tv-map.model';
-import { TvMaterialService } from 'app/graphics/material/tv-material.service';
 import { TvRoadObject, TvRoadObjectType } from "../models/objects/tv-road-object";
 import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
 import { RoadObjectBuilder } from "../road-object/road-object.builder";
@@ -28,6 +27,7 @@ import { Log } from "../../core/utils/log";
 import { InvalidRoadLength, NoGeometriesFound, ValidationException } from "../../exceptions/exceptions";
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { RoadObjectValidator } from '../road-object/road-object-validator';
+import { TvMaterialService } from "../../assets/material/tv-material.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -292,7 +292,7 @@ export class RoadBuilder {
 
 	private getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
 
-		// if guid is set use the material from the asset database
+		// if guid is set use the material from the assets database
 		if ( lane.threeMaterialGuid ) return this.materialService.getMaterial( lane.threeMaterialGuid )?.material;
 
 		let material: Material;

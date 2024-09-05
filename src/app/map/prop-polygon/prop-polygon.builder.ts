@@ -25,8 +25,8 @@ import { TvTransform } from '../models/tv-transform';
 import { PropPoint } from "../prop-point/prop-point.model";
 
 import earcut from 'earcut';
-import { AssetType } from 'app/core/asset/asset.model';
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetType } from 'app/assets/asset.model';
+import { AssetService } from 'app/assets/asset.service';
 
 interface IChildAndMesh {
 	mesh: Mesh;

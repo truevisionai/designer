@@ -16,7 +16,7 @@ import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, ShapeGeometry 
 import { TvConsole } from 'app/core/utils/console';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { AssetLoader } from "../core/interfaces/asset.loader";
-import { Asset } from "../core/asset/asset.model";
+import { Asset } from "../assets/asset.model";
 
 /**
  * @deprecated

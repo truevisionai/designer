@@ -3,7 +3,7 @@
  */
 
 import { TvTexture } from "../texture/tv-texture.model";
-import { MetaImporter } from "../../core/asset/metadata.model";
+import { MetaImporter } from "../../assets/metadata.model";
 import { Material } from "three";
 
 export class MaterialAsset {

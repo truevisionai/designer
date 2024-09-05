@@ -4,7 +4,7 @@
 
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { PointMarkingToolService } from './point-marking-tool.service';
 import { AppInspector } from 'app/core/inspector';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
@@ -365,12 +365,12 @@ export class PointMarkingTool extends BaseTool<any> {
 		}
 
 		if ( !asset ) {
-			this.setHint( 'Drag a texture or material asset from the project browser' );
+			this.setHint( 'Drag a texture or material assets from the project browser' );
 			return;
 		}
 
 		if ( asset.type != AssetType.TEXTURE && asset.type != AssetType.MATERIAL ) {
-			this.setHint( 'Drag a texture or material asset from the project browser' );
+			this.setHint( 'Drag a texture or material assets from the project browser' );
 			return;
 		}
 

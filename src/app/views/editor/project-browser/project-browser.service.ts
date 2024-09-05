@@ -3,9 +3,9 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
-import { Asset, AssetType } from '../../../core/asset/asset.model';
+import { Asset, AssetType } from '../../../assets/asset.model';
 import { StorageService } from "../../../io/storage.service";
-import { Metadata } from "../../../core/asset/metadata.model";
+import { Metadata } from "../../../assets/metadata.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -79,7 +79,7 @@ export class ProjectBrowserService {
 
 			// console.error( error, file );
 
-			// SnackBar.error( "Error in reading .meta file. Please Reimport the asset.", "", 5000 );
+			// SnackBar.error( "Error in reading .meta file. Please Reimport the assets.", "", 5000 );
 		}
 
 	}

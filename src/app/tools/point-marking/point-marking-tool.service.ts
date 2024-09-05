@@ -7,14 +7,14 @@ import { BaseToolService } from '../base-tool.service';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadObjectService } from '../../map/road-object/road-object.service';
 import { Vector3 } from 'three';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
-import { AssetManager } from 'app/core/asset/asset.manager';
+import { AssetManager } from 'app/assets/asset.manager';
 import { TvOrientation } from 'app/map/models/tv-common';
-import { TvTextureService } from 'app/graphics/texture/tv-texture.service';
 import { TvConsole } from 'app/core/utils/console';
 import { PointMarkingToolDebugger } from "./point-marking-tool.debugger";
-import { AssetService } from "../../core/asset/asset.service";
+import { AssetService } from "../../assets/asset.service";
+import { TvTextureService } from "../../assets/texture/tv-texture.service";
 
 @Injectable( {
 	providedIn: 'root'

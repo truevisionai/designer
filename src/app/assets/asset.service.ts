@@ -5,20 +5,20 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { VehicleCategory } from 'app/scenario/models/tv-enums';
-import { TvStandardMaterial } from 'app/graphics/material/tv-standard-material';
 import { TvMap } from 'app/map/models/tv-map.model';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { AssetDatabase } from './asset-database';
-import { TvConsole } from '../utils/console';
+import { TvConsole } from '../core/utils/console';
 import { MathUtils, Object3D } from 'three';
-import { RoadStyle } from '../../graphics/road-style/road-style.model';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { StorageService } from 'app/io/storage.service';
 import { FileUtils } from 'app/io/file-utils';
-import { ExporterFactory } from "../../factories/exporter.factory";
+import { ExporterFactory } from "../factories/exporter.factory";
 import { Metadata } from "./metadata.model";
-import { MaterialAsset } from "../../graphics/material/tv-material.asset";
-import { TvObjectAsset } from 'app/graphics/object/tv-object.asset';
+import { TvObjectAsset } from "./object/tv-object.asset";
+import { MaterialAsset } from "./material/tv-material.asset";
+import { RoadStyle } from "./road-style/road-style.model";
+import { TvStandardMaterial } from "./material/tv-standard-material";
 
 @Injectable( {
 	providedIn: 'root'
@@ -206,7 +206,7 @@ export class AssetService {
 
 		if ( type == AssetType.TEXTURE ) {
 
-			// for texture we dont need to update the asset file
+			// for texture we dont need to update the assets file
 			// only metadata file
 
 		} else {
@@ -241,7 +241,7 @@ export class AssetService {
 
 			clone.guid = clone.uuid = MathUtils.generateUUID();
 
-			// const newPath = asset.metadata.path.replace( asset.name, clone.name );
+			// const newPath = assets.metadata.path.replace( assets.name, clone.name );
 
 			// const data = this.createMaterialAsset( newPath, clone );
 
@@ -253,7 +253,7 @@ export class AssetService {
 
 		if ( asset.children.length > 0 ) {
 
-			this.snackBar.warn( 'Cannot rename folder or asset with children' );
+			this.snackBar.warn( 'Cannot rename folder or assets with children' );
 
 			return;
 		}
@@ -288,7 +288,7 @@ export class AssetService {
 
 		if ( asset.children.length > 0 ) {
 
-			this.snackBar.warn( 'Cannot delete folder or asset with children' );
+			this.snackBar.warn( 'Cannot delete folder or assets with children' );
 
 			return false;
 		}

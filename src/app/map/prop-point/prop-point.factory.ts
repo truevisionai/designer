@@ -4,7 +4,7 @@
 
 import { AbstractFactory } from "../../core/interfaces/abstract-factory";
 import { PropInstance } from "./prop-instance.object";
-import { Asset, AssetType } from "../../core/asset/asset.model";
+import { Asset, AssetType } from "../../assets/asset.model";
 import { Object3D, Vector3 } from "three";
 
 export class PropPointFactory extends AbstractFactory<PropInstance> {

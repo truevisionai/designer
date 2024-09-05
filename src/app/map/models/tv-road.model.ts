@@ -20,12 +20,12 @@ import { TvRoadObject } from './objects/tv-road-object';
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
 import { TvUtils } from './tv-utils';
-import { RoadStyle } from "../../graphics/road-style/road-style.model";
 import { TvLane } from './tv-lane';
 import { TvObjectContainer } from "./objects/tv-object-container";
 import { TrafficRule } from './traffic-rule';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
+import { RoadStyle } from 'app/assets/road-style/road-style.model';
 
 export class TvRoad {
 

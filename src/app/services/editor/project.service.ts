@@ -4,10 +4,10 @@
 
 import { Injectable } from '@angular/core';
 import { TvElectronService } from '../tv-electron.service';
-import { Asset } from 'app/core/asset/asset.model';
-import { Metadata } from 'app/core/asset/metadata.model';
+import { Asset } from 'app/assets/asset.model';
+import { Metadata } from 'app/assets/metadata.model';
 import { StorageService } from 'app/io/storage.service';
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetService } from 'app/assets/asset.service';
 import { MetadataFactory } from 'app/factories/metadata-factory.service';
 import { Log } from 'app/core/utils/log';
 

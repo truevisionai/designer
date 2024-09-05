@@ -4,10 +4,10 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IComponent } from 'app/objects/game-object';
-import { Asset } from 'app/core/asset/asset.model';
-import { TvTexture } from "../../../graphics/texture/tv-texture.model";
-import { TvTextureService } from "../../../graphics/texture/tv-texture.service";
+import { Asset } from 'app/assets/asset.model';
 import { Commands } from 'app/commands/commands';
+import { TvTexture } from "../../../assets/texture/tv-texture.model";
+import { TvTextureService } from "../../../assets/texture/tv-texture.service";
 
 @Component( {
 	selector: 'app-texture-inspector',

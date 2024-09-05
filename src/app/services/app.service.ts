@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { EditorService } from './editor/editor.service';
 import { SceneService } from './scene.service';
 import { RoadService } from './road/road.service';
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetService } from 'app/assets/asset.service';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 
 @Injectable( {

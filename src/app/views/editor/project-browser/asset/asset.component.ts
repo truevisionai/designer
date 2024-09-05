@@ -21,9 +21,9 @@ import { SnackBar } from 'app/services/snack-bar.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
 import { TvConsole } from '../../../../core/utils/console';
-import { Asset, AssetType } from '../../../../core/asset/asset.model';
+import { Asset, AssetType } from '../../../../assets/asset.model';
 import { ProjectBrowserService } from '../project-browser.service';
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetService } from 'app/assets/asset.service';
 import { MapEvents } from 'app/events/map-events';
 
 @Component( {
@@ -298,7 +298,7 @@ export class AssetComponent implements OnInit {
 
 		} catch ( error ) {
 
-			TvConsole.error( "Some error occured in moving asset" );
+			TvConsole.error( "Some error occured in moving assets" );
 
 			this.snackBar.error( error );
 

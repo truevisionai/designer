@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Asset } from "app/core/asset/asset.model";
+import { Asset } from "app/assets/asset.model";
 import { Vector3 } from "three";
-import { AssetManager } from "../asset/asset.manager";
+import { AssetManager } from "../../assets/asset.manager";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
-import { AssetService } from "../asset/asset.service";
+import { AssetService } from "../../assets/asset.service";
 
 export abstract class AbstractFactory<T> {
 

@@ -7,7 +7,7 @@ import { TvLaneHeight } from "./lane-height.model";
 import { Vector3 } from "three";
 import { Injectable } from "@angular/core";
 import { TvLane } from "../models/tv-lane";
-import { Asset } from "app/core/asset/asset.model";
+import { Asset } from "app/assets/asset.model";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { LanePointNode } from "../../objects/lane-node";
 

@@ -3,7 +3,7 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Asset } from '../../../../core/asset/asset.model';
+import { Asset } from '../../../../assets/asset.model';
 import { ProjectBrowserService } from '../project-browser.service';
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 

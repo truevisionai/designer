@@ -29,14 +29,14 @@ import { ExtrudeService } from '../../factories/extrude.service';
 import { TvObjectVertexLocal } from "../models/objects/tv-object-vertex-local";
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
 import { MeshBuilder } from "../../core/interfaces/mesh.builder";
-import { AssetService } from "../../core/asset/asset.service";
-import { TvMaterialService } from "../../graphics/material/tv-material.service";
-import { TvTextureService } from "../../graphics/texture/tv-texture.service";
-import { AssetType } from "../../core/asset/asset.model";
+import { AssetService } from "../../assets/asset.service";
+import { AssetType } from "../../assets/asset.model";
 import { COLOR } from "../../views/shared/utils/colors.service";
 import { TvObjectRepeat } from "../models/objects/tv-object-repeat";
 import { Log } from "../../core/utils/log";
 import { RoadGeometryService } from "../../services/road/road-geometry.service";
+import { TvMaterialService } from "../../assets/material/tv-material.service";
+import { TvTextureService } from "../../assets/texture/tv-texture.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -271,7 +271,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		if ( !roadObject.assetGuid ) {
 
-			TvConsole.error( 'Tree object with asset guid not implemented yet' );
+			TvConsole.error( 'Tree object with assets guid not implemented yet' );
 
 			return new Object3D();
 		}

@@ -7,7 +7,7 @@ import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { TvObjectMarking } from "../../map/models/tv-object-marking";
 import { TvColors, TvRoadMarkWeights } from "../../map/models/tv-common";
 import { COLOR } from "app/views/shared/utils/colors.service";
-import { AssetDatabase } from "app/core/asset/asset-database";
+import { AssetDatabase } from "app/assets/asset-database";
 import { Commands } from "app/commands/commands";
 
 export class CrosswalkInspector {

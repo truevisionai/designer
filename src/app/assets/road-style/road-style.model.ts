@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MetaImporter } from "../../core/asset/metadata.model";
+import { MetaImporter } from "../../assets/metadata.model";
 import { TvLaneOffset } from "../../map/models/tv-lane-offset";
 import { TvLaneSection } from "../../map/models/tv-lane-section";
 import { TvRoad } from "../../map/models/tv-road.model";

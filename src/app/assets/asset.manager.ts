@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { Asset } from "app/core/asset/asset.model";
+import { Asset } from "app/assets/asset.model";
 
 @Injectable( {
 	providedIn: 'root'

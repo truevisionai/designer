@@ -4,21 +4,21 @@
 
 import { Injectable } from '@angular/core';
 import { ProjectBrowserService } from '../project-browser/project-browser.service';
-import { Asset, AssetType } from '../../../core/asset/asset.model';
+import { Asset, AssetType } from '../../../assets/asset.model';
 import { DeprecatedModelLoader } from 'app/loaders/model.loader';
-import { RoadStyleLoader } from 'app/graphics/road-style/road-style.loader';
 import { EditorSettings } from 'app/services/editor/editor.settings';
 import { BufferGeometryLoader } from 'three';
 import { TvConsole } from 'app/core/utils/console';
-import { TvObjectLoader } from "../../../graphics/object/tv-object.loader";
 import { StorageService } from "../../../io/storage.service";
-import { TvTextureService } from "../../../graphics/texture/tv-texture.service";
-import { TvMaterialService } from "../../../graphics/material/tv-material.service";
-import { AssetService } from "../../../core/asset/asset.service";
-import { AssetDatabase } from "../../../core/asset/asset-database";
+import { AssetService } from "../../../assets/asset.service";
+import { AssetDatabase } from "../../../assets/asset-database";
 import { LoaderFactory } from "../../../factories/loader.factory";
-import { MaterialAsset } from "../../../graphics/material/tv-material.asset";
 import { EntityLoader } from 'app/scenario/entity/entity.loader';
+import { RoadStyleLoader } from "../../../assets/road-style/road-style.loader";
+import { TvObjectLoader } from "../../../assets/object/tv-object.loader";
+import { TvTextureService } from "../../../assets/texture/tv-texture.service";
+import { TvMaterialService } from "../../../assets/material/tv-material.service";
+import { MaterialAsset } from "../../../assets/material/tv-material.asset";
 
 @Injectable( {
 	providedIn: 'root'
@@ -83,7 +83,7 @@ export class LoadingService {
 
 			folder.children.push( asset );
 
-			// this.logs.push( 'Loading ' + asset.path );
+			// this.logs.push( 'Loading ' + assets.path );
 
 		} );
 

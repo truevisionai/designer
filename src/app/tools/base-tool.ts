@@ -12,7 +12,7 @@ import { ToolType } from './tool-types.enum';
 import { CommandHistory } from 'app/commands/command-history';
 import { AddObjectCommand } from "../commands/add-object-command";
 import { SelectObjectCommand } from "../commands/select-object-command";
-import { Asset } from 'app/core/asset/asset.model';
+import { Asset } from 'app/assets/asset.model';
 import { IDebugger } from "../core/interfaces/debug.service";
 import { BaseDataService } from 'app/core/interfaces/data.service';
 import { DebugState } from "../services/debug/debug-state";
@@ -440,7 +440,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		if ( !this.objectFactory ) {
 
-			this.setHint( 'Importing asset is not supported in this tool.' );
+			this.setHint( 'Importing assets is not supported in this tool.' );
 
 			return;
 		}
@@ -449,7 +449,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		if ( !object ) {
 
-			this.setHint( 'Importing ' + asset.getTypeAsString() + ' asset is not supported in this tool.' );
+			this.setHint( 'Importing ' + asset.getTypeAsString() + ' assets is not supported in this tool.' );
 
 			return;
 		}

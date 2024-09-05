@@ -18,7 +18,7 @@ import { TvElectronService } from './tv-electron.service';
 import { DialogService } from './dialog/dialog.service';
 import { MapService } from "./map/map.service";
 import { StorageService } from 'app/io/storage.service';
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetService } from 'app/assets/asset.service';
 import { FileUtils } from 'app/io/file-utils';
 import { ProjectService } from './editor/project.service';
 import { SceneBuilderService } from './scene-builder.service';

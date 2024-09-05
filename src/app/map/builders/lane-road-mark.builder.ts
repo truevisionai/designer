@@ -16,7 +16,7 @@ import { TvRoad } from '../models/tv-road.model';
 import { Vertex } from '../models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { Injectable } from '@angular/core';
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetDatabase } from 'app/assets/asset-database';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvRoadObjectType } from "../models/objects/tv-road-object";
 import { RoadService } from "../../services/road/road.service";

@@ -6,7 +6,6 @@ import { RoadNode } from 'app/objects/road/road-node';
 import { TvContactPoint, TvLaneSide, TvLaneType, TvRoadType } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { RoadStyleManager } from 'app/graphics/road-style/road-style.manager';
 import { Vector2, Vector3 } from 'three';
 import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
@@ -19,6 +18,7 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { MapService } from "../services/map/map.service";
 import { ControlPointFactory } from "./control-point.factory";
+import { RoadStyleManager } from 'app/assets/road-style/road-style.manager';
 
 @Injectable( {
 	providedIn: 'root'

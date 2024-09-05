@@ -5,12 +5,12 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { AssetPreviewService } from '../../inspectors/asset-preview/asset-preview.service';
 import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
-import { AssetService } from "../../../core/asset/asset.service";
-import { TvMaterialService } from "../../../graphics/material/tv-material.service";
-import { MaterialAsset } from "../../../graphics/material/tv-material.asset";
-import { Asset, AssetType } from "../../../core/asset/asset.model";
+import { AssetService } from "../../../assets/asset.service";
+import { Asset, AssetType } from "../../../assets/asset.model";
 import { SnackBar } from "../../../services/snack-bar.service";
 import { TvConsole } from 'app/core/utils/console';
+import { MaterialAsset } from "../../../assets/material/tv-material.asset";
+import { TvMaterialService } from "../../../assets/material/tv-material.service";
 
 @Component( {
 	selector: 'app-material-field',
@@ -123,12 +123,12 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 		const asset = this.assetService.getAsset( guid );
 
 		if ( !asset ) {
-			this.snackBar.warn( 'Invalid asset. Asset not found' );
+			this.snackBar.warn( 'Invalid assets. Asset not found' );
 			return;
 		}
 
 		if ( asset.type != AssetType.MATERIAL ) {
-			this.snackBar.warn( 'Invalid asset. Not a material' );
+			this.snackBar.warn( 'Invalid assets. Not a material' );
 			return;
 		}
 

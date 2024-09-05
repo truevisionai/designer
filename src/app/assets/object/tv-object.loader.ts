@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetDatabase } from 'app/assets/asset-database';
 import {
 	AmbientLight, Bone,
 	BufferGeometry,
@@ -38,7 +38,7 @@ import { TvStandardMaterial } from '../material/tv-standard-material';
 import { TvObjectAsset } from './tv-object.asset';
 import { TvMesh } from '../mesh/tv-mesh';
 import { Injectable } from "@angular/core";
-import { Asset } from "../../core/asset/asset.model";
+import { Asset } from "../../assets/asset.model";
 import { StorageService } from "../../io/storage.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
 

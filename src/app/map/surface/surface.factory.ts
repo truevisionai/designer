@@ -6,8 +6,8 @@ import { CatmullRomSpline } from "app/core/shapes/catmull-rom-spline";
 import { AbstractFactory } from "app/core/interfaces/abstract-factory";
 import { Surface } from "app/map/surface/surface.model";
 import { Injectable } from "@angular/core";
-import { Asset, AssetType } from "app/core/asset/asset.model";
-import { AssetDatabase } from "app/core/asset/asset-database";
+import { Asset, AssetType } from "app/assets/asset.model";
+import { AssetDatabase } from "app/assets/asset-database";
 import { Vector3 } from "three";
 
 @Injectable( {

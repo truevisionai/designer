@@ -2,14 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Metadata } from 'app/core/asset/metadata.model';
-import { FileUtils } from '../../io/file-utils';
-import { Environment } from '../utils/environment';
-import { TextureAsset } from "../../graphics/texture/tv-texture.model";
-import { MaterialAsset } from "../../graphics/material/tv-material.asset";
+import { Metadata } from 'app/assets/metadata.model';
+import { FileUtils } from '../io/file-utils';
 import { Object3D } from "three";
-import { TvObjectAsset } from "../../graphics/object/tv-object.asset";
-import { TvConsole } from "../utils/console";
+import { TvConsole } from "../core/utils/console";
+import { TextureAsset } from "./texture/tv-texture.model";
+import { MaterialAsset } from "./material/tv-material.asset";
+import { TvObjectAsset } from "./object/tv-object.asset";
 
 export class AssetDatabase {
 

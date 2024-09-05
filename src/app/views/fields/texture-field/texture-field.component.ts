@@ -3,13 +3,13 @@
  */
 
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { Metadata } from 'app/core/asset/metadata.model';
+import { Metadata } from 'app/assets/metadata.model';
 import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { TvTextureService } from "../../../graphics/texture/tv-texture.service";
-import { TvTexture } from "../../../graphics/texture/tv-texture.model";
-import { AssetService } from "../../../core/asset/asset.service";
-import { AssetType } from "../../../core/asset/asset.model";
+import { AssetService } from "../../../assets/asset.service";
+import { AssetType } from "../../../assets/asset.model";
+import { TvTextureService } from "../../../assets/texture/tv-texture.service";
+import { TvTexture } from "../../../assets/texture/tv-texture.model";
 
 @Component( {
 	selector: 'app-texture-field',
@@ -117,7 +117,7 @@ export class TextureFieldComponent extends AbstractFieldComponent<string> implem
 		const asset = this.assetService.getAsset( guid );
 
 		if ( !asset ) {
-			this.snackBar.warn( 'Invalid asset. Asset not found' );
+			this.snackBar.warn( 'Invalid assets. Asset not found' );
 			return;
 		}
 

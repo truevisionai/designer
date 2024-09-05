@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetType } from "../core/asset/asset.model";
-import { TvTextureFactory } from "../graphics/texture/tv-texture.factory";
-import { TvMaterialFactory } from "../graphics/material/tv-material.factory";
+import { AssetType } from "../assets/asset.model";
+import { TvTextureFactory } from "../assets/texture/tv-texture.factory";
+import { TvMaterialFactory } from "../assets/material/tv-material.factory";
 
 export interface AssetFactory {
 

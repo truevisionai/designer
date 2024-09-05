@@ -8,7 +8,7 @@ import { ToolManager } from 'app/managers/tool-manager';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { Vector3 } from 'three';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { LoaderFactory } from 'app/factories/loader.factory';
 import { TvMap } from 'app/map/models/tv-map.model';
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetDatabase } from 'app/assets/asset-database';
 import { PropManager } from 'app/managers/prop-manager';
 import { PropInstance } from '../../map/prop-point/prop-instance.object';
 import { ToolType } from '../tool-types.enum';

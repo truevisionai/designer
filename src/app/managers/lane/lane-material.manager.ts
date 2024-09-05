@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { TvMaterialService } from "app/graphics/material/tv-material.service";
+import { TvMaterialService } from "app/assets/material/tv-material.service";
 import { TvLaneType } from "app/map/models/tv-common";
 import { TvLane } from "app/map/models/tv-lane";
 import { TvLaneSection } from "app/map/models/tv-lane-section";

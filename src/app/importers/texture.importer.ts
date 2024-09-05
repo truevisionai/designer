@@ -6,15 +6,15 @@ import { Injectable } from '@angular/core';
 import { FileUtils } from "../io/file-utils";
 import { TvConsole } from "../core/utils/console";
 import { RepeatWrapping, TextureLoader, UVMapping } from "three";
-import { TextureAsset, TvTexture } from "../graphics/texture/tv-texture.model";
 import { StorageService } from "../io/storage.service";
-import { TvTextureService } from "../graphics/texture/tv-texture.service";
-import { AssetService } from "../core/asset/asset.service";
-import { Asset, AssetType } from "../core/asset/asset.model";
+import { AssetService } from "../assets/asset.service";
+import { Asset, AssetType } from "../assets/asset.model";
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
 import { SnackBar } from "../services/snack-bar.service";
 import { FileExtension } from "../io/file-extension";
 import { Importer } from "../core/interfaces/importer";
+import { TextureAsset, TvTexture } from "../assets/texture/tv-texture.model";
+import { TvTextureService } from "../assets/texture/tv-texture.service";
 
 @Injectable( {
 	providedIn: 'root'

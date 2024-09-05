@@ -8,8 +8,8 @@ import { Maths } from "app/utils/maths";
 import { Group, Object3D, Vector3 } from "three";
 import { MeshBuilder } from "../../core/interfaces/mesh.builder";
 import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
-import { AssetService } from "app/core/asset/asset.service";
-import { Asset, AssetType } from "app/core/asset/asset.model";
+import { AssetService } from "app/assets/asset.service";
+import { Asset, AssetType } from "app/assets/asset.model";
 import { SplineBuilder } from "../../services/spline/spline.builder";
 
 @Injectable( {

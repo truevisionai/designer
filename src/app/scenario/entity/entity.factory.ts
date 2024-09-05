@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/core/asset/asset-database';
+import { AssetDatabase } from 'app/assets/asset-database';
 import { ActionFactory } from 'app/scenario/builders/action-factory';
 import { DefaultVehicleController } from 'app/scenario/controllers/default-vehicle-controller';
 import { VehicleEntity } from 'app/scenario/models/entities/vehicle-entity';

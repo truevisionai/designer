@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Asset } from "../asset/asset.model";
+import { Asset } from "../../assets/asset.model";
 
 export interface AssetLoader {
 

@@ -21,12 +21,12 @@ import {
 import { ApiService } from '../../services/api.service';
 import { TvOrientation } from 'app/map/models/tv-common';
 import { TextObjectService } from 'app/services/text-object.service';
-import { TvTextureService } from "../../graphics/texture/tv-texture.service";
-import { AssetService } from 'app/core/asset/asset.service';
-import { AssetType } from 'app/core/asset/asset.model';
+import { AssetService } from 'app/assets/asset.service';
+import { AssetType } from 'app/assets/asset.model';
 import { SignalDatabase } from './road-signal.database';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadGeometryService } from "../../services/road/road-geometry.service";
+import { TvTextureService } from "../../assets/texture/tv-texture.service";
 
 @Injectable( {
 	providedIn: 'root'

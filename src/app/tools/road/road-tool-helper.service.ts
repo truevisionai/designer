@@ -12,7 +12,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadNode } from 'app/objects/road/road-node';
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetService } from 'app/assets/asset.service';
 import { RoadToolDebugger } from "./road-tool.debugger";
 import { TvRoadLink } from 'app/map/models/tv-road-link';
 import { RoadFactory } from 'app/factories/road-factory.service';

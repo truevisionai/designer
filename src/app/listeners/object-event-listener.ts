@@ -3,19 +3,19 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AssetManager } from "app/core/asset/asset.manager";
-import { AssetService } from "app/core/asset/asset.service";
-import { RoadStyle } from "app/graphics/road-style/road-style.model";
+import { AssetManager } from "app/assets/asset.manager";
+import { AssetService } from "app/assets/asset.service";
 import { MapEvents } from "app/events/map-events";
 import { PropManager } from "app/managers/prop-manager";
-import { RoadStyleManager } from "app/graphics/road-style/road-style.manager";
-import { TvStandardMaterial } from "app/graphics/material/tv-standard-material";
 import { ToolManager } from "app/managers/tool-manager";
-import { Asset, AssetType } from "app/core/asset/asset.model";
+import { Asset, AssetType } from "app/assets/asset.model";
 import { AppInspector } from "../core/inspector";
 import { DynamicInspectorComponent } from "../views/inspectors/dynamic-inspector/dynamic-inspector.component";
 import { AssetInspectorComponent } from "../views/inspectors/asset-inspector/asset-inspector.component";
-import { MaterialAsset } from "../graphics/material/tv-material.asset";
+import { TvStandardMaterial } from "../assets/material/tv-standard-material";
+import { RoadStyleManager } from "../assets/road-style/road-style.manager";
+import { RoadStyle } from "../assets/road-style/road-style.model";
+import { MaterialAsset } from "../assets/material/tv-material.asset";
 
 @Injectable( {
 	providedIn: 'root'

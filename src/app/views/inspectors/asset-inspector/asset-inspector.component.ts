@@ -3,11 +3,11 @@
  */
 
 import { Component, ComponentFactoryResolver, Input, OnDestroy, OnInit } from '@angular/core';
-import { Asset } from 'app/core/asset/asset.model';
+import { Asset } from 'app/assets/asset.model';
 import { DynamicInspectorComponent } from '../dynamic-inspector/dynamic-inspector.component';
 
 @Component( {
-	selector: 'app-asset-inspector',
+	selector: 'app-assets-inspector',
 	templateUrl: './asset-inspector.component.html',
 	styleUrls: [ './asset-inspector.component.scss' ]
 } )

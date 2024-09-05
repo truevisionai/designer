@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { ScenarioService } from 'app/scenario/services/scenario.service';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { LoaderFactory } from 'app/factories/loader.factory';
 
 @Injectable( {

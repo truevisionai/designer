@@ -5,7 +5,6 @@
 import { Injectable } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { IViewportController } from 'app/objects/i-viewport-controller';
-import { TvObjectAsset } from 'app/graphics/object/tv-object.asset';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import * as THREE from 'three';
 import {
@@ -32,14 +31,15 @@ import {
 	DEFAULT_DIRECTIONAL_LIGHT,
 	DIRECTIONAL_LIGHT_POSITION
 } from 'app/renderer/default.config';
-import { RoadStyle } from "../../../graphics/road-style/road-style.model";
-import { Asset, AssetType } from 'app/core/asset/asset.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { RoadBuilder } from 'app/map/builders/road.builder';
-import { TvTexture } from "../../../graphics/texture/tv-texture.model";
 import { TvRoadMarking } from "../../../deprecated/tv-road-marking";
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetService } from 'app/assets/asset.service';
 import { TvRoad } from "../../../map/models/tv-road.model";
 import { MapService } from 'app/services/map/map.service';
+import { TvTexture } from "../../../assets/texture/tv-texture.model";
+import { RoadStyle } from "../../../assets/road-style/road-style.model";
+import { TvObjectAsset } from "../../../assets/object/tv-object.asset";
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -496,7 +496,7 @@ export class AssetPreviewService {
 
 		scene.add( object );
 
-		// for texture asset type, we don't need to setup scene
+		// for texture assets type, we don't need to setup scene
 		if ( assetType == AssetType.TEXTURE ) return;
 
 		scene.background = new Color( 0xcce0ff );

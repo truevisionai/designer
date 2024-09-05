@@ -3,8 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FileUtils } from "../../io/file-utils";
-import { ImporterFactory } from "../../factories/importer.factory";
+import { FileUtils } from "../io/file-utils";
+import { ImporterFactory } from "../factories/importer.factory";
 
 @Injectable( {
 	providedIn: 'root'

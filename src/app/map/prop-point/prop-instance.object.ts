@@ -4,7 +4,7 @@
 
 import { Object3D, Vector3 } from 'three';
 import { SerializedAction, SerializedField } from '../../core/components/serialization';
-import { AssetDatabase } from '../../core/asset/asset-database';
+import { AssetDatabase } from '../../assets/asset-database';
 import { CommandHistory } from 'app/commands/command-history';
 import { RemoveObjectCommand } from "../../commands/remove-object-command";
 import { UnselectObjectCommand } from "../../commands/unselect-object-command";

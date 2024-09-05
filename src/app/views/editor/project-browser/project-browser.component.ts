@@ -7,16 +7,16 @@ import { ApplicationRef, Component, HostListener, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { TvConsole } from '../../../core/utils/console';
 import { SnackBar } from '../../../services/snack-bar.service';
-import { Asset, AssetType } from '../../../core/asset/asset.model';
+import { Asset, AssetType } from '../../../assets/asset.model';
 import { ProjectBrowserService } from './project-browser.service';
 import { ContextMenuType, MenuService } from 'app/services/menu.service';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { VehicleCategory } from 'app/scenario/models/tv-enums';
 import { ProjectService } from "../../../services/editor/project.service";
-import { AssetService } from 'app/core/asset/asset.service';
-import { TvMaterialFactory } from 'app/graphics/material/tv-material.factory';
-import { AssetImporter } from "../../../core/asset/asset.importer";
+import { AssetService } from 'app/assets/asset.service';
+import { AssetImporter } from "../../../assets/asset.importer";
 import { FileUtils } from 'app/io/file-utils';
+import { TvMaterialFactory } from "../../../assets/material/tv-material.factory";
 
 @Component( {
 	selector: 'app-project-browser',

@@ -4,7 +4,7 @@
 
 import { ToolType } from "./tool-types.enum";
 import { PointerEventData } from "../events/pointer-event-data";
-import { Asset } from "../core/asset/asset.model";
+import { Asset } from "../assets/asset.model";
 import { Vector3 } from "three";
 
 export interface Tool {

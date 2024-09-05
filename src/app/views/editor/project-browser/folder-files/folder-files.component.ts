@@ -12,9 +12,9 @@ import {
 	OnInit,
 	ViewChild
 } from '@angular/core';
-import { Asset, AssetType } from '../../../../core/asset/asset.model';
+import { Asset, AssetType } from '../../../../assets/asset.model';
 import { ProjectBrowserService } from '../project-browser.service';
-import { AssetService } from 'app/core/asset/asset.service';
+import { AssetService } from 'app/assets/asset.service';
 
 @Component( {
 	selector: 'app-folder-files',

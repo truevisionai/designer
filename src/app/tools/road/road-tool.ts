@@ -13,8 +13,7 @@ import { RoadControlPoint } from 'app/objects/road/road-control-point';
 import { RoadTangentPoint } from 'app/objects/road/road-tangent-point';
 import { Vector3 } from 'three';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Asset, AssetType } from 'app/core/asset/asset.model';
-import { RoadStyle } from 'app/graphics/road-style/road-style.model';
+import { Asset, AssetType } from 'app/assets/asset.model';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { ControlPointFactory } from "../../factories/control-point.factory";
 import { Commands } from 'app/commands/commands';
@@ -36,6 +35,7 @@ import { SplineDragHandler } from "./drag-handlers/spline-drag-handler.service";
 import { SplinePointDragHandler } from "./drag-handlers/spline-point-drag-handler.service";
 import { RoadControlPointSelectionStrategy, RoadTangentPointSelectionStrategy, SplineControlPointSelectionStrategy } from 'app/core/strategies/select-strategies/point-selection-strategies';
 import { ConstructorFunction } from 'app/core/models/class-map';
+import { RoadStyle } from "../../assets/road-style/road-style.model";
 
 export class RoadTool extends ToolWithHandler {
 
