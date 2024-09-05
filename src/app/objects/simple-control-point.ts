@@ -34,7 +34,7 @@ export class SimpleControlPoint<T> extends AbstractControlPoint {
 
 		this.mainObject = mainObject;
 
-		if ( position ) this.copyPosition( position );
+		if ( position ) this.setPosition( position );
 
 	}
 
@@ -65,9 +65,9 @@ export class SimpleControlPoint<T> extends AbstractControlPoint {
 
 	}
 
-	copyPosition ( position: Vector3 ): void {
+	setPosition ( position: Vector3 ): void {
 
-		super.copyPosition( position );
+		super.setPosition( position );
 
 	}
 

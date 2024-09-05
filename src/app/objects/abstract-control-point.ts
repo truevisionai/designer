@@ -38,13 +38,7 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 	setPosition ( position: Vector3 ) {
 
-		this.position.copy( position );
-
-	}
-
-	copyPosition ( position: Vector3 ) {
-
-		this.setPosition( position.clone() );
+		this.position.copy( position.clone() );
 
 	}
 

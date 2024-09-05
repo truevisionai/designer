@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { IHasCopyUpdate } from "../commands/copy-position-command";
+import { IHasCopyUpdate } from 'app/core/interfaces/has-copy-update';
 import { PointerEventData } from "../events/pointer-event-data";
 import { CommandHistory } from "../commands/command-history";
 import { AddObjectCommand } from "../commands/add-object-command";

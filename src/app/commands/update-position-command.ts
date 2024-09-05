@@ -4,7 +4,7 @@
 
 import { BaseCommand } from "./base-command";
 import { MapEvents } from "../events/map-events";
-import { IHasCopyUpdate } from "./copy-position-command";
+import { IHasCopyUpdate } from '../core/interfaces/has-copy-update';
 import { Vector3 } from "three";
 
 export class UpdatePositionCommand extends BaseCommand {
@@ -29,7 +29,7 @@ export class UpdatePositionCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.object?.copyPosition( this.newPosition );
+		this.object?.setPosition( this.newPosition );
 
 		this.object?.updateMatrixWorld( true );
 
@@ -41,7 +41,7 @@ export class UpdatePositionCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.object?.copyPosition( this.oldPosition );
+		this.object?.setPosition( this.oldPosition );
 
 		this.object?.updateMatrixWorld( true );
 

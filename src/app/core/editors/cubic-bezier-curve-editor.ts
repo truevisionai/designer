@@ -35,7 +35,7 @@ export class CubicBezierCurveEditor extends AbstractShapeEditor {
 
 			this.isDragging = true;
 
-			if ( this.currentPoint != null ) this.currentPoint.copyPosition( e.point );
+			if ( this.currentPoint != null ) this.currentPoint.setPosition( e.point );
 
 			// this.lastControlPoint.position.copy( e.point );
 

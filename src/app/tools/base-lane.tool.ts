@@ -147,7 +147,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 		if ( !position ) return;
 
-		this.selectedNode.copyPosition( position.position );
+		this.selectedNode.setPosition( position.position );
 
 		this.nodeChanged = true;
 

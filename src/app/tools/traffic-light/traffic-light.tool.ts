@@ -106,7 +106,7 @@ export class TrafficLightTool extends ToolWithHandler {
 
 		const newPosition = this.selectionService.handleTargetMovement( e, this.currentSelectedPoint );
 
-		this.currentSelectedPoint.copyPosition( newPosition.position );
+		this.currentSelectedPoint.setPosition( newPosition.position );
 
 		// this.dataService.updatePoint( this.currentSelectedPoint.mainObject, this.currentSelectedPoint );
 

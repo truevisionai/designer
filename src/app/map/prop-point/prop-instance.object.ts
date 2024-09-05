@@ -8,7 +8,7 @@ import { AssetDatabase } from '../../core/asset/asset-database';
 import { CommandHistory } from 'app/commands/command-history';
 import { RemoveObjectCommand } from "../../commands/remove-object-command";
 import { UnselectObjectCommand } from "../../commands/unselect-object-command";
-import { IHasCopyUpdate } from "../../commands/copy-position-command";
+import { IHasCopyUpdate } from 'app/core/interfaces/has-copy-update';
 
 export class PropInstance extends Object3D implements IHasCopyUpdate {
 
@@ -81,12 +81,6 @@ export class PropInstance extends Object3D implements IHasCopyUpdate {
 	}
 
 	setPosition ( position: Vector3 ): void {
-
-		this.object?.position.copy( position );
-
-	}
-
-	copyPosition ( position: Vector3 ): void {
 
 		this.object?.position.copy( position );
 

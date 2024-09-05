@@ -4,23 +4,18 @@
 
 import { BaseCommand } from './base-command';
 import { IHasPosition } from '../objects/i-has-position';
-import { IHasUpdate } from './set-value-command';
 import { MapEvents } from 'app/events/map-events';
 import { Vector3 } from "three";
 
-export interface IHasCopyUpdate extends IHasUpdate, IHasPosition {
+export class SetPositionCommand extends BaseCommand {
 
-}
-
-export class CopyPositionCommand extends BaseCommand {
+	private readonly object: IHasPosition;
 
 	private readonly oldPosition: Vector3;
 
-	constructor (
-		private object: IHasPosition,
-		private readonly newPosition: Vector3,
-		oldPosition: Vector3 = null
-	) {
+	private readonly newPosition: Vector3;
+
+	constructor ( object: IHasPosition, newPosition: Vector3, oldPosition?: Vector3 ) {
 
 		super();
 
@@ -32,7 +27,7 @@ export class CopyPositionCommand extends BaseCommand {
 
 	execute (): void {
 
-		this.object.copyPosition( this.newPosition );
+		this.object.setPosition( this.newPosition );
 
 		this.object.updateMatrixWorld( true );
 
@@ -42,7 +37,7 @@ export class CopyPositionCommand extends BaseCommand {
 
 	undo (): void {
 
-		this.object.copyPosition( this.oldPosition );
+		this.object.setPosition( this.oldPosition );
 
 		this.object.updateMatrixWorld( true );
 

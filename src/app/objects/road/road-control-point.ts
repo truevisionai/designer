@@ -83,17 +83,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 		return this.road.spline;
 	}
 
-	copyPosition ( position: Vector3 ) {
-
-		if ( !this.allowChange ) return;
-
-		super.copyPosition( position );
-
-		this.update();
-
-	}
-
-	setPosition ( position: Vector3 ): void {
+	setPosition ( position: Vector3 ) {
 
 		if ( !this.allowChange ) return;
 
@@ -233,7 +223,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 			.multiplyScalar( tangentPoint.length * sign )
 			.add( this.position );
 
-		tangentPoint.copyPosition( position );
+		tangentPoint.setPosition( position );
 
 		tangentPoint?.updateTangents();
 	}

@@ -105,7 +105,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 		if ( oldPosition.distanceTo( newPosition ) < 0.1 ) return;
 
-		Commands.CopyPosition( this.currentSelectedPoint, newPosition, oldPosition );
+		Commands.SetPosition( this.currentSelectedPoint, newPosition, oldPosition );
 
 		this.currentSelectedPointMoved = false;
 
@@ -129,7 +129,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 		const position = RoadGeometryService.instance.findRoadPosition( coord.road, coord.s );
 
-		this.currentSelectedPoint.copyPosition( position.position );
+		this.currentSelectedPoint.setPosition( position.position );
 
 		this.currentSelectedPointMoved = true;
 

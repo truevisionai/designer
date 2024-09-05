@@ -122,7 +122,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 		const oldPosition = this.pointerDownAt.clone();
 
-		Commands.CopyPosition( this.selectedNode, newPosition, oldPosition );
+		Commands.SetPosition( this.selectedNode, newPosition, oldPosition );
 
 		this.nodeChanged = false;
 	}
@@ -156,7 +156,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 			if ( position instanceof RoadPosition ) {
 
-				this.selectedNode.copyPosition( position.position );
+				this.selectedNode.setPosition( position.position );
 
 				this.nodeChanged = true;
 

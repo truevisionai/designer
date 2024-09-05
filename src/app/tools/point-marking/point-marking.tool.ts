@@ -144,7 +144,7 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		const oldPosition = this.pointerDownAt.clone();
 
-		Commands.CopyPosition( this.currentSelectedPoint, newPosition, oldPosition );
+		Commands.SetPosition( this.currentSelectedPoint, newPosition, oldPosition );
 
 		this.currentSelectedPointMoved = false;
 
@@ -411,7 +411,7 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		point.mainObject.t = coord.t;
 
-		point.copyPosition( coord.position );
+		point.setPosition( coord.position );
 
 		this.debugService?.updateDebugState( coord.road, DebugState.SELECTED );
 

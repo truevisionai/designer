@@ -11,7 +11,8 @@ import { SelectObjectCommand } from "./select-object-command";
 import { SetValueCommand } from "./set-value-command";
 import { UnselectObjectCommand } from "./unselect-object-command";
 import { IHasPosition } from "app/objects/i-has-position";
-import { CopyPositionCommand, IHasCopyUpdate } from "./copy-position-command";
+import { SetPositionCommand } from "./set-position-command";
+import { IHasCopyUpdate } from '../core/interfaces/has-copy-update';
 import { UpdatePositionCommand } from "./update-position-command";
 import { Tool } from "app/tools/tool";
 import { SetToolCommand } from "./set-tool-command";
@@ -72,9 +73,9 @@ export abstract class Commands {
 
 	}
 
-	static CopyPosition ( object: IHasPosition, newPosition: Vector3, oldPosition?: Vector3 ): void {
+	static SetPosition ( object: IHasPosition, newPosition: Vector3, oldPosition?: Vector3 ): void {
 
-		this.execute( new CopyPositionCommand( object, newPosition, oldPosition ) );
+		this.execute( new SetPositionCommand( object, newPosition, oldPosition ) );
 
 	}
 

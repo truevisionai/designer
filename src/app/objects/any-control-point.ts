@@ -35,7 +35,7 @@ export class AnyControlPoint extends AbstractControlPoint {
 
 		const cp = new AnyControlPoint( dotGeometry, dotMaterial );
 
-		if ( position ) cp.copyPosition( position );
+		if ( position ) cp.setPosition( position );
 
 		cp.userData.is_button = true;
 		cp.userData.is_control_point = true;

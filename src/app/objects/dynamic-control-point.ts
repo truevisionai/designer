@@ -35,7 +35,7 @@ export class DynamicControlPoint<T extends IHasUpdate> extends AbstractControlPo
 
 		this.mainObject = mainObject;
 
-		if ( position ) this.copyPosition( position );
+		if ( position ) this.setPosition( position );
 
 	}
 
@@ -67,9 +67,9 @@ export class DynamicControlPoint<T extends IHasUpdate> extends AbstractControlPo
 
 	}
 
-	copyPosition ( position: Vector3 ): void {
+	setPosition ( position: Vector3 ): void {
 
-		super.copyPosition( position );
+		super.setPosition( position );
 
 	}
 

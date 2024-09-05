@@ -226,7 +226,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		if ( !this.currentSelectedPoint.isSelected ) return;
 
-		this.currentSelectedPoint.copyPosition( e.point );
+		this.currentSelectedPoint.setPosition( e.point );
 
 		this.dataService.updatePoint( this.currentSelectedPoint.mainObject, this.currentSelectedPoint );
 

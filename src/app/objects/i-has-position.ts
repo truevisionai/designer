@@ -8,7 +8,7 @@ export interface IHasPosition extends Object3D {
 
 	setPosition ( position: Vector3 ): void;
 
-	copyPosition ( position: Vector3 ): void;
+	setPosition ( position: Vector3 ): void;
 
 	getPosition (): Vector3;
 }

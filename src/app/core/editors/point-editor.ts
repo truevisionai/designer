@@ -67,7 +67,7 @@ export class PointEditor extends AbstractShapeEditor {
 
 				e.point.z = 0;
 
-				this.currentPoint.copyPosition( e.point );
+				this.currentPoint.setPosition( e.point );
 
 				this.controlPointMoved.emit( this.currentPoint );
 

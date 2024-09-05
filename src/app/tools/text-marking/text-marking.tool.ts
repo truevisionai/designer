@@ -112,7 +112,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		if ( !this.pointerDownAt ) return;
 
-		Commands.CopyPosition( this.currentSelectedPoint, this.currentSelectedPoint.position, this.pointerDownAt );
+		Commands.SetPosition( this.currentSelectedPoint, this.currentSelectedPoint.position, this.pointerDownAt );
 
 		this.currentSelectedPointMoved = false;
 

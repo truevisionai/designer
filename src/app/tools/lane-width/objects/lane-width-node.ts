@@ -5,7 +5,7 @@
 import { Group, Vector3 } from 'three';
 import { TvLaneWidth } from '../../../map/models/tv-lane-width';
 import { INode } from '../../../objects/i-selectable';
-import { IHasCopyUpdate } from 'app/commands/copy-position-command';
+import { IHasCopyUpdate } from 'app/core/interfaces/has-copy-update';
 import { TvLane } from "../../../map/models/tv-lane";
 import { LaneWidthLine } from "./lane-width-line";
 import { LaneWidthPoint } from "./lane-width-point";
@@ -43,12 +43,6 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 	}
 
 	setPosition ( position: Vector3 ): void {
-
-		//
-
-	}
-
-	copyPosition ( position: Vector3 ): void {
 
 		//
 

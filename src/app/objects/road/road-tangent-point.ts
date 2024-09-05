@@ -139,9 +139,9 @@ export class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate
 
 	}
 
-	copyPosition ( position: Vector3 ) {
+	setPosition ( position: Vector3 ) {
 
-		super.copyPosition( position );
+		super.setPosition( position );
 
 		this.controlPoint.segmentType = TvGeometryType.SPIRAL;
 

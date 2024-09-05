@@ -275,7 +275,7 @@ export abstract class AbstractShapeEditor implements IShapeEditor {
 
 			this.isDragging = true;
 
-			if ( this.currentPoint != null ) this.currentPoint.copyPosition( e.point );
+			if ( this.currentPoint != null ) this.currentPoint.setPosition( e.point );
 
 			if ( this._controlPoints.length > 1 ) this.draw();
 
