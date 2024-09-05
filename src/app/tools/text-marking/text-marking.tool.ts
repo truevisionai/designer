@@ -52,8 +52,8 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 		// this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addCreationStrategy( new DepLaneCoordStrategy() );
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
-		this.selectionService.registerStrategy( TvRoad.name, selectRoadStrategy );
+		this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
+		this.selectionService.registerStrategy( TvRoad, selectRoadStrategy );
 
 		this.tool.base.addSelectionStrategy( new DepPointStrategy() );
 		this.tool.base.addSelectionStrategy( selectRoadStrategy );

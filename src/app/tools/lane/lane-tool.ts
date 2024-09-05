@@ -54,28 +54,28 @@ export class LaneTool extends ToolWithHandler {
 
 	private addSelectors (): void {
 
-		this.addSelectionStrategy( TvLane.name, new SelectLaneOverlayStrategy() );
-		this.addSelectionStrategy( TvRoad.name, new RoadSelectionStrategy() );
+		this.addSelectionStrategy( TvLane, new SelectLaneOverlayStrategy() );
+		this.addSelectionStrategy( TvRoad, new RoadSelectionStrategy() );
 
 	}
 
 	private addControllers (): void {
 
-		this.addController( TvLane.name, this.helper.base.injector.get( LaneToolLaneController ) );
-		this.addController( TvRoad.name, this.helper.base.injector.get( EmptyController ) );
+		this.addController( TvLane, this.helper.base.injector.get( LaneToolLaneController ) );
+		this.addController( TvRoad, this.helper.base.injector.get( EmptyController ) );
 
 	}
 
 	private addVisualizers (): void {
 
-		this.addVisualizer( TvRoad.name, this.helper.base.injector.get( LaneToolRoadVisualizer ) );
-		this.addVisualizer( TvLane.name, this.helper.base.injector.get( LaneToolLaneVisualizer ) );
+		this.addVisualizer( TvRoad, this.helper.base.injector.get( LaneToolRoadVisualizer ) );
+		this.addVisualizer( TvLane, this.helper.base.injector.get( LaneToolLaneVisualizer ) );
 
 	}
 
 	private addDragHandlers (): void {
 
-		this.addDragHandler( TvLane.name, this.helper.base.injector.get( LaneToolLaneDragHandler ) );
+		this.addDragHandler( TvLane, this.helper.base.injector.get( LaneToolLaneDragHandler ) );
 
 	}
 

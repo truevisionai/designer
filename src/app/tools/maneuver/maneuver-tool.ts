@@ -59,10 +59,10 @@ export class ManeuverTool extends ToolWithHandler {
 
 		this.selectionService = this.helper.base.selection;
 
-		this.addSelectionStrategy( JunctionGatePoint.name, new JunctionGatePointSelectionStrategy() );
-		this.addSelectionStrategy( SplineControlPoint.name, new SplineControlPointSelectionStrategy() );
-		this.addSelectionStrategy( ManeuverMesh.name, new ManeuverMeshSelectionStrategy() );
-		this.addSelectionStrategy( JunctionOverlay.name, new JunctionOverlaySelectionStrategy() );
+		this.addSelectionStrategy( JunctionGatePoint, new JunctionGatePointSelectionStrategy() );
+		this.addSelectionStrategy( SplineControlPoint, new SplineControlPointSelectionStrategy() );
+		this.addSelectionStrategy( ManeuverMesh, new ManeuverMeshSelectionStrategy() );
+		this.addSelectionStrategy( JunctionOverlay, new JunctionOverlaySelectionStrategy() );
 
 		this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
 
@@ -70,17 +70,17 @@ export class ManeuverTool extends ToolWithHandler {
 
 	addHandlers (): void {
 
-		this.addController( SplineControlPoint.name, this.helper.base.injector.get( ManeuverPointController ) );
-		this.addController( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGateController ) );
-		this.addController( ManeuverMesh.name, this.helper.base.injector.get( ManeuverToolManeuverMeshController ) );
-		this.addController( JunctionOverlay.name, this.helper.base.injector.get( ManeuverToolJunctionOverlayController ) );
+		this.addController( SplineControlPoint, this.helper.base.injector.get( ManeuverPointController ) );
+		this.addController( JunctionGatePoint, this.helper.base.injector.get( JunctionGateController ) );
+		this.addController( ManeuverMesh, this.helper.base.injector.get( ManeuverToolManeuverMeshController ) );
+		this.addController( JunctionOverlay, this.helper.base.injector.get( ManeuverToolJunctionOverlayController ) );
 
-		this.addVisualizer( SplineControlPoint.name, this.helper.base.injector.get( ManeuverPointVisualizer ) );
-		this.addVisualizer( JunctionGatePoint.name, this.helper.base.injector.get( JunctionGatePointVisualizer ) );
-		this.addVisualizer( ManeuverMesh.name, this.helper.base.injector.get( ManeuverVisualizer ) );
-		this.addVisualizer( JunctionOverlay.name, this.helper.base.injector.get( ManeuverToolJunctionOverlayVisualizer ) );
+		this.addVisualizer( SplineControlPoint, this.helper.base.injector.get( ManeuverPointVisualizer ) );
+		this.addVisualizer( JunctionGatePoint, this.helper.base.injector.get( JunctionGatePointVisualizer ) );
+		this.addVisualizer( ManeuverMesh, this.helper.base.injector.get( ManeuverVisualizer ) );
+		this.addVisualizer( JunctionOverlay, this.helper.base.injector.get( ManeuverToolJunctionOverlayVisualizer ) );
 
-		this.addDragHandler( SplineControlPoint.name, this.helper.base.injector.get( ManeuverPointDragHandler ) );
+		this.addDragHandler( SplineControlPoint, this.helper.base.injector.get( ManeuverPointDragHandler ) );
 
 	}
 

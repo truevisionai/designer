@@ -33,11 +33,11 @@ export class RoadSignTool extends BaseTool<any> {
 	}
 
 	get selectedPoint (): SimpleControlPoint<TvRoadSignal> {
-		return this.selectionService.findSelectedObject<SimpleControlPoint<TvRoadSignal>>( SimpleControlPoint.name );
+		return this.selectionService.findSelectedObject<SimpleControlPoint<TvRoadSignal>>( SimpleControlPoint );
 	}
 
 	get selectedRoad (): TvRoad {
-		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name );
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad );
 	}
 
 	init () {
@@ -45,8 +45,8 @@ export class RoadSignTool extends BaseTool<any> {
 		super.init();
 
 		this.tool.base.addSelectionStrategy( new DepPointStrategy() );
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
-		this.selectionService.registerStrategy( TvRoad.name, new DepSelectRoadStrategy( true, true, this.tool.toolDebugger ) );
+		this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
+		this.selectionService.registerStrategy( TvRoad, new DepSelectRoadStrategy( true, true, this.tool.toolDebugger ) );
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 

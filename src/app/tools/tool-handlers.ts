@@ -11,18 +11,19 @@ import { ValidationException } from "app/exceptions/exceptions";
 import { StatusBarService } from "app/services/status-bar.service";
 import { BaseDragHandler } from "app/core/drag-handlers/base-drag-handler";
 import { DragManager } from "./drag-manager";
+import { ClassMap, ConstructorFunction } from "app/core/models/class-map";
 
 export class ToolHandlers {
 
 	private debug = false;
 
-	private controllers: Map<string, BaseController<object>>;
-	private visualizers: Map<string, Visualizer<object>>;
+	private controllers: ClassMap<BaseController<object>>;
+	private visualizers: ClassMap<Visualizer<object>>;
 	private dragManager: DragManager;
 
 	constructor ( private selectionService: SelectionService ) {
-		this.controllers = new Map();
-		this.visualizers = new Map();
+		this.controllers = new ClassMap();
+		this.visualizers = new ClassMap();
 		this.dragManager = new DragManager();
 	}
 
@@ -44,53 +45,65 @@ export class ToolHandlers {
 		this.selectionService = selectionService;
 	}
 
-	getController ( objectName: string ): BaseController<object> {
-		return this.controllers.get( objectName );
+	getControllerByKey ( key: ConstructorFunction ): BaseController<object> {
+		return this.controllers.get( key );
 	}
 
-	addController ( objectName: string, controller: BaseController<object> ): void {
-		this.controllers.set( objectName, controller );
+	getVisualizerByKey ( key: ConstructorFunction ): Visualizer<object> {
+		return this.visualizers.get( key );
 	}
 
-	getDragHandler ( objectName: string ): BaseDragHandler<object> {
-		return this.dragManager.getDragHandler( objectName );
+	getControllerByObject ( object: object ): BaseController<object> {
+		return this.controllers.get( object.constructor as ConstructorFunction );
 	}
 
-	addVisualizer ( objectName: string, visualizer: Visualizer<object> ): void {
-		this.visualizers.set( objectName, visualizer );
+	getVisualizerByObject ( object: object ): Visualizer<object> {
+		return this.visualizers.get( object.constructor as ConstructorFunction );
 	}
 
-	addDragHandler ( objectName: string, dragHandler: BaseDragHandler<object> ): void {
-		this.dragManager.addDragHandler( objectName, dragHandler );
+	addController ( key: ConstructorFunction, controller: BaseController<object> ): void {
+		this.controllers.set( key, controller );
 	}
 
-	getControllers (): Map<string, BaseController<object>> {
+	getDragHandler ( key: ConstructorFunction ): BaseDragHandler<object> {
+		return this.dragManager.getDragHandler( key );
+	}
+
+	addVisualizer ( key: ConstructorFunction, visualizer: Visualizer<object> ): void {
+		this.visualizers.set( key, visualizer );
+	}
+
+	addDragHandler ( key: ConstructorFunction, dragHandler: BaseDragHandler<object> ): void {
+		this.dragManager.addDragHandler( key, dragHandler );
+	}
+
+	getControllers (): Map<ConstructorFunction, BaseController<object>> {
 		return this.controllers;
 	}
 
-	getVisualizers (): Map<string, Visualizer<object>> {
+	getVisualizers (): Map<ConstructorFunction, Visualizer<object>> {
 		return this.visualizers;
 	}
 
-	getDragHandlers (): Map<string, BaseDragHandler<object>> {
+	getDragHandlers (): Map<ConstructorFunction, BaseDragHandler<object>> {
 		return this.dragManager.getDragHandlers();
 	}
 
 	handleAction ( object: object, action: 'onAdded' | 'onRemoved' ): void {
 
-		const controller = this.controllers.get( object.constructor.name );
-		const visualizer = this.visualizers.get( object.constructor.name );
+		const controller = this.getControllerByObject( object );
+		const visualizer = this.getVisualizerByObject( object );
 
 		if ( controller && typeof controller[ action ] === 'function' ) {
 			controller[ action ]( object );
 		} else {
-			Log.warn( 'Invalid controller/action for object type', object.constructor.name );
+			Log.warn( 'Invalid controller/action for object type', object.toString() );
 		}
 
 		if ( visualizer && typeof visualizer[ action ] === 'function' ) {
 			visualizer[ action ]( object );
 		} else {
-			Log.warn( 'Invalid debugger handler for object type', object.constructor.name );
+			Log.warn( 'Invalid debugger handler for object type', object.toString() );
 		}
 
 	}
@@ -100,9 +113,9 @@ export class ToolHandlers {
 		// NOT NEEDED, TESTS ARE FAILING
 		// this.selectionService.getSelectedObjects().forEach( selected => this.handleDeselection( selected ) );
 
-		this.controllers.get( object.constructor.name )?.onAdded( object );
+		this.getControllerByObject( object )?.onAdded( object );
 
-		this.visualizers.get( object.constructor.name )?.onAdded( object );
+		this.getVisualizerByObject( object )?.onAdded( object );
 
 		// this.setObjectHint( object, 'onAdded' );
 
@@ -112,7 +125,7 @@ export class ToolHandlers {
 
 		const handle = ( item ) => {
 
-			const visualizer = this.visualizers.get( item.constructor.name );
+			const visualizer = this.getVisualizerByObject( item );
 
 			this.selectionService.addToSelected( item );
 
@@ -138,7 +151,7 @@ export class ToolHandlers {
 
 		const handle = ( item ) => {
 
-			const visualizer = this.visualizers.get( item.constructor.name );
+			const visualizer = this.getVisualizerByObject( item );
 
 			visualizer.onUnselected( item );
 
@@ -159,28 +172,29 @@ export class ToolHandlers {
 		}
 	}
 
-	hasHandlersFor ( object: object ): boolean {
+	hasHandlersForObject ( object: object ): boolean {
 
 		if ( Array.isArray( object ) ) {
-			return object.every( item => this.hasHandlersForName( item.constructor.name ) );
+			return object.every( item => this.hasControllerForObject( item ) && this.hasVisualizerForObject( item ) );
 		}
 
-		return this.hasHandlersForName( object.constructor.name );
-
+		return this.hasControllerForObject( object ) && this.hasVisualizerForObject( object )
 	}
 
-	hasHandlersForName ( objectName: string ): boolean {
+	hasHandlersForKey ( key: ConstructorFunction ): boolean {
+		return this.controllers.has( key ) && this.visualizers.has( key );
+	}
 
-		return this.controllers.has( objectName ) && this.visualizers.has( objectName );
+	hasControllerForObject ( object: object ): boolean {
+		return this.controllers.has( object.constructor as ConstructorFunction );
+	}
 
+	hasVisualizerForObject ( object: object ): boolean {
+		return this.visualizers.has( object.constructor as ConstructorFunction );
 	}
 
 	updateVisuals ( object: object ): void {
-		if ( this.visualizers.has( object.constructor.name ) ) {
-			this.visualizers.get( object.constructor.name ).onUpdated( object );
-		} else {
-			Log.error( `No visualizer found for ${ object.constructor.name }` );
-		}
+		this.getVisualizerByObject( object )?.onUpdated( object );
 	}
 
 	getControllerCount (): number {
@@ -188,33 +202,31 @@ export class ToolHandlers {
 	}
 
 	showInspector ( object: object ): void {
-
-		this.getController( object.constructor.name )?.showInspector( object );
-
+		this.getControllerByObject( object )?.showInspector( object );
 	}
 
 	removeObject ( object: object ): void {
 
-		if ( this.hasHandlersFor( object ) ) {
+		if ( this.hasHandlersForObject( object ) ) {
 
 			this.handleAction( object, 'onRemoved' );
 
 		} else {
 
-			Log.error( `unknown object removed: ${ object.constructor.name }` );
+			Log.error( `unknown object removed: ${ object.toString() }` );
 
 		}
 	}
 
 	updateObject ( object: object ): void {
 
-		if ( !this.hasHandlersFor( object ) ) {
-			Log.error( `unknown object updated: ${ object.constructor.name }` );
+		if ( !this.hasHandlersForObject( object ) ) {
+			Log.error( `unknown object updated: ${ object.toString() }` );
 			return;
 		}
 
-		const controller = this.controllers.get( object.constructor.name );
-		const visualizer = this.visualizers.get( object.constructor.name );
+		const controller = this.getControllerByObject( object );
+		const visualizer = this.getVisualizerByObject( object );
 
 		try {
 
@@ -267,10 +279,10 @@ export class ToolHandlers {
 			return;
 		}
 
-		const visualizer = this.visualizers.get( object.constructor.name );
+		const visualizer = this.getVisualizerByObject( object );
 
 		if ( !visualizer ) {
-			if ( this.debug ) Log.warn( `No handler found for ${ object.constructor.name }` );
+			if ( this.debug ) Log.warn( `No handler found for ${ object.toString() }` );
 			return;
 		}
 

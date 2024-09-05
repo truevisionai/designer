@@ -7,6 +7,7 @@ import { BaseTool } from './base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Log } from "../core/utils/log";
 import { KeyboardEvents } from 'app/events/keyboard-events';
+import { ConstructorFunction } from 'app/core/models/class-map';
 
 export abstract class ToolWithHandler extends BaseTool<any> {
 
@@ -22,10 +23,10 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 		if ( !selected ) return;
 
-		const controller = this.getController( selected.constructor.name );
+		const controller = this.getControllerByObject( selected );
 
 		if ( !controller ) {
-			Log.warn( `No controller found for ${ selected.constructor.name }` );
+			Log.warn( `No controller found for ${ selected }` );
 			return;
 		}
 
@@ -33,7 +34,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 		if ( created ) {
 
-			const oldObjects = this.selectionService.getAllSelectedObjects( created.constructor.name );
+			const oldObjects = this.selectionService.getSelectedObjectsByKey( created.constructor as ConstructorFunction<any> );
 
 			this.executeAddAndSelect( created, oldObjects );
 
@@ -82,7 +83,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 	override onObjectAdded ( object: Object ): void {
 
 		if ( !this.hasHandlersForObject( object ) ) {
-			Log.error( `unknown object updated: ${ object.constructor.name }` );
+			Log.error( `unknown object updated: ${ object.toString() }` );
 			return;
 		}
 
@@ -95,7 +96,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 	override onObjectUpdated ( object: Object ): void {
 
 		if ( !this.hasHandlersForObject( object ) ) {
-			Log.error( `unknown object updated: ${ object.constructor.name }` );
+			Log.error( `unknown object updated: ${ object.toString() }` );
 			return;
 		}
 
@@ -106,7 +107,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 	override onObjectRemoved ( object: Object ): void {
 
 		if ( !this.hasHandlersForObject( object ) ) {
-			Log.error( `unknown object removed: ${ object.constructor.name }` );
+			Log.error( `unknown object removed: ${ object.toString() }` );
 			return;
 		}
 
@@ -117,7 +118,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 	override onObjectSelected ( object: Object ): void {
 
 		if ( !this.hasHandlersForObject( object ) ) {
-			Log.error( `unknown object selected: ${ object.constructor.name }` );
+			Log.error( `unknown object selected: ${ object.toString() }` );
 			return;
 		}
 
@@ -132,7 +133,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 	override onObjectUnselected ( object: Object ): void {
 
 		if ( !this.hasHandlersForObject( object ) ) {
-			Log.error( `unknown object unselected: ${ object.constructor.name }` );
+			Log.error( `unknown object unselected: ${ object.toString() }` );
 			return;
 		}
 
@@ -153,7 +154,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 	private showObjectInspector ( object: object ): void {
 
 		if ( !this.hasHandlersForObject( object ) ) {
-			Log.error( `unknown object inspector: ${ object.constructor.name }` );
+			Log.error( `unknown object inspector: ${ object.toString() }` );
 			return;
 		}
 

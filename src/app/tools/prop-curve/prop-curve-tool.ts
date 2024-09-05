@@ -51,9 +51,9 @@ export class PropCurveTool extends BaseTool<PropCurve> {
 
 		this.setDebugService( this.tool.toolDebugger );
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
 
-		this.selectionService.registerStrategy( PropCurve.name, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
+		this.selectionService.registerStrategy( PropCurve, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
 
 		this.setTypeName( PropCurve.name );
 

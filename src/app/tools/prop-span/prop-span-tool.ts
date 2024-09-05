@@ -48,13 +48,13 @@ export class PropSpanTool extends BaseTool<any> {
 
 	init (): void {
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
 
 		const selectRoadStrategy = new DepSelectRoadStrategy( false, true );
 
 		selectRoadStrategy.debugger = this.tool.toolDebugger;
 
-		this.selectionService.registerStrategy( TvRoad.name, selectRoadStrategy );
+		this.selectionService.registerStrategy( TvRoad, selectRoadStrategy );
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 

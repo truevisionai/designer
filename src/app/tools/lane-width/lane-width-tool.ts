@@ -56,31 +56,31 @@ export class LaneWidthTool extends ToolWithHandler {
 
 	addStrategies (): void {
 
-		this.addSelectionStrategy( LaneWidthLine.name, new LaneWidthLineSelectionStrategy() );
-		this.addSelectionStrategy( LaneWidthPoint.name, new LaneWidthPointSelectionStrategy() );
-		this.addSelectionStrategy( TvLane.name, new SelectLaneOverlayStrategy() );
-		this.addSelectionStrategy( TvRoad.name, new RoadSelectionStrategy() );
+		this.addSelectionStrategy( LaneWidthLine, new LaneWidthLineSelectionStrategy() );
+		this.addSelectionStrategy( LaneWidthPoint, new LaneWidthPointSelectionStrategy() );
+		this.addSelectionStrategy( TvLane, new SelectLaneOverlayStrategy() );
+		this.addSelectionStrategy( TvRoad, new RoadSelectionStrategy() );
 
 	}
 
 	addVisualizers (): void {
 
-		this.addVisualizer( LaneWidthLine.name, this.tool.base.injector.get( LaneWidthLineVisualizer ) );
-		this.addVisualizer( LaneWidthPoint.name, this.tool.base.injector.get( LaneWidthPointVisualizer ) );
-		this.addVisualizer( TvLane.name, this.tool.base.injector.get( EmptyVisualizer ) );
-		this.addVisualizer( TvRoad.name, this.tool.base.injector.get( LaneWidthRoadVisualizer ) );
+		this.addVisualizer( LaneWidthLine, this.tool.base.injector.get( LaneWidthLineVisualizer ) );
+		this.addVisualizer( LaneWidthPoint, this.tool.base.injector.get( LaneWidthPointVisualizer ) );
+		this.addVisualizer( TvLane, this.tool.base.injector.get( EmptyVisualizer ) );
+		this.addVisualizer( TvRoad, this.tool.base.injector.get( LaneWidthRoadVisualizer ) );
 
 	}
 
 	addControllers (): void {
 
-		this.addController( LaneWidthLine.name, this.tool.base.injector.get( LaneWidthLineController ) );
-		this.addController( LaneWidthPoint.name, this.tool.base.injector.get( LaneWidthPointController ) );
-		this.addController( TvLane.name, this.tool.base.injector.get( LaneWidthLaneController ) );
-		this.addController( TvRoad.name, this.tool.base.injector.get( LaneWidthRoadController ) );
+		this.addController( LaneWidthLine, this.tool.base.injector.get( LaneWidthLineController ) );
+		this.addController( LaneWidthPoint, this.tool.base.injector.get( LaneWidthPointController ) );
+		this.addController( TvLane, this.tool.base.injector.get( LaneWidthLaneController ) );
+		this.addController( TvRoad, this.tool.base.injector.get( LaneWidthRoadController ) );
 
-		this.addDragHandler( LaneWidthPoint.name, this.tool.base.injector.get( LaneWidthPointDragHandler ) );
-		this.addDragHandler( LaneWidthLine.name, this.tool.base.injector.get( LaneWidthLineDragHandler ) );
+		this.addDragHandler( LaneWidthPoint, this.tool.base.injector.get( LaneWidthPointDragHandler ) );
+		this.addDragHandler( LaneWidthLine, this.tool.base.injector.get( LaneWidthLineDragHandler ) );
 
 	}
 

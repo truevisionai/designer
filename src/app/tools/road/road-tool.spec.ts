@@ -67,14 +67,14 @@ describe( 'RoadTool', () => {
 
 		tool.init();
 
-		expect( tool.hasHandlersForName( AutoSpline.name ) ).toBeTrue();
-		expect( tool.hasHandlersForName( ExplicitSpline.name ) ).toBeTrue();
-		expect( tool.hasHandlersForName( SplineControlPoint.name ) ).toBeTrue();
-		expect( tool.hasHandlersForName( RoadControlPoint.name ) ).toBeTrue();
-		expect( tool.hasHandlersForName( RoadTangentPoint.name ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( AutoSpline ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( ExplicitSpline ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( SplineControlPoint ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( RoadControlPoint ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( RoadTangentPoint ) ).toBeTrue();
 
 		// TODO: add support for this
-		// expect( tool.hasHandlersFor( RoadNode.name ) ).toBeTrue();
+		// expect( tool.hasHandlersFor( RoadNode ) ).toBeTrue();
 
 	} );
 
@@ -82,12 +82,12 @@ describe( 'RoadTool', () => {
 
 		tool.init();
 
-		expect( tool.hasSelectionStrategy( SplineControlPoint.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( RoadControlPoint.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( RoadTangentPoint.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( RoadNode.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( AutoSpline.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( ExplicitSpline.name ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( SplineControlPoint ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( RoadControlPoint ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( RoadTangentPoint ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( RoadNode ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( AutoSpline ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( ExplicitSpline ) ).toBeTrue();
 
 	} );
 

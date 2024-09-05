@@ -47,13 +47,13 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	protected get selectedNode (): LanePointNode<T> {
 
-		return this.selection?.findSelectedObject<LanePointNode<T>>( LanePointNode.name );
+		return this.selection?.findSelectedObject<LanePointNode<T>>( LanePointNode );
 
 	}
 
 	protected get selectedLane (): TvLane {
 
-		return this.selection?.findSelectedObject<TvLane>( TvLane.name );
+		return this.selection?.findSelectedObject<TvLane>( TvLane );
 
 	}
 
@@ -61,10 +61,6 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 		if ( this.selectedNode ) {
 			return this.selectedNode.mainObject;
-		}
-
-		if ( this.typeName ) {
-			return this.selection?.findSelectedObject<T>( this.typeName );
 		}
 
 	}

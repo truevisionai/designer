@@ -34,17 +34,17 @@ export class JunctionTool extends ToolWithHandler {
 
 		this.setHint( 'Click on a road to create a junction' );
 
-		this.addSelectionStrategy( JunctionNode.name, new JunctionNodeSelectionStrategy() );
-		this.addSelectionStrategy( TvJunction.name, new JunctionSelectionStrategy() );
+		this.addSelectionStrategy( JunctionNode, new JunctionNodeSelectionStrategy() );
+		this.addSelectionStrategy( TvJunction, new JunctionSelectionStrategy() );
 
 		this.setDebugService( this.helper.junctionDebugger );
 		this.setDataService( this.helper.junctionService );
 
-		this.addController( JunctionNode.name, this.helper.base.injector.get( JunctionNodeController ) );
-		this.addController( TvJunction.name, this.helper.base.injector.get( JunctionToolJunctionController ) );
+		this.addController( JunctionNode, this.helper.base.injector.get( JunctionNodeController ) );
+		this.addController( TvJunction, this.helper.base.injector.get( JunctionToolJunctionController ) );
 
-		this.addVisualizer( JunctionNode.name, this.helper.base.injector.get( JunctionNodeVisualizer ) );
-		this.addVisualizer( TvJunction.name, this.helper.base.injector.get( JunctionToolJunctionVisualizer ) );
+		this.addVisualizer( JunctionNode, this.helper.base.injector.get( JunctionNodeVisualizer ) );
+		this.addVisualizer( TvJunction, this.helper.base.injector.get( JunctionToolJunctionVisualizer ) );
 
 	}
 

@@ -58,19 +58,19 @@ describe( 'LaneWidthTool: Handlers', () => {
 
 	it( 'should have object handlers', () => {
 
-		expect( tool.hasHandlersForName( LaneWidthLine.name ) ).toBeTrue();
-		expect( tool.hasHandlersForName( LaneWidthPoint.name ) ).toBeTrue();
-		expect( tool.hasHandlersForName( TvLane.name ) ).toBeTrue();
-		expect( tool.hasHandlersForName( TvRoad.name ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( LaneWidthLine ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( LaneWidthPoint ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( TvLane ) ).toBeTrue();
+		expect( tool.hasHandlerForKey( TvRoad ) ).toBeTrue();
 
 	} );
 
 	it( 'should have selection strategies', () => {
 
-		expect( tool.hasSelectionStrategy( LaneWidthLine.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( LaneWidthPoint.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( TvLane.name ) ).toBeTrue();
-		expect( tool.hasSelectionStrategy( TvRoad.name ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( LaneWidthLine ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( LaneWidthPoint ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( TvLane ) ).toBeTrue();
+		expect( tool.hasSelectorForKey( TvRoad ) ).toBeTrue();
 
 	} );
 
@@ -142,7 +142,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 		expect( selectionService.getSelectedObjects()[ 1 ] ).toBeInstanceOf( TvLane )
 		expect( selectionService.getSelectedObjects()[ 2 ] ).toBeInstanceOf( LaneWidthPoint )
 
-		const point = selectionService.findSelectedObject<LaneWidthPoint>( LaneWidthPoint.name );
+		const point = selectionService.findSelectedObject<LaneWidthPoint>( LaneWidthPoint );
 
 		expect( point.width ).toEqual( lane.getLaneWidthVector()[ 2 ] )
 

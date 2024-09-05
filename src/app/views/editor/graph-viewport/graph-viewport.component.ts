@@ -68,7 +68,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 	nodeMoved: boolean;
 
 	get selectedObject (): AbstractControlPoint {
-		return this.selectionService.findSelectedObject<AbstractControlPoint>( SimpleControlPoint.name );
+		return this.selectionService.findSelectedObject<AbstractControlPoint>( SimpleControlPoint );
 	}
 
 	constructor (
@@ -86,7 +86,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 		this.selectionService = new SelectionService();
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
 
 		this.config.showStats = false;
 

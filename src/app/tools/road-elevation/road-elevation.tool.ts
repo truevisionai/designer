@@ -32,13 +32,13 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	get selectedRoad (): TvRoad {
 
-		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name );
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad );
 
 	}
 
 	get selectedNode (): ElevationControlPoint {
 
-		return this.selectionService.findSelectedObject<ElevationControlPoint>( ElevationControlPoint.name );
+		return this.selectionService.findSelectedObject<ElevationControlPoint>( ElevationControlPoint );
 
 	}
 
@@ -52,9 +52,9 @@ export class RoadElevationTool extends BaseTool<any> {
 
 		this.setHint( 'use LEFT CLICK to select a road' );
 
-		this.selectionService.registerStrategy( ElevationControlPoint.name, new DepPointStrategy<ElevationControlPoint>() );
+		this.selectionService.registerStrategy( ElevationControlPoint, new DepPointStrategy<ElevationControlPoint>() );
 
-		this.selectionService.registerStrategy( TvRoad.name, new DepSelectRoadStrategy() );
+		this.selectionService.registerStrategy( TvRoad, new DepSelectRoadStrategy() );
 
 		this.tool.base.addMovingStrategy( new RoadLineMovingStrategy() );
 

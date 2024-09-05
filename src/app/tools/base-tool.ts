@@ -30,6 +30,7 @@ import { BaseController } from 'app/core/controllers/base-controller';
 import { ToolHandlers } from './tool-handlers';
 import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { BaseDragHandler } from 'app/core/drag-handlers/base-drag-handler';
+import { ConstructorFunction } from 'app/core/models/class-map';
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -54,7 +55,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 	protected handlers: ToolHandlers;
 
 	protected get currentSelectedPoint (): SimpleControlPoint<T> {
-		return this.selectionService?.findSelectedObject<SimpleControlPoint<T>>( SimpleControlPoint.name );
+		return this.selectionService?.findSelectedObject<SimpleControlPoint<T>>( SimpleControlPoint );
 	}
 
 	private hintConfig: ToolHintConfig;
@@ -63,10 +64,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		if ( this.currentSelectedPoint ) {
 			return this.currentSelectedPoint.mainObject;
-		}
-
-		if ( this.typeName ) {
-			return this.selectionService?.findSelectedObject<T>( this.typeName );
 		}
 
 	}
@@ -97,40 +94,40 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		this.setHint( this.getObjectHint( object.constructor.name, action ) );
 	}
 
-	addController ( objectName: string, controller: BaseController<Object> ): void {
-		this.handlers.addController( objectName, controller );
+	addController ( key: ConstructorFunction, controller: BaseController<Object> ): void {
+		this.handlers.addController( key, controller );
 	}
 
-	getControllers (): Map<string, BaseController<Object>> {
+	getControllers (): Map<ConstructorFunction, BaseController<Object>> {
 		return this.handlers.getControllers();
 	}
 
-	getDragHandlers (): Map<string, BaseDragHandler<Object>> {
+	getDragHandlers (): Map<Function, BaseDragHandler<Object>> {
 		return this.handlers.getDragHandlers();
 	}
 
-	getController ( objectName: string ): BaseController<Object> {
-		return this.handlers.getController( objectName );
+	getControllerByObject ( object: object ): BaseController<Object> {
+		return this.handlers.getControllerByObject( object );
 	}
 
 	getControllerCount (): number {
 		return this.handlers.getControllerCount();
 	}
 
-	addVisualizer ( objectName: string, visualizer: Visualizer<Object> ): void {
-		this.handlers.addVisualizer( objectName, visualizer );
+	addVisualizer ( key: ConstructorFunction, visualizer: Visualizer<Object> ): void {
+		this.handlers.addVisualizer( key, visualizer );
 	}
 
-	addDragHandler ( objectName: string, dragHandler: BaseDragHandler<Object> ): void {
-		this.handlers.addDragHandler( objectName, dragHandler );
+	addDragHandler ( key: ConstructorFunction, dragHandler: BaseDragHandler<Object> ): void {
+		this.handlers.addDragHandler( key, dragHandler );
 	}
 
 	updateVisuals ( object: any ): void {
 		this.handlers.updateVisuals( object );
 	}
 
-	addSelectionStrategy ( objectName: string, strategy: SelectionStrategy<T> ): void {
-		this.selectionService.registerStrategy( objectName, strategy );
+	addSelectionStrategy ( key: ConstructorFunction, strategy: SelectionStrategy<T> ): void {
+		this.selectionService.registerStrategy( key, strategy );
 	}
 
 	init (): void {
@@ -579,16 +576,16 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		this.handlers.handleSelection( object );
 	}
 
-	hasHandlersForName ( objectName: string ): boolean {
-		return this.handlers.hasHandlersForName( objectName );
+	hasHandlersForObject ( object: any ): boolean {
+		return this.handlers.hasHandlersForObject( object );
 	}
 
-	hasHandlersForObject ( object: Object ): boolean {
-		return this.handlers.hasHandlersFor( object );
+	hasHandlerForKey ( key: ConstructorFunction ): boolean {
+		return this.handlers.hasHandlersForKey( key );
 	}
 
-	hasSelectionStrategy ( name: string ): boolean {
-		return this.selectionService.hasSelectionStrategyFor( name );
+	hasSelectorForKey ( key: ConstructorFunction ): boolean {
+		return this.selectionService.hasSelectorByKey( key );
 	}
 
 	protected handleDeselection ( ...objects: any ): void {
@@ -617,8 +614,8 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		return this.selectionService.getSelectedObjects();
 	}
 
-	public getSelectObjectByName<T> ( objectName: string ): T {
-		return this.selectionService.findSelectedObject<T>( objectName );
+	public getSelectObjectByName<T> ( key: ConstructorFunction ): T {
+		return this.selectionService.findSelectedObject<T>( key );
 	}
 
 	public getSelectedObjectCount (): number {

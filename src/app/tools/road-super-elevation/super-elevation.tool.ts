@@ -42,7 +42,7 @@ export class SuperElevationTool extends BaseTool<any> {
 	readonly toolType: ToolType = ToolType.SuperElevation;
 
 	get selectedRoad () {
-		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name )
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad )
 	}
 
 	constructor ( private helper: SuperElevationToolHelper ) {
@@ -55,9 +55,9 @@ export class SuperElevationTool extends BaseTool<any> {
 
 		this.setDebugService( this.helper.toolDebugger );
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
 
-		this.selectionService.registerStrategy( TvRoad.name, new DepSelectRoadStrategy( false, true, this.helper.toolDebugger ) );
+		this.selectionService.registerStrategy( TvRoad, new DepSelectRoadStrategy( false, true, this.helper.toolDebugger ) );
 
 		// this.base.addMovingStrategy( new RoadLineMovingStrategy() );
 

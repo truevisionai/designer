@@ -247,11 +247,11 @@ export class ToolFactory {
 
 			if ( type == ToolType.LaneHeight ) {
 
-				this.selectionService.registerStrategy( LanePointNode.name, new DepPointStrategy() );
+				this.selectionService.registerStrategy( LanePointNode, new DepPointStrategy() );
 
-				this.selectionService.registerStrategy( DebugLine.name, new DepSelectLineStrategy() );
+				this.selectionService.registerStrategy( DebugLine, new DepSelectLineStrategy() );
 
-				this.selectionService.registerStrategy( TvLane.name, new DepSelectLaneStrategy() );
+				this.selectionService.registerStrategy( TvLane, new DepSelectLaneStrategy() );
 
 				this.selectionService.addMovingStrategy( new MidLaneMovingStrategy() );
 
@@ -268,25 +268,25 @@ export class ToolFactory {
 		this.selectionService.reset();
 
 		if ( type == ToolType.PropPolygon ) {
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
-			this.selectionService.registerStrategy( PropPolygon.name, new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' ) );
+			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
+			this.selectionService.registerStrategy( PropPolygon, new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' ) );
 			tool.setTypeName( PropPolygon.name );
 		}
 
 		if ( type == ToolType.PropCurve ) {
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
-			this.selectionService.registerStrategy( PropCurve.name, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
+			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
+			this.selectionService.registerStrategy( PropCurve, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
 			tool.setTypeName( PropCurve.name );
 		}
 
 		if ( type == ToolType.PropPoint ) {
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
+			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
 			tool.setTypeName( PropInstance.name );
 		}
 
 		if ( type == ToolType.Surface ) {
-			this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
-			this.selectionService.registerStrategy( Surface.name, new ObjectUserDataStrategy( Surface.tag, 'surface' ) );
+			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
+			this.selectionService.registerStrategy( Surface, new ObjectUserDataStrategy( Surface.tag, 'surface' ) );
 			tool.setTypeName( Surface.name );
 		}
 

@@ -41,15 +41,15 @@ export class CrosswalkTool extends ToolWithHandler {
 			return this.selectedPoint.roadObject;
 		}
 
-		return this.selectionService.findSelectedObject<TvRoadObject>( TvRoadObject.name );
+		return this.selectionService.findSelectedObject<TvRoadObject>( TvRoadObject );
 	}
 
 	get selectedPoint (): CornerControlPoint {
-		return this.selectionService.findSelectedObject<CornerControlPoint>( CornerControlPoint.name );
+		return this.selectionService.findSelectedObject<CornerControlPoint>( CornerControlPoint );
 	}
 
 	get selectedRoad (): TvRoad {
-		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name );
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad );
 	}
 
 	private pointMoved: boolean;
@@ -66,9 +66,9 @@ export class CrosswalkTool extends ToolWithHandler {
 
 		this.tool.base.reset();
 
-		this.selectionService.registerStrategy( CornerControlPoint.name, new PointSelectionStrategy() );
-		this.selectionService.registerStrategy( TvRoadObject.name, new PointSelectionStrategy() );
-		this.selectionService.registerStrategy( TvRoad.name, new RoadSelectionStrategy() );
+		this.selectionService.registerStrategy( CornerControlPoint, new PointSelectionStrategy() );
+		this.selectionService.registerStrategy( TvRoadObject, new PointSelectionStrategy() );
+		this.selectionService.registerStrategy( TvRoad, new RoadSelectionStrategy() );
 
 		this.tool.base.addCreationStrategy( new RoadCoordStrategy() );
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
@@ -80,15 +80,15 @@ export class CrosswalkTool extends ToolWithHandler {
 
 	private addHandlers (): void {
 
-		this.addController( CornerControlPoint.name, this.tool.base.injector.get( CornerControlPointController ) );
-		this.addController( TvRoadObject.name, this.tool.base.injector.get( CrosswalkController ) );
-		this.addController( TvRoad.name, this.tool.base.injector.get( RoadController ) );
+		this.addController( CornerControlPoint, this.tool.base.injector.get( CornerControlPointController ) );
+		this.addController( TvRoadObject, this.tool.base.injector.get( CrosswalkController ) );
+		this.addController( TvRoad, this.tool.base.injector.get( RoadController ) );
 
-		this.addVisualizer( CornerControlPoint.name, this.tool.base.injector.get( CornerPointVisualizer ) );
-		this.addVisualizer( TvRoadObject.name, this.tool.base.injector.get( CrosswalkVisualizer ) );
-		this.addVisualizer( TvRoad.name, this.tool.base.injector.get( CrosswalkToolRoadVisualizer ) );
+		this.addVisualizer( CornerControlPoint, this.tool.base.injector.get( CornerPointVisualizer ) );
+		this.addVisualizer( TvRoadObject, this.tool.base.injector.get( CrosswalkVisualizer ) );
+		this.addVisualizer( TvRoad, this.tool.base.injector.get( CrosswalkToolRoadVisualizer ) );
 
-		this.addDragHandler( CornerControlPoint.name, this.tool.base.injector.get( CornerControlPointDragHandler ) );
+		this.addDragHandler( CornerControlPoint, this.tool.base.injector.get( CornerControlPointDragHandler ) );
 
 	}
 

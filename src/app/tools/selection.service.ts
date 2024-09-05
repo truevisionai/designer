@@ -12,7 +12,7 @@ import { SelectObjectCommand } from "../commands/select-object-command";
 import { IMovingStrategy } from "../core/strategies/move-strategies/move-strategy";
 import { Position } from "../scenario/models/position";
 import { Log } from 'app/core/utils/log';
-
+import { ClassMap, ConstructorFunction } from 'app/core/models/class-map';
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -20,19 +20,27 @@ export class SelectionService {
 
 	private movingStrategies: IMovingStrategy[] = [];
 
-	private strategies = new Map<string, SelectionStrategy<any>>();
+	private strategies: ClassMap<SelectionStrategy<any>>;
 
-	private selectedObjects = new Map<string, any>();
+	private selectedObjects: ClassMap<any>;
 
-	private tags = new Map<string, string>();
+	private tags: ClassMap<string>;
 
-	private priority = new Map<string, number>();
+	private priority: ClassMap<number>;
 
 	private debug = false;
 
 	private lastSelectedObject?: any;
 
 	constructor () {
+
+		this.strategies = new ClassMap<SelectionStrategy<any>>();
+
+		this.selectedObjects = new ClassMap<any>();
+
+		this.tags = new ClassMap<string>();
+
+		this.priority = new ClassMap<number>();
 
 		MapEvents.objectSelected.subscribe( object => this.addToSelected( object ) );
 
@@ -46,21 +54,21 @@ export class SelectionService {
 
 	}
 
-	registerStrategy ( type: string, strategy: SelectionStrategy<any> ): void {
+	registerStrategy ( key: ConstructorFunction, strategy: SelectionStrategy<any> ): void {
 
-		if ( this.debug ) Log.log( 'Registering strategy', type, strategy );
+		if ( this.debug ) Log.log( 'Registering strategy', key, strategy );
 
-		this.strategies.set( type, strategy );
+		this.strategies.set( key, strategy );
 
-		this.priority.set( type, this.strategies.size );
+		this.priority.set( key, this.strategies.size );
 
 	}
 
-	registerTag ( type: string, tag: any ): void {
+	registerTag ( key: ConstructorFunction, tag: any ): void {
 
-		if ( this.debug ) Log.log( 'Registering tag', type, tag );
+		if ( this.debug ) Log.log( 'Registering tag', key, tag );
 
-		this.tags.set( type, tag );
+		this.tags.set( key, tag );
 
 	}
 
@@ -110,7 +118,7 @@ export class SelectionService {
 
 			if ( !object ) continue;
 
-			this.selectNewObjectOnly( object, type );
+			this.selectNewObjectOnly( object );
 
 			return;
 
@@ -151,21 +159,17 @@ export class SelectionService {
 		if ( none ) none();
 	}
 
-	findSelectedObject<T> ( objectName: string ): T | undefined {
-		return this.selectedObjects.get( objectName ) as T;
-	}
-
-	getAllSelected<T> ( cls: new ( ...args: any[] ) => T ): T[] {
-		return Array.from( this.selectedObjects.values() ).filter( obj => obj instanceof cls ) as T[];
+	findSelectedObject<T> ( key: ConstructorFunction ): T | undefined {
+		return this.selectedObjects.get( key ) as T;
 	}
 
 	getSelectedObjects (): any[] {
 		return Array.from( this.selectedObjects.values() );
 	}
 
-	getAllSelectedObjects<T> ( objectName: string ): T[] {
-		if ( this.selectedObjects.has( objectName ) ) {
-			return [ this.selectedObjects.get( objectName ) ];
+	getSelectedObjectsByKey<T> ( key: ConstructorFunction ): T[] {
+		if ( this.selectedObjects.has( key ) ) {
+			return [ this.selectedObjects.get( key ) as T ];
 		}
 		return [];
 	}
@@ -212,15 +216,15 @@ export class SelectionService {
 
 	}
 
-	private selectNewObjectAndUnselectOld ( newSelected: any, selectedType: string ): void {
+	private selectNewObjectAndUnselectOld ( newSelected: any, selectedKey: ConstructorFunction ): void {
 
-		const newSelectedPriority = this.priority.get( selectedType );
+		const newSelectedPriority = this.priority.get( selectedKey );
 
 		const unselectObjects = [];
 
 		for ( const [ oldSelectedType, oldSelected ] of this.selectedObjects.entries() ) {
 
-			const oldSelectedPriority = this.priority.get( oldSelectedType );
+			const oldSelectedPriority = this.priority.get( oldSelected.constructor );
 
 			// unselect objects with lower priority
 			if ( oldSelectedPriority < newSelectedPriority ) {
@@ -242,11 +246,11 @@ export class SelectionService {
 
 		CommandHistory.execute( new SelectObjectCommand( newSelected, unselectObjects ) );
 
-		if ( this.debug ) Log.info( 'SelectObjectCommand fired', selectedType, newSelected, this.selectedObjects );
+		if ( this.debug ) Log.info( 'SelectObjectCommand fired', selectedKey, newSelected, this.selectedObjects );
 
 	}
 
-	private selectNewObjectOnly ( newSelected: any, selectedType: string ): void {
+	private selectNewObjectOnly ( newSelected: any ): void {
 
 		const lastSelected = this.lastSelectedObject;
 
@@ -254,27 +258,25 @@ export class SelectionService {
 
 		CommandHistory.execute( new SelectObjectCommand( newSelected ) );
 
-		if ( this.debug ) Log.info( 'SelectObjectCommand fired', selectedType, newSelected, this.selectedObjects );
+		if ( this.debug ) Log.info( 'SelectObjectCommand fired', newSelected, this.selectedObjects );
 
 	}
 
-	addToSelected ( object: Object ): void {
+	addToSelected<T> ( object: InstanceType<ConstructorFunction<T>> ): void {
 
 		if ( object == null ) return;
 
 		if ( object instanceof Array && object.length == 0 ) return;
 
-		const tag = this.getTag( object );
-
-		this.selectedObjects.set( tag, object );
+		this.selectedObjects.set( object.constructor as ConstructorFunction<T>, object );
 
 		this.lastSelectedObject = object;
 
-		if ( this.debug ) Log.info( 'addToSelected', tag, object, this.getSelectedObjects() );
+		if ( this.debug ) Log.info( 'addToSelected', object, this.getSelectedObjects() );
 
 	}
 
-	private deselectObject ( type: string ): void {
+	private deselectObject ( type: ConstructorFunction ): void {
 
 		const object = this.selectedObjects.get( type );
 
@@ -288,48 +290,14 @@ export class SelectionService {
 
 	removeFromSelected ( object: any ): void {
 
-		const tag = this.getTag( object );
-
-		this.selectedObjects.delete( tag );
+		this.selectedObjects.delete( object.constructor );
 
 		this.lastSelectedObject = null;
 
-		if ( this.debug ) Log.info( 'removeFromSelected', tag, object, this.selectedObjects );
+		if ( this.debug ) Log.info( 'removeFromSelected', object, this.selectedObjects );
 
 	}
 
-	private getTag ( object: Object ): string {
-
-		const className = this.getClassName( object );
-
-		if ( this.tags.has( className ) ) {
-
-			return this.tags.get( className );
-
-		} else {
-
-			return className;
-
-		}
-
-	}
-
-	private getClassName ( object: Object ): string {
-
-		if ( object instanceof Array ) {
-
-			if ( object.length > 0 ) {
-
-				return object[ 0 ].constructor.name;
-
-			}
-
-			return null;
-		}
-
-		return object.constructor.name;
-
-	}
 
 	addMovingStrategy ( strategy: IMovingStrategy ) {
 
@@ -355,9 +323,9 @@ export class SelectionService {
 
 	}
 
-	hasSelectionStrategyFor ( name: string ): boolean {
+	hasSelectorByKey ( key: ConstructorFunction ): boolean {
 
-		return this.strategies.has( name );
+		return this.strategies.has( key );
 
 	}
 

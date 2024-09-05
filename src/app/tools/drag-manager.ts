@@ -3,36 +3,45 @@
  */
 
 import { BaseDragHandler } from "app/core/drag-handlers/base-drag-handler";
+import { ClassMap, ConstructorFunction } from "app/core/models/class-map";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { ToolTipService } from "app/services/debug/tool-tip.service";
 import { ViewControllerService } from "app/views/editor/viewport/view-controller.service";
 
 export class DragManager {
 
-	private dragHandlers: Map<string, BaseDragHandler<object>>;
+	private dragHandlers: ClassMap<BaseDragHandler<object>>;
 
 	private isDragging: boolean;
 
 	private draggingObject: any;
 
 	constructor () {
-		this.dragHandlers = new Map();
+		this.dragHandlers = new ClassMap();
 	}
 
-	addDragHandler ( objectName: string, dragHandler: BaseDragHandler<object> ): void {
-		this.dragHandlers.set( objectName, dragHandler );
+	addDragHandler ( key: ConstructorFunction, dragHandler: BaseDragHandler<object> ): void {
+		this.dragHandlers.set( key, dragHandler );
 	}
 
-	getDragHandlers (): Map<string, BaseDragHandler<object>> {
+	getDragHandlers (): Map<ConstructorFunction, BaseDragHandler<object>> {
 		return this.dragHandlers;
 	}
 
-	getDragHandler ( objectName: string ): BaseDragHandler<object> {
-		return this.dragHandlers.get( objectName );
+	getDragHandler ( key: ConstructorFunction ): BaseDragHandler<object> {
+		return this.dragHandlers.get( key );
 	}
 
-	hasDragHandler ( objectName: string ): boolean {
-		return this.dragHandlers.has( objectName );
+	getHandlerForObject ( object: object ): BaseDragHandler<object> {
+		return this.dragHandlers.get( object.constructor as ConstructorFunction );
+	}
+
+	hasHandlerForObject ( object: object ): boolean {
+		return this.dragHandlers.has( object.constructor as ConstructorFunction );
+	}
+
+	hasDragHandler ( key: ConstructorFunction ): boolean {
+		return this.dragHandlers.has( key );
 	}
 
 	private enableControls (): void {
@@ -45,11 +54,11 @@ export class DragManager {
 
 	handleDrag ( object: object, e: PointerEventData ): void {
 
-		if ( !this.hasDragHandler( object.constructor.name ) ) {
+		if ( !this.hasHandlerForObject( object ) ) {
 			return;
 		}
 
-		const dragHandler = this.getDragHandler( object.constructor.name );
+		const dragHandler = this.getHandlerForObject( object );
 
 		if ( !dragHandler.isDraggingSupported() ) {
 			return;
@@ -104,7 +113,7 @@ export class DragManager {
 
 		if ( !this.isDragging ) return;
 
-		const handler = this.getDragHandler( this.draggingObject.constructor.name );
+		const handler = this.getHandlerForObject( this.draggingObject );
 
 		this.dragEndObject( handler, this.draggingObject, e );
 

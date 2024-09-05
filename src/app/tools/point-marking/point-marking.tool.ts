@@ -30,11 +30,11 @@ export class PointMarkingTool extends BaseTool<any> {
 	private boxSelectionStarted: boolean = false;
 
 	get selectedRoad () {
-		return this.selectionService.findSelectedObject<TvRoad>( TvRoad.name );
+		return this.selectionService.findSelectedObject<TvRoad>( TvRoad );
 	}
 
 	override get currentSelectedPoint () {
-		return this.selectionService.findSelectedObject<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint.name );
+		return this.selectionService.findSelectedObject<SimpleControlPoint<TvRoadObject>>( SimpleControlPoint );
 	}
 
 	constructor ( private tool: PointMarkingToolService ) {
@@ -47,13 +47,13 @@ export class PointMarkingTool extends BaseTool<any> {
 
 		super.init();
 
-		this.selectionService.registerStrategy( SimpleControlPoint.name, new DepPointStrategy() );
+		this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
 
 		const selectRoadStrategy = new DepSelectRoadStrategy( false, true );
 
 		selectRoadStrategy.debugger = this.tool.toolDebugger;
 
-		this.selectionService.registerStrategy( TvRoad.name, selectRoadStrategy );
+		this.selectionService.registerStrategy( TvRoad, selectRoadStrategy );
 
 		this.tool.base.addMovingStrategy( new OnRoadMovingStrategy() );
 

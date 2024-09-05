@@ -60,33 +60,27 @@ export class TrafficLightTool extends ToolWithHandler {
 
 	registerStrategies (): void {
 
-		this.selectionService.registerStrategy( JunctionGateLine.name, new JunctionGateLineSelectionStrategy() );
-		// this.selectionService.registerStrategy( ManeuverMesh.name, new ManeuverMeshSelectionStrategy() );
-		this.selectionService.registerStrategy( JunctionOverlay.name, new JunctionOverlaySelectionStrategy() );
-
-		this.selectionService.registerTag( ManeuverMesh.name, ManeuverMesh.name );
-		this.selectionService.registerTag( JunctionOverlay.name, JunctionOverlay.name );
+		this.selectionService.registerStrategy( JunctionGateLine, new JunctionGateLineSelectionStrategy() );
+		this.selectionService.registerStrategy( JunctionOverlay, new JunctionOverlaySelectionStrategy() );
 
 		this.selectionService.addMovingStrategy( new FollowHeadingMovingStrategy() );
-
-		this.setTypeName( TvJunction.name );
 
 	}
 
 	registerHandlers (): void {
 
-		this.addController( JunctionSignaliztion.name, this.tool.base.injector.get( JunctionSignaliztionController ) );
-		this.addVisualizer( JunctionSignaliztion.name, this.tool.base.injector.get( JunctionSignaliztionVisualizer ) );
+		this.addController( JunctionSignaliztion, this.tool.base.injector.get( JunctionSignaliztionController ) );
+		this.addVisualizer( JunctionSignaliztion, this.tool.base.injector.get( JunctionSignaliztionVisualizer ) );
 
 		// NOTE: not used
-		// this.addObjectHandler( ManeuverMesh.name, this.tool.base.injector.get( ManeuverMeshHandlerTrafficLight ) );
-		// this.addOverlayHandler( ManeuverMesh.name, this.tool.base.injector.get( ManeuverOverlayHandlerTrafficLight ) );
+		// this.addObjectHandler( ManeuverMesh, this.tool.base.injector.get( ManeuverMeshHandlerTrafficLight ) );
+		// this.addOverlayHandler( ManeuverMesh, this.tool.base.injector.get( ManeuverOverlayHandlerTrafficLight ) );
 
-		this.addController( JunctionOverlay.name, this.tool.base.injector.get( TrafficLightJunctionController ) );
-		this.addVisualizer( JunctionOverlay.name, this.tool.base.injector.get( TrafficLightJunctionVisualizer ) );
+		this.addController( JunctionOverlay, this.tool.base.injector.get( TrafficLightJunctionController ) );
+		this.addVisualizer( JunctionOverlay, this.tool.base.injector.get( TrafficLightJunctionVisualizer ) );
 
-		this.addController( JunctionGateLine.name, this.tool.base.injector.get( JunctionGateLineController ) );
-		this.addVisualizer( JunctionGateLine.name, this.tool.base.injector.get( JunctionGateLineVisualizer ) );
+		this.addController( JunctionGateLine, this.tool.base.injector.get( JunctionGateLineController ) );
+		this.addVisualizer( JunctionGateLine, this.tool.base.injector.get( JunctionGateLineVisualizer ) );
 
 	}
 
