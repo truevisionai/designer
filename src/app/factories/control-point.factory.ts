@@ -14,11 +14,25 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { SimpleControlPoint } from "../objects/simple-control-point";
 import { TvAbstractRoadGeometry } from "app/map/models/geometries/tv-abstract-road-geometry";
 import { Maths } from "app/utils/maths";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ControlPointFactory {
+
+	static createStraightControlPoints ( spline: AbstractSpline, start: Vector3, length: number, degrees: number ): AbstractControlPoint[] {
+
+		const hdg = Maths.Deg2Rad * degrees;
+		const direction = new Vector3( Math.cos( hdg ), Math.sin( hdg ), 0 );
+		const secondPoint = start.clone().add( direction.clone().multiplyScalar( length ) );
+
+		return [
+			this.createControl( spline, start ),
+			this.createControl( spline, secondPoint )
+		];
+
+	}
 
 	static createControl ( spline: AbstractSpline, position: Vector3, index?: number ): AbstractControlPoint {
 
@@ -47,6 +61,10 @@ export class ControlPointFactory {
 				const hdg = geometry?.hdg || 0;
 
 				return this.createRoadControlPoint( road, geometry, pointIndex, position, hdg );
+
+			} else {
+
+				Log.error( 'Road not found for spline control point' );
 
 			}
 

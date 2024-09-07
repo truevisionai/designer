@@ -23,6 +23,7 @@ import { JunctionToolHelper } from 'app/tools/junction/junction-tool.helper';
 import { MapValidatorService } from '../map/map-validator.service';
 import { HttpClient } from '@angular/common/http';
 import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
+import { SplineGeometryService } from './spline-geometry.service';
 
 export const STRAIGHT_XODR = 'assets/open-drive/straight-road.xml';
 export const ROUNDABOUT_XODR = 'assets/open-drive/roundabout-8-course.xodr';
@@ -49,7 +50,8 @@ export class SplineTestHelper {
 		public junctionToolHelper: JunctionToolHelper,
 		public mapValidator: MapValidatorService,
 		public httpClient: HttpClient,
-		public openDriveParser: OpenDriveParserService
+		public openDriveParser: OpenDriveParserService,
+		public splineGeometryService: SplineGeometryService,
 	) {
 	}
 
@@ -174,14 +176,20 @@ export class SplineTestHelper {
 
 	createStraightSpline ( start: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ) {
 
-		return SplineFactory.createStraight( start, length, degrees, type );
+		const spline = SplineFactory.createStraightSplineAndPoints( start, length, degrees, type );
+
+		// spline.addSegment( 0, this.roadFactory.createDefaultRoad() );
+
+		// spline.addControlPoints( ControlPointFactory.createStraightControlPoints( spline, start, length, degrees ) );
+
+		return spline;
 
 	}
 
 	addStraightRoadsFacingEachOther ( start: Vector3 ) {
 
-		const splineA = SplineFactory.createStraight( start, 50 );
-		const splineB = SplineFactory.createStraight( new Vector3( start.x + 150, start.y, start.z ), 50, 180 );
+		const splineA = this.createStraightSpline( start, 50 );
+		const splineB = this.createStraightSpline( new Vector3( start.x + 150, start.y, start.z ), 50, 180 );
 
 		this.splineService.add( splineA );
 		this.splineService.add( splineB );
@@ -201,9 +209,9 @@ export class SplineTestHelper {
 
 	addSixRoadJunction () {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 200 );
-		const splineB = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 200, 90 );
-		const splineC = SplineFactory.createStraight( new Vector3( -100, -100, 0 ), 200, 45 );
+		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
+		const splineB = this.createStraightSpline( new Vector3( 0, -100, 0 ), 200, 90 );
+		const splineC = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200, 45 );
 
 		this.splineService.add( splineA );
 		this.splineService.add( splineB );
@@ -212,8 +220,8 @@ export class SplineTestHelper {
 
 	createSimpleTJunction () {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 200 );
-		const splineB = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 100, 90 );
+		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
+		const splineB = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
 
 		this.splineService.add( splineA );
 		this.splineService.add( splineB );
@@ -221,8 +229,8 @@ export class SplineTestHelper {
 
 	createAngleT2RoadJunction () {
 
-		const splineA = SplineFactory.createStraight( new Vector3( 0, 0, 0 ), 100, 90 );
-		const splineB = SplineFactory.createStraight( new Vector3( 100, 0, 0 ), 135, 135 );
+		const splineA = this.createStraightSpline( new Vector3( 0, 0, 0 ), 100, 90 );
+		const splineB = this.createStraightSpline( new Vector3( 100, 0, 0 ), 135, 135 );
 
 		this.splineService.add( splineA );
 		this.splineService.add( splineB );
@@ -230,9 +238,9 @@ export class SplineTestHelper {
 
 	async createAJunction ( random = false ) {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 200 );
-		const splineC = SplineFactory.createStraight( new Vector3( -50, -100, 0 ), 200, 65 );
-		const splineB = SplineFactory.createStraight( new Vector3( 50, -100, 0 ), 200, 105 );
+		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
+		const splineC = this.createStraightSpline( new Vector3( -50, -100, 0 ), 200, 65 );
+		const splineB = this.createStraightSpline( new Vector3( 50, -100, 0 ), 200, 105 );
 
 		const splines = [ splineA, splineB, splineC ];
 
@@ -242,9 +250,9 @@ export class SplineTestHelper {
 
 	async createHJunction ( random = false ) {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 200 );
-		const splineC = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 100, 90 );
-		const splineB = SplineFactory.createStraight( new Vector3( -100, -100, 0 ), 200 );
+		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
+		const splineC = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
+		const splineB = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200 );
 
 		const splines = [ splineA, splineB, splineC ];
 
@@ -272,10 +280,10 @@ export class SplineTestHelper {
 		 */
 
 		// 4 roads coming from all directions and meeting at 0,0,0
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 100, 0 );
-		const splineB = SplineFactory.createStraight( new Vector3( 0, 100, 0 ), 100, -90 );
-		const splineC = SplineFactory.createStraight( new Vector3( 100, 0, 0 ), 100, 180 );
-		const splineD = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 100, 90 );
+		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 100, 0 );
+		const splineB = this.createStraightSpline( new Vector3( 0, 100, 0 ), 100, -90 );
+		const splineC = this.createStraightSpline( new Vector3( 100, 0, 0 ), 100, 180 );
+		const splineD = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
 
 		const splines = [ splineA, splineB, splineC, splineD ];
 
@@ -285,8 +293,8 @@ export class SplineTestHelper {
 
 	async createXJunctionWithTwoRoads ( random: boolean, length = 200 ) {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -length * 0.5, 0, 0 ), length, 0 );
-		const splineB = SplineFactory.createStraight( new Vector3( 0, -length * 0.5, 0 ), length, 90 );
+		const splineA = this.createStraightSpline( new Vector3( -length * 0.5, 0, 0 ), length, 0 );
+		const splineB = this.createStraightSpline( new Vector3( 0, -length * 0.5, 0 ), length, 90 );
 
 		await this.addInRandomOrder( [ splineA, splineB ], random );
 
@@ -294,9 +302,9 @@ export class SplineTestHelper {
 
 	async createTJunctionWith3Roads ( random = false ) {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 100 );
-		const splineB = SplineFactory.createStraight( new Vector3( 0, 0, 0 ), 100 );
-		const splineC = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 100, 90 );
+		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 100 );
+		const splineB = this.createStraightSpline( new Vector3( 0, 0, 0 ), 100 );
+		const splineC = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
 
 		const splines = [ splineA, splineB, splineC ];
 
@@ -305,9 +313,9 @@ export class SplineTestHelper {
 
 	async createDoubleTJunctionWith3Roads ( random = false ) {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 300 );
-		const splineB = SplineFactory.createStraight( new Vector3( 100, -100, 0 ), 100, 90 );
-		const splineC = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 100, 90 );
+		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 300 );
+		const splineB = this.createStraightSpline( new Vector3( 100, -100, 0 ), 100, 90 );
+		const splineC = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
 
 		const splines = [ splineA, splineB, splineC ];
 
@@ -357,9 +365,9 @@ export class SplineTestHelper {
 
 	create2CustomJunctionWith3Roads () {
 
-		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
-		const middle = SplineFactory.createStraight( new Vector3( 0, 0, 0 ), 100 );
-		const right = SplineFactory.createStraight( new Vector3( 120, 0, 0 ), 100 );
+		const left = this.createStraightSpline( new Vector3( -120, 0, 0 ), 100 );
+		const middle = this.createStraightSpline( new Vector3( 0, 0, 0 ), 100 );
+		const right = this.createStraightSpline( new Vector3( 120, 0, 0 ), 100 );
 
 		this.splineService.add( left );
 		this.splineService.add( middle );
@@ -387,8 +395,8 @@ export class SplineTestHelper {
 
 	create2RoadsForCustomJunction () {
 
-		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
-		const right = SplineFactory.createStraight( new Vector3( 20, 0, 0 ), 100 );
+		const left = this.createStraightSpline( new Vector3( -120, 0, 0 ), 100 );
+		const right = this.createStraightSpline( new Vector3( 20, 0, 0 ), 100 );
 
 		this.splineService.add( left );
 		this.splineService.add( right );
@@ -399,9 +407,9 @@ export class SplineTestHelper {
 
 	create3RoadsForCustomJunction () {
 
-		const left = SplineFactory.createStraight( new Vector3( -120, 0, 0 ), 100 );
-		const right = SplineFactory.createStraight( new Vector3( 20, 0, 0 ), 100 );
-		const bottom = SplineFactory.createStraight( new Vector3( 0, -120, 0 ), 100, 90 );
+		const left = this.createStraightSpline( new Vector3( -120, 0, 0 ), 100 );
+		const right = this.createStraightSpline( new Vector3( 20, 0, 0 ), 100 );
+		const bottom = this.createStraightSpline( new Vector3( 0, -120, 0 ), 100, 90 );
 
 		this.splineService.add( left );
 		this.splineService.add( right );

@@ -39,9 +39,9 @@ describe( 'IntersectionGroup', () => {
 
 	it( 'should give correct start for spline intersection', () => {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 200 );
-		const splineB = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 200, 90 );
-		const splineC = SplineFactory.createStraight( new Vector3( -100, -100, 0 ), 200, 45 );
+		const splineA = SplineFactory.createStraightSplineAndPoints( new Vector3( -100, 0, 0 ), 200 );
+		const splineB = SplineFactory.createStraightSplineAndPoints( new Vector3( 0, -100, 0 ), 200, 90 );
+		const splineC = SplineFactory.createStraightSplineAndPoints( new Vector3( -100, -100, 0 ), 200, 45 );
 
 		splineManager.addSpline( splineA );
 		splineManager.addSpline( splineB );

@@ -167,11 +167,16 @@ export class SplineFactory {
 	 * @param degrees
 	 * @param type
 	 */
-	static createStraight ( start: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ): AbstractSpline {
+	static createStraightSplineAndPoints ( start: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ): AbstractSpline {
 
-		const hdg = Maths.Deg2Rad * degrees;
-		const direction = new Vector3( Math.cos( hdg ), Math.sin( hdg ), 0 );
-		const secondPoint = start.clone().add( direction.clone().multiplyScalar( length ) );
+		const spline = this.createSpline( type );
+
+		spline.addControlPoints( ControlPointFactory.createStraightControlPoints( spline, start, length, degrees ) );
+
+		return spline;
+	}
+
+	static createSpline ( type: SplineType = SplineType.AUTOV2 ): AbstractSpline {
 
 		let spline: AbstractSpline;
 
@@ -180,9 +185,6 @@ export class SplineFactory {
 		} else {
 			spline = new AutoSpline();
 		}
-
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, start ) );
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, secondPoint ) );
 
 		return spline;
 	}

@@ -47,8 +47,8 @@ describe( 'JunctionManager', () => {
 
 	it( 'should give correct output for getCoordAtOffset', () => {
 
-		const splineA = SplineFactory.createStraight( new Vector3( -100, 0, 0 ), 200 );
-		const splineB = SplineFactory.createStraight( new Vector3( 0, -100, 0 ), 200, 90 );
+		const splineA = SplineFactory.createStraightSplineAndPoints( new Vector3( -100, 0, 0 ), 200 );
+		const splineB = SplineFactory.createStraightSplineAndPoints( new Vector3( 0, -100, 0 ), 200, 90 );
 
 		junctionManager.splineBuilder.buildSpline( splineA );
 		junctionManager.splineBuilder.buildSpline( splineB );
@@ -170,7 +170,7 @@ describe( 'JunctionManager', () => {
 
 		tick( 1000 );
 
-		const spline = SplineFactory.createStraight( new Vector3( -100, -100, 0 ), 200, 45 );
+		const spline = SplineFactory.createStraightSplineAndPoints( new Vector3( -100, -100, 0 ), 200, 45 );
 
 		splineManager.addSpline( spline, false );
 
@@ -189,7 +189,7 @@ describe( 'JunctionManager', () => {
 		tick( 1000 );
 
 		// create new vertical spline
-		const spline = SplineFactory.createStraight( new Vector3( 500, -100, 0 ), 200, 90 );
+		const spline = SplineFactory.createStraightSplineAndPoints( new Vector3( 500, -100, 0 ), 200, 90 );
 		splineManager.addSpline( spline, false );
 
 		// then move old vertical spline
@@ -213,7 +213,7 @@ describe( 'JunctionManager', () => {
 
 		tick( 1000 );
 
-		const spline = SplineFactory.createStraight( new Vector3( 50, -100, 0 ), 200, 90 );
+		const spline = SplineFactory.createStraightSplineAndPoints( new Vector3( 50, -100, 0 ), 200, 90 );
 
 		splineManager.addSpline( spline, false );
 

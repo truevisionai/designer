@@ -154,6 +154,20 @@ export abstract class AbstractSpline {
 		return this.geometries;
 	}
 
+	addSegment ( s: number, segment: NewSegment ): void {
+
+		if ( this.hasSegment( segment ) ) {
+			throw new Error( `Segment already exists in spline: ${ segment }` );
+		}
+
+		if ( this.segmentMap.hasKey( s ) ) {
+			throw new Error( `Key already exists in spline: ${ segment }` );
+		}
+
+		this.segmentMap.set( s, segment );
+
+	}
+
 	getSegments (): NewSegment[] {
 		return Array.from( this.segmentMap.values() );
 	}
