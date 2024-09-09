@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SelectionStrategy } from "./select-strategy";
+import { BaseSelectionStrategy } from "./select-strategy";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { Intersection, Object3D } from "three";
 import { TvLane } from "app/map/models/tv-lane";
@@ -10,7 +10,7 @@ import { JunctionOverlay } from "app/services/junction/junction-overlay";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { ManeuverMesh } from "app/services/junction/maneuver-mesh";
 
-export class ObjectUserDataStrategy<T> extends SelectionStrategy<T> {
+export class ObjectUserDataStrategy<T> extends BaseSelectionStrategy<T> {
 
 	constructor ( private tag: string, private key?: string ) {
 		super();

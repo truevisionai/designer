@@ -3,14 +3,14 @@
  */
 
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { SelectionStrategy } from './select-strategy';
+import { BaseSelectionStrategy } from './select-strategy';
 import { DebugLine } from 'app/objects/debug-line';
 import { StrategySettings } from './control-point-strategy';
 
 /**
  * @deprecated
  */
-export class DepSelectLineStrategy<T extends DebugLine<any>> extends SelectionStrategy<T> {
+export class DepSelectLineStrategy<T extends DebugLine<any>> extends BaseSelectionStrategy<T> {
 
 	private current: T = null;
 	private selected: T = null;
@@ -89,7 +89,7 @@ export class DepSelectLineStrategy<T extends DebugLine<any>> extends SelectionSt
 
 }
 
-export class SelectLineStrategy<T extends DebugLine<any>> extends SelectionStrategy<T> {
+export class SelectLineStrategy<T extends DebugLine<any>> extends BaseSelectionStrategy<T> {
 
 	private options: StrategySettings = {};
 

@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { MapEvents } from 'app/events/map-events';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { CommandHistory } from 'app/commands/command-history';
@@ -20,7 +20,7 @@ export class SelectionService {
 
 	private movingStrategies: IMovingStrategy[] = [];
 
-	private strategies: ClassMap<SelectionStrategy<any>>;
+	private strategies: ClassMap<BaseSelectionStrategy<any>>;
 
 	private selectedObjects: ClassMap<any>;
 
@@ -34,7 +34,7 @@ export class SelectionService {
 
 	constructor () {
 
-		this.strategies = new ClassMap<SelectionStrategy<any>>();
+		this.strategies = new ClassMap<BaseSelectionStrategy<any>>();
 
 		this.selectedObjects = new ClassMap<any>();
 
@@ -48,13 +48,13 @@ export class SelectionService {
 
 	}
 
-	getStrategies (): SelectionStrategy<any>[] {
+	getStrategies (): BaseSelectionStrategy<any>[] {
 
 		return Array.from( this.strategies.values() );
 
 	}
 
-	registerStrategy ( key: ConstructorFunction, strategy: SelectionStrategy<any> ): void {
+	registerStrategy ( key: ConstructorFunction, strategy: BaseSelectionStrategy<any> ): void {
 
 		if ( this.debug ) Log.log( 'Registering strategy', key, strategy );
 

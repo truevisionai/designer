@@ -4,11 +4,11 @@
 
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { SelectionStrategy } from './select-strategy';
+import { BaseSelectionStrategy } from './select-strategy';
 import { IDebugger } from 'app/core/interfaces/debug.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 
-export class RoadCoordStrategy extends SelectionStrategy<TvRoadCoord> {
+export class RoadCoordStrategy extends BaseSelectionStrategy<TvRoadCoord> {
 
 	public debugger: IDebugger<TvRoad, any>;
 

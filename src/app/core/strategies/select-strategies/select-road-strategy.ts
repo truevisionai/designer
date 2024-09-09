@@ -4,13 +4,13 @@
 
 import { IDebugger } from 'app/core/interfaces/debug.service';
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { SelectionStrategy, NewSelectionStrategy } from './select-strategy';
+import { BaseSelectionStrategy, NewSelectionStrategy } from './select-strategy';
 import { TvRoad } from 'app/map/models/tv-road.model';
 
 /**
  * @deprecated
  */
-export class DepSelectRoadStrategy extends SelectionStrategy<TvRoad> {
+export class DepSelectRoadStrategy extends BaseSelectionStrategy<TvRoad> {
 
 	public debugger: IDebugger<TvRoad, any>;
 

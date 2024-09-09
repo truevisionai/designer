@@ -4,7 +4,7 @@
 
 import { Points } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
-import { SelectionStrategy } from './select-strategy';
+import { BaseSelectionStrategy } from './select-strategy';
 import { AbstractControlPoint } from "../../../objects/abstract-control-point";
 import { LaneWidthNode } from 'app/tools/lane-width/objects/lane-width-node';
 
@@ -19,7 +19,7 @@ export interface StrategySettings {
 /**
  * @deprecated
  */
-export class DepPointStrategy<T extends AbstractControlPoint> extends SelectionStrategy<T> {
+export class DepPointStrategy<T extends AbstractControlPoint> extends BaseSelectionStrategy<T> {
 
 	private current: T = null;
 

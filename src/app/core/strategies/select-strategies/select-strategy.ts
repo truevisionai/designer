@@ -12,7 +12,22 @@ import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { RoadWidthService } from 'app/services/road/road-width.service';
 import { Intersection, Object3D, Vector3 } from "three";
 
-export abstract class SelectionStrategy<T> {
+export interface SelectionStrategy<T> {
+
+	// @deprecated
+	onPointerDown ( pointerEventData: PointerEventData ): T | undefined;
+
+	// @deprecated
+	onPointerMoved ( pointerEventData: PointerEventData ): T | undefined;
+
+	// @deprecated
+	onPointerUp ( pointerEventData: PointerEventData ): T | undefined;
+
+	handleSelection ( e: PointerEventData ): T | undefined;
+
+}
+
+export abstract class BaseSelectionStrategy<T> implements SelectionStrategy<T> {
 
 	abstract onPointerDown ( pointerEventData: PointerEventData ): T | undefined;
 
@@ -211,7 +226,7 @@ export abstract class SelectionStrategy<T> {
 	}
 }
 
-export abstract class NewSelectionStrategy<T> extends SelectionStrategy<T> {
+export abstract class NewSelectionStrategy<T> extends BaseSelectionStrategy<T> {
 
 	abstract handleSelection ( e: PointerEventData ): T;
 

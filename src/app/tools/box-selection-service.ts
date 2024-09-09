@@ -7,7 +7,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper';
 import { Camera, Mesh } from 'three';
-import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { RendererService } from 'app/renderer/renderer.service';
 import { CameraService } from 'app/renderer/camera.service';
@@ -24,7 +24,7 @@ export class BoxSelectionService {
 
 	private box: SelectionBox;
 
-	private selectStrategy: SelectionStrategy<any>;
+	private selectStrategy: BaseSelectionStrategy<any>;
 
 	private filteredCollection = [];
 
@@ -42,13 +42,13 @@ export class BoxSelectionService {
 
 	}
 
-	setStrategy ( strategy: SelectionStrategy<any> ) {
+	setStrategy ( strategy: BaseSelectionStrategy<any> ) {
 
 		this.selectStrategy = strategy;
 
 	}
 
-	init ( strategy?: SelectionStrategy<any> ) {
+	init ( strategy?: BaseSelectionStrategy<any> ) {
 
 		if ( strategy ) this.setStrategy( strategy );
 

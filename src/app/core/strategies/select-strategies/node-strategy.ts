@@ -3,10 +3,10 @@
  */
 
 import { INode } from "../../../objects/i-selectable";
-import { SelectionStrategy } from "./select-strategy";
+import { BaseSelectionStrategy } from "./select-strategy";
 import { PointerEventData } from "../../../events/pointer-event-data";
 
-export class NodeStrategy<T extends INode> extends SelectionStrategy<T> {
+export class NodeStrategy<T extends INode> extends BaseSelectionStrategy<T> {
 
     private current: T = null;
     private selected: T = null;

@@ -28,7 +28,7 @@ import { ToolHintConfig } from 'app/core/interfaces/tool.hints';
 import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';
 import { BaseController } from 'app/core/controllers/base-controller';
 import { ToolHandlers } from './tool-handlers';
-import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { BaseDragHandler } from 'app/core/drag-handlers/base-drag-handler';
 import { ConstructorFunction } from 'app/core/models/class-map';
 import { AssetDropHelper, AssetDropHandler } from './asset-drop-handler';
@@ -143,7 +143,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		this.handlers.updateVisuals( object );
 	}
 
-	addSelectionStrategy ( key: ConstructorFunction, strategy: SelectionStrategy<T> ): void {
+	addSelectionStrategy ( key: ConstructorFunction, strategy: BaseSelectionStrategy<T> ): void {
 		this.selectionService.registerStrategy( key, strategy );
 	}
 

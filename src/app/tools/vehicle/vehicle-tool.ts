@@ -6,7 +6,7 @@ import { IToolWithPoint, SelectPointCommand } from 'app/commands/select-point-co
 import { SetInspectorCommand } from 'app/commands/set-inspector-command';
 import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 import { RoadCoordStrategy } from 'app/core/strategies/select-strategies/road-coord-strategy';
-import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { EntityInspector } from 'app/scenario/inspectors/tv-entity-inspector/tv-entity-inspector.component';
 import { TeleportAction } from 'app/scenario/models/actions/tv-teleport-action';
@@ -27,9 +27,9 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	public toolType = ToolType.Vehicle;
 
-	private movingStrategy: SelectionStrategy<TvRoadCoord>;
+	private movingStrategy: BaseSelectionStrategy<TvRoadCoord>;
 
-	private controlPointStrategy: SelectionStrategy<DynamicControlPoint<ScenarioEntity>>;
+	private controlPointStrategy: BaseSelectionStrategy<DynamicControlPoint<ScenarioEntity>>;
 
 	private points: DynamicControlPoint<ScenarioEntity>[] = [];
 

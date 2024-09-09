@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { NewSelectionStrategy, SelectionStrategy } from "./select-strategy";
+import { NewSelectionStrategy, BaseSelectionStrategy } from "./select-strategy";
 import { TvLane } from "../../../map/models/tv-lane";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { TvLaneCoord } from "../../../map/models/tv-lane-coord";
@@ -12,7 +12,7 @@ import { TvRoad } from "app/map/models/tv-road.model";
 /**
  * @deprecated
  */
-export class DepSelectLaneStrategy extends SelectionStrategy<TvLane> {
+export class DepSelectLaneStrategy extends BaseSelectionStrategy<TvLane> {
 
 	private lane: TvLane;
 	private selected: TvLane;
@@ -65,7 +65,7 @@ export class DepSelectLaneStrategy extends SelectionStrategy<TvLane> {
 
 }
 
-export class SelectLaneStrategy extends SelectionStrategy<TvLane> {
+export class SelectLaneStrategy extends BaseSelectionStrategy<TvLane> {
 
 	constructor () {
 		super();
@@ -100,7 +100,7 @@ export class SelectLaneStrategy extends SelectionStrategy<TvLane> {
 /**
  * @deprecated
  */
-export class DepLaneCoordStrategy extends SelectionStrategy<TvLaneCoord> {
+export class DepLaneCoordStrategy extends BaseSelectionStrategy<TvLaneCoord> {
 
 	private lane: TvLane;
 	private selectedLane: TvLane;
