@@ -14,25 +14,25 @@ export class SetToolCommand extends BaseCommand {
 
 		super();
 
-		this.oldTool = ToolManager.currentTool;
+		this.oldTool = ToolManager.getCurrentTool();
 
 	}
 
 	execute (): void {
 
-		ToolManager.currentTool = this.newTool;
+		ToolManager.setCurrentTool( this.newTool );
 
 	}
 
 	undo (): void {
 
-		ToolManager.currentTool = this.oldTool;
+		ToolManager.setCurrentTool( this.oldTool );
 
 	}
 
 	redo (): void {
 
-		ToolManager.currentTool = this.newTool;
+		this.redo();
 
 	}
 

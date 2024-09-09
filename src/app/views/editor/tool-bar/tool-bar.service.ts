@@ -30,7 +30,7 @@ export class ToolBarService {
 
 	setToolByType ( type: ToolType ) {
 
-		if ( ToolManager.currentTool?.toolType === type ) return;
+		if ( ToolManager.isCurrentTool( type ) ) return;
 
 		const tool = this.toolFactory.createTool( type );
 

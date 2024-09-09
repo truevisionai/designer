@@ -45,7 +45,7 @@ export class LaneToolLaneDragHandler extends BaseDragHandler<TvLane> {
 
 		this.updateLaneWidth( this.newLane, this.dragStartPosition, e.point );
 
-		ToolManager.getTool().updateVisuals( this.newLane );
+		ToolManager.updateVisuals( this.newLane );
 
 	}
 

@@ -56,6 +56,6 @@ export abstract class BaseVisualizer<T> implements Visualizer<T> {
 	}
 
 	updateVisuals ( object: object ): void {
-		ToolManager.getTool()?.updateVisuals( object );
+		ToolManager.updateVisuals( object );
 	}
 }

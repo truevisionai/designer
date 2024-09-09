@@ -87,7 +87,7 @@ export class ObjectEventListener {
 
 		} else {
 
-			ToolManager.getTool()?.onObjectUpdated( object );
+			ToolManager.onObjectUpdated( object );
 
 		}
 
@@ -101,7 +101,7 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectRemoved', object );
 
-		ToolManager.getTool()?.onObjectRemoved( object );
+		ToolManager.onObjectRemoved( object );
 
 	}
 
@@ -109,7 +109,7 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectAdded', object );
 
-		ToolManager.getTool()?.onObjectAdded( object );
+		ToolManager.onObjectAdded( object );
 
 	}
 
@@ -117,7 +117,7 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectUnselected', object );
 
-		ToolManager.getTool()?.onObjectUnselected( object );
+		ToolManager.onObjectUnselected( object );
 
 	}
 
@@ -125,7 +125,7 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectSelected', object );
 
-		ToolManager.getTool()?.onObjectSelected( object );
+		ToolManager.onObjectSelected( object );
 
 	}
 

@@ -5,6 +5,8 @@
 import { EventEmitter } from '@angular/core';
 import { Tool } from "../tools/tool";
 import { ToolType } from 'app/tools/tool-types.enum';
+import { Asset } from 'app/assets/asset.model';
+import { Vector3 } from 'three';
 
 export class ToolManager {
 
@@ -12,13 +14,13 @@ export class ToolManager {
 
 	private static tool: Tool;
 
-	static get currentTool (): Tool {
+	static getCurrentTool (): Tool {
 
 		return this.tool;
 
 	}
 
-	static set currentTool ( value: Tool ) {
+	static setCurrentTool ( value: Tool ): void {
 
 		if ( !value ) {
 
@@ -71,6 +73,60 @@ export class ToolManager {
 	static enable (): void {
 
 		this.tool?.enable();
+
+	}
+
+	static isCurrentTool ( type: ToolType ): boolean {
+
+		return this.tool?.toolType === type;
+
+	}
+
+	static updateVisuals ( object: object ): void {
+
+		this.tool?.updateVisuals( object );
+
+	}
+
+	static onObjectUpdated ( object: object ): void {
+
+		this.tool?.onObjectUpdated( object );
+
+	}
+
+	static onObjectRemoved ( object: object ): void {
+
+		this.tool?.onObjectRemoved( object );
+
+	}
+
+	static onObjectAdded ( object: object ): void {
+
+		this.tool?.onObjectAdded( object );
+
+	}
+
+	static onObjectUnselected ( object: object ): void {
+
+		this.tool?.onObjectUnselected( object );
+
+	}
+
+	static onObjectSelected ( object: object ): void {
+
+		this.tool?.onObjectSelected( object );
+
+	}
+
+	static onAssetDropped ( asset: Asset, position: Vector3 ): void {
+
+		this.tool?.onAssetDropped( asset, position );
+
+	}
+
+	static shouldShowGraphViewport (): boolean {
+
+		return this.tool?.toolType == ToolType.RoadElevation;
 
 	}
 

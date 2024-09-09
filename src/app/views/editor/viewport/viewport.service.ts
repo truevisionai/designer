@@ -102,7 +102,7 @@ export class ViewportService {
 
 	importAsset ( asset: Asset, position: Vector3 ) {
 
-		ToolManager.currentTool?.onAssetDropped( asset, position );
+		ToolManager.onAssetDropped( asset, position );
 
 	}
 

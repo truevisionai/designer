@@ -12,7 +12,6 @@ import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { ShortcutService } from 'app/services/editor/shortcut.service';
 import { ToolManager } from "../../managers/tool-manager";
-import { ToolType } from "../../tools/tool-types.enum";
 import { QuesionsDialogComponent } from '../sessions/questions/questions-dialog.component';
 import { ProfileService } from 'app/services/profile.service';
 
@@ -56,7 +55,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 	}
 
 	get isElevationToolOpened (): boolean {
-		return ToolManager.currentTool?.toolType == ToolType.RoadElevation;
+		return ToolManager.shouldShowGraphViewport();
 	}
 
 	constructor (
