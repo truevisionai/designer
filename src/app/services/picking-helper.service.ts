@@ -3,11 +3,13 @@
  */
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { TvLane } from 'app/map/models/tv-lane';
 import { Object3D, Raycaster, Vector3 } from 'three';
 import { AbstractControlPoint } from "../objects/abstract-control-point";
-import { TvRoadObjectType } from "../map/models/objects/tv-road-object";
 
+
+/**
+ * @deprecated dont use this
+ */
 export class PickingHelper {
 
 	private static raycaster = new Raycaster();
@@ -100,81 +102,6 @@ export class PickingHelper {
 
 		// If there are no intersections, return null
 		return [];
-	}
-
-	public static findAllByTag<T extends Object3D> ( tag: string, e: PointerEventData, objects: T[], recursive = true ): T[] {
-
-		const intersections = this.findViaRaycasting( e, objects, recursive );
-
-		return intersections.filter( i => i[ 'tag' ] === tag );
-	}
-
-	public static findByTag<T extends Object3D> ( tag: string, e: PointerEventData, objects: T[], recursive = true ): T {
-
-		const results = this.findAllByTag( tag, e, objects, recursive );
-
-		return results.length ? results[ 0 ] : null;
-	}
-
-	public static findAllByObjectType<T extends Object3D> ( type, e: PointerEventData, objects: T[], recursive = true ): T[] {
-
-		const results = this.findViaRaycasting( e, objects, recursive );
-
-		return results.filter( i => i.type === type );
-	}
-
-	public static findByObjectType<T extends Object3D> ( type: any, e: PointerEventData, objects: T[], recursive = true ): T {
-
-		const results = this.findAllByObjectType<T>( type, e, objects, recursive );
-
-		return results.length ? results[ 0 ] : null;
-
-	}
-
-	public static checkLaneObjectInteraction ( event: PointerEventData, tag?: string ): TvLane {
-
-		const laneTag = tag || TvRoadObjectType.LANE;
-
-		let lane = null;
-
-		for ( let i = 0; i < event.intersections.length; i++ ) {
-
-			const intersection = event.intersections[ i ];
-
-			if ( intersection.object && intersection.object[ 'tag' ] === laneTag ) {
-
-				if ( intersection.object.userData.lane ) {
-
-					lane = intersection.object.userData.lane as TvLane;
-
-					break;
-				}
-			}
-		}
-
-		return lane;
-	}
-
-	public static checkReferenceLineInteraction ( event: PointerEventData, tag: string ): TvLane {
-
-		let line = null;
-
-		for ( let i = 0; i < event.intersections.length; i++ ) {
-
-			const intersection = event.intersections[ i ];
-
-			if ( intersection.object && intersection.object[ 'tag' ] === tag ) {
-
-				if ( intersection.object.userData.lane ) {
-
-					line = intersection.object.userData.lane as TvLane;
-
-					break;
-				}
-			}
-		}
-
-		return line;
 	}
 
 }
