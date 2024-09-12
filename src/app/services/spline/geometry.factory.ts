@@ -100,6 +100,8 @@ export abstract class GeometryFactory {
 		const curvStart = k;
 		const curvEnd = ( k + dk * _L );
 
+		// NOTE: can be a line if the curvature is 0
+		// but this can be a smarter check
 		if (
 			Maths.approxEquals( curvStart, 0, 0.0001 ) &&
 			Maths.approxEquals( curvEnd, 0, 0.0001 )

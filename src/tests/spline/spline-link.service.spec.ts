@@ -199,7 +199,7 @@ describe( 'SplineLinkService: Tests', () => {
 
 		AbstractSpline.reset();
 
-		testHelper.createCustomJunctionWith2Roads();
+		testHelper.addCustomJunctionWith2Roads();
 
 		testHelper.addStraightRoadSpline( new Vector3( 100, -50, 0 ), 100, 90 );
 
@@ -226,7 +226,7 @@ describe( 'SplineLinkService: Tests', () => {
 
 		AbstractSpline.reset();
 
-		testHelper.createCustomJunctionWith2Roads();
+		testHelper.addCustomJunctionWith2Roads();
 
 		testHelper.addStraightRoadSpline( new Vector3( -60, -50, 0 ), 100, 90 );
 

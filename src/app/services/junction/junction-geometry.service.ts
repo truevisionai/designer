@@ -7,28 +7,24 @@ import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { Box2, Box3, Vector2 } from "three";
 import { JunctionRoadService } from "./junction-road.service";
 import { Log } from "../../core/utils/log";
-import { TvJunctionBoundaryBuilder } from "../../map/junction-boundary/tv-junction-boundary.builder";
+import { BoundaryPositionService } from 'app/map/junction-boundary/boundary-position.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class JunctionGeometryService {
+export class JunctionBoundsService {
 
 	constructor (
 		private junctionRoadService: JunctionRoadService,
-		public boundaryBuilder: TvJunctionBoundaryBuilder,
+		private boundaryPositionService: BoundaryPositionService,
 	) {
 	}
 
-	update ( junction: TvJunction ) {
+	updateBounds ( junction: TvJunction ): void {
 
-		junction.depBoundingBox = this.createBoundingBoxFromConnectingRoads( junction );
+		junction.depBoundingBox = this.buildBox3( junction );
 
-		this.updateBoundingBox( junction );
-
-	}
-
-	updateBoundingBox ( junction: TvJunction ) {
+		junction.boundingBox = this.buildBox2( junction );
 
 		const centroid = junction.boundingBox.getCenter( new Vector2() );
 
@@ -38,7 +34,7 @@ export class JunctionGeometryService {
 
 	}
 
-	createBoundingBoxFromConnectingRoads ( junction: TvJunction ) {
+	private buildBox3 ( junction: TvJunction ): Box3 {
 
 		const boundingBox = new Box3();
 
@@ -62,9 +58,9 @@ export class JunctionGeometryService {
 
 	}
 
-	createBoundingBoxFromOuterBoundary ( junction: TvJunction ): Box2 {
+	private buildBox2 ( junction: TvJunction ): Box2 {
 
-		const points = this.boundaryBuilder.convertBoundaryToPositions( junction.outerBoundary );
+		const points = this.boundaryPositionService.getBoundaryPositions( junction.innerBoundary );
 
 		if ( points.length < 2 ) {
 			Log.error( 'JunctionBuilder.buildBoundingBox: Invalid boundary points', junction.toString() );

@@ -265,8 +265,6 @@ export class SplineFactory {
 
 		spline.controlPoints.forEach( cp => cp.userData.roadId = road.id );
 
-		spline.segmentMap.set( 0, road );
-
 		road.sStart = 0;
 
 		return spline;

@@ -20,23 +20,37 @@ export class RoadControlPointDragHandler extends PointDragHandler<RoadControlPoi
 		super();
 	}
 
-	onDragStart ( object: RoadControlPoint, e: PointerEventData ): void {
+	isDraggingSupported ( point: RoadControlPoint ): boolean {
 
-		// throw new Error( "Method not implemented." );
+		if ( point.road.hasSuccessor() && point.index === 0 ) return false;
+
+		if ( point.road.hasPredecessor() && point.index === point.spline.getControlPoints().length - 1 ) return false;
+
+		return true;
 
 	}
 
-	onDrag ( point: RoadControlPoint, e: PointerEventData ): void {
+	onDragStart ( point: RoadControlPoint, event: PointerEventData ): void {
 
-		point.setPosition( e.point );
+		if ( point.shouldMarkAsSpiral() ) {
+
+			point.markAsSpiral();
+
+		}
+
+	}
+
+	onDrag ( point: RoadControlPoint, event: PointerEventData ): void {
+
+		point.setPosition( event.point );
 
 		this.splineGeometryService.updateGeometryAndBounds( point.spline );
 
 	}
 
-	onDragEnd ( point: RoadControlPoint, e: PointerEventData ): void {
+	onDragEnd ( point: RoadControlPoint, event: PointerEventData ): void {
 
-		Commands.SetPointPosition( point.spline, point, e.point, this.dragStartPosition );
+		Commands.SetPointPosition( point.spline, point, event.point, this.dragStartPosition );
 
 	}
 

@@ -9,11 +9,14 @@ import { SplineGeometryService } from "../../../services/spline/spline-geometry.
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { SplineUtils } from "../../../utils/spline.utils";
 import { Commands } from "../../../commands/commands";
+import { Vector3 } from "three";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export abstract class SplineDragHandler extends BaseDragHandler<AutoSpline> {
+
+	private oldPositions: Vector3[];
 
 	constructor (
 		private splineGeometryService: SplineGeometryService,
@@ -23,7 +26,7 @@ export abstract class SplineDragHandler extends BaseDragHandler<AutoSpline> {
 
 	onDragStart ( object: AutoSpline, e: PointerEventData ): void {
 
-		//
+		this.oldPositions = object.getControlPoints().map( point => point.position.clone() );
 
 	}
 
@@ -46,10 +49,20 @@ export abstract class SplineDragHandler extends BaseDragHandler<AutoSpline> {
 
 	onDragEnd ( object: AutoSpline, e: PointerEventData ): void {
 
-		const delta = this.dragStartPosition.clone().sub( this.dragEndPosition );
+		if ( this.dragStartPosition.equals( this.dragEndPosition ) ) {
+			return;
+		}
 
-		Commands.DragSpline( object, delta );
+		// minimum distance to consider as drag
+		if ( this.dragStartPosition.distanceTo( this.dragEndPosition ) < 0.0001 ) {
+			return;
+		}
 
+		const newPositions = object.getControlPoints().map( point => point.position.clone() );
+
+		Commands.DragSpline( object, newPositions, this.oldPositions );
+
+		this.oldPositions = [];
 	}
 
 }

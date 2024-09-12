@@ -29,6 +29,10 @@ export const STRAIGHT_XODR = 'assets/open-drive/straight-road.xml';
 export const ROUNDABOUT_XODR = 'assets/open-drive/roundabout-8-course.xodr';
 export const CROSSING8_XODR = 'assets/open-drive/crossing-8-course.xodr';
 export const CROSSING8_COMPLEX_XODR = 'assets/open-drive/crossing-8-course.xodr';
+export const EXPLICIT_CIRCLE_XODR = 'assets/open-drive/explicit-circle.xodr';
+
+export const TOWN_01 = 'assets/open-drive/town-01.xodr';
+export const TOWN_02 = 'assets/open-drive/town-02.xodr';
 
 export const FRENCH_SMALL_XODR = 'assets/stubs/french-small.xodr';
 export const OSM2_XODR = 'assets/stubs/osm-2-xodr-small.xodr';
@@ -60,6 +64,14 @@ export class SplineTestHelper {
 		const xml = await this.loadXodr( STRAIGHT_XODR ).toPromise();
 
 		return this.openDriveParser.parse( xml );
+	}
+
+	async loadAndParseXodr ( path: string ) {
+
+		const xml = await this.loadXodr( path ).toPromise();
+
+		return this.openDriveParser.parse( xml );
+
 	}
 
 	loadXodr ( path: string ) {
@@ -166,7 +178,19 @@ export class SplineTestHelper {
 
 		start = start || new Vector3( 0, 0, 0 );
 
-		const spline = this.createStraightSpline( start, length, degrees, type );
+		const road = this.roadFactory.createDefaultRoad();
+
+		const spline = SplineFactory.createSpline( type );
+
+		spline.addSegment( 0, road );
+
+		road.spline = spline;
+
+		this.mapService.addRoad( road );
+
+		const controlPoints = ControlPointFactory.createStraightControlPoints( spline, start, length, degrees );
+
+		spline.addControlPoints( controlPoints );
 
 		this.splineService.add( spline );
 
@@ -344,7 +368,7 @@ export class SplineTestHelper {
 
 	}
 
-	createCustomJunctionWith2Roads () {
+	addCustomJunctionWith2Roads () {
 
 		this.create2RoadsForCustomJunction();
 
@@ -360,6 +384,8 @@ export class SplineTestHelper {
 		const junction = this.junctionToolHelper.createCustomJunction( links );
 
 		this.junctionService.addJunction( junction );
+
+		return junction;
 
 	}
 

@@ -193,4 +193,11 @@ export class TvRoadLink {
 		return this.element === link.element && this.contactPoint === link.contactPoint;
 
 	}
+
+	isEqualTo ( element: TvRoad | TvJunction ): boolean {
+
+		return this.element === element;
+
+	}
+
 }

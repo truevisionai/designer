@@ -91,9 +91,9 @@ export abstract class Commands {
 
 	}
 
-	static DragSpline ( object: AbstractSpline, delta: Vector3 ): void {
+	static DragSpline ( object: AbstractSpline, newPositions: Vector3[], oldPositions: Vector3[] ): void {
 
-		this.execute( new DragSplineCommand( object, delta ) );
+		this.execute( new DragSplineCommand( object, newPositions, oldPositions ) );
 
 	}
 

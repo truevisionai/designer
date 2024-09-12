@@ -19,8 +19,8 @@ export class LaneSectionNotFound extends ModelNotFoundException {
 }
 
 export class LaneNotFound extends ModelNotFoundException {
-	constructor ( message: string = 'LaneNotFound' ) {
-		super( message );
+	constructor ( laneId?: number ) {
+		super( `Lane with id ${ laneId } not found` );
 		this.name = 'LaneNotFound';
 		Error.captureStackTrace( this, LaneNotFound );
 	}

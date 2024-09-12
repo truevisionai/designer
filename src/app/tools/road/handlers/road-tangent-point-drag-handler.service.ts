@@ -20,9 +20,13 @@ export class RoadTangentPointDragHandler extends BaseDragHandler<RoadTangentPoin
 		super();
 	}
 
-	onDragStart ( object: RoadTangentPoint, e: PointerEventData ): void {
+	onDragStart ( point: RoadTangentPoint, e: PointerEventData ): void {
 
-		// throw new Error( "Method not implemented." );
+		if ( point.controlPoint.shouldMarkAsSpiral() ) {
+
+			point.controlPoint.markAsSpiral();
+
+		}
 
 	}
 

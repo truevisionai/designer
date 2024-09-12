@@ -7,9 +7,9 @@ import { ExplicitSpline } from "../../core/shapes/explicit-spline";
 import { TvAbstractRoadGeometry } from "../../map/models/geometries/tv-abstract-road-geometry";
 import { RoadControlPoint } from "../../objects/road/road-control-point";
 import { TvGeometryType } from "../../map/models/tv-common";
-import { Vector2 } from "three";
 import { breakGeometries } from "../../utils/spline.utils";
 import { GeometryFactory } from "./geometry.factory";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,7 +18,7 @@ export class ExplicitGeometryService {
 
 	build ( spline: ExplicitSpline ): void {
 
-		const geometries = this.exportFromSpline( spline );
+		const geometries = this.getGeometries( spline );
 
 		let splineLength = 0;
 
@@ -42,48 +42,30 @@ export class ExplicitGeometryService {
 
 	}
 
-	private exportFromSpline ( spline: ExplicitSpline ): TvAbstractRoadGeometry[] {
+	private getGeometries ( spline: ExplicitSpline ): TvAbstractRoadGeometry[] {
 
 		const controlPoints: RoadControlPoint[] = spline.controlPoints as RoadControlPoint[];
-
-		this.updateSegmentTypes( controlPoints );
-
-		this.updateHdgs( controlPoints );
-
-		const geometryTypes: TvGeometryType[] = this.getSegments( spline );
-
-		const hdgs: number[][] = controlPoints.map( cp => [ cp.hdg, 7, 7 ] );
-
-		const points = controlPoints.map( cp => cp.position );
 
 		let s = 0;
 
 		const geometries: TvAbstractRoadGeometry[] = [];
 
-		for ( let i = 0; i < geometryTypes.length; i++ ) {
+		for ( let i = 1; i < controlPoints.length; i++ ) {
+
+			const prevPoint = controlPoints[ i - 1 ];
 
 			const currentPoint = controlPoints[ i ];
-			const nextPoint = controlPoints[ i + 1 ];
 
-			const geometryType = geometryTypes[ i ];
+			const segmentTypes = controlPoints.map( point => point.segmentType );
 
-			let geometry: TvAbstractRoadGeometry;
+			const geometryType = segmentTypes[ i - 1 ] ?? TvGeometryType.SPIRAL;
 
-			if ( geometryType == TvGeometryType.PARAMPOLY3 ) {
+			const geometry = this.createGeometry( geometryType, prevPoint, currentPoint );
 
-				geometry = currentPoint.segmentGeometry
-
-			} else {
-
-				geometry = GeometryFactory.createFromPoint( geometryType, currentPoint, nextPoint );
-
-				currentPoint.segmentGeometry = geometry;
-
-				nextPoint.segmentGeometry = geometry;
-
+			if ( !geometry ) {
+				Log.error( 'Geometry not created' );
+				continue
 			}
-
-			if ( !geometry ) continue;
 
 			geometry.s = s;
 
@@ -94,58 +76,29 @@ export class ExplicitGeometryService {
 		}
 
 		return geometries;
+
 	}
 
-	private getSegments ( spline: ExplicitSpline ) {
+	createGeometry ( geometryType: TvGeometryType, prevPoint: RoadControlPoint, currentPoint: RoadControlPoint ): TvAbstractRoadGeometry {
 
-		const points = spline.controlPoints as RoadControlPoint[];
+		let geometry: TvAbstractRoadGeometry;
 
-		const currentGeometries = spline.geometries;
+		if ( geometryType == TvGeometryType.PARAMPOLY3 ) {
 
-		// return all points except last
-		return points.map( point => point.segmentType ).slice( 0, points.length - 1 );
-	}
+			geometry = currentPoint.segmentGeometry;
 
-	private updateHdgs ( controlPoints: RoadControlPoint[] ) {
+		} else {
 
-		// smoothly update hdg for each control point
-		// hdg is the angle between the current point and the next point
-		// start from second point
-		for ( let i = 1; i < controlPoints.length; i++ ) {
+			geometry = GeometryFactory.createFromPoint( geometryType, prevPoint, currentPoint );
 
-			const currentPoint = controlPoints[ i ];
-			const previousPoint = controlPoints[ i - 1 ];
+			currentPoint.segmentGeometry = geometry;
 
-			const p1 = new Vector2( currentPoint.position.x, currentPoint.position.y );
-			const p2 = new Vector2( previousPoint.position.x, previousPoint.position.y );
+			prevPoint.segmentGeometry = geometry;
 
-			// Calculate heading only if it's not defined
-			if ( currentPoint.hdg === null || currentPoint.hdg === undefined ) {
-				currentPoint.hdg = Math.atan2( p1.y - p2.y, p1.x - p2.x );
-			}
-
-			// Ensure the first point also gets a heading if it's not defined
-			if ( i === 1 && ( previousPoint.hdg === null || previousPoint.hdg === undefined ) ) {
-				previousPoint.hdg = Math.atan2( p2.y - p1.y, p2.x - p1.x );
-			}
 		}
 
-	}
+		return geometry;
 
-	private updateSegmentTypes ( controlPoints: RoadControlPoint[] ) {
-
-		for ( let i = 0; i < controlPoints.length; i++ ) {
-
-			const cp = controlPoints[ i ];
-
-			if ( !cp.segmentType ) {
-				cp.segmentType = TvGeometryType.SPIRAL;
-
-				// mark previous point also as spiral
-				if ( i > 0 ) controlPoints[ i - 1 ].segmentType = TvGeometryType.SPIRAL;
-			}
-
-		}
 	}
 
 }

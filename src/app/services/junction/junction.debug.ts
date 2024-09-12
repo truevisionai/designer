@@ -30,6 +30,8 @@ import { JunctionNode } from './junction-node';
 import { JunctionRoadService } from './junction-road.service';
 import { JunctionBuilder } from './junction.builder';
 import { JunctionOverlay } from './junction-overlay';
+import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,12 +54,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	constructor (
 		private junctionBuilder: JunctionBuilder,
-		private junctionService: JunctionService,
 		private debug: DebugDrawService,
 		private mapService: MapService,
-		private junctionManager: JunctionManager,
-		private queryService: MapQueryService,
 		private junctionRoadService: JunctionRoadService,
+		private junctionBoundaryService: TvJunctionBoundaryService,
+		private junctionDebugFactory: JunctionDebugFactory,
 	) {
 		super();
 	}
@@ -77,6 +78,14 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		if ( !maneuvers ) return;
 
 		return maneuvers.find( maneuver => maneuver.connection.connectingRoad === connectingRoad );
+
+	}
+
+	findMeshBySpline ( spline: AbstractSpline ): ManeuverMesh | undefined {
+
+		const connectingRoad = spline.getRoadSegments()[ 0 ];
+
+		return this.findMesh( connectingRoad.junction, connectingRoad );
 
 	}
 
@@ -146,7 +155,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !junction.outerBoundary ) {
 			Log.warn( 'OuterBoundaryMissing', junction?.toString() );
-			this.junctionManager.boundaryManager.update( junction );
+			this.junctionBoundaryService.update( junction );
 		}
 
 		const geometry = this.junctionBuilder.getJunctionGeometry( junction );
@@ -166,7 +175,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !junction.innerBoundary ) {
 			Log.warn( 'InnerBoundaryMissing', junction?.toString() );
-			this.junctionManager.boundaryManager.update( junction );
+			this.junctionBoundaryService.update( junction );
 		}
 
 		const geometry = this.junctionBuilder.getJunctionGeometry( junction );
@@ -187,7 +196,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		for ( const laneCoord of this.junctionRoadService.getJunctionGates( junction ) ) {
 
-			const line = JunctionDebugFactory.instance.createJunctionGateLine( junction, laneCoord );
+			const line = this.junctionDebugFactory.createJunctionGateLine( junction, laneCoord );
 
 			this.gates.addItem( junction, line );
 
@@ -377,13 +386,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	createManeuver ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): ManeuverMesh {
 
-		return JunctionDebugFactory.instance.createManeuverMesh( junction, connection, link );
+		return this.junctionDebugFactory.createManeuverMesh( junction, connection, link );
 
 	}
 
 	updateManeuver ( mesh: ManeuverMesh ): void {
 
-		JunctionDebugFactory.instance.updateManeuverMesh( mesh );
+		this.junctionDebugFactory.updateManeuverMesh( mesh );
 
 	}
 

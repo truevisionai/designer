@@ -11,6 +11,7 @@ import { RoadGeometryService } from '../road/road-geometry.service';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { Log } from 'app/core/utils/log';
+import { traverseLanes } from 'app/utils/road.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,18 +59,11 @@ export class LanePositionService {
 		return this.getLanePoints( road, laneSection, lane, location );
 	}
 
-	getLanePointsById ( road: TvRoad, laneId: number, location: TvLaneLocation ): TvPosTheta[] {
+	getRoadLanePoints ( road: TvRoad, laneId: number, location: TvLaneLocation ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
-		road.getLaneProfile().getLaneSections().forEach( laneSection => {
-
-			const lane = laneSection.getLaneById( laneId );
-
-			if ( !lane ) {
-				Log.warn( `Lane with id ${ laneId } not found in lane section ${ laneSection.id }` );
-				return;
-			}
+		traverseLanes( road, laneId, ( lane: TvLane, laneSection: TvLaneSection ) => {
 
 			points.push( ...this.getPoints( road, laneSection, lane, location ) );
 

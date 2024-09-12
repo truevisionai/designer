@@ -71,21 +71,9 @@ export class JunctionRoadService {
 
 				road.predecessor = new TvRoadLink( TvRoadLinkType.JUNCTION, junction, null );
 
-				// const distanceFromBox = junction.boundingBox.distanceToPoint( new Vector2( startPosition.x, startPosition.y ) );
-
-				// if ( !Maths.approxEquals( distanceFromBox, 0 ) ) {
-				// 	Log.error( 'Invalid Road To Junction Distance', road.toString(), junction.toString() );
-				// }
-
 			} else {
 
 				road.successor = new TvRoadLink( TvRoadLinkType.JUNCTION, junction, null );
-
-				// const distanceFromBox = junction.boundingBox.distanceToPoint( new Vector2( endPosition.x, endPosition.y ) );
-
-				// if ( !Maths.approxEquals( distanceFromBox, 0 ) ) {
-				// 	Log.error( 'Invalid Road To Junction Distance', road.toString(), junction.toString() );
-				// }
 
 			}
 

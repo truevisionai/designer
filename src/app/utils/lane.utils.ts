@@ -277,7 +277,7 @@ export class LaneUtils {
 
 		const lanes = laneSection.getLaneArray()
 			.filter( lane => lane.id != 0 )
-			.filter( lane => this.isCarriageWayLane( lane ) );
+			.filter( lane => lane.isCarriageWay() );
 
 		return this.findLowest( lanes );
 
@@ -287,15 +287,9 @@ export class LaneUtils {
 
 		const lanes = laneSection.getLaneArray()
 			.filter( lane => lane.id != 0 )
-			.filter( lane => this.isCarriageWayLane( lane ) );
+			.filter( lane => lane.isCarriageWay() );
 
 		return this.findHighest( lanes );
-
-	}
-
-	static isCarriageWayLane ( lane: TvLane ) {
-
-		return lane.type != TvLaneType.sidewalk && lane.type != TvLaneType.curb;
 
 	}
 

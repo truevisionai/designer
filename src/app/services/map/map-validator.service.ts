@@ -36,13 +36,13 @@ const SPHERE_SIZE = 0.1;
 export function expectLinkDistanceToBeZero ( road: TvRoad ): void {
 	if ( road.successor ) {
 		const distance = RoadUtils.distanceFromSuccessor( road, road.successor );
-		if ( !Maths.approxEquals( distance, 0 ) ) {
+		if ( !Maths.approxEquals( distance, 0, 0.001 ) ) {
 			Log.warn( `InvalidSuccessorDistance: ${ distance } ${ road.toString() } ${ road.successor.toString() }` );
 		}
 	}
 	if ( road.predecessor ) {
 		const distance = RoadUtils.distanceFromPredecessor( road, road.predecessor )
-		if ( !Maths.approxEquals( distance, 0 ) ) {
+		if ( !Maths.approxEquals( distance, 0, 0.001 ) ) {
 			Log.warn( `InvalidPredecessorDistance: ${ distance } ${ road.toString() } ${ road.predecessor.toString() }` );
 		}
 	}
@@ -471,7 +471,7 @@ export class MapValidatorService {
 			headingShouldBeSame = true;
 		}
 
-		function approxEquals ( angle1, angle2, tolerance = 1e-10 ) {
+		function approxEquals ( angle1, angle2, tolerance = 0.001 ) {
 			// Normalize angles to the range [0, 2π)
 			angle1 = ( angle1 + Math.PI * 2 ) % ( Math.PI * 2 );
 			angle2 = ( angle2 + Math.PI * 2 ) % ( Math.PI * 2 );

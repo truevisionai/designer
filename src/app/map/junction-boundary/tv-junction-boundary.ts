@@ -12,7 +12,28 @@ export enum TvBoundarySegmentType {
 };
 
 export class TvJunctionBoundary {
+
 	segments: TvJunctionSegmentBoundary[] = [];
+
+	addSegment ( segment: TvJunctionSegmentBoundary ): void {
+		this.segments.push( segment );
+	}
+
+	addSegments ( segments: TvJunctionSegmentBoundary[] ): void {
+		segments.forEach( s => this.addSegment( s ) );
+	}
+
+	getSegments (): TvJunctionSegmentBoundary[] {
+		return this.segments;
+	}
+
+	getSegmentCount (): number {
+		return this.segments.length;
+	}
+
+	clearSegments (): void {
+		this.segments = [];
+	}
 
 	clone () {
 		const boundary = new TvJunctionBoundary();
@@ -31,6 +52,7 @@ export interface TvJunctionSegmentBoundary {
 // using for incoming/outgoing roads
 // goes from left to right of the road
 export class TvJointBoundary implements TvJunctionSegmentBoundary {
+
 	type: TvBoundarySegmentType = TvBoundarySegmentType.JOINT;
 
 	/**
@@ -53,6 +75,13 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 	 */
 	jointLaneEnd?: TvLane;
 
+	constructor ( road?: TvRoad, contactPoint?: TvContactPoint, jointLaneStart?: TvLane, jointLaneEnd?: TvLane ) {
+		this.road = road;
+		this.contactPoint = contactPoint;
+		this.jointLaneStart = jointLaneStart;
+		this.jointLaneEnd = jointLaneEnd
+	}
+
 	toString () {
 		return `JointBoundary: roadId=${ this.road.id } contactPoint=${ this.contactPoint } jointLaneStart=${ this.jointLaneStart?.id } jointLaneEnd=${ this.jointLaneEnd?.id }`;
 	}
@@ -71,11 +100,27 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 // ususally for connecting roads
 // goes along the last/boundary lane of the connecting road
 export class TvLaneBoundary implements TvJunctionSegmentBoundary {
+
 	type: TvBoundarySegmentType = TvBoundarySegmentType.LANE;
 	road: TvRoad;
 	boundaryLane: TvLane;
 	sStart: number | TvContactPoint;
 	sEnd: number | TvContactPoint;
+
+	constructor ( road?: TvRoad, boundaryLane?: TvLane, sStart?: number | TvContactPoint, sEnd?: number | TvContactPoint ) {
+		this.road = road;
+		this.boundaryLane = boundaryLane;
+		this.sStart = sStart;
+		this.sEnd = sEnd;
+	}
+
+	getRoad () {
+		return this.road;
+	}
+
+	getLane () {
+		return this.boundaryLane;
+	}
 
 	toString () {
 		return `LaneBoundary: roadId=${ this.road.id } boundaryLane=${ this.boundaryLane.id } sStart=${ this.sStart } sEnd=${ this.sEnd }`;

@@ -312,6 +312,10 @@ export class TvLaneSection {
 
 	getLaneById ( laneId: number ): TvLane {
 
+		if ( !this.lanes.has( laneId ) ) {
+			throw new LaneNotFound( laneId );
+		}
+
 		return this.lanes.get( laneId );
 
 	}
@@ -366,7 +370,7 @@ export class TvLaneSection {
 	removeLane ( deletedLane: TvLane ): void {
 
 		if ( !this.hasLane( deletedLane.id ) ) {
-			throw new LaneNotFound();
+			throw new LaneNotFound( deletedLane.id );
 		}
 
 		this.lanes.delete( deletedLane.id );
@@ -703,5 +707,114 @@ export class TvLaneSection {
 		this.getRightLanes().forEach( lane => width += lane.getWidthValue( sOffset ) );
 
 		return width;
+	}
+
+	getHighestCarriageWayLane (): TvLane {
+
+		const lanes = this.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => this.isCarriageWayLane( lane ) );
+
+		return this.findHighest( lanes );
+
+	}
+
+	getLowestCarriageWayLane (): TvLane {
+
+		const lanes = this.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => this.isCarriageWayLane( lane ) );
+
+		return this.findLowest( lanes );
+
+	}
+
+	getLowestDrivingLane (): TvLane {
+
+		return this.getLowestLane( TvLaneType.driving );
+
+	}
+
+	getLowestLane ( type?: TvLaneType ): TvLane {
+
+		const lanes = this.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => !type || lane.type == type );
+
+		return this.findLowest( lanes, type );
+
+	}
+
+	getHighestLane ( type?: TvLaneType ): TvLane {
+
+		const lanes = this.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => !type || lane.type == type );
+
+		return this.findHighest( lanes, type );
+	}
+
+	getHighestDrivingLane (): TvLane {
+
+		const lanes = this.getLaneArray()
+			.filter( lane => lane.id != 0 )
+			.filter( lane => lane.type == TvLaneType.driving );
+
+		return this.findHighest( lanes );
+
+	}
+
+	isCarriageWayLane ( lane: TvLane ): boolean {
+
+		return lane.type != TvLaneType.sidewalk && lane.type != TvLaneType.curb;
+
+	}
+
+	private findHighest ( lanes: TvLane[], type?: TvLaneType ): TvLane {
+
+		if ( lanes.length === 0 ) return;
+
+		let highestLaneId = Number.MIN_SAFE_INTEGER;
+		let highestLane: TvLane = null;
+
+		for ( const current of lanes ) {
+
+			// ignore center lanes
+			if ( current.side === TvLaneSide.CENTER ) continue;
+
+			if ( type && current.type !== type ) continue;
+
+			if ( current.id > highestLaneId ) {
+				highestLane = current;
+				highestLaneId = current.id;
+			}
+
+		}
+
+		return highestLane;
+	}
+
+	private findLowest ( lanes: TvLane[], type?: TvLaneType ) {
+
+		if ( lanes.length === 0 ) return;
+
+		let lowestLaneId = Number.MAX_SAFE_INTEGER;
+		let lowestLane: TvLane = null;
+
+		for ( const current of lanes ) {
+
+			// ignore center lanes
+			if ( current.side == TvLaneSide.CENTER ) continue;
+
+			if ( type && current.type != type ) continue;
+
+			if ( current.id < lowestLaneId ) {
+				lowestLane = current;
+				lowestLaneId = current.id;
+			}
+
+		}
+
+		return lowestLane;
 	}
 }

@@ -17,13 +17,13 @@ export abstract class BaseDragHandler<T> implements DragHandler<T> {
 
 	protected dragDelta: Vector3;
 
-	abstract onDragStart ( object: T, e: PointerEventData ): void
+	abstract onDragStart ( object: T, event: PointerEventData ): void
 
-	abstract onDrag ( object: T, e: PointerEventData ): void
+	abstract onDrag ( object: T, event: PointerEventData ): void
 
-	abstract onDragEnd ( object: T, e: PointerEventData ): void;
+	abstract onDragEnd ( object: T, event: PointerEventData ): void;
 
-	isDraggingSupported (): boolean {
+	isDraggingSupported ( object: T ): boolean {
 		return true;
 	}
 

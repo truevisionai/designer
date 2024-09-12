@@ -25,7 +25,7 @@ export class TvJunction {
 
 	public corners: TvJunctionConnection[] = [];
 
-	public centroid?: Vector3;
+	public centroid: Vector3;
 
 	public type: TvJunctionType = TvJunctionType.DEFAULT;
 
@@ -47,7 +47,7 @@ export class TvJunction {
 
 	constructor ( public name: string, public id: number ) {
 
-		// this.boundingBox = new Box2();
+		this.centroid = new Vector3();
 
 	}
 
@@ -273,6 +273,47 @@ export class TvJunction {
 	containsPoint ( position: Vector3 ): boolean {
 
 		return this.boundingBox.containsPoint( new Vector2( position.x, position.z ) );
+
+	}
+
+	getConnectionsBetween ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): TvJunctionConnection[] {
+
+		const connections: TvJunctionConnection[] = [];
+
+		for ( const connection of this.getConnections() ) {
+
+			if ( !connection.getIncomingRoad().equals( incomingRoad ) ) {
+				continue;
+			}
+
+			if ( connection.getOutgoingLink()?.isEqualTo( outgoingRoad ) ) {
+				connections.push( connection );
+			}
+
+		}
+
+		return connections;
+
+	}
+
+	getConnectionsByRoad ( queryRoad: TvRoad ): TvJunctionConnection[] {
+
+		const connections: TvJunctionConnection[] = [];
+
+		for ( const connection of this.getConnections() ) {
+
+			if ( connection.getIncomingRoad().equals( queryRoad ) ) {
+
+				connections.push( connection );
+
+			} else if ( connection.getOutgoingLink()?.isEqualTo( queryRoad ) ) {
+
+				connections.push( connection );
+			}
+
+		}
+
+		return connections
 
 	}
 

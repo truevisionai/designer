@@ -46,7 +46,7 @@ describe( 'Commands', () => {
 	it( 'should call execute for DragSpline', () => {
 		const spline = SplineFactory.createAtPosition( new Vector3() );
 		const delta = new Vector3();
-		Commands.DragSpline( spline, delta );
+		Commands.DragSpline( spline, [], [] );
 		expect( CommandHistory.execute ).toHaveBeenCalled();
 	} );
 

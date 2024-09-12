@@ -167,10 +167,9 @@ export class DebugDrawService {
 
 		const point = new SimpleControlPoint( null, position );
 
-		( point.material as PointsMaterial ).color = new Color( color );
-		( point.material as PointsMaterial ).size = size;
-		( point.material as PointsMaterial ).needsUpdate = true;
-
+		point.material.color = new Color( color );
+		point.material.size = size;
+		point.material.needsUpdate = true;
 
 		return point;
 	}

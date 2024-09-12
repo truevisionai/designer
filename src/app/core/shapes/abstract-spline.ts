@@ -116,6 +116,10 @@ export abstract class AbstractSpline {
 	update () {
 	}
 
+	updateHeadings (): void {
+
+	}
+
 	getLength (): number {
 
 		let length = 0;
@@ -127,7 +131,7 @@ export abstract class AbstractSpline {
 	}
 
 	updateIndexes (): void {
-		this.controlPoints.forEach( ( point, index ) => point.tagindex = index );
+		this.controlPoints.forEach( ( point, index ) => point.index = index );
 	}
 
 	toString () {
@@ -176,12 +180,56 @@ export abstract class AbstractSpline {
 		return this.segmentMap.length;
 	}
 
+	getLastSegment (): NewSegment {
+		return this.segmentMap.getLast();
+	}
+
 	getRoadSegments (): TvRoad[] {
 		return this.getSegments().filter( segment => segment instanceof TvRoad ) as TvRoad[];
 	}
 
 	getJunctionSegments (): TvJunction[] {
 		return this.getSegments().filter( segment => segment instanceof TvJunction ) as TvJunction[];
+	}
+
+	hasSuccessor (): boolean {
+		return !!this.getSuccessor();
+	}
+
+	hasPredecessor (): boolean {
+		return !!this.getPredecessor();
+	}
+
+	successorIsRoad (): boolean {
+		return this.getSuccessor() instanceof TvRoad;
+	}
+
+	getSuccessor (): NewSegment {
+
+		const lastSegment = this.segmentMap.getLast();
+
+		if ( !lastSegment ) return;
+
+		if ( !( lastSegment instanceof TvRoad ) ) return;
+
+		if ( !lastSegment.successor ) return;
+
+		return lastSegment.successor.element;
+
+	}
+
+	getPredecessor (): NewSegment {
+
+		const segment = this.segmentMap.getFirst();
+
+		if ( !segment ) return;
+
+		if ( !( segment instanceof TvRoad ) ) return;
+
+		if ( !segment.predecessor ) return;
+
+		return segment.predecessor.element;
+
 	}
 
 	hasSegment ( segment: TvJunction | TvRoad ): boolean {

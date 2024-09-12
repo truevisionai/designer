@@ -3,19 +3,49 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AutoSpline } from "../../../core/shapes/auto-spline-v2";
 import { AppInspector } from "../../../core/inspector";
 import { RoadInspector } from "../../../views/inspectors/road-inspector/road-inspector.component";
 import { SplineController } from "./spline-controller";
+import { ExplicitSpline } from "app/core/shapes/explicit-spline";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ExplicitSplineController extends SplineController {
+export class ExplicitSplineController extends SplineController<ExplicitSpline> {
 
-	showInspector ( object: AutoSpline ): void {
+	showInspector ( object: ExplicitSpline ): void {
 
 		AppInspector.setInspector( RoadInspector, { spline: object } );
+
+	}
+
+	onAdded ( object: ExplicitSpline ): void {
+
+		object.updateHeadings();
+
+		object.updateIndexes();
+
+		super.onAdded( object );
+
+	}
+
+	onUpdated ( object: ExplicitSpline ): void {
+
+		object.updateHeadings();
+
+		object.updateIndexes();
+
+		super.onUpdated( object );
+
+	}
+
+	onRemoved ( object: ExplicitSpline ): void {
+
+		object.updateHeadings();
+
+		object.updateIndexes();
+
+		super.onRemoved( object );
 
 	}
 

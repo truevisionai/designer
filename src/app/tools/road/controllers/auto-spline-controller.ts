@@ -11,7 +11,7 @@ import { SplineController } from "./spline-controller";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class AutoSplineController extends SplineController {
+export class AutoSplineController extends SplineController<AutoSpline> {
 
 	showInspector ( object: AutoSpline ): void {
 

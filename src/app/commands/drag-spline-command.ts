@@ -9,17 +9,9 @@ import { MapEvents } from "../events/map-events";
 
 export class DragSplineCommand extends BaseCommand {
 
-	private oldPositions: Vector3[];
-
-	private newPositions: Vector3[];
-
-	constructor ( private spline: AbstractSpline, delta: Vector3 ) {
+	constructor ( private spline: AbstractSpline, private newPositions: Vector3[], private oldPositions: Vector3[] ) {
 
 		super();
-
-		this.newPositions = spline.getPositions().map( point => point.clone() );
-
-		this.oldPositions = spline.getPositions().map( pos => pos.clone().add( delta ) );
 
 	}
 

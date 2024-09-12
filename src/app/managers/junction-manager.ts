@@ -14,7 +14,7 @@ import { JunctionFactory } from "app/factories/junction.factory";
 import { AbstractSpline, NewSegment, SplineType } from "../core/shapes/abstract-spline";
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { IntersectionGroup } from "./Intersection-group";
-import { TvContactPoint, TvLaneType } from "../map/models/tv-common";
+import { TvContactPoint } from "../map/models/tv-common";
 import { TvRoadLink, TvRoadLinkType } from "../map/models/tv-road-link";
 import { JunctionService } from "../services/junction/junction.service";
 import { RoadDividerService } from "../services/road/road-divider.service";
@@ -23,23 +23,19 @@ import { RoadBuilder } from "../map/builders/road.builder";
 import { Maths } from "app/utils/maths";
 import { ConnectionFactory } from "app/factories/connection.factory";
 import { JunctionBuilder } from "app/services/junction/junction.builder";
-import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { RoadUtils } from "../utils/road.utils";
-import { Box2, MathUtils, Vector2, Vector3 } from "three";
-import { TvPosTheta } from "app/map/models/tv-pos-theta";
+import { Vector2, Vector3 } from "three";
 import { Log } from "app/core/utils/log";
-import { TvJunctionBoundaryManager } from "../map/junction-boundary/tv-junction-boundary.manager";
+import { TvJunctionBoundaryService } from "../map/junction-boundary/tv-junction-boundary.service";
 import { SplineUtils } from "app/utils/spline.utils";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { OrderedMap } from "app/core/models/ordered-map";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { ConnectionManager } from "../map/junction/connection.manager";
-import { JunctionGeometryService } from "../services/junction/junction-geometry.service";
+import { JunctionBoundsService } from "../services/junction/junction-geometry.service";
 import { JunctionLinkService } from "app/services/junction/junction-link.service";
-
-const JUNCTION_WIDTH = 10;
 
 @Injectable( {
 	providedIn: 'root'
@@ -58,11 +54,11 @@ export class JunctionManager {
 		public junctionFactory: JunctionFactory,
 		public linkService: RoadLinkService,
 		public junctionService: JunctionService,
-		public junctionGeometryService: JunctionGeometryService,
+		public junctionBoundsService: JunctionBoundsService,
 		public junctionRoadService: JunctionRoadService,
 		public roadDividerService: RoadDividerService,
 		public splineService: SplineService,
-		public boundaryManager: TvJunctionBoundaryManager,
+		public boundaryService: TvJunctionBoundaryService,
 		public connectionFactory: ConnectionFactory,
 		public junctionBuilder: JunctionBuilder,
 		public splineFactory: SplineFactory,
@@ -98,11 +94,11 @@ export class JunctionManager {
 
 		this.junctionRoadService.linkRoads( junction );
 
-		this.updateBoundary( junction );
+		this.boundaryService.update( junction );
 
 		this.updateMesh( junction );
 
-		this.updateBoundingBox( junction );
+		this.junctionBoundsService.updateBounds( junction );
 
 	}
 
@@ -204,17 +200,6 @@ export class JunctionManager {
 
 	}
 
-	updateBoundingBox ( junction: TvJunction ) {
-
-		junction.boundingBox = this.junctionBuilder.buildBoundingBox( junction );
-
-		const centroid = junction.boundingBox.getCenter( new Vector2() );
-
-		junction.centroid.x = centroid.x;
-
-		junction.centroid.y = centroid.y;
-
-	}
 
 	updateMesh ( junction: TvJunction ) {
 
@@ -229,14 +214,6 @@ export class JunctionManager {
 	removeMesh ( junction: TvJunction ) {
 
 		if ( junction.mesh ) this.mapService.map.gameObject.remove( junction.mesh );
-
-	}
-
-	updateBoundary ( junction: TvJunction ) {
-
-		this.boundaryManager.update( junction );
-
-		// junction.depBoundingBox = this.junctionService.computeBoundingBox( junction );
 
 	}
 
@@ -972,13 +949,11 @@ export class JunctionManager {
 
 		this.connectionManager.updateGeometries( junction );
 
-		this.boundaryManager.update( junction );
+		this.boundaryService.update( junction );
 
 		this.updateMesh( junction );
 
-		this.updateBoundingBox( junction );
-
-		this.updateBoundary( junction );
+		this.junctionBoundsService.updateBounds( junction );
 
 	}
 

@@ -2,9 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { OdTextures } from 'app/deprecated/od.textures';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, Vector3 } from 'three';
 import { IHasUpdate } from '../commands/set-value-command';
 import { SerializedField } from 'app/core/components/serialization';
 import { AbstractControlPoint } from "./abstract-control-point";
@@ -19,19 +17,9 @@ export class DynamicControlPoint<T extends IHasUpdate> extends AbstractControlPo
 
 		dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
-		const texture = OdTextures.point;
+		super( dotGeometry, null );
 
-		const dotMaterial = new PointsMaterial( {
-			size: 10,
-			sizeAttenuation: false,
-			map: texture,
-			alphaTest: 0.5,
-			transparent: true,
-			color: COLOR.CYAN,
-			depthTest: false
-		} );
-
-		super( dotGeometry, dotMaterial );
+		this.material = this.getDefaultMaterial();
 
 		this.mainObject = mainObject;
 

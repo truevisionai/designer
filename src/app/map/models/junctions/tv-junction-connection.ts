@@ -11,6 +11,7 @@ import { TvRoad } from '../tv-road.model';
 import { TvPosTheta } from '../tv-pos-theta';
 import { Log } from 'app/core/utils/log';
 import { RoadUtils } from 'app/utils/road.utils';
+import { TvRoadLink } from '../tv-road-link';
 
 /**
 
@@ -74,6 +75,10 @@ export class TvJunctionConnection {
 		return this.connectingRoad?.id;
 	}
 
+	getIncomingRoad (): TvRoad {
+		return this.incomingRoad;
+	}
+
 	get connectingLaneSection () {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
@@ -83,6 +88,60 @@ export class TvJunctionConnection {
 		} else if ( this.contactPoint == TvContactPoint.END ) {
 
 			return this.connectingRoad.getLaneProfile().getLastLaneSection();
+
+		}
+
+	}
+
+	getRoad (): TvRoad {
+
+		return this.connectingRoad;
+
+	}
+
+	getSpline () {
+
+		return this.connectingRoad.spline;
+
+	}
+
+	getOutgoingLink (): TvRoadLink | null {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			return this.getSuccessorLink();
+
+		} else {
+
+			return this.getPredecessorLink();
+
+		}
+
+	}
+
+	getPredecessorLink (): TvRoadLink | null {
+
+		if ( this.connectingRoad.predecessor ) {
+
+			return this.connectingRoad.predecessor;
+
+		} else {
+
+			Log.warn( `No predecessor found for road ${ this.connectingRoad.id }` );
+
+		}
+
+	}
+
+	getSuccessorLink (): TvRoadLink | null {
+
+		if ( this.connectingRoad.successor ) {
+
+			return this.connectingRoad.successor
+
+		} else {
+
+			Log.warn( `No successor found for road ${ this.connectingRoad.id }` );
 
 		}
 
@@ -138,6 +197,18 @@ export class TvJunctionConnection {
 
 	}
 
+	getLinks (): TvJunctionLaneLink[] {
+
+		return this.laneLink;
+
+	}
+
+	getLinkCount (): number {
+
+		return this.laneLink.length;
+
+	}
+
 	addLaneLink ( laneLink: TvJunctionLaneLink ) {
 
 		const exists = this.laneLink.find( link => link.from == laneLink.from && link.to == laneLink.to );
@@ -183,6 +254,12 @@ export class TvJunctionConnection {
 
 	}
 
+	getIncomingLaneCount (): number {
+
+		return this.getIncomingLaneSection().getLaneArray().length;
+
+	}
+
 	getOutgoingLanes (): TvLane[] {
 
 		throw new Error( 'Method not implemented.' );
@@ -194,6 +271,19 @@ export class TvJunctionConnection {
 		this.isCornerConnection = true;
 
 	}
+
+	getLowestLaneLink () {
+
+		return this.getLinks().sort( ( a, b ) => a.incomingLane.id - b.incomingLane.id )[ 0 ];
+
+	}
+
+	getHighestLaneLink () {
+
+		return this.getLinks().sort( ( a, b ) => b.incomingLane.id - a.incomingLane.id )[ 0 ];
+
+	}
+
 
 	getHash (): string {
 

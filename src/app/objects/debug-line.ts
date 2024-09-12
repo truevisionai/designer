@@ -4,7 +4,7 @@
 
 import { INode } from 'app/objects/i-selectable';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Color, Vector3 } from 'three';
+import { Color, Vector2, Vector3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
@@ -66,5 +66,21 @@ export class DebugLine<T> extends Line2 implements INode {
 
 		this.geometry.setPositions( positions.flatMap( p => [ p.x, p.y, p.z ] ) );
 
+	}
+
+	static create ( points: Vector3[], width = 2, color = COLOR.CYAN ): DebugLine<any> {
+
+		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
+
+		const material = new LineMaterial( {
+			color: color,
+			linewidth: width,
+			resolution: new Vector2( window.innerWidth, window.innerHeight ),
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+		} );
+
+		return new DebugLine( null, geometry, material );
 	}
 }

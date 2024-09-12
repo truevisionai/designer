@@ -32,6 +32,12 @@ export class RoadControlPointController extends PointController<RoadControlPoint
 
 		this.splineService.addOrInsertPoint( point.spline, point );
 
+		if ( point.shouldMarkAsSpiral() ) {
+			point.markAsSpiral();
+		}
+
+		this.splineService.updateSpline( point.spline );
+
 	}
 
 	onUpdated ( point: RoadControlPoint ): void {

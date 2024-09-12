@@ -26,22 +26,14 @@ import { Log } from 'app/core/utils/log';
 import { TvJunction } from '../models/junctions/tv-junction';
 import { JunctionOverlay } from 'app/services/junction/junction-overlay';
 import { DelaunatorHelper } from 'app/services/surface/delaunay';
+import { BoundaryPositionService } from './boundary-position.service';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class TvJunctionBoundaryBuilder {
 
-	private static _instance: TvJunctionBoundaryBuilder;
-
-	static get instance (): TvJunctionBoundaryBuilder {
-
-		if ( !TvJunctionBoundaryBuilder._instance ) {
-			TvJunctionBoundaryBuilder._instance = new TvJunctionBoundaryBuilder();
-		}
-
-		return TvJunctionBoundaryBuilder._instance;
-	}
+	constructor ( private boundaryPositionService: BoundaryPositionService ) { }
 
 	getBufferGeometry ( boundary: TvJunctionBoundary, via: 'shape' | 'delaunay' ): BufferGeometry {
 
@@ -129,19 +121,10 @@ export class TvJunctionBoundaryBuilder {
 
 	}
 
-	private createBoundaryPositions ( boundary: TvJunctionSegmentBoundary ): Vector3[] {
+	private createBoundaryPositions ( segment: TvJunctionSegmentBoundary ): Vector3[] {
 
-		if ( boundary.type == TvBoundarySegmentType.JOINT ) {
-			return JunctionUtils.convertJointToPositions( boundary as TvJointBoundary );
-		}
+		return this.boundaryPositionService.getSegmentPositions( segment );
 
-		if ( boundary.type == TvBoundarySegmentType.LANE ) {
-			return JunctionUtils.convertLaneToPositions( boundary as TvLaneBoundary );
-		}
-
-		console.error( 'Unknown boundary type', boundary );
-
-		return [];
 	}
 
 	private convertBoundaryToShapeComplex ( boundary: TvJunctionBoundary ) {
@@ -184,19 +167,17 @@ export class TvJunctionBoundaryBuilder {
 
 		const positions = this.convertBoundaryToPositions( boundary );
 
-		const centroid = GeometryUtils.getCentroid( positions );
-
 		const points = positions.map( p => new Vector2( p.x, p.y ) );
 
 		const shape = new Shape();
 
-		// Draw the
-		shape.moveTo( centroid.x, centroid.y );
+		const start = points[ 0 ];
+
+		shape.moveTo( start.x, start.y );
 
 		points.forEach( p => shape.lineTo( p.x, p.y ) );
 
-		// Close the shape
-		shape.lineTo( points[ 0 ].x, points[ 0 ].y );
+		shape.closePath();
 
 		return shape;
 	}

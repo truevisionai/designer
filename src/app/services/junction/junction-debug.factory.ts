@@ -18,23 +18,19 @@ import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 import { JunctionGateLine } from "./junction-gate-line";
+import { Injectable } from "@angular/core";
+import { Log } from "app/core/utils/log";
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class JunctionDebugFactory {
 
-	private static _instance: JunctionDebugFactory;
-
-	static get instance (): JunctionDebugFactory {
-
-		if ( !JunctionDebugFactory._instance ) {
-			JunctionDebugFactory._instance = new JunctionDebugFactory();
-		}
-
-		return JunctionDebugFactory._instance;
-	}
+	constructor ( private boundaryBuilder: TvJunctionBoundaryBuilder ) { }
 
 	createJunctionMesh ( junction: TvJunction ): Mesh {
 
-		const mesh = TvJunctionBoundaryBuilder.instance.buildViaShape( junction, junction.innerBoundary );
+		const mesh = this.boundaryBuilder.buildViaShape( junction, junction.innerBoundary );
 
 		( mesh.material as MeshBasicMaterial ).color.set( COLOR.CYAN );
 		( mesh.material as MeshBasicMaterial ).depthTest = false;
@@ -51,55 +47,16 @@ export class JunctionDebugFactory {
 
 	createManeuverMesh ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): ManeuverMesh {
 
-		const material = new MeshBasicMaterial( {
-			color: COLOR.GREEN,
-			opacity: 0.2,
-			transparent: true,
-			depthTest: false,
-			depthWrite: false
-		} );
-
-		const geometry = this.createManeuverMeshGeeometry( connection, link );
-
-		const mesh = new ManeuverMesh( junction, connection, link, geometry, material );
-
-		this.addArrows( mesh );
-
-		return mesh;
-
-	}
-
-	addArrows ( mesh: ManeuverMesh ): void {
-
-		const distance = mesh.connection.connectingRoad.length / 5;
-
-		const arrows = LaneDirectionHelper.drawSingleLane( mesh.link.connectingLane, distance, 0.25 );
-
-		arrows.forEach( arrow => mesh.add( arrow ) );
+		return ManeuverMesh.create( junction, connection, link );
 
 	}
 
 	updateManeuverMesh ( mesh: ManeuverMesh ): void {
 
-		const geometry = this.createManeuverMeshGeeometry( mesh.connection, mesh.link );
+		mesh.connection.getRoad().computeLaneSectionCoordinates();
 
-		mesh.geometry = geometry;
+		mesh.update();
 
-		SceneService.removeChildren( mesh );
-
-		this.addArrows( mesh );
-
-	}
-
-	createManeuverMeshGeeometry ( connection: TvJunctionConnection, link: TvJunctionLaneLink ): BufferGeometry {
-
-		const points = LanePositionService.instance.getLanePointsById(
-			connection.connectingRoad,
-			link.connectingLane.id,
-			TvLaneLocation.CENTER
-		);
-
-		return GeometryUtils.createExtrudeGeometry( points.map( p => p.position ) );
 	}
 
 	createJunctionGateLine ( junction: TvJunction, coord: TvLaneCoord, color = COLOR.CYAN, width = 8 ): JunctionGateLine {

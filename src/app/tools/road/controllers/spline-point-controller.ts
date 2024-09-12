@@ -30,6 +30,8 @@ export class SplinePointController extends PointController<SplineControlPoint> {
 
 		this.splineService.addOrInsertPoint( point.spline, point );
 
+		this.splineService.updateSpline( point.spline );
+
 	}
 
 	onUpdated ( point: SplineControlPoint ): void {

@@ -7,7 +7,6 @@ import { TvLane } from '../tv-lane';
 import { TvRoad } from '../tv-road.model';
 
 export class TvJunctionLaneLink {
-
 	public incomingLane: TvLane;
 	public incomingRoad?: TvRoad;
 

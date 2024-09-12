@@ -564,23 +564,23 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	addOrInsertPoint ( spline: AbstractSpline, point: AbstractControlPoint ): void {
 
+		let index: number;
+
 		if ( point.userData.insert ) {
 
-			this.insertPointAndUpdateSpline( spline, point );
+			index = this.findIndex( spline, point.position );
+
+			spline.controlPoints.splice( index, 0, point );
 
 		} else {
 
-			this.addPointAndUpdateSpline( spline, point, point.tagindex );
+			spline.addControlPoint( point );
 
 		}
 
-	}
+		this.updateIndexes( spline );
 
-	insertPointAndUpdateSpline ( spline: AbstractSpline, point: AbstractControlPoint ): void {
-
-		const index = this.findIndex( spline, point.position );
-
-		this.addPointAndUpdateSpline( spline, point, index );
+		this.updatePointHeading( spline, point, point.index );
 
 	}
 
@@ -598,15 +598,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	updatePointHeading ( spline: AbstractSpline, point: AbstractControlPoint, index: number ): void {
+	updatePointHeading ( spline: AbstractSpline, currentPoint: AbstractControlPoint, index: number ): void {
 
 		if ( index == 0 ) return;
 
 		if ( spline.type !== SplineType.EXPLICIT ) return;
 
-		if ( !( point instanceof RoadControlPoint ) ) return;
-
-		point.segmentType = TvGeometryType.SPIRAL;
+		if ( !( currentPoint instanceof RoadControlPoint ) ) return;
 
 		const nextPoint = spline.controlPoints[ index + 1 ];
 
@@ -614,15 +612,17 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		if ( nextPoint instanceof RoadControlPoint ) {
 
-			point.hdg = Maths.heading( point.position, nextPoint.position );
+			currentPoint.hdg = Maths.heading( currentPoint.position, nextPoint.position );
+
+		} else if ( previousPoint instanceof RoadControlPoint ) {
+
+			currentPoint.hdg = Maths.heading( previousPoint.position, currentPoint.position );
 
 		}
 
 		if ( previousPoint instanceof RoadControlPoint ) {
 
-			previousPoint.segmentType = TvGeometryType.SPIRAL;
-
-			previousPoint.hdg = Maths.heading( previousPoint.position, point.position );
+			previousPoint.hdg = Maths.heading( previousPoint.position, currentPoint.position );
 
 		}
 

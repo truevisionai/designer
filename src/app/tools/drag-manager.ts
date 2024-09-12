@@ -6,6 +6,7 @@ import { BaseDragHandler } from "app/core/drag-handlers/base-drag-handler";
 import { ClassMap, ConstructorFunction } from "app/core/models/class-map";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { ToolTipService } from "app/services/debug/tool-tip.service";
+import { StatusBarService } from "app/services/status-bar.service";
 import { ViewControllerService } from "app/views/editor/viewport/view-controller.service";
 
 export class DragManager {
@@ -60,7 +61,8 @@ export class DragManager {
 
 		const dragHandler = this.getHandlerForObject( object );
 
-		if ( !dragHandler.isDraggingSupported() ) {
+		if ( !dragHandler.isDraggingSupported( object ) ) {
+			StatusBarService.setHint( "Cannot drag this object/point" );
 			return;
 		}
 
@@ -125,7 +127,7 @@ export class DragManager {
 
 	private dragEndObject<T> ( handler: BaseDragHandler<T>, object: T, e: PointerEventData ): void {
 
-		if ( !handler.isDraggingSupported() ) {
+		if ( !handler.isDraggingSupported( object ) ) {
 			return;
 		}
 

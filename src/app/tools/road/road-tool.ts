@@ -10,7 +10,7 @@ import { RoadNode } from 'app/objects/road/road-node';
 import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { NodeStrategy } from 'app/core/strategies/select-strategies/node-strategy';
 import { RoadControlPoint } from 'app/objects/road/road-control-point';
-import { RoadTangentPoint } from 'app/objects/road/road-tangent-point';
+import { BackTangentPoint, FrontTangentPoint } from 'app/objects/road/road-tangent-point';
 import { Vector3 } from 'three';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SimpleControlPoint } from "../../objects/simple-control-point";
@@ -87,7 +87,8 @@ export class RoadTool extends ToolWithHandler {
 
 		this.addSelectionStrategy( SplineControlPoint, new SplineControlPointSelectionStrategy() );
 		this.addSelectionStrategy( RoadControlPoint, new RoadControlPointSelectionStrategy() );
-		this.addSelectionStrategy( RoadTangentPoint, new RoadTangentPointSelectionStrategy() );
+		this.addSelectionStrategy( FrontTangentPoint, new RoadTangentPointSelectionStrategy() );
+		this.addSelectionStrategy( BackTangentPoint, new RoadTangentPointSelectionStrategy() );
 		this.addSelectionStrategy( RoadNode, new NodeStrategy<RoadNode>( RoadNode.lineTag, true ) );
 		this.addSelectionStrategy( AutoSpline, new AutoSplineSelectionStrategy() );
 		this.addSelectionStrategy( ExplicitSpline, new ExplicitSplineSelectionStrategy() );
@@ -112,7 +113,8 @@ export class RoadTool extends ToolWithHandler {
 
 		this.addVisualizer( SplineControlPoint, this.tool.base.injector.get( PointVisualizer ) );
 		this.addVisualizer( RoadControlPoint, this.tool.base.injector.get( PointVisualizer ) );
-		this.addVisualizer( RoadTangentPoint, this.tool.base.injector.get( PointVisualizer ) );
+		this.addVisualizer( FrontTangentPoint, this.tool.base.injector.get( PointVisualizer ) );
+		this.addVisualizer( BackTangentPoint, this.tool.base.injector.get( PointVisualizer ) );
 		this.addVisualizer( AutoSpline, this.tool.base.injector.get( AutoSplineVisualizer ) );
 		this.addVisualizer( ExplicitSpline, this.tool.base.injector.get( ExplicitSplineVisualizer ) );
 		this.addVisualizer( TvRoad, this.tool.base.injector.get( RoadVisualizer ) );
@@ -123,7 +125,8 @@ export class RoadTool extends ToolWithHandler {
 
 		this.addController( SplineControlPoint, this.tool.base.injector.get( SplinePointController ) );
 		this.addController( RoadControlPoint, this.tool.base.injector.get( RoadControlPointController ) );
-		this.addController( RoadTangentPoint, this.tool.base.injector.get( RoadTangentPointController ) );
+		this.addController( FrontTangentPoint, this.tool.base.injector.get( RoadTangentPointController ) );
+		this.addController( BackTangentPoint, this.tool.base.injector.get( RoadTangentPointController ) );
 		this.addController( AutoSpline, this.tool.base.injector.get( AutoSplineController ) );
 		this.addController( ExplicitSpline, this.tool.base.injector.get( ExplicitSplineController ) );
 		this.addController( TvRoad, this.tool.base.injector.get( RoadController ) );
@@ -134,7 +137,8 @@ export class RoadTool extends ToolWithHandler {
 
 		this.addDragHandler( SplineControlPoint, this.tool.base.injector.get( SplinePointDragHandler ) );
 		this.addDragHandler( RoadControlPoint, this.tool.base.injector.get( RoadControlPointDragHandler ) );
-		this.addDragHandler( RoadTangentPoint, this.tool.base.injector.get( RoadTangentPointDragHandler ) );
+		this.addDragHandler( FrontTangentPoint, this.tool.base.injector.get( RoadTangentPointDragHandler ) );
+		this.addDragHandler( BackTangentPoint, this.tool.base.injector.get( RoadTangentPointDragHandler ) );
 		this.addDragHandler( AutoSpline, this.tool.base.injector.get( SplineDragHandler ) );
 		this.addDragHandler( ExplicitSpline, this.tool.base.injector.get( SplineDragHandler ) );
 

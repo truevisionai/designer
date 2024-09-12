@@ -4,15 +4,29 @@
 
 import { Injectable } from "@angular/core";
 import { BaseController } from "app/core/controllers/base-controller";
-import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { Log } from "app/core/utils/log";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SplineControlPoint } from "app/objects/road/spline-control-point";
-import { JunctionDebugService } from "app/services/junction/junction.debug";
 import { SplineService } from "app/services/spline/spline.service";
 import { ManeuverControlPointInspector } from "../maneuver.inspector";
+import { RoadTangentPoint } from "app/objects/road/road-tangent-point";
 
+function markAsDirty ( junction: TvJunction, connectingRoad: TvRoad ): void {
+
+	const connection = junction.getConnections().find( c => c.connectingRoad === connectingRoad );
+
+	if ( connection ) {
+
+		connection.laneLink.forEach( laneLink => {
+
+			laneLink.dirty = true;
+
+		} );
+
+	}
+
+}
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,8 +34,7 @@ import { ManeuverControlPointInspector } from "../maneuver.inspector";
 export class ManeuverPointController extends BaseController<SplineControlPoint> {
 
 	constructor (
-		private splineService: SplineService,
-		private junctionDebugger: JunctionDebugService,
+		private splineService: SplineService
 	) {
 		super();
 	}
@@ -38,27 +51,14 @@ export class ManeuverPointController extends BaseController<SplineControlPoint> 
 
 	}
 
-	onUpdated ( object: SplineControlPoint ): void {
+	onUpdated ( point: SplineControlPoint ): void {
 
-		const connectingRoad = this.findConnectingRoad( object.spline );
+		this.splineService.update( point.spline );
 
-		if ( !connectingRoad ) {
-			Log.error( 'Connecting road not found' );
-			return;
-		}
+		const road = point.spline.getRoadSegments()[ 0 ];
 
-		this.splineService.update( object.spline );
+		markAsDirty( road.junction, road );
 
-		this.markAsDirty( connectingRoad.junction, connectingRoad );
-
-		const mesh = this.junctionDebugger.findMesh( connectingRoad.junction, connectingRoad );
-
-		if ( !mesh ) {
-			Log.error( 'ManeuverMesh not found' );
-			return;
-		}
-
-		this.junctionDebugger.updateManeuver( mesh );
 	}
 
 	onRemoved ( object: SplineControlPoint ): void {
@@ -67,31 +67,48 @@ export class ManeuverPointController extends BaseController<SplineControlPoint> 
 
 	}
 
-	private findConnectingRoad ( spline: AbstractSpline ): TvRoad {
+}
 
-		const road = this.splineService.findFirstRoad( spline );
 
-		if ( !road.isJunction ) return;
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ManeuverRoadTangentPointController extends BaseController<RoadTangentPoint> {
 
-		return road;
+	constructor (
+		private splineService: SplineService
+	) {
+		super();
 	}
 
-	private markAsDirty ( junction: TvJunction, connectingRoad: TvRoad ): void {
+	onAdded ( point: RoadTangentPoint ): void {
 
-		const connection = junction.getConnections().find( c => c.connectingRoad === connectingRoad );
+		// tangent are not added
 
-		if ( connection ) {
+	}
 
-			connection.laneLink.forEach( laneLink => {
+	onUpdated ( point: RoadTangentPoint ): void {
 
-				laneLink.dirty = true;
+		point.update();
 
-			} );
+		point.controlPoint.update();
 
-		}
+		this.splineService.update( point.spline );
+
+		markAsDirty( point.road.junction, point.road );
+
+	}
+
+	onRemoved ( point: RoadTangentPoint ): void {
+
+		// tangent are not removed
+
+	}
+
+	showInspector ( point: RoadTangentPoint ): void {
+
+		// TODO: add inspector for tangent
 
 	}
 
 }
-
-

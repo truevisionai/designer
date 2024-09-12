@@ -125,6 +125,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return `Lane:${ this.id } Side:${ this.side } Type:${ this.type }`;
 	}
 
+	isCarriageWay (): boolean {
+		return this.type != TvLaneType.sidewalk && this.type != TvLaneType.curb;
+	}
+
 	// // TODO: Fix this bug
 	// set successor ( laneId: number ) {
 	// 	this.setSuccessor( laneId );

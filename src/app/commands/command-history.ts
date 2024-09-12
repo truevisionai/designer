@@ -13,7 +13,9 @@ export class CommandHistory {
 
 	static clear (): void {
 
-		Log.info( 'clear history' );
+		// Log.info( 'clear history' );
+
+		console.info( 'clear history' );
 
 		this.undos.splice( 0, this.undos.length );
 
@@ -23,7 +25,9 @@ export class CommandHistory {
 
 	static execute ( command: ICommand ): void {
 
-		Log.info( 'execute ', command.toString() );
+		// Log.info( 'execute ', command.toString() );
+
+		console.info( 'execute ', command );
 
 		this.undos.push( command );
 
@@ -46,7 +50,9 @@ export class CommandHistory {
 
 			const command = this.undos.pop();
 
-			Log.info( 'undo ', command.toString() );
+			// Log.info( 'undo ', command.toString() );
+
+			console.info( 'undo ', command );
 
 			command.undo();
 
@@ -54,7 +60,9 @@ export class CommandHistory {
 
 		} else {
 
-			Log.info( 'nothing to undo ' );
+			// Log.info( 'nothing to undo ' );
+
+			console.info( 'nothing to undo ' );
 
 		}
 
@@ -66,7 +74,9 @@ export class CommandHistory {
 
 			const command = this.redos.pop();
 
-			Log.info( 'redo ', command.toString() );
+			// Log.info( 'redo ', command.toString() );
+
+			console.info( 'redo ', command );
 
 			command.redo();
 
@@ -74,7 +84,9 @@ export class CommandHistory {
 
 		} else {
 
-			Log.info( 'nothing to redo ' );
+			// Log.info( 'nothing to redo ' );
+
+			console.info( 'nothing to redo ' );
 
 		}
 	}

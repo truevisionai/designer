@@ -199,13 +199,13 @@ export class ToolHandlers {
 
 		if ( this.selectionService.isObjectSelected( object ) ) {
 
-			visualizer?.onRemoved( object );
+			// NOTE: calling onRemoved is removing the objects and causing issues
+			visualizer?.onUpdated( object );
 			visualizer?.onSelected( object );
 
 		} else {
 
-			visualizer?.onRemoved( object );
-			visualizer?.onDefault( object );
+			visualizer?.onUpdated( object );
 
 		}
 

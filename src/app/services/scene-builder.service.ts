@@ -31,6 +31,8 @@ import { LinkUtils } from 'app/utils/link.utils';
 import { Log } from 'app/core/utils/log';
 import { Maths } from 'app/utils/maths';
 import { Surface } from 'app/map/surface/surface.model';
+import { JunctionBoundsService } from './junction/junction-geometry.service';
+import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -51,7 +53,9 @@ export class SceneBuilderService {
 		private roadService: RoadService,
 		private junctionBuilder: JunctionBuilder,
 		private junctionManager: JunctionManager,
-		private connectionFactory: ConnectionFactory
+		private connectionFactory: ConnectionFactory,
+		private junctionBoundaryService: TvJunctionBoundaryService,
+		private junctionBoundsService: JunctionBoundsService
 	) {
 	}
 
@@ -105,28 +109,30 @@ export class SceneBuilderService {
 
 		if ( junction.getConnectionCount() == 0 ) {
 
-			TvConsole.warn( 'Removing junction with no connections ' + junction.id );
+			TvConsole.warn( `Removing junction with no connections ${ junction.id }` );
 
 			this.junctionManager.removeJunction( junction );
 
 			return;
 		}
 
-		if ( !junction.outerBoundary || junction.outerBoundary.segments.length == 0 ) {
+		// if ( !junction.outerBoundary || junction.outerBoundary.segments.length == 0 ) {
 
-			Log.info( 'Creating OuterBoundary', junction.toString() );
+		// 	Log.info( 'Creating OuterBoundary', junction.toString() );
 
-			junction.outerBoundary = TvJunctionBoundaryFactory.createOuterBoundary( junction );
+		// 	// junction.outerBoundary = TvJunctionBoundaryFactory.createOuterBoundary( junction );
 
-		}
+		// }
 
-		if ( !junction.innerBoundary || junction.innerBoundary.segments.length == 0 ) {
+		// if ( !junction.innerBoundary || junction.innerBoundary.segments.length == 0 ) {
 
-			// Log.info( 'Creating InnerBoundary', junction.toString() );
+		// 	// Log.info( 'Creating InnerBoundary', junction.toString() );
 
-			junction.innerBoundary = TvJunctionBoundaryFactory.createInnerBoundary( junction );
+		// 	// junction.innerBoundary = TvJunctionBoundaryFactory.createInnerBoundary( junction );
 
-		}
+		// }
+
+		this.junctionBoundaryService.update( junction );
 
 		if ( junction.corners.length == 0 ) {
 
@@ -134,7 +140,9 @@ export class SceneBuilderService {
 
 		}
 
-		junction.boundingBox = this.junctionBuilder.buildBoundingBox( junction );
+		// junction.boundingBox = this.junctionBuilder.buildBoundingBox( junction );
+
+		this.junctionBoundsService.updateBounds( junction );
 
 		junction.mesh = this.junctionBuilder.buildJunction( junction );
 

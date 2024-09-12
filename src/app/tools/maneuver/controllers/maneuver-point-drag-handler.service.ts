@@ -3,45 +3,74 @@
  */
 
 import { Injectable } from "@angular/core";
-import { PointDragHandler } from "../../../core/drag-handlers/point-drag-handler.service";
 import { SplineControlPoint } from "../../../objects/road/spline-control-point";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { Commands } from "../../../commands/commands";
 import { Vector3 } from "three";
 import { AbstractSpline } from "../../../core/shapes/abstract-spline";
+import { BaseDragHandler } from "app/core/drag-handlers/base-drag-handler";
+import { RoadTangentPoint } from "app/objects/road/road-tangent-point";
+import { RoadTangentPointDragHandler } from "app/tools/road/handlers/road-tangent-point-drag-handler.service";
+import { RoadControlPointDragHandler } from "app/tools/road/handlers/road-control-point-drag-handler.service";
+import { RoadControlPoint } from "app/objects/road/road-control-point";
+
+function isDraggingSupported ( object: SplineControlPoint | RoadControlPoint ): boolean {
+
+	const index = object.index ?? object.spline.controlPoints.indexOf( object );
+
+	return index > 0 && index < object.spline.controlPoints.length - 1;
+
+}
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class ManeuverPointDragHandler extends PointDragHandler<SplineControlPoint> {
+export class ManeuverSplineControlPointDragHandler extends BaseDragHandler<SplineControlPoint> {
+
+	isDraggingSupported ( object: SplineControlPoint ): boolean {
+
+		return isDraggingSupported( object );
+
+	}
 
 	onDragStart ( object: SplineControlPoint, e: PointerEventData ): void {
 
-		// throw new Error( "Method not implemented." );
+		// this.setDragStartPosition( object.position );
 
 	}
 
-	onDrag ( object: SplineControlPoint, e: PointerEventData ): void {
+	onDrag ( point: SplineControlPoint, e: PointerEventData ): void {
 
-		const newPosition = this.getProjectedPosition( object, e );
-
-		object.setPosition( newPosition );
+		point.setPosition( this.getProjectedPosition( point, e.point ) );
 
 	}
 
-	onDragEnd ( object: SplineControlPoint, e: PointerEventData ): void {
+	onDragEnd ( point: SplineControlPoint, e: PointerEventData ): void {
 
-		const newPosition = this.getProjectedPosition( object, e );
+		const projectedPosition = this.getProjectedPosition( point, e.point );
 
-		Commands.UpdatePosition( object, newPosition, this.dragStartPosition );
+		Commands.SetPointPosition( point.spline, point, projectedPosition, this.dragStartPosition );
 
 	}
 
-	private getProjectedPosition ( point: SplineControlPoint, e: PointerEventData ): Vector3 {
+	protected getProjectedPosition ( point: SplineControlPoint, position: Vector3 ): Vector3 {
 
-		const pointerPointer = e.point.clone();
+		const initialPosition = position.clone();
 
-		let targetHdg = point.hdg;
+		const heading = this.getHeading( point );
+
+		const projectedPosition = point.position.clone()
+			.add( new Vector3( Math.cos( heading ), Math.sin( heading ), 0 )
+				.multiplyScalar( initialPosition.sub( point.position )
+					.dot( new Vector3( Math.cos( heading ), Math.sin( heading ), 0 ) ) ) );
+
+		return projectedPosition;
+
+	}
+
+	protected getHeading ( point: SplineControlPoint ): number {
+
+		let heading = point.hdg;
 
 		const spline = point.spline;
 
@@ -53,21 +82,41 @@ export class ManeuverPointDragHandler extends PointDragHandler<SplineControlPoin
 
 				const previousPoint = spline.controlPoints[ 0 ] as SplineControlPoint;
 
-				targetHdg = previousPoint.hdg || targetHdg;
+				heading = previousPoint.hdg || heading;
 
 			}
 
 		}
 
-		// const direction = new Vector3( Math.cos( targetHdg ), Math.sin( targetHdg ) );
+		return heading;
 
-		// the new adjusted position should be the mouse position projected on the heading of the point
-		// const projectedPosition = point.position.clone().add( direction )
-		// .multiplyScalar( pointerPointer.sub( point.position ).dot( direction ) );
+	}
 
-		const projectedPosition = point.position.clone().add( new Vector3( Math.cos( targetHdg ), Math.sin( targetHdg ), 0 ).multiplyScalar( pointerPointer.sub( point.position ).dot( new Vector3( Math.cos( targetHdg ), Math.sin( targetHdg ), 0 ) ) ) );
+}
 
-		return projectedPosition;
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ManeuverRoadTangentPointDragHandler extends RoadTangentPointDragHandler {
+
+	isDraggingSupported ( point: RoadTangentPoint ): boolean {
+
+		return point.controlPoint.shouldUpdateHeading();
+
+	}
+
+}
+
+
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ManeuverRoadControlPointDragHandler extends RoadControlPointDragHandler {
+
+	isDraggingSupported ( point: RoadControlPoint ): boolean {
+
+		return isDraggingSupported( point );
 
 	}
 

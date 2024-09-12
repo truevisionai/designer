@@ -77,18 +77,12 @@ export class ControlPointFactory {
 	static createRoadControlPoint ( road: TvRoad, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
 
 		if ( !geometry ) {
-			console.error( 'Geometry not found for road control point', road, geometry, index );
+			Log.warn( 'Geometry not found for road control point' );
 		}
 
-		const controlPoint = new RoadControlPoint( road, position, index );
+		const controlPoint = new RoadControlPoint( road, position, index, geometry?.geometryType, hdg );
 
 		controlPoint.segmentGeometry = geometry;
-
-		controlPoint.segmentType = geometry?.geometryType;
-
-		controlPoint.hdg = hdg;
-
-		controlPoint.userData.geometry = geometry;
 
 		controlPoint.createTangentAndLine( hdg, 1, 1 );
 

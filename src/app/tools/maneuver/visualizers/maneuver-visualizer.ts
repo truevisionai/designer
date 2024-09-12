@@ -7,7 +7,6 @@ import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { SplineDebugService } from "app/services/debug/spline-debug.service";
-import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,7 +15,7 @@ export class ManeuverVisualizer extends NodeVisualizer<ManeuverMesh> {
 
 	constructor (
 		private junctionDebugService: JunctionDebugService,
-		private splineDebugService: SplineDebugService
+		private splineDebugService: SplineDebugService,
 	) {
 		super();
 	}
@@ -25,7 +24,8 @@ export class ManeuverVisualizer extends NodeVisualizer<ManeuverMesh> {
 
 		super.onSelected( object );
 
-		this.splineDebugService.showControlPoints( object.connection.connectingRoad.spline );
+		this.splineDebugService.showReferenceLine( object.connection.getSpline() );
+		this.splineDebugService.showControlPoints( object.connection.getSpline() );
 
 	}
 
@@ -33,15 +33,14 @@ export class ManeuverVisualizer extends NodeVisualizer<ManeuverMesh> {
 
 		super.onDefault( object );
 
-		this.splineDebugService.removeControlPoints( object.connection.connectingRoad.spline );
-
 	}
 
 	onUnselected ( object: ManeuverMesh ): void {
 
 		super.onUnselected( object );
 
-		this.splineDebugService.removeControlPoints( object.connection.connectingRoad.spline );
+		this.splineDebugService.removeReferenceLine( object.connection.getSpline() );
+		this.splineDebugService.removeControlPoints( object.connection.getSpline() );
 
 	}
 
@@ -65,7 +64,8 @@ export class ManeuverVisualizer extends NodeVisualizer<ManeuverMesh> {
 
 		super.onRemoved( object );
 
-		this.splineDebugService.removeControlPoints( object.connection.connectingRoad.spline );
+		this.splineDebugService.removeReferenceLine( object.connection.getSpline() );
+		this.splineDebugService.removeControlPoints( object.connection.getSpline() );
 
 		this.junctionDebugService.removeManeuver( object.junction, object );
 
@@ -88,13 +88,5 @@ export class ManeuverVisualizer extends NodeVisualizer<ManeuverMesh> {
 		this.junctionDebugService.clear();
 
 	}
-
-}
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class ManeuverVisualizerTrafficLight extends EmptyVisualizer<ManeuverMesh> {
-
 
 }

@@ -6,17 +6,21 @@ import { BufferGeometry, Color, Material, Points, PointsMaterial, Vector3 } from
 import { ISelectable } from "./i-selectable";
 import { IHasPosition } from "./i-has-position";
 import { COLOR } from "../views/shared/utils/colors.service";
-
-const DEFAULT_COLOR = COLOR.CYAN;
-const HOVERED_COLOR = COLOR.YELLOW;
-const SELECTED_COLOR = COLOR.RED;
+import { OdTextures } from "app/deprecated/od.textures";
 
 export abstract class AbstractControlPoint extends Points implements ISelectable, IHasPosition {
+
+	protected defaultColor = COLOR.CYAN;
+
+	protected hoverColor = COLOR.YELLOW;
+
+	protected selectedColor = COLOR.RED;
 
 	public mainObject: any;
 
 	public tag: string;
-	public tagindex: number;
+
+	public index: number;
 
 	public isSelected: boolean;
 
@@ -24,7 +28,7 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 		return this.mainObject;
 	}
 
-	constructor ( geometry?: BufferGeometry, material?: Material | Material[] ) {
+	constructor ( geometry: BufferGeometry, public material: PointsMaterial ) {
 
 		super( geometry, material );
 
@@ -36,7 +40,7 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 	}
 
-	setPosition ( position: Vector3 ) {
+	setPosition ( position: Vector3 ): void {
 
 		this.position.copy( position.clone() );
 
@@ -60,41 +64,45 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 	}
 
-	update (): void { }
+	update (): void {
 
-	onMouseOver () {
-
-		( this.material as PointsMaterial ).color = new Color( HOVERED_COLOR );
-		( this.material as PointsMaterial ).needsUpdate = true;
+		// do nothing
 
 	}
 
-	onMouseOut () {
+	onMouseOver (): void {
 
-		( this.material as PointsMaterial ).color = new Color( DEFAULT_COLOR );
-		( this.material as PointsMaterial ).needsUpdate = true;
+		this.material.color = new Color( this.hoverColor );
+		this.material.needsUpdate = true;
 
 	}
 
-	select () {
+	onMouseOut (): void {
+
+		this.material.color = new Color( this.defaultColor );
+		this.material.needsUpdate = true;
+
+	}
+
+	select (): void {
 
 		this.isSelected = true;
 
-		( this.material as PointsMaterial ).color = new Color( SELECTED_COLOR );
-		( this.material as PointsMaterial ).needsUpdate = true;
+		this.material.color = new Color( this.selectedColor );
+		this.material.needsUpdate = true;
 
 	}
 
-	unselect () {
+	unselect (): void {
 
 		this.isSelected = false;
 
-		( this.material as PointsMaterial ).color = new Color( DEFAULT_COLOR );
-		( this.material as PointsMaterial ).needsUpdate = true;
+		this.material.color = new Color( this.defaultColor );
+		this.material.needsUpdate = true;
 
 	}
 
-	getForwardPosition ( distance: number, hdg?: number ) {
+	getForwardPosition ( distance: number, hdg?: number ): Vector3 {
 
 		const theta = hdg || this[ 'hdg' ];
 
@@ -103,15 +111,44 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 		return new Vector3( x, y, this.position.z );
 
-		// this.setPosition( newPoint );
+	}
 
-		// return newPoint;
+	getDirectionVector (): Vector3 {
+
+		return new Vector3( Math.cos( this[ 'hdg' ] ), Math.sin( this[ 'hdg' ] ), 0 );
 
 	}
 
-	getDirectionVector () {
+	getHeading (): number {
 
-		return new Vector3( Math.cos( this[ 'hdg' ] ), Math.sin( this[ 'hdg' ] ), 0 );
+		return this[ 'hdg' ];
+
+	}
+
+	protected getDefaultMaterial (): PointsMaterial {
+
+		return new PointsMaterial( {
+			size: 10,
+			sizeAttenuation: false,
+			map: OdTextures.point,
+			alphaTest: 0.5,
+			transparent: true,
+			color: this.defaultColor,
+			depthTest: false
+		} );
+	}
+
+	protected static getDefaultMaterial (): PointsMaterial {
+
+		return new PointsMaterial( {
+			size: 10,
+			sizeAttenuation: false,
+			map: OdTextures.point,
+			alphaTest: 0.5,
+			transparent: true,
+			color: COLOR.CYAN,
+			depthTest: false
+		} );
 
 	}
 

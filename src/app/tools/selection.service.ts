@@ -13,6 +13,7 @@ import { IMovingStrategy } from "../core/strategies/move-strategies/move-strateg
 import { Position } from "../scenario/models/position";
 import { Log } from 'app/core/utils/log';
 import { ClassMap, ConstructorFunction } from 'app/core/models/class-map';
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -193,6 +194,8 @@ export class SelectionService {
 		this.priority.clear();
 
 		this.movingStrategies = [];
+
+		this.lastSelectedObject = null;
 
 	}
 

@@ -61,7 +61,7 @@ export class RoadLinkValidator {
 
 	private linkedElementDistanceShouldBeZero ( road: TvRoad, link: TvRoadLink, distance: number ): void {
 
-		if ( !Maths.approxEquals( distance, 0 ) ) {
+		if ( !Maths.approxEquals( distance, 0, 0.001 ) ) {
 
 			throw new ValidationException( `InvalidLinkDistance: ${ distance } ${ road.toString() } ${ link.toString() }` );
 

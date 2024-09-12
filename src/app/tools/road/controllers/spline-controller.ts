@@ -4,13 +4,13 @@
 
 import { Injectable } from "@angular/core";
 import { BaseController } from "app/core/controllers/base-controller";
-import { AutoSpline } from "app/core/shapes/auto-spline-v2";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { SplineService } from "app/services/spline/spline.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export abstract class SplineController extends BaseController<AutoSpline> {
+export abstract class SplineController<T extends AbstractSpline> extends BaseController<T> {
 
 	constructor (
 		private splineService: SplineService
@@ -18,19 +18,19 @@ export abstract class SplineController extends BaseController<AutoSpline> {
 		super();
 	}
 
-	onAdded ( object: AutoSpline ): void {
+	onAdded ( object: T ): void {
 
 		this.splineService.add( object );
 
 	}
 
-	onUpdated ( object: AutoSpline ): void {
+	onUpdated ( object: T ): void {
 
 		this.splineService.updateSpline( object );
 
 	}
 
-	onRemoved ( object: AutoSpline ): void {
+	onRemoved ( object: T ): void {
 
 		this.splineService.remove( object );
 

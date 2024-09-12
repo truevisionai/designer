@@ -460,7 +460,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const point = ControlPointFactory.createSplineControlPoint( spline, position );
 
-			point.tagindex = spline.controlPoints.length;
+			point.index = spline.controlPoints.length;
 
 			spline.controlPoints.push( point );
 
@@ -486,7 +486,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const point = new SplineControlPoint( spline, position );
 
-			point.tagindex = spline.controlPoints.length;
+			point.index = spline.controlPoints.length;
 
 			spline.controlPoints.push( point );
 
@@ -637,7 +637,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const controlPoint = new SimpleControlPoint( mainObject, position );
 
-			controlPoint.tagindex = spline.controlPoints.length;
+			controlPoint.index = spline.controlPoints.length;
 
 			spline.controlPoints.push( controlPoint );
 
@@ -1234,6 +1234,14 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const toLaneId = parseInt( xmlElement.attr_to );
 
 		function findContactPoint ( incomingRoad: TvRoad ) {
+
+			if ( connection.connectingRoad.successor?.isEqualTo( incomingRoad ) ) {
+				return connection.connectingRoad.successor.contactPoint;
+			}
+
+			if ( connection.connectingRoad.predecessor?.isEqualTo( incomingRoad ) ) {
+				return connection.connectingRoad.predecessor.contactPoint;
+			}
 
 			if ( incomingRoad.successor?.id === junction.id ) {
 				return TvContactPoint.END;

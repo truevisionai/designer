@@ -9,9 +9,9 @@ export interface Selectable {
 }
 
 export interface Highlightable {
-	onMouseOver ();
+	onMouseOver (): void;
 
-	onMouseOut ();
+	onMouseOut (): void;
 }
 
 export interface ISelectable extends Selectable {

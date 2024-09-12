@@ -14,6 +14,8 @@ import { RoadUtils } from "app/utils/road.utils";
 import { SplineUtils } from "app/utils/spline.utils";
 import { JunctionManager } from "./junction-manager";
 import { MapService } from "app/services/map/map.service";
+import { Vector3 } from "three";
+import { AbstractControlPoint } from "app/objects/abstract-control-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -156,87 +158,49 @@ export class SplineLinkService {
 
 	}
 
-	syncSuccessorSpline ( spline: AbstractSpline ) {
+	syncSuccessorSpline ( spline: AbstractSpline ): void {
 
 		if ( SplineUtils.isConnection( spline ) ) return;
 
 		if ( spline.type === SplineType.EXPLICIT ) return;
 
-		const lastSegment = spline.segmentMap.getLast();
+		const successor = spline.getSuccessor();
 
-		const splineSuccessor = SplineUtils.findSuccessor( spline );
+		if ( spline.hasSuccessor() && spline.successorIsRoad() ) {
 
-		// TODO: check this flow
+			this.syncRoadSuccessorSpline( spline.getLastSegment() as TvRoad );
 
-		// if ( lastSegment instanceof TvRoad ) {
+		} else if ( successor instanceof TvJunction ) {
 
-		// 	this.syncRoadSuccessorSpline( lastSegment );
-
-		// } else if ( lastSegment instanceof TvJunction ) {
-
-		// 	Log.debug( "last segment is junction", lastSegment.toString(), spline.uuid );
-
-		// }
-
-		if ( splineSuccessor instanceof TvRoad ) {
-
-			Log.debug( "successor is road", splineSuccessor.toString(), spline.uuid );
-
-			const lastRoad = spline.segmentMap.getLast() instanceof TvRoad ? spline.segmentMap.getLast() as TvRoad : null;
-
-			if ( lastRoad ) this.syncRoadSuccessorSpline( lastRoad );
-
-		} else if ( splineSuccessor instanceof TvJunction ) {
-
-			Log.debug( "successor is junction", splineSuccessor.toString(), spline.uuid );
-
-			this.junctionManager.updateConnections( splineSuccessor );
+			this.junctionManager.updateConnections( successor );
 
 		}
 
 	}
 
-	syncPredecessorSpline ( spline: AbstractSpline ) {
+	syncPredecessorSpline ( spline: AbstractSpline ): void {
 
 		if ( SplineUtils.isConnection( spline ) ) return;
 
 		if ( spline.type === SplineType.EXPLICIT ) return;
 
-		// TODO: check this flow
+		const predecessor = spline.getPredecessor();
 
-
-		// const firstSegment = spline.segmentMap.getFirst();
-
-		// if ( firstSegment instanceof TvRoad ) {
-
-		// 	this.syncRoadPredecessorrSpline( firstSegment );
-
-		// } else if ( firstSegment instanceof TvJunction ) {
-
-		// 	Log.debug( "first segment is junction", firstSegment.toString(), spline.uuid );
-
-		// }
-
-		const splinePredecessor = SplineUtils.findPredecessor( spline );
-
-		if ( splinePredecessor instanceof TvRoad ) {
-
-			Log.debug( "predecessor is road", splinePredecessor.toString(), spline.uuid );
+		if ( predecessor instanceof TvRoad ) {
 
 			const firstRoad = spline.segmentMap.getFirst() instanceof TvRoad ? spline.segmentMap.getFirst() as TvRoad : null;
 
 			if ( firstRoad ) this.syncRoadPredecessorrSpline( firstRoad );
 
-		} else if ( splinePredecessor instanceof TvJunction ) {
+		} else if ( predecessor instanceof TvJunction ) {
 
-			Log.debug( "predecessor is junction", splinePredecessor.toString(), spline.uuid );
-
-			this.junctionManager.updateConnections( splinePredecessor );
+			this.junctionManager.updateConnections( predecessor );
 
 		}
+
 	}
 
-	syncRoadSuccessorSpline ( updatedRoad: TvRoad ) {
+	syncRoadSuccessorSpline ( updatedRoad: TvRoad ): void {
 
 		if ( !updatedRoad.successor ) return;
 
@@ -244,39 +208,25 @@ export class SplineLinkService {
 
 		const nextRoad = updatedRoad.successor.getElement<TvRoad>();
 
-		if ( updatedRoad.successor.contactPoint == TvContactPoint.START ) {
+		const isStartContact = updatedRoad.successor!.contactPoint === TvContactPoint.START;
 
-			const firstControlPoint = nextRoad.spline.controlPoints[ 0 ];
-			const secondControlPoint = nextRoad.spline.controlPoints[ 1 ];
+		const controlPoints = this.getControlPointsToAdjust( nextRoad.spline, isStartContact );
 
-			firstControlPoint.setPosition( updatedRoad.getEndPosTheta().position );
+		if ( !controlPoints ) return;
 
-			const direction = updatedRoad.getEndPosTheta().toDirectionVector();
-			const distance = firstControlPoint.position.distanceTo( secondControlPoint.position );
-			const directedPosition = firstControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
+		const [ targetPoint, adjacentPoint ] = controlPoints;
 
-			secondControlPoint.setPosition( directedPosition );
+		const target = updatedRoad.getEndPosTheta();
 
-		} else {
+		const targetDirection = target.toDirectionVector();
 
-			const secondLastControlPoint = nextRoad.spline.controlPoints[ nextRoad.spline.controlPoints.length - 2 ];
-			const lastControlPoint = nextRoad.spline.controlPoints[ nextRoad.spline.controlPoints.length - 1 ];
-
-			lastControlPoint.setPosition( updatedRoad.getEndPosTheta().position );
-
-			const direction = updatedRoad.getEndPosTheta().toDirectionVector();
-			const distance = secondLastControlPoint.position.distanceTo( lastControlPoint.position );
-			const directedPosition = lastControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
-
-			secondLastControlPoint.setPosition( directedPosition );
-
-		}
+		this.adjustControlPoints( target.position, targetDirection, targetPoint, adjacentPoint );
 
 		this.splineBuilder.buildSpline( nextRoad.spline );
 
 	}
 
-	syncRoadPredecessorrSpline ( updatedRoad: TvRoad ) {
+	syncRoadPredecessorrSpline ( updatedRoad: TvRoad ): void {
 
 		if ( !updatedRoad.predecessor ) return;
 
@@ -284,35 +234,52 @@ export class SplineLinkService {
 
 		const prevRoad = updatedRoad.predecessor.getElement<TvRoad>();
 
-		if ( updatedRoad.predecessor.contactPoint == TvContactPoint.START ) {
+		const isStartContact = updatedRoad.predecessor!.contactPoint === TvContactPoint.START;
 
-			const firstControlPoint = prevRoad.spline.controlPoints[ 0 ];
-			const secondControlPoint = prevRoad.spline.controlPoints[ 1 ];
+		const controlPoints = this.getControlPointsToAdjust( prevRoad.spline, isStartContact );
 
-			firstControlPoint.setPosition( updatedRoad.getStartPosTheta().position );
+		if ( !controlPoints ) return;
 
-			const direction = updatedRoad.getStartPosTheta().toDirectionVector().negate();
-			const distance = firstControlPoint.position.distanceTo( secondControlPoint.position );
-			const directedPosition = firstControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
+		const [ targetPoint, adjacentPoint ] = controlPoints;
 
-			secondControlPoint.setPosition( directedPosition );
+		const target = updatedRoad.getStartPosTheta();
 
-		} else {
+		const targetDirection = target.toDirectionVector().negate();
 
-			const secondLastControlPoint = prevRoad.spline.controlPoints[ prevRoad.spline.controlPoints.length - 2 ];
-			const lastControlPoint = prevRoad.spline.controlPoints[ prevRoad.spline.controlPoints.length - 1 ];
-
-			lastControlPoint.setPosition( updatedRoad.getStartPosTheta().position );
-
-			const direction = updatedRoad.getStartPosTheta().toDirectionVector().negate();
-			const distance = secondLastControlPoint.position.distanceTo( lastControlPoint.position );
-			const directedPosition = lastControlPoint.position.clone().add( direction.clone().multiplyScalar( distance ) );
-
-			secondLastControlPoint.setPosition( directedPosition );
-
-		}
+		this.adjustControlPoints( target.position, targetDirection, targetPoint, adjacentPoint );
 
 		this.splineBuilder.buildSpline( prevRoad.spline );
 
 	}
+
+	private getControlPointsToAdjust ( spline: AbstractSpline, isStartContact: boolean ): [ AbstractControlPoint, AbstractControlPoint ] | null {
+
+		const controlPoints = spline.getControlPoints();
+
+		if ( isStartContact ) {
+
+			return [ controlPoints[ 0 ], controlPoints[ 1 ] ];
+
+		} else {
+
+			const lastIndex = controlPoints.length - 1;
+
+			return [ controlPoints[ lastIndex ], controlPoints[ lastIndex - 1 ] ];
+
+		}
+
+	}
+
+	private adjustControlPoints ( position: Vector3, direction: Vector3, targetPoint: AbstractControlPoint, adjacentPoint: AbstractControlPoint ): void {
+
+		const distance = targetPoint.position.distanceTo( adjacentPoint.position );
+
+		targetPoint.setPosition( position );
+
+		const directedPosition = targetPoint.position.clone().add( direction.multiplyScalar( distance ) );
+
+		adjacentPoint.setPosition( directedPosition );
+
+	}
+
 }

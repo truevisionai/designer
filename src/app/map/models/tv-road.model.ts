@@ -178,6 +178,10 @@ export class TvRoad {
 		return this.planView.getBlockLength();
 	}
 
+	equals ( other: TvRoad ): boolean {
+		return this.id === other.id;
+	}
+
 	toString () {
 
 		if ( this.isJunction ) {

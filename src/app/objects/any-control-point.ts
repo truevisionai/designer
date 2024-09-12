@@ -2,10 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from "three";
-import { OdTextures } from "../deprecated/od.textures";
-import { COLOR } from "../views/shared/utils/colors.service";
-
+import { BufferAttribute, BufferGeometry, Vector3 } from "three";
 import { AbstractControlPoint } from "./abstract-control-point";
 
 /**
@@ -21,17 +18,7 @@ export class AnyControlPoint extends AbstractControlPoint {
 
 		dotGeometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
 
-		const texture = OdTextures.point;
-
-		const dotMaterial = new PointsMaterial( {
-			size: 10,
-			sizeAttenuation: false,
-			map: texture,
-			alphaTest: 0.5,
-			transparent: true,
-			color: COLOR.CYAN,
-			depthTest: false
-		} );
+		const dotMaterial = this.getDefaultMaterial();
 
 		const cp = new AnyControlPoint( dotGeometry, dotMaterial );
 
