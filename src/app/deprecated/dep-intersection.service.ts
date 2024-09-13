@@ -8,12 +8,12 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Box3, Vector3 } from 'three';
-import { JunctionService } from './junction.service';
-import { MapService } from '../map/map.service';
+import { JunctionService } from '../services/junction/junction.service';
+import { MapService } from '../services/map/map.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { RoadDividerService } from "../road/road-divider.service";
+import { RoadDividerService } from "../services/road/road-divider.service";
 import { DepConnectionFactory } from 'app/map/junction/dep-connection.factory';
-import { SplineService } from "../spline/spline.service";
+import { SplineService } from "../services/spline/spline.service";
 
 export class SplineIntersection {
 	spline: AbstractSpline;
@@ -27,7 +27,7 @@ export class SplineIntersection {
 @Injectable( {
 	providedIn: 'root'
 } )
-export class IntersectionService {
+export class DepIntersectionService {
 
 	constructor (
 		private mapService: MapService,

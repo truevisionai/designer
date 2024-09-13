@@ -3,7 +3,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { IntersectionService } from 'app/services/junction/intersection.service';
+import { DepIntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseTest } from 'tests/base-test.spec';
@@ -153,9 +153,9 @@ xdescribe( 'ConnectionService', () => {
 
 	} ) );
 
-	it( 'should give correct contact side', inject( [ RoadService, IntersectionService, JunctionService ], (
+	it( 'should give correct contact side', inject( [ RoadService, DepIntersectionService, JunctionService ], (
 		roadService: RoadService,
-		intersectionService: IntersectionService,
+		intersectionService: DepIntersectionService,
 		junctionService: JunctionService,
 	) => {
 

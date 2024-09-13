@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { SplineControlPoint } from 'app/objects/road/spline-control-point';
-import { IntersectionService } from 'app/services/junction/intersection.service';
+import { DepIntersectionService } from 'app/services/junction/intersection.service';
 import { RoadService } from 'app/services/road/road.service';
 import { Maths } from 'app/utils/maths';
 import { Vector3 } from 'three';
@@ -11,7 +11,7 @@ import { Vector3 } from 'three';
 xdescribe( 'IntersectionService', () => {
 
 	let roadService: RoadService;
-	let intersectionService: IntersectionService;
+	let intersectionService: DepIntersectionService;
 	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
@@ -21,7 +21,7 @@ xdescribe( 'IntersectionService', () => {
 		} );
 
 		roadService = TestBed.inject( RoadService );
-		intersectionService = TestBed.inject( IntersectionService );
+		intersectionService = TestBed.inject( DepIntersectionService );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 
 		eventServiceProvider.init();

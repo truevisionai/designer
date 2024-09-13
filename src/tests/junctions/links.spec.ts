@@ -3,7 +3,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { IntersectionService } from 'app/services/junction/intersection.service';
+import { DepIntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
@@ -19,7 +19,7 @@ xdescribe( 'LaneLinkService', () => {
 
 	let mapService: MapService;
 	let roadService: RoadService;
-	let intersectionService: IntersectionService;
+	let intersectionService: DepIntersectionService;
 	let junctionService: JunctionService;
 	let connectionService: DepConnectionFactory;
 	let eventServiceProvider: EventServiceProvider;
@@ -35,7 +35,7 @@ xdescribe( 'LaneLinkService', () => {
 
 		mapService = TestBed.inject( MapService );
 		roadService = TestBed.inject( RoadService );
-		intersectionService = TestBed.inject( IntersectionService );
+		intersectionService = TestBed.inject( DepIntersectionService );
 		junctionService = TestBed.inject( JunctionService );
 		connectionService = TestBed.inject( DepConnectionFactory );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );

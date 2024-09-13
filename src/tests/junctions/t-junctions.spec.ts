@@ -6,7 +6,7 @@ import { SplineEventListener } from "app/listeners/spline-event-listener";
 import { SplineManager } from "app/managers/spline-manager";
 import { RoadNode } from "app/objects/road/road-node";
 import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
-import { IntersectionService } from "app/services/junction/intersection.service";
+import { DepIntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapValidatorService } from "app/services/map/map-validator.service";
 import { MapService } from "app/services/map/map.service";
@@ -25,7 +25,7 @@ xdescribe( 't-junction tests', () => {
 
 	let mapService: MapService;
 	let roadService: RoadService;
-	let intersectionService: IntersectionService;
+	let intersectionService: DepIntersectionService;
 	let junctionService: JunctionService;
 	let eventServiceProvider: EventServiceProvider;
 	let splineEventListener: SplineEventListener;
@@ -45,7 +45,7 @@ xdescribe( 't-junction tests', () => {
 		splineManager = TestBed.inject( SplineManager );
 
 		mapService = TestBed.inject( MapService );
-		intersectionService = TestBed.inject( IntersectionService );
+		intersectionService = TestBed.inject( DepIntersectionService );
 		junctionService = TestBed.inject( JunctionService );
 		splineEventListener = TestBed.inject( SplineEventListener );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );

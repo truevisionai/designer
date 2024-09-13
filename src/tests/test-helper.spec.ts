@@ -1,5 +1,5 @@
 import { RoadService } from "../app/services/road/road.service";
-import { IntersectionService } from "app/services/junction/intersection.service";
+import { DepIntersectionService } from "app/services/junction/intersection.service";
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { DepConnectionFactory } from "app/map/junction/dep-connection.factory";
@@ -18,7 +18,7 @@ describe( 'BaseTest: tests', () => {
 
 	let mapService: MapService;
 	let roadService: RoadService;
-	let intersectionService: IntersectionService;
+	let intersectionService: DepIntersectionService;
 	let junctionService: JunctionService;
 	let junctionConnectionService: DepConnectionFactory;
 	let baseTest = new BaseTest();
@@ -35,7 +35,7 @@ describe( 'BaseTest: tests', () => {
 
 		mapService = TestBed.inject( MapService );
 		roadService = TestBed.inject( RoadService );
-		intersectionService = TestBed.inject( IntersectionService );
+		intersectionService = TestBed.inject( DepIntersectionService );
 		junctionService = TestBed.inject( JunctionService );
 		junctionConnectionService = TestBed.inject( DepConnectionFactory );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );

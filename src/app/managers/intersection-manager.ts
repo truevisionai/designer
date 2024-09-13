@@ -5,7 +5,7 @@
 import { Injectable } from "@angular/core";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { IntersectionService } from "app/services/junction/intersection.service";
+import { DepIntersectionService } from "app/services/junction/intersection.service";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { JunctionManager } from "./junction-manager";
@@ -22,7 +22,7 @@ export class IntersectionManager {
 
 	constructor (
 		private mapService: MapService,
-		private intersectionService: IntersectionService,
+		private intersectionService: DepIntersectionService,
 		private junctionManager: JunctionManager,
 		private splineBuilder: SplineBuilder,
 		private junctionFactory: JunctionFactory,

@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { IntersectionService } from 'app/services/junction/intersection.service';
+import { DepIntersectionService } from 'app/services/junction/intersection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
@@ -28,7 +28,7 @@ xdescribe( '4-way-junction tests', () => {
 	let roadToolService: RoadToolHelper;
 	let mapService: MapService;
 	let roadService: RoadService;
-	let intersectionService: IntersectionService;
+	let intersectionService: DepIntersectionService;
 	let junctionService: JunctionService;
 	let splineManager: SplineManager;
 	let mapValidator: MapValidatorService;
@@ -45,7 +45,7 @@ xdescribe( '4-way-junction tests', () => {
 		roadService = roadToolService.roadService
 
 		mapService = TestBed.get( MapService );
-		intersectionService = TestBed.get( IntersectionService );
+		intersectionService = TestBed.get( DepIntersectionService );
 		junctionService = TestBed.get( JunctionService );
 		splineManager = TestBed.get( SplineManager );
 		testHelper = TestBed.get( SplineTestHelper );
