@@ -36,6 +36,7 @@ import { JunctionRoadService } from "app/services/junction/junction-road.service
 import { ConnectionManager } from "../map/junction/connection.manager";
 import { JunctionBoundsService } from "../services/junction/junction-geometry.service";
 import { JunctionLinkService } from "app/services/junction/junction-link.service";
+import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -66,6 +67,7 @@ export class JunctionManager {
 		public splineFixer: SplineFixerService,
 		public connectionManager: ConnectionManager,
 		public junctionLinkService: JunctionLinkService,
+		public intersectionService: SplineIntersectionService,
 	) {
 	}
 
@@ -152,7 +154,7 @@ export class JunctionManager {
 
 		const oldJunctions = this.splineService.getJunctions( spline );
 
-		const intersections = this.splineService.findIntersections( spline );
+		const intersections = this.intersectionService.findIntersections( spline );
 
 		const result = this.categorizeJunctions( oldJunctions, intersections );
 
@@ -276,7 +278,7 @@ export class JunctionManager {
 
 			const otherSplines = splines.filter( s => s != spline );
 
-			const intersections = this.splineService.findIntersections( otherSplines[ 0 ], otherSplines );
+			const intersections = this.intersectionService.findIntersections( otherSplines[ 0 ], otherSplines );
 
 			const groups = this.createGroups( intersections );
 
@@ -488,7 +490,7 @@ export class JunctionManager {
 				const otherSpline = splines[ j ];
 
 				// Find intersections between the current spline and the other spline and add them to the list.
-				this.splineService.findIntersections( spline, [ otherSpline ] ).forEach( intersection => {
+				this.intersectionService.findIntersections( spline, [ otherSpline ] ).forEach( intersection => {
 
 					intersections.push( intersection );
 
@@ -541,7 +543,7 @@ export class JunctionManager {
 
 		const junctions = this.splineService.getJunctions( spline );
 
-		const intersections = this.splineService.findIntersections( spline );
+		const intersections = this.intersectionService.findIntersections( spline );
 
 		if ( junctions.length == 0 ) return intersections;
 
@@ -1115,7 +1117,7 @@ export class JunctionManager {
 
 				const element = splines[ b ];
 
-				const intersections = this.splineService.findIntersectionsViaBox2D( spline, element );
+				const intersections = this.intersectionService.findIntersectionsViaBox2D( spline, element );
 
 				intersections.forEach( i => group.addSplineIntersection( i ) );
 

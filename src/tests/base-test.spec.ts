@@ -2,7 +2,7 @@ import { TvLaneSection } from "../app/map/models/tv-lane-section";
 import { Vector2, Vector3 } from "three";
 import { RoadFactory } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
-import { DepIntersectionService } from "app/services/junction/intersection.service";
+import { DepIntersectionService } from 'app/deprecated/dep-intersection.service';
 import { RoadNode } from "app/objects/road/road-node";
 import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
 import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";

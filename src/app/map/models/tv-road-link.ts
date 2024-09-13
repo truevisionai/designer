@@ -8,6 +8,7 @@ import { TvJunction } from './junctions/tv-junction';
 import { TvRoadCoord } from './TvRoadCoord';
 import { TvLaneCoord } from './tv-lane-coord';
 import { TvLane } from './tv-lane';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 export enum TvRoadLinkType {
 	ROAD = 'road',
@@ -137,6 +138,10 @@ export class TvRoadLink {
 
 	getElement<T> (): T {
 		return this.element as any;
+	}
+
+	getSpline (): AbstractSpline | undefined {
+		return this.type == TvRoadLinkType.ROAD ? this.getElement<TvRoad>().spline : undefined;
 	}
 
 	toString () {

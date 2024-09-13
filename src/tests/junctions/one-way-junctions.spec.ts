@@ -1,12 +1,12 @@
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { DepIntersectionService } from "app/deprecated/dep-intersection.service";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineEventListener } from "app/listeners/spline-event-listener";
 import { IntersectionManager } from "app/managers/intersection-manager";
 import { SplineManager } from "app/managers/spline-manager";
 import { TvLaneType } from "app/map/models/tv-common";
-import { DepIntersectionService } from "app/services/junction/intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapValidatorService } from "app/services/map/map-validator.service";
 import { MapService } from "app/services/map/map.service";

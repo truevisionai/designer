@@ -13,6 +13,7 @@ import { SplineManager } from "./spline-manager";
 import { JunctionManager } from "./junction-manager";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
 
 describe( 'IntersectionGroup', () => {
 
@@ -20,6 +21,7 @@ describe( 'IntersectionGroup', () => {
 	let splineManager: SplineManager;
 	let junctionManager: JunctionManager;
 	let eventServiceProvider: EventServiceProvider;
+	let intersectionService: SplineIntersectionService;
 
 	beforeEach( () => {
 
@@ -32,6 +34,7 @@ describe( 'IntersectionGroup', () => {
 		splineManager = TestBed.inject( SplineManager );
 		junctionManager = TestBed.inject( JunctionManager );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
+		intersectionService = TestBed.inject( SplineIntersectionService );
 
 		eventServiceProvider.init();
 
@@ -47,7 +50,7 @@ describe( 'IntersectionGroup', () => {
 		splineManager.addSpline( splineB );
 		splineManager.addSpline( splineC );
 
-		const intersections = splineTestHelper.splineService.findIntersections( splineA );
+		const intersections = intersectionService.findIntersections( splineA );
 
 		expect( intersections.length ).toBe( 2 );
 
@@ -77,7 +80,7 @@ describe( 'IntersectionGroup', () => {
 
 		const spline = junctionManager.mapService.splines[ 0 ];
 
-		const intsersections = splineTestHelper.splineService.findIntersections( spline );
+		const intsersections = intersectionService.findIntersections( spline );
 
 		expect( intsersections.length ).toBe( 2 );
 
@@ -103,7 +106,7 @@ describe( 'IntersectionGroup', () => {
 
 		tick( 1000 );
 
-		const intsersections = splineTestHelper.splineService.findIntersections( response.vertical );
+		const intsersections = intersectionService.findIntersections( response.vertical );
 
 		expect( intsersections.length ).toBe( 5 );
 

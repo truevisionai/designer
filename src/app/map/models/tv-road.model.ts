@@ -252,6 +252,18 @@ export class TvRoad {
 
 	}
 
+	getSuccessorSpline (): AbstractSpline | undefined {
+
+		return this.successor?.getSpline();
+
+	}
+
+	getPredecessorSpline (): AbstractSpline | undefined {
+
+		return this.predecessor?.getSpline();
+
+	}
+
 	getPlanView (): TvPlaneView {
 
 		return this.planView;

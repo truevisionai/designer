@@ -15,6 +15,7 @@ import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { SplineManager } from "./spline-manager";
 import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
 
 describe( 'JunctionManager', () => {
 
@@ -23,6 +24,7 @@ describe( 'JunctionManager', () => {
 	let mapService: MapService;
 	let junctionManager: JunctionManager;
 	let splineManager: SplineManager;
+	let intersctionService: SplineIntersectionService;
 
 	beforeEach( () => {
 
@@ -36,6 +38,7 @@ describe( 'JunctionManager', () => {
 		mapService = TestBed.inject( MapService );
 		junctionManager = TestBed.inject( JunctionManager );
 		splineManager = TestBed.inject( SplineManager );
+		intersctionService = TestBed.inject( SplineIntersectionService );
 
 		disableMeshBuilding();
 
@@ -218,7 +221,7 @@ describe( 'JunctionManager', () => {
 		splineManager.addSpline( spline, false );
 
 		const junctions = junctionManager.splineService.getJunctions( spline );
-		const intersections = junctionManager.splineService.findIntersections( spline );
+		const intersections = intersctionService.findIntersections( spline );
 		const result = junctionManager.categorizeJunctions( junctions, intersections );
 
 		expect( result.junctionsToCreate.length ).toBe( 1 );
@@ -230,7 +233,7 @@ describe( 'JunctionManager', () => {
 		{
 			const horizontal = mapService.splines[ 0 ];
 			const junctions = junctionManager.splineService.getJunctions( horizontal );
-			const intersections = junctionManager.splineService.findIntersections( horizontal );
+			const intersections = intersctionService.findIntersections( horizontal );
 			const result = junctionManager.categorizeJunctions( junctions, intersections );
 			expect( result.junctionsToCreate.length ).toBe( 0 );
 			expect( result.junctionsToUpdate.length ).toBe( 2 );
@@ -252,7 +255,7 @@ describe( 'JunctionManager', () => {
 		const spline = mapService.splines[ 0 ];
 
 		const junctions = junctionManager.splineService.getJunctions( spline );
-		const intersections = junctionManager.splineService.findIntersections( spline );
+		const intersections = intersctionService.findIntersections( spline );
 		const result = junctionManager.categorizeJunctions( junctions, intersections );
 
 		expect( result.junctionsToCreate.length ).toBe( 0 );

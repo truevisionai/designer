@@ -6,7 +6,7 @@ import { SplineEventListener } from "app/listeners/spline-event-listener";
 import { SplineManager } from "app/managers/spline-manager";
 import { RoadNode } from "app/objects/road/road-node";
 import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
-import { DepIntersectionService } from "app/services/junction/intersection.service";
+import { DepIntersectionService } from "app/deprecated/dep-intersection.service";
 import { JunctionService } from "app/services/junction/junction.service";
 import { MapValidatorService } from "app/services/map/map-validator.service";
 import { MapService } from "app/services/map/map.service";

@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { DepIntersectionService } from 'app/services/junction/intersection.service';
+import { DepIntersectionService } from 'app/deprecated/dep-intersection.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';

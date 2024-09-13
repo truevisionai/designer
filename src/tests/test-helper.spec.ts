@@ -1,5 +1,4 @@
 import { RoadService } from "../app/services/road/road.service";
-import { DepIntersectionService } from "app/services/junction/intersection.service";
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { DepConnectionFactory } from "app/map/junction/dep-connection.factory";
@@ -11,6 +10,7 @@ import { BaseTest } from "./base-test.spec";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { DepIntersectionService } from "app/deprecated/dep-intersection.service";
 
 describe( 'BaseTest: tests', () => {
 

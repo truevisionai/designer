@@ -180,8 +180,12 @@ export abstract class AbstractSpline {
 		return this.segmentMap.length;
 	}
 
-	getLastSegment (): NewSegment {
-		return this.segmentMap.getLast();
+	getFirstSegment<T extends NewSegment> (): T {
+		return this.segmentMap.getFirst() as T;
+	}
+
+	getLastSegment<T extends NewSegment> (): T {
+		return this.segmentMap.getLast() as T;
 	}
 
 	getRoadSegments (): TvRoad[] {
@@ -204,32 +208,36 @@ export abstract class AbstractSpline {
 		return this.getSuccessor() instanceof TvRoad;
 	}
 
-	getSuccessor (): NewSegment {
-
-		const lastSegment = this.segmentMap.getLast();
-
-		if ( !lastSegment ) return;
-
-		if ( !( lastSegment instanceof TvRoad ) ) return;
-
-		if ( !lastSegment.successor ) return;
-
-		return lastSegment.successor.element;
-
+	isLastSegmentRoad (): boolean {
+		return this.getLastSegment() instanceof TvRoad;
 	}
 
-	getPredecessor (): NewSegment {
+	isFirstSegmentRoad (): boolean {
+		return this.getSegments()[ 0 ] instanceof TvRoad;
+	}
 
-		const segment = this.segmentMap.getFirst();
+	getSuccessorSpline (): AbstractSpline | undefined {
+		if ( this.isLastSegmentRoad() ) {
+			return this.getLastSegment<TvRoad>().getSuccessorSpline();
+		}
+	}
 
-		if ( !segment ) return;
+	getPredecessorSpline (): AbstractSpline | undefined {
+		if ( this.isFirstSegmentRoad() ) {
+			return this.getFirstSegment<TvRoad>().getPredecessorSpline();
+		}
+	}
 
-		if ( !( segment instanceof TvRoad ) ) return;
+	getSuccessor (): NewSegment | undefined {
+		if ( this.isLastSegmentRoad() ) {
+			return this.getLastSegment<TvRoad>().successor?.element;
+		}
+	}
 
-		if ( !segment.predecessor ) return;
-
-		return segment.predecessor.element;
-
+	getPredecessor (): NewSegment | undefined {
+		if ( this.isFirstSegmentRoad() ) {
+			return this.getFirstSegment<TvRoad>().predecessor?.element;
+		}
 	}
 
 	hasSegment ( segment: TvJunction | TvRoad ): boolean {
