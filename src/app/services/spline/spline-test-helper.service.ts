@@ -168,9 +168,21 @@ export class SplineTestHelper {
 
 		const spline = this.addStraightRoadSpline( start, length, degrees, type );
 
-		const road = spline.segmentMap.getFirst() as TvRoad;
+		return spline.getFirstSegment<TvRoad>();
 
-		return road;
+	}
+
+	createStraightRoad ( start?: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ) {
+
+		start = start || new Vector3( 0, 0, 0 );
+
+		const road = this.roadFactory.createDefaultRoad();
+
+		const spline = road.spline = this.createStraightSpline( start, length, degrees, type );
+
+		spline.addSegment( 0, road );
+
+		return spline.getFirstSegment<TvRoad>();
 
 	}
 
