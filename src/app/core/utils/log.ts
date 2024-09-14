@@ -17,6 +17,8 @@ export class Log {
 	private static logging: boolean = Environment.logging;
 	private static logLevel: LogLevel = Environment.logLevel;
 
+	private static cachedFilePath: string;
+
 	static debug ( message: string, ...optionalParams: any[] ): void {
 
 		this.writeLog( LogLevel.DEBUG, message, optionalParams );
@@ -124,25 +126,27 @@ export class Log {
 
 	private static appendToFile ( message: string ): void {
 
-		const filePath = this.getFilePath();
-
 		try {
-			StorageService.instance.appendFileSync( filePath, `${ message }\n` );
+
+			StorageService.instance.appendFileSync( this.getFilePath(), `${ message }\n` );
+
 		} catch ( error ) {
+
 			console.error( 'Error writing log to file:', error );
+
 		}
 
 	}
 
 	private static getFilePath (): string {
 
-		return electronFs.currentDirectory + '/logs/' + this.generateFilename();
+		if ( this.cachedFilePath ) return this.cachedFilePath;
 
-	}
+		const logFolder = electronFs.remote().app.getPath( 'logs' );
 
-	private static generateFilename (): string {
+		this.cachedFilePath = `${ logFolder }/application.log`;
 
-		return 'application.log';
+		return this.cachedFilePath;
 
 	}
 

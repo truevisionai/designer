@@ -10,5 +10,5 @@ export const environment = {
 	development_tools: true,
 	experimtental_tools: false,
 	logging: true,
-	log_level: LogLevel.WARN,
+	log_level: LogLevel.DEBUG,
 }
