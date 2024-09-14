@@ -18,8 +18,7 @@ import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { Object3D } from 'three';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
-import { LaneWidthLine } from "./objects/lane-width-line";
-import { LaneWidthPoint } from "./objects/lane-width-point";
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -132,6 +131,18 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
+	addNode ( node: LaneWidthNode ): void {
+
+		this.nodes.addItem( node.road, node );
+
+	}
+
+	removeNode ( node: LaneWidthNode ): void {
+
+		this.nodes.removeItem( node.road, node );
+
+	}
+
 	createNode ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, width: TvLaneWidth ): LaneWidthNode {
 
 		let node: LaneWidthNode;
@@ -152,49 +163,15 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 		} else {
 
-			node = new LaneWidthNode( width, lane );
+			const coord = new TvLaneCoord( road, laneSection, lane, width.s, 0 );
 
-			const line = node.line = this.createNodeLine( road, laneSection, lane, node );
-
-			const point = node.point = this.createPointHead( road, laneSection, lane, node );
-
-			node.add( line, point );
+			node = LaneWidthNode.create( coord, width );
 
 			this.nodeCache.set( width, node );
 
 		}
 
 		return node;
-
-	}
-
-	createPointHead ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ): LaneWidthPoint {
-
-		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
-
-		const point = new LaneWidthPoint( road, laneSection, lane, node.laneWidth );
-
-		point.setPosition( end.position );
-
-		node.add( point );
-
-		return point;
-
-	}
-
-	createNodeLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ): LaneWidthLine {
-
-		const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, node.laneWidth.s );
-
-		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
-
-		const positions = [ start.position, end.position ];
-
-		const geometry = this.debugService.createDebugLineGeometry( positions );
-
-		const material = this.debugService.createDebugLineMaterial();
-
-		return new LaneWidthLine( road, laneSection, lane, node.laneWidth, geometry, material );
 
 	}
 

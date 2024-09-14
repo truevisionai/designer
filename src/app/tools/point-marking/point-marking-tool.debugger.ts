@@ -3,95 +3,58 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BaseDebugger } from 'app/core/interfaces/base-debugger';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { DebugState } from 'app/services/debug/debug-state';
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
-import { ControlPointFactory } from "../../factories/control-point.factory";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
-import { RoadDebugService } from "../../services/debug/road-debug.service";
-import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
+import { PointMarkingControlPoint } from './objects/point-marking-object';
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PointMarkingToolDebugger extends BaseDebugger<TvRoad> {
+export class PointMarkingToolDebugger {
 
-	private pointsCache = new Map<TvRoadObject, SimpleControlPoint<TvRoadObject>>();
+	private cache = new Map<TvRoadObject, PointMarkingControlPoint>();
 
-	private controlPoints = new Object3DArrayMap<TvRoad, SimpleControlPoint<TvRoadObject>[]>();
+	private points = new Object3DArrayMap<TvRoad, PointMarkingControlPoint[]>();
 
-	constructor (
-		private roadDebugger: RoadDebugService,
-	) {
-		super();
-	}
+	constructor ( private roadGeometryService: RoadGeometryService ) { }
 
-	setDebugState ( road: TvRoad, state: DebugState ): void {
+	showRoadObjects ( road: TvRoad ): void {
 
-		this.setBaseState( road, state );
-
-	}
-
-	onHighlight ( road: TvRoad ): void {
-
-		this.roadDebugger.showRoadBorderLine( road );
-
-	}
-
-	onUnhighlight ( road: TvRoad ): void {
-
-		this.roadDebugger.removeRoadBorderLine( road );
-
-	}
-
-	onSelected ( road: TvRoad ): void {
-
-		road.getRoadObjects().forEach( roadObject => {
+		road.getObjectContainer().getRoadMarkings().forEach( roadObject => {
 
 			const point = this.createNode( road, roadObject );
 
-			this.controlPoints.addItem( road, point );
+			this.points.addItem( road, point );
 
 		} )
 
 	}
 
-	onUnselected ( road: TvRoad ): void {
+	hideRoadObjects ( road: TvRoad ): void {
 
-		this.controlPoints.removeKey( road );
-
-	}
-
-	onDefault ( road: TvRoad ): void {
-
-
-	}
-
-	onRemoved ( road: TvRoad ): void {
-
-		this.controlPoints.removeKey( road );
+		this.points.removeKey( road );
 
 	}
 
 	createNode ( road: TvRoad, roadObject: TvRoadObject ) {
 
-		const coord = RoadGeometryService.instance.findRoadPosition( road, roadObject.s, roadObject.t );
+		const coord = this.roadGeometryService.findRoadPosition( road, roadObject.s, roadObject.t );
 
 		if ( !coord ) return;
 
-		let point: SimpleControlPoint<TvRoadObject>;
+		let point: PointMarkingControlPoint;
 
-		if ( !this.pointsCache.has( roadObject ) ) {
+		if ( !this.cache.has( roadObject ) ) {
 
-			point = ControlPointFactory.createSimpleControlPoint( roadObject, coord.position );
+			point = PointMarkingControlPoint.create( road, roadObject );
 
-			this.pointsCache.set( roadObject, point );
+			this.cache.set( roadObject, point );
 
 		} else {
 
-			point = this.pointsCache.get( roadObject );
+			point = this.cache.get( roadObject );
 
 		}
 
@@ -105,12 +68,23 @@ export class PointMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
+	addPoint ( roadObject: TvRoadObject, point: PointMarkingControlPoint ): void {
 
-	clear () {
+		this.cache.set( roadObject, point );
 
-		super.clear();
+		this.points.addItem( point.userData.road, point );
 
-		this.controlPoints.clear();
+	}
+
+	removePoint ( roadObject: TvRoadObject, point: PointMarkingControlPoint ): void {
+
+		this.points.removeItem( point.road, point );
+
+	}
+
+	clear (): void {
+
+		this.points.clear();
 
 	}
 

@@ -35,6 +35,12 @@ export class TvObjectContainer {
 
 	}
 
+	getRoadMarkings (): TvRoadObject[] {
+
+		return Array.from( this.objects.values() ).filter( object => object.isRoadMarking() );
+
+	}
+
 	removeRoadObject ( roadObject: number | TvRoadObject ): void {
 
 		if ( typeof roadObject === 'number' ) {

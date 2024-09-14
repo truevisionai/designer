@@ -195,10 +195,10 @@ export class Asset {
 				return 'scene';
 
 			case AssetType.ROAD_STYLE:
-				return 'road_style';
+				return 'roadstyle';
 
 			case AssetType.ROAD_SIGN:
-				return 'road_sign';
+				return 'roadsign';
 
 			case AssetType.ENTITY:
 				return 'entity';

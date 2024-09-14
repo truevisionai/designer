@@ -7,20 +7,13 @@ import { BaseTool } from './base-tool';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Log } from "../core/utils/log";
 import { KeyboardEvents } from 'app/events/keyboard-events';
-import { ConstructorFunction } from 'app/core/models/class-map';
 import { Asset } from 'app/assets/asset.model';
-import { Vector3 } from 'three';
 
 export abstract class ToolWithHandler extends BaseTool<any> {
 
-	override onAssetDropped ( asset: Asset, position: Vector3 ): void {
+	override onAssetDroppedEvent ( asset: Asset, event: PointerEventData ): void {
 
-		if ( !this.isAsssetSupported( asset ) ) {
-			this.setHint( `Asset type: ${ asset.getTypeAsString() } not supported in this tool` );
-			return;
-		}
-
-		this.importAsset( asset, position );
+		super.onAssetDroppedEvent( asset, event );
 
 	}
 
@@ -32,24 +25,21 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 	override onPointerDownCreate ( e: PointerEventData ): void {
 
-		const selected = this.selectionService.executeSelection( e );
+		try {
 
-		if ( !selected ) return;
+			const created = this.objectCreationManager.tryCreatingObject( e );
 
-		const controller = this.getControllerByObject( selected );
+			if ( !created ) return;
 
-		if ( !controller ) {
-			Log.warn( `No controller found for ${ selected }` );
-			return;
-		}
-
-		const created = controller.createAt( selected, e );
-
-		if ( created ) {
-
-			const oldObjects = this.selectionService.getSelectedObjectsByKey( created.constructor as ConstructorFunction<any> );
+			const oldObjects = this.selectionService.getObjectLike( created );
 
 			this.executeAddAndSelect( created, oldObjects );
+
+		} catch ( error ) {
+
+			this.setHint( "Something went wrong while creating object" );
+
+			Log.error( error );
 
 		}
 

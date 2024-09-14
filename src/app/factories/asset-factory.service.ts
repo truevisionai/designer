@@ -3,11 +3,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetType } from "../assets/asset.model";
+import { Asset, AssetType } from "../assets/asset.model";
 import { TvTextureFactory } from "../assets/texture/tv-texture.factory";
 import { TvMaterialFactory } from "../assets/material/tv-material.factory";
 
-export interface AssetFactory {
+export interface Factory {
 
 	createNew (): void;
 
@@ -16,12 +16,12 @@ export interface AssetFactory {
 @Injectable( {
 	providedIn: 'root'
 } )
-export class AssetFactoryProvider {
+export class FactoryProvider {
 
 	constructor () {
 	}
 
-	getFactory ( type: AssetType ): AssetFactory {
+	getFactory ( type: AssetType ): Factory {
 
 		switch ( type ) {
 
@@ -34,4 +34,28 @@ export class AssetFactoryProvider {
 		}
 
 	}
+
+}
+
+
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class MockAssetFactory {
+
+	static createAsset ( type: AssetType ): Asset {
+
+		switch ( type ) {
+
+			case AssetType.TEXTURE:
+				return new Asset( type, 'texture', 'path/to/texture' );
+
+			case AssetType.MATERIAL:
+				return new Asset( type, 'material', 'path/to/material' );
+		}
+
+	}
+
+
 }

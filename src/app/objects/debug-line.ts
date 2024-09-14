@@ -72,7 +72,14 @@ export class DebugLine<T> extends Line2 implements INode {
 
 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
-		const material = new LineMaterial( {
+		const material = this.getMaterial( color, width );
+
+		return new DebugLine( null, geometry, material );
+	}
+
+	static getMaterial ( color = COLOR.CYAN, width = 2 ): LineMaterial {
+
+		return new LineMaterial( {
 			color: color,
 			linewidth: width,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ),
@@ -81,6 +88,5 @@ export class DebugLine<T> extends Line2 implements INode {
 			transparent: true,
 		} );
 
-		return new DebugLine( null, geometry, material );
 	}
 }

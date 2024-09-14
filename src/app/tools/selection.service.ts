@@ -175,6 +175,10 @@ export class SelectionService {
 		return [];
 	}
 
+	getObjectLike<T> ( object: object ): T[] {
+		return this.getSelectedObjectsByKey( object.constructor as ConstructorFunction<T> );
+	}
+
 	getLastSelectedObject (): any | undefined {
 		return this.lastSelectedObject;
 	}

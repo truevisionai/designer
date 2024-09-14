@@ -3,12 +3,12 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AssetFactory } from "../../factories/asset-factory.service";
+import { Factory } from "../../factories/asset-factory.service";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class TvTextureFactory implements AssetFactory {
+export class TvTextureFactory implements Factory {
 
 	constructor () {
 	}

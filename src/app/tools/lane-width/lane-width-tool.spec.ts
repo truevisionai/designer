@@ -17,6 +17,7 @@ import { LaneWidthLine } from "app/tools/lane-width/objects/lane-width-line";
 import { LaneWidthPoint } from "app/tools/lane-width/objects/lane-width-point";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { Vector3 } from "three";
+import { LaneWidthNode } from "./objects/lane-width-node";
 
 describe( 'LaneWidthTool: Handlers', () => {
 
@@ -105,7 +106,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 
 	it( 'should create and select width node', () => {
 
-		const lane = road.getLaneProfile().getFirstLaneSection().getLaneById( -2 )
+		const lane = road.getLaneProfile().getFirstLaneSection().getLaneById( 1 )
 
 		const selectionService = tool.getSelectionService();
 
@@ -119,13 +120,13 @@ describe( 'LaneWidthTool: Handlers', () => {
 		expect( tool.getSelectedObjectCount() ).toBe( 3 );
 		expect( selectionService.getSelectedObjects()[ 0 ] ).toBeInstanceOf( TvRoad )
 		expect( selectionService.getSelectedObjects()[ 1 ] ).toBeInstanceOf( TvLane )
-		expect( selectionService.getSelectedObjects()[ 2 ] ).toBeInstanceOf( LaneWidthPoint )
+		expect( selectionService.getSelectedObjects()[ 2 ] ).toBeInstanceOf( LaneWidthNode )
 
 	} );
 
 	it( 'should create and select second width node', () => {
 
-		const lane = road.getLaneProfile().getFirstLaneSection().getLaneById( -2 )
+		const lane = road.getLaneProfile().getFirstLaneSection().getLaneById( 1 )
 
 		const selectionService = tool.getSelectionService();
 
@@ -140,11 +141,11 @@ describe( 'LaneWidthTool: Handlers', () => {
 		expect( tool.getSelectedObjectCount() ).toBe( 3 );
 		expect( selectionService.getSelectedObjects()[ 0 ] ).toBeInstanceOf( TvRoad )
 		expect( selectionService.getSelectedObjects()[ 1 ] ).toBeInstanceOf( TvLane )
-		expect( selectionService.getSelectedObjects()[ 2 ] ).toBeInstanceOf( LaneWidthPoint )
+		expect( selectionService.getSelectedObjects()[ 2 ] ).toBeInstanceOf( LaneWidthNode )
 
-		const point = selectionService.findSelectedObject<LaneWidthPoint>( LaneWidthPoint );
+		const node = selectionService.findSelectedObject<LaneWidthNode>( LaneWidthNode );
 
-		expect( point.width ).toEqual( lane.getLaneWidthVector()[ 2 ] )
+		expect( node.laneWidth ).toEqual( lane.getLaneWidthVector()[ 2 ] )
 
 	} );
 
@@ -166,7 +167,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 
 		expect( tool.getSelectedObjectCount() ).toBe( 2 );
 		expect( selectionService.getSelectedObjects()[ 0 ] ).toBeInstanceOf( TvRoad )
-		expect( selectionService.getSelectedObjects()[ 1 ] ).toBeInstanceOf( TvLane )
+		expect( selectionService.getSelectedObjects()[ 1 ] ).toBeInstanceOf( LaneWidthNode )
 
 	} );
 

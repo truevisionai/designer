@@ -257,9 +257,15 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	}
 
-	onAssetDropped ( asset: Asset, position: Vector3 ): void {
+	onAssetDroppedEvent ( asset: Asset, event: PointerEventData ): void {
 
 		this.setHint( 'Asset drop is not supported' );
+
+	}
+
+	onAssetDragOverEvent(asset: Asset, event: PointerEventData): void {
+
+		this.setHint( 'Asset drag over is not supported' );
 
 	}
 

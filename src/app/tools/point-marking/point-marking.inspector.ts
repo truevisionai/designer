@@ -2,17 +2,98 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
-import { SimpleControlPoint } from 'app/objects/simple-control-point';
 import { Commands } from 'app/commands/commands';
+import { PointMarkingControlPoint } from './objects/point-marking-object';
 
 
 export class PointMarkingInspector {
 
-	constructor ( public points: SimpleControlPoint<TvRoadObject>[] ) { }
+	constructor ( public point: PointMarkingControlPoint ) { }
 
-	get items () { return this.points.map( point => point.object ); }
+	@SerializedField( { 'type': 'float', label: 'Distance' } )
+	get s (): number {
+		return this.point.s
+	}
+
+	set s ( value ) {
+		this.point.s = value;
+	}
+
+	@SerializedField( { 'type': 'float', label: 'Offset' } )
+	get t (): number {
+		return this.point.t;
+	}
+
+	set t ( value ) {
+		this.point.t = value;
+	}
+
+	@SerializedField( {
+		type: 'float',
+		label: 'Z Offset',
+		description: 'z-offset of object origin relative to the elevation of the road reference line'
+	} )
+	get zOffset (): number {
+		return this.point.roadObject.zOffset || 0;
+	}
+
+	set zOffset ( value ) {
+		this.point.roadObject.zOffset = value;
+	}
+
+	@SerializedField( {
+		type: 'float',
+		label: 'Heading Angle',
+		description: 'Heading angle of the object relative to road direction'
+	} )
+	get heading (): number {
+		return this.point.roadObject.hdg || 0;
+	}
+
+	set heading ( value ) {
+		this.point.roadObject.hdg = value;
+	}
+
+	@SerializedField( {
+		type: 'float',
+		label: 'Width',
+		description: 'Width of the object'
+	} )
+	get width (): number {
+		return this.point.roadObject.width;
+	}
+
+	set width ( value ) {
+		this.point.roadObject.width = value;
+	}
+
+	@SerializedField( {
+		type: 'float',
+		label: 'Length',
+		description: 'Length of the object'
+	} )
+	get length (): number {
+		return this.point.roadObject.length;
+	}
+
+	set length ( value ) {
+		this.point.roadObject.length = value;
+	}
+
+	@SerializedAction( { label: 'Delete' } )
+	delete (): void {
+		Commands.RemoveObject( this.point, true );
+	}
+
+}
+
+
+export class MultiPointMarkingInspector {
+
+	constructor ( public points: PointMarkingControlPoint[] ) { }
+
+	get items () { return this.points.map( point => point.roadObject ); }
 
 	getValue<T, K extends keyof T> ( items: T[], key: K, multi = true ): T[ K ] {
 
@@ -127,7 +208,7 @@ export class PointMarkingInspector {
 	@SerializedAction( { label: 'Delete' } )
 	delete () {
 
-		Commands.RemoveObject( this.points );
+		this.points.forEach( point => Commands.RemoveObject( point, true ) );
 
 	}
 

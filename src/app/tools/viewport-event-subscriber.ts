@@ -24,8 +24,6 @@ export abstract class ViewportEventSubscriber {
 	private endDragSubscriber: Subscription;
 	private dragSubscriber: Subscription;
 	private dropSubscriber: Subscription;
-	private selectSubscriber: Subscription;
-	private deSelectSubscriber: Subscription;
 	private keyboardSubscriber: Subscription;
 
 	protected pointerDownAt: Vector3;
@@ -105,10 +103,6 @@ export abstract class ViewportEventSubscriber {
 
 		this.dropSubscriber = AppService.eventSystem.drop.subscribe( e => this.onDrop( e ) );
 
-		this.selectSubscriber = AppService.eventSystem.select.subscribe( e => this.onSelect( e ) );
-
-		this.deSelectSubscriber = AppService.eventSystem.deSelect.subscribe( e => this.onDeSelect( e ) );
-
 		this.keyboardSubscriber = KeyboardEvents.keyDown.subscribe( e => this.onKeyDown( e ) );
 
 		this.subscribed = true;
@@ -130,8 +124,6 @@ export abstract class ViewportEventSubscriber {
 		this.endDragSubscriber.unsubscribe();
 		this.dragSubscriber.unsubscribe();
 		this.dropSubscriber.unsubscribe();
-		this.selectSubscriber.unsubscribe();
-		this.deSelectSubscriber.unsubscribe();
 		this.keyboardSubscriber.unsubscribe();
 
 		this.subscribed = false;
@@ -174,18 +166,5 @@ export abstract class ViewportEventSubscriber {
 	}
 
 	onKeyDown ( e: KeyboardEvent ): void { }
-
-	onDeSelect ( baseEventData: BaseEventData ): any {
-
-		// if ( baseEventData.object != null ) Debug.log( 'deselect', baseEventData.object.id );
-
-	}
-
-	onSelect ( baseEventData: BaseEventData ): any {
-
-		// Debug.log( 'selected', baseEventData.object.id );
-
-	}
-
 
 }

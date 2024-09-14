@@ -53,7 +53,13 @@ export class RoadObjectService {
 
 	}
 
-	private getRoadObjectId ( road: TvRoad ): number {
+	/**
+	 *
+	 * @param road
+	 * @returns
+	 * @deprecated we needt o remove this method
+	 */
+	getRoadObjectId ( road: TvRoad ): number {
 
 		if ( !this.ids.has( road ) ) {
 

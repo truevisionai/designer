@@ -20,6 +20,8 @@ import { ViewportService } from "./viewport.service";
 import { ViewControllerService } from "./view-controller.service";
 import { CameraService } from "../../../renderer/camera.service";
 import { MapService } from 'app/services/map/map.service';
+import { ToolManager } from 'app/managers/tool-manager';
+import { AssetType } from 'app/assets/asset.model';
 
 @Component( {
 	selector: 'app-viewport',
@@ -401,9 +403,35 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( $event: DragEvent ) {
+	onDragOver ( $event: DragEvent ): void {
+
 		$event.preventDefault();
 		$event.stopPropagation();
+
+		this.updateMousePosition( $event );
+
+		// Limit the frequency of operations to avoid performance issues.
+		if ( ( Date.now() - this.lastTime ) < this.minTime ) {
+			return;
+		}
+
+		this.lastTime = Date.now();
+
+		this.intersections = this.getIntersections( $event );
+
+		const event = this.preparePointerData( $event, this.intersections[ 0 ] );
+
+		const data = this.dragDropService.getData();
+
+		if ( !data ) return;
+
+		// dont allow dragging of scene or opendrive files
+		if ( data.type == AssetType.SCENE || data.type == AssetType.OPENDRIVE ) {
+			return;
+		}
+
+		ToolManager.onAssetDragOver( data, event );
+
 	}
 
 	@HostListener( 'dragleave', [ '$event' ] )
@@ -422,15 +450,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.intersections = this.getIntersections( $event );
 
-		this.eventSystem.drop.emit( this.preparePointerData( $event, this.intersections[ 0 ] ) );
+		const event = this.preparePointerData( $event, this.intersections[ 0 ] )
 
-		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
-
-		const position = intersection?.point || new Vector3();
+		this.eventSystem.drop.emit( event );
 
 		const data = this.dragDropService.getData();
 
-		await this.viewportService.handleAssetDropped( data, position );
+		await this.viewportService.handleAssetDropped( data, event );
 
 		this.dragDropService.clear();
 	}

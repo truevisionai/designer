@@ -6,7 +6,7 @@ import { EventEmitter } from '@angular/core';
 import { Tool } from "../tools/tool";
 import { ToolType } from 'app/tools/tool-types.enum';
 import { Asset } from 'app/assets/asset.model';
-import { Vector3 } from 'three';
+import { PointerEventData } from 'app/events/pointer-event-data';
 
 export class ToolManager {
 
@@ -118,9 +118,15 @@ export class ToolManager {
 
 	}
 
-	static onAssetDropped ( asset: Asset, position: Vector3 ): void {
+	static onAssetDropped ( asset: Asset, event: PointerEventData ): void {
 
-		this.tool?.onAssetDropped( asset, position );
+		this.tool?.onAssetDroppedEvent( asset, event );
+
+	}
+
+	static onAssetDragOver ( asset: Asset, event: PointerEventData ): void {
+
+		this.tool?.onAssetDragOverEvent( asset, event );
 
 	}
 

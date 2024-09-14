@@ -13,7 +13,6 @@ import { BaseVisualizer } from "app/core/visualizers/base-visualizer";
 } )
 export class LaneWidthRoadVisualizer extends BaseVisualizer<TvRoad> {
 
-
 	constructor (
 		private widthDebugger: LaneWidthToolDebugger,
 		private roadVisualizer: RoadVisualizer,

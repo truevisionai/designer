@@ -9,12 +9,10 @@ import { IHasCopyUpdate } from 'app/core/interfaces/has-copy-update';
 import { TvLane } from "../../../map/models/tv-lane";
 import { LaneWidthLine } from "./lane-width-line";
 import { LaneWidthPoint } from "./lane-width-point";
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 
 export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
-
-	public static readonly tag = 'width-node';
-	public static readonly pointTag = 'width-point';
-	public static readonly lineTag = 'width-line';
 
 	public line: LaneWidthLine;
 
@@ -22,7 +20,27 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
 	public isSelected: boolean = false;
 
-	get s () {
+	constructor ( public readonly road: TvRoad, private _laneWidth: TvLaneWidth, private _lane: TvLane ) {
+		super();
+	}
+
+	get lane (): TvLane {
+		return this._lane;
+	}
+
+	set lane ( value: TvLane ) {
+		this._lane = value;
+	}
+
+	get laneWidth (): TvLaneWidth {
+		return this._laneWidth;
+	}
+
+	set laneWidth ( value: TvLaneWidth ) {
+		this._laneWidth = value;
+	}
+
+	get s (): number {
 		return this.laneWidth.s;
 	}
 
@@ -30,11 +48,6 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 		this.laneWidth.s = value;
 	}
 
-	constructor ( public laneWidth: TvLaneWidth, public lane: TvLane ) {
-
-		super();
-
-	}
 
 	update (): void {
 
@@ -85,6 +98,20 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 		this.isSelected = false;
 		this.point?.unselect();
 		this.line?.unselect();
+
+	}
+
+	static create ( laneCoord: TvLaneCoord, width: TvLaneWidth ): LaneWidthNode {
+
+		const node = new LaneWidthNode( laneCoord.road, width, laneCoord.lane );
+
+		const line = node.line = LaneWidthLine.createLine( laneCoord, width );
+
+		const point = node.point = LaneWidthPoint.createPoint( laneCoord, width );
+
+		node.add( line, point );
+
+		return node;
 
 	}
 

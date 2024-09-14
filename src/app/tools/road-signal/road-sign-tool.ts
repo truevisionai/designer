@@ -131,11 +131,17 @@ export class RoadSignTool extends BaseTool<any> {
 
 	}
 
-	onAssetDropped ( asset: Asset, position: Vector3 ): void {
+	override onAssetDroppedEvent ( asset: Asset, event: PointerEventData ): void {
 
-		const coord = this.tool.roadService.findRoadCoord( position );
+		const coord = this.tool.roadService.findRoadCoord( event.point );
 
-		this.createSignal( coord?.road || this.selectedRoad, asset, position );
+		this.createSignal( coord?.road || this.selectedRoad, asset, event.point );
+
+	}
+
+	override onAssetDragOverEvent ( asset: Asset, event: PointerEventData ): void {
+
+		// do nothing
 
 	}
 

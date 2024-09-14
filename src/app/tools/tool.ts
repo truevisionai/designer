@@ -45,7 +45,9 @@ export interface Tool {
 
 	onObjectRemoved ( object: any ): void;
 
-	onAssetDropped ( asset: Asset, position: Vector3 ): void;
+	onAssetDroppedEvent ( asset: Asset, event: PointerEventData ): void;
+
+	onAssetDragOverEvent ( asset: Asset, event: PointerEventData ): void;
 
 	onKeyDown ( e: KeyboardEvent ): void;
 

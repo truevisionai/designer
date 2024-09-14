@@ -32,7 +32,7 @@ export class SetToolCommand extends BaseCommand {
 
 	redo (): void {
 
-		this.redo();
+		ToolManager.setCurrentTool( this.newTool );
 
 	}
 

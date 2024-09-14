@@ -2,11 +2,35 @@ import { AssetDatabase } from "app/assets/asset-database";
 import { Asset, AssetType } from "app/assets/asset.model";
 import { RoadStyle } from "app/assets/road-style/road-style.model";
 import { Commands } from "app/commands/commands";
+import { AssetHandler } from "app/core/interfaces/asset-handler";
+import { PointerEventData } from "app/events/pointer-event-data";
+import { TvMapQueries } from "app/map/queries/tv-map-queries";
 import { RoadService } from "app/services/road/road.service";
-import { AssetDropHandler } from "app/tools/asset-drop-handler";
 import { Vector3 } from "three";
 
-export class RoadStyleAssetDropHandler implements AssetDropHandler {
+export class RoadStyleAssetDropHandler implements AssetHandler {
+
+	onAssetDragOver ( asset: Asset, event: PointerEventData ): void {
+
+		// throw new Error( "Method not implemented." );
+
+	}
+
+	onAssetDropped ( asset: Asset, event: PointerEventData ): void {
+
+		this.importAsset( asset, event.point );
+
+	}
+
+	isLocationValid ( asset: Asset, event: PointerEventData  ): boolean {
+
+		const coord = TvMapQueries.findRoadCoord( event.point );
+
+		if ( !coord ) return false;
+
+		return true;
+
+	}
 
 	isAssetSupported ( asset: Asset ): boolean {
 
@@ -14,7 +38,7 @@ export class RoadStyleAssetDropHandler implements AssetDropHandler {
 
 	}
 
-	handle ( asset: Asset, position: Vector3 ): void {
+	importAsset ( asset: Asset, position: Vector3 ): void {
 
 		const road = RoadService.instance.findNearestRoad( position );
 

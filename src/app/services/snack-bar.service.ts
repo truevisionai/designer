@@ -10,7 +10,15 @@ import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/s
 } )
 export class SnackBar {
 
-	constructor ( private snackBar: MatSnackBar ) { }
+	/**
+	 * TODO: Remove this static instance usage and use dependency injection
+	 * @deprecated need to remove this static instance usage and use dependency injection
+	 */
+	static instance: SnackBar;
+
+	constructor ( private snackBar: MatSnackBar ) {
+		SnackBar.instance = this;
+	}
 
 	open ( message: string = '', action: string = '', duration: number = 2000 ): MatSnackBarRef<SimpleSnackBar> {
 

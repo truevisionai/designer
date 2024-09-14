@@ -15,6 +15,7 @@ import { TvRoadLink } from "../../map/models/tv-road-link";
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { RoadWidthService } from './road-width.service';
+import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -98,6 +99,35 @@ export class RoadGeometryService {
 
 		return this.findRoadPositionAt( road, position ).toRoadCoord( road );
 
+	}
+
+	findLaneCoordAt ( road: TvRoad, position: Vector3 ): TvLaneCoord | undefined {
+
+		const coord = this.findRoadCoordAt( road, position );
+
+		if ( !coord ) return;
+
+		const laneSection = coord.road.getLaneProfile().getLaneSectionAt( coord.s );
+
+		const t = coord.t;
+
+		const shouldSearchLeft = t > 0;
+
+		const lanes = shouldSearchLeft ? laneSection.getLeftLanes() : laneSection.getRightLanes();
+
+		for ( const lane of lanes ) {
+
+			const startT = laneSection.getWidthUptoStart( lane, coord.s );
+
+			const endT = laneSection.getWidthUptoEnd( lane, coord.s );
+
+			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
+
+				return new TvLaneCoord( coord.road, laneSection, lane, coord.s, 0 );
+
+			}
+
+		}
 	}
 
 	findRoadCoordStrict ( road: TvRoad, position: Vector3 ): TvRoadCoord | undefined {

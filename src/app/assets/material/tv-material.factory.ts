@@ -5,13 +5,13 @@
 import { Injectable } from "@angular/core";
 import { MathUtils } from "three";
 import { MaterialAsset } from "./tv-material.asset";
-import { AssetFactory } from "../../factories/asset-factory.service";
+import { Factory } from "../../factories/asset-factory.service";
 import { TvStandardMaterial } from "./tv-standard-material";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class TvMaterialFactory implements AssetFactory {
+export class TvMaterialFactory implements Factory {
 
 	constructor () {
 	}

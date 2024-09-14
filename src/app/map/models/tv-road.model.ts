@@ -347,6 +347,12 @@ export class TvRoad {
 
 	}
 
+	getObjectContainer (): TvObjectContainer {
+
+		return this.objectContainer;
+
+	}
+
 	getElevationProfile (): TvElevationProfile {
 
 		return this.elevationProfile;

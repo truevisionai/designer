@@ -7,10 +7,10 @@ import { DragDropData } from 'app/services/editor/drag-drop.service';
 import { ToolManager } from 'app/managers/tool-manager';
 import { TvSceneFileService } from 'app/services/tv-scene-file.service';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { Vector3 } from 'three';
 import { Asset, AssetType } from 'app/assets/asset.model';
 import { LoaderFactory } from 'app/factories/loader.factory';
 import { TvMap } from 'app/map/models/tv-map.model';
+import { PointerEventData } from 'app/events/pointer-event-data';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,13 +24,13 @@ export class ViewportService {
 	) {
 	}
 
-	async handleAssetDropped ( asset: DragDropData, position: Vector3 ) {
+	async handleAssetDropped ( asset: DragDropData, event: PointerEventData ): Promise<void> {
 
 		const type = asset?.type;
 
 		if ( !type ) {
-			console.error( 'Asset type not found', asset, position );
-			this.snackBar.warn( `File not supported for viewport extension: ${ asset?.extension } ` + asset?.path );
+			console.error( 'Asset type not found', asset, event.point );
+			this.snackBar.warn( `File not supported for viewport extension: ${ asset?.extension } ${ asset?.path }` );
 			return;
 		}
 
@@ -44,41 +44,14 @@ export class ViewportService {
 				this.loadScene( asset );
 				break;
 
-			case AssetType.PREFAB:
-				this.importAsset( asset, position );
-				break;
-
-			case AssetType.OBJECT:
-				this.importAsset( asset, position );
-				break;
-
-			case AssetType.GEOMETRY:
-				this.importAsset( asset, position );
-				break;
-
-			case AssetType.MODEL:
-				this.importAsset( asset, position );
-				break;
-
-			case AssetType.TEXTURE:
-				this.importAsset( asset, position );
-				break;
-
-			case AssetType.ROAD_STYLE:
-				this.importAsset( asset, position );
-				break;
-
-			case AssetType.MATERIAL:
-				this.importAsset( asset, position );
-				break;
-
 			default:
+				this.importAsset( asset, event );
 				break;
 		}
 
 	}
 
-	loadScene ( asset: Asset ) {
+	loadScene ( asset: Asset ): void {
 
 		const assetLoader = this.loaderFactory.getLoader( AssetType.SCENE );
 
@@ -90,7 +63,7 @@ export class ViewportService {
 
 	}
 
-	loadOpenDrive ( asset: Asset ) {
+	loadOpenDrive ( asset: Asset ): void {
 
 		const assetLoader = this.loaderFactory.getLoader( AssetType.OPENDRIVE )
 
@@ -100,9 +73,9 @@ export class ViewportService {
 
 	}
 
-	importAsset ( asset: Asset, position: Vector3 ) {
+	importAsset ( asset: Asset, event: PointerEventData ): void {
 
-		ToolManager.onAssetDropped( asset, position );
+		ToolManager.onAssetDropped( asset, event );
 
 	}
 

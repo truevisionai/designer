@@ -326,6 +326,10 @@ export class TvRoadObject {
 		}
 	}
 
+	isRoadMarking (): boolean {
+		return this.attr_type == TvRoadObjectType.roadMark;
+	}
+
 	toOrientationString (): string {
 
 		switch ( this.orientation ) {

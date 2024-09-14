@@ -189,6 +189,14 @@ export class ToolHandlers {
 		return this.controllers.has( object.constructor as ConstructorFunction );
 	}
 
+	hasControllerForKey ( key: ConstructorFunction ): boolean {
+		return this.controllers.has( key );
+	}
+
+	hasVisualizerForKey ( key: ConstructorFunction ): boolean {
+		return this.visualizers.has( key );
+	}
+
 	hasVisualizerForObject ( object: object ): boolean {
 		return this.visualizers.has( object.constructor as ConstructorFunction );
 	}
@@ -205,6 +213,7 @@ export class ToolHandlers {
 
 		} else {
 
+			// NOTE: onDefault in not needed, it is causing issues
 			visualizer?.onUpdated( object );
 
 		}
@@ -270,13 +279,29 @@ export class ToolHandlers {
 
 	handleDrag ( object: object, e: PointerEventData ): void {
 
-		this.dragManager.handleDrag( object, e );
+		try {
+
+			this.dragManager.handleDrag( object, e );
+
+		} catch ( error ) {
+
+			Log.error( error );
+
+		}
 
 	}
 
 	handleDragEnd ( e: PointerEventData ): void {
 
-		this.dragManager.handleDragEnd( e );
+		try {
+
+			this.dragManager.handleDragEnd( e );
+
+		} catch ( error ) {
+
+			Log.error( error );
+
+		}
 
 	}
 

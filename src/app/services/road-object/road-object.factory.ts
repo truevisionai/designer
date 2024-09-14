@@ -28,8 +28,24 @@ export class RoadObjectFactory {
 				return this.createCrosswalkObject( roadCoord );
 
 			default:
-				return null;
+				throw new Error( 'Road object type not supported' );
 		}
+
+	}
+
+	static createRoadObjectWithId ( id: number, type: TvRoadObjectType, roadCoord: TvRoadCoord ): TvRoadObject | null {
+
+		return this.createDefaultRoadObject( id, type, roadCoord );
+
+	}
+
+	private static createDefaultRoadObject ( id: number, type: TvRoadObjectType, roadCoord: TvRoadCoord ): TvRoadObject {
+
+		const roadObject = new TvRoadObject( type, '', id, roadCoord.s, roadCoord.t );
+
+		roadObject.road = roadCoord.road;
+
+		return roadObject
 
 	}
 

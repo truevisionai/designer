@@ -10,7 +10,6 @@ import { TvRoad } from "../../map/models/tv-road.model";
 import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
 import { ToolWithHandler } from '../base-tool-v2';
 import { SelectLaneOverlayStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
-import { EmptyVisualizer } from 'app/core/visualizers/empty-visualizer';
 import { LaneWidthInspector } from './lane-width-node-inspector';
 import { LaneWidthLineSelectionStrategy } from 'app/core/strategies/select-strategies/object-name-strategy';
 import { LaneWidthLineController } from "./controllers/lane-width-line-controller";
@@ -25,6 +24,10 @@ import { laneWidthToolHints } from './lane-width-tool-hints';
 import { LaneWidthRoadVisualizer } from "./visualizers/lane-width-road-visualizer";
 import { LaneWidthPointDragHandler } from './controllers/lane-width-point-drag-handler';
 import { LaneWidthLineDragHandler } from './controllers/lane-width-line-drag-handler';
+import { LaneWidthCreationStrategy } from './lane-width-creation-strategy';
+import { LaneWidthNode } from './objects/lane-width-node';
+import { LaneWidthNodeController } from './controllers/lane-width-node-controller';
+import { LaneWidthNodeVisualizer } from './visualizers/lane-width-node-visualizer';
 
 export class LaneWidthTool extends ToolWithHandler {
 
@@ -50,6 +53,8 @@ export class LaneWidthTool extends ToolWithHandler {
 
 		this.setHintConfig( laneWidthToolHints );
 
+		this.addCreationStrategy( this.tool.base.injector.get( LaneWidthCreationStrategy ) );
+
 		super.init();
 
 	}
@@ -67,7 +72,8 @@ export class LaneWidthTool extends ToolWithHandler {
 
 		this.addVisualizer( LaneWidthLine, this.tool.base.injector.get( LaneWidthLineVisualizer ) );
 		this.addVisualizer( LaneWidthPoint, this.tool.base.injector.get( LaneWidthPointVisualizer ) );
-		this.addVisualizer( TvLane, this.tool.base.injector.get( EmptyVisualizer ) );
+		this.addVisualizer( LaneWidthNode, this.tool.base.injector.get( LaneWidthNodeVisualizer ) );
+		this.addVisualizer( TvLane, this.tool.base.injector.get( LaneWidthNodeVisualizer ) );
 		this.addVisualizer( TvRoad, this.tool.base.injector.get( LaneWidthRoadVisualizer ) );
 
 	}
@@ -76,6 +82,7 @@ export class LaneWidthTool extends ToolWithHandler {
 
 		this.addController( LaneWidthLine, this.tool.base.injector.get( LaneWidthLineController ) );
 		this.addController( LaneWidthPoint, this.tool.base.injector.get( LaneWidthPointController ) );
+		this.addController( LaneWidthNode, this.tool.base.injector.get( LaneWidthNodeController ) );
 		this.addController( TvLane, this.tool.base.injector.get( LaneWidthLaneController ) );
 		this.addController( TvRoad, this.tool.base.injector.get( LaneWidthRoadController ) );
 

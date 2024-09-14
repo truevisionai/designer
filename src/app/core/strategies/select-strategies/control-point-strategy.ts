@@ -6,7 +6,7 @@ import { Points } from 'three';
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { BaseSelectionStrategy } from './select-strategy';
 import { AbstractControlPoint } from "../../../objects/abstract-control-point";
-import { LaneWidthNode } from 'app/tools/lane-width/objects/lane-width-node';
+import { LaneWidthPoint } from 'app/tools/lane-width/objects/lane-width-point';
 
 export interface StrategySettings {
 	higlightOnHover?: boolean;
@@ -131,7 +131,7 @@ export class LaneWidthPointSelectionStrategy extends PointSelectionStrategy {
 		super( {
 			higlightOnHover: false,
 			higlightOnSelect: false,
-			tag: LaneWidthNode.pointTag,
+			tag: LaneWidthPoint.tag,
 			returnParent: false,
 		} );
 

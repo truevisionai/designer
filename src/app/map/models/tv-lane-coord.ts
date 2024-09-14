@@ -15,11 +15,11 @@ import { TvRoadLink } from './tv-road-link';
 export class TvLaneCoord {
 
 	constructor (
-		public road: TvRoad,
-		public laneSection: TvLaneSection,
-		public lane: TvLane,
-		public s: number,
-		public offset: number
+		public readonly road: TvRoad,
+		public readonly laneSection: TvLaneSection,
+		public readonly lane: TvLane,
+		public readonly s: number,
+		public readonly offset: number
 	) {
 
 	}

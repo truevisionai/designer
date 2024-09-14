@@ -5,7 +5,6 @@
 import { AppInspector } from "../inspector";
 import { StatusBarService } from "../../services/status-bar.service";
 import { Controller } from "./controller";
-import { PointerEventData } from "app/events/pointer-event-data";
 
 export abstract class BaseController<T> implements Controller<T> {
 
@@ -36,12 +35,6 @@ export abstract class BaseController<T> implements Controller<T> {
 	}
 
 	validate ( object: T ): void {
-
-		// Do nothing by default
-
-	}
-
-	createAt ( object: T, e: PointerEventData ): any | undefined {
 
 		// Do nothing by default
 

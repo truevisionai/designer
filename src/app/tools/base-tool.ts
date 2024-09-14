@@ -31,7 +31,11 @@ import { ToolHandlers } from './tool-handlers';
 import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { BaseDragHandler } from 'app/core/drag-handlers/base-drag-handler';
 import { ConstructorFunction } from 'app/core/models/class-map';
-import { AssetDropHelper, AssetDropHandler } from './asset-drop-handler';
+import { AssetDropManager } from './asset-drop-manager';
+import { ObjectCreationManager } from './object-creation-manager';
+import { CreationStrategy } from "../core/interfaces/creation-strategy";
+import { IHasPosition } from 'app/objects/i-has-position';
+import { AssetHandler } from "../core/interfaces/asset-handler";
 
 export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
 
@@ -61,7 +65,9 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	private hintConfig: ToolHintConfig;
 
-	private assetDropHelper: AssetDropHelper;
+	private assetDropManager: AssetDropManager;
+
+	protected objectCreationManager: ObjectCreationManager;
 
 	protected get currentSelectedObject (): T {
 
@@ -79,20 +85,30 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 		this.handlers = new ToolHandlers( this.selectionService );
 
-		this.assetDropHelper = new AssetDropHelper();
+		this.assetDropManager = new AssetDropManager();
+
+		this.objectCreationManager = new ObjectCreationManager();
 
 	}
 
-	addAssetHandler ( handler: AssetDropHandler ): void {
-		this.assetDropHelper.addHandler( handler );
+	onAssetDroppedEvent ( asset: Asset, event: PointerEventData ): void {
+		this.assetDropManager.handleAssetDroppedEvent( asset, event );
 	}
 
-	isAsssetSupported ( asset: Asset ): boolean {
-		return this.assetDropHelper.isAssetSupported( asset );
+	onAssetDragOverEvent ( asset: Asset, event: PointerEventData ): void {
+		this.assetDropManager.handleAssetDragOverEvent( asset, event );
 	}
 
-	importAsset ( asset: Asset, position: Vector3 ): void {
-		this.assetDropHelper.importAsset( asset, position );
+	addCreationStrategy ( strategy: CreationStrategy<IHasPosition> ): void {
+		this.objectCreationManager.addStrategy( strategy );
+	}
+
+	addAssetHandler ( handler: AssetHandler ): void {
+		this.assetDropManager.addHandler( handler );
+	}
+
+	isAssetSupported ( asset: Asset ): boolean {
+		return this.assetDropManager.isAssetSupported( asset );
 	}
 
 	setHintConfig ( config: ToolHintConfig ): void {
@@ -137,6 +153,10 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	addDragHandler ( key: ConstructorFunction, dragHandler: BaseDragHandler<Object> ): void {
 		this.handlers.addDragHandler( key, dragHandler );
+	}
+
+	getDragHandlerByKey ( key: ConstructorFunction ): BaseDragHandler<object> {
+		return this.handlers.getDragHandler( key );
 	}
 
 	updateVisuals ( object: any ): void {
@@ -453,27 +473,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	}
 
-	onAssetDropped ( asset: Asset, position: Vector3 ) {
-
-		if ( !this.objectFactory ) {
-
-			this.setHint( 'Importing assets is not supported in this tool.' );
-
-			return;
-		}
-
-		const object = this.objectFactory.createFromAsset( asset, position );
-
-		if ( !object ) {
-
-			this.setHint( 'Importing ' + asset.getTypeAsString() + ' assets is not supported in this tool.' );
-
-			return;
-		}
-
-		this.executeAddObject( object );
-
-	}
 
 	setDebugService ( debugService: IDebugger<T, any> ) {
 
@@ -595,6 +594,14 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	hasHandlersForObject ( object: any ): boolean {
 		return this.handlers.hasHandlersForObject( object );
+	}
+
+	hasControllerForKey ( key: ConstructorFunction ): boolean {
+		return this.handlers.hasControllerForKey( key );
+	}
+
+	hasVisualizerForKey ( key: ConstructorFunction ): boolean {
+		return this.handlers.hasVisualizerForKey( key );
 	}
 
 	hasHandlerForKey ( key: ConstructorFunction ): boolean {
