@@ -60,19 +60,29 @@ export class JunctionBoundsService {
 
 	private buildBox2 ( junction: TvJunction ): Box2 {
 
-		const points = this.boundaryPositionService.getBoundaryPositions( junction.innerBoundary );
+		try {
 
-		if ( points.length < 2 ) {
-			Log.error( 'JunctionBuilder.buildBoundingBox: Invalid boundary points', junction.toString() );
+			const points = this.boundaryPositionService.getBoundaryPositions( junction.innerBoundary );
+
+			if ( points.length < 2 ) {
+				Log.error( 'JunctionBuilder.buildBoundingBox: Invalid boundary points', junction.toString() );
+				return new Box2();
+			}
+
+			const box = new Box2();
+
+			box.setFromPoints( points.map( p => new Vector2( p.x, p.y ) ) );
+
+			return box;
+
+
+		} catch ( error ) {
+
+			Log.error( error );
+
 			return new Box2();
+
 		}
-
-		const box = new Box2();
-
-		box.setFromPoints( points.map( p => new Vector2( p.x, p.y ) ) );
-
-		return box;
-
 	}
 
 }
