@@ -7,6 +7,7 @@ const { app, BrowserWindow, Menu, screen } = require( 'electron' );
 const path = require( 'path' );
 const log = require( 'electron-log' );
 
+log.initialize();
 log.info( 'App Launched' );
 
 // Keep a global reference of the window object, if you don't, the window will

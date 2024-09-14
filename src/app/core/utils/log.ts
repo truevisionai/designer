@@ -6,6 +6,7 @@ import { StorageService } from 'app/io/storage.service';
 import { Environment } from './environment';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { LogLevel } from './log-level';
+import * as Logger from 'electron-log';
 
 declare const electronFs;
 
@@ -53,6 +54,29 @@ export class Log {
 
 		if ( this.logging && this.isElectron ) {
 			this.writeToFile( formattedMessage, level, message, optionalParams );
+			// this.writeToLogger( level, formattedMessage, optionalParams );
+		}
+
+	}
+
+	static writeToLogger ( level: LogLevel, formattedMessage: string, optionalParams: any[] ): void {
+
+		switch ( level ) {
+			case LogLevel.ERROR:
+				Logger.error( formattedMessage, ...optionalParams );
+				break;
+			case LogLevel.WARN:
+				Logger.warn( formattedMessage, ...optionalParams );
+				break;
+			case LogLevel.DEBUG:
+				Logger.debug( formattedMessage, ...optionalParams );
+				break;
+			case LogLevel.INFO:
+				Logger.info( formattedMessage, ...optionalParams );
+				break;
+			default:
+				Logger.log( formattedMessage, ...optionalParams );
+				break;
 		}
 
 	}
