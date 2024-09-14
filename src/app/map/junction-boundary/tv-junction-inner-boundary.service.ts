@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { TvJunction } from "../models/junctions/tv-junction";

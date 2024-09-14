@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Asset } from "../../assets/asset.model";
 import { PointerEventData } from "../../events/pointer-event-data";
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { Commands } from "app/commands/commands";
 import { PointerEventData } from "app/events/pointer-event-data";

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 export enum LogLevel {
 	NONE = 0,
 	ERROR = 1, // Indicates something went wrong, often a critical failure that needs immediate attention.

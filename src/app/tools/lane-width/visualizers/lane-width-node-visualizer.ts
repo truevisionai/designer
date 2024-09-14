@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { LaneWidthNode } from "../objects/lane-width-node";
 import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";

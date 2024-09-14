@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { PointMarkingControlPoint } from "../objects/point-marking-object";
 import { ObjectTagStrategy } from "app/core/strategies/select-strategies/object-tag-strategy";
 

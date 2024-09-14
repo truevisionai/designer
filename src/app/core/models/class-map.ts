@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 // A generic constructor function type that creates instances of T
 export type ConstructorFunction<T = any> = new ( ...args: any[] ) => T;
 

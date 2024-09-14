@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SetPositionCommand } from './set-position-command';
 import { IHasPosition } from '../objects/i-has-position';
 import { Object3D, Vector3 } from 'three';

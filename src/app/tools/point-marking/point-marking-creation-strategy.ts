@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { CreationStrategy, ValidationFailed, ValidationPassed, ValidationResult } from "../../core/interfaces/creation-strategy";
 import { SelectionService } from "../selection.service";
 import { PointMarkingControlPoint } from "./objects/point-marking-object";

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseController } from 'app/core/controllers/base-controller';
 import { LaneWidthNode } from '../objects/lane-width-node';

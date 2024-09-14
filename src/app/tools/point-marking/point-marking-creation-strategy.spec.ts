@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TestBed } from '@angular/core/testing';
 import { PointMarkingCreationStrategy } from './point-marking-creation-strategy';
 import { SelectionService } from '../selection.service';

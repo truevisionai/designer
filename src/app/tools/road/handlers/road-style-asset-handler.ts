@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AssetDatabase } from "app/assets/asset-database";
 import { Asset, AssetType } from "app/assets/asset.model";
 import { RoadStyle } from "app/assets/road-style/road-style.model";

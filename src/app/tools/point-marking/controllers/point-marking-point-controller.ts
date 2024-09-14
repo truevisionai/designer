@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { PointMarkingControlPoint } from "../objects/point-marking-object";
 import { BaseController } from "app/core/controllers/base-controller";

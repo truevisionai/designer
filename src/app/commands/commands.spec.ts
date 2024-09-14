@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Commands } from './commands';
 import { CommandHistory } from './command-history';
 import { Tool } from 'app/tools/tool';
