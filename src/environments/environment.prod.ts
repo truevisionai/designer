@@ -1,3 +1,5 @@
+import { LogLevel } from "app/core/utils/log-level";
+
 export const environment = {
 	production: true,
 	osc_enabled: false,
@@ -7,4 +9,6 @@ export const environment = {
 	sentry_dsn: 'https://46ce0c713d5d4e23874742a318f9f864@o439184.ingest.sentry.io/5792064',
 	development_tools: true,
 	experimtental_tools: false,
+	logging: true,
+	log_level: LogLevel.INFO,
 };

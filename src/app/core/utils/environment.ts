@@ -3,6 +3,7 @@
  */
 
 import { environment } from '../../../environments/environment';
+import { LogLevel } from './log-level';
 
 export class Environment {
 
@@ -63,6 +64,18 @@ export class Environment {
 	static get mixpanel_id (): string {
 
 		return environment.mixpanel_id;
+
+	}
+
+	static get logLevel (): LogLevel {
+
+		return environment.log_level ?? LogLevel.DEBUG; // Default to debug
+
+	}
+
+	static get logging (): boolean {
+
+		return environment.logging ?? false;
 
 	}
 

@@ -57,7 +57,7 @@ export class SelectionService {
 
 	registerStrategy ( key: ConstructorFunction, strategy: BaseSelectionStrategy<any> ): void {
 
-		if ( this.debug ) Log.log( 'Registering strategy', key, strategy );
+		if ( this.debug ) Log.debug( 'Registering strategy', key, strategy );
 
 		this.strategies.set( key, strategy );
 
@@ -67,7 +67,7 @@ export class SelectionService {
 
 	registerTag ( key: ConstructorFunction, tag: any ): void {
 
-		if ( this.debug ) Log.log( 'Registering tag', key, tag );
+		if ( this.debug ) Log.debug( 'Registering tag', key, tag );
 
 		this.tags.set( key, tag );
 

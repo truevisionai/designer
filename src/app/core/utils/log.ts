@@ -5,166 +5,131 @@
 import { StorageService } from 'app/io/storage.service';
 import { Environment } from './environment';
 import { TvElectronService } from 'app/services/tv-electron.service';
+import { LogLevel } from './log-level';
 
 declare const electronFs;
 
 const MAX_LENGTH = 1000;
-const MAX_DEPTH = 1;
 
 export class Log {
 
-	private static logging = true;
 	private static isElectron = TvElectronService.isElectronApp;
-
-	static log ( message: string, ...optionalParams: any[] ): void {
-		this.writeLog( 'LOG', message, optionalParams );
-	}
+	private static logging: boolean = Environment.logging;
+	private static logLevel: LogLevel = Environment.logLevel;
 
 	static debug ( message: string, ...optionalParams: any[] ): void {
-		this.writeLog( 'DEBUG', message, optionalParams );
+
+		this.writeLog( LogLevel.DEBUG, message, optionalParams );
+
 	}
 
-	static info ( ...message: any ): void {
-		this.writeLog( 'INFO', message, [] );
+	static info ( ...message: any[] ): void {
+
+		this.writeLog( LogLevel.INFO, message.join( ' ' ), [] );
+
 	}
 
 	static error ( message: string, ...optionalParams: any[] ): void {
-		this.writeLog( 'ERROR', message, optionalParams );
+
+		this.writeLog( LogLevel.ERROR, message, optionalParams );
+
 	}
 
 	static warn ( message: string, ...optionalParams: any[] ): void {
-		this.writeLog( 'WARN', message, optionalParams );
+
+		this.writeLog( LogLevel.WARN, message, optionalParams );
+
 	}
 
-	private static getCallerInfo (): string {
+	private static writeLog ( level: LogLevel, message: string, optionalParams: any[] ): void {
 
-		const stack = new Error().stack;
+		if ( level > this.logLevel ) return;
 
-		if ( stack ) {
+		const formattedMessage = this.formatLogMessage( level, message );
 
-			const stackLines = stack.split( '\n' );
+		this.writeToConsole( level, formattedMessage, optionalParams );
 
-			// Filter out the stack lines belonging to the Logger class itself
-			for ( let i = 2; i < stackLines.length; i++ ) {
-
-				const stackLine = stackLines[ i ];
-
-				if ( !stackLine?.includes( 'Log.' ) && stackLine?.includes( 'at' ) ) {
-
-					const match = stackLine.match( /\s+at\s+(.*?)\s+\((.*):(\d+):(\d+)\)/ );
-
-					if ( match && match[ 1 ] && match[ 2 ] && match[ 3 ] && match[ 4 ] ) {
-
-						// eg. JunctionConnectionFactory.createConnections
-						const classAndMethod = match[ 1 ];
-						const className = classAndMethod.split( '.' )[ 0 ] ?? 'unknown';
-
-						// const line = match[ 3 ];
-						// const column = match[ 4 ];
-
-						// (Line:${ line }:${ column }) // can be added if needed
-						return `${ className }`;
-
-					}
-
-				}
-
-			}
-
+		if ( this.logging && this.isElectron ) {
+			this.writeToFile( formattedMessage, level, message, optionalParams );
 		}
 
-		return 'unknown';
 	}
 
-	private static writeLog ( level: string, message: string, optionalParams: any[] ): void {
-
-		if ( Environment.production ) return;
+	private static formatLogMessage ( level: LogLevel, message: string ): string {
 
 		const callerInfo = this.getCallerInfo();
 
-		// user friendly timestamp
-		// const timestamp = new Date().toISOString();
 		const timestamp = new Date().toLocaleString();
 
-		let logMessage = `[${ timestamp }][${ level }]: ${ callerInfo } ${ message }` + ' ';
+		return `[${ timestamp }][${ LogLevel[ level ] }]: ${ callerInfo } ${ message }`;
+
+	}
+
+	private static writeToConsole ( level: LogLevel, logMessage: string, optionalParams: any[] ): void {
 
 		switch ( level ) {
-			case 'ERROR':
+			case LogLevel.ERROR:
 				console.error( logMessage, ...optionalParams );
 				break;
-			case 'WARN':
+			case LogLevel.WARN:
 				console.warn( logMessage, ...optionalParams );
+				break;
+			case LogLevel.DEBUG:
+				console.debug( logMessage, ...optionalParams );
+				break;
+			case LogLevel.INFO:
+				console.info( logMessage, ...optionalParams );
 				break;
 			default:
 				console.log( logMessage, ...optionalParams );
 				break;
 		}
 
-		if ( this.logging && this.isElectron ) {
+	}
 
-			if ( Environment.production ) return;
+	private static writeToFile ( logMessage: string, level: LogLevel, message: string, optionalParams: any[] ): void {
 
-			if ( this.logging ) {
+		let fileLogMessage = logMessage + '\n';
 
-				optionalParams.forEach( param => {
+		optionalParams.forEach( param => {
+			fileLogMessage += this.formatParam( param ) + '\n';
+		} );
 
-					let paramStr = '';
-
-					if ( typeof param === 'object' ) {
-
-						try {
-
-							// paramStr = JSON.stringify( param, null, 2 );
-							paramStr = param.toString();
-
-						} catch ( error ) {
-
-							paramStr = String( param );
-
-							console.error( error );
-							console.error( param );
-
-						}
-
-					} else {
-
-						paramStr = String( param );
-
-					}
-
-					if ( paramStr.length > MAX_LENGTH ) {
-						paramStr = paramStr.slice( 0, MAX_LENGTH ) + '... [truncated]';
-					}
-
-					logMessage += paramStr + '\n';
-
-				} );
-
-			}
-
-			// Include stack trace for error and warn levels
-			if ( level === 'ERROR' || level === 'WARN' ) {
-				const error = new Error( message );
-				logMessage += `Stack Trace:\n${ error.stack }`;
-			}
-
-			this.writeToFile( logMessage );
+		if ( level === LogLevel.ERROR || level === LogLevel.WARN ) {
+			const error = new Error( message );
+			fileLogMessage += `Stack Trace:\n${ error.stack }`;
 		}
+
+		this.appendToFile( fileLogMessage );
 
 	}
 
-	private static writeToFile ( message: string ): void {
+	private static formatParam ( param: any ): string {
+
+		let paramStr = '';
+
+		try {
+			paramStr = typeof param === 'object' ? param.toString() : String( param );
+		} catch {
+			paramStr = String( param );
+		}
+
+		if ( paramStr.length > MAX_LENGTH ) {
+			paramStr = paramStr.slice( 0, MAX_LENGTH ) + '... [truncated]';
+		}
+
+		return paramStr;
+
+	}
+
+	private static appendToFile ( message: string ): void {
 
 		const filePath = this.getFilePath();
 
 		try {
-
-			StorageService.instance.appendFileSync( filePath, message + '\n' );
-
+			StorageService.instance.appendFileSync( filePath, `${ message }\n` );
 		} catch ( error ) {
-
 			console.error( 'Error writing log to file:', error );
-
 		}
 
 	}
@@ -179,46 +144,37 @@ export class Log {
 
 		return 'application.log';
 
-		// generaete filename by date
-		const date = new Date();
-		const year = date.getFullYear();
-		const month = ( '0' + ( date.getMonth() + 1 ) ).slice( -2 );
-		const day = ( '0' + date.getDate() ).slice( -2 );
-
-		return `${ year }-${ month }-${ day }_log.log`;
-
 	}
 
-	// private static safeJSONStringify ( obj: any, maxDepth: number ): string {
-	// 	const seen = new WeakSet();
-	// 	function depthLimitedReplacer ( depth: number ) {
-	// 		return ( key, value ) => {
-	// 			if ( depth > maxDepth ) return '[Max Depth Reached]';
-	// 			if ( typeof value === "object" && value !== null ) {
-	// 				if ( seen.has( value ) ) return '[Circular]';
-	// 				seen.add( value );
-	// 			}
-	// 			return value;
-	// 		};
-	// 	}
+	private static getCallerInfo (): string {
 
-	// 	try {
-	// 		return JSON.stringify( obj, depthLimitedReplacer( 0 ), 2 );
-	// 	} catch ( error ) {
-	// 		return `[Stringification Error: ${ error.message }]`;
-	// 	}
-	// }
+		const stack = new Error().stack;
 
-	// private static getCircularReplacer () {
-	// 	const seen = new WeakSet();
-	// 	return ( key, value ) => {
-	// 		if ( typeof value === "object" && value !== null ) {
-	// 			if ( seen.has( value ) ) {
-	// 				return undefined; // Remove circular reference
-	// 			}
-	// 			seen.add( value );
-	// 		}
-	// 		return value;
-	// 	};
-	// }
+		if ( stack ) {
+
+			const stackLines = stack.split( '\n' );
+
+			for ( let i = 2; i < stackLines.length; i++ ) {
+
+				const stackLine = stackLines[ i ];
+
+				if ( !stackLine.includes( 'Log.' ) && stackLine.includes( 'at' ) ) {
+
+					const match = stackLine.match( /\s+at\s+(.*?)\s+\((.*):(\d+):(\d+)\)/ );
+
+					if ( match && match[ 1 ] && match[ 2 ] && match[ 3 ] && match[ 4 ] ) {
+
+						return match[ 1 ].split( '.' )[ 0 ] ?? 'unknown';
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return 'unknown';
+
+	}
 }
