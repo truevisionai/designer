@@ -116,37 +116,31 @@ export class SceneBuilderService {
 			return;
 		}
 
-		// if ( !junction.outerBoundary || junction.outerBoundary.segments.length == 0 ) {
-
-		// 	Log.info( 'Creating OuterBoundary', junction.toString() );
-
-		// 	// junction.outerBoundary = TvJunctionBoundaryFactory.createOuterBoundary( junction );
-
-		// }
-
-		// if ( !junction.innerBoundary || junction.innerBoundary.segments.length == 0 ) {
-
-		// 	// Log.info( 'Creating InnerBoundary', junction.toString() );
-
-		// 	// junction.innerBoundary = TvJunctionBoundaryFactory.createInnerBoundary( junction );
-
-		// }
-
 		this.junctionBoundaryService.update( junction );
 
-		if ( junction.corners.length == 0 ) {
-
-			this.connectionFactory.addCornerConnections( junction );
-
-		}
-
-		// junction.boundingBox = this.junctionBuilder.buildBoundingBox( junction );
+		this.buildCorners( junction );
 
 		this.junctionBoundsService.updateBounds( junction );
 
 		junction.mesh = this.junctionBuilder.buildJunction( junction );
 
-		map.gameObject?.add( junction.mesh );
+		map.gameObject.add( junction.mesh );
+
+	}
+
+	buildCorners ( junction: TvJunction ): void {
+
+		if ( junction.corners.length > 0 ) return;
+
+		try {
+
+			this.connectionFactory.addCornerConnections( junction );
+
+		} catch ( error ) {
+
+			Log.error( error );
+
+		}
 
 	}
 
