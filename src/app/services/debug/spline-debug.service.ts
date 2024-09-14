@@ -363,18 +363,6 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 			const point = spline.controlPoints[ i ];
 
-			if ( spline.type == SplineType.EXPLICIT ) {
-
-				if ( i == 0 && SplineUtils.isPredecessorJunction( spline ) ) {
-					continue;
-				}
-
-				if ( i == spline.controlPoints.length - 1 && SplineUtils.isSuccessorJunction( spline ) ) {
-					continue;
-				}
-
-			}
-
 			this.points.addItem( spline, point );
 
 			this.showTangents( spline, point );

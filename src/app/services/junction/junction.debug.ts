@@ -306,55 +306,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !this.shouldShowEntries ) return;
 
-		const roads = junction.getRoads();
-
-		const processFirstSection = ( road: TvRoad, laneSection: TvLaneSection ) => {
-
-			if ( !road.predecessor ) return;
-
-			if ( road.predecessor.element != junction ) return;
-
-			const drivingLanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
-
-			for ( const lane of drivingLanes ) {
-
-				// const laneWidth = lane.getWidthValue( laneSection.s );
-
-				const posTheta = road.getLaneCenterPosition( lane, laneSection.s + 2 );
-
-				// if ( lane.isLeft ) posTheta.hdg += Math.PI;
-
-				const gate = this.debug.createJunctionGate( road, laneSection, lane, TvContactPoint.START, posTheta.toVector3() );
-
-				this.gates.addItem( junction, gate );
-
-			}
-
-		}
-
-		const processLastSection = ( road: TvRoad, laneSection: TvLaneSection ) => {
-
-			if ( !road.successor ) return;
-
-			if ( road.successor.element != junction ) return;
-
-			const drivingLanes = laneSection.getLaneArray().filter( lane => lane.id !== 0 && lane.type === TvLaneType.driving );
-
-			for ( const lane of drivingLanes ) {
-
-				// const laneWidth = lane.getWidthValue( laneSection.endS );
-
-				const posTheta = road.getLaneCenterPosition( lane, laneSection.endS - 2, 0 );
-
-				// if ( lane.isLeft ) posTheta.hdg += Math.PI;
-
-				const gate = this.debug.createJunctionGate( road, laneSection, lane, TvContactPoint.END, posTheta.toVector3() );
-
-				this.gates.addItem( junction, gate );
-
-			}
-
-		}
+		const roads = this.junctionRoadService.getIncomingRoads( junction );
 
 		for ( let i = 0; i < roads.length; i++ ) {
 
@@ -362,17 +314,33 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			if ( road.isJunction ) continue;
 
-			if ( road.predecessor?.type == TvRoadLinkType.JUNCTION ) {
-
-				processFirstSection( road, road.getLaneProfile().getFirstLaneSection() );
-
+			if ( road.predecessor?.isEqualTo( junction ) ) {
+				this.addEntriesAt( junction, road, TvContactPoint.START );
 			}
 
-			if ( road.successor?.type == TvRoadLinkType.JUNCTION ) {
-
-				processLastSection( road, road.getLaneProfile().getLastLaneSection() );
-
+			if ( road.successor?.isEqualTo( junction ) ) {
+				this.addEntriesAt( junction, road, TvContactPoint.END );
 			}
+
+		}
+
+	}
+
+	private addEntriesAt ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ): void {
+
+		const laneSection = road.getLaneProfile().getLaneSectionAtContact( contact );
+
+		const s = contact === TvContactPoint.START ? laneSection.s : laneSection.endS;
+
+		const distanceFromPosition = contact === TvContactPoint.START ? +2 : -2;
+
+		for ( const lane of laneSection.getDrivingLanes() ) {
+
+			const posTheta = road.getLaneCenterPosition( lane, s ).moveForward( distanceFromPosition );
+
+			const gate = this.debug.createJunctionGate( road, laneSection, lane, contact, posTheta.toVector3() );
+
+			this.gates.addItem( junction, gate );
 
 		}
 

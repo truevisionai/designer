@@ -224,6 +224,12 @@ export class TvLaneSection {
 
 	}
 
+	getDrivingLanes (): TvLane[] {
+
+		return this.laneArray.filter( lane => lane.id != 0 && lane.type == TvLaneType.driving );
+
+	}
+
 	/**
 	 * Check if the tested s-offset is inside the lane section interval
 	 * @param sCheck A double s-offset value that has to be checked
