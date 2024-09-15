@@ -3,16 +3,13 @@
  */
 
 import { PointerEventData } from "app/events/pointer-event-data";
-import { IHasPosition } from "app/objects/i-has-position";
 import { StatusBarService } from "app/services/status-bar.service";
 import { CreationStrategy } from "../core/interfaces/creation-strategy";
 import { SnackBar } from "app/services/snack-bar.service";
 
-type T = IHasPosition;
-
 export class ObjectCreationManager {
 
-	private strategies: CreationStrategy<T>[] = [];
+	private strategies: CreationStrategy<any>[] = [];
 
 	constructor () {
 
@@ -20,7 +17,7 @@ export class ObjectCreationManager {
 
 	}
 
-	addStrategy ( strategy: CreationStrategy<T> ): void {
+	addStrategy ( strategy: CreationStrategy<any> ): void {
 
 		this.strategies.push( strategy );
 
@@ -48,7 +45,7 @@ export class ObjectCreationManager {
 	 * @param event Pointer event data.
 	 * @returns The created object or null if creation failed.
 	 */
-	tryCreatingObject ( event: PointerEventData ): T | null {
+	tryCreatingObject ( event: PointerEventData ): any | null {
 
 		const messages: string[] = [];
 

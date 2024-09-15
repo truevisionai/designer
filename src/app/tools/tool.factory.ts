@@ -284,12 +284,6 @@ export class ToolFactory {
 			tool.setTypeName( PropInstance.name );
 		}
 
-		if ( type == ToolType.Surface ) {
-			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
-			this.selectionService.registerStrategy( Surface, new ObjectUserDataStrategy( Surface.tag, 'surface' ) );
-			tool.setTypeName( Surface.name );
-		}
-
 		tool.setSelectionService( this.selectionService );
 
 	}

@@ -9,6 +9,7 @@ import { MapService } from "../../services/map/map.service";
 import { SurfaceManager } from "./surface.manager";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { SplineService } from "../../services/spline/spline.service";
+import { Mesh } from "three";
 
 @Injectable( {
 	providedIn: 'root'
@@ -62,6 +63,12 @@ export class SurfaceService extends BaseDataService<Surface> {
 		this.splineService.updateIndexes( object.spline );
 
 		this.update( object );
+
+	}
+
+	getSurfaceMesh ( object: Surface ): Mesh {
+
+		return this.mapService.map.surfaceGroup.get( object ) as Mesh;
 
 	}
 

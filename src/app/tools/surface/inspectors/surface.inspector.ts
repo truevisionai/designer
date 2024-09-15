@@ -3,7 +3,6 @@
  */
 
 import { Surface } from 'app/map/surface/surface.model';
-import { SurfaceToolService } from '../../tools/surface/surface-tool.service';
 import { Mesh } from 'three';
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
@@ -19,7 +18,6 @@ export class TvSurfaceInspector {
 	constructor (
 		public surface: Surface,
 		public mesh: Mesh,
-		private service: SurfaceToolService,
 		private controlPoint?: AbstractControlPoint
 	) {
 		if ( mesh ) {
@@ -30,9 +28,7 @@ export class TvSurfaceInspector {
 	}
 
 	updateMesh () {
-
-		this.service.updateSurfaceMeshByDimensions( this.surface, this.width, this.height );
-
+		this.surface.setDimensions( this.width, this.height );
 	}
 
 	@SerializedField( { type: 'material' } )

@@ -30,10 +30,6 @@ export class FactoryServiceProvider {
 		let factory: AbstractFactory<any>;
 
 		switch ( type ) {
-			case ToolType.Surface:
-				factory = new SurfaceFactory();
-				break;
-
 			case ToolType.PropPoint:
 				factory = new PropPointFactory();
 				break;

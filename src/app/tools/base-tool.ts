@@ -99,7 +99,7 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		this.assetDropManager.handleAssetDragOverEvent( asset, event );
 	}
 
-	addCreationStrategy ( strategy: CreationStrategy<IHasPosition> ): void {
+	addCreationStrategy <T>( strategy: CreationStrategy<T> ): void {
 		this.objectCreationManager.addStrategy( strategy );
 	}
 

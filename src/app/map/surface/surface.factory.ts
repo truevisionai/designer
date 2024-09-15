@@ -9,6 +9,8 @@ import { Injectable } from "@angular/core";
 import { Asset, AssetType } from "app/assets/asset.model";
 import { AssetDatabase } from "app/assets/asset-database";
 import { Vector3 } from "three";
+import { SimpleControlPoint } from "app/objects/simple-control-point";
+import { AbstractControlPoint } from "app/objects/abstract-control-point";
 
 @Injectable( {
 	providedIn: 'root'
@@ -51,4 +53,14 @@ export class SurfaceFactory extends AbstractFactory<Surface> {
 		return new Surface( materialGuid, curve || new CatmullRomSpline( true, 'catmullrom', 0 ) );
 
 	}
+
+	static createSurfacePoint ( position: Vector3, surface: Surface ): AbstractControlPoint {
+
+		const point = new SimpleControlPoint<Surface>( surface );
+
+		point.position.copy( position );
+
+		return point;
+	}
+
 }

@@ -43,9 +43,6 @@ export class DataServiceProvider {
 			case ToolType.RoadCircle:
 				return this.splineService;
 
-			case ToolType.Surface:
-				return this.surfaceService;
-
 			case ToolType.PropPoint:
 				return this.propPointService;
 

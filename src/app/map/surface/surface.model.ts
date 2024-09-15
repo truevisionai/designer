@@ -3,7 +3,7 @@
  */
 
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { MathUtils, Object3D, Vector2 } from 'three';
+import { MathUtils, Object3D, Vector2, Vector3 } from 'three';
 
 export class Surface {
 
@@ -27,6 +27,26 @@ export class Surface {
 		public rotation: number = 0.0,
 	) {
 		this.uuid = MathUtils.generateUUID();
+	}
+
+	setDimensions ( width: number, height: number ): void {
+
+		this.repeat.set( 1 / width, 1 / height );
+
+		const position = this.spline.controlPointPositions[ 0 ];
+
+		const positions = [
+			position.clone().add( new Vector3( 0, 0, 0 ) ),
+			position.clone().add( new Vector3( width, 0, 0 ) ),
+			position.clone().add( new Vector3( width, height, 0 ) ),
+			position.clone().add( new Vector3( 0, height, 0 ) ),
+		];
+
+		this.spline.getControlPoints().forEach( ( point, index ) => {
+			if ( index >= positions.length ) return;
+			point.position.copy( positions[ index ] );
+		} );
+
 	}
 
 	toJson () {

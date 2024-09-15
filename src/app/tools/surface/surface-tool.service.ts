@@ -3,10 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Surface } from 'app/map/surface/surface.model';
-import { MapService } from 'app/services/map/map.service';
-import { Mesh } from "three";
-import { SurfaceService } from "../../map/surface/surface.service";
+import { BaseToolService } from '../base-tool.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -14,34 +11,8 @@ import { SurfaceService } from "../../map/surface/surface.service";
 export class SurfaceToolService {
 
 	constructor (
-		private mapService: MapService,
-		private surfaceService: SurfaceService,
+		public base: BaseToolService,
 	) {
-	}
-
-	getSurfaceMesh ( object: Surface ) {
-
-		return this.mapService.map.surfaceGroup.get( object ) as Mesh;
-
-	}
-
-	updateSurfaceMeshByDimensions ( surface: Surface, width: number, height: number ) {
-
-		this.mapService.map.surfaceGroup.remove( surface );
-
-		// if surface is a rectangle
-		if ( surface.spline?.controlPoints.length == 4 ) {
-
-			surface.spline.controlPoints[ 0 ].position.set( 0, 0, 0 );
-			surface.spline.controlPoints[ 1 ].position.set( width, 0, 0 );
-			surface.spline.controlPoints[ 2 ].position.set( width, height, 0 );
-			surface.spline.controlPoints[ 3 ].position.set( 0, height, 0 );
-
-			surface.repeat.set( 1 / width, 1 / height );
-		}
-
-		this.surfaceService.update( surface );
-
 	}
 
 }

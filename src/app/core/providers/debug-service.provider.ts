@@ -44,10 +44,6 @@ export class DebugServiceProvider {
 
 			debugService = this.injector.get( RoadToolDebugger );
 
-		} else if ( type === ToolType.Surface ) {
-
-			debugService = this.injector.get( HasSplineDebugService );
-
 		} else if ( type === ToolType.PropPoint ) {
 
 			debugService = this.injector.get( PointDebugService );
