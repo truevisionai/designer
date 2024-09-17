@@ -10,6 +10,7 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { SimpleControlPoint } from "app/objects/simple-control-point";
 import { Box2, Vector2 } from "three";
 import { RoadWidthService } from "../road/road-width.service";
+import { Maths } from "app/utils/maths";
 
 @Injectable( {
 	providedIn: 'root'
@@ -73,7 +74,9 @@ export class SplineBoundsService {
 			return true;
 		}
 
-		if ( spline.getLength() < 1 ) {
+		// NOTE: many imported splines from OSM have length less than 1
+		// so we need to check for 0
+		if ( Maths.approxEquals( spline.getLength(), 0 ) ) {
 			Log.warn( 'Invalid spline length', spline?.toString() );
 			return true;
 		}
