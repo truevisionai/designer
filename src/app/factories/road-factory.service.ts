@@ -38,6 +38,12 @@ export class RoadFactory {
 
 	}
 
+	getNextConnectingRoadId () {
+
+		return this.mapService.map.roads.next( false );
+
+	}
+
 	setCounter ( id: number ) {
 
 		// this.mapService.map.roads.add( id );
@@ -314,7 +320,7 @@ export class RoadFactory {
 
 	createNewRoad ( name?: string, length?: number, id?: number, junction?: TvJunction ): TvRoad {
 
-		const roadId = this.getNextRoadId( id );
+		const roadId = id || this.getNextRoadId( id );
 
 		const roadName = name || `Road${ roadId }`;
 
@@ -348,9 +354,11 @@ export class RoadFactory {
 
 	createConnectingRoad ( junction: TvJunction, entry: TvLaneCoord, exit: TvLaneCoord ): TvRoad {
 
-		const road = this.createNewRoad();
+		const roadId = this.getNextConnectingRoadId();
 
-		road.junction = junction;
+		const roadName = `Road${ roadId }`;
+
+		const road = this.createNewRoad( roadName, 0, roadId, junction );
 
 		road.setPredecessor( TvRoadLinkType.ROAD, entry.road, entry.contact );
 

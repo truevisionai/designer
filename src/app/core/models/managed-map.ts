@@ -61,11 +61,11 @@ export class ManagedMap<V> extends Map<number, V> {
 
 	}
 
-	next (): number {
+	next ( useRemoved = true ): number {
 
 		let id: number;
 
-		if ( this.removed.length > 0 ) {
+		if ( useRemoved && this.removed.length > 0 ) {
 
 			id = this.removed.shift(); // Take the smallest ID from the sorted array
 
