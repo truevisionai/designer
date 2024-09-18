@@ -13,6 +13,7 @@ import { SplineBuilder } from "../../services/spline/spline.builder";
 import { TvMaterialService } from 'app/assets/material/tv-material.service';
 import { TvTexture } from 'app/assets/texture/tv-texture.model';
 import { TvTextureService } from 'app/assets/texture/tv-texture.service';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -100,7 +101,17 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 		} else {
 
-			texture = this.textureService.getTexture( surface.textureGuid ).texture.clone();
+			try {
+
+				texture = this.textureService.getTexture( surface.textureGuid ).texture.clone();
+
+			} catch (error) {
+
+				Log.error( error );
+
+				texture = OdTextures.terrain().clone();
+
+			}
 
 		}
 

@@ -7,6 +7,7 @@ import { Environment } from './environment';
 import { TvElectronService } from 'app/services/tv-electron.service';
 import { LogLevel } from './log-level';
 import * as Logger from 'electron-log';
+import { TvConsole } from './console';
 
 declare const electronFs;
 
@@ -36,11 +37,15 @@ export class Log {
 
 		this.writeLog( LogLevel.ERROR, message, optionalParams );
 
+		TvConsole.error( message );
+
 	}
 
 	static warn ( message: string, ...optionalParams: any[] ): void {
 
 		this.writeLog( LogLevel.WARN, message, optionalParams );
+
+		TvConsole.warn( message );
 
 	}
 

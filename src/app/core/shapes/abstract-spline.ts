@@ -180,21 +180,21 @@ export abstract class AbstractSpline {
 			throw new Error( `Key exists ${ segment }` );
 		}
 
-		if ( sOffset > this.getLength() ) {
-			throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ this.toString() }` );
-		}
+		// if ( sOffset > this.getLength() ) {
+		// 	throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ this.toString() }` );
+		// }
 
-		if ( sOffset < 0 ) {
-			throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ this.toString() }` );
-		}
+		// if ( sOffset < 0 ) {
+		// 	throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ this.toString() }` );
+		// }
 
-		if ( sOffset == null ) {
-			throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ this.toString() }, ${ segment?.toString() }` );
-		}
+		// if ( sOffset == null ) {
+		// 	throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ this.toString() }, ${ segment?.toString() }` );
+		// }
 
-		if ( this.segmentMap.hasKey( sOffset ) ) {
-			throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ this.segmentMap.keys() }` );
-		}
+		// if ( this.segmentMap.hasKey( sOffset ) ) {
+		// 	throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ this.segmentMap.keys() }` );
+		// }
 
 	}
 

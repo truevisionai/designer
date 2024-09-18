@@ -156,6 +156,10 @@ export class SceneBuilderService {
 			return;
 		}
 
+		if ( road.getPlanView().getGeometryCount() == 0 ) {
+			this.splineBuilder.buildGeometry( spline );
+		}
+
 		if ( spline.type === SplineType.AUTO || spline.type == SplineType.AUTOV2 ) {
 
 			this.buildRoadMesh( map, road, spline );
