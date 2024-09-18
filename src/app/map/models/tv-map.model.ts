@@ -100,7 +100,7 @@ export class TvMap {
 
 	removeSpline ( spline: AbstractSpline ): void {
 		if ( !this.splines.find( s => s.uuid == spline.uuid ) ) {
-			throw new ModelNotFoundException( `Spline with uuid ${ spline.uuid } not found` );
+			throw new ModelNotFoundException( `Spline:${spline.type} with uuid ${ spline.uuid } not found` );
 		}
 		this.splines.splice( this.splines.indexOf( spline ), 1 );
 	}
