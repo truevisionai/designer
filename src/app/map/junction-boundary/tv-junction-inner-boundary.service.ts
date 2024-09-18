@@ -53,13 +53,42 @@ export class TvJunctionInnerBoundaryService {
 		if ( !connection ) return;
 
 		// get the lane link which is connected to the lowest lane
-		const link = connection.getLowestLaneLink();
+		const lanes = connection.laneLink.map( link => link.connectingLane );
 
-		traverseLanes( connection.connectingRoad, link.to, ( lane: TvLane ) => {
+		const lastCarriagewayLane = this.getLastCarriagewayLane( lanes );
+
+		traverseLanes( connection.connectingRoad, lastCarriagewayLane.id, ( lane: TvLane ) => {
 
 			boundary.addSegment( this.createLaneSegment( connection.connectingRoad, lane ) );
 
 		} );
+
+	}
+
+	private getLastCarriagewayLane ( lanes: TvLane[] ): TvLane {
+
+		// sort lanes by id in ascending order
+		const sortedLanes = lanes.sort( ( a, b ) => Math.abs( a.id ) - Math.abs( b.id ) );
+
+		let prevLane: TvLane;
+
+		for ( const lane of sortedLanes ) {
+
+			if ( lane.id == 0 ) continue;
+
+			if ( lane.isCarriageWay() ) {
+
+				prevLane = lane;
+
+			} else {
+
+				return prevLane;
+
+			}
+
+		}
+
+		return prevLane;
 
 	}
 
