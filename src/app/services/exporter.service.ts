@@ -3,7 +3,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { SetToolCommand } from 'app/commands/set-tool-command';
 import { IFile } from 'app/io/file';
 import { ToolManager } from 'app/managers/tool-manager';
 import { TvConsole } from 'app/core/utils/console';
@@ -13,7 +12,6 @@ import { ScenarioService } from 'app/scenario/services/scenario.service';
 import { TvCarlaExporter } from 'app/map/services/tv-carla-exporter';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
 import { FileService } from '../io/file.service';
-import { CommandHistory } from '../commands/command-history';
 import { SnackBar } from './snack-bar.service';
 import { CoordinateSystem } from './CoordinateSystem';
 import { MapService } from './map/map.service';
@@ -23,10 +21,10 @@ import { FileExtension } from "../io/file-extension";
 import { StorageService } from "../io/storage.service";
 import { FileUtils } from "../io/file-utils";
 import { ExporterFactory } from 'app/factories/exporter.factory';
+import { Commands } from 'app/commands/commands';
 
 import { saveAs } from 'file-saver';
 import { cloneDeep } from 'lodash';
-import { Commands } from 'app/commands/commands';
 
 @Injectable( {
 	providedIn: 'root'
@@ -40,6 +38,7 @@ export class ExporterService {
 		private storage: StorageService,
 		private scenarioService: ScenarioService,
 		private exporterFactory: ExporterFactory,
+		private carlaExporter: TvCarlaExporter,
 	) {
 	}
 
@@ -148,9 +147,7 @@ export class ExporterService {
 
 		this.clearTool();
 
-		const exporter = new TvCarlaExporter();
-
-		const contents = exporter.getOutput( this.mapService.map );
+		const contents = this.carlaExporter.getOutput( this.mapService.map );
 
 		this.fileService.saveFileWithExtension( null, contents, 'xodr', ( file: IFile ) => {
 

@@ -2,9 +2,13 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Injectable } from '@angular/core';
 import { TvLane } from '../models/tv-lane';
 import { OpenDriveExporter } from './open-drive-exporter';
 
+@Injectable( {
+	providedIn: 'root'
+} )
 export class TvCarlaExporter extends OpenDriveExporter {
 
 	// override default

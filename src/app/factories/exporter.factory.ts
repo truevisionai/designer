@@ -27,6 +27,7 @@ export class ExporterFactory {
 		private roadStyleExporter: RoadExporterService,
 		private meshExporter: TvMeshExporter,
 		private sceneExporter: SceneExporter,
+		private openDriveExporter: OpenDriveExporter,
 	) {
 	}
 
@@ -64,7 +65,7 @@ export class ExporterFactory {
 
 	getMapExporter ( major: number, minor: number ): AssetExporter<TvMap> {
 
-		return new OpenDriveExporter();
+		return this.openDriveExporter;
 
 	}
 }
