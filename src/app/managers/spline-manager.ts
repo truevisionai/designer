@@ -9,12 +9,12 @@ import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SplineBuilder } from "app/services/spline/spline.builder";
 import { JunctionManager } from "./junction-manager";
-import { SplineUtils } from "app/utils/spline.utils";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { Log } from "app/core/utils/log";
 import { SplineLinkService } from "./spline-link.service";
 import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
 import { SplineSegmentService } from "app/services/spline/spline-segment.service";
+
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,7 +31,7 @@ export class SplineManager {
 		private fixer: SplineFixerService,
 		private splineLinkService: SplineLinkService,
 		private splineGeometryService: SplineGeometryService,
-		private segmentService: SplineSegmentService,
+		private segmentService: SplineSegmentService
 	) {
 	}
 
@@ -99,7 +99,7 @@ export class SplineManager {
 
 		if ( this.debug ) Log.debug( "Remove", spline.toString() );
 
-		if ( SplineUtils.isConnection( spline ) ) {
+		if ( spline.isConnectingRoad() ) {
 			this.mapService.map.removeSpline( spline );
 			return;
 		}
