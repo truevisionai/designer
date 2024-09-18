@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { PointSelectionStrategy } from "app/core/strategies/select-strategies/control-point-strategy";
 import { ObjectUserDataStrategy } from "app/core/strategies/select-strategies/object-user-data-strategy";

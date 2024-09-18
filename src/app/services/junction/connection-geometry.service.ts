@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { RoadGeometryService } from '../road/road-geometry.service';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';

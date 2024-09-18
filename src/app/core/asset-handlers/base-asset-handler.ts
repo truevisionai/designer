@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { AssetHandler } from "../interfaces/asset-handler";
 import { Asset } from "app/assets/asset.model";

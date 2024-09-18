@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { PointController } from "app/core/controllers/point-controller";
 import { SurfaceService } from "app/map/surface/surface.service";

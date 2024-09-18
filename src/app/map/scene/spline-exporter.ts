@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline, NewSegment } from "../../core/shapes/abstract-spline";
 import { DepAutoSpline } from "../../core/shapes/auto-spline";
 import { AutoSpline } from "../../core/shapes/auto-spline-v2";

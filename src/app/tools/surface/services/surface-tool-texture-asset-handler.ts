@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Asset, AssetType } from "app/assets/asset.model";
 import { AssetService } from "app/assets/asset.service";
 import { Commands } from "app/commands/commands";

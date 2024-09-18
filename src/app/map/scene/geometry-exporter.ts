@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvAbstractRoadGeometry } from "../models/geometries/tv-abstract-road-geometry";
 import { TvGeometryType } from "../models/tv-common";
 import { TvArcGeometry } from "../models/geometries/tv-arc-geometry";
