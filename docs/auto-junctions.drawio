@@ -1,0 +1,67 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" version="24.7.14">
+  <diagram name="Page-1" id="cNNqnEkre-lb1CAEdeJ8">
+    <mxGraphModel dx="1085" dy="1795" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-1" value="SplineAdded" style="html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="130" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-2" value="SplineUpdated" style="html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="200" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-3" value="SplineRemoved" style="html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="270" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-4" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SplineService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ field: Type&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ method(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="265" y="110" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-5" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SplineGeometryService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ update(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="730" y="30" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-6" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SplineLinkService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ update(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="730" y="150" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-11" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SplineManager&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ field: Type&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ method(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="490" y="80" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-12" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SplineSegmentService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ addSegment(): Type&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px; line-height: 180%;&quot;&gt;+ addSegment(): Type&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="730" y="280" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-13" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SplineBuilder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ build(): Mesh&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="730" y="-70" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-18" value="Spline" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="-135" width="1610" height="675" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-19" value="Road" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="590" width="1610" height="675" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-20" value="RoadAdded" style="html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="660" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-21" value="RoadUpdated" style="html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="730" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-22" value="RoadRemoved" style="html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="800" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-23" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;RoadService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ field: Type&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ method(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="260" y="655" width="195" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-24" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;RoadManager&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ field: Type&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ method(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="485" y="655" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-25" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;RoadBuilder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ update(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="485" y="770" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-26" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;RoadElevationService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ update(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="485" y="890" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="A_VpIyD1UQjEAENPcJQa-27" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;RoadElevationService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ update(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="485" y="1010" width="200" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

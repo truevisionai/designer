@@ -9,6 +9,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { OrderedMap } from "../models/ordered-map";
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { TvRoadLink } from 'app/map/models/tv-road-link';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -185,6 +186,14 @@ export abstract class AbstractSpline {
 		return this.getFirstSegment<TvRoad>().isJunction;
 	}
 
+	getNextSegment ( segment: NewSegment ): NewSegment {
+		return this.segmentMap.getNext( segment );
+	}
+
+	getPreviousSegment ( segment: NewSegment ): NewSegment {
+		return this.segmentMap.getPrevious( segment );
+	}
+
 	getSegments (): NewSegment[] {
 		return Array.from( this.segmentMap.values() );
 	}
@@ -242,14 +251,22 @@ export abstract class AbstractSpline {
 	}
 
 	getSuccessor (): NewSegment | undefined {
+		return this.getSuccessorLink()?.getElement();
+	}
+
+	getSuccessorLink (): TvRoadLink | undefined {
 		if ( this.isLastSegmentRoad() ) {
-			return this.getLastSegment<TvRoad>().successor?.element;
+			return this.getLastSegment<TvRoad>().successor;
 		}
 	}
 
 	getPredecessor (): NewSegment | undefined {
+		return this.getPredecessorLink()?.getElement();
+	}
+
+	getPredecessorLink (): TvRoadLink | undefined {
 		if ( this.isFirstSegmentRoad() ) {
-			return this.getFirstSegment<TvRoad>().predecessor?.element;
+			return this.getFirstSegment<TvRoad>().predecessor;
 		}
 	}
 

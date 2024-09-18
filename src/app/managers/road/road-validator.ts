@@ -18,19 +18,23 @@ export class RoadValidator {
 		private roadLinkValidator: RoadLinkValidator,
 	) { }
 
-	validateRoad ( road: TvRoad ): void {
+	validateRoad ( road: TvRoad ): boolean {
 
-		if ( !this.enabled ) return;
+		if ( !this.enabled ) return true;
 
-		if ( road.isJunction ) return;
+		if ( road.isJunction ) return true;
 
 		try {
 
 			this.roadLinkValidator.validateLinks( road );
 
+			return true
+
 		} catch ( e ) {
 
 			Log.error( 'RoadValidationException', e.message );
+
+			return false
 
 		}
 

@@ -223,63 +223,57 @@ export class SplineFixerService {
 
 	}
 
-	public setInternalLinks ( spline: AbstractSpline ) {
+	public setInternalLinks ( spline: AbstractSpline ): void {
 
-		const fixSuccessor = ( road: TvRoad, nextSegment: TvRoad | TvJunction ) => {
+		const segments = spline.getSegments();
 
-			if ( nextSegment instanceof TvRoad ) {
+		for ( const segment of segments ) {
 
-				road.setSuccessorRoad( nextSegment, TvContactPoint.START );
-
-			} else if ( nextSegment instanceof TvJunction ) {
-
-				road.setSuccessor( TvRoadLinkType.JUNCTION, nextSegment );
-
-			} else {
-
-				// if ( setNull ) segment.successor = null;
-
-			}
-
-		}
-
-		const fixPredecessor = ( road: TvRoad, prevSegment: TvRoad | TvJunction ) => {
-
-			if ( prevSegment instanceof TvRoad ) {
-
-				road.setPredecessorRoad( prevSegment, TvContactPoint.END );
-
-			} else if ( prevSegment instanceof TvJunction ) {
-
-				road.setPredecessor( TvRoadLinkType.JUNCTION, prevSegment );
-
-			} else {
-
-				// if ( setNull ) segment.predecessor = null;
-
-			}
-
-		}
-
-
-		let index = 0;
-
-		spline.segmentMap.forEach( ( segment, sOffset ) => {
-
-			const prevSegment = spline.segmentMap.getPrevious( segment );
-			const nextSegment = spline.segmentMap.getNext( segment );
+			const prevSegment = spline.getPreviousSegment( segment );
+			const nextSegment = spline.getNextSegment( segment );
 
 			if ( segment instanceof TvRoad ) {
-
-				fixSuccessor( segment, nextSegment );
-
-				fixPredecessor( segment, prevSegment );
-
+				this.setSuccessor( segment, nextSegment );
+				this.setPredecessor( segment, prevSegment );
 			}
 
-			index++;
+		}
 
-		} );
+	}
+
+	private setSuccessor ( road: TvRoad, nextSegment: TvRoad | TvJunction ): void {
+
+		if ( nextSegment instanceof TvRoad ) {
+
+			road.setSuccessorRoad( nextSegment, TvContactPoint.START );
+
+		} else if ( nextSegment instanceof TvJunction ) {
+
+			road.setSuccessor( TvRoadLinkType.JUNCTION, nextSegment );
+
+		} else {
+
+			// if ( setNull ) segment.successor = null;
+
+		}
+
+	}
+
+	private setPredecessor ( road: TvRoad, prevSegment: TvRoad | TvJunction ): void {
+
+		if ( prevSegment instanceof TvRoad ) {
+
+			road.setPredecessorRoad( prevSegment, TvContactPoint.END );
+
+		} else if ( prevSegment instanceof TvJunction ) {
+
+			road.setPredecessor( TvRoadLinkType.JUNCTION, prevSegment );
+
+		} else {
+
+			// if ( setNull ) segment.predecessor = null;
+
+		}
 
 	}
 }

@@ -101,7 +101,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	function expectCoords ( spline: AbstractSpline, junction: TvJunction, expected: TvRoadLink[] ) {
 
-		const coords = junctionManager.findLinksForJunction( spline, junction );
+		const coords = junctionManager.getJunctionLinks( spline, junction );
 
 		expect( coords.length ).toBe( expected.length );
 
@@ -145,7 +145,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		expectSegments( spline, [ R1, J1, R2 ] );
 
-		const coords = junctionManager.findLinksForJunction( spline, J1 );
+		const coords = junctionManager.getJunctionLinks( spline, J1 );
 		expect( coords.length ).toBe( 2 );
 		expect( spline.segmentMap.getFirst() ).toBe( coords[ 0 ].element );
 		expect( coords[ 0 ].contactPoint ).toBe( TvContactPoint.END );

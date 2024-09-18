@@ -176,9 +176,7 @@ export class SplineLinkService {
 
 	syncSuccessorSpline ( spline: AbstractSpline ): void {
 
-		if ( SplineUtils.isConnection( spline ) ) return;
-
-		if ( spline.type === SplineType.EXPLICIT ) return;
+		if ( spline.isConnectingRoad() ) return;
 
 		const successor = spline.getSuccessor();
 
@@ -196,9 +194,7 @@ export class SplineLinkService {
 
 	syncPredecessorSpline ( spline: AbstractSpline ): void {
 
-		if ( SplineUtils.isConnection( spline ) ) return;
-
-		if ( spline.type === SplineType.EXPLICIT ) return;
+		if ( spline.isConnectingRoad() ) return;
 
 		const predecessor = spline.getPredecessor();
 

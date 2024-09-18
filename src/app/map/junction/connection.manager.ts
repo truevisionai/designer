@@ -6,17 +6,15 @@ import { Injectable } from "@angular/core";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvRoad } from "../models/tv-road.model";
 import { RoadManager } from "../../managers/road/road-manager";
-import { SplineFactory } from "../../services/spline/spline.factory";
 import { SplineBuilder } from "../../services/spline/spline.builder";
 import { JunctionRoadService } from "../../services/junction/junction-road.service";
 import { TvRoadLink, TvRoadLinkType } from "../models/tv-road-link";
 import { Log } from "../../core/utils/log";
 import { ConnectionFactory } from "../../factories/connection.factory";
 import { RoadService } from "../../services/road/road.service";
-import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvJunctionConnection } from "../models/junctions/tv-junction-connection";
 import { TvContactPoint } from "../models/tv-common";
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
+import { ConnectionGeometryService } from "app/services/junction/connection-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,6 +29,7 @@ export class ConnectionManager {
 		private splineBuilder: SplineBuilder,
 		private junctionRoadService: JunctionRoadService,
 		private connectionFactory: ConnectionFactory,
+		private connectionGeometryService: ConnectionGeometryService,
 	) {
 	}
 
@@ -145,42 +144,28 @@ export class ConnectionManager {
 
 	}
 
-	updateConnectionGeometry ( junction: TvJunction, connection: TvJunctionConnection ) {
+	// eslint-disable-next-line max-lines-per-function
+	updateConnectionGeometry ( junction: TvJunction, connection: TvJunctionConnection ): void {
 
-		const prevCoord = RoadGeometryService.instance.findLinkCoord( connection.connectingRoad.predecessor );
+		try {
 
-		const nextRoad = connection.connectingRoad.successor.element as TvRoad;
-		const nextRoadCoord = RoadGeometryService.instance.findLinkCoord( connection.connectingRoad.successor );
-
-		connection.laneLink.forEach( link => {
-
-			if ( !connection.isCornerConnection ) {
-				link.connectingLane.roadMarks.clear();
-			}
-
-			const incomingLane = link.incomingLane;
-			const connectingLane = link.connectingLane;
-			const outgoingLane = nextRoad.laneSections[ 0 ].getLaneById( connectingLane.successorId );
-
-			const newSpline = SplineFactory.createManeuverSpline( prevCoord.toLaneCoord( incomingLane ), nextRoadCoord.toLaneCoord( outgoingLane ) );
-
-			connection.connectingRoad.spline.controlPoints = newSpline.controlPoints;
+			this.connectionGeometryService.updateConnectionGeometry( connection );
 
 			this.splineBuilder.buildGeometry( connection.connectingRoad.spline );
 
-			if ( connection.connectingRoad.length > 1 ) {
+			this.splineBuilder.buildSegments( connection.connectingRoad.spline );
 
-				this.splineBuilder.buildSegments( connection.connectingRoad.spline );
+		} catch ( error ) {
 
-			} else {
+			Log.error( 'Update connection geometry failed', connection.toString() );
 
-				this.roadManager.removeRoad( connection.connectingRoad );
+			Log.error( error );
 
-				junction.removeConnection( connection );
+			this.roadManager.removeRoad( connection.connectingRoad );
 
-			}
+			junction.removeConnection( connection )
 
-		} );
+		}
 
 	}
 

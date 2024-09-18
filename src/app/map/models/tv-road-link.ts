@@ -9,6 +9,7 @@ import { TvRoadCoord } from './TvRoadCoord';
 import { TvLaneCoord } from './tv-lane-coord';
 import { TvLane } from './tv-lane';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { Log } from 'app/core/utils/log';
 
 export enum TvRoadLinkType {
 	ROAD = 'road',
@@ -180,6 +181,52 @@ export class TvRoadLink {
 
 		return new TvLaneCoord( road, this.laneSection, lane, s, 0 );
 
+
+	}
+
+	setSuccessor ( otherRoad: TvRoad ): void {
+
+		if ( this.type !== TvRoadLinkType.ROAD ) {
+			Log.error( 'RoadLinkError', 'Cannot set successor for junction link' );
+			return;
+		}
+
+		const road = this.element as TvRoad;
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			road.setPredecessorRoad( otherRoad, TvContactPoint.END );
+
+		} else {
+
+			road.setSuccessorRoad( otherRoad, TvContactPoint.END );
+
+		}
+
+		otherRoad.setSuccessorRoad( road, this.contactPoint );
+
+	}
+
+	setPredecessor ( otherRoad: TvRoad ): void {
+
+		if ( this.type !== TvRoadLinkType.ROAD ) {
+			Log.error( 'RoadLinkError', 'Cannot set predecessor for junction link' );
+			return;
+		}
+
+		const road = this.element as TvRoad;
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			road.setPredecessorRoad( otherRoad, TvContactPoint.START );
+
+		} else {
+
+			road.setSuccessorRoad( otherRoad, TvContactPoint.START );
+
+		}
+
+		otherRoad.setPredecessorRoad( road, this.contactPoint );
 
 	}
 

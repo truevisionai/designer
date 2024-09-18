@@ -133,7 +133,7 @@ export class JunctionManager {
 
 		const links = [];
 
-		otherSplines.forEach( s => this.findLinksForJunction( s, junction, links ) );
+		otherSplines.forEach( s => links.push( ...this.getJunctionLinks( s, junction ) ) );
 
 		this.connectionManager.generateConnections( junction, links );
 
@@ -726,6 +726,7 @@ export class JunctionManager {
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	insertJunction ( spline: AbstractSpline, junctionStart: number, junctionEnd: number, newJunction: TvJunction ) {
 
 		const temp = new OrderedMap<NewSegment>();
@@ -843,7 +844,13 @@ export class JunctionManager {
 
 				} else {
 
-					temp.set( junctionEnd, this.createNewRoad( spline, junctionEnd ) );
+					const newRoad = this.createNewRoad( spline, junctionEnd );
+
+					temp.set( junctionEnd, newRoad );
+
+					// not setting the successor is leading to
+					// unconnected roads
+					spline.getSuccessorLink()?.setSuccessor( newRoad );
 
 				}
 
@@ -873,12 +880,12 @@ export class JunctionManager {
 
 	}
 
-	findLinksForJunction ( spline: AbstractSpline, junction: TvJunction, coords?: TvRoadLink[] ): TvRoadLink[] {
+	getJunctionLinks ( spline: AbstractSpline, junction: TvJunction, coords?: TvRoadLink[] ): TvRoadLink[] {
 
 		coords = coords || [];
 
-		const prev = spline.segmentMap.getPrevious( junction );
-		const next = spline.segmentMap.getNext( junction );
+		const prev = spline.getPreviousSegment( junction );
+		const next = spline.getNextSegment( junction );
 
 		if ( prev instanceof TvRoad ) {
 			coords.push( new TvRoadLink( TvRoadLinkType.ROAD, prev, TvContactPoint.END ) );
@@ -951,11 +958,7 @@ export class JunctionManager {
 
 		this.connectionManager.updateGeometries( junction );
 
-		this.boundaryService.update( junction );
-
-		this.updateMesh( junction );
-
-		this.junctionBoundsService.updateBounds( junction );
+		this.junctionService.updateJunction( junction );
 
 	}
 
@@ -1257,9 +1260,35 @@ export class JunctionManager {
 
 	}
 
-	createGroupCoords ( group: IntersectionGroup, junction: TvJunction ): TvRoadLink[] {
+	private createGroupCoords ( group: IntersectionGroup, junction: TvJunction ): TvRoadLink[] {
 
 		const coords: TvRoadLink[] = [];
+
+		const splines = this.addJunctionInGroupSplines( group, junction );
+
+		splines.forEach( spline => {
+
+			this.updateSplineInternalLinks( spline );
+
+			coords.push( ...this.getJunctionLinks( spline, junction ) );
+
+			this.splineBuilder.build( spline );
+
+		} );
+
+		const junctions = this.getJunctionsWithIncomingSplines( splines );
+
+		junctions.forEach( ( incomingSplines, junction ) => {
+
+			this.updateJunction( junction, [ ...incomingSplines ] );
+
+		} );
+
+		return this.sortLinks( coords );
+
+	}
+
+	private addJunctionInGroupSplines ( group: IntersectionGroup, junction: TvJunction ): AbstractSpline[] {
 
 		const splines = new Set<AbstractSpline>();
 
@@ -1287,21 +1316,17 @@ export class JunctionManager {
 
 		} );
 
-		splines.forEach( spline => {
+		return [ ...splines ];
 
-			this.updateSplineInternalLinks( spline );
+	}
 
-			this.findLinksForJunction( spline, junction, coords );
-
-			this.splineBuilder.build( spline );
-
-		} );
+	private getJunctionsWithIncomingSplines ( splines: AbstractSpline[] ): Map<TvJunction, Set<AbstractSpline>> {
 
 		const junctions = new Map<TvJunction, Set<AbstractSpline>>();
 
 		splines.forEach( spline => {
 
-			spline.segmentMap.forEach( segment => {
+			spline.getSegments().forEach( segment => {
 
 				if ( segment instanceof TvJunction && segment.needsUpdate ) {
 
@@ -1322,7 +1347,6 @@ export class JunctionManager {
 			} );
 
 			const predecessor = SplineUtils.findPredecessor( spline );
-
 			const successor = SplineUtils.findSuccessor( spline );
 
 			if ( predecessor instanceof TvJunction && !predecessor.auto ) {
@@ -1335,13 +1359,7 @@ export class JunctionManager {
 
 		} );
 
-		junctions.forEach( ( lines, junction ) => {
-
-			this.updateJunction( junction, [ ...lines ] );
-
-		} );
-
-		return this.sortLinks( coords );
+		return junctions;
 
 	}
 
