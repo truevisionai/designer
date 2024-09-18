@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { AbstractReader } from 'app/importers/abstract-reader';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, NewSegment, SplineType } from 'app/core/shapes/abstract-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
@@ -18,6 +18,7 @@ import {
 	EnumHelper,
 	TvColors,
 	TvContactPoint,
+	TvGeometryType,
 	TvLaneSide,
 	TvRoadMarkTypes,
 	TvRoadMarkWeights,
@@ -78,6 +79,7 @@ import {
 import { Log } from 'app/core/utils/log';
 import { InvalidTypeException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parser';
+import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 
 @Injectable( {
 	providedIn: 'root'
@@ -85,6 +87,8 @@ import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parse
 export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private map: TvMap;
+
+	private explicitSplineCache: Map<TvRoad, AbstractSpline> = new Map();
 
 	constructor (
 		private threeService: ThreeService,
@@ -97,6 +101,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	load ( asset: Asset ) {
 
+		this.explicitSplineCache.clear();
+
 		const contents = this.storage.readSync( asset.path );
 
 		return this.loadContents( contents );
@@ -104,6 +110,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 	}
 
 	loadContents ( contents: string ): TvMap {
+
+		this.explicitSplineCache.clear();
 
 		this.importFromString( contents );
 
@@ -176,15 +184,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} );
 
-		this.readAsOptionalArray( xml.spline, xml => {
-
-			const spline = this.importSpline( xml );
-
-			if ( !spline ) return;
-
-			this.map.addSpline( spline );
-
-		} );
+		this.readAsOptionalArray( xml.spline, xml => this.loadSpline( xml ) );
 
 		this.readAsOptionalArray( xml.prop, xml => {
 
@@ -211,6 +211,32 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		} );
 
 		this.readEnvironment( xml.environment );
+
+	}
+
+	loadSpline ( xml: XmlElement ): void {
+
+		try {
+
+			const segments = this.parseSplineSegments( xml );
+
+			const spline = this.parseSpline( xml, segments );
+
+			segments.forEach( ( segment, s ) => {
+
+				if ( !spline.hasSegment( segment ) ) spline.addSegment( s, segment );
+
+				if ( segment instanceof TvRoad ) segment.spline = spline;
+
+			} );
+
+			this.addOrSkipSpline( spline, spline.getFirstSegment<TvRoad>() );
+
+		} catch ( error ) {
+
+			Log.error( 'Error loading spline', error );
+
+		}
 
 	}
 
@@ -241,11 +267,45 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		this.readAsOptionalArray( xml.road, xml => {
 
-			const road = this.importRoad( xml );
+			const road = this.parseRoad( xml );
 
 			if ( road ) map.addRoad( road );
 
+			// NOTE: road->spline XML structure is not consistent
+			// HAS: no segments, it ideally should belong to 1 road
+			// HAS: geometries
+			// HAS: points
+
+			this.readAsOptionalElement( xml.spline, xml => {
+
+				road.spline = this.parseExplicitSpline( xml, road );
+
+				this.addOrSkipSpline( road.spline, road );
+
+			} );
+
 		} );
+
+	}
+
+	private addOrSkipSpline ( spline: AbstractSpline, road: TvRoad ): void {
+
+		if ( spline.type === SplineType.EXPLICIT ) {
+
+			if ( this.explicitSplineCache.has( road ) ) {
+				Log.warn( 'Road already exists in cache' );
+				return;
+			}
+
+			this.explicitSplineCache.set( road, spline );
+
+			this.map.addSpline( spline );
+
+		} else {
+
+			this.map.addSpline( spline );
+
+		}
 
 	}
 
@@ -270,21 +330,85 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private importSpline ( xml: XmlElement ): AbstractSpline | undefined {
+	private parseSpline ( xml: XmlElement, segments: Map<number, NewSegment> ): AbstractSpline {
+
+		let spline: AbstractSpline;
 
 		if ( xml?.attr_type === 'autov2' ) {
 
-			return this.importAutoSplineV2( xml );
+			spline = this.parseAutoSplineVersion2( xml );
+
+		} else if ( xml?.attr_type === 'auto' ) {
+
+			spline = this.parseAutoSpline( xml );
+
+		} else if ( xml?.attr_type === 'explicit' ) {
+
+			const firstSegment = [ ...segments.values() ][ 0 ] as TvRoad;
+
+			if ( this.explicitSplineCache.has( firstSegment ) ) {
+				return this.explicitSplineCache.get( firstSegment );
+			}
+
+			spline = this.parseExplicitSpline( xml, firstSegment );
+
+			this.addOrSkipSpline( spline, firstSegment );
+
+		} else {
+
+			throw new Error( 'Unknown spline type' );
 
 		}
 
-		if ( xml?.attr_type === 'auto' ) {
+		return spline;
+	}
 
-			return this.importAutoSpline( xml );
+	// eslint-disable-next-line max-lines-per-function
+	parseSplineSegments ( xml: XmlElement ): Map<number, NewSegment> {
 
+		const segments = new Map<number, NewSegment>();
+
+		this.readAsOptionalArray( xml.roadSegment, xml => {
+
+			const start = parseFloat( xml.attr_start );
+			const id = parseInt( xml.attr_id || xml.attr_roadId || xml.attr_road_id ); 		// roadId for old file
+			const type = SplineSegment.stringToType( xml.attr_type );
+
+			if ( isNaN( id ) ) {
+				throw new Error( 'Unknown segment type' );
+			}
+
+			if ( id < 0 ) {
+				throw new Error( 'Id must be greater than 0' );
+			}
+
+			if ( type == SplineSegmentType.JUNCTION ) {
+
+				const junction = this.map.getJunctionById( id );
+
+				// TODO: need to check this
+				// junction.auto = true;
+
+				segments.set( start, junction );
+
+			} else if ( type == SplineSegmentType.ROAD ) {
+
+				segments.set( start, this.map.getRoadById( id ) );
+
+			} else {
+
+				throw new Error( 'Unknown segment type' );
+
+			}
+
+		} );
+
+		if ( segments.size == 0 ) {
+			throw new Error( 'No segments found' );
 		}
 
-		Log.warn( 'unknown spline type:' + xml?.attr_type );
+		return segments;
+
 	}
 
 	private readEnvironment ( xml: XmlElement ) {
@@ -315,9 +439,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private importRoad ( xml: XmlElement ): TvRoad {
-
-		// if ( !xml.spline ) throw new Error( 'Incorrect road' );
+	private parseRoad ( xml: XmlElement ): TvRoad {
 
 		const name = xml.attr_name || 'untitled';
 		const length = parseFloat( xml.attr_length );
@@ -348,8 +470,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		road.sidewalkMaterialGuid = xml.sidewalkMaterialGuid;
 		road.borderMaterialGuid = xml.borderMaterialGuid;
 		road.shoulderMaterialGuid = xml.shoulderMaterialGuid;
-
-		this.importRoadSpline( xml.spline, road );
 
 		this.parseRoadTypes( road, xml );
 
@@ -399,41 +519,68 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return surface;
 	}
 
-	private importRoadSpline ( xml: XmlElement, road: TvRoad ): void {
+	private parseExplicitSpline ( xml: XmlElement, road: TvRoad ): AbstractSpline {
 
-		if ( !xml ) return;
+		const geometries = this.parseSplineGeometries( xml );
 
-		const type = xml.attr_type;
-
-		// support for old version
-		// convert auto to autov2 and add to spline list
-		if ( type === 'auto' ) {
-
-			const spline = this.importAutoSpline( xml );
-
-			spline.segmentMap.set( 0, road );
-
-			road.spline = spline;
-
-			this.map.addSpline( spline );
-
-			return;
+		// if no geometries found then try fetch from road
+		if ( geometries.length == 0 ) {
+			Log.warn( 'No geometries found in parsing' );
+			road.getPlanView().getGeomtries().forEach( g => geometries.push( g ) );
 		}
 
-		if ( type === 'explicit' ) {
+		const spline: ExplicitSpline = SplineFactory.createExplicitSpline( geometries, road );
 
-			road.spline = this.importExplicitSpline( xml, road );
+		if ( xml.attr_uuid ) spline.uuid = xml.attr_uuid;
 
-			return;
-
+		if ( spline.getGeometryCount() == 0 ) {
+			Log.warn( 'No geometries found in spline' );
+			this.parseAndAddPoints( xml, spline, road );
 		}
 
-		Log.error( 'unknown spline type', type );
+		return spline;
 	}
 
-	private importExplicitSpline ( xml: XmlElement, road?: TvRoad ): ExplicitSpline {
+	parseAndAddPoints ( xml: XmlElement, spline: ExplicitSpline, road: TvRoad ) {
 
-		const geometries = []
+		this.readAsOptionalArray( xml.point, xml => {
+
+			const position = this.importVector3( xml );
+
+			const hdg = parseFloat( xml.attr_hdg ) || 0;
+
+			const geometryType = this.parseGeometryType( xml.attr_type );
+
+			const index = spline.getControlPointCount();
+
+			const point = ControlPointFactory.createRoadControlPoint( road, null, index, position, hdg );
+
+			point.segmentType = geometryType;
+
+			spline.addControlPoint( point );
+
+		} );
+
+	}
+
+	parseGeometryType ( value: string | null ): TvGeometryType {
+
+		// for old bug
+		if ( value === 'BufferGeometry' ) return TvGeometryType.SPIRAL;
+		if ( value === '1' ) return TvGeometryType.LINE;
+		if ( value === '2' ) return TvGeometryType.ARC;
+		if ( value === '3' ) return TvGeometryType.SPIRAL;
+		if ( value === '4' ) return TvGeometryType.POLY3;
+		if ( value === '5' ) return TvGeometryType.PARAMPOLY3;
+
+		Log.warn( 'Unknown geometry type', value );
+
+		return TvGeometryType.SPIRAL;
+	}
+
+	private parseSplineGeometries ( xml: XmlElement ): TvAbstractRoadGeometry[] {
+
+		const geometries = [];
 
 		this.readAsOptionalArray( xml.geometry, xml => {
 
@@ -443,14 +590,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} );
 
-		const spline: ExplicitSpline = SplineFactory.createExplicitSpline( geometries, road );
+		return geometries;
 
-		if ( xml.attr_uuid ) spline.uuid = xml.attr_uuid;
-
-		return spline;
 	}
 
-	private importAutoSpline ( xml: XmlElement ): AbstractSpline {
+	private parseAutoSpline ( xml: XmlElement ): AbstractSpline {
 
 		const spline = new AutoSpline();
 
@@ -466,19 +610,15 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} );
 
-		this.map.addSpline( spline );
-
 		return spline;
 
 	}
 
-	private importAutoSplineV2 ( xml: XmlElement ): AutoSpline {
+	private parseAutoSplineVersion2 ( xml: XmlElement ): AutoSpline {
 
 		const spline = new AutoSpline();
 
-		if ( xml.attr_uuid ) {
-			spline.uuid = xml.attr_uuid;
-		}
+		if ( xml.attr_uuid ) spline.uuid = xml.attr_uuid;
 
 		this.readAsOptionalArray( xml.point, xml => {
 
@@ -492,88 +632,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} );
 
-		let isValid = true;
-
 		if ( spline.controlPoints.length < 2 ) {
 			Log.error( 'Spline must have at least 2 control points', spline.toString() );
-			return;
-		}
-
-		this.readAsOptionalArray( xml.roadSegment, xml => {
-
-			const start = parseFloat( xml.attr_start );
-			// roadId for old file
-			const id = parseInt( xml.attr_id || xml.attr_roadId || xml.attr_road_id );
-			const type = SplineSegment.stringToType( xml.attr_type );
-
-			if ( type == SplineSegmentType.ROAD ) {
-
-				const road = this.findRoad( id );
-
-				if ( road ) {
-
-					spline.segmentMap.set( start, road );
-
-				} else {
-
-					isValid = false;
-
-					Log.error( 'Road not found with id:' + id );
-
-				}
-
-			} else if ( type == SplineSegmentType.JUNCTION ) {
-
-				const junction = this.findJunction( id );
-
-				if ( !junction ) {
-
-					Log.error( 'Junction not found with id:' + id );
-
-				} else {
-
-					junction.auto = true;
-
-					spline.segmentMap.set( start, junction );
-
-				}
-
-			} else {
-
-				if ( isNaN( id ) ) {
-
-					isValid = false;
-
-					return;
-				}
-
-				// to support old files
-				if ( id > 0 ) {
-
-					const road = this.findRoad( id );
-
-					if ( !road ) {
-
-						isValid = false;
-
-						return
-					}
-
-					spline.segmentMap.set( start, road );
-
-				}
-
-			}
-
-		} );
-
-		if ( !isValid ) {
-			Log.error( 'Invalid spline', spline.toString() );
-			return;
-		}
-
-		if ( spline.segmentMap.length == 0 ) {
-			Log.error( 'Spline must have at least 1 segment', spline.toString() );
 			return;
 		}
 

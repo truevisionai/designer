@@ -60,7 +60,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 	) {
 	}
 
-
 	exportJunctionConnection ( connection: TvJunctionConnection ) {
 		return {
 			attr_id: connection.id,
@@ -113,81 +112,93 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportSpline ( spline: AbstractSpline ): any {
-
-		function exportSegmentType ( segment: NewSegment ): string {
-			if ( segment instanceof TvRoad ) {
-				return SplineSegmentType.ROAD;
-			} else if ( segment instanceof TvJunction ) {
-				return SplineSegmentType.JUNCTION;
-			} else {
-				return null;
-			}
-		}
+	exportSpline ( spline: AbstractSpline ): Record<string, any> {
 
 		if ( spline instanceof DepAutoSpline ) {
 
-			return {
-				attr_uuid: spline.uuid,
-				attr_type: spline.type,
-				point: spline.controlPointPositions.map( point => ( {
-					attr_x: point.x,
-					attr_y: point.y,
-					attr_z: point.z
-				} ) ),
-				roadSegment: spline.segmentMap.map( ( segment, s ) => {
-					return {
-						attr_start: s,
-						attr_id: segment?.id,
-						attr_type: exportSegmentType( segment )
-					};
-				} )
-			};
+			return this.exportDepAutoSpline( spline );
+
+		} else if ( spline instanceof AutoSpline ) {
+
+			return this.exportAutoSpline( spline )
+
+		} else if ( spline instanceof ExplicitSpline ) {
+
+			return this.exportExplicitSpline( spline );
+
+		} else {
+
+			throw new Error( `Unknown spline type:${ spline.type }` );
 
 		}
 
-		if ( spline instanceof AutoSpline ) {
+	}
 
-			return {
-				attr_uuid: spline.uuid,
-				attr_type: spline.type,
-				point: spline.controlPointPositions.map( point => ( {
-					attr_x: point.x,
-					attr_y: point.y,
-					attr_z: point.z
-				} ) ),
-				roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
+	exportExplicitSpline ( spline: ExplicitSpline ): Record<string, any> {
+		return {
+			attr_uuid: spline.uuid,
+			attr_type: spline.type,
+			geometry: spline.geometries.map( geometry => this.openDrive.writeGeometry( geometry ) ),
+			point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
+				attr_x: point.position.x,
+				attr_y: point.position.y,
+				attr_z: point.position.z,
+				attr_hdg: point.hdg,
+				attr_type: point.segmentType,
+			} ) ),
+			roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
+				attr_start: s,
+				attr_id: segment.id,
+				attr_type: this.exportSegmentType( segment )
+			} ) )
+		};
+	}
+
+	exportAutoSpline ( spline: AutoSpline ): Record<string, any> {
+		return {
+			attr_uuid: spline.uuid,
+			attr_type: spline.type,
+			point: spline.controlPointPositions.map( point => ( {
+				attr_x: point.x,
+				attr_y: point.y,
+				attr_z: point.z
+			} ) ),
+			roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
+				attr_start: s,
+				attr_id: segment?.id,
+				attr_type: this.exportSegmentType( segment )
+			} ) )
+		};
+
+	}
+
+	exportDepAutoSpline ( spline: DepAutoSpline ): Record<string, any> {
+		return {
+			attr_uuid: spline.uuid,
+			attr_type: spline.type,
+			point: spline.controlPointPositions.map( point => ( {
+				attr_x: point.x,
+				attr_y: point.y,
+				attr_z: point.z
+			} ) ),
+			roadSegment: spline.segmentMap.map( ( segment, s ) => {
+				return {
 					attr_start: s,
 					attr_id: segment?.id,
-					attr_type: exportSegmentType( segment )
-				} ) )
-			};
+					attr_type: this.exportSegmentType( segment )
+				};
+			} )
+		};
+	}
 
+	private exportSegmentType ( segment: NewSegment ): string {
+		if ( segment instanceof TvRoad ) {
+			return SplineSegmentType.ROAD;
+		} else if ( segment instanceof TvJunction ) {
+			return SplineSegmentType.JUNCTION;
+		} else {
+			return null;
 		}
-
-		if ( spline instanceof ExplicitSpline ) {
-
-			return {
-				attr_uuid: spline.uuid,
-				attr_type: spline.type,
-				point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
-					attr_x: point.position.x,
-					attr_y: point.position.y,
-					attr_z: point.position.z,
-					attr_hdg: point.hdg,
-					attr_type: point.segmentType,
-				} ) ),
-				roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
-					attr_start: s,
-					attr_id: segment.id,
-					attr_type: exportSegmentType( segment )
-				} ) )
-			};
-
-		}
-
-		this.snackBar.error( 'Not able to export this spline type' );
-
 	}
 
 	exportRoad ( road: TvRoad ) {
@@ -212,7 +223,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		};
 
 		if ( road.spline?.type == 'explicit' ) {
-			xml[ 'spline' ] = this.exportRoadSpline( road.spline );
+			xml[ 'spline' ] = this.exportSpline( road.spline );
 		}
 
 		this.writeRoadLinks( xml, road );
@@ -233,54 +244,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		this.writeSignals( xml, road );
 
 		return xml;
-	}
-
-	exportRoadSpline ( spline: AbstractSpline ) {
-
-		if ( spline instanceof DepAutoSpline ) {
-
-			return {
-				attr_type: spline.type,
-				point: spline.controlPointPositions.map( point => ( {
-					attr_x: point.x,
-					attr_y: point.y,
-					attr_z: point.z
-				} ) )
-			};
-
-		}
-
-		if ( spline instanceof AutoSpline ) {
-
-			return {
-				attr_type: spline.type,
-				point: spline.controlPointPositions.map( point => ( {
-					attr_x: point.x,
-					attr_y: point.y,
-					attr_z: point.z
-				} ) )
-			};
-
-		}
-
-		if ( spline instanceof ExplicitSpline ) {
-
-			return {
-				attr_type: spline.type,
-				geometry: spline.geometries.map( geometry => this.openDrive.writeGeometry( geometry ) ),
-				point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
-					attr_x: point.position.x,
-					attr_y: point.position.y,
-					attr_z: point.position.z,
-					attr_hdg: point.hdg,
-					attr_type: point.geometry?.type || point.segmentType,
-				} ) )
-			};
-
-		}
-
-		this.snackBar.error( 'Not able to export this spline type' );
-
 	}
 
 	exportJunction ( junction: TvJunction ) {
