@@ -10,6 +10,7 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { OrderedMap } from "../models/ordered-map";
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvRoadLink } from 'app/map/models/tv-road-link';
+import { InvalidArgumentException, DuplicateModelException, DuplicateKeyException } from 'app/exceptions/exceptions';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -159,17 +160,41 @@ export abstract class AbstractSpline {
 		return this.geometries;
 	}
 
-	addSegment ( s: number, segment: NewSegment ): void {
+	addSegment ( sOffset: number, segment: NewSegment ): void {
+
+		this.validateForAdding( sOffset, segment );
+
+		this.segmentMap.remove( segment );
+
+		this.segmentMap.set( sOffset, segment );
+
+	}
+
+	private validateForAdding ( sOffset: number, segment: NewSegment ): void {
 
 		if ( this.hasSegment( segment ) ) {
-			throw new Error( `Segment already exists in spline: ${ segment }` );
+			throw new DuplicateModelException( `Segment exists: ${ segment }` );
 		}
 
-		if ( this.segmentMap.hasKey( s ) ) {
-			throw new Error( `Key already exists in spline: ${ segment }` );
+		if ( this.segmentMap.hasKey( sOffset ) ) {
+			throw new Error( `Key exists ${ segment }` );
 		}
 
-		this.segmentMap.set( s, segment );
+		if ( sOffset > this.getLength() ) {
+			throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ this.toString() }` );
+		}
+
+		if ( sOffset < 0 ) {
+			throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ this.toString() }` );
+		}
+
+		if ( sOffset == null ) {
+			throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ this.toString() }, ${ segment?.toString() }` );
+		}
+
+		if ( this.segmentMap.hasKey( sOffset ) ) {
+			throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ this.segmentMap.keys() }` );
+		}
 
 	}
 
