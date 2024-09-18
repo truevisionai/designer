@@ -172,6 +172,19 @@ export abstract class AbstractSpline {
 
 	}
 
+	isConnectingRoad (): boolean {
+
+		if ( this.getSegmentCount() !== 1 ) {
+			return false;
+		}
+
+		if ( !this.isFirstSegmentRoad() ) {
+			return false;
+		}
+
+		return this.getFirstSegment<TvRoad>().isJunction;
+	}
+
 	getSegments (): NewSegment[] {
 		return Array.from( this.segmentMap.values() );
 	}

@@ -57,7 +57,7 @@ export class ConnectionManager {
 
 	generateConnections ( junction: TvJunction, links: TvRoadLink[] = [] ) {
 
-		Log.info( 'Generating connections for junction', junction.toString );
+		Log.info( 'Generating connections for junction', junction.toString() );
 
 		const roadLinks = this.junctionRoadService.getRoadLinks( junction );
 

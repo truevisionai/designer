@@ -84,23 +84,41 @@ export class SplineLinkService {
 
 	}
 
-	onSplineRemoved ( spline: AbstractSpline ) {
+	onSplineRemoved ( spline: AbstractSpline ): void {
 
-		const lastSegment = spline.segmentMap.getLast();
-		const successor = SplineUtils.findSuccessor( spline );
+		this.removeLinksWithJunctions( spline );
 
-		if ( successor instanceof TvJunction && lastSegment instanceof TvRoad ) {
-			this.connectionManager.removeConnections( successor, lastSegment );
-			this.junctionManager.updateJunction( successor );
+		this.removeJunctionSegments( spline );
+
+		this.unlinkSpline( spline );
+
+	}
+
+	removeLinksWithJunctions ( spline: AbstractSpline ): void {
+
+		if ( spline.isLastSegmentRoad() && spline.getSuccessor() instanceof TvJunction ) {
+
+			const junction = spline.getSuccessor() as TvJunction;
+			const road = spline.getLastSegment() as TvRoad;
+
+			this.connectionManager.removeConnections( junction, road );
+			this.junctionManager.updateJunction( junction );
+
 		}
 
-		const firstSegment = spline.segmentMap.getFirst();
-		const predecessor = SplineUtils.findPredecessor( spline );
+		if ( spline.isFirstSegmentRoad() && spline.getPredecessor() instanceof TvJunction ) {
 
-		if ( predecessor instanceof TvJunction && firstSegment instanceof TvRoad ) {
-			this.connectionManager.removeConnections( predecessor, firstSegment );
-			this.junctionManager.updateJunction( predecessor );
+			const junction = spline.getPredecessor() as TvJunction;
+			const road = spline.getFirstSegment() as TvRoad;
+
+			this.connectionManager.removeConnections( junction, road );
+			this.junctionManager.updateJunction( junction );
+
 		}
+
+	}
+
+	removeJunctionSegments ( spline: AbstractSpline ): void {
 
 		for ( const segment of spline.segmentMap.toArray() ) {
 
@@ -119,8 +137,6 @@ export class SplineLinkService {
 			}
 
 		}
-
-		this.unlinkSpline( spline );
 
 	}
 

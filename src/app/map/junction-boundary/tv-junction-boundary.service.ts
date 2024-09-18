@@ -28,15 +28,21 @@ export class TvJunctionBoundaryService {
 
 		if ( !junction.innerBoundary ) {
 			junction.innerBoundary = new TvJunctionBoundary();
+		} else {
+			junction.innerBoundary.clearSegments();
 		}
 
 		this.innerBoundaryService.update( junction, junction.innerBoundary );
 
 		if ( !junction.outerBoundary ) {
 			junction.outerBoundary = new TvJunctionBoundary();
+		} else {
+			junction.outerBoundary.clearSegments();
 		}
 
 		this.outerBoundaryService.update( junction, junction.outerBoundary );
+
+		// this.debugBoundary( junction.innerBoundary, COLOR.GREEN );
 
 	}
 
