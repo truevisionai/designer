@@ -52,6 +52,10 @@ export class JunctionToolJunctionController extends EmptyController<TvJunction> 
 		this.junctionService.removeJunction( object );
 	}
 
+	onUpdated ( object: TvJunction ): void {
+		this.junctionService.updateJunction( object );
+	}
+
 }
 
 

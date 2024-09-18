@@ -18,6 +18,8 @@ import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
 import { RoadGeometryService } from "../road/road-geometry.service";
+import { JunctionBoundsService } from './junction-geometry.service';
+import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,6 +33,8 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		private junctionBuilder: JunctionBuilder,
 		private connectionService: DepConnectionFactory,
 		private mapService: MapService,
+		private boundaryService: TvJunctionBoundaryService,
+		private junctionBoundsService: JunctionBoundsService
 	) {
 		super();
 	}
@@ -59,7 +63,29 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	removeJunctionMesh ( junction: TvJunction ) {
+	updateJunction ( junction: TvJunction ): void {
+
+		this.boundaryService.update( junction );
+
+		this.updateMesh( junction );
+
+		this.junctionBoundsService.updateBounds( junction );
+
+	}
+
+	updateMesh ( junction: TvJunction ): void {
+
+		if ( junction.mesh ) this.removeJunctionMesh( junction );
+
+		junction.mesh = this.junctionBuilder.buildJunction( junction );
+
+		this.mapService.map.gameObject.add( junction.mesh );
+
+	}
+
+	removeJunctionMesh ( junction: TvJunction ): void {
+
+		this.mapService.map.gameObject.remove( junction.mesh );
 
 		this.objectMap.remove( junction );
 

@@ -5,6 +5,7 @@
 import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Commands } from "app/commands/commands";
+import { MapEvents } from "app/events/map-events";
 
 export class JunctionInspector {
 
@@ -54,4 +55,10 @@ export class JunctionInspector {
 		Commands.RemoveObject( this.junction );
 	}
 
+	@SerializedAction( {
+		label: 'Rebuild Junction',
+	} )
+	rebuild (): void {
+		MapEvents.objectUpdated.emit( this.junction );
+	}
 }
