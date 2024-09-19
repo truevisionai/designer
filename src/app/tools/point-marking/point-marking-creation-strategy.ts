@@ -21,18 +21,21 @@ import { Commands } from "app/commands/commands";
 import { TvMapQueries } from "app/map/queries/tv-map-queries";
 import { AssetHandler } from "app/core/interfaces/asset-handler";
 import { Log } from "app/core/utils/log";
+import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PointMarkingCreationStrategy implements CreationStrategy<PointMarkingControlPoint>, AssetHandler {
+export class PointMarkingCreationStrategy extends BaseCreationStrategy<PointMarkingControlPoint> implements AssetHandler {
 
 	constructor (
 		private selectionService: SelectionService,
 		private assetManager: AssetManager,
 		private textureService: TvTextureService,
 		private roadObjectService: RoadObjectService,
-	) { }
+	) {
+		super();
+	}
 
 	onAssetDragOver ( asset: Asset, event: PointerEventData ): void {
 

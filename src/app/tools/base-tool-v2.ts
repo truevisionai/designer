@@ -27,7 +27,9 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 		try {
 
-			const created = this.objectCreationManager.tryCreatingObject( e );
+			const lastSelectedObject = this.selectionService.getLastSelectedObject();
+
+			const created = this.objectCreationManager.tryCreatingObject( e, lastSelectedObject );
 
 			if ( !created ) return;
 

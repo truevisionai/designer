@@ -45,17 +45,21 @@ export class ObjectCreationManager {
 	 * @param event Pointer event data.
 	 * @returns The created object or null if creation failed.
 	 */
-	tryCreatingObject ( event: PointerEventData ): any | null {
+	tryCreatingObject ( event: PointerEventData, lastSelectedObject?: object ): any | null {
 
 		const messages: string[] = [];
 
 		for ( const strategy of this.strategies ) {
 
-			const validation = strategy.validate( event );
+			if ( !strategy.canCreate( event, lastSelectedObject ) ) {
+				continue;
+			}
+
+			const validation = strategy.validate( event, lastSelectedObject );
 
 			if ( validation.passed ) {
 
-				const createdObject = strategy.createObject( event );
+				const createdObject = strategy.createObject( event, lastSelectedObject );
 
 				if ( createdObject ) {
 

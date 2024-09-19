@@ -9,16 +9,19 @@ import { SelectionService } from "../../selection.service";
 import { SurfaceFactory } from "app/map/surface/surface.factory";
 import { Surface } from "app/map/surface/surface.model";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
+import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SurfacePointCreationStrategy implements CreationStrategy<Surface | AbstractControlPoint> {
+export class SurfacePointCreationStrategy extends BaseCreationStrategy<Surface | AbstractControlPoint> {
 
 	constructor (
 		private selectionService: SelectionService,
 		private surfaceFactory: SurfaceFactory,
-	) { }
+	) {
+		super();
+	}
 
 	validate ( event: PointerEventData ): ValidationResult {
 
