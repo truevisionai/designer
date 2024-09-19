@@ -1268,14 +1268,22 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		readXmlArray( xmlElement.laneLink, xml => {
 
-			const laneLink = this.parseJunctionConnectionLaneLink( xml, junction, connection );
+			try {
 
-			if ( !laneLink ) {
-				Log.warn( 'Link Parsing failed', xml, connection.toString() );
-				return;
-			};
+				const laneLink = this.parseJunctionConnectionLaneLink( xml, junction, connection );
 
-			connection.addLaneLink( laneLink );
+				if ( !laneLink ) {
+					Log.warn( 'Link Parsing failed', xml, connection.toString() );
+					return;
+				};
+
+				connection.addLaneLink( laneLink );
+
+			} catch ( error ) {
+
+				Log.error( error );
+
+			}
 
 		} );
 
