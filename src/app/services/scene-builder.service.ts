@@ -87,7 +87,7 @@ export class SceneBuilderService {
 
 		// NOTE: sequence spline & road building is important
 		map.getSplines().forEach( spline => this.splineBuilder.buildGeometry( spline ) );
-		map.getRoads().forEach( road => this.buildRoad( map, road ) );
+		map.getRoads().forEach( road => this.buildOrRemoveRoad( map, road ) );
 		map.getSplines().forEach( spline => this.splineBuilder.updateBounds( spline ) );
 
 	}
@@ -144,21 +144,29 @@ export class SceneBuilderService {
 
 	}
 
-	buildRoad ( map: TvMap, road: TvRoad ): void {
+	buildOrRemoveRoad ( map: TvMap, road: TvRoad ): void {
 
 		LinkUtils.updateLaneUuidLinks( road );
 
-		const spline = map.findSplineBySegment( road ) || road.spline;
+		try {
 
-		if ( !spline ) {
+			const spline = this.findRoadSpline( map, road );
+
+			this.validateRoadBuild( map, road, spline );
+
+			this.buildRoad( map, road, spline );
+
+		} catch ( error ) {
+
 			map.removeRoad( road );
-			Log.error( `Road spline not found for road id ${ road.id }` );
-			return;
+
+			Log.error( error );
+
 		}
 
-		if ( road.getPlanView().getGeometryCount() == 0 ) {
-			this.splineBuilder.buildGeometry( spline );
-		}
+	}
+
+	buildRoad ( map: TvMap, road: TvRoad, spline: AbstractSpline ): void {
 
 		if ( spline.type === SplineType.AUTO || spline.type == SplineType.AUTOV2 ) {
 
@@ -166,53 +174,61 @@ export class SceneBuilderService {
 
 		} else if ( road.spline?.type === SplineType.EXPLICIT ) {
 
-			this.buildRoadWithExplicitSpline( map, road );
+			road.sStart = 0;
+
+			road.clearGeometryAndUpdateCoords();
+
+			road.spline.getGeometries().forEach( geometry => road.addGeometryAndUpdateCoords( geometry ) );
+
+			this.buildRoadMesh( map, road, road.spline );
 
 		} else {
 
-			map.removeRoad( road );
-			Log.error( `Road spline not found for road id ${ road.id }` );
-			return;
+			throw new Error( `Road spline not found for road id ${ road.id }` );
 
 		}
 
 	}
-	buildRoadWithExplicitSpline ( map: TvMap, road: TvRoad ): void {
 
-		road.sStart = 0;
+	private validateRoadBuild ( map: TvMap, road: TvRoad, spline: AbstractSpline ): void {
 
-		road.clearGeometryAndUpdateCoords();
+		if ( spline.getControlPointCount() < 2 ) {
+			throw new Error( `Invalid control points for road id ${ road.id }` );
+		}
 
-		road.spline.getGeometries().forEach( geometry => road.addGeometryAndUpdateCoords( geometry ) );
+		if ( road.getPlanView().getGeometryCount() == 0 ) {
+			this.splineBuilder.buildGeometry( spline );
+		}
 
-		this.buildRoadMesh( map, road, road.spline );
-
-	}
-
-	buildRoadMesh ( map: TvMap, road: TvRoad, spline: AbstractSpline ): void {
-
-		road.spline = spline;
+		if ( road.getPlanView().getGeometryCount() == 0 ) {
+			throw new Error( `No geometry found for road id ${ road.id }` );
+		}
 
 		if ( spline.segmentMap.length == 0 ) {
 			Log.warn( `No segments found for road id ${ road.id }` );
 			spline.segmentMap.set( 0, road );
 		}
+	}
 
-		try {
+	private findRoadSpline ( map: TvMap, road: TvRoad ): AbstractSpline {
 
-			road.gameObject = this.roadBuilder.buildRoad( road );
+		const spline = map.findSplineBySegment( road ) || road.spline;
 
-			map.gameObject.add( road.gameObject );
-
-		} catch ( error ) {
-
-			Log.error( error );
-
-			map.removeRoad( road );
-
-			return;
-
+		if ( !spline ) {
+			throw new Error( `Road spline not found for road id ${ road.id }` );
 		}
+
+		return spline;
+
+	}
+
+	private buildRoadMesh ( map: TvMap, road: TvRoad, spline: AbstractSpline ): void {
+
+		road.spline = spline;
+
+		road.gameObject = this.roadBuilder.buildRoad( road );
+
+		map.gameObject.add( road.gameObject );
 
 	}
 
