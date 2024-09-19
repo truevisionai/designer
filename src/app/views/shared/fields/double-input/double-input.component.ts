@@ -3,6 +3,7 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Log } from 'app/core/utils/log';
 import { Maths } from 'app/utils/maths';
 
 @Component( {
@@ -73,30 +74,38 @@ export class DoubleInputComponent implements OnInit {
 
 		if ( !this.inFocus ) return;
 
-		if ( $event.deltaY < 0 && this.value < this.max ) {
+		try {
 
-			this.value += this.step;
+			if ( $event.deltaY < 0 && this.value < this.max ) {
 
-		} else if ( $event.deltaY < 0 && this.value >= this.max ) {
+				this.value += this.step;
 
-			this.value = this.max;
+			} else if ( $event.deltaY < 0 && this.value >= this.max ) {
+
+				this.value = this.max;
+			}
+
+			if ( $event.deltaY > 0 && this.value > this.min ) {
+
+				this.value -= this.step;
+
+			} else if ( $event.deltaY > 0 && this.value <= this.min ) {
+
+				this.value = this.min;
+
+			}
+
+			this.value = +this.value.toFixed( 3 );
+
+			if ( Number.isNaN( this.value ) ) this.value = 0;
+
+			this.value = Maths.clamp( this.value, this.min, this.max );
+
+		} catch ( error ) {
+
+			Log.error( error );
+
 		}
-
-		if ( $event.deltaY > 0 && this.value > this.min ) {
-
-			this.value -= this.step;
-
-		} else if ( $event.deltaY > 0 && this.value <= this.min ) {
-
-			this.value = this.min;
-
-		}
-
-		this.value = +this.value.toFixed( 3 );
-
-		if ( Number.isNaN( this.value ) ) this.value = 0;
-
-		this.value = Maths.clamp( this.value, this.min, this.max );
 
 	}
 
