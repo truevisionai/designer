@@ -89,7 +89,9 @@ export abstract class MovingStrategy<T> implements IMovingStrategy {
 
 			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
 
-				return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, 0 );
+				const laneSOffset = roadCoord.s - laneSection.s;
+
+				return new TvLaneCoord( roadCoord.road, laneSection, lane, laneSOffset, 0 );
 
 			}
 

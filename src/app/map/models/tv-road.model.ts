@@ -580,26 +580,32 @@ export class TvRoad {
 	/**
 	 * @deprecated use RoadGeometryService instead
 	 */
-	getLaneCenterPosition ( lane: TvLane, s: number, offset = 0 ) {
+	getLaneCenterPosition ( lane: TvLane, roadSOffset: number, offset = 0 ) {
 
-		return RoadGeometryService.instance.findLaneCenterPosition( this, lane.laneSection, lane, s, offset );
+		const laneSOffset = roadSOffset - lane.laneSection.s;
+
+		return RoadGeometryService.instance.findLaneCenterPosition( this, lane.laneSection, lane, laneSOffset, offset );
 	}
 
 	/**
 	 * @deprecated use RoadGeometryService instead
 	 */
-	getLaneStartPosition ( lane: TvLane, s: number, offset = 0 ) {
+	getLaneStartPosition ( lane: TvLane, roadSOffset: number, offset = 0 ) {
 
-		return RoadGeometryService.instance.findLaneStartPosition( this, lane.laneSection, lane, s, offset );
+		const laneSOffset = roadSOffset - lane.laneSection.s;
+
+		return RoadGeometryService.instance.findLaneStartPosition( this, lane.laneSection, lane, laneSOffset, offset );
 
 	}
 
 	/**
 	 * @deprecated use RoadGeometryService instead
 	 */
-	getLaneEndPosition ( lane: TvLane, s: number, offset = 0 ) {
+	getLaneEndPosition ( lane: TvLane, roadSOffset: number, offset = 0 ) {
 
-		return RoadGeometryService.instance.findLaneEndPosition( this, lane.laneSection, lane, s, offset );
+		const laneSOffset = roadSOffset - lane.laneSection.s;
+
+		return RoadGeometryService.instance.findLaneEndPosition( this, lane.laneSection, lane, laneSOffset, offset );
 
 	}
 

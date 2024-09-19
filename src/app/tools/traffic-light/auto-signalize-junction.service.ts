@@ -182,9 +182,9 @@ export class AutoSignalizeJunctionService {
 
 		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
-		const s = contactPoint == TvContactPoint.START ? 0 : road.length;
+		const roadSOffset = contactPoint == TvContactPoint.START ? 0 : road.length;
 
-		const posTheta = road.getLaneCenterPosition( lane, s );
+		const posTheta = road.getLaneCenterPosition( lane, roadSOffset );
 
 		const roadCoord = posTheta.toRoadCoord( road );
 

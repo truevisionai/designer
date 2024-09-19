@@ -290,7 +290,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		if ( !result ) return;
 
-		return new TvLaneCoord( roadCoord.road, result.lane.laneSection, result.lane, roadCoord.s, roadCoord.t );
+		const laneSOffset = roadCoord.s - result.lane.laneSection.s;
+
+		return new TvLaneCoord( roadCoord.road, result.lane.laneSection, result.lane, laneSOffset, roadCoord.t );
 	}
 
 	createConnectionRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvRoad {

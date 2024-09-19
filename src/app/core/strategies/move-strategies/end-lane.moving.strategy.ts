@@ -31,10 +31,8 @@ export class MidLaneMovingStrategy extends MovingStrategy<TvLane> {
 
 		const posTheta = target.laneSection.road.getPosThetaByPosition( event.point );
 
-		const s = posTheta.s - target.laneSection.s;
-
 		// Debug.log( posTheta, s );
-		const position = target.laneSection.road.getLaneCenterPosition( target, s );
+		const position = target.laneSection.road.getLaneCenterPosition( target, posTheta.s );
 
 		// return new LanePositionv2( lane.laneSection.road, lane, s );
 		return new WorldPosition( new Vector3( position.x, position.y, position.z ) );

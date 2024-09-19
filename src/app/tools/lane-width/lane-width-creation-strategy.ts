@@ -49,7 +49,7 @@ export class LaneWidthCreationStrategy implements CreationStrategy<LaneWidthNode
 
 		if ( !laneCoord ) return;
 
-		const sOffset = laneCoord.s - laneCoord.laneSection.s;
+		const sOffset = laneCoord.s;
 
 		const widthValue = laneCoord.lane.getWidthValue( sOffset ) || 3.2;
 

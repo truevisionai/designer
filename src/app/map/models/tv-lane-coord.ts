@@ -40,9 +40,9 @@ export class TvLaneCoord {
 
 	get contact (): TvContactPoint {
 
-		if ( Maths.approxEquals( this.s, 0 ) ) return TvContactPoint.START;
+		if ( Maths.approxEquals( this.laneSection.s - this.s, 0 ) ) return TvContactPoint.START;
 
-		if ( Maths.approxEquals( this.s, this.road.length ) ) return TvContactPoint.END;
+		if ( Maths.approxEquals( this.laneSection.s + this.s, this.road.length ) ) return TvContactPoint.END;
 
 		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
 	}
@@ -60,7 +60,7 @@ export class TvLaneCoord {
 	}
 
 	get posTheta () {
-		return this.road.getLaneStartPosition( this.lane, this.s, this.offset );
+		return this.road.getLaneStartPosition( this.lane, this.laneSection.s + this.s, this.offset );
 	}
 
 	get position (): Vector3 {

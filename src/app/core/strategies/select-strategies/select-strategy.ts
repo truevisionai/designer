@@ -105,7 +105,9 @@ export abstract class BaseSelectionStrategy<T> implements SelectionStrategy<T> {
 
 		if ( !lane ) return;
 
-		return new TvLaneCoord( roadCoord.road, laneSection, lane, roadCoord.s, roadCoord.t );
+		const laneSOffset = roadCoord.s - laneSection.s;
+
+		return new TvLaneCoord( roadCoord.road, laneSection, lane, laneSOffset, roadCoord.t );
 
 		// const t = roadCoord.t;
 

@@ -481,7 +481,7 @@ export class DebugDrawService {
 
 		}
 
-		positions.push( this.roadGeometryService.findLaneEndPosition( road, laneSection, lane, sEnd - Maths.Epsilon ) );
+		positions.push( this.roadGeometryService.findLaneEndPosition( road, laneSection, lane, sEnd ) );
 
 		return positions;
 	}

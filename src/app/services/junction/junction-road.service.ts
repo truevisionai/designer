@@ -213,9 +213,9 @@ export class JunctionRoadService {
 
 			const contactPoint = incomingRoad.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
-			const s = contactPoint == TvContactPoint.START ? 0 : incomingRoad.length;
+			const laneSection = incomingRoad.getLaneProfile().getLaneSectionAtContact( contactPoint );
 
-			const laneSection = incomingRoad.getLaneProfile().getLaneSectionAt( s );
+			const laneSOffset = contactPoint == TvContactPoint.START ? 0 : laneSection.getLength();
 
 			let side = incomingRoad.trafficRule == TrafficRule.LHT ? TvLaneSide.LEFT : TvLaneSide.RIGHT;
 
@@ -232,7 +232,7 @@ export class JunctionRoadService {
 
 				if ( lane.type != TvLaneType.driving ) continue;
 
-				coords.push( new TvLaneCoord( incomingRoad, laneSection, lane, s, 0 ) );
+				coords.push( new TvLaneCoord( incomingRoad, laneSection, lane, laneSOffset, 0 ) );
 
 			}
 

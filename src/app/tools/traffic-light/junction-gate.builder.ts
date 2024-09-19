@@ -20,7 +20,7 @@ export class JunctionGateBuilder {
 
 	build ( laneCoord: TvLaneCoord ): Object3D {
 
-		const posTheta = laneCoord.road.getLaneCenterPosition( laneCoord.lane, laneCoord.s );
+		const posTheta = laneCoord.posTheta.clone();
 
 		if ( laneCoord.lane.isLeft ) posTheta.hdg += Math.PI;
 

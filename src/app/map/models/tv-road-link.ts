@@ -177,9 +177,9 @@ export class TvRoadLink {
 
 		const road = this.element as TvRoad;
 
-		const s = this.contactPoint == TvContactPoint.START ? 0 : road.length;
+		const laneSOffset = this.contactPoint == TvContactPoint.START ? 0 : lane.laneSection.getLength();
 
-		return new TvLaneCoord( road, this.laneSection, lane, s, 0 );
+		return new TvLaneCoord( road, this.laneSection, lane, laneSOffset, 0 );
 
 
 	}

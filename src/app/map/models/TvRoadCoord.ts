@@ -80,7 +80,11 @@ export class TvRoadCoord {
 	}
 
 	toLaneCoord ( lane: TvLane ): TvLaneCoord {
-		return new TvLaneCoord( this.road, this.laneSection, lane, this.s, this.t );
+
+		const laneSOffset = this.s - this.laneSection.s;
+
+		return new TvLaneCoord( this.road, this.laneSection, lane, laneSOffset, this.t );
+
 	}
 
 	getNearestContact ( road: TvRoad ): TvContactPoint {

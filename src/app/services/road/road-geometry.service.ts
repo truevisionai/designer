@@ -123,7 +123,9 @@ export class RoadGeometryService {
 
 			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
 
-				return new TvLaneCoord( coord.road, laneSection, lane, coord.s, 0 );
+				const laneSOffset = coord.s - laneSection.s;
+
+				return new TvLaneCoord( coord.road, laneSection, lane, laneSOffset, 0 );
 
 			}
 

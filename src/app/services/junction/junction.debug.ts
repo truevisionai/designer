@@ -32,6 +32,7 @@ import { JunctionBuilder } from './junction.builder';
 import { JunctionOverlay } from './junction-overlay';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { RoadGeometryService } from '../road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -330,13 +331,14 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		const laneSection = road.getLaneProfile().getLaneSectionAtContact( contact );
 
-		const s = contact === TvContactPoint.START ? laneSection.s : laneSection.endS;
+		const laneSOffset = contact === TvContactPoint.START ? laneSection.s : laneSection.endS;
 
 		const distanceFromPosition = contact === TvContactPoint.START ? +2 : -2;
 
 		for ( const lane of laneSection.getDrivingLanes() ) {
 
-			const posTheta = road.getLaneCenterPosition( lane, s ).moveForward( distanceFromPosition );
+			const posTheta = RoadGeometryService.instance.findLaneCenterPosition( road, laneSection, lane, laneSOffset )
+			.moveForward( distanceFromPosition );
 
 			const gate = this.debug.createJunctionGate( road, laneSection, lane, contact, posTheta.toVector3() );
 
