@@ -10,7 +10,7 @@
 	<button [matMenuTriggerFor]="editMenu"
 		mat-button> Edit
 	</button>
-	<button [matMenuTriggerFor]="examplesMenu"
+	<button *ngIf="!production" [matMenuTriggerFor]="examplesMenu"
 		mat-button> Examples
 	</button>
 	<button [matMenuTriggerFor]="helpMenu"

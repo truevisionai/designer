@@ -43,6 +43,10 @@ export class MenuBarComponent implements OnInit {
 		return this.electron.isElectronApp;
 	}
 
+	get production () {
+		return Environment.production;
+	}
+
 	constructor (
 		private appService: AppService,
 		private odService: OpenDriveService,
