@@ -1,5 +1,5 @@
 import { PointerEventData } from "app/events/pointer-event-data";
-import { CreationStrategy, ValidationResult } from "./creation-strategy";
+import { CreationStrategy, ValidationPassed, ValidationResult } from "./creation-strategy";
 
 export abstract class BaseCreationStrategy<T> implements CreationStrategy<T> {
 
@@ -12,5 +12,19 @@ export abstract class BaseCreationStrategy<T> implements CreationStrategy<T> {
 		return true;
 
 	}
+
+}
+
+export abstract class FreeValidationCreationStrategy<T> implements CreationStrategy<T> {
+
+	validate ( event: PointerEventData, lastSelected?: any ): ValidationResult {
+
+		return new ValidationPassed();
+
+	}
+
+	abstract createObject ( event: PointerEventData, lastSelected?: any ): T;
+
+	abstract canCreate ( event: PointerEventData, lastSelected?: any ): boolean;
 
 }

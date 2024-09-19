@@ -153,7 +153,7 @@ describe( 'SurfaceTool: TextureAssetHandler', () => {
 
 } );
 
-describe( 'SurfaceTool: CreationStrategy', () => {
+describe( 'SurfaceTool: PointCreationStrategy', () => {
 
 	let creationStrategy: SurfacePointCreationStrategy;
 
@@ -184,11 +184,11 @@ describe( 'SurfaceTool: CreationStrategy', () => {
 
 		const event = PointerEventData.create( new Vector3( 0, 0, 0 ) );
 
-		const surface = creationStrategy.createObject( event ) as Surface;
+		const surface = creationStrategy.createObject( event );
 
 		expect( surface ).toBeDefined();
 
-		expect( surface ).toBeInstanceOf( Surface );
+		expect( surface ).toBeInstanceOf( AbstractControlPoint );
 
 	} );
 

@@ -14,7 +14,7 @@ import { ControlPointFactory } from "app/factories/control-point.factory";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { SplineService } from "app/services/spline/spline.service";
-import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
+import { BaseCreationStrategy, FreeValidationCreationStrategy } from "app/core/interfaces/base-creation-strategy";
 import { RoadService } from "app/services/road/road.service";
 import { SplineControlPoint } from "app/objects/road/spline-control-point";
 import { RoadControlPoint } from "app/objects/road/road-control-point";
@@ -22,7 +22,7 @@ import { RoadControlPoint } from "app/objects/road/road-control-point";
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SplineCreationRoadToolStrategy extends BaseCreationStrategy<AbstractSpline> {
+export class SplineCreationRoadToolStrategy extends FreeValidationCreationStrategy<AbstractSpline> {
 
 	constructor (
 		private selectionService: SelectionService,
@@ -56,12 +56,6 @@ export class SplineCreationRoadToolStrategy extends BaseCreationStrategy<Abstrac
 	canCreate ( event: PointerEventData, lastSelected?: object ): boolean {
 
 		return !lastSelected;
-
-	}
-
-	validate ( event: PointerEventData ): ValidationResult {
-
-		return new ValidationPassed();
 
 	}
 

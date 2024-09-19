@@ -2,62 +2,90 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CreationStrategy, ValidationPassed, ValidationResult } from "../../../core/interfaces/creation-strategy";
 import { Injectable } from "@angular/core";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { SelectionService } from "../../selection.service";
 import { SurfaceFactory } from "app/map/surface/surface.factory";
 import { Surface } from "app/map/surface/surface.model";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
-import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
+import { FreeValidationCreationStrategy } from "app/core/interfaces/base-creation-strategy";
+import { SimpleControlPoint } from "app/objects/simple-control-point";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class SurfacePointCreationStrategy extends BaseCreationStrategy<Surface | AbstractControlPoint> {
+export class SurfacePointCreationStrategy extends FreeValidationCreationStrategy<AbstractControlPoint> {
 
-	constructor (
-		private selectionService: SelectionService,
-		private surfaceFactory: SurfaceFactory,
-	) {
+	constructor ( private surfaceFactory: SurfaceFactory ) {
+
 		super();
-	}
-
-	validate ( event: PointerEventData ): ValidationResult {
-
-		return new ValidationPassed();
 
 	}
 
-	createObject ( event: PointerEventData ): Surface | AbstractControlPoint {
+	canCreate ( event: PointerEventData, lastSelected?: Surface | SimpleControlPoint<Surface> | null ): boolean {
 
-		const selectedSurface = this.getSelectedSurface();
+		return lastSelected instanceof Surface || lastSelected instanceof SimpleControlPoint;
 
-		if ( selectedSurface ) {
+	}
 
-			const surface = this.getSelectedSurface();
+	createObject ( event: PointerEventData, lastSelected?: Surface | SimpleControlPoint<Surface> ): AbstractControlPoint {
 
-			const point = SurfaceFactory.createSurfacePoint( event.point, surface );
+		const surface = this.getSurface( lastSelected );
 
-			return point;
+		const point = SurfaceFactory.createSurfacePoint( event.point, surface );
+
+		return point;
+
+	}
+
+	getSurface ( lastSelected: Surface | SimpleControlPoint<Surface> ): Surface {
+
+		if ( lastSelected instanceof Surface ) {
+
+			return lastSelected;
+
+		} else if ( lastSelected instanceof SimpleControlPoint ) {
+
+			return lastSelected.mainObject;
 
 		} else {
 
-			const surface = this.surfaceFactory.createSurface();
-
-			const point = SurfaceFactory.createSurfacePoint( event.point, surface );
-
-			surface.spline.addControlPoint( point );
-
-			return surface;
+			return this.surfaceFactory.createSurface();
 
 		}
 
 	}
 
-	private getSelectedSurface (): Surface | undefined {
+}
 
-		return this.selectionService.findSelectedObject<Surface>( Surface );
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export class SurfaceCreationStrategy extends FreeValidationCreationStrategy<Surface> {
+
+	constructor ( private surfaceFactory: SurfaceFactory ) {
+
+		super();
+
+	}
+
+	canCreate ( event: PointerEventData, lastSelected?: Surface | SimpleControlPoint<Surface> | null ): boolean {
+
+		// If the last selected object is a surface or no object is selected,
+		// then we can create a new surface
+		return lastSelected instanceof Surface || !lastSelected;
+
+	}
+
+	createObject ( event: PointerEventData ): Surface {
+
+		const surface = this.surfaceFactory.createSurface();
+
+		const point = SurfaceFactory.createSurfacePoint( event.point, surface );
+
+		surface.spline.addControlPoint( point );
+
+		return surface;
 
 	}
 
