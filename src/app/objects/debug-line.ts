@@ -64,6 +64,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	updateGeometry ( positions: Vector3[] ): void {
 
+		this.geometry.dispose();
 		this.geometry.setPositions( positions.flatMap( p => [ p.x, p.y, p.z ] ) );
 
 	}

@@ -307,6 +307,20 @@ export abstract class AbstractSpline {
 		}
 	}
 
+	getCoord ( distance: number, offset: number ): TvPosTheta {
+		return this.getCoordAtOffset( distance ).addLateralOffset( offset );
+	}
+
+	getCoords ( stepSize = 0.1 ): TvPosTheta[] {
+
+		const points: TvPosTheta[] = [];
+
+		for ( let step = 0; step < this.getLength(); step += stepSize ) {
+			points.push( this.getCoordAtOffset( step ) );
+		}
+
+		return points;
+	}
 }
 
 
