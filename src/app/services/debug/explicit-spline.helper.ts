@@ -36,8 +36,6 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 
 		if ( object.controlPoints.length < 2 ) return;
 
-		this.lines.addItems( object, object.lines );
-
 	}
 
 	onUnhighlight ( object: ExplicitSpline ): void {
@@ -53,8 +51,6 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 	setDebugState ( object: ExplicitSpline, state: DebugState ): void {
 
 		if ( !object ) return;
-
-		object.lines.forEach( line => line.visible = true );
 
 		this.setBaseState( object, state );
 

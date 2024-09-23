@@ -10,16 +10,19 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { SelectionService } from "../selection.service";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { TvLaneWidth } from "app/map/models/tv-lane-width";
+import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class LaneWidthCreationStrategy implements CreationStrategy<LaneWidthNode> {
+export class LaneWidthCreationStrategy extends BaseCreationStrategy<LaneWidthNode> {
 
 	constructor (
 		private selectionService: SelectionService,
 		private roadPositionService: RoadGeometryService,
-	) { }
+	) {
+		super();
+	}
 
 	validate ( event: PointerEventData ): ValidationResult {
 

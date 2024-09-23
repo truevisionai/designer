@@ -22,8 +22,10 @@ export class ValidationPassed extends ValidationResult {
 
 export interface CreationStrategy<T> {
 
-	validate ( event: PointerEventData ): ValidationResult;
+	validate ( event: PointerEventData, lastSelectedObject?: object ): ValidationResult;
 
-	createObject ( event: PointerEventData ): T;
+	createObject ( event: PointerEventData, lastSelectedObject?: object ): T;
+
+	canCreate ( event: PointerEventData, lastSelectedObject?: object ): boolean;
 
 }

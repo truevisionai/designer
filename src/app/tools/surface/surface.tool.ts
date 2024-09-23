@@ -8,7 +8,7 @@ import { SurfaceToolService } from './surface-tool.service';
 import { ToolWithHandler } from '../base-tool-v2';
 import { SurfaceController } from './controllers/surface-controller';
 import { SurfaceControlPointController } from './controllers/surface-point-controller';
-import { SurfacePointCreationStrategy } from './services/surface-creation-strategy';
+import { SurfaceCreationStrategy, SurfacePointCreationStrategy } from './services/surface-creation-strategy';
 import { SurfacePointDragHandler, SurfacePointSelectionStrategy, SurfaceSelectionStrategy } from './services/surface-strategies';
 import { SurfaceVisualizer } from './visualizers/surface-visualizer';
 import { SimpleControlPoint } from 'app/objects/simple-control-point';
@@ -34,6 +34,7 @@ export class SurfaceTool extends ToolWithHandler {
 		this.addSelectionStrategy( Surface, new SurfaceSelectionStrategy() );
 
 		this.addCreationStrategy( this.tool.base.injector.get( SurfacePointCreationStrategy ) );
+		this.addCreationStrategy( this.tool.base.injector.get( SurfaceCreationStrategy ) );
 
 		this.addController( SimpleControlPoint, this.tool.base.injector.get( SurfaceControlPointController ) );
 		this.addController( Surface, this.tool.base.injector.get( SurfaceController ) );
