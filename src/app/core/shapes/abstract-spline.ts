@@ -299,6 +299,10 @@ export abstract class AbstractSpline {
 		return this.segmentMap.contains( segment );
 	}
 
+	isLinkedToJunction (): boolean {
+		return this.getSuccessor() instanceof TvJunction || this.getPredecessor() instanceof TvJunction;
+	}
+
 	getCoordAtOffset ( sOffset: number ): TvPosTheta {
 		for ( const geometry of this.geometries ) {
 			if ( sOffset >= geometry.s && sOffset <= geometry.endS ) {

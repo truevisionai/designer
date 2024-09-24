@@ -824,7 +824,7 @@ export class JunctionManager {
 
 				const previousSegment = temp.getPrevious( newJunction );
 
-				const successor = SplineUtils.findSuccessor( spline );
+				const successor = spline.getSuccessor();
 
 				// we need to disconnect the previous road with current segment junction
 				if ( previousSegment instanceof TvRoad && successor instanceof TvJunction ) {
@@ -1348,8 +1348,8 @@ export class JunctionManager {
 
 			} );
 
-			const predecessor = SplineUtils.findPredecessor( spline );
-			const successor = SplineUtils.findSuccessor( spline );
+			const predecessor = spline.getPredecessor();
+			const successor = spline.getSuccessor();
 
 			if ( predecessor instanceof TvJunction && !predecessor.auto ) {
 				Log.error( 'Predecessor is not a road' );

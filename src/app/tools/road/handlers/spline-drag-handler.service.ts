@@ -32,7 +32,7 @@ export abstract class SplineDragHandler extends BaseDragHandler<AutoSpline> {
 
 	onDrag ( object: AutoSpline, e: PointerEventData ): void {
 
-		if ( SplineUtils.isConnectedToJunction( object ) ) {
+		if ( object.isLinkedToJunction() ) {
 			this.setHint( 'Moving spline connected with junction is not supported. Add control points to modify spline.' );
 			return;
 		}

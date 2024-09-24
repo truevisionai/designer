@@ -31,13 +31,13 @@ export class SplineLinkService {
 
 	getSuccessorSpline ( spline: AbstractSpline ): AbstractSpline | undefined {
 
-		return SplineUtils.getSuccessorSpline( spline );
+		return spline.getSuccessorSpline();
 
 	}
 
 	getPredecessorSpline ( spline: AbstractSpline ): AbstractSpline | undefined {
 
-		return SplineUtils.getPredecessorSpline( spline );
+		return spline.getPredecessorSpline();
 
 	}
 
@@ -60,14 +60,14 @@ export class SplineLinkService {
 	onSplineAdded ( spline: AbstractSpline ) {
 
 		const lastSegment = spline.segmentMap.getLast();
-		const successor = SplineUtils.findSuccessor( spline );
+		const successor = spline.getSuccessor();
 
 		if ( successor instanceof TvJunction && lastSegment instanceof TvRoad ) {
 			this.junctionManager.addLink( successor as TvJunction, lastSegment, TvContactPoint.END );
 		}
 
 		const firstSegment = spline.segmentMap.getFirst();
-		const predecessor = SplineUtils.findPredecessor( spline );
+		const predecessor = spline.getPredecessor();
 
 		if ( predecessor instanceof TvJunction && firstSegment instanceof TvRoad ) {
 			this.junctionManager.addLink( predecessor as TvJunction, firstSegment, TvContactPoint.START );
