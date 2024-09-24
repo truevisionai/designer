@@ -18,6 +18,43 @@ import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-ro
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { RoadGeometryService } from '../road/road-geometry.service';
 
+export class ManeueverHelper {
+
+	static getPositionsFromLaneCoord ( start: TvLaneCoord, end: TvLaneCoord, divider = 3 ): Vector3[] {
+
+		let entryDirection: Vector3, exitDirection: Vector3;
+
+		if ( start.contact === TvContactPoint.START ) {
+			entryDirection = start.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			entryDirection = start.posTheta.toDirectionVector();
+		}
+
+		if ( end.contact === TvContactPoint.START ) {
+			exitDirection = end.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			exitDirection = end.posTheta.toDirectionVector();
+		}
+
+		return this.getPositions( start.position, entryDirection, end.position, exitDirection, divider );
+	}
+
+	static getPositions ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): Vector3[] {
+
+		const d1 = startDirection.clone().normalize();
+		const d4 = endDirection.clone().normalize();
+
+		const distance = start.distanceTo( end );
+
+		const v2 = start.clone().add( d1.clone().multiplyScalar( distance / divider ) );
+		const v3 = end.clone().add( d4.clone().multiplyScalar( distance / divider ) );
+
+		return [ start, v2, v3, end ];
+
+	}
+
+}
+
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -74,26 +111,6 @@ export class SplineFactory {
 		}
 
 		return this.createSpline( a, aDirection, b, bDirection );
-	}
-
-	createRampRoadSpline ( entry: TvLaneCoord, exit: TvLaneCoord, side: TvLaneSide ): AbstractSpline {
-
-		if ( entry == null ) throw new Error( 'entry is null' );
-		if ( exit == null ) throw new Error( 'exit is null' );
-		if ( side == null ) throw new Error( 'side is null' );
-
-		// const nodes = this.getSplinePositions( entry, exit, side );
-
-		const spline = new AutoSpline();
-
-		// spline.addControlPointAt( nodes.start )
-		// spline.addControlPointAt( nodes.a2.toVector3() )
-		// spline.addControlPointAt( nodes.b2.toVector3() )
-		// spline.addControlPointAt( nodes.end )
-
-		// spline.controlPoints.forEach( ( cp: RoadControlPoint ) => cp.allowChange = false );
-
-		return spline;
 	}
 
 	static createManeuverSpline ( entry: TvLaneCoord, exit: TvLaneCoord, divider = 3 ): AbstractSpline {
@@ -237,7 +254,7 @@ export class SplineFactory {
 
 		function addControlPoint ( spline: ExplicitSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
 
-			const point = ControlPointFactory.createRoadControlPoint( road, geometry, index, position, hdg );
+			const point = ControlPointFactory.createRoadControlPoint( spline, geometry, index, position, hdg );
 
 			spline.controlPoints.push( point );
 
@@ -253,7 +270,7 @@ export class SplineFactory {
 
 			lastGeometry = geometries[ i ];
 
-			spline.geometries.push( lastGeometry );
+			spline.addGeometry( lastGeometry );
 
 			addControlPoint( spline, lastGeometry, i, lastGeometry.startV3, lastGeometry.hdg );
 

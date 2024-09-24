@@ -34,6 +34,10 @@ export class MapService {
 		TvMapInstance.map = value;
 	}
 
+	setMap ( map: TvMap ) {
+		this.map = map;
+	}
+
 	get roads (): TvRoad[] {
 		return this.map.getRoads();
 	}

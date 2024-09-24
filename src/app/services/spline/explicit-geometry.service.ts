@@ -3,20 +3,23 @@
  */
 
 import { Injectable } from "@angular/core";
-import { ExplicitSpline } from "../../core/shapes/explicit-spline";
 import { TvAbstractRoadGeometry } from "../../map/models/geometries/tv-abstract-road-geometry";
-import { RoadControlPoint } from "../../objects/road/road-control-point";
-import { TvGeometryType } from "../../map/models/tv-common";
 import { breakGeometries } from "../../utils/spline.utils";
-import { GeometryFactory } from "./geometry.factory";
-import { Log } from "app/core/utils/log";
+import { Vector2 } from "three";
+import { AbstractControlPoint } from "app/objects/abstract-control-point";
+import { TvLineGeometry } from "app/map/models/geometries/tv-line-geometry";
+import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";
+import { TvSpiralGeometry } from "app/map/models/geometries/tv-spiral-geometry";
+
+import * as SPIRAL from "../../core/shapes/spiral-math";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ExplicitGeometryService {
 
-	build ( spline: ExplicitSpline ): void {
+	build ( spline: AbstractSpline ): void {
 
 		const geometries = this.getGeometries( spline );
 
@@ -38,34 +41,25 @@ export class ExplicitGeometryService {
 
 		} );
 
-		spline.geometries = geometries;
+		spline.setGeometries( geometries );
 
 	}
 
-	private getGeometries ( spline: ExplicitSpline ): TvAbstractRoadGeometry[] {
+	private getGeometries ( spline: AbstractSpline ): TvAbstractRoadGeometry[] {
 
-		const controlPoints: RoadControlPoint[] = spline.controlPoints as RoadControlPoint[];
+		const controlPoints = spline.getControlPoints();
+
+		const geometries = [];
 
 		let s = 0;
 
-		const geometries: TvAbstractRoadGeometry[] = [];
-
 		for ( let i = 1; i < controlPoints.length; i++ ) {
 
-			const prevPoint = controlPoints[ i - 1 ];
+			const p1 = controlPoints[ i - 1 ];
 
-			const currentPoint = controlPoints[ i ];
+			const p2 = controlPoints[ i ];
 
-			const segmentTypes = controlPoints.map( point => point.segmentType );
-
-			const geometryType = segmentTypes[ i - 1 ] ?? TvGeometryType.SPIRAL;
-
-			const geometry = this.createGeometry( geometryType, prevPoint, currentPoint );
-
-			if ( !geometry ) {
-				Log.error( 'Geometry not created' );
-				continue
-			}
+			const geometry = this.createGeometry( p1, p2 );
 
 			geometry.s = s;
 
@@ -79,26 +73,74 @@ export class ExplicitGeometryService {
 
 	}
 
-	createGeometry ( geometryType: TvGeometryType, prevPoint: RoadControlPoint, currentPoint: RoadControlPoint ): TvAbstractRoadGeometry {
+	private createGeometry ( p1: AbstractControlPoint, p2: AbstractControlPoint ): TvAbstractRoadGeometry {
 
-		let geometry: TvAbstractRoadGeometry;
+		const dir1 = new Vector2( Math.cos( p1.hdg ), Math.sin( p1.hdg ) );
+		const dir2 = new Vector2( Math.cos( p2.hdg ), Math.sin( p2.hdg ) );
 
-		if ( geometryType == TvGeometryType.PARAMPOLY3 ) {
+		const [ curvStart, curvatureChange, length, iter ] = SPIRAL.buildClothoid(
+			p1.position.x, p1.position.y, SPIRAL.vec2Angle( dir1.x, dir1.y ),
+			p2.position.x, p2.position.y, SPIRAL.vec2Angle( dir2.x, dir2.y )
+		);
 
-			geometry = currentPoint.segmentGeometry;
+		const curvEnd = curvStart + curvatureChange * length;
+
+		const curvatureTolerance = 1e-12;
+
+		if ( Math.abs( curvStart ) < curvatureTolerance && Math.abs( curvEnd ) < curvatureTolerance ) {
+
+			return this.createLineSegment( p1, p2 )
+
+		} else if ( Math.abs( curvatureChange ) < curvatureTolerance ) {
+
+			return this.createArcSegment( p1, p2, curvStart, length )
 
 		} else {
 
-			geometry = GeometryFactory.createFromPoint( geometryType, prevPoint, currentPoint );
-
-			currentPoint.segmentGeometry = geometry;
-
-			prevPoint.segmentGeometry = geometry;
+			return this.createSpiralSegment( p1, p2, curvStart, curvEnd, length )
 
 		}
 
-		return geometry;
+	}
+
+	private createSpiralSegment ( p1: AbstractControlPoint, p2: AbstractControlPoint, curvStart: number, curvEnd: number, length: number ): TvSpiralGeometry {
+
+		return new TvSpiralGeometry( 0, p1.position.x, p1.position.y, p1.hdg, length, curvStart, curvEnd );
 
 	}
+
+	private createArcSegment ( p1: AbstractControlPoint, p2: AbstractControlPoint, curvature: number, length: number ): TvArcGeometry {
+
+		return new TvArcGeometry( 0, p1.position.x, p1.position.y, p1.hdg, length, curvature );
+
+	}
+
+	private createLineSegment ( p1: AbstractControlPoint, p2: AbstractControlPoint ): TvLineGeometry {
+
+		return new TvLineGeometry( 0, p1.position.x, p1.position.y, p1.hdg, p1.position.distanceTo( p2.position ) );
+
+	}
+
+	// createGeometry ( prevPoint: RoadControlPoint, currentPoint: RoadControlPoint, geometryType: TvGeometryType ): TvAbstractRoadGeometry {
+
+	// 	let geometry: TvAbstractRoadGeometry;
+
+	// 	if ( geometryType == TvGeometryType.PARAMPOLY3 ) {
+
+	// 		geometry = currentPoint.segmentGeometry;
+
+	// 	} else {
+
+	// 		geometry = GeometryFactory.createFromPoint( geometryType, prevPoint, currentPoint );
+
+	// 		currentPoint.segmentGeometry = geometry;
+
+	// 		prevPoint.segmentGeometry = geometry;
+
+	// 	}
+
+	// 	return geometry;
+
+	// }
 
 }

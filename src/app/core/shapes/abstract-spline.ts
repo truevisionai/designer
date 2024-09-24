@@ -41,7 +41,7 @@ export abstract class AbstractSpline {
 
 	public segmentMap = new OrderedMap<NewSegment>();
 
-	public geometries: TvAbstractRoadGeometry[] = [];
+	private geometries: TvAbstractRoadGeometry[] = [];
 
 	public waypoints: AbstractControlPoint[] = [];
 
@@ -118,10 +118,6 @@ export abstract class AbstractSpline {
 	update () {
 	}
 
-	updateHeadings (): void {
-
-	}
-
 	getLength (): number {
 
 		let length = 0;
@@ -158,6 +154,10 @@ export abstract class AbstractSpline {
 
 	getGeometries (): TvAbstractRoadGeometry[] {
 		return this.geometries;
+	}
+
+	setGeometries ( geometries: TvAbstractRoadGeometry[] ): void {
+		this.geometries = geometries;
 	}
 
 	addSegment ( sOffset: number, segment: NewSegment ): void {

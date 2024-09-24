@@ -11,12 +11,13 @@ import { AbstractControlPoint } from "../abstract-control-point";
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { Log } from 'app/core/utils/log';
 import { DebugLine } from '../debug-line';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 export class RoadControlPoint extends AbstractControlPoint {
 
-	static readonly tag = 'RoadControlPoint';
+	public static readonly tag = 'RoadControlPoint';
 
-	public mainObject: TvRoad;
+	public mainObject: AbstractSpline;
 
 	public frontTangent: RoadTangentPoint;
 
@@ -24,27 +25,18 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 	private _tangentLine: DebugLine<any>;
 
-	private _hdg: number;
-
-
-	private _segmentType?: TvGeometryType;
-
 	/**
 	 * @deprecated only needed for param poly geometry generation
 	 */
 	public segmentGeometry?: TvAbstractRoadGeometry;
 
-	public allowChange: boolean = true;
-
-	constructor ( public road: TvRoad, position: Vector3, index?: number, segmentType?: TvGeometryType, hdg?: number ) {
+	constructor ( private _spline: AbstractSpline, position: Vector3, index: number, hdg: number ) {
 
 		super( new BufferGeometry(), new PointsMaterial() );
 
-		this._segmentType = segmentType;
-
 		this._hdg = hdg;
 
-		this.mainObject = road;
+		this.mainObject = _spline;
 
 		this.geometry = new BufferGeometry();
 
@@ -68,24 +60,6 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 	}
 
-	get hdg (): number {
-		return this._hdg;
-	}
-
-	set hdg ( value: number ) {
-		if ( this.shouldUpdateHeading() ) {
-			this._hdg = value;
-		}
-	}
-
-	get segmentType (): TvGeometryType {
-		return this._segmentType;
-	}
-
-	set segmentType ( value: TvGeometryType ) {
-		this._segmentType = value;
-	}
-
 	get tangentLine (): DebugLine<any> {
 		return this._tangentLine;
 	}
@@ -94,41 +68,19 @@ export class RoadControlPoint extends AbstractControlPoint {
 		this._tangentLine = value;
 	}
 
-	get spline () {
-		return this.road.spline;
+	get spline (): AbstractSpline {
+		return this._spline;
+	}
+
+	getSpline (): object {
+		return this._spline;
 	}
 
 	setPosition ( position: Vector3 ): void {
 
-		if ( !this.allowChange ) return;
-
 		super.setPosition( position );
 
 		this.update();
-
-	}
-
-	shouldMarkAsSpiral (): boolean {
-
-		// need to check with previous point and next point
-		return true;
-
-	}
-
-	markAsSpiral (): void {
-
-		this.segmentType = TvGeometryType.SPIRAL;
-
-		// also mark previous segment as spiral
-		// also mark previous control point as spiral
-
-		const currentPointIndex = this.spline.getControlPoints().findIndex( point => point === this );
-
-		if ( currentPointIndex === 0 ) return;
-
-		const previousPoint = this.spline.getControlPoints()[ currentPointIndex - 1 ] as RoadControlPoint;
-
-		previousPoint.segmentType = TvGeometryType.SPIRAL;
 
 	}
 
@@ -199,11 +151,11 @@ export class RoadControlPoint extends AbstractControlPoint {
 			.multiplyScalar( -backLength )
 			.add( this.position );
 
-		this.frontTangent = new FrontTangentPoint( this.road, this.index + 1 + this.index * 2, this );
+		this.frontTangent = new FrontTangentPoint( this.index + 1 + this.index * 2, this );
 
 		this.frontTangent.position.copy( frontPosition );
 
-		this.backTangent = new BackTangentPoint( this.road, this.index + 1 + this.index * 2 + 1, this );
+		this.backTangent = new BackTangentPoint( this.index + 1 + this.index * 2 + 1, this );
 
 		this.backTangent.position.copy( backPosition );
 
@@ -259,9 +211,9 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 		const index = this.spline.getControlPoints().findIndex( point => point === this );
 
-		if ( this.road.hasSuccessor() && index === 0 ) return false;
+		if ( this.spline.hasSuccessor() && index === 0 ) return false;
 
-		if ( this.road.hasPredecessor() && index === this.spline.getControlPoints().length - 1 ) return false;
+		if ( this.spline.hasPredecessor() && index === this.spline.getControlPoints().length - 1 ) return false;
 
 		return true;
 

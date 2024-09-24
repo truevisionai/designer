@@ -449,8 +449,6 @@ export class MapValidatorService {
 
 		}
 
-		const label = roadA.isJunction ? 'ConnectingRoad' : 'Road';
-
 		if ( !roadB ) {
 
 			this.errors.push( linkType + ' not found ' + link.toString() + ' for road ' + roadA.id );
@@ -461,60 +459,7 @@ export class MapValidatorService {
 			return;
 		}
 
-		const contactA = linkType == 'successor' ? TvContactPoint.END : TvContactPoint.START;
-		const pointA = RoadGeometryService.instance.findContactPosition( roadA, contactA )
-		const pointB = RoadGeometryService.instance.findLinkPosition( link );
-
-		let headingShouldBeSame: boolean = false;
-
-		if ( linkType == 'successor' && link.contactPoint == TvContactPoint.START || linkType == 'predecessor' && link.contactPoint == TvContactPoint.END ) {
-			headingShouldBeSame = true;
-		}
-
-		function approxEquals ( angle1, angle2, tolerance = 0.001 ) {
-			// Normalize angles to the range [0, 2π)
-			angle1 = ( angle1 + Math.PI * 2 ) % ( Math.PI * 2 );
-			angle2 = ( angle2 + Math.PI * 2 ) % ( Math.PI * 2 );
-
-			// Check if the difference is within the tolerance
-			return Math.abs( angle1 - angle2 ) < tolerance;
-		}
-
-		if ( headingShouldBeSame ) {
-
-			if ( !approxEquals( pointA.normalizedHdg, pointB.normalizedHdg ) ) {
-
-				this.errors.push( label + ':' + roadA.id + ' invalid hdg, should be same ' + linkType + ':' + link.toString() + ' ' + pointA.normalizedHdg + ' ' + pointB.normalizedHdg );
-
-				const arrow1 = this.debugDraw.createArrow( pointA.position, pointA.normalizedHdg, COLOR.BLUE );
-				this.debugObjects.add( arrow1, arrow1 );
-
-				const arrow2 = this.debugDraw.createArrow( pointB.position, pointB.normalizedHdg, COLOR.GREEN );
-				this.debugObjects.add( arrow2, arrow2 );
-
-			}
-
-		} else {
-
-			// validate if hdg are facing each other
-			let diff = Math.abs( pointA.normalizedHdg - pointB.normalizedHdg );
-
-			// Adjust the difference to find the smaller angle
-			diff = Math.min( diff, 2 * Math.PI - diff );
-
-			if ( !Maths.approxEquals( diff, Maths.PI ) ) {
-
-				this.errors.push( label + ':' + roadA.id + ' invalid hdg, should be facing ' + linkType + ':' + link.toString() + ' ' + pointA.normalizedHdg + ' ' + pointB.normalizedHdg );
-
-				const arrow1 = this.debugDraw.createArrow( pointA.position, pointA.normalizedHdg, COLOR.BLUE );
-				this.debugObjects.add( arrow1, arrow1 );
-
-				const arrow2 = this.debugDraw.createArrow( pointB.position, pointB.normalizedHdg, COLOR.GREEN );
-				this.debugObjects.add( arrow2, arrow2 );
-
-			}
-
-		}
+		this.validateLinkHeading( roadA, roadB, link, linkType );
 
 		// NOTE: Below Lane side validation is not working as expected
 		// fails in scenario
@@ -582,6 +527,58 @@ export class MapValidatorService {
 
 		// } );
 
+	}
+
+	validateLinkHeading ( roadA: TvRoad, roadB: TvRoad, link: TvRoadLink, linkType: string ): void {
+
+		const contactA = linkType === 'successor' ? TvContactPoint.END : TvContactPoint.START;
+		const pointA = RoadGeometryService.instance.findContactPosition( roadA, contactA );
+		const pointB = RoadGeometryService.instance.findLinkPosition( link );
+		const label = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+
+		const headingShouldBeSame = link.contactPoint !== contactA;
+
+		const hdgA = pointA.normalizedHdg;
+		const hdgB = pointB.normalizedHdg;
+
+		// Tolerance for heading comparison
+		// 0.01 (about 0.57°)
+		// 0.05 (about 2.86°)
+		// 0.10 (about 5.72°)
+		const TOLERANCE = 0.05;
+
+		if ( headingShouldBeSame ) {
+			if ( !this.areHeadingsApproximatelyEqual( hdgA, hdgB, TOLERANCE ) ) {
+				this.reportError( label, roadA.id, 'same', linkType, link, hdgA, hdgB );
+			}
+		} else {
+			if ( !this.areHeadingsApproximatelyOpposite( hdgA, hdgB, TOLERANCE ) ) {
+				this.reportError( label, roadA.id, 'facing', linkType, link, hdgA, hdgB );
+			}
+		}
+
+	}
+
+	private areHeadingsApproximatelyEqual ( hdg1: number, hdg2: number, tolerance: number ): boolean {
+		const diff = Math.abs( hdg1 - hdg2 );
+		return Math.min( diff, 2 * Math.PI - diff ) < tolerance;
+	}
+
+	private areHeadingsApproximatelyOpposite ( hdg1: number, hdg2: number, tolerance: number ): boolean {
+		const diff = Math.abs( hdg1 - hdg2 );
+		const smallestDiff = Math.min( diff, 2 * Math.PI - diff );
+		return Math.abs( Math.PI - smallestDiff ) < tolerance;
+	}
+
+	private reportError ( label: string, roadId: number, expectedDirection: string, linkType: string, link: TvRoadLink, hdgA: number, hdgB: number ) {
+
+		this.errors.push( `${ label }:${ roadId } invalid hdg, should be ${ expectedDirection } ${ linkType }:${ link.toString() } ${ hdgA } ${ hdgB }` );
+
+		// const arrow1 = this.debugDraw.createArrow( pointA.position, hdgA, COLOR.BLUE );
+		// this.debugObjects.add( arrow1, arrow1 );
+
+		// const arrow2 = this.debugDraw.createArrow( pointB.position, hdgB, COLOR.GREEN );
+		// this.debugObjects.add( arrow2, arrow2 );
 	}
 
 	validateJunctionLink ( road: TvRoad, link: TvRoadLink, linkType: 'successor' | 'predecessor' ) {

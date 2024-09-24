@@ -75,7 +75,7 @@ xdescribe( 'LaneLinkService', () => {
 			TvContactPoint.START
 		);
 
-		junctionService.addJunction( junction );
+		junctionService.fireCreatedEvent( junction );
 
 		expect( roadService.getRoadCount() ).toBe( 4 );
 		expect( junction ).toBeDefined();

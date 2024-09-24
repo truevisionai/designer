@@ -395,7 +395,7 @@ export class SplineTestHelper {
 		// TODO: use service or factory to create junction
 		const junction = this.junctionToolHelper.createCustomJunction( links );
 
-		this.junctionService.addJunction( junction );
+		this.junctionService.fireCreatedEvent( junction );
 
 		return junction;
 
@@ -426,8 +426,8 @@ export class SplineTestHelper {
 		] );
 
 
-		this.junctionService.addJunction( junction1 );
-		this.junctionService.addJunction( junction2 );
+		this.junctionService.fireCreatedEvent( junction1 );
+		this.junctionService.fireCreatedEvent( junction2 );
 
 	}
 

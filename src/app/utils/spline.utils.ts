@@ -44,70 +44,40 @@ export function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Ve
 	return [ r, alpha, length, Math.sign( p2proj.y ) ];
 }
 
-export function breakGeometries ( geometries: TvAbstractRoadGeometry[], sStart: number, sEnd: number | null ): TvAbstractRoadGeometry[] {
+export function breakGeometries ( geometries: TvAbstractRoadGeometry[], cutStart: number, cutEnd: number | null ): TvAbstractRoadGeometry[] {
+
+	let distance = 0;
+
+	const sEnd = cutEnd ?? Infinity;
 
 	const newGeometries: TvAbstractRoadGeometry[] = [];
 
-	let currentS = 0;
-
 	for ( const geometry of geometries ) {
 
-		const effectiveSEnd = sEnd !== null ? sEnd : Infinity;
-
-		if ( geometry.endS <= sStart || geometry.s >= effectiveSEnd ) continue; // Skip if geometry is completely out of bounds
+		if ( geometry.endS <= cutStart || geometry.s >= sEnd ) continue;
 
 		const newGeometry = geometry.clone();
 
-		newGeometry.s = currentS;
+		newGeometry.s = distance;
 
-		if ( geometry.s < sStart && geometry.endS > sStart ) {
+		const geometryStart = Math.max( geometry.s, cutStart );
+		const geometryEnd = Math.min( geometry.endS, sEnd );
 
-			const posTheta = geometry.getRoadCoord( sStart );
+		const posTheta = geometry.getRoadCoord( geometryStart );
 
-			newGeometry.x = posTheta.x;
-
-			newGeometry.y = posTheta.y;
-
-			newGeometry.hdg = posTheta.hdg;
-
-			newGeometry.length = Math.min( geometry.endS, effectiveSEnd ) - sStart;
-
-		} else if ( geometry.endS > effectiveSEnd ) {
-
-			const posTheta = geometry.getRoadCoord( geometry.s );
-
-			newGeometry.x = posTheta.x;
-
-			newGeometry.y = posTheta.y;
-
-			newGeometry.hdg = posTheta.hdg;
-
-			newGeometry.length = effectiveSEnd - geometry.s;
-
-		} else {
-
-			const posTheta = geometry.getRoadCoord( geometry.s );
-
-			newGeometry.x = posTheta.x;
-
-			newGeometry.y = posTheta.y;
-
-			newGeometry.hdg = posTheta.hdg;
-
-			newGeometry.length = geometry.length;
-
-		}
+		newGeometry.x = posTheta.x;
+		newGeometry.y = posTheta.y;
+		newGeometry.hdg = posTheta.hdg;
+		newGeometry.length = geometryEnd - geometryStart;
 
 		newGeometries.push( newGeometry );
 
-		currentS += newGeometry.length;
+		distance += newGeometry.length;
 
 	}
 
 	return newGeometries;
-
 }
-
 
 export class SplineUtils {
 

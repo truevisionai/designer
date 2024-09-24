@@ -102,7 +102,7 @@ export class ConnectionManager {
 
 	}
 
-	removeConnections ( junction: TvJunction, road: TvRoad ) {
+	removeConnections ( junction: TvJunction, road: TvRoad ): void {
 
 		const connections = junction.getConnections();
 
@@ -132,24 +132,23 @@ export class ConnectionManager {
 
 	}
 
-	updateGeometries ( junction: TvJunction ) {
+	updateGeometries ( junction: TvJunction ): void {
 
 		const connections = junction.getConnections();
 
 		for ( const connection of connections ) {
 
-			this.updateConnectionGeometry( junction, connection );
+			this.connectionGeometryService.updateConnectionGeometry( connection );
+
+			this.buildConnectionGeometry( junction, connection );
 
 		}
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
-	updateConnectionGeometry ( junction: TvJunction, connection: TvJunctionConnection ): void {
+	buildConnectionGeometry ( junction: TvJunction, connection: TvJunctionConnection ): void {
 
 		try {
-
-			this.connectionGeometryService.updateConnectionGeometry( connection );
 
 			this.splineBuilder.buildGeometry( connection.connectingRoad.spline );
 
@@ -169,7 +168,7 @@ export class ConnectionManager {
 
 	}
 
-	removeAllConnections ( junction: TvJunction ) {
+	removeAllConnections ( junction: TvJunction ): void {
 
 		const connections = junction.getConnections();
 

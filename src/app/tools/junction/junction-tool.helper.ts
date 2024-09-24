@@ -40,13 +40,13 @@ export class JunctionToolHelper {
 
 	addJunction ( junction: TvJunction ) {
 
-		this.junctionService.addJunction( junction );
+		this.junctionService.fireCreatedEvent( junction );
 
 	}
 
 	removeJunction ( junction: TvJunction ) {
 
-		this.junctionService.removeJunction( junction );
+		this.junctionService.fireRemovedEvent( junction );
 
 	}
 

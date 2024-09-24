@@ -50,23 +50,13 @@ export class ControlPointFactory {
 
 		if ( spline.type === SplineType.EXPLICIT ) {
 
-			const road = spline.segmentMap.getFirst();
+			const pointIndex = index || spline.controlPoints.length;
 
-			if ( road instanceof TvRoad ) {
+			const geometry = spline.getGeometries()[ pointIndex - 1 ];
 
-				const pointIndex = index || spline.controlPoints.length;
+			const hdg = geometry?.hdg || 0;
 
-				const geometry = spline.geometries[ pointIndex - 1 ];
-
-				const hdg = geometry?.hdg || 0;
-
-				return this.createRoadControlPoint( road, geometry, pointIndex, position, hdg );
-
-			} else {
-
-				Log.error( 'Road not found for spline control point' );
-
-			}
+			return this.createRoadControlPoint( spline, geometry, pointIndex, position, hdg );
 
 		}
 
@@ -74,13 +64,9 @@ export class ControlPointFactory {
 
 	}
 
-	static createRoadControlPoint ( road: TvRoad, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
+	static createRoadControlPoint ( spline: AbstractSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
 
-		if ( !geometry ) {
-			Log.warn( 'Geometry not found for road control point' );
-		}
-
-		const controlPoint = new RoadControlPoint( road, position, index, geometry?.geometryType, hdg );
+		const controlPoint = new RoadControlPoint( spline, position, index, hdg );
 
 		controlPoint.segmentGeometry = geometry;
 

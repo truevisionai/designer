@@ -4,7 +4,6 @@
 
 import { TestBed } from "@angular/core/testing";
 import { ExplicitGeometryService } from "./explicit-geometry.service";
-import { ExplicitSpline } from "app/core/shapes/explicit-spline";
 import { ControlPointFactory } from "app/factories/control-point.factory";
 import { Vector3 } from "three";
 import { TvRoad } from "app/map/models/tv-road.model";
@@ -14,12 +13,14 @@ import { EXPLICIT_CIRCLE_XODR, SplineTestHelper } from "./spline-test-helper.ser
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { HttpClientModule } from "@angular/common/http";
 import { SplineBuilder } from "./spline.builder";
+import { SplineFactory } from "./spline.factory";
+import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
 
 describe( 'ExplicitGeometryService', () => {
 
 	let builder: SplineBuilder;
 	let service: ExplicitGeometryService;
-	let spline: ExplicitSpline;
+	let spline: AbstractSpline;
 	let testHelper: SplineTestHelper;
 
 	beforeEach( () => {
@@ -35,7 +36,7 @@ describe( 'ExplicitGeometryService', () => {
 
 		const road = new TvRoad( '', 0, 100 );
 
-		spline = new ExplicitSpline( road );
+		spline = SplineFactory.createSpline( SplineType.EXPLICIT );
 
 		road.spline = spline;
 
@@ -76,9 +77,7 @@ describe( 'ExplicitGeometryService', () => {
 	it( 'should have correct headings for line at 90 degree', () => {
 
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 100, 0 ) ) );
-
-		spline.updateHeadings();
+		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
 
 		service.build( spline );
 
@@ -86,8 +85,8 @@ describe( 'ExplicitGeometryService', () => {
 		expect( spline.getGeometries()[ 0 ].length ).toBe( 100 );
 		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
 
-		expect( spline.getControlPoints()[ 0 ].getHeading() ).toEqual( Math.PI / 2 );
-		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( Math.PI / 2 );
+		expect( spline.getControlPoints()[ 0 ].getHeading() ).toEqual( 0 );
+		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( 0 );
 
 	} );
 
@@ -115,19 +114,16 @@ describe( 'ExplicitGeometryService', () => {
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 100, 0 ) ) );
 
-		spline.updateHeadings();
-
 		service.build( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 2 );
-		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.SPIRAL );
-
-		// TODO: need to fix
-		// expect( spline.getGeometries()[ 1 ].geometryType ).toBe( TvGeometryType.SPIRAL );
+		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
+		expect( spline.getGeometries()[ 1 ].geometryType ).toBe( TvGeometryType.SPIRAL );
+		expect( spline.getLength() ).toBeGreaterThan( 200 );
 
 		expect( spline.getControlPoints()[ 0 ].getHeading() ).toEqual( 0 );
-		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( Math.PI / 2 );
-		expect( spline.getControlPoints()[ 2 ].getHeading() ).toEqual( Math.PI / 2 );
+		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( 0 );
+		expect( spline.getControlPoints()[ 2 ].getHeading() ).toEqual( 0 );
 
 	} );
 
@@ -163,8 +159,6 @@ describe( 'ExplicitGeometryService', () => {
 		} );
 
 		const prevHdgs = road.spline.getControlPoints().map( ( point: RoadControlPoint ) => point.hdg );
-
-		road.spline.updateHeadings();
 
 		const newHdgs = road.spline.getControlPoints().map( ( point: RoadControlPoint ) => point.hdg );
 

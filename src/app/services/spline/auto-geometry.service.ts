@@ -102,7 +102,8 @@ export class AutoGeometryService {
 
 		}
 
-		spline.geometries = splineGeometries;
+		spline.setGeometries( splineGeometries )
+
 	}
 
 	// eslint-disable-next-line max-lines-per-function

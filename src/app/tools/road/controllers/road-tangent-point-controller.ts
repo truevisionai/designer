@@ -26,7 +26,7 @@ export class RoadTangentPointController extends PointController<RoadTangentPoint
 
 	showInspector ( object: RoadTangentPoint ): void {
 
-		AppInspector.setInspector( RoadInspector, { spline: object.spline, controlPoint: object } );
+		AppInspector.setInspector( RoadInspector, { spline: object.getSpline(), controlPoint: object } );
 
 	}
 
@@ -38,7 +38,7 @@ export class RoadTangentPointController extends PointController<RoadTangentPoint
 
 		this.splineService.updateControlPoint( point );
 
-		this.splineService.updateSpline( point.spline );
+		this.splineService.updateSpline( point.getSpline() );
 
 	}
 

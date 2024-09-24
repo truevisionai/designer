@@ -25,14 +25,14 @@ export class PointCreationRoadToolStrategy extends BaseCreationStrategy<Abstract
 
 	canCreate ( event: PointerEventData, lastSelected?: any ): boolean {
 
-		return this.checkForSpline( lastSelected ) !== undefined;
+		return this.getSpline( lastSelected ) !== undefined;
 
 	}
 
 	// eslint-disable-next-line max-lines-per-function
 	validate ( event: PointerEventData, lastSelected?: any ): ValidationResult {
 
-		const spline = this.checkForSpline( lastSelected );
+		const spline = this.getSpline( lastSelected );
 
 		if ( !spline ) {
 			return new ValidationFailed( 'Select a road to add a control point' );
@@ -73,7 +73,7 @@ export class PointCreationRoadToolStrategy extends BaseCreationStrategy<Abstract
 		return new ValidationPassed();
 	}
 
-	checkForSpline ( lastSelected: any ): AbstractSpline {
+	getSpline ( lastSelected: any ): AbstractSpline {
 
 		let spline: AbstractSpline;
 
@@ -90,7 +90,7 @@ export class PointCreationRoadToolStrategy extends BaseCreationStrategy<Abstract
 
 	createObject ( event: PointerEventData, lastSelected?: any ): AbstractControlPoint {
 
-		const spline = this.checkForSpline( lastSelected );
+		const spline = this.getSpline( lastSelected );
 
 		const clickedSameRoad = this.isSameRoadClicked( event, spline );
 

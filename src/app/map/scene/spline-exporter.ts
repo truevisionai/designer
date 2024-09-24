@@ -50,13 +50,12 @@ export class SplineExporter {
 		return {
 			attr_uuid: spline.uuid,
 			attr_type: spline.type,
-			geometry: spline.geometries.map( geometry => this.geometryExporter.export( geometry ) ),
+			geometry: spline.getGeometries().map( geometry => this.geometryExporter.export( geometry ) ),
 			point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
 				attr_x: point.position.x,
 				attr_y: point.position.y,
 				attr_z: point.position.z,
-				attr_hdg: point.hdg,
-				attr_type: point.segmentType,
+				attr_hdg: point.hdg
 			} ) ),
 			roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
 				attr_start: s,

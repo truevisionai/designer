@@ -58,7 +58,7 @@ export class RoadManager {
 
 		this.mapService.setRoadOpacity( road );
 
-		if ( road.spline?.geometries.length == 0 ) {
+		if ( road.spline?.getGeometryCount() == 0 ) {
 			this.splineService.update( road.spline );
 		}
 

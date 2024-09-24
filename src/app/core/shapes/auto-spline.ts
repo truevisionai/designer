@@ -22,7 +22,7 @@ export class DepAutoSpline extends AbstractSpline {
 
 	public roundline: RoundLine;
 
-	constructor ( private road?: TvRoad ) {
+	constructor () {
 
 		super();
 

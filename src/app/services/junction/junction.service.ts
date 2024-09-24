@@ -51,29 +51,29 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	addJunction ( junction: TvJunction ) {
+	fireCreatedEvent ( junction: TvJunction ): void {
 
 		MapEvents.junctionCreated.emit( new JunctionCreatedEvent( junction ) );
 
 	}
 
-	removeJunction ( junction: TvJunction ) {
+	fireRemovedEvent ( junction: TvJunction ): void {
 
 		MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction ) );
 
 	}
 
-	updateJunction ( junction: TvJunction ): void {
+	updateJunctionMeshAndBoundary ( junction: TvJunction ): void {
 
 		this.boundaryService.update( junction );
 
-		this.updateMesh( junction );
+		this.updateJunctionMesh( junction );
 
 		this.junctionBoundsService.updateBounds( junction );
 
 	}
 
-	updateMesh ( junction: TvJunction ): void {
+	updateJunctionMesh ( junction: TvJunction ): void {
 
 		if ( junction.mesh ) this.removeJunctionMesh( junction );
 
@@ -145,7 +145,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 	}
 	add ( object: TvJunction ): void {
 
-		this.addJunction( object );
+		this.fireCreatedEvent( object );
 
 	}
 
@@ -157,7 +157,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	remove ( object: TvJunction ): void {
 
-		this.removeJunction( object );
+		this.fireRemovedEvent( object );
 
 	}
 

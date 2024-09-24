@@ -45,15 +45,15 @@ export class JunctionToolJunctionController extends EmptyController<TvJunction> 
 	}
 
 	onAdded ( object: TvJunction ): void {
-		this.junctionService.addJunction( object );
+		this.junctionService.fireCreatedEvent( object );
 	}
 
 	onRemoved ( object: TvJunction ): void {
-		this.junctionService.removeJunction( object );
+		this.junctionService.fireRemovedEvent( object );
 	}
 
 	onUpdated ( object: TvJunction ): void {
-		this.junctionService.updateJunction( object );
+		this.junctionService.updateJunctionMeshAndBoundary( object );
 	}
 
 }

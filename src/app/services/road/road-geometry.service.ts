@@ -73,7 +73,7 @@ export class RoadGeometryService {
 
 	findEndPosition ( road: TvRoad ): TvPosTheta {
 
-		return this.findRoadPosition( road, road.length - Maths.Epsilon );
+		return this.findRoadPosition( road, road.length );
 
 	}
 

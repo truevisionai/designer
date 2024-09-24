@@ -143,29 +143,22 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	updatePointHeading ( spline: AbstractSpline, currentPoint: AbstractControlPoint, index: number ): void {
 
-		if ( index == 0 ) return;
-
-		if ( spline.type !== SplineType.EXPLICIT ) return;
-
-		if ( !( currentPoint instanceof RoadControlPoint ) ) return;
+		if ( index == 0 ) {
+			currentPoint.hdg = 0;
+			return;
+		}
 
 		const nextPoint = spline.controlPoints[ index + 1 ];
 
 		const previousPoint = spline.controlPoints[ index - 1 ];
 
-		if ( nextPoint instanceof RoadControlPoint ) {
+		if ( nextPoint instanceof AbstractControlPoint ) {
 
 			currentPoint.hdg = Maths.heading( currentPoint.position, nextPoint.position );
 
-		} else if ( previousPoint instanceof RoadControlPoint ) {
+		} else if ( previousPoint instanceof AbstractControlPoint ) {
 
 			currentPoint.hdg = Maths.heading( previousPoint.position, currentPoint.position );
-
-		}
-
-		if ( previousPoint instanceof RoadControlPoint ) {
-
-			previousPoint.hdg = Maths.heading( previousPoint.position, currentPoint.position );
 
 		}
 

@@ -18,7 +18,7 @@ export class SplinePositionService {
 
 	getCoordAtOffset ( spline: AbstractSpline, sOffset: number ): TvPosTheta {
 
-		for ( const geometry of spline.geometries ) {
+		for ( const geometry of spline.getGeometries() ) {
 
 			if ( sOffset >= geometry.s && sOffset <= geometry.endS ) {
 
@@ -36,7 +36,7 @@ export class SplinePositionService {
 
 		const coordinates = new TvPosTheta();
 
-		for ( const geometry of spline.geometries ) {
+		for ( const geometry of spline.getGeometries() ) {
 
 			const temp = new TvPosTheta();
 
@@ -126,7 +126,7 @@ export class SplinePositionService {
 
 		const s = length * t;
 
-		const geometry = spline.geometries.find( g => s >= g.s && s <= g.endS );
+		const geometry = spline.getGeometries().find( g => s >= g.s && s <= g.endS );
 
 		if ( !geometry ) {
 			console.error( 'No geometry found for s:', s, spline );

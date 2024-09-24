@@ -21,8 +21,6 @@ export class ExplicitSplineController extends SplineController<ExplicitSpline> {
 
 	onAdded ( object: ExplicitSpline ): void {
 
-		object.updateHeadings();
-
 		object.updateIndexes();
 
 		super.onAdded( object );
@@ -31,8 +29,6 @@ export class ExplicitSplineController extends SplineController<ExplicitSpline> {
 
 	onUpdated ( object: ExplicitSpline ): void {
 
-		object.updateHeadings();
-
 		object.updateIndexes();
 
 		super.onUpdated( object );
@@ -40,8 +36,6 @@ export class ExplicitSplineController extends SplineController<ExplicitSpline> {
 	}
 
 	onRemoved ( object: ExplicitSpline ): void {
-
-		object.updateHeadings();
 
 		object.updateIndexes();
 

@@ -42,7 +42,7 @@ describe( 'CustomJunction: Tests', () => {
 
 		const junction = juctionToolHelper.createCustomJunction( links );
 
-		testHelper.junctionService.addJunction( junction );
+		testHelper.junctionService.fireCreatedEvent( junction );
 
 	}
 
@@ -62,7 +62,7 @@ describe( 'CustomJunction: Tests', () => {
 
 		const junction = juctionToolHelper.createCustomJunction( links );
 
-		testHelper.junctionService.addJunction( junction );
+		testHelper.junctionService.fireCreatedEvent( junction );
 
 	}
 
@@ -96,7 +96,7 @@ describe( 'CustomJunction: Tests', () => {
 
 		const junction = testHelper.mapService.findJunction( 1 );
 
-		testHelper.junctionService.removeJunction( junction );
+		testHelper.junctionService.fireRemovedEvent( junction );
 
 		expectValidMap( testHelper.mapService );
 
@@ -115,7 +115,7 @@ describe( 'CustomJunction: Tests', () => {
 		// junction model itself should not lose any data
 		expect( junction.getConnectionCount() ).toBe( 6 );
 
-		testHelper.junctionService.addJunction( junction );
+		testHelper.junctionService.fireCreatedEvent( junction );
 
 		expect( leftRoad.successor.element ).toBe( junction );
 		expect( rightRoad.predecessor.element ).toBe( junction );
@@ -188,7 +188,7 @@ describe( 'CustomJunction: Tests', () => {
 
 		const junction = testHelper.mapService.findJunction( 1 );
 
-		testHelper.junctionService.removeJunction( junction );
+		testHelper.junctionService.fireRemovedEvent( junction );
 
 		expectValidMap( testHelper.mapService );
 

@@ -42,14 +42,14 @@ describe( 'SplineToGeometry test', () => {
 
 	it( 'should create line geometry from a spline with 2 points', () => {
 
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
 
 		splineManager.addSpline( spline );
 
-		const geometry = spline.geometries[ 0 ];
+		const geometry = spline.getGeometries()[ 0 ];
 
 		expect( geometry.s ).toBe( 0 );
 		expect( geometry.x ).toBe( 0 );
@@ -61,7 +61,7 @@ describe( 'SplineToGeometry test', () => {
 
 	it( 'should create line geometry from a spline with 3 points', () => {
 
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
@@ -69,7 +69,7 @@ describe( 'SplineToGeometry test', () => {
 
 		splineManager.addSpline( spline );
 
-		const exportGeometries = spline.geometries;
+		const exportGeometries = spline.getGeometries();
 
 		expect( exportGeometries.length ).toBe( 1 );
 
@@ -92,7 +92,7 @@ describe( 'SplineToGeometry test', () => {
 
 		splineManager.addSpline( spline );
 
-		const exportGeometries = spline.geometries;
+		const exportGeometries = spline.getGeometries();
 
 		expect( exportGeometries.length ).toBe( 4 );
 

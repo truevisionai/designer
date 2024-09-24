@@ -146,7 +146,51 @@ export class JunctionManager {
 
 	}
 
-	detectJunctions ( spline: AbstractSpline ) {
+	handleSplineAdded ( spline: AbstractSpline ): void {
+
+		if ( spline.isConnectingRoad() ) {
+
+			const connectionRoad = spline.getFirstSegment() as TvRoad;
+
+			const junction = connectionRoad.junction;
+
+			const connection = junction.getConnections().find( c => c.connectingRoad == connectionRoad );
+
+			this.connectionManager.buildConnectionGeometry( junction, connection );
+
+			this.junctionService.updateJunctionMeshAndBoundary( junction );
+
+		} else {
+
+			this.detectJunctions( spline );
+
+		}
+
+	}
+
+	handleSplineUpdated ( spline: AbstractSpline ): void {
+
+		if ( spline.isConnectingRoad() ) {
+
+			const connectionRoad = spline.getFirstSegment() as TvRoad;
+
+			const junction = connectionRoad.junction;
+
+			const connection = junction.getConnections().find( c => c.connectingRoad == connectionRoad );
+
+			this.connectionManager.buildConnectionGeometry( junction, connection );
+
+			this.junctionService.updateJunctionMeshAndBoundary( junction );
+
+		} else {
+
+			this.detectJunctions( spline );
+
+		}
+
+	}
+
+	detectJunctions ( spline: AbstractSpline ): void {
 
 		if ( this.debug ) Log.debug( 'DetectJunctions', spline.toString() );
 
@@ -960,7 +1004,7 @@ export class JunctionManager {
 
 		this.connectionManager.updateGeometries( junction );
 
-		this.junctionService.updateJunction( junction );
+		this.junctionService.updateJunctionMeshAndBoundary( junction );
 
 	}
 

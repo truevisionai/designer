@@ -549,13 +549,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const hdg = parseFloat( xml.attr_hdg ) || 0;
 
-			const geometryType = this.parseGeometryType( xml.attr_type );
-
 			const index = spline.getControlPointCount();
 
-			const point = ControlPointFactory.createRoadControlPoint( road, null, index, position, hdg );
-
-			point.segmentType = geometryType;
+			const point = ControlPointFactory.createRoadControlPoint( spline, null, index, position, hdg );
 
 			spline.addControlPoint( point );
 
@@ -596,7 +592,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private parseAutoSpline ( xml: XmlElement ): AbstractSpline {
 
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 
 		this.readAsOptionalArray( xml.point, xml => {
 
@@ -614,9 +610,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseAutoSplineVersion2 ( xml: XmlElement ): AutoSpline {
+	private parseAutoSplineVersion2 ( xml: XmlElement ): AbstractSpline {
 
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 
 		if ( xml.attr_uuid ) spline.uuid = xml.attr_uuid;
 

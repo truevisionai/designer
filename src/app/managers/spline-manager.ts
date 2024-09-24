@@ -47,7 +47,7 @@ export class SplineManager {
 
 		this.addSegments( spline );
 
-		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
+		if ( updateJunctions ) this.junctionManager.handleSplineAdded( spline );
 
 	}
 
@@ -79,7 +79,7 @@ export class SplineManager {
 
 		}
 
-		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
+		if ( updateJunctions ) this.junctionManager.handleSplineUpdated( spline );
 
 	}
 

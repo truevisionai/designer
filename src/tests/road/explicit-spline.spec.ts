@@ -6,11 +6,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ExplicitSpline } from '../../app/core/shapes/explicit-spline';
 import { TvRoad } from "../../app/map/models/tv-road.model";
-import { AbstractSpline } from "../../app/core/shapes/abstract-spline";
+import { AbstractSpline, SplineType } from "../../app/core/shapes/abstract-spline";
 import { ControlPointFactory } from "../../app/factories/control-point.factory";
 import { Vector3 } from "three";
+import { SplineFactory } from 'app/services/spline/spline.factory';
 
 xdescribe( 'ExplicitSpline Test', () => {
 
@@ -20,7 +20,7 @@ xdescribe( 'ExplicitSpline Test', () => {
 
 	beforeEach( () => {
 
-		spline = new ExplicitSpline( road );
+		spline = SplineFactory.createSpline( SplineType.EXPLICIT );
 		pointFactory = new ControlPointFactory();
 
 	} );
@@ -29,7 +29,7 @@ xdescribe( 'ExplicitSpline Test', () => {
 
 
 		// horizontal
-		spline = new ExplicitSpline( road );
+		spline = SplineFactory.createSpline( SplineType.EXPLICIT );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3() ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100 ) ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 200 ) ) );
@@ -37,7 +37,7 @@ xdescribe( 'ExplicitSpline Test', () => {
 		expect( spline.getLength() ).toBe( 200 );
 
 		// vertical
-		spline = new ExplicitSpline( road );
+		spline = SplineFactory.createSpline( SplineType.EXPLICIT );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3() ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 100, 0 ) ) );
 		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 200, 0 ) ) );

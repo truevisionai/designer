@@ -358,7 +358,9 @@ export class RoadFactory {
 
 		const roadName = `Road${ roadId }`;
 
-		const road = this.createNewRoad( roadName, 0, roadId, junction );
+		const road = new TvRoad( roadName, length || 0, roadId, junction );
+
+		road.sStart = 0;
 
 		road.setPredecessor( TvRoadLinkType.ROAD, entry.road, entry.contact );
 

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { RoadGeometryService } from '../road/road-geometry.service';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { SplineFactory } from '../spline/spline.factory';
+import { ManeueverHelper } from '../spline/spline.factory';
 import { SplineType } from 'app/core/shapes/abstract-spline';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
@@ -52,9 +52,15 @@ export class ConnectionGeometryService {
 			const connectingLane = link.connectingLane;
 			const outgoingLane = nextRoad.laneSections[ 0 ].getLaneById( connectingLane.successorId );
 
-			const newSpline = SplineFactory.createManeuverSpline( prevCoord.toLaneCoord( incomingLane ), nextRoadCoord.toLaneCoord( outgoingLane ) );
+			const entry = prevCoord.toLaneCoord( incomingLane );
+			const exit = nextRoadCoord.toLaneCoord( outgoingLane );
 
-			connection.connectingRoad.spline.controlPoints = newSpline.controlPoints;
+			const newPositions = ManeueverHelper.getPositionsFromLaneCoord( entry, exit );
+			const currentPositions = connection.getSpline().getControlPoints();
+
+			for ( let i = 0; i < newPositions.length; i++ ) {
+				currentPositions[ i ].position.copy( newPositions[ i ] );
+			}
 
 		} );
 
@@ -77,29 +83,23 @@ export class ConnectionGeometryService {
 		}
 
 		const prevCoord = this.getPredecessorCoord( connection.connectingRoad );
-
 		const nextRoadCoord = this.getSuccessorCoord( connection.connectingRoad );
 
 		const incomingLane = link.incomingLane;
-
 		const connectingLane = link.connectingLane;
 
 		const outgoingLane = nextRoadCoord.road.laneSections[ 0 ].getLaneById( connectingLane.successorId );
 
 		const entry = prevCoord.toLaneCoord( incomingLane );
-
 		const exit = nextRoadCoord.toLaneCoord( outgoingLane );
 
-		const spline = SplineFactory.createManeuverSpline( entry, exit );
-
-		const newPoints = spline.getControlPoints();
-
+		const newPositions = ManeueverHelper.getPositionsFromLaneCoord( entry, exit );
 		const currentPoints = connection.getRoad().spline.getControlPoints();
 
 		// only update the first and last point
-		currentPoints[ 0 ].position.copy( newPoints[ 0 ].position );
+		currentPoints[ 0 ].position.copy( newPositions[ 0 ] );
 
-		currentPoints[ currentPoints.length - 1 ].position.copy( newPoints[ newPoints.length - 1 ].position );
+		currentPoints[ currentPoints.length - 1 ].position.copy( newPositions[ newPositions.length - 1 ] );
 
 	}
 

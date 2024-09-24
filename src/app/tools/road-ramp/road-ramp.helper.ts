@@ -225,7 +225,7 @@ export class RampToolHelper {
 		const d2 = d1.applyAxisAngle( new Vector3( 0, 0, 1 ), -Math.PI / 2 );
 		const p2 = p1.clone().add( d2.clone().multiplyScalar( start.distanceTo( p1 ) * 2 ) );
 
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, start ) );
 		// spline.controlPoints.push( ControlPointFactory.createControl( spline, p1 ) );

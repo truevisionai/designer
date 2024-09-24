@@ -20,6 +20,7 @@ import { ControlPointFactory } from "../../app/factories/control-point.factory";
 import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { DepConnectionFactory } from "../../app/map/junction/dep-connection.factory";
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
+import { SplineFactory } from 'app/services/spline/spline.factory';
 
 xdescribe( '4-way-junction tests', () => {
 
@@ -84,7 +85,7 @@ xdescribe( '4-way-junction tests', () => {
 			TvContactPoint.START
 		);
 
-		junctionService.addJunction( junction );
+		junctionService.fireCreatedEvent( junction );
 
 		expect( roadService.roads.length ).toBe( 4 );
 
@@ -121,7 +122,7 @@ xdescribe( '4-way-junction tests', () => {
 			TvContactPoint.START
 		);
 
-		junctionService.addJunction( junction );
+		junctionService.fireCreatedEvent( junction );
 
 		expect( roadService.roads.length ).toBe( 4 );
 
@@ -146,12 +147,12 @@ xdescribe( '4-way-junction tests', () => {
 	it( 'should create 4-way junction', () => {
 
 		// left to right
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, new Vector3( -50, 0, 0 ) ) );
 		spline.controlPoints.push( ControlPointFactory.createControl( spline, new Vector3( 50, 0, 0 ) ) );
 
 		// bottom to top
-		const spline2 = new AutoSpline();
+		const spline2 = SplineFactory.createSpline();
 		spline2.controlPoints.push( ControlPointFactory.createControl( spline2, new Vector3( 0, -50, 0 ) ) );
 		spline2.controlPoints.push( ControlPointFactory.createControl( spline2, new Vector3( 0, 50, 0 ) ) );
 
