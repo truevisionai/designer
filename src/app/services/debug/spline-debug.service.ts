@@ -294,7 +294,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showArrows ( spline: AbstractSpline ) {
 
-		for ( const road of this.splineService.getRoads( spline ) ) {
+		for ( const road of spline.getRoadSegments() ) {
 
 			for ( const point of road.getReferenceLinePoints( ARROW_STEP ) ) {
 

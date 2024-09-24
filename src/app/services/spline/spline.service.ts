@@ -12,16 +12,11 @@ import { SplineRemovedEvent } from 'app/events/spline/spline-removed-event';
 import { BaseDataService } from '../../core/interfaces/data.service';
 import { Vector3 } from 'three';
 import { Maths } from 'app/utils/maths';
-import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { TvPosTheta } from "../../map/models/tv-pos-theta";
 import { SplineControlPoint } from "../../objects/road/spline-control-point";
 import { RoadControlPoint } from "../../objects/road/road-control-point";
 import { RoadTangentPoint } from "../../objects/road/road-tangent-point";
-import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { RoadService } from '../road/road.service';
 import { SplinePositionService } from './spline-position.service';
 
 @Injectable( {
@@ -32,7 +27,6 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 	constructor (
 		public mapService: MapService,
 		public roadFactory: RoadFactory,
-		public roadService: RoadService,
 		private splinePositionService: SplinePositionService,
 	) {
 		super();
@@ -177,109 +171,16 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	getSuccessorSpline ( spline: AbstractSpline ): AbstractSpline {
-
-		return SplineUtils.getSuccessorSpline( spline );
-
-	}
-
-	getPredecessorSpline ( spline: AbstractSpline ): AbstractSpline {
-
-		return SplineUtils.getPredecessorSpline( spline );
-
-	}
-
-	findFirstRoad ( spline: AbstractSpline ) {
-
-		const roads = this.getRoads( spline );
-
-		return roads.length > 0 ? roads[ 0 ] : null;
-
-	}
-
-	findLastRoad ( spline: AbstractSpline ) {
-
-		const roads = this.getRoads( spline );
-
-		return roads.length > 0 ? roads[ roads.length - 1 ] : null;
-
-	}
-
-	getRoads ( spline: AbstractSpline ) {
-
-		const roads: TvRoad[] = [];
-
-		spline.segmentMap.forEach( segment => {
-
-			if ( segment instanceof TvRoad ) {
-
-				roads.push( segment );
-
-			}
-
-		} );
-
-		return roads;
-
-	}
-
-	getJunctions ( spline: AbstractSpline ) {
-
-		const junctions: TvJunction[] = [];
-
-		spline.segmentMap.forEach( segment => {
-
-			if ( segment instanceof TvJunction ) {
-
-				junctions.push( segment );
-
-			}
-
-		} );
-
-		return junctions;
-
-	}
-
-	getPoints ( spline: AbstractSpline, step: number ): Vector3[] {
-
-		return this.splinePositionService.getPoints( spline, step );
-
-	}
-
-	getPoint ( spline: AbstractSpline, t: number, offset = 0 ) {
-
-		return this.splinePositionService.getPoint( spline, t, offset );
-
-	}
-
-	getLength ( spline: AbstractSpline ): number {
-
-		return spline.getLength();
-
-	}
-
 	/**
 	 *
 	 * @param spline
+	 * @param step
 	 * @returns
-	 * @deprecated use SplineUtils.isConnectedToJunction
+	 * @deprecated
 	 */
-	isConnectionRoad ( spline: AbstractSpline ) {
+	getPoints ( spline: AbstractSpline, step: number ): Vector3[] {
 
-		return SplineUtils.isConnection( spline );
-
-	}
-
-	getCoordAt ( spline: AbstractSpline, point: Vector3 ): TvPosTheta {
-
-		return this.splinePositionService.getCoordAt( spline, point );
-
-	}
-
-	getCoordAtOffset ( spline: AbstractSpline, sOffset: number ): TvPosTheta {
-
-		return this.splinePositionService.getCoordAtOffset( spline, sOffset );
+		return this.splinePositionService.getPoints( spline, step );
 
 	}
 

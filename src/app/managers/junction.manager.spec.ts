@@ -16,6 +16,7 @@ import { SplineTestHelper } from "app/services/spline/spline-test-helper.service
 import { SplineManager } from "./spline-manager";
 import { disableMeshBuilding } from "app/map/builders/od-builder-config";
 import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
+import { SplinePositionService } from "app/services/spline/spline-position.service";
 
 describe( 'JunctionManager', () => {
 
@@ -25,6 +26,7 @@ describe( 'JunctionManager', () => {
 	let junctionManager: JunctionManager;
 	let splineManager: SplineManager;
 	let intersctionService: SplineIntersectionService;
+	let splinePositionService: SplinePositionService;
 
 	beforeEach( () => {
 
@@ -39,6 +41,7 @@ describe( 'JunctionManager', () => {
 		junctionManager = TestBed.inject( JunctionManager );
 		splineManager = TestBed.inject( SplineManager );
 		intersctionService = TestBed.inject( SplineIntersectionService );
+		splinePositionService = TestBed.inject( SplinePositionService );
 
 		disableMeshBuilding();
 
@@ -58,10 +61,10 @@ describe( 'JunctionManager', () => {
 
 		const coords: TvPosTheta[] = [];
 
-		const entryA = junctionManager.splineService.getCoordAtOffset( splineA, 90 );
-		const exitA = junctionManager.splineService.getCoordAtOffset( splineA, 110 );
-		const entryB = junctionManager.splineService.getCoordAtOffset( splineB, 90 );
-		const exitB = junctionManager.splineService.getCoordAtOffset( splineB, 110 );
+		const entryA = splinePositionService.getCoordAtOffset( splineA, 90 );
+		const exitA = splinePositionService.getCoordAtOffset( splineA, 110 );
+		const entryB = splinePositionService.getCoordAtOffset( splineB, 90 );
+		const exitB = splinePositionService.getCoordAtOffset( splineB, 110 );
 
 		coords.push( entryA );
 		coords.push( exitA );
@@ -220,7 +223,7 @@ describe( 'JunctionManager', () => {
 
 		splineManager.addSpline( spline, false );
 
-		const junctions = junctionManager.splineService.getJunctions( spline );
+		const junctions = spline.getJunctionSegments();
 		const intersections = intersctionService.findIntersections( spline );
 		const result = junctionManager.categorizeJunctions( junctions, intersections );
 
@@ -232,7 +235,7 @@ describe( 'JunctionManager', () => {
 
 		{
 			const horizontal = mapService.splines[ 0 ];
-			const junctions = junctionManager.splineService.getJunctions( horizontal );
+			const junctions = horizontal.getJunctionSegments();
 			const intersections = intersctionService.findIntersections( horizontal );
 			const result = junctionManager.categorizeJunctions( junctions, intersections );
 			expect( result.junctionsToCreate.length ).toBe( 0 );
@@ -254,7 +257,7 @@ describe( 'JunctionManager', () => {
 
 		const spline = mapService.splines[ 0 ];
 
-		const junctions = junctionManager.splineService.getJunctions( spline );
+		const junctions = spline.getJunctionSegments();
 		const intersections = intersctionService.findIntersections( spline );
 		const result = junctionManager.categorizeJunctions( junctions, intersections );
 

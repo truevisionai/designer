@@ -319,7 +319,7 @@ export class RoadLinkService {
 
 	updateSplineLinks ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
 
-		const roads = this.splineService.getRoads( spline );
+		const roads = spline.getRoadSegments();
 
 		if ( roads.length == 0 ) return;
 

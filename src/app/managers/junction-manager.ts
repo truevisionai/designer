@@ -37,6 +37,7 @@ import { ConnectionManager } from "../map/junction/connection.manager";
 import { JunctionBoundsService } from "../services/junction/junction-geometry.service";
 import { JunctionLinkService } from "app/services/junction/junction-link.service";
 import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
+import { SplinePositionService } from "app/services/spline/spline-position.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -68,6 +69,7 @@ export class JunctionManager {
 		public connectionManager: ConnectionManager,
 		public junctionLinkService: JunctionLinkService,
 		public intersectionService: SplineIntersectionService,
+		public splinePositionService: SplinePositionService,
 	) {
 	}
 
@@ -148,11 +150,11 @@ export class JunctionManager {
 
 		if ( this.debug ) Log.debug( 'DetectJunctions', spline.toString() );
 
-		if ( this.splineService.isConnectionRoad( spline ) ) return;
+		if ( spline.isConnectingRoad() ) return;
 
 		if ( spline.type == SplineType.EXPLICIT ) return;
 
-		const oldJunctions = this.splineService.getJunctions( spline );
+		const oldJunctions = spline.getJunctionSegments();
 
 		const intersections = this.intersectionService.findIntersections( spline );
 
@@ -305,7 +307,7 @@ export class JunctionManager {
 
 		if ( !previousSegment && !nextSegment ) return;
 
-		const roadCount = this.splineService.getRoads( spline ).length;
+		const roadCount = spline.getRoadSegments().length;
 
 		this.updateLinks( previousSegment, nextSegment, roadCount );
 
@@ -541,7 +543,7 @@ export class JunctionManager {
 
 	findNewIntersections ( spline: AbstractSpline ) {
 
-		const junctions = this.splineService.getJunctions( spline );
+		const junctions = spline.getJunctionSegments();
 
 		const intersections = this.intersectionService.findIntersections( spline );
 
@@ -712,7 +714,7 @@ export class JunctionManager {
 
 	createNewRoad ( spline: AbstractSpline, startOffset: number ) {
 
-		const firstRoad = this.splineService.findFirstRoad( spline );
+		const firstRoad = spline.getRoadSegments()[ 0 ];
 
 		const newRoad = this.roadService.clone( firstRoad, 0 );
 
@@ -1230,7 +1232,7 @@ export class JunctionManager {
 
 		const splines = group.getSplines();
 
-		splines.forEach( spline => this.splineService.getJunctions( spline ).forEach( junction => {
+		splines.forEach( spline => spline.getJunctionSegments().forEach( junction => {
 
 			const groupPosition = new Vector2( group.centroid.x, group.centroid.y )
 
@@ -1384,7 +1386,7 @@ export class JunctionManager {
 
 		const junctionCenter = group.getRepresentativePosition();
 
-		const junctionCoord = this.splineService.getCoordAt( spline, junctionCenter );
+		const junctionCoord = this.splinePositionService.getCoordAt( spline, junctionCenter );
 
 		const segment = spline.segmentMap.findAt( junctionCoord.s );
 
@@ -1400,7 +1402,7 @@ export class JunctionManager {
 
 		const isNearStart = () => sStart <= 0;
 
-		const isNearEnd = () => sEnd >= this.splineService.getLength( spline );
+		const isNearEnd = () => sEnd >= spline.getLength();
 
 		const differentRoads = startSegment && endSegment ? startSegment != endSegment : false;
 
@@ -1611,7 +1613,7 @@ export class JunctionManager {
 			return;
 		}
 
-		const splineLength = this.splineService.getLength( spline );
+		const splineLength = spline.getLength();
 
 		const hasPredecessor = startSegment.predecessor != null;
 
@@ -1686,7 +1688,7 @@ export class JunctionManager {
 
 	handleJunctionAtStart ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], junctionWidth: number ) {
 
-		const road = this.splineService.findFirstRoad( spline );
+		const road = spline.getRoadSegments()[ 0 ];
 
 		SplineUtils.removeSegment( spline, road );
 
