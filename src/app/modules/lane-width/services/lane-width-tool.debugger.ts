@@ -11,8 +11,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { LaneWidthNode } from 'app/modules/lane-width/objects/lane-width-node';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { DebugState } from 'app/services/debug/debug-state';
-import { RoadService } from 'app/services/road/road.service';
-import { ControlPointFactory } from "../../../factories/control-point.factory";
 import { Object3DArrayMap } from "../../../core/models/object3d-array-map";
 import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from "../../../services/debug/road-debug.service";
@@ -33,9 +31,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	constructor (
 		private roadDebugger: RoadDebugService,
-		private roadService: RoadService,
 		private debugService: DebugDrawService,
-		private pointFactory: ControlPointFactory,
 	) {
 		super();
 	}
