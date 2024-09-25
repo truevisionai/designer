@@ -33,6 +33,11 @@ export const EXPLICIT_CIRCLE_XODR = 'assets/open-drive/explicit-circle.xodr';
 
 export const TOWN_01 = 'assets/open-drive/town-01.xodr';
 export const TOWN_02 = 'assets/open-drive/town-02.xodr';
+export const TOWN_03 = 'assets/open-drive/town-03.xodr';
+export const TOWN_04 = 'assets/open-drive/town-04.xodr';
+export const TOWN_05 = 'assets/open-drive/town-05.xodr';
+export const TOWN_06 = 'assets/open-drive/town-06.xodr';
+export const TOWN_07 = 'assets/open-drive/town-07.xodr';
 
 export const FRENCH_SMALL_XODR = 'assets/stubs/french-small.xodr';
 export const OSM2_XODR = 'assets/stubs/osm-2-xodr-small.xodr';
