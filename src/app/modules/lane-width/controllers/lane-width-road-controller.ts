@@ -5,9 +5,7 @@
 import { Injectable } from "@angular/core";
 import { RoadController } from "app/core/controllers/road-handler";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthRoadController extends RoadController {
 
 	constructor () {

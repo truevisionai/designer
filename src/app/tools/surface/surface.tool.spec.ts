@@ -22,6 +22,7 @@ import { TextureAsset, TvTexture } from "app/assets/texture/tv-texture.model";
 import { SurfacePointCreationStrategy } from "./services/surface-creation-strategy";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { SelectionService } from "../selection.service";
+import { setupTest } from "tests/setup-tests";
 
 describe( 'SurfaceTool', () => {
 
@@ -30,11 +31,7 @@ describe( 'SurfaceTool', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
-
-		TestBed.inject( EventServiceProvider ).init();
+		setupTest();
 
 		testHelper = TestBed.inject( SplineTestHelper );
 

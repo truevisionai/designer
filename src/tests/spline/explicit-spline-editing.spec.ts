@@ -16,6 +16,7 @@ import { BaseTool } from "app/tools/base-tool";
 import { ToolType } from "app/tools/tool-types.enum";
 import { breakGeometries } from "app/utils/spline.utils";
 import { ToolBarService } from "app/views/editor/tool-bar/tool-bar.service";
+import { setupTest } from "tests/setup-tests";
 import { Vector3 } from "three";
 
 
@@ -28,10 +29,7 @@ describe( 'ExplicitSplineEditing test', () => {
 
 	beforeEach( async () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ RoadService ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		helper = TestBed.inject( SplineTestHelper );
 

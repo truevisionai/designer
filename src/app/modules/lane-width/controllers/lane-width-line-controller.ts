@@ -4,13 +4,11 @@
 
 import { Injectable } from "@angular/core";
 import { LineController } from "../../../core/controllers/line-controller";
-import { LaneWidthService } from "../lane-width.service";
+import { LaneWidthService } from "../services/lane-width.service";
 import { LaneWidthLine } from "../objects/lane-width-line";
-import { LaneWidthInspector } from "../lane-width-node-inspector";
+import { LaneWidthInspector } from "../services/lane-width-node-inspector";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthLineController extends LineController<LaneWidthLine> {
 
 	constructor ( private laneWidthService: LaneWidthService ) {

@@ -5,11 +5,9 @@
 import { Injectable } from "@angular/core";
 import { LaneWidthNode } from "../objects/lane-width-node";
 import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
-import { LaneWidthToolDebugger } from "../lane-width-tool.debugger";
+import { LaneWidthToolDebugger } from "../services/lane-width-tool.debugger";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthNodeVisualizer extends EmptyVisualizer<LaneWidthNode> {
 
 	constructor (

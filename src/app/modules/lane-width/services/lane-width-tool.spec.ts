@@ -9,15 +9,16 @@ import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { ToolManager } from "app/managers/tool-manager";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { ToolBarService } from "app/views/editor/tool-bar/tool-bar.service";
-import { BaseTool } from "../base-tool";
-import { ToolType } from "../tool-types.enum";
+import { BaseTool } from "../../../tools/base-tool";
+import { ToolType } from "../../../tools/tool-types.enum";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvLane } from "app/map/models/tv-lane";
-import { LaneWidthLine } from "app/tools/lane-width/objects/lane-width-line";
-import { LaneWidthPoint } from "app/tools/lane-width/objects/lane-width-point";
+import { LaneWidthLine } from "app/modules/lane-width/objects/lane-width-line";
+import { LaneWidthPoint } from "app/modules/lane-width/objects/lane-width-point";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { Vector3 } from "three";
-import { LaneWidthNode } from "./objects/lane-width-node";
+import { LaneWidthNode } from "../objects/lane-width-node";
+import { setupLaneWidthTest, setupTest } from "tests/setup-tests";
 
 describe( 'LaneWidthTool: Handlers', () => {
 
@@ -29,11 +30,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
-
-		TestBed.inject( EventServiceProvider ).init();
+		setupLaneWidthTest();
 
 		ToolManager.clear();
 

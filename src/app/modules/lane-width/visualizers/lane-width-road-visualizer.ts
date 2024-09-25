@@ -4,13 +4,11 @@
 
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../../../map/models/tv-road.model";
-import { LaneWidthToolDebugger } from "../lane-width-tool.debugger";
+import { LaneWidthToolDebugger } from "../services/lane-width-tool.debugger";
 import { RoadVisualizer } from "../../../core/visualizers/road-visualizer";
 import { BaseVisualizer } from "app/core/visualizers/base-visualizer";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthRoadVisualizer extends BaseVisualizer<TvRoad> {
 
 	constructor (

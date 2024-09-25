@@ -2,35 +2,37 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvLane } from '../../map/models/tv-lane';
-import { ToolType } from '../tool-types.enum';
+import { TvLane } from '../../../map/models/tv-lane';
+import { ToolType } from '../../../tools/tool-types.enum';
 import { LaneWidthToolService } from './lane-width-tool.service';
 import { LaneWidthPointSelectionStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
-import { TvRoad } from "../../map/models/tv-road.model";
+import { TvRoad } from "../../../map/models/tv-road.model";
 import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
-import { ToolWithHandler } from '../base-tool-v2';
+import { ToolWithHandler } from '../../../tools/base-tool-v2';
 import { SelectLaneOverlayStrategy } from 'app/core/strategies/select-strategies/object-user-data-strategy';
 import { LaneWidthInspector } from './lane-width-node-inspector';
 import { LaneWidthLineSelectionStrategy } from 'app/core/strategies/select-strategies/object-name-strategy';
-import { LaneWidthLineController } from "./controllers/lane-width-line-controller";
-import { LaneWidthLineVisualizer } from "./visualizers/lane-width-line-visualizer";
-import { LaneWidthPointController } from "./controllers/lane-width-point-controller";
-import { LaneWidthPointVisualizer } from "./visualizers/lane-width-point-visualizer";
-import { LaneWidthLine } from "./objects/lane-width-line";
-import { LaneWidthPoint } from "./objects/lane-width-point";
-import { LaneWidthLaneController } from './controllers/lane-width-lane-controller';
-import { LaneWidthRoadController } from './controllers/lane-width-road-controller';
+import { LaneWidthLineController } from "../controllers/lane-width-line-controller";
+import { LaneWidthLineVisualizer } from "../visualizers/lane-width-line-visualizer";
+import { LaneWidthPointController } from "../controllers/lane-width-point-controller";
+import { LaneWidthPointVisualizer } from "../visualizers/lane-width-point-visualizer";
+import { LaneWidthLine } from "../objects/lane-width-line";
+import { LaneWidthPoint } from "../objects/lane-width-point";
+import { LaneWidthLaneController } from '../controllers/lane-width-lane-controller';
+import { LaneWidthRoadController } from '../controllers/lane-width-road-controller';
 import { laneWidthToolHints } from './lane-width-tool-hints';
-import { LaneWidthRoadVisualizer } from "./visualizers/lane-width-road-visualizer";
-import { LaneWidthPointDragHandler } from './controllers/lane-width-point-drag-handler';
-import { LaneWidthLineDragHandler } from './controllers/lane-width-line-drag-handler';
+import { LaneWidthRoadVisualizer } from "../visualizers/lane-width-road-visualizer";
+import { LaneWidthPointDragHandler } from '../controllers/lane-width-point-drag-handler';
+import { LaneWidthLineDragHandler } from '../controllers/lane-width-line-drag-handler';
 import { LaneWidthCreationStrategy } from './lane-width-creation-strategy';
-import { LaneWidthNode } from './objects/lane-width-node';
-import { LaneWidthNodeController } from './controllers/lane-width-node-controller';
-import { LaneWidthNodeVisualizer } from './visualizers/lane-width-node-visualizer';
+import { LaneWidthNode } from '../objects/lane-width-node';
+import { LaneWidthNodeController } from '../controllers/lane-width-node-controller';
+import { LaneWidthNodeVisualizer } from '../visualizers/lane-width-node-visualizer';
 import { EmptyVisualizer } from 'app/core/visualizers/empty-visualizer';
 import { EmptyController } from 'app/core/controllers/empty-controller';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class LaneWidthTool extends ToolWithHandler {
 
 	public name: string = 'LaneWidth';

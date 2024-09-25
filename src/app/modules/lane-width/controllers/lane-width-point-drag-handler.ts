@@ -9,13 +9,11 @@ import { PointerEventData } from "app/events/pointer-event-data";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { LanePositionService } from "app/services/lane/lane-position.service";
 import { Vector3 } from "three";
-import { LaneWidthService } from "../lane-width.service";
+import { LaneWidthService } from "../services/lane-width.service";
 import { LaneWidthPoint } from "../objects/lane-width-point";
 
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthPointDragHandler extends PointDragHandler<LaneWidthPoint> {
 
 	private originalWidth: number;

@@ -21,6 +21,7 @@ import { TvMapQueries } from "app/map/queries/tv-map-queries";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { AppInspector } from "app/core/inspector";
+import { setupTest } from "tests/setup-tests";
 
 describe( 'PointMarkingTool', () => {
 
@@ -30,9 +31,7 @@ describe( 'PointMarkingTool', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
 		TestBed.inject( EventServiceProvider ).init();
 

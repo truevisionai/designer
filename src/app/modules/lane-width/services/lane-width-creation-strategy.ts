@@ -2,19 +2,22 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CreationStrategy, ValidationFailed, ValidationPassed, ValidationResult } from "../../core/interfaces/creation-strategy";
+import {
+	CreationStrategy,
+	ValidationFailed,
+	ValidationPassed,
+	ValidationResult
+} from "../../../core/interfaces/creation-strategy";
 import { Injectable } from "@angular/core";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { LaneWidthNode } from "./objects/lane-width-node";
+import { LaneWidthNode } from "../objects/lane-width-node";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { SelectionService } from "../selection.service";
+import { SelectionService } from "../../../tools/selection.service";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { TvLaneWidth } from "app/map/models/tv-lane-width";
 import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthCreationStrategy extends BaseCreationStrategy<LaneWidthNode> {
 
 	constructor (

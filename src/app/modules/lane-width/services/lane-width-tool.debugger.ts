@@ -8,21 +8,19 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { LaneWidthNode } from 'app/tools/lane-width/objects/lane-width-node';
+import { LaneWidthNode } from 'app/modules/lane-width/objects/lane-width-node';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { DebugState } from 'app/services/debug/debug-state';
 import { RoadService } from 'app/services/road/road.service';
-import { ControlPointFactory } from "../../factories/control-point.factory";
-import { Object3DArrayMap } from "../../core/models/object3d-array-map";
+import { ControlPointFactory } from "../../../factories/control-point.factory";
+import { Object3DArrayMap } from "../../../core/models/object3d-array-map";
 import { DebugLine } from 'app/objects/debug-line';
-import { RoadDebugService } from "../../services/debug/road-debug.service";
+import { RoadDebugService } from "../../../services/debug/road-debug.service";
 import { Object3D } from 'three';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	private items = new Object3DArrayMap<TvRoad, Object3D[]>();

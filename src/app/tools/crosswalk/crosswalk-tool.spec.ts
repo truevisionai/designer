@@ -21,6 +21,7 @@ import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
 import { CommandHistory } from 'app/commands/command-history';
 import { CornerControlPoint } from "./objects/corner-control-point";
+import { setupTest } from 'tests/setup-tests';
 
 describe( 'CrosswalkTool', () => {
 
@@ -34,9 +35,7 @@ describe( 'CrosswalkTool', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
 		TestBed.inject( EventServiceProvider ).init();
 

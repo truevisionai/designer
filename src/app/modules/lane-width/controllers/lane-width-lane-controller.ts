@@ -6,7 +6,6 @@ import { Injectable } from "@angular/core";
 import { EmptyController } from "app/core/controllers/empty-controller";
 import { TvLane } from "app/map/models/tv-lane";
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class LaneWidthLaneController extends EmptyController<TvLane> {}
+@Injectable()
+export class LaneWidthLaneController extends EmptyController<TvLane> {
+}

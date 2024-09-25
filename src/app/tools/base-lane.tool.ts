@@ -7,7 +7,6 @@ import { TvLane } from "app/map/models/tv-lane";
 import { SelectionService } from "./selection.service";
 import { LinkedDataService } from "app/core/interfaces/data.service";
 import { Tool } from "./tool";
-import { ViewportEventSubscriber } from "./viewport-event-subscriber";
 import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
 import { Asset } from "app/assets/asset.model";
 import { Vector3 } from "three";
@@ -25,7 +24,7 @@ import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { LanePointNode } from "../objects/lane-node";
 import { Commands } from "app/commands/commands";
 
-export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportEventSubscriber implements Tool {
+export abstract class BaseLaneTool<T extends HasDistanceValue> implements Tool {
 
 	name: string;
 
@@ -44,6 +43,10 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 	public debugDrawService: DebugDrawService;
 
 	protected nodeChanged: boolean;
+
+	public pointerDownAt: Vector3;
+
+	public isPointerDown: boolean;
 
 	protected get selectedNode (): LanePointNode<T> {
 
@@ -79,15 +82,11 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	enable (): void {
 
-		this.subscribeToEvents();
-
 		this.debugger.enable();
 
 	}
 
 	disable (): void {
-
-		this.unsubscribeToEvents();
 
 		this.debugger.clear();
 
@@ -263,7 +262,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 
 	}
 
-	onAssetDragOverEvent(asset: Asset, event: PointerEventData): void {
+	onAssetDragOverEvent ( asset: Asset, event: PointerEventData ): void {
 
 		this.setHint( 'Asset drag over is not supported' );
 
@@ -350,6 +349,12 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> extends ViewportE
 	}
 
 	protected onShowInspector ( object: LanePointNode<T> ): void {
+
+	}
+
+	onKeyDown ( e: KeyboardEvent ): void {
+
+		// throw new Error("Method not implemented.");
 
 	}
 

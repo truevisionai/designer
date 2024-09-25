@@ -3,23 +3,18 @@
  */
 
 import { Injectable } from '@angular/core';
+import { MapEvents } from 'app/events/map-events';
 import { ValidationException } from 'app/exceptions/exceptions';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvUtils } from 'app/map/models/tv-utils';
-import { LaneService } from 'app/services/lane/lane.service';
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthService {
 
-	constructor (
-		private laneService: LaneService
-	) {
-	}
+	constructor () { }
 
 	addLaneWidth ( laneSection: TvLaneSection, lane: TvLane, laneWidth: TvLaneWidth ): void {
 
@@ -27,7 +22,7 @@ export class LaneWidthService {
 
 		this.updateCoefficients( lane );
 
-		this.laneService.updateLane( lane );
+		MapEvents.laneUpdated.emit( lane );
 	}
 
 	removeLaneWidth ( laneSection: TvLaneSection, lane: TvLane, laneWidth: TvLaneWidth ): void {
@@ -36,14 +31,14 @@ export class LaneWidthService {
 
 		this.updateCoefficients( lane );
 
-		this.laneService.updateLane( lane );
+		MapEvents.laneUpdated.emit( lane );
 	}
 
 	updateLaneWidth ( laneSection: TvLaneSection, lane: TvLane, laneWidth: TvLaneWidth ): void {
 
 		this.updateCoefficients( lane );
 
-		this.laneService.updateLane( lane );
+		MapEvents.laneUpdated.emit( lane );
 
 	}
 

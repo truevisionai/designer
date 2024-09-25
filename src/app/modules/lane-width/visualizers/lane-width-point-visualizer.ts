@@ -4,14 +4,12 @@
 
 import { Injectable } from "@angular/core";
 import { NodeVisualizer } from "../../../core/visualizers/node-visualizer";
-import { LaneWidthLine } from "../objects/lane-width-line";
+import { LaneWidthPoint } from "../objects/lane-width-point";
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class LaneWidthLineVisualizer extends NodeVisualizer<LaneWidthLine> {
+@Injectable()
+export class LaneWidthPointVisualizer extends NodeVisualizer<LaneWidthPoint> {
 
-	onAdded ( object: LaneWidthLine ): void {
+	onAdded ( object: LaneWidthPoint ): void {
 
 		super.onAdded( object );
 
@@ -19,7 +17,7 @@ export class LaneWidthLineVisualizer extends NodeVisualizer<LaneWidthLine> {
 
 	}
 
-	onUpdated ( object: LaneWidthLine ): void {
+	onUpdated ( object: LaneWidthPoint ): void {
 
 		super.onUpdated( object );
 
@@ -27,7 +25,7 @@ export class LaneWidthLineVisualizer extends NodeVisualizer<LaneWidthLine> {
 
 	}
 
-	onRemoved ( object: LaneWidthLine ): void {
+	onRemoved ( object: LaneWidthPoint ): void {
 
 		super.onRemoved( object );
 

@@ -2,10 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { SerializedAction, SerializedField } from "../../core/components/serialization";
+import { SerializedAction, SerializedField } from "../../../core/components/serialization";
 import { Commands } from "app/commands/commands";
-import { LaneWidthPoint } from "./objects/lane-width-point";
-import { LaneWidthLine } from "app/tools/lane-width/objects/lane-width-line";
+import { LaneWidthPoint } from "../objects/lane-width-point";
+import { LaneWidthLine } from "app/modules/lane-width/objects/lane-width-line";
 
 export class LaneWidthInspector {
 

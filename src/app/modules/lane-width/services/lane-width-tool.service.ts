@@ -3,20 +3,18 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BaseToolService } from '../base-tool.service';
-import { LaneWidthNode } from 'app/tools/lane-width/objects/lane-width-node';
+import { BaseToolService } from '../../../tools/base-tool.service';
+import { LaneWidthNode } from 'app/modules/lane-width/objects/lane-width-node';
 import { Vector3 } from 'three';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { SnackBar } from 'app/services/snack-bar.service';
 import { LaneWidthToolDebugger } from './lane-width-tool.debugger';
-import { RoadService } from "../../services/road/road.service";
+import { RoadService } from "../../../services/road/road.service";
 import { LaneWidthService } from "./lane-width.service";
-import { DebugState } from "../../services/debug/debug-state";
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
+import { DebugState } from "../../../services/debug/debug-state";
+import { RoadGeometryService } from "../../../services/road/road-geometry.service";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthToolService {
 
 	constructor (

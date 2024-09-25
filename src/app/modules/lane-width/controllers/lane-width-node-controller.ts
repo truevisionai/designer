@@ -5,12 +5,10 @@
 import { Injectable } from '@angular/core';
 import { BaseController } from 'app/core/controllers/base-controller';
 import { LaneWidthNode } from '../objects/lane-width-node';
-import { LaneWidthService } from '../lane-width.service';
-import { LaneWidthInspector } from '../lane-width-node-inspector';
+import { LaneWidthService } from '../services/lane-width.service';
+import { LaneWidthInspector } from '../services/lane-width-node-inspector';
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneWidthNodeController extends BaseController<LaneWidthNode> {
 
 	constructor ( private laneWidthService: LaneWidthService ) {
