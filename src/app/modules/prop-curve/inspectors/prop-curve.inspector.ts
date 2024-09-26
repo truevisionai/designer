@@ -51,9 +51,19 @@ export class PropCurveInspector {
 		this.curve.reverse = value;
 	}
 
-	@SerializedAction( { label: 'Delete Curve' } )
-	delete () {
+	@SerializedAction( {
+		label: 'Delete Curve',
+	} )
+	deleteCurve () {
 		Commands.RemoveObject( this.curve );
+	}
+
+	@SerializedAction( {
+		label: 'Delete Point',
+		validate: function () { return this.point; },
+	} )
+	deletePoint () {
+		Commands.RemoveObject( this.point );
 	}
 
 }

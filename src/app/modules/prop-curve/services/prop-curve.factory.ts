@@ -3,15 +3,13 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AbstractFactory } from "../../core/interfaces/abstract-factory";
-import { PropCurve } from "./prop-curve.model";
-import { Asset, AssetType } from "../../assets/asset.model";
+import { AbstractFactory } from "../../../core/interfaces/abstract-factory";
+import { PropCurve } from "../../../map/prop-curve/prop-curve.model";
+import { Asset, AssetType } from "../../../assets/asset.model";
 import { Vector3 } from "three";
-import { PropManager } from "../../managers/prop-manager";
+import { PropManager } from "../../../managers/prop-manager";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class PropCurveFactory extends AbstractFactory<PropCurve> {
 
 	createFromAsset ( asset: Asset, position: Vector3 ): PropCurve {

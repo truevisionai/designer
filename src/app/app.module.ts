@@ -34,6 +34,7 @@ import { LoadingModule } from './views/editor/loading/loading.module';
 import { SentryService } from './core/analytics/sentry.service';
 import { SnackBar } from './services/snack-bar.service';
 import { LaneWidthModule } from './modules/lane-width/lane-width.module';
+import { PropCurveModule } from './modules/prop-curve/prop-curve.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {
@@ -65,6 +66,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		LoadingModule,
 
 		LaneWidthModule,
+		PropCurveModule,
 
 		TranslateModule.forRoot( {
 			loader: {

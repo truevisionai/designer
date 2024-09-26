@@ -5,12 +5,10 @@
 import { Injectable } from "@angular/core";
 import { BaseDebugger } from "app/core/interfaces/base-debugger";
 import { DebugState } from "app/services/debug/debug-state";
-import { AbstractSplineDebugService } from "../../services/debug/abstract-spline-debug.service";
-import { PropCurve } from "../../map/prop-curve/prop-curve.model";
+import { AbstractSplineDebugService } from "../../../services/debug/abstract-spline-debug.service";
+import { PropCurve } from "../../../map/prop-curve/prop-curve.model";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class PropCurveToolDebugger extends BaseDebugger<PropCurve> {
 
 	constructor ( private debug: AbstractSplineDebugService ) {

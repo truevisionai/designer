@@ -87,6 +87,17 @@ export abstract class AbstractSpline {
 		this.controlPoints.push( point );
 	}
 
+	insertControlPoint ( index: number, point: AbstractControlPoint ): void {
+		this.controlPoints.splice( index, 0, point );
+	}
+
+	removeControlPoint ( point: AbstractControlPoint ): void {
+		const index = this.controlPoints.indexOf( point );
+		if ( index !== -1 ) {
+			this.controlPoints.splice( index, 1 );
+		}
+	}
+
 	addControlPoints ( points: AbstractControlPoint[] ): void {
 		this.controlPoints.push( ...points );
 	}

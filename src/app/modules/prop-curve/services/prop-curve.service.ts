@@ -5,12 +5,10 @@
 import { Injectable } from '@angular/core';
 import { MapService } from 'app/services/map/map.service';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
-import { PropCurveBuilder } from './prop-curve.builder';
+import { PropCurveBuilder } from '../../../map/builders/prop-curve.builder';
 import { BaseDataService } from 'app/core/interfaces/data.service';
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class PropCurveService extends BaseDataService<PropCurve> {
 
 	constructor (

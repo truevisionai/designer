@@ -14,7 +14,6 @@ import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { SurfaceBuilder } from 'app/map/surface/surface.builder';
 import { SceneService } from './scene.service';
 import { PropPolygonService } from "../map/prop-polygon/prop-polygon.service";
-import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { RoadBuilder } from 'app/map/builders/road.builder';
 import { SplineBuilder } from './spline/spline.builder';
 import { RoadFactory } from 'app/factories/road-factory.service';
@@ -24,15 +23,13 @@ import { RoadService } from "./road/road.service";
 import { JunctionBuilder } from './junction/junction.builder';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionManager } from 'app/managers/junction-manager';
-import { TvJunctionBoundaryFactory } from "../map/junction-boundary/tv-junction-boundary.factory";
 import { ConnectionFactory } from 'app/factories/connection.factory';
-import { SplineUtils } from "../utils/spline.utils";
 import { LinkUtils } from 'app/utils/link.utils';
 import { Log } from 'app/core/utils/log';
-import { Maths } from 'app/utils/maths';
 import { Surface } from 'app/map/surface/surface.model';
 import { JunctionBoundsService } from './junction/junction-geometry.service';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
+import { PropCurveBuilder } from 'app/map/builders/prop-curve.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -45,7 +42,6 @@ export class SceneBuilderService {
 		private surfaceBuilder: SurfaceBuilder,
 		private roadObjectService: RoadObjectService,
 		private roadSignalService: RoadSignalService,
-		private propCurveService: PropCurveService,
 		private propPolygonService: PropPolygonService,
 		private roadFactory: RoadFactory,
 		private signalIdService: RoadSignalIdService,
@@ -55,7 +51,8 @@ export class SceneBuilderService {
 		private junctionManager: JunctionManager,
 		private connectionFactory: ConnectionFactory,
 		private junctionBoundaryService: TvJunctionBoundaryService,
-		private junctionBoundsService: JunctionBoundsService
+		private junctionBoundsService: JunctionBoundsService,
+		private propCurverBuilder: PropCurveBuilder,
 	) {
 	}
 
@@ -232,9 +229,11 @@ export class SceneBuilderService {
 
 	}
 
-	buildPropCurve ( map: TvMap, propCurve: PropCurve ): void {
+	buildPropCurve ( map: TvMap, curve: PropCurve ): void {
 
-		this.propCurveService.update( propCurve );
+		if ( curve.getSpline().getControlPointCount() < 2 ) return;
+
+		map.propCurvesGroup.add( curve, this.propCurverBuilder.build( curve ) );
 
 	}
 

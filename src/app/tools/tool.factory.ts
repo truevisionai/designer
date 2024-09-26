@@ -7,17 +7,14 @@ import { ToolType } from "./tool-types.enum";
 import { DebugServiceProvider } from "../core/providers/debug-service.provider";
 import { RoadToolHelper } from "./road/road-tool-helper.service";
 import { SurfaceToolService } from "./surface/surface-tool.service";
-import { PropPointService } from "../map/prop-point/prop-point.service";
 import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
 import { RoadElevationToolService } from "./road-elevation/road-elevation-tool.service";
 import { ManeuverToolHelper } from "./maneuver/maneuver-tool-helper.service";
-import { LaneWidthToolService } from "../modules/lane-width/services/lane-width-tool.service";
 import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service";
 import { LaneToolHelper } from "./lane/lane-tool.helper";
 import { CrosswalkToolHelper } from "./crosswalk/crosswalk-tool.helper";
 import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.service";
 import { JunctionToolHelper } from "./junction/junction-tool.helper";
-import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { RampToolHelper } from "./road-ramp/road-ramp.helper";
 import { ParkingRoadToolService } from "./parking/parking-road-tool.service";
 import { TextMarkingToolService } from "./text-marking/text-marking-tool.service";
@@ -31,9 +28,7 @@ import { RoadTool } from "./road/road-tool";
 import { RoadCircleTool } from "./road-circle/road-circle-tool";
 import { ManeuverTool } from "./maneuver/maneuver-tool";
 import { JunctionTool } from "./junction/junction.tool";
-import { LaneWidthTool } from "../modules/lane-width/services/lane-width-tool";
 import { PropPointTool } from "./prop-point/prop-point-tool";
-import { PropCurveTool, PropCurveToolService } from "./prop-curve/prop-curve-tool";
 import { PropPolygonTool } from "./prop-polygon/prop-polygon.tool";
 import { PropSpanTool } from "./prop-span/prop-span-tool";
 import { PolePropTool } from "./prop-pole/pole-prop.tool";
@@ -55,7 +50,6 @@ import { ParkingLotTool } from "./parking/parking-lot.tool";
 import { DepPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
 import { SelectionService } from "./selection.service";
 import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
-import { Surface } from 'app/map/surface/surface.model';
 import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
 import { ControlPointFactory } from "../factories/control-point.factory";
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
@@ -66,16 +60,11 @@ import { LaneHeightTool } from './lane-height/lane-height.tool';
 import { BaseLaneTool } from "./base-lane.tool";
 import { DepSelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { TvLane } from 'app/map/models/tv-lane';
-import { LaneHeightService } from 'app/map/lane-height/lane-height.service';
 import { DebugLine } from 'app/objects/debug-line';
 import { DepSelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { MidLaneMovingStrategy, } from "../core/strategies/move-strategies/end-lane.moving.strategy";
-import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies/follow-heading-moving-strategy';
 import { LanePointNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
-import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { SplineControlPoint } from 'app/objects/road/spline-control-point';
-import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { TrafficLightTool } from './traffic-light/traffic-light.tool';
 import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';
 import { EntityService } from "../scenario/entity/entity.service";
@@ -201,9 +190,6 @@ export class ToolFactory {
 			case ToolType.PropPoint:
 				tool = new PropPointTool();
 				break;
-			case ToolType.PropCurve:
-				tool = new PropCurveTool( this.injector.get( PropCurveToolService ) );
-				break;
 			case ToolType.PropPolygon:
 				tool = new PropPolygonTool();
 				break;
@@ -281,12 +267,6 @@ export class ToolFactory {
 			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
 			this.selectionService.registerStrategy( PropPolygon, new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' ) );
 			tool.setTypeName( PropPolygon.name );
-		}
-
-		if ( type == ToolType.PropCurve ) {
-			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
-			this.selectionService.registerStrategy( PropCurve, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
-			tool.setTypeName( PropCurve.name );
 		}
 
 		if ( type == ToolType.PropPoint ) {
