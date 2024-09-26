@@ -5,7 +5,7 @@
 import { PointerEventData } from "app/events/pointer-event-data";
 import { Intersection, Object3D } from "three";
 import { NewSelectionStrategy } from "./select-strategy";
-import { LaneWidthLine } from "../../../tools/lane-width/objects/lane-width-line";
+import { LaneWidthLine } from "../../../modules/lane-width/objects/lane-width-line";
 
 export class ObjectNameStrategy<T extends Object3D> extends NewSelectionStrategy<T> {
 

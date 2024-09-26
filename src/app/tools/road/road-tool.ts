@@ -112,8 +112,6 @@ export class RoadTool extends ToolWithHandler {
 
 	enable (): void {
 
-		this.subscribeToEvents();
-
 		// HACK: temp fix to prevent too many splines from being highlighted
 		if ( this.tool.splineService.nonJunctionSplines.length > 100 ) {
 			return;

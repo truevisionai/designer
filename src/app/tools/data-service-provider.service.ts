@@ -4,8 +4,6 @@
 
 import { Injectable, Injector } from "@angular/core";
 import { SplineService } from "../services/spline/spline.service";
-import { PropCurveService } from "../map/prop-curve/prop-curve.service";
-import { SurfaceService } from "../map/surface/surface.service";
 import { PropPolygonService } from "../map/prop-polygon/prop-polygon.service";
 import { ToolType } from "./tool-types.enum";
 import { BaseDataService, LinkedDataService } from "../core/interfaces/data.service";
@@ -23,12 +21,9 @@ export class DataServiceProvider {
 	constructor (
 		private injector: Injector,
 		private splineService: SplineService,
-		private propCurveService: PropCurveService,
-		private surfaceService: SurfaceService,
 		private propPolygonService: PropPolygonService,
 		private propPointService: PropPointService,
 		private laneService: LaneService,
-		private laneHeightService: LaneHeightService,
 		private junctionService: JunctionService
 	) {
 	}
@@ -45,9 +40,6 @@ export class DataServiceProvider {
 
 			case ToolType.PropPoint:
 				return this.propPointService;
-
-			case ToolType.PropCurve:
-				return this.propCurveService;
 
 			case ToolType.PropPolygon:
 				return this.propPolygonService;

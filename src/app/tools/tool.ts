@@ -5,11 +5,19 @@
 import { ToolType } from "./tool-types.enum";
 import { PointerEventData } from "../events/pointer-event-data";
 import { Asset } from "../assets/asset.model";
+import { InjectionToken } from '@angular/core';
 import { Vector3 } from "three";
+
+export const TOOL_PROVIDERS = new InjectionToken<Tool[]>( 'TOOL_PROVIDERS' );
+
 
 export interface Tool {
 
 	name: string;
+
+	pointerDownAt: Vector3;
+
+	isPointerDown: boolean;
 
 	toolType: ToolType;
 

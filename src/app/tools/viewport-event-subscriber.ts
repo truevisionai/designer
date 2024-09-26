@@ -2,169 +2,81 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BaseEventData, MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { Subscription } from 'rxjs';
-import { Vector3 } from 'three';
-import { AppService } from '../services/app.service';
-import { KeyboardEvents } from 'app/events/keyboard-events';
+import { ViewportEvents } from 'app/events/viewport-events';
+import { Injectable } from '@angular/core';
+import { ToolManager } from 'app/managers/tool-manager';
+import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 
-export abstract class ViewportEventSubscriber {
+@Injectable( {
+	providedIn: 'root'
+} )
+export class ViewportEventSubscriber {
 
 	private subscribed: boolean = false;
 
-	private pointerClickedSubscriber: Subscription;
-	private pointerMovedSubscriber: Subscription;
-	private pointerEnterSubscriber: Subscription;
-	private pointerExitSubscriber: Subscription;
-	private pointerUpSubscriber: Subscription;
-	private pointerDownSubscriber: Subscription;
-	private pointerLeaveSubscriber: Subscription;
-	private pointerOutSubscriber: Subscription;
-	private beginDragSubscriber: Subscription;
-	private endDragSubscriber: Subscription;
-	private dragSubscriber: Subscription;
-	private dropSubscriber: Subscription;
-	private keyboardSubscriber: Subscription;
-
-	protected pointerDownAt: Vector3;
-	protected isPointerDown: boolean;
-
-	constructor () {
+	constructor ( private viewportEvents: ViewportEvents ) {
 
 		this.subscribeToEvents();
 
 	}
 
-	subscribeToEvents () {
+	subscribeToEvents (): void {
 
 		if ( this.subscribed ) return;
 
-		if ( !AppService.eventSystem ) return;
+		this.viewportEvents.pointerMoved.subscribe( e => this.onPointerMoved( e ) );
 
-		this.pointerClickedSubscriber = AppService.eventSystem.pointerClicked.subscribe( e => {
+		this.viewportEvents.pointerUp.subscribe( e => this.onPointerUp( e ) );
 
-			if ( e.button !== MouseButton.LEFT ) return;
+		this.viewportEvents.pointerDown.subscribe( e => this.onPointerDown( e ) );
 
-			if ( e.point == null ) return;
-
-			this.onPointerClicked( e );
-
-		} );
-
-		this.pointerMovedSubscriber = AppService.eventSystem.pointerMoved.subscribe( e => {
-
-			if ( e.button !== MouseButton.LEFT ) return;
-
-			if ( e.point == null ) return;
-
-			this.onPointerMoved( e );
-
-		} );
-
-		this.pointerEnterSubscriber = AppService.eventSystem.pointerEnter.subscribe( e => this.onPointerEnter( e ) );
-
-		this.pointerExitSubscriber = AppService.eventSystem.pointerExit.subscribe( e => this.onPointerExit( e ) );
-
-		this.pointerUpSubscriber = AppService.eventSystem.pointerUp.subscribe( e => {
-
-			if ( e.button !== MouseButton.LEFT ) return;
-
-			this.onPointerUp( e );
-
-			this.isPointerDown = false;
-
-			this.pointerDownAt = null;
-
-		} );
-
-		this.pointerDownSubscriber = AppService.eventSystem.pointerDown.subscribe( e => {
-
-			if ( e.button !== MouseButton.LEFT ) return;
-
-			if ( e.point == null ) return;
-
-			this.pointerDownAt = e.button === MouseButton.LEFT ? e.point?.clone() : null;
-
-			this.isPointerDown = e.button === MouseButton.LEFT;
-
-			this.onPointerDown( e );
-
-		} );
-
-		this.pointerLeaveSubscriber = AppService.eventSystem.pointerLeave.subscribe( e => this.onPointerLeave( e ) );
-
-		this.pointerOutSubscriber = AppService.eventSystem.pointerOut.subscribe( e => this.onPointerOut( e ) );
-
-		this.beginDragSubscriber = AppService.eventSystem.beginDrag.subscribe( e => this.onBeginDrag( e ) );
-
-		this.endDragSubscriber = AppService.eventSystem.endDrag.subscribe( e => this.onEndDrag( e ) );
-
-		this.dragSubscriber = AppService.eventSystem.drag.subscribe( e => this.onDrag( e ) );
-
-		this.dropSubscriber = AppService.eventSystem.drop.subscribe( e => this.onDrop( e ) );
-
-		this.keyboardSubscriber = KeyboardEvents.keyDown.subscribe( e => this.onKeyDown( e ) );
+		// this.keyboardSubscriber = KeyboardEvents.keyDown.subscribe( e => this.onKeyDown( e ) );
 
 		this.subscribed = true;
 	}
 
-	unsubscribeToEvents () {
+	onPointerMoved ( e: PointerEventData ): void {
 
-		if ( !this.subscribed ) return;
+		if ( e.button !== MouseButton.LEFT ) return;
 
-		this.pointerClickedSubscriber.unsubscribe();
-		this.pointerMovedSubscriber.unsubscribe();
-		this.pointerEnterSubscriber.unsubscribe();
-		this.pointerExitSubscriber.unsubscribe();
-		this.pointerUpSubscriber.unsubscribe();
-		this.pointerDownSubscriber.unsubscribe();
-		this.pointerLeaveSubscriber.unsubscribe();
-		this.pointerOutSubscriber.unsubscribe();
-		this.beginDragSubscriber.unsubscribe();
-		this.endDragSubscriber.unsubscribe();
-		this.dragSubscriber.unsubscribe();
-		this.dropSubscriber.unsubscribe();
-		this.keyboardSubscriber.unsubscribe();
+		if ( e.point == null ) return;
 
-		this.subscribed = false;
+		ToolManager.getTool()?.onPointerMoved( e );
+
 	}
 
-	onPointerClicked ( pointerEventData: PointerEventData ): void { /*Debug.log( 'clicked' )*/
+	onPointerUp ( e: PointerEventData ): void {
+
+		if ( e.button !== MouseButton.LEFT ) return;
+
+		const tool = ToolManager.getTool();
+
+		if ( !tool ) return;
+
+		tool.onPointerUp( e )
+
+		tool.isPointerDown = false;
+
+		tool.pointerDownAt = null;
+
 	}
 
-	onPointerMoved ( pointerEventData: PointerEventData ): void { /*Debug.log( 'moved' )*/
-	}
+	onPointerDown ( e: PointerEventData ): void {
 
-	onPointerEnter ( pointerEventData: PointerEventData ): void { /*Debug.log( 'enter' )*/
-	}
+		if ( e.button !== MouseButton.LEFT ) return;
 
-	onPointerExit ( pointerEventData: PointerEventData ): void { /*Debug.log( 'exit' )*/
-	}
+		if ( e.point == null ) return;
 
-	onPointerDown ( pointerEventData: PointerEventData ): void { /*Debug.log( 'down' )*/
-	}
+		const tool = ToolManager.getTool();
 
-	onPointerUp ( pointerEventData: PointerEventData ): void { /*Debug.log( 'up' )*/
-	}
+		if ( !tool ) return;
 
-	onPointerOut ( pointerEventData: PointerEventData ): void { /*Debug.log( 'out' )*/
-	}
+		tool.pointerDownAt = e.button === MouseButton.LEFT ? e.point?.clone() : null;
 
-	onPointerLeave ( pointerEventData: PointerEventData ): void { /*Debug.log( 'leave' )*/
-	}
+		tool.isPointerDown = e.button === MouseButton.LEFT;
 
-	onBeginDrag ( pointerEventData: PointerEventData ): void { /*Debug.log( 'begin-drag' )*/
-	}
+		tool.onPointerDown( e );
 
-	onEndDrag ( pointerEventData: PointerEventData ): void { /*Debug.log( 'end-drag' )*/
 	}
-
-	onDrag ( pointerEventData: PointerEventData ): void { /*Debug.log( 'drag' )*/
-	}
-
-	onDrop ( pointerEventData: PointerEventData ): void { /*Debug.log( 'drop' )*/
-	}
-
-	onKeyDown ( e: KeyboardEvent ): void { }
 
 }

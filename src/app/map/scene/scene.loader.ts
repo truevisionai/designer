@@ -80,6 +80,7 @@ import { Log } from 'app/core/utils/log';
 import { InvalidTypeException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
+import { PropCurvePoint } from 'app/modules/prop-curve/objects/prop-curve-point';
 
 @Injectable( {
 	providedIn: 'root'
@@ -679,6 +680,31 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
+	private importPropCurveSpline ( xml: XmlElement, curve: PropCurve ): CatmullRomSpline {
+
+		const type = xml.attr_type || 'catmullrom';
+		const closed = xml.attr_closed === 'true';
+		const tension = 0.0; // we ignore this as we want straight lines, parseFloat( xml.attr_tension ) || 0.5;
+
+		const spline = new CatmullRomSpline( closed, type, tension );
+
+		this.readAsOptionalArray( xml.point, xml => {
+
+			const position = this.importVector3( xml );
+
+			const controlPoint = new PropCurvePoint( curve );
+
+			controlPoint.position.copy( position );
+
+			controlPoint.index = spline.controlPoints.length;
+
+			spline.controlPoints.push( controlPoint );
+
+		} );
+
+		return spline;
+	}
+
 	private importCatmullSpline ( xml: XmlElement, mainObject?: any ): CatmullRomSpline {
 
 		const type = xml.attr_type || 'catmullrom';
@@ -712,6 +738,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	private importPropCurve ( xml: XmlElement ): PropCurve {
 
 		const guid = xml.attr_guid;
@@ -720,13 +747,16 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( !meta ) return;
 
-		const spline = this.importCatmullSpline( xml.spline );
 		const reverse = xml.attr_reverse === 'true' ? true : false;
 		const rotation = parseFloat( xml.attr_rotation ) || 0;
 		const spacing = parseFloat( xml.attr_spacing ) || 5;
 		const positionVariance = parseFloat( xml.attr_positionVariance ) || 0;
 
-		const curve = new PropCurve( guid, spline, spacing, rotation, positionVariance, reverse );
+		const curve = new PropCurve( guid, null, spacing, rotation, positionVariance, reverse );
+
+		const spline = this.importPropCurveSpline( xml.spline, curve );
+
+		curve.setSpline( spline );
 
 		spline.controlPoints.forEach( p => p.mainObject = curve );
 

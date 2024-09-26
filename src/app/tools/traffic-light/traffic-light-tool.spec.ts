@@ -21,6 +21,7 @@ import { DebugLine } from "app/objects/debug-line";
 import { ManeuverMesh } from "app/services/junction/maneuver-mesh";
 import { JunctionGateLine } from "app/services/junction/junction-gate-line";
 import { JunctionOverlay } from "app/services/junction/junction-overlay";
+import { setupTest } from "tests/setup-tests";
 
 describe( 'TrafficLightTool', () => {
 
@@ -184,11 +185,7 @@ describe( 'TrafficLightTool: Handlers', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
-
-		TestBed.inject( EventServiceProvider ).init();
+		setupTest();
 
 		ToolManager.clear();
 

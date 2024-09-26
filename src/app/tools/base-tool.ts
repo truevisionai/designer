@@ -6,7 +6,6 @@ import { AppInspector } from 'app/core/inspector';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { StatusBarService } from 'app/services/status-bar.service';
 import { Vector3 } from 'three';
-import { ViewportEventSubscriber } from './viewport-event-subscriber';
 import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
 import { CommandHistory } from 'app/commands/command-history';
@@ -37,7 +36,7 @@ import { CreationStrategy } from "../core/interfaces/creation-strategy";
 import { IHasPosition } from 'app/objects/i-has-position';
 import { AssetHandler } from "../core/interfaces/asset-handler";
 
-export abstract class BaseTool<T> extends ViewportEventSubscriber implements Tool {
+export abstract class BaseTool<T> implements Tool {
 
 	abstract name: string;
 
@@ -69,6 +68,10 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	protected objectCreationManager: ObjectCreationManager;
 
+	public pointerDownAt: Vector3;
+
+	public isPointerDown: boolean;
+
 	protected get currentSelectedObject (): T {
 
 		if ( this.currentSelectedPoint ) {
@@ -78,8 +81,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 	}
 
 	protected constructor () {
-
-		super();
 
 		this.clearInspector();
 
@@ -175,8 +176,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 
 	enable (): void {
 
-		this.subscribeToEvents();
-
 		this.dataService?.all().forEach( object => {
 
 			this.debugService?.setDebugState( object, DebugState.DEFAULT );
@@ -202,8 +201,6 @@ export abstract class BaseTool<T> extends ViewportEventSubscriber implements Too
 		this.debugService?.clear();
 
 		StatusBarService.clearHint();
-
-		this.unsubscribeToEvents();
 
 	}
 

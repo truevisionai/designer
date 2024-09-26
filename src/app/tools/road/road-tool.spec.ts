@@ -27,6 +27,7 @@ import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspecto
 import { CommandHistory } from 'app/commands/command-history';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { setupTest } from 'tests/setup-tests';
 
 describe( 'RoadTool', () => {
 
@@ -36,9 +37,7 @@ describe( 'RoadTool', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
 		testHelper = TestBed.inject( SplineTestHelper );
 
@@ -101,13 +100,11 @@ describe( 'RoadTool: Spline Editing', () => {
 	let road: TvRoad;
 	let spline: AbstractSpline;
 
-	const setupTest = ( splineType: SplineType ) => {
+	const runTest = ( splineType: SplineType ) => {
 
 		beforeEach( () => {
 
-			TestBed.configureTestingModule( {
-				imports: [ HttpClientModule, MatSnackBarModule ],
-			} );
+			setupTest();
 
 			ToolManager.clear();
 
@@ -295,7 +292,7 @@ describe( 'RoadTool: Spline Editing', () => {
 
 	};
 
-	describe( 'AutoSpline', () => setupTest( SplineType.AUTOV2 ) );
-	describe( 'ExplicitSpline', () => setupTest( SplineType.EXPLICIT ) );
+	describe( 'AutoSpline', () => runTest( SplineType.AUTOV2 ) );
+	describe( 'ExplicitSpline', () => runTest( SplineType.EXPLICIT ) );
 
 } );
