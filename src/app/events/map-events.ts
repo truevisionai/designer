@@ -22,6 +22,7 @@ import { JunctionCreatedEvent } from "./junction/junction-created-event";
 import { JunctionUpdatedEvent } from "./junction/junction-updated-event";
 import { JunctionRemovedEvent } from "./junction/junction-removed-event";
 import { LaneTypeChangedEvent } from "./lane/lane-type-changed.event";
+import { PropCurve } from "app/map/prop-curve/prop-curve.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -65,5 +66,8 @@ export class MapEvents {
 	@Output() static junctionCreated = new EventEmitter<JunctionCreatedEvent>();
 	@Output() static junctionUpdated = new EventEmitter<JunctionUpdatedEvent>();
 	@Output() static junctionRemoved = new EventEmitter<JunctionRemovedEvent>();
+
+	@Output() static propCurveUpdated = new EventEmitter<PropCurve>();
+	@Output() static propCurveRemoved = new EventEmitter<PropCurve>();
 
 }

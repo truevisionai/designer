@@ -8,7 +8,7 @@ import { Material, Mesh, MeshStandardMaterial, Object3D, RepeatWrapping } from '
 import { GameObject } from 'app/objects/game-object';
 import { OdTextures } from '../../deprecated/od.textures';
 import { SurfaceGeometryBuilder } from 'app/services/surface/surface-geometry.builder';
-import { MeshBuilder } from 'app/core/interfaces/mesh.builder';
+import { MeshBuilder } from 'app/core/builders/mesh.builder';
 import { SplineBuilder } from "../../services/spline/spline.builder";
 import { TvMaterialService } from 'app/assets/material/tv-material.service';
 import { TvTexture } from 'app/assets/texture/tv-texture.model';

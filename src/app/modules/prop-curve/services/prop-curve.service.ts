@@ -5,18 +5,12 @@
 import { Injectable } from '@angular/core';
 import { MapService } from 'app/services/map/map.service';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
-import { PropCurveBuilder } from '../../../map/builders/prop-curve.builder';
-import { BaseDataService } from 'app/core/interfaces/data.service';
+import { MapEvents } from 'app/events/map-events';
 
 @Injectable()
-export class PropCurveService extends BaseDataService<PropCurve> {
+export class PropCurveService {
 
-	constructor (
-		private mapService: MapService,
-		private builder: PropCurveBuilder,
-	) {
-		super();
-	}
+	constructor ( private mapService: MapService ) { }
 
 	all (): PropCurve[] {
 
@@ -24,15 +18,15 @@ export class PropCurveService extends BaseDataService<PropCurve> {
 
 	}
 
-	add ( curve: PropCurve ) {
+	add ( curve: PropCurve ): void {
 
 		this.mapService.map.propCurves.push( curve );
 
-		this.build( curve );
+		MapEvents.propCurveUpdated.emit( curve );
 
 	}
 
-	remove ( curve: PropCurve ) {
+	remove ( curve: PropCurve ): void {
 
 		const index = this.mapService.map.propCurves.indexOf( curve );
 
@@ -42,20 +36,13 @@ export class PropCurveService extends BaseDataService<PropCurve> {
 
 		}
 
-		this.mapService.map.propCurvesGroup.remove( curve );
-	}
-
-	update ( curve: PropCurve ) {
-
-		this.build( curve );
+		MapEvents.propCurveRemoved.emit( curve );
 
 	}
 
-	private build ( curve: PropCurve ) {
+	update ( curve: PropCurve ): void {
 
-		if ( curve.spline.controlPoints.length < 2 ) return;
-
-		this.mapService.map.propCurvesGroup.add( curve, this.builder.build( curve ) );
+		MapEvents.propCurveUpdated.emit( curve );
 
 	}
 

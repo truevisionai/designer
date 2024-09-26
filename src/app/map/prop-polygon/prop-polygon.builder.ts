@@ -16,7 +16,7 @@ import {
 	Vector2
 } from "three";
 import { PropPolygon } from "./prop-polygon.model";
-import { MeshBuilder } from "../../core/interfaces/mesh.builder";
+import { MeshBuilder } from "../../core/builders/mesh.builder";
 import { GameObject } from "../../objects/game-object";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { AppConfig } from "../../app.config";

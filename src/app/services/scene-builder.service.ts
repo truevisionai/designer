@@ -29,7 +29,7 @@ import { Log } from 'app/core/utils/log';
 import { Surface } from 'app/map/surface/surface.model';
 import { JunctionBoundsService } from './junction/junction-geometry.service';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
-import { PropCurveBuilder } from 'app/map/builders/prop-curve.builder';
+import { BuilderManager } from 'app/core/builders/builder-manager';
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,7 +52,7 @@ export class SceneBuilderService {
 		private connectionFactory: ConnectionFactory,
 		private junctionBoundaryService: TvJunctionBoundaryService,
 		private junctionBoundsService: JunctionBoundsService,
-		private propCurverBuilder: PropCurveBuilder,
+		private builderManager: BuilderManager,
 	) {
 	}
 
@@ -231,9 +231,7 @@ export class SceneBuilderService {
 
 	buildPropCurve ( map: TvMap, curve: PropCurve ): void {
 
-		if ( curve.getSpline().getControlPointCount() < 2 ) return;
-
-		map.propCurvesGroup.add( curve, this.propCurverBuilder.build( curve ) );
+		this.builderManager.buildPropCurve( curve, map );
 
 	}
 

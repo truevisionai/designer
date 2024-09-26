@@ -28,7 +28,7 @@ import { TvConsole } from 'app/core/utils/console';
 import { ExtrudeService } from '../../factories/extrude.service';
 import { TvObjectVertexLocal } from "../models/objects/tv-object-vertex-local";
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
-import { MeshBuilder } from "../../core/interfaces/mesh.builder";
+import { MeshBuilder } from "../../core/builders/mesh.builder";
 import { AssetService } from "../../assets/asset.service";
 import { AssetType } from "../../assets/asset.model";
 import { COLOR } from "../../views/shared/utils/colors.service";
