@@ -24,6 +24,7 @@ export class ViewportEvents {
 	@Output() drop = new EventEmitter<PointerEventData>();
 	@Output() select = new EventEmitter<BaseEventData>();
 	@Output() deSelect = new EventEmitter<BaseEventData>();
+	@Output() keyDown = new EventEmitter<KeyboardEvent>();
 
 	static instance: any;
 

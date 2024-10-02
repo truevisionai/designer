@@ -30,9 +30,15 @@ export class ViewportEventSubscriber {
 
 		this.viewportEvents.pointerDown.subscribe( e => this.onPointerDown( e ) );
 
-		// this.keyboardSubscriber = KeyboardEvents.keyDown.subscribe( e => this.onKeyDown( e ) );
+		this.viewportEvents.keyDown.subscribe( e => this.onKeyDown( e ) );
 
 		this.subscribed = true;
+	}
+
+	onKeyDown ( e: KeyboardEvent ): void {
+
+		ToolManager.getTool()?.onKeyDown( e );
+
 	}
 
 	onPointerMoved ( e: PointerEventData ): void {

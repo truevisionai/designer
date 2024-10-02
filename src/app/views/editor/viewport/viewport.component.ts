@@ -472,6 +472,15 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
+	@HostListener( 'document:keydown', [ '$event' ] )
+	onKeyDown ( e: KeyboardEvent ): void {
+
+		if ( !this.onCanvas ) return;
+
+		this.eventSystem.keyDown.emit( e );
+
+	}
+
 	fireSelectionEvents () {
 
 		if ( this.intersections.length > 0 ) {
