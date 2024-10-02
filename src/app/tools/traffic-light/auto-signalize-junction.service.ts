@@ -118,15 +118,13 @@ export class AutoSignalizeJunctionService {
 
 		this.addControllers( type, junction, signals );
 
-		signals.forEach( signal => this.buildAndAddSignal( road, signal ) );
+		signals.forEach( signal => this.addSignal( road, signal ) );
 
 	}
 
-	buildAndAddSignal ( road: TvRoad, signal: TvRoadSignal ): void {
+	addSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
-		const mesh = this.signalService.buildSignal( road, signal );
-
-		this.signalService.addSignal( road, signal, mesh );
+		this.signalService.addSignal( road, signal );
 
 	}
 

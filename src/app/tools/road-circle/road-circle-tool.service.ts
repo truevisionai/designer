@@ -25,7 +25,7 @@ import { ViewControllerService } from 'app/views/editor/viewport/view-controller
 import { RoadService } from 'app/services/road/road.service';
 import { SplineService } from "../../services/spline/spline.service";
 import { ControlPointFactory } from "../../factories/control-point.factory";
-import { SplineBuilder } from "../../services/spline/spline.builder";
+import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
@@ -45,7 +45,7 @@ export class RoadCircleToolService {
 	private radius: number;
 
 	constructor (
-		public splineBuilder: SplineBuilder,
+		public splineBuilder: SplineGeometryGenerator,
 		public splineService: SplineService,
 		public roadService: RoadService,
 		public roadFactory: RoadFactory,

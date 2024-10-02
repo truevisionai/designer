@@ -10,7 +10,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { RoadToolHelper } from "../tools/road/road-tool-helper.service";
 import { JunctionUtils } from "./junction.utils";
 import { JunctionService } from "../services/junction/junction.service";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 
 describe( 'JunctionUtils', () => {
 

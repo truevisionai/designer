@@ -97,7 +97,7 @@ export class RoadCircleTool extends BaseTool<AbstractSpline> {
 
 			this.tempRoads.forEach( road => this.tool.roadService.mapService.addRoad( road ) );
 
-			this.tempRoads.forEach( road => this.tool.splineBuilder.build( road.spline ) );
+			this.tempRoads.forEach( road => this.tool.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( road.spline ) );
 
 			this.tempRoads.forEach( road => this.tool.roadService.fireCreatedEvent( road ) );
 

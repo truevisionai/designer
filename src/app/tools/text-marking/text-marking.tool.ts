@@ -269,7 +269,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		if ( !road ) return;
 
-		this.tool.signalService.addSignalNew( road, signal );
+		this.tool.signalService.addSignal( road, signal );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
 

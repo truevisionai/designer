@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { SharedTestModule } from "./shared-test/shared-test.module";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { LaneWidthModule } from "app/modules/lane-width/lane-width.module";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 
 export function setupTest (): void {
 
@@ -10,6 +11,8 @@ export function setupTest (): void {
 	} );
 
 	TestBed.inject( EventServiceProvider ).init();
+
+	disableMeshBuilding();
 
 }
 
@@ -21,5 +24,7 @@ export function setupLaneWidthTest (): void {
 	} );
 
 	TestBed.inject( EventServiceProvider ).init();
+
+	disableMeshBuilding();
 
 }

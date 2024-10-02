@@ -4,7 +4,7 @@
 
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
-import { TvObjectMarking } from '../map/models/tv-object-marking';
+import { TvObjectMarking } from '../../../map/models/tv-object-marking';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 
 export class MarkingObjectBuilder {

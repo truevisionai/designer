@@ -97,6 +97,12 @@ export class MapService {
 
 	}
 
+	removeSpline ( spline: AbstractSpline ): void {
+
+		this.map.removeSpline( spline );
+
+	}
+
 	findRoad ( id: number ) {
 
 		// return this.map.getRoadById( id );

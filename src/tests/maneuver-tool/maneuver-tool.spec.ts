@@ -6,7 +6,7 @@ import { ManeuverTool } from "../../app/tools/maneuver/maneuver-tool";
 import { ManeuverToolHelper } from "../../app/tools/maneuver/maneuver-tool-helper.service";
 import { SplineTestHelper } from "../../app/services/spline/spline-test-helper.service";
 import { JunctionUtils } from "../../app/utils/junction.utils";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { LaneUtils } from "app/utils/lane.utils";

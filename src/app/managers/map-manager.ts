@@ -20,14 +20,7 @@ export class MapManager {
 
 	init () {
 
-		MapEvents.mapLoaded.subscribe( e => this.onMapLoaded( e ) );
 		MapEvents.mapRemoved.subscribe( e => this.onMapRemoved( e ) );
-
-	}
-
-	onMapLoaded ( map: TvMap ): void {
-
-		if ( this.debug ) console.debug( "onMapLoaded", map );
 
 	}
 

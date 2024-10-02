@@ -3,14 +3,15 @@
  */
 
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
-import { Box2, Box3, MathUtils, Vector3 } from 'three';
+import { Box2, Box3, MathUtils, Vector2, Vector3 } from 'three';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { OrderedMap } from "../models/ordered-map";
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvRoadLink } from 'app/map/models/tv-road-link';
-import { InvalidArgumentException, DuplicateModelException, DuplicateKeyException } from 'app/exceptions/exceptions';
+import { InvalidArgumentException, DuplicateModelException, DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
+import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -181,6 +182,16 @@ export abstract class AbstractSpline {
 
 	}
 
+	removeSegment ( segment: NewSegment ): void {
+
+		if ( !this.hasSegment( segment ) ) {
+			throw new ModelNotFoundException( `Segment not found: ${ segment?.toString() }` );
+		}
+
+		this.segmentMap.remove( segment );
+
+	}
+
 	private validateForAdding ( sOffset: number, segment: NewSegment ): void {
 
 		if ( this.hasSegment( segment ) ) {
@@ -234,6 +245,16 @@ export abstract class AbstractSpline {
 		return Array.from( this.segmentMap.values() );
 	}
 
+	getSegmentAt ( s: number ): NewSegment {
+		if ( s < 0 ) {
+			throw new InvalidArgumentException( `s must be greater than 0: ${ s }` );
+		}
+		if ( s > this.getLength() ) {
+			throw new InvalidArgumentException( `s must be less than length: ${ s }` );
+		}
+		return this.segmentMap.findAt( s );
+	}
+
 	getSegmentCount (): number {
 		return this.segmentMap.length;
 	}
@@ -272,6 +293,15 @@ export abstract class AbstractSpline {
 
 	isFirstSegmentRoad (): boolean {
 		return this.getSegments()[ 0 ] instanceof TvRoad;
+	}
+
+	getLinkedSplines (): AbstractSpline[] {
+		const linkedSplines = new Set<AbstractSpline>();
+		const next = this.getSuccessorSpline();
+		const previous = this.getPredecessorSpline();
+		if ( next ) linkedSplines.add( next );
+		if ( previous ) linkedSplines.add( previous );
+		return [ ...linkedSplines ];
 	}
 
 	getSuccessorSpline (): AbstractSpline | undefined {
@@ -314,6 +344,10 @@ export abstract class AbstractSpline {
 		return this.getSuccessor() instanceof TvJunction || this.getPredecessor() instanceof TvJunction;
 	}
 
+	getIntersections ( otherSpline: AbstractSpline ) {
+		return findIntersectionsViaBox2D( this, otherSpline );
+	}
+
 	getCoordAtOffset ( sOffset: number ): TvPosTheta {
 		for ( const geometry of this.geometries ) {
 			if ( sOffset >= geometry.s && sOffset <= geometry.endS ) {
@@ -322,6 +356,27 @@ export abstract class AbstractSpline {
 		}
 	}
 
-}
+	getCoordAtPosition ( point: Vector3 ): TvPosTheta {
 
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		const coordinates = new TvPosTheta();
+
+		for ( const geometry of this.getGeometries() ) {
+
+			const temp = new TvPosTheta();
+			const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+			const distance = new Vector2( point.x, point.y ).distanceTo( nearestPoint );
+
+			if ( distance < minDistance ) {
+				minDistance = distance;
+				coordinates.copy( temp );
+			}
+
+		}
+
+		return coordinates;
+	}
+
+}
 

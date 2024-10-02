@@ -1,42 +1,34 @@
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { Log } from "app/core/utils/log";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { JunctionManager } from "app/managers/junction-manager";
 import { SplineManager } from "app/managers/spline-manager";
-import { disableMeshBuilding, enableMeshBuilding } from "app/map/builders/od-builder-config";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { Vector3 } from "three";
 import { expectValidMap } from "../base-test.spec";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { JunctionUtils } from "app/utils/junction.utils";
+import { setupTest } from "tests/setup-tests";
+import { MapValidatorService } from "app/services/map/map-validator.service";
 
 describe( 'Circle-Road-Junction Tests', () => {
 
 	let splineTestHelper: SplineTestHelper;
-	let eventServiceProvider: EventServiceProvider;
 	let mapService: MapService;
 	let junctionManager: JunctionManager;
 	let splineManager: SplineManager;
+	let mapValidator: MapValidatorService;
 
 	beforeEach( () => {
 
-		disableMeshBuilding();
-
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: []
-		} );
+		setupTest();
 
 		splineTestHelper = TestBed.inject( SplineTestHelper );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		mapService = TestBed.inject( MapService );
 		junctionManager = TestBed.inject( JunctionManager );
 		splineManager = TestBed.inject( SplineManager );
-
-		eventServiceProvider.init();
+		mapValidator = TestBed.inject( MapValidatorService );
 
 	} );
 
@@ -52,6 +44,8 @@ describe( 'Circle-Road-Junction Tests', () => {
 		expect( JunctionUtils.getLaneLinks( mapService.findJunction( 2 ) ).length ).toBe( 12 );
 
 		expectValidMap( mapService );
+
+		mapValidator.validateMap( mapService.map, true );
 
 	} ) );
 

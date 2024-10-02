@@ -207,26 +207,54 @@ export class TvRoadLink {
 
 	}
 
-	setPredecessor ( otherRoad: TvRoad ): void {
+	linkJunction ( junction: TvJunction ): void {
 
 		if ( this.type !== TvRoadLinkType.ROAD ) {
-			Log.error( 'RoadLinkError', 'Cannot set predecessor for junction link' );
+			Log.error( 'RoadLinkError', 'Cannot set link for junction link' );
 			return;
 		}
 
-		const road = this.element as TvRoad;
+		const element = this.element as TvRoad;
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
-			road.setPredecessorRoad( otherRoad, TvContactPoint.START );
+			element.setPredecessor( TvRoadLinkType.JUNCTION, junction );
 
 		} else {
 
-			road.setSuccessorRoad( otherRoad, TvContactPoint.START );
+			element.setSuccessor( TvRoadLinkType.JUNCTION, junction );
 
 		}
 
-		otherRoad.setPredecessorRoad( road, this.contactPoint );
+	}
+
+	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
+
+		if ( this.type !== TvRoadLinkType.ROAD ) {
+			Log.error( 'RoadLinkError', 'Cannot set link for junction link' );
+			return;
+		}
+
+		const element = this.element as TvRoad;
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+
+			element.setPredecessorRoad( otherRoad, otherRoadContact );
+
+		} else {
+
+			element.setSuccessorRoad( otherRoad, otherRoadContact );
+		}
+
+		if ( otherRoadContact == TvContactPoint.START ) {
+
+			otherRoad.setPredecessorRoad( element, this.contactPoint );
+
+		} else {
+
+			otherRoad.setSuccessorRoad( element, this.contactPoint );
+
+		}
 
 	}
 

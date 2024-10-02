@@ -7,7 +7,7 @@ import { TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { JunctionFactory } from "app/factories/junction.factory";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";

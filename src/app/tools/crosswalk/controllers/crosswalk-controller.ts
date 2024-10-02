@@ -28,7 +28,7 @@ export class CrosswalkController extends BaseController<TvRoadObject> {
 	}
 
 	onUpdated ( object: TvRoadObject ): void {
-		this.roadObjectService.updateRoadObject( object.road, object );
+		this.roadObjectService.updateRoadObjectMesh( object.road, object );
 	}
 
 	onRemoved ( object: TvRoadObject ): void {

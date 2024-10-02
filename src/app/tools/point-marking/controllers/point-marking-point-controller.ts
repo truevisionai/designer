@@ -39,7 +39,7 @@ export class PointMarkingController extends BaseController<PointMarkingControlPo
 
 		point.roadObject.t = coord.t;
 
-		this.roadObjectService.updateRoadObject( point.road, point.roadObject );
+		this.roadObjectService.updateRoadObjectMesh( point.road, point.roadObject );
 
 	}
 

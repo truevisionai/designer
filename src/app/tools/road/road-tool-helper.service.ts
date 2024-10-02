@@ -16,7 +16,7 @@ import { AssetService } from 'app/assets/asset.service';
 import { RoadToolDebugger } from "./road-tool.debugger";
 import { TvRoadLink } from 'app/map/models/tv-road-link';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { SplineBuilder } from 'app/services/spline/spline.builder';
+import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-generator';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 
 @Injectable( {
@@ -33,7 +33,7 @@ export class RoadToolHelper {
 		public splineFactory: SplineFactory,
 		public toolDebugger: RoadToolDebugger,
 		public roadFactory: RoadFactory,
-		public splineBuilder: SplineBuilder,
+		public splineBuilder: SplineGeometryGenerator,
 		public splineTestHelper: SplineTestHelper
 	) {
 	}
@@ -108,7 +108,7 @@ export class RoadToolHelper {
 
 		joiningRoad.spline = spline;
 
-		this.splineBuilder.build( spline );
+		this.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( spline );
 
 		return joiningRoad;
 

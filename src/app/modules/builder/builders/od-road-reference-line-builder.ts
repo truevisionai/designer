@@ -5,9 +5,9 @@
 import { SceneService } from 'app/services/scene.service';
 import * as THREE from 'three';
 import { BufferGeometry, Line, Vector3 } from 'three';
-import { COLOR } from '../../views/shared/utils/colors.service';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvRoad } from '../models/tv-road.model';
+import { COLOR } from '../../../views/shared/utils/colors.service';
+import { TvPosTheta } from '../../../map/models/tv-pos-theta';
+import { TvRoad } from '../../../map/models/tv-road.model';
 
 export class OdRoadReferenceLineBuilder {
 

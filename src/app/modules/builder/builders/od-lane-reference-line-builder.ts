@@ -6,11 +6,11 @@ import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Color, Line, LineBasicMaterial, LineDashedMaterial, Material, Object3D, Vector3 } from 'three';
-import { TvLaneSide } from '../models/tv-common';
-import { TvLane } from '../models/tv-lane';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvRoad } from '../models/tv-road.model';
+import { TvLaneSide } from '../../../map/models/tv-common';
+import { TvLane } from '../../../map/models/tv-lane';
+import { TvLaneSection } from '../../../map/models/tv-lane-section';
+import { TvPosTheta } from '../../../map/models/tv-pos-theta';
+import { TvRoad } from '../../../map/models/tv-road.model';
 import { SceneService } from 'app/services/scene.service';
 
 export enum LineType {

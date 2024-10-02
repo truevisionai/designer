@@ -327,7 +327,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 	private addRoadSignal ( road: TvRoad, object: TvRoadSignal ) {
 
-		this.tool.roadSignalService.addSignalNew( road, object );
+		this.tool.roadSignalService.addSignal( road, object );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
 

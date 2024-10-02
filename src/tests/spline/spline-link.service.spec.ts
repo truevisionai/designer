@@ -47,10 +47,10 @@ describe( 'SplineLinkService: Tests', () => {
 		const R2 = mapService.getRoad( 2 );
 		const R3 = mapService.getRoad( 3 );
 
-		expect( splineLinkService.getSuccessorSpline( R1.spline ) ).toBe( R2.spline );
-		expect( splineLinkService.getPredecessorSpline( R2.spline ) ).toBe( R1.spline );
-		expect( splineLinkService.getSuccessorSpline( R2.spline ) ).toBe( R3.spline );
-		expect( splineLinkService.getPredecessorSpline( R3.spline ) ).toBe( R2.spline );
+		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
+		expect( ( R2.spline.getPredecessorSpline() ) ).toBe( R1.spline );
+		expect( ( R2.spline.getSuccessorSpline() ) ).toBe( R3.spline );
+		expect( ( R3.spline.getPredecessorSpline() ) ).toBe( R2.spline );
 
 		expect( R1.successor.element ).toBe( R2 );
 		expect( R2.predecessor.element ).toBe( R1 );
@@ -69,10 +69,10 @@ describe( 'SplineLinkService: Tests', () => {
 		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 1 ) );
 
 		// ensue even after update, the connections are still valid
-		expect( splineLinkService.getSuccessorSpline( R1.spline ) ).toBe( R2.spline );
-		expect( splineLinkService.getPredecessorSpline( R2.spline ) ).toBe( R1.spline );
-		expect( splineLinkService.getSuccessorSpline( R2.spline ) ).toBe( R3.spline );
-		expect( splineLinkService.getPredecessorSpline( R3.spline ) ).toBe( R2.spline );
+		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
+		expect( ( R2.spline.getPredecessorSpline() ) ).toBe( R1.spline );
+		expect( ( R2.spline.getSuccessorSpline() ) ).toBe( R3.spline );
+		expect( ( R3.spline.getPredecessorSpline() ) ).toBe( R2.spline );
 
 		expectValidMap( mapService );
 
@@ -86,10 +86,10 @@ describe( 'SplineLinkService: Tests', () => {
 		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 2 ) );
 
 		// ensue even after update, the connections are still valid
-		expect( splineLinkService.getSuccessorSpline( R1.spline ) ).toBe( R2.spline );
-		expect( splineLinkService.getPredecessorSpline( R2.spline ) ).toBe( R1.spline );
-		expect( splineLinkService.getSuccessorSpline( R2.spline ) ).toBe( R3.spline );
-		expect( splineLinkService.getPredecessorSpline( R3.spline ) ).toBe( R2.spline );
+		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
+		expect( ( R2.spline.getPredecessorSpline() ) ).toBe( R1.spline );
+		expect( ( R2.spline.getSuccessorSpline() ) ).toBe( R3.spline );
+		expect( ( R3.spline.getPredecessorSpline() ) ).toBe( R2.spline );
 
 		expectValidMap( mapService );
 
@@ -110,10 +110,10 @@ describe( 'SplineLinkService: Tests', () => {
 		const R2 = mapService.getRoad( 2 );
 		const R3 = mapService.getRoad( 3 );
 
-		expect( splineLinkService.getSuccessorSpline( R1.spline ) ).toBe( R2.spline );
-		expect( splineLinkService.getPredecessorSpline( R2.spline ) ).toBe( R3.spline );
-		expect( splineLinkService.getSuccessorSpline( R2.spline ) ).toBe( R1.spline );
-		expect( splineLinkService.getPredecessorSpline( R3.spline ) ).toBe( R2.spline );
+		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
+		expect( ( R2.spline.getPredecessorSpline() ) ).toBe( R3.spline );
+		expect( ( R2.spline.getSuccessorSpline() ) ).toBe( R1.spline );
+		expect( ( R3.spline.getPredecessorSpline() ) ).toBe( R2.spline );
 
 		expect( R1.successor.element ).toBe( R2 );
 		expect( R2.predecessor.element ).toBe( R3 );
@@ -140,10 +140,10 @@ describe( 'SplineLinkService: Tests', () => {
 		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
 		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
 
-		expect( splineLinkService.getSuccessorSpline( R1.spline ) ).toBe( R2.spline );
-		expect( splineLinkService.getSuccessorSpline( R2.spline ) ).toBe( R1.spline );
-		expect( splineLinkService.getPredecessorSpline( R2.spline ) ).toBe( R3.spline );
-		expect( splineLinkService.getPredecessorSpline( R3.spline ) ).toBe( R2.spline );
+		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
+		expect( ( R2.spline.getSuccessorSpline() ) ).toBe( R1.spline );
+		expect( ( R2.spline.getPredecessorSpline() ) ).toBe( R3.spline );
+		expect( ( R3.spline.getPredecessorSpline() ) ).toBe( R2.spline );
 
 		expect( R1.successor.element ).toBe( R2 );
 		expect( R2.predecessor.element ).toBe( R3 );
@@ -170,10 +170,10 @@ describe( 'SplineLinkService: Tests', () => {
 		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
 		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
 
-		expect( splineLinkService.getSuccessorSpline( R1.spline ) ).toBe( R2.spline );
-		expect( splineLinkService.getSuccessorSpline( R2.spline ) ).toBe( R1.spline );
-		expect( splineLinkService.getPredecessorSpline( R2.spline ) ).toBe( R3.spline );
-		expect( splineLinkService.getPredecessorSpline( R3.spline ) ).toBe( R2.spline );
+		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
+		expect( ( R2.spline.getSuccessorSpline() ) ).toBe( R1.spline );
+		expect( ( R2.spline.getPredecessorSpline() ) ).toBe( R3.spline );
+		expect( ( R3.spline.getPredecessorSpline() ) ).toBe( R2.spline );
 
 		expect( R1.successor.element ).toBe( R2 );
 		expect( R2.predecessor.element ).toBe( R3 );

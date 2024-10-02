@@ -9,7 +9,7 @@ import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { BaseTest } from "./base-test.spec";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { DepIntersectionService } from "app/deprecated/dep-intersection.service";
 
 describe( 'BaseTest: tests', () => {

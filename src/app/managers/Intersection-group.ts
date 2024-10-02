@@ -35,8 +35,8 @@ export class IntersectionGroup {
 
 	addSplineIntersection ( i: SplineIntersection ) {
 
-		if ( !this.intersections.has( i.key() ) ) {
-			this.intersections.set( i.key(), i );
+		if ( !this.intersections.has( i.getKey() ) ) {
+			this.intersections.set( i.getKey(), i );
 		}
 
 		this.splines.add( i.spline );

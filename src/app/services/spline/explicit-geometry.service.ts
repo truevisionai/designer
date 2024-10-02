@@ -37,7 +37,7 @@ export class ExplicitGeometryService {
 
 			const newGeometries = breakGeometries( geometries, sStart, sEnd );
 
-			newGeometries.forEach( geometry => road.getPlanView().addGeometry( geometry ) );
+			newGeometries.forEach( geometry => road.addGeometryAndUpdateCoords( geometry ) );
 
 		} );
 

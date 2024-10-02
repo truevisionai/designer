@@ -13,7 +13,7 @@ import { TrafficRule } from 'app/map/models/traffic-rule';
 import { MapService } from '../../services/map/map.service';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
-import { SplineBuilder } from "../../services/spline/spline.builder";
+import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
@@ -27,7 +27,7 @@ import { ConnectionFactory } from "../../factories/connection.factory";
 export class DepConnectionFactory {
 
 	constructor (
-		private splineBuilder: SplineBuilder,
+		private splineBuilder: SplineGeometryGenerator,
 		private roadService: RoadService,
 		private mapService: MapService,
 		private factory: ConnectionFactory

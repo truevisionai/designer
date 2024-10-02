@@ -14,7 +14,7 @@ import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { SplineManager } from "./spline-manager";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
 import { SplinePositionService } from "app/services/spline/spline-position.service";
 

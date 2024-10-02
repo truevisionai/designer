@@ -10,7 +10,7 @@ import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { MapService } from 'app/services/map/map.service';
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
 import { SplineService } from 'app/services/spline/spline.service';
-import { SplineBuilder } from 'app/services/spline/spline.builder';
+import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-generator';
 import { SplineSegmentService } from 'app/services/spline/spline-segment.service';
 
 @Injectable( {
@@ -25,7 +25,7 @@ export class RoadDividerToolService {
 		public roadDebug: RoadDebugService,
 		public roadService: RoadService,
 		public splineService: SplineService,
-		public splineBuilder: SplineBuilder,
+		public splineBuilder: SplineGeometryGenerator,
 		public mapService: MapService,
 		public segmentService: SplineSegmentService,
 	) { }

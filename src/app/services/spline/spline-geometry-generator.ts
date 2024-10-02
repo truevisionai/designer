@@ -9,30 +9,27 @@ import { AutoSpline } from "../../core/shapes/auto-spline-v2";
 import { CatmullRomCurve3, Vector3 } from "three";
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { RoadBuilder } from 'app/map/builders/road.builder';
-import { MapService } from '../map/map.service';
 import { Log } from 'app/core/utils/log';
 import { SplineSegmentService } from './spline-segment.service';
 import { SplineBoundsService } from './spline-bounds.service';
 import { ExplicitGeometryService } from "./explicit-geometry.service";
 import { AutoGeometryService } from "./auto-geometry.service";
+import { MapEvents } from 'app/events/map-events';
 
-@Injectable( {
+@Injectable({
 	providedIn: 'root'
-} )
-export class SplineBuilder {
+})
+export class SplineGeometryGenerator {
 
 	constructor (
 		private segmentService: SplineSegmentService,
-		private mapService: MapService,
-		private roadBuilder: RoadBuilder,
 		private autoSplineBuilder: AutoGeometryService,
 		private explicitSplineBuilder: ExplicitGeometryService,
 		private splineBoundService: SplineBoundsService,
 	) {
 	}
 
-	build ( spline: AbstractSpline ): void {
+	generateGeometryAndBuildSegmentsAndBounds ( spline: AbstractSpline ): void {
 
 		if ( spline.controlPoints.length < 2 ) {
 			Log.warn( 'No control points found in spline', spline?.toString() );
@@ -103,7 +100,7 @@ export class SplineBuilder {
 
 				try {
 
-					this.roadBuilder.rebuildRoad( segment, this.mapService.map );
+					MapEvents.makeMesh.emit( segment );
 
 				} catch ( error ) {
 

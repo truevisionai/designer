@@ -3,7 +3,7 @@ import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { JunctionManager } from "app/managers/junction-manager";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { JunctionUtils } from "app/utils/junction.utils";

@@ -47,7 +47,7 @@ export class CornerControlPointController extends PointController<CornerControlP
 
 		point.corner.t = coord.t;
 
-		this.roadObjectService.updateRoadObject( point.road, point.roadObject );
+		this.roadObjectService.updateRoadObjectMesh( point.road, point.roadObject );
 
 	}
 

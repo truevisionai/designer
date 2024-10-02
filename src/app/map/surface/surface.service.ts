@@ -6,10 +6,11 @@ import { Injectable } from "@angular/core";
 import { BaseDataService } from "../../core/interfaces/data.service";
 import { Surface } from "./surface.model";
 import { MapService } from "../../services/map/map.service";
-import { SurfaceManager } from "./surface.manager";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { SplineService } from "../../services/spline/spline.service";
 import { Mesh } from "three";
+import { MapEvents } from "app/events/map-events";
+import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,8 +19,8 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 	constructor (
 		private mapService: MapService,
-		private surfaceManager: SurfaceManager,
 		private splineService: SplineService,
+		private splineBuilder: SplineGeometryGenerator,
 	) {
 		super();
 	}
@@ -34,13 +35,17 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 		this.mapService.map.addSurface( object );
 
-		this.surfaceManager.onAdded( object );
+		this.splineBuilder.buildNew( object.spline );
+
+		MapEvents.surfaceAdded.emit( object );
 
 	}
 
 	update ( object: Surface ): void {
 
-		this.surfaceManager.onUpdated( object );
+		this.splineBuilder.buildNew( object.spline );
+
+		MapEvents.surfaceUpdated.emit( object );
 
 	}
 
@@ -48,7 +53,7 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 		this.mapService.map.removeSurface( object );
 
-		this.surfaceManager.onRemoved( object );
+		MapEvents.surfaceRemoved.emit( object );
 
 	}
 

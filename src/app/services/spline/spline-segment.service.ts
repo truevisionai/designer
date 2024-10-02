@@ -12,6 +12,8 @@ import { TvContactPoint } from 'app/map/models/tv-common';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { Log } from 'app/core/utils/log';
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { MapEvents } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,33 +25,84 @@ export class SplineSegmentService {
 		private linkService: RoadLinkService,
 	) { }
 
-	removeSegments ( spline: AbstractSpline ): void {
+	addSegments ( spline: AbstractSpline ): void {
 
-		this.removeRoadSegments( spline );
+		// spline.getRoadSegments().forEach( road => {
 
-		this.removeJunctionSegments( spline );
+		// 	if ( road.isJunction ) {
+
+		// 		this.addConnectionAndSpline( road );
+
+		// 	} else {
+
+		// 		this.addRoadSegment( spline, road.sStart, road );
+		// 	}
+
+		// } )
 
 	}
 
-	removeJunctionSegments ( spline: AbstractSpline ): void {
+	private addConnectionAndSpline ( road: TvRoad ): void {
+
+		throw new Error( 'Method not implemented.' );
+
+	}
+
+	removeSegments ( spline: AbstractSpline ): void {
+
+		this.removeConnections( spline );
+
+		this.removeRoadSegments( spline );
+
+	}
+
+	private removeConnections ( spline: AbstractSpline ): void {
 
 		spline.getJunctionSegments().forEach( junction => {
 
-			if ( this.mapService.hasJunction( junction ) ) {
-
-				this.mapService.removeJunction( junction );
-
-			} else {
-
-				Log.warn( "Junction already removed", junction.toString() );
-
-			}
+			this.removeRoadConnectionAndSplines( junction, spline );
 
 		} );
 
 	}
 
-	removeRoadSegments ( spline: AbstractSpline ): void {
+	private removeRoadConnectionAndSplines ( junction: TvJunction, spline: AbstractSpline ): void {
+
+		const connections = this.getConnections( junction, spline );
+
+		for ( const connection of connections ) {
+
+			Log.info( 'Removing connection', connection.toString() );
+
+			this.mapService.removeRoad( connection.connectingRoad );
+
+			this.mapService.removeSpline( connection.connectingRoad.spline );
+
+			junction.removeConnection( connection );
+
+			MapEvents.removeMesh.emit( connection.connectingRoad.spline );
+
+		}
+
+		MapEvents.junctionUpdated.emit( junction );
+
+	}
+
+	private getConnections ( junction: TvJunction, spline: AbstractSpline ): TvJunctionConnection[] {
+
+		const connections = new Set<TvJunctionConnection>();
+
+		for ( const road of spline.getRoadSegments() ) {
+
+			junction.getConnectionsByRoad( road ).forEach( connection => connections.add( connection ) );
+
+		}
+
+		return [ ...connections ];
+
+	}
+
+	private removeRoadSegments ( spline: AbstractSpline ): void {
 
 		spline.getRoadSegments().forEach( road => {
 
@@ -123,14 +176,25 @@ export class SplineSegmentService {
 
 	}
 
-	private removeRoadSegment ( spline: AbstractSpline, road: TvRoad ) {
-
-		const predecessor = road.predecessor;
-		const successor = road.successor;
+	private removeRoadSegment ( spline: AbstractSpline, road: TvRoad ): void {
 
 		if ( !SplineUtils.hasSegment( spline, road ) ) {
 			throw new Error( 'Segment not found' );
 		}
+
+		this.removeRoadLinks( road );
+
+		spline.removeSegment( road );
+
+		this.mapService.removeRoad( road );
+
+	}
+
+	private removeRoadLinks ( road: TvRoad ): void {
+
+		const predecessor = road.predecessor;
+
+		const successor = road.successor;
 
 		if ( successor?.element instanceof TvRoad && predecessor?.element instanceof TvRoad ) {
 
@@ -146,13 +210,13 @@ export class SplineSegmentService {
 
 		}
 
-		SplineUtils.removeSegment( spline, road );
-
-		this.mapService.removeRoad( road );
-
 	}
 
-	private removeJunctionSegment ( spline: AbstractSpline, junction: TvJunction ) {
+	private removeJunctionSegment ( spline: AbstractSpline, junction: TvJunction ): void {
+
+		spline.removeSegment( junction );
+
+		this.removeRoadConnectionAndSplines( junction, spline );
 
 	}
 

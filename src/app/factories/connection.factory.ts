@@ -14,13 +14,12 @@ import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { LaneUtils } from "app/utils/lane.utils";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { TvLane } from "app/map/models/tv-lane";
-import { SplineBuilder } from "app/services/spline/spline.builder";
+import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 import { TvUtils } from "app/map/models/tv-utils";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { Log } from "app/core/utils/log";
 import { Maths } from "app/utils/maths";
 import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
-import { MapQueryService } from "app/map/queries/map-query.service";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { RoadWidthService } from "app/services/road/road-width.service";
 
@@ -32,10 +31,8 @@ export class ConnectionFactory {
 	private debug = false;
 
 	constructor (
-		private splineFactory: SplineFactory,
 		private roadFactory: RoadFactory,
-		private splineBuilder: SplineBuilder,
-		private queryService: MapQueryService,
+		private splineBuilder: SplineGeometryGenerator,
 	) {
 	}
 
@@ -68,16 +65,16 @@ export class ConnectionFactory {
 		const incomingCoords = LaneUtils.createIncomingCoords( incoming, corner );
 		const outgoingCoords = LaneUtils.createOutgoingCoords( outgoing, corner );
 
-		const processed = new Set<TvLane>();
+		const processedLanes = new Set<TvLane>();
 
-		let highest: TvLane = LaneUtils.findRightMostIncomingLane( incoming );
-		let lowest: TvLane = LaneUtils.findLeftMostIncomingLane( incoming );
+		const highestLane: TvLane = LaneUtils.findRightMostIncomingLane( incoming );
+		const lowestLane: TvLane = LaneUtils.findLeftMostIncomingLane( incoming );
 
 		for ( let i = 0; i < incomingCoords.length; i++ ) {
 
 			const incomingCoord = incomingCoords[ i ];
 
-			if ( processed.has( incomingCoord.lane ) ) continue;
+			if ( processedLanes.has( incomingCoord.lane ) ) continue;
 
 			if ( !corner && incomingCoord.lane.type != TvLaneType.driving ) continue;
 
@@ -89,22 +86,22 @@ export class ConnectionFactory {
 
 				if ( outgoingCoord.lane.type != incomingCoord.lane.type ) continue;
 
-				if ( processed.has( outgoingCoord.lane ) ) continue;
+				if ( processedLanes.has( outgoingCoord.lane ) ) continue;
 
 				const turnType = LaneUtils.determineTurnType( incomingCoord, outgoingCoord );
 
 				if ( turnType == TurnType.RIGHT || corner ) {
-					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id > highest?.id ) {
+					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id > highestLane?.id ) {
 						continue;
 					}
-					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id < highest?.id ) {
+					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id < highestLane?.id ) {
 						continue;
 					}
 				} else if ( turnType == TurnType.LEFT ) {
-					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id < lowest?.id ) {
+					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id < lowestLane?.id ) {
 						continue;
 					}
-					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id > lowest?.id ) {
+					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id > lowestLane?.id ) {
 						continue;
 					}
 				}
@@ -117,9 +114,9 @@ export class ConnectionFactory {
 
 				junction.addConnection( connection );
 
-				processed.add( incomingCoord.lane );
+				processedLanes.add( incomingCoord.lane );
 
-				processed.add( outgoingCoord.lane );
+				processedLanes.add( outgoingCoord.lane );
 
 				found = true;
 

@@ -5,27 +5,25 @@
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferAttribute, BufferGeometry, Mesh, Object3D, Vector2, Vector3 } from 'three';
-import { GameObject } from '../../objects/game-object';
-import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
-import { TvLane } from '../models/tv-lane';
-import { DOUBLE_LINE_SPACE, TvLaneRoadMark } from '../models/tv-lane-road-mark';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvPosTheta } from '../models/tv-pos-theta';
-import { TvRoad } from '../models/tv-road.model';
-import { Vertex } from '../models/vertex';
+import { GameObject } from '../../../objects/game-object';
+import { MeshGeometryData } from '../../../map/models/mesh-geometry.data';
+import { TvLaneSide, TvRoadMarkTypes } from '../../../map/models/tv-common';
+import { TvLane } from '../../../map/models/tv-lane';
+import { DOUBLE_LINE_SPACE, TvLaneRoadMark } from '../../../map/models/tv-lane-road-mark';
+import { TvLaneSection } from '../../../map/models/tv-lane-section';
+import { TvPosTheta } from '../../../map/models/tv-pos-theta';
+import { TvRoad } from '../../../map/models/tv-road.model';
+import { Vertex } from '../../../map/models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/assets/asset-database';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { TvRoadObjectType } from "../models/objects/tv-road-object";
-import { RoadService } from "../../services/road/road.service";
-import { DebugDrawService } from "../../services/debug/debug-draw.service";
+import { TvRoadObjectType } from "../../../map/models/objects/tv-road-object";
+import { RoadService } from "../../../services/road/road.service";
+import { DebugDrawService } from "../../../services/debug/debug-draw.service";
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class LaneRoadMarkBuilder {
 
 	constructor (
@@ -332,7 +330,7 @@ export class LaneRoadMarkBuilder {
 
 			posTheta.s = start + s;
 
-			posTheta = RoadGeometryService.instance.findRoadPosition(road, start + s );
+			posTheta = RoadGeometryService.instance.findRoadPosition( road, start + s );
 
 			this.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
 

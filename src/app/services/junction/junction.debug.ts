@@ -6,11 +6,9 @@ import { Injectable } from '@angular/core';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { DebugState } from '../debug/debug-state';
 import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
-import { Mesh, MeshBasicMaterial, Object3D, Vector2 } from 'three';
-import { JunctionService } from './junction.service';
+import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D, Vector2 } from 'three';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
-import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
@@ -20,15 +18,12 @@ import { DebugDrawService } from '../debug/debug-draw.service';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { MapService } from '../map/map.service';
-import { JunctionManager } from 'app/managers/junction-manager';
-import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
 import { RoadWidthService } from '../road/road-width.service';
 import { JunctionDebugFactory } from './junction-debug.factory';
 import { ManeuverMesh } from './maneuver-mesh';
 import { JunctionNode } from './junction-node';
 import { JunctionRoadService } from './junction-road.service';
-import { JunctionBuilder } from './junction.builder';
 import { JunctionOverlay } from './junction-overlay';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
@@ -54,7 +49,6 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	public shouldShowOutline = false;
 
 	constructor (
-		private junctionBuilder: JunctionBuilder,
 		private debug: DebugDrawService,
 		private mapService: MapService,
 		private junctionRoadService: JunctionRoadService,
@@ -159,7 +153,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.junctionBoundaryService.update( junction );
 		}
 
-		const geometry = this.junctionBuilder.getJunctionGeometry( junction );
+		const geometry = junction.mesh?.geometry.clone() || new BoxGeometry();
 
 		const mesh = new Mesh( geometry, new MeshBasicMaterial( { color: COLOR.YELLOW } ) );
 
@@ -179,7 +173,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.junctionBoundaryService.update( junction );
 		}
 
-		const geometry = this.junctionBuilder.getJunctionGeometry( junction );
+		const geometry = junction.mesh?.geometry.clone() || new BoxGeometry();
 
 		return JunctionOverlay.create( junction, geometry );
 
@@ -338,7 +332,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		for ( const lane of laneSection.getDrivingLanes() ) {
 
 			const posTheta = RoadGeometryService.instance.findLaneCenterPosition( road, laneSection, lane, laneSOffset )
-			.moveForward( distanceFromPosition );
+				.moveForward( distanceFromPosition );
 
 			const gate = this.debug.createJunctionGate( road, laneSection, lane, contact, posTheta.toVector3() );
 

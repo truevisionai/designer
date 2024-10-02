@@ -7,7 +7,6 @@ import { MapService } from 'app/services/map/map.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvCornerRoad } from "../models/objects/tv-corner-road";
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
-import { RoadObjectBuilder } from 'app/map/road-object/road-object.builder';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { TvColors, TvRoadMarkWeights } from 'app/map/models/tv-common';
 import { IDService } from 'app/factories/id.service';
@@ -15,8 +14,8 @@ import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvObjectRepeat } from 'app/map/models/objects/tv-object-repeat';
 import { CornerRoadFactory } from 'app/services/road-object/corner-road.factory';
 import { Log } from 'app/core/utils/log';
-import { ValidationException } from "../../exceptions/exceptions";
-import { RoadObjectValidator } from "./road-object-validator";
+import { MapEvents } from 'app/events/map-events';
+import { RoadObjectAddedEvent } from 'app/events/road-object.events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -25,11 +24,7 @@ export class RoadObjectService {
 
 	private ids: Map<TvRoad, IDService> = new Map();
 
-	constructor (
-		private map: MapService,
-		private builder: RoadObjectBuilder,
-	) {
-	}
+	constructor ( private map: MapService ) { }
 
 	clone ( roadObject: TvRoadObject ): TvRoadObject {
 
@@ -47,7 +42,7 @@ export class RoadObjectService {
 
 			// TODO: update position of road object
 			// this is inefficient, but it works for now
-			this.updateRoadObject( road, object );
+			this.updateRoadObjectMesh( road, object );
 
 		} );
 
@@ -101,11 +96,13 @@ export class RoadObjectService {
 			return;
 		}
 
-		const mesh = this.buildRoadObject( road, roadObject );
+		// const mesh = this.buildRoadObject( road, roadObject );
 
-		road.objectGroup.add( mesh );
+		// road.objectGroup.add( mesh );
 
 		road.addRoadObject( roadObject );
+
+		MapEvents.roadObjectAdded.emit( new RoadObjectAddedEvent( road, roadObject ) );
 
 	}
 
@@ -113,7 +110,7 @@ export class RoadObjectService {
 
 		roadObject.addRepeatObject( repeat );
 
-		this.updateRoadObject( roadObject.road, roadObject );
+		this.updateRoadObjectMesh( roadObject.road, roadObject );
 
 	}
 
@@ -121,59 +118,37 @@ export class RoadObjectService {
 
 		roadObject.removeRepeatObject( repeat );
 
-		this.updateRoadObject( roadObject.road, roadObject );
+		this.updateRoadObjectMesh( roadObject.road, roadObject );
 
 	}
 
-	buildRoadObject ( road: TvRoad, roadObject: TvRoadObject ) {
+	// buildRoadObject ( road: TvRoad, roadObject: TvRoadObject ) {
 
-		roadObject.mesh = this.builder.buildRoadObject( road, roadObject );
+	// roadObject.mesh = this.builder.buildRoadObject( road, roadObject );
 
-		return roadObject.mesh;
+	// return roadObject.mesh;
 
-	}
+	// }
 
 	removeRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		this.removeObject3d( road, roadObject );
+		// this.removeRoadObjectMesh( road, roadObject );
 
 		road?.removeRoadObject( roadObject.id );
 
+		MapEvents.roadObjectRemoved.emit( new RoadObjectAddedEvent( road, roadObject ) );
+
 	}
 
-	removeObject3d ( road: TvRoad, roadObject: TvRoadObject ): void {
+	removeRoadObjectMesh ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		road.objectGroup?.remove( roadObject.mesh );
 
 	}
 
-	updateRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
+	updateRoadObjectMesh ( road: TvRoad, roadObject: TvRoadObject ): void {
 
-		road.objectGroup.remove( roadObject.mesh );
-
-		try {
-
-			RoadObjectValidator.validateRoadObject( roadObject );
-
-			roadObject.mesh = this.builder.build( roadObject );
-
-			road.objectGroup.add( roadObject.mesh );
-
-		} catch ( error ) {
-
-			if ( error instanceof ValidationException ) {
-
-				Log.error( 'Validation error updating road object:', error );
-
-			} else {
-
-				Log.error( 'Error updating road object:', error );
-
-			}
-
-			road.removeRoadObject( roadObject );
-
-		}
+		MapEvents.roadObjectUpdated.emit( new RoadObjectAddedEvent( road, roadObject ) );
 
 	}
 
@@ -191,7 +166,7 @@ export class RoadObjectService {
 
 		roadObject.outlines[ 0 ]?.cornerRoads.push( cornerRoad );
 
-		this.updateRoadObject( roadObject.road, roadObject );
+		this.updateRoadObjectMesh( roadObject.road, roadObject );
 
 	}
 
@@ -205,7 +180,7 @@ export class RoadObjectService {
 			roadObject.outlines[ 0 ]?.cornerRoads.splice( index, 1 );
 		}
 
-		this.updateRoadObject( roadObject.road, roadObject );
+		this.updateRoadObjectMesh( roadObject.road, roadObject );
 
 	}
 

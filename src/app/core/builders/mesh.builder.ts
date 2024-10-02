@@ -10,7 +10,7 @@ export const BUILD_PROVIDERS = new InjectionToken<BuilderProvider[]>( 'BUILD_PRO
 
 export interface BuilderProvider {
 	key: ConstructorFunction;
-	builder: MeshBuilder<any>;
+	builderClass: new ( ...args: any[] ) => MeshBuilder<any>;
 }
 
 export abstract class MeshBuilder<T> {

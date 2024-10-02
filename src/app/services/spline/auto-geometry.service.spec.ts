@@ -3,7 +3,7 @@
  */
 
 import { TestBed, async, inject } from '@angular/core/testing';
-import { SplineBuilder } from "./spline.builder";
+import { SplineGeometryGenerator } from "./spline-geometry-generator";
 import { TvLineGeometry } from "../../map/models/geometries/tv-line-geometry";
 import { AutoGeometryService } from "./auto-geometry.service";
 

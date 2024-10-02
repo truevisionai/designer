@@ -6,11 +6,11 @@ import { Injectable } from '@angular/core';
 import { BaseDataService } from "../../core/interfaces/data.service";
 import { PropPolygon } from "./prop-polygon.model";
 import { MapService } from "../../services/map/map.service";
-import { PropPolygonBuilder } from "./prop-polygon.builder";
 import { PolygonDistributionService } from '../builders/polygon-distribution.service';
 import { TvTransform } from '../models/tv-transform';
 import { Euler, Vector3 } from 'three';
-import { SplineBuilder } from "../../services/spline/spline.builder";
+import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
+import { MapEvents } from 'app/events/map-events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,8 +19,7 @@ export class PropPolygonService extends BaseDataService<PropPolygon> {
 
 	constructor (
 		private mapService: MapService,
-		private builder: PropPolygonBuilder,
-		private splineBuilder: SplineBuilder,
+		private splineBuilder: SplineGeometryGenerator,
 	) {
 		super();
 	}
@@ -45,7 +44,7 @@ export class PropPolygonService extends BaseDataService<PropPolygon> {
 
 		this.mapService.removePropPolygon( polygon );
 
-		this.mapService.map.propPolygonsGroup.remove( polygon );
+		MapEvents.propPolygonRemoved.emit( polygon );
 
 	}
 
@@ -57,19 +56,15 @@ export class PropPolygonService extends BaseDataService<PropPolygon> {
 
 	}
 
-	private build ( object: PropPolygon ) {
+	build ( object: PropPolygon ): void {
 
 		this.splineBuilder.buildCatmullRom( object.spline );
 
-		if ( object.spline.controlPoints.length < 3 ) return;
-
-		const mesh = this.builder.build( object );
-
-		this.mapService.map.propPolygonsGroup.add( object, mesh );
+		MapEvents.propPolygonUpdated.emit( object );
 
 	}
 
-	private updatePositions ( polygon: PropPolygon ) {
+	updatePositions ( polygon: PropPolygon ) {
 
 		if ( !polygon ) return;
 

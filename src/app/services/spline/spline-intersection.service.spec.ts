@@ -45,7 +45,7 @@ describe( 'Service: SplineIntersection', () => {
 		splineGeometryService.updateGeometryAndBounds( roadA.spline );
 		splineGeometryService.updateGeometryAndBounds( roadB.spline );
 
-		const intersections = service.findIntersectionsViaBox2D( roadA.spline, roadB.spline );
+		const intersections = roadA.spline.getIntersections( roadB.spline );
 
 		expect( intersections.length ).toBe( 1 );
 

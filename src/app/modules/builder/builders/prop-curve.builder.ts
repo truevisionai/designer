@@ -6,18 +6,18 @@ import { Injectable } from "@angular/core";
 import { PropCurve } from "app/map/prop-curve/prop-curve.model";
 import { Maths } from "app/utils/maths";
 import { Group, Object3D, Vector3 } from "three";
-import { MeshBuilder } from "../../core/builders/mesh.builder";
-import { CatmullRomSpline } from "../../core/shapes/catmull-rom-spline";
+import { MeshBuilder } from "../../../core/builders/mesh.builder";
+import { CatmullRomSpline } from "../../../core/shapes/catmull-rom-spline";
 import { AssetService } from "app/assets/asset.service";
 import { Asset, AssetType } from "app/assets/asset.model";
-import { SplineBuilder } from "../../services/spline/spline.builder";
+import { SplineGeometryGenerator } from "../../../services/spline/spline-geometry-generator";
 
 @Injectable()
 export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
 	constructor (
 		private assetService: AssetService,
-		private splineBuilder: SplineBuilder,
+		private splineBuilder: SplineGeometryGenerator,
 	) {
 		super();
 	}

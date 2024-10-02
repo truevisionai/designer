@@ -4,11 +4,11 @@
 
 import { SceneService } from 'app/services/scene.service';
 import { ArrowHelper, Object3D, Vector3 } from 'three';
-import { SimpleArrowObject } from '../../objects/lane-arrow-object';
-import { TvLaneSide } from '../models/tv-common';
-import { TvLane } from '../models/tv-lane';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvRoad } from '../models/tv-road.model';
+import { SimpleArrowObject } from '../../../objects/lane-arrow-object';
+import { TvLaneSide } from '../../../map/models/tv-common';
+import { TvLane } from '../../../map/models/tv-lane';
+import { TvLaneSection } from '../../../map/models/tv-lane-section';
+import { TvRoad } from '../../../map/models/tv-road.model';
 
 export class OdLaneDirectionBuilder {
 

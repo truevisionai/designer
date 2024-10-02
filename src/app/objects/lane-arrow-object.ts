@@ -3,7 +3,7 @@
  */
 
 import { BufferGeometry, Float32BufferAttribute, Matrix4, Mesh, MeshBasicMaterial, PlaneGeometry, Quaternion, Vector3 } from 'three';
-import { OdBuilderConfig } from '../map/builders/od-builder-config';
+import { OdBuilderConfig } from '../modules/builder/builders/od-builder-config';
 import { OdTextures } from 'app/deprecated/od.textures';
 
 export class SimpleArrowObject extends Mesh {

@@ -5,17 +5,17 @@
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
-import { GameObject } from '../../objects/game-object';
-import { COLOR } from '../../views/shared/utils/colors.service';
-import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { TvLaneSide, TvRoadMarkTypes } from '../models/tv-common';
-import { TvLane } from '../models/tv-lane';
-import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { TvRoad } from '../models/tv-road.model';
-import { Vertex } from '../models/vertex';
+import { GameObject } from '../../../objects/game-object';
+import { COLOR } from '../../../views/shared/utils/colors.service';
+import { MeshGeometryData } from '../../../map/models/mesh-geometry.data';
+import { TvLaneSide, TvRoadMarkTypes } from '../../../map/models/tv-common';
+import { TvLane } from '../../../map/models/tv-lane';
+import { TvLaneRoadMark } from '../../../map/models/tv-lane-road-mark';
+import { TvLaneSection } from '../../../map/models/tv-lane-section';
+import { TvRoad } from '../../../map/models/tv-road.model';
+import { Vertex } from '../../../map/models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
-import { TvRoadObjectType } from "../models/objects/tv-road-object";
+import { TvRoadObjectType } from "../../../map/models/objects/tv-road-object";
 
 const ROADMARK_BROKEN_TILING = 3.0;
 

@@ -32,29 +32,8 @@ export class SplinePositionService {
 
 	getCoordAt ( spline: AbstractSpline, point: Vector3 ): TvPosTheta {
 
-		let minDistance = Number.MAX_SAFE_INTEGER;
+		return spline.getCoordAtPosition( point );
 
-		const coordinates = new TvPosTheta();
-
-		for ( const geometry of spline.getGeometries() ) {
-
-			const temp = new TvPosTheta();
-
-			const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
-
-			const distance = new Vector2( point.x, point.y ).distanceTo( nearestPoint );
-
-			if ( distance < minDistance ) {
-
-				minDistance = distance;
-
-				coordinates.copy( temp );
-
-			}
-
-		}
-
-		return coordinates;
 	}
 
 	getHeading ( spline: AbstractSpline, index: number, position: Vector3 ): number {

@@ -6,8 +6,7 @@ import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Object3D } from 'three';
-import { JunctionBuilder } from './junction.builder';
+import { Object3D, Vector3 } from 'three';
 import { DepConnectionFactory } from "../../map/junction/dep-connection.factory";
 import { MapService } from '../map/map.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
@@ -26,11 +25,8 @@ import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction
 } )
 export class JunctionService extends BaseDataService<TvJunction> {
 
-	private objectMap = new Object3DMap<TvJunction, Object3D>();
-
 	constructor (
 		private factory: JunctionFactory,
-		private junctionBuilder: JunctionBuilder,
 		private connectionService: DepConnectionFactory,
 		private mapService: MapService,
 		private boundaryService: TvJunctionBoundaryService,
@@ -67,27 +63,9 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 		this.boundaryService.update( junction );
 
-		this.updateJunctionMesh( junction );
+		MapEvents.makeMesh.emit( junction );
 
 		this.junctionBoundsService.updateBounds( junction );
-
-	}
-
-	updateJunctionMesh ( junction: TvJunction ): void {
-
-		if ( junction.mesh ) this.removeJunctionMesh( junction );
-
-		junction.mesh = this.junctionBuilder.buildJunction( junction );
-
-		this.mapService.map.gameObject.add( junction.mesh );
-
-	}
-
-	removeJunctionMesh ( junction: TvJunction ): void {
-
-		this.mapService.map.gameObject.remove( junction.mesh );
-
-		this.objectMap.remove( junction );
 
 	}
 
@@ -164,6 +142,26 @@ export class JunctionService extends BaseDataService<TvJunction> {
 	update ( object: TvJunction ): void {
 
 		// this.createJunctionMesh( object );
+
+	}
+
+	getNearestJunction ( target: Vector3, maxDistance = 10 ): TvJunction | undefined {
+
+		let nearestJunction: TvJunction | undefined;
+		let nearestDistance = maxDistance;
+
+		for ( const junction of this.mapService.map.getJunctions() ) {
+
+			const distance = junction.centroid?.distanceTo( target ) ?? Number.MAX_SAFE_INTEGER;
+
+			if ( distance <= nearestDistance ) {
+				nearestJunction = junction;
+				nearestDistance = distance;
+			}
+
+		}
+
+		return nearestJunction;
 
 	}
 

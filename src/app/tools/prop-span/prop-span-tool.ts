@@ -300,9 +300,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 	updateRoadSpanObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat, road?: TvRoad ) {
 
-		this.tool.removeRoadSpanObject( roadObject.road, roadObject );
-
-		this.tool.addRoadSpanObject( roadObject.road, roadObject );
+		this.tool.roadObjectService.updateRoadObjectMesh( roadObject.road, roadObject );
 
 		this.debugService?.updateDebugState( roadObject.road, DebugState.SELECTED );
 

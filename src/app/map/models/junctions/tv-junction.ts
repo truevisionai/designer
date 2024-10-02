@@ -59,9 +59,6 @@ export class TvJunction {
 		return Array.from( this.connections.values() );
 	}
 
-	/**
-	 * @deprecated use JunctionRoadService
-	 */
 	getIncomingRoads (): TvRoad[] {
 
 		const roads = new Set<TvRoad>();
@@ -82,9 +79,6 @@ export class TvJunction {
 
 	}
 
-	/**
-	 * @deprecated use JunctionRoadService
-	 */
 	getIncomingSplines (): AbstractSpline[] {
 
 		const splines = new Set<AbstractSpline>();
@@ -408,5 +402,9 @@ export class TvJunction {
 
 		return junction;
 
+	}
+
+	getKey (): string {
+		return this.getIncomingSplines().map( s => s.uuid ).sort().join( '_' );
 	}
 }

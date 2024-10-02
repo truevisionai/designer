@@ -6,33 +6,30 @@ import { Injectable } from '@angular/core';
 import { GameObject } from 'app/objects/game-object';
 import * as THREE from 'three';
 import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
-import { TvRoad } from '../models/tv-road.model';
+import { TvRoad } from '../../../map/models/tv-road.model';
 import { LaneBufferGeometry } from './LaneBufferGeometry';
-import { TvLaneSide, TvLaneType } from '../models/tv-common';
+import { TvLaneSide, TvLaneType } from '../../../map/models/tv-common';
 import { LaneRoadMarkBuilder } from './lane-road-mark.builder';
 import { Maths } from 'app/utils/maths';
-import { TvObjectType } from '../interfaces/i-tv-object';
-import { MeshGeometryData } from '../models/mesh-geometry.data';
-import { TvLane } from '../models/tv-lane';
-import { TvLaneSection } from '../models/tv-lane-section';
-import { Vertex } from '../models/vertex';
+import { TvObjectType } from '../../../map/interfaces/i-tv-object';
+import { MeshGeometryData } from '../../../map/models/mesh-geometry.data';
+import { TvLane } from '../../../map/models/tv-lane';
+import { TvLaneSection } from '../../../map/models/tv-lane-section';
+import { Vertex } from '../../../map/models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { OdMaterials } from './od-materials.service';
-import { TvMap } from '../models/tv-map.model';
-import { TvRoadObject, TvRoadObjectType } from "../models/objects/tv-road-object";
-import { RoadSignalBuilder } from "../road-signal/road-signal.builder";
-import { RoadObjectBuilder } from "../road-object/road-object.builder";
-import { RoadService } from 'app/services/road/road.service';
-import { Log } from "../../core/utils/log";
-import { InvalidRoadLength, NoGeometriesFound, ValidationException } from "../../exceptions/exceptions";
+import { TvRoadObject, TvRoadObjectType } from "../../../map/models/objects/tv-road-object";
+import { RoadSignalBuilder } from "./road-signal.builder";
+import { RoadObjectBuilder } from "./road-object.builder";
+import { Log } from "../../../core/utils/log";
+import { InvalidRoadLength, NoGeometriesFound, ValidationException } from "../../../exceptions/exceptions";
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
-import { RoadObjectValidator } from '../road-object/road-object-validator';
-import { TvMaterialService } from "../../assets/material/tv-material.service";
+import { RoadObjectValidator } from '../../../map/road-object/road-object-validator';
+import { TvMaterialService } from "../../../assets/material/tv-material.service";
+import { MeshBuilder } from 'app/core/builders/mesh.builder';
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class RoadBuilder {
+@Injectable()
+export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	private debug = false;
 
@@ -41,19 +38,12 @@ export class RoadBuilder {
 		private materialService: TvMaterialService,
 		private signalBuilder: RoadSignalBuilder,
 		private roadObjectBuilder: RoadObjectBuilder,
-		private roadService: RoadService,
 	) {
 	}
 
-	rebuildRoad ( road: TvRoad, map: TvMap ): GameObject {
+	build ( object: TvRoad ): THREE.Object3D {
 
-		if ( road.gameObject ) map.gameObject.remove( road.gameObject );
-
-		road.gameObject = this.buildRoad( road );
-
-		map.gameObject.add( road.gameObject );
-
-		return road.gameObject;
+		return this.buildRoad( object );
 
 	}
 
@@ -470,7 +460,7 @@ export class RoadBuilder {
 
 		for ( const signal of road.getRoadSignals() ) {
 
-			signal.mesh = this.signalBuilder.buildSignal( road, signal )
+			signal.mesh = this.signalBuilder.build( signal, road )
 
 			if ( !signal.mesh ) continue;
 

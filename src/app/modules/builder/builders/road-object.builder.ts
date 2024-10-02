@@ -18,29 +18,27 @@ import {
 	TextureLoader,
 	Vector3
 } from 'three';
-import { TvOrientation, TvSide } from '../models/tv-common';
+import { TvOrientation, TvSide } from '../../../map/models/tv-common';
 import { Injectable } from "@angular/core";
-import { TvRoad } from "../models/tv-road.model";
+import { TvRoad } from "../../../map/models/tv-road.model";
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { Maths } from 'app/utils/maths';
 import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
 import { TvConsole } from 'app/core/utils/console';
-import { ExtrudeService } from '../../factories/extrude.service';
-import { TvObjectVertexLocal } from "../models/objects/tv-object-vertex-local";
+import { ExtrudeService } from '../../../factories/extrude.service';
+import { TvObjectVertexLocal } from "../../../map/models/objects/tv-object-vertex-local";
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
-import { MeshBuilder } from "../../core/builders/mesh.builder";
-import { AssetService } from "../../assets/asset.service";
-import { AssetType } from "../../assets/asset.model";
-import { COLOR } from "../../views/shared/utils/colors.service";
-import { TvObjectRepeat } from "../models/objects/tv-object-repeat";
-import { Log } from "../../core/utils/log";
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
-import { TvMaterialService } from "../../assets/material/tv-material.service";
-import { TvTextureService } from "../../assets/texture/tv-texture.service";
+import { MeshBuilder } from "../../../core/builders/mesh.builder";
+import { AssetService } from "../../../assets/asset.service";
+import { AssetType } from "../../../assets/asset.model";
+import { COLOR } from "../../../views/shared/utils/colors.service";
+import { TvObjectRepeat } from "../../../map/models/objects/tv-object-repeat";
+import { Log } from "../../../core/utils/log";
+import { RoadGeometryService } from "../../../services/road/road-geometry.service";
+import { TvMaterialService } from "../../../assets/material/tv-material.service";
+import { TvTextureService } from "../../../assets/texture/tv-texture.service";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	constructor (

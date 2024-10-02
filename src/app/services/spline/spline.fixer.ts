@@ -225,55 +225,8 @@ export class SplineFixerService {
 
 	public setInternalLinks ( spline: AbstractSpline ): void {
 
-		const segments = spline.getSegments();
-
-		for ( const segment of segments ) {
-
-			const prevSegment = spline.getPreviousSegment( segment );
-			const nextSegment = spline.getNextSegment( segment );
-
-			if ( segment instanceof TvRoad ) {
-				this.setSuccessor( segment, nextSegment );
-				this.setPredecessor( segment, prevSegment );
-			}
-
-		}
+		SplineUtils.updateInternalLinks( spline );
 
 	}
 
-	private setSuccessor ( road: TvRoad, nextSegment: TvRoad | TvJunction ): void {
-
-		if ( nextSegment instanceof TvRoad ) {
-
-			road.setSuccessorRoad( nextSegment, TvContactPoint.START );
-
-		} else if ( nextSegment instanceof TvJunction ) {
-
-			road.setSuccessor( TvRoadLinkType.JUNCTION, nextSegment );
-
-		} else {
-
-			// if ( setNull ) segment.successor = null;
-
-		}
-
-	}
-
-	private setPredecessor ( road: TvRoad, prevSegment: TvRoad | TvJunction ): void {
-
-		if ( prevSegment instanceof TvRoad ) {
-
-			road.setPredecessorRoad( prevSegment, TvContactPoint.END );
-
-		} else if ( prevSegment instanceof TvJunction ) {
-
-			road.setPredecessor( TvRoadLinkType.JUNCTION, prevSegment );
-
-		} else {
-
-			// if ( setNull ) segment.predecessor = null;
-
-		}
-
-	}
 }

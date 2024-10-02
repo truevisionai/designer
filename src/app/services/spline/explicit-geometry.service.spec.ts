@@ -12,13 +12,13 @@ import { RoadControlPoint } from "app/objects/road/road-control-point";
 import { EXPLICIT_CIRCLE_XODR, SplineTestHelper } from "./spline-test-helper.service";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { HttpClientModule } from "@angular/common/http";
-import { SplineBuilder } from "./spline.builder";
+import { SplineGeometryGenerator } from "./spline-geometry-generator";
 import { SplineFactory } from "./spline.factory";
 import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
 
 describe( 'ExplicitGeometryService', () => {
 
-	let builder: SplineBuilder;
+	let builder: SplineGeometryGenerator;
 	let service: ExplicitGeometryService;
 	let spline: AbstractSpline;
 	let testHelper: SplineTestHelper;
@@ -32,7 +32,7 @@ describe( 'ExplicitGeometryService', () => {
 
 		testHelper = TestBed.get( SplineTestHelper );
 		service = TestBed.get( ExplicitGeometryService );
-		builder = TestBed.get( SplineBuilder );
+		builder = TestBed.get( SplineGeometryGenerator );
 
 		const road = new TvRoad( '', 0, 100 );
 
@@ -164,7 +164,7 @@ describe( 'ExplicitGeometryService', () => {
 
 		expect( prevHdgs ).toEqual( newHdgs );
 
-		builder.build( road.spline );
+		builder.generateGeometryAndBuildSegmentsAndBounds( road.spline );
 
 		expect( road.spline.getControlPointCount() ).toBe( 5 );
 		expect( road.spline.getGeometryCount() ).toBe( 4 );

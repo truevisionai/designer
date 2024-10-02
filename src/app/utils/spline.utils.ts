@@ -15,6 +15,8 @@ import {
 import { RoadUtils } from "./road.utils";
 import { Vector2 } from "three";
 import { TvAbstractRoadGeometry } from "../map/models/geometries/tv-abstract-road-geometry";
+import { TvContactPoint } from "app/map/models/tv-common";
+import { TvRoadLinkType } from "app/map/models/tv-road-link";
 
 export function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
@@ -80,6 +82,60 @@ export function breakGeometries ( geometries: TvAbstractRoadGeometry[], cutStart
 }
 
 export class SplineUtils {
+
+	static updateInternalLinks ( spline: AbstractSpline ): void {
+
+		const segments = spline.getSegments();
+
+		for ( const segment of segments ) {
+
+			const prevSegment = spline.getPreviousSegment( segment );
+			const nextSegment = spline.getNextSegment( segment );
+
+			if ( segment instanceof TvRoad ) {
+				this.setSuccessor( segment, nextSegment );
+				this.setPredecessor( segment, prevSegment );
+			}
+
+		}
+
+	}
+
+	private static setSuccessor ( road: TvRoad, nextSegment: TvRoad | TvJunction ): void {
+
+		if ( nextSegment instanceof TvRoad ) {
+
+			road.setSuccessorRoad( nextSegment, TvContactPoint.START );
+
+		} else if ( nextSegment instanceof TvJunction ) {
+
+			road.setSuccessor( TvRoadLinkType.JUNCTION, nextSegment );
+
+		} else {
+
+			// if ( setNull ) segment.successor = null;
+
+		}
+
+	}
+
+	private static setPredecessor ( road: TvRoad, prevSegment: TvRoad | TvJunction ): void {
+
+		if ( prevSegment instanceof TvRoad ) {
+
+			road.setPredecessorRoad( prevSegment, TvContactPoint.END );
+
+		} else if ( prevSegment instanceof TvJunction ) {
+
+			road.setPredecessor( TvRoadLinkType.JUNCTION, prevSegment );
+
+		} else {
+
+			// if ( setNull ) segment.predecessor = null;
+
+		}
+
+	}
 
 	static updateSegment ( spline: AbstractSpline, sOffset: number, segment: NewSegment ): void {
 

@@ -6,7 +6,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { AutoSignalizationType, AutoSignalizeJunctionService, JunctionSignaliztion } from "./auto-signalize-junction.service";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";

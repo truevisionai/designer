@@ -15,14 +15,14 @@ import {
 	ShapeGeometry,
 	Vector2
 } from "three";
-import { PropPolygon } from "./prop-polygon.model";
-import { MeshBuilder } from "../../core/builders/mesh.builder";
-import { GameObject } from "../../objects/game-object";
-import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { AppConfig } from "../../app.config";
-import { AbstractSpline } from "../../core/shapes/abstract-spline";
-import { TvTransform } from '../models/tv-transform';
-import { PropPoint } from "../prop-point/prop-point.model";
+import { PropPolygon } from "../../../map/prop-polygon/prop-polygon.model";
+import { MeshBuilder } from "../../../core/builders/mesh.builder";
+import { GameObject } from "../../../objects/game-object";
+import { AbstractControlPoint } from "../../../objects/abstract-control-point";
+import { AppConfig } from "../../../app.config";
+import { AbstractSpline } from "../../../core/shapes/abstract-spline";
+import { TvTransform } from '../../../map/models/tv-transform';
+import { PropPoint } from "../../../map/prop-point/prop-point.model";
 
 import earcut from 'earcut';
 import { AssetType } from 'app/assets/asset.model';
@@ -34,9 +34,7 @@ interface IChildAndMesh {
 	worldMatrix?: Matrix4;
 }
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
 	constructor ( private assetService: AssetService ) {

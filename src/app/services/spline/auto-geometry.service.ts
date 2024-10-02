@@ -96,7 +96,7 @@ export class AutoGeometryService {
 
 				const newGeometries = this.breakGeometries( splineGeometries, sStart, sEnd );
 
-				newGeometries.forEach( geometry => road.getPlanView().addGeometry( geometry ) );
+				newGeometries.forEach( geometry => road.addGeometryAndUpdateCoords( geometry ) );
 
 			}
 

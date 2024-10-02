@@ -18,20 +18,19 @@ import {
 	TextureLoader,
 	Vector3
 } from 'three';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../../services/api.service';
 import { TvOrientation } from 'app/map/models/tv-common';
 import { TextObjectService } from 'app/services/text-object.service';
 import { AssetService } from 'app/assets/asset.service';
 import { AssetType } from 'app/assets/asset.model';
-import { SignalDatabase } from './road-signal.database';
+import { SignalDatabase } from '../../../map/road-signal/road-signal.database';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
-import { TvTextureService } from "../../assets/texture/tv-texture.service";
+import { RoadGeometryService } from "../../../services/road/road-geometry.service";
+import { TvTextureService } from "../../../assets/texture/tv-texture.service";
+import { MeshBuilder } from 'app/core/builders/mesh.builder';
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class RoadSignalBuilder {
+@Injectable()
+export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 
 	constructor (
 		private api: ApiService,
@@ -42,7 +41,7 @@ export class RoadSignalBuilder {
 	) {
 	}
 
-	buildSignal ( road: TvRoad, signal: TvRoadSignal ): Object3D {
+	build ( signal: TvRoadSignal, road?: TvRoad ): Object3D {
 
 		if ( signal.type === 'roadMark' ) {
 
@@ -276,7 +275,7 @@ export class RoadSignalBuilder {
 
 	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ) {
 
-		const roadCoord = RoadGeometryService.instance.findRoadPosition(road, signal.s, signal.t );
+		const roadCoord = RoadGeometryService.instance.findRoadPosition( road, signal.s, signal.t );
 
 		let hdg: number;
 

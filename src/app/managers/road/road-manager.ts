@@ -8,8 +8,7 @@ import { MapService } from "app/services/map/map.service";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
 import { LaneManager } from "../lane/lane.manager";
-import { RoadBuilder } from "app/map/builders/road.builder";
-import { SplineBuilder } from "app/services/spline/spline.builder";
+import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 import { RoadLinkManager } from "./road-link.manager";
 import { SceneService } from "app/services/scene.service";
 import { SplineService } from "../../services/spline/spline.service";
@@ -19,6 +18,7 @@ import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Log } from "app/core/utils/log";
 import { RoadValidator } from "./road-validator";
 import { LinkUtils } from "app/utils/link.utils";
+import { MapEvents } from "app/events/map-events";
 
 @Injectable( {
 	providedIn: 'root'
@@ -32,8 +32,7 @@ export class RoadManager {
 		private roadObjectService: RoadObjectService,
 		private roadElevationManager: RoadElevationManager,
 		private laneManager: LaneManager,
-		private roadBuilder: RoadBuilder,
-		private splineBuilder: SplineBuilder,
+		private splineBuilder: SplineGeometryGenerator,
 		private roadLinkManager: RoadLinkManager,
 		private splineService: SplineService,
 		private roadValidator: RoadValidator
@@ -71,12 +70,6 @@ export class RoadManager {
 		} else {
 
 			Log.warn( 'Spline already exists', road.spline.toString() );
-
-		}
-
-		if ( road.gameObject ) {
-
-			this.mapService.map.gameObject.add( road.gameObject );
 
 		}
 
@@ -122,8 +115,6 @@ export class RoadManager {
 
 		}
 
-		this.removeMesh( road );
-
 		if ( this.mapService.hasRoad( road ) ) {
 
 			this.mapService.map.removeRoad( road );
@@ -136,23 +127,21 @@ export class RoadManager {
 
 	}
 
-	removeMesh ( road: TvRoad ) {
+	// removeMesh ( road: TvRoad ) {
 
-		road.getRoadObjects().forEach( object => {
+	// 	road.getRoadObjects().forEach( object => {
 
-			this.roadObjectService.removeObject3d( road, object );
+	// 		this.roadObjectService.removeObject3d( road, object );
 
-		} );
+	// 	} );
 
-		this.mapService.map.gameObject.remove( road.gameObject );
+	// 	this.mapService.map.gameObject.remove( road.gameObject );
 
-	}
+	// }
 
 	updateRoad ( road: TvRoad ) {
 
 		if ( this.debug ) Log.debug( 'Update', road.toString() );
-
-		this.mapService.map.gameObject.remove( road.gameObject );
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
@@ -202,18 +191,9 @@ export class RoadManager {
 
 	private rebuildRoad ( road: TvRoad ): void {
 
-		if ( road.gameObject ) {
-
-			this.mapService.map.gameObject.remove( road.gameObject );
-
-			// try to remove from both places
-			SceneService.removeFromMain( road.gameObject );
-
-		}
-
 		try {
 
-			this.roadBuilder.rebuildRoad( road, this.mapService.map );
+			MapEvents.makeMesh.emit( road );
 
 		} catch ( error ) {
 

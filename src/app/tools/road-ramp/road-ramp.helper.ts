@@ -20,7 +20,7 @@ import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { RoadDividerService } from "../../services/road/road-divider.service";
 import { JunctionFactory } from "../../factories/junction.factory";
 import { SplineService } from "../../services/spline/spline.service";
-import { SplineBuilder } from 'app/services/spline/spline.builder';
+import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-generator';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
 import { LaneUtils } from 'app/utils/lane.utils';
@@ -47,7 +47,7 @@ export class RampToolHelper {
 		public roadCutService: RoadDividerService,
 		public junctionFactory: JunctionFactory,
 		public splineService: SplineService,
-		public splineBuilder: SplineBuilder,
+		public splineBuilder: SplineGeometryGenerator,
 		public roadDividerService: RoadDividerService,
 	) {
 	}
@@ -95,7 +95,7 @@ export class RampToolHelper {
 		// NOTE: This is a hack to make the ramp road work
 		rampRoad.spline.segmentMap.set( 0, rampRoad );
 
-		this.splineBuilder.build( rampRoad.spline );
+		this.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( rampRoad.spline );
 
 		return rampRoad;
 

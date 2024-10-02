@@ -7,53 +7,37 @@ import { TvMap } from 'app/map/models/tv-map.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
 import { TvConsole } from 'app/core/utils/console';
-import { RoadObjectService } from 'app/map/road-object/road-object.service';
-import { RoadSignalService } from '../map/road-signal/road-signal.service';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
-import { SurfaceBuilder } from 'app/map/surface/surface.builder';
-import { SceneService } from './scene.service';
-import { PropPolygonService } from "../map/prop-polygon/prop-polygon.service";
-import { RoadBuilder } from 'app/map/builders/road.builder';
-import { SplineBuilder } from './spline/spline.builder';
-import { RoadFactory } from 'app/factories/road-factory.service';
-import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
-import { SplineService } from "./spline/spline.service";
-import { RoadService } from "./road/road.service";
-import { JunctionBuilder } from './junction/junction.builder';
+import { SceneService } from '../../../services/scene.service';
+import { SplineGeometryGenerator } from '../../../services/spline/spline-geometry-generator';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionManager } from 'app/managers/junction-manager';
 import { ConnectionFactory } from 'app/factories/connection.factory';
 import { LinkUtils } from 'app/utils/link.utils';
 import { Log } from 'app/core/utils/log';
 import { Surface } from 'app/map/surface/surface.model';
-import { JunctionBoundsService } from './junction/junction-geometry.service';
+import { JunctionBoundsService } from '../../../services/junction/junction-geometry.service';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { BuilderManager } from 'app/core/builders/builder-manager';
+import { MapEvents } from 'app/events/map-events';
+import { PropCurveMeshManager, PropPolygonMeshManager, SurfaceMeshManager } from '../managers/mesh-managers';
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class SceneBuilderService {
+@Injectable()
+export class SceneBuilder {
 
 	constructor (
-		private splineBuilder: SplineBuilder,
-		private roadBuilder: RoadBuilder,
-		private surfaceBuilder: SurfaceBuilder,
-		private roadObjectService: RoadObjectService,
-		private roadSignalService: RoadSignalService,
-		private propPolygonService: PropPolygonService,
-		private roadFactory: RoadFactory,
-		private signalIdService: RoadSignalIdService,
-		private splineService: SplineService,
-		private roadService: RoadService,
-		private junctionBuilder: JunctionBuilder,
+		private splineBuilder: SplineGeometryGenerator,
 		private junctionManager: JunctionManager,
 		private connectionFactory: ConnectionFactory,
 		private junctionBoundaryService: TvJunctionBoundaryService,
 		private junctionBoundsService: JunctionBoundsService,
 		private builderManager: BuilderManager,
+		private surfaceMeshManager: SurfaceMeshManager,
+		private propCurveMeshManager: PropCurveMeshManager,
+		private propPolygonMeshManager: PropPolygonMeshManager,
 	) {
+		MapEvents.mapImported.subscribe( map => this.buildScene( map ) );
 	}
 
 	buildScene ( map: TvMap ) {
@@ -64,7 +48,7 @@ export class SceneBuilderService {
 
 		map.getJunctions().forEach( junction => this.buildJunction( map, junction ) );
 
-		map.getSurfaces().forEach( surface => this.buildSurface( map, surface ) );
+		map.getSurfaces().forEach( surface => this.surfaceMeshManager.buildSurface( surface, map ) );
 
 		map.getProps().forEach( prop => {
 
@@ -72,9 +56,9 @@ export class SceneBuilderService {
 
 		} );
 
-		map.propCurves.forEach( propCurve => this.buildPropCurve( map, propCurve ) );
+		map.propCurves.forEach( curve => this.propCurveMeshManager.buildPropCurve( curve, map ) );
 
-		map.propPolygons.forEach( propPolygon => this.buildPropPolygon( map, propPolygon ) );
+		map.propPolygons.forEach( polygon => this.propPolygonMeshManager.buildPropPolygon( polygon, map ) );
 
 		SceneService.addToMain( map.gameObject );
 
@@ -91,14 +75,7 @@ export class SceneBuilderService {
 
 	buildSurface ( map: TvMap, surface: Surface ): void {
 
-		surface.mesh = this.surfaceBuilder.build( surface );
-
-		if ( !surface.mesh ) {
-			Log.error( `Error building surface mesh for surface id ${ surface.uuid }` );
-			return;
-		}
-
-		map.surfaceGroup.add( surface, surface.mesh );
+		this.surfaceMeshManager.buildSurface( surface, map );
 
 	}
 
@@ -119,9 +96,7 @@ export class SceneBuilderService {
 
 		this.junctionBoundsService.updateBounds( junction );
 
-		junction.mesh = this.junctionBuilder.buildJunction( junction );
-
-		map.gameObject.add( junction.mesh );
+		this.builderManager.buildJunction( junction, map );
 
 	}
 
@@ -223,21 +198,7 @@ export class SceneBuilderService {
 
 		road.spline = spline;
 
-		road.gameObject = this.roadBuilder.buildRoad( road );
-
-		map.gameObject.add( road.gameObject );
-
-	}
-
-	buildPropCurve ( map: TvMap, curve: PropCurve ): void {
-
-		this.builderManager.buildPropCurve( curve, map );
-
-	}
-
-	buildPropPolygon ( map: TvMap, propPolygon: PropPolygon ): void {
-
-		this.propPolygonService.update( propPolygon );
+		this.builderManager.buildRoad( road, map );
 
 	}
 
