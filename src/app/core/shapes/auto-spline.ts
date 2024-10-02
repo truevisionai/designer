@@ -16,6 +16,10 @@ import { AbstractControlPoint } from "../../objects/abstract-control-point";
  */
 export class DepAutoSpline extends AbstractSpline {
 
+	getPoints ( stepSize: number ): Vector3[] {
+		throw new Error( 'Method not implemented.' );
+	}
+
 	public type: SplineType = SplineType.AUTO;
 
 	public polyline: Polyline;

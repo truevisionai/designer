@@ -4,6 +4,8 @@
 
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { AbstractSpline, SplineType } from './abstract-spline';
+import { Vector3 } from 'three';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 
 export class AutoSpline extends AbstractSpline {
 
@@ -16,8 +18,18 @@ export class AutoSpline extends AbstractSpline {
 	}
 
 	exportGeometries (): TvAbstractRoadGeometry[] {
-
 		if ( this.controlPoints.length < 2 ) return [];
+	}
+
+	getPoints ( stepSize: number ): Vector3[] {
+
+		const points: TvPosTheta[] = []
+
+		for ( let s = 0; s < this.getLength(); s += stepSize ) {
+			points.push( this.getCoordAtOffset( s ) );
+		}
+
+		return points.map( p => p.position );
 
 	}
 

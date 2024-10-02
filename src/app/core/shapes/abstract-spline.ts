@@ -62,6 +62,8 @@ export abstract class AbstractSpline {
 		this.idCounter = 1;
 	}
 
+	abstract getPoints ( stepSize: number ): Vector3[];
+
 	protected constructor ( closed?: boolean, tension?: number ) {
 
 		this.id = AbstractSpline.idCounter++;

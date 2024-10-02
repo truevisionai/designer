@@ -241,7 +241,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
-		const points = this.splineService.getPoints( spline, LINE_STEP );
+		const points = spline.getPoints( LINE_STEP );
 
 		points.forEach( point => point.z += LINE_ZOFFSET );
 

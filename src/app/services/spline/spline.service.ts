@@ -164,19 +164,6 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	/**
-	 *
-	 * @param spline
-	 * @param step
-	 * @returns
-	 * @deprecated
-	 */
-	getPoints ( spline: AbstractSpline, step: number ): Vector3[] {
-
-		return this.splinePositionService.getPoints( spline, step );
-
-	}
-
 	updateIndexes ( spline: AbstractSpline ): void {
 
 		spline.updateIndexes();

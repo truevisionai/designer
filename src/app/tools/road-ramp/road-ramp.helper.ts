@@ -241,7 +241,7 @@ export class RampToolHelper {
 
 		this.splineBuilder.buildSpline( spline );
 
-		const points = this.splineService.getPoints( spline, 0.1 );
+		const points = spline.getPoints( 0.1 );
 
 		const line = this.debug.createLine( points );
 
@@ -255,7 +255,7 @@ export class RampToolHelper {
 
 		this.splineBuilder.buildGeometry( spline );
 
-		const positions = this.splineService.getPoints( spline, 0.1 );
+		const positions = spline.getPoints( 0.1 );
 
 		const geometry = new LineGeometry();
 
