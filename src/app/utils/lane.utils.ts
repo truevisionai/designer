@@ -8,7 +8,7 @@ import { TrafficRule } from "../map/models/traffic-rule";
 import { TravelDirection, TurnType, TvContactPoint, TvLaneSide, TvLaneType } from "../map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
-import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvLink } from "app/map/models/tv-link";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { Maths } from "./maths";
 
@@ -332,7 +332,7 @@ export class LaneUtils {
 
 	}
 
-	static createIncomingCoords ( roadCoord: TvRoadCoord | TvRoadLink, corner: boolean, matchDirection = true ) {
+	static createIncomingCoords ( roadCoord: TvRoadCoord | TvLink, corner: boolean, matchDirection = true ) {
 
 		const direction = LaneUtils.determineDirection( roadCoord.contact );
 
@@ -354,7 +354,7 @@ export class LaneUtils {
 		return coords;
 	}
 
-	static createOutgoingCoords ( roadCoord: TvRoadCoord | TvRoadLink, corner: boolean, matchDirection = true ) {
+	static createOutgoingCoords ( roadCoord: TvRoadCoord | TvLink, corner: boolean, matchDirection = true ) {
 
 		const direction = LaneUtils.determineOutDirection( roadCoord.contact );
 
@@ -416,7 +416,7 @@ export class LaneUtils {
 		return Maths.findTurnType( roadA.position, roadB.position, roadA.hdg );
 	}
 
-	static findLeftMostIncomingLane ( incoming: TvRoadLink | TvRoadCoord | TvLaneCoord, matchDirection = true ): TvLane {
+	static findLeftMostIncomingLane ( incoming: TvLink | TvRoadCoord | TvLaneCoord, matchDirection = true ): TvLane {
 
 		const direction = LaneUtils.determineDirection( incoming.contact );
 
@@ -439,7 +439,7 @@ export class LaneUtils {
 		return null;
 	}
 
-	static findRightMostIncomingLane ( incoming: TvRoadLink | TvRoadCoord | TvLaneCoord, matchDirection = true ): TvLane {
+	static findRightMostIncomingLane ( incoming: TvLink | TvRoadCoord | TvLaneCoord, matchDirection = true ): TvLane {
 
 		const direction = LaneUtils.determineDirection( incoming.contact );
 

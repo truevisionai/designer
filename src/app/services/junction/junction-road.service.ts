@@ -7,7 +7,8 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Log } from 'app/core/utils/log';
-import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLink, TvLinkType } from 'app/map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint, TvLaneSide, TvLaneType } from 'app/map/models/tv-common';
 import { RoadService } from '../road/road.service';
 import { MapService } from '../map/map.service';
@@ -24,9 +25,9 @@ export class JunctionRoadService {
 		private mapService: MapService
 	) { }
 
-	getRoadLinks ( junction: TvJunction ): TvRoadLink[] {
+	getRoadLinks ( junction: TvJunction ): TvLink[] {
 
-		const links: TvRoadLink[] = [];
+		const links: TvLink[] = [];
 
 		const roads = this.getIncomingRoads( junction );
 
@@ -38,11 +39,11 @@ export class JunctionRoadService {
 
 			if ( road.successor?.element == junction ) {
 
-				links.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.END ) );
+				links.push( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
 
 			} else if ( road.predecessor?.element == junction ) {
 
-				links.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.START ) );
+				links.push( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
 
 			}
 
@@ -69,11 +70,11 @@ export class JunctionRoadService {
 			// start is closer to junction than end, so its likely a predecessor
 			if ( startDistance < endDistance ) {
 
-				road.predecessor = new TvRoadLink( TvRoadLinkType.JUNCTION, junction, null );
+				road.predecessor = LinkFactory.createJunctionLink( junction );
 
 			} else {
 
-				road.successor = new TvRoadLink( TvRoadLinkType.JUNCTION, junction, null );
+				road.successor = LinkFactory.createJunctionLink( junction );
 
 			}
 

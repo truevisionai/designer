@@ -11,7 +11,7 @@ import { TvRoad } from '../tv-road.model';
 import { TvPosTheta } from '../tv-pos-theta';
 import { Log } from 'app/core/utils/log';
 import { RoadUtils } from 'app/utils/road.utils';
-import { TvRoadLink } from '../tv-road-link';
+import { TvLink } from '../tv-link';
 
 /**
 
@@ -105,7 +105,7 @@ export class TvJunctionConnection {
 
 	}
 
-	getOutgoingLink (): TvRoadLink | null {
+	getOutgoingLink (): TvLink | null {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
@@ -119,7 +119,7 @@ export class TvJunctionConnection {
 
 	}
 
-	getPredecessorLink (): TvRoadLink | null {
+	getPredecessorLink (): TvLink | null {
 
 		if ( this.connectingRoad.predecessor ) {
 
@@ -133,7 +133,7 @@ export class TvJunctionConnection {
 
 	}
 
-	getSuccessorLink (): TvRoadLink | null {
+	getSuccessorLink (): TvLink | null {
 
 		if ( this.connectingRoad.successor ) {
 
@@ -298,6 +298,30 @@ export class TvJunctionConnection {
 		} );
 
 		return hash;
+	}
+
+	replaceIncomingRoad ( target: TvRoad, incomingRoad: TvRoad, incomingRoadContact: TvContactPoint ): void {
+
+		if ( this.incomingRoad.equals( target ) ) {
+			this.incomingRoad = incomingRoad;
+		}
+
+		if ( this.connectingRoad.predecessor?.isEqualTo( target ) ) {
+			this.connectingRoad.setPredecessorRoad( incomingRoad, incomingRoadContact );
+		}
+
+		if ( this.connectingRoad.successor?.isEqualTo( target ) ) {
+			this.connectingRoad.setSuccessorRoad( incomingRoad, incomingRoadContact );
+		}
+
+	}
+
+	isLinkedToRoad ( target: TvRoad ): boolean {
+
+		return this.incomingRoad.equals( target ) ||
+			this.connectingRoad.predecessor?.isEqualTo( target ) ||
+			this.connectingRoad.successor?.isEqualTo( target )
+
 	}
 
 }

@@ -8,7 +8,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { LaneSectionFactory } from "./lane-section.factory";
 import { RoadFactory } from "./road-factory.service";
 import { Vector3 } from "three";
-import { TvRoadLink, TvRoadLinkType } from "../map/models/tv-road-link";
+import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from "../map/models/tv-common";
 
 describe( 'LaneSectionFactory', () => {
@@ -37,8 +37,8 @@ describe( 'LaneSectionFactory', () => {
 		const roadA = roadFactory.createStraightRoad( new Vector3( -100, 0, 0 ), 0, 50 );
 		const roadB = roadFactory.createStraightRoad( new Vector3( 50, 0, 0 ), 0, 50 );
 		const joiningRoad = roadFactory.createStraightRoad( new Vector3( -50, 0, 0 ), 0, 100 );
-		const aEnd = new TvRoadLink( TvRoadLinkType.ROAD, roadA, TvContactPoint.END );
-		const bStart = new TvRoadLink( TvRoadLinkType.ROAD, roadB, TvContactPoint.START );
+		const aEnd = LinkFactory.createRoadLink( roadA, TvContactPoint.END );
+		const bStart = LinkFactory.createRoadLink( roadB, TvContactPoint.START );
 
 		const laneSection = factory.createForJoiningRoad( joiningRoad, aEnd, bStart )[ 0 ];
 

@@ -12,7 +12,7 @@ import { JunctionDebugService } from "../../services/junction/junction.debug";
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { JunctionManager } from "../../managers/junction-manager";
-import { TvRoadLink } from 'app/map/models/tv-road-link';
+import { TvLink } from 'app/map/models/tv-link';
 import { Log } from 'app/core/utils/log';
 import { RoadService } from 'app/services/road/road.service';
 import { ConnectionFactory } from 'app/factories/connection.factory';
@@ -50,9 +50,9 @@ export class JunctionToolHelper {
 
 	}
 
-	createCustomJunction ( roadLinks: TvRoadLink[] ): TvJunction {
+	createCustomJunction ( roadLinks: TvLink[] ): TvJunction {
 
-		const sortedLinks: TvRoadLink[] = this.roadService.sortLinks( roadLinks );
+		const sortedLinks: TvLink[] = this.roadService.sortLinks( roadLinks );
 
 		const centroid = this.roadService.findCentroid( sortedLinks );
 
@@ -78,8 +78,8 @@ export class JunctionToolHelper {
 				// check if this is the first and last connection
 				const isFirstAndLast = i == 0 && j == sortedLinks.length - 1;
 
-				this.junctionManager.setLink( linkA.element, linkA.contactPoint, junction );
-				this.junctionManager.setLink( linkB.element, linkB.contactPoint, junction );
+				linkA.linkJunction( junction );
+				linkB.linkJunction( junction );
 
 				this.connectionFactory.addConnections( junction, linkA.toRoadCoord(), linkB.toRoadCoord(), !rightConnectionCreated );
 				this.connectionFactory.addConnections( junction, linkB.toRoadCoord(), linkA.toRoadCoord(), isFirstAndLast );

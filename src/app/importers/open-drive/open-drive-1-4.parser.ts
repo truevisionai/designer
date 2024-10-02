@@ -30,7 +30,8 @@ import { TvMapHeader } from '../../map/models/tv-map-header';
 import { TvMap } from '../../map/models/tv-map.model';
 import { TvObjectMarking } from '../../map/models/tv-object-marking';
 import { TvPlaneView } from '../../map/models/tv-plane-view';
-import { TvRoadLink, TvRoadLinkType } from '../../map/models/tv-road-link';
+import { TvLink, TvLinkType } from '../../map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
 import { TvRoadObject } from '../../map/models/objects/tv-road-object';
 import { TvRoadSignal } from '../../map/road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from '../../map/models/tv-road-type.class';
@@ -331,7 +332,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parseRoadLinkChild ( xmlElement: XmlElement ): TvRoadLink {
+	public parseRoadLinkChild ( xmlElement: XmlElement ): TvLink {
 
 		const elementType = this.parseElementType( xmlElement.attr_elementType );
 		const elementId = parseFloat( xmlElement.attr_elementId );
@@ -340,18 +341,18 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const elementS = xmlElement.attr_elementS ? parseFloat( xmlElement.attr_elementS ) : null;
 		const elementDir: TvOrientation = xmlElement.attr_elementDir ? this.parseOrientation( xmlElement.attr_elementDir ) : null;
 
-		if ( elementType == TvRoadLinkType.ROAD && contactPoint == null ) {
+		if ( elementType == TvLinkType.ROAD && contactPoint == null ) {
 			Log.error( 'No contact point found for link', xmlElement );
 			return;
 		}
 
 		let element = null;
 
-		if ( elementType == TvRoadLinkType.ROAD ) {
+		if ( elementType == TvLinkType.ROAD ) {
 
 			element = this.findRoad( elementId );
 
-		} else if ( elementType == TvRoadLinkType.JUNCTION ) {
+		} else if ( elementType == TvLinkType.JUNCTION ) {
 
 			element = this.findJunction( elementId );
 
@@ -367,7 +368,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			return;
 		}
 
-		const roadLink = new TvRoadLink( elementType, element, contactPoint );
+		const roadLink = LinkFactory.createLink( elementType, element, contactPoint );
 
 		if ( elementS ) {
 			roadLink.elementS = elementS;
@@ -400,15 +401,15 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parseElementType ( value: string ): TvRoadLinkType {
+	public parseElementType ( value: string ): TvLinkType {
 
 		if ( value === 'road' ) {
 
-			return TvRoadLinkType.ROAD;
+			return TvLinkType.ROAD;
 
 		} else if ( value === 'junction' ) {
 
-			return TvRoadLinkType.JUNCTION;
+			return TvLinkType.JUNCTION;
 
 		} else {
 

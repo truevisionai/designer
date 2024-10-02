@@ -14,7 +14,7 @@ import { RoadUtils } from "app/utils/road.utils";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { SplineUtils } from "app/utils/spline.utils";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvRoadLinkType } from "app/map/models/tv-road-link";
+import { TvLinkType } from "app/map/models/tv-link";
 
 @Injectable( {
 	providedIn: 'root'
@@ -171,41 +171,6 @@ export class SplineFixerService {
 			}
 
 		} );
-
-	}
-
-	// road segments should be linked to each other
-	private fixUnLinkedSegments ( spline: AbstractSpline ) {
-
-		if ( spline.type != SplineType.AUTOV2 ) return;
-
-		const segments = spline.segmentMap.values();
-
-		for ( let currentSegment of segments ) {
-
-			if ( currentSegment instanceof TvRoad ) {
-
-				const nextSegment = spline.segmentMap.getNext( currentSegment );
-
-				if ( nextSegment instanceof TvRoad && currentSegment.successor == null ) {
-
-					if ( this.debug ) Log.warn( "Fixing Links", currentSegment.toString(), nextSegment.toString() );
-
-					RoadUtils.linkSuccessor( currentSegment, nextSegment, TvContactPoint.START );
-
-				}
-
-				if ( nextSegment instanceof TvRoad && nextSegment.predecessor == null ) {
-
-					if ( this.debug ) Log.warn( "Fixing Links", currentSegment.toString(), nextSegment.toString() );
-
-					RoadUtils.linkSuccessor( currentSegment, nextSegment, TvContactPoint.START );
-
-				}
-
-			}
-
-		}
 
 	}
 

@@ -15,7 +15,8 @@ import { TvUtils } from 'app/map/models/tv-utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { LaneSectionFactory } from './lane-section.factory';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
-import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLink } from 'app/map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
 import { MapService } from "../services/map/map.service";
 import { ControlPointFactory } from "./control-point.factory";
 import { RoadStyleManager } from 'app/assets/road-style/road-style.manager';
@@ -262,7 +263,7 @@ export class RoadFactory {
 		return road;
 	}
 
-	createFromLinks ( spline: AbstractSpline, firstNode: TvRoadLink, secondNode: TvRoadLink ): TvRoad {
+	createFromLinks ( spline: AbstractSpline, firstNode: TvLink, secondNode: TvLink ): TvRoad {
 
 		const road = this.createDefaultRoad();
 
@@ -362,9 +363,9 @@ export class RoadFactory {
 
 		road.sStart = 0;
 
-		road.setPredecessor( TvRoadLinkType.ROAD, entry.road, entry.contact );
+		road.predecessor = LinkFactory.createRoadLink( entry.road, entry.contact );
 
-		road.setSuccessor( TvRoadLinkType.ROAD, exit.road, exit.contact );
+		road.successor = LinkFactory.createRoadLink( exit.road, exit.contact );
 
 		return road;
 

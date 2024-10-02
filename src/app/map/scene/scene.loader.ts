@@ -36,7 +36,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
-import { TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLinkType } from 'app/map/models/tv-link';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
@@ -909,7 +909,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		try {
 
-			if ( elementType == TvRoadLinkType.ROAD && contactPoint == null ) {
+			if ( elementType == TvLinkType.ROAD && contactPoint == null ) {
 				Log.warn( 'Unknown contact point of link for road:' + road.toString() );
 				return;
 			}
@@ -943,13 +943,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private findElement ( type: TvRoadLinkType, elementId: number ) {
+	private findElement ( type: TvLinkType, elementId: number ) {
 
-		if ( type == TvRoadLinkType.ROAD ) {
+		if ( type == TvLinkType.ROAD ) {
 
 			return this.findRoad( elementId );
 
-		} else if ( type == TvRoadLinkType.JUNCTION ) {
+		} else if ( type == TvLinkType.JUNCTION ) {
 
 			return this.map.getJunctionById( elementId );
 
@@ -961,15 +961,15 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseElementType ( value: string ): TvRoadLinkType {
+	private parseElementType ( value: string ): TvLinkType {
 
 		if ( value === 'road' ) {
 
-			return TvRoadLinkType.ROAD;
+			return TvLinkType.ROAD;
 
 		} else if ( value === 'junction' ) {
 
-			return TvRoadLinkType.JUNCTION;
+			return TvLinkType.JUNCTION;
 
 		} else {
 

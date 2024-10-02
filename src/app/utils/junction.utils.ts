@@ -15,7 +15,7 @@ import { Vector3 } from "three";
 import { Maths } from "./maths";
 import { TvJunctionConnection } from "../map/models/junctions/tv-junction-connection";
 import { TvJunctionLaneLink } from "../map/models/junctions/tv-junction-lane-link";
-import { TvRoadLink } from "../map/models/tv-road-link";
+import { TvLink } from "../map/models/tv-link";
 import { TvLane } from "app/map/models/tv-lane";
 import { LaneUtils } from "./lane.utils";
 import { Log } from "app/core/utils/log";
@@ -174,7 +174,7 @@ export class JunctionUtils {
 		return links;
 	}
 
-	static findSuccessors ( road: TvRoad, targetLane: TvLane, link: TvRoadLink ) {
+	static findSuccessors ( road: TvRoad, targetLane: TvLane, link: TvLink ) {
 
 		if ( !link ) return [];
 
@@ -235,7 +235,7 @@ export class JunctionUtils {
 
 	}
 
-	static findPredecessors ( road: TvRoad, targetLane: TvLane, link: TvRoadLink ) {
+	static findPredecessors ( road: TvRoad, targetLane: TvLane, link: TvLink ) {
 
 		if ( !link ) return [];
 

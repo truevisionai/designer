@@ -19,7 +19,7 @@ import { TvUtils } from "app/map/models/tv-utils";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { Log } from "app/core/utils/log";
 import { Maths } from "app/utils/maths";
-import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
+import { LinkFactory } from 'app/map/models/link-factory';
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { RoadWidthService } from "app/services/road/road-width.service";
 
@@ -427,9 +427,9 @@ export class ConnectionFactory {
 
 		road.junction = junction;
 
-		road.setPredecessor( TvRoadLinkType.ROAD, entry.road, entry.contact );
+		road.predecessor = LinkFactory.createRoadLink( entry.road, entry.contact );
 
-		road.setSuccessor( TvRoadLinkType.ROAD, exit.road, exit.contact );
+		road.successor = LinkFactory.createRoadLink( exit.road, exit.contact );
 
 		road.spline = SplineFactory.createManeuverSpline( entry, exit );
 

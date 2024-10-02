@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvLink } from "app/map/models/tv-link";
 import { ISelectable, Highlightable } from "app/objects/i-selectable";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { Color } from "three";
@@ -18,7 +18,7 @@ export class JunctionNode extends Line2 implements ISelectable, Highlightable {
 	isSelected: boolean;
 	defaulColor = COLOR.CYAN;
 
-	constructor ( public link: TvRoadLink, public geometry: LineGeometry, public material: LineMaterial ) {
+	constructor ( public link: TvLink, public geometry: LineGeometry, public material: LineMaterial ) {
 		super( geometry, material );
 	}
 

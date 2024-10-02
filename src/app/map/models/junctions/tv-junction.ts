@@ -11,7 +11,8 @@ import { TvRoad } from '../tv-road.model';
 import { TvJunctionType } from './tv-junction-type';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvContactPoint } from '../tv-common';
-import { TvRoadLink, TvRoadLinkType } from "../tv-road-link";
+import { TvLink, TvLinkType } from "../tv-link";
+import { LinkFactory } from '../link-factory';
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
@@ -107,12 +108,9 @@ export class TvJunction {
 
 	}
 
-	/**
-	 * @deprecated use JunctionRoadService
-	 */
-	getLinks (): TvRoadLink[] {
+	getLinks (): TvLink[] {
 
-		const edges: TvRoadLink[] = [];
+		const edges: TvLink[] = [];
 
 		const roads = this.getRoads();
 
@@ -120,15 +118,19 @@ export class TvJunction {
 
 			if ( road.geometries.length == 0 ) continue;
 
-			if ( road.successor?.type == TvRoadLinkType.JUNCTION && road.successor?.id == this.id ) {
+			if ( road.successor?.type == TvLinkType.JUNCTION && road.successor?.id == this.id ) {
 
-				edges.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.END ) );
+				const link = LinkFactory.createRoadLink( road, TvContactPoint.END )
+
+				edges.push( link );
 
 			}
 
-			if ( road.predecessor?.type == TvRoadLinkType.JUNCTION && road.predecessor?.id == this.id ) {
+			if ( road.predecessor?.type == TvLinkType.JUNCTION && road.predecessor?.id == this.id ) {
 
-				edges.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.START ) );
+				const link = LinkFactory.createRoadLink( road, TvContactPoint.START )
+
+				edges.push( link );
 
 			}
 
@@ -290,24 +292,21 @@ export class TvJunction {
 
 	}
 
-	getConnectionsByRoad ( queryRoad: TvRoad ): TvJunctionConnection[] {
+	getConnectionsByRoad ( targetRoad: TvRoad ): TvJunctionConnection[] {
 
-		const connections: TvJunctionConnection[] = [];
+		const connections = new Set<TvJunctionConnection>();
 
 		for ( const connection of this.getConnections() ) {
 
-			if ( connection.getIncomingRoad().equals( queryRoad ) ) {
+			if ( connection.isLinkedToRoad( targetRoad ) ) {
 
-				connections.push( connection );
+				connections.add( connection );
 
-			} else if ( connection.getOutgoingLink()?.isEqualTo( queryRoad ) ) {
-
-				connections.push( connection );
 			}
 
 		}
 
-		return connections
+		return Array.from( connections );
 
 	}
 
@@ -407,4 +406,15 @@ export class TvJunction {
 	getKey (): string {
 		return this.getIncomingSplines().map( s => s.uuid ).sort().join( '_' );
 	}
+
+	replaceIncomingRoad ( targetRoad: TvRoad, incomingRoad: TvRoad, incomingRoadContact: TvContactPoint ): void {
+		for ( const connection of this.getConnections() ) {
+			connection.replaceIncomingRoad( targetRoad, incomingRoad, incomingRoadContact );
+		}
+	}
+
+	removeConnectionsByRoad ( road: TvRoad, contact: TvContactPoint ): void {
+		this.getConnectionsByRoad( road ).forEach( connection => this.removeConnection( connection ) );
+	}
+
 }

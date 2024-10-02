@@ -7,7 +7,8 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map/map.service';
-import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLink, TvLinkType } from 'app/map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
 import { TvLane } from 'app/map/models/tv-lane';
 import { Vector2, Vector3 } from 'three';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
@@ -303,9 +304,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		road.junction = junction;
 
-		road.setPredecessor( TvRoadLinkType.ROAD, incoming.road, incoming.contact );
+		road.predecessor = LinkFactory.createRoadLink( incoming.road, incoming.contact );
 
-		road.setSuccessor( TvRoadLinkType.ROAD, outgoing.road, outgoing.contact );
+		road.successor = LinkFactory.createRoadLink( outgoing.road, outgoing.contact );
 
 		return road;
 
@@ -464,7 +465,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return position;
 	}
 
-	sortLinks ( links: TvRoadLink[], clockwise = true ): TvRoadLink[] {
+	sortLinks ( links: TvLink[], clockwise = true ): TvLink[] {
 
 		const points = links.map( coord => RoadGeometryService.instance.findLinkPosition( coord ) );
 
@@ -492,7 +493,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	findCentroid ( links: TvRoadLink[] ) {
+	findCentroid ( links: TvLink[] ) {
 
 		const points = links.map( link => RoadGeometryService.instance.findLinkPosition( link ).position );
 

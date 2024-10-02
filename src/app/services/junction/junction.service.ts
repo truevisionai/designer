@@ -11,7 +11,7 @@ import { DepConnectionFactory } from "../../map/junction/dep-connection.factory"
 import { MapService } from '../map/map.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLinkType } from 'app/map/models/tv-link';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
@@ -96,8 +96,8 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		const coordA = RoadGeometryService.instance.findContactCoord( roadA, contactA );
 		const coordB = RoadGeometryService.instance.findContactCoord( roadB, contactB );
 
-		this.setLink( roadA, contactA, junction );
-		this.setLink( roadB, contactB, junction );
+		roadA.linkJunction( junction, contactA );
+		roadB.linkJunction( junction, contactB );
 
 		const connectionA = this.connectionService.createConnection( junction, coordA, coordB );
 		junction.addConnection( connectionA );
@@ -108,19 +108,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		return junction;
 	}
 
-	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
-
-		if ( contact == TvContactPoint.START ) {
-
-			road.setPredecessor( TvRoadLinkType.JUNCTION, junction );
-
-		} else if ( contact == TvContactPoint.END ) {
-
-			road.setSuccessor( TvRoadLinkType.JUNCTION, junction );
-
-		}
-
-	}
 	add ( object: TvJunction ): void {
 
 		this.fireCreatedEvent( object );

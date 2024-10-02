@@ -71,7 +71,7 @@ export class SplineLinkService {
 			const junction = spline.getSuccessor() as TvJunction;
 			const road = spline.getLastSegment() as TvRoad;
 
-			this.connectionManager.removeConnections( junction, road );
+			this.connectionManager.removeConnectionAndRoads( junction, road );
 			this.junctionManager.updateJunction( junction );
 
 		}
@@ -81,7 +81,7 @@ export class SplineLinkService {
 			const junction = spline.getPredecessor() as TvJunction;
 			const road = spline.getFirstSegment() as TvRoad;
 
-			this.connectionManager.removeConnections( junction, road );
+			this.connectionManager.removeConnectionAndRoads( junction, road );
 			this.junctionManager.updateJunction( junction );
 
 		}

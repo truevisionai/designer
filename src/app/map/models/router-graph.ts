@@ -5,7 +5,7 @@
 import { TvJunction } from "./junctions/tv-junction";
 import { TvContactPoint } from "./tv-common";
 import { TvLaneSection } from "./tv-lane-section";
-import { TvRoadLinkType } from "./tv-road-link";
+import { TvLinkType } from "./tv-link";
 import { TvRoad } from "./tv-road.model";
 
 /**
@@ -178,7 +178,7 @@ class OpenDriveMap {
 
 				const roadLink = isSuccessor ? road.successor : road.predecessor;
 
-				if ( roadLink?.type !== TvRoadLinkType.ROAD || roadLink.contactPoint === null ) {
+				if ( roadLink?.type !== TvLinkType.ROAD || roadLink.contactPoint === null ) {
 					continue;
 				}
 
@@ -237,8 +237,8 @@ class OpenDriveMap {
 				const connectingRoad = this.roadMap.get( connection.connectingRoad.id );
 				if ( !incomingRoad || !connectingRoad ) continue;
 
-				const isSuccessorJunction = incomingRoad.successor?.type === TvRoadLinkType.JUNCTION && incomingRoad.successor.id === junctionId;
-				const isPredecessorJunction = incomingRoad.predecessor?.type === TvRoadLinkType.JUNCTION && incomingRoad.predecessor.id === junctionId;
+				const isSuccessorJunction = incomingRoad.successor?.type === TvLinkType.JUNCTION && incomingRoad.successor.id === junctionId;
+				const isPredecessorJunction = incomingRoad.predecessor?.type === TvLinkType.JUNCTION && incomingRoad.predecessor.id === junctionId;
 				if ( !isSuccessorJunction && !isPredecessorJunction ) continue;
 
 				const incomingLaneSection = isSuccessorJunction

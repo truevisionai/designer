@@ -9,7 +9,8 @@ import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
 import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D, Vector2 } from 'three';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
-import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLink, TvLinkType } from 'app/map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
@@ -245,7 +246,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !road.predecessor || road.predecessor.isJunction ) {
 
-			const startNode = this.createJunctionNode( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.START ) );
+			const startNode = this.createJunctionNode( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
 
 			this.nodes.addItem( road, startNode );
 
@@ -253,7 +254,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !road.successor || road.successor.isJunction ) {
 
-			const endNode = this.createJunctionNode( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.END ) );
+			const endNode = this.createJunctionNode( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
 
 			this.nodes.addItem( road, endNode );
 
@@ -261,7 +262,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	createJunctionNode ( link: TvRoadLink ): JunctionNode {
+	createJunctionNode ( link: TvLink ): JunctionNode {
 
 		const roadCoord = link.toRoadCoord();
 

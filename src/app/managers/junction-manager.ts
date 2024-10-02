@@ -15,7 +15,8 @@ import { AbstractSpline, NewSegment, SplineType } from "../core/shapes/abstract-
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { IntersectionGroup } from "./Intersection-group";
 import { TvContactPoint } from "../map/models/tv-common";
-import { TvRoadLink, TvRoadLinkType } from "../map/models/tv-road-link";
+import { TvLink, TvLinkType } from "../map/models/tv-link";
+import { LinkFactory } from 'app/map/models/link-factory';
 import { JunctionService } from "../services/junction/junction.service";
 import { Maths } from "app/utils/maths";
 import { RoadUtils } from "../utils/road.utils";
@@ -28,7 +29,6 @@ import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { ConnectionManager } from "../map/junction/connection.manager";
 import { JunctionBoundsService } from "../services/junction/junction-geometry.service";
-import { JunctionLinkService } from "app/services/junction/junction-link.service";
 import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
 import { MapEvents } from "app/events/map-events";
 
@@ -53,7 +53,6 @@ export class JunctionManager {
 		public boundaryService: TvJunctionBoundaryService,
 		public splineFixer: SplineFixerService,
 		public connectionManager: ConnectionManager,
-		public junctionLinkService: JunctionLinkService,
 		public intersectionService: SplineIntersectionService,
 	) {
 	}
@@ -416,7 +415,7 @@ export class JunctionManager {
 
 			} else if ( nextSegment instanceof TvJunction ) {
 
-				previousSegment.setPredecessor( TvRoadLinkType.JUNCTION, nextSegment );
+				previousSegment.setPredecessor( TvLinkType.JUNCTION, nextSegment );
 
 			} else {
 
@@ -712,13 +711,7 @@ export class JunctionManager {
 
 	removeConnections ( junction: TvJunction, incomingRoad: TvRoad ) {
 
-		this.connectionManager.removeConnections( junction, incomingRoad );
-
-	}
-
-	removeAllConnections ( junction: TvJunction ) {
-
-		this.connectionManager.removeAllConnections( junction );
+		this.connectionManager.removeConnectionAndRoads( junction, incomingRoad );
 
 	}
 
@@ -892,7 +885,7 @@ export class JunctionManager {
 
 	}
 
-	getJunctionLinks ( spline: AbstractSpline, junction: TvJunction, coords?: TvRoadLink[] ): TvRoadLink[] {
+	getJunctionLinks ( spline: AbstractSpline, junction: TvJunction, coords?: TvLink[] ): TvLink[] {
 
 		coords = coords || [];
 
@@ -900,11 +893,11 @@ export class JunctionManager {
 		const next = spline.getNextSegment( junction );
 
 		if ( prev instanceof TvRoad ) {
-			coords.push( new TvRoadLink( TvRoadLinkType.ROAD, prev, TvContactPoint.END ) );
+			coords.push( LinkFactory.createRoadLink( prev, TvContactPoint.END ) );
 		}
 
 		if ( next instanceof TvRoad ) {
-			coords.push( new TvRoadLink( TvRoadLinkType.ROAD, next, TvContactPoint.START ) );
+			coords.push( LinkFactory.createRoadLink( next, TvContactPoint.START ) );
 		}
 
 		return coords;
@@ -1164,7 +1157,7 @@ export class JunctionManager {
 			return;
 		}
 
-		const links: TvRoadLink[] = this.createGroupCoords( group, junction );
+		const links: TvLink[] = this.createGroupCoords( group, junction );
 
 		this.addConnectionsFromLinks( junction, links );
 
@@ -1181,23 +1174,9 @@ export class JunctionManager {
 		}
 	}
 
-	addConnectionsFromLinks ( junction: TvJunction, links: TvRoadLink[] ): void {
+	addConnectionsFromLinks ( junction: TvJunction, links: TvLink[] ): void {
 
 		this.connectionManager.addConnectionsFromLinks( junction, links );
-
-	}
-
-	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
-
-		if ( contact == TvContactPoint.START ) {
-
-			road.setPredecessor( TvRoadLinkType.JUNCTION, junction );
-
-		} else if ( contact == TvContactPoint.END ) {
-
-			road.setSuccessor( TvRoadLinkType.JUNCTION, junction );
-
-		}
 
 	}
 
@@ -1237,9 +1216,9 @@ export class JunctionManager {
 
 	}
 
-	private createGroupCoords ( group: IntersectionGroup, junction: TvJunction ): TvRoadLink[] {
+	private createGroupCoords ( group: IntersectionGroup, junction: TvJunction ): TvLink[] {
 
-		const coords: TvRoadLink[] = [];
+		const coords: TvLink[] = [];
 
 		const splines = this.addJunctionInGroupSplines( group, junction );
 
@@ -1340,13 +1319,13 @@ export class JunctionManager {
 
 	}
 
-	sortLinks ( links: TvRoadLink[] ): TvRoadLink[] {
+	sortLinks ( links: TvLink[] ): TvLink[] {
 
 		return this.roadService.sortLinks( links );
 
 	}
 
-	createRoadCoordNew ( spline: AbstractSpline, sStart: number, sEnd: number, junction: TvJunction, group: IntersectionGroup ): TvRoadLink[] {
+	createRoadCoordNew ( spline: AbstractSpline, sStart: number, sEnd: number, junction: TvJunction, group: IntersectionGroup ): TvLink[] {
 
 		// Clamp the start and end values
 		sStart = Maths.clamp( sStart, 0, spline.getLength() );
@@ -1357,7 +1336,7 @@ export class JunctionManager {
 
 		const junctionWidth = Math.abs( sEnd - sStart );
 
-		const links: TvRoadLink[] = [];
+		const links: TvLink[] = [];
 
 		const junctionCenter = group.getRepresentativePosition();
 
@@ -1391,7 +1370,7 @@ export class JunctionManager {
 
 			if ( startSegment instanceof TvRoad ) {
 
-				links.push( new TvRoadLink( TvRoadLinkType.ROAD, startSegment, TvContactPoint.END ) );
+				links.push( LinkFactory.createRoadLink( startSegment, TvContactPoint.END ) );
 
 				RoadUtils.unlinkSuccessor( startSegment );
 
@@ -1403,7 +1382,7 @@ export class JunctionManager {
 
 			if ( endSegment instanceof TvRoad ) {
 
-				links.push( new TvRoadLink( TvRoadLinkType.ROAD, endSegment, TvContactPoint.START ) );
+				links.push( LinkFactory.createRoadLink( endSegment, TvContactPoint.START ) );
 
 				RoadUtils.unlinkPredecessor( endSegment );
 
@@ -1483,7 +1462,7 @@ export class JunctionManager {
 
 	// 		if ( startSegment instanceof TvRoad ) {
 
-	// 			links.push( new TvRoadLink( TvRoadLinkType.ROAD, startSegment, TvContactPoint.END ) );
+	// 			links.push( LinkFactory.createLink( TvRoadLinkType.ROAD, startSegment, TvContactPoint.END ) );
 
 	// 			RoadUtils.unlinkSuccessor( startSegment );
 
@@ -1496,7 +1475,7 @@ export class JunctionManager {
 	// 			// spline.segmentMap.remove( endSegment );
 	// 			// spline.segmentMap.set( sEnd + 5, endSegment );
 
-	// 			links.push( new TvRoadLink( TvRoadLinkType.ROAD, endSegment, TvContactPoint.START ) );
+	// 			links.push( LinkFactory.createLink( TvRoadLinkType.ROAD, endSegment, TvContactPoint.START ) );
 
 	// 			RoadUtils.unlinkPredecessor( endSegment );
 
@@ -1527,7 +1506,7 @@ export class JunctionManager {
 	// 	return links;
 	// }
 
-	addJunctionCoords ( spline: AbstractSpline, links: TvRoadLink[], junction: TvJunction ) {
+	addJunctionCoords ( spline: AbstractSpline, links: TvLink[], junction: TvJunction ) {
 
 		Log.warn( 'addJunctionCoords', junction?.toString(), spline.segmentMap );
 
@@ -1535,7 +1514,7 @@ export class JunctionManager {
 
 		if ( previousSegment instanceof TvRoad ) {
 
-			links.push( new TvRoadLink( TvRoadLinkType.ROAD, previousSegment, TvContactPoint.END ) );
+			links.push( LinkFactory.createRoadLink( previousSegment, TvContactPoint.END ) );
 
 		} else {
 
@@ -1547,7 +1526,7 @@ export class JunctionManager {
 
 		if ( nextSegment instanceof TvRoad ) {
 
-			links.push( new TvRoadLink( TvRoadLinkType.ROAD, nextSegment, TvContactPoint.START ) );
+			links.push( LinkFactory.createRoadLink( nextSegment, TvContactPoint.START ) );
 
 		} else if ( nextSegment instanceof TvJunction ) {
 
@@ -1581,7 +1560,7 @@ export class JunctionManager {
 
 	}
 
-	handleEdgeJunction ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], sStart: number, sEnd: number, startSegment: TvRoad, mainRoad: TvRoad, junctionWidth: number ) {
+	handleEdgeJunction ( spline: AbstractSpline, junction: TvJunction, coords: TvLink[], sStart: number, sEnd: number, startSegment: TvRoad, mainRoad: TvRoad, junctionWidth: number ) {
 
 		if ( !mainRoad ) {
 			Log.error( 'Main Road is NULL' );
@@ -1615,7 +1594,7 @@ export class JunctionManager {
 					RoadUtils.unlinkSuccessor( mainRoad );
 					RoadUtils.unlinkPredecessor( nextLink.element );
 
-					coords.push( new TvRoadLink( TvRoadLinkType.ROAD, nextLink.element, nextLink.contactPoint ) );
+					coords.push( LinkFactory.createRoadLink( nextLink.element, nextLink.contactPoint ) );
 
 				} else {
 
@@ -1625,7 +1604,7 @@ export class JunctionManager {
 
 			}
 
-			mainRoad.successor = new TvRoadLink( TvRoadLinkType.JUNCTION, junction, null );
+			mainRoad.successor = LinkFactory.createJunctionLink( junction );
 
 		} else if ( isNearStart ) {
 
@@ -1650,18 +1629,18 @@ export class JunctionManager {
 		}
 	}
 
-	handleJunctionAtEnd ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], sStartJunction: number, road: TvRoad ) {
+	handleJunctionAtEnd ( spline: AbstractSpline, junction: TvJunction, coords: TvLink[], sStartJunction: number, road: TvRoad ) {
 
 		// SplineUtils.removeSegment( spline, junction );
 		SplineUtils.addSegment( spline, sStartJunction, junction );
 
 		this.rebuildRoad( road );
 
-		coords.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.END ) );
+		coords.push( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
 
 	}
 
-	handleJunctionAtStart ( spline: AbstractSpline, junction: TvJunction, coords: TvRoadLink[], junctionWidth: number ) {
+	handleJunctionAtStart ( spline: AbstractSpline, junction: TvJunction, coords: TvLink[], junctionWidth: number ) {
 
 		const road = spline.getRoadSegments()[ 0 ];
 
@@ -1670,15 +1649,15 @@ export class JunctionManager {
 		SplineUtils.addSegment( spline, 0, junction );
 		SplineUtils.addSegment( spline, junctionWidth, road );
 
-		road.setPredecessor( TvRoadLinkType.JUNCTION, junction );
+		road.setPredecessor( TvLinkType.JUNCTION, junction );
 
 		this.rebuildRoad( road );
 
-		coords.push( new TvRoadLink( TvRoadLinkType.ROAD, road, TvContactPoint.START ) );
+		coords.push( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
 
 	}
 
-	handleJunctionInMiddle ( spline: AbstractSpline, junction: TvJunction, sStart: number, sEnd: number ): TvRoadLink[] {
+	handleJunctionInMiddle ( spline: AbstractSpline, junction: TvJunction, sStart: number, sEnd: number ): TvLink[] {
 
 		const segment = spline.segmentMap.findAt( sStart );
 
@@ -1689,8 +1668,8 @@ export class JunctionManager {
 			Log.debug( 'created new segment', newRoad.toString(), 'From', segment.toString(), 'For', junction.toString(), sStart, sEnd );
 
 			return [
-				new TvRoadLink( TvRoadLinkType.ROAD, segment, TvContactPoint.END ),
-				new TvRoadLink( TvRoadLinkType.ROAD, newRoad, TvContactPoint.START )
+				LinkFactory.createRoadLink( segment, TvContactPoint.END ),
+				LinkFactory.createRoadLink( newRoad, TvContactPoint.START )
 			];
 
 		} else if ( segment instanceof TvJunction ) {
@@ -1701,8 +1680,8 @@ export class JunctionManager {
 			const next = spline.segmentMap.getNext( segment );
 
 			return [
-				new TvRoadLink( TvRoadLinkType.ROAD, prev, TvContactPoint.END ),
-				new TvRoadLink( TvRoadLinkType.ROAD, next, TvContactPoint.START )
+				LinkFactory.createLink( TvLinkType.ROAD, prev, TvContactPoint.END ),
+				LinkFactory.createLink( TvLinkType.ROAD, next, TvContactPoint.START )
 			];
 
 		} else {
@@ -1738,9 +1717,9 @@ export class JunctionManager {
 
 		}
 
-		clone.setPredecessor( TvRoadLinkType.JUNCTION, junction );
+		clone.setPredecessor( TvLinkType.JUNCTION, junction );
 
-		oldRoad.setSuccessor( TvRoadLinkType.JUNCTION, junction );
+		oldRoad.setSuccessor( TvLinkType.JUNCTION, junction );
 
 		this.linkService.updateSuccessorRelationWhileCut( clone, clone.successor, oldRoad );
 
@@ -1782,17 +1761,17 @@ export class JunctionManager {
 		if ( previousSegment instanceof TvRoad && nextSegment instanceof TvRoad ) {
 
 			return [
-				new TvRoadLink( TvRoadLinkType.ROAD, previousSegment, TvContactPoint.END ),
-				new TvRoadLink( TvRoadLinkType.ROAD, nextSegment, TvContactPoint.START )
+				LinkFactory.createRoadLink( previousSegment, TvContactPoint.END ),
+				LinkFactory.createRoadLink( nextSegment, TvContactPoint.START )
 			];
 
 		} else if ( previousSegment instanceof TvRoad ) {
 
-			return [ new TvRoadLink( TvRoadLinkType.ROAD, previousSegment, TvContactPoint.END ) ];
+			return [ LinkFactory.createRoadLink( previousSegment, TvContactPoint.END ) ];
 
 		} else if ( nextSegment instanceof TvRoad ) {
 
-			return [ new TvRoadLink( TvRoadLinkType.ROAD, nextSegment, TvContactPoint.START ) ];
+			return [ LinkFactory.createRoadLink( nextSegment, TvContactPoint.START ) ];
 
 		} else {
 
@@ -1806,7 +1785,7 @@ export class JunctionManager {
 
 	private replaceConnections ( junction: TvJunction, oldRoad: TvRoad, newRoad: TvRoad, contact: TvContactPoint ) {
 
-		this.junctionLinkService.replaceIncomingRoad( junction, oldRoad, newRoad, contact );
+		junction.replaceIncomingRoad( oldRoad, newRoad, contact );
 
 	}
 

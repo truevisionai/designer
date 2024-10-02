@@ -8,7 +8,8 @@ import { TvRoad } from "../models/tv-road.model";
 import { RoadManager } from "../../managers/road/road-manager";
 import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
 import { JunctionRoadService } from "../../services/junction/junction-road.service";
-import { TvRoadLink, TvRoadLinkType } from "../models/tv-road-link";
+import { TvLink, TvLinkType } from "../models/tv-link";
+import { LinkFactory } from '../models/link-factory';
 import { Log } from "../../core/utils/log";
 import { ConnectionFactory } from "../../factories/connection.factory";
 import { RoadService } from "../../services/road/road.service";
@@ -33,7 +34,7 @@ export class ConnectionManager {
 	) {
 	}
 
-	addConnectionsFromLinks ( junction: TvJunction, links: TvRoadLink[] ): void {
+	addConnectionsFromLinks ( junction: TvJunction, links: TvLink[] ): void {
 
 		for ( let i = 0; i < links.length; i++ ) {
 
@@ -64,7 +65,7 @@ export class ConnectionManager {
 
 	}
 
-	private shouldSkipLinkPair ( linkA: TvRoadLink, linkB: TvRoadLink ): boolean {
+	private shouldSkipLinkPair ( linkA: TvLink, linkB: TvLink ): boolean {
 
 		// roads should be different
 		if ( linkA.element === linkB.element ) return true;
@@ -76,7 +77,7 @@ export class ConnectionManager {
 	}
 
 	// eslint-disable-next-line max-lines-per-function
-	generateConnections ( junction: TvJunction, links: TvRoadLink[] = [] ): void {
+	generateConnections ( junction: TvJunction, links: TvLink[] = [] ): void {
 
 		Log.info( 'Generating connections for junction', junction.toString() );
 
@@ -84,12 +85,12 @@ export class ConnectionManager {
 
 		links.forEach( link => roadLinks.push( link ) );
 
-		const sortedLinks: TvRoadLink[] = this.roadService.sortLinks( roadLinks );
+		const sortedLinks: TvLink[] = this.roadService.sortLinks( roadLinks );
 
 		const centroid = this.roadService.findCentroid( sortedLinks );
 
 		// Removing current connections
-		this.removeAllConnections( junction );
+		this.removeAllConnectionsAndRoads( junction );
 
 		for ( let i = 0; i < sortedLinks.length; i++ ) {
 
@@ -120,35 +121,19 @@ export class ConnectionManager {
 
 	addConnectionsForRoad ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ) {
 
-		this.generateConnections( junction, [ new TvRoadLink( TvRoadLinkType.ROAD, road, contact ) ] );
+		this.generateConnections( junction, [ LinkFactory.createRoadLink( road, contact ) ] );
 
 	}
 
-	removeConnections ( junction: TvJunction, road: TvRoad ): void {
+	removeConnectionAndRoads ( junction: TvJunction, road: TvRoad ): void {
 
-		const connections = junction.getConnections();
+		const connections = junction.getConnectionsByRoad( road );
 
 		for ( const connection of connections ) {
 
-			if ( connection.incomingRoad === road ) {
+			this.roadManager.removeRoad( connection.connectingRoad );
 
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			} else if ( connection.connectingRoad.successor?.element == road ) {
-
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			} else if ( connection.connectingRoad.predecessor?.element == road ) {
-
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			}
+			junction.removeConnection( connection );
 
 		}
 
@@ -190,7 +175,7 @@ export class ConnectionManager {
 
 	}
 
-	removeAllConnections ( junction: TvJunction ): void {
+	removeAllConnectionsAndRoads ( junction: TvJunction ): void {
 
 		const connections = junction.getConnections();
 
@@ -203,4 +188,5 @@ export class ConnectionManager {
 		}
 
 	}
+
 }

@@ -18,7 +18,8 @@ import { JunctionService } from '../junction/junction.service';
 import { SplineLinkService } from 'app/managers/spline-link.service';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLink, TvLinkType } from 'app/map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
 import { JunctionToolHelper } from 'app/tools/junction/junction-tool.helper';
 import { MapValidatorService } from '../map/map-validator.service';
 import { HttpClient } from '@angular/common/http';
@@ -393,8 +394,8 @@ export class SplineTestHelper {
 		const rightRoad = this.mapService.findRoad( 2 );
 
 		const links = [
-			new TvRoadLink( TvRoadLinkType.ROAD, leftRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, rightRoad, TvContactPoint.START )
+			LinkFactory.createRoadLink( leftRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( rightRoad, TvContactPoint.START )
 		]
 
 		// TODO: use service or factory to create junction
@@ -421,13 +422,13 @@ export class SplineTestHelper {
 		const rightRoad = this.mapService.findRoad( 3 );
 
 		const junction1 = this.junctionToolHelper.createCustomJunction( [
-			new TvRoadLink( TvRoadLinkType.ROAD, leftRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, middleRoad, TvContactPoint.START ),
+			LinkFactory.createRoadLink( leftRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( middleRoad, TvContactPoint.START ),
 		] );
 
 		const junction2 = this.junctionToolHelper.createCustomJunction( [
-			new TvRoadLink( TvRoadLinkType.ROAD, middleRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, rightRoad, TvContactPoint.START )
+			LinkFactory.createRoadLink( middleRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( rightRoad, TvContactPoint.START )
 		] );
 
 

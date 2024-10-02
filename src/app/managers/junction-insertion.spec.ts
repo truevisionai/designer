@@ -19,7 +19,8 @@ import { SplineManager } from "./spline-manager";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { expectCorrectSegmentOrder } from "tests/base-test.spec";
 import { AbstractSpline, NewSegment } from "app/core/shapes/abstract-spline";
-import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
+import { TvLink, TvLinkType } from "app/map/models/tv-link";
+import { LinkFactory } from 'app/map/models/link-factory';
 
 describe( 'JunctionManager: InsertJunction', () => {
 
@@ -99,7 +100,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	}
 
-	function expectCoords ( spline: AbstractSpline, junction: TvJunction, expected: TvRoadLink[] ) {
+	function expectCoords ( spline: AbstractSpline, junction: TvJunction, expected: TvLink[] ) {
 
 		const coords = junctionManager.getJunctionLinks( spline, junction );
 
@@ -185,8 +186,8 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectInstances( spline, [ TvRoad, TvJunction, TvRoad ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START )
+			LinkFactory.createRoadLink( R1, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.START )
 		] );
 
 	} );
@@ -228,13 +229,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ R1, J2, R3, J1, R2 ] );
 
 		expectCoords( spline, J2, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, R3, TvContactPoint.START )
+			LinkFactory.createRoadLink( R1, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R3, TvContactPoint.START )
 		] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R3, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START )
+			LinkFactory.createRoadLink( R3, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.START )
 		] );
 
 	} );
@@ -270,7 +271,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectInstances( spline, [ TvRoad, TvRoad, TvJunction ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.END ),
 		] );
 
 	} );
@@ -308,7 +309,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ R1, J1 ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R1, TvContactPoint.END ),
 		] );
 
 		expect( mapService.hasRoad( 2 ) ).toBeFalse();
@@ -349,7 +350,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ J1, R1, R2 ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.START ),
+			LinkFactory.createRoadLink( R1, TvContactPoint.START ),
 		] );
 
 	} );
@@ -383,7 +384,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ junction, secondRoad ] );
 
 		expectCoords( spline, junction, [
-			new TvRoadLink( TvRoadLinkType.ROAD, secondRoad, TvContactPoint.START ),
+			LinkFactory.createRoadLink( secondRoad, TvContactPoint.START ),
 		] );
 
 	} );
@@ -420,7 +421,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ J1, R2 ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.START ),
 		] );
 
 		expect( mapService.hasRoad( 1 ) ).toBeFalse();
@@ -464,16 +465,16 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ J1, R1, J3, R2, J2 ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.START )
+			LinkFactory.createRoadLink( R1, TvContactPoint.START )
 		] );
 
 		expectCoords( spline, J3, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START )
+			LinkFactory.createRoadLink( R1, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.START )
 		] );
 
 		expectCoords( spline, J2, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.END ),
 		] );
 
 	} );

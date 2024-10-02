@@ -9,7 +9,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { OrderedMap } from "../models/ordered-map";
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
-import { TvRoadLink } from 'app/map/models/tv-road-link';
+import { TvLink } from 'app/map/models/tv-link';
 import { InvalidArgumentException, DuplicateModelException, DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
 
@@ -320,7 +320,7 @@ export abstract class AbstractSpline {
 		return this.getSuccessorLink()?.getElement();
 	}
 
-	getSuccessorLink (): TvRoadLink | undefined {
+	getSuccessorLink (): TvLink | undefined {
 		if ( this.isLastSegmentRoad() ) {
 			return this.getLastSegment<TvRoad>().successor;
 		}
@@ -330,7 +330,7 @@ export abstract class AbstractSpline {
 		return this.getPredecessorLink()?.getElement();
 	}
 
-	getPredecessorLink (): TvRoadLink | undefined {
+	getPredecessorLink (): TvLink | undefined {
 		if ( this.isFirstSegmentRoad() ) {
 			return this.getFirstSegment<TvRoad>().predecessor;
 		}

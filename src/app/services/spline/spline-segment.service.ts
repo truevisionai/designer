@@ -10,10 +10,11 @@ import { MapService } from '../map/map.service';
 import { RoadLinkService } from '../road/road-link.service';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { SplineUtils } from 'app/utils/spline.utils';
-import { TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLinkType } from 'app/map/models/tv-link';
 import { Log } from 'app/core/utils/log';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { MapEvents } from 'app/events/map-events';
+import { LinkFactory } from 'app/map/models/link-factory';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +24,8 @@ export class SplineSegmentService {
 	constructor (
 		private mapService: MapService,
 		private linkService: RoadLinkService,
-	) { }
+	) {
+	}
 
 	addSegments ( spline: AbstractSpline ): void {
 
@@ -198,15 +200,15 @@ export class SplineSegmentService {
 
 		if ( successor?.element instanceof TvRoad && predecessor?.element instanceof TvRoad ) {
 
-			predecessor.element.setSuccessorRoad( successor.element, successor.contact );
+			predecessor.element.successor = LinkFactory.createRoadLink( successor.element as TvRoad, successor.contact );
 
-			successor.element.setPredecessorRoad( predecessor.element, predecessor.contact );
+			successor.element.predecessor = LinkFactory.createRoadLink( predecessor.element as TvRoad, predecessor.contact );
 
 		} else if ( successor?.element instanceof TvJunction && predecessor?.element instanceof TvRoad ) {
 
-			predecessor.element.setSuccessor( TvRoadLinkType.JUNCTION, successor.element as TvJunction );
+			predecessor.element.successor = LinkFactory.createJunctionLink( successor.element as TvJunction );
 
-			this.linkService.replaceJunctionLinks( successor.element as TvJunction, road, predecessor.element, predecessor.contact );
+			successor.element.replaceIncomingRoad( road, predecessor.element, predecessor.contact );
 
 		}
 

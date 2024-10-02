@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvMap } from 'app/map/models/tv-map.model';
-import { TvRoadLink } from 'app/map/models/tv-road-link';
+import { TvLink } from 'app/map/models/tv-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { DebugDrawService } from '../debug/debug-draw.service';
@@ -400,7 +400,7 @@ export class MapValidatorService {
 
 	}
 
-	validateSuccessor ( roadA: TvRoad, link: TvRoadLink ) {
+	validateSuccessor ( roadA: TvRoad, link: TvLink ) {
 
 		if ( link.isRoad ) {
 
@@ -414,7 +414,7 @@ export class MapValidatorService {
 
 	}
 
-	validatePredecessor ( roadA: TvRoad, link: TvRoadLink ) {
+	validatePredecessor ( roadA: TvRoad, link: TvLink ) {
 
 		if ( link.isRoad ) {
 
@@ -428,7 +428,7 @@ export class MapValidatorService {
 
 	}
 
-	validateRoadLink ( roadA: TvRoad, link: TvRoadLink, linkType: 'successor' | 'predecessor' ) {
+	validateRoadLink ( roadA: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ) {
 
 		if ( !link.isRoad ) return;
 
@@ -537,7 +537,7 @@ export class MapValidatorService {
 
 	}
 
-	validateLinkHeading ( roadA: TvRoad, roadB: TvRoad, link: TvRoadLink, linkType: string ): void {
+	validateLinkHeading ( roadA: TvRoad, roadB: TvRoad, link: TvLink, linkType: string ): void {
 
 		const contactA = linkType === 'successor' ? TvContactPoint.END : TvContactPoint.START;
 		const pointA = RoadGeometryService.instance.findContactPosition( roadA, contactA );
@@ -578,7 +578,7 @@ export class MapValidatorService {
 		return Math.abs( Math.PI - smallestDiff ) < tolerance;
 	}
 
-	private reportError ( label: string, roadId: number, expectedDirection: string, linkType: string, link: TvRoadLink, hdgA: number, hdgB: number ) {
+	private reportError ( label: string, roadId: number, expectedDirection: string, linkType: string, link: TvLink, hdgA: number, hdgB: number ) {
 
 		this.errors.push( `${ label }:${ roadId } invalid hdg, should be ${ expectedDirection } ${ linkType }:${ link.toString() } ${ hdgA } ${ hdgB }` );
 
@@ -589,7 +589,7 @@ export class MapValidatorService {
 		// this.debugObjects.add( arrow2, arrow2 );
 	}
 
-	validateJunctionLink ( road: TvRoad, link: TvRoadLink, linkType: 'successor' | 'predecessor' ) {
+	validateJunctionLink ( road: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ) {
 
 		try {
 

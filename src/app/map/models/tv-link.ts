@@ -6,12 +6,12 @@ import { TvContactPoint, TvOrientation } from './tv-common';
 import { TvRoad } from './tv-road.model';
 import { TvJunction } from './junctions/tv-junction';
 import { TvRoadCoord } from './TvRoadCoord';
-import { TvLaneCoord } from './tv-lane-coord';
-import { TvLane } from './tv-lane';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Log } from 'app/core/utils/log';
+import { TvLaneCoord } from './tv-lane-coord';
+import { TvLane } from './tv-lane';
 
-export enum TvRoadLinkType {
+export enum TvLinkType {
 	ROAD = 'road',
 	JUNCTION = 'junction'
 }
@@ -47,11 +47,11 @@ For a virtual junction as successor or predecessor the
 @elemetType, @elementId, @elementS and @elementDir attributes shall be used.
 
  */
-export class TvRoadLink {
+export abstract class TvLink {
 
 	public element: TvRoad | TvJunction;
 
-	public type: TvRoadLinkType;
+	public type: TvLinkType;
 
 	public id: number;
 
@@ -88,13 +88,13 @@ export class TvRoadLink {
 	 * @param element Linked element (road or junction)
 	 * @param contactPoint Contact point of link on the linked element
 	 */
-	constructor ( elementType: TvRoadLinkType, element: TvRoad | TvJunction, contactPoint: TvContactPoint ) {
+	protected constructor ( elementType: TvLinkType, element: TvRoad | TvJunction, contactPoint: TvContactPoint ) {
 
 		if ( !element ) {
 			throw new Error( 'Element is required' );
 		}
 
-		if ( elementType == TvRoadLinkType.ROAD && !contactPoint ) {
+		if ( elementType == TvLinkType.ROAD && !contactPoint ) {
 			throw new Error( 'Contact point is required for road link' );
 		}
 
@@ -105,16 +105,26 @@ export class TvRoadLink {
 
 	}
 
+	abstract clone (): TvLink;
+
+	abstract linkJunction ( junction: TvJunction ): void;
+
+	abstract linkRoad ( element: TvRoad, contact: TvContactPoint ): void;
+
+	abstract unlink ( element: TvRoad, contact: TvContactPoint ): void;
+
+	abstract isEqualTo ( element: TvRoad | TvJunction ): boolean;
+
 	get contact () {
 		return this.contactPoint;
 	}
 
 	get isRoad () {
-		return this.type === TvRoadLinkType.ROAD;
+		return this.type === TvLinkType.ROAD;
 	}
 
 	get isJunction () {
-		return this.type === TvRoadLinkType.JUNCTION;
+		return this.type === TvLinkType.JUNCTION;
 	}
 
 	get laneSection () {
@@ -142,38 +152,12 @@ export class TvRoadLink {
 	}
 
 	getSpline (): AbstractSpline | undefined {
-		return this.type == TvRoadLinkType.ROAD ? this.getElement<TvRoad>().spline : undefined;
-	}
-
-	toString () {
-
-		if ( this.type == TvRoadLinkType.ROAD ) {
-
-			return `Link: ${ this.element.toString() }:${ this.contactPoint }`;
-
-		} else {
-
-			return `Link: Junction: ${ this.element.toString() }`;
-
-		}
-
-	}
-
-	toRoadCoord () {
-
-		if ( this.type == TvRoadLinkType.JUNCTION ) return;
-
-		const road = this.element as TvRoad;
-
-		const s = this.contactPoint == TvContactPoint.START ? 0 : road.length;
-
-		return new TvRoadCoord( road, s, 0 );
-
+		return this.type == TvLinkType.ROAD ? this.getElement<TvRoad>().spline : undefined;
 	}
 
 	toLaneCoord ( lane: TvLane ) {
 
-		if ( this.type == TvRoadLinkType.JUNCTION ) return;
+		if ( this.type == TvLinkType.JUNCTION ) return;
 
 		const road = this.element as TvRoad;
 
@@ -184,9 +168,21 @@ export class TvRoadLink {
 
 	}
 
+	toRoadCoord () {
+
+		if ( this.type == TvLinkType.JUNCTION ) return;
+
+		const road = this.element as TvRoad;
+
+		const s = this.contactPoint == TvContactPoint.START ? 0 : road.length;
+
+		return new TvRoadCoord( road, s, 0 );
+
+	}
+
 	setSuccessor ( otherRoad: TvRoad ): void {
 
-		if ( this.type !== TvRoadLinkType.ROAD ) {
+		if ( this.type !== TvLinkType.ROAD ) {
 			Log.error( 'RoadLinkError', 'Cannot set successor for junction link' );
 			return;
 		}
@@ -207,77 +203,88 @@ export class TvRoadLink {
 
 	}
 
-	linkJunction ( junction: TvJunction ): void {
-
-		if ( this.type !== TvRoadLinkType.ROAD ) {
-			Log.error( 'RoadLinkError', 'Cannot set link for junction link' );
-			return;
-		}
-
-		const element = this.element as TvRoad;
-
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			element.setPredecessor( TvRoadLinkType.JUNCTION, junction );
-
-		} else {
-
-			element.setSuccessor( TvRoadLinkType.JUNCTION, junction );
-
-		}
-
-	}
-
-	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
-
-		if ( this.type !== TvRoadLinkType.ROAD ) {
-			Log.error( 'RoadLinkError', 'Cannot set link for junction link' );
-			return;
-		}
-
-		const element = this.element as TvRoad;
-
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			element.setPredecessorRoad( otherRoad, otherRoadContact );
-
-		} else {
-
-			element.setSuccessorRoad( otherRoad, otherRoadContact );
-		}
-
-		if ( otherRoadContact == TvContactPoint.START ) {
-
-			otherRoad.setPredecessorRoad( element, this.contactPoint );
-
-		} else {
-
-			otherRoad.setSuccessorRoad( element, this.contactPoint );
-
-		}
-
-	}
-
-	clone (): TvRoadLink {
-
-		return new TvRoadLink(
-			this.type,
-			this.element,
-			this.contactPoint
-		);
-
-	}
-
-	matches ( link: TvRoadLink ): boolean {
+	matches ( link: TvLink ): boolean {
 
 		return this.element === link.element && this.contactPoint === link.contactPoint;
 
 	}
 
-	isEqualTo ( element: TvRoad | TvJunction ): boolean {
+}
 
-		return this.element === element;
+export class TvRoadLink extends TvLink {
 
+	constructor ( private road: TvRoad, contactPoint: TvContactPoint ) {
+		super( TvLinkType.ROAD, road, contactPoint );
 	}
 
+	clone (): TvRoadLink {
+		return new TvRoadLink( this.getElement<TvRoad>(), this.contactPoint );
+	}
+
+	toString (): string {
+		return `Link: ${ this.element.toString() }:${ this.contactPoint }`;
+	}
+
+	isEqualTo ( element: TvRoad | TvJunction ): boolean {
+		return this.element === element && this.contactPoint === this.contactPoint;
+	}
+
+	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
+
+		if ( this.contactPoint == TvContactPoint.START ) {
+			this.road.predecessor = new TvRoadLink( otherRoad, otherRoadContact );
+		} else {
+			this.road.successor = new TvRoadLink( otherRoad, otherRoadContact );
+		}
+
+		if ( otherRoadContact == TvContactPoint.START ) {
+			otherRoad.predecessor = new TvRoadLink( this.road, this.contactPoint );
+		} else {
+			otherRoad.successor = new TvRoadLink( this.road, this.contactPoint );
+		}
+	}
+
+	linkJunction ( junction: TvJunction ): void {
+		this.road.linkJunction( junction, this.contactPoint );
+	}
+
+	unlink ( road: TvRoad, contact: TvContactPoint ): void {
+		if ( this.contactPoint == TvContactPoint.START ) {
+			this.road.predecessor = null;
+		} else {
+			this.road.successor = null;
+		}
+	}
+
+}
+
+export class TvJunctionLink extends TvLink {
+
+	constructor ( private junction: TvJunction ) {
+		super( TvLinkType.JUNCTION, junction, null );
+	}
+
+	clone (): TvJunctionLink {
+		return new TvJunctionLink( this.getElement<TvJunction>() );
+	}
+
+	toString (): string {
+		return `Link: Junction: ${ this.element.toString() }`;
+	}
+
+	isEqualTo ( element: TvRoad | TvJunction ): boolean {
+		return this.element === element;
+	}
+
+	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
+		Log.error( 'RoadLinkError', 'Cannot set link for junction link' );
+	}
+
+	linkJunction ( junction: TvJunction ): void {
+		Log.error( 'RoadLinkError', 'Cannot set link for junction link' );
+	}
+
+	unlink ( road: TvRoad, contact: TvContactPoint ): void {
+		this.junction.removeConnectionsByRoad( road, contact );
+	}
 }

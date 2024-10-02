@@ -14,7 +14,8 @@ import { TvLateralProfile } from './tv-lateral.profile';
 import { TvPlaneView } from './tv-plane-view';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvLaneProfile } from './tv-lane-profile';
-import { TvRoadLink, TvRoadLinkType } from './tv-road-link';
+import { TvLink, TvLinkType } from './tv-link';
+import { LinkFactory } from './link-factory';
 import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvRoadObject } from './objects/tv-road-object';
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
@@ -75,9 +76,9 @@ export class TvRoad {
 
 	private _junction: TvJunction;
 
-	private _successor?: TvRoadLink;
+	private _successor?: TvLink;
 
-	private _predecessor?: TvRoadLink;
+	private _predecessor?: TvLink;
 
 	private cornerRoad: boolean = false;
 
@@ -130,19 +131,19 @@ export class TvRoad {
 		this._junction = value;
 	}
 
-	get successor (): TvRoadLink {
+	get successor (): TvLink {
 		return this._successor;
 	}
 
-	set successor ( value: TvRoadLink ) {
+	set successor ( value: TvLink ) {
 		this._successor = value;
 	}
 
-	get predecessor (): TvRoadLink {
+	get predecessor (): TvLink {
 		return this._predecessor;
 	}
 
-	set predecessor ( value: TvRoadLink ) {
+	set predecessor ( value: TvLink ) {
 		this._predecessor = value;
 	}
 
@@ -228,27 +229,49 @@ export class TvRoad {
 
 	}
 
-	setSuccessor ( elementType: TvRoadLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
+	setSuccessor ( elementType: TvLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
 
-		this.successor = new TvRoadLink( elementType, element, contactPoint );
+		this.successor = LinkFactory.createLink( elementType, element, contactPoint );
 
 	}
 
-	setPredecessor ( elementType: TvRoadLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
+	setPredecessor ( elementType: TvLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
 
-		this.predecessor = new TvRoadLink( elementType, element, contactPoint );
+		this.predecessor = LinkFactory.createLink( elementType, element, contactPoint );
 
 	}
 
 	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		this.setSuccessor( TvRoadLinkType.ROAD, road, contactPoint );
+		this.setSuccessor( TvLinkType.ROAD, road, contactPoint );
+
+	}
+
+	linkSuccessor ( road: TvRoad, contact: TvContactPoint ): void {
+
+		this.setSuccessorRoad( road, contact );
+
+		road.setPredecessorRoad( this, TvContactPoint.END );
+
+	}
+
+	linkJunction ( junction: TvJunction, contact: TvContactPoint ): void {
+
+		if ( contact == TvContactPoint.START ) {
+
+			this.setPredecessor( TvLinkType.JUNCTION, junction, contact );
+
+		} else {
+
+			this.setSuccessor( TvLinkType.JUNCTION, junction, contact );
+
+		}
 
 	}
 
 	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
 
-		this.setPredecessor( TvRoadLinkType.ROAD, road, contactPoint );
+		this.setPredecessor( TvLinkType.ROAD, road, contactPoint );
 
 	}
 
@@ -659,6 +682,14 @@ export class TvRoad {
 		return laneSection.getLength();
 
 	}
+
+	removeLinks (): void {
+
+		this.successor?.unlink( this, TvContactPoint.END );
+		this.predecessor?.unlink( this, TvContactPoint.START );
+
+	}
+
 
 	static ruleToString ( rule: TrafficRule ): string {
 

@@ -14,7 +14,7 @@ import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { AssetService } from 'app/assets/asset.service';
 import { RoadToolDebugger } from "./road-tool.debugger";
-import { TvRoadLink } from 'app/map/models/tv-road-link';
+import { TvLink } from 'app/map/models/tv-link';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-generator';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
@@ -56,23 +56,6 @@ export class RoadToolHelper {
 	//
 	// }
 
-	showLinks ( spline: AbstractSpline, point: AbstractControlPoint ) {
-
-		this.roadLinkService.showSplineLinks( spline, point );
-
-	}
-
-	updateLinks ( spline: AbstractSpline, point: AbstractControlPoint ) {
-
-		this.roadLinkService.updateSplineLinks( spline, point );
-
-	}
-
-	hideLinks ( selectedRoad: TvRoad ) {
-
-		this.roadLinkService.hideLinks( selectedRoad );
-
-	}
 
 	removeRoad ( road: TvRoad ) {
 

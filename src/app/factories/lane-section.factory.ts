@@ -12,7 +12,7 @@ import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvUtils } from "app/map/models/tv-utils";
 import { LaneUtils } from "app/utils/lane.utils";
-import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvLink } from "app/map/models/tv-link";
 import { TvLane } from "app/map/models/tv-lane";
 
 @Injectable( {
@@ -37,7 +37,7 @@ export class LaneSectionFactory {
 
 	}
 
-	createFromRoadLink ( joiningRoad: TvRoad, firstNode: TvRoadLink, secondNode: TvRoadLink ): TvLaneSection[] {
+	createFromRoadLink ( joiningRoad: TvRoad, firstNode: TvLink, secondNode: TvLink ): TvLaneSection[] {
 
 		return this.createForJoiningRoad( joiningRoad, firstNode, secondNode );
 
@@ -296,7 +296,7 @@ export class LaneSectionFactory {
 
 	}
 
-	createForJoiningRoad ( joiningRoad: TvRoad, predecessor: TvRoadLink, successor: TvRoadLink ): TvLaneSection[] {
+	createForJoiningRoad ( joiningRoad: TvRoad, predecessor: TvLink, successor: TvLink ): TvLaneSection[] {
 
 		const laneSection = this.createLaneSection( joiningRoad );
 
@@ -309,7 +309,7 @@ export class LaneSectionFactory {
 		return [ laneSection ];
 	}
 
-	createRightSide ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvRoadLink, successor: TvRoadLink ) {
+	createRightSide ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
 
 		const processed = new Set<TvLane>();
 
@@ -351,7 +351,7 @@ export class LaneSectionFactory {
 
 	}
 
-	createBothSides ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvRoadLink, successor: TvRoadLink ) {
+	createBothSides ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
 
 		const leftLanes = predecessor.laneSection.getLeftLanes();
 
@@ -379,7 +379,7 @@ export class LaneSectionFactory {
 
 	}
 
-	clonePredcessorSection ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvRoadLink, successor: TvRoadLink ) {
+	clonePredcessorSection ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
 
 		const sOffset = predecessor.contact == TvContactPoint.START ? 0 : road.length;
 

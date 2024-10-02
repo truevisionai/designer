@@ -3,7 +3,7 @@
  */
 
 import { TvContactPoint } from "app/map/models/tv-common";
-import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
+import { TvLink, TvLinkType } from "app/map/models/tv-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "../map/models/junctions/tv-junction";
 import { Vector2, Vector3 } from "three";
@@ -55,7 +55,7 @@ export function traverseLanes ( road: TvRoad, currentLaneId: number, callback: (
 
 export class RoadUtils {
 
-	static distanceFromSuccessor ( road: TvRoad, link: TvRoadLink ): number {
+	static distanceFromSuccessor ( road: TvRoad, link: TvLink ): number {
 
 		const end = road.getEndPosTheta();
 
@@ -75,7 +75,7 @@ export class RoadUtils {
 
 	}
 
-	static distanceFromPredecessor ( road: TvRoad, link: TvRoadLink ): number {
+	static distanceFromPredecessor ( road: TvRoad, link: TvLink ): number {
 
 		const start = road.getStartPosTheta();
 
@@ -178,45 +178,6 @@ export class RoadUtils {
 		signals.filter( object => object.s < sOffset ).forEach( signal => oldRoad.addSignal( signal ) );
 
 		newRoad.getRoadSignals().forEach( signal => signal.s -= sOffset );
-
-	}
-
-	static linkSuccessor ( road: TvRoad, successor: TvRoad, successorContact: TvContactPoint ) {
-
-		if ( road.successor ) this.unlinkSuccessor( road );
-
-		if ( successorContact === TvContactPoint.START ) {
-
-			successor.setPredecessorRoad( road, TvContactPoint.END );
-
-		} else if ( successorContact === TvContactPoint.END ) {
-
-			successor.setSuccessorRoad( road, TvContactPoint.END );
-
-		} else {
-
-			throw new Error( "Invalid contact point" );
-
-		}
-
-		road.successor = new TvRoadLink( TvRoadLinkType.ROAD, successor, successorContact );
-	}
-
-	static linkPredecessor ( road: TvRoad, predecessor: TvRoad, predecessorContact: TvContactPoint ) {
-
-		if ( road.predecessor ) this.unlinkPredecessor( road );
-
-		if ( predecessorContact === TvContactPoint.END ) {
-
-			predecessor.setSuccessorRoad( road, TvContactPoint.START );
-
-		} else {
-
-			predecessor.setPredecessorRoad( road, TvContactPoint.START );
-
-		}
-
-		road.predecessor = new TvRoadLink( TvRoadLinkType.ROAD, predecessor, predecessorContact );
 
 	}
 

@@ -12,11 +12,11 @@ import { SplineUtils } from "../app/utils/spline.utils";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { RoadUtils } from "app/utils/road.utils";
 import { MapService } from "app/services/map/map.service";
-import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvLink } from "app/map/models/tv-link";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Maths } from "app/utils/maths";
 
-function formatMessage ( road: TvRoad, link: TvRoadLink ) {
+function formatMessage ( road: TvRoad, link: TvLink ) {
 
 	return 'Invalid Distance ' + road.toString() + ' ' + link.toString();
 

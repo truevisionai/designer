@@ -4,7 +4,8 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineTestHelper } from "../../app/services/spline/spline-test-helper.service";
 import { JunctionToolHelper } from "../../app/tools/junction/junction-tool.helper";
-import { TvRoadLink, TvRoadLinkType } from "../../app/map/models/tv-road-link";
+import { TvLink, TvLinkType } from "../../app/map/models/tv-link";
+import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from "../../app/map/models/tv-common";
 import { expectValidMap } from "../base-test.spec";
 
@@ -36,8 +37,8 @@ describe( 'CustomJunction: Tests', () => {
 		const rightRoad = testHelper.mapService.findRoad( 2 );
 
 		const links = [
-			new TvRoadLink( TvRoadLinkType.ROAD, leftRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, rightRoad, TvContactPoint.START )
+			LinkFactory.createRoadLink( leftRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( rightRoad, TvContactPoint.START )
 		]
 
 		const junction = juctionToolHelper.createCustomJunction( links );
@@ -55,9 +56,9 @@ describe( 'CustomJunction: Tests', () => {
 		const bottomRoad = testHelper.mapService.findRoad( 3 );
 
 		const links = [
-			new TvRoadLink( TvRoadLinkType.ROAD, leftRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, rightRoad, TvContactPoint.START ),
-			new TvRoadLink( TvRoadLinkType.ROAD, bottomRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( leftRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( rightRoad, TvContactPoint.START ),
+			LinkFactory.createRoadLink( bottomRoad, TvContactPoint.END ),
 		]
 
 		const junction = juctionToolHelper.createCustomJunction( links );
