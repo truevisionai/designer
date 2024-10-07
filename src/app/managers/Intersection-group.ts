@@ -287,4 +287,42 @@ export class IntersectionGroup {
 		return `IntersectionGroup: ${ this.intersections.size } Splines:${ splines } Center:${ this.centroid.x.toFixed( 2 ) },${ this.centroid.y.toFixed( 2 ) }`;
 
 	}
+
+	reComputeJunctionOffsets ( force = false ) {
+
+		if ( !force && this.getSplines().length < 2 ) return;
+
+		// if group has more than 2 spline we should recalculate junctions regions
+		// for each of them to update their start/end positions
+		const splines = this.getSplines();
+
+		for ( let a = 0; a < splines.length; a++ ) {
+
+			const spline = splines[ a ];
+
+			for ( let b = a + 1; b < splines.length; b++ ) {
+
+				const element = splines[ b ];
+
+				const intersections = spline.getIntersections( element );
+
+				intersections.forEach( i => this.addSplineIntersection( i ) );
+
+			}
+
+		}
+
+		// group.getSplines().forEach( spline => {
+
+		// const offset = group.getOffset( spline );
+
+		// this.createRoadCoordNew( spline, offset.sStart, offset.sEnd, junction, group ).forEach( c => coords.push( c ) );
+
+		// this.splineBuilder.buildGeometry( spline );
+
+		// } );
+
+		// DebugDrawService.instance.drawBox2D( group.area, COLOR.WHITE );
+
+	}
 }

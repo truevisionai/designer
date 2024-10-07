@@ -30,6 +30,7 @@ import { ConnectionManager } from "../map/junction/connection.manager";
 import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
 import { MapEvents } from "app/events/map-events";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
+import { createGroupsFromIntersections } from "./intersection-group-helper";
 
 @Injectable( {
 	providedIn: 'root'
@@ -720,59 +721,6 @@ export class JunctionManager {
 		return coords;
 	}
 
-	mergeGroups ( groups: IntersectionGroup[] ) {
-
-		for ( const group of groups ) {
-
-			this.mergeGroup( group );
-
-		}
-
-	}
-
-	mergeGroup ( group: IntersectionGroup ) {
-
-		const splines = group.getSplines();
-
-		for ( const spline of splines ) {
-
-			spline.segmentMap.forEach( segment => {
-
-				if ( segment instanceof TvJunction ) {
-
-					// this.junctionGeometryService.updateBoundingBox( segment );
-
-					// const boundingBox = segment.depBoundingBox || this.junctionService.computeBoundingBox( segment );
-
-					const groupPosition = new Vector2( group.centroid.x, group.centroid.y );
-
-					const distance = segment.distanceToPoint( groupPosition );
-
-					if ( distance < 10 ) {
-
-						if ( this.debug ) Log.debug( 'Merging Junction Into Group', segment.toString() );
-
-						const incomingSplines = segment.getIncomingSplines();
-
-						incomingSplines.forEach( incomingSpline => {
-
-							const i = new SplineIntersection( incomingSpline, spline, group.getRepresentativePosition() );
-
-							group.addSplineIntersection( i );
-
-						} );
-
-						this.removeJunction( segment );
-
-					}
-
-				}
-
-			} );
-
-		}
-	}
-
 	updateConnections ( junction: TvJunction ) {
 
 		// we will regenerate splines for each connecting road
@@ -786,92 +734,8 @@ export class JunctionManager {
 
 	createGroups ( intersections: SplineIntersection[], thresholdDistance = 10 ): IntersectionGroup[] {
 
-		const groups: IntersectionGroup[] = [];
+		return createGroupsFromIntersections( intersections, thresholdDistance );
 
-		const processed: boolean[] = new Array( intersections.length ).fill( false );
-
-		for ( let i = 0; i < intersections.length; i++ ) {
-
-			const intersection = intersections[ i ];
-
-			if ( processed[ i ] ) continue; // Skip already processed intersections
-
-			// Create a new group with the current intersection
-			const group = new IntersectionGroup( intersection );
-
-			processed[ i ] = true;
-
-			// Compare with other intersections to find close ones
-			for ( let j = 0; j < intersections.length; j++ ) {
-
-				const otherIntersection = intersections[ j ];
-
-				if ( i !== j && !processed[ j ] ) {
-
-					// const distance = intersection.position.distanceTo( otherIntersection.position );
-
-					// if ( distance <= thresholdDistance ) {
-
-					// 	group.addSplineIntersection( otherIntersection );
-
-					// 	processed[ j ] = true;
-
-					// }
-
-				}
-
-			}
-
-			// // TODO: check if need need this
-			// const nearest = this.findNearestJunctionForGroup( group );
-
-			// if ( nearest ) {
-
-			// 	this.removeJunction( nearest );
-
-			// }
-
-			group.centroid = group.getRepresentativePosition();
-
-			this.reComputeJunctionOffsets( group );
-
-			groups.push( group );
-
-		}
-
-		for ( let i = 0; i < groups.length; i++ ) {
-
-			const group = groups[ i ];
-
-			for ( let j = i + 1; j < groups.length; j++ ) {
-
-				const otherGroup = groups[ j ];
-
-				const distance = group.centroid.distanceTo( otherGroup.centroid );
-
-				const intersect = group.area.intersectsBox( otherGroup.area );
-
-				if ( intersect || distance < thresholdDistance ) {
-
-					Log.warn( 'Merging Groups', group.toString(), otherGroup.toString() );
-
-					group.merge( otherGroup );
-
-					group.centroid = group.getRepresentativePosition();
-
-					groups.splice( j, 1 );
-
-					this.reComputeJunctionOffsets( group );
-
-					j--;
-
-				}
-
-			}
-
-		}
-
-		return groups;
 	}
 
 	// eslint-disable-next-line max-lines-per-function
@@ -925,44 +789,6 @@ export class JunctionManager {
 			junctionsToUpdate: [ ...junctionsToUpdate ],
 			junctionsToRemove: [ ...junctionsToRemove ]
 		};
-	}
-
-	reComputeJunctionOffsets ( group: IntersectionGroup, force = false ) {
-
-		if ( !force && group.getSplines().length < 2 ) return;
-
-		// if group has more than 2 spline we should recalculate junctions regions
-		// for each of them to update their start/end positions
-		const splines = group.getSplines();
-
-		for ( let a = 0; a < splines.length; a++ ) {
-
-			const spline = splines[ a ];
-
-			for ( let b = a + 1; b < splines.length; b++ ) {
-
-				const element = splines[ b ];
-
-				const intersections = spline.getIntersections( element );
-
-				intersections.forEach( i => group.addSplineIntersection( i ) );
-
-			}
-
-		}
-
-		// group.getSplines().forEach( spline => {
-
-		// const offset = group.getOffset( spline );
-
-		// this.createRoadCoordNew( spline, offset.sStart, offset.sEnd, junction, group ).forEach( c => coords.push( c ) );
-
-		// this.splineBuilder.buildGeometry( spline );
-
-		// } );
-
-		// DebugDrawService.instance.drawBox2D( group.area, COLOR.WHITE );
-
 	}
 
 	createJunctionFromGroup ( group: IntersectionGroup ): void {
