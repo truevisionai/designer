@@ -184,7 +184,7 @@ export class TvRoad {
 	}
 
 	equals ( other: TvRoad ): boolean {
-		return this.id === other.id;
+		return this.uuid === other.uuid;
 	}
 
 	toString () {
@@ -239,9 +239,21 @@ export class TvRoad {
 
 	}
 
+	setNullSuccessor () {
+
+		this.successor = null;
+
+	}
+
 	setPredecessor ( elementType: TvLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
 
 		this.predecessor = LinkFactory.createLink( elementType, element, contactPoint );
+
+	}
+
+	setNullPredecessor () {
+
+		this.predecessor = null;
 
 	}
 
@@ -288,6 +300,10 @@ export class TvRoad {
 		return this.successor?.getSpline();
 
 	}
+
+	getSuccessor (): TvLink { return this.successor; }
+
+	getPredecessor (): TvLink { return this.predecessor; }
 
 	getPredecessorSpline (): AbstractSpline | undefined {
 
