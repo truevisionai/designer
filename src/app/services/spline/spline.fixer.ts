@@ -73,7 +73,7 @@ export class SplineFixerService {
 
 	private fixMinSegmentCount ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.length == 0 ) {
+		if ( spline.getSegmentCount() == 0 ) {
 
 			const road = this.roadFactory.createDefaultRoad();
 
@@ -94,7 +94,7 @@ export class SplineFixerService {
 
 	private fixFirstSegment ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.length >= 1 ) {
+		if ( spline.getSegmentCount() >= 1 ) {
 
 			const firstSegment = spline.segmentMap.getFirst();
 
@@ -150,7 +150,7 @@ export class SplineFixerService {
 		spline.segmentMap.forEach( ( segment, sOffset ) => {
 
 			// cannot remove first and last segment
-			if ( index == 0 || index == spline.segmentMap.length - 1 ) {
+			if ( index == 0 || index == spline.getSegmentCount() - 1 ) {
 				index++
 				return;
 			}

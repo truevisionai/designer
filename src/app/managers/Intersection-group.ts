@@ -78,6 +78,12 @@ export class IntersectionGroup {
 
 	}
 
+	getIntersectionCount (): number {
+
+		return this.intersections.size;
+
+	}
+
 	hasSpline ( spline: AbstractSpline ) {
 
 		return this.splines.has( spline );

@@ -245,7 +245,7 @@ describe( 'SplineLinkService: Tests', () => {
 
 		expectValidMap( mapService );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		testHelper.mapValidator.validateMap( mapService.map, true );
 

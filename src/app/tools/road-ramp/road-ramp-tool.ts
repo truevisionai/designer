@@ -278,7 +278,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 	private addRampRoad ( spline: AbstractSpline ): void {
 
-		if ( spline.segmentMap.length === 0 ) {
+		if ( spline.getSegmentCount() === 0 ) {
 
 			throw new Error( 'Ramp road should have atleast one segment' );
 

@@ -128,13 +128,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 1 );
+		expect( spline.getSegmentCount() ).toBe( 1 );
 
 		junctionManager.insertJunction( spline, 40, 60, J1 );
 
 		junctionManager.updateSplineInternalLinks( spline );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -171,13 +171,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 40, 60, J1 );
 
 		junctionManager.updateSplineInternalLinks( spline );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -210,7 +210,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		junctionManager.insertJunction( spline, 90, 110, J2 );
 
@@ -218,7 +218,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		const R3 = mapService.findRoad( 3 );
 
-		expect( spline.segmentMap.length ).toBe( 5 );
+		expect( spline.getSegmentCount() ).toBe( 5 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -256,13 +256,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 80, 100, J1 );
 
 		junctionManager.updateSplineInternalLinks( spline );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -292,13 +292,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 70, 100, J1 );
 
 		junctionManager.updateSplineInternalLinks( spline );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -333,13 +333,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 0, 20, J1 );
 
 		junctionManager.updateSplineInternalLinks( spline );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -367,13 +367,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		SplineUtils.addSegment( spline, 20, secondRoad );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 0, 30, junction );
 
 		junctionManager.updateSplineInternalLinks( spline );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -406,7 +406,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 0, 50, J1 );
 
@@ -446,7 +446,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		junctionManager.insertJunction( spline, 90, 110, J3 );
 
@@ -454,7 +454,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		const R2 = mapService.findRoad( 2 );
 
-		expect( spline.segmentMap.length ).toBe( 5 );
+		expect( spline.getSegmentCount() ).toBe( 5 );
 
 		expectCorrectSegmentOrder( spline );
 

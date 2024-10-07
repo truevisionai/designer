@@ -50,7 +50,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	add ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.length == 0 ) {
+		if ( spline.getSegmentCount() == 0 ) {
 
 			const road = this.roadFactory.createDefaultRoad();
 
