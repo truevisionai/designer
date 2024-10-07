@@ -23,14 +23,6 @@ export class SplineIntersection {
 		this.addSection( otherSpline, 0, 0 );
 	}
 
-	addSection ( spline: AbstractSpline, start: number, end: number ): void {
-		this.sections.set( spline, new SplineSection( spline, start, end ) );
-	}
-
-	getSplineSections (): SplineSection[] {
-		return Array.from( this.sections.values() );
-	}
-
 	get splineStart (): number {
 		return this.sections.get( this.spline ).getStart();
 	}
@@ -61,6 +53,18 @@ export class SplineIntersection {
 
 	set otherEnd ( value: number ) {
 		this.sections.get( this.otherSpline ).setEnd( value );
+	}
+
+	getPosition (): Vector3 {
+		return this.position;
+	}
+
+	addSection ( spline: AbstractSpline, start: number, end: number ): void {
+		this.sections.set( spline, new SplineSection( spline, start, end ) );
+	}
+
+	getSplineSections (): SplineSection[] {
+		return Array.from( this.sections.values() );
 	}
 
 	getKey (): string {
