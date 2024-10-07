@@ -5,68 +5,66 @@
 import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Box2, Vector2, Vector3 } from 'three';
+import { Box2, Vector3 } from 'three';
 
 
 export class SplineIntersection {
 
 	public area: Box2;
 
-	private _splineStart: number;
-	private _splineEnd: number;
-
-	private _otherStart: number;
-	private _otherEnd: number;
+	private sections: Map<AbstractSpline, SplineSection> = new Map();
 
 	constructor (
 		public spline: AbstractSpline,
 		public otherSpline: AbstractSpline,
 		public position: Vector3,
-		public angle?: number
 	) {
+		this.addSection( spline, 0, 0 );
+		this.addSection( otherSpline, 0, 0 );
+	}
+
+	addSection ( spline: AbstractSpline, start: number, end: number ): void {
+		this.sections.set( spline, new SplineSection( spline, start, end ) );
+	}
+
+	getSplineSections (): SplineSection[] {
+		return Array.from( this.sections.values() );
 	}
 
 	get splineStart (): number {
-		return this._splineStart;
+		return this.sections.get( this.spline ).getStart();
 	}
 
 	set splineStart ( value: number ) {
-		this._splineStart = value;
+		this.sections.get( this.spline ).setStart( value );
 	}
 
 	get splineEnd (): number {
-		return this._splineEnd;
+		return this.sections.get( this.spline ).getEnd();
 	}
 
 	set splineEnd ( value: number ) {
-		this._splineEnd = value;
+		this.sections.get( this.spline ).setEnd( value );
 	}
 
 	get otherStart (): number {
-		return this._otherStart;
+		return this.sections.get( this.otherSpline ).getStart();
 	}
 
 	set otherStart ( value: number ) {
-		this._otherStart = value;
+		this.sections.get( this.otherSpline ).setStart( value );
 	}
 
 	get otherEnd (): number {
-		return this._otherEnd;
+		return this.sections.get( this.otherSpline ).getEnd();
 	}
 
 	set otherEnd ( value: number ) {
-		this._otherEnd = value;
+		this.sections.get( this.otherSpline ).setEnd( value );
 	}
 
 	getKey (): string {
 		return this.getSplines().map( s => s.uuid ).sort().join( '_' );
-	}
-
-	getSplineSections (): SplineSection[] {
-		return [
-			new SplineSection( this.spline, this.splineStart, this.splineEnd ),
-			new SplineSection( this.otherSpline, this.otherStart, this.otherEnd )
-		]
 	}
 
 	getSplines (): AbstractSpline[] {
@@ -75,6 +73,32 @@ export class SplineIntersection {
 
 	isNearJunction (): boolean {
 		return this.getSplineSections().some( section => section.isNearJunction() );
+	}
+
+	getJunction (): TvJunction | undefined {
+
+		let junction: TvJunction;
+
+		this.getSplineSections().forEach( section => {
+
+			if ( section.isNearJunction() ) {
+
+				if ( section.getStartSegment() instanceof TvJunction ) {
+
+					junction = section.getStartSegment() as TvJunction;
+
+				} else if ( section.getEndSegment() instanceof TvJunction ) {
+
+					junction = section.getEndSegment() as TvJunction;
+
+				}
+
+			}
+
+		} );
+
+		return junction;
+
 	}
 
 }
@@ -86,19 +110,27 @@ export class SplineSection {
 
 	constructor (
 		public readonly spline: AbstractSpline,
-		private readonly start: number,
-		private readonly end: number
+		private start: number,
+		private end: number
 	) {
 		this.startSegment = spline.getSegmentAt( start );
 		this.endSegment = spline.getSegmentAt( end );
 	}
 
-	getStart () {
+	getStart (): number {
 		return this.start;
 	}
 
-	getEnd () {
+	setStart ( value: number ): void {
+		this.start = value;
+	}
+
+	getEnd (): number {
 		return this.end;
+	}
+
+	setEnd ( value: number ): void {
+		this.end = value;
 	}
 
 	getStartSegment (): NewSegment {
