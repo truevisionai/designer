@@ -22,26 +22,18 @@ export class SplineIntersectionService {
 		if ( spline.controlPoints.length < 2 ) return [];
 
 		const splines = otherSplines || this.mapService.nonJunctionSplines;
-		const splineCount = splines.length;
-
-		const successorSpline = spline.getSuccessorSpline();
-		const predecessorSpline = spline.getPredecessorSpline();
 
 		const intersections: SplineIntersection[] = [];
 
-		for ( let i = 0; i < splineCount; i++ ) {
+		for ( const otherSpline of splines ) {
 
-			const otherSpline = splines[ i ];
-
-			// NOTE: ignore pre or successor splines
-			// MAY NEED TO FIND BETTER OPTION
-			if ( otherSpline == spline ) continue;
-			if ( otherSpline == successorSpline ) continue;
-			if ( otherSpline == predecessorSpline ) continue;
+			if ( spline.equals( otherSpline ) ) continue;
+			if ( spline.isLinkedTo( otherSpline ) ) continue;
 
 			findIntersectionsViaBox2D( spline, otherSpline ).forEach( intersection => {
 				intersections.push( intersection );
 			} );
+
 		}
 
 		return intersections;
@@ -54,39 +46,29 @@ export class SplineIntersectionService {
 // eslint-disable-next-line max-lines-per-function
 export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): SplineIntersection[] | null {
 
-	let intersections: SplineIntersection[] = [];
-	let startPoint: Vector2 = null;
-	let endPoint: Vector2 = null;
-	let isIntersecting = false;
-	let currentIntersectionBox = new Box2(); // To track the intersection area
+	const intersections: SplineIntersection[] = [];
 
-	if ( splineA == splineB ) return intersections;
+	if ( splineA.equals( splineB ) ) return intersections;
 
 	if ( !splineA.boundingBox.intersectsBox( splineB.boundingBox ) ) return intersections;
+
+	const currentIntersectionBox = new Box2(); // To track the intersection area
+
+	let isIntersecting = false;
 
 	for ( let i = 0; i < splineA.centerPoints.length - 1; i++ ) {
 
 		let currentIntersection = false;
 
-		const aLeftStart = splineA.leftPoints[ i ];
-		const aRightStart = splineA.rightPoints[ i ];
-		const aLeftEnd = splineA.leftPoints[ i + 1 ];
-		const aRightEnd = splineA.rightPoints[ i + 1 ];
+		const boxA = splineA.createBoundingBoxAt( i, stepSize );
 
-		if ( !aLeftStart || !aRightStart || !aLeftEnd || !aRightEnd ) continue;
+		if ( !boxA ) continue;
 
 		for ( let j = 0; j < splineB.centerPoints.length - 1; j++ ) {
 
-			const bLeftStart = splineB.leftPoints[ j ];
-			const bRightStart = splineB.rightPoints[ j ];
-			const bLeftEnd = splineB.leftPoints[ j + 1 ];
-			const bRightEnd = splineB.rightPoints[ j + 1 ];
+			const boxB = splineB.createBoundingBoxAt( j, stepSize );
 
-			if ( !bLeftStart || !bRightStart || !bLeftEnd || !bRightEnd ) continue;
-
-			// Create boxes for each segment using left and right points
-			const boxA = createBoxFromSegment( aLeftStart.position, aRightStart.position, aLeftEnd.position, aRightEnd.position );
-			const boxB = createBoxFromSegment( bLeftStart.position, bRightStart.position, bLeftEnd.position, bRightEnd.position );
+			if ( !boxB ) continue;
 
 			// Check if these boxes intersect
 			if ( boxA.intersectsBox( boxB ) ) {
@@ -95,8 +77,6 @@ export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: Ab
 
 				if ( !isIntersecting ) {
 
-					startPoint = getAveragePoint( intersection );
-
 					currentIntersectionBox.copy( intersection );
 
 				} else {
@@ -104,8 +84,6 @@ export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: Ab
 					currentIntersectionBox.union( intersection );
 
 				}
-
-				endPoint = getAveragePoint( intersection );
 
 				isIntersecting = true;
 
