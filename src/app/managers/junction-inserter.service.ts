@@ -1,4 +1,4 @@
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
@@ -18,6 +18,12 @@ export class JunctionInserter {
 		private mapService: MapService,
 	) { }
 
+	/**
+	 * Inserts a junction into the spline between sStart and sEnd.
+	 * @param sStart - The starting position along the spline where the junction should be inserted.
+	 * @param sEnd - The ending position along the spline where the junction should be inserted.
+	 * @param junction - The junction to insert.
+	 */
 	public insertJunction ( sStart: number, sEnd: number, junction: TvJunction ): void {
 
 		const section = new SplineSection( this.spline, sStart, sEnd );
@@ -44,27 +50,11 @@ export class JunctionInserter {
 
 	}
 
-	insertJunctionForDifferentRoads ( section: SplineSection, junction: TvJunction ): void {
+	private insertJunctionForDifferentRoads ( section: SplineSection, junction: TvJunction ): void {
 
-		const roadBeforeJunction = section.getStartSegment() as TvRoad;
+		this.addOrShiftSegment( section.spline, section.getStart(), junction );
 
-		const roadAfterJunction = section.getEndSegment() as TvRoad;
-
-		if ( section.spline.hasSegment( junction ) ) {
-
-			section.spline.shiftSegment( section.getStart(), junction );
-
-		} else {
-
-			section.spline.addSegment( section.getStart(), junction );
-
-		}
-
-		section.spline.shiftSegment( section.getEnd(), roadAfterJunction );
-
-		roadBeforeJunction.linkJunction( junction, TvContactPoint.END );
-
-		roadAfterJunction.linkJunction( junction, TvContactPoint.START );
+		section.spline.shiftSegment( section.getEnd(), section.getEndSegment() );
 
 		section.spline.updateLinks();
 
@@ -72,25 +62,17 @@ export class JunctionInserter {
 
 	}
 
-	insertJunctionAtMiddle ( section: SplineSection, junction: TvJunction ): void {
+	private insertJunctionAtMiddle ( section: SplineSection, junction: TvJunction ): void {
 
-		const segmentAtStart = section.getStartSegment();
-
+		const roadBeforeJunction = section.getStartSegment();
 		const roadAfterJunction = this.createOrGetRoadAfterJunction( section );
 
-		if ( section.spline.hasSegment( junction ) ) {
+		this.addOrShiftSegment( section.spline, section.getStart(), junction );
+		this.addOrShiftSegment( section.spline, section.getEnd(), roadAfterJunction );
 
-			section.spline.shiftSegment( section.getStart(), junction );
+		if ( roadBeforeJunction instanceof TvRoad ) {
 
-		} else {
-
-			section.spline.addSegment( section.getStart(), junction );
-
-		}
-
-		if ( segmentAtStart instanceof TvRoad ) {
-
-			this.linkRoads( section, segmentAtStart, roadAfterJunction, junction );
+			roadBeforeJunction.successor?.replace( roadBeforeJunction, roadAfterJunction, TvContactPoint.END );
 
 		} else {
 
@@ -98,53 +80,19 @@ export class JunctionInserter {
 
 		}
 
-	}
 
-	linkRoads ( section: SplineSection, roadBeforeJunction: TvRoad, roadAfterJunction: TvRoad, junction: TvJunction ): void {
-
-		if ( section.spline.hasSegment( junction ) ) {
-
-			section.spline.shiftSegment( section.getStart(), junction );
-
-		} else {
-
-			section.spline.addSegment( section.getStart(), junction );
-
-		}
-
-		if ( section.spline.hasSegment( roadAfterJunction ) ) {
-
-			section.spline.shiftSegment( section.getEnd(), roadAfterJunction );
-
-		} else {
-
-			section.spline.addSegment( section.getEnd(), roadAfterJunction );
-
-		}
-
-		roadBeforeJunction.successor?.replace( roadBeforeJunction, roadAfterJunction, TvContactPoint.END );
-
-		roadBeforeJunction.linkJunction( junction, TvContactPoint.END );
-
-		roadAfterJunction.linkJunction( junction, TvContactPoint.START );
-
-		section.spline.updateLinks();
-
-		section.spline.updateSegmentGeometryAndBounds();
+		this.spline.updateLinks();
+		this.spline.updateSegmentGeometryAndBounds();
 
 	}
 
-	insertJunctionAtEnd ( section: SplineSection, junction: TvJunction ): void {
+	private insertJunctionAtEnd ( section: SplineSection, junction: TvJunction ): void {
 
 		const segmentAtEnd = section.getEndSegment();
 
 		if ( segmentAtEnd instanceof TvRoad ) {
 
-			const successor = segmentAtEnd.successor?.clone();
-
-			successor?.unlink( segmentAtEnd, TvContactPoint.START );
-
-			section.spline.addSegment( section.getStart(), junction );
+			this.addOrShiftSegment( section.spline, section.getStart(), junction );
 
 			section.spline.updateLinks();
 
@@ -158,23 +106,13 @@ export class JunctionInserter {
 
 	}
 
-	insertJunctionAtStart ( section: SplineSection, junction: TvJunction ): void {
+	private insertJunctionAtStart ( section: SplineSection, junction: TvJunction ): void {
 
-		const segmentAtStart = section.getStartSegment();
+		this.addOrShiftSegment( section.spline, section.getStart(), junction );
 
-		if ( segmentAtStart instanceof TvRoad || segmentAtStart == null ) {
+		section.spline.updateLinks();
 
-			section.spline.addSegment( section.getStart(), junction );
-
-			section.spline.updateLinks();
-
-			section.spline.updateSegmentGeometryAndBounds();
-
-		} else {
-
-			throw new Error( 'Segment at start is not a road' );
-
-		}
+		section.spline.updateSegmentGeometryAndBounds();
 
 	}
 
@@ -185,7 +123,6 @@ export class JunctionInserter {
 		}
 
 		const firstRoad = section.spline.getRoadSegments()[ 0 ];
-
 		const newRoad = this.roadService.clone( firstRoad, 0 );
 
 		newRoad.sStart = section.getEnd();
@@ -195,21 +132,17 @@ export class JunctionInserter {
 		return newRoad;
 	}
 
-	private removeConnectionRoadAndSplines ( junction: TvJunction, connections: TvJunctionConnection[] ): void {
+	private addOrShiftSegment ( spline: AbstractSpline, s: number, segment: NewSegment ): void {
 
-		for ( const connection of connections ) {
+		if ( spline.hasSegment( segment ) ) {
 
-			this.mapService.removeRoad( connection.connectingRoad );
+			spline.shiftSegment( s, segment );
 
-			this.mapService.removeSpline( connection.connectingRoad.spline );
+		} else {
 
-			MapEvents.removeMesh.emit( connection.connectingRoad );
+			spline.addSegment( s, segment );
 
-			MapEvents.removeMesh.emit( connection.connectingRoad.spline );
-
-			junction.removeConnection( connection );
-
-		};
+		}
 
 	}
 
@@ -232,10 +165,9 @@ export class JunctionInserter {
 
 			} else {
 
-				section.spline.shiftSegment( section.getEnd(), section.getEndSegment() );
+				section.spline.shiftSegment( section.getEnd(), segmentAtEnd );
 
 			}
-
 
 		} else if ( section.isAtStart() && section.getStartSegment() instanceof TvRoad ) {
 
