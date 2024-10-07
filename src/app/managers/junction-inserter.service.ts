@@ -48,6 +48,11 @@ export class JunctionInserter {
 
 		}
 
+		section.spline.updateLinks();
+
+		section.spline.updateSegmentGeometryAndBounds();
+
+
 	}
 
 	private insertJunctionForDifferentRoads ( section: SplineSection, junction: TvJunction ): void {
@@ -55,10 +60,6 @@ export class JunctionInserter {
 		this.addOrShiftSegment( section.spline, section.getStart(), junction );
 
 		section.spline.shiftSegment( section.getEnd(), section.getEndSegment() );
-
-		section.spline.updateLinks();
-
-		section.spline.updateSegmentGeometryAndBounds();
 
 	}
 
@@ -80,10 +81,6 @@ export class JunctionInserter {
 
 		}
 
-
-		this.spline.updateLinks();
-		this.spline.updateSegmentGeometryAndBounds();
-
 	}
 
 	private insertJunctionAtEnd ( section: SplineSection, junction: TvJunction ): void {
@@ -93,10 +90,6 @@ export class JunctionInserter {
 		if ( segmentAtEnd instanceof TvRoad ) {
 
 			this.addOrShiftSegment( section.spline, section.getStart(), junction );
-
-			section.spline.updateLinks();
-
-			section.spline.updateSegmentGeometryAndBounds();
 
 		} else {
 
@@ -109,10 +102,6 @@ export class JunctionInserter {
 	private insertJunctionAtStart ( section: SplineSection, junction: TvJunction ): void {
 
 		this.addOrShiftSegment( section.spline, section.getStart(), junction );
-
-		section.spline.updateLinks();
-
-		section.spline.updateSegmentGeometryAndBounds();
 
 	}
 
