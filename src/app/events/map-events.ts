@@ -28,6 +28,7 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Surface } from "app/map/surface/surface.model";
 import { RoadObjectAddedEvent, RoadObjectRemovedEvent, RoadObjectUpdatedEvent, RoadSignalAddedEvent, RoadSignalRemovedEvent, RoadSignalUpdatedEvent } from "./road-object.events";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 
 @Injectable( {
 	providedIn: 'root'
@@ -50,6 +51,7 @@ export class MapEvents {
 	@Output() static splineUpdated = new EventEmitter<SplineUpdatedEvent>();
 	@Output() static splineRemoved = new EventEmitter<SplineRemovedEvent>();
 
+	@Output() static splineGeometryUpdated = new EventEmitter<AbstractSpline>();
 	@Output() static splineSegmentRemoved = new EventEmitter<SplineUpdatedEvent>();
 
 	@Output() static roadCreated = new EventEmitter<RoadCreatedEvent>();
