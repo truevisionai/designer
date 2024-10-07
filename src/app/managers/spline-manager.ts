@@ -7,7 +7,6 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map/map.service";
 import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { JunctionManager } from "./junction-manager";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { Log } from "app/core/utils/log";
 import { SplineLinkService } from "./spline-link.service";
@@ -25,7 +24,6 @@ export class SplineManager {
 	constructor (
 		private mapService: MapService,
 		private roadManager: RoadManager,
-		private junctionManager: JunctionManager,
 		private fixer: SplineFixerService,
 		private splineLinkService: SplineLinkService,
 		private segmentService: SplineSegmentService
@@ -44,7 +42,7 @@ export class SplineManager {
 
 		this.addSegments( spline );
 
-		if ( updateJunctions ) this.junctionManager.handleSplineAdded( spline );
+		if ( updateJunctions ) MapEvents.splineGeometryUpdated.emit( spline );
 
 	}
 
@@ -70,7 +68,7 @@ export class SplineManager {
 
 		}
 
-		if ( updateJunctions ) this.junctionManager.handleSplineUpdated( spline );
+		if ( updateJunctions ) MapEvents.splineGeometryUpdated.emit( spline );
 
 	}
 

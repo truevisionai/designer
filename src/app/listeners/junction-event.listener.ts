@@ -30,6 +30,8 @@ export class JunctionEventListener {
 		MapEvents.junctionRemoved.subscribe( e => this.onJunctionRemoved( e ) );
 		MapEvents.junctionUpdated.subscribe( e => this.onJunctionUpdated( e ) );
 
+		MapEvents.splineGeometryUpdated.subscribe( e => this.junctionManager.detectJunctions( e ) );
+
 	}
 
 	onJunctionUpdated ( junction: TvJunction ): void {
