@@ -71,16 +71,17 @@ import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import {
-	TvJointBoundary,
 	TvJunctionBoundary,
-	TvJunctionSegmentBoundary,
-	TvLaneBoundary
+	TvJunctionSegmentBoundary
 } from '../junction-boundary/tv-junction-boundary';
 import { Log } from 'app/core/utils/log';
 import { InvalidTypeException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { PropCurvePoint } from 'app/modules/prop-curve/objects/prop-curve-point';
+import { JunctionFactory } from 'app/factories/junction.factory';
+import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
+import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
 
 @Injectable( {
 	providedIn: 'root'
@@ -1104,14 +1105,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
-		const junction = new TvJunction( name, id );
-
-		junction.auto = xmlElement.attr_auto === 'true';
-
-		// for old files
-
-
-		return junction;
+		if ( xmlElement.attr_auto === 'true' ) {
+			return JunctionFactory.createAutoJunction( name, id );
+		} else {
+			return JunctionFactory.createDefaultJunction( name, id );
+		}
 	}
 
 	private parseJunctionConnections ( junction: TvJunction, xmlElement: XmlElement ) {
@@ -1163,7 +1161,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const segment = this.parseBoundarySegment( xml );
 
-			if ( segment ) boundary.segments.push( segment );
+			if ( segment ) boundary.addSegment( segment );
 
 		} );
 

@@ -5,11 +5,8 @@
 import { Injectable } from '@angular/core';
 import {
 	TvBoundarySegmentType,
-	TvJointBoundary,
 	TvJunctionBoundary,
-	TvJunctionSegmentBoundary,
-	TvLaneBoundary
-} from './tv-junction-boundary';
+} from '../../../map/junction-boundary/tv-junction-boundary';
 import {
 	BufferGeometry,
 	Mesh,
@@ -21,19 +18,15 @@ import {
 import { GeometryUtils } from 'app/services/surface/geometry-utils';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
-import { JunctionUtils } from 'app/utils/junction.utils';
 import { Log } from 'app/core/utils/log';
-import { TvJunction } from '../models/junctions/tv-junction';
+import { TvJunction } from '../../../map/models/junctions/tv-junction';
 import { JunctionOverlay } from 'app/services/junction/junction-overlay';
 import { DelaunatorHelper } from 'app/services/surface/delaunay';
-import { BoundaryPositionService } from './boundary-position.service';
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class TvJunctionBoundaryBuilder {
+@Injectable()
+export class JunctionBoundaryBuilder {
 
-	constructor ( private boundaryPositionService: BoundaryPositionService ) { }
+	constructor () { }
 
 	getBufferGeometry ( boundary: TvJunctionBoundary, via: 'shape' | 'delaunay' ): BufferGeometry {
 
@@ -60,9 +53,9 @@ export class TvJunctionBoundaryBuilder {
 
 		const positions: Vector3[] = [];
 
-		boundary.segments.forEach( segment => {
+		boundary.getSegments().forEach( segment => {
 
-			this.createBoundaryPositions( segment ).forEach( pos => positions.push( pos ) );
+			segment.getPoints().forEach( p => positions.push( p.toVector3() ) );
 
 		} );
 
@@ -121,21 +114,15 @@ export class TvJunctionBoundaryBuilder {
 
 	}
 
-	private createBoundaryPositions ( segment: TvJunctionSegmentBoundary ): Vector3[] {
-
-		return this.boundaryPositionService.getSegmentPositions( segment );
-
-	}
-
 	private convertBoundaryToShapeComplex ( boundary: TvJunctionBoundary ) {
 
 		// NOTE: THIS NOT WORKING PROPERLY
 
 		const shape = new Shape();
 
-		boundary.segments.forEach( ( segment, i ) => {
+		boundary.getSegments().forEach( ( segment, i ) => {
 
-			const positions = this.createBoundaryPositions( segment );
+			const positions = segment.getPoints().map( p => p.toVector2() );
 
 			if ( i == 0 ) {
 				shape.moveTo( positions[ 0 ].x, positions[ 0 ].y );

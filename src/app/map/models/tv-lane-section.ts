@@ -4,7 +4,7 @@
 
 import { GameObject } from 'app/objects/game-object';
 import { MathUtils } from 'three';
-import { TvLaneSide, TvLaneType } from './tv-common';
+import { TvContactPoint, TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
 import { Maths } from "../../utils/maths";
@@ -775,6 +775,67 @@ export class TvLaneSection {
 		return lane.type != TvLaneType.sidewalk && lane.type != TvLaneType.curb;
 
 	}
+
+	linkSuccessor ( successor: TvLaneSection, successorContact: TvContactPoint ): void {
+
+		if ( !this.isMatching( successor ) ) {
+			return;
+		}
+
+		const sign = successorContact == TvContactPoint.START ? 1 : -1;
+
+		this.lanesMap.forEach( lane => {
+
+			const otherLane = successor.getLaneById( lane.id * sign );
+
+			if ( otherLane ) {
+
+				lane.successorId = otherLane.id;
+
+				lane.successorUUID = otherLane.uuid;
+
+			} else {
+
+				lane.successorId = null;
+
+				lane.successorUUID = null;
+
+			}
+
+		} );
+
+	}
+
+	linkPredecessor ( predecessor: TvLaneSection, contact: TvContactPoint ): void {
+
+		if ( !this.isMatching( predecessor ) ) {
+			return;
+		}
+
+		const sign = contact == TvContactPoint.END ? 1 : -1;
+
+		this.lanesMap.forEach( lane => {
+
+			const otherLane = predecessor.getLaneById( lane.id * sign );
+
+			if ( otherLane ) {
+
+				lane.predecessorId = otherLane.id;
+
+				lane.predecessorUUID = otherLane.uuid;
+
+			} else {
+
+				lane.predecessorId = null;
+
+				lane.predecessorUUID = null;
+
+			}
+
+		} );
+
+	}
+
 
 	private findHighest ( lanes: TvLane[], type?: TvLaneType ): TvLane {
 

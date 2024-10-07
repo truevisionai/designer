@@ -9,16 +9,11 @@ import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { AutoSignalizationType, AutoSignalizeJunctionService, JunctionSignaliztion } from "./auto-signalize-junction.service";
-import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { OpenDriveSignals, SignalDatabase } from "app/map/road-signal/road-signal.database";
 import { ToolManager } from "app/managers/tool-manager";
 import { ToolBarService } from "app/views/editor/tool-bar/tool-bar.service";
 import { BaseTool } from "../base-tool";
 import { ToolType } from "../tool-types.enum";
-import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { SimpleControlPoint } from "app/objects/simple-control-point";
-import { DebugLine } from "app/objects/debug-line";
-import { ManeuverMesh } from "app/services/junction/maneuver-mesh";
 import { JunctionGateLine } from "app/services/junction/junction-gate-line";
 import { JunctionOverlay } from "app/services/junction/junction-overlay";
 import { setupTest } from "tests/setup-tests";
@@ -28,7 +23,6 @@ describe( 'TrafficLightTool', () => {
 	let eventServiceProvider: EventServiceProvider;
 	let testHelper: SplineTestHelper;
 	let signalizationService: AutoSignalizeJunctionService;
-	let junctionRoadService: JunctionRoadService;
 
 	beforeEach( () => {
 
@@ -42,7 +36,6 @@ describe( 'TrafficLightTool', () => {
 		testHelper = TestBed.inject( SplineTestHelper );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		signalizationService = TestBed.inject( AutoSignalizeJunctionService );
-		junctionRoadService = TestBed.inject( JunctionRoadService );
 		eventServiceProvider.init();
 
 	} );
@@ -63,7 +56,7 @@ describe( 'TrafficLightTool', () => {
 
 		expect( J1.getJunctionControllerCount() ).toBe( 4 );
 
-		junctionRoadService.getIncomingRoads( J1 ).forEach( road => {
+		J1.getIncomingRoads().forEach( road => {
 			expect( road.getSignalCount() ).toBe( 2 );
 		} );
 
@@ -102,7 +95,7 @@ describe( 'TrafficLightTool', () => {
 
 		expect( J1.getJunctionControllerCount() ).toBe( 0 );
 
-		junctionRoadService.getIncomingRoads( J1 ).forEach( road => {
+		J1.getIncomingRoads().forEach( road => {
 			expect( road.getSignalCount() ).toBe( 0 );
 		} );
 
@@ -125,7 +118,7 @@ describe( 'TrafficLightTool', () => {
 
 		expect( J1.getJunctionControllerCount() ).toBe( 0 );
 
-		junctionRoadService.getIncomingRoads( J1 ).forEach( road => {
+		J1.getIncomingRoads().forEach( road => {
 			expect( road.getSignalCount() ).toBe( 2 );
 		} );
 

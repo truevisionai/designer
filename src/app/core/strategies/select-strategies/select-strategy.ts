@@ -9,6 +9,7 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
+import { LaneDistance } from 'app/map/road/road-distance';
 import { RoadWidthService } from 'app/services/road/road-width.service';
 import { Intersection, Object3D, Vector3 } from "three";
 
@@ -105,9 +106,9 @@ export abstract class BaseSelectionStrategy<T> implements SelectionStrategy<T> {
 
 		if ( !lane ) return;
 
-		const laneSOffset = roadCoord.s - laneSection.s;
+		const laneDistance = roadCoord.s - laneSection.s as LaneDistance;
 
-		return new TvLaneCoord( roadCoord.road, laneSection, lane, laneSOffset, roadCoord.t );
+		return new TvLaneCoord( roadCoord.road, laneSection, lane, laneDistance, roadCoord.t );
 
 		// const t = roadCoord.t;
 

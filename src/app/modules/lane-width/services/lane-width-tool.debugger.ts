@@ -15,8 +15,8 @@ import { Object3DArrayMap } from "../../../core/models/object3d-array-map";
 import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from "../../../services/debug/road-debug.service";
 import { Object3D } from 'three';
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { Distance, LaneDistance, RoadDistance } from 'app/map/road/road-distance';
 
 @Injectable()
 export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
@@ -145,9 +145,11 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 			node = this.nodeCache.get( width );
 
-			const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, node.laneWidth.s );
+			const distance = laneSection.s + node.laneWidth.s as RoadDistance;
 
-			const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, node.laneWidth.s );
+			const start = road.getLaneStartPosition( lane, distance );
+
+			const end = road.getLaneEndPosition( lane, distance );
 
 			const positions = [ start.position, end.position ];
 
@@ -157,7 +159,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 		} else {
 
-			const coord = new TvLaneCoord( road, laneSection, lane, width.s, 0 );
+			const coord = new TvLaneCoord( road, laneSection, lane, width.s as LaneDistance, 0 );
 
 			node = LaneWidthNode.create( coord, width );
 

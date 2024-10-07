@@ -10,6 +10,9 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Log } from 'app/core/utils/log';
 import { TvLaneCoord } from './tv-lane-coord';
 import { TvLane } from './tv-lane';
+import { Vector3 } from 'three';
+import { TvPosTheta } from './tv-pos-theta';
+import { LaneDistance } from '../road/road-distance';
 
 export enum TvLinkType {
 	ROAD = 'road',
@@ -115,6 +118,10 @@ export abstract class TvLink {
 
 	abstract isEqualTo ( element: TvRoad | TvJunction ): boolean;
 
+	abstract replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void;
+
+	abstract getPosition (): TvPosTheta;
+
 	get contact () {
 		return this.contactPoint;
 	}
@@ -161,9 +168,9 @@ export abstract class TvLink {
 
 		const road = this.element as TvRoad;
 
-		const laneSOffset = this.contactPoint == TvContactPoint.START ? 0 : lane.laneSection.getLength();
+		const laneDistance = this.contactPoint == TvContactPoint.START ? 0 : lane.laneSection.getLength();
 
-		return new TvLaneCoord( road, this.laneSection, lane, laneSOffset, 0 );
+		return new TvLaneCoord( road, this.laneSection, lane, laneDistance as LaneDistance, 0 );
 
 
 	}
@@ -256,6 +263,18 @@ export class TvRoadLink extends TvLink {
 		}
 	}
 
+	replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
+		if ( this.contactPoint == TvContactPoint.START ) {
+			this.road.linkPredecessor( otherRoad, otherRoadContact );
+		} else {
+			this.road.linkSuccessor( otherRoad, otherRoadContact );
+		}
+	}
+
+	getPosition (): TvPosTheta {
+		return this.road.getPosThetaByContact( this.contactPoint );
+	}
+
 }
 
 export class TvJunctionLink extends TvLink {
@@ -286,5 +305,16 @@ export class TvJunctionLink extends TvLink {
 
 	unlink ( road: TvRoad, contact: TvContactPoint ): void {
 		this.junction.removeConnectionsByRoad( road, contact );
+	}
+
+	replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
+		this.junction.replaceIncomingRoad( road, otherRoad, otherRoadContact );
+	}
+
+	getPosition (): TvPosTheta {
+		Log.error( 'RoadLinkError', 'Junction link does not have position' );
+		const center = this.junction.centroid;
+		return new TvPosTheta( center.x, center.y, center.z, 0, 0 );
+
 	}
 }

@@ -35,67 +35,6 @@ xdescribe( 'ConnectionService', () => {
 
 	} ) );
 
-	it( 'should create junction with same road same direction', inject( [ RoadService, JunctionService ], (
-		roadService: RoadService,
-		junctionService: JunctionService
-	) => {
-
-		const leftRoad = roadService.createDefaultRoad();
-		leftRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -50, 0, 0 ) ) );
-		leftRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( -10, 0, 0 ) ) );
-
-		const rightRoad = roadService.createDefaultRoad();
-		rightRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 0, 0, 0 ) ) );
-		rightRoad.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( 40, 0, 0 ) ) );
-
-		roadService.add( leftRoad );
-		roadService.add( rightRoad );
-
-		expect( leftRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 7 );
-		expect( rightRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 7 );
-
-		expect( leftRoad.length ).toBe( 40 );
-		expect( rightRoad.length ).toBe( 40 );
-
-		const junction = junctionService.createJunctionFromContact(
-			leftRoad, TvContactPoint.END,
-			rightRoad, TvContactPoint.START
-		);
-
-		expect( junction ).toBeDefined();
-		expect( junction.getConnectionCount() ).toBe( 2 );
-
-		expect( leftRoad.predecessor ).toBeUndefined();
-		expect( leftRoad.successor ).toBeDefined()
-		expect( leftRoad.successor.id ).toBe( junction.id );
-
-		expect( rightRoad.successor ).toBeUndefined();
-		expect( rightRoad.predecessor ).toBeDefined()
-		expect( rightRoad.predecessor.id ).toBe( junction.id );
-
-		// expect( junction.getConnection( 0 ).incomingRoad.id ).toBe( leftRoad.id );
-		// expect( junction.getConnection( 0 ).outgoingRoad.id ).toBe( rightRoad.id );
-		// expect( junction.getConnection( 0 ).laneLink.length ).toBe( 3 );
-
-		// expect( junction.getConnection( 0 ).laneLink[ 0 ].from ).toBe( -1 );
-		// expect( junction.getConnection( 0 ).laneLink[ 0 ].to ).toBe( -1 );
-		// expect( junction.getConnection( 0 ).laneLink[ 1 ].from ).toBe( -2 );
-		// expect( junction.getConnection( 0 ).laneLink[ 1 ].to ).toBe( -2 );
-		// expect( junction.getConnection( 0 ).laneLink[ 2 ].from ).toBe( -3 );
-		// expect( junction.getConnection( 0 ).laneLink[ 2 ].to ).toBe( -3 );
-
-		// expect( junction.getConnection( 1 ).incomingRoad.id ).toBe( rightRoad.id );
-		// expect( junction.getConnection( 1 ).outgoingRoad.id ).toBe( leftRoad.id );
-		// expect( junction.getConnection( 1 ).laneLink.length ).toBe( 3 );
-
-		// expect( junction.getConnection( 1 ).laneLink[ 0 ].from ).toBe( -1 );
-		// expect( junction.getConnection( 1 ).laneLink[ 0 ].to ).toBe( -1 );
-		// expect( junction.getConnection( 1 ).laneLink[ 1 ].from ).toBe( -2 );
-		// expect( junction.getConnection( 1 ).laneLink[ 1 ].to ).toBe( -2 );
-		// expect( junction.getConnection( 1 ).laneLink[ 2 ].from ).toBe( -3 );
-		// expect( junction.getConnection( 1 ).laneLink[ 2 ].to ).toBe( -3 );
-
-	} ) );
 
 	it( 'should create connection with same road same direction', inject( [ RoadService, JunctionService, DepConnectionFactory ], (
 		roadService: RoadService,

@@ -25,7 +25,6 @@ import { AssetService } from 'app/assets/asset.service';
 import { AssetType } from 'app/assets/asset.model';
 import { SignalDatabase } from '../../../map/road-signal/road-signal.database';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadGeometryService } from "../../../services/road/road-geometry.service";
 import { TvTextureService } from "../../../assets/texture/tv-texture.service";
 import { MeshBuilder } from 'app/core/builders/mesh.builder';
 
@@ -52,7 +51,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 		// clamp signal s value if it is out of bounds
 		signal.s = Maths.clamp( signal.s, 0, road.length );
 
-		const position = RoadGeometryService.instance.findRoadPosition( road, signal.s, signal.t );
+		const position = road.getRoadPosition( signal.s, signal.t );
 
 		const parentObject = new Object3D();
 
@@ -275,7 +274,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 
 	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ) {
 
-		const roadCoord = RoadGeometryService.instance.findRoadPosition( road, signal.s, signal.t );
+		const roadCoord = road.getRoadPosition( signal.s, signal.t );
 
 		let hdg: number;
 

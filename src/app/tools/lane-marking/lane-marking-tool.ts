@@ -19,13 +19,11 @@ import { EndLaneMovingStrategy } from 'app/core/strategies/move-strategies/end-l
 import { AddObjectCommand } from "../../commands/add-object-command";
 import { SelectObjectCommand } from "../../commands/select-object-command";
 import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
-import { Environment } from 'app/core/utils/environment';
 import { LaneMarkingInspector } from './lane-marking.inspector';
 import { DebugState } from 'app/services/debug/debug-state';
 import { Maths } from 'app/utils/maths';
 import { NewLanePosition } from 'app/scenario/models/positions/tv-lane-position';
 import { Commands } from 'app/commands/commands';
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 export class LaneMarkingTool extends BaseTool<any> {
 
@@ -194,11 +192,9 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 				const road = position.road;
 
-				const laneSection = position.laneSection;
-
 				const lane = position.lane;
 
-				const location = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, position.s )
+				const location = road.getLaneEndPosition( lane, position.roadDistance )
 
 				this.selectedNode.position.copy( location.toVector3() );
 

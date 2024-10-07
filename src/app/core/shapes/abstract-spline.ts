@@ -12,6 +12,7 @@ import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLink } from 'app/map/models/tv-link';
 import { InvalidArgumentException, DuplicateModelException, DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
+import { MapEvents } from 'app/events/map-events';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -63,6 +64,8 @@ export abstract class AbstractSpline {
 	}
 
 	abstract getPoints ( stepSize: number ): Vector3[];
+
+	abstract updateSegmentGeometryAndBounds (): void;
 
 	protected constructor ( closed?: boolean, tension?: number ) {
 
@@ -378,6 +381,14 @@ export abstract class AbstractSpline {
 		}
 
 		return coordinates;
+	}
+
+	protected fireMakeSegmentMeshEvents (): void {
+		for ( const segment of this.segmentMap.toArray() ) {
+			if ( segment instanceof TvRoad ) {
+				MapEvents.makeMesh.emit( segment );
+			}
+		}
 	}
 
 }

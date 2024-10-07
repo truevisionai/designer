@@ -17,9 +17,21 @@ import { Maths } from "app/utils/maths";
 } )
 export class SplineBoundsService {
 
-	constructor () { }
+	private static _instance: SplineBoundsService;
 
-	update ( spline: AbstractSpline ): void {
+	static get instance (): SplineBoundsService {
+
+		if ( !SplineBoundsService._instance ) {
+			SplineBoundsService._instance = new SplineBoundsService();
+		}
+
+		return SplineBoundsService._instance;
+	}
+
+	constructor () {
+	}
+
+	updateBounds ( spline: AbstractSpline ): void {
 
 		this.updateWidthCache( spline );
 

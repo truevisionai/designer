@@ -9,7 +9,6 @@ import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { TvCornerRoad } from "../../map/models/objects/tv-corner-road";
 import { Log } from "../../core/utils/log";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { TvObjectOutline } from "app/map/models/objects/tv-object-outline";
 import { DebugLine } from "app/objects/debug-line";
@@ -127,7 +126,7 @@ export class CrosswalkToolDebugger {
 
 	createNode ( road: TvRoad, roadObject: TvRoadObject, corner: TvCornerRoad ): CornerControlPoint {
 
-		const position = RoadGeometryService.instance.findRoadPosition( road, corner.s, corner.t )
+		const position = road.getRoadPosition( corner.s, corner.t )
 
 		if ( !position ) {
 			Log.error( 'CrosswalkToolDebugger', 'createNode', 'Position not found' );
@@ -156,7 +155,7 @@ export class CrosswalkToolDebugger {
 
 	createOrUpdateLine ( road: TvRoad, roadObject: TvRoadObject, outline: TvObjectOutline ): DebugLine<TvRoadObject> {
 
-		const points = outline.cornerRoads.map( corner => RoadGeometryService.instance.findRoadPosition( road, corner.s, corner.t ) );
+		const points = outline.cornerRoads.map( corner => road.getRoadPosition( corner.s, corner.t ) );
 
 		let line: DebugLine<TvRoadObject>;
 

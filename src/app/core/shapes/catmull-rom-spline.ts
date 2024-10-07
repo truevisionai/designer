@@ -37,4 +37,11 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
+	updateSegmentGeometryAndBounds (): void {
+
+		// this.curve.updateArcLengths();
+
+	}
+
+
 }

@@ -10,6 +10,7 @@ import { Orientation } from '../tv-orientation';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
+import { RoadDistance } from 'app/map/road/road-distance';
 
 export class LanePosition extends Position {
 
@@ -87,7 +88,7 @@ export class NewLanePosition extends Position {
 		public road: TvRoad,
 		public laneSection: TvLaneSection,
 		public lane: TvLane,
-		public s = 0,
+		public roadDistance: RoadDistance,
 		public offset = 0,
 		orientation: Orientation = null
 	) {
@@ -98,7 +99,7 @@ export class NewLanePosition extends Position {
 
 	getVectorPosition (): Vector3 {
 
-		return this.road.getLaneCenterPosition( this.lane, this.s ).toVector3();
+		return this.road.getLaneCenterPosition( this.lane, this.roadDistance ).toVector3();
 
 	}
 
@@ -110,7 +111,7 @@ export class NewLanePosition extends Position {
 
 	toString (): string {
 
-		return `LanePosition: Road:${ this.road.id } Section:${ this.laneSection.id } Lane:${ this.lane.id } S:${ this.s } Offset:${ this.offset }`;
+		return `LanePosition: Road:${ this.road.id } Section:${ this.laneSection.id } Lane:${ this.lane.id } S:${ this.roadDistance } Offset:${ this.offset }`;
 
 	}
 

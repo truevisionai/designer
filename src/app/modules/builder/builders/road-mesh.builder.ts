@@ -23,10 +23,10 @@ import { RoadSignalBuilder } from "./road-signal.builder";
 import { RoadObjectBuilder } from "./road-object.builder";
 import { Log } from "../../../core/utils/log";
 import { InvalidRoadLength, NoGeometriesFound, ValidationException } from "../../../exceptions/exceptions";
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { RoadObjectValidator } from '../../../map/road-object/road-object-validator';
 import { TvMaterialService } from "../../../assets/material/tv-material.service";
 import { MeshBuilder } from 'app/core/builders/mesh.builder';
+import { Distance, RoadDistance } from 'app/map/road/road-distance';
 
 @Injectable()
 export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
@@ -335,10 +335,12 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
 
-		const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, sOffset - laneSection.s, 0, false );
-		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, sOffset - laneSection.s, 0, false );
+		const distance = sOffset - laneSection.s as RoadDistance;
+		const start = road.getLaneStartPosition( lane, distance, 0, false );
+		const end = road.getLaneEndPosition( lane, distance, 0, false );
 
 		const width = lane.getWidthValue( sOffset - laneSection.s );
 		const height = lane.getHeightValue( sOffset - laneSection.s );

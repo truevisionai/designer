@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvRoad } from './tv-road.model';
 
@@ -37,13 +36,13 @@ describe( 'RoadTests', () => {
 
 	it( 'should give correct geometry index', () => {
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, 0 );
+		pose = road.getRoadPosition( 0 );
 		expect( pose.hdg ).toBe( 0 );
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, 10 );
+		pose = road.getRoadPosition( 10 );
 		expect( pose.hdg ).toBe( 1 );
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, 20 );
+		pose = road.getRoadPosition( 20 );
 		expect( pose.hdg ).toBe( 2 );
 
 	} );

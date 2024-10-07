@@ -3,22 +3,18 @@
  */
 
 import { Injectable } from '@angular/core';
-import { RoadGeometryService } from '../road/road-geometry.service';
 import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { ManeueverHelper } from '../spline/spline.factory';
 import { SplineType } from 'app/core/shapes/abstract-spline';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
-import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ConnectionGeometryService {
 
-	constructor (
-		private roadGeometryService: RoadGeometryService,
-	) { }
+	constructor () { }
 
 	updateConnectionGeometry ( connection: TvJunctionConnection ): void {
 
@@ -36,11 +32,11 @@ export class ConnectionGeometryService {
 
 	private updateAutoConnectionGeometry ( connection: TvJunctionConnection ): void {
 
-		const prevCoord = this.roadGeometryService.findLinkCoord( connection.connectingRoad.predecessor );
+		const prevCoord = connection.connectingRoad.predecessor.toRoadCoord();
 
 		const nextRoad = connection.connectingRoad.successor.element as TvRoad;
 
-		const nextRoadCoord = this.roadGeometryService.findLinkCoord( connection.connectingRoad.successor );
+		const nextRoadCoord = connection.connectingRoad.successor.toRoadCoord();
 
 		connection.laneLink.forEach( link => {
 
@@ -82,8 +78,8 @@ export class ConnectionGeometryService {
 			link.connectingLane.roadMarks.clear();
 		}
 
-		const prevCoord = this.getPredecessorCoord( connection.connectingRoad );
-		const nextRoadCoord = this.getSuccessorCoord( connection.connectingRoad );
+		const prevCoord = connection.getPredecessorLink().toRoadCoord();
+		const nextRoadCoord = connection.getSuccessorLink().toRoadCoord();
 
 		const incomingLane = link.incomingLane;
 		const connectingLane = link.connectingLane;
@@ -94,24 +90,12 @@ export class ConnectionGeometryService {
 		const exit = nextRoadCoord.toLaneCoord( outgoingLane );
 
 		const newPositions = ManeueverHelper.getPositionsFromLaneCoord( entry, exit );
-		const currentPoints = connection.getRoad().spline.getControlPoints();
+		const currentPoints = connection.getSpline().getControlPoints();
 
 		// only update the first and last point
 		currentPoints[ 0 ].position.copy( newPositions[ 0 ] );
 
 		currentPoints[ currentPoints.length - 1 ].position.copy( newPositions[ newPositions.length - 1 ] );
-
-	}
-
-	private getPredecessorCoord ( road: TvRoad ): TvRoadCoord {
-
-		return this.roadGeometryService.findLinkCoord( road.predecessor );
-
-	}
-
-	private getSuccessorCoord ( road: TvRoad ): TvRoadCoord {
-
-		return this.roadGeometryService.findLinkCoord( road.successor );
 
 	}
 

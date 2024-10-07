@@ -5,7 +5,7 @@ import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { SceneBuilder } from './builders/scene.builder';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { AutoJunction, DefaultJunction, TvJunction } from 'app/map/models/junctions/tv-junction';
 import { PropCurveMeshManager, PropPolygonMeshManager, RoadObjectMeshManager, RoadSignalMeshManager, SurfaceMeshManager } from './managers/mesh-managers';
 import { Surface } from 'app/map/surface/surface.model';
 import { PropCurveBuilder } from './builders/prop-curve.builder';
@@ -18,6 +18,7 @@ import { RoadObjectBuilder } from './builders/road-object.builder';
 import { LaneRoadMarkBuilder } from './builders/lane-road-mark.builder';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { RoadSignalBuilder } from './builders/road-signal.builder';
+import { JunctionBoundaryBuilder } from './builders/junction-boundary.builder';
 
 const Managers = [
 	SurfaceMeshManager,
@@ -48,6 +49,7 @@ const Builders = [
 	SurfaceBuilder,
 	RoadMeshBuilder,
 	JunctionMeshBuilder,
+	JunctionBoundaryBuilder,
 	SceneBuilder,
 	RoadObjectBuilder,
 	LaneRoadMarkBuilder,
@@ -95,6 +97,22 @@ const Providers = [
 		provide: BUILD_PROVIDERS,
 		useValue: {
 			key: TvJunction,
+			builderClass: JunctionMeshBuilder,
+		},
+		multi: true,
+	},
+	{
+		provide: BUILD_PROVIDERS,
+		useValue: {
+			key: AutoJunction,
+			builderClass: JunctionMeshBuilder,
+		},
+		multi: true,
+	},
+	{
+		provide: BUILD_PROVIDERS,
+		useValue: {
+			key: DefaultJunction,
 			builderClass: JunctionMeshBuilder,
 		},
 		multi: true,

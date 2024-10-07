@@ -15,7 +15,6 @@ import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { BaseTest } from "tests/base-test.spec";
 import { Vector2, Vector3 } from "three";
 import { SplineControlPoint } from "app/objects/road/spline-control-point";
-import { RoadGeometryService } from "../../app/services/road/road-geometry.service";
 
 const DEFAULT_ROAD_WIDTH = 12.2;
 
@@ -72,11 +71,11 @@ xdescribe( 't-junction tests', () => {
 
 		const junction = junctionService.createNewJunction();
 
-		const coord1 = RoadGeometryService.instance.findRoadCoord( xAxisRoad, 100 );
+		const coord1 = xAxisRoad.getRoadCoord( 100 );
 		intersectionService.cutRoadForJunction( coord1, junction );
 		expect( xAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
 
-		const coord2 = RoadGeometryService.instance.findRoadCoord( yAxisRoad, 100 );
+		const coord2 = yAxisRoad.getRoadCoord( 100 );
 		intersectionService.cutRoadForJunction( coord2, junction );
 		expect( yAxisRoad.length ).toBeCloseTo( 100 - DEFAULT_ROAD_WIDTH );
 
@@ -101,10 +100,10 @@ xdescribe( 't-junction tests', () => {
 
 		const junction = junctionService.createNewJunction();
 
-		const coord1 = RoadGeometryService.instance.findRoadCoord( xAxisRoad, 100 );
+		const coord1 = xAxisRoad.getRoadCoord( 100 );
 		intersectionService.cutRoadForJunction( coord1, junction );
 
-		const coord2 = RoadGeometryService.instance.findRoadCoord( yAxisRoad, 100 );
+		const coord2 = yAxisRoad.getRoadCoord( 100 );
 		intersectionService.cutRoadForJunction( coord2, junction );
 
 		const newYAxisRoad = roadService.getRoad( 3 );

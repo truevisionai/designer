@@ -16,7 +16,6 @@ import { RoadUtils } from "./road.utils";
 import { Vector2 } from "three";
 import { TvAbstractRoadGeometry } from "../map/models/geometries/tv-abstract-road-geometry";
 import { TvContactPoint } from "app/map/models/tv-common";
-import { TvLinkType } from "app/map/models/tv-link";
 import { LinkFactory } from "app/map/models/link-factory";
 
 export function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
@@ -94,7 +93,7 @@ export class SplineUtils {
 			const nextSegment = spline.getNextSegment( segment );
 
 			if ( segment instanceof TvRoad ) {
-				this.setSuccessor( segment, nextSegment );
+				this.linkSuccessor( segment, nextSegment );
 				this.setPredecessor( segment, prevSegment );
 			}
 
@@ -102,13 +101,15 @@ export class SplineUtils {
 
 	}
 
-	private static setSuccessor ( road: TvRoad, nextSegment: TvRoad | TvJunction ): void {
+	private static linkSuccessor ( road: TvRoad, nextSegment: TvRoad | TvJunction ): void {
 
-		if ( nextSegment != null ) {
+		if ( nextSegment instanceof TvRoad ) {
 
-			const linkType = nextSegment instanceof TvRoad ? TvLinkType.ROAD : TvLinkType.JUNCTION;
+			road.linkSuccessor( nextSegment, TvContactPoint.START );
 
-			road.successor = LinkFactory.createLink( linkType, nextSegment, TvContactPoint.START );
+		} else if ( nextSegment instanceof TvJunction ) {
+
+			road.successor = LinkFactory.createJunctionLink( nextSegment );
 
 		}
 
@@ -116,11 +117,13 @@ export class SplineUtils {
 
 	private static setPredecessor ( road: TvRoad, prevSegment: TvRoad | TvJunction ): void {
 
-		if ( prevSegment != null ) {
+		if ( prevSegment instanceof TvRoad ) {
 
-			const linkType = prevSegment instanceof TvRoad ? TvLinkType.ROAD : TvLinkType.JUNCTION;
+			road.linkPredecessor( prevSegment, TvContactPoint.END );
 
-			road.predecessor = LinkFactory.createLink( linkType, prevSegment, TvContactPoint.END );
+		} else if ( prevSegment instanceof TvJunction ) {
+
+			road.predecessor = LinkFactory.createJunctionLink( prevSegment );
 
 		}
 

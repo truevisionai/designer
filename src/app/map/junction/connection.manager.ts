@@ -7,8 +7,7 @@ import { TvJunction } from "../models/junctions/tv-junction";
 import { TvRoad } from "../models/tv-road.model";
 import { RoadManager } from "../../managers/road/road-manager";
 import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
-import { JunctionRoadService } from "../../services/junction/junction-road.service";
-import { TvLink, TvLinkType } from "../models/tv-link";
+import { TvLink } from "../models/tv-link";
 import { LinkFactory } from '../models/link-factory';
 import { Log } from "../../core/utils/log";
 import { ConnectionFactory } from "../../factories/connection.factory";
@@ -28,7 +27,6 @@ export class ConnectionManager {
 		private roadService: RoadService,
 		private roadManager: RoadManager,
 		private splineBuilder: SplineGeometryGenerator,
-		private junctionRoadService: JunctionRoadService,
 		private connectionFactory: ConnectionFactory,
 		private connectionGeometryService: ConnectionGeometryService,
 	) {
@@ -81,7 +79,7 @@ export class ConnectionManager {
 
 		Log.info( 'Generating connections for junction', junction.toString() );
 
-		const roadLinks = this.junctionRoadService.getRoadLinks( junction );
+		const roadLinks = junction.getRoadLinks();
 
 		links.forEach( link => roadLinks.push( link ) );
 

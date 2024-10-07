@@ -26,8 +26,6 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { RoadControlPoint } from "../../objects/road/road-control-point";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { SplineUtils } from 'app/utils/spline.utils';
-import { RoadGeometryService } from '../road/road-geometry.service';
 import { RoadWidthService } from '../road/road-width.service';
 
 const LINE_WIDTH = 2.0;
@@ -483,8 +481,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( road, sCoord );
 
-		const start = RoadGeometryService.instance.findRoadPosition( road, sCoord, result.leftSideWidth );
-		const end = RoadGeometryService.instance.findRoadPosition( road, sCoord, -result.rightSideWidth );
+		const start = road.getRoadPosition( sCoord, result.leftSideWidth );
+		const end = road.getRoadPosition( sCoord, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 		lineGeometry.setPositions( [
@@ -520,8 +518,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( node.road, sOffset );
 
-		const start = RoadGeometryService.instance.findRoadPosition( node.road, sOffset, result.leftSideWidth );
-		const end = RoadGeometryService.instance.findRoadPosition( node.road, sOffset, -result.rightSideWidth );
+		const start = node.road.getRoadPosition( sOffset, result.leftSideWidth );
+		const end = node.road.getRoadPosition( sOffset, -result.rightSideWidth );
 
 		node.line.geometry.dispose();
 

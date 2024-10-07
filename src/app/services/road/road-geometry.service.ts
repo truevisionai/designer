@@ -16,6 +16,7 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { RoadWidthService } from './road-width.service';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { LaneDistance } from 'app/map/road/road-distance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -125,7 +126,7 @@ export class RoadGeometryService {
 
 				const laneSOffset = coord.s - laneSection.s;
 
-				return new TvLaneCoord( coord.road, laneSection, lane, laneSOffset, 0 );
+				return new TvLaneCoord( coord.road, laneSection, lane, laneSOffset as LaneDistance, 0 );
 
 			}
 

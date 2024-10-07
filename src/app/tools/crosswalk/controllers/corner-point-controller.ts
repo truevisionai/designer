@@ -6,7 +6,6 @@ import { Injectable } from "@angular/core";
 import { PointController } from "app/core/controllers/point-controller";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { Log } from "app/core/utils/log";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { CrosswalkInspector } from "../crosswalk.inspector";
 import { CornerControlPoint } from "../objects/corner-control-point";
 
@@ -17,7 +16,6 @@ export class CornerControlPointController extends PointController<CornerControlP
 
 	constructor (
 		private roadObjectService: RoadObjectService,
-		private roadGeometryService: RoadGeometryService
 	) {
 		super();
 	}
@@ -36,7 +34,7 @@ export class CornerControlPointController extends PointController<CornerControlP
 
 	onUpdated ( point: CornerControlPoint ): void {
 
-		const coord = this.roadGeometryService.findRoadPositionAt( point.road, point.position );
+		const coord = point.road.getPosThetaByPosition( point.position );
 
 		if ( !coord ) {
 			Log.error( 'CornerControlPointHandler', 'onUpdated', 'Could not find coordinate for position' );

@@ -27,6 +27,10 @@ import { TrafficRule } from './traffic-rule';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { RoadStyle } from 'app/assets/road-style/road-style.model';
+import { RoadWidthService } from 'app/services/road/road-width.service';
+import { RoadLinker } from '../link/road-linker';
+import { TvRoadCoord } from './TvRoadCoord';
+import { RoadDistance } from '../road/road-distance';
 
 export class TvRoad {
 
@@ -241,7 +245,7 @@ export class TvRoad {
 
 	}
 
-	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
+	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ): void {
 
 		this.setSuccessor( TvLinkType.ROAD, road, contactPoint );
 
@@ -249,9 +253,13 @@ export class TvRoad {
 
 	linkSuccessor ( road: TvRoad, contact: TvContactPoint ): void {
 
-		this.setSuccessorRoad( road, contact );
+		RoadLinker.instance.linkSuccessorRoad( this, road, contact );
 
-		road.setPredecessorRoad( this, TvContactPoint.END );
+	}
+
+	linkPredecessor ( road: TvRoad, contact: TvContactPoint ): void {
+
+		RoadLinker.instance.linkPredecessorRoad( this, road, contact );
 
 	}
 
@@ -388,16 +396,27 @@ export class TvRoad {
 
 	}
 
-
-	/**
-	 *
-	 * @param s
-	 * @param t
-	 * @deprecated
-	 */
-	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
+	getRoadPosition ( s: number, t = 0 ): TvPosTheta {
 
 		return RoadGeometryService.instance.findRoadPosition( this, s, t );
+
+	}
+
+	getContactPosition ( contactA: TvContactPoint ) {
+
+		return RoadGeometryService.instance.findContactPosition( this, contactA );
+
+	}
+
+	getRoadCoord ( s: number, t = 0 ): TvRoadCoord {
+
+		return RoadGeometryService.instance.findRoadCoord( this, s, t );
+
+	}
+
+	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
+
+		return this.getRoadPosition( s, t );
 
 	}
 
@@ -600,35 +619,44 @@ export class TvRoad {
 
 	}
 
-	/**
-	 * @deprecated use RoadGeometryService instead
-	 */
-	getLaneCenterPosition ( lane: TvLane, roadSOffset: number, offset = 0 ) {
+	getLaneCenterPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
 
-		const laneSOffset = roadSOffset - lane.laneSection.s;
+		const laneSOffset = roadDistance - lane.laneSection.s;
 
-		return RoadGeometryService.instance.findLaneCenterPosition( this, lane.laneSection, lane, laneSOffset, offset );
+		return RoadGeometryService.instance.findLaneCenterPosition( this, lane.laneSection, lane, laneSOffset, offset, addHeight );
 	}
 
-	/**
-	 * @deprecated use RoadGeometryService instead
-	 */
-	getLaneStartPosition ( lane: TvLane, roadSOffset: number, offset = 0 ) {
+	getLaneStartPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
 
-		const laneSOffset = roadSOffset - lane.laneSection.s;
+		const laneSOffset = roadDistance - lane.laneSection.s;
 
-		return RoadGeometryService.instance.findLaneStartPosition( this, lane.laneSection, lane, laneSOffset, offset );
+		return RoadGeometryService.instance.findLaneStartPosition( this, lane.laneSection, lane, laneSOffset, offset, addHeight );
 
 	}
 
-	/**
-	 * @deprecated use RoadGeometryService instead
-	 */
-	getLaneEndPosition ( lane: TvLane, roadSOffset: number, offset = 0 ) {
+	getLaneEndPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
 
-		const laneSOffset = roadSOffset - lane.laneSection.s;
+		const laneSOffset = roadDistance - lane.laneSection.s;
 
-		return RoadGeometryService.instance.findLaneEndPosition( this, lane.laneSection, lane, laneSOffset, offset );
+		return RoadGeometryService.instance.findLaneEndPosition( this, lane.laneSection, lane, laneSOffset, offset, addHeight );
+
+	}
+
+	getLaneCoordinatesAt ( point: Vector3 ) {
+
+		return RoadGeometryService.instance.findLaneCoordAt( this, point );
+
+	}
+
+	getRoadCoordinatesAt ( point: Vector3 ): TvRoadCoord {
+
+		return RoadGeometryService.instance.findRoadCoordAt( this, point );
+
+	}
+
+	getLocatorProvider (): RoadGeometryService {
+
+		return RoadGeometryService.instance;
 
 	}
 
@@ -668,6 +696,12 @@ export class TvRoad {
 	getPosThetaByContact ( contact: TvContactPoint ): TvPosTheta {
 
 		return RoadGeometryService.instance.findContactPosition( this, contact );
+
+	}
+
+	getRoadWidthAt ( distance: number ) {
+
+		return RoadWidthService.instance.findRoadWidthAt( this, distance );
 
 	}
 

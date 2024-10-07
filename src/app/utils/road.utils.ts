@@ -7,7 +7,6 @@ import { TvLink, TvLinkType } from "app/map/models/tv-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "../map/models/junctions/tv-junction";
 import { Vector2, Vector3 } from "three";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { TvLane } from "app/map/models/tv-lane";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 
@@ -69,7 +68,7 @@ export class RoadUtils {
 
 			const point = new Vector2( end.position.x, end.position.y );
 
-			return link.element.boundingBox.distanceToPoint( point );
+			return link.element.distanceToPoint( point );
 
 		}
 
@@ -89,7 +88,7 @@ export class RoadUtils {
 
 			const point = new Vector2( start.position.x, start.position.y );
 
-			return link.element.boundingBox.distanceToPoint( point );
+			return link.element.distanceToPoint( point );
 		}
 
 	}
@@ -225,8 +224,8 @@ export class RoadUtils {
 
 	static getContactByPosition ( road: TvRoad, position: Vector3 ): TvContactPoint {
 
-		const startDistance = RoadGeometryService.instance.findRoadPosition( road, 0 ).position.distanceTo( position );
-		const endDistance = RoadGeometryService.instance.findRoadPosition( road, this.length ).position.distanceTo( position );
+		const startDistance = road.getRoadPosition( 0 ).position.distanceTo( position );
+		const endDistance = road.getRoadPosition( this.length ).position.distanceTo( position );
 
 		if ( startDistance < endDistance ) {
 

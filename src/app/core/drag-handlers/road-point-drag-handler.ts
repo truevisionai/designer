@@ -5,7 +5,6 @@
 import { Injectable } from "@angular/core";
 import { Commands } from "app/commands/commands";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { BaseDragHandler } from "./base-drag-handler";
 import { IHasPosition } from "app/objects/i-has-position";
 import { TvRoad } from "app/map/models/tv-road.model";
@@ -19,7 +18,7 @@ export interface RoadPoint extends IHasPosition {
 } )
 export class RoadPointDragHandler<T extends RoadPoint> extends BaseDragHandler<T> {
 
-	constructor ( private roadGeometryService: RoadGeometryService ) {
+	constructor () {
 		super();
 	}
 
@@ -29,7 +28,7 @@ export class RoadPointDragHandler<T extends RoadPoint> extends BaseDragHandler<T
 
 	onDrag ( point: RoadPoint, e: PointerEventData ): void {
 
-		const roadCoord = this.roadGeometryService.findRoadCoordStrict( point.road, e.point );
+		const roadCoord = point.road.getRoadCoordinatesAt( e.point );
 
 		if ( !roadCoord ) {
 			this.setHint( 'Cannot drag point on non-road area' );
@@ -54,7 +53,7 @@ export class RoadPointDragHandler<T extends RoadPoint> extends BaseDragHandler<T
 
 	getDragTip ( point: RoadPoint ): string | null {
 
-		const coord = this.roadGeometryService.findRoadCoordStrict( point.road, point.getPosition() );
+		const coord = point.road.getRoadCoordinatesAt( point.getPosition() );
 
 		if ( !coord ) return;
 

@@ -15,9 +15,9 @@ import {
 } from 'three';
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvJunctionBoundaryBuilder } from 'app/map/junction-boundary/tv-junction-boundary.builder';
 import { TvMaterialService } from 'app/assets/material/tv-material.service';
 import { MeshBuilder } from 'app/core/builders/mesh.builder';
+import { JunctionBoundaryBuilder } from './junction-boundary.builder';
 
 const ASPHALT_GUID = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
@@ -27,7 +27,7 @@ const ASPHALT_GUID = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 export class JunctionMeshBuilder implements MeshBuilder<TvJunction> {
 
 	constructor (
-		private boundaryBuilder: TvJunctionBoundaryBuilder,
+		private boundaryBuilder: JunctionBoundaryBuilder,
 		private materialService: TvMaterialService,
 	) {
 	}

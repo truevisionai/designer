@@ -11,6 +11,7 @@ import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
+import { RoadDistance } from "app/map/road/road-distance";
 
 export class LaneWidthLine extends DebugLine<TvLaneWidth> {
 
@@ -47,7 +48,7 @@ export class LaneWidthLine extends DebugLine<TvLaneWidth> {
 
 		const start = RoadGeometryService.instance.findLaneStartPosition( road, laneSection, lane, laneWidth.s );
 
-		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, laneWidth.s );
+		const end = road.getLaneEndPosition( lane, laneSection.s + laneWidth.s as RoadDistance );
 
 		const points = [ start.position, end.position ];
 

@@ -19,7 +19,21 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 } )
 export class ExplicitGeometryService {
 
-	build ( spline: AbstractSpline ): void {
+	private static _instance: ExplicitGeometryService;
+
+	static get instance (): ExplicitGeometryService {
+
+		if ( !ExplicitGeometryService._instance ) {
+			ExplicitGeometryService._instance = new ExplicitGeometryService();
+		}
+
+		return ExplicitGeometryService._instance;
+	}
+
+	constructor () {
+	}
+
+	updateGeometry ( spline: AbstractSpline ): void {
 
 		const geometries = this.getGeometries( spline );
 
@@ -120,27 +134,5 @@ export class ExplicitGeometryService {
 		return new TvLineGeometry( 0, p1.position.x, p1.position.y, p1.hdg, p1.position.distanceTo( p2.position ) );
 
 	}
-
-	// createGeometry ( prevPoint: RoadControlPoint, currentPoint: RoadControlPoint, geometryType: TvGeometryType ): TvAbstractRoadGeometry {
-
-	// 	let geometry: TvAbstractRoadGeometry;
-
-	// 	if ( geometryType == TvGeometryType.PARAMPOLY3 ) {
-
-	// 		geometry = currentPoint.segmentGeometry;
-
-	// 	} else {
-
-	// 		geometry = GeometryFactory.createFromPoint( geometryType, prevPoint, currentPoint );
-
-	// 		currentPoint.segmentGeometry = geometry;
-
-	// 		prevPoint.segmentGeometry = geometry;
-
-	// 	}
-
-	// 	return geometry;
-
-	// }
 
 }

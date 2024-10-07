@@ -54,7 +54,7 @@ describe( 'ExplicitGeometryService', () => {
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
 
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 1 );
 		expect( spline.getGeometries()[ 0 ].length ).toBe( 100 );
@@ -67,7 +67,7 @@ describe( 'ExplicitGeometryService', () => {
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
 
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getControlPoints()[ 0 ].getHeading() ).toEqual( 0 );
 		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( 0 );
@@ -79,7 +79,7 @@ describe( 'ExplicitGeometryService', () => {
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
 
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 1 );
 		expect( spline.getGeometries()[ 0 ].length ).toBe( 100 );
@@ -96,7 +96,7 @@ describe( 'ExplicitGeometryService', () => {
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 200, 0, 0 ) ) );
 
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 2 );
 		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
@@ -114,7 +114,7 @@ describe( 'ExplicitGeometryService', () => {
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
 		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 100, 0 ) ) );
 
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 2 );
 		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.LINE );

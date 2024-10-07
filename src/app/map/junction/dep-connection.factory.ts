@@ -334,67 +334,8 @@ export class DepConnectionFactory {
 
 	private createNonDrivingLinks ( connection: TvJunctionConnection ): TvJunctionConnection {
 
-		function computeS ( lane: TvLane, contact: TvContactPoint ): number {
+		throw new Error( "Method not implemented." );
 
-			if ( contact == TvContactPoint.START ) {
-
-				return 0;
-
-			} else if ( contact == TvContactPoint.END ) {
-
-				return lane.laneSection.road.length;
-
-			}
-
-		}
-
-		const incomingContact = connection.connectingRoad.predecessor.contactPoint;
-		const outgoingContact = connection.connectingRoad.successor.contactPoint;
-
-		const incomingDirection = LaneUtils.determineDirection( incomingContact );
-		let outgoingDirection = TravelDirection.forward;
-
-		if ( incomingContact != outgoingContact ) {
-
-			outgoingDirection = incomingDirection;
-
-		} else {
-
-			if ( incomingDirection === TravelDirection.forward ) {
-
-				outgoingDirection = TravelDirection.backward;
-
-			} else {
-
-				outgoingDirection = TravelDirection.forward;
-
-			}
-
-		}
-
-		const incomingCoords = connection.getIncomingLanes()
-			.filter( lane => lane.type != TvLaneType.driving )
-			.filter( lane => lane.direction === incomingDirection )
-			.map( lane => new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, computeS( lane, incomingContact ), 0 ) );
-
-		const outgoingCoords = connection.getOutgoingLanes()
-			.filter( lane => lane.type != TvLaneType.driving )
-			.filter( lane => lane.direction === outgoingDirection )
-			.map( lane => new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, computeS( lane, outgoingContact ), 0 ) );
-
-		for ( let i = 0; i < incomingCoords.length; i++ ) {
-
-			const incomingCoord = incomingCoords[ i ];
-
-			const link = this.createLink( connection, incomingCoord, outgoingCoords );
-
-			if ( !link ) continue;
-
-			connection.addLaneLink( link );
-
-		}
-
-		return connection;
 	}
 
 	private addRoadMarks ( connection: TvJunctionConnection ): TvJunctionConnection {
@@ -503,8 +444,8 @@ export class DepConnectionFactory {
 		connectionLane.successorId = outgoing.lane.id;
 
 		// NOTE: THIS CAN probably be added in road event listener also
-		const widhtAtStart = incoming.lane.getWidthValue( incoming.s );
-		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
+		const widhtAtStart = incoming.lane.getWidthValue( incoming.laneDistance );
+		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.laneDistance );
 		connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
 		connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
 		TvUtils.computeCoefficients( connectionLane.width, roadLength );

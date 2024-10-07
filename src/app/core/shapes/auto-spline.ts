@@ -16,6 +16,10 @@ import { AbstractControlPoint } from "../../objects/abstract-control-point";
  */
 export class DepAutoSpline extends AbstractSpline {
 
+	updateSegmentGeometryAndBounds (): void {
+		throw new Error( 'Method not implemented.' );
+	}
+
 	getPoints ( stepSize: number ): Vector3[] {
 		throw new Error( 'Method not implemented.' );
 	}

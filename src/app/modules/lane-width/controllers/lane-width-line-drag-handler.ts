@@ -6,7 +6,6 @@ import { Injectable } from "@angular/core";
 import { Commands } from "app/commands/commands";
 import { BaseDragHandler } from "app/core/drag-handlers/base-drag-handler";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { LaneWidthService } from "../services/lane-width.service";
 import { LaneWidthLine } from "../objects/lane-width-line";
 
@@ -27,7 +26,7 @@ export class LaneWidthLineDragHandler extends BaseDragHandler<LaneWidthLine> {
 
 		this.initialSValue = this.initialSValue || line.s;
 
-		const coord = RoadGeometryService.instance.findRoadCoordAt( line.road, e.point );
+		const coord = line.road.getRoadCoordinatesAt( e.point );
 
 		const sOffset = coord.s - line.laneSection.s;
 
@@ -45,7 +44,7 @@ export class LaneWidthLineDragHandler extends BaseDragHandler<LaneWidthLine> {
 
 	onDragEnd ( line: LaneWidthLine, e: PointerEventData ): void {
 
-		const coord = RoadGeometryService.instance.findRoadCoordAt( line.road, e.point );
+		const coord = line.road.getRoadCoordinatesAt( e.point );
 
 		const sOffset = coord.s - line.laneSection.s;
 

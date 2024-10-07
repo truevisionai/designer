@@ -6,19 +6,16 @@ import { Injectable } from '@angular/core';
 import { DebugDrawService } from './debug-draw.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Object3D } from "three";
-import { LaneDebugService } from 'app/services/debug/lane-debug.service';
 import { TvLane } from 'app/map/models/tv-lane';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { DebugLine } from '../../objects/debug-line';
 import { MapService } from '../map/map.service';
-import { DynamicControlPoint } from "../../objects/dynamic-control-point";
 import { RoadNode } from 'app/objects/road/road-node';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { RoadWidthService } from '../road/road-width.service';
-import { RoadGeometryService } from '../road/road-geometry.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
@@ -48,13 +45,10 @@ export class RoadDebugService {
 
 	private selectedRoads = new Set<TvRoad>();
 
-	private roadGeometryService: RoadGeometryService;
-
 	constructor (
 		private debugService: DebugDrawService,
 		private mapService: MapService,
 	) {
-		this.roadGeometryService = RoadGeometryService.instance;
 	}
 
 	showNodes (): void {
@@ -273,9 +267,9 @@ export class RoadDebugService {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( road, s );
 
-		const start = this.roadGeometryService.findRoadPosition( road, s, result.leftSideWidth );
+		const start = road.getRoadPosition( s, result.leftSideWidth );
 
-		const end = this.roadGeometryService.findRoadPosition( road, s, -result.rightSideWidth );
+		const end = road.getRoadPosition( s, -result.rightSideWidth );
 
 		return this.debugService.createDebugLine( target, [ start.position, end.position ], width );
 
@@ -283,11 +277,11 @@ export class RoadDebugService {
 
 	updateRoadWidthLine ( line: Line2, roadCoord: TvRoadCoord ): Line2 {
 
-		const result = RoadWidthService.instance.findRoadWidthAt( roadCoord.road, roadCoord.s );
+		const result = roadCoord.road.getRoadWidthAt( roadCoord.s );
 
-		const start = this.roadGeometryService.findRoadPosition( roadCoord.road, roadCoord.s, result.leftSideWidth );
+		const start = roadCoord.road.getRoadPosition( roadCoord.s, result.leftSideWidth );
 
-		const end = this.roadGeometryService.findRoadPosition( roadCoord.road, roadCoord.s, -result.rightSideWidth );
+		const end = roadCoord.road.getRoadPosition( roadCoord.s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 
@@ -307,9 +301,9 @@ export class RoadDebugService {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( road, s );
 
-		const start = this.roadGeometryService.findRoadPosition( road, s, result.leftSideWidth );
+		const start = road.getRoadPosition( s, result.leftSideWidth );
 
-		const end = this.roadGeometryService.findRoadPosition( road, s, -result.rightSideWidth );
+		const end = road.getRoadPosition( s, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 

@@ -14,7 +14,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 describe( 'Service: JunctionRoad', () => {
 
-	let service: JunctionRoadService;
 	let helper: SplineTestHelper;
 	let eventServiceProvider: EventServiceProvider;
 
@@ -28,16 +27,9 @@ describe( 'Service: JunctionRoad', () => {
 		} );
 
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
-		service = TestBed.inject( JunctionRoadService );
 		helper = TestBed.inject( SplineTestHelper );
 
 		eventServiceProvider.init();
-
-	} );
-
-	it( 'should create instance', () => {
-
-		expect( service ).toBeTruthy();
 
 	} );
 
@@ -49,11 +41,11 @@ describe( 'Service: JunctionRoad', () => {
 
 		const junction = helper.mapService.findJunction( 1 );
 
-		const incomingRoads = service.getIncomingRoads( junction );
+		const incomingRoads = junction.getIncomingRoads();
 
-		const incomingSplines = service.getIncomingSplines( junction );
+		const incomingSplines = junction.getIncomingSplines();
 
-		const connectingRoads = service.getConnectingRoads( junction );
+		const connectingRoads = junction.getConnectingRoads();
 
 		expect( incomingRoads.length ).toBe( 4 );
 
@@ -71,11 +63,11 @@ describe( 'Service: JunctionRoad', () => {
 
 		const junction = helper.mapService.findJunction( 1 );
 
-		const incomingRoads = service.getIncomingRoads( junction );
+		const incomingRoads = junction.getIncomingRoads();
 
-		const incomingSplines = service.getIncomingSplines( junction );
+		const incomingSplines = junction.getIncomingSplines();
 
-		const connectingRoads = service.getConnectingRoads( junction );
+		const connectingRoads = junction.getConnectingRoads();
 
 		expect( incomingRoads.length ).toBe( 3 );
 
@@ -93,11 +85,11 @@ describe( 'Service: JunctionRoad', () => {
 
 		const junction = helper.mapService.findJunction( 1 );
 
-		const incomingRoads = service.getIncomingRoads( junction );
+		const incomingRoads = junction.getIncomingRoads();
 
-		const incomingSplines = service.getIncomingSplines( junction );
+		const incomingSplines = junction.getIncomingSplines();
 
-		const connectingRoads = service.getConnectingRoads( junction );
+		const connectingRoads = junction.getConnectingRoads();
 
 		expect( incomingRoads.length ).toBe( 3 );
 

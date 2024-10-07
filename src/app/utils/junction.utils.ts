@@ -4,23 +4,20 @@
 
 import { IntersectionGroup } from "app/managers/Intersection-group";
 import {
-	TvJointBoundary,
-	TvJunctionSegmentBoundary,
-	TvLaneBoundary
+	TvJunctionSegmentBoundary
 } from "app/map/junction-boundary/tv-junction-boundary";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint, TvLaneSide } from "app/map/models/tv-common";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Vector3 } from "three";
-import { Maths } from "./maths";
 import { TvJunctionConnection } from "../map/models/junctions/tv-junction-connection";
 import { TvJunctionLaneLink } from "../map/models/junctions/tv-junction-lane-link";
 import { TvLink } from "../map/models/tv-link";
 import { TvLane } from "app/map/models/tv-lane";
 import { LaneUtils } from "./lane.utils";
 import { Log } from "app/core/utils/log";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
-import { RoadWidthService } from "app/services/road/road-width.service";
+import { TvLaneBoundary } from "../map/junction-boundary/tv-lane-boundary";
+import { TvJointBoundary } from "../map/junction-boundary/tv-joint-boundary";
 
 export class JunctionUtils {
 
@@ -341,123 +338,12 @@ export class JunctionUtils {
 			return [];
 		}
 
-		const posTheta = joint.road.getPosThetaByContact( joint.contactPoint );
-		const roadWidth = RoadWidthService.instance.findRoadWidthAt( joint.road, posTheta.s );
-		const t = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
-
-		// return only 2 points for joint boundary
-
-		let start: Vector3;
-
-		if ( joint.contactPoint == TvContactPoint.START ) {
-
-			start = joint.jointLaneStart.side == TvLaneSide.RIGHT ?
-				joint.road.getLaneEndPosition( joint.jointLaneStart, posTheta.s ).toVector3() :
-				joint.road.getLaneStartPosition( joint.jointLaneStart, posTheta.s ).toVector3();
-
-		} else if ( joint.contactPoint == TvContactPoint.END ) {
-
-			start = joint.jointLaneStart.side == TvLaneSide.RIGHT ?
-				joint.road.getLaneStartPosition( joint.jointLaneStart, posTheta.s ).toVector3() :
-				joint.road.getLaneEndPosition( joint.jointLaneStart, posTheta.s ).toVector3();
-
-		}
-
-		const mid = joint.road.getPosThetaAt( posTheta.s, t * 0.5 ).toVector3();
-
-		let end: Vector3;
-
-		if ( joint.contactPoint == TvContactPoint.START ) {
-
-			end = joint.jointLaneEnd.side == TvLaneSide.RIGHT ?
-				joint.road.getLaneStartPosition( joint.jointLaneEnd, posTheta.s ).toVector3() :
-				joint.road.getLaneEndPosition( joint.jointLaneEnd, posTheta.s ).toVector3();
-
-		} else if ( joint.contactPoint == TvContactPoint.END ) {
-
-			end = joint.jointLaneEnd.side == TvLaneSide.RIGHT ?
-				joint.road.getLaneEndPosition( joint.jointLaneEnd, posTheta.s ).toVector3() :
-				joint.road.getLaneStartPosition( joint.jointLaneEnd, posTheta.s ).toVector3();
-
-		}
-
-		return [ start, mid, end ];
-
-		// const points: Vector3[] = []
-
-		// for ( let t = 0; t < roadWidth.leftSideWidth; t++ ) {
-		//
-		// 	const point = joint.road.getPosThetaAt( posTheta.s, roadWidth.leftSideWidth - t ).toVector3();
-		//
-		// 	points.push( point );
-		//
-		// }
-		//
-		// for ( let t = 0; t < roadWidth.rightSideWidth; t++ ) {
-		//
-		// 	const point = joint.road.getPosThetaAt( posTheta.s, -1 * t ).toVector3();
-		//
-		// 	points.push( point );
-		//
-		// }
-
-		// return points;
+		return joint.getPoints().map( point => point.toVector3() );
 	}
 
 	static convertLaneToPositions ( lane: TvLaneBoundary ): Vector3[] {
 
-		const positions: Vector3[] = [];
-
-		if ( lane.road.geometries.length == 0 ) {
-			Log.warn( 'Road has no geometries', lane.road.toString() );
-			return positions;
-		}
-
-		if ( lane.road.length == 0 ) {
-			Log.warn( 'Road has no length', lane.road.toString() );
-			return positions;
-		}
-
-		const start = this.findPosition( lane.road, lane.sStart );
-
-		const end = this.findPosition( lane.road, lane.sEnd );
-
-		// push first point
-		positions.push( lane.road.getLaneEndPosition( lane.boundaryLane, start.s + Maths.Epsilon ).toVector3() );
-
-		for ( let s = start.s; s <= end.s; s += 1 ) {
-
-			const posTheta = lane.road.getPosThetaAt( s );
-
-			const position = lane.road.getLaneEndPosition( lane.boundaryLane, posTheta.s ).toVector3();
-
-			positions.push( position );
-
-		}
-
-		// push last point
-		positions.push( lane.road.getLaneEndPosition( lane.boundaryLane, end.s - Maths.Epsilon ).toVector3() );
-
-		return positions;
-
-
-	}
-
-	static findPosition ( road: TvRoad, value: number | TvContactPoint ) {
-
-		if ( typeof value == 'number' ) {
-
-			return RoadGeometryService.instance.findRoadPosition( road, value );
-
-		} else if ( value == TvContactPoint.START ) {
-
-			return RoadGeometryService.instance.findRoadPosition( road, 0 );
-
-		} else if ( value == TvContactPoint.END ) {
-
-			return RoadGeometryService.instance.findRoadPosition( road, road.length );
-
-		}
+		return lane.getPoints().map( point => point.toVector3() );
 
 	}
 

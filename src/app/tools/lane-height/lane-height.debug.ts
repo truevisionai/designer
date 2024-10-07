@@ -15,6 +15,7 @@ import { Object3D } from "three";
 import { DebugLine } from "app/objects/debug-line";
 import { LaneSpanNode } from "app/objects/lane-node";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
+import { LaneDistance } from "app/map/road/road-distance";
 
 @Injectable( {
 	providedIn: 'root'
@@ -143,7 +144,9 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	createHeightNode ( lane: TvLane, height: TvLaneHeight ) {
 
-		const laneCoord = new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, height.s, 0 );
+		const laneDistance = height.sOffset as LaneDistance;
+
+		const laneCoord = new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, laneDistance, 0 );
 
 		if ( this.nodeCache.has( height ) ) {
 

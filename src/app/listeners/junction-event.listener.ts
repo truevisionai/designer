@@ -9,7 +9,6 @@ import { JunctionRemovedEvent } from "../events/junction/junction-removed-event"
 import { JunctionManager } from "app/managers/junction-manager";
 import { Environment } from "app/core/utils/environment";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { MapService } from "app/services/map/map.service";
 
 @Injectable( {
@@ -21,7 +20,6 @@ export class JunctionEventListener {
 
 	constructor (
 		private junctionManager: JunctionManager,
-		private junctionRoadService: JunctionRoadService,
 		private mapService: MapService,
 	) {
 	}
@@ -36,7 +34,7 @@ export class JunctionEventListener {
 
 	onJunctionUpdated ( junction: TvJunction ): void {
 
-		const splines = this.junctionRoadService.getIncomingSplines( junction );
+		const splines = junction.getIncomingSplines();
 
 		if ( splines.length <= 1 ) {
 
@@ -52,7 +50,7 @@ export class JunctionEventListener {
 
 	removeJunction ( junction: TvJunction ): void {
 
-		const incomingSplines = this.junctionRoadService.getIncomingSplines( junction );
+		const incomingSplines = junction.getIncomingSplines();
 
 		this.removeConnectionRoadAndSplines( junction );
 

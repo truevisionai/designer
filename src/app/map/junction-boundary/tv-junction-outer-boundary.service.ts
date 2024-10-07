@@ -3,18 +3,18 @@
  */
 
 import { Injectable } from "@angular/core";
-import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvContactPoint } from "../models/tv-common";
 import { TvLane } from "../models/tv-lane";
 import { TvRoad } from "../models/tv-road.model";
 import { TvRoadCoord } from "../models/TvRoadCoord";
-import { TvJunctionBoundary, TvLaneBoundary, TvJointBoundary } from "./tv-junction-boundary";
+import { TvJunctionBoundary } from "./tv-junction-boundary";
 import { TvJunctionCornerRoadService } from "./tv-junction-corner-road.service";
-import { BoundaryPositionService } from "./boundary-position.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { traverseLanes } from "app/utils/road.utils";
+import { TvLaneBoundary } from "./tv-lane-boundary";
+import { TvJointBoundary } from "./tv-joint-boundary";
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,17 +22,14 @@ import { traverseLanes } from "app/utils/road.utils";
 export class TvJunctionOuterBoundaryService {
 
 	constructor (
-		private junctionRoadService: JunctionRoadService,
 		private junctionCornerRoadService: TvJunctionCornerRoadService,
-		private boundaryPositionService: BoundaryPositionService,
 		private debugService: DebugDrawService,
 	) {
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	update ( junction: TvJunction, boundary: TvJunctionBoundary ): void {
 
-		const links = this.junctionRoadService.getRoadLinks( junction );
+		const links = junction.getRoadLinks();
 
 		const sorted = GeometryUtils.sortCoordsByAngle( links.map( link => link.toRoadCoord() ) );
 

@@ -3,17 +3,16 @@
  */
 
 import { TvOrientation } from 'app/map/models/tv-common';
-import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { AutoJunction, DefaultJunction, TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { IDService } from './id.service';
 import { Injectable } from '@angular/core';
 import { AbstractFactory } from "../core/interfaces/abstract-factory";
-
 import { Vector3 } from 'three';
 import { Asset } from 'app/assets/asset.model';
 import { MapService } from 'app/services/map/map.service';
-import { InvalidArgumentException } from 'app/exceptions/exceptions';
+import { TvJunctionType } from 'app/map/models/junctions/tv-junction-type';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,9 +23,54 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 		super();
 	}
 
-	static create () {
+	static createByType ( type: TvJunctionType, name: string, id: number ): TvJunction {
 
-		return new TvJunction( 'Junction', 0 );
+		let junction: TvJunction;
+
+		switch ( type ) {
+
+			case TvJunctionType.AUTO:
+				junction = this.createAutoJunction( name, id );
+				break;
+
+			case TvJunctionType.VIRTUAL:
+				Log.warn( "Virtual junctions are not supported yet" );
+				junction = this.createDefaultJunction( name, id );
+				break;
+
+			case TvJunctionType.DIRECT:
+				Log.warn( "Direct junctions are not supported yet" );
+				junction = this.createDefaultJunction( name, id );
+				break;
+
+			default:
+				junction = this.createDefaultJunction( name, id );
+
+		}
+
+		return junction;
+	}
+
+	static createAutoJunction ( name: string, id: number ): TvJunction {
+		return new AutoJunction( name, id );
+	}
+
+	static createDefaultJunction ( name: string, id: number ): TvJunction {
+		return new DefaultJunction( name, id );
+	}
+
+
+	static create () {
+		return new DefaultJunction( 'Junction', 0 );
+	}
+
+	createAutoJunction ( position: Vector3 ): TvJunction {
+
+		const junction = this.createByType( TvJunctionType.AUTO );
+
+		junction.centroid = position;
+
+		return junction;
 
 	}
 
@@ -34,7 +78,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 		// if ( !position ) throw new InvalidArgumentException( 'Position is required' );
 
-		const junction = this.createJunction();
+		const junction = this.createByType();
 
 		junction.centroid = position;
 
@@ -48,13 +92,21 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createJunction (): TvJunction {
+	createByType ( type = TvJunctionType.DEFAULT ): TvJunction {
 
 		const id = this.mapService.map.getNextJunctionId();
 
 		const name = `Junction${ id }`;
 
-		return new TvJunction( name, id );
+		if ( type == TvJunctionType.AUTO ) {
+
+			return JunctionFactory.createAutoJunction( name, id );
+
+		} else {
+
+			return JunctionFactory.createDefaultJunction( name, id );
+
+		}
 
 	}
 
@@ -70,11 +122,9 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	createCustomJunction ( position: Vector3 ) {
 
-		const junction = this.createJunction();
+		const junction = this.createByType();
 
 		junction.centroid = position;
-
-		junction.auto = false;
 
 		return junction;
 	}

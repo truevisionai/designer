@@ -7,12 +7,10 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map/map.service";
 import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 import { JunctionManager } from "./junction-manager";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { Log } from "app/core/utils/log";
 import { SplineLinkService } from "./spline-link.service";
-import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
 import { SplineSegmentService } from "app/services/spline/spline-segment.service";
 import { MapEvents } from "app/events/map-events";
 
@@ -27,11 +25,9 @@ export class SplineManager {
 	constructor (
 		private mapService: MapService,
 		private roadManager: RoadManager,
-		private geometryGenerator: SplineGeometryGenerator,
 		private junctionManager: JunctionManager,
 		private fixer: SplineFixerService,
 		private splineLinkService: SplineLinkService,
-		private splineGeometryService: SplineGeometryService,
 		private segmentService: SplineSegmentService
 	) {
 	}
@@ -44,7 +40,7 @@ export class SplineManager {
 
 		this.splineLinkService.onSplineAdded( spline );
 
-		this.geometryGenerator.generateGeometryAndBuildSegmentsAndBounds( spline );
+		spline.updateSegmentGeometryAndBounds();
 
 		this.addSegments( spline );
 
@@ -52,9 +48,9 @@ export class SplineManager {
 
 	}
 
-	buildSpline ( spline: AbstractSpline ) {
+	buildSpline ( spline: AbstractSpline ): void {
 
-		this.geometryGenerator.generateGeometryAndBuildSegmentsAndBounds( spline );
+		spline.updateSegmentGeometryAndBounds();
 
 	}
 
@@ -64,7 +60,7 @@ export class SplineManager {
 
 		this.fixer.fix( spline );
 
-		this.splineGeometryService.updateGeometryAndBounds( spline );
+		spline.updateSegmentGeometryAndBounds();
 
 		this.updateAndBuildLinkedSplines( spline );
 

@@ -72,7 +72,7 @@ describe( 'X-Junction Tests', () => {
 
 		expect( size.x ).toBeCloseTo( size.y );
 
-		expect( junction.boundingBox.containsPoint( new Vector2( junction.centroid.x, junction.centroid.y ) ) ).toBeTrue();
+		expect( junction.containsPoint( new Vector2( junction.centroid.x, junction.centroid.y ) ) ).toBeTrue();
 
 		expectValidMap( mapService );
 
@@ -110,7 +110,7 @@ describe( 'X-Junction Tests', () => {
 
 		expect( size.x ).toBeCloseTo( size.y );
 
-		expect( junction.boundingBox.containsPoint( new Vector2( junction.centroid.x, junction.centroid.y ) ) ).toBeTrue();
+		expect( junction.containsPoint( new Vector2( junction.centroid.x, junction.centroid.y ) ) ).toBeTrue();
 
 		expectValidMap( mapService );
 

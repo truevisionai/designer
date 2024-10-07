@@ -17,7 +17,6 @@ import { ConnectionFactory } from 'app/factories/connection.factory';
 import { LinkUtils } from 'app/utils/link.utils';
 import { Log } from 'app/core/utils/log';
 import { Surface } from 'app/map/surface/surface.model';
-import { JunctionBoundsService } from '../../../services/junction/junction-geometry.service';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { BuilderManager } from 'app/core/builders/builder-manager';
 import { MapEvents } from 'app/events/map-events';
@@ -31,7 +30,6 @@ export class SceneBuilder {
 		private junctionManager: JunctionManager,
 		private connectionFactory: ConnectionFactory,
 		private junctionBoundaryService: TvJunctionBoundaryService,
-		private junctionBoundsService: JunctionBoundsService,
 		private builderManager: BuilderManager,
 		private surfaceMeshManager: SurfaceMeshManager,
 		private propCurveMeshManager: PropCurveMeshManager,
@@ -94,7 +92,7 @@ export class SceneBuilder {
 
 		this.buildCorners( junction );
 
-		this.junctionBoundsService.updateBounds( junction );
+		junction.updatePositionAndBounds();
 
 		this.builderManager.buildJunction( junction, map );
 

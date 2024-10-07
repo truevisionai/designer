@@ -45,8 +45,8 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { JunctionGatePoint } from "app/objects/junctions/junction-gate-point";
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TextObjectService } from '../text-object.service';
-import { RoadGeometryService } from '../road/road-geometry.service';
 import { LanePositionService } from '../lane/lane-position.service';
+import { LaneDistance, RoadDistance } from 'app/map/road/road-distance';
 
 const LINE_WIDTH = 3;
 
@@ -63,13 +63,9 @@ export class DebugDrawService {
 		return this._instance;
 	}
 
-	private roadGeometryService: RoadGeometryService;
-
 	constructor ( private textService: TextObjectService ) {
 
 		DebugDrawService._instance = this;
-
-		this.roadGeometryService = RoadGeometryService.instance;
 
 	}
 
@@ -210,7 +206,7 @@ export class DebugDrawService {
 
 	createLaneWidthLine ( target: HasDistanceValue, laneCoord: TvLaneCoord, color = COLOR.CYAN, width = 4 ): LaneSpanNode<HasDistanceValue> {
 
-		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.s, laneCoord.road, laneCoord.lane );
+		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.laneDistance, laneCoord.road, laneCoord.lane );
 
 		const material = new LineMaterial( {
 			color: color,
@@ -226,7 +222,7 @@ export class DebugDrawService {
 
 	updateLaneWidthLine ( line: Line2, laneCoord: TvLaneCoord ): Line2 {
 
-		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.s, laneCoord.road, laneCoord.lane );
+		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.laneDistance, laneCoord.road, laneCoord.lane );
 
 		line.geometry.dispose();
 
@@ -427,7 +423,7 @@ export class DebugDrawService {
 			t *= -1;
 		}
 
-		const point = this.roadGeometryService.findRoadPosition( road, sOffset, t );
+		const point = road.getRoadPosition( sOffset, t );
 
 		// NOTE: this can be used if we want hdg to be adjusted with travel direction
 		if ( lane.direction == TravelDirection.backward ) {
@@ -452,11 +448,11 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			points.push( this.getPoint( lane, s ) )
+			points.push( this.getPoint( lane, s as RoadDistance ) )
 
 		}
 
-		points.push( this.getPoint( lane, sEnd - Maths.Epsilon ) );
+		points.push( this.getPoint( lane, sEnd as RoadDistance ) );
 
 		return points;
 	}
@@ -477,11 +473,13 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			positions.push( this.roadGeometryService.findLaneEndPosition( road, laneSection, lane, s ) )
+			const roadDistance = ( laneSection.s + s ) as RoadDistance;
+
+			positions.push( road.getLaneEndPosition( lane, roadDistance ) );
 
 		}
 
-		positions.push( this.roadGeometryService.findLaneEndPosition( road, laneSection, lane, sEnd ) );
+		positions.push( road.getLaneEndPosition( lane, laneSection.s + sEnd as RoadDistance ) );
 
 		return positions;
 	}
@@ -492,7 +490,7 @@ export class DebugDrawService {
 
 		for ( let s = sStart; s < sEnd; s += stepSize ) {
 
-			positions.push( this.roadGeometryService.findRoadPosition( road, Maths.clamp( s, 0, road.length ), 0 ) )
+			positions.push( road.getRoadPosition( Maths.clamp( s, 0, road.length ), 0 ) )
 
 		}
 
@@ -506,7 +504,7 @@ export class DebugDrawService {
 	 * @param s s with respect to road
 	 * @returns
 	 */
-	private getPoint ( lane: TvLane, s: number ) {
+	private getPoint ( lane: TvLane, s: RoadDistance ) {
 
 		let width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
 
@@ -515,7 +513,7 @@ export class DebugDrawService {
 			width *= -1;
 		}
 
-		const posTheta = this.roadGeometryService.findRoadPosition( lane.laneSection.road, s, width );
+		const posTheta = lane.laneSection.road.getRoadPosition( s, width );
 
 		return posTheta.toVector3();
 
@@ -559,9 +557,9 @@ export class DebugDrawService {
 
 	createJunctionGate ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, contact: TvContactPoint, position: Vector3 ): Object3D {
 
-		const s = contact === TvContactPoint.START ? 0 : road.length;
+		const laneDistance = contact === TvContactPoint.START ? laneSection.s : laneSection.endS;
 
-		const coord = new TvLaneCoord( road, laneSection, lane, s, 0 );
+		const coord = new TvLaneCoord( road, laneSection, lane, laneDistance as LaneDistance, 0 );
 
 		const point = JunctionGatePoint.create( coord );
 

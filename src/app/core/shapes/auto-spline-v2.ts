@@ -6,6 +6,8 @@ import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-ro
 import { AbstractSpline, SplineType } from './abstract-spline';
 import { Vector3 } from 'three';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { AutoGeometryService } from 'app/services/spline/auto-geometry.service';
+import { SplineBoundsService } from 'app/services/spline/spline-bounds.service';
 
 export class AutoSpline extends AbstractSpline {
 
@@ -32,5 +34,18 @@ export class AutoSpline extends AbstractSpline {
 		return points.map( p => p.position );
 
 	}
+
+	updateSegmentGeometryAndBounds (): void {
+
+		if ( this.controlPoints.length < 2 ) return;
+
+		AutoGeometryService.instance.updateGeometry( this );
+
+		this.fireMakeSegmentMeshEvents();
+
+		SplineBoundsService.instance.updateBounds( this );
+
+	}
+
 
 }

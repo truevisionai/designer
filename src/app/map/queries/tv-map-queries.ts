@@ -17,7 +17,6 @@ import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 import { TvUtils } from '../models/tv-utils';
 import { TvMapInstance } from '../services/tv-map-instance';
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 export abstract class TvBaseQueries {
 
@@ -212,7 +211,7 @@ export class TvMapQueries extends TvBaseQueries {
 			return new Vector3();
 		}
 
-		const posTheta = RoadGeometryService.instance.findRoadPosition(road, sCoordinate );
+		const posTheta = road.getRoadPosition( sCoordinate );
 
 		const laneSection = road.getLaneProfile().getLaneSectionAt( sCoordinate );
 
@@ -485,20 +484,6 @@ export class TvMapQueries extends TvBaseQueries {
 		} );
 
 		return TvUtils.getRandomArrayItem( filteredLanes ) as TvLane;
-	}
-
-	static getRandomLocationOnRoads ( roads: TvRoad[], laneType: TvLaneType ) {
-
-		const road = TvUtils.getRandomArrayItem( roads ) as TvRoad;
-
-		const laneSection = this.getRandomLaneSection( road );
-
-		const lane = this.getRandomLane( laneSection, laneType );
-
-		// get random s on lane-section
-		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.endS - 1 );
-
-		return new TvLaneCoord( road, laneSection, lane, s, 0 );
 	}
 
 	static getRoadArray (): TvRoad[] {

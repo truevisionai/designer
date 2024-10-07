@@ -6,15 +6,11 @@ import { Injectable } from '@angular/core';
 import { RoadService } from 'app/services/road/road.service';
 import { BaseToolService } from '../base-tool.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { RoadLinkService } from 'app/services/road/road-link.service';
-import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadNode } from 'app/objects/road/road-node';
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { AssetService } from 'app/assets/asset.service';
 import { RoadToolDebugger } from "./road-tool.debugger";
-import { TvLink } from 'app/map/models/tv-link';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-generator';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
@@ -28,7 +24,6 @@ export class RoadToolHelper {
 		public assetService: AssetService,
 		public splineService: SplineService,
 		public base: BaseToolService,
-		public roadLinkService: RoadLinkService,
 		public roadService: RoadService,
 		public splineFactory: SplineFactory,
 		public toolDebugger: RoadToolDebugger,
@@ -69,11 +64,13 @@ export class RoadToolHelper {
 
 	}
 
-	createJoiningRoad ( nodeA: RoadNode, nodeB: RoadNode ) {
+	createJoiningRoad ( nodeA: RoadNode, nodeB: RoadNode ): TvRoad {
 
 		const joiningRoad = this.createFromNodes( nodeA, nodeB );
 
-		this.roadLinkService.linkRoads( nodeA, nodeB, joiningRoad );
+		joiningRoad.linkPredecessor( nodeA.road, nodeA.contact );
+
+		joiningRoad.linkSuccessor( nodeB.road, nodeB.contact );
 
 		return joiningRoad;
 

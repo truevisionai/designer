@@ -8,6 +8,7 @@ import { Position } from 'app/scenario/models/position';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { RoadWidthService } from 'app/services/road/road-width.service';
+import { LaneDistance } from 'app/map/road/road-distance';
 
 export interface IMovingStrategy {
 
@@ -89,9 +90,9 @@ export abstract class MovingStrategy<T> implements IMovingStrategy {
 
 			if ( Math.abs( t ) > startT && Math.abs( t ) < endT ) {
 
-				const laneSOffset = roadCoord.s - laneSection.s;
+				const laneDistance = roadCoord.s - laneSection.s as LaneDistance;
 
-				return new TvLaneCoord( roadCoord.road, laneSection, lane, laneSOffset, 0 );
+				return new TvLaneCoord( roadCoord.road, laneSection, lane, laneDistance, 0 );
 
 			}
 

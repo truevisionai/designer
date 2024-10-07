@@ -11,6 +11,7 @@ import { Maths } from 'app/utils/maths';
 import { Orientation } from 'app/scenario/models/tv-orientation';
 import { LaneUtils } from "../../utils/lane.utils";
 import { TvLink } from './tv-link';
+import { LaneDistance, RoadDistance } from '../road/road-distance';
 
 export class TvLaneCoord {
 
@@ -18,14 +19,17 @@ export class TvLaneCoord {
 		public readonly road: TvRoad,
 		public readonly laneSection: TvLaneSection,
 		public readonly lane: TvLane,
-		public readonly s: number,
+		public readonly laneDistance: LaneDistance,
 		public readonly offset: number
 	) {
+	}
 
+	get s () {
+		return this.laneDistance;
 	}
 
 	toString () {
-		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.s } offset:${ this.offset }`;
+		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.laneDistance } offset:${ this.offset }`;
 	}
 
 	getLink (): TvLink {
@@ -40,11 +44,11 @@ export class TvLaneCoord {
 
 	get contact (): TvContactPoint {
 
-		if ( Maths.approxEquals( this.laneSection.s - this.s, 0 ) ) return TvContactPoint.START;
+		if ( Maths.approxEquals( this.laneSection.s - this.laneDistance, 0 ) ) return TvContactPoint.START;
 
-		if ( Maths.approxEquals( this.laneSection.s + this.s, this.road.length ) ) return TvContactPoint.END;
+		if ( Maths.approxEquals( this.laneSection.s + this.laneDistance, this.road.length ) ) return TvContactPoint.END;
 
-		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
+		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.laneDistance } ${ this.road.length }` );
 	}
 
 	get roadId (): number {
@@ -60,7 +64,7 @@ export class TvLaneCoord {
 	}
 
 	get posTheta () {
-		return this.road.getLaneStartPosition( this.lane, this.laneSection.s + this.s, this.offset );
+		return this.road.getLaneStartPosition( this.lane, this.laneSection.s + this.laneDistance as RoadDistance, this.offset );
 	}
 
 	get position (): Vector3 {

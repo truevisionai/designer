@@ -34,9 +34,11 @@ import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { TvTransform } from 'app/map/models/tv-transform';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
-import { TvJointBoundary, TvJunctionSegmentBoundary, TvLaneBoundary } from '../junction-boundary/tv-junction-boundary';
+import { TvJunctionSegmentBoundary } from '../junction-boundary/tv-junction-boundary';
 import { TvLaneOffset } from "../models/tv-lane-offset";
 import { SplineExporter } from "./spline-exporter";
+import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
+import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
 
 @Injectable( {
 	providedIn: 'root'
@@ -168,7 +170,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			priority: [],
 			controller: [],
 			boundary: {
-				segment: junction.outerBoundary?.segments.map( segment => this.exportBoundarySegment( segment ) )
+				segment: junction.outerBoundary?.getSegments().map( segment => this.exportBoundarySegment( segment ) )
 			},
 		};
 

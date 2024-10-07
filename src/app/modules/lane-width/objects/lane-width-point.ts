@@ -7,8 +7,8 @@ import { TvRoad } from "../../../map/models/tv-road.model";
 import { TvLaneSection } from "../../../map/models/tv-lane-section";
 import { TvLane } from "../../../map/models/tv-lane";
 import { SimpleControlPoint } from "../../../objects/simple-control-point";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
+import { RoadDistance } from "app/map/road/road-distance";
 
 export class LaneWidthPoint extends SimpleControlPoint<TvLaneWidth> {
 
@@ -41,7 +41,7 @@ export class LaneWidthPoint extends SimpleControlPoint<TvLaneWidth> {
 
 		const lane = laneCoord.lane;
 
-		const end = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, laneWidth.s );
+		const end = road.getLaneEndPosition( lane, laneSection.s + laneWidth.s as RoadDistance );
 
 		const point = new LaneWidthPoint( road, laneSection, lane, laneWidth );
 

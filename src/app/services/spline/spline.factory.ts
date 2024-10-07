@@ -13,10 +13,9 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { ExplicitSpline } from "../../core/shapes/explicit-spline";
-import { Maths } from "../../utils/maths";
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { RoadGeometryService } from '../road/road-geometry.service';
+
 
 export class ManeueverHelper {
 
@@ -74,15 +73,15 @@ export class SplineFactory {
 		let aDirection: Vector3, bDirection: Vector3;
 
 		if ( incoming.contact === TvContactPoint.START ) {
-			aDirection = RoadGeometryService.instance.findCoordPosition( incoming ).toDirectionVector().multiplyScalar( -1 );
+			aDirection = incoming.posTheta.toDirectionVector().multiplyScalar( -1 );
 		} else {
-			aDirection = RoadGeometryService.instance.findCoordPosition( incoming ).toDirectionVector();
+			aDirection = incoming.posTheta.toDirectionVector();
 		}
 
 		if ( outgoing.contact === TvContactPoint.START ) {
-			bDirection = RoadGeometryService.instance.findCoordPosition( outgoing ).toDirectionVector().multiplyScalar( -1 );
+			bDirection = outgoing.posTheta.toDirectionVector().multiplyScalar( -1 );
 		} else {
-			bDirection = RoadGeometryService.instance.findCoordPosition( outgoing ).toDirectionVector();
+			bDirection = outgoing.posTheta.toDirectionVector();
 		}
 
 		return this.createRoadSpline( road, a, aDirection, b, bDirection );

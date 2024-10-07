@@ -490,9 +490,9 @@ export class ConnectionFactory {
 
 		const roadLength = connectingRoad.length;
 
-		const widhtAtStart = incoming.lane.getWidthValue( incoming.s );
+		const widhtAtStart = incoming.lane.getWidthValue( incoming.laneDistance );
 
-		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
+		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.laneDistance );
 
 		connectingLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
 
@@ -533,9 +533,9 @@ export class ConnectionFactory {
 
 		const roadLength = connectingRoad.length;
 
-		const startHeight = incoming.lane.getHeightValue( incoming.s );
+		const startHeight = incoming.lane.getHeightValue( incoming.laneDistance );
 
-		const endHeight = outgoing.lane.getHeightValue( outgoing.s );
+		const endHeight = outgoing.lane.getHeightValue( outgoing.laneDistance );
 
 		// if ( startHeight.inner > 0 || startHeight.outer > 0 ) {
 		connectingLane.addHeightRecord( 0, startHeight.inner, startHeight.outer );

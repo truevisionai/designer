@@ -9,23 +9,16 @@ import { TextMarkingToolService } from "./text-marking-tool.service";
 import { TvRoadSignal } from "app/map/road-signal/tv-road-signal.model";
 import { AppInspector } from "app/core/inspector";
 import { DepPointStrategy } from "app/core/strategies/select-strategies/control-point-strategy";
-import { OnRoadMovingStrategy } from "app/core/strategies/move-strategies/on-road-moving.strategy";
-import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
 import { TextMarkingInspector } from "./text-marking.inspector";
-import { RoadCoordStrategy } from "app/core/strategies/select-strategies/road-coord-strategy";
-import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { DepSelectRoadStrategy } from "app/core/strategies/select-strategies/select-road-strategy";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { DebugState } from "app/services/debug/debug-state";
 import { DepLaneCoordStrategy } from "app/core/strategies/select-strategies/on-lane-strategy";
 import { AnyLaneMovingStrategy } from "app/core/strategies/move-strategies/any-lane.moving.strategy";
-import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { NewLanePosition } from "app/scenario/models/positions/tv-lane-position";
-import { CommandHistory } from "app/commands/command-history";
-import { Maths } from "app/utils/maths";
 import { Commands } from "app/commands/commands";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
+import { RoadDistance } from "app/map/road/road-distance";
 
 export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
@@ -83,16 +76,11 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		if ( !laneCoord ) return;
 
-		const posTheta = RoadGeometryService.instance.findLaneCenterPosition(
-			laneCoord.road,
-			laneCoord.laneSection,
-			laneCoord.lane,
-			laneCoord.s
-		);
+		const roadDistance = laneCoord.laneSection.s + laneCoord.laneDistance;
 
-		const roadCoord = posTheta.toRoadCoord( laneCoord.road );
+		const posTheta = laneCoord.road.getLaneCenterPosition( laneCoord.lane, roadDistance as RoadDistance );
 
-		const signal = this.tool.createTextRoadMarking( roadCoord, 'STOP' );
+		const signal = this.tool.createTextRoadMarking( posTheta.toRoadCoord( laneCoord.road ), 'STOP' );
 
 		this.executeAddObject( signal );
 
@@ -132,7 +120,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 			if ( position instanceof NewLanePosition ) {
 
-				this.currentSelectedObject.s = position.s;
+				this.currentSelectedObject.s = position.roadDistance;
 
 				this.updateTextMarking( this.currentSelectedObject );
 
@@ -185,7 +173,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 				// this.currentSelectedObject.roadId = laneCoord.road.id;
 
-				this.currentSelectedObject.s = laneCoord.s;
+				this.currentSelectedObject.s = laneCoord.laneDistance;
 
 				this.updateTextMarking( object.target );
 

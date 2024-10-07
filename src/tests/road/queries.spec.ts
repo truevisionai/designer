@@ -4,7 +4,7 @@ import { RoadService } from 'app/services/road/road.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TvRoad } from "../../app/map/models/tv-road.model";
 import { TvLaneSection } from "../../app/map/models/tv-lane-section";
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
+import { RoadDistance } from 'app/map/road/road-distance';
 
 describe( 'RoadService: Queries', () => {
 
@@ -37,7 +37,7 @@ describe( 'RoadService: Queries', () => {
 
 	it( 'should find correct position for center lane at 0', () => {
 
-		const position = RoadGeometryService.instance.findLaneCenterPosition( road, laneSection, laneSection.getLaneById( 0 ), 0 );
+		const position = road.getLaneCenterPosition( laneSection.getLaneById( 0 ), 0 as RoadDistance );
 
 		expect( position.x ).toEqual( 0 );
 		expect( position.y ).toEqual( 0 );
@@ -49,7 +49,7 @@ describe( 'RoadService: Queries', () => {
 
 	it( 'should find correct position for center lane at 10', () => {
 
-		const position = RoadGeometryService.instance.findLaneCenterPosition( road, laneSection, laneSection.getLaneById( 0 ), 10 );
+		const position = road.getLaneCenterPosition( laneSection.getLaneById( 0 ), 10 as RoadDistance );
 
 		expect( position.x ).toEqual( 10 );
 		expect( position.y ).toEqual( 0 );
@@ -65,7 +65,7 @@ describe( 'RoadService: Queries', () => {
 
 		const width = right1.getWidthValue( 0 );
 
-		const position = RoadGeometryService.instance.findLaneCenterPosition( road, laneSection, right1, 0 );
+		const position = road.getLaneCenterPosition( right1, 0 as RoadDistance );
 
 		const expected = -( 1.8 );
 
@@ -85,7 +85,7 @@ describe( 'RoadService: Queries', () => {
 
 		const width = right2.getWidthValue( 0 );
 
-		const position = RoadGeometryService.instance.findLaneCenterPosition( road, laneSection, right2, 0 );
+		const position = road.getLaneCenterPosition( right2, 0 as RoadDistance );
 
 		const expected = -( 3.6 + 0.25 );
 

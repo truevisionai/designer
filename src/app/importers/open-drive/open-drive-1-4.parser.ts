@@ -46,6 +46,7 @@ import { TvLaneOffset } from "../../map/models/tv-lane-offset";
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Log } from 'app/core/utils/log';
+import { JunctionFactory } from 'app/factories/junction.factory';
 
 
 @Injectable( {
@@ -631,12 +632,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
+		const type = TvJunction.stringToType( xmlElement.attr_type );
 
-		const junction = new TvJunction( name, id );
-
-		junction.type = TvJunction.stringToType( xmlElement.attr_type );
-
-		return junction;
+		return JunctionFactory.createByType( type, name, id );
 
 	}
 

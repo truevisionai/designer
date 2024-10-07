@@ -28,7 +28,7 @@ import { JunctionRoadService } from './junction-road.service';
 import { JunctionOverlay } from './junction-overlay';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { RoadGeometryService } from '../road/road-geometry.service';
+import { RoadDistance } from 'app/map/road/road-distance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -302,7 +302,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !this.shouldShowEntries ) return;
 
-		const roads = this.junctionRoadService.getIncomingRoads( junction );
+		const roads = junction.getIncomingRoads();
 
 		for ( let i = 0; i < roads.length; i++ ) {
 
@@ -326,14 +326,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		const laneSection = road.getLaneProfile().getLaneSectionAtContact( contact );
 
-		const laneSOffset = contact === TvContactPoint.START ? laneSection.s : laneSection.endS;
+		const distance = contact === TvContactPoint.START ? laneSection.s : laneSection.endS;
 
 		const distanceFromPosition = contact === TvContactPoint.START ? +2 : -2;
 
 		for ( const lane of laneSection.getDrivingLanes() ) {
 
-			const posTheta = RoadGeometryService.instance.findLaneCenterPosition( road, laneSection, lane, laneSOffset )
-				.moveForward( distanceFromPosition );
+			const posTheta = road.getLaneCenterPosition( lane, distance as RoadDistance ).moveForward( distanceFromPosition );
 
 			const gate = this.debug.createJunctionGate( road, laneSection, lane, contact, posTheta.toVector3() );
 

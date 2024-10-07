@@ -56,8 +56,8 @@ describe( 'JunctionManager', () => {
 		const splineA = SplineFactory.createStraightSplineAndPoints( new Vector3( -100, 0, 0 ), 200 );
 		const splineB = SplineFactory.createStraightSplineAndPoints( new Vector3( 0, -100, 0 ), 200, 90 );
 
-		junctionManager.splineBuilder.buildSpline( splineA );
-		junctionManager.splineBuilder.buildSpline( splineB );
+		splineA.updateSegmentGeometryAndBounds();
+		splineB.updateSegmentGeometryAndBounds();
 
 		const coords: TvPosTheta[] = [];
 

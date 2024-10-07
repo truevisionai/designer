@@ -17,6 +17,7 @@ import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-bounda
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { Log } from 'app/core/utils/log';
+import { TvJunctionBoundingBox } from './tv-junction-bounding-box';
 
 export class TvJunction {
 
@@ -28,28 +29,35 @@ export class TvJunction {
 
 	public centroid: Vector3;
 
-	public type: TvJunctionType = TvJunctionType.DEFAULT;
+	public type: TvJunctionType;
 
 	public mesh: Mesh;
 
-	public depBoundingBox: Box3;
-
-	public boundingBox: Box2;
-
 	public outerBoundary: TvJunctionBoundary;
-
 	public innerBoundary: TvJunctionBoundary;
 
-	public auto: boolean = true;
+	private junctionBoundingBox: TvJunctionBoundingBox;
 
 	public needsUpdate: boolean = false;
 
 	private connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
-	constructor ( public name: string, public id: number ) {
+	protected constructor ( public name: string, public id: number ) {
 
 		this.centroid = new Vector3();
 
+		this.junctionBoundingBox = new TvJunctionBoundingBox( this );
+
+	}
+
+	get auto (): boolean { return this.type === TvJunctionType.AUTO; }
+
+	get boundingBox (): Box2 {
+		return this.junctionBoundingBox.getBox();
+	}
+
+	set boundingBox ( box: Box2 ) {
+		this.junctionBoundingBox.setBox( box );
 	}
 
 	toString () {
@@ -76,7 +84,13 @@ export class TvJunction {
 
 		} );
 
-		return [ ...roads ];
+		return Array.from( roads );
+
+	}
+
+	getConnectingRoads (): TvRoad[] {
+
+		return this.getConnections().map( connection => connection.connectingRoad );
 
 	}
 
@@ -104,34 +118,26 @@ export class TvJunction {
 	 */
 	getRoadCoords () {
 
-		return this.getLinks().map( link => link.toRoadCoord() );
+		return this.getRoadLinks().map( link => link.toRoadCoord() );
 
 	}
 
-	getLinks (): TvLink[] {
+	getRoadLinks (): TvLink[] {
 
 		const edges: TvLink[] = [];
 
-		const roads = this.getRoads();
+		const roads = this.getIncomingRoads();
 
 		for ( const road of roads ) {
 
 			if ( road.geometries.length == 0 ) continue;
 
-			if ( road.successor?.type == TvLinkType.JUNCTION && road.successor?.id == this.id ) {
-
-				const link = LinkFactory.createRoadLink( road, TvContactPoint.END )
-
-				edges.push( link );
-
+			if ( road.successor?.isEqualTo( this ) ) {
+				edges.push( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
 			}
 
-			if ( road.predecessor?.type == TvLinkType.JUNCTION && road.predecessor?.id == this.id ) {
-
-				const link = LinkFactory.createRoadLink( road, TvContactPoint.START )
-
-				edges.push( link );
-
+			if ( road.predecessor?.isEqualTo( this ) ) {
+				edges.push( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
 			}
 
 		}
@@ -266,9 +272,17 @@ export class TvJunction {
 
 	}
 
-	containsPoint ( position: Vector3 ): boolean {
+	containsPoint ( target: Vector2 | Vector3 ): boolean {
 
-		return this.boundingBox.containsPoint( new Vector2( position.x, position.z ) );
+		if ( target instanceof Vector3 ) {
+
+			return this.boundingBox.containsPoint( new Vector2( target.x, target.z ) );
+
+		} else {
+
+			return this.boundingBox.containsPoint( target );
+
+		}
 
 	}
 
@@ -344,6 +358,9 @@ export class TvJunction {
 			case "direct":
 				return TvJunctionType.DIRECT;
 
+			case "auto":
+				return TvJunctionType.AUTO;
+
 			default:
 				return TvJunctionType.DEFAULT;
 
@@ -377,15 +394,11 @@ export class TvJunction {
 
 		junction.type = this.type;
 
-		junction.auto = this.auto;
-
 		junction.needsUpdate = this.needsUpdate;
 
 		junction.centroid = this.centroid?.clone();
 
 		junction.mesh = this.mesh.clone();
-
-		junction.depBoundingBox = this.depBoundingBox.clone();
 
 		junction.boundingBox = this.boundingBox.clone();
 
@@ -415,6 +428,44 @@ export class TvJunction {
 
 	removeConnectionsByRoad ( road: TvRoad, contact: TvContactPoint ): void {
 		this.getConnectionsByRoad( road ).forEach( connection => this.removeConnection( connection ) );
+	}
+
+	distanceToPoint ( target: Vector2 ): number {
+		return this.boundingBox.distanceToPoint( target );
+	}
+
+	updatePositionAndBounds (): void {
+		this.updateBoundingBox()
+		this.updateCentroid();
+	}
+
+	private updateBoundingBox (): void {
+		this.junctionBoundingBox.update();
+	}
+
+	private updateCentroid (): void {
+		const centroid = this.boundingBox.getCenter( new Vector2() );
+		this.centroid.x = centroid.x;
+		this.centroid.y = centroid.y;
+	}
+
+}
+
+
+export class DefaultJunction extends TvJunction {
+
+	constructor ( name: string, id: number ) {
+		super( name, id );
+		this.type = TvJunctionType.DEFAULT;
+	}
+
+}
+
+export class AutoJunction extends TvJunction {
+
+	constructor ( name: string, id: number ) {
+		super( name, id );
+		this.type = TvJunctionType.AUTO;
 	}
 
 }

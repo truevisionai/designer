@@ -10,11 +10,8 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { Maths } from "app/utils/maths";
 import { RoadManager } from "app/managers/road/road-manager";
 import { Log } from "app/core/utils/log";
-import { RoadUtils } from "app/utils/road.utils";
-import { TvContactPoint } from "app/map/models/tv-common";
 import { SplineUtils } from "app/utils/spline.utils";
-import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvLinkType } from "app/map/models/tv-link";
+
 
 @Injectable( {
 	providedIn: 'root'

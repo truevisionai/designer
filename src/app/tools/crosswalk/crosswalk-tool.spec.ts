@@ -15,7 +15,6 @@ import { ToolManager } from 'app/managers/tool-manager';
 import { ToolBarService } from 'app/views/editor/tool-bar/tool-bar.service';
 import { Vector3 } from 'three';
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { AppInspector } from 'app/core/inspector';
 import { DynamicInspectorComponent } from 'app/views/inspectors/dynamic-inspector/dynamic-inspector.component';
@@ -49,7 +48,7 @@ describe( 'CrosswalkTool', () => {
 
 		tool = ToolManager.getTool();
 
-		const roadCoord = RoadGeometryService.instance.findRoadCoord( road, 0 );
+		const roadCoord = road.getRoadCoord( 0 );
 
 		crosswalk = RoadObjectFactory.createRoadObject( TvRoadObjectType.crosswalk, roadCoord );
 

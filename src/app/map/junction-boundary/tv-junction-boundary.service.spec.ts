@@ -7,9 +7,11 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { CROSSING8_XODR, SplineTestHelper, TOWN_01 } from "app/services/spline/spline-test-helper.service";
 import { TvJunctionInnerBoundaryService } from "./tv-junction-inner-boundary.service";
-import { TvJointBoundary, TvJunctionBoundary, TvLaneBoundary } from "./tv-junction-boundary";
+import { TvJunctionBoundary } from "./tv-junction-boundary";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { TvJunctionOuterBoundaryService } from "./tv-junction-outer-boundary.service";
+import { TvLaneBoundary } from "./tv-lane-boundary";
+import { TvJointBoundary } from "./tv-joint-boundary";
 
 describe( 'TvJunctionInnerBoundaryService', () => {
 

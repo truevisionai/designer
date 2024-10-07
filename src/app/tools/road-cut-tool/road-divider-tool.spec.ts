@@ -17,7 +17,6 @@ import { expectValidMap } from 'tests/base-test.spec';
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { RoadSignalFactory } from 'app/map/road-signal/road-signal.factory';
 import { RoadService } from 'app/services/road/road.service';
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 describe( 'RoadDividerTool', () => {
 
@@ -44,7 +43,7 @@ describe( 'RoadDividerTool', () => {
 
 		const R1 = testHelper.addStraightRoad( new Vector3( 0, 0, 0 ) );
 
-		const roadCoord: TvRoadCoord = RoadGeometryService.instance.findRoadCoord( R1, 50 );
+		const roadCoord: TvRoadCoord = R1.getRoadCoord( 50 );
 
 		const clone = tool.divideRoadAt( roadCoord );
 
@@ -97,7 +96,7 @@ describe( 'RoadDividerTool', () => {
 		expect( R1.getRoadObjectCount() ).toBe( 100 );
 		expect( R1.getSignalCount() ).toBe( 100 );
 
-		const roadCoord: TvRoadCoord = RoadGeometryService.instance.findRoadCoord( R1, 50 );
+		const roadCoord: TvRoadCoord = R1.getRoadCoord( 50 );
 
 		const R2 = tool.divideRoadAt( roadCoord );
 
@@ -134,7 +133,7 @@ describe( 'RoadDividerTool', () => {
 
 		const R1Length = R1.getLength();
 
-		const newRoad = tool.divideRoadAt( RoadGeometryService.instance.findRoadCoord( R1, 10 ) );
+		const newRoad = tool.divideRoadAt( R1.getRoadCoord( 10 ) );
 
 		tool.onObjectAdded( newRoad );
 
@@ -181,7 +180,7 @@ describe( 'RoadDividerTool', () => {
 
 		const R1Length = R1.getLength();
 
-		const R5 = tool.divideRoadAt( RoadGeometryService.instance.findRoadCoord( R1, 10 ) );
+		const R5 = tool.divideRoadAt( R1.getRoadCoord( 10 ) );
 
 		tool.onObjectAdded( R5 );
 

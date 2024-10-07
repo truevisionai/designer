@@ -5,32 +5,22 @@
 import { Maths } from 'app/utils/maths';
 import * as THREE from 'three';
 import { BufferAttribute, BufferGeometry, Mesh, Object3D, Vector2, Vector3 } from 'three';
-import { GameObject } from '../../../objects/game-object';
-import { MeshGeometryData } from '../../../map/models/mesh-geometry.data';
 import { TvLaneSide, TvRoadMarkTypes } from '../../../map/models/tv-common';
 import { TvLane } from '../../../map/models/tv-lane';
 import { DOUBLE_LINE_SPACE, TvLaneRoadMark } from '../../../map/models/tv-lane-road-mark';
 import { TvLaneSection } from '../../../map/models/tv-lane-section';
 import { TvPosTheta } from '../../../map/models/tv-pos-theta';
 import { TvRoad } from '../../../map/models/tv-road.model';
-import { Vertex } from '../../../map/models/vertex';
 import { OdBuilderConfig } from './od-builder-config';
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/assets/asset-database';
 import { COLOR } from 'app/views/shared/utils/colors.service';
-import { TvRoadObjectType } from "../../../map/models/objects/tv-road-object";
-import { RoadService } from "../../../services/road/road.service";
-import { DebugDrawService } from "../../../services/debug/debug-draw.service";
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
+import { createRoadDistance, RoadDistance } from 'app/map/road/road-distance';
 
 @Injectable()
 export class LaneRoadMarkBuilder {
 
-	constructor (
-		private roadService: RoadService,
-		private debugService: DebugDrawService,
-	) {
-	}
+	constructor () { }
 
 	public buildRoad ( road: TvRoad ): void {
 
@@ -120,6 +110,7 @@ export class LaneRoadMarkBuilder {
 		return roadMarkMesh;
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	private buildRoadMark ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadMark: TvLaneRoadMark, type: TvRoadMarkTypes, tOffset = 0 ) {
 
 		if ( type == TvRoadMarkTypes.NONE ) return;
@@ -150,17 +141,18 @@ export class LaneRoadMarkBuilder {
 
 		}
 
-		const processStep = ( sOffset: number ) => {
+		// eslint-disable-next-line max-lines-per-function
+		const processStep = ( laneDistance: number ) => {
 
-			const posTheta = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, sOffset, tOffset );
-
+			const distance = laneSection.s + laneDistance as RoadDistance;
+			const posTheta = road.getLaneEndPosition( lane, distance, tOffset );
 			const leftStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 );
 			const rightStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
 
 			if ( type === TvRoadMarkTypes.SOLID ) {
 
-				index = addVertex( index, leftStart.position, sOffset, 0 );
-				index = addVertex( index, rightStart.position, sOffset, roadMark.width );
+				index = addVertex( index, leftStart.position, laneDistance, 0 );
+				index = addVertex( index, rightStart.position, laneDistance, roadMark.width );
 
 				if ( currentIndex > 0 ) {
 					indices.push( currentIndex, currentIndex - 1, currentIndex + 1 );
@@ -174,8 +166,9 @@ export class LaneRoadMarkBuilder {
 				index = addVertex( index, leftStart.position, 0, 0 );
 				index = addVertex( index, rightStart.position, 0, roadMark.width );
 
-				const nextSOffset = Math.min( sOffset + roadMark.length, sEnd );
-				const nextPosTheta = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, nextSOffset, tOffset );
+				const nextSOffset = Math.min( laneDistance + roadMark.length, sEnd );
+				const nextDistance = createRoadDistance( road, nextSOffset );
+				const nextPosTheta = road.getLaneEndPosition( lane, nextDistance, tOffset );
 
 				const leftEnd = nextPosTheta.clone().addLateralOffset( roadMark.width * 0.5 );
 				const rightEnd = nextPosTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
@@ -259,10 +252,10 @@ export class LaneRoadMarkBuilder {
 	//
 	// 	for ( let s = roadMark.s; s < sEnd; s += step ) {
 	//
-	// 		const posTheta = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, s );
+	// 		const posTheta = road.getLaneEndPosition(  laneSection, lane, s );
 	//
 	// 		const nextSOffset = Math.min( s + roadMark.length, sEnd );
-	// 		const nextPosTheta = RoadGeometryService.instance.findLaneEndPosition( road, laneSection, lane, nextSOffset );
+	// 		const nextPosTheta = road.getLaneEndPosition(  laneSection, lane, nextSOffset );
 	//
 	// 		const leftStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 );
 	// 		const rightStart = posTheta.clone().addLateralOffset( roadMark.width * 0.5 * -1 );
@@ -293,175 +286,177 @@ export class LaneRoadMarkBuilder {
 	//
 	// }
 
-	private createRoadMark ( roadMark: TvLaneRoadMark, lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+	// // eslint-disable-next-line max-lines-per-function
+	// private createRoadMark ( roadMark: TvLaneRoadMark, lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
 
-		roadMark.clearMesh();
+	// 	roadMark.clearMesh();
 
-		const nextRoadMark = lane.roadMarks.getNext( roadMark );
+	// 	const nextRoadMark = lane.roadMarks.getNext( roadMark );
 
-		const mesh = new MeshGeometryData();
+	// 	const mesh = new MeshGeometryData();
 
-		// setting the next coordinate
-		// if the next road mark is not available,
-		// then the next coordinate is the end of the lane section
-		let nextS: number;
+	// 	// setting the next coordinate
+	// 	// if the next road mark is not available,
+	// 	// then the next coordinate is the end of the lane section
+	// 	let nextS: number;
 
-		if ( nextRoadMark ) {
+	// 	if ( nextRoadMark ) {
 
-			nextS = nextRoadMark.s;
+	// 		nextS = nextRoadMark.s;
 
-		} else {
+	// 	} else {
 
-			nextS = laneSection.getLength();
+	// 		nextS = laneSection.getLength();
 
-		}
+	// 	}
 
-		const s2 = nextS - roadMark.s;
+	// 	const s2 = nextS - roadMark.s;
 
-		if ( roadMark.type == TvRoadMarkTypes.NONE ) return;
+	// 	if ( roadMark.type == TvRoadMarkTypes.NONE ) return;
 
-		let posTheta = new TvPosTheta();
+	// 	let posTheta = new TvPosTheta();
 
-		const step = roadMark.length + roadMark.space;
+	// 	const step = roadMark.length + roadMark.space;
 
-		const start = laneSection.s + roadMark.s;
+	// 	const start = laneSection.s + roadMark.s;
 
-		for ( let s = 0; s < s2; s += step ) {
+	// 	for ( let s = 0; s < s2; s += step ) {
 
-			posTheta.s = start + s;
+	// 		posTheta.s = start + s;
 
-			posTheta = RoadGeometryService.instance.findRoadPosition( road, start + s );
+	// 		posTheta = road.getRoadPosition( start + s );
 
-			this.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
+	// 		this.createVertex( posTheta, roadMark, mesh, roadMark.s + s );
 
-		}
+	// 	}
 
-		if ( roadMark.s2 < 1 ) return;
+	// 	if ( roadMark.s2 < 1 ) return;
 
-		// // one last entry is required to create a mesh
-		// const lastS = posTheta.s = ( start + mark.s2 ) - Maths.Epsilon;
-		// const laneSectionS = ( mark.s + mark.s2 ) - Maths.Epsilon;
-		// posTheta = lane.laneSection.road.getRoadCoordAt( lastS );
-		// this.createVertex( posTheta, mark, mesh, laneSectionS );
+	// 	// // one last entry is required to create a mesh
+	// 	// const lastS = posTheta.s = ( start + mark.s2 ) - Maths.Epsilon;
+	// 	// const laneSectionS = ( mark.s + mark.s2 ) - Maths.Epsilon;
+	// 	// posTheta = lane.laneSection.road.getRoadCoordAt( lastS );
+	// 	// this.createVertex( posTheta, mark, mesh, laneSectionS );
 
-		// at least 1 vertex is required to create a mesh
-		if ( mesh.vertices.length > 0 ) {
-			this.createRoadMarkObject( roadMark, mesh, roadMark.lane );
-		}
+	// 	// at least 1 vertex is required to create a mesh
+	// 	if ( mesh.vertices.length > 0 ) {
+	// 		this.createRoadMarkObject( roadMark, mesh, roadMark.lane );
+	// 	}
 
-	}
+	// }
 
-	private createVertex ( start: TvPosTheta, roadMark: TvLaneRoadMark, mesh: MeshGeometryData, laneSectionS: number ) {
+	// // eslint-disable-next-line max-lines-per-function
+	// private createVertex ( start: TvPosTheta, roadMark: TvLaneRoadMark, mesh: MeshGeometryData, laneSectionS: number ) {
 
-		const endS = Math.min( start.s + roadMark.length, roadMark.lane.laneSection.endS );
-		const end = roadMark.lane.laneSection.road.getPosThetaAt( endS );
+	// 	const endS = Math.min( start.s + roadMark.length, roadMark.lane.laneSection.endS );
+	// 	const end = roadMark.lane.laneSection.road.getPosThetaAt( endS );
 
-		const lane = roadMark.lane;
+	// 	const lane = roadMark.lane;
 
-		const width = roadMark.width;
+	// 	const width = roadMark.width;
 
-		const height = lane.getHeightValue( laneSectionS );
+	// 	const height = lane.getHeightValue( laneSectionS );
 
-		const elevationStart = lane.laneSection.road.getElevationProfile().getElevationValue( laneSectionS );
-		const elevationEnd = lane.laneSection.road.getElevationProfile().getElevationValue( laneSectionS + roadMark.length );
+	// 	const elevationStart = lane.laneSection.road.getElevationProfile().getElevationValue( laneSectionS );
+	// 	const elevationEnd = lane.laneSection.road.getElevationProfile().getElevationValue( laneSectionS + roadMark.length );
 
-		const startBorder = this.getLaneBorder( lane, laneSectionS, lane.laneSection, start );
-		const endBorder = this.getLaneBorder( lane, laneSectionS + roadMark.length, lane.laneSection, end );
+	// 	const startBorder = this.getLaneBorder( lane, laneSectionS, lane.laneSection, start );
+	// 	const endBorder = this.getLaneBorder( lane, laneSectionS + roadMark.length, lane.laneSection, end );
 
-		const cosFactor = Maths.cosHdgPlusPiO2( lane.side, start.hdg );
-		const sinFactor = Maths.sinHdgPlusPiO2( lane.side, start.hdg );
+	// 	const cosFactor = Maths.cosHdgPlusPiO2( lane.side, start.hdg );
+	// 	const sinFactor = Maths.sinHdgPlusPiO2( lane.side, start.hdg );
 
-		let x1 = startBorder.x + ( cosFactor * width * 0.5 );
-		let y1 = startBorder.y + ( sinFactor * width * 0.5 );
-		let x2 = startBorder.x - ( cosFactor * width * 0.5 );
-		let y2 = startBorder.y - ( sinFactor * width * 0.5 );
+	// 	let x1 = startBorder.x + ( cosFactor * width * 0.5 );
+	// 	let y1 = startBorder.y + ( sinFactor * width * 0.5 );
+	// 	let x2 = startBorder.x - ( cosFactor * width * 0.5 );
+	// 	let y2 = startBorder.y - ( sinFactor * width * 0.5 );
 
-		let x3 = endBorder.x + ( cosFactor * width * 0.5 );
-		let y3 = endBorder.y + ( sinFactor * width * 0.5 );
-		let x4 = endBorder.x - ( cosFactor * width * 0.5 );
-		let y4 = endBorder.y - ( sinFactor * width * 0.5 );
+	// 	let x3 = endBorder.x + ( cosFactor * width * 0.5 );
+	// 	let y3 = endBorder.y + ( sinFactor * width * 0.5 );
+	// 	let x4 = endBorder.x - ( cosFactor * width * 0.5 );
+	// 	let y4 = endBorder.y - ( sinFactor * width * 0.5 );
 
-		const frontLeft = new Vertex(
-			new Vector3( x1, y1, elevationStart ),
-			new Vector2( 0, 0 )
-		);
+	// 	const frontLeft = new Vertex(
+	// 		new Vector3( x1, y1, elevationStart ),
+	// 		new Vector2( 0, 0 )
+	// 	);
 
-		const frontRight = new Vertex(
-			new Vector3( x2, y2, elevationStart + height.outer ),
-			new Vector2( 0, roadMark.width )
-		);
+	// 	const frontRight = new Vertex(
+	// 		new Vector3( x2, y2, elevationStart + height.outer ),
+	// 		new Vector2( 0, roadMark.width )
+	// 	);
 
-		const backLeft = new Vertex(
-			new Vector3( x3, y3, elevationEnd ),
-			new Vector2( roadMark.length, 0 )
-		);
+	// 	const backLeft = new Vertex(
+	// 		new Vector3( x3, y3, elevationEnd ),
+	// 		new Vector2( roadMark.length, 0 )
+	// 	);
 
-		const backRight = new Vertex(
-			new Vector3( x4, y4, elevationEnd + height.outer ),
-			new Vector2( roadMark.length, roadMark.width )
-		);
+	// 	const backRight = new Vertex(
+	// 		new Vector3( x4, y4, elevationEnd + height.outer ),
+	// 		new Vector2( roadMark.length, roadMark.width )
+	// 	);
 
-		if ( lane.side == TvLaneSide.LEFT ) {
+	// 	if ( lane.side == TvLaneSide.LEFT ) {
 
-			this.addVertex( mesh, frontLeft );
-			this.addVertex( mesh, frontRight );
-			this.addVertex( mesh, backLeft );
-			this.addVertex( mesh, backRight );
+	// 		this.addVertex( mesh, frontLeft );
+	// 		this.addVertex( mesh, frontRight );
+	// 		this.addVertex( mesh, backLeft );
+	// 		this.addVertex( mesh, backRight );
 
-		} else {
+	// 	} else {
 
-			this.addVertex( mesh, frontRight );
-			this.addVertex( mesh, frontLeft );
-			this.addVertex( mesh, backRight );
-			this.addVertex( mesh, backLeft );
-		}
+	// 		this.addVertex( mesh, frontRight );
+	// 		this.addVertex( mesh, frontLeft );
+	// 		this.addVertex( mesh, backRight );
+	// 		this.addVertex( mesh, backLeft );
+	// 	}
 
-		mesh.triangles.push( mesh.currentIndex + 0, mesh.currentIndex + 3, mesh.currentIndex + 2 );
-		mesh.triangles.push( mesh.currentIndex + 0, mesh.currentIndex + 1, mesh.currentIndex + 3 );
+	// 	mesh.triangles.push( mesh.currentIndex + 0, mesh.currentIndex + 3, mesh.currentIndex + 2 );
+	// 	mesh.triangles.push( mesh.currentIndex + 0, mesh.currentIndex + 1, mesh.currentIndex + 3 );
 
-		mesh.currentIndex = mesh.currentIndex + 4;
+	// 	mesh.currentIndex = mesh.currentIndex + 4;
 
-		mesh.indices.push( mesh.currentIndex );
-	}
+	// 	mesh.indices.push( mesh.currentIndex );
+	// }
 
-	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+	// private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
 
-		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT );
+	// 	meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z + OdBuilderConfig.ROADMARK_ELEVATION_SHIFT );
 
-		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
+	// 	meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
 
-		meshData.uvs.push( v1.uvs.x, v1.uvs.y );
+	// 	meshData.uvs.push( v1.uvs.x, v1.uvs.y );
 
-	}
+	// }
 
-	private createRoadMarkObject ( roadMark: TvLaneRoadMark, mesh: MeshGeometryData, lane: TvLane ) {
+	// private createRoadMarkObject ( roadMark: TvLaneRoadMark, mesh: MeshGeometryData, lane: TvLane ) {
 
-		const geometry = new THREE.BufferGeometry();
-		const vertices = new Float32Array( mesh.vertices );
-		const faces = new Float32Array( mesh.uvs );
+	// 	const geometry = new THREE.BufferGeometry();
+	// 	const vertices = new Float32Array( mesh.vertices );
+	// 	const faces = new Float32Array( mesh.uvs );
 
-		geometry.setIndex( mesh.triangles );
+	// 	geometry.setIndex( mesh.triangles );
 
-		geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-		geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
+	// 	geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+	// 	geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
 
-		geometry.computeBoundingBox();
+	// 	geometry.computeBoundingBox();
 
-		geometry.computeVertexNormals();
+	// 	geometry.computeVertexNormals();
 
-		roadMark.gameObject = new GameObject( 'RoadMark:', geometry, this.getMaterial( roadMark ) );
+	// 	roadMark.gameObject = new GameObject( 'RoadMark:', geometry, this.getMaterial( roadMark ) );
 
-		roadMark.gameObject.Tag = TvRoadObjectType.LANE_MARKING;
+	// 	roadMark.gameObject.Tag = TvRoadObjectType.LANE_MARKING;
 
-		roadMark.gameObject.userData.data = lane;
+	// 	roadMark.gameObject.userData.data = lane;
 
-		roadMark.gameObject.userData.lane = lane;
+	// 	roadMark.gameObject.userData.lane = lane;
 
-		roadMark.gameObject.userData.roadMark = roadMark;
+	// 	roadMark.gameObject.userData.roadMark = roadMark;
 
-		lane.laneSection.road.gameObject.add( roadMark.gameObject );
+	// 	lane.laneSection.road.gameObject.add( roadMark.gameObject );
 
-	}
+	// }
 
 	private getMaterial ( roadMark: TvLaneRoadMark ): THREE.Material {
 

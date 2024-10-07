@@ -3,6 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
+import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
 
@@ -20,16 +21,24 @@ export class RoadWidthService {
 		return RoadWidthService._instance;
 	}
 
-	findRoadWidthAt ( road: TvRoad, s: number ): { totalWidth: number; leftSideWidth: number; rightSideWidth: number; } {
+	findRoadWidthAt ( road: TvRoad, value: TvContactPoint | number ): { totalWidth: number; leftSideWidth: number; rightSideWidth: number; } {
 
-		const laneSection = road.getLaneProfile().getLaneSectionAt( s );
+		let distance: number;
+
+		if ( typeof value === 'number' ) {
+			distance = value;
+		} else {
+			distance = value == TvContactPoint.START ? 0 : road.getLength();
+		}
+
+		const laneSection = road.getLaneProfile().getLaneSectionAt( distance );
 
 		const lanes = laneSection.getLaneArray();
 
 		return {
-			totalWidth: this.sumLaneWidth( lanes, s ),
-			leftSideWidth: this.sumLaneWidth( laneSection.getLeftLanes(), s ),
-			rightSideWidth: this.sumLaneWidth( laneSection.getRightLanes(), s ),
+			totalWidth: this.sumLaneWidth( lanes, distance ),
+			leftSideWidth: this.sumLaneWidth( laneSection.getLeftLanes(), distance ),
+			rightSideWidth: this.sumLaneWidth( laneSection.getRightLanes(), distance ),
 		};
 	}
 

@@ -40,7 +40,7 @@ describe( 'JunctionBoundary Tests', () => {
 
 		const boundary = TvJunctionBoundaryFactory.createInnerBoundary( mapService.findJunction( 1 ) );
 
-		expect( boundary.segments.length ).toBe( 8 );
+		expect( boundary.getSegmentCount() ).toBe( 8 );
 
 	} ) );
 
@@ -52,7 +52,7 @@ describe( 'JunctionBoundary Tests', () => {
 
 		const boundary = TvJunctionBoundaryFactory.createInnerBoundary( mapService.findJunction( 1 ) );
 
-		expect( boundary.segments.length ).toBe( 6 );
+		expect( boundary.getSegmentCount() ).toBe( 6 );
 
 	} ) );
 
@@ -64,7 +64,7 @@ describe( 'JunctionBoundary Tests', () => {
 
 		const boundary = TvJunctionBoundaryFactory.createInnerBoundary( mapService.findJunction( 1 ) );
 
-		expect( boundary.segments.length ).toBe( 12 );
+		expect( boundary.getSegmentCount() ).toBe( 12 );
 
 	} ) );
 
@@ -79,10 +79,10 @@ describe( 'JunctionBoundary Tests', () => {
 		expect( J1.getConnectionCount() ).toBe( 6 );
 
 		const innerBoundary = TvJunctionBoundaryFactory.createInnerBoundary( J1 );
-		expect( innerBoundary.segments.length ).toBe( 4 );
+		expect( innerBoundary.getSegmentCount() ).toBe( 4 );
 
 		const outerBoundary = TvJunctionBoundaryFactory.createOuterBoundary( J1 );
-		expect( outerBoundary.segments.length ).toBe( 4 );
+		expect( outerBoundary.getSegmentCount() ).toBe( 4 );
 
 	} ) );
 

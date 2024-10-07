@@ -28,8 +28,8 @@ import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Commands } from 'app/commands/commands';
-import { RoadGeometryService } from './road-geometry.service';
 import { RoadWidthService } from './road-width.service';
+import { LaneDistance } from 'app/map/road/road-distance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -43,7 +43,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 		public mapService: MapService,
 		public roadFactory: RoadFactory,
 		public queryService: MapQueryService,
-		public roadGeometryService: RoadGeometryService
 	) {
 		super();
 		RoadService.instance = this;
@@ -285,15 +284,13 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		if ( !roadCoord ) return;
 
-		const posTheta = RoadGeometryService.instance.findCoordPosition( roadCoord );
-
-		const result = this.findNearestLane( position, posTheta );
+		const result = this.findNearestLane( position, roadCoord.posTheta );
 
 		if ( !result ) return;
 
 		const laneSOffset = roadCoord.s - result.lane.laneSection.s;
 
-		return new TvLaneCoord( roadCoord.road, result.lane.laneSection, result.lane, laneSOffset, roadCoord.t );
+		return new TvLaneCoord( roadCoord.road, result.lane.laneSection, result.lane, laneSOffset as LaneDistance, roadCoord.t );
 	}
 
 	createConnectionRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvRoad {
@@ -448,7 +445,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	STtoXYZ ( road: TvRoad, s: number, t: number ) {
 
-		const posTheta = RoadGeometryService.instance.findRoadPosition( road, s, t );
+		const posTheta = road.getRoadPosition( s, t );
 
 		const position = posTheta.toVector3();
 
@@ -458,7 +455,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const lane = laneCoord.lane;
 
-		const laneHeight = lane.getHeightValue( laneCoord.s );
+		const laneHeight = lane.getHeightValue( laneCoord.laneDistance );
 
 		position.z += laneHeight.getLinearValue( 0.5 );
 
@@ -467,7 +464,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	sortLinks ( links: TvLink[], clockwise = true ): TvLink[] {
 
-		const points = links.map( coord => RoadGeometryService.instance.findLinkPosition( coord ) );
+		const points: TvPosTheta[] = links.map( coord => coord.getPosition() );
 
 		const center = GeometryUtils.getCentroid( points.map( p => p.position ) );
 
@@ -495,7 +492,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	findCentroid ( links: TvLink[] ) {
 
-		const points = links.map( link => RoadGeometryService.instance.findLinkPosition( link ).position );
+		const points = links.map( link => link.getPosition().toVector3() );
 
 		return GeometryUtils.getCentroid( points );
 

@@ -13,7 +13,6 @@ import { PointerEventData } from "app/events/pointer-event-data";
 import { LaneWidthNode } from "../objects/lane-width-node";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SelectionService } from "../../../tools/selection.service";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { TvLaneWidth } from "app/map/models/tv-lane-width";
 import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
 
@@ -22,7 +21,6 @@ export class LaneWidthCreationStrategy extends BaseCreationStrategy<LaneWidthNod
 
 	constructor (
 		private selectionService: SelectionService,
-		private roadPositionService: RoadGeometryService,
 	) {
 		super();
 	}
@@ -35,7 +33,7 @@ export class LaneWidthCreationStrategy extends BaseCreationStrategy<LaneWidthNod
 			return new ValidationFailed( 'Select a road to add' );
 		}
 
-		const laneCoord = this.roadPositionService.findLaneCoordAt( road, event.point );
+		const laneCoord = road.getLaneCoordinatesAt( event.point );
 
 		if ( !laneCoord ) {
 			return new ValidationFailed( 'Select a valid location on the road' );
@@ -51,11 +49,11 @@ export class LaneWidthCreationStrategy extends BaseCreationStrategy<LaneWidthNod
 
 		if ( !road ) return;
 
-		const laneCoord = this.roadPositionService.findLaneCoordAt( road, event.point );
+		const laneCoord = road.getLaneCoordinatesAt( event.point );
 
 		if ( !laneCoord ) return;
 
-		const sOffset = laneCoord.s;
+		const sOffset = laneCoord.laneDistance;
 
 		const widthValue = laneCoord.lane.getWidthValue( sOffset ) || 3.2;
 

@@ -24,12 +24,9 @@ import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-gen
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
 import { LaneUtils } from 'app/utils/lane.utils';
-import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { TvRoadLinkNeighbor } from "../../map/models/tv-road-link-neighbor";
 import { SplineUtils } from "../../utils/spline.utils";
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -56,13 +53,13 @@ export class RampToolHelper {
 
 		if ( startPosition instanceof TvLaneCoord ) {
 
-			const sStart = startPosition.s;
+			const sStart = startPosition.laneDistance;
 
 			const sEnd = sStart + 20;
 
 			const orientation = TvOrientation.PLUS;
 
-			const junction = this.junctionFactory.createJunction();
+			const junction = this.junctionFactory.createByType();
 
 			const road = this.roadService.clone( startPosition.road );
 
@@ -165,15 +162,7 @@ export class RampToolHelper {
 
 		if ( startPosition instanceof TvLaneCoord ) {
 
-			const position = RoadGeometryService.instance.findLaneStartPosition(
-				startPosition.road,
-				startPosition.laneSection,
-				startPosition.lane,
-				startPosition.s,
-				startPosition.offset
-			);
-
-			v1 = position.position;
+			v1 = startPosition.position;
 
 			d1 = startPosition.laneDirection;
 

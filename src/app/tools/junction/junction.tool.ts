@@ -4,7 +4,7 @@
 
 import { ToolType } from '../tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { TvJunction } from 'app/map/models/junctions/tv-junction';
+import { AutoJunction, DefaultJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionToolHelper } from './junction-tool.helper';
 import { JunctionNode } from 'app/services/junction/junction-node';
 import { JunctionNodeSelectionStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
@@ -35,16 +35,19 @@ export class JunctionTool extends ToolWithHandler {
 		this.setHint( 'Click on a road to create a junction' );
 
 		this.addSelectionStrategy( JunctionNode, new JunctionNodeSelectionStrategy() );
-		this.addSelectionStrategy( TvJunction, new JunctionSelectionStrategy() );
+		this.addSelectionStrategy( DefaultJunction, new JunctionSelectionStrategy() );
+		this.addSelectionStrategy( AutoJunction, new JunctionSelectionStrategy() );
 
 		this.setDebugService( this.helper.junctionDebugger );
 		this.setDataService( this.helper.junctionService );
 
 		this.addController( JunctionNode, this.helper.base.injector.get( JunctionNodeController ) );
-		this.addController( TvJunction, this.helper.base.injector.get( JunctionToolJunctionController ) );
+		this.addController( DefaultJunction, this.helper.base.injector.get( JunctionToolJunctionController ) );
+		this.addController( AutoJunction, this.helper.base.injector.get( JunctionToolJunctionController ) );
 
 		this.addVisualizer( JunctionNode, this.helper.base.injector.get( JunctionNodeVisualizer ) );
-		this.addVisualizer( TvJunction, this.helper.base.injector.get( JunctionToolJunctionVisualizer ) );
+		this.addVisualizer( DefaultJunction, this.helper.base.injector.get( JunctionToolJunctionVisualizer ) );
+		this.addVisualizer( AutoJunction, this.helper.base.injector.get( JunctionToolJunctionVisualizer ) );
 
 	}
 

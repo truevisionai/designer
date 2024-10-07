@@ -16,9 +16,9 @@ import { ExplicitGeometryService } from "./explicit-geometry.service";
 import { AutoGeometryService } from "./auto-geometry.service";
 import { MapEvents } from 'app/events/map-events';
 
-@Injectable({
+@Injectable( {
 	providedIn: 'root'
-})
+} )
 export class SplineGeometryGenerator {
 
 	constructor (
@@ -46,7 +46,7 @@ export class SplineGeometryGenerator {
 
 	updateBounds ( spline: AbstractSpline ): void {
 
-		this.splineBoundService.update( spline );
+		this.splineBoundService.updateBounds( spline );
 
 	}
 
@@ -67,11 +67,11 @@ export class SplineGeometryGenerator {
 
 		if ( spline instanceof AutoSpline ) {
 
-			this.autoSplineBuilder.build( spline );
+			this.autoSplineBuilder.updateGeometry( spline );
 
 		} else if ( spline instanceof ExplicitSpline ) {
 
-			this.explicitSplineBuilder.build( spline );
+			this.explicitSplineBuilder.updateGeometry( spline );
 
 		} else if ( spline instanceof CatmullRomSpline ) {
 

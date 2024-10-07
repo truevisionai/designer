@@ -6,6 +6,8 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline, SplineType } from './abstract-spline';
 import { Vector3 } from 'three';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { ExplicitGeometryService } from 'app/services/spline/explicit-geometry.service';
+import { SplineBoundsService } from 'app/services/spline/spline-bounds.service';
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -32,6 +34,18 @@ export class ExplicitSpline extends AbstractSpline {
 		}
 
 		return points.map( p => p.position );
+	}
+
+	updateSegmentGeometryAndBounds (): void {
+
+		if ( this.controlPoints.length < 2 ) return;
+
+		ExplicitGeometryService.instance.updateGeometry( this );
+
+		this.fireMakeSegmentMeshEvents();
+
+		SplineBoundsService.instance.updateBounds( this );
+
 	}
 
 }

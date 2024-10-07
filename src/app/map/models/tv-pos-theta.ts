@@ -8,6 +8,7 @@ import { Maths } from '../../utils/maths';
 import { TvLaneSide, TvSide } from './tv-common';
 import { TvRoadCoord } from './TvRoadCoord';
 import { TvRoad } from './tv-road.model';
+import { RoadDistance } from '../road/road-distance';
 
 export class TvPosTheta {
 

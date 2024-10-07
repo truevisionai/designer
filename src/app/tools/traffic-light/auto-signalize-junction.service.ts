@@ -18,10 +18,9 @@ import { RoadSignalService } from "../../map/road-signal/road-signal.service";
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Log } from 'app/core/utils/log';
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
 import { EmptyController } from 'app/core/controllers/empty-controller';
 import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
-import { JunctionRoadService } from 'app/services/junction/junction-road.service';
+import { createRoadDistance } from 'app/map/road/road-distance';
 
 export enum AutoSignalizationType {
 	ALL_GO,
@@ -46,7 +45,6 @@ export class JunctionSignaliztion {
 export class AutoSignalizeJunctionService {
 
 	constructor (
-		private junctionRoadService: JunctionRoadService,
 		private signalFactory: RoadSignalFactory,
 		private signalService: RoadSignalService,
 		private controllerService: TvSignalControllerService,
@@ -72,7 +70,7 @@ export class AutoSignalizeJunctionService {
 		// TODO: instead of incoming roads, we need connecting road to have junctions
 		// currenlty we are using incoming roads
 		// because connecting roads are automatically created by the junction
-		for ( const road of this.junctionRoadService.getIncomingRoads( junction ) ) {
+		for ( const road of junction.getIncomingRoads() ) {
 
 			this.addSignalizationToRoad( road, type, junction );
 
@@ -173,16 +171,14 @@ export class AutoSignalizeJunctionService {
 		const lane = this.findPlacementLane( road, junction );
 
 		if ( !lane ) {
-			Log.error( 'No suitable lane found for road:' + road.id );
-			TvConsole.error( 'No suitable lane found for road:' + road.id );
+			Log.error( `No suitable lane found for road:${ road.id }` );
+			TvConsole.error( `No suitable lane found for road:${ road.id }` );
 			return;
 		}
 
 		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
-		const roadSOffset = contactPoint == TvContactPoint.START ? 0 : road.length;
-
-		const posTheta = road.getLaneCenterPosition( lane, roadSOffset );
+		const posTheta = road.getLaneCenterPosition( lane, createRoadDistance( road, contactPoint ) );
 
 		const roadCoord = posTheta.toRoadCoord( road );
 
@@ -194,7 +190,7 @@ export class AutoSignalizeJunctionService {
 
 		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
-		const roadCoord = RoadGeometryService.instance.findContactCoord( road, contactPoint );
+		const roadCoord = road.getPosThetaByContact( contactPoint ).toRoadCoord( road );
 
 		const stopLine = this.signalFactory.createStopLine( roadCoord, 'StopLine', '294' );
 
@@ -337,7 +333,7 @@ export class AutoSignalizeJunctionService {
 
 	private removeSignals ( junction: TvJunction ): void {
 
-		for ( const incomingRoad of this.junctionRoadService.getIncomingRoads( junction ) ) {
+		for ( const incomingRoad of junction.getIncomingRoads() ) {
 
 			const signals = this.signalService.findSignalsByType( incomingRoad, [ '206', '205', '294', '1000001' ] );
 

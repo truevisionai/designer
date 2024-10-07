@@ -28,7 +28,6 @@ import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadUtils } from 'app/utils/road.utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { RoadGeometryService } from "../road/road-geometry.service";
 
 
 const SPHERE_SIZE = 0.1;
@@ -540,8 +539,8 @@ export class MapValidatorService {
 	validateLinkHeading ( roadA: TvRoad, roadB: TvRoad, link: TvLink, linkType: string ): void {
 
 		const contactA = linkType === 'successor' ? TvContactPoint.END : TvContactPoint.START;
-		const pointA = RoadGeometryService.instance.findContactPosition( roadA, contactA );
-		const pointB = RoadGeometryService.instance.findLinkPosition( link );
+		const pointA = roadA.getContactPosition( contactA );
+		const pointB = link.getPosition();
 		const label = roadA.isJunction ? 'ConnectingRoad' : 'Road';
 
 		const headingShouldBeSame = link.contactPoint !== contactA;
@@ -596,7 +595,7 @@ export class MapValidatorService {
 			const junction = this.map.getJunctionById( link.id );
 
 			const contactPoint = linkType == 'successor' ? road.getEndPosTheta() : road.getStartPosTheta();
-			const distanceFromJunction = junction.boundingBox.distanceToPoint( new Vector2( contactPoint.position.x, contactPoint.position.y ) );
+			const distanceFromJunction = junction.distanceToPoint( new Vector2( contactPoint.position.x, contactPoint.position.y ) );
 
 			if ( !junction.getIncomingRoads().includes( road ) ) {
 				Log.warn( 'No Connections With Junction', road.toString(), link.toString() );

@@ -7,10 +7,8 @@ import { TvLaneLocation } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { RoadGeometryService } from '../road/road-geometry.service';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
-import { Log } from 'app/core/utils/log';
 import { traverseLanes } from 'app/utils/road.utils';
 
 @Injectable( {
@@ -98,7 +96,7 @@ export class LanePositionService {
 
 		const offset = this.computeTOffset( laneSection, lane, s, location );
 
-		const point = RoadGeometryService.instance.findRoadPosition( road, s, offset * sign );
+		const point = road.getRoadPosition( s, offset * sign );
 
 		const laneHeight = lane.getHeightValue( s );
 

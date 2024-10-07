@@ -11,7 +11,6 @@ import { Object3D } from "three";
 import { DebugDrawService } from "../../services/debug/debug-draw.service";
 import { RoadService } from "../../services/road/road.service";
 import { COLOR } from "../../views/shared/utils/colors.service";
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -73,7 +72,7 @@ export class JunctionGateDebugger extends BaseDebugger<TvRoadSignal> {
 
 		const road = this.roadService.getRoad( signal.roadId );
 
-		const signalPosition = RoadGeometryService.instance.findRoadPosition( road, signal.s, signal.t );
+		const signalPosition = road.getRoadPosition( signal.s, signal.t );
 
 		for ( const dep of signal.dependencies ) {
 
@@ -83,7 +82,7 @@ export class JunctionGateDebugger extends BaseDebugger<TvRoadSignal> {
 
 			if ( !trafficLight ) continue;
 
-			const lightPosition = RoadGeometryService.instance.findRoadPosition( road, trafficLight.s, trafficLight.t )?.position;
+			const lightPosition = road.getRoadPosition( trafficLight.s, trafficLight.t )?.position;
 
 			lightPosition.z += trafficLight.zOffset;
 
