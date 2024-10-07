@@ -11,14 +11,12 @@ import { Box2, Vector2, Vector3 } from 'three';
 export class SplineIntersection {
 
 	public area: Box2;
-	public start: Vector2;
-	public end: Vector2;
 
-	public splineStart: number;
-	public splineEnd: number;
+	private _splineStart: number;
+	private _splineEnd: number;
 
-	public otherStart: number;
-	public otherEnd: number;
+	private _otherStart: number;
+	private _otherEnd: number;
 
 	constructor (
 		public spline: AbstractSpline,
@@ -26,6 +24,38 @@ export class SplineIntersection {
 		public position: Vector3,
 		public angle?: number
 	) {
+	}
+
+	get splineStart (): number {
+		return this._splineStart;
+	}
+
+	set splineStart ( value: number ) {
+		this._splineStart = value;
+	}
+
+	get splineEnd (): number {
+		return this._splineEnd;
+	}
+
+	set splineEnd ( value: number ) {
+		this._splineEnd = value;
+	}
+
+	get otherStart (): number {
+		return this._otherStart;
+	}
+
+	set otherStart ( value: number ) {
+		this._otherStart = value;
+	}
+
+	get otherEnd (): number {
+		return this._otherEnd;
+	}
+
+	set otherEnd ( value: number ) {
+		this._otherEnd = value;
 	}
 
 	getKey (): string {

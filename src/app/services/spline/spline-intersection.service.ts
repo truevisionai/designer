@@ -121,8 +121,6 @@ export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: Ab
 			const center = new Vector3( average.x, average.y, 0 );
 			const intersection = new SplineIntersection( splineA, splineB, center );
 
-			intersection.start = startPoint;
-			intersection.end = endPoint;
 			intersection.area = currentIntersectionBox.clone();
 
 			intersections.push( intersection );
@@ -141,8 +139,6 @@ export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: Ab
 		const center = new Vector3( average.x, average.y, 0 );
 		const intersection = new SplineIntersection( splineA, splineB, center );
 
-		intersection.start = startPoint;
-		intersection.end = endPoint;
 		intersection.area = currentIntersectionBox.clone();
 
 		intersections.push( intersection );
