@@ -1065,7 +1065,7 @@ export class JunctionManager {
 
 		const splines = new Set<AbstractSpline>();
 
-		group.intersections.forEach( i => {
+		group.getIntersections().forEach( i => {
 
 			if ( !splines.has( i.spline ) ) {
 

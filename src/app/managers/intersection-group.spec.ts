@@ -61,7 +61,7 @@ describe( 'IntersectionGroup', () => {
 		} )
 
 		expect( group.getIntersectionCount() ).toBe( 2 );
-		expect( group.getSplines().length ).toBe( 3 );
+		expect( group.getSplineCount() ).toBe( 3 );
 
 		expect( group.getOffset( splineA ).sStart ).toBeLessThan( 85 );
 		expect( group.getOffset( splineA ).sEnd ).toBeGreaterThan( 115 );
@@ -88,7 +88,7 @@ describe( 'IntersectionGroup', () => {
 
 		expect( groups.length ).toBe( 1 );
 
-		expect( groups[ 0 ].getSplines().length ).toBe( 3 );
+		expect( groups[ 0 ].getSplineCount() ).toBe( 3 );
 
 	} ) );
 
@@ -114,13 +114,13 @@ describe( 'IntersectionGroup', () => {
 
 		expect( groups.length ).toBe( 3 );
 
-		expect( groups[ 0 ].getSplines().length ).toBe( 3 );
+		expect( groups[ 0 ].getSplineCount() ).toBe( 3 );
 		expect( groups[ 0 ].getIntersectionCount() ).toBe( 3 );
 
-		expect( groups[ 1 ].getSplines().length ).toBe( 3 );
+		expect( groups[ 1 ].getSplineCount() ).toBe( 3 );
 		expect( groups[ 1 ].getIntersectionCount() ).toBe( 3 );
 
-		expect( groups[ 2 ].getSplines().length ).toBe( 2 );
+		expect( groups[ 2 ].getSplineCount() ).toBe( 2 );
 		expect( groups[ 2 ].getIntersectionCount() ).toBe( 1 );
 
 
