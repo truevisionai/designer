@@ -10,9 +10,17 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { OrderedMap } from "../models/ordered-map";
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLink } from 'app/map/models/tv-link';
-import { InvalidArgumentException, DuplicateModelException, DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
-import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
+import {
+	DuplicateKeyException,
+	DuplicateModelException,
+	InvalidArgumentException,
+	ModelNotFoundException
+} from 'app/exceptions/exceptions';
 import { MapEvents } from 'app/events/map-events';
+import { SplineUtils } from 'app/utils/spline.utils';
+import { LinkFactory } from 'app/map/models/link-factory';
+import { TvContactPoint } from 'app/map/models/tv-common';
+import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -21,10 +29,95 @@ export enum SplineType {
 	CATMULLROM = 'catmullrom',
 }
 
-// newsegment union
 export type NewSegment = TvRoad | TvJunction | null;
 
+class SplineLinks {
+
+	constructor ( private spline: AbstractSpline ) { }
+
+	updateLinks (): void {
+		SplineUtils.updateInternalLinks( this.spline );
+	}
+
+	getSegmentLinks ( segment: NewSegment ): TvLink[] {
+
+		const links = [];
+
+		const prev = this.spline.getPreviousSegment( segment );
+		const next = this.spline.getNextSegment( segment );
+
+		if ( prev instanceof TvRoad ) {
+			links.push( LinkFactory.createRoadLink( prev, TvContactPoint.END ) );
+		}
+
+		if ( next instanceof TvRoad ) {
+			links.push( LinkFactory.createRoadLink( next, TvContactPoint.START ) );
+		}
+
+		return links;
+	}
+
+}
+
+class SplineSegmentProfile {
+
+	constructor ( private spline: AbstractSpline ) {
+	}
+
+	insertSegment ( sStart: number, sEnd: number, newSegment: NewSegment ): void {
+
+		const startSegment = this.spline.segmentMap.findAt( sStart );
+		const endSegment = this.spline.segmentMap.findAt( sStart );
+
+		if ( startSegment instanceof TvJunction || endSegment instanceof TvJunction ) {
+			throw new Error( 'Start/End segment is junction' );
+		}
+
+		if ( startSegment != endSegment ) {
+			throw new Error( 'Start and end segments are not same' );
+		}
+
+		const existingRoad = startSegment as TvRoad;
+
+		if ( sStart < 10 ) {
+
+			this.spline.shiftSegment( sEnd, existingRoad );
+
+		} else if ( sEnd < this.spline.getLength() ) {
+
+			this.spline.addSegment( sEnd, existingRoad.clone( 0 ) );
+
+		}
+
+		this.spline.addSegment( sStart, newSegment );
+
+	}
+
+}
+
 export abstract class AbstractSpline {
+
+	createBoundingBoxAt ( i: number, stepSize: number = 1 ): Box2 {
+
+		const leftStart = this.leftPoints[ i ]?.position;
+		const rightStart = this.rightPoints[ i ]?.position;
+		const leftEnd = this.leftPoints[ i + stepSize ]?.position;
+		const rightEnd = this.rightPoints[ i + stepSize ]?.position;
+
+		if ( !leftStart || !rightStart || !leftEnd || !rightEnd ) return;
+
+		// Use the left and right points to directly define the box boundaries
+		const points = [
+			new Vector2( leftStart.x, leftStart.y ),
+			new Vector2( rightStart.x, rightStart.y ),
+			new Vector2( leftEnd.x, leftEnd.y ),
+			new Vector2( rightEnd.x, rightEnd.y )
+		];
+
+		// Create a Box2 that bounds the road segment
+		return new Box2().setFromPoints( points );
+
+	}
 
 	public abstract type: SplineType;
 
@@ -59,6 +152,9 @@ export abstract class AbstractSpline {
 
 	private static idCounter = 1;
 
+	private splineSegmentProfile: SplineSegmentProfile;
+	private splineLinks: SplineLinks;
+
 	static reset () {
 		this.idCounter = 1;
 	}
@@ -78,6 +174,10 @@ export abstract class AbstractSpline {
 		this.tension = tension || 0.5;
 
 		this.boundingBox = new Box2();
+
+		this.splineSegmentProfile = new SplineSegmentProfile( this );
+
+		this.splineLinks = new SplineLinks( this );
 
 	}
 
@@ -187,6 +287,14 @@ export abstract class AbstractSpline {
 
 	}
 
+	shiftSegment ( offset: number, segment: NewSegment ): void {
+
+		this.removeSegment( segment );
+
+		this.addSegment( offset, segment );
+
+	}
+
 	removeSegment ( segment: NewSegment ): void {
 
 		if ( !this.hasSegment( segment ) ) {
@@ -204,24 +312,24 @@ export abstract class AbstractSpline {
 		}
 
 		if ( this.segmentMap.hasKey( sOffset ) ) {
-			throw new Error( `Key exists ${ segment }` );
+			throw new Error( `Key: ${ sOffset } exists New:${ segment }` );
 		}
 
-		// if ( sOffset > this.getLength() ) {
-		// 	throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ this.toString() }` );
-		// }
+		if ( sOffset > this.getLength() ) {
+			throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ this.toString() }` );
+		}
 
-		// if ( sOffset < 0 ) {
-		// 	throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ this.toString() }` );
-		// }
+		if ( sOffset < 0 ) {
+			throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ this.toString() }` );
+		}
 
-		// if ( sOffset == null ) {
-		// 	throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ this.toString() }, ${ segment?.toString() }` );
-		// }
+		if ( sOffset == null ) {
+			throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ this.toString() }, ${ segment?.toString() }` );
+		}
 
-		// if ( this.segmentMap.hasKey( sOffset ) ) {
-		// 	throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ this.segmentMap.keys() }` );
-		// }
+		if ( this.segmentMap.hasKey( sOffset ) ) {
+			throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ this.segmentMap.keys() }` );
+		}
 
 	}
 
@@ -391,5 +499,29 @@ export abstract class AbstractSpline {
 		}
 	}
 
-}
+	insertSegment ( sStart: number, sEnd: number, segment: NewSegment ): void {
+		this.splineSegmentProfile.insertSegment( sStart, sEnd, segment );
+	}
 
+	updateLinks (): void {
+		this.splineLinks.updateLinks();
+	}
+
+	getSegmentLinks ( segment: NewSegment ): TvLink[] {
+		return this.splineLinks.getSegmentLinks( segment );
+	}
+
+	getSegmentKeys (): number[] {
+		return [ ...this.segmentMap.keys() ];
+	}
+
+	equals ( spline: AbstractSpline ): boolean {
+		return this.uuid === spline.uuid;
+	}
+
+	isLinkedTo ( spline: AbstractSpline ): boolean {
+		return this.getSuccessorSpline()?.equals( spline ) ||
+			this.getPredecessorSpline()?.equals( spline );
+	}
+
+}
