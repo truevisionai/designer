@@ -18,6 +18,8 @@ import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/ex
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { Log } from 'app/core/utils/log';
 import { TvJunctionBoundingBox } from './tv-junction-bounding-box';
+import { SplineIntersection, SplineSection } from 'app/services/junction/spline-intersection';
+
 
 export class TvJunction {
 
@@ -50,7 +52,9 @@ export class TvJunction {
 
 	}
 
-	get auto (): boolean { return this.type === TvJunctionType.AUTO; }
+	get auto (): boolean {
+		return this.type === TvJunctionType.AUTO;
+	}
 
 	get boundingBox (): Box2 {
 		return this.junctionBoundingBox.getBox();
@@ -58,6 +62,10 @@ export class TvJunction {
 
 	set boundingBox ( box: Box2 ) {
 		this.junctionBoundingBox.setBox( box );
+	}
+
+	getBoundingBox (): Box2 {
+		return this.boundingBox;
 	}
 
 	toString () {
@@ -421,9 +429,13 @@ export class TvJunction {
 	}
 
 	replaceIncomingRoad ( targetRoad: TvRoad, incomingRoad: TvRoad, incomingRoadContact: TvContactPoint ): void {
-		for ( const connection of this.getConnections() ) {
+
+		const connections = this.getConnectionsByRoad( targetRoad );
+
+		for ( const connection of connections ) {
 			connection.replaceIncomingRoad( targetRoad, incomingRoad, incomingRoadContact );
 		}
+
 	}
 
 	removeConnectionsByRoad ( road: TvRoad, contact: TvContactPoint ): void {
@@ -449,6 +461,18 @@ export class TvJunction {
 		this.centroid.y = centroid.y;
 	}
 
+	getSplineIntersections (): SplineIntersection[] {
+		return [];
+	}
+
+	updateFromIntersections (): void {
+		//
+	}
+
+	removeSpline ( spline: AbstractSpline ): void {
+		//
+	}
+
 }
 
 
@@ -463,9 +487,74 @@ export class DefaultJunction extends TvJunction {
 
 export class AutoJunction extends TvJunction {
 
+	private splines = new Set<AbstractSpline>();
+
 	constructor ( name: string, id: number ) {
 		super( name, id );
 		this.type = TvJunctionType.AUTO;
+	}
+
+	override getSplineIntersections (): SplineIntersection[] {
+
+		const intersections: SplineIntersection[] = [];
+		const splines = this.getIncomingSplines();
+
+		for ( let i = 0; i < splines.length; i++ ) {
+
+			const spline = splines[ i ];
+
+			// Start the inner loop from the next spline to avoid duplicate pairs and self-comparison.
+			for ( let j = i + 1; j < splines.length; j++ ) {
+
+				const otherSpline = splines[ j ];
+
+				intersections.push( ...spline.getIntersections( otherSpline ) );
+
+			}
+
+		}
+
+		return intersections;
+	}
+
+	override getIncomingSplines (): AbstractSpline[] {
+
+		super.getIncomingSplines().forEach( spline => this.splines.add( spline ) );
+
+		return [ ...this.splines ];
+
+	}
+
+	addSpline ( spline: AbstractSpline | AbstractSpline[] ): void {
+
+		const splines = Array.isArray( spline ) ? spline : [ spline ];
+
+		splines.forEach( s => this.splines.add( s ) );
+
+	}
+
+	removeSpline ( spline: AbstractSpline | AbstractSpline[] ): void {
+
+		const splines = Array.isArray( spline ) ? spline : [ spline ];
+
+		splines.forEach( s => this.splines.delete( s ) );
+
+	}
+
+	updateFromIntersections (): void {
+
+		// this.getSplineSections().forEach( section => {
+		//
+		// 	section.shiftJunctionAndUpdateSegments( this );
+		//
+		// } );
+
+	}
+
+	getSplineSections (): SplineSection[] {
+
+		return this.getSplineIntersections().map( intersection => intersection.getSplineSections() ).flat();
+
 	}
 
 }
