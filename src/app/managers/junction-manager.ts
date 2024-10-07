@@ -29,6 +29,7 @@ import { JunctionRoadService } from "app/services/junction/junction-road.service
 import { ConnectionManager } from "../map/junction/connection.manager";
 import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
 import { MapEvents } from "app/events/map-events";
+import { GeometryUtils } from "app/services/surface/geometry-utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -1137,7 +1138,7 @@ export class JunctionManager {
 
 	sortLinks ( links: TvLink[] ): TvLink[] {
 
-		return this.roadService.sortLinks( links );
+		return GeometryUtils.sortRoadLinks( links );
 
 	}
 

@@ -462,34 +462,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return position;
 	}
 
-	sortLinks ( links: TvLink[], clockwise = true ): TvLink[] {
-
-		const points: TvPosTheta[] = links.map( coord => coord.getPosition() );
-
-		const center = GeometryUtils.getCentroid( points.map( p => p.position ) );
-
-		if ( clockwise ) {
-
-			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
-
-			return links.map( ( point, index ) => ( {
-				point,
-				index
-			} ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
-
-		} else {
-
-			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
-
-			return links.map( ( point, index ) => ( {
-				point,
-				index
-			} ) ).sort( ( a, b ) => angles[ b.index ] - angles[ a.index ] ).map( sortedObj => sortedObj.point );
-
-		}
-
-	}
-
 	findCentroid ( links: TvLink[] ) {
 
 		const points = links.map( link => link.getPosition().toVector3() );

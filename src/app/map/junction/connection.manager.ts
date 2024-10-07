@@ -15,6 +15,7 @@ import { RoadService } from "../../services/road/road.service";
 import { TvJunctionConnection } from "../models/junctions/tv-junction-connection";
 import { TvContactPoint } from "../models/tv-common";
 import { ConnectionGeometryService } from "app/services/junction/connection-geometry.service";
+import { GeometryUtils } from "app/services/surface/geometry-utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -83,7 +84,7 @@ export class ConnectionManager {
 
 		links.forEach( link => roadLinks.push( link ) );
 
-		const sortedLinks: TvLink[] = this.roadService.sortLinks( roadLinks );
+		const sortedLinks: TvLink[] = GeometryUtils.sortRoadLinks( roadLinks );
 
 		const centroid = this.roadService.findCentroid( sortedLinks );
 

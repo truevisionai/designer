@@ -6,11 +6,30 @@ import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { Vector3, BufferGeometry, BufferAttribute, Box2, Vector2, CatmullRomCurve3, ExtrudeGeometry, Shape, MeshBasicMaterial, Mesh } from "three";
 import { Log } from "app/core/utils/log";
-import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
+import { TvLink } from "app/map/models/tv-link";
+import { TvPosTheta } from "app/map/models/tv-pos-theta";
 
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
 import earcut from 'earcut';
 
 export class GeometryUtils {
+
+	static sortRoadLinks ( links: TvLink[] ): TvLink[] {
+
+		// clockwise sort
+
+		const points: TvPosTheta[] = links.map( coord => coord.getPosition() );
+
+		const center = GeometryUtils.getCentroid( points.map( p => p.position ) );
+
+		const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
+
+		return links.map( ( point, index ) => ( {
+			point,
+			index
+		} ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
+
+	}
 
 	static getCentroid ( positions: Vector3[] ): Vector3 {
 

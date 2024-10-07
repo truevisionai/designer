@@ -17,6 +17,7 @@ import { Log } from 'app/core/utils/log';
 import { RoadService } from 'app/services/road/road.service';
 import { ConnectionFactory } from 'app/factories/connection.factory';
 import { JunctionFactory } from "../../factories/junction.factory";
+import { GeometryUtils } from 'app/services/surface/geometry-utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -52,7 +53,7 @@ export class JunctionToolHelper {
 
 	createCustomJunction ( roadLinks: TvLink[] ): TvJunction {
 
-		const sortedLinks: TvLink[] = this.roadService.sortLinks( roadLinks );
+		const sortedLinks: TvLink[] = GeometryUtils.sortRoadLinks( roadLinks );
 
 		const centroid = this.roadService.findCentroid( sortedLinks );
 
