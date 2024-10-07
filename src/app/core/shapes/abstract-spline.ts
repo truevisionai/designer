@@ -21,6 +21,7 @@ import { SplineUtils } from 'app/utils/spline.utils';
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
+import { Log } from '../utils/log';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -56,6 +57,67 @@ class SplineLinks {
 
 		return links;
 	}
+
+	removeSegmentAndReplaceLinks ( segment: NewSegment ): void {
+
+		if ( segment instanceof TvRoad ) {
+
+			this.removeRoadSegment( segment );
+
+		} else if ( segment instanceof TvJunction ) {
+
+			this.removeJunctionSegment( segment );
+
+		}
+
+		this.updateLinks();
+
+		this.spline.updateSegmentGeometryAndBounds();
+
+	}
+
+	private removeRoadSegment ( road: TvRoad ): void {
+
+		const previousSegment = this.spline.getPreviousSegment( road );
+		const nextSegment = this.spline.getNextSegment( road );
+
+		if ( previousSegment instanceof TvRoad ) {
+			previousSegment.successor = null
+		}
+
+		if ( nextSegment instanceof TvRoad ) {
+			nextSegment.predecessor = null;
+		}
+
+		if ( this.spline.hasSegment( road ) ) {
+			this.spline.removeSegment( road );
+		} else {
+			Log.warn( 'Segment not found in spline', road.toString(), this.toString() );
+		}
+
+	}
+
+	private removeJunctionSegment ( junction: TvJunction ): void {
+
+		const previousSegment = this.spline.getPreviousSegment( junction );
+		const nextSegment = this.spline.getNextSegment( junction );
+
+		if ( previousSegment instanceof TvRoad ) {
+			previousSegment.successor = null;
+		}
+
+		if ( nextSegment instanceof TvRoad ) {
+			nextSegment.predecessor = null;
+		}
+
+		if ( this.spline.hasSegment( junction ) ) {
+			this.spline.removeSegment( junction );
+		} else {
+			Log.warn( 'Segment not found in spline', junction.toString(), this.toString() );
+		}
+
+	}
+
 
 }
 
@@ -302,6 +364,12 @@ export abstract class AbstractSpline {
 		}
 
 		this.segmentMap.remove( segment );
+
+	}
+
+	removeSegmentAndReplaceLinks ( segment: NewSegment ): void {
+
+		this.splineLinks.removeSegmentAndReplaceLinks( segment );
 
 	}
 

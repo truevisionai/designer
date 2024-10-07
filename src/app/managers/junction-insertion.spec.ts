@@ -102,7 +102,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	function expectCoords ( spline: AbstractSpline, junction: TvJunction, expected: TvLink[] ) {
 
-		const coords = junctionManager.getJunctionLinks( spline, junction );
+		const coords = spline.getSegmentLinks( junction );
 
 		expect( coords.length ).toBe( expected.length );
 
@@ -132,7 +132,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 40, 60, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		expect( spline.getSegmentCount() ).toBe( 3 );
 
@@ -146,7 +146,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		expectSegments( spline, [ R1, J1, R2 ] );
 
-		const coords = junctionManager.getJunctionLinks( spline, J1 );
+		const coords = spline.getSegmentLinks( J1 );
 		expect( coords.length ).toBe( 2 );
 		expect( spline.segmentMap.getFirst() ).toBe( coords[ 0 ].element );
 		expect( coords[ 0 ].contactPoint ).toBe( TvContactPoint.END );
@@ -175,7 +175,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 40, 60, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		expect( spline.getSegmentCount() ).toBe( 3 );
 
@@ -214,7 +214,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 90, 110, J2 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		const R3 = mapService.findRoad( 3 );
 
@@ -260,7 +260,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 80, 100, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		expect( spline.getSegmentCount() ).toBe( 3 );
 
@@ -296,7 +296,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 70, 100, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		expect( spline.getSegmentCount() ).toBe( 2 );
 
@@ -337,7 +337,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 0, 20, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		expect( spline.getSegmentCount() ).toBe( 3 );
 
@@ -371,7 +371,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 0, 30, junction );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		expect( spline.getSegmentCount() ).toBe( 2 );
 
@@ -410,7 +410,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 0, 50, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		expectCorrectSegmentOrder( spline );
 
@@ -450,7 +450,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		junctionManager.insertJunction( spline, 90, 110, J3 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		const R2 = mapService.findRoad( 2 );
 

@@ -94,7 +94,7 @@ export class JunctionManager {
 
 		const links = [];
 
-		otherSplines.forEach( s => links.push( ...this.getJunctionLinks( s, junction ) ) );
+		otherSplines.forEach( s => links.push( ...s.getSegmentLinks( junction ) ) );
 
 		this.connectionManager.generateConnections( junction, links );
 
@@ -177,13 +177,11 @@ export class JunctionManager {
 
 			this.removeJunctionSegment( junction, incomingSpline );
 
-			SplineUtils.updateInternalLinks( incomingSpline );
-
 		}
 
 		this.junctionRoadService.removeAll( junction );
 
-		this.mapService.map.removeJunction( junction );
+		this.mapService.removeJunction( junction );
 
 		MapEvents.removeMesh.emit( junction );
 
@@ -206,31 +204,12 @@ export class JunctionManager {
 
 	}
 
-	removeJunctionSegment ( junction: TvJunction, incomingSpline: AbstractSpline ): void {
+	removeJunctionSegment ( junction: TvJunction, spline: AbstractSpline ): void {
 
 		// if junction is not auto then we should not remove the segment
 		if ( !junction.auto ) return;
 
-		const prev = incomingSpline.segmentMap.getPrevious( junction );
-		const next = incomingSpline.segmentMap.getNext( junction );
-
-		if ( prev instanceof TvRoad ) {
-			prev.successor = null;
-		}
-
-		if ( next instanceof TvRoad ) {
-			next.predecessor = null;
-		}
-
-		if ( SplineUtils.hasSegment( incomingSpline, junction ) ) {
-			SplineUtils.removeSegment( incomingSpline, junction );
-		} else {
-			Log.warn( 'Segment not found in spline', junction.toString(), incomingSpline?.toString() );
-		}
-
-		this.splineFixer.setInternalLinks( incomingSpline );
-
-		incomingSpline.updateSegmentGeometryAndBounds();
+		spline.removeSegmentAndReplaceLinks( junction );
 
 	}
 
@@ -242,31 +221,8 @@ export class JunctionManager {
 	 */
 	getJunctionIntersections ( junction: TvJunction ): SplineIntersection[] {
 
-		const intersections: SplineIntersection[] = [];
+		return junction.getSplineIntersections();
 
-		const splines = junction.getIncomingSplines();
-
-		for ( let i = 0; i < splines.length; i++ ) {
-
-			const spline = splines[ i ];
-
-			// Start the inner loop from the next spline to avoid duplicate pairs and self-comparison.
-			for ( let j = i + 1; j < splines.length; j++ ) {
-
-				const otherSpline = splines[ j ];
-
-				// Find intersections between the current spline and the other spline and add them to the list.
-				this.intersectionService.findIntersections( spline, [ otherSpline ] ).forEach( intersection => {
-
-					intersections.push( intersection );
-
-				} );
-
-			}
-
-		}
-
-		return intersections;
 	}
 
 	/**
@@ -277,13 +233,9 @@ export class JunctionManager {
 	 */
 	isJunctionMatchingIntersections ( junction: TvJunction, intersections: SplineIntersection[] ): boolean {
 
-		const junctionSplines = junction.getIncomingSplines();
+		const intersectionKeys = intersections.map( i => i.getKey() );
 
-		const junctionUuids = junctionSplines.map( s => s.uuid );
-
-		const splineUuids = intersections.map( i => i.spline.uuid ).concat( intersections.map( i => i.otherSpline.uuid ) );
-
-		const common = splineUuids.filter( value => junctionUuids.includes( value ) );
+		const common = intersectionKeys.filter( value => junction.getKey().includes( value ) );
 
 		for ( const intersection of intersections ) {
 			if ( junction.containsPoint( intersection.position ) ) {
@@ -291,7 +243,7 @@ export class JunctionManager {
 			}
 		}
 
-		if ( common.length == junctionSplines.length ) {
+		if ( common.length == intersectionKeys.length ) {
 
 			// if all splines are same, it is old junction
 			return true;
@@ -305,6 +257,12 @@ export class JunctionManager {
 
 	}
 
+	/**
+	 *
+	 * @param spline
+	 * @returns
+	 * @deprecated not being used anywhere except tests
+	 */
 	findNewIntersections ( spline: AbstractSpline ) {
 
 		const junctions = spline.getJunctionSegments();
@@ -500,30 +458,6 @@ export class JunctionManager {
 
 	}
 
-	updateSplineInternalLinks ( spline: AbstractSpline, setNull = true ) {
-
-		this.splineFixer.setInternalLinks( spline );
-
-	}
-
-	getJunctionLinks ( spline: AbstractSpline, junction: TvJunction, coords?: TvLink[] ): TvLink[] {
-
-		coords = coords || [];
-
-		const prev = spline.getPreviousSegment( junction );
-		const next = spline.getNextSegment( junction );
-
-		if ( prev instanceof TvRoad ) {
-			coords.push( LinkFactory.createRoadLink( prev, TvContactPoint.END ) );
-		}
-
-		if ( next instanceof TvRoad ) {
-			coords.push( LinkFactory.createRoadLink( next, TvContactPoint.START ) );
-		}
-
-		return coords;
-	}
-
 	updateConnections ( junction: TvJunction ) {
 
 		// we will regenerate splines for each connecting road
@@ -640,9 +574,9 @@ export class JunctionManager {
 
 		splines.forEach( spline => {
 
-			this.updateSplineInternalLinks( spline );
+			spline.updateLinks();
 
-			coords.push( ...this.getJunctionLinks( spline, junction ) );
+			coords.push( ...spline.getSegmentLinks( junction ) );
 
 			spline.updateSegmentGeometryAndBounds();
 
@@ -738,193 +672,6 @@ export class JunctionManager {
 	sortLinks ( links: TvLink[] ): TvLink[] {
 
 		return GeometryUtils.sortRoadLinks( links );
-
-	}
-
-	addJunctionCoords ( spline: AbstractSpline, links: TvLink[], junction: TvJunction ) {
-
-		Log.warn( 'addJunctionCoords', junction?.toString(), spline.segmentMap );
-
-		const previousSegment = spline.segmentMap.getPrevious( junction );
-
-		if ( previousSegment instanceof TvRoad ) {
-
-			links.push( LinkFactory.createRoadLink( previousSegment, TvContactPoint.END ) );
-
-		} else {
-
-			Log.warn( 'Previous Segment is not a Road', previousSegment?.toString() );
-
-		}
-
-		const nextSegment = spline.segmentMap.getNext( junction );
-
-		if ( nextSegment instanceof TvRoad ) {
-
-			links.push( LinkFactory.createRoadLink( nextSegment, TvContactPoint.START ) );
-
-		} else if ( nextSegment instanceof TvJunction ) {
-
-			Log.warn( 'Next Segment Junction', nextSegment?.toString() );
-
-			// const nextLinks = nextSegment.getLinks();
-
-			// nextLinks.forEach( link => {
-
-			// 	if ( links.find( l => l.matches( link ) ) ) return;
-
-			// 	links.push( link );
-
-			// } );
-
-		} else {
-
-			// const junctionLinks = junction.getLinks();
-
-			// junctionLinks.forEach( link => {
-
-			// 	if ( links.find( l => l.matches( link ) ) ) return;
-
-			// 	links.push( link );
-
-			// } );
-
-			Log.warn( 'Next Segment NULL' );
-
-		}
-
-	}
-
-	handleEdgeJunction ( spline: AbstractSpline, junction: TvJunction, coords: TvLink[], sStart: number, sEnd: number, startSegment: TvRoad, mainRoad: TvRoad, junctionWidth: number ) {
-
-		if ( !mainRoad ) {
-			Log.error( 'Main Road is NULL' );
-			return;
-		}
-
-		const splineLength = spline.getLength();
-
-		const hasPredecessor = startSegment.predecessor != null;
-
-		const hasSuccessor = mainRoad.successor != null;
-
-		const isNearStart = sStart <= 0;
-
-		const isNearEnd = sEnd >= splineLength;
-
-		if ( isNearEnd ) {
-
-			Log.debug( 'adding end segment coords', mainRoad.toString() );
-
-			this.handleJunctionAtEnd( spline, junction, coords, sStart, mainRoad );
-
-			if ( hasSuccessor ) {
-
-				Log.warn( 'hasSuccessor', mainRoad.toString() );
-
-				const nextLink = mainRoad.successor?.clone();
-
-				if ( nextLink.element instanceof TvRoad ) {
-
-					RoadUtils.unlinkSuccessor( mainRoad );
-					RoadUtils.unlinkPredecessor( nextLink.element );
-
-					coords.push( LinkFactory.createRoadLink( nextLink.element, nextLink.contactPoint ) );
-
-				} else {
-
-					Log.warn( 'nextLink is not a road', nextLink?.toString() );
-
-				}
-
-			}
-
-			mainRoad.successor = LinkFactory.createJunctionLink( junction );
-
-		} else if ( isNearStart ) {
-
-			Log.debug( 'adding start segment coords', startSegment?.toString() );
-
-			if ( hasPredecessor ) {
-
-				Log.debug( 'hasPredecessor', startSegment?.toString() );
-
-				this.handleJunctionAtStart( spline, junction, coords, junctionWidth );
-
-			} else {
-
-				this.handleJunctionAtStart( spline, junction, coords, junctionWidth );
-
-			}
-
-		} else {
-
-			throw new Error( 'Invalid start/end segment' );
-
-		}
-	}
-
-	handleJunctionAtEnd ( spline: AbstractSpline, junction: TvJunction, coords: TvLink[], sStartJunction: number, road: TvRoad ) {
-
-		// SplineUtils.removeSegment( spline, junction );
-		SplineUtils.addSegment( spline, sStartJunction, junction );
-
-		this.rebuildRoad( road );
-
-		coords.push( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
-
-	}
-
-	handleJunctionAtStart ( spline: AbstractSpline, junction: TvJunction, coords: TvLink[], junctionWidth: number ) {
-
-		const road = spline.getRoadSegments()[ 0 ];
-
-		SplineUtils.removeSegment( spline, road );
-
-		SplineUtils.addSegment( spline, 0, junction );
-		SplineUtils.addSegment( spline, junctionWidth, road );
-
-		road.setPredecessor( TvLinkType.JUNCTION, junction );
-
-		this.rebuildRoad( road );
-
-		coords.push( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
-
-	}
-
-	handleJunctionInMiddle ( spline: AbstractSpline, junction: TvJunction, sStart: number, sEnd: number ): TvLink[] {
-
-		const segment = spline.segmentMap.findAt( sStart );
-
-		if ( segment instanceof TvRoad ) {
-
-			const newRoad = this.createNewRoadSegment( spline, segment, junction, sStart, sEnd );
-
-			Log.debug( 'created new segment', newRoad.toString(), 'From', segment.toString(), 'For', junction.toString(), sStart, sEnd );
-
-			return [
-				LinkFactory.createRoadLink( segment, TvContactPoint.END ),
-				LinkFactory.createRoadLink( newRoad, TvContactPoint.START )
-			];
-
-		} else if ( segment instanceof TvJunction ) {
-
-			Log.debug( 'Middle segment is junction', segment.toString(), spline.toString() );
-
-			const prev = spline.segmentMap.getPrevious( segment );
-			const next = spline.segmentMap.getNext( segment );
-
-			return [
-				LinkFactory.createLink( TvLinkType.ROAD, prev, TvContactPoint.END ),
-				LinkFactory.createLink( TvLinkType.ROAD, next, TvContactPoint.START )
-			];
-
-		} else {
-
-			throw new Error( 'Invalid segment' );
-
-		}
-
 
 	}
 
