@@ -6,24 +6,18 @@ import { Injectable } from "@angular/core";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
-import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 import { RoadManager } from "./road/road-manager";
 import { RoadService } from "app/services/road/road.service";
 import { JunctionFactory } from "app/factories/junction.factory";
 import { AbstractSpline, NewSegment, SplineType } from "../core/shapes/abstract-spline";
-import { SplineIntersection } from 'app/services/junction/spline-intersection';
+import { SplineIntersection, SplineSection } from 'app/services/junction/spline-intersection';
 import { IntersectionGroup } from "./Intersection-group";
 import { TvContactPoint } from "../map/models/tv-common";
 import { TvLink, TvLinkType } from "../map/models/tv-link";
-import { LinkFactory } from 'app/map/models/link-factory';
 import { JunctionService } from "../services/junction/junction.service";
-import { Maths } from "app/utils/maths";
-import { RoadUtils } from "../utils/road.utils";
 import { Vector2, Vector3 } from "three";
 import { Log } from "app/core/utils/log";
 import { TvJunctionBoundaryService } from "../map/junction-boundary/tv-junction-boundary.service";
-import { SplineUtils } from "app/utils/spline.utils";
-import { OrderedMap } from "app/core/models/ordered-map";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { ConnectionManager } from "../map/junction/connection.manager";
@@ -31,6 +25,8 @@ import { SplineIntersectionService } from "app/services/spline/spline-intersecti
 import { MapEvents } from "app/events/map-events";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { createGroupsFromIntersections } from "./intersection-group-helper";
+import { JunctionInserter } from "./junction-inserter.service";
+import { RoadFactory } from "app/factories/road-factory.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -41,6 +37,7 @@ export class JunctionManager {
 
 	constructor (
 		public mapService: MapService,
+		public roadFactory: RoadFactory,
 		public roadManager: RoadManager,
 		public roadService: RoadService,
 		public junctionFactory: JunctionFactory,
@@ -315,146 +312,7 @@ export class JunctionManager {
 	// eslint-disable-next-line max-lines-per-function
 	insertJunction ( spline: AbstractSpline, junctionStart: number, junctionEnd: number, newJunction: TvJunction ) {
 
-		const temp = new OrderedMap<NewSegment>();
-
-		let inserted = false;
-
-		let segments = Array.from( spline.segmentMap.entries() );
-
-		for ( let i = 0; i < segments.length; i++ ) {
-
-			let [ currentOffset, currentSegment ] = segments[ i ];
-
-			const isJunction = currentSegment instanceof TvJunction;
-			const isRoad = currentSegment instanceof TvRoad;
-
-			const nextOffset = ( i < segments.length - 1 ) ? segments[ i + 1 ][ 0 ] : spline.getLength();
-			const previousSegment = ( i > 0 ) ? segments[ i - 1 ][ 1 ] : null;
-
-			if ( !inserted && junctionStart <= currentOffset ) {
-
-				temp.set( junctionStart, newJunction );
-
-				inserted = true;
-
-				// Create a new road after the junction if needed
-				if ( isJunction && junctionEnd < currentOffset ) {
-
-					// we need to disconnect the previous road with current segment junction
-					if ( previousSegment instanceof TvRoad && currentSegment instanceof TvJunction ) {
-
-						this.removeConnections( currentSegment, previousSegment );
-
-						this.junctionRoadService.removeLink( currentSegment, previousSegment );
-
-						currentSegment.needsUpdate = true;
-
-					}
-
-					// also for new road we need to add connections
-					// which will be automatically added in next step
-					temp.set( junctionEnd, this.createNewRoad( spline, junctionEnd ) );
-
-				}
-
-
-				if ( isRoad && junctionEnd < currentOffset ) {
-
-					// we need to update road at junction end
-					temp.set( junctionEnd, currentSegment );
-
-					continue;
-				}
-
-				// If the junction entirely covers this segment, skip it
-				if ( isRoad && junctionEnd >= nextOffset ) {
-
-					if ( currentSegment instanceof TvRoad ) {
-
-						this.roadManager.removeRoad( currentSegment );
-
-					} else {
-
-						throw new Error( 'Segment is junction' );
-
-					}
-
-					continue;
-
-				}
-
-			}
-
-			// Adjust the current segment if it's partially overlapped by the junction
-			if ( inserted && currentOffset < junctionEnd ) {
-				currentOffset = junctionEnd;
-			}
-
-			// Add the current segment if it's not entirely overlapped by the junction
-			if ( currentOffset < nextOffset ) {
-				temp.set( currentOffset, currentSegment );
-			}
-		}
-
-		// If the junction wasn't inserted (i.e., it goes at the end), insert it now
-		if ( !inserted ) {
-
-			temp.set( junctionStart, newJunction );
-
-			// Create a new road after the junction if needed
-			if ( junctionEnd < spline.getLength() ) {
-
-				const previousKey = temp.getPeviousKey( newJunction );
-
-				const previousSegment = temp.getPrevious( newJunction );
-
-				const successor = spline.getSuccessor();
-
-				// we need to disconnect the previous road with current segment junction
-				if ( previousSegment instanceof TvRoad && successor instanceof TvJunction ) {
-
-					successor.needsUpdate = true;
-
-					const newRoad = this.createNewRoad( spline, junctionEnd );
-
-					// new segmetn will be shiflted left
-					temp.set( previousKey, newRoad );
-
-					// and previous segment will be shifted right
-					temp.set( junctionEnd, previousSegment );
-
-					// swap the connection if previous segment predecessor is junction
-					previousSegment.predecessor?.replace( previousSegment, newRoad, TvContactPoint.START );
-
-				} else {
-
-					const newRoad = this.createNewRoad( spline, junctionEnd );
-
-					temp.set( junctionEnd, newRoad );
-
-					// not setting the successor is leading to
-					// unconnected roads
-					spline.getSuccessorLink()?.setSuccessor( newRoad );
-
-				}
-
-			}
-
-		}
-
-		spline.segmentMap.forEach( ( segment, sOffset ) => {
-			if ( !temp.contains( segment ) ) {
-				Log.error( 'Segment removed ' + segment.toString() );
-			}
-		} );
-
-		spline.segmentMap.clear();
-
-		temp.forEach( ( segment, sOffset ) => {
-
-			SplineUtils.addSegment( spline, sOffset, segment );
-
-		} );
+		new JunctionInserter( spline, this.roadService, this.roadFactory, this.mapService ).insertJunction( junctionStart, junctionEnd, newJunction );
 
 	}
 
@@ -568,7 +426,7 @@ export class JunctionManager {
 
 	private getRoadLinkFromCoords ( group: IntersectionGroup, junction: TvJunction ): TvLink[] {
 
-		const coords: TvLink[] = [];
+		const links: TvLink[] = [];
 
 		const splines = this.addJunctionInGroupSplines( group, junction );
 
@@ -576,7 +434,7 @@ export class JunctionManager {
 
 			spline.updateLinks();
 
-			coords.push( ...spline.getSegmentLinks( junction ) );
+			links.push( ...spline.getSegmentLinks( junction ) );
 
 			spline.updateSegmentGeometryAndBounds();
 
@@ -590,7 +448,7 @@ export class JunctionManager {
 
 		} );
 
-		return this.sortLinks( coords );
+		return GeometryUtils.sortRoadLinks( links );
 
 	}
 
@@ -666,12 +524,6 @@ export class JunctionManager {
 		} );
 
 		return junctions;
-
-	}
-
-	sortLinks ( links: TvLink[] ): TvLink[] {
-
-		return GeometryUtils.sortRoadLinks( links );
 
 	}
 

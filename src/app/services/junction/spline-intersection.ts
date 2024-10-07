@@ -244,7 +244,6 @@ export class SplineSection {
 
 	}
 
-
 	addRoadAfterSection ( newRoad: TvRoad ): void {
 
 		newRoad.sStart = this.end;
