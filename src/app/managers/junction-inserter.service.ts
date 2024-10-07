@@ -7,6 +7,8 @@ import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { MapService } from 'app/services/map/map.service';
+import { MapEvents } from 'app/events/map-events';
+import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
 
 export class JunctionInserter {
 
@@ -66,12 +68,13 @@ export class JunctionInserter {
 
 	private handleJunctionOverlap (
 		temp: OrderedMap<NewSegment>,
-		junctionEnd: number, previousSegment: NewSegment | null,
-		currentSegment: TvJunction
+		junctionEnd: number,
+		previousSegment: NewSegment | null,
+		junction: TvJunction
 	): void {
 		if ( previousSegment instanceof TvRoad ) {
-			this.removeConnections( currentSegment, previousSegment as TvRoad );
-			currentSegment.needsUpdate = true;
+			this.removeConnectionRoadAndSplines( junction, junction.getConnectionsByRoad( previousSegment ) );
+			junction.needsUpdate = true;
 		}
 		temp.set( junctionEnd, this.createNewRoad( this.spline, junctionEnd ) );
 	}
@@ -144,7 +147,21 @@ export class JunctionInserter {
 		return newRoad;
 	}
 
-	private removeConnections ( junction: TvJunction, road: TvRoad ): void {
-		// Implement logic to remove connections between junction and road
+	private removeConnectionRoadAndSplines ( junction: TvJunction, connections: TvJunctionConnection[] ): void {
+
+		for ( const connection of connections ) {
+
+			this.mapService.removeRoad( connection.connectingRoad );
+
+			this.mapService.removeSpline( connection.connectingRoad.spline );
+
+			MapEvents.removeMesh.emit( connection.connectingRoad );
+
+			MapEvents.removeMesh.emit( connection.connectingRoad.spline );
+
+			junction.removeConnection( connection );
+
+		};
+
 	}
 }
