@@ -10,6 +10,10 @@ import { JunctionManager } from "app/managers/junction-manager";
 import { Environment } from "app/core/utils/environment";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { MapService } from "app/services/map/map.service";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { ConnectionManager } from "app/map/junction/connection.manager";
+import { JunctionService } from "app/services/junction/junction.service";
+import { TvRoad } from "app/map/models/tv-road.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,6 +25,8 @@ export class JunctionEventListener {
 	constructor (
 		private junctionManager: JunctionManager,
 		private mapService: MapService,
+		private connectionManager: ConnectionManager,
+		private junctionService: JunctionService
 	) {
 	}
 
@@ -30,7 +36,29 @@ export class JunctionEventListener {
 		MapEvents.junctionRemoved.subscribe( e => this.onJunctionRemoved( e ) );
 		MapEvents.junctionUpdated.subscribe( e => this.onJunctionUpdated( e ) );
 
-		MapEvents.splineGeometryUpdated.subscribe( e => this.junctionManager.detectJunctions( e ) );
+		MapEvents.splineGeometryUpdated.subscribe( e => this.onSplineGeometryUpdated( e ) );
+
+	}
+
+	onSplineGeometryUpdated ( spline: AbstractSpline ): void {
+
+		if ( spline.isConnectingRoad() ) {
+
+			const connectionRoad = spline.getFirstSegment() as TvRoad;
+
+			const junction = connectionRoad.junction;
+
+			const connection = junction.getConnections().find( c => c.connectingRoad == connectionRoad );
+
+			this.connectionManager.buildConnectionGeometry( junction, connection );
+
+			this.junctionService.updateJunctionMeshAndBoundary( junction );
+
+		} else {
+
+			this.junctionManager.detectJunctions( spline );
+
+		}
 
 	}
 

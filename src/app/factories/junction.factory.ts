@@ -15,6 +15,7 @@ import { TvJunctionType } from 'app/map/models/junctions/tv-junction-type';
 import { Log } from 'app/core/utils/log';
 import { SplineIntersection } from "../services/junction/spline-intersection";
 import { IntersectionGroup } from 'app/managers/Intersection-group';
+import { Assert } from 'app/utils/assert';
 
 @Injectable( {
 	providedIn: 'root'
@@ -64,6 +65,26 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	static create () {
 		return new DefaultJunction( 'Junction', 0 );
+	}
+
+	createOrGetJunctionFromGroup ( group: IntersectionGroup ): TvJunction {
+
+		const junctions = group.getJunctions();
+
+		Assert.isTrue( junctions.length <= 1, 'Multiple junctions found in group' );
+
+		if ( junctions.length == 0 ) {
+
+			return this.createAutoJunction( group.getRepresentativePosition() );
+
+		}
+
+		if ( junctions.length == 1 ) {
+
+			return junctions.values().next().value;
+
+		}
+
 	}
 
 	createAutoJunction ( position: Vector3 ): TvJunction {
