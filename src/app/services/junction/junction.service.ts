@@ -100,7 +100,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	update ( object: TvJunction ): void {
 
-		// this.createJunctionMesh( object );
+		MapEvents.junctionUpdated.emit( object );
 
 	}
 
