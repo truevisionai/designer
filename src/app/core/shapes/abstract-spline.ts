@@ -347,6 +347,11 @@ export abstract class AbstractSpline {
 
 		this.segmentMap.set( sOffset, segment );
 
+		if ( segment instanceof TvRoad ) {
+			segment.spline = this;
+			segment.sStart = sOffset;
+		}
+
 	}
 
 	shiftSegment ( offset: number, segment: NewSegment ): void {

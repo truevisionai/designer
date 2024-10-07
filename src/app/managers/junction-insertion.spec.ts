@@ -367,6 +367,8 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		SplineUtils.addSegment( spline, 20, secondRoad );
 
+		spline.updateSegmentGeometryAndBounds();
+
 		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 0, 30, junction );

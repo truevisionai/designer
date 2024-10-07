@@ -125,6 +125,10 @@ export class SplineSection {
 		this.endSegment = spline.getSegmentAt( end );
 	}
 
+	getLength (): number {
+		return this.end - this.start;
+	}
+
 	getStart (): number {
 		return this.start;
 	}
@@ -238,6 +242,18 @@ export class SplineSection {
 
 	}
 
+	shouldRemoveFirstSegment (): boolean {
+
+		if ( this.startSegment instanceof TvRoad && this.endSegment instanceof TvRoad ) {
+
+			return this.startSegment.getLength() <= this.getLength() && this.startSegment.sStart == this.start;
+
+		}
+
+		return false;
+
+	}
+
 	hasRoadAfterJunction ( junction: TvJunction ): boolean {
 
 		return this.spline.getNextSegment( junction ) instanceof TvRoad;
@@ -313,6 +329,20 @@ export class SplineSection {
 		this.setOffsets( offsets.start, offsets.end );
 
 		this.updateOffsetSegments();
+
+	}
+
+	getSegments (): NewSegment[] {
+
+		const segments = new Set<NewSegment>();
+
+		for ( let s = this.start; s <= this.end; s++ ) {
+
+			segments.add( this.spline.getSegmentAt( s ) );
+
+		}
+
+		return [ ...segments ];
 
 	}
 
