@@ -33,7 +33,7 @@ export class CoordinateTransformer {
 			return;
 		}
 
-		map.roads.forEach( road => {
+		map.getRoads().forEach( road => {
 			road.geometries.forEach( geometry => {
 
 				const [ xTM, yTM ] = this.transformCoordinates( geometry.x, geometry.y );

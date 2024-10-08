@@ -61,7 +61,7 @@ export class JunctionManager {
 		for ( const connection of connections ) {
 
 			// TODO: use road manager
-			if ( !this.mapService.map.roads.includes( connection.connectingRoad ) ) {
+			if ( !this.mapService.map.getRoads().includes( connection.connectingRoad ) ) {
 
 				this.roadService.add( connection.connectingRoad );
 

@@ -37,7 +37,7 @@ describe( 'Imported XJunction: Tests', () => {
 
 		const map = testHelper.openDriveParser.parse( contents );
 
-		const road = map.roads.get( 1 );
+		const road = map.getRoadById( 1 );
 
 		expect( road ).toBeDefined();
 

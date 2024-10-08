@@ -250,7 +250,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( roadId < 0 ) return;
 
-			const road = this.map.roads.get( roadId );
+			const road = this.map.getRoadById( roadId );
 
 			if ( !road ) {
 				Log.debug( 'NotFound Road:' + roadId );

@@ -49,9 +49,8 @@ export class DefaultVehicleController extends AbstractController {
 		}
 
 		const entity = this.entity;
-		const roads = this.map.roads;
 
-		const currentRoad = roads.get( entity.roadId );
+		const currentRoad = this.map.getRoadById( entity.roadId );
 		const currentLaneSection = currentRoad.getLaneProfile().getLaneSectionById( entity.laneSectionId );
 		const currentLaneId = entity.laneId;
 		const currentLane = currentLaneSection.getLaneById( currentLaneId );

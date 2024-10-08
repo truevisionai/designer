@@ -100,7 +100,7 @@ export class TvMap {
 
 	removeSpline ( spline: AbstractSpline ): void {
 		if ( !this.splines.find( s => s.uuid == spline.uuid ) ) {
-			throw new ModelNotFoundException( `Spline:${spline.type} with uuid ${ spline.uuid } not found` );
+			throw new ModelNotFoundException( `Spline:${ spline.type } with uuid ${ spline.uuid } not found` );
 		}
 		this.splines.splice( this.splines.indexOf( spline ), 1 );
 	}
@@ -139,6 +139,10 @@ export class TvMap {
 		return road;
 	}
 
+	generateRoadId ( useRemoved = true ): number {
+		return this.roads.next( useRemoved );
+	}
+
 	addRoad ( road: TvRoad ) {
 
 		if ( this.roads.has( road.id ) ) {
@@ -146,6 +150,13 @@ export class TvMap {
 		}
 
 		this.roads.set( road.id, road );
+	}
+
+	hasRoad ( road: TvRoad | number ): boolean {
+		if ( typeof road === 'number' ) {
+			return this.roads.has( road );
+		}
+		return this.roads.has( road.id );
 	}
 
 	getSurfaces () {

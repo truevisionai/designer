@@ -77,11 +77,7 @@ export class MapService {
 
 	hasRoad ( road: TvRoad | number ) {
 
-		if ( typeof road === 'number' ) {
-			return this.map.roads.has( road );
-		}
-
-		return this.map.roads.has( road.id );
+		return this.map.hasRoad( road );
 
 	}
 

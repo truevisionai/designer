@@ -124,7 +124,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			'OpenDRIVE': rootNode
 		};
 
-		map.roads.forEach( road => {
+		map.getRoads().forEach( road => {
 
 			this.writeRoad( rootNode, road );
 

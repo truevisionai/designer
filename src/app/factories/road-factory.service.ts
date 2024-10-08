@@ -35,13 +35,13 @@ export class RoadFactory {
 
 	getNextRoadId ( id?: number ) {
 
-		return this.mapService.map.roads.next();
+		return this.mapService.map.generateRoadId();
 
 	}
 
 	getNextConnectingRoadId () {
 
-		return this.mapService.map.roads.next( false );
+		return this.mapService.map.generateRoadId( false );
 
 	}
 

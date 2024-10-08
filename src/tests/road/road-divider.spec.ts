@@ -162,7 +162,7 @@ describe( 'Service: RoadDivider Junctions', () => {
 
 		const road = mapService.getRoad( 1 );
 
-		expect( mapService.map.roads.size ).toBe( 1 );
+		expect( mapService.map.getRoadCount() ).toBe( 1 );
 
 		expect( road.length ).toBe( 200 );
 
