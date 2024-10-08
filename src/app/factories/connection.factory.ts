@@ -433,7 +433,7 @@ export class ConnectionFactory {
 
 		road.spline = SplineFactory.createManeuverSpline( entry, exit );
 
-		road.spline.segmentMap.set( 0, road );
+		road.spline.addSegment( 0, road );
 
 		this.splineBuilder.buildGeometry( road.spline );
 

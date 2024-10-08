@@ -56,7 +56,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 			road.spline = spline;
 
-			spline.segmentMap.set( 0, road );
+			spline.addSegment( 0, road );
 
 			this.mapService.addRoad( road );
 		}

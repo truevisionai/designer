@@ -31,6 +31,9 @@ export enum SplineType {
 export type NewSegment = TvRoad | TvJunction | null;
 
 export abstract class AbstractSpline {
+	getNextSegmentKey ( segment: NewSegment ) {
+		return this.segmentMap.getNextKey( segment );
+	}
 
 	public abstract type: SplineType;
 

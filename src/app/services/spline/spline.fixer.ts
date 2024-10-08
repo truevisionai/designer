@@ -79,7 +79,7 @@ export class SplineFixerService {
 
 			road.spline = spline;
 
-			spline.segmentMap.set( 0, road );
+			spline.addSegment( 0, road );
 
 			this.mapService.map.addRoad( road );
 
@@ -96,7 +96,7 @@ export class SplineFixerService {
 
 		if ( spline.getSegmentCount() >= 1 ) {
 
-			const firstSegment = spline.segmentMap.getFirst();
+			const firstSegment = spline.getFirstSegment();
 
 			if ( firstSegment instanceof TvRoad ) {
 
@@ -105,7 +105,7 @@ export class SplineFixerService {
 			}
 
 			// get first key
-			const firstKey = spline.segmentMap.keys().next().value;
+			const firstKey = spline.getSegmentKeys()[ 0 ];
 
 			if ( !Maths.approxEquals( firstKey, 0 ) ) {
 
@@ -147,7 +147,7 @@ export class SplineFixerService {
 
 		let index = 0;
 
-		spline.segmentMap.forEach( ( segment, sOffset ) => {
+		spline.getSegments().forEach( segment => {
 
 			// cannot remove first and last segment
 			if ( index == 0 || index == spline.getSegmentCount() - 1 ) {

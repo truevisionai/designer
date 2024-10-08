@@ -96,7 +96,7 @@ export class AutoGeometryService {
 
 		splineGeometries.forEach( geometry => splineLength += geometry.length );
 
-		const segments = spline.segmentMap.toArray();
+		const segments = spline.getSegments();
 
 		for ( const road of segments ) {
 
@@ -106,7 +106,7 @@ export class AutoGeometryService {
 
 				const sStart = road.sStart;
 
-				const sEnd = spline.segmentMap.getNextKey( road ) || splineLength;
+				const sEnd = spline.getNextSegmentKey( road ) || splineLength;
 
 				const newGeometries = this.breakGeometries( splineGeometries, sStart, sEnd );
 

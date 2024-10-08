@@ -128,7 +128,7 @@ export class SplineBoundsService {
 
 		for ( let s = 0; s <= spline.getLength(); s++ ) {
 
-			const segment = spline.segmentMap.findAt( s );
+			const segment = spline.getSegmentAt( s );
 
 			if ( segment instanceof TvRoad ) {
 				roadWidth = RoadWidthService.instance.findRoadWidthAt( segment, s - segment.sStart );

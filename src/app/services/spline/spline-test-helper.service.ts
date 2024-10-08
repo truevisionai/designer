@@ -481,9 +481,9 @@ export class SplineTestHelper {
 		const middleRoad = this.roadFactory.createDefaultRoad();
 		const rightRoad = this.roadFactory.createDefaultRoad();
 
-		left.segmentMap.set( 0, leftRoad );
-		middle.segmentMap.set( 0, middleRoad );
-		right.segmentMap.set( 0, rightRoad );
+		left.addSegment( 0, leftRoad );
+		middle.addSegment( 0, middleRoad );
+		right.addSegment( 0, rightRoad );
 
 		leftRoad.spline = left;
 		middleRoad.spline = middle;
@@ -519,9 +519,9 @@ export class SplineTestHelper {
 		const middleRoad = this.roadFactory.createDefaultRoad();
 		const rightRoad = this.roadFactory.createDefaultRoad();
 
-		left.segmentMap.set( 0, leftRoad );
-		middle.segmentMap.set( 0, middleRoad );
-		right.segmentMap.set( 0, rightRoad );
+		left.addSegment( 0, leftRoad );
+		middle.addSegment( 0, middleRoad );
+		right.addSegment( 0, rightRoad );
 
 		leftRoad.spline = left;
 		middleRoad.spline = middle;

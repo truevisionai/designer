@@ -438,7 +438,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showNodes ( spline: AbstractSpline ) {
 
-		spline.segmentMap.forEach( ( segment, key ) => {
+		spline.getSegments().forEach( segment => {
 
 			if ( segment instanceof TvRoad ) {
 

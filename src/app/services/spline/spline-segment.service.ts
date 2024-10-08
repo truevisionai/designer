@@ -140,7 +140,7 @@ export class SplineSegmentService {
 
 	private addRoadSegment ( spline: AbstractSpline, sOffset: number, newRoad: TvRoad ): void {
 
-		const existingRoad = spline.segmentMap.findAt( sOffset ) as TvRoad;
+		const existingRoad = spline.getSegmentAt( sOffset ) as TvRoad;
 
 		existingRoad.successor?.replace( existingRoad, newRoad, TvContactPoint.END );
 

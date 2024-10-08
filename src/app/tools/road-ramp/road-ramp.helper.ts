@@ -90,7 +90,7 @@ export class RampToolHelper {
 		this.addLaneSection( startCoord, endCoord, rampRoad );
 
 		// NOTE: This is a hack to make the ramp road work
-		rampRoad.spline.segmentMap.set( 0, rampRoad );
+		rampRoad.spline.addSegment( 0, rampRoad );
 
 		this.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( rampRoad.spline );
 

@@ -50,7 +50,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	function expectOffsets ( spline: AbstractSpline, offsets: number[] ) {
 
-		const keys = [ ...spline.segmentMap.keys() ];
+		const keys = spline.getSegmentKeys();
 
 		expect( keys.length ).toBe( offsets.length );
 
@@ -64,7 +64,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	function expectInstances ( spline: AbstractSpline, types: any[] ) {
 
-		const values = [ ...spline.segmentMap.values() ];
+		const values = spline.getSegments();
 
 		expect( values.length ).toBe( types.length );
 
@@ -78,9 +78,9 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	function expectSegments ( spline: AbstractSpline, segments: NewSegment[] ) {
 
-		const values = [ ...spline.segmentMap.values() ];
+		const values = spline.getSegments();
 
-		const keys = [ ...spline.segmentMap.keys() ];
+		const keys = spline.getSegmentKeys();
 
 		expect( values.length ).toBe( segments.length );
 
@@ -148,9 +148,9 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		const coords = spline.getSegmentLinks( J1 );
 		expect( coords.length ).toBe( 2 );
-		expect( spline.segmentMap.getFirst() ).toBe( coords[ 0 ].element );
+		expect( spline.getFirstSegment() ).toBe( coords[ 0 ].element );
 		expect( coords[ 0 ].contactPoint ).toBe( TvContactPoint.END );
-		expect( spline.segmentMap.getLast() ).toBe( coords[ 1 ].element );
+		expect( spline.getLastSegment() ).toBe( coords[ 1 ].element );
 		expect( coords[ 1 ].contactPoint ).toBe( TvContactPoint.START );
 
 	} );

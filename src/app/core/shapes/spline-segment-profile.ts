@@ -9,8 +9,8 @@ export class SplineSegmentProfile {
 
 	insertSegment ( sStart: number, sEnd: number, newSegment: NewSegment ): void {
 
-		const startSegment = this.spline.segmentMap.findAt( sStart );
-		const endSegment = this.spline.segmentMap.findAt( sStart );
+		const startSegment = this.spline.getSegmentAt( sStart );
+		const endSegment = this.spline.getSegmentAt( sStart );
 
 		if ( startSegment instanceof TvJunction || endSegment instanceof TvJunction ) {
 			throw new Error( 'Start/End segment is junction' );

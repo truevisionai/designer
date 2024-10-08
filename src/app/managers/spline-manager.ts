@@ -105,7 +105,7 @@ export class SplineManager {
 
 	private addSegments ( spline: AbstractSpline ): void {
 
-		for ( const segment of spline.segmentMap.toArray() ) {
+		for ( const segment of spline.getSegments() ) {
 
 			if ( segment instanceof TvRoad ) {
 
