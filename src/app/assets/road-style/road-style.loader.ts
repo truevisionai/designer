@@ -217,7 +217,7 @@ export class RoadStyleLoader implements AssetLoader {
 		const c = parseFloat( json.attr_c );
 		const d = parseFloat( json.attr_d );
 
-		return new TvLaneWidth( sOffset, a, b, c, d, lane );
+		return new TvLaneWidth( sOffset, a, b, c, d );
 	}
 
 	private readLaneRoadMark ( lane: TvLane, json: XmlElement ) {

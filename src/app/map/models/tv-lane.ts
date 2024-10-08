@@ -218,7 +218,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	addWidthRecord ( s: number, a: number, b: number, c: number, d: number ) {
 
-		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this ) );
+		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d ) );
 
 	}
 
@@ -577,7 +577,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		const newLane = new TvLane( this.side, laneId, this.type, this.level, this._laneSection );
 
 		this.getLaneWidthVector().forEach( width => {
-			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d, newLane ) );
+			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d ) );
 		} );
 
 		this.roadMarks.forEach( roadMark => {

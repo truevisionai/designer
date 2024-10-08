@@ -71,7 +71,7 @@ export class LaneToolLaneDragHandler extends BaseDragHandler<TvLane> {
 
 		lane.width.splice( 0, lane.width.length );
 
-		lane.width.push( new TvLaneWidth( 0, width, 0, 0, 0, lane ) );
+		lane.width.push( new TvLaneWidth( 0, width, 0, 0, 0 ) );
 
 	}
 

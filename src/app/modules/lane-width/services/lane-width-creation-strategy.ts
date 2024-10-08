@@ -57,7 +57,7 @@ export class LaneWidthCreationStrategy extends BaseCreationStrategy<LaneWidthNod
 
 		const widthValue = laneCoord.lane.getWidthValue( sOffset ) || 3.2;
 
-		const laneWidth = new TvLaneWidth( sOffset, widthValue, 0, 0, 0, laneCoord.lane );
+		const laneWidth = new TvLaneWidth( sOffset, widthValue, 0, 0, 0 );
 
 		return LaneWidthNode.create( laneCoord, laneWidth );
 
