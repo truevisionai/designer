@@ -118,22 +118,9 @@ export class JunctionManager {
 
 		const result = this.categorizeJunctions( oldJunctions, intersections );
 
-		for ( const junction of result.junctionsToRemove ) {
+		this.handleRemovingJunctions( spline, result.junctionsToRemove );
 
-			// NOTE: to avoid removing same junction twice
-			if ( result.junctionsToUpdate.includes( junction ) ) {
-				continue;
-			}
-
-			this.removeJunction( junction, spline, true );
-
-		}
-
-		for ( const junction of result.junctionsToUpdate ) {
-
-			this.removeJunction( junction, spline );
-
-		}
+		this.handleUpdatingJunctions( spline, result.junctionsToUpdate );
 
 		const groups = this.createGroups( intersections );
 
@@ -148,6 +135,30 @@ export class JunctionManager {
 				Log.error( 'Error Creating Junction', e );
 
 			}
+
+		}
+	}
+
+	handleUpdatingJunctions ( spline: AbstractSpline, junctionsToUpdate: TvJunction[] ): void {
+
+		for ( const junction of junctionsToUpdate ) {
+
+			this.removeJunction( junction, spline );
+
+		}
+
+	}
+
+	handleRemovingJunctions ( spline: AbstractSpline, junctionsToRemove: TvJunction[], junctionsToUpdate: TvJunction[] = [] ): void {
+
+		for ( const junction of junctionsToRemove ) {
+
+			// NOTE: to avoid removing same junction twice
+			if ( junctionsToUpdate.includes( junction ) ) {
+				continue;
+			}
+
+			this.removeJunction( junction, spline, true );
 
 		}
 	}

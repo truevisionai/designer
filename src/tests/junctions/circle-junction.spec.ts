@@ -1,29 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { MapService } from 'app/services/map/map.service';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
-import { RoadValidator } from 'app/managers/road/road-validator';
-import { RoadLinkValidator } from 'app/managers/road/road-link-validator';
 import { Vector3 } from 'three';
-import { setupTest } from 'tests/setup-tests';
-import { MapValidatorService } from 'app/services/map/map-validator.service';
+import { setupTest, expectValidMap, expectValidRoad } from 'tests/setup-tests';
 
 describe( 'CircleJunctionTest', () => {
 
 	let mapService: MapService;
 	let testHelper: SplineTestHelper;
-	let roadValidtor: RoadValidator;
-	let roadLinkValidator: RoadLinkValidator;
-	let mapValidator: MapValidatorService;
 
 	beforeEach( () => {
 
 		setupTest();
 
-		mapValidator = TestBed.get( MapValidatorService );
 		mapService = TestBed.get( MapService );
 		testHelper = TestBed.get( SplineTestHelper );
-		roadValidtor = TestBed.get( RoadValidator );
-		roadLinkValidator = TestBed.get( RoadLinkValidator );
 
 	} );
 
@@ -35,7 +26,7 @@ describe( 'CircleJunctionTest', () => {
 		expect( mapService.map.getJunctionCount() ).toBe( 2 );
 
 		mapService.map.getRoads().forEach( road => {
-			expect( roadValidtor.validateRoad( road ) ).toBe( true, 'Road validation failed for road ' + road.id );
+			expectValidRoad( road );
 		} );
 
 	} )
@@ -53,13 +44,37 @@ describe( 'CircleJunctionTest', () => {
 		expect( mapService.map.getJunctionCount() ).toBe( 0 );
 
 		mapService.map.getRoads().forEach( road => {
-			expect( roadValidtor.validateRoad( road ) ).toBe( true, 'Road validation failed for road ' + road.id );
+			expectValidRoad( road );
 		} );
 
-		mapValidator.validateMap( mapService.map, true );
+		expectValidMap( mapService.map );
 
 		expect( mapService.map.getRoadCount() ).toBe( 6 );
 
 	} )
+
+	xit( 'should pass validations when spline is moved', () => {
+
+		// TODO: Implement this test
+
+		testHelper.addCircleRoad( 50 );
+
+		expect( mapService.map.getRoadCount() ).toBe( 4 );
+
+		const horizontal = testHelper.addStraightRoad( new Vector3( -50, -50 ), 150, 45 );
+
+		testHelper.splineService.update( horizontal.spline );
+
+		expect( mapService.map.getJunctionCount() ).toBe( 2 );
+
+		mapService.map.getRoads().forEach( road => {
+			expectValidRoad( road );
+		} );
+
+		expectValidMap( mapService.map );
+
+		expect( mapService.map.getRoadCount() ).toBe( 6 );
+
+	} );
 
 } );

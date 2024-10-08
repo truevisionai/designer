@@ -3,6 +3,10 @@ import { SharedTestModule } from "./shared-test/shared-test.module";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { LaneWidthModule } from "app/modules/lane-width/lane-width.module";
 import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
+import { TvMap } from "app/map/models/tv-map.model";
+import { MapValidatorService } from "app/services/map/map-validator.service";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { RoadValidator } from "app/managers/road/road-validator";
 
 export function setupTest (): void {
 
@@ -28,3 +32,20 @@ export function setupLaneWidthTest (): void {
 	disableMeshBuilding();
 
 }
+
+export function expectValidMap ( map: TvMap, throwError = true ): void {
+
+	TestBed.inject( MapValidatorService ).validateMap( map, throwError );
+
+}
+
+export function expectValidRoad ( road: TvRoad, message?: string ): void {
+
+	const isValid = TestBed.inject( RoadValidator ).validateRoad( road );
+
+	if ( !isValid ) {
+		throw new Error( message || `Road validation failed for road ${ road.id }` );
+	}
+
+}
+

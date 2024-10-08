@@ -58,6 +58,23 @@ describe( 'X-Junction Tests', () => {
 
 	} ) );
 
+	it( 'should handle moving spline in 2-road-x-junction', fakeAsync( () => {
+
+		splineTestHelper.createXJunctionWithTwoRoads( false );
+
+		tick( 1000 );
+
+		const spline = mapService.getSplines()[ 0 ];
+
+		splineTestHelper.splineService.update( spline );
+
+		expect( mapService.getJunctionCount() ).toBe( 1 );
+		expect( mapService.getRoadCount() ).toBe( 4 + 20 );
+		expect( mapService.getSplineCount() ).toBe( 2 + 20 );
+
+	} ) );
+
+
 	it( 'x-junction of 2 roads should squared junction', fakeAsync( () => {
 
 		splineTestHelper.createXJunctionWithTwoRoads( false );
