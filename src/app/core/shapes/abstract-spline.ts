@@ -159,28 +159,6 @@ class SplineSegmentProfile {
 
 export abstract class AbstractSpline {
 
-	createBoundingBoxAt ( i: number, stepSize: number = 1 ): Box2 {
-
-		const leftStart = this.leftPoints[ i ]?.position;
-		const rightStart = this.rightPoints[ i ]?.position;
-		const leftEnd = this.leftPoints[ i + stepSize ]?.position;
-		const rightEnd = this.rightPoints[ i + stepSize ]?.position;
-
-		if ( !leftStart || !rightStart || !leftEnd || !rightEnd ) return;
-
-		// Use the left and right points to directly define the box boundaries
-		const points = [
-			new Vector2( leftStart.x, leftStart.y ),
-			new Vector2( rightStart.x, rightStart.y ),
-			new Vector2( leftEnd.x, leftEnd.y ),
-			new Vector2( rightEnd.x, rightEnd.y )
-		];
-
-		// Create a Box2 that bounds the road segment
-		return new Box2().setFromPoints( points );
-
-	}
-
 	public abstract type: SplineType;
 
 	public readonly id: number;
@@ -595,6 +573,28 @@ export abstract class AbstractSpline {
 	isLinkedTo ( spline: AbstractSpline ): boolean {
 		return this.getSuccessorSpline()?.equals( spline ) ||
 			this.getPredecessorSpline()?.equals( spline );
+	}
+
+	createBoundingBoxAt ( i: number, stepSize: number = 1 ): Box2 {
+
+		const leftStart = this.leftPoints[ i ]?.position;
+		const rightStart = this.rightPoints[ i ]?.position;
+		const leftEnd = this.leftPoints[ i + stepSize ]?.position;
+		const rightEnd = this.rightPoints[ i + stepSize ]?.position;
+
+		if ( !leftStart || !rightStart || !leftEnd || !rightEnd ) return;
+
+		// Use the left and right points to directly define the box boundaries
+		const points = [
+			new Vector2( leftStart.x, leftStart.y ),
+			new Vector2( rightStart.x, rightStart.y ),
+			new Vector2( leftEnd.x, leftEnd.y ),
+			new Vector2( rightEnd.x, rightEnd.y )
+		];
+
+		// Create a Box2 that bounds the road segment
+		return new Box2().setFromPoints( points );
+
 	}
 
 }
