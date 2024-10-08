@@ -456,29 +456,21 @@ export class JunctionManager {
 
 		const splines = new Set<AbstractSpline>();
 
-		group.getIntersections().forEach( i => {
+		for ( const intersection of group.getIntersections() ) {
 
-			if ( !splines.has( i.spline ) ) {
+			for ( const section of intersection.getSplineSections() ) {
 
-				this.insertJunction( i.spline, i.splineStart, i.splineEnd, junction );
+				if ( !splines.has( section.spline ) ) {
 
-				i.spline.updateSegmentGeometryAndBounds();
+					this.insertJunction( section.spline, section.getStart(), section.getEnd(), junction );
 
-				splines.add( i.spline );
+					splines.add( section.spline );
 
-			}
-
-			if ( !splines.has( i.otherSpline ) ) {
-
-				this.insertJunction( i.otherSpline, i.otherStart, i.otherEnd, junction );
-
-				i.otherSpline.updateSegmentGeometryAndBounds();
-
-				splines.add( i.otherSpline );
+				}
 
 			}
 
-		} );
+		}
 
 		return [ ...splines ];
 

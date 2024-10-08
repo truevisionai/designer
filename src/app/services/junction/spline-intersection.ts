@@ -19,41 +19,39 @@ export class SplineIntersection {
 		public otherSpline: AbstractSpline,
 		public position: Vector3,
 	) {
-		this.addSection( spline, 0, 0 );
-		this.addSection( otherSpline, 0, 0 );
 	}
 
-	get splineStart (): number {
-		return this.sections.get( this.spline ).getStart();
-	}
+	// get splineStart (): number {
+	// 	return this.sections.get( this.spline ).getStart();
+	// }
 
-	set splineStart ( value: number ) {
-		this.sections.get( this.spline ).setStart( value );
-	}
+	// set splineStart ( value: number ) {
+	// 	this.sections.get( this.spline ).setStart( value );
+	// }
 
-	get splineEnd (): number {
-		return this.sections.get( this.spline ).getEnd();
-	}
+	// get splineEnd (): number {
+	// 	return this.sections.get( this.spline ).getEnd();
+	// }
 
-	set splineEnd ( value: number ) {
-		this.sections.get( this.spline ).setEnd( value );
-	}
+	// set splineEnd ( value: number ) {
+	// 	this.sections.get( this.spline ).setEnd( value );
+	// }
 
-	get otherStart (): number {
-		return this.sections.get( this.otherSpline ).getStart();
-	}
+	// get otherStart (): number {
+	// 	return this.sections.get( this.otherSpline ).getStart();
+	// }
 
-	set otherStart ( value: number ) {
-		this.sections.get( this.otherSpline ).setStart( value );
-	}
+	// set otherStart ( value: number ) {
+	// 	this.sections.get( this.otherSpline ).setStart( value );
+	// }
 
-	get otherEnd (): number {
-		return this.sections.get( this.otherSpline ).getEnd();
-	}
+	// get otherEnd (): number {
+	// 	return this.sections.get( this.otherSpline ).getEnd();
+	// }
 
-	set otherEnd ( value: number ) {
-		this.sections.get( this.otherSpline ).setEnd( value );
-	}
+	// set otherEnd ( value: number ) {
+	// 	this.sections.get( this.otherSpline ).setEnd( value );
+	// }
 
 	getPosition (): Vector3 {
 		return this.position;

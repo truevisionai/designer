@@ -169,27 +169,31 @@ function computeOffsets ( intersection: SplineIntersection ): void {
 	const bMin = splineBCoords[ 0 ];
 	const bMax = splineBCoords[ splineBCoords.length - 1 ];
 
-	intersection.splineStart = Math.max( aMin.s - BUFFER, 0 );
-	intersection.splineEnd = Math.min( aMax.s + BUFFER, intersection.spline.getLength() );
+	const splineStart = Math.max( aMin.s - BUFFER, 0 );
+	const splineEnd = Math.min( aMax.s + BUFFER, intersection.spline.getLength() );
 
-	intersection.otherStart = Math.max( bMin.s - BUFFER, 0 );
-	intersection.otherEnd = Math.min( bMax.s + BUFFER, intersection.otherSpline.getLength() );
+	const otherStart = Math.max( bMin.s - BUFFER, 0 );
+	const otherEnd = Math.min( bMax.s + BUFFER, intersection.otherSpline.getLength() );
 
 	// TEMP: hack to fix the offset issue at ends
 
-	if ( intersection.otherStart == 0 ) {
-		intersection.otherEnd += 5;
-	}
+	// if ( otherStart == 0 ) {
+	// 	otherEnd += 5;
+	// }
 
-	if ( intersection.splineStart == 0 ) {
-		intersection.splineEnd += 5;
-	}
+	// if ( splineStart == 0 ) {
+	// 	splineEnd += 5;
+	// }
 
-	if ( intersection.otherEnd == intersection.otherSpline.getLength() ) {
-		intersection.otherStart -= 5;
-	}
+	// if ( otherEnd == intersection.otherSpline.getLength() ) {
+	// 	otherStart -= 5;
+	// }
 
-	if ( intersection.splineEnd == intersection.spline.getLength() ) {
-		intersection.splineStart -= 5;
-	}
+	// if ( splineEnd == intersection.spline.getLength() ) {
+	// 	splineStart -= 5;
+	// }
+
+	intersection.addSection( intersection.spline, splineStart, splineEnd );
+	intersection.addSection( intersection.otherSpline, otherStart, otherEnd );
+
 }
