@@ -1335,11 +1335,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 				return connection.connectingRoad.predecessor.contactPoint;
 			}
 
-			if ( incomingRoad.successor?.id === junction.id ) {
+			if ( incomingRoad.successor?.isEqualTo( junction ) ) {
 				return TvContactPoint.END;
 			}
 
-			if ( incomingRoad.predecessor?.id === junction.id ) {
+			if ( incomingRoad.predecessor?.isEqualTo( junction ) ) {
 				return TvContactPoint.START;
 			}
 

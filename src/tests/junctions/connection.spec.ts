@@ -74,12 +74,12 @@ xdescribe( 'ConnectionService', () => {
 		expect( connection.connectingRoad.id ).toBe( 3 );
 
 		expect( connection.connectingRoad.predecessor ).toBeDefined();
-		expect( connection.connectingRoad.predecessor.id ).toBe( leftRoad.id );
+		expect( connection.connectingRoad.predecessor.isEqualTo( leftRoad ) ).toBeTrue();
 		expect( connection.connectingRoad.predecessor.isRoad ).toBe( true )
 		expect( connection.connectingRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 
 		expect( connection.connectingRoad.successor ).toBeDefined();
-		expect( connection.connectingRoad.successor.id ).toBe( rightRoad.id );
+		expect( connection.connectingRoad.successor.isEqualTo( rightRoad ) ).toBeTrue();
 		expect( connection.connectingRoad.successor.isRoad ).toBe( true )
 		expect( connection.connectingRoad.successor.contactPoint ).toBe( TvContactPoint.START );
 

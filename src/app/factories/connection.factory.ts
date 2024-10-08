@@ -562,7 +562,7 @@ export class ConnectionFactory {
 
 		for ( const connection of connections ) {
 
-			if ( connection.getHash() == target.getHash() ) {
+			if ( connection.matches( target ) ) {
 				return true;
 			}
 

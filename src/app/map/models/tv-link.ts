@@ -56,8 +56,6 @@ export abstract class TvLink {
 
 	public type: TvLinkType;
 
-	public id: number;
-
 	public contactPoint: TvContactPoint;
 
 	/**
@@ -103,9 +101,12 @@ export abstract class TvLink {
 
 		this.element = element;
 		this.type = elementType;
-		this.id = element.id;
 		this.contactPoint = contactPoint;
 
+	}
+
+	get id (): number {
+		return this.element.id;
 	}
 
 	abstract clone (): TvLink;

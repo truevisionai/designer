@@ -285,7 +285,7 @@ export class TvJunctionConnection {
 	}
 
 
-	getHash (): string {
+	private getHash (): string {
 
 		let hash = this.incomingRoadId + '_';
 
@@ -299,6 +299,13 @@ export class TvJunctionConnection {
 
 		return hash;
 	}
+
+	matches ( target: TvJunctionConnection ): boolean {
+
+		return this.getHash() == target.getHash();
+
+	}
+
 
 	replaceIncomingRoad ( target: TvRoad, incomingRoad: TvRoad, incomingRoadContact: TvContactPoint ): void {
 

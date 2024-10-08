@@ -192,10 +192,10 @@ xdescribe( '4-way-junction tests', () => {
 		expect( rightRoad.predecessor ).toBeDefined();
 		expect( topRoad.predecessor ).toBeDefined();
 
-		expect( topRoad.predecessor.id ).toBe( junction.id );
-		expect( leftRoad.successor.id ).toBe( junction.id );
-		expect( bottomRoad.successor.id ).toBe( junction.id );
-		expect( rightRoad.predecessor.id ).toBe( junction.id );
+		expect( topRoad.predecessor.isEqualTo( junction ) ).toBeTrue()
+		expect( leftRoad.successor.isEqualTo( junction ) ).toBeTrue();
+		expect( bottomRoad.successor.isEqualTo( junction ) ).toBeTrue();
+		expect( rightRoad.predecessor.isEqualTo( junction ) ).toBeTrue()
 
 		for ( let i = 1; i <= 12; i++ ) {
 
@@ -312,33 +312,33 @@ xdescribe( '4-way-junction tests', () => {
 
 		expect( joiningRoad.successor.element ).toBe( junction );
 		expect( joiningRoad.successor.type ).toBe( TvLinkType.JUNCTION );
-		expect( joiningRoad.successor.id ).toBe( junction.id );
+		expect( joiningRoad.successor.isEqualTo( junction ) ).toBeTrue();
 		expect( joiningRoad.successor.contactPoint ).toBeUndefined();
 
 		expect( leftRoad.successor.type ).toBe( TvLinkType.ROAD );
-		expect( leftRoad.successor.id ).toBe( joiningRoad.id );
+		expect( leftRoad.successor.isEqualTo( joiningRoad ) ).toBeTrue();
 		expect( leftRoad.successor.contactPoint ).toBe( TvContactPoint.START );
 		expect( leftRoad.predecessor ).toBeUndefined();
 
 		expect( rightRoad.predecessor.type ).toBe( TvLinkType.ROAD );
-		expect( rightRoad.predecessor.id ).toBe( joiningRightHalf.id );//
+		expect( rightRoad.predecessor.isEqualTo( joiningRightHalf ) ).toBeTrue();
 		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 		expect( rightRoad.successor ).toBeUndefined();
 
 		expect( joiningRightHalf.predecessor.type ).toBe( TvLinkType.JUNCTION );
-		expect( joiningRightHalf.predecessor.id ).toBe( junction.id );
+		expect( joiningRightHalf.predecessor.isEqualTo( junction ) ).toBeTrue()
 		expect( joiningRightHalf.predecessor.contactPoint ).toBeUndefined();
 
 		expect( verticalTopHalf.predecessor.type ).toBe( TvLinkType.JUNCTION );
-		expect( verticalTopHalf.predecessor.id ).toBe( junction.id );
+		expect( verticalTopHalf.predecessor.isEqualTo( junction ) ).toBeTrue()
 		expect( verticalTopHalf.predecessor.contactPoint ).toBeUndefined();
 
 		expect( vertical.successor.type ).toBe( TvLinkType.JUNCTION );
-		expect( vertical.successor.id ).toBe( junction.id );
+		expect( vertical.successor.isEqualTo( junction ) ).toBeTrue();
 		expect( vertical.successor.contactPoint ).toBeUndefined();
 
 		expect( joiningRoad.successor.type ).toBe( TvLinkType.JUNCTION );
-		expect( joiningRoad.successor.id ).toBe( junction.id );
+		expect( joiningRoad.successor.isEqualTo( junction ) ).toBeTrue();
 		expect( joiningRoad.successor.contactPoint ).toBeUndefined();
 
 		expect( mapService.highestestRoadId ).toBe( 18 );
@@ -403,20 +403,20 @@ xdescribe( '4-way-junction tests', () => {
 		expect( joiningRoad.spline.getLength() ).toBeCloseTo( 100 );
 
 		expect( joiningRoad.predecessor.type ).toBe( TvLinkType.ROAD );
-		expect( joiningRoad.predecessor.id ).toBe( leftRoad.id );
+		expect( joiningRoad.predecessor.isEqualTo( leftRoad ) ).toBeTrue();
 		expect( joiningRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 
 		expect( joiningRoad.successor.type ).toBe( TvLinkType.ROAD );
-		expect( joiningRoad.successor.id ).toBe( rightRoad.id );
+		expect( joiningRoad.successor.isEqualTo( rightRoad ) ).toBeTrue();
 		expect( joiningRoad.successor.contactPoint ).toBe( TvContactPoint.START );
 
 		expect( leftRoad.successor.type ).toBe( TvLinkType.ROAD );
-		expect( leftRoad.successor.id ).toBe( joiningRoad.id );
+		expect( leftRoad.successor.isEqualTo( joiningRoad ) ).toBeTrue();
 		expect( leftRoad.successor.contactPoint ).toBe( TvContactPoint.START );
 		expect( leftRoad.predecessor ).toBeUndefined();
 
 		expect( rightRoad.predecessor.type ).toBe( TvLinkType.ROAD );
-		expect( rightRoad.predecessor.id ).toBe( joiningRoad.id );
+		expect( rightRoad.predecessor.isEqualTo( joiningRoad ) ).toBeTrue();
 		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 		expect( rightRoad.successor ).toBeUndefined();
 

@@ -20,26 +20,7 @@ export class DefaultVehicleController extends AbstractController {
 		super( name );
 	}
 
-	static getSuccessorRoad ( currentRoad: TvRoad, map: TvMap ) {
 
-		let nextRoad: TvRoad;
-
-		const successor = currentRoad.successor;
-
-		if ( successor.type == 'road' ) {
-
-			nextRoad = map.getRoadById( successor.id );
-
-		} else if ( successor.type == 'junction' ) {
-
-			const junction = map.getJunctionById( successor.id );
-			const connection = junction.getRandomConnectionFor( currentRoad.id );
-
-			nextRoad = connection.connectingRoad;
-		}
-
-		return nextRoad;
-	}
 
 	public update () {
 
