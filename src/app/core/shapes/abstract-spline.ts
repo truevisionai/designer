@@ -17,11 +17,9 @@ import {
 	ModelNotFoundException
 } from 'app/exceptions/exceptions';
 import { MapEvents } from 'app/events/map-events';
-import { SplineUtils } from 'app/utils/spline.utils';
-import { LinkFactory } from 'app/map/models/link-factory';
-import { TvContactPoint } from 'app/map/models/tv-common';
 import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
-import { Log } from '../utils/log';
+import { SplineSegmentProfile } from './spline-segment-profile';
+import { SplineLinks } from './spline-links';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -32,131 +30,6 @@ export enum SplineType {
 
 export type NewSegment = TvRoad | TvJunction | null;
 
-class SplineLinks {
-
-	constructor ( private spline: AbstractSpline ) { }
-
-	updateLinks (): void {
-		SplineUtils.updateInternalLinks( this.spline );
-	}
-
-	getSegmentLinks ( segment: NewSegment ): TvLink[] {
-
-		const links = [];
-
-		const prev = this.spline.getPreviousSegment( segment );
-		const next = this.spline.getNextSegment( segment );
-
-		if ( prev instanceof TvRoad ) {
-			links.push( LinkFactory.createRoadLink( prev, TvContactPoint.END ) );
-		}
-
-		if ( next instanceof TvRoad ) {
-			links.push( LinkFactory.createRoadLink( next, TvContactPoint.START ) );
-		}
-
-		return links;
-	}
-
-	removeSegmentAndReplaceLinks ( segment: NewSegment ): void {
-
-		if ( segment instanceof TvRoad ) {
-
-			this.removeRoadSegment( segment );
-
-		} else if ( segment instanceof TvJunction ) {
-
-			this.removeJunctionSegment( segment );
-
-		}
-
-		this.updateLinks();
-
-		this.spline.updateSegmentGeometryAndBounds();
-
-	}
-
-	private removeRoadSegment ( road: TvRoad ): void {
-
-		const previousSegment = this.spline.getPreviousSegment( road );
-		const nextSegment = this.spline.getNextSegment( road );
-
-		if ( previousSegment instanceof TvRoad ) {
-			previousSegment.successor = null
-		}
-
-		if ( nextSegment instanceof TvRoad ) {
-			nextSegment.predecessor = null;
-		}
-
-		if ( this.spline.hasSegment( road ) ) {
-			this.spline.removeSegment( road );
-		} else {
-			Log.warn( 'Segment not found in spline', road.toString(), this.toString() );
-		}
-
-	}
-
-	private removeJunctionSegment ( junction: TvJunction ): void {
-
-		const previousSegment = this.spline.getPreviousSegment( junction );
-		const nextSegment = this.spline.getNextSegment( junction );
-
-		if ( previousSegment instanceof TvRoad ) {
-			previousSegment.successor = null;
-		}
-
-		if ( nextSegment instanceof TvRoad ) {
-			nextSegment.predecessor = null;
-		}
-
-		if ( this.spline.hasSegment( junction ) ) {
-			this.spline.removeSegment( junction );
-		} else {
-			Log.warn( 'Segment not found in spline', junction.toString(), this.toString() );
-		}
-
-	}
-
-
-}
-
-class SplineSegmentProfile {
-
-	constructor ( private spline: AbstractSpline ) {
-	}
-
-	insertSegment ( sStart: number, sEnd: number, newSegment: NewSegment ): void {
-
-		const startSegment = this.spline.segmentMap.findAt( sStart );
-		const endSegment = this.spline.segmentMap.findAt( sStart );
-
-		if ( startSegment instanceof TvJunction || endSegment instanceof TvJunction ) {
-			throw new Error( 'Start/End segment is junction' );
-		}
-
-		if ( startSegment != endSegment ) {
-			throw new Error( 'Start and end segments are not same' );
-		}
-
-		const existingRoad = startSegment as TvRoad;
-
-		if ( sStart < 10 ) {
-
-			this.spline.shiftSegment( sEnd, existingRoad );
-
-		} else if ( sEnd < this.spline.getLength() ) {
-
-			this.spline.addSegment( sEnd, existingRoad.clone( 0 ) );
-
-		}
-
-		this.spline.addSegment( sStart, newSegment );
-
-	}
-
-}
-
 export abstract class AbstractSpline {
 
 	public abstract type: SplineType;
@@ -164,11 +37,6 @@ export abstract class AbstractSpline {
 	public readonly id: number;
 
 	public uuid: string;
-
-	/**
-	 * @deprecated dont use this property
-	 */
-	public depBoundingBox: Box3;
 
 	public boundingBox: Box2;
 
