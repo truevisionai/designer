@@ -18,7 +18,8 @@ import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/ex
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { Log } from 'app/core/utils/log';
 import { TvJunctionBoundingBox } from './tv-junction-bounding-box';
-import { SplineIntersection, SplineSection } from 'app/services/junction/spline-intersection';
+import { SplineIntersection } from 'app/services/junction/spline-intersection';
+import { SplineSection } from 'app/services/junction/spline-section';
 
 
 export class TvJunction {

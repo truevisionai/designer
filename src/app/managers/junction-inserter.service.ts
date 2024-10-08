@@ -5,9 +5,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { MapService } from 'app/services/map/map.service';
-import { MapEvents } from 'app/events/map-events';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
-import { SplineSection } from 'app/services/junction/spline-intersection';
+import { SplineSection, SplineSectionFactory } from 'app/services/junction/spline-section';
 
 export class JunctionInserter {
 
@@ -26,7 +24,7 @@ export class JunctionInserter {
 	 */
 	public insertJunction ( sStart: number, sEnd: number, junction: TvJunction ): void {
 
-		const section = new SplineSection( this.spline, sStart, sEnd );
+		const section = SplineSectionFactory.create( this.spline, sStart, sEnd );
 
 		this.shiftStartingSegmentIfNeeded( section );
 
@@ -36,11 +34,11 @@ export class JunctionInserter {
 
 		} else if ( section.isAtStart() ) {
 
-			this.insertJunctionAtStart( section, junction );
+			section.insertJunction( junction );
 
 		} else if ( section.isAtEnd() ) {
 
-			this.insertJunctionAtEnd( section, junction );
+			section.insertJunction( junction );
 
 		} else if ( section.isAtMiddle() ) {
 
@@ -83,27 +81,27 @@ export class JunctionInserter {
 
 	}
 
-	private insertJunctionAtEnd ( section: SplineSection, junction: TvJunction ): void {
+	// private insertJunctionAtEnd ( section: SplineSection, junction: TvJunction ): void {
 
-		const segmentAtEnd = section.getEndSegment();
+	// 	const segmentAtEnd = section.getEndSegment();
 
-		if ( segmentAtEnd instanceof TvRoad ) {
+	// 	if ( segmentAtEnd instanceof TvRoad ) {
 
-			this.addOrShiftSegment( section.spline, section.getStart(), junction );
+	// 		this.addOrShiftSegment( section.spline, section.getStart(), junction );
 
-		} else {
+	// 	} else {
 
-			throw new Error( 'Segment at end is not a road' );
+	// 		throw new Error( 'Segment at end is not a road' );
 
-		}
+	// 	}
 
-	}
+	// }
 
-	private insertJunctionAtStart ( section: SplineSection, junction: TvJunction ): void {
+	// private insertJunctionAtStart ( section: SplineSection, junction: TvJunction ): void {
 
-		this.addOrShiftSegment( section.spline, section.getStart(), junction );
+	// 	this.addOrShiftSegment( section.spline, section.getStart(), junction );
 
-	}
+	// }
 
 	private createOrGetRoadAfterJunction ( section: SplineSection ): TvRoad {
 
