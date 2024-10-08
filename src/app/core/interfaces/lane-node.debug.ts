@@ -12,7 +12,7 @@ import { TvLaneSide } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { HasDistanceValue } from './has-distance-value';
 import { LanePointNode } from "../../objects/lane-node";
-import { Distance, LaneDistance, RoadDistance } from 'app/map/road/road-distance';
+import { RoadDistance } from 'app/map/road/road-distance';
 
 export abstract class BaseLaneDebugService<T extends HasDistanceValue> implements IDebugger<TvLane, LanePointNode<T>> {
 
