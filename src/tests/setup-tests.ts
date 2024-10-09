@@ -33,7 +33,7 @@ export function setupLaneWidthTest (): void {
 
 }
 
-export function expectValidMap ( map: TvMap, throwError = true ): void {
+export function validateMap ( map: TvMap, throwError = true ): void {
 
 	TestBed.inject( MapValidatorService ).validateMap( map, throwError );
 

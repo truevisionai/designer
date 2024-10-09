@@ -387,13 +387,13 @@ xdescribe( '4-way-junction tests', () => {
 		expect( roadService.getRoad( 4 ) ).toBe( vertical );
 
 		// this will create junction
-		splineManager.updateSpline( vertical.spline );
+		splineService.updateSpline( vertical.spline );
 
 		// move vertical road away
 		vertical.spline.controlPoints.forEach( point => point.position.x += 300 );
 
 		// this should remove junction and remove spline roads
-		splineManager.removeSpline( vertical.spline );
+		splineService.removeSpline( vertical.spline );
 
 		expect( mapService.junctions.length ).toBe( 0 );
 		expect( mapService.roads.length ).toBe( 3 );
@@ -653,7 +653,7 @@ xdescribe( '4-way-junction tests', () => {
 		const horizontal = roadService.getRoad( 1 );
 		const vertical = roadService.getRoad( 2 );
 
-		splineManager.removeSpline( vertical.spline );
+		splineService.removeSpline( vertical.spline );
 
 		expect( mapService.splines.find( i => i.uuid == horizontal.spline.uuid ) ).toBeDefined();
 		expect( mapService.splines.find( i => i.uuid == vertical.spline.uuid ) ).toBeUndefined();

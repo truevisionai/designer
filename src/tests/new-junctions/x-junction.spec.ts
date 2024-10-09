@@ -1,5 +1,4 @@
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
-import { JunctionManager } from "app/managers/junction-manager";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { JunctionUtils } from "app/utils/junction.utils";
@@ -9,23 +8,21 @@ import { setupTest } from "tests/setup-tests";
 
 describe( 'X-Junction Tests', () => {
 
-	let splineTestHelper: SplineTestHelper;
+	let helper: SplineTestHelper;
 	let mapService: MapService;
-	let junctionManager: JunctionManager;
 
 	beforeEach( () => {
 
 		setupTest();
 
-		splineTestHelper = TestBed.inject( SplineTestHelper );
+		helper = TestBed.inject( SplineTestHelper );
 		mapService = TestBed.inject( MapService );
-		junctionManager = TestBed.inject( JunctionManager );
 
 	} );
 
-	it( 'x-junction of 2 roads should have 20 links', fakeAsync( () => {
+	it( 'should have 2 roads and 20 links', fakeAsync( () => {
 
-		splineTestHelper.createXJunctionWithTwoRoads( false );
+		helper.createXJunctionWithTwoRoads( false );
 
 		tick( 1000 );
 
@@ -43,13 +40,13 @@ describe( 'X-Junction Tests', () => {
 
 	it( 'should handle removing road from x-junction of 2 roads', fakeAsync( () => {
 
-		splineTestHelper.createXJunctionWithTwoRoads( false );
+		helper.createXJunctionWithTwoRoads( false );
 
 		tick( 1000 );
 
 		const spline = mapService.getSplines()[ 0 ];
 
-		splineTestHelper.splineService.remove( spline );
+		helper.splineService.remove( spline );
 
 		expect( mapService.getJunctionCount() ).toBe( 0 );
 
@@ -60,13 +57,13 @@ describe( 'X-Junction Tests', () => {
 
 	it( 'should handle moving spline in 2-road-x-junction', fakeAsync( () => {
 
-		splineTestHelper.createXJunctionWithTwoRoads( false );
+		helper.createXJunctionWithTwoRoads( false );
 
 		tick( 1000 );
 
 		const spline = mapService.getSplines()[ 0 ];
 
-		splineTestHelper.splineService.update( spline );
+		helper.splineService.update( spline );
 
 		expect( mapService.getJunctionCount() ).toBe( 1 );
 		expect( mapService.getRoadCount() ).toBe( 4 + 20 );
@@ -74,10 +71,9 @@ describe( 'X-Junction Tests', () => {
 
 	} ) );
 
-
 	it( 'x-junction of 2 roads should squared junction', fakeAsync( () => {
 
-		splineTestHelper.createXJunctionWithTwoRoads( false );
+		helper.createXJunctionWithTwoRoads( false );
 
 		tick( 1000 );
 
@@ -97,7 +93,7 @@ describe( 'X-Junction Tests', () => {
 
 	it( 'x-junction of 4 roads should have 20 links', fakeAsync( () => {
 
-		splineTestHelper.createXJunctionWithFourRoads( false );
+		helper.createXJunctionWithFourRoads( false );
 
 		tick( 1000 );
 
@@ -115,7 +111,7 @@ describe( 'X-Junction Tests', () => {
 
 	xit( 'x-junction of 4 roads should have squared junction', fakeAsync( () => {
 
-		splineTestHelper.createXJunctionWithFourRoads( false );
+		helper.createXJunctionWithFourRoads( false );
 
 		tick( 1000 );
 

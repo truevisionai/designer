@@ -1,34 +1,24 @@
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { Log } from "app/core/utils/log";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
-import { JunctionManager } from "app/managers/junction-manager";
-import { SplineManager } from "app/managers/spline-manager";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { Vector3 } from "three";
 import { expectValidMap } from "../base-test.spec";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { JunctionUtils } from "app/utils/junction.utils";
-import { setupTest } from "tests/setup-tests";
-import { MapValidatorService } from "app/services/map/map-validator.service";
+import { expectValidRoad, setupTest, validateMap } from "tests/setup-tests";
 
 describe( 'Circle-Road-Junction Tests', () => {
 
-	let splineTestHelper: SplineTestHelper;
+	let helper: SplineTestHelper;
 	let mapService: MapService;
-	let junctionManager: JunctionManager;
-	let splineManager: SplineManager;
-	let mapValidator: MapValidatorService;
 
 	beforeEach( () => {
 
 		setupTest();
 
-		splineTestHelper = TestBed.inject( SplineTestHelper );
+		helper = TestBed.inject( SplineTestHelper );
 		mapService = TestBed.inject( MapService );
-		junctionManager = TestBed.inject( JunctionManager );
-		splineManager = TestBed.inject( SplineManager );
-		mapValidator = TestBed.inject( MapValidatorService );
 
 	} );
 
@@ -36,8 +26,8 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		AbstractSpline.reset();
 
-		splineTestHelper.addCircleRoad( 50 );
-		splineTestHelper.addStraightRoadSpline( new Vector3( -50, 0, 0 ) );
+		helper.addCircleRoad( 50 );
+		helper.addStraightRoadSpline( new Vector3( -50, 0, 0 ) );
 
 		expect( mapService.junctions.length ).toBe( 2 );
 		expect( JunctionUtils.getLaneLinks( mapService.findJunction( 1 ) ).length ).toBe( 12 );
@@ -45,7 +35,7 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		expectValidMap( mapService );
 
-		mapValidator.validateMap( mapService.map, true );
+		validateMap( mapService.map );
 
 	} ) );
 
@@ -53,14 +43,14 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		AbstractSpline.reset();
 
-		splineTestHelper.addCircleRoad( 50 );
+		helper.addCircleRoad( 50 );
 
-		const horizontal = splineTestHelper.addStraightRoadSpline( new Vector3( -50, 0, 0 ) );
+		const horizontal = helper.addStraightRoadSpline( new Vector3( -50, 0, 0 ) );
 
 		// move the horizontal spline to right by 50
 		horizontal.controlPoints.forEach( point => point.position.x += 50 );
 
-		splineManager.updateSpline( horizontal );
+		helper.splineService.updateSpline( horizontal );
 
 		expect( mapService.junctions.length ).toBe( 2 );
 
@@ -77,11 +67,11 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		Log.debug( 'should handle 4-road-circle & default junction' );
 
-		splineTestHelper.addCircleRoad( 50 );
+		helper.addCircleRoad( 50 );
 
 		expect( mapService.junctions.length ).toBe( 0 );
 
-		splineTestHelper.addDefaultJunction();
+		helper.addDefaultJunction();
 
 		tick( 0 );
 
@@ -109,18 +99,75 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		AbstractSpline.reset();
 
-		splineTestHelper.addCircleSplineV2( 50 );
+		helper.addCircleSplineV2( 50 );
 
-		const horizontal = splineTestHelper.createStraightSpline( new Vector3( -50, 0, 0 ) );
+		const horizontal = helper.createStraightSpline( new Vector3( -50, 0, 0 ) );
 
-		splineManager.addSpline( horizontal, false );
-
-		junctionManager.detectJunctions( horizontal );
+		helper.splineService.add( horizontal );
 
 		expect( mapService.junctions.length ).toBe( 1 );
 		expect( JunctionUtils.getLaneLinks( mapService.findJunction( 1 ) ).length ).toBe( 12 );
 		expectValidMap( mapService );
 
 	} ) );
+
+	it( 'should create simple connections through a circular road', () => {
+
+		helper.addCircleRoad( 50 );
+		helper.addStraightRoad( new Vector3( -50, -50 ), 150, 45 );
+
+		expect( mapService.map.getJunctionCount() ).toBe( 2 );
+
+		mapService.map.getRoads().forEach( road => {
+			expectValidRoad( road );
+		} );
+
+	} )
+
+	it( 'should pass validations when spline is removed', () => {
+
+		helper.addCircleRoad( 50 );
+
+		expect( mapService.map.getRoadCount() ).toBe( 4 );
+
+		const horizontal = helper.addStraightRoad( new Vector3( -50, -50 ), 150, 45 );
+
+		helper.splineService.remove( horizontal.spline );
+
+		expect( mapService.map.getJunctionCount() ).toBe( 0 );
+
+		mapService.map.getRoads().forEach( road => {
+			expectValidRoad( road );
+		} );
+
+		expectValidMap( mapService );
+
+		expect( mapService.map.getRoadCount() ).toBe( 6 );
+
+	} )
+
+	xit( 'should pass validations when spline is moved', () => {
+
+		// TODO: Implement this test
+
+		helper.addCircleRoad( 50 );
+
+		expect( mapService.map.getRoadCount() ).toBe( 4 );
+
+		const horizontal = helper.addStraightRoad( new Vector3( -50, -50 ), 150, 45 );
+
+		helper.splineService.update( horizontal.spline );
+
+		expect( mapService.map.getJunctionCount() ).toBe( 2 );
+
+		mapService.map.getRoads().forEach( road => {
+			expectValidRoad( road );
+		} );
+
+		expectValidMap( mapService );
+
+		expect( mapService.map.getRoadCount() ).toBe( 6 );
+
+	} );
 
 } );

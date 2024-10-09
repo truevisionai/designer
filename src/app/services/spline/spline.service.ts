@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { MapService } from '../map/map.service';
-import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { MapEvents } from 'app/events/map-events';
 import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { SplineCreatedEvent } from 'app/events/spline/spline-created-event';
@@ -70,6 +70,12 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 	remove ( spline: AbstractSpline ) {
 
 		MapEvents.splineRemoved.emit( new SplineRemovedEvent( spline ) );
+
+	}
+
+	removeSpline ( spline: AbstractSpline ) {
+
+		this.remove( spline );
 
 	}
 
