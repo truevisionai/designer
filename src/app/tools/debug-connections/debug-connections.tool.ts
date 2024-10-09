@@ -83,7 +83,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 				return;
 			}
 
-			DebugDrawService.instance.drawText( 'J:' + junction.id.toString(), junction.centroid, 2, COLOR.RED );
+			DebugDrawService.instance.drawText( 'J:' + junction.toString(), junction.centroid, 2, COLOR.RED );
 
 			DebugDrawService.instance.drawBox2D( junction.boundingBox, COLOR.WHITE, 0.5 );
 
