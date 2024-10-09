@@ -175,7 +175,9 @@ export class TvMap {
 
 	}
 
-	getRoadById ( roadId: number ): TvRoad {
+	getRoad ( road: TvRoad | number ): TvRoad {
+
+		const roadId = typeof road === 'number' ? road : road.id;
 
 		if ( !this.roads.has( roadId ) ) {
 			throw new ModelNotFoundException( `Road with id ${ roadId } not found` );
@@ -190,13 +192,15 @@ export class TvMap {
 
 	}
 
-	getJunctionById ( id: number ): TvJunction {
+	getJunction ( junction: TvJunction | number ): TvJunction {
 
-		if ( !this.junctions.has( id ) ) {
-			throw new ModelNotFoundException( `Junction with id ${ id } not found` );
+		const junctionId = typeof junction === 'number' ? junction : junction.id;
+
+		if ( !this.junctions.has( junctionId ) ) {
+			throw new ModelNotFoundException( `Junction with id ${ junctionId } not found` );
 		}
 
-		return this.junctions.get( id );
+		return this.junctions.get( junctionId );
 
 	}
 

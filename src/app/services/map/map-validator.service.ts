@@ -702,7 +702,7 @@ export class MapValidatorService {
 
 		try {
 
-			this.map.getRoadById( id );
+			this.map.getRoad( id );
 
 		} catch ( error ) {
 

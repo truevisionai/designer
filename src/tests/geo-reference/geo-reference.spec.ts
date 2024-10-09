@@ -102,7 +102,7 @@ describe( 'GeoReference', () => {
 
 		const map = testHelper.openDriveParser.parse( contents );
 
-		const road = map.getRoadById( 3690 );
+		const road = map.getRoad( 3690 );
 
 		expect( road ).toBeDefined();
 		expect( road.length ).toBe( 6.30498600 );
@@ -125,7 +125,7 @@ describe( 'GeoReference', () => {
 
 		const map = testHelper.openDriveParser.parse( contents );
 
-		const road = map.getRoadById( 1 );
+		const road = map.getRoad( 1 );
 
 		expect( road ).toBeDefined();
 		expect( road.length ).toBeCloseTo( 39.8908043358925 );

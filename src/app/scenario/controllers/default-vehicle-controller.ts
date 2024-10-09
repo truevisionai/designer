@@ -31,7 +31,7 @@ export class DefaultVehicleController extends AbstractController {
 
 		const entity = this.entity;
 
-		const currentRoad = this.map.getRoadById( entity.roadId );
+		const currentRoad = this.map.getRoad( entity.roadId );
 		const currentLaneSection = currentRoad.getLaneProfile().getLaneSectionById( entity.laneSectionId );
 		const currentLaneId = entity.laneId;
 		const currentLane = currentLaneSection.getLaneById( currentLaneId );
@@ -62,12 +62,12 @@ export class DefaultVehicleController extends AbstractController {
 					// find road
 					if ( successor.type == 'road' ) {
 
-						nextRoad = this.map.getRoadById( successor.id );
+						nextRoad = this.map.getRoad( successor.id );
 						nextLaneId = currentLane.successorExists ? currentLane.successorId : currentLane.id;
 
 					} else if ( successor.type == 'junction' ) {
 
-						const junction = this.map.getJunctionById( successor.id );
+						const junction = this.map.getJunction( successor.id );
 						const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
 						contactPoint = connection.contactPoint;
@@ -124,12 +124,12 @@ export class DefaultVehicleController extends AbstractController {
 				// find road
 				if ( predecessor.type == 'road' ) {
 
-					nextRoad = this.map.getRoadById( predecessor.id );
+					nextRoad = this.map.getRoad( predecessor.id );
 					nextLaneId = currentLane.predecessorExists ? currentLane.predecessorId : currentLane.id;
 
 				} else if ( predecessor.type == 'junction' ) {
 
-					const junction = this.map.getJunctionById( predecessor.id );
+					const junction = this.map.getJunction( predecessor.id );
 					const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
 					contactPoint = connection.contactPoint;

@@ -105,7 +105,7 @@ export class MapService {
 
 		try {
 
-			return this.map.getRoadById( id );
+			return this.map.getRoad( id );
 
 		} catch ( error ) {
 
@@ -159,7 +159,7 @@ export class MapService {
 
 		try {
 
-			return this.map.getJunctionById( id );
+			return this.map.getJunction( id );
 
 		} catch ( error ) {
 

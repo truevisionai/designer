@@ -123,7 +123,7 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 
 		const map = await testHelper.loadAndParseXodr( TOWN_01 );
 
-		const junction = map.getJunctionById( 184 );
+		const junction = map.getJunction( 184 );
 
 		const boundary = new TvJunctionBoundary();
 

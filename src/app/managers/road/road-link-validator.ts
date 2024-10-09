@@ -4,6 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { ValidationException } from "app/exceptions/exceptions";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvLink } from "app/map/models/tv-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
@@ -49,11 +50,11 @@ export class RoadLinkValidator {
 
 		if ( link.isJunction ) {
 
-			this.mapService.map.getJunctionById( link.element.id );
+			this.mapService.map.getJunction( link.element as TvJunction );
 
 		} else if ( link.isRoad ) {
 
-			this.mapService.map.getRoadById( link.element.id );
+			this.mapService.map.getRoad( link.element as TvRoad );
 
 		}
 

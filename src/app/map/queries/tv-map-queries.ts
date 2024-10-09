@@ -29,7 +29,7 @@ export abstract class TvBaseQueries {
 export class TvMapQueries extends TvBaseQueries {
 
 	static findRoadById ( id: number ): TvRoad {
-		return this.map.getRoadById( id );
+		return this.map.getRoad( id );
 	}
 
 	static findRoadCoord ( position: Vector3 ): TvRoadCoord {
@@ -187,7 +187,7 @@ export class TvMapQueries extends TvBaseQueries {
 			sCoordinate = 0;
 		}
 
-		const road = this.map.getRoadById( roadId );
+		const road = this.map.getRoad( roadId );
 
 		if ( road === undefined ) {
 			console.error( `Road with ID: ${ roadId } not found` );

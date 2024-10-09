@@ -36,7 +36,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	getJunctionById ( id: number ) {
 
-		return this.mapService.map.getJunctionById( id );
+		return this.mapService.map.getJunction( id );
 
 	}
 

@@ -88,7 +88,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		try {
 
-			return this.mapService.map.getRoadById( roadId );
+			return this.mapService.map.getRoad( roadId );
 
 		} catch ( error ) {
 

@@ -124,7 +124,7 @@ export class LaneChangeAction extends PrivateAction {
 		// Determine the lane change direction based on the side of the road
 		offsetDirection = Math.sign( this.targetLaneId - entity.getCurrentLaneId() ) * ( isEntityOnLeftSide ? 1 : -1 );
 
-		const road = TvMapInstance.map.getRoadById( entity.getCurrentRoadId() );
+		const road = TvMapInstance.map.getRoad( entity.getCurrentRoadId() );
 
 		const current = TvMapQueries.getLaneCenterPosition( road.id, entity.getCurrentLaneId(), entity.getS(), this.initialLaneOffset );
 		const desired = TvMapQueries.getLaneCenterPosition( road.id, this.targetLaneId, entity.getS(), this.targetLaneOffset );
