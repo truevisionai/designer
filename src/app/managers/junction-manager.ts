@@ -304,23 +304,6 @@ export class JunctionManager {
 
 	}
 
-	createNewRoad ( spline: AbstractSpline, startOffset: number ) {
-
-		const firstRoad = spline.getRoadSegments()[ 0 ];
-
-		const newRoad = this.roadService.clone( firstRoad, 0 );
-
-		newRoad.sStart = startOffset;
-
-		this.mapService.map.addRoad( newRoad );
-
-		newRoad.successor = newRoad.predecessor = null;
-
-		return newRoad;
-
-	}
-
-	// eslint-disable-next-line max-lines-per-function
 	insertJunction ( spline: AbstractSpline, junctionStart: number, junctionEnd: number, newJunction: TvJunction ) {
 
 		new JunctionInserter( spline, this.roadService, this.roadFactory, this.mapService ).insertJunction( junctionStart, junctionEnd, newJunction );
@@ -516,36 +499,6 @@ export class JunctionManager {
 		} );
 
 		return junctions;
-
-	}
-
-	createNewRoadSegment ( spline: AbstractSpline, existingRoad: TvRoad, junction: TvJunction, sStart: number, sEnd: number ): TvRoad {
-
-		const newRoad = this.roadService.clone( existingRoad, sStart );
-
-		newRoad.sStart = sEnd;
-
-		spline.addSegment( sEnd, newRoad );
-
-		existingRoad.successor?.replace( existingRoad, newRoad, TvContactPoint.END );
-
-		newRoad.setPredecessor( TvLinkType.JUNCTION, junction );
-
-		existingRoad.setSuccessor( TvLinkType.JUNCTION, junction );
-
-		this.mapService.map.addRoad( newRoad );
-
-		spline.addSegment( sStart, junction );
-
-		spline.updateSegmentGeometryAndBounds();
-
-		return newRoad;
-
-	}
-
-	rebuildRoad ( road: TvRoad ): void {
-
-		road.spline.updateSegmentGeometryAndBounds();
 
 	}
 
