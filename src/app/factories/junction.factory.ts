@@ -81,7 +81,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 		if ( junctions.length == 1 ) {
 
-			return junctions.values().next().value;
+			return junctions[0];
 
 		}
 

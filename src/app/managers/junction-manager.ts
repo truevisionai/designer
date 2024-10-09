@@ -399,12 +399,7 @@ export class JunctionManager {
 
 	createCoordAndAddLinksAndJunction ( group: IntersectionGroup ): void {
 
-		const junction = this.createOrGetJunctionFromGroup( group );
-
-		if ( !junction ) {
-			Log.error( 'createJunctionFromGroup: Junction not created', group.toString() );
-			return;
-		}
+		const junction = this.junctionFactory.createOrGetJunctionFromGroup( group );
 
 		const links: TvLink[] = this.getRoadLinkFromCoords( group, junction );
 
@@ -426,12 +421,6 @@ export class JunctionManager {
 	addConnectionsFromLinks ( junction: TvJunction, links: TvLink[] ): void {
 
 		this.connectionManager.addConnectionsFromLinks( junction, links );
-
-	}
-
-	private createOrGetJunctionFromGroup ( group: IntersectionGroup ): TvJunction {
-
-		return this.junctionFactory.createOrGetJunctionFromGroup( group );
 
 	}
 
