@@ -88,8 +88,7 @@ export class ConnectionManager {
 
 		const centroid = this.roadService.findCentroid( sortedLinks );
 
-		// Removing current connections
-		this.removeAllConnectionsAndRoads( junction );
+		junction.removeAllConnections();
 
 		for ( let i = 0; i < sortedLinks.length; i++ ) {
 
@@ -124,20 +123,6 @@ export class ConnectionManager {
 
 	}
 
-	removeConnectionAndRoads ( junction: TvJunction, road: TvRoad ): void {
-
-		const connections = junction.getConnectionsByRoad( road );
-
-		for ( const connection of connections ) {
-
-			this.roadManager.removeRoad( connection.connectingRoad );
-
-			junction.removeConnection( connection );
-
-		}
-
-	}
-
 	updateGeometries ( junction: TvJunction ): void {
 
 		const connections = junction.getConnections();
@@ -166,23 +151,7 @@ export class ConnectionManager {
 
 			Log.error( error );
 
-			this.roadManager.removeRoad( connection.connectingRoad );
-
 			junction.removeConnection( connection )
-
-		}
-
-	}
-
-	removeAllConnectionsAndRoads ( junction: TvJunction ): void {
-
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			this.roadManager.removeRoad( connection.connectingRoad );
-
-			junction.removeConnection( connection );
 
 		}
 

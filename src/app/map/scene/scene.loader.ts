@@ -1288,8 +1288,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
 
-		connection.junction = junction;
-
 		readXmlArray( xmlElement.laneLink, xml => {
 
 			try {

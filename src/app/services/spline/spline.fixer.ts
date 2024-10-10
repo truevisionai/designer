@@ -122,7 +122,7 @@ export class SplineFixerService {
 
 	private fixEachSegmentStart ( spline: AbstractSpline ) {
 
-		spline.segmentMap.forEach( ( segment, sOffset ) => {
+		spline.forEachSegment( ( segment, sOffset ) => {
 
 			if ( segment instanceof TvRoad ) {
 

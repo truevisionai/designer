@@ -198,17 +198,11 @@ export class TvRoad {
 
 	}
 
-	hasSuccessor () {
+	hasLinks (): boolean { return this.hasPredecessor() || this.hasSuccessor(); }
 
-		return this.successor != null;
+	hasSuccessor (): boolean { return this.successor != null; }
 
-	}
-
-	hasPredecessor () {
-
-		return this.predecessor != null;
-
-	}
+	hasPredecessor (): boolean { return this.predecessor != null; }
 
 	getEndPosTheta () {
 

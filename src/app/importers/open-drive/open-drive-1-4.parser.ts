@@ -695,8 +695,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
 
-		connection.junction = junction;
-
 		readXmlArray( xmlElement.laneLink, xml => {
 
 			const laneLink = this.parseJunctionConnectionLaneLink( xml, junction, connection );

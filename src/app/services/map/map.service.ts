@@ -352,6 +352,8 @@ export class MapService {
 
 	}
 
+	getRoads (): TvRoad[] { return this.map.getRoads(); }
+
 	getSplineCount () {
 
 		return this.splines.length;

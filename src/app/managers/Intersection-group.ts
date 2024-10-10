@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { AbstractSpline, NewSegment } from "app/core/shapes/abstract-spline";
 import { AutoJunction, TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvLink } from "app/map/models/tv-link";
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
@@ -48,19 +48,25 @@ export class IntersectionGroup {
 
 	getJunctionLinks ( junction: TvJunction, sort = true ): TvLink[] {
 
-		const links: TvLink[] = [];
+		const links = new Map<NewSegment, TvLink>();
 
-		this.getSplineSections().forEach( section => {
+		const sections = this.getSplineSections();
 
-			links.push( ...section.spline.getSegmentLinks( junction ) );
+		for ( const section of sections ) {
 
-		} );
+			section.getLinks( junction ).forEach( link => {
 
-		if ( sort ) {
-			return GeometryUtils.sortRoadLinks( links );
+				links.set( link.element, link );
+
+			} );
+
 		}
 
-		return links;
+		if ( sort ) {
+			return GeometryUtils.sortRoadLinks( Array.from( links.values() ) );
+		}
+
+		return Array.from( links.values() );
 	}
 
 	private getJunctionsViaSplines (): TvJunction[] {

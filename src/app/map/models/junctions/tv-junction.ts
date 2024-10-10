@@ -20,6 +20,7 @@ import { Log } from 'app/core/utils/log';
 import { TvJunctionBoundingBox } from './tv-junction-bounding-box';
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { SplineSection } from 'app/services/junction/spline-section';
+import { TvMap } from '../tv-map.model';
 
 
 export class TvJunction {
@@ -45,6 +46,8 @@ export class TvJunction {
 
 	private connections: Map<number, TvJunctionConnection> = new Map<number, TvJunctionConnection>();
 
+	private map: TvMap;
+
 	protected constructor ( public name: string, public id: number ) {
 
 		this.centroid = new Vector3();
@@ -64,6 +67,10 @@ export class TvJunction {
 	set boundingBox ( box: Box2 ) {
 		this.junctionBoundingBox.setBox( box );
 	}
+
+	setMap ( map: TvMap ): void { this.map = map; }
+
+	getMap (): TvMap { return this.map; }
 
 	getBoundingBox (): Box2 {
 		return this.boundingBox;
@@ -231,6 +238,8 @@ export class TvJunction {
 			connection.id++;
 		}
 
+		connection.setJunction( this );
+
 		this.connections.set( connection.id, connection );
 
 	}
@@ -242,6 +251,20 @@ export class TvJunction {
 		}
 
 		this.connections.delete( connection.id );
+
+		connection.remove();
+
+	}
+
+	removeConnections ( connections: TvJunctionConnection[] ): void {
+
+		connections.forEach( connection => this.removeConnection( connection ) );
+
+	}
+
+	removeAllConnections (): void {
+
+		return this.removeConnections( this.getConnections() );
 
 	}
 
@@ -439,7 +462,7 @@ export class TvJunction {
 
 	}
 
-	removeConnectionsByRoad ( road: TvRoad, contact: TvContactPoint ): void {
+	removeConnectionsByRoad ( road: TvRoad, contact?: TvContactPoint ): void {
 		this.getConnectionsByRoad( road ).forEach( connection => this.removeConnection( connection ) );
 	}
 

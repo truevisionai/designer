@@ -60,8 +60,6 @@ export class DepConnectionFactory {
 			TvContactPoint.START,
 		);
 
-		connection.junction = junction;
-
 		this.splineBuilder.buildSpline( connection.connectingRoad.spline );
 
 		this.splineBuilder.buildSegments( connection.connectingRoad.spline );
@@ -80,17 +78,6 @@ export class DepConnectionFactory {
 		}
 
 		return connection;
-	}
-
-	createConnectionV2 ( junction: TvJunction, incomingRoad: TvRoad, connectingRoad: TvRoad, contact: TvContactPoint ) {
-
-		const id = junction.getConnectionCount() + 1;
-
-		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contact );
-
-		connection.junction = junction;
-
-		return connection
 	}
 
 	createConnections ( junction: TvJunction, coords: TvRoadCoord[] ): TvJunctionConnection[] {
@@ -153,18 +140,6 @@ export class DepConnectionFactory {
 		// }
 
 		return junctionConnections;
-	}
-
-	createConnectionV3 ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): TvJunctionConnection {
-
-		const connection = this.createConnection( junction, incoming, outgoing, isCorner );
-
-		if ( connection.laneLink.length == 0 ) {
-			console.error( 'No lane links created', connection );
-			return;
-		}
-
-		return connection;
 	}
 
 	postProcessJunction ( junction: TvJunction ) {
