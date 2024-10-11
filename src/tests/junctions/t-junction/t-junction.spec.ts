@@ -7,7 +7,7 @@ import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-con
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { JunctionUtils } from "app/utils/junction.utils";
-import { expectValidMap } from "../base-test.spec";
+import { expectValidMap } from "../../base-test.spec";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 
 describe( 'T-Junction Tests', () => {
