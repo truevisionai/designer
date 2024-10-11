@@ -172,20 +172,17 @@ export class AutomaticJunctions {
 
 	private createOrUpdateGroup ( spline: AbstractSpline, existingJunctions: TvJunction[], group: IntersectionGroup ): void {
 
-		if ( existingJunctions.length == 0 ) {
+		const existingJunction = existingJunctions.find( junction => group.matchesJunction( junction ) ) as AutoJunction;
+
+		if ( existingJunction ) {
+
+			existingJunction.addSpline( spline );
+
+			this.updateJunctionAndConnections( spline, existingJunction, group );
+
+		} else {
 
 			this.addOrUpdateJunction( this.createJunctionFromGroup( spline, group ) );
-
-			return;
-		}
-
-		const junction = existingJunctions.find( junction => group.matchesJunction( junction ) ) as AutoJunction;
-
-		if ( junction ) {
-
-			junction.addSpline( spline );
-
-			this.updateJunctionAndConnections( spline, junction, group );
 
 		}
 	}

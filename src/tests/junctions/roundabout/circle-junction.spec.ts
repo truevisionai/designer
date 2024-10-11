@@ -6,6 +6,7 @@ import { expectValidMap } from "../../base-test.spec";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { expectValidRoad, setupTest, validateMap } from "tests/setup-tests";
 import { expect2RoadJunction, expectTJunction, expectXJunction } from "tests/expect-junction.spec";
+import { ControlPointFactory } from "app/factories/control-point.factory";
 
 describe( '4-Road-Roundabout', () => {
 
@@ -147,6 +148,27 @@ describe( '4-Road-Roundabout', () => {
 		} );
 
 		expectValidMap( helper.mapService );
+
+	} );
+
+	it( 'should create 2 x-junctions in 2 steps', () => {
+
+		helper.addCircleRoad( 50 );
+
+		const road = helper.addStraightRoad( new Vector3( -50, -50 ), 50, 45 );
+
+		expect( helper.mapService.getJunctionCount() ).toBe( 1 );
+
+		expectXJunction( helper.mapService.findJunction( 1 ) );
+
+		road.spline.addControlPoint( ControlPointFactory.createControl( road.spline, new Vector3( -100, 100, 0 ) ) );
+
+		helper.splineService.update( road.spline );
+
+		expect( helper.mapService.getJunctionCount() ).toBe( 2 );
+
+		expectXJunction( helper.mapService.findJunction( 1 ) );
+		expectXJunction( helper.mapService.findJunction( 2 ) );
 
 	} );
 
