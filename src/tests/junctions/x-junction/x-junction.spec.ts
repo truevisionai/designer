@@ -125,7 +125,7 @@ describe( 'X-Junction Tests', () => {
 
 	} ) );
 
-	xit( 'x-junction of 4 roads should have squared junction', fakeAsync( () => {
+	it( 'x-junction of 4 roads should have squared junction', fakeAsync( () => {
 
 		helper.createXJunctionWithFourRoads( false );
 
