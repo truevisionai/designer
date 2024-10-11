@@ -30,13 +30,27 @@ export class IntersectionGroup {
 
 	}
 
-	addorUpdateJunctionSegment ( junction: AutoJunction ): void {
+	insertJunction ( junction: AutoJunction ): void {
 
 		this.updateSectionOffsets();
 
 		for ( const section of this.getSplineSections() ) {
 
 			section.insertJunction( junction );
+
+		}
+
+		this.getSplines().forEach( spline => spline.updateSegmentGeometryAndBounds() );
+
+	}
+
+	updateJunction ( junction: AutoJunction ): void {
+
+		this.updateSectionOffsets();
+
+		for ( const section of this.getSplineSections() ) {
+
+			section.updateJunction( junction );
 
 		}
 

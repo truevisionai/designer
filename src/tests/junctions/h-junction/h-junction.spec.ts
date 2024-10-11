@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { setupTest, validateMap } from "tests/setup-tests";
-import { expectXJunction } from "tests/expect-junction.spec";
+import { expectTJunction, expectXJunction } from "tests/expect-junction.spec";
 import { expectInstances } from "tests/expect-spline.spec";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
@@ -105,6 +105,32 @@ describe( 'H-Junction Tests', () => {
 		expectCorrectElements();
 
 		expectCorrectSegments( splines );
+
+	} );
+
+
+	it( 'should handle H shape to TT shape conversion', async () => {
+
+		// horizontal spline will be moved to the top
+		// which will create two T-junction on the top
+
+		const splines = helper.createHShapeWithXJunctions();
+
+		splines.horizontal.getControlPoints().forEach( point => {
+			point.position.y += 100;
+		} )
+
+		helper.splineService.update( splines.horizontal );
+
+		expectInstances( splines.horizontal, [ TvRoad, TvJunction, TvRoad, TvJunction, TvRoad ] );
+		expectInstances( splines.verticalLeft, [ TvRoad, TvJunction ] );
+		expectInstances( splines.verticalRight, [ TvRoad, TvJunction ] );
+
+		expect( mapService.getJunctionCount() ).toBe( 2 );
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 5 );
+
+		expectTJunction( mapService.findJunction( 1 ) );
+		expectTJunction( mapService.findJunction( 2 ) );
 
 	} );
 

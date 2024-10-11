@@ -273,6 +273,8 @@ export abstract class SplineSection {
 
 	abstract insertJunction ( junction: TvJunction ): void;
 
+	abstract updateJunction ( junction: TvJunction ): void;
+
 	protected addOrShiftSegment ( s: number, segment: NewSegment ): void {
 
 		if ( this.spline.hasSegment( segment ) ) {
@@ -315,6 +317,12 @@ export class StartSection extends SplineSection {
 
 	}
 
+	updateJunction ( junction: TvJunction ): void {
+
+		this.insertJunction( junction );
+
+	}
+
 	shouldAddRoadAfterJunction ( junction: TvJunction ): boolean {
 
 		return false;
@@ -344,6 +352,12 @@ export class MiddleSection extends SplineSection {
 		this.spline.updateLinks();
 
 		this.spline.updateSegmentGeometryAndBounds();
+
+	}
+
+	updateJunction ( junction: TvJunction ): void {
+
+		this.insertJunction( junction );
 
 	}
 
@@ -387,6 +401,44 @@ export class EndSection extends SplineSection {
 		this.spline.updateLinks();
 
 		this.spline.updateSegmentGeometryAndBounds();
+
+	}
+
+	updateJunction ( junction: TvJunction ): void {
+
+		this.removeSegmentAfterJunction( junction );
+
+		this.insertJunction( junction );
+
+	}
+
+	removeSegmentAfterJunction ( junction: TvJunction ): void {
+
+		const roadBeforeJunction = this.spline.getPreviousSegment( junction ) as TvRoad;
+
+		const roadAfterJunction = this.spline.getNextSegment( junction ) as TvRoad;
+
+		if ( !this.shouldRemoveRoadAfterJunction( roadAfterJunction, roadBeforeJunction ) ) return;
+
+		roadAfterJunction.successor?.replace( roadAfterJunction, roadBeforeJunction, TvContactPoint.END );
+
+		this.spline.removeSegment( roadAfterJunction );
+
+		this.spline.getMap().removeRoad( roadAfterJunction );
+
+		MapEvents.removeMesh.emit( roadAfterJunction );
+
+	}
+
+	shouldRemoveRoadAfterJunction ( roadBeforeJunction: NewSegment, roadAfterJunction: NewSegment ): boolean {
+
+		if ( roadAfterJunction == null ) return false;
+
+		if ( roadBeforeJunction == null ) return false;
+
+		if ( roadBeforeJunction == roadAfterJunction ) return false;
+
+		return true;
 
 	}
 

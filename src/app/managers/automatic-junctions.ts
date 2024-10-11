@@ -208,7 +208,7 @@ export class AutomaticJunctions {
 
 		const junction = this.createOrGetJunctionFromGroup( group, spline );
 
-		group.addorUpdateJunctionSegment( junction );
+		group.insertJunction( junction );
 
 		const links = group.getJunctionLinks( junction );
 
@@ -244,7 +244,7 @@ export class AutomaticJunctions {
 
 		junction.removeAllConnections();
 
-		group.addorUpdateJunctionSegment( junction );
+		group.updateJunction( junction );
 
 		const links = group.getJunctionLinks( junction );
 

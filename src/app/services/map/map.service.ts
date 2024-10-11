@@ -75,6 +75,12 @@ export class MapService {
 
 	}
 
+	getNonJunctionRoadCount (): number {
+
+		return this.nonJunctionRoads.length;
+
+	}
+
 	hasRoad ( road: TvRoad | number ) {
 
 		return this.map.hasRoad( road );

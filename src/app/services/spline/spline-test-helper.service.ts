@@ -315,7 +315,7 @@ export class SplineTestHelper {
 		const verticalLeft = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200, 90 );
 		const verticalRight = this.createStraightSpline( new Vector3( 100, -100, 0 ), 200, 90 );
 
-		const horizontal = this.createStraightSpline( new Vector3( -300 / 2, 0, 0 ), 300, 0 );
+		const horizontal = this.createStraightSpline( new Vector3( -150, 0, 0 ), 300, 0 );
 
 		this.splineService.add( verticalLeft );
 		this.splineService.add( verticalRight );
