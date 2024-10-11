@@ -1,4 +1,5 @@
 import { NewSegment, AbstractSpline } from "app/core/shapes/abstract-spline";
+import { Log } from "app/core/utils/log";
 import { MapEvents } from "app/events/map-events";
 import { RoadRemovedEvent } from "app/events/road/road-removed-event";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
@@ -217,7 +218,7 @@ export abstract class SplineSection {
 
 	}
 
-	private updateOffsetSegments (): void {
+	updateOffsetSegments (): void {
 
 		this.startSegment = this.spline.getSegmentAt( this.start );
 		this.endSegment = this.spline.getSegmentAt( this.end );
@@ -292,7 +293,19 @@ export class StartSection extends SplineSection {
 
 	insertJunction ( junction: TvJunction ): void {
 
-		this.spline.shiftSegment( this.end, this.startSegment );
+		if ( this.startSegment instanceof TvRoad ) {
+
+			this.spline.shiftSegment( this.end, this.startSegment );
+
+		} else if ( this.endSegment instanceof TvRoad ) {
+
+			this.spline.shiftSegment( this.end, this.endSegment );
+
+		} else {
+
+			Log.warn( 'No road segment found' );
+
+		}
 
 		this.addOrShiftSegment( this.start, junction );
 
@@ -314,31 +327,46 @@ export class MiddleSection extends SplineSection {
 
 	insertJunction ( junction: TvJunction ): void {
 
-		this.addOrShiftSegment( this.start, junction );
+		if ( this.endSegment instanceof TvRoad && this.endSegment != this.startSegment ) {
 
-		if ( this.hasRoadAfterJunction( junction ) ) {
+			this.spline.shiftSegment( this.end, this.endSegment );
 
-			const nextSegment  = this.spline.getNextSegment( junction );
+		} else if ( this.hasRoadAfterJunction( junction ) ) {
 
-			this.spline.shiftSegment( this.end, nextSegment );
-
-		} else if ( this.shouldAddRoadAfterJunction( junction ) ) {
-
-			const existingRoad = this.startSegment as TvRoad;
-
-			const id = this.spline.getMap().generateRoadId();
-
-			const road = existingRoad?.clone( 0, id );
-
-			this.spline.getMap().addRoad( road );
-
-			this.addRoadAfterSection( road );
+			this.spline.shiftSegment( this.end, this.spline.getNextSegment( junction ) );
 
 		}
+
+		this.addOrShiftSegment( this.start, junction );
+
+		this.insertRoadAfterJunction( junction );
 
 		this.spline.updateLinks();
 
 		this.spline.updateSegmentGeometryAndBounds();
+
+	}
+
+	private insertRoadAfterJunction ( junction: TvJunction ): void {
+
+		if ( !this.shouldAddRoadAfterJunction( junction ) ) return;
+
+		const existingRoad = this.startSegment as TvRoad;
+
+		const id = this.spline.getMap().generateRoadId();
+
+		const roadAfterJunction = existingRoad?.clone( 0, id );
+
+		// set the successor and predecessor to null to avoid linking the road to the junction
+		roadAfterJunction.predecessor = roadAfterJunction.successor = null;
+
+		const roadBeforeJunction = this.spline.getPreviousSegment( junction ) as TvRoad;
+
+		this.spline.getMap().addRoad( roadAfterJunction );
+
+		this.spline.addSegment( this.end, roadAfterJunction );
+
+		roadBeforeJunction.successor?.replace( roadBeforeJunction, roadAfterJunction, TvContactPoint.END );
 
 	}
 

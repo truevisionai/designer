@@ -208,15 +208,7 @@ export class AutomaticJunctions {
 
 		const junction = this.createOrGetJunctionFromGroup( group, spline );
 
-		// group.updateSectionOffsets();
-
-		for ( const section of group.getSplineSections() ) {
-
-			section.insertJunction( junction );
-
-		}
-
-		group.getSplines().forEach( spline => spline.updateSegmentGeometryAndBounds() );
+		group.addorUpdateJunctionSegment( junction );
 
 		const links = group.getJunctionLinks( junction );
 
@@ -248,71 +240,22 @@ export class AutomaticJunctions {
 
 	}
 
-	private updateJunctionAndConnections ( spline: AbstractSpline, junction: TvJunction, group: IntersectionGroup ): void {
+	private updateJunctionAndConnections ( spline: AbstractSpline, junction: AutoJunction, group: IntersectionGroup ): void {
 
-		// junction.removeAllConnections();
+		junction.removeAllConnections();
 
-		group.updateSectionOffsets();
+		group.addorUpdateJunctionSegment( junction );
 
-		for ( const section of group.getSplineSections() ) {
+		const links = group.getJunctionLinks( junction );
 
-			this.updateSection( junction, group, section );
+		this.connectionManager.addConnectionsFromLinks( junction, links );
 
-		}
+		junction.updateBoundary();
 
-		group.getSplines().forEach( s => s.updateSegmentGeometryAndBounds() );
+		junction.updatePositionAndBounds();
 
-		// const links = group.getJunctionLinks( junction );
-
-		// this.connectionManager.addConnectionsFromLinks( junction, links );
-
-		// junction.updateBoundary();
-
-		// MapEvents.makeMesh.emit( junction );
-
-		// junction.updatePositionAndBounds();
-
-		MapEvents.junctionUpdated.emit( junction );
+		this.junctionService.update( junction );
 
 	}
 
-	private createFillerRoadSegment ( spline: AbstractSpline ): TvRoad {
-
-		const firstRoad = spline.getRoadSegments()[ 0 ];
-
-		return this.roadService.clone( firstRoad, 0 );
-
-	}
-
-	private updateSection ( junction: TvJunction, group: IntersectionGroup, section: SplineSection ): void {
-
-		if ( section.spline.hasSegment( junction ) ) {
-
-			const offsets = group.getOffset( section.spline );
-
-			section.shiftJunctionAndUpdateSegments( junction );
-
-			if ( section.hasRoadAfterJunction( junction ) ) {
-
-				const nextSegment = section.spline.getNextSegment( junction ) as TvRoad;
-
-				section.shiftRoadSegment( nextSegment, offsets.sEnd );
-
-			} else if ( section.shouldAddRoadAfterJunction( junction ) ) {
-
-				const road = this.createFillerRoadSegment( section.spline );
-
-				section.addRoadAfterSection( road );
-
-				this.mapService.addRoad( road );
-
-			}
-
-		} else {
-
-			section.insertJunction( junction );
-
-		}
-
-	}
 }

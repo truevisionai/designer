@@ -310,16 +310,32 @@ export class SplineTestHelper {
 
 	}
 
-	async createHJunction ( random = false ) {
+	createHShapeWithXJunctions (): { verticalLeft: AbstractSpline; verticalRight: AbstractSpline; horizontal: AbstractSpline; } {
 
-		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
-		const splineC = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
-		const splineB = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200 );
+		const verticalLeft = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200, 90 );
+		const verticalRight = this.createStraightSpline( new Vector3( 100, -100, 0 ), 200, 90 );
 
-		const splines = [ splineA, splineB, splineC ];
+		const horizontal = this.createStraightSpline( new Vector3( -300 / 2, 0, 0 ), 300, 0 );
 
-		await this.addInRandomOrder( splines, random );
+		this.splineService.add( verticalLeft );
+		this.splineService.add( verticalRight );
+		this.splineService.add( horizontal );
 
+		return { verticalLeft, verticalRight, horizontal };
+	}
+
+	createHShapeWithTJunctions (): { verticalLeft: AbstractSpline; verticalRight: AbstractSpline; horizontal: AbstractSpline; } {
+
+		const verticalLeft = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200, 90 );
+		const verticalRight = this.createStraightSpline( new Vector3( 100, -100, 0 ), 200, 90 );
+
+		const horizontal = this.createStraightSpline( new Vector3( -200 / 2, 0, 0 ), 200, 0 );
+
+		this.splineService.add( verticalLeft );
+		this.splineService.add( verticalRight );
+		this.splineService.add( horizontal );
+
+		return { verticalLeft, verticalRight, horizontal };
 	}
 
 	async createXJunctionWithFourRoads ( random: boolean ) {

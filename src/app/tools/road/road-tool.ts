@@ -71,6 +71,12 @@ export class RoadTool extends ToolWithHandler {
 
 		super.init();
 
+		// this.tool.splineTestHelper.createHShapeWithXJunctions();
+
+		// this.tool.splineTestHelper.addCircleRoad( 50 );
+		// this.tool.splineTestHelper.addDefaultJunction();
+
+		// this.tool.splineTestHelper.createXJunctionWithFourRoads( false );
 	}
 
 	addVisualizers (): void {

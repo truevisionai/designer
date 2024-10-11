@@ -21,6 +21,7 @@ import { expectCorrectSegmentOrder } from "tests/base-test.spec";
 import { AbstractSpline, NewSegment } from "app/core/shapes/abstract-spline";
 import { TvLink, TvLinkType } from "app/map/models/tv-link";
 import { LinkFactory } from 'app/map/models/link-factory';
+import { expectInstances, expectSegments } from "tests/expect-spline.spec";
 
 describe( 'JunctionManager: InsertJunction', () => {
 
@@ -57,44 +58,6 @@ describe( 'JunctionManager: InsertJunction', () => {
 		for ( let i = 0; i < offsets.length; i++ ) {
 
 			expect( keys[ i ] ).toEqual( offsets[ i ] );
-
-		}
-
-	}
-
-	function expectInstances ( spline: AbstractSpline, types: any[] ) {
-
-		const values = spline.getSegments();
-
-		expect( values.length ).toBe( types.length );
-
-		for ( let i = 0; i < types.length; i++ ) {
-
-			expect( values[ i ] ).toBeInstanceOf( types[ i ] );
-
-		}
-
-	}
-
-	function expectSegments ( spline: AbstractSpline, segments: NewSegment[] ) {
-
-		const values = spline.getSegments();
-
-		const keys = spline.getSegmentKeys();
-
-		expect( values.length ).toBe( segments.length );
-
-		for ( let i = 0; i < segments.length; i++ ) {
-
-			expect( values[ i ] ).toBe( segments[ i ] );
-
-			if ( values[ i ] instanceof TvRoad ) {
-
-				const road = values[ i ] as TvRoad;
-
-				expect( road.sStart ).toBe( keys[ i ] );
-
-			}
 
 		}
 

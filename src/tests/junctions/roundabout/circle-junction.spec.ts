@@ -7,7 +7,7 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { expectValidRoad, setupTest, validateMap } from "tests/setup-tests";
 import { expect2RoadJunction, expectTJunction, expectXJunction } from "tests/expect-junction.spec";
 
-describe( 'Circle-Road-Junction Tests', () => {
+describe( '4-Road-Roundabout', () => {
 
 	let helper: SplineTestHelper;
 
@@ -17,27 +17,19 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		helper = TestBed.inject( SplineTestHelper );
 
-		helper.mapService.reset();
+		AbstractSpline.reset();
 
 	} );
 
-	it( 'should handle 4-road-circle & horizontal spline', fakeAsync( () => {
-
-		AbstractSpline.reset();
+	it( 'should handle horizontal spline', fakeAsync( () => {
 
 		helper.addCircleRoad( 50 );
 		helper.addStraightRoadSpline( new Vector3( -50, 0, 0 ) );
 
 		expect( helper.mapService.getJunctionCount() ).toBe( 2 );
 
-		const J1 = helper.mapService.findJunction( 1 );
-		const J2 = helper.mapService.findJunction( 2 );
-
-		expect( J1 ).toBeDefined();
-		expect( J2 ).toBeDefined();
-
-		expectTJunction( J1 );
-		expectTJunction( J2 );
+		expectTJunction( helper.mapService.findJunction( 1 ) );
+		expectTJunction( helper.mapService.findJunction( 2 ) );
 
 		expectValidMap( helper.mapService );
 
@@ -45,9 +37,7 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 	} ) );
 
-	xit( 'should handle 4-road-circle & horizontal spline movement', fakeAsync( () => {
-
-		AbstractSpline.reset();
+	it( 'should handle horizontal spline movement', async () => {
 
 		helper.addCircleRoad( 50 );
 
@@ -65,11 +55,9 @@ describe( 'Circle-Road-Junction Tests', () => {
 
 		expectValidMap( helper.mapService );
 
-	} ) );
+	} );
 
-	it( 'should handle 4-road-circle & default junction', fakeAsync( () => {
-
-		AbstractSpline.reset();
+	it( 'should handle default junction', fakeAsync( () => {
 
 		Log.debug( 'should handle 4-road-circle & default junction' );
 
@@ -100,24 +88,6 @@ describe( 'Circle-Road-Junction Tests', () => {
 		expectValidMap( helper.mapService );
 
 	} ) );
-
-	xit( 'should handle 1-road-circle & horizontal spline', () => {
-
-		// TODO: Implement this test
-
-		AbstractSpline.reset();
-
-		helper.addCircleSplineV2( 50 );
-
-		const horizontal = helper.createStraightSpline( new Vector3( -50, 0, 0 ) );
-
-		helper.splineService.add( horizontal );
-
-		expectTJunction( helper.mapService.findJunction( 1 ) );
-
-		expectValidMap( helper.mapService );
-
-	} );
 
 	it( 'should create simple connections through a circular road', () => {
 
@@ -175,6 +145,38 @@ describe( 'Circle-Road-Junction Tests', () => {
 		helper.mapService.map.getRoads().forEach( road => {
 			expectValidRoad( road );
 		} );
+
+		expectValidMap( helper.mapService );
+
+	} );
+
+} );
+
+xdescribe( '1-Road-Roundabout', () => {
+
+	let helper: SplineTestHelper;
+
+	beforeEach( () => {
+
+		setupTest();
+
+		helper = TestBed.inject( SplineTestHelper );
+
+		helper.mapService.reset();
+
+	} );
+
+	it( 'should handle 1-road-circle & horizontal spline', () => {
+
+		// TODO: Implement this test
+
+		helper.addCircleSplineV2( 50 );
+
+		const horizontal = helper.createStraightSpline( new Vector3( -50, 0, 0 ) );
+
+		helper.splineService.add( horizontal );
+
+		expectTJunction( helper.mapService.findJunction( 1 ) );
 
 		expectValidMap( helper.mapService );
 

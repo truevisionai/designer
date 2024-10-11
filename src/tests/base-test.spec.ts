@@ -16,9 +16,9 @@ import { TvLink } from "app/map/models/tv-link";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Maths } from "app/utils/maths";
 
-function formatMessage ( road: TvRoad, link: TvLink ) {
+function formatMessage ( road: TvRoad, link: TvLink, distance?: number ) {
 
-	return 'Invalid Distance ' + road.toString() + ' ' + link.toString();
+	return road.toString() + ' Invalid Distance with ' + link.toString() + ' distance:' + distance;
 
 }
 
@@ -74,13 +74,13 @@ export function expectLinkDistanceToBeZero ( road: TvRoad ) {
 
 }
 
-export function expectToHaveJunctionConnections ( road: TvRoad ) {
+export function expectLinkedConnections ( road: TvRoad ) {
 
 	if ( road.successor?.element instanceof TvJunction ) {
 
 		const hasConnection = road.successor.element.getIncomingRoads().includes( road );
 
-		expect( hasConnection ).toBe( true, 'Successor' + formatMessage( road, road.successor ) );
+		expect( hasConnection ).toBe( true, `${ road.toString() } successor link with junction has no connections` );
 
 	}
 
@@ -88,7 +88,7 @@ export function expectToHaveJunctionConnections ( road: TvRoad ) {
 
 		const hasConnection = road.predecessor.element.getIncomingRoads().includes( road );
 
-		expect( hasConnection ).toBe( true, 'Predecessor' + formatMessage( road, road.predecessor ) );
+		expect( hasConnection ).toBe( true, `${ road.toString() } predecessor link with junction has no connections` );
 
 	}
 }
@@ -97,7 +97,7 @@ export function expectValidLinks ( road: TvRoad ) {
 
 	expectLinkDistanceToBeZero( road );
 
-	expectToHaveJunctionConnections( road );
+	expectLinkedConnections( road );
 
 }
 

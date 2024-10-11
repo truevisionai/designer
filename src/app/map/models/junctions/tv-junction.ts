@@ -86,6 +86,10 @@ export class TvJunction {
 		return Array.from( this.connections.values() );
 	}
 
+	getIncomingRoadCount (): number {
+		return this.getIncomingRoads().length
+	}
+
 	getIncomingRoads (): TvRoad[] {
 
 		const roads = new Set<TvRoad>();

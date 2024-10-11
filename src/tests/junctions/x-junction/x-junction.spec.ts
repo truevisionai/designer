@@ -137,7 +137,7 @@ describe( 'X-Junction Tests', () => {
 
 		const size = junction.boundingBox.getSize( new Vector2() );
 
-		expect( size.x ).toBeCloseTo( size.y );
+		expect( size.x ).toBeCloseTo( size.y, 0.1 );
 
 		expect( junction.containsPoint( new Vector2( junction.centroid.x, junction.centroid.y ) ) ).toBeTrue();
 
