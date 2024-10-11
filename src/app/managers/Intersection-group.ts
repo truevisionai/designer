@@ -309,7 +309,7 @@ export class IntersectionGroup {
 
 	matchesJunction ( junction: TvJunction ): boolean {
 
-		return junction.getKey() == this.getKey();
+		return junction.getKey() == this.getKey() && this.area.intersectsBox( junction.boundingBox );
 
 	}
 

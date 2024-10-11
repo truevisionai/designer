@@ -271,13 +271,15 @@ export class SplineTestHelper {
 		return { horizontal, vertical };
 	}
 
-	addReverseUShapedSpline ( size = 50 ): AbstractSpline {
+	createUShape ( size = 50, reverse = false ): AbstractSpline {
+
+		const sign = reverse ? -1 : 1;
 
 		const positions = [
-			new Vector3( -size, -size, 0 ),
-			new Vector3( -size, size, 0 ),
-			new Vector3( size, size, 0 ),
-			new Vector3( size, -size, 0 )
+			new Vector3( -size, size * sign, 0 ),
+			new Vector3( -size, -size * sign, 0 ),
+			new Vector3( size, -size * sign, 0 ),
+			new Vector3( size, size * sign, 0 )
 		];
 
 		const spline = SplineFactory.createFromPoints( [] );
