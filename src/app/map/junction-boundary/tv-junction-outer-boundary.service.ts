@@ -12,7 +12,7 @@ import { TvJunctionBoundary } from "./tv-junction-boundary";
 import { TvJunctionCornerRoadService } from "./tv-junction-corner-road.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
-import { traverseLanes } from "app/utils/road.utils";
+import { traverseLanes } from "app/utils/traverseLanes";
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
 

@@ -1,10 +1,10 @@
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
-import { JunctionUtils } from "app/utils/junction.utils";
 import { Vector2 } from "three";
 import { expectValidMap } from "../base-test.spec";
 import { setupTest } from "tests/setup-tests";
+import { expectXJunction } from "tests/expect-junction.spec";
 
 describe( 'X-Junction Tests', () => {
 
@@ -26,13 +26,9 @@ describe( 'X-Junction Tests', () => {
 
 		tick( 1000 );
 
-		expect( mapService.junctions.length ).toBe( 1 );
+		expect( mapService.getJunctionCount() ).toBe( 1 );
 
-		const junction = mapService.findJunction( 1 );
-
-		const laneLinks = JunctionUtils.getLaneLinks( junction );
-
-		expect( laneLinks.length ).toBe( 20 );
+		expectXJunction( mapService.findJunction( 1 ) );
 
 		expectValidMap( mapService );
 
@@ -71,13 +67,37 @@ describe( 'X-Junction Tests', () => {
 
 	} ) );
 
+	it( 'should remove junction and links when spline is moved too far', fakeAsync( () => {
+
+		helper.createXJunctionWithTwoRoads( false );
+
+		tick( 1000 );
+
+		const spline = mapService.getSplines()[ 0 ];
+
+		spline.controlPoints.forEach( point => point.position.x += 1000 );
+
+		helper.splineService.update( spline );
+
+		expect( mapService.getSplineCount() ).toBe( 2 );
+		expect( mapService.getJunctionCount() ).toBe( 0 );
+		expect( mapService.getRoadCount() ).toBe( 2 );
+
+		expect( mapService.getRoads()[ 0 ].hasLinks() ).toBeFalse();
+		expect( mapService.getRoads()[ 1 ].hasLinks() ).toBeFalse();
+
+		expect( mapService.getSplines()[ 0 ].hasLinks() ).toBeFalse();
+		expect( mapService.getSplines()[ 1 ].hasLinks() ).toBeFalse();
+
+	} ) );
+
 	it( 'x-junction of 2 roads should squared junction', fakeAsync( () => {
 
 		helper.createXJunctionWithTwoRoads( false );
 
 		tick( 1000 );
 
-		expect( mapService.junctions.length ).toBe( 1 );
+		expect( mapService.getJunctionCount() ).toBe( 1 );
 
 		const junction = mapService.findJunction( 1 );
 
@@ -97,13 +117,9 @@ describe( 'X-Junction Tests', () => {
 
 		tick( 1000 );
 
-		expect( mapService.junctions.length ).toBe( 1 );
+		expect( mapService.getJunctionCount() ).toBe( 1 );
 
-		const junction = mapService.findJunction( 1 );
-
-		const laneLinks = JunctionUtils.getLaneLinks( junction );
-
-		expect( laneLinks.length ).toBe( 20 );
+		expectXJunction( mapService.findJunction( 1 ) );
 
 		expectValidMap( mapService );
 
@@ -115,7 +131,7 @@ describe( 'X-Junction Tests', () => {
 
 		tick( 1000 );
 
-		expect( mapService.junctions.length ).toBe( 1 );
+		expect( mapService.getJunctionCount() ).toBe( 1 );
 
 		const junction = mapService.findJunction( 1 );
 

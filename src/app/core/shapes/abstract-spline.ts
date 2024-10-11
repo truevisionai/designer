@@ -20,6 +20,8 @@ import { MapEvents } from 'app/events/map-events';
 import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
 import { SplineSegmentProfile } from './spline-segment-profile';
 import { SplineLinks } from './spline-links';
+import { TvContactPoint } from 'app/map/models/tv-common';
+import { TvMap } from 'app/map/models/tv-map.model';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -31,9 +33,6 @@ export enum SplineType {
 export type NewSegment = TvRoad | TvJunction | null;
 
 export abstract class AbstractSpline {
-	getNextSegmentKey ( segment: NewSegment ) {
-		return this.segmentMap.getNextKey( segment );
-	}
 
 	public abstract type: SplineType;
 
@@ -45,7 +44,7 @@ export abstract class AbstractSpline {
 
 	public controlPoints: AbstractControlPoint[] = [];
 
-	public segmentMap = new OrderedMap<NewSegment>();
+	private segments = new OrderedMap<NewSegment>();
 
 	private geometries: TvAbstractRoadGeometry[] = [];
 
@@ -65,6 +64,8 @@ export abstract class AbstractSpline {
 
 	private splineSegmentProfile: SplineSegmentProfile;
 	private splineLinks: SplineLinks;
+
+	private map: TvMap;
 
 	static reset () {
 		this.idCounter = 1;
@@ -91,6 +92,10 @@ export abstract class AbstractSpline {
 		this.splineLinks = new SplineLinks( this );
 
 	}
+
+	setMap ( map: TvMap ): void { this.map = map; }
+
+	getMap (): TvMap { return this.map; }
 
 	get controlPointPositions (): Vector3[] {
 		return this.controlPoints.map( point => point.position );
@@ -161,7 +166,7 @@ export abstract class AbstractSpline {
 	}
 
 	toString () {
-		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segmentMap.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
+		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segments.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
 	}
 
 	clearGeometries (): void {
@@ -192,9 +197,9 @@ export abstract class AbstractSpline {
 
 		this.validateForAdding( sOffset, segment );
 
-		this.segmentMap.remove( segment );
+		this.segments.remove( segment );
 
-		this.segmentMap.set( sOffset, segment );
+		this.segments.set( sOffset, segment );
 
 		if ( segment instanceof TvRoad ) {
 			segment.spline = this;
@@ -217,7 +222,46 @@ export abstract class AbstractSpline {
 			throw new ModelNotFoundException( `Segment not found: ${ segment?.toString() }` );
 		}
 
-		this.segmentMap.remove( segment );
+		this.segments.remove( segment );
+
+	}
+
+	removeJunctionSegmentAndUpdate ( junction: TvJunction ): void {
+
+		const junctionStart = this.segments.findKey( junction );
+
+		const prevSegment = this.getPreviousSegment( junction );
+		const nextSegment = this.getNextSegment( junction );
+
+		this.removeSegment( junction );
+
+		if ( junctionStart == 0 ) {
+
+			this.shiftSegment( 0, nextSegment );
+
+			if ( nextSegment instanceof TvRoad ) nextSegment.predecessor = null;
+
+		} else if ( nextSegment instanceof TvRoad && prevSegment instanceof TvRoad ) {
+
+			prevSegment.successor = nextSegment.successor?.clone();
+
+			nextSegment.successor?.replace( nextSegment, prevSegment, TvContactPoint.END );
+
+			this.removeSegment( nextSegment );
+
+			this.map.removeRoad( nextSegment );
+
+			MapEvents.removeMesh.emit( nextSegment );
+
+		} else if ( nextSegment == null && prevSegment instanceof TvRoad ) {
+
+			prevSegment.successor = null;
+
+		}
+
+		this.updateLinks();
+
+		this.updateSegmentGeometryAndBounds();
 
 	}
 
@@ -233,13 +277,14 @@ export abstract class AbstractSpline {
 			throw new DuplicateModelException( `Segment exists: ${ segment }` );
 		}
 
-		if ( this.segmentMap.hasKey( sOffset ) ) {
+		if ( this.segments.hasKey( sOffset ) ) {
 			throw new Error( `Key: ${ sOffset } exists New:${ segment }` );
 		}
 
-		if ( sOffset > this.getLength() ) {
-			throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ this.toString() }` );
-		}
+		// NOTE: CAUSES ERROR DURING SCENE LOAD
+		// if ( sOffset > this.getLength() ) {
+		// 	throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ this.toString() }` );
+		// }
 
 		if ( sOffset < 0 ) {
 			throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ this.toString() }` );
@@ -249,8 +294,8 @@ export abstract class AbstractSpline {
 			throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ this.toString() }, ${ segment?.toString() }` );
 		}
 
-		if ( this.segmentMap.hasKey( sOffset ) ) {
-			throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ this.segmentMap.keys() }` );
+		if ( this.segments.hasKey( sOffset ) ) {
+			throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ this.segments.keys() }` );
 		}
 
 	}
@@ -269,15 +314,19 @@ export abstract class AbstractSpline {
 	}
 
 	getNextSegment ( segment: NewSegment ): NewSegment {
-		return this.segmentMap.getNext( segment );
+		return this.segments.getNext( segment );
 	}
 
 	getPreviousSegment ( segment: NewSegment ): NewSegment {
-		return this.segmentMap.getPrevious( segment );
+		return this.segments.getPrevious( segment );
+	}
+
+	forEachSegment ( callback: ( segment: NewSegment, s: number ) => void ): void {
+		this.segments.forEach( callback );
 	}
 
 	getSegments (): NewSegment[] {
-		return Array.from( this.segmentMap.values() );
+		return Array.from( this.segments.values() );
 	}
 
 	getSegmentAt ( s: number ): NewSegment {
@@ -287,19 +336,19 @@ export abstract class AbstractSpline {
 		if ( s > this.getLength() ) {
 			throw new InvalidArgumentException( `s must be less than length: ${ s }` );
 		}
-		return this.segmentMap.findAt( s );
+		return this.segments.findAt( s );
 	}
 
 	getSegmentCount (): number {
-		return this.segmentMap.length;
+		return this.segments.length;
 	}
 
 	getFirstSegment<T extends NewSegment> (): T {
-		return this.segmentMap.getFirst() as T;
+		return this.segments.getFirst() as T;
 	}
 
 	getLastSegment<T extends NewSegment> (): T {
-		return this.segmentMap.getLast() as T;
+		return this.segments.getLast() as T;
 	}
 
 	getRoadSegments (): TvRoad[] {
@@ -308,6 +357,10 @@ export abstract class AbstractSpline {
 
 	getJunctionSegments (): TvJunction[] {
 		return this.getSegments().filter( segment => segment instanceof TvJunction ) as TvJunction[];
+	}
+
+	hasLinks (): boolean {
+		return this.hasPredecessor() || this.hasSuccessor();
 	}
 
 	hasSuccessor (): boolean {
@@ -371,8 +424,8 @@ export abstract class AbstractSpline {
 		}
 	}
 
-	hasSegment ( segment: TvJunction | TvRoad ): boolean {
-		return this.segmentMap.contains( segment );
+	hasSegment ( segment: NewSegment ): boolean {
+		return this.segments.contains( segment );
 	}
 
 	isLinkedToJunction (): boolean {
@@ -414,7 +467,7 @@ export abstract class AbstractSpline {
 	}
 
 	protected fireMakeSegmentMeshEvents (): void {
-		for ( const segment of this.segmentMap.toArray() ) {
+		for ( const segment of this.segments.toArray() ) {
 			if ( segment instanceof TvRoad ) {
 				MapEvents.makeMesh.emit( segment );
 			}
@@ -434,7 +487,11 @@ export abstract class AbstractSpline {
 	}
 
 	getSegmentKeys (): number[] {
-		return [ ...this.segmentMap.keys() ];
+		return [ ...this.segments.keys() ];
+	}
+
+	getNextSegmentKey ( segment: NewSegment ): number {
+		return this.segments.getNextKey( segment );
 	}
 
 	equals ( spline: AbstractSpline ): boolean {
