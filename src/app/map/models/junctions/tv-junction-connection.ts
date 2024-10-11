@@ -12,6 +12,8 @@ import { TvPosTheta } from '../tv-pos-theta';
 import { Log } from 'app/core/utils/log';
 import { RoadUtils } from 'app/utils/road.utils';
 import { TvLink } from '../tv-link';
+import { MapEvents } from 'app/events/map-events';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 /**
 
@@ -46,7 +48,7 @@ export class TvJunctionConnection {
 	 */
 	public isCornerConnection: boolean;
 
-	public junction: TvJunction;
+	private junction: TvJunction;
 
 	/**
 	 *
@@ -66,6 +68,12 @@ export class TvJunctionConnection {
 		if ( incomingRoad?.id == connectingRoad?.id ) Log.error( 'InvalidConnection', this.toString() );
 
 	}
+
+	setJunction ( junction: TvJunction ): void { this.junction = junction; }
+
+	getJunction (): TvJunction { return this.junction; }
+
+	get spline (): AbstractSpline { return this.connectingRoad.spline; }
 
 	get incomingRoadId (): number {
 		return this.incomingRoad?.id;
@@ -331,5 +339,29 @@ export class TvJunctionConnection {
 
 	}
 
+	remove (): void {
+
+		if ( this.junction.getMap().hasRoad( this.connectingRoad ) ) {
+			this.junction.getMap().removeRoad( this.connectingRoad );
+		} else {
+			Log.warn( "ConnectionRoad already removed", this.connectingRoad.toString() );
+		}
+
+		if ( this.junction.getMap().hasSpline( this.spline ) ) {
+			this.junction.getMap().removeSpline( this.spline );
+		} else {
+			Log.warn( "ConnectionSpline already removed", this.spline.toString() );
+		}
+
+		if ( this.junction.hasConnection( this ) ) {
+			this.junction.removeConnection( this );
+		} else {
+			Log.warn( "Connection already removed", this.toString() );
+		}
+
+		MapEvents.removeMesh.emit( this.connectingRoad );
+		MapEvents.removeMesh.emit( this.spline );
+
+	}
 }
 

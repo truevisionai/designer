@@ -14,11 +14,15 @@ import { DebugDrawService } from "app/services/debug/debug-draw.service";
 } )
 export class TvJunctionBoundaryService {
 
+	public static instance: TvJunctionBoundaryService;
+
 	constructor (
 		private outerBoundaryService: TvJunctionOuterBoundaryService,
 		private innerBoundaryService: TvJunctionInnerBoundaryService,
 		private debugService: DebugDrawService,
-	) { }
+	) {
+		TvJunctionBoundaryService.instance = this;
+	}
 
 	update ( junction: TvJunction ): void {
 

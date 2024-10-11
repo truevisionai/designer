@@ -269,6 +269,26 @@ export class SplineTestHelper {
 		this.splineService.add( splineB );
 	}
 
+	addReverseUShapedSpline ( size = 50 ): AbstractSpline {
+
+		const positions = [
+			new Vector3( -size, -size, 0 ),
+			new Vector3( -size, size, 0 ),
+			new Vector3( size, size, 0 ),
+			new Vector3( size, -size, 0 )
+		];
+
+		const spline = SplineFactory.createFromPoints( [] );
+
+		const points = positions.map( position => ControlPointFactory.createControl( spline, position ) );
+
+		spline.addControlPoints( points );
+
+		this.splineService.add( spline );
+
+		return spline;
+	}
+
 	createAngleT2RoadJunction () {
 
 		const splineA = this.createStraightSpline( new Vector3( 0, 0, 0 ), 100, 90 );

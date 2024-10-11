@@ -66,9 +66,9 @@ export class JunctionEventListener {
 
 		const splines = junction.getIncomingSplines();
 
-		if ( splines.length <= 1 ) {
+		if ( splines.length <= 1 && junction.auto ) {
 
-			this.junctionManager.removeJunction( junction );
+			this.removeJunction( junction );
 
 		} else {
 
@@ -80,33 +80,27 @@ export class JunctionEventListener {
 
 	removeJunction ( junction: TvJunction ): void {
 
-		const incomingSplines = junction.getIncomingSplines();
+		const splines = junction.getIncomingSplines();
 
-		this.removeConnectionRoadAndSplines( junction );
+		junction.removeAllConnections();
 
-		this.mapService.removeJunction( junction );
+		for ( const spline of splines ) {
+
+			if ( !spline.hasSegment( junction ) ) continue;
+
+			spline.removeJunctionSegmentAndUpdate( junction );
+
+		}
 
 		MapEvents.removeMesh.emit( junction );
 
-		incomingSplines.forEach( spline => {
-
-			spline.removeSegment( junction );
-
-			MapEvents.splineSegmentRemoved.emit( { spline } );
-
-		} );
+		this.mapService.removeJunction( junction );
 
 	}
 
-	removeConnectionRoadAndSplines ( junction: TvJunction ): void {
+	removeJunctionSegmentFromSpline ( spline: AbstractSpline, junction: TvJunction ): void {
 
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			MapEvents.splineRemoved.emit( { spline: connection.getSpline() } );
-
-		}
+		spline.removeJunctionSegmentAndUpdate( junction );
 
 	}
 
@@ -120,6 +114,23 @@ export class JunctionEventListener {
 
 		this.junctionManager.removeJunction( event.junction );
 
+		// if ( event.junction.auto ) {
+
+		// 	this.junctionManager.removeJunction( event.junction );
+
+		// } else {
+
+		// 	event.junction.getRoadLinks().forEach( link => {
+
+		// 		link.unlink( link.getElement() as TvRoad, link.contact );
+
+		// 	} );
+
+		// 	this.mapService.removeJunction( event.junction );
+
+		// 	MapEvents.removeMesh.emit( event.junction );
+
+		// }
 	}
 
 }

@@ -95,6 +95,7 @@ export class TvMap {
 		if ( this.splines.find( s => s.uuid == spline.uuid ) ) {
 			throw new DuplicateKeyException( `Spline with uuid ${ spline.uuid } already exists` );
 		}
+		spline.setMap( this );
 		this.splines.push( spline );
 	}
 
@@ -219,6 +220,8 @@ export class TvMap {
 		if ( this.junctions.has( junction.id ) ) {
 			throw new DuplicateKeyException( `Junction with id ${ junction.id } already exists` );
 		}
+
+		junction.setMap( this );
 
 		this.junctions.set( junction.id, junction );
 

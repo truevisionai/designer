@@ -2,26 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { HttpClientModule } from "@angular/common/http";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { JunctionManager } from "./junction-manager";
 import { SplineFactory } from "../services/spline/spline.factory";
 import { Vector3 } from "three";
 import { TvPosTheta } from "../map/models/tv-pos-theta";
 import { Maths } from "../utils/maths";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { SplineManager } from "./spline-manager";
 import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
 import { SplinePositionService } from "app/services/spline/spline-position.service";
+import { setupTest } from "tests/setup-tests";
 
 describe( 'JunctionManager', () => {
 
 	let splineTestHelper: SplineTestHelper;
-	let eventServiceProvider: EventServiceProvider;
 	let mapService: MapService;
 	let junctionManager: JunctionManager;
 	let splineManager: SplineManager;
@@ -30,13 +27,9 @@ describe( 'JunctionManager', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ JunctionManager ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		splineTestHelper = TestBed.inject( SplineTestHelper );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		mapService = TestBed.inject( MapService );
 		junctionManager = TestBed.inject( JunctionManager );
 		splineManager = TestBed.inject( SplineManager );
@@ -112,13 +105,15 @@ describe( 'JunctionManager', () => {
 
 	it( 'should convert 2-spline-junction into 1 intersection', fakeAsync( () => {
 
-		eventServiceProvider.init();
-
 		splineTestHelper.createXJunctionWithTwoRoads( false );
 
 		tick( 1000 );
 
-		const intersections = junctionManager.getJunctionIntersections( mapService.findJunction( 1 ) );
+		const J1 = mapService.findJunction( 1 );
+
+		expect( J1 ).toBeDefined();
+
+		const intersections = J1.getSplineIntersections();
 
 		expect( intersections.length ).toBe( 1 );
 
@@ -126,13 +121,15 @@ describe( 'JunctionManager', () => {
 
 	it( 'should convert 3-spline-junction into 3 intersections', fakeAsync( () => {
 
-		eventServiceProvider.init();
-
 		splineTestHelper.createTJunctionWith3Roads( false );
 
 		tick( 1000 );
 
-		const intersections = junctionManager.getJunctionIntersections( mapService.findJunction( 1 ) );
+		const J1 = mapService.findJunction( 1 );
+
+		expect( J1 ).toBeDefined();
+
+		const intersections = J1.getSplineIntersections();
 
 		expect( intersections.length ).toBe( 3 );
 
@@ -140,21 +137,21 @@ describe( 'JunctionManager', () => {
 
 	it( 'should convert 4-spline-junction into 6 intersections', fakeAsync( () => {
 
-		eventServiceProvider.init();
-
 		splineTestHelper.createXJunctionWithFourRoads( false );
 
 		tick( 1000 );
 
-		const intersections = junctionManager.getJunctionIntersections( mapService.findJunction( 1 ) );
+		const J1 = mapService.findJunction( 1 );
+
+		expect( J1 ).toBeDefined();
+
+		const intersections = J1.getSplineIntersections();
 
 		expect( intersections.length ).toBe( 6 );
 
 	} ) );
 
 	it( 'should detect no new intersections when spline is updated', fakeAsync( () => {
-
-		eventServiceProvider.init();
 
 		splineTestHelper.createXJunctionWithTwoRoads( false );
 
@@ -169,8 +166,6 @@ describe( 'JunctionManager', () => {
 	} ) );
 
 	it( 'should detect new intersections when new spline is added into junction', fakeAsync( () => {
-
-		eventServiceProvider.init();
 
 		splineTestHelper.createXJunctionWithTwoRoads( false );
 
@@ -187,8 +182,6 @@ describe( 'JunctionManager', () => {
 	} ) );
 
 	it( 'should remove old junction and detect new intersction', fakeAsync( () => {
-
-		eventServiceProvider.init();
 
 		splineTestHelper.createXJunctionWithTwoRoads( false );
 
@@ -212,8 +205,6 @@ describe( 'JunctionManager', () => {
 	xit( 'should categorise junctions correctly for x-junction', fakeAsync( () => {
 
 		// not in use
-
-		eventServiceProvider.init();
 
 		splineTestHelper.createXJunctionWithTwoRoads( false );
 
@@ -248,8 +239,6 @@ describe( 'JunctionManager', () => {
 	xit( 'should categorise junctions correctly for t-junction', fakeAsync( () => {
 
 		// not in use
-
-		eventServiceProvider.init();
 
 		splineTestHelper.createTJunctionWith3Roads( false );
 

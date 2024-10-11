@@ -27,6 +27,7 @@ import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { createGroupsFromIntersections } from "./intersection-group-helper";
 import { JunctionInserter } from "./junction-inserter.service";
 import { RoadFactory } from "app/factories/road-factory.service";
+import { AutomaticJunctions } from "./automatic-junctions";
 
 @Injectable( {
 	providedIn: 'root'
@@ -47,6 +48,7 @@ export class JunctionManager {
 		public splineFixer: SplineFixerService,
 		public connectionManager: ConnectionManager,
 		public intersectionService: SplineIntersectionService,
+		private automaticJunctions: AutomaticJunctions,
 	) {
 	}
 
@@ -112,31 +114,33 @@ export class JunctionManager {
 
 		if ( spline.type == SplineType.EXPLICIT ) return;
 
-		const oldJunctions = spline.getJunctionSegments();
+		this.automaticJunctions.detectJunctions( spline );
 
-		const intersections = this.intersectionService.findIntersections( spline );
+		// const oldJunctions = spline.getJunctionSegments();
 
-		const result = this.categorizeJunctions( oldJunctions, intersections );
+		// const intersections = this.intersectionService.findIntersections( spline );
 
-		this.handleRemovingJunctions( spline, result.junctionsToRemove );
+		// const result = this.categorizeJunctions( oldJunctions, intersections );
 
-		this.handleUpdatingJunctions( spline, result.junctionsToUpdate );
+		// this.handleRemovingJunctions( spline, result.junctionsToRemove );
 
-		const groups = this.createGroups( intersections );
+		// this.handleUpdatingJunctions( spline, result.junctionsToUpdate );
 
-		for ( const group of groups ) {
+		// const groups = this.createGroups( intersections );
 
-			try {
+		// for ( const group of groups ) {
 
-				this.createCoordAndAddLinksAndJunction( group );
+		// 	try {
 
-			} catch ( e ) {
+		// 		this.createCoordAndAddLinksAndJunction( group );
 
-				Log.error( 'Error Creating Junction', e );
+		// 	} catch ( e ) {
 
-			}
+		// 		Log.error( 'Error Creating Junction', e );
 
-		}
+		// 	}
+
+		// }
 	}
 
 	handleUpdatingJunctions ( spline: AbstractSpline, junctionsToUpdate: TvJunction[] ): void {
@@ -300,7 +304,7 @@ export class JunctionManager {
 
 	removeConnections ( junction: TvJunction, incomingRoad: TvRoad ) {
 
-		this.connectionManager.removeConnectionAndRoads( junction, incomingRoad );
+		junction.removeConnectionsByRoad( incomingRoad );
 
 	}
 
