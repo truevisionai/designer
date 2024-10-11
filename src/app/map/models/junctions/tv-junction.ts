@@ -236,10 +236,6 @@ export class TvJunction {
 
 	addConnection ( connection: TvJunctionConnection ): void {
 
-		// if ( this.hasConnection( connection ) ) {
-		// 	Log.error( `Connection with id ${ connection.id } already exists in junction ${ this.id }` );
-		// }
-
 		while ( this.hasConnection( connection ) ) {
 			connection.id++;
 		}
@@ -247,48 +243,26 @@ export class TvJunction {
 		connection.setJunction( this );
 
 		this.connections.set( connection.id, connection );
-
-		Log.info( `Adding connection ${ connection.id } to junction ${ this.id }` );
-
-		// this.map.addRoad( connection.connectingRoad );
-
-		// this.map.addSpline( connection.spline );
-
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	removeConnection ( connection: TvJunctionConnection ): void {
 
 		if ( !this.hasConnection( connection ) ) {
 			throw new ModelNotFoundException( `Connection with id ${ connection.id } not found in junction ${ this.id }` );
 		}
 
-		Log.warn( `Removing connection ${ connection.id } from junction ${ this.id }` );
-
 		this.connections.delete( connection.id );
 
 		if ( this.map.hasRoad( connection.connectingRoad ) ) {
 			this.map.removeRoad( connection.connectingRoad );
-		} else {
-			Log.warn( "ConnectionRoad already removed", connection.connectingRoad.toString() );
 		}
 
 		if ( this.map.hasSpline( connection.spline ) ) {
 			this.map.removeSpline( connection.spline );
-		} else {
-			Log.warn( "ConnectionSpline already removed", connection.spline.toString() );
 		}
-
-		// if ( this.hasConnection( this ) ) {
-		// 	this.removeConnection( this );
-		// } else {
-		// 	Log.warn( "Connection already removed", this.toString() );
-		// }
 
 		MapEvents.removeMesh.emit( connection.connectingRoad );
 		MapEvents.removeMesh.emit( connection.spline );
-
-		// connection.remove();
 
 	}
 

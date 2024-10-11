@@ -216,6 +216,20 @@ export abstract class AbstractSpline {
 
 	}
 
+	shiftSegmentAndUpdateLinks ( offset: number, segment: NewSegment ): void {
+
+		const prevSegment = this.getPreviousSegment( segment );
+		const nextSegment = this.getNextSegment( segment );
+
+		if ( prevSegment instanceof TvRoad ) prevSegment.successor = null;
+		if ( nextSegment instanceof TvRoad ) nextSegment.predecessor = null;
+
+		this.removeSegment( segment );
+
+		this.addSegment( offset, segment );
+
+	}
+
 	removeSegment ( segment: NewSegment ): void {
 
 		if ( !this.hasSegment( segment ) ) {

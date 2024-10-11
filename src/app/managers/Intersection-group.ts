@@ -54,7 +54,15 @@ export class IntersectionGroup {
 
 		}
 
+		this.ensureFirstSegmentIsAtStart();
+
 		this.getSplines().forEach( spline => spline.updateSegmentGeometryAndBounds() );
+
+	}
+
+	private ensureFirstSegmentIsAtStart (): void {
+
+		this.getSplines().forEach( spline => spline.shiftSegment( 0, spline.getFirstSegment() ) );
 
 	}
 

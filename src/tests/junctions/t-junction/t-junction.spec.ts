@@ -4,7 +4,7 @@ import { SplineTestHelper } from "app/services/spline/spline-test-helper.service
 import { expectValidMap } from "../../base-test.spec";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { setupTest } from "tests/setup-tests";
-import { expectTJunction } from "tests/expect-junction.spec";
+import { expectTJunction, expectXJunction } from "tests/expect-junction.spec";
 
 describe( 'T-Junction', () => {
 
@@ -38,13 +38,64 @@ describe( 'T-Junction', () => {
 
 	} );
 
-	it( 'should create one t-junction from 2 roads', () => {
+	it( 'should create simple t-junction from 2 roads', () => {
 
 		splineTestHelper.createSimpleTJunction();
 
 		expect( mapService.getJunctionCount() ).toBe( 1 );
 
 		expectTJunction( mapService.findJunction( 1 ) );
+
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 3 );
+
+	} );
+
+	it( 'should shift simple t-junction from top to bottom of spline', () => {
+
+		const splines = splineTestHelper.createSimpleTJunction();
+
+		splines.horizontal.controlPoints.forEach( point => point.position.y -= 100 );
+
+		splineTestHelper.splineService.update( splines.horizontal );
+
+		expect( mapService.getJunctionCount() ).toBe( 1 );
+
+		expectTJunction( mapService.findJunction( 1 ) );
+
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 3 );
+
+	} );
+
+	it( 'should shift simple t-junction from top to middle of spline', () => {
+
+		const splines = splineTestHelper.createSimpleTJunction();
+
+		splines.horizontal.controlPoints.forEach( point => point.position.y -= 50 );
+
+		splineTestHelper.splineService.update( splines.horizontal );
+
+		expect( mapService.getJunctionCount() ).toBe( 1 );
+
+		expectXJunction( mapService.findJunction( 1 ) );
+
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 4 );
+
+	} );
+
+	it( 'should shift simple t-junction from bottom to middle of spline', () => {
+
+		const splines = splineTestHelper.createSimpleTJunction();
+
+		splines.horizontal.controlPoints.forEach( point => point.position.y -= 100 );
+		splineTestHelper.splineService.update( splines.horizontal );
+		splines.horizontal.controlPoints.forEach( point => point.position.y += 50 );
+		splineTestHelper.splineService.update( splines.horizontal );
+
+		expect( mapService.getJunctionCount() ).toBe( 1 );
+
+		expectXJunction( mapService.findJunction( 1 ) );
+
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 4 );
 
 	} );
 

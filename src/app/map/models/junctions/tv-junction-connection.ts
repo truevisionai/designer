@@ -341,26 +341,7 @@ export class TvJunctionConnection {
 
 	remove (): void {
 
-		if ( this.junction.getMap().hasRoad( this.connectingRoad ) ) {
-			this.junction.getMap().removeRoad( this.connectingRoad );
-		} else {
-			Log.warn( "ConnectionRoad already removed", this.connectingRoad.toString() );
-		}
-
-		if ( this.junction.getMap().hasSpline( this.spline ) ) {
-			this.junction.getMap().removeSpline( this.spline );
-		} else {
-			Log.warn( "ConnectionSpline already removed", this.spline.toString() );
-		}
-
-		if ( this.junction.hasConnection( this ) ) {
-			this.junction.removeConnection( this );
-		} else {
-			Log.warn( "Connection already removed", this.toString() );
-		}
-
-		MapEvents.removeMesh.emit( this.connectingRoad );
-		MapEvents.removeMesh.emit( this.spline );
+		this.junction.removeConnection( this );
 
 	}
 }

@@ -262,11 +262,13 @@ export class SplineTestHelper {
 
 	createSimpleTJunction () {
 
-		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
-		const splineB = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
+		const horizontal = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
+		const vertical = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
 
-		this.splineService.add( splineA );
-		this.splineService.add( splineB );
+		this.splineService.add( horizontal );
+		this.splineService.add( vertical );
+
+		return { horizontal, vertical };
 	}
 
 	addReverseUShapedSpline ( size = 50 ): AbstractSpline {
