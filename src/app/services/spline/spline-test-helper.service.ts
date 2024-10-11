@@ -389,15 +389,13 @@ export class SplineTestHelper {
 		await this.addInRandomOrder( splines, random );
 	}
 
-	async createDoubleTJunctionWith3Roads ( random = false ) {
+	createDoubleTJunctionWith3Roads () {
 
-		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 300 );
-		const splineB = this.createStraightSpline( new Vector3( 100, -100, 0 ), 100, 90 );
-		const splineC = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
+		const horizontal = this.addStraightRoadSpline( new Vector3( -100, 0, 0 ), 300 );
+		const verticalRight = this.addStraightRoadSpline( new Vector3( 100, -100, 0 ), 100, 90 );
+		const verticalLeft = this.addStraightRoadSpline( new Vector3( 0, -100, 0 ), 100, 90 );
 
-		const splines = [ splineA, splineB, splineC ];
-
-		await this.addInRandomOrder( splines, random );
+		return { horizontal, verticalRight, verticalLeft };
 	}
 
 	private async addInRandomOrder ( splines: AbstractSpline[], random = true ) {
