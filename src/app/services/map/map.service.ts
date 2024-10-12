@@ -75,13 +75,15 @@ export class MapService {
 
 	}
 
+	getNonJunctionRoadCount (): number {
+
+		return this.nonJunctionRoads.length;
+
+	}
+
 	hasRoad ( road: TvRoad | number ) {
 
-		if ( typeof road === 'number' ) {
-			return this.map.roads.has( road );
-		}
-
-		return this.map.roads.has( road.id );
+		return this.map.hasRoad( road );
 
 	}
 
@@ -109,7 +111,7 @@ export class MapService {
 
 		try {
 
-			return this.map.getRoadById( id );
+			return this.map.getRoad( id );
 
 		} catch ( error ) {
 
@@ -163,7 +165,7 @@ export class MapService {
 
 		try {
 
-			return this.map.getJunctionById( id );
+			return this.map.getJunction( id );
 
 		} catch ( error ) {
 
@@ -355,6 +357,8 @@ export class MapService {
 		return this.roads.length;
 
 	}
+
+	getRoads (): TvRoad[] { return this.map.getRoads(); }
 
 	getSplineCount () {
 

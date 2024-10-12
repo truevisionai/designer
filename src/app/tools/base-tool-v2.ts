@@ -118,6 +118,9 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 		this.handlers.removeObject( object );
 
+		// if an object is removed then it should not be in selected objects
+		this.selectionService.removeFromSelected( object );
+
 	}
 
 	override onObjectSelected ( object: Object ): void {

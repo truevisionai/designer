@@ -72,8 +72,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public direction: TravelDirection;
 
-	public roadId: number;
-
 	public successorId: number;
 	public successorUUID: string;
 
@@ -90,7 +88,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	private _laneSection: TvLaneSection;
 
-	constructor ( side: TvLaneSide, id: number, type: TvLaneType, level: boolean = false, roadId?: number, laneSection?: TvLaneSection ) {
+	constructor ( side: TvLaneSide, id: number, type: TvLaneType, level: boolean = false, laneSection?: TvLaneSection ) {
 
 		this.side = side;
 
@@ -98,7 +96,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.id = id;
 		this.type = type;
 		this.level = level;
-		this.roadId = roadId;
 		this._laneSection = laneSection;
 
 		if ( this.side === TvLaneSide.LEFT ) {
@@ -221,7 +218,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	addWidthRecord ( s: number, a: number, b: number, c: number, d: number ) {
 
-		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d, this ) );
+		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d ) );
 
 	}
 
@@ -577,10 +574,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		const laneId = id || this.id;
 
-		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this._laneSection );
+		const newLane = new TvLane( this.side, laneId, this.type, this.level, this._laneSection );
 
 		this.getLaneWidthVector().forEach( width => {
-			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d, newLane ) );
+			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d ) );
 		} );
 
 		this.roadMarks.forEach( roadMark => {
@@ -596,7 +593,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		const laneId = id || this.id;
 
-		const newLane = new TvLane( this.side, laneId, this.type, this.level, this.roadId, this._laneSection );
+		const newLane = new TvLane( this.side, laneId, this.type, this.level, this._laneSection );
 
 		newLane.direction = this.direction;
 		newLane.threeMaterialGuid = this.threeMaterialGuid;

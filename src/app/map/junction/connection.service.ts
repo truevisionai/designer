@@ -38,8 +38,6 @@ export class ConnectionService {
 
 		junction.removeConnection( connection );
 
-		this.roadService.remove( connection.connectingRoad );
-
 	}
 
 	addLink ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {

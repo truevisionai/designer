@@ -30,14 +30,14 @@ export class SplineLinkService {
 
 	onSplineAdded ( spline: AbstractSpline ): void {
 
-		const lastSegment = spline.segmentMap.getLast();
+		const lastSegment = spline.getLastSegment();
 		const successor = spline.getSuccessor();
 
 		if ( successor instanceof TvJunction && lastSegment instanceof TvRoad ) {
 			this.junctionManager.addLink( successor as TvJunction, lastSegment, TvContactPoint.END );
 		}
 
-		const firstSegment = spline.segmentMap.getFirst();
+		const firstSegment = spline.getFirstSegment();
 		const predecessor = spline.getPredecessor();
 
 		if ( predecessor instanceof TvJunction && firstSegment instanceof TvRoad ) {
@@ -71,7 +71,8 @@ export class SplineLinkService {
 			const junction = spline.getSuccessor() as TvJunction;
 			const road = spline.getLastSegment() as TvRoad;
 
-			this.connectionManager.removeConnectionAndRoads( junction, road );
+			junction.removeConnectionsByRoad( road );
+
 			this.junctionManager.updateJunction( junction );
 
 		}
@@ -81,7 +82,8 @@ export class SplineLinkService {
 			const junction = spline.getPredecessor() as TvJunction;
 			const road = spline.getFirstSegment() as TvRoad;
 
-			this.connectionManager.removeConnectionAndRoads( junction, road );
+			junction.removeConnectionsByRoad( road );
+
 			this.junctionManager.updateJunction( junction );
 
 		}
@@ -90,7 +92,7 @@ export class SplineLinkService {
 
 	private removeJunctionSegments ( spline: AbstractSpline ): void {
 
-		for ( const segment of spline.segmentMap.toArray() ) {
+		for ( const segment of spline.getSegments() ) {
 
 			if ( segment instanceof TvJunction ) {
 
@@ -112,8 +114,8 @@ export class SplineLinkService {
 
 	private unlinkSpline ( spline: AbstractSpline ): void {
 
-		const firstSegment = spline.segmentMap.getFirst();
-		const lastSegment = spline.segmentMap.getLast();
+		const firstSegment = spline.getFirstSegment();
+		const lastSegment = spline.getLastSegment();
 
 		if ( firstSegment instanceof TvRoad ) {
 			RoadUtils.unlinkPredecessor( firstSegment, false );
@@ -151,7 +153,7 @@ export class SplineLinkService {
 
 		if ( predecessor instanceof TvRoad ) {
 
-			const firstRoad = spline.segmentMap.getFirst() instanceof TvRoad ? spline.segmentMap.getFirst() as TvRoad : null;
+			const firstRoad = spline.getFirstSegment() instanceof TvRoad ? spline.getFirstSegment() as TvRoad : null;
 
 			if ( firstRoad ) this.syncRoadPredecessorrSpline( firstRoad );
 

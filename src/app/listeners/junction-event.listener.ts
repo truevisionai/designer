@@ -10,6 +10,10 @@ import { JunctionManager } from "app/managers/junction-manager";
 import { Environment } from "app/core/utils/environment";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { MapService } from "app/services/map/map.service";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { ConnectionManager } from "app/map/junction/connection.manager";
+import { JunctionService } from "app/services/junction/junction.service";
+import { TvRoad } from "app/map/models/tv-road.model";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,6 +25,8 @@ export class JunctionEventListener {
 	constructor (
 		private junctionManager: JunctionManager,
 		private mapService: MapService,
+		private connectionManager: ConnectionManager,
+		private junctionService: JunctionService
 	) {
 	}
 
@@ -30,15 +36,39 @@ export class JunctionEventListener {
 		MapEvents.junctionRemoved.subscribe( e => this.onJunctionRemoved( e ) );
 		MapEvents.junctionUpdated.subscribe( e => this.onJunctionUpdated( e ) );
 
+		MapEvents.splineGeometryUpdated.subscribe( e => this.onSplineGeometryUpdated( e ) );
+
+	}
+
+	onSplineGeometryUpdated ( spline: AbstractSpline ): void {
+
+		if ( spline.isConnectingRoad() ) {
+
+			const connectionRoad = spline.getFirstSegment() as TvRoad;
+
+			const junction = connectionRoad.junction;
+
+			const connection = junction.getConnections().find( c => c.connectingRoad == connectionRoad );
+
+			this.connectionManager.buildConnectionGeometry( junction, connection );
+
+			this.junctionService.updateJunctionMeshAndBoundary( junction );
+
+		} else {
+
+			this.junctionManager.detectJunctions( spline );
+
+		}
+
 	}
 
 	onJunctionUpdated ( junction: TvJunction ): void {
 
 		const splines = junction.getIncomingSplines();
 
-		if ( splines.length <= 1 ) {
+		if ( splines.length <= 1 && junction.auto ) {
 
-			this.junctionManager.removeJunction( junction );
+			this.removeJunction( junction );
 
 		} else {
 
@@ -50,33 +80,27 @@ export class JunctionEventListener {
 
 	removeJunction ( junction: TvJunction ): void {
 
-		const incomingSplines = junction.getIncomingSplines();
+		const splines = junction.getIncomingSplines();
 
-		this.removeConnectionRoadAndSplines( junction );
+		junction.removeAllConnections();
 
-		this.mapService.removeJunction( junction );
+		for ( const spline of splines ) {
+
+			if ( !spline.hasSegment( junction ) ) continue;
+
+			spline.removeJunctionSegmentAndUpdate( junction );
+
+		}
 
 		MapEvents.removeMesh.emit( junction );
 
-		incomingSplines.forEach( spline => {
-
-			spline.removeSegment( junction );
-
-			MapEvents.splineSegmentRemoved.emit( { spline } );
-
-		} );
+		this.mapService.removeJunction( junction );
 
 	}
 
-	removeConnectionRoadAndSplines ( junction: TvJunction ): void {
+	removeJunctionSegmentFromSpline ( spline: AbstractSpline, junction: TvJunction ): void {
 
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			MapEvents.splineRemoved.emit( { spline: connection.getSpline() } );
-
-		}
+		spline.removeJunctionSegmentAndUpdate( junction );
 
 	}
 
@@ -90,6 +114,23 @@ export class JunctionEventListener {
 
 		this.junctionManager.removeJunction( event.junction );
 
+		// if ( event.junction.auto ) {
+
+		// 	this.junctionManager.removeJunction( event.junction );
+
+		// } else {
+
+		// 	event.junction.getRoadLinks().forEach( link => {
+
+		// 		link.unlink( link.getElement() as TvRoad, link.contact );
+
+		// 	} );
+
+		// 	this.mapService.removeJunction( event.junction );
+
+		// 	MapEvents.removeMesh.emit( event.junction );
+
+		// }
 	}
 
 }

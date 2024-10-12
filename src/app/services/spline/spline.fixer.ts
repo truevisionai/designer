@@ -73,13 +73,13 @@ export class SplineFixerService {
 
 	private fixMinSegmentCount ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.length == 0 ) {
+		if ( spline.getSegmentCount() == 0 ) {
 
 			const road = this.roadFactory.createDefaultRoad();
 
 			road.spline = spline;
 
-			spline.segmentMap.set( 0, road );
+			spline.addSegment( 0, road );
 
 			this.mapService.map.addRoad( road );
 
@@ -94,9 +94,9 @@ export class SplineFixerService {
 
 	private fixFirstSegment ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.length >= 1 ) {
+		if ( spline.getSegmentCount() >= 1 ) {
 
-			const firstSegment = spline.segmentMap.getFirst();
+			const firstSegment = spline.getFirstSegment();
 
 			if ( firstSegment instanceof TvRoad ) {
 
@@ -105,7 +105,7 @@ export class SplineFixerService {
 			}
 
 			// get first key
-			const firstKey = spline.segmentMap.keys().next().value;
+			const firstKey = spline.getSegmentKeys()[ 0 ];
 
 			if ( !Maths.approxEquals( firstKey, 0 ) ) {
 
@@ -122,7 +122,7 @@ export class SplineFixerService {
 
 	private fixEachSegmentStart ( spline: AbstractSpline ) {
 
-		spline.segmentMap.forEach( ( segment, sOffset ) => {
+		spline.forEachSegment( ( segment, sOffset ) => {
 
 			if ( segment instanceof TvRoad ) {
 
@@ -147,10 +147,10 @@ export class SplineFixerService {
 
 		let index = 0;
 
-		spline.segmentMap.forEach( ( segment, sOffset ) => {
+		spline.getSegments().forEach( segment => {
 
 			// cannot remove first and last segment
-			if ( index == 0 || index == spline.segmentMap.length - 1 ) {
+			if ( index == 0 || index == spline.getSegmentCount() - 1 ) {
 				index++
 				return;
 			}

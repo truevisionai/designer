@@ -88,7 +88,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		try {
 
-			return this.mapService.map.getRoadById( roadId );
+			return this.mapService.map.getRoad( roadId );
 
 		} catch ( error ) {
 
@@ -460,34 +460,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 		position.z += laneHeight.getLinearValue( 0.5 );
 
 		return position;
-	}
-
-	sortLinks ( links: TvLink[], clockwise = true ): TvLink[] {
-
-		const points: TvPosTheta[] = links.map( coord => coord.getPosition() );
-
-		const center = GeometryUtils.getCentroid( points.map( p => p.position ) );
-
-		if ( clockwise ) {
-
-			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
-
-			return links.map( ( point, index ) => ( {
-				point,
-				index
-			} ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
-
-		} else {
-
-			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
-
-			return links.map( ( point, index ) => ( {
-				point,
-				index
-			} ) ).sort( ( a, b ) => angles[ b.index ] - angles[ a.index ] ).map( sortedObj => sortedObj.point );
-
-		}
-
 	}
 
 	findCentroid ( links: TvLink[] ) {

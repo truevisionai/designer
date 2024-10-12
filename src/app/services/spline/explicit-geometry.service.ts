@@ -47,7 +47,7 @@ export class ExplicitGeometryService {
 
 			const sStart = road.sStart;
 
-			const sEnd = spline.segmentMap.getNextKey( road ) || splineLength;
+			const sEnd = spline.getNextSegmentKey( road ) || splineLength;
 
 			const newGeometries = breakGeometries( geometries, sStart, sEnd );
 

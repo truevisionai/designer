@@ -28,7 +28,7 @@ export class MapManager {
 
 		if ( this.debug ) console.debug( "onMapRemoved", map );
 
-		map.roads.forEach( road => {
+		map.getRoads().forEach( road => {
 
 			map.gameObject.remove( road.gameObject );
 

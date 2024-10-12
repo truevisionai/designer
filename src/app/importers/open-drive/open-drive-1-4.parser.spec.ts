@@ -62,7 +62,7 @@ describe( 'OpenDrive Parsing', () => {
 
 		const map = testHelper.openDriveParser.parse( contents );
 
-		const road = map.roads.get( 1 );
+		const road = map.getRoad( 1 );
 
 		expect( road ).toBeDefined();
 

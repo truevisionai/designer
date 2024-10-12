@@ -26,7 +26,7 @@ import { InvalidRoadLength, NoGeometriesFound, ValidationException } from "../..
 import { RoadObjectValidator } from '../../../map/road-object/road-object-validator';
 import { TvMaterialService } from "../../../assets/material/tv-material.service";
 import { MeshBuilder } from 'app/core/builders/mesh.builder';
-import { Distance, RoadDistance } from 'app/map/road/road-distance';
+import { RoadDistance } from 'app/map/road/road-distance';
 
 @Injectable()
 export class RoadMeshBuilder implements MeshBuilder<TvRoad> {

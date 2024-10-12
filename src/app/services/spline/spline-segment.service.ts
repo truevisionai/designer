@@ -48,25 +48,13 @@ export class SplineSegmentService {
 
 		for ( const connection of connections ) {
 
-			this.removeRoadAndSpline( connection );
+			MapEvents.removeMesh.emit( connection.connectingRoad.spline );
 
 			junction.removeConnection( connection );
 
 		}
 
 		MapEvents.junctionUpdated.emit( junction );
-
-	}
-
-	removeRoadAndSpline ( connection: TvJunctionConnection ): void {
-
-		Log.info( 'Removing connection', connection.toString() );
-
-		this.mapService.removeSpline( connection.connectingRoad.spline );
-
-		this.mapService.removeRoad( connection.connectingRoad );
-
-		MapEvents.removeMesh.emit( connection.connectingRoad.spline );
 
 	}
 
@@ -140,7 +128,7 @@ export class SplineSegmentService {
 
 	private addRoadSegment ( spline: AbstractSpline, sOffset: number, newRoad: TvRoad ): void {
 
-		const existingRoad = spline.segmentMap.findAt( sOffset ) as TvRoad;
+		const existingRoad = spline.getSegmentAt( sOffset ) as TvRoad;
 
 		existingRoad.successor?.replace( existingRoad, newRoad, TvContactPoint.END );
 

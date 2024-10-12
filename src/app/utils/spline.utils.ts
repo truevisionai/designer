@@ -139,11 +139,7 @@ export class SplineUtils {
 
 	static removeSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction ): boolean {
 
-		if ( !this.hasSegment( spline, segment ) ) {
-			throw new ModelNotFoundException( `Segment not found: ${ segment?.toString() }` );
-		}
-
-		spline.segmentMap.remove( segment );
+		spline.removeSegment( segment );
 
 		return true;
 
@@ -151,59 +147,21 @@ export class SplineUtils {
 
 	static hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction | null ) {
 
-		if ( !spline ) {
-			Log.error( 'Spline is null', segment?.toString() );
-			return;
-		}
-
-		return spline.segmentMap.contains( segment );
+		return spline.hasSegment( segment );
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ) {
 
-		if ( !spline ) {
-			throw new InvalidArgumentException( `Spline is null: ${ sOffset }, ${ segment?.toString() }` );
-		}
-
-		if ( sOffset > spline.getLength() ) {
-			throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ spline.toString() }` );
-		}
-
-		if ( sOffset < 0 ) {
-			throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ spline.toString() }` );
-		}
-
-		if ( sOffset == null ) {
-			throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ spline.toString() }, ${ segment?.toString() }` );
-		}
-
-		if ( this.hasSegment( spline, segment ) ) {
-			throw new DuplicateModelException( `Segment already exists, avoid adding again: ${ sOffset }, ${ segment?.toString() }` );
-		}
-
-		if ( spline.segmentMap.hasKey( sOffset ) ) {
-			throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ spline.segmentMap.keys() }` );
-		}
-
-		spline.segmentMap.remove( segment );
-
-		spline.segmentMap.set( sOffset, segment );
-
-		if ( segment instanceof TvRoad ) {
-
-			segment.spline = spline;
-
-			segment.sStart = sOffset;
-
-		}
+		spline.addSegment( sOffset, segment );
 
 	}
 
 
 	static areLinksCorrect ( spline: AbstractSpline ): boolean {
 
-		const segments = spline.segmentMap.toArray();
+		const segments = spline.getSegments();
 
 		if ( segments.length == 0 ) return true;
 

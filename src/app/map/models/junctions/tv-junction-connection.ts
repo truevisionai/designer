@@ -12,6 +12,8 @@ import { TvPosTheta } from '../tv-pos-theta';
 import { Log } from 'app/core/utils/log';
 import { RoadUtils } from 'app/utils/road.utils';
 import { TvLink } from '../tv-link';
+import { MapEvents } from 'app/events/map-events';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 /**
 
@@ -46,7 +48,7 @@ export class TvJunctionConnection {
 	 */
 	public isCornerConnection: boolean;
 
-	public junction: TvJunction;
+	private junction: TvJunction;
 
 	/**
 	 *
@@ -66,6 +68,12 @@ export class TvJunctionConnection {
 		if ( incomingRoad?.id == connectingRoad?.id ) Log.error( 'InvalidConnection', this.toString() );
 
 	}
+
+	setJunction ( junction: TvJunction ): void { this.junction = junction; }
+
+	getJunction (): TvJunction { return this.junction; }
+
+	get spline (): AbstractSpline { return this.connectingRoad.spline; }
 
 	get incomingRoadId (): number {
 		return this.incomingRoad?.id;
@@ -285,7 +293,7 @@ export class TvJunctionConnection {
 	}
 
 
-	getHash (): string {
+	private getHash (): string {
 
 		let hash = this.incomingRoadId + '_';
 
@@ -299,6 +307,13 @@ export class TvJunctionConnection {
 
 		return hash;
 	}
+
+	matches ( target: TvJunctionConnection ): boolean {
+
+		return this.getHash() == target.getHash();
+
+	}
+
 
 	replaceIncomingRoad ( target: TvRoad, incomingRoad: TvRoad, incomingRoadContact: TvContactPoint ): void {
 
@@ -324,5 +339,10 @@ export class TvJunctionConnection {
 
 	}
 
+	remove (): void {
+
+		this.junction.removeConnection( this );
+
+	}
 }
 

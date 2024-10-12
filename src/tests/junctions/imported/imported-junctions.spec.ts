@@ -2,8 +2,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { SplineTestHelper, STRAIGHT_XODR } from "../../app/services/spline/spline-test-helper.service";
-import { JunctionToolHelper } from "../../app/tools/junction/junction-tool.helper";
+import { SplineTestHelper, STRAIGHT_XODR } from "../../../app/services/spline/spline-test-helper.service";
+import { JunctionToolHelper } from "../../../app/tools/junction/junction-tool.helper";
 import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
 import { Vector3 } from 'three';
 
@@ -37,7 +37,7 @@ describe( 'Imported XJunction: Tests', () => {
 
 		const map = testHelper.openDriveParser.parse( contents );
 
-		const road = map.roads.get( 1 );
+		const road = map.getRoad( 1 );
 
 		expect( road ).toBeDefined();
 

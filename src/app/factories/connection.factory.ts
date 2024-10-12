@@ -433,7 +433,7 @@ export class ConnectionFactory {
 
 		road.spline = SplineFactory.createManeuverSpline( entry, exit );
 
-		road.spline.segmentMap.set( 0, road );
+		road.spline.addSegment( 0, road );
 
 		this.splineBuilder.buildGeometry( road.spline );
 
@@ -562,7 +562,7 @@ export class ConnectionFactory {
 
 		for ( const connection of connections ) {
 
-			if ( connection.getHash() == target.getHash() ) {
+			if ( connection.matches( target ) ) {
 				return true;
 			}
 

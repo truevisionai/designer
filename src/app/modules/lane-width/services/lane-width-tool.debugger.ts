@@ -16,7 +16,7 @@ import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from "../../../services/debug/road-debug.service";
 import { Object3D } from 'three';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
-import { Distance, LaneDistance, RoadDistance } from 'app/map/road/road-distance';
+import { LaneDistance, RoadDistance } from 'app/map/road/road-distance';
 
 @Injectable()
 export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {

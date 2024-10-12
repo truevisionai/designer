@@ -13,6 +13,9 @@ import { Asset } from 'app/assets/asset.model';
 import { MapService } from 'app/services/map/map.service';
 import { TvJunctionType } from 'app/map/models/junctions/tv-junction-type';
 import { Log } from 'app/core/utils/log';
+import { SplineIntersection } from "../services/junction/spline-intersection";
+import { IntersectionGroup } from 'app/managers/Intersection-group';
+import { Assert } from 'app/utils/assert';
 
 @Injectable( {
 	providedIn: 'root'
@@ -64,6 +67,26 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 		return new DefaultJunction( 'Junction', 0 );
 	}
 
+	createOrGetJunctionFromGroup ( group: IntersectionGroup ): TvJunction {
+
+		const junctions = group.getJunctions();
+
+		Assert.isTrue( junctions.length <= 1, 'Multiple junctions found in group' );
+
+		if ( junctions.length == 0 ) {
+
+			return this.createAutoJunction( group.getRepresentativePosition() );
+
+		}
+
+		if ( junctions.length == 1 ) {
+
+			return junctions[0];
+
+		}
+
+	}
+
 	createAutoJunction ( position: Vector3 ): TvJunction {
 
 		const junction = this.createByType( TvJunctionType.AUTO );
@@ -74,9 +97,33 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createFromPosition ( position: Vector3 ): TvJunction {
+	createAutoJunctionFromGroup ( group: IntersectionGroup ): AutoJunction {
 
-		// if ( !position ) throw new InvalidArgumentException( 'Position is required' );
+		const junction = this.createByType( TvJunctionType.AUTO ) as AutoJunction;
+
+		junction.centroid = group.getRepresentativePosition();
+
+		junction.addSpline( group.getSplines() );
+
+		return junction;
+
+	}
+
+	createAutoJunctionFromIntersection ( intersection: SplineIntersection ): TvJunction {
+
+		const junction = this.createByType( TvJunctionType.AUTO ) as AutoJunction;
+
+		junction.centroid = intersection.getPosition();
+
+		junction.addSpline( intersection.spline );
+
+		junction.addSpline( intersection.otherSpline );
+
+		return junction;
+
+	}
+
+	createFromPosition ( position: Vector3 ): TvJunction {
 
 		const junction = this.createByType();
 
@@ -120,7 +167,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createCustomJunction ( position: Vector3 ) {
+	createCustomJunction ( position: Vector3 ): TvJunction {
 
 		const junction = this.createByType();
 

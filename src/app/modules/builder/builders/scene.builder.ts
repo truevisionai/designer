@@ -174,9 +174,9 @@ export class SceneBuilder {
 			throw new Error( `No geometry found for road id ${ road.id }` );
 		}
 
-		if ( spline.segmentMap.length == 0 ) {
+		if ( spline.getSegmentCount() == 0 ) {
 			Log.warn( `No segments found for road id ${ road.id }` );
-			spline.segmentMap.set( 0, road );
+			spline.addSegment( 0, road );
 		}
 	}
 

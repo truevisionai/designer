@@ -36,7 +36,7 @@ export class VehicleWaypointController extends AbstractController {
 
 		const refPos = new TvPosTheta();
 
-		const currentRoad = this.map.getRoadById( this.entity.roadId );
+		const currentRoad = this.map.getRoad( this.entity.roadId );
 
 		for ( let s = this.entity.sCoordinate; s < currentRoad.length; s++ ) {
 

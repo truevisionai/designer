@@ -9,7 +9,7 @@ import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
-import { traverseLanes } from 'app/utils/road.utils';
+import { traverseLanes } from "app/utils/traverseLanes";
 
 @Injectable( {
 	providedIn: 'root'

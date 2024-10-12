@@ -196,7 +196,7 @@ export class TvLaneSection {
 	 */
 	createLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
 
-		const newLane = new TvLane( laneSide, id, type, level, this.road?.id, this );
+		const newLane = new TvLane( laneSide, id, type, level, this );
 
 		this.addLaneInstance( newLane, sort );
 

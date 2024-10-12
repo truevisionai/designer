@@ -245,7 +245,7 @@ describe( 'SplineLinkService: Tests', () => {
 
 		expectValidMap( mapService );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		testHelper.mapValidator.validateMap( mapService.map, true );
 
@@ -277,8 +277,8 @@ describe( 'SplineLinkService: Tests', () => {
 		const J3 = mapService.findJunction( 3 );
 
 		expect( R1.successor.element ).toBe( J1 );
-		expect( R2.predecessor.element ).toBe( J3 );
-		expect( R2.successor.element ).toBe( J2 );
+		expect( R2.predecessor.element ).toBe( J1 );
+		expect( R2.successor.element ).toBe( J3 );
 		expect( R3.predecessor.element ).toBe( J2 );
 
 		expectValidMap( mapService );

@@ -28,6 +28,7 @@ import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadUtils } from 'app/utils/road.utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
 
 
 const SPHERE_SIZE = 0.1;
@@ -435,7 +436,7 @@ export class MapValidatorService {
 
 		try {
 
-			roadB = this.map.getRoadById( link.id );
+			roadB = link.getElement() as TvRoad;
 
 		} catch ( error ) {
 
@@ -592,7 +593,7 @@ export class MapValidatorService {
 
 		try {
 
-			const junction = this.map.getJunctionById( link.id );
+			const junction = link.getElement() as TvJunction;
 
 			const contactPoint = linkType == 'successor' ? road.getEndPosTheta() : road.getStartPosTheta();
 			const distanceFromJunction = junction.distanceToPoint( new Vector2( contactPoint.position.x, contactPoint.position.y ) );
@@ -701,7 +702,7 @@ export class MapValidatorService {
 
 		try {
 
-			this.map.getRoadById( id );
+			this.map.getRoad( id );
 
 		} catch ( error ) {
 

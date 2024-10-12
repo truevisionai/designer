@@ -15,6 +15,7 @@ import { RoadService } from "../../services/road/road.service";
 import { TvJunctionConnection } from "../models/junctions/tv-junction-connection";
 import { TvContactPoint } from "../models/tv-common";
 import { ConnectionGeometryService } from "app/services/junction/connection-geometry.service";
+import { GeometryUtils } from "app/services/surface/geometry-utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -83,12 +84,11 @@ export class ConnectionManager {
 
 		links.forEach( link => roadLinks.push( link ) );
 
-		const sortedLinks: TvLink[] = this.roadService.sortLinks( roadLinks );
+		const sortedLinks: TvLink[] = GeometryUtils.sortRoadLinks( roadLinks );
 
 		const centroid = this.roadService.findCentroid( sortedLinks );
 
-		// Removing current connections
-		this.removeAllConnectionsAndRoads( junction );
+		junction.removeAllConnections();
 
 		for ( let i = 0; i < sortedLinks.length; i++ ) {
 
@@ -123,20 +123,6 @@ export class ConnectionManager {
 
 	}
 
-	removeConnectionAndRoads ( junction: TvJunction, road: TvRoad ): void {
-
-		const connections = junction.getConnectionsByRoad( road );
-
-		for ( const connection of connections ) {
-
-			this.roadManager.removeRoad( connection.connectingRoad );
-
-			junction.removeConnection( connection );
-
-		}
-
-	}
-
 	updateGeometries ( junction: TvJunction ): void {
 
 		const connections = junction.getConnections();
@@ -165,23 +151,7 @@ export class ConnectionManager {
 
 			Log.error( error );
 
-			this.roadManager.removeRoad( connection.connectingRoad );
-
 			junction.removeConnection( connection )
-
-		}
-
-	}
-
-	removeAllConnectionsAndRoads ( junction: TvJunction ): void {
-
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			this.roadManager.removeRoad( connection.connectingRoad );
-
-			junction.removeConnection( connection );
 
 		}
 

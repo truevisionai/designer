@@ -33,18 +33,16 @@ export abstract class LaneFactory {
 		switch ( type ) {
 
 			case TvLaneType.driving:
-				lane = new TvLane( side, id, type, false, roadId, laneSection );
+				lane = new TvLane( side, id, type, false, laneSection );
 				break;
 
 			default:
-				lane = new TvLane( side, id, type, false, roadId, laneSection );
+				lane = new TvLane( side, id, type, false, laneSection );
 				break;
 
 		}
 
 		lane.laneSection = laneSection;
-
-		lane.roadId = roadId;
 
 		return lane;
 

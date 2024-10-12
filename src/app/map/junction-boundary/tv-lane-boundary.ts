@@ -4,7 +4,7 @@ import { TvContactPoint } from "../models/tv-common";
 import { TvPosTheta } from "../models/tv-pos-theta";
 import { Maths } from "../../utils/maths";
 import { TvBoundarySegmentType, TvJunctionSegmentBoundary } from "./tv-junction-boundary";
-import { RoadDistance } from "../road/road-distance";
+import { createRoadDistance, RoadDistance } from "../road/road-distance";
 import { Log } from "app/core/utils/log";
 
 /**
@@ -39,15 +39,6 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 		return `LaneBoundary: roadId=${ this.road.id } boundaryLane=${ this.boundaryLane.id } sStart=${ this.sStart } sEnd=${ this.sEnd }`;
 	}
 
-	private getDistanceValue ( road: TvRoad, value: number | TvContactPoint ): number {
-
-		if ( typeof value == 'number' ) {
-			return value;
-		}
-
-		return value == TvContactPoint.START ? 0 : road.getLength();
-	}
-
 	getPoints ( stepSize = 1 ): TvPosTheta[] {
 
 		if ( this.road.geometries.length == 0 ) {
@@ -60,10 +51,16 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 			return [];
 		}
 
+		return this.convertBoundaryToPositions( stepSize );
+
+	}
+
+	private convertBoundaryToPositions ( stepSize ): TvPosTheta[] {
+
 		const positions: TvPosTheta[] = [];
 
-		const start = this.road.getPosThetaAt( this.getDistanceValue( this.road, this.sStart ) );
-		const end = this.road.getPosThetaAt( this.getDistanceValue( this.road, this.sEnd ) );
+		const start = this.road.getPosThetaAt( createRoadDistance( this.road, this.sStart ) );
+		const end = this.road.getPosThetaAt( createRoadDistance( this.road, this.sEnd ) );
 
 		positions.push( this.road.getLaneEndPosition( this.boundaryLane, start.s + Maths.Epsilon as RoadDistance ) );
 

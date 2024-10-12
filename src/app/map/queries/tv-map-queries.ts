@@ -24,17 +24,12 @@ export abstract class TvBaseQueries {
 		return TvMapInstance.map;
 	}
 
-	static get roads () {
-		return this.map.roads;
-	}
-
 }
 
 export class TvMapQueries extends TvBaseQueries {
+
 	static findRoadById ( id: number ): TvRoad {
-
-		return this.map.roads.get( id );
-
+		return this.map.getRoad( id );
 	}
 
 	static findRoadCoord ( position: Vector3 ): TvRoadCoord {
@@ -85,13 +80,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const point = new Vector2( x, y );
 
-		const roadCount = this.roads.size;
-
-		let road: TvRoad;
-
-		for ( const keyValue of this.roads ) {
-
-			road = keyValue[ 1 ];
+		for ( const road of this.map.getRoads() ) {
 
 			if ( roadIdsToIgnore.includes( road.id ) ) continue;
 
@@ -145,13 +134,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const point = new Vector2( x, y );
 
-		const roadCount = this.roads.size;
-
-		let road: TvRoad;
-
-		for ( const keyValue of this.roads ) {
-
-			road = keyValue[ 1 ];
+		for ( const road of this.map.getRoads() ) {
 
 			if ( road.isJunction ) continue;
 
@@ -204,7 +187,7 @@ export class TvMapQueries extends TvBaseQueries {
 			sCoordinate = 0;
 		}
 
-		const road = this.roads.get( roadId );
+		const road = this.map.getRoad( roadId );
 
 		if ( road === undefined ) {
 			console.error( `Road with ID: ${ roadId } not found` );
@@ -465,7 +448,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 	static getRandomRoad ( map: TvMap ): TvRoad {
 
-		return TvUtils.getRandomArrayItem( [ ...map.roads.values() ] ) as TvRoad;
+		return TvUtils.getRandomArrayItem( this.map.getRoads() ) as TvRoad;
 
 	}
 
@@ -486,9 +469,4 @@ export class TvMapQueries extends TvBaseQueries {
 		return TvUtils.getRandomArrayItem( filteredLanes ) as TvLane;
 	}
 
-	static getRoadArray (): TvRoad[] {
-
-		return [ ...this.roads.values() ];
-
-	}
 }

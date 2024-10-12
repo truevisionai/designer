@@ -1,5 +1,11 @@
 export abstract class Assert {
 
+	static isCount ( value: number, expected: number, message?: string ): void {
+		if ( value != expected ) {
+			throw new Error( message ?? 'Value is not the expected count' );
+		}
+	}
+
 	static isDefined<T> ( value: T, message?: string ): asserts value is NonNullable<T> {
 		if ( value === undefined || value === null ) {
 			throw new Error( message ?? 'Value is not defined' );

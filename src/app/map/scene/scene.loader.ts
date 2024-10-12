@@ -163,7 +163,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		this.readAsOptionalArray( xml.junction, xml => {
 
 			const junctionId = parseInt( xml.attr_id );
-			const junction = this.map.getJunctionById( junctionId );
+			const junction = this.map.getJunction( junctionId );
 
 			if ( !junction ) {
 				Log.warn( 'Junction not found junction:' + junctionId );
@@ -250,7 +250,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( roadId < 0 ) return;
 
-			const road = this.map.roads.get( roadId );
+			const road = this.map.getRoad( roadId );
 
 			if ( !road ) {
 				Log.debug( 'NotFound Road:' + roadId );
@@ -386,7 +386,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( type == SplineSegmentType.JUNCTION ) {
 
-				const junction = this.map.getJunctionById( id );
+				const junction = this.map.getJunction( id );
 
 				// TODO: need to check this
 				// junction.auto = true;
@@ -395,7 +395,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			} else if ( type == SplineSegmentType.ROAD ) {
 
-				segments.set( start, this.map.getRoadById( id ) );
+				segments.set( start, this.map.getRoad( id ) );
 
 			} else {
 
@@ -453,7 +453,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const junctionId = parseInt( xml.attr_junction ) || -1;
 
-			junction = junctionId > 0 ? this.map.getJunctionById( junctionId ) : null;
+			junction = junctionId > 0 ? this.map.getJunction( junctionId ) : null;
 
 		} catch ( error ) {
 
@@ -643,7 +643,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		try {
 
-			return this.map.getRoadById( id );
+			return this.map.getRoad( id );
 
 		} catch ( error ) {
 
@@ -664,7 +664,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		try {
 
-			return this.map.getJunctionById( id );
+			return this.map.getJunction( id );
 
 		} catch ( error ) {
 
@@ -952,7 +952,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} else if ( type == TvLinkType.JUNCTION ) {
 
-			return this.map.getJunctionById( elementId );
+			return this.map.getJunction( elementId );
 
 		} else {
 
@@ -1288,8 +1288,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
 
-		connection.junction = junction;
-
 		readXmlArray( xmlElement.laneLink, xml => {
 
 			try {
@@ -1335,11 +1333,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 				return connection.connectingRoad.predecessor.contactPoint;
 			}
 
-			if ( incomingRoad.successor?.id === junction.id ) {
+			if ( incomingRoad.successor?.isEqualTo( junction ) ) {
 				return TvContactPoint.END;
 			}
 
-			if ( incomingRoad.predecessor?.id === junction.id ) {
+			if ( incomingRoad.predecessor?.isEqualTo( junction ) ) {
 				return TvContactPoint.START;
 			}
 

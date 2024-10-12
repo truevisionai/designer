@@ -94,7 +94,7 @@ export class SplineGeometryGenerator {
 
 	buildSegments ( spline: AbstractSpline ) {
 
-		for ( const segment of spline.segmentMap.toArray() ) {
+		for ( const segment of spline.getSegments() ) {
 
 			if ( segment instanceof TvRoad ) {
 

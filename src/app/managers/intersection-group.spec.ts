@@ -6,37 +6,25 @@ import { IntersectionGroup } from "./Intersection-group";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { Vector3 } from "three";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
-import { HttpClientModule } from "@angular/common/http";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { SplineManager } from "./spline-manager";
 import { JunctionManager } from "./junction-manager";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { SplineIntersectionService } from "app/services/spline/spline-intersection.service";
+import { setupTest } from "tests/setup-tests";
 
 describe( 'IntersectionGroup', () => {
 
 	let splineTestHelper: SplineTestHelper;
-	let splineManager: SplineManager;
 	let junctionManager: JunctionManager;
-	let eventServiceProvider: EventServiceProvider;
 	let intersectionService: SplineIntersectionService;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			providers: [],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		splineTestHelper = TestBed.inject( SplineTestHelper );
-		splineManager = TestBed.inject( SplineManager );
 		junctionManager = TestBed.inject( JunctionManager );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		intersectionService = TestBed.inject( SplineIntersectionService );
-
-		eventServiceProvider.init();
 
 	} );
 
@@ -46,9 +34,9 @@ describe( 'IntersectionGroup', () => {
 		const splineB = SplineFactory.createStraightSplineAndPoints( new Vector3( 0, -100, 0 ), 200, 90 );
 		const splineC = SplineFactory.createStraightSplineAndPoints( new Vector3( -100, -100, 0 ), 200, 45 );
 
-		splineManager.addSpline( splineA );
-		splineManager.addSpline( splineB );
-		splineManager.addSpline( splineC );
+		splineTestHelper.splineService.add( splineA );
+		splineTestHelper.splineService.add( splineB );
+		splineTestHelper.splineService.add( splineC );
 
 		const intersections = intersectionService.findIntersections( splineA );
 
@@ -60,8 +48,8 @@ describe( 'IntersectionGroup', () => {
 			group.addSplineIntersection( intersection );
 		} )
 
-		expect( group.intersections.size ).toBe( 2 );
-		expect( group.getSplines().length ).toBe( 3 );
+		expect( group.getIntersectionCount() ).toBe( 2 );
+		expect( group.getSplineCount() ).toBe( 3 );
 
 		expect( group.getOffset( splineA ).sStart ).toBeLessThan( 85 );
 		expect( group.getOffset( splineA ).sEnd ).toBeGreaterThan( 115 );
@@ -78,6 +66,8 @@ describe( 'IntersectionGroup', () => {
 
 		splineTestHelper.addSixRoadJunction();
 
+		tick( 1000 );
+
 		const spline = junctionManager.mapService.splines[ 0 ];
 
 		const intsersections = intersectionService.findIntersections( spline );
@@ -88,7 +78,7 @@ describe( 'IntersectionGroup', () => {
 
 		expect( groups.length ).toBe( 1 );
 
-		expect( groups[ 0 ].getSplines().length ).toBe( 3 );
+		expect( groups[ 0 ].getSplineCount() ).toBe( 3 );
 
 	} ) );
 
@@ -114,14 +104,14 @@ describe( 'IntersectionGroup', () => {
 
 		expect( groups.length ).toBe( 3 );
 
-		expect( groups[ 0 ].getSplines().length ).toBe( 3 );
-		expect( groups[ 0 ].intersections.size ).toBe( 3 );
+		expect( groups[ 0 ].getSplineCount() ).toBe( 3 );
+		expect( groups[ 0 ].getIntersectionCount() ).toBe( 3 );
 
-		expect( groups[ 1 ].getSplines().length ).toBe( 3 );
-		expect( groups[ 1 ].intersections.size ).toBe( 3 );
+		expect( groups[ 1 ].getSplineCount() ).toBe( 3 );
+		expect( groups[ 1 ].getIntersectionCount() ).toBe( 3 );
 
-		expect( groups[ 2 ].getSplines().length ).toBe( 2 );
-		expect( groups[ 2 ].intersections.size ).toBe( 1 );
+		expect( groups[ 2 ].getSplineCount() ).toBe( 2 );
+		expect( groups[ 2 ].getIntersectionCount() ).toBe( 1 );
 
 
 	} ) );

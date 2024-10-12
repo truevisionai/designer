@@ -101,11 +101,11 @@ export class RoadManager {
 
 		} else {
 
-			road.spline?.segmentMap.remove( road );
+			road.spline?.removeSegment( road );
 
 		}
 
-		if ( !road.isJunction && road.spline?.segmentMap.length > 0 ) {
+		if ( !road.isJunction && road.spline?.getSegmentCount() > 0 ) {
 
 			this.splineBuilder.buildSpline( road.spline );
 

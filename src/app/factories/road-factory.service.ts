@@ -33,15 +33,21 @@ export class RoadFactory {
 	) {
 	}
 
+	static createRoad (): TvRoad {
+
+		return new TvRoad( '', 0, 0, null );
+
+	}
+
 	getNextRoadId ( id?: number ) {
 
-		return this.mapService.map.roads.next();
+		return this.mapService.map.generateRoadId();
 
 	}
 
 	getNextConnectingRoadId () {
 
-		return this.mapService.map.roads.next( false );
+		return this.mapService.map.generateRoadId( false );
 
 	}
 
@@ -331,7 +337,7 @@ export class RoadFactory {
 
 		const spline = new AutoSpline();
 
-		spline.segmentMap.set( 0, road );
+		spline.addSegment( 0, road );
 
 		road.spline = spline;
 

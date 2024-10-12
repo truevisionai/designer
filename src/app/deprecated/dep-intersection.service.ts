@@ -15,12 +15,6 @@ import { RoadDividerService } from "../services/road/road-divider.service";
 import { DepConnectionFactory } from 'app/map/junction/dep-connection.factory';
 import { SplineService } from "../services/spline/spline.service";
 
-export class SplineIntersection {
-	spline: AbstractSpline;
-	otherSpline: AbstractSpline;
-	intersection: Vector3
-}
-
 /**
  * @deprecated
  */

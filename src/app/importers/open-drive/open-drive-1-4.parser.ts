@@ -121,7 +121,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			try {
 
-				const road = this.map.getRoadById( parseInt( xml.attr_id ) );
+				const road = this.map.getRoad( parseInt( xml.attr_id ) );
 
 				this.parseRoadLinks( road, xml.link );
 
@@ -149,7 +149,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			try {
 
-				const junction = this.map.getJunctionById( parseInt( xml.attr_id ) );
+				const junction = this.map.getJunction( parseInt( xml.attr_id ) );
 
 				this.parseJunctionConnections( junction, xml );
 
@@ -210,7 +210,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			const id = parseInt( value ) || -1;
 
-			return id > 0 ? this.map.getJunctionById( id ) : null;
+			return id > 0 ? this.map.getJunction( id ) : null;
 
 		} catch ( error ) {
 
@@ -295,7 +295,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		try {
 
-			return this.map.getRoadById( id );
+			return this.map.getRoad( id );
 
 		} catch ( error ) {
 
@@ -316,7 +316,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		try {
 
-			return this.map.getJunctionById( id );
+			return this.map.getJunction( id );
 
 		} catch ( error ) {
 
@@ -679,9 +679,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-		const linkedRoad = !isNaN( linkedRoadId ) ? this.map.getRoadById( linkedRoadId ) : null;
-		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoadById( incomingRoadId ) : null;
-		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoadById( connectingRoadId ) : linkedRoad;
+		const linkedRoad = !isNaN( linkedRoadId ) ? this.map.getRoad( linkedRoadId ) : null;
+		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoad( incomingRoadId ) : null;
+		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoad( connectingRoadId ) : linkedRoad;
 
 		if ( !incomingRoad ) {
 			TvConsole.error( "Incoming road not found" );
@@ -694,8 +694,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		}
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
-
-		connection.junction = junction;
 
 		readXmlArray( xmlElement.laneLink, xml => {
 
@@ -725,11 +723,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 				return connection.connectingRoad.predecessor.contactPoint;
 			}
 
-			if ( incomingRoad.successor?.id === junction.id ) {
+			if ( incomingRoad.successor?.isEqualTo( junction ) ) {
 				return TvContactPoint.END;
 			}
 
-			if ( incomingRoad.predecessor?.id === junction.id ) {
+			if ( incomingRoad.predecessor?.isEqualTo( junction ) ) {
 				return TvContactPoint.START;
 			}
 

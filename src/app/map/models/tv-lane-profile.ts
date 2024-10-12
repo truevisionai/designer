@@ -96,8 +96,6 @@ export class TvLaneProfile {
 
 		laneSection.lanesMap.forEach( lane => {
 
-			lane.roadId = this.road.id;
-
 			lane.laneSection = laneSection;
 
 		} );
