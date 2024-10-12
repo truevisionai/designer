@@ -1,10 +1,35 @@
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { AbstractSpline, NewSegment } from "./abstract-spline";
+import { OrderedMap } from "../models/ordered-map";
 
 export class SplineSegmentProfile {
 
+	private segments: OrderedMap<NewSegment>;
+
 	constructor ( private spline: AbstractSpline ) {
+		this.segments = new OrderedMap();
+	}
+
+	getSegmentMap (): OrderedMap<NewSegment> {
+		return this.segments;
+	}
+
+	getSegmentStart ( segment: NewSegment ): number {
+		return this.segments.findKey( segment );
+	}
+
+	getSegmentEnd ( segment: NewSegment ): number {
+		return this.segments.getNextKey( segment ) || this.spline.getLength()
+	}
+
+	getStartEnd ( segment: NewSegment ): { start: number; end: number; } {
+
+		const start = this.getSegmentStart( segment );
+		const end = this.getSegmentEnd( segment );
+
+		return { start, end };
+
 	}
 
 	insertSegment ( sStart: number, sEnd: number, newSegment: NewSegment ): void {

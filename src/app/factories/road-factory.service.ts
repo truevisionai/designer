@@ -33,6 +33,12 @@ export class RoadFactory {
 	) {
 	}
 
+	static createRoad (): TvRoad {
+
+		return new TvRoad( '', 0, 0, null );
+
+	}
+
 	getNextRoadId ( id?: number ) {
 
 		return this.mapService.map.generateRoadId();

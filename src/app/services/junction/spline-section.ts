@@ -1,12 +1,10 @@
 import { NewSegment, AbstractSpline } from "app/core/shapes/abstract-spline";
 import { Log } from "app/core/utils/log";
 import { MapEvents } from "app/events/map-events";
-import { RoadRemovedEvent } from "app/events/road/road-removed-event";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvLink } from "app/map/models/tv-link";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { Assert } from "app/utils/assert";
 import { Box2 } from "three";
 
 

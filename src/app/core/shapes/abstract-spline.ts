@@ -44,8 +44,6 @@ export abstract class AbstractSpline {
 
 	public controlPoints: AbstractControlPoint[] = [];
 
-	private segments = new OrderedMap<NewSegment>();
-
 	private geometries: TvAbstractRoadGeometry[] = [];
 
 	public waypoints: AbstractControlPoint[] = [];
@@ -91,6 +89,10 @@ export abstract class AbstractSpline {
 
 		this.splineLinks = new SplineLinks( this );
 
+	}
+
+	private get segments () {
+		return this.splineSegmentProfile.getSegmentMap();
 	}
 
 	setMap ( map: TvMap ): void { this.map = map; }
@@ -351,6 +353,18 @@ export abstract class AbstractSpline {
 			throw new InvalidArgumentException( `s must be less than length: ${ s }` );
 		}
 		return this.segments.findAt( s );
+	}
+
+	getSegmentStart ( segment: NewSegment ): number {
+		return this.splineSegmentProfile.getSegmentStart( segment );
+	}
+
+	getSegmentEnd ( segment: NewSegment ): number {
+		return this.splineSegmentProfile.getSegmentEnd( segment );
+	}
+
+	getSegmentStartEnd ( segment: NewSegment ): { start: number; end: number; } {
+		return this.splineSegmentProfile.getStartEnd( segment );
 	}
 
 	getSegmentCount (): number {
