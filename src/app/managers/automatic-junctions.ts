@@ -3,15 +3,11 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { JunctionFactory } from "app/factories/junction.factory";
 import { ConnectionManager } from "app/map/junction/connection.manager";
 import { AutoJunction, TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvRoad } from "app/map/models/tv-road.model";
 import { JunctionService } from "app/services/junction/junction.service";
 import { SplineIntersection } from "app/services/junction/spline-intersection";
 import { MapService } from "app/services/map/map.service";
 import { RoadService } from "app/services/road/road.service";
-import { MapEvents } from "app/events/map-events";
 import { IntersectionGroup } from "./Intersection-group";
-import { TvContactPoint } from "app/map/models/tv-common";
-import { SplineSection } from "app/services/junction/spline-section";
 import { IntersectionGroupHelper } from "./intersection-group-helper";
 
 @Injectable( {
@@ -127,46 +123,6 @@ export class AutomaticJunctions {
 		spline.removeJunctionSegmentAndUpdate( junction );
 
 		this.junctionService.update( junction );
-
-	}
-
-	removeSegmentAfterJunction ( spline: AbstractSpline, junction: TvJunction ): void {
-
-		const prevSegment = spline.getPreviousSegment( junction );
-		const nextSegment = spline.getNextSegment( junction );
-
-		if ( nextSegment instanceof TvRoad && prevSegment instanceof TvRoad ) {
-
-			const successor = nextSegment.successor?.clone();
-
-			nextSegment.successor?.replace( nextSegment, prevSegment, TvContactPoint.END );
-
-			prevSegment.successor = successor;
-
-			this.mapService.removeRoad( nextSegment );
-
-			spline.removeSegment( nextSegment );
-
-			MapEvents.removeMesh.emit( nextSegment );
-
-		}
-
-	}
-
-	shouldRemoveRoadAfterJunction ( spline: AbstractSpline, junction: TvJunction ): boolean {
-
-		const prevSegment = spline.getPreviousSegment( junction );
-		const nextSegment = spline.getNextSegment( junction );
-
-		if ( nextSegment instanceof TvRoad && prevSegment instanceof TvRoad ) {
-
-			return true;
-
-		} else {
-
-			return false
-
-		}
 
 	}
 

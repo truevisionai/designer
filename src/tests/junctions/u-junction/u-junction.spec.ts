@@ -6,7 +6,6 @@ import { expectTJunction, expectXJunction } from "tests/expect-junction.spec";
 import { expectInstances } from "tests/expect-spline.spec";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { expectLinkedConnections } from "tests/base-test.spec";
 import { Vector3 } from "three";
 
 describe( 'U-Junction', () => {
@@ -46,7 +45,7 @@ describe( 'U-Junction', () => {
 		expectXJunction( mapService.findJunction( 1 ) );
 		expectXJunction( mapService.findJunction( 2 ) );
 
-		expect( mapService.nonJunctionRoads.length ).toBe( 6 );
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 6 );
 
 	}
 
@@ -96,17 +95,81 @@ describe( 'U-Junction', () => {
 
 	} );
 
-	xit( 'should remove keep 1 x-junction and 1 junction when shifted right', () => {
+	it( 'should remove 1 junction and update 1 junction when shifted right', () => {
+
+		const splines = createUShapeAndHoriztonalSpline();
+
+		splines.horizontal.getControlPoints().forEach( cp => cp.position.x += 100 );
+
+		helper.splineService.update( splines.horizontal );
+
+		expect( mapService.getJunctionCount() ).toBe( 1 );
+
+		expectXJunction( mapService.findJunction( 2 ) );
+
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 4 );
+
+		expectInstances( splines.horizontal, [ TvRoad, TvJunction, TvRoad ] );
+
+		expectInstances( splines.spline, [ TvRoad, TvJunction, TvRoad ] );
 
 	} );
 
-	xit( 'should create remove 1 junction and create t-junction junction when shifted right', () => {
+	it( 'should remove 1 junction & create t-junction when shifted right', () => {
+
+		const splines = createUShapeAndHoriztonalSpline();
+
+		splines.horizontal.getControlPoints().forEach( cp => cp.position.x += 150 );
+
+		helper.splineService.update( splines.horizontal );
+
+		expect( mapService.getJunctionCount() ).toBe( 1 );
+
+		expectTJunction( mapService.findJunction( 2 ) );
+
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 4 );
+
+		expectInstances( splines.horizontal, [ TvJunction, TvRoad, TvRoad ] );
+
+		expectInstances( splines.spline, [ TvRoad, TvJunction, TvRoad ] );
 
 	} );
 
-	xit( 'should create 2 t-junctions when shifted up', () => {
+	it( 'should create 2 t-junctions when shifted up', () => {
+
+		const splines = createUShapeAndHoriztonalSpline();
+
+		splines.horizontal.getControlPoints().forEach( cp => cp.position.y += 50 );
+
+		helper.splineService.update( splines.horizontal );
+
+		expect( mapService.getJunctionCount() ).toBe( 2 );
+
+		expectTJunction( mapService.findJunction( 1 ) );
+		expectTJunction( mapService.findJunction( 2 ) );
+
+		expect( mapService.getNonJunctionRoadCount() ).toBe( 4 );
+
+		expectInstances( splines.horizontal, [ TvRoad, TvJunction, TvRoad, TvJunction, TvRoad ] );
+		expectInstances( splines.spline, [ TvJunction, TvRoad, TvJunction ] );
 
 	} );
+
+	it( 'should undo 2 t-junctions', () => {
+
+		const splines = createUShapeAndHoriztonalSpline();
+
+		splines.horizontal.getControlPoints().forEach( cp => cp.position.y += 50 );
+		helper.splineService.update( splines.horizontal );
+		splines.horizontal.getControlPoints().forEach( cp => cp.position.y -= 50 );
+		helper.splineService.update( splines.horizontal );
+
+		expectCorrectElements();
+
+		expectCorrectSegments( splines );
+
+	} );
+
 
 	xit( 'should remove junctions when shifted away from U shape', () => {
 

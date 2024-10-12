@@ -35,6 +35,7 @@ export function expectTJunction ( junction: TvJunction, message?: string ): void
 
 	expect( junction.getConnectionCount() ).toBe( linkCount.T_JUNCTION );
 	expect( junction.getLaneLinkCount() ).toBe( linkCount.T_JUNCTION );
+	expect( junction.getIncomingRoadCount() ).toBe( 3 );
 
 	for ( const connection of junction.getConnections() ) {
 		expectValidConnection( connection );

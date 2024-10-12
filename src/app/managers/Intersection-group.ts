@@ -7,7 +7,6 @@ import { AutoJunction, TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvLink } from "app/map/models/tv-link";
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { SplineSection } from 'app/services/junction/spline-section';
-
 import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { Assert } from "app/utils/assert";
 import { Box2, Vector2, Vector3 } from "three";

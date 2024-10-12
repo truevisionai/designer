@@ -82,68 +82,11 @@ export abstract class SplineSection {
 		return !this.hasDifferentSegments();
 	}
 
-	shouldCreateRoadSegment (): boolean {
-		return this.hasSameSegments() && this.isAtMiddle();
-	}
-
-	addRoadSegment ( s: number, segment: NewSegment ): void {
-		this.spline.addSegment( s, segment );
-	}
-
 	isNearJunction (): boolean {
 		return this.startSegment instanceof TvJunction || this.endSegment instanceof TvJunction;
 	}
 
-	insertJunctionSegment ( junction: NewSegment ): void {
 
-		if ( this.hasDifferentSegments() ) {
-
-			this.spline.addSegment( this.start, junction );
-			this.shiftOrRemoveRoadAfterJunction( junction );
-
-			return;
-		}
-
-		if ( this.isAtStart() ) {
-
-			this.shiftRoadSegment( this.getStartSegment() as TvRoad, this.end );
-			this.spline.addSegment( this.start, junction );
-
-		} else {
-
-			this.spline.addSegment( this.start, junction );
-			this.shiftOrRemoveRoadAfterJunction( junction );
-
-		}
-
-	}
-
-	shiftOrRemoveRoadAfterJunction ( junction: NewSegment ): void {
-
-		if ( !this.hasRoadAfterJunction( junction as TvJunction ) ) return;
-
-		const road = this.endSegment as TvRoad;
-
-		if ( this.end < this.spline.getLength() ) {
-
-			this.shiftRoadSegment( this.endSegment as TvRoad, this.end );
-
-			return;
-		}
-
-		this.spline.removeSegment( road );
-
-		this.endSegment = junction;
-
-		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
-
-	}
-
-	shouldAddRoadAfterJunction ( junction: TvJunction ): boolean {
-
-		return this.isAtMiddle(); //&& this.spline.getNextSegment( junction ) === null;
-
-	}
 
 	shouldRemoveFirstSegment (): boolean {
 
@@ -160,48 +103,6 @@ export abstract class SplineSection {
 	hasRoadAfterJunction ( junction: TvJunction ): boolean {
 
 		return this.spline.getNextSegment( junction ) instanceof TvRoad;
-
-	}
-
-	addRoadAfterSection ( newRoad: TvRoad ): void {
-
-		newRoad.sStart = this.end;
-
-		// we reach this point only if the section is in the middle of the spline
-		// so we can safely assume that the start segment is a road
-		const existingRoad = this.startSegment instanceof TvRoad ?
-			this.startSegment :
-			this.spline.getPreviousSegment( this.startSegment ) as TvRoad;
-
-		Assert.isTrue( existingRoad instanceof TvRoad, 'The start segment is not a road' );
-
-		existingRoad.successor?.replace( existingRoad, newRoad, TvContactPoint.END );
-
-		newRoad.linkPredecessor( existingRoad, TvContactPoint.END );
-
-		this.spline.addSegment( this.end, newRoad );
-
-	}
-
-	shiftRoadSegment ( road: TvRoad, offset: number ): void {
-
-		road.sStart = this.end;
-
-		this.spline.shiftSegment( offset, road );
-
-	}
-
-	shiftJunctionAndUpdateSegments ( junction: TvJunction, start?: number, end?: number ): void {
-
-		start = start ?? this.start;
-
-		end = end ?? this.end;
-
-		this.spline.shiftSegment( start, junction );
-
-		this.spline.updateLinks();
-
-		this.spline.updateSegmentGeometryAndBounds();
 
 	}
 
@@ -275,20 +176,6 @@ export abstract class SplineSection {
 
 	abstract updateJunction ( junction: TvJunction ): void;
 
-	protected addOrShiftSegment ( s: number, segment: NewSegment ): void {
-
-		if ( this.spline.hasSegment( segment ) ) {
-
-			this.spline.shiftSegment( s, segment );
-
-		} else {
-
-			this.spline.addSegment( s, segment );
-
-		}
-
-	}
-
 	protected addOrShiftJunction ( s: number, segment: TvJunction ): void {
 
 		if ( this.spline.hasSegment( segment ) ) {
@@ -300,6 +187,100 @@ export abstract class SplineSection {
 			this.spline.addSegment( s, segment );
 
 		}
+
+	}
+
+	protected removeSegmentAfterJunction ( junction: TvJunction ): void {
+
+		const roadBeforeJunction = this.spline.getPreviousSegment( junction ) as TvRoad;
+
+		const roadAfterJunction = this.spline.getNextSegment( junction ) as TvRoad;
+
+		if ( !this.shouldRemoveRoadAfterJunction( junction ) ) return;
+
+		roadAfterJunction.successor?.replace( roadAfterJunction, roadBeforeJunction, TvContactPoint.END );
+
+		this.spline.removeSegment( roadAfterJunction );
+
+		this.spline.getMap().removeRoad( roadAfterJunction );
+
+		MapEvents.removeMesh.emit( roadAfterJunction );
+
+	}
+
+	protected shouldRemoveRoadAfterJunction ( junction: TvJunction ): boolean {
+
+		const roadBeforeJunction = this.spline.getPreviousSegment( junction ) as TvRoad;
+
+		const roadAfterJunction = this.spline.getNextSegment( junction ) as TvRoad;
+
+		if ( roadAfterJunction == null ) return false;
+
+		if ( roadBeforeJunction == null ) return false;
+
+		if ( roadBeforeJunction == roadAfterJunction ) return false;
+
+		return true;
+
+	}
+
+	protected addRoadAfterJunction ( junction: TvJunction ): void {
+
+		if ( !this.shouldAddRoadAfterJunction( junction ) ) return;
+
+		const existingRoad = this.startSegment as TvRoad;
+
+		const id = this.spline.getMap().generateRoadId();
+
+		const roadAfterJunction = existingRoad?.clone( 0, id );
+
+		// set the successor and predecessor to null to avoid linking the road to the junction
+		roadAfterJunction.predecessor = roadAfterJunction.successor = null;
+
+		const roadBeforeJunction = this.spline.getPreviousSegment( junction ) as TvRoad;
+
+		this.spline.getMap().addRoad( roadAfterJunction );
+
+		this.spline.addSegment( this.end, roadAfterJunction );
+
+		roadBeforeJunction.successor?.replace( roadBeforeJunction, roadAfterJunction, TvContactPoint.END );
+
+	}
+
+	protected addRoadBeforeJunction ( junction: TvJunction ): void {
+
+		if ( !this.shouldAddRoadBeforeJunction( junction ) ) return;
+
+		const existingRoad = this.endSegment as TvRoad;
+
+		const id = this.spline.getMap().generateRoadId();
+
+		const roadBeforeJunction = existingRoad?.clone( 0, id );
+
+		// set the successor and predecessor to null to avoid linking the road to the junction
+		roadBeforeJunction.predecessor = roadBeforeJunction.successor = null;
+
+		this.spline.getMap().addRoad( roadBeforeJunction );
+
+		this.spline.addSegment( 0, roadBeforeJunction );
+
+	}
+
+	protected shouldAddRoadAfterJunction ( junction: TvJunction ): boolean {
+
+		return this.isAtMiddle() && !this.hasRoadAfterJunction( junction );
+
+	}
+
+	protected shouldAddRoadBeforeJunction ( junction: TvJunction ): boolean {
+
+		return this.isAtMiddle() && !this.hasRoadBeforeJunction( junction );
+
+	}
+
+	protected hasRoadBeforeJunction ( junction: TvJunction ): boolean {
+
+		return this.spline.getPreviousSegment( junction ) instanceof TvRoad;
 
 	}
 
@@ -337,12 +318,6 @@ export class StartSection extends SplineSection {
 
 	}
 
-	shouldAddRoadAfterJunction ( junction: TvJunction ): boolean {
-
-		return false;
-
-	}
-
 }
 
 export class MiddleSection extends SplineSection {
@@ -361,7 +336,7 @@ export class MiddleSection extends SplineSection {
 
 		this.addOrShiftJunction( this.start, junction );
 
-		this.insertRoadAfterJunction( junction );
+		this.addRoadAfterJunction( junction );
 
 		this.spline.updateLinks();
 
@@ -373,83 +348,7 @@ export class MiddleSection extends SplineSection {
 
 		this.insertJunction( junction );
 
-		this.insertRoadBeforeJunction( junction );
-
-	}
-
-	removeJunctionSegment ( junction: TvJunction ): void {
-
-		const previousSegment = this.spline.getPreviousSegment( junction );
-		const nextSegment = this.spline.getNextSegment( junction );
-
-		if ( previousSegment instanceof TvRoad ) {
-			previousSegment.successor?.unlink( previousSegment, TvContactPoint.END );
-		}
-
-		if ( nextSegment instanceof TvRoad ) {
-			nextSegment.predecessor?.unlink( nextSegment, TvContactPoint.START );
-		}
-
-		this.spline.removeSegment( junction );
-	}
-
-	private insertRoadAfterJunction ( junction: TvJunction ): void {
-
-		if ( !this.shouldAddRoadAfterJunction( junction ) ) return;
-
-		const existingRoad = this.startSegment as TvRoad;
-
-		const id = this.spline.getMap().generateRoadId();
-
-		const roadAfterJunction = existingRoad?.clone( 0, id );
-
-		// set the successor and predecessor to null to avoid linking the road to the junction
-		roadAfterJunction.predecessor = roadAfterJunction.successor = null;
-
-		const roadBeforeJunction = this.spline.getPreviousSegment( junction ) as TvRoad;
-
-		this.spline.getMap().addRoad( roadAfterJunction );
-
-		this.spline.addSegment( this.end, roadAfterJunction );
-
-		roadBeforeJunction.successor?.replace( roadBeforeJunction, roadAfterJunction, TvContactPoint.END );
-
-	}
-
-	private insertRoadBeforeJunction ( junction: TvJunction ): void {
-
-		if ( !this.shouldAddRoadBeforeJunction( junction ) ) return;
-
-		const existingRoad = this.endSegment as TvRoad;
-
-		const id = this.spline.getMap().generateRoadId();
-
-		const roadBeforeJunction = existingRoad?.clone( 0, id );
-
-		// set the successor and predecessor to null to avoid linking the road to the junction
-		roadBeforeJunction.predecessor = roadBeforeJunction.successor = null;
-
-		this.spline.getMap().addRoad( roadBeforeJunction );
-
-		this.spline.addSegment( 0, roadBeforeJunction );
-
-	}
-
-	shouldAddRoadAfterJunction ( junction: TvJunction ): boolean {
-
-		return this.isAtMiddle() && !this.hasRoadAfterJunction( junction );
-
-	}
-
-	shouldAddRoadBeforeJunction ( junction: TvJunction ): boolean {
-
-		return this.isAtMiddle() && !this.hasRoadBeforeJunction( junction );
-
-	}
-
-	hasRoadBeforeJunction ( junction: TvJunction ): boolean {
-
-		return this.spline.getPreviousSegment( junction ) instanceof TvRoad;
+		this.addRoadBeforeJunction( junction );
 
 	}
 
@@ -472,42 +371,6 @@ export class EndSection extends SplineSection {
 		this.removeSegmentAfterJunction( junction );
 
 		this.insertJunction( junction );
-
-	}
-
-	removeSegmentAfterJunction ( junction: TvJunction ): void {
-
-		const roadBeforeJunction = this.spline.getPreviousSegment( junction ) as TvRoad;
-
-		const roadAfterJunction = this.spline.getNextSegment( junction ) as TvRoad;
-
-		if ( !this.shouldRemoveRoadAfterJunction( roadAfterJunction, roadBeforeJunction ) ) return;
-
-		roadAfterJunction.successor?.replace( roadAfterJunction, roadBeforeJunction, TvContactPoint.END );
-
-		this.spline.removeSegment( roadAfterJunction );
-
-		this.spline.getMap().removeRoad( roadAfterJunction );
-
-		MapEvents.removeMesh.emit( roadAfterJunction );
-
-	}
-
-	shouldRemoveRoadAfterJunction ( roadBeforeJunction: NewSegment, roadAfterJunction: NewSegment ): boolean {
-
-		if ( roadAfterJunction == null ) return false;
-
-		if ( roadBeforeJunction == null ) return false;
-
-		if ( roadBeforeJunction == roadAfterJunction ) return false;
-
-		return true;
-
-	}
-
-	shouldAddRoadAfterJunction ( junction: TvJunction ): boolean {
-
-		return false;
 
 	}
 
