@@ -376,6 +376,14 @@ export class EndSection extends SplineSection {
 
 export class SplineSectionFactory {
 
+	static createFromSegment ( spline: AbstractSpline, segment: NewSegment ): SplineSection {
+
+		const { start, end } = spline.getSegmentStartEnd( segment );
+
+		return SplineSectionFactory.create( spline, start, end );
+
+	}
+
 	static create ( spline: AbstractSpline, start: number, end: number ): SplineSection {
 
 		if ( start == 0 ) {
