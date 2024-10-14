@@ -7,7 +7,6 @@ import { Box2, Box3, MathUtils, Vector2, Vector3 } from 'three';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { OrderedMap } from "../models/ordered-map";
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvLink } from 'app/map/models/tv-link';
 import {
@@ -22,6 +21,8 @@ import { SplineSegmentProfile } from './spline-segment-profile';
 import { SplineLinks } from './spline-links';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvMap } from 'app/map/models/tv-map.model';
+import { Maths } from 'app/utils/maths';
+import { SplineElevationProfile } from './spline-elevation-profile';
 
 export enum SplineType {
 	AUTO = 'auto',
@@ -62,6 +63,7 @@ export abstract class AbstractSpline {
 
 	private splineSegmentProfile: SplineSegmentProfile;
 	private splineLinks: SplineLinks;
+	private splineElevationProfile: SplineElevationProfile;
 
 	private map: TvMap;
 
@@ -88,6 +90,8 @@ export abstract class AbstractSpline {
 		this.splineSegmentProfile = new SplineSegmentProfile( this );
 
 		this.splineLinks = new SplineLinks( this );
+
+		this.splineElevationProfile = new SplineElevationProfile( this );
 
 	}
 
@@ -552,5 +556,25 @@ export abstract class AbstractSpline {
 		return new Box2().setFromPoints( points );
 
 	}
+
+	private getHeightAtOffset ( splineDistance: number ): number {
+
+		return this.splineElevationProfile.getHeightAtOffset( splineDistance );
+
+	}
+
+	isHeightMatching ( index: number, other: AbstractSpline, otherIndex: number ): boolean {
+
+		// NOTE: we're treating index as spline distance/offset here
+
+		const heightDiffTolerance = 0.1;
+
+		const heightA = this.getHeightAtOffset( index );
+		const heightB = other.getHeightAtOffset( otherIndex );
+
+		return Maths.approxEquals( heightA, heightB, heightDiffTolerance );
+
+	}
+
 
 }

@@ -73,6 +73,8 @@ export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: Ab
 			// Check if these boxes intersect
 			if ( boxA.intersectsBox( boxB ) ) {
 
+				if ( !splineA.isHeightMatching( i, splineB, j ) ) continue;
+
 				const intersection = boxA.clone().intersect( boxB );
 
 				if ( !isIntersecting ) {
