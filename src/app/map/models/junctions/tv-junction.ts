@@ -234,6 +234,12 @@ export class TvJunction {
 
 	}
 
+	hasMatchingConnection ( connection: TvJunctionConnection ): boolean {
+
+		return this.getConnections().find( c => c.matches( connection ) ) != undefined;
+
+	}
+
 	addConnection ( connection: TvJunctionConnection ): void {
 
 		while ( this.hasConnection( connection ) ) {

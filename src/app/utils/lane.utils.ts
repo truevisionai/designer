@@ -294,28 +294,6 @@ export class LaneUtils {
 
 	}
 
-	static determineTurnType ( incomingCoord: TvLaneCoord | TvRoadCoord, outgoingCoord: TvLaneCoord | TvRoadCoord ): TurnType {
-
-		// TODO: for now, if spline is same then it is straight
-		// We can improve this later
-		if ( incomingCoord.road.spline.uuid == outgoingCoord.road.spline.uuid ) {
-			return TurnType.STRAIGHT;
-		}
-
-		const roadA = incomingCoord.road.getPosThetaByContact( incomingCoord.contact );
-		const roadB = outgoingCoord.road.getPosThetaByContact( outgoingCoord.contact );
-
-		if ( incomingCoord.contact == TvContactPoint.START ) {
-			roadA.rotateDegree( 180 );
-		}
-
-		if ( outgoingCoord.contact == TvContactPoint.START ) {
-			roadB.rotateDegree( 180 );
-		}
-
-		return Maths.findTurnType( roadA.position, roadB.position, roadA.hdg );
-	}
-
 	static isEntry ( lane: TvLane, contact: TvContactPoint ): boolean {
 
 		return ( lane.direction === TravelDirection.forward && contact === TvContactPoint.END ) ||
