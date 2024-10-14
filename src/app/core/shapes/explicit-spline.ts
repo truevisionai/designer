@@ -39,7 +39,14 @@ export class ExplicitSpline extends AbstractSpline {
 
 	updateSegmentGeometryAndBounds (): void {
 
-		if ( this.controlPoints.length < 2 ) return;
+		if ( this.getControlPointCount() < 2 ) {
+			this.clearGeometries();
+			this.clearSegmentGeometries();
+			this.centerPoints = [];
+			this.leftPoints = [];
+			this.rightPoints = [];
+			return;
+		}
 
 		ExplicitGeometryService.instance.updateGeometry( this );
 

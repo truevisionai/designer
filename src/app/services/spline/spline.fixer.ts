@@ -34,11 +34,6 @@ export class SplineFixerService {
 
 		if ( !this.enabled ) return;
 
-		if ( spline.controlPoints.length < 2 ) {
-			this.removeExtraSegments( spline );
-			return;
-		}
-
 		if ( !SplineUtils.areLinksCorrect( spline ) && log ) {
 			console.log( "Links are not correct", spline );
 			Log.error( "Links are not correct", spline?.toString() );
@@ -55,21 +50,6 @@ export class SplineFixerService {
 		// this.fixUnLinkedSegments( spline );
 
 		this.fixInternalLinks( spline );
-	}
-
-	removeExtraSegments ( spline: AbstractSpline ): void {
-
-		const roads = spline.getRoadSegments();
-
-		// start from 2nd road
-		for ( let i = 1; i < roads.length; i++ ) {
-
-			this.roadManager.removeRoad( roads[ i ] );
-
-		}
-
-		this.fixInternalLinks( spline, true );
-
 	}
 
 	private fixMinSegmentCount ( spline: AbstractSpline ) {

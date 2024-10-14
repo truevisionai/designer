@@ -56,6 +56,11 @@ export class SplineManager {
 
 		if ( this.debug ) Log.debug( "Update", spline.toString() );
 
+		if ( spline.getControlPointCount() < 2 ) {
+			this.segmentService.removeExtraSegments( spline );
+			return;
+		}
+
 		this.fixer.fix( spline );
 
 		spline.updateSegmentGeometryAndBounds();

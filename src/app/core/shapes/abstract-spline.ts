@@ -191,6 +191,10 @@ export abstract class AbstractSpline {
 		this.geometries = [];
 	}
 
+	clearSegments (): void {
+		this.getSegments().forEach( segment => this.removeSegment( segment ) );
+	}
+
 	clearSegmentGeometries (): void {
 		this.getRoadSegments().forEach( segment => segment.clearGeometryAndUpdateCoords() );
 	}
@@ -255,6 +259,18 @@ export abstract class AbstractSpline {
 		}
 
 		this.segments.remove( segment );
+
+	}
+
+	removeAllJunctions (): void {
+
+		const junctions = this.getJunctionSegments();
+
+		for ( const junction of junctions ) {
+
+			this.removeJunctionSegmentAndUpdate( junction );
+
+		}
 
 	}
 

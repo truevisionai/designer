@@ -38,7 +38,14 @@ export class AutoSpline extends AbstractSpline {
 
 	updateSegmentGeometryAndBounds (): void {
 
-		if ( this.controlPoints.length < 2 ) return;
+		if ( this.getControlPointCount() < 2 ) {
+			this.clearGeometries();
+			this.clearSegmentGeometries();
+			this.centerPoints = [];
+			this.leftPoints = [];
+			this.rightPoints = [];
+			return;
+		}
 
 		AutoGeometryService.instance.updateGeometry( this );
 

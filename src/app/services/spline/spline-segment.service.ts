@@ -24,6 +24,27 @@ export class SplineSegmentService {
 	) {
 	}
 
+	removeExtraSegments ( spline: AbstractSpline ): void {
+
+		this.removeConnections( spline );
+
+		this.removeRoadSegments( spline, true );
+
+		const firstSegment = spline.getRoadSegments()[ 0 ];
+
+		if ( firstSegment ) {
+
+			firstSegment.successor = null;
+			firstSegment.predecessor = null;
+
+		}
+
+		spline.clearSegments();
+
+		spline.addSegment( 0, firstSegment );
+
+	}
+
 	removeSegments ( spline: AbstractSpline ): void {
 
 		this.removeConnections( spline );
@@ -54,6 +75,8 @@ export class SplineSegmentService {
 
 		}
 
+		junction.removeSpline( spline );
+
 		MapEvents.junctionUpdated.emit( junction );
 
 	}
@@ -72,9 +95,14 @@ export class SplineSegmentService {
 
 	}
 
-	private removeRoadSegments ( spline: AbstractSpline ): void {
+	private removeRoadSegments ( spline: AbstractSpline, keepFirst = false ): void {
 
-		spline.getRoadSegments().forEach( road => {
+		spline.getRoadSegments().forEach( ( road, index ) => {
+
+			if ( keepFirst && index === 0 ) {
+				road.predecessor = road.successor = null;
+				return
+			};
 
 			if ( this.mapService.hasRoad( road ) ) {
 
@@ -87,6 +115,8 @@ export class SplineSegmentService {
 			}
 
 		} );
+
+		MapEvents.removeMesh.emit( spline );
 
 	}
 
