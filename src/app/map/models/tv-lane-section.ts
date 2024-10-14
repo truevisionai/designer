@@ -894,6 +894,42 @@ export class TvLaneSection {
 		return contact === TvContactPoint.END ? false : true;
 	}
 
+	getLeftMostIncomingLane ( contact: TvContactPoint ): TvLane | undefined {
+
+		const direction = LaneUtils.determineDirection( contact );
+
+		const lanes = this.getLaneArray().filter( lane => lane.direction === direction );
+
+		if ( contact == TvContactPoint.START ) {
+
+			return LaneUtils.findLowest( lanes, TvLaneType.driving );
+
+		} else if ( contact == TvContactPoint.END ) {
+
+			return LaneUtils.findHighest( lanes, TvLaneType.driving );
+
+		}
+
+	}
+
+	getRightMostIncomingLane ( contact: TvContactPoint ): TvLane | undefined {
+
+		const direction = LaneUtils.determineDirection( contact );
+
+		const lanes = this.getLaneArray().filter( lane => lane.direction === direction );
+
+		if ( contact == TvContactPoint.START ) {
+
+			return LaneUtils.findHighest( lanes, TvLaneType.driving );
+
+		} else if ( contact == TvContactPoint.END ) {
+
+			return LaneUtils.findLowest( lanes, TvLaneType.driving );
+
+		}
+
+	}
+
 	private findHighest ( lanes: TvLane[], type?: TvLaneType ): TvLane {
 
 		if ( lanes.length === 0 ) return;

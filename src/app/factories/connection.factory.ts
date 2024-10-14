@@ -67,8 +67,8 @@ export class ConnectionFactory {
 
 		const processedLanes = new Set<TvLane>();
 
-		const highestLane: TvLane = LaneUtils.findRightMostIncomingLane( incoming );
-		const lowestLane: TvLane = LaneUtils.findLeftMostIncomingLane( incoming );
+		const rightMostLane: TvLane = incoming.laneSection.getRightMostIncomingLane( incoming.contact );
+		const leftMostLane: TvLane = incoming.laneSection.getLeftMostIncomingLane( incoming.contact );
 
 		for ( let i = 0; i < incomingCoords.length; i++ ) {
 
@@ -91,17 +91,17 @@ export class ConnectionFactory {
 				const turnType = LaneUtils.determineTurnType( incomingCoord, outgoingCoord );
 
 				if ( turnType == TurnType.RIGHT || corner ) {
-					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id > highestLane?.id ) {
+					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id > rightMostLane?.id ) {
 						continue;
 					}
-					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id < highestLane?.id ) {
+					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id < rightMostLane?.id ) {
 						continue;
 					}
 				} else if ( turnType == TurnType.LEFT ) {
-					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id < lowestLane?.id ) {
+					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id < leftMostLane?.id ) {
 						continue;
 					}
-					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id > lowestLane?.id ) {
+					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id > leftMostLane?.id ) {
 						continue;
 					}
 				}
