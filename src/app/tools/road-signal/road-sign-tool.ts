@@ -40,6 +40,10 @@ export class RoadSignTool extends BaseTool<any> {
 		return this.selectionService.findSelectedObject<TvRoad>( TvRoad );
 	}
 
+	protected get currentSelectedObject (): TvRoadSignal {
+		return this.selectedPoint?.mainObject || this.currentSelectedPoint?.mainObject;
+	}
+
 	init () {
 
 		super.init();
@@ -109,12 +113,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 		if ( !this.currentSelectedObject ) return;
 
-		const road = this.tool.roadService.getRoad( this.currentSelectedObject.roadId );
-
-		if ( !road ) {
-			Log.error( `Road with ID ${ this.currentSelectedObject.roadId } could not be retrieved.` );
-			return;
-		}
+		const road = this.currentSelectedObject.getRoad();
 
 		const position = this.tool.roadService.findRoadCoord( pointerEventData.point );
 
@@ -149,12 +148,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 		if ( object instanceof TvRoadSignal ) {
 
-			const road = this.selectedRoad || this.tool.roadService.getRoad( object.roadId );
-
-			if ( !road ) {
-				this.setHint( 'Road not found for signal' );
-				return;
-			}
+			const road = object.getRoad() || this.selectedRoad;
 
 			this.setHint( 'Drag the signal to the desired position' );
 
@@ -162,16 +156,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 		} else if ( object instanceof SimpleControlPoint ) {
 
-			const road = this.selectedRoad || this.tool.roadService.getRoad( object.mainObject.roadId );
-
-			if ( !road ) {
-				this.setHint( 'Road not found for signal' );
-				return;
-			}
-
-			this.setHint( 'Drag the signal to the desired position' );
-
-			this.addRoadSignal( road, object.mainObject );
+			this.onObjectAdded( object.mainObject );
 
 		}
 
@@ -181,9 +166,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 		if ( object instanceof TvRoadSignal ) {
 
-			const road = this.tool.roadService.getRoad( object.roadId );
-
-			this.updateRoadSignal( road, object );
+			this.updateRoadSignal( object.getRoad(), object );
 
 		} else if ( object instanceof RoadSignalInspector ) {
 
@@ -193,9 +176,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 			if ( object.mainObject instanceof TvRoadSignal ) {
 
-				const road = this.tool.roadService.getRoad( object.mainObject.roadId );
-
-				if ( !road ) return;
+				const road = object.mainObject.getRoad();
 
 				const coord = road.getPosThetaByPosition( object.position );
 
@@ -215,9 +196,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 		if ( object instanceof TvRoadSignal ) {
 
-			const road = this.selectedRoad || this.tool.roadService.getRoad( object.roadId );
-
-			if ( !road ) return;
+			const road = object.getRoad() || this.selectedRoad;
 
 			this.removeRoadSignal( road, object );
 
@@ -225,13 +204,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 		} else if ( object instanceof SimpleControlPoint ) {
 
-			const road = this.selectedRoad || this.tool.roadService.getRoad( object.mainObject.roadId );
-
-			if ( !road ) return;
-
-			this.removeRoadSignal( road, object.mainObject );
-
-			this.onObjectUnselected( object );
+			this.onObjectRemoved( object.mainObject );
 
 		}
 
@@ -325,15 +298,15 @@ export class RoadSignTool extends BaseTool<any> {
 
 	}
 
-	private addRoadSignal ( road: TvRoad, object: TvRoadSignal ) {
+	private addRoadSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
-		this.tool.roadSignalService.addSignal( road, object );
+		this.tool.roadSignalService.addSignal( road, signal );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
 
 	}
 
-	private updateRoadSignal ( road: TvRoad, signal: TvRoadSignal ) {
+	private updateRoadSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
 		this.tool.roadSignalService.updateSignal( road, signal );
 
@@ -341,7 +314,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 	}
 
-	private removeRoadSignal ( road: TvRoad, signal: TvRoadSignal ) {
+	private removeRoadSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
 		this.tool.roadSignalService.removeSignal( road, signal );
 

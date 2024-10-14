@@ -352,7 +352,7 @@ export class TvRoad {
 
 	addSignal ( signal: TvRoadSignal ): void {
 
-		signal.roadId = this.id;
+		signal.setRoad( this );
 
 		this.signals.set( signal.id, signal );
 
@@ -376,7 +376,11 @@ export class TvRoad {
 
 	}
 
-	getRoadSignalById ( id: number ): TvRoadSignal {
+	getRoadSignal ( id: number ): TvRoadSignal {
+
+		if ( !this.signals.has( id ) ) {
+			throw new Error( `Signal with id ${ id } not found` );
+		}
 
 		return this.signals.get( id );
 
@@ -460,16 +464,14 @@ export class TvRoad {
 			hOffset, pitch, roll
 		);
 
-		signal.roadId = this.id;
-
-		this.signals.set( signal.id, signal );
+		this.addSignal( signal );
 
 		return signal;
 	}
 
 	addRoadSignalInstance ( signal: TvRoadSignal ): void {
 
-		this.signals.set( signal.id, signal );
+		this.addSignal( signal );
 
 	}
 

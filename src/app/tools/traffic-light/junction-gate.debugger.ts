@@ -11,6 +11,7 @@ import { Object3D } from "three";
 import { DebugDrawService } from "../../services/debug/debug-draw.service";
 import { RoadService } from "../../services/road/road.service";
 import { COLOR } from "../../views/shared/utils/colors.service";
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -70,27 +71,28 @@ export class JunctionGateDebugger extends BaseDebugger<TvRoadSignal> {
 
 	private createLines ( signal: TvRoadSignal ) {
 
-		const road = this.roadService.getRoad( signal.roadId );
+		for ( const dependency of signal.dependencies ) {
 
-		const signalPosition = road.getRoadPosition( signal.s, signal.t );
+			if ( dependency.type != TvSignalDependencyType.TrafficLight ) continue;
 
-		for ( const dep of signal.dependencies ) {
+			try {
 
-			if ( dep.type != TvSignalDependencyType.TrafficLight ) continue;
+				const trafficLight = signal.getRoad().getRoadSignal( dependency.id );
 
-			const trafficLight = road.getRoadSignalById( dep.id );
+				const positions = [
+					signal.getPosition().toVector3(),
+					trafficLight.getPosition().toVector3()
+				];
 
-			if ( !trafficLight ) continue;
+				const line = this.debugService.createLine( positions, COLOR.WHITE, 4 );
 
-			const lightPosition = road.getRoadPosition( trafficLight.s, trafficLight.t )?.position;
+				this.lines.addItem( signal, line );
 
-			lightPosition.z += trafficLight.zOffset;
+			} catch ( error ) {
 
-			const positions = [ signalPosition.position, lightPosition ];
+				Log.error( error );
 
-			const line = this.debugService.createLine( positions, COLOR.WHITE, 4 );
-
-			this.lines.addItem( signal, line );
+			}
 
 		}
 

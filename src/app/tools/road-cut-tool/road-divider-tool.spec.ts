@@ -85,7 +85,7 @@ describe( 'RoadDividerTool', () => {
 
 			signal.id = signalId++;
 
-			signal.roadId = R1.id;
+			signal.setRoad( R1 );
 
 			signal.s = s;
 

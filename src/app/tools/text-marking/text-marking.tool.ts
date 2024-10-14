@@ -114,7 +114,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		if ( !this.currentSelectedObject ) return;
 
-		const road = this.tool.roadService.getRoad( this.currentSelectedObject.roadId );
+		const road = this.currentSelectedObject.getRoad();
 
 		this.tool.base.handleTargetMovement( pointerEventData, road, ( position: any ) => {
 
@@ -251,11 +251,9 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 	}
 
-	addTextMarking ( signal: TvRoadSignal ) {
+	addTextMarking ( signal: TvRoadSignal ): void {
 
-		const road = this.tool.roadService.getRoad( signal.roadId );
-
-		if ( !road ) return;
+		const road = signal.getRoad();
 
 		this.tool.signalService.addSignal( road, signal );
 
@@ -263,11 +261,9 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 	}
 
-	updateTextMarking ( signal: TvRoadSignal ) {
+	updateTextMarking ( signal: TvRoadSignal ): void {
 
-		const road = this.tool.roadService.getRoad( signal.roadId );
-
-		if ( !road ) return;
+		const road = signal.getRoad();
 
 		this.tool.signalService.updateSignal( road, signal );
 
@@ -275,11 +271,9 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 	}
 
-	removeTextMarking ( signal: TvRoadSignal ) {
+	removeTextMarking ( signal: TvRoadSignal ): void {
 
-		const road = this.tool.roadService.getRoad( signal.roadId );
-
-		if ( !road ) return;
+		const road = signal.getRoad();
 
 		this.tool.signalService.removeSignal( road, signal );
 

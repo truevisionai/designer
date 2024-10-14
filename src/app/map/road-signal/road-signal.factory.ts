@@ -29,7 +29,7 @@ export class RoadSignalFactory {
 
 	}
 
-	createTrafficLight ( roadCoord: TvRoadCoord, name: string, type: string, subType: string ) {
+	createTrafficLight ( roadCoord: TvRoadCoord, name: string, type: string, subType: string ): TvRoadSignal {
 
 		const signal = this.createRoadSignal( roadCoord, name, type, subType );
 
@@ -41,7 +41,7 @@ export class RoadSignalFactory {
 
 	}
 
-	createPoledSign ( coord: TvRoadCoord, name: string, type: string, subtype: string = '-1' ) {
+	createPoledSign ( coord: TvRoadCoord, name: string, type: string, subtype: string = '-1' ): TvRoadSignal {
 
 		const signal = this.createRoadSignal( coord, name, type, subtype );
 
@@ -51,7 +51,7 @@ export class RoadSignalFactory {
 
 	}
 
-	createStopLine ( coord: TvRoadCoord, name: string, type: string, subtype: string = '-1' ) {
+	createStopLine ( coord: TvRoadCoord, name: string, type: string, subtype: string = '-1' ): TvRoadSignal {
 
 		const signal = this.createRoadSignal( coord, name, type, subtype );
 
@@ -63,7 +63,7 @@ export class RoadSignalFactory {
 
 	}
 
-	createRoadSignal ( coord: TvRoadCoord, name: string, type: string, subtype: string = '-1' ) {
+	createRoadSignal ( coord: TvRoadCoord, name: string, type: string, subtype: string = '-1' ): TvRoadSignal {
 
 		const signal = this.createSignal( coord.s, coord.t, name );
 
@@ -74,17 +74,18 @@ export class RoadSignalFactory {
 		signal.text = 'none';
 		signal.zOffset = 0.005;
 		signal.country = 'OpenDRIVE';
-		signal.roadId = coord.road.id;
 		signal.unit = TvUnit.NONE;
 		signal.value = null;
 		signal.height = ROAD_SIGN_HEIGHT;
 		signal.width = ROAD_SIGN_WIDTH;
 
+		signal.setRoad( coord.road );
+
 		return signal;
 
 	}
 
-	createSignalFromAsset ( asset: Asset, coord: TvRoadCoord, name: string, type: string = 'truevision', subtype: string = 'stop' ) {
+	createSignalFromAsset ( asset: Asset, coord: TvRoadCoord, name: string, type: string = 'truevision', subtype: string = 'stop' ): TvRoadSignal {
 
 		const signal = this.createSignal( coord.s, coord.t, name );
 
@@ -96,7 +97,6 @@ export class RoadSignalFactory {
 		signal.orientation = coord.t > 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
 		signal.zOffset = POLE_SIGN_ZOFFSET;
 		signal.country = 'OpenDRIVE';
-		signal.roadId = coord.road.id;
 		signal.unit = TvUnit.NONE;
 		signal.value = null;
 		signal.height = ROAD_SIGN_HEIGHT;
@@ -104,11 +104,13 @@ export class RoadSignalFactory {
 
 		signal.assetGuid = asset.guid;
 
+		signal.setRoad( coord.road );
+
 		return signal;
 
 	}
 
-	createTextRoadMarking ( coord: TvRoadCoord, text: string ) {
+	createTextRoadMarking ( coord: TvRoadCoord, text: string ): TvRoadSignal {
 
 		const signal = this.createSignal( coord.s, coord.t, text );
 
@@ -120,14 +122,15 @@ export class RoadSignalFactory {
 		signal.orientation = coord.t > 0 ? TvOrientation.MINUS : TvOrientation.PLUS;
 		signal.zOffset = 0.005;
 		signal.country = 'OpenDRIVE';
-		signal.roadId = coord.road.id;
 		signal.unit = TvUnit.T;
 		signal.value = 0.8;
+
+		signal.setRoad( coord.road );
 
 		return signal;
 	}
 
-	private createSignal ( s: number, t: number, name: string ) {
+	private createSignal ( s: number, t: number, name: string ): TvRoadSignal {
 
 		const id = this.getNextId();
 
