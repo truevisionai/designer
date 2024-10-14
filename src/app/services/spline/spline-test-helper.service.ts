@@ -4,7 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { Vector2, Vector3 } from "three";
-import { AbstractSpline, SplineType } from "../../core/shapes/abstract-spline";
+import { AbstractSpline } from "../../core/shapes/abstract-spline";
+import { SplineType } from 'app/core/shapes/spline-type';
 import { SplineService } from "./spline.service";
 import { SplineFactory } from "./spline.factory";
 import { RoadFactory } from "../../factories/road-factory.service";
@@ -157,9 +158,9 @@ export class SplineTestHelper {
 
 		const spline = SplineFactory.createFromPoints( [] );
 
-		this.cirleToolService.createCirclePoints( center, end, radius ).forEach( point => {
+		this.cirleToolService.createCirclePoints( center, end, radius ).forEach( position => {
 
-			spline.controlPoints.push( ControlPointFactory.createControl( spline, point ) );
+			spline.addControlPoint( position );
 
 		} );
 
@@ -284,9 +285,7 @@ export class SplineTestHelper {
 
 		const spline = SplineFactory.createFromPoints( [] );
 
-		const points = positions.map( position => ControlPointFactory.createControl( spline, position ) );
-
-		spline.addControlPoints( points );
+		positions.forEach( position => spline.addControlPoint( position ) );
 
 		this.splineService.add( spline );
 

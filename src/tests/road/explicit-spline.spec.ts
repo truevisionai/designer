@@ -7,7 +7,8 @@
  */
 
 import { TvRoad } from "../../app/map/models/tv-road.model";
-import { AbstractSpline, SplineType } from "../../app/core/shapes/abstract-spline";
+import { AbstractSpline } from "../../app/core/shapes/abstract-spline";
+import { SplineType } from 'app/core/shapes/spline-type';
 import { ControlPointFactory } from "../../app/factories/control-point.factory";
 import { Vector3 } from "three";
 import { SplineFactory } from 'app/services/spline/spline.factory';

@@ -3,7 +3,8 @@
  */
 
 import { CatmullRomCurve3, CurveType, Vector3 } from 'three';
-import { AbstractSpline, SplineType } from './abstract-spline';
+import { AbstractSpline } from './abstract-spline';
+import { SplineType } from './spline-type';
 
 export class CatmullRomSpline extends AbstractSpline {
 

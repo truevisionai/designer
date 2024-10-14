@@ -158,9 +158,7 @@ export class RoadFactory {
 
 			const position = new Vector3( value.x, value.y, 0 );
 
-			const point = ControlPointFactory.createControl( road.spline, position );
-
-			road.spline.controlPoints.push( point );
+			road.spline.addControlPoint( position );
 
 		} );
 

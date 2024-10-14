@@ -3,7 +3,8 @@
  */
 
 import { NewSelectionStrategy } from "./select-strategy";
-import { AbstractSpline, SplineType } from "../../shapes/abstract-spline";
+import { AbstractSpline } from "../../shapes/abstract-spline";
+import { SplineType } from 'app/core/shapes/spline-type';
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { AutoSpline } from "app/core/shapes/auto-spline-v2";
 import { ExplicitSpline } from "app/core/shapes/explicit-spline";

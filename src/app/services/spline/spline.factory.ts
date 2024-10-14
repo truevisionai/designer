@@ -6,7 +6,8 @@ import { Injectable } from '@angular/core';
 import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
-import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineType } from 'app/core/shapes/spline-type';
 import { Vector3 } from 'three';
 import { RoadNode } from 'app/objects/road/road-node';
 import { TvRoad } from 'app/map/models/tv-road.model';
@@ -166,10 +167,10 @@ export class SplineFactory {
 
 		const spline = new AutoSpline();
 
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, start ) );
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, v2 ) );
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, v3 ) );
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, end ) );
+		spline.addControlPoint( start ) ;
+		spline.addControlPoint( v2 ) ;
+		spline.addControlPoint( v3 ) ;
+		spline.addControlPoint( end ) ;
 
 		spline.update();
 
@@ -243,7 +244,7 @@ export class SplineFactory {
 
 		}
 
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, position, 0 ) );
+		spline.addControlPoint( position ) ;
 
 		return spline;
 

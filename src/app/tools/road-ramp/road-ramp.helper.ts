@@ -216,10 +216,8 @@ export class RampToolHelper {
 
 		const spline = SplineFactory.createSpline();
 
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, start ) );
-		// spline.controlPoints.push( ControlPointFactory.createControl( spline, p1 ) );
-		// spline.controlPoints.push( ControlPointFactory.createControl( spline, p2 ) );
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, end ) );
+		spline.addControlPoint( start );
+		spline.addControlPoint( end );
 
 		return spline;
 	}

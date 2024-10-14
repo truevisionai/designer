@@ -4,7 +4,8 @@
 
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector2, Vector3 } from 'three';
-import { AbstractSpline, SplineType } from './abstract-spline';
+import { AbstractSpline } from './abstract-spline';
+import { SplineType } from './spline-type';
 import { Polyline } from '../../objects/polyline';
 import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';

@@ -41,7 +41,7 @@ describe( 'Commands', () => {
 
 	it( 'should call execute for SetPointPosition', () => {
 		const spline = SplineFactory.createAtPosition( new Vector3() );
-		const point = ControlPointFactory.createControl( spline, new Vector3() );
+		const point = spline.addControlPoint( new Vector3() );
 		const newPosition = new Vector3();
 		Commands.SetPointPosition( spline, point, newPosition );
 		expect( CommandHistory.execute ).toHaveBeenCalled();

@@ -23,13 +23,8 @@ import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { Maths } from 'app/utils/maths';
 import { SplineElevationProfile } from './spline-elevation-profile';
-
-export enum SplineType {
-	AUTO = 'auto',
-	AUTOV2 = 'autov2',
-	EXPLICIT = 'explicit',
-	CATMULLROM = 'catmullrom',
-}
+import { ControlPointFactory } from 'app/factories/control-point.factory';
+import { SplineType } from './spline-type';
 
 export type NewSegment = TvRoad | TvJunction | null;
 
@@ -43,11 +38,9 @@ export abstract class AbstractSpline {
 
 	public boundingBox: Box2;
 
-	public controlPoints: AbstractControlPoint[] = [];
+	private _controlPoints: AbstractControlPoint[] = [];
 
 	private geometries: TvAbstractRoadGeometry[] = [];
-
-	public waypoints: AbstractControlPoint[] = [];
 
 	public centerPoints: AbstractControlPoint[] = [];
 	public leftPoints: AbstractControlPoint[] = [];
@@ -99,20 +92,39 @@ export abstract class AbstractSpline {
 		return this.splineSegmentProfile.getSegmentMap();
 	}
 
-	setMap ( map: TvMap ): void { this.map = map; }
+	get controlPoints (): AbstractControlPoint[] {
+		return this._controlPoints;
+	}
 
-	getMap (): TvMap { return this.map; }
+	set controlPoints ( value: AbstractControlPoint[] ) {
+		this._controlPoints = value;
+	}
 
 	get controlPointPositions (): Vector3[] {
 		return this.controlPoints.map( point => point.position );
 	}
 
+	setMap ( map: TvMap ): void { this.map = map; }
+
+	getMap (): TvMap { return this.map; }
+
 	getControlPoints (): AbstractControlPoint[] {
 		return this.controlPoints;
 	}
 
-	addControlPoint ( point: AbstractControlPoint ): void {
+	addControlPoint ( position: AbstractControlPoint | Vector3 ): AbstractControlPoint {
+
+		let point: AbstractControlPoint;
+
+		if ( position instanceof Vector3 ) {
+			point = ControlPointFactory.createControl( this, position );
+		} else {
+			point = position;
+		}
+
 		this.controlPoints.push( point );
+
+		return point;
 	}
 
 	insertControlPoint ( index: number, point: AbstractControlPoint ): void {

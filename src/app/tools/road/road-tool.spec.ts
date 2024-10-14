@@ -26,7 +26,8 @@ import { AppInspector } from 'app/core/inspector';
 import { RoadInspector } from 'app/views/inspectors/road-inspector/road-inspector.component';
 import { CommandHistory } from 'app/commands/command-history';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
-import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineType } from 'app/core/shapes/spline-type';
 import { setupTest } from 'tests/setup-tests';
 
 describe( 'RoadTool', () => {

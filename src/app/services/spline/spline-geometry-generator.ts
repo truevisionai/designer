@@ -3,7 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineType } from 'app/core/shapes/spline-type';
 import { TvRoad } from "../../map/models/tv-road.model";
 import { AutoSpline } from "../../core/shapes/auto-spline-v2";
 import { CatmullRomCurve3, Vector3 } from "three";

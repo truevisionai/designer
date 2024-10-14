@@ -148,13 +148,13 @@ xdescribe( '4-way-junction tests', () => {
 
 		// left to right
 		const spline = SplineFactory.createSpline();
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, new Vector3( -50, 0, 0 ) ) );
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, new Vector3( 50, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( -50, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 50, 0, 0 ) );
 
 		// bottom to top
 		const spline2 = SplineFactory.createSpline();
-		spline2.controlPoints.push( ControlPointFactory.createControl( spline2, new Vector3( 0, -50, 0 ) ) );
-		spline2.controlPoints.push( ControlPointFactory.createControl( spline2, new Vector3( 0, 50, 0 ) ) );
+		spline2.addControlPoint( new Vector3( 0, -50, 0 ) );
+		spline2.addControlPoint( new Vector3( 0, 50, 0 ) );
 
 		splineService.add( spline );
 		splineService.add( spline2 );

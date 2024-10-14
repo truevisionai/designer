@@ -5,7 +5,8 @@
 import { Injectable } from '@angular/core';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { AbstractReader } from 'app/importers/abstract-reader';
-import { AbstractSpline, NewSegment, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
+import { SplineType } from 'app/core/shapes/spline-type';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
@@ -600,11 +601,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const position = this.importVector3( xml );
 
-			const point = ControlPointFactory.createSplineControlPoint( spline, position );
+			const point = spline.addControlPoint( position );
 
 			point.index = spline.controlPoints.length;
-
-			spline.controlPoints.push( point );
 
 		} );
 

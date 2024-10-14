@@ -3,7 +3,8 @@
  */
 
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
-import { AbstractSpline, SplineType } from './abstract-spline';
+import { AbstractSpline } from './abstract-spline';
+import { SplineType } from './spline-type';
 import { Vector3 } from 'three';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { AutoGeometryService } from 'app/services/spline/auto-geometry.service';

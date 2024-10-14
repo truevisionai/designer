@@ -3,7 +3,8 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { SplineType } from 'app/core/shapes/spline-type';
 import { RoadFactory } from "app/factories/road-factory.service";
 import { MapService } from "../map/map.service";
 import { TvRoad } from "app/map/models/tv-road.model";

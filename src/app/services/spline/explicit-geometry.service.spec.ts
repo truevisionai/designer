@@ -14,7 +14,8 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { HttpClientModule } from "@angular/common/http";
 import { SplineGeometryGenerator } from "./spline-geometry-generator";
 import { SplineFactory } from "./spline.factory";
-import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { SplineType } from 'app/core/shapes/spline-type';
 
 describe( 'ExplicitGeometryService', () => {
 
@@ -51,8 +52,8 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should create line', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
 
 		service.updateGeometry( spline );
 
@@ -64,8 +65,8 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should have correct headings for line', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
 
 		service.updateGeometry( spline );
 
@@ -76,8 +77,8 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should have correct headings for line at 90 degree', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
 
 		service.updateGeometry( spline );
 
@@ -92,9 +93,9 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should create 3 points forming a line', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 200, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 200, 0, 0 ) );
 
 		service.updateGeometry( spline );
 
@@ -110,9 +111,9 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should create spiral with 3 points', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 100, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 100, 0 ) );
 
 		service.updateGeometry( spline );
 

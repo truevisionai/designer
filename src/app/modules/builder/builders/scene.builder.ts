@@ -5,7 +5,8 @@
 import { Injectable } from '@angular/core';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineType } from 'app/core/shapes/spline-type';
 import { TvConsole } from 'app/core/utils/console';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';

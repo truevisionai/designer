@@ -161,7 +161,7 @@ describe( '4-Road-Roundabout', () => {
 
 		expectXJunction( helper.mapService.findJunction( 1 ) );
 
-		road.spline.addControlPoint( ControlPointFactory.createControl( road.spline, new Vector3( -100, 100, 0 ) ) );
+		road.spline.addControlPoint( new Vector3( -100, 100, 0 ) );
 
 		helper.splineService.update( road.spline );
 
