@@ -39,13 +39,13 @@ export class JunctionToolHelper {
 	) {
 	}
 
-	addJunction ( junction: TvJunction ) {
+	addJunction ( junction: TvJunction ): void {
 
 		this.junctionService.fireCreatedEvent( junction );
 
 	}
 
-	removeJunction ( junction: TvJunction ) {
+	removeJunction ( junction: TvJunction ): void {
 
 		this.junctionService.fireRemovedEvent( junction );
 
@@ -60,6 +60,13 @@ export class JunctionToolHelper {
 		const junction = this.junctionFactory.createCustomJunction( centroid );
 
 		if ( this.debug ) Log.info( 'coords', sortedLinks.length, sortedLinks );
+
+		this.addConnections( sortedLinks, junction );
+
+		return junction;
+	}
+
+	private addConnections ( sortedLinks: TvLink[], junction: TvJunction ): void {
 
 		for ( let i = 0; i < sortedLinks.length; i++ ) {
 
@@ -95,7 +102,5 @@ export class JunctionToolHelper {
 			}
 
 		}
-
-		return junction;
 	}
 }

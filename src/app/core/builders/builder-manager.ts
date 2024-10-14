@@ -65,7 +65,7 @@ export class BuilderManager {
 
 	removeJunctionMesh ( junction: TvJunction, map: TvMap ): void {
 
-		Log.debug( 'Remove junction mesh', junction.toString() );
+		// Log.debug( 'Remove junction mesh', junction.toString() );
 
 		if ( junction.mesh ) map.gameObject.remove( junction.mesh );
 
@@ -79,7 +79,7 @@ export class BuilderManager {
 
 	buildJunction ( junction: TvJunction, map: TvMap ): void {
 
-		Log.debug( 'Build junction mesh', junction.toString() );
+		// Log.debug( 'Build junction mesh', junction.toString() );
 
 		if ( junction.mesh ) map.gameObject.remove( junction.mesh );
 
@@ -99,13 +99,13 @@ export class BuilderManager {
 
 		map.gameObject.add( road.gameObject );
 
-		Log.debug( 'Add road mesh', road.toString() );
+		// Log.debug( 'Add road mesh', road.toString() );
 
 	}
 
 	removeRoadMesh ( road: TvRoad, map: TvMap ): void {
 
-		Log.debug( 'Remove road mesh', road.toString() );
+		// Log.debug( 'Remove road mesh', road.toString() );
 
 		road.getLaneProfile().getLaneSections().forEach( laneSection => {
 			laneSection.gameObject?.remove();
@@ -136,7 +136,7 @@ export class BuilderManager {
 
 	removeSpline ( spline: AbstractSpline, map: TvMap ): void {
 
-		Log.debug( 'Remove spline mesh', spline.toString() );
+		// Log.debug( 'Remove spline mesh', spline.toString() );
 
 		spline.getRoadSegments().forEach( road => this.removeRoadMesh( road, map ) );
 

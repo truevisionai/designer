@@ -14,32 +14,6 @@ import { Maths } from "./maths";
 
 export class LaneUtils {
 
-	static findSuccessorLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): TvLane | null {
-
-		// if no successor id is provided, then consider lane id as successor id
-		const successorId = lane.successorId || lane.id;
-
-		const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
-
-		if ( !nextLaneSection ) return;
-
-		return nextLaneSection.getLaneById( successorId );
-
-	}
-
-	static findPredecessorLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): TvLane | null {
-
-		// if no predecessor id is provided, then consider lane id as predecessor id
-		const predecessorId = lane.predecessorId || lane.id;
-
-		const prevLaneSection = LaneUtils.findPreviousLaneSection( road, laneSection );
-
-		if ( !prevLaneSection ) return;
-
-		return prevLaneSection.getLaneById( predecessorId );
-
-	}
-
 	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
 
 		const index = road.laneSections.indexOf( laneSection );
@@ -318,80 +292,6 @@ export class LaneUtils {
 
 		return lowestLane;
 
-	}
-
-	static findOuterMostDrivingLane ( laneSection: TvLaneSection, side: TvLaneSide ) {
-
-		return this.findOuterMostLane( laneSection, side, TvLaneType.driving );
-
-	}
-
-	static findOuterMostDrivingConnection ( laneSection: TvLaneSection, side: TvLaneSide ) {
-
-		return this.findOuterMostLane( laneSection, side, TvLaneType.driving );
-
-	}
-
-	static createIncomingCoords ( roadCoord: TvRoadCoord | TvLink, corner: boolean, matchDirection = true ) {
-
-		const direction = LaneUtils.determineDirection( roadCoord.contact );
-
-		let lanes: TvLane[] = [];
-
-		if ( matchDirection ) {
-			lanes = roadCoord.laneSection.getLaneArray().filter( lane => lane.direction === direction );
-		} else {
-			lanes = roadCoord.laneSection.getLaneArray();
-		}
-
-		const coords = lanes.map( lane => roadCoord.toLaneCoord( lane ) );
-
-		if ( this.shouldSortIncoming( roadCoord.contact, corner ) ) {
-			// sort by lane id in ascending order
-			coords.sort( ( a, b ) => a.lane.id - b.lane.id );
-		}
-
-		return coords;
-	}
-
-	static createOutgoingCoords ( roadCoord: TvRoadCoord | TvLink, corner: boolean, matchDirection = true ) {
-
-		const direction = LaneUtils.determineOutDirection( roadCoord.contact );
-
-		let lanes: TvLane[] = [];
-
-		if ( matchDirection ) {
-			lanes = roadCoord.laneSection.getLaneArray().filter( lane => lane.direction === direction );
-		} else {
-			lanes = roadCoord.laneSection.getLaneArray();
-		}
-
-		const coords = lanes.map( lane => roadCoord.toLaneCoord( lane ) );
-
-		if ( this.shouldSortOutgoing( roadCoord.contact, corner ) ) {
-			// sort by lane id in ascending order
-			coords.sort( ( a, b ) => a.lane.id - b.lane.id );
-		}
-
-		return coords;
-	}
-
-	static shouldSortIncoming ( contact: TvContactPoint, corner: boolean ): boolean {
-
-		if ( corner ) {
-			return contact === TvContactPoint.END ? true : false;
-		}
-
-		return contact === TvContactPoint.END ? false : true;
-	}
-
-	static shouldSortOutgoing ( contact: TvContactPoint, corner: boolean ): boolean {
-
-		if ( corner ) {
-			return contact === TvContactPoint.END ? false : true;
-		}
-
-		return contact === TvContactPoint.END ? true : false;
 	}
 
 	static determineTurnType ( incomingCoord: TvLaneCoord | TvRoadCoord, outgoingCoord: TvLaneCoord | TvRoadCoord ): TurnType {

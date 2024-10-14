@@ -62,8 +62,8 @@ export class ConnectionFactory {
 
 	addConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner = false ): void {
 
-		const incomingCoords = LaneUtils.createIncomingCoords( incoming, corner );
-		const outgoingCoords = LaneUtils.createOutgoingCoords( outgoing, corner );
+		const incomingCoords = incoming.laneSection.getIncomingCoords( incoming.contact, corner );
+		const outgoingCoords = outgoing.laneSection.getOutgoingCoords( outgoing.contact, corner );
 
 		const processedLanes = new Set<TvLane>();
 

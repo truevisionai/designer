@@ -314,8 +314,8 @@ export class LaneSectionFactory {
 		const processed = new Set<TvLane>();
 
 		// first we'll process right side lanes of incoming
-		const incomingCoords = LaneUtils.createIncomingCoords( predecessor, false );
-		const outgoingCoords = LaneUtils.createOutgoingCoords( successor, false );
+		const incomingCoords = predecessor.laneSection.getIncomingCoords( predecessor.contact, false );
+		const outgoingCoords = successor.laneSection.getOutgoingCoords( successor.contact, false );
 
 		// const highest: TvLane = LaneUtils.findRightMostIncomingLane( predecessor );
 		// const lowest: TvLane = LaneUtils.findLeftMostIncomingLane( successor );

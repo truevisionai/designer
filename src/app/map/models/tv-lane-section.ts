@@ -9,6 +9,9 @@ import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
 import { Maths } from "../../utils/maths";
 import { LaneNotFound } from 'app/exceptions/exceptions';
+import { LaneUtils } from 'app/utils/lane.utils';
+import { TvLaneCoord } from './tv-lane-coord';
+import { createLaneDistance } from '../road/road-distance';
 
 export class TvLaneSection {
 
@@ -836,6 +839,60 @@ export class TvLaneSection {
 
 	}
 
+	getOutgoingCoords ( contact: TvContactPoint, isCorner: boolean ): TvLaneCoord[] {
+
+		const direction = LaneUtils.determineOutDirection( contact );
+
+		const lanes = this.getLaneArray().filter( lane => lane.direction === direction );
+
+		const coords = lanes.map( lane => {
+			return new TvLaneCoord( this.road, this, lane, createLaneDistance( lane, contact ), 0 );
+		} );
+
+		if ( this.shouldSortOutgoing( contact, isCorner ) ) {
+			// sort by lane id in ascending order
+			coords.sort( ( a, b ) => a.lane.id - b.lane.id );
+		}
+
+		return coords;
+
+	}
+
+	private shouldSortOutgoing ( contact: TvContactPoint, isCorner: boolean ): boolean {
+
+		if ( isCorner ) {
+			return contact === TvContactPoint.END ? false : true;
+		}
+
+		return contact === TvContactPoint.END ? true : false;
+	}
+
+	getIncomingCoords ( contact: TvContactPoint, isCorner: boolean ): TvLaneCoord[] {
+
+		const direction = LaneUtils.determineDirection( contact );
+
+		const lanes = this.getLaneArray().filter( lane => lane.direction === direction );
+
+		const coords = lanes.map( lane => {
+			return new TvLaneCoord( this.road, this, lane, createLaneDistance( lane, contact ), 0 );
+		} );
+
+		// sort by lane id in ascending order
+		if ( this.shouldSortIncoming( contact, isCorner ) ) {
+			coords.sort( ( a, b ) => a.lane.id - b.lane.id );
+		}
+
+		return coords;
+	}
+
+	private shouldSortIncoming ( contact: TvContactPoint, corner: boolean ): boolean {
+
+		if ( corner ) {
+			return contact === TvContactPoint.END ? true : false;
+		}
+
+		return contact === TvContactPoint.END ? false : true;
+	}
 
 	private findHighest ( lanes: TvLane[], type?: TvLaneType ): TvLane {
 
