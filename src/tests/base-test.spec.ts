@@ -1,6 +1,6 @@
 import { TvLaneSection } from "../app/map/models/tv-lane-section";
 import { Vector2, Vector3 } from "three";
-import { RoadFactory } from "../app/factories/road-factory.service";
+import { RoadFactory, RoadMakeOptions } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
 import { DepIntersectionService } from 'app/deprecated/dep-intersection.service';
 import { RoadNode } from "app/objects/road/road-node";
@@ -141,6 +141,24 @@ export function createOneWayRoad (): TvRoad {
 	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.6, 0, 0, 0 );
 	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 0.5, 0, 0, 0 );
 	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 2.0, 0, 0, 0 );
+
+	return road;
+
+}
+
+export function createFreewayOneWayRoad ( options: RoadMakeOptions ): TvRoad {
+
+	const road = RoadFactory.makeRoad( options );
+
+	const laneSection = road.getLaneProfile().getFirstLaneSection();
+
+	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -6, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
 
 	return road;
 
