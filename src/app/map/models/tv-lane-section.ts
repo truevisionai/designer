@@ -329,6 +329,12 @@ export class TvLaneSection {
 
 	}
 
+	addCenterLane (): TvLane {
+
+		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+
+	}
+
 	addLaneInstance ( newLane: TvLane, sort: boolean = true ): void {
 
 		newLane.laneSection = this;
