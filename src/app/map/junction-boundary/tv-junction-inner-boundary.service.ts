@@ -15,6 +15,7 @@ import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { traverseLanes } from "app/utils/traverseLanes";
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -47,12 +48,20 @@ export class TvJunctionInnerBoundaryService {
 
 		const connection = this.junctionCornerRoadService.getInnerConnectionForRoad( junction, coord.road );
 
-		if ( !connection ) return;
+		if ( !connection ) {
+			Log.warn( 'No corner road found for junction connection' );
+			return;
+		}
 
 		// get the lane link which is connected to the lowest lane
 		const lanes = connection.laneLink.map( link => link.connectingLane );
 
 		const lastCarriagewayLane = this.getLastCarriagewayLane( lanes );
+
+		if ( !lastCarriagewayLane ) {
+			Log.warn( 'No carriageway lane found for junction connection' );
+			return;
+		}
 
 		traverseLanes( connection.connectingRoad, lastCarriagewayLane.id, ( lane: TvLane ) => {
 
