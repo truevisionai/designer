@@ -20,7 +20,7 @@ import { LinkFactory } from 'app/map/models/link-factory';
 import { MapService } from "../services/map/map.service";
 import { RoadStyleManager } from 'app/assets/road-style/road-style.manager';
 
-class RoadMakeOptions {
+export class RoadMakeOptions {
 	maxSpeed?: number = 40;
 	type?: TvRoadType = TvRoadType.UNKNOWN;
 	id?: number;
