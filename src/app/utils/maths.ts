@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TurnType, TvLaneSide, TvSide } from 'app/map/models/tv-common';
-import { Box2, Box3, MathUtils, Vector2, Vector3 } from 'three';
+import { TvLaneSide, TvSide } from 'app/map/models/tv-common';
+import { Box2, Box3, Vector2, Vector3 } from 'three';
 import { TvPosTheta } from "../map/models/tv-pos-theta";
 
 export class Maths {
@@ -724,47 +724,6 @@ export class Maths {
 
 		return min + t * ( max - min );
 
-	}
-
-	static findTurnType ( A: Vector3, B: Vector3, heading: number ) {
-
-		// Create vectors for positions of A and B
-		const positionA = new Vector2( A.x, A.y );
-		const positionB = new Vector2( B.x, B.y );
-
-		// Calculate vector from A to B
-		const vectorAB = new Vector2().subVectors( positionB, positionA );
-
-		// Create heading vector for A
-		const headingVector = new Vector2( Math.cos( heading ), Math.sin( heading ) );
-
-		// Calculate the angle in degrees between heading vector and vector AB
-		const dot = headingVector.dot( vectorAB );
-		const angleRadians = Math.acos( dot / ( headingVector.length() * vectorAB.length() ) );
-		const angleDegrees = MathUtils.radToDeg( angleRadians );
-
-		// Calculate the determinant (similar to cross product z-component in 3D) to determine direction
-		const crossZ = headingVector.x * vectorAB.y - headingVector.y * vectorAB.x;
-
-		// Define the threshold for straight direction
-		// NOTE: DONT CHANGE THIS VALUE
-		// WE NEED TO WRITE TEST CASES TO ENSURE NEW VALUE WORKS
-		const straightThreshold = 30; // ±30 degrees for straight
-
-		// Determine if within straight range
-		if ( Math.abs( angleDegrees ) <= straightThreshold ) {
-
-			return TurnType.STRAIGHT;
-
-		} else if ( crossZ > 0 ) {
-
-			return TurnType.LEFT;
-
-		} else {
-
-			return TurnType.RIGHT;
-
-		}
 	}
 
 	static convertToBox3d ( box: Box2 ) {

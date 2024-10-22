@@ -18,8 +18,20 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvLink } from 'app/map/models/tv-link';
 import { LinkFactory } from 'app/map/models/link-factory';
 import { MapService } from "../services/map/map.service";
-import { ControlPointFactory } from "./control-point.factory";
 import { RoadStyleManager } from 'app/assets/road-style/road-style.manager';
+
+class RoadMakeOptions {
+	maxSpeed?: number = 40;
+	type?: TvRoadType = TvRoadType.UNKNOWN;
+	id?: number;
+	position?: Vector3;
+	hdg?: number = 0;
+	length?: number = 100
+	leftLaneCount?: number = 0;
+	rightLaneCount?: number = 1;
+	leftWidth?: number = 3.6;
+	rightWidth?: number = 3.6;
+}
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,9 +45,57 @@ export class RoadFactory {
 	) {
 	}
 
-	static createRoad (): TvRoad {
+	static createRoad ( id = -1 ): TvRoad {
 
-		return new TvRoad( '', 0, 0, null );
+		return new TvRoad( '', 0, id, null );
+
+	}
+
+	static makeRoad ( options?: RoadMakeOptions ): TvRoad {
+
+		const road = this.createRoad( options?.id );
+
+		const position = options.position ?? new Vector3( 0, 0, 0 );
+		const hdg = options.hdg ?? 0;
+		const length = options.length ?? 10;
+
+		road.getPlanView().addGeometryLine( 0, position.x, position.y, hdg, length );
+
+		const laneSection = LaneSectionFactory.createLaneSection(
+			options.leftLaneCount,
+			options.leftWidth,
+			options.rightLaneCount,
+			options.rightWidth
+		);
+
+		road.getLaneProfile().addLaneSectionInstance( laneSection );
+
+		return road;
+
+	}
+
+	static makeHighwayRoad ( options?: RoadMakeOptions ): TvRoad {
+
+		const road = this.createRoad();
+
+		const position = options.position ?? new Vector3( 0, 0, 0 );
+		const hdg = options.hdg ?? 0;
+		const length = options.length ?? 10;
+
+		road.getPlanView().addGeometryLine( 0, position.x, position.y, hdg, length );
+
+		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
+
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+		laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
+
+		for ( let id = 1; id <= options.rightLaneCount; id++ ) {
+			laneSection.createLane( TvLaneSide.RIGHT, -( id + 1 ), TvLaneType.driving, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
+		}
+
+		laneSection.createLane( TvLaneSide.RIGHT, ( options.rightLaneCount + 2 ) * -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
+
+		return road;
 
 	}
 
@@ -109,26 +169,6 @@ export class RoadFactory {
 		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
 
 		road.addElevationProfile( roadStyle.elevationProfile );
-
-		return road;
-
-	}
-
-	createHighwayRoad ( type: TvRoadType = TvRoadType.MOTORWAY, maxSpeed: number = 40 ): TvRoad {
-
-		const road = this.createNewRoad();
-
-		road.setType( type, maxSpeed );
-
-		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
-
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
-		laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 3.6, 0, 0, 0 );
-		laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-		laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-		laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-		laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-		laneSection.createLane( TvLaneSide.RIGHT, -6, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
 
 		return road;
 
@@ -210,25 +250,9 @@ export class RoadFactory {
 
 		const road = this.createNewRoad();
 
-		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
+		const laneSection = LaneSectionFactory.createLaneSection( leftCount, leftWidth, rightCount, rightWidth );
 
-		for ( let i = 1; i <= leftCount; i++ ) {
-
-			const lane = laneSection.createLane( TvLaneSide.LEFT, i, TvLaneType.driving, false, true );
-
-			lane.addWidthRecord( 0, leftWidth, 0, 0, 0 );
-
-		}
-
-		for ( let i = 1; i <= rightCount; i++ ) {
-
-			const lane = laneSection.createLane( TvLaneSide.RIGHT, -i, TvLaneType.driving, false, true );
-
-			lane.addWidthRecord( 0, rightWidth, 0, 0, 0 );
-
-		}
-
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		road.getLaneProfile().addLaneSectionInstance( laneSection );
 
 		return road;
 

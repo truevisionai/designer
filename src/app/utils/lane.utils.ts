@@ -5,12 +5,9 @@
 import { TvLane } from "app/map/models/tv-lane";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TrafficRule } from "../map/models/traffic-rule";
-import { TravelDirection, TurnType, TvContactPoint, TvLaneSide, TvLaneType } from "../map/models/tv-common";
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
-import { TvRoadCoord } from "app/map/models/TvRoadCoord";
-import { TvLink } from "app/map/models/tv-link";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
-import { Maths } from "./maths";
 
 export class LaneUtils {
 

@@ -126,6 +126,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.type != TvLaneType.sidewalk && this.type != TvLaneType.curb;
 	}
 
+	get isDrivingLane (): boolean {
+		return this.type == TvLaneType.driving;
+	}
+
 	// // TODO: Fix this bug
 	// set successor ( laneId: number ) {
 	// 	this.setSuccessor( laneId );
@@ -684,6 +688,8 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.borders.push( border );
 
 	}
+
+	isEqualTo ( lane: TvLane ): boolean { return this.uuid === lane.uuid; }
 
 	static stringToType ( type: string ): TvLaneType {
 

@@ -26,6 +26,10 @@ export class TvLaneProfile {
 
 	}
 
+	addDefaultLaneSection (): void {
+		this.addLaneSectionInstance( new TvLaneSection( 1, 0, false, this.road ) );
+	}
+
 	getRoad (): TvRoad {
 		return this.road;
 	}

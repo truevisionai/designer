@@ -31,6 +31,7 @@ import { RoadWidthService } from 'app/services/road/road-width.service';
 import { RoadLinker } from '../link/road-linker';
 import { TvRoadCoord } from './TvRoadCoord';
 import { RoadDistance } from '../road/road-distance';
+import { TvMap } from './tv-map.model';
 
 export class TvRoad {
 
@@ -86,6 +87,8 @@ export class TvRoad {
 
 	private cornerRoad: boolean = false;
 
+	private map: TvMap;
+
 	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
 
 		this.uuid = MathUtils.generateUUID();
@@ -102,6 +105,10 @@ export class TvRoad {
 		this.signalGroup.name = 'SignalGroup';
 		this.objectGroup.name = 'ObjectGroup';
 	}
+
+	setMap ( map: TvMap ): void { this.map = map; }
+
+	getMap (): TvMap { return this.map; }
 
 	get sStart (): number {
 		return this._sStart;
@@ -204,11 +211,11 @@ export class TvRoad {
 
 	hasPredecessor (): boolean { return this.predecessor != null; }
 
-	getEndPosTheta () {
+	getStartCoord (): TvRoadCoord { return this.getRoadCoord( 0 ); }
 
-		return this.getPosThetaAt( this.length - Maths.Epsilon );
+	getEndCoord (): TvRoadCoord { return this.getRoadCoord( this.length ); }
 
-	}
+	getEndPosTheta () { return this.getPosThetaAt( this.length - Maths.Epsilon ); }
 
 	getStartPosTheta () {
 

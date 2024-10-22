@@ -4,7 +4,7 @@ import { RoadFactory } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
 import { DepIntersectionService } from 'app/deprecated/dep-intersection.service';
 import { RoadNode } from "app/objects/road/road-node";
-import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
+import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
 import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { SplineControlPoint } from "app/objects/road/spline-control-point";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
@@ -127,6 +127,23 @@ export function exportCorrectLaneOrder ( laneSection: TvLaneSection ) {
 	laneSection.getRightLanes().forEach( ( lane, index ) => {
 		expect( lane.id ).toBe( -1 - index );
 	} );
+}
+
+export function createOneWayRoad (): TvRoad {
+
+	const road = RoadFactory.makeRoad( { id: 1, leftLaneCount: 0, rightLaneCount: 0 } );
+
+	const laneSection = road.getLaneProfile().getFirstLaneSection();
+
+	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 2.0, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 0.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.6, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 0.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 2.0, 0, 0, 0 );
+
+	return road;
+
 }
 
 export class BaseTest {

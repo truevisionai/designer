@@ -378,7 +378,7 @@ export class TvJunction {
 
 			if ( laneId ) {
 
-				return ( connection.incomingRoadId === incomingRoadId && connection.getToLaneId( laneId ) );
+				return ( connection.incomingRoadId === incomingRoadId && connection.getConnectingLaneId( laneId ) );
 
 			} else {
 

@@ -331,6 +331,8 @@ export class TvLaneSection {
 
 	addLaneInstance ( newLane: TvLane, sort: boolean = true ): void {
 
+		newLane.laneSection = this;
+
 		if ( this.lanes.has( newLane.id ) ) {
 
 			const lanes = [ ...this.lanes.entries() ];
@@ -861,10 +863,10 @@ export class TvLaneSection {
 	private shouldSortOutgoing ( contact: TvContactPoint, isCorner: boolean ): boolean {
 
 		if ( isCorner ) {
-			return contact === TvContactPoint.END ? false : true;
+			return contact !== TvContactPoint.END;
 		}
 
-		return contact === TvContactPoint.END ? true : false;
+		return contact === TvContactPoint.END;
 	}
 
 	getIncomingCoords ( contact: TvContactPoint, isCorner: boolean ): TvLaneCoord[] {
@@ -888,10 +890,10 @@ export class TvLaneSection {
 	private shouldSortIncoming ( contact: TvContactPoint, corner: boolean ): boolean {
 
 		if ( corner ) {
-			return contact === TvContactPoint.END ? true : false;
+			return contact === TvContactPoint.END;
 		}
 
-		return contact === TvContactPoint.END ? false : true;
+		return contact !== TvContactPoint.END;
 	}
 
 	getLeftMostIncomingLane ( contact: TvContactPoint ): TvLane | undefined {

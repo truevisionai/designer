@@ -552,7 +552,7 @@ export class ConnectionFactory {
 		connection.addLaneLink( link );
 	}
 
-	private static determineTurnType ( entry: TvLaneCoord | TvRoadCoord, exit: TvLaneCoord | TvRoadCoord ): TurnType {
+	static determineTurnType ( entry: TvLaneCoord | TvRoadCoord, exit: TvLaneCoord | TvRoadCoord ): TurnType {
 
 		// TODO: for now, if spline is same then it is straight
 		// We can improve this later
@@ -560,17 +560,58 @@ export class ConnectionFactory {
 			return TurnType.STRAIGHT;
 		}
 
-		const roadA = entry.road.getPosThetaByContact( entry.contact );
-		const roadB = exit.road.getPosThetaByContact( exit.contact );
+		const entryPosition = entry.road.getPosThetaByContact( entry.contact );
+		const exitPosition = exit.road.getPosThetaByContact( exit.contact );
 
 		if ( entry.contact == TvContactPoint.START ) {
-			roadA.rotateDegree( 180 );
+			entryPosition.rotateDegree( 180 );
 		}
 
 		if ( exit.contact == TvContactPoint.START ) {
-			roadB.rotateDegree( 180 );
+			exitPosition.rotateDegree( 180 );
 		}
 
-		return Maths.findTurnType( roadA.position, roadB.position, roadA.hdg );
+		return this.findTurnType( entryPosition.position, exitPosition.position, entryPosition.hdg );
+	}
+
+	private static findTurnType ( A: Vector3, B: Vector3, heading: number ): TurnType {
+
+		// Create vectors for positions of A and B
+		const positionA = new Vector2( A.x, A.y );
+		const positionB = new Vector2( B.x, B.y );
+
+		// Calculate vector from A to B
+		const vectorAB = new Vector2().subVectors( positionB, positionA );
+
+		// Create heading vector for A
+		const headingVector = new Vector2( Math.cos( heading ), Math.sin( heading ) );
+
+		// Calculate the angle in degrees between heading vector and vector AB
+		const dot = headingVector.dot( vectorAB );
+		const angleRadians = Math.acos( dot / ( headingVector.length() * vectorAB.length() ) );
+		const angleDegrees = MathUtils.radToDeg( angleRadians );
+
+		// Calculate the determinant (similar to cross product z-component in 3D) to determine direction
+		const crossZ = headingVector.x * vectorAB.y - headingVector.y * vectorAB.x;
+
+		// Define the threshold for straight direction
+		// NOTE: DONT CHANGE THIS VALUE
+		// WE NEED TO WRITE TEST CASES TO ENSURE NEW VALUE WORKS
+		const straightThreshold = 30; // ±30 degrees for straight
+
+		// Determine if within straight range
+		if ( Math.abs( angleDegrees ) <= straightThreshold ) {
+
+			return TurnType.STRAIGHT;
+
+		} else if ( crossZ > 0 ) {
+
+			return TurnType.LEFT;
+
+		} else {
+
+			return TurnType.RIGHT;
+
+		}
 	}
 }

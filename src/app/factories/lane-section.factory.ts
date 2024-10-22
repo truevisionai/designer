@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { RoadNode } from "app/objects/road/road-node";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
-import { TurnType, TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
+import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
@@ -21,6 +21,31 @@ import { TvLane } from "app/map/models/tv-lane";
 export class LaneSectionFactory {
 
 	constructor () {
+	}
+
+	static createLaneSection ( leftCount: number, leftWidth: number, rightCount: number, rightWidth: number ): TvLaneSection {
+
+		const laneSection = new TvLaneSection( 0, 0, true, null );
+
+		for ( let i = 1; i <= leftCount; i++ ) {
+
+			const lane = laneSection.createLane( TvLaneSide.LEFT, i, TvLaneType.driving, false, true );
+
+			lane.addWidthRecord( 0, leftWidth, 0, 0, 0 );
+
+		}
+
+		for ( let i = 1; i <= rightCount; i++ ) {
+
+			const lane = laneSection.createLane( TvLaneSide.RIGHT, -i, TvLaneType.driving, false, true );
+
+			lane.addWidthRecord( 0, rightWidth, 0, 0, 0 );
+
+		}
+
+		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+
+		return laneSection;
 	}
 
 	createSuccessorLaneSection ( road: TvRoad ) {

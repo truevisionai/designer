@@ -150,6 +150,8 @@ export class TvMap {
 			throw new DuplicateKeyException( `Road with id ${ road.id } already exists` );
 		}
 
+		road.setMap( this );
+
 		this.roads.set( road.id, road );
 	}
 
