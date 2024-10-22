@@ -132,6 +132,26 @@ export class SplineFactory {
 		return this.createRoadSpline( entry.position, entryDirection, exit.position, exitDirection, divider );
 	}
 
+	static createFromRoadCoords ( start: TvRoadCoord, end: TvRoadCoord ): AbstractSpline {
+
+		let startDirection: Vector3, endDirection: Vector3;
+
+		if ( start.contact === TvContactPoint.START ) {
+			startDirection = start.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			startDirection = start.posTheta.toDirectionVector();
+		}
+
+		if ( end.contact === TvContactPoint.START ) {
+			endDirection = end.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			endDirection = end.posTheta.toDirectionVector();
+		}
+
+		return this.createRoadSpline( start.position, startDirection, end.position, endDirection );
+
+	}
+
 	createSpline ( v1: Vector3, v1Direction: Vector3, v4: Vector3, v4Direction: Vector3 ): AbstractSpline {
 
 		return this.createRoadSpline( null, v1, v1Direction, v4, v4Direction );
@@ -167,10 +187,10 @@ export class SplineFactory {
 
 		const spline = new AutoSpline();
 
-		spline.addControlPoint( start ) ;
-		spline.addControlPoint( v2 ) ;
-		spline.addControlPoint( v3 ) ;
-		spline.addControlPoint( end ) ;
+		spline.addControlPoint( start );
+		spline.addControlPoint( v2 );
+		spline.addControlPoint( v3 );
+		spline.addControlPoint( end );
 
 		spline.update();
 
@@ -244,7 +264,7 @@ export class SplineFactory {
 
 		}
 
-		spline.addControlPoint( position ) ;
+		spline.addControlPoint( position );
 
 		return spline;
 
