@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { LeftTurnConnection, RightTurnConnection, StraightConnection, TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { RoadFactory } from "./road-factory.service";
@@ -22,6 +22,8 @@ import { Maths } from "app/utils/maths";
 import { LinkFactory } from 'app/map/models/link-factory';
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { RoadWidthService } from "app/services/road/road-width.service";
+import { MathUtils, Vector2, Vector3 } from "three";
+import { LaneLinkFactory } from "./lane-link-factory";
 
 @Injectable( {
 	providedIn: 'root'
@@ -57,6 +59,86 @@ export class ConnectionFactory {
 			}
 
 		}
+
+	}
+
+	addConnectionsNew ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner = false ): void {
+
+		const connection = ConnectionFactory.createConnectionAndRoad( junction, incoming, outgoing, corner ? TurnType.RIGHT : undefined );
+
+		const links = LaneLinkFactory.generateLinks( connection );
+
+		links.forEach( link => connection.addLaneLink( link ) );
+
+		junction.addConnection( connection );
+
+	}
+
+	static createConnectionAndRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, type?: TurnType ): TvJunctionConnection {
+
+		const connectingRoad = this.createConnectingRoad( junction, incoming, outgoing );
+
+		const connection = this.createConnection( connectingRoad, incoming, outgoing, type );
+
+		return connection;
+
+	}
+
+	static createRightConnectionAndRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvJunctionConnection {
+
+		return this.createConnectionAndRoad( junction, incoming, outgoing, TurnType.RIGHT );
+
+	}
+
+	private static createConnection ( connectingRoad: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord, type?: TurnType ): TvJunctionConnection {
+
+		const turnType = type || ConnectionFactory.determineTurnType( incoming, outgoing );
+
+		let connection: TvJunctionConnection;
+
+		if ( turnType == TurnType.RIGHT ) {
+
+			connection = new RightTurnConnection( 0, incoming.road, connectingRoad, incoming.contact );
+
+		} else if ( turnType == TurnType.STRAIGHT ) {
+
+			connection = new StraightConnection( 0, incoming.road, connectingRoad, incoming.contact );
+
+		} else if ( turnType == TurnType.LEFT ) {
+
+			connection = new LeftTurnConnection( 0, incoming.road, connectingRoad, incoming.contact );
+
+		} else {
+
+			throw new Error( 'Unknown turn type' );
+
+		}
+
+		return connection;
+
+	}
+
+	private static createConnectingRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvRoad {
+
+		const roadId = incoming.road.getMap().generateRoadId( false );
+
+		const connectingRoad = RoadFactory.createRoad( roadId );
+
+		connectingRoad.setPredecessorRoad( incoming.road, incoming.contact );
+
+		connectingRoad.setSuccessorRoad( outgoing.road, outgoing.contact );
+
+		connectingRoad.junction = junction;
+
+		connectingRoad.spline = SplineFactory.createFromRoadCoords( incoming, outgoing );
+
+		connectingRoad.spline.addSegment( 0, connectingRoad );
+
+		connectingRoad.getLaneProfile().addDefaultLaneSection();
+
+		connectingRoad.spline.updateSegmentGeometryAndBounds();
+
+		return connectingRoad;
 
 	}
 
@@ -597,7 +679,7 @@ export class ConnectionFactory {
 		// Define the threshold for straight direction
 		// NOTE: DONT CHANGE THIS VALUE
 		// WE NEED TO WRITE TEST CASES TO ENSURE NEW VALUE WORKS
-		const straightThreshold = 30; // ±30 degrees for straight
+		const straightThreshold = 10; // ±30 degrees for straight
 
 		// Determine if within straight range
 		if ( Math.abs( angleDegrees ) <= straightThreshold ) {

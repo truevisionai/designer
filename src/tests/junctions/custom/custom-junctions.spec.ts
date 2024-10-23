@@ -74,7 +74,7 @@ describe( 'CustomJunction: Tests', () => {
 
 		expect( junction ).toBeDefined();
 		expect( junction.getLaneLinkCount() ).toBe( 6 );
-		expect( junction.getConnectionCount() ).toBe( 2 );
+		expect( junction.getConnectionCount() ).toBe( 6 );
 
 		expectValidMap( testHelper.mapService );
 

@@ -15,6 +15,11 @@ export class ManeuverInspector {
 	) {
 	}
 
+	@SerializedField( { type: 'string', disabled: true } )
+	get turnType (): string {
+		return this.maneuver.connection.getTurnType() as string;
+	}
+
 	@SerializedAction( { label: 'Delete' } )
 	deleteManeuver () {
 		Commands.RemoveObject( this.maneuver );
