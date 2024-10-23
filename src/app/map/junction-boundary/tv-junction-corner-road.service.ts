@@ -65,7 +65,7 @@ export class TvJunctionCornerRoadService {
 		return connections;
 	}
 
-	getAdjacentRoadToRight ( junction: TvJunction, incomingRoad: TvRoad ): TvRoadCoord {
+	private getAdjacentRoadToRight ( junction: TvJunction, incomingRoad: TvRoad ): TvRoadCoord {
 
 		const coords = junction.getRoadLinks().map( link => link.toRoadCoord() );
 
