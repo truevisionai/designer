@@ -115,15 +115,20 @@ export class TvJunctionConnection {
 
 	getOutgoingLink (): TvLink | null {
 
-		if ( this.contactPoint == TvContactPoint.START ) {
+		return this.contactPoint == TvContactPoint.START ? this.getSuccessorLink() : this.getPredecessorLink();
 
-			return this.getSuccessorLink();
+	}
 
-		} else {
+	getIncomingLink (): TvLink | null {
 
-			return this.getPredecessorLink();
+		return this.contactPoint == TvContactPoint.START ? this.getPredecessorLink() : this.getSuccessorLink();
 
-		}
+	}
+
+	getOutgoingRoadContact (): TvContactPoint {
+
+		// return this.contactPoint == TvContactPoint.START ? TvContactPoint.END : TvContactPoint.START;
+		return this.getSuccessorLink()?.contactPoint;
 
 	}
 
