@@ -340,11 +340,10 @@ export class TvJunction {
 
 		for ( const connection of this.getConnections() ) {
 
-			if ( !connection.getIncomingRoad().equals( incomingRoad ) ) {
-				continue;
-			}
-
-			if ( connection.getOutgoingLink()?.isEqualTo( outgoingRoad ) ) {
+			if (
+				connection.isLinkedToRoad( incomingRoad ) &&
+				connection.isLinkedToRoad( outgoingRoad )
+			) {
 				connections.push( connection );
 			}
 
