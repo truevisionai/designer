@@ -12,7 +12,7 @@ import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
 import { TvLink, TvLinkType } from 'app/map/models/tv-link';
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { DebugDrawService } from '../debug/debug-draw.service';

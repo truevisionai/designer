@@ -17,7 +17,7 @@ import { DebugTextService } from '../debug/debug-text.service';
 import { Environment } from 'app/core/utils/environment';
 import { MapEvents } from 'app/events/map-events';
 import { MapService } from './map.service';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvElectronService } from '../tv-electron.service';

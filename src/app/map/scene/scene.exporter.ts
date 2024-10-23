@@ -13,7 +13,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Surface } from 'app/map/surface/surface.model';
 import { XMLBuilder } from 'fast-xml-parser';
 import { FileService } from '../../io/file.service';
-import { TvJunctionConnection } from '../models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from '../models/connections/tv-junction-connection';
 import { SnackBar } from '../../services/snack-bar.service';
 import { TvElectronService } from '../../services/tv-electron.service';
 import { ThreeService } from 'app/renderer/three.service';

@@ -1,6 +1,6 @@
 import { ConnectionFactory } from "app/factories/connection.factory";
 import { JunctionFactory } from "app/factories/junction.factory";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TurnType, TvContactPoint } from "app/map/models/tv-common";
 import { TvRoad } from "app/map/models/tv-road.model";
 

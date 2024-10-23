@@ -14,7 +14,7 @@ import { TvUserData } from '../models/tv-user-data';
 import { TvJunction } from '../models/junctions/tv-junction';
 import { TvVirtualJunction } from '../models/junctions/tv-virtual-junction';
 import { TvJunctionType } from '../models/junctions/tv-junction-type';
-import { TvJunctionConnection } from '../models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from '../models/connections/tv-junction-connection';
 import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
 import { TvLaneHeight } from '../lane-height/lane-height.model';

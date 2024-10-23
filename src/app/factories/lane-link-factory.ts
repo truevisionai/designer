@@ -1,4 +1,4 @@
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { TvLaneSide } from "app/map/models/tv-common";
 import { TvLane } from "app/map/models/tv-lane";

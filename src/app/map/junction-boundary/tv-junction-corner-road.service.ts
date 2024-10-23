@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { TvJunction } from "../models/junctions/tv-junction";
-import { TvJunctionConnection } from "../models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
 import { TvRoad } from "../models/tv-road.model";
 import { GeometryUtils } from "../../services/surface/geometry-utils";
 import { TvRoadCoord } from '../models/TvRoadCoord';

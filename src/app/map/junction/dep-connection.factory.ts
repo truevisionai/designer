@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from "../models/TvRoadCoord";
 import { TvContactPoint, TvLaneSide, TvLaneType } from "../models/tv-common";
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { RoadService } from '../../services/road/road.service';
 import { TrafficRule } from 'app/map/models/traffic-rule';

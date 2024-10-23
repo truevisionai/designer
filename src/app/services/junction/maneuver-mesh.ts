@@ -4,7 +4,7 @@
 
 import { Log } from "app/core/utils/log";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { TvLaneLocation } from "app/map/models/tv-common";
 import { INode } from "app/objects/i-selectable";

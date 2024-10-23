@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { ManeueverHelper } from '../spline/spline.factory';
 import { SplineType } from 'app/core/shapes/spline-type';

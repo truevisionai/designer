@@ -3,7 +3,7 @@
  */
 
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { Vector2, Vector3 } from "three";

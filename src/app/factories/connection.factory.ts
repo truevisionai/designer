@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { LeftTurnConnection, RightTurnConnection, StraightConnection, TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { RoadFactory } from "./road-factory.service";
@@ -24,6 +24,9 @@ import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { RoadWidthService } from "app/services/road/road-width.service";
 import { MathUtils, Vector2, Vector3 } from "three";
 import { LaneLinkFactory } from "./lane-link-factory";
+import { RightTurnConnection } from "../map/models/connections/right-turn-connection";
+import { StraightConnection } from "../map/models/connections/straight-connection";
+import { LeftTurnConnection } from "../map/models/connections/left-turn-connection";
 
 @Injectable( {
 	providedIn: 'root'

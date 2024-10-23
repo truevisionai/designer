@@ -12,7 +12,7 @@ import { LinkFactory } from '../models/link-factory';
 import { Log } from "../../core/utils/log";
 import { ConnectionFactory } from "../../factories/connection.factory";
 import { RoadService } from "../../services/road/road.service";
-import { TvJunctionConnection } from "../models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
 import { TvContactPoint } from "../models/tv-common";
 import { ConnectionGeometryService } from "app/services/junction/connection-geometry.service";
 import { GeometryUtils } from "app/services/surface/geometry-utils";

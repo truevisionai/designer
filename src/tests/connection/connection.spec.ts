@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { JunctionFactory } from "app/factories/junction.factory";
 import { RoadFactory } from "app/factories/road-factory.service";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvMap } from "app/map/models/tv-map.model";
 import { TvRoad } from "app/map/models/tv-road.model";

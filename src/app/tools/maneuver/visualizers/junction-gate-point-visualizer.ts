@@ -8,7 +8,7 @@ import { Log } from "app/core/utils/log";
 import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { ConnectionFactory } from "app/factories/connection.factory";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { JunctionGatePoint } from "app/objects/junctions/junction-gate-point";
 import { JunctionDebugService } from "app/services/junction/junction.debug";

@@ -4,7 +4,7 @@
 
 import { Box2, Box3, Mesh, Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
-import { TvJunctionConnection } from './tv-junction-connection';
+import { TvJunctionConnection } from '../connections/tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
 import { TvJunctionPriority } from './tv-junction-priority';
 import { TvRoad } from '../tv-road.model';

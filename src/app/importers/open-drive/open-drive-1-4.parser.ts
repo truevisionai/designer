@@ -20,7 +20,7 @@ import {
 import { TvUserData } from 'app/map/models/tv-user-data';
 import { TvControllerControl, TvSignalController } from '../../map/signal-controller/tv-signal-controller';
 import { TvJunction } from '../../map/models/junctions/tv-junction';
-import { TvJunctionConnection } from '../../map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from '../../map/models/connections/tv-junction-connection';
 import { TvJunctionController } from '../../map/models/junctions/tv-junction-controller';
 import { TvJunctionLaneLink } from '../../map/models/junctions/tv-junction-lane-link';
 import { TvJunctionPriority } from '../../map/models/junctions/tv-junction-priority';

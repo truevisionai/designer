@@ -10,7 +10,7 @@ import { MapService } from '../map/map.service';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { Log } from 'app/core/utils/log';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { MapEvents } from 'app/events/map-events';
 import { LinkFactory } from 'app/map/models/link-factory';
 
