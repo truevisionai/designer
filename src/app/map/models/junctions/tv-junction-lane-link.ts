@@ -51,7 +51,7 @@ export class TvJunctionLaneLink {
 	}
 
 	toString () {
-		return `Incoming: ${ this.incomingRoad?.id } Lane: ${ this.incomingLane?.id } Connecting: ${ this.connectingRoad?.id } Lane: ${ this.connectingLane?.id } Turn: ${ this.turnType }`;
+		return `IncomingLane: ${ this.incomingLane.id } ConnectingLane: ${ this.connectingLane.id } Turn: ${ this.turnType }`;
 	}
 
 }

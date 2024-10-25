@@ -98,13 +98,13 @@ export class JunctionGatePointVisualizer extends NodeVisualizer<JunctionGatePoin
 
 	private createConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ): TvJunctionConnection | undefined {
 
-		if ( !LaneUtils.canConnect( incoming, outgoing ) ) {
+		if ( !incoming.canConnect( outgoing ) ) {
 			Log.error( 'Invalid lane directions' );
 			return;
 		}
 
-		const entry = LaneUtils.isEntry( incoming.lane, incoming.contact ) ? incoming : outgoing;
-		const exit = LaneUtils.isExit( outgoing.lane, outgoing.contact ) ? outgoing : incoming;
+		const entry = incoming.isEntry() ? incoming : outgoing;
+		const exit = outgoing.isExit() ? outgoing : incoming;
 
 		if ( entry === exit ) {
 			Log.error( 'Invalid entry or exit' );
@@ -128,7 +128,7 @@ export class JunctionGatePointVisualizer extends NodeVisualizer<JunctionGatePoin
 			return false;
 		}
 
-		if ( !LaneUtils.canConnect( first, second ) ) {
+		if ( !first.canConnect( second ) ) {
 			// this.setHint( 'Cannot connect gates with invalid lane directions' );
 			return false;
 		}

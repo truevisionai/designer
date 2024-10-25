@@ -8,7 +8,7 @@ import { IHasUpdate } from 'app/commands/set-value-command';
 import { ISelectable } from 'app/objects/i-selectable';
 import { MathUtils } from 'three';
 import { MeshGeometryData } from './mesh-geometry.data';
-import { TravelDirection, TvColors, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
+import { TravelDirection, TvColors, TvContactPoint, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLaneAccess } from './tv-lane-access';
 import { TvLaneBorder } from './tv-lane-border';
 import { TvLaneMaterial } from './tv-lane-material';
@@ -21,6 +21,8 @@ import { TvUtils } from './tv-utils';
 import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { OrderedMap } from "../../core/models/ordered-map";
 import { TvRoad } from './tv-road.model';
+import { TvLaneCoord } from './tv-lane-coord';
+import { createLaneDistance } from '../road/road-distance';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -696,6 +698,20 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	isEqualTo ( lane: TvLane ): boolean { return this.uuid === lane.uuid; }
+
+	toLaneCoord ( distance: number | TvContactPoint ): TvLaneCoord {
+		return new TvLaneCoord( this.getRoad(), this.getLaneSection(), this, createLaneDistance( this, distance ), 0 );
+	}
+
+	isExit ( contact: TvContactPoint ): boolean {
+		return ( this.direction === TravelDirection.forward && contact === TvContactPoint.START ) ||
+			( this.direction === TravelDirection.backward && contact === TvContactPoint.END );
+	}
+
+	isEntry ( contact: TvContactPoint ): boolean {
+		return ( this.direction === TravelDirection.forward && contact === TvContactPoint.END ) ||
+			( this.direction === TravelDirection.backward && contact === TvContactPoint.START );
+	}
 
 	static stringToType ( type: string ): TvLaneType {
 

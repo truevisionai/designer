@@ -86,7 +86,7 @@ export class JunctionManager {
 
 	}
 
-	updateJunction ( junction: TvJunction, otherSplines: AbstractSpline[] = [] ) {
+	updateJunction ( junction: TvJunction, otherSplines: AbstractSpline[] = [] ): void {
 
 		if ( this.debug ) Log.debug( 'Update', junction.toString() );
 

@@ -12,7 +12,7 @@ import { TvLane } from './tv-lane';
 import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvPosTheta } from './tv-pos-theta';
 import { Log } from 'app/core/utils/log';
-import { LaneDistance } from '../road/road-distance';
+import { createLaneDistance } from '../road/road-distance';
 
 export class TvRoadCoord {
 
@@ -82,7 +82,7 @@ export class TvRoadCoord {
 
 	toLaneCoord ( lane: TvLane ): TvLaneCoord {
 
-		const laneDistance = this.s - this.laneSection.s as LaneDistance;
+		const laneDistance = createLaneDistance( lane, this.s - this.laneSection.s );
 
 		return new TvLaneCoord( this.road, this.laneSection, lane, laneDistance, this.t );
 

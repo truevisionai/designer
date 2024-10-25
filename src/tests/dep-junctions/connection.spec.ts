@@ -114,20 +114,20 @@ xdescribe( 'ConnectionService', () => {
 
 		expect( junction.getConnection( 0 ).contactPoint ).toBe( TvContactPoint.START );
 		expect( junction.getConnection( 0 ).incomingRoad.id ).toBe( bottom.id );
-		expect( junction.getConnection( 0 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.getConnection( 0 ).computeIncomingContactPoint() ).toBe( TvContactPoint.END );
 
 
 		expect( junction.getConnection( 1 ).contactPoint ).toBe( TvContactPoint.START );
 		expect( junction.getConnection( 1 ).incomingRoad.id ).toBe( left.id );
-		expect( junction.getConnection( 1 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.getConnection( 1 ).computeIncomingContactPoint() ).toBe( TvContactPoint.END );
 
 		expect( junction.getConnection( 2 ).contactPoint ).toBe( TvContactPoint.START );
 		expect( junction.getConnection( 2 ).incomingRoad.id ).toBe( bottom.id );
-		expect( junction.getConnection( 2 ).getIncomingContactPoint() ).toBe( TvContactPoint.END );
+		expect( junction.getConnection( 2 ).computeIncomingContactPoint() ).toBe( TvContactPoint.END );
 
 		expect( junction.getConnection( 3 ).contactPoint ).toBe( TvContactPoint.START );
 		expect( junction.getConnection( 3 ).incomingRoad.id ).toBe( top.id );
-		expect( junction.getConnection( 3 ).getIncomingContactPoint() ).toBe( TvContactPoint.START );
+		expect( junction.getConnection( 3 ).computeIncomingContactPoint() ).toBe( TvContactPoint.START );
 
 		// TODO: add more tests for rest of the connections
 

@@ -129,9 +129,9 @@ export function exportCorrectLaneOrder ( laneSection: TvLaneSection ) {
 	} );
 }
 
-export function createOneWayRoad (): TvRoad {
+export function createOneWayRoad ( options?: RoadMakeOptions ): TvRoad {
 
-	const road = RoadFactory.makeRoad( { id: 1, leftLaneCount: 0, rightLaneCount: 0 } );
+	const road = RoadFactory.makeRoad( { id: options?.id, leftLaneCount: 0, rightLaneCount: 0 } );
 
 	const laneSection = road.getLaneProfile().getFirstLaneSection();
 

@@ -113,7 +113,7 @@ export class SplineFactory {
 		return this.createSpline( a, aDirection, b, bDirection );
 	}
 
-	static createManeuverSpline ( entry: TvLaneCoord, exit: TvLaneCoord, divider = 3 ): AbstractSpline {
+	static createFromLaneCoords ( entry: TvLaneCoord, exit: TvLaneCoord, divider = 3 ): AbstractSpline {
 
 		let entryDirection: Vector3, exitDirection: Vector3;
 

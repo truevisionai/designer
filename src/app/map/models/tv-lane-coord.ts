@@ -6,7 +6,7 @@ import { Vector3 } from 'three';
 import { TvRoad } from './tv-road.model';
 import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";
-import { TvContactPoint } from './tv-common';
+import { TravelDirection, TvContactPoint, TvLaneType } from './tv-common';
 import { Maths } from 'app/utils/maths';
 import { Orientation } from 'app/scenario/models/tv-orientation';
 import { LaneUtils } from "../../utils/lane.utils";
@@ -20,7 +20,7 @@ export class TvLaneCoord {
 		public readonly laneSection: TvLaneSection,
 		public readonly lane: TvLane,
 		public readonly laneDistance: LaneDistance,
-		public readonly offset: number
+		public readonly offset: number = 0
 	) {
 	}
 
@@ -94,5 +94,34 @@ export class TvLaneCoord {
 		return this.posTheta;
 	}
 
+	canConnect ( otherLane: TvLaneCoord ): boolean {
+
+		if ( this.road.id === otherLane.road.id ) return false;
+
+		if ( this.lane.type !== otherLane.lane.type ) return false;
+
+		// for carriage way we don't want to merge entries with entries and exits with exits
+		if ( this.lane.isCarriageWay() && this.lane.type != TvLaneType.shoulder ) {
+
+			// don't merge if both are entries
+			if ( this.isEntry() && otherLane.isEntry() ) return false;
+
+			// don't merge if both are exits
+			if ( this.isExit() && otherLane.isExit() ) return false;
+
+		}
+
+		return true;
+
+	}
+
+	isEntry (): boolean {
+		return this.lane.isEntry( this.contact );
+	}
+
+
+	isExit (): boolean {
+		return this.lane.isExit( this.contact );
+	}
 }
 
