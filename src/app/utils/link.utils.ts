@@ -35,7 +35,7 @@ export class LinkUtils {
 
 					if ( successorLane ) {
 
-						currentLane.successorUUID = successorLane.uuid;
+						currentLane.setSuccessor( successorLane );
 
 					}
 
@@ -52,7 +52,7 @@ export class LinkUtils {
 
 						if ( successorLane ) {
 
-							currentLane.successorUUID = successorLane.uuid;
+							currentLane.setSuccessor( successorLane );
 
 						}
 
@@ -72,7 +72,7 @@ export class LinkUtils {
 
 					if ( predecessorLane ) {
 
-						currentLane.predecessorUUID = predecessorLane.uuid;
+						currentLane.setPredecessor( predecessorLane );
 
 					}
 
@@ -89,7 +89,7 @@ export class LinkUtils {
 
 						if ( predecessorLane ) {
 
-							currentLane.predecessorUUID = predecessorLane.uuid;
+							currentLane.setPredecessor( predecessorLane );
 
 						}
 					}

@@ -86,8 +86,6 @@ export class ConnectionManager {
 
 		const sortedLinks: TvLink[] = GeometryUtils.sortRoadLinks( roadLinks );
 
-		const centroid = this.roadService.findCentroid( sortedLinks );
-
 		junction.removeAllConnections();
 
 		for ( let i = 0; i < sortedLinks.length; i++ ) {

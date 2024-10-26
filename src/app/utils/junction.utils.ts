@@ -191,11 +191,11 @@ export class JunctionUtils {
 
 					} else {
 
-						if ( laneLink.connectingLane.successorUUID == targetLane.uuid ) {
+						if ( laneLink.connectingLane.isSuccessor( targetLane ) ) {
 
 							successors.push( laneLink.connectingLane );
 
-						} else if ( laneLink.connectingLane.predecessorUUID == targetLane.uuid ) {
+						} else if ( laneLink.connectingLane.isPredecessor( targetLane ) ) {
 
 							successors.push( laneLink.connectingLane );
 
@@ -252,11 +252,11 @@ export class JunctionUtils {
 
 					} else {
 
-						if ( laneLink.connectingLane.successorUUID == targetLane.uuid ) {
+						if ( laneLink.connectingLane.isSuccessor( targetLane ) ) {
 
 							predecessors.push( laneLink.connectingLane );
 
-						} else if ( laneLink.connectingLane.predecessorUUID == targetLane.uuid ) {
+						} else if ( laneLink.connectingLane.isPredecessor( targetLane ) ) {
 
 							predecessors.push( laneLink.connectingLane );
 

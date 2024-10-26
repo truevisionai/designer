@@ -415,8 +415,7 @@ export class DepConnectionFactory {
 			true
 		);
 
-		connectionLane.predecessorId = incoming.lane.id;
-		connectionLane.successorId = outgoing.lane.id;
+		connectionLane.setLinks( incoming.lane, outgoing.lane );
 
 		// NOTE: THIS CAN probably be added in road event listener also
 		const widhtAtStart = incoming.lane.getWidthValue( incoming.laneDistance );

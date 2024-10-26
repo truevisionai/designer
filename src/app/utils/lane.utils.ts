@@ -11,6 +11,34 @@ import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 
 export class LaneUtils {
 
+	private static readonly TYPE_ALIASES: Record<string, TvLaneType> = {
+		walking: TvLaneType.sidewalk,
+	};
+
+	static typeToString ( type: TvLaneType ): string {
+		return type in TvLaneType ? type : 'none';
+	}
+
+	static stringToType ( value: string ): TvLaneType {
+
+		// Convert to lowercase for case-insensitive comparison
+		const normalizedValue = value.toLowerCase();
+
+		// Check direct matches first
+		const enumValues = Object.values( TvLaneType ) as string[];
+		if ( enumValues.includes( normalizedValue ) ) {
+			return normalizedValue as TvLaneType;
+		}
+
+		// Check aliases
+		if ( normalizedValue in LaneUtils.TYPE_ALIASES ) {
+			return LaneUtils.TYPE_ALIASES[ normalizedValue ];
+		}
+
+		return TvLaneType.none;
+
+	}
+
 	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
 
 		const index = road.laneSections.indexOf( laneSection );

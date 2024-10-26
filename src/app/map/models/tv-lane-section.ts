@@ -519,7 +519,7 @@ export class TvLaneSection {
 
 	isMatching ( other: TvLaneSection ): boolean {
 
-		if ( this.lanesMap.size !== other.lanesMap.size ) return false;
+		if ( this.getLaneCount() !== other.getLaneCount() ) return false;
 
 		for ( let [ id, laneA ] of this.lanesMap ) {
 
@@ -527,11 +527,9 @@ export class TvLaneSection {
 
 			if ( !laneB ) return false;
 
-			// if ( laneA.width !== laneB.width ) return false;
-
-			if ( laneA.type != laneB.type ) return false;
-
-			if ( laneA.direction != laneB.direction ) return false;
+			if ( !laneA.isMatching( laneB ) ) {
+				return false;
+			}
 
 		}
 
@@ -797,21 +795,7 @@ export class TvLaneSection {
 
 		this.lanesMap.forEach( lane => {
 
-			const otherLane = successor.getLaneById( lane.id * sign );
-
-			if ( otherLane ) {
-
-				lane.successorId = otherLane.id;
-
-				lane.successorUUID = otherLane.uuid;
-
-			} else {
-
-				lane.successorId = null;
-
-				lane.successorUUID = null;
-
-			}
+			lane.setOrUnsetSuccessor( successor.getLaneById( lane.id * sign ) );
 
 		} );
 
@@ -827,21 +811,7 @@ export class TvLaneSection {
 
 		this.lanesMap.forEach( lane => {
 
-			const otherLane = predecessor.getLaneById( lane.id * sign );
-
-			if ( otherLane ) {
-
-				lane.predecessorId = otherLane.id;
-
-				lane.predecessorUUID = otherLane.uuid;
-
-			} else {
-
-				lane.predecessorId = null;
-
-				lane.predecessorUUID = null;
-
-			}
+			lane.setOrUnsetPredecessor( predecessor.getLaneById( lane.id * sign ) )
 
 		} );
 
@@ -851,7 +821,7 @@ export class TvLaneSection {
 
 		const direction = LaneUtils.determineOutDirection( contact );
 
-		const lanes = this.getLaneArray().filter( lane => lane.direction === direction );
+		const lanes = this.getLaneArray().filter( lane => lane.matchesDirection( direction ) );
 
 		const coords = lanes.map( lane => {
 			return new TvLaneCoord( this.road, this, lane, createLaneDistance( lane, contact ), 0 );
@@ -879,7 +849,7 @@ export class TvLaneSection {
 
 		const direction = LaneUtils.determineDirection( contact );
 
-		const lanes = this.getLaneArray().filter( lane => lane.direction === direction );
+		const lanes = this.getLaneArray().filter( lane => lane.matchesDirection( direction ) );
 
 		const coords = lanes.map( lane => {
 			return new TvLaneCoord( this.road, this, lane, createLaneDistance( lane, contact ), 0 );
@@ -906,7 +876,7 @@ export class TvLaneSection {
 
 		const direction = LaneUtils.determineDirection( contact );
 
-		const lanes = this.getLaneArray().filter( lane => lane.direction === direction );
+		const lanes = this.getLaneArray().filter( lane => lane.matchesDirection( direction ) );
 
 		if ( contact == TvContactPoint.START ) {
 
@@ -924,7 +894,7 @@ export class TvLaneSection {
 
 		const direction = LaneUtils.determineDirection( contact );
 
-		const lanes = this.getLaneArray().filter( lane => lane.direction === direction );
+		const lanes = this.getLaneArray().filter( lane => lane.matchesDirection( direction ) );
 
 		if ( contact == TvContactPoint.START ) {
 

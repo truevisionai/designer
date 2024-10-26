@@ -426,7 +426,7 @@ export class DebugDrawService {
 		const point = road.getRoadPosition( sOffset, t );
 
 		// NOTE: this can be used if we want hdg to be adjusted with travel direction
-		if ( lane.direction == TravelDirection.backward ) {
+		if ( lane.matchesDirection( TravelDirection.backward ) ) {
 			point.hdg += Math.PI;
 		}
 

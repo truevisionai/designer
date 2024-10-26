@@ -23,6 +23,7 @@ import { OrderedMap } from "../../core/models/ordered-map";
 import { TvRoad } from './tv-road.model';
 import { TvLaneCoord } from './tv-lane-coord';
 import { createLaneDistance } from '../road/road-distance';
+import { LaneUtils } from 'app/utils/lane.utils';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -75,18 +76,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	public direction: TravelDirection;
 
 	public successorId: number;
-	public successorUUID: string;
-
 	public predecessorId: number;
-	public predecessorUUID: string;
 
-	get successorExists (): boolean {
-		return this.successorId !== undefined && this.successorId !== null;
-	}
-
-	get predecessorExists (): boolean {
-		return this.predecessorId !== undefined && this.predecessorId !== null;
-	}
+	private successorUUID: string;
+	private predecessorUUID: string;
 
 	private _laneSection: TvLaneSection;
 
@@ -132,11 +125,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.type == TvLaneType.driving;
 	}
 
-	// // TODO: Fix this bug
-	// set successor ( laneId: number ) {
-	// 	this.setSuccessor( laneId );
-	// }
-
 	get laneSection (): TvLaneSection {
 		return this._laneSection;
 	}
@@ -155,6 +143,63 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	get laneSectionId () {
 		return this._laneSection?.id;
+	}
+
+	get successorExists (): boolean {
+		return this.successorId !== undefined && this.successorId !== null;
+	}
+
+	get predecessorExists (): boolean {
+		return this.predecessorId !== undefined && this.predecessorId !== null;
+	}
+
+	isSuccessor ( lane: TvLane ): boolean {
+		return this.successorUUID === lane.uuid;
+	}
+
+	isPredecessor ( lane: TvLane ): boolean {
+		return this.predecessorUUID === lane.uuid;
+	}
+
+	unsetPredecessor (): void {
+		this.predecessorId = undefined;
+		this.predecessorUUID = undefined;
+	}
+
+	unsetSuccessor (): void {
+		this.successorId = undefined;
+		this.successorUUID = undefined;
+	}
+
+	setPredecessor ( lane: TvLane ): void {
+		this.predecessorId = lane.id;
+		this.predecessorUUID = lane.uuid;
+	}
+
+	setSuccessor ( lane: TvLane ): void {
+		this.successorId = lane.id;
+		this.successorUUID = lane.uuid;
+	}
+
+	setOrUnsetSuccessor ( lane?: TvLane ): void {
+		if ( lane ) {
+			this.setSuccessor( lane );
+		} else {
+			this.unsetSuccessor();
+		}
+	}
+
+	setOrUnsetPredecessor ( lane?: TvLane ): void {
+		if ( lane ) {
+			this.setPredecessor( lane );
+		} else {
+			this.unsetPredecessor();
+		}
+	}
+
+	setLinks ( predecessor: TvLane, successor: TvLane ): void {
+		this.setPredecessor( predecessor );
+		this.setSuccessor( successor );
 	}
 
 	update (): void {
@@ -699,6 +744,18 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	isEqualTo ( lane: TvLane ): boolean { return this.uuid === lane.uuid; }
 
+	isMatching ( otherLane: TvLane ): boolean {
+
+		if ( this.type != otherLane.type ) return false;
+		if ( this.direction != otherLane.direction ) return false;
+
+		return true;
+	}
+
+	matchesDirection ( direction: TravelDirection ): boolean {
+		return this.direction === direction;
+	}
+
 	toLaneCoord ( distance: number | TvContactPoint ): TvLaneCoord {
 		return new TvLaneCoord( this.getRoad(), this.getLaneSection(), this, createLaneDistance( this, distance ), 0 );
 	}
@@ -714,72 +771,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	static stringToType ( type: string ): TvLaneType {
-
-		if ( type === 'bidirectional' ) return TvLaneType.bidirectional;
-		if ( type === 'driving' ) return TvLaneType.driving;
-		if ( type === 'stop' ) return TvLaneType.stop;
-		if ( type === 'shoulder' ) return TvLaneType.shoulder;
-		if ( type === 'restricted' ) return TvLaneType.restricted;
-		if ( type === 'median' ) return TvLaneType.median;
-		if ( type === 'special1' ) return TvLaneType.special1;
-		if ( type === 'special2' ) return TvLaneType.special2;
-		if ( type === 'special3' ) return TvLaneType.special3;
-		if ( type === 'roadWorks' ) return TvLaneType.roadWorks;
-		if ( type === 'tram' ) return TvLaneType.tram;
-		if ( type === 'rail' ) return TvLaneType.rail;
-		if ( type === 'entry' ) return TvLaneType.entry;
-		if ( type === 'exit' ) return TvLaneType.exit;
-		if ( type === 'offRamp' ) return TvLaneType.offRamp;
-		if ( type === 'onRamp' ) return TvLaneType.onRamp;
-		if ( type === 'connectingRamp' ) return TvLaneType.connectingRamp;
-		if ( type === 'bus' ) return TvLaneType.bus;
-		if ( type === 'taxi' ) return TvLaneType.taxi;
-		if ( type === 'HOV' ) return TvLaneType.HOV;
-		if ( type === 'sidewalk' ) return TvLaneType.sidewalk;
-		if ( type === 'walking' ) return TvLaneType.sidewalk;
-		if ( type === 'biking' ) return TvLaneType.biking;
-		if ( type === 'border' ) return TvLaneType.border;
-		if ( type === 'curb' ) return TvLaneType.curb;
-		if ( type === 'parking' ) return TvLaneType.parking;
-		if ( type === 'slipLane' ) return TvLaneType.slipLane;
-		if ( type === 'shared' ) return TvLaneType.shared;
-		if ( type === 'none' ) return TvLaneType.none;
-
-		return TvLaneType.none;
-
+		return LaneUtils.stringToType( type );
 	}
 
 	static typeToString ( type: TvLaneType ): string {
-
-		if ( type === TvLaneType.bidirectional ) return 'bidirectional';
-		if ( type === TvLaneType.driving ) return 'driving';
-		if ( type === TvLaneType.stop ) return 'stop';
-		if ( type === TvLaneType.shoulder ) return 'shoulder';
-		if ( type === TvLaneType.restricted ) return 'restricted';
-		if ( type === TvLaneType.median ) return 'median';
-		if ( type === TvLaneType.special1 ) return 'special1';
-		if ( type === TvLaneType.special2 ) return 'special2';
-		if ( type === TvLaneType.special3 ) return 'special3';
-		if ( type === TvLaneType.roadWorks ) return 'roadWorks';
-		if ( type === TvLaneType.tram ) return 'tram';
-		if ( type === TvLaneType.rail ) return 'rail';
-		if ( type === TvLaneType.entry ) return 'entry';
-		if ( type === TvLaneType.exit ) return 'exit';
-		if ( type === TvLaneType.offRamp ) return 'offRamp';
-		if ( type === TvLaneType.onRamp ) return 'onRamp';
-		if ( type === TvLaneType.connectingRamp ) return 'connectingRamp';
-		if ( type === TvLaneType.bus ) return 'bus';
-		if ( type === TvLaneType.taxi ) return 'taxi';
-		if ( type === TvLaneType.HOV ) return 'HOV';
-		if ( type === TvLaneType.sidewalk ) return 'sidewalk';
-		if ( type === TvLaneType.biking ) return 'biking';
-		if ( type === TvLaneType.border ) return 'border';
-		if ( type === TvLaneType.curb ) return 'curb';
-		if ( type === TvLaneType.parking ) return 'parking';
-		if ( type === TvLaneType.none ) return 'none';
-
-		return 'none';
-
+		return LaneUtils.typeToString( type );
 	}
 }
 

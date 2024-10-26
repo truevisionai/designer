@@ -13,7 +13,8 @@ import { LaneUtils } from 'app/utils/lane.utils';
 } )
 export class LaneLinkManager {
 
-	constructor () { }
+	constructor () {
+	}
 
 	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
@@ -24,11 +25,11 @@ export class LaneLinkManager {
 		const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
 
 		if ( !lane.predecessorExists && prevLaneSection ) {
-			lane.predecessorId = ( prevLaneSection.getNearestLane( lane )?.id );
+			lane.setOrUnsetPredecessor( prevLaneSection.getNearestLane( lane ) );
 		}
 
 		if ( !lane.successorExists && nextLaneSection ) {
-			lane.successorId = ( nextLaneSection.getNearestLane( lane )?.id );
+			lane.setOrUnsetSuccessor( nextLaneSection.getNearestLane( lane ) )
 		}
 	}
 
@@ -42,7 +43,7 @@ export class LaneLinkManager {
 
 			const successorLane = this.findSuccessor( predecessorLanes[ i ], successorLanes );
 
-			predecessorLanes[ i ].successorId = successorLane?.id;
+			predecessorLanes[ i ].setOrUnsetSuccessor( successorLane );
 
 		}
 
@@ -50,7 +51,7 @@ export class LaneLinkManager {
 
 			const predecessorLane = this.findPredecessor( successorLanes[ i ], predecessorLanes );
 
-			successorLanes[ i ].predecessorId = predecessorLane?.id;
+			successorLanes[ i ].setOrUnsetPredecessor( predecessorLane );
 
 		}
 

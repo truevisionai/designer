@@ -100,7 +100,13 @@ export class LaneSectionFactory {
 
 				if ( next.contact == TvContactPoint.START ) {
 
-					lane.successorId = next.laneSection.getNearestLane( lane )?.id;
+					const nearest = next.laneSection.getNearestLane( lane );
+
+					if ( nearest ) {
+						lane.setSuccessor( nearest );
+					} else {
+						lane.unsetSuccessor();
+					}
 
 				} else {
 
@@ -252,11 +258,11 @@ export class LaneSectionFactory {
 				);
 
 				if ( prevLane ) {
-					lane.predecessorId = prevLane.id;
+					lane.setPredecessor( prevLane );
 				}
 
 				if ( nextLane ) {
-					lane.successorId = nextLane.id;
+					lane.setSuccessor( nextLane );
 				}
 
 				lane.width.splice( 0, lane.width.length );
@@ -310,11 +316,11 @@ export class LaneSectionFactory {
 		}
 
 		if ( predecessorLane ) {
-			maneuverLane.predecessorId = predecessorLane?.id
+			maneuverLane.setPredecessor( predecessorLane );
 		}
 
 		if ( successorLane ) {
-			maneuverLane.successorId = successorLane?.id
+			maneuverLane.setSuccessor( successorLane );
 		}
 
 		return laneSection;
@@ -361,8 +367,8 @@ export class LaneSectionFactory {
 				if ( outgoing.lane.type != incoming.lane.type ) continue;
 
 				const lane = laneSection.createLane( incoming.lane.side, incoming.lane.id, incoming.lane.type, true, true );
-				lane.predecessorId = incoming.lane.id;
-				lane.successorId = outgoing.lane.id;
+
+				lane.setLinks( incoming.lane, outgoing.lane );
 
 				processed.add( incoming.lane );
 

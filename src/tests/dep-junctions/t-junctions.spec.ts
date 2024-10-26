@@ -275,7 +275,6 @@ xdescribe( 't-junction tests', () => {
 
 		expect( junction.getConnection( 0 ).incomingRoadId ).toBe( 4 );
 		expect( junction.getConnection( 0 ).laneLink.length ).toBe( 3 );
-		expect( junction.getConnection( 0 ).isCornerConnection ).toBe( true );
 		expect( junction.getConnection( 0 ).laneLink[ 0 ].connectingLane.type ).toBe( TvLaneType.driving );
 		expect( junction.getConnection( 0 ).laneLink[ 0 ].connectingLane.id ).toBe( -1 );
 		expect( junction.getConnection( 0 ).laneLink[ 0 ].connectingLane.predecessorId ).toBe( -1 );
