@@ -10,9 +10,7 @@ import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { FreeValidationCreationStrategy } from "app/core/interfaces/base-creation-strategy";
 import { SimpleControlPoint } from "app/objects/simple-control-point";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfacePointCreationStrategy extends FreeValidationCreationStrategy<AbstractControlPoint> {
 
 	constructor ( private surfaceFactory: SurfaceFactory ) {
@@ -83,7 +81,7 @@ export class SurfaceCreationStrategy extends FreeValidationCreationStrategy<Surf
 
 		const point = SurfaceFactory.createSurfacePoint( event.point, surface );
 
-		surface.spline.addControlPoint( point );
+		surface.addControlPoint( point );
 
 		return surface;
 

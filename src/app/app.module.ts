@@ -36,6 +36,7 @@ import { SnackBar } from './services/snack-bar.service';
 import { LaneWidthModule } from './modules/lane-width/lane-width.module';
 import { PropCurveModule } from './modules/prop-curve/prop-curve.module';
 import { BuilderModule } from './modules/builder/builder.module';
+import { SurfaceToolModule } from './modules/surface/surface.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {
@@ -69,6 +70,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		BuilderModule,
 		LaneWidthModule,
 		PropCurveModule,
+		SurfaceToolModule,
 
 		TranslateModule.forRoot( {
 			loader: {

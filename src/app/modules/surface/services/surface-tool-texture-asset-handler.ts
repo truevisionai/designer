@@ -10,13 +10,11 @@ import { SurfaceFactory } from "app/map/surface/surface.factory";
 import { Surface } from "app/map/surface/surface.model";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { Vector3 } from "three";
-import { SelectionService } from "../../selection.service";
+import { SelectionService } from "../../../tools/selection.service";
 import { Injectable } from "@angular/core";
 import { DropAnywhereAssetHandler } from "app/core/asset-handlers/base-asset-handler";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfaceToolTextureAssetHandler extends DropAnywhereAssetHandler {
 
 	constructor (
@@ -38,17 +36,16 @@ export class SurfaceToolTextureAssetHandler extends DropAnywhereAssetHandler {
 		const texture = this.assetService.getTexture( asset.guid ).texture;
 
 		const surfaceWidth = texture.image.width;
-
 		const surfaceHeight = texture.image.height;
 
 		const surface = this.surfaceFactory.createSurface();
 
 		surface.textureGuid = asset.guid;
 
-		surface.spline.addControlPoint( this.createControlPoint( surface, event.point ) );
-		surface.spline.addControlPoint( this.createControlPoint( surface, event.point ) );
-		surface.spline.addControlPoint( this.createControlPoint( surface, event.point ) );
-		surface.spline.addControlPoint( this.createControlPoint( surface, event.point ) );
+		surface.addControlPoint( this.createControlPoint( surface, event.point ) );
+		surface.addControlPoint( this.createControlPoint( surface, event.point ) );
+		surface.addControlPoint( this.createControlPoint( surface, event.point ) );
+		surface.addControlPoint( this.createControlPoint( surface, event.point ) );
 
 		surface.setDimensions( surfaceWidth, surfaceHeight );
 

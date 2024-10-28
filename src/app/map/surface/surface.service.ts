@@ -12,9 +12,7 @@ import { Mesh } from "three";
 import { MapEvents } from "app/events/map-events";
 import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfaceService extends BaseDataService<Surface> {
 
 	constructor (
@@ -31,7 +29,7 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 	}
 
-	add ( object: Surface ) {
+	add ( object: Surface ): void {
 
 		this.mapService.map.addSurface( object );
 
@@ -49,7 +47,7 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 	}
 
-	remove ( object: Surface ) {
+	remove ( object: Surface ): void {
 
 		this.mapService.map.removeSurface( object );
 
@@ -57,7 +55,7 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 	}
 
-	addPoint ( object: Surface, point: AbstractControlPoint ) {
+	addPoint ( object: Surface, point: AbstractControlPoint ): void {
 
 		const index = this.splineService.findIndex( object.spline, point.position );
 

@@ -6,7 +6,6 @@ import { Inject, Injectable, Injector } from '@angular/core';
 import { ToolType } from "./tool-types.enum";
 import { DebugServiceProvider } from "../core/providers/debug-service.provider";
 import { RoadToolHelper } from "./road/road-tool-helper.service";
-import { SurfaceToolService } from "./surface/surface-tool.service";
 import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
 import { RoadElevationToolService } from "./road-elevation/road-elevation-tool.service";
 import { ManeuverToolHelper } from "./maneuver/maneuver-tool-helper.service";
@@ -32,7 +31,6 @@ import { PropPointTool } from "./prop-point/prop-point-tool";
 import { PropPolygonTool } from "./prop-polygon/prop-polygon.tool";
 import { PropSpanTool } from "./prop-span/prop-span-tool";
 import { PolePropTool } from "./prop-pole/pole-prop.tool";
-import { SurfaceTool } from "./surface/surface.tool";
 import { LaneMarkingTool } from "./lane-marking/lane-marking-tool";
 import { LaneTool } from "./lane/lane-tool";
 import { PointMarkingTool } from "./point-marking/point-marking.tool";
@@ -87,7 +85,6 @@ export class ToolFactory {
 		private injector: Injector,
 		private debugFactory: DebugServiceProvider,
 		private roadToolService: RoadToolHelper,
-		private surfaceToolService: SurfaceToolService,
 		private roadCircleService: RoadCircleToolService,
 		private roadElevationService: RoadElevationToolService,
 		private maneuverToolService: ManeuverToolHelper,
@@ -198,9 +195,6 @@ export class ToolFactory {
 				break;
 			case ToolType.PolePropTool:
 				tool = new PolePropTool( this.propBarrierToolService );
-				break;
-			case ToolType.Surface:
-				tool = new SurfaceTool( this.surfaceToolService );
 				break;
 			case ToolType.LaneMarking:
 				tool = new LaneMarkingTool( this.laneMarkingService );

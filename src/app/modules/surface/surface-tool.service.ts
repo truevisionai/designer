@@ -3,11 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BaseToolService } from '../base-tool.service';
+import { BaseToolService } from '../../tools/base-tool.service';
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfaceToolService {
 
 	constructor (
