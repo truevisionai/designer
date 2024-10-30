@@ -12,9 +12,7 @@ import { RoadService } from '../../services/road/road.service';
 import { LinkedDataService } from "../../core/interfaces/data.service";
 import { Log } from 'app/core/utils/log';
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 	constructor (

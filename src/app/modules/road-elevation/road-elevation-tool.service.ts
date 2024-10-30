@@ -3,19 +3,17 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ElevationControlPoint } from 'app/map/road-elevation/tv-elevation.object';
+import { ElevationControlPoint } from 'app/modules/road-elevation/tv-elevation.object';
 import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
 import { Vector3 } from 'three';
-import { BaseToolService } from '../base-tool.service';
+import { BaseToolService } from '../../tools/base-tool.service';
 import { Object3DMap } from '../../core/models/object3d-map';
-import { TvElevationService } from 'app/map/road-elevation/tv-elevation.service';
+import { TvElevationService } from 'app/modules/road-elevation/tv-elevation.service';
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class RoadElevationToolService {
 
 	private nodes = new Object3DMap<TvElevation, ElevationControlPoint>();
@@ -28,7 +26,7 @@ export class RoadElevationToolService {
 	) {
 	}
 
-	onToolDisabled () {
+	onToolDisabled (): void {
 
 		this.nodes.clear();
 
@@ -38,7 +36,7 @@ export class RoadElevationToolService {
 
 	}
 
-	showControlPoints ( road: TvRoad ) {
+	showControlPoints ( road: TvRoad ): void {
 
 		road.getElevationProfile().getElevations().forEach( elevation => {
 
@@ -52,7 +50,7 @@ export class RoadElevationToolService {
 
 	}
 
-	hideControlPoints ( road: TvRoad ) {
+	hideControlPoints ( road: TvRoad ): void {
 
 		road.getElevationProfile().getElevations().forEach( elevation => {
 
@@ -64,7 +62,7 @@ export class RoadElevationToolService {
 
 	}
 
-	removeElevation ( road: TvRoad, node: TvElevation ) {
+	removeElevation ( road: TvRoad, node: TvElevation ): void {
 
 		this.elevationService.remove( road, node );
 
@@ -74,7 +72,7 @@ export class RoadElevationToolService {
 
 	}
 
-	updateElevationNode ( road: TvRoad, node: ElevationControlPoint, position: Vector3 ) {
+	updateElevationNode ( road: TvRoad, node: ElevationControlPoint, position: Vector3 ): void {
 
 		const roadCoord = road.getPosThetaByPosition( position );
 
@@ -84,7 +82,7 @@ export class RoadElevationToolService {
 
 	}
 
-	updateElevation ( road: TvRoad, elevation: TvElevation ) {
+	updateElevation ( road: TvRoad, elevation: TvElevation ): void {
 
 		this.elevationService.update( road, elevation );
 
@@ -92,7 +90,7 @@ export class RoadElevationToolService {
 
 	}
 
-	addElevation ( road: TvRoad, elevation: TvElevation ) {
+	addElevation ( road: TvRoad, elevation: TvElevation ): void {
 
 		this.elevationService.add( road, elevation );
 
@@ -112,7 +110,7 @@ export class RoadElevationToolService {
 
 	}
 
-	private updateControlPoints ( road: TvRoad ) {
+	private updateControlPoints ( road: TvRoad ): void {
 
 		this.hideControlPoints( road );
 

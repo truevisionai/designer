@@ -7,7 +7,6 @@ import { ToolType } from "./tool-types.enum";
 import { DebugServiceProvider } from "../core/providers/debug-service.provider";
 import { RoadToolHelper } from "./road/road-tool-helper.service";
 import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
-import { RoadElevationToolService } from "./road-elevation/road-elevation-tool.service";
 import { ManeuverToolHelper } from "./maneuver/maneuver-tool-helper.service";
 import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service";
 import { LaneToolHelper } from "./lane/lane-tool.helper";
@@ -40,7 +39,6 @@ import { PointerTool } from "./pointer/pointer-tool";
 import { MeasurementTool } from "./measurement/measurement.tool";
 import { VehicleTool } from "./vehicle/vehicle-tool";
 import { RoadSignTool } from "./road-signal/road-sign-tool";
-import { RoadElevationTool } from "./road-elevation/road-elevation.tool";
 import { RoadRampTool } from "./road-ramp/road-ramp-tool";
 import { RoadDividerTool } from "./road-cut-tool/road-divider-tool";
 import { ParkingRoadTool } from "./parking/parking-road-tool";
@@ -50,7 +48,6 @@ import { SelectionService } from "./selection.service";
 import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
 import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
 import { ControlPointFactory } from "../factories/control-point.factory";
-import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { DataServiceProvider } from "./data-service-provider.service";
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { Tool, TOOL_PROVIDERS } from "./tool";
@@ -86,7 +83,6 @@ export class ToolFactory {
 		private debugFactory: DebugServiceProvider,
 		private roadToolService: RoadToolHelper,
 		private roadCircleService: RoadCircleToolService,
-		private roadElevationService: RoadElevationToolService,
 		private maneuverToolService: ManeuverToolHelper,
 		private laneMarkingService: LaneMarkingToolService,
 		private laneToolService: LaneToolHelper,
@@ -225,9 +221,6 @@ export class ToolFactory {
 				break;
 			case ToolType.RoadSignTool:
 				tool = new RoadSignTool( this.roadSignalToolService );
-				break;
-			case ToolType.RoadElevation:
-				tool = new RoadElevationTool( this.roadElevationService );
 				break;
 			case ToolType.RoadRampTool:
 				tool = new RoadRampTool( this.injector.get( RampToolHelper ) );
