@@ -8,20 +8,14 @@ import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
-import { RoadService } from '../../services/road/road.service';
-import { LinkedDataService } from "../../core/interfaces/data.service";
 import { Log } from 'app/core/utils/log';
+import { MapEvents } from 'app/events/map-events';
+import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 
 @Injectable()
-export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
+export class TvElevationService {
 
-	constructor (
-		roadService: RoadService
-	) {
-		super();
-
-		this.parentService = roadService;
-	}
+	constructor () { }
 
 	validate ( road: TvRoad, elevation: TvElevation ): boolean {
 
@@ -63,7 +57,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
-		this.parentService.update( road );
+		this.fireRoadUpdatedEvent( road );
 
 	}
 
@@ -79,7 +73,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
-		this.parentService.update( road );
+		this.fireRoadUpdatedEvent( road );
 
 	}
 
@@ -89,7 +83,13 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
-		this.parentService.update( road );
+		this.fireRoadUpdatedEvent( road );
+
+	}
+
+	fireRoadUpdatedEvent ( road: TvRoad ): void {
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
 	}
 
