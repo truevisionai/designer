@@ -32,20 +32,23 @@ export class TvElevationService {
 		return true;
 	}
 
-	createElevation ( road: TvRoad, point: Vector3 ) {
+	createElevation ( road: TvRoad, point: Vector3 ): TvElevation {
 
 		const roadCoord = road.getPosThetaByPosition( point ).toRoadCoord( road );
 
 		return this.createElevationAt( roadCoord );
+
 	}
 
-	createElevationAt ( roadCoord: TvRoadCoord ) {
+	createElevationAt ( roadCoord: TvRoadCoord ): TvElevation {
 
-		const elevation = roadCoord.road.getElevationProfile().getElevationAt( roadCoord.s ).clone( roadCoord.s );
+		const existing = roadCoord.road.getElevationProfile().getElevationAt( roadCoord.s )
 
-		elevation.a = roadCoord.road.getElevationProfile().getElevationValue( roadCoord.s );
+		const clone = existing ? existing.clone( roadCoord.s ) : new TvElevation( roadCoord.s, 0, 0, 0, 0 );
 
-		return elevation;
+		clone.a = roadCoord.road.getElevationProfile().getElevationValue( roadCoord.s );
+
+		return clone;
 
 	}
 
