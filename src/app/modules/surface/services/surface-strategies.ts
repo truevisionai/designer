@@ -21,8 +21,6 @@ export class SurfaceSelectionStrategy extends ObjectUserDataStrategy<Surface> {
 }
 
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfacePointDragHandler extends SimpleControlPointDragHandler<Surface> {
 }

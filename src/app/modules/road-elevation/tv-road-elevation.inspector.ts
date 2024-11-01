@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TvRoad } from "../models/tv-road.model";
+import { TvRoad } from "../../map/models/tv-road.model";
 import { SerializedAction } from "../../core/components/serialization";
 import { Commands } from "app/commands/commands";
 
@@ -14,7 +14,7 @@ export class TvRoadElevationInspector {
 	}
 
 	@SerializedAction( { label: 'Increase Elevation' } )
-	increase () {
+	increase (): void {
 
 		this.road.getElevationProfile().getElevations().forEach( elevation => {
 
@@ -29,7 +29,7 @@ export class TvRoadElevationInspector {
 	}
 
 	@SerializedAction( { label: 'Decrease Elevation' } )
-	decrease () {
+	decrease (): void {
 
 		this.road.getElevationProfile().getElevations().forEach( elevation => {
 

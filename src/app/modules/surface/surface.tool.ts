@@ -3,9 +3,9 @@
  */
 
 import { Surface } from 'app/map/surface/surface.model';
-import { ToolType } from '../tool-types.enum';
+import { ToolType } from '../../tools/tool-types.enum';
 import { SurfaceToolService } from './surface-tool.service';
-import { ToolWithHandler } from '../base-tool-v2';
+import { ToolWithHandler } from '../../tools/base-tool-v2';
 import { SurfaceController } from './controllers/surface-controller';
 import { SurfaceControlPointController } from './controllers/surface-point-controller';
 import { SurfaceCreationStrategy, SurfacePointCreationStrategy } from './services/surface-creation-strategy';

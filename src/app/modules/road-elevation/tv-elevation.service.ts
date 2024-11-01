@@ -8,22 +8,14 @@ import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvUtils } from 'app/map/models/tv-utils';
 import { Vector3 } from 'three';
-import { RoadService } from '../../services/road/road.service';
-import { LinkedDataService } from "../../core/interfaces/data.service";
 import { Log } from 'app/core/utils/log';
+import { MapEvents } from 'app/events/map-events';
+import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
+@Injectable()
+export class TvElevationService {
 
-	constructor (
-		roadService: RoadService
-	) {
-		super();
-
-		this.parentService = roadService;
-	}
+	constructor () { }
 
 	validate ( road: TvRoad, elevation: TvElevation ): boolean {
 
@@ -40,20 +32,23 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 		return true;
 	}
 
-	createElevation ( road: TvRoad, point: Vector3 ) {
+	createElevation ( road: TvRoad, point: Vector3 ): TvElevation {
 
 		const roadCoord = road.getPosThetaByPosition( point ).toRoadCoord( road );
 
 		return this.createElevationAt( roadCoord );
+
 	}
 
-	createElevationAt ( roadCoord: TvRoadCoord ) {
+	createElevationAt ( roadCoord: TvRoadCoord ): TvElevation {
 
-		const elevation = roadCoord.road.getElevationProfile().getElevationAt( roadCoord.s ).clone( roadCoord.s );
+		const existing = roadCoord.road.getElevationProfile().getElevationAt( roadCoord.s )
 
-		elevation.a = roadCoord.road.getElevationProfile().getElevationValue( roadCoord.s );
+		const clone = existing ? existing.clone( roadCoord.s ) : new TvElevation( roadCoord.s, 0, 0, 0, 0 );
 
-		return elevation;
+		clone.a = roadCoord.road.getElevationProfile().getElevationValue( roadCoord.s );
+
+		return clone;
 
 	}
 
@@ -65,7 +60,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
-		this.parentService.update( road );
+		this.fireRoadUpdatedEvent( road );
 
 	}
 
@@ -81,7 +76,7 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
-		this.parentService.update( road );
+		this.fireRoadUpdatedEvent( road );
 
 	}
 
@@ -91,7 +86,13 @@ export class TvElevationService extends LinkedDataService<TvRoad, TvElevation> {
 
 		TvUtils.computeCoefficients( road.getElevationProfile().getElevations(), road.length );
 
-		this.parentService.update( road );
+		this.fireRoadUpdatedEvent( road );
+
+	}
+
+	fireRoadUpdatedEvent ( road: TvRoad ): void {
+
+		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
 	}
 

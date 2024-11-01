@@ -44,7 +44,7 @@ export class TvSurfaceInspector {
 		return this.surface.spline;
 	}
 
-	set spline ( value: any ) {
+	set spline ( value: AbstractSpline ) {
 		this.surface.spline = value;
 	}
 

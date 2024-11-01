@@ -8,9 +8,7 @@ import { Surface } from "app/map/surface/surface.model";
 import { SurfaceService } from "app/map/surface/surface.service";
 import { TvSurfaceInspector } from "../inspectors/surface.inspector";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfaceController extends BaseController<Surface> {
 
 	constructor ( private service: SurfaceService ) {

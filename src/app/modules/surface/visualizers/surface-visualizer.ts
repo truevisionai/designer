@@ -7,9 +7,7 @@ import { BaseVisualizer } from "app/core/visualizers/base-visualizer";
 import { Surface } from "app/map/surface/surface.model";
 import { SplineDebugService } from "app/services/debug/spline-debug.service";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfaceVisualizer extends BaseVisualizer<Surface> {
 
 	constructor (

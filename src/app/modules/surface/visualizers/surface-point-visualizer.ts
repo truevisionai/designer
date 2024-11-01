@@ -7,9 +7,7 @@ import { NodeVisualizer } from "../../../core/visualizers/node-visualizer";
 import { SimpleControlPoint } from "../../../objects/simple-control-point";
 import { Surface } from "../../../map/surface/surface.model";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfacePointVisualizer extends NodeVisualizer<SimpleControlPoint<Surface>> {
 
 	constructor () {

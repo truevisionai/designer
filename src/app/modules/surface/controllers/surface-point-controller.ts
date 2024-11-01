@@ -10,9 +10,7 @@ import { Surface } from "app/map/surface/surface.model";
 import { SimpleControlPoint } from "app/objects/simple-control-point";
 import { TvSurfaceInspector } from "../inspectors/surface.inspector";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class SurfaceControlPointController extends PointController<SimpleControlPoint<Surface>> {
 
 	constructor ( private surfaceService: SurfaceService, private splineService: SplineService ) {

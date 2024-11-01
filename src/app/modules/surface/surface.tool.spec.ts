@@ -8,9 +8,9 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { Asset, AssetType } from "app/assets/asset.model";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
-import { BaseTool } from "../base-tool";
-import { ToolType } from "../tool-types.enum";
-import { ToolFactory } from "../tool.factory";
+import { BaseTool } from "../../tools/base-tool";
+import { ToolType } from "../../tools/tool-types.enum";
+import { ToolFactory } from "../../tools/tool.factory";
 import { SimpleControlPoint } from "app/objects/simple-control-point";
 import { Surface } from "app/map/surface/surface.model";
 import { SurfaceToolTextureAssetHandler } from "./services/surface-tool-texture-asset-handler";
@@ -21,8 +21,8 @@ import { AssetService } from "app/assets/asset.service";
 import { TextureAsset, TvTexture } from "app/assets/texture/tv-texture.model";
 import { SurfacePointCreationStrategy } from "./services/surface-creation-strategy";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
-import { SelectionService } from "../selection.service";
-import { setupTest } from "tests/setup-tests";
+import { SelectionService } from "../../tools/selection.service";
+import { setupSurfaceTool, setupTest } from "tests/setup-tests";
 
 describe( 'SurfaceTool', () => {
 
@@ -31,7 +31,7 @@ describe( 'SurfaceTool', () => {
 
 	beforeEach( () => {
 
-		setupTest();
+		setupSurfaceTool();
 
 		testHelper = TestBed.inject( SplineTestHelper );
 
@@ -111,11 +111,7 @@ describe( 'SurfaceTool: TextureAssetHandler', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
-
-		TestBed.inject( EventServiceProvider ).init();
+		setupSurfaceTool();
 
 		assetHandler = TestBed.inject( SurfaceToolTextureAssetHandler );
 
@@ -156,11 +152,7 @@ describe( 'SurfaceTool: PointCreationStrategy', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
-
-		TestBed.inject( EventServiceProvider ).init();
+		setupSurfaceTool();
 
 		creationStrategy = TestBed.inject( SurfacePointCreationStrategy );
 
