@@ -22,7 +22,7 @@ import { TextureAsset, TvTexture } from "app/assets/texture/tv-texture.model";
 import { SurfacePointCreationStrategy } from "./services/surface-creation-strategy";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { SelectionService } from "../../tools/selection.service";
-import { setupTest } from "tests/setup-tests";
+import { setupSurfaceTool, setupTest } from "tests/setup-tests";
 
 describe( 'SurfaceTool', () => {
 
@@ -31,7 +31,7 @@ describe( 'SurfaceTool', () => {
 
 	beforeEach( () => {
 
-		setupTest();
+		setupSurfaceTool();
 
 		testHelper = TestBed.inject( SplineTestHelper );
 
@@ -111,11 +111,7 @@ describe( 'SurfaceTool: TextureAssetHandler', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
-
-		TestBed.inject( EventServiceProvider ).init();
+		setupSurfaceTool();
 
 		assetHandler = TestBed.inject( SurfaceToolTextureAssetHandler );
 
@@ -156,11 +152,7 @@ describe( 'SurfaceTool: PointCreationStrategy', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
-
-		TestBed.inject( EventServiceProvider ).init();
+		setupSurfaceTool();
 
 		creationStrategy = TestBed.inject( SurfacePointCreationStrategy );
 
