@@ -168,7 +168,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectAdded ( object: any ): void {
 
-		if ( this.debug ) Log.info( 'onObjectAdded', object );
+		if ( this.debug ) Log.debug( 'onObjectAdded', object );
 
 		if ( object instanceof TvElevation ) {
 
@@ -181,7 +181,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectUpdated ( object: any ): void {
 
-		if ( this.debug ) Log.info( 'onObjectUpdated', object );
+		if ( this.debug ) Log.debug( 'onObjectUpdated', object );
 
 		if ( object instanceof TvElevation ) {
 
@@ -211,7 +211,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectRemoved ( object: any ): void {
 
-		if ( this.debug ) Log.info( 'onObjectRemoved', object );
+		if ( this.debug ) Log.debug( 'onObjectRemoved', object );
 
 		if ( object instanceof TvElevation ) {
 
@@ -225,7 +225,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectSelected ( object: any ): void {
 
-		if ( this.debug ) Log.info( 'onObjectSelected', object );
+		if ( this.debug ) Log.debug( 'onObjectSelected', object );
 
 		if ( object instanceof ElevationControlPoint ) {
 
@@ -241,7 +241,7 @@ export class RoadElevationTool extends BaseTool<any> {
 
 	onObjectUnselected ( object: any ): void {
 
-		if ( this.debug ) Log.info( 'onObjectUnselected', object );
+		if ( this.debug ) Log.debug( 'onObjectUnselected', object );
 
 		if ( object instanceof ElevationControlPoint ) {
 

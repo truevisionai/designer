@@ -70,6 +70,7 @@ import {
 	SuperElevationToolHelper
 } from "./road-super-elevation/super-elevation.tool";
 import { ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-user-data-strategy";
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -238,7 +239,7 @@ export class ToolFactory {
 				tool = new TrafficLightTool( this.trafficLightToolService );
 				break;
 			default:
-				console.error( 'Invalid tool type' + type );
+				Log.error( 'Invalid tool type' + type );
 				break;
 		}
 
