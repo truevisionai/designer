@@ -8,6 +8,7 @@ import { MapValidatorService } from "app/services/map/map-validator.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { RoadValidator } from "app/managers/road/road-validator";
 import { SurfaceToolModule } from "app/modules/surface/surface.module";
+import { CrosswalkToolModule } from "../app/modules/crosswalk/crosswalk-tool.module";
 
 export function setupTest (): void {
 
@@ -38,6 +39,18 @@ export function setupSurfaceTool (): void {
 
 	TestBed.configureTestingModule( {
 		imports: [ SharedTestModule, SurfaceToolModule ],
+	} );
+
+	TestBed.inject( EventServiceProvider ).init();
+
+	disableMeshBuilding();
+
+}
+
+export function setupCrosswalkTool (): void {
+
+	TestBed.configureTestingModule( {
+		imports: [ SharedTestModule, CrosswalkToolModule ],
 	} );
 
 	TestBed.inject( EventServiceProvider ).init();
