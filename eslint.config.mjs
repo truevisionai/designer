@@ -3,6 +3,9 @@ import pluginJs from "@eslint/js";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 
+// eslint-disable-next-line no-undef
+global.structuredClone = global.structuredClone || (obj => JSON.parse(JSON.stringify(obj)));
+
 export default [
 	{
 		ignores: [ "**/*.spec.ts" ],
