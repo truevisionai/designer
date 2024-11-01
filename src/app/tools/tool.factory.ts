@@ -10,7 +10,6 @@ import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
 import { ManeuverToolHelper } from "./maneuver/maneuver-tool-helper.service";
 import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service";
 import { LaneToolHelper } from "./lane/lane-tool.helper";
-import { CrosswalkToolHelper } from "./crosswalk/crosswalk-tool.helper";
 import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.service";
 import { JunctionToolHelper } from "./junction/junction-tool.helper";
 import { RampToolHelper } from "./road-ramp/road-ramp.helper";
@@ -34,7 +33,6 @@ import { LaneMarkingTool } from "./lane-marking/lane-marking-tool";
 import { LaneTool } from "./lane/lane-tool";
 import { PointMarkingTool } from "./point-marking/point-marking.tool";
 import { TextMarkingTool } from "./text-marking/text-marking.tool";
-import { CrosswalkTool } from "./crosswalk/crosswalk-tool";
 import { PointerTool } from "./pointer/pointer-tool";
 import { MeasurementTool } from "./measurement/measurement.tool";
 import { VehicleTool } from "./vehicle/vehicle-tool";
@@ -207,9 +205,6 @@ export class ToolFactory {
 				break;
 			case ToolType.TextMarkingTool:
 				tool = new TextMarkingTool( this.textMarkingToolService );
-				break;
-			case ToolType.Crosswalk:
-				tool = new CrosswalkTool( this.injector.get( CrosswalkToolHelper ) );
 				break;
 			case ToolType.Pointer:
 				tool = new PointerTool();
