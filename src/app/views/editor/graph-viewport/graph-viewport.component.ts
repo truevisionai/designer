@@ -14,9 +14,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { CameraService } from 'app/renderer/camera.service';
-import { TextObjectService } from 'app/services/text-object.service';
-import { RoadElevationToolService } from 'app/tools/road-elevation/road-elevation-tool.service';
-import { AssetPreviewService } from 'app/views/inspectors/asset-preview/asset-preview.service';
 import { Scene, Group, OrthographicCamera, Color, Vector3 } from 'three';
 import { CanvasConfig, ViewportConfig } from "../viewport-new/viewport-new.component";
 import { ViewportEvents } from "../../../events/viewport-events";
@@ -25,7 +22,6 @@ import { Maths } from "../../../utils/maths";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { SelectionService } from "../../../tools/selection.service";
 import { DepPointStrategy } from "../../../core/strategies/select-strategies/control-point-strategy";
-import { TvElevationService } from "../../../map/road-elevation/tv-elevation.service";
 import { KeyboardEvents } from 'app/events/keyboard-events';
 import { CommandHistory } from 'app/commands/command-history';
 import { ToolBarService } from '../tool-bar/tool-bar.service';
@@ -72,11 +68,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 	}
 
 	constructor (
-		private previewService: AssetPreviewService,
-		private roadElevation: RoadElevationToolService,
 		private cameraService: CameraService,
-		private textService: TextObjectService,
-		private elevationService: TvElevationService,
 		private toolBarService: ToolBarService,
 		private debugDrawService: DebugDrawService,
 	) {

@@ -4,10 +4,8 @@
 
 import { TestBed } from '@angular/core/testing';
 import { OpenDrive14Parser } from './open-drive-1-4.parser';
-import { HttpClientModule } from '@angular/common/http';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { OpenDriveParserService } from "./open-drive-parser.service";
-import { FRENCH_SMALL_XODR, OSM2_XODR, SplineTestHelper, STRAIGHT_XODR } from 'app/services/spline/spline-test-helper.service';
+import { SplineTestHelper, STRAIGHT_XODR } from 'app/services/spline/spline-test-helper.service';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'OpenDrive Parsing', () => {
 
@@ -16,10 +14,7 @@ describe( 'OpenDrive Parsing', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ OpenDrive14Parser, OpenDriveParserService ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		parser = TestBed.inject( OpenDrive14Parser );
 		testHelper = TestBed.inject( SplineTestHelper );
@@ -81,8 +76,6 @@ describe( 'OpenDrive Parsing', () => {
 		expect( road.spline.controlPoints[ 1 ].position.z ).toBe( 0 );
 
 	} );
-
-
 
 
 } );

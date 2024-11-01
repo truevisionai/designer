@@ -45,13 +45,13 @@ export class TvElevationProfile {
 
 	}
 
-	createAndAddElevation ( s: number, a: number, b: number, c: number, d: number ) {
+	createAndAddElevation ( s: number, a: number, b: number, c: number, d: number ): void {
 
-		this.elevations.push( new TvElevation( s, a, b, c, d ) );
+		this.addElevation( new TvElevation( s, a, b, c, d ) );
 
 	}
 
-	addElevation ( elevation: TvElevation ) {
+	addElevation ( elevation: TvElevation ): void {
 
 		this.elevations.push( elevation );
 
@@ -59,7 +59,7 @@ export class TvElevationProfile {
 
 	}
 
-	getElevationValue ( s: number ) {
+	getElevationValue ( s: number ): number {
 
 		const elevation = this.getElevationAt( s );
 
@@ -74,7 +74,7 @@ export class TvElevationProfile {
 
 	}
 
-	removeElevation ( elevation: TvElevation ) {
+	removeElevation ( elevation: TvElevation ): void {
 
 		const index = this.elevations.indexOf( elevation );
 

@@ -5,10 +5,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { TvJunctionCornerRoadService } from './tv-junction-corner-road.service';
 import { CROSSING8_XODR, SplineTestHelper, TOWN_01, TOWN_02 } from "../../services/spline/spline-test-helper.service";
-import { HttpClientModule } from "@angular/common/http";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { EventServiceProvider } from "../../listeners/event-service-provider";
-import { TvContactPoint } from '../models/tv-common';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'TvJunctionCornerRoadService', () => {
 
@@ -18,13 +15,9 @@ describe( 'TvJunctionCornerRoadService', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
 		testHelper = TestBed.inject( SplineTestHelper );
-
-		TestBed.inject( EventServiceProvider ).init();
 
 		service = TestBed.inject( TvJunctionCornerRoadService );
 

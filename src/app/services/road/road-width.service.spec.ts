@@ -6,8 +6,7 @@ import { TestBed } from '@angular/core/testing';
 import { RoadWidthService } from './road-width.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SplineTestHelper } from '../spline/spline-test-helper.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpClientModule } from '@angular/common/http';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'Service: RoadWidth', () => {
 
@@ -17,10 +16,7 @@ describe( 'Service: RoadWidth', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: [ RoadWidthService ]
-		} );
+		setupTest();
 
 		service = TestBed.inject( RoadWidthService );
 		helper = TestBed.inject( SplineTestHelper );

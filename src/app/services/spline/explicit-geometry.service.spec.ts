@@ -4,18 +4,16 @@
 
 import { TestBed } from "@angular/core/testing";
 import { ExplicitGeometryService } from "./explicit-geometry.service";
-import { ControlPointFactory } from "app/factories/control-point.factory";
 import { Vector3 } from "three";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvGeometryType } from "app/map/models/tv-common";
 import { RoadControlPoint } from "app/objects/road/road-control-point";
 import { EXPLICIT_CIRCLE_XODR, SplineTestHelper } from "./spline-test-helper.service";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { HttpClientModule } from "@angular/common/http";
 import { SplineGeometryGenerator } from "./spline-geometry-generator";
 import { SplineFactory } from "./spline.factory";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { SplineType } from 'app/core/shapes/spline-type';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'ExplicitGeometryService', () => {
 
@@ -26,10 +24,7 @@ describe( 'ExplicitGeometryService', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ MatSnackBarModule, HttpClientModule ],
-			providers: [ ExplicitGeometryService ]
-		} );
+		setupTest();
 
 		testHelper = TestBed.get( SplineTestHelper );
 		service = TestBed.get( ExplicitGeometryService );
@@ -179,7 +174,6 @@ describe( 'ExplicitGeometryService', () => {
 
 
 	} );
-
 
 
 } );

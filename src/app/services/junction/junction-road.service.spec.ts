@@ -5,31 +5,18 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { JunctionRoadService } from './junction-road.service';
 import { SplineTestHelper } from '../spline/spline-test-helper.service';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { disableMeshBuilding } from 'app/modules/builder/builders/od-builder-config';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpClientModule } from '@angular/common/http';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'Service: JunctionRoad', () => {
 
 	let helper: SplineTestHelper;
-	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
-		disableMeshBuilding();
+		setupTest();
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: []
-		} );
-
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		helper = TestBed.inject( SplineTestHelper );
-
-		eventServiceProvider.init();
 
 	} );
 

@@ -1,6 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { CreationStrategy } from "app/core/interfaces/creation-strategy";
 import { SplineCreationRoadToolStrategy } from "./spline-creator";
 import { PointCreationRoadToolStrategy } from "./spline-point-creator";
@@ -8,6 +6,7 @@ import { PointerEventData } from "app/events/pointer-event-data";
 import { Vector3 } from "three";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
+import { setupTest } from "../../../../tests/setup-tests";
 
 describe( 'RoadTool: SplineCreator', () => {
 
@@ -15,9 +14,7 @@ describe( 'RoadTool: SplineCreator', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
 		creator = TestBed.inject( SplineCreationRoadToolStrategy );
 
@@ -39,9 +36,7 @@ describe( 'RoadTool: PointCreationRoadToolStrategy', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
 		creator = TestBed.inject( PointCreationRoadToolStrategy );
 

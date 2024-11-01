@@ -4,23 +4,20 @@
 
 import { TestBed } from '@angular/core/testing';
 import { PointMarkingCreationStrategy } from './point-marking-creation-strategy';
-import { SelectionService } from '../selection.service';
 import { AssetManager } from 'app/assets/asset.manager';
-import { Asset, AssetType } from 'app/assets/asset.model';
-import { TvTextureService } from 'app/assets/texture/tv-texture.service';
-import { Commands } from 'app/commands/commands';
-import { RoadObjectService } from 'app/map/road-object/road-object.service';
+import { AssetType } from 'app/assets/asset.model';
 import { Vector3 } from 'three';
 import { MockAssetFactory } from 'app/factories/asset-factory.service';
 import { CreationStrategy } from 'app/core/interfaces/creation-strategy';
 import { PointMarkingControlPoint } from './objects/point-marking-object';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
-import { HttpClientModule } from '@angular/common/http';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { setupTest } from "../../../tests/setup-tests";
+import { SelectionService } from "../selection.service";
+import { SplineTestHelper } from "../../services/spline/spline-test-helper.service";
+import { RoadObjectService } from "../../map/road-object/road-object.service";
+import { TvTextureService } from "../../assets/texture/tv-texture.service";
+import { TvRoad } from "../../map/models/tv-road.model";
 
 
 describe( 'PointMarkingCreationStrategy', () => {
@@ -35,18 +32,9 @@ describe( 'PointMarkingCreationStrategy', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ MatSnackBarModule, HttpClientModule ],
-			providers: [
-				PointMarkingCreationStrategy,
-				SelectionService,
-				AssetManager,
-				TvTextureService,
-				RoadObjectService,
-			],
-		} );
+		setupTest();
 
-		TestBed.inject( EventServiceProvider ).init();
+		TestBed.inject( SelectionService );
 
 		strategy = TestBed.inject( PointMarkingCreationStrategy );
 		selectionService = TestBed.inject( SelectionService );

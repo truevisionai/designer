@@ -2,12 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { JunctionFactory } from "app/factories/junction.factory";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
-import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
@@ -18,34 +14,27 @@ import { JunctionManager } from "./junction-manager";
 import { SplineManager } from "./spline-manager";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { expectCorrectSegmentOrder } from "tests/base-test.spec";
-import { AbstractSpline, NewSegment } from "app/core/shapes/abstract-spline";
-import { TvLink, TvLinkType } from "app/map/models/tv-link";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { TvLink } from "app/map/models/tv-link";
 import { LinkFactory } from 'app/map/models/link-factory';
 import { expectInstances, expectSegments } from "tests/expect-spline.spec";
+import { setupTest } from "../../tests/setup-tests";
 
 describe( 'JunctionManager: InsertJunction', () => {
 
 	let splineTestHelper: SplineTestHelper;
-	let eventServiceProvider: EventServiceProvider;
 	let mapService: MapService;
 	let junctionManager: JunctionManager;
 	let splineManager: SplineManager;
 
 	beforeEach( () => {
 
-		disableMeshBuilding();
-
-		TestBed.configureTestingModule( {
-			providers: [ JunctionManager ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		splineTestHelper = TestBed.inject( SplineTestHelper );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		mapService = TestBed.inject( MapService );
 		junctionManager = TestBed.inject( JunctionManager );
 		splineManager = TestBed.inject( SplineManager );
-		eventServiceProvider.init();
 
 	} );
 

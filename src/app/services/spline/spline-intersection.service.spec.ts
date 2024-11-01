@@ -8,10 +8,8 @@ import { TestBed, async, inject } from '@angular/core/testing';
 import { SplineIntersectionService } from './spline-intersection.service';
 import { SplineTestHelper } from './spline-test-helper.service';
 import { Vector3 } from 'three';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpClientModule } from '@angular/common/http';
-import { SplineBoundsService } from './spline-bounds.service';
 import { SplineGeometryService } from './spline-geometry.service';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'Service: SplineIntersection', () => {
 
@@ -21,10 +19,7 @@ describe( 'Service: SplineIntersection', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ MatSnackBarModule, HttpClientModule ],
-			providers: [ SplineIntersectionService ]
-		} );
+		setupTest();
 
 		service = TestBed.get( SplineIntersectionService );
 

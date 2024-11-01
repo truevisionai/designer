@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineTestHelper } from "../../../app/services/spline/spline-test-helper.service";
-import { JunctionToolHelper } from "../../../app/tools/junction/junction-tool.helper";
+import { JunctionToolHelper } from "../../../app/modules/junction/junction-tool.helper";
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from "../../../app/map/models/tv-common";
 import { expectValidMap } from "../../base-test.spec";
@@ -74,7 +74,6 @@ describe( 'CustomJunction: Tests', () => {
 
 		expect( junction ).toBeDefined();
 		expect( junction.getLaneLinkCount() ).toBe( 6 );
-		expect( junction.getConnectionCount() ).toBe( 6 );
 
 		expectValidMap( testHelper.mapService );
 

@@ -90,7 +90,6 @@ import { AppComfirmComponent } from './services/app-confirm/app-confirm.componen
 import { AppConfirmService } from './services/app-confirm/app-confirm.service';
 import { AppLoaderComponent } from './services/app-loader/app-loader.component';
 import { AppLoaderService } from './services/app-loader/app-loader.service';
-import { AuthGuard } from './services/auth/auth.guard';
 import { NavigationService } from './services/navigation.service';
 import { RoutePartsService } from './services/route-parts.service';
 // SERVICES
@@ -218,7 +217,6 @@ const classesToInclude = [
 		ThemeService,
 		NavigationService,
 		RoutePartsService,
-		AuthGuard,
 		AppConfirmService,
 		AppLoaderService,
 		AppInputDialogService,
