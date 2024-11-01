@@ -18,7 +18,8 @@ const Controllers = [
 
 const Services = [
 	CrosswalkToolDebugger,
-	CornerControlPointDragHandler
+	CornerControlPointDragHandler,
+	CrosswalkToolHelper
 ];
 
 const Views = [
