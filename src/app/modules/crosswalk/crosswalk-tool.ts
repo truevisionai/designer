@@ -5,10 +5,7 @@
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { ToolType } from 'app/tools/tool-types.enum';
-import {
-	DepPointStrategy,
-	PointSelectionStrategy
-} from '../../core/strategies/select-strategies/control-point-strategy';
+import { PointSelectionStrategy } from '../../core/strategies/select-strategies/control-point-strategy';
 import { RoadCoordStrategy } from '../../core/strategies/select-strategies/road-coord-strategy';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
@@ -19,7 +16,6 @@ import { CrosswalkInspector } from './crosswalk.inspector';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { CornerPointVisualizer } from "./visualizers/corner-point-visualizer";
 import { RoadController } from "../../core/controllers/road-handler";
-
 import { CrosswalkToolRoadVisualizer } from "./visualizers/crosswalk-tool-road-visualizer";
 import { CornerControlPointController } from './controllers/corner-point-controller';
 import { CrosswalkVisualizer } from './visualizers/crosswalk-visualizer';
@@ -53,8 +49,6 @@ export class CrosswalkTool extends ToolWithHandler {
 	get selectedRoad (): TvRoad {
 		return this.selectionService.findSelectedObject<TvRoad>( TvRoad );
 	}
-
-	private pointMoved: boolean;
 
 	constructor ( private tool: CrosswalkToolHelper ) {
 
@@ -146,7 +140,7 @@ export class CrosswalkTool extends ToolWithHandler {
 
 	createCornerRoad ( roadObject: TvRoadObject, roadCoord: TvRoadCoord ): void {
 
-		if ( roadCoord.roadId != roadObject.road.id ) {
+		if ( roadCoord.roadId !== roadObject.road.id ) {
 			this.setHint( 'Road should be same to create crosswalk' );
 			return;
 		}
