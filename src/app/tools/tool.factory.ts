@@ -11,7 +11,6 @@ import { ManeuverToolHelper } from "./maneuver/maneuver-tool-helper.service";
 import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service";
 import { LaneToolHelper } from "./lane/lane-tool.helper";
 import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.service";
-import { JunctionToolHelper } from "./junction/junction-tool.helper";
 import { RampToolHelper } from "./road-ramp/road-ramp.helper";
 import { ParkingRoadToolService } from "./parking/parking-road-tool.service";
 import { TextMarkingToolService } from "./text-marking/text-marking-tool.service";
@@ -24,7 +23,6 @@ import { BaseTool } from "./base-tool";
 import { RoadTool } from "./road/road-tool";
 import { RoadCircleTool } from "./road-circle/road-circle-tool";
 import { ManeuverTool } from "./maneuver/maneuver-tool";
-import { JunctionTool } from "./junction/junction.tool";
 import { PropPointTool } from "./prop-point/prop-point-tool";
 import { PropPolygonTool } from "./prop-polygon/prop-polygon.tool";
 import { PropSpanTool } from "./prop-span/prop-span-tool";
@@ -86,7 +84,6 @@ export class ToolFactory {
 		private laneMarkingService: LaneMarkingToolService,
 		private laneToolService: LaneToolHelper,
 		private roadCutToolService: RoadDividerToolService,
-		private junctionToolService: JunctionToolHelper,
 		private parkingRoadToolService: ParkingRoadToolService,
 		private textMarkingToolService: TextMarkingToolService,
 		private propSpanToolService: PropSpanToolService,
@@ -175,9 +172,6 @@ export class ToolFactory {
 				break;
 			case ToolType.Maneuver:
 				tool = new ManeuverTool( this.maneuverToolService );
-				break;
-			case ToolType.Junction:
-				tool = new JunctionTool( this.junctionToolService );
 				break;
 			case ToolType.PropPoint:
 				tool = new PropPointTool();

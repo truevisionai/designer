@@ -8,35 +8,25 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 import { Vector3 } from 'three';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { HttpClientModule } from '@angular/common/http';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { expectValidMap } from 'tests/base-test.spec';
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { RoadSignalFactory } from 'app/map/road-signal/road-signal.factory';
-import { RoadService } from 'app/services/road/road.service';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'RoadDividerTool', () => {
 
 	let tool: RoadDividerTool;
-	let roadService: RoadService;
 	let testHelper: SplineTestHelper;
-	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ RoadDividerToolService, EventServiceProvider ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
+
 		testHelper = TestBed.inject( SplineTestHelper );
 		tool = new RoadDividerTool( TestBed.inject( RoadDividerToolService ) );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
-		roadService = TestBed.inject( RoadService );
 
-		eventServiceProvider.init();
 	} );
 
 	it( 'should divide road in two parts', () => {

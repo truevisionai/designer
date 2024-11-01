@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineTestHelper, STRAIGHT_XODR } from "../../../app/services/spline/spline-test-helper.service";
-import { JunctionToolHelper } from "../../../app/tools/junction/junction-tool.helper";
+import { JunctionToolHelper } from "../../../app/modules/junction/junction-tool.helper";
 import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
 import { Vector3 } from 'three';
 

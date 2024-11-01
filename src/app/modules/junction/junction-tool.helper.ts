@@ -3,15 +3,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { JunctionService } from 'app/services/junction/junction.service';
 import { MapService } from 'app/services/map/map.service';
-import { BaseToolService } from '../base-tool.service';
+import { BaseToolService } from '../../tools/base-tool.service';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionDebugService } from "../../services/junction/junction.debug";
-import { TvContactPoint } from 'app/map/models/tv-common';
-import { TvRoad } from 'app/map/models/tv-road.model';
-import { JunctionManager } from "../../managers/junction-manager";
 import { TvLink } from 'app/map/models/tv-link';
 import { Log } from 'app/core/utils/log';
 import { RoadService } from 'app/services/road/road.service';
@@ -24,31 +20,21 @@ import { GeometryUtils } from 'app/services/surface/geometry-utils';
 } )
 export class JunctionToolHelper {
 
+	// TODO: this helper/class should not be provided in root
+	// currently its being used in spline test helper, which is used
+	// in every test file
+
 	private debug = true;
 
 	constructor (
 		public junctionDebugger: JunctionDebugService,
 		public junctionService: JunctionService,
-		public junctionManager: JunctionManager,
-		public debugDraw: DebugDrawService,
 		public base: BaseToolService,
 		public mapService: MapService,
 		public roadService: RoadService,
 		public connectionFactory: ConnectionFactory,
 		public junctionFactory: JunctionFactory,
 	) {
-	}
-
-	addJunction ( junction: TvJunction ): void {
-
-		this.junctionService.fireCreatedEvent( junction );
-
-	}
-
-	removeJunction ( junction: TvJunction ): void {
-
-		this.junctionService.fireRemovedEvent( junction );
-
 	}
 
 	createCustomJunction ( roadLinks: TvLink[] ): TvJunction {

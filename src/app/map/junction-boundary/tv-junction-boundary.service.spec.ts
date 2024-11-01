@@ -2,16 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { HttpClientModule } from "@angular/common/http";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { CROSSING8_XODR, SplineTestHelper, TOWN_01 } from "app/services/spline/spline-test-helper.service";
 import { TvJunctionInnerBoundaryService } from "./tv-junction-inner-boundary.service";
 import { TvJunctionBoundary } from "./tv-junction-boundary";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { TvJunctionOuterBoundaryService } from "./tv-junction-outer-boundary.service";
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'TvJunctionInnerBoundaryService', () => {
 
@@ -20,13 +18,9 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
 		testHelper = TestBed.inject( SplineTestHelper );
-
-		TestBed.inject( EventServiceProvider ).init();
 
 		service = TestBed.inject( TvJunctionInnerBoundaryService );
 
@@ -152,13 +146,9 @@ describe( 'TvJunctionOuterBoundaryService', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
 		testHelper = TestBed.inject( SplineTestHelper );
-
-		TestBed.inject( EventServiceProvider ).init();
 
 		service = TestBed.inject( TvJunctionOuterBoundaryService );
 

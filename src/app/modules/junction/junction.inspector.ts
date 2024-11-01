@@ -19,12 +19,12 @@ export class JunctionInspector {
 		disabled: true,
 		description: 'Whether the junction is automatic or created manually'
 	} )
-	get automatic () {
+	get automatic (): string {
 		return this.junction.auto ? 'true' : 'false';
 	}
 
 	@SerializedField( { type: 'string', disabled: true } )
-	get type () {
+	get type (): string {
 		return this.junction.type
 	}
 
@@ -33,7 +33,7 @@ export class JunctionInspector {
 		disabled: true,
 		description: 'The number of connections in the junction'
 	} )
-	get totalConnections () {
+	get totalConnections (): number {
 		return this.junction.getConnectionCount();
 	}
 
@@ -42,16 +42,18 @@ export class JunctionInspector {
 		disabled: true,
 		description: 'The number of lane links in the junction'
 	} )
-	get totalLinks () {
+	get totalLinks (): number {
 		return this.junction.getConnections().flatMap( connection => connection.laneLink ).length;
 	}
 
 	@SerializedAction( {
 		label: 'Delete Junction',
-		validate: function () { return !this.junction.auto; },
+		validate: function () {
+			return !this.junction.auto;
+		},
 		description: 'You can only delete junctions that are not automatic',
 	} )
-	deleteManeuver () {
+	deleteManeuver (): void {
 		Commands.RemoveObject( this.junction );
 	}
 

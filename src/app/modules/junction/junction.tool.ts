@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ToolType } from '../tool-types.enum';
+import { ToolType } from '../../tools/tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { AutoJunction, DefaultJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionToolHelper } from './junction-tool.helper';
@@ -11,7 +11,7 @@ import { JunctionNodeSelectionStrategy } from "../../core/strategies/select-stra
 import { Log } from 'app/core/utils/log';
 import { Commands } from 'app/commands/commands';
 import { JunctionSelectionStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
-import { ToolWithHandler } from '../base-tool-v2';
+import { ToolWithHandler } from '../../tools/base-tool-v2';
 import { JunctionNodeController, JunctionNodeVisualizer, JunctionToolJunctionController, JunctionToolJunctionVisualizer } from './junction-handlers';
 
 export class JunctionTool extends ToolWithHandler {

@@ -12,9 +12,7 @@ import { JunctionService } from "app/services/junction/junction.service";
 import { JunctionInspector } from "./junction.inspector";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class JunctionToolJunctionVisualizer extends EmptyVisualizer<TvJunction> {
 
 	constructor ( private junctionDebugService: JunctionDebugService ) {
@@ -31,9 +29,7 @@ export class JunctionToolJunctionVisualizer extends EmptyVisualizer<TvJunction> 
 
 }
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class JunctionToolJunctionController extends EmptyController<TvJunction> {
 
 	constructor ( private junctionService: JunctionService ) {
@@ -58,13 +54,10 @@ export class JunctionToolJunctionController extends EmptyController<TvJunction> 
 
 }
 
+@Injectable()
+export class JunctionNodeVisualizer extends NodeVisualizer<JunctionNode> {
+}
 
-@Injectable( {
-	providedIn: 'root'
-} )
-export class JunctionNodeVisualizer extends NodeVisualizer<JunctionNode> { }
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class JunctionNodeController extends EmptyController<JunctionNode> { }
+@Injectable()
+export class JunctionNodeController extends EmptyController<JunctionNode> {
+}

@@ -5,6 +5,7 @@ import { EventServiceProvider } from "../../app/listeners/event-service-provider
 import { SplineTestHelper } from "../../app/services/spline/spline-test-helper.service";
 import { ToolBarService } from "../../app/views/editor/tool-bar/tool-bar.service";
 import { TOOL_PROVIDERS } from "../../app/tools/tool";
+import { JunctionToolHelper } from "../../app/modules/junction/junction-tool.helper";
 
 @NgModule( {
 	declarations: [],
@@ -15,6 +16,7 @@ import { TOOL_PROVIDERS } from "../../app/tools/tool";
 	providers: [
 		SplineTestHelper,
 		EventServiceProvider,
+		JunctionToolHelper,
 		ToolBarService,
 		{
 			provide: TOOL_PROVIDERS,
