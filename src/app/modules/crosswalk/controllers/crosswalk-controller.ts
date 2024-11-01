@@ -10,9 +10,7 @@ import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { CrosswalkInspector } from "../crosswalk.inspector";
 
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class CrosswalkController extends BaseController<TvRoadObject> {
 
 	constructor ( private roadObjectService: RoadObjectService ) {

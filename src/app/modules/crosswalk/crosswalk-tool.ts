@@ -4,7 +4,7 @@
 
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
-import { ToolType } from '../tool-types.enum';
+import { ToolType } from 'app/tools/tool-types.enum';
 import {
 	DepPointStrategy,
 	PointSelectionStrategy
@@ -19,7 +19,7 @@ import { CrosswalkInspector } from './crosswalk.inspector';
 import { TvCornerRoad } from 'app/map/models/objects/tv-corner-road';
 import { CornerPointVisualizer } from "./visualizers/corner-point-visualizer";
 import { RoadController } from "../../core/controllers/road-handler";
-import { ToolWithHandler } from "../base-tool-v2";
+
 import { CrosswalkToolRoadVisualizer } from "./visualizers/crosswalk-tool-road-visualizer";
 import { CornerControlPointController } from './controllers/corner-point-controller';
 import { CrosswalkVisualizer } from './visualizers/crosswalk-visualizer';
@@ -28,6 +28,8 @@ import { RoadObjectFactory } from 'app/services/road-object/road-object.factory'
 import { Commands } from 'app/commands/commands';
 import { CornerControlPoint } from "./objects/corner-control-point";
 import { CornerControlPointDragHandler } from "./controllers/corner-control-point-drag-handler.service";
+import { ToolWithHandler } from 'app/tools/base-tool-v2';
+
 
 export class CrosswalkTool extends ToolWithHandler {
 
@@ -60,7 +62,7 @@ export class CrosswalkTool extends ToolWithHandler {
 
 	}
 
-	init () {
+	init (): void {
 
 		super.init();
 

@@ -7,9 +7,7 @@ import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { CornerControlPoint } from "../objects/corner-control-point";
 import { CrosswalkToolDebugger } from "../crosswalk-tool-debugger";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class CornerPointVisualizer extends NodeVisualizer<CornerControlPoint> {
 
 	constructor ( private crosswalkDebugService: CrosswalkToolDebugger ) {
