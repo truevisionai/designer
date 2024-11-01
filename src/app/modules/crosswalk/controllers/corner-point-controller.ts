@@ -9,9 +9,7 @@ import { Log } from "app/core/utils/log";
 import { CrosswalkInspector } from "../crosswalk.inspector";
 import { CornerControlPoint } from "../objects/corner-control-point";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class CornerControlPointController extends PointController<CornerControlPoint> {
 
 	constructor (

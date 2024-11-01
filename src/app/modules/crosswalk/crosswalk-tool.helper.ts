@@ -3,13 +3,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BaseToolService } from "../base-tool.service";
+import { BaseToolService } from 'app/tools/base-tool.service';
 import { CrosswalkToolDebugger } from "./crosswalk-tool-debugger";
 import { RoadService } from "../../services/road/road.service";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class CrosswalkToolHelper {
 
 	constructor (

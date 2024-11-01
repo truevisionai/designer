@@ -15,9 +15,7 @@ import { DebugLine } from "app/objects/debug-line";
 import { Object3DMap } from "app/core/models/object3d-map";
 import { CornerControlPoint } from "./objects/corner-control-point";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class CrosswalkToolDebugger {
 
 	private nodes: Object3DArrayMap<TvRoadObject, CornerControlPoint[]>;

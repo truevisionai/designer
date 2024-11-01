@@ -9,9 +9,7 @@ import { CrosswalkToolDebugger } from "../crosswalk-tool-debugger";
 import { TvRoadObjectType } from "app/map/models/objects/tv-road-object";
 import { BaseVisualizer } from "app/core/visualizers/base-visualizer";
 
-@Injectable( {
-	providedIn: 'root'
-} )
+@Injectable()
 export class CrosswalkToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 
 	constructor (
