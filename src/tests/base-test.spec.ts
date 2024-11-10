@@ -153,12 +153,36 @@ export function createFreewayOneWayRoad ( options: RoadMakeOptions ): TvRoad {
 	const laneSection = road.getLaneProfile().getFirstLaneSection();
 
 	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
-	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
-	laneSection.createLane( TvLaneSide.RIGHT, -6, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 3.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.shoulder, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -6, TvLaneType.shoulder, false, true ).addDefaultWidth();
+
+	return road;
+
+}
+
+export function createFreewayRoad ( options: RoadMakeOptions ): TvRoad {
+
+	const road = RoadFactory.makeRoad( options );
+
+	const laneSection = road.getLaneProfile().getFirstLaneSection();
+
+	laneSection.createLane( TvLaneSide.LEFT, 6, TvLaneType.shoulder, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 5, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 4, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.shoulder, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.shoulder, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -6, TvLaneType.shoulder, false, true ).addDefaultWidth();
 
 	return road;
 

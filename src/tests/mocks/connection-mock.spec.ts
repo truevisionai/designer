@@ -26,6 +26,16 @@ export function createMockRightConnection ( incomingRoad: TvRoad, outgoingRoad: 
 
 }
 
+export function createCornerConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad, incomingContact?: TvContactPoint, outgoingContact?: TvContactPoint ): TvJunctionConnection {
+
+	const connection = createMockConnection( TurnType.RIGHT, incomingRoad, outgoingRoad, incomingContact, outgoingContact );
+
+	connection.markAsCornerConnection();
+
+	return connection
+
+}
+
 export function createMockStraightConnection ( incomingRoad: TvRoad, outgoingRoad: TvRoad, incomingContact?: TvContactPoint, outgoingContact?: TvContactPoint ): TvJunctionConnection {
 
 	return createMockConnection( TurnType.STRAIGHT, incomingRoad, outgoingRoad, incomingContact, outgoingContact );

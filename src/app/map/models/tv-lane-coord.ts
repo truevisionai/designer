@@ -6,7 +6,7 @@ import { Vector3 } from 'three';
 import { TvRoad } from './tv-road.model';
 import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";
-import { TravelDirection, TvContactPoint, TvLaneType } from './tv-common';
+import { TvContactPoint, TvLaneType } from './tv-common';
 import { Maths } from 'app/utils/maths';
 import { Orientation } from 'app/scenario/models/tv-orientation';
 import { LaneUtils } from "../../utils/lane.utils";
@@ -122,6 +122,10 @@ export class TvLaneCoord {
 
 	isExit (): boolean {
 		return this.lane.isExit( this.contact );
+	}
+
+	getLaneWidth (): number {
+		return this.lane.getWidthValue( this.laneDistance );
 	}
 }
 

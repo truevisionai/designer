@@ -8,7 +8,15 @@ import { IHasUpdate } from 'app/commands/set-value-command';
 import { ISelectable } from 'app/objects/i-selectable';
 import { MathUtils } from 'three';
 import { MeshGeometryData } from './mesh-geometry.data';
-import { TravelDirection, TvColors, TvContactPoint, TvLaneSide, TvLaneType, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
+import {
+	TravelDirection,
+	TvColors,
+	TvContactPoint,
+	TvLaneSide,
+	TvLaneType,
+	TvRoadMarkTypes,
+	TvRoadMarkWeights
+} from './tv-common';
 import { TvLaneAccess } from './tv-lane-access';
 import { TvLaneBorder } from './tv-lane-border';
 import { TvLaneMaterial } from './tv-lane-material';
@@ -141,16 +149,20 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.side === TvLaneSide.RIGHT;
 	}
 
-	get laneSectionId () {
+	get isCenter (): boolean {
+		return this.side === TvLaneSide.CENTER;
+	}
+
+	get laneSectionId (): number {
 		return this._laneSection?.id;
 	}
 
 	get successorExists (): boolean {
-		return this.successorId !== undefined && this.successorId !== null;
+		return !!this.successorId && !!this.successorUUID;
 	}
 
 	get predecessorExists (): boolean {
-		return this.predecessorId !== undefined && this.predecessorId !== null;
+		return !!this.predecessorId && !!this.predecessorUUID;
 	}
 
 	isSuccessor ( lane: TvLane ): boolean {
@@ -172,11 +184,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	setPredecessor ( lane: TvLane ): void {
+		if ( this.isCenter ) return;
 		this.predecessorId = lane.id;
 		this.predecessorUUID = lane.uuid;
 	}
 
 	setSuccessor ( lane: TvLane ): void {
+		if ( this.isCenter ) return;
 		this.successorId = lane.id;
 		this.successorUUID = lane.uuid;
 	}
@@ -385,6 +399,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	clearLaneHeight () {
 		this.height.splice( 0, this.height.length );
+	}
+
+	clearLaneWidth (): void {
+		this.width.splice( 0, this.width.length );
 	}
 
 	getLaneWidthVector (): TvLaneWidth[] {
@@ -742,7 +760,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	isEqualTo ( lane: TvLane ): boolean { return this.uuid === lane.uuid; }
+	isEqualTo ( lane: TvLane ): boolean {
+		return this.uuid === lane.uuid;
+	}
 
 	isMatching ( otherLane: TvLane ): boolean {
 
@@ -776,6 +796,14 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	static typeToString ( type: TvLaneType ): string {
 		return LaneUtils.typeToString( type );
+	}
+
+	addDefaultWidth (): void {
+		this.addWidthRecord( 0, 3.5, 0, 0, 0 );
+	}
+
+	updateWidthCoefficients (): void {
+		TvUtils.computeCoefficients( this.width, this.laneSection.getLength() );
 	}
 }
 

@@ -4,7 +4,7 @@ import { SplineTestHelper } from "app/services/spline/spline-test-helper.service
 import { Vector2 } from "three";
 import { expectValidMap } from "../../base-test.spec";
 import { setupTest } from "tests/setup-tests";
-import { expectXJunction } from "tests/expect-junction.spec";
+import { EXPECT_CONNECTION, expectXJunction } from "tests/expect-junction.spec";
 
 describe( 'X-Junction Tests', () => {
 
@@ -62,8 +62,8 @@ describe( 'X-Junction Tests', () => {
 		helper.splineService.update( spline );
 
 		expect( mapService.getJunctionCount() ).toBe( 1 );
-		expect( mapService.getRoadCount() ).toBe( 4 + 20 );
-		expect( mapService.getSplineCount() ).toBe( 2 + 20 );
+		expect( mapService.getRoadCount() ).toBe( 4 + EXPECT_CONNECTION.X_JUNCTION );
+		expect( mapService.getSplineCount() ).toBe( 2 + EXPECT_CONNECTION.X_JUNCTION );
 
 	} ) );
 

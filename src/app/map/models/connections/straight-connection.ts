@@ -23,7 +23,9 @@ export class StraightConnection extends TvJunctionConnection {
 
 		let drivingLanes = this.getIncomingLanes().filter( lane => lane.isDrivingLane );
 
-		if ( this.contactPoint == TvContactPoint.END ) {
+		const contactPoint = this.getIncomingRoadContact();
+
+		if ( contactPoint == TvContactPoint.END ) {
 
 			drivingLanes = drivingLanes.filter( lane => lane.id <= innerMostDrivingLane.id )
 
@@ -39,14 +41,17 @@ export class StraightConnection extends TvJunctionConnection {
 
 		return drivingLanes.map( lane =>
 
-			new TvLaneCoord( incomingRoad, laneSection, lane, createLaneDistance( lane, this.contactPoint ), 0 )
+			new TvLaneCoord( incomingRoad, laneSection, lane, createLaneDistance( lane, contactPoint ), 0 )
+
 		);
 
 	}
 
 	getExitCoords (): TvLaneCoord[] {
 
-		const direction = LaneUtils.determineDirection( this.contactPoint );
+		const contactPoint = this.getOutgoingRoadContact();
+
+		const direction = LaneUtils.determineOutDirection( contactPoint );
 
 		const drivingLanes = this.getOutgoingLanes().filter( lane => lane.direction == direction ).filter( lane => lane.isDrivingLane );
 
@@ -56,7 +61,7 @@ export class StraightConnection extends TvJunctionConnection {
 
 		return drivingLanes.map( exitLane => {
 
-			return new TvLaneCoord( outgoingRoad, laneSection, exitLane, createLaneDistance( exitLane, this.contactPoint ), 0 );
+			return new TvLaneCoord( outgoingRoad, laneSection, exitLane, createLaneDistance( exitLane, contactPoint ), 0 );
 
 		} );
 

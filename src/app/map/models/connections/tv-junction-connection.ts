@@ -3,7 +3,7 @@
  */
 
 import { MathUtils } from 'three';
-import { TurnType, TvContactPoint } from '../tv-common';
+import { TurnType, TvContactPoint, TvLaneType } from '../tv-common';
 import { TvJunction } from '../junctions/tv-junction';
 import { TvJunctionLaneLink } from '../junctions/tv-junction-lane-link';
 import { TvLane } from '../tv-lane';
@@ -16,6 +16,10 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvLaneSection } from '../tv-lane-section';
 import { TvLaneCoord } from "../tv-lane-coord";
 import { LaneUtils } from 'app/utils/lane.utils';
+import { determineTurnType } from './connection-utils';
+
+const DESC = ( a: TvLane, b: TvLane ) => b.id - a.id;
+const ASC = ( a: TvLane, b: TvLane ) => a.id - b.id;
 
 /**
 
@@ -89,6 +93,14 @@ export class TvJunctionConnection {
 		return this.turnType;
 	}
 
+	setConnectingRoad ( road: TvRoad ): void {
+		this.connectingRoad = road;
+	}
+
+	getConnectingRoad (): TvRoad {
+		return this.connectingRoad;
+	}
+
 	get spline (): AbstractSpline {
 		return this.connectingRoad.spline;
 	}
@@ -103,6 +115,14 @@ export class TvJunctionConnection {
 
 	getIncomingRoad (): TvRoad {
 		return this.incomingRoad;
+	}
+
+	shouldCreateNonDrivingLinks (): boolean {
+		return this.isCornerConnection
+	}
+
+	isCorner (): boolean {
+		return this.isCornerConnection;
 	}
 
 	get connectingLaneSection () {
@@ -151,8 +171,7 @@ export class TvJunctionConnection {
 
 	getOutgoingRoadContact (): TvContactPoint {
 
-		// return this.contactPoint == TvContactPoint.START ? TvContactPoint.END : TvContactPoint.START;
-		return this.getSuccessorLink()?.contactPoint;
+		return this.getOutgoingLink()?.contactPoint;
 
 	}
 
@@ -190,11 +209,25 @@ export class TvJunctionConnection {
 
 	}
 
-	getIncomingContactPoint (): TvContactPoint {
+	computeIncomingContactPoint (): TvContactPoint {
 
 		const incomingPosition = this.getIncomingPosition();
 
 		return RoadUtils.getContactByPosition( this.incomingRoad, incomingPosition.position );
+
+	}
+
+	getIncomingRoadContact (): TvContactPoint {
+
+		if ( this.connectingRoad.successor.isEqualTo( this.incomingRoad ) ) {
+			return this.connectingRoad.successor.contactPoint;
+		}
+
+		if ( this.connectingRoad.predecessor.isEqualTo( this.incomingRoad ) ) {
+			return this.connectingRoad.predecessor.contactPoint;
+		}
+
+		throw new Error( 'Invalid incoming road contact point' );
 
 	}
 
@@ -240,19 +273,31 @@ export class TvJunctionConnection {
 
 	}
 
+	getLastLink (): TvJunctionLaneLink | undefined {
+
+		return this.laneLink[ this.laneLink.length - 1 ];
+
+	}
+
 	getLinkCount (): number {
 
 		return this.laneLink.length;
 
 	}
 
-	addLaneLink ( laneLink: TvJunctionLaneLink ) {
+	addLaneLink ( laneLink: TvJunctionLaneLink ): void {
 
 		const exists = this.laneLink.find( link => link.from == laneLink.from && link.to == laneLink.to );
 
 		if ( exists ) return;
 
 		this.laneLink.push( laneLink );
+
+	}
+
+	addLaneLinks ( links: TvJunctionLaneLink[] ): void {
+
+		links.forEach( link => this.addLaneLink( link ) );
 
 	}
 
@@ -297,36 +342,32 @@ export class TvJunctionConnection {
 
 	}
 
-	getOutgoingCoords ( corner?: boolean ) {
+	getOutgoingCoords (): TvLaneCoord[] {
 
-		return this.getOutgoingLaneSection().getOutgoingCoords( this.getOutgoingRoadContact(), corner || this.isCornerConnection );
+		const outgoingContact = this.getOutgoingRoadContact();
+
+		return this.getOutgoingLanes().map( lane => lane.toLaneCoord( outgoingContact ) );
 
 	}
 
-	getIncomingCoords ( corner?: boolean ) {
+	getIncomingCoords (): TvLaneCoord[] {
 
-		return this.getIncomingLaneSection().getIncomingCoords( this.contactPoint, corner || this.isCornerConnection );
+		const incomingContact = this.getIncomingRoadContact();
+
+		return this.getIncomingLanes().map( lane => lane.toLaneCoord( incomingContact ) );
 
 	}
 
 	getIncomingLanes (): TvLane[] {
 
-		const direction = LaneUtils.determineDirection( this.contactPoint );
-
+		const contactPoint = this.getIncomingRoadContact();
+		const direction = LaneUtils.determineDirection( contactPoint );
 		const lanes = this.getIncomingLaneSection().getLaneArray().filter( lane => lane.direction == direction );
 
-		if ( this.contactPoint == TvContactPoint.END ) {
-
-			// sort in descending order
-			// -1, -2, -3
-			return lanes.sort( ( a, b ) => b.id - a.id );
-
+		if ( contactPoint == TvContactPoint.END ) {
+			return lanes.sort( DESC );
 		} else {
-
-			// sort in ascending order
-			// 1, 2, 3
-			return lanes.sort( ( a, b ) => a.id - b.id );
-
+			return lanes.sort( ASC );
 		}
 
 	}
@@ -339,22 +380,14 @@ export class TvJunctionConnection {
 
 	getOutgoingLanes (): TvLane[] {
 
-		// const direction = this.isIncomingInSameDirection ? LaneUtils.determineDirection( this.contactPoint ) : LaneUtils.determineOutDirection( this.contactPoint );
+		const contactPoint = this.getOutgoingRoadContact();
+		const direction = LaneUtils.determineOutDirection( contactPoint );
+		const lanes = this.getOutgoingLaneSection().getLaneArray().filter( lane => lane.direction == direction );
 
-		const lanes = this.getOutgoingLaneSection().getLaneArray();
-
-		if ( this.contactPoint == TvContactPoint.END ) {
-
-			// sort in descending order
-			// -1, -2, -3
-			return lanes.sort( ( a, b ) => b.id - a.id );
-
+		if ( contactPoint == TvContactPoint.START ) {
+			return lanes.sort( DESC );
 		} else {
-
-			// sort in ascending order
-			// 1, 2, 3
-			return lanes.sort( ( a, b ) => a.id - b.id );
-
+			return lanes.sort( ASC );
 		}
 
 	}
@@ -422,15 +455,21 @@ export class TvJunctionConnection {
 
 	}
 
-	getEntryCoords (): TvLaneCoord[] { return []; }
+	getEntryCoords (): TvLaneCoord[] {
+		return [];
+	}
 
-	getExitCoords (): TvLaneCoord[] { return []; }
+	getExitCoords (): TvLaneCoord[] {
+		return [];
+	}
 
 	protected getInnerMostDrivingLane (): TvLane {
 
 		const drivingLanes = this.getIncomingLanes().filter( lane => lane.isDrivingLane );
 
-		if ( this.contactPoint == TvContactPoint.END ) {
+		const contactPoint = this.getIncomingRoadContact();
+
+		if ( contactPoint == TvContactPoint.END ) {
 
 			return drivingLanes.sort( ( a, b ) => b.id - a.id )[ 0 ];
 
@@ -440,6 +479,80 @@ export class TvJunctionConnection {
 
 		}
 
+	}
+
+	protected get isIncomingInSameDirection (): boolean {
+
+		return this.contactPoint !== this.getOutgoingRoadContact();
+
+	}
+
+	// eslint-disable-next-line max-lines-per-function
+	getLanePairs (): Map<TvLane, TvLane> {
+
+		const incoming = this.getIncomingLink();
+		const outgoing = this.getOutgoingLink();
+
+		const corner = this.turnType == TurnType.RIGHT;
+
+		const incomingLaneCoords = incoming.laneSection.getIncomingCoords( incoming.contact, corner );
+		const outgoingLaneCoords = outgoing.laneSection.getOutgoingCoords( outgoing.contact, corner );
+
+		const processedLanes = new Set<TvLane>();
+		const pairs = new Map<TvLane, TvLane>();
+
+		const rightMostLane: TvLane = incoming.laneSection.getRightMostIncomingLane( incoming.contact );
+		const leftMostLane: TvLane = incoming.laneSection.getLeftMostIncomingLane( incoming.contact );
+
+		const turnType = determineTurnType( incoming.toRoadCoord(), outgoing.toRoadCoord() );
+
+		for ( const entryLaneCoord of incomingLaneCoords ) {
+
+			if ( processedLanes.has( entryLaneCoord.lane ) ) continue;
+
+			if ( !corner && entryLaneCoord.lane.type !== TvLaneType.driving ) continue;
+
+			let found = false;
+
+			for ( const exitLaneCoord of outgoingLaneCoords ) {
+
+				if ( exitLaneCoord.lane.type != entryLaneCoord.lane.type ) continue;
+
+				if ( processedLanes.has( exitLaneCoord.lane ) ) continue;
+
+				if ( turnType == TurnType.RIGHT || corner ) {
+					if ( incoming.contact == TvContactPoint.END && entryLaneCoord.lane.id > rightMostLane?.id ) {
+						continue;
+					}
+					if ( incoming.contact == TvContactPoint.START && entryLaneCoord.lane.id < rightMostLane?.id ) {
+						continue;
+					}
+				} else if ( turnType == TurnType.LEFT ) {
+					if ( incoming.contact == TvContactPoint.END && entryLaneCoord.lane.id < leftMostLane?.id ) {
+						continue;
+					}
+					if ( incoming.contact == TvContactPoint.START && entryLaneCoord.lane.id > leftMostLane?.id ) {
+						continue;
+					}
+				}
+
+				pairs.set( entryLaneCoord.lane, exitLaneCoord.lane );
+
+				processedLanes.add( entryLaneCoord.lane );
+
+				processedLanes.add( exitLaneCoord.lane );
+
+				found = true;
+
+				break;
+
+			}
+
+			if ( found ) continue;
+
+		}
+
+		return pairs;
 	}
 
 }

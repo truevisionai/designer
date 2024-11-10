@@ -260,6 +260,12 @@ export class TvLaneProfile {
 
 	}
 
+	getNonCenterLanes (): TvLane[] {
+
+		return this.laneSections.flatMap( laneSection => laneSection.getNonCenterLanes() );
+
+	}
+
 	getLaneOffsetCount () {
 
 		return this.laneOffsets.length;

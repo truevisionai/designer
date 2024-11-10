@@ -76,7 +76,7 @@ describe( 'JunctionBoundary Tests', () => {
 
 		const J1 = mapService.findJunction( 1 );
 
-		expect( J1.getConnectionCount() ).toBe( 6 );
+		expect( J1.getConnectionCount() ).toBe( 2 );
 
 		const innerBoundary = TvJunctionBoundaryFactory.createInnerBoundary( J1 );
 		expect( innerBoundary.getSegmentCount() ).toBe( 4 );

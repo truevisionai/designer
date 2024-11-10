@@ -227,6 +227,12 @@ export class TvLaneSection {
 
 	}
 
+	getNonCenterLanes (): TvLane[] {
+
+		return this.laneArray.filter( lane => lane.side != TvLaneSide.CENTER );
+
+	}
+
 	getDrivingLanes (): TvLane[] {
 
 		return this.laneArray.filter( lane => lane.id != 0 && lane.type == TvLaneType.driving );

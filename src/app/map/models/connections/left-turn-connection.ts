@@ -19,42 +19,38 @@ export class LeftTurnConnection extends TvJunctionConnection {
 
 	getEntryCoords (): TvLaneCoord[] {
 
-		// const direction = LaneUtils.determineDirection( this.contactPoint );
-		// const exitLanes = this.getIncomingLanes().filter( lane => lane.direction == direction );
-		const entryLane = this.getInnerMostDrivingLane();
+		const contactPoint = this.getIncomingRoadContact();
+		const direction = LaneUtils.determineDirection( contactPoint );
 
-		if ( !entryLane ) return [];
+		const entryLanes = this.getIncomingLanes()
+			.filter( lane => lane.direction == direction )
+			.filter( lane => lane.isDrivingLane );
 
-		const incomingRoad = this.getIncomingRoad();
+		if ( entryLanes.length === 0 ) return [];
 
-		const laneSection = this.getIncomingLaneSection();
+		const entryLane = entryLanes[ 0 ];
 
-		const laneDistance = createLaneDistance( entryLane, this.contactPoint );
+		const laneDistance = createLaneDistance( entryLane, contactPoint );
 
-		const coord = new TvLaneCoord( incomingRoad, laneSection, entryLane, laneDistance, 0 );
-
-		return [ coord ];
+		return [ entryLane.toLaneCoord( laneDistance ) ];
 	}
 
 	getExitCoords (): TvLaneCoord[] {
 
-		const direction = LaneUtils.determineDirection( this.contactPoint );
+		const contactPoint = this.getOutgoingRoadContact();
+		const direction = LaneUtils.determineOutDirection( contactPoint );
 
-		const exitLanes = this.getOutgoingLanes().filter( lane => lane.direction == direction );
+		const exitLanes = this.getOutgoingLanes()
+			.filter( lane => lane.direction == direction )
+			.filter( lane => lane.isDrivingLane );
 
-		const exitLane = exitLanes.filter( lane => lane.isDrivingLane )[ 0 ];
+		if ( exitLanes.length === 0 ) return [];
 
-		if ( !exitLane ) return [];
+		const exitLane = exitLanes[ 0 ];
 
-		const outgoingRoad = this.getOutgoingRoad();
+		const laneDistance = createLaneDistance( exitLane, contactPoint );
 
-		const laneSection = this.getOutgoingLaneSection();
-
-		const laneDistance = createLaneDistance( exitLane, this.contactPoint );
-
-		const coord = new TvLaneCoord( outgoingRoad, laneSection, exitLane, laneDistance, 0 );
-
-		return [ coord ];
+		return [ exitLane.toLaneCoord( laneDistance ) ];
 
 	}
 

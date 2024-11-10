@@ -5,13 +5,11 @@
 import { Injectable } from "@angular/core";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvRoad } from "../models/tv-road.model";
-import { RoadManager } from "../../managers/road/road-manager";
 import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
 import { TvLink } from "../models/tv-link";
 import { LinkFactory } from '../models/link-factory';
 import { Log } from "../../core/utils/log";
 import { ConnectionFactory } from "../../factories/connection.factory";
-import { RoadService } from "../../services/road/road.service";
 import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
 import { TvContactPoint } from "../models/tv-common";
 import { ConnectionGeometryService } from "app/services/junction/connection-geometry.service";
@@ -22,11 +20,7 @@ import { GeometryUtils } from "app/services/surface/geometry-utils";
 } )
 export class ConnectionManager {
 
-	private debug = true;
-
 	constructor (
-		private roadService: RoadService,
-		private roadManager: RoadManager,
 		private splineBuilder: SplineGeometryGenerator,
 		private connectionFactory: ConnectionFactory,
 		private connectionGeometryService: ConnectionGeometryService,
