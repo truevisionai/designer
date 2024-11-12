@@ -1201,32 +1201,27 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 
 		const laneSection = road.getLaneProfile().getLaneSectionAtContact( contactPoint );
-		const jointLaneStart = laneSection.getLaneById( jointLaneStartId );
-		const jointLaneEnd = laneSection.getLaneById( jointLaneEndId );
+		const startLane = laneSection.getLaneById( jointLaneStartId );
+		const endLane = laneSection.getLaneById( jointLaneEndId );
 
 		if ( !laneSection ) {
 			Log.warn( 'lane section not found' );
 			return;
 		}
 
-		if ( !jointLaneStart ) {
+		if ( !startLane ) {
 			Log.warn( 'jointLaneStart not found' );
 			return;
 		}
 
-		if ( !jointLaneEnd ) {
+		if ( !endLane ) {
 			Log.warn( 'jointLaneEnd not found' );
 			return;
 		}
 
-		const jointBoundary = new TvJointBoundary();
-
-		jointBoundary.road = road;
-		jointBoundary.contactPoint = contactPoint;
-		jointBoundary.jointLaneStart = jointLaneStart;
-		jointBoundary.jointLaneEnd = jointLaneEnd;
-
-		return jointBoundary;
+		return new TvJointBoundary(
+			road, contactPoint, startLane, endLane
+		);
 
 	}
 

@@ -99,11 +99,8 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 	}
 
 	clone () {
-		const joint = new TvJointBoundary();
-		joint.road = this.road;
-		joint.contactPoint = this.contactPoint;
-		joint.jointLaneStart = this.jointLaneStart;
-		joint.jointLaneEnd = this.jointLaneEnd;
-		return joint;
+		return new TvJointBoundary(
+			this.road, this.contactPoint, this.jointLaneStart, this.jointLaneEnd
+		);
 	}
 }

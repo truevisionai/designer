@@ -129,49 +129,43 @@ export class TvJunctionBoundaryFactory {
 
 	private static createOuterJointSegment ( roadCoord: TvRoadCoord ) {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getLeftMostLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getRightMostLane();
+			startLane = roadCoord.laneSection.getLeftMostLane();
+			endLane = roadCoord.laneSection.getRightMostLane();
 
 		} else {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getRightMostLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getLeftMostLane();
+			startLane = roadCoord.laneSection.getRightMostLane();
+			endLane = roadCoord.laneSection.getLeftMostLane();
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 
 	private static createInnerJointSegment ( roadCoord: TvRoadCoord ) {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
-			boundary.jointLaneEnd = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
+			startLane = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
+			endLane = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
 
 		} else {
 
-			boundary.jointLaneStart = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
-			boundary.jointLaneEnd = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
+			startLane = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
+			endLane = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 

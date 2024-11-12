@@ -100,25 +100,22 @@ export class TvJunctionInnerBoundaryService {
 
 	private createJointSegment ( junction: TvJunction, roadCoord: TvRoadCoord ): TvJointBoundary {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getHighestCarriageWayLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getLowestCarriageWayLane();
+			startLane = roadCoord.laneSection.getHighestCarriageWayLane();
+			endLane = roadCoord.laneSection.getLowestCarriageWayLane();
 
 		} else {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getLowestCarriageWayLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getHighestCarriageWayLane();
+			startLane = roadCoord.laneSection.getLowestCarriageWayLane();
+			endLane = roadCoord.laneSection.getHighestCarriageWayLane();
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 
