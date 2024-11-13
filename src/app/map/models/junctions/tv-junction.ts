@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Box2, Box3, Mesh, Vector2, Vector3 } from 'three';
+import { Box2, Mesh, Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvJunctionConnection } from '../connections/tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
@@ -11,15 +11,14 @@ import { TvRoad } from '../tv-road.model';
 import { TvJunctionType } from './tv-junction-type';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvContactPoint } from '../tv-common';
-import { TvLink, TvLinkType } from "../tv-link";
+import { TvLink } from "../tv-link";
 import { LinkFactory } from '../link-factory';
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
-import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
+import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { TvJunctionLaneLink } from './tv-junction-lane-link';
 import { Log } from 'app/core/utils/log';
 import { TvJunctionBoundingBox } from './tv-junction-bounding-box';
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
-import { SplineSection } from 'app/services/junction/spline-section';
 import { TvMap } from '../tv-map.model';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { MapEvents } from 'app/events/map-events';
@@ -70,9 +69,13 @@ export class TvJunction {
 		this.junctionBoundingBox.setBox( box );
 	}
 
-	setMap ( map: TvMap ): void { this.map = map; }
+	setMap ( map: TvMap ): void {
+		this.map = map;
+	}
 
-	getMap (): TvMap { return this.map; }
+	getMap (): TvMap {
+		return this.map;
+	}
 
 	getBoundingBox (): Box2 {
 		return this.boundingBox;
@@ -477,7 +480,7 @@ export class TvJunction {
 
 	}
 
-	removeConnectionsByRoad ( road: TvRoad, contact?: TvContactPoint ): void {
+	removeConnectionsByRoad ( road: TvRoad ): void {
 		this.getConnectionsByRoad( road ).forEach( connection => this.removeConnection( connection ) );
 	}
 
@@ -519,85 +522,3 @@ export class TvJunction {
 }
 
 
-export class DefaultJunction extends TvJunction {
-
-	constructor ( name: string, id: number ) {
-		super( name, id );
-		this.type = TvJunctionType.DEFAULT;
-	}
-
-}
-
-export class AutoJunction extends TvJunction {
-
-	private splines = new Set<AbstractSpline>();
-
-	constructor ( name: string, id: number ) {
-		super( name, id );
-		this.type = TvJunctionType.AUTO;
-	}
-
-	override getSplineIntersections (): SplineIntersection[] {
-
-		const intersections: SplineIntersection[] = [];
-		const splines = this.getIncomingSplines();
-
-		for ( let i = 0; i < splines.length; i++ ) {
-
-			const spline = splines[ i ];
-
-			// Start the inner loop from the next spline to avoid duplicate pairs and self-comparison.
-			for ( let j = i + 1; j < splines.length; j++ ) {
-
-				const otherSpline = splines[ j ];
-
-				intersections.push( ...spline.getIntersections( otherSpline ) );
-
-			}
-
-		}
-
-		return intersections;
-	}
-
-	override getIncomingSplines (): AbstractSpline[] {
-
-		super.getIncomingSplines().forEach( spline => this.splines.add( spline ) );
-
-		return [ ...this.splines ];
-
-	}
-
-	addSpline ( spline: AbstractSpline | AbstractSpline[] ): void {
-
-		const splines = Array.isArray( spline ) ? spline : [ spline ];
-
-		splines.forEach( s => this.splines.add( s ) );
-
-	}
-
-	removeSpline ( spline: AbstractSpline | AbstractSpline[] ): void {
-
-		const splines = Array.isArray( spline ) ? spline : [ spline ];
-
-		splines.forEach( s => this.splines.delete( s ) );
-
-	}
-
-	updateFromIntersections (): void {
-
-		// this.getSplineSections().forEach( section => {
-		//
-		// 	section.shiftJunctionAndUpdateSegments( this );
-		//
-		// } );
-
-	}
-
-	getSplineSections (): SplineSection[] {
-
-		return this.getSplineIntersections().map( intersection => intersection.getSplineSections() ).flat();
-
-	}
-
-}

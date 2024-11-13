@@ -3,7 +3,7 @@
  */
 
 import { TvOrientation } from 'app/map/models/tv-common';
-import { AutoJunction, DefaultJunction, TvJunction } from 'app/map/models/junctions/tv-junction';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Injectable } from '@angular/core';
@@ -16,6 +16,8 @@ import { Log } from 'app/core/utils/log';
 import { SplineIntersection } from "../services/junction/spline-intersection";
 import { IntersectionGroup } from 'app/managers/Intersection-group';
 import { Assert } from 'app/utils/assert';
+import { AutoJunction } from "../map/models/junctions/auto-junction";
+import { DefaultJunction } from "../map/models/junctions/default-junction";
 
 @Injectable( {
 	providedIn: 'root'

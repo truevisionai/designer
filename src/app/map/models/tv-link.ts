@@ -305,7 +305,7 @@ export class TvJunctionLink extends TvLink {
 	}
 
 	unlink ( road: TvRoad, contact: TvContactPoint ): void {
-		this.junction.removeConnectionsByRoad( road, contact );
+		this.junction.removeConnectionsByRoad( road );
 	}
 
 	replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {

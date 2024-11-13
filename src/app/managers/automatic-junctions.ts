@@ -2,13 +2,14 @@ import { Injectable } from "@angular/core";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { JunctionFactory } from "app/factories/junction.factory";
 import { ConnectionManager } from "app/map/junction/connection.manager";
-import { AutoJunction, TvJunction } from "app/map/models/junctions/tv-junction";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { JunctionService } from "app/services/junction/junction.service";
 import { SplineIntersection } from "app/services/junction/spline-intersection";
 import { MapService } from "app/services/map/map.service";
 import { RoadService } from "app/services/road/road.service";
 import { IntersectionGroup } from "./Intersection-group";
 import { IntersectionGroupHelper } from "./intersection-group-helper";
+import { AutoJunction } from "../map/models/junctions/auto-junction";
 
 @Injectable( {
 	providedIn: 'root'

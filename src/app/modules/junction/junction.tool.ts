@@ -4,7 +4,6 @@
 
 import { ToolType } from '../../tools/tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { AutoJunction, DefaultJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionToolHelper } from './junction-tool.helper';
 import { JunctionNode } from 'app/services/junction/junction-node';
 import { JunctionNodeSelectionStrategy } from "../../core/strategies/select-strategies/object-tag-strategy";
@@ -13,6 +12,8 @@ import { Commands } from 'app/commands/commands';
 import { JunctionSelectionStrategy } from "../../core/strategies/select-strategies/object-user-data-strategy";
 import { ToolWithHandler } from '../../tools/base-tool-v2';
 import { JunctionNodeController, JunctionNodeVisualizer, JunctionToolJunctionController, JunctionToolJunctionVisualizer } from './junction-handlers';
+import { AutoJunction } from "../../map/models/junctions/auto-junction";
+import { DefaultJunction } from "../../map/models/junctions/default-junction";
 
 export class JunctionTool extends ToolWithHandler {
 
