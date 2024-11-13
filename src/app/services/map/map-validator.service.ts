@@ -632,7 +632,7 @@ export class MapValidatorService {
 		this.validateConnectionAndRoad( connection.incomingRoadId, connection );
 		this.validateConnectionAndRoad( connection.connectingRoadId, connection );
 
-		connection.laneLink.forEach( link => {
+		connection.getLinks().forEach( link => {
 
 			// const incomingLaneSection = link.incomingRoad.getLaneProfile().getLaneSectionAtContact( link.incomingContactPoint );
 			// const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;

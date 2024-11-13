@@ -2,16 +2,14 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TurnType, TvContactPoint } from '../tv-common';
+import { TurnType } from '../tv-common';
 import { TvLane } from '../tv-lane';
 import { TvRoad } from '../tv-road.model';
 
 export class TvJunctionLaneLink {
-	public incomingLane: TvLane;
-	public incomingRoad?: TvRoad;
 
+	public incomingLane: TvLane;
 	public connectingLane: TvLane;
-	public connectingRoad?: TvRoad;
 
 	/**
 	 * can be useful to track if the link is modified
@@ -39,20 +37,24 @@ export class TvJunctionLaneLink {
 		return this.connectingLane?.id;
 	}
 
-	clone (): any {
+	get connectingRoad (): TvRoad {
+		return this.connectingLane.getRoad();
+	}
 
-		const link = new TvJunctionLaneLink( this.incomingLane, this.connectingLane );
+	get incomingRoad (): TvRoad {
+		return this.incomingLane.getRoad();
+	}
 
-		link.incomingRoad = this.incomingRoad;
-		link.connectingRoad = this.connectingRoad;
-
-		return link;
-
+	clone (): TvJunctionLaneLink {
+		return new TvJunctionLaneLink( this.incomingLane, this.connectingLane );
 	}
 
 	toString () {
 		return `IncomingLane: ${ this.incomingLane.id } ConnectingLane: ${ this.connectingLane.id } Turn: ${ this.turnType }`;
 	}
 
+	matchesIncomingLane ( lane: TvLane ): boolean {
+		return this.incomingLane.isEqualTo( lane );
+	}
 }
 

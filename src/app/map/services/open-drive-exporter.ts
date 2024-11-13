@@ -61,7 +61,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	public map: TvMap;
 
-	constructor ( private geometryExporter: GeometryExporter ) { }
+	constructor ( private geometryExporter: GeometryExporter ) {
+	}
 
 	exportAsString ( asset: TvMap ): string {
 
@@ -973,7 +974,6 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		}
 
-		// const connections = this.mergeConnections( junction );
 		const connections = junction.getConnections();
 
 		if ( connections.length > 0 ) {
@@ -989,76 +989,6 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 
 		return xml;
-	}
-
-	private mergeConnections ( junction: TvJunction ) {
-
-		let map = new Map<number, TvJunctionConnection[]>();
-
-		const sorted = junction.getConnections().sort( ( a, b ) => a.incomingRoad.id - b.incomingRoad.id );
-
-		sorted.forEach( connection => {
-
-			if ( !map.has( connection.incomingRoad.id ) ) {
-				map.set( connection.incomingRoad.id, [] );
-			}
-
-			map.get( connection.incomingRoad.id ).push( connection );
-
-		} );
-
-		const uniqueConnections = [];
-
-		const processed = new Set<TvJunctionConnection>();
-
-		for ( let [ incomingRoadId, connections ] of map ) {
-
-			// sort by whether the connection is a corner road or not
-			const cornerConnections = connections.filter( connection => connection.isCornerConnection );
-			const nonCornerConnections = connections.filter( connection => !connection.isCornerConnection );
-
-			if ( cornerConnections.length > 0 ) {
-
-				const id = junction.getConnectionCount();
-				const incomingRoad = cornerConnections[ 0 ].incomingRoad;
-				const connectingRoad = cornerConnections[ 0 ].connectingRoad;
-				const contactPoint = cornerConnections[ 0 ].contactPoint;
-
-				const group = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
-
-				cornerConnections.forEach( connection => {
-
-					connection.laneLink.forEach( link => {
-
-						group.laneLink.push( link );
-
-					} )
-
-					processed.add( connection );
-
-				} );
-
-				uniqueConnections.push( group );
-
-			}
-
-			for ( let i = 0; i < nonCornerConnections.length; i++ ) {
-
-				const connection = nonCornerConnections[ i ];
-
-				if ( !processed.has( connection ) ) {
-
-					uniqueConnections.push( connection );
-
-					processed.add( connection );
-
-				}
-
-			}
-		}
-
-		return uniqueConnections;
-
 	}
 
 	private writeDefaultJunction ( junction: TvJunction ): XmlElement {
@@ -1093,7 +1023,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			attr_id: connection.id,
 			attr_incomingRoad: connection.incomingRoadId,
 			attr_connectingRoad: connection.connectingRoadId,
-			laneLink: connection.laneLink.map( laneLink => {
+			laneLink: connection.getLinks().map( laneLink => {
 				return {
 					attr_from: laneLink.from,
 					attr_to: laneLink.to

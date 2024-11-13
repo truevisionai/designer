@@ -1291,7 +1291,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 				if ( !laneLink ) {
 					Log.warn( 'Link Parsing failed', xml, connection.toString() );
 					return;
-				};
+				}
+				;
 
 				connection.addLaneLink( laneLink );
 
@@ -1303,7 +1304,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} );
 
-		if ( connection.laneLink.length == 0 ) {
+		if ( connection.getLinkCount() == 0 ) {
 			Log.error( 'Removing InvalidConnection with 0 links', connection.toString() );
 			this.map.removeRoad( connectingRoad );
 			return;
@@ -1377,12 +1378,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			return;
 		}
 
-		const link = new TvJunctionLaneLink( fromLane, toLane );
-
-		link.incomingRoad = connection.incomingRoad;
-		link.connectingRoad = connection.connectingRoad;
-
-		return link;
+		return new TvJunctionLaneLink( fromLane, toLane );
 
 	}
 

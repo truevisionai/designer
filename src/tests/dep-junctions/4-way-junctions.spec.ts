@@ -94,11 +94,11 @@ xdescribe( '4-way-junction tests', () => {
 
 		expect( junction.getConnection( 0 ) ).toBeDefined()
 		expect( junction.getConnection( 0 ).incomingRoad ).toBe( roadA );
-		expect( junction.getConnection( 0 ).laneLink.length ).toBe( 3 );
+		expect( junction.getConnection( 0 ).getLinkCount() ).toBe( 3 );
 
 		expect( junction.getConnection( 1 ) ).toBeDefined()
 		expect( junction.getConnection( 1 ).incomingRoad ).toBe( roadB );
-		expect( junction.getConnection( 1 ).laneLink.length ).toBe( 3 );
+		expect( junction.getConnection( 1 ).getLinkCount() ).toBe( 3 );
 
 		mapValidator.validateMap( mapService.map, true );
 	} )
@@ -449,7 +449,7 @@ xdescribe( '4-way-junction tests', () => {
 		junctionConnectionService.postProcessConnection( junction, connection );
 
 		// TODO: CHECK THIS SHOULD BE 3
-		expect( connection.laneLink.length ).toBe( 2 );
+		expect( connection.getLinkCount() ).toBe( 2 );
 
 		mapValidator.validateMap( mapService.map, true );
 

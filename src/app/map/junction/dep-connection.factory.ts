@@ -398,7 +398,7 @@ export class DepConnectionFactory {
 		if ( !outgoing ) return;
 
 		// check if this outgoing lane is already connected
-		const exists = connection.laneLink.find( link => link.connectingLane.successorId == outgoing.lane.id );
+		const exists = connection.laneLinks.find( link => link.connectingLane.successorId == outgoing.lane.id );
 
 		if ( exists ) return;
 
@@ -424,18 +424,8 @@ export class DepConnectionFactory {
 		connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
 		TvUtils.computeCoefficients( connectionLane.width, roadLength );
 
-		return this.createLaneLink( incoming.lane, connectionLane, incoming, connection.connectingRoad );
+		return new TvJunctionLaneLink( incoming.lane, connectionLane );
 
 	}
 
-	private createLaneLink ( from: TvLane, to: TvLane, incoming: TvLaneCoord | TvRoadCoord, connectingRoad: TvRoad ) {
-
-		const link = new TvJunctionLaneLink( from, to );
-
-		link.incomingRoad = incoming.road;
-		link.connectingRoad = connectingRoad;
-
-		return link;
-
-	}
 }

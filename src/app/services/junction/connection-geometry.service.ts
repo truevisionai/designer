@@ -38,7 +38,7 @@ export class ConnectionGeometryService {
 
 		const nextRoadCoord = connection.connectingRoad.successor.toRoadCoord();
 
-		connection.laneLink.forEach( link => {
+		connection.getLinks().forEach( link => {
 
 			if ( !connection.isCornerConnection ) {
 				link.connectingLane.roadMarks.clear();
@@ -64,7 +64,7 @@ export class ConnectionGeometryService {
 
 	private updateExplicitConnectionGeometry ( connection: TvJunctionConnection ): void {
 
-		connection.laneLink.forEach( link => {
+		connection.getLinks().forEach( link => {
 
 			this.updateLinkGeometry( connection, link );
 

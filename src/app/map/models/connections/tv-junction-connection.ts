@@ -42,9 +42,9 @@ The @connectingRoad attribute shall not be used for junctions with @type="direct
  **/
 export class TvJunctionConnection {
 
-	public readonly uuid: string;
+	private readonly uuid: string;
 
-	public laneLink: TvJunctionLaneLink[] = [];
+	private _laneLinks: TvJunctionLaneLink[] = [];
 
 	/**
 	 * user internally to identity which connections are corner
@@ -74,6 +74,10 @@ export class TvJunctionConnection {
 
 		if ( incomingRoad?.id == connectingRoad?.id ) Log.error( 'InvalidConnection', this.toString() );
 
+	}
+
+	get laneLinks (): TvJunctionLaneLink[] {
+		return this._laneLinks;
 	}
 
 	setJunction ( junction: TvJunction ): void {
@@ -248,49 +252,43 @@ export class TvJunctionConnection {
 
 		const clone = new TvJunctionConnection( this.id, this.incomingRoad, this.connectingRoad, this.contactPoint );
 
-		clone.laneLink = this.laneLink.map( link => link.clone() );
+		clone._laneLinks = this._laneLinks.map( link => link.clone() );
 
 		return clone;
 
 	}
 
-	getJunctionLaneLinkCount (): number {
-
-		return this.laneLink.length;
-
-	}
-
 	getJunctionLaneLink ( index: number ): TvJunctionLaneLink {
 
-		return this.laneLink[ index ];
+		return this._laneLinks[ index ];
 
 	}
 
 	getLinks (): TvJunctionLaneLink[] {
 
-		return this.laneLink;
+		return this._laneLinks;
 
 	}
 
 	getLastLink (): TvJunctionLaneLink | undefined {
 
-		return this.laneLink[ this.laneLink.length - 1 ];
+		return this._laneLinks[ this._laneLinks.length - 1 ];
 
 	}
 
 	getLinkCount (): number {
 
-		return this.laneLink.length;
+		return this._laneLinks.length;
 
 	}
 
 	addLaneLink ( laneLink: TvJunctionLaneLink ): void {
 
-		const exists = this.laneLink.find( link => link.from == laneLink.from && link.to == laneLink.to );
+		const exists = this._laneLinks.find( link => link.from == laneLink.from && link.to == laneLink.to );
 
 		if ( exists ) return;
 
-		this.laneLink.push( laneLink );
+		this._laneLinks.push( laneLink );
 
 	}
 
@@ -302,7 +300,7 @@ export class TvJunctionConnection {
 
 	getConnectingLaneId ( laneId: number ): number {
 
-		for ( const link of this.laneLink ) {
+		for ( const link of this._laneLinks ) {
 
 			if ( link.from == laneId ) {
 
@@ -413,7 +411,7 @@ export class TvJunctionConnection {
 
 		let hash = this.incomingRoadId + '_';
 
-		this.laneLink.forEach( link => {
+		this._laneLinks.forEach( link => {
 
 			hash += '_' + link.incomingLane.id;
 			hash += '_' + link.connectingRoad.successor.id;
@@ -486,5 +484,16 @@ export class TvJunctionConnection {
 
 	}
 
+	removeLink ( link: TvJunctionLaneLink ) {
+
+		this._laneLinks = this._laneLinks.filter( laneLink => laneLink !== link );
+
+	}
+
+	getLinkForIncomingLane ( lane: TvLane ): TvJunctionLaneLink {
+
+		return this._laneLinks.find( link => link.matchesIncomingLane( lane ) );
+
+	}
 }
 

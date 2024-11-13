@@ -496,9 +496,6 @@ export class ConnectionFactory {
 
 		const link = new TvJunctionLaneLink( incoming.lane, connectingLane );
 
-		link.incomingRoad = incoming.road;
-		link.connectingRoad = connectingRoad;
-
 		connection.addLaneLink( link );
 	}
 

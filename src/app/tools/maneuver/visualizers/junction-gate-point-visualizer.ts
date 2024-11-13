@@ -74,12 +74,12 @@ export class JunctionGatePointVisualizer extends NodeVisualizer<JunctionGatePoin
 
 		const connection = this.createConnection( junction, incoming, outgoing );
 
-		if ( !connection || connection.laneLink.length === 0 ) {
+		if ( !connection || connection.getLinkCount() === 0 ) {
 			Log.error( 'Unable to create connection or link' );
 			return;
 		}
 
-		const link = connection.laneLink[ 0 ];
+		const link = connection.getLinks()[ 0 ];
 
 		while ( junction.hasConnection( connection.id ) ) {
 			connection.id = connection.id + 1;

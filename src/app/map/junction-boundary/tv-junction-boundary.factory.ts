@@ -4,7 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { TvJunction } from "../models/junctions/tv-junction";
-import { TvBoundarySegmentType, TvJunctionBoundary } from "./tv-junction-boundary";
+import { TvJunctionBoundary } from "./tv-junction-boundary";
 import { GeometryUtils } from "../../services/surface/geometry-utils";
 import { LaneUtils } from "../../utils/lane.utils";
 import { TvRoadCoord } from "../models/TvRoadCoord";
@@ -34,9 +34,9 @@ export class TvJunctionBoundaryFactory {
 
 			const lowestLane = LaneUtils.findLowestCarriageWayLane( coord.laneSection );
 
-			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+			junction.getConnectionsByRoad( coord.road ).forEach( connection => {
 
-				const link = connection.laneLink.find( link => link.incomingLane == lowestLane );
+				const link = connection.getLinkForIncomingLane( lowestLane );
 
 				if ( link ) {
 
@@ -54,9 +54,9 @@ export class TvJunctionBoundaryFactory {
 
 			const highestLane = LaneUtils.findHighestCarriageWayLane( coord.laneSection );
 
-			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+			junction.getConnectionsByRoad( coord.road ).forEach( connection => {
 
-				const link = connection.laneLink.find( link => link.incomingLane == highestLane );
+				const link = connection.getLinkForIncomingLane( highestLane );
 
 				if ( link ) {
 
@@ -87,9 +87,9 @@ export class TvJunctionBoundaryFactory {
 
 			const lowestLane = LaneUtils.findLowestLane( coord.laneSection );
 
-			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+			junction.getConnectionsByRoad( coord.road ).forEach( connection => {
 
-				const link = connection.laneLink.find( link => link.incomingLane == lowestLane );
+				const link = connection.getLinkForIncomingLane( lowestLane );
 
 				if ( link ) {
 
@@ -107,9 +107,9 @@ export class TvJunctionBoundaryFactory {
 
 			const highestLane = LaneUtils.findHigestLane( coord.laneSection );
 
-			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+			junction.getConnectionsByRoad( coord.road ).forEach( connection => {
 
-				const link = connection.laneLink.find( link => link.incomingLane == highestLane );
+				const link = connection.getLinkForIncomingLane( highestLane );
 
 				if ( link ) {
 

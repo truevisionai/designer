@@ -248,7 +248,7 @@ class OpenDriveMap {
 					? connectingRoad.laneSections[ 0 ]
 					: connectingRoad.laneSections[ connectingRoad.laneSections.length - 1 ];
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.laneLinks ) {
 					if ( laneLink.from === 0 || laneLink.to === 0 ) continue;
 
 					const fromLane = incomingLaneSection.lanesMap.get( laneLink.from );

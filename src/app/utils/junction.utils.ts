@@ -121,7 +121,7 @@ export class JunctionUtils {
 
 		for ( const connection of junction.getConnections() ) {
 
-			for ( const laneLink of connection.laneLink ) {
+			for ( const laneLink of connection.getLinks() ) {
 
 				links.push( laneLink );
 
@@ -141,7 +141,7 @@ export class JunctionUtils {
 
 		for ( const connection of connections ) {
 
-			for ( const laneLink of connection.laneLink ) {
+			for ( const laneLink of connection.getLinks() ) {
 
 				links.push( laneLink );
 
@@ -160,7 +160,7 @@ export class JunctionUtils {
 
 		for ( const connection of connections ) {
 
-			for ( const laneLink of connection.laneLink ) {
+			for ( const laneLink of connection.getLinks() ) {
 
 				links.push( laneLink );
 
@@ -183,7 +183,7 @@ export class JunctionUtils {
 
 			for ( const connection of connections ) {
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLinks() ) {
 
 					if ( laneLink.incomingLane.uuid == targetLane.uuid ) {
 
@@ -244,7 +244,7 @@ export class JunctionUtils {
 
 			for ( const connection of connections ) {
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLinks() ) {
 
 					if ( laneLink.incomingLane.uuid == targetLane.uuid ) {
 
@@ -351,7 +351,7 @@ export class JunctionUtils {
 
 		for ( const connection of junction.getConnections() ) {
 
-			for ( const laneLink of connection.laneLink ) {
+			for ( const laneLink of connection.getLinks() ) {
 
 				if ( laneLink == link ) {
 
