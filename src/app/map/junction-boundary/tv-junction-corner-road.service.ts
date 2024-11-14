@@ -98,7 +98,7 @@ export class TvJunctionCornerRoadService {
 
 		for ( const connection of connections ) {
 
-			const laneIds = connection.getLinks()
+			const laneIds = connection.getLaneLinks()
 				.filter( link => allLanes || link.incomingLane.isCarriageWay() )
 				.map( link => link.incomingLane.id );
 

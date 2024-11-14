@@ -397,8 +397,12 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return index;
 	}
 
-	clearLaneHeight () {
+	clearLaneHeight (): void {
 		this.height.splice( 0, this.height.length );
+	}
+
+	clearRoadMarks (): void {
+		this.roadMarks.clear();
 	}
 
 	clearLaneWidth (): void {

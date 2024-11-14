@@ -154,18 +154,18 @@ xdescribe( 'LaneLinkService', () => {
 		const leftToRight = connectionService.createConnection( junction, incoming, outgoing );
 		expect( leftToRight ).toBeDefined();
 		expect( leftToRight.getLinkCount() ).toBe( 2 );
-		expect( leftToRight.getLinks()[ 0 ].incomingLane.id ).toBe( -1 );
-		expect( leftToRight.getLinks()[ 0 ].connectingLane.id ).toBe( -1 );
-		expect( leftToRight.getLinks()[ 0 ].connectingLane.predecessorId ).toBe( -1 );
-		expect( leftToRight.getLinks()[ 0 ].connectingLane.successorId ).toBe( -1 );
+		expect( leftToRight.getLaneLinks()[ 0 ].incomingLane.id ).toBe( -1 );
+		expect( leftToRight.getLaneLinks()[ 0 ].connectingLane.id ).toBe( -1 );
+		expect( leftToRight.getLaneLinks()[ 0 ].connectingLane.predecessorId ).toBe( -1 );
+		expect( leftToRight.getLaneLinks()[ 0 ].connectingLane.successorId ).toBe( -1 );
 
 		const rightToLeft = connectionService.createConnection( junction, outgoing, incoming );
 		expect( rightToLeft ).toBeDefined();
 		expect( rightToLeft.getLinkCount() ).toBe( 1 );
-		expect( rightToLeft.getLinks()[ 0 ].incomingLane.id ).toBe( 1 );
-		expect( rightToLeft.getLinks()[ 0 ].connectingLane.id ).toBe( -1 );
-		expect( rightToLeft.getLinks()[ 0 ].connectingLane.predecessorId ).toBe( 1 );
-		expect( rightToLeft.getLinks()[ 0 ].connectingLane.successorId ).toBe( 1 );
+		expect( rightToLeft.getLaneLinks()[ 0 ].incomingLane.id ).toBe( 1 );
+		expect( rightToLeft.getLaneLinks()[ 0 ].connectingLane.id ).toBe( -1 );
+		expect( rightToLeft.getLaneLinks()[ 0 ].connectingLane.predecessorId ).toBe( 1 );
+		expect( rightToLeft.getLaneLinks()[ 0 ].connectingLane.successorId ).toBe( 1 );
 
 	} );
 
@@ -192,15 +192,15 @@ xdescribe( 'LaneLinkService', () => {
 
 		expect( leftToRight ).toBeDefined();
 		expect( leftToRight.getLinkCount() ).toBe( 1 );
-		expect( leftToRight.getLinks()[ 0 ].connectingLane.getWidthValue( 0 ) ).toBe( 1 );
-		expect( leftToRight.getLinks()[ 0 ].connectingLane.getWidthValue( roadLength ) ).toBe( 1 );
+		expect( leftToRight.getLaneLinks()[ 0 ].connectingLane.getWidthValue( 0 ) ).toBe( 1 );
+		expect( leftToRight.getLaneLinks()[ 0 ].connectingLane.getWidthValue( roadLength ) ).toBe( 1 );
 
 		const rightToLeft = connectionService.createConnection( junction, outgoing, incoming );
 
 		expect( rightToLeft ).toBeDefined();
 		expect( rightToLeft.getLinkCount() ).toBe( 1 );
-		expect( rightToLeft.getLinks()[ 0 ].connectingLane.getWidthValue( 0 ) ).toBe( 1 );
-		expect( rightToLeft.getLinks()[ 0 ].connectingLane.getWidthValue( roadLength ) ).toBe( 1 );
+		expect( rightToLeft.getLaneLinks()[ 0 ].connectingLane.getWidthValue( 0 ) ).toBe( 1 );
+		expect( rightToLeft.getLaneLinks()[ 0 ].connectingLane.getWidthValue( roadLength ) ).toBe( 1 );
 
 
 	} );
@@ -228,8 +228,8 @@ xdescribe( 'LaneLinkService', () => {
 
 		expect( leftToRight ).toBeDefined();
 		expect( leftToRight.getLinkCount() ).toBe( 1 );
-		expect( leftToRight.getLinks()[ 0 ].connectingLane.getWidthValue( 0 ) ).toBe( 1 );
-		expect( leftToRight.getLinks()[ 0 ].connectingLane.getWidthValue( roadLength ) ).toBe( 2 );
+		expect( leftToRight.getLaneLinks()[ 0 ].connectingLane.getWidthValue( 0 ) ).toBe( 1 );
+		expect( leftToRight.getLaneLinks()[ 0 ].connectingLane.getWidthValue( roadLength ) ).toBe( 2 );
 
 
 	} );

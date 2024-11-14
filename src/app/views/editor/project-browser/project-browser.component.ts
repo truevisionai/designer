@@ -45,7 +45,6 @@ export class ProjectBrowserComponent implements OnInit {
 		private electron: TvElectronService,
 		private assetService: AssetService,
 		private snackBar: SnackBar,
-		private materialFactory: TvMaterialFactory,
 		private assetImporter: AssetImporter,
 	) {
 	}
@@ -158,7 +157,9 @@ export class ProjectBrowserComponent implements OnInit {
 				},
 				{
 					label: 'Material',
-					click: () => this.assetService.createMaterialAsset( this.currentFolder.path, 'Material.material', this.materialFactory.createNew() )
+					click: () => this.assetService.createMaterialAsset(
+						this.currentFolder.path, 'Material.material', TvMaterialFactory.createNew()
+					)
 				},
 				{
 					label: 'Entity',
@@ -180,10 +181,10 @@ export class ProjectBrowserComponent implements OnInit {
 				},
 			]
 		},
-		{
-			label: 'Show In Explorer',
-			click: () => this.showInExplorer()
-		},
+			{
+				label: 'Show In Explorer',
+				click: () => this.showInExplorer()
+			},
 		] );
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );

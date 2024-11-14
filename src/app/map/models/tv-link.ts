@@ -173,7 +173,6 @@ export abstract class TvLink {
 
 		return new TvLaneCoord( road, this.laneSection, lane, laneDistance as LaneDistance, 0 );
 
-
 	}
 
 	toRoadCoord () {

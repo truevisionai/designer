@@ -79,7 +79,7 @@ export class JunctionGatePointVisualizer extends NodeVisualizer<JunctionGatePoin
 			return;
 		}
 
-		const link = connection.getLinks()[ 0 ];
+		const link = connection.getLaneLinks()[ 0 ];
 
 		while ( junction.hasConnection( connection.id ) ) {
 			connection.id = connection.id + 1;

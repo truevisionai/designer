@@ -1023,7 +1023,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			attr_id: connection.id,
 			attr_incomingRoad: connection.incomingRoadId,
 			attr_connectingRoad: connection.connectingRoadId,
-			laneLink: connection.getLinks().map( laneLink => {
+			laneLink: connection.getLaneLinks().map( laneLink => {
 				return {
 					attr_from: laneLink.from,
 					attr_to: laneLink.to

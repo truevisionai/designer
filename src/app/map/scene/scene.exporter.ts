@@ -64,7 +64,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			attr_incomingRoad: connection.incomingRoadId,
 			attr_connectingRoad: connection.connectingRoadId,
 			attr_contactPoint: connection.contactPoint,
-			laneLink: connection.getLinks().map( link => {
+			laneLink: connection.getLaneLinks().map( link => {
 				return {
 					attr_from: link.from,
 					attr_to: link.to,

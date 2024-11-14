@@ -264,7 +264,7 @@ export class TvJunctionConnection {
 
 	}
 
-	getLinks (): TvJunctionLaneLink[] {
+	getLaneLinks (): TvJunctionLaneLink[] {
 
 		return this._laneLinks;
 
@@ -289,6 +289,8 @@ export class TvJunctionConnection {
 		if ( exists ) return;
 
 		this._laneLinks.push( laneLink );
+
+		laneLink.setConnection( this );
 
 	}
 
@@ -397,13 +399,13 @@ export class TvJunctionConnection {
 
 	getLowestLaneLink () {
 
-		return this.getLinks().sort( ( a, b ) => a.incomingLane.id - b.incomingLane.id )[ 0 ];
+		return this.getLaneLinks().sort( ( a, b ) => a.incomingLane.id - b.incomingLane.id )[ 0 ];
 
 	}
 
 	getHighestLaneLink () {
 
-		return this.getLinks().sort( ( a, b ) => b.incomingLane.id - a.incomingLane.id )[ 0 ];
+		return this.getLaneLinks().sort( ( a, b ) => b.incomingLane.id - a.incomingLane.id )[ 0 ];
 
 	}
 

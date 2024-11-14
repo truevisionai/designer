@@ -4,40 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { Asset, AssetType } from "../assets/asset.model";
-import { TvTextureFactory } from "../assets/texture/tv-texture.factory";
-import { TvMaterialFactory } from "../assets/material/tv-material.factory";
-
-export interface Factory {
-
-	createNew (): void;
-
-}
-
-@Injectable( {
-	providedIn: 'root'
-} )
-export class FactoryProvider {
-
-	constructor () {
-	}
-
-	getFactory ( type: AssetType ): Factory {
-
-		switch ( type ) {
-
-			case AssetType.TEXTURE:
-				return new TvTextureFactory();
-
-			case AssetType.MATERIAL:
-				return new TvMaterialFactory();
-
-		}
-
-	}
-
-}
-
-
 
 @Injectable( {
 	providedIn: 'root'

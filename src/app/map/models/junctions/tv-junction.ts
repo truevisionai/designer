@@ -305,7 +305,7 @@ export class TvJunction {
 
 		for ( const connection of this.getConnections() ) {
 
-			for ( const laneLink of connection.getLinks() ) {
+			for ( const laneLink of connection.getLaneLinks() ) {
 
 				links.push( laneLink );
 

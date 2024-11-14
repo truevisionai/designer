@@ -212,7 +212,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		junction.getConnections().forEach( connection => {
 
-			connection.getLinks().forEach( link => {
+			connection.getLaneLinks().forEach( link => {
 
 				if ( link.connectingLane.type != TvLaneType.driving ) return;
 

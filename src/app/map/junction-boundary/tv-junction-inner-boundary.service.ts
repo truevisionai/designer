@@ -54,7 +54,7 @@ export class TvJunctionInnerBoundaryService {
 		}
 
 		// get the lane link which is connected to the lowest lane
-		const lanes = connection.laneLinks.map( link => link.connectingLane );
+		const lanes = connection.getLaneLinks().map( link => link.getConnectingLane() );
 
 		const lastCarriagewayLane = this.getLastCarriagewayLane( lanes );
 

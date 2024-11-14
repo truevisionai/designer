@@ -95,14 +95,8 @@ export class ConnectionFactory {
 
 		const innerLink = links[ 0 ];
 
-		const incomingLane = innerLink.incomingLane;
-		const connectingLane = innerLink.connectingLane;
-
-		const outgoingLaneSection = connection.getOutgoingLaneSection();
-		const outgoingLane = outgoingLaneSection.getLaneById( connectingLane.successorId );
-
-		const incomingLaneCoord = incoming.toLaneCoord( incomingLane );
-		const outgoingLaneCoord = outgoing.toLaneCoord( outgoingLane );
+		const incomingLaneCoord = incoming.toLaneCoord( innerLink.getIncomingLane() );
+		const outgoingLaneCoord = outgoing.toLaneCoord( innerLink.getOutgoingLane() );
 
 		const spline = SplineFactory.createFromLaneCoords( incomingLaneCoord, outgoingLaneCoord );
 

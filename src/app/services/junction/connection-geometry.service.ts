@@ -34,22 +34,16 @@ export class ConnectionGeometryService {
 
 		const prevCoord = connection.connectingRoad.predecessor.toRoadCoord();
 
-		const nextRoad = connection.connectingRoad.successor.element as TvRoad;
-
 		const nextRoadCoord = connection.connectingRoad.successor.toRoadCoord();
 
-		connection.getLinks().forEach( link => {
+		connection.getLaneLinks().forEach( link => {
 
 			if ( !connection.isCornerConnection ) {
-				link.connectingLane.roadMarks.clear();
+				link.getConnectingLane().clearLaneHeight();
 			}
 
-			const incomingLane = link.incomingLane;
-			const connectingLane = link.connectingLane;
-			const outgoingLane = nextRoad.laneSections[ 0 ].getLaneById( connectingLane.successorId );
-
-			const entry = prevCoord.toLaneCoord( incomingLane );
-			const exit = nextRoadCoord.toLaneCoord( outgoingLane );
+			const entry = prevCoord.toLaneCoord( link.getIncomingLane() );
+			const exit = nextRoadCoord.toLaneCoord( link.getOutgoingLane() );
 
 			const newPositions = ManeueverHelper.getPositionsFromLaneCoord( entry, exit );
 			const currentPositions = connection.getSpline().getControlPoints();
@@ -64,7 +58,7 @@ export class ConnectionGeometryService {
 
 	private updateExplicitConnectionGeometry ( connection: TvJunctionConnection ): void {
 
-		connection.getLinks().forEach( link => {
+		connection.getLaneLinks().forEach( link => {
 
 			this.updateLinkGeometry( connection, link );
 
@@ -75,19 +69,11 @@ export class ConnectionGeometryService {
 	private updateLinkGeometry ( connection: TvJunctionConnection, link: TvJunctionLaneLink ): void {
 
 		if ( !connection.isCornerConnection ) {
-			link.connectingLane.roadMarks.clear();
+			link.getConnectingLane().clearRoadMarks();
 		}
 
-		const prevCoord = connection.getPredecessorLink().toRoadCoord();
-		const nextRoadCoord = connection.getSuccessorLink().toRoadCoord();
-
-		const incomingLane = link.incomingLane;
-		const connectingLane = link.connectingLane;
-
-		const outgoingLane = nextRoadCoord.road.laneSections[ 0 ].getLaneById( connectingLane.successorId );
-
-		const entry = prevCoord.toLaneCoord( incomingLane );
-		const exit = nextRoadCoord.toLaneCoord( outgoingLane );
+		const entry = link.getIncomingCoord();
+		const exit = link.getOutgoingCoord();
 
 		const newPositions = ManeueverHelper.getPositionsFromLaneCoord( entry, exit );
 		const currentPoints = connection.getSpline().getControlPoints();
