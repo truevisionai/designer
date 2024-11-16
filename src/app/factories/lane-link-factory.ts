@@ -52,8 +52,6 @@ export class LaneLinkFactory {
 
 			connectingLane.setLinks( entry.lane, exit.lane );
 
-			// this.addWidthRecord( connectingLane, entry, exit );
-
 			links.push( new TvJunctionLaneLink( entry.lane, connectingLane ) );
 
 		}
@@ -88,10 +86,6 @@ export class LaneLinkFactory {
 			connection.getLaneSection().addLaneInstance( connectingLane );
 
 			connectingLane.setLinks( entry.lane, exit.lane );
-
-			connectingLane.addWidthRecord( connectingLane.getRoad().getLength(), exit.getLaneWidth(), 0, 0, 0 );
-
-			connectingLane.updateWidthCoefficients();
 
 			links.push( new TvJunctionLaneLink( entry.lane, connectingLane ) );
 

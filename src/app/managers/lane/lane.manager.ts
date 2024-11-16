@@ -9,7 +9,6 @@ import { LaneHeightManager } from "./lane-height.manager";
 import { ParkingLaneManager } from "./parking-lane.manager";
 import { LaneMarkingManager } from "./lane-marking.manager";
 import { LaneLinkManager } from "./lane-link.manager";
-import { LaneMaterialManager } from "./lane-material.manager";
 import { MapEvents } from "../../events/map-events";
 import { SplineRemovedEvent } from "../../events/spline/spline-removed-event";
 import { RoadUpdatedEvent } from "../../events/road/road-updated-event";
@@ -25,7 +24,6 @@ export class LaneManager {
 		private parkingLaneManager: ParkingLaneManager,
 		private laneMarkingManager: LaneMarkingManager,
 		private laneLinkManager: LaneLinkManager,
-		private laneMaterialManager: LaneMaterialManager,
 	) {
 	}
 
@@ -85,8 +83,6 @@ export class LaneManager {
 		this.laneHeightManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 
 		this.parkingLaneManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
-
-		this.laneMaterialManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 
 	}
 
