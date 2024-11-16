@@ -235,7 +235,7 @@ export class DepConnectionFactory {
 		// add missing lanes if any
 		if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
 
-			const lanes = connection.connectingLaneSection.getLaneArray();
+			const lanes = connection.connectingLaneSection.getLanes();
 
 			for ( let i = 0; i < lanes.length; i++ ) {
 
@@ -273,7 +273,7 @@ export class DepConnectionFactory {
 		}
 
 		if ( !connection.connectingLaneSection.areRightLanesInOrder() ) {
-			console.error( "lanes are not orderd." + connection.connectingLaneSection.getLaneArray().map( i => i.id ) );
+			console.error( "lanes are not orderd." + connection.connectingLaneSection.getLanes().map( i => i.id ) );
 		}
 
 		return connection;
@@ -284,12 +284,12 @@ export class DepConnectionFactory {
 		const incomingDirection = LaneUtils.determineDirection( incoming.contact );
 		const outgoingDirection = LaneUtils.determineOutDirection( outgoing.contact );
 
-		const incomingLaneCoords = incoming.laneSection.getLaneArray()
+		const incomingLaneCoords = incoming.laneSection.getLanes()
 			.filter( lane => lane.type == TvLaneType.driving || lane.type == TvLaneType.shoulder )
 			.filter( lane => lane.direction === incomingDirection )
 			.map( lane => incoming.toLaneCoord( lane ) );
 
-		const outgoingLaneCoords = outgoing.laneSection.getLaneArray()
+		const outgoingLaneCoords = outgoing.laneSection.getLanes()
 			.filter( lane => lane.type == TvLaneType.driving || lane.type == TvLaneType.shoulder )
 			.filter( lane => lane.direction === outgoingDirection )
 			.map( lane => outgoing.toLaneCoord( lane ) );

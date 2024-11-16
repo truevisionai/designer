@@ -12,6 +12,10 @@ import { LaneNotFound } from 'app/exceptions/exceptions';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { TvLaneCoord } from './tv-lane-coord';
 import { createLaneDistance } from '../road/road-distance';
+import { LaneSectionWidthCalculator } from "./lane-section-width-calculator";
+
+const DESC = ( a: TvLane, b: TvLane ) => b.id - a.id;
+const ASC = ( a: TvLane, b: TvLane ) => a.id - b.id;
 
 export class TvLaneSection {
 
@@ -32,11 +36,14 @@ export class TvLaneSection {
 
 	private length: number;
 
+	private readonly widthCalculator: LaneSectionWidthCalculator;
+
 	constructor ( id: number, s: number, singleSide: boolean, public road: TvRoad ) {
 		this.uuid = MathUtils.generateUUID();
 		this.id = id;
 		this.s = s;
 		this.singleSide = singleSide;
+		this.widthCalculator = new LaneSectionWidthCalculator( this );
 	}
 
 	getRoad (): TvRoad {
@@ -49,10 +56,6 @@ export class TvLaneSection {
 
 	setLength ( value: number ): void {
 		this.length = value;
-	}
-
-	get roadId () {
-		return this.road.id;
 	}
 
 	get lanesMap () {
@@ -72,120 +75,16 @@ export class TvLaneSection {
 		return this.lanes.has( lane.id );
 	}
 
-	/**
-	 *
-	 * @param lane
-	 * @param sCoordinate with respect to lane section
-	 */
 	getWidthUptoStart ( lane: TvLane, sCoordinate: number ): number {
-
-		let width = 0;
-		let lanes: TvLane[] = [];
-
-		if ( lane.side == TvLaneSide.RIGHT ) {
-
-			lanes = this.getRightLanes();
-
-		} else if ( lane.side == TvLaneSide.LEFT ) {
-
-			lanes = this.getLeftLanes().reverse();
-
-		} else {
-
-			width = 0;
-
-			return width;
-
-		}
-
-		for ( let i = 0; i < lanes.length; i++ ) {
-
-			// TODO: Check if this correct
-
-			var element = lanes[ i ];
-
-			if ( element.id == lane.id ) break;
-
-			width += element.getWidthValue( sCoordinate );
-		}
-
-		// Debug.log(`upto-start lane-id: ${lane.id} s: ${sCoordinate} width: ${width}`);
-
-		return width;
-
+		return this.widthCalculator.getWidthUptoStart( lane, sCoordinate );
 	}
 
 	getWidthUptoEnd ( lane: TvLane, sCoordinate: number ): number {
-
-		let width = 0;
-		let lanes: TvLane[] = [];
-
-		if ( lane.side == TvLaneSide.RIGHT ) {
-
-			lanes = this.getRightLanes();
-
-		} else if ( lane.side == TvLaneSide.LEFT ) {
-
-			lanes = this.getLeftLanes().reverse();
-
-		} else {
-
-			return width = 0;
-
-		}
-
-		for ( let i = 0; i < lanes.length; i++ ) {
-
-			// TODO: Check if this correct
-
-			var element = lanes[ i ];
-
-			width += element.getWidthValue( sCoordinate );
-
-			if ( element.id == lane.id ) break;
-		}
-
-		// Debug.log(`upto-end lane-id: ${lane.id} s: ${sCoordinate} width: ${width}`);
-
-		return width;
-
+		return this.widthCalculator.getWidthUptoEnd( lane, sCoordinate );
 	}
 
 	getWidthUptoCenter ( lane: TvLane, sCoordinate: number ): number {
-
-		let cumulativeWidth = 0;
-		let lanes: TvLane[] = [];
-
-		if ( lane.side == TvLaneSide.RIGHT ) {
-
-			lanes = this.getRightLanes();
-
-		} else if ( lane.side == TvLaneSide.LEFT ) {
-
-			lanes = this.getLeftLanes().reverse();
-
-		} else {
-
-			return 0;
-		}
-
-		for ( let i = 0; i < lanes.length; i++ ) {
-
-			let element = lanes[ i ];
-
-			let width = element.getWidthValue( sCoordinate );
-
-			cumulativeWidth += width;
-
-			if ( element.id == lane.id ) {
-
-				cumulativeWidth -= width / 2;
-				break;
-			}
-		}
-
-		return cumulativeWidth;
-
+		return this.widthCalculator.getWidthUptoCenter( lane, sCoordinate );
 	}
 
 	/**
@@ -208,7 +107,7 @@ export class TvLaneSection {
 
 	getLaneAtIndex ( index: number ): TvLane {
 
-		if ( this.laneArray.length > 0 && index < this.laneArray.length ) {
+		if ( this.lanes.size > 0 && index < this.lanes.size ) {
 			return this.laneArray[ index ];
 		}
 
@@ -217,11 +116,11 @@ export class TvLaneSection {
 
 	getLaneCount (): number {
 
-		return this.laneArray.length;
+		return this.lanes.size;
 
 	}
 
-	getLaneArray (): TvLane[] {
+	getLanes (): TvLane[] {
 
 		return this.laneArray;
 
@@ -229,13 +128,13 @@ export class TvLaneSection {
 
 	getNonCenterLanes (): TvLane[] {
 
-		return this.laneArray.filter( lane => lane.side != TvLaneSide.CENTER );
+		return this.getLanes().filter( lane => !lane.isCenter );
 
 	}
 
 	getDrivingLanes (): TvLane[] {
 
-		return this.laneArray.filter( lane => lane.id != 0 && lane.type == TvLaneType.driving );
+		return this.getLanes().filter( lane => !lane.isCenter && lane.isDrivingLane );
 
 	}
 
@@ -255,13 +154,13 @@ export class TvLaneSection {
 
 	getLeftLaneCount (): number {
 
-		return this.laneArray.filter( lane => lane.side === TvLaneSide.LEFT ).length;
+		return this.getLeftLanes().length;
 
 	}
 
 	getLeftLanes (): TvLane[] {
 
-		return this.laneArray.filter( lane => lane.side === TvLaneSide.LEFT );
+		return this.laneArray.filter( lane => lane.isLeft );
 
 	}
 
@@ -309,19 +208,19 @@ export class TvLaneSection {
 
 	getCenterLanes (): TvLane[] {
 
-		return this.laneArray.filter( lane => lane.side === TvLaneSide.CENTER );
+		return this.laneArray.filter( lane => lane.isCenter );
 
 	}
 
 	getRightLaneCount (): number {
 
-		return this.laneArray.filter( lane => lane.side === TvLaneSide.RIGHT ).length;
+		return this.getRightLanes().length;
 
 	}
 
 	getRightLanes (): TvLane[] {
 
-		return this.laneArray.filter( lane => lane.side === TvLaneSide.RIGHT );
+		return this.laneArray.filter( lane => lane.isRight );
 
 	}
 
@@ -372,15 +271,19 @@ export class TvLaneSection {
 
 	sortLanes (): void {
 
-		const inDescOrder = ( a: [ number, TvLane ], b: [ number, TvLane ] ) => a[ 1 ].id > b[ 1 ].id ? -1 : 1;
+		const sortedLanes = this.getLanes().sort( DESC );
 
-		this.lanes = new Map( [ ...this.lanes.entries() ].sort( inDescOrder ) );
+		this.lanes.clear();
+
+		for ( const lane of sortedLanes ) {
+			this.lanes.set( lane.id, lane );
+		}
 
 	}
 
 	getRightMostLane (): TvLane {
 
-		return this.laneArray[ this.laneArray.length - 1 ];
+		return this.laneArray[ this.lanes.size - 1 ];
 
 	}
 
@@ -424,50 +327,7 @@ export class TvLaneSection {
 
 	}
 
-	findNearestLane ( s: number, t: number, location: 'start' | 'center' | 'end' ): TvLane {
-
-		const lanes = t > 0 ? this.getLeftLanes() : this.getRightLanes();
-
-		if ( this.lanes.has( 0 ) ) lanes.push( this.lanes.get( 0 ) );
-
-		// we need to find the lane which is closest to the pointer
-		const THRESHOLD = 0.5;
-
-		let minDistance = Infinity;
-
-		let targetLane: TvLane;
-
-		for ( const lane of lanes ) {
-
-			let laneT: number;
-
-			if ( location === 'center' ) {
-
-				laneT = this.getWidthUptoCenter( lane, s );
-
-			} else if ( location === 'end' ) {
-
-				laneT = this.getWidthUptoEnd( lane, s );
-
-			}
-
-			const distance = Math.abs( laneT - Math.abs( t ) );
-
-			// if ( this.debug ) Debug.log( lane.id, laneT, t, distance < THRESHOLD );
-
-			if ( distance < minDistance && distance < THRESHOLD ) {
-				minDistance = distance;
-				targetLane = lane;
-			}
-
-		}
-
-		return targetLane;
-	}
-
 	getLaneAt ( s: number, t: number ): TvLane {
-
-		const lanes = this.lanesMap;
 
 		const isLeft = t > 0;
 		const isRight = t < 0;
@@ -476,7 +336,7 @@ export class TvLaneSection {
 			return this.getLaneById( 0 );
 		}
 
-		for ( const [ id, lane ] of lanes ) {
+		for ( const lane of this.getLanes() ) {
 
 			// logic to skip left or right lanes depending on t value
 			if ( isLeft && lane.isRight ) continue;
@@ -719,20 +579,15 @@ export class TvLaneSection {
 
 	}
 
-	computeWidthAt ( sOffset: number ) {
+	computeWidthAt ( sOffset: number ): number {
 
-		let width = 0;
+		return this.widthCalculator.getWidthAt( sOffset );
 
-		this.getLeftLanes().forEach( lane => width += lane.getWidthValue( sOffset ) );
-
-		this.getRightLanes().forEach( lane => width += lane.getWidthValue( sOffset ) );
-
-		return width;
 	}
 
 	getHighestCarriageWayLane (): TvLane {
 
-		const lanes = this.getLaneArray()
+		const lanes = this.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => this.isCarriageWayLane( lane ) );
 
@@ -742,7 +597,7 @@ export class TvLaneSection {
 
 	getLowestCarriageWayLane (): TvLane {
 
-		const lanes = this.getLaneArray()
+		const lanes = this.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => this.isCarriageWayLane( lane ) );
 
@@ -758,7 +613,7 @@ export class TvLaneSection {
 
 	getLowestLane ( type?: TvLaneType ): TvLane {
 
-		const lanes = this.getLaneArray()
+		const lanes = this.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => !type || lane.type == type );
 
@@ -768,7 +623,7 @@ export class TvLaneSection {
 
 	getHighestLane ( type?: TvLaneType ): TvLane {
 
-		const lanes = this.getLaneArray()
+		const lanes = this.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => !type || lane.type == type );
 
@@ -777,7 +632,7 @@ export class TvLaneSection {
 
 	getHighestDrivingLane (): TvLane {
 
-		const lanes = this.getLaneArray()
+		const lanes = this.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => lane.type == TvLaneType.driving );
 
@@ -827,7 +682,7 @@ export class TvLaneSection {
 
 		const direction = LaneUtils.determineOutDirection( contact );
 
-		const lanes = this.getLaneArray().filter( lane => lane.matchesDirection( direction ) );
+		const lanes = this.getLanes().filter( lane => lane.matchesDirection( direction ) );
 
 		const coords = lanes.map( lane => {
 			return new TvLaneCoord( this.road, this, lane, createLaneDistance( lane, contact ), 0 );
@@ -855,7 +710,7 @@ export class TvLaneSection {
 
 		const direction = LaneUtils.determineDirection( contact );
 
-		const lanes = this.getLaneArray().filter( lane => lane.matchesDirection( direction ) );
+		const lanes = this.getLanes().filter( lane => lane.matchesDirection( direction ) );
 
 		const coords = lanes.map( lane => {
 			return new TvLaneCoord( this.road, this, lane, createLaneDistance( lane, contact ), 0 );
@@ -882,7 +737,7 @@ export class TvLaneSection {
 
 		const direction = LaneUtils.determineDirection( contact );
 
-		const lanes = this.getLaneArray().filter( lane => lane.matchesDirection( direction ) );
+		const lanes = this.getLanes().filter( lane => lane.matchesDirection( direction ) );
 
 		if ( contact == TvContactPoint.START ) {
 
@@ -900,7 +755,7 @@ export class TvLaneSection {
 
 		const direction = LaneUtils.determineDirection( contact );
 
-		const lanes = this.getLaneArray().filter( lane => lane.matchesDirection( direction ) );
+		const lanes = this.getLanes().filter( lane => lane.matchesDirection( direction ) );
 
 		if ( contact == TvContactPoint.START ) {
 
@@ -924,7 +779,7 @@ export class TvLaneSection {
 		for ( const current of lanes ) {
 
 			// ignore center lanes
-			if ( current.side === TvLaneSide.CENTER ) continue;
+			if ( current.isCenter ) continue;
 
 			if ( type && current.type !== type ) continue;
 
@@ -948,7 +803,7 @@ export class TvLaneSection {
 		for ( const current of lanes ) {
 
 			// ignore center lanes
-			if ( current.side == TvLaneSide.CENTER ) continue;
+			if ( current.isCenter ) continue;
 
 			if ( type && current.type != type ) continue;
 
@@ -961,4 +816,11 @@ export class TvLaneSection {
 
 		return lowestLane;
 	}
+
+	getLanesBySide ( side: TvLaneSide ): TvLane[] {
+
+		return this.getLanes().filter( lane => lane.side === side );
+
+	}
 }
+

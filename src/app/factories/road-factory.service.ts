@@ -232,7 +232,7 @@ export class RoadFactory {
 
 		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
 
-		laneSection.getLaneArray().forEach( lane => {
+		laneSection.getLanes().forEach( lane => {
 
 			if ( lane.side === TvLaneSide.CENTER ) return;
 

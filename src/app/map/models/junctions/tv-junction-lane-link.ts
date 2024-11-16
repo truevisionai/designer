@@ -10,8 +10,8 @@ import { TvLaneCoord } from '../tv-lane-coord';
 
 export class TvJunctionLaneLink {
 
-	public incomingLane: TvLane;
-	public connectingLane: TvLane;
+	private readonly _incomingLane: TvLane;
+	private readonly _connectingLane: TvLane;
 
 	/**
 	 * can be useful to track if the link is modified
@@ -19,51 +19,54 @@ export class TvJunctionLaneLink {
 	 */
 	public dirty: boolean = false;
 
-	public turnType: TurnType;
+	private turnType: TurnType;
 
 	private connection: TvJunctionConnection;
 
-	/**
-	 *
-	 * @param from ID of the incoming lane
-	 * @param to ID of the connecting lane
-	 */
-	constructor ( from: TvLane, to: TvLane ) {
-		this.incomingLane = from;
-		this.connectingLane = to;
+	constructor ( incomingLane: TvLane, connectingLane: TvLane ) {
+		this._incomingLane = incomingLane;
+		this._connectingLane = connectingLane;
+	}
+
+	get connectingLane (): TvLane {
+		return this._connectingLane;
+	}
+
+	get incomingLane (): TvLane {
+		return this._incomingLane;
 	}
 
 	get from (): number {
-		return this.incomingLane?.id;
+		return this._incomingLane?.id;
 	}
 
 	get to (): number {
-		return this.connectingLane?.id;
+		return this._connectingLane?.id;
 	}
 
 	get connectingRoad (): TvRoad {
-		return this.connectingLane.getRoad();
+		return this._connectingLane.getRoad();
 	}
 
 	get incomingRoad (): TvRoad {
-		return this.incomingLane.getRoad();
+		return this._incomingLane.getRoad();
 	}
 
 	clone (): TvJunctionLaneLink {
-		return new TvJunctionLaneLink( this.incomingLane, this.connectingLane );
+		return new TvJunctionLaneLink( this._incomingLane, this._connectingLane );
 	}
 
 	toString (): string {
-		return `IncomingLane: ${ this.incomingLane.id } ConnectingLane: ${ this.connectingLane.id } Turn: ${ this.turnType }`;
+		return `IncomingLane: ${ this._incomingLane.id } ConnectingLane: ${ this._connectingLane.id } Turn: ${ this.turnType }`;
 	}
 
 	matchesIncomingLane ( lane: TvLane ): boolean {
-		return this.incomingLane.isEqualTo( lane );
+		return this._incomingLane.isEqualTo( lane );
 	}
 
 	getOutgoingLane (): TvLane {
 
-		const connectingLane = this.connectingLane;
+		const connectingLane = this._connectingLane;
 		const outgoingLaneSection = this.connection.getOutgoingLaneSection();
 
 		return outgoingLaneSection.getLaneById( connectingLane.successorId );
@@ -74,16 +77,12 @@ export class TvJunctionLaneLink {
 		this.connection = connection;
 	}
 
-	getConnection (): TvJunctionConnection {
-		return this.connection;
-	}
-
 	getIncomingLane (): TvLane {
-		return this.incomingLane;
+		return this._incomingLane;
 	}
 
 	getConnectingLane (): TvLane {
-		return this.connectingLane;
+		return this._connectingLane;
 	}
 
 	getIncomingCoord (): TvLaneCoord | undefined {

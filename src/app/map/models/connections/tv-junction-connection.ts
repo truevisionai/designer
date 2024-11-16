@@ -315,17 +315,9 @@ export class TvJunctionConnection {
 		return null;
 	}
 
-	getIncomingLaneSection () {
+	getIncomingLaneSection (): TvLaneSection {
 
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			return this.incomingRoad.getLaneProfile().getFirstLaneSection();
-
-		} else {
-
-			return this.incomingRoad.getLaneProfile().getLastLaneSection();
-
-		}
+		return this.incomingRoad.getLaneProfile().getLaneSectionAtContact( this.getIncomingRoadContact() );
 
 	}
 
@@ -361,7 +353,7 @@ export class TvJunctionConnection {
 
 		const contactPoint = this.getIncomingRoadContact();
 		const direction = LaneUtils.determineDirection( contactPoint );
-		const lanes = this.getIncomingLaneSection().getLaneArray().filter( lane => lane.direction == direction );
+		const lanes = this.getIncomingLaneSection().getLanes().filter( lane => lane.direction == direction );
 
 		if ( contactPoint == TvContactPoint.END ) {
 			return lanes.sort( DESC );
@@ -373,7 +365,7 @@ export class TvJunctionConnection {
 
 	getIncomingLaneCount (): number {
 
-		return this.getIncomingLaneSection().getLaneArray().length;
+		return this.getIncomingLaneSection().getLanes().length;
 
 	}
 
@@ -381,7 +373,7 @@ export class TvJunctionConnection {
 
 		const contactPoint = this.getOutgoingRoadContact();
 		const direction = LaneUtils.determineOutDirection( contactPoint );
-		const lanes = this.getOutgoingLaneSection().getLaneArray().filter( lane => lane.direction == direction );
+		const lanes = this.getOutgoingLaneSection().getLanes().filter( lane => lane.direction == direction );
 
 		if ( contactPoint == TvContactPoint.START ) {
 			return lanes.sort( DESC );
@@ -411,13 +403,13 @@ export class TvJunctionConnection {
 
 	private getHash (): string {
 
-		let hash = this.incomingRoadId + '_';
+		let hash = `${ this.incomingRoadId }_`;
 
 		this._laneLinks.forEach( link => {
 
-			hash += '_' + link.incomingLane.id;
-			hash += '_' + link.connectingRoad.successor.id;
-			hash += '_' + link.connectingLane.successorId;
+			hash += `_${ link.incomingLane.id }`;
+			hash += `_${ link.connectingRoad.successor.id }`;
+			hash += `_${ link.connectingLane.successorId }`;
 
 		} );
 
@@ -486,7 +478,7 @@ export class TvJunctionConnection {
 
 	}
 
-	removeLink ( link: TvJunctionLaneLink ) {
+	removeLink ( link: TvJunctionLaneLink ): void {
 
 		this._laneLinks = this._laneLinks.filter( laneLink => laneLink !== link );
 

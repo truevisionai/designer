@@ -106,19 +106,19 @@ export class RampToolHelper {
 
 		if ( start instanceof TvLaneCoord ) {
 			if ( start.lane.isRight ) {
-				incomingLanes = start.laneSection.getLaneArray().filter( lane => lane.id < start.laneId );
+				incomingLanes = start.laneSection.getLanes().filter( lane => lane.id < start.laneId );
 			} else {
 				// TODO: check if this is correct
-				incomingLanes = start.laneSection.getLaneArray().filter( lane => lane.id > start.laneId );
+				incomingLanes = start.laneSection.getLanes().filter( lane => lane.id > start.laneId );
 			}
 		}
 
 		if ( incomingLanes.find( lane => lane.type == TvLaneType.driving ) == undefined ) {
 			if ( start instanceof TvLaneCoord ) {
 				if ( start.lane.isRight ) {
-					incomingLanes = start.laneSection.getLaneArray().filter( lane => lane.id <= start.laneId );
+					incomingLanes = start.laneSection.getLanes().filter( lane => lane.id <= start.laneId );
 				} else {
-					incomingLanes = start.laneSection.getLaneArray().filter( lane => lane.id >= start.laneId );
+					incomingLanes = start.laneSection.getLanes().filter( lane => lane.id >= start.laneId );
 				}
 			}
 		}

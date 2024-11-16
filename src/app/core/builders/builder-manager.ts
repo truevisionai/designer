@@ -109,7 +109,7 @@ export class BuilderManager {
 
 		road.getLaneProfile().getLaneSections().forEach( laneSection => {
 			laneSection.gameObject?.remove();
-			laneSection.getLaneArray().forEach( lane => lane.gameObject?.remove() );
+			laneSection.getLanes().forEach( lane => lane.gameObject?.remove() );
 		} )
 
 		if ( road.gameObject ) {

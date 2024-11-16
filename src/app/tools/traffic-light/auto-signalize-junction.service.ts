@@ -229,11 +229,11 @@ export class AutoSignalizeJunctionService {
 
 		if ( side == TvLaneSide.LEFT ) {
 
-			return LaneUtils.findHighest( laneSection.getLaneArray(), laneType );
+			return LaneUtils.findHighest( laneSection.getLanes(), laneType );
 
 		} else if ( side == TvLaneSide.RIGHT ) {
 
-			return LaneUtils.findLowest( laneSection.getLaneArray(), laneType );
+			return LaneUtils.findLowest( laneSection.getLanes(), laneType );
 
 		} else {
 
@@ -292,7 +292,7 @@ export class AutoSignalizeJunctionService {
 
 		const laneSection = road.getLaneProfile().getLaneSectionAt( s );
 
-		const drivingLanes = laneSection.getLaneArray().filter( lane => lane.type == TvLaneType.driving && lane.side == side ).map( lane => lane.id );
+		const drivingLanes = laneSection.getLanes().filter( lane => lane.type == TvLaneType.driving && lane.side == side ).map( lane => lane.id );
 
 		// TODO: this is not correct, we need to find the lane with the signal
 		const minLaneId = Math.min( ...drivingLanes );

@@ -126,7 +126,7 @@ export class ParkingRoadToolService {
 
 		this.roadService.add( road );
 
-		road.getLaneProfile().getFirstLaneSection().getLaneArray().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
+		road.getLaneProfile().getFirstLaneSection().getLanes().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
 
 			this.addRepeatedParkingObject( road, lane );
 

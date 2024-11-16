@@ -256,7 +256,7 @@ export class TvLaneProfile {
 
 	getLanes (): TvLane[] {
 
-		return this.laneSections.flatMap( laneSection => laneSection.getLaneArray() );
+		return this.laneSections.flatMap( laneSection => laneSection.getLanes() );
 
 	}
 

@@ -82,7 +82,7 @@ export class LaneSectionFactory {
 
 			const laneSection = previous.laneSection.cloneAtS( 0, 0, null, newRoad );
 
-			const lanes = laneSection.getLaneArray();
+			const lanes = laneSection.getLanes();
 
 			for ( let i = 0; i < lanes.length; i++ ) {
 
@@ -122,8 +122,8 @@ export class LaneSectionFactory {
 
 			const laneSection = this.createLaneSection( newRoad );
 
-			const prevLanes = previous.laneSection.getLaneArray();
-			const nextLanes = next.laneSection.getLaneArray();
+			const prevLanes = previous.laneSection.getLanes();
+			const nextLanes = next.laneSection.getLanes();
 
 			const laneCount = Math.max(
 				previous.laneSection.lanesMap.size,
@@ -198,7 +198,7 @@ export class LaneSectionFactory {
 
 		const incomingDirection = LaneUtils.determineDirection( predecessor.contact );
 
-		return predecessor.laneSection.getLaneArray()
+		return predecessor.laneSection.getLanes()
 			.filter( lane => lane.direction === incomingDirection )
 			.map( lane => predecessor.toLaneCoord( lane ) );
 
@@ -215,11 +215,11 @@ export class LaneSectionFactory {
 		const incomingDirection = LaneUtils.determineDirection( predecessor.contact );
 		const outgoingDirection = LaneUtils.determineOutDirection( successor.contact );
 
-		const incomingLaneCoords = predecessor.laneSection.getLaneArray()
+		const incomingLaneCoords = predecessor.laneSection.getLanes()
 			.filter( lane => lane.direction === incomingDirection )
 			.map( lane => predecessor.toLaneCoord( lane ) )
 
-		const outgoingLaneCoords = successor.laneSection.getLaneArray()
+		const outgoingLaneCoords = successor.laneSection.getLanes()
 			.filter( lane => lane.direction === outgoingDirection )
 			.map( lane => successor.toLaneCoord( lane ) )
 
@@ -416,7 +416,7 @@ export class LaneSectionFactory {
 
 		const clone = predecessor.laneSection.cloneAtS( sOffset );
 
-		const lanes = clone.getLaneArray();
+		const lanes = clone.getLanes();
 
 		for ( let i = 0; i < lanes.length; i++ ) {
 

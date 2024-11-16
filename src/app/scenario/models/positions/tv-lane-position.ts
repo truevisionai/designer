@@ -65,7 +65,7 @@ export class LanePosition extends Position {
 	}
 
 	getLaneArray () {
-		return TvMapQueries.findRoadById( this.roadId ).getLaneProfile().getLaneSectionAt( this.sCoordinate ).getLaneArray();
+		return TvMapQueries.findRoadById( this.roadId ).getLaneProfile().getLaneSectionAt( this.sCoordinate ).getLanes();
 	}
 
 	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {

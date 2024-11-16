@@ -200,7 +200,7 @@ export class LaneUtils {
 
 	static findOuterMostLane ( laneSection: TvLaneSection, side: TvLaneSide, type?: TvLaneType ) {
 
-		const lanes = laneSection.getLaneArray().filter( lane => lane.side == side && ( !type || lane.type == type ) );
+		const lanes = laneSection.getLanes().filter( lane => lane.side == side && ( !type || lane.type == type ) );
 
 		if ( lanes.length === 0 ) return null;
 
@@ -228,7 +228,7 @@ export class LaneUtils {
 
 	static findHigestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
 
-		const lanes = laneSection.getLaneArray()
+		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => !type || lane.type == type );
 
@@ -264,7 +264,7 @@ export class LaneUtils {
 
 	static findLowestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
 
-		const lanes = laneSection.getLaneArray()
+		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => !type || lane.type == type );
 
@@ -274,7 +274,7 @@ export class LaneUtils {
 
 	static findLowestCarriageWayLane ( laneSection: TvLaneSection ) {
 
-		const lanes = laneSection.getLaneArray()
+		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => lane.isCarriageWay() );
 
@@ -284,7 +284,7 @@ export class LaneUtils {
 
 	static findHighestCarriageWayLane ( laneSection: TvLaneSection ) {
 
-		const lanes = laneSection.getLaneArray()
+		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => lane.isCarriageWay() );
 

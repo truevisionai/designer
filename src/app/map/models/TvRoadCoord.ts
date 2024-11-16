@@ -56,7 +56,7 @@ export class TvRoadCoord {
 	}
 
 	get lanes () {
-		return this.laneSection.getLaneArray();
+		return this.laneSection.getLanes();
 	}
 
 	get roadId (): number {

@@ -231,7 +231,7 @@ export class MapService {
 
 			const laneSection = road.laneSections[ j ];
 
-			for ( const lane of laneSection.getLaneArray() ) {
+			for ( const lane of laneSection.getLanes() ) {
 
 				if ( !lane.gameObject ) continue;
 
@@ -328,7 +328,7 @@ export class MapService {
 
 			for ( const laneSection of road.laneSections ) {
 
-				for ( const lane of laneSection.getLaneArray() ) {
+				for ( const lane of laneSection.getLanes() ) {
 
 					if ( lane.gameObject instanceof Mesh ) {
 

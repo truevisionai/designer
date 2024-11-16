@@ -35,9 +35,9 @@ export class LaneLinkManager {
 
 	linkLaneSections ( predecessor: TvLaneSection, succcessor: TvLaneSection ) {
 
-		const predecessorLanes = predecessor.getLaneArray();
+		const predecessorLanes = predecessor.getLanes();
 
-		const successorLanes = succcessor.getLaneArray();
+		const successorLanes = succcessor.getLanes();
 
 		for ( let i = 0; i < predecessorLanes.length; i++ ) {
 
