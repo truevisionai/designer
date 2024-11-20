@@ -117,28 +117,6 @@ export class RoadFactory {
 
 	}
 
-	//static cloneRoad ( road: TvRoad, s = 0 ): TvRoad {
-	//
-	//	const cloned = road.clone( s );
-	//
-	//	cloned.id = this.IDService.getUniqueID();
-	//
-	//	return cloned;
-	//
-	//}
-
-	//static createFirstRoadControlPoint ( position: Vector3 ) {
-	//
-	//	const road = this.createDefaultRoad( TvRoadType.TOWN, 40 );
-	//
-	//	const point = road.addControlPointAt( position );
-	//
-	//	road.spline.addRoadSegment( 0, road.id );
-	//
-	//	return { point, road };
-	//
-	//}
-
 	createRampRoad ( lane?: TvLane ): TvRoad {
 
 		const road = this.createNewRoad();

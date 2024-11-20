@@ -37,11 +37,6 @@ describe( 'Service: RoadDivider Simple', () => {
 
 	it( 'should divide straight road in middle', () => {
 
-		// const road = roadService.createDefaultRoad();
-		// road.spline.controlPoints.pushAt( new Vector3( -50, 0, 0 ) );
-		// road.spline.controlPoints.pushAt( new Vector3( 50, 0, 0 ) );
-		// roadService.addRoad( road );
-
 		const S_OFFSET = 50;
 
 		const road = testHelper.createDefaultRoad( [

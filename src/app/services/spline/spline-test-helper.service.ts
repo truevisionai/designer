@@ -220,10 +220,6 @@ export class SplineTestHelper {
 
 		const spline = SplineFactory.createStraightSplineAndPoints( start, length, degrees, type );
 
-		// spline.addSegment( 0, this.roadFactory.createDefaultRoad() );
-
-		// spline.addControlPoints( ControlPointFactory.createStraightControlPoints( spline, start, length, degrees ) );
-
 		return spline;
 
 	}

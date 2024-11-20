@@ -44,7 +44,7 @@ export class TvJunctionBoundaryService {
 
 		this.outerBoundaryService.update( junction, junction.outerBoundary );
 
-		this.debugBoundary( junction.innerBoundary );
+		// this.debugBoundary( junction.innerBoundary );
 
 	}
 

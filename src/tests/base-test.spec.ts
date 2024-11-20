@@ -2,7 +2,6 @@ import { TvLaneSection } from "../app/map/models/tv-lane-section";
 import { Vector2, Vector3 } from "three";
 import { RoadFactory, RoadMakeOptions } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
-import { DepIntersectionService } from 'app/deprecated/dep-intersection.service';
 import { RoadNode } from "app/objects/road/road-node";
 import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
 import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
@@ -226,124 +225,6 @@ export class BaseTest {
 		roadService.add( road );
 
 		return road;
-
-	}
-
-	createOneWayRoad ( roadService: RoadService, points: Vector2[] ) {
-
-		const road = this.createRoad( roadService, points, 1, 2 );
-
-		// --------------------------------
-		// 1 - sidewalk on left
-		// -------------------------------->
-		// -1 - driving road
-		// --------------------------------
-		// -2 - sidewalk on right
-		// --------------------------------
-
-		road.laneSections[ 0 ].lanesMap.get( 1 ).type = TvLaneType.sidewalk;
-		road.laneSections[ 0 ].lanesMap.get( -2 ).type = TvLaneType.sidewalk;
-		road.laneSections[ 0 ].lanesMap.get( -1 ).type = TvLaneType.driving;
-
-		roadService.add( road );
-
-		return road;
-
-	}
-
-	createFourWayJunction (
-		roadService: RoadService,
-		intersectionService: DepIntersectionService,
-		leftLaneCount = 1,
-		rightLaneCount = 1,
-		leftWidth = 3.6,
-		rightWidth = 3.6
-	) {
-
-		// x-axis
-		const horizontalRoad = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ],
-			leftLaneCount,
-			rightLaneCount,
-			leftWidth,
-			rightWidth
-		);
-
-		// y-axis
-		const verticalRoad = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
-			leftLaneCount,
-			rightLaneCount,
-			leftWidth,
-			rightWidth
-		);
-
-		roadService.add( horizontalRoad );
-
-		roadService.add( verticalRoad );
-
-		intersectionService.checkSplineIntersections( verticalRoad.spline );
-
-	}
-
-	createTJunction (
-		roadService: RoadService,
-		intersectionService: DepIntersectionService,
-		leftLaneCount = 1,
-		rightLaneCount = 1,
-		leftWidth = 3.6,
-		rightWidth = 3.6
-	) {
-
-		/**
-		 *
-		 * T junction
-		 *
-		 * | |
-		 * | |- - - -
-		 * | |- - - -
-		 * | |
-		 *
-		 */
-
-		const horizontal = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ],
-			leftLaneCount,
-			rightLaneCount,
-			leftWidth,
-			rightWidth
-		);
-
-		const vertical = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
-			leftLaneCount,
-			rightLaneCount,
-			leftWidth,
-			rightWidth
-		);
-
-		roadService.add( horizontal );
-
-		roadService.add( vertical );
-
-		intersectionService.checkSplineIntersections( vertical.spline );
-
-	}
-
-	createConnectedRoads ( roadToolService: RoadToolHelper ) {
-
-		/**
-
-		 * -------------------------------
-		 *  	1 	|	  3	 	| 		2
-		 * -------------------------------
-
-		 */
-
-		const leftRoad = this.createDefaultRoad( roadToolService.roadService, [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
-		const rightRoad = this.createDefaultRoad( roadToolService.roadService, [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
-
-		const leftNode = new RoadNode( leftRoad, TvContactPoint.END );
-		const rightNode = new RoadNode( rightRoad, TvContactPoint.START );
-
-		const joiningRoad = roadToolService.createJoiningRoad( leftNode, rightNode );
-		roadToolService.roadService.add( joiningRoad );
 
 	}
 

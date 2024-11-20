@@ -25,6 +25,7 @@ import { Maths } from 'app/utils/maths';
 import { SplineElevationProfile } from './spline-elevation-profile';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { SplineType } from './spline-type';
+import { SplineIntersection } from "../../services/junction/spline-intersection";
 
 export type NewSegment = TvRoad | TvJunction | null;
 
@@ -104,9 +105,13 @@ export abstract class AbstractSpline {
 		return this.controlPoints.map( point => point.position );
 	}
 
-	setMap ( map: TvMap ): void { this.map = map; }
+	setMap ( map: TvMap ): void {
+		this.map = map;
+	}
 
-	getMap (): TvMap { return this.map; }
+	getMap (): TvMap {
+		return this.map;
+	}
 
 	getControlPoints (): AbstractControlPoint[] {
 		return this.controlPoints;
@@ -492,7 +497,7 @@ export abstract class AbstractSpline {
 		return this.getSuccessor() instanceof TvJunction || this.getPredecessor() instanceof TvJunction;
 	}
 
-	getIntersections ( otherSpline: AbstractSpline ) {
+	getIntersections ( otherSpline: AbstractSpline ): SplineIntersection[] {
 		return findIntersectionsViaBox2D( this, otherSpline );
 	}
 

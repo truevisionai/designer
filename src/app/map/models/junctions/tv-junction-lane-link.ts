@@ -37,11 +37,11 @@ export class TvJunctionLaneLink {
 	}
 
 	get from (): number {
-		return this._incomingLane?.id;
+		return this._incomingLane.id;
 	}
 
 	get to (): number {
-		return this._connectingLane?.id;
+		return this._connectingLane.id;
 	}
 
 	get connectingRoad (): TvRoad {

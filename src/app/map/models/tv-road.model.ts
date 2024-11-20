@@ -106,9 +106,13 @@ export class TvRoad {
 		this.objectGroup.name = 'ObjectGroup';
 	}
 
-	setMap ( map: TvMap ): void { this.map = map; }
+	setMap ( map: TvMap ): void {
+		this.map = map;
+	}
 
-	getMap (): TvMap { return this.map; }
+	getMap (): TvMap {
+		return this.map;
+	}
 
 	get sStart (): number {
 		return this._sStart;
@@ -205,17 +209,29 @@ export class TvRoad {
 
 	}
 
-	hasLinks (): boolean { return this.hasPredecessor() || this.hasSuccessor(); }
+	hasLinks (): boolean {
+		return this.hasPredecessor() || this.hasSuccessor();
+	}
 
-	hasSuccessor (): boolean { return this.successor != null; }
+	hasSuccessor (): boolean {
+		return this.successor != null;
+	}
 
-	hasPredecessor (): boolean { return this.predecessor != null; }
+	hasPredecessor (): boolean {
+		return this.predecessor != null;
+	}
 
-	getStartCoord (): TvRoadCoord { return this.getRoadCoord( 0 ); }
+	getStartCoord (): TvRoadCoord {
+		return this.getRoadCoord( 0 );
+	}
 
-	getEndCoord (): TvRoadCoord { return this.getRoadCoord( this.length ); }
+	getEndCoord (): TvRoadCoord {
+		return this.getRoadCoord( this.length );
+	}
 
-	getEndPosTheta () { return this.getPosThetaAt( this.length - Maths.Epsilon ); }
+	getEndPosTheta () {
+		return this.getPosThetaAt( this.length - Maths.Epsilon );
+	}
 
 	getStartPosTheta () {
 
@@ -302,9 +318,13 @@ export class TvRoad {
 
 	}
 
-	getSuccessor (): TvLink { return this.successor; }
+	getSuccessor (): TvLink {
+		return this.successor;
+	}
 
-	getPredecessor (): TvLink { return this.predecessor; }
+	getPredecessor (): TvLink {
+		return this.predecessor;
+	}
 
 	getPredecessorSpline (): AbstractSpline | undefined {
 
@@ -708,10 +728,7 @@ export class TvRoad {
 		this.boundingBox = boundingBox;
 
 	}
-
-	/**
-	 * @deprecated use RoadGeometryService instead
-	 */
+	
 	getPosThetaByContact ( contact: TvContactPoint ): TvPosTheta {
 
 		return RoadGeometryService.instance.findContactPosition( this, contact );
