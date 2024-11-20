@@ -21,12 +21,6 @@ export class LaneLinkFactory {
 			this.createNonDrivingLinks( connection ).forEach( link => links.push( link ) );
 		}
 
-		// if ( connection.getLinkCount() == 0 ) {
-		// 	console.debug( 'No links created for connection', connection, connection.shouldCreateNonDrivingLinks() );
-		// } else {
-		// 	console.debug( 'Created links for connection', connection.getLinkCount(), connection );
-		// }
-
 		return links;
 
 	}
@@ -126,7 +120,7 @@ export class LaneLinkFactory {
 
 		let bestMatch: TvLaneCoord | undefined;
 
-		let closestLane: TvLane | null = null;
+		let closestLane: TvLane;
 
 		for ( const exit of exits ) {
 
