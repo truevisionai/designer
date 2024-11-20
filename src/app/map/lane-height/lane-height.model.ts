@@ -34,11 +34,8 @@ export class TvLaneHeight {
 	constructor ( sOffset: number, inner: number, outer: number ) {
 
 		this.sOffset = sOffset || 0;
-
 		this.inner = inner || 0;
-
 		this.outer = outer || 0;
-
 		this.uuid = MathUtils.generateUUID();
 
 	}
@@ -52,12 +49,26 @@ export class TvLaneHeight {
 	 * @param t 0 to 1
 	 * @returns
 	 */
-	getLinearValue ( t: number ) {
+	getLinearValue ( t: number ): number {
 		return this.inner + ( this.outer - this.inner ) * t;
 	}
 
-	matches ( other: TvLaneHeight ) {
+	matches ( other: TvLaneHeight ): boolean {
 		return this.inner === other.inner && this.outer === other.outer;
+	}
+
+	copyHeight ( other: TvLaneHeight ): void {
+		this.inner = other.inner;
+		this.outer = other.outer;
+	}
+
+	setHeight ( value: number ): void {
+		this.inner = value;
+		this.outer = value;
+	}
+
+	clone (): TvLaneHeight {
+		return new TvLaneHeight( this.sOffset, this.inner, this.outer );
 	}
 
 }

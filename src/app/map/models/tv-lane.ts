@@ -380,21 +380,28 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return index;
 	}
 
-	addHeightRecord ( sOffset: number, inner: number, outer: number ) {
+	addHeightRecord ( sOffset: number, inner: number, outer: number ): void {
 
-		const index = this.checkLaneHeightInterval( sOffset ) + 1;
+		this.addHeightRecordInstance( new TvLaneHeight( sOffset, inner, outer ) );
+
+	}
+
+	addHeightRecordInstance ( height: TvLaneHeight ): void {
+
+		const index = this.checkLaneHeightInterval( height.sOffset ) + 1;
 
 		if ( index > this.getLaneHeightCount() ) {
 
-			this.height.push( new TvLaneHeight( sOffset, inner, outer ) );
+			this.height.push( height );
 
 		} else {
 
-			this.height[ index ] = new TvLaneHeight( sOffset, inner, outer );
+			this.height[ index ] = height;
 
 		}
 
-		return index;
+		this.height.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+
 	}
 
 	clearLaneHeight (): void {

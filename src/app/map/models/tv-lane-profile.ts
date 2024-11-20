@@ -266,9 +266,37 @@ export class TvLaneProfile {
 
 	}
 
-	getLaneOffsetCount () {
+	getLaneOffsetCount (): number {
 
 		return this.laneOffsets.length;
+
+	}
+
+	getNextLaneSection ( laneSection: TvLaneSection ): TvLaneSection | undefined {
+
+		const index = this.laneSections.indexOf( laneSection );
+
+		if ( index === this.laneSections.length - 1 ) {
+
+			return this.road.successor ? this.road.successor.laneSection : undefined;
+
+		}
+
+		return this.laneSections[ index + 1 ];
+
+	}
+
+	getPreviousLaneSection ( laneSection: TvLaneSection ): TvLaneSection | undefined {
+
+		const index = this.laneSections.indexOf( laneSection );
+
+		if ( index === 0 ) {
+
+			return this.road.predecessor ? this.road.predecessor.laneSection : undefined;
+
+		}
+
+		return this.laneSections[ index - 1 ];
 
 	}
 }

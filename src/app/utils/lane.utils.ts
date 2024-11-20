@@ -39,85 +39,25 @@ export class LaneUtils {
 
 	}
 
+	/**
+	 * @deprecated use road.getLaneProfile().getPreviousLaneSection()
+	 * @param road
+	 * @param laneSection
+	 */
 	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
 
-		const index = road.laneSections.indexOf( laneSection );
-
-		if ( index === 0 ) {
-
-			if ( !road.predecessor ) return null;
-
-			if ( !road.predecessor.isRoad ) return null;
-
-			const predecessorRoad = road.predecessor.element as TvRoad;
-
-			if ( road.predecessor.contactPoint == TvContactPoint.START ) {
-
-				return predecessorRoad.laneSections[ 0 ];
-
-			} else {
-
-				return predecessorRoad.laneSections[ predecessorRoad.laneSections.length - 1 ];
-
-			}
-
-		}
-
-		return road.laneSections[ index - 1 ];
-
-		// getPredecessorLaneSection ( laneSection: TvLaneSection ) {
-
-		// 	const index = this.laneSections.findIndex( ls => ls == laneSection );
-
-		// 	if ( index > 0 ) return this.laneSections[ index - 1 ];
-
-		// 	if ( !this.predecessor ) return;
-
-		// 	return this.predecessor.laneSection;
-
-		// }
-
+		return road.getLaneProfile().getPreviousLaneSection( laneSection );
 
 	}
 
+	/**
+	 * @deprecated use road.getLaneProfile().getNextLaneSection()
+	 * @param road
+	 * @param laneSection
+	 */
 	static findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
 
-		const index = road.laneSections.indexOf( laneSection );
-
-		if ( index === road.laneSections.length - 1 ) {
-
-			if ( !road.successor ) return null;
-
-			if ( !road.successor.isRoad ) return null;
-
-			const successorRoad = road.successor.element as TvRoad;
-
-			if ( road.successor.contactPoint == TvContactPoint.START ) {
-
-				return successorRoad.laneSections[ 0 ];
-
-			} else {
-
-				return successorRoad.laneSections[ successorRoad.laneSections.length - 1 ];
-
-			}
-
-		}
-
-		return road.laneSections[ index + 1 ];
-
-
-		// getSuccessorLaneSection ( laneSection: TvLaneSection ): TvLaneSection {
-
-		// 	const nextLaneSection = this.laneSections.find( ls => ls.s > laneSection.s );
-
-		// 	if ( nextLaneSection ) return nextLaneSection;
-
-		// 	if ( !this.successor ) return;
-
-		// 	return this.successor.laneSection
-
-		// }
+		return road.getLaneProfile().getNextLaneSection( laneSection );
 
 	}
 

@@ -20,7 +20,7 @@ export class LaneHeightManager {
 
 		const heightValue = this.getHeightValueByType( lane.type );
 
-		lane.height.forEach( height => height.inner = height.outer = heightValue );
+		lane.height.forEach( height => height.setHeight( heightValue ) );
 
 	}
 
@@ -29,7 +29,6 @@ export class LaneHeightManager {
 		this.createDefaultNodes( road, laneSection, lane );
 
 	}
-
 
 	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
 
@@ -67,19 +66,14 @@ export class LaneHeightManager {
 
 		if ( otherLane.height.length == 0 ) {
 
-			otherLane.addHeightRecord( height.sOffset, height.inner, height.outer );
+			otherLane.addHeightRecordInstance( height.clone() );
 
 			return;
 		}
 
 		const otherLaneHeight = otherLane.height.find( ( h: TvLaneHeight ) => h.sOffset >= height.sOffset );
 
-		if ( otherLaneHeight ) {
-
-			otherLaneHeight.inner = height.inner;
-			otherLaneHeight.outer = height.outer;
-
-		}
+		otherLaneHeight?.copyHeight( otherLaneHeight );
 
 	}
 
@@ -99,7 +93,7 @@ export class LaneHeightManager {
 
 		const sEnd = nextLaneSection ? nextLaneSection.s - laneSection.s : road.length - laneSection.s;
 
-		if ( lane.height.length === 0 ) {
+		if ( lane.getLaneHeightCount() === 0 ) {
 
 			let height = this.getHeightValueByType( lane.type );
 
@@ -108,7 +102,7 @@ export class LaneHeightManager {
 
 		}
 
-		if ( lane.height.length == 1 ) {
+		if ( lane.getLaneHeightCount() == 1 ) {
 
 			const inner = lane.height[ 0 ].inner;
 			const outer = lane.height[ 0 ].outer;
