@@ -144,7 +144,7 @@ export class DepConnectionFactory {
 
 	postProcessJunction ( junction: TvJunction ) {
 
-		const roads = junction.getRoads();
+		const roads = junction.getIncomingRoads();
 
 		const connections = junction.getConnections();
 

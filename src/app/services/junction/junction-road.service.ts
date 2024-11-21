@@ -22,15 +22,16 @@ export class JunctionRoadService {
 	constructor (
 		private roadService: RoadService,
 		private mapService: MapService
-	) { }
+	) {
+	}
 
 	linkRoads ( junction: TvJunction ): void {
 
 		if ( !this.shouldLinkRoads( junction ) ) return;
 
-		const roads = junction.getIncomingRoads();
+		const incomingRoads = junction.getIncomingRoads();
 
-		for ( const road of roads ) {
+		for ( const road of incomingRoads ) {
 
 			const startPosition = road.getStartPosTheta().toVector3();
 			const endPosition = road.getEndPosTheta().toVector3();

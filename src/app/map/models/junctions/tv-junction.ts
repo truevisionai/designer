@@ -129,18 +129,6 @@ export class TvJunction {
 
 	}
 
-	/**
-	 * @deprecated use JunctionRoadService
-	 */
-	getRoads (): TvRoad[] {
-
-		return this.getIncomingRoads();
-
-	}
-
-	/**
-	 * @deprecated use JunctionRoadService
-	 */
 	getRoadCoords () {
 
 		return this.getRoadLinks().map( link => link.toRoadCoord() );
@@ -149,25 +137,25 @@ export class TvJunction {
 
 	getRoadLinks (): TvLink[] {
 
-		const edges: TvLink[] = [];
+		const links: TvLink[] = [];
 
-		const roads = this.getIncomingRoads();
+		const incomingRoads = this.getIncomingRoads();
 
-		for ( const road of roads ) {
+		for ( const road of incomingRoads ) {
 
 			if ( road.geometries.length == 0 ) continue;
 
 			if ( road.successor?.isEqualTo( this ) ) {
-				edges.push( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
+				links.push( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
 			}
 
 			if ( road.predecessor?.isEqualTo( this ) ) {
-				edges.push( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
+				links.push( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
 			}
 
 		}
 
-		return edges;
+		return links;
 	}
 
 	getJunctionPriorityCount (): number {

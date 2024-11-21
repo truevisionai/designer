@@ -27,31 +27,13 @@ export class ThreeService {
 
 	}
 
-	focus ( object: THREE.Object3D<THREE.Object3DEventMap> ): void {
-
-		console.error( 'Method not implemented.' );
-
-	}
-
-	select ( object: THREE.Object3D<THREE.Object3DEventMap> ): void {
-
-		console.error( 'Method not implemented.' );
-
-	}
-
-	deselect ( object: THREE.Object3D<THREE.Object3DEventMap> ): void {
-
-		console.error( 'Method not implemented.' );
-
-	}
-
-	public get camera () {
+	get camera () {
 
 		return this.cameraService.camera;
 
 	}
 
-	public get scene () {
+	get scene () {
 
 		return this.sceneService.scene;
 
