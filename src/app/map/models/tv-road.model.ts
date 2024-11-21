@@ -9,7 +9,6 @@ import { Box3, Group, MathUtils, Vector2, Vector3 } from 'three';
 import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
-import { TvLaneSection } from './tv-lane-section';
 import { TvLateralProfile } from './tv-lateral.profile';
 import { TvPlaneView } from './tv-plane-view';
 import { TvPosTheta } from './tv-pos-theta';
@@ -32,6 +31,7 @@ import { RoadLinker } from '../link/road-linker';
 import { TvRoadCoord } from './TvRoadCoord';
 import { RoadDistance } from '../road/road-distance';
 import { TvMap } from './tv-map.model';
+import { TvLaneCoord } from "./tv-lane-coord";
 
 export class TvRoad {
 
@@ -681,7 +681,7 @@ export class TvRoad {
 
 	}
 
-	getLaneCoordinatesAt ( point: Vector3 ) {
+	getLaneCoordinatesAt ( point: Vector3 ): TvLaneCoord {
 
 		return RoadGeometryService.instance.findLaneCoordAt( this, point );
 
@@ -728,7 +728,7 @@ export class TvRoad {
 		this.boundingBox = boundingBox;
 
 	}
-	
+
 	getPosThetaByContact ( contact: TvContactPoint ): TvPosTheta {
 
 		return RoadGeometryService.instance.findContactPosition( this, contact );
@@ -744,12 +744,6 @@ export class TvRoad {
 	markAsCornerRoad () {
 
 		this.cornerRoad = true;
-
-	}
-
-	getLaneSectionLength ( laneSection: TvLaneSection ) {
-
-		return laneSection.getLength();
 
 	}
 

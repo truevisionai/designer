@@ -223,7 +223,7 @@ class OpenDriveMap {
 
 						const from = new LaneKey( fromRoad.id, fromLaneSection.s, fromLane.id );
 						const to = new LaneKey( toRoad.id, toLaneSection.s, toLane.id );
-						const laneLength = road.getLaneSectionLength( fromLaneSection );
+						const laneLength = fromLaneSection.getLength();
 						routingGraph.addEdge( new RoutingGraphEdge( from, to, laneLength ) );
 					}
 				}
@@ -257,7 +257,7 @@ class OpenDriveMap {
 
 					const from = new LaneKey( incomingRoad.id, incomingLaneSection.s, fromLane.id );
 					const to = new LaneKey( connectingRoad.id, connectingLaneSection.s, toLane.id );
-					const laneLength = incomingRoad.getLaneSectionLength( incomingLaneSection );
+					const laneLength = incomingLaneSection.getLength();
 					routingGraph.addEdge( new RoutingGraphEdge( from, to, laneLength ) );
 				}
 			}

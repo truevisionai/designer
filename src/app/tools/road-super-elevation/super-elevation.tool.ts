@@ -76,7 +76,7 @@ export class SuperElevationTool extends BaseTool<any> {
 			return;
 		}
 
-		const current = coord.road.getLateralProfile().getSuperElevation( coord.s );
+		const current = coord.road.getLateralProfile().getSuperElevationAt( coord.s );
 
 		const clone = current?.clone() || new TvSuperElevation( coord.s, 0, 0, 0, 0 );
 

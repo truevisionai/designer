@@ -1,7 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import { JunctionFactory } from "app/factories/junction.factory";
 import { RoadFactory } from "app/factories/road-factory.service";
-import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TurnType, TvContactPoint } from "app/map/models/tv-common";
 import { TvMap } from "app/map/models/tv-map.model";
@@ -17,7 +15,6 @@ describe( 'TvJunctionConnection', () => {
 
 	let helper: SplineTestHelper;
 	let connection: TvJunctionConnection;
-	let junction: TvJunction;
 
 	let incomingRoad: TvRoad;
 	let outgoingRoad: TvRoad;
@@ -27,8 +24,6 @@ describe( 'TvJunctionConnection', () => {
 		setupTest();
 
 		helper = TestBed.inject( SplineTestHelper );
-
-		junction = JunctionFactory.create();
 
 		incomingRoad = helper.addStraightRoad( new Vector3( 0, 0, 0 ), 50 )
 		outgoingRoad = helper.addStraightRoad( new Vector3( 60, 0, 0 ), 50 );
