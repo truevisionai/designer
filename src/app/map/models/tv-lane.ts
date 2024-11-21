@@ -65,7 +65,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public roadMarks = new OrderedMap<TvLaneRoadMark>();
 
-	public material: TvLaneMaterial[] = [];
+	public materials: TvLaneMaterial[] = [];
 
 	public visibility: TvLaneVisibility[] = [];
 
@@ -314,11 +314,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		if ( index > this.getLaneMaterialCount() ) {
 
-			this.material.push( new TvLaneMaterial( sOffset, surface, friction, roughness ) );
+			this.materials.push( new TvLaneMaterial( sOffset, surface, friction, roughness ) );
 
 		} else {
 
-			this.material[ index ] = ( new TvLaneMaterial( sOffset, surface, friction, roughness ) );
+			this.materials[ index ] = ( new TvLaneMaterial( sOffset, surface, friction, roughness ) );
 
 		}
 
@@ -422,8 +422,8 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getLaneMaterial ( index ): TvLaneMaterial {
 
-		if ( this.material.length > 0 && index < this.material.length ) {
-			return this.material[ index ];
+		if ( this.materials.length > 0 && index < this.materials.length ) {
+			return this.materials[ index ];
 		}
 
 		return null;
@@ -470,7 +470,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	getLaneMaterialCount (): number {
-		return this.material.length;
+		return this.materials.length;
 	}
 
 	getLaneVisibilityCount (): number {
@@ -493,9 +493,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		let res = -1;
 
-		for ( let i = 0; i < this.material.length; i++ ) {
+		for ( let i = 0; i < this.materials.length; i++ ) {
 
-			if ( sCheck >= this.material[ i ].sOffset ) {
+			if ( sCheck >= this.materials[ i ].sOffset ) {
 
 				res = i;
 

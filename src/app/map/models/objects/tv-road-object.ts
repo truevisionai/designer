@@ -157,7 +157,7 @@ export class TvRoadObject {
 
 	public roll: number;
 
-	public repeat: TvObjectRepeat[] = [];
+	private repeat: TvObjectRepeat[] = [];
 
 	private _markings: TvObjectMarking[] = [];
 
