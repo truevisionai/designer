@@ -423,8 +423,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		this.writeLaneLinks( laneNode, lane );
 
-		for ( let i = 0; i < lane.getLaneWidthCount(); i++ ) {
-			this.writeLaneWidth( laneNode, lane.getLaneWidth( i ) );
+		for ( const width of lane.getWidthArray() ) {
+			this.writeLaneWidth( laneNode, width );
 		}
 
 		lane.roadMarks.forEach( roadMark => {

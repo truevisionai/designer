@@ -303,7 +303,7 @@ export class MapValidatorService {
 
 	validateLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
-		if ( lane.width.length == 0 ) {
+		if ( lane.getLaneWidthCount() == 0 ) {
 			this.errors.push( `${ road.toString() } ${ lane.toString() } has no width` );
 		}
 
@@ -317,7 +317,7 @@ export class MapValidatorService {
 
 	validateLaneWidth ( lane: TvLane ) {
 
-		this.validatePolynomials( lane.width );
+		this.validatePolynomials( lane.getWidthArray() );
 
 	}
 

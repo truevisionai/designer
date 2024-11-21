@@ -29,7 +29,7 @@ export class LaneManager {
 
 	onLaneCreated ( lane: TvLane ) {
 
-		if ( lane.laneSection.road.isJunction ) return;
+		if ( lane.getRoad().isJunction ) return;
 
 		this.laneLinkManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
@@ -45,7 +45,7 @@ export class LaneManager {
 
 	onLaneRemoved ( lane: TvLane ) {
 
-		if ( lane.laneSection.road.isJunction ) return;
+		if ( lane.getRoad().isJunction ) return;
 
 		this.parkingLaneManager.onLaneRemoved( lane.laneSection.road, lane.laneSection, lane );
 
@@ -66,7 +66,7 @@ export class LaneManager {
 
 	onLaneUpdated ( lane: TvLane ) {
 
-		if ( lane.laneSection.road.isJunction ) return;
+		if ( lane.getRoad().isJunction ) return;
 
 		this.laneWidthManager.onLaneUpdated( lane.laneSection.road, lane.laneSection, lane );
 
@@ -76,7 +76,7 @@ export class LaneManager {
 
 	onLaneTypeChanged ( lane: TvLane ) {
 
-		if ( lane.laneSection.road.isJunction ) return;
+		if ( lane.getRoad().isJunction ) return;
 
 		this.laneWidthManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 

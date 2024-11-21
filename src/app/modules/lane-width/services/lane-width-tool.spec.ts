@@ -142,7 +142,7 @@ describe( 'LaneWidthTool: Handlers', () => {
 
 		const node = selectionService.findSelectedObject<LaneWidthNode>( LaneWidthNode );
 
-		expect( node.laneWidth ).toEqual( lane.getLaneWidthVector()[ 2 ] )
+		expect( node.laneWidth ).toEqual( lane.getWidthArray()[ 2 ] )
 
 	} );
 

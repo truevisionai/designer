@@ -491,7 +491,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			attr_materialGuid: lane.threeMaterialGuid,
 			attr_direction: lane.direction,
 			link: {},
-			width: lane.width.map( width => this.writeLaneWidth( width ) ),
+			width: lane.getWidthArray().map( width => this.writeLaneWidth( width ) ),
 			roadMark: lane.roadMarks.map( mark => this.writeLaneRoadMark( mark ) ),
 			material: lane.material.map( material => this.writeLaneMaterial( material ) ),
 			visibility: lane.visibility.map( visibility => this.writeLaneVisibility( visibility ) ),

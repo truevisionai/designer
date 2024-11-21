@@ -59,7 +59,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 */
 	public level: boolean = false;
 
-	public width: TvLaneWidth[] = [];
+	private widths: TvLaneWidth[] = [];
 
 	public borders: TvLaneBorder[] = [];
 
@@ -281,7 +281,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	addWidthRecord ( s: number, a: number, b: number, c: number, d: number ) {
+	addWidthRecord ( s: number, a: number, b: number, c: number, d: number ): void {
 
 		return this.addWidthRecordInstance( new TvLaneWidth( s, a, b, c, d ) );
 
@@ -413,20 +413,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	clearLaneWidth (): void {
-		this.width.splice( 0, this.width.length );
+		this.widths.splice( 0, this.widths.length );
 	}
 
-	getLaneWidthVector (): TvLaneWidth[] {
-		return this.width;
-	}
-
-	getLaneWidth ( index ): TvLaneWidth {
-
-		if ( this.width.length > 0 && index < this.width.length ) {
-			return this.width[ index ];
-		}
-
-		return null;
+	getWidthArray (): TvLaneWidth[] {
+		return this.widths;
 	}
 
 	getLaneMaterial ( index ): TvLaneMaterial {
@@ -475,7 +466,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	getLaneWidthCount (): number {
-		return this.width.length;
+		return this.widths.length;
 	}
 
 	getLaneMaterialCount (): number {
@@ -656,7 +647,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 		const newLane = new TvLane( this.side, laneId, this.type, this.level, this._laneSection );
 
-		this.getLaneWidthVector().forEach( width => {
+		this.getWidthArray().forEach( width => {
 			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d ) );
 		} );
 
@@ -712,7 +703,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getLaneWidthAt ( s: number ): TvLaneWidth {
 
-		return TvUtils.checkIntervalArray( this.width, s );
+		return TvUtils.checkIntervalArray( this.widths, s );
 
 	}
 
@@ -728,19 +719,17 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	addWidthRecordInstance ( laneWidth: TvLaneWidth ) {
+	addWidthRecordInstance ( laneWidth: TvLaneWidth ): void {
 
-		this.width.push( laneWidth );
-
-		this.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.widths.push( laneWidth );
+		this.sortWidth();
 
 	}
 
-	removeWidthRecordInstance ( laneWidth: TvLaneWidth ) {
+	removeWidthRecordInstance ( laneWidth: TvLaneWidth ): void {
 
-		this.width.splice( this.width.indexOf( laneWidth ), 1 );
-
-		this.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.widths.splice( this.widths.indexOf( laneWidth ), 1 );
+		this.sortWidth();
 
 	}
 
@@ -814,7 +803,24 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	updateWidthCoefficients (): void {
-		TvUtils.computeCoefficients( this.width, this.laneSection.getLength() );
+		TvUtils.computeCoefficients( this.widths, this.laneSection.getLength() );
+	}
+
+	removeInvalidWidths (): void {
+
+		for ( let i = 0; i < this.widths.length; i++ ) {
+
+			const width = this.widths[ i ];
+
+			// Remove nodes that are out of bounds
+			if ( width.s < 0 || width.s > this.laneSection.getLength() ) {
+				this.widths.splice( i, 1 );
+			}
+		}
+	}
+
+	sortWidth (): void {
+		this.widths.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 	}
 }
 

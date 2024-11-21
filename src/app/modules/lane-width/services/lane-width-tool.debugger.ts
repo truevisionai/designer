@@ -104,7 +104,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	showLane ( road: TvRoad, section: TvLaneSection, lane: TvLane ): void {
 
-		lane.width.forEach( width => {
+		lane.getWidthArray().forEach( width => {
 
 			const node = this.createNode( road, section, lane, width );
 
@@ -173,9 +173,9 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	createSpanLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ) {
 
-		const i = lane.width.indexOf( node.laneWidth );
+		const i = lane.getWidthArray().indexOf( node.laneWidth );
 
-		const next = lane.width[ i + 1 ];
+		const next = lane.getWidthArray()[ i + 1 ];
 
 		const sStart = node.laneWidth.s;
 

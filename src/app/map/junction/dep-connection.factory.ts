@@ -264,7 +264,7 @@ export class DepConnectionFactory {
 					newLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
 					newLane.addWidthRecord( connectingRoad.length, 0, 0, 0, 0 );
 
-					TvUtils.computeCoefficients( newLane.width, connectingRoad.length );
+					newLane.updateWidthCoefficients();
 
 				}
 
@@ -422,7 +422,7 @@ export class DepConnectionFactory {
 		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.laneDistance );
 		connectionLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
 		connectionLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
-		TvUtils.computeCoefficients( connectionLane.width, roadLength );
+		connectionLane.updateWidthCoefficients();
 
 		return new TvJunctionLaneLink( incoming.lane, connectionLane );
 

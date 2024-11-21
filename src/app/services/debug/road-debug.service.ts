@@ -220,7 +220,7 @@ export class RoadDebugService {
 
 			section.lanesMap.forEach( lane => {
 
-				lane.width.forEach( width => {
+				lane.getWidthArray().forEach( width => {
 
 					const referenceLine = this.createLaneReferenceLine( road, section, lane, width );
 
@@ -242,9 +242,9 @@ export class RoadDebugService {
 
 	createLaneReferenceLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: TvLaneWidth ): DebugLine<TvLane> {
 
-		const i = lane.width.indexOf( node );
+		const i = lane.getWidthArray().indexOf( node );
 
-		const next = lane.width[ i + 1 ];
+		const next = lane.getWidthArray()[ i + 1 ];
 
 		const sStart = node.s;
 

@@ -49,7 +49,7 @@ describe( 'Service: RoadWidth', () => {
 
 		const newLaneSection = laneSection.cloneAtS( 2, 50 );
 
-		newLaneSection.getLanes().forEach( lane => lane.width.forEach( width => width.a *= 2 ) );
+		newLaneSection.getLanes().forEach( lane => lane.getWidthArray().forEach( width => width.a *= 2 ) );
 
 		road.getLaneProfile().addLaneSectionInstance( newLaneSection );
 

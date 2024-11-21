@@ -44,7 +44,7 @@ export class LaneWidthService {
 
 	updateCoefficients ( lane: TvLane ): void {
 
-		TvUtils.computeCoefficients( lane.width, lane.laneSection.getLength() );
+		lane.updateWidthCoefficients();
 
 	}
 

@@ -32,7 +32,7 @@ export class LaneSpanService {
 					const sStart = cubic.s;
 
 					// get s of next lane width node
-					let sEnd = lane.width[ i + 1 ]?.s || laneSection.getLength();
+					let sEnd = lane.getWidthArray()[ i + 1 ]?.s || laneSection.getLength();
 
 					const points = this.getPoints( lane, sStart, sEnd, 0.1 );
 

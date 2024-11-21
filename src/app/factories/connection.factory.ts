@@ -465,7 +465,7 @@ export class ConnectionFactory {
 
 		connectingLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
 
-		TvUtils.computeCoefficients( connectingLane.width, roadLength );
+		connectingLane.updateWidthCoefficients();
 
 	}
 

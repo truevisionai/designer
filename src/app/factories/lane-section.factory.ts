@@ -265,7 +265,7 @@ export class LaneSectionFactory {
 					lane.setSuccessor( nextLane );
 				}
 
-				lane.width.splice( 0, lane.width.length );
+				lane.clearLaneWidth();
 
 				const widhtAtStart = prevLane?.getWidthValue( 0 ) || 0;
 
@@ -275,7 +275,7 @@ export class LaneSectionFactory {
 
 				lane.addWidthRecord( connectingRoad.length, widthAtEnd, 0, 0, 0 );
 
-				TvUtils.computeCoefficients( lane.width, connectingRoad.length );
+				lane.updateWidthCoefficients();
 
 			}
 		}

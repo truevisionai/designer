@@ -130,8 +130,8 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 			// height: []
 		};
 
-		for ( let i = 0; i < lane.getLaneWidthCount(); i++ ) {
-			this.openDriveExporter.writeLaneWidth( laneNode, lane.getLaneWidth( i ) );
+		for ( const width of lane.getWidthArray() ) {
+			this.openDriveExporter.writeLaneWidth( laneNode, width );
 		}
 
 		for ( const roadMark of lane.roadMarks.toArray() ) {
