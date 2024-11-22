@@ -410,7 +410,7 @@ export class TvLaneSection {
 
 	isHeightMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
 
-		if ( this.lanesMap.size !== other.lanesMap.size ) return false;
+		if ( this.lanes.size !== other.lanes.size ) return false;
 
 		for ( let [ id, laneA ] of this.lanesMap ) {
 
@@ -431,7 +431,7 @@ export class TvLaneSection {
 
 	isWidthMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
 
-		if ( this.lanesMap.size !== other.lanesMap.size ) return false;
+		if ( this.lanes.size !== other.lanes.size ) return false;
 
 		for ( let [ id, laneA ] of this.lanesMap ) {
 
@@ -451,7 +451,7 @@ export class TvLaneSection {
 
 	isMarkingMatching ( otherLaneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
 
-		if ( this.lanesMap.size !== otherLaneSection.lanesMap.size ) return false;
+		if ( this.lanes.size !== otherLaneSection.lanes.size ) return false;
 
 		for ( let [ id, lane ] of this.lanesMap ) {
 
