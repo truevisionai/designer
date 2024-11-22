@@ -228,8 +228,6 @@ export class DepConnectionFactory {
 
 		if ( !isCorner ) return connection;
 
-		this.createNonDrivingLinks( connection );
-
 		this.addRoadMarks( connection );
 
 		// add missing lanes if any
@@ -307,12 +305,6 @@ export class DepConnectionFactory {
 
 	}
 
-	private createNonDrivingLinks ( connection: TvJunctionConnection ): TvJunctionConnection {
-
-		throw new Error( "Method not implemented." );
-
-	}
-
 	private addRoadMarks ( connection: TvJunctionConnection ): TvJunctionConnection {
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
@@ -339,48 +331,6 @@ export class DepConnectionFactory {
 
 		} );
 
-		// TODO: test and
-		return;
-
-		// function computeS ( lane: TvLane, contact: TvContactPoint ): number {
-
-		// 	if ( contact == TvContactPoint.START ) {
-
-		// 		return 0;
-
-		// 	} else if ( contact == TvContactPoint.END ) {
-
-		// 		return lane.laneSection.road.length;
-
-		// 	}
-
-		// }
-
-		// const incomingContact = connection.connectingRoad.predecessor.contactPoint;
-		// const outgoingContact = connection.connectingRoad.successor.contactPoint;
-
-		// const incomingDirection = this.determineDirection( incomingContact );
-		// const outgoingDirection = this.determineDirection( outgoingContact );
-
-		// const incomingCoords = connection.getIncomingLanes()
-		// 	.filter( lane => lane.direction === outgoingDirection )
-		// 	.map( lane => new TvLaneCoord( lane.laneSection.road, lane.laneSection, lane, computeS( lane, incomingContact ), 0 ) );
-
-		// for ( let i = 0; i < incomingCoords.length; i++ ) {
-
-		// 	const incoming = incomingCoords[ i ];
-
-		// 	const roadmark = incoming.lane.getRoadMarkAt( incoming.s );
-
-		// 	const laneLink = connection.laneLink.find( link => link.incomingLane === incoming.lane );
-
-		// 	if ( roadmark && laneLink ) {
-		// 		laneLink.connectingLane.addRoadMarkInstance( roadmark.clone( 0 ) );
-		// 	}
-
-		// }
-
-		// return connection;
 	}
 
 	private createLink ( connection: TvJunctionConnection, incoming: TvLaneCoord, outgoingLanes: TvLaneCoord[] ) {

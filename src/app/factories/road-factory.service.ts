@@ -244,7 +244,7 @@ export class RoadFactory {
 
 		road.getLaneProfile().clearLaneSections();
 
-		const laneSections = this.laneSectionFactory.createFromRoadNode( road, firstNode, secondNode );
+		const laneSections = LaneSectionFactory.createFromRoadNode( firstNode, secondNode );
 
 		for ( const laneSection of laneSections ) {
 

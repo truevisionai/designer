@@ -354,15 +354,20 @@ export class TvLaneSection {
 
 	cloneAtS ( id?: number, s?: number, side?: boolean, road?: TvRoad ): TvLaneSection {
 
-		const clone = new TvLaneSection( id || 0, s || this.s, side || this.singleSide, road || this.road );
+		const laneSection = new TvLaneSection(
+			id || 0,
+			s || this.s,
+			side || this.singleSide,
+			road || this.road
+		);
 
 		this.lanes.forEach( lane => {
 
-			clone.lanes.set( lane.id, lane.cloneAtS( lane.id, s || 0 ) );
+			laneSection.addLaneInstance( lane.cloneAtS( lane.id, s || 0 ) );
 
 		} );
 
-		return clone;
+		return laneSection;
 	}
 
 	removeLeftLanes (): void {
