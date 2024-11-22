@@ -58,7 +58,7 @@ export class TvLaneSection {
 		this.length = value;
 	}
 
-	get lanesMap () {
+	private get lanesMap (): Map<number, TvLane> {
 		return this.lanes;
 	}
 

@@ -47,6 +47,10 @@ export class TvLaneProfile {
 		return this.laneSections;
 	}
 
+	getLaneSectionCount (): number {
+		return this.laneSections.length;
+	}
+
 	getLaneOffsets (): TvLaneOffset[] {
 		return this.laneOffsets.toArray();
 	}
@@ -99,7 +103,7 @@ export class TvLaneProfile {
 
 		laneSection.road = this.road;
 
-		laneSection.lanesMap.forEach( lane => {
+		laneSection.getLanes().forEach( lane => {
 
 			lane.laneSection = laneSection;
 

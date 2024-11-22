@@ -253,9 +253,9 @@ export class MapValidatorService {
 			this.errors.push( `${ road.toString() } LaneSection has less than 2 lanes ${ laneSection.toString() }` );
 		}
 
-		for ( const [ id, lane ] of laneSection.lanesMap ) {
+		for ( const lane of laneSection.getLanes() ) {
 
-			if ( id == 0 ) continue;
+			if ( lane.id == 0 ) continue;
 
 			this.validateLane( road, laneSection, lane );
 
@@ -272,13 +272,13 @@ export class MapValidatorService {
 		// Lane numbering shall be unique per lane section.
 		const laneIds = [];
 
-		for ( const [ id, lane ] of laneSection.lanesMap ) {
+		for ( const lane of laneSection.getLanes() ) {
 
-			if ( laneIds.includes( id ) ) {
+			if ( laneIds.includes( lane.id ) ) {
 				this.errors.push( `${ road.toString() } LaneSection has duplicate lane id ${ laneSection.toString() }` );
 			}
 
-			laneIds.push( id );
+			laneIds.push( lane.id );
 		}
 
 	}

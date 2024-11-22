@@ -218,7 +218,7 @@ export class RoadDebugService {
 
 		road.laneSections.forEach( section => {
 
-			section.lanesMap.forEach( lane => {
+			section.getLanes().forEach( lane => {
 
 				lane.getWidthArray().forEach( width => {
 

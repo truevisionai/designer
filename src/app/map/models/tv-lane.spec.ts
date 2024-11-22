@@ -54,7 +54,7 @@ describe( 'OpenDrive LaneSection', () => {
 
 		expect( laneSection.getLaneCount() ).toBe( 8 );
 
-		const clone = laneSection.lanesMap.get( -2 ).clone();
+		const clone = laneSection.getLaneById( -2 ).clone();
 
 		laneSection.addLaneInstance( clone );
 
@@ -72,7 +72,7 @@ describe( 'OpenDrive LaneSection', () => {
 
 		expect( laneSection.getLaneCount() ).toBe( 8 );
 
-		const clone = laneSection.lanesMap.get( -2 ).clone( -3 );
+		const clone = laneSection.getLaneById( -2 ).clone( -3 );
 
 		laneSection.addLaneInstance( clone );
 

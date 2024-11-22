@@ -90,7 +90,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 		road.laneSections.forEach( laneSection => {
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				lane.roadMarks.forEach( roadMark => {
 
@@ -113,7 +113,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 		road.laneSections.forEach( laneSection => {
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				lane.roadMarks.forEach( roadMark => {
 

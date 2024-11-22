@@ -271,7 +271,7 @@ export class ConnectionFactory {
 		connection.connectingRoad.getLaneProfile().addLaneSectionInstance( clone );
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 				lane.roadMarks.clear()
 			} )
 		} );
@@ -436,7 +436,7 @@ export class ConnectionFactory {
 
 	private createRoadMarks ( laneSection: TvLaneSection, incoming: TvLaneCoord ) {
 
-		laneSection.lanesMap.forEach( lane => {
+		laneSection.getLanes().forEach( lane => {
 
 			if ( lane.side == TvLaneSide.CENTER ) return;
 

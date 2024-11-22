@@ -52,7 +52,7 @@ export class LaneManager {
 		// if road has only 1 lane section and
 		// that lane section has no lanes, then
 		// remove the whole spline as we no longer have valid road
-		if ( lane.laneSection.road.laneSections.length == 1 && lane.laneSection.lanesMap.size == 1 ) {
+		if ( lane.getRoad().getLaneProfile().getLaneSectionCount() == 1 && lane.laneSection.getLaneCount() == 1 ) {
 
 			MapEvents.splineRemoved.emit( new SplineRemovedEvent( lane.laneSection.road.spline ) );
 

@@ -58,14 +58,14 @@ describe( 'JunctionUtils', () => {
 		// incoming road lane:-1 must have 3 successors
 		expect( JunctionUtils.findSuccessors( incomingRoad, incomingRightLane, incomingRoad.successor ).length ).toBe( 3 );
 		// sidewalk should have only 1 successor
-		expect( JunctionUtils.findSuccessors( incomingRoad, incomingLaneSection.lanesMap.get( -2 ), incomingRoad.successor ).length ).toBe( 1 );
+		expect( JunctionUtils.findSuccessors( incomingRoad, incomingLaneSection.getLaneById( -2 ), incomingRoad.successor ).length ).toBe( 1 );
 
 		// outgoing road lane:1 must have 3 predecessors
 		expect( JunctionUtils.findPredecessors( outgoingRoad, outgoingLeftLane, outgoingRoad.predecessor ).length ).toBe( 3 );
 		// outgoing road lane:-1 must have 3 successors
 		expect( JunctionUtils.findSuccessors( outgoingRoad, outgoingRightLane, outgoingRoad.predecessor ).length ).toBe( 3 );
 		// sidewalk should have only 1 successor
-		expect( JunctionUtils.findSuccessors( outgoingRoad, outgoingLaneSection.lanesMap.get( -2 ), outgoingRoad.predecessor ).length ).toBe( 1 );
+		expect( JunctionUtils.findSuccessors( outgoingRoad, outgoingLaneSection.getLaneById( -2 ), outgoingRoad.predecessor ).length ).toBe( 1 );
 
 
 	} ) );

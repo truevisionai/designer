@@ -23,7 +23,7 @@ export class LaneSpanService {
 
 		lane.laneSection.road.laneSections.forEach( laneSection => {
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				for ( let i = 0; i < polynomials.length; i++ ) {
 

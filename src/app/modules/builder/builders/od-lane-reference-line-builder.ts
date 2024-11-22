@@ -134,7 +134,7 @@ export class OdLaneReferenceLineBuilder {
 
 			const laneSection = road.getLaneProfile().getLaneSections()[ i ];
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				if ( this.drawCenterLane === false && lane.side === TvLaneSide.CENTER ) return;
 

@@ -196,9 +196,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 			road.laneSections.forEach( laneSection => {
 
-				laneSection.lanesMap.forEach( lane => {
-
-					if ( lane.side == TvLaneSide.CENTER ) return;
+				laneSection.getNonCenterLanes().forEach( lane => {
 
 					this.setBaseState( lane, DebugState.DEFAULT );
 

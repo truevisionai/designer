@@ -152,7 +152,7 @@ export class LaneSectionFactory {
 
 			laneSection.sortLanes();
 
-			for ( const lane of laneSection.lanesMap.values() ) {
+			for ( const lane of laneSection.getLanes() ) {
 
 				if ( lane.id == 0 ) continue;
 

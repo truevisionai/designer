@@ -248,8 +248,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const t = roadCoord.t;
 
-		const lanes = laneSection.lanesMap;
-
 		let targetLane: TvLane;
 
 		const isLeft = t > 0;
@@ -259,7 +257,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 			return laneSection.getLaneById( 0 );
 		}
 
-		for ( const [ id, lane ] of lanes ) {
+		for ( const lane of laneSection.getLanes() ) {
 
 			// logic to skip left or right lanes depending on t value
 			if ( isLeft && lane.isRight ) continue;

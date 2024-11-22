@@ -92,7 +92,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 		road.laneSections.forEach( section => {
 
-			section.lanesMap.forEach( lane => {
+			section.getLanes().forEach( lane => {
 
 				this.showLane( road, section, lane );
 

@@ -42,7 +42,7 @@ export class RoadManager {
 		this.roadLinkManager.onRoadCreated( road );
 
 		for ( const laneSection of road.laneSections ) {
-			for ( const [ id, lane ] of laneSection.lanesMap ) {
+			for ( const lane of laneSection.getLanes() ) {
 				this.laneManager.onLaneCreated( lane );
 			}
 		}

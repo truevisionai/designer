@@ -446,27 +446,4 @@ export class TvMapQueries extends TvBaseQueries {
 	static getLaneSpeed () {
 	}
 
-	static getRandomRoad ( map: TvMap ): TvRoad {
-
-		return TvUtils.getRandomArrayItem( this.map.getRoads() ) as TvRoad;
-
-	}
-
-	static getRandomLaneSection ( road: TvRoad ): TvLaneSection {
-
-		return TvUtils.getRandomArrayItem( road.getLaneProfile().getLaneSections() ) as TvLaneSection;
-
-	}
-
-	static getRandomLane ( laneSection: TvLaneSection, laneType: TvLaneType ): TvLane {
-
-		const lanes = [ ...laneSection.lanesMap.values() ];
-
-		const filteredLanes = lanes.filter( lane => {
-			if ( lane.type === laneType && lane.side !== TvLaneSide.CENTER ) return true;
-		} );
-
-		return TvUtils.getRandomArrayItem( filteredLanes ) as TvLane;
-	}
-
 }

@@ -705,7 +705,7 @@ export class TvRoad {
 
 		this.laneProfile.getLaneSections().map( laneSection => {
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				if ( lane.id == 0 ) return;
 

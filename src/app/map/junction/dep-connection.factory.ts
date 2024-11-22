@@ -309,7 +309,7 @@ export class DepConnectionFactory {
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				if ( lane.side == TvLaneSide.CENTER ) return;
 
