@@ -305,7 +305,7 @@ export class DepConnectionFactory {
 
 	}
 
-	private addRoadMarks ( connection: TvJunctionConnection ): TvJunctionConnection {
+	private addRoadMarks ( connection: TvJunctionConnection ) {
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
 

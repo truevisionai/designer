@@ -184,13 +184,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	setPredecessor ( lane: TvLane ): void {
-		if ( this.isCenter ) return;
+		if ( this.isCenter || lane.type != this.type ) return;
 		this.predecessorId = lane.id;
 		this.predecessorUUID = lane.uuid;
 	}
 
 	setSuccessor ( lane: TvLane ): void {
-		if ( this.isCenter ) return;
+		if ( this.isCenter || lane.type != this.type ) return;
 		this.successorId = lane.id;
 		this.successorUUID = lane.uuid;
 	}

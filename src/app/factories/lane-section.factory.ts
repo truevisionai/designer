@@ -5,12 +5,9 @@
 import { Injectable } from "@angular/core";
 import { RoadNode } from "app/objects/road/road-node";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
-import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
-import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { TvUtils } from "app/map/models/tv-utils";
 import { LaneUtils } from "app/utils/lane.utils";
 import { TvLink } from "app/map/models/tv-link";
 import { TvLane } from "app/map/models/tv-lane";
@@ -57,6 +54,36 @@ export class LaneSectionFactory {
 		const clone = sectionA.cloneAtS( 0, 0, null );
 
 		return [ clone ];
+
+	}
+
+	static createFromRoadCoord ( previousRoad: TvRoadCoord, nextRoad: TvRoadCoord ): TvLaneSection[] {
+
+		const isLaneSectionMatching = previousRoad.laneSection.isMatching( nextRoad.laneSection );
+
+		if ( isLaneSectionMatching ) {
+
+			const laneSection = previousRoad.laneSection.cloneAtS( 0, 0, null );
+
+			laneSection.linkPredecessor( previousRoad.laneSection, previousRoad.contact );
+			laneSection.linkSuccessor( nextRoad.laneSection, nextRoad.contact );
+
+			return [ laneSection ];
+
+		} else {
+
+			const firstSection = previousRoad.laneSection.cloneAtS( 0, 0, null );
+			const secondSection = nextRoad.laneSection.cloneAtS( 0, 0, null );
+
+			firstSection.linkPredecessor( previousRoad.laneSection, previousRoad.contact );
+			firstSection.linkSuccessor( secondSection, TvContactPoint.START );
+
+			secondSection.linkPredecessor( firstSection, TvContactPoint.END );
+			secondSection.linkSuccessor( nextRoad.laneSection, nextRoad.contact );
+
+			return [ firstSection, secondSection ]
+
+		}
 
 	}
 

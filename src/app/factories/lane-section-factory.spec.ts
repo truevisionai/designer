@@ -55,4 +55,41 @@ describe( 'LaneSectionFactory', () => {
 
 	} );
 
+	it( 'should create section for 2-lane-road with 4-lane-road', () => {
+
+		const previousRoad = RoadFactory.makeRoad( {
+			leftLaneCount: 1,
+			rightLaneCount: 1,
+		} );
+
+		const nextRoad = RoadFactory.makeRoad( {
+			leftLaneCount: 2,
+			rightLaneCount: 2,
+		} )
+
+		const newLaneSections = LaneSectionFactory.createFromRoadCoord(
+			previousRoad.getEndCoord(),
+			nextRoad.getStartCoord()
+		);
+
+		expect( newLaneSections.length ).toBe( 2 );
+
+		expect( newLaneSections[ 0 ].getLaneCount() ).toBe( 3 );
+		expect( newLaneSections[ 0 ].getNonCenterLanes().map( lane => lane.predecessorId ) ).toEqual( [ 1, -1 ] );
+		expect( newLaneSections[ 0 ].getNonCenterLanes().map( lane => lane.successorId ) ).toEqual( [ 1, -1 ] );
+
+		previousRoad.getEndCoord().laneSection.getNonCenterLanes().forEach( lane => {
+			expect( lane.successorId ).toBe( lane.id );
+		} )
+
+		expect( newLaneSections[ 1 ].getLaneCount() ).toBe( 5 );
+		expect( newLaneSections[ 1 ].getNonCenterLanes().map( lane => lane.predecessorId ) ).toEqual( [ undefined, 1, -1, undefined ] );
+		expect( newLaneSections[ 1 ].getNonCenterLanes().map( lane => lane.successorId ) ).toEqual( [ 2, 1, -1, -2 ] );
+
+		nextRoad.getStartCoord().laneSection.getNonCenterLanes().forEach( lane => {
+			expect( lane.predecessorId ).toBe( lane.id );
+		} )
+
+	} );
+
 } )

@@ -388,17 +388,17 @@ export class TvLaneSection {
 
 	}
 
-	isMatching ( other: TvLaneSection ): boolean {
+	isMatching ( laneSection: TvLaneSection ): boolean {
 
-		if ( this.getLaneCount() !== other.getLaneCount() ) return false;
+		if ( this.lanes.size !== laneSection.lanes.size ) return false;
 
-		for ( let [ id, laneA ] of this.lanesMap ) {
+		for ( const lane of this.getLanes() ) {
 
-			const laneB = other.getLaneById( id );
+			const otherLane = this.lanes.get( lane.id );
 
-			if ( !laneB ) return false;
+			if ( !otherLane ) return false;
 
-			if ( !laneA.isMatching( laneB ) ) {
+			if ( !lane.isMatching( otherLane ) ) {
 				return false;
 			}
 
@@ -408,39 +408,40 @@ export class TvLaneSection {
 
 	}
 
-	isHeightMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isHeightMatching ( laneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
 
-		if ( this.lanes.size !== other.lanes.size ) return false;
+		if ( this.lanes.size !== laneSection.lanes.size ) return false;
 
-		for ( let [ id, laneA ] of this.lanesMap ) {
+		for ( const lane of this.getLanes() ) {
 
-			const laneB = other.getLaneById( id );
+			const otherLane = laneSection.lanes.get( lane.id );
 
-			if ( !laneB ) return false;
+			if ( !otherLane ) return false;
 
-			const heightA = laneA.getHeightValue( sOffset );
-			const heightB = laneB.getHeightValue( otherSOffset );
+			const heightA = lane.getHeightValue( sOffset );
+			const heightB = otherLane.getHeightValue( otherSOffset );
 
-			if ( !Maths.approxEquals( heightA.inner, heightB.inner ) ) return false;
-			if ( !Maths.approxEquals( heightA.outer, heightB.outer ) ) return false;
+			if ( !heightA.matches( heightB ) ) {
+				return false;
+			}
 
 		}
 
 		return true;
 	}
 
-	isWidthMatching ( other: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isWidthMatching ( laneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
 
-		if ( this.lanes.size !== other.lanes.size ) return false;
+		if ( this.lanes.size !== laneSection.lanes.size ) return false;
 
-		for ( let [ id, laneA ] of this.lanesMap ) {
+		for ( const lane of this.getLanes() ) {
 
-			const laneB = other.getLaneById( id );
+			const otherLane = laneSection.lanes.get( lane.id );
 
-			if ( !laneB ) return false;
+			if ( !otherLane ) return false;
 
-			const widthA = laneA.getWidthValue( sOffset );
-			const widthB = laneB.getWidthValue( otherSOffset );
+			const widthA = lane.getWidthValue( sOffset );
+			const widthB = otherLane.getWidthValue( otherSOffset );
 
 			if ( !Maths.approxEquals( widthA, widthB ) ) return false;
 
@@ -651,35 +652,39 @@ export class TvLaneSection {
 
 	}
 
-	linkSuccessor ( successor: TvLaneSection, successorContact: TvContactPoint ): void {
+	linkSuccessor ( laneSection: TvLaneSection, contact: TvContactPoint ): void {
 
-		if ( !this.isMatching( successor ) ) {
-			return;
-		}
+		const sign = contact == TvContactPoint.START ? 1 : -1;
 
-		const sign = successorContact == TvContactPoint.START ? 1 : -1;
+		this.getNonCenterLanes().forEach( lane => {
+			lane.setOrUnsetSuccessor( laneSection.lanes.get( lane.id * sign ) );
+		} );
 
-		this.lanesMap.forEach( lane => {
-
-			lane.setOrUnsetSuccessor( successor.getLaneById( lane.id * sign ) );
-
+		laneSection.getNonCenterLanes().forEach( lane => {
+			if ( contact == TvContactPoint.START ) {
+				lane.setOrUnsetPredecessor( this.lanes.get( lane.id * sign ) );
+			} else {
+				lane.setOrUnsetSuccessor( this.lanes.get( lane.id * sign ) );
+			}
 		} );
 
 	}
 
-	linkPredecessor ( predecessor: TvLaneSection, contact: TvContactPoint ): void {
-
-		if ( !this.isMatching( predecessor ) ) {
-			return;
-		}
+	linkPredecessor ( laneSection: TvLaneSection, contact: TvContactPoint ): void {
 
 		const sign = contact == TvContactPoint.END ? 1 : -1;
 
-		this.lanesMap.forEach( lane => {
-
-			lane.setOrUnsetPredecessor( predecessor.getLaneById( lane.id * sign ) )
-
+		this.getNonCenterLanes().forEach( lane => {
+			lane.setOrUnsetPredecessor( laneSection.lanes.get( lane.id * sign ) );
 		} );
+
+		laneSection.getNonCenterLanes().forEach( lane => {
+			if ( contact == TvContactPoint.START ) {
+				lane.setOrUnsetPredecessor( this.lanes.get( lane.id * sign ) );
+			} else {
+				lane.setOrUnsetSuccessor( this.lanes.get( lane.id * sign ) );
+			}
+		} )
 
 	}
 

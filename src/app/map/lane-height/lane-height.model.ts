@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Maths } from "app/utils/maths";
 import { MathUtils } from "three/src/math/MathUtils";
 
 /**
@@ -53,8 +54,13 @@ export class TvLaneHeight {
 		return this.inner + ( this.outer - this.inner ) * t;
 	}
 
-	matches ( other: TvLaneHeight ): boolean {
-		return this.inner === other.inner && this.outer === other.outer;
+	matches ( laneHeight: TvLaneHeight ): boolean {
+
+		if ( !Maths.approxEquals( this.inner, laneHeight.inner ) ) return false;
+		if ( !Maths.approxEquals( this.outer, laneHeight.outer ) ) return false;
+
+		return true;
+
 	}
 
 	copyHeight ( other: TvLaneHeight ): void {
