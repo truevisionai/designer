@@ -42,7 +42,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 		public splineFactory: SplineFactory,
 		public mapService: MapService,
 		public roadFactory: RoadFactory,
-		public queryService: MapQueryService,
 	) {
 		super();
 		RoadService.instance = this;
@@ -54,21 +53,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	getRoadFactory (): RoadFactory {
-
-		return this.roadFactory;
-
-	}
-
 	get roads (): TvRoad[] {
 
 		return this.mapService.map.getRoads();
-
-	}
-
-	get junctionRoads (): TvRoad[] {
-
-		return this.roads.filter( road => road.isJunction );
 
 	}
 

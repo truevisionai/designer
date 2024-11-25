@@ -6,7 +6,6 @@ import { TvLinkType } from 'app/map/models/tv-link';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
-import { BaseTest } from 'tests/base-test.spec';
 import { Vector2 } from 'three';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
@@ -15,7 +14,6 @@ import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service
 describe( 'RoadTool: Connecting Roads', () => {
 
 	let tool: RoadTool;
-	let base: BaseTest = new BaseTest;
 	let toolHelper: RoadToolHelper;
 	let eventServiceProvider: EventServiceProvider;
 	let splineTestHelper: SplineTestHelper;
