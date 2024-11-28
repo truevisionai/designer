@@ -7,7 +7,8 @@ import { DebugDrawService } from './debug-draw.service';
 import { Box3Helper, Object3D, Vector2 } from "three";
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { DebugLine } from '../../objects/debug-line';
-import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineType } from 'app/core/shapes/spline-type';
 import { DebugState } from 'app/services/debug/debug-state';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { ExplicitSplineHelper } from "./explicit-spline.helper";
@@ -26,8 +27,6 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { RoadControlPoint } from "../../objects/road/road-control-point";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { SplineUtils } from 'app/utils/spline.utils';
-import { RoadGeometryService } from '../road/road-geometry.service';
 import { RoadWidthService } from '../road/road-width.service';
 
 const LINE_WIDTH = 2.0;
@@ -241,7 +240,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
-		const points = this.splineService.getPoints( spline, LINE_STEP );
+		const points = spline.getPoints( LINE_STEP );
 
 		points.forEach( point => point.z += LINE_ZOFFSET );
 
@@ -294,7 +293,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showArrows ( spline: AbstractSpline ) {
 
-		for ( const road of this.splineService.getRoads( spline ) ) {
+		for ( const road of spline.getRoadSegments() ) {
 
 			for ( const point of road.getReferenceLinePoints( ARROW_STEP ) ) {
 
@@ -440,7 +439,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showNodes ( spline: AbstractSpline ) {
 
-		spline.segmentMap.forEach( ( segment, key ) => {
+		spline.getSegments().forEach( segment => {
 
 			if ( segment instanceof TvRoad ) {
 
@@ -483,8 +482,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( road, sCoord );
 
-		const start = RoadGeometryService.instance.findRoadPosition( road, sCoord, result.leftSideWidth );
-		const end = RoadGeometryService.instance.findRoadPosition( road, sCoord, -result.rightSideWidth );
+		const start = road.getRoadPosition( sCoord, result.leftSideWidth );
+		const end = road.getRoadPosition( sCoord, -result.rightSideWidth );
 
 		const lineGeometry = new LineGeometry();
 		lineGeometry.setPositions( [
@@ -520,8 +519,8 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( node.road, sOffset );
 
-		const start = RoadGeometryService.instance.findRoadPosition( node.road, sOffset, result.leftSideWidth );
-		const end = RoadGeometryService.instance.findRoadPosition( node.road, sOffset, -result.rightSideWidth );
+		const start = node.road.getRoadPosition( sOffset, result.leftSideWidth );
+		const end = node.road.getRoadPosition( sOffset, -result.rightSideWidth );
 
 		node.line.geometry.dispose();
 

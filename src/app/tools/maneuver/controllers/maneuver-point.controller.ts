@@ -18,7 +18,7 @@ function markAsDirty ( junction: TvJunction, connectingRoad: TvRoad ): void {
 
 	if ( connection ) {
 
-		connection.laneLink.forEach( laneLink => {
+		connection.getLaneLinks().forEach( laneLink => {
 
 			laneLink.dirty = true;
 
@@ -93,9 +93,13 @@ export class ManeuverRoadTangentPointController extends BaseController<RoadTange
 
 		point.controlPoint.update();
 
-		this.splineService.update( point.spline );
+		this.splineService.update( point.getSpline() );
 
-		markAsDirty( point.road.junction, point.road );
+		point.getSpline().getRoadSegments().forEach( road => {
+
+			markAsDirty( road.junction, road );
+
+		} );
 
 	}
 

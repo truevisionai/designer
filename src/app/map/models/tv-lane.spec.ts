@@ -38,7 +38,7 @@ describe( 'OpenDrive LaneSection', () => {
 
 		rightFour = laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true );
 
-		laneSection.getLaneArray().forEach( lane => {
+		laneSection.getLanes().forEach( lane => {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 
@@ -52,36 +52,36 @@ describe( 'OpenDrive LaneSection', () => {
 
 	it( 'should add right lane correcty', () => {
 
-		expect( laneSection.lanesMap.size ).toBe( 8 );
+		expect( laneSection.getLaneCount() ).toBe( 8 );
 
-		const clone = laneSection.lanesMap.get( -2 ).clone();
+		const clone = laneSection.getLaneById( -2 ).clone();
 
 		laneSection.addLaneInstance( clone );
 
-		expect( laneSection.lanesMap.size ).toBe( 9 );
+		expect( laneSection.getLaneCount() ).toBe( 9 );
 		// expecttCorrectOrderOfLanes( laneSection );
 
 		laneSection.removeLane( clone );
 
-		expect( laneSection.lanesMap.size ).toBe( 8 );
+		expect( laneSection.getLaneCount() ).toBe( 8 );
 		// expecttCorrectOrderOfLanes( laneSection );
 
 	} );
 
 	it( 'should add right lane correcty', () => {
 
-		expect( laneSection.lanesMap.size ).toBe( 8 );
+		expect( laneSection.getLaneCount() ).toBe( 8 );
 
-		const clone = laneSection.lanesMap.get( -2 ).clone( -3 );
+		const clone = laneSection.getLaneById( -2 ).clone( -3 );
 
 		laneSection.addLaneInstance( clone );
 
-		expect( laneSection.lanesMap.size ).toBe( 9 );
+		expect( laneSection.getLaneCount() ).toBe( 9 );
 		// expecttCorrectOrderOfLanes( laneSection );
 
 		laneSection.removeLane( clone );
 
-		expect( laneSection.lanesMap.size ).toBe( 8 );
+		expect( laneSection.getLaneCount() ).toBe( 8 );
 		// expecttCorrectOrderOfLanes( laneSection );
 
 	} );

@@ -1,10 +1,9 @@
 import { TvLaneSection } from "../app/map/models/tv-lane-section";
 import { Vector2, Vector3 } from "three";
-import { RoadFactory } from "../app/factories/road-factory.service";
+import { RoadFactory, RoadMakeOptions } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
-import { DepIntersectionService } from 'app/deprecated/dep-intersection.service';
 import { RoadNode } from "app/objects/road/road-node";
-import { TvContactPoint, TvLaneType } from "app/map/models/tv-common";
+import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
 import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
 import { SplineControlPoint } from "app/objects/road/spline-control-point";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
@@ -12,13 +11,13 @@ import { SplineUtils } from "../app/utils/spline.utils";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { RoadUtils } from "app/utils/road.utils";
 import { MapService } from "app/services/map/map.service";
-import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvLink } from "app/map/models/tv-link";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Maths } from "app/utils/maths";
 
-function formatMessage ( road: TvRoad, link: TvRoadLink ) {
+function formatMessage ( road: TvRoad, link: TvLink, distance?: number ) {
 
-	return 'Invalid Distance ' + road.toString() + ' ' + link.toString();
+	return road.toString() + ' Invalid Distance with ' + link.toString() + ' distance:' + distance;
 
 }
 
@@ -74,13 +73,13 @@ export function expectLinkDistanceToBeZero ( road: TvRoad ) {
 
 }
 
-export function expectToHaveJunctionConnections ( road: TvRoad ) {
+export function expectLinkedConnections ( road: TvRoad ) {
 
 	if ( road.successor?.element instanceof TvJunction ) {
 
 		const hasConnection = road.successor.element.getIncomingRoads().includes( road );
 
-		expect( hasConnection ).toBe( true, 'Successor' + formatMessage( road, road.successor ) );
+		expect( hasConnection ).toBe( true, `${ road.toString() } successor link with junction has no connections` );
 
 	}
 
@@ -88,7 +87,7 @@ export function expectToHaveJunctionConnections ( road: TvRoad ) {
 
 		const hasConnection = road.predecessor.element.getIncomingRoads().includes( road );
 
-		expect( hasConnection ).toBe( true, 'Predecessor' + formatMessage( road, road.predecessor ) );
+		expect( hasConnection ).toBe( true, `${ road.toString() } predecessor link with junction has no connections` );
 
 	}
 }
@@ -97,7 +96,7 @@ export function expectValidLinks ( road: TvRoad ) {
 
 	expectLinkDistanceToBeZero( road );
 
-	expectToHaveJunctionConnections( road );
+	expectLinkedConnections( road );
 
 }
 
@@ -129,163 +128,62 @@ export function exportCorrectLaneOrder ( laneSection: TvLaneSection ) {
 	} );
 }
 
-export class BaseTest {
+export function createOneWayRoad ( options?: RoadMakeOptions ): TvRoad {
 
-	constructor () {
-	}
+	const road = RoadFactory.makeRoad( { id: options?.id, leftLaneCount: 0, rightLaneCount: 0 } );
 
-	makeRoad ( roadFactory: RoadFactory, points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
+	const laneSection = road.getLaneProfile().getFirstLaneSection();
 
-		const road = roadFactory.createRoadWithLaneCount( leftLaneCount, rightLaneCount, leftWidth, rightWidth );
+	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 2.0, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 0.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.6, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 0.5, 0, 0, 0 );
+	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 2.0, 0, 0, 0 );
 
-		points.forEach( point => road.spline.controlPoints.push( new SplineControlPoint( null, new Vector3( point.x, point.y, 0 ) ) ) );
-
-		return road;
-
-	}
-
-	makeDefaultRoad ( roadFactory: RoadFactory, points: Vector2[] ) {
-
-		return roadFactory.createFromControlPoints( points );
-
-	}
-
-	createRoad ( roadService: RoadService, points: Vector2[], leftLaneCount = 1, rightLaneCount = 1, leftWidth = 3.6, rightWidth = 3.6 ) {
-
-		const road = this.makeRoad( roadService.getRoadFactory(), points, leftLaneCount, rightLaneCount, leftWidth, rightWidth );
-
-		roadService.add( road );
-
-		return road;
-
-	}
-
-	createDefaultRoad ( roadService: RoadService, points: Vector2[] ) {
-
-		const road = this.makeDefaultRoad( roadService.getRoadFactory(), points );
-
-		roadService.add( road );
-
-		return road;
-
-	}
-
-	createOneWayRoad ( roadService: RoadService, points: Vector2[] ) {
-
-		const road = this.createRoad( roadService, points, 1, 2 );
-
-		// --------------------------------
-		// 1 - sidewalk on left
-		// -------------------------------->
-		// -1 - driving road
-		// --------------------------------
-		// -2 - sidewalk on right
-		// --------------------------------
-
-		road.laneSections[ 0 ].lanesMap.get( 1 ).type = TvLaneType.sidewalk;
-		road.laneSections[ 0 ].lanesMap.get( -2 ).type = TvLaneType.sidewalk;
-		road.laneSections[ 0 ].lanesMap.get( -1 ).type = TvLaneType.driving;
-
-		roadService.add( road );
-
-		return road;
-
-	}
-
-	createFourWayJunction (
-		roadService: RoadService,
-		intersectionService: DepIntersectionService,
-		leftLaneCount = 1,
-		rightLaneCount = 1,
-		leftWidth = 3.6,
-		rightWidth = 3.6
-	) {
-
-		// x-axis
-		const horizontalRoad = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( -100, 0 ), new Vector2( 100, 0 ) ],
-			leftLaneCount,
-			rightLaneCount,
-			leftWidth,
-			rightWidth
-		);
-
-		// y-axis
-		const verticalRoad = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
-			leftLaneCount,
-			rightLaneCount,
-			leftWidth,
-			rightWidth
-		);
-
-		roadService.add( horizontalRoad );
-
-		roadService.add( verticalRoad );
-
-		intersectionService.checkSplineIntersections( verticalRoad.spline );
-
-	}
-
-	createTJunction (
-		roadService: RoadService,
-		intersectionService: DepIntersectionService,
-		leftLaneCount = 1,
-		rightLaneCount = 1,
-		leftWidth = 3.6,
-		rightWidth = 3.6
-	) {
-
-		/**
-		 *
-		 * T junction
-		 *
-		 * | |
-		 * | |- - - -
-		 * | |- - - -
-		 * | |
-		 *
-		 */
-
-		const horizontal = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ],
-			leftLaneCount,
-			rightLaneCount,
-			leftWidth,
-			rightWidth
-		);
-
-		const vertical = this.makeRoad( roadService.getRoadFactory(), [ new Vector2( 0, -100 ), new Vector2( 0, 100 ) ],
-			leftLaneCount,
-			rightLaneCount,
-			leftWidth,
-			rightWidth
-		);
-
-		roadService.add( horizontal );
-
-		roadService.add( vertical );
-
-		intersectionService.checkSplineIntersections( vertical.spline );
-
-	}
-
-	createConnectedRoads ( roadToolService: RoadToolHelper ) {
-
-		/**
-
-		 * -------------------------------
-		 *  	1 	|	  3	 	| 		2
-		 * -------------------------------
-
-		 */
-
-		const leftRoad = this.createDefaultRoad( roadToolService.roadService, [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
-		const rightRoad = this.createDefaultRoad( roadToolService.roadService, [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
-
-		const leftNode = new RoadNode( leftRoad, TvContactPoint.END );
-		const rightNode = new RoadNode( rightRoad, TvContactPoint.START );
-
-		const joiningRoad = roadToolService.createJoiningRoad( leftNode, rightNode );
-		roadToolService.roadService.add( joiningRoad );
-
-	}
+	return road;
 
 }
+
+export function createFreewayOneWayRoad ( options: RoadMakeOptions ): TvRoad {
+
+	const road = RoadFactory.makeRoad( options );
+
+	const laneSection = road.getLaneProfile().getFirstLaneSection();
+
+	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.shoulder, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -6, TvLaneType.shoulder, false, true ).addDefaultWidth();
+
+	return road;
+
+}
+
+export function createFreewayRoad ( options: RoadMakeOptions ): TvRoad {
+
+	const road = RoadFactory.makeRoad( options );
+
+	const laneSection = road.getLaneProfile().getFirstLaneSection();
+
+	laneSection.createLane( TvLaneSide.LEFT, 6, TvLaneType.shoulder, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 5, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 4, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.shoulder, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.shoulder, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -5, TvLaneType.driving, false, true ).addDefaultWidth();
+	laneSection.createLane( TvLaneSide.RIGHT, -6, TvLaneType.shoulder, false, true ).addDefaultWidth();
+
+	return road;
+
+}
+

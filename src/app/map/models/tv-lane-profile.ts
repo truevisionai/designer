@@ -26,6 +26,11 @@ export class TvLaneProfile {
 
 	}
 
+	addDefaultLaneSection (): void {
+		if ( this.laneSections.length > 0 ) return;
+		this.addLaneSectionInstance( new TvLaneSection( 1, 0, false, this.road ) );
+	}
+
 	getRoad (): TvRoad {
 		return this.road;
 	}
@@ -40,6 +45,10 @@ export class TvLaneProfile {
 
 	getLaneSections (): TvLaneSection[] {
 		return this.laneSections;
+	}
+
+	getLaneSectionCount (): number {
+		return this.laneSections.length;
 	}
 
 	getLaneOffsets (): TvLaneOffset[] {
@@ -94,9 +103,7 @@ export class TvLaneProfile {
 
 		laneSection.road = this.road;
 
-		laneSection.lanesMap.forEach( lane => {
-
-			lane.roadId = this.road.id;
+		laneSection.getLanes().forEach( lane => {
 
 			lane.laneSection = laneSection;
 
@@ -253,13 +260,47 @@ export class TvLaneProfile {
 
 	getLanes (): TvLane[] {
 
-		return this.laneSections.flatMap( laneSection => laneSection.getLaneArray() );
+		return this.laneSections.flatMap( laneSection => laneSection.getLanes() );
 
 	}
 
-	getLaneOffsetCount () {
+	getNonCenterLanes (): TvLane[] {
+
+		return this.laneSections.flatMap( laneSection => laneSection.getNonCenterLanes() );
+
+	}
+
+	getLaneOffsetCount (): number {
 
 		return this.laneOffsets.length;
+
+	}
+
+	getNextLaneSection ( laneSection: TvLaneSection ): TvLaneSection | undefined {
+
+		const index = this.laneSections.indexOf( laneSection );
+
+		if ( index === this.laneSections.length - 1 ) {
+
+			return this.road.successor ? this.road.successor.laneSection : undefined;
+
+		}
+
+		return this.laneSections[ index + 1 ];
+
+	}
+
+	getPreviousLaneSection ( laneSection: TvLaneSection ): TvLaneSection | undefined {
+
+		const index = this.laneSections.indexOf( laneSection );
+
+		if ( index === 0 ) {
+
+			return this.road.predecessor ? this.road.predecessor.laneSection : undefined;
+
+		}
+
+		return this.laneSections[ index - 1 ];
 
 	}
 }

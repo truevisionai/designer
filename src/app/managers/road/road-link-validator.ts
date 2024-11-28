@@ -4,7 +4,8 @@
 
 import { Injectable } from "@angular/core";
 import { ValidationException } from "app/exceptions/exceptions";
-import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
+import { TvLink } from "app/map/models/tv-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
 import { Maths } from "app/utils/maths";
@@ -25,7 +26,7 @@ export class RoadLinkValidator {
 
 	}
 
-	private validateSuccessor ( road: TvRoad, link: TvRoadLink ): void {
+	private validateSuccessor ( road: TvRoad, link: TvLink ): void {
 
 		if ( !link ) return;
 
@@ -35,7 +36,7 @@ export class RoadLinkValidator {
 
 	}
 
-	private validatePredecessor ( road: TvRoad, link: TvRoadLink ): void {
+	private validatePredecessor ( road: TvRoad, link: TvLink ): void {
 
 		if ( !link ) return;
 
@@ -45,21 +46,21 @@ export class RoadLinkValidator {
 
 	}
 
-	private linkedElementShouldExist ( link: TvRoadLink ): void {
+	private linkedElementShouldExist ( link: TvLink ): void {
 
 		if ( link.isJunction ) {
 
-			this.mapService.map.getJunctionById( link.element.id );
+			this.mapService.map.getJunction( link.element as TvJunction );
 
 		} else if ( link.isRoad ) {
 
-			this.mapService.map.getRoadById( link.element.id );
+			this.mapService.map.getRoad( link.element as TvRoad );
 
 		}
 
 	}
 
-	private linkedElementDistanceShouldBeZero ( road: TvRoad, link: TvRoadLink, distance: number ): void {
+	private linkedElementDistanceShouldBeZero ( road: TvRoad, link: TvLink, distance: number ): void {
 
 		if ( !Maths.approxEquals( distance, 0, 0.001 ) ) {
 

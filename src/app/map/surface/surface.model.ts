@@ -2,7 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { MathUtils, Object3D, Vector2, Vector3 } from 'three';
 
 export class Surface {
@@ -11,22 +12,95 @@ export class Surface {
 
 	public uuid: string;
 
-	public textureGuid: string;
-
-	public transparent: boolean = true;
-
-	public opacity: number = 1.0;
-
-	public mesh: Object3D;
+	private _textureGuid: string;
+	private _transparent: boolean = true;
+	private _opacity: number = 1.0;
+	private _mesh: Object3D;
 
 	constructor (
-		public materialGuid: string,
-		public spline: CatmullRomSpline,
-		public offset: Vector2 = new Vector2( 0, 0 ),
-		public repeat: Vector2 = new Vector2( 1, 1 ),
-		public rotation: number = 0.0,
+		private _materialGuid: string,
+		private _spline: AbstractSpline,
+		private _offset: Vector2 = new Vector2( 0, 0 ),
+		private _repeat: Vector2 = new Vector2( 1, 1 ),
+		private _rotation: number = 0.0,
 	) {
 		this.uuid = MathUtils.generateUUID();
+	}
+
+	get spline (): AbstractSpline {
+		return this._spline;
+	}
+
+	set spline ( value: AbstractSpline ) {
+		this._spline = value;
+	}
+
+	get materialGuid (): string {
+		return this._materialGuid;
+	}
+
+	set materialGuid ( value: string ) {
+		this._materialGuid = value;
+	}
+
+	get offset (): Vector2 {
+		return this._offset;
+	}
+
+	set offset ( value: Vector2 ) {
+		this._offset = value;
+	}
+
+	get repeat (): Vector2 {
+		return this._repeat;
+	}
+
+	set repeat ( value: Vector2 ) {
+		this._repeat = value;
+	}
+
+	get rotation (): number {
+		return this._rotation;
+	}
+
+	set rotation ( value: number ) {
+		this._rotation = value;
+	}
+
+	get textureGuid (): string {
+		return this._textureGuid;
+	}
+
+	set textureGuid ( value: string ) {
+		this._textureGuid = value;
+	}
+
+	get transparent (): boolean {
+		return this._transparent;
+	}
+
+	set transparent ( value: boolean ) {
+		this._transparent = value;
+	}
+
+	get opacity (): number {
+		return this._opacity;
+	}
+
+	set opacity ( value: number ) {
+		this._opacity = value;
+	}
+
+	get mesh (): Object3D {
+		return this._mesh;
+	}
+
+	set mesh ( value: Object3D ) {
+		this._mesh = value;
+	}
+
+	addControlPoint ( point: AbstractControlPoint ): void {
+		this.spline.addControlPoint( point );
 	}
 
 	setDimensions ( width: number, height: number ): void {

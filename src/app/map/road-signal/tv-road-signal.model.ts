@@ -3,9 +3,10 @@
  */
 
 import { TvDynamicTypes, TvOrientation, TvUnit } from '../models/tv-common';
-import { TvUserData } from '../models/tv-user-data';
 import { TvLaneValidity } from "../models/objects/tv-lane-validity";
 import { MathUtils, Object3D } from "three";
+import { TvRoad } from '../models/tv-road.model';
+import { TvPosTheta } from '../models/tv-pos-theta';
 
 export enum TvSignalType {
 	RoadMark = 'roadMark',
@@ -39,8 +40,7 @@ export class TvRoadSignal {
 
 	public userData: Map<string, string | number> = new Map<string, string | number>();
 
-	// internal use
-	public roadId: number;
+	private road: TvRoad;
 
 	public assetGuid: string;
 
@@ -88,6 +88,20 @@ export class TvRoadSignal {
 		public roll: number = 0
 	) {
 		this.uuid = MathUtils.generateUUID();
+	}
+
+	setRoad ( road: TvRoad ): void {
+		this.road = road;
+	}
+
+	getRoad (): TvRoad {
+		return this.road;
+	}
+
+	getPosition (): TvPosTheta {
+		const position = this.road.getRoadPosition( this.s, this.t );
+		position.z += this.zOffset;
+		return position;
 	}
 
 	addValidity ( fromLane: number, toLane: number ): void {

@@ -5,7 +5,8 @@
 import { Injectable } from '@angular/core';
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { AbstractReader } from 'app/importers/abstract-reader';
-import { AbstractSpline, NewSegment, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
+import { SplineType } from 'app/core/shapes/spline-type';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
@@ -28,7 +29,7 @@ import {
 import { TvUserData } from 'app/map/models/tv-user-data';
 import { TvControllerControl } from 'app/map/signal-controller/tv-signal-controller';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvJunctionController } from 'app/map/models/junctions/tv-junction-controller';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { TvJunctionPriority } from 'app/map/models/junctions/tv-junction-priority';
@@ -36,7 +37,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
-import { TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLinkType } from 'app/map/models/tv-link';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
@@ -71,15 +72,17 @@ import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import {
-	TvJointBoundary,
 	TvJunctionBoundary,
-	TvJunctionSegmentBoundary,
-	TvLaneBoundary
+	TvJunctionSegmentBoundary
 } from '../junction-boundary/tv-junction-boundary';
 import { Log } from 'app/core/utils/log';
 import { InvalidTypeException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
+import { PropCurvePoint } from 'app/modules/prop-curve/objects/prop-curve-point';
+import { JunctionFactory } from 'app/factories/junction.factory';
+import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
+import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
 
 @Injectable( {
 	providedIn: 'root'
@@ -161,7 +164,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		this.readAsOptionalArray( xml.junction, xml => {
 
 			const junctionId = parseInt( xml.attr_id );
-			const junction = this.map.getJunctionById( junctionId );
+			const junction = this.map.getJunction( junctionId );
 
 			if ( !junction ) {
 				Log.warn( 'Junction not found junction:' + junctionId );
@@ -248,7 +251,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( roadId < 0 ) return;
 
-			const road = this.map.roads.get( roadId );
+			const road = this.map.getRoad( roadId );
 
 			if ( !road ) {
 				Log.debug( 'NotFound Road:' + roadId );
@@ -384,7 +387,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( type == SplineSegmentType.JUNCTION ) {
 
-				const junction = this.map.getJunctionById( id );
+				const junction = this.map.getJunction( id );
 
 				// TODO: need to check this
 				// junction.auto = true;
@@ -393,7 +396,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			} else if ( type == SplineSegmentType.ROAD ) {
 
-				segments.set( start, this.map.getRoadById( id ) );
+				segments.set( start, this.map.getRoad( id ) );
 
 			} else {
 
@@ -451,7 +454,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const junctionId = parseInt( xml.attr_junction ) || -1;
 
-			junction = junctionId > 0 ? this.map.getJunctionById( junctionId ) : null;
+			junction = junctionId > 0 ? this.map.getJunction( junctionId ) : null;
 
 		} catch ( error ) {
 
@@ -549,13 +552,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const hdg = parseFloat( xml.attr_hdg ) || 0;
 
-			const geometryType = this.parseGeometryType( xml.attr_type );
-
 			const index = spline.getControlPointCount();
 
-			const point = ControlPointFactory.createRoadControlPoint( road, null, index, position, hdg );
-
-			point.segmentType = geometryType;
+			const point = ControlPointFactory.createRoadControlPoint( spline, null, index, position, hdg );
 
 			spline.addControlPoint( point );
 
@@ -596,17 +595,15 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private parseAutoSpline ( xml: XmlElement ): AbstractSpline {
 
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 
 		this.readAsOptionalArray( xml.point, xml => {
 
 			const position = this.importVector3( xml );
 
-			const point = ControlPointFactory.createSplineControlPoint( spline, position );
+			const point = spline.addControlPoint( position );
 
 			point.index = spline.controlPoints.length;
-
-			spline.controlPoints.push( point );
 
 		} );
 
@@ -614,9 +611,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseAutoSplineVersion2 ( xml: XmlElement ): AutoSpline {
+	private parseAutoSplineVersion2 ( xml: XmlElement ): AbstractSpline {
 
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 
 		if ( xml.attr_uuid ) spline.uuid = xml.attr_uuid;
 
@@ -645,7 +642,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		try {
 
-			return this.map.getRoadById( id );
+			return this.map.getRoad( id );
 
 		} catch ( error ) {
 
@@ -666,7 +663,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		try {
 
-			return this.map.getJunctionById( id );
+			return this.map.getJunction( id );
 
 		} catch ( error ) {
 
@@ -681,6 +678,31 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
+	}
+
+	private importPropCurveSpline ( xml: XmlElement, curve: PropCurve ): CatmullRomSpline {
+
+		const type = xml.attr_type || 'catmullrom';
+		const closed = xml.attr_closed === 'true';
+		const tension = 0.0; // we ignore this as we want straight lines, parseFloat( xml.attr_tension ) || 0.5;
+
+		const spline = new CatmullRomSpline( closed, type, tension );
+
+		this.readAsOptionalArray( xml.point, xml => {
+
+			const position = this.importVector3( xml );
+
+			const controlPoint = new PropCurvePoint( curve );
+
+			controlPoint.position.copy( position );
+
+			controlPoint.index = spline.controlPoints.length;
+
+			spline.controlPoints.push( controlPoint );
+
+		} );
+
+		return spline;
 	}
 
 	private importCatmullSpline ( xml: XmlElement, mainObject?: any ): CatmullRomSpline {
@@ -716,6 +738,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	private importPropCurve ( xml: XmlElement ): PropCurve {
 
 		const guid = xml.attr_guid;
@@ -724,13 +747,16 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( !meta ) return;
 
-		const spline = this.importCatmullSpline( xml.spline );
 		const reverse = xml.attr_reverse === 'true' ? true : false;
 		const rotation = parseFloat( xml.attr_rotation ) || 0;
 		const spacing = parseFloat( xml.attr_spacing ) || 5;
 		const positionVariance = parseFloat( xml.attr_positionVariance ) || 0;
 
-		const curve = new PropCurve( guid, spline, spacing, rotation, positionVariance, reverse );
+		const curve = new PropCurve( guid, null, spacing, rotation, positionVariance, reverse );
+
+		const spline = this.importPropCurveSpline( xml.spline, curve );
+
+		curve.setSpline( spline );
 
 		spline.controlPoints.forEach( p => p.mainObject = curve );
 
@@ -883,7 +909,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		try {
 
-			if ( elementType == TvRoadLinkType.ROAD && contactPoint == null ) {
+			if ( elementType == TvLinkType.ROAD && contactPoint == null ) {
 				Log.warn( 'Unknown contact point of link for road:' + road.toString() );
 				return;
 			}
@@ -917,15 +943,15 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private findElement ( type: TvRoadLinkType, elementId: number ) {
+	private findElement ( type: TvLinkType, elementId: number ) {
 
-		if ( type == TvRoadLinkType.ROAD ) {
+		if ( type == TvLinkType.ROAD ) {
 
 			return this.findRoad( elementId );
 
-		} else if ( type == TvRoadLinkType.JUNCTION ) {
+		} else if ( type == TvLinkType.JUNCTION ) {
 
-			return this.map.getJunctionById( elementId );
+			return this.map.getJunction( elementId );
 
 		} else {
 
@@ -935,15 +961,15 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseElementType ( value: string ): TvRoadLinkType {
+	private parseElementType ( value: string ): TvLinkType {
 
 		if ( value === 'road' ) {
 
-			return TvRoadLinkType.ROAD;
+			return TvLinkType.ROAD;
 
 		} else if ( value === 'junction' ) {
 
-			return TvRoadLinkType.JUNCTION;
+			return TvLinkType.JUNCTION;
 
 		} else {
 
@@ -1078,14 +1104,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
 
-		const junction = new TvJunction( name, id );
-
-		junction.auto = xmlElement.attr_auto === 'true';
-
-		// for old files
-
-
-		return junction;
+		if ( xmlElement.attr_auto === 'true' ) {
+			return JunctionFactory.createAutoJunction( name, id );
+		} else {
+			return JunctionFactory.createDefaultJunction( name, id );
+		}
 	}
 
 	private parseJunctionConnections ( junction: TvJunction, xmlElement: XmlElement ) {
@@ -1137,7 +1160,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const segment = this.parseBoundarySegment( xml );
 
-			if ( segment ) boundary.segments.push( segment );
+			if ( segment ) boundary.addSegment( segment );
 
 		} );
 
@@ -1178,32 +1201,27 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 
 		const laneSection = road.getLaneProfile().getLaneSectionAtContact( contactPoint );
-		const jointLaneStart = laneSection.getLaneById( jointLaneStartId );
-		const jointLaneEnd = laneSection.getLaneById( jointLaneEndId );
+		const startLane = laneSection.getLaneById( jointLaneStartId );
+		const endLane = laneSection.getLaneById( jointLaneEndId );
 
 		if ( !laneSection ) {
 			Log.warn( 'lane section not found' );
 			return;
 		}
 
-		if ( !jointLaneStart ) {
+		if ( !startLane ) {
 			Log.warn( 'jointLaneStart not found' );
 			return;
 		}
 
-		if ( !jointLaneEnd ) {
+		if ( !endLane ) {
 			Log.warn( 'jointLaneEnd not found' );
 			return;
 		}
 
-		const jointBoundary = new TvJointBoundary();
-
-		jointBoundary.road = road;
-		jointBoundary.contactPoint = contactPoint;
-		jointBoundary.jointLaneStart = jointLaneStart;
-		jointBoundary.jointLaneEnd = jointLaneEnd;
-
-		return jointBoundary;
+		return new TvJointBoundary(
+			road, contactPoint, startLane, endLane
+		);
 
 	}
 
@@ -1264,8 +1282,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
 
-		connection.junction = junction;
-
 		readXmlArray( xmlElement.laneLink, xml => {
 
 			try {
@@ -1275,7 +1291,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 				if ( !laneLink ) {
 					Log.warn( 'Link Parsing failed', xml, connection.toString() );
 					return;
-				};
+				}
+				;
 
 				connection.addLaneLink( laneLink );
 
@@ -1287,7 +1304,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		} );
 
-		if ( connection.laneLink.length == 0 ) {
+		if ( connection.getLinkCount() == 0 ) {
 			Log.error( 'Removing InvalidConnection with 0 links', connection.toString() );
 			this.map.removeRoad( connectingRoad );
 			return;
@@ -1311,11 +1328,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 				return connection.connectingRoad.predecessor.contactPoint;
 			}
 
-			if ( incomingRoad.successor?.id === junction.id ) {
+			if ( incomingRoad.successor?.isEqualTo( junction ) ) {
 				return TvContactPoint.END;
 			}
 
-			if ( incomingRoad.predecessor?.id === junction.id ) {
+			if ( incomingRoad.predecessor?.isEqualTo( junction ) ) {
 				return TvContactPoint.START;
 			}
 
@@ -1361,12 +1378,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			return;
 		}
 
-		const link = new TvJunctionLaneLink( fromLane, toLane );
-
-		link.incomingRoad = connection.incomingRoad;
-		link.connectingRoad = connection.connectingRoad;
-
-		return link;
+		return new TvJunctionLaneLink( fromLane, toLane );
 
 	}
 

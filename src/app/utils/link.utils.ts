@@ -20,7 +20,7 @@ export class LinkUtils {
 
 			const laneSection = road.laneSections[ i ];
 
-			for ( const [ laneId, currentLane ] of laneSection.lanesMap ) {
+			for ( const currentLane of laneSection.getNonCenterLanes() ) {
 
 				// Update successor
 				if ( i < road.laneSections.length - 1 ) {
@@ -29,13 +29,13 @@ export class LinkUtils {
 
 					const nextLaneSection = road.laneSections[ i + 1 ];
 
-					const id = currentLane.successorId !== null ? currentLane.successorId : currentLane.id;
+					const id = currentLane.successorId ?? currentLane.id;
 
-					const successorLane = nextLaneSection.lanesMap.get( id );
+					const successorLane = nextLaneSection.getLaneById( id );
 
 					if ( successorLane ) {
 
-						currentLane.successorUUID = successorLane.uuid;
+						currentLane.setSuccessor( successorLane );
 
 					}
 
@@ -46,13 +46,13 @@ export class LinkUtils {
 
 					if ( nextLaneSection ) {
 
-						const id = currentLane.successorId !== null ? currentLane.successorId : currentLane.id;
+						const id = currentLane.successorId ?? currentLane.id;
 
-						const successorLane = nextLaneSection.lanesMap.get( id );
+						const successorLane = nextLaneSection.getLaneById( id );
 
 						if ( successorLane ) {
 
-							currentLane.successorUUID = successorLane.uuid;
+							currentLane.setSuccessor( successorLane );
 
 						}
 
@@ -66,13 +66,13 @@ export class LinkUtils {
 					// If not the first lane section, look in the previous lane section of the same road
 					const prevLaneSection = road.laneSections[ i - 1 ];
 
-					const id = currentLane.predecessorId !== null ? currentLane.predecessorId : currentLane.id;
+					const id = currentLane.predecessorId ?? currentLane.id;
 
-					const predecessorLane = prevLaneSection.lanesMap.get( id );
+					const predecessorLane = prevLaneSection.getLaneById( id );
 
 					if ( predecessorLane ) {
 
-						currentLane.predecessorUUID = predecessorLane.uuid;
+						currentLane.setPredecessor( predecessorLane );
 
 					}
 
@@ -83,13 +83,13 @@ export class LinkUtils {
 
 					if ( prevLaneSection ) {
 
-						const id = currentLane.predecessorId !== null ? currentLane.predecessorId : currentLane.id;
+						const id = currentLane.predecessorId ?? currentLane.id;
 
-						const predecessorLane = prevLaneSection.lanesMap.get( id );
+						const predecessorLane = prevLaneSection.getLaneById( id );
 
 						if ( predecessorLane ) {
 
-							currentLane.predecessorUUID = predecessorLane.uuid;
+							currentLane.setPredecessor( predecessorLane );
 
 						}
 					}

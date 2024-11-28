@@ -8,7 +8,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvCornerLocal } from 'app/map/models/objects/tv-corner-local';
-import { RoadGeometryService } from "../road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,7 +18,7 @@ export class CornerRoadFactory {
 
 	static createCornerRoad ( road: TvRoad, s: number, t: number, z: number = 0 ): TvCornerRoad {
 
-		const coord = RoadGeometryService.instance.findRoadCoord( road, s, t );
+		const coord = road.getRoadCoord( s, t );
 
 		if ( !coord ) {
 			console.error( 'Road coord not found' );

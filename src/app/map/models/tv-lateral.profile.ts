@@ -47,19 +47,19 @@ export class TvLateralProfile {
 		this.shapes = [];
 	}
 
-	getSuperElevationCount () {
+	getSuperElevationCount (): number {
 		return this.superElevations.length;
 	}
 
-	getFirstSuperElevation () {
+	getFirstSuperElevation (): TvSuperElevation {
 		return this.superElevations.getFirst();
 	}
 
-	getLastSuperElevation () {
+	getLastSuperElevation (): TvSuperElevation {
 		return this.superElevations.getLast();
 	}
 
-	getSuperElevation ( s: number ) {
+	getSuperElevationAt ( s: number ): TvSuperElevation {
 		return this.superElevations.findAt( s );
 	}
 
@@ -67,7 +67,7 @@ export class TvLateralProfile {
 		return this.superElevations.findAt( s )?.getValue( s );
 	}
 
-	getSuperElevations () {
+	getSuperElevations (): TvSuperElevation[] {
 		return this.superElevations.toArray();
 	}
 

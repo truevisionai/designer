@@ -17,9 +17,21 @@ import { Maths } from "app/utils/maths";
 } )
 export class SplineBoundsService {
 
-	constructor () { }
+	private static _instance: SplineBoundsService;
 
-	update ( spline: AbstractSpline ): void {
+	static get instance (): SplineBoundsService {
+
+		if ( !SplineBoundsService._instance ) {
+			SplineBoundsService._instance = new SplineBoundsService();
+		}
+
+		return SplineBoundsService._instance;
+	}
+
+	constructor () {
+	}
+
+	updateBounds ( spline: AbstractSpline ): void {
 
 		this.updateWidthCache( spline );
 
@@ -116,7 +128,7 @@ export class SplineBoundsService {
 
 		for ( let s = 0; s <= spline.getLength(); s++ ) {
 
-			const segment = spline.segmentMap.findAt( s );
+			const segment = spline.getSegmentAt( s );
 
 			if ( segment instanceof TvRoad ) {
 				roadWidth = RoadWidthService.instance.findRoadWidthAt( segment, s - segment.sStart );

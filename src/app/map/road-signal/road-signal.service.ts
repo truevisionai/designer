@@ -5,10 +5,10 @@
 import { Injectable } from '@angular/core';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { RoadSignalBuilder } from './road-signal.builder';
-import { Group, Object3D } from 'three';
 import { Maths } from "../../utils/maths";
 import { RoadSignalIdService } from "./road-signal-id.service";
+import { MapEvents } from 'app/events/map-events';
+import { RoadSignalAddedEvent, RoadSignalRemovedEvent, RoadSignalUpdatedEvent } from 'app/events/road-object.events';
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,36 +16,17 @@ import { RoadSignalIdService } from "./road-signal-id.service";
 export class RoadSignalService {
 
 	constructor (
-		private signalBuilder: RoadSignalBuilder,
 		private signalIdService: RoadSignalIdService,
 	) {
 	}
 
-	buildSignal ( road: TvRoad, signal: TvRoadSignal ) {
-
-		signal.mesh = this.signalBuilder.buildSignal( road, signal );
-
-		return signal.mesh;
-
-	}
-
-	addSignal ( road: TvRoad, signal: TvRoadSignal, object: Object3D ) {
+	addSignal ( road: TvRoad, signal: TvRoadSignal ) {
 
 		road.addRoadSignalInstance( signal );
 
-		road.signalGroup?.add( object );
-
 		this.signalIdService.add( signal.id );
 
-	}
-
-	addSignalNew ( road: TvRoad, signal: TvRoadSignal ) {
-
-		const mesh = this.buildSignal( road, signal );
-
-		if ( !mesh ) return;
-
-		this.addSignal( road, signal, mesh );
+		MapEvents.roadSignalAdded.emit( new RoadSignalAddedEvent( road, signal ) );
 
 	}
 
@@ -55,15 +36,12 @@ export class RoadSignalService {
 
 		this.signalIdService.remove( signal.id );
 
-		road.signalGroup?.remove( signal.mesh );
-
+		MapEvents.roadSignalRemoved.emit( new RoadSignalRemovedEvent( road, signal ) );
 	}
 
 	updateSignal ( road: TvRoad, signal: TvRoadSignal ) {
 
-		road.signalGroup?.remove( signal.mesh );
-
-		this.addSignalNew( road, signal );
+		MapEvents.roadSignalUpdated.emit( new RoadSignalUpdatedEvent( road, signal ) );
 
 	}
 

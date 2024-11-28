@@ -4,9 +4,11 @@
 
 import { TestBed } from '@angular/core/testing';
 import { TvJunction } from '../models/junctions/tv-junction';
-import { TvJunctionBoundary, TvLaneBoundary } from './tv-junction-boundary';
+import { TvJunctionBoundary } from './tv-junction-boundary';
 import { TvJunctionBoundaryFactory } from './tv-junction-boundary.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
+import { JunctionFactory } from 'app/factories/junction.factory';
+import { TvLaneBoundary } from "./tv-lane-boundary";
 
 describe( 'TvJunctionBoundaryFactory', () => {
 
@@ -31,7 +33,7 @@ describe( 'TvJunctionBoundaryFactory', () => {
 			const boundary = TvJunctionBoundaryFactory.createInnerBoundary( junction );
 
 			expect( boundary ).toBeTruthy();
-			expect( boundary.segments.length ).toEqual( 0 );
+			expect( boundary.getSegmentCount() ).toEqual( 0 );
 		} );
 	} );
 
@@ -41,7 +43,7 @@ describe( 'TvJunctionBoundaryFactory', () => {
 			const boundary = TvJunctionBoundaryFactory.createOuterBoundary( junction );
 
 			expect( boundary ).toBeTruthy();
-			expect( boundary.segments.length ).toEqual( 0 );
+			expect( boundary.getSegmentCount() ).toEqual( 0 );
 		} );
 	} );
 
@@ -58,21 +60,20 @@ describe( 'TvJunctionBoundaryFactory', () => {
 
 
 			const boundary = new TvJunctionBoundary();
-			boundary.segments = [ laneBoundary ];
+			boundary.addSegment( laneBoundary );
 
 			TvJunctionBoundaryFactory.sortBoundarySegments( boundary );
 
-			expect( boundary.segments.length ).toBe( 1 );
+			expect( boundary.getSegmentCount() ).toBe( 1 );
 			// Add more specific expectations about the order of segments
 		} );
 
 		it( 'should handle empty boundary segments', () => {
 			const boundary = new TvJunctionBoundary();
-			boundary.segments = [];
 
 			TvJunctionBoundaryFactory.sortBoundarySegments( boundary );
 
-			expect( boundary.segments.length ).toBe( 0 );
+			expect( boundary.getSegmentCount() ).toBe( 0 );
 		} );
 	} );
 } );
@@ -80,5 +81,5 @@ describe( 'TvJunctionBoundaryFactory', () => {
 function createMockJunction (): TvJunction {
 	// Create and return a mock TvJunction object
 	// This would include mock roads, connections, and lane sections
-	return new TvJunction( 'mock-junction', 0 );
+	return JunctionFactory.create();
 }

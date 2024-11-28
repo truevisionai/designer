@@ -7,7 +7,8 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map/map.service';
-import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLink, TvLinkType } from 'app/map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
 import { TvLane } from 'app/map/models/tv-lane';
 import { Vector2, Vector3 } from 'three';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
@@ -27,8 +28,8 @@ import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Commands } from 'app/commands/commands';
-import { RoadGeometryService } from './road-geometry.service';
 import { RoadWidthService } from './road-width.service';
+import { LaneDistance } from 'app/map/road/road-distance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -41,8 +42,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 		public splineFactory: SplineFactory,
 		public mapService: MapService,
 		public roadFactory: RoadFactory,
-		public queryService: MapQueryService,
-		public roadGeometryService: RoadGeometryService
 	) {
 		super();
 		RoadService.instance = this;
@@ -54,21 +53,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	getRoadFactory (): RoadFactory {
-
-		return this.roadFactory;
-
-	}
-
 	get roads (): TvRoad[] {
 
 		return this.mapService.map.getRoads();
-
-	}
-
-	get junctionRoads (): TvRoad[] {
-
-		return this.roads.filter( road => road.isJunction );
 
 	}
 
@@ -88,7 +75,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		try {
 
-			return this.mapService.map.getRoadById( roadId );
+			return this.mapService.map.getRoad( roadId );
 
 		} catch ( error ) {
 
@@ -248,8 +235,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const t = roadCoord.t;
 
-		const lanes = laneSection.lanesMap;
-
 		let targetLane: TvLane;
 
 		const isLeft = t > 0;
@@ -259,7 +244,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 			return laneSection.getLaneById( 0 );
 		}
 
-		for ( const [ id, lane ] of lanes ) {
+		for ( const lane of laneSection.getLanes() ) {
 
 			// logic to skip left or right lanes depending on t value
 			if ( isLeft && lane.isRight ) continue;
@@ -284,15 +269,13 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		if ( !roadCoord ) return;
 
-		const posTheta = RoadGeometryService.instance.findCoordPosition( roadCoord );
-
-		const result = this.findNearestLane( position, posTheta );
+		const result = this.findNearestLane( position, roadCoord.posTheta );
 
 		if ( !result ) return;
 
 		const laneSOffset = roadCoord.s - result.lane.laneSection.s;
 
-		return new TvLaneCoord( roadCoord.road, result.lane.laneSection, result.lane, laneSOffset, roadCoord.t );
+		return new TvLaneCoord( roadCoord.road, result.lane.laneSection, result.lane, laneSOffset as LaneDistance, roadCoord.t );
 	}
 
 	createConnectionRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvRoad {
@@ -303,9 +286,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		road.junction = junction;
 
-		road.setPredecessor( TvRoadLinkType.ROAD, incoming.road, incoming.contact );
+		road.predecessor = LinkFactory.createRoadLink( incoming.road, incoming.contact );
 
-		road.setSuccessor( TvRoadLinkType.ROAD, outgoing.road, outgoing.contact );
+		road.successor = LinkFactory.createRoadLink( outgoing.road, outgoing.contact );
 
 		return road;
 
@@ -447,7 +430,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	STtoXYZ ( road: TvRoad, s: number, t: number ) {
 
-		const posTheta = RoadGeometryService.instance.findRoadPosition( road, s, t );
+		const posTheta = road.getRoadPosition( s, t );
 
 		const position = posTheta.toVector3();
 
@@ -457,44 +440,16 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		const lane = laneCoord.lane;
 
-		const laneHeight = lane.getHeightValue( laneCoord.s );
+		const laneHeight = lane.getHeightValue( laneCoord.laneDistance );
 
 		position.z += laneHeight.getLinearValue( 0.5 );
 
 		return position;
 	}
 
-	sortLinks ( links: TvRoadLink[], clockwise = true ): TvRoadLink[] {
+	findCentroid ( links: TvLink[] ) {
 
-		const points = links.map( coord => RoadGeometryService.instance.findLinkPosition( coord ) );
-
-		const center = GeometryUtils.getCentroid( points.map( p => p.position ) );
-
-		if ( clockwise ) {
-
-			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
-
-			return links.map( ( point, index ) => ( {
-				point,
-				index
-			} ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
-
-		} else {
-
-			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
-
-			return links.map( ( point, index ) => ( {
-				point,
-				index
-			} ) ).sort( ( a, b ) => angles[ b.index ] - angles[ a.index ] ).map( sortedObj => sortedObj.point );
-
-		}
-
-	}
-
-	findCentroid ( links: TvRoadLink[] ) {
-
-		const points = links.map( link => RoadGeometryService.instance.findLinkPosition( link ).position );
+		const points = links.map( link => link.getPosition().toVector3() );
 
 		return GeometryUtils.getCentroid( points );
 

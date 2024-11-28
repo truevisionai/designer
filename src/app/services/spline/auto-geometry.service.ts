@@ -22,7 +22,21 @@ import { Log } from "app/core/utils/log";
 } )
 export class AutoGeometryService {
 
-	build ( spline: AutoSpline ): void {
+	private static _instance: AutoGeometryService;
+
+	static get instance (): AutoGeometryService {
+
+		if ( !AutoGeometryService._instance ) {
+			AutoGeometryService._instance = new AutoGeometryService();
+		}
+
+		return AutoGeometryService._instance;
+	}
+
+	constructor () {
+	}
+
+	updateGeometry ( spline: AutoSpline ): void {
 
 		this.updateHdgs( spline );
 
@@ -44,7 +58,7 @@ export class AutoGeometryService {
 
 	}
 
-	updateHdgs ( spline: AutoSpline ): void {
+	private updateHdgs ( spline: AutoSpline ): void {
 
 		const hdgs = [];
 
@@ -74,7 +88,7 @@ export class AutoGeometryService {
 
 	}
 
-	updateRoadSegments ( spline: AutoSpline ): void {
+	private updateRoadSegments ( spline: AutoSpline ): void {
 
 		const splineGeometries = this.exportGeometries( spline );
 
@@ -82,7 +96,7 @@ export class AutoGeometryService {
 
 		splineGeometries.forEach( geometry => splineLength += geometry.length );
 
-		const segments = spline.segmentMap.toArray();
+		const segments = spline.getSegments();
 
 		for ( const road of segments ) {
 
@@ -92,17 +106,18 @@ export class AutoGeometryService {
 
 				const sStart = road.sStart;
 
-				const sEnd = spline.segmentMap.getNextKey( road ) || splineLength;
+				const sEnd = spline.getNextSegmentKey( road ) || splineLength;
 
 				const newGeometries = this.breakGeometries( splineGeometries, sStart, sEnd );
 
-				newGeometries.forEach( geometry => road.getPlanView().addGeometry( geometry ) );
+				newGeometries.forEach( geometry => road.addGeometryAndUpdateCoords( geometry ) );
 
 			}
 
 		}
 
-		spline.geometries = splineGeometries;
+		spline.setGeometries( splineGeometries )
+
 	}
 
 	// eslint-disable-next-line max-lines-per-function

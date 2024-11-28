@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvConsole } from 'app/core/utils/console';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvMap } from 'app/map/models/tv-map.model';
-import { TvRoadLink } from 'app/map/models/tv-road-link';
+import { TvLink } from 'app/map/models/tv-link';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { DebugDrawService } from '../debug/debug-draw.service';
@@ -17,7 +17,7 @@ import { DebugTextService } from '../debug/debug-text.service';
 import { Environment } from 'app/core/utils/environment';
 import { MapEvents } from 'app/events/map-events';
 import { MapService } from './map.service';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvElectronService } from '../tv-electron.service';
@@ -28,7 +28,7 @@ import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { SplineUtils } from 'app/utils/spline.utils';
 import { RoadUtils } from 'app/utils/road.utils';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { RoadGeometryService } from "../road/road-geometry.service";
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
 
 
 const SPHERE_SIZE = 0.1;
@@ -171,7 +171,7 @@ export class MapValidatorService {
 
 	}
 
-	validateRoad ( road: TvRoad ) {
+	validateRoad ( road: TvRoad ): void {
 
 		this.validateRoadLinks( road );
 
@@ -195,108 +195,116 @@ export class MapValidatorService {
 	 * @param road
 	 * @returns
 	 */
-	validateLaneSections ( road: TvRoad ) {
+	validateLaneSections ( road: TvRoad ): void {
 
-		const validLaneSection = ( laneSection: TvLaneSection ) => {
+		const laneSections = road.getLaneProfile().getLaneSections();
 
-			if ( laneSection.getLaneCount() == 0 ) {
-				this.errors.push( 'Road:' + road.id + ' LaneSection has no lanes ' + laneSection.toString() );
-			}
-
-			if ( laneSection.getCenterLanes().length == 0 ) {
-				this.errors.push( 'Road:' + road.id + ' LaneSection has no center lanes ' + laneSection.toString() );
-			}
-
-			if ( laneSection.getCenterLanes().length > 1 ) {
-				this.errors.push( 'Road:' + road.id + ' LaneSection has more than one center lane ' + laneSection.toString() );
-			}
-
-			if ( laneSection.getLaneCount() < 2 ) {
-				this.errors.push( 'Road:' + road.id + ' LaneSection has less than 2 lanes ' + laneSection.toString() );
-			}
-
-			for ( const [ id, lane ] of laneSection.lanesMap ) {
-
-				if ( id == 0 ) continue;
-
-				this.validateLane( road, laneSection, lane );
-
-			}
-
-			// Lane numbering shall start with 1 next to the center lane in
-			// positive t-direction in ascending order and -1 next to the center lane
-			// in negative t-direction in descending order.
-			// Lane numbering shall be consecutive without any gaps.
-			// 4 3 2 1 0 -1 -2 -3
-			if ( !laneSection.areLeftLanesInOrder() ) {
-
-				const laneIds = laneSection.getLeftLanes().map( lane => lane.id );
-
-				this.errors.push( road.toString() + ' left lanes are not in order ' + laneSection.toString() + ' LaneIds:' + laneIds );
-
-			}
-
-			if ( !laneSection.areRightLanesInOrder() ) {
-
-				const laneIds = laneSection.getRightLanes().map( lane => lane.id );
-
-				this.errors.push( road.toString() + ' right lanes are not in order ' + laneSection.toString() + ' LaneIds:' + laneIds );
-
-			}
-
-			// Lane numbering shall be unique per lane section.
-			const laneIds = [];
-
-			for ( const [ id, lane ] of laneSection.lanesMap ) {
-
-				if ( laneIds.includes( id ) ) {
-					this.errors.push( road.toString() + ' LaneSection has duplicate lane id ' + laneSection.toString() );
-				}
-
-				laneIds.push( id );
-
-			}
-
-
-
-		}
-
-		if ( road.laneSections.length == 0 ) {
-			this.errors.push( 'Road:' + road.id + ' has no lane sections' );
+		if ( laneSections.length == 0 ) {
+			this.errors.push( `${ road.toString() } has no lane sections` );
 			return;
 		}
 
-		const firstLaneSection = road.laneSections[ 0 ];
+		const firstLaneSection = laneSections[ 0 ];
 
 		if ( firstLaneSection.s != 0 ) {
-			this.errors.push( 'Road:' + road.id + ' first lane section s != 0' + firstLaneSection.toString() );
+			this.errors.push( `${ road.toString() } first lane section s != 0${ firstLaneSection.toString() }` );
 		}
 
-		validLaneSection( firstLaneSection );
+		laneSections.forEach( laneSection => {
+			this.validateLaneSection( road, laneSection );
+		} )
 
-		for ( let i = 1; i < road.laneSections.length; i++ ) {
+	}
 
-			const prevLaneSection = road.laneSections[ i - 1 ];
-			const laneSection = road.laneSections[ i ];
+	validateLaneSectionAreInOrder ( road: TvRoad, laneSections: TvLaneSection[] ): void {
 
-			if ( laneSection.s < prevLaneSection.s ) {
-				this.errors.push( 'Road:' + road.id + ' lane section not in order of increasing s' + prevLaneSection.toString() + laneSection.toString() );
+		for ( let i = 1; i < laneSections.length; i++ ) {
+
+			const previous = laneSections[ i - 1 ];
+			const current = laneSections[ i ];
+
+			if ( current.s < previous.s ) {
+				this.errors.push( `${ road.toString() } lane section not in order of increasing s${ previous.toString() }${ current.toString() }` );
 			}
 
-			if ( Maths.approxEquals( laneSection.s, prevLaneSection.s ) ) {
-				this.errors.push( 'Road:' + road.id + ' lane section s is not increasing' + prevLaneSection.toString() + laneSection.toString() );
+			if ( current.s === previous.s ) {
+				this.errors.push( `${ road.toString() } lane sections cannot be equal s${ previous.toString() }${ current.toString() }` );
 			}
 
-			validLaneSection( laneSection );
+			this.validateLaneSection( road, current );
+		}
+	}
 
+	validateLaneSection ( road: TvRoad, laneSection: TvLaneSection ): void {
+
+		if ( laneSection.getLaneCount() == 0 ) {
+			this.errors.push( `${ road.toString() } LaneSection has no lanes ${ laneSection.toString() }` );
+		}
+
+		if ( laneSection.getCenterLanes().length == 0 ) {
+			this.errors.push( `${ road.toString() } LaneSection has no center lanes ${ laneSection.toString() }` );
+		}
+
+		if ( laneSection.getCenterLanes().length > 1 ) {
+			this.errors.push( `${ road.toString() } LaneSection has more than one center lane ${ laneSection.toString() }` );
+		}
+
+		if ( laneSection.getLaneCount() < 2 ) {
+			this.errors.push( `${ road.toString() } LaneSection has less than 2 lanes ${ laneSection.toString() }` );
+		}
+
+		for ( const lane of laneSection.getLanes() ) {
+
+			if ( lane.id == 0 ) continue;
+
+			this.validateLane( road, laneSection, lane );
+
+		}
+
+		this.validateLanesAreInOrder( road, laneSection );
+
+		this.validateLaneIdsAreNotDuplicate( road, laneSection );
+
+	}
+
+	validateLaneIdsAreNotDuplicate ( road: TvRoad, laneSection: TvLaneSection ): void {
+
+		// Lane numbering shall be unique per lane section.
+		const laneIds = [];
+
+		for ( const lane of laneSection.getLanes() ) {
+
+			if ( laneIds.includes( lane.id ) ) {
+				this.errors.push( `${ road.toString() } LaneSection has duplicate lane id ${ laneSection.toString() }` );
+			}
+
+			laneIds.push( lane.id );
 		}
 
 	}
 
-	validateLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	validateLanesAreInOrder ( road: TvRoad, laneSection: TvLaneSection ): void {
 
-		if ( lane.width.length == 0 ) {
-			this.errors.push( 'Road:' + road.id + ' Lane:' + lane.id + ' has no width' );
+		// Lane numbering shall start with 1 next to the center lane in
+		// positive t-direction in ascending order and -1 next to the center lane
+		// in negative t-direction in descending order.
+		// Lane numbering shall be consecutive without any gaps.
+		// 4 3 2 1 0 -1 -2 -3
+		if ( !laneSection.areLeftLanesInOrder() ) {
+			const laneIds = laneSection.getLeftLanes().map( lane => lane.id );
+			this.errors.push( `${ road.toString() } left lanes are not in order ${ laneSection.toString() } LaneIds:${ laneIds }` );
+		}
+
+		if ( !laneSection.areRightLanesInOrder() ) {
+			const laneIds = laneSection.getRightLanes().map( lane => lane.id );
+			this.errors.push( `${ road.toString() } right lanes are not in order ${ laneSection.toString() } LaneIds:${ laneIds }` );
+		}
+	}
+
+	validateLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
+
+		if ( lane.getLaneWidthCount() == 0 ) {
+			this.errors.push( `${ road.toString() } ${ lane.toString() } has no width` );
 		}
 
 		this.validateLaneWidth( lane );
@@ -309,7 +317,7 @@ export class MapValidatorService {
 
 	validateLaneWidth ( lane: TvLane ) {
 
-		this.validatePolynomials( lane.width );
+		this.validatePolynomials( lane.getWidthArray() );
 
 	}
 
@@ -317,15 +325,15 @@ export class MapValidatorService {
 
 		for ( let i = 1; i < polynomials.length; i++ ) {
 
-			const prev = polynomials[ i - 1 ];
+			const previous = polynomials[ i - 1 ];
 			const current = polynomials[ i ];
 
-			if ( prev.s > current.s ) {
-				this.errors.push( 'Polynomials not in order of increasing s ' + prev.toString() + current.toString() );
+			if ( current.s < previous.s ) {
+				this.errors.push( `Polynomials not in order of increasing s ${ previous.toString() }${ current.toString() }` );
 			}
 
-			if ( Maths.approxEquals( prev.s, current.s ) ) {
-				this.errors.push( 'Polynomials distance should be more than 0 ' + prev.toString() + current.toString() );
+			if ( current.s === previous.s ) {
+				this.errors.push( `Polynomials cannot have equal s ${ previous.toString() }${ current.toString() }` );
 			}
 
 		}
@@ -350,13 +358,13 @@ export class MapValidatorService {
 
 			if ( road.successor.laneSection.getLaneCount() != laneSection.getLaneCount() ) {
 
-				this.errors.push( road.toString() + ' has successor ' + road.successor.toString() + ' but lane:' + lane.id + ' has no successor' );
+				this.errors.push( `${ road.toString() } has successor ${ road.successor.toString() } but lane:${ lane.id } has no successor` );
 
 			} else {
 
 				if ( road.successor.contactPoint == TvContactPoint.END ) {
 
-					this.errors.push( road.toString() + ' has successor ' + road.successor.toString() + ' but lane:' + lane.id + ' has no successor' );
+					this.errors.push( `${ road.toString() } has successor ${ road.successor.toString() } but lane:${ lane.id } has no successor` );
 
 				}
 
@@ -368,13 +376,13 @@ export class MapValidatorService {
 
 			if ( road.predecessor.laneSection.getLaneCount() != laneSection.getLaneCount() ) {
 
-				this.errors.push( road.toString() + ' has predecessor ' + road.predecessor.toString() + ' but lane:' + lane.id + ' has no predecessor' );
+				this.errors.push( `${ road.toString() } has predecessor ${ road.predecessor.toString() } but lane:${ lane.id } has no predecessor` );
 
 			} else {
 
 				if ( road.predecessor.contactPoint == TvContactPoint.START ) {
 
-					this.errors.push( road.toString() + ' has predecessor ' + road.predecessor.toString() + ' but lane:' + lane.id + ' has no predecessor' );
+					this.errors.push( `${ road.toString() } has predecessor ${ road.predecessor.toString() } but lane:${ lane.id } has no predecessor` );
 
 				}
 
@@ -392,7 +400,7 @@ export class MapValidatorService {
 
 	}
 
-	validateSuccessor ( roadA: TvRoad, link: TvRoadLink ) {
+	validateSuccessor ( roadA: TvRoad, link: TvLink ) {
 
 		if ( link.isRoad ) {
 
@@ -406,7 +414,7 @@ export class MapValidatorService {
 
 	}
 
-	validatePredecessor ( roadA: TvRoad, link: TvRoadLink ) {
+	validatePredecessor ( roadA: TvRoad, link: TvLink ) {
 
 		if ( link.isRoad ) {
 
@@ -420,7 +428,7 @@ export class MapValidatorService {
 
 	}
 
-	validateRoadLink ( roadA: TvRoad, link: TvRoadLink, linkType: 'successor' | 'predecessor' ) {
+	validateRoadLink ( roadA: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ) {
 
 		if ( !link.isRoad ) return;
 
@@ -428,13 +436,13 @@ export class MapValidatorService {
 
 		try {
 
-			roadB = this.map.getRoadById( link.id );
+			roadB = link.getElement() as TvRoad;
 
 		} catch ( error ) {
 
 			if ( error instanceof ModelNotFoundException ) {
 
-				this.errors.push( linkType + ' not found for road ' + roadA.toString() + ' link: ' + link.toString() );
+				this.errors.push( `${ linkType } not found for road ${ roadA.toString() } link: ${ link.toString() }` );
 
 				const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE * 10, COLOR.MAGENTA );
 				this.debugObjects.add( sphere1, sphere1 );
@@ -449,11 +457,9 @@ export class MapValidatorService {
 
 		}
 
-		const label = roadA.isJunction ? 'ConnectingRoad' : 'Road';
-
 		if ( !roadB ) {
 
-			this.errors.push( linkType + ' not found ' + link.toString() + ' for road ' + roadA.id );
+			this.errors.push( `${ linkType } not found ${ link.toString() } for road ${ roadA.id }` );
 
 			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE * 10, COLOR.MAGENTA );
 			this.debugObjects.add( sphere1, sphere1 );
@@ -461,60 +467,7 @@ export class MapValidatorService {
 			return;
 		}
 
-		const contactA = linkType == 'successor' ? TvContactPoint.END : TvContactPoint.START;
-		const pointA = RoadGeometryService.instance.findContactPosition( roadA, contactA )
-		const pointB = RoadGeometryService.instance.findLinkPosition( link );
-
-		let headingShouldBeSame: boolean = false;
-
-		if ( linkType == 'successor' && link.contactPoint == TvContactPoint.START || linkType == 'predecessor' && link.contactPoint == TvContactPoint.END ) {
-			headingShouldBeSame = true;
-		}
-
-		function approxEquals ( angle1, angle2, tolerance = 0.001 ) {
-			// Normalize angles to the range [0, 2π)
-			angle1 = ( angle1 + Math.PI * 2 ) % ( Math.PI * 2 );
-			angle2 = ( angle2 + Math.PI * 2 ) % ( Math.PI * 2 );
-
-			// Check if the difference is within the tolerance
-			return Math.abs( angle1 - angle2 ) < tolerance;
-		}
-
-		if ( headingShouldBeSame ) {
-
-			if ( !approxEquals( pointA.normalizedHdg, pointB.normalizedHdg ) ) {
-
-				this.errors.push( label + ':' + roadA.id + ' invalid hdg, should be same ' + linkType + ':' + link.toString() + ' ' + pointA.normalizedHdg + ' ' + pointB.normalizedHdg );
-
-				const arrow1 = this.debugDraw.createArrow( pointA.position, pointA.normalizedHdg, COLOR.BLUE );
-				this.debugObjects.add( arrow1, arrow1 );
-
-				const arrow2 = this.debugDraw.createArrow( pointB.position, pointB.normalizedHdg, COLOR.GREEN );
-				this.debugObjects.add( arrow2, arrow2 );
-
-			}
-
-		} else {
-
-			// validate if hdg are facing each other
-			let diff = Math.abs( pointA.normalizedHdg - pointB.normalizedHdg );
-
-			// Adjust the difference to find the smaller angle
-			diff = Math.min( diff, 2 * Math.PI - diff );
-
-			if ( !Maths.approxEquals( diff, Maths.PI ) ) {
-
-				this.errors.push( label + ':' + roadA.id + ' invalid hdg, should be facing ' + linkType + ':' + link.toString() + ' ' + pointA.normalizedHdg + ' ' + pointB.normalizedHdg );
-
-				const arrow1 = this.debugDraw.createArrow( pointA.position, pointA.normalizedHdg, COLOR.BLUE );
-				this.debugObjects.add( arrow1, arrow1 );
-
-				const arrow2 = this.debugDraw.createArrow( pointB.position, pointB.normalizedHdg, COLOR.GREEN );
-				this.debugObjects.add( arrow2, arrow2 );
-
-			}
-
-		}
+		this.validateLinkHeading( roadA, roadB, link, linkType );
 
 		// NOTE: Below Lane side validation is not working as expected
 		// fails in scenario
@@ -584,14 +537,66 @@ export class MapValidatorService {
 
 	}
 
-	validateJunctionLink ( road: TvRoad, link: TvRoadLink, linkType: 'successor' | 'predecessor' ) {
+	validateLinkHeading ( roadA: TvRoad, roadB: TvRoad, link: TvLink, linkType: string ): void {
+
+		const contactA = linkType === 'successor' ? TvContactPoint.END : TvContactPoint.START;
+		const pointA = roadA.getContactPosition( contactA );
+		const pointB = link.getPosition();
+		const label = roadA.isJunction ? 'ConnectingRoad' : 'Road';
+
+		const headingShouldBeSame = link.contactPoint !== contactA;
+
+		const hdgA = pointA.normalizedHdg;
+		const hdgB = pointB.normalizedHdg;
+
+		// Tolerance for heading comparison
+		// 0.01 (about 0.57°)
+		// 0.05 (about 2.86°)
+		// 0.10 (about 5.72°)
+		const TOLERANCE = 0.05;
+
+		if ( headingShouldBeSame ) {
+			if ( !this.areHeadingsApproximatelyEqual( hdgA, hdgB, TOLERANCE ) ) {
+				this.reportError( label, roadA.id, 'same', linkType, link, hdgA, hdgB );
+			}
+		} else {
+			if ( !this.areHeadingsApproximatelyOpposite( hdgA, hdgB, TOLERANCE ) ) {
+				this.reportError( label, roadA.id, 'facing', linkType, link, hdgA, hdgB );
+			}
+		}
+
+	}
+
+	private areHeadingsApproximatelyEqual ( hdg1: number, hdg2: number, tolerance: number ): boolean {
+		const diff = Math.abs( hdg1 - hdg2 );
+		return Math.min( diff, 2 * Math.PI - diff ) < tolerance;
+	}
+
+	private areHeadingsApproximatelyOpposite ( hdg1: number, hdg2: number, tolerance: number ): boolean {
+		const diff = Math.abs( hdg1 - hdg2 );
+		const smallestDiff = Math.min( diff, 2 * Math.PI - diff );
+		return Math.abs( Math.PI - smallestDiff ) < tolerance;
+	}
+
+	private reportError ( label: string, roadId: number, expectedDirection: string, linkType: string, link: TvLink, hdgA: number, hdgB: number ) {
+
+		this.errors.push( `${ label }:${ roadId } invalid hdg, should be ${ expectedDirection } ${ linkType }:${ link.toString() } ${ hdgA } ${ hdgB }` );
+
+		// const arrow1 = this.debugDraw.createArrow( pointA.position, hdgA, COLOR.BLUE );
+		// this.debugObjects.add( arrow1, arrow1 );
+
+		// const arrow2 = this.debugDraw.createArrow( pointB.position, hdgB, COLOR.GREEN );
+		// this.debugObjects.add( arrow2, arrow2 );
+	}
+
+	validateJunctionLink ( road: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ) {
 
 		try {
 
-			const junction = this.map.getJunctionById( link.id );
+			const junction = link.getElement() as TvJunction;
 
 			const contactPoint = linkType == 'successor' ? road.getEndPosTheta() : road.getStartPosTheta();
-			const distanceFromJunction = junction.boundingBox.distanceToPoint( new Vector2( contactPoint.position.x, contactPoint.position.y ) );
+			const distanceFromJunction = junction.distanceToPoint( new Vector2( contactPoint.position.x, contactPoint.position.y ) );
 
 			if ( !junction.getIncomingRoads().includes( road ) ) {
 				Log.warn( 'No Connections With Junction', road.toString(), link.toString() );
@@ -606,7 +611,7 @@ export class MapValidatorService {
 
 			if ( error instanceof ModelNotFoundException ) {
 
-				this.errors.push( 'validateJunctionLink: ' + linkType + ' not found ' + link.toString() + ' for road ' + road.id );
+				this.errors.push( `validateJunctionLink: ${ linkType } not found ${ link.toString() } for road ${ road.id }` );
 
 				const sphere1 = this.debugDraw.createSphere( road.getEndPosTheta().position, SPHERE_SIZE, COLOR.MAGENTA );
 
@@ -627,7 +632,7 @@ export class MapValidatorService {
 		this.validateConnectionAndRoad( connection.incomingRoadId, connection );
 		this.validateConnectionAndRoad( connection.connectingRoadId, connection );
 
-		connection.laneLink.forEach( link => {
+		connection.getLaneLinks().forEach( link => {
 
 			// const incomingLaneSection = link.incomingRoad.getLaneProfile().getLaneSectionAtContact( link.incomingContactPoint );
 			// const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;
@@ -697,13 +702,13 @@ export class MapValidatorService {
 
 		try {
 
-			this.map.getRoadById( id );
+			this.map.getRoad( id );
 
 		} catch ( error ) {
 
 			if ( error instanceof ModelNotFoundException ) {
 
-				this.errors.push( 'Road:' + id + ' not found. ' + connection.toString() );
+				this.errors.push( `Road:${ id } not found. ${ connection.toString() }` );
 
 			} else {
 

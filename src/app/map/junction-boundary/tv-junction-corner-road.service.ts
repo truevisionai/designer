@@ -4,10 +4,9 @@
 
 import { Injectable } from '@angular/core';
 import { TvJunction } from "../models/junctions/tv-junction";
-import { TvJunctionConnection } from "../models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
 import { TvRoad } from "../models/tv-road.model";
 import { GeometryUtils } from "../../services/surface/geometry-utils";
-import { JunctionRoadService } from "../../services/junction/junction-road.service";
 import { TvRoadCoord } from '../models/TvRoadCoord';
 
 @Injectable( {
@@ -15,9 +14,7 @@ import { TvRoadCoord } from '../models/TvRoadCoord';
 } )
 export class TvJunctionCornerRoadService {
 
-	constructor (
-		private junctionRoadService: JunctionRoadService
-	) { }
+	constructor () { }
 
 	getJunctionCornerConnections ( junction: TvJunction ): TvJunctionConnection[] {
 
@@ -55,7 +52,7 @@ export class TvJunctionCornerRoadService {
 
 		const connections = [];
 
-		const links = this.junctionRoadService.getRoadLinks( junction );
+		const links = junction.getRoadLinks();
 
 		const coords = links.map( link => link.toRoadCoord() );
 
@@ -68,9 +65,9 @@ export class TvJunctionCornerRoadService {
 		return connections;
 	}
 
-	getAdjacentRoadToRight ( junction: TvJunction, incomingRoad: TvRoad ): TvRoadCoord {
+	private getAdjacentRoadToRight ( junction: TvJunction, incomingRoad: TvRoad ): TvRoadCoord {
 
-		const coords = this.junctionRoadService.getRoadLinks( junction ).map( link => link.toRoadCoord() );
+		const coords = junction.getRoadLinks().map( link => link.toRoadCoord() );
 
 		const sortedRoadLinks = GeometryUtils.sortCoordsByAngle( coords );
 
@@ -101,7 +98,7 @@ export class TvJunctionCornerRoadService {
 
 		for ( const connection of connections ) {
 
-			const laneIds = connection.getLinks()
+			const laneIds = connection.getLaneLinks()
 				.filter( link => allLanes || link.incomingLane.isCarriageWay() )
 				.map( link => link.incomingLane.id );
 

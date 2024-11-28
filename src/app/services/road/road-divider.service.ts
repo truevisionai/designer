@@ -7,9 +7,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from './road.service';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { SplineService } from '../spline/spline.service';
-import { RoadLinkService } from "./road-link.service";
-import { RoadManager } from "../../managers/road/road-manager";
-import { MapService } from "../map/map.service";
 import { SplineUtils } from "../../utils/spline.utils";
 import { SplineSegmentService } from '../spline/spline-segment.service';
 
@@ -19,11 +16,8 @@ import { SplineSegmentService } from '../spline/spline-segment.service';
 export class RoadDividerService {
 
 	constructor (
-		private mapService: MapService,
-		private roadManager: RoadManager,
 		private roadService: RoadService,
 		private splineService: SplineService,
-		private linkService: RoadLinkService,
 		private segmentService: SplineSegmentService,
 	) {
 	}

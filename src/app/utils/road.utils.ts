@@ -3,59 +3,14 @@
  */
 
 import { TvContactPoint } from "app/map/models/tv-common";
-import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
+import { TvLink, TvLinkType } from "app/map/models/tv-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "../map/models/junctions/tv-junction";
 import { Vector2, Vector3 } from "three";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
-import { TvLane } from "app/map/models/tv-lane";
-import { TvLaneSection } from "app/map/models/tv-lane-section";
-
-export function traverseLanes ( road: TvRoad, currentLaneId: number, callback: ( lane: TvLane, laneSection: TvLaneSection ) => void ): void {
-
-	const laneSections = road.getLaneProfile().getLaneSections();
-
-	let currentLaneSectionIndex = 0;
-	let currentLaneSection = laneSections[ currentLaneSectionIndex ];
-	let currentLane: TvLane;
-
-	while ( currentLaneId != null ) {
-
-		// Check if laneSectionIndex is out of bounds
-		if ( currentLaneSectionIndex >= laneSections.length ) {
-			break;
-		}
-
-		// Check if the current lane section has the current lane ID
-		if ( !currentLaneSection.hasLane( currentLaneId ) ) {
-			break;
-		}
-
-		// Get the current lane by ID
-		currentLane = currentLaneSection.getLaneById( currentLaneId );
-
-		// Call the callback with the current lane and lane section
-		callback( currentLane, currentLaneSection );
-
-		// Get the successor lane ID to move to the next lane
-		currentLaneId = currentLane.successorId;
-
-		// Move to the next lane section
-		currentLaneSectionIndex += 1;
-
-		// Ensure we are still within bounds before updating the lane section
-		if ( currentLaneSectionIndex < laneSections.length ) {
-			currentLaneSection = laneSections[ currentLaneSectionIndex ];
-		}
-
-	}
-
-}
-
 
 export class RoadUtils {
 
-	static distanceFromSuccessor ( road: TvRoad, link: TvRoadLink ): number {
+	static distanceFromSuccessor ( road: TvRoad, link: TvLink ): number {
 
 		const end = road.getEndPosTheta();
 
@@ -69,13 +24,13 @@ export class RoadUtils {
 
 			const point = new Vector2( end.position.x, end.position.y );
 
-			return link.element.boundingBox.distanceToPoint( point );
+			return link.element.distanceToPoint( point );
 
 		}
 
 	}
 
-	static distanceFromPredecessor ( road: TvRoad, link: TvRoadLink ): number {
+	static distanceFromPredecessor ( road: TvRoad, link: TvLink ): number {
 
 		const start = road.getStartPosTheta();
 
@@ -89,7 +44,7 @@ export class RoadUtils {
 
 			const point = new Vector2( start.position.x, start.position.y );
 
-			return link.element.boundingBox.distanceToPoint( point );
+			return link.element.distanceToPoint( point );
 		}
 
 	}
@@ -181,45 +136,6 @@ export class RoadUtils {
 
 	}
 
-	static linkSuccessor ( road: TvRoad, successor: TvRoad, successorContact: TvContactPoint ) {
-
-		if ( road.successor ) this.unlinkSuccessor( road );
-
-		if ( successorContact === TvContactPoint.START ) {
-
-			successor.setPredecessorRoad( road, TvContactPoint.END );
-
-		} else if ( successorContact === TvContactPoint.END ) {
-
-			successor.setSuccessorRoad( road, TvContactPoint.END );
-
-		} else {
-
-			throw new Error( "Invalid contact point" );
-
-		}
-
-		road.successor = new TvRoadLink( TvRoadLinkType.ROAD, successor, successorContact );
-	}
-
-	static linkPredecessor ( road: TvRoad, predecessor: TvRoad, predecessorContact: TvContactPoint ) {
-
-		if ( road.predecessor ) this.unlinkPredecessor( road );
-
-		if ( predecessorContact === TvContactPoint.END ) {
-
-			predecessor.setSuccessorRoad( road, TvContactPoint.START );
-
-		} else {
-
-			predecessor.setPredecessorRoad( road, TvContactPoint.START );
-
-		}
-
-		road.predecessor = new TvRoadLink( TvRoadLinkType.ROAD, predecessor, predecessorContact );
-
-	}
-
 	static unlinkSuccessor ( road: TvRoad, updateMe = true ) {
 
 		if ( !road.successor ) return;
@@ -264,8 +180,8 @@ export class RoadUtils {
 
 	static getContactByPosition ( road: TvRoad, position: Vector3 ): TvContactPoint {
 
-		const startDistance = RoadGeometryService.instance.findRoadPosition( road, 0 ).position.distanceTo( position );
-		const endDistance = RoadGeometryService.instance.findRoadPosition( road, this.length ).position.distanceTo( position );
+		const startDistance = road.getRoadPosition( 0 ).position.distanceTo( position );
+		const endDistance = road.getRoadPosition( this.length ).position.distanceTo( position );
 
 		if ( startDistance < endDistance ) {
 

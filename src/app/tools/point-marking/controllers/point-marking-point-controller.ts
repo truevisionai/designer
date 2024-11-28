@@ -7,7 +7,6 @@ import { PointMarkingControlPoint } from "../objects/point-marking-object";
 import { BaseController } from "app/core/controllers/base-controller";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { PointMarkingInspector } from "../point-marking.inspector";
-import { RoadGeometryService } from "app/services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -15,8 +14,7 @@ import { RoadGeometryService } from "app/services/road/road-geometry.service";
 export class PointMarkingController extends BaseController<PointMarkingControlPoint> {
 
 	constructor (
-		private roadObjectService: RoadObjectService,
-		private roadGeometryService: RoadGeometryService
+		private roadObjectService: RoadObjectService
 	) {
 		super();
 	}
@@ -29,7 +27,7 @@ export class PointMarkingController extends BaseController<PointMarkingControlPo
 
 	onUpdated ( point: PointMarkingControlPoint ): void {
 
-		const coord = this.roadGeometryService.findRoadPositionAt( point.road, point.position );
+		const coord = point.road.getPosThetaByPosition( point.position );
 
 		if ( !coord ) {
 			return;
@@ -39,7 +37,7 @@ export class PointMarkingController extends BaseController<PointMarkingControlPo
 
 		point.roadObject.t = coord.t;
 
-		this.roadObjectService.updateRoadObject( point.road, point.roadObject );
+		this.roadObjectService.updateRoadObjectMesh( point.road, point.roadObject );
 
 	}
 

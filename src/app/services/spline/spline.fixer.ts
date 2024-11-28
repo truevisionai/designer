@@ -3,18 +3,16 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { SplineType } from 'app/core/shapes/spline-type';
 import { RoadFactory } from "app/factories/road-factory.service";
 import { MapService } from "../map/map.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Maths } from "app/utils/maths";
 import { RoadManager } from "app/managers/road/road-manager";
 import { Log } from "app/core/utils/log";
-import { RoadUtils } from "app/utils/road.utils";
-import { TvContactPoint } from "app/map/models/tv-common";
 import { SplineUtils } from "app/utils/spline.utils";
-import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvRoadLinkType } from "app/map/models/tv-road-link";
+
 
 @Injectable( {
 	providedIn: 'root'
@@ -36,11 +34,6 @@ export class SplineFixerService {
 
 		if ( !this.enabled ) return;
 
-		if ( spline.controlPoints.length < 2 ) {
-			this.removeExtraSegments( spline );
-			return;
-		}
-
 		if ( !SplineUtils.areLinksCorrect( spline ) && log ) {
 			console.log( "Links are not correct", spline );
 			Log.error( "Links are not correct", spline?.toString() );
@@ -59,30 +52,15 @@ export class SplineFixerService {
 		this.fixInternalLinks( spline );
 	}
 
-	removeExtraSegments ( spline: AbstractSpline ): void {
-
-		const roads = spline.getRoadSegments();
-
-		// start from 2nd road
-		for ( let i = 1; i < roads.length; i++ ) {
-
-			this.roadManager.removeRoad( roads[ i ] );
-
-		}
-
-		this.fixInternalLinks( spline, true );
-
-	}
-
 	private fixMinSegmentCount ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.length == 0 ) {
+		if ( spline.getSegmentCount() == 0 ) {
 
 			const road = this.roadFactory.createDefaultRoad();
 
 			road.spline = spline;
 
-			spline.segmentMap.set( 0, road );
+			spline.addSegment( 0, road );
 
 			this.mapService.map.addRoad( road );
 
@@ -97,9 +75,9 @@ export class SplineFixerService {
 
 	private fixFirstSegment ( spline: AbstractSpline ) {
 
-		if ( spline.segmentMap.length >= 1 ) {
+		if ( spline.getSegmentCount() >= 1 ) {
 
-			const firstSegment = spline.segmentMap.getFirst();
+			const firstSegment = spline.getFirstSegment();
 
 			if ( firstSegment instanceof TvRoad ) {
 
@@ -108,7 +86,7 @@ export class SplineFixerService {
 			}
 
 			// get first key
-			const firstKey = spline.segmentMap.keys().next().value;
+			const firstKey = spline.getSegmentKeys()[ 0 ];
 
 			if ( !Maths.approxEquals( firstKey, 0 ) ) {
 
@@ -125,7 +103,7 @@ export class SplineFixerService {
 
 	private fixEachSegmentStart ( spline: AbstractSpline ) {
 
-		spline.segmentMap.forEach( ( segment, sOffset ) => {
+		spline.forEachSegment( ( segment, sOffset ) => {
 
 			if ( segment instanceof TvRoad ) {
 
@@ -150,10 +128,10 @@ export class SplineFixerService {
 
 		let index = 0;
 
-		spline.segmentMap.forEach( ( segment, sOffset ) => {
+		spline.getSegments().forEach( segment => {
 
 			// cannot remove first and last segment
-			if ( index == 0 || index == spline.segmentMap.length - 1 ) {
+			if ( index == 0 || index == spline.getSegmentCount() - 1 ) {
 				index++
 				return;
 			}
@@ -174,41 +152,6 @@ export class SplineFixerService {
 
 	}
 
-	// road segments should be linked to each other
-	private fixUnLinkedSegments ( spline: AbstractSpline ) {
-
-		if ( spline.type != SplineType.AUTOV2 ) return;
-
-		const segments = spline.segmentMap.values();
-
-		for ( let currentSegment of segments ) {
-
-			if ( currentSegment instanceof TvRoad ) {
-
-				const nextSegment = spline.segmentMap.getNext( currentSegment );
-
-				if ( nextSegment instanceof TvRoad && currentSegment.successor == null ) {
-
-					if ( this.debug ) Log.warn( "Fixing Links", currentSegment.toString(), nextSegment.toString() );
-
-					RoadUtils.linkSuccessor( currentSegment, nextSegment, TvContactPoint.START );
-
-				}
-
-				if ( nextSegment instanceof TvRoad && nextSegment.predecessor == null ) {
-
-					if ( this.debug ) Log.warn( "Fixing Links", currentSegment.toString(), nextSegment.toString() );
-
-					RoadUtils.linkSuccessor( currentSegment, nextSegment, TvContactPoint.START );
-
-				}
-
-			}
-
-		}
-
-	}
-
 	public fixInternalLinks ( spline: AbstractSpline, setNull = false ) {
 
 		// TODO: we need to check
@@ -225,55 +168,8 @@ export class SplineFixerService {
 
 	public setInternalLinks ( spline: AbstractSpline ): void {
 
-		const segments = spline.getSegments();
-
-		for ( const segment of segments ) {
-
-			const prevSegment = spline.getPreviousSegment( segment );
-			const nextSegment = spline.getNextSegment( segment );
-
-			if ( segment instanceof TvRoad ) {
-				this.setSuccessor( segment, nextSegment );
-				this.setPredecessor( segment, prevSegment );
-			}
-
-		}
+		SplineUtils.updateInternalLinks( spline );
 
 	}
 
-	private setSuccessor ( road: TvRoad, nextSegment: TvRoad | TvJunction ): void {
-
-		if ( nextSegment instanceof TvRoad ) {
-
-			road.setSuccessorRoad( nextSegment, TvContactPoint.START );
-
-		} else if ( nextSegment instanceof TvJunction ) {
-
-			road.setSuccessor( TvRoadLinkType.JUNCTION, nextSegment );
-
-		} else {
-
-			// if ( setNull ) segment.successor = null;
-
-		}
-
-	}
-
-	private setPredecessor ( road: TvRoad, prevSegment: TvRoad | TvJunction ): void {
-
-		if ( prevSegment instanceof TvRoad ) {
-
-			road.setPredecessorRoad( prevSegment, TvContactPoint.END );
-
-		} else if ( prevSegment instanceof TvJunction ) {
-
-			road.setPredecessor( TvRoadLinkType.JUNCTION, prevSegment );
-
-		} else {
-
-			// if ( setNull ) segment.predecessor = null;
-
-		}
-
-	}
 }

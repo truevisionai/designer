@@ -12,11 +12,6 @@ export enum TurnType {
 	OTHER = 'other'
 }
 
-export enum TvElementType {
-	ROAD = 'road',
-	JUNCTION = 'junction'
-}
-
 export enum TvLaneType {
 	none = 'none', // Describes the space on the outermost edge of the road and
 	// does not have actual content Its only purpose is for applications to

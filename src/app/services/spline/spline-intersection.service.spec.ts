@@ -8,10 +8,8 @@ import { TestBed, async, inject } from '@angular/core/testing';
 import { SplineIntersectionService } from './spline-intersection.service';
 import { SplineTestHelper } from './spline-test-helper.service';
 import { Vector3 } from 'three';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpClientModule } from '@angular/common/http';
-import { SplineBoundsService } from './spline-bounds.service';
 import { SplineGeometryService } from './spline-geometry.service';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'Service: SplineIntersection', () => {
 
@@ -21,10 +19,7 @@ describe( 'Service: SplineIntersection', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ MatSnackBarModule, HttpClientModule ],
-			providers: [ SplineIntersectionService ]
-		} );
+		setupTest();
 
 		service = TestBed.get( SplineIntersectionService );
 
@@ -45,7 +40,7 @@ describe( 'Service: SplineIntersection', () => {
 		splineGeometryService.updateGeometryAndBounds( roadA.spline );
 		splineGeometryService.updateGeometryAndBounds( roadB.spline );
 
-		const intersections = service.findIntersectionsViaBox2D( roadA.spline, roadB.spline );
+		const intersections = roadA.spline.getIntersections( roadB.spline );
 
 		expect( intersections.length ).toBe( 1 );
 

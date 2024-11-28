@@ -20,7 +20,7 @@ import {
 import { TvUserData } from 'app/map/models/tv-user-data';
 import { TvControllerControl, TvSignalController } from '../../map/signal-controller/tv-signal-controller';
 import { TvJunction } from '../../map/models/junctions/tv-junction';
-import { TvJunctionConnection } from '../../map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from '../../map/models/connections/tv-junction-connection';
 import { TvJunctionController } from '../../map/models/junctions/tv-junction-controller';
 import { TvJunctionLaneLink } from '../../map/models/junctions/tv-junction-lane-link';
 import { TvJunctionPriority } from '../../map/models/junctions/tv-junction-priority';
@@ -30,7 +30,8 @@ import { TvMapHeader } from '../../map/models/tv-map-header';
 import { TvMap } from '../../map/models/tv-map.model';
 import { TvObjectMarking } from '../../map/models/tv-object-marking';
 import { TvPlaneView } from '../../map/models/tv-plane-view';
-import { TvRoadLink, TvRoadLinkType } from '../../map/models/tv-road-link';
+import { TvLink, TvLinkType } from '../../map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
 import { TvRoadObject } from '../../map/models/objects/tv-road-object';
 import { TvRoadSignal } from '../../map/road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from '../../map/models/tv-road-type.class';
@@ -45,6 +46,7 @@ import { TvLaneOffset } from "../../map/models/tv-lane-offset";
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Log } from 'app/core/utils/log';
+import { JunctionFactory } from 'app/factories/junction.factory';
 
 
 @Injectable( {
@@ -119,7 +121,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			try {
 
-				const road = this.map.getRoadById( parseInt( xml.attr_id ) );
+				const road = this.map.getRoad( parseInt( xml.attr_id ) );
 
 				this.parseRoadLinks( road, xml.link );
 
@@ -147,7 +149,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			try {
 
-				const junction = this.map.getJunctionById( parseInt( xml.attr_id ) );
+				const junction = this.map.getJunction( parseInt( xml.attr_id ) );
 
 				this.parseJunctionConnections( junction, xml );
 
@@ -208,7 +210,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			const id = parseInt( value ) || -1;
 
-			return id > 0 ? this.map.getJunctionById( id ) : null;
+			return id > 0 ? this.map.getJunction( id ) : null;
 
 		} catch ( error ) {
 
@@ -293,7 +295,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		try {
 
-			return this.map.getRoadById( id );
+			return this.map.getRoad( id );
 
 		} catch ( error ) {
 
@@ -314,7 +316,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		try {
 
-			return this.map.getJunctionById( id );
+			return this.map.getJunction( id );
 
 		} catch ( error ) {
 
@@ -331,7 +333,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parseRoadLinkChild ( xmlElement: XmlElement ): TvRoadLink {
+	public parseRoadLinkChild ( xmlElement: XmlElement ): TvLink {
 
 		const elementType = this.parseElementType( xmlElement.attr_elementType );
 		const elementId = parseFloat( xmlElement.attr_elementId );
@@ -340,18 +342,18 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const elementS = xmlElement.attr_elementS ? parseFloat( xmlElement.attr_elementS ) : null;
 		const elementDir: TvOrientation = xmlElement.attr_elementDir ? this.parseOrientation( xmlElement.attr_elementDir ) : null;
 
-		if ( elementType == TvRoadLinkType.ROAD && contactPoint == null ) {
+		if ( elementType == TvLinkType.ROAD && contactPoint == null ) {
 			Log.error( 'No contact point found for link', xmlElement );
 			return;
 		}
 
 		let element = null;
 
-		if ( elementType == TvRoadLinkType.ROAD ) {
+		if ( elementType == TvLinkType.ROAD ) {
 
 			element = this.findRoad( elementId );
 
-		} else if ( elementType == TvRoadLinkType.JUNCTION ) {
+		} else if ( elementType == TvLinkType.JUNCTION ) {
 
 			element = this.findJunction( elementId );
 
@@ -367,7 +369,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			return;
 		}
 
-		const roadLink = new TvRoadLink( elementType, element, contactPoint );
+		const roadLink = LinkFactory.createLink( elementType, element, contactPoint );
 
 		if ( elementS ) {
 			roadLink.elementS = elementS;
@@ -400,15 +402,15 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parseElementType ( value: string ): TvRoadLinkType {
+	public parseElementType ( value: string ): TvLinkType {
 
 		if ( value === 'road' ) {
 
-			return TvRoadLinkType.ROAD;
+			return TvLinkType.ROAD;
 
 		} else if ( value === 'junction' ) {
 
-			return TvRoadLinkType.JUNCTION;
+			return TvLinkType.JUNCTION;
 
 		} else {
 
@@ -630,12 +632,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
+		const type = TvJunction.stringToType( xmlElement.attr_type );
 
-		const junction = new TvJunction( name, id );
-
-		junction.type = TvJunction.stringToType( xmlElement.attr_type );
-
-		return junction;
+		return JunctionFactory.createByType( type, name, id );
 
 	}
 
@@ -680,9 +679,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-		const linkedRoad = !isNaN( linkedRoadId ) ? this.map.getRoadById( linkedRoadId ) : null;
-		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoadById( incomingRoadId ) : null;
-		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoadById( connectingRoadId ) : linkedRoad;
+		const linkedRoad = !isNaN( linkedRoadId ) ? this.map.getRoad( linkedRoadId ) : null;
+		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoad( incomingRoadId ) : null;
+		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoad( connectingRoadId ) : linkedRoad;
 
 		if ( !incomingRoad ) {
 			TvConsole.error( "Incoming road not found" );
@@ -695,8 +694,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		}
 
 		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
-
-		connection.junction = junction;
 
 		readXmlArray( xmlElement.laneLink, xml => {
 
@@ -726,11 +723,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 				return connection.connectingRoad.predecessor.contactPoint;
 			}
 
-			if ( incomingRoad.successor?.id === junction.id ) {
+			if ( incomingRoad.successor?.isEqualTo( junction ) ) {
 				return TvContactPoint.END;
 			}
 
-			if ( incomingRoad.predecessor?.id === junction.id ) {
+			if ( incomingRoad.predecessor?.isEqualTo( junction ) ) {
 				return TvContactPoint.START;
 			}
 
@@ -780,12 +777,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			return;
 		}
 
-		const link = new TvJunctionLaneLink( fromLane, toLane );
-
-		link.connectingRoad = connection.connectingRoad;
-		link.incomingRoad = connection.incomingRoad;
-
-		return link;
+		return new TvJunctionLaneLink( fromLane, toLane );
 	}
 
 	public parseJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {

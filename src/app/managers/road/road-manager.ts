@@ -8,17 +8,13 @@ import { MapService } from "app/services/map/map.service";
 import { RoadObjectService } from "app/map/road-object/road-object.service";
 import { RoadElevationManager } from "./road-elevation.manager";
 import { LaneManager } from "../lane/lane.manager";
-import { RoadBuilder } from "app/map/builders/road.builder";
-import { SplineBuilder } from "app/services/spline/spline.builder";
+import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 import { RoadLinkManager } from "./road-link.manager";
-import { SceneService } from "app/services/scene.service";
 import { SplineService } from "../../services/spline/spline.service";
-import { TvContactPoint } from "app/map/models/tv-common";
-import { TvRoadLink } from "app/map/models/tv-road-link";
-import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Log } from "app/core/utils/log";
 import { RoadValidator } from "./road-validator";
 import { LinkUtils } from "app/utils/link.utils";
+import { MapEvents } from "app/events/map-events";
 
 @Injectable( {
 	providedIn: 'root'
@@ -32,8 +28,7 @@ export class RoadManager {
 		private roadObjectService: RoadObjectService,
 		private roadElevationManager: RoadElevationManager,
 		private laneManager: LaneManager,
-		private roadBuilder: RoadBuilder,
-		private splineBuilder: SplineBuilder,
+		private splineBuilder: SplineGeometryGenerator,
 		private roadLinkManager: RoadLinkManager,
 		private splineService: SplineService,
 		private roadValidator: RoadValidator
@@ -47,7 +42,7 @@ export class RoadManager {
 		this.roadLinkManager.onRoadCreated( road );
 
 		for ( const laneSection of road.laneSections ) {
-			for ( const [ id, lane ] of laneSection.lanesMap ) {
+			for ( const lane of laneSection.getLanes() ) {
 				this.laneManager.onLaneCreated( lane );
 			}
 		}
@@ -58,7 +53,7 @@ export class RoadManager {
 
 		this.mapService.setRoadOpacity( road );
 
-		if ( road.spline?.geometries.length == 0 ) {
+		if ( road.spline?.getGeometryCount() == 0 ) {
 			this.splineService.update( road.spline );
 		}
 
@@ -71,12 +66,6 @@ export class RoadManager {
 		} else {
 
 			Log.warn( 'Spline already exists', road.spline.toString() );
-
-		}
-
-		if ( road.gameObject ) {
-
-			this.mapService.map.gameObject.add( road.gameObject );
 
 		}
 
@@ -112,17 +101,15 @@ export class RoadManager {
 
 		} else {
 
-			road.spline?.segmentMap.remove( road );
+			road.spline?.removeSegment( road );
 
 		}
 
-		if ( !road.isJunction && road.spline?.segmentMap.length > 0 ) {
+		if ( !road.isJunction && road.spline?.getSegmentCount() > 0 ) {
 
 			this.splineBuilder.buildSpline( road.spline );
 
 		}
-
-		this.removeMesh( road );
 
 		if ( this.mapService.hasRoad( road ) ) {
 
@@ -136,23 +123,21 @@ export class RoadManager {
 
 	}
 
-	removeMesh ( road: TvRoad ) {
+	// removeMesh ( road: TvRoad ) {
 
-		road.getRoadObjects().forEach( object => {
+	// 	road.getRoadObjects().forEach( object => {
 
-			this.roadObjectService.removeObject3d( road, object );
+	// 		this.roadObjectService.removeObject3d( road, object );
 
-		} );
+	// 	} );
 
-		this.mapService.map.gameObject.remove( road.gameObject );
+	// 	this.mapService.map.gameObject.remove( road.gameObject );
 
-	}
+	// }
 
 	updateRoad ( road: TvRoad ) {
 
 		if ( this.debug ) Log.debug( 'Update', road.toString() );
-
-		this.mapService.map.gameObject.remove( road.gameObject );
 
 		if ( road.spline.controlPoints.length < 2 ) return;
 
@@ -202,18 +187,9 @@ export class RoadManager {
 
 	private rebuildRoad ( road: TvRoad ): void {
 
-		if ( road.gameObject ) {
-
-			this.mapService.map.gameObject.remove( road.gameObject );
-
-			// try to remove from both places
-			SceneService.removeFromMain( road.gameObject );
-
-		}
-
 		try {
 
-			this.roadBuilder.rebuildRoad( road, this.mapService.map );
+			MapEvents.makeMesh.emit( road );
 
 		} catch ( error ) {
 
@@ -231,36 +207,7 @@ export class RoadManager {
 
 		if ( removedRoad.isJunction ) return;
 
-		const processLink = ( link: TvRoadLink ) => {
-
-			if ( link.isRoad ) {
-
-				const road = link.element as TvRoad;
-
-				if ( link.contactPoint === TvContactPoint.START ) {
-
-					road.predecessor = removedRoad.successor?.clone();
-
-				} else {
-
-					road.successor = removedRoad.successor?.clone();
-
-				}
-
-			} else if ( link.isJunction ) {
-
-				// if the road is connected to a junction, remove the road from the junction
-				const junction = link.element as TvJunction;
-				const connections = junction.getConnections().filter( connection => connection.incomingRoad === removedRoad );
-				connections.forEach( connection => this.removeRoad( connection.connectingRoad ) );
-
-			}
-
-		}
-
-		if ( removedRoad.predecessor ) processLink( removedRoad.predecessor );
-
-		if ( removedRoad.successor ) processLink( removedRoad.successor );
+		removedRoad.removeLinks();
 
 	}
 }

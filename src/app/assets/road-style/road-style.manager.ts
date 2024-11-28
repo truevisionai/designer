@@ -51,7 +51,7 @@ export class RoadStyleManager {
 
 			roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 
-			roadStyle.laneSection.getLaneArray().filter( lane => lane.side !== TvLaneSide.CENTER ).forEach( lane => {
+			roadStyle.laneSection.getLanes().filter( lane => lane.side !== TvLaneSide.CENTER ).forEach( lane => {
 
 				const width = lane.type === TvLaneType.parking ? 5.6 : 3.6;
 
@@ -87,7 +87,7 @@ export class RoadStyleManager {
 		centerLane.addRoadMarkOfType( 0, TvRoadMarkTypes.BROKEN );
 		rightLane1.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
 
-		roadStyle.laneSection.getLaneArray().forEach( lane => {
+		roadStyle.laneSection.getLanes().forEach( lane => {
 
 			if ( lane.side !== TvLaneSide.CENTER ) {
 
@@ -128,7 +128,7 @@ export class RoadStyleManager {
 		rightLane1.addNoneRoadMark();
 		rightLane2.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
 
-		roadStyle.laneSection.getLaneArray().filter( lane => lane.side !== TvLaneSide.CENTER ).forEach( lane => {
+		roadStyle.laneSection.getLanes().filter( lane => lane.side !== TvLaneSide.CENTER ).forEach( lane => {
 
 			if ( lane.type == TvLaneType.driving ) {
 

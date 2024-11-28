@@ -18,7 +18,6 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { SuperElevationService } from './super-elevation.service';
 import { BaseToolService } from '../base-tool.service';
 import { Commands } from 'app/commands/commands';
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -77,7 +76,7 @@ export class SuperElevationTool extends BaseTool<any> {
 			return;
 		}
 
-		const current = coord.road.getLateralProfile().getSuperElevation( coord.s );
+		const current = coord.road.getLateralProfile().getSuperElevationAt( coord.s );
 
 		const clone = current?.clone() || new TvSuperElevation( coord.s, 0, 0, 0, 0 );
 
@@ -127,7 +126,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 		if ( !coord || coord.road != this.selectedRoad ) return;
 
-		const position = RoadGeometryService.instance.findRoadPosition( coord.road, coord.s );
+		const position = coord.road.getRoadPosition( coord.s );
 
 		this.currentSelectedPoint.setPosition( position.position );
 

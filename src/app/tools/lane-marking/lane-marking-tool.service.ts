@@ -84,14 +84,14 @@ export class LaneMarkingToolService {
 			return;
 		}
 
-		return new TvLaneCoord( laneCoord.road, laneCoord.laneSection, lane, laneCoord.s, laneCoord.offset );
+		return new TvLaneCoord( laneCoord.road, laneCoord.laneSection, lane, laneCoord.laneDistance, laneCoord.offset );
 	}
 
 	findBestLane ( coord: TvLaneCoord ): TvLane | undefined {
 
 		const laneSection = coord.laneSection;
 
-		const offset = RoadGeometryService.instance.findWidthUpto( laneSection.road, laneSection, coord.lane, coord.s - laneSection.s );
+		const offset = RoadGeometryService.instance.findWidthUpto( laneSection.road, laneSection, coord.lane, coord.laneDistance - laneSection.s );
 
 		const diff = Math.abs( coord.offset ) - Math.abs( offset );
 
@@ -123,7 +123,7 @@ export class LaneMarkingToolService {
 			return;
 		}
 
-		const sOffset = Maths.clamp( laneCoord.s - lane.laneSection.s, 0, lane.laneSection.getLength() );
+		const sOffset = Maths.clamp( laneCoord.laneDistance - lane.laneSection.s, 0, lane.laneSection.getLength() );
 
 		let marking = lane.getRoadMarkAt( sOffset )?.clone( sOffset );
 

@@ -12,6 +12,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { ScenarioObjectType, VehicleCategory } from "../models/tv-enums";
 import { EntityFactory } from 'app/scenario/entity/entity.factory';
 import { ScenarioService } from '../services/scenario.service';
+import { RoadDistance } from 'app/map/road/road-distance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -61,7 +62,7 @@ export class EntityService {
 
 	createVehicleOnLane ( road: TvRoad, lane: TvLane, s = 0, offset = 0 ) {
 
-		const position = road.getLaneCenterPosition( lane, s, offset ).position;
+		const position = road.getLaneCenterPosition( lane, s as RoadDistance, offset ).position;
 
 		return this.createVehicleAt( position, new Orientation() );
 

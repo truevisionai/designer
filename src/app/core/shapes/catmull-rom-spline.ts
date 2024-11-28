@@ -3,7 +3,8 @@
  */
 
 import { CatmullRomCurve3, CurveType, Vector3 } from 'three';
-import { AbstractSpline, SplineType } from './abstract-spline';
+import { AbstractSpline } from './abstract-spline';
+import { SplineType } from './spline-type';
 
 export class CatmullRomSpline extends AbstractSpline {
 
@@ -31,10 +32,17 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
-	getPoints ( spacing = 10 ): Vector3[] {
+	getPoints ( stepSize = 10 ): Vector3[] {
 
-		return this.curve?.getPoints( spacing );
+		return this.curve?.getPoints( stepSize ) || [];
 
 	}
+
+	updateSegmentGeometryAndBounds (): void {
+
+		// this.curve.updateArcLengths();
+
+	}
+
 
 }

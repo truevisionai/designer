@@ -95,12 +95,13 @@ export class TvMap {
 		if ( this.splines.find( s => s.uuid == spline.uuid ) ) {
 			throw new DuplicateKeyException( `Spline with uuid ${ spline.uuid } already exists` );
 		}
+		spline.setMap( this );
 		this.splines.push( spline );
 	}
 
 	removeSpline ( spline: AbstractSpline ): void {
 		if ( !this.splines.find( s => s.uuid == spline.uuid ) ) {
-			throw new ModelNotFoundException( `Spline:${spline.type} with uuid ${ spline.uuid } not found` );
+			throw new ModelNotFoundException( `Spline:${ spline.type } with uuid ${ spline.uuid } not found` );
 		}
 		this.splines.splice( this.splines.indexOf( spline ), 1 );
 	}
@@ -139,13 +140,26 @@ export class TvMap {
 		return road;
 	}
 
+	generateRoadId ( useRemoved = true ): number {
+		return this.roads.next( useRemoved );
+	}
+
 	addRoad ( road: TvRoad ) {
 
 		if ( this.roads.has( road.id ) ) {
 			throw new DuplicateKeyException( `Road with id ${ road.id } already exists` );
 		}
 
+		road.setMap( this );
+
 		this.roads.set( road.id, road );
+	}
+
+	hasRoad ( road: TvRoad | number ): boolean {
+		if ( typeof road === 'number' ) {
+			return this.roads.has( road );
+		}
+		return this.roads.has( road.id );
 	}
 
 	getSurfaces () {
@@ -164,7 +178,9 @@ export class TvMap {
 
 	}
 
-	getRoadById ( roadId: number ): TvRoad {
+	getRoad ( road: TvRoad | number ): TvRoad {
+
+		const roadId = typeof road === 'number' ? road : road.id;
 
 		if ( !this.roads.has( roadId ) ) {
 			throw new ModelNotFoundException( `Road with id ${ roadId } not found` );
@@ -179,13 +195,15 @@ export class TvMap {
 
 	}
 
-	getJunctionById ( id: number ): TvJunction {
+	getJunction ( junction: TvJunction | number ): TvJunction {
 
-		if ( !this.junctions.has( id ) ) {
-			throw new ModelNotFoundException( `Junction with id ${ id } not found` );
+		const junctionId = typeof junction === 'number' ? junction : junction.id;
+
+		if ( !this.junctions.has( junctionId ) ) {
+			throw new ModelNotFoundException( `Junction with id ${ junctionId } not found` );
 		}
 
-		return this.junctions.get( id );
+		return this.junctions.get( junctionId );
 
 	}
 
@@ -204,6 +222,8 @@ export class TvMap {
 		if ( this.junctions.has( junction.id ) ) {
 			throw new DuplicateKeyException( `Junction with id ${ junction.id } already exists` );
 		}
+
+		junction.setMap( this );
 
 		this.junctions.set( junction.id, junction );
 

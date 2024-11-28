@@ -3,8 +3,12 @@
  */
 
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { AbstractSpline, SplineType } from './abstract-spline';
-import { RoadControlPoint } from 'app/objects/road/road-control-point';
+import { AbstractSpline } from './abstract-spline';
+import { SplineType } from './spline-type';
+import { Vector3 } from 'three';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { ExplicitGeometryService } from 'app/services/spline/explicit-geometry.service';
+import { SplineBoundsService } from 'app/services/spline/spline-bounds.service';
 
 export class ExplicitSpline extends AbstractSpline {
 
@@ -22,35 +26,33 @@ export class ExplicitSpline extends AbstractSpline {
 
 	update (): void { }
 
-	updateHeadings (): void {
+	getPoints ( stepSize: number ): Vector3[] {
 
-		const controlPoints = this.getControlPoints() as RoadControlPoint[];
+		const points: TvPosTheta[] = []
 
-		for ( let i = 0; i < controlPoints.length - 1; i++ ) {
-
-			const current = controlPoints[ i ];
-			const next = controlPoints[ i + 1 ];
-
-			// skip if heading is already set
-			if ( current.hdg != 0 ) continue;
-
-			const heading = Math.atan2( next.position.y - current.position.y, next.position.x - current.position.x );
-
-			current.hdg = heading;
-
+		for ( let s = 0; s < this.getLength(); s += stepSize ) {
+			points.push( this.getCoordAtOffset( s ) );
 		}
 
-		// last point
+		return points.map( p => p.position );
+	}
 
-		const last = controlPoints[ controlPoints.length - 1 ];
+	updateSegmentGeometryAndBounds (): void {
 
-		if ( last.hdg != 0 ) return;
+		if ( this.getControlPointCount() < 2 ) {
+			this.clearGeometries();
+			this.clearSegmentGeometries();
+			this.centerPoints = [];
+			this.leftPoints = [];
+			this.rightPoints = [];
+			return;
+		}
 
-		const secondLast = controlPoints[ controlPoints.length - 2 ];
+		ExplicitGeometryService.instance.updateGeometry( this );
 
-		const heading = Math.atan2( last.position.y - secondLast.position.y, last.position.x - secondLast.position.x );
+		this.fireMakeSegmentMeshEvents();
 
-		last.hdg = heading;
+		SplineBoundsService.instance.updateBounds( this );
 
 	}
 

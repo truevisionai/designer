@@ -96,20 +96,6 @@ export class BaseToolService {
 
 	}
 
-	onPointerDown ( e: PointerEventData ) {
-
-		for ( let i = 0; i < this.selectionStrategies.length; i++ ) {
-
-			const element = this.selectionStrategies[ i ];
-
-			const result = element.handleSelection( e );
-
-			if ( result ) return result;
-
-		}
-
-	}
-
 	highlight ( e: PointerEventData ) {
 
 		for ( let i = 0; i < this.selectionStrategies.length; i++ ) {
@@ -119,18 +105,6 @@ export class BaseToolService {
 			const result = element.onPointerMoved( e );
 
 			if ( result ) return result;
-
-		}
-
-	}
-
-	move ( e: PointerEventData ): Position {
-
-		for ( let i = 0; i < this.movingStrategies.length; i++ ) {
-
-			const position = this.movingStrategies[ i ].getPosition( e );
-
-			if ( position ) return position;
 
 		}
 

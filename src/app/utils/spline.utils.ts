@@ -15,6 +15,8 @@ import {
 import { RoadUtils } from "./road.utils";
 import { Vector2 } from "three";
 import { TvAbstractRoadGeometry } from "../map/models/geometries/tv-abstract-road-geometry";
+import { TvContactPoint } from "app/map/models/tv-common";
+import { LinkFactory } from "app/map/models/link-factory";
 
 export function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Vector2 ): number[] {
 
@@ -44,72 +46,88 @@ export function getArcParams ( p1: Vector2, p2: Vector2, dir1: Vector2, dir2: Ve
 	return [ r, alpha, length, Math.sign( p2proj.y ) ];
 }
 
-export function breakGeometries ( geometries: TvAbstractRoadGeometry[], sStart: number, sEnd: number | null ): TvAbstractRoadGeometry[] {
+export function breakGeometries ( geometries: TvAbstractRoadGeometry[], cutStart: number, cutEnd: number | null ): TvAbstractRoadGeometry[] {
+
+	let distance = 0;
+
+	const sEnd = cutEnd ?? Infinity;
 
 	const newGeometries: TvAbstractRoadGeometry[] = [];
 
-	let currentS = 0;
-
 	for ( const geometry of geometries ) {
 
-		const effectiveSEnd = sEnd !== null ? sEnd : Infinity;
-
-		if ( geometry.endS <= sStart || geometry.s >= effectiveSEnd ) continue; // Skip if geometry is completely out of bounds
+		if ( geometry.endS <= cutStart || geometry.s >= sEnd ) continue;
 
 		const newGeometry = geometry.clone();
 
-		newGeometry.s = currentS;
+		newGeometry.s = distance;
 
-		if ( geometry.s < sStart && geometry.endS > sStart ) {
+		const geometryStart = Math.max( geometry.s, cutStart );
+		const geometryEnd = Math.min( geometry.endS, sEnd );
 
-			const posTheta = geometry.getRoadCoord( sStart );
+		const posTheta = geometry.getRoadCoord( geometryStart );
 
-			newGeometry.x = posTheta.x;
-
-			newGeometry.y = posTheta.y;
-
-			newGeometry.hdg = posTheta.hdg;
-
-			newGeometry.length = Math.min( geometry.endS, effectiveSEnd ) - sStart;
-
-		} else if ( geometry.endS > effectiveSEnd ) {
-
-			const posTheta = geometry.getRoadCoord( geometry.s );
-
-			newGeometry.x = posTheta.x;
-
-			newGeometry.y = posTheta.y;
-
-			newGeometry.hdg = posTheta.hdg;
-
-			newGeometry.length = effectiveSEnd - geometry.s;
-
-		} else {
-
-			const posTheta = geometry.getRoadCoord( geometry.s );
-
-			newGeometry.x = posTheta.x;
-
-			newGeometry.y = posTheta.y;
-
-			newGeometry.hdg = posTheta.hdg;
-
-			newGeometry.length = geometry.length;
-
-		}
+		newGeometry.x = posTheta.x;
+		newGeometry.y = posTheta.y;
+		newGeometry.hdg = posTheta.hdg;
+		newGeometry.length = geometryEnd - geometryStart;
 
 		newGeometries.push( newGeometry );
 
-		currentS += newGeometry.length;
+		distance += newGeometry.length;
 
 	}
 
 	return newGeometries;
-
 }
 
-
 export class SplineUtils {
+
+	static updateInternalLinks ( spline: AbstractSpline ): void {
+
+		const segments = spline.getSegments();
+
+		for ( const segment of segments ) {
+
+			const prevSegment = spline.getPreviousSegment( segment );
+			const nextSegment = spline.getNextSegment( segment );
+
+			if ( segment instanceof TvRoad ) {
+				this.linkSuccessor( segment, nextSegment );
+				this.setPredecessor( segment, prevSegment );
+			}
+
+		}
+
+	}
+
+	private static linkSuccessor ( road: TvRoad, nextSegment: TvRoad | TvJunction ): void {
+
+		if ( nextSegment instanceof TvRoad ) {
+
+			road.linkSuccessor( nextSegment, TvContactPoint.START );
+
+		} else if ( nextSegment instanceof TvJunction ) {
+
+			road.successor = LinkFactory.createJunctionLink( nextSegment );
+
+		}
+
+	}
+
+	private static setPredecessor ( road: TvRoad, prevSegment: TvRoad | TvJunction ): void {
+
+		if ( prevSegment instanceof TvRoad ) {
+
+			road.linkPredecessor( prevSegment, TvContactPoint.END );
+
+		} else if ( prevSegment instanceof TvJunction ) {
+
+			road.predecessor = LinkFactory.createJunctionLink( prevSegment );
+
+		}
+
+	}
 
 	static updateSegment ( spline: AbstractSpline, sOffset: number, segment: NewSegment ): void {
 
@@ -121,11 +139,7 @@ export class SplineUtils {
 
 	static removeSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction ): boolean {
 
-		if ( !this.hasSegment( spline, segment ) ) {
-			throw new ModelNotFoundException( `Segment not found: ${ segment?.toString() }` );
-		}
-
-		spline.segmentMap.remove( segment );
+		spline.removeSegment( segment );
 
 		return true;
 
@@ -133,159 +147,21 @@ export class SplineUtils {
 
 	static hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction | null ) {
 
-		if ( !spline ) {
-			Log.error( 'Spline is null', segment?.toString() );
-			return;
-		}
-
-		return spline.segmentMap.contains( segment );
+		return spline.hasSegment( segment );
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ) {
 
-		if ( !spline ) {
-			throw new InvalidArgumentException( `Spline is null: ${ sOffset }, ${ segment?.toString() }` );
-		}
-
-		if ( sOffset > spline.getLength() ) {
-			throw new InvalidArgumentException( `sOffset must be less than end: ${ sOffset }, ${ spline.toString() }` );
-		}
-
-		if ( sOffset < 0 ) {
-			throw new InvalidArgumentException( `sOffset must be greater than 0: ${ sOffset }, ${ spline.toString() }` );
-		}
-
-		if ( sOffset == null ) {
-			throw new InvalidArgumentException( `sOffset is null: ${ sOffset }, ${ spline.toString() }, ${ segment?.toString() }` );
-		}
-
-		if ( this.hasSegment( spline, segment ) ) {
-			throw new DuplicateModelException( `Segment already exists, avoid adding again: ${ sOffset }, ${ segment?.toString() }` );
-		}
-
-		if ( spline.segmentMap.hasKey( sOffset ) ) {
-			throw new DuplicateKeyException( `sOffset already occupied: ${ sOffset }, ${ segment?.toString() }, ${ spline.segmentMap.keys() }` );
-		}
-
-		spline.segmentMap.remove( segment );
-
-		spline.segmentMap.set( sOffset, segment );
-
-		if ( segment instanceof TvRoad ) {
-
-			segment.spline = spline;
-
-			segment.sStart = sOffset;
-
-		}
+		spline.addSegment( sOffset, segment );
 
 	}
 
-	static findSuccessor ( spline: AbstractSpline ): TvRoad | TvJunction | null {
-
-		const lastSegment = spline.segmentMap.getLast();
-
-		if ( !lastSegment ) return;
-
-		if ( !( lastSegment instanceof TvRoad ) ) return;
-
-		if ( !lastSegment.successor ) return;
-
-		return lastSegment.successor.element;
-
-	}
-
-	static findPredecessor ( spline: AbstractSpline ): TvRoad | TvJunction | null {
-
-		const segment = spline.segmentMap.getFirst();
-
-		if ( !segment ) return;
-
-		if ( !( segment instanceof TvRoad ) ) return;
-
-		if ( !segment.predecessor ) return;
-
-		return segment.predecessor.element;
-
-	}
-
-	static isSuccessorJunction ( spline: AbstractSpline ): boolean {
-
-		return this.findSuccessor( spline ) instanceof TvJunction;
-
-	}
-
-	static isPredecessorJunction ( spline: AbstractSpline ): boolean {
-
-		return this.findPredecessor( spline ) instanceof TvJunction;
-
-	}
-
-	static isConnectedToJunction ( spline: AbstractSpline ): boolean {
-
-		return this.isSuccessorJunction( spline ) || this.isPredecessorJunction( spline );
-
-	}
-
-	static isConnection ( spline: AbstractSpline ) {
-
-		if ( spline.segmentMap.length != 1 ) {
-			return false;
-		}
-
-		const segment = spline.segmentMap.getFirst();
-
-		if ( !( segment instanceof TvRoad ) ) {
-			return false;
-		}
-
-		return segment.isJunction;
-	}
-
-	static getSuccessorSpline ( spline: AbstractSpline ): AbstractSpline {
-
-		const lastSegment = spline.segmentMap.getLast();
-
-		if ( !lastSegment ) return;
-
-		if ( !( lastSegment instanceof TvRoad ) ) return;
-
-		const road = lastSegment;
-
-		if ( !road.successor ) return;
-
-		if ( !road.successor.isRoad ) return;
-
-		const successorRoad = road.successor.element as TvRoad;
-
-		return successorRoad.spline;
-
-	}
-
-	static getPredecessorSpline ( spline: AbstractSpline ): AbstractSpline {
-
-		const firstSegment = spline.segmentMap.getFirst();
-
-		if ( !firstSegment ) return;
-
-		if ( !( firstSegment instanceof TvRoad ) ) return;
-
-		const road = firstSegment;
-
-		if ( !road.predecessor ) return;
-
-		if ( !road.predecessor.isRoad ) return;
-
-		const predecessorRoad = road.predecessor.element as TvRoad;
-
-		return predecessorRoad.spline;
-
-	}
 
 	static areLinksCorrect ( spline: AbstractSpline ): boolean {
 
-		const segments = spline.segmentMap.toArray();
+		const segments = spline.getSegments();
 
 		if ( segments.length == 0 ) return true;
 

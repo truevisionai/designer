@@ -4,38 +4,35 @@
 
 import { TestBed } from "@angular/core/testing";
 import { ExplicitGeometryService } from "./explicit-geometry.service";
-import { ExplicitSpline } from "app/core/shapes/explicit-spline";
-import { ControlPointFactory } from "app/factories/control-point.factory";
 import { Vector3 } from "three";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvGeometryType } from "app/map/models/tv-common";
 import { RoadControlPoint } from "app/objects/road/road-control-point";
 import { EXPLICIT_CIRCLE_XODR, SplineTestHelper } from "./spline-test-helper.service";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { HttpClientModule } from "@angular/common/http";
-import { SplineBuilder } from "./spline.builder";
+import { SplineGeometryGenerator } from "./spline-geometry-generator";
+import { SplineFactory } from "./spline.factory";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { SplineType } from 'app/core/shapes/spline-type';
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'ExplicitGeometryService', () => {
 
-	let builder: SplineBuilder;
+	let builder: SplineGeometryGenerator;
 	let service: ExplicitGeometryService;
-	let spline: ExplicitSpline;
+	let spline: AbstractSpline;
 	let testHelper: SplineTestHelper;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ MatSnackBarModule, HttpClientModule ],
-			providers: [ ExplicitGeometryService ]
-		} );
+		setupTest();
 
 		testHelper = TestBed.get( SplineTestHelper );
 		service = TestBed.get( ExplicitGeometryService );
-		builder = TestBed.get( SplineBuilder );
+		builder = TestBed.get( SplineGeometryGenerator );
 
 		const road = new TvRoad( '', 0, 100 );
 
-		spline = new ExplicitSpline( road );
+		spline = SplineFactory.createSpline( SplineType.EXPLICIT );
 
 		road.spline = spline;
 
@@ -50,10 +47,10 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should create line', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
 
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 1 );
 		expect( spline.getGeometries()[ 0 ].length ).toBe( 100 );
@@ -63,10 +60,10 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should have correct headings for line', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
 
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getControlPoints()[ 0 ].getHeading() ).toEqual( 0 );
 		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( 0 );
@@ -75,29 +72,27 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should have correct headings for line at 90 degree', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 100, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
 
-		spline.updateHeadings();
-
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 1 );
 		expect( spline.getGeometries()[ 0 ].length ).toBe( 100 );
 		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
 
-		expect( spline.getControlPoints()[ 0 ].getHeading() ).toEqual( Math.PI / 2 );
-		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( Math.PI / 2 );
+		expect( spline.getControlPoints()[ 0 ].getHeading() ).toEqual( 0 );
+		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( 0 );
 
 	} );
 
 	it( 'should create 3 points forming a line', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 200, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 200, 0, 0 ) );
 
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 2 );
 		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
@@ -111,23 +106,20 @@ describe( 'ExplicitGeometryService', () => {
 
 	it( 'should create spiral with 3 points', () => {
 
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 0, 0 ) ) );
-		spline.addControlPoint( ControlPointFactory.createControl( spline, new Vector3( 100, 100, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 100, 0 ) );
 
-		spline.updateHeadings();
-
-		service.build( spline );
+		service.updateGeometry( spline );
 
 		expect( spline.getGeometryCount() ).toBe( 2 );
-		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.SPIRAL );
-
-		// TODO: need to fix
-		// expect( spline.getGeometries()[ 1 ].geometryType ).toBe( TvGeometryType.SPIRAL );
+		expect( spline.getGeometries()[ 0 ].geometryType ).toBe( TvGeometryType.LINE );
+		expect( spline.getGeometries()[ 1 ].geometryType ).toBe( TvGeometryType.SPIRAL );
+		expect( spline.getLength() ).toBeGreaterThan( 200 );
 
 		expect( spline.getControlPoints()[ 0 ].getHeading() ).toEqual( 0 );
-		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( Math.PI / 2 );
-		expect( spline.getControlPoints()[ 2 ].getHeading() ).toEqual( Math.PI / 2 );
+		expect( spline.getControlPoints()[ 1 ].getHeading() ).toEqual( 0 );
+		expect( spline.getControlPoints()[ 2 ].getHeading() ).toEqual( 0 );
 
 	} );
 
@@ -164,13 +156,11 @@ describe( 'ExplicitGeometryService', () => {
 
 		const prevHdgs = road.spline.getControlPoints().map( ( point: RoadControlPoint ) => point.hdg );
 
-		road.spline.updateHeadings();
-
 		const newHdgs = road.spline.getControlPoints().map( ( point: RoadControlPoint ) => point.hdg );
 
 		expect( prevHdgs ).toEqual( newHdgs );
 
-		builder.build( road.spline );
+		builder.generateGeometryAndBuildSegmentsAndBounds( road.spline );
 
 		expect( road.spline.getControlPointCount() ).toBe( 5 );
 		expect( road.spline.getGeometryCount() ).toBe( 4 );
@@ -184,7 +174,6 @@ describe( 'ExplicitGeometryService', () => {
 
 
 	} );
-
 
 
 } );

@@ -12,6 +12,7 @@ import { LaneEventListener } from 'app/listeners/lane-event-listener';
 import { ObjectEventListener } from './object-event-listener';
 import { MapManager } from "../managers/map-manager";
 import { EntityManager } from "../scenario/entity/entity.manager";
+import { ViewportEventSubscriber } from 'app/tools/viewport-event-subscriber';
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,6 +31,7 @@ export class EventServiceProvider {
 		private assetEventListener: ObjectEventListener,
 		private mapManager: MapManager,
 		private entityManager: EntityManager,
+		private viewportSubscriber: ViewportEventSubscriber,
 	) {
 	}
 

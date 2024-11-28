@@ -32,7 +32,6 @@ import {
 	DIRECTIONAL_LIGHT_POSITION
 } from 'app/renderer/default.config';
 import { Asset, AssetType } from 'app/assets/asset.model';
-import { RoadBuilder } from 'app/map/builders/road.builder';
 import { TvRoadMarking } from "../../../deprecated/tv-road-marking";
 import { AssetService } from 'app/assets/asset.service';
 import { TvRoad } from "../../../map/models/tv-road.model";
@@ -40,6 +39,7 @@ import { MapService } from 'app/services/map/map.service';
 import { TvTexture } from "../../../assets/texture/tv-texture.model";
 import { RoadStyle } from "../../../assets/road-style/road-style.model";
 import { TvObjectAsset } from "../../../assets/object/tv-object.asset";
+import { BuilderFactory } from 'app/modules/builder/builder.factory';
 
 const WIDTH = 200;
 const HEIGHT = 200;
@@ -76,7 +76,7 @@ export class AssetPreviewService {
 	private groundTexture = new TextureLoader().load( 'assets/grass.jpg' );
 
 	constructor (
-		private roadBuilder: RoadBuilder,
+		private builderFactory: BuilderFactory,
 		private assetService: AssetService,
 		private mapService: MapService,
 	) {
@@ -427,7 +427,7 @@ export class AssetPreviewService {
 
 		roadStyle.objects.forEach( obj => road.addRoadObject( obj.clone() ) );
 
-		return this.roadBuilder.buildRoad( road );
+		return this.builderFactory.getBuilder( road ).build( road );
 
 	}
 

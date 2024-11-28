@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { SplineFactory } from "app/services/spline/spline.factory";
 import { RoadFactory } from "./road-factory.service";
@@ -14,15 +14,20 @@ import { TvRoadCoord } from "app/map/models/TvRoadCoord";
 import { LaneUtils } from "app/utils/lane.utils";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { TvLane } from "app/map/models/tv-lane";
-import { SplineBuilder } from "app/services/spline/spline.builder";
+import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 import { TvUtils } from "app/map/models/tv-utils";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { Log } from "app/core/utils/log";
 import { Maths } from "app/utils/maths";
-import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
-import { MapQueryService } from "app/map/queries/map-query.service";
+import { LinkFactory } from 'app/map/models/link-factory';
 import { RoadGeometryService } from "app/services/road/road-geometry.service";
 import { RoadWidthService } from "app/services/road/road-width.service";
+import { LaneLinkFactory } from "./lane-link-factory";
+import { RightTurnConnection } from "../map/models/connections/right-turn-connection";
+import { StraightConnection } from "../map/models/connections/straight-connection";
+import { LeftTurnConnection } from "../map/models/connections/left-turn-connection";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { determineTurnType } from "app/map/models/connections/connection-utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -32,14 +37,12 @@ export class ConnectionFactory {
 	private debug = false;
 
 	constructor (
-		private splineFactory: SplineFactory,
 		private roadFactory: RoadFactory,
-		private splineBuilder: SplineBuilder,
-		private queryService: MapQueryService,
+		private splineBuilder: SplineGeometryGenerator,
 	) {
 	}
 
-	public addCornerConnections ( junction: TvJunction ) {
+	public addCornerConnections ( junction: TvJunction ): void {
 
 		junction.corners = [];
 
@@ -63,131 +66,186 @@ export class ConnectionFactory {
 
 	}
 
-	addConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner = false ): void {
+	public addConnectionsNew ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): void {
 
-		const incomingCoords = LaneUtils.createIncomingCoords( incoming, corner );
-		const outgoingCoords = LaneUtils.createOutgoingCoords( outgoing, corner );
+		const connection = ConnectionFactory.createConnectionAndRoad( junction, incoming, outgoing );
 
-		const processed = new Set<TvLane>();
+		if ( isCorner ) connection.markAsCornerConnection();
 
-		let highest: TvLane = LaneUtils.findRightMostIncomingLane( incoming );
-		let lowest: TvLane = LaneUtils.findLeftMostIncomingLane( incoming );
+		const links = LaneLinkFactory.createLinks( connection )
 
-		for ( let i = 0; i < incomingCoords.length; i++ ) {
-
-			const incomingCoord = incomingCoords[ i ];
-
-			if ( processed.has( incomingCoord.lane ) ) continue;
-
-			if ( !corner && incomingCoord.lane.type != TvLaneType.driving ) continue;
-
-			let found = false;
-
-			for ( let j = 0; j < outgoingCoords.length; j++ ) {
-
-				const outgoingCoord = outgoingCoords[ j ];
-
-				if ( outgoingCoord.lane.type != incomingCoord.lane.type ) continue;
-
-				if ( processed.has( outgoingCoord.lane ) ) continue;
-
-				const turnType = LaneUtils.determineTurnType( incomingCoord, outgoingCoord );
-
-				if ( turnType == TurnType.RIGHT || corner ) {
-					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id > highest?.id ) {
-						continue;
-					}
-					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id < highest?.id ) {
-						continue;
-					}
-				} else if ( turnType == TurnType.LEFT ) {
-					if ( incoming.contact == TvContactPoint.END && incomingCoord.lane.id < lowest?.id ) {
-						continue;
-					}
-					if ( incoming.contact == TvContactPoint.START && incomingCoord.lane.id > lowest?.id ) {
-						continue;
-					}
-				}
-
-				if ( this.debug ) Log.debug( 'turnType', turnType, incomingCoord.toString(), outgoingCoord.toString() );
-
-				const connection = this.createConnection( junction, incomingCoord, outgoingCoord, corner );
-
-				if ( this.hasConnection( junction, connection ) ) continue;
-
-				junction.addConnection( connection );
-
-				processed.add( incomingCoord.lane );
-
-				processed.add( outgoingCoord.lane );
-
-				found = true;
-
-				break;
-
-			}
-
-			if ( found ) continue;
-
+		if ( links.length === 0 ) {
+			Log.debug( 'No links found', connection.toString() );
+			return;
 		}
+
+		connection.addLaneLinks( links );
+
+		connection.connectingRoad.spline = this.createConnectionSpline( connection, links, incoming, outgoing );
+
+		junction.addConnection( connection );
 
 	}
 
-	public createSingleConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ): TvJunctionConnection {
+	private createConnectionSpline ( connection: TvJunctionConnection, links: TvJunctionLaneLink[], incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
 
-		const turnType = LaneUtils.determineTurnType( incoming, outgoing );
+		if ( links.length === 0 ) {
+			throw new Error( 'No links found' );
+		}
 
-		if ( this.debug ) Log.debug( 'turnType', turnType, incoming.toString(), outgoing.toString() );
+		const innerLink = links[ 0 ];
 
-		const connection = this.createConnection( junction, incoming, outgoing, false );
+		const incomingLaneCoord = incoming.toLaneCoord( innerLink.getIncomingLane() );
+		const outgoingLaneCoord = outgoing.toLaneCoord( innerLink.getOutgoingLane() );
 
-		if ( this.hasConnection( junction, connection ) ) return;
+		const spline = SplineFactory.createFromLaneCoords( incomingLaneCoord, outgoingLaneCoord );
+
+		spline.addSegment( 0, connection.getRoad() );
+
+		spline.updateSegmentGeometryAndBounds();
+
+		return spline;
+	}
+
+	static createConnectionAndRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, type?: TurnType ): TvJunctionConnection {
+
+		const connectingRoad = this.createConnectingRoad( junction, incoming, outgoing );
+
+		const connection = this.createConnection( connectingRoad, incoming, outgoing, type );
 
 		return connection;
 
 	}
 
-	private createCornerConnection ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner: boolean ) {
+	private static createConnection ( connectingRoad: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord, type?: TurnType ): TvJunctionConnection {
 
-		let rightLane: TvLane;
-		let leftLane: TvLane;
+		const turnType = type || determineTurnType( incoming, outgoing );
 
-		if ( incoming.contact == TvContactPoint.END ) {
-			rightLane = LaneUtils.findLowest( incoming.laneSection.getLaneArray() );
+		let connection: TvJunctionConnection;
+
+		if ( turnType == TurnType.RIGHT ) {
+
+			connection = new RightTurnConnection( 0, incoming.road, connectingRoad, TvContactPoint.START );
+
+		} else if ( turnType == TurnType.STRAIGHT ) {
+
+			connection = new StraightConnection( 0, incoming.road, connectingRoad, TvContactPoint.START );
+
+		} else if ( turnType == TurnType.LEFT ) {
+
+			connection = new LeftTurnConnection( 0, incoming.road, connectingRoad, TvContactPoint.START );
+
 		} else {
-			rightLane = LaneUtils.findHighest( incoming.laneSection.getLaneArray() );
+
+			throw new Error( 'Unknown turn type' );
+
 		}
 
-		if ( outgoing.contact == TvContactPoint.END ) {
-			leftLane = LaneUtils.findHighest( outgoing.laneSection.getLaneArray() );
-		} else {
-			leftLane = LaneUtils.findLowest( outgoing.laneSection.getLaneArray() );
-		}
+		return connection;
 
-		console.log( 'fake incomingRightMost', rightLane?.toString() );
-		console.log( 'fake outgoingLeftMost', leftLane?.toString() );
+	}
 
-		const incomingCoord = incoming.toLaneCoord( rightLane );
-		const outgoingCoord = outgoing.toLaneCoord( leftLane );
+	private static createConnectingRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvRoad {
 
-		// pass corner as false to avoid creating roadmarks and other corner specific stuff
-		const connection = this.createConnection( junction, incomingCoord, outgoingCoord, false );
+		const roadId = incoming.road.getMap().generateRoadId( false );
 
-		if ( incoming.contact == TvContactPoint.START ) {
-			const width = rightLane.getWidthValue( 0 );
-			connection.connectingRoad.getLaneProfile().createAndAddLaneOffset( 0, width, 0, 0, 0 );
-		} else {
-			connection.connectingRoad.getLaneProfile().createAndAddLaneOffset( 0, 0, 0, 0, 0 );
-		}
+		const connectingRoad = RoadFactory.createRoad( roadId );
 
-		if ( outgoing.contact == TvContactPoint.END ) {
-			const width = leftLane.getWidthValue( 0 );
-			connection.connectingRoad.getLaneProfile().createAndAddLaneOffset( connection.connectingRoad.length, width, 0, 0, 0 );
-		} else {
-			connection.connectingRoad.getLaneProfile().createAndAddLaneOffset( connection.connectingRoad.length, 0, 0, 0, 0 );
-		}
+		connectingRoad.setPredecessorRoad( incoming.road, incoming.contact );
 
-		TvUtils.computeCoefficients( connection.connectingRoad.laneOffsets, connection.connectingRoad.length );
+		connectingRoad.setSuccessorRoad( outgoing.road, outgoing.contact );
+
+		connectingRoad.junction = junction;
+
+		// connectingRoad.spline = SplineFactory.createFromRoadCoords( incoming, outgoing );
+
+		// connectingRoad.spline.addSegment( 0, connectingRoad );
+
+		// connectingRoad.getLaneProfile().addDefaultLaneSection();
+
+		// connectingRoad.spline.updateSegmentGeometryAndBounds();
+
+		return connectingRoad;
+
+	}
+
+	public addConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner = false ): void {
+
+		this.addConnectionsNew( junction, incoming, outgoing, corner );
+
+		// const incomingLaneCoords = incoming.laneSection.getIncomingCoords( incoming.contact, corner );
+		// const outgoingLaneCoords = outgoing.laneSection.getOutgoingCoords( outgoing.contact, corner );
+		//
+		// const processedLanes = new Set<TvLane>();
+		//
+		// const rightMostLane: TvLane = incoming.laneSection.getRightMostIncomingLane( incoming.contact );
+		// const leftMostLane: TvLane = incoming.laneSection.getLeftMostIncomingLane( incoming.contact );
+		//
+		// for ( const entryLaneCoord of incomingLaneCoords ) {
+		//
+		// 	if ( processedLanes.has( entryLaneCoord.lane ) ) continue;
+		//
+		// 	if ( !corner && entryLaneCoord.lane.type !== TvLaneType.driving ) continue;
+		//
+		// 	let found = false;
+		//
+		// 	for ( const exitLaneCoord of outgoingLaneCoords ) {
+		//
+		// 		if ( exitLaneCoord.lane.type != entryLaneCoord.lane.type ) continue;
+		//
+		// 		if ( processedLanes.has( exitLaneCoord.lane ) ) continue;
+		//
+		// 		const turnType = determineTurnType( entryLaneCoord, exitLaneCoord );
+		//
+		// 		if ( turnType == TurnType.RIGHT || corner ) {
+		// 			if ( incoming.contact == TvContactPoint.END && entryLaneCoord.lane.id > rightMostLane?.id ) {
+		// 				continue;
+		// 			}
+		// 			if ( incoming.contact == TvContactPoint.START && entryLaneCoord.lane.id < rightMostLane?.id ) {
+		// 				continue;
+		// 			}
+		// 		} else if ( turnType == TurnType.LEFT ) {
+		// 			if ( incoming.contact == TvContactPoint.END && entryLaneCoord.lane.id < leftMostLane?.id ) {
+		// 				continue;
+		// 			}
+		// 			if ( incoming.contact == TvContactPoint.START && entryLaneCoord.lane.id > leftMostLane?.id ) {
+		// 				continue;
+		// 			}
+		// 		}
+		//
+		// 		if ( this.debug ) Log.debug( 'turnType', turnType, entryLaneCoord.toString(), exitLaneCoord.toString() );
+		//
+		// 		const connection = this.createConnection( junction, entryLaneCoord, exitLaneCoord, corner );
+		//
+		// 		if ( junction.hasMatchingConnection( connection ) ) continue;
+		//
+		// 		junction.addConnection( connection );
+		//
+		// 		processedLanes.add( entryLaneCoord.lane );
+		//
+		// 		processedLanes.add( exitLaneCoord.lane );
+		//
+		// 		found = true;
+		//
+		// 		break;
+		//
+		// 	}
+		//
+		// 	if ( found ) continue;
+		//
+		// }
+
+	}
+
+	public createSingleConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ): TvJunctionConnection {
+
+		const turnType = determineTurnType( incoming, outgoing );
+
+		if ( this.debug ) Log.debug( 'turnType', turnType, incoming.toString(), outgoing.toString() );
+
+		const connection = this.createConnection( junction, incoming, outgoing, false );
+
+		if ( junction.hasMatchingConnection( connection ) ) return;
 
 		return connection;
 
@@ -213,7 +271,7 @@ export class ConnectionFactory {
 		connection.connectingRoad.getLaneProfile().addLaneSectionInstance( clone );
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 				lane.roadMarks.clear()
 			} )
 		} );
@@ -275,98 +333,6 @@ export class ConnectionFactory {
 
 	}
 
-	// private createFakeConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner: boolean ) {
-
-	// 	const connections: TvJunctionConnection[] = [];
-
-	// 	const incomingCoords = LaneUtils.createIncomingCoords( incoming, corner, false );
-	// 	const outgoingCoords = LaneUtils.createOutgoingCoords( outgoing, corner, false );
-
-	// 	for ( let i = 0; i < incomingCoords.length; i++ ) {
-
-	// 		const incomingCoord = incomingCoords[ i ];
-
-	// 		if ( incomingCoord.lane.type != TvLaneType.driving ) continue;
-
-	// 		for ( let j = 0; j < outgoingCoords.length; j++ ) {
-
-	// 			const outgoingCoord = outgoingCoords[ j ];
-
-	// 			if ( outgoingCoord.lane.type != TvLaneType.driving ) continue;
-
-	// 			const connection = this.createConnection( junction, incomingCoord, outgoingCoord, false );
-
-	// 			connections.push( connection );
-
-	// 			junction.addConnection( connection );
-
-	// 		}
-
-	// 	}
-
-	// 	return connections;
-	// }
-
-	// private createFakeConnectionsV2 ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner: boolean ) {
-
-	// 	const connections: TvJunctionConnection[] = [];
-
-	// 	const incomingCoords = LaneUtils.createIncomingCoords( incoming, corner, false );
-
-	// 	for ( let i = 0; i < incomingCoords.length; i++ ) {
-
-	// 		const incomingCoord = incomingCoords[ i ];
-
-	// 		// const outgoingLane = outgoing.laneSection.getNearestLane( incomingCoord.lane );
-	// 		const outgoingLane = TvLaneSection.getNearestLane( outgoing.laneSection.getLaneArray(), incomingCoord.lane );
-
-	// 		if ( !outgoingLane ) continue;
-
-	// 		const outgoingCoord = outgoing.toLaneCoord( outgoingLane );
-
-	// 		const connection = this.createConnection( junction, incomingCoord, outgoingCoord, false );
-
-	// 		connections.push( connection );
-
-	// 	}
-
-	// 	return connections;
-	// }
-
-	// private createFakeConnectionsV3 ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner: boolean ) {
-
-	// 	const leftLink = new TvRoadLink( TvRoadLinkType.ROAD, incoming.road, incoming.contact );
-	// 	const rightLink = new TvRoadLink( TvRoadLinkType.ROAD, outgoing.road, outgoing.contact );
-
-	// 	const road = this.roadFactory.createNewRoad();
-
-	// 	road.spline = this.splineFactory.createSplineFromLinks( leftLink, rightLink );
-
-	// 	road.junction = junction;
-
-	// 	road.spline.segmentMap.set( 0, road );
-
-	// 	this.splineBuilder.buildGeometry( road.spline );
-
-	// 	// const laneSections = this.laneSectionFactory.createFromRoadLink( road, leftLink, rightLink );
-
-	// 	// laneSections.forEach( laneSection => road.getLaneProfile().addLaneSectionInstance( laneSection ) );
-
-	// 	road.getLaneProfile().addLaneSectionInstance( incoming.laneSection.cloneAtS( 0, 0, false, road ) );
-
-	// 	road.laneSections.forEach( laneSection => {
-	// 		laneSection.lanes.forEach( lane => {
-	// 			lane.roadMarks.clear()
-	// 		} )
-	// 	} );
-
-	// 	const connection = new TvJunctionConnection( junction.connections.size, incoming.road, road, TvContactPoint.START );
-
-	// 	junction.addConnection( connection );
-
-	// 	return [ connection ];
-	// }
-
 	private createConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvJunctionConnection {
 
 		const connectingRoad = this.createConnectingRoad( junction, incoming, outgoing );
@@ -388,13 +354,13 @@ export class ConnectionFactory {
 		return connection;
 	}
 
-	private createConnectingRoad ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ) {
+	private createConnectingRoad ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ): TvRoad {
 
 		const road = this.roadFactory.createConnectingRoad( junction, incoming, outgoing );
 
-		road.spline = SplineFactory.createManeuverSpline( incoming, outgoing );
+		road.spline = SplineFactory.createFromLaneCoords( incoming, outgoing );
 
-		road.spline.segmentMap.set( 0, road );
+		road.spline.addSegment( 0, road );
 
 		this.splineBuilder.buildGeometry( road.spline );
 
@@ -430,13 +396,13 @@ export class ConnectionFactory {
 
 		road.junction = junction;
 
-		road.setPredecessor( TvRoadLinkType.ROAD, entry.road, entry.contact );
+		road.predecessor = LinkFactory.createRoadLink( entry.road, entry.contact );
 
-		road.setSuccessor( TvRoadLinkType.ROAD, exit.road, exit.contact );
+		road.successor = LinkFactory.createRoadLink( exit.road, exit.contact );
 
-		road.spline = SplineFactory.createManeuverSpline( entry, exit );
+		road.spline = SplineFactory.createFromLaneCoords( entry, exit );
 
-		road.spline.segmentMap.set( 0, road );
+		road.spline.addSegment( 0, road );
 
 		this.splineBuilder.buildGeometry( road.spline );
 
@@ -458,9 +424,7 @@ export class ConnectionFactory {
 
 		if ( corner ) this.createRoadMarks( laneSection, incoming );
 
-		connectingLane.predecessorId = incoming.laneId;
-
-		connectingLane.successorId = outgoing.laneId;
+		connectingLane.setLinks( incoming.lane, outgoing.lane );
 
 		this.splineBuilder.buildGeometry( connectingRoad.spline );
 
@@ -472,7 +436,7 @@ export class ConnectionFactory {
 
 	private createRoadMarks ( laneSection: TvLaneSection, incoming: TvLaneCoord ) {
 
-		laneSection.lanesMap.forEach( lane => {
+		laneSection.getLanes().forEach( lane => {
 
 			if ( lane.side == TvLaneSide.CENTER ) return;
 
@@ -493,42 +457,15 @@ export class ConnectionFactory {
 
 		const roadLength = connectingRoad.length;
 
-		const widhtAtStart = incoming.lane.getWidthValue( incoming.s );
+		const widhtAtStart = incoming.lane.getWidthValue( incoming.laneDistance );
 
-		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.s );
+		const widthAtEnd = outgoing.lane.getWidthValue( outgoing.laneDistance );
 
 		connectingLane.addWidthRecord( 0, widhtAtStart, 0, 0, 0 );
 
 		connectingLane.addWidthRecord( roadLength, widthAtEnd, 0, 0, 0 );
 
-		TvUtils.computeCoefficients( connectingLane.width, roadLength );
-
-	}
-
-	private determineConnectionType ( incomingCoord: TvLaneCoord, outgoingCoord: TvLaneCoord ): string {
-
-		const incomingLaneId = incomingCoord.lane.id;
-		const outgoingLaneId = outgoingCoord.lane.id;
-
-		if ( incomingCoord.contact === TvContactPoint.START ) {
-
-			if ( incomingLaneId === outgoingLaneId ) {
-				return "straight";
-			} else if ( incomingLaneId > outgoingLaneId ) {
-				return "left";
-			} else {
-				return "right";
-			}
-
-		} else { // TvContactPoint.END
-			if ( incomingLaneId === outgoingLaneId ) {
-				return "straight";
-			} else if ( incomingLaneId < outgoingLaneId ) {
-				return "left";
-			} else {
-				return "right";
-			}
-		}
+		connectingLane.updateWidthCoefficients();
 
 	}
 
@@ -536,9 +473,9 @@ export class ConnectionFactory {
 
 		const roadLength = connectingRoad.length;
 
-		const startHeight = incoming.lane.getHeightValue( incoming.s );
+		const startHeight = incoming.lane.getHeightValue( incoming.laneDistance );
 
-		const endHeight = outgoing.lane.getHeightValue( outgoing.s );
+		const endHeight = outgoing.lane.getHeightValue( outgoing.laneDistance );
 
 		// if ( startHeight.inner > 0 || startHeight.outer > 0 ) {
 		connectingLane.addHeightRecord( 0, startHeight.inner, startHeight.outer );
@@ -553,25 +490,8 @@ export class ConnectionFactory {
 
 		const link = new TvJunctionLaneLink( incoming.lane, connectingLane );
 
-		link.incomingRoad = incoming.road;
-		link.connectingRoad = connectingRoad;
-
 		connection.addLaneLink( link );
 	}
 
-	private hasConnection ( junction: TvJunction, target: TvJunctionConnection ) {
-
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			if ( connection.getHash() == target.getHash() ) {
-				return true;
-			}
-
-		}
-
-		return false;
-	}
 
 }

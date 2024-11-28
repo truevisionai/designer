@@ -11,11 +11,6 @@ import { PointDebugService } from "../../services/debug/point-debug.service";
 import { HasSplineDebugService } from "../../services/debug/has-spline-debug.service";
 import { BaseLaneDebugService } from "../interfaces/lane-node.debug";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
-import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
-import { ManeuverRoadDebugger } from "app/map/maneuver-road/maneuver-road.debugger";
-import { TvJunction } from "../../map/models/junctions/tv-junction";
-import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { ControlPointDebugger } from "../../services/debug/control-point.debugger";
 import { LaneHeightDebugService } from "app/tools/lane-height/lane-height.debug";
 import { LaneMarkingToolDebugger } from "app/tools/lane-marking/lane-marking-tool.debugger";
 import { TextMarkingToolDebugger } from "app/tools/text-marking/text-marking-tool.debugger";
@@ -81,50 +76,5 @@ export class DebugServiceProvider {
 		return debugService;
 	}
 
-	createByObjectType ( toolType: ToolType, object: any ): IDebugger<any, any> {
-
-		let debugService: IDebugger<any, any>;
-
-		if ( object instanceof ManeuverMesh ) {
-
-			debugService = this.injector.get( ManeuverRoadDebugger );
-
-			if ( toolType === ToolType.TrafficLight ) {
-
-				( debugService as ManeuverRoadDebugger ).shouldShowControlPoints = false;
-				( debugService as ManeuverRoadDebugger ).shouldShowLines = false;
-
-			}
-
-		} else if ( object instanceof TvJunction ) {
-
-			debugService = this.injector.get( JunctionDebugService );
-
-			if ( toolType === ToolType.TrafficLight ) {
-
-				( debugService as JunctionDebugService ).shouldShowEntries = false;
-
-			} else {
-
-				( debugService as JunctionDebugService ).shouldShowEntries = true;
-
-			}
-
-		} else if ( object instanceof AbstractControlPoint ) {
-
-			debugService = this.injector.get( ControlPointDebugger );
-
-		}
-
-		if ( debugService instanceof BaseLaneDebugService ) {
-
-			debugService.debugDrawService = this.debugDrawService;
-
-			debugService.mapService = this.mapService;
-
-		}
-
-		return debugService;
-	}
 
 }

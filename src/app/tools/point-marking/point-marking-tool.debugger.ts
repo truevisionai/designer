@@ -6,7 +6,6 @@ import { Injectable } from '@angular/core';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { PointMarkingControlPoint } from './objects/point-marking-object';
 
 @Injectable( {
@@ -17,8 +16,6 @@ export class PointMarkingToolDebugger {
 	private cache = new Map<TvRoadObject, PointMarkingControlPoint>();
 
 	private points = new Object3DArrayMap<TvRoad, PointMarkingControlPoint[]>();
-
-	constructor ( private roadGeometryService: RoadGeometryService ) { }
 
 	showRoadObjects ( road: TvRoad ): void {
 
@@ -40,7 +37,7 @@ export class PointMarkingToolDebugger {
 
 	createNode ( road: TvRoad, roadObject: TvRoadObject ) {
 
-		const coord = this.roadGeometryService.findRoadPosition( road, roadObject.s, roadObject.t );
+		const coord = road.getRoadPosition( roadObject.s, roadObject.t );
 
 		if ( !coord ) return;
 

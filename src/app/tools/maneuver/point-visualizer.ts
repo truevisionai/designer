@@ -37,15 +37,15 @@ export class PointVisualizer<T extends AbstractControlPoint> extends NodeVisuali
 
 		if ( object instanceof SplineControlPoint ) {
 
-			this.updateVisuals( object.spline );
+			this.updateVisuals( object.getSpline() );
 
 		} else if ( object instanceof RoadControlPoint ) {
 
-			this.updateVisuals( object.spline );
+			this.updateVisuals( object.getSpline() );
 
 		} else if ( object instanceof RoadTangentPoint ) {
 
-			this.updateVisuals( object.spline );
+			this.updateVisuals( object.getSpline() );
 
 		} else {
 

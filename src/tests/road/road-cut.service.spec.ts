@@ -5,13 +5,13 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
-import { SplineBuilder } from 'app/services/spline/spline.builder';
+import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-generator';
 import { Vector3 } from 'three';
 
 xdescribe( 'Service: RoadCut', () => {
 
 	let eventServiceProvider: EventServiceProvider;
-	let splineBuilder: SplineBuilder;
+	let splineBuilder: SplineGeometryGenerator;
 
 	beforeEach( () => {
 		TestBed.configureTestingModule( {
@@ -22,7 +22,7 @@ xdescribe( 'Service: RoadCut', () => {
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		eventServiceProvider.init();
 
-		splineBuilder = TestBed.inject( SplineBuilder );
+		splineBuilder = TestBed.inject( SplineGeometryGenerator );
 
 	} );
 
@@ -48,7 +48,7 @@ xdescribe( 'Service: RoadCut', () => {
 		expect( oldRoad ).toBeDefined();
 		expect( newRoad ).toBeDefined();
 
-		expect( oldRoad.spline.segmentMap.length ).toBe( 3 );
+		expect( oldRoad.spline.getSegmentCount() ).toBe( 3 );
 		expect( oldRoad.sStart ).toBe( 0 );
 		expect( newRoad.sStart ).toBe( 60 );
 
@@ -79,7 +79,7 @@ xdescribe( 'Service: RoadCut', () => {
 		expect( oldRoad ).toBeDefined();
 		expect( newRoad ).not.toBeDefined();
 
-		expect( oldRoad.spline.segmentMap.length ).toBe( 2 );
+		expect( oldRoad.spline.getSegmentCount() ).toBe( 2 );
 		expect( oldRoad.sStart ).toBe( 0 );
 
 		splineBuilder.buildSpline( oldRoad.spline );

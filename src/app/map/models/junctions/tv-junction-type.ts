@@ -6,5 +6,6 @@
 export enum TvJunctionType {
 	DEFAULT = 'default',
 	VIRTUAL = 'virtual',
-	DIRECT = 'direct'
+	DIRECT = 'direct',
+	AUTO = 'auto'
 }

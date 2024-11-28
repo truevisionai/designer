@@ -29,7 +29,8 @@ import { RoadControlPointSelectionStrategy, RoadTangentPointSelectionStrategy, S
 import { RoadStyleAssetDropHandler } from './handlers/road-style-asset-handler';
 import { RoadController } from './controllers/road-controller';
 import { RoadVisualizer } from './visualizers/road-visualizer';
-import { PointCreationRoadToolStrategy, SplineCreationRoadToolStrategy } from './road-tool-creation-strategy';
+import { SplineCreationRoadToolStrategy } from './creators/spline-creator';
+import { PointCreationRoadToolStrategy } from "./creators/spline-point-creator";
 
 export class RoadTool extends ToolWithHandler {
 
@@ -110,8 +111,6 @@ export class RoadTool extends ToolWithHandler {
 	}
 
 	enable (): void {
-
-		this.subscribeToEvents();
 
 		// HACK: temp fix to prevent too many splines from being highlighted
 		if ( this.tool.splineService.nonJunctionSplines.length > 100 ) {

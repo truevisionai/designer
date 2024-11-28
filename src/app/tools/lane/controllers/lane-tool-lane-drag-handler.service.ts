@@ -69,9 +69,9 @@ export class LaneToolLaneDragHandler extends BaseDragHandler<TvLane> {
 
 		const width = this.calculateLaneWidth( this.startLaneCoord, start, end );
 
-		lane.width.splice( 0, lane.width.length );
+		lane.clearLaneWidth();
 
-		lane.width.push( new TvLaneWidth( 0, width, 0, 0, 0, lane ) );
+		lane.addWidthRecordInstance( new TvLaneWidth( 0, width, 0, 0, 0 ) );
 
 	}
 

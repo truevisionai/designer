@@ -2,22 +2,15 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable, Injector } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import { ToolType } from "./tool-types.enum";
 import { DebugServiceProvider } from "../core/providers/debug-service.provider";
 import { RoadToolHelper } from "./road/road-tool-helper.service";
-import { SurfaceToolService } from "./surface/surface-tool.service";
-import { PropPointService } from "../map/prop-point/prop-point.service";
 import { RoadCircleToolService } from "./road-circle/road-circle-tool.service";
-import { RoadElevationToolService } from "./road-elevation/road-elevation-tool.service";
 import { ManeuverToolHelper } from "./maneuver/maneuver-tool-helper.service";
-import { LaneWidthToolService } from "./lane-width/lane-width-tool.service";
 import { LaneMarkingToolService } from "./lane-marking/lane-marking-tool.service";
 import { LaneToolHelper } from "./lane/lane-tool.helper";
-import { CrosswalkToolHelper } from "./crosswalk/crosswalk-tool.helper";
 import { RoadDividerToolService } from "./road-cut-tool/road-divider-tool.service";
-import { JunctionToolHelper } from "./junction/junction-tool.helper";
-import { PropCurveService } from "../map/prop-curve/prop-curve.service";
 import { RampToolHelper } from "./road-ramp/road-ramp.helper";
 import { ParkingRoadToolService } from "./parking/parking-road-tool.service";
 import { TextMarkingToolService } from "./text-marking/text-marking-tool.service";
@@ -30,24 +23,18 @@ import { BaseTool } from "./base-tool";
 import { RoadTool } from "./road/road-tool";
 import { RoadCircleTool } from "./road-circle/road-circle-tool";
 import { ManeuverTool } from "./maneuver/maneuver-tool";
-import { JunctionTool } from "./junction/junction.tool";
-import { LaneWidthTool } from "./lane-width/lane-width-tool";
 import { PropPointTool } from "./prop-point/prop-point-tool";
-import { PropCurveTool, PropCurveToolService } from "./prop-curve/prop-curve-tool";
 import { PropPolygonTool } from "./prop-polygon/prop-polygon.tool";
 import { PropSpanTool } from "./prop-span/prop-span-tool";
 import { PolePropTool } from "./prop-pole/pole-prop.tool";
-import { SurfaceTool } from "./surface/surface.tool";
 import { LaneMarkingTool } from "./lane-marking/lane-marking-tool";
 import { LaneTool } from "./lane/lane-tool";
 import { PointMarkingTool } from "./point-marking/point-marking.tool";
 import { TextMarkingTool } from "./text-marking/text-marking.tool";
-import { CrosswalkTool } from "./crosswalk/crosswalk-tool";
 import { PointerTool } from "./pointer/pointer-tool";
 import { MeasurementTool } from "./measurement/measurement.tool";
 import { VehicleTool } from "./vehicle/vehicle-tool";
 import { RoadSignTool } from "./road-signal/road-sign-tool";
-import { RoadElevationTool } from "./road-elevation/road-elevation.tool";
 import { RoadRampTool } from "./road-ramp/road-ramp-tool";
 import { RoadDividerTool } from "./road-cut-tool/road-divider-tool";
 import { ParkingRoadTool } from "./parking/parking-road-tool";
@@ -55,27 +42,20 @@ import { ParkingLotTool } from "./parking/parking-lot.tool";
 import { DepPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
 import { SelectionService } from "./selection.service";
 import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
-import { Surface } from 'app/map/surface/surface.model';
 import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
 import { ControlPointFactory } from "../factories/control-point.factory";
-import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { DataServiceProvider } from "./data-service-provider.service";
 import { PropInstance } from 'app/map/prop-point/prop-instance.object';
-import { Tool } from "./tool";
+import { Tool, TOOL_PROVIDERS } from "./tool";
 import { LaneHeightTool } from './lane-height/lane-height.tool';
 import { BaseLaneTool } from "./base-lane.tool";
 import { DepSelectLaneStrategy } from 'app/core/strategies/select-strategies/on-lane-strategy';
 import { TvLane } from 'app/map/models/tv-lane';
-import { LaneHeightService } from 'app/map/lane-height/lane-height.service';
 import { DebugLine } from 'app/objects/debug-line';
 import { DepSelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { MidLaneMovingStrategy, } from "../core/strategies/move-strategies/end-lane.moving.strategy";
-import { FollowHeadingMovingStrategy } from 'app/core/strategies/move-strategies/follow-heading-moving-strategy';
 import { LanePointNode } from "../objects/lane-node";
 import { SimpleControlPoint } from "../objects/simple-control-point";
-import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { SplineControlPoint } from 'app/objects/road/spline-control-point';
-import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { TrafficLightTool } from './traffic-light/traffic-light.tool';
 import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';
 import { EntityService } from "../scenario/entity/entity.service";
@@ -86,28 +66,24 @@ import {
 	SuperElevationToolHelper
 } from "./road-super-elevation/super-elevation.tool";
 import { ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-user-data-strategy";
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ToolFactory {
 
+	private toolMap = new Map<ToolType, Tool>();
+
 	constructor (
 		private injector: Injector,
 		private debugFactory: DebugServiceProvider,
 		private roadToolService: RoadToolHelper,
-		private surfaceToolService: SurfaceToolService,
-		private propPointService: PropPointService,
 		private roadCircleService: RoadCircleToolService,
-		private roadElevationService: RoadElevationToolService,
 		private maneuverToolService: ManeuverToolHelper,
-		private laneWidthService: LaneWidthToolService,
 		private laneMarkingService: LaneMarkingToolService,
 		private laneToolService: LaneToolHelper,
 		private roadCutToolService: RoadDividerToolService,
-		private junctionToolService: JunctionToolHelper,
-		private propCurveService: PropCurveService,
-		private roadRampService: RampToolHelper,
 		private parkingRoadToolService: ParkingRoadToolService,
 		private textMarkingToolService: TextMarkingToolService,
 		private propSpanToolService: PropSpanToolService,
@@ -119,107 +95,17 @@ export class ToolFactory {
 		private factoryProvider: FactoryServiceProvider,
 		private pointFactory: ControlPointFactory,
 		private dataServiceProvider: DataServiceProvider,
-		private laneHeightService: LaneHeightService,
 		private trafficLightToolService: TrafficLightToolService,
+		@Inject( TOOL_PROVIDERS ) tools: Tool[],
 	) {
+		tools.forEach( tool => {
+			this.toolMap.set( tool.toolType, tool );
+		} )
 	}
 
 	createTool ( type: ToolType ): Tool | null {
 
-		let tool: Tool;
-
-		switch ( type ) {
-			case ToolType.DebugConnections:
-				tool = new DebugConnectionTool( this.injector.get( DebugConnectionToolService ) );
-				break;
-			case ToolType.Road:
-				tool = this.createRoadTool()
-				break;
-			case ToolType.RoadCircle:
-				tool = new RoadCircleTool( this.roadCircleService );
-				break;
-			case ToolType.SuperElevation:
-				tool = new SuperElevationTool( this.injector.get( SuperElevationToolHelper ) );
-				break;
-			case ToolType.Maneuver:
-				tool = new ManeuverTool( this.maneuverToolService );
-				break;
-			case ToolType.Junction:
-				tool = new JunctionTool( this.junctionToolService );
-				break;
-			case ToolType.LaneWidth:
-				tool = new LaneWidthTool( this.laneWidthService );
-				break;
-			case ToolType.PropPoint:
-				tool = new PropPointTool();
-				break;
-			case ToolType.PropCurve:
-				tool = new PropCurveTool( this.injector.get( PropCurveToolService ) );
-				break;
-			case ToolType.PropPolygon:
-				tool = new PropPolygonTool();
-				break;
-			case ToolType.PropSpanTool:
-				tool = new PropSpanTool( this.propSpanToolService );
-				break;
-			case ToolType.PolePropTool:
-				tool = new PolePropTool( this.propBarrierToolService );
-				break;
-			case ToolType.Surface:
-				tool = new SurfaceTool( this.surfaceToolService );
-				break;
-			case ToolType.LaneMarking:
-				tool = new LaneMarkingTool( this.laneMarkingService );
-				break;
-			case ToolType.Lane:
-				tool = new LaneTool( this.laneToolService );
-				break;
-			case ToolType.LaneHeight:
-				tool = new LaneHeightTool( this.injector.get( LaneHeightToolService ) );
-				break;
-			case ToolType.PointMarkingTool:
-				tool = new PointMarkingTool( this.pointMarkingToolService );
-				break;
-			case ToolType.TextMarkingTool:
-				tool = new TextMarkingTool( this.textMarkingToolService );
-				break;
-			case ToolType.Crosswalk:
-				tool = new CrosswalkTool( this.injector.get( CrosswalkToolHelper ) );
-				break;
-			case ToolType.Pointer:
-				tool = new PointerTool();
-				break;
-			case ToolType.MeasurementTool:
-				tool = new MeasurementTool( this.measurementToolService );
-				break;
-			case ToolType.Vehicle:
-				tool = new VehicleTool( this.injector.get( EntityService ) );
-				break;
-			case ToolType.RoadSignTool:
-				tool = new RoadSignTool( this.roadSignalToolService );
-				break;
-			case ToolType.RoadElevation:
-				tool = new RoadElevationTool( this.roadElevationService );
-				break;
-			case ToolType.RoadRampTool:
-				tool = new RoadRampTool( this.injector.get( RampToolHelper ) );
-				break;
-			case ToolType.RoadDividerTool:
-				tool = new RoadDividerTool( this.roadCutToolService );
-				break;
-			case ToolType.ParkingRoad:
-				tool = new ParkingRoadTool( this.parkingRoadToolService );
-				break;
-			case ToolType.ParkingLot:
-				tool = new ParkingLotTool( this.parkingRoadToolService );
-				break;
-			case ToolType.TrafficLight:
-				tool = new TrafficLightTool( this.trafficLightToolService );
-				break;
-			default:
-				console.error( 'Invalid tool type' + type );
-				break;
-		}
+		const tool = this.createToolInstance( type );
 
 		if ( tool instanceof BaseTool ) {
 
@@ -263,6 +149,93 @@ export class ToolFactory {
 		return tool;
 	}
 
+	createToolInstance ( type: ToolType ): Tool {
+
+		if ( this.toolMap.has( type ) ) {
+			return this.toolMap.get( type );
+		}
+
+		let tool: Tool
+
+		switch ( type ) {
+			case ToolType.DebugConnections:
+				tool = new DebugConnectionTool( this.injector.get( DebugConnectionToolService ) );
+				break;
+			case ToolType.Road:
+				tool = this.createRoadTool()
+				break;
+			case ToolType.RoadCircle:
+				tool = new RoadCircleTool( this.roadCircleService );
+				break;
+			case ToolType.SuperElevation:
+				tool = new SuperElevationTool( this.injector.get( SuperElevationToolHelper ) );
+				break;
+			case ToolType.Maneuver:
+				tool = new ManeuverTool( this.maneuverToolService );
+				break;
+			case ToolType.PropPoint:
+				tool = new PropPointTool();
+				break;
+			case ToolType.PropPolygon:
+				tool = new PropPolygonTool();
+				break;
+			case ToolType.PropSpanTool:
+				tool = new PropSpanTool( this.propSpanToolService );
+				break;
+			case ToolType.PolePropTool:
+				tool = new PolePropTool( this.propBarrierToolService );
+				break;
+			case ToolType.LaneMarking:
+				tool = new LaneMarkingTool( this.laneMarkingService );
+				break;
+			case ToolType.Lane:
+				tool = new LaneTool( this.laneToolService );
+				break;
+			case ToolType.LaneHeight:
+				tool = new LaneHeightTool( this.injector.get( LaneHeightToolService ) );
+				break;
+			case ToolType.PointMarkingTool:
+				tool = new PointMarkingTool( this.pointMarkingToolService );
+				break;
+			case ToolType.TextMarkingTool:
+				tool = new TextMarkingTool( this.textMarkingToolService );
+				break;
+			case ToolType.Pointer:
+				tool = new PointerTool();
+				break;
+			case ToolType.MeasurementTool:
+				tool = new MeasurementTool( this.measurementToolService );
+				break;
+			case ToolType.Vehicle:
+				tool = new VehicleTool( this.injector.get( EntityService ) );
+				break;
+			case ToolType.RoadSignTool:
+				tool = new RoadSignTool( this.roadSignalToolService );
+				break;
+			case ToolType.RoadRampTool:
+				tool = new RoadRampTool( this.injector.get( RampToolHelper ) );
+				break;
+			case ToolType.RoadDividerTool:
+				tool = new RoadDividerTool( this.roadCutToolService );
+				break;
+			case ToolType.ParkingRoad:
+				tool = new ParkingRoadTool( this.parkingRoadToolService );
+				break;
+			case ToolType.ParkingLot:
+				tool = new ParkingLotTool( this.parkingRoadToolService );
+				break;
+			case ToolType.TrafficLight:
+				tool = new TrafficLightTool( this.trafficLightToolService );
+				break;
+			default:
+				Log.error( 'Invalid tool type' + type );
+				break;
+		}
+
+		return tool;
+
+	}
+
 	setSelectionStrategies ( tool: BaseTool<any>, type: ToolType ) {
 
 		this.selectionService.reset();
@@ -271,12 +244,6 @@ export class ToolFactory {
 			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
 			this.selectionService.registerStrategy( PropPolygon, new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' ) );
 			tool.setTypeName( PropPolygon.name );
-		}
-
-		if ( type == ToolType.PropCurve ) {
-			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
-			this.selectionService.registerStrategy( PropCurve, new ObjectUserDataStrategy<PropCurve>( PropCurve.tag, 'curve' ) );
-			tool.setTypeName( PropCurve.name );
 		}
 
 		if ( type == ToolType.PropPoint ) {

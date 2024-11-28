@@ -6,11 +6,12 @@ import { ManeuverTool } from "../../app/tools/maneuver/maneuver-tool";
 import { ManeuverToolHelper } from "../../app/tools/maneuver/maneuver-tool-helper.service";
 import { SplineTestHelper } from "../../app/services/spline/spline-test-helper.service";
 import { JunctionUtils } from "../../app/utils/junction.utils";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
+import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { LaneUtils } from "app/utils/lane.utils";
 import { BaseTool } from "app/tools/base-tool";
+import { LaneDistance } from "app/map/road/road-distance";
 
 describe( 'ManeuverTool', () => {
 
@@ -97,17 +98,17 @@ describe( 'ManeuverTool', () => {
 		const leftRoad = helper.mapService.findRoad( 1 );
 		const rightRoad = helper.mapService.findRoad( 4 );
 
-		const entryR1 = new TvLaneCoord( leftRoad, leftRoad.laneSections[ 0 ], leftRoad.laneSections[ 0 ].getLaneById( -1 ), leftRoad.length, 0 );
+		const entryR1 = new TvLaneCoord( leftRoad, leftRoad.laneSections[ 0 ], leftRoad.laneSections[ 0 ].getLaneById( -1 ), leftRoad.length as LaneDistance, 0 );
 		expect( LaneUtils.canConnect( entryR1, entryR1 ) ).toBe( false );
 
-		const exitR1 = new TvLaneCoord( rightRoad, rightRoad.laneSections[ 0 ], rightRoad.laneSections[ 0 ].getLaneById( -1 ), 0, 0 );
+		const exitR1 = new TvLaneCoord( rightRoad, rightRoad.laneSections[ 0 ], rightRoad.laneSections[ 0 ].getLaneById( -1 ), 0 as LaneDistance, 0 );
 		expect( LaneUtils.canConnect( exitR1, exitR1 ) ).toBe( false );
 
-		const exitL1 = new TvLaneCoord( rightRoad, rightRoad.laneSections[ 0 ], rightRoad.laneSections[ 0 ].getLaneById( 1 ), 0, 0 );
+		const exitL1 = new TvLaneCoord( rightRoad, rightRoad.laneSections[ 0 ], rightRoad.laneSections[ 0 ].getLaneById( 1 ), 0 as LaneDistance, 0 );
 		expect( LaneUtils.canConnect( entryR1, exitL1 ) ).toBe( false );
 		expect( LaneUtils.canConnect( exitL1, entryR1 ) ).toBe( false );
 
-		const exitR2 = new TvLaneCoord( rightRoad, rightRoad.laneSections[ 0 ], rightRoad.laneSections[ 0 ].getLaneById( -2 ), 0, 0 );
+		const exitR2 = new TvLaneCoord( rightRoad, rightRoad.laneSections[ 0 ], rightRoad.laneSections[ 0 ].getLaneById( -2 ), 0 as LaneDistance, 0 );
 		expect( LaneUtils.canConnect( exitR2, entryR1 ) ).toBe( false );
 		expect( LaneUtils.canConnect( entryR1, exitR2 ) ).toBe( false );
 

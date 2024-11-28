@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { RoadService } from '../../services/road/road.service';
 import { Log } from 'app/core/utils/log';
@@ -14,9 +14,12 @@ import { Log } from 'app/core/utils/log';
 } )
 export class ConnectionService {
 
-	constructor ( private roadService: RoadService ) { }
+	constructor (
+		private roadService: RoadService
+	) {
+	}
 
-	addConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
+	addConnection ( junction: TvJunction, connection: TvJunctionConnection ): void {
 
 		if ( junction.hasConnection( connection ) ) {
 			Log.error( 'Connection already exists', connection?.toString() );
@@ -29,7 +32,7 @@ export class ConnectionService {
 
 	}
 
-	removeConnection ( junction: TvJunction, connection: TvJunctionConnection ) {
+	removeConnection ( junction: TvJunction, connection: TvJunctionConnection ): void {
 
 		if ( !junction.hasConnection( connection ) ) {
 			Log.error( 'Connection does not exist', connection?.toString() );
@@ -38,25 +41,23 @@ export class ConnectionService {
 
 		junction.removeConnection( connection );
 
-		this.roadService.remove( connection.connectingRoad );
-
 	}
 
-	addLink ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+	addLink ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): void {
 
 		if ( !junction.hasConnection( connection ) ) {
 			this.addConnection( junction, connection );
 		}
 
-		connection.laneLink.push( link );
+		connection.addLaneLink( link );
 
 	}
 
-	removeLink ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ) {
+	removeLink ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): void {
 
-		connection.laneLink = connection.laneLink.filter( l => l !== link );
+		connection.removeLink( link );
 
-		if ( connection.laneLink.length === 0 ) {
+		if ( connection.getLinkCount() === 0 ) {
 			this.removeConnection( junction, connection );
 		}
 

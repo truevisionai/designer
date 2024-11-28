@@ -20,14 +20,7 @@ export class MapManager {
 
 	init () {
 
-		MapEvents.mapLoaded.subscribe( e => this.onMapLoaded( e ) );
 		MapEvents.mapRemoved.subscribe( e => this.onMapRemoved( e ) );
-
-	}
-
-	onMapLoaded ( map: TvMap ): void {
-
-		if ( this.debug ) console.debug( "onMapLoaded", map );
 
 	}
 
@@ -35,7 +28,7 @@ export class MapManager {
 
 		if ( this.debug ) console.debug( "onMapRemoved", map );
 
-		map.roads.forEach( road => {
+		map.getRoads().forEach( road => {
 
 			map.gameObject.remove( road.gameObject );
 
@@ -43,7 +36,7 @@ export class MapManager {
 
 				if ( road.gameObject ) road.gameObject.remove( laneSection.gameObject );
 
-				if ( road.gameObject ) laneSection.lanesMap.forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
+				if ( road.gameObject ) laneSection.getLanes().forEach( lane => laneSection.gameObject.remove( lane.gameObject ) );
 
 			} );
 

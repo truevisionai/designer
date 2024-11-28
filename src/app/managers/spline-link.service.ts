@@ -3,15 +3,14 @@
  */
 
 import { Injectable } from "@angular/core";
-import { AbstractSpline, SplineType } from "app/core/shapes/abstract-spline";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { Log } from "app/core/utils/log";
 import { ConnectionManager } from "app/map/junction/connection.manager";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { SplineBuilder } from "app/services/spline/spline.builder";
+import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 import { RoadUtils } from "app/utils/road.utils";
-import { SplineUtils } from "app/utils/spline.utils";
 import { JunctionManager } from "./junction-manager";
 import { MapService } from "app/services/map/map.service";
 import { Vector3 } from "three";
@@ -25,49 +24,21 @@ export class SplineLinkService {
 	constructor (
 		private junctionManager: JunctionManager,
 		private connectionManager: ConnectionManager,
-		private splineBuilder: SplineBuilder,
+		private geometryGenerator: SplineGeometryGenerator,
 		private mapService: MapService,
 	) { }
 
-	getSuccessorSpline ( spline: AbstractSpline ): AbstractSpline | undefined {
+	onSplineAdded ( spline: AbstractSpline ): void {
 
-		return SplineUtils.getSuccessorSpline( spline );
-
-	}
-
-	getPredecessorSpline ( spline: AbstractSpline ): AbstractSpline | undefined {
-
-		return SplineUtils.getPredecessorSpline( spline );
-
-	}
-
-	getLinkedSplines ( spline: AbstractSpline ): AbstractSpline[] {
-
-		const linkedSplines = new Set<AbstractSpline>();
-
-		const next = this.getSuccessorSpline( spline );
-
-		const previous = this.getPredecessorSpline( spline );
-
-		if ( next ) linkedSplines.add( next );
-
-		if ( previous ) linkedSplines.add( previous );
-
-		return [ ...linkedSplines ];
-
-	}
-
-	onSplineAdded ( spline: AbstractSpline ) {
-
-		const lastSegment = spline.segmentMap.getLast();
-		const successor = SplineUtils.findSuccessor( spline );
+		const lastSegment = spline.getLastSegment();
+		const successor = spline.getSuccessor();
 
 		if ( successor instanceof TvJunction && lastSegment instanceof TvRoad ) {
 			this.junctionManager.addLink( successor as TvJunction, lastSegment, TvContactPoint.END );
 		}
 
-		const firstSegment = spline.segmentMap.getFirst();
-		const predecessor = SplineUtils.findPredecessor( spline );
+		const firstSegment = spline.getFirstSegment();
+		const predecessor = spline.getPredecessor();
 
 		if ( predecessor instanceof TvJunction && firstSegment instanceof TvRoad ) {
 			this.junctionManager.addLink( predecessor as TvJunction, firstSegment, TvContactPoint.START );
@@ -81,7 +52,6 @@ export class SplineLinkService {
 
 		this.syncPredecessorSpline( spline );
 
-
 	}
 
 	onSplineRemoved ( spline: AbstractSpline ): void {
@@ -94,14 +64,15 @@ export class SplineLinkService {
 
 	}
 
-	removeLinksWithJunctions ( spline: AbstractSpline ): void {
+	private removeLinksWithJunctions ( spline: AbstractSpline ): void {
 
 		if ( spline.isLastSegmentRoad() && spline.getSuccessor() instanceof TvJunction ) {
 
 			const junction = spline.getSuccessor() as TvJunction;
 			const road = spline.getLastSegment() as TvRoad;
 
-			this.connectionManager.removeConnections( junction, road );
+			junction.removeConnectionsByRoad( road );
+
 			this.junctionManager.updateJunction( junction );
 
 		}
@@ -111,16 +82,17 @@ export class SplineLinkService {
 			const junction = spline.getPredecessor() as TvJunction;
 			const road = spline.getFirstSegment() as TvRoad;
 
-			this.connectionManager.removeConnections( junction, road );
+			junction.removeConnectionsByRoad( road );
+
 			this.junctionManager.updateJunction( junction );
 
 		}
 
 	}
 
-	removeJunctionSegments ( spline: AbstractSpline ): void {
+	private removeJunctionSegments ( spline: AbstractSpline ): void {
 
-		for ( const segment of spline.segmentMap.toArray() ) {
+		for ( const segment of spline.getSegments() ) {
 
 			if ( segment instanceof TvJunction ) {
 
@@ -140,10 +112,10 @@ export class SplineLinkService {
 
 	}
 
-	unlinkSpline ( spline: AbstractSpline ) {
+	private unlinkSpline ( spline: AbstractSpline ): void {
 
-		const firstSegment = spline.segmentMap.getFirst();
-		const lastSegment = spline.segmentMap.getLast();
+		const firstSegment = spline.getFirstSegment();
+		const lastSegment = spline.getLastSegment();
 
 		if ( firstSegment instanceof TvRoad ) {
 			RoadUtils.unlinkPredecessor( firstSegment, false );
@@ -155,26 +127,7 @@ export class SplineLinkService {
 
 	}
 
-	public fixExternalLinks ( spline: AbstractSpline ) {
-
-		const firstSegment = spline.segmentMap.getFirst();
-		const lastSegment = spline.segmentMap.getLast();
-
-		if ( firstSegment instanceof TvRoad ) {
-			if ( firstSegment.predecessor?.element instanceof TvRoad ) {
-				RoadUtils.linkPredecessor( firstSegment, firstSegment.predecessor.element, firstSegment.predecessor.contactPoint );
-			}
-		}
-
-		if ( lastSegment instanceof TvRoad ) {
-			if ( lastSegment.successor?.element instanceof TvRoad ) {
-				RoadUtils.linkSuccessor( lastSegment, lastSegment.successor.element, lastSegment.successor.contactPoint );
-			}
-		}
-
-	}
-
-	syncSuccessorSpline ( spline: AbstractSpline ): void {
+	private syncSuccessorSpline ( spline: AbstractSpline ): void {
 
 		if ( spline.isConnectingRoad() ) return;
 
@@ -192,7 +145,7 @@ export class SplineLinkService {
 
 	}
 
-	syncPredecessorSpline ( spline: AbstractSpline ): void {
+	private syncPredecessorSpline ( spline: AbstractSpline ): void {
 
 		if ( spline.isConnectingRoad() ) return;
 
@@ -200,7 +153,7 @@ export class SplineLinkService {
 
 		if ( predecessor instanceof TvRoad ) {
 
-			const firstRoad = spline.segmentMap.getFirst() instanceof TvRoad ? spline.segmentMap.getFirst() as TvRoad : null;
+			const firstRoad = spline.getFirstSegment() instanceof TvRoad ? spline.getFirstSegment() as TvRoad : null;
 
 			if ( firstRoad ) this.syncRoadPredecessorrSpline( firstRoad );
 
@@ -212,7 +165,7 @@ export class SplineLinkService {
 
 	}
 
-	syncRoadSuccessorSpline ( updatedRoad: TvRoad ): void {
+	private syncRoadSuccessorSpline ( updatedRoad: TvRoad ): void {
 
 		if ( !updatedRoad.successor ) return;
 
@@ -234,11 +187,11 @@ export class SplineLinkService {
 
 		this.adjustControlPoints( target.position, targetDirection, targetPoint, adjacentPoint );
 
-		this.splineBuilder.buildSpline( nextRoad.spline );
+		this.geometryGenerator.buildSpline( nextRoad.spline );
 
 	}
 
-	syncRoadPredecessorrSpline ( updatedRoad: TvRoad ): void {
+	private syncRoadPredecessorrSpline ( updatedRoad: TvRoad ): void {
 
 		if ( !updatedRoad.predecessor ) return;
 
@@ -260,7 +213,7 @@ export class SplineLinkService {
 
 		this.adjustControlPoints( target.position, targetDirection, targetPoint, adjacentPoint );
 
-		this.splineBuilder.buildSpline( prevRoad.spline );
+		this.geometryGenerator.buildSpline( prevRoad.spline );
 
 	}
 

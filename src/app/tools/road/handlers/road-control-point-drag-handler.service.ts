@@ -22,9 +22,9 @@ export class RoadControlPointDragHandler extends PointDragHandler<RoadControlPoi
 
 	isDraggingSupported ( point: RoadControlPoint ): boolean {
 
-		if ( point.road.hasSuccessor() && point.index === 0 ) return false;
+		if ( point.spline.hasSuccessor() && point.index === 0 ) return false;
 
-		if ( point.road.hasPredecessor() && point.index === point.spline.getControlPoints().length - 1 ) return false;
+		if ( point.spline.hasPredecessor() && point.index === point.spline.getControlPoints().length - 1 ) return false;
 
 		return true;
 
@@ -32,11 +32,7 @@ export class RoadControlPointDragHandler extends PointDragHandler<RoadControlPoi
 
 	onDragStart ( point: RoadControlPoint, event: PointerEventData ): void {
 
-		if ( point.shouldMarkAsSpiral() ) {
-
-			point.markAsSpiral();
-
-		}
+		// do nothing
 
 	}
 

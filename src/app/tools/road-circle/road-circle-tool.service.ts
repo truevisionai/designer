@@ -25,7 +25,7 @@ import { ViewControllerService } from 'app/views/editor/viewport/view-controller
 import { RoadService } from 'app/services/road/road.service';
 import { SplineService } from "../../services/spline/spline.service";
 import { ControlPointFactory } from "../../factories/control-point.factory";
-import { SplineBuilder } from "../../services/spline/spline.builder";
+import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
@@ -45,7 +45,7 @@ export class RoadCircleToolService {
 	private radius: number;
 
 	constructor (
-		public splineBuilder: SplineBuilder,
+		public splineBuilder: SplineGeometryGenerator,
 		public splineService: SplineService,
 		public roadService: RoadService,
 		public roadFactory: RoadFactory,
@@ -221,16 +221,14 @@ export class RoadCircleToolService {
 
 				const nextRoad = roads[ j + 1 ];
 
-				road.setSuccessorRoad( nextRoad, TvContactPoint.START );
-				nextRoad.setPredecessorRoad( road, TvContactPoint.END );
+				road.linkSuccessor( nextRoad, TvContactPoint.START );
 
 			} else {
 
 				// its last road, so make connection with the first one
 				const firstRoad = roads[ 0 ];
 
-				road.setSuccessorRoad( firstRoad, TvContactPoint.START );
-				firstRoad.setPredecessorRoad( road, TvContactPoint.END );
+				road.linkSuccessor( firstRoad, TvContactPoint.START );
 
 			}
 

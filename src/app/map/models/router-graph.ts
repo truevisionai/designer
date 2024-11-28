@@ -5,7 +5,7 @@
 import { TvJunction } from "./junctions/tv-junction";
 import { TvContactPoint } from "./tv-common";
 import { TvLaneSection } from "./tv-lane-section";
-import { TvRoadLinkType } from "./tv-road-link";
+import { TvLinkType } from "./tv-link";
 import { TvRoad } from "./tv-road.model";
 
 /**
@@ -178,7 +178,7 @@ class OpenDriveMap {
 
 				const roadLink = isSuccessor ? road.successor : road.predecessor;
 
-				if ( roadLink?.type !== TvRoadLinkType.ROAD || roadLink.contactPoint === null ) {
+				if ( roadLink?.type !== TvLinkType.ROAD || roadLink.contactPoint === null ) {
 					continue;
 				}
 
@@ -206,11 +206,11 @@ class OpenDriveMap {
 						nextLaneSectionRoad = road;
 					}
 
-					for ( const [ laneId, lane ] of currentLaneSection.lanesMap ) {
+					for ( const lane of currentLaneSection.getLanes() ) {
 						const nextLaneId = isSuccessor ? lane.successorId : lane.predecessorId;
 						if ( nextLaneId === 0 ) continue;
 
-						const nextLane = nextLaneSection.lanesMap.get( nextLaneId );
+						const nextLane = nextLaneSection.getLaneById( nextLaneId );
 						if ( !nextLane ) continue;
 
 						const fromLane = isSuccessor ? lane : nextLane;
@@ -223,7 +223,7 @@ class OpenDriveMap {
 
 						const from = new LaneKey( fromRoad.id, fromLaneSection.s, fromLane.id );
 						const to = new LaneKey( toRoad.id, toLaneSection.s, toLane.id );
-						const laneLength = road.getLaneSectionLength( fromLaneSection );
+						const laneLength = fromLaneSection.getLength();
 						routingGraph.addEdge( new RoutingGraphEdge( from, to, laneLength ) );
 					}
 				}
@@ -237,8 +237,8 @@ class OpenDriveMap {
 				const connectingRoad = this.roadMap.get( connection.connectingRoad.id );
 				if ( !incomingRoad || !connectingRoad ) continue;
 
-				const isSuccessorJunction = incomingRoad.successor?.type === TvRoadLinkType.JUNCTION && incomingRoad.successor.id === junctionId;
-				const isPredecessorJunction = incomingRoad.predecessor?.type === TvRoadLinkType.JUNCTION && incomingRoad.predecessor.id === junctionId;
+				const isSuccessorJunction = incomingRoad.successor?.type === TvLinkType.JUNCTION && incomingRoad.successor.id === junctionId;
+				const isPredecessorJunction = incomingRoad.predecessor?.type === TvLinkType.JUNCTION && incomingRoad.predecessor.id === junctionId;
 				if ( !isSuccessorJunction && !isPredecessorJunction ) continue;
 
 				const incomingLaneSection = isSuccessorJunction
@@ -248,16 +248,16 @@ class OpenDriveMap {
 					? connectingRoad.laneSections[ 0 ]
 					: connectingRoad.laneSections[ connectingRoad.laneSections.length - 1 ];
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.laneLinks ) {
 					if ( laneLink.from === 0 || laneLink.to === 0 ) continue;
 
-					const fromLane = incomingLaneSection.lanesMap.get( laneLink.from );
-					const toLane = connectingLaneSection.lanesMap.get( laneLink.to );
+					const fromLane = incomingLaneSection.getLaneById( laneLink.from );
+					const toLane = connectingLaneSection.getLaneById( laneLink.to );
 					if ( !fromLane || !toLane ) continue;
 
 					const from = new LaneKey( incomingRoad.id, incomingLaneSection.s, fromLane.id );
 					const to = new LaneKey( connectingRoad.id, connectingLaneSection.s, toLane.id );
-					const laneLength = incomingRoad.getLaneSectionLength( incomingLaneSection );
+					const laneLength = incomingLaneSection.getLength();
 					routingGraph.addEdge( new RoutingGraphEdge( from, to, laneLength ) );
 				}
 			}

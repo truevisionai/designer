@@ -5,8 +5,6 @@
 import { Injectable } from "@angular/core";
 import { RoadTangentPoint } from "../../../objects/road/road-tangent-point";
 import { SplineService } from "../../../services/spline/spline.service";
-import { RoadLinkService } from "../../../services/road/road-link.service";
-import { SplineGeometryService } from "../../../services/spline/spline-geometry.service";
 import { PointController } from "../../../core/controllers/point-controller";
 import { RoadInspector } from "app/views/inspectors/road-inspector/road-inspector.component";
 import { AppInspector } from "../../../core/inspector";
@@ -18,15 +16,13 @@ export class RoadTangentPointController extends PointController<RoadTangentPoint
 
 	constructor (
 		private splineService: SplineService,
-		private roadLinkService: RoadLinkService,
-		private splineGeometryService: SplineGeometryService,
 	) {
 		super();
 	}
 
 	showInspector ( object: RoadTangentPoint ): void {
 
-		AppInspector.setInspector( RoadInspector, { spline: object.spline, controlPoint: object } );
+		AppInspector.setInspector( RoadInspector, { spline: object.getSpline(), controlPoint: object } );
 
 	}
 
@@ -38,7 +34,7 @@ export class RoadTangentPointController extends PointController<RoadTangentPoint
 
 		this.splineService.updateControlPoint( point );
 
-		this.splineService.updateSpline( point.spline );
+		this.splineService.updateSpline( point.getSpline() );
 
 	}
 

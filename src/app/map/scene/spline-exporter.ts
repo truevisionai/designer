@@ -50,19 +50,14 @@ export class SplineExporter {
 		return {
 			attr_uuid: spline.uuid,
 			attr_type: spline.type,
-			geometry: spline.geometries.map( geometry => this.geometryExporter.export( geometry ) ),
+			geometry: spline.getGeometries().map( geometry => this.geometryExporter.export( geometry ) ),
 			point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
 				attr_x: point.position.x,
 				attr_y: point.position.y,
 				attr_z: point.position.z,
-				attr_hdg: point.hdg,
-				attr_type: point.segmentType,
+				attr_hdg: point.hdg
 			} ) ),
-			roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
-				attr_start: s,
-				attr_id: segment.id,
-				attr_type: this.exportSegmentType( segment )
-			} ) )
+			roadSegment: this.exportSegments( spline )
 		};
 	}
 
@@ -75,11 +70,7 @@ export class SplineExporter {
 				attr_y: point.y,
 				attr_z: point.z
 			} ) ),
-			roadSegment: spline.segmentMap.map( ( segment, s ) => ( {
-				attr_start: s,
-				attr_id: segment?.id,
-				attr_type: this.exportSegmentType( segment )
-			} ) )
+			roadSegment: this.exportSegments( spline ),
 		};
 
 	}
@@ -93,14 +84,23 @@ export class SplineExporter {
 				attr_y: point.y,
 				attr_z: point.z
 			} ) ),
-			roadSegment: spline.segmentMap.map( ( segment, s ) => {
-				return {
-					attr_start: s,
-					attr_id: segment?.id,
-					attr_type: this.exportSegmentType( segment )
-				};
-			} )
+			roadSegment: this.exportSegments( spline )
 		};
+	}
+
+	private exportSegments ( spline: AbstractSpline ): any[] {
+
+		const nodes = [];
+
+		spline.forEachSegment( ( segment, s ) => {
+			nodes.push( {
+				attr_start: s,
+				attr_id: segment?.id,
+				attr_type: this.exportSegmentType( segment )
+			} );
+		} );
+
+		return nodes;
 	}
 
 	private exportSegmentType ( segment: NewSegment ): string {

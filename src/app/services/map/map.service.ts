@@ -34,6 +34,10 @@ export class MapService {
 		TvMapInstance.map = value;
 	}
 
+	setMap ( map: TvMap ) {
+		this.map = map;
+	}
+
 	get roads (): TvRoad[] {
 		return this.map.getRoads();
 	}
@@ -71,13 +75,15 @@ export class MapService {
 
 	}
 
+	getNonJunctionRoadCount (): number {
+
+		return this.nonJunctionRoads.length;
+
+	}
+
 	hasRoad ( road: TvRoad | number ) {
 
-		if ( typeof road === 'number' ) {
-			return this.map.roads.has( road );
-		}
-
-		return this.map.roads.has( road.id );
+		return this.map.hasRoad( road );
 
 	}
 
@@ -93,13 +99,19 @@ export class MapService {
 
 	}
 
+	removeSpline ( spline: AbstractSpline ): void {
+
+		this.map.removeSpline( spline );
+
+	}
+
 	findRoad ( id: number ) {
 
 		// return this.map.getRoadById( id );
 
 		try {
 
-			return this.map.getRoadById( id );
+			return this.map.getRoad( id );
 
 		} catch ( error ) {
 
@@ -153,7 +165,7 @@ export class MapService {
 
 		try {
 
-			return this.map.getJunctionById( id );
+			return this.map.getJunction( id );
 
 		} catch ( error ) {
 
@@ -219,7 +231,7 @@ export class MapService {
 
 			const laneSection = road.laneSections[ j ];
 
-			for ( const lane of laneSection.getLaneArray() ) {
+			for ( const lane of laneSection.getLanes() ) {
 
 				if ( !lane.gameObject ) continue;
 
@@ -316,7 +328,7 @@ export class MapService {
 
 			for ( const laneSection of road.laneSections ) {
 
-				for ( const lane of laneSection.getLaneArray() ) {
+				for ( const lane of laneSection.getLanes() ) {
 
 					if ( lane.gameObject instanceof Mesh ) {
 
@@ -345,6 +357,8 @@ export class MapService {
 		return this.roads.length;
 
 	}
+
+	getRoads (): TvRoad[] { return this.map.getRoads(); }
 
 	getSplineCount () {
 

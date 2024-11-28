@@ -5,69 +5,82 @@
 import { Injectable } from "@angular/core";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvRoad } from "../models/tv-road.model";
-import { RoadManager } from "../../managers/road/road-manager";
-import { SplineBuilder } from "../../services/spline/spline.builder";
-import { JunctionRoadService } from "../../services/junction/junction-road.service";
-import { TvRoadLink, TvRoadLinkType } from "../models/tv-road-link";
+import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
+import { TvLink } from "../models/tv-link";
+import { LinkFactory } from '../models/link-factory';
 import { Log } from "../../core/utils/log";
 import { ConnectionFactory } from "../../factories/connection.factory";
-import { RoadService } from "../../services/road/road.service";
-import { TvJunctionConnection } from "../models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
 import { TvContactPoint } from "../models/tv-common";
 import { ConnectionGeometryService } from "app/services/junction/connection-geometry.service";
+import { GeometryUtils } from "app/services/surface/geometry-utils";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class ConnectionManager {
 
-	private debug = true;
-
 	constructor (
-		private roadService: RoadService,
-		private roadManager: RoadManager,
-		private splineBuilder: SplineBuilder,
-		private junctionRoadService: JunctionRoadService,
+		private splineBuilder: SplineGeometryGenerator,
 		private connectionFactory: ConnectionFactory,
 		private connectionGeometryService: ConnectionGeometryService,
 	) {
 	}
 
-	// const junctionLinks: TvRoadLink[] = [];
+	addConnectionsFromLinks ( junction: TvJunction, links: TvLink[] ): void {
 
-	// const junctionSplines = new Set<AbstractSpline>();
+		for ( let i = 0; i < links.length; i++ ) {
 
-	// // TODO: we can also find all the splines which are found in junction boundary
-	// this.junctionRoadService.getIncomingSplines( junction ).forEach( s => junctionSplines.add( s ) );
+			const linkA = links[ i ];
 
-	// otherSplines.forEach( spline => junctionSplines.add( spline ) );
+			let rightConnectionCreated = false;
 
-	// junctionSplines.forEach( spline => {
+			for ( let j = i + 1; j < links.length; j++ ) {
 
-	// 	this.updateSplineInternalLinks( spline, false );
+				const linkB = links[ j ];
 
-	// 	this.findLinksForJunction( spline, junction, junctionLinks );
+				// check if this is the first and last connection
+				const isFirstAndLast = i == 0 && j == links.length - 1
 
-	// } );
+				if ( this.shouldSkipLinkPair( linkA, linkB ) ) continue;
 
-	// this.connectionManager.removeAllConnections( junction );
+				linkA.linkJunction( junction );
+				linkB.linkJunction( junction );
 
-	// this.createConnections( junction, this.sortLinks( junctionLinks ) );
+				this.connectionFactory.addConnections( junction, linkA.toRoadCoord(), linkB.toRoadCoord(), !rightConnectionCreated );
+				this.connectionFactory.addConnections( junction, linkB.toRoadCoord(), linkA.toRoadCoord(), isFirstAndLast );
 
-	generateConnections ( junction: TvJunction, links: TvRoadLink[] = [] ) {
+				rightConnectionCreated = true;
+
+			}
+
+		}
+
+	}
+
+	private shouldSkipLinkPair ( linkA: TvLink, linkB: TvLink ): boolean {
+
+		// roads should be different
+		if ( linkA.element === linkB.element ) return true;
+
+		if ( linkA.element instanceof TvJunction || linkB.element instanceof TvJunction ) return true;
+
+		return false;
+
+	}
+
+	// eslint-disable-next-line max-lines-per-function
+	generateConnections ( junction: TvJunction, links: TvLink[] = [] ): void {
 
 		Log.info( 'Generating connections for junction', junction.toString() );
 
-		const roadLinks = this.junctionRoadService.getRoadLinks( junction );
+		const roadLinks = junction.getRoadLinks();
 
 		links.forEach( link => roadLinks.push( link ) );
 
-		const sortedLinks: TvRoadLink[] = this.roadService.sortLinks( roadLinks );
+		const sortedLinks: TvLink[] = GeometryUtils.sortRoadLinks( roadLinks );
 
-		const centroid = this.roadService.findCentroid( sortedLinks );
-
-		// Removing current connections
-		this.removeAllConnections( junction );
+		junction.removeAllConnections();
 
 		for ( let i = 0; i < sortedLinks.length; i++ ) {
 
@@ -98,58 +111,27 @@ export class ConnectionManager {
 
 	addConnectionsForRoad ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ) {
 
-		this.generateConnections( junction, [ new TvRoadLink( TvRoadLinkType.ROAD, road, contact ) ] );
+		this.generateConnections( junction, [ LinkFactory.createRoadLink( road, contact ) ] );
 
 	}
 
-	removeConnections ( junction: TvJunction, road: TvRoad ) {
+	updateGeometries ( junction: TvJunction ): void {
 
 		const connections = junction.getConnections();
 
 		for ( const connection of connections ) {
-
-			if ( connection.incomingRoad === road ) {
-
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			} else if ( connection.connectingRoad.successor?.element == road ) {
-
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			} else if ( connection.connectingRoad.predecessor?.element == road ) {
-
-				this.roadManager.removeRoad( connection.connectingRoad );
-
-				junction.removeConnection( connection );
-
-			}
-
-		}
-
-	}
-
-	updateGeometries ( junction: TvJunction ) {
-
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			this.updateConnectionGeometry( junction, connection );
-
-		}
-
-	}
-
-	// eslint-disable-next-line max-lines-per-function
-	updateConnectionGeometry ( junction: TvJunction, connection: TvJunctionConnection ): void {
-
-		try {
 
 			this.connectionGeometryService.updateConnectionGeometry( connection );
+
+			this.buildConnectionGeometry( junction, connection );
+
+		}
+
+	}
+
+	buildConnectionGeometry ( junction: TvJunction, connection: TvJunctionConnection ): void {
+
+		try {
 
 			this.splineBuilder.buildGeometry( connection.connectingRoad.spline );
 
@@ -161,25 +143,10 @@ export class ConnectionManager {
 
 			Log.error( error );
 
-			this.roadManager.removeRoad( connection.connectingRoad );
-
 			junction.removeConnection( connection )
 
 		}
 
 	}
 
-	removeAllConnections ( junction: TvJunction ) {
-
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			this.roadManager.removeRoad( connection.connectingRoad );
-
-			junction.removeConnection( connection );
-
-		}
-
-	}
 }

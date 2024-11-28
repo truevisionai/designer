@@ -17,6 +17,7 @@ import { AssetService } from 'app/assets/asset.service';
 import { AssetImporter } from "../../../assets/asset.importer";
 import { FileUtils } from 'app/io/file-utils';
 import { TvMaterialFactory } from "../../../assets/material/tv-material.factory";
+import { Log } from "../../../core/utils/log";
 
 @Component( {
 	selector: 'app-project-browser',
@@ -45,7 +46,6 @@ export class ProjectBrowserComponent implements OnInit {
 		private electron: TvElectronService,
 		private assetService: AssetService,
 		private snackBar: SnackBar,
-		private materialFactory: TvMaterialFactory,
 		private assetImporter: AssetImporter,
 	) {
 	}
@@ -118,13 +118,13 @@ export class ProjectBrowserComponent implements OnInit {
 
 		if ( !file ) {
 			this.snackBar.error( 'Incorrect file. Cannot import' );
-			console.error( 'Incorrect file. Cannot import' );
+			Log.error( 'Incorrect file. Cannot import' );
 			return;
 		}
 
 		if ( !file.path ) {
 			this.snackBar.error( 'Incorrect file path. Cannot import' );
-			console.error( 'Incorrect file path. Cannot import', file, folderPath );
+			Log.error( 'Incorrect file path. Cannot import', file, folderPath );
 			return;
 		}
 
@@ -132,7 +132,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 		if ( !extension ) {
 			this.snackBar.error( 'Incorrect file extension. Cannot import' );
-			console.error( 'Incorrect file extension. Cannot import', file, folderPath );
+			Log.error( 'Incorrect file extension. Cannot import', file, folderPath );
 			return;
 		}
 
@@ -158,7 +158,9 @@ export class ProjectBrowserComponent implements OnInit {
 				},
 				{
 					label: 'Material',
-					click: () => this.assetService.createMaterialAsset( this.currentFolder.path, 'Material.material', this.materialFactory.createNew() )
+					click: () => this.assetService.createMaterialAsset(
+						this.currentFolder.path, 'Material.material', TvMaterialFactory.createNew()
+					)
 				},
 				{
 					label: 'Entity',
@@ -180,10 +182,10 @@ export class ProjectBrowserComponent implements OnInit {
 				},
 			]
 		},
-		{
-			label: 'Show In Explorer',
-			click: () => this.showInExplorer()
-		},
+			{
+				label: 'Show In Explorer',
+				click: () => this.showInExplorer()
+			},
 		] );
 
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );

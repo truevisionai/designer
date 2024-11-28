@@ -2,12 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { JunctionFactory } from "app/factories/junction.factory";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
-import { disableMeshBuilding } from "app/map/builders/od-builder-config";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
@@ -18,38 +14,33 @@ import { JunctionManager } from "./junction-manager";
 import { SplineManager } from "./spline-manager";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { expectCorrectSegmentOrder } from "tests/base-test.spec";
-import { AbstractSpline, NewSegment } from "app/core/shapes/abstract-spline";
-import { TvRoadLink, TvRoadLinkType } from "app/map/models/tv-road-link";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { TvLink } from "app/map/models/tv-link";
+import { LinkFactory } from 'app/map/models/link-factory';
+import { expectInstances, expectSegments } from "tests/expect-spline.spec";
+import { setupTest } from "../../tests/setup-tests";
 
 describe( 'JunctionManager: InsertJunction', () => {
 
 	let splineTestHelper: SplineTestHelper;
-	let eventServiceProvider: EventServiceProvider;
 	let mapService: MapService;
 	let junctionManager: JunctionManager;
 	let splineManager: SplineManager;
 
 	beforeEach( () => {
 
-		disableMeshBuilding();
-
-		TestBed.configureTestingModule( {
-			providers: [ JunctionManager ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		splineTestHelper = TestBed.inject( SplineTestHelper );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		mapService = TestBed.inject( MapService );
 		junctionManager = TestBed.inject( JunctionManager );
 		splineManager = TestBed.inject( SplineManager );
-		eventServiceProvider.init();
 
 	} );
 
 	function expectOffsets ( spline: AbstractSpline, offsets: number[] ) {
 
-		const keys = [ ...spline.segmentMap.keys() ];
+		const keys = spline.getSegmentKeys();
 
 		expect( keys.length ).toBe( offsets.length );
 
@@ -61,47 +52,9 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	}
 
-	function expectInstances ( spline: AbstractSpline, types: any[] ) {
+	function expectCoords ( spline: AbstractSpline, junction: TvJunction, expected: TvLink[] ) {
 
-		const values = [ ...spline.segmentMap.values() ];
-
-		expect( values.length ).toBe( types.length );
-
-		for ( let i = 0; i < types.length; i++ ) {
-
-			expect( values[ i ] ).toBeInstanceOf( types[ i ] );
-
-		}
-
-	}
-
-	function expectSegments ( spline: AbstractSpline, segments: NewSegment[] ) {
-
-		const values = [ ...spline.segmentMap.values() ];
-
-		const keys = [ ...spline.segmentMap.keys() ];
-
-		expect( values.length ).toBe( segments.length );
-
-		for ( let i = 0; i < segments.length; i++ ) {
-
-			expect( values[ i ] ).toBe( segments[ i ] );
-
-			if ( values[ i ] instanceof TvRoad ) {
-
-				const road = values[ i ] as TvRoad;
-
-				expect( road.sStart ).toBe( keys[ i ] );
-
-			}
-
-		}
-
-	}
-
-	function expectCoords ( spline: AbstractSpline, junction: TvJunction, expected: TvRoadLink[] ) {
-
-		const coords = junctionManager.getJunctionLinks( spline, junction );
+		const coords = spline.getSegmentLinks( junction );
 
 		expect( coords.length ).toBe( expected.length );
 
@@ -127,13 +80,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 1 );
+		expect( spline.getSegmentCount() ).toBe( 1 );
 
 		junctionManager.insertJunction( spline, 40, 60, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -145,18 +98,18 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		expectSegments( spline, [ R1, J1, R2 ] );
 
-		const coords = junctionManager.getJunctionLinks( spline, J1 );
+		const coords = spline.getSegmentLinks( J1 );
 		expect( coords.length ).toBe( 2 );
-		expect( spline.segmentMap.getFirst() ).toBe( coords[ 0 ].element );
+		expect( spline.getFirstSegment() ).toBe( coords[ 0 ].element );
 		expect( coords[ 0 ].contactPoint ).toBe( TvContactPoint.END );
-		expect( spline.segmentMap.getLast() ).toBe( coords[ 1 ].element );
+		expect( spline.getLastSegment() ).toBe( coords[ 1 ].element );
 		expect( coords[ 1 ].contactPoint ).toBe( TvContactPoint.START );
 
 	} );
 
 	it( 'should insert junction in middle on spline with two roads', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createJunction();
+		const J1 = splineTestHelper.junctionFactory.createByType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ) );
 
@@ -170,13 +123,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 40, 60, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -185,16 +138,16 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectInstances( spline, [ TvRoad, TvJunction, TvRoad ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START )
+			LinkFactory.createRoadLink( R1, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.START )
 		] );
 
 	} );
 
 	it( 'should insert second junction before first junction', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createJunction();
-		const J2 = splineTestHelper.junctionFactory.createJunction();
+		const J1 = splineTestHelper.junctionFactory.createByType();
+		const J2 = splineTestHelper.junctionFactory.createByType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ), 300 );
 
@@ -209,15 +162,15 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		junctionManager.insertJunction( spline, 90, 110, J2 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		const R3 = mapService.findRoad( 3 );
 
-		expect( spline.segmentMap.length ).toBe( 5 );
+		expect( spline.getSegmentCount() ).toBe( 5 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -228,20 +181,20 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ R1, J2, R3, J1, R2 ] );
 
 		expectCoords( spline, J2, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, R3, TvContactPoint.START )
+			LinkFactory.createRoadLink( R1, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R3, TvContactPoint.START )
 		] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R3, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START )
+			LinkFactory.createRoadLink( R3, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.START )
 		] );
 
 	} );
 
 	it( 'should insert at end with existing roads before junction', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createJunction();
+		const J1 = splineTestHelper.junctionFactory.createByType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ) );
 
@@ -255,13 +208,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 80, 100, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -270,14 +223,14 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectInstances( spline, [ TvRoad, TvRoad, TvJunction ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.END ),
 		] );
 
 	} );
 
 	it( 'should insert at end and remove full covered road', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createJunction();
+		const J1 = splineTestHelper.junctionFactory.createByType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ) );
 
@@ -291,13 +244,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 70, 100, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -308,7 +261,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ R1, J1 ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R1, TvContactPoint.END ),
 		] );
 
 		expect( mapService.hasRoad( 2 ) ).toBeFalse();
@@ -317,7 +270,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	it( 'should insert start with two roads after junction', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createJunction();
+		const J1 = splineTestHelper.junctionFactory.createByType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ) );
 
@@ -332,13 +285,13 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 0, 20, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -349,7 +302,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ J1, R1, R2 ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.START ),
+			LinkFactory.createRoadLink( R1, TvContactPoint.START ),
 		] );
 
 	} );
@@ -366,13 +319,15 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		SplineUtils.addSegment( spline, 20, secondRoad );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		spline.updateSegmentGeometryAndBounds();
+
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 0, 30, junction );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -383,7 +338,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ junction, secondRoad ] );
 
 		expectCoords( spline, junction, [
-			new TvRoadLink( TvRoadLinkType.ROAD, secondRoad, TvContactPoint.START ),
+			LinkFactory.createRoadLink( secondRoad, TvContactPoint.START ),
 		] );
 
 	} );
@@ -405,11 +360,11 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 2 );
+		expect( spline.getSegmentCount() ).toBe( 2 );
 
 		junctionManager.insertJunction( spline, 0, 50, J1 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		expectCorrectSegmentOrder( spline );
 
@@ -420,7 +375,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ J1, R2 ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.START ),
 		] );
 
 		expect( mapService.hasRoad( 1 ) ).toBeFalse();
@@ -429,9 +384,9 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	it( 'should insert 3rd junction between 2 existing junctions', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createJunction();
-		const J2 = splineTestHelper.junctionFactory.createJunction();
-		const J3 = splineTestHelper.junctionFactory.createJunction();
+		const J1 = splineTestHelper.junctionFactory.createByType();
+		const J2 = splineTestHelper.junctionFactory.createByType();
+		const J3 = splineTestHelper.junctionFactory.createByType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ), 200 );
 
@@ -445,15 +400,15 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 		splineManager.addSpline( spline, false );
 
-		expect( spline.segmentMap.length ).toBe( 3 );
+		expect( spline.getSegmentCount() ).toBe( 3 );
 
 		junctionManager.insertJunction( spline, 90, 110, J3 );
 
-		junctionManager.updateSplineInternalLinks( spline );
+		spline.updateLinks();
 
 		const R2 = mapService.findRoad( 2 );
 
-		expect( spline.segmentMap.length ).toBe( 5 );
+		expect( spline.getSegmentCount() ).toBe( 5 );
 
 		expectCorrectSegmentOrder( spline );
 
@@ -464,16 +419,16 @@ describe( 'JunctionManager: InsertJunction', () => {
 		expectSegments( spline, [ J1, R1, J3, R2, J2 ] );
 
 		expectCoords( spline, J1, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.START )
+			LinkFactory.createRoadLink( R1, TvContactPoint.START )
 		] );
 
 		expectCoords( spline, J3, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R1, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.START )
+			LinkFactory.createRoadLink( R1, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.START )
 		] );
 
 		expectCoords( spline, J2, [
-			new TvRoadLink( TvRoadLinkType.ROAD, R2, TvContactPoint.END ),
+			LinkFactory.createRoadLink( R2, TvContactPoint.END ),
 		] );
 
 	} );

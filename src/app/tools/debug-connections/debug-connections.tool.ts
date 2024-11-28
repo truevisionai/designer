@@ -18,7 +18,6 @@ import { JunctionUtils } from "../../utils/junction.utils";
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { Log } from 'app/core/utils/log';
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { RoadWidthService } from 'app/services/road/road-width.service';
 
 @Injectable( {
@@ -67,7 +66,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 			const t = width.leftSideWidth - width.rightSideWidth;
 
-			const position = RoadGeometryService.instance.findRoadPosition( road, road.length * 0.5, t * 0.5 )?.position;
+			const position = road.getRoadPosition( road.length * 0.5, t * 0.5 )?.position;
 
 			if ( !position ) return;
 
@@ -84,7 +83,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 				return;
 			}
 
-			DebugDrawService.instance.drawText( 'J:' + junction.id.toString(), junction.centroid, 2, COLOR.RED );
+			DebugDrawService.instance.drawText( 'J:' + junction.toString(), junction.centroid, 2, COLOR.RED );
 
 			DebugDrawService.instance.drawBox2D( junction.boundingBox, COLOR.WHITE, 0.5 );
 

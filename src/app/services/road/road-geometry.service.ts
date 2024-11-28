@@ -8,14 +8,14 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { Vector3 } from 'three';
-import { Maths } from 'app/utils/maths';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { InvalidArgumentException, NoGeometriesFound } from 'app/exceptions/exceptions';
-import { TvRoadLink } from "../../map/models/tv-road-link";
+import { TvLink } from "../../map/models/tv-link";
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { RoadWidthService } from './road-width.service';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
+import { LaneDistance } from 'app/map/road/road-distance';
 
 @Injectable( {
 	providedIn: 'root'
@@ -73,7 +73,7 @@ export class RoadGeometryService {
 
 	findEndPosition ( road: TvRoad ): TvPosTheta {
 
-		return this.findRoadPosition( road, road.length - Maths.Epsilon );
+		return this.findRoadPosition( road, road.length );
 
 	}
 
@@ -125,7 +125,7 @@ export class RoadGeometryService {
 
 				const laneSOffset = coord.s - laneSection.s;
 
-				return new TvLaneCoord( coord.road, laneSection, lane, laneSOffset, 0 );
+				return new TvLaneCoord( coord.road, laneSection, lane, laneSOffset as LaneDistance, 0 );
 
 			}
 
@@ -311,7 +311,7 @@ export class RoadGeometryService {
 
 	}
 
-	findLinkCoord ( link: TvRoadLink ): TvRoadCoord {
+	findLinkCoord ( link: TvLink ): TvRoadCoord {
 
 		if ( link.isJunction ) {
 			throw new Error( 'Junction link does not have position' );
@@ -321,7 +321,7 @@ export class RoadGeometryService {
 
 	}
 
-	findLinkPosition ( link: TvRoadLink ): TvPosTheta {
+	findLinkPosition ( link: TvLink ): TvPosTheta {
 
 		if ( link.isJunction ) {
 			throw new Error( 'Junction link does not have position' );

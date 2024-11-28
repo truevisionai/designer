@@ -24,6 +24,8 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 	public isSelected: boolean;
 
+	protected _hdg: number = 0;
+
 	get target (): any {
 		return this.mainObject;
 	}
@@ -38,6 +40,16 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 
 		this.tag = 'control-point';
 
+	}
+
+	get hdg (): number {
+		return this._hdg;
+	}
+
+	set hdg ( value: number ) {
+		if ( this.shouldUpdateHeading() ) {
+			this._hdg = value;
+		}
 	}
 
 	setPosition ( position: Vector3 ): void {
@@ -149,6 +161,12 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 			color: COLOR.CYAN,
 			depthTest: false
 		} );
+
+	}
+
+	shouldUpdateHeading (): boolean {
+
+		return true;
 
 	}
 

@@ -22,14 +22,21 @@ import { JunctionCreatedEvent } from "./junction/junction-created-event";
 import { JunctionUpdatedEvent } from "./junction/junction-updated-event";
 import { JunctionRemovedEvent } from "./junction/junction-removed-event";
 import { LaneTypeChangedEvent } from "./lane/lane-type-changed.event";
+import { PropCurve } from "app/map/prop-curve/prop-curve.model";
+import { PropPolygon } from "app/map/prop-polygon/prop-polygon.model";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { TvJunction } from "app/map/models/junctions/tv-junction";
+import { Surface } from "app/map/surface/surface.model";
+import { RoadObjectAddedEvent, RoadObjectRemovedEvent, RoadObjectUpdatedEvent, RoadSignalAddedEvent, RoadSignalRemovedEvent, RoadSignalUpdatedEvent } from "./road-object.events";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class MapEvents {
 
-	@Output() static mapLoaded = new EventEmitter<TvMap>();
 	@Output() static mapRemoved = new EventEmitter<TvMap>();
+	@Output() static mapImported = new EventEmitter<TvMap>();
 
 	@Output() static assetSelected = new EventEmitter<Asset>();
 	@Output() static assetDragged = new EventEmitter<Asset>();
@@ -44,11 +51,12 @@ export class MapEvents {
 	@Output() static splineUpdated = new EventEmitter<SplineUpdatedEvent>();
 	@Output() static splineRemoved = new EventEmitter<SplineRemovedEvent>();
 
+	@Output() static splineGeometryUpdated = new EventEmitter<AbstractSpline>();
+	@Output() static splineSegmentRemoved = new EventEmitter<SplineUpdatedEvent>();
+
 	@Output() static roadCreated = new EventEmitter<RoadCreatedEvent>();
 	@Output() static roadUpdated = new EventEmitter<RoadUpdatedEvent>();
 	@Output() static roadRemoved = new EventEmitter<RoadRemovedEvent>();
-	@Output() static roadSelected = new EventEmitter<RoadSelectedEvent>();
-	@Output() static roadUnselected = new EventEmitter<RoadUnselectedEvent>();
 
 	@Output() static controlPointSelected = new EventEmitter<AbstractControlPoint>();
 	@Output() static controlPointUnselected = new EventEmitter<AbstractControlPoint>();
@@ -63,7 +71,28 @@ export class MapEvents {
 	@Output() static laneRemoved = new EventEmitter<TvLane>();
 
 	@Output() static junctionCreated = new EventEmitter<JunctionCreatedEvent>();
-	@Output() static junctionUpdated = new EventEmitter<JunctionUpdatedEvent>();
 	@Output() static junctionRemoved = new EventEmitter<JunctionRemovedEvent>();
+	@Output() static junctionUpdated = new EventEmitter<TvJunction>();
+
+	@Output() static makeMesh = new EventEmitter<any>();
+	@Output() static removeMesh = new EventEmitter<any>();
+
+	@Output() static propCurveUpdated = new EventEmitter<PropCurve>();
+	@Output() static propCurveRemoved = new EventEmitter<PropCurve>();
+
+	@Output() static propPolygonUpdated = new EventEmitter<PropPolygon>();
+	@Output() static propPolygonRemoved = new EventEmitter<PropPolygon>();
+
+	@Output() static surfaceAdded = new EventEmitter<Surface>();
+	@Output() static surfaceUpdated = new EventEmitter<Surface>();
+	@Output() static surfaceRemoved = new EventEmitter<Surface>();
+
+	@Output() static roadObjectAdded = new EventEmitter<RoadObjectAddedEvent>();
+	@Output() static roadObjectUpdated = new EventEmitter<RoadObjectUpdatedEvent>();
+	@Output() static roadObjectRemoved = new EventEmitter<RoadObjectRemovedEvent>();
+
+	@Output() static roadSignalAdded = new EventEmitter<RoadSignalAddedEvent>();
+	@Output() static roadSignalUpdated = new EventEmitter<RoadSignalUpdatedEvent>();
+	@Output() static roadSignalRemoved = new EventEmitter<RoadSignalRemovedEvent>();
 
 }

@@ -4,7 +4,8 @@
 
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector2, Vector3 } from 'three';
-import { AbstractSpline, SplineType } from './abstract-spline';
+import { AbstractSpline } from './abstract-spline';
+import { SplineType } from './spline-type';
 import { Polyline } from '../../objects/polyline';
 import { RoundLine } from './round-line';
 import { SceneService } from '../../services/scene.service';
@@ -16,13 +17,21 @@ import { AbstractControlPoint } from "../../objects/abstract-control-point";
  */
 export class DepAutoSpline extends AbstractSpline {
 
+	updateSegmentGeometryAndBounds (): void {
+		throw new Error( 'Method not implemented.' );
+	}
+
+	getPoints ( stepSize: number ): Vector3[] {
+		throw new Error( 'Method not implemented.' );
+	}
+
 	public type: SplineType = SplineType.AUTO;
 
 	public polyline: Polyline;
 
 	public roundline: RoundLine;
 
-	constructor ( private road?: TvRoad ) {
+	constructor () {
 
 		super();
 

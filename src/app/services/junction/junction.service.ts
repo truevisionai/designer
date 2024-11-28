@@ -6,19 +6,13 @@ import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Object3D } from 'three';
-import { JunctionBuilder } from './junction.builder';
-import { DepConnectionFactory } from "../../map/junction/dep-connection.factory";
+import { Object3D, Vector3 } from 'three';
 import { MapService } from '../map/map.service';
-import { Object3DMap } from 'app/core/models/object3d-map';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { TvRoadLinkType } from 'app/map/models/tv-road-link';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
-import { RoadGeometryService } from "../road/road-geometry.service";
-import { JunctionBoundsService } from './junction-geometry.service';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 
 @Injectable( {
@@ -26,15 +20,10 @@ import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction
 } )
 export class JunctionService extends BaseDataService<TvJunction> {
 
-	private objectMap = new Object3DMap<TvJunction, Object3D>();
-
 	constructor (
 		private factory: JunctionFactory,
-		private junctionBuilder: JunctionBuilder,
-		private connectionService: DepConnectionFactory,
 		private mapService: MapService,
 		private boundaryService: TvJunctionBoundaryService,
-		private junctionBoundsService: JunctionBoundsService
 	) {
 		super();
 	}
@@ -47,67 +36,39 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	getJunctionById ( id: number ) {
 
-		return this.mapService.map.getJunctionById( id );
+		return this.mapService.map.getJunction( id );
 
 	}
 
-	addJunction ( junction: TvJunction ) {
+	fireCreatedEvent ( junction: TvJunction ): void {
 
 		MapEvents.junctionCreated.emit( new JunctionCreatedEvent( junction ) );
 
 	}
 
-	removeJunction ( junction: TvJunction ) {
+	fireRemovedEvent ( junction: TvJunction ): void {
 
 		MapEvents.junctionRemoved.emit( new JunctionRemovedEvent( junction ) );
 
 	}
 
-	updateJunction ( junction: TvJunction ): void {
+	updateJunctionMeshAndBoundary ( junction: TvJunction ): void {
 
 		this.boundaryService.update( junction );
 
-		this.updateMesh( junction );
+		MapEvents.makeMesh.emit( junction );
 
-		this.junctionBoundsService.updateBounds( junction );
-
-	}
-
-	updateMesh ( junction: TvJunction ): void {
-
-		if ( junction.mesh ) this.removeJunctionMesh( junction );
-
-		junction.mesh = this.junctionBuilder.buildJunction( junction );
-
-		this.mapService.map.gameObject.add( junction.mesh );
-
-	}
-
-	removeJunctionMesh ( junction: TvJunction ): void {
-
-		this.mapService.map.gameObject.remove( junction.mesh );
-
-		this.objectMap.remove( junction );
+		junction.updatePositionAndBounds();
 
 	}
 
 	createNewJunction () {
 
-		return this.factory.createJunction();
+		return this.factory.createByType();
 
 	}
 
-	createJunctionFromContact (
-		roadA: TvRoad, contactA: TvContactPoint,
-		roadB: TvRoad, contactB: TvContactPoint
-	): TvJunction {
 
-		const junction = this.factory.createJunction();
-
-		this.addConnectionsFromContact( junction, roadA, contactA, roadB, contactB );
-
-		return junction;
-	}
 
 	addConnectionsFromContact (
 		junction: TvJunction,
@@ -115,37 +76,13 @@ export class JunctionService extends BaseDataService<TvJunction> {
 		roadB: TvRoad, contactB: TvContactPoint
 	): TvJunction {
 
-		const coordA = RoadGeometryService.instance.findContactCoord( roadA, contactA );
-		const coordB = RoadGeometryService.instance.findContactCoord( roadB, contactB );
-
-		this.setLink( roadA, contactA, junction );
-		this.setLink( roadB, contactB, junction );
-
-		const connectionA = this.connectionService.createConnection( junction, coordA, coordB );
-		junction.addConnection( connectionA );
-
-		const connectionB = this.connectionService.createConnection( junction, coordB, coordA );
-		junction.addConnection( connectionB );
 
 		return junction;
 	}
 
-	setLink ( road: TvRoad, contact: TvContactPoint, junction: TvJunction ) {
-
-		if ( contact == TvContactPoint.START ) {
-
-			road.setPredecessor( TvRoadLinkType.JUNCTION, junction );
-
-		} else if ( contact == TvContactPoint.END ) {
-
-			road.setSuccessor( TvRoadLinkType.JUNCTION, junction );
-
-		}
-
-	}
 	add ( object: TvJunction ): void {
 
-		this.addJunction( object );
+		this.fireCreatedEvent( object );
 
 	}
 
@@ -157,13 +94,33 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	remove ( object: TvJunction ): void {
 
-		this.removeJunction( object );
+		this.fireRemovedEvent( object );
 
 	}
 
 	update ( object: TvJunction ): void {
 
-		// this.createJunctionMesh( object );
+		MapEvents.junctionUpdated.emit( object );
+
+	}
+
+	getNearestJunction ( target: Vector3, maxDistance = 10 ): TvJunction | undefined {
+
+		let nearestJunction: TvJunction | undefined;
+		let nearestDistance = maxDistance;
+
+		for ( const junction of this.mapService.map.getJunctions() ) {
+
+			const distance = junction.centroid?.distanceTo( target ) ?? Number.MAX_SAFE_INTEGER;
+
+			if ( distance <= nearestDistance ) {
+				nearestJunction = junction;
+				nearestDistance = distance;
+			}
+
+		}
+
+		return nearestJunction;
 
 	}
 

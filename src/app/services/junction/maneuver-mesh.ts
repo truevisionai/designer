@@ -4,7 +4,7 @@
 
 import { Log } from "app/core/utils/log";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { TvLaneLocation } from "app/map/models/tv-common";
 import { INode } from "app/objects/i-selectable";
@@ -12,7 +12,7 @@ import { COLOR } from "app/views/shared/utils/colors.service";
 import { BufferGeometry, Mesh, MeshBasicMaterial, Object3D } from "three";
 import { LanePositionService } from "../lane/lane-position.service";
 import { GeometryUtils } from "../surface/geometry-utils";
-import { LaneDirectionHelper } from "app/map/builders/od-lane-direction-builder";
+import { LaneDirectionHelper } from "app/modules/builder/builders/od-lane-direction-builder";
 import { TvRoad } from "app/map/models/tv-road.model";
 
 

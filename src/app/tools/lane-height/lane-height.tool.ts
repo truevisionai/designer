@@ -14,6 +14,7 @@ import { PointerEventData } from "app/events/pointer-event-data";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { TvLane } from "app/map/models/tv-lane";
 import { Commands } from "app/commands/commands";
+import { LaneDistance } from "app/map/road/road-distance";
 
 export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
@@ -78,9 +79,9 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 		const laneSection = this.laneSpanNode.lane.laneSection;
 
-		const sOffset = roadCoord.s - laneSection.s;
+		const laneDistance = roadCoord.s - laneSection.s as LaneDistance;
 
-		const laneCoord = new TvLaneCoord( roadCoord.road, laneSection, this.laneSpanNode.lane, sOffset, 0 );
+		const laneCoord = new TvLaneCoord( roadCoord.road, laneSection, this.laneSpanNode.lane, laneDistance, 0 );
 
 		this.debugDrawService.updateLaneWidthLine( this.laneSpanNode, laneCoord );
 

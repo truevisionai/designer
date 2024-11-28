@@ -10,7 +10,9 @@ import { Color, Group } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { ISelectable } from '../i-selectable';
-import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
+import { TvLink, TvLinkType } from 'app/map/models/tv-link';
+import { LinkFactory } from 'app/map/models/link-factory';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
 
 export class RoadNode extends Group implements ISelectable {
 
@@ -33,12 +35,20 @@ export class RoadNode extends Group implements ISelectable {
 
 	}
 
-	get material () {
-		return this.line.material as LineMaterial;
+	get posTheta (): TvPosTheta {
+		return this.road.getPosThetaByContact( this.contact );
+	}
+
+	get material (): LineMaterial {
+		return this.line.material;
 	}
 
 	set material ( value: LineMaterial ) {
 		this.line.material = value;
+	}
+
+	get laneSection (): TvLaneSection {
+		return this.road.getLaneProfile().getLaneSectionAtContact( this.contact );
 	}
 
 	select () {
@@ -93,7 +103,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	toLink () {
 
-		return new TvRoadLink( TvRoadLinkType.ROAD, this.road, this.contact );
+		return LinkFactory.createRoadLink( this.road, this.contact );
 
 	}
 

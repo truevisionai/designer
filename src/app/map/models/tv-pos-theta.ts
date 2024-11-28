@@ -8,6 +8,7 @@ import { Maths } from '../../utils/maths';
 import { TvLaneSide, TvSide } from './tv-common';
 import { TvRoadCoord } from './TvRoadCoord';
 import { TvRoad } from './tv-road.model';
+import { RoadDistance } from '../road/road-distance';
 
 export class TvPosTheta {
 
@@ -199,8 +200,7 @@ export class TvPosTheta {
 	}
 
 	get normalizedHdg () {
-		// Normalize the heading to be within 0 to 2π
-		return this.hdg - Math.floor( this.hdg / ( 2 * Math.PI ) ) * ( 2 * Math.PI );
+		return ( ( this.hdg % ( 2 * Math.PI ) ) + 2 * Math.PI ) % ( 2 * Math.PI );
 	}
 
 	distanceTo ( b: Vector3 | TvPosTheta ) {

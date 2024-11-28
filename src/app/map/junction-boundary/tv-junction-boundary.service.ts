@@ -8,8 +8,7 @@ import { TvJunctionInnerBoundaryService } from "./tv-junction-inner-boundary.ser
 import { TvBoundarySegmentType, TvJunctionBoundary } from "./tv-junction-boundary";
 import { TvJunctionOuterBoundaryService } from "./tv-junction-outer-boundary.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
-import { BoundaryPositionService } from "./boundary-position.service";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { COLOR } from "../../views/shared/utils/colors.service";
 import { Color } from "three";
 
 @Injectable( {
@@ -17,12 +16,15 @@ import { Color } from "three";
 } )
 export class TvJunctionBoundaryService {
 
+	public static instance: TvJunctionBoundaryService;
+
 	constructor (
 		private outerBoundaryService: TvJunctionOuterBoundaryService,
 		private innerBoundaryService: TvJunctionInnerBoundaryService,
 		private debugService: DebugDrawService,
-		private boundaryPositionService: BoundaryPositionService
-	) { }
+	) {
+		TvJunctionBoundaryService.instance = this;
+	}
 
 	update ( junction: TvJunction ): void {
 
@@ -42,31 +44,29 @@ export class TvJunctionBoundaryService {
 
 		this.outerBoundaryService.update( junction, junction.outerBoundary );
 
-		// this.debugBoundary( junction.innerBoundary, COLOR.GREEN );
+		// this.debugBoundary( junction.innerBoundary );
 
 	}
 
+	// eslint-disable-next-line no-undef
 	debugBoundary ( boundary: TvJunctionBoundary, color = COLOR.RED ): void {
 
 		boundary.getSegments().forEach( segment => {
 
-			if ( segment.type == TvBoundarySegmentType.LANE ) {
+			const white = new Color( 1, 1, 1 );
 
-				const white = new Color( 1, 1, 1 );
+			console.log( segment, segment.getPoints() );
 
-				this.boundaryPositionService.getSegmentPositions( segment ).forEach( ( position, index ) => {
+			segment.getPoints().forEach( ( position, index ) => {
 
-					// as the index grows, make the white color will get darker
-					const color = white.clone().multiplyScalar( 1 - index / 10 );
+				// as the index grows, make the white color will get darker
+				const color = white.clone().multiplyScalar( 1 - index / 10 );
 
-					this.debugService.drawText( index.toString(), position, 0.2, color.getHex() );
+				this.debugService.drawText( index.toString(), position.toVector3(), 0.2, color.getHex() );
 
-				} )
-
-			}
+			} )
 
 		} )
 
 	}
-
 }

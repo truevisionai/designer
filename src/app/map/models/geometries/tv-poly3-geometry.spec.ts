@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvRoad } from '../tv-road.model';
 
@@ -15,7 +14,7 @@ describe( 'OdPoly3Geometry', () => {
 
 		pose = new TvPosTheta();
 
-		road = new TvRoad( '', 100, 1);
+		road = new TvRoad( '', 100, 1 );
 
 	} );
 
@@ -34,22 +33,22 @@ describe( 'OdPoly3Geometry', () => {
 
 		road.getPlanView().addGeometryPoly( s, x, y, hdg, length, a, b, c, d );
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, 0 );
+		pose = road.getRoadPosition( 0 );
 		expect( pose.x ).toBe( 0 );
 		expect( pose.y ).toBe( 0 );
 		expect( pose.hdg ).toBe( 0 );
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, 1 );
+		pose = road.getRoadPosition( 1 );
 		expect( pose.x ).toBe( 1 );
 		expect( pose.y ).toBe( 1 );
 		expect( pose.hdg ).toBe( 2 );
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, 2 );
+		pose = road.getRoadPosition( 2 );
 		expect( pose.x ).toBe( 2 );
 		expect( pose.y ).toBe( 4 );
 		expect( pose.hdg ).toBe( 4 );
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, 3 );
+		pose = road.getRoadPosition( 3 );
 		expect( pose.x ).toBe( 3 );
 		expect( pose.y ).toBe( 9 );
 		expect( pose.hdg ).toBe( 6 );

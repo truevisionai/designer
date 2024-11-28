@@ -10,7 +10,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RoadService } from 'app/services/road/road.service';
 import { Vector2 } from 'three';
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 describe( 'TvLineGeometry', () => {
 
@@ -54,13 +53,13 @@ describe( 'TvLineGeometry', () => {
 
 		let posTheta = new TvPosTheta();
 
-		posTheta = RoadGeometryService.instance.findRoadPosition(road, 0 );
+		posTheta = road.getRoadPosition( 0 );
 
 		expect( posTheta.x ).toBe( 0 );
 		expect( posTheta.y ).toBe( 1 );
 		expect( posTheta.hdg ).toBe( 0 );
 
-		posTheta = RoadGeometryService.instance.findRoadPosition(road, 10 );
+		posTheta = road.getRoadPosition( 10 );
 
 		expect( posTheta.x ).toBe( 10 );
 		expect( posTheta.y ).toBe( 1 );
@@ -76,13 +75,13 @@ describe( 'TvLineGeometry', () => {
 
 		let posTheta = new TvPosTheta();
 
-		posTheta = RoadGeometryService.instance.findRoadPosition(road, 0 );
+		posTheta = road.getRoadPosition( 0 );
 
 		expect( posTheta.x ).toBe( 1 );
 		expect( posTheta.y ).toBe( 0 );
 		expect( posTheta.hdg ).toBe( hdg );
 
-		posTheta = RoadGeometryService.instance.findRoadPosition(road, 10 );
+		posTheta = road.getRoadPosition( 10 );
 
 		expect( Math.round( posTheta.x ) ).toBe( 1 );
 		expect( Math.round( posTheta.y ) ).toBe( 10 );
@@ -96,13 +95,13 @@ describe( 'TvLineGeometry', () => {
 
 		road.getPlanView().addGeometryLine( 0, 0, 0, hdg, 10 );
 
-		let posTheta = RoadGeometryService.instance.findRoadPosition(road, 0 );
+		let posTheta = road.getRoadPosition( 0 );
 
 		expect( Math.round( posTheta.x ) ).toBe( 0 );
 		expect( posTheta.y ).toBe( 0 );
 		expect( posTheta.hdg ).toBe( hdg );
 
-		posTheta = RoadGeometryService.instance.findRoadPosition(road, 10 );
+		posTheta = road.getRoadPosition( 10 );
 
 		expect( Math.round( posTheta.x ) ).toBe( -10 );
 		expect( Math.round( posTheta.y ) ).toBe( 0 );
@@ -122,14 +121,14 @@ describe( 'TvLineGeometry', () => {
 
 		road.getPlanView().addGeometryLine( s, x, y, hdg, length );
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, s );
+		pose = road.getRoadPosition( s );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( pose.y ).toBe( 0 );
 
 		t = 1;
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, s, t );
+		pose = road.getRoadPosition( s, t );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( pose.y ).toBe( t );
@@ -148,14 +147,14 @@ describe( 'TvLineGeometry', () => {
 
 		road.getPlanView().addGeometryLine( s, x, y, hdg, length );
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, s );
+		pose = road.getRoadPosition( s );
 
 		expect( Math.round( pose.x ) ).toBe( 0 );
 		expect( Math.round( pose.y ) ).toBe( 0 );
 
 		t = 1;
 
-		pose = RoadGeometryService.instance.findRoadPosition(road, s, t );
+		pose = road.getRoadPosition( s, t );
 
 		expect( Math.round( pose.x ) ).toBe( -1 );
 		expect( Math.round( pose.y ) ).toBe( 0 );

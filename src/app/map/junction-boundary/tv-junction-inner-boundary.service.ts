@@ -3,18 +3,19 @@
  */
 
 import { Injectable } from "@angular/core";
-import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvContactPoint } from "../models/tv-common";
 import { TvLane } from "../models/tv-lane";
 import { TvRoad } from "../models/tv-road.model";
 import { TvRoadCoord } from "../models/TvRoadCoord";
-import { TvJunctionBoundary, TvLaneBoundary, TvJointBoundary } from "./tv-junction-boundary";
-import { BoundaryPositionService } from "./boundary-position.service";
+import { TvJunctionBoundary } from "./tv-junction-boundary";
 import { TvJunctionCornerRoadService } from "./tv-junction-corner-road.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
-import { traverseLanes } from "app/utils/road.utils";
+import { traverseLanes } from "app/utils/traverseLanes";
+import { TvLaneBoundary } from "./tv-lane-boundary";
+import { TvJointBoundary } from "./tv-joint-boundary";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,16 +23,13 @@ import { traverseLanes } from "app/utils/road.utils";
 export class TvJunctionInnerBoundaryService {
 
 	constructor (
-		private junctionRoadService: JunctionRoadService,
-		private boundaryPositionService: BoundaryPositionService,
 		private debugService: DebugDrawService,
 		private junctionCornerRoadService: TvJunctionCornerRoadService
 	) { }
 
-	// eslint-disable-next-line max-lines-per-function
 	update ( junction: TvJunction, boundary: TvJunctionBoundary ): void {
 
-		const links = this.junctionRoadService.getRoadLinks( junction );
+		const links = junction.getRoadLinks();
 
 		const sorted = GeometryUtils.sortCoordsByAngle( links.map( link => link.toRoadCoord() ) );
 
@@ -50,12 +48,20 @@ export class TvJunctionInnerBoundaryService {
 
 		const connection = this.junctionCornerRoadService.getInnerConnectionForRoad( junction, coord.road );
 
-		if ( !connection ) return;
+		if ( !connection ) {
+			Log.warn( 'No corner road found for junction connection' );
+			return;
+		}
 
 		// get the lane link which is connected to the lowest lane
-		const lanes = connection.laneLink.map( link => link.connectingLane );
+		const lanes = connection.getLaneLinks().map( link => link.getConnectingLane() );
 
 		const lastCarriagewayLane = this.getLastCarriagewayLane( lanes );
+
+		if ( !lastCarriagewayLane ) {
+			Log.warn( 'No carriageway lane found for junction connection' );
+			return;
+		}
 
 		traverseLanes( connection.connectingRoad, lastCarriagewayLane.id, ( lane: TvLane ) => {
 
@@ -94,25 +100,22 @@ export class TvJunctionInnerBoundaryService {
 
 	private createJointSegment ( junction: TvJunction, roadCoord: TvRoadCoord ): TvJointBoundary {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getHighestCarriageWayLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getLowestCarriageWayLane();
+			startLane = roadCoord.laneSection.getHighestCarriageWayLane();
+			endLane = roadCoord.laneSection.getLowestCarriageWayLane();
 
 		} else {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getLowestCarriageWayLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getHighestCarriageWayLane();
+			startLane = roadCoord.laneSection.getLowestCarriageWayLane();
+			endLane = roadCoord.laneSection.getHighestCarriageWayLane();
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 
@@ -133,181 +136,3 @@ export class TvJunctionInnerBoundaryService {
 	}
 
 }
-
-// @Injectable( {
-// 	providedIn: 'root'
-// } )
-// export class TvJunctionInnerBoundaryService {
-
-// 	constructor (
-// 		private junctionRoadService: JunctionRoadService,
-// 		private boundaryPositionService: BoundaryPositionService
-// 	) { }
-
-// 	update ( junction: TvJunction, boundary: TvJunctionBoundary ): void {
-
-// 		const links = this.junctionRoadService.getRoadLinks( junction );
-
-// 		const sortedCoords = GeometryUtils.sortCoordsByAngle( links.map( link => link.toRoadCoord() ) );
-
-// 		sortedCoords.forEach( coord => {
-
-// 			// NOTE: Sequence of the following code is important
-
-// 			const lowestLaneSegment = this.createLowestLaneSegment( junction, coord );
-// 			if ( lowestLaneSegment ) boundary.addSegment( lowestLaneSegment );
-
-// 			const jointSegment = this.createInnerJointSegment( coord.road, coord.contact );
-// 			if ( jointSegment ) boundary.addSegment( jointSegment );
-
-// 			const highestLaneSegment = this.createHighestLaneSegment( junction, coord );
-// 			if ( highestLaneSegment ) boundary.addSegment( highestLaneSegment );
-
-// 		} );
-
-// 		this.sortBoundarySegments( boundary );
-
-// 	}
-
-// 	createLowestLaneSegment ( junction: TvJunction, coord: TvRoadCoord ) {
-
-// 		const lowestLane = coord.laneSection.getLowestCarriageWayLane();
-
-// 		const connection = junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).find( connection => {
-
-// 			return connection.laneLink.find( link => link.incomingLane == lowestLane );
-
-// 		} );
-
-// 		if ( !connection ) {
-// 			console.error( 'No connection found for road', coord.roadId );
-// 			return;
-// 		}
-
-// 		const link = connection.laneLink.find( link => link.incomingLane == lowestLane );
-
-// 		if ( !link ) {
-// 			console.error( 'No link found for lane', lowestLane.id );
-// 			return;
-// 		}
-
-// 		return this.createLaneSegment( connection.connectingRoad, link.connectingLane );
-
-// 	}
-
-// 	createHighestLaneSegment ( junction: TvJunction, coord: TvRoadCoord ) {
-
-// 		const highestLane = coord.laneSection.getHighestCarriageWayLane();
-
-// 		const connection = junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).find( connection => {
-
-// 			return connection.laneLink.find( link => link.incomingLane == highestLane );
-
-// 		} );
-
-// 		if ( !connection ) {
-// 			console.error( 'No connection found for road', coord.roadId );
-// 			return;
-// 		}
-
-// 		const link = connection.laneLink.find( link => link.incomingLane == highestLane );
-
-// 		if ( !link ) {
-// 			console.error( 'No link found for lane', highestLane.id );
-// 			return;
-// 		}
-
-// 		return this.createLaneSegment( connection.connectingRoad, link.connectingLane );
-
-// 	}
-
-// 	private createLaneSegment ( road: TvRoad, boundaryLane: TvLane ) {
-
-// 		return new TvLaneBoundary( road, boundaryLane, 0, road.length );
-
-// 	}
-
-// 	private createOuterJointSegment ( road: TvRoad, contactPoint: TvContactPoint ) {
-
-// 		const laneSection = road.getLaneProfile().getLaneSectionAtContact( contactPoint );
-
-// 		if ( contactPoint == TvContactPoint.END ) {
-
-// 			const jointLaneStart = laneSection.getLeftMostLane();
-// 			const jointLaneEnd = laneSection.getRightMostLane();
-
-// 			return new TvJointBoundary( road, contactPoint, jointLaneStart, jointLaneEnd );
-
-// 		} else {
-
-// 			const jointLaneStart = laneSection.getRightMostLane();
-// 			const jointLaneEnd = laneSection.getLeftMostLane();
-
-// 			return new TvJointBoundary( road, contactPoint, jointLaneStart, jointLaneEnd );
-
-// 		}
-
-// 	}
-
-// 	private createInnerJointSegment ( road: TvRoad, contactPoint: TvContactPoint ) {
-
-// 		const laneSection = road.getLaneProfile().getLaneSectionAtContact( contactPoint );
-
-// 		if ( contactPoint == TvContactPoint.END ) {
-
-// 			const jointLaneStart = laneSection.getHighestCarriageWayLane();
-// 			const jointLaneEnd = laneSection.getLowestCarriageWayLane();
-
-// 			return new TvJointBoundary( road, contactPoint, jointLaneStart, jointLaneEnd );
-
-// 		} else {
-
-// 			const jointLaneStart = laneSection.getLowestCarriageWayLane();
-// 			const jointLaneEnd = laneSection.getHighestCarriageWayLane();
-
-// 			return new TvJointBoundary( road, contactPoint, jointLaneStart, jointLaneEnd );
-
-// 		}
-
-// 	}
-
-// 	// eslint-disable-next-line max-lines-per-function
-// 	private sortBoundarySegments ( boundary: TvJunctionBoundary ): void {
-
-// 		if ( boundary.segments.length == 0 ) {
-// 			Log.error( 'No segments found in boundary' );
-// 			return;
-// 		}
-
-// 		const tempPoints = boundary.getSegments().map( segment => {
-
-// 			const positions = this.boundaryPositionService.getSegmentPositions( segment );
-
-// 			if ( positions.length == 0 ) {
-// 				Log.error( 'No positions found in segment' );
-// 				return { position: new Vector3(), segment };
-// 			}
-
-// 			return { position: positions[ 0 ], segment };
-
-// 		} );
-
-// 		const centroid = GeometryUtils.getCentroid( tempPoints.map( p => p.position ) );
-
-// 		tempPoints.sort( ( a, b ) => {
-
-// 			const angleA = GeometryUtils.getAngle( centroid, a.position );
-// 			const angleB = GeometryUtils.getAngle( centroid, b.position );
-
-// 			return angleA - angleB;
-
-// 		} );
-
-// 		boundary.clearSegments();
-
-// 		boundary.addSegments( tempPoints.map( p => p.segment ) );
-
-// 	}
-
-
-// }

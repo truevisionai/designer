@@ -3,7 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractSpline, SplineType } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { SplineType } from 'app/core/shapes/spline-type';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { RoadControlPoint } from 'app/objects/road/road-control-point';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';

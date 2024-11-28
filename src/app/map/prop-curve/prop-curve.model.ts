@@ -29,6 +29,14 @@ export class PropCurve {
 
 	}
 
+	getSpline (): AbstractSpline {
+		return this.spline;
+	}
+
+	setSpline ( spline: AbstractSpline ): void {
+		this.spline = spline;
+	}
+
 	addProp ( prop: Object3D, position: Vector3, rotation: Vector3, scale: Vector3 ) {
 
 		prop.position.copy( position );

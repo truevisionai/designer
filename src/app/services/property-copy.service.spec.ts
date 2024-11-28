@@ -10,8 +10,8 @@ describe( 'PropertyCopyService Test', () => {
 
 	it( 'copy lane to lane', () => {
 
-		const lane1 = new TvLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, 1, null );
-		const lane2 = new TvLane( TvLaneSide.RIGHT, 2, TvLaneType.border, false, 1, null );
+		const lane1 = new TvLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, null );
+		const lane2 = new TvLane( TvLaneSide.RIGHT, 2, TvLaneType.border, false, null );
 
 		PropertyCopyService.copyProperties( lane1 );
 		PropertyCopyService.pasteProperties( lane2 );

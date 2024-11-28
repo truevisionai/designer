@@ -18,10 +18,9 @@ import { RoadSignalService } from "../../map/road-signal/road-signal.service";
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Log } from 'app/core/utils/log';
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
 import { EmptyController } from 'app/core/controllers/empty-controller';
 import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
-import { JunctionRoadService } from 'app/services/junction/junction-road.service';
+import { createRoadDistance } from 'app/map/road/road-distance';
 
 export enum AutoSignalizationType {
 	ALL_GO,
@@ -46,7 +45,6 @@ export class JunctionSignaliztion {
 export class AutoSignalizeJunctionService {
 
 	constructor (
-		private junctionRoadService: JunctionRoadService,
 		private signalFactory: RoadSignalFactory,
 		private signalService: RoadSignalService,
 		private controllerService: TvSignalControllerService,
@@ -72,7 +70,7 @@ export class AutoSignalizeJunctionService {
 		// TODO: instead of incoming roads, we need connecting road to have junctions
 		// currenlty we are using incoming roads
 		// because connecting roads are automatically created by the junction
-		for ( const road of this.junctionRoadService.getIncomingRoads( junction ) ) {
+		for ( const road of junction.getIncomingRoads() ) {
 
 			this.addSignalizationToRoad( road, type, junction );
 
@@ -118,15 +116,13 @@ export class AutoSignalizeJunctionService {
 
 		this.addControllers( type, junction, signals );
 
-		signals.forEach( signal => this.buildAndAddSignal( road, signal ) );
+		signals.forEach( signal => this.addSignal( road, signal ) );
 
 	}
 
-	buildAndAddSignal ( road: TvRoad, signal: TvRoadSignal ): void {
+	addSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
-		const mesh = this.signalService.buildSignal( road, signal );
-
-		this.signalService.addSignal( road, signal, mesh );
+		this.signalService.addSignal( road, signal );
 
 	}
 
@@ -175,16 +171,14 @@ export class AutoSignalizeJunctionService {
 		const lane = this.findPlacementLane( road, junction );
 
 		if ( !lane ) {
-			Log.error( 'No suitable lane found for road:' + road.id );
-			TvConsole.error( 'No suitable lane found for road:' + road.id );
+			Log.error( `No suitable lane found for road:${ road.id }` );
+			TvConsole.error( `No suitable lane found for road:${ road.id }` );
 			return;
 		}
 
 		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
-		const roadSOffset = contactPoint == TvContactPoint.START ? 0 : road.length;
-
-		const posTheta = road.getLaneCenterPosition( lane, roadSOffset );
+		const posTheta = road.getLaneCenterPosition( lane, createRoadDistance( road, contactPoint ) );
 
 		const roadCoord = posTheta.toRoadCoord( road );
 
@@ -196,7 +190,7 @@ export class AutoSignalizeJunctionService {
 
 		const contactPoint = road.successor?.isJunction ? TvContactPoint.END : TvContactPoint.START;
 
-		const roadCoord = RoadGeometryService.instance.findContactCoord( road, contactPoint );
+		const roadCoord = road.getPosThetaByContact( contactPoint ).toRoadCoord( road );
 
 		const stopLine = this.signalFactory.createStopLine( roadCoord, 'StopLine', '294' );
 
@@ -235,11 +229,11 @@ export class AutoSignalizeJunctionService {
 
 		if ( side == TvLaneSide.LEFT ) {
 
-			return LaneUtils.findHighest( laneSection.getLaneArray(), laneType );
+			return LaneUtils.findHighest( laneSection.getLanes(), laneType );
 
 		} else if ( side == TvLaneSide.RIGHT ) {
 
-			return LaneUtils.findLowest( laneSection.getLaneArray(), laneType );
+			return LaneUtils.findLowest( laneSection.getLanes(), laneType );
 
 		} else {
 
@@ -298,7 +292,7 @@ export class AutoSignalizeJunctionService {
 
 		const laneSection = road.getLaneProfile().getLaneSectionAt( s );
 
-		const drivingLanes = laneSection.getLaneArray().filter( lane => lane.type == TvLaneType.driving && lane.side == side ).map( lane => lane.id );
+		const drivingLanes = laneSection.getLanes().filter( lane => lane.type == TvLaneType.driving && lane.side == side ).map( lane => lane.id );
 
 		// TODO: this is not correct, we need to find the lane with the signal
 		const minLaneId = Math.min( ...drivingLanes );
@@ -339,7 +333,7 @@ export class AutoSignalizeJunctionService {
 
 	private removeSignals ( junction: TvJunction ): void {
 
-		for ( const incomingRoad of this.junctionRoadService.getIncomingRoads( junction ) ) {
+		for ( const incomingRoad of junction.getIncomingRoads() ) {
 
 			const signals = this.signalService.findSignalsByType( incomingRoad, [ '206', '205', '294', '1000001' ] );
 

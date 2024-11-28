@@ -2,16 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TurnType, TvContactPoint } from '../tv-common';
+import { TurnType } from '../tv-common';
 import { TvLane } from '../tv-lane';
 import { TvRoad } from '../tv-road.model';
+import { TvJunctionConnection } from "../connections/tv-junction-connection";
+import { TvLaneCoord } from '../tv-lane-coord';
 
 export class TvJunctionLaneLink {
-	public incomingLane: TvLane;
-	public incomingRoad?: TvRoad;
 
-	public connectingLane: TvLane;
-	public connectingRoad?: TvRoad;
+	private readonly _incomingLane: TvLane;
+	private readonly _connectingLane: TvLane;
 
 	/**
 	 * can be useful to track if the link is modified
@@ -19,39 +19,78 @@ export class TvJunctionLaneLink {
 	 */
 	public dirty: boolean = false;
 
-	public turnType: TurnType;
+	private turnType: TurnType;
 
-	/**
-	 *
-	 * @param from ID of the incoming lane
-	 * @param to ID of the connecting lane
-	 */
-	constructor ( from: TvLane, to: TvLane ) {
-		this.incomingLane = from;
-		this.connectingLane = to;
+	private connection: TvJunctionConnection;
+
+	constructor ( incomingLane: TvLane, connectingLane: TvLane ) {
+		this._incomingLane = incomingLane;
+		this._connectingLane = connectingLane;
+	}
+
+	get connectingLane (): TvLane {
+		return this._connectingLane;
+	}
+
+	get incomingLane (): TvLane {
+		return this._incomingLane;
 	}
 
 	get from (): number {
-		return this.incomingLane?.id;
+		return this._incomingLane.id;
 	}
 
 	get to (): number {
-		return this.connectingLane?.id;
+		return this._connectingLane.id;
 	}
 
-	clone (): any {
+	get connectingRoad (): TvRoad {
+		return this._connectingLane.getRoad();
+	}
 
-		const link = new TvJunctionLaneLink( this.incomingLane, this.connectingLane );
+	get incomingRoad (): TvRoad {
+		return this._incomingLane.getRoad();
+	}
 
-		link.incomingRoad = this.incomingRoad;
-		link.connectingRoad = this.connectingRoad;
+	clone (): TvJunctionLaneLink {
+		return new TvJunctionLaneLink( this._incomingLane, this._connectingLane );
+	}
 
-		return link;
+	toString (): string {
+		return `IncomingLane: ${ this._incomingLane.id } ConnectingLane: ${ this._connectingLane.id } Turn: ${ this.turnType }`;
+	}
+
+	matchesIncomingLane ( lane: TvLane ): boolean {
+		return this._incomingLane.isEqualTo( lane );
+	}
+
+	getOutgoingLane (): TvLane {
+
+		const connectingLane = this._connectingLane;
+		const outgoingLaneSection = this.connection.getOutgoingLaneSection();
+
+		return outgoingLaneSection.getLaneById( connectingLane.successorId );
 
 	}
 
-	toString () {
-		return `Incoming: ${ this.incomingRoad?.id } Lane: ${ this.incomingLane?.id } Connecting: ${ this.connectingRoad?.id } Lane: ${ this.connectingLane?.id } Turn: ${ this.turnType }`;
+	setConnection ( connection: TvJunctionConnection ): void {
+		this.connection = connection;
+	}
+
+	getIncomingLane (): TvLane {
+		return this._incomingLane;
+	}
+
+	getConnectingLane (): TvLane {
+		return this._connectingLane;
+	}
+
+	getIncomingCoord (): TvLaneCoord | undefined {
+		return this.connection.getPredecessorLink()?.toLaneCoord( this.getIncomingLane() );
+	}
+
+	getOutgoingCoord (): TvLaneCoord | undefined {
+		return this.connection.getSuccessorLink()?.toLaneCoord( this.getOutgoingLane() );
 	}
 
 }

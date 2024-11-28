@@ -13,7 +13,6 @@ import { DebugState } from "app/services/debug/debug-state";
 import { RoadDebugService } from "app/services/debug/road-debug.service";
 import { RoadService } from "app/services/road/road.service";
 import { Object3D } from "three";
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -116,7 +115,7 @@ export class RoadSignToolDebugger extends BaseDebugger<TvRoad> {
 
 		// if ( signal.subtype == TvSignalSubType.Text ) return;
 
-		const posTheta = RoadGeometryService.instance.findRoadPosition( road, signal.s, signal.t );
+		const posTheta = road.getRoadPosition( signal.s, signal.t );
 
 		let point: SimpleControlPoint<TvRoadSignal>;
 

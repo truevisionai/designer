@@ -33,6 +33,13 @@ import { SessionsModule } from './views/sessions/sessions.module';
 import { LoadingModule } from './views/editor/loading/loading.module';
 import { SentryService } from './core/analytics/sentry.service';
 import { SnackBar } from './services/snack-bar.service';
+import { LaneWidthModule } from './modules/lane-width/lane-width.module';
+import { PropCurveModule } from './modules/prop-curve/prop-curve.module';
+import { BuilderModule } from './modules/builder/builder.module';
+import { SurfaceToolModule } from './modules/surface/surface.module';
+import { RoadElevationModule } from './modules/road-elevation/road-elevation.module';
+import { CrosswalkToolModule } from './modules/crosswalk/crosswalk-tool.module';
+import { JunctionToolModule } from "./modules/junction/junction.module";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ) {
@@ -62,6 +69,14 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		SessionsModule,
 		SatPopoverModule,
 		LoadingModule,
+
+		BuilderModule,
+		LaneWidthModule,
+		PropCurveModule,
+		SurfaceToolModule,
+		RoadElevationModule,
+		CrosswalkToolModule,
+		JunctionToolModule,
 
 		TranslateModule.forRoot( {
 			loader: {

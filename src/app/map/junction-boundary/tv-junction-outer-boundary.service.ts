@@ -3,18 +3,19 @@
  */
 
 import { Injectable } from "@angular/core";
-import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvContactPoint } from "../models/tv-common";
 import { TvLane } from "../models/tv-lane";
 import { TvRoad } from "../models/tv-road.model";
 import { TvRoadCoord } from "../models/TvRoadCoord";
-import { TvJunctionBoundary, TvLaneBoundary, TvJointBoundary } from "./tv-junction-boundary";
+import { TvJunctionBoundary } from "./tv-junction-boundary";
 import { TvJunctionCornerRoadService } from "./tv-junction-corner-road.service";
-import { BoundaryPositionService } from "./boundary-position.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
-import { traverseLanes } from "app/utils/road.utils";
+import { traverseLanes } from "app/utils/traverseLanes";
+import { TvLaneBoundary } from "./tv-lane-boundary";
+import { TvJointBoundary } from "./tv-joint-boundary";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,17 +23,14 @@ import { traverseLanes } from "app/utils/road.utils";
 export class TvJunctionOuterBoundaryService {
 
 	constructor (
-		private junctionRoadService: JunctionRoadService,
 		private junctionCornerRoadService: TvJunctionCornerRoadService,
-		private boundaryPositionService: BoundaryPositionService,
 		private debugService: DebugDrawService,
 	) {
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	update ( junction: TvJunction, boundary: TvJunctionBoundary ): void {
 
-		const links = this.junctionRoadService.getRoadLinks( junction );
+		const links = junction.getRoadLinks();
 
 		const sorted = GeometryUtils.sortCoordsByAngle( links.map( link => link.toRoadCoord() ) );
 
@@ -51,10 +49,18 @@ export class TvJunctionOuterBoundaryService {
 
 		const connection = this.junctionCornerRoadService.getCornerConnectionForRoad( junction, coord.road );
 
-		if ( !connection ) return;
+		if ( !connection ) {
+			Log.warn( 'No corner road found for junction connection' );
+			return;
+		}
 
 		// get the lane link which is connected to the lowest lane
 		const link = connection.getLowestLaneLink();
+
+		if ( !link ) {
+			Log.warn( 'No lane link found for corner road' );
+			return;
+		}
 
 		traverseLanes( connection.connectingRoad, link.to, ( lane: TvLane ) => {
 
@@ -66,25 +72,22 @@ export class TvJunctionOuterBoundaryService {
 
 	private createJointSegment ( roadCoord: TvRoadCoord ): TvJointBoundary {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getLeftMostLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getRightMostLane();
+			startLane = roadCoord.laneSection.getLeftMostLane();
+			endLane = roadCoord.laneSection.getRightMostLane();
 
 		} else {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getRightMostLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getLeftMostLane();
+			startLane = roadCoord.laneSection.getRightMostLane();
+			endLane = roadCoord.laneSection.getLeftMostLane();
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 

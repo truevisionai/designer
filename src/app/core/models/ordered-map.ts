@@ -128,7 +128,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getPeviousKey ( value: T ) {
+	getPreviousKey ( value: T ) {
 
 		const previous = this.getPrevious( value );
 

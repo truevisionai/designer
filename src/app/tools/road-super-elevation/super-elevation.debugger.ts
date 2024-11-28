@@ -16,7 +16,6 @@ import { DebugDrawService } from "../../services/debug/debug-draw.service";
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
 import { Log } from 'app/core/utils/log';
 import { SuperElevationService } from './super-elevation.service';
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 
 @Injectable( {
@@ -113,7 +112,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 
 		this.superElevationService.validate( road, superElevation );
 
-		const posTheta = RoadGeometryService.instance.findRoadPosition( road, superElevation.s );
+		const posTheta = road.getRoadPosition( superElevation.s );
 
 		if ( !posTheta ) {
 			Log.error( 'SuperElevationDebugger', 'createNode', 'posTheta is undefined' );

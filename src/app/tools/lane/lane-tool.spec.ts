@@ -6,13 +6,11 @@ import { LaneTool } from './lane-tool';
 import { ToolType } from '../tool-types.enum';
 import { LaneToolHelper } from './lane-tool.helper';
 import { TestBed } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 import { LaneService } from 'app/services/lane/lane.service';
 import { exportCorrectLaneOrder } from 'tests/base-test.spec';
 import { LaneFactory } from "../../services/lane/lane.factory";
+import { setupTest } from "../../../tests/setup-tests";
 
 describe( 'LaneTool', () => {
 
@@ -22,10 +20,7 @@ describe( 'LaneTool', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ EventServiceProvider ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		laneTool = new LaneTool( TestBed.inject( LaneToolHelper ) );
 		testHelper = TestBed.inject( SplineTestHelper );

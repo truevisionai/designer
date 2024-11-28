@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvMap } from "app/map/models/tv-map.model";
-import { TvRoadLink } from "app/map/models/tv-road-link";
+import { TvLink } from "app/map/models/tv-link";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Maths } from "../../utils/maths";
 import { Log } from "../../core/utils/log";
@@ -63,7 +63,7 @@ export class MapFixer {
 
 	}
 
-	private fixSuccessor ( predecessor: TvRoad, link: TvRoadLink ) {
+	private fixSuccessor ( predecessor: TvRoad, link: TvLink ) {
 
 		if ( link.isJunction ) {
 
@@ -115,7 +115,7 @@ export class MapFixer {
 
 	}
 
-	private fixPredecessor ( successor: TvRoad, link: TvRoadLink ) {
+	private fixPredecessor ( successor: TvRoad, link: TvLink ) {
 
 		if ( link.isJunction ) {
 

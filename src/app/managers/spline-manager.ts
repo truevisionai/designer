@@ -7,13 +7,11 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapService } from "app/services/map/map.service";
 import { RoadManager } from "./road/road-manager";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { SplineBuilder } from "app/services/spline/spline.builder";
-import { JunctionManager } from "./junction-manager";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { Log } from "app/core/utils/log";
 import { SplineLinkService } from "./spline-link.service";
-import { SplineGeometryService } from "app/services/spline/spline-geometry.service";
 import { SplineSegmentService } from "app/services/spline/spline-segment.service";
+import { MapEvents } from "app/events/map-events";
 
 
 @Injectable( {
@@ -26,11 +24,8 @@ export class SplineManager {
 	constructor (
 		private mapService: MapService,
 		private roadManager: RoadManager,
-		private splineBuilder: SplineBuilder,
-		private junctionManager: JunctionManager,
 		private fixer: SplineFixerService,
 		private splineLinkService: SplineLinkService,
-		private splineGeometryService: SplineGeometryService,
 		private segmentService: SplineSegmentService
 	) {
 	}
@@ -43,17 +38,17 @@ export class SplineManager {
 
 		this.splineLinkService.onSplineAdded( spline );
 
-		this.splineBuilder.build( spline );
+		spline.updateSegmentGeometryAndBounds();
 
 		this.addSegments( spline );
 
-		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
+		if ( updateJunctions ) MapEvents.splineGeometryUpdated.emit( spline );
 
 	}
 
-	buildSpline ( spline: AbstractSpline ) {
+	buildSpline ( spline: AbstractSpline ): void {
 
-		this.splineBuilder.build( spline );
+		spline.updateSegmentGeometryAndBounds();
 
 	}
 
@@ -61,15 +56,14 @@ export class SplineManager {
 
 		if ( this.debug ) Log.debug( "Update", spline.toString() );
 
-		this.fixer.fix( spline );
-
 		if ( spline.getControlPointCount() < 2 ) {
-
-			this.removeMesh( spline );
-
+			this.segmentService.removeExtraSegments( spline );
+			return;
 		}
 
-		this.splineGeometryService.updateGeometryAndBounds( spline );
+		this.fixer.fix( spline );
+
+		spline.updateSegmentGeometryAndBounds();
 
 		this.updateAndBuildLinkedSplines( spline );
 
@@ -79,7 +73,7 @@ export class SplineManager {
 
 		}
 
-		if ( updateJunctions ) this.junctionManager.detectJunctions( spline );
+		if ( updateJunctions ) MapEvents.splineGeometryUpdated.emit( spline );
 
 	}
 
@@ -87,7 +81,7 @@ export class SplineManager {
 
 		this.splineLinkService.updateLinkedSplines( spline );
 
-		this.splineLinkService.getLinkedSplines( spline ).forEach( linkedSpline => {
+		spline.getLinkedSplines().forEach( linkedSpline => {
 
 			this.buildSpline( linkedSpline );
 
@@ -106,31 +100,17 @@ export class SplineManager {
 
 		this.splineLinkService.onSplineRemoved( spline );
 
-		this.removeMesh( spline );
-
 		this.mapService.map.removeSpline( spline );
 
 		this.segmentService.removeSegments( spline );
 
-	}
-
-	private removeMesh ( spline: AbstractSpline ): void {
-
-		for ( const segment of spline.segmentMap.toArray() ) {
-
-			if ( segment instanceof TvRoad ) {
-
-				this.roadManager.removeMesh( segment );
-
-			}
-
-		}
+		MapEvents.removeMesh.emit( spline );
 
 	}
 
 	private addSegments ( spline: AbstractSpline ): void {
 
-		for ( const segment of spline.segmentMap.toArray() ) {
+		for ( const segment of spline.getSegments() ) {
 
 			if ( segment instanceof TvRoad ) {
 

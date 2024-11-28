@@ -1,0 +1,91 @@
+import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
+import { TvRoad } from "../../app/map/models/tv-road.model";
+import { setupTest } from 'tests/setup-tests';
+import { TestBed } from "@angular/core/testing";
+import { Vector3 } from "three";
+import { TvContactPoint } from "app/map/models/tv-common";
+import { TvLaneSection } from "app/map/models/tv-lane-section";
+
+describe( 'RoadLinker', () => {
+
+	let leftRoad: TvRoad;
+	let rightRoad: TvRoad;
+	let helper: SplineTestHelper;
+	let prevSection: TvLaneSection;
+	let nextSection: TvLaneSection;
+
+	beforeEach( () => {
+
+		setupTest();
+
+		helper = TestBed.inject( SplineTestHelper );
+
+		leftRoad = helper.createStraightRoad( new Vector3( 0, 0, 0 ), 100 );
+		rightRoad = helper.createStraightRoad( new Vector3( 100, 0, 0 ), 100 );
+
+		prevSection = leftRoad.getLaneProfile().getLastLaneSection();
+		nextSection = rightRoad.getLaneProfile().getFirstLaneSection();
+
+	} );
+
+	it( 'link when next road is successor', () => {
+
+		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+
+		leftRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
+			expect( lane.successorExists ).toBe( true );
+			expect( lane.isSuccessor( nextSection.getLaneById( lane.id ) ) ).toBe( true );
+		} );
+
+		leftRoad.getLaneProfile().getLanes().forEach( lane => {
+			expect( lane.predecessorExists ).toBe( false );
+		} );
+
+		rightRoad.getLaneProfile().getLanes().forEach( lane => {
+			expect( lane.successorExists ).toBe( false );
+		} );
+
+		rightRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
+			expect( lane.predecessorExists ).toBe( true );
+			expect( lane.isPredecessor( prevSection.getLaneById( lane.id ) ) ).toBe( true );
+		} );
+
+	} );
+
+	it( 'link when both roads are successor to each other', () => {
+
+		leftRoad.linkSuccessor( rightRoad, TvContactPoint.END );
+
+		leftRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
+			expect( lane.successorExists ).toBe( true );
+			expect( lane.isSuccessor( nextSection.getLaneById( lane.id * -1 ) ) ).toBe( true );
+		} );
+
+		leftRoad.getLaneProfile().getLanes().forEach( lane => {
+			expect( lane.predecessorExists ).toBe( false );
+		} );
+
+		rightRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
+			expect( lane.successorExists ).toBe( true );
+			expect( lane.isSuccessor( prevSection.getLaneById( lane.id * -1 ) ) ).toBe( true );
+		} );
+
+		rightRoad.getLaneProfile().getLanes().forEach( lane => {
+			expect( lane.predecessorExists ).toBe( false );
+		} );
+
+	} );
+
+	xit( 'link predecessor with successor', () => {
+
+		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+
+	} );
+
+	xit( 'link predecessor with predecessor', () => {
+
+		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+
+	} );
+
+} );

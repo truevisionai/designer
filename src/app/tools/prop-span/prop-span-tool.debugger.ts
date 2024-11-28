@@ -14,7 +14,6 @@ import { Object3D } from "three";
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { DebugLine } from "../../objects/debug-line";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -101,7 +100,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 	createNode ( road: TvRoad, roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
 
-		const coord = RoadGeometryService.instance.findRoadPosition( road, repeat.sStart, roadObject.t );
+		const coord = road.getRoadPosition( repeat.sStart, roadObject.t );
 
 		if ( !coord ) return;
 
@@ -167,7 +166,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 			const clamped = Math.min( s, road.length );
 
-			const posTheta = RoadGeometryService.instance.findRoadPosition( road, clamped, roadObject.t );
+			const posTheta = road.getRoadPosition( clamped, roadObject.t );
 
 			if ( !posTheta ) continue;
 

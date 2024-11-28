@@ -14,9 +14,9 @@ export abstract class LaneFactory {
 
 	}
 
-	public static createCenterLane ( roadId: number, laneSection: TvLaneSection ): TvLane {
+	public static createCenterLane (): TvLane {
 
-		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, roadId, laneSection );
+		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none );
 
 	}
 
@@ -26,25 +26,23 @@ export abstract class LaneFactory {
 
 	}
 
-	public static createLane ( side: TvLaneSide, id: number, type: TvLaneType, roadId: number, laneSection: TvLaneSection ): TvLane {
+	public static createLane ( side: TvLaneSide, id: number, type: TvLaneType, roadId?: number, laneSection?: TvLaneSection ): TvLane {
 
 		let lane: TvLane;
 
 		switch ( type ) {
 
 			case TvLaneType.driving:
-				lane = new TvLane( side, id, type, false, roadId, laneSection );
+				lane = new TvLane( side, id, type, false, laneSection );
 				break;
 
 			default:
-				lane = new TvLane( side, id, type, false, roadId, laneSection );
+				lane = new TvLane( side, id, type, false, laneSection );
 				break;
 
 		}
 
 		lane.laneSection = laneSection;
-
-		lane.roadId = roadId;
 
 		return lane;
 

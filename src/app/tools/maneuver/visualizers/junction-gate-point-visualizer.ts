@@ -8,7 +8,7 @@ import { Log } from "app/core/utils/log";
 import { NodeVisualizer } from "app/core/visualizers/node-visualizer";
 import { ConnectionFactory } from "app/factories/connection.factory";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { JunctionGatePoint } from "app/objects/junctions/junction-gate-point";
 import { JunctionDebugService } from "app/services/junction/junction.debug";
@@ -74,12 +74,12 @@ export class JunctionGatePointVisualizer extends NodeVisualizer<JunctionGatePoin
 
 		const connection = this.createConnection( junction, incoming, outgoing );
 
-		if ( !connection || connection.laneLink.length === 0 ) {
+		if ( !connection || connection.getLinkCount() === 0 ) {
 			Log.error( 'Unable to create connection or link' );
 			return;
 		}
 
-		const link = connection.laneLink[ 0 ];
+		const link = connection.getLaneLinks()[ 0 ];
 
 		while ( junction.hasConnection( connection.id ) ) {
 			connection.id = connection.id + 1;
@@ -98,13 +98,13 @@ export class JunctionGatePointVisualizer extends NodeVisualizer<JunctionGatePoin
 
 	private createConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord ): TvJunctionConnection | undefined {
 
-		if ( !LaneUtils.canConnect( incoming, outgoing ) ) {
+		if ( !incoming.canConnect( outgoing ) ) {
 			Log.error( 'Invalid lane directions' );
 			return;
 		}
 
-		const entry = LaneUtils.isEntry( incoming.lane, incoming.contact ) ? incoming : outgoing;
-		const exit = LaneUtils.isExit( outgoing.lane, outgoing.contact ) ? outgoing : incoming;
+		const entry = incoming.isEntry() ? incoming : outgoing;
+		const exit = outgoing.isExit() ? outgoing : incoming;
 
 		if ( entry === exit ) {
 			Log.error( 'Invalid entry or exit' );
@@ -128,7 +128,7 @@ export class JunctionGatePointVisualizer extends NodeVisualizer<JunctionGatePoin
 			return false;
 		}
 
-		if ( !LaneUtils.canConnect( first, second ) ) {
+		if ( !first.canConnect( second ) ) {
 			// this.setHint( 'Cannot connect gates with invalid lane directions' );
 			return false;
 		}

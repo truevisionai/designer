@@ -114,11 +114,11 @@ export class PolePropTool extends BaseTool<any>{
 
 		if ( object instanceof TvRoadObject ) {
 
-			this.tool.objectService.updateRoadObject( object.road, object );
+			this.tool.objectService.updateRoadObjectMesh( object.road, object );
 
 		} else if ( object instanceof PolePropInspector ) {
 
-			this.tool.objectService.updateRoadObject( object.roadObject.road, object.roadObject );
+			this.tool.objectService.updateRoadObjectMesh( object.roadObject.road, object.roadObject );
 
 		}
 

@@ -17,7 +17,10 @@ import { Vector2 } from "three";
 
 import * as SPIRAL from "../../core/shapes/spiral-math";
 
-export abstract class GeometryFactory {
+/**
+ * @deprecated
+ */
+abstract class GeometryFactory {
 
 	static createFromPoint ( type: TvGeometryType, p1: RoadControlPoint, p2: RoadControlPoint ): TvAbstractRoadGeometry {
 
@@ -106,7 +109,7 @@ export abstract class GeometryFactory {
 			Maths.approxEquals( curvStart, 0, 0.0001 ) &&
 			Maths.approxEquals( curvEnd, 0, 0.0001 )
 		) {
-			p1.segmentType = TvGeometryType.LINE;
+			// p1.segmentType = TvGeometryType.LINE;
 			return this.createLineGeometry( p1, p2 );
 		}
 

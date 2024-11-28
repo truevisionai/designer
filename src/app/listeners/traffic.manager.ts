@@ -105,7 +105,7 @@ export class TrafficManager {
 
 			const laneSection = road.laneSections[ i ];
 
-			const lanes = laneSection.getLaneArray();
+			const lanes = laneSection.getLanes();
 
 			for ( let j = 0; j < lanes.length; j++ ) {
 

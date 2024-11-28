@@ -4,7 +4,7 @@
 
 import { Injectable } from "@angular/core";
 import { TvJunction } from "../models/junctions/tv-junction";
-import { TvBoundarySegmentType, TvJointBoundary, TvJunctionBoundary, TvLaneBoundary } from "./tv-junction-boundary";
+import { TvJunctionBoundary } from "./tv-junction-boundary";
 import { GeometryUtils } from "../../services/surface/geometry-utils";
 import { LaneUtils } from "../../utils/lane.utils";
 import { TvRoadCoord } from "../models/TvRoadCoord";
@@ -14,6 +14,8 @@ import { TvContactPoint } from "../models/tv-common";
 import { JunctionUtils } from "app/utils/junction.utils";
 import { Log } from "app/core/utils/log";
 import { Vector3 } from "three";
+import { TvLaneBoundary } from "./tv-lane-boundary";
+import { TvJointBoundary } from "./tv-joint-boundary";
 
 @Injectable( {
 	providedIn: 'root'
@@ -32,15 +34,15 @@ export class TvJunctionBoundaryFactory {
 
 			const lowestLane = LaneUtils.findLowestCarriageWayLane( coord.laneSection );
 
-			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+			junction.getConnectionsByRoad( coord.road ).forEach( connection => {
 
-				const link = connection.laneLink.find( link => link.incomingLane == lowestLane );
+				const link = connection.getLinkForIncomingLane( lowestLane );
 
 				if ( link ) {
 
 					const segment = this.createLaneSegment( connection.connectingRoad, link.connectingLane );
 
-					boundary.segments.push( segment );
+					boundary.addSegment( segment );
 
 				}
 
@@ -48,19 +50,19 @@ export class TvJunctionBoundaryFactory {
 
 			const segment = this.createInnerJointSegment( coord );
 
-			boundary.segments.push( segment );
+			boundary.addSegment( segment );
 
 			const highestLane = LaneUtils.findHighestCarriageWayLane( coord.laneSection );
 
-			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+			junction.getConnectionsByRoad( coord.road ).forEach( connection => {
 
-				const link = connection.laneLink.find( link => link.incomingLane == highestLane );
+				const link = connection.getLinkForIncomingLane( highestLane );
 
 				if ( link ) {
 
 					const segment = this.createLaneSegment( connection.connectingRoad, link.connectingLane );
 
-					boundary.segments.push( segment );
+					boundary.addSegment( segment );
 				}
 
 			} );
@@ -85,15 +87,15 @@ export class TvJunctionBoundaryFactory {
 
 			const lowestLane = LaneUtils.findLowestLane( coord.laneSection );
 
-			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+			junction.getConnectionsByRoad( coord.road ).forEach( connection => {
 
-				const link = connection.laneLink.find( link => link.incomingLane == lowestLane );
+				const link = connection.getLinkForIncomingLane( lowestLane );
 
 				if ( link ) {
 
 					const segment = this.createLaneSegment( connection.connectingRoad, link.connectingLane );
 
-					boundary.segments.push( segment );
+					boundary.addSegment( segment );
 
 				}
 
@@ -101,19 +103,19 @@ export class TvJunctionBoundaryFactory {
 
 			const segment = this.createOuterJointSegment( coord );
 
-			boundary.segments.push( segment );
+			boundary.addSegment( segment );
 
 			const highestLane = LaneUtils.findHigestLane( coord.laneSection );
 
-			junction.getConnections().filter( c => c.incomingRoadId == coord.roadId ).forEach( connection => {
+			junction.getConnectionsByRoad( coord.road ).forEach( connection => {
 
-				const link = connection.laneLink.find( link => link.incomingLane == highestLane );
+				const link = connection.getLinkForIncomingLane( highestLane );
 
 				if ( link ) {
 
 					const segment = this.createLaneSegment( connection.connectingRoad, link.connectingLane );
 
-					boundary.segments.push( segment );
+					boundary.addSegment( segment );
 				}
 
 			} );
@@ -127,49 +129,43 @@ export class TvJunctionBoundaryFactory {
 
 	private static createOuterJointSegment ( roadCoord: TvRoadCoord ) {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getLeftMostLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getRightMostLane();
+			startLane = roadCoord.laneSection.getLeftMostLane();
+			endLane = roadCoord.laneSection.getRightMostLane();
 
 		} else {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getRightMostLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getLeftMostLane();
+			startLane = roadCoord.laneSection.getRightMostLane();
+			endLane = roadCoord.laneSection.getLeftMostLane();
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 
 	private static createInnerJointSegment ( roadCoord: TvRoadCoord ) {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
-			boundary.jointLaneEnd = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
+			startLane = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
+			endLane = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
 
 		} else {
 
-			boundary.jointLaneStart = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
-			boundary.jointLaneEnd = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
+			startLane = LaneUtils.findLowestCarriageWayLane( roadCoord.laneSection );
+			endLane = LaneUtils.findHighestCarriageWayLane( roadCoord.laneSection );
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 
@@ -191,12 +187,12 @@ export class TvJunctionBoundaryFactory {
 
 	static sortBoundarySegments ( boundary: TvJunctionBoundary ) {
 
-		if ( boundary.segments.length == 0 ) {
+		if ( boundary.getSegmentCount() == 0 ) {
 			Log.error( 'No segments found in boundary' );
 			return
 		}
 
-		const segments = boundary.segments;
+		const segments = boundary.getSegments();
 
 		const points = segments.map( segment => {
 
@@ -223,8 +219,9 @@ export class TvJunctionBoundaryFactory {
 		} );
 
 
-		boundary.segments = [];
-		boundary.segments = points.map( p => p.segment );
+		boundary.clearSegments();
+
+		points.forEach( p => boundary.addSegment( p.segment ) );
 
 	}
 

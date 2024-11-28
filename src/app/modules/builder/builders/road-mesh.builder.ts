@@ -1,0 +1,517 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
+import { Injectable } from '@angular/core';
+import { GameObject } from 'app/objects/game-object';
+import * as THREE from 'three';
+import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
+import { TvRoad } from '../../../map/models/tv-road.model';
+import { LaneBufferGeometry } from './LaneBufferGeometry';
+import { TvLaneSide, TvLaneType } from '../../../map/models/tv-common';
+import { LaneRoadMarkBuilder } from './lane-road-mark.builder';
+import { Maths } from 'app/utils/maths';
+import { TvObjectType } from '../../../map/interfaces/i-tv-object';
+import { MeshGeometryData } from '../../../map/models/mesh-geometry.data';
+import { TvLane } from '../../../map/models/tv-lane';
+import { TvLaneSection } from '../../../map/models/tv-lane-section';
+import { Vertex } from '../../../map/models/vertex';
+import { OdBuilderConfig } from './od-builder-config';
+import { OdMaterials } from './od-materials.service';
+import { TvRoadObject, TvRoadObjectType } from "../../../map/models/objects/tv-road-object";
+import { RoadSignalBuilder } from "./road-signal.builder";
+import { RoadObjectBuilder } from "./road-object.builder";
+import { Log } from "../../../core/utils/log";
+import { InvalidRoadLength, NoGeometriesFound, ValidationException } from "../../../exceptions/exceptions";
+import { RoadObjectValidator } from '../../../map/road-object/road-object-validator';
+import { TvMaterialService } from "../../../assets/material/tv-material.service";
+import { MeshBuilder } from 'app/core/builders/mesh.builder';
+import { RoadDistance } from 'app/map/road/road-distance';
+
+@Injectable()
+export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
+
+	private debug = false;
+
+	constructor (
+		private roadMarkBuilder: LaneRoadMarkBuilder,
+		private materialService: TvMaterialService,
+		private signalBuilder: RoadSignalBuilder,
+		private roadObjectBuilder: RoadObjectBuilder,
+	) {
+	}
+
+	build ( object: TvRoad ): THREE.Object3D {
+
+		return this.buildRoad( object );
+
+	}
+
+	validateRoad ( road: TvRoad ): void {
+
+		if ( road.getPlanView().getGeometryCount() < 1 ) {
+			throw new NoGeometriesFound();
+		}
+
+		if ( Maths.approxEquals( road.getLength(), 0 ) ) {
+			throw new InvalidRoadLength();
+		}
+
+	}
+
+	buildRoad ( road: TvRoad ): GameObject {
+
+		this.validateRoad( road );
+
+		const gameObject = this.createRoadGameObject( road );
+
+		road.computeLaneSectionCoordinates();
+
+		if ( !this.shouldBuild( road ) ) return gameObject;
+
+		if ( this.debug ) Log.debug( 'building', road.toString() );
+
+		const laneSections = road.getLaneProfile().getLaneSections();
+
+		for ( let i = 0; i < laneSections.length; i++ ) {
+
+			const laneSection = laneSections[ i ];
+
+			laneSection.gameObject = this.buildLaneSection( road, laneSection );
+
+			gameObject.add( laneSection.gameObject );
+
+		}
+
+		this.buildRoadMarkings( road );
+
+		this.updateJunctionVisibility( road );
+
+		gameObject.add( this.buildRoadObjects( road ) );
+
+		gameObject.add( this.buildSignals( road ) );
+
+		road.computeBoundingBox();
+
+		return gameObject;
+
+	}
+
+	buildRoadMarkings ( road: TvRoad ) {
+
+		const laneSections = road.getLaneProfile().getLaneSections();
+
+		// NOTE: not using this this to support connection meshes
+		// this.roadMarkBuilder.buildRoad( road );
+
+		for ( let i = 0; i < laneSections.length; i++ ) {
+
+			const laneSection = laneSections[ i ];
+
+			const lanes = laneSection.getLanes();
+
+			for ( let j = 0; j < lanes.length; j++ ) {
+
+				const lane = lanes[ j ];
+
+				const roadMarkMesh = this.roadMarkBuilder.buildLane( road, laneSection, lane );
+
+				if ( roadMarkMesh ) {
+
+					laneSection.gameObject.add( roadMarkMesh );
+
+				}
+
+			}
+
+		}
+
+	}
+
+	updateJunctionVisibility ( road: TvRoad ) {
+
+		if ( !road.isJunction ) return;
+
+		const laneSections = road.getLaneProfile().getLaneSections();
+
+		for ( let i = 0; i < laneSections.length; i++ ) {
+
+			const laneSection = laneSections[ i ];
+
+			const lanes = laneSection.getLanes();
+
+			for ( let j = 0; j < lanes.length; j++ ) {
+
+				const lane = lanes[ j ];
+
+				lane.gameObject.visible = lane.type == TvLaneType.sidewalk;
+
+			}
+
+		}
+
+	}
+
+	private shouldBuild ( road: TvRoad ): boolean {
+
+		if ( !OdBuilderConfig.BUILD_MESH ) return false;
+
+		if ( road.isJunction ) return OdBuilderConfig.BUILD_CONNECTING_ROADS;
+
+		return true;
+	}
+
+	private createRoadGameObject ( road: TvRoad ) {
+
+		const gameObject = new GameObject( 'Road:' + road.id );
+
+		gameObject.Tag = TvRoadObjectType.ROAD;
+
+		return gameObject;
+	}
+
+	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+
+		const laneSectionMesh = new GameObject( 'LaneSection' );
+
+		const leftLanes = laneSection.getLeftLanes().reverse();
+
+		for ( let i = 0; i < leftLanes.length; i++ ) {
+
+			const lane = leftLanes[ i ];
+
+			lane.gameObject = this.buildLane( leftLanes[ i ], laneSection, road );
+
+			laneSectionMesh.add( lane.gameObject );
+
+		}
+
+		const centerLanes = laneSection.getCenterLanes();
+
+		for ( let i = 0; i < centerLanes.length; i++ ) {
+
+			const lane = centerLanes[ i ];
+
+			lane.gameObject = this.createCenterLane( centerLanes[ i ], laneSection, road );
+
+			laneSectionMesh.add( lane.gameObject );
+
+		}
+
+		const rightLanes = laneSection.getRightLanes();
+
+		for ( let i = 0; i < rightLanes.length; i++ ) {
+
+			const lane = rightLanes[ i ];
+
+			lane.gameObject = this.buildLane( rightLanes[ i ], laneSection, road );
+
+			laneSectionMesh.add( lane.gameObject );
+
+		}
+
+		return laneSectionMesh;
+	}
+
+	private createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+
+		const geometry = new BufferGeometry();
+
+		geometry.name = 'center-lane';
+
+		return this.createLaneGameObject( lane, geometry, new MeshBasicMaterial() );
+
+	}
+
+	private buildLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
+
+		let stepSize = road.isJunction ? OdBuilderConfig.JUNCTION_STEP : OdBuilderConfig.ROAD_STEP;
+
+		lane.meshData = null;
+		lane.meshData = new MeshGeometryData;
+
+		const sStart = laneSection.s;
+		const nextLaneSection = road.laneSections.find( section => section.s > laneSection.s );
+		const sEnd = nextLaneSection?.s || road.length;
+
+		for ( let sOffset = sStart; sOffset < sEnd; sOffset += stepSize ) {
+
+			this.makeLaneVertices( road, laneSection, lane, sOffset );
+
+		}
+
+		// add last s geometry to close any gaps
+		this.makeLaneVertices( road, laneSection, lane, sEnd - Maths.Epsilon );
+
+		let perStep = 2;
+
+		if ( lane.height.length > 0 ) {
+			if ( lane.height[ 0 ].inner > 0 ) perStep++;
+			if ( lane.height[ 0 ].outer > 0 ) perStep++;
+		}
+
+		this.createMeshIndices( lane.meshData, perStep );
+
+		const geometry = new BufferGeometry();
+
+		geometry.name = 'createLaneMeshFromGeometry lane-id : ' + lane.id;
+
+		const vertices = new Float32Array( lane.meshData.vertices );
+		const normals = new Float32Array( lane.meshData.normals );
+		const faces = new Float32Array( lane.meshData.uvs );
+
+		geometry.setIndex( lane.meshData.triangles );
+		geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+		geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+		geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( faces, 2 ) );
+
+		geometry.computeBoundingBox();
+		geometry.computeVertexNormals();
+
+		return this.createLaneGameObject( lane, geometry, this.getLaneMaterial( road, lane ) );
+
+	}
+
+	buildLaneV2 ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+
+		const geometry = new LaneBufferGeometry( lane, laneSection, road );
+
+		return this.createLaneGameObject( lane, geometry, this.getLaneMaterial( road, lane ) );
+
+	}
+
+	private getLaneMaterial ( road: TvRoad, lane: TvLane ): Material {
+
+		// if guid is set use the material from the assets database
+		if ( lane.threeMaterialGuid ) return this.materialService.getMaterial( lane.threeMaterialGuid )?.material;
+
+		let material: Material;
+		let guid: string;
+
+		const drivingMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+		const sidewalkMaterialGuid: string = '87B8CB52-7E11-4F22-9CF6-285EC8FE9218';
+		const borderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+		const shoulderMaterialGuid: string = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
+
+		switch ( lane.type ) {
+
+			case TvLaneType.driving:
+				guid = road?.drivingMaterialGuid || drivingMaterialGuid;
+				break;
+
+			case TvLaneType.border:
+				guid = road?.borderMaterialGuid || borderMaterialGuid;
+				break;
+
+			case TvLaneType.sidewalk:
+				guid = road?.sidewalkMaterialGuid || sidewalkMaterialGuid;
+				break;
+
+			case TvLaneType.shoulder:
+				guid = road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				break;
+
+			case TvLaneType.stop:
+				guid = road?.shoulderMaterialGuid || shoulderMaterialGuid;
+				break;
+
+			case TvLaneType.parking:
+				guid = road?.drivingMaterialGuid || drivingMaterialGuid;
+				break;
+
+			default:
+				guid = drivingMaterialGuid;
+				break;
+
+		}
+
+		// find by guid
+		if ( guid ) material = this.materialService.getMaterial( guid )?.material;
+
+		// if no material found then use in built
+		if ( !material ) material = OdMaterials.getLaneMaterial( lane );
+
+		return material;
+
+	}
+
+	// eslint-disable-next-line max-lines-per-function
+	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+
+		const distance = sOffset - laneSection.s as RoadDistance;
+		const start = road.getLaneStartPosition( lane, distance, 0, false );
+		const end = road.getLaneEndPosition( lane, distance, 0, false );
+
+		const width = lane.getWidthValue( sOffset - laneSection.s );
+		const height = lane.getHeightValue( sOffset - laneSection.s );
+
+		let vv1: Vertex;
+		let vv2: Vertex;
+
+		const v1 = new Vertex();
+		v1.position = start.position?.clone();
+		v1.uvs = new Vector2( 0, sOffset );
+
+		if ( height.inner > 0 ) {
+			vv1 = new Vertex();
+			vv1.position = start.position?.clone().add( new Vector3( 0, 0, height.inner ) );
+			vv1.uvs = new Vector2( height.inner, sOffset );
+		}
+
+		const v2 = new Vertex();
+		v2.position = end.position?.clone();
+		v2.uvs = new Vector2( height.inner + width, sOffset );
+
+		if ( height.outer > 0 ) {
+			vv2 = new Vertex();
+			vv2.position = end.position?.clone().add( new Vector3( 0, 0, height.outer ) );
+			vv2.uvs = new Vector2( height.inner + width + height.outer, sOffset );
+		}
+
+		if ( lane.side == TvLaneSide.RIGHT ) {
+
+			this.addVertex( lane.meshData, v1 );
+			if ( vv1 ) this.addVertex( lane.meshData, vv1 );
+			if ( vv2 ) this.addVertex( lane.meshData, vv2 );
+			this.addVertex( lane.meshData, v2 );
+
+		} else {
+
+			this.addVertex( lane.meshData, v2 );
+			if ( vv2 ) this.addVertex( lane.meshData, vv2 );
+			if ( vv1 ) this.addVertex( lane.meshData, vv1 );
+			this.addVertex( lane.meshData, v1 );
+
+		}
+
+	}
+
+	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+
+		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z );
+		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
+		meshData.uvs.push( v1.uvs.x, v1.uvs.y );
+		meshData.indices.push( meshData.currentIndex++ );
+
+	}
+
+	private createMeshIndices ( geom: MeshGeometryData, verticesPerStep = 2 ): void {
+
+		if ( verticesPerStep < 2 ) {
+			console.error( "verticesPerStep should be at least 2" );
+			return;
+		}
+
+		for ( let i = 0; i < geom.indices.length / verticesPerStep - 1; i++ ) {
+
+			// This loop creates triangles for every consecutive pair of vertices
+			// within a step and between two consecutive steps.
+			for ( let j = 0; j < verticesPerStep - 1; j++ ) {
+
+				let index1 = i * verticesPerStep + j;
+				let index2 = i * verticesPerStep + j + 1;
+				let index3 = ( i + 1 ) * verticesPerStep + j;
+				let index4 = ( i + 1 ) * verticesPerStep + j + 1;
+
+				geom.triangles.push( index1, index2, index3 );
+				geom.triangles.push( index2, index4, index3 );
+			}
+		}
+
+	}
+
+	// Note: Experimental
+	// // for single mesh
+	// createMeshIndicesMultiple ( geom: MeshGeometryData, rows: number, cols: number ): void {
+	// 	// Note that rows and cols are the number of vertices in each direction
+	// 	// So for a 4x4 grid, rows=4 and cols=4
+
+	// 	for ( let i = 0; i < rows - 1; i++ ) {         // iterate through rows
+	// 		for ( let j = 0; j < cols - 1; j++ ) {     // iterate through columns
+
+	// 			// Calculate base index for the current quad
+	// 			let index = i * cols + j;
+
+	// 			// Create two triangles for the current quad
+
+	// 			// Triangle 1
+	// 			geom.triangles.push( index );          // bottom-left
+	// 			geom.triangles.push( index + 1 );      // bottom-right
+	// 			geom.triangles.push( index + cols );   // top-left
+
+	// 			// Triangle 2
+	// 			geom.triangles.push( index + 1 );      // bottom-right
+	// 			geom.triangles.push( index + cols + 1 ); // top-right
+	// 			geom.triangles.push( index + cols );   // top-left
+	// 		}
+	// 	}
+	// }
+
+	private createLaneGameObject ( lane: TvLane, geometry: BufferGeometry, material: THREE.Material | THREE.Material[] ) {
+
+		const gameObject = new GameObject( 'Lane:' + lane.id, geometry, material );
+
+		gameObject.Tag = TvObjectType[ TvObjectType.LANE ];
+
+		return gameObject;
+	}
+
+	private buildSignals ( road: TvRoad ) {
+
+		road.signalGroup?.clear();
+
+		for ( const signal of road.getRoadSignals() ) {
+
+			signal.mesh = this.signalBuilder.build( signal, road )
+
+			if ( !signal.mesh ) continue;
+
+			road.signalGroup?.add( signal.mesh );
+
+		}
+
+		return road.signalGroup;
+	}
+
+	private buildRoadObjects ( road: TvRoad ): THREE.Group {
+
+		road.objectGroup?.clear();
+
+		for ( const roadObject of road.getRoadObjects() ) {
+
+			this.buildAndAddRoadObject( road, roadObject );
+
+		}
+
+		return road.objectGroup;
+
+	}
+
+	buildAndAddRoadObject ( road: TvRoad, roadObject: TvRoadObject ): void {
+
+		try {
+
+			roadObject.road = road;
+
+			RoadObjectValidator.validateRoadObject( roadObject );
+
+			roadObject.mesh = this.roadObjectBuilder.build( roadObject );
+
+			road.objectGroup.add( roadObject.mesh );
+
+		} catch ( error ) {
+
+			if ( error instanceof ValidationException ) {
+
+				Log.error( 'ValidationException road object', error.message );
+
+			} else {
+
+				Log.error( 'Failed to build road object', error.message );
+
+			}
+
+			road.removeRoadObject( roadObject );
+		}
+	}
+}

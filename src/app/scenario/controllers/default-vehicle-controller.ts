@@ -20,26 +20,7 @@ export class DefaultVehicleController extends AbstractController {
 		super( name );
 	}
 
-	static getSuccessorRoad ( currentRoad: TvRoad, map: TvMap ) {
 
-		let nextRoad: TvRoad;
-
-		const successor = currentRoad.successor;
-
-		if ( successor.type == 'road' ) {
-
-			nextRoad = map.getRoadById( successor.id );
-
-		} else if ( successor.type == 'junction' ) {
-
-			const junction = map.getJunctionById( successor.id );
-			const connection = junction.getRandomConnectionFor( currentRoad.id );
-
-			nextRoad = connection.connectingRoad;
-		}
-
-		return nextRoad;
-	}
 
 	public update () {
 
@@ -49,9 +30,8 @@ export class DefaultVehicleController extends AbstractController {
 		}
 
 		const entity = this.entity;
-		const roads = this.map.roads;
 
-		const currentRoad = roads.get( entity.roadId );
+		const currentRoad = this.map.getRoad( entity.roadId );
 		const currentLaneSection = currentRoad.getLaneProfile().getLaneSectionById( entity.laneSectionId );
 		const currentLaneId = entity.laneId;
 		const currentLane = currentLaneSection.getLaneById( currentLaneId );
@@ -82,18 +62,18 @@ export class DefaultVehicleController extends AbstractController {
 					// find road
 					if ( successor.type == 'road' ) {
 
-						nextRoad = this.map.getRoadById( successor.id );
+						nextRoad = this.map.getRoad( successor.id );
 						nextLaneId = currentLane.successorExists ? currentLane.successorId : currentLane.id;
 
 					} else if ( successor.type == 'junction' ) {
 
-						const junction = this.map.getJunctionById( successor.id );
+						const junction = this.map.getJunction( successor.id );
 						const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
 						contactPoint = connection.contactPoint;
 
 						nextRoad = connection.connectingRoad;
-						nextLaneId = connection.getToLaneId( currentLaneId );
+						nextLaneId = connection.getConnectingLaneId( currentLaneId );
 					}
 
 					// update s-coordinate
@@ -144,18 +124,18 @@ export class DefaultVehicleController extends AbstractController {
 				// find road
 				if ( predecessor.type == 'road' ) {
 
-					nextRoad = this.map.getRoadById( predecessor.id );
+					nextRoad = this.map.getRoad( predecessor.id );
 					nextLaneId = currentLane.predecessorExists ? currentLane.predecessorId : currentLane.id;
 
 				} else if ( predecessor.type == 'junction' ) {
 
-					const junction = this.map.getJunctionById( predecessor.id );
+					const junction = this.map.getJunction( predecessor.id );
 					const connection = junction.getRandomConnectionFor( currentRoad.id, currentLaneId );
 
 					contactPoint = connection.contactPoint;
 
 					nextRoad = connection.connectingRoad;
-					nextLaneId = connection.getToLaneId( currentLaneId );
+					nextLaneId = connection.getConnectingLaneId( currentLaneId );
 				}
 
 				// update s-coordinate

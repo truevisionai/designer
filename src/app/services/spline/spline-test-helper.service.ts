@@ -4,7 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { Vector2, Vector3 } from "three";
-import { AbstractSpline, SplineType } from "../../core/shapes/abstract-spline";
+import { AbstractSpline } from "../../core/shapes/abstract-spline";
+import { SplineType } from 'app/core/shapes/spline-type';
 import { SplineService } from "./spline.service";
 import { SplineFactory } from "./spline.factory";
 import { RoadFactory } from "../../factories/road-factory.service";
@@ -18,8 +19,8 @@ import { JunctionService } from '../junction/junction.service';
 import { SplineLinkService } from 'app/managers/spline-link.service';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvRoadLink, TvRoadLinkType } from 'app/map/models/tv-road-link';
-import { JunctionToolHelper } from 'app/tools/junction/junction-tool.helper';
+import { LinkFactory } from 'app/map/models/link-factory';
+import { JunctionToolHelper } from 'app/modules/junction/junction-tool.helper';
 import { MapValidatorService } from '../map/map-validator.service';
 import { HttpClient } from '@angular/common/http';
 import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
@@ -33,6 +34,11 @@ export const EXPLICIT_CIRCLE_XODR = 'assets/open-drive/explicit-circle.xodr';
 
 export const TOWN_01 = 'assets/open-drive/town-01.xodr';
 export const TOWN_02 = 'assets/open-drive/town-02.xodr';
+export const TOWN_03 = 'assets/open-drive/town-03.xodr';
+export const TOWN_04 = 'assets/open-drive/town-04.xodr';
+export const TOWN_05 = 'assets/open-drive/town-05.xodr';
+export const TOWN_06 = 'assets/open-drive/town-06.xodr';
+export const TOWN_07 = 'assets/open-drive/town-07.xodr';
 
 export const FRENCH_SMALL_XODR = 'assets/stubs/french-small.xodr';
 export const OSM2_XODR = 'assets/stubs/osm-2-xodr-small.xodr';
@@ -151,9 +157,9 @@ export class SplineTestHelper {
 
 		const spline = SplineFactory.createFromPoints( [] );
 
-		this.cirleToolService.createCirclePoints( center, end, radius ).forEach( point => {
+		this.cirleToolService.createCirclePoints( center, end, radius ).forEach( position => {
 
-			spline.controlPoints.push( ControlPointFactory.createControl( spline, point ) );
+			spline.addControlPoint( position );
 
 		} );
 
@@ -214,10 +220,6 @@ export class SplineTestHelper {
 
 		const spline = SplineFactory.createStraightSplineAndPoints( start, length, degrees, type );
 
-		// spline.addSegment( 0, this.roadFactory.createDefaultRoad() );
-
-		// spline.addControlPoints( ControlPointFactory.createStraightControlPoints( spline, start, length, degrees ) );
-
 		return spline;
 
 	}
@@ -256,11 +258,33 @@ export class SplineTestHelper {
 
 	createSimpleTJunction () {
 
-		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
-		const splineB = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
+		const horizontal = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
+		const vertical = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
 
-		this.splineService.add( splineA );
-		this.splineService.add( splineB );
+		this.splineService.add( horizontal );
+		this.splineService.add( vertical );
+
+		return { horizontal, vertical };
+	}
+
+	createUShape ( size = 50, reverse = false ): AbstractSpline {
+
+		const sign = reverse ? -1 : 1;
+
+		const positions = [
+			new Vector3( -size, size * sign, 0 ),
+			new Vector3( -size, -size * sign, 0 ),
+			new Vector3( size, -size * sign, 0 ),
+			new Vector3( size, size * sign, 0 )
+		];
+
+		const spline = SplineFactory.createFromPoints( [] );
+
+		positions.forEach( position => spline.addControlPoint( position ) );
+
+		this.splineService.add( spline );
+
+		return spline;
 	}
 
 	createAngleT2RoadJunction () {
@@ -284,16 +308,32 @@ export class SplineTestHelper {
 
 	}
 
-	async createHJunction ( random = false ) {
+	createHShapeWithXJunctions (): { verticalLeft: AbstractSpline; verticalRight: AbstractSpline; horizontal: AbstractSpline; } {
 
-		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
-		const splineC = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
-		const splineB = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200 );
+		const verticalLeft = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200, 90 );
+		const verticalRight = this.createStraightSpline( new Vector3( 100, -100, 0 ), 200, 90 );
 
-		const splines = [ splineA, splineB, splineC ];
+		const horizontal = this.createStraightSpline( new Vector3( -150, 0, 0 ), 300, 0 );
 
-		await this.addInRandomOrder( splines, random );
+		this.splineService.add( verticalLeft );
+		this.splineService.add( verticalRight );
+		this.splineService.add( horizontal );
 
+		return { verticalLeft, verticalRight, horizontal };
+	}
+
+	createHShapeWithTJunctions (): { verticalLeft: AbstractSpline; verticalRight: AbstractSpline; horizontal: AbstractSpline; } {
+
+		const verticalLeft = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200, 90 );
+		const verticalRight = this.createStraightSpline( new Vector3( 100, -100, 0 ), 200, 90 );
+
+		const horizontal = this.createStraightSpline( new Vector3( -200 / 2, 0, 0 ), 200, 0 );
+
+		this.splineService.add( verticalLeft );
+		this.splineService.add( verticalRight );
+		this.splineService.add( horizontal );
+
+		return { verticalLeft, verticalRight, horizontal };
 	}
 
 	async createXJunctionWithFourRoads ( random: boolean ) {
@@ -347,15 +387,13 @@ export class SplineTestHelper {
 		await this.addInRandomOrder( splines, random );
 	}
 
-	async createDoubleTJunctionWith3Roads ( random = false ) {
+	createDoubleTJunctionWith3Roads () {
 
-		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 300 );
-		const splineB = this.createStraightSpline( new Vector3( 100, -100, 0 ), 100, 90 );
-		const splineC = this.createStraightSpline( new Vector3( 0, -100, 0 ), 100, 90 );
+		const horizontal = this.addStraightRoadSpline( new Vector3( -100, 0, 0 ), 300 );
+		const verticalRight = this.addStraightRoadSpline( new Vector3( 100, -100, 0 ), 100, 90 );
+		const verticalLeft = this.addStraightRoadSpline( new Vector3( 0, -100, 0 ), 100, 90 );
 
-		const splines = [ splineA, splineB, splineC ];
-
-		await this.addInRandomOrder( splines, random );
+		return { horizontal, verticalRight, verticalLeft };
 	}
 
 	private async addInRandomOrder ( splines: AbstractSpline[], random = true ) {
@@ -388,14 +426,14 @@ export class SplineTestHelper {
 		const rightRoad = this.mapService.findRoad( 2 );
 
 		const links = [
-			new TvRoadLink( TvRoadLinkType.ROAD, leftRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, rightRoad, TvContactPoint.START )
+			LinkFactory.createRoadLink( leftRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( rightRoad, TvContactPoint.START )
 		]
 
 		// TODO: use service or factory to create junction
 		const junction = this.junctionToolHelper.createCustomJunction( links );
 
-		this.junctionService.addJunction( junction );
+		this.junctionService.fireCreatedEvent( junction );
 
 		return junction;
 
@@ -416,18 +454,18 @@ export class SplineTestHelper {
 		const rightRoad = this.mapService.findRoad( 3 );
 
 		const junction1 = this.junctionToolHelper.createCustomJunction( [
-			new TvRoadLink( TvRoadLinkType.ROAD, leftRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, middleRoad, TvContactPoint.START ),
+			LinkFactory.createRoadLink( leftRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( middleRoad, TvContactPoint.START ),
 		] );
 
 		const junction2 = this.junctionToolHelper.createCustomJunction( [
-			new TvRoadLink( TvRoadLinkType.ROAD, middleRoad, TvContactPoint.END ),
-			new TvRoadLink( TvRoadLinkType.ROAD, rightRoad, TvContactPoint.START )
+			LinkFactory.createRoadLink( middleRoad, TvContactPoint.END ),
+			LinkFactory.createRoadLink( rightRoad, TvContactPoint.START )
 		] );
 
 
-		this.junctionService.addJunction( junction1 );
-		this.junctionService.addJunction( junction2 );
+		this.junctionService.fireCreatedEvent( junction1 );
+		this.junctionService.fireCreatedEvent( junction2 );
 
 	}
 
@@ -475,9 +513,9 @@ export class SplineTestHelper {
 		const middleRoad = this.roadFactory.createDefaultRoad();
 		const rightRoad = this.roadFactory.createDefaultRoad();
 
-		left.segmentMap.set( 0, leftRoad );
-		middle.segmentMap.set( 0, middleRoad );
-		right.segmentMap.set( 0, rightRoad );
+		left.addSegment( 0, leftRoad );
+		middle.addSegment( 0, middleRoad );
+		right.addSegment( 0, rightRoad );
 
 		leftRoad.spline = left;
 		middleRoad.spline = middle;
@@ -513,9 +551,9 @@ export class SplineTestHelper {
 		const middleRoad = this.roadFactory.createDefaultRoad();
 		const rightRoad = this.roadFactory.createDefaultRoad();
 
-		left.segmentMap.set( 0, leftRoad );
-		middle.segmentMap.set( 0, middleRoad );
-		right.segmentMap.set( 0, rightRoad );
+		left.addSegment( 0, leftRoad );
+		middle.addSegment( 0, middleRoad );
+		right.addSegment( 0, rightRoad );
 
 		leftRoad.spline = left;
 		middleRoad.spline = middle;

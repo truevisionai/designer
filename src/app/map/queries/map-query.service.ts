@@ -8,9 +8,7 @@ import { TvRoad } from "../models/tv-road.model";
 import { TvLaneSection } from "../models/tv-lane-section";
 import { TvLane } from "../models/tv-lane";
 import { TvJunction } from "../models/junctions/tv-junction";
-import { TvContactPoint, TvLaneSide } from "../models/tv-common";
 import { LaneUtils } from 'app/utils/lane.utils';
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -18,11 +16,9 @@ import { RoadGeometryService } from "../../services/road/road-geometry.service";
 export class MapQueryService {
 
 	constructor (
-		private mapService: MapService,
-		private roadGeometryService: RoadGeometryService
+		private mapService: MapService
 	) {
 	}
-
 
 	get map () {
 		return this.mapService.map;
@@ -71,7 +67,7 @@ export class MapQueryService {
 
 				if ( connection.incomingRoad !== road ) continue;
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					if ( laneLink.from != lane.id ) continue;
 
@@ -91,7 +87,7 @@ export class MapQueryService {
 
 			for ( const connection of junction.getConnections() ) {
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					const connectingLane = connection.connectingLaneSection.getLaneById( laneLink.to );
 
@@ -136,7 +132,7 @@ export class MapQueryService {
 
 				if ( connection.incomingRoad !== road ) continue;
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					if ( laneLink.from != lane.id ) continue;
 
@@ -156,7 +152,7 @@ export class MapQueryService {
 
 			for ( const connection of junction.getConnections() ) {
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					const connectingLane = connection.connectingLaneSection.getLaneById( laneLink.to );
 

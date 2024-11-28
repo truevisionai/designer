@@ -6,11 +6,12 @@ import { Vector3 } from 'three';
 import { TvRoad } from './tv-road.model';
 import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";
-import { TvContactPoint } from './tv-common';
+import { TvContactPoint, TvLaneType } from './tv-common';
 import { Maths } from 'app/utils/maths';
 import { Orientation } from 'app/scenario/models/tv-orientation';
 import { LaneUtils } from "../../utils/lane.utils";
-import { TvRoadLink } from './tv-road-link';
+import { TvLink } from './tv-link';
+import { LaneDistance, RoadDistance } from '../road/road-distance';
 
 export class TvLaneCoord {
 
@@ -18,17 +19,20 @@ export class TvLaneCoord {
 		public readonly road: TvRoad,
 		public readonly laneSection: TvLaneSection,
 		public readonly lane: TvLane,
-		public readonly s: number,
-		public readonly offset: number
+		public readonly laneDistance: LaneDistance,
+		public readonly offset: number = 0
 	) {
+	}
 
+	get s () {
+		return this.laneDistance;
 	}
 
 	toString () {
-		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.s } offset:${ this.offset }`;
+		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.laneDistance } offset:${ this.offset }`;
 	}
 
-	getLink (): TvRoadLink {
+	getLink (): TvLink {
 		if ( this.contact == TvContactPoint.START ) {
 			return this.road.predecessor;
 		} else if ( this.contact == TvContactPoint.END ) {
@@ -40,11 +44,11 @@ export class TvLaneCoord {
 
 	get contact (): TvContactPoint {
 
-		if ( Maths.approxEquals( this.laneSection.s - this.s, 0 ) ) return TvContactPoint.START;
+		if ( Maths.approxEquals( this.laneSection.s - this.laneDistance, 0 ) ) return TvContactPoint.START;
 
-		if ( Maths.approxEquals( this.laneSection.s + this.s, this.road.length ) ) return TvContactPoint.END;
+		if ( Maths.approxEquals( this.laneSection.s + this.laneDistance, this.road.length ) ) return TvContactPoint.END;
 
-		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.s } ${ this.road.length }` );
+		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.laneDistance } ${ this.road.length }` );
 	}
 
 	get roadId (): number {
@@ -60,7 +64,7 @@ export class TvLaneCoord {
 	}
 
 	get posTheta () {
-		return this.road.getLaneStartPosition( this.lane, this.laneSection.s + this.s, this.offset );
+		return this.road.getLaneStartPosition( this.lane, this.laneSection.s + this.laneDistance as RoadDistance, this.offset );
 	}
 
 	get position (): Vector3 {
@@ -90,5 +94,38 @@ export class TvLaneCoord {
 		return this.posTheta;
 	}
 
+	canConnect ( otherLane: TvLaneCoord ): boolean {
+
+		if ( this.road.id === otherLane.road.id ) return false;
+
+		if ( this.lane.type !== otherLane.lane.type ) return false;
+
+		// for carriage way we don't want to merge entries with entries and exits with exits
+		if ( this.lane.isCarriageWay() && this.lane.type != TvLaneType.shoulder ) {
+
+			// don't merge if both are entries
+			if ( this.isEntry() && otherLane.isEntry() ) return false;
+
+			// don't merge if both are exits
+			if ( this.isExit() && otherLane.isExit() ) return false;
+
+		}
+
+		return true;
+
+	}
+
+	isEntry (): boolean {
+		return this.lane.isEntry( this.contact );
+	}
+
+
+	isExit (): boolean {
+		return this.lane.isExit( this.contact );
+	}
+
+	getLaneWidth (): number {
+		return this.lane.getWidthValue( this.laneDistance );
+	}
 }
 

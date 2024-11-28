@@ -13,7 +13,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Surface } from 'app/map/surface/surface.model';
 import { XMLBuilder } from 'fast-xml-parser';
 import { FileService } from '../../io/file.service';
-import { TvJunctionConnection } from '../models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from '../models/connections/tv-junction-connection';
 import { SnackBar } from '../../services/snack-bar.service';
 import { TvElectronService } from '../../services/tv-electron.service';
 import { ThreeService } from 'app/renderer/three.service';
@@ -34,9 +34,11 @@ import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { TvTransform } from 'app/map/models/tv-transform';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
-import { TvJointBoundary, TvJunctionSegmentBoundary, TvLaneBoundary } from '../junction-boundary/tv-junction-boundary';
+import { TvJunctionSegmentBoundary } from '../junction-boundary/tv-junction-boundary';
 import { TvLaneOffset } from "../models/tv-lane-offset";
 import { SplineExporter } from "./spline-exporter";
+import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
+import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
 
 @Injectable( {
 	providedIn: 'root'
@@ -62,7 +64,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			attr_incomingRoad: connection.incomingRoadId,
 			attr_connectingRoad: connection.connectingRoadId,
 			attr_contactPoint: connection.contactPoint,
-			laneLink: connection.laneLink.map( link => {
+			laneLink: connection.getLaneLinks().map( link => {
 				return {
 					attr_from: link.from,
 					attr_to: link.to,
@@ -168,7 +170,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			priority: [],
 			controller: [],
 			boundary: {
-				segment: junction.outerBoundary?.segments.map( segment => this.exportBoundarySegment( segment ) )
+				segment: junction.outerBoundary?.getSegments().map( segment => this.exportBoundarySegment( segment ) )
 			},
 		};
 
@@ -489,9 +491,9 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			attr_materialGuid: lane.threeMaterialGuid,
 			attr_direction: lane.direction,
 			link: {},
-			width: lane.width.map( width => this.writeLaneWidth( width ) ),
+			width: lane.getWidthArray().map( width => this.writeLaneWidth( width ) ),
 			roadMark: lane.roadMarks.map( mark => this.writeLaneRoadMark( mark ) ),
-			material: lane.material.map( material => this.writeLaneMaterial( material ) ),
+			material: lane.materials.map( material => this.writeLaneMaterial( material ) ),
 			visibility: lane.visibility.map( visibility => this.writeLaneVisibility( visibility ) ),
 			speed: lane.speed.map( speed => this.writeLaneSpeed( speed ) ),
 			access: lane.access.map( access => this.writeLaneAccess( access ) ),

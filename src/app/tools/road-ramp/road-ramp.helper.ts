@@ -20,16 +20,13 @@ import { TvJunction } from "../../map/models/junctions/tv-junction";
 import { RoadDividerService } from "../../services/road/road-divider.service";
 import { JunctionFactory } from "../../factories/junction.factory";
 import { SplineService } from "../../services/spline/spline.service";
-import { SplineBuilder } from 'app/services/spline/spline.builder';
+import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-generator';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
 import { LaneUtils } from 'app/utils/lane.utils';
-import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { TvRoadLinkNeighbor } from "../../map/models/tv-road-link-neighbor";
 import { SplineUtils } from "../../utils/spline.utils";
-import { RoadGeometryService } from "../../services/road/road-geometry.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -47,7 +44,7 @@ export class RampToolHelper {
 		public roadCutService: RoadDividerService,
 		public junctionFactory: JunctionFactory,
 		public splineService: SplineService,
-		public splineBuilder: SplineBuilder,
+		public splineBuilder: SplineGeometryGenerator,
 		public roadDividerService: RoadDividerService,
 	) {
 	}
@@ -56,13 +53,13 @@ export class RampToolHelper {
 
 		if ( startPosition instanceof TvLaneCoord ) {
 
-			const sStart = startPosition.s;
+			const sStart = startPosition.laneDistance;
 
 			const sEnd = sStart + 20;
 
 			const orientation = TvOrientation.PLUS;
 
-			const junction = this.junctionFactory.createJunction();
+			const junction = this.junctionFactory.createByType();
 
 			const road = this.roadService.clone( startPosition.road );
 
@@ -93,9 +90,9 @@ export class RampToolHelper {
 		this.addLaneSection( startCoord, endCoord, rampRoad );
 
 		// NOTE: This is a hack to make the ramp road work
-		rampRoad.spline.segmentMap.set( 0, rampRoad );
+		rampRoad.spline.addSegment( 0, rampRoad );
 
-		this.splineBuilder.build( rampRoad.spline );
+		this.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( rampRoad.spline );
 
 		return rampRoad;
 
@@ -109,19 +106,19 @@ export class RampToolHelper {
 
 		if ( start instanceof TvLaneCoord ) {
 			if ( start.lane.isRight ) {
-				incomingLanes = start.laneSection.getLaneArray().filter( lane => lane.id < start.laneId );
+				incomingLanes = start.laneSection.getLanes().filter( lane => lane.id < start.laneId );
 			} else {
 				// TODO: check if this is correct
-				incomingLanes = start.laneSection.getLaneArray().filter( lane => lane.id > start.laneId );
+				incomingLanes = start.laneSection.getLanes().filter( lane => lane.id > start.laneId );
 			}
 		}
 
 		if ( incomingLanes.find( lane => lane.type == TvLaneType.driving ) == undefined ) {
 			if ( start instanceof TvLaneCoord ) {
 				if ( start.lane.isRight ) {
-					incomingLanes = start.laneSection.getLaneArray().filter( lane => lane.id <= start.laneId );
+					incomingLanes = start.laneSection.getLanes().filter( lane => lane.id <= start.laneId );
 				} else {
-					incomingLanes = start.laneSection.getLaneArray().filter( lane => lane.id >= start.laneId );
+					incomingLanes = start.laneSection.getLanes().filter( lane => lane.id >= start.laneId );
 				}
 			}
 		}
@@ -165,15 +162,7 @@ export class RampToolHelper {
 
 		if ( startPosition instanceof TvLaneCoord ) {
 
-			const position = RoadGeometryService.instance.findLaneStartPosition(
-				startPosition.road,
-				startPosition.laneSection,
-				startPosition.lane,
-				startPosition.s,
-				startPosition.offset
-			);
-
-			v1 = position.position;
+			v1 = startPosition.position;
 
 			d1 = startPosition.laneDirection;
 
@@ -225,12 +214,10 @@ export class RampToolHelper {
 		const d2 = d1.applyAxisAngle( new Vector3( 0, 0, 1 ), -Math.PI / 2 );
 		const p2 = p1.clone().add( d2.clone().multiplyScalar( start.distanceTo( p1 ) * 2 ) );
 
-		const spline = new AutoSpline();
+		const spline = SplineFactory.createSpline();
 
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, start ) );
-		// spline.controlPoints.push( ControlPointFactory.createControl( spline, p1 ) );
-		// spline.controlPoints.push( ControlPointFactory.createControl( spline, p2 ) );
-		spline.controlPoints.push( ControlPointFactory.createControl( spline, end ) );
+		spline.addControlPoint( start );
+		spline.addControlPoint( end );
 
 		return spline;
 	}
@@ -241,7 +228,7 @@ export class RampToolHelper {
 
 		this.splineBuilder.buildSpline( spline );
 
-		const points = this.splineService.getPoints( spline, 0.1 );
+		const points = spline.getPoints( 0.1 );
 
 		const line = this.debug.createLine( points );
 
@@ -255,7 +242,7 @@ export class RampToolHelper {
 
 		this.splineBuilder.buildGeometry( spline );
 
-		const positions = this.splineService.getPoints( spline, 0.1 );
+		const positions = spline.getPoints( 0.1 );
 
 		const geometry = new LineGeometry();
 

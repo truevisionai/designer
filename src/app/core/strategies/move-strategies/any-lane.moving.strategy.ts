@@ -8,6 +8,7 @@ import { Position } from "app/scenario/models/position";
 import { LanePosition, NewLanePosition } from "app/scenario/models/positions/tv-lane-position";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvLane } from "app/map/models/tv-lane";
+import { RoadDistance } from "app/map/road/road-distance";
 
 export class AnyLaneMovingStrategy extends MovingStrategy<TvLane> {
 
@@ -26,14 +27,16 @@ export class AnyLaneMovingStrategy extends MovingStrategy<TvLane> {
 		let offset = 0;
 
 		if ( this.contact == TvContactPoint.START ) {
-			offset -= laneCoord.lane.getWidthValue( laneCoord.s ) * 0.5;
+			offset -= laneCoord.lane.getWidthValue( laneCoord.laneDistance ) * 0.5;
 		}
 
 		if ( this.contact == TvContactPoint.END ) {
-			offset += laneCoord.lane.getWidthValue( laneCoord.s ) * 0.5;
+			offset += laneCoord.lane.getWidthValue( laneCoord.laneDistance ) * 0.5;
 		}
 
-		return new NewLanePosition( laneCoord.road, laneCoord.laneSection, laneCoord.lane, laneCoord.s, offset );
+		const roadDistance = laneCoord.laneSection.s + laneCoord.laneDistance as RoadDistance;
+
+		return new NewLanePosition( laneCoord.road, laneCoord.laneSection, laneCoord.lane, roadDistance, offset );
 
 	}
 

@@ -8,11 +8,14 @@ import { RoadTangentPoint } from "../../../objects/road/road-tangent-point";
 import { SplineGeometryService } from "../../../services/spline/spline-geometry.service";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { Commands } from "../../../commands/commands";
+import { Vector3 } from "three";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadTangentPointDragHandler extends BaseDragHandler<RoadTangentPoint> {
+
+	private oldPosition: Vector3;
 
 	constructor (
 		private splineGeometryService: SplineGeometryService,
@@ -22,15 +25,13 @@ export class RoadTangentPointDragHandler extends BaseDragHandler<RoadTangentPoin
 
 	onDragStart ( point: RoadTangentPoint, e: PointerEventData ): void {
 
-		if ( point.controlPoint.shouldMarkAsSpiral() ) {
-
-			point.controlPoint.markAsSpiral();
-
-		}
+		this.oldPosition = point.position.clone();
 
 	}
 
 	onDrag ( point: RoadTangentPoint, e: PointerEventData ): void {
+
+		this.oldPosition = this.oldPosition || point.position.clone();
 
 		point.setPosition( e.point );
 
@@ -38,13 +39,15 @@ export class RoadTangentPointDragHandler extends BaseDragHandler<RoadTangentPoin
 
 		point.controlPoint.update();
 
-		this.splineGeometryService.updateGeometryAndBounds( point.spline );
+		this.splineGeometryService.updateGeometryAndBounds( point.getSpline() );
 
 	}
 
 	onDragEnd ( point: RoadTangentPoint, e: PointerEventData ): void {
 
-		Commands.SetPointPosition( point.spline, point, e.point, this.dragStartPosition );
+		Commands.SetPointPosition( point.getSpline(), point, e.point, this.oldPosition );
+
+		this.oldPosition = null;
 
 	}
 

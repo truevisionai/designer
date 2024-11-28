@@ -17,7 +17,6 @@ import { TvPosTheta } from '../models/tv-pos-theta';
 import { TvRoad } from '../models/tv-road.model';
 import { TvUtils } from '../models/tv-utils';
 import { TvMapInstance } from '../services/tv-map-instance';
-import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 
 export abstract class TvBaseQueries {
 
@@ -25,17 +24,12 @@ export abstract class TvBaseQueries {
 		return TvMapInstance.map;
 	}
 
-	static get roads () {
-		return this.map.roads;
-	}
-
 }
 
 export class TvMapQueries extends TvBaseQueries {
+
 	static findRoadById ( id: number ): TvRoad {
-
-		return this.map.roads.get( id );
-
+		return this.map.getRoad( id );
 	}
 
 	static findRoadCoord ( position: Vector3 ): TvRoadCoord {
@@ -86,13 +80,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const point = new Vector2( x, y );
 
-		const roadCount = this.roads.size;
-
-		let road: TvRoad;
-
-		for ( const keyValue of this.roads ) {
-
-			road = keyValue[ 1 ];
+		for ( const road of this.map.getRoads() ) {
 
 			if ( roadIdsToIgnore.includes( road.id ) ) continue;
 
@@ -146,13 +134,7 @@ export class TvMapQueries extends TvBaseQueries {
 
 		const point = new Vector2( x, y );
 
-		const roadCount = this.roads.size;
-
-		let road: TvRoad;
-
-		for ( const keyValue of this.roads ) {
-
-			road = keyValue[ 1 ];
+		for ( const road of this.map.getRoads() ) {
 
 			if ( road.isJunction ) continue;
 
@@ -205,14 +187,14 @@ export class TvMapQueries extends TvBaseQueries {
 			sCoordinate = 0;
 		}
 
-		const road = this.roads.get( roadId );
+		const road = this.map.getRoad( roadId );
 
 		if ( road === undefined ) {
 			console.error( `Road with ID: ${ roadId } not found` );
 			return new Vector3();
 		}
 
-		const posTheta = RoadGeometryService.instance.findRoadPosition(road, sCoordinate );
+		const posTheta = road.getRoadPosition( sCoordinate );
 
 		const laneSection = road.getLaneProfile().getLaneSectionAt( sCoordinate );
 
@@ -464,46 +446,4 @@ export class TvMapQueries extends TvBaseQueries {
 	static getLaneSpeed () {
 	}
 
-	static getRandomRoad ( map: TvMap ): TvRoad {
-
-		return TvUtils.getRandomArrayItem( [ ...map.roads.values() ] ) as TvRoad;
-
-	}
-
-	static getRandomLaneSection ( road: TvRoad ): TvLaneSection {
-
-		return TvUtils.getRandomArrayItem( road.getLaneProfile().getLaneSections() ) as TvLaneSection;
-
-	}
-
-	static getRandomLane ( laneSection: TvLaneSection, laneType: TvLaneType ): TvLane {
-
-		const lanes = [ ...laneSection.lanesMap.values() ];
-
-		const filteredLanes = lanes.filter( lane => {
-			if ( lane.type === laneType && lane.side !== TvLaneSide.CENTER ) return true;
-		} );
-
-		return TvUtils.getRandomArrayItem( filteredLanes ) as TvLane;
-	}
-
-	static getRandomLocationOnRoads ( roads: TvRoad[], laneType: TvLaneType ) {
-
-		const road = TvUtils.getRandomArrayItem( roads ) as TvRoad;
-
-		const laneSection = this.getRandomLaneSection( road );
-
-		const lane = this.getRandomLane( laneSection, laneType );
-
-		// get random s on lane-section
-		const s = Maths.randomNumberBetween( laneSection.s + 1, laneSection.endS - 1 );
-
-		return new TvLaneCoord( road, laneSection, lane, s, 0 );
-	}
-
-	static getRoadArray (): TvRoad[] {
-
-		return [ ...this.roads.values() ];
-
-	}
 }

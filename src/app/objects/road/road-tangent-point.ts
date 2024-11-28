@@ -3,13 +3,12 @@
  */
 
 import { CURVE_Y } from 'app/core/shapes/spline-config';
-import { TvRoad } from 'app/map/models/tv-road.model';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
 import { IHasUpdate } from '../../commands/set-value-command';
 import { RoadControlPoint } from './road-control-point';
 import { AbstractControlPoint } from "../abstract-control-point";
-import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { AbstractSpline } from '../../core/shapes/abstract-spline';
 
 export abstract class RoadTangentPoint extends AbstractControlPoint implements IHasUpdate {
 
@@ -23,7 +22,7 @@ export abstract class RoadTangentPoint extends AbstractControlPoint implements I
 
 	abstract getHeading (): number;
 
-	constructor ( public road: TvRoad, index: number, public controlPoint: RoadControlPoint ) {
+	constructor ( index: number, public controlPoint: RoadControlPoint ) {
 
 		super( new BufferGeometry(), new PointsMaterial() );
 
@@ -38,12 +37,6 @@ export abstract class RoadTangentPoint extends AbstractControlPoint implements I
 		this.tag = RoadTangentPoint.tag;
 
 		this.index = index;
-
-	}
-
-	get spline (): AbstractSpline {
-
-		return this.road.spline;
 
 	}
 
@@ -65,12 +58,17 @@ export abstract class RoadTangentPoint extends AbstractControlPoint implements I
 
 	}
 
+	getSpline (): AbstractSpline {
+		return this.controlPoint.spline
+	}
+
+
 }
 
 export class FrontTangentPoint extends RoadTangentPoint {
 
-	constructor ( road: TvRoad, index: number, controlPoint: RoadControlPoint ) {
-		super( road, index, controlPoint );
+	constructor ( index: number, controlPoint: RoadControlPoint ) {
+		super( index, controlPoint );
 	}
 
 	update (): void {
@@ -107,8 +105,8 @@ export class FrontTangentPoint extends RoadTangentPoint {
 
 export class BackTangentPoint extends RoadTangentPoint {
 
-	constructor ( road: TvRoad, index: number, controlPoint: RoadControlPoint ) {
-		super( road, index, controlPoint );
+	constructor ( index: number, controlPoint: RoadControlPoint ) {
+		super( index, controlPoint );
 	}
 
 	update (): void {
