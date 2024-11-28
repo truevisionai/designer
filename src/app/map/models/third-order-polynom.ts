@@ -106,6 +106,30 @@ export class ThirdOrderPolynom {
 			( this.d * ds * ds * ds );
 	}
 
+
+	copy ( value: ThirdOrderPolynom ): this {
+
+		this.s = value.s;
+		this.a = value.a;
+		this.b = value.b;
+		this.c = value.c;
+		this.d = value.d;
+
+		return this;
+
+	}
+
+	copyCoefficients ( value: ThirdOrderPolynom ): this {
+
+		this.a = value.a;
+		this.b = value.b;
+		this.c = value.c;
+		this.d = value.d;
+
+		return this;
+
+	}
+
 	toString (): string {
 
 		return `s: ${ this.s }, a: ${ this.a }, b: ${ this.b }, c: ${ this.c }, d: ${ this.d }`;

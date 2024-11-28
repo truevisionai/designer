@@ -18,7 +18,7 @@ export class TvRoadTypeClass {
 		this.speed = new TvRoadSpeed( maxSpeed, speedUnit );
 	}
 
-	static stringToTypes ( value ): TvRoadType {
+	static stringToTypes ( value: string ): TvRoadType {
 
 		if ( value === 'unknown' ) {
 

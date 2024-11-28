@@ -57,7 +57,7 @@ export class LaneSectionFactory {
 
 	}
 
-	static createFromRoadCoord ( previousRoad: TvRoadCoord, nextRoad: TvRoadCoord ): TvLaneSection[] {
+	static createFromRoadCoord ( previousRoad: TvRoadCoord | RoadNode, nextRoad: TvRoadCoord | RoadNode ): TvLaneSection[] {
 
 		const isLaneSectionMatching = previousRoad.laneSection.isMatching( nextRoad.laneSection );
 

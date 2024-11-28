@@ -30,8 +30,10 @@ import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { OrderedMap } from "../../core/models/ordered-map";
 import { TvRoad } from './tv-road.model';
 import { TvLaneCoord } from './tv-lane-coord';
-import { createLaneDistance } from '../road/road-distance';
 import { LaneUtils } from 'app/utils/lane.utils';
+import { Maths } from "../../utils/maths";
+
+import { createLaneDistance } from '../road/road-distance';
 
 export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
@@ -598,13 +600,19 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 * Evaluate the record and the return the width value
 	 * @param sCheck
 	 */
-	getWidthValue ( sCheck ): number {
+	getWidthValue ( sCheck: number ): number {
 
 		const widthEntry = this.getLaneWidthAt( sCheck );
 
 		if ( widthEntry == null ) return 0;
 
 		return widthEntry.getValue( sCheck );
+	}
+
+	getWidthValueAt ( value: number | TvContactPoint ): number {
+
+		return this.getWidthValue( createLaneDistance( this, value ) );
+
 	}
 
 	/**
@@ -721,7 +729,14 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	addWidthRecordInstance ( laneWidth: TvLaneWidth ): void {
 
-		this.widths.push( laneWidth );
+		const index = this.widths.findIndex( width => Maths.approxEquals( width.s, laneWidth.s ) );
+
+		if ( index >= 0 ) {
+			this.widths[ index ].copyCoefficients( laneWidth );
+		} else {
+			this.widths.push( laneWidth );
+		}
+
 		this.sortWidth();
 
 	}
@@ -821,6 +836,14 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	sortWidth (): void {
 		this.widths.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+	}
+
+	addWidthRecordAtEnd ( width: number ): void {
+		this.addWidthRecord( this.laneSection.getLength(), width, 0, 0, 0 );
+	}
+
+	addWidthRecordAtStart ( width: number ): void {
+		this.addWidthRecord( 0, width, 0, 0, 0 );
 	}
 }
 

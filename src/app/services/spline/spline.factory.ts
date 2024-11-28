@@ -132,7 +132,7 @@ export class SplineFactory {
 		return this.createRoadSpline( entry.position, entryDirection, exit.position, exitDirection, divider );
 	}
 
-	static createFromRoadCoords ( start: TvRoadCoord, end: TvRoadCoord ): AbstractSpline {
+	static createFromRoadCoords ( start: TvRoadCoord | RoadNode, end: TvRoadCoord | RoadNode ): AbstractSpline {
 
 		let startDirection: Vector3, endDirection: Vector3;
 
@@ -148,8 +148,11 @@ export class SplineFactory {
 			endDirection = end.posTheta.toDirectionVector();
 		}
 
-		return this.createRoadSpline( start.position, startDirection, end.position, endDirection );
+		const spline = this.createRoadSpline( start.position, startDirection, end.position, endDirection );
 
+		spline.updateSegmentGeometryAndBounds();
+
+		return spline;
 	}
 
 	createSpline ( v1: Vector3, v1Direction: Vector3, v4: Vector3, v4Direction: Vector3 ): AbstractSpline {

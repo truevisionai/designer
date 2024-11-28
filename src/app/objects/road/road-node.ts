@@ -12,6 +12,7 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { ISelectable } from '../i-selectable';
 import { TvLink, TvLinkType } from 'app/map/models/tv-link';
 import { LinkFactory } from 'app/map/models/link-factory';
+import { TvLaneSection } from 'app/map/models/tv-lane-section';
 
 export class RoadNode extends Group implements ISelectable {
 
@@ -34,12 +35,20 @@ export class RoadNode extends Group implements ISelectable {
 
 	}
 
-	get material () {
-		return this.line.material as LineMaterial;
+	get posTheta (): TvPosTheta {
+		return this.road.getPosThetaByContact( this.contact );
+	}
+
+	get material (): LineMaterial {
+		return this.line.material;
 	}
 
 	set material ( value: LineMaterial ) {
 		this.line.material = value;
+	}
+
+	get laneSection (): TvLaneSection {
+		return this.road.getLaneProfile().getLaneSectionAtContact( this.contact );
 	}
 
 	select () {
