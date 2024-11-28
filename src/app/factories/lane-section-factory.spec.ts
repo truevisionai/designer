@@ -10,6 +10,7 @@ import { RoadFactory } from "./road-factory.service";
 import { Vector3 } from "three";
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from "../map/models/tv-common";
+import { TvLaneSection } from "../map/models/tv-lane-section";
 
 describe( 'LaneSectionFactory', () => {
 
@@ -64,8 +65,10 @@ describe( 'LaneSectionFactory', () => {
 
 		const nextRoad = RoadFactory.makeRoad( {
 			leftLaneCount: 2,
+			leftWidth: 2,
 			rightLaneCount: 2,
-		} )
+			rightWidth: 2
+		} );
 
 		const newLaneSections = LaneSectionFactory.createFromRoadCoord(
 			previousRoad.getEndCoord(),
@@ -89,6 +92,35 @@ describe( 'LaneSectionFactory', () => {
 		nextRoad.getStartCoord().laneSection.getNonCenterLanes().forEach( lane => {
 			expect( lane.predecessorId ).toBe( lane.id );
 		} )
+
+	} );
+
+	it( 'should create section and match lane-widths 2-lane-road with 4-lane-road', () => {
+
+		const previousRoad = RoadFactory.makeRoad( {
+			leftLaneCount: 1,
+			rightLaneCount: 1,
+		} );
+
+		const nextRoad = RoadFactory.makeRoad( {
+			leftLaneCount: 1,
+			rightLaneCount: 1,
+			leftWidth: 2,
+			rightWidth: 2
+		} );
+
+		spyOn( TvLaneSection.prototype, 'getLength' ).and.returnValue( 100 );
+
+		const laneSections = LaneSectionFactory.createFromRoadCoord(
+			previousRoad.getEndCoord(),
+			nextRoad.getStartCoord()
+		);
+
+		expect( laneSections.length ).toBe( 1 );
+
+		expect( laneSections[ 0 ].getNonCenterLanes().map( lane => lane.getLaneWidthCount() ) ).toEqual( [ 2, 2 ] );
+
+		expect( laneSections[ 0 ].getNonCenterLanes().map( lane => lane.getWidthValue( 0 ) ) ).toEqual( [ 3.6, 3.6 ] );
 
 	} );
 

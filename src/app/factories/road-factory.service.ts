@@ -19,6 +19,9 @@ import { TvLink } from 'app/map/models/tv-link';
 import { LinkFactory } from 'app/map/models/link-factory';
 import { MapService } from "../services/map/map.service";
 import { RoadStyleManager } from 'app/assets/road-style/road-style.manager';
+import { TvRoadCoord } from "../map/models/TvRoadCoord";
+import { SplineFactory } from "../services/spline/spline.factory";
+import { LANE_WIDTH } from "../map/models/tv-lane-width";
 
 export class RoadMakeOptions {
 	maxSpeed?: number = 40;
@@ -62,10 +65,10 @@ export class RoadFactory {
 		road.getPlanView().addGeometryLine( 0, position.x, position.y, hdg, length );
 
 		const laneSection = LaneSectionFactory.createLaneSection(
-			options.leftLaneCount,
-			options.leftWidth,
-			options.rightLaneCount,
-			options.rightWidth
+			options.leftLaneCount ?? 0,
+			options.leftWidth ?? LANE_WIDTH.DEFAULT_LANE_WIDTH,
+			options.rightLaneCount ?? 0,
+			options.rightWidth ?? LANE_WIDTH.DEFAULT_LANE_WIDTH
 		);
 
 		road.getLaneProfile().addLaneSectionInstance( laneSection );
@@ -267,6 +270,38 @@ export class RoadFactory {
 		}
 
 		return road;
+	}
+
+	static createJoiningRoad ( previousRoad: TvRoadCoord | RoadNode, nextRoad: TvRoadCoord | RoadNode ): TvRoad {
+
+		const spline = SplineFactory.createFromRoadCoords( previousRoad, nextRoad );
+
+		const road = this.createRoad();
+
+		const laneSections = LaneSectionFactory.createFromRoadCoord( previousRoad, nextRoad );
+
+		for ( const laneSection of laneSections ) {
+
+			road.getLaneProfile().addLaneSectionInstance( laneSection );
+
+		}
+
+		if ( previousRoad.road.hasType ) {
+
+			const s = previousRoad.contact === TvContactPoint.START ? 0 : previousRoad.road.length;
+
+			const roadType = previousRoad.road.getRoadTypeAt( s );
+
+			road.setType( roadType.type, roadType.speed.max, roadType.speed.unit );
+
+		} else {
+
+			road.setType( TvRoadType.TOWN, 40 );
+
+		}
+
+		return road;
+
 	}
 
 	createFromLinks ( spline: AbstractSpline, firstNode: TvLink, secondNode: TvLink ): TvRoad {

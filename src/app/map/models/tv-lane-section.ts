@@ -668,6 +668,28 @@ export class TvLaneSection {
 			}
 		} );
 
+		this.syncWidthWithNextLane( laneSection, contact );
+
+	}
+
+	syncWidthWithNextLane ( laneSection: TvLaneSection, contact: TvContactPoint ): void {
+
+		this.getNonCenterLanes().filter( lane => lane.successorExists ).forEach( lane => {
+
+			if ( !laneSection.hasLane( lane.successorId ) ) return;
+
+			const laneWidth = lane.getWidthValue( this.getLength() );
+			const nextLane = laneSection.getLaneById( lane.successorId );
+			const nextWidth = nextLane.getWidthValueAt( contact );
+
+			if ( !Maths.approxEquals( laneWidth, nextWidth ) ) {
+				lane.addWidthRecordAtEnd( nextWidth );
+			}
+
+			lane.updateWidthCoefficients();
+
+		} );
+
 	}
 
 	linkPredecessor ( laneSection: TvLaneSection, contact: TvContactPoint ): void {
@@ -685,6 +707,28 @@ export class TvLaneSection {
 				lane.setOrUnsetSuccessor( this.lanes.get( lane.id * sign ) );
 			}
 		} )
+
+		this.syncWidthWithPreviousSection( laneSection, contact );
+
+	}
+
+	syncWidthWithPreviousSection ( laneSection: TvLaneSection, contact: TvContactPoint ): void {
+
+		this.getNonCenterLanes().filter( lane => lane.predecessorExists ).forEach( lane => {
+
+			if ( !laneSection.hasLane( lane.predecessorId ) ) return;
+
+			const laneWidth = lane.getWidthValue( 0 );
+			const previousLane = laneSection.getLaneById( lane.predecessorId );
+			const previousWidth = previousLane.getWidthValueAt( contact );
+
+			if ( !Maths.approxEquals( laneWidth, previousWidth ) ) {
+				lane.addWidthRecordAtStart( previousWidth );
+			}
+
+			lane.updateWidthCoefficients();
+
+		} );
 
 	}
 
@@ -803,7 +847,7 @@ export class TvLaneSection {
 		return highestLane;
 	}
 
-	private findLowest ( lanes: TvLane[], type?: TvLaneType ) {
+	private findLowest ( lanes: TvLane[], type?: TvLaneType ): TvLane {
 
 		if ( lanes.length === 0 ) return;
 
