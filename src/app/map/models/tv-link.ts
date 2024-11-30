@@ -10,7 +10,6 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Log } from 'app/core/utils/log';
 import { TvLaneCoord } from './tv-lane-coord';
 import { TvLane } from './tv-lane';
-import { Vector3 } from 'three';
 import { TvPosTheta } from './tv-pos-theta';
 import { LaneDistance } from '../road/road-distance';
 
@@ -115,23 +114,21 @@ export abstract class TvLink {
 
 	abstract linkRoad ( element: TvRoad, contact: TvContactPoint ): void;
 
-	abstract unlink ( element: TvRoad, contact: TvContactPoint ): void;
-
 	abstract isEqualTo ( element: TvRoad | TvJunction ): boolean;
 
 	abstract replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void;
 
 	abstract getPosition (): TvPosTheta;
 
-	get contact () {
+	get contact (): TvContactPoint {
 		return this.contactPoint;
 	}
 
-	get isRoad () {
+	get isRoad (): boolean {
 		return this.type === TvLinkType.ROAD;
 	}
 
-	get isJunction () {
+	get isJunction (): boolean {
 		return this.type === TvLinkType.JUNCTION;
 	}
 
@@ -216,6 +213,11 @@ export abstract class TvLink {
 
 	}
 
+	removeLinks (): void {
+
+		// override in child
+
+	}
 }
 
 export class TvRoadLink extends TvLink {
@@ -239,15 +241,15 @@ export class TvRoadLink extends TvLink {
 	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
-			this.road.predecessor = new TvRoadLink( otherRoad, otherRoadContact );
+			this.road.setPredecessor( new TvRoadLink( otherRoad, otherRoadContact ) );
 		} else {
-			this.road.successor = new TvRoadLink( otherRoad, otherRoadContact );
+			this.road.setSuccessor( new TvRoadLink( otherRoad, otherRoadContact ) );
 		}
 
 		if ( otherRoadContact == TvContactPoint.START ) {
-			otherRoad.predecessor = new TvRoadLink( this.road, this.contactPoint );
+			otherRoad.setPredecessor( new TvRoadLink( this.road, this.contactPoint ) );
 		} else {
-			otherRoad.successor = new TvRoadLink( this.road, this.contactPoint );
+			otherRoad.setSuccessor( new TvRoadLink( this.road, this.contactPoint ) );
 		}
 	}
 
@@ -255,19 +257,27 @@ export class TvRoadLink extends TvLink {
 		this.road.linkJunction( junction, this.contactPoint );
 	}
 
-	unlink ( road: TvRoad, contact: TvContactPoint ): void {
-		if ( this.contactPoint == TvContactPoint.START ) {
-			this.road.predecessor = null;
+	removeLinks (): void {
+
+		if ( this.contact == TvContactPoint.START ) {
+
+			this.getElement<TvRoad>().setPredecessor( null );
+			this.getElement<TvRoad>().getLaneProfile().getFirstLaneSection()?.removePredecessorLinks();
+
 		} else {
-			this.road.successor = null;
+
+			this.getElement<TvRoad>().setSuccessor( null );
+			this.getElement<TvRoad>().getLaneProfile().getLastLaneSection()?.removeSuccessorLinks();
+
 		}
+
 	}
 
 	replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
 		if ( this.contactPoint == TvContactPoint.START ) {
-			this.road.linkPredecessor( otherRoad, otherRoadContact );
+			this.road.linkPredecessorRoad( otherRoad, otherRoadContact );
 		} else {
-			this.road.linkSuccessor( otherRoad, otherRoadContact );
+			this.road.linkSuccessorRoad( otherRoad, otherRoadContact );
 		}
 	}
 
@@ -279,20 +289,22 @@ export class TvRoadLink extends TvLink {
 
 export class TvJunctionLink extends TvLink {
 
+	public override element: TvJunction;
+
 	constructor ( private junction: TvJunction ) {
 		super( TvLinkType.JUNCTION, junction, null );
 	}
 
 	clone (): TvJunctionLink {
-		return new TvJunctionLink( this.getElement<TvJunction>() );
+		return new TvJunctionLink( this.element );
 	}
 
 	toString (): string {
 		return `Link: Junction: ${ this.element.toString() }`;
 	}
 
-	isEqualTo ( element: TvRoad | TvJunction ): boolean {
-		return this.element === element;
+	isEqualTo ( element: TvJunction ): boolean {
+		return this.element.equals( element );
 	}
 
 	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
@@ -301,10 +313,6 @@ export class TvJunctionLink extends TvLink {
 
 	linkJunction ( junction: TvJunction ): void {
 		Log.error( 'RoadLinkError', 'Cannot set link for junction link' );
-	}
-
-	unlink ( road: TvRoad, contact: TvContactPoint ): void {
-		this.junction.removeConnectionsByRoad( road );
 	}
 
 	replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {

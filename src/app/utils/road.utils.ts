@@ -146,15 +146,15 @@ export class RoadUtils {
 
 		if ( road.successor.contactPoint === TvContactPoint.START ) {
 
-			linkedRoad.predecessor = null;
+			linkedRoad.removePredecessor();
 
 		} else {
 
-			linkedRoad.successor = null;
+			linkedRoad.removeSuccessor();
 
 		}
 
-		if ( updateMe ) road.successor = null;
+		if ( updateMe ) road.removeSuccessor();
 	}
 
 	static unlinkPredecessor ( road: TvRoad, updateMe = true ) {
@@ -167,15 +167,15 @@ export class RoadUtils {
 
 		if ( road.predecessor.contactPoint === TvContactPoint.START ) {
 
-			linkedRoad.predecessor = null;
+			linkedRoad.removePredecessor();
 
 		} else {
 
-			linkedRoad.successor = null;
+			linkedRoad.removeSuccessor();
 
 		}
 
-		if ( updateMe ) road.predecessor = null;
+		if ( updateMe ) road.removePredecessor();
 	}
 
 	static getContactByPosition ( road: TvRoad, position: Vector3 ): TvContactPoint {

@@ -68,9 +68,9 @@ export class RoadToolHelper {
 
 		const joiningRoad = this.createFromNodes( nodeA, nodeB );
 
-		joiningRoad.linkPredecessor( nodeA.road, nodeA.contact );
+		joiningRoad.linkPredecessorRoad( nodeA.road, nodeA.contact );
 
-		joiningRoad.linkSuccessor( nodeB.road, nodeB.contact );
+		joiningRoad.linkSuccessorRoad( nodeB.road, nodeB.contact );
 
 		return joiningRoad;
 

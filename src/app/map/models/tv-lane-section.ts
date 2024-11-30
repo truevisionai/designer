@@ -876,5 +876,13 @@ export class TvLaneSection {
 		return this.getLanes().filter( lane => lane.side === side );
 
 	}
+
+	removePredecessorLinks (): void {
+		this.getNonCenterLanes().forEach( lane => lane.unsetPredecessor() );
+	}
+
+	removeSuccessorLinks (): void {
+		this.getNonCenterLanes().forEach( lane => lane.unsetSuccessor() );
+	}
 }
 

@@ -250,45 +250,81 @@ export class TvRoad {
 
 	}
 
-	setSuccessor ( elementType: TvLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
+	setSuccessorLink ( type: TvLinkType, element: TvRoad | TvJunction, contact?: TvContactPoint ): void {
 
-		this.successor = LinkFactory.createLink( elementType, element, contactPoint );
-
-	}
-
-	setNullSuccessor () {
-
-		this.successor = null;
+		this.setSuccessor( LinkFactory.createLink( type, element, contact ) );
 
 	}
 
-	setPredecessor ( elementType: TvLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
+	setSuccessor ( link: TvLink ): void {
 
-		this.predecessor = LinkFactory.createLink( elementType, element, contactPoint );
+		this._successor = link;
 
 	}
 
-	setNullPredecessor () {
+	removeSuccessor (): void {
 
-		this.predecessor = null;
+		this.successor?.removeLinks();
+
+		this.laneProfile.getLastLaneSection()?.removeSuccessorLinks();
+
+		this._successor = null;
+
+	}
+
+	setPredecessorLink ( type: TvLinkType, element: TvRoad | TvJunction, contact?: TvContactPoint ): void {
+
+		this.setPredecessor( LinkFactory.createLink( type, element, contact ) );
+
+	}
+
+	setPredecessor ( link: TvLink ): void {
+
+		this._predecessor = link;
+
+	}
+
+	removePredecessor (): void {
+
+		this.predecessor?.removeLinks();
+
+		this._predecessor = null;
+
+		this.laneProfile.getFirstLaneSection()?.removePredecessorLinks();
 
 	}
 
 	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ): void {
 
-		this.setSuccessor( TvLinkType.ROAD, road, contactPoint );
+		this.setSuccessorLink( TvLinkType.ROAD, road, contactPoint );
 
 	}
 
-	linkSuccessor ( road: TvRoad, contact: TvContactPoint ): void {
+	linkSuccessorRoad ( road: TvRoad, contact: TvContactPoint ): void {
 
 		RoadLinker.instance.linkSuccessorRoad( this, road, contact );
 
 	}
 
-	linkPredecessor ( road: TvRoad, contact: TvContactPoint ): void {
+	linkSuccessor (): void {
+
+		if ( !this.successor || this.successor.isRoad ) return;
+
+		this.linkSuccessorRoad( this.successor.getElement<TvRoad>(), this.successor.contactPoint );
+
+	}
+
+	linkPredecessorRoad ( road: TvRoad, contact: TvContactPoint ): void {
 
 		RoadLinker.instance.linkPredecessorRoad( this, road, contact );
+
+	}
+
+	linkPredecessor (): void {
+
+		if ( !this.predecessor || this.predecessor.isRoad ) return;
+
+		this.linkPredecessorRoad( this.predecessor.getElement<TvRoad>(), this.predecessor.contactPoint );
 
 	}
 
@@ -296,19 +332,19 @@ export class TvRoad {
 
 		if ( contact == TvContactPoint.START ) {
 
-			this.setPredecessor( TvLinkType.JUNCTION, junction, contact );
+			this.setPredecessorLink( TvLinkType.JUNCTION, junction, contact );
 
 		} else {
 
-			this.setSuccessor( TvLinkType.JUNCTION, junction, contact );
+			this.setSuccessorLink( TvLinkType.JUNCTION, junction, contact );
 
 		}
 
 	}
 
-	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
+	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ): void {
 
-		this.setPredecessor( TvLinkType.ROAD, road, contactPoint );
+		this.setPredecessorLink( TvLinkType.ROAD, road, contactPoint );
 
 	}
 
@@ -647,8 +683,8 @@ export class TvRoad {
 		road.shoulderMaterialGuid = this.shoulderMaterialGuid;
 		road.trafficRule = this.trafficRule;
 		road.planView = this.planView.clone();
-		road.predecessor = this.predecessor?.clone();
-		road.successor = this.successor?.clone();
+		road._predecessor = this.predecessor?.clone();
+		road._successor = this.successor?.clone();
 
 		road.getLaneProfile().addLaneSectionInstance( this.getLaneProfile().getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
 
@@ -749,11 +785,22 @@ export class TvRoad {
 
 	removeLinks (): void {
 
-		this.successor?.unlink( this, TvContactPoint.END );
-		this.predecessor?.unlink( this, TvContactPoint.START );
+		this.removePredecessor();
+		this.removeSuccessor();
 
 	}
 
+	getLink ( contact: TvContactPoint ): TvLink {
+
+		if ( contact == TvContactPoint.START ) {
+			return this.predecessor;
+		} else if ( contact == TvContactPoint.END ) {
+			return this.successor;
+		} else {
+			throw new Error( 'Invalid contact point' );
+		}
+
+	}
 
 	static ruleToString ( rule: TrafficRule ): string {
 

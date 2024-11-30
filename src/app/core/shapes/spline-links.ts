@@ -57,11 +57,11 @@ export class SplineLinks {
 		const nextSegment = this.spline.getNextSegment( road );
 
 		if ( previousSegment instanceof TvRoad ) {
-			previousSegment.successor = null;
+			previousSegment.removeSuccessor();
 		}
 
 		if ( nextSegment instanceof TvRoad ) {
-			nextSegment.predecessor = null;
+			nextSegment.removePredecessor();
 		}
 
 		if ( this.spline.hasSegment( road ) ) {
@@ -78,11 +78,11 @@ export class SplineLinks {
 		const nextSegment = this.spline.getNextSegment( junction );
 
 		if ( previousSegment instanceof TvRoad ) {
-			previousSegment.successor = null;
+			previousSegment.removeSuccessor()
 		}
 
 		if ( nextSegment instanceof TvRoad ) {
-			nextSegment.predecessor = null;
+			nextSegment.removePredecessor();
 		}
 
 		if ( this.spline.hasSegment( junction ) ) {

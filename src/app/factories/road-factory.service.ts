@@ -404,9 +404,9 @@ export class RoadFactory {
 
 		road.sStart = 0;
 
-		road.predecessor = LinkFactory.createRoadLink( entry.road, entry.contact );
+		road.setPredecessorRoad( entry.road, entry.contact );
 
-		road.successor = LinkFactory.createRoadLink( exit.road, exit.contact );
+		road.setSuccessorRoad( exit.road, exit.contact );
 
 		return road;
 

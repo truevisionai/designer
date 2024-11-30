@@ -248,8 +248,8 @@ export abstract class AbstractSpline {
 		const prevSegment = this.getPreviousSegment( segment );
 		const nextSegment = this.getNextSegment( segment );
 
-		if ( prevSegment instanceof TvRoad ) prevSegment.successor = null;
-		if ( nextSegment instanceof TvRoad ) nextSegment.predecessor = null;
+		if ( prevSegment instanceof TvRoad ) prevSegment.removeSuccessor();
+		if ( nextSegment instanceof TvRoad ) nextSegment.removePredecessor();
 
 		this.removeSegment( segment );
 
@@ -292,11 +292,11 @@ export abstract class AbstractSpline {
 
 			this.shiftSegment( 0, nextSegment );
 
-			if ( nextSegment instanceof TvRoad ) nextSegment.predecessor = null;
+			if ( nextSegment instanceof TvRoad ) nextSegment.removePredecessor();
 
 		} else if ( nextSegment instanceof TvRoad && prevSegment instanceof TvRoad ) {
 
-			prevSegment.successor = nextSegment.successor?.clone();
+			prevSegment.setSuccessor( nextSegment.successor?.clone() );
 
 			nextSegment.successor?.replace( nextSegment, prevSegment, TvContactPoint.END );
 
@@ -308,7 +308,7 @@ export abstract class AbstractSpline {
 
 		} else if ( nextSegment == null && prevSegment instanceof TvRoad ) {
 
-			prevSegment.successor = null;
+			prevSegment.removeSuccessor();
 
 		}
 

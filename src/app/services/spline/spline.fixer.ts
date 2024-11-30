@@ -162,13 +162,7 @@ export class SplineFixerService {
 			Log.warn( "Fixing incorrect links", spline?.toString() );
 		}
 
-		this.setInternalLinks( spline );
-
-	}
-
-	public setInternalLinks ( spline: AbstractSpline ): void {
-
-		SplineUtils.updateInternalLinks( spline );
+		spline.updateLinks();
 
 	}
 

@@ -75,7 +75,7 @@ export class MapFixer {
 
 				Log.warn( 'No Connections With Junction', predecessor.toString(), link.toString() );
 
-				predecessor.successor = null;
+				predecessor.removeSuccessor();
 
 				Log.warn( 'Trying to fix road', predecessor.toString() );
 
@@ -127,7 +127,7 @@ export class MapFixer {
 
 				Log.warn( 'No Connections With Junction', successor.toString(), link.toString() );
 
-				successor.predecessor = null
+				successor.removePredecessor();
 
 				Log.warn( 'Trying to fix road', successor.toString() );
 

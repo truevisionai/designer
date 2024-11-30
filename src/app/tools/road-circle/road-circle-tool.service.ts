@@ -221,14 +221,14 @@ export class RoadCircleToolService {
 
 				const nextRoad = roads[ j + 1 ];
 
-				road.linkSuccessor( nextRoad, TvContactPoint.START );
+				road.linkSuccessorRoad( nextRoad, TvContactPoint.START );
 
 			} else {
 
 				// its last road, so make connection with the first one
 				const firstRoad = roads[ 0 ];
 
-				road.linkSuccessor( firstRoad, TvContactPoint.START );
+				road.linkSuccessorRoad( firstRoad, TvContactPoint.START );
 
 			}
 

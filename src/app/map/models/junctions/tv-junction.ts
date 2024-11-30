@@ -81,6 +81,10 @@ export class TvJunction {
 		return this.boundingBox;
 	}
 
+	equals ( junction: TvJunction ): boolean {
+		return this.id === junction.id;
+	}
+
 	toString () {
 		return `Junction:${ this.id } Connections:${ this.connections.size }`;
 	}

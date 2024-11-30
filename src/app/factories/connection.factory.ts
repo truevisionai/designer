@@ -390,15 +390,15 @@ export class ConnectionFactory {
 
 	}
 
-	private createFakeConnectingRoad ( junction: TvJunction, entry: TvLaneCoord, exit: TvLaneCoord ) {
+	private createFakeConnectingRoad ( junction: TvJunction, entry: TvLaneCoord, exit: TvLaneCoord ): TvRoad {
 
 		const road = this.roadFactory.createFakeRoad();
 
 		road.junction = junction;
 
-		road.predecessor = LinkFactory.createRoadLink( entry.road, entry.contact );
+		road.setPredecessorRoad( entry.road, entry.contact );
 
-		road.successor = LinkFactory.createRoadLink( exit.road, exit.contact );
+		road.setSuccessorRoad( exit.road, exit.contact );
 
 		road.spline = SplineFactory.createFromLaneCoords( entry, exit );
 

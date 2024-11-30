@@ -269,7 +269,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			if ( !link ) TvConsole.error( `Predecessor not found for ${ road.toString() }` );
 
-			road.predecessor = link;
+			road.setPredecessor( link );
 
 		}
 
@@ -279,7 +279,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			if ( !link ) TvConsole.error( `Successor not found for ${ road.toString() }` );
 
-			road.successor = link;
+			road.setSuccessor( link );
 
 		}
 

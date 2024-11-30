@@ -33,13 +33,7 @@ export class TvLaneCoord {
 	}
 
 	getLink (): TvLink {
-		if ( this.contact == TvContactPoint.START ) {
-			return this.road.predecessor;
-		} else if ( this.contact == TvContactPoint.END ) {
-			return this.road.successor;
-		} else {
-			throw new Error( 'Invalid contact point' );
-		}
+		return this.road.getLink( this.contact );
 	}
 
 	get contact (): TvContactPoint {

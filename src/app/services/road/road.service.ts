@@ -286,9 +286,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		road.junction = junction;
 
-		road.predecessor = LinkFactory.createRoadLink( incoming.road, incoming.contact );
+		road.setPredecessorRoad( incoming.road, incoming.contact );
 
-		road.successor = LinkFactory.createRoadLink( outgoing.road, outgoing.contact );
+		road.setSuccessorRoad( outgoing.road, outgoing.contact );
 
 		return road;
 

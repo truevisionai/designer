@@ -105,7 +105,7 @@ export class SplineUtils {
 
 		if ( nextSegment instanceof TvRoad ) {
 
-			road.linkSuccessor( nextSegment, TvContactPoint.START );
+			road.linkSuccessorRoad( nextSegment, TvContactPoint.START );
 
 		} else if ( nextSegment instanceof TvJunction ) {
 
@@ -119,7 +119,7 @@ export class SplineUtils {
 
 		if ( prevSegment instanceof TvRoad ) {
 
-			road.linkPredecessor( prevSegment, TvContactPoint.END );
+			road.linkPredecessorRoad( prevSegment, TvContactPoint.END );
 
 		} else if ( prevSegment instanceof TvJunction ) {
 

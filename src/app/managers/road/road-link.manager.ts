@@ -65,21 +65,21 @@ export class RoadLinkManager {
 
 			if ( road.successor?.contactPoint === TvContactPoint.START ) {
 
-				successorRoad.predecessor = null;
+				successorRoad.removePredecessor();
 
 			} else if ( road.successor?.contactPoint === TvContactPoint.END ) {
 
-				successorRoad.successor = null;
+				successorRoad.removeSuccessor();
 
 			}
 
 			if ( road.predecessor?.contactPoint === TvContactPoint.START ) {
 
-				predecessorRoad.predecessor = null;
+				predecessorRoad.removePredecessor();
 
 			} else if ( road.predecessor?.contactPoint === TvContactPoint.END ) {
 
-				predecessorRoad.successor = null;
+				predecessorRoad.removeSuccessor();
 
 			}
 
@@ -89,11 +89,11 @@ export class RoadLinkManager {
 
 			if ( road.successor?.contactPoint === TvContactPoint.START ) {
 
-				successorRoad.predecessor = null;
+				successorRoad.removePredecessor();
 
 			} else if ( road.successor?.contactPoint === TvContactPoint.END ) {
 
-				successorRoad.successor = null;
+				successorRoad.removeSuccessor();
 
 			}
 
@@ -103,11 +103,11 @@ export class RoadLinkManager {
 
 			if ( road.predecessor?.contactPoint === TvContactPoint.START ) {
 
-				predecessorRoad.predecessor = null;
+				predecessorRoad.removePredecessor();
 
 			} else if ( road.predecessor?.contactPoint === TvContactPoint.END ) {
 
-				predecessorRoad.successor = null;
+				predecessorRoad.removeSuccessor();
 
 			}
 

@@ -923,11 +923,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			if ( type === 0 ) {
 
-				road.setPredecessor( elementType, element, contactPoint );
+				road.setPredecessorLink( elementType, element, contactPoint );
 
 			} else if ( type === 1 ) {
 
-				road.setSuccessor( elementType, element, contactPoint );
+				road.setSuccessorLink( elementType, element, contactPoint );
 
 			} else if ( type === 2 ) {
 
