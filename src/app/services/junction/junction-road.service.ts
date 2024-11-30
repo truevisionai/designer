@@ -69,11 +69,11 @@ export class JunctionRoadService {
 
 	removeLink ( junction: TvJunction, road: TvRoad ): void {
 
-		if ( road.successor?.isEqualTo( junction ) ) {
+		if ( road.successor?.equals( junction ) ) {
 
 			road.removeSuccessor();
 
-		} else if ( road.predecessor?.isEqualTo( junction ) ) {
+		} else if ( road.predecessor?.equals( junction ) ) {
 
 			road.removePredecessor();
 

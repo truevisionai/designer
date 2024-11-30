@@ -118,8 +118,8 @@ describe( 'CustomJunction: Tests', () => {
 
 		testHelper.junctionService.fireCreatedEvent( junction );
 
-		expect( leftRoad.successor.isEqualTo( junction ) ).toBeTrue();
-		expect( rightRoad.predecessor.isEqualTo( junction ) ).toBeTrue();
+		expect( leftRoad.successor.equals( junction ) ).toBeTrue();
+		expect( rightRoad.predecessor.equals( junction ) ).toBeTrue();
 
 		expect( testHelper.mapService.findJunction( 1 ) ).toBe( junction );
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 1 );

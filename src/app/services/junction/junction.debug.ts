@@ -310,11 +310,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			if ( road.isJunction ) continue;
 
-			if ( road.predecessor?.isEqualTo( junction ) ) {
+			if ( road.predecessor?.equals( junction ) ) {
 				this.addEntriesAt( junction, road, TvContactPoint.START );
 			}
 
-			if ( road.successor?.isEqualTo( junction ) ) {
+			if ( road.successor?.equals( junction ) ) {
 				this.addEntriesAt( junction, road, TvContactPoint.END );
 			}
 

@@ -715,19 +715,19 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		function findContactPoint ( incomingRoad: TvRoad ) {
 
-			if ( connection.connectingRoad.successor?.isEqualTo( incomingRoad ) ) {
+			if ( connection.connectingRoad.successor?.equals( incomingRoad ) ) {
 				return connection.connectingRoad.successor.contactPoint;
 			}
 
-			if ( connection.connectingRoad.predecessor?.isEqualTo( incomingRoad ) ) {
+			if ( connection.connectingRoad.predecessor?.equals( incomingRoad ) ) {
 				return connection.connectingRoad.predecessor.contactPoint;
 			}
 
-			if ( incomingRoad.successor?.isEqualTo( junction ) ) {
+			if ( incomingRoad.successor?.equals( junction ) ) {
 				return TvContactPoint.END;
 			}
 
-			if ( incomingRoad.predecessor?.isEqualTo( junction ) ) {
+			if ( incomingRoad.predecessor?.equals( junction ) ) {
 				return TvContactPoint.START;
 			}
 

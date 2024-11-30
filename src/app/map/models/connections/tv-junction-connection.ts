@@ -222,11 +222,11 @@ export class TvJunctionConnection {
 
 	getIncomingRoadContact (): TvContactPoint {
 
-		if ( this.connectingRoad.successor.isEqualTo( this.incomingRoad ) ) {
+		if ( this.connectingRoad.successor.equals( this.incomingRoad ) ) {
 			return this.connectingRoad.successor.contactPoint;
 		}
 
-		if ( this.connectingRoad.predecessor.isEqualTo( this.incomingRoad ) ) {
+		if ( this.connectingRoad.predecessor.equals( this.incomingRoad ) ) {
 			return this.connectingRoad.predecessor.contactPoint;
 		}
 
@@ -428,11 +428,11 @@ export class TvJunctionConnection {
 			this.incomingRoad = incomingRoad;
 		}
 
-		if ( this.connectingRoad.predecessor?.isEqualTo( target ) ) {
+		if ( this.connectingRoad.predecessor?.equals( target ) ) {
 			this.connectingRoad.setPredecessorRoad( incomingRoad, incomingRoadContact );
 		}
 
-		if ( this.connectingRoad.successor?.isEqualTo( target ) ) {
+		if ( this.connectingRoad.successor?.equals( target ) ) {
 			this.connectingRoad.setSuccessorRoad( incomingRoad, incomingRoadContact );
 		}
 
@@ -441,8 +441,8 @@ export class TvJunctionConnection {
 	isLinkedToRoad ( target: TvRoad ): boolean {
 
 		return this.incomingRoad.equals( target ) ||
-			this.getPredecessorLink()?.isEqualTo( target ) ||
-			this.getSuccessorLink()?.isEqualTo( target )
+			this.getPredecessorLink()?.equals( target ) ||
+			this.getSuccessorLink()?.equals( target )
 
 	}
 

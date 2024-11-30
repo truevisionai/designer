@@ -149,11 +149,11 @@ export class TvJunction {
 
 			if ( road.geometries.length == 0 ) continue;
 
-			if ( road.successor?.isEqualTo( this ) ) {
+			if ( road.successor?.equals( this ) ) {
 				links.push( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
 			}
 
-			if ( road.predecessor?.isEqualTo( this ) ) {
+			if ( road.predecessor?.equals( this ) ) {
 				links.push( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
 			}
 

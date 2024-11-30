@@ -114,7 +114,7 @@ export abstract class TvLink {
 
 	abstract linkRoad ( element: TvRoad, contact: TvContactPoint ): void;
 
-	abstract isEqualTo ( element: TvRoad | TvJunction ): boolean;
+	abstract equals ( element: TvRoad | TvJunction ): boolean;
 
 	abstract replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void;
 
@@ -234,7 +234,7 @@ export class TvRoadLink extends TvLink {
 		return `Link: ${ this.element.toString() }:${ this.contactPoint }`;
 	}
 
-	isEqualTo ( element: TvRoad | TvJunction ): boolean {
+	equals ( element: TvRoad | TvJunction ): boolean {
 		return this.element === element && this.contactPoint === this.contactPoint;
 	}
 
@@ -303,7 +303,7 @@ export class TvJunctionLink extends TvLink {
 		return `Link: Junction: ${ this.element.toString() }`;
 	}
 
-	isEqualTo ( element: TvJunction ): boolean {
+	equals ( element: TvJunction ): boolean {
 		return this.element.equals( element );
 	}
 

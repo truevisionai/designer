@@ -775,7 +775,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	isEqualTo ( lane: TvLane ): boolean {
+	equals ( lane: TvLane ): boolean {
 		return this.uuid === lane.uuid;
 	}
 

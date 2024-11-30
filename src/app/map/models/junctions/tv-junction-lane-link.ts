@@ -61,7 +61,7 @@ export class TvJunctionLaneLink {
 	}
 
 	matchesIncomingLane ( lane: TvLane ): boolean {
-		return this._incomingLane.isEqualTo( lane );
+		return this._incomingLane.equals( lane );
 	}
 
 	getOutgoingLane (): TvLane {
