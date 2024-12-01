@@ -493,7 +493,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		} else {
 
-			this.snackBar.error( 'No geometry found for road:' + road.id + '. Adding default line with length 1' );
+			this.snackBar.error( `No geometry found for ${ road.toString() }. Adding default line with length 1` );
 
 			road.getPlanView().addGeometryLine( 0, 0, 0, 0, Math.max( road.length, 1 ) );
 
