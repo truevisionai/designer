@@ -144,7 +144,11 @@ export class TvMap {
 		return this.roads.next( useRemoved );
 	}
 
-	addRoad ( road: TvRoad ) {
+	/**
+	 * Adds a road to the map
+	 * @param road
+	 */
+	addRoad ( road: TvRoad ): void {
 
 		if ( this.roads.has( road.id ) ) {
 			throw new DuplicateKeyException( `Road with id ${ road.id } already exists` );
@@ -153,6 +157,18 @@ export class TvMap {
 		road.setMap( this );
 
 		this.roads.set( road.id, road );
+	}
+
+	/**
+	 * Inserts a road into the map and assigns a new id
+	 * @param road
+	 */
+	insertRoad ( road: TvRoad ): void {
+
+		road.setId( this.roads.next() );
+
+		this.addRoad( road );
+
 	}
 
 	hasRoad ( road: TvRoad | number ): boolean {

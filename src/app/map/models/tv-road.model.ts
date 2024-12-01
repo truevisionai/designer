@@ -77,7 +77,7 @@ export class TvRoad {
 
 	public readonly name: string;
 
-	public readonly id: number;
+	private _id: number;
 
 	private _junction: TvJunction;
 
@@ -93,7 +93,7 @@ export class TvRoad {
 
 		this.uuid = MathUtils.generateUUID();
 		this.name = name;
-		this.id = id;
+		this._id = id;
 		this._junction = junction;
 		this.planView = new TvPlaneView();
 		this.laneProfile = new TvLaneProfile( this );
@@ -110,8 +110,16 @@ export class TvRoad {
 		this.map = map;
 	}
 
+	setId ( id: number ): void {
+		this._id = id;
+	}
+
 	getMap (): TvMap {
 		return this.map;
+	}
+
+	get id (): number {
+		return this._id;
 	}
 
 	get sStart (): number {
@@ -201,11 +209,11 @@ export class TvRoad {
 	toString () {
 
 		if ( this.isJunction ) {
-			return `ConnectingRoad:${ this.id } Junction:${ this.junctionId } Successor:${ this.successor?.element.id } Predecessor:${ this.predecessor?.element.id }`;
+			return `ConnectingRoad:${ this._id } Junction:${ this.junctionId } Successor:${ this.successor?.element.id } Predecessor:${ this.predecessor?.element.id }`;
 		}
 
 		// return `Road:${ this.id } Successor:${ this.successor?.type }:${ this.successor?.element.id } Predecessor:${ this.predecessor?.type }:${ this.predecessor?.element.id }`;
-		return `Road:${ this.id }`;
+		return `Road:${ this._id }`;
 
 	}
 
@@ -670,9 +678,9 @@ export class TvRoad {
 
 	clone ( s: number, id?: number ): TvRoad {
 
-		const name = `Road ${ id || this.id }`
+		const name = `Road ${ id || this._id }`
 
-		const road = new TvRoad( name, this.length, id || this.id, this._junction );
+		const road = new TvRoad( name, this.length, id || this._id, this._junction );
 
 		road.spline = this.spline;
 		road.type = this.type.map( type => type.clone() );

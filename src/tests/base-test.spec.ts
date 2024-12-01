@@ -128,6 +128,21 @@ export function exportCorrectLaneOrder ( laneSection: TvLaneSection ) {
 	} );
 }
 
+
+export function createDefaultRoad ( options?: RoadMakeOptions ): TvRoad {
+
+	const road = RoadFactory.createDefaultRoad( options?.id || -1 );
+
+	const position = options?.position ?? new Vector3( 0, 0, 0 );
+	const hdg = options?.hdg ?? 0;
+	const length = options?.length ?? 10;
+
+	road.getPlanView().addGeometryLine( 0, position.x, position.y, hdg, length );
+
+	return road;
+
+}
+
 export function createOneWayRoad ( options?: RoadMakeOptions ): TvRoad {
 
 	const road = RoadFactory.makeRoad( { id: options?.id, leftLaneCount: 0, rightLaneCount: 0 } );

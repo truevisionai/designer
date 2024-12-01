@@ -155,6 +155,22 @@ export class RoadFactory {
 
 	}
 
+	static createDefaultRoad ( params: Partial<TvRoad> ): TvRoad {
+
+		const road = this.createRoad( params.id );
+
+		const roadStyle = RoadStyleManager.getDefaultRoadStyle( road );
+
+		road.getLaneProfile().addLaneOffset( roadStyle.laneOffset );
+
+		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
+
+		road.addElevationProfile( roadStyle.elevationProfile );
+
+		return road;
+
+	}
+
 	createParkingRoad ( type: TvRoadType = TvRoadType.LOW_SPEED, maxSpeed: number = 10 ): TvRoad {
 
 		const road = this.createNewRoad();

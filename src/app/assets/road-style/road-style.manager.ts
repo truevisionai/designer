@@ -30,7 +30,7 @@ export class RoadStyleManager {
 			return this.style.clone( road );
 		}
 
-		return this.getDefaultRoadStyle( road );
+		return RoadStyleManager.getDefaultRoadStyle( road );
 	}
 
 	getRampRoadStyle ( road: TvRoad, lane?: TvLane ): RoadStyle {
@@ -65,7 +65,7 @@ export class RoadStyleManager {
 		return roadStyle;
 	}
 
-	getDefaultRoadStyle ( road: TvRoad ): RoadStyle {
+	static getDefaultRoadStyle ( road: TvRoad ): RoadStyle {
 
 		const roadStyle = new RoadStyle();
 
