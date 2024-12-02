@@ -41,7 +41,7 @@ export class RoadStyleManager {
 
 		roadStyle.laneSection = new TvLaneSection( 0, 0, true, road );
 
-		roadStyle.laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		roadStyle.laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 
 		if ( lane ) {
 
@@ -78,7 +78,7 @@ export class RoadStyleManager {
 		const leftLane3 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 3, TvLaneType.sidewalk, true, true );
 		const leftLane2 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.shoulder, true, true );
 		const leftLane1 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
-		const centerLane = roadStyle.laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		const centerLane = roadStyle.laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 		const rightLane1 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 		const rightLane2 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, true, true );
 		const rightLane3 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.sidewalk, true, true );
@@ -118,7 +118,7 @@ export class RoadStyleManager {
 
 		const leftLane2 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.parking, true, true );
 		const leftLane1 = roadStyle.laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
-		const centerLane = roadStyle.laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		const centerLane = roadStyle.laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 		const rightLane1 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 		const rightLane2 = roadStyle.laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.parking, true, true );
 

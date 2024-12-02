@@ -89,7 +89,7 @@ export class RoadFactory {
 
 		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+		laneSection.createCenterLane( 0, TvLaneType.none, false, true );
 		laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
 
 		for ( let id = 1; id <= options.rightLaneCount; id++ ) {
@@ -227,7 +227,7 @@ export class RoadFactory {
 			laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 		}
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 
 		laneSection.getLanes().forEach( lane => {
 

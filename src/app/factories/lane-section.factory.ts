@@ -40,7 +40,7 @@ export class LaneSectionFactory {
 
 		}
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 
 		return laneSection;
 	}
@@ -163,7 +163,7 @@ export class LaneSectionFactory {
 				previous.laneSection.getRightLanes() :
 				next.laneSection.getRightLanes();
 
-			laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+			laneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
 			for ( let i = 0; i < leftLanes.length; i++ ) {
 
@@ -238,7 +238,7 @@ export class LaneSectionFactory {
 			.filter( lane => lane.direction === outgoingDirection )
 			.map( lane => successor.toLaneCoord( lane ) )
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		laneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
 		const coords = incomingLaneCoords.length >= outgoingLaneCoords.length ?
 			incomingLaneCoords :
@@ -311,7 +311,7 @@ export class LaneSectionFactory {
 
 		const laneSection = this.createLaneSection( joiningRoad );
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		laneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
 		// this.createBothSides( laneSection, joiningRoad, predecessor, successor );
 		// this.createRightSide( laneSection, joiningRoad, successor, predecessor );

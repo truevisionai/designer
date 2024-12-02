@@ -72,7 +72,7 @@ describe( 'OpenDrive Model', () => {
 
 		leftOne = laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 
 		rightOne = laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
 

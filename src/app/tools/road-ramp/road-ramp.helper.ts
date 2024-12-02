@@ -123,7 +123,7 @@ export class RampToolHelper {
 			}
 		}
 
-		const centerLane = connectingLaneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		const centerLane = connectingLaneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
 		centerLane.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
 

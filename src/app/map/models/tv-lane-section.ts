@@ -96,13 +96,19 @@ export class TvLaneSection {
 	 * @param {boolean} level Level parameter of the road
 	 * @param {boolean} sort Defines if the lanes should be sorted when added. True by default
 	 */
-	createLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
+	createLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
 
 		const newLane = new TvLane( laneSide, id, type, level, this );
 
 		this.addLaneInstance( newLane, sort );
 
 		return newLane;
+	}
+
+	createCenterLane ( id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
+
+		return this.createLane( TvLaneSide.CENTER, id, type, level, sort );
+
 	}
 
 	getLaneAtIndex ( index: number ): TvLane {
@@ -236,7 +242,7 @@ export class TvLaneSection {
 
 	addCenterLane (): TvLane {
 
-		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+		return this.createCenterLane( 0, TvLaneType.none, false, true );
 
 	}
 

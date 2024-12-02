@@ -149,7 +149,7 @@ export function createOneWayRoad ( options?: RoadMakeOptions ): TvRoad {
 
 	const laneSection = road.getLaneProfile().getFirstLaneSection();
 
-	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createCenterLane( 0, TvLaneType.none, false, true );
 	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, 2.0, 0, 0, 0 );
 	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.shoulder, false, true ).addWidthRecord( 0, 0.5, 0, 0, 0 );
 	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addWidthRecord( 0, 3.6, 0, 0, 0 );
@@ -166,7 +166,7 @@ export function createFreewayOneWayRoad ( options: RoadMakeOptions ): TvRoad {
 
 	const laneSection = road.getLaneProfile().getFirstLaneSection();
 
-	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createCenterLane( 0, TvLaneType.none, false, true );
 	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.shoulder, false, true ).addDefaultWidth();
 	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addDefaultWidth();
 	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addDefaultWidth();
@@ -190,7 +190,7 @@ export function createFreewayRoad ( options: RoadMakeOptions ): TvRoad {
 	laneSection.createLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true ).addDefaultWidth();
 	laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true ).addDefaultWidth();
 	laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.shoulder, false, true ).addDefaultWidth();
-	laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+	laneSection.createCenterLane( 0, TvLaneType.none, false, true );
 	laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.shoulder, false, true ).addDefaultWidth();
 	laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true ).addDefaultWidth();
 	laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true ).addDefaultWidth();
