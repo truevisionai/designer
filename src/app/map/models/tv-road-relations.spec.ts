@@ -1,10 +1,8 @@
 import { TvRoadRelations } from './tv-road-relations';
 import { TvRoad } from './tv-road.model';
-import { TvJunction } from './junctions/tv-junction';
-import { TvLink, TvLinkType } from './tv-link';
+import { TvLinkType } from './tv-link';
 import { TvContactPoint } from './tv-common';
 import { LinkFactory } from './link-factory';
-import { RoadLinker } from '../link/road-linker';
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { SplineFactory } from "../../services/spline/spline.factory";
 import { JunctionFactory } from "../../factories/junction.factory";
@@ -53,13 +51,13 @@ describe( 'TvRoadRelations', () => {
 	it( 'should set successor road', () => {
 		const successorRoad = RoadFactory.createRoad();
 		roadRelations.setSuccessorRoad( successorRoad, TvContactPoint.END );
-		expect( roadRelations.getSuccessor().getElement<TvRoad>() ).toBe( successorRoad );
+		expect( roadRelations.getSuccessor().equals( successorRoad ) ).toBeTrue();
 	} );
 
 	it( 'should link successor road', () => {
 		const successorRoad = RoadFactory.createDefaultRoad();
 		roadRelations.linkSuccessorRoad( successorRoad, TvContactPoint.END );
-		expect( roadRelations.getSuccessor().getElement<TvRoad>() ).toBe( successorRoad );
+		expect( roadRelations.getSuccessor().equals( successorRoad ) ).toBeTrue();
 		road.getLaneProfile().getNonCenterLanes().forEach( lane => {
 			expect( lane.predecessorExists ).toBeFalse();
 			expect( lane.successorExists ).toBeTrue();
@@ -69,7 +67,7 @@ describe( 'TvRoadRelations', () => {
 	it( 'should link predecessor road', () => {
 		const predecessorRoad = RoadFactory.createDefaultRoad();
 		roadRelations.linkPredecessorRoad( predecessorRoad, TvContactPoint.START );
-		expect( roadRelations.getPredecessor().getElement<TvRoad>() ).toBe( predecessorRoad );
+		expect( roadRelations.getPredecessor().equals( predecessorRoad ) ).toBeTrue();
 		road.getLaneProfile().getNonCenterLanes().forEach( lane => {
 			expect( lane.predecessorExists ).toBeTrue();
 			expect( lane.successorExists ).toBeFalse();
@@ -79,13 +77,13 @@ describe( 'TvRoadRelations', () => {
 	it( 'should link junction as predecessor', () => {
 		const junction = JunctionFactory.create();
 		roadRelations.linkJunction( junction, TvContactPoint.START );
-		expect( roadRelations.getPredecessor().getElement<TvJunction>() ).toBe( junction );
+		expect( roadRelations.getPredecessor().equals( junction ) ).toBeTrue();
 	} );
 
 	it( 'should link junction as successor', () => {
 		const junction = JunctionFactory.create();
 		roadRelations.linkJunction( junction, TvContactPoint.END );
-		expect( roadRelations.getSuccessor().getElement<TvJunction>() ).toBe( junction );
+		expect( roadRelations.getSuccessor().equals( junction ) ).toBeTrue();
 	} );
 
 	it( 'should get successor spline', () => {
