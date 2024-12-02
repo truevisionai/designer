@@ -136,7 +136,7 @@ export class OdLaneReferenceLineBuilder {
 
 			laneSection.getLanes().forEach( lane => {
 
-				if ( this.drawCenterLane === false && lane.side === TvLaneSide.CENTER ) return;
+				if ( this.drawCenterLane === false && lane.isCenter ) return;
 
 				const points: TvPosTheta[] = [];
 

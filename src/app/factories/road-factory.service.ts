@@ -229,9 +229,7 @@ export class RoadFactory {
 
 		laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 
-		laneSection.getLanes().forEach( lane => {
-
-			if ( lane.side === TvLaneSide.CENTER ) return;
+		laneSection.getNonCenterLanes().forEach( lane => {
 
 			if ( lane.type !== TvLaneType.driving ) return;
 

@@ -86,15 +86,15 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 
 			const lane = laneSection.getLaneAtIndex( i );
 
-			if ( lane.side === TvLaneSide.LEFT ) {
+			if ( lane.isLeft ) {
 
 				this.writeLane( leftLanes, lane );
 
-			} else if ( lane.side === TvLaneSide.RIGHT ) {
+			} else if ( lane.isRight ) {
 
 				this.writeLane( rightLanes, lane );
 
-			} else if ( lane.side === TvLaneSide.CENTER ) {
+			} else if ( lane.isCenter ) {
 
 				this.writeLane( centerLanes, lane );
 

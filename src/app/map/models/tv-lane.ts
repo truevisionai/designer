@@ -103,11 +103,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.level = level;
 		this._laneSection = laneSection;
 
-		if ( this.side === TvLaneSide.LEFT ) {
+		if ( this.isLeft ) {
 			this.direction = TravelDirection.backward;
-		} else if ( this.side === TvLaneSide.RIGHT ) {
+		} else if ( this.isRight ) {
 			this.direction = TravelDirection.forward;
-		} else if ( this.side === TvLaneSide.CENTER ) {
+		} else if ( this.isCenter ) {
 			this.direction = TravelDirection.undirected;
 		} else {
 			this.direction = TravelDirection.undirected;

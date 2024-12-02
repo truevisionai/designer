@@ -438,7 +438,7 @@ export class ConnectionFactory {
 
 		laneSection.getLanes().forEach( lane => {
 
-			if ( lane.side == TvLaneSide.CENTER ) return;
+			if ( lane.isCenter ) return;
 
 			const lastRoadMark = incoming.lane.roadMarks.getLast();
 

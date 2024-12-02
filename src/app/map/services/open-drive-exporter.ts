@@ -97,7 +97,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	public writeLaneLinks ( laneNode: any, lane: TvLane ) {
 
 		// not link for center lanes
-		if ( lane.side === TvLaneSide.CENTER ) return;
+		if ( lane.isCenter ) return;
 
 		if ( lane.predecessorExists ) {
 			laneNode.link[ 'predecessor' ] = { attr_id: lane.predecessorId };
@@ -376,15 +376,15 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 			const lane = laneSection.getLaneAtIndex( i );
 
-			if ( lane.side === TvLaneSide.LEFT ) {
+			if ( lane.isLeft ) {
 
 				this.writeLane( leftLanes, lane );
 
-			} else if ( lane.side === TvLaneSide.RIGHT ) {
+			} else if ( lane.isRight ) {
 
 				this.writeLane( rightLanes, lane );
 
-			} else if ( lane.side === TvLaneSide.CENTER ) {
+			} else if ( lane.isCenter ) {
 
 				this.writeLane( centerLanes, lane );
 
