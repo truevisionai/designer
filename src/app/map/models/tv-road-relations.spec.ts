@@ -16,7 +16,7 @@ describe( 'TvRoadRelations', () => {
 	let roadRelations: TvRoadRelations;
 
 	beforeEach( () => {
-		road = RoadFactory.createRoad();
+		road = RoadFactory.createDefaultRoad( { id: 1 } );
 		roadRelations = new TvRoadRelations( road );
 	} );
 
@@ -57,17 +57,23 @@ describe( 'TvRoadRelations', () => {
 	} );
 
 	it( 'should link successor road', () => {
-		const successorRoad = RoadFactory.createRoad();
-		spyOn( RoadLinker.instance, 'linkSuccessorRoad' );
+		const successorRoad = RoadFactory.createDefaultRoad();
 		roadRelations.linkSuccessorRoad( successorRoad, TvContactPoint.END );
-		expect( RoadLinker.instance.linkSuccessorRoad ).toHaveBeenCalledWith( road, successorRoad, TvContactPoint.END );
+		expect( roadRelations.getSuccessor().getElement<TvRoad>() ).toBe( successorRoad );
+		road.getLaneProfile().getNonCenterLanes().forEach( lane => {
+			expect( lane.predecessorExists ).toBeFalse();
+			expect( lane.successorExists ).toBeTrue();
+		} );
 	} );
 
 	it( 'should link predecessor road', () => {
-		const predecessorRoad = RoadFactory.createRoad();
-		spyOn( RoadLinker.instance, 'linkPredecessorRoad' );
+		const predecessorRoad = RoadFactory.createDefaultRoad();
 		roadRelations.linkPredecessorRoad( predecessorRoad, TvContactPoint.START );
-		expect( RoadLinker.instance.linkPredecessorRoad ).toHaveBeenCalledWith( road, predecessorRoad, TvContactPoint.START );
+		expect( roadRelations.getPredecessor().getElement<TvRoad>() ).toBe( predecessorRoad );
+		road.getLaneProfile().getNonCenterLanes().forEach( lane => {
+			expect( lane.predecessorExists ).toBeTrue();
+			expect( lane.successorExists ).toBeFalse();
+		} );
 	} );
 
 	it( 'should link junction as predecessor', () => {

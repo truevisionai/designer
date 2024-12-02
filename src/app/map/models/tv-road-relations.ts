@@ -60,6 +60,7 @@ export class TvRoadRelations {
 	}
 
 	linkSuccessorRoad ( road: TvRoad, contact: TvContactPoint ): void {
+		this.setSuccessorRoad( road, contact );
 		RoadLinker.instance.linkSuccessorRoad( this.road, road, contact );
 	}
 
@@ -69,6 +70,7 @@ export class TvRoadRelations {
 	}
 
 	linkPredecessorRoad ( road: TvRoad, contact: TvContactPoint ): void {
+		this.setPredecessorRoad( road, contact );
 		RoadLinker.instance.linkPredecessorRoad( this.road, road, contact );
 	}
 

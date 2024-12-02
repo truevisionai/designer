@@ -155,9 +155,9 @@ export class RoadFactory {
 
 	}
 
-	static createDefaultRoad ( params: Partial<TvRoad> ): TvRoad {
+	static createDefaultRoad ( params?: Partial<TvRoad> ): TvRoad {
 
-		const road = this.createRoad( params.id );
+		const road = this.createRoad( params?.id );
 
 		const roadStyle = RoadStyleManager.getDefaultRoadStyle( road );
 
