@@ -111,6 +111,18 @@ export class TvLaneSection {
 
 	}
 
+	createLeftLane ( id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
+
+		return this.createLane( TvLaneSide.LEFT, id, type, level, sort );
+
+	}
+
+	createRightLane ( id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
+
+		return this.createLane( TvLaneSide.RIGHT, id, type, level, sort );
+
+	}
+
 	getLaneAtIndex ( index: number ): TvLane {
 
 		if ( this.lanes.size > 0 && index < this.lanes.size ) {

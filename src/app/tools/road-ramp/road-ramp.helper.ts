@@ -132,7 +132,7 @@ export class RampToolHelper {
 
 		for ( const incomingLane of incomingLanes ) {
 
-			const lane = connectingLaneSection.createLane( TvLaneSide.RIGHT, -rightLaneCount, incomingLane.type, true, true );
+			const lane = connectingLaneSection.createRightLane( -rightLaneCount, incomingLane.type, true, true );
 
 			LaneUtils.copyPreviousLane( incomingLane, incomingLane.laneSection, incomingLane.laneSection.road, lane );
 
@@ -144,7 +144,7 @@ export class RampToolHelper {
 
 			if ( sourceLane.type == TvLaneType.driving ) continue;
 
-			const lane = connectingLaneSection.createLane( TvLaneSide.LEFT, leftLaneCount, sourceLane.type, true, true );
+			const lane = connectingLaneSection.createLeftLane( leftLaneCount, sourceLane.type, true, true );
 
 			LaneUtils.copyPreviousLane( sourceLane, sourceLane.laneSection, sourceLane.laneSection.road, lane );
 

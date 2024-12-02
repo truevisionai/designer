@@ -90,13 +90,13 @@ export class RoadFactory {
 		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
 
 		laneSection.createCenterLane( 0, TvLaneType.none, false, true );
-		laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
+		laneSection.createRightLane( -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
 
 		for ( let id = 1; id <= options.rightLaneCount; id++ ) {
-			laneSection.createLane( TvLaneSide.RIGHT, -( id + 1 ), TvLaneType.driving, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
+			laneSection.createRightLane( -( id + 1 ), TvLaneType.driving, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
 		}
 
-		laneSection.createLane( TvLaneSide.RIGHT, ( options.rightLaneCount + 2 ) * -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
+		laneSection.createRightLane( ( options.rightLaneCount + 2 ) * -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
 
 		return road;
 
@@ -220,11 +220,11 @@ export class RoadFactory {
 		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
 
 		if ( side === TvLaneSide.LEFT ) {
-			laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+			laneSection.createLeftLane( 1, TvLaneType.driving, false, true );
 		}
 
 		if ( side === TvLaneSide.RIGHT ) {
-			laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+			laneSection.createRightLane( -1, TvLaneType.driving, false, true );
 		}
 
 		laneSection.createCenterLane( 0, TvLaneType.driving, false, true );

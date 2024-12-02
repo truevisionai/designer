@@ -26,7 +26,7 @@ export class LaneSectionFactory {
 
 		for ( let i = 1; i <= leftCount; i++ ) {
 
-			const lane = laneSection.createLane( TvLaneSide.LEFT, i, TvLaneType.driving, false, true );
+			const lane = laneSection.createLeftLane( i, TvLaneType.driving, false, true );
 
 			lane.addWidthRecord( 0, leftWidth, 0, 0, 0 );
 
@@ -34,7 +34,7 @@ export class LaneSectionFactory {
 
 		for ( let i = 1; i <= rightCount; i++ ) {
 
-			const lane = laneSection.createLane( TvLaneSide.RIGHT, -i, TvLaneType.driving, false, true );
+			const lane = laneSection.createRightLane( -i, TvLaneType.driving, false, true );
 
 			lane.addWidthRecord( 0, rightWidth, 0, 0, 0 );
 
@@ -167,13 +167,13 @@ export class LaneSectionFactory {
 
 			for ( let i = 0; i < leftLanes.length; i++ ) {
 
-				laneSection.createLane( TvLaneSide.LEFT, leftLanes[ i ].id, leftLanes[ i ].type, false, false );
+				laneSection.createLeftLane( leftLanes[ i ].id, leftLanes[ i ].type, false, false );
 
 			}
 
 			for ( let i = 0; i < rightLanes.length; i++ ) {
 
-				laneSection.createLane( TvLaneSide.RIGHT, rightLanes[ i ].id, rightLanes[ i ].type, false, false );
+				laneSection.createRightLane( rightLanes[ i ].id, rightLanes[ i ].type, false, false );
 
 			}
 

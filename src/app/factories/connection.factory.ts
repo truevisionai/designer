@@ -416,7 +416,7 @@ export class ConnectionFactory {
 
 		laneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
-		const connectingLane = laneSection.createLane( TvLaneSide.RIGHT, -1, incoming.lane.type, false, false );
+		const connectingLane = laneSection.createRightLane( -1, incoming.lane.type, false, false );
 
 		this.createLaneWidth( incoming, connectingLane, connectingRoad, outgoing );
 
