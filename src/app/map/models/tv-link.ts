@@ -51,11 +51,11 @@ For a virtual junction as successor or predecessor the
  */
 export abstract class TvLink {
 
-	public element: TvRoad | TvJunction;
+	public readonly element: TvRoad | TvJunction;
 
-	public type: TvLinkType;
+	public readonly type: TvLinkType;
 
-	public contactPoint: TvContactPoint;
+	public readonly contactPoint: TvContactPoint;
 
 	/**
 	 * TODO:
@@ -224,6 +224,8 @@ export abstract class TvLink {
 
 export class TvRoadLink extends TvLink {
 
+	public override readonly element: TvRoad;
+
 	constructor ( private road: TvRoad, contactPoint: TvContactPoint ) {
 		super( TvLinkType.ROAD, road, contactPoint );
 	}
@@ -236,8 +238,8 @@ export class TvRoadLink extends TvLink {
 		return `Link: ${ this.element.toString() }:${ this.contactPoint }`;
 	}
 
-	equals ( element: TvRoad | TvJunction ): boolean {
-		return this.element === element && this.contactPoint === this.contactPoint;
+	equals ( element: TvRoad ): boolean {
+		return this.element.equals( element ) && this.contactPoint === this.contactPoint;
 	}
 
 	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
@@ -291,7 +293,7 @@ export class TvRoadLink extends TvLink {
 
 export class TvJunctionLink extends TvLink {
 
-	public override element: TvJunction;
+	public override readonly element: TvJunction;
 
 	constructor ( private junction: TvJunction ) {
 		super( TvLinkType.JUNCTION, junction, null );
@@ -325,6 +327,5 @@ export class TvJunctionLink extends TvLink {
 		Log.error( 'RoadLinkError', 'Junction link does not have position' );
 		const center = this.junction.centroid;
 		return new TvPosTheta( center.x, center.y, center.z, 0, 0 );
-
 	}
 }

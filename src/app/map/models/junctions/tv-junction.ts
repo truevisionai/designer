@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Box2, Mesh, Vector2, Vector3 } from 'three';
+import { Box2, MathUtils, Mesh, Vector2, Vector3 } from 'three';
 import { Maths } from '../../../utils/maths';
 import { TvJunctionConnection } from '../connections/tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';
@@ -49,7 +49,11 @@ export class TvJunction {
 
 	private map: TvMap;
 
+	private uuid: string;
+
 	protected constructor ( public name: string, public id: number ) {
+
+		this.uuid = MathUtils.generateUUID();
 
 		this.centroid = new Vector3();
 
@@ -82,7 +86,7 @@ export class TvJunction {
 	}
 
 	equals ( junction: TvJunction ): boolean {
-		return junction instanceof TvJunction && this.id === junction.id;
+		return junction instanceof TvJunction && this.uuid === junction.uuid;
 	}
 
 	toString () {

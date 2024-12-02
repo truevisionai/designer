@@ -199,7 +199,7 @@ export class TvRoad {
 	}
 
 	equals ( other: TvRoad ): boolean {
-		return this.uuid === other.uuid;
+		return other instanceof TvRoad && this.uuid === other.uuid;
 	}
 
 	toString () {
