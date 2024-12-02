@@ -15,7 +15,6 @@ import { TvPosTheta } from './tv-pos-theta';
 import { TvLaneProfile } from './tv-lane-profile';
 import { TvLink, TvLinkType } from './tv-link';
 import { LinkFactory } from './link-factory';
-import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvRoadObject } from './objects/tv-road-object';
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
@@ -27,11 +26,11 @@ import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { RoadStyle } from 'app/assets/road-style/road-style.model';
 import { RoadWidthService } from 'app/services/road/road-width.service';
-import { RoadLinker } from '../link/road-linker';
 import { TvRoadCoord } from './TvRoadCoord';
 import { RoadDistance } from '../road/road-distance';
 import { TvMap } from './tv-map.model';
 import { TvLaneCoord } from "./tv-lane-coord";
+import { TvRoadRelations } from './tv-road-relations';
 
 export class TvRoad {
 
@@ -73,17 +72,13 @@ export class TvRoad {
 
 	private planView: TvPlaneView;
 
-	private neighbors: TvRoadLinkNeighbor[] = [];
+	private relations: TvRoadRelations;
 
 	public readonly name: string;
 
 	private _id: number;
 
 	private _junction: TvJunction;
-
-	private _successor?: TvLink;
-
-	private _predecessor?: TvLink;
 
 	private cornerRoad: boolean = false;
 
@@ -96,6 +91,7 @@ export class TvRoad {
 		this._id = id;
 		this._junction = junction;
 		this.planView = new TvPlaneView();
+		this.relations = new TvRoadRelations( this );
 		this.laneProfile = new TvLaneProfile( this );
 		this.elevationProfile = new TvElevationProfile();
 		this.lateralProfile = new TvLateralProfile();
@@ -155,19 +151,19 @@ export class TvRoad {
 	}
 
 	get successor (): TvLink {
-		return this._successor;
+		return this.relations.getSuccessor();
 	}
 
 	set successor ( value: TvLink ) {
-		this._successor = value;
+		this.relations.setSuccessor( value );
 	}
 
 	get predecessor (): TvLink {
-		return this._predecessor;
+		return this.relations.getPredecessor();
 	}
 
 	set predecessor ( value: TvLink ) {
-		this._predecessor = value;
+		this.relations.setPredecessor( value );
 	}
 
 	get junctionId (): number {
@@ -259,127 +255,75 @@ export class TvRoad {
 	}
 
 	setSuccessorLink ( type: TvLinkType, element: TvRoad | TvJunction, contact?: TvContactPoint ): void {
-
 		this.setSuccessor( LinkFactory.createLink( type, element, contact ) );
-
 	}
 
 	setSuccessor ( link: TvLink ): void {
-
-		this._successor = link;
-
+		this.relations.setSuccessor( link );
 	}
 
 	removeSuccessor (): void {
-
-		this.successor?.removeLinks();
-
-		this.laneProfile.getLastLaneSection()?.removeSuccessorLinks();
-
-		this._successor = null;
-
+		this.relations.removeSuccessor();
 	}
 
 	setPredecessorLink ( type: TvLinkType, element: TvRoad | TvJunction, contact?: TvContactPoint ): void {
-
-		this.setPredecessor( LinkFactory.createLink( type, element, contact ) );
-
+		this.relations.setPredecessorLink( type, element, contact );
 	}
 
 	setPredecessor ( link: TvLink ): void {
-
-		this._predecessor = link;
-
+		this.relations.setPredecessor( link );
 	}
 
 	removePredecessor (): void {
-
-		this.predecessor?.removeLinks();
-
-		this._predecessor = null;
-
-		this.laneProfile.getFirstLaneSection()?.removePredecessorLinks();
-
+		this.relations.removePredecessor();
 	}
 
 	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ): void {
-
-		this.setSuccessorLink( TvLinkType.ROAD, road, contactPoint );
-
+		this.relations.setSuccessorRoad( road, contactPoint );
 	}
 
 	linkSuccessorRoad ( road: TvRoad, contact: TvContactPoint ): void {
-
-		RoadLinker.instance.linkSuccessorRoad( this, road, contact );
-
+		this.relations.linkSuccessorRoad( road, contact );
 	}
 
 	linkSuccessor (): void {
-
-		if ( !this.successor || this.successor.isRoad ) return;
-
-		this.linkSuccessorRoad( this.successor.getElement<TvRoad>(), this.successor.contactPoint );
-
+		this.relations.linkSuccessor();
 	}
 
 	linkPredecessorRoad ( road: TvRoad, contact: TvContactPoint ): void {
-
-		RoadLinker.instance.linkPredecessorRoad( this, road, contact );
-
+		this.relations.linkPredecessorRoad( road, contact );
 	}
 
 	linkPredecessor (): void {
-
-		if ( !this.predecessor || this.predecessor.isRoad ) return;
-
-		this.linkPredecessorRoad( this.predecessor.getElement<TvRoad>(), this.predecessor.contactPoint );
-
+		this.relations.linkPredecessor();
 	}
 
 	linkJunction ( junction: TvJunction, contact: TvContactPoint ): void {
-
-		if ( contact == TvContactPoint.START ) {
-
-			this.setPredecessorLink( TvLinkType.JUNCTION, junction, contact );
-
-		} else {
-
-			this.setSuccessorLink( TvLinkType.JUNCTION, junction, contact );
-
-		}
-
+		this.relations.linkJunction( junction, contact );
 	}
 
 	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ): void {
-
-		this.setPredecessorLink( TvLinkType.ROAD, road, contactPoint );
-
+		this.relations.setPredecessorRoad( road, contactPoint );
 	}
 
 	getSuccessorSpline (): AbstractSpline | undefined {
-
-		return this.successor?.getSpline();
-
+		return this.relations.getSuccessorSpline();
 	}
 
 	getSuccessor (): TvLink {
-		return this.successor;
+		return this.relations.getSuccessor();
 	}
 
 	getPredecessor (): TvLink {
-		return this.predecessor;
+		return this.relations.getPredecessor();
 	}
 
 	getPredecessorSpline (): AbstractSpline | undefined {
-
-		return this.predecessor?.getSpline();
-
+		return this.relations.getPredecessorSpline();
 	}
 
 	getPlanView (): TvPlaneView {
-
 		return this.planView;
-
 	}
 
 	addGeometryAndUpdateCoords ( geometry: TvAbstractRoadGeometry ): void {
@@ -691,8 +635,8 @@ export class TvRoad {
 		road.shoulderMaterialGuid = this.shoulderMaterialGuid;
 		road.trafficRule = this.trafficRule;
 		road.planView = this.planView.clone();
-		road._predecessor = this.predecessor?.clone();
-		road._successor = this.successor?.clone();
+		road.predecessor = this.predecessor?.clone();
+		road.successor = this.successor?.clone();
 
 		road.getLaneProfile().addLaneSectionInstance( this.getLaneProfile().getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
 
