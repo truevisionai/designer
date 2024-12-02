@@ -27,7 +27,7 @@ export class TvRoadRelations {
 
 	setSuccessor ( link: TvLink ): void {
 		if ( link?.equals( this.road ) ) {
-			throw new Error( "A road cannot be its own successor." );
+			throw new Error( `A road cannot be its own successor. ${ this.road.toString() } -> ${ link.toString() }` );
 		}
 		this.successor = link;
 	}
@@ -48,7 +48,7 @@ export class TvRoadRelations {
 
 	setPredecessor ( link: TvLink ): void {
 		if ( link?.equals( this.road ) ) {
-			throw new Error( "A road cannot be its own predecessor." );
+			throw new Error( `A road cannot be its own predecessor. ${ this.road.toString() } <- ${ link.toString() }` );
 		}
 		this.predecessor = link;
 	}

@@ -110,6 +110,8 @@ export abstract class TvLink {
 
 	abstract clone (): TvLink;
 
+	abstract toString (): string;
+
 	abstract linkJunction ( junction: TvJunction ): void;
 
 	abstract linkRoad ( element: TvRoad, contact: TvContactPoint ): void;

@@ -82,7 +82,7 @@ export class TvJunction {
 	}
 
 	equals ( junction: TvJunction ): boolean {
-		return this.id === junction.id;
+		return junction instanceof TvJunction && this.id === junction.id;
 	}
 
 	toString () {
