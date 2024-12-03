@@ -23,7 +23,7 @@ export class LaneBufferGeometry extends BufferGeometry {
 
 	}
 
-	build () {
+	build (): void {
 		// if ( this.lane.side == TvLaneSide.LEFT ) return;
 
 		const indices: number[] = [];

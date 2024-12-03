@@ -40,7 +40,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 
 	}
 
-	loadSync ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
+	loadSync ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ): void {
 
 		const fileExtension = FileUtils.getExtensionFromPath( path );
 
@@ -99,7 +99,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 		return group;
 	}
 
-	private loadGLTF ( filepath: string, success: Function, error: Function ) {
+	private loadGLTF ( filepath: string, success: Function, error: Function ): void {
 
 		const loader = new GLTFLoader();
 
@@ -162,7 +162,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 		return object;
 	}
 
-	private loadSVG ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
+	private loadSVG ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ): void {
 
 		const loader = new SVGLoader();
 

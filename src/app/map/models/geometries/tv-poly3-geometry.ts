@@ -79,7 +79,7 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 
 	}
 
-	computeVars () {
+	computeVars (): void {
 
 
 		this.sinTheta = Math.sin( this.hdg );

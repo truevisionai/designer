@@ -74,7 +74,7 @@ export class AutoSplineHelper extends BaseDebugger<AutoSpline> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

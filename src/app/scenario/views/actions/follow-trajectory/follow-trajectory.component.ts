@@ -28,7 +28,7 @@ export class FollowTrajectoryComponent implements OnInit, IComponent, OnDestroy 
 
 	constructor () { }
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		ToolManager.disable();
 
@@ -46,7 +46,7 @@ export class FollowTrajectoryComponent implements OnInit, IComponent, OnDestroy 
 
 	}
 
-	onExit () {
+	onExit (): void {
 
 		AppInspector.clear();
 

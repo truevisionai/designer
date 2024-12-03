@@ -15,7 +15,7 @@ export class ResetHelper {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		this.scenario.objects.forEach( entity => {
 
@@ -41,7 +41,7 @@ export class ResetHelper {
 
 	}
 
-	private resetGroups ( groups: ConditionGroup[] ) {
+	private resetGroups ( groups: ConditionGroup[] ): void {
 
 		groups.forEach( group => {
 
@@ -51,7 +51,7 @@ export class ResetHelper {
 
 	}
 
-	private resetStory ( story: Story ) {
+	private resetStory ( story: Story ): void {
 
 		story.hasStarted = false;
 		story.isCompleted = false;
@@ -64,7 +64,7 @@ export class ResetHelper {
 
 	}
 
-	private resetAct ( act: Act ) {
+	private resetAct ( act: Act ): void {
 
 		act.hasStarted = false;
 		act.isCompleted = false;
@@ -85,7 +85,7 @@ export class ResetHelper {
 
 	}
 
-	private resetManeuver ( maneuver: Maneuver ) {
+	private resetManeuver ( maneuver: Maneuver ): void {
 
 		maneuver.hasStarted = false;
 		maneuver.isCompleted = false;
@@ -99,7 +99,7 @@ export class ResetHelper {
 
 	}
 
-	private resetEvent ( event: TvEvent ) {
+	private resetEvent ( event: TvEvent ): void {
 
 		event.hasStarted = false;
 		event.isCompleted = false;

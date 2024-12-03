@@ -28,14 +28,14 @@ export abstract class TvAction {
 
 	abstract execute ( entity: ScenarioEntity ): void;
 
-	reset () {
+	reset (): void {
 
 		this.hasStarted = false;
 		this.isCompleted = false;
 
 	}
 
-	setName ( name: string ) {
+	setName ( name: string ): void {
 		this.name = name;
 	}
 

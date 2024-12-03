@@ -503,7 +503,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		ToolManager.toolChanged.subscribe( ( tool: Tool ) => {
 
@@ -527,7 +527,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onMouseOver ( tool: IToolMenu ) {
+	onMouseOver ( tool: IToolMenu ): void {
 
 		if ( tool.description ) {
 
@@ -554,7 +554,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onMouseOut ( tool: any ) {
+	onMouseOut ( tool: any ): void {
 
 		this.popover.anchor = null;
 
@@ -565,7 +565,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 	}
 
 	@HostListener( 'document:keydown', [ '$event' ] )
-	onKeyDown ( event: KeyboardEvent ) {
+	onKeyDown ( event: KeyboardEvent ): void {
 
 		// check if mouse is on tool
 		if ( !this.mouseOnTool ) return;
@@ -576,7 +576,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 		// TODO: open help section for that tool
 	}
 
-	setToolType ( type: ToolType ) {
+	setToolType ( type: ToolType ): void {
 
 		this.toolBarService.setToolByType( type );
 

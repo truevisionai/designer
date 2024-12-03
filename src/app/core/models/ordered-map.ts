@@ -45,7 +45,7 @@ export class OrderedMap<T> {
 		return this;
 	}
 
-	sort () {
+	sort (): void {
 
 		const entries = [ ...this.internalMap.entries() ].sort( ( a, b ) => a[ 0 ] - b[ 0 ] );
 
@@ -69,7 +69,7 @@ export class OrderedMap<T> {
 
 	}
 
-	remove ( value: T ) {
+	remove ( value: T ): void {
 
 		const key = this.findKey( value );
 
@@ -176,7 +176,7 @@ export class OrderedMap<T> {
 
 	}
 
-	forEach ( callbackfn: ( value: T, key: number, map: Map<number, T> ) => void, thisArg?: any ) {
+	forEach ( callbackfn: ( value: T, key: number, map: Map<number, T> ) => void, thisArg?: any ): void {
 
 		for ( const [ key, value ] of this.internalMap.entries() ) {
 			callbackfn.call( thisArg, value, key, this );
@@ -194,7 +194,7 @@ export class OrderedMap<T> {
 		return result;
 	}
 
-	clear () {
+	clear (): void {
 		this.internalMap.clear();
 	}
 

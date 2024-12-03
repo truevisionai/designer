@@ -29,7 +29,7 @@ export class ViewControllerService {
 		this.cameraService.cameraChanged.subscribe( ( camera ) => this.onCameraChanged( camera ) );
 	}
 
-	init ( camera: THREE.Camera, canvas: HTMLCanvasElement ) {
+	init ( camera: THREE.Camera, canvas: HTMLCanvasElement ): void {
 
 		const controls = TvOrbitControls.getNew( camera, canvas );
 
@@ -42,19 +42,19 @@ export class ViewControllerService {
 		this.controls = controls;
 	}
 
-	enableControls () {
+	enableControls (): void {
 
 		this.controls.enabled = true;
 
 	}
 
-	disableControls () {
+	disableControls (): void {
 
 		this.controls.enabled = false;
 
 	}
 
-	setFocusTarget ( target: Vector3 ) {
+	setFocusTarget ( target: Vector3 ): void {
 
 		// this.target = target;
 		this.controls.setTarget( target );
@@ -73,20 +73,20 @@ export class ViewControllerService {
 
 	}
 
-	removeFocusTarget () {
+	removeFocusTarget (): void {
 
 		this.controls.setTarget( this.target?.position.clone() ?? new Vector3() );
 		this.target = null;
 
 	}
 
-	update ( delta: number ) {
+	update ( delta: number ): void {
 
 		this.controls.update();
 
 	}
 
-	focus ( obj: THREE.Object3D ) {
+	focus ( obj: THREE.Object3D ): void {
 
 		//// move the camera on top of the object
 		//this.camera.position.setX( obj.position.x );
@@ -102,7 +102,7 @@ export class ViewControllerService {
 		//( this.camera as any ).updateProjectionMatrix();
 	}
 
-	private onCameraChanged ( camera: THREE.Camera ) {
+	private onCameraChanged ( camera: THREE.Camera ): void {
 
 		this.controls.setCamera( camera );
 
@@ -121,7 +121,7 @@ export class ViewControllerService {
 
 	}
 
-	updateCameraPosition () {
+	updateCameraPosition (): void {
 
 		//const target = this.getFocusTarget();
 		//

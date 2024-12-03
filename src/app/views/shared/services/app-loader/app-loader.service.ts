@@ -22,7 +22,7 @@ export class AppLoaderService {
 		return this.dialogRef.afterClosed();
 	}
 
-	public close () {
+	public close (): void {
 		if ( this.dialogRef ) {
 			this.dialogRef.close();
 		}

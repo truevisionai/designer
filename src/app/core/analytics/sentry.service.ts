@@ -61,7 +61,7 @@ export class SentryService {
 
 	}
 
-	captureWithMapState ( error: Error, context: any ) {
+	captureWithMapState ( error: Error, context: any ): void {
 
 		if ( !this.isErrorTrackingEnabled ) return;
 

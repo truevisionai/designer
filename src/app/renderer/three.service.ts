@@ -47,7 +47,7 @@ export class ThreeService {
 
 	}
 
-	setEnvironment ( environment: ScenarioEnvironment, removeOld = false ) {
+	setEnvironment ( environment: ScenarioEnvironment, removeOld = false ): void {
 
 		if ( removeOld ) {
 
@@ -109,13 +109,13 @@ export class ThreeService {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		SceneService.clear();
 
 	}
 
-	wireframeMode ( showWireframe: boolean ) {
+	wireframeMode ( showWireframe: boolean ): void {
 
 		this.sceneService.scene.traverse( function ( child ) {
 
@@ -129,7 +129,7 @@ export class ThreeService {
 
 	}
 
-	private addAxesHelper () {
+	private addAxesHelper (): void {
 
 		SceneService.addEditorObject( new THREE.AxesHelper( 3000 ) );
 

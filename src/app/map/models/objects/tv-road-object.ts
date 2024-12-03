@@ -306,7 +306,7 @@ export class TvRoadObject {
 
 	}
 
-	removeRepeatObject ( repeat: TvObjectRepeat ) {
+	removeRepeatObject ( repeat: TvObjectRepeat ): void {
 
 		this.repeat = this.repeat.filter( r => r !== repeat );
 

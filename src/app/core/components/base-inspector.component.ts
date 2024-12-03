@@ -11,7 +11,7 @@ import { Component, HostListener } from '@angular/core';
 export abstract class BaseInspector {
 
 	@HostListener( 'window:keydown', [ '$event' ] )
-	baseOnKeyDown ( event: KeyboardEvent ) {
+	baseOnKeyDown ( event: KeyboardEvent ): void {
 
 		if ( event.key === 'Delete' || ( event.key === 'Backspace' && event.metaKey ) ) {
 			this.onDelete();
@@ -19,7 +19,7 @@ export abstract class BaseInspector {
 
 	}
 
-	onDelete () {
+	onDelete (): void {
 
 	}
 }

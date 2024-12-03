@@ -122,7 +122,7 @@ export class RoadSignalInspector {
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	delete () {
+	delete (): void {
 
 		Commands.RemoveObject( this.signal );
 

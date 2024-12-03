@@ -78,7 +78,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	showControls ( road: TvRoad, roadObject: TvRoadObject ) {
+	showControls ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		roadObject.repeats.forEach( repeat => {
 
@@ -178,7 +178,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

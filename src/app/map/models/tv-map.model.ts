@@ -79,7 +79,7 @@ export class TvMap {
 		return this.controllers.next();
 	}
 
-	addController ( controller: TvSignalController ) {
+	addController ( controller: TvSignalController ): void {
 		this.controllers.set( controller.id, controller );
 	}
 
@@ -184,7 +184,7 @@ export class TvMap {
 
 	}
 
-	removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ): void {
 
 		if ( !this.roads.has( road.id ) ) {
 			throw new ModelNotFoundException( `Road with id ${ road.id } not found` );
@@ -233,7 +233,7 @@ export class TvMap {
 
 	}
 
-	addJunction ( junction: TvJunction ) {
+	addJunction ( junction: TvJunction ): void {
 
 		if ( this.junctions.has( junction.id ) ) {
 			throw new DuplicateKeyException( `Junction with id ${ junction.id } already exists` );
@@ -258,7 +258,7 @@ export class TvMap {
 
 	}
 
-	removeJunction ( junction: TvJunction ) {
+	removeJunction ( junction: TvJunction ): void {
 
 		if ( !this.junctions.has( junction.id ) ) {
 			throw new ModelNotFoundException( `Junction with id ${ junction.id } not found` );
@@ -268,13 +268,13 @@ export class TvMap {
 
 	}
 
-	removeSurface ( surface: Surface ) {
+	removeSurface ( surface: Surface ): void {
 
 		this.surfaces.splice( this.surfaces.indexOf( surface ), 1 );
 
 	}
 
-	addSurface ( surface: Surface ) {
+	addSurface ( surface: Surface ): void {
 
 		this.surfaces.push( surface );
 
@@ -284,15 +284,15 @@ export class TvMap {
 		return this.props;
 	}
 
-	addProp ( prop: PropInstance ) {
+	addProp ( prop: PropInstance ): void {
 		this.props.push( prop );
 	}
 
-	removeProp ( prop: PropInstance ) {
+	removeProp ( prop: PropInstance ): void {
 		this.props.splice( this.props.indexOf( prop ), 1 );
 	}
 
-	destroy () {
+	destroy (): void {
 
 		this.clear();
 
@@ -301,7 +301,7 @@ export class TvMap {
 	/**
 	 * Clears the OpenDrive structure, could be used to start a new document
 	 */
-	clear () {
+	clear (): void {
 
 		this.roads.clear();
 

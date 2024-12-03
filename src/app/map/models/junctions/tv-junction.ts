@@ -189,7 +189,7 @@ export class TvJunction {
 		return null;
 	}
 
-	addController ( controller: TvJunctionController ) {
+	addController ( controller: TvJunctionController ): void {
 
 		if ( this.controllers.find( c => c.id === controller.id ) ) {
 			Log.error( `Controller with id ${ controller.id } already exists in junction ${ this.id }` );
@@ -313,7 +313,7 @@ export class TvJunction {
 
 	}
 
-	addPriority ( priority: TvJunctionPriority ) {
+	addPriority ( priority: TvJunctionPriority ): void {
 
 		this.priorities.push( priority );
 

@@ -248,7 +248,7 @@ export class TvRoad {
 
 	}
 
-	setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ) {
+	setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ): void {
 
 		this.type.push( new TvRoadTypeClass( 0, type, maxSpeed, unit ) );
 
@@ -334,13 +334,13 @@ export class TvRoad {
 
 	}
 
-	setElevationProfile ( elevationProfile: TvElevationProfile ) {
+	setElevationProfile ( elevationProfile: TvElevationProfile ): void {
 
 		this.elevationProfile = elevationProfile;
 
 	}
 
-	addElevationProfile ( elevationProfile?: TvElevationProfile ) {
+	addElevationProfile ( elevationProfile?: TvElevationProfile ): void {
 
 		if ( elevationProfile ) {
 
@@ -385,7 +385,7 @@ export class TvRoad {
 
 	}
 
-	clearSignals () {
+	clearSignals (): void {
 
 		this.signals.clear();
 
@@ -592,7 +592,7 @@ export class TvRoad {
 		return points;
 	}
 
-	computeLaneSectionCoordinates () {
+	computeLaneSectionCoordinates (): void {
 
 		this.getLaneProfile().computeLaneSectionCoordinates();
 
@@ -729,7 +729,7 @@ export class TvRoad {
 
 	}
 
-	markAsCornerRoad () {
+	markAsCornerRoad (): void {
 
 		this.cornerRoad = true;
 

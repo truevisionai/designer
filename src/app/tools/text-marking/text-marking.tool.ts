@@ -205,7 +205,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 	}
 
-	onRoadSelected ( road: TvRoad ) {
+	onRoadSelected ( road: TvRoad ): void {
 
 		if ( this.currentSelectedObject ) this.onSignalUnselected( this.currentSelectedObject );
 
@@ -235,7 +235,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 	}
 
-	onSignalSelected ( signal: TvRoadSignal ) {
+	onSignalSelected ( signal: TvRoadSignal ): void {
 
 		this.currentSelectedPoint?.select();
 
@@ -243,7 +243,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 	}
 
-	onSignalUnselected ( signal: TvRoadSignal ) {
+	onSignalUnselected ( signal: TvRoadSignal ): void {
 
 		this.currentSelectedPoint?.unselect();
 

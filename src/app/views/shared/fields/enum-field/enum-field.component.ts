@@ -26,7 +26,7 @@ export class EnumFieldComponent extends AbstractFieldComponent<any> implements O
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		const labels = Object.keys( this.enum );
 		const values = Object.values( this.enum );
@@ -42,7 +42,7 @@ export class EnumFieldComponent extends AbstractFieldComponent<any> implements O
 
 	}
 
-	onChanged ( $event ) {
+	onChanged ( $event ): void {
 
 		this.changed.emit( $event.target.value );
 

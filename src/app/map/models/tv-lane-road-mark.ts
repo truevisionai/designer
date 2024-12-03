@@ -145,7 +145,7 @@ export class TvLaneRoadMark {
 		return this.type;
 	}
 
-	setType ( value ) {
+	setType ( value ): void {
 		this.type = value;
 	}
 
@@ -208,7 +208,7 @@ export class TvLaneRoadMark {
 		}
 	}
 
-	clearMesh () {
+	clearMesh (): void {
 
 		if ( this.gameObject ) {
 

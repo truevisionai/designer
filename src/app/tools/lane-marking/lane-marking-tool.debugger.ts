@@ -86,7 +86,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	showRoad ( road: TvRoad ) {
+	showRoad ( road: TvRoad ): void {
 
 		road.laneSections.forEach( laneSection => {
 
@@ -109,7 +109,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 		} );
 	}
 
-	hideRoad ( road: TvRoad ) {
+	hideRoad ( road: TvRoad ): void {
 
 		road.laneSections.forEach( laneSection => {
 
@@ -182,7 +182,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

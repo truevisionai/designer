@@ -37,7 +37,7 @@ export class PropCurve {
 		this.spline = spline;
 	}
 
-	addProp ( prop: Object3D, position: Vector3, rotation: Vector3, scale: Vector3 ) {
+	addProp ( prop: Object3D, position: Vector3, rotation: Vector3, scale: Vector3 ): void {
 
 		prop.position.copy( position );
 

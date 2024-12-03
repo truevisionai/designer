@@ -27,7 +27,7 @@ Width (ds) shall be greater than or equal to zero.
 } )
 export class LaneWidthManager {
 
-	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		this.validateLane( lane );
 
@@ -39,7 +39,7 @@ export class LaneWidthManager {
 
 	}
 
-	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		this.validateLane( lane );
 
@@ -51,7 +51,7 @@ export class LaneWidthManager {
 
 	}
 
-	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		return;
 
@@ -63,7 +63,7 @@ export class LaneWidthManager {
 
 	}
 
-	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( road.isJunction ) return;
 
@@ -121,7 +121,7 @@ export class LaneWidthManager {
 		lane.updateWidthCoefficients();
 	}
 
-	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
+	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ): void {
 
 		// TODO: Implement this method
 
@@ -155,7 +155,7 @@ export class LaneWidthManager {
 
 	}
 
-	private validateLane ( lane: TvLane ) {
+	private validateLane ( lane: TvLane ): void {
 
 		this.ensureMinWidthRecord( lane );
 		lane.sortWidth();
@@ -163,7 +163,7 @@ export class LaneWidthManager {
 
 	}
 
-	private ensureMinWidthRecord ( lane: TvLane ) {
+	private ensureMinWidthRecord ( lane: TvLane ): void {
 
 		if ( lane.isCenter ) {
 			lane.clearLaneWidth();

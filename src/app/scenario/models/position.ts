@@ -32,7 +32,7 @@ export abstract class Position {
 
 	abstract updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void;
 
-	setPosition ( value: Vector3 ) {
+	setPosition ( value: Vector3 ): void {
 		if ( !this.vector0 ) this.vector0 = new Vector3();
 		this.vector0.copy( value );
 	}
@@ -45,7 +45,7 @@ export abstract class Position {
 		return {};
 	}
 
-	setOrientationV2 ( orientation: Orientation ) {
+	setOrientationV2 ( orientation: Orientation ): void {
 		if ( this.orientation ) {
 			this.orientation.copy( orientation );
 		} else {

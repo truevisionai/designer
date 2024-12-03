@@ -64,7 +64,7 @@ export class PropPolygonService extends BaseDataService<PropPolygon> {
 
 	}
 
-	updatePositions ( polygon: PropPolygon ) {
+	updatePositions ( polygon: PropPolygon ): void {
 
 		if ( !polygon ) return;
 

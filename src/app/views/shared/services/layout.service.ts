@@ -64,7 +64,7 @@ export class LayoutService {
 		this.setAppLayout();
 	}
 
-	setAppLayout () {
+	setAppLayout (): void {
 		//******** SET YOUR LAYOUT OPTIONS HERE *********
 		// this.layoutConf = {
 		// 	'navigationPos': 'side',      // side, top
@@ -85,7 +85,7 @@ export class LayoutService {
 		//**********************
 	}
 
-	publishLayoutChange ( lc: ILayoutConf, opt: ILayoutChangeOptions = {} ) {
+	publishLayoutChange ( lc: ILayoutConf, opt: ILayoutChangeOptions = {} ): void {
 		if ( this.layoutConf.matTheme !== lc.matTheme && lc.matTheme ) {
 			this.themeService.changeTheme( this.layoutConf.matTheme, lc.matTheme );
 		}
@@ -94,11 +94,11 @@ export class LayoutService {
 		this.layoutConfSubject.next( this.layoutConf );
 	}
 
-	applyMatTheme ( r: Renderer2 ) {
+	applyMatTheme ( r: Renderer2 ): void {
 		this.themeService.applyMatTheme( r, this.layoutConf.matTheme );
 	}
 
-	setLayoutFromQuery () {
+	setLayoutFromQuery (): void {
 		// let layoutConfString = getQueryParam( 'layout' );
 		// try {
 		// 	this.layoutConf = JSON.parse( layoutConfString );
@@ -107,7 +107,7 @@ export class LayoutService {
 		// }
 	}
 
-	adjustLayout ( options: IAdjustScreenOptions = {} ) {
+	adjustLayout ( options: IAdjustScreenOptions = {} ): void {
 		let sidebarStyle: string;
 		this.isMobile = this.isSm();
 		this.currentRoute = options.route || this.currentRoute;

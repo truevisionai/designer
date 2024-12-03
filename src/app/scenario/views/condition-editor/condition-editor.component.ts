@@ -37,18 +37,18 @@ export class ConditionEditorComponent implements OnInit {
 		return this.condition as EntityCondition;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 
 	}
 
-	remove () {
+	remove (): void {
 
 		this.removed.emit( this.condition );
 
 	}
 
-	toggle ( $event: MouseEvent ) {
+	toggle ( $event: MouseEvent ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();

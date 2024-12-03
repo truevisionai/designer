@@ -185,7 +185,7 @@ export class TvJunctionBoundaryFactory {
 
 	}
 
-	static sortBoundarySegments ( boundary: TvJunctionBoundary ) {
+	static sortBoundarySegments ( boundary: TvJunctionBoundary ): void {
 
 		if ( boundary.getSegmentCount() == 0 ) {
 			Log.error( 'No segments found in boundary' );

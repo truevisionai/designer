@@ -113,7 +113,7 @@ export class PolePropInspector {
 	// }
 
 	@SerializedAction( { label: 'Delete' } )
-	delete () {
+	delete (): void {
 
 		Commands.RemoveObject( this.roadObject );
 

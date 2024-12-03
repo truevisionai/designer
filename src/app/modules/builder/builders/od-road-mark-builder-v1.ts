@@ -86,7 +86,7 @@ export class OdRoadMarkBuilderV1 {
 	}
 
 
-	private processLane ( laneSection: TvLaneSection, lane: TvLane ) {
+	private processLane ( laneSection: TvLaneSection, lane: TvLane ): void {
 
 		const roadMarks = lane.roadMarks.toArray();
 
@@ -299,14 +299,14 @@ export class OdRoadMarkBuilderV1 {
 		// }
 	}
 
-	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+	private addVertex ( meshData: MeshGeometryData, v1: Vertex ): void {
 		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z + 0.11 );
 		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
 		meshData.uvs.push( v1.uvs.x, v1.uvs.y );
 		meshData.indices.push( meshData.currentIndex++ );
 	}
 
-	private drawRoadMark ( roadMark: TvLaneRoadMark, mesh: MeshGeometryData, lane: TvLane ) {
+	private drawRoadMark ( roadMark: TvLaneRoadMark, mesh: MeshGeometryData, lane: TvLane ): void {
 
 		this.createMeshIndices( mesh );
 

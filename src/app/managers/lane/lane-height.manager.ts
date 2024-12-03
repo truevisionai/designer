@@ -16,7 +16,7 @@ import { LaneUtils } from "app/utils/lane.utils";
 export class LaneHeightManager {
 
 
-	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		const heightValue = this.getHeightValueByType( lane.type );
 
@@ -24,13 +24,13 @@ export class LaneHeightManager {
 
 	}
 
-	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		this.createDefaultNodes( road, laneSection, lane );
 
 	}
 
-	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		this.createDefaultNodes( road, laneSection, lane );
 
@@ -62,7 +62,7 @@ export class LaneHeightManager {
 
 	}
 
-	private sync ( otherLane: TvLane, height: TvLaneHeight ) {
+	private sync ( otherLane: TvLane, height: TvLaneHeight ): void {
 
 		if ( otherLane.height.length == 0 ) {
 
@@ -87,7 +87,7 @@ export class LaneHeightManager {
 
 	}
 
-	private ensureMinimumTwoNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	private ensureMinimumTwoNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
 
@@ -113,7 +113,7 @@ export class LaneHeightManager {
 
 	}
 
-	private updateFirstAndLastNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	private updateFirstAndLastNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( lane.height.length === 0 ) return;
 

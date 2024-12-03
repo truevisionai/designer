@@ -17,7 +17,7 @@ export class RoadStyleManager {
 
 	private style?: RoadStyle;
 
-	setCurrentStyle ( style: RoadStyle ) {
+	setCurrentStyle ( style: RoadStyle ): void {
 
 		this.style = style;
 

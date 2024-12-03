@@ -48,7 +48,7 @@ export class EntityManager {
 
 	}
 
-	updateEntityPosition ( entity: ScenarioEntity, road: TvRoad ) {
+	updateEntityPosition ( entity: ScenarioEntity, road: TvRoad ): void {
 
 		return;
 
@@ -58,7 +58,7 @@ export class EntityManager {
 		teleportAction?.execute( entity );
 	}
 
-	setEntity ( entity: ScenarioEntity ) {
+	setEntity ( entity: ScenarioEntity ): void {
 
 		this.entity = entity;
 

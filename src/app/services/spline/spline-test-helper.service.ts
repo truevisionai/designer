@@ -122,7 +122,7 @@ export class SplineTestHelper {
 
 	}
 
-	addCircleRoad ( radius: number, center = new Vector3() ) {
+	addCircleRoad ( radius: number, center = new Vector3() ): void {
 
 		const end = new Vector3( center.x + radius, center.y, center.z );
 
@@ -245,7 +245,7 @@ export class SplineTestHelper {
 		return { horizontal, vertical };
 	}
 
-	addSixRoadJunction () {
+	addSixRoadJunction (): void {
 
 		const splineA = this.createStraightSpline( new Vector3( -100, 0, 0 ), 200 );
 		const splineB = this.createStraightSpline( new Vector3( 0, -100, 0 ), 200, 90 );
@@ -287,7 +287,7 @@ export class SplineTestHelper {
 		return spline;
 	}
 
-	createAngleT2RoadJunction () {
+	createAngleT2RoadJunction (): void {
 
 		const splineA = this.createStraightSpline( new Vector3( 0, 0, 0 ), 100, 90 );
 		const splineB = this.createStraightSpline( new Vector3( 100, 0, 0 ), 135, 135 );
@@ -439,7 +439,7 @@ export class SplineTestHelper {
 
 	}
 
-	create2CustomJunctionWith3Roads () {
+	create2CustomJunctionWith3Roads (): void {
 
 		const left = this.createStraightSpline( new Vector3( -120, 0, 0 ), 100 );
 		const middle = this.createStraightSpline( new Vector3( 0, 0, 0 ), 100 );

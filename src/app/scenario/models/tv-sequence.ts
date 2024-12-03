@@ -51,7 +51,7 @@ export class ManeuverGroup {
 
 	}
 
-	addManeuver ( maneuver: Maneuver ) {
+	addManeuver ( maneuver: Maneuver ): void {
 
 		// const hasName = ScenarioInstance.db.has_maneuver( maneuver.name );
 

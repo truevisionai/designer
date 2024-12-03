@@ -62,7 +62,7 @@ export class TvSceneFileService {
 		return this.scenarioService.getScenario();
 	}
 
-	newScene ( map?: TvMap ) {
+	newScene ( map?: TvMap ): void {
 
 		this.currentFile = new IFile( 'Untitled.scene' );
 
@@ -72,7 +72,7 @@ export class TvSceneFileService {
 
 	}
 
-	setMap ( map: TvMap ) {
+	setMap ( map: TvMap ): void {
 
 		this.destroyMap( this.mapService.map );
 
@@ -94,7 +94,7 @@ export class TvSceneFileService {
 
 	}
 
-	setFilePath ( path: string, map: TvMap ) {
+	setFilePath ( path: string, map: TvMap ): void {
 
 		if ( !this.currentFile ) this.currentFile = new IFile( 'Untitled.scene' );
 
@@ -112,7 +112,7 @@ export class TvSceneFileService {
 
 	}
 
-	openLastFile () {
+	openLastFile (): void {
 
 		const lastFile = this.localStorage.get( STORAGE_KEYS.LAST_FILE );
 
@@ -129,7 +129,7 @@ export class TvSceneFileService {
 
 	}
 
-	destroyMap ( map: TvMap ) {
+	destroyMap ( map: TvMap ): void {
 
 		if ( map == null ) return;
 
@@ -210,7 +210,7 @@ export class TvSceneFileService {
 
 	}
 
-	private createSceneAsset ( path: string ) {
+	private createSceneAsset ( path: string ): void {
 
 		const extension = 'scene';
 
@@ -237,7 +237,7 @@ export class TvSceneFileService {
 
 	}
 
-	private updateSceneAsset ( path: string ) {
+	private updateSceneAsset ( path: string ): void {
 
 		const extension = 'scene';
 

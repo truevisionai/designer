@@ -175,7 +175,7 @@ class Sun {
 		)
 	}
 
-	update () {
+	update (): void {
 
 		const lightDirection = this.direction.normalize();
 
@@ -304,7 +304,7 @@ class DomeImage {
 		this.update();
 	}
 
-	update () {
+	update (): void {
 
 		// const dome = this;
 

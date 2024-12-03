@@ -52,7 +52,7 @@ export class RoadToolHelper {
 	// }
 
 
-	removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ): void {
 
 		this.roadService.remove( road );
 

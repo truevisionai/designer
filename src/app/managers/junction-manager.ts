@@ -53,7 +53,7 @@ export class JunctionManager {
 	) {
 	}
 
-	addJunction ( junction: TvJunction ) {
+	addJunction ( junction: TvJunction ): void {
 
 		if ( this.debug ) Log.debug( 'Add', junction.toString() );
 
@@ -168,7 +168,7 @@ export class JunctionManager {
 		}
 	}
 
-	addLink ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ) {
+	addLink ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ): void {
 
 		this.connectionManager.addConnectionsForRoad( junction, road, contact );
 
@@ -303,19 +303,19 @@ export class JunctionManager {
 		return newIntersections;
 	}
 
-	removeConnections ( junction: TvJunction, incomingRoad: TvRoad ) {
+	removeConnections ( junction: TvJunction, incomingRoad: TvRoad ): void {
 
 		junction.removeConnectionsByRoad( incomingRoad );
 
 	}
 
-	insertJunction ( spline: AbstractSpline, junctionStart: number, junctionEnd: number, newJunction: TvJunction ) {
+	insertJunction ( spline: AbstractSpline, junctionStart: number, junctionEnd: number, newJunction: TvJunction ): void {
 
 		new JunctionInserter( spline, this.roadService, this.roadFactory, this.mapService ).insertJunction( junctionStart, junctionEnd, newJunction );
 
 	}
 
-	updateConnections ( junction: TvJunction ) {
+	updateConnections ( junction: TvJunction ): void {
 
 		// we will regenerate splines for each connecting road
 		// no other modification is needed

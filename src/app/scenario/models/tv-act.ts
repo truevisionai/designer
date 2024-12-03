@@ -47,20 +47,20 @@ export class Act {
 
 	}
 
-	addManeuverGroup ( sequence: ManeuverGroup ) {
+	addManeuverGroup ( sequence: ManeuverGroup ): void {
 
 		this.maneueverGroups.push( sequence );
 
 	}
 
-	addStartCondition ( condition: Condition ) {
+	addStartCondition ( condition: Condition ): void {
 		if ( this.startConditionGroups.length == 0 ) {
 			this.startConditionGroups.push( new ConditionGroup() );
 		}
 		this.startConditionGroups[ 0 ].addCondition( condition );
 	}
 
-	addEndCondition ( condition: Condition ) {
+	addEndCondition ( condition: Condition ): void {
 
 		if ( this.endConditionGroups.length == 0 ) {
 			this.endConditionGroups.push( new ConditionGroup() );

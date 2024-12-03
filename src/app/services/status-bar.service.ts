@@ -94,7 +94,7 @@ export class StatusBarService {
 		return StatusBarService.message;
 	}
 
-	static setHint ( msg: string ) {
+	static setHint ( msg: string ): void {
 
 		if ( msg == '' || msg == null ) return;
 
@@ -116,7 +116,7 @@ export class StatusBarService {
 
 	}
 
-	static setMessage ( msg: string, force = false ) {
+	static setMessage ( msg: string, force = false ): void {
 
 		if ( !force && this.message === msg ) return;
 
@@ -133,13 +133,13 @@ export class StatusBarService {
 
 	}
 
-	static clearHint () {
+	static clearHint (): void {
 
 		this.message = '';
 
 	}
 
-	onPointerMoved ( data: PointerEventData ) {
+	onPointerMoved ( data: PointerEventData ): void {
 
 		if ( !data?.point ) return;
 

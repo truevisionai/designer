@@ -195,7 +195,7 @@ export class GeometryUtils {
 
 	}
 
-	static weldBufferGeometry ( geometry: BufferGeometry, threshold: number = 0.001 ) {
+	static weldBufferGeometry ( geometry: BufferGeometry, threshold: number = 0.001 ): void {
 
 		const vertices = geometry.attributes.position.array;
 		const weldMap = new Map();

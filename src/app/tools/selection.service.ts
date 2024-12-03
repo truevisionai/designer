@@ -187,7 +187,7 @@ export class SelectionService {
 		return this.selectedObjects.size;
 	}
 
-	reset () {
+	reset (): void {
 
 		this.strategies.clear();
 
@@ -306,7 +306,7 @@ export class SelectionService {
 	}
 
 
-	addMovingStrategy ( strategy: IMovingStrategy ) {
+	addMovingStrategy ( strategy: IMovingStrategy ): void {
 
 		this.movingStrategies.push( strategy );
 

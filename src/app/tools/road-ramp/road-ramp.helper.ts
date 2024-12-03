@@ -98,7 +98,7 @@ export class RampToolHelper {
 
 	}
 
-	addLaneSection ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3, road: TvRoad ) {
+	addLaneSection ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3, road: TvRoad ): void {
 
 		const connectingLaneSection = new TvLaneSection( 0, 0, true, road );
 

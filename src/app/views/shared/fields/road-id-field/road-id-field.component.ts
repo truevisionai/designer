@@ -23,10 +23,10 @@ export class RoadIdFieldComponent extends AbstractFieldComponent<number> {
 		return this.roadService.roads.map( road => road.id );
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	onRoadIdChanged ( $roadId: number ) {
+	onRoadIdChanged ( $roadId: number ): void {
 		this.changed.emit( $roadId );
 	}
 }

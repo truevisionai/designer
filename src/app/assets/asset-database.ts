@@ -16,7 +16,7 @@ export class AssetDatabase {
 
 	private static instances: Map<string, any> = new Map<string, any>();
 
-	static setMetadata ( guid: string, metadata: Metadata ) {
+	static setMetadata ( guid: string, metadata: Metadata ): void {
 
 		this.metadata.set( guid, metadata );
 
@@ -45,7 +45,7 @@ export class AssetDatabase {
 
 	}
 
-	static setInstance ( guid: string, instance: any ) {
+	static setInstance ( guid: string, instance: any ): void {
 
 		this.instances.set( guid, instance );
 
@@ -77,13 +77,13 @@ export class AssetDatabase {
 
 	}
 
-	static removeInstance ( guid: string ) {
+	static removeInstance ( guid: string ): void {
 
 		this.instances.delete( guid );
 
 	}
 
-	static remove ( guid: string ) {
+	static remove ( guid: string ): void {
 
 		try {
 

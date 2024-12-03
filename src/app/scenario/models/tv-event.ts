@@ -56,7 +56,7 @@ export class TvEvent {
 
 	}
 
-	addNewAction ( name: string, action: TvAction ) {
+	addNewAction ( name: string, action: TvAction ): void {
 
 		// const hasName = ScenarioInstance.db.has_action( name );
 
@@ -75,7 +75,7 @@ export class TvEvent {
 		} );
 	}
 
-	addStartCondition ( condition: Condition ) {
+	addStartCondition ( condition: Condition ): void {
 
 		const conditionGroup = this.createOrGetGroup();
 
@@ -112,7 +112,7 @@ export class TvEvent {
 
 	}
 
-	removeCondition ( $condition: Condition ) {
+	removeCondition ( $condition: Condition ): void {
 
 		for ( let i = 0; i < this.startConditionGroups.length; i++ ) {
 
@@ -142,7 +142,7 @@ export class TvEvent {
 
 	}
 
-	removeAction ( action: PrivateAction ) {
+	removeAction ( action: PrivateAction ): void {
 
 		this.actions.forEach( ( value, key ) => {
 
@@ -158,13 +158,13 @@ export class TvEvent {
 
 	}
 
-	addAction ( action: PrivateAction ) {
+	addAction ( action: PrivateAction ): void {
 
 		this.actions.set( action.name, action );
 
 	}
 
-	private onActionCompleted ( e: StoryboardEvent ) {
+	private onActionCompleted ( e: StoryboardEvent ): void {
 
 		if ( e.type != StoryboardElementType.action ) return;
 

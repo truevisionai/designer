@@ -41,10 +41,10 @@ export class EventEditorComponent implements OnInit {
 		return this.scenarioService.getScenario();
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	addCondition ( $type: ConditionType ) {
+	addCondition ( $type: ConditionType ): void {
 
 		const condition = ConditionFactory.createCondition( $type, this.entity );
 
@@ -52,7 +52,7 @@ export class EventEditorComponent implements OnInit {
 
 	}
 
-	addAction ( $type: ActionType ) {
+	addAction ( $type: ActionType ): void {
 
 		const action = this.elementFactory.createEventAction( $type, this.entity );
 
@@ -60,20 +60,20 @@ export class EventEditorComponent implements OnInit {
 
 	}
 
-	removeAction ( action: TvAction ) {
+	removeAction ( action: TvAction ): void {
 
 		this.event.removeAction( action as PrivateAction );
 
 	}
 
-	removeCondition ( condition: Condition ) {
+	removeCondition ( condition: Condition ): void {
 
 		this.event.removeCondition( condition );
 
 	}
 
 	@HostListener( 'contextmenu', [ '$event' ] )
-	onContextMenu ( $event ) {
+	onContextMenu ( $event ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -92,7 +92,7 @@ export class EventEditorComponent implements OnInit {
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
-	toggle ( $event: MouseEvent ) {
+	toggle ( $event: MouseEvent ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -101,7 +101,7 @@ export class EventEditorComponent implements OnInit {
 
 	}
 
-	delete ( $event: MouseEvent ) {
+	delete ( $event: MouseEvent ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();

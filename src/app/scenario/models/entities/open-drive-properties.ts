@@ -58,7 +58,7 @@ export class OpenDriveProperties {
 		}
 	}
 
-	reset () {
+	reset (): void {
 
 		this.roadId = 0;
 		this.laneSectionId = 0;

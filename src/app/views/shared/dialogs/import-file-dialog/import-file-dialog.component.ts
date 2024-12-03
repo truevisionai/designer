@@ -44,13 +44,13 @@ export class ImportFileDialogComponent implements OnInit {
 
 	}
 
-	selectFile ( file: IFile ) {
+	selectFile ( file: IFile ): void {
 
 		this.selectedFile = file;
 
 	}
 
-	public fileChange ( event ) {
+	public fileChange ( event ): void {
 
 		const self = this;
 
@@ -73,7 +73,7 @@ export class ImportFileDialogComponent implements OnInit {
 
 	}
 
-	public onImport () {
+	public onImport (): void {
 
 		if ( this.selectedFile != null ) {
 
@@ -87,7 +87,7 @@ export class ImportFileDialogComponent implements OnInit {
 
 	}
 
-	public onCancel () {
+	public onCancel (): void {
 
 		this.dialogRef.close();
 

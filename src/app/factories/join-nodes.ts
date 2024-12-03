@@ -25,7 +25,7 @@ export class JoinNode {
 
 	}
 
-	join () {
+	join (): void {
 
 		// first node position/direction
 		// second node position/direction
@@ -75,7 +75,7 @@ export class JoinNode {
 		return new Vector3( x, y, 0 );
 	}
 
-	private checkIntersection ( a: TvPosTheta, b: TvPosTheta ) {
+	private checkIntersection ( a: TvPosTheta, b: TvPosTheta ): void {
 
 		const directionVectorA = {
 			x: Math.cos( a.hdg ),
@@ -103,7 +103,7 @@ export class JoinNode {
 		}
 	}
 
-	private checkIntersectionInSameDirection ( a: TvPosTheta, b: TvPosTheta ) {
+	private checkIntersectionInSameDirection ( a: TvPosTheta, b: TvPosTheta ): void {
 
 		// function isIntersectionInDirection ( intersection, startPoint: TvPosTheta, directionVector ) {
 		// 	const deltaX = intersection.x - startPoint.x;

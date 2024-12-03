@@ -51,7 +51,7 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 		return this.canvas.height;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		if ( !this.object3d ) {
 
@@ -105,7 +105,7 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	render () {
+	render (): void {
 
 		// this seems a faster want to call render function
 		this.frameId = requestAnimationFrame( this.render );
@@ -116,7 +116,7 @@ export class AssetPreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	@HostListener( 'window: resize', [ '$event' ] )
-	resize () {
+	resize (): void {
 
 		const container = this.previewService.renderer.domElement.parentElement;
 

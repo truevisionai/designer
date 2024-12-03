@@ -33,7 +33,7 @@ export class SuperElevationService {
 		return true;
 	}
 
-	add ( road: TvRoad, superElevation: TvSuperElevation ) {
+	add ( road: TvRoad, superElevation: TvSuperElevation ): void {
 
 		this.validate( road, superElevation );
 
@@ -45,7 +45,7 @@ export class SuperElevationService {
 
 	}
 
-	update ( road: TvRoad, superElevation: TvSuperElevation ) {
+	update ( road: TvRoad, superElevation: TvSuperElevation ): void {
 
 		this.validate( road, superElevation );
 
@@ -55,7 +55,7 @@ export class SuperElevationService {
 
 	}
 
-	remove ( road: TvRoad, superElevation: TvSuperElevation ) {
+	remove ( road: TvRoad, superElevation: TvSuperElevation ): void {
 
 		road.getLateralProfile().removeSuperElevation( superElevation );
 

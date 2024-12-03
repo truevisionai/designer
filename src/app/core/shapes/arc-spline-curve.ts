@@ -20,7 +20,7 @@ export class CustomSplineCurve {
 		return this.mGeometries;
 	}
 
-	addPoint ( p: Vector3 ) {
+	addPoint ( p: Vector3 ): void {
 
 		this.points.push( p );
 
@@ -28,7 +28,7 @@ export class CustomSplineCurve {
 
 	}
 
-	addPoints ( points: Vector3[] ) {
+	addPoints ( points: Vector3[] ): void {
 
 		points.forEach( point => {
 			this.points.push( point );
@@ -37,7 +37,7 @@ export class CustomSplineCurve {
 		this.compute();
 	}
 
-	compute () {
+	compute (): void {
 
 		if ( this.points.length < 3 ) return;
 

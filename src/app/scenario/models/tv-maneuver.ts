@@ -61,11 +61,11 @@ export class Maneuver {
 		return event;
 	}
 
-	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
+	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ): void {
 		this.parameterDeclarations.push( parameterDeclaration );
 	}
 
-	private onEventCompleted ( storyEvent: StoryboardEvent ) {
+	private onEventCompleted ( storyEvent: StoryboardEvent ): void {
 
 		this.eventIndex++;
 

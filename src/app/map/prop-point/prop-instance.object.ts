@@ -21,7 +21,7 @@ export class PropInstance extends Object3D implements IHasCopyUpdate {
 	}
 
 	@SerializedAction()
-	delete () {
+	delete (): void {
 
 		CommandHistory.executeMany( new UnselectObjectCommand( this ), new RemoveObjectCommand( this ) );
 
@@ -92,7 +92,7 @@ export class PropInstance extends Object3D implements IHasCopyUpdate {
 
 	}
 
-	update () {
+	update (): void {
 
 		this.object?.updateMatrixWorld( true );
 

@@ -299,7 +299,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeRoadNetwork ( xml: XmlElement, roadNetwork: RoadNetwork ) {
+	writeRoadNetwork ( xml: XmlElement, roadNetwork: RoadNetwork ): void {
 
 		if ( this.version == OpenScenarioVersion.v0_9 ) {
 
@@ -343,7 +343,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeStoryboard ( xml: any, storyboard: Storyboard ) {
+	writeStoryboard ( xml: any, storyboard: Storyboard ): void {
 
 		const key = this.version == OpenScenarioVersion.v0_9 ? 'EndConditions' : 'StopTrigger';
 
@@ -1007,7 +1007,7 @@ export class OpenScenarioExporter {
 		return xml;
 	}
 
-	writeInitActions ( xml: any ) {
+	writeInitActions ( xml: any ): void {
 
 		this.openScenario.objects.forEach( object => {
 

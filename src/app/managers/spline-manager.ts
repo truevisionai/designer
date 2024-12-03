@@ -30,7 +30,7 @@ export class SplineManager {
 	) {
 	}
 
-	addSpline ( spline: AbstractSpline, updateJunctions = true ) {
+	addSpline ( spline: AbstractSpline, updateJunctions = true ): void {
 
 		if ( this.debug ) Log.debug( "Add", spline.toString() );
 

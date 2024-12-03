@@ -108,11 +108,11 @@ export class TvRoadSignal {
 		this.validities.push( new TvLaneValidity( fromLane, toLane ) );
 	}
 
-	addDependency ( id: number, type: TvSignalDependencyType ) {
+	addDependency ( id: number, type: TvSignalDependencyType ): void {
 		this.dependencies.push( new TvSignalDependency( id, type ) );
 	}
 
-	addReference ( elementId: number, elementType: TvReferenceElementType, type?: string ) {
+	addReference ( elementId: number, elementType: TvReferenceElementType, type?: string ): void {
 		this.references.push( new TvReference( elementId, elementType, type ) );
 	}
 

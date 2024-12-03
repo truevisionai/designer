@@ -122,7 +122,7 @@ export class StandardMaterialInspector {
 		this.update();
 	}
 
-	update () {
+	update (): void {
 
 		const asset = this.materialService.assetService.getAsset( this.materialAsset.guid );
 
@@ -138,7 +138,7 @@ export class StandardMaterialInspector {
 
 	}
 
-	setMap ( attributeName: string, guid: string ) {
+	setMap ( attributeName: string, guid: string ): void {
 
 		if ( guid == null ) {
 			this.materialAsset.setMap( attributeName, null );

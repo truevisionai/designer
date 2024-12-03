@@ -109,7 +109,7 @@ export class ConnectionManager {
 		}
 	}
 
-	addConnectionsForRoad ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ) {
+	addConnectionsForRoad ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ): void {
 
 		this.generateConnections( junction, [ LinkFactory.createRoadLink( road, contact ) ] );
 

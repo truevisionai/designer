@@ -126,7 +126,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	}
 
-	private showHeightNodes ( lane: TvLane ) {
+	private showHeightNodes ( lane: TvLane ): void {
 
 		this.nodes.removeKey( lane );
 
@@ -165,7 +165,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 		return node;
 	}
 
-	private showSpanLines ( lane: TvLane ) {
+	private showSpanLines ( lane: TvLane ): void {
 
 		this.lines.removeKey( lane );
 

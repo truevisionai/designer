@@ -67,25 +67,25 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
 	}
 
-	onMouseOver () {
+	onMouseOver (): void {
 
 		//
 
 	}
 
-	onMouseOut () {
+	onMouseOut (): void {
 
 		//
 
 	}
 
-	updateLaneWidthValues () {
+	updateLaneWidthValues (): void {
 
 		//
 
 	}
 
-	select () {
+	select (): void {
 
 		this.isSelected = true;
 		this.point?.select();
@@ -93,7 +93,7 @@ export class LaneWidthNode extends Group implements INode, IHasCopyUpdate {
 
 	}
 
-	unselect () {
+	unselect (): void {
 
 		this.isSelected = false;
 		this.point?.unselect();

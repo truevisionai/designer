@@ -16,7 +16,7 @@ export class ParkingLaneManager {
 
 	constructor ( private parkingRoadToolService: ParkingRoadToolService ) { }
 
-	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( lane.type == TvLaneType.parking ) {
 
@@ -31,7 +31,7 @@ export class ParkingLaneManager {
 
 	}
 
-	onLaneRemoved ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneRemoved ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( lane.type == TvLaneType.parking ) {
 
@@ -41,7 +41,7 @@ export class ParkingLaneManager {
 
 	}
 
-	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( lane.type == TvLaneType.parking ) {
 

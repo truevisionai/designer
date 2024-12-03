@@ -281,7 +281,7 @@ export class IntersectionGroup {
 
 	}
 
-	merge ( otherGroup: IntersectionGroup ) {
+	merge ( otherGroup: IntersectionGroup ): void {
 
 		otherGroup.intersections.forEach( intersection => {
 
@@ -331,7 +331,7 @@ export class IntersectionGroup {
 
 	}
 
-	reComputeJunctionOffsets ( force = false ) {
+	reComputeJunctionOffsets ( force = false ): void {
 
 		if ( !force && this.getSplines().length < 2 ) return;
 

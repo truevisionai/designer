@@ -28,11 +28,11 @@ export class ManeuverToolHelper {
 		public connectionFactory: ConnectionFactory,
 	) { }
 
-	addControlPoint ( spline: AbstractSpline, point: SplineControlPoint ) {
+	addControlPoint ( spline: AbstractSpline, point: SplineControlPoint ): void {
 		this.splineService.addPointAndUpdateSpline( spline, point );
 	}
 
-	removeControlPoint ( spline: AbstractSpline, point: SplineControlPoint ) {
+	removeControlPoint ( spline: AbstractSpline, point: SplineControlPoint ): void {
 		this.splineService.removePointAndUpdateSpline( spline, point );
 	}
 

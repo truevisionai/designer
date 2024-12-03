@@ -40,7 +40,7 @@ export class PropPolygonTool extends BaseTool<any> {
 
 	}
 
-	onObjectUpdated ( object: any ) {
+	onObjectUpdated ( object: any ): void {
 
 		if ( object instanceof PropPolygonInspector ) {
 
@@ -54,7 +54,7 @@ export class PropPolygonTool extends BaseTool<any> {
 
 	}
 
-	onCreateObject ( e: PointerEventData ) {
+	onCreateObject ( e: PointerEventData ): void {
 
 		if ( !this.prop ) this.setHint( 'Select a prop from the project browser' );
 

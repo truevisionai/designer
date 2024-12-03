@@ -22,7 +22,7 @@ export class RelativeTarget extends Target {
 
 	}
 
-	setTarget ( value ) {
+	setTarget ( value ): void {
 
 		this.target = value;
 

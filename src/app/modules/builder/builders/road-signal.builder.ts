@@ -272,7 +272,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 		return defaultMaterial;
 	}
 
-	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ) {
+	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ): void {
 
 		const roadCoord = road.getRoadPosition( signal.s, signal.t );
 
@@ -296,7 +296,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 
 	}
 
-	private addPole ( object: Object3D, poleHeight: number, poleRadius: number ) {
+	private addPole ( object: Object3D, poleHeight: number, poleRadius: number ): void {
 
 		const pole = this.createPole( poleHeight, poleRadius );
 

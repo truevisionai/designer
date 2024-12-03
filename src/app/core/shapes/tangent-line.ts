@@ -36,7 +36,7 @@ export class TangentLine {
 
 	}
 
-	update ( hdgs: any[], points?: any[] ) {
+	update ( hdgs: any[], points?: any[] ): void {
 
 		this.hdgs = hdgs;
 

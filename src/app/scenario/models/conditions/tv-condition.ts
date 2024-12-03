@@ -93,7 +93,7 @@ export abstract class Condition {
 
 	}
 
-	reset () {
+	reset (): void {
 		this.passed = false;
 		this.scenario = null;
 	}

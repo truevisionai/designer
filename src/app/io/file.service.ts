@@ -105,7 +105,7 @@ export class FileService {
 		return Promise.resolve( arrayBuffer );
 	}
 
-	saveFileWithExtension ( directory: string = null, contents: string, extension: string, callbackFn: any = null ) {
+	saveFileWithExtension ( directory: string = null, contents: string, extension: string, callbackFn: any = null ): void {
 
 		if ( directory == null ) directory = this.projectFolder;
 
@@ -148,7 +148,7 @@ export class FileService {
 
 	}
 
-	writeFile ( filepath, content, callbackFn: any = null ) {
+	writeFile ( filepath, content, callbackFn: any = null ): void {
 
 		this.fs.writeFile( filepath, content, ( err, data ) => {
 
@@ -172,7 +172,7 @@ export class FileService {
 
 	}
 
-	deleteFolderRecursive ( folderPath ) {
+	deleteFolderRecursive ( folderPath ): void {
 
 		if ( this.fs.existsSync( folderPath ) ) {
 
@@ -195,7 +195,7 @@ export class FileService {
 		}
 	}
 
-	deleteFileSync ( path: string ) {
+	deleteFileSync ( path: string ): void {
 
 		this.fs.unlinkSync( path );
 
@@ -331,7 +331,7 @@ export class FileService {
 
 	}
 
-	copyDirSync ( source: string, destination: string ) {
+	copyDirSync ( source: string, destination: string ): void {
 
 		if ( !this.fs.existsSync( destination ) ) {
 			this.fs.mkdirSync( destination, { recursive: true } );

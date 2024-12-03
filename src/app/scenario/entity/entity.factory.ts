@@ -25,7 +25,7 @@ export class EntityFactory {
 	) {
 	}
 
-	reset () {
+	reset (): void {
 
 		this.entityIds.reset();
 

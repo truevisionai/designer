@@ -82,7 +82,7 @@ export class ToolTipService {
 		return toolTip;
 	}
 
-	updateTooltipPosition ( id: number, position: Vector2 | Vector3 ) {
+	updateTooltipPosition ( id: number, position: Vector2 | Vector3 ): void {
 
 		if ( this.tooltips.has( id ) ) {
 
@@ -104,7 +104,7 @@ export class ToolTipService {
 
 	}
 
-	updateTooltipContent ( id: number, content: string ) {
+	updateTooltipContent ( id: number, content: string ): void {
 
 		if ( this.tooltips.has( id ) ) {
 
@@ -118,7 +118,7 @@ export class ToolTipService {
 
 	}
 
-	removeToolTip ( toolTip: TooltipInterface ) {
+	removeToolTip ( toolTip: TooltipInterface ): void {
 
 		if ( this.tooltips.has( toolTip.id ) ) {
 
@@ -149,7 +149,7 @@ export class ToolTipService {
 		return new Vector2( vector.x, vector.y );
 	}
 
-	clear () {
+	clear (): void {
 
 		this.tooltips.forEach( ( tooltip ) => {
 			this.tooltipRemoved.emit( tooltip );

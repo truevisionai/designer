@@ -38,13 +38,13 @@ export class PropSpanToolService {
 
 	}
 
-	addRoadSpanObject ( road: TvRoad, roadObject: TvRoadObject ) {
+	addRoadSpanObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		this.roadObjectService.addRoadObject( road, roadObject );
 
 	}
 
-	removeRoadSpanObject ( road: TvRoad, roadObject: TvRoadObject ) {
+	removeRoadSpanObject ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		this.roadObjectService.removeRoadObject( road, roadObject );
 

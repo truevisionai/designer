@@ -275,7 +275,7 @@ export class SplineFactory {
 
 	static createExplicitSpline ( geometries: TvAbstractRoadGeometry[], road: TvRoad ): ExplicitSpline {
 
-		function addControlPoint ( spline: ExplicitSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
+		function addControlPoint ( spline: ExplicitSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ): void {
 
 			const point = ControlPointFactory.createRoadControlPoint( spline, geometry, index, position, hdg );
 

@@ -114,7 +114,7 @@ export class RoadFactory {
 
 	}
 
-	setCounter ( id: number ) {
+	setCounter ( id: number ): void {
 
 		// this.mapService.map.roads.add( id );
 

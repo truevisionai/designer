@@ -60,7 +60,7 @@ export class AuthService {
 
 	}
 
-	public logout () {
+	public logout (): void {
 
 		window.localStorage.clear();
 

@@ -26,25 +26,25 @@ export class LaneOffsetActionComponent {
 
 	}
 
-	onShapeChanged ( $event: DynamicsShape ) {
+	onShapeChanged ( $event: DynamicsShape ): void {
 
 		Commands.SetValue( this.laneOffsetAction, 'dynamicsShape', $event );
 
 	}
 
-	onMaxAccelChanged ( $maxLateralAcc: number ) {
+	onMaxAccelChanged ( $maxLateralAcc: number ): void {
 
 		Commands.SetValue( this.laneOffsetAction, 'maxLateralAcc', $maxLateralAcc );
 
 	}
 
-	onContinousChanged ( $event: boolean ) {
+	onContinousChanged ( $event: boolean ): void {
 
 		this.laneOffsetAction.continous = $event;
 
 	}
 
-	onTargetChanged ( $event: Target ) {
+	onTargetChanged ( $event: Target ): void {
 
 		this.laneOffsetAction.target = $event;
 

@@ -42,13 +42,13 @@ export class BoxSelectionService {
 
 	}
 
-	setStrategy ( strategy: BaseSelectionStrategy<any> ) {
+	setStrategy ( strategy: BaseSelectionStrategy<any> ): void {
 
 		this.selectStrategy = strategy;
 
 	}
 
-	init ( strategy?: BaseSelectionStrategy<any> ) {
+	init ( strategy?: BaseSelectionStrategy<any> ): void {
 
 		if ( strategy ) this.setStrategy( strategy );
 
@@ -77,7 +77,7 @@ export class BoxSelectionService {
 
 	}
 
-	start ( e: PointerEventData ) {
+	start ( e: PointerEventData ): void {
 
 		this.filteredCollection = [];
 

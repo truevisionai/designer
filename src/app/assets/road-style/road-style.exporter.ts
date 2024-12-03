@@ -70,7 +70,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 
 	}
 
-	private writeLaneSection ( xmlNode: any, laneSection: TvLaneSection ) {
+	private writeLaneSection ( xmlNode: any, laneSection: TvLaneSection ): void {
 
 		const leftLanes = {
 			lane: []

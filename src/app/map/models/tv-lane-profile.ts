@@ -66,7 +66,7 @@ export class TvLaneProfile {
 		return this.laneSections.find( laneSection => laneSection.id === id );
 	}
 
-	clearLaneSections () {
+	clearLaneSections (): void {
 		this.laneSections.splice( 0, this.laneSections.length );
 	}
 
@@ -105,7 +105,7 @@ export class TvLaneProfile {
 	 * @param singleSide
 	 * @deprecated use addGetLaneSection
 	 */
-	createAndAddLaneSection ( s: number, singleSide: boolean ) {
+	createAndAddLaneSection ( s: number, singleSide: boolean ): void {
 
 		this.addGetLaneSection( s, singleSide );
 
@@ -151,7 +151,7 @@ export class TvLaneProfile {
 
 	}
 
-	updateLaneOffsetValues ( roadLength: number ) {
+	updateLaneOffsetValues ( roadLength: number ): void {
 
 		this.laneOffsets.computeCoefficients( roadLength );
 
@@ -179,7 +179,7 @@ export class TvLaneProfile {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		this.laneSections = [];
 
@@ -187,7 +187,7 @@ export class TvLaneProfile {
 
 	}
 
-	sortLaneSections () {
+	sortLaneSections (): void {
 
 		this.laneSections.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
@@ -234,7 +234,7 @@ export class TvLaneProfile {
 
 	}
 
-	computeLaneSectionCoordinates () {
+	computeLaneSectionCoordinates (): void {
 
 		const laneSections = this.getLaneSections();
 

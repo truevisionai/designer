@@ -105,7 +105,7 @@ export class HermiteSplineCurve extends Curve<Vector3> {
 		return point;
 	}
 
-	getCoefficients () {
+	getCoefficients (): void {
 
 
 	}

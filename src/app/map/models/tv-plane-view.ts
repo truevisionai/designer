@@ -55,7 +55,7 @@ export class TvPlaneView {
 		return geometry;
 	}
 
-	addGeometrySpiral ( s, x, y, hdg, length, curvStart, curvEnd ) {
+	addGeometrySpiral ( s, x, y, hdg, length, curvStart, curvEnd ): void {
 
 		// const geometry = new ODGeometry();
 		// geometry.spiral = new OdSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd );
@@ -72,25 +72,25 @@ export class TvPlaneView {
 		return geometry;
 	}
 
-	addGeometryPoly3 ( s, x, y, hdg, length, a, b, c, d ) {
+	addGeometryPoly3 ( s, x, y, hdg, length, a, b, c, d ): void {
 
 		this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
 
 	}
 
-	addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
+	addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ): void {
 
 		this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
 
 	}
 
-	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?) {
+	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?): void {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
 	}
 
-	addGeometryParamPoly ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?) {
+	addGeometryParamPoly ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?): void {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 

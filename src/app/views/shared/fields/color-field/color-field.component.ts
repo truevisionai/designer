@@ -45,13 +45,13 @@ export class ColorFieldComponent extends AbstractFieldComponent<Color> implement
 
 	}
 
-	onChange ( $event ) {
+	onChange ( $event ): void {
 
 		// do nothing
 
 	}
 
-	onChangeCompleted ( $event ) {
+	onChangeCompleted ( $event ): void {
 
 		this.value.setStyle( $event.color.hex );
 
@@ -61,7 +61,7 @@ export class ColorFieldComponent extends AbstractFieldComponent<Color> implement
 
 	}
 
-	togglePicker () {
+	togglePicker (): void {
 
 		if ( !this.isPickerOpen ) {
 

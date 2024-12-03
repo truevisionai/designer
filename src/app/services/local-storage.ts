@@ -31,13 +31,13 @@ export class LocalStorage {
 		return value;
 	}
 
-	public delete ( key: string ) {
+	public delete ( key: string ): void {
 
 		return window.localStorage.removeItem( key );
 
 	}
 
-	public deleteAll ( key: string ) {
+	public deleteAll ( key: string ): void {
 
 		return window.localStorage.clear();
 

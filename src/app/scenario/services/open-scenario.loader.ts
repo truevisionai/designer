@@ -141,7 +141,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	}
 
-	setPath ( path: string ) {
+	setPath ( path: string ): void {
 		this.directoryPath = path;
 	}
 
@@ -1336,7 +1336,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		return action;
 	}
 
-	parseInitActions ( xml: XmlElement, scenario: TvScenario ) {
+	parseInitActions ( xml: XmlElement, scenario: TvScenario ): void {
 
 		this.readAsOptionalArray( xml.Global, ( item ) => {
 
@@ -2215,7 +2215,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		return new TrafficSignalPhase( name, duration, states );
 	}
 
-	parseLaneChangeTarget ( xml: XmlElement ) {
+	parseLaneChangeTarget ( xml: XmlElement ): void {
 
 	}
 

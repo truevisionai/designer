@@ -26,7 +26,7 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	computeVars () {
+	computeVars (): void {
 
 		this.curve = this.getCurve();
 

@@ -129,11 +129,11 @@ export class TvObjectMarking {
 		this._materialGuid = value;
 	}
 
-	addCornerRoad ( corner: TvCornerRoad ) {
+	addCornerRoad ( corner: TvCornerRoad ): void {
 		this.cornerReferences.push( corner.attr_id );
 	}
 
-	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
+	removeCornerRoad ( tvCornerRoad: TvCornerRoad ): void {
 
 		const index = this.cornerReferences.indexOf( tvCornerRoad.attr_id );
 

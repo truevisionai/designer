@@ -52,7 +52,7 @@ export class SuperElevationInspector {
 	}
 
 	@SerializedAction( { label: 'Increase Angle' } )
-	increase () {
+	increase (): void {
 
 		const newValue = this.elevation.a + 0.1;
 
@@ -63,7 +63,7 @@ export class SuperElevationInspector {
 	}
 
 	@SerializedAction( { label: 'Decrease Angle' } )
-	decrease () {
+	decrease (): void {
 
 		const newValue = this.elevation.a - 0.1;
 
@@ -74,7 +74,7 @@ export class SuperElevationInspector {
 	}
 
 	@SerializedAction()
-	delete () {
+	delete (): void {
 
 		if ( Maths.approxEquals( this.distance, 0 ) ) {
 

@@ -70,7 +70,7 @@ export class OpenDriveService {
 
 	}
 
-	public import ( path, contents, callbackFn = null ) {
+	public import ( path, contents, callbackFn = null ): void {
 
 		const old = this.mapService.map;
 
@@ -107,7 +107,7 @@ export class OpenDriveService {
 
 	}
 
-	importFromPath ( filepath: string, callbackFn = null ) {
+	importFromPath ( filepath: string, callbackFn = null ): void {
 
 		const contents = this.storage.readSync( filepath );
 

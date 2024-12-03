@@ -88,7 +88,7 @@ export class TextureImporter implements Importer {
 
 	}
 
-	private createTextureAsset ( texture: TvTexture, sourcePath: string, destinationFolder: string ) {
+	private createTextureAsset ( texture: TvTexture, sourcePath: string, destinationFolder: string ): void {
 
 		const textureAsset = new TextureAsset( texture.guid, texture );
 

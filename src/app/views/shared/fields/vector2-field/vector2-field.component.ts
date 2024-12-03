@@ -27,7 +27,7 @@ export class Vector2FieldComponent extends AbstractFieldComponent<Vector2> imple
 		super();
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 	onXChanged ( $value: any ): void {

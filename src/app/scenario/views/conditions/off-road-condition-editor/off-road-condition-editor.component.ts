@@ -22,7 +22,7 @@ export class OffRoadConditionEditorComponent {
 
 	}
 
-	onDurationChanged ( $duration: number ) {
+	onDurationChanged ( $duration: number ): void {
 
 		Commands.SetValue( this.offRoadCondition, 'duration', $duration );
 

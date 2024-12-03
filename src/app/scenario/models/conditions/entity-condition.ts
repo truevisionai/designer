@@ -17,7 +17,7 @@ export abstract class EntityCondition extends Condition {
 	// name of all entities which can affect this condition
 	public triggeringEntities: string[] = [];
 
-	public addTriggeringEntity ( entityName: string ) {
+	public addTriggeringEntity ( entityName: string ): void {
 
 		this.triggeringEntities.push( entityName );
 

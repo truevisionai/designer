@@ -70,7 +70,7 @@ export class SignalJunctionDebugger extends BaseDebugger<TvJunction> {
 
 	}
 
-	clear () {
+	clear (): void {
 		super.clear();
 		this.gates.clear();
 	}

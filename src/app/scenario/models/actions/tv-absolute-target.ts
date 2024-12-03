@@ -25,7 +25,7 @@ export class AbsoluteTarget extends Target {
 
 	}
 
-	setTarget ( value ) {
+	setTarget ( value ): void {
 
 		this.target = value;
 

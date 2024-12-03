@@ -13,7 +13,7 @@ import { Commands } from "app/commands/commands";
 
 export abstract class BasePointTool<T extends IHasCopyUpdate> extends BaseTool<T> {
 
-	onPointerDownCreate ( e: PointerEventData ) {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
 		this.onCreateObject( e );
 
@@ -39,7 +39,7 @@ export abstract class BasePointTool<T extends IHasCopyUpdate> extends BaseTool<T
 
 	}
 
-	onCreateObject ( e: PointerEventData ) {
+	onCreateObject ( e: PointerEventData ): void {
 
 		if ( e.point == null ) return;
 

@@ -18,7 +18,7 @@ export class TvSignalController {
 	) {
 	}
 
-	addControl ( signalId: number, type?: string ) {
+	addControl ( signalId: number, type?: string ): void {
 		this.controls.push( new TvControllerControl( signalId, type ) );
 	}
 }

@@ -41,7 +41,7 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	computeVars () {
+	computeVars (): void {
 
 		/*nothing*/
 

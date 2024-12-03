@@ -54,7 +54,7 @@ export class PropCurveInspector {
 	@SerializedAction( {
 		label: 'Delete Curve',
 	} )
-	deleteCurve () {
+	deleteCurve (): void {
 		Commands.RemoveObject( this.curve );
 	}
 
@@ -62,7 +62,7 @@ export class PropCurveInspector {
 		label: 'Delete Point',
 		validate: function () { return this.point; },
 	} )
-	deletePoint () {
+	deletePoint (): void {
 		Commands.RemoveObject( this.point );
 	}
 

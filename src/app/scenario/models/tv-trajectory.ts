@@ -24,7 +24,7 @@ export class Trajectory {
 	) {
 	}
 
-	addParameter ( parameterDeclaration: ParameterDeclaration ) {
+	addParameter ( parameterDeclaration: ParameterDeclaration ): void {
 		this.parameterDeclarations.push( parameterDeclaration );
 	}
 
@@ -50,7 +50,7 @@ export class PolylineShape extends AbstractShape {
 	// min 2 vertices mandatory
 	vertices: Vertex[] = [];
 
-	addVertex ( vertex: Vertex ) {
+	addVertex ( vertex: Vertex ): void {
 		this.vertices.push( vertex );
 	}
 }
@@ -143,7 +143,7 @@ export class Nurbs extends AbstractShape {
 		super();
 	}
 
-	static fromXML ( xml: XmlElement ) {
+	static fromXML ( xml: XmlElement ): void {
 
 		TvConsole.warn( 'Nurbs are not suppoerted yet' );
 

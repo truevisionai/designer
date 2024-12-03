@@ -19,7 +19,7 @@ export class LaneSpanService {
 
 	constructor () { }
 
-	createLaneSpanLines ( lane: TvLane, polynomials: ThirdOrderPolynom[] ) {
+	createLaneSpanLines ( lane: TvLane, polynomials: ThirdOrderPolynom[] ): void {
 
 		lane.laneSection.road.laneSections.forEach( laneSection => {
 

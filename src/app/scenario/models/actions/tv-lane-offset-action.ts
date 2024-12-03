@@ -53,7 +53,7 @@ export class LaneOffsetAction extends PrivateAction {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		super.reset();
 
@@ -62,7 +62,7 @@ export class LaneOffsetAction extends PrivateAction {
 
 	}
 
-	execute ( entity: ScenarioEntity ) {
+	execute ( entity: ScenarioEntity ): void {
 
 		if ( !this.startTime ) this.startTime = Time.time;
 

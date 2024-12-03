@@ -42,7 +42,7 @@ export class TvScenario {
 	constructor () {
 	}
 
-	setRoadNetworkPath ( path: string ) {
+	setRoadNetworkPath ( path: string ): void {
 		this.roadNetwork = new RoadNetwork( new File( path ), null );
 	}
 
@@ -54,7 +54,7 @@ export class TvScenario {
 		return this.parameterDeclarations.find( param => param.name === name );
 	}
 
-	addStory ( story: Story ) {
+	addStory ( story: Story ): void {
 
 		this.storyboard.addStory( story );
 
@@ -73,7 +73,7 @@ export class TvScenario {
 
 	}
 
-	addObject ( object: ScenarioEntity ) {
+	addObject ( object: ScenarioEntity ): void {
 
 		this.objects.set( object.name, object );
 
@@ -214,7 +214,7 @@ export class TvScenario {
 
 	}
 
-	executeInitActions () {
+	executeInitActions (): void {
 
 		this.objects.forEach( entity => {
 
@@ -269,7 +269,7 @@ export class TvScenario {
 
 	}
 
-	setRoadProperties ( entity: ScenarioEntity, position: Position ) {
+	setRoadProperties ( entity: ScenarioEntity, position: Position ): void {
 
 		const roadCoord = new TvPosTheta();
 

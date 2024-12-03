@@ -30,7 +30,7 @@ export class SplineFixerService {
 	) {
 	}
 
-	fix ( spline: AbstractSpline, log = true ) {
+	fix ( spline: AbstractSpline, log = true ): void {
 
 		if ( !this.enabled ) return;
 
@@ -52,7 +52,7 @@ export class SplineFixerService {
 		this.fixInternalLinks( spline );
 	}
 
-	private fixMinSegmentCount ( spline: AbstractSpline ) {
+	private fixMinSegmentCount ( spline: AbstractSpline ): void {
 
 		if ( spline.getSegmentCount() == 0 ) {
 
@@ -73,7 +73,7 @@ export class SplineFixerService {
 
 	}
 
-	private fixFirstSegment ( spline: AbstractSpline ) {
+	private fixFirstSegment ( spline: AbstractSpline ): void {
 
 		if ( spline.getSegmentCount() >= 1 ) {
 
@@ -101,7 +101,7 @@ export class SplineFixerService {
 
 	}
 
-	private fixEachSegmentStart ( spline: AbstractSpline ) {
+	private fixEachSegmentStart ( spline: AbstractSpline ): void {
 
 		spline.forEachSegment( ( segment, sOffset ) => {
 
@@ -120,7 +120,7 @@ export class SplineFixerService {
 
 	}
 
-	private fixDuplicateSegments ( spline: AbstractSpline ) {
+	private fixDuplicateSegments ( spline: AbstractSpline ): void {
 
 		if ( spline.type != SplineType.AUTOV2 ) return;
 
@@ -152,7 +152,7 @@ export class SplineFixerService {
 
 	}
 
-	public fixInternalLinks ( spline: AbstractSpline, setNull = false ) {
+	public fixInternalLinks ( spline: AbstractSpline, setNull = false ): void {
 
 		// TODO: we need to check
 		// const predecessor = SplineUtils.findPredecessor( spline );

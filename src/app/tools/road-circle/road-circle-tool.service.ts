@@ -54,7 +54,7 @@ export class RoadCircleToolService {
 	) {
 	}
 
-	onToolDisabled () {
+	onToolDisabled (): void {
 
 		SceneService.removeFromTool( this.line );
 
@@ -62,19 +62,19 @@ export class RoadCircleToolService {
 
 	}
 
-	addRoad ( road: TvRoad ) {
+	addRoad ( road: TvRoad ): void {
 
 		this.roadService.add( road );
 
 	}
 
-	removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ): void {
 
 		this.roadService.remove( road );
 
 	}
 
-	init ( centre: Vector3, end: Vector3, radius: number ) {
+	init ( centre: Vector3, end: Vector3, radius: number ): void {
 
 		this.start = centre;
 
@@ -99,7 +99,7 @@ export class RoadCircleToolService {
 		SceneService.addToolObject( this.text3d );
 	}
 
-	reset () {
+	reset (): void {
 
 		this.start = null;
 
@@ -113,7 +113,7 @@ export class RoadCircleToolService {
 
 	}
 
-	update ( radius: number, end: Vector3 ) {
+	update ( radius: number, end: Vector3 ): void {
 
 		this.radius = radius;
 

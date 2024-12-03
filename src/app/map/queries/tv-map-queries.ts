@@ -303,147 +303,147 @@ export class TvMapQueries extends TvBaseQueries {
 		};
 	}
 
-	static getMaxTrackPos () {
+	static getMaxTrackPos (): void {
 	}
 
-	static getCurvature () {
+	static getCurvature (): void {
 	}
 
-	static getLaneCurvature ( a, b, c, d ) {
+	static getLaneCurvature ( a, b, c, d ): void {
 	}
 
-	static getDeltaLaneDir () {
+	static getDeltaLaneDir (): void {
 	}
 
-	static getLaneWidth ( lane: TvLane, s: number ) {
+	static getLaneWidth ( lane: TvLane, s: number ): void {
 	}
 
 	// static getLaneWidth2 ( lane: OdLane, s, a, b )
 
-	static getLaneWidthAndRoadMark ( lane: TvLane, s: number ) {
+	static getLaneWidthAndRoadMark ( lane: TvLane, s: number ): void {
 
 	}
 
-	static getLaneHeight () {
+	static getLaneHeight (): void {
 	}
 
-	static getNextJunction ( trackCoord, bool, juncHeader, double, roadHeader ) {
-
-	}
-
-	static getObjects ( trackCoord, bool, double, resultInfostruct: [] ) {
+	static getNextJunction ( trackCoord, bool, juncHeader, double, roadHeader ): void {
 
 	}
 
-	static getPitch ( road: TvRoad, trackCoord, double ) {
+	static getObjects ( trackCoord, bool, double, resultInfostruct: [] ): void {
+
 	}
 
-	static getPitchAndZ ( road: TvRoad, trackCoord, double ) {
+	static getPitch ( road: TvRoad, trackCoord, double ): void {
 	}
 
-	static getPitchAndPitchDot ( road: TvRoad, trackCoord, double ) {
+	static getPitchAndZ ( road: TvRoad, trackCoord, double ): void {
 	}
 
-	static getPitchDot ( road: TvRoad, trackCoord, double ) {
+	static getPitchAndPitchDot ( road: TvRoad, trackCoord, double ): void {
 	}
 
-	static getRoll ( road: TvRoad, trackCoord, double ) {
+	static getPitchDot ( road: TvRoad, trackCoord, double ): void {
 	}
 
-	static getRoll2 ( trackCoord, double ) {
+	static getRoll ( road: TvRoad, trackCoord, double ): void {
 	}
 
-	static getRollAndRollDot ( road: TvRoad, trackCoord, double ) {
+	static getRoll2 ( trackCoord, double ): void {
 	}
 
-	static getRollDot ( road: TvRoad, trackCoord, double ) {
+	static getRollAndRollDot ( road: TvRoad, trackCoord, double ): void {
 	}
 
-	static getSignals ( trackCoord, bool, double, resultInfostruct: [] ) {
+	static getRollDot ( road: TvRoad, trackCoord, double ): void {
 	}
 
-	static getTrackAngles ( trackCoord, coord: TvCoord ) {
+	static getSignals ( trackCoord, bool, double, resultInfostruct: [] ): void {
 	}
 
-	static getTrackAnglesDot ( trackCoord, coord: TvCoord ) {
+	static getTrackAngles ( trackCoord, coord: TvCoord ): void {
 	}
 
-	static getTrackHeading ( trackCoord, double ) {
+	static getTrackAnglesDot ( trackCoord, coord: TvCoord ): void {
 	}
 
-	static getTrackWidth ( trackCoord ) {
+	static getTrackHeading ( trackCoord, double ): void {
 	}
 
-	static inTunnel ( laneCoord ) {
+	static getTrackWidth ( trackCoord ): void {
 	}
 
-	static onBridge ( laneCoord ) {
+	static inTunnel ( laneCoord ): void {
 	}
 
-	static lane2curvature ( laneCoord ) {
+	static onBridge ( laneCoord ): void {
 	}
 
-	static lane2laneHeight ( laneCoord ) {
+	static lane2curvature ( laneCoord ): void {
 	}
 
-	static lane2laneWidth ( laneCoord ) {
+	static lane2laneHeight ( laneCoord ): void {
 	}
 
-	static lane2roadMark ( laneCoord ) {
+	static lane2laneWidth ( laneCoord ): void {
 	}
 
-	static lane2track ( laneCoord ) {
+	static lane2roadMark ( laneCoord ): void {
 	}
 
-	static lane2validLane ( laneCoord ) {
+	static lane2track ( laneCoord ): void {
 	}
 
-	static lane2validLane2 ( laneCoord, bool ) {
+	static lane2validLane ( laneCoord ): void {
 	}
 
-	static s2elevation ( road, s ) {
+	static lane2validLane2 ( laneCoord, bool ): void {
 	}
 
-	static s2superelevation ( road, s ) {
+	static s2elevation ( road, s ): void {
 	}
 
-	static s2surface ( road, s, ushort ) {
+	static s2superelevation ( road, s ): void {
 	}
 
-	static laneId2Node () {
+	static s2surface ( road, s, ushort ): void {
 	}
 
-	static laneSpeedFromRoadType ( laneCoord, double ) {
+	static laneId2Node (): void {
 	}
 
-	static getRoadMark ( lane: TvLane, double ) {
+	static laneSpeedFromRoadType ( laneCoord, double ): void {
 	}
 
-	static getRoadType ( laneCoord ) {
+	static getRoadMark ( lane: TvLane, double ): void {
 	}
 
-	static getFootPoint () {
+	static getRoadType ( laneCoord ): void {
 	}
 
-	static getTolerance () {
+	static getFootPoint (): void {
 	}
 
-	static setRoadData ( a ) {
+	static getTolerance (): void {
 	}
 
-	static getRoadData () {
+	static setRoadData ( a ): void {
 	}
 
-	static getLaneFromId ( laneSection: TvLaneSection, id ) {
+	static getRoadData (): void {
 	}
 
-	static getLaneOnNextRoad ( laneCoord: TvLaneCoord, road: TvRoad ) {
+	static getLaneFromId ( laneSection: TvLaneSection, id ): void {
 	}
 
-	static getLaneOnPreviousRoad ( laneCoord: TvLaneCoord, road: TvRoad ) {
+	static getLaneOnNextRoad ( laneCoord: TvLaneCoord, road: TvRoad ): void {
 	}
 
-	static getLaneSpeed () {
+	static getLaneOnPreviousRoad ( laneCoord: TvLaneCoord, road: TvRoad ): void {
+	}
+
+	static getLaneSpeed (): void {
 	}
 
 }

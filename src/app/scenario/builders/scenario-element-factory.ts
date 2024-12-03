@@ -35,7 +35,7 @@ export class ScenarioElementFactory {
 	constructor ( private actionFactory: ActionFactory ) {
 	}
 
-	reset () {
+	reset (): void {
 
 		this.storyId.reset();
 		this.actId.reset();

@@ -48,13 +48,13 @@ export class ConditionByEntityComponent implements OnInit {
 
 	}
 
-	onEntityChanged ( value ) {
+	onEntityChanged ( value ): void {
 
 		this.entity = value;
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

@@ -15,7 +15,7 @@ export class DragDropService {
 
 	private data: DragDropData;
 
-	setData ( data: DragDropData ) {
+	setData ( data: DragDropData ): void {
 		this.data = data;
 	}
 
@@ -23,7 +23,7 @@ export class DragDropService {
 		return this.data;
 	}
 
-	clear () {
+	clear (): void {
 		this.data = undefined;
 	}
 

@@ -27,11 +27,11 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 		return this.position as WorldPosition;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 	}
 
-	onPositionTypeChanged ( $type: PositionType ) {
+	onPositionTypeChanged ( $type: PositionType ): void {
 
 		// the current vector can be translated to new the type if possible
 		// const currentVector3 = this.position.toVector3();
@@ -45,7 +45,7 @@ export class PositionEditorComponent extends AbstractPositionEditor implements O
 
 	}
 
-	onPositionModified ( $event: Position ) {
+	onPositionModified ( $event: Position ): void {
 
 		this.positionModified.emit( $event );
 

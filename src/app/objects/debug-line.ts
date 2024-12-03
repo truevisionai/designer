@@ -28,7 +28,7 @@ export class DebugLine<T> extends Line2 implements INode {
 		this.originalWidth = material?.linewidth || 2;
 	}
 
-	onMouseOver () {
+	onMouseOver (): void {
 
 		this.material.color = new Color( HOVERED_COLOR );
 		this.material.linewidth = this.originalWidth;
@@ -36,7 +36,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	onMouseOut () {
+	onMouseOut (): void {
 
 		this.material.color = new Color( DEFAULT_COLOR );
 		this.material.linewidth = this.originalWidth;
@@ -44,7 +44,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	select () {
+	select (): void {
 
 		this.isSelected = true;
 
@@ -53,7 +53,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	unselect () {
+	unselect (): void {
 
 		this.isSelected = false;
 

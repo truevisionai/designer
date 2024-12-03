@@ -69,7 +69,7 @@ export class DebugDrawService {
 
 	}
 
-	drawText ( text: string, position: Vector3, size = 1, color = COLOR.WHITE ) {
+	drawText ( text: string, position: Vector3, size = 1, color = COLOR.WHITE ): void {
 
 		const textObject = this.textService.createFromText( text, size, color );
 
@@ -79,7 +79,7 @@ export class DebugDrawService {
 
 	}
 
-	drawBox ( boundingBox: Box3 ) {
+	drawBox ( boundingBox: Box3 ): void {
 
 		const box = new Box3Helper( boundingBox );
 
@@ -87,7 +87,7 @@ export class DebugDrawService {
 
 	}
 
-	drawBox2D ( box: Box2, color = COLOR.WHITE, opacity = 1 ) {
+	drawBox2D ( box: Box2, color = COLOR.WHITE, opacity = 1 ): void {
 
 		const mesh = this.createBox2D( box, color, opacity );
 
@@ -109,7 +109,7 @@ export class DebugDrawService {
 
 	}
 
-	drawPoint ( position: Vector3, size = 10, color = COLOR.RED ) {
+	drawPoint ( position: Vector3, size = 10, color = COLOR.RED ): void {
 
 		const point = this.createPoint( position, size, color );
 
@@ -117,7 +117,7 @@ export class DebugDrawService {
 
 	}
 
-	drawSphere ( position: Vector3, size = 0.1, color = COLOR.RED ) {
+	drawSphere ( position: Vector3, size = 0.1, color = COLOR.RED ): void {
 
 		const sphere = this.createSphere( position, size, color );
 
@@ -139,7 +139,7 @@ export class DebugDrawService {
 
 	}
 
-	removeLine ( line: Line2 ) {
+	removeLine ( line: Line2 ): void {
 
 		this.group.remove( line );
 
@@ -170,7 +170,7 @@ export class DebugDrawService {
 		return point;
 	}
 
-	clear () {
+	clear (): void {
 
 		this.group.clear();
 

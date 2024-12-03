@@ -135,7 +135,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	add ( road: TvRoad ) {
+	add ( road: TvRoad ): void {
 
 		this.mapService.map.addRoad( road );
 
@@ -149,19 +149,19 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	update ( road: TvRoad ) {
+	update ( road: TvRoad ): void {
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
 	}
 
-	remove ( road: TvRoad ) {
+	remove ( road: TvRoad ): void {
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
 	}
 
-	duplicateRoad ( road: TvRoad ) {
+	duplicateRoad ( road: TvRoad ): void {
 
 		const clone = this.clone( road );
 
@@ -173,7 +173,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	shiftRoad ( road: TvRoad, x: number, y: number ) {
+	shiftRoad ( road: TvRoad, x: number, y: number ): void {
 
 		const posTheta = road.getStartPosTheta();
 

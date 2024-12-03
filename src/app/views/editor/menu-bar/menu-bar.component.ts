@@ -65,14 +65,14 @@ export class MenuBarComponent implements OnInit {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		const opacity = this.localStorage.get( 'models.opacity', 1 );
 		this.mapService.setOpacityLevel( opacity );
 
 	}
 
-	onNewFile () {
+	onNewFile (): void {
 
 		this.mainFileService.newScene();
 
@@ -84,43 +84,43 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
-	showNewRoadDialog () {
+	showNewRoadDialog (): void {
 
 
 	}
 
-	onSave () {
+	onSave (): void {
 
 		this.mainFileService.save();
 
 	}
 
-	onSaveAs () {
+	onSaveAs (): void {
 
 		this.mainFileService.saveAs();
 
 	}
 
 
-	onExit () {
+	onExit (): void {
 
 		this.appService.exit();
 
 	}
 
-	onUndo () {
+	onUndo (): void {
 
 		CommandHistory.undo();
 
 	}
 
-	onRedo () {
+	onRedo (): void {
 
 		CommandHistory.redo();
 
 	}
 
-	onEsminiSettings () {
+	onEsminiSettings (): void {
 
 		const settings = {
 			title: 'Esmini Settings',
@@ -156,31 +156,31 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
-	validateMap () {
+	validateMap (): void {
 
 		this.mapValidator.validateMap( this.mapService.map );
 
 	}
 
-	onMapSettings () {
+	onMapSettings (): void {
 
 		AppInspector.setDynamicInspector( new MapSeting( this.mapService, this.localStorage ) );
 
 	}
 
-	openManual () {
+	openManual (): void {
 
 		window.open( AppLinks.roadEditorManualLink, '_blank' );
 
 	}
 
-	openContactUs () {
+	openContactUs (): void {
 
 		window.open( AppLinks.contactUsLink, '_blank' );
 
 	}
 
-	openTutorials () {
+	openTutorials (): void {
 
 		this.dialog.open( TutorialsDialogComponent, {
 			width: '680px',
@@ -191,31 +191,31 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
-	openUserGuide () {
+	openUserGuide (): void {
 
 		window.open( AppLinks.documentationLink, '_blank' );
 
 	}
 
-	onImportOpenDRIVE () {
+	onImportOpenDRIVE (): void {
 
 		this.odService.showImportDialog();
 
 	}
 
-	onExportOpenDRIVE () {
+	onExportOpenDRIVE (): void {
 
 		this.exporter.exportOpenDrive();
 
 	}
 
-	onExportGLTF () {
+	onExportGLTF (): void {
 
 		this.exporter.exportGTLF();
 
 	}
 
-	onExportGLB () {
+	onExportGLB (): void {
 
 		// this.exporter.exportGLB();
 
@@ -225,7 +225,7 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
-	importOdExample ( filename: string ) {
+	importOdExample ( filename: string ): void {
 
 		if ( filename == null ) {
 			console.error( 'Invalid filename' );
@@ -245,19 +245,19 @@ export class MenuBarComponent implements OnInit {
 		} );
 	}
 
-	onExportCARLA () {
+	onExportCARLA (): void {
 
 		this.exporter.exportCARLA();
 
 	}
 
-	openAbout () {
+	openAbout (): void {
 
 		alert( 'App Version ' + Environment.version );
 
 	}
 
-	logout () {
+	logout (): void {
 
 		this.appService.auth.logout();
 
@@ -265,7 +265,7 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
-	exportOpenScenario () {
+	exportOpenScenario (): void {
 
 		this.exporter.exportOpenScenario();
 

@@ -21,7 +21,7 @@ export class MapFixer {
 	// disabling as it is creating issues
 	private enabled = false;
 
-	fixMap ( map: TvMap ) {
+	fixMap ( map: TvMap ): void {
 
 		if ( !this.enabled ) return;
 
@@ -47,7 +47,7 @@ export class MapFixer {
 
 	}
 
-	private fixRoad ( road: TvRoad ) {
+	private fixRoad ( road: TvRoad ): void {
 
 		if ( road.successor ) {
 
@@ -63,7 +63,7 @@ export class MapFixer {
 
 	}
 
-	private fixSuccessor ( predecessor: TvRoad, link: TvLink ) {
+	private fixSuccessor ( predecessor: TvRoad, link: TvLink ): void {
 
 		if ( link.isJunction ) {
 
@@ -115,7 +115,7 @@ export class MapFixer {
 
 	}
 
-	private fixPredecessor ( successor: TvRoad, link: TvLink ) {
+	private fixPredecessor ( successor: TvRoad, link: TvLink ): void {
 
 		if ( link.isJunction ) {
 
@@ -167,13 +167,13 @@ export class MapFixer {
 
 	}
 
-	private fixConnectingRoad ( road: TvRoad ) {
+	private fixConnectingRoad ( road: TvRoad ): void {
 
 		// this.checkIfJunctionExists( road.junction );
 
 	}
 
-	private fixJunction ( junction: TvJunction ) {
+	private fixJunction ( junction: TvJunction ): void {
 
 
 	}

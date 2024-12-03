@@ -117,7 +117,7 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 		mesh.geometry.computeBoundingBox();
 	}
 
-	private updateProps ( mesh: Object3D, polygon: PropPolygon ) {
+	private updateProps ( mesh: Object3D, polygon: PropPolygon ): void {
 
 		// group props by guid
 		const uniqueProps = new Map<string, PropPoint[]>();
@@ -164,7 +164,7 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 		controlPoints: AbstractControlPoint[],
 		propObject: Object3D,
 		propChildren: IChildAndMesh[]
-	) {
+	): void {
 
 		if ( controlPoints.length < 3 ) return;
 

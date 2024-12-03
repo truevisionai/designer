@@ -75,7 +75,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.material = this.materialService.getMaterial( this.data.guid )?.material as TvStandardMaterial;
 
@@ -83,7 +83,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	ngOnDestroy () {
+	ngOnDestroy (): void {
 
 		this.subscription?.unsubscribe();
 
@@ -93,7 +93,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onTypeChanged ( newMaterialType: string ) {
+	onTypeChanged ( newMaterialType: string ): void {
 
 		// You need to ensure the new material type is a valid one
 		if ( !this.materialTypes.includes( newMaterialType ) ) {
@@ -146,56 +146,56 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onColorChanged ( $value ) {
+	onColorChanged ( $value ): void {
 
 		this.updateMaterialProperty( this.material, 'color', $value );
 
 	}
 
 	// not being used
-	onEmissiveColorChanged ( $value ) {
+	onEmissiveColorChanged ( $value ): void {
 
 		this.updateMaterialProperty( this.material, 'emissive', $value );
 
 	}
 
-	onRoughnessChanged ( $value ) {
+	onRoughnessChanged ( $value ): void {
 
 		this.updateMaterialProperty( this.material, 'roughness', $value );
 
 	}
 
-	onMetalnessChanged ( $value ) {
+	onMetalnessChanged ( $value ): void {
 
 		this.updateMaterialProperty( this.material, 'metalness', $value );
 
 	}
 
-	onEmissiveChanged ( $value ) {
+	onEmissiveChanged ( $value ): void {
 
 		this.updateMaterialProperty( this.material, 'emissive', $value );
 
 	}
 
-	onEmissiveIntensityChanged ( $value ) {
+	onEmissiveIntensityChanged ( $value ): void {
 
 		this.updateMaterialProperty( this.material, 'emissiveIntensity', $value );
 
 	}
 
-	onTransparentChanged ( $value ) {
+	onTransparentChanged ( $value ): void {
 
 		this.updateMaterialProperty( this.material, 'transparent', $value );
 
 	}
 
-	onOpacityChanged ( $value ) {
+	onOpacityChanged ( $value ): void {
 
 		this.updateMaterialProperty( this.material, 'opacity', $value );
 
 	}
 
-	onMapChanged ( $guid: string ) {
+	onMapChanged ( $guid: string ): void {
 
 		const texture = this.textureService.getTexture( $guid )?.texture;
 
@@ -203,7 +203,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onRoughnessMapChanged ( $guid: string ) {
+	onRoughnessMapChanged ( $guid: string ): void {
 
 		const texture = this.textureService.getTexture( $guid )?.texture;
 
@@ -211,7 +211,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onMetalnessMapChanged ( $guid: string ) {
+	onMetalnessMapChanged ( $guid: string ): void {
 
 		const texture = this.textureService.getTexture( $guid )?.texture;
 
@@ -219,7 +219,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onNormalMapChanged ( $guid: string ) {
+	onNormalMapChanged ( $guid: string ): void {
 
 		const texture = this.textureService.getTexture( $guid )?.texture;
 
@@ -227,7 +227,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onAOMapChanged ( $guid: string ) {
+	onAOMapChanged ( $guid: string ): void {
 
 		const texture = this.textureService.getTexture( $guid )?.texture;
 
@@ -235,7 +235,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onDisplacementMapChanged ( $guid: string ) {
+	onDisplacementMapChanged ( $guid: string ): void {
 
 		const texture = this.textureService.getTexture( $guid )?.texture;
 
@@ -243,20 +243,20 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onAlphaMapChanged ( $guid: string ) {
+	onAlphaMapChanged ( $guid: string ): void {
 
 		const texture = this.textureService.getTexture( $guid )?.texture;
 
 		this.updateGuid( this.material, 'alphaMap', texture );
 	}
 
-	private updatePreviewCache () {
+	private updatePreviewCache (): void {
 
 		this.data.preview = this.getFreshPreview();
 
 	}
 
-	updateMaterialProperty<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ) {
+	updateMaterialProperty<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ): void {
 
 		const oldValue = ( typeof material[ propertyName ] === 'number' || typeof material[ propertyName ] === 'boolean' )
 			? material[ propertyName ]
@@ -267,7 +267,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 		CommandHistory.execute( new SetValueCommand<T, K>( material, propertyName, newValue, oldValue ) );
 	}
 
-	updateGuid<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ) {
+	updateGuid<T, K extends keyof T> ( material: T, propertyName: K, newValue: T[ K ] ): void {
 
 		const setValueCommand = new SetValueCommand<T, K>( material, propertyName, newValue );
 
@@ -275,7 +275,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	private onObjectUpdated ( object: Object ) {
+	private onObjectUpdated ( object: Object ): void {
 
 		if ( object == this.material ) {
 

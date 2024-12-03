@@ -85,7 +85,7 @@ export class MapValidatorService {
 		this.init();
 	}
 
-	init () {
+	init (): void {
 
 		if ( !this.electron.isElectronApp ) return;
 
@@ -123,7 +123,7 @@ export class MapValidatorService {
 
 	}
 
-	setMap ( map: TvMap ) {
+	setMap ( map: TvMap ): void {
 
 		this.map = map;
 
@@ -315,13 +315,13 @@ export class MapValidatorService {
 
 	}
 
-	validateLaneWidth ( lane: TvLane ) {
+	validateLaneWidth ( lane: TvLane ): void {
 
 		this.validatePolynomials( lane.getWidthArray() );
 
 	}
 
-	validatePolynomials ( polynomials: { s: number }[] ) {
+	validatePolynomials ( polynomials: { s: number }[] ): void {
 
 		for ( let i = 1; i < polynomials.length; i++ ) {
 
@@ -352,7 +352,7 @@ export class MapValidatorService {
 	 * @param laneSection
 	 * @param lane
 	 */
-	validateLaneLinks ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	validateLaneLinks ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( !road.isJunction && road.successor?.isRoad && !lane.successorExists ) {
 
@@ -392,7 +392,7 @@ export class MapValidatorService {
 
 	}
 
-	validateRoadLinks ( roadA: TvRoad ) {
+	validateRoadLinks ( roadA: TvRoad ): void {
 
 		if ( roadA.successor ) this.validateSuccessor( roadA, roadA.successor );
 
@@ -400,7 +400,7 @@ export class MapValidatorService {
 
 	}
 
-	validateSuccessor ( roadA: TvRoad, link: TvLink ) {
+	validateSuccessor ( roadA: TvRoad, link: TvLink ): void {
 
 		if ( link.isRoad ) {
 
@@ -414,7 +414,7 @@ export class MapValidatorService {
 
 	}
 
-	validatePredecessor ( roadA: TvRoad, link: TvLink ) {
+	validatePredecessor ( roadA: TvRoad, link: TvLink ): void {
 
 		if ( link.isRoad ) {
 
@@ -428,7 +428,7 @@ export class MapValidatorService {
 
 	}
 
-	validateRoadLink ( roadA: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ) {
+	validateRoadLink ( roadA: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ): void {
 
 		if ( !link.isRoad ) return;
 
@@ -578,7 +578,7 @@ export class MapValidatorService {
 		return Math.abs( Math.PI - smallestDiff ) < tolerance;
 	}
 
-	private reportError ( label: string, roadId: number, expectedDirection: string, linkType: string, link: TvLink, hdgA: number, hdgB: number ) {
+	private reportError ( label: string, roadId: number, expectedDirection: string, linkType: string, link: TvLink, hdgA: number, hdgB: number ): void {
 
 		this.errors.push( `${ label }:${ roadId } invalid hdg, should be ${ expectedDirection } ${ linkType }:${ link.toString() } ${ hdgA } ${ hdgB }` );
 
@@ -589,7 +589,7 @@ export class MapValidatorService {
 		// this.debugObjects.add( arrow2, arrow2 );
 	}
 
-	validateJunctionLink ( road: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ) {
+	validateJunctionLink ( road: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ): void {
 
 		try {
 
@@ -627,7 +627,7 @@ export class MapValidatorService {
 
 	}
 
-	validateConnection ( connection: TvJunctionConnection, incomingContact: TvContactPoint ) {
+	validateConnection ( connection: TvJunctionConnection, incomingContact: TvContactPoint ): void {
 
 		this.validateConnectionAndRoad( connection.incomingRoadId, connection );
 		this.validateConnectionAndRoad( connection.connectingRoadId, connection );
@@ -661,7 +661,7 @@ export class MapValidatorService {
 		} );
 	}
 
-	validateConnectingRoad ( connection: TvJunctionConnection ) {
+	validateConnectingRoad ( connection: TvJunctionConnection ): void {
 
 		this.validateConnectionAndRoad( connection.incomingRoadId, connection );
 		this.validateConnectionAndRoad( connection.connectingRoadId, connection );
@@ -698,7 +698,7 @@ export class MapValidatorService {
 
 	}
 
-	validateConnectionAndRoad ( id: number, connection: TvJunctionConnection ) {
+	validateConnectionAndRoad ( id: number, connection: TvJunctionConnection ): void {
 
 		try {
 

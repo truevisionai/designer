@@ -37,13 +37,13 @@ export class ActionComponent implements OnInit {
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		// Debug.log( this.action );
 
 	}
 
-	toggle ( $event: MouseEvent ) {
+	toggle ( $event: MouseEvent ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -52,7 +52,7 @@ export class ActionComponent implements OnInit {
 
 	}
 
-	deleteAction ( $event: MouseEvent ) {
+	deleteAction ( $event: MouseEvent ): void {
 
 		this.removed.emit( this.action );
 

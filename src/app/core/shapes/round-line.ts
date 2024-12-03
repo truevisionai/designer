@@ -38,7 +38,7 @@ export class RoundLine {
 
 	}
 
-	addPoint ( point: AbstractControlPoint ) {
+	addPoint ( point: AbstractControlPoint ): void {
 
 		this.points.push( point );
 

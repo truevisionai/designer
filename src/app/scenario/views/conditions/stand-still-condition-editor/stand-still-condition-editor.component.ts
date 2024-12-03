@@ -17,7 +17,7 @@ export class StandStillConditionEditorComponent implements OnInit {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

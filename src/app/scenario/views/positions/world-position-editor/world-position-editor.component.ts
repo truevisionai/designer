@@ -15,7 +15,7 @@ export class WorldPositionEditorComponent extends AbstractPositionEditor {
 
 	@Input() position: WorldPosition;
 
-	onPositionChanged ( $event: Vector3 ) {
+	onPositionChanged ( $event: Vector3 ): void {
 
 		this.position.setPosition( $event );
 
@@ -23,7 +23,7 @@ export class WorldPositionEditorComponent extends AbstractPositionEditor {
 
 	}
 
-	onRotationChanged ( $event: Vector3 ) {
+	onRotationChanged ( $event: Vector3 ): void {
 
 		this.position.orientation?.copyFromVector3( $event );
 

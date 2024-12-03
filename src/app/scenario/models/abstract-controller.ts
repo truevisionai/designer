@@ -22,15 +22,15 @@ export abstract class AbstractController {
 		console.error( 'controller update method not overridden' );
 	}
 
-	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
+	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ): void {
 		this.parameterDeclarations.push( parameterDeclaration );
 	}
 
-	addProptery ( property: TvProperty ) {
+	addProptery ( property: TvProperty ): void {
 		this.properties.push( property );
 	}
 
-	start () {
+	start (): void {
 		console.error( 'controller start method not overridden' );
 	}
 }

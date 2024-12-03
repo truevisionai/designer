@@ -88,7 +88,7 @@ export class ConnectionsDebugger extends BaseDebugger<TvLaneCoord> {
 
 	}
 
-	resetHighlighted () {
+	resetHighlighted (): void {
 
 		this.highlightedLanes.forEach( ( material, lane ) => {
 
@@ -102,7 +102,7 @@ export class ConnectionsDebugger extends BaseDebugger<TvLaneCoord> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

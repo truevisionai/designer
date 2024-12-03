@@ -21,7 +21,7 @@ export class ManeuverInspector {
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	deleteManeuver () {
+	deleteManeuver (): void {
 		Commands.RemoveObject( this.maneuver );
 	}
 

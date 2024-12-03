@@ -55,7 +55,7 @@ export class TvMaterialService {
 
 	}
 
-	updateByGuid ( guid: string ) {
+	updateByGuid ( guid: string ): void {
 
 		const asset = this.assetService.getAsset( guid );
 
@@ -68,7 +68,7 @@ export class TvMaterialService {
 
 	}
 
-	addMaterial ( material: MaterialAsset ) {
+	addMaterial ( material: MaterialAsset ): void {
 
 		this.assetService.setInstance( material.guid, material );
 

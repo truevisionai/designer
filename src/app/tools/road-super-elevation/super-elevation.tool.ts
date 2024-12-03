@@ -182,7 +182,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 	}
 
-	onObjectUpdated ( object: any ) {
+	onObjectUpdated ( object: any ): void {
 
 		if ( object instanceof SuperElevationInspector ) {
 
@@ -214,7 +214,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 	}
 
-	onObjectRemoved ( object: any ) {
+	onObjectRemoved ( object: any ): void {
 
 		if ( object instanceof SimpleControlPoint ) {
 

@@ -65,7 +65,7 @@ export class ImportFbxDialogComponent implements OnInit {
 
 	}
 
-	import () {
+	import (): void {
 
 	}
 

@@ -24,13 +24,13 @@ export class TrajectoriesInspectorComponent implements OnInit, IComponent {
 		return this.data;
 	};
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		Log.info( this.data );
 
 	}
 
-	selectTrajectory ( trajectory ) {
+	selectTrajectory ( trajectory ): void {
 
 		this.selected = trajectory;
 

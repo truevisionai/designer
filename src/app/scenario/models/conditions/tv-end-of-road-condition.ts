@@ -70,7 +70,7 @@ export class EndOfRoadCondition extends EntityCondition {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		super.reset();
 

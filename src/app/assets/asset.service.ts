@@ -37,7 +37,7 @@ export class AssetService {
 	) {
 	}
 
-	addAsset ( asset: Asset ) {
+	addAsset ( asset: Asset ): void {
 
 		this.assets.set( asset.guid, asset );
 
@@ -91,13 +91,13 @@ export class AssetService {
 
 	}
 
-	setMetadata ( guid: string, metadata: Metadata ) {
+	setMetadata ( guid: string, metadata: Metadata ): void {
 
 		AssetDatabase.setMetadata( guid, metadata );
 
 	}
 
-	setInstance ( guid: string, instance: any ) {
+	setInstance ( guid: string, instance: any ): void {
 
 		AssetDatabase.setInstance( guid, instance );
 
@@ -166,7 +166,7 @@ export class AssetService {
 
 	}
 
-	createFolderAsset ( path: string, name: string = 'Untitled' ) {
+	createFolderAsset ( path: string, name: string = 'Untitled' ): void {
 
 		const response = this.storageService.createDirectory( path, name );
 
@@ -198,7 +198,7 @@ export class AssetService {
 
 	}
 
-	saveAssetByGuid ( type: AssetType, guid: string, object: any ) {
+	saveAssetByGuid ( type: AssetType, guid: string, object: any ): void {
 
 		const metadata = AssetDatabase.getMetadata( guid );
 
@@ -223,13 +223,13 @@ export class AssetService {
 
 	}
 
-	saveAsset ( data: Asset ) {
+	saveAsset ( data: Asset ): void {
 
 		this.saveAssetByGuid( data.type, data.metadata.guid, AssetDatabase.getInstance( data.metadata.guid ) );
 
 	}
 
-	copyAsset ( asset: Asset ) {
+	copyAsset ( asset: Asset ): void {
 
 		const cloneName = asset.assetName + '_copy';
 
@@ -249,7 +249,7 @@ export class AssetService {
 
 	}
 
-	renameAsset ( asset: Asset, name: string ) {
+	renameAsset ( asset: Asset, name: string ): void {
 
 		if ( asset.children.length > 0 ) {
 
@@ -308,7 +308,7 @@ export class AssetService {
 		return true;
 	}
 
-	private deleteFolder ( asset: Asset ) {
+	private deleteFolder ( asset: Asset ): void {
 
 		try {
 
@@ -324,7 +324,7 @@ export class AssetService {
 
 	}
 
-	private deleteFile ( asset: Asset ) {
+	private deleteFile ( asset: Asset ): void {
 
 		try {
 
@@ -340,7 +340,7 @@ export class AssetService {
 
 	}
 
-	private deleteMetadata ( asset: Asset ) {
+	private deleteMetadata ( asset: Asset ): void {
 
 		try {
 
@@ -360,7 +360,7 @@ export class AssetService {
 
 	}
 
-	moveAsset ( asset: Asset, folder: Asset ) {
+	moveAsset ( asset: Asset, folder: Asset ): void {
 
 		const newPath = this.storageService.join( folder.path, asset.name );
 
@@ -376,7 +376,7 @@ export class AssetService {
 
 	}
 
-	private writeAssetFile ( asset: Asset, data: string ) {
+	private writeAssetFile ( asset: Asset, data: string ): void {
 
 		if ( data ) this.storageService.writeSync( asset.path, data );
 
@@ -384,7 +384,7 @@ export class AssetService {
 
 	}
 
-	private writeAssetMetaFile ( asset: Asset ) {
+	private writeAssetMetaFile ( asset: Asset ): void {
 
 		if ( !asset.metadata ) return;
 
@@ -392,7 +392,7 @@ export class AssetService {
 
 	}
 
-	updateMetaFileByAsset ( asset: Asset ) {
+	updateMetaFileByAsset ( asset: Asset ): void {
 
 		AssetDatabase.setMetadata( asset.metadata.guid, asset.metadata );
 
@@ -400,7 +400,7 @@ export class AssetService {
 
 	}
 
-	updateMetaFile ( path: string, metadata: Metadata ) {
+	updateMetaFile ( path: string, metadata: Metadata ): void {
 
 		if ( !metadata ) return;
 

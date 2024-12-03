@@ -126,7 +126,7 @@ export class TvPosTheta {
 
 	}
 
-	copy ( other: TvPosTheta ) {
+	copy ( other: TvPosTheta ): void {
 		this.x = other.x;
 		this.y = other.y;
 		this.z = other.z;

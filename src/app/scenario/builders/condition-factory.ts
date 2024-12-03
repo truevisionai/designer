@@ -20,7 +20,7 @@ import { WorldPosition } from '../models/positions/tv-world-position';
 import { ConditionType, RelativeDistanceType, Rule, TriggeringRule } from '../models/tv-enums';
 
 export class ConditionFactory {
-	static reset () {
+	static reset (): void {
 		// throw new Error( 'Method not implemented.' );
 	}
 

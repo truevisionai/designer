@@ -49,7 +49,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.files = this.folder ? this.projectBrowserService.getAssets( this.folder.path ) : [];
 
@@ -59,20 +59,20 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	}
 
-	ngAfterViewInit () {
+	ngAfterViewInit (): void {
 
 		this.updateThumbnailCount( this.contentRef.nativeElement.clientWidth );
 
 	}
 
 	@HostListener( 'window:resize' )
-	onWindowResize () {
+	onWindowResize (): void {
 
 		this.updateThumbnailCount( this.contentRef.nativeElement.clientWidth );
 
 	}
 
-	updateThumbnailCount ( width: number ) {
+	updateThumbnailCount ( width: number ): void {
 
 		// 125 is the minimum width for the item
 		const count = Math.floor( width / 100 );
@@ -81,19 +81,19 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onFileDeleted ( $node: Asset ) {
+	onFileDeleted ( $node: Asset ): void {
 
 		this.refreshFolder();
 
 	}
 
-	onFileRenamed ( $event ) {
+	onFileRenamed ( $event ): void {
 
 		this.refreshFolder();
 
 	}
 
-	refreshFolder () {
+	refreshFolder (): void {
 
 		this.appRef.tick();
 

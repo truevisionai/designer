@@ -24,13 +24,13 @@ export abstract class AbstractFactory<T> {
 
 	}
 
-	setAssetManager ( manager: AssetManager ) {
+	setAssetManager ( manager: AssetManager ): void {
 
 		this.assetManager = manager;
 
 	}
 
-	setAssetService ( assetService: AssetService ) {
+	setAssetService ( assetService: AssetService ): void {
 
 		this.assetService = assetService;
 

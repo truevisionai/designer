@@ -277,7 +277,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private saveObject ( sourcePath: string, destinationFolder: string, object: Object3D ) {
+	private saveObject ( sourcePath: string, destinationFolder: string, object: Object3D ): void {
 
 		const filename = FileUtils.getFilenameWithoutExtension( sourcePath );
 
@@ -335,7 +335,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private flipUVs ( object: Object3D ) {
+	private flipUVs ( object: Object3D ): void {
 
 		// Traverse and conditionally modify UVs after the system change
 		object.traverse( function ( child ) {

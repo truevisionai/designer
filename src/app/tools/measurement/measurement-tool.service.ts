@@ -30,13 +30,13 @@ export class MeasurementToolService {
 
 	}
 
-	updateToolTip ( id: number, text: string ) {
+	updateToolTip ( id: number, text: string ): void {
 
 		this.toolTipService.updateTooltipContent( id, text );
 
 	}
 
-	removeToolTip ( toolTip: TooltipInterface ) {
+	removeToolTip ( toolTip: TooltipInterface ): void {
 
 		this.toolTipService.removeToolTip( toolTip );
 
@@ -53,7 +53,7 @@ export class MeasurementToolService {
 		return textObject;
 	}
 
-	updateText ( object: TextObject3d, text: string ) {
+	updateText ( object: TextObject3d, text: string ): void {
 
 		this.debugTextService.updateText( object, text );
 

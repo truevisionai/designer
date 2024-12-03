@@ -149,7 +149,7 @@ export class RoadStyleLoader implements AssetLoader {
 		return laneSection;
 	}
 
-	private readLane ( laneSection: TvLaneSection, xmlElement: any, laneSide: TvLaneSide ) {
+	private readLane ( laneSection: TvLaneSection, xmlElement: any, laneSide: TvLaneSide ): void {
 
 		const id = parseFloat( xmlElement.attr_id );
 		const type = xmlElement.attr_type;

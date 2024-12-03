@@ -97,7 +97,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	buildRoadMarkings ( road: TvRoad ) {
+	buildRoadMarkings ( road: TvRoad ): void {
 
 		const laneSections = road.getLaneProfile().getLaneSections();
 
@@ -128,7 +128,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	updateJunctionVisibility ( road: TvRoad ) {
+	updateJunctionVisibility ( road: TvRoad ): void {
 
 		if ( !road.isJunction ) return;
 
@@ -336,7 +336,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 	}
 
 	// eslint-disable-next-line max-lines-per-function
-	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): void {
 
 		const distance = sOffset - laneSection.s as RoadDistance;
 		const start = road.getLaneStartPosition( lane, distance, 0, false );
@@ -386,7 +386,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+	private addVertex ( meshData: MeshGeometryData, v1: Vertex ): void {
 
 		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z );
 		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );

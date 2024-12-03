@@ -99,14 +99,14 @@ export class LaneUtils {
 	}
 
 	// when we only have incoming lane
-	static copyPreviousLane ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPreviousLane ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		LaneUtils.copyPrevLaneWidth( prevLane, prevSection, prevRoad, lane );
 		LaneUtils.copyPrevRoadMark( prevLane, prevSection, prevRoad, lane );
 
 	}
 
-	static copyPrevLaneWidth ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPrevLaneWidth ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		// const newSectionLength = lane.laneSection.road.length - lane.laneSection.s;
 
@@ -118,7 +118,7 @@ export class LaneUtils {
 
 	}
 
-	static copyNextLaneWidth ( nextLane: TvLane, nextSection: TvLaneSection, nextRoad: TvRoad, lane: TvLane ) {
+	static copyNextLaneWidth ( nextLane: TvLane, nextSection: TvLaneSection, nextRoad: TvRoad, lane: TvLane ): void {
 
 		const newSectionLength = lane.laneSection.road.length - lane.laneSection.s;
 
@@ -128,7 +128,7 @@ export class LaneUtils {
 
 	}
 
-	static copyPrevRoadMark ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPrevRoadMark ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		const lastRoadMark = prevLane.roadMarks.getLast();
 

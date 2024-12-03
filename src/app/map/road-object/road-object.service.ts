@@ -36,7 +36,7 @@ export class RoadObjectService {
 
 	}
 
-	updateRoadObjectPositions ( road: TvRoad ) {
+	updateRoadObjectPositions ( road: TvRoad ): void {
 
 		road.getRoadObjects().forEach( object => {
 
@@ -106,7 +106,7 @@ export class RoadObjectService {
 
 	}
 
-	addRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+	addRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ): void {
 
 		roadObject.addRepeatObject( repeat );
 
@@ -114,7 +114,7 @@ export class RoadObjectService {
 
 	}
 
-	removeRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+	removeRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ): void {
 
 		roadObject.removeRepeatObject( repeat );
 

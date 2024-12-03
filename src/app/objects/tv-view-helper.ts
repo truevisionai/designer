@@ -279,7 +279,7 @@ export class TvViewHelper extends Object3D {
 		this.negZAxisHelper.material.dispose();
 	}
 
-	prepareAnimationData ( object, focusPoint ) {
+	prepareAnimationData ( object, focusPoint ): void {
 
 		switch ( object.userData.type ) {
 

@@ -4,7 +4,7 @@
 
 import { XmlElement } from "../importers/xml.element";
 
-export function readXmlArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ) {
+export function readXmlArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ): void {
 
 	if ( items != null ) {
 
@@ -26,7 +26,7 @@ export function readXmlArray ( items: any, callbackFn: ( xml: XmlElement, count:
 
 }
 
-export function readXmlElement ( xml: any, callbackFn: ( xml: XmlElement ) => void ) {
+export function readXmlElement ( xml: any, callbackFn: ( xml: XmlElement ) => void ): void {
 
 	if ( xml != null ) {
 

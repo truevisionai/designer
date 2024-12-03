@@ -267,7 +267,7 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	private updateValidLanes ( signal: TvRoadSignal, road: TvRoad, s: number, junction: TvJunction ) {
+	private updateValidLanes ( signal: TvRoadSignal, road: TvRoad, s: number, junction: TvJunction ): void {
 
 		/**
 		Rules
@@ -301,7 +301,7 @@ export class AutoSignalizeJunctionService {
 		signal.addValidity( minLaneId, maxLaneId );
 	}
 
-	private removeControllers ( junction: TvJunction ) {
+	private removeControllers ( junction: TvJunction ): void {
 
 		// remove existing controllers from junction and map
 		for ( const controller of junction.controllers ) {
@@ -314,7 +314,7 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	private addControllers ( type: AutoSignalizationType, junction: TvJunction, signals: TvRoadSignal[] ) {
+	private addControllers ( type: AutoSignalizationType, junction: TvJunction, signals: TvRoadSignal[] ): void {
 
 		// controllers are only needed in split phase
 		if ( type != AutoSignalizationType.SPIT_PHASE ) return;

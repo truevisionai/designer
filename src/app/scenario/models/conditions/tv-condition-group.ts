@@ -8,11 +8,11 @@ export class ConditionGroup {
 
 	public conditions: Condition[] = [];
 
-	addCondition ( condition: Condition ) {
+	addCondition ( condition: Condition ): void {
 		this.conditions.push( condition );
 	}
 
-	reset () {
+	reset (): void {
 		for ( let i = 0; i < this.conditions.length; i++ ) {
 			this.conditions[ i ].reset();
 		}

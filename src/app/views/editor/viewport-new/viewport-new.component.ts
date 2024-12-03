@@ -126,7 +126,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.render = this.render.bind( this );
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.prevTime = ( performance || Date ).now();
 		this.beginTime = ( performance || Date ).now();
@@ -182,7 +182,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		cancelAnimationFrame( this.animationId );
 	}
 
-	render () {
+	render (): void {
 
 		// this seems a faster want to call render function
 		requestAnimationFrame( this.render );
@@ -198,13 +198,13 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.frameEnd();
 	}
 
-	frameBegin () {
+	frameBegin (): void {
 
 		this.beginTime = ( performance || Date ).now();
 
 	}
 
-	frameEnd () {
+	frameEnd (): void {
 
 		this.frames++;
 
@@ -221,7 +221,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	onMouseMove ( event: MouseEvent ) {
+	onMouseMove ( event: MouseEvent ): void {
 
 		// TODO: implement GPU picking
 		// https://threejs.org/examples/webgl_interactive_cubes_gpu.html
@@ -249,7 +249,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	onMouseClick ( event: MouseEvent ) {
+	onMouseClick ( event: MouseEvent ): void {
 
 		if ( !this.onCanvas ) return;
 
@@ -273,7 +273,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	onMouseDown ( $event: MouseEvent ) {
+	onMouseDown ( $event: MouseEvent ): void {
 
 		if ( !this.onCanvas ) return;
 
@@ -305,19 +305,19 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	handleRightClick ( event: MouseEvent, intersection: Intersection ) {
+	handleRightClick ( event: MouseEvent, intersection: Intersection ): void {
 
 		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
 
 	}
 
-	handleMiddleClick ( event: MouseEvent, intersection: Intersection ) {
+	handleMiddleClick ( event: MouseEvent, intersection: Intersection ): void {
 
 		// do nothing
 
 	}
 
-	handleLeftClick ( event: MouseEvent, intersection: Intersection ) {
+	handleLeftClick ( event: MouseEvent, intersection: Intersection ): void {
 
 		this.fireSelectionEvents();
 
@@ -334,7 +334,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
 	}
 
-	onMouseUp ( event: MouseEvent ) {
+	onMouseUp ( event: MouseEvent ): void {
 
 		this.isPointerDown = false;
 
@@ -370,7 +370,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	 *
 	 * @param $event
 	 */
-	onMouseEnter ( $event: Event ) {
+	onMouseEnter ( $event: Event ): void {
 
 		this.onCanvas = true;
 		this.eventSystem.pointerEnter.emit( new PointerEventData );
@@ -383,7 +383,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	 *
 	 * @param $event
 	 */
-	onMouseLeave ( $event: Event ) {
+	onMouseLeave ( $event: Event ): void {
 
 		this.onCanvas = false;
 		this.eventSystem.pointerLeave.emit( new PointerEventData );
@@ -397,7 +397,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	 * @param $event
 	 * @deprecated dont use use this event, as it triggers when mouse leaves any child elements
 	 */
-	onMouseOut ( $event: MouseEvent ) {
+	onMouseOut ( $event: MouseEvent ): void {
 
 		this.onCanvas = false;
 		this.eventSystem.pointerOut.emit( new PointerEventData );
@@ -405,7 +405,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	@HostListener( 'window: resize', [ '$event' ] )
-	onWindowResized () {
+	onWindowResized (): void {
 
 		const container = this.renderer.domElement.parentElement.parentElement;
 
@@ -429,7 +429,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	fireSelectionEvents () {
+	fireSelectionEvents (): void {
 
 		if ( this.intersections.length > 0 ) {
 
@@ -587,11 +587,11 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	onContextMenu ( $event: MouseEvent ) {
+	onContextMenu ( $event: MouseEvent ): void {
 
 	}
 
-	updateMousePosition ( $event: MouseEvent ) {
+	updateMousePosition ( $event: MouseEvent ): void {
 
 		this.currentMousePosition.x = ( ( $event.clientX - this.canvasConfig.left ) / this.canvasConfig.width ) * 2 - 1;
 		this.currentMousePosition.y = -( ( $event.clientY - this.canvasConfig.top ) / this.canvasConfig.height ) * 2 + 1;
@@ -623,7 +623,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		return this.raycaster.intersectObjects( [ this.background ], false );
 	}
 
-	private initRenderer ( canvas: HTMLCanvasElement ) {
+	private initRenderer ( canvas: HTMLCanvasElement ): void {
 
 		this.renderer = new WebGLRenderer( {
 			alpha: false,
@@ -646,7 +646,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	private resizeCamera ( camera: Camera, aspect: number ) {
+	private resizeCamera ( camera: Camera, aspect: number ): void {
 
 		if ( camera instanceof OrthographicCamera ) {
 
@@ -665,7 +665,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	adjustRaycasterThreshold () {
+	adjustRaycasterThreshold (): void {
 
 		const target = this.controls.getTarget() || new Vector3();
 

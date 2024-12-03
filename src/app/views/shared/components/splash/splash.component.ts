@@ -14,7 +14,7 @@ export class SplashComponent implements OnInit {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

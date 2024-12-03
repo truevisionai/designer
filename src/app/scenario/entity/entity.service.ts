@@ -68,7 +68,7 @@ export class EntityService {
 
 	}
 
-	removeAll () {
+	removeAll (): void {
 
 		this.vehicles.clear();
 

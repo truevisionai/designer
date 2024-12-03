@@ -28,19 +28,19 @@ export class LaneMarkingToolService {
 		private laneService: LaneService,
 	) { }
 
-	rebuild ( lane: TvLane ) {
+	rebuild ( lane: TvLane ): void {
 
 		this.laneService.updateLane( lane );
 
 	}
 
-	updateNode ( node: LaneMarkingNode ) {
+	updateNode ( node: LaneMarkingNode ): void {
 
 		this.rebuild( node.lane );
 
 	}
 
-	addRoadmark ( lane: TvLane, roadMark: TvLaneRoadMark ) {
+	addRoadmark ( lane: TvLane, roadMark: TvLaneRoadMark ): void {
 
 		lane.addRoadMarkInstance( roadMark );
 
@@ -48,13 +48,13 @@ export class LaneMarkingToolService {
 
 	}
 
-	addNode ( node: LaneMarkingNode ) {
+	addNode ( node: LaneMarkingNode ): void {
 
 		this.addRoadmark( node.lane, node.roadmark );
 
 	}
 
-	removeRoadmark ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+	removeRoadmark ( lane: TvLane, roadmark: TvLaneRoadMark ): void {
 
 		lane.removeRoadMark( roadmark );
 
@@ -62,7 +62,7 @@ export class LaneMarkingToolService {
 
 	}
 
-	removeNode ( node: LaneMarkingNode ) {
+	removeNode ( node: LaneMarkingNode ): void {
 
 		this.removeRoadmark( node.lane, node.roadmark );
 

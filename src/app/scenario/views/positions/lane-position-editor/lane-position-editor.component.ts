@@ -20,22 +20,22 @@ export class LanePositionEditorComponent extends AbstractPositionEditor {
 		return this.lanePosition.getLaneArray().map( lane => lane.id );
 	}
 
-	onRoadIdChanged ( $event: any ) {
+	onRoadIdChanged ( $event: any ): void {
 		this.lanePosition.roadId = parseFloat( $event );
 		this.positionModified.emit( this.position );
 	}
 
-	onSValueChanged ( $event: any ) {
+	onSValueChanged ( $event: any ): void {
 		this.lanePosition.sCoordinate = parseFloat( $event );
 		this.positionModified.emit( this.position );
 	}
 
-	onLaneIdChanged ( $event: any ) {
+	onLaneIdChanged ( $event: any ): void {
 		this.lanePosition.laneId = parseFloat( $event );
 		this.positionModified.emit( this.position );
 	}
 
-	onOffsetChanged ( $event: any ) {
+	onOffsetChanged ( $event: any ): void {
 		this.lanePosition.offset = parseFloat( $event );
 		this.positionModified.emit( this.position );
 	}

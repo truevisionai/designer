@@ -25,13 +25,13 @@ export class TvTextureService {
 
 	}
 
-	addTexture ( guid: string, asset: TextureAsset ) {
+	addTexture ( guid: string, asset: TextureAsset ): void {
 
 		this.assetService.setInstance( guid, asset );
 
 	}
 
-	update ( asset: Asset ) {
+	update ( asset: Asset ): void {
 
 		if ( !asset ) return;
 

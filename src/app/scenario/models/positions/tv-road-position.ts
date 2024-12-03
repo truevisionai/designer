@@ -76,7 +76,7 @@ export class RoadPosition extends Position {
 		this.updated.emit();
 	}
 
-	exportXml () {
+	exportXml (): void {
 		throw new Error( 'Method not implemented.' );
 	}
 

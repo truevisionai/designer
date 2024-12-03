@@ -24,25 +24,25 @@ export class RelativeDistanceConditionComponent {
 
 	}
 
-	onTargetEntityChanged ( $targetEntity: string ) {
+	onTargetEntityChanged ( $targetEntity: string ): void {
 
 		this.relativeDistanceCondition.entityRef = $targetEntity;
 
 	}
 
-	onDistanceChanged ( $distance: number ) {
+	onDistanceChanged ( $distance: number ): void {
 
 		this.relativeDistanceCondition.distance = $distance;
 
 	}
 
-	onFreespaceChanged ( $freespace: any ) {
+	onFreespaceChanged ( $freespace: any ): void {
 
 		this.relativeDistanceCondition.freespace = $freespace;
 
 	}
 
-	onRuleChanged ( $rule: Rule ) {
+	onRuleChanged ( $rule: Rule ): void {
 
 		this.relativeDistanceCondition.rule = $rule;
 

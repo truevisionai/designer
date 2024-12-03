@@ -61,7 +61,7 @@ export abstract class AbstractSpline {
 
 	private map: TvMap;
 
-	static reset () {
+	static reset (): void {
 		this.idCounter = 1;
 	}
 
@@ -171,7 +171,7 @@ export abstract class AbstractSpline {
 		return this.controlPoints.length >= 2 ? this.controlPoints[ this.controlPoints.length - 2 ] : null;
 	}
 
-	update () {
+	update (): void {
 	}
 
 	getLength (): number {

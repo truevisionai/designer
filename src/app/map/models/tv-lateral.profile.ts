@@ -79,23 +79,23 @@ export class TvLateralProfile {
 		return this.shapes;
 	}
 
-	createSuperElevation ( s: number, a: number, b: number, c: number, d: number ) {
+	createSuperElevation ( s: number, a: number, b: number, c: number, d: number ): void {
 		this.superElevations.set( s, new TvSuperElevation( s, a, b, c, d ) );
 	}
 
-	addSuperElevation ( elevation: TvSuperElevation ) {
+	addSuperElevation ( elevation: TvSuperElevation ): void {
 		this.superElevations.set( elevation.s, elevation );
 	}
 
-	removeSuperElevation ( superElevation: TvSuperElevation ) {
+	removeSuperElevation ( superElevation: TvSuperElevation ): void {
 		this.superElevations.remove( superElevation );
 	}
 
-	addCrossfall ( crossfall: TvLateralProfileCrossfall ) {
+	addCrossfall ( crossfall: TvLateralProfileCrossfall ): void {
 		this.crossfalls.push( crossfall );
 	}
 
-	addShape ( s: number, t: number, a: number, b: number, c: number, d: number ) {
+	addShape ( s: number, t: number, a: number, b: number, c: number, d: number ): void {
 
 		const shape = new TvLateralProfileShape();
 
@@ -112,7 +112,7 @@ export class TvLateralProfile {
 
 	}
 
-	computeCoefficients ( roadLength: number ) {
+	computeCoefficients ( roadLength: number ): void {
 
 		this.superElevations.computeCoefficients( roadLength );
 
@@ -121,7 +121,7 @@ export class TvLateralProfile {
 	// shape elements shall be defined in ascending order,
 	// firstly according to the s-coordinate and
 	// secondly according to the t-coordinate.
-	sortShapes () {
+	sortShapes (): void {
 		this.shapes.sort( ( a, b ) => {
 			if ( a.s === b.s ) {
 				return a.t - b.t;

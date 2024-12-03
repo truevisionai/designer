@@ -88,7 +88,7 @@ describe( 'OpenDrive LaneSection', () => {
 
 } );
 
-function expecttCorrectOrderOfLanes ( laneSection: TvLaneSection ) {
+function expecttCorrectOrderOfLanes ( laneSection: TvLaneSection ): void {
 
 	laneSection.getLeftLanes().forEach( ( lane, index, items ) => {
 		const laneId = items.length - index;

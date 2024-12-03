@@ -17,7 +17,7 @@ export class OrderedArry<T> {
 		return this.entries.length;
 	}
 
-	clear () {
+	clear (): void {
 		this.entries = [];
 	}
 
@@ -40,7 +40,7 @@ export class OrderedArry<T> {
 		return this;
 	}
 
-	sort () {
+	sort (): void {
 
 		this.entries.sort( ( a, b ) => a[ this.key ] - b[ this.key ] );
 
@@ -58,7 +58,7 @@ export class OrderedArry<T> {
 
 	}
 
-	remove ( value: T ) {
+	remove ( value: T ): void {
 
 		this.entries = this.entries.filter( entry => entry !== value );
 
@@ -143,7 +143,7 @@ export class OrderedArry<T> {
 
 	}
 
-	forEach ( callbackfn: ( value: T, key: number, values: T[] ) => void, thisArg?: any ) {
+	forEach ( callbackfn: ( value: T, key: number, values: T[] ) => void, thisArg?: any ): void {
 
 		for ( const entry of this.entries ) {
 			callbackfn.call( thisArg, entry, entry[ this.key ], this.entries );

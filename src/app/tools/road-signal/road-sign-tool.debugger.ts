@@ -103,7 +103,7 @@ export class RoadSignToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	hideRoad ( road: TvRoad ) {
+	hideRoad ( road: TvRoad ): void {
 
 		this.points.removeKey( road );
 

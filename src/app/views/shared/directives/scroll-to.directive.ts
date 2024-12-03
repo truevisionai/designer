@@ -9,7 +9,7 @@ export class ScrollToDirective implements OnInit {
 	constructor ( @Attribute( 'scrollTo' ) public elmID: string, private el: ElementRef ) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 	currentYPosition () {

@@ -155,13 +155,13 @@ export class StorageService {
 
 	}
 
-	deleteFileSync ( path: string ) {
+	deleteFileSync ( path: string ): void {
 
 		return this.fileService.deleteFileSync( path );
 
 	}
 
-	deleteFolderSync ( path: string ) {
+	deleteFolderSync ( path: string ): void {
 
 		return this.fileService.deleteFolderRecursive( path );
 

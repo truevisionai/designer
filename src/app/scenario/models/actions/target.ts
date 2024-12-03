@@ -26,7 +26,7 @@ export abstract class Target {
 
 	abstract setTarget ( value );
 
-	reset () {
+	reset (): void {
 
 
 	}

@@ -122,7 +122,7 @@ export class ParkingRoadToolService {
 		return road;
 	}
 
-	addRoad ( road: TvRoad ) {
+	addRoad ( road: TvRoad ): void {
 
 		this.roadService.add( road );
 
@@ -133,7 +133,7 @@ export class ParkingRoadToolService {
 		} );
 	}
 
-	addRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
+	addRepeatedParkingObject ( road: TvRoad, lane: TvLane ): void {
 
 		const s = this.getStartPosition( road, lane.laneSection, lane ) + PARKING_WIDTH * 0.5;
 
@@ -182,7 +182,7 @@ export class ParkingRoadToolService {
 		return laneSection.s;
 	}
 
-	removeRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
+	removeRepeatedParkingObject ( road: TvRoad, lane: TvLane ): void {
 
 		road.getRoadObjects()
 			.filter( roadObject => roadObject.getRepeatList().find( repeat => repeat.targetLane == lane ) )
@@ -194,7 +194,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	removeRoad ( object: TvRoad ) {
+	removeRoad ( object: TvRoad ): void {
 
 		this.roadService.remove( object );
 
@@ -239,7 +239,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createStripedMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeOffset = 0.5, gapLength = 0.3 ) {
+	createStripedMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeOffset = 0.5, gapLength = 0.3 ): void {
 
 		const numStripes = Math.floor( roadObject.length / ( gapLength ) );
 
@@ -451,7 +451,7 @@ export class ParkingRoadToolService {
 	// 	}
 	// }
 
-	createRectangularParkingLot ( start: Vector3, end: Vector3 ) {
+	createRectangularParkingLot ( start: Vector3, end: Vector3 ): void {
 
 		// Calculate width and height
 		var width = Math.abs( start.x - end.x );
@@ -525,7 +525,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	hideBoundingBoxes () {
+	hideBoundingBoxes (): void {
 
 		this.roadService.roads.forEach( road => {
 
@@ -539,7 +539,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	hideBoundingBox ( roadObject: TvRoadObject ) {
+	hideBoundingBox ( roadObject: TvRoadObject ): void {
 
 		//
 

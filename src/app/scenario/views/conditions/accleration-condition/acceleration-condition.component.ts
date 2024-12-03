@@ -24,13 +24,13 @@ export class AccelerationConditionComponent {
 
 	}
 
-	onRuleChanged ( $rule: Rule ) {
+	onRuleChanged ( $rule: Rule ): void {
 
 		this.accelerationCondition.rule = $rule;
 
 	}
 
-	onAccelerationChanged ( $value: number ) {
+	onAccelerationChanged ( $value: number ): void {
 
 		this.accelerationCondition.value = $value;
 

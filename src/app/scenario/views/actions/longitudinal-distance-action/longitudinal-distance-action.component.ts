@@ -19,35 +19,35 @@ export class LongitudinalDistanceActionComponent {
 		return this.action as LongitudinalDistanceAction;
 	}
 
-	onValueChanged ( $event: number ) {
+	onValueChanged ( $event: number ): void {
 		this.longitudinalDistanceAction.value = $event;
 	}
 
-	onTargetChanged ( $event: string ) {
+	onTargetChanged ( $event: string ): void {
 		this.longitudinalDistanceAction.targetEntity = $event;
 	}
 
-	onValueTypeChanged ( $event ) {
+	onValueTypeChanged ( $event ): void {
 		this.longitudinalDistanceAction.valueType = $event;
 	}
 
-	onMaxAccelChanged ( $event: any ) {
+	onMaxAccelChanged ( $event: any ): void {
 		this.longitudinalDistanceAction.dynamicConstraints.maxAcceleration = $event;
 	}
 
-	onMaxDecelChanged ( $event: any ) {
+	onMaxDecelChanged ( $event: any ): void {
 		this.longitudinalDistanceAction.dynamicConstraints.maxDeceleration = $event;
 	}
 
-	onMaxSpeedChanged ( $event: any ) {
+	onMaxSpeedChanged ( $event: any ): void {
 		this.longitudinalDistanceAction.dynamicConstraints.maxSpeed = $event;
 	}
 
-	onContinousChanged ( $event: any ) {
+	onContinousChanged ( $event: any ): void {
 		this.longitudinalDistanceAction.continous = $event;
 	}
 
-	onFreespaceChanged ( $event: any ) {
+	onFreespaceChanged ( $event: any ): void {
 		this.longitudinalDistanceAction.freespace = $event;
 	}
 }

@@ -31,25 +31,25 @@ export class BaseToolService {
 	) {
 	}
 
-	addSelectionStrategy ( strategy: BaseSelectionStrategy<any> ) {
+	addSelectionStrategy ( strategy: BaseSelectionStrategy<any> ): void {
 
 		this.selectionStrategies.push( strategy );
 
 	}
 
-	addCreationStrategy ( strategy: BaseSelectionStrategy<any> ) {
+	addCreationStrategy ( strategy: BaseSelectionStrategy<any> ): void {
 
 		this.creationStrategies.push( strategy );
 
 	}
 
-	addMovingStrategy ( strategy: IMovingStrategy ) {
+	addMovingStrategy ( strategy: IMovingStrategy ): void {
 
 		this.movingStrategies.push( strategy );
 
 	}
 
-	setSelected ( object: any ) {
+	setSelected ( object: any ): void {
 
 
 	}
@@ -150,7 +150,7 @@ export class BaseToolService {
 
 	}
 
-	clearStrategies () {
+	clearStrategies (): void {
 
 		this.selectionStrategies.forEach( s => s.dispose() );
 		this.creationStrategies.forEach( s => s.dispose() );
@@ -160,26 +160,26 @@ export class BaseToolService {
 		this.creationStrategies = [];
 	}
 
-	reset () {
+	reset (): void {
 
 		this.clearStrategies();
 
 
 	}
 
-	enableControls () {
+	enableControls (): void {
 
 		this.viewController.enableControls();
 
 	}
 
-	disableControls () {
+	disableControls (): void {
 
 		this.viewController.disableControls();
 
 	}
 
-	setCursor ( hint: string ) {
+	setCursor ( hint: string ): void {
 
 		this.cursorService.setCursor( hint );
 

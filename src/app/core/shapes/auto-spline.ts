@@ -37,7 +37,7 @@ export class DepAutoSpline extends AbstractSpline {
 
 	}
 
-	init () {
+	init (): void {
 
 		this.polyline = new Polyline( this.controlPoints );
 
@@ -53,14 +53,14 @@ export class DepAutoSpline extends AbstractSpline {
 
 	}
 
-	hideLines () {
+	hideLines (): void {
 
 		this.polyline.mesh.visible = false;
 		this.roundline.mesh.visible = false;
 
 	}
 
-	showLines () {
+	showLines (): void {
 
 		this.polyline.mesh.visible = true;
 		this.roundline.mesh.visible = true;
@@ -77,7 +77,7 @@ export class DepAutoSpline extends AbstractSpline {
 	}
 
 
-	update () {
+	update (): void {
 
 		this.updateHdgs();
 
@@ -87,7 +87,7 @@ export class DepAutoSpline extends AbstractSpline {
 
 	}
 
-	updateHdgs () {
+	updateHdgs (): void {
 
 		const hdgs = [];
 
@@ -117,7 +117,7 @@ export class DepAutoSpline extends AbstractSpline {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		this.controlPoints.splice( 0, this.controlPoints.length );
 

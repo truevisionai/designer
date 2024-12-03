@@ -29,7 +29,7 @@ export class PlayerService {
 	constructor () {
 	}
 
-	play () {
+	play (): void {
 
 		ToolManager.disable();
 
@@ -59,7 +59,7 @@ export class PlayerService {
 		}() );
 	}
 
-	pause () {
+	pause (): void {
 
 		this.playerPaused.emit();
 
@@ -69,7 +69,7 @@ export class PlayerService {
 		cancelAnimationFrame( this.handle );
 	}
 
-	stop () {
+	stop (): void {
 
 		cancelAnimationFrame( this.handle );
 
@@ -83,7 +83,7 @@ export class PlayerService {
 		ToolManager.enable();
 	}
 
-	tick () {
+	tick (): void {
 
 		const time = performance.now();
 

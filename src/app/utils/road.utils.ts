@@ -136,7 +136,7 @@ export class RoadUtils {
 
 	}
 
-	static unlinkSuccessor ( road: TvRoad, updateMe = true ) {
+	static unlinkSuccessor ( road: TvRoad, updateMe = true ): void {
 
 		if ( !road.successor ) return;
 
@@ -157,7 +157,7 @@ export class RoadUtils {
 		if ( updateMe ) road.removeSuccessor();
 	}
 
-	static unlinkPredecessor ( road: TvRoad, updateMe = true ) {
+	static unlinkPredecessor ( road: TvRoad, updateMe = true ): void {
 
 		if ( !road.predecessor ) return;
 

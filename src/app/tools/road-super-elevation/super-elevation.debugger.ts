@@ -200,7 +200,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 		return line;
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

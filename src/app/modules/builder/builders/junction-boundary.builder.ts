@@ -91,7 +91,7 @@ export class JunctionBoundaryBuilder {
 	 * Useful for debugging the boundary
 	 * @param boundary
 	 */
-	private debugDrawBoundary ( boundary: TvJunctionBoundary ) {
+	private debugDrawBoundary ( boundary: TvJunctionBoundary ): void {
 
 		let points = this.convertBoundaryToPositions( boundary );
 

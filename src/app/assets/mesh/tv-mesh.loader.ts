@@ -40,7 +40,7 @@ export class TvMeshLoader {
 
 	}
 
-	private parseMaterial ( mesh: TvMesh, materialGuid: string | string[] ) {
+	private parseMaterial ( mesh: TvMesh, materialGuid: string | string[] ): void {
 
 		mesh.materialGuid = materialGuid;
 
@@ -68,7 +68,7 @@ export class TvMeshLoader {
 
 	}
 
-	private parseGeometry ( mesh: TvMesh, geometryGuid: string ) {
+	private parseGeometry ( mesh: TvMesh, geometryGuid: string ): void {
 
 		if ( geometryGuid == undefined ) return;
 

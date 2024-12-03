@@ -113,7 +113,7 @@ export class QuestionsComponent implements OnInit {
 		private userService: ProfileService
 	) { }
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.parentForm = this.fb.group( {
 			personal: this.profileGroup,
@@ -168,7 +168,7 @@ export class QuestionsComponent implements OnInit {
 		} );
 
 	}
-	submit () {
+	submit (): void {
 
 		console.log( this.parentForm?.value );
 

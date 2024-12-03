@@ -42,7 +42,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	protected selected = new Set<TvLane>();
 
-	protected setBaseState ( object: TvLane, state: DebugState ) {
+	protected setBaseState ( object: TvLane, state: DebugState ): void {
 
 		if ( !object ) return;
 
@@ -79,7 +79,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 		return true;
 	}
 
-	private setHighlightState ( object: TvLane ) {
+	private setHighlightState ( object: TvLane ): void {
 
 		if ( !this.shouldHighlight( object ) ) return;
 
@@ -89,7 +89,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	}
 
-	private setDefaultState ( object: TvLane ) {
+	private setDefaultState ( object: TvLane ): void {
 
 		if ( this.highlighted.has( object ) ) {
 
@@ -110,7 +110,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 		this.onDefault( object );
 	}
 
-	private setSelectedState ( object: TvLane ) {
+	private setSelectedState ( object: TvLane ): void {
 
 		if ( this.selected.has( object ) ) {
 
@@ -132,7 +132,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 		this.onSelected( object );
 	}
 
-	private setRemovedState ( object: TvLane ) {
+	private setRemovedState ( object: TvLane ): void {
 
 		if ( this.selected.has( object ) ) {
 
@@ -154,7 +154,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	}
 
-	resetHighlighted () {
+	resetHighlighted (): void {
 
 		this.highlighted.forEach( object => this.setDebugState( object, DebugState.DEFAULT ) );
 
@@ -162,7 +162,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	}
 
-	resetSelected () {
+	resetSelected (): void {
 
 		this.selected.forEach( object => this.setDebugState( object, DebugState.DEFAULT ) );
 
@@ -170,7 +170,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	}
 
-	updateDebugState ( object: TvLane, state: DebugState ) {
+	updateDebugState ( object: TvLane, state: DebugState ): void {
 
 		if ( object ) this.onRemoved( object );
 

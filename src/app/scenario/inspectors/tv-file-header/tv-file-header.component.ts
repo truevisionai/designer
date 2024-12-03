@@ -16,7 +16,7 @@ export class FileHeaderComponent implements OnInit {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 
 	}

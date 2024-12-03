@@ -98,7 +98,7 @@ export class TvElectronService {
 		return this.electron ? this.electron.shell : null;
 	}
 
-	setTitle ( title: string, filePath?: string ) {
+	setTitle ( title: string, filePath?: string ): void {
 
 		let newTitle = title;
 
@@ -107,7 +107,7 @@ export class TvElectronService {
 		electronFs.setTitle( newTitle );
 	}
 
-	openLink ( link: string ) {
+	openLink ( link: string ): void {
 
 		this.remote.shell.openExternal( link );
 

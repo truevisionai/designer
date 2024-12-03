@@ -236,7 +236,7 @@ export class ToolFactory {
 
 	}
 
-	setSelectionStrategies ( tool: BaseTool<any>, type: ToolType ) {
+	setSelectionStrategies ( tool: BaseTool<any>, type: ToolType ): void {
 
 		this.selectionService.reset();
 

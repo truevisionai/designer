@@ -13,7 +13,7 @@ export class EditorLayoutComponent implements OnInit {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

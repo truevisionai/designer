@@ -23,6 +23,6 @@ export class EsminiInspectorComponent extends BaseInspector implements IComponen
 		super();
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 }

@@ -383,7 +383,7 @@ export class TvJunctionConnection {
 
 	}
 
-	markAsCornerConnection () {
+	markAsCornerConnection (): void {
 
 		this.isCornerConnection = true;
 

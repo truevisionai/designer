@@ -44,7 +44,7 @@ export class RoadSignTool extends BaseTool<any> {
 		return this.selectedPoint?.mainObject || this.currentSelectedPoint?.mainObject;
 	}
 
-	init () {
+	init (): void {
 
 		super.init();
 
@@ -57,7 +57,7 @@ export class RoadSignTool extends BaseTool<any> {
 		this.setDebugService( this.tool.toolDebugger );
 	}
 
-	enable () {
+	enable (): void {
 
 		super.enable();
 
@@ -254,7 +254,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 	}
 
-	createSignal ( road: TvRoad, asset: Asset, position: Vector3 ) {
+	createSignal ( road: TvRoad, asset: Asset, position: Vector3 ): void {
 
 		if ( !road ) {
 			this.setHint( 'Please select a road first.' );

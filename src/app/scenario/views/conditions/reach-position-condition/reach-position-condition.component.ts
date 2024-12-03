@@ -30,7 +30,7 @@ export class ReachPositionConditionComponent extends BaseConditionEditorComponen
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		const geometry = this.getGeometry( this.reachedCondition.tolerance );
 
@@ -52,25 +52,25 @@ export class ReachPositionConditionComponent extends BaseConditionEditorComponen
 		return new TorusGeometry( radius, tube, radialSegments, tubularSegments );
 	}
 
-	ngOnDestroy () {
+	ngOnDestroy (): void {
 
 		this.threeService.remove( this.sphere );
 
 	}
 
-	onPositionTypeChanged ( position: Position ) {
+	onPositionTypeChanged ( position: Position ): void {
 
 		this.sphere.position.copy( position.getVectorPosition() );
 
 	}
 
-	onPositionChanged ( position: Position ) {
+	onPositionChanged ( position: Position ): void {
 
 		this.sphere.position.copy( position.getVectorPosition() );
 
 	}
 
-	onToleranceChanged ( value: number ) {
+	onToleranceChanged ( value: number ): void {
 
 		this.reachedCondition.tolerance = value;
 

@@ -34,7 +34,7 @@ export class MapService {
 		TvMapInstance.map = value;
 	}
 
-	setMap ( map: TvMap ) {
+	setMap ( map: TvMap ): void {
 		this.map = map;
 	}
 
@@ -87,13 +87,13 @@ export class MapService {
 
 	}
 
-	addRoad ( road: TvRoad ) {
+	addRoad ( road: TvRoad ): void {
 
 		this.map.addRoad( road );
 
 	}
 
-	removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ): void {
 
 		this.map.removeRoad( road );
 
@@ -129,7 +129,7 @@ export class MapService {
 
 	}
 
-	addSpline ( spline: AbstractSpline ) {
+	addSpline ( spline: AbstractSpline ): void {
 
 		this.map.addSpline( spline );
 
@@ -183,7 +183,7 @@ export class MapService {
 
 	}
 
-	removeJunction ( junction: TvJunction ) {
+	removeJunction ( junction: TvJunction ): void {
 
 		// this.map.removeJunction( junction );
 
@@ -207,7 +207,7 @@ export class MapService {
 
 	}
 
-	setOpacityLevel ( opacity: number ) {
+	setOpacityLevel ( opacity: number ): void {
 
 		this.resetMapOpacity();
 
@@ -223,7 +223,7 @@ export class MapService {
 
 	}
 
-	setRoadOpacity ( road: TvRoad, opacity?: number ) {
+	setRoadOpacity ( road: TvRoad, opacity?: number ): void {
 
 		const opacityValue = opacity || this.getOpacityLevel();
 
@@ -288,7 +288,7 @@ export class MapService {
 
 	}
 
-	resetMapOpacity () {
+	resetMapOpacity (): void {
 
 		this.opacityObjects.forEach( ( originalMaterial, mesh ) => {
 
@@ -300,19 +300,19 @@ export class MapService {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		this.map.clear();
 
 	}
 
-	removePropPolygon ( object: PropPolygon ) {
+	removePropPolygon ( object: PropPolygon ): void {
 
 		this.map.propPolygons.splice( this.map.propPolygons.indexOf( object ), 1 );
 
 	}
 
-	addPropPolygon ( object: PropPolygon ) {
+	addPropPolygon ( object: PropPolygon ): void {
 
 		if ( this.map.propPolygons.includes( object ) ) return;
 

@@ -165,7 +165,7 @@ export class SplineSegmentService {
 
 	}
 
-	private addJunctionSegment ( spline: AbstractSpline, sOffset: number, junction: TvJunction ) {
+	private addJunctionSegment ( spline: AbstractSpline, sOffset: number, junction: TvJunction ): void {
 
 	}
 

@@ -310,7 +310,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	addMaterialRecord ( sOffset: number, surface: string, friction: number, roughness: number ) {
+	addMaterialRecord ( sOffset: number, surface: string, friction: number, roughness: number ): void {
 
 		const index = this.checkLaneMaterialInterval( sOffset ) + 1;
 
@@ -721,7 +721,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	addRoadMarkInstance ( roadmark: TvLaneRoadMark ) {
+	addRoadMarkInstance ( roadmark: TvLaneRoadMark ): void {
 
 		this.roadMarks.set( roadmark.s, roadmark );
 
@@ -769,7 +769,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	addBorder ( border: TvLaneBorder ) {
+	addBorder ( border: TvLaneBorder ): void {
 
 		this.borders.push( border );
 

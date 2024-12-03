@@ -48,13 +48,13 @@ export class LaneChangeAction extends PrivateAction {
 
 	}
 
-	setTarget ( target: Target ) {
+	setTarget ( target: Target ): void {
 
 		this.target = target;
 
 	}
 
-	reset () {
+	reset (): void {
 
 		super.reset();
 
@@ -65,7 +65,7 @@ export class LaneChangeAction extends PrivateAction {
 
 	}
 
-	execute ( entity: ScenarioEntity ) {
+	execute ( entity: ScenarioEntity ): void {
 
 		if ( this.isCompleted ) return;
 
@@ -104,7 +104,7 @@ export class LaneChangeAction extends PrivateAction {
 
 	}
 
-	private computeLateralDistance ( entity: ScenarioEntity ) {
+	private computeLateralDistance ( entity: ScenarioEntity ): void {
 
 		this.initialLaneOffset = entity.getCurrentLaneOffset();
 
@@ -134,7 +134,7 @@ export class LaneChangeAction extends PrivateAction {
 		this.lateralDistance = offsetDirection * distance;
 	}
 
-	private computeTDirection () {
+	private computeTDirection (): void {
 
 		// // if left lane change then negative
 		// // if right lane change then positive

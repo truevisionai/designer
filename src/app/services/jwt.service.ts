@@ -33,11 +33,11 @@ export class JwtService {
 		return window.localStorage[ this.KEY ];
 	}
 
-	saveToken ( token: string ) {
+	saveToken ( token: string ): void {
 		window.localStorage[ this.KEY ] = token;
 	}
 
-	destroyToken () {
+	destroyToken (): void {
 		window.localStorage.removeItem( 'jwtToken' );
 	}
 

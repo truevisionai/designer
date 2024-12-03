@@ -37,7 +37,7 @@ export class EntityBuilder {
 
 	}
 
-	buildController ( entity: ScenarioEntity ) {
+	buildController ( entity: ScenarioEntity ): void {
 
 		// if ( obj.controller instanceof CatalogReferenceController ) {
 		//
@@ -65,7 +65,7 @@ export class EntityBuilder {
 		// }
 	}
 
-	loadVehicleTexture ( entity: ScenarioEntity, callback: ( texture: Texture ) => void ) {
+	loadVehicleTexture ( entity: ScenarioEntity, callback: ( texture: Texture ) => void ): void {
 
 		// const loader = new TextureLoader();
 		//
@@ -85,7 +85,7 @@ export class EntityBuilder {
 		// } );
 	}
 
-	public createVehicleSprite ( entity: ScenarioEntity, texture: Texture ) {
+	public createVehicleSprite ( entity: ScenarioEntity, texture: Texture ): void {
 
 		// // var spriteMaterial = new SpriteMaterial( { models: texture, color: 0xffffff } );
 		// // obj.gameObject = new Sprite( spriteMaterial );
@@ -106,7 +106,7 @@ export class EntityBuilder {
 		// SceneService.add( obj.gameObject );
 	}
 
-	public createVehicleIconLabel ( parent: Object3D, color = 0xffffff ) {
+	public createVehicleIconLabel ( parent: Object3D, color = 0xffffff ): void {
 
 		// const loader = new TextureLoader();
 		// const texture = loader.load( 'assets/car-icon-circle.png' );

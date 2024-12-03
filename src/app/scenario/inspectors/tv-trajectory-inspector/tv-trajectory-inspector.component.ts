@@ -21,7 +21,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.drawTrajectory();
 
@@ -55,7 +55,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 	}
 
-	addVertexAddedListener () {
+	addVertexAddedListener (): void {
 
 		// this.shapeEditor.controlPointAdded.subscribe( ( e: Points ) => {
 		//
@@ -83,7 +83,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 	}
 
-	drawTrajectory () {
+	drawTrajectory (): void {
 
 		// if ( this.trajectory.shape instanceof PolylineShape ) {
 		//
@@ -102,7 +102,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 	}
 
-	addGeometryChangeListener () {
+	addGeometryChangeListener (): void {
 
 		// this.shapeEditor.curveGeometryChanged.subscribe( ( curve: CatmullRomCurve3 ) => {
 		//
@@ -122,7 +122,7 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 	}
 
-	onPositionModified ( position: Position ) {
+	onPositionModified ( position: Position ): void {
 
 		throw new Error( 'not implemented' );
 

@@ -20,7 +20,7 @@ export class ParamatersInspectorComponent implements OnInit, IComponent {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 		this.declaration = this.data;
 	}
 

@@ -56,7 +56,7 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 
