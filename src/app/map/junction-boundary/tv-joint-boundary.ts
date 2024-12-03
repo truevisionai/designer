@@ -65,13 +65,13 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
-			start = this.jointLaneStart.side == TvLaneSide.RIGHT ?
+			start = this.jointLaneStart.isRight ?
 				this.road.getLaneEndPosition( this.jointLaneStart, roadDistance ) :
 				this.road.getLaneStartPosition( this.jointLaneStart, roadDistance );
 
 		} else if ( this.contactPoint == TvContactPoint.END ) {
 
-			start = this.jointLaneStart.side == TvLaneSide.RIGHT ?
+			start = this.jointLaneStart.isRight ?
 				this.road.getLaneStartPosition( this.jointLaneStart, roadDistance ) :
 				this.road.getLaneEndPosition( this.jointLaneStart, roadDistance );
 
@@ -83,13 +83,13 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
-			end = this.jointLaneEnd.side == TvLaneSide.RIGHT ?
+			end = this.jointLaneEnd.isRight ?
 				this.road.getLaneStartPosition( this.jointLaneEnd, roadDistance ) :
 				this.road.getLaneEndPosition( this.jointLaneEnd, roadDistance );
 
 		} else if ( this.contactPoint == TvContactPoint.END ) {
 
-			end = this.jointLaneEnd.side == TvLaneSide.RIGHT ?
+			end = this.jointLaneEnd.isRight ?
 				this.road.getLaneEndPosition( this.jointLaneEnd, roadDistance ) :
 				this.road.getLaneStartPosition( this.jointLaneEnd, roadDistance );
 

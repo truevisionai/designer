@@ -185,7 +185,7 @@ export class LaneUtils {
 		for ( const current of lanes ) {
 
 			// ignore center lanes
-			if ( current.side == TvLaneSide.CENTER ) continue;
+			if ( current.isCenter ) continue;
 
 			if ( type && current.type != type ) continue;
 
@@ -242,7 +242,7 @@ export class LaneUtils {
 		for ( const current of lanes ) {
 
 			// ignore center lanes
-			if ( current.side == TvLaneSide.CENTER ) continue;
+			if ( current.isCenter ) continue;
 
 			if ( type && current.type != type ) continue;
 

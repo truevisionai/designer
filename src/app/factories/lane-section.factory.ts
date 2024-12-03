@@ -264,13 +264,7 @@ export class LaneSectionFactory {
 
 				id++;
 
-				const lane = laneSection.createLane(
-					TvLaneSide.RIGHT,
-					-id,
-					coord.lane.type,
-					true,
-					true
-				);
+				const lane = laneSection.createRightLane( -id, coord.lane.type, true, true );
 
 				if ( prevLane ) {
 					lane.setPredecessor( prevLane );

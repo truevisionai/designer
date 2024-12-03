@@ -165,7 +165,7 @@ export class LaneWidthManager {
 
 	private ensureMinWidthRecord ( lane: TvLane ) {
 
-		if ( lane.side == TvLaneSide.CENTER ) {
+		if ( lane.isCenter ) {
 			lane.clearLaneWidth();
 			return;
 		}

@@ -268,7 +268,7 @@ export class OdRoadMarkBuilderV1 {
 			new Vector2( texX, texY )
 		);
 
-		if ( lane.side == TvLaneSide.LEFT ) {
+		if ( lane.isLeft ) {
 			this.addVertex( mesh, v1 );
 			this.addVertex( mesh, v2 );
 		} else {

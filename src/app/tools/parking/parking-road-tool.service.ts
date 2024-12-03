@@ -206,7 +206,7 @@ export class ParkingRoadToolService {
 
 		let t = road.getLaneProfile().getFirstLaneSection().getWidthUptoCenter( lane, s );
 
-		if ( lane.side == TvLaneSide.RIGHT ) t *= -1;
+		if ( lane.isRight ) t *= -1;
 
 		const roadObject = this.roadObjectService.createRoadObject( road, TvRoadObjectType.parkingSpace, s, t );
 

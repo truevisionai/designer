@@ -368,7 +368,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 			vv2.uvs = new Vector2( height.inner + width + height.outer, sOffset );
 		}
 
-		if ( lane.side == TvLaneSide.RIGHT ) {
+		if ( lane.isRight ) {
 
 			this.addVertex( lane.meshData, v1 );
 			if ( vv1 ) this.addVertex( lane.meshData, vv1 );
