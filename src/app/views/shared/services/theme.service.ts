@@ -4,7 +4,6 @@
 
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, Renderer2 } from '@angular/core';
-import { getQueryParam } from '../helpers/url.helper';
 
 export interface ITheme {
 	name: string,
@@ -14,6 +13,7 @@ export interface ITheme {
 
 @Injectable()
 export class ThemeService {
+
 	public egretThemes: ITheme[] = [ {
 		'name': 'egret-dark-purple',
 		'baseColor': '#9c27b0',
@@ -54,7 +54,7 @@ export class ThemeService {
 
 	}
 
-	changeTheme ( prevTheme, themeName: string ) {
+	changeTheme ( prevTheme: string, themeName: string ) {
 		this.renderer.removeClass( this.document.body, prevTheme );
 		this.renderer.addClass( this.document.body, themeName );
 		this.flipActiveFlag( themeName );

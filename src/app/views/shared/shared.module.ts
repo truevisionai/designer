@@ -42,8 +42,6 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { StatusBarComponent } from '../editor/status-bar/status-bar.component';
 
 // ALL TIME REQUIRED
-import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
-import { PropBrowserComponent } from './components/prop-browser/prop-browser.component';
 import { SplashComponent } from './components/splash/splash.component';
 import { AppInputDialogService } from './dialogs/app-input-dialog/app-input-dialog-service';
 import { AppInputDialogComponent } from './dialogs/app-input-dialog/app-input-dialog.component';
@@ -92,7 +90,6 @@ import { TextareaFieldComponent } from './fields/textarea-field/textarea-field.c
 // import { LandingPageService } from '../shared/services/landing-page.service';
 
 const classesToInclude = [
-	AuthLayoutComponent,
 	AppComfirmComponent,
 	AppLoaderComponent,
 	FontSizeDirective,
@@ -125,7 +122,6 @@ const classesToInclude = [
 	TextareaFieldComponent,
 	ColorFieldComponent,
 	SelectEntityFieldComponent,
-	PropBrowserComponent,
 	RoadIdFieldComponent,
 	AppInputDialogComponent,
 

@@ -5,7 +5,6 @@
 import { Injectable, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { getQueryParam } from '../helpers/url.helper';
 import { ThemeService } from './theme.service';
 
 export interface ILayoutConf {
