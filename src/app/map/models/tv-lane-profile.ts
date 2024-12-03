@@ -111,9 +111,15 @@ export class TvLaneProfile {
 
 	}
 
+	private hasLaneSectionAt ( s: number ): boolean {
+
+		return this.laneSections.find( laneSection => laneSection.s === s ) !== undefined;
+
+	}
+
 	addLaneSection ( laneSection: TvLaneSection ): void {
 
-		if ( TvUtils.checkIntervalArray( this.laneSections, laneSection.s ) !== null ) {
+		if ( this.hasLaneSectionAt( laneSection.s ) ) {
 			throw new Error( `Lane section already exists at ${ laneSection.s }` );
 		}
 
