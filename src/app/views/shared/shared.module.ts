@@ -43,14 +43,12 @@ import { StatusBarComponent } from '../editor/status-bar/status-bar.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { ButtonLoadingComponent } from './components/button-loading/button-loading.component';
 // ONLY FOR DEMO (Removable without changing any layout configuration)
-import { CustomizerComponent } from './components/customizer/customizer.component';
 import { FooterBottomComponent } from './components/footer-bottom/footer-bottom.component';
 // ONLY REQUIRED FOR **SIDE** NAVIGATION LAYOUT
 import { HeaderSideComponent } from './components/header-side/header-side.component';
 // ONLY REQUIRED FOR **TOP** NAVIGATION LAYOUT
 import { HeaderTopComponent } from './components/header-top/header-top.component';
 // ALL TIME REQUIRED
-import { AdminLayoutComponent } from './components/layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { PropBrowserComponent } from './components/prop-browser/prop-browser.component';
@@ -112,12 +110,10 @@ const classesToInclude = [
 	NotificationsComponent,
 	SidebarSideComponent,
 	HeaderSideComponent,
-	AdminLayoutComponent,
 	AuthLayoutComponent,
 	BreadcrumbComponent,
 	AppComfirmComponent,
 	AppLoaderComponent,
-	CustomizerComponent,
 	ButtonLoadingComponent,
 	FontSizeDirective,
 	ScrollToDirective,
