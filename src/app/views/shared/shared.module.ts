@@ -42,8 +42,6 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { StatusBarComponent } from '../editor/status-bar/status-bar.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { ButtonLoadingComponent } from './components/button-loading/button-loading.component';
-// ONLY FOR DEMO (Removable without changing any layout configuration)
-import { FooterBottomComponent } from './components/footer-bottom/footer-bottom.component';
 // ONLY REQUIRED FOR **SIDE** NAVIGATION LAYOUT
 import { HeaderSideComponent } from './components/header-side/header-side.component';
 // ONLY REQUIRED FOR **TOP** NAVIGATION LAYOUT
@@ -129,7 +127,6 @@ const classesToInclude = [
 	StatusBarComponent,
 	ImportFileDialogComponent,
 	SearchPipe,
-	FooterBottomComponent,
 	SplashComponent,
 	TranslatePipe,
 	TooltipComponent,
