@@ -71,7 +71,7 @@ export class RoadFactory {
 			options.rightWidth ?? LANE_WIDTH.DEFAULT_LANE_WIDTH
 		);
 
-		road.getLaneProfile().addLaneSectionInstance( laneSection );
+		road.getLaneProfile().addLaneSection( laneSection );
 
 		return road;
 
@@ -87,7 +87,7 @@ export class RoadFactory {
 
 		road.getPlanView().addGeometryLine( 0, position.x, position.y, hdg, length );
 
-		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
+		const laneSection = road.getLaneProfile().addDefaultLaneSection();
 
 		laneSection.createCenterLane( 0, TvLaneType.none, false, true );
 		laneSection.createRightLane( -1, TvLaneType.sidewalk, false, true ).addWidthRecord( 0, options.rightWidth, 0, 0, 0 );
@@ -131,7 +131,7 @@ export class RoadFactory {
 
 		road.getLaneProfile().addLaneOffset( roadStyle.laneOffset );
 
-		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
+		road.getLaneProfile().addLaneSection( roadStyle.laneSection );
 
 		return road;
 
@@ -147,7 +147,7 @@ export class RoadFactory {
 
 		road.getLaneProfile().addLaneOffset( roadStyle.laneOffset );
 
-		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
+		road.getLaneProfile().addLaneSection( roadStyle.laneSection );
 
 		road.addElevationProfile( roadStyle.elevationProfile );
 
@@ -163,7 +163,7 @@ export class RoadFactory {
 
 		road.getLaneProfile().addLaneOffset( roadStyle.laneOffset );
 
-		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
+		road.getLaneProfile().addLaneSection( roadStyle.laneSection );
 
 		road.addElevationProfile( roadStyle.elevationProfile );
 
@@ -181,7 +181,7 @@ export class RoadFactory {
 
 		road.getLaneProfile().addLaneOffset( roadStyle.laneOffset );
 
-		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection );
+		road.getLaneProfile().addLaneSection( roadStyle.laneSection );
 
 		return road;
 
@@ -217,7 +217,7 @@ export class RoadFactory {
 
 		const road = this.createNewRoad();
 
-		const laneSection = road.getLaneProfile().addGetLaneSection( 0 );
+		const laneSection = road.getLaneProfile().addDefaultLaneSection();
 
 		if ( side === TvLaneSide.LEFT ) {
 			laneSection.createLeftLane( 1, TvLaneType.driving, false, true );
@@ -247,7 +247,7 @@ export class RoadFactory {
 
 		const laneSection = LaneSectionFactory.createLaneSection( leftCount, leftWidth, rightCount, rightWidth );
 
-		road.getLaneProfile().addLaneSectionInstance( laneSection );
+		road.getLaneProfile().addLaneSection( laneSection );
 
 		return road;
 
@@ -265,7 +265,7 @@ export class RoadFactory {
 
 		for ( const laneSection of laneSections ) {
 
-			road.getLaneProfile().addLaneSectionInstance( laneSection );
+			road.getLaneProfile().addLaneSection( laneSection );
 
 		}
 
@@ -292,11 +292,15 @@ export class RoadFactory {
 
 		const road = this.createRoad();
 
+		road.spline = spline;
+
+		road.sStart = 0;
+
 		const laneSections = LaneSectionFactory.createFromRoadCoord( previousRoad, nextRoad );
 
 		for ( const laneSection of laneSections ) {
 
-			road.getLaneProfile().addLaneSectionInstance( laneSection );
+			road.getLaneProfile().addLaneSection( laneSection );
 
 		}
 
@@ -330,7 +334,7 @@ export class RoadFactory {
 
 		for ( const laneSection of laneSections ) {
 
-			road.getLaneProfile().addLaneSectionInstance( laneSection );
+			road.getLaneProfile().addLaneSection( laneSection );
 
 		}
 

@@ -1118,7 +1118,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			} );
 		} );
 
-		road.getLaneProfile().addLaneSectionInstance( laneSection );
+		road.getLaneProfile().addLaneSection( laneSection );
 	}
 
 	public parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ): TvLane {

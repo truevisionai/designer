@@ -423,7 +423,7 @@ export class AssetPreviewService {
 		road.laneOffsets.push( roadStyle.laneOffset );
 
 		road.laneSections.splice( 0, road.laneSections.length );
-		road.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection )
+		road.getLaneProfile().addLaneSection( roadStyle.laneSection )
 
 		roadStyle.objects.forEach( obj => road.addRoadObject( obj.clone() ) );
 

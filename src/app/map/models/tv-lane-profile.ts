@@ -26,9 +26,16 @@ export class TvLaneProfile {
 
 	}
 
-	addDefaultLaneSection (): void {
-		if ( this.laneSections.length > 0 ) return;
-		this.addLaneSectionInstance( new TvLaneSection( 1, 0, false, this.road ) );
+	addDefaultLaneSection (): TvLaneSection {
+
+		if ( this.laneSections.length > 0 ) return this.getFirstLaneSection();
+
+		const laneSection = new TvLaneSection( this.laneSections.length + 1, 0, false, this.road )
+
+		this.addLaneSection( laneSection );
+
+		return laneSection;
+
 	}
 
 	getRoad (): TvRoad {
@@ -63,6 +70,11 @@ export class TvLaneProfile {
 		this.laneSections.splice( 0, this.laneSections.length );
 	}
 
+	/**
+	 * @param s
+	 * @param singleSide
+	 * @deprecated
+	 */
 	addGetLaneSection ( s: number, singleSide: boolean = false ): TvLaneSection {
 
 		const laneSections = this.getLaneSections();
@@ -71,7 +83,7 @@ export class TvLaneProfile {
 
 		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this.road );
 
-		this.addLaneSectionInstance( laneSection );
+		this.addLaneSection( laneSection );
 
 		return laneSection;
 	}
@@ -99,15 +111,15 @@ export class TvLaneProfile {
 
 	}
 
-	addLaneSectionInstance ( laneSection: TvLaneSection ): void {
+	addLaneSection ( laneSection: TvLaneSection ): void {
+
+		if ( TvUtils.checkIntervalArray( this.laneSections, laneSection.s ) !== null ) {
+			throw new Error( `Lane section already exists at ${ laneSection.s }` );
+		}
 
 		laneSection.road = this.road;
 
-		laneSection.getLanes().forEach( lane => {
-
-			lane.laneSection = laneSection;
-
-		} );
+		laneSection.getLanes().forEach( lane => lane.laneSection = laneSection );
 
 		this.laneSections.push( laneSection );
 

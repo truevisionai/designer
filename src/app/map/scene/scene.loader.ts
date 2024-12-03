@@ -1815,7 +1815,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 			} );
 		} );
 
-		road.getLaneProfile().addLaneSectionInstance( laneSection );
+		road.getLaneProfile().addLaneSection( laneSection );
 	}
 
 	private parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ) {

@@ -268,7 +268,7 @@ export class ConnectionFactory {
 		const connection = this.createFakeConnection( junction, incomingCoord, outgoingCoord, true );
 		connection.connectingRoad.laneSections.splice( 0, 1 );
 		const clone = incoming.laneSection.cloneAtS( 0, 0, false, connection.connectingRoad );
-		connection.connectingRoad.getLaneProfile().addLaneSectionInstance( clone );
+		connection.connectingRoad.getLaneProfile().addLaneSection( clone );
 
 		connection.connectingRoad.laneSections.forEach( laneSection => {
 			laneSection.getLanes().forEach( lane => {
@@ -412,7 +412,7 @@ export class ConnectionFactory {
 
 	private createConnectingLane ( connectingRoad: TvRoad, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvLane {
 
-		const laneSection = connectingRoad.getLaneProfile().addGetLaneSection( 0 );
+		const laneSection = connectingRoad.getLaneProfile().addDefaultLaneSection();
 
 		laneSection.createCenterLane( 0, TvLaneType.none, false, false );
 

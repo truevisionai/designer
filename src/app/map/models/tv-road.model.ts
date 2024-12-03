@@ -604,7 +604,7 @@ export class TvRoad {
 
 		this.getLaneProfile().addLaneOffset( roadStyle.laneOffset.clone() );
 
-		this.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
+		this.getLaneProfile().addLaneSection( roadStyle.laneSection.cloneAtS( 0 ) );
 
 		this.elevationProfile = roadStyle.elevationProfile.clone();
 
@@ -638,7 +638,7 @@ export class TvRoad {
 		road.predecessor = this.predecessor?.clone();
 		road.successor = this.successor?.clone();
 
-		road.getLaneProfile().addLaneSectionInstance( this.getLaneProfile().getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
+		road.getLaneProfile().addLaneSection( this.getLaneProfile().getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
 
 		this.getRoadObjects().forEach( obj => road.addRoadObject( obj.clone() ) );
 
