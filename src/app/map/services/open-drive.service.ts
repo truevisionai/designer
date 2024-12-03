@@ -36,7 +36,7 @@ export class OpenDriveService {
 	/**
 	 * @deprecated
 	 */
-	async showImportDialog () {
+	async showImportDialog (): Promise<void> {
 
 		const response = await this.fileService.showAsyncDialog();
 
@@ -115,13 +115,13 @@ export class OpenDriveService {
 
 	}
 
-	getOpenDriveOutput () {
+	getOpenDriveOutput (): string {
 
 		return this.openDriveExporter.getOutput( this.mapService.map );
 
 	}
 
-	getSceneOutput () {
+	getSceneOutput (): any {
 
 		return this.sceneExporter.exportAsString();
 

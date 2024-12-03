@@ -165,7 +165,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 		return laneNode;
 	}
 
-	private writeLaneOffset ( xmlNode, laneOffset: TvLaneOffset ) {
+	private writeLaneOffset ( xmlNode, laneOffset: TvLaneOffset ): any {
 
 		xmlNode.laneOffset = {
 			attr_s: laneOffset.s,
@@ -178,7 +178,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 		return xmlNode;
 	}
 
-	private exportTypes ( types: TvRoadTypeClass[] ) {
+	private exportTypes ( types: TvRoadTypeClass[] ): any {
 
 		return types.map( type => {
 

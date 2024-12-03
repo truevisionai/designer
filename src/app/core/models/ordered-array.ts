@@ -52,7 +52,7 @@ export class OrderedArry<T> {
 
 	}
 
-	contains ( value: T ) {
+	contains ( value: T ): boolean {
 
 		return this.entries.includes( value );
 
@@ -99,7 +99,7 @@ export class OrderedArry<T> {
 
 	}
 
-	getNextKey ( value: T ) {
+	getNextKey ( value: T ): any {
 
 		const next = this.getNext( value );
 
@@ -111,13 +111,13 @@ export class OrderedArry<T> {
 
 	}
 
-	getLast () {
+	getLast (): T {
 
 		return this.entries.length > 0 ? this.entries[ this.entries.length - 1 ] : null;
 
 	}
 
-	getFirst () {
+	getFirst (): T {
 
 		return this.entries.length > 0 ? this.entries[ 0 ] : null;
 

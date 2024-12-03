@@ -16,7 +16,7 @@ export class TvObjectExporter implements AssetExporter<any> {
 	constructor () {
 	}
 
-	exportAsString ( objectAsset: TvObjectAsset ) {
+	exportAsString ( objectAsset: TvObjectAsset ): string {
 
 		const output = this.exportAsJSON( objectAsset.instance );
 
@@ -31,7 +31,7 @@ export class TvObjectExporter implements AssetExporter<any> {
 		return JSON.stringify( json, null, 2 );
 	}
 
-	exportAsJSON ( instance: any, meta?: any ) {
+	exportAsJSON ( instance: any, meta?: any ): any {
 
 		// meta is a string when called from JSON.stringify
 		const isRootObject = ( meta === undefined || typeof meta === 'string' );
@@ -147,7 +147,7 @@ export class TvObjectExporter implements AssetExporter<any> {
 
 		//
 
-		function serialize ( library, element ) {
+		function serialize ( library, element ): any {
 
 			if ( library[ element.uuid ] === undefined ) {
 
@@ -228,7 +228,7 @@ export class TvObjectExporter implements AssetExporter<any> {
 
 		if ( instance.material !== undefined ) {
 
-			function serializeMaterial ( material: Material | TvStandardMaterial ) {
+			function serializeMaterial ( material: Material | TvStandardMaterial ): any {
 
 				if ( material instanceof TvStandardMaterial ) {
 
@@ -326,7 +326,7 @@ export class TvObjectExporter implements AssetExporter<any> {
 		// extract data from the cache hash
 		// remove metadata on each item
 		// and return as array
-		function extractFromCache ( cache ) {
+		function extractFromCache ( cache ): any[] {
 
 			const values = [];
 			for ( const key in cache ) {

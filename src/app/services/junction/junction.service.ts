@@ -34,7 +34,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	getJunctionById ( id: number ) {
+	getJunctionById ( id: number ): any {
 
 		return this.mapService.map.getJunction( id );
 
@@ -62,7 +62,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	createNewJunction () {
+	createNewJunction (): any {
 
 		return this.factory.createByType();
 

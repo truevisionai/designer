@@ -6,7 +6,7 @@ import { AppInfo } from 'app/services/app-info.service';
 
 export class FileUtils {
 
-	static getExtensionFromPath ( path: string ) {
+	static getExtensionFromPath ( path: string ): string {
 
 		// if ( this.electron.isWindows ) {
 

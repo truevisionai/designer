@@ -474,7 +474,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	createNode ( road: TvRoad, contact: TvContactPoint ) {
+	createNode ( road: TvRoad, contact: TvContactPoint ): any {
 
 		const node = new RoadNode( road, contact );
 

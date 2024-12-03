@@ -50,7 +50,7 @@ export class ApiService {
 		).pipe( catchError( this.formatErrors ) );
 	}
 
-	private formatErrors ( error: any ) {
+	private formatErrors ( error: any ): Observable<never> {
 		return throwError( error.error );
 	}
 

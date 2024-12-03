@@ -167,7 +167,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 	}
 
-	private getContents ( coord: TvLaneCoord ) {
+	private getContents ( coord: TvLaneCoord ): string {
 
 		let contents = '';
 

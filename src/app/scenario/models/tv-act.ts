@@ -31,13 +31,13 @@ export class Act {
 
 	}
 
-	static getNewName ( name = 'MyAct' ) {
+	static getNewName ( name = 'MyAct' ): string {
 
 		return `${ name }${ this.count }`;
 
 	}
 
-	addNewSequence ( name: string, numberOfExecutions: number = 1, ...actors: string[] ) {
+	addNewSequence ( name: string, numberOfExecutions: number = 1, ...actors: string[] ): ManeuverGroup {
 
 		const sequence = new ManeuverGroup( name, numberOfExecutions, actors );
 

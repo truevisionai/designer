@@ -79,7 +79,7 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 
 	}
 
-	clone () {
+	clone (): TvLaneBoundary {
 		const lane = new TvLaneBoundary();
 		lane.road = this.road;
 		lane.boundaryLane = this.boundaryLane;

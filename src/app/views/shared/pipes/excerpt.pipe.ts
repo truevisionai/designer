@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe( { name: 'excerpt' } )
 export class ExcerptPipe implements PipeTransform {
-	transform ( text: string, limit: number = 5 ) {
+	transform ( text: string, limit: number = 5 ): string {
 		if ( text.length <= limit ) {
 			return text;
 		}

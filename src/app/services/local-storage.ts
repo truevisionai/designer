@@ -20,7 +20,7 @@ export class LocalStorage {
 
 	}
 
-	public get ( key: string, value?: any ) {
+	public get ( key: string, value?: any ): any {
 
 		if ( window.localStorage.getItem( key ) ) {
 			return window.localStorage.getItem( key );

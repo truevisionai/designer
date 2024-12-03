@@ -84,7 +84,7 @@ export class TvObjectLoader implements AssetLoader {
 
 	}
 
-	private parseGeometries ( geometries ) {
+	private parseGeometries ( geometries ): any {
 
 		const bufferGeometryLoader = new BufferGeometryLoader();
 
@@ -120,7 +120,7 @@ export class TvObjectLoader implements AssetLoader {
 
 	}
 
-	private parseObject ( data, geometries, materials, textures, animations ) {
+	private parseObject ( data, geometries, materials, textures, animations ): Object3D {
 
 		let object;
 
@@ -136,7 +136,7 @@ export class TvObjectLoader implements AssetLoader {
 
 		}
 
-		function getMaterial ( name ) {
+		function getMaterial ( name ): any {
 
 			if ( name === undefined ) return undefined;
 
@@ -172,7 +172,7 @@ export class TvObjectLoader implements AssetLoader {
 
 		}
 
-		function getTexture ( uuid ) {
+		function getTexture ( uuid ): any {
 
 			if ( textures[ uuid ] === undefined ) {
 

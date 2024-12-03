@@ -102,13 +102,13 @@ export class RoadFactory {
 
 	}
 
-	getNextRoadId ( id?: number ) {
+	getNextRoadId ( id?: number ): any {
 
 		return this.mapService.map.generateRoadId();
 
 	}
 
-	getNextConnectingRoadId () {
+	getNextConnectingRoadId (): any {
 
 		return this.mapService.map.generateRoadId( false );
 

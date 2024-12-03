@@ -82,7 +82,7 @@ export class VehicleEntity extends ScenarioEntity {
 
 	}
 
-	toJSON ( meta?: any ) {
+	toJSON ( meta?: any ): any {
 		return {
 			guid: this.uuid,
 			objectType: this.scenarioObjectType,

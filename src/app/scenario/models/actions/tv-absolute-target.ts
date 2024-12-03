@@ -19,7 +19,7 @@ export class AbsoluteTarget extends Target {
 
 	}
 
-	getTarget () {
+	getTarget (): number {
 
 		return this.target;
 

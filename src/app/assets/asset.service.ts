@@ -19,6 +19,7 @@ import { TvObjectAsset } from "./object/tv-object.asset";
 import { MaterialAsset } from "./material/tv-material.asset";
 import { RoadStyle } from "./road-style/road-style.model";
 import { TvStandardMaterial } from "./material/tv-standard-material";
+import { TextureAsset } from './texture/tv-texture.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -55,7 +56,7 @@ export class AssetService {
 
 	}
 
-	getTexture ( guid: string ) {
+	getTexture ( guid: string ): TextureAsset {
 
 		return AssetDatabase.getTexture( guid );
 
@@ -67,19 +68,19 @@ export class AssetService {
 
 	}
 
-	getObjectAsset ( guid: string ) {
+	getObjectAsset ( guid: string ): TvObjectAsset {
 
 		return this.getInstance<TvObjectAsset>( guid );
 
 	}
 
-	getMaterialAsset ( guid: string ) {
+	getMaterialAsset ( guid: string ): MaterialAsset {
 
 		return this.getInstance<MaterialAsset>( guid );
 
 	}
 
-	getModelAsset ( guid: string ) {
+	getModelAsset ( guid: string ): Object3D {
 
 		return this.getInstance<Object3D>( guid );
 
@@ -156,7 +157,7 @@ export class AssetService {
 
 	}
 
-	createRoadStyleAsset ( directory: string, style: RoadStyle, filename: string = 'RoadStyle.roadstyle' ) {
+	createRoadStyleAsset ( directory: string, style: RoadStyle, filename: string = 'RoadStyle.roadstyle' ): Asset {
 
 		const exporter = this.exporterFactory.getExporter( AssetType.ROAD_STYLE );
 
@@ -176,7 +177,7 @@ export class AssetService {
 
 	}
 
-	createMaterialAsset ( path: string, name = 'Material.material', material: MaterialAsset ) {
+	createMaterialAsset ( path: string, name = 'Material.material', material: MaterialAsset ): Asset {
 
 		const exporter = this.exporterFactory.getExporter( AssetType.MATERIAL );
 
@@ -445,13 +446,13 @@ export class AssetService {
 		return output;
 	}
 
-	getAssetName ( guid: string ) {
+	getAssetName ( guid: string ): string {
 
 		return AssetDatabase.getAssetNameByGuid( guid );
 
 	}
 
-	getRoadStyleAsset ( guid: string ) {
+	getRoadStyleAsset ( guid: string ): RoadStyle {
 
 		return this.getInstance<RoadStyle>( guid );
 

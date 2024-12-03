@@ -184,7 +184,7 @@ export class AssetPreviewService {
 		this.sphere.visible = false;
 	}
 
-	getPreview ( asset: Asset ) {
+	getPreview ( asset: Asset ): string {
 
 		let preview: string;
 

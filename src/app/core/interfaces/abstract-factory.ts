@@ -18,7 +18,7 @@ export abstract class AbstractFactory<T> {
 
 	protected assetService: AssetService;
 
-	createControlPoint ( object: T, position: Vector3 ) {
+	createControlPoint ( object: T, position: Vector3 ): SimpleControlPoint<T> {
 
 		return new SimpleControlPoint<T>( object, position );
 

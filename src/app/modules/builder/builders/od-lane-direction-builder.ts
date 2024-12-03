@@ -92,7 +92,7 @@ export class OdLaneDirectionBuilder {
 		SceneService.addToolObject( arrowHelper );
 	}
 
-	private createArrow2D ( origin: Vector3, hdg: number ) {
+	private createArrow2D ( origin: Vector3, hdg: number ): SimpleArrowObject {
 
 		const arrow = new SimpleArrowObject( origin, hdg );
 
@@ -143,7 +143,7 @@ export class LaneDirectionHelper {
 
 	private static distance = 5;
 
-	public static drawSingleLane ( lane: TvLane, distance = 5, size = 0.5 ) {
+	public static drawSingleLane ( lane: TvLane, distance = 5, size = 0.5 ): SimpleArrowObject[] {
 
 		this.distance = distance;
 
@@ -151,7 +151,7 @@ export class LaneDirectionHelper {
 
 	}
 
-	private static drawLane ( lane: TvLane, laneSection: TvLaneSection, size = 0.5 ) {
+	private static drawLane ( lane: TvLane, laneSection: TvLaneSection, size = 0.5 ): SimpleArrowObject[] {
 
 		const arrows: SimpleArrowObject[] = [];
 

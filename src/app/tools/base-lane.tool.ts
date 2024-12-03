@@ -322,7 +322,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> implements Tool {
 
 	}
 
-	protected highlight ( e: PointerEventData ) {
+	protected highlight ( e: PointerEventData ): any {
 
 		this.debugger.resetHighlighted();
 

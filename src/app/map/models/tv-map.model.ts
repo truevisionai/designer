@@ -67,7 +67,7 @@ export class TvMap {
 		return Array.from( this.roads.values() );
 	}
 
-	getControllers () {
+	getControllers (): TvSignalController[] {
 		return Array.from( this.controllers.values() );
 	}
 
@@ -106,7 +106,7 @@ export class TvMap {
 		this.splines.splice( this.splines.indexOf( spline ), 1 );
 	}
 
-	hasSpline ( spline: AbstractSpline ) {
+	hasSpline ( spline: AbstractSpline ): AbstractSpline {
 		return this.splines.find( s => s.uuid == spline.uuid );
 	}
 
@@ -178,7 +178,7 @@ export class TvMap {
 		return this.roads.has( road.id );
 	}
 
-	getSurfaces () {
+	getSurfaces (): Surface[] {
 
 		return this.surfaces;
 
@@ -252,7 +252,7 @@ export class TvMap {
 		return this.junctions.has( junction.id );
 	}
 
-	getJunctions () {
+	getJunctions (): TvJunction[] {
 
 		return Array.from( this.junctions.values() );
 
@@ -280,7 +280,7 @@ export class TvMap {
 
 	}
 
-	getProps () {
+	getProps (): PropInstance[] {
 		return this.props;
 	}
 

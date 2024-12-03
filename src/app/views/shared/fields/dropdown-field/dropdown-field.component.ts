@@ -37,7 +37,7 @@ export class DropdownFieldComponent extends AbstractFieldComponent<any> implemen
 
 	}
 
-	showOption ( option: any ) {
+	showOption ( option: any ): any {
 
 		if ( typeof ( option ) == 'string' ) {
 

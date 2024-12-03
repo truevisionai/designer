@@ -26,7 +26,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
-	override getLength () {
+	override getLength (): number {
 
 		return this.curve?.getLength();
 

@@ -71,7 +71,7 @@ export class RoadObjectService {
 		return this.ids.get( road ).getNextId();
 	}
 
-	createRoadObject ( road: TvRoad, type: TvRoadObjectType, s: number, t: number ) {
+	createRoadObject ( road: TvRoad, type: TvRoadObjectType, s: number, t: number ): any {
 
 		const id = this.getRoadObjectId( road );
 
@@ -83,7 +83,7 @@ export class RoadObjectService {
 
 	}
 
-	createMarking () {
+	createMarking (): any {
 
 		return new TvObjectMarking( TvColors.WHITE, 0.0, 1.0, null, TvRoadMarkWeights.STANDARD, 0, 0, 0.005, 0.1, [] );
 
@@ -184,7 +184,7 @@ export class RoadObjectService {
 
 	}
 
-	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ) {
+	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ): any {
 
 		const cornerLocal = CornerRoadFactory.createCornerLocalOutline( outline, u, v, z, height );
 

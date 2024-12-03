@@ -50,7 +50,7 @@ export class ModelImporter implements Importer {
 	) {
 	}
 
-	async import ( sourcePath: string, destinationFolder: string ) {
+	async import ( sourcePath: string, destinationFolder: string ): Promise<void> {
 
 		const extension = FileUtils.getExtensionFromPath( sourcePath ).toLowerCase();
 
@@ -79,7 +79,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private async importGLTF ( sourcePath: string, destinationFolder: string ) {
+	private async importGLTF ( sourcePath: string, destinationFolder: string ): Promise<void> {
 
 		const sourceFolder = FileUtils.getDirectoryFromPath( sourcePath ) + '/';
 
@@ -93,7 +93,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private async importGLB ( sourcePath: string, destinationFolder: string ) {
+	private async importGLB ( sourcePath: string, destinationFolder: string ): Promise<void> {
 
 		const sourceFolder = FileUtils.getDirectoryFromPath( sourcePath ) + '/';
 
@@ -107,7 +107,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private async importFBX ( sourcePath: string, destinationFolder: string ) {
+	private async importFBX ( sourcePath: string, destinationFolder: string ): Promise<void> {
 
 		const loader = new FBXLoader();
 
@@ -131,7 +131,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private async importDAE ( sourcePath: string, destinationFolder: string ) {
+	private async importDAE ( sourcePath: string, destinationFolder: string ): Promise<void> {
 
 		const sourceFolder = FileUtils.getDirectoryFromPath( sourcePath ) + '/';
 
@@ -145,7 +145,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private async createAssets ( sourcePath: string, destinationFolder: string, object: Object3D ) {
+	private async createAssets ( sourcePath: string, destinationFolder: string, object: Object3D ): Promise<void> {
 
 		ThreeJsUtils.changeCoordinateSystem( object, CoordinateSystem.UNITY_GLTF, CoordinateSystem.OPEN_DRIVE );
 
@@ -166,7 +166,7 @@ export class ModelImporter implements Importer {
 		this.flipUVs( object );
 	}
 
-	private async importOBJ ( sourcePath: string, destinationFolder: string ) {
+	private async importOBJ ( sourcePath: string, destinationFolder: string ): Promise<void> {
 
 		const loader = new OBJLoader();
 
@@ -214,7 +214,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private async saveTextures ( json: any, destinationFolder: string ) {
+	private async saveTextures ( json: any, destinationFolder: string ): Promise<void> {
 
 		if ( !json.textures ) return;
 
@@ -250,7 +250,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private saveImage ( json, texture, destinationFolder: string ) {
+	private saveImage ( json, texture, destinationFolder: string ): string {
 
 		const image = json?.images.find( image => image.uuid === texture.image );
 
@@ -307,7 +307,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private async convertToGLB ( sourcePath: string, successCallback?: Function, errorCallback?: Function ) {
+	private async convertToGLB ( sourcePath: string, successCallback?: Function, errorCallback?: Function ): Promise<any> {
 
 		const extension = FileUtils.getExtensionFromPath( sourcePath );
 

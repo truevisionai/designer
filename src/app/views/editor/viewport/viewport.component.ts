@@ -441,7 +441,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	async onDrop ( $event: DragEvent ) {
+	async onDrop ( $event: DragEvent ): Promise<void> {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -608,7 +608,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	detectWebgl () {
+	detectWebgl (): boolean {
 
 		try {
 

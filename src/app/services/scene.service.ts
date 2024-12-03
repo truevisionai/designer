@@ -70,7 +70,7 @@ export class SceneService {
 
 	static getEditorLayer (): Group { return this.editorLayer; }
 
-	static raycastableObjects () {
+	static raycastableObjects (): (THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap> | THREE.Group<THREE.Object3DEventMap>)[] {
 
 		const raycastableObjects = [];
 

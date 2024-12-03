@@ -47,7 +47,7 @@ export class WorldPosition extends Position {
 
 	}
 
-	toXML ( version: OpenScenarioVersion ) {
+	toXML ( version: OpenScenarioVersion ): any {
 
 		const key = version == OpenScenarioVersion.v0_9 ?
 			'World' :

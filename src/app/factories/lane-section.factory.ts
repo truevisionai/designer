@@ -400,7 +400,7 @@ export class LaneSectionFactory {
 
 	}
 
-	private createLaneSection ( road: TvRoad ) {
+	private createLaneSection ( road: TvRoad ): any {
 
 		return new TvLaneSection( road.laneSections.length, 0, false, road );
 

@@ -140,7 +140,7 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	getFreshPreview () {
+	getFreshPreview (): string {
 
 		return this.previewService.getMaterialPreview( this.material );
 

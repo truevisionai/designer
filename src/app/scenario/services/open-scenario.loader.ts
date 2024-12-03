@@ -593,7 +593,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		return new RelativeRoadPosition( entity, roadId, ds, dt, orientation );
 	}
 
-	parseCondition ( xml: XmlElement ) {
+	parseCondition ( xml: XmlElement ): Condition {
 
 		let condition: Condition = null;
 
@@ -634,7 +634,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	}
 
-	parseFileHeader ( xmlElement: any ) {
+	parseFileHeader ( xmlElement: any ): FileHeader {
 
 		return new FileHeader(
 			parseFloat( xmlElement.attr_revMajor ),
@@ -669,7 +669,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		return timeReference;
 	}
 
-	parseRoadNetwork ( xml: XmlElement ) {
+	parseRoadNetwork ( xml: XmlElement ): RoadNetwork {
 
 		let logics: File, sceneGraph: File;
 		let controllers: TrafficSignalController[] = [];
@@ -925,7 +925,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	}
 
-	parseFile ( xml: XmlElement ) {
+	parseFile ( xml: XmlElement ): File {
 
 		return new File( xml.attr_filepath );
 
@@ -1982,7 +1982,7 @@ export class OpenScenarioLoader extends AbstractReader {
 		return storyboard;
 	}
 
-	parseScenarioObjectType ( value: string ) {
+	parseScenarioObjectType ( value: string ): ScenarioObjectType {
 
 		switch ( value ) {
 
@@ -2081,7 +2081,7 @@ export class OpenScenarioLoader extends AbstractReader {
 
 	}
 
-	parseTimeToCollisionCondition ( xml: XmlElement ) {
+	parseTimeToCollisionCondition ( xml: XmlElement ): TimeToCollisionCondition {
 
 		const entityRef =
 			xml?.Target?.Entity?.attr_name ||	// 0.9

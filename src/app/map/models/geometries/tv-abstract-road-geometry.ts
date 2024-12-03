@@ -24,7 +24,7 @@ export abstract class TvAbstractRoadGeometry {
 
 	public abstract getRoadCoord ( s: number ): TvPosTheta;
 
-	public abstract computeVars ();
+	public abstract computeVars (): any;
 
 	public abstract getCurve (): Curve<Vector2>;
 
@@ -118,7 +118,7 @@ export abstract class TvAbstractRoadGeometry {
 
 	}
 
-	public getPositionAt ( s ) {
+	public getPositionAt ( s ): TvPosTheta {
 
 		return this.getRoadCoord( s );
 

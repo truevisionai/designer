@@ -11,13 +11,13 @@ import { AssetExporter } from "../../core/interfaces/asset-exporter";
 } )
 export class TvGeometryExporter implements AssetExporter<TvGeometry> {
 
-	exportAsString ( geometry: TvGeometry ) {
+	exportAsString ( geometry: TvGeometry ): string {
 
 		return JSON.stringify( this.exportAsJSON( geometry ) );
 
 	}
 
-	exportAsJSON ( geometry: TvGeometry ) {
+	exportAsJSON ( geometry: TvGeometry ): any {
 
 		return geometry.toJSON();
 

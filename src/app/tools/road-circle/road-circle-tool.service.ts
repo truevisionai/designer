@@ -134,7 +134,7 @@ export class RoadCircleToolService {
 		this.debugTextService.updateText( this.text3d, 'Radius: ' + radius.toFixed( 2 ) );
 	}
 
-	createRoads () {
+	createRoads (): TvRoad[] {
 
 		const roads = this.createCircularRoads( this.start, this.end, this.radius );
 

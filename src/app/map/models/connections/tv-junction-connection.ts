@@ -154,7 +154,7 @@ export class TvJunctionConnection {
 
 	}
 
-	getSpline () {
+	getSpline (): AbstractSpline {
 
 		return this.connectingRoad.spline;
 
@@ -248,7 +248,7 @@ export class TvJunctionConnection {
 
 	}
 
-	clone () {
+	clone (): TvJunctionConnection {
 
 		const clone = new TvJunctionConnection( this.id, this.incomingRoad, this.connectingRoad, this.contactPoint );
 
@@ -389,13 +389,13 @@ export class TvJunctionConnection {
 
 	}
 
-	getLowestLaneLink () {
+	getLowestLaneLink (): TvJunctionLaneLink {
 
 		return this.getLaneLinks().sort( ( a, b ) => a.incomingLane.id - b.incomingLane.id )[ 0 ];
 
 	}
 
-	getHighestLaneLink () {
+	getHighestLaneLink (): TvJunctionLaneLink {
 
 		return this.getLaneLinks().sort( ( a, b ) => b.incomingLane.id - a.incomingLane.id )[ 0 ];
 

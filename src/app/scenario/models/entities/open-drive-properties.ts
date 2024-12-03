@@ -18,7 +18,7 @@ export class OpenDriveProperties {
 	public distanceTraveled: number = 0;
 	public isOpenDrive: boolean;
 
-	isEndOfRoad () {
+	isEndOfRoad (): boolean {
 		const road = TvMapInstance.map.getRoad( this.roadId );
 
 		// either at the end of the road
@@ -37,7 +37,7 @@ export class OpenDriveProperties {
 		}
 	}
 
-	isOffRoad () {
+	isOffRoad (): boolean {
 		// TODO can be imrpved
 		const road = TvMapInstance.map.getRoad( this.roadId );
 		const laneSection = road.getLaneProfile().getLaneSectionById( this.laneSectionId );
@@ -73,7 +73,7 @@ export class OpenDriveProperties {
 
 	}
 
-	clone () {
+	clone (): OpenDriveProperties {
 
 		const clone = new OpenDriveProperties();
 

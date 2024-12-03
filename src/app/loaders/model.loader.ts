@@ -12,7 +12,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { StorageService } from 'app/io/storage.service';
-import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, ShapeGeometry } from 'three';
+import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, Scene, ShapeGeometry } from 'three';
 import { TvConsole } from 'app/core/utils/console';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { AssetLoader } from "../core/interfaces/asset.loader";
@@ -77,7 +77,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 
 	}
 
-	private loadOBJ ( filepath: string, success: Function, error: Function ) {
+	private loadOBJ ( filepath: string, success: Function, error: Function ): Group {
 
 		const loader = new OBJLoader();
 
@@ -123,7 +123,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 
 	}
 
-	private loadCollada ( filepath: string, success: Function, error: Function ) {
+	private loadCollada ( filepath: string, success: Function, error: Function ): Scene {
 
 		var loader = new ColladaLoader();
 
@@ -145,7 +145,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 		return group.scene;
 	}
 
-	private async loadFBX ( filepath: string, success: Function, error: Function ) {
+	private async loadFBX ( filepath: string, success: Function, error: Function ): Promise<Group> {
 
 		const loader = new FBXLoader();
 

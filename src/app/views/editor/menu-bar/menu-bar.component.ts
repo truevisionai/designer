@@ -78,7 +78,7 @@ export class MenuBarComponent implements OnInit {
 
 	}
 
-	async onOpenFile () {
+	async onOpenFile (): Promise<void> {
 
 		await this.mainFileService.showOpenWindow( this.projectService.projectPath );
 

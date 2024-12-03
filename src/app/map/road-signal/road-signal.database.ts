@@ -68,7 +68,7 @@ export class SignalDatabase {
 		}
 	];
 
-	static findBySignal ( signal: TvRoadSignal ) {
+	static findBySignal ( signal: TvRoadSignal ): any {
 
 		const model = this.findModel( signal );
 
@@ -80,7 +80,7 @@ export class SignalDatabase {
 
 	}
 
-	private static findModel ( signal: TvRoadSignal ) {
+	private static findModel ( signal: TvRoadSignal ): any {
 
 		for ( const model of this.models ) {
 
@@ -94,7 +94,7 @@ export class SignalDatabase {
 
 	}
 
-	private static findTexture ( signal: TvRoadSignal ) {
+	private static findTexture ( signal: TvRoadSignal ): any {
 
 		for ( const texture of this.textures ) {
 

@@ -204,7 +204,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		return header;
 	}
 
-	private parseJunctionId ( value: any ) {
+	private parseJunctionId ( value: any ): TvJunction {
 
 		try {
 
@@ -382,7 +382,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		return roadLink;
 	}
 
-	public parseOrientation ( value: string ) {
+	public parseOrientation ( value: string ): TvOrientation {
 
 		switch ( value ) {
 
@@ -670,7 +670,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ) {
+	public parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ): TvJunctionConnection {
 
 		const id = parseInt( xmlElement.attr_id );
 		const incomingRoadId = parseInt( xmlElement.attr_incomingRoad );
@@ -713,7 +713,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const fromLaneId = parseInt( xmlElement.attr_from );
 		const toLaneId = parseInt( xmlElement.attr_to );
 
-		function findContactPoint ( incomingRoad: TvRoad ) {
+		function findContactPoint ( incomingRoad: TvRoad ): TvContactPoint {
 
 			if ( connection.connectingRoad.successor?.equals( incomingRoad ) ) {
 				return connection.connectingRoad.successor.contactPoint;
@@ -1264,7 +1264,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	}
 
-	public parseLaneOffset ( xml: XmlElement ) {
+	public parseLaneOffset ( xml: XmlElement ): TvLaneOffset {
 
 		const s = parseFloat( xml.attr_s );
 		const a = parseFloat( xml.attr_a );

@@ -61,13 +61,13 @@ export class ViewControllerService {
 
 	}
 
-	getFocusTarget () {
+	getFocusTarget (): THREE.Object3D<THREE.Object3DEventMap> {
 
 		return this.target;
 
 	}
 
-	getTarget () {
+	getTarget (): THREE.Vector3 {
 
 		return this.target?.position || this.controls.getTarget();
 
@@ -143,7 +143,7 @@ export class ViewControllerService {
 
 	}
 
-	getDistance () {
+	getDistance (): number {
 
 		if ( this.controls instanceof TvOrbitControls ) {
 

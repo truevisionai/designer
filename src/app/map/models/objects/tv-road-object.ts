@@ -271,7 +271,7 @@ export class TvRoadObject {
 		widthStart?: number, widthEnd?: number,
 		heightStart?: number, heightEnd?: number,
 		zOffsetStart?: number, zOffsetEnd?: number
-	) {
+	): TvObjectRepeat {
 
 		const object = new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd );
 
@@ -289,7 +289,7 @@ export class TvRoadObject {
 		widthStart?: number, widthEnd?: number,
 		heightStart?: number, heightEnd?: number,
 		zOffsetStart?: number, zOffsetEnd?: number
-	) {
+	): TvObjectRepeat {
 
 		const object = new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd );
 
@@ -316,7 +316,7 @@ export class TvRoadObject {
 		this._markings.push( markingObject );
 	}
 
-	findCornerRoadById ( id: number ) {
+	findCornerRoadById ( id: number ): import("/Users/himanshu/Code/designer-private/src/app/map/models/objects/tv-corner-road").TvCornerRoad {
 		for ( const outline of this.outlines ) {
 			for ( const corner of outline.cornerRoads ) {
 				if ( corner.attr_id == id ) {

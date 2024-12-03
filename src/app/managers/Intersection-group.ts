@@ -253,7 +253,7 @@ export class IntersectionGroup {
 
 	}
 
-	getOffset ( spline: AbstractSpline ) {
+	getOffset ( spline: AbstractSpline ): any {
 
 		const sections = this.getSplineSections().filter( section => section.spline.equals( spline ) );
 
@@ -323,7 +323,7 @@ export class IntersectionGroup {
 
 	}
 
-	toString () {
+	toString (): string {
 
 		const splines = Array.from( this.splines ).map( spline => spline.id ).join( ',' );
 

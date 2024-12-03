@@ -16,7 +16,7 @@ export class AssetImporter {
 	) {
 	}
 
-	async import ( sourcePath: string, destinationFolder: string ) {
+	async import ( sourcePath: string, destinationFolder: string ): Promise<void> {
 
 		const extension = FileUtils.getExtensionFromPath( sourcePath );
 

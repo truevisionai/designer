@@ -551,7 +551,7 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	protected highlight ( e: PointerEventData ) {
+	protected highlight ( e: PointerEventData ): any {
 
 		if ( this.isPointerDown ) return;
 

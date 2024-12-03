@@ -161,7 +161,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return true;
 	}
 
-	private createRoadGameObject ( road: TvRoad ) {
+	private createRoadGameObject ( road: TvRoad ): any {
 
 		const gameObject = new GameObject( 'Road:' + road.id );
 
@@ -170,7 +170,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return gameObject;
 	}
 
-	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
 
 		const laneSectionMesh = new GameObject( 'LaneSection' );
 
@@ -213,7 +213,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return laneSectionMesh;
 	}
 
-	private createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+	private createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
 
 		const geometry = new BufferGeometry();
 
@@ -272,7 +272,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	buildLaneV2 ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+	buildLaneV2 ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
 
 		const geometry = new LaneBufferGeometry( lane, laneSection, road );
 
@@ -447,7 +447,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 	// 	}
 	// }
 
-	private createLaneGameObject ( lane: TvLane, geometry: BufferGeometry, material: THREE.Material | THREE.Material[] ) {
+	private createLaneGameObject ( lane: TvLane, geometry: BufferGeometry, material: THREE.Material | THREE.Material[] ): any {
 
 		const gameObject = new GameObject( 'Lane:' + lane.id, geometry, material );
 
@@ -456,7 +456,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return gameObject;
 	}
 
-	private buildSignals ( road: TvRoad ) {
+	private buildSignals ( road: TvRoad ): THREE.Group<THREE.Object3DEventMap> {
 
 		road.signalGroup?.clear();
 

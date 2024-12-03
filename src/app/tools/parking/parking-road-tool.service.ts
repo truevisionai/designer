@@ -73,7 +73,7 @@ export class ParkingRoadToolService {
 	) {
 	}
 
-	createParkingRoad ( points: Vector3[] ) {
+	createParkingRoad ( points: Vector3[] ): any {
 
 		const road = this.roadService.createParkingRoad();
 
@@ -88,7 +88,7 @@ export class ParkingRoadToolService {
 		return road;
 	}
 
-	createLeftParkingRoad ( points: Vector3[] ) {
+	createLeftParkingRoad ( points: Vector3[] ): any {
 
 		const road = this.roadService.createParkingRoad();
 
@@ -105,7 +105,7 @@ export class ParkingRoadToolService {
 		return road;
 	}
 
-	createRightParkingRoad ( points: Vector3[] ) {
+	createRightParkingRoad ( points: Vector3[] ): any {
 
 		const road = this.roadService.createParkingRoad();
 
@@ -200,7 +200,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createParkingSpaceRoadObject ( road: TvRoad, lane: TvLane, s: number ) {
+	createParkingSpaceRoadObject ( road: TvRoad, lane: TvLane, s: number ): any {
 
 		const laneWidth = lane.getWidthValue( s );
 
@@ -485,7 +485,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createEntryRoad ( start: THREE.Vector3, end: THREE.Vector3 ) {
+	createEntryRoad ( start: THREE.Vector3, end: THREE.Vector3 ): any {
 
 		const points = [ start, end ];
 
@@ -505,7 +505,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createExitRoad ( start: THREE.Vector3, end: THREE.Vector3 ) {
+	createExitRoad ( start: THREE.Vector3, end: THREE.Vector3 ): any {
 
 		const points = [ start, end ];
 

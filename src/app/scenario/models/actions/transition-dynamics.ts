@@ -30,7 +30,7 @@ export class TransitionDynamics {
 
 	}
 
-	calculateSpeed ( initialSpeed: number, targetSpeed: number, elapsedTime: number ) {
+	calculateSpeed ( initialSpeed: number, targetSpeed: number, elapsedTime: number ): number {
 
 		let newSpeed = initialSpeed;
 
@@ -59,7 +59,7 @@ export class TransitionDynamics {
 		return newSpeed;
 	}
 
-	calculateOffset ( initialOffset: number, targetOffset: number, elapsedTime: number ) {
+	calculateOffset ( initialOffset: number, targetOffset: number, elapsedTime: number ): number {
 
 		let newLaneOffset = initialOffset;
 
@@ -87,7 +87,7 @@ export class TransitionDynamics {
 
 	}
 
-	getDimensionAsString () {
+	getDimensionAsString (): "distance" | "time" | "rate" | "value" {
 
 		switch ( this.dynamicsDimension ) {
 
@@ -108,7 +108,7 @@ export class TransitionDynamics {
 
 	}
 
-	getDimensionSuffix () {
+	getDimensionSuffix (): "m" | "s" | "m/s" | "" {
 
 		switch ( this.dynamicsDimension ) {
 
@@ -129,7 +129,7 @@ export class TransitionDynamics {
 
 	}
 
-	private stepCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ) {
+	private stepCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ): number {
 
 		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 
@@ -146,7 +146,7 @@ export class TransitionDynamics {
 
 	}
 
-	private linearCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ) {
+	private linearCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ): any {
 
 		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 
@@ -178,7 +178,7 @@ export class TransitionDynamics {
 
 	}
 
-	private sinusoidalCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ) {
+	private sinusoidalCalculation ( initialSpeed: number, targetSpeed: number, elapsedTime: number ): number {
 
 		if ( this.dynamicsDimension === DynamicsDimension.time ) {
 

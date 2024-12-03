@@ -60,14 +60,14 @@ export class TvScenario {
 
 	}
 
-	findEntityOrFail ( entityName: string ) {
+	findEntityOrFail ( entityName: string ): ScenarioEntity {
 
 		if ( !this.hasEntity( entityName ) ) throw new Error( `${ entityName } entity not found` );
 
 		return this.objects.get( entityName );
 	}
 
-	hasEntity ( entityName: string ) {
+	hasEntity ( entityName: string ): boolean {
 
 		return this.objects.has( entityName );
 

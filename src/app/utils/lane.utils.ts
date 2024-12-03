@@ -44,7 +44,7 @@ export class LaneUtils {
 	 * @param road
 	 * @param laneSection
 	 */
-	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
 
 		return road.getLaneProfile().getPreviousLaneSection( laneSection );
 
@@ -55,7 +55,7 @@ export class LaneUtils {
 	 * @param road
 	 * @param laneSection
 	 */
-	static findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	static findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
 
 		return road.getLaneProfile().getNextLaneSection( laneSection );
 
@@ -138,7 +138,7 @@ export class LaneUtils {
 
 	}
 
-	static findOuterMostLane ( laneSection: TvLaneSection, side: TvLaneSide, type?: TvLaneType ) {
+	static findOuterMostLane ( laneSection: TvLaneSection, side: TvLaneSide, type?: TvLaneType ): any {
 
 		const lanes = laneSection.getLanes().filter( lane => lane.side == side && ( !type || lane.type == type ) );
 
@@ -166,7 +166,7 @@ export class LaneUtils {
 		return outerMostLane;
 	}
 
-	static findHigestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
+	static findHigestLane ( laneSection: TvLaneSection, type?: TvLaneType ): any {
 
 		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
@@ -175,7 +175,7 @@ export class LaneUtils {
 		return this.findHighest( lanes, type );
 	}
 
-	static findHighest ( lanes: TvLane[], type?: TvLaneType ) {
+	static findHighest ( lanes: TvLane[], type?: TvLaneType ): any {
 
 		if ( lanes.length === 0 ) return null;
 
@@ -202,7 +202,7 @@ export class LaneUtils {
 
 	}
 
-	static findLowestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
+	static findLowestLane ( laneSection: TvLaneSection, type?: TvLaneType ): any {
 
 		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
@@ -212,7 +212,7 @@ export class LaneUtils {
 
 	}
 
-	static findLowestCarriageWayLane ( laneSection: TvLaneSection ) {
+	static findLowestCarriageWayLane ( laneSection: TvLaneSection ): any {
 
 		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
@@ -222,7 +222,7 @@ export class LaneUtils {
 
 	}
 
-	static findHighestCarriageWayLane ( laneSection: TvLaneSection ) {
+	static findHighestCarriageWayLane ( laneSection: TvLaneSection ): any {
 
 		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
@@ -232,7 +232,7 @@ export class LaneUtils {
 
 	}
 
-	static findLowest ( lanes: TvLane[], type?: TvLaneType ) {
+	static findLowest ( lanes: TvLane[], type?: TvLaneType ): any {
 
 		if ( lanes.length === 0 ) return null;
 

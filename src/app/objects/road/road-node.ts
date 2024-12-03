@@ -101,7 +101,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	}
 
-	toLink () {
+	toLink (): any {
 
 		return LinkFactory.createRoadLink( this.road, this.contact );
 

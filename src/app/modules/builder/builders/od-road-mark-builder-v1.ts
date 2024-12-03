@@ -144,7 +144,7 @@ export class OdRoadMarkBuilderV1 {
 
 	}
 
-	private createVertex ( s, roadMark: TvLaneRoadMark, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData, laneSectionS: number ) {
+	private createVertex ( s, roadMark: TvLaneRoadMark, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData, laneSectionS: number ): boolean {
 
 		const cumulativeWidth = this.getCumulativeWidth( laneSectionS, lane, laneSection );
 
@@ -327,7 +327,7 @@ export class OdRoadMarkBuilderV1 {
 		lane.laneSection.road.gameObject?.add( roadMark.gameObject );
 	}
 
-	private getMaterial ( roadMark: TvLaneRoadMark ) {
+	private getMaterial ( roadMark: TvLaneRoadMark ): THREE.MeshBasicMaterial {
 
 		let color: number;
 
@@ -365,7 +365,7 @@ export class OdRoadMarkBuilderV1 {
 		} );
 	}
 
-	private getGeometry ( mesh: MeshGeometryData ) {
+	private getGeometry ( mesh: MeshGeometryData ): THREE.BufferGeometry<THREE.NormalBufferAttributes> {
 
 		const geometry = new THREE.BufferGeometry();
 		const vertices = new Float32Array( mesh.vertices );
@@ -386,7 +386,7 @@ export class OdRoadMarkBuilderV1 {
 		return geometry;
 	}
 
-	private getCumulativeWidth ( s, lane: TvLane, laneSection: TvLaneSection ) {
+	private getCumulativeWidth ( s, lane: TvLane, laneSection: TvLaneSection ): number {
 
 		let width = 0;
 

@@ -49,7 +49,7 @@ export class RoadUtils {
 
 	}
 
-	static isSuccessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ) {
+	static isSuccessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ): boolean {
 
 		if ( !segment.successor ) return false;
 
@@ -59,7 +59,7 @@ export class RoadUtils {
 
 	}
 
-	static isPredecessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ) {
+	static isPredecessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ): boolean {
 
 		if ( !segment.predecessor ) return false;
 

@@ -208,7 +208,7 @@ export class CameraService {
 
 	}
 
-	computeDistance ( target: Vector3, camera?: Camera ) {
+	computeDistance ( target: Vector3, camera?: Camera ): number {
 
 		camera = camera ?? this.camera;
 

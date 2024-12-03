@@ -24,7 +24,7 @@ export class PropSpanToolService {
 	) {
 	}
 
-	createRoadSpanObject ( assetGuid: string, position: TvRoadCoord ) {
+	createRoadSpanObject ( assetGuid: string, position: TvRoadCoord ): any {
 
 		const roadObject = this.createRoadObject( assetGuid, position, TvRoadObjectType.tree );
 
@@ -50,7 +50,7 @@ export class PropSpanToolService {
 
 	}
 
-	createRoadObject ( assetGuid: string, position: TvRoadCoord, objectType: TvRoadObjectType ) {
+	createRoadObject ( assetGuid: string, position: TvRoadCoord, objectType: TvRoadObjectType ): any {
 
 		const roadObject = this.roadObjectService.createRoadObject( position.road, objectType, position.s, position.t );
 

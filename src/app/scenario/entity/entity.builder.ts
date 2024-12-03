@@ -120,7 +120,7 @@ export class EntityBuilder {
 		// sprite.position.set( 0, 0, 2 );
 	}
 
-	private buildVehicle ( entity: ScenarioEntity ) {
+	private buildVehicle ( entity: ScenarioEntity ): Mesh<BoxGeometry, MeshBasicMaterial> {
 
 		// const model = entity.model3d;
 

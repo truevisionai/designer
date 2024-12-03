@@ -188,7 +188,7 @@ export abstract class AbstractSpline {
 		this.controlPoints.forEach( ( point, index ) => point.index = index );
 	}
 
-	toString () {
+	toString (): string {
 		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segments.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
 	}
 

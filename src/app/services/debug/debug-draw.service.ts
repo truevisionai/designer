@@ -95,7 +95,7 @@ export class DebugDrawService {
 
 	}
 
-	createBox2D ( box: Box2, color = COLOR.WHITE, opacity = 1 ) {
+	createBox2D ( box: Box2, color = COLOR.WHITE, opacity = 1 ): Mesh {
 
 		const geometry = new PlaneGeometry( box.getSize( new Vector2() ).x, box.getSize( new Vector2() ).y );
 
@@ -127,7 +127,7 @@ export class DebugDrawService {
 
 	}
 
-	drawLine ( positions: Vector3[], color = 0xffffff, lineWidth = 2 ) {
+	drawLine ( positions: Vector3[], color = 0xffffff, lineWidth = 2 ): Line2 {
 
 		if ( positions.length < 2 ) return;
 
@@ -145,7 +145,7 @@ export class DebugDrawService {
 
 	}
 
-	createSphere ( position: Vector3, size = 0.1, color = COLOR.RED ) {
+	createSphere ( position: Vector3, size = 0.1, color = COLOR.RED ): Mesh {
 
 		const geometry = new SphereGeometry( size, 32, 32 );
 
@@ -159,7 +159,7 @@ export class DebugDrawService {
 
 	}
 
-	createPoint ( position: Vector3, size = 10, color = COLOR.RED ) {
+	createPoint ( position: Vector3, size = 10, color = COLOR.RED ): SimpleControlPoint<any> {
 
 		const point = new SimpleControlPoint( null, position );
 
@@ -192,7 +192,7 @@ export class DebugDrawService {
 		return new DebugLine( height, lineGeometry, material );
 	}
 
-	createLaneNode<T extends HasDistanceValue> ( road: TvRoad, lane: TvLane, target: T, location?: TvLaneLocation ) {
+	createLaneNode<T extends HasDistanceValue> ( road: TvRoad, lane: TvLane, target: T, location?: TvLaneLocation ): LanePointNode<T> {
 
 		location = location || TvLaneLocation.CENTER;
 
@@ -232,7 +232,7 @@ export class DebugDrawService {
 
 	}
 
-	createLaneWidthLineGeometry ( laneS: number, road: TvRoad, lane: TvLane ) {
+	createLaneWidthLineGeometry ( laneS: number, road: TvRoad, lane: TvLane ): LineGeometry {
 
 		const s = lane.laneSection.s + laneS;
 
@@ -442,7 +442,7 @@ export class DebugDrawService {
 	 * @param stepSize
 	 * @returns
 	 */
-	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
+	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ): Vector3[] {
 
 		const points: Vector3[] = [];
 
@@ -467,7 +467,7 @@ export class DebugDrawService {
 	 * @param stepSize
 	 * @returns
 	 */
-	getPositions ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ) {
+	getPositions ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ): TvPosTheta[] {
 
 		const positions: TvPosTheta[] = [];
 
@@ -484,7 +484,7 @@ export class DebugDrawService {
 		return positions;
 	}
 
-	getRoadPositions ( road: TvRoad, sStart: number, sEnd: number, stepSize = 0.1 ) {
+	getRoadPositions ( road: TvRoad, sStart: number, sEnd: number, stepSize = 0.1 ): TvPosTheta[] {
 
 		const positions: TvPosTheta[] = [];
 
@@ -504,7 +504,7 @@ export class DebugDrawService {
 	 * @param s s with respect to road
 	 * @returns
 	 */
-	private getPoint ( lane: TvLane, s: RoadDistance ) {
+	private getPoint ( lane: TvLane, s: RoadDistance ): any {
 
 		let width = lane.laneSection.getWidthUptoEnd( lane, s - lane.laneSection.s );
 

@@ -79,7 +79,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 	}
 
-	divideRoadAt ( roadCoord: TvRoadCoord ) {
+	divideRoadAt ( roadCoord: TvRoadCoord ): any {
 
 		const clone = this.tool.dividerService.divideRoadAt( roadCoord.road, roadCoord.s );
 

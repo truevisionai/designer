@@ -48,7 +48,7 @@ export class SurfaceFactory extends AbstractFactory<Surface> {
 
 	}
 
-	createSurface ( materialGuid = 'grass', position?: Vector3, curve?: CatmullRomSpline ) {
+	createSurface ( materialGuid = 'grass', position?: Vector3, curve?: CatmullRomSpline ): any {
 
 		return new Surface( materialGuid, curve || new CatmullRomSpline( true, 'catmullrom', 0 ) );
 

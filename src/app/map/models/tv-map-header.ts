@@ -42,7 +42,7 @@ export class TvMapHeader {
 		this.origin = new Vector2( 0, 0 );
 	}
 
-	clone () {
+	clone (): TvMapHeader {
 
 		const header = new TvMapHeader();
 
@@ -64,7 +64,7 @@ export class TvMapHeader {
 		return header;
 	}
 
-	reset () {
+	reset (): this {
 
 		this.north = 0;
 		this.south = 0;

@@ -82,7 +82,7 @@ export class ClothoidShape extends AbstractShape {
 	public position: Position;
 
 
-	toXML () {
+	toXML (): any {
 
 		return {
 			attr_curvature: this.curvature,
@@ -164,7 +164,7 @@ export class Nurbs extends AbstractShape {
 		// return nurbs;
 	}
 
-	toXML () {
+	toXML (): any {
 		return {
 			attr_order: this.order,
 			ControlPoint: this.controlPoints.map( cp => {

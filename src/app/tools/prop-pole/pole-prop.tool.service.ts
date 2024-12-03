@@ -20,13 +20,13 @@ export class PolePropToolService {
 	) {
 	}
 
-	createStreetLight ( position: RoadPosition, height = 4, width = 2.0, poleWidth = 0.15 ) {
+	createStreetLight ( position: RoadPosition, height = 4, width = 2.0, poleWidth = 0.15 ): any {
 
 		return this.factory.createStreetLight( position, height, width, poleWidth );
 
 	}
 
-	createSmallPole ( position: RoadPosition, height = 1, radius = 0.05, useLocalVertex = true ) {
+	createSmallPole ( position: RoadPosition, height = 1, radius = 0.05, useLocalVertex = true ): any {
 
 		return this.factory.createSmallPole( position, height, radius, useLocalVertex );
 

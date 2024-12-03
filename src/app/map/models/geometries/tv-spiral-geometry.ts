@@ -103,7 +103,7 @@ export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 		return new TvPosTheta( point.x, point.y, hdg, s );
 	}
 
-	getCurveV2 () {
+	getCurveV2 (): SplineCurve {
 
 		// resolution can be increased to 0.001 but 0.01 for now is fine
 		// very low value for resolution means high memory for control points

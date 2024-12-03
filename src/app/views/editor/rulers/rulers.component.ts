@@ -105,7 +105,7 @@ export class RulersComponent implements OnInit {
 
 	}
 
-	private calculateAxisRange ( camera: OrthographicCamera, axis: 'x' | 'y' ) {
+	private calculateAxisRange ( camera: OrthographicCamera, axis: 'x' | 'y' ): any {
 		// You would implement the logic here to determine the min and max
 		// visible values along the specified axis based on the camera's
 		// position, zoom level, and aspect ratio.
@@ -193,7 +193,7 @@ export class RulersComponent implements OnInit {
 	}
 
 	// Assuming 'camera' is your Three.js camera and 'renderer' is your Three.js renderer
-	private toScreenPosition ( obj: Vector3, camera: Camera, width: number, height: number ) {
+	private toScreenPosition ( obj: Vector3, camera: Camera, width: number, height: number ): any {
 
 		const vector = new THREE.Vector3();
 		const widthHalf = 0.5 * width;

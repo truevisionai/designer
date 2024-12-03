@@ -61,7 +61,7 @@ export class RoadSignalService {
 
 	}
 
-	findSignalsByType ( road: TvRoad, types: string[] = [] ) {
+	findSignalsByType ( road: TvRoad, types: string[] = [] ): TvRoadSignal[] {
 
 		const signals = road.getRoadSignals();
 

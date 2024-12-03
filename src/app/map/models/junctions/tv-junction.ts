@@ -89,7 +89,7 @@ export class TvJunction {
 		return junction instanceof TvJunction && this.uuid === junction.uuid;
 	}
 
-	toString () {
+	toString (): string {
 		return `Junction:${ this.id } Connections:${ this.connections.size }`;
 	}
 
@@ -137,7 +137,7 @@ export class TvJunction {
 
 	}
 
-	getRoadCoords () {
+	getRoadCoords (): import("/Users/himanshu/Code/designer-private/src/app/map/models/TvRoadCoord").TvRoadCoord[] {
 
 		return this.getRoadLinks().map( link => link.toRoadCoord() );
 
@@ -178,7 +178,7 @@ export class TvJunction {
 
 	}
 
-	getJunctionPriority ( index: number ) {
+	getJunctionPriority ( index: number ): TvJunctionPriority {
 
 		if ( index < this.priorities.length && this.priorities.length > 0 ) {
 
@@ -202,7 +202,7 @@ export class TvJunction {
 		this.controllers.push( controller );
 	}
 
-	getJunctionController ( index: number ) {
+	getJunctionController ( index: number ): TvJunctionController {
 
 		if ( index < this.controllers.length && this.controllers.length > 0 ) {
 			return this.controllers[ index ];
@@ -434,7 +434,7 @@ export class TvJunction {
 
 	}
 
-	clone () {
+	clone (): TvJunction {
 
 		const junction = new TvJunction( this.name, this.id );
 

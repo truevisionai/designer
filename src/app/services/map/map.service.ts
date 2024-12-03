@@ -81,7 +81,7 @@ export class MapService {
 
 	}
 
-	hasRoad ( road: TvRoad | number ) {
+	hasRoad ( road: TvRoad | number ): any {
 
 		return this.map.hasRoad( road );
 
@@ -105,7 +105,7 @@ export class MapService {
 
 	}
 
-	findRoad ( id: number ) {
+	findRoad ( id: number ): any {
 
 		// return this.map.getRoadById( id );
 
@@ -135,13 +135,13 @@ export class MapService {
 
 	}
 
-	hasSpline ( spline: AbstractSpline ) {
+	hasSpline ( spline: AbstractSpline ): boolean {
 
 		return this.map.getSplines().find( s => s.uuid === spline.uuid ) !== undefined;
 
 	}
 
-	findSplineById ( id: number ) {
+	findSplineById ( id: number ): any {
 
 		const spline = this.map.getSplines().find( s => s.id === id );
 
@@ -153,13 +153,13 @@ export class MapService {
 
 	}
 
-	hasJunction ( junction: TvJunction | number ) {
+	hasJunction ( junction: TvJunction | number ): any {
 
 		return this.map.hasJunction( junction );
 
 	}
 
-	findJunction ( id: number ) {
+	findJunction ( id: number ): any {
 
 		// return this.map.getJunctionById( id );
 
@@ -282,7 +282,7 @@ export class MapService {
 		}
 	}
 
-	getOpacityLevel () {
+	getOpacityLevel (): number {
 
 		return this.opactiyLevel;
 
@@ -320,7 +320,7 @@ export class MapService {
 
 	}
 
-	getLaneMeshes () {
+	getLaneMeshes (): Mesh[] {
 
 		const meshes: Mesh[] = [];
 
@@ -346,13 +346,13 @@ export class MapService {
 
 	}
 
-	getJunctionCount () {
+	getJunctionCount (): number {
 
 		return this.junctions.length;
 
 	}
 
-	getRoadCount () {
+	getRoadCount (): number {
 
 		return this.roads.length;
 
@@ -360,7 +360,7 @@ export class MapService {
 
 	getRoads (): TvRoad[] { return this.map.getRoads(); }
 
-	getSplineCount () {
+	getSplineCount (): any {
 
 		return this.splines.length;
 

@@ -91,7 +91,7 @@ export class OpenScenarioExporter {
 		return this.version == OpenScenarioVersion.v0_9 ? 'attr_object' : 'attr_entityRef';
 	}
 
-	getOutputString ( openScenario: TvScenario ) {
+	getOutputString ( openScenario: TvScenario ): any {
 
 		this.openScenario = openScenario;
 
@@ -159,7 +159,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeEntities ( rootNode: any, objects: Map<string, ScenarioEntity> ) {
+	writeEntities ( rootNode: any, objects: Map<string, ScenarioEntity> ): XmlElement {
 
 		const scenarioObjects = [];
 
@@ -206,9 +206,9 @@ export class OpenScenarioExporter {
 		return scenarioObject;
 	}
 
-	writeVehicle ( vehicle: VehicleEntity ) {
+	writeVehicle ( vehicle: VehicleEntity ): any {
 
-		function writeAxle ( axle: TvAxle ) {
+		function writeAxle ( axle: TvAxle ): any {
 			return {
 				attr_maxSteering: axle.maxSteering,
 				attr_wheelDiameter: axle.wheelDiameter,
@@ -335,7 +335,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeFile ( file: File ) {
+	writeFile ( file: File ): any {
 
 		return {
 			attr_filepath: file.filepath
@@ -523,7 +523,7 @@ export class OpenScenarioExporter {
 		};
 	}
 
-	writeEntityCondition ( condition: EntityCondition ) {
+	writeEntityCondition ( condition: EntityCondition ): any {
 
 		let conditionXml = {};
 
@@ -615,7 +615,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeTimeToCollisionCondition ( condition: TimeToCollisionCondition ) {
+	writeTimeToCollisionCondition ( condition: TimeToCollisionCondition ): XmlElement {
 
 		if ( this.version == OpenScenarioVersion.v0_9 ) {
 			return {
@@ -732,7 +732,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeStandStillCondition ( condition: StandStillCondition ) {
+	writeStandStillCondition ( condition: StandStillCondition ): any {
 
 		return {
 			attr_duration: condition.duration,
@@ -740,7 +740,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeSpeedCondition ( condition: SpeedCondition ) {
+	writeSpeedCondition ( condition: SpeedCondition ): any {
 
 		return {
 			attr_value: condition.value,
@@ -1037,7 +1037,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writePrivateAction ( privateAction: PrivateAction ) {
+	writePrivateAction ( privateAction: PrivateAction ): any {
 
 		let xml = null;
 
@@ -1270,7 +1270,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeTarget ( abstractTarget: Target, absoluteKey = 'Absolute', relativeKey = 'Relative' ) {
+	writeTarget ( abstractTarget: Target, absoluteKey = 'Absolute', relativeKey = 'Relative' ): any {
 
 		if ( abstractTarget.targetType == TargetType.absolute ) {
 
@@ -1316,7 +1316,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writePositionAction ( action: TeleportAction ) {
+	writePositionAction ( action: TeleportAction ): XmlElement {
 
 		if ( this.version == OpenScenarioVersion.v0_9 ) {
 			return {
@@ -1426,7 +1426,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeOrientation ( orientation: Orientation ) {
+	writeOrientation ( orientation: Orientation ): any {
 
 		if ( !orientation ) return;
 
@@ -1434,13 +1434,13 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeWorldPosition ( position: WorldPosition ) {
+	writeWorldPosition ( position: WorldPosition ): any {
 
 		return position.toXML( this.version );
 
 	}
 
-	writeRelativeObjectPosition ( position: RelativeObjectPosition ) {
+	writeRelativeObjectPosition ( position: RelativeObjectPosition ): any {
 
 		const key = this.version == OpenScenarioVersion.v0_9 ? 'RelativeObject' : 'RelativeObjectPosition';
 
@@ -1455,13 +1455,13 @@ export class OpenScenarioExporter {
 		};
 	}
 
-	writeCatalogs ( rootNode: any, catalogs: Catalogs ) {
+	writeCatalogs ( rootNode: any, catalogs: Catalogs ): any {
 
 		return undefined;
 
 	}
 
-	writeParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
+	writeParameterDeclaration ( parameterDeclaration: ParameterDeclaration ): { attr_name: string; attr_value: string; attr_type: "string" | "boolean" | "integer" | "double" | "unsignedInt" | "unsignedShort" | "dateTime" | "unknown"; attr_parameterType?: undefined; } | { attr_name: string; attr_value: string; attr_parameterType: "string" | "boolean" | "integer" | "double" | "unsignedInt" | "unsignedShort" | "dateTime" | "unknown"; attr_type?: undefined; } {
 
 		if ( this.version == OpenScenarioVersion.v0_9 ) {
 
@@ -1481,13 +1481,13 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeParameterDeclarations ( parameterDeclarations: ParameterDeclaration[] ) {
+	writeParameterDeclarations ( parameterDeclarations: ParameterDeclaration[] ): XmlElement[] {
 
 		return parameterDeclarations.map( item => this.writeParameterDeclaration( item ) );
 
 	}
 
-	writeLanePosition ( position: LanePosition ) {
+	writeLanePosition ( position: LanePosition ): any {
 
 		const key = this.version == OpenScenarioVersion.v0_9 ? 'Lane' : 'LanePosition';
 
@@ -1503,7 +1503,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeRelativeLanePosition ( position: RelativeLanePosition ) {
+	writeRelativeLanePosition ( position: RelativeLanePosition ): any {
 
 		const key = this.version == OpenScenarioVersion.v0_9 ? 'RelativeLane' : 'RelativeLanePosition';
 
@@ -1527,7 +1527,7 @@ export class OpenScenarioExporter {
 		return xml;
 	}
 
-	writeTrajectory ( trajectory: Trajectory ) {
+	writeTrajectory ( trajectory: Trajectory ): any {
 
 		return {
 			attr_name: trajectory.name,
@@ -1541,7 +1541,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeVertex ( vertex: Vertex ) {
+	writeVertex ( vertex: Vertex ): XmlElement {
 
 		if ( this.version == OpenScenarioVersion.v0_9 ) {
 			return {
@@ -1578,7 +1578,7 @@ export class OpenScenarioExporter {
 		}
 	}
 
-	writePolyline ( shape: PolylineShape ) {
+	writePolyline ( shape: PolylineShape ): any {
 		return {
 			Polyline: {
 				Vertex: shape.vertices.map( vertex => this.writeVertex( vertex ) )
@@ -1586,11 +1586,11 @@ export class OpenScenarioExporter {
 		};
 	}
 
-	writeClothoid ( shape: ClothoidShape ) {
+	writeClothoid ( shape: ClothoidShape ): any {
 		return shape.toXML();
 	}
 
-	writeSpline ( shape: SplineShape ) {
+	writeSpline ( shape: SplineShape ): any {
 		return {
 			Spline: {
 				ControlPoint1: {

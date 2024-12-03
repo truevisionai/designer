@@ -12,7 +12,7 @@ export class ScrollToDirective implements OnInit {
 	ngOnInit (): void {
 	}
 
-	currentYPosition () {
+	currentYPosition (): number {
 		// Firefox, Chrome, Opera, Safari
 		if ( self.pageYOffset ) return self.pageYOffset;
 		// Internet Explorer 6 - standards mode
@@ -24,7 +24,7 @@ export class ScrollToDirective implements OnInit {
 		return 0;
 	};
 
-	elmYPosition ( eID ) {
+	elmYPosition ( eID ): number {
 		var elm = document.getElementById( eID );
 		var y = elm.offsetTop;
 		var node: any = elm;
@@ -36,7 +36,7 @@ export class ScrollToDirective implements OnInit {
 	};
 
 	@HostListener( 'click', [ '$event' ] )
-	smoothScroll () {
+	smoothScroll (): boolean {
 		if ( !this.elmID ) {
 			return;
 		}

@@ -41,7 +41,7 @@ export abstract class Position {
 		return this.orientation?.toEuler() || new Euler( 0, 0, 0 );
 	}
 
-	toXML ( version?: OpenScenarioVersion ) {
+	toXML ( version?: OpenScenarioVersion ): any {
 		return {};
 	}
 

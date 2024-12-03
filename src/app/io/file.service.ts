@@ -201,7 +201,7 @@ export class FileService {
 
 	}
 
-	createFolder ( path: string, name: string = 'New Folder' ) {
+	createFolder ( path: string, name: string = 'New Folder' ): any {
 
 		try {
 
@@ -236,7 +236,7 @@ export class FileService {
 
 	}
 
-	createFile ( path: string, name: string = 'New Untitled', extension: string, contents: any ) {
+	createFile ( path: string, name: string = 'New Untitled', extension: string, contents: any ): any {
 
 		let fileName = name;
 		let filePath = this.join( path, `${ fileName }.${ extension }` );
@@ -253,7 +253,7 @@ export class FileService {
 		return { fileName, filePath };
 	}
 
-	readPathContentsSync ( dirpath ) {
+	readPathContentsSync ( dirpath ): any[] {
 
 		let files = [];
 
@@ -291,7 +291,7 @@ export class FileService {
 		return items;
 	}
 
-	getItemProperties ( itemPath ) {
+	getItemProperties ( itemPath ): any {
 
 		const stats = this.fs.statSync( itemPath );
 
@@ -306,7 +306,7 @@ export class FileService {
 		};
 	}
 
-	getItemType ( item, path ) {
+	getItemType ( item, path ): "file" | "directory" | "blockdevice" | "characterdevice" | "symlink" | "fifo" | "socket" | "" {
 		if ( electronFs.stat.isFile( path ) ) {
 			return 'file';
 		} else if ( electronFs.stat.isDirectory( path ) ) {

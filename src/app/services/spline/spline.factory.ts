@@ -88,7 +88,7 @@ export class SplineFactory {
 		return this.createRoadSpline( road, a, aDirection, b, bDirection );
 	}
 
-	createSplineFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
+	createSplineFromNodes ( firstNode: RoadNode, secondNode: RoadNode ): AbstractSpline {
 
 		if ( firstNode == null ) throw new Error( 'firstNode is null' );
 		if ( secondNode == null ) throw new Error( 'secondNode is null' );

@@ -123,7 +123,7 @@ export class Surface {
 
 	}
 
-	toJson () {
+	toJson (): any {
 
 		return {
 			attr_uuid: this.uuid,

@@ -126,7 +126,7 @@ export class TvRoadSignal {
 		}
 	}
 
-	static stringToOrientation ( value: any ) {
+	static stringToOrientation ( value: any ): TvOrientation {
 		if ( value === '+' ) {
 			return TvOrientation.PLUS;
 		} else if ( value === '-' ) {

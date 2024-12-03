@@ -35,7 +35,7 @@ export class ToolTipService {
 		ToolTipService.instance = this;
 	}
 
-	createFrom3D ( text: string, position: Vector2 | Vector3 ) {
+	createFrom3D ( text: string, position: Vector2 | Vector3 ): any {
 
 		const id = this.tooltips.size + 1;
 
@@ -71,7 +71,7 @@ export class ToolTipService {
 
 	}
 
-	private createTooltip ( id: number, content: string, position: Vector2 ) {
+	private createTooltip ( id: number, content: string, position: Vector2 ): any {
 
 		const toolTip = { id, content, position };
 
@@ -130,13 +130,13 @@ export class ToolTipService {
 
 	}
 
-	getTooltips () {
+	getTooltips (): Map<number, TooltipInterface> {
 
 		return this.tooltips;
 
 	}
 
-	private get2DPosition ( position: Vector3 ) {
+	private get2DPosition ( position: Vector3 ): Vector2 {
 
 		const vector = position.clone().project( this.cameraService.camera );
 

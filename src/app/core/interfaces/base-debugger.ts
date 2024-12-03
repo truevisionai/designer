@@ -53,7 +53,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	}
 
-	private shouldHighlight ( object: T ) {
+	private shouldHighlight ( object: T ): boolean {
 
 		// we don't want to highlight selected objects
 		if ( this.selected.has( object ) ) return false;
@@ -189,7 +189,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	}
 
-	protected createControlPoint ( object: T, position: Vector3 ) {
+	protected createControlPoint ( object: T, position: Vector3 ): SimpleControlPoint<T> {
 
 		return new SimpleControlPoint( object, position );
 

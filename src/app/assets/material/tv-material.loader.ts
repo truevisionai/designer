@@ -71,7 +71,7 @@ export class TvMaterialLoader implements AssetLoader {
 
 	}
 
-	private parseVersion01 ( data: any ) {
+	private parseVersion01 ( data: any ): MaterialAsset {
 
 		if ( !data.guid ) data.guid = data.uuid;
 
@@ -422,7 +422,7 @@ export class TvMaterialLoader implements AssetLoader {
 
 	}
 
-	static createMaterialFromType ( type ) {
+	static createMaterialFromType ( type ): any {
 
 		const materialLib = {
 			ShadowMaterial,

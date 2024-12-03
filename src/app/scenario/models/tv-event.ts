@@ -50,7 +50,7 @@ export class TvEvent {
 		return conditions;
 	}
 
-	static getNewName ( name = 'MyEvent' ) {
+	static getNewName ( name = 'MyEvent' ): string {
 
 		return `${ name }${ this.count }`;
 
@@ -83,7 +83,7 @@ export class TvEvent {
 
 	}
 
-	createOrGetGroup () {
+	createOrGetGroup (): ConditionGroup {
 
 		if ( this.startConditionGroups.length === 0 ) {
 
@@ -94,7 +94,7 @@ export class TvEvent {
 		return this.startConditionGroups[ 0 ];
 	}
 
-	hasPassed () {
+	hasPassed (): boolean {
 
 		return ConditionUtils.hasGroupsPassed( this.startConditionGroups );
 
@@ -106,7 +106,7 @@ export class TvEvent {
 
 	}
 
-	getActionMap () {
+	getActionMap (): Map<string, TvAction> {
 
 		return this._actions;
 

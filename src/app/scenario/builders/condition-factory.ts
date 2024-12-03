@@ -70,7 +70,7 @@ export class ConditionFactory {
 	}
 
 
-	private static createSimulationTimeCondition () {
+	private static createSimulationTimeCondition (): SimulationTimeCondition {
 
 		return new SimulationTimeCondition(
 			0,
@@ -79,7 +79,7 @@ export class ConditionFactory {
 
 	}
 
-	private static createDistanceCondition ( entity?: ScenarioEntity ) {
+	private static createDistanceCondition ( entity?: ScenarioEntity ): DistanceCondition {
 
 		const position = new WorldPosition( entity?.position.clone() || new Vector3() );
 
@@ -87,7 +87,7 @@ export class ConditionFactory {
 
 	}
 
-	private static createReachedPositionCondition ( entity?: ScenarioEntity ) {
+	private static createReachedPositionCondition ( entity?: ScenarioEntity ): ReachPositionCondition {
 
 		const position = new WorldPosition( entity?.position.clone() || new Vector3() );
 
@@ -98,7 +98,7 @@ export class ConditionFactory {
 		return condition;
 	}
 
-	private static createTimeHeadwayCondition ( entity?: ScenarioEntity ) {
+	private static createTimeHeadwayCondition ( entity?: ScenarioEntity ): TimeHeadwayCondition {
 
 		const condition = new TimeHeadwayCondition( null, 5, false, false, Rule.GreaterThan );
 
@@ -109,7 +109,7 @@ export class ConditionFactory {
 
 	}
 
-	private static createTraveledDistanceCondition ( entity?: ScenarioEntity ) {
+	private static createTraveledDistanceCondition ( entity?: ScenarioEntity ): TraveledDistanceCondition {
 
 		const condition = new TraveledDistanceCondition( 100, TriggeringRule.Any );
 
@@ -118,7 +118,7 @@ export class ConditionFactory {
 		return condition;
 	}
 
-	private static createSpeedCondition ( entity?: ScenarioEntity ) {
+	private static createSpeedCondition ( entity?: ScenarioEntity ): SpeedCondition {
 
 		const condition = new SpeedCondition( 40, Rule.GreaterThan );
 
@@ -128,7 +128,7 @@ export class ConditionFactory {
 
 	}
 
-	private static createOffRoadCondition ( entity?: ScenarioEntity ) {
+	private static createOffRoadCondition ( entity?: ScenarioEntity ): OffRoadCondition {
 
 		const condition = new OffRoadCondition( 5 );
 
@@ -138,7 +138,7 @@ export class ConditionFactory {
 
 	}
 
-	private static createEndOfRoadCondition ( entity?: ScenarioEntity ) {
+	private static createEndOfRoadCondition ( entity?: ScenarioEntity ): EndOfRoadCondition {
 
 		const condition = new EndOfRoadCondition( 5 );
 
@@ -148,7 +148,7 @@ export class ConditionFactory {
 
 	}
 
-	private static createRelativeDistanceCondition ( entity?: ScenarioEntity ) {
+	private static createRelativeDistanceCondition ( entity?: ScenarioEntity ): RelativeDistanceCondition {
 
 		const condition = new RelativeDistanceCondition(
 			entity?.name, 10, RelativeDistanceType.cartesianDistance,
@@ -161,7 +161,7 @@ export class ConditionFactory {
 
 	}
 
-	private static createAccelerationCondition ( entity?: ScenarioEntity ) {
+	private static createAccelerationCondition ( entity?: ScenarioEntity ): AccelerationCondition {
 
 		const condition = new AccelerationCondition( 1.0, Rule.GreaterThan );
 
@@ -170,7 +170,7 @@ export class ConditionFactory {
 		return condition;
 	}
 
-	private static createRelativeSpeedCondition ( entity?: ScenarioEntity ) {
+	private static createRelativeSpeedCondition ( entity?: ScenarioEntity ): RelativeSpeedCondition {
 
 		const condition = new RelativeSpeedCondition( entity?.name, 10, Rule.GreaterThan );
 

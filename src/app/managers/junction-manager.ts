@@ -276,7 +276,7 @@ export class JunctionManager {
 	 * @returns
 	 * @deprecated not being used anywhere except tests
 	 */
-	findNewIntersections ( spline: AbstractSpline ) {
+	findNewIntersections ( spline: AbstractSpline ): any {
 
 		const junctions = spline.getJunctionSegments();
 

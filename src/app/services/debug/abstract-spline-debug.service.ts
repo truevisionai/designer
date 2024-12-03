@@ -171,7 +171,7 @@ export class AbstractSplineDebugService {
 
 	}
 
-	private createCatmullRomLine ( spline: CatmullRomSpline ) {
+	private createCatmullRomLine ( spline: CatmullRomSpline ): Line {
 
 		const geometry = new BufferGeometry();
 

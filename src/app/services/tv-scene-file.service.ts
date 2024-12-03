@@ -142,7 +142,7 @@ export class TvSceneFileService {
 		MapEvents.mapRemoved.emit( map );
 	}
 
-	async showOpenWindow ( path?: string ) {
+	async showOpenWindow ( path?: string ): Promise<void> {
 
 		const response = await this.dialogService.openDialog( {
 			path: path,
@@ -157,7 +157,7 @@ export class TvSceneFileService {
 
 	}
 
-	async openFromPath ( path: string, callback?: Function ) {
+	async openFromPath ( path: string, callback?: Function ): Promise<void> {
 
 		TvConsole.info( 'Opening file: ' + path );
 
@@ -173,7 +173,7 @@ export class TvSceneFileService {
 
 	}
 
-	async save () {
+	async save (): Promise<void> {
 
 		if ( this.currentFile == null ) {
 			TvConsole.error( 'Create file before saving' );
@@ -194,7 +194,7 @@ export class TvSceneFileService {
 
 	}
 
-	async saveAs () {
+	async saveAs (): Promise<void> {
 
 		const options = {
 			defaultPath: this.projectService.projectPath,

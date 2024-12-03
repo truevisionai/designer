@@ -24,7 +24,7 @@ export class MeasurementToolService {
 	) {
 	}
 
-	showToolTipAt ( text: string, position: Vector3 ) {
+	showToolTipAt ( text: string, position: Vector3 ): any {
 
 		return this.toolTipService.createFrom3D( text, position );
 
@@ -42,7 +42,7 @@ export class MeasurementToolService {
 
 	}
 
-	showTextAt ( text: string, position: Vector3, size: number ) {
+	showTextAt ( text: string, position: Vector3, size: number ): any {
 
 		const textObject = this.debugTextService.createTextObject( text, size );
 

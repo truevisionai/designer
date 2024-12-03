@@ -40,7 +40,7 @@ export class AuthService {
 		return null;
 	}
 
-	public refresh () {
+	public refresh (): Observable<any> {
 
 		return this.api.post( '/auth/refresh' ).pipe( map( response => {
 
@@ -98,7 +98,7 @@ export class AuthService {
 		password: string,
 		confirmPassword: string,
 		agreed: boolean
-	) {
+	): Observable<any> {
 
 		return this.api.post( '/auth/register', {
 			name,
@@ -128,13 +128,13 @@ export class AuthService {
 
 	}
 
-	public forgotPassword ( email: string ) {
+	public forgotPassword ( email: string ): Observable<any> {
 
 		return this.api.post( '/auth/forgot-password', { email } );
 
 	}
 
-	public resendEmailConfirmationLink ( email: string ) {
+	public resendEmailConfirmationLink ( email: string ): Observable<any> {
 
 		return this.api.post( '/auth/resend-email-confirmation', { email } );
 

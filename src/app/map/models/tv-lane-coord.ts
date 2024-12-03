@@ -28,7 +28,7 @@ export class TvLaneCoord {
 		return this.laneDistance;
 	}
 
-	toString () {
+	toString (): string {
 		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.laneDistance } offset:${ this.offset }`;
 	}
 
@@ -84,7 +84,7 @@ export class TvLaneCoord {
 		return new Orientation( 0, 0, 0 );
 	}
 
-	toPosTheta () {
+	toPosTheta (): import("/Users/himanshu/Code/designer-private/src/app/map/models/tv-pos-theta").TvPosTheta {
 		return this.posTheta;
 	}
 

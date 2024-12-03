@@ -76,7 +76,7 @@ export class TangentLine {
 
 	}
 
-	updateOneSegment ( idx, point ) {
+	updateOneSegment ( idx, point ): Vector3[] {
 
 		const position = this.geometry.attributes.position as BufferAttribute;
 

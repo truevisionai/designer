@@ -12,7 +12,7 @@ import { OpenDriveExporter } from './open-drive-exporter';
 export class TvCarlaExporter extends OpenDriveExporter {
 
 	// override default
-	public writeLane ( xmlNode, lane: TvLane ) {
+	public writeLane ( xmlNode, lane: TvLane ): any {
 
 		return super.writeLane( xmlNode, lane );
 

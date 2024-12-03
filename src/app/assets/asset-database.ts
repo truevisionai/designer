@@ -39,7 +39,7 @@ export class AssetDatabase {
 		}
 	}
 
-	static removeMetadata ( guid: string ) {
+	static removeMetadata ( guid: string ): boolean {
 
 		return this.metadata.delete( guid );
 
@@ -99,7 +99,7 @@ export class AssetDatabase {
 
 	}
 
-	static has ( uuid: string ) {
+	static has ( uuid: string ): boolean {
 
 		return this.instances.has( uuid );
 

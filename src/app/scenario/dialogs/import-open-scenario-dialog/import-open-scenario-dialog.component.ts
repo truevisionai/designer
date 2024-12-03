@@ -79,7 +79,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 	}
 
-	async readScenario () {
+	async readScenario (): Promise<void> {
 
 		try {
 

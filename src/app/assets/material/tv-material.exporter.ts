@@ -19,7 +19,7 @@ export class TvMaterialExporter implements AssetExporter<MaterialAsset> {
 		return JSON.stringify( data, null, 4 );
 	}
 
-	exportAsJSON ( material: MaterialAsset ) {
+	exportAsJSON ( material: MaterialAsset ): any {
 
 		if ( material instanceof MaterialAsset ) {
 

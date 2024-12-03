@@ -77,7 +77,7 @@ export class Orientation {
 		return new Orientation( h, p, r, type );
 	}
 
-	toXML ( version?: OpenScenarioVersion ) {
+	toXML ( version?: OpenScenarioVersion ): any {
 		return {
 			attr_h: this.h + Maths.PI2 ?? 0,
 			attr_p: this.p ?? 0,
@@ -155,7 +155,7 @@ export class Orientation {
 
 	}
 
-	add ( relativeOrientation: Orientation ) {
+	add ( relativeOrientation: Orientation ): this {
 
 		this.h += relativeOrientation.h;
 		this.p += relativeOrientation.p;
@@ -164,7 +164,7 @@ export class Orientation {
 		return this;
 	}
 
-	isNotEmpty () {
+	isNotEmpty (): boolean {
 		return this.h != 0 && this.p != 0 && this.r != 0;
 	}
 }

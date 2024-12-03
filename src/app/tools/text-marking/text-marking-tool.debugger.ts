@@ -108,7 +108,7 @@ export class TextMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNode ( road: TvRoad, signal: TvRoadSignal ) {
+	createNode ( road: TvRoad, signal: TvRoadSignal ): Object3D {
 
 		if ( signal.type != TvSignalType.RoadMark ) return;
 

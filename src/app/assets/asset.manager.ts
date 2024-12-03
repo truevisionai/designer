@@ -52,7 +52,7 @@ export class AssetManager {
 
 	}
 
-	getProp () {
+	getProp (): Asset {
 
 		return this.modelAsset;
 

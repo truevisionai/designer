@@ -89,7 +89,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getPrevious ( value: T ) {
+	getPrevious ( value: T ): T {
 
 		const values = this.toArray();
 
@@ -102,7 +102,7 @@ export class OrderedMap<T> {
 		return values[ index - 1 ] || null;
 	}
 
-	getNext ( value: T ) {
+	getNext ( value: T ): T {
 
 		const values = this.toArray();
 
@@ -116,7 +116,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getNextKey ( value: T ) {
+	getNextKey ( value: T ): number {
 
 		const next = this.getNext( value );
 
@@ -128,7 +128,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getPreviousKey ( value: T ) {
+	getPreviousKey ( value: T ): number {
 
 		const previous = this.getPrevious( value );
 
@@ -140,7 +140,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getLast () {
+	getLast (): T {
 
 		const values = this.toArray();
 
@@ -148,7 +148,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getFirst () {
+	getFirst (): T {
 
 		const values = this.toArray();
 

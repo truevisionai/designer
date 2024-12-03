@@ -107,7 +107,7 @@ export class LaneMarkingToolService {
 
 	}
 
-	createNode ( point: Vector3 ) {
+	createNode ( point: Vector3 ): LaneMarkingNode {
 
 		const laneCoord = this.roadService.findLaneCoord( point );
 

@@ -90,7 +90,7 @@ export class ProjectBrowserComponent implements OnInit {
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	async onDrop ( $event: DragEvent ) {
+	async onDrop ( $event: DragEvent ): Promise<void> {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -114,7 +114,7 @@ export class ProjectBrowserComponent implements OnInit {
 		}
 	}
 
-	async handleDroppedFile ( file: File, folderPath: string ) {
+	async handleDroppedFile ( file: File, folderPath: string ): Promise<void> {
 
 		if ( !file ) {
 			this.snackBar.error( 'Incorrect file. Cannot import' );

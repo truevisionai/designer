@@ -10,6 +10,7 @@ import {
 	Color,
 	Euler,
 	Float32BufferAttribute,
+	Material,
 	Mesh,
 	MeshBasicMaterial,
 	MeshStandardMaterial,
@@ -240,7 +241,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	}
 
-	private calculateHeading ( road: TvRoad, roadObject: TvRoadObject ) {
+	private calculateHeading ( road: TvRoad, roadObject: TvRoadObject ): number {
 
 		const roadCoord = road.getRoadPosition( roadObject.s, roadObject.t );
 
@@ -328,7 +329,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 	}
 
-	getObject3dInstance ( assetGuid: string ) {
+	getObject3dInstance ( assetGuid: string ): Object3D {
 
 		const asset = this.assetService.getAsset( assetGuid );
 
@@ -480,7 +481,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 		return bbox;
 	}
 
-	private buildMarking ( road: TvRoad, roadObject: TvRoadObject, marking: TvObjectMarking ) {
+	private buildMarking ( road: TvRoad, roadObject: TvRoadObject, marking: TvObjectMarking ): Mesh {
 
 		const points: Vector3[] = [];
 
@@ -545,7 +546,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 		return object3D;
 	}
 
-	getCornerLocalPosition ( road: TvRoad, roadObject: TvRoadObject, cornerLocal: TvCornerLocal ) {
+	getCornerLocalPosition ( road: TvRoad, roadObject: TvRoadObject, cornerLocal: TvCornerLocal ): Vector3 {
 
 		return new Vector3( cornerLocal.attr_u, cornerLocal.attr_v, cornerLocal.attr_z );
 
@@ -640,7 +641,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 		return this.createGeometryFromCurve( marking, curve );
 	}
 
-	private createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ) {
+	private createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ): Mesh {
 
 		const curve = new CatmullRomCurve3( [
 			new Vector3( 0, 0, 0 ),
@@ -956,7 +957,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 	//
 	// }
 
-	private getRoadMarkMaterial ( roadObject: TvRoadObject ) {
+	private getRoadMarkMaterial ( roadObject: TvRoadObject ): Material {
 
 		const subType: any = {
 			'arrowLeft': 'http://www.vzkat.de/2017/Teil03/206.gif',

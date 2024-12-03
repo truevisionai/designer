@@ -19,7 +19,7 @@ export class ProjectBrowserService {
 	) {
 	}
 
-	getFolders ( path: string ) {
+	getFolders ( path: string ): Asset[] {
 
 		return this.storage.getDirectoryFiles( path ).filter( node => node.type == 'directory' ).map( node => {
 
@@ -29,7 +29,7 @@ export class ProjectBrowserService {
 
 	}
 
-	getAssets ( path: string ) {
+	getAssets ( path: string ): Asset[] {
 
 		const assets: Asset[] = [];
 

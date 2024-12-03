@@ -28,7 +28,7 @@ export class ToolBarService {
 	) {
 	}
 
-	setToolByType ( type: ToolType ) {
+	setToolByType ( type: ToolType ): any {
 
 		if ( ToolManager.isCurrentTool( type ) ) {
 			return ToolManager.getCurrentTool();

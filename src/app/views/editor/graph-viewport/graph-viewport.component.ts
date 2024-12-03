@@ -115,7 +115,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	createCamera () {
+	createCamera (): any {
 
 		const camera = this.cameraService.createOrthographicCamera( -100, 100, 100, -100 );
 

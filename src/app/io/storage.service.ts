@@ -51,7 +51,7 @@ export class StorageService {
 
 	}
 
-	appendFileSync ( path: string, contents: string, options?: any ) {
+	appendFileSync ( path: string, contents: string, options?: any ): any {
 
 		return this.fileService.fs.appendFileSync( path, contents, options );
 
@@ -87,7 +87,7 @@ export class StorageService {
 
 	}
 
-	getDirectoryFiles ( path: string ) {
+	getDirectoryFiles ( path: string ): any[] {
 
 		return this.fileService.readPathContentsSync( path );
 

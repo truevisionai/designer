@@ -44,7 +44,7 @@ export class MaterialAsset {
 
 	}
 
-	toMetadata ( path: string ) {
+	toMetadata ( path: string ): any {
 		return {
 			guid: this.guid,
 			importer: MetaImporter.MATERIAL,

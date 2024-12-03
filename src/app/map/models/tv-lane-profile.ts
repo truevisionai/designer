@@ -42,11 +42,11 @@ export class TvLaneProfile {
 		return this.road;
 	}
 
-	getFirstLaneSection () {
+	getFirstLaneSection (): TvLaneSection {
 		return this.laneSections[ 0 ];
 	}
 
-	getLastLaneSection () {
+	getLastLaneSection (): TvLaneSection {
 		return this.laneSections[ this.laneSections.length - 1 ];
 	}
 
@@ -62,7 +62,7 @@ export class TvLaneProfile {
 		return this.laneOffsets.toArray();
 	}
 
-	getLaneSectionById ( id: number ) {
+	getLaneSectionById ( id: number ): TvLaneSection {
 		return this.laneSections.find( laneSection => laneSection.id === id );
 	}
 
@@ -228,7 +228,7 @@ export class TvLaneProfile {
 		this.updateLaneOffsetValues( this.road.length );
 	}
 
-	getLaneOffsetAt ( number: number ) {
+	getLaneOffsetAt ( number: number ): TvLaneOffset {
 
 		return this.getLaneOffsetEntryAt( number );
 
@@ -270,7 +270,7 @@ export class TvLaneProfile {
 
 	}
 
-	getLaneAt ( s: number, t: number ) {
+	getLaneAt ( s: number, t: number ): TvLane {
 
 		return this.getLaneSectionAt( s ).getLaneAt( s, t );
 

@@ -35,13 +35,13 @@ export class ManeuverGroup {
 
 	}
 
-	static getNewName ( name = 'MySequence' ) {
+	static getNewName ( name = 'MySequence' ): string {
 
 		return `${ name }${ this.count }`;
 
 	}
 
-	addNewManeuver ( name: string ) {
+	addNewManeuver ( name: string ): Maneuver {
 
 		const maneuver = new Maneuver( name );
 

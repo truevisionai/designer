@@ -123,7 +123,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.laneSection;
 	}
 
-	toString () {
+	toString (): string {
 		return `Lane:${ this.id } Side:${ this.side } Type:${ this.type }`;
 	}
 
@@ -289,7 +289,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	addRoadMarkRecord ( sOffset: number, type: TvRoadMarkTypes, weight: TvRoadMarkWeights, color: TvColors, width: number, laneChange: TvRoadMarkLaneChange, height: number ) {
+	addRoadMarkRecord ( sOffset: number, type: TvRoadMarkTypes, weight: TvRoadMarkWeights, color: TvColors, width: number, laneChange: TvRoadMarkLaneChange, height: number ): TvLaneRoadMark {
 
 		const roadMark = new TvLaneRoadMark( sOffset, type, weight, color, width, laneChange, height, this );
 
@@ -298,13 +298,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return roadMark;
 	}
 
-	addNoneRoadMark ( s = 0 ) {
+	addNoneRoadMark ( s = 0 ): TvLaneRoadMark {
 
 		return this.addRoadMarkRecord( s, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.0, TvRoadMarkLaneChange.NONE, 0.0 );
 
 	}
 
-	addRoadMarkOfType ( s = 0, type: TvRoadMarkTypes ) {
+	addRoadMarkOfType ( s = 0, type: TvRoadMarkTypes ): TvLaneRoadMark {
 
 		return this.addRoadMarkRecord( s, type, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.15, TvRoadMarkLaneChange.NONE, 0.0 );
 
@@ -330,7 +330,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	// DELETE METHODS
 	//
 
-	addVisibilityRecord ( sOffset: number, forward: number, back: number, left: number, right: number ) {
+	addVisibilityRecord ( sOffset: number, forward: number, back: number, left: number, right: number ): number {
 
 		const index = this.checkLaneVisibilityInterval( sOffset ) + 1;
 
@@ -348,7 +348,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	addSpeedRecord ( sOffset: number, max: number, unit: string ) {
+	addSpeedRecord ( sOffset: number, max: number, unit: string ): number {
 
 		const index = this.checkLaneSpeedInterval( sOffset ) + 1;
 
@@ -365,7 +365,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return index;
 	}
 
-	addAccessRecord ( sOffset: number, restriction: string ) {
+	addAccessRecord ( sOffset: number, restriction: string ): number {
 
 		const index = this.checkLaneAccessInterval( sOffset ) + 1;
 

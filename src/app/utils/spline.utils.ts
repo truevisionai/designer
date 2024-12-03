@@ -145,7 +145,7 @@ export class SplineUtils {
 
 	}
 
-	static hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction | null ) {
+	static hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction | null ): any {
 
 		return spline.hasSegment( segment );
 

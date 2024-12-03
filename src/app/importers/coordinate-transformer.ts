@@ -143,7 +143,7 @@ export function convertToWGS84String ( projString: string ): string {
 	}
 }
 
-export function getWorldProjection ( projString: string, ) {
+export function getWorldProjection ( projString: string, ): any {
 
 	try {
 
@@ -161,7 +161,7 @@ export function getWorldProjection ( projString: string, ) {
 
 }
 
-export function getWorldOriginInLatLong ( projString: string ) {
+export function getWorldOriginInLatLong ( projString: string ): any[] {
 
 	try {
 

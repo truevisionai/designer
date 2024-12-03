@@ -36,7 +36,7 @@ export class TvBoundingBox {
 		);
 	}
 
-	toJSON () {
+	toJSON (): any {
 		return {
 			center: this.center,
 			dimension: this.dimension
@@ -66,7 +66,7 @@ export class TvPerformance {
 		);
 	}
 
-	toJSON () {
+	toJSON (): this {
 		return this;
 	}
 }
@@ -91,7 +91,7 @@ export class TvAxles {
 		);
 	}
 
-	toJSON () {
+	toJSON (): this {
 		return this;
 	}
 }

@@ -202,7 +202,7 @@ export class TvRoad {
 		return other instanceof TvRoad && this.uuid === other.uuid;
 	}
 
-	toString () {
+	toString (): string {
 
 		if ( this.isJunction ) {
 			return `ConnectingRoad:${ this._id } Junction:${ this.junctionId } Successor:${ this.successor?.id } Predecessor:${ this.predecessor?.id }`;
@@ -233,11 +233,11 @@ export class TvRoad {
 		return this.getRoadCoord( this.length );
 	}
 
-	getEndPosTheta () {
+	getEndPosTheta (): TvPosTheta {
 		return this.getPosThetaAt( this.length - Maths.Epsilon );
 	}
 
-	getStartPosTheta () {
+	getStartPosTheta (): TvPosTheta {
 
 		// helps catch bugs
 		if ( this.geometries.length == 0 ) {
@@ -431,7 +431,7 @@ export class TvRoad {
 
 	}
 
-	getContactPosition ( contactA: TvContactPoint ) {
+	getContactPosition ( contactA: TvContactPoint ): any {
 
 		return RoadGeometryService.instance.findContactPosition( this, contactA );
 
@@ -468,7 +468,7 @@ export class TvRoad {
 		hOffset: number,
 		pitch: number,
 		roll: number
-	) {
+	): TvRoadSignal {
 
 		const signal = new TvRoadSignal(
 			s, t, id, name,
@@ -723,7 +723,7 @@ export class TvRoad {
 
 	}
 
-	getRoadWidthAt ( distance: number ) {
+	getRoadWidthAt ( distance: number ): any {
 
 		return RoadWidthService.instance.findRoadWidthAt( this, distance );
 

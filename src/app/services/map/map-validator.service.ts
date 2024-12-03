@@ -129,13 +129,13 @@ export class MapValidatorService {
 
 	}
 
-	getErrors () {
+	getErrors (): any[] {
 
 		return this.errors;
 
 	}
 
-	validateMap ( map: TvMap, throwError = false ) {
+	validateMap ( map: TvMap, throwError = false ): boolean {
 
 		this.map = map;
 

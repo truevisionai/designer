@@ -519,7 +519,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	}
 
-	getClass ( tool: IToolMenu ) {
+	getClass ( tool: IToolMenu ): string {
 
 		if ( !this.currentTool ) return tool.class;
 

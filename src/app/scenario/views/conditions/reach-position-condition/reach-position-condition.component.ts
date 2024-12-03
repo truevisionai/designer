@@ -43,7 +43,7 @@ export class ReachPositionConditionComponent extends BaseConditionEditorComponen
 		this.sphere.position.copy( this.reachedCondition.position.getVectorPosition() );
 	}
 
-	getGeometry ( radius ) {
+	getGeometry ( radius ): TorusGeometry {
 
 		const tube = 0.1;
 		const radialSegments = 3;

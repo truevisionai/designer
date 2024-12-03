@@ -65,7 +65,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 	}
 
 
-	static create () {
+	static create (): DefaultJunction {
 		return new DefaultJunction( 'Junction', 0 );
 	}
 

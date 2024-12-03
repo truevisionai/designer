@@ -558,7 +558,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	detectWebgl () {
+	detectWebgl (): boolean {
 
 		try {
 
@@ -688,7 +688,7 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	computeDistance ( target: Vector3, camera?: Camera ) {
+	computeDistance ( target: Vector3, camera?: Camera ): number {
 
 		camera = camera ?? this.camera;
 

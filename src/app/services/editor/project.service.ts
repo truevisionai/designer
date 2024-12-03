@@ -179,7 +179,7 @@ export class ProjectService {
 
 	}
 
-	getDefaultProjectPath ( folder: string ) {
+	getDefaultProjectPath ( folder: string ): any {
 
 		const pathsToCheck = [];
 

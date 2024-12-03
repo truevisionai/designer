@@ -20,7 +20,7 @@ import { PolynomialArray } from "../../core/models/ordered-array";
  */
 export class TvSuperElevation extends ThirdOrderPolynom {
 
-	clone () {
+	clone (): TvSuperElevation {
 		return new TvSuperElevation( this.s, this.a, this.b, this.c, this.d );
 	}
 
@@ -63,7 +63,7 @@ export class TvLateralProfile {
 		return this.superElevations.findAt( s );
 	}
 
-	getSuperElevationValue ( s: number ) {
+	getSuperElevationValue ( s: number ): number {
 		return this.superElevations.findAt( s )?.getValue( s );
 	}
 
@@ -75,7 +75,7 @@ export class TvLateralProfile {
 		return this.superElevations.getNext( elevation );
 	}
 
-	getShapes () {
+	getShapes (): TvLateralProfileShape[] {
 		return this.shapes;
 	}
 

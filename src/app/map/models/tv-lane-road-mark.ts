@@ -141,7 +141,7 @@ export class TvLaneRoadMark {
 		return COLOR.stringToColor( this.color );
 	}
 
-	getType () {
+	getType (): TvRoadMarkTypes {
 		return this.type;
 	}
 
@@ -149,7 +149,7 @@ export class TvLaneRoadMark {
 		this.type = value;
 	}
 
-	static getSpaceByType ( value: TvRoadMarkTypes ) {
+	static getSpaceByType ( value: TvRoadMarkTypes ): 0 | 4.5 | 1.2 {
 		switch ( value ) {
 			case TvRoadMarkTypes.SOLID:
 				return 0;
@@ -175,7 +175,7 @@ export class TvLaneRoadMark {
 
 	}
 
-	static getLengthByType ( value: TvRoadMarkTypes ) {
+	static getLengthByType ( value: TvRoadMarkTypes ): 1 | 3 {
 		switch ( value ) {
 			case TvRoadMarkTypes.SOLID:
 				return 1.0;
@@ -200,7 +200,7 @@ export class TvLaneRoadMark {
 		}
 	}
 
-	static getWidthByWeight ( value: TvRoadMarkWeights ) {
+	static getWidthByWeight ( value: TvRoadMarkWeights ): 0.3 | 0.15 {
 		if ( value == TvRoadMarkWeights.BOLD ) {
 			return 0.3;
 		} else {
@@ -220,7 +220,7 @@ export class TvLaneRoadMark {
 
 	}
 
-	clone ( s?: number, lane?: TvLane ) {
+	clone ( s?: number, lane?: TvLane ): TvLaneRoadMark {
 
 		return new TvLaneRoadMark(
 			s || this.sOffset,
@@ -243,7 +243,7 @@ export class TvLaneRoadMark {
 
 	}
 
-	static laneChangeFromString ( value: string ) {
+	static laneChangeFromString ( value: string ): TvRoadMarkLaneChange {
 
 		switch ( value ) {
 

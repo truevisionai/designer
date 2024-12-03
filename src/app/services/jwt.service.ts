@@ -41,7 +41,7 @@ export class JwtService {
 		window.localStorage.removeItem( 'jwtToken' );
 	}
 
-	hasToken () {
+	hasToken (): boolean {
 		return (
 			this.token != null &&
 			this.token !== undefined &&

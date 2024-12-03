@@ -91,7 +91,7 @@ export class RelativeWorldPosition extends Position {
 		return new RelativeWorldPosition( new EntityRef( entity ), new Vector3( dx, dy, dz ), orientation );
 	}
 
-	toXML ( version?: OpenScenarioVersion ) {
+	toXML ( version?: OpenScenarioVersion ): any {
 
 		return {
 			attr_entityRef: this.entityRef?.name,

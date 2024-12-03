@@ -95,7 +95,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	clone ( road: TvRoad, s = 0 ) {
+	clone ( road: TvRoad, s = 0 ): any {
 
 		const id = this.roadFactory.getNextRoadId();
 
@@ -105,19 +105,19 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	createRampRoad ( connectionLane?: TvLane ) {
+	createRampRoad ( connectionLane?: TvLane ): any {
 
 		return this.roadFactory.createRampRoad( connectionLane );
 
 	}
 
-	createSingleLaneRoad ( width: number ) {
+	createSingleLaneRoad ( width: number ): any {
 
 		return this.roadFactory.createSingleLaneRoad( width );
 
 	}
 
-	createNewRoad () {
+	createNewRoad (): any {
 
 		return this.roadFactory.createNewRoad();
 
@@ -364,7 +364,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	findNearestLane ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ) {
+	findNearestLane ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): any {
 
 		let nearestLane: TvLane = null;
 
@@ -428,7 +428,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	STtoXYZ ( road: TvRoad, s: number, t: number ) {
+	STtoXYZ ( road: TvRoad, s: number, t: number ): any {
 
 		const posTheta = road.getRoadPosition( s, t );
 
@@ -447,7 +447,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return position;
 	}
 
-	findCentroid ( links: TvLink[] ) {
+	findCentroid ( links: TvLink[] ): Vector3 {
 
 		const points = links.map( link => link.getPosition().toVector3() );
 

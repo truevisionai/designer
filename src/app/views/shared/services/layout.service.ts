@@ -127,7 +127,7 @@ export class LayoutService {
 		} );
 	}
 
-	isSm () {
+	isSm (): boolean {
 		return window.matchMedia( `(max-width: 959px)` ).matches;
 	}
 }

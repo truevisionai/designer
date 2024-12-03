@@ -59,7 +59,7 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	}
 
-	has ( key: K ) {
+	has ( key: K ): boolean {
 
 		return this.map.has( key );
 

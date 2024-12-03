@@ -40,7 +40,7 @@ export class ImportFbxDialogComponent implements OnInit {
 	) {
 	}
 
-	async ngOnInit () {
+	async ngOnInit (): Promise<void> {
 
 		const loader = new FBXLoader();
 

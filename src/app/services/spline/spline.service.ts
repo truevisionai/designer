@@ -42,7 +42,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	findById ( id: number ) {
+	findById ( id: number ): any {
 
 		return this.mapService.findSplineById( id );
 

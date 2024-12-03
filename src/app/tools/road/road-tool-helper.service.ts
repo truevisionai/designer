@@ -58,7 +58,7 @@ export class RoadToolHelper {
 
 	}
 
-	duplicateRoad ( selectedRoad: TvRoad ) {
+	duplicateRoad ( selectedRoad: TvRoad ): any {
 
 		return this.roadService.duplicateRoad( selectedRoad );
 
@@ -76,7 +76,7 @@ export class RoadToolHelper {
 
 	}
 
-	createFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
+	createFromNodes ( firstNode: RoadNode, secondNode: RoadNode ): any {
 
 		const spline = this.splineFactory.createSplineFromNodes( firstNode, secondNode );
 

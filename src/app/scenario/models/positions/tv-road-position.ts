@@ -84,7 +84,7 @@ export class RoadPosition extends Position {
 		return this.getRoad()?.getPosThetaAt( this.sValue, this.tValue ).toVector3();
 	}
 
-	getRoad () {
+	getRoad (): any {
 		if ( this._road ) {
 			return this._road;
 		}

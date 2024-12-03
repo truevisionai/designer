@@ -255,7 +255,7 @@ export class ToolFactory {
 
 	}
 
-	private createRoadTool () {
+	private createRoadTool (): RoadTool {
 
 		return new RoadTool( this.roadToolService );
 

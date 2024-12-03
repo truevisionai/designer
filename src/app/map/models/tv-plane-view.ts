@@ -22,7 +22,7 @@ export class TvPlaneView {
 
 	}
 
-	getGeometryAtIndex ( index: number ) {
+	getGeometryAtIndex ( index: number ): TvAbstractRoadGeometry {
 
 		return this.geometries[ index ];
 
@@ -46,7 +46,7 @@ export class TvPlaneView {
 
 	}
 
-	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ) {
+	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
 
 		const geometry = new TvLineGeometry( s, x, y, hdg, length );
 
@@ -63,7 +63,7 @@ export class TvPlaneView {
 		this.geometries.push( new TvSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd ) );
 	}
 
-	addGeometryArc ( s, x, y, hdg, length, curvature: number ) {
+	addGeometryArc ( s, x, y, hdg, length, curvature: number ): TvArcGeometry {
 
 		const geometry = new TvArcGeometry( s, x, y, hdg, length, curvature );
 
@@ -99,7 +99,7 @@ export class TvPlaneView {
 	/**
 	 * Getter for the overall planView/ road length (sum of all geometry record lengths)
 	 */
-	getBlockLength () {
+	getBlockLength (): number {
 
 		let total = 0;
 

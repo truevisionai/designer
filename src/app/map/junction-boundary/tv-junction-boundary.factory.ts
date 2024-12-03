@@ -127,7 +127,7 @@ export class TvJunctionBoundaryFactory {
 		return boundary;
 	}
 
-	private static createOuterJointSegment ( roadCoord: TvRoadCoord ) {
+	private static createOuterJointSegment ( roadCoord: TvRoadCoord ): TvJointBoundary {
 
 		let startLane: TvLane;
 		let endLane: TvLane;
@@ -148,7 +148,7 @@ export class TvJunctionBoundaryFactory {
 
 	}
 
-	private static createInnerJointSegment ( roadCoord: TvRoadCoord ) {
+	private static createInnerJointSegment ( roadCoord: TvRoadCoord ): TvJointBoundary {
 
 		let startLane: TvLane;
 		let endLane: TvLane;
@@ -169,7 +169,7 @@ export class TvJunctionBoundaryFactory {
 
 	}
 
-	private static createLaneSegment ( connectingRoad: TvRoad, connectionLane: TvLane ) {
+	private static createLaneSegment ( connectingRoad: TvRoad, connectionLane: TvLane ): TvLaneBoundary {
 
 		const boundary = new TvLaneBoundary();
 

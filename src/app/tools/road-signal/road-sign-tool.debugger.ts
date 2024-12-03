@@ -109,7 +109,7 @@ export class RoadSignToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNode ( road: TvRoad, signal: TvRoadSignal ) {
+	createNode ( road: TvRoad, signal: TvRoadSignal ): SimpleControlPoint<TvRoadSignal> {
 
 		// if ( signal.type == TvSignalType.RoadMark ) return;
 

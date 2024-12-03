@@ -142,7 +142,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	}
 
-	createHeightNode ( lane: TvLane, height: TvLaneHeight ) {
+	createHeightNode ( lane: TvLane, height: TvLaneHeight ): any {
 
 		const laneDistance = height.sOffset as LaneDistance;
 

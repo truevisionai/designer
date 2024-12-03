@@ -96,7 +96,7 @@ export class BaseToolService {
 
 	}
 
-	highlight ( e: PointerEventData ) {
+	highlight ( e: PointerEventData ): any {
 
 		for ( let i = 0; i < this.selectionStrategies.length; i++ ) {
 

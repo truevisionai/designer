@@ -279,7 +279,7 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 		return faces;
 	}
 
-	private extractMeshesAndMaterials ( group: Group ) {
+	private extractMeshesAndMaterials ( group: Group ): IChildAndMesh[] {
 
 		const meshesAndMaterials: IChildAndMesh[] = [];
 

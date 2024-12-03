@@ -259,7 +259,7 @@ export abstract class ScenarioEntity implements IHasUpdate {
 		this.openDriveProperties.laneSectionId = id;
 	}
 
-	getLaneSectionId () {
+	getLaneSectionId (): number {
 		return this.openDriveProperties.laneSectionId;
 	}
 
@@ -271,7 +271,7 @@ export abstract class ScenarioEntity implements IHasUpdate {
 		this.openDriveProperties.s = s;
 	}
 
-	getTravelingDirection () {
+	getTravelingDirection (): number {
 		return this.openDriveProperties.direction;
 	}
 
@@ -290,7 +290,7 @@ export abstract class ScenarioEntity implements IHasUpdate {
 		this.controller?.start();
 	}
 
-	clone () {
+	clone (): any {
 		return new ( this.constructor as any )( this.name, this.boundingBox );
 	}
 }

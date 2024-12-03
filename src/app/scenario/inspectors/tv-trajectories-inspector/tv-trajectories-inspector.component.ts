@@ -36,7 +36,7 @@ export class TrajectoriesInspectorComponent implements OnInit, IComponent {
 
 	}
 
-	isDisabled ( trajectory: Trajectory ) {
+	isDisabled ( trajectory: Trajectory ): boolean {
 
 		return trajectory !== this.selected;
 

@@ -16,7 +16,7 @@ export class RelativeTarget extends Target {
 
 	}
 
-	getTarget () {
+	getTarget (): number {
 
 		return this.target;
 

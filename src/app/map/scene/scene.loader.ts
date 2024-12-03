@@ -102,7 +102,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		super();
 	}
 
-	load ( asset: Asset ) {
+	load ( asset: Asset ): TvMap {
 
 		this.explicitSplineCache.clear();
 
@@ -638,7 +638,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 	}
 
 
-	findRoad ( id: number ) {
+	findRoad ( id: number ): any {
 
 		try {
 
@@ -659,7 +659,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	findJunction ( id: number ) {
+	findJunction ( id: number ): any {
 
 		try {
 
@@ -943,7 +943,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private findElement ( type: TvLinkType, elementId: number ) {
+	private findElement ( type: TvLinkType, elementId: number ): any {
 
 		if ( type == TvLinkType.ROAD ) {
 
@@ -1032,7 +1032,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseGeometry ( xml: XmlElement ) {
+	private parseGeometry ( xml: XmlElement ): TvLineGeometry | TvArcGeometry | TvSpiralGeometry | TvPoly3Geometry | TvParamPoly3Geometry {
 
 		const s = parseFloat( xml.attr_s );
 		const x = parseFloat( xml.attr_x );
@@ -1255,7 +1255,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return laneBoundary;
 	}
 
-	private parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ) {
+	private parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ): any {
 
 		const id = parseInt( xmlElement.attr_id );
 		const incomingRoadId = parseInt( xmlElement.attr_incomingRoad );
@@ -1318,7 +1318,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		const fromLaneId = parseInt( xmlElement.attr_from );
 		const toLaneId = parseInt( xmlElement.attr_to );
 
-		function findContactPoint ( incomingRoad: TvRoad ) {
+		function findContactPoint ( incomingRoad: TvRoad ): any {
 
 			if ( connection.connectingRoad.successor?.equals( incomingRoad ) ) {
 				return connection.connectingRoad.successor.contactPoint;
@@ -1473,7 +1473,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 	}
 
-	private parseObject ( road: TvRoad, xmlElement: XmlElement ) {
+	private parseObject ( road: TvRoad, xmlElement: XmlElement ): any {
 
 		const type = xmlElement.attr_type;
 		const name = xmlElement.attr_name;
@@ -1666,7 +1666,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	private parseSignal ( road: TvRoad, xmlElement: XmlElement ): void {
 
-		function findAvailableId ( id: number, road: TvRoad ) {
+		function findAvailableId ( id: number, road: TvRoad ): number {
 
 			while ( road.hasRoadSignal( id ) ) {
 				id++;
@@ -1886,7 +1886,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneRoadMark ( lane: TvLane, xmlElement: XmlElement ) {
+	private parseLaneRoadMark ( lane: TvLane, xmlElement: XmlElement ): any {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset ) || 0;
 		const type = xmlElement.attr_type || TvRoadMarkTypes.SOLID;

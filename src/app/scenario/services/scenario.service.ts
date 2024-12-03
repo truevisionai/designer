@@ -33,7 +33,7 @@ export class ScenarioService {
 
 	}
 
-	async importScenario ( path: string ) {
+	async importScenario ( path: string ): Promise<void> {
 
 		this.destroy();
 

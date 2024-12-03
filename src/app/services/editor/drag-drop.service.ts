@@ -19,7 +19,7 @@ export class DragDropService {
 		this.data = data;
 	}
 
-	getData () {
+	getData (): DragDropData {
 		return this.data;
 	}
 

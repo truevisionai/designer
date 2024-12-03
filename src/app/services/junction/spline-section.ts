@@ -148,7 +148,7 @@ export abstract class SplineSection {
 
 	}
 
-	private computeOffsets ( area: Box2 ) {
+	private computeOffsets ( area: Box2 ): any {
 
 		const intersectingOffsets = [ this.start, this.end ];
 

@@ -49,7 +49,7 @@ export class LanePosition extends Position {
 
 	}
 
-	toXML ( version: OpenScenarioVersion ) {
+	toXML ( version: OpenScenarioVersion ): any {
 
 		const key = version == OpenScenarioVersion.v0_9 ? 'Lane' : 'LanePosition';
 
@@ -64,7 +64,7 @@ export class LanePosition extends Position {
 		};
 	}
 
-	getLaneArray () {
+	getLaneArray (): TvLane[] {
 		return TvMapQueries.findRoadById( this.roadId ).getLaneProfile().getLaneSectionAt( this.sCoordinate ).getLanes();
 	}
 

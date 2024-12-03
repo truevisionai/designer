@@ -89,7 +89,7 @@ export class ManagedMap<V> extends Map<number, V> {
 
 	}
 
-	toArray () {
+	toArray (): V[] {
 
 		return Array.from( this.values() );
 

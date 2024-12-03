@@ -315,7 +315,7 @@ export class OdLaneReferenceLineBuilder {
 		SceneService.addToolObject( line );
 	}
 
-	private getLineMaterial ( type: LineType ) {
+	private getLineMaterial ( type: LineType ): THREE.LineBasicMaterial {
 
 		if ( type == LineType.SOLID ) {
 

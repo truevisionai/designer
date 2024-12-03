@@ -60,7 +60,7 @@ export class TextObjectService {
 
 	}
 
-	private createTextObject ( text: string, size: number, geometry: BufferGeometry, material: MeshBasicMaterial ) {
+	private createTextObject ( text: string, size: number, geometry: BufferGeometry, material: MeshBasicMaterial ): any {
 
 		return new TextObject3d( text, size, geometry, material );
 

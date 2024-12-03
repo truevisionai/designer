@@ -68,7 +68,7 @@ export class TvViewHelper extends Object3D {
 
 		this.geometry = new BoxGeometry( 0.8, 0.05, 0.05 ).translate( 0.4, 0, 0 );
 
-		function getAxisMaterial ( color ) {
+		function getAxisMaterial ( color ): MeshBasicMaterial {
 			return new MeshBasicMaterial( { color: color, toneMapped: false } );
 		}
 
