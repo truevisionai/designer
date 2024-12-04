@@ -22,7 +22,7 @@ export class AssetDatabase {
 
 	}
 
-	static getMetadata ( guid: string ): Metadata {
+	static getMetadata ( guid: string ): Metadata | undefined {
 
 		return this.metadata.get( guid );
 
@@ -30,12 +30,12 @@ export class AssetDatabase {
 
 	static getAssetNameByGuid ( guid: string ): string {
 
-		if ( !guid ) return;
-
 		const metadata = this.getMetadata( guid );
 
 		if ( metadata ) {
 			return FileUtils.getFilenameFromPath( metadata.path );
+		} else {
+			return 'Unknown';
 		}
 	}
 

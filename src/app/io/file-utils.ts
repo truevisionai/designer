@@ -8,30 +8,12 @@ export class FileUtils {
 
 	static getExtensionFromPath ( path: string ): string {
 
-		// if ( this.electron.isWindows ) {
-
-		// 	const array = filename.split( '.' );
-
-		// 	return array[ array.length - 1 ];
-		// }
-
-		// const regEx = /(?:\.([^.]+))?$/;
-
-		// const extension = regEx.exec( filename )[ 1 ];
-
-		// return extension;
-
-		if ( !path ) return;
-
 		// split by dot and return the last item
-
 		return path.split( '.' ).pop();
 
 	}
 
 	static getDirectoryFromPath ( path: string ): string {
-
-		if ( !path ) return;
 
 		// split by slash or back-slash then remove the last item and add
 		// slash or blash at the end
@@ -48,13 +30,11 @@ export class FileUtils {
 			return path.split( '/' ).slice( 0, -1 ).join( '/' );
 		}
 
-		throw new Error( 'unknown platform' + process.platform );
+		throw new Error( `unknown platform${ process.platform }` );
 
 	}
 
 	static getFilenameFromPath ( path: string ): string {
-
-		if ( !path ) return;
 
 		// if windows, split by backslash and return the last item
 		if ( AppInfo.electron.isWindows ) {
@@ -70,24 +50,20 @@ export class FileUtils {
 			return path.split( '/' ).pop();
 		}
 
-		throw new Error( 'unknown platform' + process.platform );
+		throw new Error( `unknown platform${ process.platform }` );
 	}
 
-	static getFilenameWithoutExtension ( path: string ): string|undefined {
+	static getFilenameWithoutExtension ( path: string ): string {
 
-		if ( !path ) return;
+		const filename = this.getFilenameFromPath( path );
 
-		const filename = FileUtils.getFilenameFromPath( path );
+		const extension = this.getExtensionFromPath( path );
 
-		const extension = FileUtils.getExtensionFromPath( path );
-
-		return filename.replace( '.' + extension, '' );
+		return filename.replace( `.${ extension }`, '' );
 
 	}
 
 	static pathToFileURL ( path: string ): string {
-
-		if ( !path ) return;
 
 		const isWindows = AppInfo.electron.isWindows;
 
