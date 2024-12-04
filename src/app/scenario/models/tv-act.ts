@@ -31,13 +31,13 @@ export class Act {
 
 	}
 
-	static getNewName ( name = 'MyAct' ) {
+	static getNewName ( name: string = 'MyAct' ): string {
 
 		return `${ name }${ this.count }`;
 
 	}
 
-	addNewSequence ( name: string, numberOfExecutions: number = 1, ...actors: string[] ) {
+	addNewSequence ( name: string, numberOfExecutions: number = 1, ...actors: string[] ): ManeuverGroup {
 
 		const sequence = new ManeuverGroup( name, numberOfExecutions, actors );
 
@@ -47,20 +47,20 @@ export class Act {
 
 	}
 
-	addManeuverGroup ( sequence: ManeuverGroup ) {
+	addManeuverGroup ( sequence: ManeuverGroup ): void {
 
 		this.maneueverGroups.push( sequence );
 
 	}
 
-	addStartCondition ( condition: Condition ) {
+	addStartCondition ( condition: Condition ): void {
 		if ( this.startConditionGroups.length == 0 ) {
 			this.startConditionGroups.push( new ConditionGroup() );
 		}
 		this.startConditionGroups[ 0 ].addCondition( condition );
 	}
 
-	addEndCondition ( condition: Condition ) {
+	addEndCondition ( condition: Condition ): void {
 
 		if ( this.endConditionGroups.length == 0 ) {
 			this.endConditionGroups.push( new ConditionGroup() );

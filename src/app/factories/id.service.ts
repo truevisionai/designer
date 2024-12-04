@@ -18,7 +18,7 @@ export class IDService {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		this.highestID = 0;
 		this.usedIDs.clear()
@@ -61,7 +61,7 @@ export class IDService {
 
 	}
 
-	remove ( id: number ) {
+	remove ( id: number ): void {
 
 		this.usedIDs.delete( id );
 
@@ -85,7 +85,7 @@ export class IDService {
 
 	}
 
-	add ( id: number ) {
+	add ( id: number ): void {
 
 		this.usedIDs.add( id );
 
@@ -95,7 +95,7 @@ export class IDService {
 
 	}
 
-	private updateHighestID () {
+	private updateHighestID (): void {
 
 		this.highestID = 0;
 

@@ -98,7 +98,7 @@ export class RampToolHelper {
 
 	}
 
-	addLaneSection ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3, road: TvRoad ) {
+	addLaneSection ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3, road: TvRoad ): void {
 
 		const connectingLaneSection = new TvLaneSection( 0, 0, true, road );
 
@@ -199,7 +199,7 @@ export class RampToolHelper {
 		return spline;
 	}
 
-	createSplineNew ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): AbstractSpline {
+	createSplineNew ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): AbstractSpline {
 
 		// directions must be normalized
 		const d1 = startDirection.clone().normalize();

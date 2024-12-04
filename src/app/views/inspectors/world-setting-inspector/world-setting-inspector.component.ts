@@ -57,7 +57,7 @@ export class WorldSettingInspectorComponent extends BaseInspector implements OnI
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.data = this.mapService.map.header;
 
@@ -67,7 +67,7 @@ export class WorldSettingInspectorComponent extends BaseInspector implements OnI
 
 	}
 
-	clearProjection () {
+	clearProjection (): void {
 
 		const oldValue = this.mapService.map.header;
 
@@ -77,19 +77,19 @@ export class WorldSettingInspectorComponent extends BaseInspector implements OnI
 
 	}
 
-	onLatChanged ( value: any ) {
+	onLatChanged ( value: any ): void {
 
 		CommandHistory.execute( new SetValueCommand( this.data.origin, 'x', parseFloat( value ) ?? 0, this.data.origin.x ) );
 
 	}
 
-	onLongChanged ( value: any ) {
+	onLongChanged ( value: any ): void {
 
 		CommandHistory.execute( new SetValueCommand( this.data.origin, 'y', parseFloat( value ) ?? 0, this.data.origin.y ) );
 
 	}
 
-	onOffsetChanged ( value: any ) {
+	onOffsetChanged ( value: any ): void {
 
 		try {
 
@@ -105,7 +105,7 @@ export class WorldSettingInspectorComponent extends BaseInspector implements OnI
 
 	}
 
-	onHeadingOffsetChanged ( value: any ) {
+	onHeadingOffsetChanged ( value: any ): void {
 
 		CommandHistory.execute( new SetValueCommand( this.data, 'headingOffset', parseFloat( value ) ?? 0, this.data.headingOffset ) );
 

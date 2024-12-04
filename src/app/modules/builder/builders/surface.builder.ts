@@ -59,7 +59,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 		return new GameObject( 'surface:' + surface.uuid, geometry, material );
 	}
 
-	private buildMaterial ( surface: Surface ) {
+	private buildMaterial ( surface: Surface ): Material {
 
 		const texture = this.buildTexture( surface );
 
@@ -83,7 +83,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 	}
 
-	private buildTexture ( surface: Surface ) {
+	private buildTexture ( surface: Surface ): TvTexture {
 
 		let texture: TvTexture;
 

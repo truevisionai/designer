@@ -22,7 +22,7 @@ export class SplinePointListener {
 
 	}
 
-	init () {
+	init (): void {
 
 		MapEvents.controlPointCreated.subscribe( e => this.onRoadControlPointCreated( e ) );
 		MapEvents.controlPointRemoved.subscribe( e => this.onRoadControlPointRemoved( e ) );
@@ -30,7 +30,7 @@ export class SplinePointListener {
 
 	}
 
-	onRoadControlPointCreated ( event: ControlPointCreatedEvent ) {
+	onRoadControlPointCreated ( event: ControlPointCreatedEvent ): void {
 
 		SceneService.addToolObject( event.controlPoint );
 
@@ -38,13 +38,13 @@ export class SplinePointListener {
 
 	}
 
-	onRoadControlPointUpdated ( event: ControlPointUpdatedEvent ) {
+	onRoadControlPointUpdated ( event: ControlPointUpdatedEvent ): void {
 
 		MapEvents.splineUpdated.emit( new SplineUpdatedEvent( event.controlPoint.spline ) );
 
 	}
 
-	onRoadControlPointRemoved ( event: ControlPointRemovedEvent ) {
+	onRoadControlPointRemoved ( event: ControlPointRemovedEvent ): void {
 
 		SceneService.removeFromTool( event.controlPoint );
 

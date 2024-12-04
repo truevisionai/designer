@@ -27,7 +27,7 @@ export class LaneManager {
 	) {
 	}
 
-	onLaneCreated ( lane: TvLane ) {
+	onLaneCreated ( lane: TvLane ): void {
 
 		if ( lane.getRoad().isJunction ) return;
 
@@ -43,7 +43,7 @@ export class LaneManager {
 
 	}
 
-	onLaneRemoved ( lane: TvLane ) {
+	onLaneRemoved ( lane: TvLane ): void {
 
 		if ( lane.getRoad().isJunction ) return;
 
@@ -64,7 +64,7 @@ export class LaneManager {
 
 	}
 
-	onLaneUpdated ( lane: TvLane ) {
+	onLaneUpdated ( lane: TvLane ): void {
 
 		if ( lane.getRoad().isJunction ) return;
 
@@ -74,7 +74,7 @@ export class LaneManager {
 
 	}
 
-	onLaneTypeChanged ( lane: TvLane ) {
+	onLaneTypeChanged ( lane: TvLane ): void {
 
 		if ( lane.getRoad().isJunction ) return;
 

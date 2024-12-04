@@ -32,7 +32,7 @@ export class TextObject {
 		}
 	}
 
-	update ( message: string, position: Vector3, size: number = this.size, color: number = this.color ) {
+	update ( message: string, position: Vector3, size: number = this.size, color: number = this.color ): void {
 		// Remove the old text from the scene
 		SceneService.removeFromTool( this.textMesh );
 
@@ -46,7 +46,7 @@ export class TextObject {
 		this.createText();
 	}
 
-	updateText ( message: string ) {
+	updateText ( message: string ): void {
 		// Remove the old text from the scene
 		SceneService.removeFromTool( this.textMesh );
 
@@ -55,20 +55,20 @@ export class TextObject {
 		this.createText();
 	}
 
-	hide () {
+	hide (): void {
 		this.textMesh.visible = false;
 	}
 
-	show () {
+	show (): void {
 		this.textMesh.visible = true;
 	}
 
-	remove () {
+	remove (): void {
 		// Remove the text from the scene
 		SceneService.removeFromTool( this.textMesh );
 	}
 
-	private createText () {
+	private createText (): void {
 
 		const shapes = TextObject.font.generateShapes( this.message, this.size );
 		const geometry = new THREE.ShapeGeometry( shapes );

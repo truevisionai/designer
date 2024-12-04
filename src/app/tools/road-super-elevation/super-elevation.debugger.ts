@@ -108,7 +108,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNode ( road: TvRoad, superElevation: TvSuperElevation ) {
+	createNode ( road: TvRoad, superElevation: TvSuperElevation ): any {
 
 		this.superElevationService.validate( road, superElevation );
 
@@ -141,7 +141,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 		return point;
 	}
 
-	createSpanLine ( road: TvRoad, superElevation: TvSuperElevation ) {
+	createSpanLine ( road: TvRoad, superElevation: TvSuperElevation ): DebugLine<TvSuperElevation> {
 
 		const next = road.getLateralProfile().getNextSuperElevation( superElevation );
 
@@ -176,7 +176,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNodeLine ( road: TvRoad, superElevation: TvSuperElevation ) {
+	createNodeLine ( road: TvRoad, superElevation: TvSuperElevation ): DebugLine<TvSuperElevation> {
 
 		let line: DebugLine<TvSuperElevation>;
 
@@ -200,7 +200,7 @@ export class SuperElevationDebugger extends BaseDebugger<TvRoad> {
 		return line;
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

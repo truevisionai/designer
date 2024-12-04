@@ -16,13 +16,13 @@ export class AssetDatabase {
 
 	private static instances: Map<string, any> = new Map<string, any>();
 
-	static setMetadata ( guid: string, metadata: Metadata ) {
+	static setMetadata ( guid: string, metadata: Metadata ): void {
 
 		this.metadata.set( guid, metadata );
 
 	}
 
-	static getMetadata ( guid: string ): Metadata {
+	static getMetadata ( guid: string ): Metadata | undefined {
 
 		return this.metadata.get( guid );
 
@@ -30,22 +30,22 @@ export class AssetDatabase {
 
 	static getAssetNameByGuid ( guid: string ): string {
 
-		if ( !guid ) return;
-
 		const metadata = this.getMetadata( guid );
 
 		if ( metadata ) {
 			return FileUtils.getFilenameFromPath( metadata.path );
+		} else {
+			return 'Unknown';
 		}
 	}
 
-	static removeMetadata ( guid: string ) {
+	static removeMetadata ( guid: string ): boolean {
 
 		return this.metadata.delete( guid );
 
 	}
 
-	static setInstance ( guid: string, instance: any ) {
+	static setInstance ( guid: string, instance: any ): void {
 
 		this.instances.set( guid, instance );
 
@@ -77,13 +77,13 @@ export class AssetDatabase {
 
 	}
 
-	static removeInstance ( guid: string ) {
+	static removeInstance ( guid: string ): void {
 
 		this.instances.delete( guid );
 
 	}
 
-	static remove ( guid: string ) {
+	static remove ( guid: string ): void {
 
 		try {
 
@@ -99,7 +99,7 @@ export class AssetDatabase {
 
 	}
 
-	static has ( uuid: string ) {
+	static has ( uuid: string ): boolean {
 
 		return this.instances.has( uuid );
 

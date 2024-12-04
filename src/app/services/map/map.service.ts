@@ -34,7 +34,7 @@ export class MapService {
 		TvMapInstance.map = value;
 	}
 
-	setMap ( map: TvMap ) {
+	setMap ( map: TvMap ): void {
 		this.map = map;
 	}
 
@@ -81,19 +81,19 @@ export class MapService {
 
 	}
 
-	hasRoad ( road: TvRoad | number ) {
+	hasRoad ( road: TvRoad | number ): any {
 
 		return this.map.hasRoad( road );
 
 	}
 
-	addRoad ( road: TvRoad ) {
+	addRoad ( road: TvRoad ): void {
 
 		this.map.addRoad( road );
 
 	}
 
-	removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ): void {
 
 		this.map.removeRoad( road );
 
@@ -105,7 +105,7 @@ export class MapService {
 
 	}
 
-	findRoad ( id: number ) {
+	findRoad ( id: number ): any {
 
 		// return this.map.getRoadById( id );
 
@@ -129,19 +129,19 @@ export class MapService {
 
 	}
 
-	addSpline ( spline: AbstractSpline ) {
+	addSpline ( spline: AbstractSpline ): void {
 
 		this.map.addSpline( spline );
 
 	}
 
-	hasSpline ( spline: AbstractSpline ) {
+	hasSpline ( spline: AbstractSpline ): boolean {
 
 		return this.map.getSplines().find( s => s.uuid === spline.uuid ) !== undefined;
 
 	}
 
-	findSplineById ( id: number ) {
+	findSplineById ( id: number ): any {
 
 		const spline = this.map.getSplines().find( s => s.id === id );
 
@@ -153,13 +153,13 @@ export class MapService {
 
 	}
 
-	hasJunction ( junction: TvJunction | number ) {
+	hasJunction ( junction: TvJunction | number ): any {
 
 		return this.map.hasJunction( junction );
 
 	}
 
-	findJunction ( id: number ) {
+	findJunction ( id: number ): any {
 
 		// return this.map.getJunctionById( id );
 
@@ -183,7 +183,7 @@ export class MapService {
 
 	}
 
-	removeJunction ( junction: TvJunction ) {
+	removeJunction ( junction: TvJunction ): void {
 
 		// this.map.removeJunction( junction );
 
@@ -207,7 +207,7 @@ export class MapService {
 
 	}
 
-	setOpacityLevel ( opacity: number ) {
+	setOpacityLevel ( opacity: number ): void {
 
 		this.resetMapOpacity();
 
@@ -223,7 +223,7 @@ export class MapService {
 
 	}
 
-	setRoadOpacity ( road: TvRoad, opacity?: number ) {
+	setRoadOpacity ( road: TvRoad, opacity?: number ): void {
 
 		const opacityValue = opacity || this.getOpacityLevel();
 
@@ -282,13 +282,13 @@ export class MapService {
 		}
 	}
 
-	getOpacityLevel () {
+	getOpacityLevel (): number {
 
 		return this.opactiyLevel;
 
 	}
 
-	resetMapOpacity () {
+	resetMapOpacity (): void {
 
 		this.opacityObjects.forEach( ( originalMaterial, mesh ) => {
 
@@ -300,19 +300,19 @@ export class MapService {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		this.map.clear();
 
 	}
 
-	removePropPolygon ( object: PropPolygon ) {
+	removePropPolygon ( object: PropPolygon ): void {
 
 		this.map.propPolygons.splice( this.map.propPolygons.indexOf( object ), 1 );
 
 	}
 
-	addPropPolygon ( object: PropPolygon ) {
+	addPropPolygon ( object: PropPolygon ): void {
 
 		if ( this.map.propPolygons.includes( object ) ) return;
 
@@ -320,7 +320,7 @@ export class MapService {
 
 	}
 
-	getLaneMeshes () {
+	getLaneMeshes (): Mesh[] {
 
 		const meshes: Mesh[] = [];
 
@@ -346,13 +346,13 @@ export class MapService {
 
 	}
 
-	getJunctionCount () {
+	getJunctionCount (): number {
 
 		return this.junctions.length;
 
 	}
 
-	getRoadCount () {
+	getRoadCount (): number {
 
 		return this.roads.length;
 
@@ -360,7 +360,7 @@ export class MapService {
 
 	getRoads (): TvRoad[] { return this.map.getRoads(); }
 
-	getSplineCount () {
+	getSplineCount (): any {
 
 		return this.splines.length;
 

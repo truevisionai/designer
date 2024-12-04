@@ -30,11 +30,11 @@ export class Route {
 	}
 
 
-	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
+	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ): void {
 		this.parameterDeclaration.push( parameterDeclaration );
 	}
 
-	addWaypoint ( waypoint: Waypoint ) {
+	addWaypoint ( waypoint: Waypoint ): void {
 		this.waypoints.push( waypoint );
 	}
 }

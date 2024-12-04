@@ -37,7 +37,7 @@ export abstract class Commands {
 
 	}
 
-	static RemoveObject ( object: object | object[], fireUnselectEvent = false ): void {
+	static RemoveObject ( object: object | object[], fireUnselectEvent: boolean = false ): void {
 
 		this.execute( new RemoveObjectCommand( object, fireUnselectEvent ) );
 

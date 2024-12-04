@@ -14,6 +14,7 @@ import { Story } from '../models/tv-story';
 import { ActionFactory } from './action-factory';
 import { ConditionFactory } from './condition-factory';
 import { Injectable } from "@angular/core";
+import { TvAction } from '../models/tv-action';
 
 @Injectable( {
 	providedIn: 'root'
@@ -35,7 +36,7 @@ export class ScenarioElementFactory {
 	constructor ( private actionFactory: ActionFactory ) {
 	}
 
-	reset () {
+	reset (): void {
 
 		this.storyId.reset();
 		this.actId.reset();
@@ -46,7 +47,7 @@ export class ScenarioElementFactory {
 
 	}
 
-	makeStory ( entity: ScenarioEntity, $actionType: ActionType ) {
+	makeStory ( entity: ScenarioEntity, $actionType: ActionType ): Story {
 
 		const story = this.createStory( entity );
 
@@ -71,7 +72,7 @@ export class ScenarioElementFactory {
 		return story;
 	}
 
-	createStory ( entity: ScenarioEntity ) {
+	createStory ( entity: ScenarioEntity ): Story {
 
 		const id = this.storyId.getNextId();
 
@@ -80,7 +81,7 @@ export class ScenarioElementFactory {
 		return new Story( storyName, entity.name );
 	}
 
-	createAct () {
+	createAct (): Act {
 
 		const id = this.actId.getNextId();
 
@@ -88,7 +89,7 @@ export class ScenarioElementFactory {
 
 	}
 
-	createManeuverGroup ( entity: ScenarioEntity ) {
+	createManeuverGroup ( entity: ScenarioEntity ): ManeuverGroup {
 
 		const id = this.maneuverGroupId.getNextId();
 
@@ -98,7 +99,7 @@ export class ScenarioElementFactory {
 
 	}
 
-	createManeuver () {
+	createManeuver (): Maneuver {
 
 		const id = this.maneuverId.getNextId();
 
@@ -108,7 +109,7 @@ export class ScenarioElementFactory {
 
 	}
 
-	createEvent ( action: PrivateAction ) {
+	createEvent ( action: PrivateAction ): TvEvent {
 
 		const id = this.eventId.getNextId();
 
@@ -125,7 +126,7 @@ export class ScenarioElementFactory {
 		return event;
 	}
 
-	createEventAction ( $actionType: ActionType, entity: ScenarioEntity ) {
+	createEventAction ( $actionType: ActionType, entity: ScenarioEntity ): TvAction {
 
 		const actionID = this.actionId.getNextId();
 
@@ -135,7 +136,7 @@ export class ScenarioElementFactory {
 
 	}
 
-	createEmptyEvent () {
+	createEmptyEvent (): TvEvent {
 
 		const id = this.eventId.getNextId();
 

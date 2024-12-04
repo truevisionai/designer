@@ -24,25 +24,25 @@ export class MeasurementToolService {
 	) {
 	}
 
-	showToolTipAt ( text: string, position: Vector3 ) {
+	showToolTipAt ( text: string, position: Vector3 ): any {
 
 		return this.toolTipService.createFrom3D( text, position );
 
 	}
 
-	updateToolTip ( id: number, text: string ) {
+	updateToolTip ( id: number, text: string ): void {
 
 		this.toolTipService.updateTooltipContent( id, text );
 
 	}
 
-	removeToolTip ( toolTip: TooltipInterface ) {
+	removeToolTip ( toolTip: TooltipInterface ): void {
 
 		this.toolTipService.removeToolTip( toolTip );
 
 	}
 
-	showTextAt ( text: string, position: Vector3, size: number ) {
+	showTextAt ( text: string, position: Vector3, size: number ): any {
 
 		const textObject = this.debugTextService.createTextObject( text, size );
 
@@ -53,7 +53,7 @@ export class MeasurementToolService {
 		return textObject;
 	}
 
-	updateText ( object: TextObject3d, text: string ) {
+	updateText ( object: TextObject3d, text: string ): void {
 
 		this.debugTextService.updateText( object, text );
 

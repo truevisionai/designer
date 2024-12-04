@@ -51,7 +51,7 @@ export class RoadNode extends Group implements ISelectable {
 		return this.road.getLaneProfile().getLaneSectionAtContact( this.contact );
 	}
 
-	select () {
+	select (): void {
 
 		this.isSelected = true;
 
@@ -60,7 +60,7 @@ export class RoadNode extends Group implements ISelectable {
 		this.renderOrder = 5;
 	}
 
-	unselect () {
+	unselect (): void {
 
 		this.isSelected = false;
 
@@ -69,14 +69,14 @@ export class RoadNode extends Group implements ISelectable {
 		this.renderOrder = 3;
 	}
 
-	onMouseOver () {
+	onMouseOver (): void {
 
 		this.material.color = new Color( COLOR.YELLOW );
 		this.material.needsUpdate = true;
 
 	}
 
-	onMouseOut () {
+	onMouseOut (): void {
 
 		this.material.color = new Color( RoadNode.defaultColor );
 		this.material.needsUpdate = true;
@@ -101,7 +101,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	}
 
-	toLink () {
+	toLink (): any {
 
 		return LinkFactory.createRoadLink( this.road, this.contact );
 

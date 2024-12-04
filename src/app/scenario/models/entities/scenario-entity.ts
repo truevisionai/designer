@@ -142,7 +142,7 @@ export abstract class ScenarioEntity implements IHasUpdate {
 		this.initActions = this.initActions.filter( a => a !== action );
 	}
 
-	onUpdate () {
+	onUpdate (): void {
 
 		if ( !this.openDriveProperties.autonomous && !this.enabled ) return;
 
@@ -177,11 +177,11 @@ export abstract class ScenarioEntity implements IHasUpdate {
 		this.position.copy( newPosition );
 	}
 
-	setAutonomous ( value: boolean ) {
+	setAutonomous ( value: boolean ): void {
 		this.openDriveProperties.autonomous = value;
 	}
 
-	setSpeed ( newSpeed: number ) {
+	setSpeed ( newSpeed: number ): void {
 		this.openDriveProperties.speed = newSpeed;
 	}
 
@@ -194,7 +194,7 @@ export abstract class ScenarioEntity implements IHasUpdate {
 
 	}
 
-	setEuler ( value: Euler ) {
+	setEuler ( value: Euler ): void {
 		this.rotation.copy( value );
 	}
 
@@ -214,11 +214,11 @@ export abstract class ScenarioEntity implements IHasUpdate {
 		return this.openDriveProperties.speed;
 	}
 
-	enable () {
+	enable (): void {
 		this.enabled = this.visible = true;
 	}
 
-	disable () {
+	disable (): void {
 		this.enabled = this.visible = false;
 	}
 
@@ -251,35 +251,35 @@ export abstract class ScenarioEntity implements IHasUpdate {
 		return this.position;
 	}
 
-	setRoadId ( id: number ) {
+	setRoadId ( id: number ): void {
 		this.openDriveProperties.roadId = id;
 	}
 
-	setLaneSectionId ( id: number ) {
+	setLaneSectionId ( id: number ): void {
 		this.openDriveProperties.laneSectionId = id;
 	}
 
-	getLaneSectionId () {
+	getLaneSectionId (): number {
 		return this.openDriveProperties.laneSectionId;
 	}
 
-	setDirection ( number: number ) {
+	setDirection ( number: number ): void {
 		this.openDriveProperties.direction = number;
 	}
 
-	setSValue ( s: number ) {
+	setSValue ( s: number ): void {
 		this.openDriveProperties.s = s;
 	}
 
-	getTravelingDirection () {
+	getTravelingDirection (): number {
 		return this.openDriveProperties.direction;
 	}
 
-	setTravelingDirection ( number: number ) {
+	setTravelingDirection ( number: number ): void {
 		this.openDriveProperties.direction = number;
 	}
 
-	onStart () {
+	onStart (): void {
 
 		//this.userData.position = this.position.clone();
 		//this.userData.rotation = this.rotation.clone();
@@ -290,7 +290,7 @@ export abstract class ScenarioEntity implements IHasUpdate {
 		this.controller?.start();
 	}
 
-	clone () {
+	clone (): any {
 		return new ( this.constructor as any )( this.name, this.boundingBox );
 	}
 }

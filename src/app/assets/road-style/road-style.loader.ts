@@ -32,7 +32,7 @@ export class RoadStyleLoader implements AssetLoader {
 	) {
 	}
 
-	load ( asset: Asset ) {
+	load ( asset: Asset ): RoadStyle {
 
 		const contents = this.storageService.readSync( asset.path );
 
@@ -76,7 +76,7 @@ export class RoadStyleLoader implements AssetLoader {
 		return roadStyle;
 	}
 
-	parseRoadObject ( xmlElement: XmlElement ) {
+	parseRoadObject ( xmlElement: XmlElement ): any {
 
 		const type = xmlElement.attr_type;
 		const name = xmlElement.attr_name;
@@ -149,7 +149,7 @@ export class RoadStyleLoader implements AssetLoader {
 		return laneSection;
 	}
 
-	private readLane ( laneSection: TvLaneSection, xmlElement: any, laneSide: TvLaneSide ) {
+	private readLane ( laneSection: TvLaneSection, xmlElement: any, laneSide: TvLaneSide ): void {
 
 		const id = parseFloat( xmlElement.attr_id );
 		const type = xmlElement.attr_type;
@@ -208,7 +208,7 @@ export class RoadStyleLoader implements AssetLoader {
 
 	}
 
-	private readLaneWidth ( lane: TvLane, json: XmlElement ) {
+	private readLaneWidth ( lane: TvLane, json: XmlElement ): TvLaneWidth {
 
 		const sOffset = parseFloat( json.attr_sOffset );
 
@@ -220,7 +220,7 @@ export class RoadStyleLoader implements AssetLoader {
 		return new TvLaneWidth( sOffset, a, b, c, d );
 	}
 
-	private readLaneRoadMark ( lane: TvLane, json: XmlElement ) {
+	private readLaneRoadMark ( lane: TvLane, json: XmlElement ): TvLaneRoadMark {
 
 		const sOffset = parseFloat( json.attr_sOffset );
 		const type = json.attr_type;

@@ -42,11 +42,11 @@ export class TvLaneProfile {
 		return this.road;
 	}
 
-	getFirstLaneSection () {
+	getFirstLaneSection (): TvLaneSection {
 		return this.laneSections[ 0 ];
 	}
 
-	getLastLaneSection () {
+	getLastLaneSection (): TvLaneSection {
 		return this.laneSections[ this.laneSections.length - 1 ];
 	}
 
@@ -62,11 +62,11 @@ export class TvLaneProfile {
 		return this.laneOffsets.toArray();
 	}
 
-	getLaneSectionById ( id: number ) {
+	getLaneSectionById ( id: number ): TvLaneSection {
 		return this.laneSections.find( laneSection => laneSection.id === id );
 	}
 
-	clearLaneSections () {
+	clearLaneSections (): void {
 		this.laneSections.splice( 0, this.laneSections.length );
 	}
 
@@ -105,7 +105,7 @@ export class TvLaneProfile {
 	 * @param singleSide
 	 * @deprecated use addGetLaneSection
 	 */
-	createAndAddLaneSection ( s: number, singleSide: boolean ) {
+	createAndAddLaneSection ( s: number, singleSide: boolean ): void {
 
 		this.addGetLaneSection( s, singleSide );
 
@@ -151,7 +151,7 @@ export class TvLaneProfile {
 
 	}
 
-	updateLaneOffsetValues ( roadLength: number ) {
+	updateLaneOffsetValues ( roadLength: number ): void {
 
 		this.laneOffsets.computeCoefficients( roadLength );
 
@@ -179,7 +179,7 @@ export class TvLaneProfile {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		this.laneSections = [];
 
@@ -187,7 +187,7 @@ export class TvLaneProfile {
 
 	}
 
-	sortLaneSections () {
+	sortLaneSections (): void {
 
 		this.laneSections.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
@@ -228,13 +228,13 @@ export class TvLaneProfile {
 		this.updateLaneOffsetValues( this.road.length );
 	}
 
-	getLaneOffsetAt ( number: number ) {
+	getLaneOffsetAt ( number: number ): TvLaneOffset {
 
 		return this.getLaneOffsetEntryAt( number );
 
 	}
 
-	computeLaneSectionCoordinates () {
+	computeLaneSectionCoordinates (): void {
 
 		const laneSections = this.getLaneSections();
 
@@ -270,7 +270,7 @@ export class TvLaneProfile {
 
 	}
 
-	getLaneAt ( s: number, t: number ) {
+	getLaneAt ( s: number, t: number ): TvLane {
 
 		return this.getLaneSectionAt( s ).getLaneAt( s, t );
 

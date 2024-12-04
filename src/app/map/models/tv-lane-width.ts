@@ -16,7 +16,7 @@ export class TvLaneWidth extends ThirdOrderPolynom {
 
 	}
 
-	clone ( s?: number ) {
+	clone ( s?: number ): TvLaneWidth {
 
 		return new TvLaneWidth( s || this.s, this.a, this.b, this.c, this.d );
 

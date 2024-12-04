@@ -87,13 +87,13 @@ export class ConditionService {
 
 	}
 
-	private hasSimulationTimeConditionPassed ( condition: SimulationTimeCondition ) {
+	private hasSimulationTimeConditionPassed ( condition: SimulationTimeCondition ): boolean {
 
 		return this.hasRulePassed( condition.rule, Time.inSeconds, condition.value );
 
 	}
 
-	private hasSpeedConditionPassed ( condition: SpeedCondition ) {
+	private hasSpeedConditionPassed ( condition: SpeedCondition ): boolean {
 
 		for ( const entityName of condition.triggeringEntities ) {
 
@@ -123,13 +123,13 @@ export class ConditionService {
 
 	}
 
-	private hasRulePassed ( rule: Rule, left: number, right: number ) {
+	private hasRulePassed ( rule: Rule, left: number, right: number ): boolean {
 
 		return ConditionUtils.hasRulePassed( rule, left, right );
 
 	}
 
-	private hasEndOfRoadConditionPassed ( condition: EndOfRoadCondition ) {
+	private hasEndOfRoadConditionPassed ( condition: EndOfRoadCondition ): boolean {
 
 		const passed: boolean[] = condition.triggeringEntities.map( entityName => {
 
@@ -173,7 +173,7 @@ export class ConditionService {
 
 	}
 
-	private hasEntityOffRoadConditionPassed ( condition: OffRoadCondition ) {
+	private hasEntityOffRoadConditionPassed ( condition: OffRoadCondition ): boolean {
 
 		const isOffRoad = ( entityName: string ) => {
 

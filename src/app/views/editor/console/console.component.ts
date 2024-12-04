@@ -26,10 +26,10 @@ export class ConsoleComponent implements OnInit {
 		return TvConsole.logs;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	onMouseOver ( log: TvLog ) {
+	onMouseOver ( log: TvLog ): void {
 
 		if ( log.message.length > 100 ) {
 
@@ -52,7 +52,7 @@ export class ConsoleComponent implements OnInit {
 
 	}
 
-	onMouseOut ( tool: any ) {
+	onMouseOut ( tool: any ): void {
 
 		this.popover.anchor = null;
 
@@ -63,7 +63,7 @@ export class ConsoleComponent implements OnInit {
 	}
 
 
-	clear () {
+	clear (): void {
 
 		TvConsole.clear();
 

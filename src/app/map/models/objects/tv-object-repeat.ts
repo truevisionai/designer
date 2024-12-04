@@ -66,7 +66,7 @@ export class TvObjectRepeat {
 	 * @returns
 	 * @deprecated
 	 */
-	static calculateLength ( segmentLength: number, roadLength?: number ) {
+	static calculateLength ( segmentLength: number, roadLength?: number ): number {
 
 		if ( !roadLength ) {
 			return segmentLength;
@@ -87,7 +87,7 @@ export class TvObjectRepeat {
 		return segmentLength;
 	}
 
-	computeLength ( roadLength?: number ) {
+	computeLength ( roadLength?: number ): number {
 
 		let actualLength = roadLength;
 

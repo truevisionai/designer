@@ -43,7 +43,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent<number> impleme
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.min = parseFloat( this.min );
 		this.max = parseFloat( this.max );
@@ -51,19 +51,19 @@ export class DoubleFieldComponent extends AbstractFieldComponent<number> impleme
 
 	}
 
-	onBlur () {
+	onBlur (): void {
 
 		this.inFocus = false;
 
 	}
 
-	onFocus () {
+	onFocus (): void {
 
 		this.inFocus = true;
 
 	}
 
-	onWheel ( $event: WheelEvent ) {
+	onWheel ( $event: WheelEvent ): void {
 
 		if ( this.disabled ) return;
 
@@ -106,7 +106,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent<number> impleme
 		}, 300 );
 	}
 
-	onModelChanged ( $event: any ) {
+	onModelChanged ( $event: any ): void {
 
 		if ( this.disabled ) return;
 
@@ -122,7 +122,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent<number> impleme
 
 	}
 
-	onKeydown ( $event: KeyboardEvent ) {
+	onKeydown ( $event: KeyboardEvent ): void {
 
 		// `key` holds the character ('1', 'a', '.', etc.) or the action ('ArrowRight', 'Backspace', etc.)
 		const key = $event.key;
@@ -144,7 +144,7 @@ export class DoubleFieldComponent extends AbstractFieldComponent<number> impleme
 		}
 	}
 
-	onInput ( $event: Event ) {
+	onInput ( $event: Event ): void {
 
 		const inputValue: string = ( $event.target as HTMLInputElement ).value;
 

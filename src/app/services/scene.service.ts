@@ -70,7 +70,7 @@ export class SceneService {
 
 	static getEditorLayer (): Group { return this.editorLayer; }
 
-	static raycastableObjects () {
+	static raycastableObjects (): (THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap> | THREE.Group<THREE.Object3DEventMap>)[] {
 
 		const raycastableObjects = [];
 
@@ -94,14 +94,14 @@ export class SceneService {
 
 	}
 
-	static addEditorObject ( object: Object3D ) {
+	static addEditorObject ( object: Object3D ): void {
 
 		this.editorLayer.add( object );
 
 		this.changed.emit();
 	}
 
-	static removeFromEditor ( object: Object3D ) {
+	static removeFromEditor ( object: Object3D ): void {
 
 		if ( object == null ) return;
 
@@ -131,7 +131,7 @@ export class SceneService {
 
 	}
 
-	static removeFromTool ( object: Object3D, fireEvent = true ): void {
+	static removeFromTool ( object: Object3D, fireEvent: boolean = true ): void {
 
 		if ( object == null ) return;
 
@@ -140,7 +140,7 @@ export class SceneService {
 		if ( fireEvent ) this.changed.emit();
 	}
 
-	static clear () {
+	static clear (): void {
 
 		this.disposeHierarchy( this.mainLayer, this.disposeNode );
 
@@ -169,7 +169,7 @@ export class SceneService {
 		this.changed.emit();
 	}
 
-	static removeChildren ( mesh: Object3D ) {
+	static removeChildren ( mesh: Object3D ): void {
 
 		// Remove children
 		while ( mesh.children.length > 0 ) {
@@ -180,7 +180,7 @@ export class SceneService {
 	}
 
 
-	private static disposeHierarchy ( node, callback ) {
+	private static disposeHierarchy ( node: any, callback: any ): void {
 
 		for ( let i = node.children.length - 1; i >= 0; i-- ) {
 
@@ -193,7 +193,7 @@ export class SceneService {
 		}
 	}
 
-	private static disposeNode ( node: any ) {
+	private static disposeNode ( node: any ): void {
 
 		if ( node instanceof Mesh ) {
 
@@ -206,7 +206,7 @@ export class SceneService {
 
 			}
 
-			function disposeMaterial ( material: XmlElement ) {
+			function disposeMaterial ( material: XmlElement ): void {
 
 				if ( material.map != null || material.map != undefined ) {
 					material.map.dispose();

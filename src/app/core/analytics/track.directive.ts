@@ -18,7 +18,7 @@ export class TrackDirective {
 	constructor ( private analytics: AnalyticsService ) {
 	}
 
-	@HostListener( 'click' ) onMouseEnter () {
+	@HostListener( 'click' ) onMouseEnter (): void {
 
 		const event = this.eventName || this.event;
 

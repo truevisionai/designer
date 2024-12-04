@@ -25,10 +25,10 @@ export class ProjectHierarchyComponent implements OnInit {
 
 	hasChild = ( _: number, node: Asset ) => true;
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	onClick ( node: Asset ) {
+	onClick ( node: Asset ): void {
 
 		this.selectedFolder = node;
 

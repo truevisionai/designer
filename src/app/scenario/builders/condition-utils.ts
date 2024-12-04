@@ -30,7 +30,7 @@ export class ConditionUtils {
 		return hasPassed;
 	}
 
-	static hasGroupsPassed ( groups: ConditionGroup[], rule: TriggeringRule = TriggeringRule.All ) {
+	static hasGroupsPassed ( groups: ConditionGroup[], rule: TriggeringRule = TriggeringRule.All ): boolean {
 
 		let allGroupsPassed = true;
 
@@ -53,7 +53,7 @@ export class ConditionUtils {
 		return allGroupsPassed;
 	}
 
-	static hasGroupPassed ( group: ConditionGroup, rule: TriggeringRule = TriggeringRule.All ) {
+	static hasGroupPassed ( group: ConditionGroup, rule: TriggeringRule = TriggeringRule.All ): boolean {
 
 		let allConditionsPassed = true;
 

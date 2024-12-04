@@ -22,7 +22,7 @@ export class TvPlaneView {
 
 	}
 
-	getGeometryAtIndex ( index: number ) {
+	getGeometryAtIndex ( index: number ): TvAbstractRoadGeometry {
 
 		return this.geometries[ index ];
 
@@ -46,7 +46,7 @@ export class TvPlaneView {
 
 	}
 
-	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ) {
+	addGeometryLine ( s: number, x: number, y: number, hdg: number, length: number ): TvLineGeometry {
 
 		const geometry = new TvLineGeometry( s, x, y, hdg, length );
 
@@ -55,7 +55,7 @@ export class TvPlaneView {
 		return geometry;
 	}
 
-	addGeometrySpiral ( s, x, y, hdg, length, curvStart, curvEnd ) {
+	addGeometrySpiral ( s: any, x: any, y: any, hdg: any, length: any, curvStart: any, curvEnd: any ): void {
 
 		// const geometry = new ODGeometry();
 		// geometry.spiral = new OdSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd );
@@ -63,7 +63,7 @@ export class TvPlaneView {
 		this.geometries.push( new TvSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd ) );
 	}
 
-	addGeometryArc ( s, x, y, hdg, length, curvature: number ) {
+	addGeometryArc ( s: any, x: any, y: any, hdg: any, length: any, curvature: number ): TvArcGeometry {
 
 		const geometry = new TvArcGeometry( s, x, y, hdg, length, curvature );
 
@@ -72,25 +72,25 @@ export class TvPlaneView {
 		return geometry;
 	}
 
-	addGeometryPoly3 ( s, x, y, hdg, length, a, b, c, d ) {
+	addGeometryPoly3 ( s: any, x: any, y: any, hdg: any, length: any, a: any, b: any, c: any, d: any ): void {
 
 		this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
 
 	}
 
-	addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ) {
+	addGeometryPoly ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ): void {
 
 		this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
 
 	}
 
-	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?) {
+	addGeometryParamPoly3 ( s: any, x: any, y: any, hdg: any, length: any, aU: any, bU: any, cU: any, dU: any, aV: any, bV: any, cV: any, dV: any, pRange?: any): void {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
 	}
 
-	addGeometryParamPoly ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?) {
+	addGeometryParamPoly ( s: any, x: any, y: any, hdg: any, length: any, aU: any, bU: any, cU: any, dU: any, aV: any, bV: any, cV: any, dV: any, pRange?: any): void {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
@@ -99,7 +99,7 @@ export class TvPlaneView {
 	/**
 	 * Getter for the overall planView/ road length (sum of all geometry record lengths)
 	 */
-	getBlockLength () {
+	getBlockLength (): number {
 
 		let total = 0;
 
@@ -112,7 +112,7 @@ export class TvPlaneView {
 		return total;
 	}
 
-	distance ( pos: Vector2, x, y ): number {
+	distance ( pos: Vector2, x: any, y: any ): number {
 
 		return Math.sqrt( ( x - pos.x ) * ( x - pos.x ) + ( y - pos.y ) * ( y - pos.y ) );
 

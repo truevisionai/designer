@@ -39,7 +39,7 @@ export class AnalyticsService {
 
 	}
 
-	init () {
+	init (): void {
 
 		if ( Environment.production ) this.trackPageChanges();
 
@@ -51,7 +51,7 @@ export class AnalyticsService {
 
 	}
 
-	send ( event: string, options: any ) {
+	send ( event: string, options: any ): void {
 
 		if ( !Environment.production ) return;
 
@@ -59,7 +59,7 @@ export class AnalyticsService {
 
 	}
 
-	trackError ( error: Error ) {
+	trackError ( error: Error ): void {
 
 		if ( !Environment.production ) return;
 
@@ -71,7 +71,7 @@ export class AnalyticsService {
 
 	}
 
-	setEmail ( email: string ) {
+	setEmail ( email: string ): void {
 
 		if ( Environment.production ) this.mixpanel.setEmail( email );
 
@@ -79,7 +79,7 @@ export class AnalyticsService {
 
 	}
 
-	trackPageView ( url: string ) {
+	trackPageView ( url: string ): void {
 
 		if ( !Environment.production ) return;
 
@@ -89,7 +89,7 @@ export class AnalyticsService {
 
 	}
 
-	private trackPageChanges () {
+	private trackPageChanges (): void {
 
 		this.router.events
 			.pipe(

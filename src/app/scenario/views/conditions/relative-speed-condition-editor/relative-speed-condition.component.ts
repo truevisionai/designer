@@ -24,19 +24,19 @@ export class RelativeSpeedConditionComponent {
 
 	}
 
-	onTargetEntityChanged ( $entity: string ) {
+	onTargetEntityChanged ( $entity: string ): void {
 
 		this.relativeSpeedCondition.entity = $entity;
 
 	}
 
-	onRelativeSpeedChanged ( $speed: number ) {
+	onRelativeSpeedChanged ( $speed: number ): void {
 
 		this.relativeSpeedCondition.speed = $speed;
 
 	}
 
-	onRuleChanged ( $rule: Rule ) {
+	onRuleChanged ( $rule: Rule ): void {
 
 		this.relativeSpeedCondition.rule = $rule;
 

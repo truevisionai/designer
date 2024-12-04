@@ -15,19 +15,19 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	}
 
-	setParent ( parent: Object3D ) {
+	setParent ( parent: Object3D ): void {
 
 		this.parent = parent;
 
 	}
 
-	addItems ( key: K, objects: T ) {
+	addItems ( key: K, objects: T ): void {
 
 		objects.forEach( object => this.addItem( key, object ) );
 
 	}
 
-	addItem ( key: K, object: Object3D ) {
+	addItem ( key: K, object: Object3D ): void {
 
 		if ( !this.map.has( key ) ) {
 
@@ -59,13 +59,13 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	}
 
-	has ( key: K ) {
+	has ( key: K ): boolean {
 
 		return this.map.has( key );
 
 	}
 
-	removeItem ( key: K, object: Object3D ) {
+	removeItem ( key: K, object: Object3D ): void {
 
 		if ( !this.map.has( key ) ) return;
 
@@ -75,7 +75,7 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 
 	}
 
-	removeKey ( key: K ) {
+	removeKey ( key: K ): void {
 
 		if ( !this.map.has( key ) ) return;
 
@@ -88,7 +88,7 @@ export class Object3DArrayMap<K, T extends Array<Object3D>> {
 		this.map.delete( key );
 	}
 
-	clear () {
+	clear (): void {
 
 		this.map.forEach( objects => {
 

@@ -22,7 +22,7 @@ export class LaneEventListener {
 	) {
 	}
 
-	init () {
+	init (): void {
 
 		MapEvents.laneCreated.subscribe( e => this.onLaneCreated( e ) );
 		MapEvents.laneRemoved.subscribe( e => this.onLaneRemoved( e ) );

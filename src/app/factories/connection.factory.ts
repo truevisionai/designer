@@ -66,7 +66,7 @@ export class ConnectionFactory {
 
 	}
 
-	public addConnectionsNew ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): void {
+	public addConnectionsNew ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner: boolean = false ): void {
 
 		const connection = ConnectionFactory.createConnectionAndRoad( junction, incoming, outgoing );
 
@@ -169,7 +169,7 @@ export class ConnectionFactory {
 
 	}
 
-	public addConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner = false ): void {
+	public addConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner: boolean = false ): void {
 
 		this.addConnectionsNew( junction, incoming, outgoing, corner );
 
@@ -251,7 +251,7 @@ export class ConnectionFactory {
 
 	}
 
-	public createFakeCorners ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ) {
+	public createFakeCorners ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): void {
 
 		const rightLane = ( incoming.contact == TvContactPoint.END )
 			? LaneUtils.findLowest( incoming.lanes )
@@ -333,7 +333,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvJunctionConnection {
+	private createConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner: boolean = false ): TvJunctionConnection {
 
 		const connectingRoad = this.createConnectingRoad( junction, incoming, outgoing );
 
@@ -368,7 +368,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createFakeConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvJunctionConnection {
+	private createFakeConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner: boolean = false ): TvJunctionConnection {
 
 		const connectingRoad = this.createFakeConnectingRoad( junction, incoming, outgoing );
 
@@ -410,7 +410,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createConnectingLane ( connectingRoad: TvRoad, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvLane {
+	private createConnectingLane ( connectingRoad: TvRoad, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner: boolean = false ): TvLane {
 
 		const laneSection = connectingRoad.getLaneProfile().addDefaultLaneSection();
 
@@ -434,7 +434,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createRoadMarks ( laneSection: TvLaneSection, incoming: TvLaneCoord ) {
+	private createRoadMarks ( laneSection: TvLaneSection, incoming: TvLaneCoord ): void {
 
 		laneSection.getLanes().forEach( lane => {
 
@@ -450,7 +450,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createLaneWidth ( incoming: TvLaneCoord, connectingLane: TvLane, connectingRoad: TvRoad, outgoing: TvLaneCoord ) {
+	private createLaneWidth ( incoming: TvLaneCoord, connectingLane: TvLane, connectingRoad: TvRoad, outgoing: TvLaneCoord ): void {
 
 		// for start
 		// LaneUtils.copyPrevLaneWidth( incoming.lane, incoming.laneSection, incoming.road, connectingLane );
@@ -469,7 +469,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createHeightNodes ( incoming: TvLaneCoord, connectingLane: TvLane, connectingRoad: TvRoad, outgoing: TvLaneCoord ) {
+	private createHeightNodes ( incoming: TvLaneCoord, connectingLane: TvLane, connectingRoad: TvRoad, outgoing: TvLaneCoord ): void {
 
 		const roadLength = connectingRoad.length;
 
@@ -486,7 +486,7 @@ export class ConnectionFactory {
 		// }
 	}
 
-	private createLink ( incoming: TvLaneCoord, connectingLane: TvLane, connectingRoad: TvRoad, connection: TvJunctionConnection ) {
+	private createLink ( incoming: TvLaneCoord, connectingLane: TvLane, connectingRoad: TvRoad, connection: TvJunctionConnection ): void {
 
 		const link = new TvJunctionLaneLink( incoming.lane, connectingLane );
 

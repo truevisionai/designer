@@ -35,7 +35,7 @@ export class RoadManager {
 	) {
 	}
 
-	addRoad ( road: TvRoad ) {
+	addRoad ( road: TvRoad ): void {
 
 		if ( this.debug ) Log.debug( 'Add', road.toString() );
 
@@ -73,7 +73,7 @@ export class RoadManager {
 
 	}
 
-	removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ): void {
 
 		if ( this.debug ) Log.debug( 'Remove', road.toString() );
 
@@ -135,7 +135,7 @@ export class RoadManager {
 
 	// }
 
-	updateRoad ( road: TvRoad ) {
+	updateRoad ( road: TvRoad ): void {
 
 		if ( this.debug ) Log.debug( 'Update', road.toString() );
 
@@ -162,7 +162,7 @@ export class RoadManager {
 
 	}
 
-	private buildLinks ( road: TvRoad ) {
+	private buildLinks ( road: TvRoad ): void {
 
 		if ( road.successor?.isRoad ) {
 
@@ -203,7 +203,7 @@ export class RoadManager {
 
 	}
 
-	private removeLinks ( removedRoad: TvRoad ) {
+	private removeLinks ( removedRoad: TvRoad ): void {
 
 		if ( removedRoad.isJunction ) return;
 

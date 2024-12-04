@@ -29,31 +29,31 @@ export class TimeHeadwayConditionEditorComponent {
 
 	}
 
-	onTargetEntityChanged ( $targetEntity: string ) {
+	onTargetEntityChanged ( $targetEntity: string ): void {
 
 		this.timeHeadwayCondition.setTargetEntity( $targetEntity );
 
 	}
 
-	onRuleChanged ( $rule: Rule ) {
+	onRuleChanged ( $rule: Rule ): void {
 
 		this.timeHeadwayCondition.setRule( $rule );
 
 	}
 
-	onValueChanged ( $event: number ) {
+	onValueChanged ( $event: number ): void {
 
 		this.timeHeadwayCondition.value = $event;
 
 	}
 
-	onFreespaceChanged ( $event: any ) {
+	onFreespaceChanged ( $event: any ): void {
 
 		this.timeHeadwayCondition.freespace = $event === 'true';
 
 	}
 
-	onAlongRouteChanged ( $event: any ) {
+	onAlongRouteChanged ( $event: any ): void {
 
 		this.timeHeadwayCondition.alongRoute = $event === 'true';
 

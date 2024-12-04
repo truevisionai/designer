@@ -14,7 +14,7 @@ export class KeyboardEvents {
 	private static isKeyDown: boolean;
 	private static keyCode: number;
 
-	static OnKeyDown ( e: KeyboardEvent ) {
+	static OnKeyDown ( e: KeyboardEvent ): void {
 
 		this.isKeyDown = true;
 		this.keyCode = e.keyCode;
@@ -24,7 +24,7 @@ export class KeyboardEvents {
 		this.isShiftKeyDown = e.shiftKey;
 	}
 
-	static OnKeyUp ( e: KeyboardEvent ) {
+	static OnKeyUp ( e: KeyboardEvent ): void {
 
 		this.isKeyDown = false;
 		this.keyCode = e.keyCode;

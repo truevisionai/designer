@@ -35,7 +35,7 @@ export class PointMarkingToolDebugger {
 
 	}
 
-	createNode ( road: TvRoad, roadObject: TvRoadObject ) {
+	createNode ( road: TvRoad, roadObject: TvRoadObject ): PointMarkingControlPoint {
 
 		const coord = road.getRoadPosition( roadObject.s, roadObject.t );
 

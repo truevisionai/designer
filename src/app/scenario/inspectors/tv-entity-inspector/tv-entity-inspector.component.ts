@@ -63,7 +63,7 @@ export class EntityInspector implements OnInit, IComponent {
 		return this.scenario.getManeuversForEntity( this.entity.name );
 	}
 
-	addEvent ( $actionType: ActionType ) {
+	addEvent ( $actionType: ActionType ): void {
 
 		if ( $actionType !== null ) {
 
@@ -74,15 +74,15 @@ export class EntityInspector implements OnInit, IComponent {
 		}
 	}
 
-	addManeuever () {
+	addManeuever (): void {
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 	}
 
-	removeInitAction ( action: PrivateAction ) {
+	removeInitAction ( action: PrivateAction ): void {
 
 		this.entity.removeInitAction( action );
 

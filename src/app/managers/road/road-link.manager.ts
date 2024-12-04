@@ -13,7 +13,7 @@ export class RoadLinkManager {
 
 	constructor () { }
 
-	onRoadCreated ( road: TvRoad ) {
+	onRoadCreated ( road: TvRoad ): void {
 
 		if ( road.isJunction ) {
 			return;
@@ -29,7 +29,7 @@ export class RoadLinkManager {
 
 	}
 
-	onRoadRemoved ( road: TvRoad ) {
+	onRoadRemoved ( road: TvRoad ): void {
 
 		if ( road.isJunction ) {
 			return;
@@ -115,7 +115,7 @@ export class RoadLinkManager {
 
 	}
 
-	setPredecessor ( road: TvRoad, predecessor: TvRoad, predecessorContact: TvContactPoint ) {
+	setPredecessor ( road: TvRoad, predecessor: TvRoad, predecessorContact: TvContactPoint ): void {
 
 		if ( predecessorContact === TvContactPoint.START ) {
 
@@ -129,7 +129,7 @@ export class RoadLinkManager {
 
 	}
 
-	setSuccessor ( road: TvRoad, successor: TvRoad, successorContact: TvContactPoint ) {
+	setSuccessor ( road: TvRoad, successor: TvRoad, successorContact: TvContactPoint ): void {
 
 		if ( successorContact === TvContactPoint.START ) {
 

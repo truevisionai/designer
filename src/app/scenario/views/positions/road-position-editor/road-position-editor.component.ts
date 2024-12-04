@@ -20,17 +20,17 @@ export class RoadPositionEditorComponent extends AbstractPositionEditor {
 		return this.roadPosition.getRoad().length;
 	}
 
-	onSValueChanged ( $value: number ) {
+	onSValueChanged ( $value: number ): void {
 		this.roadPosition.sValue = $value;
 		this.positionModified.emit( this.position );
 	}
 
-	onTValueChanged ( $value: number ) {
+	onTValueChanged ( $value: number ): void {
 		this.roadPosition.tValue = $value;
 		this.positionModified.emit( this.position );
 	}
 
-	onRoadIdChanged ( $roadId: number ) {
+	onRoadIdChanged ( $roadId: number ): void {
 		this.roadPosition.roadId = $roadId;
 		this.positionModified.emit( this.position );
 	}

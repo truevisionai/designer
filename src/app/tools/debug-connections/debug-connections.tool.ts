@@ -50,7 +50,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 	}
 
-	init () {
+	init (): void {
 
 		super.init();
 
@@ -97,7 +97,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 	}
 
-	disable () {
+	disable (): void {
 
 		super.disable();
 
@@ -167,7 +167,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 	}
 
-	private getContents ( coord: TvLaneCoord ) {
+	private getContents ( coord: TvLaneCoord ): string {
 
 		let contents = '';
 

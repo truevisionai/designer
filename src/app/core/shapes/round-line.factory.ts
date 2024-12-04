@@ -68,7 +68,7 @@ export class RoundLineFactory {
 		return radii;
 	}
 
-	static computeGeometries ( positions: Vector3[], hdgs: number[], radii: number[] ) {
+	static computeGeometries ( positions: Vector3[], hdgs: number[], radii: number[] ): TvAbstractRoadGeometry[] {
 
 		let totalLength = 0;
 

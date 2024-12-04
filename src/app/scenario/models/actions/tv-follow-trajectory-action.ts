@@ -54,7 +54,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 		super();
 	}
 
-	execute ( entity: ScenarioEntity ) {
+	execute ( entity: ScenarioEntity ): void {
 
 		if ( !this.hasStarted ) {
 
@@ -68,13 +68,13 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		this.index = 0;
 
 	}
 
-	private start ( entity: ScenarioEntity ) {
+	private start ( entity: ScenarioEntity ): void {
 
 		this.hasStarted = true;
 
@@ -82,7 +82,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 	}
 
-	private update ( entity: ScenarioEntity ) {
+	private update ( entity: ScenarioEntity ): void {
 
 		switch ( this.trajectoryFollowingMode ) {
 
@@ -101,7 +101,7 @@ export class FollowTrajectoryAction extends AbstractRoutingAction {
 
 	}
 
-	private steering ( entity: ScenarioEntity ) {
+	private steering ( entity: ScenarioEntity ): void {
 
 		// Debug.log( this );
 

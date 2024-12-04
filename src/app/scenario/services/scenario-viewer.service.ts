@@ -34,7 +34,7 @@ export class ScenarioViewerService {
 
 	}
 
-	setFocus () {
+	setFocus (): void {
 
 		const entities = this.scenarioService.entities;
 
@@ -55,33 +55,33 @@ export class ScenarioViewerService {
 
 	}
 
-	private onPlayerStarted () {
+	private onPlayerStarted (): void {
 
 		this.setFocus();
 
 	}
 
-	private onPlayerResumed () {
+	private onPlayerResumed (): void {
 
 	}
 
-	private onPlayerStopped () {
+	private onPlayerStopped (): void {
 
 		this.removeFocus();
 
 	}
 
-	private onPlayerPaused () {
+	private onPlayerPaused (): void {
 
 		this.removeFocus();
 
 	}
 
-	private onPlayerTick ( e: PlayerUpdateData ) {
+	private onPlayerTick ( e: PlayerUpdateData ): void {
 
 	}
 
-	private removeFocus () {
+	private removeFocus (): void {
 
 		const entities = this.scenarioService.entities;
 

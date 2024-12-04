@@ -14,13 +14,13 @@ export class TvSignalControllerService {
 	constructor ( private mapService: MapService ) {
 	}
 
-	removeController ( id: number ) {
+	removeController ( id: number ): void {
 
 		this.mapService.map.removeController( id );
 
 	}
 
-	addController ( controller: TvSignalController ) {
+	addController ( controller: TvSignalController ): void {
 
 		this.mapService.map.addController( controller );
 

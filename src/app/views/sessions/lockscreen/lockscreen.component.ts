@@ -23,10 +23,10 @@ export class LockscreenComponent implements OnInit {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	unlock () {
+	unlock (): void {
 
 		this.submitButton.disabled = true;
 		this.progressBar.mode = 'indeterminate';

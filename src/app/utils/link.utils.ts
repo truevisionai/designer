@@ -14,7 +14,7 @@ export class LinkUtils {
 	 * The linking helps in junction connections and lane changing
 	 * @param road
 	 */
-	static updateLaneUuidLinks ( road: TvRoad ) {
+	static updateLaneUuidLinks ( road: TvRoad ): void {
 
 		for ( let i = 0; i < road.laneSections.length; i++ ) {
 

@@ -25,10 +25,10 @@ export class ForgotPasswordComponent implements OnInit {
 	constructor ( private authService: AuthService, private snackBar: SnackBar ) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	submitEmail () {
+	submitEmail (): void {
 
 		this.submitButton.disabled = true;
 

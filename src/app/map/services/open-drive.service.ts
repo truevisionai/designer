@@ -36,7 +36,7 @@ export class OpenDriveService {
 	/**
 	 * @deprecated
 	 */
-	async showImportDialog () {
+	async showImportDialog (): Promise<void> {
 
 		const response = await this.fileService.showAsyncDialog();
 
@@ -70,7 +70,7 @@ export class OpenDriveService {
 
 	}
 
-	public import ( path, contents, callbackFn = null ) {
+	public import ( path: any, contents: any, callbackFn: any = null ): void {
 
 		const old = this.mapService.map;
 
@@ -107,7 +107,7 @@ export class OpenDriveService {
 
 	}
 
-	importFromPath ( filepath: string, callbackFn = null ) {
+	importFromPath ( filepath: string, callbackFn: any = null ): void {
 
 		const contents = this.storage.readSync( filepath );
 
@@ -115,13 +115,13 @@ export class OpenDriveService {
 
 	}
 
-	getOpenDriveOutput () {
+	getOpenDriveOutput (): string {
 
 		return this.openDriveExporter.getOutput( this.mapService.map );
 
 	}
 
-	getSceneOutput () {
+	getSceneOutput (): any {
 
 		return this.sceneExporter.exportAsString();
 

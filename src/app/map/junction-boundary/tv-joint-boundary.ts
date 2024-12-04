@@ -40,7 +40,7 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 		this.jointLaneEnd = jointLaneEnd
 	}
 
-	toString () {
+	toString (): string {
 		return `JointBoundary: roadId=${ this.road.id } contactPoint=${ this.contactPoint } jointLaneStart=${ this.jointLaneStart?.id } jointLaneEnd=${ this.jointLaneEnd?.id }`;
 	}
 
@@ -98,7 +98,7 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 		return [ start, mid, end ];
 	}
 
-	clone () {
+	clone (): TvJointBoundary {
 		return new TvJointBoundary(
 			this.road, this.contactPoint, this.jointLaneStart, this.jointLaneEnd
 		);

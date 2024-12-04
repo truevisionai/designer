@@ -42,13 +42,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	findById ( id: number ) {
+	findById ( id: number ): any {
 
 		return this.mapService.findSplineById( id );
 
 	}
 
-	add ( spline: AbstractSpline ) {
+	add ( spline: AbstractSpline ): void {
 
 		if ( spline.getSegmentCount() == 0 ) {
 
@@ -67,13 +67,13 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	}
 
-	remove ( spline: AbstractSpline ) {
+	remove ( spline: AbstractSpline ): void {
 
 		MapEvents.splineRemoved.emit( new SplineRemovedEvent( spline ) );
 
 	}
 
-	removeSpline ( spline: AbstractSpline ) {
+	removeSpline ( spline: AbstractSpline ): void {
 
 		this.remove( spline );
 

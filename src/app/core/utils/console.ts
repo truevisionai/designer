@@ -54,7 +54,7 @@ export class TvConsole {
 		return this.logs[ 0 ];
 	}
 
-	static clear () {
+	static clear (): void {
 
 		this.logs.splice( 0, this.logs.length );
 
@@ -62,7 +62,7 @@ export class TvConsole {
 
 	}
 
-	static info ( message: string ) {
+	static info ( message: string ): void {
 
 		// if same message is being printed then just increase the counter
 		if ( this.logs.length > 0 && this.lastLog.type === TvLogType.info && this.lastLog.message === message ) {
@@ -83,7 +83,7 @@ export class TvConsole {
 	}
 
 
-	static warn ( message: string ) {
+	static warn ( message: string ): void {
 
 		// if same message is being printed then just increase the counter
 		if ( this.logs.length > 0 && this.lastLog.type === TvLogType.warn && this.lastLog.message === message ) {
@@ -104,7 +104,7 @@ export class TvConsole {
 	}
 
 
-	static error ( message: string ) {
+	static error ( message: string ): void {
 
 		// if same message is being printed then just increase the counter
 		if ( this.logs.length > 0 && this.lastLog.type === TvLogType.error && this.lastLog.message === message ) {

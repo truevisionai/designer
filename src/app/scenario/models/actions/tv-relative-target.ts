@@ -16,13 +16,13 @@ export class RelativeTarget extends Target {
 
 	}
 
-	getTarget () {
+	getTarget (): number {
 
 		return this.target;
 
 	}
 
-	setTarget ( value ) {
+	setTarget ( value: any ): void {
 
 		this.target = value;
 

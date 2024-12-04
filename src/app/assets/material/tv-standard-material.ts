@@ -274,7 +274,7 @@ export class TvStandardMaterial extends MeshStandardMaterial {
 
 		// TODO: Copied from Object3D.toJSON
 
-		function extractFromCache ( cache ) {
+		function extractFromCache ( cache: any ): any[] {
 
 			const values = [];
 

@@ -39,7 +39,7 @@ export class SceneBuilder {
 		MapEvents.mapImported.subscribe( map => this.buildScene( map ) );
 	}
 
-	buildScene ( map: TvMap ) {
+	buildScene ( map: TvMap ): void {
 
 		SceneService.removeFromMain( map.gameObject );
 

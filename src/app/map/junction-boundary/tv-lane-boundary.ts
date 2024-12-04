@@ -39,7 +39,7 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 		return `LaneBoundary: roadId=${ this.road.id } boundaryLane=${ this.boundaryLane.id } sStart=${ this.sStart } sEnd=${ this.sEnd }`;
 	}
 
-	getPoints ( stepSize = 1 ): TvPosTheta[] {
+	getPoints ( stepSize: number = 1 ): TvPosTheta[] {
 
 		if ( this.road.geometries.length == 0 ) {
 			Log.warn( 'Road has no geometries', this.road.toString() );
@@ -55,7 +55,7 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 
 	}
 
-	private convertBoundaryToPositions ( stepSize ): TvPosTheta[] {
+	private convertBoundaryToPositions ( stepSize: any ): TvPosTheta[] {
 
 		const positions: TvPosTheta[] = [];
 
@@ -79,7 +79,7 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 
 	}
 
-	clone () {
+	clone (): TvLaneBoundary {
 		const lane = new TvLaneBoundary();
 		lane.road = this.road;
 		lane.boundaryLane = this.boundaryLane;

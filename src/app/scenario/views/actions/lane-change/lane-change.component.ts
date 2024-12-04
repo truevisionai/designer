@@ -31,11 +31,11 @@ export class LaneChangeComponent implements OnInit {
 		return this.laneChangeAction.dynamics;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 	}
 
-	onTargetChanged ( $target: Target ) {
+	onTargetChanged ( $target: Target ): void {
 
 		this.laneChangeAction.setTarget( $target );
 

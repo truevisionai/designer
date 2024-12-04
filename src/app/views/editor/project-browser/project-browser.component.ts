@@ -50,7 +50,7 @@ export class ProjectBrowserComponent implements OnInit {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.dataSource.data = [];
 
@@ -62,27 +62,27 @@ export class ProjectBrowserComponent implements OnInit {
 
 	}
 
-	onFolderChanged ( node: Asset ) {
+	onFolderChanged ( node: Asset ): void {
 
 		this.currentFolder = node;
 
 	}
 
-	loadFilesInFolder () {
+	loadFilesInFolder (): void {
 
 		this.dataSource.data = this.projectBrowser.getFolders( this.projectService.projectPath );
 
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( evt ) {
+	onDragOver ( evt: any ): void {
 
 		evt.preventDefault();
 		evt.stopPropagation();
 	}
 
 	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( evt ) {
+	onDragLeave ( evt: any ): void {
 
 		evt.preventDefault();
 		evt.stopPropagation();
@@ -90,7 +90,7 @@ export class ProjectBrowserComponent implements OnInit {
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	async onDrop ( $event: DragEvent ) {
+	async onDrop ( $event: DragEvent ): Promise<void> {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -114,7 +114,7 @@ export class ProjectBrowserComponent implements OnInit {
 		}
 	}
 
-	async handleDroppedFile ( file: File, folderPath: string ) {
+	async handleDroppedFile ( file: File, folderPath: string ): Promise<void> {
 
 		if ( !file ) {
 			this.snackBar.error( 'Incorrect file. Cannot import' );
@@ -140,7 +140,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 	}
 
-	onContextMenu ( $event, selectedNode?: Asset ) {
+	onContextMenu ( $event: any, selectedNode?: Asset ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -191,7 +191,7 @@ export class ProjectBrowserComponent implements OnInit {
 		this.menuService.showContextMenu( ContextMenuType.HIERARCHY );
 	}
 
-	refreshFolder () {
+	refreshFolder (): void {
 
 		this.projectBrowser.folderChanged.emit( this.currentFolder );
 

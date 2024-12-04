@@ -162,7 +162,7 @@ export abstract class TvLink {
 		return this.type == TvLinkType.ROAD ? this.getElement<TvRoad>().spline : undefined;
 	}
 
-	toLaneCoord ( lane: TvLane ) {
+	toLaneCoord ( lane: TvLane ): TvLaneCoord {
 
 		if ( this.type == TvLinkType.JUNCTION ) return;
 
@@ -174,7 +174,7 @@ export abstract class TvLink {
 
 	}
 
-	toRoadCoord () {
+	toRoadCoord (): TvRoadCoord {
 
 		if ( this.type == TvLinkType.JUNCTION ) return;
 

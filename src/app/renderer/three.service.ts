@@ -47,7 +47,7 @@ export class ThreeService {
 
 	}
 
-	setEnvironment ( environment: ScenarioEnvironment, removeOld = false ) {
+	setEnvironment ( environment: ScenarioEnvironment, removeOld: boolean = false ): void {
 
 		if ( removeOld ) {
 
@@ -98,24 +98,24 @@ export class ThreeService {
 	 * @param raycasting
 	 * @deprecated use SceneService.add instead
 	 */
-	add ( object: THREE.Object3D, raycasting = false ): any {
+	add ( object: THREE.Object3D, raycasting: boolean = false ): any {
 
 		SceneService.addToMain( object, raycasting );
 	}
 
-	remove ( object: THREE.Object3D, raycasting = false ): any {
+	remove ( object: THREE.Object3D, raycasting: boolean = false ): any {
 
 		SceneService.removeFromMain( object, raycasting );
 
 	}
 
-	reset () {
+	reset (): void {
 
 		SceneService.clear();
 
 	}
 
-	wireframeMode ( showWireframe: boolean ) {
+	wireframeMode ( showWireframe: boolean ): void {
 
 		this.sceneService.scene.traverse( function ( child ) {
 
@@ -129,7 +129,7 @@ export class ThreeService {
 
 	}
 
-	private addAxesHelper () {
+	private addAxesHelper (): void {
 
 		SceneService.addEditorObject( new THREE.AxesHelper( 3000 ) );
 

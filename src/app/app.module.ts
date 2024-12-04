@@ -42,7 +42,7 @@ import { CrosswalkToolModule } from './modules/crosswalk/crosswalk-tool.module';
 import { JunctionToolModule } from "./modules/junction/junction.module";
 
 // AoT requires an exported function for factories
-export function HttpLoaderFactory ( httpClient: HttpClient ) {
+export function HttpLoaderFactory ( httpClient: HttpClient ): TranslateHttpLoader {
 	return new TranslateHttpLoader( httpClient, './assets/i18n/', '.json' );
 }
 

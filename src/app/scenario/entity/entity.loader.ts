@@ -22,7 +22,7 @@ export class EntityLoader {
 	) {
 	}
 
-	loadEntity ( asset: Asset ) {
+	loadEntity ( asset: Asset ): ScenarioEntity {
 
 		const contents = this.storageService.readSync( asset.path );
 
@@ -66,7 +66,7 @@ export class EntityLoader {
 
 	}
 
-	parseAxles ( json: XmlElement ) {
+	parseAxles ( json: XmlElement ): any {
 
 		const front = this.parseAxle( json.front );
 
@@ -79,7 +79,7 @@ export class EntityLoader {
 		return new TvAxles( front, rear, additional );
 	}
 
-	parseAxle ( json: XmlElement ) {
+	parseAxle ( json: XmlElement ): any {
 
 		const maxSteering: number = parseFloat( json.maxSteering );
 		const wheelDiameter: number = parseFloat( json.wheelDiameter );

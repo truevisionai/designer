@@ -88,7 +88,7 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	}
 
-	async exportRoadStyle () {
+	async exportRoadStyle (): Promise<void> {
 
 		const saved = await this.dialogService.saveDialogSimple( 'RoadStyle', RoadStyle.extension );
 

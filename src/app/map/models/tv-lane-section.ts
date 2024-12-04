@@ -161,7 +161,7 @@ export class TvLaneSection {
 	 * @param sCheck A double s-offset value that has to be checked
 	 * @returns {boolean} Return true if the s-offset value belongs to current lane section, false otherwise
 	 */
-	checkInterval ( sCheck ): boolean {
+	checkInterval ( sCheck: any ): boolean {
 
 		if ( sCheck >= this.s ) {
 			return true;
@@ -426,7 +426,7 @@ export class TvLaneSection {
 
 	}
 
-	isHeightMatching ( laneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isHeightMatching ( laneSection: TvLaneSection, sOffset: number = 0, otherSOffset: number = 0 ): boolean {
 
 		if ( this.lanes.size !== laneSection.lanes.size ) return false;
 
@@ -448,7 +448,7 @@ export class TvLaneSection {
 		return true;
 	}
 
-	isWidthMatching ( laneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isWidthMatching ( laneSection: TvLaneSection, sOffset: number = 0, otherSOffset: number = 0 ): boolean {
 
 		if ( this.lanes.size !== laneSection.lanes.size ) return false;
 
@@ -468,7 +468,7 @@ export class TvLaneSection {
 		return true;
 	}
 
-	isMarkingMatching ( otherLaneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isMarkingMatching ( otherLaneSection: TvLaneSection, sOffset: number = 0, otherSOffset: number = 0 ): boolean {
 
 		if ( this.lanes.size !== otherLaneSection.lanes.size ) return false;
 

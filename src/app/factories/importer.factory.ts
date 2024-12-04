@@ -20,7 +20,7 @@ export class ImporterFactory {
 	) {
 	}
 
-	getImporter ( extension: string ) {
+	getImporter ( extension: string ): Importer {
 
 		let importer: Importer;
 

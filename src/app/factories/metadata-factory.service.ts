@@ -146,7 +146,7 @@ export class MetadataFactory {
 
 	}
 
-	static createMetadataFormPath ( destinationPath: string ) {
+	static createMetadataFormPath ( destinationPath: string ): Metadata {
 
 		const filename = FileUtils.getFilenameFromPath( destinationPath );
 
@@ -281,7 +281,7 @@ export class MetadataFactory {
 		return metadata;
 	}
 
-	static createSceneMetadata ( name: string, guid: string, path: string ) {
+	static createSceneMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,
@@ -292,7 +292,7 @@ export class MetadataFactory {
 
 	}
 
-	static createModelMetadata ( name: string, guid: string, path: string ) {
+	static createModelMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,
@@ -303,7 +303,7 @@ export class MetadataFactory {
 
 	}
 
-	static createOpenDriveMetadata ( name: string, guid: string, path: string ) {
+	static createOpenDriveMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,
@@ -314,7 +314,7 @@ export class MetadataFactory {
 
 	}
 
-	static createOpenScenarioMetadata ( name: string, guid: string, path: string ) {
+	static createOpenScenarioMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,
@@ -325,7 +325,7 @@ export class MetadataFactory {
 
 	}
 
-	static createMaterialMetadata ( name: string, guid: string, path: string ) {
+	static createMaterialMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,
@@ -336,7 +336,7 @@ export class MetadataFactory {
 
 	}
 
-	static createGeometryMetadata ( name: string, guid: string, path: string ) {
+	static createGeometryMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,
@@ -347,7 +347,7 @@ export class MetadataFactory {
 
 	}
 
-	static createPrefabMetadata ( name: string, guid: string, path: string ) {
+	static createPrefabMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,
@@ -358,7 +358,7 @@ export class MetadataFactory {
 
 	}
 
-	static createObjectMetadata ( name: string, guid: string, path: string ) {
+	static createObjectMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,
@@ -369,7 +369,7 @@ export class MetadataFactory {
 
 	}
 
-	static createSignMetadata ( name: string, guid: string, path: string ) {
+	static createSignMetadata ( name: string, guid: string, path: string ): any {
 
 		return {
 			guid: guid,

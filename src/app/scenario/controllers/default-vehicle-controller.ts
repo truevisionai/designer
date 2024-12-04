@@ -22,7 +22,7 @@ export class DefaultVehicleController extends AbstractController {
 
 
 
-	public update () {
+	public update (): void {
 
 		if ( !this.entity.openDriveProperties.isOpenDrive ) {
 			TvConsole.warn( this.entity.name + ` is not OpenDrive entity` );

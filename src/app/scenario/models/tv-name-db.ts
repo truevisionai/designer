@@ -25,7 +25,7 @@ export class NameDB {
 	private condition: Map<string, null> = new Map<string, null>();
 	private parameters: Map<string, null> = new Map<string, null>();
 
-	clear () {
+	clear (): void {
 
 		this.story.clear();
 		this.entity.clear();
@@ -104,7 +104,7 @@ export class NameDB {
 		this.trajectory.set( name, value );
 	}
 
-	public remove_entity ( name: string ) {
+	public remove_entity ( name: string ): void {
 		this.entity.delete( name );
 	}
 }

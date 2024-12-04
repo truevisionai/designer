@@ -20,7 +20,7 @@ export class TutorialsDialogComponent {
 	) {
 	}
 
-	openYoutube () {
+	openYoutube (): void {
 
 		this.tvElectron.openLink( AppLinks.tutorialsLink );
 

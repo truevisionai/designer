@@ -70,13 +70,13 @@ export class TimeHeadwayCondition extends EntityCondition {
 
 	}
 
-	setTargetEntity ( $targetEntity: string ) {
+	setTargetEntity ( $targetEntity: string ): void {
 
 		this.entityRef = $targetEntity;
 
 	}
 
-	setRule ( rule: Rule ) {
+	setRule ( rule: Rule ): void {
 
 		this.rule = rule;
 

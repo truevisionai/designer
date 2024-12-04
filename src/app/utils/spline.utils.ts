@@ -145,14 +145,14 @@ export class SplineUtils {
 
 	}
 
-	static hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction | null ) {
+	static hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction | null ): any {
 
 		return spline.hasSegment( segment );
 
 	}
 
 	// eslint-disable-next-line max-lines-per-function
-	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ) {
+	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ): void {
 
 		spline.addSegment( sOffset, segment );
 

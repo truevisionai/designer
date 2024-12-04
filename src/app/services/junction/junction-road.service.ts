@@ -85,7 +85,7 @@ export class JunctionRoadService {
 
 	}
 
-	removeAll ( junction: TvJunction ) {
+	removeAll ( junction: TvJunction ): void {
 
 		const connections = junction.getConnections();
 

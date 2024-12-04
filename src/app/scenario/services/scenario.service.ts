@@ -33,7 +33,7 @@ export class ScenarioService {
 
 	}
 
-	async importScenario ( path: string ) {
+	async importScenario ( path: string ): Promise<void> {
 
 		this.destroy();
 
@@ -69,7 +69,7 @@ export class ScenarioService {
 
 	}
 
-	setScenario ( scenario: TvScenario ) {
+	setScenario ( scenario: TvScenario ): void {
 
 		this.destroy();
 
@@ -77,7 +77,7 @@ export class ScenarioService {
 
 	}
 
-	destroy () {
+	destroy (): void {
 
 		if ( !this.scenario ) return;
 

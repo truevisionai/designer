@@ -314,7 +314,7 @@ export class LaneSectionFactory {
 		return [ laneSection ];
 	}
 
-	createRightSide ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
+	createRightSide ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ): void {
 
 		const processed = new Set<TvLane>();
 
@@ -356,7 +356,7 @@ export class LaneSectionFactory {
 
 	}
 
-	createBothSides ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
+	createBothSides ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ): void {
 
 		const leftLanes = predecessor.laneSection.getLeftLanes();
 
@@ -384,7 +384,7 @@ export class LaneSectionFactory {
 
 	}
 
-	clonePredcessorSection ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
+	clonePredcessorSection ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ): void {
 
 		const sOffset = predecessor.contact == TvContactPoint.START ? 0 : road.length;
 
@@ -400,7 +400,7 @@ export class LaneSectionFactory {
 
 	}
 
-	private createLaneSection ( road: TvRoad ) {
+	private createLaneSection ( road: TvRoad ): any {
 
 		return new TvLaneSection( road.laneSections.length, 0, false, road );
 

@@ -33,14 +33,14 @@ export class Polyline {
 		this.mesh.frustumCulled = false;
 	}
 
-	addPoint ( point: AbstractControlPoint ) {
+	addPoint ( point: AbstractControlPoint ): void {
 
 		this.points.push( point );
 
 	}
 
 	// Should be called once after curve control points get updated
-	update () {
+	update (): void {
 
 		if ( this.points.length <= 1 ) return;
 

@@ -55,7 +55,7 @@ export class SignupComponent implements OnInit {
 		return this.signupForm.controls[ 'email' ] as FormControl;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.authService.logout();
 
@@ -77,7 +77,7 @@ export class SignupComponent implements OnInit {
 		} );
 	}
 
-	signup () {
+	signup (): void {
 
 		const form = this.signupForm.value;
 

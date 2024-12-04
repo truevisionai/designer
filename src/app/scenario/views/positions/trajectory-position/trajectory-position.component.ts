@@ -13,7 +13,7 @@ export class TrajectoryPositionComponent implements OnInit {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

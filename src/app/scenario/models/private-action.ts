@@ -9,7 +9,7 @@ export abstract class PrivateAction extends TvAction {
 
 	public category = ActionCategory.private;
 
-	protected actionCompleted () {
+	protected actionCompleted (): void {
 
 		this.isCompleted = true;
 

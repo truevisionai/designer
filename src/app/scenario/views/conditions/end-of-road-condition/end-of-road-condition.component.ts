@@ -25,10 +25,10 @@ export class EndOfRoadConditionComponent implements OnInit {
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	onDurationChanged ( $duration: number ) {
+	onDurationChanged ( $duration: number ): void {
 
 		Commands.SetValue( this.endOfRoadCondition, 'duration', $duration );
 

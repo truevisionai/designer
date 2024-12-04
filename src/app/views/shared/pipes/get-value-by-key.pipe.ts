@@ -26,7 +26,7 @@ export class GetValueByKeyPipe implements PipeTransform {
 
 @Pipe( { name: 'keys' } )
 export class KeysPipe implements PipeTransform {
-	transform ( value, args: string[] ): any {
+	transform ( value: any, args: string[] ): any {
 		let keys = [];
 		for ( var enumMember in value ) {
 			if ( !isNaN( parseInt( enumMember, 10 ) ) ) {

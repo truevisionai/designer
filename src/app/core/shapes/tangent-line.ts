@@ -36,7 +36,7 @@ export class TangentLine {
 
 	}
 
-	update ( hdgs: any[], points?: any[] ) {
+	update ( hdgs: any[], points?: any[] ): void {
 
 		this.hdgs = hdgs;
 
@@ -76,7 +76,7 @@ export class TangentLine {
 
 	}
 
-	updateOneSegment ( idx, point ) {
+	updateOneSegment ( idx: any, point: any ): Vector3[] {
 
 		const position = this.geometry.attributes.position as BufferAttribute;
 

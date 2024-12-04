@@ -61,7 +61,7 @@ export class DynamicControlPoint<T extends IHasUpdate> extends AbstractControlPo
 
 	}
 
-	update () {
+	update (): void {
 
 		this.mainObject?.update();
 

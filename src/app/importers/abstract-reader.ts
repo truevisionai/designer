@@ -6,7 +6,7 @@ import { XmlElement } from "./xml.element";
 
 export abstract class AbstractReader {
 
-	public static readAsOptionalArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ) {
+	public static readAsOptionalArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ): void {
 
 		if ( items != null ) {
 
@@ -28,7 +28,7 @@ export abstract class AbstractReader {
 
 	}
 
-	public static readAsOptionalElement ( xml: any, callbackFn: ( xml: XmlElement ) => void ) {
+	public static readAsOptionalElement ( xml: any, callbackFn: ( xml: XmlElement ) => void ): void {
 
 		if ( xml != null ) {
 
@@ -38,7 +38,7 @@ export abstract class AbstractReader {
 
 	}
 
-	public readAsOptionalArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ) {
+	public readAsOptionalArray ( items: any, callbackFn: ( xml: XmlElement, count: number ) => void ): void {
 
 		if ( items != null ) {
 
@@ -60,7 +60,7 @@ export abstract class AbstractReader {
 
 	}
 
-	public readAsOptionalElement ( xml: XmlElement, callbackFn: ( xml: XmlElement ) => void ) {
+	public readAsOptionalElement ( xml: XmlElement, callbackFn: ( xml: XmlElement ) => void ): void {
 
 		if ( xml != null ) {
 

@@ -12,7 +12,7 @@ export class TvLaneOffset extends ThirdOrderPolynom {
 
 	}
 
-	clone ( s?: number ) {
+	clone ( s?: number ): TvLaneOffset {
 
 		return new TvLaneOffset( s || this.s, this.a, this.b, this.c, this.d );
 

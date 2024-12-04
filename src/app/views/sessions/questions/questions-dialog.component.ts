@@ -22,7 +22,7 @@ export class QuesionsDialogComponent {
 		@Inject( MAT_DIALOG_DATA ) public data: any,
 	) { }
 
-	onSubmit () {
+	onSubmit (): void {
 		this.dialogRef.close();
 	}
 

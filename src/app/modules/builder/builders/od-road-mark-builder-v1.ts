@@ -86,7 +86,7 @@ export class OdRoadMarkBuilderV1 {
 	}
 
 
-	private processLane ( laneSection: TvLaneSection, lane: TvLane ) {
+	private processLane ( laneSection: TvLaneSection, lane: TvLane ): void {
 
 		const roadMarks = lane.roadMarks.toArray();
 
@@ -144,7 +144,7 @@ export class OdRoadMarkBuilderV1 {
 
 	}
 
-	private createVertex ( s, roadMark: TvLaneRoadMark, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData, laneSectionS: number ) {
+	private createVertex ( s: any, roadMark: TvLaneRoadMark, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData, laneSectionS: number ): boolean {
 
 		const cumulativeWidth = this.getCumulativeWidth( laneSectionS, lane, laneSection );
 
@@ -299,14 +299,14 @@ export class OdRoadMarkBuilderV1 {
 		// }
 	}
 
-	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+	private addVertex ( meshData: MeshGeometryData, v1: Vertex ): void {
 		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z + 0.11 );
 		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
 		meshData.uvs.push( v1.uvs.x, v1.uvs.y );
 		meshData.indices.push( meshData.currentIndex++ );
 	}
 
-	private drawRoadMark ( roadMark: TvLaneRoadMark, mesh: MeshGeometryData, lane: TvLane ) {
+	private drawRoadMark ( roadMark: TvLaneRoadMark, mesh: MeshGeometryData, lane: TvLane ): void {
 
 		this.createMeshIndices( mesh );
 
@@ -327,7 +327,7 @@ export class OdRoadMarkBuilderV1 {
 		lane.laneSection.road.gameObject?.add( roadMark.gameObject );
 	}
 
-	private getMaterial ( roadMark: TvLaneRoadMark ) {
+	private getMaterial ( roadMark: TvLaneRoadMark ): THREE.MeshBasicMaterial {
 
 		let color: number;
 
@@ -365,7 +365,7 @@ export class OdRoadMarkBuilderV1 {
 		} );
 	}
 
-	private getGeometry ( mesh: MeshGeometryData ) {
+	private getGeometry ( mesh: MeshGeometryData ): THREE.BufferGeometry<THREE.NormalBufferAttributes> {
 
 		const geometry = new THREE.BufferGeometry();
 		const vertices = new Float32Array( mesh.vertices );
@@ -386,7 +386,7 @@ export class OdRoadMarkBuilderV1 {
 		return geometry;
 	}
 
-	private getCumulativeWidth ( s, lane: TvLane, laneSection: TvLaneSection ) {
+	private getCumulativeWidth ( s: any, lane: TvLane, laneSection: TvLaneSection ): number {
 
 		let width = 0;
 

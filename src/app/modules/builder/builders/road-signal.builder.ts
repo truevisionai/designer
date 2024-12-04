@@ -163,7 +163,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 
 	}
 
-	private buildSignGeometry ( signal: TvRoadSignal ) {
+	private buildSignGeometry ( signal: TvRoadSignal ): PlaneGeometry {
 
 		const width = signal.width || 0.5;
 
@@ -190,31 +190,31 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 		return pole;
 	}
 
-	private createRectangle () {
+	private createRectangle (): PlaneGeometry {
 
 		return new PlaneGeometry( 1, 1.5 );
 
 	}
 
-	private createSquare ( width: number = 1, height: number = 1 ) {
+	private createSquare ( width: number = 1, height: number = 1 ): PlaneGeometry {
 
 		return new PlaneGeometry( width, height );
 
 	}
 
-	private createTiltedSquare ( sign: string, signal: TvRoadSignal ) {
+	private createTiltedSquare ( sign: string, signal: TvRoadSignal ): CylinderGeometry {
 
 		return new CylinderGeometry( 0.5, 0.5, 0.05, 4, 1 );
 
 	}
 
-	private createSpherical () {
+	private createSpherical (): CircleGeometry {
 
 		return new CircleGeometry( 0.5 );
 
 	}
 
-	private getSignMaterial ( signal: TvRoadSignal ) {
+	private getSignMaterial ( signal: TvRoadSignal ): any {
 
 		const defaultMaterial = new MeshBasicMaterial( {
 			color: COLOR.MAGENTA
@@ -272,7 +272,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 		return defaultMaterial;
 	}
 
-	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ) {
+	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ): void {
 
 		const roadCoord = road.getRoadPosition( signal.s, signal.t );
 
@@ -296,7 +296,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 
 	}
 
-	private addPole ( object: Object3D, poleHeight: number, poleRadius: number ) {
+	private addPole ( object: Object3D, poleHeight: number, poleRadius: number ): void {
 
 		const pole = this.createPole( poleHeight, poleRadius );
 

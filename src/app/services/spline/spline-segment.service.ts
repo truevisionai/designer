@@ -90,7 +90,7 @@ export class SplineSegmentService {
 
 	}
 
-	private removeRoadSegments ( spline: AbstractSpline, keepFirst = false ): void {
+	private removeRoadSegments ( spline: AbstractSpline, keepFirst: boolean = false ): void {
 
 		spline.getRoadSegments().forEach( ( road, index ) => {
 
@@ -165,7 +165,7 @@ export class SplineSegmentService {
 
 	}
 
-	private addJunctionSegment ( spline: AbstractSpline, sOffset: number, junction: TvJunction ) {
+	private addJunctionSegment ( spline: AbstractSpline, sOffset: number, junction: TvJunction ): void {
 
 	}
 

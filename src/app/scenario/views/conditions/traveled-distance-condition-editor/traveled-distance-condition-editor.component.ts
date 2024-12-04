@@ -20,7 +20,7 @@ export class TraveledDistanceConditionEditorComponent {
 		return this.condition as TraveledDistanceCondition;
 	}
 
-	onDistanceValueChanged ( value: number ) {
+	onDistanceValueChanged ( value: number ): void {
 
 		Commands.SetValue( this.distanceCondition, 'value', value );
 

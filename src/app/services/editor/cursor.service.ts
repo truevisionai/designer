@@ -24,7 +24,7 @@ export class CursorService {
 
 	}
 
-	setCursor ( cursorStyle: string ) {
+	setCursor ( cursorStyle: string ): void {
 
 		if ( this.cursorStyle === cursorStyle ) return;
 

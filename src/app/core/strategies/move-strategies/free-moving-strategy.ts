@@ -14,7 +14,7 @@ export class FreeMovingStrategy extends MovingStrategy<any> {
 
 	private raycaster = new Raycaster();
 
-	init () {
+	init (): void {
 
 		this.raycaster.far = 1000;
 

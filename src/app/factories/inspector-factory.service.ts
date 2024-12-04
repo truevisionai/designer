@@ -23,7 +23,7 @@ export class InspectorFactory {
 	) {
 	}
 
-	setAssetInspector ( asset: Asset ) {
+	setAssetInspector ( asset: Asset ): void {
 
 		if ( asset.type === AssetType.TEXTURE ) {
 
@@ -43,7 +43,7 @@ export class InspectorFactory {
 
 	}
 
-	setMaterialInspector ( asset: Asset ) {
+	setMaterialInspector ( asset: Asset ): void {
 
 		const materialAsset = this.materialService.getMaterial( asset.guid );
 

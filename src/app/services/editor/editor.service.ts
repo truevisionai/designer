@@ -30,32 +30,32 @@ export class EditorService {
 	) {
 	}
 
-	newFile () {
+	newFile (): void {
 
 		this.mainFileService.newScene();
 
 	}
 
-	save () {
+	save (): void {
 
 		this.mainFileService.save();
 
 	}
 
-	saveAs () {
+	saveAs (): void {
 
 		this.mainFileService.saveAs();
 
 	}
 
-	onKeyDown ( e: KeyboardEvent ) {
+	onKeyDown ( e: KeyboardEvent ): void {
 
 		// fire the event for the whole application
 		KeyboardEvents.OnKeyDown( e );
 
 	}
 
-	onKeyUp ( e: KeyboardEvent ) {
+	onKeyUp ( e: KeyboardEvent ): void {
 
 		// fire the event for the whole application
 		KeyboardEvents.OnKeyUp( e );

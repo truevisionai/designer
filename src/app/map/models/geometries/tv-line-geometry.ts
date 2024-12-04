@@ -41,13 +41,13 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	computeVars () {
+	computeVars (): void {
 
 		/*nothing*/
 
 	}
 
-	clone () {
+	clone (): TvLineGeometry {
 
 		return new TvLineGeometry( this.s, this.x, this.y, this.hdg, this.length );
 
@@ -71,7 +71,7 @@ export class TvLineGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	getStCoordinates ( posTheta: TvPosTheta ) {
+	getStCoordinates ( posTheta: TvPosTheta ): Vector2 {
 
 		const objPosition = new Vector2( posTheta.x, posTheta.y );
 

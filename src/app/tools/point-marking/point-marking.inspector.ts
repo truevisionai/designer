@@ -95,7 +95,7 @@ export class MultiPointMarkingInspector {
 
 	get items () { return this.points.map( point => point.roadObject ); }
 
-	getValue<T, K extends keyof T> ( items: T[], key: K, multi = true ): T[ K ] {
+	getValue<T, K extends keyof T> ( items: T[], key: K, multi: boolean = true ): T[ K ] {
 
 		if ( items.length > 1 ) {
 
@@ -109,7 +109,7 @@ export class MultiPointMarkingInspector {
 
 	}
 
-	setValue<T, K extends keyof T> ( items: T[], key: K, value: T[ K ], multi = true ) {
+	setValue<T, K extends keyof T> ( items: T[], key: K, value: T[ K ], multi: boolean = true ): void {
 
 		if ( items.length > 1 ) {
 
@@ -206,7 +206,7 @@ export class MultiPointMarkingInspector {
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	delete () {
+	delete (): void {
 
 		this.points.forEach( point => Commands.RemoveObject( point, true ) );
 

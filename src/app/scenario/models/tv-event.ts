@@ -50,13 +50,13 @@ export class TvEvent {
 		return conditions;
 	}
 
-	static getNewName ( name = 'MyEvent' ) {
+	static getNewName ( name: string = 'MyEvent' ): string {
 
 		return `${ name }${ this.count }`;
 
 	}
 
-	addNewAction ( name: string, action: TvAction ) {
+	addNewAction ( name: string, action: TvAction ): void {
 
 		// const hasName = ScenarioInstance.db.has_action( name );
 
@@ -75,7 +75,7 @@ export class TvEvent {
 		} );
 	}
 
-	addStartCondition ( condition: Condition ) {
+	addStartCondition ( condition: Condition ): void {
 
 		const conditionGroup = this.createOrGetGroup();
 
@@ -83,7 +83,7 @@ export class TvEvent {
 
 	}
 
-	createOrGetGroup () {
+	createOrGetGroup (): ConditionGroup {
 
 		if ( this.startConditionGroups.length === 0 ) {
 
@@ -94,7 +94,7 @@ export class TvEvent {
 		return this.startConditionGroups[ 0 ];
 	}
 
-	hasPassed () {
+	hasPassed (): boolean {
 
 		return ConditionUtils.hasGroupsPassed( this.startConditionGroups );
 
@@ -106,13 +106,13 @@ export class TvEvent {
 
 	}
 
-	getActionMap () {
+	getActionMap (): Map<string, TvAction> {
 
 		return this._actions;
 
 	}
 
-	removeCondition ( $condition: Condition ) {
+	removeCondition ( $condition: Condition ): void {
 
 		for ( let i = 0; i < this.startConditionGroups.length; i++ ) {
 
@@ -142,7 +142,7 @@ export class TvEvent {
 
 	}
 
-	removeAction ( action: PrivateAction ) {
+	removeAction ( action: PrivateAction ): void {
 
 		this.actions.forEach( ( value, key ) => {
 
@@ -158,13 +158,13 @@ export class TvEvent {
 
 	}
 
-	addAction ( action: PrivateAction ) {
+	addAction ( action: PrivateAction ): void {
 
 		this.actions.set( action.name, action );
 
 	}
 
-	private onActionCompleted ( e: StoryboardEvent ) {
+	private onActionCompleted ( e: StoryboardEvent ): void {
 
 		if ( e.type != StoryboardElementType.action ) return;
 

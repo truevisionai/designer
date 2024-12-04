@@ -43,7 +43,7 @@ export class LaneRoadMarkBuilder {
 		}
 	}
 
-	buildLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	buildLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): THREE.Object3D<THREE.Object3DEventMap> {
 
 		const roadMarkMesh = new Object3D();
 
@@ -111,7 +111,7 @@ export class LaneRoadMarkBuilder {
 	}
 
 	// eslint-disable-next-line max-lines-per-function
-	private buildRoadMark ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadMark: TvLaneRoadMark, type: TvRoadMarkTypes, tOffset = 0 ) {
+	private buildRoadMark ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadMark: TvLaneRoadMark, type: TvRoadMarkTypes, tOffset: number = 0 ): THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material, THREE.Object3DEventMap> {
 
 		if ( type == TvRoadMarkTypes.NONE ) return;
 
@@ -487,7 +487,7 @@ export class LaneRoadMarkBuilder {
 
 	}
 
-	private getCumulativeWidth ( laneSectionS, lane: TvLane, laneSection: TvLaneSection ) {
+	private getCumulativeWidth ( laneSectionS: any, lane: TvLane, laneSection: TvLaneSection ): number {
 
 		let width = 0;
 
@@ -510,7 +510,7 @@ export class LaneRoadMarkBuilder {
 		return width;
 	}
 
-	private getLaneBorder ( lane: TvLane, laneSectionS, laneSection: TvLaneSection, posTheta: TvPosTheta ) {
+	private getLaneBorder ( lane: TvLane, laneSectionS: any, laneSection: TvLaneSection, posTheta: TvPosTheta ): THREE.Vector2 {
 
 		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, posTheta.hdg );
 		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, posTheta.hdg );

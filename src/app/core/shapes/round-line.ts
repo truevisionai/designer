@@ -38,7 +38,7 @@ export class RoundLine {
 
 	}
 
-	addPoint ( point: AbstractControlPoint ) {
+	addPoint ( point: AbstractControlPoint ): void {
 
 		this.points.push( point );
 
@@ -294,7 +294,7 @@ export class RoundLine {
 		position.needsUpdate = true;
 	}
 
-	private arcInterpolation ( currentPoint: Vector3, prevPoint: Vector3, nextPoint: Vector3, radius: number, v: Vector3 ) {
+	private arcInterpolation ( currentPoint: Vector3, prevPoint: Vector3, nextPoint: Vector3, radius: number, v: Vector3 ): Vector3 {
 
 		const va = new Vector3()
 			.subVectors( prevPoint, currentPoint )

@@ -9,7 +9,7 @@ export class ScenarioEvents {
 
 	public static events = new EventEmitter<StoryboardEvent>();
 
-	static fire ( event: StoryboardEvent ) {
+	static fire ( event: StoryboardEvent ): void {
 
 		this.events.emit( event );
 

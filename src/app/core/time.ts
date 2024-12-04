@@ -51,7 +51,7 @@ export class Time {
 
 	}
 
-	static reset () {
+	static reset (): void {
 
 		this.deltaTime = 0;
 		this.deltaTimeInMs = 0;

@@ -19,7 +19,7 @@ export class RoadEventListener {
 	) {
 	}
 
-	init () {
+	init (): void {
 
 		MapEvents.roadCreated.subscribe( e => this.onRoadCreated( e ) );
 		MapEvents.roadRemoved.subscribe( e => this.onRoadRemoved( e ) );
@@ -27,13 +27,13 @@ export class RoadEventListener {
 
 	}
 
-	onRoadCreated ( event: RoadCreatedEvent ) {
+	onRoadCreated ( event: RoadCreatedEvent ): void {
 
 		this.roadManager.addRoad( event.road );
 
 	}
 
-	onRoadUpdated ( event: RoadUpdatedEvent ) {
+	onRoadUpdated ( event: RoadUpdatedEvent ): void {
 
 		if ( event.road.spline.controlPoints.length < 2 ) return;
 
@@ -41,7 +41,7 @@ export class RoadEventListener {
 
 	}
 
-	onRoadRemoved ( event: RoadRemovedEvent ) {
+	onRoadRemoved ( event: RoadRemovedEvent ): void {
 
 		this.roadManager.removeRoad( event.road );
 

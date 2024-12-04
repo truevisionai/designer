@@ -202,7 +202,7 @@ export class TvRoad {
 		return other instanceof TvRoad && this.uuid === other.uuid;
 	}
 
-	toString () {
+	toString (): string {
 
 		if ( this.isJunction ) {
 			return `ConnectingRoad:${ this._id } Junction:${ this.junctionId } Successor:${ this.successor?.id } Predecessor:${ this.predecessor?.id }`;
@@ -233,11 +233,11 @@ export class TvRoad {
 		return this.getRoadCoord( this.length );
 	}
 
-	getEndPosTheta () {
+	getEndPosTheta (): TvPosTheta {
 		return this.getPosThetaAt( this.length - Maths.Epsilon );
 	}
 
-	getStartPosTheta () {
+	getStartPosTheta (): TvPosTheta {
 
 		// helps catch bugs
 		if ( this.geometries.length == 0 ) {
@@ -248,7 +248,7 @@ export class TvRoad {
 
 	}
 
-	setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ) {
+	setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ): void {
 
 		this.type.push( new TvRoadTypeClass( 0, type, maxSpeed, unit ) );
 
@@ -334,13 +334,13 @@ export class TvRoad {
 
 	}
 
-	setElevationProfile ( elevationProfile: TvElevationProfile ) {
+	setElevationProfile ( elevationProfile: TvElevationProfile ): void {
 
 		this.elevationProfile = elevationProfile;
 
 	}
 
-	addElevationProfile ( elevationProfile?: TvElevationProfile ) {
+	addElevationProfile ( elevationProfile?: TvElevationProfile ): void {
 
 		if ( elevationProfile ) {
 
@@ -385,7 +385,7 @@ export class TvRoad {
 
 	}
 
-	clearSignals () {
+	clearSignals (): void {
 
 		this.signals.clear();
 
@@ -425,25 +425,25 @@ export class TvRoad {
 
 	}
 
-	getRoadPosition ( s: number, t = 0 ): TvPosTheta {
+	getRoadPosition ( s: number, t: number = 0 ): TvPosTheta {
 
 		return RoadGeometryService.instance.findRoadPosition( this, s, t );
 
 	}
 
-	getContactPosition ( contactA: TvContactPoint ) {
+	getContactPosition ( contactA: TvContactPoint ): any {
 
 		return RoadGeometryService.instance.findContactPosition( this, contactA );
 
 	}
 
-	getRoadCoord ( s: number, t = 0 ): TvRoadCoord {
+	getRoadCoord ( s: number, t: number = 0 ): TvRoadCoord {
 
 		return RoadGeometryService.instance.findRoadCoord( this, s, t );
 
 	}
 
-	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
+	getPosThetaAt ( s: number, t: number = 0 ): TvPosTheta {
 
 		return this.getRoadPosition( s, t );
 
@@ -468,7 +468,7 @@ export class TvRoad {
 		hOffset: number,
 		pitch: number,
 		roll: number
-	) {
+	): TvRoadSignal {
 
 		const signal = new TvRoadSignal(
 			s, t, id, name,
@@ -577,7 +577,7 @@ export class TvRoad {
 	/**
 	 * @deprecated use RoadGeometryService instead
 	 */
-	getReferenceLinePoints ( step = 1.0, t?: number ): TvPosTheta[] {
+	getReferenceLinePoints ( step: number = 1.0, t?: number ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
@@ -592,7 +592,7 @@ export class TvRoad {
 		return points;
 	}
 
-	computeLaneSectionCoordinates () {
+	computeLaneSectionCoordinates (): void {
 
 		this.getLaneProfile().computeLaneSectionCoordinates();
 
@@ -646,14 +646,14 @@ export class TvRoad {
 
 	}
 
-	getLaneCenterPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneCenterPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 
 		return RoadGeometryService.instance.findLaneCenterPosition( this, lane.laneSection, lane, laneSOffset, offset, addHeight );
 	}
 
-	getLaneStartPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneStartPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 
@@ -661,7 +661,7 @@ export class TvRoad {
 
 	}
 
-	getLaneEndPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneEndPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 
@@ -723,13 +723,13 @@ export class TvRoad {
 
 	}
 
-	getRoadWidthAt ( distance: number ) {
+	getRoadWidthAt ( distance: number ): any {
 
 		return RoadWidthService.instance.findRoadWidthAt( this, distance );
 
 	}
 
-	markAsCornerRoad () {
+	markAsCornerRoad (): void {
 
 		this.cornerRoad = true;
 

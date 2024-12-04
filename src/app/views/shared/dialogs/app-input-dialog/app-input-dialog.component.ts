@@ -26,7 +26,7 @@ export class AppInputDialogComponent implements OnInit {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.form = this.fb.group( {} );
 
@@ -38,7 +38,7 @@ export class AppInputDialogComponent implements OnInit {
 
 	}
 
-	onFieldChange ( field: AppInputDialogField, value: any ) {
+	onFieldChange ( field: AppInputDialogField, value: any ): void {
 
 		field.value = value;
 
@@ -46,7 +46,7 @@ export class AppInputDialogComponent implements OnInit {
 
 	}
 
-	save () {
+	save (): void {
 
 		this.dialogRef.close( this.form.value );
 

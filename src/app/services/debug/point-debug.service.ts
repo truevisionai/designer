@@ -58,7 +58,7 @@ export class PointDebugService extends BaseDebugger<PropInstance> {
 
 	}
 
-	private createOrUpdate ( object: PropInstance ) {
+	private createOrUpdate ( object: PropInstance ): AbstractControlPoint {
 
 		if ( !object ) return;
 

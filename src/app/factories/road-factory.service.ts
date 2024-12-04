@@ -48,7 +48,7 @@ export class RoadFactory {
 	) {
 	}
 
-	static createRoad ( id = -1 ): TvRoad {
+	static createRoad ( id: number = -1 ): TvRoad {
 
 		return new TvRoad( '', 0, id, null );
 
@@ -102,19 +102,19 @@ export class RoadFactory {
 
 	}
 
-	getNextRoadId ( id?: number ) {
+	getNextRoadId ( id?: number ): any {
 
 		return this.mapService.map.generateRoadId();
 
 	}
 
-	getNextConnectingRoadId () {
+	getNextConnectingRoadId (): any {
 
 		return this.mapService.map.generateRoadId( false );
 
 	}
 
-	setCounter ( id: number ) {
+	setCounter ( id: number ): void {
 
 		// this.mapService.map.roads.add( id );
 
@@ -203,7 +203,7 @@ export class RoadFactory {
 
 	}
 
-	createStraightRoad ( position: Vector3, hdg = 0, length = 10 ): TvRoad {
+	createStraightRoad ( position: Vector3, hdg: number = 0, length: number = 10 ): TvRoad {
 
 		const road = this.createDefaultRoad();
 
@@ -213,7 +213,7 @@ export class RoadFactory {
 
 	}
 
-	createSingleLaneRoad ( width = 3.6, side = TvLaneSide.RIGHT ): TvRoad {
+	createSingleLaneRoad ( width: number = 3.6, side: any = TvLaneSide.RIGHT ): TvRoad {
 
 		const road = this.createNewRoad();
 
@@ -241,7 +241,7 @@ export class RoadFactory {
 
 	}
 
-	createRoadWithLaneCount ( leftCount = 1, rightCount = 1, leftWidth = 3.6, rightWidth = 3.6 ): TvRoad {
+	createRoadWithLaneCount ( leftCount: number = 1, rightCount: number = 1, leftWidth: number = 3.6, rightWidth: number = 3.6 ): TvRoad {
 
 		const road = this.createNewRoad();
 

@@ -82,7 +82,7 @@ export class TextMarkingInspector {
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	delete () {
+	delete (): void {
 
 		Commands.RemoveObject( this.signal );
 

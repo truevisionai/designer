@@ -30,7 +30,7 @@ export class Vector3FieldComponent extends AbstractFieldComponent<Vector3> imple
 		super();
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 	onXChanged ( $value: any ): void {

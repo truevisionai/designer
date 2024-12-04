@@ -16,7 +16,7 @@ export class ProfileService {
 		private api: ApiService
 	) { }
 
-	updateProfile ( profile: any ) {
+	updateProfile ( profile: any ): void {
 		this.api.post( '/profile', profile ).subscribe( ( response ) => {
 			console.log( response );
 		} );

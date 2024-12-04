@@ -40,7 +40,7 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 	}
 
-	onPointerUp ( e: PointerEventData ) {
+	onPointerUp ( e: PointerEventData ): void {
 
 		if ( !e.point ) return
 
@@ -62,7 +62,7 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 	}
 
-	onPointerMoved ( e: PointerEventData ) {
+	onPointerMoved ( e: PointerEventData ): void {
 
 		if ( !this.isPointerDown ) {
 
@@ -131,7 +131,7 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 	}
 
-	onObjectUpdated ( object: any ) {
+	onObjectUpdated ( object: any ): void {
 
 		if ( object instanceof LaneHeightInspector ) {
 
@@ -215,13 +215,13 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 	}
 
-	protected onShowInspector ( node: LanePointNode<TvLaneHeight> ) {
+	protected onShowInspector ( node: LanePointNode<TvLaneHeight> ): void {
 
 		this.setInspector( new LaneHeightInspector( node.mainObject, node.lane ) );
 
 	}
 
-	private removeLaneHeight ( lane: TvLane, laneHeight: TvLaneHeight ) {
+	private removeLaneHeight ( lane: TvLane, laneHeight: TvLaneHeight ): void {
 
 		this.data.remove( lane, laneHeight );
 
@@ -231,7 +231,7 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 	}
 
-	private addLaneHeight ( lane: TvLane, laneHeight: TvLaneHeight ) {
+	private addLaneHeight ( lane: TvLane, laneHeight: TvLaneHeight ): void {
 
 		this.data.add( lane, laneHeight );
 
@@ -241,7 +241,7 @@ export class LaneHeightTool extends BaseLaneTool<TvLaneHeight> {
 
 	}
 
-	private updateLaneHeight ( lane: TvLane, laneHeight: TvLaneHeight ) {
+	private updateLaneHeight ( lane: TvLane, laneHeight: TvLaneHeight ): void {
 
 		this.data.update( lane, laneHeight );
 

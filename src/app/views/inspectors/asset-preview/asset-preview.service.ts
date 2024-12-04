@@ -86,7 +86,7 @@ export class AssetPreviewService {
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.createCube();
 
@@ -103,7 +103,7 @@ export class AssetPreviewService {
 		this.ground.visible = false;
 	}
 
-	createLights ( scene: Scene ) {
+	createLights ( scene: Scene ): void {
 
 		const directionaLight = DEFAULT_DIRECTIONAL_LIGHT;
 
@@ -137,7 +137,7 @@ export class AssetPreviewService {
 
 	}
 
-	resetCamera () {
+	resetCamera (): void {
 
 		this.camera = new PerspectiveCamera( 50, WIDTH / HEIGHT, 0.1, 1000 );
 
@@ -151,7 +151,7 @@ export class AssetPreviewService {
 
 	}
 
-	private createCube () {
+	private createCube (): void {
 
 		const geometry = new BoxGeometry( 1, 1, 1 );
 
@@ -162,7 +162,7 @@ export class AssetPreviewService {
 		this.cube.visible = false;
 	}
 
-	private createPlane () {
+	private createPlane (): void {
 
 		const geometry = new PlaneGeometry( 10, 10 );
 
@@ -173,7 +173,7 @@ export class AssetPreviewService {
 		this.plane.visible = false;
 	}
 
-	private createSphere () {
+	private createSphere (): void {
 
 		const geometry = new SphereGeometry( 1, 32, 32 );
 
@@ -184,7 +184,7 @@ export class AssetPreviewService {
 		this.sphere.visible = false;
 	}
 
-	getPreview ( asset: Asset ) {
+	getPreview ( asset: Asset ): string {
 
 		let preview: string;
 
@@ -308,7 +308,7 @@ export class AssetPreviewService {
 		return image;
 	}
 
-	private resetScene () {
+	private resetScene (): void {
 
 		this.cube.material = this.cubeMaterial;
 
@@ -455,7 +455,7 @@ export class AssetPreviewService {
 		return image;
 	}
 
-	setupCamera ( assetType: AssetType, object: Object3D, camera: Camera ) {
+	setupCamera ( assetType: AssetType, object: Object3D, camera: Camera ): void {
 
 		const box = new Box3().setFromObject( object );
 		const size = box.getSize( new Vector3() );
@@ -490,7 +490,7 @@ export class AssetPreviewService {
 
 	}
 
-	setupScene ( assetType: AssetType, object: Object3D, scene: Scene ) {
+	setupScene ( assetType: AssetType, object: Object3D, scene: Scene ): void {
 
 		object.position.set( 0, 0, 0 );
 
@@ -519,7 +519,7 @@ export class AssetPreviewService {
 
 	}
 
-	private addGreenGround ( scene ) {
+	private addGreenGround ( scene: any ): void {
 
 		// ground
 		this.groundTexture.wrapS = this.groundTexture.wrapT = THREE.RepeatWrapping;

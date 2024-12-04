@@ -42,7 +42,7 @@ export class ExporterService {
 	) {
 	}
 
-	exportOpenDrive () {
+	exportOpenDrive (): void {
 
 		ToolManager.disable();
 
@@ -64,7 +64,7 @@ export class ExporterService {
 
 	}
 
-	exportOpenScenario ( filename = 'scenario.xosc' ) {
+	exportOpenScenario ( filename: string = 'scenario.xosc' ): void {
 
 		ToolManager.disable();
 
@@ -84,7 +84,7 @@ export class ExporterService {
 
 	}
 
-	exportGLB ( filename = 'road.glb', coordinateSystem = CoordinateSystem.UNITY_GLTF, includeProps = false ) {
+	exportGLB ( filename: string = 'road.glb', coordinateSystem: CoordinateSystem = CoordinateSystem.UNITY_GLTF, includeProps: boolean = false ): void {
 
 		this.clearTool();
 
@@ -119,7 +119,7 @@ export class ExporterService {
 
 	}
 
-	exportGTLF () {
+	exportGTLF (): void {
 
 		this.clearTool();
 
@@ -143,7 +143,7 @@ export class ExporterService {
 
 	}
 
-	exportCARLA () {
+	exportCARLA (): void {
 
 		this.clearTool();
 
@@ -157,7 +157,7 @@ export class ExporterService {
 
 	}
 
-	private clearTool () {
+	private clearTool (): void {
 
 		Commands.SetTool( null );
 

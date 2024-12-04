@@ -20,7 +20,7 @@ export class RoadSignalService {
 	) {
 	}
 
-	addSignal ( road: TvRoad, signal: TvRoadSignal ) {
+	addSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
 		road.addRoadSignalInstance( signal );
 
@@ -30,7 +30,7 @@ export class RoadSignalService {
 
 	}
 
-	removeSignal ( road: TvRoad, signal: TvRoadSignal ) {
+	removeSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
 		road.removeRoadSignal( signal );
 
@@ -39,7 +39,7 @@ export class RoadSignalService {
 		MapEvents.roadSignalRemoved.emit( new RoadSignalRemovedEvent( road, signal ) );
 	}
 
-	updateSignal ( road: TvRoad, signal: TvRoadSignal ) {
+	updateSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
 		MapEvents.roadSignalUpdated.emit( new RoadSignalUpdatedEvent( road, signal ) );
 
@@ -61,7 +61,7 @@ export class RoadSignalService {
 
 	}
 
-	findSignalsByType ( road: TvRoad, types: string[] = [] ) {
+	findSignalsByType ( road: TvRoad, types: string[] = [] ): TvRoadSignal[] {
 
 		const signals = road.getRoadSignals();
 

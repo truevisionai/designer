@@ -6,7 +6,7 @@ import { ConditionUtils } from '../../builders/condition-utils';
 import { ConditionCategory, ConditionEdge, ConditionType, Rule } from '../tv-enums';
 import { TvScenario } from "../tv-scenario";
 
-export function conditionTypeToString ( type: ConditionType ) {
+export function conditionTypeToString ( type: ConditionType ): string {
 
 	if ( type == ConditionType.ByEntity_EndOfRoad ) return 'EndOfRoadCondition';
 
@@ -93,7 +93,7 @@ export abstract class Condition {
 
 	}
 
-	reset () {
+	reset (): void {
 		this.passed = false;
 		this.scenario = null;
 	}

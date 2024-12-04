@@ -28,7 +28,7 @@ export class AssetManager {
 		this._modelAsset = value;
 	}
 
-	setTextureAsset ( asset: Asset ) {
+	setTextureAsset ( asset: Asset ): void {
 
 		this.textureAsset = asset;
 
@@ -40,7 +40,7 @@ export class AssetManager {
 
 	}
 
-	setMaterialAsset ( asset: Asset ) {
+	setMaterialAsset ( asset: Asset ): void {
 
 		this.materialAsset = asset;
 
@@ -52,7 +52,7 @@ export class AssetManager {
 
 	}
 
-	getProp () {
+	getProp (): Asset {
 
 		return this.modelAsset;
 
