@@ -73,7 +73,7 @@ export class TvPosTheta {
 		return this.clone( x, y, this.hdg, this.s + s, this.t );
 	}
 
-	isPointOnLine ( point: Vector2, s = 1000 ): boolean {
+	isPointOnLine ( point: Vector2, s: number = 1000 ): boolean {
 
 		const startPoint = this.toVector3();
 

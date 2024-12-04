@@ -37,7 +37,7 @@ export class TvMaterialExporter implements AssetExporter<MaterialAsset> {
 
 		const isRootObject = ( meta === undefined || typeof meta === 'string' );
 
-		function getGUID ( material, mapName ): string {
+		function getGUID ( material: any, mapName: any ): string {
 
 			const map = material[ mapName ];
 

@@ -65,7 +65,7 @@ export class ThreeJsUtils {
 		return gameObject;
 	}
 
-	static createPinkTexture ( width, height ): any {
+	static createPinkTexture ( width: any, height: any ): any {
 
 		// Create a canvas
 		const canvas = document.createElement( 'canvas' );

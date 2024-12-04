@@ -32,7 +32,7 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
-	getPoints ( stepSize = 10 ): Vector3[] {
+	getPoints ( stepSize: number = 10 ): Vector3[] {
 
 		return this.curve?.getPoints( stepSize ) || [];
 

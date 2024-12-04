@@ -30,7 +30,7 @@ export class SplineFixerService {
 	) {
 	}
 
-	fix ( spline: AbstractSpline, log = true ): void {
+	fix ( spline: AbstractSpline, log: boolean = true ): void {
 
 		if ( !this.enabled ) return;
 
@@ -152,7 +152,7 @@ export class SplineFixerService {
 
 	}
 
-	public fixInternalLinks ( spline: AbstractSpline, setNull = false ): void {
+	public fixInternalLinks ( spline: AbstractSpline, setNull: boolean = false ): void {
 
 		// TODO: we need to check
 		// const predecessor = SplineUtils.findPredecessor( spline );

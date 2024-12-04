@@ -239,7 +239,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createStripedMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeOffset = 0.5, gapLength = 0.3 ): void {
+	createStripedMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeOffset: number = 0.5, gapLength: number = 0.3 ): void {
 
 		const numStripes = Math.floor( roadObject.length / ( gapLength ) );
 

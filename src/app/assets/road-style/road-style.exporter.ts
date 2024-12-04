@@ -114,7 +114,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 		xmlNode.laneSection = laneSectionNode;
 	}
 
-	private writeLane ( xmlNode, lane: TvLane ): any {
+	private writeLane ( xmlNode: any, lane: TvLane ): any {
 
 		const laneNode = {
 			attr_id: lane.id,
@@ -165,7 +165,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 		return laneNode;
 	}
 
-	private writeLaneOffset ( xmlNode, laneOffset: TvLaneOffset ): any {
+	private writeLaneOffset ( xmlNode: any, laneOffset: TvLaneOffset ): any {
 
 		xmlNode.laneOffset = {
 			attr_s: laneOffset.s,

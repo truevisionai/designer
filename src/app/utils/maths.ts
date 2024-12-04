@@ -230,14 +230,14 @@ export class Maths {
 		return a;
 	}
 
-	public static cosineInterpolation ( x, y, t ): number {
+	public static cosineInterpolation ( x: any, y: any, t: any ): number {
 
 		const t2 = ( 1 - Math.cos( t * Math.PI ) ) * 0.5;
 
 		return ( x * ( 1 - t2 ) + y * t2 );
 	}
 
-	public static sineInterpolation ( x, y, t ): number {
+	public static sineInterpolation ( x: any, y: any, t: any ): number {
 
 		const t2 = ( 1 - Math.cos( t * Math.PI ) ) * 0.5;
 
@@ -529,7 +529,7 @@ export class Maths {
 
 	}
 
-	static approxEquals ( a: number, b: number, precision = 0.00001 ): boolean {
+	static approxEquals ( a: number, b: number, precision: number = 0.00001 ): boolean {
 
 		return Math.abs( a - b ) <= precision;
 

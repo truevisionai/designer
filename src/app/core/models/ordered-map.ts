@@ -28,7 +28,7 @@ export class OrderedMap<T> {
 		return this.internalMap.values();
 	}
 
-	set ( key: number, value: T, sort = true ): this {
+	set ( key: number, value: T, sort: boolean = true ): this {
 
 		// check if value is already present
 		if ( this.contains( value ) ) {

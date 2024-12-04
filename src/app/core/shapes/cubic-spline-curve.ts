@@ -6,33 +6,33 @@ import { CatmullRomCurve3, Curve, CurvePath, CurveType, Vector3 } from 'three';
 import { AnyControlPoint } from "../../objects/any-control-point";
 
 
-function CubicBezierP0 ( t, p ): number {
+function CubicBezierP0 ( t: any, p: any ): number {
 
 	const k = 1 - t;
 	return k * k * k * p;
 
 }
 
-function CubicBezierP1 ( t, p ): number {
+function CubicBezierP1 ( t: any, p: any ): number {
 
 	const k = 1 - t;
 	return 3 * k * k * t * p;
 
 }
 
-function CubicBezierP2 ( t, p ): number {
+function CubicBezierP2 ( t: any, p: any ): number {
 
 	return 3 * ( 1 - t ) * t * t * p;
 
 }
 
-function CubicBezierP3 ( t, p ): number {
+function CubicBezierP3 ( t: any, p: any ): number {
 
 	return t * t * t * p;
 
 }
 
-function CubicBezier ( t, p0, p1, p2, p3 ): number {
+function CubicBezier ( t: any, p0: any, p1: any, p2: any, p3: any ): number {
 
 	return CubicBezierP0( t, p0 ) + CubicBezierP1( t, p1 ) + CubicBezierP2( t, p2 ) +
 		CubicBezierP3( t, p3 );

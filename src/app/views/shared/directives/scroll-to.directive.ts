@@ -24,7 +24,7 @@ export class ScrollToDirective implements OnInit {
 		return 0;
 	};
 
-	elmYPosition ( eID ): number {
+	elmYPosition ( eID: any ): number {
 		var elm = document.getElementById( eID );
 		var y = elm.offsetTop;
 		var node: any = elm;

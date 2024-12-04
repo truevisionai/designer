@@ -57,7 +57,7 @@ export class LaneSpanService {
 
 	}
 
-	private getPoints ( lane: TvLane, sStart: number, sEnd: number, step = 1.0 ): TvPosTheta[] {
+	private getPoints ( lane: TvLane, sStart: number, sEnd: number, step: number = 1.0 ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 

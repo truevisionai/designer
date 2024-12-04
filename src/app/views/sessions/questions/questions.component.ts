@@ -9,7 +9,7 @@ import { AppService } from 'app/services/app.service';
 import { ProfileService } from 'app/services/profile.service';
 
 // Custom validator function
-export function requireCheckboxesToBeCheckedValidator ( minRequired = 1 ): ValidatorFn {
+export function requireCheckboxesToBeCheckedValidator ( minRequired: number = 1 ): ValidatorFn {
 
 	return function validate ( formGroup: FormGroup ): ValidationErrors | null {
 

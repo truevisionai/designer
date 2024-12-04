@@ -31,7 +31,7 @@ export class Maneuver {
 
 	}
 
-	static getNewName ( name = 'MyManeuver' ): string {
+	static getNewName ( name: string = 'MyManeuver' ): string {
 
 		return `${ name }${ this.count }`;
 

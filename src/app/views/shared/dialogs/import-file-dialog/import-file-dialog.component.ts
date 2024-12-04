@@ -50,7 +50,7 @@ export class ImportFileDialogComponent implements OnInit {
 
 	}
 
-	public fileChange ( event ): void {
+	public fileChange ( event: any ): void {
 
 		const self = this;
 

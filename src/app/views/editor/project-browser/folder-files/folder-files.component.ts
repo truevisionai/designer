@@ -87,7 +87,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onFileRenamed ( $event ): void {
+	onFileRenamed ( $event: any ): void {
 
 		this.refreshFolder();
 

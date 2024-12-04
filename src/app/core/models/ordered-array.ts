@@ -21,7 +21,7 @@ export class OrderedArry<T> {
 		this.entries = [];
 	}
 
-	set ( key: number, value: T, sort = true ): this {
+	set ( key: number, value: T, sort: boolean = true ): this {
 
 		// if the value is already in the array, we don't add it
 		if ( this.contains( value ) ) return this;

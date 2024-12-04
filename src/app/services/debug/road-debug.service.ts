@@ -91,7 +91,7 @@ export class RoadDebugService {
 
 	}
 
-	showRoadBorderLine ( road: TvRoad, lineWidth = LINE_WIDTH, color = COLOR.CYAN ): void {
+	showRoadBorderLine ( road: TvRoad, lineWidth: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
 
 		const add = ( lane: TvLane ) => {
 
@@ -120,7 +120,7 @@ export class RoadDebugService {
 
 	}
 
-	highlightRoad ( road: TvRoad, arrows = true ): void {
+	highlightRoad ( road: TvRoad, arrows: boolean = true ): void {
 
 		if ( this.selectedRoads.has( road ) ) return;
 
@@ -190,7 +190,7 @@ export class RoadDebugService {
 
 	}
 
-	getReferenceLinePoints ( road: TvRoad, step = 1.0 ): TvPosTheta[] {
+	getReferenceLinePoints ( road: TvRoad, step: number = 1.0 ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
@@ -203,7 +203,7 @@ export class RoadDebugService {
 		return points;
 	}
 
-	createRoadNode<T> ( road: TvRoad, target: T, s: number, width = 2, color = COLOR.CYAN ): DebugLine<T> {
+	createRoadNode<T> ( road: TvRoad, target: T, s: number, width: number = 2, color: any = COLOR.CYAN ): DebugLine<T> {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( road, s );
 
@@ -214,7 +214,7 @@ export class RoadDebugService {
 
 	}
 
-	showLaneReferenceLines ( road: TvRoad, color = COLOR.CYAN ): void {
+	showLaneReferenceLines ( road: TvRoad, color: any = COLOR.CYAN ): void {
 
 		road.laneSections.forEach( section => {
 
@@ -263,7 +263,7 @@ export class RoadDebugService {
 
 	}
 
-	createRoadWidthLinev2<T> ( road: TvRoad, s: number, target?: T, width = 2 ): DebugLine<T> {
+	createRoadWidthLinev2<T> ( road: TvRoad, s: number, target?: T, width: number = 2 ): DebugLine<T> {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( road, s );
 

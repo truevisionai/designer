@@ -23,7 +23,7 @@ export class RoadBarrierService {
 		public objectService: RoadObjectService,
 	) { }
 
-	createWall ( position: RoadPosition, height = 1.0, width = 0.1 ): any {
+	createWall ( position: RoadPosition, height: number = 1.0, width: number = 0.1 ): any {
 
 		// const sqLength = 1, sqWidth = 0.25;
 		// const squareShape = new Shape()

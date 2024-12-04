@@ -82,7 +82,7 @@ export class IntersectionGroup {
 
 	}
 
-	getJunctionLinks ( junction: TvJunction, sort = true ): TvLink[] {
+	getJunctionLinks ( junction: TvJunction, sort: boolean = true ): TvLink[] {
 
 		const links = new Map<NewSegment, TvLink>();
 
@@ -331,7 +331,7 @@ export class IntersectionGroup {
 
 	}
 
-	reComputeJunctionOffsets ( force = false ): void {
+	reComputeJunctionOffsets ( force: boolean = false ): void {
 
 		if ( !force && this.getSplines().length < 2 ) return;
 

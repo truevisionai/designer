@@ -9,7 +9,7 @@ import { OdTextures } from '../../../deprecated/od.textures';
 
 export class OdMaterials {
 
-	static getLaneMaterial ( lane: TvLane, forceNew = false ): MeshStandardMaterial {
+	static getLaneMaterial ( lane: TvLane, forceNew: boolean = false ): MeshStandardMaterial {
 
 		// if ( !forceNew && lane.gameObject != null && lane.gameObject.material != null ) {
 		// 	return lane.gameObject.material as MeshStandardMaterial;

@@ -143,7 +143,7 @@ export class LaneDirectionHelper {
 
 	private static distance = 5;
 
-	public static drawSingleLane ( lane: TvLane, distance = 5, size = 0.5 ): SimpleArrowObject[] {
+	public static drawSingleLane ( lane: TvLane, distance: number = 5, size: number = 0.5 ): SimpleArrowObject[] {
 
 		this.distance = distance;
 
@@ -151,7 +151,7 @@ export class LaneDirectionHelper {
 
 	}
 
-	private static drawLane ( lane: TvLane, laneSection: TvLaneSection, size = 0.5 ): SimpleArrowObject[] {
+	private static drawLane ( lane: TvLane, laneSection: TvLaneSection, size: number = 0.5 ): SimpleArrowObject[] {
 
 		const arrows: SimpleArrowObject[] = [];
 

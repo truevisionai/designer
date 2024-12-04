@@ -55,7 +55,7 @@ export class TvPlaneView {
 		return geometry;
 	}
 
-	addGeometrySpiral ( s, x, y, hdg, length, curvStart, curvEnd ): void {
+	addGeometrySpiral ( s: any, x: any, y: any, hdg: any, length: any, curvStart: any, curvEnd: any ): void {
 
 		// const geometry = new ODGeometry();
 		// geometry.spiral = new OdSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd );
@@ -63,7 +63,7 @@ export class TvPlaneView {
 		this.geometries.push( new TvSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd ) );
 	}
 
-	addGeometryArc ( s, x, y, hdg, length, curvature: number ): TvArcGeometry {
+	addGeometryArc ( s: any, x: any, y: any, hdg: any, length: any, curvature: number ): TvArcGeometry {
 
 		const geometry = new TvArcGeometry( s, x, y, hdg, length, curvature );
 
@@ -72,7 +72,7 @@ export class TvPlaneView {
 		return geometry;
 	}
 
-	addGeometryPoly3 ( s, x, y, hdg, length, a, b, c, d ): void {
+	addGeometryPoly3 ( s: any, x: any, y: any, hdg: any, length: any, a: any, b: any, c: any, d: any ): void {
 
 		this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
 
@@ -84,13 +84,13 @@ export class TvPlaneView {
 
 	}
 
-	addGeometryParamPoly3 ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?): void {
+	addGeometryParamPoly3 ( s: any, x: any, y: any, hdg: any, length: any, aU: any, bU: any, cU: any, dU: any, aV: any, bV: any, cV: any, dV: any, pRange?: any): void {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
 	}
 
-	addGeometryParamPoly ( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange?): void {
+	addGeometryParamPoly ( s: any, x: any, y: any, hdg: any, length: any, aU: any, bU: any, cU: any, dU: any, aV: any, bV: any, cV: any, dV: any, pRange?: any): void {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
@@ -112,7 +112,7 @@ export class TvPlaneView {
 		return total;
 	}
 
-	distance ( pos: Vector2, x, y ): number {
+	distance ( pos: Vector2, x: any, y: any ): number {
 
 		return Math.sqrt( ( x - pos.x ) * ( x - pos.x ) + ( y - pos.y ) * ( y - pos.y ) );
 

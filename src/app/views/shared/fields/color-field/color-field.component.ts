@@ -45,13 +45,13 @@ export class ColorFieldComponent extends AbstractFieldComponent<Color> implement
 
 	}
 
-	onChange ( $event ): void {
+	onChange ( $event: any ): void {
 
 		// do nothing
 
 	}
 
-	onChangeCompleted ( $event ): void {
+	onChangeCompleted ( $event: any ): void {
 
 		this.value.setStyle( $event.color.hex );
 
@@ -76,7 +76,7 @@ export class ColorFieldComponent extends AbstractFieldComponent<Color> implement
 	}
 
 	@HostListener( 'window:mousedown', [ '$event' ] )
-	onGlobalClick ( e ): void {
+	onGlobalClick ( e: any ): void {
 
 		if ( !this.colorPicker.nativeElement.contains( event.target ) ) {
 

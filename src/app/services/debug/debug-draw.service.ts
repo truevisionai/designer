@@ -69,7 +69,7 @@ export class DebugDrawService {
 
 	}
 
-	drawText ( text: string, position: Vector3, size = 1, color = COLOR.WHITE ): void {
+	drawText ( text: string, position: Vector3, size: number = 1, color: any = COLOR.WHITE ): void {
 
 		const textObject = this.textService.createFromText( text, size, color );
 
@@ -87,7 +87,7 @@ export class DebugDrawService {
 
 	}
 
-	drawBox2D ( box: Box2, color = COLOR.WHITE, opacity = 1 ): void {
+	drawBox2D ( box: Box2, color: any = COLOR.WHITE, opacity: number = 1 ): void {
 
 		const mesh = this.createBox2D( box, color, opacity );
 
@@ -95,7 +95,7 @@ export class DebugDrawService {
 
 	}
 
-	createBox2D ( box: Box2, color = COLOR.WHITE, opacity = 1 ): Mesh {
+	createBox2D ( box: Box2, color: any = COLOR.WHITE, opacity: number = 1 ): Mesh {
 
 		const geometry = new PlaneGeometry( box.getSize( new Vector2() ).x, box.getSize( new Vector2() ).y );
 
@@ -109,7 +109,7 @@ export class DebugDrawService {
 
 	}
 
-	drawPoint ( position: Vector3, size = 10, color = COLOR.RED ): void {
+	drawPoint ( position: Vector3, size: number = 10, color: any = COLOR.RED ): void {
 
 		const point = this.createPoint( position, size, color );
 
@@ -117,7 +117,7 @@ export class DebugDrawService {
 
 	}
 
-	drawSphere ( position: Vector3, size = 0.1, color = COLOR.RED ): void {
+	drawSphere ( position: Vector3, size: number = 0.1, color: any = COLOR.RED ): void {
 
 		const sphere = this.createSphere( position, size, color );
 
@@ -127,7 +127,7 @@ export class DebugDrawService {
 
 	}
 
-	drawLine ( positions: Vector3[], color = 0xffffff, lineWidth = 2 ): Line2 {
+	drawLine ( positions: Vector3[], color: number = 0xffffff, lineWidth: number = 2 ): Line2 {
 
 		if ( positions.length < 2 ) return;
 
@@ -145,7 +145,7 @@ export class DebugDrawService {
 
 	}
 
-	createSphere ( position: Vector3, size = 0.1, color = COLOR.RED ): Mesh {
+	createSphere ( position: Vector3, size: number = 0.1, color: any = COLOR.RED ): Mesh {
 
 		const geometry = new SphereGeometry( size, 32, 32 );
 
@@ -159,7 +159,7 @@ export class DebugDrawService {
 
 	}
 
-	createPoint ( position: Vector3, size = 10, color = COLOR.RED ): SimpleControlPoint<any> {
+	createPoint ( position: Vector3, size: number = 10, color: any = COLOR.RED ): SimpleControlPoint<any> {
 
 		const point = new SimpleControlPoint( null, position );
 
@@ -204,7 +204,7 @@ export class DebugDrawService {
 
 	}
 
-	createLaneWidthLine ( target: HasDistanceValue, laneCoord: TvLaneCoord, color = COLOR.CYAN, width = 4 ): LaneSpanNode<HasDistanceValue> {
+	createLaneWidthLine ( target: HasDistanceValue, laneCoord: TvLaneCoord, color: any = COLOR.CYAN, width: number = 4 ): LaneSpanNode<HasDistanceValue> {
 
 		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.laneDistance, laneCoord.road, laneCoord.lane );
 
@@ -244,7 +244,7 @@ export class DebugDrawService {
 
 	}
 
-	createLine ( positions: Vector3[], color = 0xffffff, lineWidth = 2 ): Line2 {
+	createLine ( positions: Vector3[], color: number = 0xffffff, lineWidth: number = 2 ): Line2 {
 
 		const geometry = this.createLineGeometry( positions );
 
@@ -276,7 +276,7 @@ export class DebugDrawService {
 
 	}
 
-	createDebugLine<T> ( target: T, points: Vector3[], lineWidth = 2, color = COLOR.CYAN ): DebugLine<T> {
+	createDebugLine<T> ( target: T, points: Vector3[], lineWidth: number = 2, color: any = COLOR.CYAN ): DebugLine<T> {
 
 		const geometry = this.createDebugLineGeometry( points );
 
@@ -296,7 +296,7 @@ export class DebugDrawService {
 
 	}
 
-	createDebugLineMaterial ( color = COLOR.CYAN, lineWidth = 2 ): LineMaterial {
+	createDebugLineMaterial ( color: any = COLOR.CYAN, lineWidth: number = 2 ): LineMaterial {
 
 		return new LineMaterial( {
 			color: color,
@@ -321,7 +321,7 @@ export class DebugDrawService {
 
 	}
 
-	createDashedLine<T> ( target: T, points: Vector3[], lineWidth = 2, color = COLOR.CYAN ): DebugLine<T> {
+	createDashedLine<T> ( target: T, points: Vector3[], lineWidth: number = 2, color: any = COLOR.CYAN ): DebugLine<T> {
 
 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
@@ -347,14 +347,14 @@ export class DebugDrawService {
 
 	}
 
-	createArrow ( position: Vector3, hdg: number, color = 0xffffff, size = 1.0 ): Mesh {
+	createArrow ( position: Vector3, hdg: number, color: number = 0xffffff, size: number = 1.0 ): Mesh {
 
 		// Create a 2D arrow at the current position and direction.
 		return new SimpleArrowObject( position, hdg, size );
 
 	}
 
-	drawArrow ( position: Vector3, hdg: number, color = 0xffffff, size = 1.0 ): Mesh {
+	drawArrow ( position: Vector3, hdg: number, color: number = 0xffffff, size: number = 1.0 ): Mesh {
 
 		const arrow = this.createArrow( position, hdg, color, size );
 
@@ -366,13 +366,13 @@ export class DebugDrawService {
 
 	}
 
-	createSharpArrow ( position: Vector3, hdg: number, color = 0xffffff, size = 1.0 ): Mesh {
+	createSharpArrow ( position: Vector3, hdg: number, color: number = 0xffffff, size: number = 1.0 ): Mesh {
 
 		return new SharpArrowObject( position, hdg, color, size );
 
 	}
 
-	getDirectedPoints ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, side: TvLaneSide, stepSize = 1.0 ): TvPosTheta[] {
+	getDirectedPoints ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, side: TvLaneSide, stepSize: number = 1.0 ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
@@ -442,7 +442,7 @@ export class DebugDrawService {
 	 * @param stepSize
 	 * @returns
 	 */
-	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ): Vector3[] {
+	getPoints ( lane: TvLane, sStart: number, sEnd: number, stepSize: number = 1.0 ): Vector3[] {
 
 		const points: Vector3[] = [];
 
@@ -467,7 +467,7 @@ export class DebugDrawService {
 	 * @param stepSize
 	 * @returns
 	 */
-	getPositions ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sStart: number, sEnd: number, stepSize = 1.0 ): TvPosTheta[] {
+	getPositions ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sStart: number, sEnd: number, stepSize: number = 1.0 ): TvPosTheta[] {
 
 		const positions: TvPosTheta[] = [];
 
@@ -484,7 +484,7 @@ export class DebugDrawService {
 		return positions;
 	}
 
-	getRoadPositions ( road: TvRoad, sStart: number, sEnd: number, stepSize = 0.1 ): TvPosTheta[] {
+	getRoadPositions ( road: TvRoad, sStart: number, sEnd: number, stepSize: number = 0.1 ): TvPosTheta[] {
 
 		const positions: TvPosTheta[] = [];
 
@@ -519,7 +519,7 @@ export class DebugDrawService {
 
 	}
 
-	createEntryExitBoxMesh ( position: Vector3, hdg = 0, width = 3.6 ): Mesh {
+	createEntryExitBoxMesh ( position: Vector3, hdg: number = 0, width: number = 3.6 ): Mesh {
 
 		const texture = OdTextures.arrowCircle();
 
@@ -569,7 +569,7 @@ export class DebugDrawService {
 
 	}
 
-	createOutlineFromGeometry ( geometry: BufferGeometry, width = LINE_WIDTH, color = COLOR.CYAN ): LineSegments2 {
+	createOutlineFromGeometry ( geometry: BufferGeometry, width: number = LINE_WIDTH, color: any = COLOR.CYAN ): LineSegments2 {
 
 		const edges = new EdgesGeometry( geometry );
 

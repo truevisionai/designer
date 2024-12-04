@@ -425,7 +425,7 @@ export class TvRoad {
 
 	}
 
-	getRoadPosition ( s: number, t = 0 ): TvPosTheta {
+	getRoadPosition ( s: number, t: number = 0 ): TvPosTheta {
 
 		return RoadGeometryService.instance.findRoadPosition( this, s, t );
 
@@ -437,13 +437,13 @@ export class TvRoad {
 
 	}
 
-	getRoadCoord ( s: number, t = 0 ): TvRoadCoord {
+	getRoadCoord ( s: number, t: number = 0 ): TvRoadCoord {
 
 		return RoadGeometryService.instance.findRoadCoord( this, s, t );
 
 	}
 
-	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
+	getPosThetaAt ( s: number, t: number = 0 ): TvPosTheta {
 
 		return this.getRoadPosition( s, t );
 
@@ -577,7 +577,7 @@ export class TvRoad {
 	/**
 	 * @deprecated use RoadGeometryService instead
 	 */
-	getReferenceLinePoints ( step = 1.0, t?: number ): TvPosTheta[] {
+	getReferenceLinePoints ( step: number = 1.0, t?: number ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
@@ -646,14 +646,14 @@ export class TvRoad {
 
 	}
 
-	getLaneCenterPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneCenterPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 
 		return RoadGeometryService.instance.findLaneCenterPosition( this, lane.laneSection, lane, laneSOffset, offset, addHeight );
 	}
 
-	getLaneStartPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneStartPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 
@@ -661,7 +661,7 @@ export class TvRoad {
 
 	}
 
-	getLaneEndPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneEndPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 

@@ -56,15 +56,15 @@ export class JoinNode {
 
 	}
 
-	private headingToSlope ( hdg ): number {
+	private headingToSlope ( hdg: any ): number {
 		return Math.tan( hdg );
 	}
 
-	private calculateYIntercept ( x, y, slope ): number {
+	private calculateYIntercept ( x: any, y: any, slope: any ): number {
 		return y - slope * x;
 	}
 
-	private calculateIntersection ( slopeA, slopeB, yInterceptA, yInterceptB ): Vector3 {
+	private calculateIntersection ( slopeA: any, slopeB: any, yInterceptA: any, yInterceptB: any ): Vector3 {
 		if ( slopeA === slopeB ) {
 			return null; // The lines are parallel and do not intersect
 		}
@@ -115,7 +115,7 @@ export class JoinNode {
 		// 	);
 		// }
 
-		function isIntersectionInDirection ( intersection: Vector2, startPoint: TvPosTheta, directionVector ): any {
+		function isIntersectionInDirection ( intersection: Vector2, startPoint: TvPosTheta, directionVector: any ): any {
 
 			return startPoint.isPointOnLine( intersection );
 

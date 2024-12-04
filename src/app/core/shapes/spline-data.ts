@@ -55,7 +55,7 @@ export function HermiteSpline ( p0: Vector2, p1: Vector2, v0: Vector2, v1: Vecto
 
 }
 
-function sqr ( x ): number {
+function sqr ( x: any ): number {
 	return x * x;
 }
 
@@ -83,7 +83,7 @@ function LengthEstimate ( s: SplineData ): number[] {
 
 }
 
-export function Length ( s: SplineData, maxError /*float*/ ): any {
+export function Length ( s: SplineData, maxError: any /*float*/ ): any {
 
 	// return computeSplineLength( s, 1000 );
 

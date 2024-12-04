@@ -131,7 +131,7 @@ export class SceneService {
 
 	}
 
-	static removeFromTool ( object: Object3D, fireEvent = true ): void {
+	static removeFromTool ( object: Object3D, fireEvent: boolean = true ): void {
 
 		if ( object == null ) return;
 
@@ -180,7 +180,7 @@ export class SceneService {
 	}
 
 
-	private static disposeHierarchy ( node, callback ): void {
+	private static disposeHierarchy ( node: any, callback: any ): void {
 
 		for ( let i = node.children.length - 1; i >= 0; i-- ) {
 

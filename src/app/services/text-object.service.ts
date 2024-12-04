@@ -31,7 +31,7 @@ export class TextObjectService {
 
 	}
 
-	createFromText ( text: string, size: number = 1, color = COLOR.WHITE ): TextObject3d {
+	createFromText ( text: string, size: number = 1, color: any = COLOR.WHITE ): TextObject3d {
 
 		const geometry = this.createTextGeometry( text, size );
 

@@ -145,7 +145,7 @@ export class TvLaneRoadMark {
 		return this.type;
 	}
 
-	setType ( value ): void {
+	setType ( value: any ): void {
 		this.type = value;
 	}
 

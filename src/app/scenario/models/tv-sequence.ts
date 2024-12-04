@@ -35,7 +35,7 @@ export class ManeuverGroup {
 
 	}
 
-	static getNewName ( name = 'MySequence' ): string {
+	static getNewName ( name: string = 'MySequence' ): string {
 
 		return `${ name }${ this.count }`;
 

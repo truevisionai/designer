@@ -49,7 +49,7 @@ export class DynamicConstraints {
 
 	// proportional controller, which is a type of feedback
 	// controller that adjusts its output proportional to the error.
-	computeSpeed ( currentDistance, targetDistance, currentSpeed, targetEntitySpeed ): any {
+	computeSpeed ( currentDistance: any, targetDistance: any, currentSpeed: any, targetEntitySpeed: any ): any {
 
 		const distanceDiff = currentDistance - targetDistance;
 		const speedDiff = currentSpeed - targetEntitySpeed;

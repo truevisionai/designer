@@ -230,7 +230,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 
 	}
 
-	protected createLine ( node, lane: TvLane, start: number, end: number, lineWidth = 4, stepSize = 0.1 ): any {
+	protected createLine ( node: any, lane: TvLane, start: number, end: number, lineWidth: number = 4, stepSize: number = 0.1 ): any {
 
 		const points = this.debugDrawService.getPoints( lane, start, end, stepSize );
 
@@ -239,7 +239,7 @@ export abstract class BaseLaneDebugService<T extends HasDistanceValue> implement
 		return line;
 	}
 
-	protected createDashedLine ( node, lane: TvLane, start: number, end: number, lineWidth = 4, stepSize = 0.1 ): any {
+	protected createDashedLine ( node: any, lane: TvLane, start: number, end: number, lineWidth: number = 4, stepSize: number = 0.1 ): any {
 
 		const points = this.debugDrawService.getPoints( lane, start, end, stepSize );
 

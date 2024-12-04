@@ -264,7 +264,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ): void {
+	showBorder ( spline: AbstractSpline, lineWidth: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
 
 		if ( spline.getControlPointCount() < 2 ) return;
 

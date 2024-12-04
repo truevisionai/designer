@@ -88,7 +88,7 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 
 	}
 
-	getBezierValue ( sCheck ): number {
+	getBezierValue ( sCheck: any ): number {
 
 		const du = sCheck - this.s;
 

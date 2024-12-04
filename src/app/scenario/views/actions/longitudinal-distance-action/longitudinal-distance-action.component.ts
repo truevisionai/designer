@@ -27,7 +27,7 @@ export class LongitudinalDistanceActionComponent {
 		this.longitudinalDistanceAction.targetEntity = $event;
 	}
 
-	onValueTypeChanged ( $event ): void {
+	onValueTypeChanged ( $event: any ): void {
 		this.longitudinalDistanceAction.valueType = $event;
 	}
 

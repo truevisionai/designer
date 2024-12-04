@@ -64,7 +64,7 @@ export class ExporterService {
 
 	}
 
-	exportOpenScenario ( filename = 'scenario.xosc' ): void {
+	exportOpenScenario ( filename: string = 'scenario.xosc' ): void {
 
 		ToolManager.disable();
 
@@ -84,7 +84,7 @@ export class ExporterService {
 
 	}
 
-	exportGLB ( filename = 'road.glb', coordinateSystem = CoordinateSystem.UNITY_GLTF, includeProps = false ): void {
+	exportGLB ( filename: string = 'road.glb', coordinateSystem: CoordinateSystem = CoordinateSystem.UNITY_GLTF, includeProps: boolean = false ): void {
 
 		this.clearTool();
 

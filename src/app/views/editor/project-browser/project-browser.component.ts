@@ -75,14 +75,14 @@ export class ProjectBrowserComponent implements OnInit {
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( evt ): void {
+	onDragOver ( evt: any ): void {
 
 		evt.preventDefault();
 		evt.stopPropagation();
 	}
 
 	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( evt ): void {
+	onDragLeave ( evt: any ): void {
 
 		evt.preventDefault();
 		evt.stopPropagation();
@@ -140,7 +140,7 @@ export class ProjectBrowserComponent implements OnInit {
 
 	}
 
-	onContextMenu ( $event, selectedNode?: Asset ): void {
+	onContextMenu ( $event: any, selectedNode?: Asset ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();

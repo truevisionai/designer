@@ -31,7 +31,7 @@ export class DropdownFieldComponent extends AbstractFieldComponent<any> implemen
 
 	}
 
-	onChanged ( $event ): void {
+	onChanged ( $event: any ): void {
 
 		this.changed.emit( $event.target.value );
 

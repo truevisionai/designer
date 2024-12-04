@@ -73,7 +73,7 @@ export class EventEditorComponent implements OnInit {
 	}
 
 	@HostListener( 'contextmenu', [ '$event' ] )
-	onContextMenu ( $event ): void {
+	onContextMenu ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();

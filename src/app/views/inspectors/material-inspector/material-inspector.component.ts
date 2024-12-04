@@ -146,50 +146,50 @@ export class MaterialInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onColorChanged ( $value ): void {
+	onColorChanged ( $value: any ): void {
 
 		this.updateMaterialProperty( this.material, 'color', $value );
 
 	}
 
 	// not being used
-	onEmissiveColorChanged ( $value ): void {
+	onEmissiveColorChanged ( $value: any ): void {
 
 		this.updateMaterialProperty( this.material, 'emissive', $value );
 
 	}
 
-	onRoughnessChanged ( $value ): void {
+	onRoughnessChanged ( $value: any ): void {
 
 		this.updateMaterialProperty( this.material, 'roughness', $value );
 
 	}
 
-	onMetalnessChanged ( $value ): void {
+	onMetalnessChanged ( $value: any ): void {
 
 		this.updateMaterialProperty( this.material, 'metalness', $value );
 
 	}
 
-	onEmissiveChanged ( $value ): void {
+	onEmissiveChanged ( $value: any ): void {
 
 		this.updateMaterialProperty( this.material, 'emissive', $value );
 
 	}
 
-	onEmissiveIntensityChanged ( $value ): void {
+	onEmissiveIntensityChanged ( $value: any ): void {
 
 		this.updateMaterialProperty( this.material, 'emissiveIntensity', $value );
 
 	}
 
-	onTransparentChanged ( $value ): void {
+	onTransparentChanged ( $value: any ): void {
 
 		this.updateMaterialProperty( this.material, 'transparent', $value );
 
 	}
 
-	onOpacityChanged ( $value ): void {
+	onOpacityChanged ( $value: any ): void {
 
 		this.updateMaterialProperty( this.material, 'opacity', $value );
 

@@ -184,7 +184,7 @@ export class RoadObjectService {
 
 	}
 
-	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ): any {
+	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height: number = 0.0 ): any {
 
 		const cornerLocal = CornerRoadFactory.createCornerLocalOutline( outline, u, v, z, height );
 

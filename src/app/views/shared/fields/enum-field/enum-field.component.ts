@@ -42,7 +42,7 @@ export class EnumFieldComponent extends AbstractFieldComponent<any> implements O
 
 	}
 
-	onChanged ( $event ): void {
+	onChanged ( $event: any ): void {
 
 		this.changed.emit( $event.target.value );
 

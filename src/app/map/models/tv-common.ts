@@ -238,7 +238,7 @@ export enum ObjectFillType {
 
 export class EnumHelper {
 
-	static stringToOdUnits ( value ): TvUnit {
+	static stringToOdUnits ( value: any ): TvUnit {
 
 		switch ( value ) {
 

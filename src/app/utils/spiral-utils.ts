@@ -100,7 +100,7 @@ const gd = [
 	1.86958710162783236342e-22,
 ];
 
-function polevl ( x, coef, n ): any {
+function polevl ( x: any, coef: any, n: any ): any {
 
 	let ans;
 	let p = 0;
@@ -116,7 +116,7 @@ function polevl ( x, coef, n ): any {
 	return ans;
 }
 
-function p1evl ( x, coef, n ): any {
+function p1evl ( x: any, coef: any, n: any ): any {
 
 	let ans;
 	let p = 0;
@@ -132,7 +132,7 @@ function p1evl ( x, coef, n ): any {
 	return ans;
 }
 
-function fresnel ( xxa, ssa, cca ): any {
+function fresnel ( xxa: any, ssa: any, cca: any ): any {
 	let f, g, cc, ss, c, s, t, u;
 	let x, x2;
 
@@ -173,7 +173,7 @@ function fresnel ( xxa, ssa, cca ): any {
 	return { y: ssa, x: cca };
 }
 
-function odrSpiral ( s, cDot, x, y, t ): any {
+function odrSpiral ( s: any, cDot: any, x: any, y: any, t: any ): any {
 
 	let a;
 
@@ -197,7 +197,7 @@ function odrSpiral ( s, cDot, x, y, t ): any {
 
 export class SpiralUtils {
 
-	public static fresnel ( xxa, ssa, cca ): any {
+	public static fresnel ( xxa: any, ssa: any, cca: any ): any {
 
 		return fresnel( xxa, ssa, cca );
 
@@ -212,7 +212,7 @@ export class SpiralUtils {
 	 * @param t
 	 * @returns {x: number, y: number, t: number}
 	 */
-	static odrSpiral ( s, cDot, x, y, t ): any {
+	static odrSpiral ( s: any, cDot: any, x: any, y: any, t: any ): any {
 
 		return odrSpiral( s, cDot, x, y, t );
 

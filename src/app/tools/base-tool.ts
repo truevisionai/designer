@@ -539,7 +539,7 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	protected executeRemoveObject ( object: Object, fireUnselectEvent = false ): void {
+	protected executeRemoveObject ( object: Object, fireUnselectEvent: boolean = false ): void {
 
 		Commands.RemoveObject( object, fireUnselectEvent );
 

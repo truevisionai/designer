@@ -95,7 +95,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	clone ( road: TvRoad, s = 0 ): any {
+	clone ( road: TvRoad, s: number = 0 ): any {
 
 		const id = this.roadFactory.getNextRoadId();
 
@@ -198,7 +198,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	findRoadCoord ( position: Vector3, junctions = true ): TvRoadCoord | null {
+	findRoadCoord ( position: Vector3, junctions: boolean = true ): TvRoadCoord | null {
 
 		const posTheta = new TvPosTheta();
 

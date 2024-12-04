@@ -72,7 +72,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'click', [ '$event' ] )
-	onClick ( $event ): void {
+	onClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -80,7 +80,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'dblclick', [ '$event' ] )
-	onDoubleClick ( $event ): void {
+	onDoubleClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -88,7 +88,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( $event ): void {
+	onDragOver ( $event: any ): void {
 
 		// DONT REMOVE THIS
 
@@ -98,7 +98,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( $event ): void {
+	onDragLeave ( $event: any ): void {
 
 		// DONT REMOVE THIS
 

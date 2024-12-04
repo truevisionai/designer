@@ -90,7 +90,7 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'click', [ '$event' ] )
-	onClick ( $event ): void {
+	onClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -114,7 +114,7 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'dblclick', [ '$event' ] )
-	onDoubleClick ( $event ): void {
+	onDoubleClick ( $event: any ): void {
 
 		if ( this.asset.isDirectory ) {
 
@@ -128,7 +128,7 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'contextmenu', [ '$event' ] )
-	onContextMenu ( $event ): void {
+	onContextMenu ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -264,14 +264,14 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'dragend', [ '$event' ] )
-	onDragEnd ( $event ): void {
+	onDragEnd ( $event: any ): void {
 
 		// Debug.log( $event )
 
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	onDrop ( $event ): void {
+	onDrop ( $event: any ): void {
 
 		AssetComponent.disablePopover = false;
 

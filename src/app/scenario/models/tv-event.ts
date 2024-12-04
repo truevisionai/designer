@@ -50,7 +50,7 @@ export class TvEvent {
 		return conditions;
 	}
 
-	static getNewName ( name = 'MyEvent' ): string {
+	static getNewName ( name: string = 'MyEvent' ): string {
 
 		return `${ name }${ this.count }`;
 

@@ -144,7 +144,7 @@ export class OdRoadMarkBuilderV1 {
 
 	}
 
-	private createVertex ( s, roadMark: TvLaneRoadMark, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData, laneSectionS: number ): boolean {
+	private createVertex ( s: any, roadMark: TvLaneRoadMark, laneSection: TvLaneSection, lane: TvLane, mesh: MeshGeometryData, laneSectionS: number ): boolean {
 
 		const cumulativeWidth = this.getCumulativeWidth( laneSectionS, lane, laneSection );
 
@@ -386,7 +386,7 @@ export class OdRoadMarkBuilderV1 {
 		return geometry;
 	}
 
-	private getCumulativeWidth ( s, lane: TvLane, laneSection: TvLaneSection ): number {
+	private getCumulativeWidth ( s: any, lane: TvLane, laneSection: TvLaneSection ): number {
 
 		let width = 0;
 

@@ -141,7 +141,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createByType ( type = TvJunctionType.DEFAULT ): TvJunction {
+	createByType ( type: any = TvJunctionType.DEFAULT ): TvJunction {
 
 		const id = this.mapService.map.getNextJunctionId();
 

@@ -63,7 +63,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'click', [ '$event' ] )
-	onClick ( $event ): void {
+	onClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -71,7 +71,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'dblclick', [ '$event' ] )
-	onDoubleClick ( $event ): void {
+	onDoubleClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -79,7 +79,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( $event ): void {
+	onDragOver ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -87,7 +87,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( $event ): void {
+	onDragLeave ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();

@@ -337,7 +337,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeRoadLinks ( xmlNode, road: TvRoad ): void {
+	writeRoadLinks ( xmlNode: any, road: TvRoad ): void {
 
 		xmlNode.link = {};
 
@@ -382,7 +382,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	writeRoadType ( xmlNode, road: TvRoad ): void {
+	writeRoadType ( xmlNode: any, road: TvRoad ): void {
 
 		if ( road.type.length > 0 ) {
 
@@ -408,7 +408,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeLanes ( xmlNode, road: TvRoad ): void {
+	writeLanes ( xmlNode: any, road: TvRoad ): void {
 
 		// add default lane offset if not present
 		if ( road.laneOffsets.length == 0 ) {
@@ -437,7 +437,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeLaneSections ( xmlNode, laneSection: TvLaneSection ): void {
+	writeLaneSections ( xmlNode: any, laneSection: TvLaneSection ): void {
 
 		const leftLanes = {
 			lane: []
@@ -482,7 +482,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeLane ( xmlNode, lane: TvLane ): any {
+	writeLane ( xmlNode: any, lane: TvLane ): any {
 
 		const laneNode = {
 			attr_id: lane.id,

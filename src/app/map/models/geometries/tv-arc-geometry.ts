@@ -88,7 +88,7 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 
 	}
 
-	findS ( x, y ): void {
+	findS ( x: any, y: any ): void {
 
 		// not working just for reference
 

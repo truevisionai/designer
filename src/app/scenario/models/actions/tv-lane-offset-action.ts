@@ -84,7 +84,7 @@ export class LaneOffsetAction extends PrivateAction {
 		// This function should return the elapsed time since the start of the action
 		const elapsedTime = ( Time.time - this.startTime ) * 0.001;
 
-		function calculateLaneOffset ( entity, targetOffset, elapsedTime, maxLateralAcc ): any {
+		function calculateLaneOffset ( entity: any, targetOffset: any, elapsedTime: any, maxLateralAcc: any ): any {
 			let currentOffset = entity.getCurrentLaneOffset();
 			let L = targetOffset - currentOffset;
 			let dynamicsTime = Math.sqrt( L * Math.PI ** 2 / maxLateralAcc );

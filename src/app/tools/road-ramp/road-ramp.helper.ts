@@ -199,7 +199,7 @@ export class RampToolHelper {
 		return spline;
 	}
 
-	createSplineNew ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): AbstractSpline {
+	createSplineNew ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): AbstractSpline {
 
 		// directions must be normalized
 		const d1 = startDirection.clone().normalize();

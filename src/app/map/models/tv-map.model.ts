@@ -140,7 +140,7 @@ export class TvMap {
 		return road;
 	}
 
-	generateRoadId ( useRemoved = true ): number {
+	generateRoadId ( useRemoved: boolean = true ): number {
 		return this.roads.next( useRemoved );
 	}
 

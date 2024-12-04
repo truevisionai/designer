@@ -250,7 +250,7 @@ export class ModelImporter implements Importer {
 
 	}
 
-	private saveImage ( json, texture, destinationFolder: string ): string {
+	private saveImage ( json: any, texture: any, destinationFolder: string ): string {
 
 		const image = json?.images.find( image => image.uuid === texture.image );
 

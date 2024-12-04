@@ -83,19 +83,19 @@ export class FileService {
 		return this.remote.dialog.showOpenDialog( options );
 	}
 
-	async readAsync ( path: string, encoding = 'utf-8' ): Promise<any> {
+	async readAsync ( path: string, encoding: string = 'utf-8' ): Promise<any> {
 
 		return Promise.resolve( this.fs.readFileSync( path, encoding ) );
 
 	}
 
-	async writeAsync ( path: string, data, options ): Promise<any> {
+	async writeAsync ( path: string, data: any, options: any ): Promise<any> {
 
 		return Promise.resolve( this.fs.writeFileSync( path, data, options ) );
 
 	}
 
-	async readAsArrayBuffer ( path ): Promise<any> {
+	async readAsArrayBuffer ( path: any ): Promise<any> {
 
 		const data = this.fs.readFileSync( path, null );
 
@@ -148,7 +148,7 @@ export class FileService {
 
 	}
 
-	writeFile ( filepath, content, callbackFn: any = null ): void {
+	writeFile ( filepath: any, content: any, callbackFn: any = null ): void {
 
 		this.fs.writeFile( filepath, content, ( err, data ) => {
 
@@ -172,7 +172,7 @@ export class FileService {
 
 	}
 
-	deleteFolderRecursive ( folderPath ): void {
+	deleteFolderRecursive ( folderPath: any ): void {
 
 		if ( this.fs.existsSync( folderPath ) ) {
 
@@ -253,7 +253,7 @@ export class FileService {
 		return { fileName, filePath };
 	}
 
-	readPathContentsSync ( dirpath ): any[] {
+	readPathContentsSync ( dirpath: any ): any[] {
 
 		let files = [];
 
@@ -291,7 +291,7 @@ export class FileService {
 		return items;
 	}
 
-	getItemProperties ( itemPath ): any {
+	getItemProperties ( itemPath: any ): any {
 
 		const stats = this.fs.statSync( itemPath );
 
@@ -306,7 +306,7 @@ export class FileService {
 		};
 	}
 
-	getItemType ( item, path ): "file" | "directory" | "blockdevice" | "characterdevice" | "symlink" | "fifo" | "socket" | "" {
+	getItemType ( item: any, path: any ): "file" | "directory" | "blockdevice" | "characterdevice" | "symlink" | "fifo" | "socket" | "" {
 		if ( electronFs.stat.isFile( path ) ) {
 			return 'file';
 		} else if ( electronFs.stat.isDirectory( path ) ) {
@@ -325,7 +325,7 @@ export class FileService {
 		return '';
 	}
 
-	join ( path, filename ): string {
+	join ( path: any, filename: any ): string {
 
 		return this.path.join( path, filename );
 

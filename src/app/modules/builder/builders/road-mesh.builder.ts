@@ -395,7 +395,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	private createMeshIndices ( geom: MeshGeometryData, verticesPerStep = 2 ): void {
+	private createMeshIndices ( geom: MeshGeometryData, verticesPerStep: number = 2 ): void {
 
 		if ( verticesPerStep < 2 ) {
 			console.error( "verticesPerStep should be at least 2" );

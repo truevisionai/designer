@@ -519,7 +519,7 @@ export class AssetPreviewService {
 
 	}
 
-	private addGreenGround ( scene ): void {
+	private addGreenGround ( scene: any ): void {
 
 		// ground
 		this.groundTexture.wrapS = this.groundTexture.wrapT = THREE.RepeatWrapping;

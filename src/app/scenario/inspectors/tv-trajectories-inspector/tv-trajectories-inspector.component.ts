@@ -30,7 +30,7 @@ export class TrajectoriesInspectorComponent implements OnInit, IComponent {
 
 	}
 
-	selectTrajectory ( trajectory ): void {
+	selectTrajectory ( trajectory: any ): void {
 
 		this.selected = trajectory;
 

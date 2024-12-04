@@ -90,7 +90,7 @@ export class SplineSegmentService {
 
 	}
 
-	private removeRoadSegments ( spline: AbstractSpline, keepFirst = false ): void {
+	private removeRoadSegments ( spline: AbstractSpline, keepFirst: boolean = false ): void {
 
 		spline.getRoadSegments().forEach( ( road, index ) => {
 

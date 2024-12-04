@@ -20,7 +20,7 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 export class ManeueverHelper {
 
-	static getPositionsFromLaneCoord ( start: TvLaneCoord, end: TvLaneCoord, divider = 3 ): Vector3[] {
+	static getPositionsFromLaneCoord ( start: TvLaneCoord, end: TvLaneCoord, divider: number = 3 ): Vector3[] {
 
 		let entryDirection: Vector3, exitDirection: Vector3;
 
@@ -39,7 +39,7 @@ export class ManeueverHelper {
 		return this.getPositions( start.position, entryDirection, end.position, exitDirection, divider );
 	}
 
-	static getPositions ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): Vector3[] {
+	static getPositions ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): Vector3[] {
 
 		const d1 = startDirection.clone().normalize();
 		const d4 = endDirection.clone().normalize();
@@ -113,7 +113,7 @@ export class SplineFactory {
 		return this.createSpline( a, aDirection, b, bDirection );
 	}
 
-	static createFromLaneCoords ( entry: TvLaneCoord, exit: TvLaneCoord, divider = 3 ): AbstractSpline {
+	static createFromLaneCoords ( entry: TvLaneCoord, exit: TvLaneCoord, divider: number = 3 ): AbstractSpline {
 
 		let entryDirection: Vector3, exitDirection: Vector3;
 
@@ -171,7 +171,7 @@ export class SplineFactory {
 
 	}
 
-	static createRoadSpline ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): AbstractSpline {
+	static createRoadSpline ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): AbstractSpline {
 
 		if ( start == null ) throw new Error( 'entry is null' );
 		if ( startDirection == null ) throw new Error( 'entryDirection is null' );
@@ -207,7 +207,7 @@ export class SplineFactory {
 	 * @param degrees
 	 * @param type
 	 */
-	static createStraightSplineAndPoints ( start: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ): AbstractSpline {
+	static createStraightSplineAndPoints ( start: Vector3, length: number = 100, degrees: number = 0, type: SplineType = SplineType.AUTOV2 ): AbstractSpline {
 
 		const spline = this.createSpline( type );
 

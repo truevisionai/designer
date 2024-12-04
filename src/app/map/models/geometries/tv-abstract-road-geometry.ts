@@ -118,7 +118,7 @@ export abstract class TvAbstractRoadGeometry {
 
 	}
 
-	public getPositionAt ( s ): TvPosTheta {
+	public getPositionAt ( s: any ): TvPosTheta {
 
 		return this.getRoadCoord( s );
 

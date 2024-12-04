@@ -178,7 +178,7 @@ export class JunctionManager {
 
 	}
 
-	removeJunction ( junction: TvJunction, spline?: AbstractSpline, processOthers = false ): void {
+	removeJunction ( junction: TvJunction, spline?: AbstractSpline, processOthers: boolean = false ): void {
 
 		if ( this.debug ) Log.debug( 'Remove', junction.toString() );
 
@@ -326,7 +326,7 @@ export class JunctionManager {
 
 	}
 
-	createGroups ( intersections: SplineIntersection[], thresholdDistance = 10 ): IntersectionGroup[] {
+	createGroups ( intersections: SplineIntersection[], thresholdDistance: number = 10 ): IntersectionGroup[] {
 
 		return createGroupsFromIntersections( intersections, thresholdDistance );
 

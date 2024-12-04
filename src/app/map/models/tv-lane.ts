@@ -298,13 +298,13 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return roadMark;
 	}
 
-	addNoneRoadMark ( s = 0 ): TvLaneRoadMark {
+	addNoneRoadMark ( s: number = 0 ): TvLaneRoadMark {
 
 		return this.addRoadMarkRecord( s, TvRoadMarkTypes.NONE, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.0, TvRoadMarkLaneChange.NONE, 0.0 );
 
 	}
 
-	addRoadMarkOfType ( s = 0, type: TvRoadMarkTypes ): TvLaneRoadMark {
+	addRoadMarkOfType ( s: number = 0, type: TvRoadMarkTypes ): TvLaneRoadMark {
 
 		return this.addRoadMarkRecord( s, type, TvRoadMarkWeights.STANDARD, TvColors.WHITE, 0.15, TvRoadMarkLaneChange.NONE, 0.0 );
 
@@ -422,7 +422,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.widths;
 	}
 
-	getLaneMaterial ( index ): TvLaneMaterial {
+	getLaneMaterial ( index: any ): TvLaneMaterial {
 
 		if ( this.materials.length > 0 && index < this.materials.length ) {
 			return this.materials[ index ];
@@ -431,7 +431,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return null;
 	}
 
-	getLaneVisibility ( index ): TvLaneVisibility {
+	getLaneVisibility ( index: any ): TvLaneVisibility {
 
 		if ( this.visibility.length > 0 && index < this.visibility.length ) {
 			return this.visibility[ index ];
@@ -440,7 +440,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return null;
 	}
 
-	getLaneSpeed ( index ): TvLaneSpeed {
+	getLaneSpeed ( index: any ): TvLaneSpeed {
 
 		if ( this.speed.length > 0 && index < this.speed.length ) {
 			return this.speed[ index ];
@@ -449,7 +449,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return null;
 	}
 
-	getLaneAccess ( index ): TvLaneAccess {
+	getLaneAccess ( index: any ): TvLaneAccess {
 
 		if ( this.access.length > 0 && index < this.access.length ) {
 			return this.access[ index ];
@@ -458,7 +458,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return null;
 	}
 
-	getLaneHeight ( index ): TvLaneHeight {
+	getLaneHeight ( index: any ): TvLaneHeight {
 
 		if ( this.height.length > 0 && index < this.height.length ) {
 			return this.height[ index ];
@@ -642,7 +642,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 * mark object corresponding to the provided s-offset
 	 * @param sCheck
 	 */
-	getRoadMark ( sCheck ): TvLaneRoadMark {
+	getRoadMark ( sCheck: any ): TvLaneRoadMark {
 
 		return this.roadMarks.findAt( sCheck );
 

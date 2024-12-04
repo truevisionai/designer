@@ -104,7 +104,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	getNearestJunction ( target: Vector3, maxDistance = 10 ): TvJunction | undefined {
+	getNearestJunction ( target: Vector3, maxDistance: number = 10 ): TvJunction | undefined {
 
 		let nearestJunction: TvJunction | undefined;
 		let nearestDistance = maxDistance;

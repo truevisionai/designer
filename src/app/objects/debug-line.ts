@@ -68,7 +68,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	static create ( points: Vector3[], width = 2, color = COLOR.CYAN ): DebugLine<any> {
+	static create ( points: Vector3[], width: number = 2, color: any = COLOR.CYAN ): DebugLine<any> {
 
 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
@@ -77,7 +77,7 @@ export class DebugLine<T> extends Line2 implements INode {
 		return new DebugLine( null, geometry, material );
 	}
 
-	static getMaterial ( color = COLOR.CYAN, width = 2 ): LineMaterial {
+	static getMaterial ( color: any = COLOR.CYAN, width: number = 2 ): LineMaterial {
 
 		return new LineMaterial( {
 			color: color,

@@ -85,7 +85,7 @@ export class ThirdOrderPolynom {
 	 * @param sOther
 	 * @returns {boolean}
 	 */
-	checkInterval ( sOther ): boolean {
+	checkInterval ( sOther: any ): boolean {
 
 		return sOther >= this._s;
 

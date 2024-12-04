@@ -1270,7 +1270,7 @@ export class OpenScenarioExporter {
 
 	}
 
-	writeTarget ( abstractTarget: Target, absoluteKey = 'Absolute', relativeKey = 'Relative' ): any {
+	writeTarget ( abstractTarget: Target, absoluteKey: string = 'Absolute', relativeKey: string = 'Relative' ): any {
 
 		if ( abstractTarget.targetType == TargetType.absolute ) {
 

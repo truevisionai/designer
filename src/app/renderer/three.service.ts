@@ -47,7 +47,7 @@ export class ThreeService {
 
 	}
 
-	setEnvironment ( environment: ScenarioEnvironment, removeOld = false ): void {
+	setEnvironment ( environment: ScenarioEnvironment, removeOld: boolean = false ): void {
 
 		if ( removeOld ) {
 
@@ -98,12 +98,12 @@ export class ThreeService {
 	 * @param raycasting
 	 * @deprecated use SceneService.add instead
 	 */
-	add ( object: THREE.Object3D, raycasting = false ): any {
+	add ( object: THREE.Object3D, raycasting: boolean = false ): any {
 
 		SceneService.addToMain( object, raycasting );
 	}
 
-	remove ( object: THREE.Object3D, raycasting = false ): any {
+	remove ( object: THREE.Object3D, raycasting: boolean = false ): any {
 
 		SceneService.removeFromMain( object, raycasting );
 

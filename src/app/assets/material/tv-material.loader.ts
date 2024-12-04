@@ -422,7 +422,7 @@ export class TvMaterialLoader implements AssetLoader {
 
 	}
 
-	static createMaterialFromType ( type ): any {
+	static createMaterialFromType ( type: any ): any {
 
 		const materialLib = {
 			ShadowMaterial,

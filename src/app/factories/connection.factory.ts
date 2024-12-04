@@ -66,7 +66,7 @@ export class ConnectionFactory {
 
 	}
 
-	public addConnectionsNew ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner = false ): void {
+	public addConnectionsNew ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, isCorner: boolean = false ): void {
 
 		const connection = ConnectionFactory.createConnectionAndRoad( junction, incoming, outgoing );
 
@@ -169,7 +169,7 @@ export class ConnectionFactory {
 
 	}
 
-	public addConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner = false ): void {
+	public addConnections ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, corner: boolean = false ): void {
 
 		this.addConnectionsNew( junction, incoming, outgoing, corner );
 
@@ -333,7 +333,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvJunctionConnection {
+	private createConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner: boolean = false ): TvJunctionConnection {
 
 		const connectingRoad = this.createConnectingRoad( junction, incoming, outgoing );
 
@@ -368,7 +368,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createFakeConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvJunctionConnection {
+	private createFakeConnection ( junction: TvJunction, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner: boolean = false ): TvJunctionConnection {
 
 		const connectingRoad = this.createFakeConnectingRoad( junction, incoming, outgoing );
 
@@ -410,7 +410,7 @@ export class ConnectionFactory {
 
 	}
 
-	private createConnectingLane ( connectingRoad: TvRoad, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner = false ): TvLane {
+	private createConnectingLane ( connectingRoad: TvRoad, incoming: TvLaneCoord, outgoing: TvLaneCoord, corner: boolean = false ): TvLane {
 
 		const laneSection = connectingRoad.getLaneProfile().addDefaultLaneSection();
 

@@ -31,7 +31,7 @@ export class Act {
 
 	}
 
-	static getNewName ( name = 'MyAct' ): string {
+	static getNewName ( name: string = 'MyAct' ): string {
 
 		return `${ name }${ this.count }`;
 

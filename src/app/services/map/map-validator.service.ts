@@ -135,7 +135,7 @@ export class MapValidatorService {
 
 	}
 
-	validateMap ( map: TvMap, throwError = false ): boolean {
+	validateMap ( map: TvMap, throwError: boolean = false ): boolean {
 
 		this.map = map;
 

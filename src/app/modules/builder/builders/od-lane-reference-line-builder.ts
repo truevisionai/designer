@@ -118,7 +118,7 @@ export class OdLaneReferenceLineBuilder {
 		this.drawRoad( road, type );
 	}
 
-	public drawRoad ( road: TvRoad, type: LineType = LineType.SOLID, redraw = false ): void {
+	public drawRoad ( road: TvRoad, type: LineType = LineType.SOLID, redraw: boolean = false ): void {
 
 		if ( road == null ) return;
 

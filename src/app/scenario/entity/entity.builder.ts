@@ -106,7 +106,7 @@ export class EntityBuilder {
 		// SceneService.add( obj.gameObject );
 	}
 
-	public createVehicleIconLabel ( parent: Object3D, color = 0xffffff ): void {
+	public createVehicleIconLabel ( parent: Object3D, color: number = 0xffffff ): void {
 
 		// const loader = new TextureLoader();
 		// const texture = loader.load( 'assets/car-icon-circle.png' );

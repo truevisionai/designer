@@ -60,7 +60,7 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	addSignalization ( junction: TvJunction, type: AutoSignalizationType, useProps = false ): void {
+	addSignalization ( junction: TvJunction, type: AutoSignalizationType, useProps: boolean = false ): void {
 
 		this.removeControllers( junction );
 

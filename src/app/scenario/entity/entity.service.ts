@@ -61,7 +61,7 @@ export class EntityService {
 
 	}
 
-	createVehicleOnLane ( road: TvRoad, lane: TvLane, s = 0, offset = 0 ): any {
+	createVehicleOnLane ( road: TvRoad, lane: TvLane, s: number = 0, offset: number = 0 ): any {
 
 		const position = road.getLaneCenterPosition( lane, s as RoadDistance, offset ).position;
 

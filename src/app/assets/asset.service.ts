@@ -177,7 +177,7 @@ export class AssetService {
 
 	}
 
-	createMaterialAsset ( path: string, name = 'Material.material', material: MaterialAsset ): Asset {
+	createMaterialAsset ( path: string, name: string = 'Material.material', material: MaterialAsset ): Asset {
 
 		const exporter = this.exporterFactory.getExporter( AssetType.MATERIAL );
 

@@ -116,7 +116,7 @@ export class StatusBarService {
 
 	}
 
-	static setMessage ( msg: string, force = false ): void {
+	static setMessage ( msg: string, force: boolean = false ): void {
 
 		if ( !force && this.message === msg ) return;
 

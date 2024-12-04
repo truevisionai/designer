@@ -77,7 +77,7 @@ export class GeometryUtils {
 
 	}
 
-	static sortCoordsByAngle ( coords: TvRoadCoord[], clockwise = false ): TvRoadCoord[] {
+	static sortCoordsByAngle ( coords: TvRoadCoord[], clockwise: boolean = false ): TvRoadCoord[] {
 
 		let sortedPoints = GeometryUtils.sortByAngle( coords.map( p => p.position ), null, clockwise );
 
@@ -267,7 +267,7 @@ export class GeometryUtils {
 		return points;
 	}
 
-	static createExtrudeGeometry ( points: Vector3[], width = 1.0, height = 0.1 ): BufferGeometry {
+	static createExtrudeGeometry ( points: Vector3[], width: number = 1.0, height: number = 0.1 ): BufferGeometry {
 
 		if ( points.length < 2 ) {
 			Log.error( 'Not enough points to create extrude geometry' );
@@ -296,7 +296,7 @@ export class GeometryUtils {
 		return new ExtrudeGeometry( shape, extrudeSettings );
 	}
 
-	static mergeGeometries ( geometries: BufferGeometry[], useGroups = false ): BufferGeometry {
+	static mergeGeometries ( geometries: BufferGeometry[], useGroups: boolean = false ): BufferGeometry {
 
 		return BufferGeometryUtils.mergeGeometries( geometries, useGroups );
 
