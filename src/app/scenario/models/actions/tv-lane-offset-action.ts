@@ -53,7 +53,7 @@ export class LaneOffsetAction extends PrivateAction {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		super.reset();
 
@@ -62,7 +62,7 @@ export class LaneOffsetAction extends PrivateAction {
 
 	}
 
-	execute ( entity: ScenarioEntity ) {
+	execute ( entity: ScenarioEntity ): void {
 
 		if ( !this.startTime ) this.startTime = Time.time;
 
@@ -84,7 +84,7 @@ export class LaneOffsetAction extends PrivateAction {
 		// This function should return the elapsed time since the start of the action
 		const elapsedTime = ( Time.time - this.startTime ) * 0.001;
 
-		function calculateLaneOffset ( entity, targetOffset, elapsedTime, maxLateralAcc ) {
+		function calculateLaneOffset ( entity: any, targetOffset: any, elapsedTime: any, maxLateralAcc: any ): any {
 			let currentOffset = entity.getCurrentLaneOffset();
 			let L = targetOffset - currentOffset;
 			let dynamicsTime = Math.sqrt( L * Math.PI ** 2 / maxLateralAcc );

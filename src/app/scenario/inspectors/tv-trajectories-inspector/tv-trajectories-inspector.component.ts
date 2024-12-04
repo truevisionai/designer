@@ -24,19 +24,19 @@ export class TrajectoriesInspectorComponent implements OnInit, IComponent {
 		return this.data;
 	};
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		Log.info( this.data );
 
 	}
 
-	selectTrajectory ( trajectory ) {
+	selectTrajectory ( trajectory: any ): void {
 
 		this.selected = trajectory;
 
 	}
 
-	isDisabled ( trajectory: Trajectory ) {
+	isDisabled ( trajectory: Trajectory ): boolean {
 
 		return trajectory !== this.selected;
 

@@ -45,7 +45,7 @@ export class PropCurveTool extends ToolWithHandler {
 
 	}
 
-	init () {
+	init (): void {
 
 		super.init();
 

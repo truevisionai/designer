@@ -69,7 +69,7 @@ export class JunctionGateDebugger extends BaseDebugger<TvRoadSignal> {
 
 	}
 
-	private createLines ( signal: TvRoadSignal ) {
+	private createLines ( signal: TvRoadSignal ): void {
 
 		for ( const dependency of signal.dependencies ) {
 

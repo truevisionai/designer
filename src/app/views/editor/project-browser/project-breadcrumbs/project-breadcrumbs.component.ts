@@ -14,7 +14,7 @@ export class ProjectBreadcrumbsComponent implements OnInit {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

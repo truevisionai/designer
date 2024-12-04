@@ -12,11 +12,6 @@ export enum TurnType {
 	OTHER = 'other'
 }
 
-export enum TvElementType {
-	ROAD = 'road',
-	JUNCTION = 'junction'
-}
-
 export enum TvLaneType {
 	none = 'none', // Describes the space on the outermost edge of the road and
 	// does not have actual content Its only purpose is for applications to
@@ -243,7 +238,7 @@ export enum ObjectFillType {
 
 export class EnumHelper {
 
-	static stringToOdUnits ( value ): TvUnit {
+	static stringToOdUnits ( value: any ): TvUnit {
 
 		switch ( value ) {
 
@@ -314,7 +309,7 @@ export class EnumHelper {
 
 	}
 
-	static dimensionToString ( dynamicsDimension: DynamicsDimension ) {
+	static dimensionToString ( dynamicsDimension: DynamicsDimension ): "distance" | "time" | "rate" | "value" {
 
 		switch ( dynamicsDimension ) {
 
@@ -335,7 +330,7 @@ export class EnumHelper {
 
 	}
 
-	static stringToDynamics ( dynamicsString: string ) {
+	static stringToDynamics ( dynamicsString: string ): DynamicsShape {
 
 		switch ( dynamicsString ) {
 

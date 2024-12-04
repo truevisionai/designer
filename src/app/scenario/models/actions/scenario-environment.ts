@@ -69,7 +69,7 @@ class Weather {
 
 	}
 
-	static fromXML ( xml: XmlElement ) {
+	static fromXML ( xml: XmlElement ): Weather {
 
 		const sun = xml.Sun;
 		const fog = xml.Fog;
@@ -86,7 +86,7 @@ class Weather {
 
 	}
 
-	static import ( xml: XmlElement ) {
+	static import ( xml: XmlElement ): Weather {
 
 		const sun = xml.Sun ? Sun.import( xml.Sun ) : new Sun();
 		// const fog = xml.Fog;
@@ -103,7 +103,7 @@ class Weather {
 
 	}
 
-	export () {
+	export (): any {
 		return {
 			Sun: this.sun.export(),
 		}
@@ -175,7 +175,7 @@ class Sun {
 		)
 	}
 
-	update () {
+	update (): void {
 
 		const lightDirection = this.direction.normalize();
 
@@ -185,7 +185,7 @@ class Sun {
 
 	}
 
-	static import ( xml: XmlElement ) {
+	static import ( xml: XmlElement ): Sun {
 
 		const azimuth: number = parseFloat( xml.attr_azimuth ) || 1;
 		const elevation: number = parseFloat( xml.attr_elevation ) || 0;
@@ -197,7 +197,7 @@ class Sun {
 		return sun
 	}
 
-	export () {
+	export (): any {
 
 		return {
 			'attr_azimuth': this.azimuth,
@@ -304,7 +304,7 @@ class DomeImage {
 		this.update();
 	}
 
-	update () {
+	update (): void {
 
 		// const dome = this;
 
@@ -378,7 +378,7 @@ class TimeOfDay {
 		this.dateTime = dateTime;
 	}
 
-	static fromXML ( xml: XmlElement ) {
+	static fromXML ( xml: XmlElement ): TimeOfDay {
 		const animation = xml.attr_animation;
 		const dateTime = xml.attr_dateTime;
 		return new TimeOfDay( animation, dateTime );
@@ -402,7 +402,7 @@ class RoadCondition {
 	) {
 	}
 
-	static fromXML ( xml: XmlElement ) {
+	static fromXML ( xml: XmlElement ): RoadCondition {
 		const wetness = xml.attr_wetness;
 		const friction = xml.attr_friction;
 		return new RoadCondition( wetness, friction, [] );
@@ -429,7 +429,7 @@ export class ScenarioEnvironment {
 		this._name = value;
 	}
 
-	static fromXML ( xml: XmlElement ) {
+	static fromXML ( xml: XmlElement ): ScenarioEnvironment {
 
 		const name = xml.attr_name;
 
@@ -442,7 +442,7 @@ export class ScenarioEnvironment {
 		return new ScenarioEnvironment( name, timeOfDay, weather, roadCondition, [] );
 	}
 
-	export () {
+	export (): any {
 		return {
 			'attr_name': this.name,
 			Weather: this.weather.export()

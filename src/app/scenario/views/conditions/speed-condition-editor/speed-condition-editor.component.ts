@@ -31,13 +31,13 @@ export class SpeedConditionEditorComponent extends BaseConditionEditorComponent 
 
 	}
 
-	onSpeedChanged ( $value: number ) {
+	onSpeedChanged ( $value: number ): void {
 
 		Commands.SetValue( this.speedCondition, 'value', $value );
 
 	}
 
-	onRuleChanged ( $rule: Rule ) {
+	onRuleChanged ( $rule: Rule ): void {
 
 		Commands.SetValue( this.speedCondition, 'rule', $rule );
 

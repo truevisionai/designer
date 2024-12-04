@@ -21,7 +21,7 @@ export class SplineEventListener {
 	) {
 	}
 
-	init () {
+	init (): void {
 
 		MapEvents.splineCreated.subscribe( e => this.onSplineCreated( e ) );
 		MapEvents.splineRemoved.subscribe( e => this.onSplineRemoved( e ) );
@@ -29,19 +29,19 @@ export class SplineEventListener {
 
 	}
 
-	onSplineCreated ( event: SplineCreatedEvent ) {
+	onSplineCreated ( event: SplineCreatedEvent ): void {
 
 		this.splineManager.addSpline( event.spline );
 
 	}
 
-	onSplineRemoved ( event: SplineRemovedEvent ) {
+	onSplineRemoved ( event: SplineRemovedEvent ): void {
 
 		this.splineManager.removeSpline( event.spline );
 
 	}
 
-	onSplineUpdated ( event: SplineUpdatedEvent ) {
+	onSplineUpdated ( event: SplineUpdatedEvent ): void {
 
 		this.splineManager.updateSpline( event.spline );
 

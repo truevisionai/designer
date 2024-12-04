@@ -132,7 +132,7 @@ export class RelativeLanePosition extends Position {
 
 	}
 
-	toXML ( version?: OpenScenarioVersion ) {
+	toXML ( version?: OpenScenarioVersion ): any {
 
 		return {
 			attr_entityRef: this._entityRef?.name,

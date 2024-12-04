@@ -12,7 +12,7 @@ import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
 import { TvLink, TvLinkType } from 'app/map/models/tv-link';
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvJunctionLaneLink } from 'app/map/models/junctions/tv-junction-lane-link';
 import { BaseDebugger } from "../../core/interfaces/base-debugger";
 import { DebugDrawService } from '../debug/debug-draw.service';
@@ -85,13 +85,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	addManeuver ( junction: TvJunction, maneuver: ManeuverMesh ) {
+	addManeuver ( junction: TvJunction, maneuver: ManeuverMesh ): void {
 
 		this.maneuvers.addItem( junction, maneuver );
 
 	}
 
-	removeManeuver ( junction: TvJunction, maneuver: ManeuverMesh ) {
+	removeManeuver ( junction: TvJunction, maneuver: ManeuverMesh ): void {
 
 		this.maneuvers.removeItem( junction, maneuver );
 
@@ -212,7 +212,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		junction.getConnections().forEach( connection => {
 
-			connection.laneLink.forEach( link => {
+			connection.getLaneLinks().forEach( link => {
 
 				if ( link.connectingLane.type != TvLaneType.driving ) return;
 
@@ -232,7 +232,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	showOutline ( junction: TvJunction ) {
+	showOutline ( junction: TvJunction ): void {
 
 		const outline = this.createJunctionOutline( junction );
 
@@ -240,7 +240,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	showNodes ( road: TvRoad ) {
+	showNodes ( road: TvRoad ): void {
 
 		if ( road.isJunction ) return;
 
@@ -310,11 +310,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			if ( road.isJunction ) continue;
 
-			if ( road.predecessor?.isEqualTo( junction ) ) {
+			if ( road.predecessor?.equals( junction ) ) {
 				this.addEntriesAt( junction, road, TvContactPoint.START );
 			}
 
-			if ( road.successor?.isEqualTo( junction ) ) {
+			if ( road.successor?.equals( junction ) ) {
 				this.addEntriesAt( junction, road, TvContactPoint.END );
 			}
 
@@ -360,7 +360,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

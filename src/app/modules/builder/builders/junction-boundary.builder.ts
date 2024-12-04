@@ -91,7 +91,7 @@ export class JunctionBoundaryBuilder {
 	 * Useful for debugging the boundary
 	 * @param boundary
 	 */
-	private debugDrawBoundary ( boundary: TvJunctionBoundary ) {
+	private debugDrawBoundary ( boundary: TvJunctionBoundary ): void {
 
 		let points = this.convertBoundaryToPositions( boundary );
 
@@ -114,7 +114,7 @@ export class JunctionBoundaryBuilder {
 
 	}
 
-	private convertBoundaryToShapeComplex ( boundary: TvJunctionBoundary ) {
+	private convertBoundaryToShapeComplex ( boundary: TvJunctionBoundary ): Shape {
 
 		// NOTE: THIS NOT WORKING PROPERLY
 
@@ -150,7 +150,7 @@ export class JunctionBoundaryBuilder {
 		return shape;
 	}
 
-	private convertBoundaryToShapeSimple ( boundary: TvJunctionBoundary ) {
+	private convertBoundaryToShapeSimple ( boundary: TvJunctionBoundary ): Shape {
 
 		const positions = this.convertBoundaryToPositions( boundary );
 

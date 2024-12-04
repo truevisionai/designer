@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { OpenDriveService } from 'app/map/services/open-drive.service';
 import { ApiService } from '../services/api.service';
 import { IFile } from './file';
+import { Observable } from 'rxjs';
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,32 +20,32 @@ export class FileApiService {
 	}
 
 	// get file
-	getFile ( name: string, type: string ) {
+	getFile ( name: string, type: string ): Observable<any> {
 
 		return this.api.get( `/files?type=${ type }&name=${ name }` );
 
 	}
 
 	// get list of files
-	getFileList ( type: string ) {
+	getFileList ( type: string ): Observable<any> {
 
 		return this.api.get( `/files/list?type=${ type }` );
 
 	}
 
-	save ( file: IFile ) {
+	save ( file: IFile ): Observable<any> {
 
 		return this.api.put( '/files', { file } );
 
 	}
 
-	ping () {
+	ping (): Observable<any> {
 
 		return this.api.get( `/ping` );
 
 	}
 
-	uploadMapFiles ( e: Error, openDriveMap?: string, tvMap?: string ) {
+	uploadMapFiles ( e: Error, openDriveMap?: string, tvMap?: string ): Observable<any> {
 
 		try {
 
@@ -68,7 +69,7 @@ export class FileApiService {
 
 	}
 
-	uploadCurrentMapState () {
+	uploadCurrentMapState (): Observable<any> {
 
 		const openDriveState = this.mapService.getOpenDriveOutput();
 		const tvMapState = this.mapService.getSceneOutput();

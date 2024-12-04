@@ -22,7 +22,7 @@ export class DefaultVehicleController extends AbstractController {
 
 
 
-	public update () {
+	public update (): void {
 
 		if ( !this.entity.openDriveProperties.isOpenDrive ) {
 			TvConsole.warn( this.entity.name + ` is not OpenDrive entity` );
@@ -73,7 +73,7 @@ export class DefaultVehicleController extends AbstractController {
 						contactPoint = connection.contactPoint;
 
 						nextRoad = connection.connectingRoad;
-						nextLaneId = connection.getToLaneId( currentLaneId );
+						nextLaneId = connection.getConnectingLaneId( currentLaneId );
 					}
 
 					// update s-coordinate
@@ -135,7 +135,7 @@ export class DefaultVehicleController extends AbstractController {
 					contactPoint = connection.contactPoint;
 
 					nextRoad = connection.connectingRoad;
-					nextLaneId = connection.getToLaneId( currentLaneId );
+					nextLaneId = connection.getConnectingLaneId( currentLaneId );
 				}
 
 				// update s-coordinate

@@ -15,6 +15,7 @@ import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { traverseLanes } from "app/utils/traverseLanes";
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -48,10 +49,18 @@ export class TvJunctionOuterBoundaryService {
 
 		const connection = this.junctionCornerRoadService.getCornerConnectionForRoad( junction, coord.road );
 
-		if ( !connection ) return;
+		if ( !connection ) {
+			Log.warn( 'No corner road found for junction connection' );
+			return;
+		}
 
 		// get the lane link which is connected to the lowest lane
 		const link = connection.getLowestLaneLink();
+
+		if ( !link ) {
+			Log.warn( 'No lane link found for corner road' );
+			return;
+		}
 
 		traverseLanes( connection.connectingRoad, link.to, ( lane: TvLane ) => {
 
@@ -63,25 +72,22 @@ export class TvJunctionOuterBoundaryService {
 
 	private createJointSegment ( roadCoord: TvRoadCoord ): TvJointBoundary {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getLeftMostLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getRightMostLane();
+			startLane = roadCoord.laneSection.getLeftMostLane();
+			endLane = roadCoord.laneSection.getRightMostLane();
 
 		} else {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getRightMostLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getLeftMostLane();
+			startLane = roadCoord.laneSection.getRightMostLane();
+			endLane = roadCoord.laneSection.getLeftMostLane();
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 

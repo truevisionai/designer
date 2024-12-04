@@ -24,16 +24,16 @@ export class ManeuverEditorComponent implements OnInit {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	delete ( $event: MouseEvent ) {
+	delete ( $event: MouseEvent ): void {
 
 		// TODO: Implement this
 
 	}
 
-	addEvent () {
+	addEvent (): void {
 
 		const event = this.elementFactory.createEmptyEvent();
 

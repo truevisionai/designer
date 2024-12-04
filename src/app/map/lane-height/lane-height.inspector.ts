@@ -43,7 +43,7 @@ export class LaneHeightInspector {
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	delete () {
+	delete (): void {
 		Commands.RemoveObject( this );
 	}
 }

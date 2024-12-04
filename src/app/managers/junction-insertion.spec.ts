@@ -38,7 +38,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	} );
 
-	function expectOffsets ( spline: AbstractSpline, offsets: number[] ) {
+	function expectOffsets ( spline: AbstractSpline, offsets: number[] ): void {
 
 		const keys = spline.getSegmentKeys();
 
@@ -52,7 +52,7 @@ describe( 'JunctionManager: InsertJunction', () => {
 
 	}
 
-	function expectCoords ( spline: AbstractSpline, junction: TvJunction, expected: TvLink[] ) {
+	function expectCoords ( spline: AbstractSpline, junction: TvJunction, expected: TvLink[] ): void {
 
 		const coords = spline.getSegmentLinks( junction );
 

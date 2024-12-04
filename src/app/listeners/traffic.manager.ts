@@ -33,7 +33,7 @@ export class TrafficManager {
 		private scenarioDirector: ScenarioDirectorService
 	) { }
 
-	init () {
+	init (): void {
 
 		if ( this.disabled ) return;
 
@@ -70,7 +70,7 @@ export class TrafficManager {
 		this.playerService.playerTick.subscribe( e => this.onPlayerTick( e ) );
 	}
 
-	restart () {
+	restart (): void {
 
 		if ( this.disabled ) return;
 
@@ -82,7 +82,7 @@ export class TrafficManager {
 
 	}
 
-	restartTraffic () {
+	restartTraffic (): void {
 
 		// for ( const vehicle of this.vehicleService.getVehicles() ) {
 		// 	this.scenarioService.getScenario().removeObject( vehicle );
@@ -99,13 +99,13 @@ export class TrafficManager {
 
 	}
 
-	createTraffic ( road: TvRoad ) {
+	createTraffic ( road: TvRoad ): void {
 
 		for ( let i = 0; i < road.laneSections.length; i++ ) {
 
 			const laneSection = road.laneSections[ i ];
 
-			const lanes = laneSection.getLaneArray();
+			const lanes = laneSection.getLanes();
 
 			for ( let j = 0; j < lanes.length; j++ ) {
 

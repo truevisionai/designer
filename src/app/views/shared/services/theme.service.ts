@@ -4,7 +4,6 @@
 
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, Renderer2 } from '@angular/core';
-import { getQueryParam } from '../helpers/url.helper';
 
 export interface ITheme {
 	name: string,
@@ -14,6 +13,7 @@ export interface ITheme {
 
 @Injectable()
 export class ThemeService {
+
 	public egretThemes: ITheme[] = [ {
 		'name': 'egret-dark-purple',
 		'baseColor': '#9c27b0',
@@ -40,7 +40,7 @@ export class ThemeService {
 	}
 
 	// Invoked in AppComponent and apply 'activatedTheme' on startup
-	applyMatTheme ( r: Renderer2, themeName: string ) {
+	applyMatTheme ( r: Renderer2, themeName: string ): void {
 		this.renderer = r;
 
 		this.activatedTheme = this.egretThemes[ 1 ];
@@ -54,13 +54,13 @@ export class ThemeService {
 
 	}
 
-	changeTheme ( prevTheme, themeName: string ) {
+	changeTheme ( prevTheme: string, themeName: string ): void {
 		this.renderer.removeClass( this.document.body, prevTheme );
 		this.renderer.addClass( this.document.body, themeName );
 		this.flipActiveFlag( themeName );
 	}
 
-	flipActiveFlag ( themeName: string ) {
+	flipActiveFlag ( themeName: string ): void {
 		this.egretThemes.forEach( ( t ) => {
 			t.isActive = false;
 			if ( t.name === themeName ) {
@@ -71,7 +71,7 @@ export class ThemeService {
 	}
 
 	// *********** ONLY FOR DEMO **********
-	setThemeFromQuery () {
+	setThemeFromQuery (): void {
 		// let themeStr = getQueryParam( 'theme' );
 		// try {
 		// 	this.activatedTheme = JSON.parse( themeStr );

@@ -24,9 +24,9 @@ export abstract class Target {
 
 	abstract getTarget (): any;
 
-	abstract setTarget ( value );
+	abstract setTarget ( value: any ): any;
 
-	reset () {
+	reset (): void {
 
 
 	}

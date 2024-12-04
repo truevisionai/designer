@@ -22,14 +22,14 @@ export class RelativeWorldComponent extends AbstractPositionEditor {
 		return this.relativeWorldPosition.delta;
 	}
 
-	onDeltaChanged ( $delta: Vector3 ) {
+	onDeltaChanged ( $delta: Vector3 ): void {
 
 		this.relativeWorldPosition.delta = $delta;
 
 		this.positionModified.emit( this.position );
 	}
 
-	onEntityChanged ( $entityRef: string ) {
+	onEntityChanged ( $entityRef: string ): void {
 
 		this.relativeWorldPosition.entityName = $entityRef;
 

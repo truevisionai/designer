@@ -27,7 +27,7 @@ Width (ds) shall be greater than or equal to zero.
 } )
 export class LaneWidthManager {
 
-	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		this.validateLane( lane );
 
@@ -39,7 +39,7 @@ export class LaneWidthManager {
 
 	}
 
-	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		this.validateLane( lane );
 
@@ -51,7 +51,7 @@ export class LaneWidthManager {
 
 	}
 
-	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		return;
 
@@ -63,14 +63,14 @@ export class LaneWidthManager {
 
 	}
 
-	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	private syncWithSuccessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( road.isJunction ) return;
 
 		// if successor is not defined return
 		if ( !lane.successorExists ) return;
 
-		const nextLaneSection = this.nextLaneSection( lane );
+		const nextLaneSection = road.getLaneProfile().getNextLaneSection( laneSection );
 
 		if ( !nextLaneSection ) return
 
@@ -79,7 +79,7 @@ export class LaneWidthManager {
 
 		const succcessor = nextLaneSection.getLaneById( lane.successorId );
 
-		const lastWidthNode = lane.width[ lane.width.length - 1 ];
+		const lastWidthNode = lane.getWidthArray()[ lane.getLaneWidthCount() - 1 ];
 
 		if ( !lastWidthNode ) return;
 
@@ -118,24 +118,12 @@ export class LaneWidthManager {
 
 		}
 
-		TvUtils.computeCoefficients( lane.width, laneSection.getLength() );
+		lane.updateWidthCoefficients();
 	}
 
-	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ) {
+	private syncWithPredecessor ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, targetWidth?: number ): void {
 
 		// TODO: Implement this method
-
-	}
-
-	private previousLaneSection ( lane: TvLane ): TvLaneSection {
-
-		return LaneUtils.findPreviousLaneSection( lane.laneSection.road, lane.laneSection );
-
-	}
-
-	private nextLaneSection ( lane: TvLane ): TvLaneSection {
-
-		return LaneUtils.findNextLaneSection( lane.laneSection.road, lane.laneSection );
 
 	}
 
@@ -167,28 +155,29 @@ export class LaneWidthManager {
 
 	}
 
-	private validateLane ( lane: TvLane ) {
+	private validateLane ( lane: TvLane ): void {
 
 		this.ensureMinWidthRecord( lane );
-		this.ensureCorrectOrder( lane );
-		this.removeInvalidNodes( lane );
+		lane.sortWidth();
+		lane.removeInvalidWidths();
+
 	}
 
-	private ensureMinWidthRecord ( lane: TvLane ) {
+	private ensureMinWidthRecord ( lane: TvLane ): void {
 
-		if ( lane.side == TvLaneSide.CENTER ) {
-			lane.width.splice( 0, lane.width.length );
+		if ( lane.isCenter ) {
+			lane.clearLaneWidth();
 			return;
 		}
 
 
-		if ( lane.width.length == 0 ) {
+		if ( lane.getLaneWidthCount() == 0 ) {
 
 			lane.addWidthRecord( 0, this.getWidthByType( lane.type ), 0, 0, 0 );
 
 		} else {
 
-			const firstWidth = lane.width[ 0 ];
+			const firstWidth = lane.getWidthArray()[ 0 ];
 
 			if ( firstWidth.s != 0 ) {
 
@@ -200,26 +189,4 @@ export class LaneWidthManager {
 
 	}
 
-	private removeInvalidNodes ( lane: TvLane ) {
-
-		for ( let i = 0; i < lane.width.length; i++ ) {
-
-			const width = lane.width[ i ];
-
-			// Remove nodes that are out of bounds
-			if ( width.s < 0 || width.s > lane.laneSection.getLength() ) {
-
-				lane.width.splice( i, 1 );
-
-			}
-
-		}
-
-	}
-
-	private ensureCorrectOrder ( lane: TvLane ) {
-
-		lane.width.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
-
-	}
 }

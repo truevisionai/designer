@@ -72,7 +72,7 @@ export class OffRoadCondition extends EntityCondition {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		super.reset();
 

@@ -74,12 +74,10 @@ export abstract class MovingStrategy<T> implements IMovingStrategy {
 
 		const t = roadCoord.t;
 
-		const lanes = laneSection.lanesMap;
-
 		const isLeft = t > 0;
 		const isRight = t < 0;
 
-		for ( const [ id, lane ] of lanes ) {
+		for ( const lane of laneSection.getLanes() ) {
 
 			// logic to skip left or right lanes depending on t value
 			if ( isLeft && lane.isRight ) continue;

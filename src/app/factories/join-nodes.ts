@@ -25,7 +25,7 @@ export class JoinNode {
 
 	}
 
-	join () {
+	join (): void {
 
 		// first node position/direction
 		// second node position/direction
@@ -56,15 +56,15 @@ export class JoinNode {
 
 	}
 
-	private headingToSlope ( hdg ) {
+	private headingToSlope ( hdg: any ): number {
 		return Math.tan( hdg );
 	}
 
-	private calculateYIntercept ( x, y, slope ) {
+	private calculateYIntercept ( x: any, y: any, slope: any ): number {
 		return y - slope * x;
 	}
 
-	private calculateIntersection ( slopeA, slopeB, yInterceptA, yInterceptB ) {
+	private calculateIntersection ( slopeA: any, slopeB: any, yInterceptA: any, yInterceptB: any ): Vector3 {
 		if ( slopeA === slopeB ) {
 			return null; // The lines are parallel and do not intersect
 		}
@@ -75,7 +75,7 @@ export class JoinNode {
 		return new Vector3( x, y, 0 );
 	}
 
-	private checkIntersection ( a: TvPosTheta, b: TvPosTheta ) {
+	private checkIntersection ( a: TvPosTheta, b: TvPosTheta ): void {
 
 		const directionVectorA = {
 			x: Math.cos( a.hdg ),
@@ -103,7 +103,7 @@ export class JoinNode {
 		}
 	}
 
-	private checkIntersectionInSameDirection ( a: TvPosTheta, b: TvPosTheta ) {
+	private checkIntersectionInSameDirection ( a: TvPosTheta, b: TvPosTheta ): void {
 
 		// function isIntersectionInDirection ( intersection, startPoint: TvPosTheta, directionVector ) {
 		// 	const deltaX = intersection.x - startPoint.x;
@@ -115,7 +115,7 @@ export class JoinNode {
 		// 	);
 		// }
 
-		function isIntersectionInDirection ( intersection: Vector2, startPoint: TvPosTheta, directionVector ) {
+		function isIntersectionInDirection ( intersection: Vector2, startPoint: TvPosTheta, directionVector: any ): any {
 
 			return startPoint.isPointOnLine( intersection );
 

@@ -138,7 +138,7 @@ export class RoadSignalFactory {
 
 	}
 
-	private getNextId () {
+	private getNextId (): number {
 
 		return this.idService.getNextId();
 

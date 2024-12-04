@@ -3,7 +3,7 @@
  */
 
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { Vector2, Vector3 } from "three";
@@ -36,7 +36,7 @@ export class JunctionDebugFactory {
 
 	}
 
-	createJunctionGateLine ( junction: TvJunction, coord: TvLaneCoord, color = COLOR.CYAN, width = 8 ): JunctionGateLine {
+	createJunctionGateLine ( junction: TvJunction, coord: TvLaneCoord, color: any = COLOR.CYAN, width: number = 8 ): JunctionGateLine {
 
 		const start = LanePositionService.instance.findLaneStartPosition( coord.road, coord.laneSection, coord.lane, coord.laneDistance );
 
@@ -56,7 +56,7 @@ export class JunctionDebugFactory {
 
 	}
 
-	createLineMaterial ( color = COLOR.CYAN, lineWidth = 2 ): LineMaterial {
+	createLineMaterial ( color: any = COLOR.CYAN, lineWidth: number = 2 ): LineMaterial {
 
 		return new LineMaterial( {
 			color: color,

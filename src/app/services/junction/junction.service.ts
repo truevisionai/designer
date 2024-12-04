@@ -34,7 +34,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	getJunctionById ( id: number ) {
+	getJunctionById ( id: number ): any {
 
 		return this.mapService.map.getJunction( id );
 
@@ -62,7 +62,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	createNewJunction () {
+	createNewJunction (): any {
 
 		return this.factory.createByType();
 
@@ -104,7 +104,7 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	}
 
-	getNearestJunction ( target: Vector3, maxDistance = 10 ): TvJunction | undefined {
+	getNearestJunction ( target: Vector3, maxDistance: number = 10 ): TvJunction | undefined {
 
 		let nearestJunction: TvJunction | undefined;
 		let nearestDistance = maxDistance;

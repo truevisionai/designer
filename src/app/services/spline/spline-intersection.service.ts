@@ -17,7 +17,7 @@ export class SplineIntersectionService {
 		private mapService: MapService
 	) { }
 
-	findIntersections ( spline: AbstractSpline, otherSplines = null ): SplineIntersection[] {
+	findIntersections ( spline: AbstractSpline, otherSplines: any = null ): SplineIntersection[] {
 
 		if ( spline.controlPoints.length < 2 ) return [];
 
@@ -44,7 +44,7 @@ export class SplineIntersectionService {
 
 
 // eslint-disable-next-line max-lines-per-function
-export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize = 1 ): SplineIntersection[] | null {
+export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize: number = 1 ): SplineIntersection[] | null {
 
 	const intersections: SplineIntersection[] = [];
 

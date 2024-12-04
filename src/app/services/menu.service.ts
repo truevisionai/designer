@@ -22,14 +22,14 @@ export class MenuService {
 	constructor ( private electron: TvElectronService ) {
 	}
 
-	registerContextMenu ( type: ContextMenuType, template: Array<( MenuItemConstructorOptions ) | ( MenuItem )> ) {
+	registerContextMenu ( type: ContextMenuType, template: Array<( MenuItemConstructorOptions ) | ( MenuItem )> ): void {
 
 		if ( !this.electron.isElectronApp ) return;
 
 		menus.append( type, template );
 	}
 
-	showContextMenu ( type: ContextMenuType ) {
+	showContextMenu ( type: ContextMenuType ): void {
 
 		if ( !this.electron.isElectronApp ) return;
 

@@ -38,17 +38,17 @@ export class RoadCircleTool extends BaseTool<AbstractSpline> {
 
 	}
 
-	init () {
+	init (): void {
 
 	}
 
-	enable () {
+	enable (): void {
 
 		super.enable();
 
 	}
 
-	disable () {
+	disable (): void {
 
 		super.disable();
 
@@ -117,7 +117,7 @@ export class RoadCircleTool extends BaseTool<AbstractSpline> {
 
 	}
 
-	onPointerDownCreate ( e: PointerEventData ) {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
 		if ( this.debug ) Log.info( 'onPointerDownSelect', e, this.isDragging, this.isPointerDown, this.currentRadius );
 
@@ -129,7 +129,7 @@ export class RoadCircleTool extends BaseTool<AbstractSpline> {
 
 	}
 
-	onPointerUp ( e: PointerEventData ) {
+	onPointerUp ( e: PointerEventData ): void {
 
 		if ( this.debug ) Log.info( 'onPointerUp', e, this.isDragging, this.isPointerDown, this.currentRadius );
 
@@ -148,7 +148,7 @@ export class RoadCircleTool extends BaseTool<AbstractSpline> {
 		this.tool.viewController.enableControls();
 	}
 
-	onPointerMoved ( e: PointerEventData ) {
+	onPointerMoved ( e: PointerEventData ): void {
 
 		if ( this.debug ) Log.info( 'onPointerMoved', e, this.isDragging, this.isPointerDown, this.currentRadius );
 

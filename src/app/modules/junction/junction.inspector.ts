@@ -43,7 +43,7 @@ export class JunctionInspector {
 		description: 'The number of lane links in the junction'
 	} )
 	get totalLinks (): number {
-		return this.junction.getConnections().flatMap( connection => connection.laneLink ).length;
+		return this.junction.getLaneLinkCount()
 	}
 
 	@SerializedAction( {

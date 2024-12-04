@@ -49,7 +49,7 @@ export class LanePosition extends Position {
 
 	}
 
-	toXML ( version: OpenScenarioVersion ) {
+	toXML ( version: OpenScenarioVersion ): any {
 
 		const key = version == OpenScenarioVersion.v0_9 ? 'Lane' : 'LanePosition';
 
@@ -64,8 +64,8 @@ export class LanePosition extends Position {
 		};
 	}
 
-	getLaneArray () {
-		return TvMapQueries.findRoadById( this.roadId ).getLaneProfile().getLaneSectionAt( this.sCoordinate ).getLaneArray();
+	getLaneArray (): TvLane[] {
+		return TvMapQueries.findRoadById( this.roadId ).getLaneProfile().getLaneSectionAt( this.sCoordinate ).getLanes();
 	}
 
 	updateFromWorldPosition ( position: Vector3, orientation: Orientation ): void {

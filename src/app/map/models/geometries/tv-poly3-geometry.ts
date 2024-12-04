@@ -79,7 +79,7 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 
 	}
 
-	computeVars () {
+	computeVars (): void {
 
 
 		this.sinTheta = Math.sin( this.hdg );
@@ -88,7 +88,7 @@ export class TvPoly3Geometry extends TvAbstractRoadGeometry {
 
 	}
 
-	getBezierValue ( sCheck ): number {
+	getBezierValue ( sCheck: any ): number {
 
 		const du = sCheck - this.s;
 

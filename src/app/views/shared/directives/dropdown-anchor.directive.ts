@@ -17,7 +17,7 @@ export class DropdownAnchorDirective {
 	}
 
 	@HostListener( 'click', [ '$event' ] )
-	onClick ( e: any ) {
+	onClick ( e: any ): void {
 		this.navlink.toggle();
 	}
 }

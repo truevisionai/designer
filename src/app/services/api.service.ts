@@ -43,14 +43,14 @@ export class ApiService {
 		).pipe( catchError( this.formatErrors ) );
 	}
 
-	delete ( path ): Observable<any> {
+	delete ( path: any ): Observable<any> {
 		return this.http.delete(
 			`${ this.apiUrl }${ path }`,
 			{ headers: this.addAppVersionHeader() }
 		).pipe( catchError( this.formatErrors ) );
 	}
 
-	private formatErrors ( error: any ) {
+	private formatErrors ( error: any ): Observable<never> {
 		return throwError( error.error );
 	}
 

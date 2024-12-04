@@ -5,94 +5,59 @@
 import { TvLane } from "app/map/models/tv-lane";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TrafficRule } from "../map/models/traffic-rule";
-import { TravelDirection, TurnType, TvContactPoint, TvLaneSide, TvLaneType } from "../map/models/tv-common";
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from "../map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
-import { TvRoadCoord } from "app/map/models/TvRoadCoord";
-import { TvLink } from "app/map/models/tv-link";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
-import { Maths } from "./maths";
 
 export class LaneUtils {
 
-	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	private static readonly TYPE_ALIASES: Record<string, TvLaneType> = {
+		walking: TvLaneType.sidewalk,
+	};
 
-		const index = road.laneSections.indexOf( laneSection );
+	static typeToString ( type: TvLaneType ): string {
+		return type in TvLaneType ? type : 'none';
+	}
 
-		if ( index === 0 ) {
+	static stringToType ( value: string ): TvLaneType {
 
-			if ( !road.predecessor ) return null;
+		// Convert to lowercase for case-insensitive comparison
+		const normalizedValue = value.toLowerCase();
 
-			if ( !road.predecessor.isRoad ) return null;
-
-			const predecessorRoad = road.predecessor.element as TvRoad;
-
-			if ( road.predecessor.contactPoint == TvContactPoint.START ) {
-
-				return predecessorRoad.laneSections[ 0 ];
-
-			} else {
-
-				return predecessorRoad.laneSections[ predecessorRoad.laneSections.length - 1 ];
-
-			}
-
+		// Check direct matches first
+		const enumValues = Object.values( TvLaneType ) as string[];
+		if ( enumValues.includes( normalizedValue ) ) {
+			return normalizedValue as TvLaneType;
 		}
 
-		return road.laneSections[ index - 1 ];
+		// Check aliases
+		if ( normalizedValue in LaneUtils.TYPE_ALIASES ) {
+			return LaneUtils.TYPE_ALIASES[ normalizedValue ];
+		}
 
-		// getPredecessorLaneSection ( laneSection: TvLaneSection ) {
-
-		// 	const index = this.laneSections.findIndex( ls => ls == laneSection );
-
-		// 	if ( index > 0 ) return this.laneSections[ index - 1 ];
-
-		// 	if ( !this.predecessor ) return;
-
-		// 	return this.predecessor.laneSection;
-
-		// }
-
+		return TvLaneType.none;
 
 	}
 
-	static findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	/**
+	 * @deprecated use road.getLaneProfile().getPreviousLaneSection()
+	 * @param road
+	 * @param laneSection
+	 */
+	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
 
-		const index = road.laneSections.indexOf( laneSection );
+		return road.getLaneProfile().getPreviousLaneSection( laneSection );
 
-		if ( index === road.laneSections.length - 1 ) {
+	}
 
-			if ( !road.successor ) return null;
+	/**
+	 * @deprecated use road.getLaneProfile().getNextLaneSection()
+	 * @param road
+	 * @param laneSection
+	 */
+	static findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
 
-			if ( !road.successor.isRoad ) return null;
-
-			const successorRoad = road.successor.element as TvRoad;
-
-			if ( road.successor.contactPoint == TvContactPoint.START ) {
-
-				return successorRoad.laneSections[ 0 ];
-
-			} else {
-
-				return successorRoad.laneSections[ successorRoad.laneSections.length - 1 ];
-
-			}
-
-		}
-
-		return road.laneSections[ index + 1 ];
-
-
-		// getSuccessorLaneSection ( laneSection: TvLaneSection ): TvLaneSection {
-
-		// 	const nextLaneSection = this.laneSections.find( ls => ls.s > laneSection.s );
-
-		// 	if ( nextLaneSection ) return nextLaneSection;
-
-		// 	if ( !this.successor ) return;
-
-		// 	return this.successor.laneSection
-
-		// }
+		return road.getLaneProfile().getNextLaneSection( laneSection );
 
 	}
 
@@ -134,14 +99,14 @@ export class LaneUtils {
 	}
 
 	// when we only have incoming lane
-	static copyPreviousLane ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPreviousLane ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		LaneUtils.copyPrevLaneWidth( prevLane, prevSection, prevRoad, lane );
 		LaneUtils.copyPrevRoadMark( prevLane, prevSection, prevRoad, lane );
 
 	}
 
-	static copyPrevLaneWidth ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPrevLaneWidth ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		// const newSectionLength = lane.laneSection.road.length - lane.laneSection.s;
 
@@ -153,7 +118,7 @@ export class LaneUtils {
 
 	}
 
-	static copyNextLaneWidth ( nextLane: TvLane, nextSection: TvLaneSection, nextRoad: TvRoad, lane: TvLane ) {
+	static copyNextLaneWidth ( nextLane: TvLane, nextSection: TvLaneSection, nextRoad: TvRoad, lane: TvLane ): void {
 
 		const newSectionLength = lane.laneSection.road.length - lane.laneSection.s;
 
@@ -163,7 +128,7 @@ export class LaneUtils {
 
 	}
 
-	static copyPrevRoadMark ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPrevRoadMark ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		const lastRoadMark = prevLane.roadMarks.getLast();
 
@@ -173,9 +138,9 @@ export class LaneUtils {
 
 	}
 
-	static findOuterMostLane ( laneSection: TvLaneSection, side: TvLaneSide, type?: TvLaneType ) {
+	static findOuterMostLane ( laneSection: TvLaneSection, side: TvLaneSide, type?: TvLaneType ): any {
 
-		const lanes = laneSection.getLaneArray().filter( lane => lane.side == side && ( !type || lane.type == type ) );
+		const lanes = laneSection.getLanes().filter( lane => lane.side == side && ( !type || lane.type == type ) );
 
 		if ( lanes.length === 0 ) return null;
 
@@ -201,16 +166,16 @@ export class LaneUtils {
 		return outerMostLane;
 	}
 
-	static findHigestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
+	static findHigestLane ( laneSection: TvLaneSection, type?: TvLaneType ): any {
 
-		const lanes = laneSection.getLaneArray()
+		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => !type || lane.type == type );
 
 		return this.findHighest( lanes, type );
 	}
 
-	static findHighest ( lanes: TvLane[], type?: TvLaneType ) {
+	static findHighest ( lanes: TvLane[], type?: TvLaneType ): any {
 
 		if ( lanes.length === 0 ) return null;
 
@@ -220,7 +185,7 @@ export class LaneUtils {
 		for ( const current of lanes ) {
 
 			// ignore center lanes
-			if ( current.side == TvLaneSide.CENTER ) continue;
+			if ( current.isCenter ) continue;
 
 			if ( type && current.type != type ) continue;
 
@@ -237,9 +202,9 @@ export class LaneUtils {
 
 	}
 
-	static findLowestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
+	static findLowestLane ( laneSection: TvLaneSection, type?: TvLaneType ): any {
 
-		const lanes = laneSection.getLaneArray()
+		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => !type || lane.type == type );
 
@@ -247,9 +212,9 @@ export class LaneUtils {
 
 	}
 
-	static findLowestCarriageWayLane ( laneSection: TvLaneSection ) {
+	static findLowestCarriageWayLane ( laneSection: TvLaneSection ): any {
 
-		const lanes = laneSection.getLaneArray()
+		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => lane.isCarriageWay() );
 
@@ -257,9 +222,9 @@ export class LaneUtils {
 
 	}
 
-	static findHighestCarriageWayLane ( laneSection: TvLaneSection ) {
+	static findHighestCarriageWayLane ( laneSection: TvLaneSection ): any {
 
-		const lanes = laneSection.getLaneArray()
+		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
 			.filter( lane => lane.isCarriageWay() );
 
@@ -267,7 +232,7 @@ export class LaneUtils {
 
 	}
 
-	static findLowest ( lanes: TvLane[], type?: TvLaneType ) {
+	static findLowest ( lanes: TvLane[], type?: TvLaneType ): any {
 
 		if ( lanes.length === 0 ) return null;
 
@@ -277,7 +242,7 @@ export class LaneUtils {
 		for ( const current of lanes ) {
 
 			// ignore center lanes
-			if ( current.side == TvLaneSide.CENTER ) continue;
+			if ( current.isCenter ) continue;
 
 			if ( type && current.type != type ) continue;
 
@@ -294,33 +259,9 @@ export class LaneUtils {
 
 	}
 
-	static isEntry ( lane: TvLane, contact: TvContactPoint ): boolean {
-
-		return ( lane.direction === TravelDirection.forward && contact === TvContactPoint.END ) ||
-			( lane.direction === TravelDirection.backward && contact === TvContactPoint.START );
-
-	}
-
-
-	static isExit ( lane: TvLane, contact: TvContactPoint ): boolean {
-
-		return ( lane.direction === TravelDirection.forward && contact === TvContactPoint.START ) ||
-			( lane.direction === TravelDirection.backward && contact === TvContactPoint.END );
-
-	}
-
 	static canConnect ( left: TvLaneCoord, right: TvLaneCoord ): boolean {
 
-		if ( left.road.id === right.road.id ) return false;
+		return left.canConnect( right );
 
-		if ( left.lane.type !== right.lane.type ) return false;
-
-		// don't merge if both are entries
-		if ( this.isEntry( left.lane, left.contact ) && this.isEntry( right.lane, right.contact ) ) return false;
-
-		// don't merge if both are exits
-		if ( this.isExit( left.lane, left.contact ) && this.isExit( right.lane, right.contact ) ) return false;
-
-		return true;
 	}
 }

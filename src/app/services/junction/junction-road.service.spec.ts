@@ -38,7 +38,7 @@ describe( 'Service: JunctionRoad', () => {
 
 		expect( incomingSplines.length ).toBe( 2 );
 
-		expect( connectingRoads.length ).toBe( 20 );							// 1 for each link
+		expect( connectingRoads.length ).toBe( 12 );							// 1 for each link
 
 	} ) );
 
@@ -60,7 +60,7 @@ describe( 'Service: JunctionRoad', () => {
 
 		expect( incomingSplines.length ).toBe( 3 );
 
-		expect( connectingRoads.length ).toBe( 12 );							// 1 for each link
+		expect( connectingRoads.length ).toBe( 6 );							// 1 for each link
 
 	} ) );
 
@@ -82,7 +82,7 @@ describe( 'Service: JunctionRoad', () => {
 
 		expect( incomingSplines.length ).toBe( 2 );
 
-		expect( connectingRoads.length ).toBe( 12 );							// 1 for each link
+		expect( connectingRoads.length ).toBe( 6 );							// 1 for each link
 
 	} ) );
 

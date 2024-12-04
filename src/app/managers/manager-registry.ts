@@ -30,7 +30,7 @@ export class ManagerRegistry {
 
 	}
 
-	public static initManagers () {
+	public static initManagers (): void {
 
 		this.managers.forEach( manager => {
 

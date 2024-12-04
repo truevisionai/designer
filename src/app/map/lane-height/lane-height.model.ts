@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { Maths } from "app/utils/maths";
 import { MathUtils } from "three/src/math/MathUtils";
 
 /**
@@ -34,11 +35,8 @@ export class TvLaneHeight {
 	constructor ( sOffset: number, inner: number, outer: number ) {
 
 		this.sOffset = sOffset || 0;
-
 		this.inner = inner || 0;
-
 		this.outer = outer || 0;
-
 		this.uuid = MathUtils.generateUUID();
 
 	}
@@ -52,12 +50,31 @@ export class TvLaneHeight {
 	 * @param t 0 to 1
 	 * @returns
 	 */
-	getLinearValue ( t: number ) {
+	getLinearValue ( t: number ): number {
 		return this.inner + ( this.outer - this.inner ) * t;
 	}
 
-	matches ( other: TvLaneHeight ) {
-		return this.inner === other.inner && this.outer === other.outer;
+	matches ( laneHeight: TvLaneHeight ): boolean {
+
+		if ( !Maths.approxEquals( this.inner, laneHeight.inner ) ) return false;
+		if ( !Maths.approxEquals( this.outer, laneHeight.outer ) ) return false;
+
+		return true;
+
+	}
+
+	copyHeight ( other: TvLaneHeight ): void {
+		this.inner = other.inner;
+		this.outer = other.outer;
+	}
+
+	setHeight ( value: number ): void {
+		this.inner = value;
+		this.outer = value;
+	}
+
+	clone (): TvLaneHeight {
+		return new TvLaneHeight( this.sOffset, this.inner, this.outer );
 	}
 
 }

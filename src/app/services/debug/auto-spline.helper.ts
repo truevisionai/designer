@@ -74,7 +74,7 @@ export class AutoSplineHelper extends BaseDebugger<AutoSpline> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 
@@ -83,11 +83,11 @@ export class AutoSplineHelper extends BaseDebugger<AutoSpline> {
 		this.points.clear();
 	}
 
-	createPolyline ( object: AutoSpline ) {
+	createPolyline ( object: AutoSpline ): Polyline {
 		return new Polyline( object.controlPoints );
 	}
 
-	createRoundLine ( object: AutoSpline ) {
+	createRoundLine ( object: AutoSpline ): RoundLine {
 		return new RoundLine( object.controlPoints );
 	}
 }

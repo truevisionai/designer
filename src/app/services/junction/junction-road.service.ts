@@ -22,15 +22,16 @@ export class JunctionRoadService {
 	constructor (
 		private roadService: RoadService,
 		private mapService: MapService
-	) { }
+	) {
+	}
 
 	linkRoads ( junction: TvJunction ): void {
 
 		if ( !this.shouldLinkRoads( junction ) ) return;
 
-		const roads = junction.getIncomingRoads();
+		const incomingRoads = junction.getIncomingRoads();
 
-		for ( const road of roads ) {
+		for ( const road of incomingRoads ) {
 
 			const startPosition = road.getStartPosTheta().toVector3();
 			const endPosition = road.getEndPosTheta().toVector3();
@@ -41,11 +42,11 @@ export class JunctionRoadService {
 			// start is closer to junction than end, so its likely a predecessor
 			if ( startDistance < endDistance ) {
 
-				road.predecessor = LinkFactory.createJunctionLink( junction );
+				road.setPredecessor( LinkFactory.createJunctionLink( junction ) );
 
 			} else {
 
-				road.successor = LinkFactory.createJunctionLink( junction );
+				road.setSuccessor( LinkFactory.createJunctionLink( junction ) );
 
 			}
 
@@ -68,13 +69,13 @@ export class JunctionRoadService {
 
 	removeLink ( junction: TvJunction, road: TvRoad ): void {
 
-		if ( road.successor?.element === junction ) {
+		if ( road.successor?.equals( junction ) ) {
 
-			road.successor = null;
+			road.removeSuccessor();
 
-		} else if ( road.predecessor?.element === junction ) {
+		} else if ( road.predecessor?.equals( junction ) ) {
 
-			road.predecessor = null;
+			road.removePredecessor();
 
 		} else {
 
@@ -84,7 +85,7 @@ export class JunctionRoadService {
 
 	}
 
-	removeAll ( junction: TvJunction ) {
+	removeAll ( junction: TvJunction ): void {
 
 		const connections = junction.getConnections();
 

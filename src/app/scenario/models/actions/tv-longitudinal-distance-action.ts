@@ -37,14 +37,14 @@ export class LongitudinalDistanceAction extends PrivateAction {
 		super();
 	}
 
-	reset () {
+	reset (): void {
 		super.reset();
 
 		this.startTime = null;
 		this.targetDistance = null;
 	}
 
-	execute ( entity: ScenarioEntity ) {
+	execute ( entity: ScenarioEntity ): void {
 
 		if ( this.isCompleted ) return;
 
@@ -85,7 +85,7 @@ export class LongitudinalDistanceAction extends PrivateAction {
 		// Debug.log( 'LongitudinalDistanceAction', entity.name, currentDistance, this.targetDistance, entity.getCurrentSpeed() );
 	}
 
-	private computeLongitudinalDistance ( entity: ScenarioEntity ) {
+	private computeLongitudinalDistance ( entity: ScenarioEntity ): void {
 
 		if ( this.valueType === 'distance' ) {
 

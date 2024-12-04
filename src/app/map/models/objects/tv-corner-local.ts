@@ -26,7 +26,7 @@ export class TvCornerLocal {
 	) {
 	}
 
-	clone () {
+	clone (): TvCornerLocal {
 		return new TvCornerLocal(
 			this.attr_id,
 			this.attr_u,

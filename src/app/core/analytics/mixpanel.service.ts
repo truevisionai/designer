@@ -36,7 +36,7 @@ export class MixpanelService {
 		mixpanel.track( id, action );
 	}
 
-	setEmail ( email: string ) {
+	setEmail ( email: string ): void {
 		mixpanel.people.set( {
 			$email: email
 		} );

@@ -13,7 +13,7 @@ export class RoadElevationManager {
 
 	constructor () { }
 
-	onRoadCreated ( road: TvRoad ) {
+	onRoadCreated ( road: TvRoad ): void {
 
 		this.createDefaultNodes( road );
 
@@ -41,7 +41,7 @@ export class RoadElevationManager {
 
 	}
 
-	private syncPredecessor ( road: TvRoad ) {
+	private syncPredecessor ( road: TvRoad ): void {
 
 		if ( !road.predecessor ) return;
 
@@ -91,7 +91,7 @@ export class RoadElevationManager {
 
 	}
 
-	private syncSuccessor ( road: TvRoad ) {
+	private syncSuccessor ( road: TvRoad ): void {
 
 		if ( !road.successor ) return;
 
@@ -153,7 +153,7 @@ export class RoadElevationManager {
 
 	}
 
-	removeInvalidNodes ( road: TvRoad ) {
+	removeInvalidNodes ( road: TvRoad ): void {
 
 		for ( const elevation of road.getElevationProfile().getElevations() ) {
 
@@ -198,15 +198,15 @@ export class RoadElevationManager {
 
 	}
 
-	addFirstElevationNode ( road: TvRoad ) {
+	addFirstElevationNode ( road: TvRoad ): void {
 		road.getElevationProfile().createAndAddElevation( 0, 0, 0, 0, 0 );
 	}
 
-	addLastElevationNode ( road: TvRoad ) {
+	addLastElevationNode ( road: TvRoad ): void {
 		road.getElevationProfile().createAndAddElevation( road.length, 0, 0, 0, 0 );
 	}
 
-	private updateFirstAndLastNodes ( road: TvRoad ) {
+	private updateFirstAndLastNodes ( road: TvRoad ): void {
 
 		// Update the first node
 		road.getElevationProfile().getFirstElevation().s = 0;

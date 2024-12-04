@@ -135,9 +135,9 @@ export class LaneTool extends ToolWithHandler {
 
 		const lane = LaneFactory.createDuplicate( laneCoord.lane );
 
-		lane.width.splice( 0, lane.width.length );
+		lane.clearLaneWidth();
 
-		lane.width.push( new TvLaneWidth( 0, width, 0, 0, 0 ) );
+		lane.addWidthRecordInstance( new TvLaneWidth( 0, width, 0, 0, 0 ) );
 
 		return lane;
 

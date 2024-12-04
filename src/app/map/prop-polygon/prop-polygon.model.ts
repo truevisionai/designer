@@ -33,7 +33,7 @@ export class PropPolygon {
 
 	}
 
-	addTransform ( guid: string, transform: TvTransform ) {
+	addTransform ( guid: string, transform: TvTransform ): void {
 
 		this.props.push( { guid, transform } );
 

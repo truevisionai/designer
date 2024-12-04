@@ -43,7 +43,7 @@ export class ShortcutService {
 
 	}
 
-	init () {
+	init (): void {
 
 		ShorcutFactory.shortcuts.forEach( ( shortcut ) => {
 

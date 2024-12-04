@@ -13,6 +13,7 @@ import { ScenarioObjectType, VehicleCategory } from "../models/tv-enums";
 import { EntityFactory } from 'app/scenario/entity/entity.factory';
 import { ScenarioService } from '../services/scenario.service';
 import { RoadDistance } from 'app/map/road/road-distance';
+import { ScenarioEntity } from '../models/entities/scenario-entity';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,13 +32,13 @@ export class EntityService {
 		return this.scenarioService.entities;
 	}
 
-	createVehicle () {
+	createVehicle (): any {
 
 		return this.entityFactory.createDefaultCar();
 
 	}
 
-	createEntityByType ( type: ScenarioObjectType ) {
+	createEntityByType ( type: ScenarioObjectType ): any {
 
 		switch ( type ) {
 
@@ -48,19 +49,19 @@ export class EntityService {
 
 	}
 
-	createVehicleAt ( position: Vector3, orientation: Orientation ) {
+	createVehicleAt ( position: Vector3, orientation: Orientation ): any {
 
 		return this.entityFactory.createVehicleAt( position, orientation );
 
 	}
 
-	createVehicleByType ( category: VehicleCategory ) {
+	createVehicleByType ( category: VehicleCategory ): any {
 
 		return this.entityFactory.createVehicle( category );
 
 	}
 
-	createVehicleOnLane ( road: TvRoad, lane: TvLane, s = 0, offset = 0 ) {
+	createVehicleOnLane ( road: TvRoad, lane: TvLane, s: number = 0, offset: number = 0 ): any {
 
 		const position = road.getLaneCenterPosition( lane, s as RoadDistance, offset ).position;
 
@@ -68,13 +69,13 @@ export class EntityService {
 
 	}
 
-	removeAll () {
+	removeAll (): void {
 
 		this.vehicles.clear();
 
 	}
 
-	findEntityByName ( name: string ) {
+	findEntityByName ( name: string ): ScenarioEntity {
 
 		return this.entities.find( entity => entity.name === name );
 

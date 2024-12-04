@@ -86,11 +86,11 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	showRoad ( road: TvRoad ) {
+	showRoad ( road: TvRoad ): void {
 
 		road.laneSections.forEach( laneSection => {
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				lane.roadMarks.forEach( roadMark => {
 
@@ -109,11 +109,11 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 		} );
 	}
 
-	hideRoad ( road: TvRoad ) {
+	hideRoad ( road: TvRoad ): void {
 
 		road.laneSections.forEach( laneSection => {
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				lane.roadMarks.forEach( roadMark => {
 
@@ -133,7 +133,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNode ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadmark: TvLaneRoadMark ) {
+	createNode ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadmark: TvLaneRoadMark ): LaneMarkingNode {
 
 		let node: LaneMarkingNode;
 
@@ -156,7 +156,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 		return node;
 	}
 
-	createSpanLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadmark: TvLaneRoadMark, node: LaneMarkingNode ) {
+	createSpanLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadmark: TvLaneRoadMark, node: LaneMarkingNode ): any {
 
 		const nextRoadMark = lane.roadMarks.getNext( roadmark );
 
@@ -182,7 +182,7 @@ export class LaneMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

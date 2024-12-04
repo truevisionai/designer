@@ -35,13 +35,13 @@ export class ManeuverGroup {
 
 	}
 
-	static getNewName ( name = 'MySequence' ) {
+	static getNewName ( name: string = 'MySequence' ): string {
 
 		return `${ name }${ this.count }`;
 
 	}
 
-	addNewManeuver ( name: string ) {
+	addNewManeuver ( name: string ): Maneuver {
 
 		const maneuver = new Maneuver( name );
 
@@ -51,7 +51,7 @@ export class ManeuverGroup {
 
 	}
 
-	addManeuver ( maneuver: Maneuver ) {
+	addManeuver ( maneuver: Maneuver ): void {
 
 		// const hasName = ScenarioInstance.db.has_maneuver( maneuver.name );
 

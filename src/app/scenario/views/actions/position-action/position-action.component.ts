@@ -30,7 +30,7 @@ export class PositionActionComponent {
 	constructor ( private scenarioService: ScenarioService ) {
 	}
 
-	onPositionChanged ( $event: Position ) {
+	onPositionChanged ( $event: Position ): void {
 
 		this.positionAction?.setPosition( $event );
 
@@ -39,7 +39,7 @@ export class PositionActionComponent {
 		this.updateOtherEntities();
 	}
 
-	onPositionModified ( $event: Position ) {
+	onPositionModified ( $event: Position ): void {
 
 		this.positionAction?.setPosition( $event );
 
@@ -48,7 +48,7 @@ export class PositionActionComponent {
 		this.updateOtherEntities();
 	}
 
-	private updateOtherEntities () {
+	private updateOtherEntities (): void {
 
 		this.scenarioService.getScenario().executeInitActions();
 

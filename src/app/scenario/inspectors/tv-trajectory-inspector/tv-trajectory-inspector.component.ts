@@ -3,13 +3,8 @@
  */
 
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { AbstractShapeEditor } from 'app/core/editors/abstract-shape-editor';
-import { PolyLineEditor } from 'app/core/editors/polyline-editor';
-import { Log } from 'app/core/utils/log';
-import { CatmullRomCurve3, Points } from 'three';
 import { Position } from '../../models/position';
-import { WorldPosition } from '../../models/positions/tv-world-position';
-import { PolylineShape, Trajectory, Vertex } from '../../models/tv-trajectory';
+import { Trajectory } from '../../models/tv-trajectory';
 
 @Component( {
 	selector: 'app-tv-trajectory-inspector',
@@ -23,14 +18,10 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 	@Input() display: boolean = true;
 	@Input() disableEditing: boolean = false;
 
-	private shapeEditor: AbstractShapeEditor;
-
 	constructor () {
 	}
 
-	ngOnInit () {
-
-		this.shapeEditor = new PolyLineEditor;
+	ngOnInit (): void {
 
 		this.drawTrajectory();
 
@@ -42,96 +33,96 @@ export class TrajectoryInspectorComponent implements OnInit, OnDestroy, OnChange
 
 	ngOnChanges ( changes: SimpleChanges ): void {
 
-		if ( this.shapeEditor == null ) return;
-
-		if ( this.disableEditing ) {
-
-			this.shapeEditor.removeHighlight();
-
-			this.shapeEditor.disable();
-
-			Log.info( 'disable', this.trajectory.name );
-
-		} else {
-
-			this.shapeEditor.highlight();
-
-			this.shapeEditor.enable();
-
-			Log.info( 'enabld', this.trajectory.name );
-
-		}
+		// if ( this.shapeEditor == null ) return;
+		//
+		// if ( this.disableEditing ) {
+		//
+		// 	this.shapeEditor.removeHighlight();
+		//
+		// 	this.shapeEditor.disable();
+		//
+		// 	Log.info( 'disable', this.trajectory.name );
+		//
+		// } else {
+		//
+		// 	this.shapeEditor.highlight();
+		//
+		// 	this.shapeEditor.enable();
+		//
+		// 	Log.info( 'enabld', this.trajectory.name );
+		//
+		// }
 
 	}
 
-	addVertexAddedListener () {
+	addVertexAddedListener (): void {
 
-		this.shapeEditor.controlPointAdded.subscribe( ( e: Points ) => {
-
-			if ( this.disableEditing ) return;
-
-			if ( this.trajectory.shape instanceof PolylineShape ) {
-
-				const time = this.trajectory.shape.vertices.length;
-
-				const position = new WorldPosition( e.position.clone() );
-
-				const vertex = new Vertex( time, position );
-
-				this.trajectory.shape.vertices.push( vertex );
-
-			}
-
-		} );
+		// this.shapeEditor.controlPointAdded.subscribe( ( e: Points ) => {
+		//
+		// 	if ( this.disableEditing ) return;
+		//
+		// 	if ( this.trajectory.shape instanceof PolylineShape ) {
+		//
+		// 		const time = this.trajectory.shape.vertices.length;
+		//
+		// 		const position = new WorldPosition( e.position.clone() );
+		//
+		// 		const vertex = new Vertex( time, position );
+		//
+		// 		this.trajectory.shape.vertices.push( vertex );
+		//
+		// 	}
+		//
+		// } );
 
 	}
 
 	ngOnDestroy (): void {
 
-		this.shapeEditor.destroy();
+		// this.shapeEditor.destroy();
 
 	}
 
-	drawTrajectory () {
+	drawTrajectory (): void {
 
-		if ( this.trajectory.shape instanceof PolylineShape ) {
-
-			this.trajectory.shape.vertices.forEach( vertex => {
-
-				// Important! Need to set the vector3
-				vertex.position.setPosition( vertex.position.getVectorPosition() );
-
-				this.shapeEditor.addControlPoint( vertex.position.getVectorPosition() );
-
-			} );
-
-			this.shapeEditor.draw();
-
-		}
-
-	}
-
-	addGeometryChangeListener () {
-
-		this.shapeEditor.curveGeometryChanged.subscribe( ( curve: CatmullRomCurve3 ) => {
-
-			if ( this.disableEditing ) return;
-
-			curve.points.forEach( ( point, i ) => {
-
-				if ( this.trajectory.shape instanceof PolylineShape ) {
-
-					this.trajectory.shape.vertices[ i ].position.setPosition( point );
-
-				}
-
-			} );
-
-		} );
+		// if ( this.trajectory.shape instanceof PolylineShape ) {
+		//
+		// 	this.trajectory.shape.vertices.forEach( vertex => {
+		//
+		// 		// Important! Need to set the vector3
+		// 		vertex.position.setPosition( vertex.position.getVectorPosition() );
+		//
+		// 		this.shapeEditor.addControlPoint( vertex.position.getVectorPosition() );
+		//
+		// 	} );
+		//
+		// 	this.shapeEditor.draw();
+		//
+		// }
 
 	}
 
-	onPositionModified ( position: Position ) {
+	addGeometryChangeListener (): void {
+
+		// this.shapeEditor.curveGeometryChanged.subscribe( ( curve: CatmullRomCurve3 ) => {
+		//
+		// 	if ( this.disableEditing ) return;
+		//
+		// 	curve.points.forEach( ( point, i ) => {
+		//
+		// 		if ( this.trajectory.shape instanceof PolylineShape ) {
+		//
+		// 			this.trajectory.shape.vertices[ i ].position.setPosition( point );
+		//
+		// 		}
+		//
+		// 	} );
+		//
+		// } );
+
+	}
+
+	onPositionModified ( position: Position ): void {
 
 		throw new Error( 'not implemented' );
 

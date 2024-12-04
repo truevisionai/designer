@@ -9,7 +9,7 @@ export class FontSizeDirective implements OnInit {
 	constructor ( @Attribute( 'fontSize' ) public fontSize: string, private el: ElementRef ) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 		this.el.nativeElement.fontSize = this.fontSize;
 	}
 }

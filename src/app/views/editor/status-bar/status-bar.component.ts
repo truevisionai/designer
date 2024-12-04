@@ -37,7 +37,7 @@ export class StatusBarComponent implements OnInit {
 
 	}
 
-	onMessageChanged ( message: string ) {
+	onMessageChanged ( message: string ): void {
 
 		this.highlightStatus = true;
 

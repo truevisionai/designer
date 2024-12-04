@@ -15,13 +15,13 @@ export class TvCoord {
 	) {
 	}
 
-	static getDist2d ( a: TvCoord, b: TvCoord ) {
+	static getDist2d ( a: TvCoord, b: TvCoord ): number {
 		const dx = a.x - b.x;
 		const dy = a.y - b.y;
 		return Math.sqrt( dx * dx + dy * dy );
 	}
 
-	static getDist3d ( a: TvCoord, b: TvCoord ) {
+	static getDist3d ( a: TvCoord, b: TvCoord ): number {
 		const dx = a.x - b.x;
 		const dy = a.y - b.y;
 		const dz = a.z - b.z;

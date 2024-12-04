@@ -10,7 +10,7 @@ import { IViewportController } from './i-viewport-controller';
 
 export class TvOrbitControls extends OrbitControls implements IViewportController {
 
-	static getNew ( camera, canvas ) {
+	static getNew ( camera: any, canvas: any ): TvOrbitControls {
 
 		const controls = new TvOrbitControls( camera, canvas );
 

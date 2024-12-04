@@ -9,7 +9,6 @@ import { LaneHeightManager } from "./lane-height.manager";
 import { ParkingLaneManager } from "./parking-lane.manager";
 import { LaneMarkingManager } from "./lane-marking.manager";
 import { LaneLinkManager } from "./lane-link.manager";
-import { LaneMaterialManager } from "./lane-material.manager";
 import { MapEvents } from "../../events/map-events";
 import { SplineRemovedEvent } from "../../events/spline/spline-removed-event";
 import { RoadUpdatedEvent } from "../../events/road/road-updated-event";
@@ -25,13 +24,12 @@ export class LaneManager {
 		private parkingLaneManager: ParkingLaneManager,
 		private laneMarkingManager: LaneMarkingManager,
 		private laneLinkManager: LaneLinkManager,
-		private laneMaterialManager: LaneMaterialManager,
 	) {
 	}
 
-	onLaneCreated ( lane: TvLane ) {
+	onLaneCreated ( lane: TvLane ): void {
 
-		if ( lane.laneSection.road.isJunction ) return;
+		if ( lane.getRoad().isJunction ) return;
 
 		this.laneLinkManager.onLaneCreated( lane.laneSection.road, lane.laneSection, lane );
 
@@ -45,16 +43,16 @@ export class LaneManager {
 
 	}
 
-	onLaneRemoved ( lane: TvLane ) {
+	onLaneRemoved ( lane: TvLane ): void {
 
-		if ( lane.laneSection.road.isJunction ) return;
+		if ( lane.getRoad().isJunction ) return;
 
 		this.parkingLaneManager.onLaneRemoved( lane.laneSection.road, lane.laneSection, lane );
 
 		// if road has only 1 lane section and
 		// that lane section has no lanes, then
 		// remove the whole spline as we no longer have valid road
-		if ( lane.laneSection.road.laneSections.length == 1 && lane.laneSection.lanesMap.size == 1 ) {
+		if ( lane.getRoad().getLaneProfile().getLaneSectionCount() == 1 && lane.laneSection.getLaneCount() == 1 ) {
 
 			MapEvents.splineRemoved.emit( new SplineRemovedEvent( lane.laneSection.road.spline ) );
 
@@ -66,9 +64,9 @@ export class LaneManager {
 
 	}
 
-	onLaneUpdated ( lane: TvLane ) {
+	onLaneUpdated ( lane: TvLane ): void {
 
-		if ( lane.laneSection.road.isJunction ) return;
+		if ( lane.getRoad().isJunction ) return;
 
 		this.laneWidthManager.onLaneUpdated( lane.laneSection.road, lane.laneSection, lane );
 
@@ -76,17 +74,15 @@ export class LaneManager {
 
 	}
 
-	onLaneTypeChanged ( lane: TvLane ) {
+	onLaneTypeChanged ( lane: TvLane ): void {
 
-		if ( lane.laneSection.road.isJunction ) return;
+		if ( lane.getRoad().isJunction ) return;
 
 		this.laneWidthManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 
 		this.laneHeightManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 
 		this.parkingLaneManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
-
-		this.laneMaterialManager.onLaneTypeChanged( lane.laneSection.road, lane.laneSection, lane );
 
 	}
 

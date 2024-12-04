@@ -28,7 +28,7 @@ export class DebugLine<T> extends Line2 implements INode {
 		this.originalWidth = material?.linewidth || 2;
 	}
 
-	onMouseOver () {
+	onMouseOver (): void {
 
 		this.material.color = new Color( HOVERED_COLOR );
 		this.material.linewidth = this.originalWidth;
@@ -36,7 +36,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	onMouseOut () {
+	onMouseOut (): void {
 
 		this.material.color = new Color( DEFAULT_COLOR );
 		this.material.linewidth = this.originalWidth;
@@ -44,7 +44,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	select () {
+	select (): void {
 
 		this.isSelected = true;
 
@@ -53,7 +53,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	unselect () {
+	unselect (): void {
 
 		this.isSelected = false;
 
@@ -68,7 +68,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	static create ( points: Vector3[], width = 2, color = COLOR.CYAN ): DebugLine<any> {
+	static create ( points: Vector3[], width: number = 2, color: any = COLOR.CYAN ): DebugLine<any> {
 
 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
@@ -77,7 +77,7 @@ export class DebugLine<T> extends Line2 implements INode {
 		return new DebugLine( null, geometry, material );
 	}
 
-	static getMaterial ( color = COLOR.CYAN, width = 2 ): LineMaterial {
+	static getMaterial ( color: any = COLOR.CYAN, width: number = 2 ): LineMaterial {
 
 		return new LineMaterial( {
 			color: color,

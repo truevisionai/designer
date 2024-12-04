@@ -23,7 +23,7 @@ export class LaneBufferGeometry extends BufferGeometry {
 
 	}
 
-	build () {
+	build (): void {
 		// if ( this.lane.side == TvLaneSide.LEFT ) return;
 
 		const indices: number[] = [];
@@ -62,7 +62,7 @@ export class LaneBufferGeometry extends BufferGeometry {
 			const x2 = refLine.x + cosHdgPlusPiO2 * ( cumulativeWidth + width );
 			const y2 = refLine.y + sinHdgPlusPiO2 * ( cumulativeWidth + width );
 
-			if ( lane.side == TvLaneSide.RIGHT ) {
+			if ( lane.isRight ) {
 
 				vertices.push( x1, y1, 0 );
 				vertices.push( x2, y2, 0 );
@@ -101,7 +101,7 @@ export class LaneBufferGeometry extends BufferGeometry {
 		const x2 = refLine.x + cosHdgPlusPiO2 * ( cumulativeWidth + width );
 		const y2 = refLine.y + sinHdgPlusPiO2 * ( cumulativeWidth + width );
 
-		if ( lane.side == TvLaneSide.RIGHT ) {
+		if ( lane.isRight ) {
 
 			vertices.push( x1, y1, 0 );
 			vertices.push( x2, y2, 0 );

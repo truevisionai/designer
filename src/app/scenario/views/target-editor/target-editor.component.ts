@@ -25,19 +25,19 @@ export class TargetEditorComponent {
 
 	}
 
-	onEntityChanged ( $entity: string ) {
+	onEntityChanged ( $entity: string ): void {
 
 		this.relativeTarget.entityRef.name = $entity;
 
 	}
 
-	onValueChanged ( $event: any ) {
+	onValueChanged ( $event: any ): void {
 
 		this.target.setTarget( $event );
 
 	}
 
-	onTypeChanged ( $type: TargetType ) {
+	onTypeChanged ( $type: TargetType ): void {
 
 		switch ( $type ) {
 

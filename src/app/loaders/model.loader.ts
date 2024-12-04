@@ -12,7 +12,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { StorageService } from 'app/io/storage.service';
-import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, ShapeGeometry } from 'three';
+import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, Scene, ShapeGeometry } from 'three';
 import { TvConsole } from 'app/core/utils/console';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { AssetLoader } from "../core/interfaces/asset.loader";
@@ -40,7 +40,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 
 	}
 
-	loadSync ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
+	loadSync ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ): void {
 
 		const fileExtension = FileUtils.getExtensionFromPath( path );
 
@@ -77,7 +77,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 
 	}
 
-	private loadOBJ ( filepath: string, success: Function, error: Function ) {
+	private loadOBJ ( filepath: string, success: Function, error: Function ): Group {
 
 		const loader = new OBJLoader();
 
@@ -99,7 +99,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 		return group;
 	}
 
-	private loadGLTF ( filepath: string, success: Function, error: Function ) {
+	private loadGLTF ( filepath: string, success: Function, error: Function ): void {
 
 		const loader = new GLTFLoader();
 
@@ -123,7 +123,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 
 	}
 
-	private loadCollada ( filepath: string, success: Function, error: Function ) {
+	private loadCollada ( filepath: string, success: Function, error: Function ): Scene {
 
 		var loader = new ColladaLoader();
 
@@ -145,7 +145,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 		return group.scene;
 	}
 
-	private async loadFBX ( filepath: string, success: Function, error: Function ) {
+	private async loadFBX ( filepath: string, success: Function, error: Function ): Promise<Group> {
 
 		const loader = new FBXLoader();
 
@@ -162,7 +162,7 @@ export class DeprecatedModelLoader implements AssetLoader {
 		return object;
 	}
 
-	private loadSVG ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ) {
+	private loadSVG ( path: string, successCallback: ( object: Object3D ) => void, errorCallback: ( error: string ) => void ): void {
 
 		const loader = new SVGLoader();
 

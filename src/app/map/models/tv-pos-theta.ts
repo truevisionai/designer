@@ -51,14 +51,14 @@ export class TvPosTheta {
 		return direction;
 	}
 
-	rotateDegree ( degree: number ) {
+	rotateDegree ( degree: number ): this {
 
 		this.hdg = this.hdg + Maths.Deg2Rad * degree;
 
 		return this;
 	}
 
-	rotateRadian ( radians: number ) {
+	rotateRadian ( radians: number ): this {
 
 		this.hdg = this.hdg + radians;
 
@@ -73,7 +73,7 @@ export class TvPosTheta {
 		return this.clone( x, y, this.hdg, this.s + s, this.t );
 	}
 
-	isPointOnLine ( point: Vector2, s = 1000 ): boolean {
+	isPointOnLine ( point: Vector2, s: number = 1000 ): boolean {
 
 		const startPoint = this.toVector3();
 
@@ -87,7 +87,7 @@ export class TvPosTheta {
 	}
 
 	// offset means t
-	addLateralOffset ( offset: number ) {
+	addLateralOffset ( offset: number ): this {
 
 		// // find the end of the chord line
 		// this.x = this.x + Math.cos( this.hdg ) * laneOffset;
@@ -113,7 +113,7 @@ export class TvPosTheta {
 		return this;
 	}
 
-	clone ( x?: number, y?: number, hdg?: number, s?: number, t?: number, z?: number ) {
+	clone ( x?: number, y?: number, hdg?: number, s?: number, t?: number, z?: number ): TvPosTheta {
 
 		return new TvPosTheta(
 			x || this.x,
@@ -126,7 +126,7 @@ export class TvPosTheta {
 
 	}
 
-	copy ( other: TvPosTheta ) {
+	copy ( other: TvPosTheta ): void {
 		this.x = other.x;
 		this.y = other.y;
 		this.z = other.z;
@@ -146,7 +146,7 @@ export class TvPosTheta {
 		return new TvRoadCoord( road, this.s, this.t, this.z, this.hdg, 0, 0 );
 	}
 
-	computeSideAngle ( B: TvPosTheta ) {
+	computeSideAngle ( B: TvPosTheta ): any {
 
 		const A = this;
 
@@ -180,7 +180,7 @@ export class TvPosTheta {
 	}
 
 
-	angleTo ( point: TvPosTheta ) {
+	angleTo ( point: TvPosTheta ): number {
 
 		let dirFrom = this.toDirectionVector();
 		let dirTo = point.toDirectionVector();
@@ -203,7 +203,7 @@ export class TvPosTheta {
 		return ( ( this.hdg % ( 2 * Math.PI ) ) + 2 * Math.PI ) % ( 2 * Math.PI );
 	}
 
-	distanceTo ( b: Vector3 | TvPosTheta ) {
+	distanceTo ( b: Vector3 | TvPosTheta ): number {
 
 		if ( b instanceof TvPosTheta ) {
 			return this.toVector3().distanceTo( b.toVector3() );
@@ -212,7 +212,7 @@ export class TvPosTheta {
 		return this.toVector3().distanceTo( b );
 	}
 
-	toString () {
+	toString (): string {
 		return `x:${ this.x?.toFixed( 2 ) }, y:${ this.y?.toFixed( 2 ) }, z:${ this.z?.toFixed( 2 ) }, hdg:${ this.hdg?.toFixed( 2 ) }, s:${ this.s?.toFixed( 2 ) }, t:${ this.t?.toFixed( 2 ) }`;
 	}
 }

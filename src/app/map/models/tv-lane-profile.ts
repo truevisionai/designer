@@ -26,15 +26,27 @@ export class TvLaneProfile {
 
 	}
 
+	addDefaultLaneSection (): TvLaneSection {
+
+		if ( this.laneSections.length > 0 ) return this.getFirstLaneSection();
+
+		const laneSection = new TvLaneSection( this.laneSections.length + 1, 0, false, this.road )
+
+		this.addLaneSection( laneSection );
+
+		return laneSection;
+
+	}
+
 	getRoad (): TvRoad {
 		return this.road;
 	}
 
-	getFirstLaneSection () {
+	getFirstLaneSection (): TvLaneSection {
 		return this.laneSections[ 0 ];
 	}
 
-	getLastLaneSection () {
+	getLastLaneSection (): TvLaneSection {
 		return this.laneSections[ this.laneSections.length - 1 ];
 	}
 
@@ -42,18 +54,27 @@ export class TvLaneProfile {
 		return this.laneSections;
 	}
 
+	getLaneSectionCount (): number {
+		return this.laneSections.length;
+	}
+
 	getLaneOffsets (): TvLaneOffset[] {
 		return this.laneOffsets.toArray();
 	}
 
-	getLaneSectionById ( id: number ) {
+	getLaneSectionById ( id: number ): TvLaneSection {
 		return this.laneSections.find( laneSection => laneSection.id === id );
 	}
 
-	clearLaneSections () {
+	clearLaneSections (): void {
 		this.laneSections.splice( 0, this.laneSections.length );
 	}
 
+	/**
+	 * @param s
+	 * @param singleSide
+	 * @deprecated
+	 */
 	addGetLaneSection ( s: number, singleSide: boolean = false ): TvLaneSection {
 
 		const laneSections = this.getLaneSections();
@@ -62,7 +83,7 @@ export class TvLaneProfile {
 
 		const laneSection = new TvLaneSection( laneSectionId, s, singleSide, this.road );
 
-		this.addLaneSectionInstance( laneSection );
+		this.addLaneSection( laneSection );
 
 		return laneSection;
 	}
@@ -84,21 +105,27 @@ export class TvLaneProfile {
 	 * @param singleSide
 	 * @deprecated use addGetLaneSection
 	 */
-	createAndAddLaneSection ( s: number, singleSide: boolean ) {
+	createAndAddLaneSection ( s: number, singleSide: boolean ): void {
 
 		this.addGetLaneSection( s, singleSide );
 
 	}
 
-	addLaneSectionInstance ( laneSection: TvLaneSection ): void {
+	private hasLaneSectionAt ( s: number ): boolean {
+
+		return this.laneSections.find( laneSection => laneSection.s === s ) !== undefined;
+
+	}
+
+	addLaneSection ( laneSection: TvLaneSection ): void {
+
+		if ( this.hasLaneSectionAt( laneSection.s ) ) {
+			throw new Error( `Lane section already exists at ${ laneSection.s }` );
+		}
 
 		laneSection.road = this.road;
 
-		laneSection.lanesMap.forEach( lane => {
-
-			lane.laneSection = laneSection;
-
-		} );
+		laneSection.getLanes().forEach( lane => lane.laneSection = laneSection );
 
 		this.laneSections.push( laneSection );
 
@@ -124,7 +151,7 @@ export class TvLaneProfile {
 
 	}
 
-	updateLaneOffsetValues ( roadLength: number ) {
+	updateLaneOffsetValues ( roadLength: number ): void {
 
 		this.laneOffsets.computeCoefficients( roadLength );
 
@@ -152,7 +179,7 @@ export class TvLaneProfile {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		this.laneSections = [];
 
@@ -160,7 +187,7 @@ export class TvLaneProfile {
 
 	}
 
-	sortLaneSections () {
+	sortLaneSections (): void {
 
 		this.laneSections.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
@@ -201,13 +228,13 @@ export class TvLaneProfile {
 		this.updateLaneOffsetValues( this.road.length );
 	}
 
-	getLaneOffsetAt ( number: number ) {
+	getLaneOffsetAt ( number: number ): TvLaneOffset {
 
 		return this.getLaneOffsetEntryAt( number );
 
 	}
 
-	computeLaneSectionCoordinates () {
+	computeLaneSectionCoordinates (): void {
 
 		const laneSections = this.getLaneSections();
 
@@ -243,7 +270,7 @@ export class TvLaneProfile {
 
 	}
 
-	getLaneAt ( s: number, t: number ) {
+	getLaneAt ( s: number, t: number ): TvLane {
 
 		return this.getLaneSectionAt( s ).getLaneAt( s, t );
 
@@ -251,13 +278,47 @@ export class TvLaneProfile {
 
 	getLanes (): TvLane[] {
 
-		return this.laneSections.flatMap( laneSection => laneSection.getLaneArray() );
+		return this.laneSections.flatMap( laneSection => laneSection.getLanes() );
 
 	}
 
-	getLaneOffsetCount () {
+	getNonCenterLanes (): TvLane[] {
+
+		return this.laneSections.flatMap( laneSection => laneSection.getNonCenterLanes() );
+
+	}
+
+	getLaneOffsetCount (): number {
 
 		return this.laneOffsets.length;
+
+	}
+
+	getNextLaneSection ( laneSection: TvLaneSection ): TvLaneSection | undefined {
+
+		const index = this.laneSections.indexOf( laneSection );
+
+		if ( index === this.laneSections.length - 1 ) {
+
+			return this.road.successor ? this.road.successor.laneSection : undefined;
+
+		}
+
+		return this.laneSections[ index + 1 ];
+
+	}
+
+	getPreviousLaneSection ( laneSection: TvLaneSection ): TvLaneSection | undefined {
+
+		const index = this.laneSections.indexOf( laneSection );
+
+		if ( index === 0 ) {
+
+			return this.road.predecessor ? this.road.predecessor.laneSection : undefined;
+
+		}
+
+		return this.laneSections[ index - 1 ];
 
 	}
 }

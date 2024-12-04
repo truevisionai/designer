@@ -30,7 +30,7 @@ export class ScenarioBuilder {
 
 	}
 
-	private addEndCondition ( storyboard: Storyboard ) {
+	private addEndCondition ( storyboard: Storyboard ): void {
 
 		// if already has end conditions then return
 		if ( storyboard.endConditionGroups.length > 0 ) return;

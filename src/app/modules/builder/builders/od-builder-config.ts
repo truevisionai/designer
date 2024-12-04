@@ -2,12 +2,12 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-export function disableMeshBuilding () {
+export function disableMeshBuilding (): void {
 	OdBuilderConfig.BUILD_MESH = false;
 }
 
 
-export function enableMeshBuilding () {
+export function enableMeshBuilding (): void {
 	OdBuilderConfig.BUILD_MESH = true;
 }
 

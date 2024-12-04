@@ -76,7 +76,7 @@ export class SuperElevationTool extends BaseTool<any> {
 			return;
 		}
 
-		const current = coord.road.getLateralProfile().getSuperElevation( coord.s );
+		const current = coord.road.getLateralProfile().getSuperElevationAt( coord.s );
 
 		const clone = current?.clone() || new TvSuperElevation( coord.s, 0, 0, 0, 0 );
 
@@ -182,7 +182,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 	}
 
-	onObjectUpdated ( object: any ) {
+	onObjectUpdated ( object: any ): void {
 
 		if ( object instanceof SuperElevationInspector ) {
 
@@ -214,7 +214,7 @@ export class SuperElevationTool extends BaseTool<any> {
 
 	}
 
-	onObjectRemoved ( object: any ) {
+	onObjectRemoved ( object: any ): void {
 
 		if ( object instanceof SimpleControlPoint ) {
 

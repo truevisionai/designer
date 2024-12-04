@@ -6,12 +6,13 @@ import { Vector3 } from 'three';
 import { TvRoad } from './tv-road.model';
 import { TvLaneSection } from "./tv-lane-section";
 import { TvLane } from "./tv-lane";
-import { TvContactPoint } from './tv-common';
+import { TvContactPoint, TvLaneType } from './tv-common';
 import { Maths } from 'app/utils/maths';
 import { Orientation } from 'app/scenario/models/tv-orientation';
 import { LaneUtils } from "../../utils/lane.utils";
 import { TvLink } from './tv-link';
 import { LaneDistance, RoadDistance } from '../road/road-distance';
+import { TvPosTheta } from './tv-pos-theta';
 
 export class TvLaneCoord {
 
@@ -20,7 +21,7 @@ export class TvLaneCoord {
 		public readonly laneSection: TvLaneSection,
 		public readonly lane: TvLane,
 		public readonly laneDistance: LaneDistance,
-		public readonly offset: number
+		public readonly offset: number = 0
 	) {
 	}
 
@@ -28,18 +29,12 @@ export class TvLaneCoord {
 		return this.laneDistance;
 	}
 
-	toString () {
+	toString (): string {
 		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.laneDistance } offset:${ this.offset }`;
 	}
 
 	getLink (): TvLink {
-		if ( this.contact == TvContactPoint.START ) {
-			return this.road.predecessor;
-		} else if ( this.contact == TvContactPoint.END ) {
-			return this.road.successor;
-		} else {
-			throw new Error( 'Invalid contact point' );
-		}
+		return this.road.getLink( this.contact );
 	}
 
 	get contact (): TvContactPoint {
@@ -90,9 +85,42 @@ export class TvLaneCoord {
 		return new Orientation( 0, 0, 0 );
 	}
 
-	toPosTheta () {
+	toPosTheta (): TvPosTheta {
 		return this.posTheta;
 	}
 
+	canConnect ( otherLane: TvLaneCoord ): boolean {
+
+		if ( this.road.id === otherLane.road.id ) return false;
+
+		if ( this.lane.type !== otherLane.lane.type ) return false;
+
+		// for carriage way we don't want to merge entries with entries and exits with exits
+		if ( this.lane.isCarriageWay() && this.lane.type != TvLaneType.shoulder ) {
+
+			// don't merge if both are entries
+			if ( this.isEntry() && otherLane.isEntry() ) return false;
+
+			// don't merge if both are exits
+			if ( this.isExit() && otherLane.isExit() ) return false;
+
+		}
+
+		return true;
+
+	}
+
+	isEntry (): boolean {
+		return this.lane.isEntry( this.contact );
+	}
+
+
+	isExit (): boolean {
+		return this.lane.isExit( this.contact );
+	}
+
+	getLaneWidth (): number {
+		return this.lane.getWidthValue( this.laneDistance );
+	}
 }
 

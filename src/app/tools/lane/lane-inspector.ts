@@ -54,7 +54,7 @@ export class LaneInspector {
 	}
 
 	@SerializedAction()
-	duplicate () {
+	duplicate (): void {
 
 		const duplicate = LaneFactory.createDuplicate( this.lane );
 
@@ -63,7 +63,7 @@ export class LaneInspector {
 	}
 
 	@SerializedAction()
-	delete () {
+	delete (): void {
 
 		Commands.RemoveObject( this.lane );
 

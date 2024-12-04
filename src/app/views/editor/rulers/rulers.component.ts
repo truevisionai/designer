@@ -45,14 +45,14 @@ export class RulersComponent implements OnInit {
 
 	}
 
-	onViewUpdated ( $event: any ) {
+	onViewUpdated ( $event: any ): void {
 
 		this.createLabels();
 		this.updateLabels();
 
 	}
 
-	private createLabels () {
+	private createLabels (): void {
 
 		// Clear existing labels
 		this.yAxisLabels = [];
@@ -105,7 +105,7 @@ export class RulersComponent implements OnInit {
 
 	}
 
-	private calculateAxisRange ( camera: OrthographicCamera, axis: 'x' | 'y' ) {
+	private calculateAxisRange ( camera: OrthographicCamera, axis: 'x' | 'y' ): any {
 		// You would implement the logic here to determine the min and max
 		// visible values along the specified axis based on the camera's
 		// position, zoom level, and aspect ratio.
@@ -122,7 +122,7 @@ export class RulersComponent implements OnInit {
 		return { min, max };
 	}
 
-	private updateLabels () {
+	private updateLabels (): void {
 
 		const labelHeight = 20; // Replace with your label height. You might need to measure this dynamically.
 		const labelWidth = 30; // Estimate or dynamically measure the width of your labels.
@@ -193,7 +193,7 @@ export class RulersComponent implements OnInit {
 	}
 
 	// Assuming 'camera' is your Three.js camera and 'renderer' is your Three.js renderer
-	private toScreenPosition ( obj: Vector3, camera: Camera, width: number, height: number ) {
+	private toScreenPosition ( obj: Vector3, camera: Camera, width: number, height: number ): any {
 
 		const vector = new THREE.Vector3();
 		const widthHalf = 0.5 * width;

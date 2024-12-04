@@ -18,7 +18,7 @@ export class AppLoaderComponent implements OnInit {
 	constructor ( public dialogRef: MatDialogRef<AppLoaderComponent> ) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

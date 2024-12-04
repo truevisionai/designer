@@ -43,7 +43,7 @@ export class SigninComponent implements OnInit {
 		return this.form?.get( 'password' ) as FormControl;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.authService.logout();
 
@@ -55,7 +55,7 @@ export class SigninComponent implements OnInit {
 
 	}
 
-	onSubmit () {
+	onSubmit (): void {
 
 		const formData = this.form.value;
 
@@ -68,7 +68,7 @@ export class SigninComponent implements OnInit {
 			.subscribe( res => this.onSuccess( res ), err => this.onError( err ) );
 	}
 
-	onError ( errorResponse: any ) {
+	onError ( errorResponse: any ): void {
 
 		this.submitButton.disabled = false;
 		this.progressBar.mode = 'determinate';
@@ -84,7 +84,7 @@ export class SigninComponent implements OnInit {
 
 	}
 
-	onSuccess ( response: any ) {
+	onSuccess ( response: any ): void {
 
 		this.submitButton.disabled = false;
 		this.progressBar.mode = 'determinate';
@@ -95,7 +95,7 @@ export class SigninComponent implements OnInit {
 
 	}
 
-	resendEmailConfirmationLink () {
+	resendEmailConfirmationLink (): void {
 
 		if ( this.email.invalid ) {
 			this.email.markAsTouched();

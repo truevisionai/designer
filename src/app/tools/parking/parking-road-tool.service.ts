@@ -73,7 +73,7 @@ export class ParkingRoadToolService {
 	) {
 	}
 
-	createParkingRoad ( points: Vector3[] ) {
+	createParkingRoad ( points: Vector3[] ): any {
 
 		const road = this.roadService.createParkingRoad();
 
@@ -88,7 +88,7 @@ export class ParkingRoadToolService {
 		return road;
 	}
 
-	createLeftParkingRoad ( points: Vector3[] ) {
+	createLeftParkingRoad ( points: Vector3[] ): any {
 
 		const road = this.roadService.createParkingRoad();
 
@@ -105,7 +105,7 @@ export class ParkingRoadToolService {
 		return road;
 	}
 
-	createRightParkingRoad ( points: Vector3[] ) {
+	createRightParkingRoad ( points: Vector3[] ): any {
 
 		const road = this.roadService.createParkingRoad();
 
@@ -122,18 +122,18 @@ export class ParkingRoadToolService {
 		return road;
 	}
 
-	addRoad ( road: TvRoad ) {
+	addRoad ( road: TvRoad ): void {
 
 		this.roadService.add( road );
 
-		road.getLaneProfile().getFirstLaneSection().getLaneArray().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
+		road.getLaneProfile().getFirstLaneSection().getLanes().filter( lane => lane.type == TvLaneType.parking ).forEach( lane => {
 
 			this.addRepeatedParkingObject( road, lane );
 
 		} );
 	}
 
-	addRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
+	addRepeatedParkingObject ( road: TvRoad, lane: TvLane ): void {
 
 		const s = this.getStartPosition( road, lane.laneSection, lane ) + PARKING_WIDTH * 0.5;
 
@@ -182,7 +182,7 @@ export class ParkingRoadToolService {
 		return laneSection.s;
 	}
 
-	removeRepeatedParkingObject ( road: TvRoad, lane: TvLane ) {
+	removeRepeatedParkingObject ( road: TvRoad, lane: TvLane ): void {
 
 		road.getRoadObjects()
 			.filter( roadObject => roadObject.getRepeatList().find( repeat => repeat.targetLane == lane ) )
@@ -194,19 +194,19 @@ export class ParkingRoadToolService {
 
 	}
 
-	removeRoad ( object: TvRoad ) {
+	removeRoad ( object: TvRoad ): void {
 
 		this.roadService.remove( object );
 
 	}
 
-	createParkingSpaceRoadObject ( road: TvRoad, lane: TvLane, s: number ) {
+	createParkingSpaceRoadObject ( road: TvRoad, lane: TvLane, s: number ): any {
 
 		const laneWidth = lane.getWidthValue( s );
 
 		let t = road.getLaneProfile().getFirstLaneSection().getWidthUptoCenter( lane, s );
 
-		if ( lane.side == TvLaneSide.RIGHT ) t *= -1;
+		if ( lane.isRight ) t *= -1;
 
 		const roadObject = this.roadObjectService.createRoadObject( road, TvRoadObjectType.parkingSpace, s, t );
 
@@ -239,7 +239,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createStripedMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeOffset = 0.5, gapLength = 0.3 ) {
+	createStripedMarking ( roadObject: TvRoadObject, outline: TvObjectOutline, stripeOffset: number = 0.5, gapLength: number = 0.3 ): void {
 
 		const numStripes = Math.floor( roadObject.length / ( gapLength ) );
 
@@ -451,7 +451,7 @@ export class ParkingRoadToolService {
 	// 	}
 	// }
 
-	createRectangularParkingLot ( start: Vector3, end: Vector3 ) {
+	createRectangularParkingLot ( start: Vector3, end: Vector3 ): void {
 
 		// Calculate width and height
 		var width = Math.abs( start.x - end.x );
@@ -485,7 +485,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createEntryRoad ( start: THREE.Vector3, end: THREE.Vector3 ) {
+	createEntryRoad ( start: THREE.Vector3, end: THREE.Vector3 ): any {
 
 		const points = [ start, end ];
 
@@ -505,7 +505,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createExitRoad ( start: THREE.Vector3, end: THREE.Vector3 ) {
+	createExitRoad ( start: THREE.Vector3, end: THREE.Vector3 ): any {
 
 		const points = [ start, end ];
 
@@ -525,7 +525,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	hideBoundingBoxes () {
+	hideBoundingBoxes (): void {
 
 		this.roadService.roads.forEach( road => {
 
@@ -539,7 +539,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	hideBoundingBox ( roadObject: TvRoadObject ) {
+	hideBoundingBox ( roadObject: TvRoadObject ): void {
 
 		//
 

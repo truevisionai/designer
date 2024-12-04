@@ -10,7 +10,7 @@ import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint, TvLaneSide } from "app/map/models/tv-common";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Vector3 } from "three";
-import { TvJunctionConnection } from "../map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "../map/models/connections/tv-junction-connection";
 import { TvJunctionLaneLink } from "../map/models/junctions/tv-junction-lane-link";
 import { TvLink } from "../map/models/tv-link";
 import { TvLane } from "app/map/models/tv-lane";
@@ -21,7 +21,7 @@ import { TvJointBoundary } from "../map/junction-boundary/tv-joint-boundary";
 
 export class JunctionUtils {
 
-	private static findConnectionsOf ( junction: TvJunction, road: TvRoad ) {
+	private static findConnectionsOf ( junction: TvJunction, road: TvRoad ): TvJunctionConnection[] {
 
 		const connections: TvJunctionConnection[] = [];
 
@@ -51,7 +51,7 @@ export class JunctionUtils {
 
 	}
 
-	private static findConnectionsFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ) {
+	private static findConnectionsFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ): TvJunctionConnection[] {
 
 		const connections: TvJunctionConnection[] = [];
 
@@ -77,7 +77,7 @@ export class JunctionUtils {
 
 	}
 
-	private static findConnectionsBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ) {
+	private static findConnectionsBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ): TvJunctionConnection[] {
 
 		const connections: TvJunctionConnection[] = [];
 
@@ -115,13 +115,13 @@ export class JunctionUtils {
 
 	}
 
-	static getLaneLinks ( junction: TvJunction ) {
+	static getLaneLinks ( junction: TvJunction ): TvJunctionLaneLink[] {
 
 		const links: TvJunctionLaneLink[] = [];
 
 		for ( const connection of junction.getConnections() ) {
 
-			for ( const laneLink of connection.laneLink ) {
+			for ( const laneLink of connection.getLaneLinks() ) {
 
 				links.push( laneLink );
 
@@ -133,7 +133,7 @@ export class JunctionUtils {
 
 	}
 
-	static findLinksBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ) {
+	static findLinksBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ): TvJunctionLaneLink[] {
 
 		const links: TvJunctionLaneLink[] = [];
 
@@ -141,7 +141,7 @@ export class JunctionUtils {
 
 		for ( const connection of connections ) {
 
-			for ( const laneLink of connection.laneLink ) {
+			for ( const laneLink of connection.getLaneLinks() ) {
 
 				links.push( laneLink );
 
@@ -152,7 +152,7 @@ export class JunctionUtils {
 		return links;
 	}
 
-	static findLinksFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ) {
+	static findLinksFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ): TvJunctionLaneLink[] {
 
 		const links: TvJunctionLaneLink[] = [];
 
@@ -160,7 +160,7 @@ export class JunctionUtils {
 
 		for ( const connection of connections ) {
 
-			for ( const laneLink of connection.laneLink ) {
+			for ( const laneLink of connection.getLaneLinks() ) {
 
 				links.push( laneLink );
 
@@ -171,7 +171,7 @@ export class JunctionUtils {
 		return links;
 	}
 
-	static findSuccessors ( road: TvRoad, targetLane: TvLane, link: TvLink ) {
+	static findSuccessors ( road: TvRoad, targetLane: TvLane, link: TvLink ): TvLane[] {
 
 		if ( !link ) return [];
 
@@ -183,7 +183,7 @@ export class JunctionUtils {
 
 			for ( const connection of connections ) {
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					if ( laneLink.incomingLane.uuid == targetLane.uuid ) {
 
@@ -191,11 +191,11 @@ export class JunctionUtils {
 
 					} else {
 
-						if ( laneLink.connectingLane.successorUUID == targetLane.uuid ) {
+						if ( laneLink.connectingLane.isSuccessor( targetLane ) ) {
 
 							successors.push( laneLink.connectingLane );
 
-						} else if ( laneLink.connectingLane.predecessorUUID == targetLane.uuid ) {
+						} else if ( laneLink.connectingLane.isPredecessor( targetLane ) ) {
 
 							successors.push( laneLink.connectingLane );
 
@@ -232,7 +232,7 @@ export class JunctionUtils {
 
 	}
 
-	static findPredecessors ( road: TvRoad, targetLane: TvLane, link: TvLink ) {
+	static findPredecessors ( road: TvRoad, targetLane: TvLane, link: TvLink ): TvLane[] {
 
 		if ( !link ) return [];
 
@@ -244,7 +244,7 @@ export class JunctionUtils {
 
 			for ( const connection of connections ) {
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					if ( laneLink.incomingLane.uuid == targetLane.uuid ) {
 
@@ -252,11 +252,11 @@ export class JunctionUtils {
 
 					} else {
 
-						if ( laneLink.connectingLane.successorUUID == targetLane.uuid ) {
+						if ( laneLink.connectingLane.isSuccessor( targetLane ) ) {
 
 							predecessors.push( laneLink.connectingLane );
 
-						} else if ( laneLink.connectingLane.predecessorUUID == targetLane.uuid ) {
+						} else if ( laneLink.connectingLane.isPredecessor( targetLane ) ) {
 
 							predecessors.push( laneLink.connectingLane );
 
@@ -293,7 +293,7 @@ export class JunctionUtils {
 
 	}
 
-	static generateJunctionHash ( junction: TvJunction ) {
+	static generateJunctionHash ( junction: TvJunction ): string {
 
 		const splineIds = junction.getIncomingSplines().map( spline => spline.uuid ).sort().join( ',' );
 
@@ -302,7 +302,7 @@ export class JunctionUtils {
 		return hash;
 	}
 
-	static generateGroupHash ( group: IntersectionGroup ) {
+	static generateGroupHash ( group: IntersectionGroup ): string {
 
 		const spline = group.getSplines().map( spline => spline.uuid ).sort().join( ',' );
 
@@ -347,11 +347,11 @@ export class JunctionUtils {
 
 	}
 
-	static findConnectionFromLink ( junction: TvJunction, link: TvJunctionLaneLink ) {
+	static findConnectionFromLink ( junction: TvJunction, link: TvJunctionLaneLink ): any {
 
 		for ( const connection of junction.getConnections() ) {
 
-			for ( const laneLink of connection.laneLink ) {
+			for ( const laneLink of connection.getLaneLinks() ) {
 
 				if ( laneLink == link ) {
 

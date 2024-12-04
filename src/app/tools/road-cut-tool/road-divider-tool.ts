@@ -32,7 +32,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 	}
 
-	init () {
+	init (): void {
 
 		super.init();
 
@@ -46,7 +46,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 	}
 
-	enable () {
+	enable (): void {
 
 		super.enable();
 
@@ -54,7 +54,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 	}
 
-	disable () {
+	disable (): void {
 
 		super.disable();
 
@@ -79,7 +79,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 	}
 
-	divideRoadAt ( roadCoord: TvRoadCoord ) {
+	divideRoadAt ( roadCoord: TvRoadCoord ): any {
 
 		const clone = this.tool.dividerService.divideRoadAt( roadCoord.road, roadCoord.s );
 
@@ -138,7 +138,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 	}
 
-	private drawLine ( position: RoadPosition ) {
+	private drawLine ( position: RoadPosition ): void {
 
 		if ( !this.debugLine ) {
 
@@ -154,7 +154,7 @@ export class RoadDividerTool extends BaseTool<any> {
 
 	}
 
-	private removeLine () {
+	private removeLine (): void {
 
 		if ( !this.debugLine ) return;
 

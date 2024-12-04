@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ImportFbxDialogComponent } from 'app/views/dialogs/import-fbx-dialog/import-fbx-dialog.component';
 import {
 	ImportOpenScenarioDialogComponent,
@@ -20,7 +20,7 @@ export class DialogFactory {
 	) {
 	}
 
-	showImportOpenScenarioDialog ( path: string, destinationPath: string, extension: string ) {
+	showImportOpenScenarioDialog ( path: string, destinationPath: string, extension: string ): MatDialogRef<ImportOpenScenarioDialogComponent, any> {
 
 		return this.dialog.open( ImportOpenScenarioDialogComponent, {
 			width: '680px',
@@ -30,7 +30,7 @@ export class DialogFactory {
 
 	}
 
-	showImportFBXDialog ( path: string, destinationPath: string, extension: string ) {
+	showImportFBXDialog ( path: string, destinationPath: string, extension: string ): MatDialogRef<unknown, any> {
 
 		return this.dialog.open( ImportFbxDialogComponent, {
 			width: '680px',

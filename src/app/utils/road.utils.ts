@@ -49,7 +49,7 @@ export class RoadUtils {
 
 	}
 
-	static isSuccessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ) {
+	static isSuccessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ): boolean {
 
 		if ( !segment.successor ) return false;
 
@@ -59,7 +59,7 @@ export class RoadUtils {
 
 	}
 
-	static isPredecessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ) {
+	static isPredecessor ( segment: TvRoad, nextSegment: TvRoad | TvJunction ): boolean {
 
 		if ( !segment.predecessor ) return false;
 
@@ -136,7 +136,7 @@ export class RoadUtils {
 
 	}
 
-	static unlinkSuccessor ( road: TvRoad, updateMe = true ) {
+	static unlinkSuccessor ( road: TvRoad, updateMe: boolean = true ): void {
 
 		if ( !road.successor ) return;
 
@@ -146,18 +146,18 @@ export class RoadUtils {
 
 		if ( road.successor.contactPoint === TvContactPoint.START ) {
 
-			linkedRoad.predecessor = null;
+			linkedRoad.removePredecessor();
 
 		} else {
 
-			linkedRoad.successor = null;
+			linkedRoad.removeSuccessor();
 
 		}
 
-		if ( updateMe ) road.successor = null;
+		if ( updateMe ) road.removeSuccessor();
 	}
 
-	static unlinkPredecessor ( road: TvRoad, updateMe = true ) {
+	static unlinkPredecessor ( road: TvRoad, updateMe: boolean = true ): void {
 
 		if ( !road.predecessor ) return;
 
@@ -167,15 +167,15 @@ export class RoadUtils {
 
 		if ( road.predecessor.contactPoint === TvContactPoint.START ) {
 
-			linkedRoad.predecessor = null;
+			linkedRoad.removePredecessor();
 
 		} else {
 
-			linkedRoad.successor = null;
+			linkedRoad.removeSuccessor();
 
 		}
 
-		if ( updateMe ) road.predecessor = null;
+		if ( updateMe ) road.removePredecessor();
 	}
 
 	static getContactByPosition ( road: TvRoad, position: Vector3 ): TvContactPoint {

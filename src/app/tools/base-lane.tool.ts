@@ -92,7 +92,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> implements Tool {
 
 	}
 
-	onPointerDown ( e: PointerEventData ) {
+	onPointerDown ( e: PointerEventData ): void {
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
@@ -112,7 +112,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> implements Tool {
 
 	}
 
-	onPointerUp ( e: PointerEventData ) {
+	onPointerUp ( e: PointerEventData ): void {
 
 		if ( !this.nodeChanged ) return;
 
@@ -127,7 +127,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> implements Tool {
 		this.nodeChanged = false;
 	}
 
-	onPointerMoved ( e: PointerEventData ) {
+	onPointerMoved ( e: PointerEventData ): void {
 
 		if ( !this.isPointerDown ) {
 
@@ -280,49 +280,49 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> implements Tool {
 
 	}
 
-	protected setHint ( msg: string ) {
+	protected setHint ( msg: string ): void {
 
 		StatusBarService.setHint( msg );
 
 	}
 
-	protected selectObject ( object: any, previousObject: any ) {
+	protected selectObject ( object: any, previousObject: any ): void {
 
 		Commands.Select( object, previousObject );
 
 	}
 
-	protected unselectObject ( object: any ) {
+	protected unselectObject ( object: any ): void {
 
 		Commands.Unselect( object );
 
 	}
 
-	protected executeAddObject ( object: any ) {
+	protected executeAddObject ( object: any ): void {
 
 		Commands.AddObject( object );
 
 	}
 
-	protected executeAddAndSelect ( object: any, previousObject: any ) {
+	protected executeAddAndSelect ( object: any, previousObject: any ): void {
 
 		CommandHistory.executeMany( new AddObjectCommand( object ), new SelectObjectCommand( object, previousObject ) );
 
 	}
 
-	protected executeRemoveObject ( object: any ) {
+	protected executeRemoveObject ( object: any ): void {
 
 		Commands.RemoveObject( object );
 
 	}
 
-	protected setInspector ( data: any ) {
+	protected setInspector ( data: any ): void {
 
 		AppInspector.setDynamicInspector( data );
 
 	}
 
-	protected highlight ( e: PointerEventData ) {
+	protected highlight ( e: PointerEventData ): any {
 
 		this.debugger.resetHighlighted();
 
@@ -342,7 +342,7 @@ export abstract class BaseLaneTool<T extends HasDistanceValue> implements Tool {
 
 	}
 
-	protected handleSelection ( e: PointerEventData ) {
+	protected handleSelection ( e: PointerEventData ): void {
 
 		this.selection?.handleSelection( e );
 

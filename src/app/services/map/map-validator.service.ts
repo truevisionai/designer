@@ -17,7 +17,7 @@ import { DebugTextService } from '../debug/debug-text.service';
 import { Environment } from 'app/core/utils/environment';
 import { MapEvents } from 'app/events/map-events';
 import { MapService } from './map.service';
-import { TvJunctionConnection } from 'app/map/models/junctions/tv-junction-connection';
+import { TvJunctionConnection } from 'app/map/models/connections/tv-junction-connection';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvElectronService } from '../tv-electron.service';
@@ -85,7 +85,7 @@ export class MapValidatorService {
 		this.init();
 	}
 
-	init () {
+	init (): void {
 
 		if ( !this.electron.isElectronApp ) return;
 
@@ -123,19 +123,19 @@ export class MapValidatorService {
 
 	}
 
-	setMap ( map: TvMap ) {
+	setMap ( map: TvMap ): void {
 
 		this.map = map;
 
 	}
 
-	getErrors () {
+	getErrors (): any[] {
 
 		return this.errors;
 
 	}
 
-	validateMap ( map: TvMap, throwError = false ) {
+	validateMap ( map: TvMap, throwError: boolean = false ): boolean {
 
 		this.map = map;
 
@@ -253,9 +253,9 @@ export class MapValidatorService {
 			this.errors.push( `${ road.toString() } LaneSection has less than 2 lanes ${ laneSection.toString() }` );
 		}
 
-		for ( const [ id, lane ] of laneSection.lanesMap ) {
+		for ( const lane of laneSection.getLanes() ) {
 
-			if ( id == 0 ) continue;
+			if ( lane.id == 0 ) continue;
 
 			this.validateLane( road, laneSection, lane );
 
@@ -272,13 +272,13 @@ export class MapValidatorService {
 		// Lane numbering shall be unique per lane section.
 		const laneIds = [];
 
-		for ( const [ id, lane ] of laneSection.lanesMap ) {
+		for ( const lane of laneSection.getLanes() ) {
 
-			if ( laneIds.includes( id ) ) {
+			if ( laneIds.includes( lane.id ) ) {
 				this.errors.push( `${ road.toString() } LaneSection has duplicate lane id ${ laneSection.toString() }` );
 			}
 
-			laneIds.push( id );
+			laneIds.push( lane.id );
 		}
 
 	}
@@ -303,7 +303,7 @@ export class MapValidatorService {
 
 	validateLane ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
-		if ( lane.width.length == 0 ) {
+		if ( lane.getLaneWidthCount() == 0 ) {
 			this.errors.push( `${ road.toString() } ${ lane.toString() } has no width` );
 		}
 
@@ -315,13 +315,13 @@ export class MapValidatorService {
 
 	}
 
-	validateLaneWidth ( lane: TvLane ) {
+	validateLaneWidth ( lane: TvLane ): void {
 
-		this.validatePolynomials( lane.width );
+		this.validatePolynomials( lane.getWidthArray() );
 
 	}
 
-	validatePolynomials ( polynomials: { s: number }[] ) {
+	validatePolynomials ( polynomials: { s: number }[] ): void {
 
 		for ( let i = 1; i < polynomials.length; i++ ) {
 
@@ -352,7 +352,7 @@ export class MapValidatorService {
 	 * @param laneSection
 	 * @param lane
 	 */
-	validateLaneLinks ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	validateLaneLinks ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( !road.isJunction && road.successor?.isRoad && !lane.successorExists ) {
 
@@ -392,7 +392,7 @@ export class MapValidatorService {
 
 	}
 
-	validateRoadLinks ( roadA: TvRoad ) {
+	validateRoadLinks ( roadA: TvRoad ): void {
 
 		if ( roadA.successor ) this.validateSuccessor( roadA, roadA.successor );
 
@@ -400,7 +400,7 @@ export class MapValidatorService {
 
 	}
 
-	validateSuccessor ( roadA: TvRoad, link: TvLink ) {
+	validateSuccessor ( roadA: TvRoad, link: TvLink ): void {
 
 		if ( link.isRoad ) {
 
@@ -414,7 +414,7 @@ export class MapValidatorService {
 
 	}
 
-	validatePredecessor ( roadA: TvRoad, link: TvLink ) {
+	validatePredecessor ( roadA: TvRoad, link: TvLink ): void {
 
 		if ( link.isRoad ) {
 
@@ -428,7 +428,7 @@ export class MapValidatorService {
 
 	}
 
-	validateRoadLink ( roadA: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ) {
+	validateRoadLink ( roadA: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ): void {
 
 		if ( !link.isRoad ) return;
 
@@ -578,7 +578,7 @@ export class MapValidatorService {
 		return Math.abs( Math.PI - smallestDiff ) < tolerance;
 	}
 
-	private reportError ( label: string, roadId: number, expectedDirection: string, linkType: string, link: TvLink, hdgA: number, hdgB: number ) {
+	private reportError ( label: string, roadId: number, expectedDirection: string, linkType: string, link: TvLink, hdgA: number, hdgB: number ): void {
 
 		this.errors.push( `${ label }:${ roadId } invalid hdg, should be ${ expectedDirection } ${ linkType }:${ link.toString() } ${ hdgA } ${ hdgB }` );
 
@@ -589,7 +589,7 @@ export class MapValidatorService {
 		// this.debugObjects.add( arrow2, arrow2 );
 	}
 
-	validateJunctionLink ( road: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ) {
+	validateJunctionLink ( road: TvRoad, link: TvLink, linkType: 'successor' | 'predecessor' ): void {
 
 		try {
 
@@ -627,12 +627,12 @@ export class MapValidatorService {
 
 	}
 
-	validateConnection ( connection: TvJunctionConnection, incomingContact: TvContactPoint ) {
+	validateConnection ( connection: TvJunctionConnection, incomingContact: TvContactPoint ): void {
 
 		this.validateConnectionAndRoad( connection.incomingRoadId, connection );
 		this.validateConnectionAndRoad( connection.connectingRoadId, connection );
 
-		connection.laneLink.forEach( link => {
+		connection.getLaneLinks().forEach( link => {
 
 			// const incomingLaneSection = link.incomingRoad.getLaneProfile().getLaneSectionAtContact( link.incomingContactPoint );
 			// const incomingSOffset = link.incomingContactPoint == TvContactPoint.START ? 0 : link.incomingRoad.length;
@@ -661,7 +661,7 @@ export class MapValidatorService {
 		} );
 	}
 
-	validateConnectingRoad ( connection: TvJunctionConnection ) {
+	validateConnectingRoad ( connection: TvJunctionConnection ): void {
 
 		this.validateConnectionAndRoad( connection.incomingRoadId, connection );
 		this.validateConnectionAndRoad( connection.connectingRoadId, connection );
@@ -698,7 +698,7 @@ export class MapValidatorService {
 
 	}
 
-	validateConnectionAndRoad ( id: number, connection: TvJunctionConnection ) {
+	validateConnectionAndRoad ( id: number, connection: TvJunctionConnection ): void {
 
 		try {
 

@@ -123,7 +123,7 @@ export class StoryboardElementStateCondition extends ValueCondition {
 		return false;
 	}
 
-	private eventCallback ( event: StoryboardEvent ) {
+	private eventCallback ( event: StoryboardEvent ): void {
 
 		if ( event.type !== this.storyboardElementType ) return;
 

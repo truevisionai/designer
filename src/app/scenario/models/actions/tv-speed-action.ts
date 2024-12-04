@@ -46,7 +46,7 @@ export class SpeedAction extends PrivateAction {
 
 	}
 
-	execute ( entity: ScenarioEntity ) {
+	execute ( entity: ScenarioEntity ): void {
 
 		if ( this.isCompleted ) return;
 
@@ -84,7 +84,7 @@ export class SpeedAction extends PrivateAction {
 
 	}
 
-	reset () {
+	reset (): void {
 
 		super.reset();
 

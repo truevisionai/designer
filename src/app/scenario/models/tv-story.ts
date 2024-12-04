@@ -26,11 +26,11 @@ export class Story {
 	) {
 	}
 
-	addAct ( act: Act ) {
+	addAct ( act: Act ): void {
 		this.acts.push( act );
 	}
 
-	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
+	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ): void {
 		this.parameterDeclarations.push( parameterDeclaration );
 	}
 

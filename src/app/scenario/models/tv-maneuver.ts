@@ -31,13 +31,13 @@ export class Maneuver {
 
 	}
 
-	static getNewName ( name = 'MyManeuver' ) {
+	static getNewName ( name: string = 'MyManeuver' ): string {
 
 		return `${ name }${ this.count }`;
 
 	}
 
-	addEvent ( event: TvEvent ) {
+	addEvent ( event: TvEvent ): TvEvent {
 
 		this.events.push( event );
 
@@ -48,7 +48,7 @@ export class Maneuver {
 	}
 
 
-	addNewEvent ( name: string, priority: string = 'overwrite' ) {
+	addNewEvent ( name: string, priority: string = 'overwrite' ): TvEvent {
 
 		// const hasName = ScenarioInstance.db.has_event( name );
 
@@ -61,11 +61,11 @@ export class Maneuver {
 		return event;
 	}
 
-	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ) {
+	addParameterDeclaration ( parameterDeclaration: ParameterDeclaration ): void {
 		this.parameterDeclarations.push( parameterDeclaration );
 	}
 
-	private onEventCompleted ( storyEvent: StoryboardEvent ) {
+	private onEventCompleted ( storyEvent: StoryboardEvent ): void {
 
 		this.eventIndex++;
 

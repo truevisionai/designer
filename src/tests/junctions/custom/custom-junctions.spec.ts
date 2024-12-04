@@ -7,6 +7,7 @@ import { JunctionToolHelper } from "../../../app/modules/junction/junction-tool.
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from "../../../app/map/models/tv-common";
 import { expectValidMap } from "../../base-test.spec";
+import { EXPECT_CONNECTION } from "../../expect-junction.spec";
 
 describe( 'CustomJunction: Tests', () => {
 
@@ -85,8 +86,8 @@ describe( 'CustomJunction: Tests', () => {
 
 		expect( testHelper.mapService.findJunction( 1 ) ).toBe( junction );
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 1 );
-		expect( testHelper.mapService.getRoadCount() ).toBe( 8 );
-		expect( testHelper.mapService.getSplineCount() ).toBe( 8 );
+		expect( testHelper.mapService.getRoadCount() ).toBe( 4 );
+		expect( testHelper.mapService.getSplineCount() ).toBe( 4 );
 
 	} );
 
@@ -103,8 +104,8 @@ describe( 'CustomJunction: Tests', () => {
 		const leftRoad = testHelper.mapService.findRoad( 1 );
 		const rightRoad = testHelper.mapService.findRoad( 2 );
 
-		expect( leftRoad.successor ).toBeNull();
-		expect( rightRoad.predecessor ).toBeNull();
+		expect( leftRoad.hasSuccessor() ).toBeFalse();
+		expect( rightRoad.hasPredecessor() ).toBeFalse();
 
 		expect( testHelper.mapService.hasJunction( 1 ) ).toBeFalse();
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 0 );
@@ -113,17 +114,17 @@ describe( 'CustomJunction: Tests', () => {
 
 		// now lets undo
 		// junction model itself should not lose any data
-		expect( junction.getConnectionCount() ).toBe( 6 );
+		expect( junction.getConnectionCount() ).toBe( 2 );
 
 		testHelper.junctionService.fireCreatedEvent( junction );
 
-		expect( leftRoad.successor.element ).toBe( junction );
-		expect( rightRoad.predecessor.element ).toBe( junction );
+		expect( leftRoad.successor.equals( junction ) ).toBeTrue();
+		expect( rightRoad.predecessor.equals( junction ) ).toBeTrue();
 
 		expect( testHelper.mapService.findJunction( 1 ) ).toBe( junction );
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 1 );
-		expect( testHelper.mapService.getRoadCount() ).toBe( 8 );
-		expect( testHelper.mapService.getSplineCount() ).toBe( 8 );
+		expect( testHelper.mapService.getRoadCount() ).toBe( 4 );
+		expect( testHelper.mapService.getSplineCount() ).toBe( 4 );
 
 		expectValidMap( testHelper.mapService );
 
@@ -150,8 +151,8 @@ describe( 'CustomJunction: Tests', () => {
 
 		expect( testHelper.mapService.findJunction( 1 ) ).toBe( junction );
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 1 );
-		expect( testHelper.mapService.getRoadCount() ).toBe( 3 + 12 );
-		expect( testHelper.mapService.getSplineCount() ).toBe( 3 + 12 );
+		expect( testHelper.mapService.getRoadCount() ).toBe( 3 + EXPECT_CONNECTION.T_JUNCTION );
+		expect( testHelper.mapService.getSplineCount() ).toBe( 3 + EXPECT_CONNECTION.T_JUNCTION );
 
 	} );
 
@@ -177,8 +178,8 @@ describe( 'CustomJunction: Tests', () => {
 		expect( testHelper.mapService.findRoad( 2 ) ).toBeDefined();
 		expect( testHelper.mapService.findJunction( 1 ) ).toBeDefined();
 		expect( testHelper.mapService.getJunctionCount() ).toBe( 1 );
-		expect( testHelper.mapService.getRoadCount() ).toBe( 2 + 6 );
-		expect( testHelper.mapService.getSplineCount() ).toBe( 2 + 6 );
+		expect( testHelper.mapService.getRoadCount() ).toBe( 4 );
+		expect( testHelper.mapService.getSplineCount() ).toBe( 4 );
 
 	} );
 

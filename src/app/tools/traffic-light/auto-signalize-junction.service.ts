@@ -60,7 +60,7 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	addSignalization ( junction: TvJunction, type: AutoSignalizationType, useProps = false ): void {
+	addSignalization ( junction: TvJunction, type: AutoSignalizationType, useProps: boolean = false ): void {
 
 		this.removeControllers( junction );
 
@@ -229,11 +229,11 @@ export class AutoSignalizeJunctionService {
 
 		if ( side == TvLaneSide.LEFT ) {
 
-			return LaneUtils.findHighest( laneSection.getLaneArray(), laneType );
+			return LaneUtils.findHighest( laneSection.getLanes(), laneType );
 
 		} else if ( side == TvLaneSide.RIGHT ) {
 
-			return LaneUtils.findLowest( laneSection.getLaneArray(), laneType );
+			return LaneUtils.findLowest( laneSection.getLanes(), laneType );
 
 		} else {
 
@@ -267,7 +267,7 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	private updateValidLanes ( signal: TvRoadSignal, road: TvRoad, s: number, junction: TvJunction ) {
+	private updateValidLanes ( signal: TvRoadSignal, road: TvRoad, s: number, junction: TvJunction ): void {
 
 		/**
 		Rules
@@ -292,7 +292,7 @@ export class AutoSignalizeJunctionService {
 
 		const laneSection = road.getLaneProfile().getLaneSectionAt( s );
 
-		const drivingLanes = laneSection.getLaneArray().filter( lane => lane.type == TvLaneType.driving && lane.side == side ).map( lane => lane.id );
+		const drivingLanes = laneSection.getLanes().filter( lane => lane.type == TvLaneType.driving && lane.side == side ).map( lane => lane.id );
 
 		// TODO: this is not correct, we need to find the lane with the signal
 		const minLaneId = Math.min( ...drivingLanes );
@@ -301,7 +301,7 @@ export class AutoSignalizeJunctionService {
 		signal.addValidity( minLaneId, maxLaneId );
 	}
 
-	private removeControllers ( junction: TvJunction ) {
+	private removeControllers ( junction: TvJunction ): void {
 
 		// remove existing controllers from junction and map
 		for ( const controller of junction.controllers ) {
@@ -314,7 +314,7 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	private addControllers ( type: AutoSignalizationType, junction: TvJunction, signals: TvRoadSignal[] ) {
+	private addControllers ( type: AutoSignalizationType, junction: TvJunction, signals: TvRoadSignal[] ): void {
 
 		// controllers are only needed in split phase
 		if ( type != AutoSignalizationType.SPIT_PHASE ) return;

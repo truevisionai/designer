@@ -21,14 +21,14 @@ export class RelativeObjectPositionEditorComponent extends AbstractPositionEdito
 		return this.relativeObjectPosition.delta;
 	}
 
-	onDeltaChanged ( $delta: any ) {
+	onDeltaChanged ( $delta: any ): void {
 
 		this.relativeObjectPosition.delta = $delta;
 
 		this.positionModified.emit( this.position );
 	}
 
-	onEntityChanged ( $entityName: string ) {
+	onEntityChanged ( $entityName: string ): void {
 
 		this.relativeObjectPosition.entityRef.name = $entityName;
 

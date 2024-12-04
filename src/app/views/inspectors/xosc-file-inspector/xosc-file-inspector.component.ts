@@ -18,7 +18,7 @@ export class XoscFileInspectorComponent implements OnInit, IComponent {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

@@ -8,7 +8,6 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
 import { Vector3 } from 'three';
-import { Maths } from 'app/utils/maths';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { InvalidArgumentException, NoGeometriesFound } from 'app/exceptions/exceptions';
 import { TvLink } from "../../map/models/tv-link";
@@ -153,11 +152,11 @@ export class RoadGeometryService {
 
 	findWidthUptoStart ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): number {
 
-		if ( lane.side == TvLaneSide.CENTER ) return 0;
+		if ( lane.isCenter ) return 0;
 
 		let width = 0;
 
-		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
+		const lanes = lane.isRight ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
 
 		for ( let i = 0; i < lanes.length; i++ ) {
 
@@ -172,7 +171,7 @@ export class RoadGeometryService {
 		return width;
 	}
 
-	findLaneStartPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset: number = 0, withLaneHeight: boolean = true ) {
+	findLaneStartPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset: number = 0, withLaneHeight: boolean = true ): TvPosTheta {
 
 		const t = this.findWidthUptoStart( road, laneSection, lane, sOffset );
 
@@ -190,7 +189,7 @@ export class RoadGeometryService {
 		return posTheta;
 	}
 
-	findLaneCenterPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset: number = 0, withLaneHeight: boolean = true ) {
+	findLaneCenterPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset: number = 0, withLaneHeight: boolean = true ): TvPosTheta {
 
 		const t = this.findWidthUptoCenter( road, laneSection, lane, sOffset );
 
@@ -207,13 +206,13 @@ export class RoadGeometryService {
 
 	}
 
-	findWidthUptoCenter ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+	findWidthUptoCenter ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): number {
 
-		if ( lane.side == TvLaneSide.CENTER ) return 0;
+		if ( lane.isCenter ) return 0;
 
 		let totalWidth = 0;
 
-		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
+		const lanes = lane.isRight ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
 
 		for ( let i = 0; i < lanes.length; i++ ) {
 
@@ -234,13 +233,13 @@ export class RoadGeometryService {
 
 	}
 
-	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+	findWidthUpto ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): number {
 
-		if ( lane.side == TvLaneSide.CENTER ) return 0;
+		if ( lane.isCenter ) return 0;
 
 		let width = 0;
 
-		const lanes = lane.side == TvLaneSide.RIGHT ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
+		const lanes = lane.isRight ? laneSection.getRightLanes() : laneSection.getLeftLanes().reverse();
 
 		for ( let i = 0; i < lanes.length; i++ ) {
 
@@ -254,7 +253,7 @@ export class RoadGeometryService {
 		return width;
 	}
 
-	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset: number = 0, withLaneHeight: boolean = true ) {
+	findLaneEndPosition ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number, tOffset: number = 0, withLaneHeight: boolean = true ): TvPosTheta {
 
 		const t = this.findWidthUpto( road, laneSection, lane, sOffset ) + tOffset;
 

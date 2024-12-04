@@ -64,7 +64,7 @@ export class RoadStyle {
 		return style;
 	}
 
-	setRoad ( road: TvRoad ) {
+	setRoad ( road: TvRoad ): void {
 
 		this.laneSection.road = road;
 

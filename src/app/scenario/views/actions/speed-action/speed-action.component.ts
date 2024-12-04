@@ -23,7 +23,7 @@ export class SpeedActionComponent implements OnInit, IComponent {
 		return this.action as SpeedAction;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		if ( this.data != null && this.action == null ) {
 
@@ -32,7 +32,7 @@ export class SpeedActionComponent implements OnInit, IComponent {
 		}
 	}
 
-	onTargetChanged ( value: Target ) {
+	onTargetChanged ( value: Target ): void {
 
 		this.speedAction.target = value;
 

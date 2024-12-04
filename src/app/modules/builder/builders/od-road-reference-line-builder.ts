@@ -21,7 +21,7 @@ export class OdRoadReferenceLineBuilder {
 
 	}
 
-	public static showRoadReferenceLine ( road: TvRoad ) {
+	public static showRoadReferenceLine ( road: TvRoad ): void {
 
 		let tmp = new TvPosTheta();
 
@@ -33,7 +33,7 @@ export class OdRoadReferenceLineBuilder {
 
 	}
 
-	private static drawLine ( positions: TvPosTheta[] ) {
+	private static drawLine ( positions: TvPosTheta[] ): void {
 
 		const points = this.convertToVector3( positions );
 
@@ -58,7 +58,7 @@ export class OdRoadReferenceLineBuilder {
 
 	}
 
-	public clear ( road: TvRoad ) {
+	public clear ( road: TvRoad ): void {
 
 		// if ( this.cache.has( road.id ) ) {
 
@@ -70,13 +70,13 @@ export class OdRoadReferenceLineBuilder {
 
 	}
 
-	public create () {
+	public create (): void {
 
 		this.buildRoad( this.road );
 
 	}
 
-	public buildRoad ( road: TvRoad ) {
+	public buildRoad ( road: TvRoad ): void {
 
 		this.road = road;
 

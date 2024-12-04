@@ -17,16 +17,7 @@ export class TvLaneBorder extends ThirdOrderPolynom {
 
 	}
 
-
-	get laneId () {
-		return this.lane.id;
-	}
-
-	get roadId () {
-		return this.lane.laneSection.road.id;
-	}
-
-	clone ( s?: number ) {
+	clone ( s?: number ): TvLaneBorder {
 
 		return new TvLaneBorder( s || this.s, this.a, this.b, this.c, this.d, this.lane );
 

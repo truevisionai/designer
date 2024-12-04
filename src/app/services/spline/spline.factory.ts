@@ -20,7 +20,7 @@ import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
 export class ManeueverHelper {
 
-	static getPositionsFromLaneCoord ( start: TvLaneCoord, end: TvLaneCoord, divider = 3 ): Vector3[] {
+	static getPositionsFromLaneCoord ( start: TvLaneCoord, end: TvLaneCoord, divider: number = 3 ): Vector3[] {
 
 		let entryDirection: Vector3, exitDirection: Vector3;
 
@@ -39,7 +39,7 @@ export class ManeueverHelper {
 		return this.getPositions( start.position, entryDirection, end.position, exitDirection, divider );
 	}
 
-	static getPositions ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): Vector3[] {
+	static getPositions ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): Vector3[] {
 
 		const d1 = startDirection.clone().normalize();
 		const d4 = endDirection.clone().normalize();
@@ -88,7 +88,7 @@ export class SplineFactory {
 		return this.createRoadSpline( road, a, aDirection, b, bDirection );
 	}
 
-	createSplineFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
+	createSplineFromNodes ( firstNode: RoadNode, secondNode: RoadNode ): AbstractSpline {
 
 		if ( firstNode == null ) throw new Error( 'firstNode is null' );
 		if ( secondNode == null ) throw new Error( 'secondNode is null' );
@@ -113,7 +113,7 @@ export class SplineFactory {
 		return this.createSpline( a, aDirection, b, bDirection );
 	}
 
-	static createManeuverSpline ( entry: TvLaneCoord, exit: TvLaneCoord, divider = 3 ): AbstractSpline {
+	static createFromLaneCoords ( entry: TvLaneCoord, exit: TvLaneCoord, divider: number = 3 ): AbstractSpline {
 
 		let entryDirection: Vector3, exitDirection: Vector3;
 
@@ -132,6 +132,29 @@ export class SplineFactory {
 		return this.createRoadSpline( entry.position, entryDirection, exit.position, exitDirection, divider );
 	}
 
+	static createFromRoadCoords ( start: TvRoadCoord | RoadNode, end: TvRoadCoord | RoadNode ): AbstractSpline {
+
+		let startDirection: Vector3, endDirection: Vector3;
+
+		if ( start.contact === TvContactPoint.START ) {
+			startDirection = start.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			startDirection = start.posTheta.toDirectionVector();
+		}
+
+		if ( end.contact === TvContactPoint.START ) {
+			endDirection = end.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			endDirection = end.posTheta.toDirectionVector();
+		}
+
+		const spline = this.createRoadSpline( start.position, startDirection, end.position, endDirection );
+
+		spline.updateSegmentGeometryAndBounds();
+
+		return spline;
+	}
+
 	createSpline ( v1: Vector3, v1Direction: Vector3, v4: Vector3, v4Direction: Vector3 ): AbstractSpline {
 
 		return this.createRoadSpline( null, v1, v1Direction, v4, v4Direction );
@@ -148,7 +171,7 @@ export class SplineFactory {
 
 	}
 
-	static createRoadSpline ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): AbstractSpline {
+	static createRoadSpline ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): AbstractSpline {
 
 		if ( start == null ) throw new Error( 'entry is null' );
 		if ( startDirection == null ) throw new Error( 'entryDirection is null' );
@@ -167,10 +190,10 @@ export class SplineFactory {
 
 		const spline = new AutoSpline();
 
-		spline.addControlPoint( start ) ;
-		spline.addControlPoint( v2 ) ;
-		spline.addControlPoint( v3 ) ;
-		spline.addControlPoint( end ) ;
+		spline.addControlPoint( start );
+		spline.addControlPoint( v2 );
+		spline.addControlPoint( v3 );
+		spline.addControlPoint( end );
 
 		spline.update();
 
@@ -184,7 +207,7 @@ export class SplineFactory {
 	 * @param degrees
 	 * @param type
 	 */
-	static createStraightSplineAndPoints ( start: Vector3, length = 100, degrees = 0, type: SplineType = SplineType.AUTOV2 ): AbstractSpline {
+	static createStraightSplineAndPoints ( start: Vector3, length: number = 100, degrees: number = 0, type: SplineType = SplineType.AUTOV2 ): AbstractSpline {
 
 		const spline = this.createSpline( type );
 
@@ -244,7 +267,7 @@ export class SplineFactory {
 
 		}
 
-		spline.addControlPoint( position ) ;
+		spline.addControlPoint( position );
 
 		return spline;
 
@@ -252,7 +275,7 @@ export class SplineFactory {
 
 	static createExplicitSpline ( geometries: TvAbstractRoadGeometry[], road: TvRoad ): ExplicitSpline {
 
-		function addControlPoint ( spline: ExplicitSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
+		function addControlPoint ( spline: ExplicitSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ): void {
 
 			const point = ControlPointFactory.createRoadControlPoint( spline, geometry, index, position, hdg );
 

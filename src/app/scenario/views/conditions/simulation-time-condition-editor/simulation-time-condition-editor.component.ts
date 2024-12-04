@@ -25,12 +25,12 @@ export class SimulationTimeConditionEditorComponent implements OnInit {
 		return this.condition as SimulationTimeCondition;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 
 	}
 
-	onTimeChanged ( $event: number ) {
+	onTimeChanged ( $event: number ): void {
 		this.simulationTimeCondition.value = $event;
 	}
 

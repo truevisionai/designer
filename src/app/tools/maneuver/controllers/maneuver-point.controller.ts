@@ -18,7 +18,7 @@ function markAsDirty ( junction: TvJunction, connectingRoad: TvRoad ): void {
 
 	if ( connection ) {
 
-		connection.laneLink.forEach( laneLink => {
+		connection.getLaneLinks().forEach( laneLink => {
 
 			laneLink.dirty = true;
 

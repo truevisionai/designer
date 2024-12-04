@@ -16,7 +16,7 @@ export class Storyboard {
 	public endConditionGroups: ConditionGroup[] = [];
 	public initActions = new InitActions();
 
-	addStory ( story: Story ) {
+	addStory ( story: Story ): void {
 
 		// const hasName = ScenarioInstance.db.has_story( story.name );
 		//
@@ -38,13 +38,13 @@ export class Storyboard {
 
 	}
 
-	addEndConditionGroup ( group: ConditionGroup ) {
+	addEndConditionGroup ( group: ConditionGroup ): void {
 
 		this.endConditionGroups.push( group );
 
 	}
 
-	addEndCondition ( condition: Condition ) {
+	addEndCondition ( condition: Condition ): void {
 
 		if ( this.endConditionGroups.length > 0 ) {
 
@@ -63,7 +63,7 @@ export class Storyboard {
 	}
 
 
-	removeEvent ( event: TvEvent ) {
+	removeEvent ( event: TvEvent ): void {
 
 		this.stories.forEach( story => {
 

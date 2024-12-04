@@ -33,19 +33,19 @@ export class DistanceConditionComponent extends BaseConditionEditorComponent {
 
 	}
 
-	onPositionChanged ( position: Position ) {
+	onPositionChanged ( position: Position ): void {
 
 		Commands.SetValue( this.distanceCondition, 'position', position );
 
 	}
 
-	onDistanceChanged ( $event: any ) {
+	onDistanceChanged ( $event: any ): void {
 
 		this.distanceCondition.value = $event;
 
 	}
 
-	onRuleChanged ( $event: Rule ) {
+	onRuleChanged ( $event: Rule ): void {
 
 		this.distanceCondition.rule = $event;
 

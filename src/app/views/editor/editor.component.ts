@@ -81,14 +81,14 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.shortcutService.init();
 
 		this.onEditorOpened();
 	}
 
-	onEditorOpened () {
+	onEditorOpened (): void {
 
 		this.openLastEditedFile();
 
@@ -96,7 +96,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	}
 
-	openLastEditedFile () {
+	openLastEditedFile (): void {
 
 		setTimeout( () => {
 
@@ -106,7 +106,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	}
 
-	fetchUserProfile () {
+	fetchUserProfile (): void {
 
 		if ( !navigator.onLine ) return;
 
@@ -124,7 +124,7 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	}
 
-	openOnboardingForm () {
+	openOnboardingForm (): void {
 
 		this.dialog.open( QuesionsDialogComponent, {
 			data: {},
@@ -145,19 +145,19 @@ export class EditorComponent implements OnInit, AfterContentInit {
 
 	}
 
-	showNewScenarioDialog () {
+	showNewScenarioDialog (): void {
 
 	}
 
 	@HostListener( 'document:keydown', [ '$event' ] )
-	onKeyDown ( e: KeyboardEvent ) {
+	onKeyDown ( e: KeyboardEvent ): void {
 
 		this.editor.onKeyDown( e );
 
 	}
 
 	@HostListener( 'document:keyup', [ '$event' ] )
-	onKeyUp ( e: KeyboardEvent ) {
+	onKeyUp ( e: KeyboardEvent ): void {
 
 		this.editor.onKeyUp( e );
 

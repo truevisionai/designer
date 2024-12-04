@@ -44,7 +44,7 @@ export class LoadingService {
 	) {
 	}
 
-	loadProject ( path: string ) {
+	loadProject ( path: string ): void {
 
 		this.loadFolder( path );
 
@@ -71,7 +71,7 @@ export class LoadingService {
 		this.editorSettings.loadSettings();
 	}
 
-	loadFolder ( path: string ) {
+	loadFolder ( path: string ): void {
 
 		const folder = new Asset( AssetType.DIRECTORY, path, path );
 
@@ -97,7 +97,7 @@ export class LoadingService {
 
 	}
 
-	loadTextures () {
+	loadTextures (): void {
 
 		const loader = this.assetLoaderProvider.getLoader( AssetType.TEXTURE );
 
@@ -115,7 +115,7 @@ export class LoadingService {
 
 	}
 
-	loadMaterials () {
+	loadMaterials (): void {
 
 		const loader = this.assetLoaderProvider.getLoader( AssetType.MATERIAL );
 
@@ -139,7 +139,7 @@ export class LoadingService {
 
 	}
 
-	loadModels () {
+	loadModels (): void {
 
 		this.assets.filter( asset => asset.type == AssetType.MODEL ).forEach( asset => {
 
@@ -157,7 +157,7 @@ export class LoadingService {
 
 	}
 
-	loadRoadStyles () {
+	loadRoadStyles (): void {
 
 		this.assets.filter( asset => asset.type == AssetType.ROAD_STYLE ).forEach( asset => {
 
@@ -169,7 +169,7 @@ export class LoadingService {
 
 	}
 
-	loadEntities () {
+	loadEntities (): void {
 
 		this.assets.filter( asset => asset.type == AssetType.ENTITY ).forEach( asset => {
 
@@ -181,7 +181,7 @@ export class LoadingService {
 
 	}
 
-	loadGeometries () {
+	loadGeometries (): void {
 
 		const loader = new BufferGeometryLoader();
 
@@ -201,7 +201,7 @@ export class LoadingService {
 
 	}
 
-	loadPrefabs () {
+	loadPrefabs (): void {
 
 		this.assets.filter( asset => asset.type == AssetType.OBJECT ).forEach( asset => {
 
@@ -217,7 +217,7 @@ export class LoadingService {
 
 	}
 
-	loadSceneFiles () {
+	loadSceneFiles (): void {
 
 		this.assets.filter( asset => asset.type == AssetType.SCENE ).forEach( asset => {
 
@@ -227,7 +227,7 @@ export class LoadingService {
 
 	}
 
-	loadOpenDriveFiles () {
+	loadOpenDriveFiles (): void {
 
 		this.assets.filter( asset => asset.type == AssetType.OPENDRIVE ).forEach( asset => {
 
@@ -249,7 +249,7 @@ export class LoadingService {
 
 	}
 
-	loadOpenScenarioFiles () {
+	loadOpenScenarioFiles (): void {
 
 		this.assets.filter( asset => asset.type == AssetType.OPENSCENARIO ).forEach( asset => {
 
@@ -271,7 +271,7 @@ export class LoadingService {
 
 	}
 
-	loadRoadMarkings () {
+	loadRoadMarkings (): void {
 
 		// AssetDatabase.getMetadataAll().forEach( meta => {
 
@@ -289,7 +289,7 @@ export class LoadingService {
 
 	}
 
-	private updateMaterial ( asset: Asset, material: MaterialAsset ) {
+	private updateMaterial ( asset: Asset, material: MaterialAsset ): void {
 
 		if ( material instanceof MaterialAsset ) {
 

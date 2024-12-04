@@ -47,7 +47,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 		return Environment.production;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		Log.info( 'App Version: ', Environment.version );
 
@@ -63,11 +63,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 	}
 
-	ngAfterViewInit () {
+	ngAfterViewInit (): void {
 		this.layout.applyMatTheme( this.renderer );
 	}
 
-	changePageTitle () {
+	changePageTitle (): void {
 		this.router.events.pipe( filter( event => event instanceof NavigationEnd ) ).subscribe( ( routeChange ) => {
 			var routeParts = this.routePartsService.generateRouteParts( this.activeRoute.snapshot );
 			if ( !routeParts.length ) {
@@ -85,7 +85,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 		} );
 	}
 
-	private trackPageChanges () {
+	private trackPageChanges (): void {
 		this.router.events
 			.pipe(
 				filter( ( event: RouterEvent ) => event instanceof NavigationEnd ),

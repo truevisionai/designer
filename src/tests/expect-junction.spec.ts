@@ -1,10 +1,16 @@
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { TvJunctionConnection } from "app/map/models/junctions/tv-junction-connection";
+import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 
-const linkCount = {
+export const EXPECT_LINKS = {
 	X_JUNCTION: 20,
 	T_JUNCTION: 12,
 	TWO_ROAD: 6
+}
+
+export const EXPECT_CONNECTION = {
+	X_JUNCTION: 12,
+	T_JUNCTION: 6,
+	TWO_ROAD: 2
 }
 
 export function expectXJunction ( junction: TvJunction, message?: string ): void {
@@ -13,8 +19,8 @@ export function expectXJunction ( junction: TvJunction, message?: string ): void
 
 	if ( !junction ) return;
 
-	expect( junction.getConnectionCount() ).toBe( linkCount.X_JUNCTION );
-	expect( junction.getLaneLinkCount() ).toBe( linkCount.X_JUNCTION );
+	expect( junction.getConnectionCount() ).toBe( EXPECT_CONNECTION.X_JUNCTION );
+	expect( junction.getLaneLinkCount() ).toBe( EXPECT_LINKS.X_JUNCTION );
 	expect( junction.getIncomingRoadCount() ).toBe( 4 );
 
 	for ( const connection of junction.getConnections() ) {
@@ -33,8 +39,8 @@ export function expectTJunction ( junction: TvJunction, message?: string ): void
 
 	if ( !junction ) return;
 
-	expect( junction.getConnectionCount() ).toBe( linkCount.T_JUNCTION );
-	expect( junction.getLaneLinkCount() ).toBe( linkCount.T_JUNCTION );
+	expect( junction.getConnectionCount() ).toBe( EXPECT_CONNECTION.T_JUNCTION );
+	expect( junction.getLaneLinkCount() ).toBe( EXPECT_LINKS.T_JUNCTION );
 	expect( junction.getIncomingRoadCount() ).toBe( 3 );
 
 	for ( const connection of junction.getConnections() ) {
@@ -49,8 +55,8 @@ export function expect2RoadJunction ( junction: TvJunction, message?: string ): 
 
 	if ( !junction ) return;
 
-	expect( junction.getConnectionCount() ).toBe( linkCount.TWO_ROAD );
-	expect( junction.getLaneLinkCount() ).toBe( linkCount.TWO_ROAD );
+	expect( junction.getConnectionCount() ).toBe( EXPECT_CONNECTION.TWO_ROAD );
+	expect( junction.getLaneLinkCount() ).toBe( EXPECT_LINKS.TWO_ROAD );
 
 	for ( const connection of junction.getConnections() ) {
 		expectValidConnection( connection );

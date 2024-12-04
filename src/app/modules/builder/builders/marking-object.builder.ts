@@ -49,7 +49,7 @@ export class MarkingObjectBuilder {
 		return object3D;
 	}
 
-	static createMarkingMesh ( roadObject: TvRoadObject, marking: TvObjectMarking ) {
+	static createMarkingMesh ( roadObject: TvRoadObject, marking: TvObjectMarking ): Mesh {
 
 		const points: Vector3[] = [];
 
@@ -165,7 +165,7 @@ export class MarkingObjectBuilder {
 		return this.createGeometryFromCurve( marking, curve );
 	}
 
-	private static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ) {
+	private static createZebraCrossingInPolygon ( marking: TvObjectMarking, vertices: Vector3[] ): Mesh {
 
 		const curve = new CatmullRomCurve3( [
 			new Vector3( 0, 0, 0 ),

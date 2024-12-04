@@ -33,7 +33,7 @@ export class RoadWidthService {
 
 		const laneSection = road.getLaneProfile().getLaneSectionAt( distance );
 
-		const lanes = laneSection.getLaneArray();
+		const lanes = laneSection.getLanes();
 
 		return {
 			totalWidth: this.sumLaneWidth( lanes, distance ),
@@ -46,7 +46,7 @@ export class RoadWidthService {
 
 		const laneSection = road.getLaneProfile().getLaneSectionAt( s );
 
-		const lanes = laneSection.getLaneArray();
+		const lanes = laneSection.getLanes();
 
 		return this.sumLaneWidth( lanes, s );
 	}

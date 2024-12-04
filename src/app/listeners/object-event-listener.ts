@@ -32,7 +32,7 @@ export class ObjectEventListener {
 
 	}
 
-	init () {
+	init (): void {
 
 		MapEvents.assetSelected.subscribe( e => this.onAssetSelected( e ) );
 		MapEvents.assetDragged.subscribe( e => this.onAssetSelected( e ) );
@@ -129,7 +129,7 @@ export class ObjectEventListener {
 
 	}
 
-	private updateInspector () {
+	private updateInspector (): void {
 
 		const inspector = AppInspector.lastInspectorCreated;
 
@@ -142,7 +142,7 @@ export class ObjectEventListener {
 		}
 	}
 
-	private updateAsset ( object: object ) {
+	private updateAsset ( object: object ): void {
 
 		if ( object instanceof MaterialAsset ) {
 

@@ -25,6 +25,7 @@ import { Maths } from 'app/utils/maths';
 import { SplineElevationProfile } from './spline-elevation-profile';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { SplineType } from './spline-type';
+import { SplineIntersection } from "../../services/junction/spline-intersection";
 
 export type NewSegment = TvRoad | TvJunction | null;
 
@@ -60,7 +61,7 @@ export abstract class AbstractSpline {
 
 	private map: TvMap;
 
-	static reset () {
+	static reset (): void {
 		this.idCounter = 1;
 	}
 
@@ -104,9 +105,13 @@ export abstract class AbstractSpline {
 		return this.controlPoints.map( point => point.position );
 	}
 
-	setMap ( map: TvMap ): void { this.map = map; }
+	setMap ( map: TvMap ): void {
+		this.map = map;
+	}
 
-	getMap (): TvMap { return this.map; }
+	getMap (): TvMap {
+		return this.map;
+	}
 
 	getControlPoints (): AbstractControlPoint[] {
 		return this.controlPoints;
@@ -166,7 +171,7 @@ export abstract class AbstractSpline {
 		return this.controlPoints.length >= 2 ? this.controlPoints[ this.controlPoints.length - 2 ] : null;
 	}
 
-	update () {
+	update (): void {
 	}
 
 	getLength (): number {
@@ -183,7 +188,7 @@ export abstract class AbstractSpline {
 		this.controlPoints.forEach( ( point, index ) => point.index = index );
 	}
 
-	toString () {
+	toString (): string {
 		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segments.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
 	}
 
@@ -243,8 +248,8 @@ export abstract class AbstractSpline {
 		const prevSegment = this.getPreviousSegment( segment );
 		const nextSegment = this.getNextSegment( segment );
 
-		if ( prevSegment instanceof TvRoad ) prevSegment.successor = null;
-		if ( nextSegment instanceof TvRoad ) nextSegment.predecessor = null;
+		if ( prevSegment instanceof TvRoad ) prevSegment.removeSuccessor();
+		if ( nextSegment instanceof TvRoad ) nextSegment.removePredecessor();
 
 		this.removeSegment( segment );
 
@@ -287,11 +292,11 @@ export abstract class AbstractSpline {
 
 			this.shiftSegment( 0, nextSegment );
 
-			if ( nextSegment instanceof TvRoad ) nextSegment.predecessor = null;
+			if ( nextSegment instanceof TvRoad ) nextSegment.removePredecessor();
 
 		} else if ( nextSegment instanceof TvRoad && prevSegment instanceof TvRoad ) {
 
-			prevSegment.successor = nextSegment.successor?.clone();
+			prevSegment.setSuccessor( nextSegment.successor?.clone() );
 
 			nextSegment.successor?.replace( nextSegment, prevSegment, TvContactPoint.END );
 
@@ -303,7 +308,7 @@ export abstract class AbstractSpline {
 
 		} else if ( nextSegment == null && prevSegment instanceof TvRoad ) {
 
-			prevSegment.successor = null;
+			prevSegment.removeSuccessor();
 
 		}
 
@@ -492,7 +497,7 @@ export abstract class AbstractSpline {
 		return this.getSuccessor() instanceof TvJunction || this.getPredecessor() instanceof TvJunction;
 	}
 
-	getIntersections ( otherSpline: AbstractSpline ) {
+	getIntersections ( otherSpline: AbstractSpline ): SplineIntersection[] {
 		return findIntersectionsViaBox2D( this, otherSpline );
 	}
 

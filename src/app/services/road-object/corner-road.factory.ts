@@ -39,7 +39,7 @@ export class CornerRoadFactory {
 
 	}
 
-	static createCornerRoadOutline ( road: TvRoad, outline: TvObjectOutline, s: number, t: number, height: number = 0.0, dz = 0.0 ) {
+	static createCornerRoadOutline ( road: TvRoad, outline: TvObjectOutline, s: number, t: number, height: number = 0.0, dz: number = 0.0 ): any {
 
 		const id = outline.cornerLocals.length + outline.cornerRoads.length;
 
@@ -47,7 +47,7 @@ export class CornerRoadFactory {
 
 	}
 
-	static createCornerLocalOutline ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ) {
+	static createCornerLocalOutline ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height: number = 0.0 ): any {
 
 		const id = outline.cornerLocals.length + outline.cornerRoads.length;
 

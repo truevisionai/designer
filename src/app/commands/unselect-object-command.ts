@@ -27,7 +27,7 @@ export class UnselectObjectCommand extends BaseCommand {
 
 	}
 
-	execute () {
+	execute (): void {
 
 		this.objects.forEach( object => MapEvents.objectUnselected.emit( object ) );
 

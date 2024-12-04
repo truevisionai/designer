@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { TurnType, TvLaneSide, TvSide } from 'app/map/models/tv-common';
-import { Box2, Box3, MathUtils, Vector2, Vector3 } from 'three';
+import { TvLaneSide, TvSide } from 'app/map/models/tv-common';
+import { Box2, Box3, Vector2, Vector3 } from 'three';
 import { TvPosTheta } from "../map/models/tv-pos-theta";
 
 export class Maths {
@@ -149,7 +149,7 @@ export class Maths {
 		// return ZERO;
 	}
 
-	public static getDirectionVector ( hdg: number ) {
+	public static getDirectionVector ( hdg: number ): Vector2 {
 
 		return new Vector2( Math.cos( hdg ), Math.sin( hdg ) );
 
@@ -213,13 +213,13 @@ export class Maths {
 
 	}
 
-	static linearInterpolation ( x: number, y: number, t: number ) {
+	static linearInterpolation ( x: number, y: number, t: number ): number {
 
 		return ( 1 - t ) * x + t * y;
 
 	}
 
-	static linearInterpolationVector3 ( p1: Vector3, p2: Vector3, t: number ) {
+	static linearInterpolationVector3 ( p1: Vector3, p2: Vector3, t: number ): Vector3 {
 
 		const a = new Vector3();
 
@@ -230,27 +230,27 @@ export class Maths {
 		return a;
 	}
 
-	public static cosineInterpolation ( x, y, t ) {
+	public static cosineInterpolation ( x: any, y: any, t: any ): number {
 
 		const t2 = ( 1 - Math.cos( t * Math.PI ) ) * 0.5;
 
 		return ( x * ( 1 - t2 ) + y * t2 );
 	}
 
-	public static sineInterpolation ( x, y, t ) {
+	public static sineInterpolation ( x: any, y: any, t: any ): number {
 
 		const t2 = ( 1 - Math.cos( t * Math.PI ) ) * 0.5;
 
 		return ( x * ( 1 - t2 ) + y * t2 );
 	}
 
-	public static randomNumberBetween ( min: number, max: number ) {
+	public static randomNumberBetween ( min: number, max: number ): number {
 
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
 
 	}
 
-	public static randomFloatBetween ( min: number, max: number ) {
+	public static randomFloatBetween ( min: number, max: number ): number {
 
 		return Math.random() * ( max - min ) + min;
 
@@ -285,18 +285,18 @@ export class Maths {
 		return null;
 	}
 
-	public static randomFloat () {
+	public static randomFloat (): number {
 
 		return Math.random();
 	}
 
-	static cubicInterpolation ( x: number, y: number, t: any ) {
+	static cubicInterpolation ( x: number, y: number, t: any ): number {
 
 		return y;
 
 	}
 
-	static moveTowards ( v1: Vector3, v2: Vector3, maxDistanceDelta: number ) {
+	static moveTowards ( v1: Vector3, v2: Vector3, maxDistanceDelta: number ): Vector3 {
 
 		const current = v1.clone();
 		const target = v2.clone();
@@ -366,7 +366,7 @@ export class Maths {
 		return false;
 	}
 
-	static onSegment ( p: Vector3, q: Vector3, r: Vector3 ) {
+	static onSegment ( p: Vector3, q: Vector3, r: Vector3 ): boolean {
 
 		if (
 			q.x <= Math.max( p.x, r.x ) &&
@@ -385,7 +385,7 @@ export class Maths {
 	// 0 --> p, q and r are colinear
 	// 1 --> Clockwise
 	// 2 --> Counterclockwise
-	static orientation ( p: Vector3, q: Vector3, r: Vector3 ) {
+	static orientation ( p: Vector3, q: Vector3, r: Vector3 ): 0 | 1 | 2 {
 
 		// See https://www.geeksforgeeks.org/orientation-3-ordered-points/
 		// for details of below formula.
@@ -460,7 +460,7 @@ export class Maths {
 		return null; // Lines do not intersect
 	}
 
-	static findLineIntersectionAngle ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ) {
+	static findLineIntersectionAngle ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ): number {
 
 		const dir1 = b.clone().sub( a );
 		const dir2 = d.clone().sub( c );
@@ -495,7 +495,7 @@ export class Maths {
 		return this.lineLineIntersection( p1, a, p2, b );
 	}
 
-	static findRadius ( p1: Vector3, p1Heading: number, p3: Vector3, p3Heading: number ) {
+	static findRadius ( p1: Vector3, p1Heading: number, p3: Vector3, p3Heading: number ): any {
 
 		const distance = 1;
 
@@ -523,19 +523,19 @@ export class Maths {
 
 	}
 
-	static clamp ( num: number, min: number, max: number ) {
+	static clamp ( num: number, min: number, max: number ): number {
 
 		return num <= min ? min : num >= max ? max : num;
 
 	}
 
-	static approxEquals ( a: number, b: number, precision = 0.00001 ): boolean {
+	static approxEquals ( a: number, b: number, precision: number = 0.00001 ): boolean {
 
 		return Math.abs( a - b ) <= precision;
 
 	}
 
-	static slope ( A: Vector2 | Vector3, B: Vector2 | Vector3 ) {
+	static slope ( A: Vector2 | Vector3, B: Vector2 | Vector3 ): number {
 
 		return ( B.y - A.y ) / ( B.x - A.x );
 
@@ -682,7 +682,7 @@ export class Maths {
 		}
 	}
 
-	static heading ( previousPoint: Vector2 | Vector3, newPoint: Vector2 | Vector3 ) {
+	static heading ( previousPoint: Vector2 | Vector3, newPoint: Vector2 | Vector3 ): number {
 
 		// Calculate the angle from the previous point to the new point
 		const deltaX = newPoint.x - previousPoint.x;
@@ -693,7 +693,7 @@ export class Maths {
 
 	}
 
-	static round ( value: number, precision: number = 2 ) {
+	static round ( value: number, precision: number = 2 ): number {
 
 		const multiplier = Math.pow( 10, precision || 0 );
 
@@ -701,18 +701,18 @@ export class Maths {
 
 	}
 
-	static normalizeHeading ( heading: number ) {
+	static normalizeHeading ( heading: number ): number {
 
 		return ( heading + Maths.PI ) % ( 2 * Maths.PI ) - Maths.PI;
 	}
 
-	static findIntersection ( a: TvPosTheta, b: TvPosTheta ) {
+	static findIntersection ( a: TvPosTheta, b: TvPosTheta ): Vector3 {
 
 		return this.lineLineIntersection_2( a.position, a.hdg, b.position, b.hdg );
 
 	}
 
-	static vec2Angle ( x: number, y: number ) {
+	static vec2Angle ( x: number, y: number ): number {
 		const d = Math.sqrt( x * x + y * y );
 		x /= d;
 		y /= d
@@ -720,54 +720,13 @@ export class Maths {
 		else return 2 * Math.PI - Math.acos( x );
 	}
 
-	static lerp ( min: number, max: number, t: number ) {
+	static lerp ( min: number, max: number, t: number ): number {
 
 		return min + t * ( max - min );
 
 	}
 
-	static findTurnType ( A: Vector3, B: Vector3, heading: number ) {
-
-		// Create vectors for positions of A and B
-		const positionA = new Vector2( A.x, A.y );
-		const positionB = new Vector2( B.x, B.y );
-
-		// Calculate vector from A to B
-		const vectorAB = new Vector2().subVectors( positionB, positionA );
-
-		// Create heading vector for A
-		const headingVector = new Vector2( Math.cos( heading ), Math.sin( heading ) );
-
-		// Calculate the angle in degrees between heading vector and vector AB
-		const dot = headingVector.dot( vectorAB );
-		const angleRadians = Math.acos( dot / ( headingVector.length() * vectorAB.length() ) );
-		const angleDegrees = MathUtils.radToDeg( angleRadians );
-
-		// Calculate the determinant (similar to cross product z-component in 3D) to determine direction
-		const crossZ = headingVector.x * vectorAB.y - headingVector.y * vectorAB.x;
-
-		// Define the threshold for straight direction
-		// NOTE: DONT CHANGE THIS VALUE
-		// WE NEED TO WRITE TEST CASES TO ENSURE NEW VALUE WORKS
-		const straightThreshold = 30; // ±30 degrees for straight
-
-		// Determine if within straight range
-		if ( Math.abs( angleDegrees ) <= straightThreshold ) {
-
-			return TurnType.STRAIGHT;
-
-		} else if ( crossZ > 0 ) {
-
-			return TurnType.LEFT;
-
-		} else {
-
-			return TurnType.RIGHT;
-
-		}
-	}
-
-	static convertToBox3d ( box: Box2 ) {
+	static convertToBox3d ( box: Box2 ): Box3 {
 
 		// Convert Box2 to Box3
 		let min = new Vector3( box.min.x, box.min.y, 0 );

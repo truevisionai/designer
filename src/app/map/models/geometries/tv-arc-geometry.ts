@@ -82,13 +82,13 @@ export class TvArcGeometry extends TvAbstractRoadGeometry {
 		return new TvPosTheta( retX, retY, this.hdg + theta, s );
 	}
 
-	computeVars () {
+	computeVars (): void {
 
 		// nothing
 
 	}
 
-	findS ( x, y ) {
+	findS ( x: any, y: any ): void {
 
 		// not working just for reference
 

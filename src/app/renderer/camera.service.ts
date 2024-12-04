@@ -52,7 +52,7 @@ export class CameraService {
 
 	}
 
-	init () {
+	init (): void {
 
 		// higher near value >= 10 reduces the z fighting that
 		// happens in rendering road markings
@@ -119,7 +119,7 @@ export class CameraService {
 
 	}
 
-	private onCanvasResized () {
+	private onCanvasResized (): void {
 
 		const aspect = this.canvasService.aspect;
 
@@ -144,7 +144,7 @@ export class CameraService {
 
 	}
 
-	updateCameraPosition () {
+	updateCameraPosition (): void {
 
 		//const target = this.getFocusTarget();
 		//
@@ -166,7 +166,7 @@ export class CameraService {
 
 	}
 
-	resetCamera () {
+	resetCamera (): void {
 
 		if ( this.camera instanceof OrthographicCamera ) {
 
@@ -180,7 +180,7 @@ export class CameraService {
 
 	}
 
-	private resetOrthographicCamera ( camera: OrthographicCamera ) {
+	private resetOrthographicCamera ( camera: OrthographicCamera ): void {
 
 		this.camera.position.copy( this.camera.userData.initialPosition ?? new Vector3( 0, 0, 200 ) );
 
@@ -194,7 +194,7 @@ export class CameraService {
 
 	}
 
-	private resetPerspectiveCamera ( camera: PerspectiveCamera ) {
+	private resetPerspectiveCamera ( camera: PerspectiveCamera ): void {
 
 		this.camera.position.copy( this.camera.userData.initialPosition ?? new Vector3( 0, -50, 200 ) );
 
@@ -208,7 +208,7 @@ export class CameraService {
 
 	}
 
-	computeDistance ( target: Vector3, camera?: Camera ) {
+	computeDistance ( target: Vector3, camera?: Camera ): number {
 
 		camera = camera ?? this.camera;
 

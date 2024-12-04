@@ -109,13 +109,13 @@ export class PropSpanInspector {
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	delete () {
+	delete (): void {
 
 		Commands.RemoveObject( this.roadObject );
 
 	}
 
-	updateLength () {
+	updateLength (): void {
 
 		if ( this.repeat.sStart + this.repeat.segmentLength > this.roadObject.road.length ) {
 

@@ -87,13 +87,13 @@ export class SplineGeometryGenerator {
 	 * @param spline
 	 * @deprecated
 	 */
-	buildSpline ( spline: AbstractSpline ) {
+	buildSpline ( spline: AbstractSpline ): void {
 
 		this.buildGeometry( spline );
 
 	}
 
-	buildSegments ( spline: AbstractSpline ) {
+	buildSegments ( spline: AbstractSpline ): void {
 
 		for ( const segment of spline.getSegments() ) {
 
@@ -119,7 +119,7 @@ export class SplineGeometryGenerator {
 
 	}
 
-	buildCatmullRomSpline ( spline: CatmullRomSpline ) {
+	buildCatmullRomSpline ( spline: CatmullRomSpline ): void {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
@@ -133,7 +133,7 @@ export class SplineGeometryGenerator {
 
 	}
 
-	buildNew ( spline: AbstractSpline ) {
+	buildNew ( spline: AbstractSpline ): void {
 
 		if ( spline.type === SplineType.CATMULLROM ) {
 
@@ -143,7 +143,7 @@ export class SplineGeometryGenerator {
 
 	}
 
-	buildCatmullRom ( spline: CatmullRomSpline ) {
+	buildCatmullRom ( spline: CatmullRomSpline ): void {
 
 		if ( spline.controlPoints.length < 2 ) return;
 

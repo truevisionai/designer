@@ -9,23 +9,7 @@ export interface HasSpline {
 	spline: AbstractSpline;
 }
 
-export interface HasNoSpline {
-	// Properties and methods for objects without a spline
-}
-
-export interface DataService {
-
-	all ( parent?: any ): any;
-
-	add ( parent: any, object?: any ): void;
-
-	update ( parent: any, object?: any ): void;
-
-	remove ( parent: any, object: any ): void;
-
-}
-
-export abstract class BaseDataService<T extends any> {
+export abstract class BaseDataService<T> {
 
 	abstract all (): T[];
 

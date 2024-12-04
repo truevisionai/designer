@@ -31,7 +31,7 @@ export class TvJunctionBoundary {
 		this.segments = [];
 	}
 
-	clone () {
+	clone (): TvJunctionBoundary {
 		const boundary = new TvJunctionBoundary();
 		boundary.segments = this.segments.map( s => s.clone() );
 		return boundary;

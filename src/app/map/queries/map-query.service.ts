@@ -40,7 +40,7 @@ export class MapQueryService {
 		return this.mapService.junctions;
 	}
 
-	findLaneSuccessors ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	findLaneSuccessors ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): TvLane[] {
 
 		const successors: TvLane[] = []
 
@@ -67,7 +67,7 @@ export class MapQueryService {
 
 				if ( connection.incomingRoad !== road ) continue;
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					if ( laneLink.from != lane.id ) continue;
 
@@ -87,7 +87,7 @@ export class MapQueryService {
 
 			for ( const connection of junction.getConnections() ) {
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					const connectingLane = connection.connectingLaneSection.getLaneById( laneLink.to );
 
@@ -105,7 +105,7 @@ export class MapQueryService {
 
 	}
 
-	findLanePredecessors ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	findLanePredecessors ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): TvLane[] {
 
 		const predecessors: TvLane[] = []
 
@@ -132,7 +132,7 @@ export class MapQueryService {
 
 				if ( connection.incomingRoad !== road ) continue;
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					if ( laneLink.from != lane.id ) continue;
 
@@ -152,7 +152,7 @@ export class MapQueryService {
 
 			for ( const connection of junction.getConnections() ) {
 
-				for ( const laneLink of connection.laneLink ) {
+				for ( const laneLink of connection.getLaneLinks() ) {
 
 					const connectingLane = connection.connectingLaneSection.getLaneById( laneLink.to );
 

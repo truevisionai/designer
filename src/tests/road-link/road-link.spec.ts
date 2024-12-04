@@ -4,12 +4,22 @@ import { setupTest } from 'tests/setup-tests';
 import { TestBed } from "@angular/core/testing";
 import { Vector3 } from "three";
 import { TvContactPoint } from "app/map/models/tv-common";
+import { TvLaneSection } from "app/map/models/tv-lane-section";
+
+function expectLaneSectionWithNoLinks ( laneSection: TvLaneSection ) {
+	laneSection.getNonCenterLanes().forEach( lane => {
+		expect( lane.successorExists ).toBeFalse();
+		expect( lane.predecessorExists ).toBeFalse();
+	} );
+}
 
 describe( 'RoadLinker', () => {
 
 	let leftRoad: TvRoad;
 	let rightRoad: TvRoad;
 	let helper: SplineTestHelper;
+	let prevSection: TvLaneSection;
+	let nextSection: TvLaneSection;
 
 	beforeEach( () => {
 
@@ -20,81 +30,102 @@ describe( 'RoadLinker', () => {
 		leftRoad = helper.createStraightRoad( new Vector3( 0, 0, 0 ), 100 );
 		rightRoad = helper.createStraightRoad( new Vector3( 100, 0, 0 ), 100 );
 
+		prevSection = leftRoad.getLaneProfile().getLastLaneSection();
+		nextSection = rightRoad.getLaneProfile().getFirstLaneSection();
+
 	} );
 
 	it( 'link when next road is successor', () => {
 
-		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.START );
 
-		leftRoad.getLaneProfile().getLanes().forEach( lane => {
+		leftRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
 			expect( lane.successorExists ).toBe( true );
-			expect( lane.successorId ).toBeDefined();
-			expect( lane.successorUUID ).toBeDefined();
-			expect( lane.successorId ).toBe( lane.id );
+			expect( lane.isSuccessor( nextSection.getLaneById( lane.id ) ) ).toBe( true );
 		} );
 
 		leftRoad.getLaneProfile().getLanes().forEach( lane => {
 			expect( lane.predecessorExists ).toBe( false );
-			expect( lane.predecessorId ).toBeUndefined();
-			expect( lane.predecessorUUID ).toBeUndefined();
 		} );
 
 		rightRoad.getLaneProfile().getLanes().forEach( lane => {
 			expect( lane.successorExists ).toBe( false );
-			expect( lane.successorId ).toBeUndefined();
-			expect( lane.successorUUID ).toBeUndefined();
 		} );
 
-		rightRoad.getLaneProfile().getLanes().forEach( lane => {
+		rightRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
 			expect( lane.predecessorExists ).toBe( true );
-			expect( lane.predecessorId ).toBeDefined();
-			expect( lane.predecessorUUID ).toBeDefined();
-			expect( lane.predecessorId ).toBe( lane.id );
+			expect( lane.isPredecessor( prevSection.getLaneById( lane.id ) ) ).toBe( true );
 		} );
+
+	} );
+
+	it( 'should unlink with successor with contact start', () => {
+
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.START );
+
+		leftRoad.removeSuccessor();
+
+		expect( leftRoad.hasSuccessor() ).toBe( false );
+		expect( leftRoad.hasPredecessor() ).toBe( false );
+
+		expect( rightRoad.hasSuccessor() ).toBe( false );
+		expect( rightRoad.hasPredecessor() ).toBe( false );
+
+		leftRoad.laneSections.forEach( laneSection => expectLaneSectionWithNoLinks( laneSection ) );
+		rightRoad.laneSections.forEach( laneSection => expectLaneSectionWithNoLinks( laneSection ) );
+
+	} );
+
+	it( 'should unlink with successor with contact end', () => {
+
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.END );
+
+		leftRoad.removeSuccessor();
+
+		expect( leftRoad.hasPredecessor() ).toBe( false );
+		expect( leftRoad.hasSuccessor() ).toBe( false );
+
+		expect( rightRoad.hasPredecessor() ).toBe( false );
+		expect( rightRoad.hasSuccessor() ).toBe( false );
+
+		leftRoad.laneSections.forEach( laneSection => expectLaneSectionWithNoLinks( laneSection ) );
+		rightRoad.laneSections.forEach( laneSection => expectLaneSectionWithNoLinks( laneSection ) );
 
 	} );
 
 	it( 'link when both roads are successor to each other', () => {
 
-		leftRoad.linkSuccessor( rightRoad, TvContactPoint.END );
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.END );
 
-		leftRoad.getLaneProfile().getLanes().forEach( lane => {
+		leftRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
 			expect( lane.successorExists ).toBe( true );
-			expect( lane.successorId ).toBeDefined();
-			expect( lane.successorUUID ).toBeDefined();
-			expect( lane.successorId ).toBe( lane.id * -1 );
+			expect( lane.isSuccessor( nextSection.getLaneById( lane.id * -1 ) ) ).toBe( true );
 		} );
 
 		leftRoad.getLaneProfile().getLanes().forEach( lane => {
 			expect( lane.predecessorExists ).toBe( false );
-			expect( lane.predecessorId ).toBeUndefined();
-			expect( lane.predecessorUUID ).toBeUndefined();
 		} );
 
-		rightRoad.getLaneProfile().getLanes().forEach( lane => {
+		rightRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
 			expect( lane.successorExists ).toBe( true );
-			expect( lane.successorId ).toBeDefined();
-			expect( lane.successorUUID ).toBeDefined();
-			expect( lane.successorId ).toBe( lane.id * -1 );
+			expect( lane.isSuccessor( prevSection.getLaneById( lane.id * -1 ) ) ).toBe( true );
 		} );
 
 		rightRoad.getLaneProfile().getLanes().forEach( lane => {
 			expect( lane.predecessorExists ).toBe( false );
-			expect( lane.predecessorId ).toBeUndefined();
-			expect( lane.predecessorUUID ).toBeUndefined();
 		} );
 
 	} );
 
 	xit( 'link predecessor with successor', () => {
 
-		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.START );
 
 	} );
 
 	xit( 'link predecessor with predecessor', () => {
 
-		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.START );
 
 	} );
 

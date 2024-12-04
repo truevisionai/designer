@@ -65,7 +65,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	onSelected ( lane: TvLane ): void {
 
-		lane.laneSection.lanesMap.forEach( item => {
+		lane.laneSection.getLanes().forEach( item => {
 
 			this.showHeightNodes( item );
 
@@ -78,7 +78,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	onUnselected ( lane: TvLane ): void {
 
-		lane.laneSection.lanesMap.forEach( item => {
+		lane.laneSection.getLanes().forEach( item => {
 
 			this.nodes.removeKey( item );
 
@@ -97,7 +97,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	onRemoved ( lane: TvLane ): void {
 
-		lane.laneSection.lanesMap.forEach( item => {
+		lane.laneSection.getLanes().forEach( item => {
 
 			this.nodes.removeKey( item );
 
@@ -126,7 +126,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	}
 
-	private showHeightNodes ( lane: TvLane ) {
+	private showHeightNodes ( lane: TvLane ): void {
 
 		this.nodes.removeKey( lane );
 
@@ -142,7 +142,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 	}
 
-	createHeightNode ( lane: TvLane, height: TvLaneHeight ) {
+	createHeightNode ( lane: TvLane, height: TvLaneHeight ): any {
 
 		const laneDistance = height.sOffset as LaneDistance;
 
@@ -165,7 +165,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 		return node;
 	}
 
-	private showSpanLines ( lane: TvLane ) {
+	private showSpanLines ( lane: TvLane ): void {
 
 		this.lines.removeKey( lane );
 

@@ -22,7 +22,7 @@ export class TvMeshExporter implements AssetExporter<TvMesh> {
 		return JSON.stringify( data );
 	}
 
-	exportAsJSON ( mesh: TvMesh ) {
+	exportAsJSON ( mesh: TvMesh ): any {
 
 		// NOTE: this is not correct, but it is just a placeholder
 		const data = {

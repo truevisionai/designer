@@ -25,7 +25,7 @@ export class AppInspector {
 
 	private static componentItem: ComponentItem;
 
-	public static setInspector ( component: Type<IComponent>, data: any ) {
+	public static setInspector ( component: Type<IComponent>, data: any ): void {
 
 		if ( !component ) this.clear();
 
@@ -41,7 +41,7 @@ export class AppInspector {
 
 	}
 
-	public static setDynamicInspector ( data: any ) {
+	public static setDynamicInspector ( data: any ): void {
 
 		this.setInspector( DynamicInspectorComponent, data );
 
@@ -71,7 +71,7 @@ export class AppInspector {
 
 	}
 
-	static clear () {
+	static clear (): void {
 
 		this.currentInspector = null;
 

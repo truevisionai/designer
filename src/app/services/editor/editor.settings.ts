@@ -19,7 +19,7 @@ export class EditorSettings {
 	) {
 	}
 
-	loadSettings () {
+	loadSettings (): void {
 
 		try {
 
@@ -63,12 +63,12 @@ export class EditorSettings {
 		return this.settings[ key ];
 	}
 
-	setSetting ( key: string, value: any ) {
+	setSetting ( key: string, value: any ): void {
 		this.settings[ key ] = value;
 		this.saveSettings();
 	}
 
-	private saveSettings () {
+	private saveSettings (): void {
 
 		const value = JSON.stringify( this.settings, null, 2 );
 

@@ -38,7 +38,7 @@ export class AbstractSplineDebugService {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		this.points.clear();
 
@@ -52,7 +52,7 @@ export class AbstractSplineDebugService {
 
 	}
 
-	hide ( spline: AbstractSpline ) {
+	hide ( spline: AbstractSpline ): void {
 
 		// spline.hide();
 
@@ -60,7 +60,7 @@ export class AbstractSplineDebugService {
 
 	}
 
-	showLines ( spline: AbstractSpline ) {
+	showLines ( spline: AbstractSpline ): void {
 
 		if ( spline.type == SplineType.CATMULLROM ) {
 
@@ -76,7 +76,7 @@ export class AbstractSplineDebugService {
 
 	}
 
-	hideLines ( spline: AbstractSpline ) {
+	hideLines ( spline: AbstractSpline ): void {
 
 		if ( spline.type == SplineType.CATMULLROM ) {
 
@@ -92,19 +92,19 @@ export class AbstractSplineDebugService {
 
 	}
 
-	removeLines ( spline: AbstractSpline ) {
+	removeLines ( spline: AbstractSpline ): void {
 
 		this.lines.delete( spline );
 
 	}
 
-	removeControlPoints ( spline: AbstractSpline ) {
+	removeControlPoints ( spline: AbstractSpline ): void {
 
 		this.points.removeKey( spline );
 
 	}
 
-	showControlPoints ( spline: AbstractSpline ) {
+	showControlPoints ( spline: AbstractSpline ): void {
 
 		this.points.removeKey( spline );
 
@@ -145,13 +145,13 @@ export class AbstractSplineDebugService {
 
 	}
 
-	hideControlPoints ( spline: AbstractSpline ) {
+	hideControlPoints ( spline: AbstractSpline ): void {
 
 		this.points.removeKey( spline );
 
 	}
 
-	private showCatmullRomLines ( spline: CatmullRomSpline ) {
+	private showCatmullRomLines ( spline: CatmullRomSpline ): void {
 
 		if ( !spline.closed && spline.controlPoints.length < 2 ) return;
 
@@ -165,13 +165,13 @@ export class AbstractSplineDebugService {
 
 	}
 
-	private hideCatmullRomLines ( spline: CatmullRomSpline ) {
+	private hideCatmullRomLines ( spline: CatmullRomSpline ): void {
 
 		this.linesInScene.remove( spline );
 
 	}
 
-	private createCatmullRomLine ( spline: CatmullRomSpline ) {
+	private createCatmullRomLine ( spline: CatmullRomSpline ): Line {
 
 		const geometry = new BufferGeometry();
 

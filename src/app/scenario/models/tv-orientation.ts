@@ -77,7 +77,7 @@ export class Orientation {
 		return new Orientation( h, p, r, type );
 	}
 
-	toXML ( version?: OpenScenarioVersion ) {
+	toXML ( version?: OpenScenarioVersion ): any {
 		return {
 			attr_h: this.h + Maths.PI2 ?? 0,
 			attr_p: this.p ?? 0,
@@ -98,14 +98,14 @@ export class Orientation {
 		return new Orientation( this.h, this.p, this.r, this.type );
 	}
 
-	copy ( orentation: Orientation ) {
+	copy ( orentation: Orientation ): void {
 		this.h = orentation.h;
 		this.p = orentation.p;
 		this.r = orentation.r;
 		this.type = orentation.type;
 	}
 
-	copyFromVector3 ( value: Vector3 ) {
+	copyFromVector3 ( value: Vector3 ): void {
 		this.h = value.x;
 		this.p = value.y;
 		this.r = value.z;
@@ -155,7 +155,7 @@ export class Orientation {
 
 	}
 
-	add ( relativeOrientation: Orientation ) {
+	add ( relativeOrientation: Orientation ): this {
 
 		this.h += relativeOrientation.h;
 		this.p += relativeOrientation.p;
@@ -164,7 +164,7 @@ export class Orientation {
 		return this;
 	}
 
-	isNotEmpty () {
+	isNotEmpty (): boolean {
 		return this.h != 0 && this.p != 0 && this.r != 0;
 	}
 }

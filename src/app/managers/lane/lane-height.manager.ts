@@ -16,22 +16,21 @@ import { LaneUtils } from "app/utils/lane.utils";
 export class LaneHeightManager {
 
 
-	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		const heightValue = this.getHeightValueByType( lane.type );
 
-		lane.height.forEach( height => height.inner = height.outer = heightValue );
+		lane.height.forEach( height => height.setHeight( heightValue ) );
 
 	}
 
-	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		this.createDefaultNodes( road, laneSection, lane );
 
 	}
 
-
-	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		this.createDefaultNodes( road, laneSection, lane );
 
@@ -63,23 +62,18 @@ export class LaneHeightManager {
 
 	}
 
-	private sync ( otherLane: TvLane, height: TvLaneHeight ) {
+	private sync ( otherLane: TvLane, height: TvLaneHeight ): void {
 
 		if ( otherLane.height.length == 0 ) {
 
-			otherLane.addHeightRecord( height.sOffset, height.inner, height.outer );
+			otherLane.addHeightRecordInstance( height.clone() );
 
 			return;
 		}
 
 		const otherLaneHeight = otherLane.height.find( ( h: TvLaneHeight ) => h.sOffset >= height.sOffset );
 
-		if ( otherLaneHeight ) {
-
-			otherLaneHeight.inner = height.inner;
-			otherLaneHeight.outer = height.outer;
-
-		}
+		otherLaneHeight?.copyHeight( otherLaneHeight );
 
 	}
 
@@ -93,13 +87,13 @@ export class LaneHeightManager {
 
 	}
 
-	private ensureMinimumTwoNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	private ensureMinimumTwoNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		const nextLaneSection = LaneUtils.findNextLaneSection( road, laneSection );
 
 		const sEnd = nextLaneSection ? nextLaneSection.s - laneSection.s : road.length - laneSection.s;
 
-		if ( lane.height.length === 0 ) {
+		if ( lane.getLaneHeightCount() === 0 ) {
 
 			let height = this.getHeightValueByType( lane.type );
 
@@ -108,7 +102,7 @@ export class LaneHeightManager {
 
 		}
 
-		if ( lane.height.length == 1 ) {
+		if ( lane.getLaneHeightCount() == 1 ) {
 
 			const inner = lane.height[ 0 ].inner;
 			const outer = lane.height[ 0 ].outer;
@@ -119,7 +113,7 @@ export class LaneHeightManager {
 
 	}
 
-	private updateFirstAndLastNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	private updateFirstAndLastNodes ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( lane.height.length === 0 ) return;
 

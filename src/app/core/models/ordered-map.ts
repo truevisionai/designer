@@ -28,7 +28,7 @@ export class OrderedMap<T> {
 		return this.internalMap.values();
 	}
 
-	set ( key: number, value: T, sort = true ): this {
+	set ( key: number, value: T, sort: boolean = true ): this {
 
 		// check if value is already present
 		if ( this.contains( value ) ) {
@@ -45,7 +45,7 @@ export class OrderedMap<T> {
 		return this;
 	}
 
-	sort () {
+	sort (): void {
 
 		const entries = [ ...this.internalMap.entries() ].sort( ( a, b ) => a[ 0 ] - b[ 0 ] );
 
@@ -69,7 +69,7 @@ export class OrderedMap<T> {
 
 	}
 
-	remove ( value: T ) {
+	remove ( value: T ): void {
 
 		const key = this.findKey( value );
 
@@ -89,7 +89,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getPrevious ( value: T ) {
+	getPrevious ( value: T ): T {
 
 		const values = this.toArray();
 
@@ -102,7 +102,7 @@ export class OrderedMap<T> {
 		return values[ index - 1 ] || null;
 	}
 
-	getNext ( value: T ) {
+	getNext ( value: T ): T {
 
 		const values = this.toArray();
 
@@ -116,7 +116,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getNextKey ( value: T ) {
+	getNextKey ( value: T ): number {
 
 		const next = this.getNext( value );
 
@@ -128,7 +128,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getPreviousKey ( value: T ) {
+	getPreviousKey ( value: T ): number {
 
 		const previous = this.getPrevious( value );
 
@@ -140,7 +140,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getLast () {
+	getLast (): T {
 
 		const values = this.toArray();
 
@@ -148,7 +148,7 @@ export class OrderedMap<T> {
 
 	}
 
-	getFirst () {
+	getFirst (): T {
 
 		const values = this.toArray();
 
@@ -176,7 +176,7 @@ export class OrderedMap<T> {
 
 	}
 
-	forEach ( callbackfn: ( value: T, key: number, map: Map<number, T> ) => void, thisArg?: any ) {
+	forEach ( callbackfn: ( value: T, key: number, map: Map<number, T> ) => void, thisArg?: any ): void {
 
 		for ( const [ key, value ] of this.internalMap.entries() ) {
 			callbackfn.call( thisArg, value, key, this );
@@ -194,7 +194,7 @@ export class OrderedMap<T> {
 		return result;
 	}
 
-	clear () {
+	clear (): void {
 		this.internalMap.clear();
 	}
 

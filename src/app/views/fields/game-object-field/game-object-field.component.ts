@@ -37,7 +37,7 @@ export class GameObjectFieldComponent implements OnInit {
 		return this.asset?.preview;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.asset = this.assetService.getAsset( this.value );
 
@@ -63,7 +63,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'click', [ '$event' ] )
-	onClick ( $event ) {
+	onClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -71,7 +71,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'dblclick', [ '$event' ] )
-	onDoubleClick ( $event ) {
+	onDoubleClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -79,7 +79,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( $event ) {
+	onDragOver ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -87,7 +87,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( $event ) {
+	onDragLeave ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -95,7 +95,7 @@ export class GameObjectFieldComponent implements OnInit {
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	onDrop ( $event: DragEvent ) {
+	onDrop ( $event: DragEvent ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();

@@ -19,13 +19,13 @@ export class AbsoluteTarget extends Target {
 
 	}
 
-	getTarget () {
+	getTarget (): number {
 
 		return this.target;
 
 	}
 
-	setTarget ( value ) {
+	setTarget ( value: any ): void {
 
 		this.target = value;
 

@@ -36,7 +36,7 @@ export class RoadObjectService {
 
 	}
 
-	updateRoadObjectPositions ( road: TvRoad ) {
+	updateRoadObjectPositions ( road: TvRoad ): void {
 
 		road.getRoadObjects().forEach( object => {
 
@@ -71,7 +71,7 @@ export class RoadObjectService {
 		return this.ids.get( road ).getNextId();
 	}
 
-	createRoadObject ( road: TvRoad, type: TvRoadObjectType, s: number, t: number ) {
+	createRoadObject ( road: TvRoad, type: TvRoadObjectType, s: number, t: number ): any {
 
 		const id = this.getRoadObjectId( road );
 
@@ -83,7 +83,7 @@ export class RoadObjectService {
 
 	}
 
-	createMarking () {
+	createMarking (): any {
 
 		return new TvObjectMarking( TvColors.WHITE, 0.0, 1.0, null, TvRoadMarkWeights.STANDARD, 0, 0, 0.005, 0.1, [] );
 
@@ -106,7 +106,7 @@ export class RoadObjectService {
 
 	}
 
-	addRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+	addRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ): void {
 
 		roadObject.addRepeatObject( repeat );
 
@@ -114,7 +114,7 @@ export class RoadObjectService {
 
 	}
 
-	removeRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+	removeRepeatObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat ): void {
 
 		roadObject.removeRepeatObject( repeat );
 
@@ -184,7 +184,7 @@ export class RoadObjectService {
 
 	}
 
-	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height = 0.0 ) {
+	pushCornerLocal ( outline: TvObjectOutline, u: number, v: number, z: number = 0.0, height: number = 0.0 ): any {
 
 		const cornerLocal = CornerRoadFactory.createCornerLocalOutline( outline, u, v, z, height );
 

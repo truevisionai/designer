@@ -66,7 +66,7 @@ export class AppService {
 
 	}
 
-	public exit () {
+	public exit (): void {
 
 		this.electron.remote.app.exit( 0 );
 

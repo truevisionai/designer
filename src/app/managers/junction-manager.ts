@@ -53,7 +53,7 @@ export class JunctionManager {
 	) {
 	}
 
-	addJunction ( junction: TvJunction ) {
+	addJunction ( junction: TvJunction ): void {
 
 		if ( this.debug ) Log.debug( 'Add', junction.toString() );
 
@@ -86,7 +86,7 @@ export class JunctionManager {
 
 	}
 
-	updateJunction ( junction: TvJunction, otherSplines: AbstractSpline[] = [] ) {
+	updateJunction ( junction: TvJunction, otherSplines: AbstractSpline[] = [] ): void {
 
 		if ( this.debug ) Log.debug( 'Update', junction.toString() );
 
@@ -168,7 +168,7 @@ export class JunctionManager {
 		}
 	}
 
-	addLink ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ) {
+	addLink ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ): void {
 
 		this.connectionManager.addConnectionsForRoad( junction, road, contact );
 
@@ -178,7 +178,7 @@ export class JunctionManager {
 
 	}
 
-	removeJunction ( junction: TvJunction, spline?: AbstractSpline, processOthers = false ): void {
+	removeJunction ( junction: TvJunction, spline?: AbstractSpline, processOthers: boolean = false ): void {
 
 		if ( this.debug ) Log.debug( 'Remove', junction.toString() );
 
@@ -276,7 +276,7 @@ export class JunctionManager {
 	 * @returns
 	 * @deprecated not being used anywhere except tests
 	 */
-	findNewIntersections ( spline: AbstractSpline ) {
+	findNewIntersections ( spline: AbstractSpline ): any {
 
 		const junctions = spline.getJunctionSegments();
 
@@ -303,19 +303,19 @@ export class JunctionManager {
 		return newIntersections;
 	}
 
-	removeConnections ( junction: TvJunction, incomingRoad: TvRoad ) {
+	removeConnections ( junction: TvJunction, incomingRoad: TvRoad ): void {
 
 		junction.removeConnectionsByRoad( incomingRoad );
 
 	}
 
-	insertJunction ( spline: AbstractSpline, junctionStart: number, junctionEnd: number, newJunction: TvJunction ) {
+	insertJunction ( spline: AbstractSpline, junctionStart: number, junctionEnd: number, newJunction: TvJunction ): void {
 
 		new JunctionInserter( spline, this.roadService, this.roadFactory, this.mapService ).insertJunction( junctionStart, junctionEnd, newJunction );
 
 	}
 
-	updateConnections ( junction: TvJunction ) {
+	updateConnections ( junction: TvJunction ): void {
 
 		// we will regenerate splines for each connecting road
 		// no other modification is needed
@@ -326,7 +326,7 @@ export class JunctionManager {
 
 	}
 
-	createGroups ( intersections: SplineIntersection[], thresholdDistance = 10 ): IntersectionGroup[] {
+	createGroups ( intersections: SplineIntersection[], thresholdDistance: number = 10 ): IntersectionGroup[] {
 
 		return createGroupsFromIntersections( intersections, thresholdDistance );
 

@@ -10,23 +10,23 @@ export abstract class LaneFactory {
 
 	public static createLeftLane ( id: number, type: TvLaneType, roadId: number, laneSection: TvLaneSection ): TvLane {
 
-		return this.createLane( TvLaneSide.LEFT, id, type, roadId, laneSection );
+		return this.createLeftLane( id, type, roadId, laneSection );
 
 	}
 
-	public static createCenterLane ( roadId: number, laneSection: TvLaneSection ): TvLane {
+	public static createCenterLane (): TvLane {
 
-		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, roadId, laneSection );
+		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none );
 
 	}
 
 	public static createRightLane ( id: number, type: TvLaneType, roadId: number, laneSection: TvLaneSection ): TvLane {
 
-		return this.createLane( TvLaneSide.RIGHT, id, type, roadId, laneSection );
+		return this.createRightLane( id, type, roadId, laneSection );
 
 	}
 
-	public static createLane ( side: TvLaneSide, id: number, type: TvLaneType, roadId: number, laneSection: TvLaneSection ): TvLane {
+	public static createLane ( side: TvLaneSide, id: number, type: TvLaneType, roadId?: number, laneSection?: TvLaneSection ): TvLane {
 
 		let lane: TvLane;
 

@@ -37,7 +37,7 @@ export class LaneService extends BaseDataService<TvLane> {
 		this.removeLane( object );
 	}
 
-	addLane ( lane: TvLane ) {
+	addLane ( lane: TvLane ): void {
 
 		lane.laneSection.addLaneInstance( lane, true );
 
@@ -45,7 +45,7 @@ export class LaneService extends BaseDataService<TvLane> {
 
 	}
 
-	removeLane ( lane: TvLane ) {
+	removeLane ( lane: TvLane ): void {
 
 		lane.laneSection.removeLane( lane );
 
@@ -53,13 +53,13 @@ export class LaneService extends BaseDataService<TvLane> {
 
 	}
 
-	updateLane ( lane: TvLane ) {
+	updateLane ( lane: TvLane ): void {
 
 		MapEvents.laneUpdated.emit( lane );
 
 	}
 
-	setLaneType ( lane: TvLane, type: TvLaneType ) {
+	setLaneType ( lane: TvLane, type: TvLaneType ): void {
 
 		const oldType = lane.type;
 

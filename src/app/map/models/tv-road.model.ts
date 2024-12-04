@@ -9,14 +9,12 @@ import { Box3, Group, MathUtils, Vector2, Vector3 } from 'three';
 import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
-import { TvLaneSection } from './tv-lane-section';
 import { TvLateralProfile } from './tv-lateral.profile';
 import { TvPlaneView } from './tv-plane-view';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvLaneProfile } from './tv-lane-profile';
 import { TvLink, TvLinkType } from './tv-link';
 import { LinkFactory } from './link-factory';
-import { TvRoadLinkNeighbor } from './tv-road-link-neighbor';
 import { TvRoadObject } from './objects/tv-road-object';
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvRoadTypeClass } from './tv-road-type.class';
@@ -28,9 +26,11 @@ import { RoadGeometryService } from 'app/services/road/road-geometry.service';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { RoadStyle } from 'app/assets/road-style/road-style.model';
 import { RoadWidthService } from 'app/services/road/road-width.service';
-import { RoadLinker } from '../link/road-linker';
 import { TvRoadCoord } from './TvRoadCoord';
 import { RoadDistance } from '../road/road-distance';
+import { TvMap } from './tv-map.model';
+import { TvLaneCoord } from "./tv-lane-coord";
+import { TvRoadRelations } from './tv-road-relations';
 
 export class TvRoad {
 
@@ -72,27 +72,26 @@ export class TvRoad {
 
 	private planView: TvPlaneView;
 
-	private neighbors: TvRoadLinkNeighbor[] = [];
+	private relations: TvRoadRelations;
 
 	public readonly name: string;
 
-	public readonly id: number;
+	private _id: number;
 
 	private _junction: TvJunction;
 
-	private _successor?: TvLink;
-
-	private _predecessor?: TvLink;
-
 	private cornerRoad: boolean = false;
+
+	private map: TvMap;
 
 	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
 
 		this.uuid = MathUtils.generateUUID();
 		this.name = name;
-		this.id = id;
+		this._id = id;
 		this._junction = junction;
 		this.planView = new TvPlaneView();
+		this.relations = new TvRoadRelations( this );
 		this.laneProfile = new TvLaneProfile( this );
 		this.elevationProfile = new TvElevationProfile();
 		this.lateralProfile = new TvLateralProfile();
@@ -101,6 +100,22 @@ export class TvRoad {
 
 		this.signalGroup.name = 'SignalGroup';
 		this.objectGroup.name = 'ObjectGroup';
+	}
+
+	setMap ( map: TvMap ): void {
+		this.map = map;
+	}
+
+	setId ( id: number ): void {
+		this._id = id;
+	}
+
+	getMap (): TvMap {
+		return this.map;
+	}
+
+	get id (): number {
+		return this._id;
 	}
 
 	get sStart (): number {
@@ -136,19 +151,19 @@ export class TvRoad {
 	}
 
 	get successor (): TvLink {
-		return this._successor;
+		return this.relations.getSuccessor();
 	}
 
 	set successor ( value: TvLink ) {
-		this._successor = value;
+		this.relations.setSuccessor( value );
 	}
 
 	get predecessor (): TvLink {
-		return this._predecessor;
+		return this.relations.getPredecessor();
 	}
 
 	set predecessor ( value: TvLink ) {
-		this._predecessor = value;
+		this.relations.setPredecessor( value );
 	}
 
 	get junctionId (): number {
@@ -184,33 +199,45 @@ export class TvRoad {
 	}
 
 	equals ( other: TvRoad ): boolean {
-		return this.uuid === other.uuid;
+		return other instanceof TvRoad && this.uuid === other.uuid;
 	}
 
-	toString () {
+	toString (): string {
 
 		if ( this.isJunction ) {
-			return `ConnectingRoad:${ this.id } Junction:${ this.junctionId } Successor:${ this.successor?.element.id } Predecessor:${ this.predecessor?.element.id }`;
+			return `ConnectingRoad:${ this._id } Junction:${ this.junctionId } Successor:${ this.successor?.id } Predecessor:${ this.predecessor?.id }`;
 		}
 
 		// return `Road:${ this.id } Successor:${ this.successor?.type }:${ this.successor?.element.id } Predecessor:${ this.predecessor?.type }:${ this.predecessor?.element.id }`;
-		return `Road:${ this.id }`;
+		return `Road:${ this._id }`;
 
 	}
 
-	hasLinks (): boolean { return this.hasPredecessor() || this.hasSuccessor(); }
+	hasLinks (): boolean {
+		return this.hasPredecessor() || this.hasSuccessor();
+	}
 
-	hasSuccessor (): boolean { return this.successor != null; }
+	hasSuccessor (): boolean {
+		return this.successor != null;
+	}
 
-	hasPredecessor (): boolean { return this.predecessor != null; }
+	hasPredecessor (): boolean {
+		return this.predecessor != null;
+	}
 
-	getEndPosTheta () {
+	getStartCoord (): TvRoadCoord {
+		return this.getRoadCoord( 0 );
+	}
 
+	getEndCoord (): TvRoadCoord {
+		return this.getRoadCoord( this.length );
+	}
+
+	getEndPosTheta (): TvPosTheta {
 		return this.getPosThetaAt( this.length - Maths.Epsilon );
-
 	}
 
-	getStartPosTheta () {
+	getStartPosTheta (): TvPosTheta {
 
 		// helps catch bugs
 		if ( this.geometries.length == 0 ) {
@@ -221,94 +248,82 @@ export class TvRoad {
 
 	}
 
-	setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ) {
+	setType ( type: TvRoadType, maxSpeed: number = 40, unit: TvUnit = TvUnit.MILES_PER_HOUR ): void {
 
 		this.type.push( new TvRoadTypeClass( 0, type, maxSpeed, unit ) );
 
 	}
 
-	setSuccessor ( elementType: TvLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
-
-		this.successor = LinkFactory.createLink( elementType, element, contactPoint );
-
+	setSuccessorLink ( type: TvLinkType, element: TvRoad | TvJunction, contact?: TvContactPoint ): void {
+		this.setSuccessor( LinkFactory.createLink( type, element, contact ) );
 	}
 
-	setNullSuccessor () {
-
-		this.successor = null;
-
+	setSuccessor ( link: TvLink ): void {
+		this.relations.setSuccessor( link );
 	}
 
-	setPredecessor ( elementType: TvLinkType, element: TvRoad | TvJunction, contactPoint?: TvContactPoint ) {
-
-		this.predecessor = LinkFactory.createLink( elementType, element, contactPoint );
-
+	removeSuccessor (): void {
+		this.relations.removeSuccessor();
 	}
 
-	setNullPredecessor () {
+	setPredecessorLink ( type: TvLinkType, element: TvRoad | TvJunction, contact?: TvContactPoint ): void {
+		this.relations.setPredecessorLink( type, element, contact );
+	}
 
-		this.predecessor = null;
+	setPredecessor ( link: TvLink ): void {
+		this.relations.setPredecessor( link );
+	}
 
+	removePredecessor (): void {
+		this.relations.removePredecessor();
 	}
 
 	setSuccessorRoad ( road: TvRoad, contactPoint: TvContactPoint ): void {
-
-		this.setSuccessor( TvLinkType.ROAD, road, contactPoint );
-
+		this.relations.setSuccessorRoad( road, contactPoint );
 	}
 
-	linkSuccessor ( road: TvRoad, contact: TvContactPoint ): void {
-
-		RoadLinker.instance.linkSuccessorRoad( this, road, contact );
-
+	linkSuccessorRoad ( road: TvRoad, contact: TvContactPoint ): void {
+		this.relations.linkSuccessorRoad( road, contact );
 	}
 
-	linkPredecessor ( road: TvRoad, contact: TvContactPoint ): void {
+	linkSuccessor (): void {
+		this.relations.linkSuccessor();
+	}
 
-		RoadLinker.instance.linkPredecessorRoad( this, road, contact );
+	linkPredecessorRoad ( road: TvRoad, contact: TvContactPoint ): void {
+		this.relations.linkPredecessorRoad( road, contact );
+	}
 
+	linkPredecessor (): void {
+		this.relations.linkPredecessor();
 	}
 
 	linkJunction ( junction: TvJunction, contact: TvContactPoint ): void {
-
-		if ( contact == TvContactPoint.START ) {
-
-			this.setPredecessor( TvLinkType.JUNCTION, junction, contact );
-
-		} else {
-
-			this.setSuccessor( TvLinkType.JUNCTION, junction, contact );
-
-		}
-
+		this.relations.linkJunction( junction, contact );
 	}
 
-	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ) {
-
-		this.setPredecessor( TvLinkType.ROAD, road, contactPoint );
-
+	setPredecessorRoad ( road: TvRoad, contactPoint: TvContactPoint ): void {
+		this.relations.setPredecessorRoad( road, contactPoint );
 	}
 
 	getSuccessorSpline (): AbstractSpline | undefined {
-
-		return this.successor?.getSpline();
-
+		return this.relations.getSuccessorSpline();
 	}
 
-	getSuccessor (): TvLink { return this.successor; }
+	getSuccessor (): TvLink {
+		return this.relations.getSuccessor();
+	}
 
-	getPredecessor (): TvLink { return this.predecessor; }
+	getPredecessor (): TvLink {
+		return this.relations.getPredecessor();
+	}
 
 	getPredecessorSpline (): AbstractSpline | undefined {
-
-		return this.predecessor?.getSpline();
-
+		return this.relations.getPredecessorSpline();
 	}
 
 	getPlanView (): TvPlaneView {
-
 		return this.planView;
-
 	}
 
 	addGeometryAndUpdateCoords ( geometry: TvAbstractRoadGeometry ): void {
@@ -319,13 +334,13 @@ export class TvRoad {
 
 	}
 
-	setElevationProfile ( elevationProfile: TvElevationProfile ) {
+	setElevationProfile ( elevationProfile: TvElevationProfile ): void {
 
 		this.elevationProfile = elevationProfile;
 
 	}
 
-	addElevationProfile ( elevationProfile?: TvElevationProfile ) {
+	addElevationProfile ( elevationProfile?: TvElevationProfile ): void {
 
 		if ( elevationProfile ) {
 
@@ -370,7 +385,7 @@ export class TvRoad {
 
 	}
 
-	clearSignals () {
+	clearSignals (): void {
 
 		this.signals.clear();
 
@@ -410,25 +425,25 @@ export class TvRoad {
 
 	}
 
-	getRoadPosition ( s: number, t = 0 ): TvPosTheta {
+	getRoadPosition ( s: number, t: number = 0 ): TvPosTheta {
 
 		return RoadGeometryService.instance.findRoadPosition( this, s, t );
 
 	}
 
-	getContactPosition ( contactA: TvContactPoint ) {
+	getContactPosition ( contactA: TvContactPoint ): any {
 
 		return RoadGeometryService.instance.findContactPosition( this, contactA );
 
 	}
 
-	getRoadCoord ( s: number, t = 0 ): TvRoadCoord {
+	getRoadCoord ( s: number, t: number = 0 ): TvRoadCoord {
 
 		return RoadGeometryService.instance.findRoadCoord( this, s, t );
 
 	}
 
-	getPosThetaAt ( s: number, t = 0 ): TvPosTheta {
+	getPosThetaAt ( s: number, t: number = 0 ): TvPosTheta {
 
 		return this.getRoadPosition( s, t );
 
@@ -453,7 +468,7 @@ export class TvRoad {
 		hOffset: number,
 		pitch: number,
 		roll: number
-	) {
+	): TvRoadSignal {
 
 		const signal = new TvRoadSignal(
 			s, t, id, name,
@@ -562,7 +577,7 @@ export class TvRoad {
 	/**
 	 * @deprecated use RoadGeometryService instead
 	 */
-	getReferenceLinePoints ( step = 1.0, t?: number ): TvPosTheta[] {
+	getReferenceLinePoints ( step: number = 1.0, t?: number ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 
@@ -577,7 +592,7 @@ export class TvRoad {
 		return points;
 	}
 
-	computeLaneSectionCoordinates () {
+	computeLaneSectionCoordinates (): void {
 
 		this.getLaneProfile().computeLaneSectionCoordinates();
 
@@ -589,7 +604,7 @@ export class TvRoad {
 
 		this.getLaneProfile().addLaneOffset( roadStyle.laneOffset.clone() );
 
-		this.getLaneProfile().addLaneSectionInstance( roadStyle.laneSection.cloneAtS( 0 ) );
+		this.getLaneProfile().addLaneSection( roadStyle.laneSection.cloneAtS( 0 ) );
 
 		this.elevationProfile = roadStyle.elevationProfile.clone();
 
@@ -607,9 +622,9 @@ export class TvRoad {
 
 	clone ( s: number, id?: number ): TvRoad {
 
-		const name = `Road ${ id || this.id }`
+		const name = `Road ${ id || this._id }`
 
-		const road = new TvRoad( name, this.length, id || this.id, this._junction );
+		const road = new TvRoad( name, this.length, id || this._id, this._junction );
 
 		road.spline = this.spline;
 		road.type = this.type.map( type => type.clone() );
@@ -623,7 +638,7 @@ export class TvRoad {
 		road.predecessor = this.predecessor?.clone();
 		road.successor = this.successor?.clone();
 
-		road.getLaneProfile().addLaneSectionInstance( this.getLaneProfile().getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
+		road.getLaneProfile().addLaneSection( this.getLaneProfile().getLaneSectionAt( s ).cloneAtS( 0, 0 ) );
 
 		this.getRoadObjects().forEach( obj => road.addRoadObject( obj.clone() ) );
 
@@ -631,14 +646,14 @@ export class TvRoad {
 
 	}
 
-	getLaneCenterPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneCenterPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 
 		return RoadGeometryService.instance.findLaneCenterPosition( this, lane.laneSection, lane, laneSOffset, offset, addHeight );
 	}
 
-	getLaneStartPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneStartPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 
@@ -646,7 +661,7 @@ export class TvRoad {
 
 	}
 
-	getLaneEndPosition ( lane: TvLane, roadDistance: RoadDistance, offset = 0, addHeight = true ): TvPosTheta {
+	getLaneEndPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
 
@@ -654,7 +669,7 @@ export class TvRoad {
 
 	}
 
-	getLaneCoordinatesAt ( point: Vector3 ) {
+	getLaneCoordinatesAt ( point: Vector3 ): TvLaneCoord {
 
 		return RoadGeometryService.instance.findLaneCoordAt( this, point );
 
@@ -678,7 +693,7 @@ export class TvRoad {
 
 		this.laneProfile.getLaneSections().map( laneSection => {
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
 				if ( lane.id == 0 ) return;
 
@@ -702,40 +717,42 @@ export class TvRoad {
 
 	}
 
-	/**
-	 * @deprecated use RoadGeometryService instead
-	 */
 	getPosThetaByContact ( contact: TvContactPoint ): TvPosTheta {
 
 		return RoadGeometryService.instance.findContactPosition( this, contact );
 
 	}
 
-	getRoadWidthAt ( distance: number ) {
+	getRoadWidthAt ( distance: number ): any {
 
 		return RoadWidthService.instance.findRoadWidthAt( this, distance );
 
 	}
 
-	markAsCornerRoad () {
+	markAsCornerRoad (): void {
 
 		this.cornerRoad = true;
 
 	}
 
-	getLaneSectionLength ( laneSection: TvLaneSection ) {
-
-		return laneSection.getLength();
-
-	}
-
 	removeLinks (): void {
 
-		this.successor?.unlink( this, TvContactPoint.END );
-		this.predecessor?.unlink( this, TvContactPoint.START );
+		this.removePredecessor();
+		this.removeSuccessor();
 
 	}
 
+	getLink ( contact: TvContactPoint ): TvLink {
+
+		if ( contact == TvContactPoint.START ) {
+			return this.predecessor;
+		} else if ( contact == TvContactPoint.END ) {
+			return this.successor;
+		} else {
+			throw new Error( 'Invalid contact point' );
+		}
+
+	}
 
 	static ruleToString ( rule: TrafficRule ): string {
 

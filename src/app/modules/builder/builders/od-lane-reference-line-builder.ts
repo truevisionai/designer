@@ -63,7 +63,7 @@ export class OdLaneReferenceLineBuilder {
 
 	}
 
-	private static makeLanePoints ( laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
+	private static makeLanePoints ( laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ): void {
 
 		let s = laneSection.s;
 
@@ -79,7 +79,7 @@ export class OdLaneReferenceLineBuilder {
 		OdLaneReferenceLineBuilder.makeLanePointsLoop( s, laneSection, lane, points );
 	}
 
-	private static makeLanePointsLoop ( s: number, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ) {
+	private static makeLanePointsLoop ( s: number, laneSection: TvLaneSection, lane: TvLane, points: TvPosTheta[] = [] ): void {
 
 		let posTheta = lane.laneSection.road.getPosThetaAt( s );
 
@@ -96,13 +96,13 @@ export class OdLaneReferenceLineBuilder {
 
 	}
 
-	public setType ( lineType: LineType ) {
+	public setType ( lineType: LineType ): void {
 
 		this.lineType = lineType;
 
 	}
 
-	public create () {
+	public create (): void {
 
 		this.road.computeLaneSectionCoordinates();
 
@@ -118,7 +118,7 @@ export class OdLaneReferenceLineBuilder {
 		this.drawRoad( road, type );
 	}
 
-	public drawRoad ( road: TvRoad, type: LineType = LineType.SOLID, redraw = false ) {
+	public drawRoad ( road: TvRoad, type: LineType = LineType.SOLID, redraw: boolean = false ): void {
 
 		if ( road == null ) return;
 
@@ -134,9 +134,9 @@ export class OdLaneReferenceLineBuilder {
 
 			const laneSection = road.getLaneProfile().getLaneSections()[ i ];
 
-			laneSection.lanesMap.forEach( lane => {
+			laneSection.getLanes().forEach( lane => {
 
-				if ( this.drawCenterLane === false && lane.side === TvLaneSide.CENTER ) return;
+				if ( this.drawCenterLane === false && lane.isCenter ) return;
 
 				const points: TvPosTheta[] = [];
 
@@ -150,7 +150,7 @@ export class OdLaneReferenceLineBuilder {
 		}
 	}
 
-	public showLaneLine ( lane: TvLane, type: LineType = LineType.SOLID ) {
+	public showLaneLine ( lane: TvLane, type: LineType = LineType.SOLID ): void {
 
 		const points: TvPosTheta[] = [];
 
@@ -160,7 +160,7 @@ export class OdLaneReferenceLineBuilder {
 
 	}
 
-	public clear () {
+	public clear (): void {
 
 		this.lines.forEach( line => {
 
@@ -174,7 +174,7 @@ export class OdLaneReferenceLineBuilder {
 
 	}
 
-	onMouseOverLine ( line: Line ) {
+	onMouseOverLine ( line: Line ): void {
 
 		if ( this.selectedLine && line.id === this.selectedLine.id ) return;
 
@@ -212,7 +212,7 @@ export class OdLaneReferenceLineBuilder {
 		( line.material as LineBasicMaterial ).needsUpdate = true;
 	}
 
-	onMouseOutLine () {
+	onMouseOutLine (): void {
 
 		if ( !this.mouseOverLine ) return;
 
@@ -238,7 +238,7 @@ export class OdLaneReferenceLineBuilder {
 		this.mouseOverLine = null;
 	}
 
-	onLineSelected ( line: Line ) {
+	onLineSelected ( line: Line ): void {
 
 		if ( this.selectedLine && this.selectedLine.id == line.id ) return;
 
@@ -263,7 +263,7 @@ export class OdLaneReferenceLineBuilder {
 
 	}
 
-	onLineUnselected () {
+	onLineUnselected (): void {
 
 		if ( !this.selectedLine ) return;
 
@@ -286,7 +286,7 @@ export class OdLaneReferenceLineBuilder {
 
 	}
 
-	private drawLine ( lane: TvLane, points: Vector3[], type: LineType = LineType.SOLID ) {
+	private drawLine ( lane: TvLane, points: Vector3[], type: LineType = LineType.SOLID ): void {
 
 		const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
@@ -315,7 +315,7 @@ export class OdLaneReferenceLineBuilder {
 		SceneService.addToolObject( line );
 	}
 
-	private getLineMaterial ( type: LineType ) {
+	private getLineMaterial ( type: LineType ): THREE.LineBasicMaterial {
 
 		if ( type == LineType.SOLID ) {
 

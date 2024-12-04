@@ -36,7 +36,7 @@ export class PositionFactory {
 
 	}
 
-	private createPositionFromVector ( type: PositionType, vector3: Vector3, orientation?: Orientation, entity?: ScenarioEntity ) {
+	private createPositionFromVector ( type: PositionType, vector3: Vector3, orientation?: Orientation, entity?: ScenarioEntity ): WorldPosition | RelativeWorldPosition | RelativeObjectPosition | RoadPosition | RelativeRoadPosition | LanePosition | RelativeLanePosition {
 
 		if ( type == PositionType.World ) {
 

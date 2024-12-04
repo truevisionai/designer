@@ -177,7 +177,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 	}
 
-	onRoadSelected ( road: TvRoad ) {
+	onRoadSelected ( road: TvRoad ): void {
 
 		// if ( this.point ) this.onControlPointUnselected( this.point );
 
@@ -199,7 +199,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 	}
 
-	onRoadUnselected ( road: TvRoad ) {
+	onRoadUnselected ( road: TvRoad ): void {
 
 		this.debugService?.updateDebugState( road, DebugState.DEFAULT );
 
@@ -209,7 +209,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 	}
 
-	onPointUnselected ( point: SimpleControlPoint<TvObjectRepeat> ) {
+	onPointUnselected ( point: SimpleControlPoint<TvObjectRepeat> ): void {
 
 		this.point = null;
 
@@ -219,7 +219,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 	}
 
-	onPointSelected ( point: SimpleControlPoint<TvObjectRepeat> ) {
+	onPointSelected ( point: SimpleControlPoint<TvObjectRepeat> ): void {
 
 		const roadObject = point.userData.roadObject;
 
@@ -297,7 +297,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 	}
 
-	updateRoadSpanObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat, road?: TvRoad ) {
+	updateRoadSpanObject ( roadObject: TvRoadObject, repeat: TvObjectRepeat, road?: TvRoad ): void {
 
 		this.tool.roadObjectService.updateRoadObjectMesh( roadObject.road, roadObject );
 
@@ -305,7 +305,7 @@ export class PropSpanTool extends BaseTool<any> {
 
 	}
 
-	updateByPosition ( roadObject: TvRoadObject, repeat: TvObjectRepeat, position: Vector3 ) {
+	updateByPosition ( roadObject: TvRoadObject, repeat: TvObjectRepeat, position: Vector3 ): void {
 
 		const coord = this.tool.roadService.findRoadCoordAtPosition( position );
 

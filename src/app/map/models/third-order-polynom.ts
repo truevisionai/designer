@@ -85,7 +85,7 @@ export class ThirdOrderPolynom {
 	 * @param sOther
 	 * @returns {boolean}
 	 */
-	checkInterval ( sOther ): boolean {
+	checkInterval ( sOther: any ): boolean {
 
 		return sOther >= this._s;
 
@@ -104,6 +104,30 @@ export class ThirdOrderPolynom {
 			( this.b * ds ) +
 			( this.c * ds * ds ) +
 			( this.d * ds * ds * ds );
+	}
+
+
+	copy ( value: ThirdOrderPolynom ): this {
+
+		this.s = value.s;
+		this.a = value.a;
+		this.b = value.b;
+		this.c = value.c;
+		this.d = value.d;
+
+		return this;
+
+	}
+
+	copyCoefficients ( value: ThirdOrderPolynom ): this {
+
+		this.a = value.a;
+		this.b = value.b;
+		this.c = value.c;
+		this.d = value.d;
+
+		return this;
+
 	}
 
 	toString (): string {

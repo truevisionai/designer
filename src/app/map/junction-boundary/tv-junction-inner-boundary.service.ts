@@ -15,6 +15,7 @@ import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { traverseLanes } from "app/utils/traverseLanes";
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
+import { Log } from "app/core/utils/log";
 
 @Injectable( {
 	providedIn: 'root'
@@ -47,12 +48,20 @@ export class TvJunctionInnerBoundaryService {
 
 		const connection = this.junctionCornerRoadService.getInnerConnectionForRoad( junction, coord.road );
 
-		if ( !connection ) return;
+		if ( !connection ) {
+			Log.warn( 'No corner road found for junction connection' );
+			return;
+		}
 
 		// get the lane link which is connected to the lowest lane
-		const lanes = connection.laneLink.map( link => link.connectingLane );
+		const lanes = connection.getLaneLinks().map( link => link.getConnectingLane() );
 
 		const lastCarriagewayLane = this.getLastCarriagewayLane( lanes );
+
+		if ( !lastCarriagewayLane ) {
+			Log.warn( 'No carriageway lane found for junction connection' );
+			return;
+		}
 
 		traverseLanes( connection.connectingRoad, lastCarriagewayLane.id, ( lane: TvLane ) => {
 
@@ -91,25 +100,22 @@ export class TvJunctionInnerBoundaryService {
 
 	private createJointSegment ( junction: TvJunction, roadCoord: TvRoadCoord ): TvJointBoundary {
 
-		const boundary = new TvJointBoundary();
-
-		boundary.road = roadCoord.road;
-
-		boundary.contactPoint = roadCoord.contact;
+		let startLane: TvLane;
+		let endLane: TvLane;
 
 		if ( roadCoord.contact == TvContactPoint.END ) {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getHighestCarriageWayLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getLowestCarriageWayLane();
+			startLane = roadCoord.laneSection.getHighestCarriageWayLane();
+			endLane = roadCoord.laneSection.getLowestCarriageWayLane();
 
 		} else {
 
-			boundary.jointLaneStart = roadCoord.laneSection.getLowestCarriageWayLane();
-			boundary.jointLaneEnd = roadCoord.laneSection.getHighestCarriageWayLane();
+			startLane = roadCoord.laneSection.getLowestCarriageWayLane();
+			endLane = roadCoord.laneSection.getHighestCarriageWayLane();
 
 		}
 
-		return boundary;
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
 
 	}
 

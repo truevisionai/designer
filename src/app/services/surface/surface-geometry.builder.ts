@@ -16,7 +16,7 @@ export class SurfaceGeometryBuilder {
 
 	createSortedPolygon ( positions: Vector3[] ): BufferGeometry {
 
-		function sortByAngle ( points: Vector3[], center: Vector3 ) {
+		function sortByAngle ( points: Vector3[], center: Vector3 ): Vector3[] {
 			const angles = points.map( point => Math.atan2( point.y - center.y, point.x - center.x ) );
 			return points.map( ( point, index ) => ( { point, index } ) ).sort( ( a, b ) => angles[ a.index ] - angles[ b.index ] ).map( sortedObj => sortedObj.point );
 		}

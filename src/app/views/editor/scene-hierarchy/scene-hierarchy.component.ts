@@ -26,7 +26,7 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
 	showProperties = false;
 
-	toggleProperties () {
+	toggleProperties (): void {
 		this.showProperties = !this.showProperties;
 	}
 
@@ -118,7 +118,7 @@ export class SceneHierarchyComponent implements OnInit, OnDestroy {
 
 	}
 
-	onNodeClicked ( node: FlatNode ) {
+	onNodeClicked ( node: FlatNode ): void {
 
 	}
 }

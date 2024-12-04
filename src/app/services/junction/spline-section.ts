@@ -148,7 +148,7 @@ export abstract class SplineSection {
 
 	}
 
-	private computeOffsets ( area: Box2 ) {
+	private computeOffsets ( area: Box2 ): any {
 
 		const intersectingOffsets = [ this.start, this.end ];
 
@@ -233,7 +233,7 @@ export abstract class SplineSection {
 		const roadAfterJunction = existingRoad?.clone( 0, id );
 
 		// set the successor and predecessor to null to avoid linking the road to the junction
-		roadAfterJunction.predecessor = roadAfterJunction.successor = null;
+		roadAfterJunction.removeLinks();
 
 		const roadBeforeJunction = this.spline.getPreviousSegment( junction ) as TvRoad;
 
@@ -256,7 +256,7 @@ export abstract class SplineSection {
 		const roadBeforeJunction = existingRoad?.clone( 0, id );
 
 		// set the successor and predecessor to null to avoid linking the road to the junction
-		roadBeforeJunction.predecessor = roadBeforeJunction.successor = null;
+		roadBeforeJunction.removeLinks();
 
 		this.spline.getMap().addRoad( roadBeforeJunction );
 

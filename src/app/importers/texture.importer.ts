@@ -29,7 +29,7 @@ export class TextureImporter implements Importer {
 	) {
 	}
 
-	async import ( sourcePath: string, destinationFolder: string ) {
+	async import ( sourcePath: string, destinationFolder: string ): Promise<void> {
 
 		const extension = FileUtils.getExtensionFromPath( sourcePath ).toLowerCase();
 
@@ -63,7 +63,7 @@ export class TextureImporter implements Importer {
 
 	}
 
-	private importTexture ( sourcePath: string, destinationFolder: string ) {
+	private importTexture ( sourcePath: string, destinationFolder: string ): any {
 
 		try {
 
@@ -88,7 +88,7 @@ export class TextureImporter implements Importer {
 
 	}
 
-	private createTextureAsset ( texture: TvTexture, sourcePath: string, destinationFolder: string ) {
+	private createTextureAsset ( texture: TvTexture, sourcePath: string, destinationFolder: string ): void {
 
 		const textureAsset = new TextureAsset( texture.guid, texture );
 
@@ -114,7 +114,7 @@ export class TextureImporter implements Importer {
 
 	}
 
-	private importTGA ( sourcePath: string, destinationFolder: string ) {
+	private importTGA ( sourcePath: string, destinationFolder: string ): any {
 
 		try {
 

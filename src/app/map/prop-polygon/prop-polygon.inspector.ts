@@ -35,7 +35,7 @@ export class PropPolygonInspector {
 	}
 
 	@SerializedAction( { label: 'Delete Polygon' } )
-	delete () {
+	delete (): void {
 
 		Commands.RemoveObject( this.polygon );
 

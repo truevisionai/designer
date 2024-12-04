@@ -14,6 +14,7 @@ import { TvObjectOutline } from "./tv-object-outline";
 import { TvLane } from '../tv-lane';
 import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
 import { Euler, MathUtils, Object3D, Vector3 } from 'three';
+import { TvCornerRoad } from './tv-corner-road';
 
 export enum TvRoadObjectType {
 
@@ -157,7 +158,7 @@ export class TvRoadObject {
 
 	public roll: number;
 
-	public repeat: TvObjectRepeat[] = [];
+	private repeat: TvObjectRepeat[] = [];
 
 	private _markings: TvObjectMarking[] = [];
 
@@ -271,7 +272,7 @@ export class TvRoadObject {
 		widthStart?: number, widthEnd?: number,
 		heightStart?: number, heightEnd?: number,
 		zOffsetStart?: number, zOffsetEnd?: number
-	) {
+	): TvObjectRepeat {
 
 		const object = new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd );
 
@@ -289,7 +290,7 @@ export class TvRoadObject {
 		widthStart?: number, widthEnd?: number,
 		heightStart?: number, heightEnd?: number,
 		zOffsetStart?: number, zOffsetEnd?: number
-	) {
+	): TvObjectRepeat {
 
 		const object = new TvObjectRepeat( s, length, distance, tStart, tEnd, widthStart, widthEnd, heightStart, heightEnd, zOffsetStart, zOffsetEnd );
 
@@ -306,7 +307,7 @@ export class TvRoadObject {
 
 	}
 
-	removeRepeatObject ( repeat: TvObjectRepeat ) {
+	removeRepeatObject ( repeat: TvObjectRepeat ): void {
 
 		this.repeat = this.repeat.filter( r => r !== repeat );
 
@@ -316,7 +317,7 @@ export class TvRoadObject {
 		this._markings.push( markingObject );
 	}
 
-	findCornerRoadById ( id: number ) {
+	findCornerRoadById ( id: number ): TvCornerRoad {
 		for ( const outline of this.outlines ) {
 			for ( const corner of outline.cornerRoads ) {
 				if ( corner.attr_id == id ) {

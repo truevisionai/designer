@@ -26,13 +26,13 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
-	override getLength () {
+	override getLength (): number {
 
 		return this.curve?.getLength();
 
 	}
 
-	getPoints ( stepSize = 10 ): Vector3[] {
+	getPoints ( stepSize: number = 10 ): Vector3[] {
 
 		return this.curve?.getPoints( stepSize ) || [];
 

@@ -35,14 +35,14 @@ export class ActEditorComponent implements OnInit {
 		return this.scenarioService.getScenario();
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.acts = this.scenario.getActsByOwner( this.entity.name );
 		this.selectedAct = this.acts[ 0 ];
 
 	}
 
-	addCondition () {
+	addCondition (): void {
 
 		// TODO: Implement this
 

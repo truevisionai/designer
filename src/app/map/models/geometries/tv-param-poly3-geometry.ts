@@ -46,7 +46,7 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 	}
 
-	computeVars () {
+	computeVars (): void {
 
 		this.sinTheta = Math.sin( this.hdg );
 		this.cosTheta = Math.cos( this.hdg );

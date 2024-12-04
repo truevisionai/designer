@@ -27,7 +27,7 @@ export class TvSurfaceInspector {
 		}
 	}
 
-	updateMesh () {
+	updateMesh (): void {
 		this.surface.setDimensions( this.width, this.height );
 	}
 
@@ -139,7 +139,7 @@ export class TvSurfaceInspector {
 	}
 
 	@SerializedAction( { label: 'Delete' } )
-	deleteSurface () {
+	deleteSurface (): void {
 
 		Commands.RemoveObject( this.surface );
 
@@ -149,7 +149,7 @@ export class TvSurfaceInspector {
 		label: 'Delete Control Point',
 		validate: function () { return this.controlPoint !== undefined; } // Using the validation method
 	} )
-	deleteControlPoint () {
+	deleteControlPoint (): void {
 
 		if ( !this.controlPoint ) return;
 

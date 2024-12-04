@@ -81,7 +81,7 @@ export class TvRoadMarking {
 		}, null, 2 );
 	}
 
-	clone () {
+	clone (): TvRoadMarking {
 
 		return new TvRoadMarking( this.name, this.type, this.textureGuid );
 

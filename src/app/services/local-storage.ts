@@ -20,7 +20,7 @@ export class LocalStorage {
 
 	}
 
-	public get ( key: string, value?: any ) {
+	public get ( key: string, value?: any ): any {
 
 		if ( window.localStorage.getItem( key ) ) {
 			return window.localStorage.getItem( key );
@@ -31,13 +31,13 @@ export class LocalStorage {
 		return value;
 	}
 
-	public delete ( key: string ) {
+	public delete ( key: string ): void {
 
 		return window.localStorage.removeItem( key );
 
 	}
 
-	public deleteAll ( key: string ) {
+	public deleteAll ( key: string ): void {
 
 		return window.localStorage.clear();
 
