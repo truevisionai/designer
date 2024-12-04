@@ -14,6 +14,7 @@ import { TvObjectOutline } from "./tv-object-outline";
 import { TvLane } from '../tv-lane';
 import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
 import { Euler, MathUtils, Object3D, Vector3 } from 'three';
+import { TvCornerRoad } from './tv-corner-road';
 
 export enum TvRoadObjectType {
 
@@ -316,7 +317,7 @@ export class TvRoadObject {
 		this._markings.push( markingObject );
 	}
 
-	findCornerRoadById ( id: number ): import("/Users/himanshu/Code/designer-private/src/app/map/models/objects/tv-corner-road").TvCornerRoad {
+	findCornerRoadById ( id: number ): TvCornerRoad {
 		for ( const outline of this.outlines ) {
 			for ( const corner of outline.cornerRoads ) {
 				if ( corner.attr_id == id ) {

@@ -22,6 +22,7 @@ import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { TvMap } from '../tv-map.model';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { MapEvents } from 'app/events/map-events';
+import { TvRoadCoord } from '../TvRoadCoord';
 
 
 export class TvJunction {
@@ -137,7 +138,7 @@ export class TvJunction {
 
 	}
 
-	getRoadCoords (): import("/Users/himanshu/Code/designer-private/src/app/map/models/TvRoadCoord").TvRoadCoord[] {
+	getRoadCoords (): TvRoadCoord[] {
 
 		return this.getRoadLinks().map( link => link.toRoadCoord() );
 

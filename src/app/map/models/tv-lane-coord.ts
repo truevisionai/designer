@@ -12,6 +12,7 @@ import { Orientation } from 'app/scenario/models/tv-orientation';
 import { LaneUtils } from "../../utils/lane.utils";
 import { TvLink } from './tv-link';
 import { LaneDistance, RoadDistance } from '../road/road-distance';
+import { TvPosTheta } from './tv-pos-theta';
 
 export class TvLaneCoord {
 
@@ -84,7 +85,7 @@ export class TvLaneCoord {
 		return new Orientation( 0, 0, 0 );
 	}
 
-	toPosTheta (): import("/Users/himanshu/Code/designer-private/src/app/map/models/tv-pos-theta").TvPosTheta {
+	toPosTheta (): TvPosTheta {
 		return this.posTheta;
 	}
 
