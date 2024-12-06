@@ -44,7 +44,7 @@ export class AutoSplineHelper extends BaseDebugger<AutoSpline> {
 
 		this.points.addItems( object, object.controlPoints );
 
-		if ( object.controlPoints.length < 2 ) return;
+		if ( object.getControlPointCount() < 2 ) return;
 
 		this.lines.addItem( object, this.createPolyline( object )?.mesh )
 		this.lines.addItem( object, this.createRoundLine( object )?.mesh );

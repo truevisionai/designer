@@ -210,7 +210,7 @@ describe( 'SplineLinkService: Tests', () => {
 		const spline = mapService.findSplineById( 2 );
 
 		expect( spline ).toBeDefined();
-		expect( spline.controlPoints.length ).toBe( 2 );
+		expect( spline.getControlPointCount() ).toBe( 2 );
 
 		spline.controlPoints.forEach( point => point.position.y += 1 );
 
@@ -237,7 +237,7 @@ describe( 'SplineLinkService: Tests', () => {
 		const spline = mapService.findSplineById( 1 );
 
 		expect( spline ).toBeDefined();
-		expect( spline.controlPoints.length ).toBe( 2 );
+		expect( spline.getControlPointCount() ).toBe( 2 );
 
 		spline.controlPoints.forEach( point => point.position.y += 1 );
 

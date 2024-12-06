@@ -132,7 +132,7 @@ describe( 'SplineToGeometry test', () => {
 
 		for ( let road of roadService.roads ) {
 
-			expect( road.spline.controlPoints.length ).toBeGreaterThanOrEqual( 2 );
+			expect( road.spline.getControlPointCount() ).toBeGreaterThanOrEqual( 2 );
 			expect( road.geometries.length ).toBeGreaterThanOrEqual( 1 );
 
 			for ( let geometry of road.geometries ) {

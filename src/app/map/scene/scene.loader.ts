@@ -603,7 +603,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const point = spline.addControlPoint( position );
 
-			point.index = spline.controlPoints.length;
+			point.index = spline.getControlPointCount();
 
 		} );
 
@@ -623,13 +623,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const point = new SplineControlPoint( spline, position );
 
-			point.index = spline.controlPoints.length;
+			point.index = spline.getControlPointCount();
 
 			spline.controlPoints.push( point );
 
 		} );
 
-		if ( spline.controlPoints.length < 2 ) {
+		if ( spline.getControlPointCount() < 2 ) {
 			Log.error( 'Spline must have at least 2 control points', spline.toString() );
 			return;
 		}
@@ -696,7 +696,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			controlPoint.position.copy( position );
 
-			controlPoint.index = spline.controlPoints.length;
+			controlPoint.index = spline.getControlPointCount();
 
 			spline.controlPoints.push( controlPoint );
 
@@ -719,7 +719,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const controlPoint = new SimpleControlPoint( mainObject, position );
 
-			controlPoint.index = spline.controlPoints.length;
+			controlPoint.index = spline.getControlPointCount();
 
 			spline.controlPoints.push( controlPoint );
 

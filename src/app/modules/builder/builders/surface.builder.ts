@@ -34,7 +34,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 	private buildSurface ( surface: Surface ): Mesh {
 
 		// update the surface if >=3 points are present
-		if ( surface.spline.controlPoints.length < 2 ) {
+		if ( surface.spline.getControlPointCount() < 2 ) {
 			return;
 		}
 

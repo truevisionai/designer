@@ -51,7 +51,7 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
 		const mesh = new Group();
 
-		if ( polygon.spline.controlPoints.length < 3 ) {
+		if ( polygon.spline.getControlPointCount() < 3 ) {
 
 			this.updateProps( mesh, polygon );
 

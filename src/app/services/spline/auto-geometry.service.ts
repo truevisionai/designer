@@ -64,7 +64,7 @@ export class AutoGeometryService {
 
 		let hdg, p1, p2, currentPoint: AbstractControlPoint, previousPoint: AbstractControlPoint;
 
-		for ( let i = 1; i < spline.controlPoints.length; i++ ) {
+		for ( let i = 1; i < spline.getControlPointCount(); i++ ) {
 
 			previousPoint = spline.controlPoints[ i - 1 ];
 			currentPoint = spline.controlPoints[ i ];
@@ -123,7 +123,7 @@ export class AutoGeometryService {
 	// eslint-disable-next-line max-lines-per-function
 	exportGeometries ( spline: AutoSpline ): TvAbstractRoadGeometry[] {
 
-		if ( spline.controlPoints.length < 2 ) return [];
+		if ( spline.getControlPointCount() < 2 ) return [];
 
 		let totalLength = 0;
 

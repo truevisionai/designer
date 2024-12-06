@@ -112,7 +112,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	exportRoad ( road: TvRoad ): any {
 
-		if ( road.spline.controlPoints.length < 2 ) {
+		if ( road.spline.getControlPointCount() < 2 ) {
 			TvConsole.error( 'Road spline must have atleast 2 control points. Skipping export' );
 			this.snackBar.error( 'Road spline must have atleast 2 control points. Skipping export' );
 			return;

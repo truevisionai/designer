@@ -49,7 +49,7 @@ export class ControlPointFactory {
 
 		if ( spline.type === SplineType.EXPLICIT ) {
 
-			const pointIndex = index || spline.controlPoints.length;
+			const pointIndex = index || spline.getControlPointCount();
 
 			const geometry = spline.getGeometries()[ pointIndex - 1 ];
 

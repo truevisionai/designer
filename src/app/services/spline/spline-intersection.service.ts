@@ -19,7 +19,7 @@ export class SplineIntersectionService {
 
 	findIntersections ( spline: AbstractSpline, otherSplines: any = null ): SplineIntersection[] {
 
-		if ( spline.controlPoints.length < 2 ) return [];
+		if ( spline.getControlPointCount() < 2 ) return [];
 
 		const splines = otherSplines || this.mapService.nonJunctionSplines;
 

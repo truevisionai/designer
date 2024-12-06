@@ -133,7 +133,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	addPointAndUpdateSpline ( spline: AbstractSpline, point: AbstractControlPoint, index?: number ): void {
 
-		index = index ?? spline.controlPoints.length;
+		index = index ?? spline.getControlPointCount();
 
 		spline.controlPoints.splice( index, 0, point );
 
@@ -177,14 +177,14 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 	findIndex ( spline: AbstractSpline, position: Vector3 ): number {
 
 		let minDistance = Infinity;
-		let index = spline.controlPoints.length; // insert at the end by default
+		let index = spline.getControlPointCount(); // insert at the end by default
 
 		// Ensure the loop includes the segment between the last and first control points
-		for ( let i = 0; i < spline.controlPoints.length; i++ ) {
+		for ( let i = 0; i < spline.getControlPointCount(); i++ ) {
 
 			const current = spline.controlPoints[ i ];
 
-			const nextIndex = ( i + 1 ) % spline.controlPoints.length;
+			const nextIndex = ( i + 1 ) % spline.getControlPointCount();
 
 			// If the spline is open, do not consider the last segment
 			if ( !spline.closed && nextIndex === 0 ) {

@@ -93,7 +93,7 @@ export class DepAutoSpline extends AbstractSpline {
 
 		let hdg, p1, p2, currentPoint: AbstractControlPoint, previousPoint: AbstractControlPoint;
 
-		for ( let i = 1; i < this.controlPoints.length; i++ ) {
+		for ( let i = 1; i < this.getControlPointCount(); i++ ) {
 
 			previousPoint = this.controlPoints[ i - 1 ];
 			currentPoint = this.controlPoints[ i ];
@@ -119,7 +119,7 @@ export class DepAutoSpline extends AbstractSpline {
 
 	clear (): void {
 
-		this.controlPoints.splice( 0, this.controlPoints.length );
+		this.controlPoints.splice( 0, this.getControlPointCount() );
 
 		SceneService.removeFromMain( this.polyline.mesh );
 

@@ -156,19 +156,19 @@ export abstract class AbstractSpline {
 	}
 
 	getFirstPoint (): AbstractControlPoint | null {
-		return this.controlPoints.length >= 1 ? this.controlPoints[ 0 ] : null;
+		return this.getControlPointCount() >= 1 ? this.controlPoints[ 0 ] : null;
 	}
 
 	getSecondPoint (): AbstractControlPoint | null {
-		return this.controlPoints.length >= 2 ? this.controlPoints[ 1 ] : null;
+		return this.getControlPointCount() >= 2 ? this.controlPoints[ 1 ] : null;
 	}
 
 	getLastPoint (): AbstractControlPoint | null {
-		return this.controlPoints.length >= 1 ? this.controlPoints[ this.controlPoints.length - 1 ] : null;
+		return this.getControlPointCount() >= 1 ? this.controlPoints[ this.getControlPointCount() - 1 ] : null;
 	}
 
 	getSecondLastPoint (): AbstractControlPoint | null {
-		return this.controlPoints.length >= 2 ? this.controlPoints[ this.controlPoints.length - 2 ] : null;
+		return this.getControlPointCount() >= 2 ? this.controlPoints[ this.getControlPointCount() - 2 ] : null;
 	}
 
 	update (): void {
@@ -189,7 +189,7 @@ export abstract class AbstractSpline {
 	}
 
 	toString (): string {
-		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segments.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
+		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segments.length } Length:${ this.getLength() } Points:${ this.getControlPointCount() } Geometries:${ this.geometries.length }`;
 	}
 
 	clearGeometries (): void {

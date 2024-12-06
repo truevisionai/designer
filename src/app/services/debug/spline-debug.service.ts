@@ -111,7 +111,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	onDefault ( spline: AbstractSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		this.showBorder( spline );
 
@@ -121,7 +121,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		this.removeBorder( spline );
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		this.showBorder( spline, LINE_WIDTH * 2 );
 
@@ -131,7 +131,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	onSelected ( spline: AbstractSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		this.removeBorder( spline );
 		this.showBorder( spline, LINE_WIDTH, COLOR.RED );
@@ -238,7 +238,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 	////// PRIVATE
 	showReferenceLine ( spline: AbstractSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		const points = spline.getPoints( LINE_STEP );
 
@@ -358,7 +358,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	showControlPoints ( spline: AbstractSpline ): void {
 
-		for ( let i = 0; i < spline.controlPoints.length; i++ ) {
+		for ( let i = 0; i < spline.getControlPointCount(); i++ ) {
 
 			const point = spline.controlPoints[ i ];
 
@@ -380,7 +380,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 			const index = spline.controlPoints.indexOf( point );
 
-			if ( index != spline.controlPoints.length - 1 ) {
+			if ( index != spline.getControlPointCount() - 1 ) {
 
 				point.frontTangent.visible = true;
 

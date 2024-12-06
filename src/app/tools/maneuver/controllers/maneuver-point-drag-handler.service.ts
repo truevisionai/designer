@@ -18,7 +18,7 @@ function isDraggingSupported ( object: SplineControlPoint | RoadControlPoint ): 
 
 	const index = object.index ?? object.spline.controlPoints.indexOf( object );
 
-	return index > 0 && index < object.spline.controlPoints.length - 1;
+	return index > 0 && index < object.spline.getControlPointCount() - 1;
 
 }
 

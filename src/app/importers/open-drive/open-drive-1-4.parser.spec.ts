@@ -65,7 +65,7 @@ describe( 'OpenDrive Parsing', () => {
 		expect( road.spline.getLength() ).toBe( 100 );
 		expect( road.id ).toBe( 1 );
 		expect( road.isJunction ).toBe( false );
-		expect( road.spline.controlPoints.length ).toBe( 2 );
+		expect( road.spline.getControlPointCount() ).toBe( 2 );
 
 		expect( road.spline.controlPoints[ 0 ].position.x ).toBe( 0 );
 		expect( road.spline.controlPoints[ 0 ].position.y ).toBe( 0 );		//

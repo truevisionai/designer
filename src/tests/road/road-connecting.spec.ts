@@ -31,7 +31,7 @@ describe( 'RoadTool: Connecting Roads', () => {
 		const joiningRoad = service.createJoiningRoad( prevNode, nextNode );
 
 		expect( joiningRoad ).toBeDefined();
-		expect( joiningRoad.spline.controlPoints.length ).toBe( 4 );
+		expect( joiningRoad.spline.getControlPointCount() ).toBe( 4 );
 		expect( joiningRoad.spline.getLength() ).toBeCloseTo( 100 );
 
 		expect( joiningRoad.getPredecessor().isRoad ).toBe( true );

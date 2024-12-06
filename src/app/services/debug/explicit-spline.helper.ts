@@ -34,7 +34,7 @@ export class ExplicitSplineHelper extends BaseDebugger<ExplicitSpline> {
 
 	onSelected ( object: ExplicitSpline ): void {
 
-		if ( object.controlPoints.length < 2 ) return;
+		if ( object.getControlPointCount() < 2 ) return;
 
 	}
 

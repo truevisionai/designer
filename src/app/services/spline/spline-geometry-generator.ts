@@ -32,7 +32,7 @@ export class SplineGeometryGenerator {
 
 	generateGeometryAndBuildSegmentsAndBounds ( spline: AbstractSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) {
+		if ( spline.getControlPointCount() < 2 ) {
 			Log.warn( 'No control points found in spline', spline?.toString() );
 			return;
 		}
@@ -61,7 +61,7 @@ export class SplineGeometryGenerator {
 
 	buildGeometry ( spline: AbstractSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) {
+		if ( spline.getControlPointCount() < 2 ) {
 			Log.warn( 'No control points found in spline', spline?.toString() );
 			return;
 		}
@@ -121,7 +121,7 @@ export class SplineGeometryGenerator {
 
 	buildCatmullRomSpline ( spline: CatmullRomSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		if ( !spline.curve ) return;
 
@@ -145,7 +145,7 @@ export class SplineGeometryGenerator {
 
 	buildCatmullRom ( spline: CatmullRomSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		if ( !spline.curve ) {
 			spline.curve = new CatmullRomCurve3(

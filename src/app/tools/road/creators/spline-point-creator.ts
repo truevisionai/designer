@@ -66,7 +66,7 @@ export class PointCreationRoadToolStrategy extends BaseCreationStrategy<Abstract
 			return new ValidationFailed( 'Cannot add a control point to the start of a road with a predecessor' );
 		}
 
-		if ( index == spline.controlPoints.length - 1 && hasSuccessor && !clickedSameRoad ) {
+		if ( index == spline.getControlPointCount() - 1 && hasSuccessor && !clickedSameRoad ) {
 			return new ValidationFailed( 'Cannot add a control point to the end of a road with a successor' );
 		}
 

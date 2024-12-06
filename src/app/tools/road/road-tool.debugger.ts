@@ -40,7 +40,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 	onDefault ( spline: AbstractSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		this.splineDebugger.showBorder( spline );
 
@@ -56,7 +56,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.removeNodes( spline );
 		this.splineDebugger.removeBoundPoints( spline );
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		this.splineDebugger.showBorder( spline );
 		this.splineDebugger.showArrows( spline );
@@ -72,7 +72,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.removeArrows( spline );
 		this.splineDebugger.removeBorder( spline );
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		this.splineDebugger.showBorder( spline );
 
@@ -80,7 +80,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 	onSelected ( spline: AbstractSpline ): void {
 
-		if ( spline.controlPoints.length < 2 ) return;
+		if ( spline.getControlPointCount() < 2 ) return;
 
 		this.splineDebugger.removeBorder( spline );
 		this.splineDebugger.removeArrows( spline );
