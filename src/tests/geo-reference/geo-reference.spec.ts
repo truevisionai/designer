@@ -109,13 +109,13 @@ describe( 'GeoReference', () => {
 		expect( road.spline.getLength() ).toBe( 6.30498600 );
 		expect( road.spline.getControlPointCount() ).toBe( 2 );
 
-		expect( road.spline.controlPoints[ 0 ].position.x ).toBeCloseTo( 1835.7 );
-		expect( road.spline.controlPoints[ 0 ].position.y ).toBeCloseTo( 476.48 );
-		expect( road.spline.controlPoints[ 0 ].position.z ).toBe( 0 );
+		expect( road.spline.getControlPoints()[ 0 ].position.x ).toBeCloseTo( 1835.7 );
+		expect( road.spline.getControlPoints()[ 0 ].position.y ).toBeCloseTo( 476.48 );
+		expect( road.spline.getControlPoints()[ 0 ].position.z ).toBe( 0 );
 
-		expect( road.spline.controlPoints[ 1 ].position.x ).toBeCloseTo( 1835.8 );
-		expect( road.spline.controlPoints[ 1 ].position.y ).toBeCloseTo( 470.177 );
-		expect( road.spline.controlPoints[ 1 ].position.z ).toBe( 0 );
+		expect( road.spline.getControlPoints()[ 1 ].position.x ).toBeCloseTo( 1835.8 );
+		expect( road.spline.getControlPoints()[ 1 ].position.y ).toBeCloseTo( 470.177 );
+		expect( road.spline.getControlPoints()[ 1 ].position.z ).toBe( 0 );
 
 	} )
 
@@ -132,9 +132,9 @@ describe( 'GeoReference', () => {
 		expect( road.spline.getLength() ).toBeCloseTo( 39.8908043358925 );
 		expect( road.spline.getControlPointCount() ).toBeGreaterThan( 2 );
 
-		expect( road.spline.controlPoints[ 0 ].position.x ).toBeCloseTo( 368.49, 0.1 );
-		expect( road.spline.controlPoints[ 0 ].position.y ).toBeCloseTo( 220.97, 0.1 );
-		expect( road.spline.controlPoints[ 0 ].position.z ).toBe( 0 );
+		expect( road.spline.getControlPoints()[ 0 ].position.x ).toBeCloseTo( 368.49, 0.1 );
+		expect( road.spline.getControlPoints()[ 0 ].position.y ).toBeCloseTo( 220.97, 0.1 );
+		expect( road.spline.getControlPoints()[ 0 ].position.z ).toBe( 0 );
 
 	} )
 

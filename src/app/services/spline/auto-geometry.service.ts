@@ -66,8 +66,8 @@ export class AutoGeometryService {
 
 		for ( let i = 1; i < spline.getControlPointCount(); i++ ) {
 
-			previousPoint = spline.controlPoints[ i - 1 ];
-			currentPoint = spline.controlPoints[ i ];
+			previousPoint = spline.getControlPoints()[ i - 1 ];
+			currentPoint = spline.getControlPoints()[ i ];
 
 			p1 = new Vector2( currentPoint.position.x, currentPoint.position.y );
 			p2 = new Vector2( previousPoint.position.x, previousPoint.position.y );
@@ -127,7 +127,7 @@ export class AutoGeometryService {
 
 		let totalLength = 0;
 
-		const roundline = new RoundLine( spline.controlPoints );
+		const roundline = new RoundLine( spline.getControlPoints() );
 
 		roundline.update();
 

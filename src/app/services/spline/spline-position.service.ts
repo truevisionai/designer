@@ -37,7 +37,7 @@ export class SplinePositionService {
 
 	getHeading ( spline: AbstractSpline, index: number, position: Vector3 ): number {
 
-		const previousPoint = spline.controlPoints[ index - 1 ];
+		const previousPoint = spline.getControlPoints()[ index - 1 ];
 
 		let hdg: number = 0;
 

@@ -192,7 +192,7 @@ describe( 'JunctionManager', () => {
 		splineManager.addSpline( spline, false );
 
 		// then move old vertical spline
-		mapService.splines[ 1 ].controlPoints.forEach( cp => cp.position.x += 500 );
+		mapService.splines[ 1 ].getControlPoints().forEach( cp => cp.position.x += 500 );
 
 		splineManager.updateSpline( mapService.splines[ 1 ], false );
 

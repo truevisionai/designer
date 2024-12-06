@@ -39,7 +39,7 @@ export abstract class AbstractSpline {
 
 	public boundingBox: Box2;
 
-	private _controlPoints: AbstractControlPoint[] = [];
+	private controlPoints: AbstractControlPoint[] = [];
 
 	private geometries: TvAbstractRoadGeometry[] = [];
 
@@ -93,14 +93,6 @@ export abstract class AbstractSpline {
 		return this.splineSegmentProfile.getSegmentMap();
 	}
 
-	get controlPoints (): AbstractControlPoint[] {
-		return this._controlPoints;
-	}
-
-	set controlPoints ( value: AbstractControlPoint[] ) {
-		this._controlPoints = value;
-	}
-
 	get controlPointPositions (): Vector3[] {
 		return this.controlPoints.map( point => point.position );
 	}
@@ -141,6 +133,10 @@ export abstract class AbstractSpline {
 		if ( index !== -1 ) {
 			this.controlPoints.splice( index, 1 );
 		}
+	}
+
+	removeAllControlPoints (): void {
+		this.controlPoints.splice( 0, this.controlPoints.length );
 	}
 
 	addControlPoints ( points: AbstractControlPoint[] ): void {
@@ -185,7 +181,7 @@ export abstract class AbstractSpline {
 	}
 
 	updateIndexes (): void {
-		this.controlPoints.forEach( ( point, index ) => point.index = index );
+		this.getControlPoints().forEach( ( point, index ) => point.index = index );
 	}
 
 	toString (): string {

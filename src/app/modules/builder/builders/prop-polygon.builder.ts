@@ -138,7 +138,7 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
 			const transforms = props.map( prop => prop.transform );
 
-			this.createInstancedMeshesV2( mesh, transforms, polygon.spline.controlPoints, propObject, propChildren );
+			this.createInstancedMeshesV2( mesh, transforms, polygon.spline.getControlPoints(), propObject, propChildren );
 
 		} );
 

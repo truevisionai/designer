@@ -517,7 +517,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		surface.opacity = parseFloat( xml.material?.attr_opacity ) || 1.0;
 
-		spline.controlPoints.forEach( p => p.mainObject = surface );
+		spline.getControlPoints().forEach( p => p.mainObject = surface );
 
 		return surface;
 	}
@@ -625,7 +625,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			point.index = spline.getControlPointCount();
 
-			spline.controlPoints.push( point );
+			spline.addControlPoint( point );
 
 		} );
 
@@ -698,7 +698,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			controlPoint.index = spline.getControlPointCount();
 
-			spline.controlPoints.push( controlPoint );
+			spline.addControlPoint( controlPoint );
 
 		} );
 
@@ -721,7 +721,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			controlPoint.index = spline.getControlPointCount();
 
-			spline.controlPoints.push( controlPoint );
+			spline.addControlPoint( controlPoint );
 
 		} );
 
@@ -758,7 +758,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		curve.setSpline( spline );
 
-		spline.controlPoints.forEach( p => p.mainObject = curve );
+		spline.getControlPoints().forEach( p => p.mainObject = curve );
 
 		this.readAsOptionalArray( xml.props, propXml => {
 
@@ -793,7 +793,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( id ) polygon.id = id;
 
-		spline.controlPoints.forEach( point => point.mainObject = polygon );
+		spline.getControlPoints().forEach( point => point.mainObject = polygon );
 
 		this.readAsOptionalArray( xml.props || xml.prop, prop => {
 

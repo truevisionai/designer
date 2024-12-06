@@ -45,7 +45,7 @@ describe( '4-Road-Roundabout', () => {
 		const horizontal = helper.addStraightRoadSpline( new Vector3( -50, 0, 0 ) );
 
 		// move the horizontal spline to right by 50
-		horizontal.controlPoints.forEach( point => point.position.x += 50 );
+		horizontal.getControlPoints().forEach( point => point.position.x += 50 );
 
 		helper.splineService.updateSpline( horizontal );
 

@@ -108,7 +108,7 @@ export class AbstractSplineDebugService {
 
 		this.points.removeKey( spline );
 
-		spline.controlPoints.forEach( point => {
+		spline.getControlPoints().forEach( point => {
 
 			point.visible = true;
 

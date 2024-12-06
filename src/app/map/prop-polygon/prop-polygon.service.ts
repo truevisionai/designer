@@ -68,9 +68,9 @@ export class PropPolygonService extends BaseDataService<PropPolygon> {
 
 		if ( !polygon ) return;
 
-		if ( polygon.spline?.controlPoints?.length < 3 ) return;
+		if ( polygon.spline?.getControlPointCount() < 3 ) return;
 
-		const positions = PolygonDistributionService.distributePoints( polygon.spline.controlPoints.map( cp => cp.position ), polygon.density );
+		const positions = PolygonDistributionService.distributePoints( polygon.spline.getControlPoints().map( cp => cp.position ), polygon.density );
 
 		const propGuid = polygon.props.length > 0 ? polygon.props[ 0 ].guid : polygon.propGuid;
 

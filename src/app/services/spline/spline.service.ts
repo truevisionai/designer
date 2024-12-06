@@ -91,11 +91,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	removePoint ( spline: AbstractSpline, point: AbstractControlPoint ): void {
 
-		const index = spline.controlPoints.findIndex( p => p.id === point.id );
-
-		if ( index == -1 ) return;
-
-		spline.controlPoints.splice( index, 1 );
+		spline.removeControlPoint( point );
 
 		this.updateIndexes( spline );
 
@@ -117,7 +113,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 			index = this.findIndex( spline, point.position );
 
-			spline.controlPoints.splice( index, 0, point );
+			spline.insertControlPoint( index, point );
 
 		} else {
 
@@ -135,7 +131,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 		index = index ?? spline.getControlPointCount();
 
-		spline.controlPoints.splice( index, 0, point );
+		spline.insertControlPoint( index, point );
 
 		this.updatePointHeading( spline, point, index );
 
@@ -152,9 +148,9 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			return;
 		}
 
-		const nextPoint = spline.controlPoints[ index + 1 ];
+		const nextPoint = spline.getControlPoints()[ index + 1 ];
 
-		const previousPoint = spline.controlPoints[ index - 1 ];
+		const previousPoint = spline.getControlPoints()[ index - 1 ];
 
 		if ( nextPoint instanceof AbstractControlPoint ) {
 
@@ -182,7 +178,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 		// Ensure the loop includes the segment between the last and first control points
 		for ( let i = 0; i < spline.getControlPointCount(); i++ ) {
 
-			const current = spline.controlPoints[ i ];
+			const current = spline.getControlPoints()[ i ];
 
 			const nextIndex = ( i + 1 ) % spline.getControlPointCount();
 
@@ -192,7 +188,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			}
 
 			// Use modulo to wrap around to the first point when reaching the end
-			const next = spline.controlPoints[ nextIndex ];
+			const next = spline.getControlPoints()[ nextIndex ];
 
 			const distance = this.calculateDistanceToSegment( position, current, next );
 

@@ -23,10 +23,10 @@ export class FollowHeadingMovingStrategy extends MovingStrategy<AbstractControlP
 
 		if ( spline instanceof AbstractSpline ) {
 
-			const index = spline.controlPoints.indexOf( target );
+			const index = spline.getControlPoints().indexOf( target );
 
 			if ( index == 1 ) {
-				targetHdg = spline.controlPoints[ 0 ][ 'hdg' ] || targetHdg;
+				targetHdg = spline.getControlPoints()[ 0 ][ 'hdg' ] || targetHdg;
 			}
 
 		}

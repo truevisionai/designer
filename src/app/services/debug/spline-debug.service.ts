@@ -360,7 +360,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		for ( let i = 0; i < spline.getControlPointCount(); i++ ) {
 
-			const point = spline.controlPoints[ i ];
+			const point = spline.getControlPoints()[ i ];
 
 			this.points.addItem( spline, point );
 
@@ -378,7 +378,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 				point.createTangentAndLine( point.hdg, 7, 7 );
 			}
 
-			const index = spline.controlPoints.indexOf( point );
+			const index = spline.getControlPoints().indexOf( point );
 
 			if ( index != spline.getControlPointCount() - 1 ) {
 
@@ -419,7 +419,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 		if ( spline.type == SplineType.EXPLICIT ) return;
 
-		const points = spline.controlPoints.map( point => point.position );
+		const points = spline.getControlPoints().map( point => point.position );
 
 		if ( spline.closed && points.length > 2 ) {
 			points.push( points[ 0 ] );

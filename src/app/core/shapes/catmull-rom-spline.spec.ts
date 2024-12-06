@@ -20,9 +20,9 @@ describe( 'CatmullRomSpline test', () => {
 
 	it( 'should give correct positions', () => {
 
-		spline.controlPoints.push( AnyControlPoint.create( '', new Vector3( 0, 0, 0 ) ) );
-		spline.controlPoints.push( AnyControlPoint.create( '', new Vector3( 50, 0, 0 ) ) );
-		spline.controlPoints.push( AnyControlPoint.create( '', new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( AnyControlPoint.create( '', new Vector3( 0, 0, 0 ) ) );
+		spline.addControlPoint( AnyControlPoint.create( '', new Vector3( 50, 0, 0 ) ) );
+		spline.addControlPoint( AnyControlPoint.create( '', new Vector3( 100, 0, 0 ) ) );
 
 		spline.update();
 

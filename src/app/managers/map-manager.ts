@@ -50,7 +50,7 @@ export class MapManager {
 
 		map.propPolygons.forEach( polygon => {
 
-			polygon.spline?.controlPoints.forEach( point => SceneService.removeFromMain( point ) );
+			polygon.spline?.getControlPoints().forEach( point => SceneService.removeFromMain( point ) );
 
 		} );
 

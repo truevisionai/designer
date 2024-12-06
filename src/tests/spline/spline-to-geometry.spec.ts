@@ -44,8 +44,8 @@ describe( 'SplineToGeometry test', () => {
 
 		const spline = SplineFactory.createSpline();
 
-		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
 
 		splineManager.addSpline( spline );
 
@@ -63,9 +63,9 @@ describe( 'SplineToGeometry test', () => {
 
 		const spline = SplineFactory.createSpline();
 
-		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
-		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
-		spline.controlPoints.push( pointFactory.createSplineControlPoint( spline, new Vector3( 200, 0, 0 ) ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 0, 0, 0 ) ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( pointFactory.createSplineControlPoint( spline, new Vector3( 200, 0, 0 ) ) );
 
 		splineManager.addSpline( spline );
 
