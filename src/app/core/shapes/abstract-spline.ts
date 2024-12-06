@@ -109,14 +109,14 @@ export abstract class AbstractSpline {
 		return this.controlPoints;
 	}
 
-	addControlPoint ( position: AbstractControlPoint | Vector3 ): AbstractControlPoint {
+	addControlPoint ( value: AbstractControlPoint | Vector3 ): AbstractControlPoint {
 
 		let point: AbstractControlPoint;
 
-		if ( position instanceof Vector3 ) {
-			point = ControlPointFactory.createControl( this, position );
+		if ( value instanceof Vector3 ) {
+			point = ControlPointFactory.createControl( this, value );
 		} else {
-			point = position;
+			point = value;
 		}
 
 		this.controlPoints.push( point );

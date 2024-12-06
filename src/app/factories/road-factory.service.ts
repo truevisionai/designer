@@ -198,9 +198,7 @@ export class RoadFactory {
 
 		controlPoints.forEach( value => {
 
-			const position = new Vector3( value.x, value.y, 0 );
-
-			road.spline.addControlPoint( position );
+			road.spline.addControlPoint( new Vector3( value.x, value.y, 0 ) );
 
 		} );
 

@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { CatmullRomCurve3, Curve, CurvePath, CurveType, Vector3 } from 'three';
-import { AnyControlPoint } from "../../objects/any-control-point";
 
 
 function CubicBezierP0 ( t: any, p: any ): number {
@@ -118,7 +118,7 @@ export class LineArcSplineCurve extends CurvePath<Vector3> {
 
 	/** NOT WORKING CURRENTLY */
 	constructor (
-		public points: AnyControlPoint[]
+		public points: AbstractControlPoint[]
 	) {
 		super();
 	}
@@ -207,8 +207,8 @@ export class LineArcSplineCurve extends CurvePath<Vector3> {
 		// store lengths from one point to another for the whole spline
 		const lengths = new Array( this.points.length - 1 );
 
-		let currentPoint: AnyControlPoint = null;
-		let nextPoint: AnyControlPoint = null;
+		let currentPoint: AbstractControlPoint = null;
+		let nextPoint: AbstractControlPoint = null;
 
 		this.points.forEach( ( currentPoint, i ) => {
 

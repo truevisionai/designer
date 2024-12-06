@@ -59,7 +59,7 @@ export class ControlPointFactory {
 
 		}
 
-		return new SplineControlPoint( spline, position );
+		return new SplineControlPoint( spline, position, spline.getControlPointCount() );
 
 	}
 

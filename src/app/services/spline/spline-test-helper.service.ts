@@ -97,7 +97,7 @@ export class SplineTestHelper {
 
 		const road = this.roadFactory.createRoadWithLaneCount( leftLaneCount, rightLaneCount, leftWidth, rightWidth );
 
-		points.forEach( point => road.spline.addControlPoint( new SplineControlPoint( null, new Vector3( point.x, point.y, 0 ) ) ) );
+		points.forEach( point => road.spline.addControlPoint( new Vector3( point.x, point.y, 0 ) ) );
 
 		return road;
 

@@ -601,9 +601,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const position = this.importVector3( xml );
 
-			const point = spline.addControlPoint( position );
-
-			point.index = spline.getControlPointCount();
+			spline.addControlPoint( position );
 
 		} );
 
@@ -621,11 +619,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const position = this.importVector3( xml );
 
-			const point = new SplineControlPoint( spline, position );
-
-			point.index = spline.getControlPointCount();
-
-			spline.addControlPoint( point );
+			spline.addControlPoint( position );
 
 		} );
 
