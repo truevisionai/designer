@@ -58,11 +58,7 @@ export class RoadToolHelper {
 
 	}
 
-	duplicateRoad ( selectedRoad: TvRoad ): any {
 
-		return this.roadService.duplicateRoad( selectedRoad );
-
-	}
 
 	createJoiningRoad ( nodeA: RoadNode, nodeB: RoadNode ): TvRoad {
 

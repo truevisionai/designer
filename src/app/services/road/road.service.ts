@@ -161,37 +161,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	duplicateRoad ( road: TvRoad ): void {
-
-		const clone = this.clone( road );
-
-		const roadWidth = RoadWidthService.instance.findRoadWidthAt( road, 0 );
-
-		this.shiftRoad( clone, roadWidth.totalWidth, 0 );
-
-		Commands.AddObject( clone );
-
-	}
-
-	shiftRoad ( road: TvRoad, x: number, y: number ): void {
-
-		const posTheta = road.getStartPosTheta();
-
-		posTheta.rotateDegree( -90 );
-
-		const direction = posTheta.toDirectionVector();
-
-		direction.multiplyScalar( x );
-
-		road.spline.controlPoints.forEach( point => {
-
-			// move in direction of road
-			point.position.add( direction );
-
-		} );
-
-	}
-
 	findRoadCoordAtPosition ( position: Vector3 ): TvRoadCoord {
 
 		return TvMapQueries.findRoadCoord( position );
