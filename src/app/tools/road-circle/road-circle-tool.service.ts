@@ -177,10 +177,10 @@ export class RoadCircleToolService {
 			const a2 = startPosTheta.moveForward( +distance );
 			const b2 = endPosTheta.moveForward( -distance );
 
-			points.push( ControlPointFactory.createControl( road.spline, start ) );
-			points.push( ControlPointFactory.createControl( road.spline, a2.toVector3() ) );
-			points.push( ControlPointFactory.createControl( road.spline, b2.toVector3() ) );
-			points.push( ControlPointFactory.createControl( road.spline, arc.endV3.clone() ) );
+			points.push( ControlPointFactory.createControlPoint( road.spline, start ) );
+			points.push( ControlPointFactory.createControlPoint( road.spline, a2.toVector3() ) );
+			points.push( ControlPointFactory.createControlPoint( road.spline, b2.toVector3() ) );
+			points.push( ControlPointFactory.createControlPoint( road.spline, arc.endV3.clone() ) );
 
 			start = arc.endV3;
 

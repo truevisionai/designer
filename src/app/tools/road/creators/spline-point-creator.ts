@@ -100,7 +100,7 @@ export class PointCreationRoadToolStrategy extends BaseCreationStrategy<Abstract
 			index = this.splineService.findIndex( spline, event.point );
 		}
 
-		const point = ControlPointFactory.createControl( spline, event.point, index );
+		const point = ControlPointFactory.createControlPoint( spline, event.point, index );
 
 		point.userData.insert = clickedSameRoad;
 

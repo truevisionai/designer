@@ -193,10 +193,10 @@ describe( 'RoadTool: Spline Editing', () => {
 
 		it( 'should undo deleted contol point', () => {
 
-			const thirdPoint = ControlPointFactory.createControl( spline, new Vector3( 100, 100, 0 ) );
+			const thirdPoint = ControlPointFactory.createControlPoint( spline, new Vector3( 100, 100, 0 ) );
 			tool.onObjectAdded( thirdPoint );
 
-			const fourthPoint = ControlPointFactory.createControl( spline, new Vector3( 120, 120, 0 ) );
+			const fourthPoint = ControlPointFactory.createControlPoint( spline, new Vector3( 120, 120, 0 ) );
 			tool.onObjectAdded( fourthPoint );
 
 			expect( spline.getControlPointCount() ).toBe( 4 );

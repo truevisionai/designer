@@ -6,7 +6,6 @@ import { expectValidMap } from "../../base-test.spec";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { expectValidRoad, setupTest, validateMap } from "tests/setup-tests";
 import { expect2RoadJunction, expectTJunction, expectXJunction } from "tests/expect-junction.spec";
-import { ControlPointFactory } from "app/factories/control-point.factory";
 
 describe( '4-Road-Roundabout', () => {
 

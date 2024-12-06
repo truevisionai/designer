@@ -1,13 +1,10 @@
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { AutoSpline } from "app/core/shapes/auto-spline-v2";
-import { ControlPointFactory } from "app/factories/control-point.factory";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineManager } from "app/managers/spline-manager";
 import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
-import { SplineControlPoint } from "app/objects/road/spline-control-point";
 import { RoadService } from "app/services/road/road.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { SplineFactory } from "app/services/spline/spline.factory";
@@ -16,7 +13,6 @@ import { Vector2, Vector3 } from "three";
 describe( 'SplineToGeometry test', () => {
 
 	let splineFactory: SplineFactory;
-	let pointFactory: ControlPointFactory;
 	let roadService: RoadService;
 	let eventServiceProvider: EventServiceProvider;
 	let splineManager: SplineManager;
@@ -31,7 +27,6 @@ describe( 'SplineToGeometry test', () => {
 
 		splineManager = TestBed.inject( SplineManager );
 		splineFactory = TestBed.inject( SplineFactory );
-		pointFactory = TestBed.inject( ControlPointFactory );
 		roadService = TestBed.inject( RoadService );
 		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		testHelper = TestBed.inject( SplineTestHelper );
