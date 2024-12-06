@@ -54,9 +54,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 			const road = this.roadFactory.createDefaultRoad();
 
-			road.spline = spline;
-
-			spline.addSegment( 0, road );
+			road.setSplineAndSegment( spline );
 
 			this.mapService.addRoad( road );
 		}

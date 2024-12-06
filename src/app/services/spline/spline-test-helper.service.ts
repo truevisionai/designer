@@ -185,9 +185,9 @@ export class SplineTestHelper {
 
 		const road = this.roadFactory.createDefaultRoad();
 
-		const spline = road.spline = this.createStraightSpline( start, length, degrees, type );
+		const spline = this.createStraightSpline( start, length, degrees, type );
 
-		spline.addSegment( 0, road );
+		road.setSplineAndSegment( spline );
 
 		return spline.getFirstSegment<TvRoad>();
 
@@ -201,9 +201,7 @@ export class SplineTestHelper {
 
 		const spline = SplineFactory.createSpline( type );
 
-		spline.addSegment( 0, road );
-
-		road.spline = spline;
+		road.setSplineAndSegment( spline );
 
 		this.mapService.addRoad( road );
 
@@ -514,13 +512,9 @@ export class SplineTestHelper {
 		const middleRoad = this.roadFactory.createDefaultRoad();
 		const rightRoad = this.roadFactory.createDefaultRoad();
 
-		left.addSegment( 0, leftRoad );
-		middle.addSegment( 0, middleRoad );
-		right.addSegment( 0, rightRoad );
-
-		leftRoad.spline = left;
-		middleRoad.spline = middle;
-		rightRoad.spline = right;
+		leftRoad.setSplineAndSegment( left );
+		middleRoad.setSplineAndSegment( middle );
+		rightRoad.setSplineAndSegment( right );
 
 		leftRoad.setSuccessorRoad( middleRoad, TvContactPoint.START );
 		middleRoad.setPredecessorRoad( leftRoad, TvContactPoint.END );
@@ -552,13 +546,9 @@ export class SplineTestHelper {
 		const middleRoad = this.roadFactory.createDefaultRoad();
 		const rightRoad = this.roadFactory.createDefaultRoad();
 
-		left.addSegment( 0, leftRoad );
-		middle.addSegment( 0, middleRoad );
-		right.addSegment( 0, rightRoad );
-
-		leftRoad.spline = left;
-		middleRoad.spline = middle;
-		rightRoad.spline = right;
+		leftRoad.setSplineAndSegment( left );
+		middleRoad.setSplineAndSegment( middle );
+		rightRoad.setSplineAndSegment( right );
 
 		leftRoad.setSuccessorRoad( middleRoad, TvContactPoint.END );
 		middleRoad.setSuccessorRoad( leftRoad, TvContactPoint.END );

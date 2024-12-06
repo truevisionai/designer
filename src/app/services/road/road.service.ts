@@ -95,7 +95,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	clone ( road: TvRoad, s: number = 0 ): any {
+	clone ( road: TvRoad, s: number = 0 ): TvRoad {
 
 		const id = this.roadFactory.getNextRoadId();
 
@@ -105,19 +105,19 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	createRampRoad ( connectionLane?: TvLane ): any {
+	createRampRoad ( connectionLane?: TvLane ): TvRoad {
 
 		return this.roadFactory.createRampRoad( connectionLane );
 
 	}
 
-	createSingleLaneRoad ( width: number ): any {
+	createSingleLaneRoad ( width: number ): TvRoad {
 
 		return this.roadFactory.createSingleLaneRoad( width );
 
 	}
 
-	createNewRoad (): any {
+	createNewRoad (): TvRoad {
 
 		return this.roadFactory.createNewRoad();
 

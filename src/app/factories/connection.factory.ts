@@ -81,13 +81,13 @@ export class ConnectionFactory {
 
 		connection.addLaneLinks( links );
 
-		connection.connectingRoad.spline = this.createConnectionSpline( connection, links, incoming, outgoing );
+		this.createAndSetSpline( connection, links, incoming, outgoing );
 
 		junction.addConnection( connection );
 
 	}
 
-	private createConnectionSpline ( connection: TvJunctionConnection, links: TvJunctionLaneLink[], incoming: TvRoadCoord, outgoing: TvRoadCoord ): AbstractSpline {
+	private createAndSetSpline ( connection: TvJunctionConnection, links: TvJunctionLaneLink[], incoming: TvRoadCoord, outgoing: TvRoadCoord ): void {
 
 		if ( links.length === 0 ) {
 			throw new Error( 'No links found' );
@@ -100,11 +100,10 @@ export class ConnectionFactory {
 
 		const spline = SplineFactory.createFromLaneCoords( incomingLaneCoord, outgoingLaneCoord );
 
-		spline.addSegment( 0, connection.getRoad() );
+		connection.getRoad().setSplineAndSegment( spline );
 
 		spline.updateSegmentGeometryAndBounds();
 
-		return spline;
 	}
 
 	static createConnectionAndRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord, type?: TurnType ): TvJunctionConnection {
@@ -358,11 +357,11 @@ export class ConnectionFactory {
 
 		const road = this.roadFactory.createConnectingRoad( junction, incoming, outgoing );
 
-		road.spline = SplineFactory.createFromLaneCoords( incoming, outgoing );
+		const spline = SplineFactory.createFromLaneCoords( incoming, outgoing );
 
-		road.spline.addSegment( 0, road );
+		road.setSplineAndSegment( spline );
 
-		this.splineBuilder.buildGeometry( road.spline );
+		this.splineBuilder.buildGeometry( spline );
 
 		return road;
 
@@ -400,11 +399,11 @@ export class ConnectionFactory {
 
 		road.setSuccessorRoad( exit.road, exit.contact );
 
-		road.spline = SplineFactory.createFromLaneCoords( entry, exit );
+		const spline = SplineFactory.createFromLaneCoords( entry, exit );
 
-		road.spline.addSegment( 0, road );
+		road.setSplineAndSegment( spline );
 
-		this.splineBuilder.buildGeometry( road.spline );
+		this.splineBuilder.buildGeometry( spline );
 
 		return road;
 

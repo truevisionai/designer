@@ -84,9 +84,7 @@ export class RoadToolHelper {
 
 		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
 
-		spline.addSegment( 0, joiningRoad );
-
-		joiningRoad.spline = spline;
+		joiningRoad.setSplineAndSegment( spline );
 
 		this.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( spline );
 

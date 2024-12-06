@@ -165,7 +165,7 @@ export class SplineFactory {
 
 		const spline = SplineFactory.createRoadSpline( v1, v1Direction, v4, v4Direction );
 
-		if ( road ) spline.addSegment( 0, road );
+		if ( road ) road.setSplineAndSegment( spline );
 
 		return spline;
 

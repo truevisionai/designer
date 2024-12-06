@@ -386,13 +386,9 @@ export class RoadFactory {
 
 		const road = new TvRoad( roadName, length || 0, roadId, junction );
 
-		road.sStart = 0;
-
 		const spline = new AutoSpline();
 
-		spline.addSegment( 0, road );
-
-		road.spline = spline;
+		road.setSplineAndSegment( spline );
 
 		return road;
 

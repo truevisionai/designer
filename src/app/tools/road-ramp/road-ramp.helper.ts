@@ -77,7 +77,7 @@ export class RampToolHelper {
 
 		const rampRoad = this.roadService.createNewRoad();
 
-		rampRoad.spline = this.createSpline( startCoord, endCoord );
+		const spline = this.createSpline( startCoord, endCoord );
 
 		if ( startCoord instanceof TvLaneCoord ) {
 
@@ -90,7 +90,7 @@ export class RampToolHelper {
 		this.addLaneSection( startCoord, endCoord, rampRoad );
 
 		// NOTE: This is a hack to make the ramp road work
-		rampRoad.spline.addSegment( 0, rampRoad );
+		rampRoad.setSplineAndSegment( spline );
 
 		this.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( rampRoad.spline );
 
