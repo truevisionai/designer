@@ -22,6 +22,7 @@ import { RoadStyleManager } from 'app/assets/road-style/road-style.manager';
 import { TvRoadCoord } from "../map/models/TvRoadCoord";
 import { SplineFactory } from "../services/spline/spline.factory";
 import { LANE_WIDTH } from "../map/models/tv-lane-width";
+import { Maths } from "../utils/maths";
 
 export class RoadMakeOptions {
 	maxSpeed?: number = 40;
@@ -62,7 +63,11 @@ export class RoadFactory {
 		const hdg = options.hdg ?? 0;
 		const length = options.length ?? 10;
 
+		const spline = SplineFactory.createStraightSplineAndPoints( position, length, hdg * Maths.Rad2Deg );
+
 		road.getPlanView().addGeometryLine( 0, position.x, position.y, hdg, length );
+
+		road.setSplineAndSegment( spline );
 
 		const laneSection = LaneSectionFactory.createLaneSection(
 			options.leftLaneCount ?? 0,

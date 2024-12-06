@@ -8,7 +8,7 @@ import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { SplineType } from 'app/core/shapes/spline-type';
 import { SplineService } from "./spline.service";
 import { SplineFactory } from "./spline.factory";
-import { RoadFactory } from "../../factories/road-factory.service";
+import { RoadFactory, RoadMakeOptions } from "../../factories/road-factory.service";
 import { RoadCircleToolService } from 'app/tools/road-circle/road-circle-tool.service';
 import { SplineControlPoint } from 'app/objects/road/spline-control-point';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
@@ -234,7 +234,10 @@ export class SplineTestHelper {
 		return { splineA, splineB };
 	}
 
-	async addDefaultJunction ( random: boolean = false ): Promise<{ horizontal: AbstractSpline; vertical: AbstractSpline; }> {
+	async addDefaultJunction ( random: boolean = false ): Promise<{
+		horizontal: AbstractSpline;
+		vertical: AbstractSpline;
+	}> {
 
 		const horizontal = this.createStraightSpline( new Vector3( -50, 0, 0 ) );
 		const vertical = this.createStraightSpline( new Vector3( 0, -50, 0 ), 100, 90 );
@@ -307,7 +310,11 @@ export class SplineTestHelper {
 
 	}
 
-	createHShapeWithXJunctions (): { verticalLeft: AbstractSpline; verticalRight: AbstractSpline; horizontal: AbstractSpline; } {
+	createHShapeWithXJunctions (): {
+		verticalLeft: AbstractSpline;
+		verticalRight: AbstractSpline;
+		horizontal: AbstractSpline;
+	} {
 
 		const verticalLeft = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200, 90 );
 		const verticalRight = this.createStraightSpline( new Vector3( 100, -100, 0 ), 200, 90 );
@@ -321,7 +328,11 @@ export class SplineTestHelper {
 		return { verticalLeft, verticalRight, horizontal };
 	}
 
-	createHShapeWithTJunctions (): { verticalLeft: AbstractSpline; verticalRight: AbstractSpline; horizontal: AbstractSpline; } {
+	createHShapeWithTJunctions (): {
+		verticalLeft: AbstractSpline;
+		verticalRight: AbstractSpline;
+		horizontal: AbstractSpline;
+	} {
 
 		const verticalLeft = this.createStraightSpline( new Vector3( -100, -100, 0 ), 200, 90 );
 		const verticalRight = this.createStraightSpline( new Vector3( 100, -100, 0 ), 200, 90 );
@@ -562,4 +573,13 @@ export class SplineTestHelper {
 
 		return { left, middle, right };
 	}
+
+	addCustomRoad ( options?: RoadMakeOptions ): void {
+
+		const road = RoadFactory.makeRoad( options );
+
+		this.splineService.add( road.spline );
+
+	}
+
 }
