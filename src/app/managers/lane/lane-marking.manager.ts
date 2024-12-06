@@ -13,7 +13,7 @@ import { TvRoad } from "app/map/models/tv-road.model";
 } )
 export class LaneMarkingManager {
 
-	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneCreated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		// TODO: add after testing
 		return;
@@ -61,19 +61,19 @@ export class LaneMarkingManager {
 
 	}
 
-	onLaneRemoved ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneRemoved ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		//
 
 	}
 
-	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneUpdated ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		//
 
 	}
 
-	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ) {
+	onLaneTypeChanged ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane ): void {
 
 		if ( lane.type != TvLaneType.driving ) return;
 

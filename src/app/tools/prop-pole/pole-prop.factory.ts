@@ -22,7 +22,7 @@ export class PolePropFactory {
 	) {
 	}
 
-	createStreetLight ( position: RoadPosition, height = 4, width = 2.0, poleWidth = 0.15 ) {
+	createStreetLight ( position: RoadPosition, height: number = 4, width: number = 2.0, poleWidth: number = 0.15 ): any {
 
 		const object = this.objectService.createRoadObject( position.road, TvRoadObjectType.pole, position.s, position.t );
 
@@ -43,7 +43,7 @@ export class PolePropFactory {
 
 	}
 
-	createSmallPole ( position: RoadPosition, height = 1, radius = 0.05, useLocalVertex = true ) {
+	createSmallPole ( position: RoadPosition, height: number = 1, radius: number = 0.05, useLocalVertex: boolean = true ): any {
 
 		const object = this.objectService.createRoadObject( position.road, TvRoadObjectType.pole, position.s, position.t );
 

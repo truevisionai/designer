@@ -27,7 +27,7 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.texture = this.textureService.getTexture( this.data.guid )?.texture;
 
@@ -37,13 +37,13 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	ngOnDestroy () {
+	ngOnDestroy (): void {
 
 		this.save();
 
 	}
 
-	save () {
+	save (): void {
 
 		if ( !this.data ) return;
 
@@ -51,7 +51,7 @@ export class TextureInspector implements OnInit, IComponent, OnDestroy {
 
 	}
 
-	onChange ( $newValue: any, property: keyof TvTexture ) {
+	onChange ( $newValue: any, property: keyof TvTexture ): void {
 
 		if ( !this.texture ) return;
 

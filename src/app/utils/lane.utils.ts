@@ -44,7 +44,7 @@ export class LaneUtils {
 	 * @param road
 	 * @param laneSection
 	 */
-	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
 
 		return road.getLaneProfile().getPreviousLaneSection( laneSection );
 
@@ -55,7 +55,7 @@ export class LaneUtils {
 	 * @param road
 	 * @param laneSection
 	 */
-	static findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	static findNextLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
 
 		return road.getLaneProfile().getNextLaneSection( laneSection );
 
@@ -99,14 +99,14 @@ export class LaneUtils {
 	}
 
 	// when we only have incoming lane
-	static copyPreviousLane ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPreviousLane ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		LaneUtils.copyPrevLaneWidth( prevLane, prevSection, prevRoad, lane );
 		LaneUtils.copyPrevRoadMark( prevLane, prevSection, prevRoad, lane );
 
 	}
 
-	static copyPrevLaneWidth ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPrevLaneWidth ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		// const newSectionLength = lane.laneSection.road.length - lane.laneSection.s;
 
@@ -118,7 +118,7 @@ export class LaneUtils {
 
 	}
 
-	static copyNextLaneWidth ( nextLane: TvLane, nextSection: TvLaneSection, nextRoad: TvRoad, lane: TvLane ) {
+	static copyNextLaneWidth ( nextLane: TvLane, nextSection: TvLaneSection, nextRoad: TvRoad, lane: TvLane ): void {
 
 		const newSectionLength = lane.laneSection.road.length - lane.laneSection.s;
 
@@ -128,7 +128,7 @@ export class LaneUtils {
 
 	}
 
-	static copyPrevRoadMark ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ) {
+	static copyPrevRoadMark ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 
 		const lastRoadMark = prevLane.roadMarks.getLast();
 
@@ -138,7 +138,7 @@ export class LaneUtils {
 
 	}
 
-	static findOuterMostLane ( laneSection: TvLaneSection, side: TvLaneSide, type?: TvLaneType ) {
+	static findOuterMostLane ( laneSection: TvLaneSection, side: TvLaneSide, type?: TvLaneType ): any {
 
 		const lanes = laneSection.getLanes().filter( lane => lane.side == side && ( !type || lane.type == type ) );
 
@@ -166,7 +166,7 @@ export class LaneUtils {
 		return outerMostLane;
 	}
 
-	static findHigestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
+	static findHigestLane ( laneSection: TvLaneSection, type?: TvLaneType ): any {
 
 		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
@@ -175,7 +175,7 @@ export class LaneUtils {
 		return this.findHighest( lanes, type );
 	}
 
-	static findHighest ( lanes: TvLane[], type?: TvLaneType ) {
+	static findHighest ( lanes: TvLane[], type?: TvLaneType ): any {
 
 		if ( lanes.length === 0 ) return null;
 
@@ -185,7 +185,7 @@ export class LaneUtils {
 		for ( const current of lanes ) {
 
 			// ignore center lanes
-			if ( current.side == TvLaneSide.CENTER ) continue;
+			if ( current.isCenter ) continue;
 
 			if ( type && current.type != type ) continue;
 
@@ -202,7 +202,7 @@ export class LaneUtils {
 
 	}
 
-	static findLowestLane ( laneSection: TvLaneSection, type?: TvLaneType ) {
+	static findLowestLane ( laneSection: TvLaneSection, type?: TvLaneType ): any {
 
 		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
@@ -212,7 +212,7 @@ export class LaneUtils {
 
 	}
 
-	static findLowestCarriageWayLane ( laneSection: TvLaneSection ) {
+	static findLowestCarriageWayLane ( laneSection: TvLaneSection ): any {
 
 		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
@@ -222,7 +222,7 @@ export class LaneUtils {
 
 	}
 
-	static findHighestCarriageWayLane ( laneSection: TvLaneSection ) {
+	static findHighestCarriageWayLane ( laneSection: TvLaneSection ): any {
 
 		const lanes = laneSection.getLanes()
 			.filter( lane => lane.id != 0 )
@@ -232,7 +232,7 @@ export class LaneUtils {
 
 	}
 
-	static findLowest ( lanes: TvLane[], type?: TvLaneType ) {
+	static findLowest ( lanes: TvLane[], type?: TvLaneType ): any {
 
 		if ( lanes.length === 0 ) return null;
 
@@ -242,7 +242,7 @@ export class LaneUtils {
 		for ( const current of lanes ) {
 
 			// ignore center lanes
-			if ( current.side == TvLaneSide.CENTER ) continue;
+			if ( current.isCenter ) continue;
 
 			if ( type && current.type != type ) continue;
 

@@ -38,7 +38,7 @@ export class AppDropdownDirective {
 		}
 	}
 
-	public getUrl () {
+	public getUrl (): string {
 		return this.router.url;
 	}
 

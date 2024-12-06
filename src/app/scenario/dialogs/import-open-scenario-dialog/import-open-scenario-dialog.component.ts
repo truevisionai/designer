@@ -79,7 +79,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 	}
 
-	async readScenario () {
+	async readScenario (): Promise<void> {
 
 		try {
 
@@ -104,7 +104,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 	}
 
-	import () {
+	import (): void {
 
 		if ( !this.scenario ) return;
 
@@ -122,7 +122,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 	}
 
-	copyCatalogs () {
+	copyCatalogs (): void {
 
 		this.scenario.catalogs.getCatalogs().forEach( catalog => {
 
@@ -132,7 +132,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 	}
 
-	importCatalog ( catalog: Catalog ) {
+	importCatalog ( catalog: Catalog ): void {
 
 		if ( !catalog.directory?.path ) TvConsole.error( 'No path found for catalog ' + catalog.name + ' ' + catalog.catalogType );
 		if ( !catalog.directory?.path ) return;
@@ -177,7 +177,7 @@ export class ImportOpenScenarioDialogComponent implements OnInit {
 
 	}
 
-	private importScenario () {
+	private importScenario (): void {
 
 		this.fileService.fs.copyFileSync( this.data.path, this.scenarioFileDestination );
 

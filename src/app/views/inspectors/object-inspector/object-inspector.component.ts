@@ -34,7 +34,7 @@ export class ObjectInspectorComponent implements OnInit, AfterViewInit {
 
 	}
 
-	loadInspector ( component: ComponentItem ) {
+	loadInspector ( component: ComponentItem ): void {
 
 		const componentFactory = this.componentFactoryResolver.resolveComponentFactory( component.component );
 
@@ -53,14 +53,14 @@ export class ObjectInspectorComponent implements OnInit, AfterViewInit {
 		AppInspector.lastInspectorCreated = componentInstance;
 	}
 
-	clearInspector () {
+	clearInspector (): void {
 
 		if ( this.componentContainer ) this.componentContainer.viewContainerRef.clear();
 
 	}
 
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 
 	}

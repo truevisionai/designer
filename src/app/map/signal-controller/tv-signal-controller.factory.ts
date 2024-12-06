@@ -13,7 +13,7 @@ export class TvSignalControllerFactory {
 
 	constructor ( private mapService: MapService ) { }
 
-	createNewController () {
+	createNewController (): TvSignalController {
 
 		const id = this.mapService.map.getControllerCount();
 

@@ -53,9 +53,9 @@ export class COLOR {
 
 	static fullColorHex ( r: number, g: number, b: number ): string {
 
-		var red = this.rgbToHex( r );
-		var green = this.rgbToHex( g );
-		var blue = this.rgbToHex( b );
+		const red = this.rgbToHex( r );
+		const green = this.rgbToHex( g );
+		const blue = this.rgbToHex( b );
 
 		return red + green + blue;
 	}
@@ -84,11 +84,11 @@ export class COLOR {
 
 	}
 
-	private static rgbToHex ( rgb ) {
+	private static rgbToHex ( rgb: any ): string {
 
-		var hex = Number( rgb ).toString( 16 );
+		let hex = Number( rgb ).toString( 16 );
 
-		if ( hex.length < 2 ) hex = '0' + hex;
+		if ( hex.length < 2 ) hex = `0${ hex }`;
 
 		return hex;
 	}

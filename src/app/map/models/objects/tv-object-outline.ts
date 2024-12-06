@@ -100,7 +100,7 @@ export class TvObjectOutline {
 		return this.cornerRoads.length;
 	}
 
-	removeCornerRoad ( tvCornerRoad: TvCornerRoad ) {
+	removeCornerRoad ( tvCornerRoad: TvCornerRoad ): void {
 
 		const index = this.cornerRoads.indexOf( tvCornerRoad );
 

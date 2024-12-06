@@ -85,13 +85,13 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	addManeuver ( junction: TvJunction, maneuver: ManeuverMesh ) {
+	addManeuver ( junction: TvJunction, maneuver: ManeuverMesh ): void {
 
 		this.maneuvers.addItem( junction, maneuver );
 
 	}
 
-	removeManeuver ( junction: TvJunction, maneuver: ManeuverMesh ) {
+	removeManeuver ( junction: TvJunction, maneuver: ManeuverMesh ): void {
 
 		this.maneuvers.removeItem( junction, maneuver );
 
@@ -232,7 +232,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	showOutline ( junction: TvJunction ) {
+	showOutline ( junction: TvJunction ): void {
 
 		const outline = this.createJunctionOutline( junction );
 
@@ -240,7 +240,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	showNodes ( road: TvRoad ) {
+	showNodes ( road: TvRoad ): void {
 
 		if ( road.isJunction ) return;
 
@@ -310,11 +310,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			if ( road.isJunction ) continue;
 
-			if ( road.predecessor?.isEqualTo( junction ) ) {
+			if ( road.predecessor?.equals( junction ) ) {
 				this.addEntriesAt( junction, road, TvContactPoint.START );
 			}
 
-			if ( road.successor?.isEqualTo( junction ) ) {
+			if ( road.successor?.equals( junction ) ) {
 				this.addEntriesAt( junction, road, TvContactPoint.END );
 			}
 
@@ -360,7 +360,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

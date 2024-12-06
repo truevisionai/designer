@@ -47,7 +47,7 @@ export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 		return group;
 	}
 
-	private placeProps ( curve: PropCurve, spline: CatmullRomSpline, group: Group, asset: Asset ) {
+	private placeProps ( curve: PropCurve, spline: CatmullRomSpline, group: Group, asset: Asset ): void {
 
 		const prop = this.getProp( asset );
 

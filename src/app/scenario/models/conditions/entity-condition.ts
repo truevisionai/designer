@@ -17,7 +17,7 @@ export abstract class EntityCondition extends Condition {
 	// name of all entities which can affect this condition
 	public triggeringEntities: string[] = [];
 
-	public addTriggeringEntity ( entityName: string ) {
+	public addTriggeringEntity ( entityName: string ): void {
 
 		this.triggeringEntities.push( entityName );
 
@@ -27,7 +27,7 @@ export abstract class EntityCondition extends Condition {
 		this.triggeringRule = rule;
 	}
 
-	protected isTriggerRulePassing ( values: number[], rule: Rule, right: number ) {
+	protected isTriggerRulePassing ( values: number[], rule: Rule, right: number ): boolean {
 
 		switch ( this.triggeringRule ) {
 
@@ -67,7 +67,7 @@ export abstract class EntityCondition extends Condition {
 
 	}
 
-	protected calculateDistance ( entityName: string, position: Position, freespace: boolean ) {
+	protected calculateDistance ( entityName: string, position: Position, freespace: boolean ): number {
 
 		if ( !freespace ) {
 

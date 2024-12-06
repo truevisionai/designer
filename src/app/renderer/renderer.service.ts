@@ -19,7 +19,7 @@ export class RendererService {
 	) {
 	}
 
-	init ( canvas: HTMLCanvasElement ) {
+	init ( canvas: HTMLCanvasElement ): void {
 
 		this.renderer = new WebGLRenderer( {
 			alpha: false,
@@ -44,7 +44,7 @@ export class RendererService {
 
 	}
 
-	onCanvasResized () {
+	onCanvasResized (): void {
 
 		this.renderer.setViewport( -this.canvasService.left, -this.canvasService.top, this.canvasService.width, this.canvasService.height );
 

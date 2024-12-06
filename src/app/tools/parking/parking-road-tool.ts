@@ -22,7 +22,7 @@ export class ParkingRoadTool extends BaseTool<any>{
 		super();
 	}
 
-	init () {
+	init (): void {
 
 		// do tnighin
 

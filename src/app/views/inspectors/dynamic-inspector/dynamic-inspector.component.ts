@@ -106,7 +106,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		// change label to class name
 		// if ( this.data ) this.label = this.data.constructor.name;
@@ -117,13 +117,13 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	ngAfterViewInit () {
+	ngAfterViewInit (): void {
 
 		if ( this.data ) this.loadFields( this.data );
 
 	}
 
-	reload () {
+	reload (): void {
 
 		for ( const [ field, componentRef ] of this.fieldComponents ) {
 
@@ -133,7 +133,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	toggleProperties () {
+	toggleProperties (): void {
 
 		this.showProperties = !this.showProperties;
 
@@ -157,7 +157,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	loadFields ( data: any ) {
+	loadFields ( data: any ): void {
 
 		this.serializableFields.forEach( ( item, index ) => {
 
@@ -166,7 +166,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		} );
 	}
 
-	loadField ( data: any, item: { field: string; settings: ISerializedFieldSetting; }, index: number ) {
+	loadField ( data: any, item: { field: string; settings: ISerializedFieldSetting; }, index: number ): void {
 
 		const fieldHost = this.fieldHosts.toArray()[ index ];
 
@@ -210,7 +210,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 	}
 
-	applyComponentSettings ( component: AbstractFieldComponent<any>, settings: ISerializedFieldSetting ) {
+	applyComponentSettings ( component: AbstractFieldComponent<any>, settings: ISerializedFieldSetting ): void {
 
 		if ( component instanceof DoubleFieldComponent ) {
 

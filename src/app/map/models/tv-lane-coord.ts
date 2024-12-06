@@ -12,6 +12,7 @@ import { Orientation } from 'app/scenario/models/tv-orientation';
 import { LaneUtils } from "../../utils/lane.utils";
 import { TvLink } from './tv-link';
 import { LaneDistance, RoadDistance } from '../road/road-distance';
+import { TvPosTheta } from './tv-pos-theta';
 
 export class TvLaneCoord {
 
@@ -28,18 +29,12 @@ export class TvLaneCoord {
 		return this.laneDistance;
 	}
 
-	toString () {
+	toString (): string {
 		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.laneDistance } offset:${ this.offset }`;
 	}
 
 	getLink (): TvLink {
-		if ( this.contact == TvContactPoint.START ) {
-			return this.road.predecessor;
-		} else if ( this.contact == TvContactPoint.END ) {
-			return this.road.successor;
-		} else {
-			throw new Error( 'Invalid contact point' );
-		}
+		return this.road.getLink( this.contact );
 	}
 
 	get contact (): TvContactPoint {
@@ -90,7 +85,7 @@ export class TvLaneCoord {
 		return new Orientation( 0, 0, 0 );
 	}
 
-	toPosTheta () {
+	toPosTheta (): TvPosTheta {
 		return this.posTheta;
 	}
 

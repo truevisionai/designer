@@ -40,7 +40,7 @@ export class PlayerBarComponent {
 		return this.esminiPlayerService.isEnabled && Environment.oscEnabled;
 	}
 
-	playSimulation () {
+	playSimulation (): void {
 
 		if ( this.esminiPlayerService.isEnabled ) {
 			AppInspector.setInspector( EsminiInspectorComponent, this.esminiPlayerService.logs );
@@ -55,7 +55,7 @@ export class PlayerBarComponent {
 		// this.hasStarted = true;
 	}
 
-	pauseSimulation () {
+	pauseSimulation (): void {
 
 		if ( !this.isPlaying ) return;
 
@@ -63,7 +63,7 @@ export class PlayerBarComponent {
 
 	}
 
-	stopSimulation () {
+	stopSimulation (): void {
 
 		if ( !this.hasStarted ) return;
 
@@ -72,7 +72,7 @@ export class PlayerBarComponent {
 		this.hasStarted = false;
 	}
 
-	playSingleSimulationStep () {
+	playSingleSimulationStep (): void {
 
 		this.playSimulation();
 
@@ -80,13 +80,13 @@ export class PlayerBarComponent {
 
 	}
 
-	onMouseDown () {
+	onMouseDown (): void {
 
 		this.handle = setInterval( () => this.playSingleSimulationStep(), 20 );
 
 	}
 
-	onMouseUp () {
+	onMouseUp (): void {
 
 		clearInterval( this.handle );
 

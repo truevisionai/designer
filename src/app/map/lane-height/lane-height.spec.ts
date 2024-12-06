@@ -1,6 +1,6 @@
 import { TvLaneHeight } from './lane-height.model';
 
-function createMockLaneHeight ( sOffset: number, innerHeight: number, outerHeight: number ) {
+function createMockLaneHeight ( sOffset: number, innerHeight: number, outerHeight: number ): TvLaneHeight {
 	return new TvLaneHeight( sOffset, innerHeight, outerHeight );
 }
 

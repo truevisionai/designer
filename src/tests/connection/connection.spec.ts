@@ -5,8 +5,12 @@ import { TurnType, TvContactPoint } from "app/map/models/tv-common";
 import { TvMap } from "app/map/models/tv-map.model";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
-import { createFreewayOneWayRoad, createOneWayRoad } from "tests/base-test.spec";
-import { createMockLeftConnection, createMockRightConnection, createMockStraightConnection } from "tests/mocks/connection-mock.spec";
+import { createDefaultRoad, createFreewayOneWayRoad, createOneWayRoad } from "tests/base-test.spec";
+import {
+	createMockLeftConnection,
+	createMockRightConnection,
+	createMockStraightConnection
+} from "tests/mocks/connection-mock.spec";
 import { setupTest } from "tests/setup-tests";
 import { Vector3 } from "three";
 import { determineTurnType } from "app/map/models/connections/connection-utils";
@@ -18,6 +22,8 @@ describe( 'TvJunctionConnection', () => {
 
 	let incomingRoad: TvRoad;
 	let outgoingRoad: TvRoad;
+
+	let map = new TvMap();
 
 	beforeEach( () => {
 
@@ -140,7 +146,7 @@ describe( 'TvJunctionConnection', () => {
 			incomingRoad = RoadFactory.makeRoad( { id: 1, leftLaneCount: 3, rightLaneCount: 3 } );
 			outgoingRoad = RoadFactory.makeRoad( { id: 2, leftLaneCount: 3, rightLaneCount: 3 } );
 
-			const map = new TvMap();
+			map = new TvMap();
 
 			map.addRoad( incomingRoad );
 			map.addRoad( outgoingRoad );
@@ -216,7 +222,7 @@ describe( 'TvJunctionConnection', () => {
 			incomingRoad = createFreewayOneWayRoad( { id: 1 } );
 			outgoingRoad = createFreewayOneWayRoad( { id: 2 } );
 
-			const map = new TvMap();
+			map = new TvMap();
 
 			map.addRoad( incomingRoad );
 
@@ -339,7 +345,7 @@ describe( 'TvJunctionConnection', () => {
 			incomingRoad = createOneWayRoad();
 			outgoingRoad = createOneWayRoad();
 
-			const map = new TvMap();
+			map = new TvMap();
 
 			map.addRoad( incomingRoad );
 
@@ -409,7 +415,27 @@ describe( 'TvJunctionConnection', () => {
 
 	} );
 
-	describe( 'OneWayRoad With MultiLaneRoad', () => {
+	describe( 'OneWayRoad With DefaultRoad', () => {
+
+		beforeEach( () => {
+
+			incomingRoad = createOneWayRoad();
+			outgoingRoad = createDefaultRoad();
+
+			map.insertRoad( incomingRoad );
+			map.insertRoad( outgoingRoad );
+
+		} );
+
+		it( 'should get entry coords for right turn', () => {
+
+			connection = createMockRightConnection( incomingRoad, outgoingRoad );
+
+			expect( connection ).toBeDefined();
+			expect( connection.getEntryCoords().length ).toBe( 1 );
+			expect( connection.getEntryCoords().map( entry => entry.lane.id ) ).toEqual( [ -3 ] );
+
+		} );
 
 		xit( 'should get entry coords for right turn' );
 		xit( 'should get exit coords for right turn' );

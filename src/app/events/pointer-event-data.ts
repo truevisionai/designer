@@ -55,7 +55,7 @@ export class PointerEventData extends BaseEventData {
 		this.pointerDown = partialData.pointerDown || undefined;
 	}
 
-	static create ( point: Vector3, button = MouseButton.LEFT ): PointerEventData {
+	static create ( point: Vector3, button: MouseButton = MouseButton.LEFT ): PointerEventData {
 
 		return new PointerEventData( {
 			button: button,

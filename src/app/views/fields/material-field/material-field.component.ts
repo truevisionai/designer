@@ -52,7 +52,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 		return this.assetService.getAssetName( this.guid || this.value );
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		if ( !this.guid && !this.value ) {
 			return;
@@ -72,7 +72,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'click', [ '$event' ] )
-	onClick ( $event ) {
+	onClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -80,7 +80,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'dblclick', [ '$event' ] )
-	onDoubleClick ( $event ) {
+	onDoubleClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -88,7 +88,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( $event ) {
+	onDragOver ( $event: any ): void {
 
 		// DONT REMOVE THIS
 
@@ -98,7 +98,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( $event ) {
+	onDragLeave ( $event: any ): void {
 
 		// DONT REMOVE THIS
 
@@ -108,7 +108,7 @@ export class MaterialFieldComponent extends AbstractFieldComponent<string> imple
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	onDrop ( $event: DragEvent ) {
+	onDrop ( $event: DragEvent ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();

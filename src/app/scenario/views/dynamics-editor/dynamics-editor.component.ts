@@ -32,7 +32,7 @@ export class DynamicsEditorComponent {
 
 	}
 
-	onShapeChanged ( $event: DynamicsShape ) {
+	onShapeChanged ( $event: DynamicsShape ): void {
 
 		Log.info( $event );
 
@@ -42,7 +42,7 @@ export class DynamicsEditorComponent {
 
 	}
 
-	onDimensionChanged ( $event: DynamicsDimension ) {
+	onDimensionChanged ( $event: DynamicsDimension ): void {
 
 		Log.info( $event );
 
@@ -52,7 +52,7 @@ export class DynamicsEditorComponent {
 
 	}
 
-	onValueChanged ( $event: number ) {
+	onValueChanged ( $event: number ): void {
 
 		Log.info( $event );
 

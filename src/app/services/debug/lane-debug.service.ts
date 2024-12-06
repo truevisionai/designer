@@ -63,7 +63,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOutlines ( laneProfile: TvLaneProfile, width = LINE_WIDTH, color = COLOR.CYAN ): void {
+	showLaneOutlines ( laneProfile: TvLaneProfile, width: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
 
 		laneProfile.getLanes().forEach( lane => {
 
@@ -73,7 +73,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOutline ( lane: TvLane, width = LINE_WIDTH, color = COLOR.CYAN ): void {
+	showLaneOutline ( lane: TvLane, width: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
 
 		if ( lane.id == 0 ) return;
 
@@ -105,7 +105,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOverlays ( laneProfile: TvLaneProfile, color = COLOR.CYAN ): void {
+	showLaneOverlays ( laneProfile: TvLaneProfile, color: any = COLOR.CYAN ): void {
 
 		laneProfile.getLanes().forEach( lane => {
 
@@ -115,7 +115,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOverlay ( lane: TvLane, color = COLOR.CYAN ): void {
+	showLaneOverlay ( lane: TvLane, color: any = COLOR.CYAN ): void {
 
 		if ( lane.id == 0 ) return;
 
@@ -155,7 +155,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneBorders ( lane: TvLane, lineWidth = LINE_WIDTH, color = COLOR.CYAN ): void {
+	showLaneBorders ( lane: TvLane, lineWidth: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
 
 		const add = ( lane: TvLane, side: TvLaneSide ) => {
 
@@ -216,7 +216,7 @@ export class LaneDebugService {
 
 	}
 
-	createLaneReferenceLine ( lane: TvLane, location: TvLaneLocation, color = 0xffffff ): Line2 {
+	createLaneReferenceLine ( lane: TvLane, location: TvLaneLocation, color: number = 0xffffff ): Line2 {
 
 		const points = LanePositionService.instance.getPoints( lane.laneSection.road, lane.laneSection, lane, location );
 

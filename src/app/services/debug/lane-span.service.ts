@@ -19,7 +19,7 @@ export class LaneSpanService {
 
 	constructor () { }
 
-	createLaneSpanLines ( lane: TvLane, polynomials: ThirdOrderPolynom[] ) {
+	createLaneSpanLines ( lane: TvLane, polynomials: ThirdOrderPolynom[] ): void {
 
 		lane.laneSection.road.laneSections.forEach( laneSection => {
 
@@ -57,7 +57,7 @@ export class LaneSpanService {
 
 	}
 
-	private getPoints ( lane: TvLane, sStart: number, sEnd: number, step = 1.0 ): TvPosTheta[] {
+	private getPoints ( lane: TvLane, sStart: number, sEnd: number, step: number = 1.0 ): TvPosTheta[] {
 
 		const points: TvPosTheta[] = [];
 

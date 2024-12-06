@@ -84,7 +84,7 @@ export class TrafficLightTool extends ToolWithHandler {
 
 	}
 
-	disable () {
+	disable (): void {
 
 		super.disable();
 

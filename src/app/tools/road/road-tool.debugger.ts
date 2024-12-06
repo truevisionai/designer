@@ -29,7 +29,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		super();
 	}
 
-	setDebugState ( spline: AbstractSpline, state: DebugState ) {
+	setDebugState ( spline: AbstractSpline, state: DebugState ): void {
 
 		if ( !spline ) return;
 
@@ -67,7 +67,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	onUnhighlight ( spline: AbstractSpline ) {
+	onUnhighlight ( spline: AbstractSpline ): void {
 
 		this.splineDebugger.removeArrows( spline );
 		this.splineDebugger.removeBorder( spline );
@@ -111,7 +111,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	onRemoved ( spline: AbstractSpline ) {
+	onRemoved ( spline: AbstractSpline ): void {
 
 		this.splineDebugger.removeBorder( spline );
 		this.splineDebugger.removeArrows( spline );
@@ -128,7 +128,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 
@@ -136,7 +136,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	resetHighlighted () {
+	resetHighlighted (): void {
 
 		this.highlighted.forEach( spline => this.onDefault( spline ) );
 

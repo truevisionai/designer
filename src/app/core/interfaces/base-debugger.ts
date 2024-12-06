@@ -27,7 +27,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	protected selected = new Set<T>();
 
-	protected setBaseState ( object: T, state: DebugState ) {
+	protected setBaseState ( object: T, state: DebugState ): void {
 
 		if ( !object ) return;
 
@@ -53,7 +53,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	}
 
-	private shouldHighlight ( object: T ) {
+	private shouldHighlight ( object: T ): boolean {
 
 		// we don't want to highlight selected objects
 		if ( this.selected.has( object ) ) return false;
@@ -64,7 +64,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 		return true;
 	}
 
-	private setHighlightState ( object: T ) {
+	private setHighlightState ( object: T ): void {
 
 		if ( !this.shouldHighlight( object ) ) return;
 
@@ -74,7 +74,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	}
 
-	private setDefaultState ( object: T ) {
+	private setDefaultState ( object: T ): void {
 
 		if ( this.highlighted.has( object ) ) {
 
@@ -95,7 +95,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 		this.onDefault( object );
 	}
 
-	private setSelectedState ( object: T ) {
+	private setSelectedState ( object: T ): void {
 
 		if ( this.selected.has( object ) ) {
 
@@ -117,7 +117,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 		this.onSelected( object );
 	}
 
-	private setRemovedState ( object: T ) {
+	private setRemovedState ( object: T ): void {
 
 		if ( this.selected.has( object ) ) {
 
@@ -139,7 +139,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	}
 
-	resetHighlighted () {
+	resetHighlighted (): void {
 
 		this.highlighted.forEach( object => this.setDebugState( object, DebugState.DEFAULT ) );
 
@@ -147,7 +147,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	}
 
-	resetSelected () {
+	resetSelected (): void {
 
 		this.selected.forEach( object => this.setDebugState( object, DebugState.DEFAULT ) );
 
@@ -155,7 +155,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	}
 
-	updateDebugState ( object: T, state: DebugState ) {
+	updateDebugState ( object: T, state: DebugState ): void {
 
 		if ( object ) this.onRemoved( object );
 
@@ -189,7 +189,7 @@ export abstract class BaseDebugger<T> implements IDebugger<T, any> {
 
 	}
 
-	protected createControlPoint ( object: T, position: Vector3 ) {
+	protected createControlPoint ( object: T, position: Vector3 ): SimpleControlPoint<T> {
 
 		return new SimpleControlPoint( object, position );
 

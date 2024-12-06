@@ -58,7 +58,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 	) {
 	}
 
-	exportJunctionConnection ( connection: TvJunctionConnection ) {
+	exportJunctionConnection ( connection: TvJunctionConnection ): any {
 		return {
 			attr_id: connection.id,
 			attr_incomingRoad: connection.incomingRoadId,
@@ -94,7 +94,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		return xmlDocument;
 	}
 
-	exportAsJSON ( map: TvMap ) {
+	exportAsJSON ( map: TvMap ): any {
 
 		return {
 			version: 0.1,
@@ -110,7 +110,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportRoad ( road: TvRoad ) {
+	exportRoad ( road: TvRoad ): any {
 
 		if ( road.spline.controlPoints.length < 2 ) {
 			TvConsole.error( 'Road spline must have atleast 2 control points. Skipping export' );
@@ -155,7 +155,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		return xml;
 	}
 
-	exportJunction ( junction: TvJunction ) {
+	exportJunction ( junction: TvJunction ): any {
 
 		return {
 			attr_id: junction.id,
@@ -209,7 +209,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportProp ( prop: PropInstance ) {
+	exportProp ( prop: PropInstance ): any {
 
 		return {
 			attr_guid: prop.guid,
@@ -232,13 +232,13 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportPropCurves ( curves: PropCurve[] ) {
+	exportPropCurves ( curves: PropCurve[] ): any {
 
 		return curves.map( curve => this.exportPropCurve( curve ) );
 
 	}
 
-	exportPropCurve ( curve: PropCurve ) {
+	exportPropCurve ( curve: PropCurve ): any {
 
 		return {
 			attr_spacing: curve.spacing,
@@ -278,13 +278,13 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportPropPolygons ( polygons: PropPolygon[] ) {
+	exportPropPolygons ( polygons: PropPolygon[] ): any {
 
 		return polygons.map( polygon => this.exportPropPolygon( polygon ) );
 
 	}
 
-	exportPropPolygon ( polygon: PropPolygon ) {
+	exportPropPolygon ( polygon: PropPolygon ): any {
 
 		return {
 			attr_id: polygon.id,
@@ -309,7 +309,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportTransform ( transform: TvTransform ) {
+	exportTransform ( transform: TvTransform ): any {
 
 		return {
 			position: {
@@ -331,13 +331,13 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportSurface ( surface: Surface ) {
+	exportSurface ( surface: Surface ): any {
 
 		return surface.toJson();
 
 	}
 
-	writeRoadLinks ( xmlNode, road: TvRoad ) {
+	writeRoadLinks ( xmlNode: any, road: TvRoad ): void {
 
 		xmlNode.link = {};
 
@@ -382,7 +382,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	writeRoadType ( xmlNode, road: TvRoad ) {
+	writeRoadType ( xmlNode: any, road: TvRoad ): void {
 
 		if ( road.type.length > 0 ) {
 
@@ -408,7 +408,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeLanes ( xmlNode, road: TvRoad ) {
+	writeLanes ( xmlNode: any, road: TvRoad ): void {
 
 		// add default lane offset if not present
 		if ( road.laneOffsets.length == 0 ) {
@@ -425,7 +425,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	writeLaneOffset ( laneOffset: TvLaneOffset ) {
+	writeLaneOffset ( laneOffset: TvLaneOffset ): any {
 
 		return {
 			attr_s: laneOffset.s,
@@ -437,7 +437,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeLaneSections ( xmlNode, laneSection: TvLaneSection ) {
+	writeLaneSections ( xmlNode: any, laneSection: TvLaneSection ): void {
 
 		const leftLanes = {
 			lane: []
@@ -453,15 +453,15 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 			const lane = laneSection.getLaneAtIndex( i );
 
-			if ( lane.side === TvLaneSide.LEFT ) {
+			if ( lane.isLeft ) {
 
 				this.writeLane( leftLanes, lane );
 
-			} else if ( lane.side === TvLaneSide.RIGHT ) {
+			} else if ( lane.isRight ) {
 
 				this.writeLane( rightLanes, lane );
 
-			} else if ( lane.side === TvLaneSide.CENTER ) {
+			} else if ( lane.isCenter ) {
 
 				this.writeLane( centerLanes, lane );
 
@@ -482,7 +482,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeLane ( xmlNode, lane: TvLane ): any {
+	writeLane ( xmlNode: any, lane: TvLane ): any {
 
 		const laneNode = {
 			attr_id: lane.id,
@@ -507,10 +507,10 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		return laneNode;
 	}
 
-	writeLaneLinks ( laneNode: any, lane: TvLane ) {
+	writeLaneLinks ( laneNode: any, lane: TvLane ): void {
 
 		// not link for center lanes
-		if ( lane.side === TvLaneSide.CENTER ) return;
+		if ( lane.isCenter ) return;
 
 		if ( lane.predecessorExists ) {
 			laneNode.link[ 'predecessor' ] = { attr_id: lane.predecessorId };
@@ -522,7 +522,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeLaneWidth ( laneWidth: TvLaneWidth ) {
+	writeLaneWidth ( laneWidth: TvLaneWidth ): any {
 
 		return {
 			attr_sOffset: laneWidth.s,
@@ -533,7 +533,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	writeLaneRoadMark ( laneRoadMark: TvLaneRoadMark ) {
+	writeLaneRoadMark ( laneRoadMark: TvLaneRoadMark ): any {
 
 		const xml = {
 			attr_sOffset: laneRoadMark.sOffset,
@@ -555,7 +555,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		return xml;
 	}
 
-	writeLaneMaterial ( laneMaterial: TvLaneMaterial ) {
+	writeLaneMaterial ( laneMaterial: TvLaneMaterial ): any {
 
 		return {
 			attr_sOffset: laneMaterial.sOffset,
@@ -565,7 +565,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	writeLaneVisibility ( laneVisibility: TvLaneVisibility ) {
+	writeLaneVisibility ( laneVisibility: TvLaneVisibility ): any {
 
 		return {
 			attr_sOffset: laneVisibility.sOffset,
@@ -577,7 +577,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeLaneSpeed ( laneSpeed: TvLaneSpeed ) {
+	writeLaneSpeed ( laneSpeed: TvLaneSpeed ): any {
 
 		return {
 			attr_sOffset: laneSpeed.sOffset,
@@ -586,7 +586,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	writeLaneAccess ( laneAccess: TvLaneAccess ) {
+	writeLaneAccess ( laneAccess: TvLaneAccess ): any {
 
 		return {
 			attr_sOffset: laneAccess.sOffset,
@@ -594,7 +594,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		};
 	}
 
-	writeLaneHeight ( laneHeight: TvLaneHeight ) {
+	writeLaneHeight ( laneHeight: TvLaneHeight ): any {
 
 		return {
 			attr_sOffset: laneHeight.sOffset,
@@ -613,7 +613,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		return xml
 	}
 
-	writeSignals ( xmlNode: XmlElement, road: TvRoad ) {
+	writeSignals ( xmlNode: XmlElement, road: TvRoad ): void {
 
 		if ( road.getSignalCount() === 0 ) return;
 
@@ -623,7 +623,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeSignal ( signal: TvRoadSignal ) {
+	writeSignal ( signal: TvRoadSignal ): any {
 
 		const xml = this.openDrive.writeSignal( signal );
 

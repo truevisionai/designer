@@ -51,7 +51,7 @@ export function weilerAtherton ( vertices: number[], edges: number[], clipPolygo
 
 	return outputTriangles;
 
-	function findVertexIndex ( vertices, point ) {
+	function findVertexIndex ( vertices: any, point: any ): number {
 		for ( let i = 0; i < vertices.length; i += 2 ) {
 			if ( vertices[ i ] === point[ 0 ] && vertices[ i + 1 ] === point[ 1 ] ) {
 				return i / 2;
@@ -61,7 +61,7 @@ export function weilerAtherton ( vertices: number[], edges: number[], clipPolygo
 		return ( vertices.length / 2 ) - 1;
 	}
 
-	function clipTriangle ( triangle, clipPolygon ) {
+	function clipTriangle ( triangle: any, clipPolygon: any ): any {
 		let outputList = triangle;
 
 		for ( let i = 0; i < clipPolygon.length; i++ ) {
@@ -89,11 +89,11 @@ export function weilerAtherton ( vertices: number[], edges: number[], clipPolygo
 
 		return outputList;
 
-		function inside ( p, cp1, cp2 ) {
+		function inside ( p: any, cp1: any, cp2: any ): boolean {
 			return ( cp2[ 0 ] - cp1[ 0 ] ) * ( p[ 1 ] - cp1[ 1 ] ) > ( cp2[ 1 ] - cp1[ 1 ] ) * ( p[ 0 ] - cp1[ 0 ] );
 		}
 
-		function intersection ( cp1, cp2, s, e ) {
+		function intersection ( cp1: any, cp2: any, s: any, e: any ): number[] {
 			const dc = [ cp1[ 0 ] - cp2[ 0 ], cp1[ 1 ] - cp2[ 1 ] ];
 			const dp = [ s[ 0 ] - e[ 0 ], s[ 1 ] - e[ 1 ] ];
 
@@ -162,11 +162,11 @@ export function sutherlandHodgman ( vertices: number[], edges: number[], clipPol
 
 	return outputList;
 
-	function inside ( p, cp1, cp2 ) {
+	function inside ( p: any, cp1: any, cp2: any ): boolean {
 		return ( cp2[ 0 ] - cp1[ 0 ] ) * ( p[ 1 ] - cp1[ 1 ] ) > ( cp2[ 1 ] - cp1[ 1 ] ) * ( p[ 0 ] - cp1[ 0 ] );
 	}
 
-	function intersection ( cp1, cp2, s, e ): number[] {
+	function intersection ( cp1: any, cp2: any, s: any, e: any ): number[] {
 		const dc = [ cp1[ 0 ] - cp2[ 0 ], cp1[ 1 ] - cp2[ 1 ] ];
 		const dp = [ s[ 0 ] - e[ 0 ], s[ 1 ] - e[ 1 ] ];
 
@@ -301,7 +301,7 @@ export function enhancedClip ( vertices: number[], triangles: number[], clipPoly
 		return inside;
 	}
 
-	function clipTriangle ( triangle, clipPolygon ) {
+	function clipTriangle ( triangle: any, clipPolygon: any ): any {
 		let outputList = triangle;
 
 		for ( let i = 0; i < clipPolygon.length; i++ ) {
@@ -329,7 +329,7 @@ export function enhancedClip ( vertices: number[], triangles: number[], clipPoly
 
 		return outputList;
 
-		function intersection ( cp1, cp2, s, e ) {
+		function intersection ( cp1: any, cp2: any, s: any, e: any ): number[] {
 			const dc = [ cp1[ 0 ] - cp2[ 0 ], cp1[ 1 ] - cp2[ 1 ] ];
 			const dp = [ s[ 0 ] - e[ 0 ], s[ 1 ] - e[ 1 ] ];
 
@@ -402,11 +402,11 @@ export function debugSutherlandHodgman ( vertices: number[], edges: number[], cl
 
 	return outputList;
 
-	function inside ( p, cp1, cp2 ) {
+	function inside ( p: any, cp1: any, cp2: any ): boolean {
 		return ( cp2[ 0 ] - cp1[ 0 ] ) * ( p[ 1 ] - cp1[ 1 ] ) > ( cp2[ 1 ] - cp1[ 1 ] ) * ( p[ 0 ] - cp1[ 0 ] );
 	}
 
-	function intersection ( cp1, cp2, s, e ): number[] {
+	function intersection ( cp1: any, cp2: any, s: any, e: any ): number[] {
 		const dc = [ cp1[ 0 ] - cp2[ 0 ], cp1[ 1 ] - cp2[ 1 ] ];
 		const dp = [ s[ 0 ] - e[ 0 ], s[ 1 ] - e[ 1 ] ];
 
@@ -418,7 +418,7 @@ export function debugSutherlandHodgman ( vertices: number[], edges: number[], cl
 	}
 }
 
-export function fixWindingOrder ( vertices, triangles ) {
+export function fixWindingOrder ( vertices: any, triangles: any ): any[] {
 	const fixedTriangles = [];
 	for ( let i = 0; i < triangles.length; i += 3 ) {
 		const s = triangles[ i ];

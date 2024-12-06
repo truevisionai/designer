@@ -13,7 +13,7 @@ export class RoadLinkManager {
 
 	constructor () { }
 
-	onRoadCreated ( road: TvRoad ) {
+	onRoadCreated ( road: TvRoad ): void {
 
 		if ( road.isJunction ) {
 			return;
@@ -29,7 +29,7 @@ export class RoadLinkManager {
 
 	}
 
-	onRoadRemoved ( road: TvRoad ) {
+	onRoadRemoved ( road: TvRoad ): void {
 
 		if ( road.isJunction ) {
 			return;
@@ -65,21 +65,21 @@ export class RoadLinkManager {
 
 			if ( road.successor?.contactPoint === TvContactPoint.START ) {
 
-				successorRoad.predecessor = null;
+				successorRoad.removePredecessor();
 
 			} else if ( road.successor?.contactPoint === TvContactPoint.END ) {
 
-				successorRoad.successor = null;
+				successorRoad.removeSuccessor();
 
 			}
 
 			if ( road.predecessor?.contactPoint === TvContactPoint.START ) {
 
-				predecessorRoad.predecessor = null;
+				predecessorRoad.removePredecessor();
 
 			} else if ( road.predecessor?.contactPoint === TvContactPoint.END ) {
 
-				predecessorRoad.successor = null;
+				predecessorRoad.removeSuccessor();
 
 			}
 
@@ -89,11 +89,11 @@ export class RoadLinkManager {
 
 			if ( road.successor?.contactPoint === TvContactPoint.START ) {
 
-				successorRoad.predecessor = null;
+				successorRoad.removePredecessor();
 
 			} else if ( road.successor?.contactPoint === TvContactPoint.END ) {
 
-				successorRoad.successor = null;
+				successorRoad.removeSuccessor();
 
 			}
 
@@ -103,11 +103,11 @@ export class RoadLinkManager {
 
 			if ( road.predecessor?.contactPoint === TvContactPoint.START ) {
 
-				predecessorRoad.predecessor = null;
+				predecessorRoad.removePredecessor();
 
 			} else if ( road.predecessor?.contactPoint === TvContactPoint.END ) {
 
-				predecessorRoad.successor = null;
+				predecessorRoad.removeSuccessor();
 
 			}
 
@@ -115,7 +115,7 @@ export class RoadLinkManager {
 
 	}
 
-	setPredecessor ( road: TvRoad, predecessor: TvRoad, predecessorContact: TvContactPoint ) {
+	setPredecessor ( road: TvRoad, predecessor: TvRoad, predecessorContact: TvContactPoint ): void {
 
 		if ( predecessorContact === TvContactPoint.START ) {
 
@@ -129,7 +129,7 @@ export class RoadLinkManager {
 
 	}
 
-	setSuccessor ( road: TvRoad, successor: TvRoad, successorContact: TvContactPoint ) {
+	setSuccessor ( road: TvRoad, successor: TvRoad, successorContact: TvContactPoint ): void {
 
 		if ( successorContact === TvContactPoint.START ) {
 

@@ -128,7 +128,7 @@ export class IntersectionGroupHelper {
 // }
 
 
-export function createGroupsFromIntersections ( intersections: SplineIntersection[], thresholdDistance = 10 ): IntersectionGroup[] {
+export function createGroupsFromIntersections ( intersections: SplineIntersection[], thresholdDistance: number = 10 ): IntersectionGroup[] {
 
 	const groups: IntersectionGroup[] = [];
 

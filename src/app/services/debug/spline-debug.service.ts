@@ -92,7 +92,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	setDebugState ( spline: AbstractSpline, state: DebugState ) {
+	setDebugState ( spline: AbstractSpline, state: DebugState ): void {
 
 		if ( !spline ) return;
 
@@ -144,7 +144,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 		this.showCurvature( spline );
 	}
 
-	showCurvature ( spline: AbstractSpline ) {
+	showCurvature ( spline: AbstractSpline ): void {
 
 		this.texts.removeKey( spline );
 
@@ -177,7 +177,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	removeCurvature ( spline: AbstractSpline ) {
+	removeCurvature ( spline: AbstractSpline ): void {
 
 		this.texts.removeKey( spline );
 
@@ -195,7 +195,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	onRemoved ( spline: AbstractSpline ) {
+	onRemoved ( spline: AbstractSpline ): void {
 
 		this.referenceLines.removeKey( spline );
 
@@ -211,7 +211,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	highlight ( spline: AbstractSpline ) {
+	highlight ( spline: AbstractSpline ): void {
 
 		if ( this.selected.has( spline ) ) return;
 
@@ -227,7 +227,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	onUnhighlight ( spline: AbstractSpline ) {
+	onUnhighlight ( spline: AbstractSpline ): void {
 
 		this.referenceLines.removeKey( spline );
 
@@ -236,7 +236,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 	}
 
 	////// PRIVATE
-	showReferenceLine ( spline: AbstractSpline ) {
+	showReferenceLine ( spline: AbstractSpline ): void {
 
 		if ( spline.controlPoints.length < 2 ) return;
 
@@ -258,13 +258,13 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	removeReferenceLine ( spline: AbstractSpline ) {
+	removeReferenceLine ( spline: AbstractSpline ): void {
 
 		this.referenceLines.removeKey( spline );
 
 	}
 
-	showBorder ( spline: AbstractSpline, lineWidth = LINE_WIDTH, color = COLOR.CYAN ) {
+	showBorder ( spline: AbstractSpline, lineWidth: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
 
 		if ( spline.getControlPointCount() < 2 ) return;
 
@@ -285,13 +285,13 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	removeBorder ( spline: AbstractSpline ) {
+	removeBorder ( spline: AbstractSpline ): void {
 
 		this.borders.removeKey( spline );
 
 	}
 
-	showArrows ( spline: AbstractSpline ) {
+	showArrows ( spline: AbstractSpline ): void {
 
 		for ( const road of spline.getRoadSegments() ) {
 
@@ -308,13 +308,13 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	removeArrows ( spline: AbstractSpline ) {
+	removeArrows ( spline: AbstractSpline ): void {
 
 		this.arrows.removeKey( spline );
 
 	}
 
-	showBoundingBox ( spline: AbstractSpline ) {
+	showBoundingBox ( spline: AbstractSpline ): void {
 
 		const box = new Box3Helper( Maths.convertToBox3d( spline.boundingBox ) );
 
@@ -324,13 +324,13 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	removeBoundingBox ( spline: AbstractSpline ) {
+	removeBoundingBox ( spline: AbstractSpline ): void {
 
 		this.boundingBoxes.removeKey( spline );
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 
@@ -407,13 +407,13 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	removeControlPoints ( spline: AbstractSpline ) {
+	removeControlPoints ( spline: AbstractSpline ): void {
 
 		this.points.removeKey( spline );
 
 	}
 
-	showPolyline ( spline: AbstractSpline ) {
+	showPolyline ( spline: AbstractSpline ): void {
 
 		if ( spline.getControlPointCount() < 2 ) return;
 
@@ -431,13 +431,13 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	removePolyline ( spline: AbstractSpline ) {
+	removePolyline ( spline: AbstractSpline ): void {
 
 		this.polylines.removeKey( spline );
 
 	}
 
-	showNodes ( spline: AbstractSpline ) {
+	showNodes ( spline: AbstractSpline ): void {
 
 		spline.getSegments().forEach( segment => {
 
@@ -455,26 +455,26 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	removeNodes ( spline: AbstractSpline ) {
+	removeNodes ( spline: AbstractSpline ): void {
 
 		this.nodes.removeKey( spline );
 
 	}
 
-	showBoundPoints ( spline: AbstractSpline ) {
+	showBoundPoints ( spline: AbstractSpline ): void {
 
 		spline.leftPoints.forEach( point => this.points.addItem( spline, point ) );
 		spline.rightPoints.forEach( point => this.points.addItem( spline, point ) );
 
 	}
 
-	removeBoundPoints ( spline: AbstractSpline ) {
+	removeBoundPoints ( spline: AbstractSpline ): void {
 
 		this.points.removeKey( spline );
 
 	}
 
-	createNode ( road: TvRoad, contact: TvContactPoint ) {
+	createNode ( road: TvRoad, contact: TvContactPoint ): any {
 
 		const node = new RoadNode( road, contact );
 
@@ -513,7 +513,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	updateNode ( node: RoadNode ) {
+	updateNode ( node: RoadNode ): void {
 
 		const sOffset = node.contact == TvContactPoint.START ? 0 : node.road.length;
 

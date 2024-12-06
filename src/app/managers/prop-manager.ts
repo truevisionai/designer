@@ -10,7 +10,7 @@ export class PropManager {
 
 	private static prop?: DynamicMeta<PropModel>;
 
-	static setProp ( prop: DynamicMeta<PropModel> ) {
+	static setProp ( prop: DynamicMeta<PropModel> ): void {
 
 		this.prop = prop;
 

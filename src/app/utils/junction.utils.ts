@@ -21,7 +21,7 @@ import { TvJointBoundary } from "../map/junction-boundary/tv-joint-boundary";
 
 export class JunctionUtils {
 
-	private static findConnectionsOf ( junction: TvJunction, road: TvRoad ) {
+	private static findConnectionsOf ( junction: TvJunction, road: TvRoad ): TvJunctionConnection[] {
 
 		const connections: TvJunctionConnection[] = [];
 
@@ -51,7 +51,7 @@ export class JunctionUtils {
 
 	}
 
-	private static findConnectionsFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ) {
+	private static findConnectionsFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ): TvJunctionConnection[] {
 
 		const connections: TvJunctionConnection[] = [];
 
@@ -77,7 +77,7 @@ export class JunctionUtils {
 
 	}
 
-	private static findConnectionsBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ) {
+	private static findConnectionsBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ): TvJunctionConnection[] {
 
 		const connections: TvJunctionConnection[] = [];
 
@@ -115,7 +115,7 @@ export class JunctionUtils {
 
 	}
 
-	static getLaneLinks ( junction: TvJunction ) {
+	static getLaneLinks ( junction: TvJunction ): TvJunctionLaneLink[] {
 
 		const links: TvJunctionLaneLink[] = [];
 
@@ -133,7 +133,7 @@ export class JunctionUtils {
 
 	}
 
-	static findLinksBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ) {
+	static findLinksBetween ( junction: TvJunction, incoming: TvRoad, outgoing: TvRoad ): TvJunctionLaneLink[] {
 
 		const links: TvJunctionLaneLink[] = [];
 
@@ -152,7 +152,7 @@ export class JunctionUtils {
 		return links;
 	}
 
-	static findLinksFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ) {
+	static findLinksFrom ( junction: TvJunction, from: TvRoad, to: TvRoad ): TvJunctionLaneLink[] {
 
 		const links: TvJunctionLaneLink[] = [];
 
@@ -171,7 +171,7 @@ export class JunctionUtils {
 		return links;
 	}
 
-	static findSuccessors ( road: TvRoad, targetLane: TvLane, link: TvLink ) {
+	static findSuccessors ( road: TvRoad, targetLane: TvLane, link: TvLink ): TvLane[] {
 
 		if ( !link ) return [];
 
@@ -232,7 +232,7 @@ export class JunctionUtils {
 
 	}
 
-	static findPredecessors ( road: TvRoad, targetLane: TvLane, link: TvLink ) {
+	static findPredecessors ( road: TvRoad, targetLane: TvLane, link: TvLink ): TvLane[] {
 
 		if ( !link ) return [];
 
@@ -293,7 +293,7 @@ export class JunctionUtils {
 
 	}
 
-	static generateJunctionHash ( junction: TvJunction ) {
+	static generateJunctionHash ( junction: TvJunction ): string {
 
 		const splineIds = junction.getIncomingSplines().map( spline => spline.uuid ).sort().join( ',' );
 
@@ -302,7 +302,7 @@ export class JunctionUtils {
 		return hash;
 	}
 
-	static generateGroupHash ( group: IntersectionGroup ) {
+	static generateGroupHash ( group: IntersectionGroup ): string {
 
 		const spline = group.getSplines().map( spline => spline.uuid ).sort().join( ',' );
 
@@ -347,7 +347,7 @@ export class JunctionUtils {
 
 	}
 
-	static findConnectionFromLink ( junction: TvJunction, link: TvJunctionLaneLink ) {
+	static findConnectionFromLink ( junction: TvJunction, link: TvJunctionLaneLink ): any {
 
 		for ( const connection of junction.getConnections() ) {
 

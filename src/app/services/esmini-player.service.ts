@@ -29,7 +29,7 @@ export class EsminiPlayerService {
 		return this.editor.settings.esminiEnabled;
 	}
 
-	playSimulation () {
+	playSimulation (): void {
 
 		this.logs.splice( 0, this.logs.length );
 
@@ -47,7 +47,7 @@ export class EsminiPlayerService {
 
 	}
 
-	run ( path: string, xodr: string, xosc: string ) {
+	run ( path: string, xodr: string, xosc: string ): void {
 
 		if ( this.editor.scenario.objects.size === 0 ) {
 
@@ -61,7 +61,7 @@ export class EsminiPlayerService {
 
 	}
 
-	runOdrViewer ( path: string, xodr: string ) {
+	runOdrViewer ( path: string, xodr: string ): void {
 
 		const binPath = this.editor.settings.odrViewerPath;
 
@@ -95,7 +95,7 @@ export class EsminiPlayerService {
 
 	}
 
-	runScenario ( path: string, xodr: string, xosc: string ) {
+	runScenario ( path: string, xodr: string, xosc: string ): void {
 
 		const binPath = this.editor.settings.esminiPath;
 

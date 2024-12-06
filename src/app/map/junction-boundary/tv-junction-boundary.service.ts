@@ -49,7 +49,7 @@ export class TvJunctionBoundaryService {
 	}
 
 	// eslint-disable-next-line no-undef
-	debugBoundary ( boundary: TvJunctionBoundary, color = COLOR.RED ): void {
+	debugBoundary ( boundary: TvJunctionBoundary, color: number = COLOR.RED ): void {
 
 		boundary.getSegments().forEach( segment => {
 

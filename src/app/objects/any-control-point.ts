@@ -12,7 +12,7 @@ export class AnyControlPoint extends AbstractControlPoint {
 
 	static roadTag = 'road';
 
-	static create ( name = '', position?: Vector3 ) {
+	static create ( name: string = '', position?: Vector3 ): AnyControlPoint {
 
 		const dotGeometry = new BufferGeometry();
 

@@ -96,13 +96,31 @@ export class TvLaneSection {
 	 * @param {boolean} level Level parameter of the road
 	 * @param {boolean} sort Defines if the lanes should be sorted when added. True by default
 	 */
-	createLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ) {
+	createLane ( laneSide: TvLaneSide, id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
 
 		const newLane = new TvLane( laneSide, id, type, level, this );
 
 		this.addLaneInstance( newLane, sort );
 
 		return newLane;
+	}
+
+	createCenterLane ( id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
+
+		return this.createLane( TvLaneSide.CENTER, id, type, level, sort );
+
+	}
+
+	createLeftLane ( id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
+
+		return this.createLane( TvLaneSide.LEFT, id, type, level, sort );
+
+	}
+
+	createRightLane ( id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
+
+		return this.createLane( TvLaneSide.RIGHT, id, type, level, sort );
+
 	}
 
 	getLaneAtIndex ( index: number ): TvLane {
@@ -143,7 +161,7 @@ export class TvLaneSection {
 	 * @param sCheck A double s-offset value that has to be checked
 	 * @returns {boolean} Return true if the s-offset value belongs to current lane section, false otherwise
 	 */
-	checkInterval ( sCheck ): boolean {
+	checkInterval ( sCheck: any ): boolean {
 
 		if ( sCheck >= this.s ) {
 			return true;
@@ -236,7 +254,7 @@ export class TvLaneSection {
 
 	addCenterLane (): TvLane {
 
-		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, true );
+		return this.createCenterLane( 0, TvLaneType.none, false, true );
 
 	}
 
@@ -408,7 +426,7 @@ export class TvLaneSection {
 
 	}
 
-	isHeightMatching ( laneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isHeightMatching ( laneSection: TvLaneSection, sOffset: number = 0, otherSOffset: number = 0 ): boolean {
 
 		if ( this.lanes.size !== laneSection.lanes.size ) return false;
 
@@ -430,7 +448,7 @@ export class TvLaneSection {
 		return true;
 	}
 
-	isWidthMatching ( laneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isWidthMatching ( laneSection: TvLaneSection, sOffset: number = 0, otherSOffset: number = 0 ): boolean {
 
 		if ( this.lanes.size !== laneSection.lanes.size ) return false;
 
@@ -450,7 +468,7 @@ export class TvLaneSection {
 		return true;
 	}
 
-	isMarkingMatching ( otherLaneSection: TvLaneSection, sOffset = 0, otherSOffset = 0 ): boolean {
+	isMarkingMatching ( otherLaneSection: TvLaneSection, sOffset: number = 0, otherSOffset: number = 0 ): boolean {
 
 		if ( this.lanes.size !== otherLaneSection.lanes.size ) return false;
 
@@ -875,6 +893,14 @@ export class TvLaneSection {
 
 		return this.getLanes().filter( lane => lane.side === side );
 
+	}
+
+	removePredecessorLinks (): void {
+		this.getNonCenterLanes().forEach( lane => lane.unsetPredecessor() );
+	}
+
+	removeSuccessorLinks (): void {
+		this.getNonCenterLanes().forEach( lane => lane.unsetSuccessor() );
 	}
 }
 

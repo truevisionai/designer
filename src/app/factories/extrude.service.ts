@@ -56,7 +56,7 @@ export class ExtrudeService {
 		return shape;
 	}
 
-	buildRadiusObject ( points: Vector3[], radius: number ) {
+	buildRadiusObject ( points: Vector3[], radius: number ): void {
 
 		// const geometry = new THREE.BufferGeometry().setFromPoints( points );
 

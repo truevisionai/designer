@@ -17,11 +17,11 @@ export class OrderedArry<T> {
 		return this.entries.length;
 	}
 
-	clear () {
+	clear (): void {
 		this.entries = [];
 	}
 
-	set ( key: number, value: T, sort = true ): this {
+	set ( key: number, value: T, sort: boolean = true ): this {
 
 		// if the value is already in the array, we don't add it
 		if ( this.contains( value ) ) return this;
@@ -40,7 +40,7 @@ export class OrderedArry<T> {
 		return this;
 	}
 
-	sort () {
+	sort (): void {
 
 		this.entries.sort( ( a, b ) => a[ this.key ] - b[ this.key ] );
 
@@ -52,13 +52,13 @@ export class OrderedArry<T> {
 
 	}
 
-	contains ( value: T ) {
+	contains ( value: T ): boolean {
 
 		return this.entries.includes( value );
 
 	}
 
-	remove ( value: T ) {
+	remove ( value: T ): void {
 
 		this.entries = this.entries.filter( entry => entry !== value );
 
@@ -99,7 +99,7 @@ export class OrderedArry<T> {
 
 	}
 
-	getNextKey ( value: T ) {
+	getNextKey ( value: T ): any {
 
 		const next = this.getNext( value );
 
@@ -111,13 +111,13 @@ export class OrderedArry<T> {
 
 	}
 
-	getLast () {
+	getLast (): T {
 
 		return this.entries.length > 0 ? this.entries[ this.entries.length - 1 ] : null;
 
 	}
 
-	getFirst () {
+	getFirst (): T {
 
 		return this.entries.length > 0 ? this.entries[ 0 ] : null;
 
@@ -143,7 +143,7 @@ export class OrderedArry<T> {
 
 	}
 
-	forEach ( callbackfn: ( value: T, key: number, values: T[] ) => void, thisArg?: any ) {
+	forEach ( callbackfn: ( value: T, key: number, values: T[] ) => void, thisArg?: any ): void {
 
 		for ( const entry of this.entries ) {
 			callbackfn.call( thisArg, entry, entry[ this.key ], this.entries );

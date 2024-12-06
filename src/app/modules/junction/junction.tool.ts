@@ -31,7 +31,7 @@ export class JunctionTool extends ToolWithHandler {
 
 	}
 
-	init () {
+	init (): void {
 
 		this.setHint( 'Click on a road to create a junction' );
 

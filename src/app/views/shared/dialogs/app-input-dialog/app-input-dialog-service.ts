@@ -37,7 +37,7 @@ export class AppInputDialogService {
 
 	}
 
-	public close () {
+	public close (): void {
 		if ( this.dialogRef ) {
 			this.dialogRef.close();
 		}

@@ -91,7 +91,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 	}
 
-	onPointerMoved ( e: PointerEventData ) {
+	onPointerMoved ( e: PointerEventData ): void {
 
 		this.helper.base.handleCreation( e, position => {
 
@@ -109,7 +109,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 	}
 
-	updateCursorHints ( position: TvLaneCoord | Vector3 ) {
+	updateCursorHints ( position: TvLaneCoord | Vector3 ): void {
 
 		if ( !this.startCoord ) {
 			this.helper.base.setCursor( 'auto' );
@@ -197,7 +197,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 	}
 
-	private createRampRoad ( startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ) {
+	private createRampRoad ( startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ): void {
 
 		if ( startCoord instanceof TvLaneCoord ) {
 
@@ -213,7 +213,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 	}
 
-	private showRampLine ( position: TvLaneCoord | Vector3 ) {
+	private showRampLine ( position: TvLaneCoord | Vector3 ): void {
 
 		const computeDistance = ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3 ) => {
 
@@ -248,7 +248,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 	}
 
-	private showStartLine ( position: TvLaneCoord | Vector3 ) {
+	private showStartLine ( position: TvLaneCoord | Vector3 ): void {
 
 		if ( this.debug ) Log.info( 'show start line', position );
 

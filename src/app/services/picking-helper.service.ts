@@ -14,7 +14,7 @@ export class PickingHelper {
 
 	private static raycaster = new Raycaster();
 
-	public static checkControlPointInteraction ( event: PointerEventData, tag: string, maxDistance = 0.5 ): AbstractControlPoint {
+	public static checkControlPointInteraction ( event: PointerEventData, tag: string, maxDistance: number = 0.5 ): AbstractControlPoint {
 
 		let hasInteracted = false;
 
@@ -42,7 +42,7 @@ export class PickingHelper {
 		return controlPoint;
 	}
 
-	public static findNearestViaDistance<T extends Object3D> ( position: Vector3, objects: T[], maxDistance = 0.5 ): T {
+	public static findNearestViaDistance<T extends Object3D> ( position: Vector3, objects: T[], maxDistance: number = 0.5 ): T {
 
 		let nearestDistance = Number.MAX_VALUE;
 		let nearestObject: T = null;
@@ -65,7 +65,7 @@ export class PickingHelper {
 		return nearestObject;
 	}
 
-	public static findNearestViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[], recursive = true ): T {
+	public static findNearestViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[], recursive: boolean = true ): T {
 
 		// Find intersections with the control points
 		const results = this.findViaRaycasting( e, objects, recursive );
@@ -79,7 +79,7 @@ export class PickingHelper {
 		return null;
 	}
 
-	public static findViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[], recursive = true ): T[] {
+	public static findViaRaycasting<T extends Object3D> ( e: PointerEventData, objects: T[], recursive: boolean = true ): T[] {
 
 		// Update the raycaster with the camera and the normalized mouse coordinates
 		this.raycaster.setFromCamera( e.mouse, e.camera );

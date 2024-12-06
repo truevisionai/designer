@@ -1,6 +1,7 @@
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { AbstractSpline } from "./abstract-spline";
+import { Log } from "../utils/log";
 
 
 export class SplineElevationProfile {
@@ -12,6 +13,11 @@ export class SplineElevationProfile {
 	getHeightAtOffset ( splineDistance: number ): number {
 
 		const road = this.getNearestRoad( splineDistance );
+
+		if ( !road ) {
+			Log.debug( 'SplineElevationProfile', `No road found at spline distance: ${ splineDistance }` );
+			return 0;
+		}
 
 		const roadDistance = splineDistance - road.sStart;
 

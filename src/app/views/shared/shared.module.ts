@@ -40,23 +40,8 @@ import { ColorChromeModule } from 'ngx-color/chrome';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 import { StatusBarComponent } from '../editor/status-bar/status-bar.component';
-import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
-import { ButtonLoadingComponent } from './components/button-loading/button-loading.component';
-// ONLY FOR DEMO (Removable without changing any layout configuration)
-import { CustomizerComponent } from './components/customizer/customizer.component';
-import { FooterBottomComponent } from './components/footer-bottom/footer-bottom.component';
-// ONLY REQUIRED FOR **SIDE** NAVIGATION LAYOUT
-import { HeaderSideComponent } from './components/header-side/header-side.component';
-// ONLY REQUIRED FOR **TOP** NAVIGATION LAYOUT
-import { HeaderTopComponent } from './components/header-top/header-top.component';
+
 // ALL TIME REQUIRED
-import { AdminLayoutComponent } from './components/layouts/admin-layout/admin-layout.component';
-import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
-import { NotificationsComponent } from './components/notifications/notifications.component';
-import { PropBrowserComponent } from './components/prop-browser/prop-browser.component';
-import { SidebarSideComponent } from './components/sidebar-side/sidebar-side.component';
-import { SidebarTopComponent } from './components/sidebar-top/sidebar-top.component';
-import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { SplashComponent } from './components/splash/splash.component';
 import { AppInputDialogService } from './dialogs/app-input-dialog/app-input-dialog-service';
 import { AppInputDialogComponent } from './dialogs/app-input-dialog/app-input-dialog.component';
@@ -65,7 +50,7 @@ import { ComponentContainerDirective } from './directives/component-container.di
 import { DropdownAnchorDirective } from './directives/dropdown-anchor.directive';
 import { DropdownLinkDirective } from './directives/dropdown-link.directive';
 import { AppDropdownDirective } from './directives/dropdown.directive';
-import { EgretSideNavToggleDirective } from './directives/egret-side-nav-toggle.directive';
+
 // DIRECTIVES
 import { FontSizeDirective } from './directives/font-size.directive';
 import { ScrollToDirective } from './directives/scroll-to.directive';
@@ -85,7 +70,6 @@ import { GetValueByKeyPipe, KeysPipe } from './pipes/get-value-by-key.pipe';
 // PIPES
 import { RelativeTimePipe } from './pipes/relative-time.pipe';
 import { TranslatePipe } from './pipes/translate.pipe';
-import { SearchModule } from './search/search.module';
 import { AppComfirmComponent } from './services/app-confirm/app-confirm.component';
 import { AppConfirmService } from './services/app-confirm/app-confirm.service';
 import { AppLoaderComponent } from './services/app-loader/app-loader.component';
@@ -106,26 +90,14 @@ import { TextareaFieldComponent } from './fields/textarea-field/textarea-field.c
 // import { LandingPageService } from '../shared/services/landing-page.service';
 
 const classesToInclude = [
-	HeaderTopComponent,
-	SidebarTopComponent,
-	SidenavComponent,
-	NotificationsComponent,
-	SidebarSideComponent,
-	HeaderSideComponent,
-	AdminLayoutComponent,
-	AuthLayoutComponent,
-	BreadcrumbComponent,
 	AppComfirmComponent,
 	AppLoaderComponent,
-	CustomizerComponent,
-	ButtonLoadingComponent,
 	FontSizeDirective,
 	ScrollToDirective,
 	AppDropdownDirective,
 	DropdownAnchorDirective,
 	DropdownLinkDirective,
 	ComponentContainerDirective,
-	EgretSideNavToggleDirective,
 	RelativeTimePipe,
 	ExcerptPipe,
 	GetValueByKeyPipe,
@@ -133,7 +105,6 @@ const classesToInclude = [
 	StatusBarComponent,
 	ImportFileDialogComponent,
 	SearchPipe,
-	FooterBottomComponent,
 	SplashComponent,
 	TranslatePipe,
 	TooltipComponent,
@@ -151,7 +122,6 @@ const classesToInclude = [
 	TextareaFieldComponent,
 	ColorFieldComponent,
 	SelectEntityFieldComponent,
-	PropBrowserComponent,
 	RoadIdFieldComponent,
 	AppInputDialogComponent,
 
@@ -189,7 +159,6 @@ const classesToInclude = [
 		MatProgressSpinnerModule,
 		// MatRippleModule,
 		MatDialogModule,
-		SearchModule,
 		PerfectScrollbarModule,
 		MatTreeModule,
 		MatFormFieldModule,

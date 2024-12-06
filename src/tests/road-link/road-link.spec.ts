@@ -6,6 +6,13 @@ import { Vector3 } from "three";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 
+function expectLaneSectionWithNoLinks ( laneSection: TvLaneSection ) {
+	laneSection.getNonCenterLanes().forEach( lane => {
+		expect( lane.successorExists ).toBeFalse();
+		expect( lane.predecessorExists ).toBeFalse();
+	} );
+}
+
 describe( 'RoadLinker', () => {
 
 	let leftRoad: TvRoad;
@@ -30,7 +37,7 @@ describe( 'RoadLinker', () => {
 
 	it( 'link when next road is successor', () => {
 
-		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.START );
 
 		leftRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
 			expect( lane.successorExists ).toBe( true );
@@ -52,9 +59,43 @@ describe( 'RoadLinker', () => {
 
 	} );
 
+	it( 'should unlink with successor with contact start', () => {
+
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.START );
+
+		leftRoad.removeSuccessor();
+
+		expect( leftRoad.hasSuccessor() ).toBe( false );
+		expect( leftRoad.hasPredecessor() ).toBe( false );
+
+		expect( rightRoad.hasSuccessor() ).toBe( false );
+		expect( rightRoad.hasPredecessor() ).toBe( false );
+
+		leftRoad.laneSections.forEach( laneSection => expectLaneSectionWithNoLinks( laneSection ) );
+		rightRoad.laneSections.forEach( laneSection => expectLaneSectionWithNoLinks( laneSection ) );
+
+	} );
+
+	it( 'should unlink with successor with contact end', () => {
+
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.END );
+
+		leftRoad.removeSuccessor();
+
+		expect( leftRoad.hasPredecessor() ).toBe( false );
+		expect( leftRoad.hasSuccessor() ).toBe( false );
+
+		expect( rightRoad.hasPredecessor() ).toBe( false );
+		expect( rightRoad.hasSuccessor() ).toBe( false );
+
+		leftRoad.laneSections.forEach( laneSection => expectLaneSectionWithNoLinks( laneSection ) );
+		rightRoad.laneSections.forEach( laneSection => expectLaneSectionWithNoLinks( laneSection ) );
+
+	} );
+
 	it( 'link when both roads are successor to each other', () => {
 
-		leftRoad.linkSuccessor( rightRoad, TvContactPoint.END );
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.END );
 
 		leftRoad.getLaneProfile().getNonCenterLanes().forEach( lane => {
 			expect( lane.successorExists ).toBe( true );
@@ -78,13 +119,13 @@ describe( 'RoadLinker', () => {
 
 	xit( 'link predecessor with successor', () => {
 
-		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.START );
 
 	} );
 
 	xit( 'link predecessor with predecessor', () => {
 
-		leftRoad.linkSuccessor( rightRoad, TvContactPoint.START );
+		leftRoad.linkSuccessorRoad( rightRoad, TvContactPoint.START );
 
 	} );
 

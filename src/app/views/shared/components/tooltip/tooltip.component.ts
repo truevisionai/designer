@@ -16,7 +16,7 @@ export class TooltipComponent implements OnInit {
 
 	tooltips: TooltipInterface[] = [];
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.tooltips = Array.from( this.tooltipService.getTooltips().values() );
 

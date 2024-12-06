@@ -98,7 +98,7 @@ export class RampToolHelper {
 
 	}
 
-	addLaneSection ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3, road: TvRoad ) {
+	addLaneSection ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3, road: TvRoad ): void {
 
 		const connectingLaneSection = new TvLaneSection( 0, 0, true, road );
 
@@ -123,7 +123,7 @@ export class RampToolHelper {
 			}
 		}
 
-		const centerLane = connectingLaneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		const centerLane = connectingLaneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
 		centerLane.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
 
@@ -132,7 +132,7 @@ export class RampToolHelper {
 
 		for ( const incomingLane of incomingLanes ) {
 
-			const lane = connectingLaneSection.createLane( TvLaneSide.RIGHT, -rightLaneCount, incomingLane.type, true, true );
+			const lane = connectingLaneSection.createRightLane( -rightLaneCount, incomingLane.type, true, true );
 
 			LaneUtils.copyPreviousLane( incomingLane, incomingLane.laneSection, incomingLane.laneSection.road, lane );
 
@@ -144,7 +144,7 @@ export class RampToolHelper {
 
 			if ( sourceLane.type == TvLaneType.driving ) continue;
 
-			const lane = connectingLaneSection.createLane( TvLaneSide.LEFT, leftLaneCount, sourceLane.type, true, true );
+			const lane = connectingLaneSection.createLeftLane( leftLaneCount, sourceLane.type, true, true );
 
 			LaneUtils.copyPreviousLane( sourceLane, sourceLane.laneSection, sourceLane.laneSection.road, lane );
 
@@ -152,7 +152,7 @@ export class RampToolHelper {
 
 		}
 
-		road.getLaneProfile().addLaneSectionInstance( connectingLaneSection );
+		road.getLaneProfile().addLaneSection( connectingLaneSection );
 
 	}
 
@@ -199,7 +199,7 @@ export class RampToolHelper {
 		return spline;
 	}
 
-	createSplineNew ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider = 3 ): AbstractSpline {
+	createSplineNew ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): AbstractSpline {
 
 		// directions must be normalized
 		const d1 = startDirection.clone().normalize();

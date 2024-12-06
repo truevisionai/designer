@@ -21,7 +21,7 @@ export class MaterialAsset {
 		this.setGuid( guid );
 	}
 
-	setGuid ( guid: string ) {
+	setGuid ( guid: string ): void {
 
 		this.guid = guid;
 		this.material.userData.guid = guid;
@@ -29,7 +29,7 @@ export class MaterialAsset {
 
 	}
 
-	setMap ( attributeName: string, texture: TvTexture ) {
+	setMap ( attributeName: string, texture: TvTexture ): void {
 
 		if ( texture.guid === undefined ) {
 			console.error( 'Texture has no guid' );
@@ -44,7 +44,7 @@ export class MaterialAsset {
 
 	}
 
-	toMetadata ( path: string ) {
+	toMetadata ( path: string ): any {
 		return {
 			guid: this.guid,
 			importer: MetaImporter.MATERIAL,

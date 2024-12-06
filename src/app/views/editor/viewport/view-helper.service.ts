@@ -25,7 +25,7 @@ export class ViewHelperService {
 	) {
 	}
 
-	init ( viewHelperCanvas: HTMLCanvasElement ) {
+	init ( viewHelperCanvas: HTMLCanvasElement ): void {
 
 		this.viewHelperCanavs = viewHelperCanvas;
 
@@ -57,7 +57,7 @@ export class ViewHelperService {
 		}
 	}
 
-	update ( delta: number ) {
+	update ( delta: number ): void {
 
 		if ( !this.viewHelper ) return;
 
@@ -67,7 +67,7 @@ export class ViewHelperService {
 
 	}
 
-	render ( renderer: WebGLRenderer ) {
+	render ( renderer: WebGLRenderer ): void {
 
 		if ( !this.viewHelper ) return;
 
@@ -77,7 +77,7 @@ export class ViewHelperService {
 
 	}
 
-	handleClick ( $event: PointerEvent ) {
+	handleClick ( $event: PointerEvent ): void {
 
 		this.viewHelper?.handleClick( $event );
 

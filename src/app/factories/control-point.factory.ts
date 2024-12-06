@@ -63,7 +63,7 @@ export class ControlPointFactory {
 
 	}
 
-	static createRoadControlPoint ( spline: AbstractSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ) {
+	static createRoadControlPoint ( spline: AbstractSpline, geometry: TvAbstractRoadGeometry, index: number, position: Vector3, hdg: number ): any {
 
 		const controlPoint = new RoadControlPoint( spline, position, index, hdg );
 

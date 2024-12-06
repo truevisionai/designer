@@ -82,7 +82,7 @@ export class IntersectionGroup {
 
 	}
 
-	getJunctionLinks ( junction: TvJunction, sort = true ): TvLink[] {
+	getJunctionLinks ( junction: TvJunction, sort: boolean = true ): TvLink[] {
 
 		const links = new Map<NewSegment, TvLink>();
 
@@ -253,7 +253,7 @@ export class IntersectionGroup {
 
 	}
 
-	getOffset ( spline: AbstractSpline ) {
+	getOffset ( spline: AbstractSpline ): any {
 
 		const sections = this.getSplineSections().filter( section => section.spline.equals( spline ) );
 
@@ -281,7 +281,7 @@ export class IntersectionGroup {
 
 	}
 
-	merge ( otherGroup: IntersectionGroup ) {
+	merge ( otherGroup: IntersectionGroup ): void {
 
 		otherGroup.intersections.forEach( intersection => {
 
@@ -323,7 +323,7 @@ export class IntersectionGroup {
 
 	}
 
-	toString () {
+	toString (): string {
 
 		const splines = Array.from( this.splines ).map( spline => spline.id ).join( ',' );
 
@@ -331,7 +331,7 @@ export class IntersectionGroup {
 
 	}
 
-	reComputeJunctionOffsets ( force = false ) {
+	reComputeJunctionOffsets ( force: boolean = false ): void {
 
 		if ( !force && this.getSplines().length < 2 ) return;
 

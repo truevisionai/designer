@@ -35,7 +35,7 @@ export class EventServiceProvider {
 	) {
 	}
 
-	init () {
+	init (): void {
 
 		if ( EventServiceProvider.initialized ) return;
 

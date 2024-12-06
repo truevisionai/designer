@@ -18,7 +18,7 @@ export class MapManager {
 
 	}
 
-	init () {
+	init (): void {
 
 		MapEvents.mapRemoved.subscribe( e => this.onMapRemoved( e ) );
 

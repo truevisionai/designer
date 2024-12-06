@@ -20,7 +20,7 @@ export class RoutePartsService {
 	constructor ( private router: Router ) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 	generateRouteParts ( snapshot: ActivatedRouteSnapshot ): IRoutePart[] {

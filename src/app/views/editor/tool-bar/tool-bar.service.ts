@@ -28,7 +28,7 @@ export class ToolBarService {
 	) {
 	}
 
-	setToolByType ( type: ToolType ) {
+	setToolByType ( type: ToolType ): any {
 
 		if ( ToolManager.isCurrentTool( type ) ) {
 			return ToolManager.getCurrentTool();
@@ -47,13 +47,13 @@ export class ToolBarService {
 
 	}
 
-	private setTool ( tool: Tool ) {
+	private setTool ( tool: Tool ): void {
 
 		Commands.SetTool( tool );
 
 	}
 
-	setToolbarHeight ( height: number ) {
+	setToolbarHeight ( height: number ): void {
 
 		this.height = height;
 
@@ -65,7 +65,7 @@ export class ToolBarService {
 
 	}
 
-	setWorldInspector () {
+	setWorldInspector (): void {
 
 		const environment = this.threeService.environment;
 
@@ -75,7 +75,7 @@ export class ToolBarService {
 
 	}
 
-	setEnvironmentInspector () {
+	setEnvironmentInspector (): void {
 
 		const environment = this.threeService.environment;
 

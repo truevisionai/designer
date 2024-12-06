@@ -25,10 +25,10 @@ export class SelectEntityFieldComponent extends AbstractFieldComponent<string> i
 		return this.entityService.entities.map( entity => entity.name );
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
-	onEntityChanged ( $entity: string ) {
+	onEntityChanged ( $entity: string ): void {
 		this.changed.emit( $entity );
 	}
 }

@@ -61,7 +61,7 @@ export class ManagedMap<V> extends Map<number, V> {
 
 	}
 
-	next ( useRemoved = true ): number {
+	next ( useRemoved: boolean = true ): number {
 
 		let id: number;
 
@@ -89,7 +89,7 @@ export class ManagedMap<V> extends Map<number, V> {
 
 	}
 
-	toArray () {
+	toArray (): V[] {
 
 		return Array.from( this.values() );
 

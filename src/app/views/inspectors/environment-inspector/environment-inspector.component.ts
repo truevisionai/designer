@@ -20,6 +20,6 @@ export class EnvironmentInspectorComponent extends BaseInspector implements ICom
 		super()
 	}
 
-	ngOnInit () { }
+	ngOnInit (): void { }
 
 }

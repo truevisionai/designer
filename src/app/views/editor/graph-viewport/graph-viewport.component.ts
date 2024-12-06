@@ -74,7 +74,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.selectionService = new SelectionService();
 
@@ -115,7 +115,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	createCamera () {
+	createCamera (): any {
 
 		const camera = this.cameraService.createOrthographicCamera( -100, 100, 100, -100 );
 
@@ -127,7 +127,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onRoadSelected ( road: TvRoad ) {
+	onRoadSelected ( road: TvRoad ): void {
 
 		this.selectedRoad = road;
 
@@ -135,7 +135,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onRoadUnselected ( road: TvRoad ) {
+	onRoadUnselected ( road: TvRoad ): void {
 
 		this.selectedRoad = null;
 
@@ -147,13 +147,13 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onRoadUpdated ( road: TvRoad ) {
+	onRoadUpdated ( road: TvRoad ): void {
 
 		this.updateLine( road );
 
 	}
 
-	onRoadRemoved ( road: TvRoad ) {
+	onRoadRemoved ( road: TvRoad ): void {
 
 		this.selectedRoad = null;
 
@@ -174,7 +174,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 		return point;
 	}
 
-	private setupGraphScene ( scene: Scene ) {
+	private setupGraphScene ( scene: Scene ): void {
 
 		scene.background = new Color( 0x000000 );
 
@@ -201,7 +201,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	private onPointerUp ( event: PointerEventData ) {
+	private onPointerUp ( event: PointerEventData ): void {
 
 		// Debug.log( 'Pointer up', event, this.selectedObject );
 
@@ -228,7 +228,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 		this.nodeMoved = false;
 	}
 
-	private onPointerDown ( event: PointerEventData ) {
+	private onPointerDown ( event: PointerEventData ): void {
 
 		// Debug.log( 'Pointer down', event );
 
@@ -244,7 +244,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	private handleCreation ( event: PointerEventData ) {
+	private handleCreation ( event: PointerEventData ): void {
 
 		if ( !this.selectedRoad ) return;
 
@@ -264,7 +264,7 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	private onPointerMoved ( event: PointerEventData ) {
+	private onPointerMoved ( event: PointerEventData ): void {
 
 		// Debug.log( 'Pointer moved', event );
 		this.selectionService.executeSelection( event );
@@ -285,13 +285,13 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	onCanvasResized ( $event: CanvasConfig ) {
+	onCanvasResized ( $event: CanvasConfig ): void {
 
 		this.canvasConfig = $event;
 
 	}
 
-	onViewUpdated ( $event: any ) {
+	onViewUpdated ( $event: any ): void {
 
 		this.viewUpdated.emit( $event );
 
@@ -303,13 +303,13 @@ export class GraphViewportComponent implements OnInit, AfterViewInit {
 
 	}
 
-	private onPointerClicked ( event: PointerEventData ) {
+	private onPointerClicked ( event: PointerEventData ): void {
 
 		// Debug.log( 'Pointer clicked', event );
 
 	}
 
-	private updateLine ( road: TvRoad ) {
+	private updateLine ( road: TvRoad ): void {
 
 		this.nodes.clear();
 

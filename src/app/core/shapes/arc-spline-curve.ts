@@ -20,7 +20,7 @@ export class CustomSplineCurve {
 		return this.mGeometries;
 	}
 
-	addPoint ( p: Vector3 ) {
+	addPoint ( p: Vector3 ): void {
 
 		this.points.push( p );
 
@@ -28,7 +28,7 @@ export class CustomSplineCurve {
 
 	}
 
-	addPoints ( points: Vector3[] ) {
+	addPoints ( points: Vector3[] ): void {
 
 		points.forEach( point => {
 			this.points.push( point );
@@ -37,7 +37,7 @@ export class CustomSplineCurve {
 		this.compute();
 	}
 
-	compute () {
+	compute (): void {
 
 		if ( this.points.length < 3 ) return;
 
@@ -105,7 +105,7 @@ export class CustomSplineCurve {
 		}
 	}
 
-	private createArcGeometry ( s: number, x: number, y: number, p1: Vector3, hdg: number, p3: Vector3, hdg2: number, p2: Vector3 ) {
+	private createArcGeometry ( s: number, x: number, y: number, p1: Vector3, hdg: number, p3: Vector3, hdg2: number, p2: Vector3 ): any {
 
 		const res = this.getRadius( p1, hdg, p3, hdg2 );
 
@@ -125,7 +125,7 @@ export class CustomSplineCurve {
 		return new TvArcGeometry( s, x, y, hdg, arcLength, curvature );
 	}
 
-	private getRadius ( A: Vector3, line1Hdg: number, C: Vector3, line2Hdg: number ) {
+	private getRadius ( A: Vector3, line1Hdg: number, C: Vector3, line2Hdg: number ): any {
 
 		const B = new Vector3(
 			A.x + Math.cos( line1Hdg + Maths.PI2 ) * 1,

@@ -204,13 +204,13 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	clearInspector () {
+	clearInspector (): void {
 
 		AppInspector.clear();
 
 	}
 
-	onPointerDown ( e: PointerEventData ) {
+	onPointerDown ( e: PointerEventData ): void {
 
 		if ( e.button !== MouseButton.LEFT ) return;
 
@@ -230,13 +230,13 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	onPointerDownSelect ( e: PointerEventData ) {
+	onPointerDownSelect ( e: PointerEventData ): void {
 
 		this.selectionService?.handleSelection( e );
 
 	}
 
-	onPointerDownCreate ( e: PointerEventData ) {
+	onPointerDownCreate ( e: PointerEventData ): void {
 
 		if ( !this.currentSelectedObject ) {
 
@@ -288,7 +288,7 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	onCreateObject ( e: PointerEventData ) {
+	onCreateObject ( e: PointerEventData ): void {
 
 		if ( e.point == null ) return;
 
@@ -310,7 +310,7 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	onCreatePoint ( e: PointerEventData ) {
+	onCreatePoint ( e: PointerEventData ): void {
 
 		const point = this.pointFactory.createSimpleControlPoint<T>( this.currentSelectedObject, e.point );
 
@@ -352,7 +352,7 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	onDuplicateKeyDown () {
+	onDuplicateKeyDown (): void {
 	}
 
 	onObjectSelected ( object: T ): void {
@@ -428,7 +428,7 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	onObjectUpdated ( object: T ) {
+	onObjectUpdated ( object: T ): void {
 
 		if ( object.constructor.name === this.typeName ) {
 
@@ -446,7 +446,7 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	onObjectRemoved ( object: T ) {
+	onObjectRemoved ( object: T ): void {
 
 		if ( object.constructor.name === this.typeName ) {
 
@@ -471,19 +471,19 @@ export abstract class BaseTool<T> implements Tool {
 	}
 
 
-	setDebugService ( debugService: IDebugger<T, any> ) {
+	setDebugService ( debugService: IDebugger<T, any> ): void {
 
 		this.debugService = debugService;
 
 	}
 
-	setDataService ( dataService: BaseDataService<T> ) {
+	setDataService ( dataService: BaseDataService<T> ): void {
 
 		this.dataService = dataService;
 
 	}
 
-	setSelectionService ( selectionService: SelectionService ) {
+	setSelectionService ( selectionService: SelectionService ): void {
 
 		this.selectionService = selectionService;
 
@@ -491,43 +491,43 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	setTypeName ( typeName: string ) {
+	setTypeName ( typeName: string ): void {
 
 		this.typeName = typeName;
 
 	}
 
-	setObjectFactory ( objectFactory: AbstractFactory<T> ) {
+	setObjectFactory ( objectFactory: AbstractFactory<T> ): void {
 
 		this.objectFactory = objectFactory;
 
 	}
 
-	setPointFactory ( controlPointFactory: ControlPointFactory ) {
+	setPointFactory ( controlPointFactory: ControlPointFactory ): void {
 
 		this.pointFactory = controlPointFactory;
 
 	}
 
-	setHint ( msg: string ) {
+	setHint ( msg: string ): void {
 
 		StatusBarService.setHint( msg );
 
 	}
 
-	protected selectObject ( object: Object, previousObject: Object ) {
+	protected selectObject ( object: Object, previousObject: Object ): void {
 
 		Commands.Select( object, previousObject );
 
 	}
 
-	protected unselectObject ( object: Object ) {
+	protected unselectObject ( object: Object ): void {
 
 		Commands.Unselect( object );
 
 	}
 
-	protected executeAddObject ( object: Object ) {
+	protected executeAddObject ( object: Object ): void {
 
 		Commands.AddObject( object );
 
@@ -539,19 +539,19 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	protected executeRemoveObject ( object: Object, fireUnselectEvent = false ) {
+	protected executeRemoveObject ( object: Object, fireUnselectEvent: boolean = false ): void {
 
 		Commands.RemoveObject( object, fireUnselectEvent );
 
 	}
 
-	protected setInspector ( data: object ) {
+	protected setInspector ( data: object ): void {
 
 		AppInspector.setDynamicInspector( data );
 
 	}
 
-	protected highlight ( e: PointerEventData ) {
+	protected highlight ( e: PointerEventData ): any {
 
 		if ( this.isPointerDown ) return;
 
@@ -568,7 +568,7 @@ export abstract class BaseTool<T> implements Tool {
 
 	}
 
-	protected handleSelection ( e: PointerEventData ) {
+	protected handleSelection ( e: PointerEventData ): void {
 
 		this.selectionService?.handleSelection( e );
 

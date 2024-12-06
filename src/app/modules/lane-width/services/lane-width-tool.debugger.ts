@@ -171,7 +171,7 @@ export class LaneWidthToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createSpanLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ) {
+	createSpanLine ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, node: LaneWidthNode ): DebugLine<any> {
 
 		const i = lane.getWidthArray().indexOf( node.laneWidth );
 

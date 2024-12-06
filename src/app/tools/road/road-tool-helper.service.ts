@@ -52,13 +52,13 @@ export class RoadToolHelper {
 	// }
 
 
-	removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ): void {
 
 		this.roadService.remove( road );
 
 	}
 
-	duplicateRoad ( selectedRoad: TvRoad ) {
+	duplicateRoad ( selectedRoad: TvRoad ): any {
 
 		return this.roadService.duplicateRoad( selectedRoad );
 
@@ -68,15 +68,15 @@ export class RoadToolHelper {
 
 		const joiningRoad = this.createFromNodes( nodeA, nodeB );
 
-		joiningRoad.linkPredecessor( nodeA.road, nodeA.contact );
+		joiningRoad.linkPredecessorRoad( nodeA.road, nodeA.contact );
 
-		joiningRoad.linkSuccessor( nodeB.road, nodeB.contact );
+		joiningRoad.linkSuccessorRoad( nodeB.road, nodeB.contact );
 
 		return joiningRoad;
 
 	}
 
-	createFromNodes ( firstNode: RoadNode, secondNode: RoadNode ) {
+	createFromNodes ( firstNode: RoadNode, secondNode: RoadNode ): any {
 
 		const spline = this.splineFactory.createSplineFromNodes( firstNode, secondNode );
 

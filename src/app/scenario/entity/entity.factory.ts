@@ -25,7 +25,7 @@ export class EntityFactory {
 	) {
 	}
 
-	reset () {
+	reset (): void {
 
 		this.entityIds.reset();
 
@@ -99,7 +99,7 @@ export class EntityFactory {
 
 	}
 
-	createDefaultCar ( name?: string, category = VehicleCategory.car ): VehicleEntity {
+	createDefaultCar ( name?: string, category: any = VehicleCategory.car ): VehicleEntity {
 
 		const vehicleName = name || this.entityIds.getName( 'Vehicle' );
 
@@ -122,7 +122,7 @@ export class EntityFactory {
 		return vehicleEntity;
 	}
 
-	createDefaultTruck ( name?: string, category = VehicleCategory.truck ): VehicleEntity {
+	createDefaultTruck ( name?: string, category: any = VehicleCategory.truck ): VehicleEntity {
 
 		const vehicleName = name || this.entityIds.getName( 'Truck' );
 

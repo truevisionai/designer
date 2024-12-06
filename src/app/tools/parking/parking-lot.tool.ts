@@ -22,7 +22,7 @@ export class ParkingLotTool extends BaseTool<any>{
 		super();
 	}
 
-	init () {
+	init (): void {
 
 
 	}

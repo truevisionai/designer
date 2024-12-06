@@ -30,7 +30,7 @@ export class JunctionEventListener {
 	) {
 	}
 
-	init () {
+	init (): void {
 
 		MapEvents.junctionCreated.subscribe( e => this.onJunctionCreated( e ) );
 		MapEvents.junctionRemoved.subscribe( e => this.onJunctionRemoved( e ) );

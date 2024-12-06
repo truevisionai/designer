@@ -51,7 +51,7 @@ describe( 'Service: RoadWidth', () => {
 
 		newLaneSection.getLanes().forEach( lane => lane.getWidthArray().forEach( width => width.a *= 2 ) );
 
-		road.getLaneProfile().addLaneSectionInstance( newLaneSection );
+		road.getLaneProfile().addLaneSection( newLaneSection );
 
 		expect( service.findTotalWidthAt( road, 0 ) ).toBe( 12.2 );
 		expect( service.findLeftWidthAt( road, 0 ) ).toBe( 6.1 );

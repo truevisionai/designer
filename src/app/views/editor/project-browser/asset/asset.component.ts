@@ -76,7 +76,7 @@ export class AssetComponent implements OnInit {
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		try {
 
@@ -90,7 +90,7 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'click', [ '$event' ] )
-	onClick ( $event ) {
+	onClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -114,7 +114,7 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'dblclick', [ '$event' ] )
-	onDoubleClick ( $event ) {
+	onDoubleClick ( $event: any ): void {
 
 		if ( this.asset.isDirectory ) {
 
@@ -128,7 +128,7 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'contextmenu', [ '$event' ] )
-	onContextMenu ( $event ) {
+	onContextMenu ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -184,7 +184,7 @@ export class AssetComponent implements OnInit {
 
 	}
 
-	deleteNode () {
+	deleteNode (): void {
 
 		try {
 
@@ -200,7 +200,7 @@ export class AssetComponent implements OnInit {
 
 	}
 
-	renameNode () {
+	renameNode (): void {
 
 		this.showRenaming = true;
 
@@ -222,7 +222,7 @@ export class AssetComponent implements OnInit {
 
 	}
 
-	showInExplorer () {
+	showInExplorer (): void {
 
 		try {
 
@@ -236,20 +236,20 @@ export class AssetComponent implements OnInit {
 
 	}
 
-	reimport () {
+	reimport (): void {
 
 		this.snackBar.error( 'Not able to reimport' );
 
 	}
 
-	reimportAll () {
+	reimportAll (): void {
 
 		this.snackBar.error( 'Not able to reimport' );
 
 	}
 
 	@HostListener( 'dragstart', [ '$event' ] )
-	onDragStart ( $event: DragEvent ) {
+	onDragStart ( $event: DragEvent ): void {
 
 		AssetComponent.disablePopover = true;
 
@@ -264,14 +264,14 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'dragend', [ '$event' ] )
-	onDragEnd ( $event ) {
+	onDragEnd ( $event: any ): void {
 
 		// Debug.log( $event )
 
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	onDrop ( $event ) {
+	onDrop ( $event: any ): void {
 
 		AssetComponent.disablePopover = false;
 
@@ -307,7 +307,7 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'window:mousedown', [ '$event' ] )
-	onMouseDown ( $event: MouseEvent ) {
+	onMouseDown ( $event: MouseEvent ): void {
 
 		AssetComponent.disablePopover = true;
 
@@ -324,14 +324,14 @@ export class AssetComponent implements OnInit {
 	}
 
 	@HostListener( 'window:mouseup', [ '$event' ] )
-	onMouseUp ( $event: MouseEvent ) {
+	onMouseUp ( $event: MouseEvent ): void {
 
 		AssetComponent.disablePopover = false;
 
 	}
 
 	@HostListener( 'window:keydown', [ '$event' ] )
-	onKeyDown ( $event: KeyboardEvent ) {
+	onKeyDown ( $event: KeyboardEvent ): void {
 
 		if ( !this.showRenaming ) return;
 
@@ -381,7 +381,7 @@ export class AssetComponent implements OnInit {
 
 	}
 
-	private initPreview ( asset: Asset ) {
+	private initPreview ( asset: Asset ): void {
 
 		if ( asset.type == AssetType.SCENE ) return;
 

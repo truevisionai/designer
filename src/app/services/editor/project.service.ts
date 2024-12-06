@@ -86,7 +86,7 @@ export class ProjectService {
 
 	}
 
-	setupDefaultAssets () {
+	setupDefaultAssets (): void {
 
 		try {
 
@@ -121,7 +121,7 @@ export class ProjectService {
 
 	}
 
-	createDefaultAssets () {
+	createDefaultAssets (): void {
 
 		this.copyAssets( 'RoadStyles' );
 
@@ -137,7 +137,7 @@ export class ProjectService {
 
 	}
 
-	copyAssets ( subFolder: string ) {
+	copyAssets ( subFolder: string ): void {
 
 		try {
 
@@ -179,7 +179,7 @@ export class ProjectService {
 
 	}
 
-	getDefaultProjectPath ( folder: string ) {
+	getDefaultProjectPath ( folder: string ): any {
 
 		const pathsToCheck = [];
 

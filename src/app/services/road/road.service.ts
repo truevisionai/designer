@@ -95,7 +95,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	clone ( road: TvRoad, s = 0 ) {
+	clone ( road: TvRoad, s: number = 0 ): any {
 
 		const id = this.roadFactory.getNextRoadId();
 
@@ -105,19 +105,19 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	createRampRoad ( connectionLane?: TvLane ) {
+	createRampRoad ( connectionLane?: TvLane ): any {
 
 		return this.roadFactory.createRampRoad( connectionLane );
 
 	}
 
-	createSingleLaneRoad ( width: number ) {
+	createSingleLaneRoad ( width: number ): any {
 
 		return this.roadFactory.createSingleLaneRoad( width );
 
 	}
 
-	createNewRoad () {
+	createNewRoad (): any {
 
 		return this.roadFactory.createNewRoad();
 
@@ -135,7 +135,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	add ( road: TvRoad ) {
+	add ( road: TvRoad ): void {
 
 		this.mapService.map.addRoad( road );
 
@@ -149,19 +149,19 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	update ( road: TvRoad ) {
+	update ( road: TvRoad ): void {
 
 		MapEvents.roadUpdated.emit( new RoadUpdatedEvent( road ) );
 
 	}
 
-	remove ( road: TvRoad ) {
+	remove ( road: TvRoad ): void {
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
 
 	}
 
-	duplicateRoad ( road: TvRoad ) {
+	duplicateRoad ( road: TvRoad ): void {
 
 		const clone = this.clone( road );
 
@@ -173,7 +173,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	shiftRoad ( road: TvRoad, x: number, y: number ) {
+	shiftRoad ( road: TvRoad, x: number, y: number ): void {
 
 		const posTheta = road.getStartPosTheta();
 
@@ -198,7 +198,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	findRoadCoord ( position: Vector3, junctions = true ): TvRoadCoord | null {
+	findRoadCoord ( position: Vector3, junctions: boolean = true ): TvRoadCoord | null {
 
 		const posTheta = new TvPosTheta();
 
@@ -286,9 +286,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 		road.junction = junction;
 
-		road.predecessor = LinkFactory.createRoadLink( incoming.road, incoming.contact );
+		road.setPredecessorRoad( incoming.road, incoming.contact );
 
-		road.successor = LinkFactory.createRoadLink( outgoing.road, outgoing.contact );
+		road.setSuccessorRoad( outgoing.road, outgoing.contact );
 
 		return road;
 
@@ -364,7 +364,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	findNearestLane ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ) {
+	findNearestLane ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): any {
 
 		let nearestLane: TvLane = null;
 
@@ -428,7 +428,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	STtoXYZ ( road: TvRoad, s: number, t: number ) {
+	STtoXYZ ( road: TvRoad, s: number, t: number ): any {
 
 		const posTheta = road.getRoadPosition( s, t );
 
@@ -447,7 +447,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return position;
 	}
 
-	findCentroid ( links: TvLink[] ) {
+	findCentroid ( links: TvLink[] ): Vector3 {
 
 		const points = links.map( link => link.getPosition().toVector3() );
 

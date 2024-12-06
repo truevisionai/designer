@@ -22,21 +22,21 @@ describe( 'OpenDrive LaneSection', () => {
 
 		laneSection = new TvLaneSection( 1, 0, true, null );
 
-		leftTwo = laneSection.createLane( TvLaneSide.LEFT, 2, TvLaneType.driving, false, true );
+		leftTwo = laneSection.createLeftLane( 2, TvLaneType.driving, false, true );
 
-		leftThree = laneSection.createLane( TvLaneSide.LEFT, 3, TvLaneType.driving, false, true );
+		leftThree = laneSection.createLeftLane( 3, TvLaneType.driving, false, true );
 
-		leftOne = laneSection.createLane( TvLaneSide.LEFT, 1, TvLaneType.driving, false, true );
+		leftOne = laneSection.createLeftLane( 1, TvLaneType.driving, false, true );
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 
-		rightOne = laneSection.createLane( TvLaneSide.RIGHT, -1, TvLaneType.driving, false, true );
+		rightOne = laneSection.createRightLane( -1, TvLaneType.driving, false, true );
 
-		rightThree = laneSection.createLane( TvLaneSide.RIGHT, -3, TvLaneType.driving, false, true );
+		rightThree = laneSection.createRightLane( -3, TvLaneType.driving, false, true );
 
-		rightTwo = laneSection.createLane( TvLaneSide.RIGHT, -2, TvLaneType.driving, false, true );
+		rightTwo = laneSection.createRightLane( -2, TvLaneType.driving, false, true );
 
-		rightFour = laneSection.createLane( TvLaneSide.RIGHT, -4, TvLaneType.driving, false, true );
+		rightFour = laneSection.createRightLane( -4, TvLaneType.driving, false, true );
 
 		laneSection.getLanes().forEach( lane => {
 
@@ -88,7 +88,7 @@ describe( 'OpenDrive LaneSection', () => {
 
 } );
 
-function expecttCorrectOrderOfLanes ( laneSection: TvLaneSection ) {
+function expecttCorrectOrderOfLanes ( laneSection: TvLaneSection ): void {
 
 	laneSection.getLeftLanes().forEach( ( lane, index, items ) => {
 		const laneId = items.length - index;

@@ -42,7 +42,7 @@ export class DoubleInputComponent implements OnInit {
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.min = parseFloat( this.min );
 		this.max = parseFloat( this.max );
@@ -50,7 +50,7 @@ export class DoubleInputComponent implements OnInit {
 
 	}
 
-	onBlur () {
+	onBlur (): void {
 
 		this.inFocus = false;
 
@@ -58,13 +58,13 @@ export class DoubleInputComponent implements OnInit {
 
 	}
 
-	onFocus () {
+	onFocus (): void {
 
 		this.inFocus = true;
 
 	}
 
-	onWheel ( $event: WheelEvent ) {
+	onWheel ( $event: WheelEvent ): void {
 
 		// presvent default action to stop scrolling
 		$event.preventDefault();
@@ -109,7 +109,7 @@ export class DoubleInputComponent implements OnInit {
 
 	}
 
-	onModelChanged ( $value: any ) {
+	onModelChanged ( $value: any ): void {
 
 		if ( this.disabled ) return;
 
@@ -127,7 +127,7 @@ export class DoubleInputComponent implements OnInit {
 	}
 
 	@HostListener( 'keydown', [ '$event' ] )
-	onKeydown ( $event: KeyboardEvent ) {
+	onKeydown ( $event: KeyboardEvent ): void {
 
 		if ( this.disabled ) return;
 
@@ -141,7 +141,7 @@ export class DoubleInputComponent implements OnInit {
 
 	}
 
-	fireChangedEvent () {
+	fireChangedEvent (): void {
 
 		let value = parseFloat( this.value );
 
@@ -161,7 +161,7 @@ export class DoubleInputComponent implements OnInit {
 
 	}
 
-	onInput ( $event: any ) {
+	onInput ( $event: any ): void {
 
 
 	}

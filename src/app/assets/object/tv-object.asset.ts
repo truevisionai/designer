@@ -17,7 +17,7 @@ export class TvObjectAsset {
 		this.instance.userData = { guid: this.guid };
 	}
 
-	toMetadata ( path: string ) {
+	toMetadata ( path: string ): any {
 
 		return {
 			guid: this.guid,
@@ -27,7 +27,7 @@ export class TvObjectAsset {
 		};
 	}
 
-	clone () {
+	clone (): TvObjectAsset {
 
 		return new TvObjectAsset( this.guid, this.instance.clone() );
 

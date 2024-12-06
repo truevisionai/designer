@@ -10,7 +10,6 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Log } from 'app/core/utils/log';
 import { TvLaneCoord } from './tv-lane-coord';
 import { TvLane } from './tv-lane';
-import { Vector3 } from 'three';
 import { TvPosTheta } from './tv-pos-theta';
 import { LaneDistance } from '../road/road-distance';
 
@@ -52,11 +51,11 @@ For a virtual junction as successor or predecessor the
  */
 export abstract class TvLink {
 
-	public element: TvRoad | TvJunction;
+	public readonly element: TvRoad | TvJunction;
 
-	public type: TvLinkType;
+	public readonly type: TvLinkType;
 
-	public contactPoint: TvContactPoint;
+	public readonly contactPoint: TvContactPoint;
 
 	/**
 	 * TODO:
@@ -111,27 +110,27 @@ export abstract class TvLink {
 
 	abstract clone (): TvLink;
 
+	abstract toString (): string;
+
 	abstract linkJunction ( junction: TvJunction ): void;
 
 	abstract linkRoad ( element: TvRoad, contact: TvContactPoint ): void;
 
-	abstract unlink ( element: TvRoad, contact: TvContactPoint ): void;
-
-	abstract isEqualTo ( element: TvRoad | TvJunction ): boolean;
+	abstract equals ( element: TvRoad | TvJunction ): boolean;
 
 	abstract replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void;
 
 	abstract getPosition (): TvPosTheta;
 
-	get contact () {
+	get contact (): TvContactPoint {
 		return this.contactPoint;
 	}
 
-	get isRoad () {
+	get isRoad (): boolean {
 		return this.type === TvLinkType.ROAD;
 	}
 
-	get isJunction () {
+	get isJunction (): boolean {
 		return this.type === TvLinkType.JUNCTION;
 	}
 
@@ -163,7 +162,7 @@ export abstract class TvLink {
 		return this.type == TvLinkType.ROAD ? this.getElement<TvRoad>().spline : undefined;
 	}
 
-	toLaneCoord ( lane: TvLane ) {
+	toLaneCoord ( lane: TvLane ): TvLaneCoord {
 
 		if ( this.type == TvLinkType.JUNCTION ) return;
 
@@ -175,7 +174,7 @@ export abstract class TvLink {
 
 	}
 
-	toRoadCoord () {
+	toRoadCoord (): TvRoadCoord {
 
 		if ( this.type == TvLinkType.JUNCTION ) return;
 
@@ -216,9 +215,16 @@ export abstract class TvLink {
 
 	}
 
+	removeLinks (): void {
+
+		// override in child
+
+	}
 }
 
 export class TvRoadLink extends TvLink {
+
+	public override readonly element: TvRoad;
 
 	constructor ( private road: TvRoad, contactPoint: TvContactPoint ) {
 		super( TvLinkType.ROAD, road, contactPoint );
@@ -232,22 +238,22 @@ export class TvRoadLink extends TvLink {
 		return `Link: ${ this.element.toString() }:${ this.contactPoint }`;
 	}
 
-	isEqualTo ( element: TvRoad | TvJunction ): boolean {
-		return this.element === element && this.contactPoint === this.contactPoint;
+	equals ( element: TvRoad ): boolean {
+		return this.element.equals( element ) && this.contactPoint === this.contactPoint;
 	}
 
 	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
-			this.road.predecessor = new TvRoadLink( otherRoad, otherRoadContact );
+			this.road.setPredecessor( new TvRoadLink( otherRoad, otherRoadContact ) );
 		} else {
-			this.road.successor = new TvRoadLink( otherRoad, otherRoadContact );
+			this.road.setSuccessor( new TvRoadLink( otherRoad, otherRoadContact ) );
 		}
 
 		if ( otherRoadContact == TvContactPoint.START ) {
-			otherRoad.predecessor = new TvRoadLink( this.road, this.contactPoint );
+			otherRoad.setPredecessor( new TvRoadLink( this.road, this.contactPoint ) );
 		} else {
-			otherRoad.successor = new TvRoadLink( this.road, this.contactPoint );
+			otherRoad.setSuccessor( new TvRoadLink( this.road, this.contactPoint ) );
 		}
 	}
 
@@ -255,19 +261,27 @@ export class TvRoadLink extends TvLink {
 		this.road.linkJunction( junction, this.contactPoint );
 	}
 
-	unlink ( road: TvRoad, contact: TvContactPoint ): void {
-		if ( this.contactPoint == TvContactPoint.START ) {
-			this.road.predecessor = null;
+	removeLinks (): void {
+
+		if ( this.contact == TvContactPoint.START ) {
+
+			this.getElement<TvRoad>().setPredecessor( null );
+			this.getElement<TvRoad>().getLaneProfile().getFirstLaneSection()?.removePredecessorLinks();
+
 		} else {
-			this.road.successor = null;
+
+			this.getElement<TvRoad>().setSuccessor( null );
+			this.getElement<TvRoad>().getLaneProfile().getLastLaneSection()?.removeSuccessorLinks();
+
 		}
+
 	}
 
 	replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
 		if ( this.contactPoint == TvContactPoint.START ) {
-			this.road.linkPredecessor( otherRoad, otherRoadContact );
+			this.road.linkPredecessorRoad( otherRoad, otherRoadContact );
 		} else {
-			this.road.linkSuccessor( otherRoad, otherRoadContact );
+			this.road.linkSuccessorRoad( otherRoad, otherRoadContact );
 		}
 	}
 
@@ -279,20 +293,22 @@ export class TvRoadLink extends TvLink {
 
 export class TvJunctionLink extends TvLink {
 
+	public override readonly element: TvJunction;
+
 	constructor ( private junction: TvJunction ) {
 		super( TvLinkType.JUNCTION, junction, null );
 	}
 
 	clone (): TvJunctionLink {
-		return new TvJunctionLink( this.getElement<TvJunction>() );
+		return new TvJunctionLink( this.element );
 	}
 
 	toString (): string {
 		return `Link: Junction: ${ this.element.toString() }`;
 	}
 
-	isEqualTo ( element: TvRoad | TvJunction ): boolean {
-		return this.element === element;
+	equals ( element: TvJunction ): boolean {
+		return this.element.equals( element );
 	}
 
 	linkRoad ( otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
@@ -303,10 +319,6 @@ export class TvJunctionLink extends TvLink {
 		Log.error( 'RoadLinkError', 'Cannot set link for junction link' );
 	}
 
-	unlink ( road: TvRoad, contact: TvContactPoint ): void {
-		this.junction.removeConnectionsByRoad( road );
-	}
-
 	replace ( road: TvRoad, otherRoad: TvRoad, otherRoadContact: TvContactPoint ): void {
 		this.junction.replaceIncomingRoad( road, otherRoad, otherRoadContact );
 	}
@@ -315,6 +327,5 @@ export class TvJunctionLink extends TvLink {
 		Log.error( 'RoadLinkError', 'Junction link does not have position' );
 		const center = this.junction.centroid;
 		return new TvPosTheta( center.x, center.y, center.z, 0, 0 );
-
 	}
 }

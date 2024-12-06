@@ -32,6 +32,11 @@ export class LaneLinkFactory {
 
 		const links: TvJunctionLaneLink[] = [];
 
+		// NOTE: to ensure exit lane is not used twice
+		// in future we might support this with multiple
+		// lane sections
+		const usedExits = new Set<TvLane>();
+
 		let id = 1;
 
 		for ( const entry of entries ) {
@@ -40,7 +45,9 @@ export class LaneLinkFactory {
 
 			const exit = this.findMatchingExitLane( entry, exits );
 
-			if ( !exit ) continue;
+			if ( !exit || usedExits.has( exit.lane ) ) continue;
+
+			usedExits.add( exit.lane );
 
 			const connectingLane = entry.lane.clone( id++ * -1 );
 
@@ -143,8 +150,6 @@ export class LaneLinkFactory {
 			}
 
 			bestMatch = exit;
-
-			break;
 
 		}
 

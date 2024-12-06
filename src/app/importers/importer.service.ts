@@ -20,7 +20,7 @@ export class ImporterService {
 	) {
 	}
 
-	async importAsset ( asset: Asset ) {
+	async importAsset ( asset: Asset ): Promise<void> {
 
 		switch ( asset.type ) {
 
@@ -36,7 +36,7 @@ export class ImporterService {
 
 	}
 
-	async importScene ( asset: Asset ) {
+	async importScene ( asset: Asset ): Promise<void> {
 
 		const assetLoader = this.loaderFactory.getLoader( AssetType.SCENE )
 

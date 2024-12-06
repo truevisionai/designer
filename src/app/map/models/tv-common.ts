@@ -238,7 +238,7 @@ export enum ObjectFillType {
 
 export class EnumHelper {
 
-	static stringToOdUnits ( value ): TvUnit {
+	static stringToOdUnits ( value: any ): TvUnit {
 
 		switch ( value ) {
 
@@ -309,7 +309,7 @@ export class EnumHelper {
 
 	}
 
-	static dimensionToString ( dynamicsDimension: DynamicsDimension ) {
+	static dimensionToString ( dynamicsDimension: DynamicsDimension ): "distance" | "time" | "rate" | "value" {
 
 		switch ( dynamicsDimension ) {
 
@@ -330,7 +330,7 @@ export class EnumHelper {
 
 	}
 
-	static stringToDynamics ( dynamicsString: string ) {
+	static stringToDynamics ( dynamicsString: string ): DynamicsShape {
 
 		switch ( dynamicsString ) {
 

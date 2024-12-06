@@ -102,13 +102,13 @@ export class TextMarkingToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	hideRoad ( road: TvRoad ) {
+	hideRoad ( road: TvRoad ): void {
 
 		this.points.removeKey( road );
 
 	}
 
-	createNode ( road: TvRoad, signal: TvRoadSignal ) {
+	createNode ( road: TvRoad, signal: TvRoadSignal ): Object3D {
 
 		if ( signal.type != TvSignalType.RoadMark ) return;
 

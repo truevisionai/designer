@@ -26,18 +26,18 @@ export class DropdownFieldComponent extends AbstractFieldComponent<any> implemen
 
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 
 	}
 
-	onChanged ( $event ) {
+	onChanged ( $event: any ): void {
 
 		this.changed.emit( $event.target.value );
 
 	}
 
-	showOption ( option: any ) {
+	showOption ( option: any ): any {
 
 		if ( typeof ( option ) == 'string' ) {
 

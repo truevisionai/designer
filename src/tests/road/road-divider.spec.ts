@@ -73,11 +73,11 @@ describe( 'Service: RoadDivider Simple', () => {
 		expect( road.geometries[ 0 ].length ).toBe( 50 );
 
 		expect( road.successor ).toBeDefined();
-		expect( road.successor.isEqualTo( newRoad ) ).toBeTrue();
+		expect( road.successor.equals( newRoad ) ).toBeTrue();
 		expect( road.successor.contactPoint ).toBe( TvContactPoint.START );
 
 		expect( newRoad.predecessor ).toBeDefined();
-		expect( newRoad.predecessor.isEqualTo( road ) ).toBeTrue();
+		expect( newRoad.predecessor.equals( road ) ).toBeTrue();
 		expect( newRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 
 		// check laneSection
@@ -188,11 +188,11 @@ describe( 'Service: RoadDivider Junctions', () => {
 		expect( road.geometries[ 0 ].length ).toBe( 50 );
 
 		expect( road.successor ).toBeDefined();
-		expect( road.successor.isEqualTo( newRoad ) ).toBeTrue();
+		expect( road.successor.equals( newRoad ) ).toBeTrue();
 		expect( road.successor.contactPoint ).toBe( TvContactPoint.START );
 
 		expect( newRoad.predecessor ).toBeDefined();
-		expect( newRoad.predecessor.isEqualTo( road ) ).toBeTrue();
+		expect( newRoad.predecessor.equals( road ) ).toBeTrue();
 		expect( newRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
 
 		// check laneSection

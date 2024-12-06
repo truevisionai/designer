@@ -67,7 +67,7 @@ export class TvMap {
 		return Array.from( this.roads.values() );
 	}
 
-	getControllers () {
+	getControllers (): TvSignalController[] {
 		return Array.from( this.controllers.values() );
 	}
 
@@ -79,7 +79,7 @@ export class TvMap {
 		return this.controllers.next();
 	}
 
-	addController ( controller: TvSignalController ) {
+	addController ( controller: TvSignalController ): void {
 		this.controllers.set( controller.id, controller );
 	}
 
@@ -106,7 +106,7 @@ export class TvMap {
 		this.splines.splice( this.splines.indexOf( spline ), 1 );
 	}
 
-	hasSpline ( spline: AbstractSpline ) {
+	hasSpline ( spline: AbstractSpline ): AbstractSpline {
 		return this.splines.find( s => s.uuid == spline.uuid );
 	}
 
@@ -140,11 +140,15 @@ export class TvMap {
 		return road;
 	}
 
-	generateRoadId ( useRemoved = true ): number {
+	generateRoadId ( useRemoved: boolean = true ): number {
 		return this.roads.next( useRemoved );
 	}
 
-	addRoad ( road: TvRoad ) {
+	/**
+	 * Adds a road to the map
+	 * @param road
+	 */
+	addRoad ( road: TvRoad ): void {
 
 		if ( this.roads.has( road.id ) ) {
 			throw new DuplicateKeyException( `Road with id ${ road.id } already exists` );
@@ -155,6 +159,18 @@ export class TvMap {
 		this.roads.set( road.id, road );
 	}
 
+	/**
+	 * Inserts a road into the map and assigns a new id
+	 * @param road
+	 */
+	insertRoad ( road: TvRoad ): void {
+
+		road.setId( this.roads.next() );
+
+		this.addRoad( road );
+
+	}
+
 	hasRoad ( road: TvRoad | number ): boolean {
 		if ( typeof road === 'number' ) {
 			return this.roads.has( road );
@@ -162,13 +178,13 @@ export class TvMap {
 		return this.roads.has( road.id );
 	}
 
-	getSurfaces () {
+	getSurfaces (): Surface[] {
 
 		return this.surfaces;
 
 	}
 
-	removeRoad ( road: TvRoad ) {
+	removeRoad ( road: TvRoad ): void {
 
 		if ( !this.roads.has( road.id ) ) {
 			throw new ModelNotFoundException( `Road with id ${ road.id } not found` );
@@ -217,7 +233,7 @@ export class TvMap {
 
 	}
 
-	addJunction ( junction: TvJunction ) {
+	addJunction ( junction: TvJunction ): void {
 
 		if ( this.junctions.has( junction.id ) ) {
 			throw new DuplicateKeyException( `Junction with id ${ junction.id } already exists` );
@@ -236,13 +252,13 @@ export class TvMap {
 		return this.junctions.has( junction.id );
 	}
 
-	getJunctions () {
+	getJunctions (): TvJunction[] {
 
 		return Array.from( this.junctions.values() );
 
 	}
 
-	removeJunction ( junction: TvJunction ) {
+	removeJunction ( junction: TvJunction ): void {
 
 		if ( !this.junctions.has( junction.id ) ) {
 			throw new ModelNotFoundException( `Junction with id ${ junction.id } not found` );
@@ -252,31 +268,31 @@ export class TvMap {
 
 	}
 
-	removeSurface ( surface: Surface ) {
+	removeSurface ( surface: Surface ): void {
 
 		this.surfaces.splice( this.surfaces.indexOf( surface ), 1 );
 
 	}
 
-	addSurface ( surface: Surface ) {
+	addSurface ( surface: Surface ): void {
 
 		this.surfaces.push( surface );
 
 	}
 
-	getProps () {
+	getProps (): PropInstance[] {
 		return this.props;
 	}
 
-	addProp ( prop: PropInstance ) {
+	addProp ( prop: PropInstance ): void {
 		this.props.push( prop );
 	}
 
-	removeProp ( prop: PropInstance ) {
+	removeProp ( prop: PropInstance ): void {
 		this.props.splice( this.props.indexOf( prop ), 1 );
 	}
 
-	destroy () {
+	destroy (): void {
 
 		this.clear();
 
@@ -285,7 +301,7 @@ export class TvMap {
 	/**
 	 * Clears the OpenDrive structure, could be used to start a new document
 	 */
-	clear () {
+	clear (): void {
 
 		this.roads.clear();
 

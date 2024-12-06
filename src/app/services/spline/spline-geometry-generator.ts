@@ -87,7 +87,7 @@ export class SplineGeometryGenerator {
 	 * @param spline
 	 * @deprecated
 	 */
-	buildSpline ( spline: AbstractSpline ) {
+	buildSpline ( spline: AbstractSpline ): void {
 
 		this.buildGeometry( spline );
 

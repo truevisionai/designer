@@ -13,7 +13,7 @@ export class RelativeLanePositionComponent implements OnInit {
 	constructor () {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 	}
 
 }

@@ -97,7 +97,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	buildRoadMarkings ( road: TvRoad ) {
+	buildRoadMarkings ( road: TvRoad ): void {
 
 		const laneSections = road.getLaneProfile().getLaneSections();
 
@@ -128,7 +128,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	updateJunctionVisibility ( road: TvRoad ) {
+	updateJunctionVisibility ( road: TvRoad ): void {
 
 		if ( !road.isJunction ) return;
 
@@ -161,7 +161,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return true;
 	}
 
-	private createRoadGameObject ( road: TvRoad ) {
+	private createRoadGameObject ( road: TvRoad ): any {
 
 		const gameObject = new GameObject( 'Road:' + road.id );
 
@@ -170,7 +170,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return gameObject;
 	}
 
-	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ) {
+	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
 
 		const laneSectionMesh = new GameObject( 'LaneSection' );
 
@@ -213,7 +213,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return laneSectionMesh;
 	}
 
-	private createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+	private createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
 
 		const geometry = new BufferGeometry();
 
@@ -272,7 +272,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	buildLaneV2 ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ) {
+	buildLaneV2 ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
 
 		const geometry = new LaneBufferGeometry( lane, laneSection, road );
 
@@ -336,7 +336,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 	}
 
 	// eslint-disable-next-line max-lines-per-function
-	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ) {
+	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): void {
 
 		const distance = sOffset - laneSection.s as RoadDistance;
 		const start = road.getLaneStartPosition( lane, distance, 0, false );
@@ -368,7 +368,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 			vv2.uvs = new Vector2( height.inner + width + height.outer, sOffset );
 		}
 
-		if ( lane.side == TvLaneSide.RIGHT ) {
+		if ( lane.isRight ) {
 
 			this.addVertex( lane.meshData, v1 );
 			if ( vv1 ) this.addVertex( lane.meshData, vv1 );
@@ -386,7 +386,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	private addVertex ( meshData: MeshGeometryData, v1: Vertex ) {
+	private addVertex ( meshData: MeshGeometryData, v1: Vertex ): void {
 
 		meshData.vertices.push( v1.position.x, v1.position.y, v1.position.z );
 		meshData.normals.push( v1.normal.x, v1.normal.y, v1.normal.z );
@@ -395,7 +395,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	private createMeshIndices ( geom: MeshGeometryData, verticesPerStep = 2 ): void {
+	private createMeshIndices ( geom: MeshGeometryData, verticesPerStep: number = 2 ): void {
 
 		if ( verticesPerStep < 2 ) {
 			console.error( "verticesPerStep should be at least 2" );
@@ -447,7 +447,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 	// 	}
 	// }
 
-	private createLaneGameObject ( lane: TvLane, geometry: BufferGeometry, material: THREE.Material | THREE.Material[] ) {
+	private createLaneGameObject ( lane: TvLane, geometry: BufferGeometry, material: THREE.Material | THREE.Material[] ): any {
 
 		const gameObject = new GameObject( 'Lane:' + lane.id, geometry, material );
 
@@ -456,7 +456,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return gameObject;
 	}
 
-	private buildSignals ( road: TvRoad ) {
+	private buildSignals ( road: TvRoad ): THREE.Group<THREE.Object3DEventMap> {
 
 		road.signalGroup?.clear();
 

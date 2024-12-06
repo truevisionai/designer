@@ -94,7 +94,7 @@ export class LaneMarkingInspector {
 	}
 
 	@SerializedAction()
-	delete () {
+	delete (): void {
 
 		Commands.RemoveObject( this );
 

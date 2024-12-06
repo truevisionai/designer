@@ -45,7 +45,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	init () {
+	init (): void {
 
 		this.setHint( 'Use LEFT CLICK to select road or lane' );
 
@@ -99,7 +99,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	onPointerDownSelect ( e: PointerEventData ) {
+	onPointerDownSelect ( e: PointerEventData ): void {
 
 		this.tool.base.handleSelection( e, selected => {
 
@@ -149,7 +149,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	onPointerUp ( e: PointerEventData ) {
+	onPointerUp ( e: PointerEventData ): void {
 
 		if ( !this.selectedNode ) return
 
@@ -173,7 +173,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	onPointerMoved ( e: PointerEventData ) {
+	onPointerMoved ( e: PointerEventData ): void {
 
 		if ( !this.isPointerDown ) {
 
@@ -325,7 +325,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	onNodeSelected ( node: LaneMarkingNode ) {
+	onNodeSelected ( node: LaneMarkingNode ): void {
 
 		if ( this.selectedNode ) this.onNodeUnselected( this.selectedNode );
 
@@ -341,7 +341,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	onNodeUnselected ( node: LaneMarkingNode ) {
+	onNodeUnselected ( node: LaneMarkingNode ): void {
 
 		node?.unselect();
 
@@ -351,7 +351,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	showInspector ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+	showInspector ( lane: TvLane, roadmark: TvLaneRoadMark ): void {
 
 		const inspector = new LaneMarkingInspector( lane, roadmark );
 
@@ -359,7 +359,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	addRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+	addRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ): void {
 
 		this.tool.addRoadmark( lane, roadmark );
 
@@ -369,7 +369,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	updateRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+	updateRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ): void {
 
 		this.tool.rebuild( lane );
 
@@ -379,7 +379,7 @@ export class LaneMarkingTool extends BaseTool<any> {
 
 	}
 
-	removeRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ) {
+	removeRoadMark ( lane: TvLane, roadmark: TvLaneRoadMark ): void {
 
 		this.tool.removeRoadmark( lane, roadmark );
 

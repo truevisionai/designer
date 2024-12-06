@@ -31,13 +31,13 @@ export class ExportGlbDialog implements OnInit {
 	) {
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		// this.exporter.exportGLB();
 
 	}
 
-	export () {
+	export (): void {
 
 		let coordinateSystem = CoordinateSystem.THREE_JS;
 

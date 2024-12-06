@@ -26,7 +26,7 @@ export class LaneSectionFactory {
 
 		for ( let i = 1; i <= leftCount; i++ ) {
 
-			const lane = laneSection.createLane( TvLaneSide.LEFT, i, TvLaneType.driving, false, true );
+			const lane = laneSection.createLeftLane( i, TvLaneType.driving, false, true );
 
 			lane.addWidthRecord( 0, leftWidth, 0, 0, 0 );
 
@@ -34,13 +34,13 @@ export class LaneSectionFactory {
 
 		for ( let i = 1; i <= rightCount; i++ ) {
 
-			const lane = laneSection.createLane( TvLaneSide.RIGHT, -i, TvLaneType.driving, false, true );
+			const lane = laneSection.createRightLane( -i, TvLaneType.driving, false, true );
 
 			lane.addWidthRecord( 0, rightWidth, 0, 0, 0 );
 
 		}
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.driving, false, true );
+		laneSection.createCenterLane( 0, TvLaneType.driving, false, true );
 
 		return laneSection;
 	}
@@ -163,17 +163,17 @@ export class LaneSectionFactory {
 				previous.laneSection.getRightLanes() :
 				next.laneSection.getRightLanes();
 
-			laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+			laneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
 			for ( let i = 0; i < leftLanes.length; i++ ) {
 
-				laneSection.createLane( TvLaneSide.LEFT, leftLanes[ i ].id, leftLanes[ i ].type, false, false );
+				laneSection.createLeftLane( leftLanes[ i ].id, leftLanes[ i ].type, false, false );
 
 			}
 
 			for ( let i = 0; i < rightLanes.length; i++ ) {
 
-				laneSection.createLane( TvLaneSide.RIGHT, rightLanes[ i ].id, rightLanes[ i ].type, false, false );
+				laneSection.createRightLane( rightLanes[ i ].id, rightLanes[ i ].type, false, false );
 
 			}
 
@@ -238,7 +238,7 @@ export class LaneSectionFactory {
 			.filter( lane => lane.direction === outgoingDirection )
 			.map( lane => successor.toLaneCoord( lane ) )
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		laneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
 		const coords = incomingLaneCoords.length >= outgoingLaneCoords.length ?
 			incomingLaneCoords :
@@ -264,13 +264,7 @@ export class LaneSectionFactory {
 
 				id++;
 
-				const lane = laneSection.createLane(
-					TvLaneSide.RIGHT,
-					-id,
-					coord.lane.type,
-					true,
-					true
-				);
+				const lane = laneSection.createRightLane( -id, coord.lane.type, true, true );
 
 				if ( prevLane ) {
 					lane.setPredecessor( prevLane );
@@ -311,7 +305,7 @@ export class LaneSectionFactory {
 
 		const laneSection = this.createLaneSection( joiningRoad );
 
-		laneSection.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, false, false );
+		laneSection.createCenterLane( 0, TvLaneType.none, false, false );
 
 		// this.createBothSides( laneSection, joiningRoad, predecessor, successor );
 		// this.createRightSide( laneSection, joiningRoad, successor, predecessor );
@@ -320,7 +314,7 @@ export class LaneSectionFactory {
 		return [ laneSection ];
 	}
 
-	createRightSide ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
+	createRightSide ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ): void {
 
 		const processed = new Set<TvLane>();
 
@@ -362,7 +356,7 @@ export class LaneSectionFactory {
 
 	}
 
-	createBothSides ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
+	createBothSides ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ): void {
 
 		const leftLanes = predecessor.laneSection.getLeftLanes();
 
@@ -390,7 +384,7 @@ export class LaneSectionFactory {
 
 	}
 
-	clonePredcessorSection ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ) {
+	clonePredcessorSection ( laneSection: TvLaneSection, road: TvRoad, predecessor: TvLink, successor: TvLink ): void {
 
 		const sOffset = predecessor.contact == TvContactPoint.START ? 0 : road.length;
 
@@ -406,7 +400,7 @@ export class LaneSectionFactory {
 
 	}
 
-	private createLaneSection ( road: TvRoad ) {
+	private createLaneSection ( road: TvRoad ): any {
 
 		return new TvLaneSection( road.laneSections.length, 0, false, road );
 

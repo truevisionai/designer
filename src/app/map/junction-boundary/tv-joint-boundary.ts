@@ -40,7 +40,7 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 		this.jointLaneEnd = jointLaneEnd
 	}
 
-	toString () {
+	toString (): string {
 		return `JointBoundary: roadId=${ this.road.id } contactPoint=${ this.contactPoint } jointLaneStart=${ this.jointLaneStart?.id } jointLaneEnd=${ this.jointLaneEnd?.id }`;
 	}
 
@@ -65,13 +65,13 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
-			start = this.jointLaneStart.side == TvLaneSide.RIGHT ?
+			start = this.jointLaneStart.isRight ?
 				this.road.getLaneEndPosition( this.jointLaneStart, roadDistance ) :
 				this.road.getLaneStartPosition( this.jointLaneStart, roadDistance );
 
 		} else if ( this.contactPoint == TvContactPoint.END ) {
 
-			start = this.jointLaneStart.side == TvLaneSide.RIGHT ?
+			start = this.jointLaneStart.isRight ?
 				this.road.getLaneStartPosition( this.jointLaneStart, roadDistance ) :
 				this.road.getLaneEndPosition( this.jointLaneStart, roadDistance );
 
@@ -83,13 +83,13 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 
 		if ( this.contactPoint == TvContactPoint.START ) {
 
-			end = this.jointLaneEnd.side == TvLaneSide.RIGHT ?
+			end = this.jointLaneEnd.isRight ?
 				this.road.getLaneStartPosition( this.jointLaneEnd, roadDistance ) :
 				this.road.getLaneEndPosition( this.jointLaneEnd, roadDistance );
 
 		} else if ( this.contactPoint == TvContactPoint.END ) {
 
-			end = this.jointLaneEnd.side == TvLaneSide.RIGHT ?
+			end = this.jointLaneEnd.isRight ?
 				this.road.getLaneEndPosition( this.jointLaneEnd, roadDistance ) :
 				this.road.getLaneStartPosition( this.jointLaneEnd, roadDistance );
 
@@ -98,7 +98,7 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 		return [ start, mid, end ];
 	}
 
-	clone () {
+	clone (): TvJointBoundary {
 		return new TvJointBoundary(
 			this.road, this.contactPoint, this.jointLaneStart, this.jointLaneEnd
 		);

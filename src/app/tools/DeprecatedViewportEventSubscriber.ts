@@ -32,7 +32,7 @@ export abstract class DeprecatedViewportEventSubscriber {
 
 	}
 
-	subscribeToEvents () {
+	subscribeToEvents (): void {
 
 		if ( this.subscribed ) return;
 
@@ -105,7 +105,7 @@ export abstract class DeprecatedViewportEventSubscriber {
 		this.subscribed = true;
 	}
 
-	unsubscribeToEvents () {
+	unsubscribeToEvents (): void {
 
 		if ( !this.subscribed ) return;
 

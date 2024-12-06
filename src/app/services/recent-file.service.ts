@@ -64,7 +64,7 @@ export class RecentFileService {
 
 	}
 
-	addPathToRecentFiles ( path: string ) {
+	addPathToRecentFiles ( path: string ): void {
 
 		this.mRecentFiles.push( new IFile( null, path ) );
 

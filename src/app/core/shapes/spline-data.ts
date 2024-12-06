@@ -6,7 +6,7 @@ import { Vector2, Vector4 } from 'three';
 
 
 // Optimised for t=0.5
-function Split ( spline: Vector4 ) {
+function Split ( spline: Vector4 ): Vector4[] {
 
 	const q0 = ( spline.x + spline.y ) * 0.5; // x + y / 2
 
@@ -55,11 +55,11 @@ export function HermiteSpline ( p0: Vector2, p1: Vector2, v0: Vector2, v1: Vecto
 
 }
 
-function sqr ( x ) {
+function sqr ( x: any ): number {
 	return x * x;
 }
 
-function LengthEstimate ( s: SplineData ) {
+function LengthEstimate ( s: SplineData ): number[] {
 
 	// Our convex hull is p0, p1, p2, p3, so p0_p3 is our minimum possible length, and p0_p1 + p1_p2 + p2_p3 our maximum.
 
@@ -83,7 +83,7 @@ function LengthEstimate ( s: SplineData ) {
 
 }
 
-export function Length ( s: SplineData, maxError /*float*/ ) {
+export function Length ( s: SplineData, maxError: any /*float*/ ): any {
 
 	// return computeSplineLength( s, 1000 );
 

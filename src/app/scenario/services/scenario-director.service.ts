@@ -59,7 +59,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private static setRoadProperties ( obj: ScenarioEntity ) {
+	private static setRoadProperties ( obj: ScenarioEntity ): void {
 
 		const roadCoord = new TvPosTheta();
 
@@ -83,7 +83,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private onPlayerStarted () {
+	private onPlayerStarted (): void {
 
 		if ( this.logEvents ) console.info( 'scenario-started', this.scenarioService );
 
@@ -91,32 +91,32 @@ export class ScenarioDirectorService {
 		this.updateScenario();
 	}
 
-	private onPlayerResumed () {
+	private onPlayerResumed (): void {
 
 		if ( this.logEvents ) console.info( 'scenario-resumed' );
 
 	}
 
-	private onPlayerPaused () {
+	private onPlayerPaused (): void {
 
 		if ( this.logEvents ) console.info( 'scenario-paused' );
 
 	}
 
-	private onPlayerStopped () {
+	private onPlayerStopped (): void {
 
 		if ( this.logEvents ) console.info( 'scenario-stopped' );
 
 		this.resetScenario();
 	}
 
-	private onPlayerTick ( e: PlayerUpdateData ) {
+	private onPlayerTick ( e: PlayerUpdateData ): void {
 
 		this.updateScenario();
 
 	}
 
-	private updateScenario () {
+	private updateScenario (): void {
 
 		this.scenario.objects.forEach( ( entity ) => {
 
@@ -149,7 +149,7 @@ export class ScenarioDirectorService {
 		}
 	}
 
-	private startScenario () {
+	private startScenario (): void {
 
 		ScenarioEvents.fire( {
 			name: 'scenario-started',
@@ -184,7 +184,7 @@ export class ScenarioDirectorService {
 		// this.added = true;
 	}
 
-	private runStory ( story: Story ) {
+	private runStory ( story: Story ): void {
 
 		if ( this.logEvents ) console.info( 'running-story', story.name );
 
@@ -205,7 +205,7 @@ export class ScenarioDirectorService {
 		} );
 	}
 
-	private startAct ( act: Act ) {
+	private startAct ( act: Act ): void {
 
 		if ( this.logEvents ) console.info( 'started-act', act.name );
 
@@ -216,7 +216,7 @@ export class ScenarioDirectorService {
 		this.updateAct( act );
 	}
 
-	private updateAct ( act: Act ) {
+	private updateAct ( act: Act ): void {
 
 		if ( this.logEvents ) console.info( 'running-act', act.name );
 
@@ -228,7 +228,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private updateSequence ( sequence: ManeuverGroup ) {
+	private updateSequence ( sequence: ManeuverGroup ): void {
 
 		sequence.maneuvers.forEach( maneuver => {
 
@@ -245,7 +245,7 @@ export class ScenarioDirectorService {
 		} );
 	}
 
-	private startManeuver ( maneuver: Maneuver, sequence: ManeuverGroup ) {
+	private startManeuver ( maneuver: Maneuver, sequence: ManeuverGroup ): void {
 
 		if ( this.logEvents ) console.info( 'started-manuever', maneuver.name );
 
@@ -256,7 +256,7 @@ export class ScenarioDirectorService {
 		this.updateManeuver( maneuver, sequence );
 	}
 
-	private updateManeuver ( maneuver: Maneuver, sequence: ManeuverGroup ) {
+	private updateManeuver ( maneuver: Maneuver, sequence: ManeuverGroup ): void {
 
 		if ( this.logEvents ) console.info( 'running-maneuver', maneuver.name );
 
@@ -299,7 +299,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private startEvent ( event: TvEvent, sequence: ManeuverGroup ) {
+	private startEvent ( event: TvEvent, sequence: ManeuverGroup ): void {
 
 		if ( this.logEvents ) console.info( 'started-event', event.name );
 
@@ -311,7 +311,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private updateEvent ( event: TvEvent, sequence: ManeuverGroup ) {
+	private updateEvent ( event: TvEvent, sequence: ManeuverGroup ): void {
 
 		if ( this.logEvents ) console.info( 'running-event', event.name );
 
@@ -354,7 +354,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private startAction ( action: TvAction, actionName: string, sequence: ManeuverGroup ) {
+	private startAction ( action: TvAction, actionName: string, sequence: ManeuverGroup ): void {
 
 		if ( this.logEvents ) console.info( 'started-action', actionName );
 
@@ -366,7 +366,7 @@ export class ScenarioDirectorService {
 
 	}
 
-	private updateAction ( action: TvAction, actionName: string, sequence: ManeuverGroup ) {
+	private updateAction ( action: TvAction, actionName: string, sequence: ManeuverGroup ): void {
 
 		if ( this.logEvents ) console.info( 'running-action', actionName );
 
@@ -381,7 +381,7 @@ export class ScenarioDirectorService {
 		} );
 	}
 
-	private resetScenario () {
+	private resetScenario (): void {
 
 		( new ResetHelper( this.scenario ) ).reset();
 

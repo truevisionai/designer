@@ -57,7 +57,7 @@ export abstract class AbstractFieldComponent<T> {
 
 	}
 
-	onModelChanged ( $event: any ) {
+	onModelChanged ( $event: any ): void {
 
 		this.value = $event;
 
@@ -67,7 +67,7 @@ export abstract class AbstractFieldComponent<T> {
 
 	}
 
-	onFieldValueChanged ( $event: any ) {
+	onFieldValueChanged ( $event: any ): void {
 
 		this.fieldValue = $event;
 

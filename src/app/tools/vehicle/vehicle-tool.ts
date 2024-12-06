@@ -91,7 +91,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	}
 
-	onPointerDownCreate ( event: PointerEventData ) {
+	onPointerDownCreate ( event: PointerEventData ): void {
 
 		const roadCoord = this.movingStrategy.onPointerDown( event );
 
@@ -107,7 +107,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	}
 
-	onPointerDownSelect ( event: PointerEventData ) {
+	onPointerDownSelect ( event: PointerEventData ): void {
 
 		// if ( this.isVehicleSelected( event ) ) return;
 		// deselect
@@ -152,7 +152,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	}
 
-	updateLocation ( entity: ScenarioEntity, roadCoord: TvRoadCoord ) {
+	updateLocation ( entity: ScenarioEntity, roadCoord: TvRoadCoord ): void {
 
 		const teleportAction = entity.initActions.find( action => action instanceof TeleportAction ) as TeleportAction;
 
@@ -191,7 +191,7 @@ export class VehicleTool extends BaseTool<any> implements IToolWithPoint {
 
 	}
 
-	selectVehicle ( entity: VehicleEntity ) {
+	selectVehicle ( entity: VehicleEntity ): void {
 
 		CommandHistory.execute( new SetInspectorCommand( EntityInspector, entity ) );
 

@@ -4,9 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-
 import { Observable } from 'rxjs';
-
 import { AppComfirmComponent } from './app-confirm.component';
 
 interface confirmData {

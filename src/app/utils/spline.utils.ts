@@ -105,7 +105,7 @@ export class SplineUtils {
 
 		if ( nextSegment instanceof TvRoad ) {
 
-			road.linkSuccessor( nextSegment, TvContactPoint.START );
+			road.linkSuccessorRoad( nextSegment, TvContactPoint.START );
 
 		} else if ( nextSegment instanceof TvJunction ) {
 
@@ -119,7 +119,7 @@ export class SplineUtils {
 
 		if ( prevSegment instanceof TvRoad ) {
 
-			road.linkPredecessor( prevSegment, TvContactPoint.END );
+			road.linkPredecessorRoad( prevSegment, TvContactPoint.END );
 
 		} else if ( prevSegment instanceof TvJunction ) {
 
@@ -145,14 +145,14 @@ export class SplineUtils {
 
 	}
 
-	static hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction | null ) {
+	static hasSegment ( spline: AbstractSpline, segment: TvRoad | TvJunction | null ): any {
 
 		return spline.hasSegment( segment );
 
 	}
 
 	// eslint-disable-next-line max-lines-per-function
-	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ) {
+	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ): void {
 
 		spline.addSegment( sOffset, segment );
 

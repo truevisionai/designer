@@ -35,7 +35,7 @@ export class TvTexture extends Texture {
 		this.guid = guid;
 	}
 
-	static createFromTexture ( guid: string, texture: Texture ) {
+	static createFromTexture ( guid: string, texture: Texture ): TvTexture {
 
 		const tvTexture = new TvTexture( guid );
 
@@ -45,7 +45,7 @@ export class TvTexture extends Texture {
 
 	}
 
-	toMetadata ( path: string ) {
+	toMetadata ( path: string ): any {
 
 		const image = this.image;
 
@@ -83,7 +83,7 @@ export class TextureAsset {
 		this.texture.userData = { guid: this.guid };
 	}
 
-	toMetadata ( path: string ) {
+	toMetadata ( path: string ): any {
 
 		return this.texture.toMetadata( path );
 

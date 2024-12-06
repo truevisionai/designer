@@ -78,7 +78,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	showControls ( road: TvRoad, roadObject: TvRoadObject ) {
+	showControls ( road: TvRoad, roadObject: TvRoadObject ): void {
 
 		roadObject.repeats.forEach( repeat => {
 
@@ -98,7 +98,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createNode ( road: TvRoad, roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+	createNode ( road: TvRoad, roadObject: TvRoadObject, repeat: TvObjectRepeat ): Object3D {
 
 		const coord = road.getRoadPosition( repeat.sStart, roadObject.t );
 
@@ -130,7 +130,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	createLine ( road: TvRoad, roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+	createLine ( road: TvRoad, roadObject: TvRoadObject, repeat: TvObjectRepeat ): DebugLine<any> {
 
 		const points = this.getLinePoints( road, roadObject, repeat );
 
@@ -152,7 +152,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	getLinePoints ( road: TvRoad, roadObject: TvRoadObject, repeat: TvObjectRepeat ) {
+	getLinePoints ( road: TvRoad, roadObject: TvRoadObject, repeat: TvObjectRepeat ): any[] {
 
 		const points = [];
 
@@ -178,7 +178,7 @@ export class PropSpanToolDebugger extends BaseDebugger<TvRoad> {
 
 	}
 
-	clear () {
+	clear (): void {
 
 		super.clear();
 

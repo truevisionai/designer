@@ -49,7 +49,7 @@ export class DelaunatorHelper {
 	private static filterTriangles ( vertices: number[], triangles: number[], boundaryPositions: Vector2[] ): number[] {
 
 		// Check if a point is inside the boundary using a point-in-polygon test
-		function isPointInsideBoundary ( x, y ): boolean {
+		function isPointInsideBoundary ( x: any, y: any ): boolean {
 			let inside = false;
 			for ( let i = 0, j = boundaryPositions.length - 1; i < boundaryPositions.length; j = i++ ) {
 				const xi = boundaryPositions[ i ].x, yi = boundaryPositions[ i ].y;
@@ -84,7 +84,7 @@ export class DelaunatorHelper {
 		return filteredTriangles;
 	}
 
-	private static calculateUVs ( points ): Float32Array {
+	private static calculateUVs ( points: any ): Float32Array {
 
 		const uvArray = new Float32Array( points.length * 2 );
 		let minX = Infinity, maxX = -Infinity;

@@ -43,8 +43,8 @@ describe( 'TvLaneProfile', () => {
 	it( 'should get the lane sections', () => {
 		const laneSection1 = new TvLaneSection( 1, 0, false, road );
 		const laneSection2 = new TvLaneSection( 2, 100, true, road );
-		laneProfile.addLaneSectionInstance( laneSection1 );
-		laneProfile.addLaneSectionInstance( laneSection2 );
+		laneProfile.addLaneSection( laneSection1 );
+		laneProfile.addLaneSection( laneSection2 );
 		expect( laneProfile.getLaneSections() ).toEqual( [ laneSection1, laneSection2 ] );
 	} );
 
@@ -60,8 +60,8 @@ describe( 'TvLaneProfile', () => {
 	it( 'should get the lane section by id', () => {
 		const laneSection1 = new TvLaneSection( 1, 0, false, road );
 		const laneSection2 = new TvLaneSection( 2, 100, true, road );
-		laneProfile.addLaneSectionInstance( laneSection1 );
-		laneProfile.addLaneSectionInstance( laneSection2 );
+		laneProfile.addLaneSection( laneSection1 );
+		laneProfile.addLaneSection( laneSection2 );
 		expect( laneProfile.getLaneSectionById( 2 ) ).toBe( laneSection2 );
 	} );
 

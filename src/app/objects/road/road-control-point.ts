@@ -84,7 +84,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 	}
 
-	update () {
+	update (): void {
 
 		this.updateFrontTangent();
 
@@ -94,7 +94,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 
 	}
 
-	show () {
+	show (): void {
 
 		super.show();
 
@@ -105,7 +105,7 @@ export class RoadControlPoint extends AbstractControlPoint {
 		if ( this.tangentLine ) this.tangentLine.visible = true;
 	}
 
-	hide () {
+	hide (): void {
 
 		super.hide();
 

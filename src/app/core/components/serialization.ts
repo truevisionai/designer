@@ -22,7 +22,7 @@ export interface ISerializedActionSetting {
 	validate?: Function;
 }
 
-export function SerializedAction ( settings?: ISerializedActionSetting ) {
+export function SerializedAction ( settings?: ISerializedActionSetting ): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void {
 
 	return function ( target: any, propertyKey: string, descriptor: PropertyDescriptor ) {
 
@@ -40,7 +40,7 @@ export function SerializedAction ( settings?: ISerializedActionSetting ) {
 
 }
 
-export function SerializedField ( settings: ISerializedFieldSetting ) {
+export function SerializedField ( settings: ISerializedFieldSetting ): (target: any, propertyKey: string) => void {
 	return function ( target: any, propertyKey: string ) {
 		Reflect.defineMetadata( 'serializable', true, target, propertyKey );
 		Reflect.defineMetadata( 'fieldSettings', settings, target, propertyKey );

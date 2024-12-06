@@ -32,12 +32,7 @@ export class SplineSegmentService {
 
 		const firstSegment = spline.getRoadSegments()[ 0 ];
 
-		if ( firstSegment ) {
-
-			firstSegment.successor = null;
-			firstSegment.predecessor = null;
-
-		}
+		firstSegment?.removeLinks();
 
 		spline.clearSegments();
 
@@ -95,12 +90,12 @@ export class SplineSegmentService {
 
 	}
 
-	private removeRoadSegments ( spline: AbstractSpline, keepFirst = false ): void {
+	private removeRoadSegments ( spline: AbstractSpline, keepFirst: boolean = false ): void {
 
 		spline.getRoadSegments().forEach( ( road, index ) => {
 
 			if ( keepFirst && index === 0 ) {
-				road.predecessor = road.successor = null;
+				road.removeLinks();
 				return
 			};
 
@@ -162,7 +157,7 @@ export class SplineSegmentService {
 
 		existingRoad.successor?.replace( existingRoad, newRoad, TvContactPoint.END );
 
-		newRoad.linkPredecessor( existingRoad, TvContactPoint.END );
+		newRoad.linkPredecessorRoad( existingRoad, TvContactPoint.END );
 
 		spline.addSegment( sOffset, newRoad );
 
@@ -170,7 +165,7 @@ export class SplineSegmentService {
 
 	}
 
-	private addJunctionSegment ( spline: AbstractSpline, sOffset: number, junction: TvJunction ) {
+	private addJunctionSegment ( spline: AbstractSpline, sOffset: number, junction: TvJunction ): void {
 
 	}
 
@@ -196,13 +191,13 @@ export class SplineSegmentService {
 
 		if ( successor?.element instanceof TvRoad && predecessor?.element instanceof TvRoad ) {
 
-			predecessor.element.successor = LinkFactory.createRoadLink( successor.element as TvRoad, successor.contact );
+			predecessor.element.setSuccessor( LinkFactory.createRoadLink( successor.element as TvRoad, successor.contact ) );
 
-			successor.element.predecessor = LinkFactory.createRoadLink( predecessor.element as TvRoad, predecessor.contact );
+			successor.element.setPredecessor( LinkFactory.createRoadLink( predecessor.element as TvRoad, predecessor.contact ) );
 
 		} else if ( successor?.element instanceof TvJunction && predecessor?.element instanceof TvRoad ) {
 
-			predecessor.element.successor = LinkFactory.createJunctionLink( successor.element as TvJunction );
+			predecessor.element.setSuccessor( LinkFactory.createJunctionLink( successor.element as TvJunction ) );
 
 			successor.element.replaceIncomingRoad( road, predecessor.element, predecessor.contact );
 

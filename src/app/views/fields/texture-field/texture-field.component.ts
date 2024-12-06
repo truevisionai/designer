@@ -48,7 +48,7 @@ export class TextureFieldComponent extends AbstractFieldComponent<string> implem
 		return this.guid || this.value;
 	}
 
-	ngOnInit () {
+	ngOnInit (): void {
 
 		this.texture = this.id ? this.textureService.getTexture( this.id )?.texture : null;
 
@@ -62,7 +62,7 @@ export class TextureFieldComponent extends AbstractFieldComponent<string> implem
 
 	}
 
-	onRemoveClicked () {
+	onRemoveClicked (): void {
 
 		this.guid = null;
 		this.changed.emit( null );
@@ -70,7 +70,7 @@ export class TextureFieldComponent extends AbstractFieldComponent<string> implem
 	}
 
 	@HostListener( 'click', [ '$event' ] )
-	onClick ( $event ) {
+	onClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -78,7 +78,7 @@ export class TextureFieldComponent extends AbstractFieldComponent<string> implem
 	}
 
 	@HostListener( 'dblclick', [ '$event' ] )
-	onDoubleClick ( $event ) {
+	onDoubleClick ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -86,7 +86,7 @@ export class TextureFieldComponent extends AbstractFieldComponent<string> implem
 	}
 
 	@HostListener( 'dragover', [ '$event' ] )
-	onDragOver ( $event ) {
+	onDragOver ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -94,7 +94,7 @@ export class TextureFieldComponent extends AbstractFieldComponent<string> implem
 	}
 
 	@HostListener( 'dragleave', [ '$event' ] )
-	onDragLeave ( $event ) {
+	onDragLeave ( $event: any ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();
@@ -102,7 +102,7 @@ export class TextureFieldComponent extends AbstractFieldComponent<string> implem
 	}
 
 	@HostListener( 'drop', [ '$event' ] )
-	onDrop ( $event: DragEvent ) {
+	onDrop ( $event: DragEvent ): void {
 
 		$event.preventDefault();
 		$event.stopPropagation();

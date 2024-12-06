@@ -50,7 +50,7 @@ export class SelectPointCommand extends BaseCommand {
 		}
 	}
 
-	execute () {
+	execute (): void {
 
 		this.oldPoint?.unselect();
 

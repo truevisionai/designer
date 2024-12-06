@@ -10,7 +10,7 @@ export abstract class LaneFactory {
 
 	public static createLeftLane ( id: number, type: TvLaneType, roadId: number, laneSection: TvLaneSection ): TvLane {
 
-		return this.createLane( TvLaneSide.LEFT, id, type, roadId, laneSection );
+		return this.createLeftLane( id, type, roadId, laneSection );
 
 	}
 
@@ -22,7 +22,7 @@ export abstract class LaneFactory {
 
 	public static createRightLane ( id: number, type: TvLaneType, roadId: number, laneSection: TvLaneSection ): TvLane {
 
-		return this.createLane( TvLaneSide.RIGHT, id, type, roadId, laneSection );
+		return this.createRightLane( id, type, roadId, laneSection );
 
 	}
 

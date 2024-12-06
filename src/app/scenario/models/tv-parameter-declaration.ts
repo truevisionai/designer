@@ -74,7 +74,7 @@ export class ParameterDeclaration {
 
 	}
 
-	static typeToString ( type: ParameterType ) {
+	static typeToString ( type: ParameterType ): "integer" | "double" | "string" | "boolean" | "unsignedInt" | "unsignedShort" | "dateTime" | "unknown" {
 
 		if ( type === ParameterType.integer ) {
 			return 'integer';
