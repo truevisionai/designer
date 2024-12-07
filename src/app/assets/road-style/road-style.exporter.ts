@@ -13,6 +13,7 @@ import { TvLaneOffset } from 'app/map/models/tv-lane-offset';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { SceneExporter } from 'app/map/scene/scene.exporter';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { JsonObject } from 'app/importers/xml.element';
 
 @Injectable( {
 	providedIn: 'root'
@@ -33,7 +34,7 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 
 	}
 
-	exportAsJSON ( style: RoadStyle ): any {
+	exportAsJSON ( style: RoadStyle ): JsonObject {
 
 		const xmlNode = {
 			version: 1,

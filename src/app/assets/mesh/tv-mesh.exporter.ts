@@ -5,6 +5,7 @@
 import { Injectable } from '@angular/core';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvMesh } from "./tv-mesh";
+import { JsonObject } from 'app/importers/xml.element';
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,7 +23,7 @@ export class TvMeshExporter implements AssetExporter<TvMesh> {
 		return JSON.stringify( data );
 	}
 
-	exportAsJSON ( mesh: TvMesh ): any {
+	exportAsJSON ( mesh: TvMesh ): JsonObject {
 
 		// NOTE: this is not correct, but it is just a placeholder
 		const data = {

@@ -82,7 +82,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	exportAsJSON ( asset: TvMap ): any {
+	exportAsJSON ( asset: TvMap ): XmlElement {
 
 		return this.writeFile( asset );
 
@@ -94,17 +94,17 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeLaneLinks ( laneNode: any, lane: TvLane ): void {
+	public writeLaneLinks ( xmlNode: XmlElement, lane: TvLane ): void {
 
 		// not link for center lanes
 		if ( lane.isCenter ) return;
 
 		if ( lane.predecessorExists ) {
-			laneNode.link[ 'predecessor' ] = { attr_id: lane.predecessorId };
+			xmlNode.link[ 'predecessor' ] = { attr_id: lane.predecessorId };
 		}
 
 		if ( lane.successorExists ) {
-			laneNode.link[ 'successor' ] = { attr_id: lane.successorId };
+			xmlNode.link[ 'successor' ] = { attr_id: lane.successorId };
 		}
 
 	}
@@ -112,7 +112,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	/**
 	 * Writes the data from the OpenDrive structure to a file
 	 */
-	public writeFile ( map: TvMap ): any {
+	public writeFile ( map: TvMap ): XmlElement {
 
 		const rootNode = {
 			header: this.writeHeader( map.header ),
@@ -139,7 +139,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	 * Methods follow the same hierarchical structure and are called automatically when WriteFile
 	 * is executed
 	 */
-	public writeHeader ( header: TvMapHeader ): any {
+	public writeHeader ( header: TvMapHeader ): XmlElement {
 
 		const xml = {
 			attr_revMajor: header.revMajor,
@@ -167,7 +167,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		return xml;
 	}
 
-	public writeRoad ( xmlNode: any, road: TvRoad ): void {
+	public writeRoad ( xmlNode: XmlElement, road: TvRoad ): void {
 
 		const xml = {
 			attr_name: road.name,
@@ -199,7 +199,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	public writeRoadLinks ( xmlNode: any, road: TvRoad ): void {
+	public writeRoadLinks ( xmlNode: XmlElement, road: TvRoad ): void {
 
 		xmlNode.link = {};
 
@@ -273,7 +273,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeRoadType ( roadType: TvRoadTypeClass ): any {
+	public writeRoadType ( roadType: TvRoadTypeClass ): XmlElement {
 
 		const xml = {
 			attr_s: roadType.s,
@@ -289,7 +289,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		return xml;
 	}
 
-	public writePlanView ( xmlNode: any, road: TvRoad ): void {
+	public writePlanView ( xmlNode: XmlElement, road: TvRoad ): void {
 
 		xmlNode.planView = {
 			geometry: road.geometries.map( geometry => this.writeGeometry( geometry ) )
@@ -303,7 +303,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	writeElevationProfile ( elevationProfile: TvElevationProfile ): any {
+	writeElevationProfile ( elevationProfile: TvElevationProfile ): XmlElement {
 
 		if ( elevationProfile.getElevationCount() == 0 ) {
 			elevationProfile.createAndAddElevation( 0, 0, 0, 0, 0 );
@@ -325,7 +325,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	writeLateralProfile ( lateralProfile: TvLateralProfile ): any {
+	writeLateralProfile ( lateralProfile: TvLateralProfile ): XmlElement {
 
 		return {
 			superelevation: lateralProfile.getSuperElevations().map( superElevation => this.writePolynomial( superElevation ) ),
@@ -347,7 +347,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		};
 	}
 
-	public writeLanes ( xmlNode: any, laneProfile: TvLaneProfile ): void {
+	public writeLanes ( xmlNode: XmlElement, laneProfile: TvLaneProfile ): void {
 
 		if ( laneProfile.getLaneOffsetCount() ) {
 			laneProfile.createAndAddLaneOffset( 0, 0, 0, 0, 0 );
@@ -360,7 +360,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeLaneSection ( laneSection: TvLaneSection ): any {
+	public writeLaneSection ( laneSection: TvLaneSection ): XmlElement {
 
 		const leftLanes = {
 			lane: []
@@ -405,7 +405,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeLane ( xmlNode: any, lane: TvLane ): any {
+	public writeLane ( xmlNode: XmlElement, lane: TvLane ): XmlElement {
 
 		const laneNode = {
 			attr_id: lane.id,
@@ -476,7 +476,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		return laneNode;
 	}
 
-	public writeLaneWidth ( xmlNode: any, laneWidth: TvLaneWidth ): void {
+	public writeLaneWidth ( xmlNode: XmlElement, laneWidth: TvLaneWidth ): void {
 
 		xmlNode.width.push( {
 			attr_sOffset: laneWidth.s,
@@ -487,7 +487,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	public writeLaneRoadMark ( xmlNode: any, laneRoadMark: TvLaneRoadMark ): void {
+	public writeLaneRoadMark ( xmlNode: XmlElement, laneRoadMark: TvLaneRoadMark ): void {
 
 		xmlNode.roadMark.push( {
 			attr_sOffset: laneRoadMark.sOffset,
@@ -501,7 +501,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	public writeLaneMaterial ( xmlNode: any, laneMaterial: TvLaneMaterial ): void {
+	public writeLaneMaterial ( xmlNode: XmlElement, laneMaterial: TvLaneMaterial ): void {
 
 		xmlNode.material.push( {
 			attr_sOffset: laneMaterial.sOffset,
@@ -511,7 +511,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	public writeLaneVisibility ( xmlNode: any, laneVisibility: TvLaneVisibility ): void {
+	public writeLaneVisibility ( xmlNode: XmlElement, laneVisibility: TvLaneVisibility ): void {
 
 		xmlNode.visibility.push( {
 			attr_sOffset: laneVisibility.sOffset,
@@ -522,7 +522,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	public writeLaneSpeed ( xmlNode: any, laneSpeed: TvLaneSpeed ): void {
+	public writeLaneSpeed ( xmlNode: XmlElement, laneSpeed: TvLaneSpeed ): void {
 
 		xmlNode.speed.push( {
 			attr_sOffset: laneSpeed.sOffset,
@@ -531,7 +531,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	public writeLaneAccess ( xmlNode: any, laneAccess: TvLaneAccess ): void {
+	public writeLaneAccess ( xmlNode: XmlElement, laneAccess: TvLaneAccess ): void {
 
 		xmlNode.access.push( {
 			attr_sOffset: laneAccess.sOffset,
@@ -539,7 +539,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	public writeLaneHeight ( xmlNode: any, laneHeight: TvLaneHeight ): void {
+	public writeLaneHeight ( xmlNode: XmlElement, laneHeight: TvLaneHeight ): void {
 
 		xmlNode.height.push( {
 			attr_sOffset: laneHeight.sOffset,
@@ -662,7 +662,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	 * @param objectOutline
 	 * @deprecated
 	 */
-	public writeObjectOutline ( xmlNode: any, objectOutline: TvObjectOutline ): void {
+	public writeObjectOutline ( xmlNode: XmlElement, objectOutline: TvObjectOutline ): void {
 
 		if ( objectOutline != null ) {
 
@@ -744,7 +744,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeObjectMaterial ( xmlNode: any, roadObject: TvRoadObject ): void {
+	public writeObjectMaterial ( xmlNode: XmlElement, roadObject: TvRoadObject ): void {
 
 		if ( roadObject.material != null ) {
 
@@ -818,7 +818,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeObjectParkingSpace ( xmlNode: any, roadObject: TvRoadObject ): void {
+	public writeObjectParkingSpace ( xmlNode: XmlElement, roadObject: TvRoadObject ): void {
 
 		if ( roadObject.parkingSpace != null ) {
 
@@ -846,7 +846,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	public writeSignals ( road: TvRoad ): any {
+	public writeSignals ( road: TvRoad ): XmlElement {
 
 		return {
 			signal: road.getRoadSignals().map( signal => this.writeSignal( signal ) )
@@ -854,7 +854,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeSignal ( signal: TvRoadSignal ): any {
+	public writeSignal ( signal: TvRoadSignal ): XmlElement {
 
 		const xml = {
 			attr_s: signal.s,
@@ -907,14 +907,14 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		return xml;
 	}
 
-	writeSignalDependency ( dependency: TvSignalDependency ): any {
+	writeSignalDependency ( dependency: TvSignalDependency ): XmlElement {
 		return {
 			attr_id: dependency.id,
 			attr_type: dependency.type
 		}
 	}
 
-	writeReference ( reference: TvReference ): any {
+	writeReference ( reference: TvReference ): XmlElement {
 
 		return {
 			attr_id: reference.elementId,
@@ -924,10 +924,10 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeSurface ( xmlNode: any, road: TvRoad ): void {
+	public writeSurface ( xmlNode: XmlElement, road: TvRoad ): void {
 	}
 
-	public writeSignalController ( controller: TvSignalController ): any {
+	public writeSignalController ( controller: TvSignalController ): XmlElement {
 
 		return {
 			attr_id: controller.id,
@@ -938,7 +938,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeSignalControl ( control: TvControllerControl ): any {
+	public writeSignalControl ( control: TvControllerControl ): XmlElement {
 
 		return {
 			attr_signalId: control.signalId,
@@ -1017,7 +1017,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		};
 	}
 
-	public writeConnection ( connection: TvJunctionConnection ): any {
+	public writeConnection ( connection: TvJunctionConnection ): XmlElement {
 
 		const xml = {
 			attr_id: connection.id,
@@ -1039,7 +1039,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		return xml;
 	}
 
-	public writeJunctionPriority ( priority: TvJunctionPriority ): any {
+	public writeJunctionPriority ( priority: TvJunctionPriority ): XmlElement {
 
 		return {
 			attr_high: priority.high,
@@ -1047,7 +1047,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	public writeJunctionController ( controller: TvJunctionController ): any {
+	public writeJunctionController ( controller: TvJunctionController ): XmlElement {
 
 		return {
 			attr_id: controller.id,
@@ -1057,7 +1057,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeUserDataFromArray ( xmlNode: any, userData: TvUserData[] ): void {
+	public writeUserDataFromArray ( xmlNode: XmlElement, userData: TvUserData[] ): void {
 
 		for ( let i = 0; i < userData.length; i++ ) {
 
@@ -1068,7 +1068,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 	}
 
-	public writeUserData ( data: TvUserData ): any {
+	public writeUserData ( data: TvUserData ): XmlElement {
 
 		return {
 			attr_code: data.code,
@@ -1077,7 +1077,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
-	public writeUserDataFromMap ( xmlNode: any, userData: Map<any, TvUserData> ): void {
+	public writeUserDataFromMap ( xmlNode: XmlElement, userData: Map<any, TvUserData> ): void {
 
 		userData.forEach( userData => {
 

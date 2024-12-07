@@ -216,7 +216,7 @@ export class RoadFactory {
 
 	}
 
-	createSingleLaneRoad ( width: number = 3.6, side: any = TvLaneSide.RIGHT ): TvRoad {
+	createSingleLaneRoad ( width: number = 3.6, side: TvLaneSide = TvLaneSide.RIGHT ): TvRoad {
 
 		const road = this.createNewRoad();
 

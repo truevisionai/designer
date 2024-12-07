@@ -7,6 +7,7 @@ import { Material } from "three";
 import { TvStandardMaterial } from "../material/tv-standard-material";
 import { TvObjectAsset } from "./tv-object.asset";
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
+import { JsonObject } from 'app/importers/xml.element';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,7 +32,7 @@ export class TvObjectExporter implements AssetExporter<any> {
 		return JSON.stringify( json, null, 2 );
 	}
 
-	exportAsJSON ( instance: any, meta?: any ): any {
+	exportAsJSON ( instance: any, meta?: any ): JsonObject {
 
 		// meta is a string when called from JSON.stringify
 		const isRootObject = ( meta === undefined || typeof meta === 'string' );

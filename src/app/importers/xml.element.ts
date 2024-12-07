@@ -5,3 +5,5 @@
 export interface XmlElement {
 	[ key: string ]: any;
 }
+
+export declare type JsonObject = Record<string, any>;
