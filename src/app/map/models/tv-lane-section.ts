@@ -105,9 +105,9 @@ export class TvLaneSection {
 		return newLane;
 	}
 
-	createCenterLane ( id: number, type: TvLaneType, level: boolean, sort: boolean ): TvLane {
+	createCenterLane ( id?: number, type?: TvLaneType, level?: boolean, sort?: boolean ): TvLane {
 
-		return this.createLane( TvLaneSide.CENTER, id, type, level, sort );
+		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, level, false );
 
 	}
 
@@ -901,6 +901,46 @@ export class TvLaneSection {
 
 	removeSuccessorLinks (): void {
 		this.getNonCenterLanes().forEach( lane => lane.unsetSuccessor() );
+	}
+
+	setLanes ( lanes: TvLane[] ): void {
+
+		lanes.forEach( lane => {
+
+			lane.laneSection = this;
+
+			this.lanes.set( lane.id, lane );
+
+		} );
+
+	}
+
+	equals ( laneSection: TvLaneSection ): boolean {
+		return this.uuid == laneSection.uuid;
+	}
+
+	getRightCarriagewayBoundary (): number {
+		let lastLane: TvLane;
+		for ( const lane of this.getRightLanes().sort( DESC ) ) {
+			if ( lane.isCarriageWay() ) {
+				lastLane = lane;
+			} else {
+				break;
+			}
+		}
+		return lastLane ? lastLane.id : Number.MAX_SAFE_INTEGER;
+	}
+
+	getLeftCarriagewayBoundary (): number {
+		let lastLane: TvLane;
+		for ( const lane of this.getLeftLanes().sort( ASC ) ) {
+			if ( lane.isCarriageWay() ) {
+				lastLane = lane;
+			} else {
+				break;
+			}
+		}
+		return lastLane ? lastLane.id : Number.MIN_SAFE_INTEGER;
 	}
 }
 

@@ -854,5 +854,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	addWidthRecordAtStart ( width: number ): void {
 		this.addWidthRecord( 0, width, 0, 0, 0 );
 	}
+
+	getType (): TvLaneType {
+		return this.type;
+	}
 }
 
