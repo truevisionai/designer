@@ -27,11 +27,19 @@ describe( 'LaneSection', () => {
 
 		expect( laneSection.getRightCarriagewayBoundary() ).toBe( -2 );
 
+		laneSection.removeRightLanes();
+
+		expect( laneSection.getRightCarriagewayBoundary() ).toBe( 0 );
+
 	} );
 
 	it( 'should give correct left carriageway boundary', () => {
 
 		expect( laneSection.getLeftCarriagewayBoundary() ).toBe( 2 );
+
+		laneSection.removeLeftLanes();
+
+		expect( laneSection.getLeftCarriagewayBoundary() ).toBe( 0 );
 
 	} );
 

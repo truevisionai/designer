@@ -928,7 +928,7 @@ export class TvLaneSection {
 				break;
 			}
 		}
-		return lastLane ? lastLane.id : Number.MAX_SAFE_INTEGER;
+		return lastLane ? lastLane.id : 0;
 	}
 
 	getLeftCarriagewayBoundary (): number {
@@ -940,7 +940,7 @@ export class TvLaneSection {
 				break;
 			}
 		}
-		return lastLane ? lastLane.id : Number.MIN_SAFE_INTEGER;
+		return lastLane ? lastLane.id : 0;
 	}
 }
 
