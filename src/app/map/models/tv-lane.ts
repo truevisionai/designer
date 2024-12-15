@@ -131,6 +131,14 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.type != TvLaneType.sidewalk && this.type != TvLaneType.curb;
 	}
 
+	get isForward (): boolean {
+		return this.direction === TravelDirection.forward;
+	}
+
+	get isBackward (): boolean {
+		return this.direction === TravelDirection.backward;
+	}
+
 	get isDrivingLane (): boolean {
 		return this.type == TvLaneType.driving;
 	}
@@ -756,7 +764,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties?(): Object {
+	copyProperties? (): Object {
 
 		return {
 			travelDirection: this.direction,
@@ -857,6 +865,24 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getType (): TvLaneType {
 		return this.type;
+	}
+
+	switchSide (): void {
+		this.side = this.side === TvLaneSide.LEFT ? TvLaneSide.RIGHT : TvLaneSide.LEFT;
+	}
+
+	switchDirection (): void {
+		if ( this.direction === TravelDirection.backward ) {
+			this.direction = TravelDirection.forward;
+		} else if ( this.direction === TravelDirection.forward ) {
+			this.direction = TravelDirection.backward;
+		}
+	}
+
+	switchSideAndDirection (): this {
+		this.switchSide();
+		this.switchDirection();
+		return this;
 	}
 }
 

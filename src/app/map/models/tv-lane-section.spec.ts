@@ -23,6 +23,13 @@ describe( 'LaneSection', () => {
 
 	} );
 
+	it( 'should be equate lane section correctly', () => {
+
+		expect( laneSection.equals( laneSection ) ).toBe( true );
+		expect( laneSection.equals( laneSection.cloneAtS() ) ).toBe( false );
+
+	} );
+
 	it( 'should give correct right carriageway boundary', () => {
 
 		expect( laneSection.getRightCarriagewayBoundary() ).toBe( -2 );

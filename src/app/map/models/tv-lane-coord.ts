@@ -30,7 +30,7 @@ export class TvLaneCoord {
 	}
 
 	toString (): string {
-		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.laneDistance } offset:${ this.offset }`;
+		return `LaneCoord: Road:${ this.road.id } Section:${ this.laneSection.id } Lane:${ this.lane.id } s:${ this.laneDistance } offset:${ this.offset }`;
 	}
 
 	getLink (): TvLink {
@@ -44,18 +44,6 @@ export class TvLaneCoord {
 		if ( Maths.approxEquals( this.laneSection.s + this.laneDistance, this.road.length ) ) return TvContactPoint.END;
 
 		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.laneDistance } ${ this.road.length }` );
-	}
-
-	get roadId (): number {
-		return this.road?.id;
-	}
-
-	get laneSectionId (): number {
-		return this.laneSection?.id;
-	}
-
-	get laneId (): number {
-		return this.lane?.id;
 	}
 
 	get posTheta () {
@@ -121,6 +109,10 @@ export class TvLaneCoord {
 
 	getLaneWidth (): number {
 		return this.lane.getWidthValue( this.laneDistance );
+	}
+
+	getLaneDirectionVector (): Vector3 {
+		return this.lane.isBackward ? this.direction.negate() : this.direction;
 	}
 }
 

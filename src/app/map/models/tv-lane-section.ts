@@ -4,7 +4,7 @@
 
 import { GameObject } from 'app/objects/game-object';
 import { MathUtils } from 'three';
-import { TvContactPoint, TvLaneSide, TvLaneType } from './tv-common';
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
 import { Maths } from "../../utils/maths";
@@ -255,6 +255,20 @@ export class TvLaneSection {
 	addCenterLane (): TvLane {
 
 		return this.createCenterLane( 0, TvLaneType.none, false, true );
+
+	}
+
+	addLane ( lane: TvLane ): void {
+
+		if ( this.lanes.has( lane.id ) ) {
+			throw new Error( `Lane with id:${ lane.id } already exists` );
+		}
+
+		lane.laneSection = this;
+
+		this.lanes.set( lane.id, lane );
+
+		this.sortLanes();
 
 	}
 
@@ -942,5 +956,46 @@ export class TvLaneSection {
 		}
 		return lastLane ? lastLane.id : 0;
 	}
+
+	getLanesAfterRightBoundary (): TvLane[] {
+
+		const rightBoundary = this.getRightCarriagewayBoundary();
+
+		return this.getRightLanes().sort( DESC ).filter( lane => lane.id <= rightBoundary );
+
+	}
+
+	getLanesAfterLeftBoundary (): TvLane[] {
+
+		const leftBoundary = this.getLeftCarriagewayBoundary();
+
+		return this.getLeftLanes().sort( ASC ).filter( lane => lane.id >= leftBoundary );
+
+	}
+
+	insertRightLane ( lane: TvLane ): void {
+
+		lane.side = TvLaneSide.RIGHT;
+
+		lane.id = -1 * ( this.getRightLaneCount() + 1 );
+
+		if ( lane.isDrivingLane ) lane.direction = TravelDirection.forward;
+
+		this.addLane( lane );
+
+	}
+
+	insertLeftLane ( lane: TvLane ): void {
+
+		lane.side = TvLaneSide.LEFT;
+
+		lane.id = this.getLeftLaneCount() + 1;
+
+		if ( lane.isDrivingLane ) lane.direction = TravelDirection.backward;
+
+		this.addLane( lane );
+
+	}
+
 }
 
