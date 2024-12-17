@@ -133,6 +133,9 @@ export class TvLaneRoadMark {
 		this._lane = lane;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	get s2 () {
 		return this.lastSCoordinate - this.sOffset;
 	}
