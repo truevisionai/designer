@@ -107,7 +107,7 @@ export class TvLaneSection {
 
 	createCenterLane ( id?: number, type?: TvLaneType, level?: boolean, sort?: boolean ): TvLane {
 
-		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, level, false );
+		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, level, true );
 
 	}
 
@@ -256,6 +256,15 @@ export class TvLaneSection {
 
 		return this.createCenterLane( 0, TvLaneType.none, false, true );
 
+	}
+
+	addOrGetCenterLane (): TvLane {
+
+		if ( this.hasLane( 0 ) ) {
+			return this.getLaneById( 0 );
+		}
+
+		return this.addCenterLane();
 	}
 
 	addLane ( lane: TvLane ): void {
