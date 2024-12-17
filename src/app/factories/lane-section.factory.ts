@@ -5,12 +5,15 @@
 import { Injectable } from "@angular/core";
 import { RoadNode } from "app/objects/road/road-node";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
-import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
+import { TurnType, TvContactPoint, TvLaneType, TvOrientation } from "app/map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { LaneUtils } from "app/utils/lane.utils";
 import { TvLink } from "app/map/models/tv-link";
 import { TvLane } from "app/map/models/tv-lane";
+import { TvLaneCoord } from "../map/models/tv-lane-coord";
+import { Vector3 } from "three";
+import { findOrientation, findTurnTypeForRampRoad } from "../map/models/connections/connection-utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -406,4 +409,51 @@ export class LaneSectionFactory {
 
 	}
 
+	static createForRampRoad ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3 ): TvLaneSection {
+
+		const laneSection = new TvLaneSection( 0, 0, true, null );
+
+		if ( start instanceof TvLaneCoord ) {
+
+			const turnType = findTurnTypeForRampRoad( start, end );
+			const orientation = findOrientation( start, end );
+
+			let lanes: TvLane[] = [];
+
+			if ( turnType == TurnType.LEFT ) {
+
+				lanes = start.laneSection.getLanes().filter( lane => lane.id >= start.lane.id ).map( lane => lane.clone() );
+
+				laneSection.setLanes( lanes );
+
+				if ( start.lane.isLeft ) laneSection.addCenterLane();
+
+				start.laneSection.getLanesAfterLeftBoundary().forEach( ( lane, index ) => {
+
+					laneSection.insertRightLane( lane.clone().switchSideAndDirection() );
+
+				} );
+
+			} else {
+
+				// this will get all the right lanes which have -ve id
+				lanes = start.laneSection.getLanes().filter( lane => lane.id <= start.lane.id ).map( lane => lane.clone() );
+
+				start.laneSection.getLanesAfterRightBoundary().forEach( lane => {
+					laneSection.insertLeftLane( lane.clone() );
+				} );
+
+				if ( start.lane.isRight ) laneSection.addCenterLane();
+
+				if ( orientation === TvOrientation.MINUS ) {
+					lanes = lanes.map( lane => lane.switchSideAndDirection() );
+				}
+
+				laneSection.setLanes( lanes );
+			}
+
+		}
+
+		return laneSection;
+	}
 }

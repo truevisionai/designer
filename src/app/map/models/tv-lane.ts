@@ -804,7 +804,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	matchesDirection ( direction: TravelDirection ): boolean {
-		return this.direction === direction;
+		if ( this.isDrivingLane ) {
+			return this.direction == direction;
+		}
+		return true;
 	}
 
 	toLaneCoord ( distance: number | TvContactPoint ): TvLaneCoord {

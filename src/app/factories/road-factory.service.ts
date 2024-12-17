@@ -16,7 +16,6 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { LaneSectionFactory } from './lane-section.factory';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvLink } from 'app/map/models/tv-link';
-import { LinkFactory } from 'app/map/models/link-factory';
 import { MapService } from "../services/map/map.service";
 import { RoadStyleManager } from 'app/assets/road-style/road-style.manager';
 import { TvRoadCoord } from "../map/models/TvRoadCoord";
@@ -429,4 +428,21 @@ export class RoadFactory {
 
 	}
 
+	static createRampRoad ( startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ): TvRoad {
+
+		const rampRoad = this.createRoad();
+
+		const spline = SplineFactory.createRampRoadSpline( startCoord, endCoord );
+
+		const laneSection = LaneSectionFactory.createForRampRoad( startCoord, endCoord );
+
+		rampRoad.setSplineAndSegment( spline );
+
+		rampRoad.getLaneProfile().addLaneSection( laneSection );
+
+		spline.updateSegmentGeometryAndBounds();
+
+		return rampRoad;
+
+	}
 }

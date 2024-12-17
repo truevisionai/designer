@@ -938,8 +938,6 @@ export class TvLaneSection {
 		for ( const lane of this.getRightLanes().sort( DESC ) ) {
 			if ( lane.isCarriageWay() ) {
 				lastLane = lane;
-			} else {
-				break;
 			}
 		}
 		return lastLane ? lastLane.id : 0;
@@ -950,8 +948,6 @@ export class TvLaneSection {
 		for ( const lane of this.getLeftLanes().sort( ASC ) ) {
 			if ( lane.isCarriageWay() ) {
 				lastLane = lane;
-			} else {
-				break;
 			}
 		}
 		return lastLane ? lastLane.id : 0;

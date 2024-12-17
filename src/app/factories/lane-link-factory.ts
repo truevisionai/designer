@@ -10,7 +10,7 @@ export class LaneLinkFactory {
 
 	public static createLinks ( connection: TvJunctionConnection ): TvJunctionLaneLink[] {
 
-		const links = [];
+		const links: TvJunctionLaneLink[] = [];
 
 		connection.getRoad().getLaneProfile().addDefaultLaneSection();
 		connection.getLaneSection().addCenterLane();

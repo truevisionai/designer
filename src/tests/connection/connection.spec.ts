@@ -246,7 +246,7 @@ describe( 'TvJunctionConnection', () => {
 
 			expect( connection ).toBeDefined();
 
-			expect( connection.getEntryCoords().length ).toEqual( 0 );
+			expect( connection.getEntryCoords().length ).toEqual( 1 );
 			// should probably be 0 because the road is one way
 			expect( connection.getExitCoords().length ).toEqual( 1 );
 
@@ -434,6 +434,16 @@ describe( 'TvJunctionConnection', () => {
 			expect( connection ).toBeDefined();
 			expect( connection.getEntryCoords().length ).toBe( 1 );
 			expect( connection.getEntryCoords().map( entry => entry.lane.id ) ).toEqual( [ -3 ] );
+
+		} );
+
+		it( 'should get entry coords for ramp road', () => {
+
+			connection = createMockRightConnection( incomingRoad, outgoingRoad, TvContactPoint.START, TvContactPoint.START );
+
+			expect( connection ).toBeDefined();
+			expect( connection.getEntryCoords().length ).toBe( 2 );
+			expect( connection.getEntryCoords().map( entry => entry.lane.id ) ).toEqual( [ -4, -5 ] );
 
 		} );
 
