@@ -60,7 +60,7 @@ export class RoadFactory {
 
 		const position = options.position ?? new Vector3( 0, 0, 0 );
 		const hdg = options.hdg ?? 0;
-		const length = options.length ?? 10;
+		const length = options.length ?? 100;
 
 		const spline = SplineFactory.createStraightSplineAndPoints( position, length, hdg * Maths.Rad2Deg );
 

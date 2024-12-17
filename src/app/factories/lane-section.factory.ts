@@ -421,62 +421,107 @@ export class LaneSectionFactory {
 
 			if ( turnType == TurnType.LEFT ) {
 
-				start.laneSection.getLanes().reverse().filter( lane => lane.id >= start.lane.id ).forEach( lane => {
-					if ( orientation === TvOrientation.PLUS ) {
-						laneSection.insertRightLane( lane.clone() );
-					} else {
-						laneSection.insertLeftLane( lane.clone() );
-					}
-				} );
-
-				start.laneSection.getLanesAfterLeftBoundary().forEach( ( lane ) => {
-					if ( orientation === TvOrientation.PLUS ) {
-						laneSection.insertLeftLane( lane.clone() );
-					} else {
-						laneSection.insertRightLane( lane.clone() );
-					}
-				} );
-
-				if ( start.lane.isLeft ) {
-					const centerLane = laneSection.addCenterLane();
-					const leftBoundary = start.laneSection.getLeftCarriagewayBoundary() - 1;
-
-					if ( start.laneSection.hasLane( leftBoundary ) ) {
-						const target = start.laneSection.getLaneById( leftBoundary );
-						const roadMark = target.getRoadMarkAt( start.laneDistance )?.clone( 0 );
-						centerLane.addRoadMarkInstance( roadMark );
-					}
-				}
-
-			} else {
-
-				start.laneSection.getLanes().filter( lane => lane.id <= start.lane.id ).forEach( ( lane ) => {
-					if ( orientation === TvOrientation.PLUS ) {
-						laneSection.insertRightLane( lane.clone() );
-					} else {
-						laneSection.insertLeftLane( lane.clone() );
-					}
-				} );
-
-				start.laneSection.getLanesAfterRightBoundary().forEach( ( lane ) => {
-					if ( orientation === TvOrientation.PLUS ) {
-						laneSection.insertLeftLane( lane.clone() );
-					} else {
-						laneSection.insertRightLane( lane.clone() );
-					}
-				} );
-
 				if ( start.lane.isRight ) {
 
-					const centerLane = laneSection.addCenterLane();
-					const rightBoundary = start.laneSection.getRightCarriagewayBoundary() + 1;
+					start.laneSection.getLanes().filter( lane => lane.id >= start.lane.id ).forEach( ( lane ) => {
+						laneSection.addLane( lane.clone() );
+					} );
 
-					if ( start.laneSection.hasLane( rightBoundary ) ) {
-						const target = start.laneSection.getLaneById( rightBoundary );
-						const roadMark = target.getRoadMarkAt( start.laneDistance )?.clone( 0 );
-						centerLane.addRoadMarkInstance( roadMark );
-					}
+					return laneSection;
+
 				}
+
+				// else {
+
+				// 	const centerLane = laneSection.addCenterLane();
+				// 	const leftBoundary = start.laneSection.getLeftCarriagewayBoundary() - 1;
+
+				// 	if ( start.laneSection.hasLane( leftBoundary ) ) {
+				// 		const target = start.laneSection.getLaneById( leftBoundary );
+				// 		const roadMark = target.getRoadMarkAt( start.laneDistance )?.clone( 0 );
+				// 		centerLane.addRoadMarkInstance( roadMark );
+				// 	}
+				// }
+
+				if ( orientation === TvOrientation.PLUS ) {
+
+					start.laneSection.getLanes().reverse().filter( lane => lane.id >= start.lane.id ).forEach( lane => {
+						laneSection.insertRightLane( lane.clone() );
+					} );
+
+					start.laneSection.getLanesAfterLeftBoundary().forEach( ( lane ) => {
+						laneSection.insertLeftLane( lane.clone() );
+					} );
+
+				} else {
+
+					start.laneSection.getLanes().reverse().filter( lane => lane.id >= start.lane.id ).forEach( lane => {
+						laneSection.insertLeftLane( lane.clone() );
+					} );
+
+					start.laneSection.getLanesAfterLeftBoundary().forEach( ( lane ) => {
+						laneSection.insertRightLane( lane.clone() );
+					} );
+
+				}
+
+				laneSection.addOrGetCenterLane();
+
+			} else if ( turnType == TurnType.RIGHT ) {
+
+				// if ( start.lane.isRight ) {
+
+				// 	const centerLane = laneSection.addCenterLane();
+				// 	const rightBoundary = start.laneSection.getRightCarriagewayBoundary() + 1;
+
+				// 	if ( start.laneSection.hasLane( rightBoundary ) ) {
+				// 		const target = start.laneSection.getLaneById( rightBoundary );
+				// 		const roadMark = target.getRoadMarkAt( start.laneDistance )?.clone( 0 );
+				// 		centerLane.addRoadMarkInstance( roadMark );
+				// 	}
+
+				// }
+
+				if ( start.lane.isLeft ) {
+
+					// exit right
+
+					start.laneSection.getLanes().filter( lane => lane.id <= start.lane.id ).forEach( ( lane ) => {
+						laneSection.insertLane( lane.clone() );
+					} );
+
+					return laneSection;
+
+				}
+
+				if ( orientation == TvOrientation.PLUS ) {
+
+					// exit right
+
+					start.laneSection.getLanes().filter( lane => lane.id <= start.lane.id ).forEach( ( lane ) => {
+						laneSection.insertRightLane( lane.clone() );
+					} );
+
+					start.laneSection.getLanesAfterRightBoundary().forEach( ( lane ) => {
+						laneSection.insertLeftLane( lane.clone() );
+					} );
+
+				} else {
+
+					// entry right
+
+					start.laneSection.getLanes().filter( lane => lane.id <= start.lane.id ).forEach( ( lane ) => {
+						laneSection.insertLeftLane( lane.clone() );
+					} );
+
+					start.laneSection.getLanesAfterRightBoundary().forEach( ( lane ) => {
+						laneSection.insertRightLane( lane.clone() );
+					} );
+
+				}
+
+				laneSection.addOrGetCenterLane();
+
 			}
 		}
 

@@ -978,6 +978,24 @@ export class TvLaneSection {
 
 	}
 
+	insertLane ( lane: TvLane ): void {
+
+		if ( lane.isLeft ) {
+
+			this.insertLeftLane( lane );
+
+		} else if ( lane.isRight ) {
+
+			this.insertRightLane( lane );
+
+		} else {
+
+			this.addLane( lane );
+
+		}
+
+	}
+
 	insertRightLane ( lane: TvLane ): void {
 
 		lane.side = TvLaneSide.RIGHT;

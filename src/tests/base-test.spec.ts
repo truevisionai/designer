@@ -14,6 +14,7 @@ import { MapService } from "app/services/map/map.service";
 import { TvLink } from "app/map/models/tv-link";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Maths } from "app/utils/maths";
+import { TvLaneCoord } from "../app/map/models/tv-lane-coord";
 
 function formatMessage ( road: TvRoad, link: TvLink, distance?: number ) {
 
@@ -199,6 +200,12 @@ export function createFreewayRoad ( options: RoadMakeOptions ): TvRoad {
 	laneSection.createRightLane( -6, TvLaneType.shoulder, false, true ).addDefaultWidth();
 
 	return road;
+
+}
+
+export function createRampRoad ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3 ): TvRoad {
+
+	return RoadFactory.createRampRoad( start, end );
 
 }
 
