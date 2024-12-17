@@ -353,7 +353,7 @@ export class TvJunctionConnection {
 
 		const contactPoint = this.getIncomingRoadContact();
 		const direction = LaneUtils.determineDirection( contactPoint );
-		const lanes = this.getIncomingLaneSection().getLanes().filter( lane => lane.direction == direction );
+		const lanes = this.getIncomingLaneSection().getLanes().filter( lane => lane.matchesDirection( direction ) );
 
 		if ( contactPoint == TvContactPoint.END ) {
 			return lanes.sort( DESC );

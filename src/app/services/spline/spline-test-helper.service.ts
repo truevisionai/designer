@@ -179,7 +179,7 @@ export class SplineTestHelper {
 
 	}
 
-	createStraightRoad ( start?: Vector3, length: number = 100, degrees: number = 0, type: SplineType = SplineType.AUTOV2 ): any {
+	createStraightRoad ( start?: Vector3, length: number = 100, degrees: number = 0, type: SplineType = SplineType.AUTOV2 ): TvRoad {
 
 		start = start || new Vector3( 0, 0, 0 );
 
@@ -188,6 +188,8 @@ export class SplineTestHelper {
 		const spline = this.createStraightSpline( start, length, degrees, type );
 
 		road.setSplineAndSegment( spline );
+
+		spline.updateSegmentGeometryAndBounds();
 
 		return spline.getFirstSegment<TvRoad>();
 

@@ -13,6 +13,7 @@ import { LaneUtils } from "../../utils/lane.utils";
 import { TvLink } from './tv-link';
 import { LaneDistance, RoadDistance } from '../road/road-distance';
 import { TvPosTheta } from './tv-pos-theta';
+import { TvLaneRoadMark } from './tv-lane-road-mark';
 
 export class TvLaneCoord {
 
@@ -102,7 +103,6 @@ export class TvLaneCoord {
 		return this.lane.isEntry( this.contact );
 	}
 
-
 	isExit (): boolean {
 		return this.lane.isExit( this.contact );
 	}
@@ -114,5 +114,10 @@ export class TvLaneCoord {
 	getLaneDirectionVector (): Vector3 {
 		return this.lane.isBackward ? this.direction.negate() : this.direction;
 	}
+
+	getRoadMark (): TvLaneRoadMark {
+		return this.lane.getRoadMarkAt( this.laneDistance );
+	}
+
 }
 

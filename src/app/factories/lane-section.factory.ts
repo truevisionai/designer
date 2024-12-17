@@ -443,7 +443,23 @@ export class LaneSectionFactory {
 					laneSection.insertLeftLane( lane.clone() );
 				} );
 
-				if ( start.lane.isRight ) laneSection.addCenterLane();
+				if ( start.lane.isRight ) {
+
+					const centerLane = laneSection.addCenterLane();
+
+					const rightBoundary = start.laneSection.getRightCarriagewayBoundary() + 1;
+
+					if ( start.laneSection.hasLane( rightBoundary ) ) {
+
+						const target = start.laneSection.getLaneById( rightBoundary );
+
+						const roadMark = target.getRoadMarkAt( start.laneDistance )?.clone( 0 );
+
+						centerLane.addRoadMarkInstance( roadMark );
+
+					}
+
+				}
 
 				if ( orientation === TvOrientation.MINUS ) {
 					lanes = lanes.map( lane => lane.switchSideAndDirection() );

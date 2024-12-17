@@ -35,7 +35,7 @@ export class TvLaneRoadMark {
 
 	public readonly uuid: string;
 
-	public readonly lane: TvLane;
+	private _lane: TvLane;
 
 	public gameObject: GameObject;
 
@@ -123,6 +123,14 @@ export class TvLaneRoadMark {
 		this.materialGuid = materialGuid;
 		this.lane = lane;
 		this.length = length || TvLaneRoadMark.getLengthByType( type );
+	}
+
+	get lane () {
+		return this._lane;
+	}
+
+	set lane ( lane: TvLane ) {
+		this._lane = lane;
 	}
 
 	get s2 () {

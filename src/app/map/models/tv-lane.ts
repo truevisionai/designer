@@ -658,9 +658,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 * mark object corresponding to the provided s-offset
 	 * @param sCheck
 	 */
-	getRoadMark ( sCheck: any ): TvLaneRoadMark {
+	getRoadMark ( sCheck: number ): TvLaneRoadMark {
 
-		return this.roadMarks.findAt( sCheck );
+		return this.getRoadMarkAt( sCheck );
 
 	}
 
@@ -733,11 +733,27 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getRoadMarkAt ( s: number ): TvLaneRoadMark {
 
-		return this.roadMarks.findAt( s );
+		const roadmark = this.roadMarks.findAt( s );
 
+		if ( roadmark ) {
+			return roadmark;
+		}
+
+		return new TvLaneRoadMark(
+			s,
+			TvRoadMarkTypes.NONE,
+			TvRoadMarkWeights.STANDARD,
+			TvColors.WHITE,
+			0.0,
+			TvRoadMarkLaneChange.NONE,
+			0.0,
+			this
+		);
 	}
 
 	addRoadMarkInstance ( roadmark: TvLaneRoadMark ): void {
+
+		roadmark.lane = this;
 
 		this.roadMarks.set( roadmark.s, roadmark );
 
@@ -764,7 +780,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
-	copyProperties? (): Object {
+	copyProperties?(): Object {
 
 		return {
 			travelDirection: this.direction,
