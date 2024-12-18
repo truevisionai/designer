@@ -437,7 +437,7 @@ export class TvRoad {
 
 	}
 
-	getContactPosition ( contactA: TvContactPoint ): any {
+	getContactPosition ( contactA: TvContactPoint ): TvPosTheta {
 
 		return RoadGeometryService.instance.findContactPosition( this, contactA );
 
@@ -699,11 +699,7 @@ export class TvRoad {
 
 		this.laneProfile.getLaneSections().map( laneSection => {
 
-			laneSection.getLanes().forEach( lane => {
-
-				if ( lane.id == 0 ) return;
-
-				if ( !lane.gameObject ) return;
+			laneSection.getNonCenterLanes().filter( lane => lane.gameObject != null ).forEach( lane => {
 
 				if ( !boundingBox ) {
 

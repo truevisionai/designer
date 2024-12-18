@@ -33,8 +33,9 @@ export function findTurnTypeForRampRoad ( entry: TvLaneCoord, exit: TvLaneCoord 
 
 	const entryPosition = entry.posTheta;
 	const exitPosition = exit instanceof Vector3 ? exit : exit.position;
+	const entryHeading = entry.getLaneHeading();
 
-	return findTurnType( entryPosition.position, exitPosition, entryPosition.normalizedHdg );
+	return findTurnType( entryPosition.position, exitPosition, entryHeading );
 
 }
 

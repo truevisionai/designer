@@ -74,10 +74,6 @@ export class TvLaneCoord {
 		return new Orientation( 0, 0, 0 );
 	}
 
-	toPosTheta (): TvPosTheta {
-		return this.posTheta;
-	}
-
 	canConnect ( otherLane: TvLaneCoord ): boolean {
 
 		if ( this.road.id === otherLane.road.id ) return false;
@@ -112,7 +108,17 @@ export class TvLaneCoord {
 	}
 
 	getLaneDirectionVector (): Vector3 {
-		return this.lane.isBackward ? this.direction.negate() : this.direction;
+		if ( this.lane.isBackward ) {
+			return this.posTheta.reverseHeading().toDirectionVector();
+		}
+		return this.posTheta.toDirectionVector();
+	}
+
+	getLaneHeading (): number {
+		if ( this.lane.isBackward ) {
+			return this.posTheta.hdg + Math.PI;
+		}
+		return this.posTheta.hdg;
 	}
 
 	getRoadMark (): TvLaneRoadMark {

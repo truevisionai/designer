@@ -1020,5 +1020,20 @@ export class TvLaneSection {
 
 	}
 
+	getLanesAfter ( target: TvLane ): TvLane[] {
+		if ( target.isRight ) {
+			return this.getLanes().filter( lane => lane.id <= target.id );
+		} else {
+			return this.getLanes().filter( lane => lane.id >= target.id );
+		}
+	}
+
+	getLanesBefore ( target: TvLane ): TvLane[] {
+		if ( target.isRight ) {
+			return this.getLanes().filter( lane => lane.id >= target.id );
+		} else {
+			return this.getLanes().filter( lane => lane.id <= target.id );
+		}
+	}
 }
 

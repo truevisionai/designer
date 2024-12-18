@@ -11,8 +11,9 @@ import { RoadFactory } from "../../factories/road-factory.service";
 import { Vector3 } from "three";
 import { TvLaneType, TvOrientation } from "../../map/models/tv-common";
 import { findOrientation } from "../../map/models/connections/connection-utils";
+import { createFreewayRoad, createRampRoad } from "tests/base-test.spec";
 
-describe( 'RoadRampTool', () => {
+describe( 'RoadRampTool Orientation', () => {
 
 	let mainRoad: TvRoad;
 
@@ -62,41 +63,215 @@ describe( 'RoadRampTool', () => {
 
 	} );
 
-	it( 'should create right-turn slip road for right lane', () => {
+} );
 
-		const start = mainRoad.getLaneProfile().getFirstLaneSection().getLaneById( -1 ).toLaneCoord( 0 );
+describe( 'RoadRampTool', () => {
 
-		const end = new Vector3( 50, -50, 0 );
+	let mainRoad: TvRoad;
 
-		const rampRoad = RoadFactory.createRampRoad( start, end );
+	beforeEach( () => {
 
-		expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 6 );
-		expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneById( 2 ).getType() ).toBe( TvLaneType.sidewalk );
-		expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneById( 1 ).getType() ).toBe( TvLaneType.shoulder );
-		expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneById( 0 ).getType() ).toBe( TvLaneType.none );
-		expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneById( -1 ).getType() ).toBe( TvLaneType.driving );
-		expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneById( -2 ).getType() ).toBe( TvLaneType.shoulder );
-		expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneById( -3 ).getType() ).toBe( TvLaneType.sidewalk );
+		setupTest();
+
+		mainRoad = TestBed.inject( SplineTestHelper ).createStraightRoad();
 
 	} );
 
-	it( 'should create right-turn slip road for left lane', () => {
+	it( 'should create entry from right to right on default road', () => {
 
 		const start = mainRoad.getLaneProfile().getFirstLaneSection().getLaneById( -1 ).toLaneCoord( 0 );
 
-		const end = new Vector3( 50, 50, 0 );
+		const end = new Vector3( 0, -50, 0 );
 
-		const rampRoad = RoadFactory.createRampRoad( start, end );
+		const rampRoad = createRampRoad( start, end );
+
+		expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 6 );
+
+		expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.id ) ).toEqual( [ 2, 1, 0, -1, -2, -3 ] );
 
 		expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.getType() ) ).toEqual( [
 			TvLaneType.sidewalk,
 			TvLaneType.shoulder,
-			TvLaneType.driving,
 			TvLaneType.none,
 			TvLaneType.driving,
 			TvLaneType.shoulder,
 			TvLaneType.sidewalk,
 		] );
+
+		expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.isLeft ) ).toEqual( [
+			true,
+			true,
+			false,
+			false,
+			false,
+			false,
+		] );
+
+	} );
+
+	it( 'should create entry for right lane on freeway road', () => {
+
+		const freeway = createFreewayRoad( { id: 1 } );
+
+		const start = freeway.getLaneProfile().getFirstLaneSection().getLaneById( -5 ).toLaneCoord( 50 );
+
+		const end = new Vector3( 0, -100, 0 );
+
+		const rampRoad = createRampRoad( start, end );
+
+		expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.id ) ).toEqual( [ 2, 1, 0, -1 ] );
+
+		expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.getType() ) ).toEqual( [
+			TvLaneType.shoulder,
+			TvLaneType.driving,
+			TvLaneType.none,
+			TvLaneType.shoulder,
+		] );
+
+	} );
+
+	describe( 'exits', () => {
+
+		it( 'should create exit from right to right on default road', () => {
+
+			const start = mainRoad.getLaneProfile().getFirstLaneSection().getLaneById( -1 ).toLaneCoord( 0 );
+
+			const end = new Vector3( 50, -50, 0 );
+
+			const rampRoad = createRampRoad( start, end );
+
+			expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 6 );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.id ) ).toEqual( [ 2, 1, 0, -1, -2, -3 ] );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.getType() ) ).toEqual( [
+				TvLaneType.sidewalk,
+				TvLaneType.shoulder,
+				TvLaneType.none,
+				TvLaneType.driving,
+				TvLaneType.shoulder,
+				TvLaneType.sidewalk,
+			] );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.isLeft ) ).toEqual( [
+				true,
+				true,
+				false,
+				false,
+				false,
+				false,
+			] );
+
+		} );
+
+		it( 'should create exit from right to left on default road', () => {
+
+			const start = mainRoad.getLaneProfile().getFirstLaneSection().getLaneById( -1 ).toLaneCoord( 0 );
+
+			const end = new Vector3( 50, 50, 0 );
+
+			const rampRoad = createRampRoad( start, end );
+
+			expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 7 );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.id ) ).toEqual( [ 3, 2, 1, 0, -1, -2, -3 ] );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.getType() ) ).toEqual( [
+				TvLaneType.sidewalk,
+				TvLaneType.shoulder,
+				TvLaneType.driving,
+				TvLaneType.none,
+				TvLaneType.driving,
+				TvLaneType.shoulder,
+				TvLaneType.sidewalk,
+			] );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.isLeft ) ).toEqual( [
+				true,
+				true,
+				true,
+				false,
+				false,
+				false,
+				false,
+			] );
+
+		} );
+
+		it( 'should create exit for right lane on freeway road', () => {
+
+			const freeway = createFreewayRoad( { id: 1 } );
+
+			const start = freeway.getLaneProfile().getFirstLaneSection().getLaneById( -5 ).toLaneCoord( 0 );
+
+			const end = new Vector3( 50, -50, 0 );
+
+			const rampRoad = createRampRoad( start, end );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.id ) ).toEqual( [ 1, 0, -1, -2 ] );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.getType() ) ).toEqual( [
+				TvLaneType.shoulder,
+				TvLaneType.none,
+				TvLaneType.driving,
+				TvLaneType.shoulder,
+			] );
+
+		} );
+
+		it( 'should create exit with 2 right lanes on freeway road', () => {
+
+			const freeway = createFreewayRoad( { id: 1 } );
+
+			const start = freeway.getLaneProfile().getFirstLaneSection().getLaneById( -4 ).toLaneCoord( 0 );
+
+			const end = new Vector3( 50, -50, 0 );
+
+			const rampRoad = createRampRoad( start, end );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.id ) ).toEqual( [ 1, 0, -1, -2, -3 ] );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.getType() ) ).toEqual( [
+				TvLaneType.shoulder,
+				TvLaneType.none,
+				TvLaneType.driving,
+				TvLaneType.driving,
+				TvLaneType.shoulder,
+			] );
+
+		} );
+
+		xit( 'should create exit from left to left on default road', () => {
+
+			const start = mainRoad.getLaneProfile().getFirstLaneSection().getLaneById( 1 ).toLaneCoord( 50 );
+
+			const end = new Vector3( 0, 50, 0 );
+
+			const rampRoad = createRampRoad( start, end );
+
+			expect( rampRoad.getLaneProfile().getFirstLaneSection().getLaneCount() ).toBe( 6 );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.id ) ).toEqual( [ 2, 1, 0, -1, -2, -3 ] );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.getType() ) ).toEqual( [
+				TvLaneType.sidewalk,
+				TvLaneType.shoulder,
+				TvLaneType.none,
+				TvLaneType.driving,
+				TvLaneType.shoulder,
+				TvLaneType.sidewalk,
+			] );
+
+			expect( rampRoad.getLaneProfile().getLanes().map( lane => lane.isLeft ) ).toEqual( [
+				true,
+				true,
+				false,
+				false,
+				false,
+				false,
+			] );
+
+		} );
 
 	} );
 
