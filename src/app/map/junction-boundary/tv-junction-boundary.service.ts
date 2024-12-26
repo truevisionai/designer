@@ -55,9 +55,7 @@ export class TvJunctionBoundaryService {
 
 			const white = new Color( 1, 1, 1 );
 
-			console.log( segment, segment.getPoints() );
-
-			segment.getPoints().forEach( ( position, index ) => {
+			segment.getOuterPoints().forEach( ( position, index ) => {
 
 				// as the index grows, make the white color will get darker
 				const color = white.clone().multiplyScalar( 1 - index / 10 );

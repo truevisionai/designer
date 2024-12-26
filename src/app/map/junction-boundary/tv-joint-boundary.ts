@@ -45,7 +45,7 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 	}
 
 	// eslint-disable-next-line max-lines-per-function
-	getPoints (): TvPosTheta[] {
+	getOuterPoints (): TvPosTheta[] {
 
 		if ( this.road.geometries.length == 0 ) {
 			Log.warn( 'Road has no geometries', this.road.toString() );
@@ -96,6 +96,10 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 		}
 
 		return [ start, mid, end ];
+	}
+
+	getInnerPoints (): TvPosTheta[] {
+		return this.getOuterPoints();
 	}
 
 	clone (): TvJointBoundary {

@@ -6,7 +6,7 @@ import { GameObject } from 'app/objects/game-object';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Maths } from 'app/utils/maths';
 import { Box3, Group, MathUtils, Vector2, Vector3 } from 'three';
-import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { TvContactPoint, TvDynamicTypes, TvLaneLocation, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
 import { TvLateralProfile } from './tv-lateral.profile';
@@ -649,6 +649,20 @@ export class TvRoad {
 		this.getRoadObjects().forEach( obj => road.addRoadObject( obj.clone() ) );
 
 		return road;
+
+	}
+
+	getLanePosition ( lane: TvLane, roadDistance: RoadDistance, location: TvLaneLocation, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
+
+		if ( location === TvLaneLocation.START ) {
+			return this.getLaneStartPosition( lane, roadDistance, offset, addHeight );
+		} else if ( location === TvLaneLocation.END ) {
+			return this.getLaneEndPosition( lane, roadDistance, offset, addHeight );
+		} else if ( location === TvLaneLocation.CENTER ) {
+			return this.getLaneCenterPosition( lane, roadDistance, offset, addHeight );
+		} else {
+			throw new Error( 'Invalid location' );
+		}
 
 	}
 

@@ -36,6 +36,32 @@ export class TvJunctionBoundary {
 		boundary.segments = this.segments.map( s => s.clone() );
 		return boundary;
 	}
+
+	getOuterPositions (): TvPosTheta[] {
+
+		const positions: TvPosTheta[] = [];
+
+		this.getSegments().forEach( segment => {
+			segment.getOuterPoints().forEach( point => {
+				positions.push( point );
+			} );
+		} );
+
+		return positions;
+	}
+
+	getInnerPositions (): TvPosTheta[] {
+
+		const positions: TvPosTheta[] = [];
+
+		this.getSegments().forEach( segment => {
+			segment.getInnerPoints().forEach( point => {
+				positions.push( point );
+			} );
+		} );
+
+		return positions;
+	}
 }
 
 export interface TvJunctionSegmentBoundary {
@@ -44,6 +70,8 @@ export interface TvJunctionSegmentBoundary {
 
 	clone (): TvJunctionSegmentBoundary;
 
-	getPoints (): TvPosTheta[];
+	getOuterPoints (): TvPosTheta[];
+
+	getInnerPoints (): TvPosTheta[];
 
 }

@@ -116,6 +116,10 @@ export class TvJunctionConnection {
 		return this.connectingRoad?.id;
 	}
 
+	get isRightTurn (): boolean {
+		return this.turnType == TurnType.RIGHT;
+	}
+
 	getIncomingRoad (): TvRoad {
 		return this.incomingRoad;
 	}
@@ -398,6 +402,18 @@ export class TvJunctionConnection {
 	getHighestLaneLink (): TvJunctionLaneLink {
 
 		return this.getLaneLinks().sort( ( a, b ) => b.incomingLane.id - a.incomingLane.id )[ 0 ];
+
+	}
+
+	getOuterLaneLink (): TvJunctionLaneLink {
+
+		const contactPoint = this.getIncomingRoadContact();
+
+		if ( contactPoint == TvContactPoint.START ) {
+			return this.getHighestLaneLink();
+		} else {
+			return this.getLowestLaneLink();
+		}
 
 	}
 

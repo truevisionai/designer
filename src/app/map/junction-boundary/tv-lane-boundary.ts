@@ -1,6 +1,6 @@
 import { TvRoad } from "../models/tv-road.model";
 import { TvLane } from "../models/tv-lane";
-import { TvContactPoint } from "../models/tv-common";
+import { TvContactPoint, TvLaneLocation, TvLaneSide } from "../models/tv-common";
 import { TvPosTheta } from "../models/tv-pos-theta";
 import { Maths } from "../../utils/maths";
 import { TvBoundarySegmentType, TvJunctionSegmentBoundary } from "./tv-junction-boundary";
@@ -39,7 +39,7 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 		return `LaneBoundary: roadId=${ this.road.id } boundaryLane=${ this.boundaryLane.id } sStart=${ this.sStart } sEnd=${ this.sEnd }`;
 	}
 
-	getPoints ( stepSize: number = 1 ): TvPosTheta[] {
+	getOuterPoints ( stepSize: number = 1 ): TvPosTheta[] {
 
 		if ( this.road.geometries.length == 0 ) {
 			Log.warn( 'Road has no geometries', this.road.toString() );
@@ -51,29 +51,45 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 			return [];
 		}
 
-		return this.convertBoundaryToPositions( stepSize );
+		return this.getBoundaryPositions( stepSize, TvLaneLocation.END );
 
 	}
 
-	private convertBoundaryToPositions ( stepSize: any ): TvPosTheta[] {
+	getInnerPoints ( stepSize: number = 1 ): TvPosTheta[] {
+
+		if ( this.road.geometries.length == 0 ) {
+			Log.warn( 'Road has no geometries', this.road.toString() );
+			return [];
+		}
+
+		if ( this.road.length == 0 ) {
+			Log.warn( 'Road has no length', this.road.toString() );
+			return [];
+		}
+
+		return this.getBoundaryPositions( stepSize, TvLaneLocation.START );
+
+	}
+
+	private getBoundaryPositions ( stepSize: number, location: TvLaneLocation ): TvPosTheta[] {
 
 		const positions: TvPosTheta[] = [];
 
 		const start = this.road.getPosThetaAt( createRoadDistance( this.road, this.sStart ) );
 		const end = this.road.getPosThetaAt( createRoadDistance( this.road, this.sEnd ) );
 
-		positions.push( this.road.getLaneEndPosition( this.boundaryLane, start.s + Maths.Epsilon as RoadDistance ) );
+		positions.push( this.road.getLanePosition( this.boundaryLane, start.s + Maths.Epsilon as RoadDistance, location ) );
 
 		for ( let s = start.s; s <= end.s; s += stepSize ) {
 
 			const posTheta = this.road.getPosThetaAt( s );
-			const position = this.road.getLaneEndPosition( this.boundaryLane, posTheta.s as RoadDistance );
+			const position = this.road.getLanePosition( this.boundaryLane, posTheta.s as RoadDistance, location );
 
 			positions.push( position );
 
 		}
 
-		positions.push( this.road.getLaneEndPosition( this.boundaryLane, end.s - Maths.Epsilon as RoadDistance ) );
+		positions.push( this.road.getLanePosition( this.boundaryLane, end.s - Maths.Epsilon as RoadDistance, location ) );
 
 		return positions;
 

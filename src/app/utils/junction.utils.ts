@@ -338,12 +338,12 @@ export class JunctionUtils {
 			return [];
 		}
 
-		return joint.getPoints().map( point => point.toVector3() );
+		return joint.getOuterPoints().map( point => point.toVector3() );
 	}
 
 	static convertLaneToPositions ( lane: TvLaneBoundary ): Vector3[] {
 
-		return lane.getPoints().map( point => point.toVector3() );
+		return lane.getOuterPoints().map( point => point.toVector3() );
 
 	}
 
