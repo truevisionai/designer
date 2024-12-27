@@ -52,7 +52,7 @@ export class AutoJunction extends TvJunction {
 
 	}
 
-	removeSpline ( spline: AbstractSpline | AbstractSpline[] ): void {
+	override removeSpline ( spline: AbstractSpline | AbstractSpline[] ): void {
 
 		const splines = Array.isArray( spline ) ? spline : [ spline ];
 
@@ -60,7 +60,7 @@ export class AutoJunction extends TvJunction {
 
 	}
 
-	updateFromIntersections (): void {
+	override updateFromIntersections (): void {
 
 		// this.getSplineSections().forEach( section => {
 		//

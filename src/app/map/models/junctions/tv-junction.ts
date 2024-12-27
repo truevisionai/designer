@@ -23,6 +23,7 @@ import { TvMap } from '../tv-map.model';
 import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { MapEvents } from 'app/events/map-events';
 import { TvRoadCoord } from '../TvRoadCoord';
+import { GeometryUtils } from 'app/services/surface/geometry-utils';
 
 
 export class TvJunction {
@@ -514,6 +515,17 @@ export class TvJunction {
 
 	updateBoundary (): void {
 		TvJunctionBoundaryService.instance.update( this );
+	}
+
+	getAdjacentRoadCoord ( target: TvRoad ): TvRoadCoord {
+
+		const coords = this.getRoadLinks().map( link => link.toRoadCoord() );
+		const sortedRoadLinks = GeometryUtils.sortCoordsByAngle( coords );
+		const incomingRoadIndex = sortedRoadLinks.findIndex( coord => coord.road == target );
+		const rightRoadIndex = ( incomingRoadIndex + 1 ) % sortedRoadLinks.length;
+
+		return sortedRoadLinks[ rightRoadIndex ];
+
 	}
 
 }

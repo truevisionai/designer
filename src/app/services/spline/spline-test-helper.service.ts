@@ -26,6 +26,7 @@ import { HttpClient } from '@angular/common/http';
 import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
 import { SplineGeometryService } from './spline-geometry.service';
 import { Observable } from 'rxjs';
+import { TvMap } from 'app/map/models/tv-map.model';
 
 export const STRAIGHT_XODR = 'assets/open-drive/straight-road.xml';
 export const ROUNDABOUT_XODR = 'assets/open-drive/roundabout-8-course.xodr';
@@ -66,14 +67,14 @@ export class SplineTestHelper {
 	) {
 	}
 
-	async loadStraightXodr (): Promise<any> {
+	async loadStraightXodr (): Promise<TvMap> {
 
 		const xml = await this.loadXodr( STRAIGHT_XODR ).toPromise();
 
 		return this.openDriveParser.parse( xml );
 	}
 
-	async loadAndParseXodr ( path: string ): Promise<any> {
+	async loadAndParseXodr ( path: string ): Promise<TvMap> {
 
 		const xml = await this.loadXodr( path ).toPromise();
 
