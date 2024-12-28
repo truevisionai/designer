@@ -42,9 +42,9 @@ export class AutoSplineHelper extends BaseDebugger<AutoSpline> {
 
 	onSelected ( object: AutoSpline ): void {
 
-		this.points.addItems( object, object.controlPoints );
+		this.points.addItems( object, object.getControlPoints() );
 
-		if ( object.controlPoints.length < 2 ) return;
+		if ( object.getControlPointCount() < 2 ) return;
 
 		this.lines.addItem( object, this.createPolyline( object )?.mesh )
 		this.lines.addItem( object, this.createRoundLine( object )?.mesh );
@@ -84,10 +84,10 @@ export class AutoSplineHelper extends BaseDebugger<AutoSpline> {
 	}
 
 	createPolyline ( object: AutoSpline ): Polyline {
-		return new Polyline( object.controlPoints );
+		return new Polyline( object.getControlPoints() );
 	}
 
 	createRoundLine ( object: AutoSpline ): RoundLine {
-		return new RoundLine( object.controlPoints );
+		return new RoundLine( object.getControlPoints() );
 	}
 }

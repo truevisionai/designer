@@ -58,9 +58,7 @@ export class SplineFixerService {
 
 			const road = this.roadFactory.createDefaultRoad();
 
-			road.spline = spline;
-
-			spline.addSegment( 0, road );
+			road.setSplineAndSegment( spline );
 
 			this.mapService.map.addRoad( road );
 

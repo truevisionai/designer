@@ -75,7 +75,7 @@ describe( 'X-Junction Tests', () => {
 
 		const spline = mapService.getSplines()[ 0 ];
 
-		spline.controlPoints.forEach( point => point.position.x += 1000 );
+		spline.getControlPoints().forEach( point => point.position.x += 1000 );
 
 		helper.splineService.update( spline );
 

@@ -39,7 +39,7 @@ export abstract class AbstractSpline {
 
 	public boundingBox: Box2;
 
-	private _controlPoints: AbstractControlPoint[] = [];
+	private controlPoints: AbstractControlPoint[] = [];
 
 	private geometries: TvAbstractRoadGeometry[] = [];
 
@@ -93,14 +93,6 @@ export abstract class AbstractSpline {
 		return this.splineSegmentProfile.getSegmentMap();
 	}
 
-	get controlPoints (): AbstractControlPoint[] {
-		return this._controlPoints;
-	}
-
-	set controlPoints ( value: AbstractControlPoint[] ) {
-		this._controlPoints = value;
-	}
-
 	get controlPointPositions (): Vector3[] {
 		return this.controlPoints.map( point => point.position );
 	}
@@ -117,14 +109,14 @@ export abstract class AbstractSpline {
 		return this.controlPoints;
 	}
 
-	addControlPoint ( position: AbstractControlPoint | Vector3 ): AbstractControlPoint {
+	addControlPoint ( value: AbstractControlPoint | Vector3 ): AbstractControlPoint {
 
 		let point: AbstractControlPoint;
 
-		if ( position instanceof Vector3 ) {
-			point = ControlPointFactory.createControl( this, position );
+		if ( value instanceof Vector3 ) {
+			point = ControlPointFactory.createControlPoint( this, value );
 		} else {
-			point = position;
+			point = value;
 		}
 
 		this.controlPoints.push( point );
@@ -143,6 +135,10 @@ export abstract class AbstractSpline {
 		}
 	}
 
+	removeAllControlPoints (): void {
+		this.controlPoints.splice( 0, this.controlPoints.length );
+	}
+
 	addControlPoints ( points: AbstractControlPoint[] ): void {
 		this.controlPoints.push( ...points );
 	}
@@ -156,19 +152,19 @@ export abstract class AbstractSpline {
 	}
 
 	getFirstPoint (): AbstractControlPoint | null {
-		return this.controlPoints.length >= 1 ? this.controlPoints[ 0 ] : null;
+		return this.getControlPointCount() >= 1 ? this.controlPoints[ 0 ] : null;
 	}
 
 	getSecondPoint (): AbstractControlPoint | null {
-		return this.controlPoints.length >= 2 ? this.controlPoints[ 1 ] : null;
+		return this.getControlPointCount() >= 2 ? this.controlPoints[ 1 ] : null;
 	}
 
 	getLastPoint (): AbstractControlPoint | null {
-		return this.controlPoints.length >= 1 ? this.controlPoints[ this.controlPoints.length - 1 ] : null;
+		return this.getControlPointCount() >= 1 ? this.controlPoints[ this.getControlPointCount() - 1 ] : null;
 	}
 
 	getSecondLastPoint (): AbstractControlPoint | null {
-		return this.controlPoints.length >= 2 ? this.controlPoints[ this.controlPoints.length - 2 ] : null;
+		return this.getControlPointCount() >= 2 ? this.controlPoints[ this.getControlPointCount() - 2 ] : null;
 	}
 
 	update (): void {
@@ -185,11 +181,11 @@ export abstract class AbstractSpline {
 	}
 
 	updateIndexes (): void {
-		this.controlPoints.forEach( ( point, index ) => point.index = index );
+		this.getControlPoints().forEach( ( point, index ) => point.index = index );
 	}
 
 	toString (): string {
-		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segments.length } Length:${ this.getLength() } Points:${ this.controlPoints.length } Geometries:${ this.geometries.length }`;
+		return `Spline:${ this.id } Type:${ this.type } Segments:${ this.segments.length } Length:${ this.getLength() } Points:${ this.getControlPointCount() } Geometries:${ this.geometries.length }`;
 	}
 
 	clearGeometries (): void {

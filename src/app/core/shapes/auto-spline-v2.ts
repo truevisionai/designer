@@ -21,7 +21,7 @@ export class AutoSpline extends AbstractSpline {
 	}
 
 	exportGeometries (): TvAbstractRoadGeometry[] {
-		if ( this.controlPoints.length < 2 ) return [];
+		if ( this.getControlPointCount() < 2 ) return [];
 	}
 
 	getPoints ( stepSize: number ): Vector3[] {

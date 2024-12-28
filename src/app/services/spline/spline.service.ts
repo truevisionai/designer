@@ -54,9 +54,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 			const road = this.roadFactory.createDefaultRoad();
 
-			road.spline = spline;
-
-			spline.addSegment( 0, road );
+			road.setSplineAndSegment( spline );
 
 			this.mapService.addRoad( road );
 		}
@@ -93,11 +91,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	removePoint ( spline: AbstractSpline, point: AbstractControlPoint ): void {
 
-		const index = spline.controlPoints.findIndex( p => p.id === point.id );
-
-		if ( index == -1 ) return;
-
-		spline.controlPoints.splice( index, 1 );
+		spline.removeControlPoint( point );
 
 		this.updateIndexes( spline );
 
@@ -119,7 +113,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 			index = this.findIndex( spline, point.position );
 
-			spline.controlPoints.splice( index, 0, point );
+			spline.insertControlPoint( index, point );
 
 		} else {
 
@@ -135,9 +129,9 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 
 	addPointAndUpdateSpline ( spline: AbstractSpline, point: AbstractControlPoint, index?: number ): void {
 
-		index = index ?? spline.controlPoints.length;
+		index = index ?? spline.getControlPointCount();
 
-		spline.controlPoints.splice( index, 0, point );
+		spline.insertControlPoint( index, point );
 
 		this.updatePointHeading( spline, point, index );
 
@@ -154,9 +148,9 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			return;
 		}
 
-		const nextPoint = spline.controlPoints[ index + 1 ];
+		const nextPoint = spline.getControlPoints()[ index + 1 ];
 
-		const previousPoint = spline.controlPoints[ index - 1 ];
+		const previousPoint = spline.getControlPoints()[ index - 1 ];
 
 		if ( nextPoint instanceof AbstractControlPoint ) {
 
@@ -179,14 +173,14 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 	findIndex ( spline: AbstractSpline, position: Vector3 ): number {
 
 		let minDistance = Infinity;
-		let index = spline.controlPoints.length; // insert at the end by default
+		let index = spline.getControlPointCount(); // insert at the end by default
 
 		// Ensure the loop includes the segment between the last and first control points
-		for ( let i = 0; i < spline.controlPoints.length; i++ ) {
+		for ( let i = 0; i < spline.getControlPointCount(); i++ ) {
 
-			const current = spline.controlPoints[ i ];
+			const current = spline.getControlPoints()[ i ];
 
-			const nextIndex = ( i + 1 ) % spline.controlPoints.length;
+			const nextIndex = ( i + 1 ) % spline.getControlPointCount();
 
 			// If the spline is open, do not consider the last segment
 			if ( !spline.closed && nextIndex === 0 ) {
@@ -194,7 +188,7 @@ export class SplineService extends BaseDataService<AbstractSpline> {
 			}
 
 			// Use modulo to wrap around to the first point when reaching the end
-			const next = spline.controlPoints[ nextIndex ];
+			const next = spline.getControlPoints()[ nextIndex ];
 
 			const distance = this.calculateDistanceToSegment( position, current, next );
 

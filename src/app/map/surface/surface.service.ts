@@ -59,7 +59,7 @@ export class SurfaceService extends BaseDataService<Surface> {
 
 		const index = this.splineService.findIndex( object.spline, point.position );
 
-		object.spline.controlPoints.splice( index, 0, point );
+		object.spline.insertControlPoint( index, point );
 
 		this.splineService.updatePointHeading( object.spline, point, index );
 

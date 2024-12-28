@@ -54,7 +54,7 @@ describe( 'T-Junction', () => {
 
 		const splines = splineTestHelper.createSimpleTJunction();
 
-		splines.horizontal.controlPoints.forEach( point => point.position.y -= 100 );
+		splines.horizontal.getControlPoints().forEach( point => point.position.y -= 100 );
 
 		splineTestHelper.splineService.update( splines.horizontal );
 
@@ -70,7 +70,7 @@ describe( 'T-Junction', () => {
 
 		const splines = splineTestHelper.createSimpleTJunction();
 
-		splines.horizontal.controlPoints.forEach( point => point.position.y -= 50 );
+		splines.horizontal.getControlPoints().forEach( point => point.position.y -= 50 );
 
 		splineTestHelper.splineService.update( splines.horizontal );
 
@@ -86,9 +86,9 @@ describe( 'T-Junction', () => {
 
 		const splines = splineTestHelper.createSimpleTJunction();
 
-		splines.horizontal.controlPoints.forEach( point => point.position.y -= 100 );
+		splines.horizontal.getControlPoints().forEach( point => point.position.y -= 100 );
 		splineTestHelper.splineService.update( splines.horizontal );
-		splines.horizontal.controlPoints.forEach( point => point.position.y += 50 );
+		splines.horizontal.getControlPoints().forEach( point => point.position.y += 50 );
 		splineTestHelper.splineService.update( splines.horizontal );
 
 		expect( mapService.getJunctionCount() ).toBe( 1 );
@@ -127,7 +127,7 @@ describe( 'T-Junction', () => {
 		expect( mapService.getJunctionCount() ).toBe( 2 );
 
 		// move the horizontal spline up by 100
-		splines.horizontal.controlPoints.forEach( point => point.position.y += 100 );
+		splines.horizontal.getControlPoints().forEach( point => point.position.y += 100 );
 
 		// this step should remove all the junctions
 		splineTestHelper.splineService.update( splines.horizontal );

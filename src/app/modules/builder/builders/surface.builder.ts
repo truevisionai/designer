@@ -34,7 +34,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 	private buildSurface ( surface: Surface ): Mesh {
 
 		// update the surface if >=3 points are present
-		if ( surface.spline.controlPoints.length < 2 ) {
+		if ( surface.spline.getControlPointCount() < 2 ) {
 			return;
 		}
 
@@ -52,7 +52,7 @@ export class SurfaceBuilder extends MeshBuilder<Surface> {
 
 	private buildMesh ( surface: Surface ): GameObject {
 
-		const geometry = this.surfaceGeometryBuilder.createPolygon( surface.spline.controlPoints.map( cp => cp.position ) );
+		const geometry = this.surfaceGeometryBuilder.createPolygon( surface.spline.getControlPoints().map( cp => cp.position ) );
 
 		const material = this.buildMaterial( surface );
 

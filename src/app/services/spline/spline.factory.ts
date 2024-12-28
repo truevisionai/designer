@@ -165,7 +165,7 @@ export class SplineFactory {
 
 		const spline = SplineFactory.createRoadSpline( v1, v1Direction, v4, v4Direction );
 
-		if ( road ) spline.addSegment( 0, road );
+		if ( road ) road.setSplineAndSegment( spline );
 
 		return spline;
 
@@ -279,7 +279,7 @@ export class SplineFactory {
 
 			const point = ControlPointFactory.createRoadControlPoint( spline, geometry, index, position, hdg );
 
-			spline.controlPoints.push( point );
+			spline.addControlPoint( point );
 
 		}
 
@@ -303,7 +303,7 @@ export class SplineFactory {
 
 		addControlPoint( spline, lastGeometry, geometries.length, lastCoord.toVector3(), lastCoord.hdg );
 
-		spline.controlPoints.forEach( cp => cp.userData.roadId = road.id );
+		spline.getControlPoints().forEach( cp => cp.userData.roadId = road.id );
 
 		road.sStart = 0;
 

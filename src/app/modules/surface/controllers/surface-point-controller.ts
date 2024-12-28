@@ -21,7 +21,7 @@ export class SurfaceControlPointController extends PointController<SimpleControl
 
 		const index = this.splineService.findIndex( point.mainObject.spline, point.position );
 
-		point.mainObject.spline.controlPoints.splice( index, 0, point );
+		point.mainObject.spline.insertControlPoint( index, point );
 
 		this.splineService.updatePointHeading( point.mainObject.spline, point, index );
 
@@ -39,9 +39,9 @@ export class SurfaceControlPointController extends PointController<SimpleControl
 
 	onRemoved ( point: SimpleControlPoint<Surface> ): void {
 
-		const index = point.mainObject.spline.controlPoints.indexOf( point );
+		const index = point.mainObject.spline.getControlPoints().indexOf( point );
 
-		point.mainObject.spline.controlPoints.splice( index, 1 );
+		point.mainObject.spline.insertControlPoint( index, point );
 
 		this.splineService.updateIndexes( point.mainObject.spline );
 

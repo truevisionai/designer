@@ -51,7 +51,7 @@ export class SplineExporter {
 			attr_uuid: spline.uuid,
 			attr_type: spline.type,
 			geometry: spline.getGeometries().map( geometry => this.geometryExporter.export( geometry ) ),
-			point: spline.controlPoints.map( ( point: RoadControlPoint ) => ( {
+			point: spline.getControlPoints().map( ( point: RoadControlPoint ) => ( {
 				attr_x: point.position.x,
 				attr_y: point.position.y,
 				attr_z: point.position.z,

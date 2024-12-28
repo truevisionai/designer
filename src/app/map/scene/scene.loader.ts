@@ -517,7 +517,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		surface.opacity = parseFloat( xml.material?.attr_opacity ) || 1.0;
 
-		spline.controlPoints.forEach( p => p.mainObject = surface );
+		spline.getControlPoints().forEach( p => p.mainObject = surface );
 
 		return surface;
 	}
@@ -601,9 +601,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const position = this.importVector3( xml );
 
-			const point = spline.addControlPoint( position );
-
-			point.index = spline.controlPoints.length;
+			spline.addControlPoint( position );
 
 		} );
 
@@ -621,15 +619,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const position = this.importVector3( xml );
 
-			const point = new SplineControlPoint( spline, position );
-
-			point.index = spline.controlPoints.length;
-
-			spline.controlPoints.push( point );
+			spline.addControlPoint( position );
 
 		} );
 
-		if ( spline.controlPoints.length < 2 ) {
+		if ( spline.getControlPointCount() < 2 ) {
 			Log.error( 'Spline must have at least 2 control points', spline.toString() );
 			return;
 		}
@@ -696,9 +690,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			controlPoint.position.copy( position );
 
-			controlPoint.index = spline.controlPoints.length;
+			controlPoint.index = spline.getControlPointCount();
 
-			spline.controlPoints.push( controlPoint );
+			spline.addControlPoint( controlPoint );
 
 		} );
 
@@ -719,9 +713,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const controlPoint = new SimpleControlPoint( mainObject, position );
 
-			controlPoint.index = spline.controlPoints.length;
+			controlPoint.index = spline.getControlPointCount();
 
-			spline.controlPoints.push( controlPoint );
+			spline.addControlPoint( controlPoint );
 
 		} );
 
@@ -758,7 +752,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		curve.setSpline( spline );
 
-		spline.controlPoints.forEach( p => p.mainObject = curve );
+		spline.getControlPoints().forEach( p => p.mainObject = curve );
 
 		this.readAsOptionalArray( xml.props, propXml => {
 
@@ -793,7 +787,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( id ) polygon.id = id;
 
-		spline.controlPoints.forEach( point => point.mainObject = polygon );
+		spline.getControlPoints().forEach( point => point.mainObject = polygon );
 
 		this.readAsOptionalArray( xml.props || xml.prop, prop => {
 

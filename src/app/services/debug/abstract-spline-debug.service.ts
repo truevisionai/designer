@@ -108,7 +108,7 @@ export class AbstractSplineDebugService {
 
 		this.points.removeKey( spline );
 
-		spline.controlPoints.forEach( point => {
+		spline.getControlPoints().forEach( point => {
 
 			point.visible = true;
 
@@ -153,9 +153,9 @@ export class AbstractSplineDebugService {
 
 	private showCatmullRomLines ( spline: CatmullRomSpline ): void {
 
-		if ( !spline.closed && spline.controlPoints.length < 2 ) return;
+		if ( !spline.closed && spline.getControlPointCount() < 2 ) return;
 
-		if ( spline.closed && spline.controlPoints.length < 3 ) return;
+		if ( spline.closed && spline.getControlPointCount() < 3 ) return;
 
 		const line = this.createCatmullRomLine( spline );
 

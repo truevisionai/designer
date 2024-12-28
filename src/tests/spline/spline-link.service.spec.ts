@@ -60,13 +60,13 @@ describe( 'SplineLinkService: Tests', () => {
 		expectValidMap( mapService );
 
 		// update middle spline
-		R2.spline.controlPoints.forEach( point => point.position.y = 1 );
+		R2.spline.getControlPoints().forEach( point => point.position.y = 1 );
 
 		testHelper.splineService.update( R2.spline );
 
-		R1.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 1 ) );
-		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 1 ) );
-		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 1 ) );
+		R1.spline.getControlPoints().forEach( point => expect( point.position.y ).toBe( 1 ) );
+		R2.spline.getControlPoints().forEach( point => expect( point.position.y ).toBe( 1 ) );
+		R3.spline.getControlPoints().forEach( point => expect( point.position.y ).toBe( 1 ) );
 
 		// ensue even after update, the connections are still valid
 		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
@@ -77,13 +77,13 @@ describe( 'SplineLinkService: Tests', () => {
 		expectValidMap( mapService );
 
 		// update middle spline again
-		R2.spline.controlPoints.forEach( point => point.position.y += 1 );
+		R2.spline.getControlPoints().forEach( point => point.position.y += 1 );
 
 		testHelper.splineService.update( R2.spline );
 
-		R1.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 2 ) );
-		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 2 ) );
-		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBe( 2 ) );
+		R1.spline.getControlPoints().forEach( point => expect( point.position.y ).toBe( 2 ) );
+		R2.spline.getControlPoints().forEach( point => expect( point.position.y ).toBe( 2 ) );
+		R3.spline.getControlPoints().forEach( point => expect( point.position.y ).toBe( 2 ) );
 
 		// ensue even after update, the connections are still valid
 		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
@@ -132,13 +132,13 @@ describe( 'SplineLinkService: Tests', () => {
 		expectValidMap( mapService );
 
 		// update middle spline
-		R2.spline.controlPoints.forEach( point => point.position.y += 1 );
+		R2.spline.getControlPoints().forEach( point => point.position.y += 1 );
 
 		testHelper.splineService.update( R2.spline );
 
-		R1.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
-		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
-		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
+		R1.spline.getControlPoints().forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
+		R2.spline.getControlPoints().forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
+		R3.spline.getControlPoints().forEach( point => expect( point.position.y ).toBeCloseTo( 1 ) );
 
 		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
 		expect( ( R2.spline.getSuccessorSpline() ) ).toBe( R1.spline );
@@ -162,13 +162,13 @@ describe( 'SplineLinkService: Tests', () => {
 		expectValidMap( mapService );
 
 		// update middle spline
-		R2.spline.controlPoints.forEach( point => point.position.y += 1 );
+		R2.spline.getControlPoints().forEach( point => point.position.y += 1 );
 
 		testHelper.splineService.update( R2.spline );
 
-		R1.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
-		R2.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
-		R3.spline.controlPoints.forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
+		R1.spline.getControlPoints().forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
+		R2.spline.getControlPoints().forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
+		R3.spline.getControlPoints().forEach( point => expect( point.position.y ).toBeCloseTo( 2 ) );
 
 		expect( ( R1.spline.getSuccessorSpline() ) ).toBe( R2.spline );
 		expect( ( R2.spline.getSuccessorSpline() ) ).toBe( R1.spline );
@@ -210,9 +210,9 @@ describe( 'SplineLinkService: Tests', () => {
 		const spline = mapService.findSplineById( 2 );
 
 		expect( spline ).toBeDefined();
-		expect( spline.controlPoints.length ).toBe( 2 );
+		expect( spline.getControlPointCount() ).toBe( 2 );
 
-		spline.controlPoints.forEach( point => point.position.y += 1 );
+		spline.getControlPoints().forEach( point => point.position.y += 1 );
 
 		testHelper.splineService.update( spline );
 
@@ -237,9 +237,9 @@ describe( 'SplineLinkService: Tests', () => {
 		const spline = mapService.findSplineById( 1 );
 
 		expect( spline ).toBeDefined();
-		expect( spline.controlPoints.length ).toBe( 2 );
+		expect( spline.getControlPointCount() ).toBe( 2 );
 
-		spline.controlPoints.forEach( point => point.position.y += 1 );
+		spline.getControlPoints().forEach( point => point.position.y += 1 );
 
 		testHelper.splineService.update( spline );
 

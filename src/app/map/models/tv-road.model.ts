@@ -202,6 +202,12 @@ export class TvRoad {
 		return other instanceof TvRoad && this.uuid === other.uuid;
 	}
 
+	setSplineAndSegment ( spline: AbstractSpline ): void {
+		this.sStart = 0;
+		this.spline = spline;
+		this.spline.addSegment( this.sStart, this )
+	}
+
 	toString (): string {
 
 		if ( this.isJunction ) {

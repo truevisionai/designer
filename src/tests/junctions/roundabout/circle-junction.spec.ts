@@ -6,7 +6,6 @@ import { expectValidMap } from "../../base-test.spec";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { expectValidRoad, setupTest, validateMap } from "tests/setup-tests";
 import { expect2RoadJunction, expectTJunction, expectXJunction } from "tests/expect-junction.spec";
-import { ControlPointFactory } from "app/factories/control-point.factory";
 
 describe( '4-Road-Roundabout', () => {
 
@@ -45,7 +44,7 @@ describe( '4-Road-Roundabout', () => {
 		const horizontal = helper.addStraightRoadSpline( new Vector3( -50, 0, 0 ) );
 
 		// move the horizontal spline to right by 50
-		horizontal.controlPoints.forEach( point => point.position.x += 50 );
+		horizontal.getControlPoints().forEach( point => point.position.x += 50 );
 
 		helper.splineService.updateSpline( horizontal );
 

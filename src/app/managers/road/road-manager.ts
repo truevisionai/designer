@@ -139,7 +139,7 @@ export class RoadManager {
 
 		if ( this.debug ) Log.debug( 'Update', road.toString() );
 
-		if ( road.spline.controlPoints.length < 2 ) return;
+		if ( road.spline.getControlPointCount() < 2 ) return;
 
 		this.roadElevationManager.onRoadUpdated( road );
 

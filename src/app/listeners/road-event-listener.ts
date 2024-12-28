@@ -35,7 +35,7 @@ export class RoadEventListener {
 
 	onRoadUpdated ( event: RoadUpdatedEvent ): void {
 
-		if ( event.road.spline.controlPoints.length < 2 ) return;
+		if ( event.road.spline.getControlPointCount() < 2 ) return;
 
 		this.roadManager.updateRoad( event.road );
 

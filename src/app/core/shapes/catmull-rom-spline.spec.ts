@@ -5,7 +5,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Vector3 } from 'three';
 import { CatmullRomSpline } from './catmull-rom-spline';
-import { AnyControlPoint } from "../../objects/any-control-point";
 
 
 describe( 'CatmullRomSpline test', () => {
@@ -20,9 +19,9 @@ describe( 'CatmullRomSpline test', () => {
 
 	it( 'should give correct positions', () => {
 
-		spline.controlPoints.push( AnyControlPoint.create( '', new Vector3( 0, 0, 0 ) ) );
-		spline.controlPoints.push( AnyControlPoint.create( '', new Vector3( 50, 0, 0 ) ) );
-		spline.controlPoints.push( AnyControlPoint.create( '', new Vector3( 100, 0, 0 ) ) );
+		spline.addControlPoint( new Vector3( 0, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 50, 0, 0 ) );
+		spline.addControlPoint( new Vector3( 100, 0, 0 ) );
 
 		spline.update();
 

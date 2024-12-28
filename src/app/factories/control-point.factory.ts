@@ -27,13 +27,13 @@ export class ControlPointFactory {
 		const secondPoint = start.clone().add( direction.clone().multiplyScalar( length ) );
 
 		return [
-			this.createControl( spline, start ),
-			this.createControl( spline, secondPoint )
+			this.createControlPoint( spline, start ),
+			this.createControlPoint( spline, secondPoint )
 		];
 
 	}
 
-	static createControl ( spline: AbstractSpline, position: Vector3, index?: number ): AbstractControlPoint {
+	static createControlPoint ( spline: AbstractSpline, position: Vector3, index?: number ): AbstractControlPoint {
 
 		return this.createSplineControlPoint( spline, position, index );
 
@@ -49,7 +49,7 @@ export class ControlPointFactory {
 
 		if ( spline.type === SplineType.EXPLICIT ) {
 
-			const pointIndex = index || spline.controlPoints.length;
+			const pointIndex = index || spline.getControlPointCount();
 
 			const geometry = spline.getGeometries()[ pointIndex - 1 ];
 
@@ -59,7 +59,7 @@ export class ControlPointFactory {
 
 		}
 
-		return new SplineControlPoint( spline, position );
+		return new SplineControlPoint( spline, position, spline.getControlPointCount() );
 
 	}
 
@@ -95,7 +95,7 @@ export class ControlPointFactory {
 	 */
 	createSplineControlPoint ( spline: AbstractSpline, position: Vector3 ): AbstractControlPoint {
 
-		return ControlPointFactory.createControl( spline, position );
+		return ControlPointFactory.createControlPoint( spline, position );
 
 	}
 

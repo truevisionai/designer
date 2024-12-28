@@ -16,9 +16,9 @@ import { RoadControlPoint } from "app/objects/road/road-control-point";
 
 function isDraggingSupported ( object: SplineControlPoint | RoadControlPoint ): boolean {
 
-	const index = object.index ?? object.spline.controlPoints.indexOf( object );
+	const index = object.index ?? object.spline.getControlPoints().indexOf( object );
 
-	return index > 0 && index < object.spline.controlPoints.length - 1;
+	return index > 0 && index < object.spline.getControlPointCount() - 1;
 
 }
 
@@ -76,11 +76,11 @@ export class ManeuverSplineControlPointDragHandler extends BaseDragHandler<Splin
 
 		if ( spline instanceof AbstractSpline ) {
 
-			const index = spline.controlPoints.indexOf( point );
+			const index = spline.getControlPoints().indexOf( point );
 
 			if ( index == 1 ) {
 
-				const previousPoint = spline.controlPoints[ 0 ] as SplineControlPoint;
+				const previousPoint = spline.getControlPoints()[ 0 ] as SplineControlPoint;
 
 				heading = previousPoint.hdg || heading;
 

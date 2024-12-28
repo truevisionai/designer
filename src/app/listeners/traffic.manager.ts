@@ -90,7 +90,7 @@ export class TrafficManager {
 		this.vehicleService.removeAll();
 
 		this.roadService.roads
-			.filter( road => road.spline.controlPoints.length >= 2 )
+			.filter( road => road.spline.getControlPointCount() >= 2 )
 			.filter( road => road.geometries.length > 0 )
 			.filter( road => !road.isJunction )
 			.forEach( road => {

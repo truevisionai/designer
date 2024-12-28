@@ -102,12 +102,6 @@ export class RoadInspector extends BaseInspector implements OnInit, OnDestroy, I
 
 	}
 
-	duplicateRoad (): void {
-
-		this.roadService.duplicateRoad( this.road );
-
-	}
-
 	onRoadSpeedChanged ( $value: number ): void {
 
 		Commands.SetValue( this.roadType.speed, 'max', $value );

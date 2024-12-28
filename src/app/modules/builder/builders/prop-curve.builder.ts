@@ -26,7 +26,7 @@ export class PropCurveBuilder extends MeshBuilder<PropCurve> {
 
 		const group = new Group();
 
-		if ( curve.spline.controlPoints.length < 2 ) return;
+		if ( curve.spline.getControlPointCount() < 2 ) return;
 
 		this.splineBuilder.buildSpline( curve.spline );
 

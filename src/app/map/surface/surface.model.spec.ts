@@ -5,7 +5,6 @@
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { Vector2, Vector3 } from 'three';
 import { Surface } from './surface.model';
-import { AnyControlPoint } from "../../objects/any-control-point";
 
 describe( 'TvSurface', () => {
 
@@ -21,11 +20,9 @@ describe( 'TvSurface', () => {
 			new Vector3( 2, 2, 0 ),
 		];
 
-		const controlPoints = controlPointPositions.map( position => AnyControlPoint.create( '', position ) );
-
 		const spline = new CatmullRomSpline( true, 'catmullrom', 0.5 );
 
-		controlPoints.forEach( point => spline.controlPoints.push( point ) );
+		controlPointPositions.forEach( position => spline.addControlPoint( position ) );
 
 		const offset = new Vector2( 10, 20 );
 		const scale = new Vector2( 2, 3 );

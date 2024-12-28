@@ -39,15 +39,15 @@ export class DepAutoSpline extends AbstractSpline {
 
 	init (): void {
 
-		this.polyline = new Polyline( this.controlPoints );
+		this.polyline = new Polyline( this.getControlPoints() );
 
-		this.roundline = new RoundLine( this.controlPoints );
+		this.roundline = new RoundLine( this.getControlPoints() );
 
 	}
 
 	hide (): void {
 
-		this.controlPoints.forEach( i => i.visible = false );
+		this.getControlPoints().forEach( i => i.visible = false );
 
 		// this.hideLines();
 
@@ -70,7 +70,7 @@ export class DepAutoSpline extends AbstractSpline {
 
 	show (): void {
 
-		this.controlPoints.forEach( i => i.visible = true );
+		this.getControlPoints().forEach( i => i.visible = true );
 
 		this.showLines();
 
@@ -93,10 +93,10 @@ export class DepAutoSpline extends AbstractSpline {
 
 		let hdg, p1, p2, currentPoint: AbstractControlPoint, previousPoint: AbstractControlPoint;
 
-		for ( let i = 1; i < this.controlPoints.length; i++ ) {
+		for ( let i = 1; i < this.getControlPointCount(); i++ ) {
 
-			previousPoint = this.controlPoints[ i - 1 ];
-			currentPoint = this.controlPoints[ i ];
+			previousPoint = this.getControlPoints()[ i - 1 ];
+			currentPoint = this.getControlPoints()[ i ];
 
 			p1 = new Vector2( currentPoint.position.x, currentPoint.position.y );
 			p2 = new Vector2( previousPoint.position.x, previousPoint.position.y );
@@ -119,7 +119,7 @@ export class DepAutoSpline extends AbstractSpline {
 
 	clear (): void {
 
-		this.controlPoints.splice( 0, this.controlPoints.length );
+		this.removeAllControlPoints();
 
 		SceneService.removeFromMain( this.polyline.mesh );
 

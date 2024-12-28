@@ -1,75 +1,56 @@
-import { HttpClientModule } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { RoadNode } from 'app/objects/road/road-node';
 import { TvContactPoint } from 'app/map/models/tv-common';
-import { TvLinkType } from 'app/map/models/tv-link';
-import { RoadService } from 'app/services/road/road.service';
-import { RoadTool } from 'app/tools/road/road-tool';
 import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
 import { Vector2 } from 'three';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
+import { setupTest } from 'tests/setup-tests';
 
 describe( 'RoadTool: Connecting Roads', () => {
 
-	let tool: RoadTool;
-	let toolHelper: RoadToolHelper;
-	let eventServiceProvider: EventServiceProvider;
-	let splineTestHelper: SplineTestHelper;
+	let service: RoadToolHelper;
+	let helper: SplineTestHelper;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ RoadService ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
-		tool = new RoadTool( TestBed.inject( RoadToolHelper ) )
-		toolHelper = TestBed.inject( RoadToolHelper );
-		splineTestHelper = TestBed.inject( SplineTestHelper );
+		service = TestBed.inject( RoadToolHelper );
+		helper = TestBed.inject( SplineTestHelper );
 
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
-		eventServiceProvider.init();
 	} );
-
-	it( 'should ...', inject( [ RoadService ], ( roadService: RoadService ) => {
-
-		expect( roadService ).toBeTruthy();
-
-	} ) );
 
 	it( 'should connect roads', () => {
 
-		const leftRoad = splineTestHelper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
-		const rightRoad = splineTestHelper.createDefaultRoad( [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
+		const prevRoad = helper.createDefaultRoad( [ new Vector2( 0, 0 ), new Vector2( 100, 0 ) ] );
+		const nextRoad = helper.createDefaultRoad( [ new Vector2( 200, 0 ), new Vector2( 300, 0 ) ] );
 
-		const leftNode = new RoadNode( leftRoad, TvContactPoint.END );
-		const rightNode = new RoadNode( rightRoad, TvContactPoint.START );
+		const prevNode = new RoadNode( prevRoad, TvContactPoint.END );
+		const nextNode = new RoadNode( nextRoad, TvContactPoint.START );
 
-		const joiningRoad = toolHelper.createJoiningRoad( leftNode, rightNode );
+		const joiningRoad = service.createJoiningRoad( prevNode, nextNode );
 
 		expect( joiningRoad ).toBeDefined();
-		expect( joiningRoad.spline.controlPoints.length ).toBe( 4 );
+		expect( joiningRoad.spline.getControlPointCount() ).toBe( 4 );
 		expect( joiningRoad.spline.getLength() ).toBeCloseTo( 100 );
 
-		expect( joiningRoad.predecessor.type ).toBe( TvLinkType.ROAD );
-		expect( joiningRoad.predecessor.equals( leftRoad ) ).toBeTrue();
-		expect( joiningRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
+		expect( joiningRoad.getPredecessor().isRoad ).toBe( true );
+		expect( joiningRoad.getPredecessor().equals( prevRoad ) ).toBeTrue();
+		expect( joiningRoad.getPredecessor().contactPoint ).toBe( TvContactPoint.END );
 
-		expect( joiningRoad.successor.type ).toBe( TvLinkType.ROAD );
-		expect( joiningRoad.successor.equals( rightRoad ) ).toBeTrue();
+		expect( joiningRoad.successor.isRoad ).toBe( true );
+		expect( joiningRoad.successor.equals( nextRoad ) ).toBeTrue();
 		expect( joiningRoad.successor.contactPoint ).toBe( TvContactPoint.START );
 
-		expect( leftRoad.successor.type ).toBe( TvLinkType.ROAD );
-		expect( leftRoad.successor.equals( joiningRoad ) ).toBeTrue();
-		expect( leftRoad.successor.contactPoint ).toBe( TvContactPoint.START );
-		expect( leftRoad.predecessor ).toBeUndefined();
+		expect( prevRoad.successor.isRoad ).toBe( true );
+		expect( prevRoad.successor.equals( joiningRoad ) ).toBeTrue();
+		expect( prevRoad.successor.contactPoint ).toBe( TvContactPoint.START );
+		expect( prevRoad.predecessor ).toBeUndefined();
 
-		expect( rightRoad.predecessor.type ).toBe( TvLinkType.ROAD );
-		expect( rightRoad.predecessor.equals( joiningRoad ) ).toBeTrue();
-		expect( rightRoad.predecessor.contactPoint ).toBe( TvContactPoint.END );
-		expect( rightRoad.successor ).toBeUndefined();
+		expect( nextRoad.getPredecessor().isRoad ).toBe( true );
+		expect( nextRoad.getPredecessor().equals( joiningRoad ) ).toBeTrue();
+		expect( nextRoad.getPredecessor().contactPoint ).toBe( TvContactPoint.END );
+		expect( nextRoad.successor ).toBeUndefined();
 
 	} );
 

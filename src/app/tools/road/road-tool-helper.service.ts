@@ -33,37 +33,6 @@ export class RoadToolHelper {
 	) {
 	}
 
-	// addControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ): void {
-	//
-	// 	this.splineService.addControlPoint( spline, controlPoint );
-	//
-	// }
-	//
-	// insertControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
-	//
-	// 	this.splineService.insertControlPoint( spline, controlPoint );
-	//
-	// }
-	//
-	// removeControlPoint ( spline: AbstractSpline, controlPoint: AbstractControlPoint ) {
-	//
-	// 	this.splineService.removeControlPoint( spline, controlPoint );
-	//
-	// }
-
-
-	removeRoad ( road: TvRoad ): void {
-
-		this.roadService.remove( road );
-
-	}
-
-	duplicateRoad ( selectedRoad: TvRoad ): any {
-
-		return this.roadService.duplicateRoad( selectedRoad );
-
-	}
-
 	createJoiningRoad ( nodeA: RoadNode, nodeB: RoadNode ): TvRoad {
 
 		const joiningRoad = this.createFromNodes( nodeA, nodeB );
@@ -76,7 +45,7 @@ export class RoadToolHelper {
 
 	}
 
-	createFromNodes ( firstNode: RoadNode, secondNode: RoadNode ): any {
+	private createFromNodes ( firstNode: RoadNode, secondNode: RoadNode ): TvRoad {
 
 		const spline = this.splineFactory.createSplineFromNodes( firstNode, secondNode );
 
@@ -84,9 +53,7 @@ export class RoadToolHelper {
 
 		const joiningRoad = this.roadFactory.createJoiningRoad( spline, firstNode, secondNode );
 
-		spline.addSegment( 0, joiningRoad );
-
-		joiningRoad.spline = spline;
+		joiningRoad.setSplineAndSegment( spline );
 
 		this.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( spline );
 

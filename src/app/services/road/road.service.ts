@@ -95,7 +95,7 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	clone ( road: TvRoad, s: number = 0 ): any {
+	clone ( road: TvRoad, s: number = 0 ): TvRoad {
 
 		const id = this.roadFactory.getNextRoadId();
 
@@ -105,19 +105,19 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	createRampRoad ( connectionLane?: TvLane ): any {
+	createRampRoad ( connectionLane?: TvLane ): TvRoad {
 
 		return this.roadFactory.createRampRoad( connectionLane );
 
 	}
 
-	createSingleLaneRoad ( width: number ): any {
+	createSingleLaneRoad ( width: number ): TvRoad {
 
 		return this.roadFactory.createSingleLaneRoad( width );
 
 	}
 
-	createNewRoad (): any {
+	createNewRoad (): TvRoad {
 
 		return this.roadFactory.createNewRoad();
 
@@ -158,37 +158,6 @@ export class RoadService extends BaseDataService<TvRoad> {
 	remove ( road: TvRoad ): void {
 
 		MapEvents.roadRemoved.emit( new RoadRemovedEvent( road ) );
-
-	}
-
-	duplicateRoad ( road: TvRoad ): void {
-
-		const clone = this.clone( road );
-
-		const roadWidth = RoadWidthService.instance.findRoadWidthAt( road, 0 );
-
-		this.shiftRoad( clone, roadWidth.totalWidth, 0 );
-
-		Commands.AddObject( clone );
-
-	}
-
-	shiftRoad ( road: TvRoad, x: number, y: number ): void {
-
-		const posTheta = road.getStartPosTheta();
-
-		posTheta.rotateDegree( -90 );
-
-		const direction = posTheta.toDirectionVector();
-
-		direction.multiplyScalar( x );
-
-		road.spline.controlPoints.forEach( point => {
-
-			// move in direction of road
-			point.position.add( direction );
-
-		} );
 
 	}
 

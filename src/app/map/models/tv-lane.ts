@@ -310,6 +310,14 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	}
 
+	addSolidRoadMark ( s: number = 0 ): this {
+
+		this.addRoadMarkOfType( s, TvRoadMarkTypes.SOLID );
+
+		return this;
+
+	}
+
 	addMaterialRecord ( sOffset: number, surface: string, friction: number, roughness: number ): void {
 
 		const index = this.checkLaneMaterialInterval( sOffset ) + 1;
@@ -813,8 +821,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return LaneUtils.typeToString( type );
 	}
 
-	addDefaultWidth (): void {
+	addDefaultWidth (): this {
 		this.addWidthRecord( 0, 3.5, 0, 0, 0 );
+		return this;
 	}
 
 	updateWidthCoefficients (): void {
@@ -844,6 +853,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	addWidthRecordAtStart ( width: number ): void {
 		this.addWidthRecord( 0, width, 0, 0, 0 );
+	}
+
+	getType (): TvLaneType {
+		return this.type;
 	}
 }
 

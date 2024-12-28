@@ -8,9 +8,11 @@ import { DynamicControlPoint } from "../dynamic-control-point";
 
 export class SplineControlPoint extends DynamicControlPoint<AbstractSpline> {
 
-    constructor ( public spline: AbstractSpline, position?: Vector3 ) {
+    constructor ( public spline: AbstractSpline, position: Vector3, index: number ) {
 
         super( spline, position );
+
+		this.index = index;
 
     }
 

@@ -6,6 +6,7 @@ import { Injectable } from "@angular/core";
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { MaterialAsset } from "./tv-material.asset";
 import { FrontSide, NormalBlending } from "three";
+import { JsonObject } from "app/importers/xml.element";
 
 @Injectable( {
 	providedIn: 'root'
@@ -19,7 +20,7 @@ export class TvMaterialExporter implements AssetExporter<MaterialAsset> {
 		return JSON.stringify( data, null, 4 );
 	}
 
-	exportAsJSON ( material: MaterialAsset ): any {
+	exportAsJSON ( material: MaterialAsset ): JsonObject {
 
 		if ( material instanceof MaterialAsset ) {
 
