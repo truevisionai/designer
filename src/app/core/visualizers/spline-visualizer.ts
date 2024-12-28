@@ -19,7 +19,7 @@ import { SceneService } from "app/services/scene.service";
 } )
 export abstract class SplineVisualizer<T extends AbstractSpline> extends BaseVisualizer<T> {
 
-	private objects = new Map<AbstractSpline, IView>();
+	private views = new Map<AbstractSpline, IView>();
 
 	constructor (
 		private splineDebugService: SplineDebugService,
@@ -49,7 +49,7 @@ export abstract class SplineVisualizer<T extends AbstractSpline> extends BaseVis
 		// this.splineDebugService.showReferenceLine( spline );
 		// this.splineDebugService.showCurvature( spline );
 
-		this.objects.get( spline )?.update();
+		this.views.get( spline )?.update();
 
 	}
 
@@ -65,17 +65,17 @@ export abstract class SplineVisualizer<T extends AbstractSpline> extends BaseVis
 
 	onHighlight ( object: AbstractSpline ): void {
 
-		if ( !this.objects.has( object ) ) {
+		if ( !this.views.has( object ) ) {
 
 			const node = new SplineView( object );
 
-			this.objects.set( object, node );
+			this.views.set( object, node );
 
 			SceneService.addToolObject( node );
 
 		}
 
-		this.objects.get( object ).onMouseOver();
+		this.views.get( object ).onMouseOver();
 
 	}
 
@@ -87,7 +87,7 @@ export abstract class SplineVisualizer<T extends AbstractSpline> extends BaseVis
 		// this.splineDebugService.removeReferenceLine( object );
 		// this.splineDebugService.removeCurvature( object );
 
-		this.objects.get( object ).onMouseOut();
+		this.views.get( object ).onMouseOut();
 
 	}
 
@@ -99,19 +99,19 @@ export abstract class SplineVisualizer<T extends AbstractSpline> extends BaseVis
 		// this.splineDebugService.showReferenceLine( object );
 		// this.splineDebugService.showCurvature( object );
 
-		this.objects.get( object )?.onClick();
+		this.views.get( object )?.onClick();
 
 	}
 
 	onUnselected ( object: AbstractSpline ): void {
 
-		this.objects.get( object )?.onMouseOut();
+		this.views.get( object )?.onMouseOut();
 
 	}
 
 	onRemoved ( object: AbstractSpline ): void {
 
-		this.objects.get( object )?.hide();
+		this.views.get( object )?.hide();
 
 	}
 
