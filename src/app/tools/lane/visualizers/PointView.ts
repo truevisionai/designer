@@ -2,9 +2,12 @@ import { EventEmitter } from "app/events/event-emitter";
 import { COLOR } from "app/views/shared/utils/colors.service";
 import { Points, BufferGeometry, PointsMaterial, Vector3, Float32BufferAttribute } from "three";
 import { IView } from "./IView";
+import { OdTextures } from "app/deprecated/od.textures";
 
 
 export class PointView extends Points implements IView {
+
+	isView: boolean = true;
 
 	public clicked = new EventEmitter<this>();
 	public mouseOver = new EventEmitter<this>();
@@ -27,17 +30,17 @@ export class PointView extends Points implements IView {
 	}
 
 	onMouseOver?(): void {
-		this.material.color.set( COLOR.BLUE );
+		this.material.color.set( COLOR.YELLOW );
 		this.mouseOver.emit( 'mouseOver', this );
 	}
 
 	onMouseOut?(): void {
-		this.material.color.set( COLOR.RED );
+		this.material.color.set( COLOR.CYAN );
 		this.mouseOut.emit( 'mouseOut', this );
 	}
 
 	onClick?(): void {
-		this.material.color.set( COLOR.GREEN );
+		this.material.color.set( COLOR.RED );
 		this.clicked.emit( 'clicked', this );
 	}
 
@@ -46,7 +49,18 @@ export class PointView extends Points implements IView {
 		const geometry = new BufferGeometry();
 		geometry.setAttribute( 'position', new Float32BufferAttribute( [ position.x, position.y, position.z ], 3 ) );
 
-		const material = new PointsMaterial( { color: COLOR.RED, size: 0.1 } );
+		// const geometry = new BufferGeometry();
+		// geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 3 ), 3 ) );
+
+		const material = new PointsMaterial( {
+			size: 10,
+			sizeAttenuation: false,
+			map: OdTextures.point,
+			alphaTest: 0.5,
+			transparent: true,
+			color: COLOR.CYAN,
+			depthTest: false
+		} );
 
 		return new PointView( geometry, material );
 

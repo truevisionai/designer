@@ -1,5 +1,6 @@
-
 export interface IView {
+
+	isView?: boolean;
 
 	// Method to display the object in the view (3D scene, UI, etc.)
 	show (): void;
@@ -17,5 +18,11 @@ export interface IView {
 	onMouseOut?(): void;
 
 	onClick?(): void;
+
+}
+
+export function isView ( object: any ): object is IView {
+
+	return ( object as IView )?.isView === true;
 
 }

@@ -7,6 +7,8 @@ import { IView } from "./IView";
 
 export class SplineBorderView extends Group implements IView {
 
+	isView: boolean = true;
+
 	private leftBorder: DebugLine<any>;
 	private rightBorder: DebugLine<any>;
 

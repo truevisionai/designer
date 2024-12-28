@@ -12,7 +12,7 @@ export class SplinePolylineView extends BaseView implements IView {
 
 		super();
 
-		const points = spline.controlPoints.map( point => point.position );
+		const points = spline.getControlPoints().map( point => point.position );
 
 		if ( spline.closed && points.length > 2 ) {
 			points.push( points[ 0 ] );
@@ -33,7 +33,7 @@ export class SplinePolylineView extends BaseView implements IView {
 	}
 
 	update (): void {
-		this.line.updateGeometry( this.spline.controlPoints.map( point => point.position ) );
+		this.line.updateGeometry( this.spline.getControlPoints().map( point => point.position ) );
 	}
 
 	onMouseOver?(): void {

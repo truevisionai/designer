@@ -22,6 +22,7 @@ import { CameraService } from "../../../renderer/camera.service";
 import { MapService } from 'app/services/map/map.service';
 import { ToolManager } from 'app/managers/tool-manager';
 import { AssetType } from 'app/assets/asset.model';
+import { isView, IView } from 'app/tools/lane/visualizers/IView';
 
 @Component( {
 	selector: 'app-viewport',
@@ -217,6 +218,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
+	private lastObject?: IView;
+
 	onMouseMove ( event: MouseEvent ): void {
 
 		// TODO: implement GPU picking
@@ -235,13 +238,27 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( !this.onCanvas ) return;
 
+		this.lastObject?.onMouseOut();
+
+		this.lastObject = null;
+
 		this.intersections = this.getIntersections( event, true );
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
 		if ( !intersection ) return;
 
-		this.eventSystem.pointerMoved.emit( this.preparePointerData( event, intersection ) );
+		if ( isView( intersection.object ) ) {
+
+			this.lastObject = intersection.object;
+
+			this.lastObject.onMouseOver();
+
+		} else {
+
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, intersection ) );
+
+		}
 
 	}
 
@@ -660,7 +677,16 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster.layers.set( 0 );  // default layer
 
-		const intersections = this.raycaster.intersectObjects( this.sceneService.scene.children, recursive );
+		let intersections = this.raycaster.intersectObjects( this.sceneService.toolLayer.children, recursive );
+
+		if ( intersections.length > 0 ) {
+
+			// if object is found then fire move event
+			return intersections;
+
+		}
+
+		intersections = this.raycaster.intersectObjects( this.sceneService.scene.children, recursive );
 
 		if ( intersections.length > 0 ) {
 

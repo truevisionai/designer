@@ -24,7 +24,10 @@ export class SplineView extends BaseView implements IView {
 		this.referenceLine = new SplineReferenceLineView( spline );
 
 		spline.getControlPoints().forEach( point => {
-			this.points.push( PointView.create( point.position ) );
+			const view = PointView.create( point.position );
+			view.hide();
+			this.points.push( view );
+			this.add( view );
 		} );
 
 		this.polyline.hide();
@@ -38,12 +41,12 @@ export class SplineView extends BaseView implements IView {
 
 	show (): void {
 		console.log( 'SplineView.show' );
-		// this.visible = true;
+		this.visible = true;
 	}
 
 	hide (): void {
 		console.log( 'SplineView.hide' );
-		// this.visible = false;
+		this.visible = false;
 	}
 
 	update (): void {

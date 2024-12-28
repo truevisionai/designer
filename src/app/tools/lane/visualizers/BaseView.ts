@@ -4,6 +4,8 @@ import { IView } from "./IView";
 
 export abstract class BaseView extends Object3D implements IView {
 
+	isView: boolean = true;
+
 	abstract show (): void;
 
 	abstract hide (): void;
