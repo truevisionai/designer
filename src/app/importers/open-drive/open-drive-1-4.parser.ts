@@ -47,6 +47,8 @@ import { SplineFactory } from 'app/services/spline/spline.factory';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Log } from 'app/core/utils/log';
 import { JunctionFactory } from 'app/factories/junction.factory';
+import { findTurnTypeOfConnectingRoad } from 'app/map/models/connections/connection-utils';
+import { ConnectionFactory } from 'app/factories/connection.factory';
 
 
 @Injectable( {
@@ -693,15 +695,21 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			return;
 		}
 
-		const connection = new TvJunctionConnection( id, incomingRoad, connectingRoad, contactPoint );
+		const turnType = findTurnTypeOfConnectingRoad( connectingRoad );
+
+		const connection = ConnectionFactory.createConnectionOfType( turnType, { id, incomingRoad, connectingRoad, contactPoint } );
 
 		readXmlArray( xmlElement.laneLink, xml => {
 
-			const laneLink = this.parseJunctionConnectionLaneLink( xml, junction, connection );
+			try {
 
-			if ( !laneLink ) return;
+				connection.addLaneLink( this.parseJunctionConnectionLaneLink( xml, junction, connection ) );
 
-			connection.addLaneLink( laneLink );
+			} catch ( error ) {
+
+				Log.error( 'Error parsing lane link', error );
+
+			}
 
 		} );
 
@@ -731,51 +739,15 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 				return TvContactPoint.START;
 			}
 
-			return null;
+			throw new Error( 'contact point not found' );
 		}
 
-		if ( !connection.incomingRoad ) {
-			return;
-		}
-
-		// contact point of the incoming road with junction
 		const incomingContactPoint = findContactPoint( connection.incomingRoad );
-
-		if ( !incomingContactPoint ) {
-			TvConsole.error( 'contact point not found' );
-			console.error( 'contact point not found', xmlElement );
-			return;
-		}
-
-		const incomingLaneSection = connection.incomingRoad.getLaneProfile().getLaneSectionAtContact( incomingContactPoint );
-		const connectionLaneSection = connection.connectingRoad.getLaneProfile().getLaneSectionAtContact( connection.contactPoint );
-
-		if ( !incomingLaneSection ) {
-			TvConsole.error( 'incoming lane section not found' );
-			console.error( 'contact point not found', xmlElement );
-			return;
-		}
-
-		if ( !connectionLaneSection ) {
-			TvConsole.error( 'connection lane section not found' );
-			console.error( 'contact point not found', xmlElement );
-			return;
-		}
+		const incomingLaneSection = connection.getIncomingRoad().getLaneSectionAt( incomingContactPoint );
+		const connectionLaneSection = connection.getConnectingRoad().getLaneSectionAt( connection.contactPoint );
 
 		const fromLane = incomingLaneSection.getLaneById( fromLaneId );
 		const toLane = connectionLaneSection.getLaneById( toLaneId );
-
-		if ( !fromLane ) {
-			TvConsole.error( 'from lane not found' );
-			console.error( 'from lane not found', xmlElement );
-			return;
-		}
-
-		if ( !toLane ) {
-			TvConsole.error( 'to lane not found' );
-			console.error( 'to lane not found', xmlElement );
-			return;
-		}
 
 		return new TvJunctionLaneLink( fromLane, toLane );
 	}

@@ -2,6 +2,7 @@ import { MathUtils, Vector2, Vector3 } from "three";
 import { TurnType, TvContactPoint, TvLaneType, TvOrientation } from "../tv-common";
 import { TvLaneCoord } from "../tv-lane-coord";
 import { TvRoadCoord } from "../TvRoadCoord";
+import { TvRoad } from "../tv-road.model";
 
 // Configurable thresholds
 const STRAIGHT_THRESHOLD = 10; // degrees
@@ -39,6 +40,14 @@ export function findTurnTypeForRampRoad ( entry: TvLaneCoord, exit: TvLaneCoord 
 
 }
 
+export function findTurnTypeOfConnectingRoad ( connectingRoad: TvRoad ): TurnType {
+
+	const start = connectingRoad.getStartPosTheta();
+	const end = connectingRoad.getEndPosTheta();
+
+	return findTurnType( start.position, end.position, start.normalizedHdg );
+}
+
 export function findOrientation ( entry: TvLaneCoord, exit: TvLaneCoord | Vector3 ): TvOrientation {
 
 	const entryPosition = entry.posTheta.position;
@@ -61,7 +70,6 @@ export function findOrientation ( entry: TvLaneCoord, exit: TvLaneCoord | Vector
 	return TvOrientation.MINUS;
 }
 
-// eslint-disable-next-line max-lines-per-function
 function findTurnType ( entry: Vector3, exit: Vector3, entryHeading: number ): TurnType {
 
 	// Create vectors for positions of A and B
