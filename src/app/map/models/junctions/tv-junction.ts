@@ -354,6 +354,12 @@ export class TvJunction {
 
 	}
 
+	findCornerConnection ( incoming: TvRoad, outgoing: TvRoad ): TvJunctionConnection | undefined {
+
+		return this.getConnectionsBetween( incoming, outgoing ).find( connection => connection.isRightTurn || connection.hasSidewalks() );
+
+	}
+
 	getConnectionsByRoad ( targetRoad: TvRoad ): TvJunctionConnection[] {
 
 		const connections = new Set<TvJunctionConnection>();
@@ -525,6 +531,28 @@ export class TvJunction {
 		const rightRoadIndex = ( incomingRoadIndex + 1 ) % sortedRoadLinks.length;
 
 		return sortedRoadLinks[ rightRoadIndex ];
+
+	}
+
+	updateCorners (): void {
+
+		this.connections.forEach( connection => connection.setCorner( false ) );
+
+		const incomingRoads = this.getIncomingRoads();
+
+		for ( const incomingRoad of incomingRoads ) {
+
+			const right = this.getAdjacentRoadCoord( incomingRoad );
+
+			const connection = this.findCornerConnection( incomingRoad, right.road );
+
+			if ( connection ) {
+
+				connection.setCorner( true );
+
+			}
+
+		}
 
 	}
 

@@ -143,6 +143,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return this.type == TvLaneType.driving;
 	}
 
+	get isSidewalk (): boolean {
+		return this.type == TvLaneType.sidewalk;
+	}
+
 	get laneSection (): TvLaneSection {
 		return this._laneSection;
 	}

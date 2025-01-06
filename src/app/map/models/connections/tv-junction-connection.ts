@@ -393,6 +393,12 @@ export class TvJunctionConnection {
 
 	}
 
+	setCorner ( isCorner: boolean ): void {
+
+		this.isCornerConnection = isCorner;
+
+	}
+
 	getLowestLaneLink (): TvJunctionLaneLink {
 
 		return this.getLaneLinks().sort( ( a, b ) => a.incomingLane.id - b.incomingLane.id )[ 0 ];
@@ -505,5 +511,12 @@ export class TvJunctionConnection {
 		return this._laneLinks.find( link => link.matchesIncomingLane( lane ) );
 
 	}
+
+	hasSidewalks (): boolean {
+
+		return this._laneLinks.some( link => link.connectingLane.isSidewalk );
+
+	}
+
 }
 
