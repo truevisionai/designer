@@ -31,6 +31,7 @@ import { RoadDistance } from '../road/road-distance';
 import { TvMap } from './tv-map.model';
 import { TvLaneCoord } from "./tv-lane-coord";
 import { TvRoadRelations } from './tv-road-relations';
+import { TvLaneSection } from './tv-lane-section';
 
 export class TvRoad {
 
@@ -362,6 +363,20 @@ export class TvRoad {
 	getLaneProfile (): TvLaneProfile {
 
 		return this.laneProfile;
+
+	}
+
+	getLaneSectionAt ( query: number | TvContactPoint ): TvLaneSection {
+
+		if ( typeof query === 'number' ) {
+
+			return this.laneProfile.getLaneSectionAt( query );
+
+		} else {
+
+			return this.laneProfile.getLaneSectionAtContact( query );
+
+		}
 
 	}
 
