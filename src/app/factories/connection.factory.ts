@@ -110,35 +110,50 @@ export class ConnectionFactory {
 
 		const connectingRoad = this.createConnectingRoad( junction, incoming, outgoing );
 
-		const connection = this.createConnection( connectingRoad, incoming, outgoing, type );
+		const connection = this.determineTypeAndCreateConnection( connectingRoad, incoming, outgoing, type );
 
 		return connection;
 
 	}
 
-	private static createConnection ( connectingRoad: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord, type?: TurnType ): TvJunctionConnection {
+	static createConnectionOfType ( turnType: TurnType, options: Partial<TvJunctionConnection> ): TvJunctionConnection {
 
-		const turnType = type || determineTurnType( incoming, outgoing );
+		const connectionId = options.id || 0;
+		const contactPoint = options.contactPoint || TvContactPoint.START;
 
 		let connection: TvJunctionConnection;
 
 		if ( turnType == TurnType.RIGHT ) {
 
-			connection = new RightTurnConnection( 0, incoming.road, connectingRoad, TvContactPoint.START );
+			connection = new RightTurnConnection( connectionId, options.incomingRoad, options.connectingRoad, contactPoint );
 
 		} else if ( turnType == TurnType.STRAIGHT ) {
 
-			connection = new StraightConnection( 0, incoming.road, connectingRoad, TvContactPoint.START );
+			connection = new StraightConnection( connectionId, options.incomingRoad, options.connectingRoad, contactPoint );
 
 		} else if ( turnType == TurnType.LEFT ) {
 
-			connection = new LeftTurnConnection( 0, incoming.road, connectingRoad, TvContactPoint.START );
+			connection = new LeftTurnConnection( connectionId, options.incomingRoad, options.connectingRoad, contactPoint );
 
 		} else {
 
 			throw new Error( 'Unknown turn type' );
 
 		}
+
+		return connection;
+
+
+	}
+
+	private static determineTypeAndCreateConnection ( connectingRoad: TvRoad, incoming: TvRoadCoord, outgoing: TvRoadCoord, type?: TurnType ): TvJunctionConnection {
+
+		const turnType = type || determineTurnType( incoming, outgoing );
+
+		const connection = this.createConnectionOfType( turnType, {
+			incomingRoad: incoming.road,
+			connectingRoad: connectingRoad,
+		} )
 
 		return connection;
 
