@@ -18,7 +18,6 @@ import { TvLink, TvLinkType } from "../map/models/tv-link";
 import { JunctionService } from "../services/junction/junction.service";
 import { Vector3 } from "three";
 import { Log } from "app/core/utils/log";
-import { TvJunctionBoundaryService } from "../map/junction-boundary/tv-junction-boundary.service";
 import { SplineFixerService } from "app/services/spline/spline.fixer";
 import { JunctionRoadService } from "app/services/junction/junction-road.service";
 import { ConnectionManager } from "../map/junction/connection.manager";
@@ -45,7 +44,6 @@ export class JunctionManager {
 		public junctionFactory: JunctionFactory,
 		public junctionService: JunctionService,
 		public junctionRoadService: JunctionRoadService,
-		public boundaryService: TvJunctionBoundaryService,
 		public splineFixer: SplineFixerService,
 		public connectionManager: ConnectionManager,
 		public intersectionService: SplineIntersectionService,
@@ -78,7 +76,7 @@ export class JunctionManager {
 
 		this.junctionRoadService.linkRoads( junction );
 
-		this.boundaryService.update( junction );
+		junction.updateBoundary();
 
 		MapEvents.makeMesh.emit( junction );
 
