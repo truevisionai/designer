@@ -22,7 +22,7 @@ export default [
 			...pluginJs.configs.recommended.rules,
 			...tsPlugin.configs.recommended.rules,
 			"max-lines-per-function": [ "warn", {
-				max: 20,
+				max: 30,
 				skipBlankLines: true,
 				skipComments: true
 			} ],
