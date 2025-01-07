@@ -226,11 +226,11 @@ export class TvJunctionConnection {
 
 	getIncomingRoadContact (): TvContactPoint {
 
-		if ( this.connectingRoad.successor.equals( this.incomingRoad ) ) {
+		if ( this.connectingRoad.successor?.equals( this.incomingRoad ) ) {
 			return this.connectingRoad.successor.contactPoint;
 		}
 
-		if ( this.connectingRoad.predecessor.equals( this.incomingRoad ) ) {
+		if ( this.connectingRoad.predecessor?.equals( this.incomingRoad ) ) {
 			return this.connectingRoad.predecessor.contactPoint;
 		}
 
