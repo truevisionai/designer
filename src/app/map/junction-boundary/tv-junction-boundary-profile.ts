@@ -2,11 +2,11 @@ import { Log } from "app/core/utils/log";
 import { TvJunctionBoundary } from "app/map/junction-boundary/tv-junction-boundary";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { traverseLanes } from "app/utils/traverseLanes";
-import { TvLane } from "../tv-lane";
-import { TvRoadCoord } from "../TvRoadCoord";
-import { TvJunction } from "./tv-junction";
+import { TvLane } from "../models/tv-lane";
+import { TvRoadCoord } from "../models/TvRoadCoord";
+import { TvJunction } from "../models/junctions/tv-junction";
 import { TvJunctionBoundaryFactory } from "app/map/junction-boundary/tv-junction-boundary.factory";
-import { TvJunctionConnection } from "../connections/tv-junction-connection";
+import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
 
 export class TvJunctionBoundaryProfile {
 

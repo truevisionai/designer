@@ -23,7 +23,7 @@ import { TvMap } from '../tv-map.model';
 import { MapEvents } from 'app/events/map-events';
 import { TvRoadCoord } from '../TvRoadCoord';
 import { GeometryUtils } from 'app/services/surface/geometry-utils';
-import { TvJunctionBoundaryProfile } from './tv-junction-boundary-profile';
+import { TvJunctionBoundaryProfile } from '../../junction-boundary/tv-junction-boundary-profile';
 
 export class TvJunction {
 
