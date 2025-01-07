@@ -5,15 +5,12 @@
 import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { TvRoad } from 'app/map/models/tv-road.model';
-import { Object3D, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { MapService } from '../map/map.service';
-import { TvContactPoint } from 'app/map/models/tv-common';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';
 import { JunctionCreatedEvent } from 'app/events/junction/junction-created-event';
 import { BaseDataService } from "../../core/interfaces/data.service";
-import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,7 +20,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 	constructor (
 		private factory: JunctionFactory,
 		private mapService: MapService,
-		private boundaryService: TvJunctionBoundaryService,
 	) {
 		super();
 	}
@@ -31,12 +27,6 @@ export class JunctionService extends BaseDataService<TvJunction> {
 	get junctions () {
 
 		return this.mapService.map.getJunctions();
-
-	}
-
-	getJunctionById ( id: number ): any {
-
-		return this.mapService.map.getJunction( id );
 
 	}
 
@@ -54,30 +44,12 @@ export class JunctionService extends BaseDataService<TvJunction> {
 
 	updateJunctionMeshAndBoundary ( junction: TvJunction ): void {
 
-		this.boundaryService.update( junction );
+		junction.updateBoundary();
 
 		MapEvents.makeMesh.emit( junction );
 
 		junction.updatePositionAndBounds();
 
-	}
-
-	createNewJunction (): any {
-
-		return this.factory.createByType();
-
-	}
-
-
-
-	addConnectionsFromContact (
-		junction: TvJunction,
-		roadA: TvRoad, contactA: TvContactPoint,
-		roadB: TvRoad, contactB: TvContactPoint
-	): TvJunction {
-
-
-		return junction;
 	}
 
 	add ( object: TvJunction ): void {
