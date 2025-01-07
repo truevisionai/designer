@@ -650,6 +650,8 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		} );
 
+		junction.updateCornerConnections();
+
 	}
 
 	public parseJunctionPriorities ( junction: TvJunction, xmlElement: XmlElement ): void {

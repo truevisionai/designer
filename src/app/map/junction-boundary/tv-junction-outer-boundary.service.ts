@@ -17,6 +17,10 @@ import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
 import { Log } from "app/core/utils/log";
 
+
+/**
+ * @deprecated
+ */
 @Injectable( {
 	providedIn: 'root'
 } )

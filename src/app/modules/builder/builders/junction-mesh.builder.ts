@@ -42,7 +42,7 @@ export class JunctionMeshBuilder implements MeshBuilder<TvJunction> {
 
 	getJunctionGeometry ( junction: TvJunction ): BufferGeometry {
 
-		return this.boundaryBuilder.getBufferGeometry( junction.innerBoundary, 'delaunay' );
+		return this.boundaryBuilder.getBufferGeometry( junction.outerBoundary, 'delaunay' );
 
 	}
 

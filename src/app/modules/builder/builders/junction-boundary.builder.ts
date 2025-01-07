@@ -57,7 +57,7 @@ export class JunctionBoundaryBuilder {
 
 	private getDeluanayGeometry ( boundary: TvJunctionBoundary ): BufferGeometry {
 
-		return DelaunatorHelper.createFromPoints( boundary.getOuterPositions().map( p => p.toVector3() ) );
+		return DelaunatorHelper.createFromPoints( boundary.getInnerPositions().map( p => p.toVector3() ) );
 
 	}
 

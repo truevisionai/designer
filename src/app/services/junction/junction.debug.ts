@@ -26,9 +26,9 @@ import { ManeuverMesh } from './maneuver-mesh';
 import { JunctionNode } from './junction-node';
 import { JunctionRoadService } from './junction-road.service';
 import { JunctionOverlay } from './junction-overlay';
-import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadDistance } from 'app/map/road/road-distance';
+import { createGeometryFromBoundary } from 'app/modules/builder/builders/junction-boundary.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -53,7 +53,6 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		private debug: DebugDrawService,
 		private mapService: MapService,
 		private junctionRoadService: JunctionRoadService,
-		private junctionBoundaryService: TvJunctionBoundaryService,
 		private junctionDebugFactory: JunctionDebugFactory,
 	) {
 		super();
@@ -139,7 +138,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.meshes.removeKey( junction );
 		}
 
-		const mesh = this.createJunctionMesh( junction );
+		const mesh = this.createJunctionOverlay( junction );
 
 		this.meshes.addItem( junction, mesh );
 
@@ -151,7 +150,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !junction.outerBoundary ) {
 			Log.warn( 'OuterBoundaryMissing', junction?.toString() );
-			this.junctionBoundaryService.update( junction );
+			junction.updateBoundary();
 		}
 
 		const geometry = junction.mesh?.geometry.clone() || new BoxGeometry();
@@ -167,14 +166,9 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	createJunctionMesh ( junction: TvJunction ): JunctionOverlay {
+	createJunctionOverlay ( junction: TvJunction ): JunctionOverlay {
 
-		if ( !junction.innerBoundary ) {
-			Log.warn( 'InnerBoundaryMissing', junction?.toString() );
-			this.junctionBoundaryService.update( junction );
-		}
-
-		const geometry = junction.mesh?.geometry.clone() || new BoxGeometry();
+		const geometry = createGeometryFromBoundary( junction.outerBoundary );
 
 		return JunctionOverlay.create( junction, geometry );
 
