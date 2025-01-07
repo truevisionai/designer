@@ -4,14 +4,13 @@
 
 import { Injectable } from "@angular/core";
 import { TvJunction } from "../models/junctions/tv-junction";
-import { TvJunctionBoundary } from "./tv-junction-boundary";
+import { TvJunctionBoundary, TvJunctionSegmentBoundary } from "./tv-junction-boundary";
 import { GeometryUtils } from "../../services/surface/geometry-utils";
 import { LaneUtils } from "../../utils/lane.utils";
 import { TvRoadCoord } from "../models/TvRoadCoord";
 import { TvRoad } from "../models/tv-road.model";
 import { TvLane } from "../models/tv-lane";
 import { TvContactPoint } from "../models/tv-common";
-import { JunctionUtils } from "app/utils/junction.utils";
 import { Log } from "app/core/utils/log";
 import { Vector3 } from "three";
 import { TvLaneBoundary } from "./tv-lane-boundary";
@@ -21,6 +20,43 @@ import { TvJointBoundary } from "./tv-joint-boundary";
 	providedIn: 'root'
 } )
 export class TvJunctionBoundaryFactory {
+
+	static createJointSegment ( roadCoord: TvRoadCoord ): TvJunctionSegmentBoundary {
+
+		let startLane: TvLane;
+		let endLane: TvLane;
+
+		if ( roadCoord.contact == TvContactPoint.END ) {
+
+			startLane = roadCoord.laneSection.getLeftMostLane();
+			endLane = roadCoord.laneSection.getRightMostLane();
+
+		} else {
+
+			startLane = roadCoord.laneSection.getRightMostLane();
+			endLane = roadCoord.laneSection.getLeftMostLane();
+
+		}
+
+		return new TvJointBoundary( roadCoord.road, roadCoord.contact, startLane, endLane );
+
+	}
+
+	static createLaneBoundary ( road: TvRoad, lane: TvLane ): TvJunctionSegmentBoundary {
+
+		const boundary = new TvLaneBoundary();
+
+		boundary.road = road;
+
+		boundary.boundaryLane = lane;
+
+		boundary.sStart = lane.getLaneSection().s;
+
+		boundary.sEnd = lane.getLaneSection().endS;
+
+		return boundary;
+
+	}
 
 	static createInnerBoundary ( junction: TvJunction ): TvJunctionBoundary {
 
@@ -196,7 +232,7 @@ export class TvJunctionBoundaryFactory {
 
 		const points = segments.map( segment => {
 
-			const positions = JunctionUtils.convetToPositions( segment );
+			const positions = this.getSegmentPositions( segment );
 
 			if ( positions.length == 0 ) {
 				Log.error( 'No positions found in segment' );
@@ -222,6 +258,42 @@ export class TvJunctionBoundaryFactory {
 		boundary.clearSegments();
 
 		points.forEach( p => boundary.addSegment( p.segment ) );
+
+	}
+
+	private static getSegmentPositions ( segment: TvJunctionSegmentBoundary ): Vector3[] {
+
+		if ( segment instanceof TvLaneBoundary ) {
+
+			return this.getLanePositions( segment );
+
+		} else if ( segment instanceof TvJointBoundary ) {
+
+			return this.getJointPositions( segment );
+
+		}
+
+		throw new Error( 'Invalid segment type' );
+	}
+
+	private static getJointPositions ( joint: TvJointBoundary ): Vector3[] {
+
+		if ( joint.road.geometries.length == 0 ) {
+			Log.warn( 'Road has no geometries', joint.road.toString() );
+			return [];
+		}
+
+		if ( joint.road.length == 0 ) {
+			Log.warn( 'Road has no length', joint.road.toString() );
+			return [];
+		}
+
+		return joint.getOuterPoints().map( point => point.toVector3() );
+	}
+
+	private static getLanePositions ( lane: TvLaneBoundary ): Vector3[] {
+
+		return lane.getOuterPoints().map( point => point.toVector3() );
 
 	}
 
