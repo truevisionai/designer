@@ -3,10 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import {
-	TvBoundarySegmentType,
-	TvJunctionBoundary,
-} from '../../../map/junction-boundary/tv-junction-boundary';
+import { TvJunctionBoundary } from '../../../map/junction-boundary/tv-junction-boundary';
 import {
 	BufferGeometry,
 	Mesh,
@@ -124,11 +121,11 @@ export class JunctionBoundaryBuilder {
 
 			Log.info( 'Segment', i, segment.toString() );
 
-			if ( segment.type == TvBoundarySegmentType.JOINT ) {
+			if ( segment.isJointSegment ) {
 
 				positions.forEach( pos => shape.lineTo( pos.x, pos.y ) );
 
-			} else if ( segment.type == TvBoundarySegmentType.LANE ) {
+			} else if ( segment.isLaneSegment ) {
 
 				shape.splineThru( positions.map( pos => new Vector2( pos.x, pos.y ) ) );
 

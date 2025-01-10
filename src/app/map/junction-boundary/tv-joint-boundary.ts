@@ -9,7 +9,7 @@ import { createRoadDistance, RoadDistance } from "../road/road-distance";
 // roadId="2" contactPoint="end" jointLaneStart="2" jointLaneEnd="-1"
 // using for incoming/outgoing roads
 // goes from left to right of the road
-export class TvJointBoundary implements TvJunctionSegmentBoundary {
+export class TvJointBoundary extends TvJunctionSegmentBoundary {
 
 	type: TvBoundarySegmentType = TvBoundarySegmentType.JOINT;
 
@@ -34,14 +34,55 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 	jointLaneEnd?: TvLane;
 
 	constructor ( road?: TvRoad, contactPoint?: TvContactPoint, jointLaneStart?: TvLane, jointLaneEnd?: TvLane ) {
+		super();
 		this.road = road;
 		this.contactPoint = contactPoint;
 		this.jointLaneStart = jointLaneStart;
 		this.jointLaneEnd = jointLaneEnd
 	}
 
+	getJointLaneStart (): TvLane {
+		return this.jointLaneStart;
+	}
+
+	getJointLaneEnd (): TvLane {
+		return this.jointLaneEnd;
+	}
+
 	toString (): string {
 		return `JointBoundary: roadId=${ this.road.id } contactPoint=${ this.contactPoint } jointLaneStart=${ this.jointLaneStart?.id } jointLaneEnd=${ this.jointLaneEnd?.id }`;
+	}
+
+	getPoints (): TvPosTheta[] {
+
+		if ( this.road.geometries.length == 0 ) {
+			Log.warn( 'Road has no geometries', this.road.toString() );
+			return [];
+		}
+
+		if ( this.road.length == 0 ) {
+			Log.warn( 'Road has no length', this.road.toString() );
+			return [];
+		}
+
+		const roadDistance = createRoadDistance( this.road, this.contactPoint );
+		const roadWidth = this.road.getRoadWidthAt( roadDistance );
+		const lateralOffset = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
+
+		const start = this.jointLaneStart.isCarriageWay ?
+			this.road.getLaneEndPosition( this.jointLaneStart, roadDistance ) :
+			this.road.getLaneStartPosition( this.jointLaneStart, roadDistance );
+
+		const mid = this.jointLaneStart.isCarriageWay ?
+			this.road.getPosThetaAt( roadDistance, lateralOffset * 1.0 ) :
+			this.road.getPosThetaAt( roadDistance, lateralOffset * 0.0 );
+
+		const end = this.jointLaneEnd.isCarriageWay ?
+			this.road.getLaneEndPosition( this.jointLaneEnd, roadDistance ) :
+			this.road.getLaneStartPosition( this.jointLaneEnd, roadDistance );
+
+		return [ start, mid, end ];
+
 	}
 
 	// eslint-disable-next-line max-lines-per-function
@@ -61,45 +102,34 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 		const roadWidth = this.road.getRoadWidthAt( roadDistance );
 		const lateralOffset = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
 
-		let start: TvPosTheta;
-
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			start = this.jointLaneStart.isRight ?
-				this.road.getLaneEndPosition( this.jointLaneStart, roadDistance ) :
-				this.road.getLaneStartPosition( this.jointLaneStart, roadDistance );
-
-		} else if ( this.contactPoint == TvContactPoint.END ) {
-
-			start = this.jointLaneStart.isRight ?
-				this.road.getLaneStartPosition( this.jointLaneStart, roadDistance ) :
-				this.road.getLaneEndPosition( this.jointLaneStart, roadDistance );
-
-		}
-
+		const start = this.road.getLaneEndPosition( this.jointLaneStart, roadDistance );
 		const mid = this.road.getPosThetaAt( roadDistance, lateralOffset * 0.5 );
-
-		let end: TvPosTheta;
-
-		if ( this.contactPoint == TvContactPoint.START ) {
-
-			end = this.jointLaneEnd.isRight ?
-				this.road.getLaneStartPosition( this.jointLaneEnd, roadDistance ) :
-				this.road.getLaneEndPosition( this.jointLaneEnd, roadDistance );
-
-		} else if ( this.contactPoint == TvContactPoint.END ) {
-
-			end = this.jointLaneEnd.isRight ?
-				this.road.getLaneEndPosition( this.jointLaneEnd, roadDistance ) :
-				this.road.getLaneStartPosition( this.jointLaneEnd, roadDistance );
-
-		}
+		const end = this.road.getLaneEndPosition( this.jointLaneEnd, roadDistance );
 
 		return [ start, mid, end ];
 	}
 
 	getInnerPoints (): TvPosTheta[] {
-		return this.getOuterPoints();
+
+		if ( this.road.geometries.length == 0 ) {
+			Log.warn( 'Road has no geometries', this.road.toString() );
+			return [];
+		}
+
+		if ( this.road.length == 0 ) {
+			Log.warn( 'Road has no length', this.road.toString() );
+			return [];
+		}
+
+		const roadDistance = createRoadDistance( this.road, this.contactPoint );
+		const roadWidth = this.road.getRoadWidthAt( roadDistance );
+		const lateralOffset = roadWidth.leftSideWidth - roadWidth.rightSideWidth;
+
+		const start = this.road.getLaneStartPosition( this.jointLaneStart, roadDistance );
+		const mid = this.road.getPosThetaAt( roadDistance, lateralOffset * 0.5 );
+		const end = this.road.getLaneStartPosition( this.jointLaneEnd, roadDistance );
+
+		return [ start, mid, end ];
 	}
 
 	clone (): TvJointBoundary {

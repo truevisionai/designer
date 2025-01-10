@@ -37,6 +37,20 @@ export class TvJunctionBoundary {
 		return boundary;
 	}
 
+	getPositions (): TvPosTheta[] {
+
+		const positions: TvPosTheta[] = [];
+
+		this.getSegments().forEach( segment => {
+			segment.getPoints().forEach( point => {
+				positions.push( point );
+			} );
+		} );
+
+		return positions;
+
+	}
+
 	getOuterPositions (): TvPosTheta[] {
 
 		const positions: TvPosTheta[] = [];
@@ -64,14 +78,24 @@ export class TvJunctionBoundary {
 	}
 }
 
-export interface TvJunctionSegmentBoundary {
+export abstract class TvJunctionSegmentBoundary {
 
 	type: TvBoundarySegmentType;
 
-	clone (): TvJunctionSegmentBoundary;
+	abstract clone (): TvJunctionSegmentBoundary;
 
-	getOuterPoints (): TvPosTheta[];
+	abstract getPoints (): TvPosTheta[];
 
-	getInnerPoints (): TvPosTheta[];
+	abstract getOuterPoints (): TvPosTheta[];
+
+	abstract getInnerPoints (): TvPosTheta[];
+
+	get isLaneSegment (): boolean {
+		return this.type == TvBoundarySegmentType.LANE;
+	}
+
+	get isJointSegment (): boolean {
+		return this.type == TvBoundarySegmentType.JOINT;
+	}
 
 }

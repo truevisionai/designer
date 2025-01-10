@@ -12,7 +12,7 @@ import { Log } from "app/core/utils/log";
  * // ususally for connecting roads
  * // goes along the last/boundary lane of the connecting road
  */
-export class TvLaneBoundary implements TvJunctionSegmentBoundary {
+export class TvLaneBoundary extends TvJunctionSegmentBoundary {
 
 	type: TvBoundarySegmentType = TvBoundarySegmentType.LANE;
 	road: TvRoad;
@@ -21,6 +21,7 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 	sEnd: number | TvContactPoint;
 
 	constructor ( road?: TvRoad, boundaryLane?: TvLane, sStart?: number | TvContactPoint, sEnd?: number | TvContactPoint ) {
+		super();
 		this.road = road;
 		this.boundaryLane = boundaryLane;
 		this.sStart = sStart;
@@ -37,6 +38,16 @@ export class TvLaneBoundary implements TvJunctionSegmentBoundary {
 
 	toString (): string {
 		return `LaneBoundary: roadId=${ this.road.id } boundaryLane=${ this.boundaryLane.id } sStart=${ this.sStart } sEnd=${ this.sEnd }`;
+	}
+
+	getPoints (): TvPosTheta[] {
+
+		if ( this.boundaryLane.isCarriageWay() ) {
+			return this.getOuterPoints();
+		}
+
+		return this.getInnerPoints();
+
 	}
 
 	getOuterPoints ( stepSize: number = 1 ): TvPosTheta[] {
