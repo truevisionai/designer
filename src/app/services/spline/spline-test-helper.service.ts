@@ -27,6 +27,7 @@ import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-pars
 import { SplineGeometryService } from './spline-geometry.service';
 import { Observable } from 'rxjs';
 import { TvMap } from 'app/map/models/tv-map.model';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
 
 export const STRAIGHT_XODR = 'assets/open-drive/straight-road.xml';
 export const ROUNDABOUT_XODR = 'assets/open-drive/roundabout-8-course.xodr';
@@ -248,6 +249,18 @@ export class SplineTestHelper {
 		await this.addInRandomOrder( [ horizontal, vertical ], random );
 
 		return { horizontal, vertical };
+	}
+
+	createDefaultJunction (): TvJunction {
+
+		const horizontal = this.createStraightSpline( new Vector3( -50, 0, 0 ) );
+		const vertical = this.createStraightSpline( new Vector3( 0, -50, 0 ), 100, 90 );
+
+		this.splineService.add( horizontal );
+		this.splineService.add( vertical );
+
+		return this.mapService.findJunction( 1 );
+
 	}
 
 	addSixRoadJunction (): void {
