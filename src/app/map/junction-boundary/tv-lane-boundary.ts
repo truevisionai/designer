@@ -17,10 +17,10 @@ export class TvLaneBoundary extends TvJunctionSegmentBoundary {
 	type: TvBoundarySegmentType = TvBoundarySegmentType.LANE;
 	road: TvRoad;
 	boundaryLane: TvLane;
-	sStart: number | TvContactPoint;
-	sEnd: number | TvContactPoint;
+	sStart: RoadDistance | TvContactPoint;
+	sEnd: RoadDistance | TvContactPoint;
 
-	constructor ( road?: TvRoad, boundaryLane?: TvLane, sStart?: number | TvContactPoint, sEnd?: number | TvContactPoint ) {
+	constructor ( road?: TvRoad, boundaryLane?: TvLane, sStart?: RoadDistance | TvContactPoint, sEnd?: RoadDistance | TvContactPoint ) {
 		super();
 		this.road = road;
 		this.boundaryLane = boundaryLane;
