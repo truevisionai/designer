@@ -4,7 +4,7 @@
 
 import { GameObject } from 'app/objects/game-object';
 import { MathUtils } from "three";
-import { TvContactPoint, TvLaneSide, TvLaneType } from './tv-common';
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
 import { Maths } from "../../utils/maths";
