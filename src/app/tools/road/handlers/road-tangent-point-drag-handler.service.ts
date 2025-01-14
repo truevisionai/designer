@@ -8,7 +8,7 @@ import { RoadTangentPoint } from "../../../objects/road/road-tangent-point";
 import { SplineGeometryService } from "../../../services/spline/spline-geometry.service";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { Commands } from "../../../commands/commands";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 @Injectable( {
 	providedIn: 'root'

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector2, Vector4 } from 'three';
+import { Vector2, Vector4 } from "three";
 
 
 // Optimised for t=0.5

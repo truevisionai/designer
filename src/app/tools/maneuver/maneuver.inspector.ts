@@ -5,7 +5,7 @@
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { ManeuverMesh } from 'app/services/junction/maneuver-mesh';
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
-import { Vector2 } from "three";
+import { Vector2 } from "app/core/maths"
 import { Commands } from "app/commands/commands";
 
 export class ManeuverInspector {

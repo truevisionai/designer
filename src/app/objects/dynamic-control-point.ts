@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferAttribute, BufferGeometry, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, Vector3 } from "three";
 import { IHasUpdate } from '../commands/set-value-command';
 import { SerializedField } from 'app/core/components/serialization';
 import { AbstractControlPoint } from "./abstract-control-point";

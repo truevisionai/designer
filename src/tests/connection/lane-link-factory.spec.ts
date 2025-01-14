@@ -2,7 +2,7 @@ import { JunctionFactory } from "../../app/factories/junction.factory";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { TestBed } from "@angular/core/testing";
 import { setupTest } from "tests/setup-tests";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { TvJunctionConnection } from "app/map/models/connections/tv-junction-connection";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "app/map/models/junctions/tv-junction";

@@ -4,7 +4,7 @@
 
 import { TestBed } from "@angular/core/testing";
 import { ExplicitGeometryService } from "./explicit-geometry.service";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvGeometryType } from "app/map/models/tv-common";
 import { RoadControlPoint } from "app/objects/road/road-control-point";

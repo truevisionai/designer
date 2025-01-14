@@ -6,7 +6,7 @@ import { expectTJunction, expectXJunction } from "tests/expect-junction.spec";
 import { expectInstances } from "tests/expect-spline.spec";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 describe( 'U-Junction', () => {
 

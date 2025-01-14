@@ -7,7 +7,6 @@ import {
 	BoxGeometry,
 	BufferGeometry,
 	CatmullRomCurve3,
-	Color,
 	Euler,
 	Float32BufferAttribute,
 	Material,
@@ -18,7 +17,7 @@ import {
 	PlaneGeometry,
 	TextureLoader,
 	Vector3
-} from 'three';
+} from "three";
 import { TvOrientation, TvSide } from '../../../map/models/tv-common';
 import { Injectable } from "@angular/core";
 import { TvRoad } from "../../../map/models/tv-road.model";
@@ -32,11 +31,12 @@ import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry';
 import { MeshBuilder } from "../../../core/builders/mesh.builder";
 import { AssetService } from "../../../assets/asset.service";
 import { AssetType } from "../../../assets/asset.model";
-import { COLOR } from "../../../views/shared/utils/colors.service";
+import { ColorUtils } from "../../../views/shared/utils/colors.service";
 import { TvObjectRepeat } from "../../../map/models/objects/tv-object-repeat";
 import { Log } from "../../../core/utils/log";
 import { TvMaterialService } from "../../../assets/material/tv-material.service";
 import { TvTextureService } from "../../../assets/texture/tv-texture.service";
+import { Color } from "app/core/maths";
 
 @Injectable()
 export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
@@ -892,7 +892,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 	// 	const endPoint = new Vector3( 10, 100, 0 );
 	//
 	// 	const direction = endPoint.clone().sub( startPoint ).normalize();
-	// 	const perpendicular = new THREE.Vector3( -direction.y, direction.x, direction.z ).multiplyScalar( marking.width / 2 );
+	// 	const perpendicular = new Vector3( -direction.y, direction.x, direction.z ).multiplyScalar( marking.width / 2 );
 	// 	const totalLength = startPoint.distanceTo( endPoint );
 	// 	const fullStripeLength = marking.lineLength + marking.spaceLength;
 	// 	const numFullStripes = Math.floor( totalLength / fullStripeLength );
@@ -981,7 +981,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 		const asset = this.assetService.getAsset( roadObject.assetGuid );
 
 		if ( !asset ) {
-			return new MeshStandardMaterial( { color: COLOR.MAGENTA } );
+			return new MeshStandardMaterial( { color: ColorUtils.MAGENTA } );
 		}
 
 		if ( asset.type == AssetType.MATERIAL ) {

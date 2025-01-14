@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { BaseVisualizer } from "./base-visualizer";
 import { AbstractSpline } from "../shapes/abstract-spline";
 import { SplineDebugService } from "../../services/debug/spline-debug.service";
-import { COLOR } from "../../views/shared/utils/colors.service";
+import { ColorUtils } from "../../views/shared/utils/colors.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -71,7 +71,7 @@ export abstract class SplineVisualizer<T extends AbstractSpline> extends BaseVis
 
 	onSelected ( object: AbstractSpline ): void {
 
-		this.splineDebugService.showBorder( object, 4, COLOR.RED );
+		this.splineDebugService.showBorder( object, 4, ColorUtils.RED );
 		this.splineDebugService.showControlPoints( object );
 		this.splineDebugService.showPolyline( object );
 		this.splineDebugService.showReferenceLine( object );

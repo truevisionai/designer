@@ -4,8 +4,8 @@
 
 import { Injectable } from '@angular/core';
 import { GameObject } from 'app/objects/game-object';
-import * as THREE from 'three';
-import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from 'three';
+import * as THREE from "three";
+import { BufferGeometry, Material, MeshBasicMaterial, Vector2, Vector3 } from "three";
 import { TvRoad } from '../../../map/models/tv-road.model';
 import { LaneBufferGeometry } from './LaneBufferGeometry';
 import { TvLaneSide, TvLaneType } from '../../../map/models/tv-common';

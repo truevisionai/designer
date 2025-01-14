@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Points } from 'three';
+import { Points } from "three";
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { BaseSelectionStrategy } from './select-strategy';
 import { AbstractControlPoint } from "../../../objects/abstract-control-point";

@@ -6,7 +6,7 @@ import { GameObject } from 'app/objects/game-object';
 import { Copiable } from 'app/services/property-copy.service';
 import { IHasUpdate } from 'app/commands/set-value-command';
 import { ISelectable } from 'app/objects/i-selectable';
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 import { MeshGeometryData } from './mesh-geometry.data';
 import {
 	TravelDirection,

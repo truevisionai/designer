@@ -67,7 +67,7 @@ export class ViewControllerService {
 
 	}
 
-	getTarget (): THREE.Vector3 {
+	getTarget (): Vector3 {
 
 		return this.target?.position || this.controls.getTarget();
 

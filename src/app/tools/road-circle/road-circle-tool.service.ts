@@ -11,10 +11,10 @@ import {
 	LineLoop,
 	Vector2,
 	Vector3
-} from 'three';
+} from "three";
 import { SceneService } from '../../services/scene.service';
 import { TextObject3d } from 'app/objects/text-object';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { TvContactPoint } from 'app/map/models/tv-common';
@@ -84,7 +84,7 @@ export class RoadCircleToolService {
 
 		let circleGeometry = new CircleGeometry( radius, radius * 4 );
 
-		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: COLOR.CYAN, linewidth: 4 } ) );
+		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: ColorUtils.CYAN, linewidth: 4 } ) );
 
 		this.line.name = 'circle';
 

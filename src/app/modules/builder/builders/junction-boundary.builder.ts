@@ -14,9 +14,9 @@ import {
 	ShapeGeometry,
 	Vector2,
 	Vector3
-} from 'three';
+} from "three";
 import { GeometryUtils } from 'app/services/surface/geometry-utils';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { Log } from 'app/core/utils/log';
 import { TvJunction } from '../../../map/models/junctions/tv-junction';
@@ -99,18 +99,18 @@ export class JunctionBoundaryBuilder {
 		points.forEach( ( p, index ) => {
 
 			// Draw the point as a green sphere
-			DebugDrawService.instance.drawSphere( p.clone(), 0.1, COLOR.GREEN );
+			DebugDrawService.instance.drawSphere( p.clone(), 0.1, ColorUtils.GREEN );
 
 			// Draw lines between consecutive points
 			const nextIndex = ( index + 1 ) % points.length;
 
-			DebugDrawService.instance.drawLine( [ p.clone(), points[ nextIndex ].clone() ], COLOR.BLUE, 1 );
+			DebugDrawService.instance.drawLine( [ p.clone(), points[ nextIndex ].clone() ], ColorUtils.BLUE, 1 );
 
 		} );
 
 		const center = GeometryUtils.getCentroid( points );
 
-		DebugDrawService.instance.drawSphere( center.clone(), 1.0, COLOR.RED );
+		DebugDrawService.instance.drawSphere( center.clone(), 1.0, ColorUtils.RED );
 
 	}
 

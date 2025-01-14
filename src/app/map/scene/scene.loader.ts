@@ -44,7 +44,7 @@ import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Surface } from 'app/map/surface/surface.model';
 import { XMLParser } from 'fast-xml-parser';
-import { Euler, Object3D, Vector2, Vector3 } from 'three';
+import { Euler, Object3D, Vector2, Vector3 } from "three";
 import { AssetDatabase } from '../../assets/asset-database';
 import { TvConsole } from '../../core/utils/console';
 import { SnackBar } from '../../services/snack-bar.service';

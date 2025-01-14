@@ -9,7 +9,7 @@ import { DebugState } from "../../services/debug/debug-state";
 import { TvLane } from "../../map/models/tv-lane";
 import { Material, MeshBasicMaterial } from "three";
 import { LaneDebugService } from "../../services/debug/lane-debug.service";
-import { COLOR } from "../../views/shared/utils/colors.service";
+import { ColorUtils } from "../../views/shared/utils/colors.service";
 import { RoadToolDebugger } from "../road/road-tool.debugger";
 import { JunctionUtils } from "app/utils/junction.utils";
 
@@ -44,19 +44,19 @@ export class ConnectionsDebugger extends BaseDebugger<TvLaneCoord> {
 
 			this.highlightedLanes.set( lane, material );
 
-			this.laneDebugService.showDirectionalArrows( lane, COLOR.WHITE );
+			this.laneDebugService.showDirectionalArrows( lane, ColorUtils.WHITE );
 
 		}
 
 		if ( this.highlightedLanes.has( coord.lane ) ) return;
 
-		highlight( coord.lane, COLOR.MBLUE );
+		highlight( coord.lane, ColorUtils.MBLUE );
 
 		const successors = JunctionUtils.findSuccessors( coord.road, coord.lane, coord.road.successor );
-		successors.forEach( lane => highlight( lane, COLOR.MGREEN ) );
+		successors.forEach( lane => highlight( lane, ColorUtils.MGREEN ) );
 
 		const predecessors = JunctionUtils.findPredecessors( coord.road, coord.lane, coord.road.predecessor );
-		predecessors.forEach( lane => highlight( lane, COLOR.MRED ) );
+		predecessors.forEach( lane => highlight( lane, ColorUtils.MRED ) );
 
 	}
 

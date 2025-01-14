@@ -8,7 +8,7 @@ import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineType } from 'app/core/shapes/spline-type';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { RoadNode } from 'app/objects/road/road-node';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';

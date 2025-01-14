@@ -3,7 +3,7 @@
  */
 
 import { Asset } from "app/assets/asset.model";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AssetManager } from "../../assets/asset.manager";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { AssetService } from "../../assets/asset.service";

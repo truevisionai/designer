@@ -10,7 +10,7 @@ import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { Object3D } from "three";
 import { DebugDrawService } from "../../services/debug/debug-draw.service";
 import { RoadService } from "../../services/road/road.service";
-import { COLOR } from "../../views/shared/utils/colors.service";
+import { ColorUtils } from "../../views/shared/utils/colors.service";
 import { Log } from 'app/core/utils/log';
 
 @Injectable( {
@@ -84,7 +84,7 @@ export class JunctionGateDebugger extends BaseDebugger<TvRoadSignal> {
 					trafficLight.getPosition().toVector3()
 				];
 
-				const line = this.debugService.createLine( positions, COLOR.WHITE, 4 );
+				const line = this.debugService.createLine( positions, ColorUtils.WHITE, 4 );
 
 				this.lines.addItem( signal, line );
 

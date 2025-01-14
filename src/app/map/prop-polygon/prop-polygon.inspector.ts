@@ -5,7 +5,7 @@
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { PropPolygon } from "./prop-polygon.model";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { Commands } from "app/commands/commands";
 
 export class PropPolygonInspector {

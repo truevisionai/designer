@@ -4,7 +4,7 @@
 
 import { LaneElementFactory, ILaneNodeFactory } from "app/core/interfaces/lane-element.factory";
 import { TvLaneHeight } from "./lane-height.model";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { Injectable } from "@angular/core";
 import { TvLane } from "../models/tv-lane";
 import { Asset } from "app/assets/asset.model";

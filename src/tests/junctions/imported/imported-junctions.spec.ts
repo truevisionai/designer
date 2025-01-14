@@ -5,7 +5,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineTestHelper, STRAIGHT_XODR } from "../../../app/services/spline/spline-test-helper.service";
 import { JunctionToolHelper } from "../../../app/modules/junction/junction-tool.helper";
 import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 
 describe( 'Imported XJunction: Tests', () => {
 

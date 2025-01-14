@@ -8,7 +8,7 @@ import { PropPolygon } from "./prop-polygon.model";
 import { MapService } from "../../services/map/map.service";
 import { PolygonDistributionService } from '../builders/polygon-distribution.service';
 import { TvTransform } from '../models/tv-transform';
-import { Euler, Vector3 } from 'three';
+import { Euler, Vector3 } from "three";
 import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
 import { MapEvents } from 'app/events/map-events';
 

@@ -4,7 +4,7 @@
 
 import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractFieldComponent } from 'app/views/shared/fields/abstract-field.component';
-import { Color } from 'three';
+import { Color } from 'app/core/maths';
 
 @Component( {
 	selector: 'app-color-field',

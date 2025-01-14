@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { MathUtils } from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { MathUtils } from "three";
 import { GameObject } from '../../objects/game-object';
 import { TvColors, TvRoadMarkTypes, TvRoadMarkWeights } from './tv-common';
 import { TvLane } from './tv-lane';
@@ -138,7 +138,7 @@ export class TvLaneRoadMark {
 	}
 
 	get threeColor () {
-		return COLOR.stringToColor( this.color );
+		return ColorUtils.stringToColor( this.color );
 	}
 
 	getType (): TvRoadMarkTypes {

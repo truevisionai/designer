@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Group, Vector3 } from 'three';
+import { Group, Vector3 } from "three";
 import { TvLaneWidth } from '../../../map/models/tv-lane-width';
 import { INode } from '../../../objects/i-selectable';
 import { IHasCopyUpdate } from 'app/core/interfaces/has-copy-update';

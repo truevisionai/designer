@@ -21,9 +21,9 @@ export class CameraService {
 	private cameras: THREE.Camera[] = [];
 
 	// This will create a vector to store the offset position from the object
-	private p_offset = new THREE.Vector3( 20, 20, 20 );
+	private p_offset = new Vector3( 20, 20, 20 );
 
-	private o_offset = new THREE.Vector3( 0, 0, 100 );
+	private o_offset = new Vector3( 0, 0, 100 );
 
 	get camera () {
 		return this.cameras[ this.currentCameraIndex ];

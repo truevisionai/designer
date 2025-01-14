@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { LaneOffsetAction } from '../models/actions/tv-lane-offset-action';
 import { RelativeTarget } from '../models/actions/tv-relative-target';
 import { ScenarioEntity } from '../models/entities/scenario-entity';

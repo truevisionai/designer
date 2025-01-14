@@ -3,7 +3,7 @@
  */
 
 import { DebugState } from "../../services/debug/debug-state";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { IDebugger } from "./debug.service";
 

@@ -13,7 +13,7 @@ import {
 	MeshPhongMaterial,
 	MeshPhysicalMaterial,
 	MeshStandardMaterial
-} from 'three';
+} from "three";
 import { AssetPreviewService } from '../asset-preview/asset-preview.service';
 import { AssetService } from "../../../assets/asset.service";
 import { Asset, AssetType } from 'app/assets/asset.model';

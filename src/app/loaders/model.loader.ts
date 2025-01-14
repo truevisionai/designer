@@ -12,7 +12,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { StorageService } from 'app/io/storage.service';
-import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, Scene, ShapeGeometry } from 'three';
+import { DoubleSide, Group, Mesh, MeshStandardMaterial, Object3D, Scene, ShapeGeometry } from "three";
 import { TvConsole } from 'app/core/utils/console';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { AssetLoader } from "../core/interfaces/asset.loader";

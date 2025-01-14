@@ -7,7 +7,7 @@ import { MapEvents } from "../events/map-events";
 import { AbstractSpline } from "../core/shapes/abstract-spline";
 import { ICommand } from "./command";
 import { SplineFactory } from "app/services/spline/spline.factory";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AbstractControlPoint } from "../objects/abstract-control-point";
 
 describe( 'AddSplineCommand', () => {

@@ -8,7 +8,7 @@ import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from 'app/services/debug/road-debug.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { BaseToolService } from '../../tools/base-tool.service';
 import { Object3DMap } from '../../core/models/object3d-map';
 import { TvElevationService } from 'app/modules/road-elevation/tv-elevation.service';

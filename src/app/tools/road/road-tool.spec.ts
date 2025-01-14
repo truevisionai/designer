@@ -17,7 +17,7 @@ import { RoadNode } from 'app/objects/road/road-node';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { ToolBarService } from "../../views/editor/tool-bar/tool-bar.service";
 import { ToolManager } from "../../managers/tool-manager";

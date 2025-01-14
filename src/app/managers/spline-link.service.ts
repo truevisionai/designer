@@ -13,7 +13,7 @@ import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-gen
 import { RoadUtils } from "app/utils/road.utils";
 import { JunctionManager } from "./junction-manager";
 import { MapService } from "app/services/map/map.service";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 
 @Injectable( {

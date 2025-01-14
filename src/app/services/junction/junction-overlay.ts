@@ -4,7 +4,7 @@
 
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { INode } from "app/objects/i-selectable";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { Mesh, BufferGeometry, MeshBasicMaterial, FrontSide } from "three";
 
 export class JunctionOverlay extends Mesh implements INode {
@@ -28,7 +28,7 @@ export class JunctionOverlay extends Mesh implements INode {
 	static create ( junction: TvJunction, geometry: BufferGeometry ): JunctionOverlay {
 
 		const material = new MeshBasicMaterial( {
-			color: COLOR.CYAN,
+			color: ColorUtils.CYAN,
 			side: FrontSide,
 			depthTest: false,
 			transparent: true,
@@ -42,7 +42,7 @@ export class JunctionOverlay extends Mesh implements INode {
 
 		this.isSelected = true;
 
-		this.material.color.set( COLOR.WHITE );
+		this.material.color.set( ColorUtils.WHITE );
 		this.material.opacity = 0.1;
 		this.material.needsUpdate = true;
 
@@ -52,7 +52,7 @@ export class JunctionOverlay extends Mesh implements INode {
 
 		this.isSelected = false;
 
-		this.material.color.set( COLOR.CYAN );
+		this.material.color.set( ColorUtils.CYAN );
 		this.material.opacity = 0.2;
 		this.material.needsUpdate = true;
 
@@ -60,7 +60,7 @@ export class JunctionOverlay extends Mesh implements INode {
 
 	onMouseOver (): void {
 
-		this.material.color.set( COLOR.YELLOW );
+		this.material.color.set( ColorUtils.YELLOW );
 		this.material.opacity = 0.2;
 		this.material.needsUpdate = true;
 
@@ -68,7 +68,7 @@ export class JunctionOverlay extends Mesh implements INode {
 
 	onMouseOut (): void {
 
-		this.material.color.set( COLOR.CYAN );
+		this.material.color.set( ColorUtils.CYAN );
 		this.material.opacity = 0.2;
 		this.material.needsUpdate = true;
 

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Camera, Vector3 } from 'three';
+import { Camera, Vector3 } from "three";
 
 export interface IViewportController {
 

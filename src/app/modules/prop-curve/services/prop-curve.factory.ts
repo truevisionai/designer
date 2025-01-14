@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { AbstractFactory } from "../../../core/interfaces/abstract-factory";
 import { PropCurve } from "../../../map/prop-curve/prop-curve.model";
 import { Asset, AssetType } from "../../../assets/asset.model";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { PropManager } from "../../../managers/prop-manager";
 
 @Injectable()

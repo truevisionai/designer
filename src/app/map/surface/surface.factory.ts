@@ -8,7 +8,7 @@ import { Surface } from "app/map/surface/surface.model";
 import { Injectable } from "@angular/core";
 import { Asset, AssetType } from "app/assets/asset.model";
 import { AssetDatabase } from "app/assets/asset-database";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { SimpleControlPoint } from "app/objects/simple-control-point";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 

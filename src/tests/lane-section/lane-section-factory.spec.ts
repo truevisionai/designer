@@ -8,7 +8,7 @@ import { MapValidatorService } from "app/services/map/map-validator.service";
 import { MapService } from "app/services/map/map.service";
 import { RoadService } from "app/services/road/road.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
-import { Vector2 } from "three";
+import { Vector2 } from "app/core/maths"
 
 xdescribe( 'LaneSectionFactory: tests', () => {
 

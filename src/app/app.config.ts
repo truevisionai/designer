@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 
 export const AppConfig = {
 	DEFAULT_UP: new Vector3( 0, 0, 1 ),

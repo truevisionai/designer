@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Euler, Vector3 } from 'three';
+import { Euler, Vector3 } from "three";
 
 
 export class TvTransform {

@@ -16,7 +16,7 @@ import { IntersectionGroup } from "./Intersection-group";
 import { TvContactPoint } from "../map/models/tv-common";
 import { TvLink, TvLinkType } from "../map/models/tv-link";
 import { JunctionService } from "../services/junction/junction.service";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { Log } from "app/core/utils/log";
 import { TvJunctionBoundaryService } from "../map/junction-boundary/tv-junction-boundary.service";
 import { SplineFixerService } from "app/services/spline/spline.fixer";

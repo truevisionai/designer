@@ -4,7 +4,7 @@
 
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { ISnapStrategy } from './ISnapStrategy';
 
 export interface ISnappable {

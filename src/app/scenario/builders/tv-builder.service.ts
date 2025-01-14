@@ -44,7 +44,7 @@
 //
 // 	}
 //
-// 	// addVehicleActor ( point: THREE.Vector3 ): any {
+// 	// addVehicleActor ( point: Vector3 ): any {
 //
 // 	//   const playerName = 'New Player';
 //
@@ -72,7 +72,7 @@
 // 	// }
 //
 //
-// 	// createCar ( point: THREE.Vector3 ): THREE.Object3D {
+// 	// createCar ( point: Vector3 ): THREE.Object3D {
 //
 // 	//   const spriteMap = new THREE.TextureLoader().load( 'assets/img/top-view-car-red.png' );
 // 	//   const geometry = new THREE.PlaneBufferGeometry( 6, 3 );

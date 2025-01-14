@@ -9,7 +9,7 @@ import { SplineGeometryService } from "../../../services/spline/spline-geometry.
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { SplineUtils } from "../../../utils/spline.utils";
 import { Commands } from "../../../commands/commands";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 @Injectable( {
 	providedIn: 'root'

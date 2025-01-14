@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferGeometry, Float32BufferAttribute, Matrix4, Mesh, MeshBasicMaterial, PlaneGeometry, Quaternion, Vector3 } from 'three';
+import { BufferGeometry, Float32BufferAttribute, Matrix4, Mesh, MeshBasicMaterial, PlaneGeometry, Quaternion, Vector3 } from "three";
 import { OdBuilderConfig } from '../modules/builder/builders/od-builder-config';
 import { OdTextures } from 'app/deprecated/od.textures';
 

@@ -4,7 +4,7 @@
 
 import { TvColors } from "app/map/models/tv-common";
 
-export class COLOR {
+export class ColorUtils {
 
 	static RED = 0xFF0000;
 	static MRED = 0xfa4e4e;
@@ -64,21 +64,21 @@ export class COLOR {
 
 		switch ( value ) {
 
-			case 'standard': return COLOR.WHITE;
+			case 'standard': return ColorUtils.WHITE;
 
-			case 'white': return COLOR.WHITE;
+			case 'white': return ColorUtils.WHITE;
 
-			case 'red': return COLOR.RED;
+			case 'red': return ColorUtils.RED;
 
-			case 'green': return COLOR.GREEN;
+			case 'green': return ColorUtils.GREEN;
 
-			case 'yellow': return COLOR.YELLOW;
+			case 'yellow': return ColorUtils.YELLOW;
 
-			case 'orange': return COLOR.ORANGE;
+			case 'orange': return ColorUtils.ORANGE;
 
-			case 'blue': return COLOR.BLUE;
+			case 'blue': return ColorUtils.BLUE;
 
-			default: return COLOR.WHITE;
+			default: return ColorUtils.WHITE;
 
 		}
 

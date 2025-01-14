@@ -13,7 +13,7 @@ import { TvLane } from "../models/tv-lane";
 import { TvContactPoint } from "../models/tv-common";
 import { JunctionUtils } from "app/utils/junction.utils";
 import { Log } from "app/core/utils/log";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
 

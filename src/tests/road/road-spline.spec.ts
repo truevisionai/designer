@@ -5,7 +5,7 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvGeometryType } from 'app/map/models/tv-common';
 import { RoadService } from 'app/services/road/road.service';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
-import { Vector2 } from 'three';
+import { Vector2 } from 'app/core/maths';
 
 describe( 'Service: RoadSpline', () => {
 

@@ -3,7 +3,7 @@
  */
 
 import { PointerEventData } from "app/events/pointer-event-data";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { StatusBarService } from "app/services/status-bar.service";
 import { DragHandler } from "./drag-handler";
 

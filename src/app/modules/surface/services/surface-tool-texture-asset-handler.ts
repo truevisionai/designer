@@ -9,7 +9,7 @@ import { PointerEventData } from "app/events/pointer-event-data";
 import { SurfaceFactory } from "app/map/surface/surface.factory";
 import { Surface } from "app/map/surface/surface.model";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { SelectionService } from "../../../tools/selection.service";
 import { Injectable } from "@angular/core";
 import { DropAnywhereAssetHandler } from "app/core/asset-handlers/base-asset-handler";

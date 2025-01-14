@@ -6,7 +6,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D, Texture } from 'three';
+import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D, Texture } from "three";
 import { ScenarioEntity } from "../models/entities/scenario-entity";
 import { ScenarioObjectType } from "../models/tv-enums";
 import { Injectable } from "@angular/core";

@@ -3,7 +3,7 @@
  */
 
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { CatmullRomCurve3, Curve, CurvePath, CurveType, Vector3 } from 'three';
+import { CatmullRomCurve3, Curve, CurvePath, CurveType, Vector3 } from "three";
 
 
 function CubicBezierP0 ( t: any, p: any ): number {

@@ -7,9 +7,9 @@ import { TravelDirection, TvLaneLocation, TvLaneSide } from 'app/map/models/tv-c
 import { TvLane } from 'app/map/models/tv-lane';
 import { DebugDrawService } from './debug-draw.service';
 import { DebugLine } from '../../objects/debug-line';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
-import { BufferGeometry, Material, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
+import { BufferGeometry, Material, Mesh, MeshBasicMaterial, Object3D, Vector3 } from "three";
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
@@ -23,7 +23,7 @@ const LINE_ZOFFSET = 0.1;
 
 const ARROW_SIZE = 1.0;
 const ARROW_STEP = 5;
-const ARROW_COLOR = COLOR.YELLOW;
+const ARROW_COLOR = ColorUtils.YELLOW;
 
 @Injectable( {
 	providedIn: 'root'
@@ -63,7 +63,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOutlines ( laneProfile: TvLaneProfile, width: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
+	showLaneOutlines ( laneProfile: TvLaneProfile, width: number = LINE_WIDTH, color: any = ColorUtils.CYAN ): void {
 
 		laneProfile.getLanes().forEach( lane => {
 
@@ -73,7 +73,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOutline ( lane: TvLane, width: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
+	showLaneOutline ( lane: TvLane, width: number = LINE_WIDTH, color: any = ColorUtils.CYAN ): void {
 
 		if ( lane.id == 0 ) return;
 
@@ -105,7 +105,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOverlays ( laneProfile: TvLaneProfile, color: any = COLOR.CYAN ): void {
+	showLaneOverlays ( laneProfile: TvLaneProfile, color: any = ColorUtils.CYAN ): void {
 
 		laneProfile.getLanes().forEach( lane => {
 
@@ -115,7 +115,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneOverlay ( lane: TvLane, color: any = COLOR.CYAN ): void {
+	showLaneOverlay ( lane: TvLane, color: any = ColorUtils.CYAN ): void {
 
 		if ( lane.id == 0 ) return;
 
@@ -155,7 +155,7 @@ export class LaneDebugService {
 
 	}
 
-	showLaneBorders ( lane: TvLane, lineWidth: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
+	showLaneBorders ( lane: TvLane, lineWidth: number = LINE_WIDTH, color: any = ColorUtils.CYAN ): void {
 
 		const add = ( lane: TvLane, side: TvLaneSide ) => {
 

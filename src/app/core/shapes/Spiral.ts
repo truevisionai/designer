@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from 'three';
+import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from "three";
 import { ARC_SEGMENTS } from './spline-config';
 
 class Spiral {

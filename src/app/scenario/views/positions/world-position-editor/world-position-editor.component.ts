@@ -4,7 +4,7 @@
 
 import { Component, Input } from '@angular/core';
 import { WorldPosition } from 'app/scenario/models/positions/tv-world-position';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 
 @Component( {

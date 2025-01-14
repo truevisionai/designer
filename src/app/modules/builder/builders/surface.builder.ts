@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { Surface } from '../../../map/surface/surface.model';
-import { Material, Mesh, MeshStandardMaterial, Object3D, RepeatWrapping } from 'three';
+import { Material, Mesh, MeshStandardMaterial, Object3D, RepeatWrapping } from "three";
 import { GameObject } from 'app/objects/game-object';
 import { OdTextures } from '../../../deprecated/od.textures';
 import { SurfaceGeometryBuilder } from 'app/services/surface/surface-geometry.builder';

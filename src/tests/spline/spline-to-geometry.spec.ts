@@ -1,6 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { Vector2, Vector3 } from "app/core/maths";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { SplineManager } from "app/managers/spline-manager";
 import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";
@@ -8,7 +9,7 @@ import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { RoadService } from "app/services/road/road.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { SplineFactory } from "app/services/spline/spline.factory";
-import { Vector2, Vector3 } from "three";
+
 
 describe( 'SplineToGeometry test', () => {
 

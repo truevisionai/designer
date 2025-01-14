@@ -3,9 +3,10 @@
  */
 
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
-import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from 'three';
+import { BoxGeometry, BufferGeometry, CatmullRomCurve3, Float32BufferAttribute, Mesh, MeshBasicMaterial, Object3D, Vector3 } from "three";
 import { TvObjectMarking } from '../../../map/models/tv-object-marking';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
+import { Color } from 'app/core/maths';
 
 export class MarkingObjectBuilder {
 
@@ -59,7 +60,7 @@ export class MarkingObjectBuilder {
 
 				if ( marking.cornerReferences.includes( cornerRoad.attr_id ) ) {
 
-					points.push( cornerRoad.position );
+					points.push( cornerRoad.getPosition() );
 
 				}
 
@@ -416,7 +417,7 @@ export class MarkingObjectBuilder {
 	// 	const endPoint = new Vector3( 10, 100, 0 );
 	//
 	// 	const direction = endPoint.clone().sub( startPoint ).normalize();
-	// 	const perpendicular = new THREE.Vector3( -direction.y, direction.x, direction.z ).multiplyScalar( marking.width / 2 );
+	// 	const perpendicular = new Vector3( -direction.y, direction.x, direction.z ).multiplyScalar( marking.width / 2 );
 	// 	const totalLength = startPoint.distanceTo( endPoint );
 	// 	const fullStripeLength = marking.lineLength + marking.spaceLength;
 	// 	const numFullStripes = Math.floor( totalLength / fullStripeLength );

@@ -5,7 +5,7 @@
 import { CURVE_Y } from 'app/core/shapes/spline-config';
 import { TvGeometryType } from 'app/map/models/tv-common';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from "three";
 import { BackTangentPoint, FrontTangentPoint, RoadTangentPoint } from './road-tangent-point';
 import { AbstractControlPoint } from "../abstract-control-point";
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';

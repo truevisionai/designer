@@ -15,7 +15,7 @@ import { SimpleControlPoint } from "app/objects/simple-control-point";
 import { Surface } from "app/map/surface/surface.model";
 import { SurfaceToolTextureAssetHandler } from "./services/surface-tool-texture-asset-handler";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { Commands } from "app/commands/commands";
 import { AssetService } from "app/assets/asset.service";
 import { TextureAsset, TvTexture } from "app/assets/texture/tv-texture.model";

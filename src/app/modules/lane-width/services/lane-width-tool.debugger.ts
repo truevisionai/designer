@@ -14,7 +14,7 @@ import { DebugState } from 'app/services/debug/debug-state';
 import { Object3DArrayMap } from "../../../core/models/object3d-array-map";
 import { DebugLine } from 'app/objects/debug-line';
 import { RoadDebugService } from "../../../services/debug/road-debug.service";
-import { Object3D } from 'three';
+import { Object3D } from "three";
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { LaneDistance, RoadDistance } from 'app/map/road/road-distance';
 

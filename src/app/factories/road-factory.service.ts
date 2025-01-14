@@ -6,7 +6,7 @@ import { RoadNode } from 'app/objects/road/road-node';
 import { TvContactPoint, TvLaneSide, TvLaneType, TvRoadType } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { AutoSpline } from 'app/core/shapes/auto-spline-v2';
 import { Injectable } from '@angular/core';
 import { TvJunction } from "../map/models/junctions/tv-junction";

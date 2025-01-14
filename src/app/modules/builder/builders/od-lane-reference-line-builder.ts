@@ -2,16 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { Maths } from 'app/utils/maths';
-import * as THREE from 'three';
-import { Color, Line, LineBasicMaterial, LineDashedMaterial, Material, Object3D, Vector3 } from 'three';
+import * as THREE from "three";
+import { Line, LineBasicMaterial, LineDashedMaterial, Material, Object3D, Vector3 } from "three";
 import { TvLaneSide } from '../../../map/models/tv-common';
 import { TvLane } from '../../../map/models/tv-lane';
 import { TvLaneSection } from '../../../map/models/tv-lane-section';
 import { TvPosTheta } from '../../../map/models/tv-pos-theta';
 import { TvRoad } from '../../../map/models/tv-road.model';
 import { SceneService } from 'app/services/scene.service';
+import { Color } from 'app/core/maths';
 
 export enum LineType {
 	SOLID = 'solid',
@@ -19,7 +20,7 @@ export enum LineType {
 	BOTH = 'both',
 }
 
-const DEFAULT_LINE_COLOR = COLOR.CYAN;
+const DEFAULT_LINE_COLOR = ColorUtils.CYAN;
 const HIGHLIGHT_LINE_COLOR = new Color( 0, 1, 0 );
 const SELECTED_LINE_COLOR = new Color( 1, 0, 0 );
 

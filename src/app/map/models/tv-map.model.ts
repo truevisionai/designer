@@ -12,7 +12,7 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoad } from './tv-road.model';
 import { Surface } from '../surface/surface.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Object3D, Vector2 } from 'three';
+import { Object3D, Vector2 } from "three";
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { ManagedMap } from "../../core/models/managed-map";
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';

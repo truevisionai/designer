@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { FrontSide, MeshStandardMaterial, NormalBlending } from 'three';
+import { FrontSide, MeshStandardMaterial, NormalBlending } from "three";
 
 export class TvStandardMaterial extends MeshStandardMaterial {
 

@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { VehicleEntity } from '../models/entities/vehicle-entity';
-import { Object3D, Vector3 } from 'three';
+import { Object3D, Vector3 } from "three";
 import { Orientation } from '../models/tv-orientation';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvLane } from 'app/map/models/tv-lane';

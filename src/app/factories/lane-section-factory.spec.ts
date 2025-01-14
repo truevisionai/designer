@@ -7,7 +7,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { LaneSectionFactory } from "./lane-section.factory";
 import { RoadFactory } from "./road-factory.service";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from "../map/models/tv-common";
 import { TvLaneSection } from "../map/models/tv-lane-section";

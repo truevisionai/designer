@@ -3,9 +3,9 @@
  */
 
 import { SceneService } from 'app/services/scene.service';
-import * as THREE from 'three';
-import { BufferGeometry, Line, Vector3 } from 'three';
-import { COLOR } from '../../../views/shared/utils/colors.service';
+import * as THREE from "three";
+import { BufferGeometry, Line, Vector3 } from "three";
+import { ColorUtils } from '../../../views/shared/utils/colors.service';
 import { TvPosTheta } from '../../../map/models/tv-pos-theta';
 import { TvRoad } from '../../../map/models/tv-road.model';
 
@@ -13,7 +13,7 @@ export class OdRoadReferenceLineBuilder {
 
 	// private points: OdPosTheta[] = [];
 
-	private static material = new THREE.LineBasicMaterial( { color: COLOR.RED, linewidth: 2 } );
+	private static material = new THREE.LineBasicMaterial( { color: ColorUtils.RED, linewidth: 2 } );
 	line: any;
 	private cache: Map<number, Line> = new Map<number, Line>();
 

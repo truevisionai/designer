@@ -18,7 +18,7 @@ import {
 	Vector2,
 	Vector3,
 	Vector4
-} from 'three';
+} from "three";
 
 export class TvViewHelper extends Object3D {
 

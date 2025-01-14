@@ -3,7 +3,7 @@
  */
 
 import { Maths } from 'app/utils/maths';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { EntityRef } from '../entity-ref';
 import { OpenScenarioVersion, OrientationType } from '../tv-enums';
 import { Orientation } from '../tv-orientation';

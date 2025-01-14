@@ -13,7 +13,7 @@ import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
 import { TvLane } from '../tv-lane';
 import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
-import { Euler, MathUtils, Object3D, Vector3 } from 'three';
+import { Euler, MathUtils, Object3D, Vector3 } from "three";
 import { TvCornerRoad } from './tv-corner-road';
 
 export enum TvRoadObjectType {

@@ -6,7 +6,7 @@ import { SerializedAction, SerializedField } from "app/core/components/serializa
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { TvObjectMarking } from "../../map/models/tv-object-marking";
 import { TvColors, TvRoadMarkWeights } from "../../map/models/tv-common";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { AssetDatabase } from "app/assets/asset-database";
 import { Commands } from "app/commands/commands";
 
@@ -93,7 +93,7 @@ export class CrosswalkInspector {
 
 	set color ( value: TvColors ) {
 		this.marking.color = value;
-		this.marking.material?.color.set( COLOR.stringToColor( value ) );
+		this.marking.material?.color.set( ColorUtils.stringToColor( value ) );
 		this.marking.material.needsUpdate = true;
 	}
 

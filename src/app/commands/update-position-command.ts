@@ -5,7 +5,7 @@
 import { BaseCommand } from "./base-command";
 import { MapEvents } from "../events/map-events";
 import { IHasCopyUpdate } from '../core/interfaces/has-copy-update';
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 export class UpdatePositionCommand extends BaseCommand {
 

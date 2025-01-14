@@ -7,7 +7,7 @@ import { TvRoad } from "../../map/models/tv-road.model";
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvContactPoint, TvLaneSide } from 'app/map/models/tv-common';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { InvalidArgumentException, NoGeometriesFound } from 'app/exceptions/exceptions';
 import { TvLink } from "../../map/models/tv-link";

@@ -4,7 +4,7 @@
 
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { TvTransform } from '../models/tv-transform';
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 import { PropPoint } from "../prop-point/prop-point.model";
 
 export class PropPolygon {

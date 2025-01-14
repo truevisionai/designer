@@ -3,7 +3,7 @@
  */
 
 import { TvLaneSide, TvSide } from 'app/map/models/tv-common';
-import { Box2, Box3, Vector2, Vector3 } from 'three';
+import { Box2, Box3, Vector2, Vector3 } from "three";
 import { TvPosTheta } from "../map/models/tv-pos-theta";
 
 export class Maths {

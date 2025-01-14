@@ -3,7 +3,7 @@
  */
 
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { Object3D, Vector3 } from 'three';
+import { Object3D, Vector3 } from "three";
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
 
 export class PropCurve {

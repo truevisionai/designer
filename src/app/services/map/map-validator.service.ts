@@ -11,8 +11,8 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { DebugDrawService } from '../debug/debug-draw.service';
 import { Object3DMap } from 'app/core/models/object3d-map';
-import { Object3D, Vector2, Vector3 } from 'three';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { Object3D, Vector2, Vector3 } from "three";
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { DebugTextService } from '../debug/debug-text.service';
 import { Environment } from 'app/core/utils/environment';
 import { MapEvents } from 'app/events/map-events';
@@ -444,7 +444,7 @@ export class MapValidatorService {
 
 				this.errors.push( `${ linkType } not found for road ${ roadA.toString() } link: ${ link.toString() }` );
 
-				const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE * 10, COLOR.MAGENTA );
+				const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE * 10, ColorUtils.MAGENTA );
 				this.debugObjects.add( sphere1, sphere1 );
 
 				return;
@@ -461,7 +461,7 @@ export class MapValidatorService {
 
 			this.errors.push( `${ linkType } not found ${ link.toString() } for road ${ roadA.id }` );
 
-			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE * 10, COLOR.MAGENTA );
+			const sphere1 = this.debugDraw.createSphere( roadA.getEndPosTheta().position, SPHERE_SIZE * 10, ColorUtils.MAGENTA );
 			this.debugObjects.add( sphere1, sphere1 );
 
 			return;
@@ -613,7 +613,7 @@ export class MapValidatorService {
 
 				this.errors.push( `validateJunctionLink: ${ linkType } not found ${ link.toString() } for road ${ road.id }` );
 
-				const sphere1 = this.debugDraw.createSphere( road.getEndPosTheta().position, SPHERE_SIZE, COLOR.MAGENTA );
+				const sphere1 = this.debugDraw.createSphere( road.getEndPosTheta().position, SPHERE_SIZE, ColorUtils.MAGENTA );
 
 				this.debugObjects.add( sphere1, sphere1 );
 

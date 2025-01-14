@@ -3,7 +3,7 @@
  */
 
 import { Orientation } from 'app/scenario/models/tv-orientation';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvRoad } from './tv-road.model';
 import { TvContactPoint } from './tv-common';
 import { Maths } from 'app/utils/maths';

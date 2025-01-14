@@ -3,7 +3,7 @@
  */
 
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
-import { Box2, Box3, MathUtils, Vector2, Vector3 } from 'three';
+import { Box2, Vector2, Vector3 } from "app/core/maths";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
@@ -26,6 +26,7 @@ import { SplineElevationProfile } from './spline-elevation-profile';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { SplineType } from './spline-type';
 import { SplineIntersection } from "../../services/junction/spline-intersection";
+import { MathUtils } from 'three';
 
 export type NewSegment = TvRoad | TvJunction | null;
 

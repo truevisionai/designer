@@ -7,7 +7,7 @@ import { DebugDrawService } from './debug-draw.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Object3D } from "three";
 import { TvLane } from 'app/map/models/tv-lane';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { DebugLine } from '../../objects/debug-line';
 import { MapService } from '../map/map.service';
@@ -26,7 +26,7 @@ const LINE_ZOFFSET = 0.1;
 
 const ARROW_SIZE = 1.5;
 const ARROW_STEP = 5;
-const ARROW_COLOR = COLOR.YELLOW;
+const ARROW_COLOR = ColorUtils.YELLOW;
 
 @Injectable( {
 	providedIn: 'root'
@@ -69,8 +69,8 @@ export class RoadDebugService {
 
 	showRoadNodes ( road: TvRoad ): void {
 
-		const startNode = this.createRoadNode( road, road, 0, 6, COLOR.MAGENTA );
-		const endNode = this.createRoadNode( road, road, road.length, 6, COLOR.MAGENTA );
+		const startNode = this.createRoadNode( road, road, 0, 6, ColorUtils.MAGENTA );
+		const endNode = this.createRoadNode( road, road, road.length, 6, ColorUtils.MAGENTA );
 		// const startNode = new RoadNode( road, TvContactPoint.START );
 		// const endNode = new RoadNode( road, TvContactPoint.END );
 
@@ -91,7 +91,7 @@ export class RoadDebugService {
 
 	}
 
-	showRoadBorderLine ( road: TvRoad, lineWidth: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
+	showRoadBorderLine ( road: TvRoad, lineWidth: number = LINE_WIDTH, color: any = ColorUtils.CYAN ): void {
 
 		const add = ( lane: TvLane ) => {
 
@@ -203,7 +203,7 @@ export class RoadDebugService {
 		return points;
 	}
 
-	createRoadNode<T> ( road: TvRoad, target: T, s: number, width: number = 2, color: any = COLOR.CYAN ): DebugLine<T> {
+	createRoadNode<T> ( road: TvRoad, target: T, s: number, width: number = 2, color: any = ColorUtils.CYAN ): DebugLine<T> {
 
 		const result = RoadWidthService.instance.findRoadWidthAt( road, s );
 
@@ -214,7 +214,7 @@ export class RoadDebugService {
 
 	}
 
-	showLaneReferenceLines ( road: TvRoad, color: any = COLOR.CYAN ): void {
+	showLaneReferenceLines ( road: TvRoad, color: any = ColorUtils.CYAN ): void {
 
 		road.laneSections.forEach( section => {
 

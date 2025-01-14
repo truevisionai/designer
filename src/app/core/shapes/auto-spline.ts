@@ -3,7 +3,7 @@
  */
 
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { AbstractSpline } from './abstract-spline';
 import { SplineType } from './spline-type';
 import { Polyline } from '../../objects/polyline';
