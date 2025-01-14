@@ -13,10 +13,10 @@ import { ConnectionsDebugger } from "./connections.debugger";
 import { Injectable } from "@angular/core";
 import { MapQueryService } from "../../map/queries/map-query.service";
 import { TvLaneCoord } from "../../map/models/tv-lane-coord";
-import { Vector2 } from "three";
+import { Vector2 } from "app/core/maths"
 import { JunctionUtils } from "../../utils/junction.utils";
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { Log } from 'app/core/utils/log';
 import { RoadWidthService } from 'app/services/road/road-width.service';
 
@@ -72,7 +72,7 @@ export class DebugConnectionTool extends BaseTool<any> {
 
 			position.z += 0.01;
 
-			DebugDrawService.instance.drawText( road.id.toString(), position, 2, COLOR.RED );
+			DebugDrawService.instance.drawText( road.id.toString(), position, 2, ColorUtils.RED );
 
 		} );
 
@@ -83,9 +83,9 @@ export class DebugConnectionTool extends BaseTool<any> {
 				return;
 			}
 
-			DebugDrawService.instance.drawText( 'J:' + junction.toString(), junction.centroid, 2, COLOR.RED );
+			DebugDrawService.instance.drawText( 'J:' + junction.toString(), junction.centroid, 2, ColorUtils.RED );
 
-			DebugDrawService.instance.drawBox2D( junction.boundingBox, COLOR.WHITE, 0.5 );
+			DebugDrawService.instance.drawBox2D( junction.boundingBox, ColorUtils.WHITE, 0.5 );
 
 		} );
 

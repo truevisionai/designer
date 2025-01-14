@@ -7,7 +7,7 @@ import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { TvLineGeometry } from 'app/map/models/geometries/tv-line-geometry';
 import { TvSide } from 'app/map/models/tv-common';
 import { Maths } from 'app/utils/maths';
-import { Curve, Vector3 } from 'three';
+import { Curve, Vector3 } from "three";
 
 export class CustomSplineCurve {
 

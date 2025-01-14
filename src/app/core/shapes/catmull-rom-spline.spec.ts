@@ -3,7 +3,7 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { CatmullRomSpline } from './catmull-rom-spline';
 
 

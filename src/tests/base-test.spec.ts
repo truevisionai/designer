@@ -1,5 +1,5 @@
 import { TvLaneSection } from "../app/map/models/tv-lane-section";
-import { Vector2, Vector3 } from "three";
+import { Vector2, Vector3 } from "app/core/maths";
 import { RoadFactory, RoadMakeOptions } from "../app/factories/road-factory.service";
 import { RoadService } from "../app/services/road/road.service";
 import { RoadNode } from "app/objects/road/road-node";

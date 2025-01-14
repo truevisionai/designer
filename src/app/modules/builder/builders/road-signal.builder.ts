@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import {
 	CircleGeometry,
 	CylinderGeometry,
@@ -17,7 +17,7 @@ import {
 	PlaneGeometry,
 	TextureLoader,
 	Vector3
-} from 'three';
+} from "three";
 import { ApiService } from '../../../services/api.service';
 import { TvOrientation } from 'app/map/models/tv-common';
 import { TextObjectService } from 'app/services/text-object.service';
@@ -179,7 +179,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 	private createPole ( poleHeight: number, poleRadius: number ): Object3D {
 
 		const geometry = new CylinderGeometry( poleRadius, poleRadius, poleHeight, 32 );
-		const material = new MeshBasicMaterial( { color: COLOR.LIGHTGRAY } );
+		const material = new MeshBasicMaterial( { color: ColorUtils.LIGHTGRAY } );
 
 		const pole = new Mesh( geometry, material );
 
@@ -217,7 +217,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 	private getSignMaterial ( signal: TvRoadSignal ): any {
 
 		const defaultMaterial = new MeshBasicMaterial( {
-			color: COLOR.MAGENTA
+			color: ColorUtils.MAGENTA
 		} );
 
 		const asset = signal?.assetGuid ? this.assetService.getAsset( signal.assetGuid ) : null;

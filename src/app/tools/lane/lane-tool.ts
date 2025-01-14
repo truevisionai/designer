@@ -7,7 +7,7 @@ import { TvLane } from '../../map/models/tv-lane';
 import { ToolType } from '../tool-types.enum';
 import { LaneToolHelper } from './lane-tool.helper';
 import { ToolWithHandler } from '../base-tool-v2';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { Commands } from 'app/commands/commands';

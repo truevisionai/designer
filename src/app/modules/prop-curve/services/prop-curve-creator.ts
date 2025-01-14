@@ -5,7 +5,7 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { PropManager } from 'app/managers/prop-manager';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
 import { PropModel } from 'app/map/prop-point/prop-model.model';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { PropCurvePoint } from '../objects/prop-curve-point';
 
 @Injectable()

@@ -3,7 +3,7 @@
  */
 
 import { TvMap } from 'app/map/models/tv-map.model';
-import { Vector2 } from 'three';
+import { Vector2 } from 'app/core/maths';
 import { Log } from 'app/core/utils/log';
 
 import proj4 from 'proj4';

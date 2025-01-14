@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Intersection } from 'three';
+import { Intersection } from "three";
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { BaseSelectionStrategy } from './select-strategy';
 import { JunctionNode } from 'app/services/junction/junction-node';

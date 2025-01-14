@@ -8,7 +8,7 @@ import { PointDragHandler } from "app/core/drag-handlers/point-drag-handler.serv
 import { PointerEventData } from "app/events/pointer-event-data";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";
 import { LanePositionService } from "app/services/lane/lane-position.service";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { LaneWidthService } from "../services/lane-width.service";
 import { LaneWidthPoint } from "../objects/lane-width-point";
 

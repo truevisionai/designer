@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from "three";
 import { SceneService } from '../../services/scene.service';
 import { Time } from '../../core/time';
 import { TvPosTheta } from '../../map/models/tv-pos-theta';

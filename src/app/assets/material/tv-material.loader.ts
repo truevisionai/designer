@@ -3,12 +3,9 @@
  */
 
 import {
-	Color,
 	LineBasicMaterial,
 	LineDashedMaterial,
 	Material,
-	Matrix3,
-	Matrix4,
 	MeshBasicMaterial,
 	MeshDepthMaterial,
 	MeshDistanceMaterial,
@@ -24,10 +21,7 @@ import {
 	ShaderMaterial,
 	ShadowMaterial,
 	SpriteMaterial,
-	Vector2,
-	Vector3,
-	Vector4
-} from 'three';
+} from "three";
 import { Asset } from 'app/assets/asset.model';
 import { StorageService } from 'app/io/storage.service';
 import { Injectable } from '@angular/core';
@@ -37,7 +31,8 @@ import { AssetLoader } from "../../core/interfaces/asset.loader";
 import { TvTexture } from '../texture/tv-texture.model';
 import { AssetService } from "../../assets/asset.service";
 import { isObject } from "rxjs/internal-compatibility";
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { Color, Matrix3, Matrix4, Vector2, Vector3, Vector4 } from 'app/core/maths';
 
 @Injectable( {
 	providedIn: 'root'
@@ -173,7 +168,7 @@ export class TvMaterialLoader implements AssetLoader {
 
 		if ( !material.guid ) {
 			console.error( 'Material guid not found', json );
-			return new MeshBasicMaterial( { color: COLOR.MAGENTA } );
+			return new MeshBasicMaterial( { color: ColorUtils.MAGENTA } );
 		}
 
 		if ( json.uuid !== undefined ) material.uuid = json.uuid;

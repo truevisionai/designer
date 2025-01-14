@@ -5,7 +5,7 @@
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { MapEvents } from "app/events/map-events";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { BaseCommand } from "./base-command";
 
 

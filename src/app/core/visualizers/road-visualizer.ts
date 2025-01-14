@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { TvRoad } from "../../map/models/tv-road.model";
 import { RoadDebugService } from "../../services/debug/road-debug.service";
 import { BaseVisualizer } from "./base-visualizer";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { MapEvents } from "app/events/map-events";
 import { LaneDebugService } from "app/services/debug/lane-debug.service";
 
@@ -66,7 +66,7 @@ export class RoadVisualizer extends BaseVisualizer<TvRoad> {
 
 		this.laneDebugger.removeLaneOverlays( object.getLaneProfile() );
 
-		this.roadDebug.showRoadBorderLine( object, 3, COLOR.RED );
+		this.roadDebug.showRoadBorderLine( object, 3, ColorUtils.RED );
 
 		this.laneDebugger.showLaneOverlays( object.getLaneProfile() );
 

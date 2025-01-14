@@ -7,7 +7,7 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvUtils } from 'app/map/models/tv-utils';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { Log } from 'app/core/utils/log';
 import { MapEvents } from 'app/events/map-events';
 import { RoadUpdatedEvent } from 'app/events/road/road-updated-event';

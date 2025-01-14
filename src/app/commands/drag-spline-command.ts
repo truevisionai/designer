@@ -3,7 +3,7 @@
  */
 
 import { BaseCommand } from "./base-command";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AbstractSpline } from "../core/shapes/abstract-spline";
 import { MapEvents } from "../events/map-events";
 

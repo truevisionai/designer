@@ -9,7 +9,7 @@ import { TvMap } from 'app/map/models/tv-map.model';
 import { Asset, AssetType } from 'app/assets/asset.model';
 import { AssetDatabase } from './asset-database';
 import { TvConsole } from '../core/utils/console';
-import { MathUtils, Object3D } from 'three';
+import { MathUtils, Object3D } from "three";
 import { SnackBar } from 'app/services/snack-bar.service';
 import { StorageService } from 'app/io/storage.service';
 import { FileUtils } from 'app/io/file-utils';

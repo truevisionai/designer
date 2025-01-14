@@ -11,7 +11,7 @@ import { PointerEventData } from "../../../events/pointer-event-data";
 import { LaneFactory } from "../../../services/lane/lane.factory";
 import { ToolManager } from "../../../managers/tool-manager";
 import { Commands } from "../../../commands/commands";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { TvLaneWidth } from "../../../map/models/tv-lane-width";
 
 @Injectable( {

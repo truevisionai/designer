@@ -3,7 +3,7 @@
  */
 
 import { SerializedField } from 'app/core/components/serialization';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvAxles, TvBoundingBox, TvDimension, TvPerformance } from '../tv-bounding-box';
 import { ScenarioObjectType, VehicleCategory } from '../tv-enums';
 import { TvProperty } from '../tv-properties';

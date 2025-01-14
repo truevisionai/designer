@@ -6,8 +6,8 @@ import { Injectable } from '@angular/core';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { DebugState } from '../debug/debug-state';
 import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
-import { BoxGeometry, Color, Mesh, MeshBasicMaterial, Object3D, Vector2 } from 'three';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D, Vector2 } from "three";
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
 import { TvLink, TvLinkType } from 'app/map/models/tv-link';
 import { LinkFactory } from 'app/map/models/link-factory';
@@ -30,6 +30,7 @@ import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadDistance } from 'app/map/road/road-distance';
 import { createGeometryFromBoundary } from 'app/modules/builder/builders/junction-boundary.builder';
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
+import { Color } from 'app/core/maths';
 
 @Injectable( {
 	providedIn: 'root'
@@ -156,7 +157,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		const geometry = junction.mesh?.geometry.clone() || new BoxGeometry();
 
-		const mesh = new Mesh( geometry, new MeshBasicMaterial( { color: COLOR.YELLOW } ) );
+		const mesh = new Mesh( geometry, new MeshBasicMaterial( { color: ColorUtils.YELLOW } ) );
 
 		mesh[ 'tag' ] = 'junction';
 
@@ -277,7 +278,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		] );
 
 		const lineMaterial = new LineMaterial( {
-			color: COLOR.CYAN,
+			color: ColorUtils.CYAN,
 			linewidth: 6,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
 			depthTest: false,
@@ -371,7 +372,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	private debugBoundary ( boundary: TvJunctionBoundary, color: number = COLOR.RED ): void {
+	private debugBoundary ( boundary: TvJunctionBoundary, color: number = ColorUtils.RED ): void {
 
 		boundary.getSegments().forEach( segment => {
 

@@ -9,7 +9,7 @@ import { TvSuperElevation } from 'app/map/models/tv-lateral.profile';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { SimpleControlPoint } from 'app/objects/simple-control-point';
 import { DebugState } from 'app/services/debug/debug-state';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { DebugLine } from "../../objects/debug-line";
 import { DebugDrawService } from "../../services/debug/debug-draw.service";

@@ -3,7 +3,7 @@
  */
 
 import { Log } from 'app/core/utils/log';
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 
 export class ThirdOrderPolynom {
 

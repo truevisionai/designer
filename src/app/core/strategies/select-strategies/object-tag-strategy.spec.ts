@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Intersection, Object3D, Vector3 } from 'three';
+import { Intersection, Object3D, Vector3 } from "three";
 import { PointerEventData } from '../../../events/pointer-event-data';
 import { ObjectTagStrategy } from './object-tag-strategy';
 

@@ -9,7 +9,7 @@ import { ScenarioEnvironment } from '../scenario/models/actions/scenario-environ
 import { DEFAULT_AMBIENT_LIGHT } from './default.config';
 import { CameraService } from "./camera.service";
 
-import * as THREE from 'three';
+import * as THREE from "three";
 
 @Injectable( {
 	providedIn: 'root'

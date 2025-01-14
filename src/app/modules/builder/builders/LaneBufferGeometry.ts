@@ -3,8 +3,8 @@
  */
 
 import { Maths } from 'app/utils/maths';
-import * as THREE from 'three';
-import { BufferGeometry } from 'three';
+import * as THREE from "three";
+import { BufferGeometry } from "three";
 import { TvLaneSide } from '../../../map/models/tv-common';
 import { TvLane } from '../../../map/models/tv-lane';
 import { TvLaneSection } from '../../../map/models/tv-lane-section';

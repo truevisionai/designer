@@ -4,7 +4,7 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Vector2FieldComponent } from './vector2-field.component';
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 
 describe( 'Vector2FieldComponent', () => {
 

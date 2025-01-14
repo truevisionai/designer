@@ -138,7 +138,7 @@ export class RulersComponent implements OnInit {
 		this.yAxisLabels.forEach( ( label ) => {
 
 			// Use the label's xValue to determine its 3D position
-			const labelPosition = new THREE.Vector3( 0, label.value, 0 ); // Change y and z if needed
+			const labelPosition = new Vector3( 0, label.value, 0 ); // Change y and z if needed
 
 			// Calculate the 2D position
 			const pos2D = this.toScreenPosition( labelPosition, this.camera, this.canvasConfig.width, this.canvasConfig.height );
@@ -154,7 +154,7 @@ export class RulersComponent implements OnInit {
 		this.xAxisLabels.forEach( ( label ) => {
 
 			// Use the label's xValue to determine its 3D position
-			const labelPosition = new THREE.Vector3( label.value, 0, 0 ); // Change y and z if needed
+			const labelPosition = new Vector3( label.value, 0, 0 ); // Change y and z if needed
 
 			// Calculate the 2D position
 			const pos2D = this.toScreenPosition( labelPosition, this.camera, this.canvasConfig.width, this.canvasConfig.height );
@@ -195,7 +195,7 @@ export class RulersComponent implements OnInit {
 	// Assuming 'camera' is your Three.js camera and 'renderer' is your Three.js renderer
 	private toScreenPosition ( obj: Vector3, camera: Camera, width: number, height: number ): any {
 
-		const vector = new THREE.Vector3();
+		const vector = new Vector3();
 		const widthHalf = 0.5 * width;
 		const heightHalf = 0.5 * height;
 

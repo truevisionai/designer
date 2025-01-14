@@ -7,7 +7,7 @@ import { Maths } from '../../../utils/maths';
 import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
-import { Curve, MathUtils, SplineCurve, Vector2 } from 'three';
+import { Curve, MathUtils, SplineCurve, Vector2 } from "three";
 
 export class TvSpiralGeometry extends TvAbstractRoadGeometry {
 

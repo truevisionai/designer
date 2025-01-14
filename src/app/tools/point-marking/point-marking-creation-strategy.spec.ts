@@ -6,7 +6,7 @@ import { TestBed } from '@angular/core/testing';
 import { PointMarkingCreationStrategy } from './point-marking-creation-strategy';
 import { AssetManager } from 'app/assets/asset.manager';
 import { AssetType } from 'app/assets/asset.model';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { MockAssetFactory } from 'app/factories/asset-factory.service';
 import { CreationStrategy } from 'app/core/interfaces/creation-strategy';
 import { PointMarkingControlPoint } from './objects/point-marking-object';

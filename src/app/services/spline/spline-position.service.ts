@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { Maths } from 'app/utils/maths';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 
 @Injectable( {
 	providedIn: 'root'

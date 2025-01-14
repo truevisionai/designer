@@ -3,7 +3,7 @@
  */
 
 import { Maths } from 'app/utils/maths';
-import { Euler, Matrix3, Vector3 } from 'three';
+import { Euler, Matrix3, Vector3 } from "three";
 import { OpenScenarioVersion, OrientationType } from './tv-enums';
 import { XmlElement } from "../../importers/xml.element";
 

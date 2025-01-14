@@ -9,7 +9,7 @@ import { VehicleEntity } from 'app/scenario/models/entities/vehicle-entity';
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/scenario/models/tv-bounding-box';
 import { ActionType, VehicleCategory } from 'app/scenario/models/tv-enums';
 import { Orientation } from 'app/scenario/models/tv-orientation';
-import { Object3D, Vector3 } from 'three';
+import { Object3D, Vector3 } from "three";
 import { IDService } from '../../factories/id.service';
 import { Injectable } from "@angular/core";
 

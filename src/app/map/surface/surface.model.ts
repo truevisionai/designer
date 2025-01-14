@@ -4,7 +4,7 @@
 
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
-import { MathUtils, Object3D, Vector2, Vector3 } from 'three';
+import { MathUtils, Object3D, Vector2, Vector3 } from "three";
 
 export class Surface {
 

@@ -5,8 +5,8 @@
 import { Injectable } from '@angular/core';
 import { ThirdOrderPolynom } from 'app/map/models/third-order-polynom';
 import { TvLane } from 'app/map/models/tv-lane';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Vector2 } from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { Vector2 } from 'app/core/maths';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { DebugLine } from '../../objects/debug-line';
@@ -39,7 +39,7 @@ export class LaneSpanService {
 					const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
 					const material = new LineMaterial( {
-						color: COLOR.CYAN,
+						color: ColorUtils.CYAN,
 						linewidth: 2,
 						resolution: new Vector2( window.innerWidth, window.innerHeight ),
 						depthTest: false,

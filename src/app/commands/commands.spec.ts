@@ -5,7 +5,7 @@
 import { Commands } from './commands';
 import { CommandHistory } from './command-history';
 import { Tool } from 'app/tools/tool';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 import { ControlPointFactory } from 'app/factories/control-point.factory';
 

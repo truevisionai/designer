@@ -10,7 +10,7 @@ import { RoadControlPoint } from 'app/objects/road/road-control-point';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { Object3DArrayMap } from "../../core/models/object3d-array-map";
 import { BufferGeometry, Line, LineBasicMaterial, LineLoop, Object3D } from "three";
-import { COLOR } from "../../views/shared/utils/colors.service";
+import { ColorUtils } from "../../views/shared/utils/colors.service";
 import { Object3DMap } from "../../core/models/object3d-map";
 
 @Injectable( {
@@ -182,11 +182,11 @@ export class AbstractSplineDebugService {
 		// Create the final object to add to the scene
 		if ( spline.closed ) {
 
-			mesh = new LineLoop( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
+			mesh = new LineLoop( geometry, new LineBasicMaterial( { color: ColorUtils.CYAN, opacity: 0.35 } ) );
 
 		} else {
 
-			mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35 } ) );
+			mesh = new Line( geometry, new LineBasicMaterial( { color: ColorUtils.CYAN, opacity: 0.35 } ) );
 
 		}
 

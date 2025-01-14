@@ -3,7 +3,7 @@
  */
 
 // Class representing a position in space plus a direction.
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { Maths } from '../../utils/maths';
 import { TvSide } from './tv-common';
 import { TvRoadCoord } from './TvRoadCoord';

@@ -3,7 +3,7 @@
  */
 
 import { Component } from '@angular/core';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { RelativeObjectPosition } from '../../../models/positions/tv-relative-object-position';
 import { AbstractPositionEditor } from '../../position-editor/AbstractPositionEditor';
 

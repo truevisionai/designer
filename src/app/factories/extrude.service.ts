@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { CatmullRomPath } from 'app/core/shapes/cubic-spline-curve';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
-import { BufferGeometry, CurvePath, ExtrudeGeometry, ExtrudeGeometryOptions, Mesh, MeshStandardMaterial, Shape, Vector3 } from 'three';
+import { BufferGeometry, CurvePath, ExtrudeGeometry, ExtrudeGeometryOptions, Mesh, MeshStandardMaterial, Shape, Vector3 } from "three";
 import { TvRoadObjectSkeleton } from "../map/models/objects/tv-road-object-skeleton";
 import { TvObjectPolyline } from "../map/models/objects/tv-object-polyline";
 import { TvObjectVertexRoad } from "../map/models/objects/tv-object-vertex-road";

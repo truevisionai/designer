@@ -3,7 +3,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { AbstractFieldComponent } from '../abstract-field.component';
 import { Maths } from '../../../../utils/maths';
 

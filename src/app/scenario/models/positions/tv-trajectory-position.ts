@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { Position } from '../position';
 import { CatalogReference } from '../tv-catalogs';
 import { PositionType } from '../tv-enums';

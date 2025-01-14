@@ -5,7 +5,7 @@ import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
 import { RoadService } from 'app/services/road/road.service';
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { OpenDriveParserService } from "../../app/importers/open-drive/open-drive-parser.service";
 import { XML } from '../stubs/straight-road-stub';
 import { MapService } from "../../app/services/map/map.service";

@@ -33,7 +33,7 @@ import {
 	Scene,
 	SkinnedMesh,
 	SpotLight, Sprite
-} from 'three';
+} from "three";
 import { TvStandardMaterial } from '../material/tv-standard-material';
 import { TvObjectAsset } from './tv-object.asset';
 import { TvMesh } from '../mesh/tv-mesh';

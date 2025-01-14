@@ -9,7 +9,7 @@ import { Maths } from "../../utils/maths";
 import { MapEvents } from "../../events/map-events";
 import { RoadRemovedEvent } from "../../events/road/road-removed-event";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
-import { Vector2 } from "three";
+import { Vector2 } from "app/core/maths"
 import { TvAbstractRoadGeometry } from "../../map/models/geometries/tv-abstract-road-geometry";
 import { RoundLine } from "../../core/shapes/round-line";
 import { TvLineGeometry } from "../../map/models/geometries/tv-line-geometry";

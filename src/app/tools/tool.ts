@@ -6,7 +6,7 @@ import { ToolType } from "./tool-types.enum";
 import { PointerEventData } from "../events/pointer-event-data";
 import { Asset } from "../assets/asset.model";
 import { InjectionToken } from '@angular/core';
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 export const TOOL_PROVIDERS = new InjectionToken<Tool[]>( 'TOOL_PROVIDERS' );
 

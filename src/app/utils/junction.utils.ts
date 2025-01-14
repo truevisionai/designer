@@ -9,7 +9,7 @@ import {
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvContactPoint, TvLaneSide } from "app/map/models/tv-common";
 import { TvRoad } from "app/map/models/tv-road.model";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { TvJunctionConnection } from "../map/models/connections/tv-junction-connection";
 import { TvJunctionLaneLink } from "../map/models/junctions/tv-junction-lane-link";
 import { TvLink } from "../map/models/tv-link";

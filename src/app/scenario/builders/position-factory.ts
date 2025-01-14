@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvConsole } from '../../core/utils/console';
 import { TvPosTheta } from '../../map/models/tv-pos-theta';
 import { ScenarioEntity } from '../models/entities/scenario-entity';

@@ -6,13 +6,14 @@ import { SerializedField } from 'app/core/components/serialization';
 import { TvBoundingBox } from '../tv-bounding-box';
 import { ParameterDeclaration } from '../tv-parameter-declaration';
 import { TvProperty } from '../tv-properties';
-import { Color, DataTexture, DirectionalLight, Vector3, WebGLCubeRenderTarget } from 'three';
+import { Color, DataTexture, DirectionalLight, Vector3, WebGLCubeRenderTarget } from "three";
 import { SceneService } from 'app/services/scene.service';
-import * as THREE from 'three';
+import * as THREE from "three";
 import { AssetDatabase } from 'app/assets/asset-database';
 import { DIRECTIONAL_LIGHT_COLOR, DIRECTIONAL_LIGHT_INTENSITY } from 'app/renderer/default.config';
 import { XmlElement } from "../../../importers/xml.element";
 import { TvTexture } from 'app/assets/texture/tv-texture.model';
+import { Vector2 } from 'app/core/maths';
 
 enum CloudState {
 	Cloudy = 'cloudy',
@@ -294,11 +295,11 @@ class DomeImage {
 	}
 
 	@SerializedField( { type: 'vector2' } )
-	get offset (): THREE.Vector2 {
+	get offset (): Vector2 {
 		return this.texture?.offset;
 	}
 
-	set offset ( value: THREE.Vector2 ) {
+	set offset ( value: Vector2 ) {
 		this.texture.offset = value;
 		this.texture.needsUpdate = true;
 		this.update();

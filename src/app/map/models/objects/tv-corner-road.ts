@@ -3,7 +3,7 @@
  */
 
 import { TvRoad } from "../tv-road.model";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 /**
  * Defines a corner point on the object’s outline in road co-ordinates..

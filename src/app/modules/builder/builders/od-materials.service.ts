@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MeshStandardMaterial } from 'three';
-import { COLOR } from '../../../views/shared/utils/colors.service';
+import { MeshStandardMaterial } from "three";
+import { ColorUtils } from '../../../views/shared/utils/colors.service';
 import { TvLane } from '../../../map/models/tv-lane';
 import { OdTextures } from '../../../deprecated/od.textures';
 
@@ -17,7 +17,7 @@ export class OdMaterials {
 
 		return new MeshStandardMaterial( {
 			map: OdTextures.getLaneTexture( lane ),
-			color: COLOR.WHITE,
+			color: ColorUtils.WHITE,
 			wireframe: false,
 		} );
 	}

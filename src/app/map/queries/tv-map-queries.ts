@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { TvConsole } from '../../core/utils/console';
 import { Maths } from '../../utils/maths';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';

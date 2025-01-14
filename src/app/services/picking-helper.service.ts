@@ -3,7 +3,7 @@
  */
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { Object3D, Raycaster, Vector3 } from 'three';
+import { Object3D, Raycaster, Vector3 } from "three";
 import { AbstractControlPoint } from "../objects/abstract-control-point";
 
 

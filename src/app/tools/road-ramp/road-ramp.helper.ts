@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvOrientation } from 'app/map/models/tv-common';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { BaseToolService } from 'app/tools/base-tool.service';
 import { DebugDrawService } from '../../services/debug/debug-draw.service';

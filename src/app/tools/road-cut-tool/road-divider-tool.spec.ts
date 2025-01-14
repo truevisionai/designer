@@ -7,7 +7,7 @@ import { RoadDividerToolService } from './road-divider-tool.service';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { expectValidMap } from 'tests/base-test.spec';

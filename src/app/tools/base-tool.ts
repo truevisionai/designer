@@ -5,7 +5,7 @@
 import { AppInspector } from 'app/core/inspector';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { StatusBarService } from 'app/services/status-bar.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { KeyboardEvents } from '../events/keyboard-events';
 import { ToolType } from './tool-types.enum';
 import { CommandHistory } from 'app/commands/command-history';

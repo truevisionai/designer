@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Vector3, Vector2, Box2 } from 'three';
+import { Vector3, Vector2, Box2 } from "three";
 import { SplineIntersection } from '../junction/spline-intersection';
 import { MapService } from '../map/map.service';
 

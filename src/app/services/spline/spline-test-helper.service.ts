@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Vector2, Vector3 } from "three";
+import { Vector2, Vector3 } from "app/core/maths";
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { SplineType } from 'app/core/shapes/spline-type';
 import { SplineService } from "./spline.service";

@@ -9,7 +9,7 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { SplineUtils } from "app/utils/spline.utils";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { JunctionManager } from "./junction-manager";
 import { SplineManager } from "./spline-manager";
 import { TvContactPoint } from "app/map/models/tv-common";

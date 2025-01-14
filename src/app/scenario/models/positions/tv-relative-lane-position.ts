@@ -4,7 +4,7 @@
 
 import { TvConsole } from 'app/core/utils/console';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { SerializedField } from '../../../core/components/serialization';
 import { EntityRef } from '../entity-ref';
 import { Position } from '../position';

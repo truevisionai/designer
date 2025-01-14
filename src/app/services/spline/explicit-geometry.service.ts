@@ -5,7 +5,7 @@
 import { Injectable } from "@angular/core";
 import { TvAbstractRoadGeometry } from "../../map/models/geometries/tv-abstract-road-geometry";
 import { breakGeometries } from "../../utils/spline.utils";
-import { Vector2 } from "three";
+import { Vector2 } from "app/core/maths"
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { TvLineGeometry } from "app/map/models/geometries/tv-line-geometry";
 import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";

@@ -5,7 +5,7 @@
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { JunctionManager } from "./junction-manager";
 import { SplineFactory } from "../services/spline/spline.factory";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { TvPosTheta } from "../map/models/tv-pos-theta";
 import { Maths } from "../utils/maths";
 import { MapService } from "app/services/map/map.service";

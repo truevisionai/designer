@@ -3,7 +3,7 @@ import { CreationStrategy } from "app/core/interfaces/creation-strategy";
 import { SplineCreationRoadToolStrategy } from "./spline-creator";
 import { PointCreationRoadToolStrategy } from "./spline-point-creator";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { setupTest } from "../../../../tests/setup-tests";

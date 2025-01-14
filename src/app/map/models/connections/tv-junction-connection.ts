@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 import { TurnType, TvContactPoint } from '../tv-common';
 import { TvJunction } from '../junctions/tv-junction';
 import { TvJunctionLaneLink } from '../junctions/tv-junction-lane-link';

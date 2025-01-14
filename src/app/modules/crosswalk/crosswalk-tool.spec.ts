@@ -8,7 +8,7 @@ import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-o
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { ToolManager } from 'app/managers/tool-manager';
 import { ToolBarService } from 'app/views/editor/tool-bar/tool-bar.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { AppInspector } from 'app/core/inspector';

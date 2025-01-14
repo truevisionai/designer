@@ -13,7 +13,7 @@ import { TvGeometryType } from "app/map/models/tv-common";
 import { RoadControlPoint } from "app/objects/road/road-control-point";
 import { Maths } from "app/utils/maths";
 import { getArcParams } from "app/utils/spline.utils";
-import { Vector2 } from "three";
+import { Vector2 } from "app/core/maths"
 
 import * as SPIRAL from "../../core/shapes/spiral-math";
 

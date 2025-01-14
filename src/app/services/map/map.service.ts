@@ -7,7 +7,7 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvMapInstance } from 'app/map/services/tv-map-instance';
-import { Material, Mesh } from 'three';
+import { Material, Mesh } from "three";
 import { PropPolygon } from "../../map/prop-polygon/prop-polygon.model";
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Log } from 'app/core/utils/log';

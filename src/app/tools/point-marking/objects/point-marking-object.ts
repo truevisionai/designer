@@ -9,7 +9,7 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { RoadWidthService } from "app/services/road/road-width.service";
 import { Maths } from "app/utils/maths";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { BufferAttribute, BufferGeometry, PointsMaterial } from "three";
 
 export class PointMarkingControlPoint extends AbstractControlPoint {
@@ -96,7 +96,7 @@ export class PointMarkingControlPoint extends AbstractControlPoint {
 			map: texture,
 			alphaTest: 0.5,
 			transparent: true,
-			color: COLOR.CYAN,
+			color: ColorUtils.CYAN,
 			depthTest: false
 		} );
 

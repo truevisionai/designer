@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { TextObject3d } from 'app/objects/text-object';
 import { TextObjectService } from 'app/services/text-object.service';
-import { FrontSide, MeshBasicMaterial } from 'three';
+import { FrontSide, MeshBasicMaterial } from "three";
 
 @Injectable( {
 	providedIn: 'root'

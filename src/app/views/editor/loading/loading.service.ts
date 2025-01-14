@@ -7,7 +7,7 @@ import { ProjectBrowserService } from '../project-browser/project-browser.servic
 import { Asset, AssetType } from '../../../assets/asset.model';
 import { DeprecatedModelLoader } from 'app/loaders/model.loader';
 import { EditorSettings } from 'app/services/editor/editor.settings';
-import { BufferGeometryLoader } from 'three';
+import { BufferGeometryLoader } from "three";
 import { TvConsole } from 'app/core/utils/console';
 import { StorageService } from "../../../io/storage.service";
 import { AssetService } from "../../../assets/asset.service";

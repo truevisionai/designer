@@ -5,7 +5,8 @@
 import { Injectable } from '@angular/core';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { Vector3 } from 'three';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { Object3D, Vector3 } from "three";
 import { MapService } from '../map/map.service';
 import { MapEvents } from 'app/events/map-events';
 import { JunctionRemovedEvent } from 'app/events/junction/junction-removed-event';

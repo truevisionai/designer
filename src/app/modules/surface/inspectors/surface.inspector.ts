@@ -3,7 +3,7 @@
  */
 
 import { Surface } from 'app/map/surface/surface.model';
-import { Mesh } from 'three';
+import { Mesh } from "three";
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';

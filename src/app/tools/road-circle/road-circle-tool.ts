@@ -3,7 +3,7 @@
  */
 
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { RoadCircleToolService } from "./road-circle-tool.service";

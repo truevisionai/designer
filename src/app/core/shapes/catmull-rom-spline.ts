@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CatmullRomCurve3, CurveType, Vector3 } from 'three';
+import { CatmullRomCurve3, CurveType, Vector3 } from "three";
 import { AbstractSpline } from './abstract-spline';
 import { SplineType } from './spline-type';
 

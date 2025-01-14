@@ -2,19 +2,20 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { BufferGeometry, Color, Material, Points, PointsMaterial, Vector3 } from "three";
+import { BufferGeometry, Material, Points, PointsMaterial, Vector3 } from "three";
 import { ISelectable } from "./i-selectable";
 import { IHasPosition } from "./i-has-position";
-import { COLOR } from "../views/shared/utils/colors.service";
+import { ColorUtils } from "../views/shared/utils/colors.service";
 import { OdTextures } from "app/deprecated/od.textures";
+import { Color } from "app/core/maths";
 
 export abstract class AbstractControlPoint extends Points implements ISelectable, IHasPosition {
 
-	protected defaultColor = COLOR.CYAN;
+	protected defaultColor = ColorUtils.CYAN;
 
-	protected hoverColor = COLOR.YELLOW;
+	protected hoverColor = ColorUtils.YELLOW;
 
-	protected selectedColor = COLOR.RED;
+	protected selectedColor = ColorUtils.RED;
 
 	public mainObject: any;
 
@@ -158,7 +159,7 @@ export abstract class AbstractControlPoint extends Points implements ISelectable
 			map: OdTextures.point,
 			alphaTest: 0.5,
 			transparent: true,
-			color: COLOR.CYAN,
+			color: ColorUtils.CYAN,
 			depthTest: false
 		} );
 

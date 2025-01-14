@@ -4,7 +4,7 @@
 
 import { IntersectionGroup } from "./Intersection-group";
 import { SplineFactory } from "app/services/spline/spline.factory";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { JunctionManager } from "./junction-manager";

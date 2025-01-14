@@ -3,7 +3,7 @@
  */
 
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { DynamicControlPoint } from "../dynamic-control-point";
 
 export class SplineControlPoint extends DynamicControlPoint<AbstractSpline> {

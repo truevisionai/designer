@@ -12,7 +12,7 @@ import {
 	Texture,
 	TextureLoader,
 	UnsignedByteType
-} from 'three';
+} from "three";
 import { TextureAsset, TvTexture } from "./tv-texture.model";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
 

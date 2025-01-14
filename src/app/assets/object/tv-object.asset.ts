@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Object3D } from 'three';
+import { Object3D } from "three";
 import { MetaImporter } from "../../assets/metadata.model";
 
 export class TvObjectAsset {

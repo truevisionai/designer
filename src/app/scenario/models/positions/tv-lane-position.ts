@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvMapQueries } from '../../../map/queries/tv-map-queries';
 import { Position } from '../position';
 import { OpenScenarioVersion, PositionType } from '../tv-enums';

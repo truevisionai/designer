@@ -8,7 +8,7 @@ import { MapService } from 'app/services/map/map.service';
 import { RoadService } from 'app/services/road/road.service';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 import { expectValidMap } from 'tests/base-test.spec';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 
 describe( 'SplineLinkService: Tests', () => {
 

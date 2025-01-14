@@ -7,7 +7,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { SceneService } from 'app/services/scene.service';
 import { Subscription } from 'rxjs';
-import { Object3D } from 'three';
+import { Object3D } from "three";
 import { Environment } from "../../../core/utils/environment";
 
 class FlatNode extends Object3D {

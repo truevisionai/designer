@@ -4,7 +4,7 @@
 
 import { TvLink } from "app/map/models/tv-link";
 import { ISelectable, Highlightable } from "app/objects/i-selectable";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { Color } from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
@@ -16,7 +16,7 @@ export class JunctionNode extends Line2 implements ISelectable, Highlightable {
 	static tag = 'JunctionNode';
 	tag = 'JunctionNode';
 	isSelected: boolean;
-	defaulColor = COLOR.CYAN;
+	defaulColor = ColorUtils.CYAN;
 
 	constructor ( public link: TvLink, public geometry: LineGeometry, public material: LineMaterial ) {
 		super( geometry, material );
@@ -24,7 +24,7 @@ export class JunctionNode extends Line2 implements ISelectable, Highlightable {
 
 	select (): void {
 		this.isSelected = true;
-		this.material.color = new Color( COLOR.RED );
+		this.material.color = new Color( ColorUtils.RED );
 		this.renderOrder = 5;
 	}
 
@@ -36,7 +36,7 @@ export class JunctionNode extends Line2 implements ISelectable, Highlightable {
 
 	onMouseOver (): void {
 		if ( this.isSelected ) return;
-		this.material.color = new Color( COLOR.YELLOW );
+		this.material.color = new Color( ColorUtils.YELLOW );
 		this.material.needsUpdate = true;
 	}
 

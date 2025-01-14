@@ -5,7 +5,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { TvOrbitControls } from 'app/objects/tv-orbit-controls';
-import { Object3D, PerspectiveCamera, Scene, } from 'three';
+import { Object3D, PerspectiveCamera, Scene, } from "three";
 import { AssetPreviewService } from './asset-preview.service';
 import { Asset, AssetType } from "../../../assets/asset.model";
 import { IViewportController } from 'app/objects/i-viewport-controller';

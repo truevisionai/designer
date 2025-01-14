@@ -4,7 +4,7 @@
 
 import { TvElevation } from 'app/map/road-elevation/tv-elevation.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { DynamicControlPoint } from '../../objects/dynamic-control-point';
 
 export class ElevationControlPoint extends DynamicControlPoint<any> {

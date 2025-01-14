@@ -3,7 +3,7 @@
  */
 
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { Mesh, BufferGeometry, Material, MeshBasicMaterial, SphereGeometry } from "three";
 import { INode } from "../i-selectable";
 
@@ -26,7 +26,7 @@ export class JunctionGatePoint extends Mesh implements INode {
 
 		this.isSelected = true;
 
-		this.material.color.set( COLOR.RED );
+		this.material.color.set( ColorUtils.RED );
 
 		this.material.needsUpdate = true;
 
@@ -36,7 +36,7 @@ export class JunctionGatePoint extends Mesh implements INode {
 
 		this.isSelected = false;
 
-		this.material.color.set( COLOR.CYAN );
+		this.material.color.set( ColorUtils.CYAN );
 
 		this.material.needsUpdate = true;
 
@@ -44,7 +44,7 @@ export class JunctionGatePoint extends Mesh implements INode {
 
 	onMouseOver (): void {
 
-		this.material.color.set( COLOR.YELLOW );
+		this.material.color.set( ColorUtils.YELLOW );
 
 		this.material.needsUpdate = true;
 
@@ -52,7 +52,7 @@ export class JunctionGatePoint extends Mesh implements INode {
 
 	onMouseOut (): void {
 
-		this.material.color.set( COLOR.CYAN );
+		this.material.color.set( ColorUtils.CYAN );
 
 		this.material.needsUpdate = true
 
@@ -63,7 +63,7 @@ export class JunctionGatePoint extends Mesh implements INode {
 		const geometry = new SphereGeometry( 1.0, 32, 32 );
 
 		const material = new MeshBasicMaterial( {
-			color: COLOR.CYAN,
+			color: ColorUtils.CYAN,
 			depthTest: false
 		} );
 

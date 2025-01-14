@@ -8,7 +8,7 @@ import { TvObjectPolyline } from 'app/map/models/objects/tv-object-polyline';
 import { TvObjectVertexLocal } from 'app/map/models/objects/tv-object-vertex-local';
 import { TvObjectVertexRoad } from 'app/map/models/objects/tv-object-vertex-road';
 import { TvRoadObjectSkeleton } from 'app/map/models/objects/tv-road-object-skeleton';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { BaseToolService } from '../base-tool.service';
 import { RoadObjectService } from '../../map/road-object/road-object.service';
 import { TvRoadObjectType } from "../../map/models/objects/tv-road-object";

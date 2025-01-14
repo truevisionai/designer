@@ -3,10 +3,10 @@
  */
 
 import { Maths } from 'app/utils/maths';
-import * as THREE from 'three';
-import { Vector2, Vector3 } from 'three';
+import * as THREE from "three";
+import { Vector2, Vector3 } from 'app/core/maths';
 import { GameObject } from '../../../objects/game-object';
-import { COLOR } from '../../../views/shared/utils/colors.service';
+import { ColorUtils } from '../../../views/shared/utils/colors.service';
 import { MeshGeometryData } from '../../../map/models/mesh-geometry.data';
 import { TvLaneSide, TvRoadMarkTypes } from '../../../map/models/tv-common';
 import { TvLane } from '../../../map/models/tv-lane';
@@ -337,23 +337,23 @@ export class OdRoadMarkBuilderV1 {
 		switch ( roadMark.color ) {
 
 			case 'standard':
-				color = COLOR.WHITE;
+				color = ColorUtils.WHITE;
 				break;
 
 			case 'white':
-				color = COLOR.WHITE;
+				color = ColorUtils.WHITE;
 				break;
 
 			case 'yellow':
-				color = COLOR.YELLOW;
+				color = ColorUtils.YELLOW;
 				break;
 
 			case 'red':
-				color = COLOR.RED;
+				color = ColorUtils.RED;
 				break;
 
 			default:
-				color = COLOR.WHITE;
+				color = ColorUtils.WHITE;
 				break;
 
 		}

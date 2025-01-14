@@ -8,7 +8,7 @@ import { PropManager } from 'app/managers/prop-manager';
 import { PropPolygon } from '../../map/prop-polygon/prop-polygon.model';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { PropPolygonInspector } from "../../map/prop-polygon/prop-polygon.inspector";
 

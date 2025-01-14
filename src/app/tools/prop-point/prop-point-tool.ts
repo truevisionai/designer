@@ -7,7 +7,7 @@ import { PropManager } from 'app/managers/prop-manager';
 import { PropInstance } from '../../map/prop-point/prop-instance.object';
 import { ToolType } from '../tool-types.enum';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { Object3D } from 'three';
+import { Object3D } from "three";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { BasePointTool } from "../base-point-tool";
 

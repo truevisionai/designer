@@ -7,7 +7,7 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import {
 	Box2,
 	Box3,
@@ -25,7 +25,7 @@ import {
 	SphereGeometry,
 	Vector2,
 	Vector3
-} from 'three';
+} from "three";
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
@@ -69,7 +69,7 @@ export class DebugDrawService {
 
 	}
 
-	drawText ( text: string, position: Vector3, size: number = 1, color: any = COLOR.WHITE ): void {
+	drawText ( text: string, position: Vector3, size: number = 1, color: any = ColorUtils.WHITE ): void {
 
 		const textObject = this.textService.createFromText( text, size, color );
 
@@ -87,7 +87,7 @@ export class DebugDrawService {
 
 	}
 
-	drawBox2D ( box: Box2, color: any = COLOR.WHITE, opacity: number = 1 ): void {
+	drawBox2D ( box: Box2, color: any = ColorUtils.WHITE, opacity: number = 1 ): void {
 
 		const mesh = this.createBox2D( box, color, opacity );
 
@@ -95,7 +95,7 @@ export class DebugDrawService {
 
 	}
 
-	createBox2D ( box: Box2, color: any = COLOR.WHITE, opacity: number = 1 ): Mesh {
+	createBox2D ( box: Box2, color: any = ColorUtils.WHITE, opacity: number = 1 ): Mesh {
 
 		const geometry = new PlaneGeometry( box.getSize( new Vector2() ).x, box.getSize( new Vector2() ).y );
 
@@ -109,7 +109,7 @@ export class DebugDrawService {
 
 	}
 
-	drawPoint ( position: Vector3, size: number = 10, color: any = COLOR.RED ): void {
+	drawPoint ( position: Vector3, size: number = 10, color: any = ColorUtils.RED ): void {
 
 		const point = this.createPoint( position, size, color );
 
@@ -117,7 +117,7 @@ export class DebugDrawService {
 
 	}
 
-	drawSphere ( position: Vector3, size: number = 0.1, color: any = COLOR.RED ): void {
+	drawSphere ( position: Vector3, size: number = 0.1, color: any = ColorUtils.RED ): void {
 
 		const sphere = this.createSphere( position, size, color );
 
@@ -145,7 +145,7 @@ export class DebugDrawService {
 
 	}
 
-	createSphere ( position: Vector3, size: number = 0.1, color: any = COLOR.RED ): Mesh {
+	createSphere ( position: Vector3, size: number = 0.1, color: any = ColorUtils.RED ): Mesh {
 
 		const geometry = new SphereGeometry( size, 32, 32 );
 
@@ -159,7 +159,7 @@ export class DebugDrawService {
 
 	}
 
-	createPoint ( position: Vector3, size: number = 10, color: any = COLOR.RED ): SimpleControlPoint<any> {
+	createPoint ( position: Vector3, size: number = 10, color: any = ColorUtils.RED ): SimpleControlPoint<any> {
 
 		const point = new SimpleControlPoint( null, position );
 
@@ -181,7 +181,7 @@ export class DebugDrawService {
 		const lineGeometry = this.createLaneWidthLineGeometry( height.sOffset, road, lane );
 
 		const material = new LineMaterial( {
-			color: COLOR.CYAN,
+			color: ColorUtils.CYAN,
 			linewidth: 4,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ),
 			depthTest: false,
@@ -204,7 +204,7 @@ export class DebugDrawService {
 
 	}
 
-	createLaneWidthLine ( target: HasDistanceValue, laneCoord: TvLaneCoord, color: any = COLOR.CYAN, width: number = 4 ): LaneSpanNode<HasDistanceValue> {
+	createLaneWidthLine ( target: HasDistanceValue, laneCoord: TvLaneCoord, color: any = ColorUtils.CYAN, width: number = 4 ): LaneSpanNode<HasDistanceValue> {
 
 		const lineGeometry = this.createLaneWidthLineGeometry( laneCoord.laneDistance, laneCoord.road, laneCoord.lane );
 
@@ -276,7 +276,7 @@ export class DebugDrawService {
 
 	}
 
-	createDebugLine<T> ( target: T, points: Vector3[], lineWidth: number = 2, color: any = COLOR.CYAN ): DebugLine<T> {
+	createDebugLine<T> ( target: T, points: Vector3[], lineWidth: number = 2, color: any = ColorUtils.CYAN ): DebugLine<T> {
 
 		const geometry = this.createDebugLineGeometry( points );
 
@@ -296,7 +296,7 @@ export class DebugDrawService {
 
 	}
 
-	createDebugLineMaterial ( color: any = COLOR.CYAN, lineWidth: number = 2 ): LineMaterial {
+	createDebugLineMaterial ( color: any = ColorUtils.CYAN, lineWidth: number = 2 ): LineMaterial {
 
 		return new LineMaterial( {
 			color: color,
@@ -321,7 +321,7 @@ export class DebugDrawService {
 
 	}
 
-	createDashedLine<T> ( target: T, points: Vector3[], lineWidth: number = 2, color: any = COLOR.CYAN ): DebugLine<T> {
+	createDashedLine<T> ( target: T, points: Vector3[], lineWidth: number = 2, color: any = ColorUtils.CYAN ): DebugLine<T> {
 
 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
@@ -527,7 +527,7 @@ export class DebugDrawService {
 			map: texture,
 			alphaTest: 0.9,
 			transparent: true,
-			color: COLOR.SKYBLUE,
+			color: ColorUtils.SKYBLUE,
 			depthTest: false,
 			depthWrite: false
 		} );
@@ -548,7 +548,7 @@ export class DebugDrawService {
 
 		const boxLine = new BoxGeometry( width, 0.5, 0.01 );
 
-		const meshLine = new Mesh( boxLine, new MeshBasicMaterial( { color: COLOR.GREEN } ) );
+		const meshLine = new Mesh( boxLine, new MeshBasicMaterial( { color: ColorUtils.GREEN } ) );
 
 		mesh.add( meshLine );
 
@@ -569,7 +569,7 @@ export class DebugDrawService {
 
 	}
 
-	createOutlineFromGeometry ( geometry: BufferGeometry, width: number = LINE_WIDTH, color: any = COLOR.CYAN ): LineSegments2 {
+	createOutlineFromGeometry ( geometry: BufferGeometry, width: number = LINE_WIDTH, color: any = ColorUtils.CYAN ): LineSegments2 {
 
 		const edges = new EdgesGeometry( geometry );
 

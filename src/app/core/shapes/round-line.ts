@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial, Vector3 } from "three";
 import { ARC_TESSEL, MAX_CTRL_POINTS } from './spline-config';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { InvalidValueException } from 'app/exceptions/exceptions';
@@ -26,7 +26,7 @@ export class RoundLine {
 
 		this.curveType = 'roundline';
 
-		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.CYAN, opacity: 0.35, linewidth: 2 } ) );
+		this.mesh = new Line( geometry, new LineBasicMaterial( { color: ColorUtils.CYAN, opacity: 0.35, linewidth: 2 } ) );
 
 		this.mesh.name = 'roundline';
 

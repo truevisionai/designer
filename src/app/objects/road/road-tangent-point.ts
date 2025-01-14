@@ -3,8 +3,8 @@
  */
 
 import { CURVE_Y } from 'app/core/shapes/spline-config';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, PointsMaterial, Vector3 } from "three";
 import { IHasUpdate } from '../../commands/set-value-command';
 import { RoadControlPoint } from './road-control-point';
 import { AbstractControlPoint } from "../abstract-control-point";
@@ -14,7 +14,7 @@ export abstract class RoadTangentPoint extends AbstractControlPoint implements I
 
 	public static readonly tag = 'RoadTangentPoint';
 
-	protected defaultColor = COLOR.MBLUE;
+	protected defaultColor = ColorUtils.MBLUE;
 
 	public length = 1;
 

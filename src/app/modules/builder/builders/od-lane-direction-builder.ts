@@ -3,7 +3,7 @@
  */
 
 import { SceneService } from 'app/services/scene.service';
-import { ArrowHelper, Object3D, Vector3 } from 'three';
+import { ArrowHelper, Object3D, Vector3 } from "three";
 import { SimpleArrowObject } from '../../../objects/lane-arrow-object';
 import { TvLaneSide } from '../../../map/models/tv-common';
 import { TvLane } from '../../../map/models/tv-lane';

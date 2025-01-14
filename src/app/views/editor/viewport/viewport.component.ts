@@ -8,8 +8,8 @@ import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ThreeService } from 'app/renderer/three.service';
 
 // import * as Stats from 'stats.js';
-import * as THREE from 'three';
-import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
+import * as THREE from "three";
+import { Intersection, Object3D, OrthographicCamera, PerspectiveCamera, Vector3, WebGLRenderer } from "three";
 import { SceneService } from '../../../services/scene.service';
 import { CanvasService } from '../../../renderer/canvas.service';
 import { Environment } from 'app/core/utils/environment';
@@ -22,6 +22,7 @@ import { CameraService } from "../../../renderer/camera.service";
 import { MapService } from 'app/services/map/map.service';
 import { ToolManager } from 'app/managers/tool-manager';
 import { AssetType } from 'app/assets/asset.model';
+import { Vector2 } from 'app/core/maths';
 
 @Component( {
 	selector: 'app-viewport',
@@ -49,11 +50,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	raycaster = new THREE.Raycaster;
 
-	currentMousePosition: THREE.Vector2 = new THREE.Vector2();
+	currentMousePosition: Vector2 = new Vector2();
 
-	prevMousePosition: THREE.Vector2 = new THREE.Vector2();
+	prevMousePosition: Vector2 = new Vector2();
 
-	mouseDelta: THREE.Vector2 = new THREE.Vector2();
+	mouseDelta: Vector2 = new Vector2();
 
 	clock = new THREE.Clock();
 
