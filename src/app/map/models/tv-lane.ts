@@ -907,5 +907,33 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.switchDirection();
 		return this;
 	}
+
+	getSuccessorLane (): TvLane | undefined {
+
+		if ( !this.successorExists ) return;
+
+		const successor = this.laneSection.road.getSuccessor();
+
+		if ( !successor.isRoad ) return;
+
+		const section = successor.getElement<TvRoad>().getLaneSectionAt( successor.contact );
+
+		return section.getLaneById( this.successorId );
+
+	}
+
+	getPredecessorLane (): TvLane | undefined {
+
+		if ( !this.predecessorExists ) return;
+
+		const predecessor = this.laneSection.road.getPredecessor();
+
+		if ( !predecessor.isRoad ) return;
+
+		const section = predecessor.getElement<TvRoad>().getLaneSectionAt( predecessor.contact );
+
+		return section.getLaneById( this.predecessorId );
+
+	}
 }
 

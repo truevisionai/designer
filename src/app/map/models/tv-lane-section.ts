@@ -230,6 +230,8 @@ export class TvLaneSection {
 
 	}
 
+	getCenterLane (): TvLane { return this.getLaneById( 0 ); }
+
 	getRightLaneCount (): number {
 
 		return this.getRightLanes().length;
@@ -331,6 +333,12 @@ export class TvLaneSection {
 	getLeftMostLane (): TvLane {
 
 		return this.laneArray[ 0 ];
+
+	}
+
+	removeLanes ( lanes: TvLane[] ): void {
+
+		lanes.forEach( lane => this.removeLane( lane ) );
 
 	}
 

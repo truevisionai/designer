@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { DebugState } from '../debug/debug-state';
 import { Object3DArrayMap } from 'app/core/models/object3d-array-map';
-import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D, Vector2 } from 'three';
+import { BoxGeometry, Color, Mesh, MeshBasicMaterial, Object3D, Vector2 } from 'three';
 import { COLOR } from 'app/views/shared/utils/colors.service';
 import { TvContactPoint, TvLaneType } from 'app/map/models/tv-common';
 import { TvLink, TvLinkType } from 'app/map/models/tv-link';
@@ -29,6 +29,7 @@ import { JunctionOverlay } from './junction-overlay';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadDistance } from 'app/map/road/road-distance';
 import { createGeometryFromBoundary } from 'app/modules/builder/builders/junction-boundary.builder';
+import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 
 @Injectable( {
 	providedIn: 'root'
@@ -169,6 +170,8 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 	createJunctionOverlay ( junction: TvJunction ): JunctionOverlay {
 
 		const geometry = createGeometryFromBoundary( junction.outerBoundary );
+
+		// this.debugBoundary( junction.outerBoundary );
 
 		return JunctionOverlay.create( junction, geometry );
 
@@ -367,4 +370,24 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		this.nodes.clear();
 
 	}
+
+	private debugBoundary ( boundary: TvJunctionBoundary, color: number = COLOR.RED ): void {
+
+		boundary.getSegments().forEach( segment => {
+
+			const white = new Color( 1, 1, 1 );
+
+			segment.getOuterPoints().forEach( ( position, index ) => {
+
+				// as the index grows, make the white color will get darker
+				const color = white.clone().multiplyScalar( 1 - index / 10 );
+
+				this.debug.drawText( index.toString(), position.toVector3(), 0.2, color.getHex() );
+
+			} )
+
+		} )
+
+	}
+
 }

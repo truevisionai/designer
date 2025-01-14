@@ -36,7 +36,7 @@ export class TvJunctionBoundaryProfile {
 		sorted.forEach( coord => {
 
 			// NOTE: Sequence of the following code is important
-			this.outerBoundary.addSegment( TvJunctionBoundaryFactory.createJointSegment( coord ) );
+			this.outerBoundary.addSegment( TvJunctionBoundaryFactory.createJointSegment( this.junction, coord ) );
 
 			this.findAndAddCornerRoad( this.junction, coord, this.outerBoundary );
 

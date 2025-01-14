@@ -22,7 +22,7 @@ import { DelaunatorHelper } from 'app/services/surface/delaunay';
 
 export function createGeometryFromBoundary ( boundary: TvJunctionBoundary ): BufferGeometry {
 
-	return DelaunatorHelper.createFromPoints( boundary.getInnerPositions().map( p => p.toVector3() ) );
+	return DelaunatorHelper.createFromPoints( boundary.getPositions().map( p => p.toVector3() ) );
 
 }
 
@@ -54,7 +54,7 @@ export class JunctionBoundaryBuilder {
 
 	private getDeluanayGeometry ( boundary: TvJunctionBoundary ): BufferGeometry {
 
-		return DelaunatorHelper.createFromPoints( boundary.getInnerPositions().map( p => p.toVector3() ) );
+		return DelaunatorHelper.createFromPoints( boundary.getPositions().map( p => p.toVector3() ) );
 
 	}
 
