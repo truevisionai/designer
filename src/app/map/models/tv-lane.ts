@@ -3,7 +3,6 @@
  */
 
 import { GameObject } from 'app/objects/game-object';
-import { Copiable } from 'app/services/property-copy.service';
 import { IHasUpdate } from 'app/commands/set-value-command';
 import { ISelectable } from 'app/objects/i-selectable';
 import { MathUtils } from "three";
@@ -697,15 +696,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	removeWidthRecordInstance ( laneWidth: TvLaneWidth ): void {
 		this.widthProfile.removeWidthRecord( laneWidth );
-	}
-
-	copyProperties? (): Object {
-
-		return {
-			travelDirection: this.direction,
-			type: this.type,
-			level: this.level,
-		};
 	}
 
 	removeRoadMark ( roadmark: TvLaneRoadMark ): void {
