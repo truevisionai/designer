@@ -32,7 +32,7 @@ import { LaneUtils } from 'app/utils/lane.utils';
 
 import { createLaneDistance } from '../road/road-distance';
 
-export class TvLane implements ISelectable, Copiable, IHasUpdate {
+export class TvLane implements ISelectable, IHasUpdate {
 
 	public readonly uuid: string;
 
