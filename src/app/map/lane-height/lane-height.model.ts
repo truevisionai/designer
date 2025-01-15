@@ -128,6 +128,9 @@ export class LaneHeightProfile {
 
 	addHeight ( height: TvLaneHeight ): void {
 
+		// Center lane should not have height
+		if ( this.lane.isCenter ) return;
+
 		const index = this.getIndexByDistance( height.sOffset ) + 1;
 
 		if ( index > this.getHeightCount() ) {
