@@ -176,7 +176,9 @@ describe( 'RoadTool: Spline Editing', () => {
 
 			expect( newPoint ).toBeDefined();
 
-			expect( newPoint.position ).toEqual( new Vector3( 200, 200, 0 ) );
+			expect( newPoint.position.x ).toEqual( 200 );
+			expect( newPoint.position.y ).toEqual( 200 );
+			expect( newPoint.position.z ).toEqual( 0 );
 
 			expect( newPoint ).toBeInstanceOf( splineType === SplineType.EXPLICIT ? RoadControlPoint : SplineControlPoint );
 

@@ -47,7 +47,9 @@ describe( 'Imported XJunction: Tests', () => {
 		expect( road.isJunction ).toBe( false );
 		expect( road.spline.getControlPointCount() ).toBe( 2 );
 
-		expect( road.spline.getPositions()[ 0 ] ).toEqual( new Vector3( 0, 0, 0 ) );
+		expect( road.spline.getPositions()[ 0 ].x ).toBe( 0 );
+		expect( road.spline.getPositions()[ 0 ].y ).toBe( 0 );
+		expect( road.spline.getPositions()[ 0 ].z ).toBe( 0 );
 
 		expect( road.spline.getControlPoints()[ 1 ].position.x ).toBeCloseTo( 0 );
 		expect( road.spline.getControlPoints()[ 1 ].position.y ).toBe( 100 );
