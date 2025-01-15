@@ -25,7 +25,7 @@ import { TvLaneSection } from './tv-lane-section';
 import { TvLaneSpeed } from './tv-lane-speed';
 import { TvLaneVisibility } from './tv-lane-visibility';
 import { TvLaneWidth, TvLaneWidthProfile } from './tv-lane-width';
-import { TvLaneHeight } from '../lane-height/lane-height.model';
+import { LaneHeightProfile, TvLaneHeight } from '../lane-height/lane-height.model';
 import { OrderedMap } from "../../core/models/ordered-map";
 import { TvRoad } from './tv-road.model';
 import { TvLaneCoord } from './tv-lane-coord';
@@ -61,9 +61,9 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	private widthProfile: TvLaneWidthProfile;
 
-	public borders: TvLaneBorder[] = [];
+	private borders: TvLaneBorder[] = [];
 
-	public roadMarks = new OrderedMap<TvLaneRoadMark>();
+	private _roadMarks = new OrderedMap<TvLaneRoadMark>();
 
 	public materials: TvLaneMaterial[] = [];
 
@@ -73,7 +73,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public access: TvLaneAccess[] = [];
 
-	public height: TvLaneHeight[] = [];
+	private heightProfile: LaneHeightProfile;
 
 	public threeMaterialGuid: string;
 
@@ -101,6 +101,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.level = level;
 		this._laneSection = laneSection;
 		this.widthProfile = new TvLaneWidthProfile( this );
+		this.heightProfile = new LaneHeightProfile( this );
 
 		if ( this.isLeft ) {
 			this.direction = TravelDirection.backward;
@@ -128,6 +129,18 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	isCarriageWay (): boolean {
 		return this.type != TvLaneType.sidewalk && this.type != TvLaneType.curb;
+	}
+
+	get roadMarks (): OrderedMap<TvLaneRoadMark> {
+		return this._roadMarks;
+	}
+
+	set roadMarks ( value ) {
+		this._roadMarks = value;
+	}
+
+	get height (): TvLaneHeight[] {
+		return this.heightProfile.getArray();
 	}
 
 	get isDrivingLane (): boolean {
@@ -390,31 +403,15 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	addHeightRecord ( sOffset: number, inner: number, outer: number ): void {
-
-		this.addHeightRecordInstance( new TvLaneHeight( sOffset, inner, outer ) );
-
+		this.heightProfile.createAndAddHeight( sOffset, inner, outer );
 	}
 
 	addHeightRecordInstance ( height: TvLaneHeight ): void {
-
-		const index = this.checkLaneHeightInterval( height.sOffset ) + 1;
-
-		if ( index > this.getLaneHeightCount() ) {
-
-			this.height.push( height );
-
-		} else {
-
-			this.height[ index ] = height;
-
-		}
-
-		this.height.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
-
+		this.heightProfile.addHeight( height );
 	}
 
 	clearLaneHeight (): void {
-		this.height.splice( 0, this.height.length );
+		this.heightProfile.clear();
 	}
 
 	clearRoadMarks (): void {
@@ -465,13 +462,8 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return null;
 	}
 
-	getLaneHeight ( index: any ): TvLaneHeight {
-
-		if ( this.height.length > 0 && index < this.height.length ) {
-			return this.height[ index ];
-		}
-
-		return null;
+	getLaneHeight ( index: number ): TvLaneHeight {
+		return this.heightProfile.getHeightByIndex( index );
 	}
 
 	getLaneWidthCount (): number {
@@ -495,7 +487,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	getLaneHeightCount (): number {
-		return this.height.length;
+		return this.heightProfile.getHeightCount();
 	}
 
 	checkLaneMaterialInterval ( sCheck: number ): number {
@@ -582,27 +574,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return res;
 	}
 
-	checkLaneHeightInterval ( s_value: number ): number {
-
-		let res = -1;
-
-		for ( let i = 0; i < this.height.length; i++ ) {
-
-			if ( s_value >= this.height[ i ].sOffset ) {
-
-				res = i;
-
-			} else {
-
-				break;
-
-			}
-
-		}
-
-		return res;
-	}
-
 	/**
 	 * Evaluate the record and the return the width value
 	 * @param sCheck
@@ -627,21 +598,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 * @param sOffset
 	 */
 	getHeightValue ( sOffset: number ): TvLaneHeight {
-
-		const laneHeight = new TvLaneHeight( sOffset, 0, 0 );
-
-		const index = this.checkLaneHeightInterval( sOffset );
-
-		if ( index >= 0 ) {
-
-			const currentHeight = this.getLaneHeight( index );
-
-			laneHeight.inner = currentHeight.inner;
-			laneHeight.outer = currentHeight.outer;
-
-		}
-
-		return laneHeight;
+		return this.heightProfile.getHeightValue( sOffset );
 	}
 
 	/**
@@ -742,7 +699,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.widthProfile.removeWidthRecord( laneWidth );
 	}
 
-	copyProperties?(): Object {
+	copyProperties? (): Object {
 
 		return {
 			travelDirection: this.direction,

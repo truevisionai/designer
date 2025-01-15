@@ -311,8 +311,6 @@ export class MapValidatorService {
 
 		// this.validateLaneLinks( road, laneSection, lane );
 
-		this.validatePolynomials( lane.borders );
-
 	}
 
 	validateLaneWidth ( lane: TvLane ): void {
