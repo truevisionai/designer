@@ -41,7 +41,7 @@ export class TvMap {
 
 	private controllers = new ManagedMap<TvSignalController>();
 
-	public roads = new ManagedMap<TvRoad>();
+	private roads = new ManagedMap<TvRoad>();
 
 	private junctions = new ManagedMap<TvJunction>();
 
