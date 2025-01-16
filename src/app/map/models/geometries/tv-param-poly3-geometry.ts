@@ -7,6 +7,8 @@ import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
 import { TvAbstractRoadGeometry } from './tv-abstract-road-geometry';
 
+export type PRANGE = 'arcLength' | 'normalized';
+
 export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 
 	public geometryType: TvGeometryType = TvGeometryType.PARAMPOLY3;
@@ -30,7 +32,7 @@ export class TvParamPoly3Geometry extends TvAbstractRoadGeometry {
 		length: number,
 		aU: number, bU: number, cU: number, dU: number,
 		aV: number, bV: number, cV: number, dV: number,
-		public pRange: 'arcLength' | 'normalized' = 'arcLength'
+		public pRange: PRANGE = 'arcLength'
 	) {
 		super( s, x, y, hdg, length );
 		this.aU = aU;
