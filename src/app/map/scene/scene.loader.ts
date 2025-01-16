@@ -366,7 +366,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return spline;
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	parseSplineSegments ( xml: XmlElement ): Map<number, NewSegment> {
 
 		const segments = new Map<number, NewSegment>();
@@ -732,7 +731,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	private importPropCurve ( xml: XmlElement ): PropCurve {
 
 		const guid = xml.attr_guid;

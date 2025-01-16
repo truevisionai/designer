@@ -332,7 +332,6 @@ export class JunctionManager {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	categorizeJunctions ( junctions: TvJunction[], intersections: SplineIntersection[] ): {
 		junctionsToCreate: SplineIntersection[],
 		junctionsToUpdate: TvJunction[],

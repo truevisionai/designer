@@ -44,7 +44,6 @@ export class TvJointBoundary implements TvJunctionSegmentBoundary {
 		return `JointBoundary: roadId=${ this.road.id } contactPoint=${ this.contactPoint } jointLaneStart=${ this.jointLaneStart?.id } jointLaneEnd=${ this.jointLaneEnd?.id }`;
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	getPoints (): TvPosTheta[] {
 
 		if ( this.road.geometries.length == 0 ) {

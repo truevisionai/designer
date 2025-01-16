@@ -28,7 +28,6 @@ class ReturnTypeAdder {
 		} );
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	private processFunctionLikeDeclaration ( node: FunctionDeclaration | MethodDeclaration ): void {
 		if ( !node.getReturnTypeNode() ) {
 			const signature = node.getSignature();
@@ -53,7 +52,6 @@ class ReturnTypeAdder {
 		}
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	private isAnonymousObjectType ( type: Type ): boolean {
 		// Handle arrays, tuples, and type references (e.g., generics)
 		if ( type.isArray() || type.isTuple() ) {

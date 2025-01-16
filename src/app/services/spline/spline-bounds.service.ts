@@ -68,7 +68,6 @@ export class SplineBoundsService {
 		}
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	private isInvalid ( spline: AbstractSpline ): boolean {
 
 		if ( spline.getSegmentCount() == 0 ) {

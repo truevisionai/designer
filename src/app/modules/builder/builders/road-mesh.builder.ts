@@ -335,7 +335,6 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): void {
 
 		const distance = sOffset - laneSection.s as RoadDistance;
