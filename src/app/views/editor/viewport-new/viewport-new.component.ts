@@ -22,6 +22,7 @@ import { IViewportController } from "../../../objects/i-viewport-controller";
 import { TvOrbitControls } from "../../../objects/tv-orbit-controls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Vector2 } from 'app/core/maths';
+import { Log } from "../../../core/utils/log";
 
 export class CanvasConfig {
 	width: number = 600;
@@ -408,7 +409,12 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	@HostListener( 'window: resize', [ '$event' ] )
 	onWindowResized (): void {
 
-		const container = this.renderer.domElement.parentElement.parentElement;
+		const container = this.renderer.domElement.parentElement?.parentElement;
+
+		if ( !container ) {
+			Log.error( 'Container not found in viewport-new' );
+			return;
+		}
 
 		const box = container.getBoundingClientRect();
 

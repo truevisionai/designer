@@ -53,6 +53,13 @@ export class FileApiService {
 
 			const tvMapState = tvMap || this.mapService.getSceneOutput();
 
+			// Check file size before uploading
+			if ( this.isExceedingMaxFileSize( openDriveState, tvMapState ) ) {
+				return new Observable( observer => {
+					observer.error( 'File size exceeds 1MB' );
+				} );
+			}
+
 			return this.api.put( '/files/log-error', {
 				error: e?.name || 'UnknownError',
 				mapStates: {
@@ -64,6 +71,11 @@ export class FileApiService {
 		} catch ( error ) {
 
 			console.error( error );
+
+			// Return a failed observable in case of errors
+			return new Observable( observer => {
+				observer.error( error );
+			} );
 
 		}
 
@@ -82,4 +94,19 @@ export class FileApiService {
 		} );
 
 	}
+
+	isExceedingMaxFileSize ( openDriveState: string, tvMapState: string ): boolean {
+
+		// Measure size in bytes
+		const encoder = new TextEncoder();
+		const openDriveStateSize = encoder.encode( openDriveState ).length;
+		const tvMapStateSize = encoder.encode( tvMapState ).length;
+
+		const size = openDriveStateSize + tvMapStateSize;
+		const maxSize = 1000000; // 10MB
+
+		return size >= maxSize;
+
+	}
+
 }

@@ -151,7 +151,6 @@ export class SplineUtils {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ): void {
 
 		spline.addSegment( sOffset, segment );

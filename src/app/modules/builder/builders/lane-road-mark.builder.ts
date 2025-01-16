@@ -141,7 +141,6 @@ export class LaneRoadMarkBuilder {
 
 		}
 
-		// eslint-disable-next-line max-lines-per-function
 		const processStep = ( laneDistance: number ) => {
 
 			const distance = laneSection.s + laneDistance as RoadDistance;

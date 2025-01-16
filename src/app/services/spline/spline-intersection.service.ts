@@ -43,7 +43,6 @@ export class SplineIntersectionService {
 }
 
 
-// eslint-disable-next-line max-lines-per-function
 export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize: number = 1 ): SplineIntersection[] | null {
 
 	if ( splineA.getControlPointCount() < 2 ) return [];
@@ -153,7 +152,6 @@ function createBoxFromSegment ( leftStart: Vector3, rightStart: Vector3, leftEnd
 }
 
 
-// eslint-disable-next-line max-lines-per-function
 function computeOffsets ( intersection: SplineIntersection ): void {
 
 	const BUFFER = 2;
