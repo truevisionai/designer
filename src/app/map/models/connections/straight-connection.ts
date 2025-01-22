@@ -53,7 +53,7 @@ export class StraightConnection extends TvJunctionConnection {
 
 		const direction = LaneUtils.determineOutDirection( contactPoint );
 
-		const drivingLanes = this.getOutgoingLanes().filter( lane => lane.direction == direction ).filter( lane => lane.isDrivingLane );
+		const drivingLanes = this.getOutgoingLanes().filter( lane => lane.matchesDirection( direction ) ).filter( lane => lane.isDrivingLane );
 
 		const outgoingRoad = this.getOutgoingRoad();
 

@@ -29,7 +29,7 @@ import { OrderedMap } from "../../core/models/ordered-map";
 import { TvRoad } from './tv-road.model';
 import { TvLaneCoord } from './tv-lane-coord';
 import { LaneUtils } from 'app/utils/lane.utils';
-
+import { TrafficRule } from './traffic-rule';
 import { createLaneDistance } from '../road/road-distance';
 
 export class TvLane implements ISelectable, IHasUpdate {
@@ -102,15 +102,7 @@ export class TvLane implements ISelectable, IHasUpdate {
 		this.widthProfile = new TvLaneWidthProfile( this );
 		this.heightProfile = new LaneHeightProfile( this );
 
-		if ( this.isLeft ) {
-			this.direction = TravelDirection.backward;
-		} else if ( this.isRight ) {
-			this.direction = TravelDirection.forward;
-		} else if ( this.isCenter ) {
-			this.direction = TravelDirection.undirected;
-		} else {
-			this.direction = TravelDirection.undirected;
-		}
+		this.direction = this.detectDirection();
 
 	}
 
@@ -130,6 +122,27 @@ export class TvLane implements ISelectable, IHasUpdate {
 		return this.type != TvLaneType.sidewalk && this.type != TvLaneType.curb;
 	}
 
+	/**
+	 * Returns true if the lane is for traffic participants, flow of traffic
+	 */
+	get isTrafficLane (): boolean {
+		return (
+			this.type === TvLaneType.driving ||
+			this.type === TvLaneType.biking ||
+			this.type === TvLaneType.slipLane ||
+			this.type === TvLaneType.shared ||
+			this.type === TvLaneType.bidirectional ||
+			this.type === TvLaneType.entry ||
+			this.type === TvLaneType.exit ||
+			this.type === TvLaneType.onRamp ||
+			this.type === TvLaneType.offRamp ||
+			this.type === TvLaneType.connectingRamp ||
+			this.type === TvLaneType.bus ||
+			this.type === TvLaneType.taxi ||
+			this.type === TvLaneType.HOV
+		)
+	}
+
 	get roadMarks (): OrderedMap<TvLaneRoadMark> {
 		return this._roadMarks;
 	}
@@ -140,6 +153,33 @@ export class TvLane implements ISelectable, IHasUpdate {
 
 	get height (): TvLaneHeight[] {
 		return this.heightProfile.getArray();
+	}
+
+	get isForward (): boolean {
+		return this.direction === TravelDirection.forward;
+	}
+
+	get isReversed (): boolean {
+
+		if ( this.isCenter ) return false;
+
+		if ( this.laneSection.road.hasRightHandTraffic ) {
+
+			if ( this.isRight && this.isBackward ) return true;
+			if ( this.isLeft && this.isForward ) return true;
+
+		} else {
+
+			if ( this.isRight && this.isForward ) return true;
+			if ( this.isLeft && this.isBackward ) return true;
+
+		}
+
+		return false;
+	}
+
+	get isBackward (): boolean {
+		return this.direction === TravelDirection.backward;
 	}
 
 	get isDrivingLane (): boolean {
@@ -729,7 +769,11 @@ export class TvLane implements ISelectable, IHasUpdate {
 	}
 
 	matchesDirection ( direction: TravelDirection ): boolean {
-		return this.direction === direction;
+
+		if ( this.isCenter ) return false
+		if ( this.isTrafficLane ) return this.direction === direction;
+
+		return true;
 	}
 
 	toLaneCoord ( distance: number | TvContactPoint ): TvLaneCoord {
@@ -781,6 +825,27 @@ export class TvLane implements ISelectable, IHasUpdate {
 
 	getType (): TvLaneType {
 		return this.type;
+	}
+
+	private detectDirection (): TravelDirection | undefined {
+
+		if ( this.isCenter ) return undefined;
+
+		const trafficRule = this.laneSection?.road?.trafficRule || TrafficRule.RHT;
+
+		if ( this.isTrafficLane && trafficRule === TrafficRule.RHT ) {
+
+			return this.isLeft ? TravelDirection.backward : TravelDirection.forward;
+
+		} else if ( this.isTrafficLane && trafficRule === TrafficRule.LHT ) {
+
+			return this.isRight ? TravelDirection.backward : TravelDirection.forward;
+
+		} else {
+
+			return TravelDirection.undirected;
+
+		}
 	}
 }
 
