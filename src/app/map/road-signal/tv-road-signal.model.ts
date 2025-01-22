@@ -4,9 +4,10 @@
 
 import { TvDynamicTypes, TvOrientation, TvUnit } from '../models/tv-common';
 import { TvLaneValidity } from "../models/objects/tv-lane-validity";
-import { MathUtils, Object3D } from "three";
+import { Euler, MathUtils, Object3D, Quaternion, Vector3 } from "three";
 import { TvRoad } from '../models/tv-road.model';
 import { TvPosTheta } from '../models/tv-pos-theta';
+import { Maths } from 'app/utils/maths';
 
 export enum TvSignalType {
 	RoadMark = 'roadMark',
@@ -114,6 +115,52 @@ export class TvRoadSignal {
 
 	addReference ( elementId: number, elementType: TvReferenceElementType, type?: string ): void {
 		this.references.push( new TvReference( elementId, elementType, type ) );
+	}
+
+	getObjectHeading (): number {
+
+		const roadCoord = this.road.getRoadPosition( this.s, this.t );
+
+		let hdg: number;
+
+		if ( this.orientation === TvOrientation.PLUS ) {
+
+			hdg = this.hOffset + roadCoord.hdg - Maths.PI2;
+
+		} else if ( this.orientation === TvOrientation.MINUS ) {
+
+			hdg = this.hOffset + roadCoord.hdg + Maths.PI2;
+
+		} else {
+
+			hdg = roadCoord.hdg;
+
+		}
+
+		return hdg;
+
+	}
+
+	getObjectRotation (): Euler {
+
+		const heading = this.getObjectHeading();
+
+		const rotation = new Euler( 0, 0, 0 );
+
+		const surfaceNormal = this.road.getSurfaceNormal( this.s, this.t );
+
+		// Align the rotation to the surface normal
+		// Against default decal orientation
+		// Assuming decals face +Z by default
+		rotation.setFromQuaternion( new Quaternion().setFromUnitVectors( new Vector3( 0, 0, 1 ), surfaceNormal ) );
+
+		rotation.x += this.pitch || 0;
+
+		rotation.y += this.roll || 0;
+
+		rotation.z += heading;
+
+		return rotation;
 	}
 
 	static stringToDynamicType ( value: string ): TvDynamicTypes {

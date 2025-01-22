@@ -13,8 +13,9 @@ import { TvParkingSpace } from "./tv-parking-space";
 import { TvObjectOutline } from "./tv-object-outline";
 import { TvLane } from '../tv-lane';
 import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
-import { Euler, MathUtils, Object3D, Vector3 } from "three";
+import { Euler, MathUtils, Object3D, Quaternion, Vector3 } from "three";
 import { TvCornerRoad } from './tv-corner-road';
+import { Maths } from 'app/utils/maths';
 
 export enum TvRoadObjectType {
 
@@ -405,6 +406,52 @@ export class TvRoadObject {
 
 		return object;
 
+	}
+
+	getObjectHeading (): number {
+
+		const roadCoord = this.road.getRoadPosition( this.s, this.t );
+
+		let hdg: number;
+
+		if ( this.orientation === TvOrientation.PLUS ) {
+
+			hdg = this.hdg + roadCoord.hdg - Maths.PI2;
+
+		} else if ( this.orientation === TvOrientation.MINUS ) {
+
+			hdg = this.hdg + roadCoord.hdg + Maths.PI2;
+
+		} else {
+
+			hdg = roadCoord.hdg;
+
+		}
+
+		return hdg;
+
+	}
+
+	getObjectRotation (): Euler {
+
+		const heading = this.getObjectHeading();
+
+		const rotation = new Euler( 0, 0, 0 );
+
+		const surfaceNormal = this.road.getSurfaceNormal( this.s, this.t );
+
+		// Align the rotation to the surface normal
+		// Against default decal orientation
+		// Assuming decals face +Z by default
+		rotation.setFromQuaternion( new Quaternion().setFromUnitVectors( new Vector3( 0, 0, 1 ), surfaceNormal ) );
+
+		rotation.x += this.pitch || 0;
+
+		rotation.y += this.roll || 0;
+
+		rotation.z += heading;
+
+		return rotation;
 	}
 
 	toString (): string {

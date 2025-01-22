@@ -439,6 +439,12 @@ export class TvRoad {
 
 	}
 
+	getSurfaceNormal ( s: number, t: number ): Vector3 {
+
+		return RoadGeometryService.instance.getRoadSurfaceNormal( this, s, t );
+
+	}
+
 	getRoadPosition ( s: number, t: number = 0 ): TvPosTheta {
 
 		return RoadGeometryService.instance.findRoadPosition( this, s, t );

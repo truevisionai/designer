@@ -108,7 +108,7 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		const scale = new Vector3( object.width, object.length, 0.1 );
 
-		const rotation = new Euler( object.pitch, object.roll, this.calculateHeading( road, object ) );
+		const rotation = object.getObjectRotation();
 
 		if ( !lane || lane?.id == 0 ) {
 
@@ -238,30 +238,6 @@ export class RoadObjectBuilder extends MeshBuilder<TvRoadObject> {
 
 		// TODO: Implement this
 		return new Object3D();
-
-	}
-
-	private calculateHeading ( road: TvRoad, roadObject: TvRoadObject ): number {
-
-		const roadCoord = road.getRoadPosition( roadObject.s, roadObject.t );
-
-		let hdg: number;
-
-		if ( roadObject.orientation === TvOrientation.PLUS ) {
-
-			hdg = roadObject.hdg + roadCoord.hdg - Maths.PI2;
-
-		} else if ( roadObject.orientation === TvOrientation.MINUS ) {
-
-			hdg = roadObject.hdg + roadCoord.hdg + Maths.PI2;
-
-		} else {
-
-			hdg = roadCoord.hdg;
-
-		}
-
-		return hdg;
 
 	}
 

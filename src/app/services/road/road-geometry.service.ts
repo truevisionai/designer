@@ -36,6 +36,32 @@ export class RoadGeometryService {
 	constructor () {
 	}
 
+	getRoadSurfaceNormal ( road: TvRoad, s: number, t: number ): Vector3 {
+
+		this.validateSOffset( road, s );
+
+		const posTheta = this.findRoadPosition( road, s, t );
+
+		// Get the elevation and superelevation
+		const superElevation = road.getLateralProfile().getSuperElevationValue( s );
+
+		// Compute the elevation slope (dz/ds)
+		const elevationSlope = road.getElevationProfile().getSlopeAt( s );
+
+		// Compute the lateral slope (dz/dt) due to superelevation
+		const lateralSlope = Math.tan( superElevation || 0 );
+
+		// Calculate the normal vector components
+		// The road surface normal is affected by both elevation and superelevation
+		const nx = -elevationSlope * Math.cos( posTheta.hdg );
+		const ny = -elevationSlope * Math.sin( posTheta.hdg );
+		const nz = 1 - ( t * lateralSlope );
+
+		// Create and normalize the normal vector
+		return new Vector3( nx, ny, nz ).normalize();
+
+	}
+
 	findContactPosition ( road: TvRoad, contact: TvContactPoint ): TvPosTheta {
 
 		if ( contact === TvContactPoint.START ) {
