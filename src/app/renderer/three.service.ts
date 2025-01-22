@@ -71,7 +71,7 @@ export class ThreeService {
 
 	createGridHelper (): void {
 
-		const gridHelper = new THREE.GridHelper( 1000, 100 );
+		const gridHelper = new THREE.GridHelper( 10000, 1000 );
 
 		gridHelper.material.transparent = true;
 		gridHelper.material.opacity = 0.5;
