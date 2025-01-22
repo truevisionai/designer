@@ -45,7 +45,7 @@ export class TvElevationProfile {
 
 	}
 
-	createAndAddElevation ( s: number, a: number, b: number, c: number, d: number ): void {
+	createAndAddElevation ( s: number, a: number, b: number = 0, c: number = 0, d: number = 0 ): void {
 
 		this.addElevation( new TvElevation( s, a, b, c, d ) );
 
@@ -87,6 +87,16 @@ export class TvElevationProfile {
 		this.elevations.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
 
 		// TvUtils.computeCoefficients( this.elevation, this.length );
+
+	}
+
+	getSlopeAt ( s: number ): number {
+
+		const elevation = this.getElevationAt( s );
+
+		if ( elevation == null ) return 0;
+
+		return elevation.getSlope( s );
 
 	}
 
