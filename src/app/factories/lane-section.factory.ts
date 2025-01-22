@@ -234,11 +234,11 @@ export class LaneSectionFactory {
 		const outgoingDirection = LaneUtils.determineOutDirection( successor.contact );
 
 		const incomingLaneCoords = predecessor.laneSection.getLanes()
-			.filter( lane => lane.direction === incomingDirection )
+			.filter( lane => lane.matchesDirection( incomingDirection ) )
 			.map( lane => predecessor.toLaneCoord( lane ) )
 
 		const outgoingLaneCoords = successor.laneSection.getLanes()
-			.filter( lane => lane.direction === outgoingDirection )
+			.filter( lane => lane.matchesDirection( outgoingDirection ) )
 			.map( lane => successor.toLaneCoord( lane ) )
 
 		laneSection.createCenterLane( 0, TvLaneType.none, false, false );

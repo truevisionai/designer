@@ -9,7 +9,7 @@ import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
 import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
 import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
-import { TvGeometryType, TvLaneSide } from '../models/tv-common';
+import { TravelDirection, TvGeometryType, TvLaneSide } from '../models/tv-common';
 import { TvUserData } from '../models/tv-user-data';
 import { TvJunction } from '../models/junctions/tv-junction';
 import { TvVirtualJunction } from '../models/junctions/tv-virtual-junction';
@@ -411,6 +411,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			attr_id: lane.id,
 			attr_type: TvLane.typeToString( lane.type ),
 			attr_level: lane.level === true ? 'true' : 'false',
+			attr_direction: this.exportLaneDirection( lane, lane.direction ),
 			link: {},
 			width: [],
 			roadMark: [],
@@ -474,6 +475,32 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		xmlNode.lane.push( laneNode );
 
 		return laneNode;
+	}
+
+	exportLaneDirection ( lane: TvLane, direction: TravelDirection ): string {
+
+		// ASAM openDRIVE 1.8
+		// both: Bidirectional, both directions are valid.
+		// reversed: Directly opposite to the standard direction.
+		// standard: Direction is determined by the combination of left & right lane grouping
+		// 			 and the values LHT or RHT of the @rule attribute of a road.
+		if ( lane.isCenter ) {
+			return 'both';
+		}
+
+		if ( direction === TravelDirection.bidirectional ) {
+			return 'both';
+		}
+
+		if ( direction === TravelDirection.undirected ) {
+			return 'both';
+		}
+
+		if ( lane.isReversed ) {
+			return 'reversed';
+		}
+
+		return 'standard'
 	}
 
 	public writeLaneWidth ( xmlNode: XmlElement, laneWidth: TvLaneWidth ): void {

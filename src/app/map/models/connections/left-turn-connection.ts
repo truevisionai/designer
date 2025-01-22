@@ -23,7 +23,7 @@ export class LeftTurnConnection extends TvJunctionConnection {
 		const direction = LaneUtils.determineDirection( contactPoint );
 
 		const entryLanes = this.getIncomingLanes()
-			.filter( lane => lane.direction == direction )
+			.filter( lane => lane.matchesDirection( direction ) )
 			.filter( lane => lane.isDrivingLane );
 
 		if ( entryLanes.length === 0 ) return [];
@@ -41,7 +41,7 @@ export class LeftTurnConnection extends TvJunctionConnection {
 		const direction = LaneUtils.determineOutDirection( contactPoint );
 
 		const exitLanes = this.getOutgoingLanes()
-			.filter( lane => lane.direction == direction )
+			.filter( lane => lane.matchesDirection( direction ) )
 			.filter( lane => lane.isDrivingLane );
 
 		if ( exitLanes.length === 0 ) return [];
