@@ -68,7 +68,7 @@ export class CameraService {
 		const top = height / otherDivider;
 		const bottom = height / -otherDivider;
 
-		const orthographicCamera = this.createOrthographicCamera( left, right, top, bottom, near, far );
+		const orthographicCamera = this.createOrthographicCamera( left, right, top, bottom, 0.1, far );
 
 		const perspectiveCamera = new THREE.PerspectiveCamera( 50, width / height, near, far );
 		perspectiveCamera.position.set( 0, -50, 200 );
