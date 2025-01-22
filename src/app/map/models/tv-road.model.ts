@@ -130,6 +130,14 @@ export class TvRoad {
 		return this._trafficRule;
 	}
 
+	get hasRightHandTraffic (): boolean {
+		return this.trafficRule === TrafficRule.RHT;
+	}
+
+	get hasLeftHandTraffic (): boolean {
+		return this.trafficRule === TrafficRule.LHT;
+	}
+
 	set trafficRule ( value ) {
 		this._trafficRule = value;
 	}
