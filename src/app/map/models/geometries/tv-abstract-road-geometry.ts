@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Curve, MathUtils, Vector2, Vector3 } from 'three';
+import { Curve, MathUtils, Vector2, Vector3 } from "three";
 import { TvGeometryType } from '../tv-common';
 import { TvPosTheta } from '../tv-pos-theta';
 

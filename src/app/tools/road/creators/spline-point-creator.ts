@@ -29,7 +29,6 @@ export class PointCreationRoadToolStrategy extends BaseCreationStrategy<Abstract
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	validate ( event: PointerEventData, lastSelected?: any ): ValidationResult {
 
 		const spline = this.getSpline( lastSelected );

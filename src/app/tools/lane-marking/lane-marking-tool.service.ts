@@ -10,7 +10,7 @@ import { TvLaneRoadMark } from 'app/map/models/tv-lane-road-mark';
 import { LaneService } from 'app/services/lane/lane.service';
 import { LaneMarkingToolDebugger } from './lane-marking-tool.debugger';
 import { RoadService } from 'app/services/road/road.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { Log } from 'app/core/utils/log';
 import { Maths } from 'app/utils/maths';

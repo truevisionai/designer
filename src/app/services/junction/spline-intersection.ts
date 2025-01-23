@@ -4,7 +4,7 @@
 
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
-import { Box2, Vector3 } from 'three';
+import { Box2, Vector3 } from "three";
 import { SplineSection, SplineSectionFactory } from './spline-section';
 
 

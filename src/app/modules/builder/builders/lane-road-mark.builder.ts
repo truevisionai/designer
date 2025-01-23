@@ -3,8 +3,8 @@
  */
 
 import { Maths } from 'app/utils/maths';
-import * as THREE from 'three';
-import { BufferAttribute, BufferGeometry, Mesh, Object3D, Vector2, Vector3 } from 'three';
+import * as THREE from "three";
+import { BufferAttribute, BufferGeometry, Mesh, Object3D, Vector2, Vector3 } from "three";
 import { TvLaneSide, TvRoadMarkTypes } from '../../../map/models/tv-common';
 import { TvLane } from '../../../map/models/tv-lane';
 import { DOUBLE_LINE_SPACE, TvLaneRoadMark } from '../../../map/models/tv-lane-road-mark';
@@ -14,7 +14,7 @@ import { TvRoad } from '../../../map/models/tv-road.model';
 import { OdBuilderConfig } from './od-builder-config';
 import { Injectable } from '@angular/core';
 import { AssetDatabase } from 'app/assets/asset-database';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { createRoadDistance, RoadDistance } from 'app/map/road/road-distance';
 
 @Injectable()
@@ -141,7 +141,6 @@ export class LaneRoadMarkBuilder {
 
 		}
 
-		// eslint-disable-next-line max-lines-per-function
 		const processStep = ( laneDistance: number ) => {
 
 			const distance = laneSection.s + laneDistance as RoadDistance;
@@ -477,7 +476,7 @@ export class LaneRoadMarkBuilder {
 
 		}
 
-		const color = COLOR.stringToColor( roadMark.color );
+		const color = ColorUtils.stringToColor( roadMark.color );
 
 		return new THREE.MeshStandardMaterial( {
 			color: color,
@@ -510,7 +509,7 @@ export class LaneRoadMarkBuilder {
 		return width;
 	}
 
-	private getLaneBorder ( lane: TvLane, laneSectionS: any, laneSection: TvLaneSection, posTheta: TvPosTheta ): THREE.Vector2 {
+	private getLaneBorder ( lane: TvLane, laneSectionS: any, laneSection: TvLaneSection, posTheta: TvPosTheta ): Vector2 {
 
 		const cosHdgPlusPiO2 = Maths.cosHdgPlusPiO2( lane.side, posTheta.hdg );
 		const sinHdgPlusPiO2 = Maths.sinHdgPlusPiO2( lane.side, posTheta.hdg );

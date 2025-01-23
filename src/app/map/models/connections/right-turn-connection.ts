@@ -35,7 +35,6 @@ export class RightTurnConnection extends TvJunctionConnection {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	getExitCoords (): TvLaneCoord[] {
 
 		const contactPoint = this.getOutgoingRoadContact()

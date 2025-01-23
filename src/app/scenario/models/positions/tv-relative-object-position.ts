@@ -3,7 +3,7 @@
  */
 
 import { SerializedField } from 'app/core/components/serialization';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { EntityRef } from '../entity-ref';
 import { Position } from '../position';
 import { OpenScenarioVersion, OrientationType, PositionType } from '../tv-enums';

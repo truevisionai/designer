@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { AccelerationCondition } from '../models/conditions/tv-acceleration-condition';
 import { Condition } from '../models/conditions/tv-condition';
 import { DistanceCondition } from '../models/conditions/tv-distance-condition';

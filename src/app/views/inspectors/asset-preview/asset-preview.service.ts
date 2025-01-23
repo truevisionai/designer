@@ -5,14 +5,14 @@
 import { Injectable } from '@angular/core';
 import { AppConfig } from 'app/app.config';
 import { IViewportController } from 'app/objects/i-viewport-controller';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import * as THREE from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import * as THREE from "three";
+import { Color } from 'app/core/maths';
 import {
 	Box3,
 	BoxGeometry,
 	BufferGeometry,
 	Camera,
-	Color,
 	Material,
 	Mesh,
 	MeshStandardMaterial,
@@ -24,7 +24,7 @@ import {
 	TextureLoader,
 	Vector3,
 	WebGLRenderer
-} from 'three';
+} from "three";
 import { TvRoadSign } from '../../../map/models/tv-road-sign.model';
 import {
 	AMBIENT_LIGHT_COLOR,
@@ -263,7 +263,7 @@ export class AssetPreviewService {
 
 		if ( !geometry ) return;
 
-		const model = new Mesh( geometry, new MeshStandardMaterial( { color: COLOR.GRAY, wireframe: true } ) );
+		const model = new Mesh( geometry, new MeshStandardMaterial( { color: ColorUtils.GRAY, wireframe: true } ) );
 
 		this.setupScene( AssetType.GEOMETRY, model, this.scene );
 

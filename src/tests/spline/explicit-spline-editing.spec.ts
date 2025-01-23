@@ -12,7 +12,7 @@ import { ToolType } from "app/tools/tool-types.enum";
 import { breakGeometries } from "app/utils/spline.utils";
 import { ToolBarService } from "app/views/editor/tool-bar/tool-bar.service";
 import { setupTest } from "tests/setup-tests";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 
 describe( 'ExplicitSplineEditing test', () => {

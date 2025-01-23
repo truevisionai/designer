@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Material } from 'three';
+import { Material } from "three";
 
 export class TvRoadSign {
 

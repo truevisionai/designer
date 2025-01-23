@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Quaternion, Vector3 } from 'three';
+import { Quaternion, Vector3 } from "three";
 import { PlayerService, PlayerUpdateData } from '../../core/player.service';
 import { TvConsole } from '../../core/utils/console';
 import { ScenarioService } from './scenario.service';

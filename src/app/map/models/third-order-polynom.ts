@@ -3,7 +3,7 @@
  */
 
 import { Log } from 'app/core/utils/log';
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 
 export class ThirdOrderPolynom {
 
@@ -106,6 +106,14 @@ export class ThirdOrderPolynom {
 			( this.d * ds * ds * ds );
 	}
 
+	getSlope ( sOffset: number ): number {
+
+		// Difference between the query point and the start of the interval
+		const ds = sOffset - this.s;
+
+		return this.b + 2 * this.c * ds + 3 * this.d * ds ** 2;
+
+	}
 
 	copy ( value: ThirdOrderPolynom ): this {
 

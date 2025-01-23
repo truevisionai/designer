@@ -4,7 +4,7 @@
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Object3D } from 'three';
+import { Object3D } from "three";
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { FileUtils } from '../../../io/file-utils';
 import { FileService } from '../../../io/file.service';

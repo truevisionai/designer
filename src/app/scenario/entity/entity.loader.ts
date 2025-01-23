@@ -6,7 +6,7 @@ import { readXmlArray } from 'app/utils/xml-utils';
 import { ScenarioEntity } from 'app/scenario/models/entities/scenario-entity';
 import { VehicleEntity } from 'app/scenario/models/entities/vehicle-entity';
 import { TvAxle, TvAxles, TvBoundingBox, TvDimension, TvPerformance } from 'app/scenario/models/tv-bounding-box';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { XmlElement } from "../../importers/xml.element";
 import { Injectable } from '@angular/core';
 import { Asset } from 'app/assets/asset.model';

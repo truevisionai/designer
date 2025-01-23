@@ -3,7 +3,7 @@
  */
 
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { Surface } from './surface.model';
 
 describe( 'TvSurface', () => {

@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 import earcut from 'earcut';
 

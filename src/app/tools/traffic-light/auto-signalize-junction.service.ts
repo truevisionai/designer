@@ -78,7 +78,6 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	addSignalizationToRoad ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ): void {
 
 		const signals: TvRoadSignal[] = [];
@@ -126,7 +125,6 @@ export class AutoSignalizeJunctionService {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	private getSignalByType ( road: TvRoad, type: AutoSignalizationType, junction: TvJunction ): TvRoadSignal {
 
 		const roadCoord = this.findSignalPosition( road, type, junction );

@@ -3,7 +3,7 @@
  */
 
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { Position } from 'app/scenario/models/position';
 import { TvLane } from 'app/map/models/tv-lane';
 import { WorldPosition } from 'app/scenario/models/positions/tv-world-position';

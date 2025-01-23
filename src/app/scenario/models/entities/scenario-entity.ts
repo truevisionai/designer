@@ -3,7 +3,7 @@
  */
 
 import { IHasUpdate } from 'app/commands/set-value-command';
-import { Euler, MathUtils, Object3D, Vector3 } from 'three';
+import { Euler, MathUtils, Object3D, Vector3 } from "three";
 import { TvConsole } from '../../../core/utils/console';
 import { AbstractController } from '../abstract-controller';
 import { TeleportAction } from '../actions/tv-teleport-action';

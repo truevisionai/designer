@@ -3,8 +3,8 @@
  */
 
 import { SceneService } from 'app/services/scene.service';
-import * as THREE from 'three';
-import { Vector3 } from 'three';
+import * as THREE from "three";
+import { Vector3 } from 'app/core/maths';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
 /**

@@ -69,7 +69,6 @@ export class ConnectionManager {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	generateConnections ( junction: TvJunction, links: TvLink[] = [] ): void {
 
 		Log.info( 'Generating connections for junction', junction.toString() );

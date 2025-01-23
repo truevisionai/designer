@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 import { TurnType, TvContactPoint } from '../tv-common';
 import { TvJunction } from '../junctions/tv-junction';
 import { TvJunctionLaneLink } from '../junctions/tv-junction-lane-link';
@@ -353,7 +353,7 @@ export class TvJunctionConnection {
 
 		const contactPoint = this.getIncomingRoadContact();
 		const direction = LaneUtils.determineDirection( contactPoint );
-		const lanes = this.getIncomingLaneSection().getLanes().filter( lane => lane.direction == direction );
+		const lanes = this.getIncomingLaneSection().getLanes().filter( lane => lane.matchesDirection( direction ) );
 
 		if ( contactPoint == TvContactPoint.END ) {
 			return lanes.sort( DESC );
@@ -373,7 +373,7 @@ export class TvJunctionConnection {
 
 		const contactPoint = this.getOutgoingRoadContact();
 		const direction = LaneUtils.determineOutDirection( contactPoint );
-		const lanes = this.getOutgoingLaneSection().getLanes().filter( lane => lane.direction == direction );
+		const lanes = this.getOutgoingLaneSection().getLanes().filter( lane => lane.matchesDirection( direction ) );
 
 		if ( contactPoint == TvContactPoint.START ) {
 			return lanes.sort( DESC );

@@ -8,7 +8,7 @@ import { TvJunctionConnection } from "app/map/models/connections/tv-junction-con
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { TvLaneLocation } from "app/map/models/tv-common";
 import { INode } from "app/objects/i-selectable";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { BufferGeometry, Mesh, MeshBasicMaterial, Object3D } from "three";
 import { LanePositionService } from "../lane/lane-position.service";
 import { GeometryUtils } from "../surface/geometry-utils";
@@ -38,28 +38,28 @@ export class ManeuverMesh extends Mesh implements INode {
 
 	select (): void {
 
-		this.material.color.set( COLOR.RED );
+		this.material.color.set( ColorUtils.RED );
 		this.material.needsUpdate = true;
 
 	}
 
 	unselect (): void {
 
-		this.material.color.set( COLOR.GREEN );
+		this.material.color.set( ColorUtils.GREEN );
 		this.material.needsUpdate = true;
 
 	}
 
 	onMouseOver (): void {
 
-		this.material.color.set( COLOR.YELLOW );
+		this.material.color.set( ColorUtils.YELLOW );
 		this.material.needsUpdate = true;
 
 	}
 
 	onMouseOut (): void {
 
-		this.material.color.set( COLOR.GREEN );
+		this.material.color.set( ColorUtils.GREEN );
 		this.material.needsUpdate = true;
 
 	}
@@ -126,7 +126,7 @@ export class ManeuverMesh extends Mesh implements INode {
 	public static create ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): ManeuverMesh {
 
 		const material = new MeshBasicMaterial( {
-			color: COLOR.GREEN,
+			color: ColorUtils.GREEN,
 			opacity: 0.2,
 			transparent: true,
 			depthTest: false,

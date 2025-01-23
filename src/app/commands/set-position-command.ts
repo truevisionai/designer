@@ -5,7 +5,7 @@
 import { BaseCommand } from './base-command';
 import { IHasPosition } from '../objects/i-has-position';
 import { MapEvents } from 'app/events/map-events';
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 export class SetPositionCommand extends BaseCommand {
 

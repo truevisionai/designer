@@ -5,7 +5,7 @@
 import { HasDistanceValue } from "../core/interfaces/has-distance-value";
 import { TvRoad } from "../map/models/tv-road.model";
 import { TvLane } from "../map/models/tv-lane";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { SimpleControlPoint } from "./simple-control-point";
 import { DebugLine } from "./debug-line";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";

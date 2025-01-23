@@ -3,7 +3,7 @@
  */
 
 import { SceneService } from 'app/services/scene.service';
-import { Object3D } from 'three';
+import { Object3D } from "three";
 
 export class Object3DMap<K, T extends Object3D> {
 

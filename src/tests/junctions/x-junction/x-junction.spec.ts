@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
-import { Vector2 } from "three";
+import { Vector2 } from "app/core/maths"
 import { expectValidMap } from "../../base-test.spec";
 import { setupTest } from "tests/setup-tests";
 import { EXPECT_CONNECTION, expectXJunction } from "tests/expect-junction.spec";

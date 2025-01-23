@@ -7,7 +7,7 @@ import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvMapInstance } from 'app/map/services/tv-map-instance';
-import { Material, Mesh } from 'three';
+import { Material, Mesh } from "three";
 import { PropPolygon } from "../../map/prop-polygon/prop-polygon.model";
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
 import { Log } from 'app/core/utils/log';
@@ -81,7 +81,7 @@ export class MapService {
 
 	}
 
-	hasRoad ( road: TvRoad | number ): any {
+	hasRoad ( road: TvRoad | number ): boolean {
 
 		return this.map.hasRoad( road );
 
@@ -105,7 +105,7 @@ export class MapService {
 
 	}
 
-	findRoad ( id: number ): any {
+	findRoad ( id: number ): TvRoad {
 
 		// return this.map.getRoadById( id );
 
@@ -141,7 +141,7 @@ export class MapService {
 
 	}
 
-	findSplineById ( id: number ): any {
+	findSplineById ( id: number ): AbstractSpline {
 
 		const spline = this.map.getSplines().find( s => s.id === id );
 
@@ -153,13 +153,13 @@ export class MapService {
 
 	}
 
-	hasJunction ( junction: TvJunction | number ): any {
+	hasJunction ( junction: TvJunction | number ): boolean {
 
 		return this.map.hasJunction( junction );
 
 	}
 
-	findJunction ( id: number ): any {
+	findJunction ( id: number ): TvJunction {
 
 		// return this.map.getJunctionById( id );
 
@@ -360,7 +360,7 @@ export class MapService {
 
 	getRoads (): TvRoad[] { return this.map.getRoads(); }
 
-	getSplineCount (): any {
+	getSplineCount (): number {
 
 		return this.splines.length;
 

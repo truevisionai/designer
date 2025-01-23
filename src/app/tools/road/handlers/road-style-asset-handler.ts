@@ -10,7 +10,7 @@ import { AssetHandler } from "app/core/interfaces/asset-handler";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { TvMapQueries } from "app/map/queries/tv-map-queries";
 import { RoadService } from "app/services/road/road.service";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 export class RoadStyleAssetDropHandler implements AssetHandler {
 

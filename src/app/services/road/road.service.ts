@@ -10,7 +10,7 @@ import { MapService } from '../map/map.service';
 import { TvLink, TvLinkType } from 'app/map/models/tv-link';
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvLane } from 'app/map/models/tv-lane';
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';

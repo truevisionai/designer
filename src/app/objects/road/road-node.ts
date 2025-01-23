@@ -5,12 +5,11 @@
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Color, Group } from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { Color, Group } from "three";
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { ISelectable } from '../i-selectable';
-import { TvLink, TvLinkType } from 'app/map/models/tv-link';
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 
@@ -19,7 +18,7 @@ export class RoadNode extends Group implements ISelectable {
 	public static readonly tag = 'road-node';
 	public static readonly lineTag = 'road-node-line';
 
-	public static defaultColor = COLOR.MAGENTA;
+	public static defaultColor = ColorUtils.MAGENTA;
 	public static defaultWidth = 6;
 
 	public line: Line2;
@@ -55,7 +54,7 @@ export class RoadNode extends Group implements ISelectable {
 
 		this.isSelected = true;
 
-		this.material.color = new Color( COLOR.RED );
+		this.material.color = new Color( ColorUtils.RED );
 
 		this.renderOrder = 5;
 	}
@@ -71,7 +70,7 @@ export class RoadNode extends Group implements ISelectable {
 
 	onMouseOver (): void {
 
-		this.material.color = new Color( COLOR.YELLOW );
+		this.material.color = new Color( ColorUtils.YELLOW );
 		this.material.needsUpdate = true;
 
 	}

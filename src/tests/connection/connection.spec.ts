@@ -12,7 +12,7 @@ import {
 	createMockStraightConnection
 } from "tests/mocks/connection-mock.spec";
 import { setupTest } from "tests/setup-tests";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { determineTurnType } from "app/map/models/connections/connection-utils";
 
 describe( 'TvJunctionConnection', () => {

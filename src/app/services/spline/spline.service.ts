@@ -10,7 +10,7 @@ import { SplineUpdatedEvent } from 'app/events/spline/spline-updated-event';
 import { SplineCreatedEvent } from 'app/events/spline/spline-created-event';
 import { SplineRemovedEvent } from 'app/events/spline/spline-removed-event';
 import { BaseDataService } from '../../core/interfaces/data.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { Maths } from 'app/utils/maths';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { SplineControlPoint } from "../../objects/road/spline-control-point";

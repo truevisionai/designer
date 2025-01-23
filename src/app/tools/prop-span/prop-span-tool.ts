@@ -20,7 +20,7 @@ import { RoadPosition } from "app/scenario/models/positions/tv-road-position";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { PropSpanInspector } from "./prop-span-inspector";
 import { DebugState } from "../../services/debug/debug-state";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { Commands } from "app/commands/commands";
 
 export class PropSpanTool extends BaseTool<any> {

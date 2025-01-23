@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AddObjectCommand } from "./add-object-command";
 import { AddSelectCommand } from "./add-select-command";
 import { CommandHistory } from "./command-history";

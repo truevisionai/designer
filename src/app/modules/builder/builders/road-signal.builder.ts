@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import {
 	CircleGeometry,
 	CylinderGeometry,
@@ -17,7 +17,7 @@ import {
 	PlaneGeometry,
 	TextureLoader,
 	Vector3
-} from 'three';
+} from "three";
 import { ApiService } from '../../../services/api.service';
 import { TvOrientation } from 'app/map/models/tv-common';
 import { TextObjectService } from 'app/services/text-object.service';
@@ -61,13 +61,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 
 		parentObject.position.copy( position.toVector3() );
 
-		// parentObject.position.z += signal.zOffset;
-
-		parentObject.rotation.x = signal.pitch;
-
-		parentObject.rotation.y = signal.roll;
-
-		this.applyHeading( parentObject, road, signal );
+		parentObject.rotation.copy( signal.getObjectRotation() );
 
 		return parentObject;
 
@@ -120,6 +114,8 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 
 		signal.s = Maths.clamp( signal.s, 0, road.length );
 
+		const rotation = signal.getObjectRotation();
+
 		const position = this.roadService.STtoXYZ( road, signal.s, signal.t );
 
 		const textObject3d = this.textService.createFromText( signal.text, signal.value );
@@ -128,11 +124,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 
 		textObject3d.position.z += signal.zOffset;
 
-		textObject3d.rotation.x = signal.pitch;
-
-		textObject3d.rotation.y = signal.roll;
-
-		this.applyHeading( textObject3d, road, signal );
+		textObject3d.rotation.copy( rotation );
 
 		try {
 
@@ -179,7 +171,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 	private createPole ( poleHeight: number, poleRadius: number ): Object3D {
 
 		const geometry = new CylinderGeometry( poleRadius, poleRadius, poleHeight, 32 );
-		const material = new MeshBasicMaterial( { color: COLOR.LIGHTGRAY } );
+		const material = new MeshBasicMaterial( { color: ColorUtils.LIGHTGRAY } );
 
 		const pole = new Mesh( geometry, material );
 
@@ -217,7 +209,7 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 	private getSignMaterial ( signal: TvRoadSignal ): any {
 
 		const defaultMaterial = new MeshBasicMaterial( {
-			color: COLOR.MAGENTA
+			color: ColorUtils.MAGENTA
 		} );
 
 		const asset = signal?.assetGuid ? this.assetService.getAsset( signal.assetGuid ) : null;
@@ -270,30 +262,6 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 		}
 
 		return defaultMaterial;
-	}
-
-	private applyHeading ( object: Object3D, road: TvRoad, signal: TvRoadSignal ): void {
-
-		const roadCoord = road.getRoadPosition( signal.s, signal.t );
-
-		let hdg: number;
-
-		if ( signal.orientation === TvOrientation.PLUS ) {
-
-			hdg = signal.hOffset + roadCoord.hdg - Maths.PI2;
-
-		} else if ( signal.orientation === TvOrientation.MINUS ) {
-
-			hdg = signal.hOffset + roadCoord.hdg + Maths.PI2;
-
-		} else {
-
-			hdg = roadCoord.hdg;
-
-		}
-
-		object.rotation.z = hdg;
-
 	}
 
 	private addPole ( object: Object3D, poleHeight: number, poleRadius: number ): void {

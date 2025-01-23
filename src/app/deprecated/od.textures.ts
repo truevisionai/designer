@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import * as THREE from 'three';
-import { MathUtils, SRGBColorSpace, Texture } from 'three';
+import * as THREE from "three";
+import { MathUtils, SRGBColorSpace, Texture } from "three";
 import { TvLaneType } from '../map/models/tv-common';
 import { TvLane } from '../map/models/tv-lane';
 import { Maths } from "../utils/maths";

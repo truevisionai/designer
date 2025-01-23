@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector2, Vector3, Vector4 } from 'three';
+import { Vector2, Vector3, Vector4 } from "three";
 
 export class Vertex {
 	public position: Vector3;

@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { DebugDrawService } from './debug-draw.service';
 import { Box3Helper, Object3D, Vector2 } from "three";
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { DebugLine } from '../../objects/debug-line';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineType } from 'app/core/shapes/spline-type';
@@ -35,7 +35,7 @@ const LINE_ZOFFSET = 0.1;
 
 const ARROW_SIZE = 1.5;
 const ARROW_STEP = 10;
-const ARROW_COLOR = COLOR.YELLOW;
+const ARROW_COLOR = ColorUtils.YELLOW;
 
 @Injectable( {
 	providedIn: 'root'
@@ -134,7 +134,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 		if ( spline.getControlPointCount() < 2 ) return;
 
 		this.removeBorder( spline );
-		this.showBorder( spline, LINE_WIDTH, COLOR.RED );
+		this.showBorder( spline, LINE_WIDTH, ColorUtils.RED );
 
 		this.arrows.removeKey( spline );
 		this.showArrows( spline );
@@ -264,7 +264,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	showBorder ( spline: AbstractSpline, lineWidth: number = LINE_WIDTH, color: any = COLOR.CYAN ): void {
+	showBorder ( spline: AbstractSpline, lineWidth: number = LINE_WIDTH, color: any = ColorUtils.CYAN ): void {
 
 		if ( spline.getControlPointCount() < 2 ) return;
 
@@ -425,7 +425,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 			points.push( points[ 0 ] );
 		}
 
-		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH, COLOR.WHITE );
+		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH, ColorUtils.WHITE );
 
 		this.polylines.addItem( spline, line );
 

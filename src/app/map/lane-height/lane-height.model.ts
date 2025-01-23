@@ -4,6 +4,7 @@
 
 import { Maths } from "app/utils/maths";
 import { MathUtils } from "three/src/math/MathUtils";
+import { TvLane } from "../models/tv-lane";
 
 /**
 
@@ -41,9 +42,13 @@ export class TvLaneHeight {
 
 	}
 
-	get s () { return this.sOffset; }
+	get s () {
+		return this.sOffset;
+	}
 
-	set s ( value ) { this.sOffset = value; }
+	set s ( value ) {
+		this.sOffset = value;
+	}
 
 	/**
 	 * Get the linear value of the lane height at a given t
@@ -77,4 +82,106 @@ export class TvLaneHeight {
 		return new TvLaneHeight( this.sOffset, this.inner, this.outer );
 	}
 
+}
+
+
+export class LaneHeightProfile {
+
+	private height: TvLaneHeight[] = [];
+
+	constructor ( private lane: TvLane ) {
+	}
+
+	getArray (): TvLaneHeight[] {
+
+		return this.height;
+
+	}
+
+	getIndexByDistance ( sOffset: number ): number {
+
+		let res = -1;
+
+		for ( let i = 0; i < this.height.length; i++ ) {
+
+			if ( sOffset >= this.height[ i ].sOffset ) {
+
+				res = i;
+
+			} else {
+
+				break;
+
+			}
+
+		}
+
+		return res;
+
+	}
+
+	createAndAddHeight ( sOffset: number, inner: number, outer: number ): void {
+
+		this.addHeight( new TvLaneHeight( sOffset, inner, outer ) );
+
+	}
+
+	addHeight ( height: TvLaneHeight ): void {
+
+		// Center lane should not have height
+		if ( this.lane.isCenter ) return;
+
+		const index = this.getIndexByDistance( height.sOffset ) + 1;
+
+		if ( index > this.getHeightCount() ) {
+
+			this.height.push( height );
+
+		} else {
+
+			this.height[ index ] = height;
+
+		}
+
+		this.height.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+
+	}
+
+	getHeightCount (): number {
+
+		return this.height.length;
+
+	}
+
+	getHeightByIndex ( index: number ): TvLaneHeight | undefined {
+
+		if ( this.height.length > 0 && index < this.height.length ) {
+
+			return this.height[ index ];
+
+		}
+
+	}
+
+	clear (): void {
+
+		this.height.splice( 0, this.height.length );
+
+	}
+
+	getHeightValue ( sOffset: number ): TvLaneHeight {
+
+		const height = new TvLaneHeight( sOffset, 0, 0 );
+
+		const index = this.getIndexByDistance( sOffset );
+
+		if ( index >= 0 ) {
+
+			height.copyHeight( this.getHeightByIndex( index ) );
+
+		}
+
+		return height;
+
+	}
 }

@@ -9,7 +9,7 @@ import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
 import { ToolTipService, TooltipInterface } from 'app/services/debug/tool-tip.service';
 import { SceneService } from 'app/services/scene.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 
 @Injectable( {
 	providedIn: 'root'

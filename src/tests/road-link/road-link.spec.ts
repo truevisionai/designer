@@ -2,7 +2,7 @@ import { SplineTestHelper } from "app/services/spline/spline-test-helper.service
 import { TvRoad } from "../../app/map/models/tv-road.model";
 import { setupTest } from 'tests/setup-tests';
 import { TestBed } from "@angular/core/testing";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { TvContactPoint } from "app/map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 

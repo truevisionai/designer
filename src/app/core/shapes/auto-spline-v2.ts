@@ -5,7 +5,7 @@
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { AbstractSpline } from './abstract-spline';
 import { SplineType } from './spline-type';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { AutoGeometryService } from 'app/services/spline/auto-geometry.service';
 import { SplineBoundsService } from 'app/services/spline/spline-bounds.service';

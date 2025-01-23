@@ -9,7 +9,7 @@ import { LinkedDataService } from "app/core/interfaces/data.service";
 import { Tool } from "./tool";
 import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
 import { Asset } from "app/assets/asset.model";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { IDebugger } from "app/core/interfaces/debug.service";
 import { AddObjectCommand } from "app/commands/add-object-command";
 import { SelectObjectCommand } from "app/commands/select-object-command";

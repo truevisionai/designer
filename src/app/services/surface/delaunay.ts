@@ -7,7 +7,6 @@ import Delaunator from 'delaunator';
 
 export class DelaunatorHelper {
 
-	// eslint-disable-next-line max-lines-per-function
 	static createGeometry ( points: Vector2[], originalPoints: Vector3[] ): BufferGeometry {
 
 		// Convert points to a flat array for Delaunator
@@ -45,7 +44,6 @@ export class DelaunatorHelper {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	private static filterTriangles ( vertices: number[], triangles: number[], boundaryPositions: Vector2[] ): number[] {
 
 		// Check if a point is inside the boundary using a point-in-polygon test

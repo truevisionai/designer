@@ -16,7 +16,7 @@ import { TvLane } from "app/map/models/tv-lane";
 import { LaneWidthLine } from "app/modules/lane-width/objects/lane-width-line";
 import { LaneWidthPoint } from "app/modules/lane-width/objects/lane-width-point";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { LaneWidthNode } from "../objects/lane-width-node";
 import { setupLaneWidthTest, setupTest } from "tests/setup-tests";
 

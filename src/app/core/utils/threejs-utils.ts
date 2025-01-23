@@ -4,7 +4,7 @@
 
 import { TvTexture } from 'app/assets/texture/tv-texture.model';
 import { CoordinateSystem } from 'app/services/CoordinateSystem';
-import { CanvasTexture, Object3D, Vector3 } from 'three';
+import { CanvasTexture, Object3D, Vector3 } from "three";
 
 
 export class ThreeJsUtils {

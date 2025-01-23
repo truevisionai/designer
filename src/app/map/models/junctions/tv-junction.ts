@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Box2, MathUtils, Mesh, Vector2, Vector3 } from 'three';
+import { Box2, MathUtils, Mesh, Vector2, Vector3 } from "three";
 import { Maths } from '../../../utils/maths';
 import { TvJunctionConnection } from '../connections/tv-junction-connection';
 import { TvJunctionController } from './tv-junction-controller';

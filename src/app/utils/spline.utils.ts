@@ -13,7 +13,7 @@ import {
 	ModelNotFoundException
 } from "app/exceptions/exceptions";
 import { RoadUtils } from "./road.utils";
-import { Vector2 } from "three";
+import { Vector2 } from "app/core/maths"
 import { TvAbstractRoadGeometry } from "../map/models/geometries/tv-abstract-road-geometry";
 import { TvContactPoint } from "app/map/models/tv-common";
 import { LinkFactory } from "app/map/models/link-factory";
@@ -151,7 +151,6 @@ export class SplineUtils {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	static addSegment ( spline: AbstractSpline, sOffset: number, segment: TvRoad | TvJunction | null ): void {
 
 		spline.addSegment( sOffset, segment );

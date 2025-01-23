@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { Time } from '../../../core/time';
 import { Maths } from '../../../utils/maths';
 import { ScenarioEntity } from '../entities/scenario-entity';

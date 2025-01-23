@@ -13,7 +13,7 @@ import { TvMap } from './tv-map.model';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvRoad } from './tv-road.model';
 import { RoadService } from 'app/services/road/road.service';
-import { Vector2 } from 'three';
+import { Vector2 } from 'app/core/maths';
 
 describe( 'OpenDrive Model', () => {
 

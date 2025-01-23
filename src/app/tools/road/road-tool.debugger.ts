@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { BaseDebugger } from 'app/core/interfaces/base-debugger';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { DebugState } from 'app/services/debug/debug-state';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { SplineDebugService } from "../../services/debug/spline-debug.service";
 import { Environment } from "../../core/utils/environment";
 
@@ -87,7 +87,7 @@ export class RoadToolDebugger extends BaseDebugger<AbstractSpline> {
 		this.splineDebugger.removeNodes( spline );
 		this.splineDebugger.removeBoundPoints( spline );
 
-		this.splineDebugger.showBorder( spline, LINE_WIDTH, COLOR.RED );
+		this.splineDebugger.showBorder( spline, LINE_WIDTH, ColorUtils.RED );
 		this.splineDebugger.showArrows( spline );
 		this.splineDebugger.showReferenceLine( spline );
 		this.splineDebugger.showCurvature( spline );

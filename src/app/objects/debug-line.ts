@@ -3,15 +3,15 @@
  */
 
 import { INode } from 'app/objects/i-selectable';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Color, Vector2, Vector3 } from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { Color, Vector2, Vector3 } from 'app/core/maths';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
-const DEFAULT_COLOR = COLOR.CYAN;
-const HOVERED_COLOR = COLOR.YELLOW;
-const SELECTED_COLOR = COLOR.RED;
+const DEFAULT_COLOR = ColorUtils.CYAN;
+const HOVERED_COLOR = ColorUtils.YELLOW;
+const SELECTED_COLOR = ColorUtils.RED;
 
 export class DebugLine<T> extends Line2 implements INode {
 
@@ -69,7 +69,7 @@ export class DebugLine<T> extends Line2 implements INode {
 
 	}
 
-	static create ( points: Vector3[], width: number = 2, color: any = COLOR.CYAN ): DebugLine<any> {
+	static create ( points: Vector3[], width: number = 2, color: any = ColorUtils.CYAN ): DebugLine<any> {
 
 		const geometry = new LineGeometry().setPositions( points.flatMap( p => [ p.x, p.y, p.z ] ) );
 
@@ -78,7 +78,7 @@ export class DebugLine<T> extends Line2 implements INode {
 		return new DebugLine( null, geometry, material );
 	}
 
-	static getMaterial ( color: any = COLOR.CYAN, width: number = 2 ): LineMaterial {
+	static getMaterial ( color: any = ColorUtils.CYAN, width: number = 2 ): LineMaterial {
 
 		return new LineMaterial( {
 			color: color,

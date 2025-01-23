@@ -4,7 +4,7 @@
 
 import { PointerEventData, PointerMoveData } from 'app/events/pointer-event-data';
 import { TextObject } from 'app/objects/text-object';
-import * as THREE from 'three';
+import * as THREE from "three";
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 

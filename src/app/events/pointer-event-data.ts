@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Camera, Face, Intersection, Object3D, Vector2, Vector3 } from 'three';
+import { Camera, Face, Intersection, Object3D, Vector2, Vector3 } from "three";
 
 export class BaseEventData {
 	object: Object3D;

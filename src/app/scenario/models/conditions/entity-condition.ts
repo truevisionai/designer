@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { ScenarioEntity } from '../entities/scenario-entity';
 import { Position } from '../position';
 import { ConditionCategory, Rule, TriggeringRule } from '../tv-enums';

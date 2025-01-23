@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@angular/core';
-import { MathUtils, Vector3 } from 'three';
+import { MathUtils, Vector3 } from "three";
 import { StoryboardEvent } from '../services/scenario-director.service';
 // import { ScenarioInstance } from '../services/scenario-instance';
 import { ScenarioEntity } from './entities/scenario-entity';

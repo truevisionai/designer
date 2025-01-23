@@ -29,7 +29,6 @@ export function determineTurnType ( entry: TvLaneCoord | TvRoadCoord, exit: TvLa
 	return findTurnType( entryPosition.position, exitPosition.position, entryPosition.normalizedHdg );
 }
 
-// eslint-disable-next-line max-lines-per-function
 function findTurnType ( entry: Vector3, exit: Vector3, entryHeading: number ): TurnType {
 
 	// Create vectors for positions of A and B
@@ -80,7 +79,6 @@ function findTurnType ( entry: Vector3, exit: Vector3, entryHeading: number ): T
 }
 
 
-// eslint-disable-next-line max-lines-per-function
 function determineConnectionType ( incomingCoord: TvLaneCoord, outgoingCoord: TvLaneCoord ): string {
 
 	const incomingLaneId = incomingCoord.lane.id;

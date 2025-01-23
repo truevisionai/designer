@@ -9,7 +9,7 @@ import { TvRoad } from '../tv-road.model';
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RoadService } from 'app/services/road/road.service';
-import { Vector2 } from 'three';
+import { Vector2 } from 'app/core/maths';
 
 describe( 'TvLineGeometry', () => {
 

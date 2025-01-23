@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { RoadNode } from 'app/objects/road/road-node';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { RoadToolHelper } from 'app/tools/road/road-tool-helper.service';
-import { Vector2 } from 'three';
+import { Vector2 } from 'app/core/maths';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 import { setupTest } from 'tests/setup-tests';
 

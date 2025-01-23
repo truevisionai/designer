@@ -4,8 +4,8 @@
 
 import { Type } from '@angular/core';
 import { ISelectable } from 'app/objects/i-selectable';
-import * as THREE from 'three';
-import { BufferGeometry, Material } from 'three';
+import * as THREE from "three";
+import { BufferGeometry, Material } from "three";
 
 export interface IComponent {
 	data: any;

@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { SplineControlPoint } from "../../../objects/road/spline-control-point";
 import { PointerEventData } from "../../../events/pointer-event-data";
 import { Commands } from "../../../commands/commands";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AbstractSpline } from "../../../core/shapes/abstract-spline";
 import { BaseDragHandler } from "app/core/drag-handlers/base-drag-handler";
 import { RoadTangentPoint } from "app/objects/road/road-tangent-point";

@@ -8,7 +8,7 @@
 
 import { AbstractSpline } from "../../app/core/shapes/abstract-spline";
 import { SplineType } from 'app/core/shapes/spline-type';
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { SplineFactory } from 'app/services/spline/spline.factory';
 
 xdescribe( 'ExplicitSpline Test', () => {

@@ -13,7 +13,7 @@ import { PointMarkingControlPoint } from "./objects/point-marking-object";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Asset, AssetType } from "app/assets/asset.model";
 import { PointerEventData } from "app/events/pointer-event-data";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AssetManager } from "app/assets/asset.manager";
 import { PointMarkingCreationStrategy } from "./point-marking-creation-strategy";
 import { ValidationPassed } from "app/core/interfaces/creation-strategy";

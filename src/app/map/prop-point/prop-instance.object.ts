@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Object3D, Vector3 } from 'three';
+import { Object3D, Vector3 } from "three";
 import { SerializedAction, SerializedField } from '../../core/components/serialization';
 import { AssetDatabase } from '../../assets/asset-database';
 import { CommandHistory } from 'app/commands/command-history';

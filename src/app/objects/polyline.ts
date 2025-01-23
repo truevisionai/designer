@@ -2,8 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { BufferAttribute, BufferGeometry, Line, LineBasicMaterial } from "three";
 import { MAX_CTRL_POINTS } from '../core/shapes/spline-config';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 
@@ -22,7 +22,7 @@ export class Polyline {
 
 		this.curveType = 'polyline';
 
-		this.mesh = new Line( geometry, new LineBasicMaterial( { color: COLOR.WHITE, opacity: 0.35, linewidth: 2 } ) );
+		this.mesh = new Line( geometry, new LineBasicMaterial( { color: ColorUtils.WHITE, opacity: 0.35, linewidth: 2 } ) );
 
 		this.mesh.name = 'polyline';
 

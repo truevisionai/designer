@@ -12,7 +12,7 @@ import {
 	Object3D,
 	RepeatWrapping,
 	Texture,
-} from 'three';
+} from "three";
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvMaterialService } from 'app/assets/material/tv-material.service';

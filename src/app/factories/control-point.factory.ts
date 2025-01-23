@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { AbstractControlPoint } from "../objects/abstract-control-point";
 import { SplineControlPoint } from "../objects/road/spline-control-point";
 import { Injectable } from "@angular/core";

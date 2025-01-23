@@ -8,7 +8,7 @@ import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/sel
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Position } from 'app/scenario/models/position';
 import { SelectionService } from './selection.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { ViewControllerService } from "../views/editor/viewport/view-controller.service";
 import { CursorService } from 'app/services/editor/cursor.service';
 

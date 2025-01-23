@@ -9,8 +9,8 @@ import { TvLane } from 'app/map/models/tv-lane';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadObjectService } from '../../map/road-object/road-object.service';
-import * as THREE from 'three';
-import { Vector3 } from 'three';
+import * as THREE from "three";
+import { Vector3 } from 'app/core/maths';
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
@@ -283,10 +283,10 @@ export class ParkingRoadToolService {
 	// 	const diagonalDistance = Math.sqrt( width * width + height * height );
 	// 	const numberOfLines = Math.floor( diagonalDistance / gap );
 
-	// 	const topLeft = new THREE.Vector3( -width / 2, height / 2, 0 );
-	// 	const topRight = new THREE.Vector3( width / 2, height / 2, 0 );
-	// 	const bottomLeft = new THREE.Vector3( -width / 2, -height / 2, 0 );
-	// 	const bottomRight = new THREE.Vector3( width / 2, -height / 2, 0 );
+	// 	const topLeft = new Vector3( -width / 2, height / 2, 0 );
+	// 	const topRight = new Vector3( width / 2, height / 2, 0 );
+	// 	const bottomLeft = new Vector3( -width / 2, -height / 2, 0 );
+	// 	const bottomRight = new Vector3( width / 2, -height / 2, 0 );
 
 	// 	// Function to interpolate between two points
 	// 	function interpolate ( start: Vector3, end: Vector3, t: number ) {
@@ -463,8 +463,8 @@ export class ParkingRoadToolService {
 		var centerZ = ( start.z + end.z ) / 2;
 
 		// Calculate points C and D
-		var topLeft = new THREE.Vector3( centerX - width / 2, centerY + height / 2, centerZ );
-		var bottomRight = new THREE.Vector3( centerX + width / 2, centerY - height / 2, centerZ );
+		var topLeft = new Vector3( centerX - width / 2, centerY + height / 2, centerZ );
+		var bottomRight = new Vector3( centerX + width / 2, centerY - height / 2, centerZ );
 
 		this.addRoad( this.createEntryRoad( start, topLeft ) );
 		this.addRoad( this.createExitRoad( end, bottomRight ) );
@@ -474,8 +474,8 @@ export class ParkingRoadToolService {
 
 		for ( let i = singleRoadWidth * 0.5; i <= height - ( singleRoadWidth * 0.5 ); i += singleRoadWidth ) {
 
-			const start = new THREE.Vector3( ( centerX - width / 2 ) + sideRoadWidth, centerY + height / 2 - i, centerZ );
-			const end = new THREE.Vector3( ( centerX + width / 2 ) - sideRoadWidth, centerY + height / 2 - i, centerZ );
+			const start = new Vector3( ( centerX - width / 2 ) + sideRoadWidth, centerY + height / 2 - i, centerZ );
+			const end = new Vector3( ( centerX + width / 2 ) - sideRoadWidth, centerY + height / 2 - i, centerZ );
 
 			const road = this.createParkingRoad( [ start, end ] );
 
@@ -485,7 +485,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createEntryRoad ( start: THREE.Vector3, end: THREE.Vector3 ): any {
+	createEntryRoad ( start: Vector3, end: Vector3 ): any {
 
 		const points = [ start, end ];
 
@@ -505,7 +505,7 @@ export class ParkingRoadToolService {
 
 	}
 
-	createExitRoad ( start: THREE.Vector3, end: THREE.Vector3 ): any {
+	createExitRoad ( start: Vector3, end: Vector3 ): any {
 
 		const points = [ start, end ];
 

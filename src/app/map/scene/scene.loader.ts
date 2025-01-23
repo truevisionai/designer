@@ -44,7 +44,7 @@ import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Surface } from 'app/map/surface/surface.model';
 import { XMLParser } from 'fast-xml-parser';
-import { Euler, Object3D, Vector2, Vector3 } from 'three';
+import { Euler, Object3D, Vector2, Vector3 } from "three";
 import { AssetDatabase } from '../../assets/asset-database';
 import { TvConsole } from '../../core/utils/console';
 import { SnackBar } from '../../services/snack-bar.service';
@@ -366,7 +366,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return spline;
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	parseSplineSegments ( xml: XmlElement ): Map<number, NewSegment> {
 
 		const segments = new Map<number, NewSegment>();
@@ -732,7 +731,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	// eslint-disable-next-line max-lines-per-function
 	private importPropCurve ( xml: XmlElement ): PropCurve {
 
 		const guid = xml.attr_guid;

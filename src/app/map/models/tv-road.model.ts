@@ -5,7 +5,7 @@
 import { GameObject } from 'app/objects/game-object';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Maths } from 'app/utils/maths';
-import { Box3, Group, MathUtils, Vector2, Vector3 } from 'three';
+import { Box3, Group, MathUtils, Vector2, Vector3 } from "three";
 import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
@@ -128,6 +128,14 @@ export class TvRoad {
 
 	get trafficRule (): TrafficRule {
 		return this._trafficRule;
+	}
+
+	get hasRightHandTraffic (): boolean {
+		return this.trafficRule === TrafficRule.RHT;
+	}
+
+	get hasLeftHandTraffic (): boolean {
+		return this.trafficRule === TrafficRule.LHT;
 	}
 
 	set trafficRule ( value ) {
@@ -428,6 +436,12 @@ export class TvRoad {
 	getLateralProfile (): TvLateralProfile {
 
 		return this.lateralProfile;
+
+	}
+
+	getSurfaceNormal ( s: number, t: number ): Vector3 {
+
+		return RoadGeometryService.instance.getRoadSurfaceNormal( this, s, t );
 
 	}
 

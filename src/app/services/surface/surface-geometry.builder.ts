@@ -5,7 +5,7 @@
 import earcut from 'earcut';
 
 import { Injectable } from '@angular/core';
-import { Vector3, BufferGeometry, BufferAttribute } from 'three';
+import { Vector3, BufferGeometry, BufferAttribute } from "three";
 
 @Injectable( {
 	providedIn: 'root'

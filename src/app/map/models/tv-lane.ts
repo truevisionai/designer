@@ -3,10 +3,9 @@
  */
 
 import { GameObject } from 'app/objects/game-object';
-import { Copiable } from 'app/services/property-copy.service';
 import { IHasUpdate } from 'app/commands/set-value-command';
 import { ISelectable } from 'app/objects/i-selectable';
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 import { MeshGeometryData } from './mesh-geometry.data';
 import {
 	TravelDirection,
@@ -24,18 +23,16 @@ import { TvLaneRoadMark, TvRoadMarkLaneChange } from './tv-lane-road-mark';
 import { TvLaneSection } from './tv-lane-section';
 import { TvLaneSpeed } from './tv-lane-speed';
 import { TvLaneVisibility } from './tv-lane-visibility';
-import { TvLaneWidth } from './tv-lane-width';
-import { TvUtils } from './tv-utils';
-import { TvLaneHeight } from '../lane-height/lane-height.model';
+import { TvLaneWidth, TvLaneWidthProfile } from './tv-lane-width';
+import { LaneHeightProfile, TvLaneHeight } from '../lane-height/lane-height.model';
 import { OrderedMap } from "../../core/models/ordered-map";
 import { TvRoad } from './tv-road.model';
 import { TvLaneCoord } from './tv-lane-coord';
 import { LaneUtils } from 'app/utils/lane.utils';
-import { Maths } from "../../utils/maths";
-
+import { TrafficRule } from './traffic-rule';
 import { createLaneDistance } from '../road/road-distance';
 
-export class TvLane implements ISelectable, Copiable, IHasUpdate {
+export class TvLane implements ISelectable, IHasUpdate {
 
 	public readonly uuid: string;
 
@@ -61,11 +58,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 */
 	public level: boolean = false;
 
-	private widths: TvLaneWidth[] = [];
+	private widthProfile: TvLaneWidthProfile;
 
-	public borders: TvLaneBorder[] = [];
+	private borders: TvLaneBorder[] = [];
 
-	public roadMarks = new OrderedMap<TvLaneRoadMark>();
+	private _roadMarks = new OrderedMap<TvLaneRoadMark>();
 
 	public materials: TvLaneMaterial[] = [];
 
@@ -75,7 +72,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	public access: TvLaneAccess[] = [];
 
-	public height: TvLaneHeight[] = [];
+	private heightProfile: LaneHeightProfile;
 
 	public threeMaterialGuid: string;
 
@@ -102,16 +99,10 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		this.type = type;
 		this.level = level;
 		this._laneSection = laneSection;
+		this.widthProfile = new TvLaneWidthProfile( this );
+		this.heightProfile = new LaneHeightProfile( this );
 
-		if ( this.isLeft ) {
-			this.direction = TravelDirection.backward;
-		} else if ( this.isRight ) {
-			this.direction = TravelDirection.forward;
-		} else if ( this.isCenter ) {
-			this.direction = TravelDirection.undirected;
-		} else {
-			this.direction = TravelDirection.undirected;
-		}
+		this.direction = this.detectDirection();
 
 	}
 
@@ -129,6 +120,66 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	isCarriageWay (): boolean {
 		return this.type != TvLaneType.sidewalk && this.type != TvLaneType.curb;
+	}
+
+	/**
+	 * Returns true if the lane is for traffic participants, flow of traffic
+	 */
+	get isTrafficLane (): boolean {
+		return (
+			this.type === TvLaneType.driving ||
+			this.type === TvLaneType.biking ||
+			this.type === TvLaneType.slipLane ||
+			this.type === TvLaneType.shared ||
+			this.type === TvLaneType.bidirectional ||
+			this.type === TvLaneType.entry ||
+			this.type === TvLaneType.exit ||
+			this.type === TvLaneType.onRamp ||
+			this.type === TvLaneType.offRamp ||
+			this.type === TvLaneType.connectingRamp ||
+			this.type === TvLaneType.bus ||
+			this.type === TvLaneType.taxi ||
+			this.type === TvLaneType.HOV
+		)
+	}
+
+	get roadMarks (): OrderedMap<TvLaneRoadMark> {
+		return this._roadMarks;
+	}
+
+	set roadMarks ( value ) {
+		this._roadMarks = value;
+	}
+
+	get height (): TvLaneHeight[] {
+		return this.heightProfile.getArray();
+	}
+
+	get isForward (): boolean {
+		return this.direction === TravelDirection.forward;
+	}
+
+	get isReversed (): boolean {
+
+		if ( this.isCenter ) return false;
+
+		if ( this.laneSection.road.hasRightHandTraffic ) {
+
+			if ( this.isRight && this.isBackward ) return true;
+			if ( this.isLeft && this.isForward ) return true;
+
+		} else {
+
+			if ( this.isRight && this.isForward ) return true;
+			if ( this.isLeft && this.isBackward ) return true;
+
+		}
+
+		return false;
+	}
+
+	get isBackward (): boolean {
+		return this.direction === TravelDirection.backward;
 	}
 
 	get isDrivingLane (): boolean {
@@ -391,31 +442,15 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	addHeightRecord ( sOffset: number, inner: number, outer: number ): void {
-
-		this.addHeightRecordInstance( new TvLaneHeight( sOffset, inner, outer ) );
-
+		this.heightProfile.createAndAddHeight( sOffset, inner, outer );
 	}
 
 	addHeightRecordInstance ( height: TvLaneHeight ): void {
-
-		const index = this.checkLaneHeightInterval( height.sOffset ) + 1;
-
-		if ( index > this.getLaneHeightCount() ) {
-
-			this.height.push( height );
-
-		} else {
-
-			this.height[ index ] = height;
-
-		}
-
-		this.height.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
-
+		this.heightProfile.addHeight( height );
 	}
 
 	clearLaneHeight (): void {
-		this.height.splice( 0, this.height.length );
+		this.heightProfile.clear();
 	}
 
 	clearRoadMarks (): void {
@@ -423,11 +458,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	clearLaneWidth (): void {
-		this.widths.splice( 0, this.widths.length );
+		this.widthProfile.clear();
 	}
 
 	getWidthArray (): TvLaneWidth[] {
-		return this.widths;
+		return this.widthProfile.getWidthArray();
 	}
 
 	getLaneMaterial ( index: any ): TvLaneMaterial {
@@ -466,17 +501,12 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return null;
 	}
 
-	getLaneHeight ( index: any ): TvLaneHeight {
-
-		if ( this.height.length > 0 && index < this.height.length ) {
-			return this.height[ index ];
-		}
-
-		return null;
+	getLaneHeight ( index: number ): TvLaneHeight {
+		return this.heightProfile.getHeightByIndex( index );
 	}
 
 	getLaneWidthCount (): number {
-		return this.widths.length;
+		return this.widthProfile.getWidthCount();
 	}
 
 	getLaneMaterialCount (): number {
@@ -496,7 +526,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	getLaneHeightCount (): number {
-		return this.height.length;
+		return this.heightProfile.getHeightCount();
 	}
 
 	checkLaneMaterialInterval ( sCheck: number ): number {
@@ -583,27 +613,6 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 		return res;
 	}
 
-	checkLaneHeightInterval ( s_value: number ): number {
-
-		let res = -1;
-
-		for ( let i = 0; i < this.height.length; i++ ) {
-
-			if ( s_value >= this.height[ i ].sOffset ) {
-
-				res = i;
-
-			} else {
-
-				break;
-
-			}
-
-		}
-
-		return res;
-	}
-
 	/**
 	 * Evaluate the record and the return the width value
 	 * @param sCheck
@@ -628,21 +637,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	 * @param sOffset
 	 */
 	getHeightValue ( sOffset: number ): TvLaneHeight {
-
-		const laneHeight = new TvLaneHeight( sOffset, 0, 0 );
-
-		const index = this.checkLaneHeightInterval( sOffset );
-
-		if ( index >= 0 ) {
-
-			const currentHeight = this.getLaneHeight( index );
-
-			laneHeight.inner = currentHeight.inner;
-			laneHeight.outer = currentHeight.outer;
-
-		}
-
-		return laneHeight;
+		return this.heightProfile.getHeightValue( sOffset );
 	}
 
 	/**
@@ -719,7 +714,7 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getLaneWidthAt ( s: number ): TvLaneWidth {
 
-		return TvUtils.checkIntervalArray( this.widths, s );
+		return this.widthProfile.getWidthAt( s );
 
 	}
 
@@ -736,33 +731,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	addWidthRecordInstance ( laneWidth: TvLaneWidth ): void {
-
-		const index = this.widths.findIndex( width => Maths.approxEquals( width.s, laneWidth.s ) );
-
-		if ( index >= 0 ) {
-			this.widths[ index ].copyCoefficients( laneWidth );
-		} else {
-			this.widths.push( laneWidth );
-		}
-
-		this.sortWidth();
-
+		this.widthProfile.addWidthRecord( laneWidth );
 	}
 
 	removeWidthRecordInstance ( laneWidth: TvLaneWidth ): void {
-
-		this.widths.splice( this.widths.indexOf( laneWidth ), 1 );
-		this.sortWidth();
-
-	}
-
-	copyProperties?(): Object {
-
-		return {
-			travelDirection: this.direction,
-			type: this.type,
-			level: this.level,
-		};
+		this.widthProfile.removeWidthRecord( laneWidth );
 	}
 
 	removeRoadMark ( roadmark: TvLaneRoadMark ): void {
@@ -796,7 +769,11 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	matchesDirection ( direction: TravelDirection ): boolean {
-		return this.direction === direction;
+
+		if ( this.isCenter ) return false
+		if ( this.isTrafficLane ) return this.direction === direction;
+
+		return true;
 	}
 
 	toLaneCoord ( distance: number | TvContactPoint ): TvLaneCoord {
@@ -827,24 +804,15 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 	}
 
 	updateWidthCoefficients (): void {
-		TvUtils.computeCoefficients( this.widths, this.laneSection.getLength() );
+		this.widthProfile.updateCoefficients();
 	}
 
 	removeInvalidWidths (): void {
-
-		for ( let i = 0; i < this.widths.length; i++ ) {
-
-			const width = this.widths[ i ];
-
-			// Remove nodes that are out of bounds
-			if ( width.s < 0 || width.s > this.laneSection.getLength() ) {
-				this.widths.splice( i, 1 );
-			}
-		}
+		this.widthProfile.removeInvalidWidths();
 	}
 
 	sortWidth (): void {
-		this.widths.sort( ( a, b ) => a.s > b.s ? 1 : -1 );
+		this.widthProfile.sortWidth();
 	}
 
 	addWidthRecordAtEnd ( width: number ): void {
@@ -857,6 +825,27 @@ export class TvLane implements ISelectable, Copiable, IHasUpdate {
 
 	getType (): TvLaneType {
 		return this.type;
+	}
+
+	private detectDirection (): TravelDirection | undefined {
+
+		if ( this.isCenter ) return undefined;
+
+		const trafficRule = this.laneSection?.road?.trafficRule || TrafficRule.RHT;
+
+		if ( this.isTrafficLane && trafficRule === TrafficRule.RHT ) {
+
+			return this.isLeft ? TravelDirection.backward : TravelDirection.forward;
+
+		} else if ( this.isTrafficLane && trafficRule === TrafficRule.LHT ) {
+
+			return this.isRight ? TravelDirection.backward : TravelDirection.forward;
+
+		} else {
+
+			return TravelDirection.undirected;
+
+		}
 	}
 }
 

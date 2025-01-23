@@ -1,7 +1,7 @@
 /*
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { PointerEventData } from '../../events/pointer-event-data';
 import { TvRoadSignal } from '../../map/road-signal/tv-road-signal.model';
 import { TvRoad } from '../../map/models/tv-road.model';

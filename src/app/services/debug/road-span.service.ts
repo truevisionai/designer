@@ -8,8 +8,8 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { DebugLine } from '../../objects/debug-line';
 import { DebugDrawService } from './debug-draw.service';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
-import { COLOR } from 'app/views/shared/utils/colors.service';
-import { Vector2, Vector3 } from 'three';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
 @Injectable( {

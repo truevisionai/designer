@@ -6,7 +6,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvPosTheta } from 'app/map/models/tv-pos-theta';
 import { TvRoad } from 'app/map/models/tv-road.model';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { ViewportEvents } from 'app/events/viewport-events';
 import { RoadService } from "./road/road.service";
 import { TvLane } from 'app/map/models/tv-lane';

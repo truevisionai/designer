@@ -8,7 +8,7 @@ import { TvLane } from "app/map/models/tv-lane";
 import { DebugState } from "app/services/debug/debug-state";
 import { TvLaneHeight } from "../../map/lane-height/lane-height.model";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
-import { COLOR } from "app/views/shared/utils/colors.service";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { Object3DArrayMap } from "app/core/models/object3d-array-map";
 import { Object3D } from "three";
@@ -158,7 +158,7 @@ export class LaneHeightDebugService extends BaseLaneDebugService<TvLaneHeight> {
 
 		}
 
-		const node = this.debugDrawService.createLaneWidthLine( height, laneCoord, COLOR.CYAN, 8 );
+		const node = this.debugDrawService.createLaneWidthLine( height, laneCoord, ColorUtils.CYAN, 8 );
 
 		this.nodeCache.set( height, node );
 

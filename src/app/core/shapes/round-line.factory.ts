@@ -5,7 +5,7 @@
 import { TvAbstractRoadGeometry } from 'app/map/models/geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { TvLineGeometry } from 'app/map/models/geometries/tv-line-geometry';
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 
 

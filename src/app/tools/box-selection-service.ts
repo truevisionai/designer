@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import { SelectionHelper } from 'three/examples/jsm/interactive/SelectionHelper';
-import { Camera, Mesh } from 'three';
+import { Camera, Mesh } from "three";
 import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { RendererService } from 'app/renderer/renderer.service';

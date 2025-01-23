@@ -5,7 +5,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { CameraService } from 'app/renderer/camera.service';
 import { CanvasService } from 'app/renderer/canvas.service';
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'app/core/maths';
 
 export interface TooltipInterface {
 	id: number;

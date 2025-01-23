@@ -2,11 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Vector2 } from 'three';
+import { Vector2 } from 'app/core/maths';
 import { TvAbstractRoadGeometry } from './geometries/tv-abstract-road-geometry';
 import { TvArcGeometry } from './geometries/tv-arc-geometry';
 import { TvLineGeometry } from './geometries/tv-line-geometry';
-import { TvParamPoly3Geometry } from './geometries/tv-param-poly3-geometry';
+import { PRANGE, TvParamPoly3Geometry } from './geometries/tv-param-poly3-geometry';
 import { TvPoly3Geometry } from './geometries/tv-poly3-geometry';
 import { TvSpiralGeometry } from './geometries/tv-spiral-geometry';
 import { TvUtils } from './tv-utils';
@@ -55,7 +55,7 @@ export class TvPlaneView {
 		return geometry;
 	}
 
-	addGeometrySpiral ( s: any, x: any, y: any, hdg: any, length: any, curvStart: any, curvEnd: any ): void {
+	addGeometrySpiral ( s: number, x: number, y: number, hdg: number, length: number, curvStart: number, curvEnd: number ): void {
 
 		// const geometry = new ODGeometry();
 		// geometry.spiral = new OdSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd );
@@ -63,7 +63,7 @@ export class TvPlaneView {
 		this.geometries.push( new TvSpiralGeometry( s, x, y, hdg, length, curvStart, curvEnd ) );
 	}
 
-	addGeometryArc ( s: any, x: any, y: any, hdg: any, length: any, curvature: number ): TvArcGeometry {
+	addGeometryArc ( s: number, x: number, y: number, hdg: number, length: number, curvature: number ): TvArcGeometry {
 
 		const geometry = new TvArcGeometry( s, x, y, hdg, length, curvature );
 
@@ -72,7 +72,7 @@ export class TvPlaneView {
 		return geometry;
 	}
 
-	addGeometryPoly3 ( s: any, x: any, y: any, hdg: any, length: any, a: any, b: any, c: any, d: any ): void {
+	addGeometryPoly3 ( s: number, x: number, y: number, hdg: number, length: number, a: number, b: number, c: number, d: number ): void {
 
 		this.geometries.push( new TvPoly3Geometry( s, x, y, hdg, length, a, b, c, d ) );
 
@@ -84,13 +84,13 @@ export class TvPlaneView {
 
 	}
 
-	addGeometryParamPoly3 ( s: any, x: any, y: any, hdg: any, length: any, aU: any, bU: any, cU: any, dU: any, aV: any, bV: any, cV: any, dV: any, pRange?: any): void {
+	addGeometryParamPoly3 ( s: number, x: number, y: number, hdg: number, length: number, aU: number, bU: number, cU: number, dU: number, aV: number, bV: number, cV: number, dV: number, pRange?: PRANGE ): void {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
 	}
 
-	addGeometryParamPoly ( s: any, x: any, y: any, hdg: any, length: any, aU: any, bU: any, cU: any, dU: any, aV: any, bV: any, cV: any, dV: any, pRange?: any): void {
+	addGeometryParamPoly ( s: number, x: number, y: number, hdg: number, length: number, aU: number, bU: number, cU: number, dU: number, aV: number, bV: number, cV: number, dV: number, pRange?: PRANGE ): void {
 
 		this.geometries.push( new TvParamPoly3Geometry( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange ) );
 
@@ -112,7 +112,7 @@ export class TvPlaneView {
 		return total;
 	}
 
-	distance ( pos: Vector2, x: any, y: any ): number {
+	distance ( pos: Vector2, x: number, y: number ): number {
 
 		return Math.sqrt( ( x - pos.x ) * ( x - pos.x ) + ( y - pos.y ) * ( y - pos.y ) );
 

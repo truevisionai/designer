@@ -8,7 +8,7 @@ import { TvVirtualJunction } from 'app/map/models/junctions/tv-virtual-junction'
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Injectable } from '@angular/core';
 import { AbstractFactory } from "../core/interfaces/abstract-factory";
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { Asset } from 'app/assets/asset.model';
 import { MapService } from 'app/services/map/map.service';
 import { TvJunctionType } from 'app/map/models/junctions/tv-junction-type';

@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { MapValidatorService } from '../../app/services/map/map-validator.service';
-import { Vector2 } from 'three';
+import { Vector2 } from 'app/core/maths';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { HttpClientModule } from '@angular/common/http';
 import { MapService } from 'app/services/map/map.service';

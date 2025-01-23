@@ -3,7 +3,7 @@
  */
 
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { ToolType } from '../tool-types.enum';
 import { BaseTool } from '../base-tool';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
@@ -14,7 +14,7 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Log } from 'app/core/utils/log';
 import { TvLaneType } from "../../map/models/tv-common";
 import { RampToolHelper } from './road-ramp.helper';
-import { COLOR } from 'app/views/shared/utils/colors.service';
+import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Commands } from 'app/commands/commands';
 
@@ -263,7 +263,7 @@ export class RoadRampTool extends BaseTool<any> {
 
 		if ( !this.startLine ) {
 
-			this.startLine = this.helper.debug.createLaneWidthLine( null, position, COLOR.CYAN, 8 );
+			this.startLine = this.helper.debug.createLaneWidthLine( null, position, ColorUtils.CYAN, 8 );
 
 			SceneService.addToolObject( this.startLine );
 

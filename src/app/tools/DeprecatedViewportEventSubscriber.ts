@@ -2,7 +2,7 @@ import { KeyboardEvents } from "app/events/keyboard-events";
 import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
 import { AppService } from "app/services/app.service";
 import { Subscription } from "rxjs";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 
 
 export abstract class DeprecatedViewportEventSubscriber {

@@ -7,7 +7,7 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 import { SplineIntersectionService } from './spline-intersection.service';
 import { SplineTestHelper } from './spline-test-helper.service';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { SplineGeometryService } from './spline-geometry.service';
 import { setupTest } from "../../../tests/setup-tests";
 

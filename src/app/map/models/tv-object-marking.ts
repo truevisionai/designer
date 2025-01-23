@@ -4,7 +4,7 @@
 
 import { TvColors, TvRoadMarkWeights, TvSide } from './tv-common';
 import { TvCornerRoad } from "./objects/tv-corner-road";
-import { MeshBasicMaterial } from 'three';
+import { MeshBasicMaterial } from "three";
 
 export class TvObjectMarking {
 

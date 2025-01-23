@@ -8,8 +8,8 @@ import { TvJunctionInnerBoundaryService } from "./tv-junction-inner-boundary.ser
 import { TvBoundarySegmentType, TvJunctionBoundary } from "./tv-junction-boundary";
 import { TvJunctionOuterBoundaryService } from "./tv-junction-outer-boundary.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
-import { COLOR } from "../../views/shared/utils/colors.service";
-import { Color } from "three";
+import { ColorUtils } from "../../views/shared/utils/colors.service";
+import { Color } from "app/core/maths";
 
 @Injectable( {
 	providedIn: 'root'
@@ -49,7 +49,7 @@ export class TvJunctionBoundaryService {
 	}
 
 	// eslint-disable-next-line no-undef
-	debugBoundary ( boundary: TvJunctionBoundary, color: number = COLOR.RED ): void {
+	debugBoundary ( boundary: TvJunctionBoundary, color: number = ColorUtils.RED ): void {
 
 		boundary.getSegments().forEach( segment => {
 

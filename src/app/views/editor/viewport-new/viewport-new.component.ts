@@ -16,11 +16,13 @@ import {
 import { Environment } from 'app/core/utils/environment';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ViewportEvents } from 'app/events/viewport-events';
-import * as THREE from 'three';
-import { Object3D, WebGLRenderer, Intersection, OrthographicCamera, PerspectiveCamera, Camera, Vector3 } from 'three';
+import * as THREE from "three";
+import { Object3D, WebGLRenderer, Intersection, OrthographicCamera, PerspectiveCamera, Camera, Vector3 } from "three";
 import { IViewportController } from "../../../objects/i-viewport-controller";
 import { TvOrbitControls } from "../../../objects/tv-orbit-controls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Vector2 } from 'app/core/maths';
+import { Log } from "../../../core/utils/log";
 
 export class CanvasConfig {
 	width: number = 600;
@@ -84,11 +86,11 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	raycaster = new THREE.Raycaster;
 
-	currentMousePosition: THREE.Vector2 = new THREE.Vector2();
+	currentMousePosition: Vector2 = new Vector2();
 
-	prevMousePosition: THREE.Vector2 = new THREE.Vector2();
+	prevMousePosition: Vector2 = new Vector2();
 
-	mouseDelta: THREE.Vector2 = new THREE.Vector2();
+	mouseDelta: Vector2 = new Vector2();
 
 	private animationId: number;
 
@@ -407,7 +409,12 @@ export class ViewportNewComponent implements OnInit, AfterViewInit, OnDestroy {
 	@HostListener( 'window: resize', [ '$event' ] )
 	onWindowResized (): void {
 
-		const container = this.renderer.domElement.parentElement.parentElement;
+		const container = this.renderer.domElement.parentElement?.parentElement;
+
+		if ( !container ) {
+			Log.error( 'Container not found in viewport-new' );
+			return;
+		}
 
 		const box = container.getBoundingClientRect();
 

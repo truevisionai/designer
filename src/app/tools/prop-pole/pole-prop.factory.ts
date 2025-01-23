@@ -9,7 +9,7 @@ import { TvRoadObjectSkeleton } from "../../map/models/objects/tv-road-object-sk
 import { TvObjectPolyline } from "../../map/models/objects/tv-object-polyline";
 import { TvObjectVertexRoad } from "../../map/models/objects/tv-object-vertex-road";
 import { TvObjectVertexLocal } from "../../map/models/objects/tv-object-vertex-local";
-import { Vector3 } from "three";
+import { Vector3 } from "app/core/maths"
 import { TvRoadObjectType } from "../../map/models/objects/tv-road-object";
 
 @Injectable( {

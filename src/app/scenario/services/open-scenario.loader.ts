@@ -7,7 +7,7 @@ import { EntityFactory } from 'app/scenario/entity/entity.factory';
 import { FileUtils } from 'app/io/file-utils';
 import { AbstractReader } from 'app/importers/abstract-reader';
 import { XMLParser } from 'fast-xml-parser';
-import { Vector3 } from 'three';
+import { Vector3 } from 'app/core/maths';
 import { IFile } from '../../io/file';
 import { readXmlArray, readXmlElement } from '../../utils/xml-utils';
 import { TvConsole } from '../../core/utils/console';
