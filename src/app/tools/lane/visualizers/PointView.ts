@@ -1,8 +1,8 @@
 import { EventEmitter } from "app/events/event-emitter";
-import { COLOR } from "app/views/shared/utils/colors.service";
 import { Points, BufferGeometry, PointsMaterial, Vector3, Float32BufferAttribute } from "three";
 import { IView } from "./IView";
 import { OdTextures } from "app/deprecated/od.textures";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 
 
 export class PointView extends Points implements IView {
@@ -30,17 +30,17 @@ export class PointView extends Points implements IView {
 	}
 
 	onMouseOver?(): void {
-		this.material.color.set( COLOR.YELLOW );
+		this.material.color.set( ColorUtils.YELLOW );
 		this.mouseOver.emit( 'mouseOver', this );
 	}
 
 	onMouseOut?(): void {
-		this.material.color.set( COLOR.CYAN );
+		this.material.color.set( ColorUtils.CYAN );
 		this.mouseOut.emit( 'mouseOut', this );
 	}
 
 	onClick?(): void {
-		this.material.color.set( COLOR.RED );
+		this.material.color.set( ColorUtils.RED );
 		this.clicked.emit( 'clicked', this );
 	}
 
@@ -58,7 +58,7 @@ export class PointView extends Points implements IView {
 			map: OdTextures.point,
 			alphaTest: 0.5,
 			transparent: true,
-			color: COLOR.CYAN,
+			color: ColorUtils.CYAN,
 			depthTest: false
 		} );
 
