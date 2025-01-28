@@ -245,6 +245,7 @@ export class ToolHandlers {
 
 		if ( !this.hasHandlersForObject( object ) ) {
 			Log.error( `unknown object updated: ${ object.toString() }` );
+			console.error( `unknown object updated`, object );
 			return;
 		}
 

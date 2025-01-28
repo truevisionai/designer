@@ -7,8 +7,8 @@ import { IHasPosition } from '../objects/i-has-position';
 import { MapEvents } from 'app/events/map-events';
 import { Vector3 } from "app/core/maths"
 import { Object3D } from "three";
-import { isView } from 'app/tools/lane/visualizers/IView';
-import { isViewModel } from 'app/tools/lane/visualizers/IViewModel';
+import { isView } from 'app/tools/lane/visualizers/i-view';
+import { isViewModel } from 'app/tools/lane/visualizers/i-view-model';
 
 export class SetPositionCommand extends BaseCommand {
 

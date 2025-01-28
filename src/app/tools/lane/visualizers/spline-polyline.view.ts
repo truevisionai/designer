@@ -1,22 +1,24 @@
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { DebugLine } from "app/objects/debug-line";
-import { BaseView } from "./BaseView";
-import { IView } from "./IView";
+import { BaseView } from "./base.view";
+import { IView } from "./i-view";
 
 
-export class SplineReferenceLineView extends BaseView implements IView {
+export class SplinePolylineView extends BaseView implements IView {
 
 	private line: DebugLine<any>;
 
-	constructor ( public spline: AbstractSpline ) {
+	constructor ( private spline: AbstractSpline ) {
 
 		super();
 
-		const points = spline.getCoords();
+		const points = spline.getControlPoints().map( point => point.position );
 
-		const positions = points.map( point => point.position );
+		if ( spline.closed && points.length > 2 ) {
+			points.push( points[ 0 ] );
+		}
 
-		this.line = DebugLine.create( positions );
+		this.line = DebugLine.create( points );
 
 		this.add( this.line );
 
@@ -31,8 +33,7 @@ export class SplineReferenceLineView extends BaseView implements IView {
 	}
 
 	update (): void {
-		this.line.updateGeometry( this.spline.getCoords().map( point => point.position ) );
-		console.log( 'SplineReferenceLineView.update', this.spline.getCoords().map( point => point.position ) );
+		this.line.updateGeometry( this.spline.getControlPoints().map( point => point.position ) );
 	}
 
 	onMouseOver?(): void {

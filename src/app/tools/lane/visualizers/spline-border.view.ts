@@ -1,11 +1,11 @@
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { DebugLine } from "app/objects/debug-line";
-import { Group } from "three";
-import { IView } from "./IView";
+import { IView } from "./i-view";
+import { BaseView } from "./base.view";
 
 
-export class SplineBorderView extends Group implements IView {
+export class SplineBorderView extends BaseView implements IView {
 
 	isView: boolean = true;
 

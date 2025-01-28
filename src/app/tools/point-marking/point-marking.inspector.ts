@@ -5,7 +5,7 @@
 import { SerializedAction, SerializedField } from 'app/core/components/serialization';
 import { Commands } from 'app/commands/commands';
 import { PointMarkingControlPoint } from './objects/point-marking-object';
-
+import { RoadObjectViewModel } from "./road-object-view.model";
 
 export class PointMarkingInspector {
 
@@ -88,7 +88,98 @@ export class PointMarkingInspector {
 
 }
 
+export abstract class BaseVMInspector<T> {
 
+	protected constructor ( protected viewModel: T ) { }
+
+	getViewModel (): T {
+		return this.viewModel;
+	}
+
+}
+
+export class RoadObjectViewModelInspector extends BaseVMInspector<RoadObjectViewModel> {
+
+	constructor ( viewModel: RoadObjectViewModel ) {
+		super( viewModel );
+	}
+
+	@SerializedField( { 'type': 'float', label: 'Distance' } )
+	get s (): number {
+		return this.viewModel.object.s
+	}
+
+	set s ( value ) {
+		this.viewModel.object.s = value;
+	}
+
+	@SerializedField( { 'type': 'float', label: 'Offset' } )
+	get t (): number {
+		return this.viewModel.object.t;
+	}
+
+	set t ( value ) {
+		this.viewModel.object.t = value;
+	}
+
+	@SerializedField( {
+		type: 'float',
+		label: 'Z Offset',
+		description: 'z-offset of object origin relative to the elevation of the road reference line'
+	} )
+	get zOffset (): number {
+		return this.viewModel.object.zOffset || 0;
+	}
+
+	set zOffset ( value ) {
+		this.viewModel.object.zOffset = value;
+	}
+
+	@SerializedField( {
+		type: 'float',
+		label: 'Heading Angle',
+		description: 'Heading angle of the object relative to road direction'
+	} )
+	get heading (): number {
+		return this.viewModel.object.hdg || 0;
+	}
+
+	set heading ( value ) {
+		this.viewModel.object.hdg = value;
+	}
+
+	@SerializedField( {
+		type: 'float',
+		label: 'Width',
+		description: 'Width of the object'
+	} )
+	get width (): number {
+		return this.viewModel.object.width;
+	}
+
+	set width ( value ) {
+		this.viewModel.object.width = value;
+	}
+
+	@SerializedField( {
+		type: 'float',
+		label: 'Length',
+		description: 'Length of the object'
+	} )
+	get length (): number {
+		return this.viewModel.object.length;
+	}
+
+	set length ( value ) {
+		this.viewModel.object.length = value;
+	}
+
+	@SerializedAction( { label: 'Delete' } )
+	delete (): void {
+		Commands.RemoveObject( this.viewModel, true );
+	}
+
+}
 export class MultiPointMarkingInspector {
 
 	constructor ( public points: PointMarkingControlPoint[] ) { }

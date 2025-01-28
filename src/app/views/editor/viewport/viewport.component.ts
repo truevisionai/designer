@@ -2,7 +2,17 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	ElementRef,
+	HostListener,
+	Injectable,
+	Input,
+	OnDestroy,
+	OnInit,
+	ViewChild
+} from '@angular/core';
 import { ViewportEvents } from 'app/events/viewport-events';
 import { MouseButton, PointerEventData } from 'app/events/pointer-event-data';
 import { ThreeService } from 'app/renderer/three.service';
@@ -22,8 +32,11 @@ import { CameraService } from "../../../renderer/camera.service";
 import { MapService } from 'app/services/map/map.service';
 import { ToolManager } from 'app/managers/tool-manager';
 import { AssetType } from 'app/assets/asset.model';
-import { isView, IView } from 'app/tools/lane/visualizers/IView';
+import { isView, IView } from 'app/tools/lane/visualizers/i-view';
 import { Vector2 } from 'app/core/maths';
+import { Commands } from 'app/commands/commands';
+import { SelectionService } from 'app/tools/selection.service';
+import { KeyboardEvents } from "../../../events/keyboard-events";
 
 @Component( {
 	selector: 'app-viewport',
@@ -101,6 +114,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		private cameraService: CameraService,
 		private mapService: MapService,
 		private sceneService: SceneService,
+		private selectionService: SelectionService,
+		private dragManager: ViewportDragManager,
 	) {
 		this.render = this.render.bind( this );
 	}
@@ -239,23 +254,43 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( !this.onCanvas ) return;
 
-		this.lastObject?.onMouseOut();
-
-		this.lastObject = null;
-
 		this.intersections = this.getIntersections( event, true );
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-		if ( !intersection ) return;
+		if ( !intersection ) {
+			this.lastObject?.onMouseOut();
+			this.lastObject = null;
+			return;
+		}
+
+		if ( this.isPointerDown ) {
+
+			if ( !this.dragManager.isDragging ) {
+				this.dragManager.onDragStart( intersection.object, this.preparePointerData( event, intersection ) );
+			}
+
+			this.dragManager.onDrag( intersection.object, this.preparePointerData( event, intersection ) );
+
+			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, intersection ) );
+
+			return;
+		}
 
 		if ( isView( intersection.object ) ) {
 
-			this.lastObject = intersection.object;
+			if ( this.lastObject === intersection.object ) return;
 
+			this.lastObject?.onMouseOut();
+			this.lastObject = null;
+
+			this.lastObject = intersection.object;
 			this.lastObject.onMouseOver();
 
 		} else {
+
+			this.lastObject?.onMouseOut();
+			this.lastObject = null;
 
 			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, intersection ) );
 
@@ -287,9 +322,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
+	private isPointerDown: boolean;
+
 	onMouseDown ( $event: MouseEvent ): void {
 
 		if ( !this.onCanvas ) return;
+
+		this.isPointerDown = true;
 
 		this.intersections = this.getIntersections( $event, true );
 
@@ -297,21 +336,31 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-		if ( !intersection ) return;
+		if ( $event.button === MouseButton.LEFT && KeyboardEvents.isShiftKeyDown ) {
 
-		switch ( $event.button ) {
+			if ( !intersection ) return;
 
-			case MouseButton.LEFT:
+			this.handleLeftClick( $event, intersection );
+
+		} else if ( $event.button === MouseButton.LEFT && !KeyboardEvents.isShiftKeyDown ) {
+
+			if ( !intersection ) {
+
+				Commands.Unselect( this.selectionService.getSelectedObjects() );
+
+			} else {
+
 				this.handleLeftClick( $event, intersection );
-				break;
 
-			case MouseButton.MIDDLE:
-				this.handleMiddleClick( $event, intersection );
-				break;
+			}
 
-			case MouseButton.RIGHT:
-				this.handleRightClick( $event, intersection );
-				break;
+		} else if ( $event.button === MouseButton.MIDDLE ) {
+
+			this.handleMiddleClick( $event, intersection );
+
+		} else if ( $event.button === MouseButton.RIGHT ) {
+
+			this.handleRightClick( $event, intersection );
 
 		}
 
@@ -343,10 +392,37 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		}
 
-		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
+		if ( intersection?.object.id == SceneService.bgForClicks.id && !KeyboardEvents.isShiftKeyDown ) {
+
+			Commands.Unselect( this.selectionService.getSelectedObjects() );
+
+		}
+
+		if ( isView( intersection.object ) ) {
+
+			if ( this.selectionService.isObjectSelected( intersection.object.getViewModel() ) ) {
+				console.log( 'object already selected' );
+				return;
+			}
+
+			// NOTE: this is a temporary solution to select objects
+			// const previousSelections = this.selectionService.getSelectedObjects();
+
+			Commands.Select( intersection.object.getViewModel() );
+
+		} else {
+
+			console.log( 'no view object found' );
+
+			this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
+
+		}
+
 	}
 
 	onMouseUp ( event: MouseEvent ): void {
+
+		this.isPointerDown = false;
 
 		this.viewControllerService.enableControls();
 
@@ -366,6 +442,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		if ( this.intersections.length > 0 ) {
 
 			this.eventSystem.pointerUp.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
+
+			this.dragManager.onDragEnd( this.preparePointerData( event, this.intersections[ 0 ] ) );
+
 
 		} else {
 
@@ -758,4 +837,57 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.raycaster.params.Points.threshold = threshold;
 
 	}
+}
+
+
+@Injectable( {
+	providedIn: 'root'
+} )
+class ViewportDragManager {
+
+	private dragStartPosition: Vector3;
+
+	private selectedObject: IView | undefined;
+
+	isDragging: boolean;
+
+	constructor () {
+
+	}
+
+	onDragStart ( selectedObject: object, event: PointerEventData ): void {
+
+		if ( !isView( selectedObject ) ) return;
+
+		this.selectedObject = selectedObject;
+
+		this.isDragging = true;
+
+		this.dragStartPosition = event.point.clone();
+
+	}
+
+	onDragEnd ( event: PointerEventData ): void {
+
+		this.isDragging = false;
+
+		if ( !isView( this.selectedObject ) ) return;
+
+		Commands.SetPosition( this.selectedObject, event.point, this.dragStartPosition );
+
+		this.selectedObject = undefined;
+
+		this.dragStartPosition = undefined;
+
+	}
+
+	onDrag ( object: object, event: PointerEventData ): void {
+
+		if ( !isView( this.selectedObject ) ) return;
+
+		this.selectedObject.emit( 'drag', event );
+
+	}
+
+
 }

@@ -1,10 +1,13 @@
 import { Object3D } from "three";
-import { IView } from "./IView";
+import { IView } from "./i-view";
+import { Vector3 } from "../../../core/maths";
 
 
 export abstract class BaseView extends Object3D implements IView {
 
 	isView: boolean = true;
+
+	protected isSelected: boolean = false;
 
 	abstract show (): void;
 
@@ -20,4 +23,15 @@ export abstract class BaseView extends Object3D implements IView {
 
 	abstract onDeselect?(): void;
 
+	setSelected ( selected: boolean ): void {
+		this.isSelected = selected;
+	}
+
+	getPosition (): Vector3 {
+		return this.position;
+	}
+
+	setPosition ( position: Vector3 ): void {
+		this.position.copy( position );
+	}
 }

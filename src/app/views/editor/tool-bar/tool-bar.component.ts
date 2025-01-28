@@ -2,7 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AfterViewInit, Component, Host, HostBinding, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	Host,
+	HostBinding,
+	HostListener,
+	OnInit,
+	ViewChild,
+	ViewContainerRef
+} from '@angular/core';
 import { SatPopover } from '@ncstate/sat-popover';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { CommandHistory } from 'app/commands/command-history';
@@ -16,7 +25,9 @@ import { Environment } from 'app/core/utils/environment';
 import { ToolBarService } from './tool-bar.service';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Tool } from "../../../tools/tool";
-import { WorldSettingInspectorComponent } from 'app/views/inspectors/world-setting-inspector/world-setting-inspector.component';
+import {
+	WorldSettingInspectorComponent
+} from 'app/views/inspectors/world-setting-inspector/world-setting-inspector.component';
 
 class IToolMenu {
 	id: string;
@@ -326,6 +337,20 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			track: 'button',
 			tooltip: 'Text Marking Tool',
 			click: () => this.setToolType( ToolType.TextMarkingTool ),
+			enabled: true,
+		},
+		{
+			id: 'showParkingTool',
+			label: 'Parking Tool',
+			class: 'toolbar-button',
+			toolType: ToolType.Parking,
+			action: 'parking-tool',
+			icon: 'local_parking',
+			title: 'Parking Tool',
+			description: '',
+			track: 'button',
+			tooltip: 'Parking Tool',
+			click: () => this.setToolType( ToolType.Parking ),
 			enabled: true,
 		},
 		{

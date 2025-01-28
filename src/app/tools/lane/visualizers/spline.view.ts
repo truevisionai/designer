@@ -1,10 +1,10 @@
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
-import { BaseView } from "./BaseView";
-import { IView } from "./IView";
-import { PointView } from "./PointView";
-import { SplineBorderView } from "./SplineBorderView";
-import { SplinePolylineView } from "./SplinePolylineView";
-import { SplineReferenceLineView } from "./SplineReferenceLineView";
+import { BaseView } from "./base.view";
+import { IView } from "./i-view";
+import { PointView } from "./point.view";
+import { SplineBorderView } from "./spline-border.view";
+import { SplinePolylineView } from "./spline-polyline.view";
+import { SplineReferenceLineView } from "./spline-reference-line.view";
 
 
 export class SplineView extends BaseView implements IView {

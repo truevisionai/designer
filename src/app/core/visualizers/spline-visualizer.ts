@@ -7,8 +7,8 @@ import { BaseVisualizer } from "./base-visualizer";
 import { AbstractSpline } from "../shapes/abstract-spline";
 import { SplineDebugService } from "../../services/debug/spline-debug.service";
 import { SceneService } from "app/services/scene.service";
-import { IView } from "app/tools/lane/visualizers/IView";
-import { SplineView } from "app/tools/lane/visualizers/SplineView";
+import { IView } from "app/tools/lane/visualizers/i-view";
+import { SplineView } from "app/tools/lane/visualizers/spline.view";
 import { ColorUtils } from "app/views/shared/utils/colors.service";
 
 @Injectable( {
