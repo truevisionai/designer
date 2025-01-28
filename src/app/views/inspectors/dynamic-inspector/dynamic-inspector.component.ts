@@ -38,6 +38,7 @@ import { TextureFieldComponent } from 'app/views/fields/texture-field/texture-fi
 import { Subscription } from 'rxjs';
 import { TextareaFieldComponent } from 'app/views/shared/fields/textarea-field/textarea-field.component';
 import { Commands } from 'app/commands/commands';
+import { Log } from 'app/core/utils/log';
 
 @Directive( {
 	selector: '[app-field-host]',
@@ -190,11 +191,7 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 
 		this.applyComponentSettings( componentRef.instance, item.settings );
 
-		componentRef.instance.changed?.subscribe( ( value ) => {
-
-			Commands.SetValue( data, item.field, value );
-
-		} );
+		componentRef.instance.changed?.subscribe( ( newValue ) => this.onFieldValueChanged( data, item.field, newValue ) );
 
 		componentRef.instance.clicked?.subscribe( ( value ) => {
 
@@ -207,6 +204,24 @@ export class DynamicInspectorComponent implements OnInit, AfterViewInit, ICompon
 		this.updateSub = data?.updated?.subscribe( () => componentRef.instance.value = data[ item.field ] );
 
 		this.fieldComponents.set( item.field, componentRef );
+
+	}
+
+	onFieldValueChanged ( data: any, field: string, newValue: any ): void {
+
+		try {
+
+			const oldValue = data[ field ];
+
+			if ( oldValue === newValue ) return
+
+			Commands.SetValue( data, field, newValue );
+
+		} catch ( error ) {
+
+			Log.error( error );
+
+		}
 
 	}
 
