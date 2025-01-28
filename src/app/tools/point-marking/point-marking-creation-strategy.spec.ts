@@ -9,7 +9,6 @@ import { AssetType } from 'app/assets/asset.model';
 import { Vector3 } from 'app/core/maths';
 import { MockAssetFactory } from 'app/factories/asset-factory.service';
 import { CreationStrategy } from 'app/core/interfaces/creation-strategy';
-import { PointMarkingControlPoint } from './objects/point-marking-object';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { setupTest } from "../../../tests/setup-tests";
@@ -18,11 +17,12 @@ import { SplineTestHelper } from "../../services/spline/spline-test-helper.servi
 import { RoadObjectService } from "../../map/road-object/road-object.service";
 import { TvTextureService } from "../../assets/texture/tv-texture.service";
 import { TvRoad } from "../../map/models/tv-road.model";
+import { RoadObjectViewModel } from './road-object-view.model';
 
 
 describe( 'PointMarkingCreationStrategy', () => {
 
-	let strategy: CreationStrategy<PointMarkingControlPoint>;
+	let strategy: CreationStrategy<RoadObjectViewModel>;
 	let selectionService: SelectionService;
 	let assetManager: AssetManager;
 	let textureService: TvTextureService;
