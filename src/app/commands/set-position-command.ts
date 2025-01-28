@@ -6,6 +6,9 @@ import { BaseCommand } from './base-command';
 import { IHasPosition } from '../objects/i-has-position';
 import { MapEvents } from 'app/events/map-events';
 import { Vector3 } from "app/core/maths"
+import { Object3D } from "three";
+import { isView } from 'app/tools/lane/visualizers/IView';
+import { isViewModel } from 'app/tools/lane/visualizers/IViewModel';
 
 export class SetPositionCommand extends BaseCommand {
 
@@ -31,7 +34,7 @@ export class SetPositionCommand extends BaseCommand {
 
 		this.object.setPosition( this.newPosition );
 
-		this.object.updateMatrixWorld( true );
+		this.updateObject( this.object );
 
 		MapEvents.objectUpdated.emit( this.object );
 
@@ -41,7 +44,7 @@ export class SetPositionCommand extends BaseCommand {
 
 		this.object.setPosition( this.oldPosition );
 
-		this.object.updateMatrixWorld( true );
+		this.updateObject( this.object );
 
 		MapEvents.objectUpdated.emit( this.object );
 
@@ -52,5 +55,21 @@ export class SetPositionCommand extends BaseCommand {
 		this.execute();
 
 	}
+
+	private updateObject ( object: object ): void {
+
+		if ( object instanceof Object3D ) {
+			object.updateMatrixWorld( true );
+		}
+
+		if ( isView( object ) ) {
+			// do nothing
+		}
+
+		if ( isViewModel( object ) ) {
+			// do nothing
+		}
+	}
+
 }
 
