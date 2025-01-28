@@ -6,6 +6,7 @@ import { BaseCommand } from "./base-command";
 import { MapEvents } from "../events/map-events";
 import { IHasCopyUpdate } from '../core/interfaces/has-copy-update';
 import { Vector3 } from "app/core/maths"
+import { Object3D } from "three";
 
 export class UpdatePositionCommand extends BaseCommand {
 
@@ -31,7 +32,7 @@ export class UpdatePositionCommand extends BaseCommand {
 
 		this.object?.setPosition( this.newPosition );
 
-		this.object?.updateMatrixWorld( true );
+		this.updateObject( this.object );
 
 		this.object?.update();
 
@@ -43,7 +44,7 @@ export class UpdatePositionCommand extends BaseCommand {
 
 		this.object?.setPosition( this.oldPosition );
 
-		this.object?.updateMatrixWorld( true );
+		this.updateObject( this.object );
 
 		this.object?.update();
 
@@ -56,4 +57,15 @@ export class UpdatePositionCommand extends BaseCommand {
 		this.execute();
 
 	}
+
+	private updateObject ( object: object ): void {
+
+		if ( object instanceof Object3D ) {
+
+			object.updateMatrixWorld( true );
+
+		}
+
+	}
+
 }
