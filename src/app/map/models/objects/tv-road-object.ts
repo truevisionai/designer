@@ -440,6 +440,20 @@ export class TvRoadObject {
 
 	}
 
+	setPosition ( position: Vector3 ): void {
+
+		const coord = this.road.getRoadCoordinatesAt( position );
+
+		this.updateRoadCoordinates( coord.s, coord.t );
+
+	}
+
+	getPosition (): Vector3 {
+
+		return this.getObjectPosition().toVector3();
+
+	}
+
 	getObjectPosition (): TvPosTheta {
 
 		return this.road.getRoadPosition( this.s, this.t );
