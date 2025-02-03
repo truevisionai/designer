@@ -258,6 +258,8 @@ export class ViewSelectionStrategy extends NewSelectionStrategy<IView> {
 
 		for ( const intersection of e.intersections ) {
 
+			if ( intersection.object.visible === false ) continue;
+
 			if ( isView( intersection.object ) ) {
 
 				return intersection.object;

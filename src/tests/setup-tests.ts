@@ -9,6 +9,10 @@ import { TvRoad } from "app/map/models/tv-road.model";
 import { RoadValidator } from "app/managers/road/road-validator";
 import { SurfaceToolModule } from "app/modules/surface/surface.module";
 import { CrosswalkToolModule } from "../app/modules/crosswalk/crosswalk-tool.module";
+import { ToolFactory } from "../app/tools/tool.factory";
+import { ToolType } from "../app/tools/tool-types.enum";
+import { BaseTool } from "../app/tools/base-tool";
+import { ToolManager } from "../app/managers/tool-manager";
 
 export function setupTest (): void {
 
@@ -22,6 +26,17 @@ export function setupTest (): void {
 
 }
 
+export function setCurrentTool<T extends BaseTool<T>> ( toolType: ToolType ): T {
+
+	const tool = TestBed.inject( ToolFactory ).createTool( toolType ) as T;
+
+	tool.init();
+
+	ToolManager.setCurrentTool( tool );
+
+	return tool;
+
+}
 
 export function setupLaneWidthTest (): void {
 

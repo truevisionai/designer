@@ -131,7 +131,7 @@ export class PointMarkingCreationStrategy extends BaseCreationStrategy<TvRoadObj
 		return roadObject;
 	}
 
-	private getDimensions ( asset: Asset ): Vector2 {
+	public getDimensions ( asset: Asset ): Vector2 {
 
 		if ( asset.type == AssetType.MATERIAL ) {
 
