@@ -11,6 +11,7 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { LaneDistance } from 'app/map/road/road-distance';
 import { RoadWidthService } from 'app/services/road/road-width.service';
+import { isView, IView } from 'app/tools/lane/visualizers/i-view';
 import { Intersection, Object3D, Vector3 } from "three";
 
 export interface SelectionStrategy<T> {
@@ -251,3 +252,20 @@ export abstract class NewSelectionStrategy<T> extends BaseSelectionStrategy<T> {
 
 }
 
+export class ViewSelectionStrategy extends NewSelectionStrategy<IView> {
+
+	handleSelection ( e: PointerEventData ): IView {
+
+		for ( const intersection of e.intersections ) {
+
+			if ( isView( intersection.object ) ) {
+
+				return intersection.object;
+
+			}
+
+		}
+
+	}
+
+}
