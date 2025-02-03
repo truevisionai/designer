@@ -81,7 +81,7 @@ describe( 'PointMarkingTool', () => {
 
 	it( 'should have selectors', () => {
 
-		expect( tool.hasSelectorForKey( PointMarkingControlPoint ) ).toBeTrue();
+		// expect( tool.hasSelectorForKey( PointMarkingControlPoint ) ).toBeTrue(); // NOT NEEDED
 		expect( tool.hasSelectorForKey( TvRoad ) ).toBeTrue();
 
 	} );

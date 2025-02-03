@@ -4,6 +4,7 @@ import { IView } from "./i-view";
 import { OdTextures } from "app/deprecated/od.textures";
 import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { IViewModel } from "./i-view-model";
+import { ViewManager } from 'app/tools/point-marking/view-manager';
 
 
 export class PointView extends Points implements IView {
@@ -20,10 +21,12 @@ export class PointView extends Points implements IView {
 
 	show (): void {
 		this.visible = true;
+		ViewManager.addViewModel( this.viewModel );
 	}
 
 	hide (): void {
 		this.visible = false;
+		ViewManager.remove( this.viewModel );
 	}
 
 	update (): void {
@@ -31,7 +34,8 @@ export class PointView extends Points implements IView {
 	}
 
 	remove ( ...objects ): this {
-		return this.removeFromParent();
+		ViewManager.remove( this.viewModel );
+		return this;
 	}
 
 	onMouseOver?(): void {

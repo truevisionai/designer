@@ -13,8 +13,12 @@ import { PointMarkingCreationStrategy } from './point-marking-creation-strategy'
 import { RoadPointDragHandler } from 'app/core/drag-handlers/road-point-drag-handler';
 import { PointMarkingToolHintConfiguration } from './point-marking-tool-hints';
 import { PointMarkingController } from './controllers/point-marking-point-controller';
-import { PointMarkingVisualizer } from './visualizers/point-marking-point-visualizer';
 import { RoadSelectionStrategy } from 'app/core/strategies/select-strategies/select-road-strategy';
+import { EmptyVisualizer } from "../../core/visualizers/empty-visualizer";
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { ViewManager } from './view-manager';
+import { RoadObjectViewModel } from './road-object-view.model';
+import { ViewSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 
 
 export class PointMarkingTool extends ToolWithHandler {
@@ -51,7 +55,7 @@ export class PointMarkingTool extends ToolWithHandler {
 
 	addSelectors (): void {
 
-		// this.addSelectionStrategy( PointMarkingControlPoint, new PointMarkingSelector() );
+		this.addSelectionStrategy( TvRoadObject, new ViewSelectionStrategy() );
 		this.addSelectionStrategy( TvRoad, new RoadSelectionStrategy() );
 
 	}
@@ -65,7 +69,7 @@ export class PointMarkingTool extends ToolWithHandler {
 
 	addVisualizers (): void {
 
-		this.addVisualizer( PointMarkingControlPoint, this.tool.base.injector.get( PointMarkingVisualizer ) );
+		this.addVisualizer( PointMarkingControlPoint, this.tool.base.injector.get( EmptyVisualizer ) );
 		this.addVisualizer( TvRoad, this.tool.base.injector.get( PointMarkingToolRoadVisualizer ) );
 
 	}
@@ -75,6 +79,66 @@ export class PointMarkingTool extends ToolWithHandler {
 		super.disable();
 
 		this.tool.base.reset();
+
+	}
+
+	onObjectAdded ( object: Object ): void {
+
+		if ( object instanceof TvRoadObject ) {
+
+			const viewModel = new RoadObjectViewModel( object, this.tool.roadObjectService );
+
+			ViewManager.addViewModel( viewModel );
+
+			viewModel.render();
+
+		} else {
+
+			super.onObjectAdded( object );
+
+		}
+
+	}
+
+	onObjectRemoved ( object: Object ): void {
+
+		if ( object instanceof TvRoadObject ) {
+
+			ViewManager.removeViewModel( ViewManager.getViewModel( object ) );
+
+		} else {
+
+			super.onObjectRemoved( object );
+
+		}
+
+	}
+
+	onObjectSelected ( object: Object ): void {
+
+		if ( object instanceof TvRoadObject ) {
+
+			ViewManager.onViewModelSelected( ViewManager.getViewModel( object ) );
+
+		} else {
+
+			super.onObjectSelected( object );
+
+		}
+
+	}
+
+	onObjectUnselected ( object: Object ): void {
+
+		if ( object instanceof TvRoadObject ) {
+
+			ViewManager.onViewModelUnselected( ViewManager.getViewModel( object ) );
+
+		} else {
+
+			super.onObjectUnselected( object );
+
+		}
 
 	}
 

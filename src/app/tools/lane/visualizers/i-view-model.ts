@@ -2,27 +2,33 @@ import { Object3D } from "three";
 import { IView } from "./i-view";
 import { ColorUtils } from "../../../views/shared/utils/colors.service";
 import { PointerEventData } from "../../../events/pointer-event-data";
-import { SceneService } from "../../../services/scene.service";
+import { Vector3 } from "../../../core/maths";
+import { BaseVMInspector } from "app/tools/point-marking/point-marking.inspector";
 
 export interface IViewModel<TModel, TView> {
 
 	isViewModel?: boolean;
 
-	render?(): void;
+	render (): void;
 
-	update?(): void;
+	update (): void;
 
-	remove?(): void;
+	remove (): void;
 
-	onSelect?(): void;
+	onSelect (): void;
 
-	onDeselect?(): void;
+	onDeselect (): void;
 
-	getObject3d?(): Object3D;
+	getObject3d (): Object3D;
 
-	setView?( view: IView ): void;
+	setView ( view: IView ): void;
 
-	getModel?(): TModel;
+	getView (): IView;
+
+	getModel (): TModel;
+
+	getInspector?(): BaseVMInspector<any>;
+
 
 }
 
@@ -35,7 +41,11 @@ export abstract class BaseViewModel<TModel, TView> implements IViewModel<TModel,
 
 	protected view: IView;
 
-	protected constructor ( view: IView ) {
+	protected dragStartAt?: Vector3;
+
+	abstract getInspector?(): BaseVMInspector<any>;
+
+	protected constructor ( private model: any, view: IView ) {
 
 		this.view = view;
 
@@ -47,37 +57,59 @@ export abstract class BaseViewModel<TModel, TView> implements IViewModel<TModel,
 
 		this.view.on( 'clicked', () => this.onSelect() );
 
-		this.view.on( 'drag', ( data ) => this.onDrag( data ) );
+		this.view.on( 'dragStart', ( event ) => this.onDragStart( event ) );
+
+		this.view.on( 'drag', ( event ) => this.onDrag( event ) );
+
+		this.view.on( 'dragEnd', ( event ) => this.onDragEnd( event ) );
 
 		this.view.on( 'update', () => this.onViewUpdated() );
 	}
 
-	onViewUpdated (): void { }
+	update (): void {
+
+		// called when the view model is updated
+
+	}
+
+	getModel (): TModel {
+
+		return this.model;
+
+	}
+
+	onViewUpdated (): void {
+
+		// called when the view is updated
+
+	}
 
 	remove (): void {
-
-		// this.view.hide();
 
 		this.view.remove?.();
 
 	}
 
-	render () {
+	render (): void {
 
-		SceneService.addToolObject( this.getObject3d() );
-
-		this.getView().show();
+		this.view.show?.();
 
 	}
 
 	onSelect (): void {
+
 		this.setSelected( true );
+
 		this.view.setColor( ColorUtils.RED );
+
 	}
 
 	onDeselect (): void {
+
 		this.setSelected( false );
+
 		this.view.setColor( ColorUtils.CYAN );
+
 	}
 
 	setSelected ( selected: boolean ): void {
@@ -106,9 +138,19 @@ export abstract class BaseViewModel<TModel, TView> implements IViewModel<TModel,
 		this.view.setColor( ColorUtils.CYAN );
 	}
 
-	protected onDrag ( data: PointerEventData ): void {
-		console.log( 'drag', this.view, data );
+	protected onDragStart ( event: PointerEventData ): void {
+		this.dragStartAt = event.point;
 	}
+
+	protected onDrag ( event: PointerEventData ): void {
+		//
+	}
+
+	protected onDragEnd ( event: PointerEventData ): void {
+		this.dragStartAt = undefined;
+	}
+
+
 }
 
 export function isViewModel ( object: any ): object is IViewModel<any, any> {

@@ -21,12 +21,11 @@ import { TvMapQueries } from "app/map/queries/tv-map-queries";
 import { AssetHandler } from "app/core/interfaces/asset-handler";
 import { Log } from "app/core/utils/log";
 import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
-import { RoadObjectViewModel } from "./road-object-view.model";
 
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PointMarkingCreationStrategy extends BaseCreationStrategy<RoadObjectViewModel> implements AssetHandler {
+export class PointMarkingCreationStrategy extends BaseCreationStrategy<TvRoadObject> implements AssetHandler {
 
 	constructor (
 		private selectionService: SelectionService,
@@ -91,7 +90,7 @@ export class PointMarkingCreationStrategy extends BaseCreationStrategy<RoadObjec
 		return new ValidationPassed();
 	}
 
-	createObject ( event: PointerEventData ): RoadObjectViewModel {
+	createObject ( event: PointerEventData ): TvRoadObject {
 
 		const asset = this.assetManager.getTextureAsset() || this.assetManager.getMaterialAsset();
 
@@ -99,17 +98,13 @@ export class PointMarkingCreationStrategy extends BaseCreationStrategy<RoadObjec
 
 	}
 
-	createFromAsset ( asset: Asset, position: Vector3 ): RoadObjectViewModel {
+	createFromAsset ( asset: Asset, position: Vector3 ): TvRoadObject {
 
 		const coord = TvMapQueries.findRoadCoord( position );
 
 		if ( !coord ) return;
 
-		const roadObject = this.createRoadObjectFromAsset( asset, coord );
-
-		const point = new RoadObjectViewModel( roadObject );
-
-		return point;
+		return this.createRoadObjectFromAsset( asset, coord );
 
 	}
 

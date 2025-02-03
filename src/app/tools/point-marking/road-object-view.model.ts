@@ -1,17 +1,16 @@
 import { BaseViewModel } from "../lane/visualizers/i-view-model";
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { PointView } from "../lane/visualizers/point.view";
-import { MapEvents } from "../../events/map-events";
-import { RoadObjectRemovedEvent, RoadObjectUpdatedEvent } from "../../events/road-object.events";
-import { RoadObjectViewModelInspector } from "./point-marking.inspector";
+import { BaseVMInspector, RoadObjectViewModelInspector } from "./point-marking.inspector";
 import { PointerEventData } from "../../events/pointer-event-data";
-import { AppInspector } from "../../core/inspector";
+import { Commands } from "../../commands/commands";
+import { RoadObjectService } from "app/map/road-object/road-object.service";
 
 export class RoadObjectViewModel extends BaseViewModel<TvRoadObject, PointView> {
 
-	constructor ( public object: TvRoadObject ) {
+	constructor ( public object: TvRoadObject, private roadObjectService: RoadObjectService ) {
 
-		super( PointView.create( object.getObjectPosition().toVector3() ) );
+		super( object, PointView.create( object.getObjectPosition().toVector3() ) );
 
 	}
 
@@ -19,9 +18,9 @@ export class RoadObjectViewModel extends BaseViewModel<TvRoadObject, PointView> 
 
 		super.render();
 
-		this.object.road.addRoadObject( this.object );
+		this.roadObjectService.addRoadObject( this.object.road, this.object );
 
-		MapEvents.roadObjectAdded.emit( { road: this.object.road, roadObject: this.object } );
+		this.rebuild();
 
 	}
 
@@ -29,19 +28,15 @@ export class RoadObjectViewModel extends BaseViewModel<TvRoadObject, PointView> 
 
 		this.view.setPosition( this.object.getObjectPosition().toVector3() );
 
-		MapEvents.roadObjectUpdated.emit( new RoadObjectUpdatedEvent( this.object.road, this.object ) );
+		this.rebuild();
 
 	}
 
 	onViewUpdated (): void {
 
-		const coord = this.object.road.getRoadCoordinatesAt( this.view.getPosition() );
+		this.object.setPosition( this.view.getPosition() );
 
-		this.object.updateRoadCoordinates( coord.s, coord.t );
-
-		this.view.setPosition( coord.position );
-
-		MapEvents.roadObjectUpdated.emit( new RoadObjectUpdatedEvent( this.object.road, this.object ) );
+		this.rebuild();
 
 	}
 
@@ -49,32 +44,41 @@ export class RoadObjectViewModel extends BaseViewModel<TvRoadObject, PointView> 
 
 		super.remove();
 
-		this.object.road.removeRoadObject( this.object );
-
-		MapEvents.roadObjectRemoved.emit( new RoadObjectRemovedEvent( this.object.road, this.object ) );
+		this.roadObjectService.removeRoadObject( this.object.road, this.object );
 
 	}
 
-	onDrag ( data: PointerEventData ): void {
+	getInspector (): BaseVMInspector<any> {
 
-		if ( !this.object.road.isPointOnRoad( data.point ) ) return;
-
-		const coord = this.object.road.getRoadCoordinatesAt( data.point );
-
-		this.object.updateRoadCoordinates( coord.s, coord.t );
-
-		this.view.setPosition( data.point );
-
-		MapEvents.roadObjectUpdated.emit( new RoadObjectUpdatedEvent( this.object.road, this.object ) );
+		return new RoadObjectViewModelInspector( this );
 
 	}
 
-	override onSelect (): void {
+	protected override onDrag ( event: PointerEventData ): void {
 
-		AppInspector.setDynamicInspector( new RoadObjectViewModelInspector( this ) );
+		if ( !this.object.road.isPointOnRoad( event.point ) ) return;
 
-		super.onSelect();
+		this.object.setPosition( event.point );
+
+		this.view.setPosition( event.point );
+
+		this.rebuild();
 
 	}
 
+	protected override onDragEnd ( event: PointerEventData ): void {
+
+		Commands.SetPosition( this.object, this.view.getPosition(), this.dragStartAt );
+
+		this.rebuild();
+
+		super.onDragEnd( event );
+
+	}
+
+	private rebuild (): void {
+
+		this.roadObjectService.updateRoadObjectMesh( this.object.road, this.object );
+
+	}
 }

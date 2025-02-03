@@ -400,19 +400,9 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( isView( intersection.object ) ) {
 
-			if ( this.selectionService.isObjectSelected( intersection.object.getViewModel() ) ) {
-				console.log( 'object already selected' );
-				return;
-			}
-
-			// NOTE: this is a temporary solution to select objects
-			// const previousSelections = this.selectionService.getSelectedObjects();
-
-			Commands.Select( intersection.object.getViewModel() );
+			this.selectionService.handleSelection( this.preparePointerData( event, intersection ) );
 
 		} else {
-
-			console.log( 'no view object found' );
 
 			this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
 
@@ -865,6 +855,8 @@ class ViewportDragManager {
 
 		this.dragStartPosition = event.point.clone();
 
+		this.selectedObject.emit( 'dragStart', event );
+
 	}
 
 	onDragEnd ( event: PointerEventData ): void {
@@ -873,7 +865,7 @@ class ViewportDragManager {
 
 		if ( !isView( this.selectedObject ) ) return;
 
-		Commands.SetPosition( this.selectedObject, event.point, this.dragStartPosition );
+		this.selectedObject.emit( 'dragEnd', event );
 
 		this.selectedObject = undefined;
 

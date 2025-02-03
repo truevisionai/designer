@@ -17,12 +17,12 @@ import { SplineTestHelper } from "../../services/spline/spline-test-helper.servi
 import { RoadObjectService } from "../../map/road-object/road-object.service";
 import { TvTextureService } from "../../assets/texture/tv-texture.service";
 import { TvRoad } from "../../map/models/tv-road.model";
-import { RoadObjectViewModel } from './road-object-view.model';
+import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 
 
 describe( 'PointMarkingCreationStrategy', () => {
 
-	let strategy: CreationStrategy<RoadObjectViewModel>;
+	let strategy: CreationStrategy<TvRoadObject>;
 	let selectionService: SelectionService;
 	let assetManager: AssetManager;
 	let textureService: TvTextureService;
@@ -91,7 +91,7 @@ describe( 'PointMarkingCreationStrategy', () => {
 
 		const object = strategy.createObject( event );
 
-		expect( object ).toBeInstanceOf( AbstractControlPoint );
+		expect( object ).toBeInstanceOf( TvRoadObject );
 
 	} );
 
