@@ -34,9 +34,7 @@ import { ToolManager } from 'app/managers/tool-manager';
 import { AssetType } from 'app/assets/asset.model';
 import { isView, IView } from 'app/tools/lane/visualizers/i-view';
 import { Vector2 } from 'app/core/maths';
-import { Commands } from 'app/commands/commands';
 import { SelectionService } from 'app/tools/selection.service';
-import { KeyboardEvents } from "../../../events/keyboard-events";
 
 @Component( {
 	selector: 'app-viewport',
@@ -336,23 +334,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-		if ( $event.button === MouseButton.LEFT && KeyboardEvents.isShiftKeyDown ) {
+		if ( !intersection ) return;
 
-			if ( !intersection ) return;
+		if ( $event.button === MouseButton.LEFT ) {
 
 			this.handleLeftClick( $event, intersection );
-
-		} else if ( $event.button === MouseButton.LEFT && !KeyboardEvents.isShiftKeyDown ) {
-
-			if ( !intersection ) {
-
-				Commands.Unselect( this.selectionService.getSelectedObjects() );
-
-			} else {
-
-				this.handleLeftClick( $event, intersection );
-
-			}
 
 		} else if ( $event.button === MouseButton.MIDDLE ) {
 
@@ -392,21 +378,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		}
 
-		if ( intersection?.object.id == SceneService.bgForClicks.id && !KeyboardEvents.isShiftKeyDown ) {
-
-			Commands.Unselect( this.selectionService.getSelectedObjects() );
-
-		}
-
-		if ( isView( intersection.object ) ) {
-
-			this.selectionService.handleSelection( this.preparePointerData( event, intersection ) );
-
-		} else {
-
-			this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
-
-		}
+		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
 
 	}
 
