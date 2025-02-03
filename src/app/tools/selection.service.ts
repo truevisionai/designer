@@ -13,6 +13,7 @@ import { IMovingStrategy } from "../core/strategies/move-strategies/move-strateg
 import { Position } from "../scenario/models/position";
 import { Log } from 'app/core/utils/log';
 import { ClassMap, ConstructorFunction } from 'app/core/models/class-map';
+import { isView } from './lane/visualizers/i-view';
 
 @Injectable( {
 	providedIn: 'root'
@@ -62,6 +63,8 @@ export class SelectionService {
 		this.strategies.set( key, strategy );
 
 		this.priority.set( key, this.strategies.size );
+
+		if ( this.debug ) Log.debug( 'Priority set', key, this.strategies.size );
 
 	}
 
@@ -251,7 +254,15 @@ export class SelectionService {
 
 		if ( lastSelected && lastSelected === newSelected && unselectObjects.length === 0 ) return;
 
-		CommandHistory.execute( new SelectObjectCommand( newSelected, unselectObjects ) );
+		if ( isView( newSelected ) ) {
+
+			CommandHistory.execute( new SelectObjectCommand( newSelected.getViewModel().getModel(), unselectObjects ) );
+
+		} else {
+
+			CommandHistory.execute( new SelectObjectCommand( newSelected, unselectObjects ) );
+
+		}
 
 		if ( this.debug ) Log.info( 'SelectObjectCommand fired', selectedKey, newSelected, this.selectedObjects );
 
