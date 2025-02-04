@@ -2,7 +2,16 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	Host,
+	HostBinding,
+	HostListener,
+	OnInit,
+	ViewChild,
+	ViewContainerRef
+} from '@angular/core';
 import { SatPopover } from '@ncstate/sat-popover';
 import { ToolType } from 'app/tools/tool-types.enum';
 import { ToolManager } from '../../../managers/tool-manager';

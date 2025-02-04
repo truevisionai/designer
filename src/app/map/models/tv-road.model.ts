@@ -701,6 +701,12 @@ export class TvRoad {
 
 	}
 
+	isPointOnRoad ( point: Vector3 ): boolean {
+
+		return RoadGeometryService.instance.isPointOnRoad( this, point );
+
+	}
+
 	getLocatorProvider (): RoadGeometryService {
 
 		return RoadGeometryService.instance;

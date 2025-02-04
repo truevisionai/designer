@@ -69,6 +69,10 @@ export abstract class Commands {
 
 	static Unselect ( object: object | object[] ): void {
 
+		if ( !object ) return;
+
+		if ( Array.isArray( object ) && object.length === 0 ) return;
+
 		this.execute( new UnselectObjectCommand( object ) );
 
 	}

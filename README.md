@@ -67,3 +67,19 @@ The latest tutorials and videos can be found at: [https://www.youtube.com/channe
 In brief, you are free to use and modify Truevision Designer for all non-commercial purposes only. Please read the license for more details.
 
 Your access to and use of Truevision Designer on GitHub is governed by the Truevision Designer End User License Agreement. If you don't agree to those terms, as amended from time to time, you are not permitted to access or use Truevision Designer.
+
+
+## MVVM Architecture
+
+Always pass the Model to SetValueCommand or SetPositionCommand. Here’s why:
+Model is the Source of Truth:
+
+Changes should always be applied to the Model since it represents the persistent state of your application.
+The ViewModel reflects the Model’s state and is regenerated dynamically when needed.
+Why not pass the ViewModel?
+
+ViewModels are transient and are tied to user interactions. If you pass a ViewModel, you might run into issues when the ViewModel is destroyed (e.g., when the road is unselected).
+Passing the Model ensures that commands are consistent and reusable, even if the ViewModel or View is recreated.
+Why not pass the View?
+
+Views are purely visual and should never contain logic or state. Passing them tightly couples UI with business logic, violating MVVM principles.

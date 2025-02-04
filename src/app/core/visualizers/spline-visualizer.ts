@@ -6,7 +6,88 @@ import { Injectable } from "@angular/core";
 import { BaseVisualizer } from "./base-visualizer";
 import { AbstractSpline } from "../shapes/abstract-spline";
 import { SplineDebugService } from "../../services/debug/spline-debug.service";
-import { ColorUtils } from "../../views/shared/utils/colors.service";
+import { SceneService } from "app/services/scene.service";
+import { IView } from "app/tools/lane/visualizers/i-view";
+import { SplineView } from "app/tools/lane/visualizers/spline.view";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
+
+@Injectable( {
+	providedIn: 'root'
+} )
+export abstract class NewSplineVisualizerWithView<T extends AbstractSpline> extends BaseVisualizer<T> {
+
+	private views = new Map<AbstractSpline, IView>();
+
+	// NOTE: this visualizer is not used in the codebase
+	constructor (
+		private splineDebugService: SplineDebugService,
+	) {
+
+		super();
+
+	}
+
+	onAdded ( object: AbstractSpline ): void {
+
+		// this.splineDebugService.showBorder( object );
+
+	}
+
+	onUpdated ( spline: AbstractSpline ): void {
+
+		this.views.get( spline )?.update();
+
+	}
+
+	onClearHighlight (): void { }
+
+	onHighlight ( object: AbstractSpline ): void {
+
+		if ( !this.views.has( object ) ) {
+
+			const node = new SplineView( object );
+
+			this.views.set( object, node );
+
+			SceneService.addToolObject( node );
+
+		}
+
+		this.views.get( object ).onMouseOver();
+
+	}
+
+	onDefault ( object: AbstractSpline ): void {
+
+		this.views.get( object ).onMouseOut();
+
+	}
+
+	onSelected ( object: AbstractSpline ): void {
+
+		this.views.get( object )?.onClick();
+
+	}
+
+	onUnselected ( object: AbstractSpline ): void {
+
+		this.views.get( object )?.onMouseOut();
+
+	}
+
+	onRemoved ( object: AbstractSpline ): void {
+
+		this.views.get( object )?.hide();
+
+	}
+
+	clear (): void {
+
+		this.highlighted.clear();
+
+	}
+
+}
 
 @Injectable( {
 	providedIn: 'root'

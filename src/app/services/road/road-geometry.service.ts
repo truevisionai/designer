@@ -158,6 +158,24 @@ export class RoadGeometryService {
 		}
 	}
 
+	isPointOnRoad ( road: TvRoad, position: Vector3 ): boolean {
+
+		const roadCoord = this.findRoadCoordAt( road, position );
+
+		const width = roadCoord.t > 0 ?
+			RoadWidthService.instance.findLeftWidthAt( roadCoord.road, roadCoord.s ) :
+			RoadWidthService.instance.findRightWidthAt( roadCoord.road, roadCoord.s );
+
+		if ( Math.abs( roadCoord.t ) > width ) return false;
+
+		if ( Math.abs( roadCoord.s ) < 0.01 ) return false;
+
+		if ( Math.abs( roadCoord.s ) > road.getLength() ) return false;
+
+		return true;
+
+	}
+
 	findRoadCoordStrict ( road: TvRoad, position: Vector3 ): TvRoadCoord | undefined {
 
 		const roadCoord = this.findRoadCoordAt( road, position );

@@ -22,7 +22,7 @@ export class PointMarkingToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 
 	onSelected ( road: TvRoad ): void {
 
-		this.toolDebugger.showRoadObjects( road );
+		this.toolDebugger.showRoadObjectViewModels( road );
 
 		this.roadVisualizer.onSelected( road );
 
@@ -36,7 +36,7 @@ export class PointMarkingToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 
 	onUnselected ( road: TvRoad ): void {
 
-		this.toolDebugger.hideRoadObjects( road );
+		this.toolDebugger.hideRoadObjectViewModels( road );
 
 		this.roadVisualizer.onUnselected( road );
 
@@ -44,7 +44,7 @@ export class PointMarkingToolRoadVisualizer extends BaseVisualizer<TvRoad> {
 
 	onRemoved ( road: TvRoad ): void {
 
-		this.toolDebugger.hideRoadObjects( road );
+		this.toolDebugger.hideRoadObjectViewModels( road );
 
 		this.roadVisualizer.onRemoved( road );
 
