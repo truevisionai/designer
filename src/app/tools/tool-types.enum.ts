@@ -33,6 +33,7 @@ export enum ToolType {
 	WorldSetting,
 	TrafficLight,
 	Parking,
+	ParkingSpot,
 	ParkingLot,
 	ParkingRoad,
 	TextMarkingTool,
