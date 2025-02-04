@@ -19,8 +19,6 @@ import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { ViewManager } from './view-manager';
 import { RoadObjectViewModel } from './road-object-view.model';
 import { ViewSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
-
-
 export class PointMarkingTool extends ToolWithHandler {
 
 	public name: string = 'Point Marking Tool';
@@ -95,48 +93,6 @@ export class PointMarkingTool extends ToolWithHandler {
 		} else {
 
 			super.onObjectAdded( object );
-
-		}
-
-	}
-
-	onObjectRemoved ( object: Object ): void {
-
-		if ( object instanceof TvRoadObject ) {
-
-			ViewManager.removeViewModel( ViewManager.getViewModel( object ) );
-
-		} else {
-
-			super.onObjectRemoved( object );
-
-		}
-
-	}
-
-	onObjectSelected ( object: Object ): void {
-
-		if ( object instanceof TvRoadObject ) {
-
-			ViewManager.onViewModelSelected( ViewManager.getViewModel( object ) );
-
-		} else {
-
-			super.onObjectSelected( object );
-
-		}
-
-	}
-
-	onObjectUnselected ( object: Object ): void {
-
-		if ( object instanceof TvRoadObject ) {
-
-			ViewManager.onViewModelUnselected( ViewManager.getViewModel( object ) );
-
-		} else {
-
-			super.onObjectUnselected( object );
 
 		}
 
