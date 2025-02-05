@@ -38,9 +38,29 @@ export class ParkingCurve {
 
 	private parkingSpots: ParkingSpot[] = [];
 
+	private parkingSpotWidth: number = ParkingSpot.DEFAULT_WIDTH;
+
+	private parkingSpotLength: number = ParkingSpot.DEFAULT_LENGTH;
+
 	constructor ( id?: string, private spline?: AbstractSpline ) {
 		this.id = id ?? MathUtils.generateUUID();
 		this.spline = spline || new CatmullRomSpline( false, 'catmullrom', 0.001 );
+	}
+
+	getWidth (): number {
+		return this.parkingSpotWidth;
+	}
+
+	setWidth ( width: number ): void {
+		this.parkingSpotWidth = width;
+	}
+
+	getLength (): number {
+		return this.parkingSpotLength;
+	}
+
+	setLength ( length: number ): void {
+		this.parkingSpotLength = length;
 	}
 
 	getParkingSpots (): readonly ParkingSpot[] {
@@ -67,7 +87,7 @@ export class ParkingCurve {
 
 		const centerPositions: TvPosTheta[] = [];
 
-		const spotWidth = ParkingSpot.DEFAULT_WIDTH;
+		const spotWidth = this.parkingSpotWidth ?? ParkingSpot.DEFAULT_WIDTH;
 
 		for ( let i = 0; i < this.spline.controlPointPositions.length - 1; i++ ) {
 
@@ -103,7 +123,7 @@ export class ParkingCurve {
 
 		this.getPotentialSpots().forEach( spot => {
 
-			const spotLength = ParkingSpot.DEFAULT_LENGTH / 2
+			const spotLength = this.parkingSpotLength / 2
 
 			const leftPosition = new Vector3(
 				spot.x + Math.cos( spot.hdg + Maths.PI / 2 ) * spotLength,
@@ -117,8 +137,8 @@ export class ParkingCurve {
 				0
 			);
 
-			positions.push( new ParkingSpot( null, leftPosition, ParkingSpot.DEFAULT_WIDTH, ParkingSpot.DEFAULT_LENGTH, spot.hdg - Maths.PI2 ) );
-			positions.push( new ParkingSpot( null, rightPosition, ParkingSpot.DEFAULT_WIDTH, ParkingSpot.DEFAULT_LENGTH, spot.hdg + Maths.PI2 ) );
+			positions.push( new ParkingSpot( null, leftPosition, this.parkingSpotWidth, this.parkingSpotLength, spot.hdg - Maths.PI2 ) );
+			positions.push( new ParkingSpot( null, rightPosition, this.parkingSpotWidth, this.parkingSpotLength, spot.hdg + Maths.PI2 ) );
 
 		} );
 

@@ -17,7 +17,9 @@ import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D } from "three";
 import { SharpArrowObject } from "app/objects/lane-arrow-object";
 import { Object3DArrayMap } from "app/core/models/object3d-array-map";
 import { ObjectUserDataStrategy } from "app/core/strategies/select-strategies/object-user-data-strategy";
-import { PropCurve } from "app/map/prop-curve/prop-curve.model";
+import { AbstractControlPoint } from "app/objects/abstract-control-point";
+import { Commands } from "app/commands/commands";
+import { SerializedField, SerializedAction } from "app/core/components/serialization";
 
 
 @Injectable()
@@ -60,7 +62,7 @@ export class ParkingCurveService {
 
 	update ( parkingCurve: ParkingCurve ): void {
 
-		// this.mapService.map.removeParkingCurve( parkingCurve );
+		parkingCurve.update();
 
 	}
 
@@ -93,7 +95,7 @@ export class ParkingCurveController extends BaseController<ParkingCurve> {
 
 	showInspector ( parkingCurve: ParkingCurve ): void {
 
-		//
+		this.setInspector( new ParkingCurveInspector( parkingCurve ) );
 
 	}
 
@@ -130,7 +132,7 @@ export class ParkingCurvePointController extends PointController<ParkingCurvePoi
 
 	showInspector ( point: ParkingCurvePoint ): void {
 
-		console.log( point );
+		this.setInspector( new ParkingCurveInspector( point.mainObject, point ) );
 
 	}
 
@@ -253,7 +255,6 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 }
 
-
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -263,6 +264,47 @@ export class ParkingCurvePointVisualizer extends PointVisualizer<ParkingCurvePoi
 
 		this.updateVisuals( point.mainObject );
 
+	}
+
+}
+
+export class ParkingCurveInspector {
+
+	constructor (
+		public parkingCurve: ParkingCurve,
+		public controlPoint?: AbstractControlPoint
+	) {
+	}
+
+	@SerializedField( { type: 'float', min: 1 } )
+	get width (): number {
+		return this.parkingCurve.getWidth();
+	}
+
+	set width ( value: number ) {
+		this.parkingCurve.setWidth( value );
+	}
+
+	@SerializedField( { type: 'float', min: 1 } )
+	get length (): number {
+		return this.parkingCurve.getLength();
+	}
+
+	set length ( value: number ) {
+		this.parkingCurve.setLength( value );
+	}
+
+	@SerializedAction( { label: 'Delete Parking Curve' } )
+	delete (): void {
+		Commands.RemoveObject( this.parkingCurve );
+	}
+
+	@SerializedAction( {
+		label: 'Delete Control Point',
+		validate: function () { return this.controlPoint !== undefined; } // Using the validation method
+	} )
+	deleteControlPoint (): void {
+		Commands.RemoveObject( this.controlPoint );
 	}
 
 }
@@ -302,6 +344,20 @@ export class ParkingSpotTool extends ToolWithHandler {
 			this.tool.parkignCurveVisualizer.onDefault( parkingCurve );
 
 		} );
+
+	}
+
+	onObjectUpdated ( object: Object ): void {
+
+		if ( object instanceof ParkingCurveInspector ) {
+
+			super.onObjectUpdated( object.parkingCurve );
+
+		} else {
+
+			super.onObjectUpdated( object );
+
+		}
 
 	}
 
