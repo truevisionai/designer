@@ -78,19 +78,13 @@ export class SharpArrowObject extends Mesh {
 
 		this.name = 'SharpArrowObject';
 
-		// Compute the direction vector from the heading
-		const direction = new Vector3( Math.cos( hdg ), Math.sin( hdg ), 0 );
+		/// Set the object's rotation.
+		// The arrow is assumed to be oriented upward by default.
+		// To have it point in the direction defined by hdg (in radians),
+		// rotate it around the Z-axis by hdg - Math.PI/2.
+		this.rotation.z = hdg - Math.PI / 2;
 
-		// Compute the quaternion that represents the rotation from +Y to the direction.
-		const quaternion = new Quaternion().setFromUnitVectors( new Vector3( 0, 1, 0 ), direction.normalize() );
-
-		// Create the transformation matrix.
-		const matrix = new Matrix4();
-		matrix.compose( position, quaternion, new Vector3( 1, 1, 1 ) );  // Using uniform scaling.
-
-		// Apply the transformation to the arrow.
-		this.applyMatrix4( matrix );
-
+		this.position.copy( position );
 
 	}
 
