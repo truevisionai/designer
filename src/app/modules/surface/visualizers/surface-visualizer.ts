@@ -57,6 +57,7 @@ export class SurfaceVisualizer extends BaseVisualizer<Surface> {
 
 	clear (): void {
 		this.highlighted.clear();
+		this.splineDebugService.clear();
 	}
 
 }

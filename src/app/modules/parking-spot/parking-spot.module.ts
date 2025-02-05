@@ -1,15 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TOOL_PROVIDERS } from "../../tools/tool";
-import { ParkingSpotTool, ParkingSpotToolService } from "./parking-spot.tool";
+import { ParkingCurveController, ParkingCurvePointController, ParkingCurveService, ParkingCurveVisualizer, ParkingSpotTool, ParkingSpotToolService } from "./parking-spot.tool";
+import { ParkingCurveCreator, ParkingCurvePointCreator } from "./services/parking-spot-creation-strategy";
 
-const Controllers = [];
-
-const Services = [
-	ParkingSpotToolService
+const Controllers = [
+	ParkingCurvePointController,
+	ParkingCurveController,
 ];
 
-const Views = [];
+const Services = [
+	ParkingSpotToolService,
+	ParkingCurveCreator,
+	ParkingCurvePointCreator,
+	ParkingCurveService,
+];
+
+const Views = [
+	ParkingCurveVisualizer
+];
 
 @NgModule( {
 	imports: [

@@ -342,7 +342,7 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			description: '',
 			track: 'button',
 			tooltip: 'Parking Spot Tool',
-			click: () => this.loadToolModule( ToolType.ParkingSpot ),
+			click: () => this.setToolType( ToolType.ParkingSpot ),
 			enabled: true,
 		},
 		{

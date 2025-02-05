@@ -16,6 +16,7 @@ import { Object3D, Vector2 } from "three";
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { ManagedMap } from "../../core/models/managed-map";
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
+import { ParkingCurve } from "app/modules/parking-spot/services/parking-curve";
 
 export class TvMap {
 
@@ -296,6 +297,24 @@ export class TvMap {
 
 		this.clear();
 
+	}
+
+	private parkingCurves: ParkingCurve[] = [];
+
+	getParkingCurves (): readonly ParkingCurve[] {
+		return this.parkingCurves;
+	}
+
+	addParkingCurve ( parkingCurve: ParkingCurve ): void {
+		this.parkingCurves.push( parkingCurve );
+	}
+
+	removeParkingCurve ( parkingCurve: ParkingCurve ): void {
+		this.parkingCurves.splice( this.parkingCurves.indexOf( parkingCurve ), 1 );
+	}
+
+	hasParkingCurve ( parkingCurve: ParkingCurve ): boolean {
+		return this.parkingCurves.includes( parkingCurve );
 	}
 
 	/**
