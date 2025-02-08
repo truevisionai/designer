@@ -16,7 +16,6 @@ import {
 	ModelNotFoundException
 } from 'app/exceptions/exceptions';
 import { MapEvents } from 'app/events/map-events';
-import { findIntersectionsViaBox2D } from 'app/services/spline/spline-intersection.service';
 import { SplineSegmentProfile } from './spline-segment-profile';
 import { SplineLinks } from './spline-links';
 import { TvContactPoint } from 'app/map/models/tv-common';
@@ -27,6 +26,7 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { SplineType } from './spline-type';
 import { SplineIntersection } from "../../services/junction/spline-intersection";
 import { MathUtils } from 'three';
+import { findIntersectionsViaBox2D } from "../../services/spline/spline-intersection-helper";
 
 export type NewSegment = TvRoad | TvJunction | null;
 
@@ -108,6 +108,10 @@ export abstract class AbstractSpline {
 
 	getControlPoints (): AbstractControlPoint[] {
 		return this.controlPoints;
+	}
+
+	setControlPoints ( points: AbstractControlPoint[] ): void {
+		this.controlPoints = points;
 	}
 
 	addControlPoint ( value: AbstractControlPoint | Vector3 ): AbstractControlPoint {

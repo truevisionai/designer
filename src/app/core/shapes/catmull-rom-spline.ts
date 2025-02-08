@@ -44,6 +44,14 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
+	setControlPoints ( points: AbstractControlPoint[] ): void {
+
+		super.setControlPoints( points );
+
+		this.update();
+
+	}
+
 	override getLength (): number {
 
 		return this.curve?.getLength();

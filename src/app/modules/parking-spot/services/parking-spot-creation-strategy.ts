@@ -5,7 +5,7 @@ import { DynamicControlPoint } from "../../../objects/dynamic-control-point";
 import { ValidationFailed, ValidationPassed, ValidationResult } from "app/core/interfaces/creation-strategy";
 import { MapService } from "../../../services/map/map.service";
 import { Vector3 } from "three";
-import { ParkingCurve } from "./parking-curve";
+import { ParkingCurve } from "../../../map/parking/parking-curve";
 
 export class ParkingCurvePoint extends DynamicControlPoint<ParkingCurve> {
 

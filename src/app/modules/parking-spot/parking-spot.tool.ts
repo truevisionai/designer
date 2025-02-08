@@ -4,7 +4,7 @@ import { BaseToolService } from "../../tools/base-tool.service";
 import { ToolWithHandler } from "../../tools/base-tool-v2";
 import { ToolType } from "../../tools/tool-types.enum";
 import { ParkingCurveCreator, ParkingCurvePoint, ParkingCurvePointCreator } from "./services/parking-spot-creation-strategy";
-import { ParkingCurve, ParkingSpot } from "./services/parking-curve";
+import { ParkingCurve } from "../../map/parking/parking-curve";
 import { PointSelectionStrategy } from "app/core/strategies/select-strategies/control-point-strategy";
 import { PointVisualizer } from "app/tools/maneuver/point-visualizer";
 import { PointController } from "app/core/controllers/point-controller";
@@ -13,13 +13,16 @@ import { MapService } from "app/services/map/map.service";
 import { SplineDebugService } from "app/services/debug/spline-debug.service";
 import { BaseVisualizer } from "app/core/visualizers/base-visualizer";
 import { SimpleControlPointDragHandler } from "app/core/drag-handlers/point-drag-handler.service";
-import { BoxGeometry, Mesh, MeshBasicMaterial, Object3D } from "three";
+import { Object3D } from "three";
 import { SharpArrowObject } from "app/objects/lane-arrow-object";
 import { Object3DArrayMap } from "app/core/models/object3d-array-map";
 import { ObjectUserDataStrategy } from "app/core/strategies/select-strategies/object-user-data-strategy";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { Commands } from "app/commands/commands";
 import { SerializedField, SerializedAction } from "app/core/components/serialization";
+import { LineView } from "app/tools/lane/visualizers/line.view";
+import { Polygon } from "app/tools/lane/visualizers/polygon-view";
+import { ParkingRegion } from "../../map/parking/parking-region";
 
 
 @Injectable()
@@ -44,19 +47,19 @@ export class ParkingCurveService {
 
 	getParkingCurves (): readonly ParkingCurve[] {
 
-		return this.mapService.map.getParkingCurves();
+		return this.mapService.map.getParkingGraph().getParkingCurves();
 
 	}
 
 	add ( parkingCurve: ParkingCurve ): void {
 
-		this.mapService.map.addParkingCurve( parkingCurve );
+		this.mapService.map.getParkingGraph().addParkingCurve( parkingCurve );
 
 	}
 
 	remove ( parkingCurve: ParkingCurve ): void {
 
-		this.mapService.map.removeParkingCurve( parkingCurve );
+		this.mapService.map.getParkingGraph().removeParkingCurve( parkingCurve );
 
 	}
 
@@ -141,7 +144,7 @@ export class ParkingCurvePointController extends PointController<ParkingCurvePoi
 @Injectable()
 export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
-	private spots: Object3DArrayMap<any, Object3D[]> = new Object3DArrayMap();
+	private objects: Object3DArrayMap<any, Object3D[]> = new Object3DArrayMap();
 
 	constructor (
 		private splineDebugService: SplineDebugService,
@@ -197,7 +200,9 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 	onRemoved ( object: ParkingCurve ): void {
 
-		this.spots.removeKey( object );
+		super.removeFromHighlighted( object );
+
+		this.objects.removeKey( object );
 
 		this.splineDebugService.removePolyline( object.getSpline() );
 		this.splineDebugService.removeControlPoints( object.getSpline() );
@@ -216,40 +221,38 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		this.splineDebugService.clear();
 
-		this.spots.clear();
+		this.objects.clear();
 
 	}
 
 	private showSpots ( parkingCurve: ParkingCurve ): void {
 
-		this.spots.removeKey( parkingCurve );
+		this.objects.removeKey( parkingCurve );
 
-		parkingCurve.getParkingSpots().forEach( spot => {
+		parkingCurve.generatePreviewRegions().forEach( region => {
 
-			const spotArrow = new SharpArrowObject( spot.getPosition(), spot.heading );
-			const spotBox = this.createSpotBox( spot, parkingCurve );
+			const arrowObject = new SharpArrowObject( region.getCenter(), region.heading );
+			const edgeObject = LineView.create( region.getPoints(), 1 );
+			const regionObject = this.createRegionObject( region, parkingCurve );
 
-			this.spots.addItem( parkingCurve, spotBox );
-			this.spots.addItem( parkingCurve, spotArrow );
+			this.objects.addItem( parkingCurve, arrowObject );
+			this.objects.addItem( parkingCurve, regionObject );
+			this.objects.addItem( parkingCurve, edgeObject );
 
 		} );
 
 	}
 
-	private createSpotBox ( parkingSpot: ParkingSpot, parkingCurve: ParkingCurve ): Mesh {
+	private createRegionObject ( region: ParkingRegion, parkingCurve: ParkingCurve ): Object3D {
 
-		const boxGeometry = new BoxGeometry( parkingSpot.width, parkingSpot.length, 0.1 );
-		const material = new MeshBasicMaterial( { color: 0x00ff00, transparent: true, opacity: 0.2 } );
-		const mesh = new Mesh( boxGeometry, material );
+		const regionObject = Polygon.create( region.getPoints() );
 
-		mesh.position.copy( parkingSpot.getPosition() );
-		mesh.rotation.z = parkingSpot.heading - Math.PI / 2;
-		mesh.scale.multiplyScalar( 0.9 );
+		regionObject.material.transparent = true;
+		regionObject.material.opacity = 0.001;
+		regionObject.userData.parkingCurve = parkingCurve;
+		regionObject[ 'tag' ] = ParkingCurve.tag;
 
-		mesh.userData.parkingCurve = parkingCurve;
-		mesh[ 'tag' ] = ParkingCurve.tag;
-
-		return mesh;
+		return regionObject;
 
 	}
 
