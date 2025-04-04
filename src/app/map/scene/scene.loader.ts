@@ -83,6 +83,7 @@ import { PropCurvePoint } from 'app/modules/prop-curve/objects/prop-curve-point'
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
 import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
+import { ParkingGraph } from '../parking/parking-graph';
 
 @Injectable( {
 	providedIn: 'root'
@@ -214,6 +215,16 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		} );
 
 		this.readEnvironment( xml.environment );
+
+		this.loadParkingGraph( xml.parkingGraph );
+
+	}
+
+	loadParkingGraph ( xml: XmlElement ): void {
+
+		if (!xml) return;
+
+		this.map.setParkingGraph( ParkingGraph.fromSceneJSON( xml ) )
 
 	}
 

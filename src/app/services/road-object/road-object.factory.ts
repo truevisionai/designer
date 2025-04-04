@@ -8,11 +8,34 @@ import { TvObjectOutline } from 'app/map/models/objects/tv-object-outline';
 import { TvRoadObject, TvRoadObjectType } from 'app/map/models/objects/tv-road-object';
 import { TvObjectMarking } from 'app/map/models/tv-object-marking';
 import { CornerRoadFactory } from './corner-road.factory';
+import { TvPosTheta } from 'app/map/models/tv-pos-theta';
+import { Box2, Vector2 } from 'app/core/maths';
+import { TvOrientation } from 'app/map/models/tv-common';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class RoadObjectFactory {
+
+	static createParkingSpaceObject ( coord: TvRoadCoord | TvPosTheta, size: Vector2, heading: number ): TvRoadObject {
+
+		const id = TvRoadObject.counter++;
+		const name = `parkingSpace${ id }`;
+
+		const object = new TvRoadObject(
+			TvRoadObjectType.parkingSpace, name, id, coord.s, coord.t,
+		);
+
+		object.zOffset = 0;
+		object.length = size.y;
+		object.width = size.x;
+		object.hdg = heading;
+		object.orientation = TvOrientation.NONE;
+		// object.outline = region.toOutline(); // If OpenDRIVE 1.6+
+
+		return object;
+
+	}
 
 	static createMockRoadObject (): TvRoadObject {
 

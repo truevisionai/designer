@@ -2,7 +2,7 @@ import { Vector3 } from "app/core/maths";
 
 import { ParkingGraph } from "./parking-graph";
 
-fdescribe( 'ParkingGraph', () => {
+describe( 'ParkingGraph', () => {
 
 	let parkingGraph: ParkingGraph;
 

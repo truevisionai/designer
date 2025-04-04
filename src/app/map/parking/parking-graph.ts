@@ -4,6 +4,7 @@ import { ParkingCurve } from "./parking-curve";
 import { ParkingEdge } from "./parking-edge";
 import { ParkingNode } from "./parking-node";
 import { ParkingRegion } from "./parking-region";
+import { readXmlArray } from "app/utils/xml-utils";
 
 export class ParkingGraph {
 
@@ -21,6 +22,7 @@ export class ParkingGraph {
 	}
 
 	addParkingCurve ( parkingCurve: ParkingCurve ): void {
+		parkingCurve.setParkingGraph( this );
 		this.parkingCurves.push( parkingCurve );
 	}
 
@@ -43,6 +45,53 @@ export class ParkingGraph {
 
 	getEdges (): ParkingEdge[] {
 		return this.edges;
+	}
+
+	addEdge ( edge: ParkingEdge ): void {
+		this.edges.push( edge );
+	}
+
+	removeEdge ( edge: ParkingEdge ): void {
+		const index = this.edges.indexOf( edge );
+		if ( index === -1 ) {
+			throw new Error( `Edge with id ${ edge.id } not found` );
+		} else {
+			this.edges.splice( index, 1 );
+		}
+	}
+
+	addNode ( node: ParkingNode ): void {
+		this.nodes.push( node );
+	}
+
+	removeNode ( node: ParkingNode ): void {
+		const index = this.nodes.indexOf( node );
+		if ( index === -1 ) {
+			throw new Error( `Node with id ${ node.id } not found` );
+		} else {
+			this.nodes.splice( index, 1 );
+		}
+	}
+
+	addRegion ( region: ParkingRegion ): void {
+		this.regions.push( region );
+	}
+
+	addRegions ( regions: ParkingRegion[] ): void {
+		regions.forEach( region => this.addRegion( region ) );
+	}
+
+	removeRegion ( region: ParkingRegion ): void {
+		const index = this.regions.indexOf( region );
+		if ( index === -1 ) {
+			throw new Error( `Region with id ${ region.id } not found` );
+		} else {
+			this.regions.splice( index, 1 );
+		}
+	}
+
+	removeRegions ( regions: ParkingRegion[] ): void {
+		regions.forEach( region => this.removeRegion( region ) );
 	}
 
 	getEdgeCount (): number {
@@ -112,10 +161,7 @@ export class ParkingGraph {
 	public getOrCreateEdge ( start: ParkingNode, end: ParkingNode ): ParkingEdge {
 		// Ensure consistent ordering if needed
 		// Could search for an existing edge with the same node references
-		const existing = this.edges.find( e =>
-			( e.startNode === start && e.endNode === end ) ||
-			( e.startNode === end && e.endNode === start )
-		);
+		const existing = this.edges.find( e => e.matches( start, end ) || e.matches( end, start ) );
 		if ( existing ) return existing;
 
 		// Otherwise create new
@@ -125,11 +171,30 @@ export class ParkingGraph {
 	}
 
 	public createRegion ( edgeList: ParkingEdge[] ): ParkingRegion {
-		const region = new ParkingRegion();
+		const region = new ParkingRegion( 0 );
 		region.setEdges( edgeList );
 		// Let the region know about the edges
 		this.regions.push( region );
 		return region;
 	}
 
+	static fromSceneJSON ( json: any ): ParkingGraph {
+		const graph = new ParkingGraph();
+		// graph.nodes = json.nodes.map( ( node: any ) => ParkingNode.fromSceneJSON( node ) );
+		// graph.edges = json.edges.map( ( edge: any ) => ParkingEdge.fromSceneJSON( edge, graph ) );
+		// graph.regions = json.regions.map( ( region: any ) => ParkingRegion.fromSceneJSON( region, graph ) );
+		readXmlArray( json.parkingCurves, ( curve: any ) => {
+			graph.addParkingCurve( ParkingCurve.fromSceneJSON( curve ) );
+		} );
+		return graph;
+	}
+
+	toSceneJSON (): any {
+		return {
+			nodes: this.nodes.map( node => node.toSceneJSON() ),
+			edges: this.edges.map( edge => edge.toSceneJSON() ),
+			regions: this.regions.map( region => region.toSceneJSON() ),
+			parkingCurves: this.parkingCurves.map( curve => curve.toSceneJSON() )
+		}
+	}
 }

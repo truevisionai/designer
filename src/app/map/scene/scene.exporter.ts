@@ -104,7 +104,8 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			surface: map.getSurfaces().map( surface => this.exportSurface( surface ) ),
 			spline: map.getSplines().map( spline => this.splineExporter.export( spline ) ),
 			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
-			environment: this.threeService.environment.export()
+			environment: this.threeService.environment.export(),
+			parkingGraph: map.getParkingGraph().toSceneJSON(),
 		};
 
 	}

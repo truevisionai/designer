@@ -1,8 +1,8 @@
 import { Vector3 } from "three";
 import { ParkingCurve } from "./parking-curve";
-import { ParkingCurvePoint } from "../../modules/parking-spot/services/parking-spot-creation-strategy";
 import { Maths } from "app/utils/maths";
 import { ParkingGraph } from "./parking-graph";
+import { ParkingCurvePoint } from "../../modules/parking-spot/objects/parking-curve-point";
 
 function createStraightParkingCurve (): ParkingCurve {
 
@@ -15,7 +15,7 @@ function createStraightParkingCurve (): ParkingCurve {
 
 }
 
-fdescribe( 'ParkingCurve', () => {
+describe( 'ParkingCurve', () => {
 
 	let parkingCurve: ParkingCurve;
 
@@ -61,7 +61,7 @@ fdescribe( 'ParkingCurve', () => {
 } );
 
 
-fdescribe( 'ParkingGraph', () => {
+describe( 'ParkingGraph', () => {
 
 	let parkingCurve: ParkingCurve;
 	let parkingGraph: ParkingGraph;
@@ -100,5 +100,54 @@ fdescribe( 'ParkingGraph', () => {
 
 	} );
 
+} );
+
+
+
+describe( 'ParkingGraph Import/Export', () => {
+
+	let parkingCurve: ParkingCurve;
+	let parkingGraph: ParkingGraph;
+
+	beforeEach( () => {
+
+		parkingGraph = new ParkingGraph();
+		parkingCurve = parkingGraph.createParkingCurve( [ new Vector3( 0, 0 ), new Vector3( 5, 0 ) ] );
+
+		parkingGraph.bakeCurve( parkingCurve );
+
+	} );
+
+	it( 'should export parking node', () => {
+
+		const json = parkingGraph.toSceneJSON();
+
+		expect( json.nodes.length ).toBe( 9 );
+		expect( json.edges.length ).toBe( 12 );
+		expect( json.regions.length ).toBe( 4 );
+		expect( json.parkingCurves.length ).toBe( 0 );
+
+	} );
+
+	it( 'should export parking edge', () => {
+
+		const edge = parkingGraph.getEdges()[ 0 ];
+
+		const json = edge.toSceneJSON();
+
+		expect( json ).toEqual( {
+			id: edge.id,
+			startNodeId: edge.getStartNode().id,
+			endNodeId: edge.getEndNode().id,
+			markingGuid: edge.getMarkingGuid()
+		} );
+
+	} );
+
+	it( 'should export parking curve', () => {
+
+		//
+
+	} );
 
 } );

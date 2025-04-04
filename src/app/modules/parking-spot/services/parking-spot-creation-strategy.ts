@@ -1,24 +1,10 @@
 import { Injectable } from "@angular/core";
 import { FreeValidationCreationStrategy } from "../../../core/interfaces/base-creation-strategy";
 import { PointerEventData } from "../../../events/pointer-event-data";
-import { DynamicControlPoint } from "../../../objects/dynamic-control-point";
 import { ValidationFailed, ValidationPassed, ValidationResult } from "app/core/interfaces/creation-strategy";
 import { MapService } from "../../../services/map/map.service";
-import { Vector3 } from "three";
 import { ParkingCurve } from "../../../map/parking/parking-curve";
-
-export class ParkingCurvePoint extends DynamicControlPoint<ParkingCurve> {
-
-	setPosition ( position: Vector3 ): void {
-		super.setPosition( position );
-		this.mainObject.update();
-	}
-
-	update (): void {
-		super.update();
-	}
-
-}
+import { ParkingCurvePoint } from "../objects/parking-curve-point";
 
 @Injectable()
 export class ParkingCurveCreator extends FreeValidationCreationStrategy<ParkingCurve> {
