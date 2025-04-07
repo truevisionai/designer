@@ -82,6 +82,10 @@ export class TvLaneHeight {
 		return new TvLaneHeight( this.sOffset, this.inner, this.outer );
 	}
 
+	toString (): string {
+		return `LaneHeight: s:${ this.sOffset } inner:${ this.inner } outer:${ this.outer }`;
+	}
+
 }
 
 

@@ -666,6 +666,10 @@ export class TvLane implements ISelectable, IHasUpdate {
 			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d ) );
 		} );
 
+		this.height.forEach( height => {
+			newLane.addHeightRecordInstance( new TvLaneHeight( height.sOffset, height.inner, height.outer ) );
+		} );
+
 		this.roadMarks.forEach( roadMark => {
 			const clone = roadMark.clone( roadMark.sOffset, newLane );
 			newLane.roadMarks.set( clone.s, clone );
