@@ -7,6 +7,11 @@ import { TvBoundarySegmentType, TvJunctionSegmentBoundary } from "./tv-junction-
 import { createRoadDistance, RoadDistance } from "../road/road-distance";
 import { Log } from "app/core/utils/log";
 
+// TODO: remove this
+// this is a temporary bug fix for the height of the lane boundary
+// it should be removed when the height is fixed in the road
+const TEMP_BUG_FIX_HEIGHT = false;
+
 /**
  * // roadId="8" boundaryLane="-2" sStart="begin" sEnd="end"
  * // ususally for connecting roads
@@ -83,11 +88,6 @@ export class TvLaneBoundary extends TvJunctionSegmentBoundary {
 	}
 
 	private getBoundaryPositions ( stepSize: number, location: TvLaneLocation ): TvPosTheta[] {
-
-		// TODO: remove this
-		// this is a temporary bug fix for the height of the lane boundary
-		// it should be removed when the height is fixed in the road
-		const TEMP_BUG_FIX_HEIGHT = false;
 
 		const positions: TvPosTheta[] = [];
 
