@@ -51,6 +51,12 @@ import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model
 import { ThirdOrderPolynom } from '../models/third-order-polynom';
 import { TvLaneProfile } from "../models/tv-lane-profile";
 import { GeometryExporter } from "../scene/geometry-exporter";
+import { ParkingGraph } from '../parking/parking-graph';
+import { ParkingRegion } from '../parking/parking-region';
+import { RoadService } from 'app/services/road/road.service';
+import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
+import { Vector2 } from 'app/core/maths';
+import { RoadUtils } from 'app/utils/road.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -61,7 +67,12 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	public map: TvMap;
 
-	constructor ( private geometryExporter: GeometryExporter ) {
+	private parkingSpaceObjects: Map<number, TvRoadObject[]> = new Map();
+
+	constructor (
+		private geometryExporter: GeometryExporter,
+		private roadService: RoadService,
+	) {
 	}
 
 	exportAsString ( asset: TvMap ): string {
@@ -125,13 +136,83 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			'OpenDRIVE': rootNode
 		};
 
+		this.createParkingSpaceObjects( map.getParkingGraph() );
+
 		map.getRoads().forEach( road => {
 
 			this.writeRoad( rootNode, road );
 
 		} );
 
+		this.removeParkingSpaceObjects();
+
 		return xmlDocument;
+	}
+
+	private removeParkingSpaceObjects (): void {
+
+		this.parkingSpaceObjects.forEach( objects => {
+
+			objects.forEach( object => {
+
+				object.road.removeRoadObject( object );
+
+			} );
+
+		} );
+
+		this.parkingSpaceObjects.clear();
+
+	}
+
+	private createParkingSpaceObjects ( parkingGraph: ParkingGraph ): void {
+
+		parkingGraph.getParkingCurves().forEach( parkingCurve => {
+
+			parkingCurve.generatePreviewRegions().forEach( region => {
+
+				this.createParkingSpaceObject( region );
+
+			} );
+
+		} )
+
+		parkingGraph.getRegions().forEach( region => {
+
+			this.createParkingSpaceObject( region );
+
+		} )
+
+	}
+
+	private createParkingSpaceObject ( region: ParkingRegion, targetRoad?: TvRoad ): TvRoadObject {
+
+		const road = targetRoad || this.roadService.findNearestRoad( region.getCenterPosition() );
+
+		if ( !road ) {
+			return;
+		}
+
+		const center = region.getCenterPosition(); // Or compute from edges
+		const coord = road.getPosThetaByPosition( center );
+		const box = region.getBoundingBox();
+		const heading = RoadUtils.getRelativeHeading( coord.hdg, region.heading );
+		const size = new Vector2();
+
+		box.getSize( size )
+
+		const roadObject = RoadObjectFactory.createParkingSpaceObject( coord, size, heading );
+
+		road.addRoadObject( roadObject );
+
+		if ( this.parkingSpaceObjects.has( road.id ) ) {
+			this.parkingSpaceObjects.get( road.id ).push( roadObject );
+		} else {
+			this.parkingSpaceObjects.set( road.id, [ roadObject ] );
+		}
+
+		return roadObject;
+
 	}
 
 	/**

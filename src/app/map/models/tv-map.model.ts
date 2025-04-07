@@ -16,6 +16,7 @@ import { Object3D, Vector2 } from "three";
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { ManagedMap } from "../../core/models/managed-map";
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
+import { ParkingGraph } from "../parking/parking-graph";
 
 export class TvMap {
 
@@ -49,6 +50,8 @@ export class TvMap {
 
 	private splines: AbstractSpline[] = [];
 
+	private parkingGraph: ParkingGraph;
+
 	constructor () {
 
 		this.surfaceGroup = new Object3DMap( this.gameObject );
@@ -60,6 +63,8 @@ export class TvMap {
 		this.propPolygonsGroup = new Object3DMap( this.gameObject );
 
 		this.header = new TvMapHeader();
+
+		this.parkingGraph = new ParkingGraph();
 
 	}
 
@@ -305,6 +310,36 @@ export class TvMap {
 		this.clear();
 
 	}
+
+	getParkingGraph (): ParkingGraph {
+		return this.parkingGraph;
+	}
+
+	setParkingGraph ( parkingGraph: ParkingGraph ): void {
+		this.parkingGraph = parkingGraph;
+	}
+
+	// getParkingCurves (): readonly ParkingCurve[] {
+	// 	return this.parkingGraph.getCurves();
+	// }
+
+	// addParkingCurve ( parkingCurve: ParkingCurve ): void {
+	// 	this.parkingCurves.push( parkingCurve );
+	// }
+
+	// removeParkingCurve ( parkingCurve: ParkingCurve ): void {
+	// 	const index = this.parkingCurves.indexOf( parkingCurve );
+	// 	if ( index === - 1 ) {
+	// 		throw new ModelNotFoundException( `ParkingCurve with id ${ parkingCurve.id } not found` );
+	// 	} else {
+	// 		this.parkingCurves.splice( index, 1 );
+	// 		console.log( 'ParkingCurve removed', parkingCurve );
+	// 	}
+	// }
+
+	// hasParkingCurve ( parkingCurve: ParkingCurve ): boolean {
+	// 	return this.parkingCurves.includes( parkingCurve );
+	// }
 
 	/**
 	 * Clears the OpenDrive structure, could be used to start a new document

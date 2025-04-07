@@ -281,6 +281,13 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 			if ( roadIdsToIgnore.includes( road.id ) ) continue;
 
+			// // TODO: faster way to check if point is inside road bounding box
+			// if ( !road.boundingBox.expandByScalar( 1 ).containsPoint( point ) ) {
+			// 	continue;
+			// } else {
+			// 	console.warn( 'Road ', road.toString() );
+			// }
+
 			for ( const geometry of road.geometries ) {
 
 				const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );

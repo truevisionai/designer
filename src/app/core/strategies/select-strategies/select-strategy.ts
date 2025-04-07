@@ -199,7 +199,7 @@ export abstract class BaseSelectionStrategy<T> implements SelectionStrategy<T> {
 			.filter( intersection => intersection.object !== undefined )
 			.map( intersection => intersection.object );
 
-		return objects.find( ( object: Object3D ) => object[ 'tag' ] === tag );
+		return objects.find( ( object: Object3D ) => object[ 'tag' ] === tag || object.userData.tag === tag );
 
 	}
 

@@ -50,11 +50,17 @@ export class DepPointStrategy<T extends AbstractControlPoint> extends BaseSelect
 			.filter( i => i.object.visible )
 			.filter( i => i.object.type === 'Points' );
 
-		const nearest = this.findNearestObject( pointerEventData.point, intersections );
+		let nearest: any;
+
+		if ( this.options?.tag !== null ) {
+			nearest = this.findByTag( this.options.tag, intersections );
+		} else {
+			nearest = this.findNearestObject( pointerEventData.point, intersections );
+		}
 
 		if ( !nearest ) return;
 
-		this.selected = nearest as any;
+		this.selected = nearest as unknown as T;
 
 		if ( this.options?.higlightOnSelect ) {
 			this.selected?.select();
@@ -65,7 +71,7 @@ export class DepPointStrategy<T extends AbstractControlPoint> extends BaseSelect
 		}
 
 		if ( this.options?.returnTarget ) {
-			return this.selected?.target;
+			return this.selected?.target || this.selected?.mainObject;
 		}
 
 		return this.selected;
@@ -118,6 +124,7 @@ export class PointSelectionStrategy extends DepPointStrategy<AbstractControlPoin
 			higlightOnSelect: options?.higlightOnSelect || false,
 			tag: options?.tag || null,
 			returnParent: options?.returnParent || false,
+			returnTarget: options?.returnTarget || false
 		} );
 
 	}

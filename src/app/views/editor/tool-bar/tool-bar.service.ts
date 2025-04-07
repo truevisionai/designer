@@ -85,4 +85,20 @@ export class ToolBarService {
 
 	}
 
+	async loadToolModule ( toolType: ToolType ): Promise<void> {
+
+		if ( ToolManager.isCurrentTool( toolType ) ) {
+			return;
+		}
+
+		const tool = await this.toolFactory.loadToolModule( toolType );
+
+		if ( !tool ) {
+			TvConsole.error( `Tool not found for type: ${ toolType }` );
+			return
+		}
+
+		this.setTool( tool );
+
+	}
 }

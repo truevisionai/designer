@@ -14,20 +14,12 @@ import {
 } from '@angular/core';
 import { SatPopover } from '@ncstate/sat-popover';
 import { ToolType } from 'app/tools/tool-types.enum';
-import { CommandHistory } from 'app/commands/command-history';
 import { ToolManager } from '../../../managers/tool-manager';
 import { ThreeService } from '../../../renderer/three.service';
-import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import {
-	EnvironmentInspectorComponent
-} from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { Environment } from 'app/core/utils/environment';
 import { ToolBarService } from './tool-bar.service';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Tool } from "../../../tools/tool";
-import {
-	WorldSettingInspectorComponent
-} from 'app/views/inspectors/world-setting-inspector/world-setting-inspector.component';
 
 class IToolMenu {
 	id: string;
@@ -340,17 +332,17 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			enabled: true,
 		},
 		{
-			id: 'showParkingTool',
-			label: 'Parking Tool',
+			id: 'showParkingSpotTool',
+			label: 'Parking Spot',
 			class: 'toolbar-button',
-			toolType: ToolType.Parking,
-			action: 'parking-tool',
+			toolType: ToolType.ParkingSpot,
+			action: 'parking-Spot-tool',
 			icon: 'local_parking',
-			title: 'Parking Tool',
+			title: 'Parking Spot Tool',
 			description: '',
 			track: 'button',
-			tooltip: 'Parking Tool',
-			click: () => this.setToolType( ToolType.Parking ),
+			tooltip: 'Parking Spot Tool',
+			click: () => this.setToolType( ToolType.ParkingSpot ),
 			enabled: true,
 		},
 		{
@@ -607,4 +599,8 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	}
 
+	private async loadToolModule ( toolType: ToolType ): Promise<void> {
+
+		await this.toolBarService.loadToolModule( toolType );
+	}
 }

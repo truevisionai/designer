@@ -40,6 +40,7 @@ import { SurfaceToolModule } from './modules/surface/surface.module';
 import { RoadElevationModule } from './modules/road-elevation/road-elevation.module';
 import { CrosswalkToolModule } from './modules/crosswalk/crosswalk-tool.module';
 import { JunctionToolModule } from "./modules/junction/junction.module";
+import { ParkingSpotModule } from './modules/parking-spot/parking-spot.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ): TranslateHttpLoader {
@@ -77,6 +78,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		RoadElevationModule,
 		CrosswalkToolModule,
 		JunctionToolModule,
+		ParkingSpotModule,
 
 		TranslateModule.forRoot( {
 			loader: {

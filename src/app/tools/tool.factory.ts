@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Inject, Injectable, Injector } from '@angular/core';
+import { Compiler, Inject, Injectable, Injector, NgModuleFactory, NgModuleRef } from '@angular/core';
 import { ToolType } from "./tool-types.enum";
 import { DebugServiceProvider } from "../core/providers/debug-service.provider";
 import { RoadToolHelper } from "./road/road-tool-helper.service";
@@ -61,10 +61,7 @@ import { TrafficLightToolService } from './traffic-light/traffic-light-tool.serv
 import { EntityService } from "../scenario/entity/entity.service";
 import { LaneHeightToolService } from './lane-height/lane-height-tool.service';
 import { DebugConnectionTool, DebugConnectionToolService } from "./debug-connections/debug-connections.tool";
-import {
-	SuperElevationTool,
-	SuperElevationToolHelper
-} from "./road-super-elevation/super-elevation.tool";
+import { SuperElevationTool, SuperElevationToolHelper } from "./road-super-elevation/super-elevation.tool";
 import { ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-user-data-strategy";
 import { Log } from 'app/core/utils/log';
 
@@ -76,6 +73,7 @@ export class ToolFactory {
 	private toolMap = new Map<ToolType, Tool>();
 
 	constructor (
+		private compiler: Compiler,
 		private injector: Injector,
 		private debugFactory: DebugServiceProvider,
 		private roadToolService: RoadToolHelper,
@@ -107,44 +105,7 @@ export class ToolFactory {
 
 		const tool = this.createToolInstance( type );
 
-		if ( tool instanceof BaseTool ) {
-
-			tool.setDebugService( this.debugFactory.createDebugService( type ) );
-
-			tool.setDataService( this.dataServiceProvider.createDataService( type ) );
-
-			tool.setObjectFactory( this.factoryProvider.createFromToolType( type ) );
-
-			tool.setPointFactory( this.pointFactory );
-
-			this.setSelectionStrategies( tool, type );
-
-		} else if ( tool instanceof BaseLaneTool ) {
-
-			tool.debugger = this.debugFactory.createDebugService( type );
-
-			tool.data = this.dataServiceProvider.createLinkedDataService( type );
-
-			tool.factory = this.factoryProvider.createForLaneTool( type );
-
-			tool.debugDrawService = this.debugFactory.debugDrawService;
-
-			this.selectionService.reset();
-
-			if ( type == ToolType.LaneHeight ) {
-
-				this.selectionService.registerStrategy( LanePointNode, new DepPointStrategy() );
-
-				this.selectionService.registerStrategy( DebugLine, new DepSelectLineStrategy() );
-
-				this.selectionService.registerStrategy( TvLane, new DepSelectLaneStrategy() );
-
-				this.selectionService.addMovingStrategy( new MidLaneMovingStrategy() );
-
-			}
-
-			tool.selection = this.selectionService;
-		}
+		this.setToolServices( tool, type );
 
 		return tool;
 	}
@@ -258,6 +219,85 @@ export class ToolFactory {
 	private createRoadTool (): RoadTool {
 
 		return new RoadTool( this.roadToolService );
+
+	}
+
+	async loadToolModule ( toolType: ToolType ): Promise<Tool> {
+
+		if ( this.toolMap.has( toolType ) ) {
+			return this.toolMap.get( toolType );
+		}
+
+		let moduleFactory: NgModuleFactory<any>;
+
+		if ( toolType == ToolType.ParkingSpot ) {
+
+			const { ParkingSpotModule } = await import( 'app/modules/parking-spot/parking-spot.module' );
+
+			// For JIT, compile the module. (In AOT mode, this step is not necessary)
+			moduleFactory = await this.compiler.compileModuleAsync( ParkingSpotModule );
+
+		} else {
+
+			Log.error( 'Tool module not found' );
+			return;
+
+		}
+
+		const moduleRef: NgModuleRef<any> = moduleFactory.create( this.injector );
+
+		const tool = moduleRef.injector.get( TOOL_PROVIDERS ).find( tool => tool.toolType === toolType );
+
+		this.toolMap.set( toolType, tool );
+
+		this.setToolServices( tool, toolType );
+
+		return tool;
+
+	}
+
+	private setToolServices ( tool: Tool, type: ToolType ): void {
+
+		this.selectionService.reset();
+
+		if ( tool instanceof BaseTool ) {
+
+			tool.setDebugService( this.debugFactory.createDebugService( type ) );
+
+			tool.setDataService( this.dataServiceProvider.createDataService( type ) );
+
+			tool.setObjectFactory( this.factoryProvider.createFromToolType( type ) );
+
+			tool.setPointFactory( this.pointFactory );
+
+			this.setSelectionStrategies( tool, type );
+
+		} else if ( tool instanceof BaseLaneTool ) {
+
+			tool.debugger = this.debugFactory.createDebugService( type );
+
+			tool.data = this.dataServiceProvider.createLinkedDataService( type );
+
+			tool.factory = this.factoryProvider.createForLaneTool( type );
+
+			tool.debugDrawService = this.debugFactory.debugDrawService;
+
+			this.selectionService.reset();
+
+			if ( type == ToolType.LaneHeight ) {
+
+				this.selectionService.registerStrategy( LanePointNode, new DepPointStrategy() );
+
+				this.selectionService.registerStrategy( DebugLine, new DepSelectLineStrategy() );
+
+				this.selectionService.registerStrategy( TvLane, new DepSelectLaneStrategy() );
+
+				this.selectionService.addMovingStrategy( new MidLaneMovingStrategy() );
+
+			}
+
+			tool.selection = this.selectionService;
+		}
 
 	}
 }
