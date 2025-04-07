@@ -170,31 +170,83 @@ export class ParkingGraph {
 		return newEdge;
 	}
 
-	public createRegion ( edgeList: ParkingEdge[] ): ParkingRegion {
+	public createRegion ( edges: ParkingEdge[] ): ParkingRegion {
 		const region = new ParkingRegion( 0 );
-		region.setEdges( edgeList );
+		region.setEdges( edges );
 		// Let the region know about the edges
 		this.regions.push( region );
 		return region;
 	}
 
 	static fromSceneJSON ( json: any ): ParkingGraph {
+
 		const graph = new ParkingGraph();
-		// graph.nodes = json.nodes.map( ( node: any ) => ParkingNode.fromSceneJSON( node ) );
-		// graph.edges = json.edges.map( ( edge: any ) => ParkingEdge.fromSceneJSON( edge, graph ) );
-		// graph.regions = json.regions.map( ( region: any ) => ParkingRegion.fromSceneJSON( region, graph ) );
-		readXmlArray( json.parkingCurves, ( curve: any ) => {
+
+		readXmlArray( json.node, ( node: any ) => {
+			graph.addNode( ParkingNode.fromSceneJSON( node ) );
+		} );
+
+		readXmlArray( json.edge, ( json: any ) => {
+
+			const startNode = graph.getNodesById( json.attr_startNodeId );
+			const endNode = graph.getNodesById( json.attr_endNodeId );
+			const markingGuid = json.attr_markingGuid;
+			const id = json.attr_id;
+
+			const edge = new ParkingEdge( startNode, endNode, markingGuid );
+
+			edge.id = id;
+
+			graph.addEdge( edge );
+
+		} );
+
+		readXmlArray( json.region, ( json: any ) => {
+
+			const heading = parseFloat( json.attr_heading );
+
+			const region = new ParkingRegion( heading );
+
+			region.id = json.attr_id;
+
+			readXmlArray( json.edge, ( json: any ) => {
+				region.addEdge( graph.getEdgeById( json.attr_id ) );
+			} );
+
+			graph.addRegion( region );
+
+		} );
+
+		readXmlArray( json.parkingCurve, ( curve: any ) => {
 			graph.addParkingCurve( ParkingCurve.fromSceneJSON( curve ) );
 		} );
+
 		return graph;
+
+	}
+
+	getEdgeById ( edgeId: string ): ParkingEdge {
+		const edge = this.edges.find( edge => edge.id === edgeId );
+		if ( !edge ) {
+			throw new Error( `Edge with id ${ edgeId } not found` );
+		}
+		return edge;
+	}
+
+	getNodesById ( nodeId: string ): ParkingNode {
+		const node = this.nodes.find( node => node.id === nodeId );
+		if ( !node ) {
+			throw new Error( `Node with id ${ nodeId } not found` );
+		}
+		return node;
 	}
 
 	toSceneJSON (): any {
 		return {
-			nodes: this.nodes.map( node => node.toSceneJSON() ),
-			edges: this.edges.map( edge => edge.toSceneJSON() ),
-			regions: this.regions.map( region => region.toSceneJSON() ),
-			parkingCurves: this.parkingCurves.map( curve => curve.toSceneJSON() )
+			node: this.nodes.map( node => node.toSceneJSON() ),
+			edge: this.edges.map( edge => edge.toSceneJSON() ),
+			region: this.regions.map( region => region.toSceneJSON() ),
+			parkingCurve: this.parkingCurves.map( curve => curve.toSceneJSON() )
 		}
 	}
 }

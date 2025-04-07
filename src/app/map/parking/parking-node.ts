@@ -13,9 +13,15 @@ export class ParkingNode {
 
 	static fromSceneJSON ( json: any ): ParkingNode {
 
-		const position = new Vector3().fromArray( json.position );
-		const markingGuid = json.markingGuid;
-		const id = json.id;
+		const position = new Vector3(
+			parseFloat( json.position.attr_x ) ?? 0,
+			parseFloat( json.position.attr_y ) ?? 0,
+			parseFloat( json.position.attr_z ) ?? 0
+		);
+
+		const markingGuid = json.attr_markingGuid;
+
+		const id = json.attr_id;
 
 		const node = new ParkingNode( position, markingGuid );
 
@@ -30,9 +36,13 @@ export class ParkingNode {
 
 	toSceneJSON (): any {
 		return {
-			id: this.id,
-			position: this.position.toArray(),
-			markingGuid: this.markingGuid
+			attr_id: this.id,
+			attr_markingGuid: this.markingGuid,
+			position: {
+				attr_x: this.position?.x,
+				attr_y: this.position?.y,
+				attr_z: this.position?.z
+			},
 		};
 	}
 }

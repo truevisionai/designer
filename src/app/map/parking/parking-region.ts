@@ -9,10 +9,14 @@ export class ParkingRegion {
 
 	private edges: ParkingEdge[] = [];
 
-	public readonly id: string;
+	public id: string;
 
-	constructor ( public readonly heading: number ) {
+	constructor ( public heading: number ) {
 		this.id = MathUtils.generateUUID();
+	}
+
+	setHeading ( heading: number ): void {
+		this.heading = heading;
 	}
 
 	getEdgeCount (): number {
@@ -89,9 +93,13 @@ export class ParkingRegion {
 
 	toSceneJSON (): any {
 		return {
-			id: this.id,
-			heading: this.heading,
-			edges: this.edges.map( edge => edge.toSceneJSON() )
+			attr_id: this.id,
+			attr_heading: this.heading,
+			edge: this.edges.map( edge => {
+				return {
+					attr_id: edge.id
+				};
+			} )
 		};
 	}
 

@@ -29,32 +29,16 @@ export class ParkingEdge {
 		return this.startNode === startNode && this.endNode === endNode;
 	}
 
-	fromSceneJSON ( json: any ): ParkingEdge {
-
-		const startNode = ParkingNode.fromSceneJSON( json.startNode );
-		const endNode = ParkingNode.fromSceneJSON( json.endNode );
-		const markingGuid = json.markingGuid;
-		const id = json.id;
-
-		const edge = new ParkingEdge( startNode, endNode, markingGuid );
-
-		edge.id = id;
-
-		return edge;
-	}
-
 	getNodePositions (): Vector3[] {
-
 		return [ this.startNode.position, this.endNode.position ];
-
 	}
 
 	toSceneJSON (): any {
 		return {
-			id: this.id,
-			startNodeId: this.startNode.id,
-			endNodeId: this.endNode.id,
-			markingGuid: this.markingGuid
+			attr_id: this.id,
+			attr_startNodeId: this.startNode.id,
+			attr_endNodeId: this.endNode.id,
+			attr_markingGuid: this.markingGuid
 		};
 	}
 }

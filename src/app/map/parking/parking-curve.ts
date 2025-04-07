@@ -160,6 +160,7 @@ export class ParkingCurve {
 				}
 
 				const region = graph.createRegion( edges );
+				region.setHeading( center.hdg - Maths.PI2 );
 				newRegions.push( region );
 			}
 
@@ -176,6 +177,7 @@ export class ParkingCurve {
 				}
 
 				const region = graph.createRegion( edges );
+				region.setHeading( center.hdg + Maths.PI2 );
 				newRegions.push( region );
 			}
 
