@@ -95,6 +95,14 @@ export class ParkingSpotTool extends ToolWithHandler {
 
 			this.tool.parkignCurveVisualizer.showParkingGraph( object );
 
+		} else if ( object instanceof ParkingNode ) {
+
+			// NOTE: hack to update parking graph
+
+			const graph = this.tool.mapService.map.getParkingGraph()
+
+			this.tool.parkignCurveVisualizer.updateParkingGraph( graph );
+
 		} else {
 
 			super.onObjectUpdated( object );

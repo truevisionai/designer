@@ -7,6 +7,7 @@ import { ParkingCurvePoint } from "./objects/parking-curve-point";
 import { MapService } from "app/services/map/map.service";
 import { PointVisualizer } from "app/tools/maneuver/point-visualizer";
 import { ParkingNodePoint } from "./objects/parking-node-point";
+import { ToolManager } from "app/managers/tool-manager";
 
 @Injectable()
 export class ParkingCurvePointController extends PointController<ParkingCurvePoint> {
@@ -63,7 +64,7 @@ export class ParkingNodeController extends PointController<ParkingNodePoint> {
 	onUpdated ( point: ParkingNodePoint ): void {
 
 		// point.mainObject.update();
-		console.log( 'onUpdated', point );
+		point.mainObject.position.copy( point.position );
 
 	}
 
@@ -89,7 +90,8 @@ export class ParkingNodeVisualizer extends PointVisualizer<ParkingNodePoint> {
 
 	protected override updateSpline ( object: ParkingNodePoint ): void {
 
-		this.updateVisuals( object.mainObject );
+		// NOTE: hack to update parking graph
+		ToolManager.onObjectUpdated( object.mainObject );
 
 	}
 

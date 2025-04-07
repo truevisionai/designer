@@ -14,7 +14,7 @@ import { ParkingNodePoint } from "./objects/parking-node-point";
 @Injectable()
 export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
-	private objects: Object3DArrayMap<ParkingCurve, Object3D[]> = new Object3DArrayMap();
+	private parkingCurveObjects: Object3DArrayMap<ParkingCurve, Object3D[]> = new Object3DArrayMap();
 
 	private graphObjects: Object3DArrayMap<ParkingGraph, Object3D[]> = new Object3DArrayMap();
 
@@ -74,7 +74,7 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		super.removeFromHighlighted( object );
 
-		this.objects.removeKey( object );
+		this.parkingCurveObjects.removeKey( object );
 
 		this.splineDebugService.removePolyline( object.getSpline() );
 		this.splineDebugService.removeControlPoints( object.getSpline() );
@@ -93,7 +93,7 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		this.splineDebugService.clear();
 
-		this.objects.clear();
+		this.parkingCurveObjects.clear();
 
 		this.graphObjects.clear();
 
@@ -106,6 +106,14 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 			this.onDefault( parkingCurve );
 
 		} );
+
+		this.updateParkingGraph( graph );
+
+	}
+
+	updateParkingGraph ( graph: ParkingGraph ): void {
+
+		this.graphObjects.clear();
 
 		graph.getNodes().forEach( parkinNode => {
 
@@ -121,19 +129,9 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 	}
 
-	updateParkingGraph ( graph: ParkingGraph ): void {
-
-		graph.getParkingCurves().forEach( parkingCurve => {
-
-			this.onUpdated( parkingCurve );
-
-		} )
-
-	}
-
 	private showSpots ( parkingCurve: ParkingCurve ): void {
 
-		this.objects.removeKey( parkingCurve );
+		this.parkingCurveObjects.removeKey( parkingCurve );
 
 		parkingCurve.generatePreviewRegions().forEach( region => {
 
@@ -141,9 +139,9 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 			const edgeObject = LineView.create( region.getPoints(), 1 );
 			const regionObject = this.createRegionObject( region, parkingCurve );
 
-			this.objects.addItem( parkingCurve, arrowObject );
-			this.objects.addItem( parkingCurve, regionObject );
-			this.objects.addItem( parkingCurve, edgeObject );
+			this.parkingCurveObjects.addItem( parkingCurve, arrowObject );
+			this.parkingCurveObjects.addItem( parkingCurve, regionObject );
+			this.parkingCurveObjects.addItem( parkingCurve, edgeObject );
 
 		} );
 
