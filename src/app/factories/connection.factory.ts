@@ -83,6 +83,8 @@ export class ConnectionFactory {
 
 		this.createAndSetSpline( connection, links, incoming, outgoing );
 
+		links.forEach( link => LaneLinkFactory.syncLinks( link, connection ) )
+
 		junction.addConnection( connection );
 
 	}

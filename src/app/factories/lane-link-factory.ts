@@ -67,6 +67,41 @@ export class LaneLinkFactory {
 
 	}
 
+	static syncLinks ( link: TvJunctionLaneLink, connection: TvJunctionConnection ): void {
+
+		return;
+
+		const incomingLane = link.incomingLane;
+		const connectingLame = link.connectingLane;
+		const outgoingLane = link.getOutgoingLane();
+
+		const incomingContact = connection.getIncomingRoadContact();
+		const outgoingContact = connection.getOutgoingRoadContact();
+
+		const entry = incomingLane.toLaneCoord( incomingContact );
+		const exit = outgoingLane.toLaneCoord( outgoingContact );
+
+		this.syncLaneHeight( entry, exit, connectingLame );
+
+	}
+
+	static syncLaneHeight ( previous: TvLaneCoord, next: TvLaneCoord, currentLane: TvLane ): void {
+
+		const previousHeight = previous.getLaneHeight();
+		const nextHeight = next.getLaneHeight();
+
+		previousHeight.sOffset = 0;
+		nextHeight.sOffset = currentLane.getRoad().getLength();
+
+		Assert.is( previousHeight.sOffset, 0, 'Lane height should not be 0' );
+		Assert.isGreaterThan( nextHeight.sOffset, 0, 'Lane height should not be 0' );
+
+		currentLane.clearLaneHeight();
+		currentLane.addHeightRecordInstance( previousHeight.clone() );
+		currentLane.addHeightRecordInstance( nextHeight.clone() );
+
+	}
+
 	private static createNonDrivingLinks ( connection: TvJunctionConnection ): TvJunctionLaneLink[] {
 
 		const entries = connection.getIncomingCoords();

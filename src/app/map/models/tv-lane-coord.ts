@@ -14,6 +14,7 @@ import { TvLink } from './tv-link';
 import { LaneDistance, RoadDistance } from '../road/road-distance';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvLaneRoadMark } from './tv-lane-road-mark';
+import { TvLaneHeight } from '../lane-height/lane-height.model';
 
 export class TvLaneCoord {
 
@@ -105,6 +106,10 @@ export class TvLaneCoord {
 
 	getLaneWidth (): number {
 		return this.lane.getWidthValue( this.laneDistance );
+	}
+
+	getLaneHeight (): TvLaneHeight {
+		return this.lane.getHeightValue( this.laneDistance );
 	}
 
 	getLaneDirectionVector (): Vector3 {
