@@ -194,4 +194,18 @@ export class RoadUtils {
 		}
 
 	}
+
+	static getRelativeHeading ( roadHeading: number, objectHeading: number ): number {
+
+		// Calculate the difference between the object heading and road heading
+		// This gives us the relative heading of the parking space with respect to the road
+		let relativeHeading = objectHeading - roadHeading;
+
+		// Normalize the angle to be within [-π, π]
+		while ( relativeHeading > Math.PI ) relativeHeading -= 2 * Math.PI;
+		while ( relativeHeading < -Math.PI ) relativeHeading += 2 * Math.PI;
+
+		return relativeHeading;
+
+	}
 }

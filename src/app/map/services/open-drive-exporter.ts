@@ -56,6 +56,7 @@ import { ParkingRegion } from '../parking/parking-region';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { Vector2 } from 'app/core/maths';
+import { RoadUtils } from 'app/utils/road.utils';
 
 @Injectable( {
 	providedIn: 'root'
@@ -195,11 +196,12 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		const center = region.getCenterPosition(); // Or compute from edges
 		const coord = road.getPosThetaByPosition( center );
 		const box = region.getBoundingBox();
+		const heading = RoadUtils.getRelativeHeading( coord.hdg, region.heading );
 		const size = new Vector2();
 
 		box.getSize( size )
 
-		const roadObject = RoadObjectFactory.createParkingSpaceObject( coord, size, region.heading );
+		const roadObject = RoadObjectFactory.createParkingSpaceObject( coord, size, heading );
 
 		road.addRoadObject( roadObject );
 
