@@ -84,23 +84,28 @@ export class TvLaneBoundary extends TvJunctionSegmentBoundary {
 
 	private getBoundaryPositions ( stepSize: number, location: TvLaneLocation ): TvPosTheta[] {
 
+		// TODO: remove this
+		// this is a temporary bug fix for the height of the lane boundary
+		// it should be removed when the height is fixed in the road
+		const TEMP_BUG_FIX_HEIGHT = false;
+
 		const positions: TvPosTheta[] = [];
 
 		const start = this.road.getPosThetaAt( createRoadDistance( this.road, this.sStart ) );
 		const end = this.road.getPosThetaAt( createRoadDistance( this.road, this.sEnd ) );
 
-		positions.push( this.road.getLanePosition( this.boundaryLane, start.s + Maths.Epsilon as RoadDistance, location ) );
+		positions.push( this.road.getLanePosition( this.boundaryLane, start.s + Maths.Epsilon as RoadDistance, location, 0, TEMP_BUG_FIX_HEIGHT ) );
 
 		for ( let s = start.s; s <= end.s; s += stepSize ) {
 
 			const posTheta = this.road.getPosThetaAt( s );
-			const position = this.road.getLanePosition( this.boundaryLane, posTheta.s as RoadDistance, location );
+			const position = this.road.getLanePosition( this.boundaryLane, posTheta.s as RoadDistance, location, 0, TEMP_BUG_FIX_HEIGHT );
 
 			positions.push( position );
 
 		}
 
-		positions.push( this.road.getLanePosition( this.boundaryLane, end.s - Maths.Epsilon as RoadDistance, location ) );
+		positions.push( this.road.getLanePosition( this.boundaryLane, end.s - Maths.Epsilon as RoadDistance, location, 0, TEMP_BUG_FIX_HEIGHT ) );
 
 		return positions;
 
