@@ -26,9 +26,11 @@ import { ManeuverMesh } from './maneuver-mesh';
 import { JunctionNode } from './junction-node';
 import { JunctionRoadService } from './junction-road.service';
 import { JunctionOverlay } from './junction-overlay';
-import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { RoadDistance } from 'app/map/road/road-distance';
+import { createGeometryFromBoundary } from 'app/modules/builder/builders/junction-boundary.builder';
+import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
+import { Color } from 'app/core/maths';
 
 @Injectable( {
 	providedIn: 'root'
@@ -53,7 +55,6 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		private debug: DebugDrawService,
 		private mapService: MapService,
 		private junctionRoadService: JunctionRoadService,
-		private junctionBoundaryService: TvJunctionBoundaryService,
 		private junctionDebugFactory: JunctionDebugFactory,
 	) {
 		super();
@@ -139,7 +140,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 			this.meshes.removeKey( junction );
 		}
 
-		const mesh = this.createJunctionMesh( junction );
+		const mesh = this.createJunctionOverlay( junction );
 
 		this.meshes.addItem( junction, mesh );
 
@@ -151,7 +152,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 		if ( !junction.outerBoundary ) {
 			Log.warn( 'OuterBoundaryMissing', junction?.toString() );
-			this.junctionBoundaryService.update( junction );
+			junction.updateBoundary();
 		}
 
 		const geometry = junction.mesh?.geometry.clone() || new BoxGeometry();
@@ -167,14 +168,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	}
 
-	createJunctionMesh ( junction: TvJunction ): JunctionOverlay {
+	createJunctionOverlay ( junction: TvJunction ): JunctionOverlay {
 
-		if ( !junction.innerBoundary ) {
-			Log.warn( 'InnerBoundaryMissing', junction?.toString() );
-			this.junctionBoundaryService.update( junction );
-		}
+		const geometry = createGeometryFromBoundary( junction.outerBoundary );
 
-		const geometry = junction.mesh?.geometry.clone() || new BoxGeometry();
+		// this.debugBoundary( junction.outerBoundary );
 
 		return JunctionOverlay.create( junction, geometry );
 
@@ -373,4 +371,24 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 		this.nodes.clear();
 
 	}
+
+	private debugBoundary ( boundary: TvJunctionBoundary, color: number = ColorUtils.RED ): void {
+
+		boundary.getSegments().forEach( segment => {
+
+			const white = new Color( 1, 1, 1 );
+
+			segment.getOuterPoints().forEach( ( position, index ) => {
+
+				// as the index grows, make the white color will get darker
+				const color = white.clone().multiplyScalar( 1 - index / 10 );
+
+				this.debug.drawText( index.toString(), position.toVector3(), 0.2, color.getHex() );
+
+			} )
+
+		} )
+
+	}
+
 }

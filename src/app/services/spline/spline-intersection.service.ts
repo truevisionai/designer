@@ -45,6 +45,9 @@ export class SplineIntersectionService {
 
 export function findIntersectionsViaBox2D ( splineA: AbstractSpline, splineB: AbstractSpline, stepSize: number = 1 ): SplineIntersection[] | null {
 
+	if ( splineA.getControlPointCount() < 2 ) return [];
+	if ( splineB.getControlPointCount() < 2 ) return [];
+
 	const intersections: SplineIntersection[] = [];
 
 	if ( splineA.equals( splineB ) ) return intersections;

@@ -168,7 +168,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.raycaster.params.Line2 = {
 
-			threshold: 0.5
+			threshold: 10
 		}
 
 		this.raycaster.far = 10000;
@@ -781,22 +781,30 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	adjustRaycasterThreshold (): void {
 
-		const target = this.viewControllerService.getTarget() || new Vector3();
+		/**
+		 *
+		 * @param min  minimum threshold
+		 * @param minDistance distance at which the threshold is minimum
+		 * @param max maximum threshold
+		 * @param maxDistance distance at which the threshold is maximum
+		 * @returns
+		 */
+		function calculateThreshold ( min: number, minDistance: number, max: number, maxDistance: number ): number {
 
+			const normalizedDistance = Math.min( Math.max( ( cameraDistance - minDistance ) / ( maxDistance - minDistance ), 0 ), 1 );
+
+			const threshold = max + ( min - max ) * ( 1 - normalizedDistance );
+
+			return threshold;
+		}
+
+		const target = this.viewControllerService.getTarget() || new Vector3();
 		const cameraDistance = this.cameraService.computeDistance( target );
 
-		// Adjust the threshold based on camera distance
-		const min = 0.1; // minimum threshold
-		const minDistance = 1; // distance at which the threshold is minimum
+		const lineThreshold = calculateThreshold( 10, 100, 20, 1000 );
 
-		const maxDistance = 2500; // distance at which the threshold is maximum
-		const max = 10.0; // maximum threshold
-
-		const normalizedDistance = Math.min( Math.max( ( cameraDistance - minDistance ) / ( maxDistance - minDistance ), 0 ), 1 );
-
-		const threshold = max + ( min - max ) * ( 1 - normalizedDistance );
-
-		this.raycaster.params.Points.threshold = threshold;
+		this.raycaster.params.Points.threshold = calculateThreshold( 0.1, 1, 10, 2500 );
+		this.raycaster.params.Line2.threshold = lineThreshold;
 
 	}
 }

@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvContactPoint, TvLaneSide, TvLaneType, TvOrientation, TvRoadMarkTypes } from 'app/map/models/tv-common';
+import { TvOrientation } from 'app/map/models/tv-common';
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Vector3 } from 'app/core/maths';
@@ -21,10 +21,6 @@ import { RoadDividerService } from "../../services/road/road-divider.service";
 import { JunctionFactory } from "../../factories/junction.factory";
 import { SplineService } from "../../services/spline/spline.service";
 import { SplineGeometryGenerator } from 'app/services/spline/spline-geometry-generator';
-import { TvLaneSection } from 'app/map/models/tv-lane-section';
-import { TvLane } from 'app/map/models/tv-lane';
-import { LaneUtils } from 'app/utils/lane.utils';
-import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineUtils } from "../../utils/spline.utils";
 
@@ -75,151 +71,49 @@ export class RampToolHelper {
 
 	createRampRoad ( startCoord: TvLaneCoord | Vector3, endCoord: TvLaneCoord | Vector3 ): TvRoad {
 
-		const rampRoad = this.roadService.createNewRoad();
+		const rampRoad = RoadFactory.createRampRoad( startCoord, endCoord );
 
-		const spline = this.createSpline( startCoord, endCoord );
-
-		if ( startCoord instanceof TvLaneCoord ) {
-
-			// startCoord.road.neighbors.push( new TvRoadLinkNeighbor( rampRoad, TvContactPoint.START ) );
-
-			// rampRoad.neighbors.push( new TvRoadLinkNeighbor( startCoord.road, null ) );
-
-		}
-
-		this.addLaneSection( startCoord, endCoord, rampRoad );
-
-		// NOTE: This is a hack to make the ramp road work
-		rampRoad.setSplineAndSegment( spline );
-
-		this.splineBuilder.generateGeometryAndBuildSegmentsAndBounds( rampRoad.spline );
+		this.mapService.map.updateRoadId( rampRoad );
 
 		return rampRoad;
 
 	}
 
-	addLaneSection ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3, road: TvRoad ): void {
+	// addLaneSection ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3, road: TvRoad ): void {
 
-		const connectingLaneSection = new TvLaneSection( 0, 0, true, road );
+	// 	// let rightLaneCount = 1;
+	// 	// let leftLaneCount = 1;
 
-		let incomingLanes: TvLane[] = [];
+	// 	// for ( const incomingLane of incomingLanes ) {
 
-		if ( start instanceof TvLaneCoord ) {
-			if ( start.lane.isRight ) {
-				incomingLanes = start.laneSection.getLanes().filter( lane => lane.id < start.laneId );
-			} else {
-				// TODO: check if this is correct
-				incomingLanes = start.laneSection.getLanes().filter( lane => lane.id > start.laneId );
-			}
-		}
+	// 	// 	const lane = connectingLaneSection.createRightLane( -rightLaneCount, incomingLane.type, true, true );
 
-		if ( incomingLanes.find( lane => lane.type == TvLaneType.driving ) == undefined ) {
-			if ( start instanceof TvLaneCoord ) {
-				if ( start.lane.isRight ) {
-					incomingLanes = start.laneSection.getLanes().filter( lane => lane.id <= start.laneId );
-				} else {
-					incomingLanes = start.laneSection.getLanes().filter( lane => lane.id >= start.laneId );
-				}
-			}
-		}
+	// 	// 	LaneUtils.copyPreviousLane( incomingLane, incomingLane.laneSection, incomingLane.laneSection.road, lane );
 
-		const centerLane = connectingLaneSection.createCenterLane( 0, TvLaneType.none, false, false );
+	// 	// 	rightLaneCount++;
 
-		centerLane.addRoadMarkOfType( 0, TvRoadMarkTypes.SOLID );
+	// 	// }
 
-		let rightLaneCount = 1;
-		let leftLaneCount = 1;
+	// 	// for ( const sourceLane of incomingLanes ) {
 
-		for ( const incomingLane of incomingLanes ) {
+	// 	// 	if ( sourceLane.type == TvLaneType.driving ) continue;
 
-			const lane = connectingLaneSection.createRightLane( -rightLaneCount, incomingLane.type, true, true );
+	// 	// 	const lane = connectingLaneSection.createLeftLane( leftLaneCount, sourceLane.type, true, true );
 
-			LaneUtils.copyPreviousLane( incomingLane, incomingLane.laneSection, incomingLane.laneSection.road, lane );
+	// 	// 	LaneUtils.copyPreviousLane( sourceLane, sourceLane.laneSection, sourceLane.laneSection.road, lane );
 
-			rightLaneCount++;
+	// 	// 	leftLaneCount++;
 
-		}
+	// 	// }
 
-		for ( const sourceLane of incomingLanes ) {
+	// 	// road.getLaneProfile().addLaneSection( connectingLaneSection );
 
-			if ( sourceLane.type == TvLaneType.driving ) continue;
-
-			const lane = connectingLaneSection.createLeftLane( leftLaneCount, sourceLane.type, true, true );
-
-			LaneUtils.copyPreviousLane( sourceLane, sourceLane.laneSection, sourceLane.laneSection.road, lane );
-
-			leftLaneCount++;
-
-		}
-
-		road.getLaneProfile().addLaneSection( connectingLaneSection );
-
-	}
+	// }
 
 	createSpline ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): AbstractSpline {
 
-		let v1: Vector3, v2: Vector3, d1: Vector3, d2: Vector3;
+		return SplineFactory.createRampRoadSpline( startPosition, endPosition );
 
-		if ( startPosition instanceof TvLaneCoord ) {
-
-			v1 = startPosition.position;
-
-			d1 = startPosition.laneDirection;
-
-			// add 45 degree angle to the direction
-			// to smooth out the curve
-			// d1.applyAxisAngle( new Vector3( 0, 0, 1 ), -Math.PI / 4 );
-
-		} else if ( startPosition instanceof Vector3 ) {
-
-			v1 = startPosition;
-
-			d1 = new Vector3( 0, 0, 1 );
-
-		}
-
-		if ( endPosition instanceof TvLaneCoord ) {
-
-			v2 = endPosition.position;
-
-			d2 = endPosition.laneDirection.negate();
-
-		} else if ( endPosition instanceof Vector3 ) {
-
-			v2 = endPosition;
-
-			d2 = d1.clone().multiplyScalar( -1 );
-
-		}
-
-		const spline = this.createSplineNew( v1, d1, v2, d2 );
-
-		this.splineBuilder.buildSpline( spline );
-
-		return spline;
-	}
-
-	createSplineNew ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): AbstractSpline {
-
-		// directions must be normalized
-		const d1 = startDirection.clone().normalize();
-
-		const distance = start.distanceTo( end );
-
-		// v2 and v3 are the control points
-		const p1 = start.clone().add( d1.clone().multiplyScalar( Math.min( distance / divider, 30 ) ) );
-
-		// add 45 degree angle to the direction
-		// to smooth out the curve
-		const d2 = d1.applyAxisAngle( new Vector3( 0, 0, 1 ), -Math.PI / 2 );
-		const p2 = p1.clone().add( d2.clone().multiplyScalar( start.distanceTo( p1 ) * 2 ) );
-
-		const spline = SplineFactory.createSpline();
-
-		spline.addControlPoint( start );
-		spline.addControlPoint( end );
-
-		return spline;
 	}
 
 	createReferenceLine ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ): Line2 {

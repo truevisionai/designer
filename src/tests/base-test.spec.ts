@@ -12,6 +12,7 @@ import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Maths } from "app/utils/maths";
 import { ViewManager } from "../app/tools/point-marking/view-manager";
 import { AppInspector } from "../app/core/inspector";
+import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 
 function formatMessage ( road: TvRoad, link: TvLink, distance?: number ) {
 
@@ -219,3 +220,8 @@ export function expectInspectorRemoved () {
 export function expectInspectorSet () {
 	expect( AppInspector.hasInspector() ).toBeTrue();
 }
+
+export function createRampRoad ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3 ): TvRoad {
+	return RoadFactory.createRampRoad( start, end );
+}
+

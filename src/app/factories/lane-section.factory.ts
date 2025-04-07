@@ -5,12 +5,15 @@
 import { Injectable } from "@angular/core";
 import { RoadNode } from "app/objects/road/road-node";
 import { TvRoadCoord } from "app/map/models/TvRoadCoord";
-import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
+import { TurnType, TvContactPoint, TvLaneType, TvOrientation } from "app/map/models/tv-common";
 import { TvLaneSection } from "app/map/models/tv-lane-section";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { LaneUtils } from "app/utils/lane.utils";
 import { TvLink } from "app/map/models/tv-link";
 import { TvLane } from "app/map/models/tv-lane";
+import { TvLaneCoord } from "../map/models/tv-lane-coord";
+import { Vector3 } from "three";
+import { findOrientation, findTurnTypeForRampRoad } from "../map/models/connections/connection-utils";
 
 @Injectable( {
 	providedIn: 'root'
@@ -406,4 +409,94 @@ export class LaneSectionFactory {
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
+	static createForRampRoad ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3 ): TvLaneSection {
+
+		const laneSection = new TvLaneSection( 0, 0, true, null );
+
+		if ( start instanceof TvLaneCoord ) {
+
+			const turnType = findTurnTypeForRampRoad( start, end );
+			const orientation = findOrientation( start, end );
+
+			if ( start.lane.isRight && turnType == TurnType.RIGHT ) {
+
+				if ( orientation == TvOrientation.PLUS ) {
+					// EXIT
+					start.laneSection.getLanesAfter( start.lane ).forEach( ( lane ) => {
+						laneSection.insertRightLane( lane.clone() );
+					} );
+					start.laneSection.getLanesAfterRightBoundary().forEach( ( lane ) => {
+						laneSection.insertLeftLane( lane.clone() );
+					} );
+				} else {
+					// ENTRY
+					start.laneSection.getLanesAfter( start.lane ).forEach( ( lane ) => {
+						laneSection.insertLeftLane( lane.clone() );
+					} );
+					start.laneSection.getLanesAfterRightBoundary().forEach( ( lane ) => {
+						laneSection.insertRightLane( lane.clone() );
+					} );
+				}
+
+
+			} else if ( start.lane.isRight && turnType == TurnType.LEFT ) {
+
+				// ENTRY-EXIT
+				start.laneSection.getLanes().filter( lane => lane.id >= start.lane.id ).forEach( ( lane ) => {
+					laneSection.addLane( lane.clone() );
+				} );
+				start.laneSection.getLanesAfterLeftBoundary().forEach( ( lane ) => {
+					laneSection.insertRightLane( lane.clone() );
+				} );
+
+			}
+
+			if ( start.lane.isLeft && turnType == TurnType.RIGHT ) {
+
+				if ( orientation == TvOrientation.PLUS ) {
+					// EXIT
+					start.laneSection.getLanesAfter( start.lane ).reverse().forEach( ( lane ) => {
+						laneSection.insertRightLane( lane.clone() );
+					} );
+					start.laneSection.getLanesAfterLeftBoundary().forEach( ( lane ) => {
+						laneSection.insertLeftLane( lane.clone() );
+					} );
+				} else {
+					// ENTRY
+					start.laneSection.getLanesAfter( start.lane ).reverse().forEach( ( lane ) => {
+						laneSection.insertLeftLane( lane.clone() );
+					} );
+					start.laneSection.getLanesAfterLeftBoundary().forEach( ( lane ) => {
+						laneSection.insertRightLane( lane.clone() );
+					} );
+				}
+
+			} else if ( start.lane.isLeft && turnType == TurnType.LEFT ) {
+
+				// ENTRY-EXIT
+				start.laneSection.getLanesBefore( start.lane ).forEach( ( lane ) => {
+					laneSection.addLane( lane.clone() );
+				} );
+				start.laneSection.getLanesAfterRightBoundary().forEach( ( lane ) => {
+					laneSection.insertLeftLane( lane.clone() );
+				} );
+
+			}
+
+			const centerLane = laneSection.addOrGetCenterLane();
+			const boundary = start.laneSection.getRightCarriagewayBoundary() + 1;
+
+			if ( start.laneSection.hasLane( boundary ) ) {
+				const target = start.laneSection.getLaneById( boundary );
+				const roadMark = target.getRoadMarkAt( start.laneDistance )?.clone( 0 );
+				centerLane.addRoadMarkInstance( roadMark );
+			}
+
+			return laneSection;
+
+		}
+
+		return laneSection;
+	}
 }

@@ -9,6 +9,7 @@ import { TvJunctionBoundaryFactory } from './tv-junction-boundary.factory';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvLaneBoundary } from "./tv-lane-boundary";
+import { TvContactPoint } from '../models/tv-common';
 
 describe( 'TvJunctionBoundaryFactory', () => {
 
@@ -55,8 +56,8 @@ describe( 'TvJunctionBoundaryFactory', () => {
 			const laneBoundary = new TvLaneBoundary();
 			laneBoundary.road = road;
 			laneBoundary.boundaryLane = road.laneSections[ 0 ].getLaneById( -1 );
-			laneBoundary.sStart = 0;
-			laneBoundary.sEnd = 100;
+			laneBoundary.sStart = TvContactPoint.START;
+			laneBoundary.sEnd = TvContactPoint.END;
 
 
 			const boundary = new TvJunctionBoundary();

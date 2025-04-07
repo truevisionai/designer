@@ -15,7 +15,7 @@ import {
 import { LaneLinkFactory } from "../../app/factories/lane-link-factory";
 import { RoadFactory } from "../../app/factories/road-factory.service";
 import { TvMap } from "app/map/models/tv-map.model";
-import { createFreewayOneWayRoad, createFreewayRoad, createOneWayRoad } from "tests/base-test.spec";
+import { createDefaultRoad, createFreewayOneWayRoad, createFreewayRoad, createOneWayRoad } from "tests/base-test.spec";
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { TvContactPoint } from "app/map/models/tv-common";
 
@@ -204,6 +204,70 @@ describe( 'LaneLinkFactory', () => {
 			expect( links.map( link => link.from ) ).toEqual( [ -3, -4, -5 ] );
 
 			expect( links.map( link => link.to ) ).toEqual( [ -1, -2, -3 ] );
+
+		} );
+
+		it( 'should create links for straight connection', () => {
+
+			connection = createMockStraightConnection( incomingRoad, outgoingRoad );
+
+			const links = createLinks( connection );
+
+			expect( links.map( link => link.from ) ).toEqual( [ -3 ] );
+
+			expect( links.map( link => link.to ) ).toEqual( [ -1 ] );
+
+		} );
+
+		it( 'should create links for left turn connection', () => {
+
+			connection = createMockLeftConnection( incomingRoad, outgoingRoad );
+
+			const links = createLinks( connection );
+
+			expect( links.map( link => link.from ) ).toEqual( [ -3 ] );
+
+			expect( links.map( link => link.to ) ).toEqual( [ -1 ] );
+
+		} );
+
+	} );
+
+	describe( 'OneWayRoad With Default', () => {
+
+		beforeEach( () => {
+
+			incomingRoad = createOneWayRoad( { id: 1 } );
+			outgoingRoad = createDefaultRoad( { id: 2 } );
+
+			const map = new TvMap();
+
+			map.addRoad( incomingRoad );
+			map.addRoad( outgoingRoad );
+
+		} );
+
+		it( 'should create links for right turn', () => {
+
+			connection = createCornerConnection( incomingRoad, outgoingRoad );
+
+			const links = createLinks( connection );
+
+			expect( links.map( link => link.from ) ).toEqual( [ -3, -4, -5 ] );
+
+			expect( links.map( link => link.to ) ).toEqual( [ -1, -2, -3 ] );
+
+		} );
+
+		it( 'should create links for right turn with not driving connection', () => {
+
+			connection = createCornerConnection( incomingRoad, outgoingRoad, TvContactPoint.START, TvContactPoint.START );
+
+			const links = createLinks( connection );
+
+			expect( links.map( link => link.from ) ).toEqual( [ -2, -1 ] );
+
+			expect( links.map( link => link.to ) ).toEqual( [ -1, -2 ] );
 
 		} );
 

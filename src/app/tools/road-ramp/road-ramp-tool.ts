@@ -95,13 +95,21 @@ export class RoadRampTool extends BaseTool<any> {
 
 		this.helper.base.handleCreation( e, position => {
 
-			this.startCoord ? this.showRampLine( position ) : this.showStartLine( position );
+			if ( this.startCoord ) {
+				this.showRampLine( position );
+			} else {
+				this.showStartLine( position );
+			}
 
 			// this.updateCursorHints( position );
 
 		}, ( position: Vector3 ) => {
 
-			this.startCoord ? this.showRampLine( position ) : this.showStartLine( position );
+			if ( this.startCoord ) {
+				this.showRampLine( position );
+			} else {
+				this.showStartLine( position );
+			}
 
 			// this.updateCursorHints( position );
 

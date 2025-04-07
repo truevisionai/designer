@@ -19,6 +19,9 @@ import { TvRoadObjectType } from "../../../map/models/objects/tv-road-object";
 
 const ROADMARK_BROKEN_TILING = 3.0;
 
+/**
+ * @deprecated
+ */
 export class OdRoadMarkBuilderV1 {
 
 	private _texture: any;
