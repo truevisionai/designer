@@ -18,3 +18,9 @@ npm run sentry-upload
 rm -rf dist/*.map
 
 npm run release
+
+# git log -n 100 --pretty=format:"%h %ad %s" --date=short > commits.txt
+# git log -n 300 --pretty=format:"%h %ad %s | %b" --date=short > commits.txt
+# git log -n 300 --pretty=format:"%h %ad %s | %b" --date=short | tr '\n' ' ' | sed 's/  /\n/g' > commits.txt
+
+
