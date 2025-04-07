@@ -16,6 +16,7 @@ import { traverseLanes } from "app/utils/traverseLanes";
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
 import { Log } from "app/core/utils/log";
+import { RoadDistance } from "../road/road-distance";
 
 /**
  * @deprecated
@@ -136,9 +137,9 @@ export class TvJunctionInnerBoundaryService {
 
 		boundary.boundaryLane = connectionLane;
 
-		boundary.sStart = connectionLane.getLaneSection().s;
+		boundary.sStart = connectionLane.getLaneSection().s as RoadDistance;
 
-		boundary.sEnd = connectionLane.getLaneSection().endS;
+		boundary.sEnd = connectionLane.getLaneSection().endS as RoadDistance;
 
 		return boundary;
 
