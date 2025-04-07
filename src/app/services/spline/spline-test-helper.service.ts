@@ -26,6 +26,8 @@ import { HttpClient } from '@angular/common/http';
 import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
 import { SplineGeometryService } from './spline-geometry.service';
 import { Observable } from 'rxjs';
+import { TvMap } from 'app/map/models/tv-map.model';
+import { TvJunction } from 'app/map/models/junctions/tv-junction';
 
 export const STRAIGHT_XODR = 'assets/open-drive/straight-road.xml';
 export const ROUNDABOUT_XODR = 'assets/open-drive/roundabout-8-course.xodr';
@@ -66,14 +68,14 @@ export class SplineTestHelper {
 	) {
 	}
 
-	async loadStraightXodr (): Promise<any> {
+	async loadStraightXodr (): Promise<TvMap> {
 
 		const xml = await this.loadXodr( STRAIGHT_XODR ).toPromise();
 
 		return this.openDriveParser.parse( xml );
 	}
 
-	async loadAndParseXodr ( path: string ): Promise<any> {
+	async loadAndParseXodr ( path: string ): Promise<TvMap> {
 
 		const xml = await this.loadXodr( path ).toPromise();
 
@@ -179,7 +181,7 @@ export class SplineTestHelper {
 
 	}
 
-	createStraightRoad ( start?: Vector3, length: number = 100, degrees: number = 0, type: SplineType = SplineType.AUTOV2 ): any {
+	createStraightRoad ( start?: Vector3, length: number = 100, degrees: number = 0, type: SplineType = SplineType.AUTOV2 ): TvRoad {
 
 		start = start || new Vector3( 0, 0, 0 );
 
@@ -188,6 +190,8 @@ export class SplineTestHelper {
 		const spline = this.createStraightSpline( start, length, degrees, type );
 
 		road.setSplineAndSegment( spline );
+
+		spline.updateSegmentGeometryAndBounds();
 
 		return spline.getFirstSegment<TvRoad>();
 
@@ -245,6 +249,18 @@ export class SplineTestHelper {
 		await this.addInRandomOrder( [ horizontal, vertical ], random );
 
 		return { horizontal, vertical };
+	}
+
+	createDefaultJunction (): TvJunction {
+
+		const horizontal = this.createStraightSpline( new Vector3( -50, 0, 0 ) );
+		const vertical = this.createStraightSpline( new Vector3( 0, -50, 0 ), 100, 90 );
+
+		this.splineService.add( horizontal );
+		this.splineService.add( vertical );
+
+		return this.mapService.findJunction( 1 );
+
 	}
 
 	addSixRoadJunction (): void {

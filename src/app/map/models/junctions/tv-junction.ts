@@ -20,10 +20,10 @@ import { Log } from 'app/core/utils/log';
 import { TvJunctionBoundingBox } from './tv-junction-bounding-box';
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { TvMap } from '../tv-map.model';
-import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { MapEvents } from 'app/events/map-events';
 import { TvRoadCoord } from '../TvRoadCoord';
-
+import { GeometryUtils } from 'app/services/surface/geometry-utils';
+import { TvJunctionBoundaryProfile } from '../../junction-boundary/tv-junction-boundary-profile';
 
 export class TvJunction {
 
@@ -39,8 +39,7 @@ export class TvJunction {
 
 	public mesh: Mesh;
 
-	public outerBoundary: TvJunctionBoundary;
-	public innerBoundary: TvJunctionBoundary;
+	private boundaryProfile: TvJunctionBoundaryProfile;
 
 	private junctionBoundingBox: TvJunctionBoundingBox;
 
@@ -60,6 +59,8 @@ export class TvJunction {
 
 		this.junctionBoundingBox = new TvJunctionBoundingBox( this );
 
+		this.boundaryProfile = new TvJunctionBoundaryProfile( this );
+
 	}
 
 	get auto (): boolean {
@@ -72,6 +73,18 @@ export class TvJunction {
 
 	set boundingBox ( box: Box2 ) {
 		this.junctionBoundingBox.setBox( box );
+	}
+
+	get outerBoundary (): TvJunctionBoundary {
+		return this.boundaryProfile.getOuterBoundary();
+	}
+
+	set outerBoundary ( value: TvJunctionBoundary ) {
+		this.boundaryProfile.setOuterBoundary( value );
+	}
+
+	getBoundary (): TvJunctionBoundary {
+		return this.boundaryProfile.getOuterBoundary();
 	}
 
 	setMap ( map: TvMap ): void {
@@ -353,6 +366,52 @@ export class TvJunction {
 
 	}
 
+	findCornerConnection ( incoming: TvRoad, outgoing: TvRoad ): TvJunctionConnection | undefined {
+
+		const connection = this.getConnectionsBetween( incoming, outgoing ).find( connection => connection.isRightTurn || connection.hasSidewalks() );
+
+		if ( connection ) {
+			return connection;
+		}
+
+		return this.getConnectionWithOutermostLane( this.getConnectionsBetween( incoming, outgoing ) );
+	}
+
+	private getConnectionWithOutermostLane ( connections: TvJunctionConnection[] ): TvJunctionConnection {
+
+		return this.findConnectionByLaneId( connections, true );
+
+	}
+
+	private getOuterMostCarriagewayConnection ( connections: TvJunctionConnection[] ): TvJunctionConnection {
+
+		return this.findConnectionByLaneId( connections, false );
+
+	}
+
+	private findConnectionByLaneId ( connections: TvJunctionConnection[], allLanes: boolean ): TvJunctionConnection {
+
+		let outerConnection: TvJunctionConnection | null = null;
+		let maxDistanceFromZero: number = -Infinity;
+
+		for ( const connection of connections ) {
+
+			const laneIds = connection.getLaneLinks()
+				.filter( link => allLanes || link.incomingLane.isCarriageWay() )
+				.map( link => link.incomingLane.id );
+
+			const farthestLaneId = laneIds.reduce( ( acc, id ) => Math.abs( id ) > Math.abs( acc ) ? id : acc, 0 );
+
+			if ( Math.abs( farthestLaneId ) > maxDistanceFromZero ) {
+				outerConnection = connection;
+				maxDistanceFromZero = Math.abs( farthestLaneId );
+			}
+
+		}
+
+		return outerConnection!;
+	}
+
 	getConnectionsByRoad ( targetRoad: TvRoad ): TvJunctionConnection[] {
 
 		const connections = new Set<TvJunctionConnection>();
@@ -451,8 +510,6 @@ export class TvJunction {
 
 		junction.outerBoundary = this.outerBoundary.clone();
 
-		junction.innerBoundary = this.innerBoundary.clone();
-
 		this.priorities.forEach( priority => junction.addPriority( priority.clone() ) );
 
 		this.controllers.forEach( controller => junction.controllers.push( controller.clone() ) );
@@ -513,7 +570,40 @@ export class TvJunction {
 	}
 
 	updateBoundary (): void {
-		TvJunctionBoundaryService.instance.update( this );
+		this.boundaryProfile.update();
+	}
+
+	getAdjacentRoadCoord ( target: TvRoad ): TvRoadCoord {
+
+		const coords = this.getRoadLinks().map( link => link.toRoadCoord() );
+		const sortedRoadLinks = GeometryUtils.sortCoordsByAngle( coords );
+		const incomingRoadIndex = sortedRoadLinks.findIndex( coord => coord.road == target );
+		const rightRoadIndex = ( incomingRoadIndex + 1 ) % sortedRoadLinks.length;
+
+		return sortedRoadLinks[ rightRoadIndex ];
+
+	}
+
+	updateCornerConnections (): void {
+
+		this.connections.forEach( connection => connection.setCorner( false ) );
+
+		const incomingRoads = this.getIncomingRoads();
+
+		for ( const incomingRoad of incomingRoads ) {
+
+			const right = this.getAdjacentRoadCoord( incomingRoad );
+
+			const connection = this.findCornerConnection( incomingRoad, right.road );
+
+			if ( connection ) {
+
+				connection.setCorner( true );
+
+			}
+
+		}
+
 	}
 
 }

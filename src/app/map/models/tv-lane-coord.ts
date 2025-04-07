@@ -13,6 +13,8 @@ import { LaneUtils } from "../../utils/lane.utils";
 import { TvLink } from './tv-link';
 import { LaneDistance, RoadDistance } from '../road/road-distance';
 import { TvPosTheta } from './tv-pos-theta';
+import { TvLaneRoadMark } from './tv-lane-road-mark';
+import { TvLaneHeight } from '../lane-height/lane-height.model';
 
 export class TvLaneCoord {
 
@@ -30,7 +32,7 @@ export class TvLaneCoord {
 	}
 
 	toString (): string {
-		return `LaneCoord: Road:${ this.roadId } Section:${ this.laneSectionId } Lane:${ this.laneId } s:${ this.laneDistance } offset:${ this.offset }`;
+		return `LaneCoord: Road:${ this.road.id } Section:${ this.laneSection.id } Lane:${ this.lane.id } s:${ this.laneDistance } offset:${ this.offset }`;
 	}
 
 	getLink (): TvLink {
@@ -44,18 +46,6 @@ export class TvLaneCoord {
 		if ( Maths.approxEquals( this.laneSection.s + this.laneDistance, this.road.length ) ) return TvContactPoint.END;
 
 		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.laneDistance } ${ this.road.length }` );
-	}
-
-	get roadId (): number {
-		return this.road?.id;
-	}
-
-	get laneSectionId (): number {
-		return this.laneSection?.id;
-	}
-
-	get laneId (): number {
-		return this.lane?.id;
 	}
 
 	get posTheta () {
@@ -85,10 +75,6 @@ export class TvLaneCoord {
 		return new Orientation( 0, 0, 0 );
 	}
 
-	toPosTheta (): TvPosTheta {
-		return this.posTheta;
-	}
-
 	canConnect ( otherLane: TvLaneCoord ): boolean {
 
 		if ( this.road.id === otherLane.road.id ) return false;
@@ -114,7 +100,6 @@ export class TvLaneCoord {
 		return this.lane.isEntry( this.contact );
 	}
 
-
 	isExit (): boolean {
 		return this.lane.isExit( this.contact );
 	}
@@ -122,5 +107,28 @@ export class TvLaneCoord {
 	getLaneWidth (): number {
 		return this.lane.getWidthValue( this.laneDistance );
 	}
+
+	getLaneHeight (): TvLaneHeight {
+		return this.lane.getHeightValue( this.laneDistance );
+	}
+
+	getLaneDirectionVector (): Vector3 {
+		if ( this.lane.isBackward ) {
+			return this.posTheta.reverseHeading().toDirectionVector();
+		}
+		return this.posTheta.toDirectionVector();
+	}
+
+	getLaneHeading (): number {
+		if ( this.lane.isBackward ) {
+			return this.posTheta.hdg + Math.PI;
+		}
+		return this.posTheta.hdg;
+	}
+
+	getRoadMark (): TvLaneRoadMark {
+		return this.lane.getRoadMarkAt( this.laneDistance );
+	}
+
 }
 

@@ -1,7 +1,8 @@
-import { Vector3, Vector2, MathUtils } from "three";
-import { TurnType, TvContactPoint } from "../tv-common";
+import { MathUtils, Vector2, Vector3 } from "three";
+import { TurnType, TvContactPoint, TvLaneType, TvOrientation } from "../tv-common";
 import { TvLaneCoord } from "../tv-lane-coord";
 import { TvRoadCoord } from "../TvRoadCoord";
+import { TvRoad } from "../tv-road.model";
 
 // Configurable thresholds
 const STRAIGHT_THRESHOLD = 10; // degrees
@@ -27,6 +28,46 @@ export function determineTurnType ( entry: TvLaneCoord | TvRoadCoord, exit: TvLa
 	}
 
 	return findTurnType( entryPosition.position, exitPosition.position, entryPosition.normalizedHdg );
+}
+
+export function findTurnTypeForRampRoad ( entry: TvLaneCoord, exit: TvLaneCoord | Vector3 ): TurnType {
+
+	const entryPosition = entry.posTheta;
+	const exitPosition = exit instanceof Vector3 ? exit : exit.position;
+	const entryHeading = entry.getLaneHeading();
+
+	return findTurnType( entryPosition.position, exitPosition, entryHeading );
+
+}
+
+export function findTurnTypeOfConnectingRoad ( connectingRoad: TvRoad ): TurnType {
+
+	const start = connectingRoad.getStartPosTheta();
+	const end = connectingRoad.getEndPosTheta();
+
+	return findTurnType( start.position, end.position, start.normalizedHdg );
+}
+
+export function findOrientation ( entry: TvLaneCoord, exit: TvLaneCoord | Vector3 ): TvOrientation {
+
+	const entryPosition = entry.posTheta.position;
+	const entryHeading = entry.getLaneDirectionVector();
+	const exitPosition = exit instanceof Vector3 ? exit : exit.position;
+
+	const vectorToExit = exitPosition.sub( entryPosition );
+
+	// Entry heading vector
+	const entryHeadingVector = entryHeading.normalize();
+
+	// Dot product to project vectorToExit onto entryHeadingVector
+	const dotProduct = vectorToExit.dot( entryHeadingVector );
+
+	// If the dot product is positive, the exit is ahead; if negative, it's behind
+	if ( dotProduct >= 0 ) {
+		return TvOrientation.PLUS
+	}
+
+	return TvOrientation.MINUS;
 }
 
 function findTurnType ( entry: Vector3, exit: Vector3, entryHeading: number ): TurnType {

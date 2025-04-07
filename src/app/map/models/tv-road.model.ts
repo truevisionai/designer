@@ -6,7 +6,7 @@ import { GameObject } from 'app/objects/game-object';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Maths } from 'app/utils/maths';
 import { Box3, Group, MathUtils, Vector2, Vector3 } from "three";
-import { TvContactPoint, TvDynamicTypes, TvOrientation, TvRoadType, TvUnit } from './tv-common';
+import { TvContactPoint, TvDynamicTypes, TvLaneLocation, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
 import { TvLateralProfile } from './tv-lateral.profile';
@@ -31,6 +31,7 @@ import { RoadDistance } from '../road/road-distance';
 import { TvMap } from './tv-map.model';
 import { TvLaneCoord } from "./tv-lane-coord";
 import { TvRoadRelations } from './tv-road-relations';
+import { TvLaneSection } from './tv-lane-section';
 
 export class TvRoad {
 
@@ -373,6 +374,20 @@ export class TvRoad {
 
 	}
 
+	getLaneSectionAt ( query: number | TvContactPoint ): TvLaneSection {
+
+		if ( typeof query === 'number' ) {
+
+			return this.laneProfile.getLaneSectionAt( query );
+
+		} else {
+
+			return this.laneProfile.getLaneSectionAtContact( query );
+
+		}
+
+	}
+
 	getTypes (): TvRoadTypeClass[] {
 
 		return this.type;
@@ -451,7 +466,7 @@ export class TvRoad {
 
 	}
 
-	getContactPosition ( contactA: TvContactPoint ): any {
+	getContactPosition ( contactA: TvContactPoint ): TvPosTheta {
 
 		return RoadGeometryService.instance.findContactPosition( this, contactA );
 
@@ -666,6 +681,20 @@ export class TvRoad {
 
 	}
 
+	getLanePosition ( lane: TvLane, roadDistance: RoadDistance, location: TvLaneLocation, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
+
+		if ( location === TvLaneLocation.START ) {
+			return this.getLaneStartPosition( lane, roadDistance, offset, addHeight );
+		} else if ( location === TvLaneLocation.END ) {
+			return this.getLaneEndPosition( lane, roadDistance, offset, addHeight );
+		} else if ( location === TvLaneLocation.CENTER ) {
+			return this.getLaneCenterPosition( lane, roadDistance, offset, addHeight );
+		} else {
+			throw new Error( 'Invalid location' );
+		}
+
+	}
+
 	getLaneCenterPosition ( lane: TvLane, roadDistance: RoadDistance, offset: number = 0, addHeight: boolean = true ): TvPosTheta {
 
 		const laneSOffset = roadDistance - lane.laneSection.s;
@@ -713,11 +742,7 @@ export class TvRoad {
 
 		this.laneProfile.getLaneSections().map( laneSection => {
 
-			laneSection.getLanes().forEach( lane => {
-
-				if ( lane.id == 0 ) return;
-
-				if ( !lane.gameObject ) return;
+			laneSection.getNonCenterLanes().filter( lane => lane.gameObject != null ).forEach( lane => {
 
 				if ( !boundingBox ) {
 

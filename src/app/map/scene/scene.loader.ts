@@ -83,6 +83,7 @@ import { PropCurvePoint } from 'app/modules/prop-curve/objects/prop-curve-point'
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
 import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
+import { parseRoadDistance } from "../road/road-distance";
 
 @Injectable( {
 	providedIn: 'root'
@@ -1221,8 +1222,6 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		const roadId = parseInt( xml.attr_roadId );
 		const boundaryLane = parseInt( xml.attr_boundaryLane );
-		const sStart = parseFloat( xml.attr_sStart );
-		const sEnd = parseFloat( xml.attr_sEnd );
 
 		const road = this.findRoad( roadId );
 
@@ -1241,8 +1240,8 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		laneBoundary.road = road;
 		laneBoundary.boundaryLane = lane;
-		laneBoundary.sStart = sStart;
-		laneBoundary.sEnd = sEnd;
+		laneBoundary.sStart = parseRoadDistance( xml.attr_sStart );
+		laneBoundary.sEnd = parseRoadDistance( xml.attr_sEnd );
 
 		return laneBoundary;
 	}

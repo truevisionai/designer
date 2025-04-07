@@ -16,7 +16,11 @@ import { traverseLanes } from "app/utils/traverseLanes";
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
 import { Log } from "app/core/utils/log";
+import { RoadDistance } from "../road/road-distance";
 
+/**
+ * @deprecated
+ */
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -54,9 +58,15 @@ export class TvJunctionInnerBoundaryService {
 		}
 
 		// get the lane link which is connected to the lowest lane
-		const lanes = connection.getLaneLinks().map( link => link.getConnectingLane() );
+		// TODO: test this logic
 
-		const lastCarriagewayLane = this.getLastCarriagewayLane( lanes );
+		// OLD logic
+		// const lanes = connection.getLaneLinks().map( link => link.getConnectingLane() );
+		// const lastCarriagewayLane = this.getLastCarriagewayLane( lanes );
+
+		// NEW logic
+		const laneId = connection.getLaneSection().getRightCarriagewayBoundary();
+		const lastCarriagewayLane = connection.getLaneSection().getLaneById( laneId );
 
 		if ( !lastCarriagewayLane ) {
 			Log.warn( 'No carriageway lane found for junction connection' );
@@ -127,9 +137,9 @@ export class TvJunctionInnerBoundaryService {
 
 		boundary.boundaryLane = connectionLane;
 
-		boundary.sStart = connectionLane.getLaneSection().s;
+		boundary.sStart = connectionLane.getLaneSection().s as RoadDistance;
 
-		boundary.sEnd = connectionLane.getLaneSection().endS;
+		boundary.sEnd = connectionLane.getLaneSection().endS as RoadDistance;
 
 		return boundary;
 

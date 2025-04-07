@@ -41,7 +41,7 @@ export class TvMap {
 
 	private controllers = new ManagedMap<TvSignalController>();
 
-	public roads = new ManagedMap<TvRoad>();
+	private roads = new ManagedMap<TvRoad>();
 
 	private junctions = new ManagedMap<TvJunction>();
 
@@ -165,10 +165,18 @@ export class TvMap {
 	 */
 	insertRoad ( road: TvRoad ): void {
 
-		road.setId( this.roads.next() );
+		road.setId( this.generateRoadId() );
 
 		this.addRoad( road );
 
+	}
+
+	/**
+	 *
+	 * @param road
+	 */
+	updateRoadId ( road: TvRoad ): void {
+		road.setId( this.generateRoadId() );
 	}
 
 	hasRoad ( road: TvRoad | number ): boolean {

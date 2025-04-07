@@ -4,7 +4,7 @@
 
 import { GameObject } from 'app/objects/game-object';
 import { MathUtils } from "three";
-import { TvContactPoint, TvLaneSide, TvLaneType } from './tv-common';
+import { TravelDirection, TvContactPoint, TvLaneSide, TvLaneType } from './tv-common';
 import { TvLane } from './tv-lane';
 import { TvRoad } from './tv-road.model';
 import { Maths } from "../../utils/maths";
@@ -107,7 +107,7 @@ export class TvLaneSection {
 
 	createCenterLane ( id?: number, type?: TvLaneType, level?: boolean, sort?: boolean ): TvLane {
 
-		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, level, false );
+		return this.createLane( TvLaneSide.CENTER, 0, TvLaneType.none, level, true );
 
 	}
 
@@ -230,6 +230,8 @@ export class TvLaneSection {
 
 	}
 
+	getCenterLane (): TvLane { return this.getLaneById( 0 ); }
+
 	getRightLaneCount (): number {
 
 		return this.getRightLanes().length;
@@ -255,6 +257,29 @@ export class TvLaneSection {
 	addCenterLane (): TvLane {
 
 		return this.createCenterLane( 0, TvLaneType.none, false, true );
+
+	}
+
+	addOrGetCenterLane (): TvLane {
+
+		if ( this.hasLane( 0 ) ) {
+			return this.getLaneById( 0 );
+		}
+
+		return this.addCenterLane();
+	}
+
+	addLane ( lane: TvLane ): void {
+
+		if ( this.lanes.has( lane.id ) ) {
+			throw new Error( `Lane with id:${ lane.id } already exists` );
+		}
+
+		lane.laneSection = this;
+
+		this.lanes.set( lane.id, lane );
+
+		this.sortLanes();
 
 	}
 
@@ -308,6 +333,12 @@ export class TvLaneSection {
 	getLeftMostLane (): TvLane {
 
 		return this.laneArray[ 0 ];
+
+	}
+
+	removeLanes ( lanes: TvLane[] ): void {
+
+		lanes.forEach( lane => this.removeLane( lane ) );
 
 	}
 
@@ -924,8 +955,6 @@ export class TvLaneSection {
 		for ( const lane of this.getRightLanes().sort( DESC ) ) {
 			if ( lane.isCarriageWay() ) {
 				lastLane = lane;
-			} else {
-				break;
 			}
 		}
 		return lastLane ? lastLane.id : 0;
@@ -936,11 +965,83 @@ export class TvLaneSection {
 		for ( const lane of this.getLeftLanes().sort( ASC ) ) {
 			if ( lane.isCarriageWay() ) {
 				lastLane = lane;
-			} else {
-				break;
 			}
 		}
 		return lastLane ? lastLane.id : 0;
+	}
+
+	getLanesAfterRightBoundary (): TvLane[] {
+
+		const rightBoundary = this.getRightCarriagewayBoundary();
+
+		return this.getRightLanes().sort( DESC ).filter( lane => lane.id <= rightBoundary );
+
+	}
+
+	getLanesAfterLeftBoundary (): TvLane[] {
+
+		const leftBoundary = this.getLeftCarriagewayBoundary();
+
+		return this.getLeftLanes().sort( ASC ).filter( lane => lane.id >= leftBoundary );
+
+	}
+
+	insertLane ( lane: TvLane ): void {
+
+		if ( lane.isLeft ) {
+
+			this.insertLeftLane( lane );
+
+		} else if ( lane.isRight ) {
+
+			this.insertRightLane( lane );
+
+		} else {
+
+			this.addLane( lane );
+
+		}
+
+	}
+
+	insertRightLane ( lane: TvLane ): void {
+
+		lane.side = TvLaneSide.RIGHT;
+
+		lane.id = -1 * ( this.getRightLaneCount() + 1 );
+
+		if ( lane.isDrivingLane ) lane.direction = TravelDirection.forward;
+
+		this.addLane( lane );
+
+	}
+
+	insertLeftLane ( lane: TvLane ): void {
+
+		lane.side = TvLaneSide.LEFT;
+
+		lane.id = this.getLeftLaneCount() + 1;
+
+		if ( lane.isDrivingLane ) lane.direction = TravelDirection.backward;
+
+		this.addLane( lane );
+
+	}
+
+	getLanesAfter ( target: TvLane ): TvLane[] {
+		if ( target.isRight ) {
+			return this.getLanes().filter( lane => lane.id <= target.id );
+		} else {
+			return this.getLanes().filter( lane => lane.id >= target.id );
+		}
+	}
+
+	getLanesBefore ( target: TvLane ): TvLane[] {
+		if ( target.isRight ) {
+			return this.getLanes().filter( lane => lane.id >= target.id );
+		} else {
+			return this.getLanes().filter( lane => lane.id <= target.id );
+		}
 	}
 }
 

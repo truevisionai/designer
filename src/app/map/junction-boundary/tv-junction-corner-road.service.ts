@@ -6,8 +6,6 @@ import { Injectable } from '@angular/core';
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
 import { TvRoad } from "../models/tv-road.model";
-import { GeometryUtils } from "../../services/surface/geometry-utils";
-import { TvRoadCoord } from '../models/TvRoadCoord';
 
 @Injectable( {
 	providedIn: 'root'
@@ -22,15 +20,16 @@ export class TvJunctionCornerRoadService {
 
 	}
 
-	getCarriagewayConnections ( junction: TvJunction ): TvJunctionConnection[] {
-
-		return this.getConnections( junction, this.getInnerConnectionForRoad.bind( this ) );
-
-	}
-
 	getCornerConnectionForRoad ( junction: TvJunction, incomingRoad: TvRoad ): TvJunctionConnection {
 
-		const rightRoadCoord = this.getAdjacentRoadToRight( junction, incomingRoad );
+		const rightRoadCoord = junction.getAdjacentRoadCoord( incomingRoad );
+
+		// const cornerConnections = junction.getConnectionsBetween( incomingRoad, rightRoadCoord.road )
+			// .filter( connection => connection.isCorner() || connection.hasSidewalks() );
+
+		// return junction.findCornerConnection( incomingRoad, rightRoadCoord.road );
+
+		// return this.getConnectionWithOutermostLane( cornerConnections );
 
 		const rightConnections = junction.getConnectionsBetween( incomingRoad, rightRoadCoord.road );
 
@@ -40,7 +39,7 @@ export class TvJunctionCornerRoadService {
 
 	getInnerConnectionForRoad ( junction: TvJunction, incomingRoad: TvRoad ): TvJunctionConnection {
 
-		const rightRoadCoord = this.getAdjacentRoadToRight( junction, incomingRoad );
+		const rightRoadCoord = junction.getAdjacentRoadCoord( incomingRoad );
 
 		const rightConnections = junction.getConnectionsBetween( incomingRoad, rightRoadCoord.road );
 
@@ -58,25 +57,13 @@ export class TvJunctionCornerRoadService {
 
 		coords.forEach( coord => {
 
-			connections.push( callbackFunction( junction, coord.road ) );
+			const connection = callbackFunction( junction, coord.road );
+
+			if ( connection ) connections.push( connection );
 
 		} );
 
 		return connections;
-	}
-
-	private getAdjacentRoadToRight ( junction: TvJunction, incomingRoad: TvRoad ): TvRoadCoord {
-
-		const coords = junction.getRoadLinks().map( link => link.toRoadCoord() );
-
-		const sortedRoadLinks = GeometryUtils.sortCoordsByAngle( coords );
-
-		const incomingRoadIndex = sortedRoadLinks.findIndex( coord => coord.road == incomingRoad );
-
-		const rightRoadIndex = ( incomingRoadIndex + 1 ) % sortedRoadLinks.length;
-
-		return sortedRoadLinks[ rightRoadIndex ];
-
 	}
 
 	private getConnectionWithOutermostLane ( connections: TvJunctionConnection[] ): TvJunctionConnection {

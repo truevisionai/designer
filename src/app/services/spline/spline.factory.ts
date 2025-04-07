@@ -310,4 +310,73 @@ export class SplineFactory {
 		return spline;
 
 	}
+
+	static createRampRoadSpline ( startPosition: TvLaneCoord | Vector3, endPosition: TvLaneCoord | Vector3 ) {
+
+		function createSplineNew ( start: Vector3, startDirection: Vector3, end: Vector3, endDirection: Vector3, divider: number = 3 ): AbstractSpline {
+
+			// directions must be normalized
+			const d1 = startDirection.clone().normalize();
+
+			const distance = start.distanceTo( end );
+
+			// v2 and v3 are the control points
+			const p1 = start.clone().add( d1.clone().multiplyScalar( Math.min( distance / divider, 30 ) ) );
+
+			// add 45 degree angle to the direction
+			// to smooth out the curve
+			const d2 = d1.applyAxisAngle( new Vector3( 0, 0, 1 ), -Math.PI / 2 );
+			const p2 = p1.clone().add( d2.clone().multiplyScalar( start.distanceTo( p1 ) * 2 ) );
+
+			const spline = SplineFactory.createSpline();
+
+			spline.addControlPoint( start );
+			spline.addControlPoint( end );
+
+			return spline;
+		}
+
+
+		let v1: Vector3, v2: Vector3, d1: Vector3, d2: Vector3;
+
+		if ( startPosition instanceof TvLaneCoord ) {
+
+			v1 = startPosition.position;
+
+			d1 = startPosition.laneDirection;
+
+			// add 45 degree angle to the direction
+			// to smooth out the curve
+			// d1.applyAxisAngle( new Vector3( 0, 0, 1 ), -Math.PI / 4 );
+
+		} else if ( startPosition instanceof Vector3 ) {
+
+			v1 = startPosition;
+
+			d1 = new Vector3( 0, 0, 1 );
+
+		}
+
+		if ( endPosition instanceof TvLaneCoord ) {
+
+			v2 = endPosition.position;
+
+			d2 = endPosition.laneDirection.negate();
+
+		} else if ( endPosition instanceof Vector3 ) {
+
+			v2 = endPosition;
+
+			d2 = d1.clone().multiplyScalar( -1 );
+
+		}
+
+		const spline = createSplineNew( v1, d1, v2, d2 );
+
+		// spline.updateSegmentGeometryAndBounds();
+
+		return spline;
+
+
+	}
 }

@@ -93,7 +93,7 @@ export class TvLaneProfile {
 		const laneSection: TvLaneSection = TvUtils.checkIntervalArray( this.laneSections, s );
 
 		if ( !laneSection ) {
-			throw new LaneSectionNotFound();
+			throw new LaneSectionNotFound( `Lane section not found at ${ s }` );
 		}
 
 		return laneSection;

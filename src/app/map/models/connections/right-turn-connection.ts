@@ -25,7 +25,10 @@ export class RightTurnConnection extends TvJunctionConnection {
 
 		const drivingLanes = incomingLanes.filter( lane => lane.isDrivingLane );
 
-		if ( drivingLanes.length === 0 ) return [];
+		if ( drivingLanes.length === 0 ) {
+			const nonDrivingLanes = this.getIncomingLaneSection().getLanesAfterRightBoundary()
+			return nonDrivingLanes.map( lane => lane.toLaneCoord( createLaneDistance( lane, incomingContact ) ) );
+		}
 
 		const outerLane = drivingLanes[ drivingLanes.length - 1 ];
 
