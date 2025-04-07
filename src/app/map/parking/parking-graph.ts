@@ -143,9 +143,7 @@ export class ParkingGraph {
 	 */
 	public getOrCreateNode ( position: Vector3 ): ParkingNode {
 		// For simplicity, let's skip tolerance and do exact matches
-		const existing = this.nodes.find( node =>
-			node.position.equals( position )
-		);
+		const existing = this.nodes.find( node => node.position.distanceTo( position ) < 0.01 );
 		if ( existing ) return existing;
 
 		// Otherwise create a new node
