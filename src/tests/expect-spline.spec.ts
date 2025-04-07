@@ -38,3 +38,15 @@ export function expectInstances ( spline: AbstractSpline, types: any[] ) {
 	}
 
 }
+
+export function expectInstancesOf ( values: any[], types: any[] ) {
+
+	expect( values.length ).toBe( types.length );
+
+	for ( let i = 0; i < types.length; i++ ) {
+
+		expect( values[ i ] ).toBeInstanceOf( types[ i ] );
+
+	}
+
+}

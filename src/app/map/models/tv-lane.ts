@@ -186,6 +186,10 @@ export class TvLane implements ISelectable, IHasUpdate {
 		return this.type == TvLaneType.driving;
 	}
 
+	get isSidewalk (): boolean {
+		return this.type == TvLaneType.sidewalk;
+	}
+
 	get laneSection (): TvLaneSection {
 		return this._laneSection;
 	}
@@ -645,9 +649,9 @@ export class TvLane implements ISelectable, IHasUpdate {
 	 * mark object corresponding to the provided s-offset
 	 * @param sCheck
 	 */
-	getRoadMark ( sCheck: any ): TvLaneRoadMark {
+	getRoadMark ( sCheck: number ): TvLaneRoadMark {
 
-		return this.roadMarks.findAt( sCheck );
+		return this.getRoadMarkAt( sCheck );
 
 	}
 
@@ -660,6 +664,10 @@ export class TvLane implements ISelectable, IHasUpdate {
 
 		this.getWidthArray().forEach( width => {
 			newLane.addWidthRecordInstance( new TvLaneWidth( width.s, width.a, width.b, width.c, width.d ) );
+		} );
+
+		this.height.forEach( height => {
+			newLane.addHeightRecordInstance( new TvLaneHeight( height.sOffset, height.inner, height.outer ) );
 		} );
 
 		this.roadMarks.forEach( roadMark => {
@@ -720,11 +728,27 @@ export class TvLane implements ISelectable, IHasUpdate {
 
 	getRoadMarkAt ( s: number ): TvLaneRoadMark {
 
-		return this.roadMarks.findAt( s );
+		const roadmark = this.roadMarks.findAt( s );
 
+		if ( roadmark ) {
+			return roadmark;
+		}
+
+		return new TvLaneRoadMark(
+			s,
+			TvRoadMarkTypes.NONE,
+			TvRoadMarkWeights.STANDARD,
+			TvColors.WHITE,
+			0.0,
+			TvRoadMarkLaneChange.NONE,
+			0.0,
+			this
+		);
 	}
 
 	addRoadMarkInstance ( roadmark: TvLaneRoadMark ): void {
+
+		roadmark.lane = this;
 
 		this.roadMarks.set( roadmark.s, roadmark );
 
@@ -827,6 +851,51 @@ export class TvLane implements ISelectable, IHasUpdate {
 		return this.type;
 	}
 
+	switchSide (): void {
+		this.side = this.side === TvLaneSide.LEFT ? TvLaneSide.RIGHT : TvLaneSide.LEFT;
+	}
+
+	switchDirection (): void {
+		if ( this.direction === TravelDirection.backward ) {
+			this.direction = TravelDirection.forward;
+		} else if ( this.direction === TravelDirection.forward ) {
+			this.direction = TravelDirection.backward;
+		}
+	}
+
+	switchSideAndDirection (): this {
+		this.switchSide();
+		this.switchDirection();
+		return this;
+	}
+
+	getSuccessorLane (): TvLane | undefined {
+
+		if ( !this.successorExists ) return;
+
+		const successor = this.laneSection.road.getSuccessor();
+
+		if ( !successor.isRoad ) return;
+
+		const section = successor.getElement<TvRoad>().getLaneSectionAt( successor.contact );
+
+		return section.getLaneById( this.successorId );
+
+	}
+
+	getPredecessorLane (): TvLane | undefined {
+
+		if ( !this.predecessorExists ) return;
+
+		const predecessor = this.laneSection.road.getPredecessor();
+
+		if ( !predecessor.isRoad ) return;
+
+		const section = predecessor.getElement<TvRoad>().getLaneSectionAt( predecessor.contact );
+
+		return section.getLaneById( this.predecessorId );
+
+	}
 	private detectDirection (): TravelDirection | undefined {
 
 		if ( this.isCenter ) return undefined;

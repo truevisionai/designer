@@ -36,14 +36,66 @@ export class TvJunctionBoundary {
 		boundary.segments = this.segments.map( s => s.clone() );
 		return boundary;
 	}
+
+	getPositions (): TvPosTheta[] {
+
+		const positions: TvPosTheta[] = [];
+
+		this.getSegments().forEach( segment => {
+			segment.getPoints().forEach( point => {
+				positions.push( point );
+			} );
+		} );
+
+		return positions;
+
+	}
+
+	getOuterPositions (): TvPosTheta[] {
+
+		const positions: TvPosTheta[] = [];
+
+		this.getSegments().forEach( segment => {
+			segment.getOuterPoints().forEach( point => {
+				positions.push( point );
+			} );
+		} );
+
+		return positions;
+	}
+
+	getInnerPositions (): TvPosTheta[] {
+
+		const positions: TvPosTheta[] = [];
+
+		this.getSegments().forEach( segment => {
+			segment.getInnerPoints().forEach( point => {
+				positions.push( point );
+			} );
+		} );
+
+		return positions;
+	}
 }
 
-export interface TvJunctionSegmentBoundary {
+export abstract class TvJunctionSegmentBoundary {
 
 	type: TvBoundarySegmentType;
 
-	clone (): TvJunctionSegmentBoundary;
+	abstract clone (): TvJunctionSegmentBoundary;
 
-	getPoints (): TvPosTheta[];
+	abstract getPoints (): TvPosTheta[];
+
+	abstract getOuterPoints (): TvPosTheta[];
+
+	abstract getInnerPoints (): TvPosTheta[];
+
+	get isLaneSegment (): boolean {
+		return this.type == TvBoundarySegmentType.LANE;
+	}
+
+	get isJointSegment (): boolean {
+		return this.type == TvBoundarySegmentType.JOINT;
+	}
 
 }

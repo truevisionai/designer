@@ -93,5 +93,8 @@ export class TvJunctionLaneLink {
 		return this.connection.getSuccessorLink()?.toLaneCoord( this.getOutgoingLane() );
 	}
 
+	isLinkedToLane ( lane: TvLane ): boolean {
+		return this.incomingLane.equals( lane ) || this.connectingLane.isSuccessor( lane ) || this.connectingLane.isPredecessor( lane );
+	}
 }
 

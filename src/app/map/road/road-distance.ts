@@ -6,6 +6,19 @@ import { TvRoad } from "../models/tv-road.model";
 export type RoadDistance = number & { __brand: 'RoadDistance' };
 export type LaneDistance = number & { __brand: 'LaneDistance' };
 
+export function parseRoadDistance ( value: string ): RoadDistance | TvContactPoint {
+
+	if ( value === 'start' ) {
+		return TvContactPoint.START;
+	}
+
+	if ( value === 'end' ) {
+		return TvContactPoint.END;
+	}
+
+	return parseFloat( value ) as RoadDistance;
+}
+
 export function createRoadDistance ( road: TvRoad, value: number | TvContactPoint ): RoadDistance {
 
 	if ( typeof value === 'number' ) {

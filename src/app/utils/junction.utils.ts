@@ -311,42 +311,6 @@ export class JunctionUtils {
 		return hash;
 	}
 
-	static convetToPositions ( segment: TvJunctionSegmentBoundary ): Vector3[] {
-
-		if ( segment instanceof TvLaneBoundary ) {
-
-			return this.convertLaneToPositions( segment );
-
-		} else if ( segment instanceof TvJointBoundary ) {
-
-			return this.convertJointToPositions( segment );
-
-		}
-
-		throw new Error( 'Invalid segment type' );
-	}
-
-	static convertJointToPositions ( joint: TvJointBoundary ): Vector3[] {
-
-		if ( joint.road.geometries.length == 0 ) {
-			Log.warn( 'Road has no geometries', joint.road.toString() );
-			return [];
-		}
-
-		if ( joint.road.length == 0 ) {
-			Log.warn( 'Road has no length', joint.road.toString() );
-			return [];
-		}
-
-		return joint.getPoints().map( point => point.toVector3() );
-	}
-
-	static convertLaneToPositions ( lane: TvLaneBoundary ): Vector3[] {
-
-		return lane.getPoints().map( point => point.toVector3() );
-
-	}
-
 	static findConnectionFromLink ( junction: TvJunction, link: TvJunctionLaneLink ): any {
 
 		for ( const connection of junction.getConnections() ) {

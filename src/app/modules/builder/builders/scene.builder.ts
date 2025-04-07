@@ -8,8 +8,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { SplineType } from 'app/core/shapes/spline-type';
 import { TvConsole } from 'app/core/utils/console';
-import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
-import { PropPolygon } from 'app/map/prop-polygon/prop-polygon.model';
 import { SceneService } from '../../../services/scene.service';
 import { SplineGeometryGenerator } from '../../../services/spline/spline-geometry-generator';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
@@ -18,7 +16,6 @@ import { ConnectionFactory } from 'app/factories/connection.factory';
 import { LinkUtils } from 'app/utils/link.utils';
 import { Log } from 'app/core/utils/log';
 import { Surface } from 'app/map/surface/surface.model';
-import { TvJunctionBoundaryService } from 'app/map/junction-boundary/tv-junction-boundary.service';
 import { BuilderManager } from 'app/core/builders/builder-manager';
 import { MapEvents } from 'app/events/map-events';
 import { PropCurveMeshManager, PropPolygonMeshManager, SurfaceMeshManager } from '../managers/mesh-managers';
@@ -30,7 +27,6 @@ export class SceneBuilder {
 		private splineBuilder: SplineGeometryGenerator,
 		private junctionManager: JunctionManager,
 		private connectionFactory: ConnectionFactory,
-		private junctionBoundaryService: TvJunctionBoundaryService,
 		private builderManager: BuilderManager,
 		private surfaceMeshManager: SurfaceMeshManager,
 		private propCurveMeshManager: PropCurveMeshManager,
@@ -89,7 +85,9 @@ export class SceneBuilder {
 			return;
 		}
 
-		this.junctionBoundaryService.update( junction );
+		// junction.updateCornerConnections();
+
+		junction.updateBoundary();
 
 		this.buildCorners( junction );
 

@@ -17,6 +17,10 @@ import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
 import { Log } from "app/core/utils/log";
 
+
+/**
+ * @deprecated
+ */
 @Injectable( {
 	providedIn: 'root'
 } )
@@ -55,7 +59,7 @@ export class TvJunctionOuterBoundaryService {
 		}
 
 		// get the lane link which is connected to the lowest lane
-		const link = connection.getLowestLaneLink();
+		const link = connection.getOuterLaneLink();
 
 		if ( !link ) {
 			Log.warn( 'No lane link found for corner road' );

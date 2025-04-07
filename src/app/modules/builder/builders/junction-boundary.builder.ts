@@ -3,10 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import {
-	TvBoundarySegmentType,
-	TvJunctionBoundary,
-} from '../../../map/junction-boundary/tv-junction-boundary';
+import { TvJunctionBoundary } from '../../../map/junction-boundary/tv-junction-boundary';
 import {
 	BufferGeometry,
 	Mesh,
@@ -22,6 +19,12 @@ import { Log } from 'app/core/utils/log';
 import { TvJunction } from '../../../map/models/junctions/tv-junction';
 import { JunctionOverlay } from 'app/services/junction/junction-overlay';
 import { DelaunatorHelper } from 'app/services/surface/delaunay';
+
+export function createGeometryFromBoundary ( boundary: TvJunctionBoundary ): BufferGeometry {
+
+	return DelaunatorHelper.createFromPoints( boundary.getPositions().map( p => p.toVector3() ) );
+
+}
 
 @Injectable()
 export class JunctionBoundaryBuilder {
@@ -49,23 +52,9 @@ export class JunctionBoundaryBuilder {
 
 	}
 
-	convertBoundaryToPositions ( boundary: TvJunctionBoundary ): Vector3[] {
-
-		const positions: Vector3[] = [];
-
-		boundary.getSegments().forEach( segment => {
-
-			segment.getPoints().forEach( p => positions.push( p.toVector3() ) );
-
-		} );
-
-		return positions
-
-	}
-
 	private getDeluanayGeometry ( boundary: TvJunctionBoundary ): BufferGeometry {
 
-		return DelaunatorHelper.createFromPoints( this.convertBoundaryToPositions( boundary ) );
+		return DelaunatorHelper.createFromPoints( boundary.getPositions().map( p => p.toVector3() ) );
 
 	}
 
@@ -74,7 +63,7 @@ export class JunctionBoundaryBuilder {
 		// const shape = this.convertBoundaryToShape( boundary );
 		// const shape = this.convertBoundaryToShapeSimple( boundary );
 
-		const points = this.convertBoundaryToPositions( boundary );
+		const points = boundary.getOuterPositions().map( point => point.toVector3() );
 
 		if ( points.length < 3 ) {
 			Log.error( 'Invalid boundary points', points.length );
@@ -93,7 +82,7 @@ export class JunctionBoundaryBuilder {
 	 */
 	private debugDrawBoundary ( boundary: TvJunctionBoundary ): void {
 
-		let points = this.convertBoundaryToPositions( boundary );
+		const points = boundary.getOuterPositions().map( point => point.toVector3() );
 
 		// Draw the
 		points.forEach( ( p, index ) => {
@@ -122,7 +111,7 @@ export class JunctionBoundaryBuilder {
 
 		boundary.getSegments().forEach( ( segment, i ) => {
 
-			const positions = segment.getPoints().map( p => p.toVector2() );
+			const positions = segment.getOuterPoints().map( p => p.toVector2() );
 
 			if ( i == 0 ) {
 				shape.moveTo( positions[ 0 ].x, positions[ 0 ].y );
@@ -132,11 +121,11 @@ export class JunctionBoundaryBuilder {
 
 			Log.info( 'Segment', i, segment.toString() );
 
-			if ( segment.type == TvBoundarySegmentType.JOINT ) {
+			if ( segment.isJointSegment ) {
 
 				positions.forEach( pos => shape.lineTo( pos.x, pos.y ) );
 
-			} else if ( segment.type == TvBoundarySegmentType.LANE ) {
+			} else if ( segment.isLaneSegment ) {
 
 				shape.splineThru( positions.map( pos => new Vector2( pos.x, pos.y ) ) );
 
@@ -152,9 +141,7 @@ export class JunctionBoundaryBuilder {
 
 	private convertBoundaryToShapeSimple ( boundary: TvJunctionBoundary ): Shape {
 
-		const positions = this.convertBoundaryToPositions( boundary );
-
-		const points = positions.map( p => new Vector2( p.x, p.y ) );
+		const points = boundary.getOuterPositions().map( point => point.toVector2() );
 
 		const shape = new Shape();
 

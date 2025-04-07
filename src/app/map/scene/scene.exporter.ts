@@ -188,6 +188,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 	exportBoundarySegment ( segment: TvJunctionSegmentBoundary ): XmlElement {
 
 		if ( segment instanceof TvLaneBoundary ) {
+
 			return {
 				attr_type: 'lane',
 				attr_roadId: segment.road.id,
@@ -195,9 +196,9 @@ export class SceneExporter implements AssetExporter<TvMap> {
 				attr_sStart: segment.sStart,
 				attr_sEnd: segment.sEnd,
 			};
-		}
 
-		if ( segment instanceof TvJointBoundary ) {
+		} else if ( segment instanceof TvJointBoundary ) {
+
 			return {
 				attr_type: 'joint',
 				attr_roadId: segment.road.id,
@@ -205,7 +206,10 @@ export class SceneExporter implements AssetExporter<TvMap> {
 				attr_jointLaneStart: segment.jointLaneStart?.id,
 				attr_jointLaneEnd: segment.jointLaneEnd?.id,
 			};
+
 		}
+
+		throw new Error( 'Unknown boundary segment type' );
 
 	}
 

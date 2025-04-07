@@ -4,9 +4,6 @@
 
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { CROSSING8_XODR, SplineTestHelper, TOWN_01 } from "app/services/spline/spline-test-helper.service";
-import { TvJunctionInnerBoundaryService } from "./tv-junction-inner-boundary.service";
-import { TvJunctionBoundary } from "./tv-junction-boundary";
-import { TvJunctionOuterBoundaryService } from "./tv-junction-outer-boundary.service";
 import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
 import { setupTest } from "../../../tests/setup-tests";
@@ -14,7 +11,6 @@ import { setupTest } from "../../../tests/setup-tests";
 describe( 'TvJunctionInnerBoundaryService', () => {
 
 	let testHelper: SplineTestHelper;
-	let service: TvJunctionInnerBoundaryService;
 
 	beforeEach( () => {
 
@@ -22,17 +18,15 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 
 		testHelper = TestBed.inject( SplineTestHelper );
 
-		service = TestBed.inject( TvJunctionInnerBoundaryService );
-
 	} );
 
 	it( 'should create inner boundary for junction between 2 roads', () => {
 
 		const junction = testHelper.addCustomJunctionWith2Roads();
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( boundary.getSegmentCount() ).toBe( 4 );
 
@@ -51,9 +45,9 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 
 		const junction = testHelper.mapService.findJunction( 1 );
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( boundary.getSegmentCount() ).toBe( 8 );
 
@@ -76,9 +70,9 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 
 		const junction = testHelper.mapService.findJunction( 1 );
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( boundary.getSegmentCount() ).toBe( 6 );
 
@@ -97,9 +91,9 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 
 		const junction = map.getJunctions()[ 0 ];
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( junction.getConnectionCount() ).toBe( 12 );
 		expect( boundary.getSegmentCount() ).toBe( 8 );
@@ -119,9 +113,9 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 
 		const junction = map.getJunction( 184 );
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( junction.getConnectionCount() ).toBe( 6 );
 		expect( boundary.getSegmentCount() ).toBe( 7 );
@@ -142,7 +136,6 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 describe( 'TvJunctionOuterBoundaryService', () => {
 
 	let testHelper: SplineTestHelper;
-	let service: TvJunctionOuterBoundaryService;
 
 	beforeEach( () => {
 
@@ -150,17 +143,15 @@ describe( 'TvJunctionOuterBoundaryService', () => {
 
 		testHelper = TestBed.inject( SplineTestHelper );
 
-		service = TestBed.inject( TvJunctionOuterBoundaryService );
-
 	} );
 
 	it( 'should create outer boundary for junction between 2 roads', () => {
 
 		const junction = testHelper.addCustomJunctionWith2Roads();
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( boundary.getSegmentCount() ).toBe( 4 );
 
@@ -179,9 +170,9 @@ describe( 'TvJunctionOuterBoundaryService', () => {
 
 		const junction = testHelper.mapService.findJunction( 1 );
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( boundary.getSegmentCount() ).toBe( 8 );
 
@@ -204,9 +195,9 @@ describe( 'TvJunctionOuterBoundaryService', () => {
 
 		const junction = testHelper.mapService.findJunction( 1 );
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( boundary.getSegmentCount() ).toBe( 6 );
 
@@ -225,9 +216,9 @@ describe( 'TvJunctionOuterBoundaryService', () => {
 
 		const junction = map.getJunctions()[ 0 ];
 
-		const boundary = new TvJunctionBoundary();
+		const boundary = junction.outerBoundary;
 
-		service.update( junction, boundary );
+		junction.updateBoundary();
 
 		expect( junction.getConnectionCount() ).toBe( 12 );
 		expect( boundary.getSegmentCount() ).toBe( 8 );

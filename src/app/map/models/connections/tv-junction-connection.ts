@@ -116,6 +116,10 @@ export class TvJunctionConnection {
 		return this.connectingRoad?.id;
 	}
 
+	get isRightTurn (): boolean {
+		return this.turnType == TurnType.RIGHT;
+	}
+
 	getIncomingRoad (): TvRoad {
 		return this.incomingRoad;
 	}
@@ -222,11 +226,11 @@ export class TvJunctionConnection {
 
 	getIncomingRoadContact (): TvContactPoint {
 
-		if ( this.connectingRoad.successor.equals( this.incomingRoad ) ) {
+		if ( this.connectingRoad.successor?.equals( this.incomingRoad ) ) {
 			return this.connectingRoad.successor.contactPoint;
 		}
 
-		if ( this.connectingRoad.predecessor.equals( this.incomingRoad ) ) {
+		if ( this.connectingRoad.predecessor?.equals( this.incomingRoad ) ) {
 			return this.connectingRoad.predecessor.contactPoint;
 		}
 
@@ -389,6 +393,12 @@ export class TvJunctionConnection {
 
 	}
 
+	setCorner ( isCorner: boolean ): void {
+
+		this.isCornerConnection = isCorner;
+
+	}
+
 	getLowestLaneLink (): TvJunctionLaneLink {
 
 		return this.getLaneLinks().sort( ( a, b ) => a.incomingLane.id - b.incomingLane.id )[ 0 ];
@@ -398,6 +408,18 @@ export class TvJunctionConnection {
 	getHighestLaneLink (): TvJunctionLaneLink {
 
 		return this.getLaneLinks().sort( ( a, b ) => b.incomingLane.id - a.incomingLane.id )[ 0 ];
+
+	}
+
+	getOuterLaneLink (): TvJunctionLaneLink {
+
+		const contactPoint = this.getIncomingRoadContact();
+
+		if ( contactPoint == TvContactPoint.START ) {
+			return this.getHighestLaneLink();
+		} else {
+			return this.getLowestLaneLink();
+		}
 
 	}
 
@@ -489,5 +511,12 @@ export class TvJunctionConnection {
 		return this._laneLinks.find( link => link.matchesIncomingLane( lane ) );
 
 	}
+
+	hasSidewalks (): boolean {
+
+		return this._laneLinks.some( link => link.connectingLane.isSidewalk );
+
+	}
+
 }
 

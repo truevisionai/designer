@@ -2,8 +2,11 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+import { RoadFactory } from 'app/factories/road-factory.service';
+import { createRoadDistance } from '../road/road-distance';
 import { TvPosTheta } from './tv-pos-theta';
 import { TvRoad } from './tv-road.model';
+import { LANE_WIDTH } from './tv-lane-width';
 
 describe( 'RoadTests', () => {
 
@@ -95,5 +98,76 @@ describe( 'RoadTests', () => {
 		expect( road.getLaneProfile().getLaneOffsetValue( 20 ) ).toBe( 20 );
 
 	} );
+
+} );
+
+
+describe( 'RoadLanePositionTests', () => {
+
+	let road: TvRoad;
+
+	beforeEach( () => {
+
+		road = RoadFactory.createDefaultRoad();
+
+		// 3 straight road lines
+		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
+		road.getPlanView().addGeometryLine( 10, 0, 0, 1, 10 );
+		road.getPlanView().addGeometryLine( 20, 0, 0, 2, 10 );
+
+	} );
+
+	it( 'should give correct lane start position for right lane', () => {
+
+		const lane = road.getLaneSectionAt( 0 ).getLaneById( -1 );
+
+		const position = road.getLaneStartPosition( lane, createRoadDistance( road, 0 ) );
+
+		expect( position.x ).toBeCloseTo( 0 );
+		expect( position.y ).toBeCloseTo( 0 );
+		expect( position.z ).toBeCloseTo( 0 );
+		expect( position.hdg ).toBeCloseTo( 0 );
+
+	} );
+
+	it( 'should give correct lane end position for right lane', () => {
+
+		const lane = road.getLaneSectionAt( 0 ).getLaneById( -1 );
+
+		const position = road.getLaneEndPosition( lane, createRoadDistance( road, 0 ) );
+
+		expect( position.x ).toBeCloseTo( 0 );
+		expect( position.y ).toBeCloseTo( -LANE_WIDTH.DEFAULT_LANE_WIDTH );
+		expect( position.z ).toBeCloseTo( 0 );
+		expect( position.hdg ).toBeCloseTo( 0 );
+
+	} );
+
+	it( 'should give correct lane start position for left lane', () => {
+
+		const lane = road.getLaneSectionAt( 0 ).getLaneById( 1 );
+
+		const position = road.getLaneStartPosition( lane, createRoadDistance( road, 0 ) );
+
+		expect( position.x ).toBeCloseTo( 0 );
+		expect( position.y ).toBeCloseTo( 0 );
+		expect( position.z ).toBeCloseTo( 0 );
+		expect( position.hdg ).toBeCloseTo( 0 );
+
+	} );
+
+	it( 'should give correct lane end position for left lane', () => {
+
+		const lane = road.getLaneSectionAt( 0 ).getLaneById( 1 );
+
+		const position = road.getLaneEndPosition( lane, createRoadDistance( road, 0 ) );
+
+		expect( position.x ).toBeCloseTo( 0 );
+		expect( position.y ).toBeCloseTo( LANE_WIDTH.DEFAULT_LANE_WIDTH );
+		expect( position.z ).toBeCloseTo( 0 );
+		expect( position.hdg ).toBeCloseTo( 0 );
+
+	} );
+
 
 } );
