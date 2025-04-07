@@ -122,10 +122,10 @@ describe( 'ParkingGraph Import/Export', () => {
 
 		const json = parkingGraph.toSceneJSON();
 
-		expect( json.nodes.length ).toBe( 9 );
-		expect( json.edges.length ).toBe( 12 );
-		expect( json.regions.length ).toBe( 4 );
-		expect( json.parkingCurves.length ).toBe( 0 );
+		expect( json.node.length ).toBe( 9 );
+		expect( json.edge.length ).toBe( 12 );
+		expect( json.region.length ).toBe( 4 );
+		expect( json.parkingCurve.length ).toBe( 0 );
 
 	} );
 
@@ -136,10 +136,10 @@ describe( 'ParkingGraph Import/Export', () => {
 		const json = edge.toSceneJSON();
 
 		expect( json ).toEqual( {
-			id: edge.id,
-			startNodeId: edge.getStartNode().id,
-			endNodeId: edge.getEndNode().id,
-			markingGuid: edge.getMarkingGuid()
+			attr_id: edge.id,
+			attr_startNodeId: edge.getStartNode().id,
+			attr_endNodeId: edge.getEndNode().id,
+			attr_markingGuid: edge.getMarkingGuid()
 		} );
 
 	} );
