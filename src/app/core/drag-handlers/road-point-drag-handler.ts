@@ -67,7 +67,7 @@ export class RoadPointDragHandler<T extends RoadPoint> extends BaseDragHandler<T
 			return;
 		}
 
-		Commands.SetPosition( point, point.position, this.dragStartPosition );
+		Commands.SetPosition( point, point.getPosition(), this.dragStartPosition );
 
 	}
 

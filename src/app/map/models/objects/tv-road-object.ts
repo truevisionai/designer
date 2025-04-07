@@ -16,6 +16,7 @@ import { TvRoadObjectSkeleton } from "./tv-road-object-skeleton";
 import { Euler, MathUtils, Object3D, Quaternion, Vector3 } from "three";
 import { TvCornerRoad } from './tv-corner-road';
 import { Maths } from 'app/utils/maths';
+import { TvPosTheta } from '../tv-pos-theta';
 
 export enum TvRoadObjectType {
 
@@ -429,6 +430,33 @@ export class TvRoadObject {
 		}
 
 		return hdg;
+
+	}
+
+	updateRoadCoordinates ( s: number, t: number ): void {
+
+		this.s = s;
+		this.t = t;
+
+	}
+
+	setPosition ( position: Vector3 ): void {
+
+		const coord = this.road.getRoadCoordinatesAt( position );
+
+		this.updateRoadCoordinates( coord.s, coord.t );
+
+	}
+
+	getPosition (): Vector3 {
+
+		return this.getObjectPosition().toVector3();
+
+	}
+
+	getObjectPosition (): TvPosTheta {
+
+		return this.road.getRoadPosition( this.s, this.t );
 
 	}
 

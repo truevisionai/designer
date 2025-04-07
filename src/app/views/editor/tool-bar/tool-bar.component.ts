@@ -2,21 +2,24 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AfterViewInit, Component, Host, HostBinding, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	Host,
+	HostBinding,
+	HostListener,
+	OnInit,
+	ViewChild,
+	ViewContainerRef
+} from '@angular/core';
 import { SatPopover } from '@ncstate/sat-popover';
 import { ToolType } from 'app/tools/tool-types.enum';
-import { CommandHistory } from 'app/commands/command-history';
 import { ToolManager } from '../../../managers/tool-manager';
 import { ThreeService } from '../../../renderer/three.service';
-import { SetInspectorCommand } from 'app/commands/set-inspector-command';
-import {
-	EnvironmentInspectorComponent
-} from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { Environment } from 'app/core/utils/environment';
 import { ToolBarService } from './tool-bar.service';
 import { MatToolbar } from '@angular/material/toolbar';
 import { Tool } from "../../../tools/tool";
-import { WorldSettingInspectorComponent } from 'app/views/inspectors/world-setting-inspector/world-setting-inspector.component';
 
 class IToolMenu {
 	id: string;
@@ -329,6 +332,20 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 			enabled: true,
 		},
 		{
+			id: 'showParkingSpotTool',
+			label: 'Parking Spot',
+			class: 'toolbar-button',
+			toolType: ToolType.ParkingSpot,
+			action: 'parking-Spot-tool',
+			icon: 'local_parking',
+			title: 'Parking Spot Tool',
+			description: '',
+			track: 'button',
+			tooltip: 'Parking Spot Tool',
+			click: () => this.setToolType( ToolType.ParkingSpot ),
+			enabled: true,
+		},
+		{
 			id: 'showParkingRoadTool',
 			label: 'Parking Road',
 			class: 'toolbar-button',
@@ -582,4 +599,8 @@ export class ToolBarComponent implements OnInit, AfterViewInit {
 
 	}
 
+	private async loadToolModule ( toolType: ToolType ): Promise<void> {
+
+		await this.toolBarService.loadToolModule( toolType );
+	}
 }

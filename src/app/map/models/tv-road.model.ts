@@ -5,7 +5,7 @@
 import { GameObject } from 'app/objects/game-object';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 import { Maths } from 'app/utils/maths';
-import { Box3, Group, MathUtils, Vector2, Vector3 } from "three";
+import { Box2, Box3, Group, MathUtils, Vector2, Vector3 } from "three";
 import { TvContactPoint, TvDynamicTypes, TvLaneLocation, TvOrientation, TvRoadType, TvUnit } from './tv-common';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { TvJunction } from './junctions/tv-junction';
@@ -57,7 +57,7 @@ export class TvRoad {
 
 	private _trafficRule = TrafficRule.RHT;
 
-	public boundingBox: Box3;
+	public boundingBox: Box2;
 
 	public gameObject: GameObject;
 
@@ -730,6 +730,12 @@ export class TvRoad {
 
 	}
 
+	isPointOnRoad ( point: Vector3 ): boolean {
+
+		return RoadGeometryService.instance.isPointOnRoad( this, point );
+
+	}
+
 	getLocatorProvider (): RoadGeometryService {
 
 		return RoadGeometryService.instance;
@@ -758,7 +764,11 @@ export class TvRoad {
 
 		} );
 
-		this.boundingBox = boundingBox;
+		this.boundingBox = new Box2();
+		this.boundingBox.min.x = boundingBox.min.x;
+		this.boundingBox.min.y = boundingBox.min.y;
+		this.boundingBox.max.x = boundingBox.max.x;
+		this.boundingBox.max.y = boundingBox.max.y;
 
 	}
 

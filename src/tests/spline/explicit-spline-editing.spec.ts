@@ -1,16 +1,11 @@
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { EventServiceProvider } from "app/listeners/event-service-provider";
-import { ToolManager } from "app/managers/tool-manager";
-import { TvArcGeometry } from "app/map/models/geometries/tv-arc-geometry";
 import { TvLineGeometry } from "app/map/models/geometries/tv-line-geometry";
 import { TvSpiralGeometry } from "app/map/models/geometries/tv-spiral-geometry";
 import { TvMap } from "app/map/models/tv-map.model";
 import { MapService } from "app/services/map/map.service";
-import { RoadService } from "app/services/road/road.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { BaseTool } from "app/tools/base-tool";
 import { ToolType } from "app/tools/tool-types.enum";

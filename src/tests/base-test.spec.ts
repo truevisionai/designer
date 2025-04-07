@@ -1,11 +1,7 @@
 import { TvLaneSection } from "../app/map/models/tv-lane-section";
-import { Vector2, Vector3 } from "app/core/maths";
+import { Vector3 } from "app/core/maths";
 import { RoadFactory, RoadMakeOptions } from "../app/factories/road-factory.service";
-import { RoadService } from "../app/services/road/road.service";
-import { RoadNode } from "app/objects/road/road-node";
-import { TvContactPoint, TvLaneSide, TvLaneType } from "app/map/models/tv-common";
-import { RoadToolHelper } from "app/tools/road/road-tool-helper.service";
-import { SplineControlPoint } from "app/objects/road/spline-control-point";
+import { TvLaneType } from "app/map/models/tv-common";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { SplineUtils } from "../app/utils/spline.utils";
 import { TvRoad } from "app/map/models/tv-road.model";
@@ -14,6 +10,8 @@ import { MapService } from "app/services/map/map.service";
 import { TvLink } from "app/map/models/tv-link";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Maths } from "app/utils/maths";
+import { ViewManager } from "../app/tools/point-marking/view-manager";
+import { AppInspector } from "../app/core/inspector";
 import { TvLaneCoord } from "../app/map/models/tv-lane-coord";
 
 function formatMessage ( road: TvRoad, link: TvLink, distance?: number ) {
@@ -203,9 +201,27 @@ export function createFreewayRoad ( options: RoadMakeOptions ): TvRoad {
 
 }
 
+export function expectViewModelRemoved ( model: any ) {
+	expect( ViewManager.hasModel( model ) ).toBeFalsy();
+}
+
+export function expectViewModelHidden ( model: any ) {
+	expect( ViewManager.getViewModel( model ).getObject3d().visible ).toBeFalse();
+}
+
+export function expectViewModelExists ( model: any ) {
+	expect( ViewManager.hasModel( model ) ).toBeTrue()
+}
+
+export function expectInspectorRemoved () {
+	expect( AppInspector.hasInspector() ).toBeFalse();
+}
+
+export function expectInspectorSet () {
+	expect( AppInspector.hasInspector() ).toBeTrue();
+}
+
 export function createRampRoad ( start: TvLaneCoord | Vector3, end: TvLaneCoord | Vector3 ): TvRoad {
-
 	return RoadFactory.createRampRoad( start, end );
-
 }
 

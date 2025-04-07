@@ -34,7 +34,6 @@ describe( 'SetPositionCommand', () => {
 		setPositionCommand = new SetPositionCommand( object, newPosition, oldPosition );
 
 		spyOn( object, 'setPosition' )
-		spyOn( object, 'updateMatrixWorld' );
 
 	} );
 
@@ -43,8 +42,7 @@ describe( 'SetPositionCommand', () => {
 		setPositionCommand.execute();
 
 		expect( object.setPosition ).toHaveBeenCalledWith( newPosition );
-		expect( object.updateMatrixWorld ).toHaveBeenCalledWith( true );
-		// Add more expectations here
+
 	} );
 
 	it( 'should undo the command correctly', () => {
@@ -52,8 +50,7 @@ describe( 'SetPositionCommand', () => {
 		setPositionCommand.undo();
 
 		expect( object.setPosition ).toHaveBeenCalledWith( oldPosition );
-		expect( object.updateMatrixWorld ).toHaveBeenCalledWith( true );
-		// Add more expectations here
+
 	} );
 
 	it( 'should redo the command correctly', () => {
@@ -61,8 +58,7 @@ describe( 'SetPositionCommand', () => {
 		setPositionCommand.redo();
 
 		expect( object.setPosition ).toHaveBeenCalledWith( newPosition );
-		expect( object.updateMatrixWorld ).toHaveBeenCalledWith( true );
-		// Add more expectations here
+
 	} );
 
 } );

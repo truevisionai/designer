@@ -16,6 +16,10 @@ import { TvStandardMaterial } from "../assets/material/tv-standard-material";
 import { RoadStyleManager } from "../assets/road-style/road-style.manager";
 import { RoadStyle } from "../assets/road-style/road-style.model";
 import { MaterialAsset } from "../assets/material/tv-material.asset";
+import { isViewModel } from "app/tools/lane/visualizers/i-view-model";
+import { BaseVMInspector } from "app/tools/point-marking/point-marking.inspector";
+import { isView } from "app/tools/lane/visualizers/i-view";
+import { ViewManager } from "../tools/point-marking/view-manager";
 
 @Injectable( {
 	providedIn: 'root'
@@ -85,6 +89,22 @@ export class ObjectEventListener {
 
 			this.assetService.saveAssetByGuid( AssetType.MATERIAL, object.guid, object );
 
+		} else if ( isViewModel( object ) ) {
+
+			object.update?.();
+
+		} else if ( isView( object ) ) {
+
+			object.update?.();
+
+		} else if ( object instanceof BaseVMInspector ) {
+
+			object.getViewModel().update?.();
+
+		} else if ( ViewManager.hasModel( object ) ) {
+
+			ViewManager.getViewModel( object )?.update();
+
 		} else {
 
 			ToolManager.onObjectUpdated( object );
@@ -101,7 +121,19 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectRemoved', object );
 
-		ToolManager.onObjectRemoved( object );
+		if ( isViewModel( object ) ) {
+
+			object.remove?.();
+
+		} else if ( ViewManager.hasModel( object ) ) {
+
+			ViewManager.getViewModel( object )?.remove();
+
+		} else {
+
+			ToolManager.onObjectRemoved( object );
+
+		}
 
 	}
 
@@ -109,7 +141,15 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectAdded', object );
 
-		ToolManager.onObjectAdded( object );
+		if ( ViewManager.hasModel( object ) ) {
+
+			ViewManager.getViewModel( object )?.render();
+
+		} else {
+
+			ToolManager.onObjectAdded( object );
+
+		}
 
 	}
 
@@ -117,7 +157,14 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectUnselected', object );
 
-		ToolManager.onObjectUnselected( object );
+		if ( ViewManager.hasModel( object ) ) {
+
+			ViewManager.onViewModelUnselected( ViewManager.getViewModel( object ) );
+
+		} else {
+
+			ToolManager.onObjectUnselected( object );
+		}
 
 	}
 
@@ -125,7 +172,14 @@ export class ObjectEventListener {
 
 		if ( this.debug ) console.debug( 'onObjectSelected', object );
 
-		ToolManager.onObjectSelected( object );
+		if ( ViewManager.hasModel( object ) ) {
+
+			ViewManager.onViewModelSelected( ViewManager.getViewModel( object ) );
+
+		} else {
+
+			ToolManager.onObjectSelected( object );
+		}
 
 	}
 

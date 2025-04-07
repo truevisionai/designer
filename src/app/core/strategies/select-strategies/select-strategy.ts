@@ -11,6 +11,7 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
 import { LaneDistance } from 'app/map/road/road-distance';
 import { RoadWidthService } from 'app/services/road/road-width.service';
+import { isView, IView } from 'app/tools/lane/visualizers/i-view';
 import { Intersection, Object3D, Vector3 } from "three";
 
 export interface SelectionStrategy<T> {
@@ -198,7 +199,7 @@ export abstract class BaseSelectionStrategy<T> implements SelectionStrategy<T> {
 			.filter( intersection => intersection.object !== undefined )
 			.map( intersection => intersection.object );
 
-		return objects.find( ( object: Object3D ) => object[ 'tag' ] === tag );
+		return objects.find( ( object: Object3D ) => object[ 'tag' ] === tag || object.userData.tag === tag );
 
 	}
 
@@ -251,3 +252,22 @@ export abstract class NewSelectionStrategy<T> extends BaseSelectionStrategy<T> {
 
 }
 
+export class ViewSelectionStrategy extends NewSelectionStrategy<IView> {
+
+	handleSelection ( e: PointerEventData ): IView {
+
+		for ( const intersection of e.intersections ) {
+
+			if ( intersection.object.visible === false ) continue;
+
+			if ( isView( intersection.object ) ) {
+
+				return intersection.object;
+
+			}
+
+		}
+
+	}
+
+}

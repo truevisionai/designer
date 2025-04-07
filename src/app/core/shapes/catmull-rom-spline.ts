@@ -5,6 +5,7 @@
 import { CatmullRomCurve3, CurveType, Vector3 } from "three";
 import { AbstractSpline } from './abstract-spline';
 import { SplineType } from './spline-type';
+import { AbstractControlPoint } from "app/objects/abstract-control-point";
 
 export class CatmullRomSpline extends AbstractSpline {
 
@@ -26,15 +27,43 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
+	addControlPoint ( value: AbstractControlPoint | Vector3 ): AbstractControlPoint {
+
+		const controlPoint = super.addControlPoint( value );
+
+		this.update();
+
+		return controlPoint;
+	}
+
+	removeControlPoint ( point: AbstractControlPoint ): void {
+
+		super.removeControlPoint( point );
+
+		this.update();
+
+	}
+
+	setControlPoints ( points: AbstractControlPoint[] ): void {
+
+		super.setControlPoints( points );
+
+		this.update();
+
+	}
+
 	override getLength (): number {
 
 		return this.curve?.getLength();
 
 	}
 
-	getPoints ( stepSize: number = 10 ): Vector3[] {
+	override getPoints ( stepSize: number = 10 ): Vector3[] {
 
-		return this.curve?.getPoints( stepSize ) || [];
+		const length = this.getLength();
+		const count = Math.floor( length / stepSize );
+
+		return this.curve.getPoints( count );
 
 	}
 

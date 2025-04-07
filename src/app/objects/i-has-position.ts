@@ -2,9 +2,9 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Object3D, Vector3 } from "three";
+import { Vector3 } from "three";
 
-export interface IHasPosition extends Object3D {
+export interface IHasPosition {
 
 	setPosition ( position: Vector3 ): void;
 

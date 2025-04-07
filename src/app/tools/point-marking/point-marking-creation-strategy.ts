@@ -2,9 +2,8 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { CreationStrategy, ValidationFailed, ValidationPassed, ValidationResult } from "../../core/interfaces/creation-strategy";
+import { ValidationFailed, ValidationPassed, ValidationResult } from "../../core/interfaces/creation-strategy";
 import { SelectionService } from "../selection.service";
-import { PointMarkingControlPoint } from "./objects/point-marking-object";
 import { PointerEventData } from "app/events/pointer-event-data";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { RoadObjectFactory } from "app/services/road-object/road-object.factory";
@@ -26,7 +25,7 @@ import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy
 @Injectable( {
 	providedIn: 'root'
 } )
-export class PointMarkingCreationStrategy extends BaseCreationStrategy<PointMarkingControlPoint> implements AssetHandler {
+export class PointMarkingCreationStrategy extends BaseCreationStrategy<TvRoadObject> implements AssetHandler {
 
 	constructor (
 		private selectionService: SelectionService,
@@ -91,7 +90,7 @@ export class PointMarkingCreationStrategy extends BaseCreationStrategy<PointMark
 		return new ValidationPassed();
 	}
 
-	createObject ( event: PointerEventData ): PointMarkingControlPoint {
+	createObject ( event: PointerEventData ): TvRoadObject {
 
 		const asset = this.assetManager.getTextureAsset() || this.assetManager.getMaterialAsset();
 
@@ -99,23 +98,17 @@ export class PointMarkingCreationStrategy extends BaseCreationStrategy<PointMark
 
 	}
 
-	createFromAsset ( asset: Asset, position: Vector3 ): PointMarkingControlPoint {
+	createFromAsset ( asset: Asset, position: Vector3 ): TvRoadObject {
 
 		const coord = TvMapQueries.findRoadCoord( position );
 
 		if ( !coord ) return;
 
-		const roadObject = this.createPointMarking( asset, coord );
-
-		const point = PointMarkingControlPoint.create( coord.road, roadObject );
-
-		point.position.copy( coord.position );
-
-		return point;
+		return this.createRoadObjectFromAsset( asset, coord );
 
 	}
 
-	private createPointMarking ( asset: Asset, coord: TvRoadCoord ): TvRoadObject {
+	private createRoadObjectFromAsset ( asset: Asset, coord: TvRoadCoord ): TvRoadObject {
 
 		const id = this.roadObjectService.getRoadObjectId( coord.road );
 
@@ -138,7 +131,7 @@ export class PointMarkingCreationStrategy extends BaseCreationStrategy<PointMark
 		return roadObject;
 	}
 
-	private getDimensions ( asset: Asset ): Vector2 {
+	public getDimensions ( asset: Asset ): Vector2 {
 
 		if ( asset.type == AssetType.MATERIAL ) {
 

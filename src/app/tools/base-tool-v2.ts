@@ -127,6 +127,7 @@ export abstract class ToolWithHandler extends BaseTool<any> {
 
 		if ( !this.hasHandlersForObject( object ) ) {
 			Log.error( `unknown object selected: ${ object.toString() }` );
+			console.error( `unknown object selected:`, object );
 			return;
 		}
 
