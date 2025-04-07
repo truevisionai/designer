@@ -26,7 +26,7 @@ export class ParkingEdge {
 	}
 
 	matches ( startNode: ParkingNode, endNode: ParkingNode ): boolean {
-		return this.startNode === startNode && this.endNode === endNode;
+		return this.startNode.matches( startNode ) && this.endNode.matches( endNode );
 	}
 
 	getNodePositions (): Vector3[] {
