@@ -8,18 +8,15 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import {
-	CircleGeometry,
 	CylinderGeometry,
 	FrontSide,
 	Mesh,
 	MeshBasicMaterial,
 	Object3D,
-	PlaneGeometry,
 	TextureLoader,
 	Vector3
 } from "three";
 import { ApiService } from '../../../services/api.service';
-import { TvOrientation } from 'app/map/models/tv-common';
 import { TextObjectService } from 'app/services/text-object.service';
 import { AssetService } from 'app/assets/asset.service';
 import { AssetType } from 'app/assets/asset.model';
@@ -27,6 +24,11 @@ import { SignalDatabase } from '../../../map/road-signal/road-signal.database';
 import { RoadService } from 'app/services/road/road.service';
 import { TvTextureService } from "../../../assets/texture/tv-texture.service";
 import { MeshBuilder } from 'app/core/builders/mesh.builder';
+import * as THREE from 'three';
+
+const signBackMaterial = new THREE.MeshBasicMaterial( { color: 0x777777 } ); // grey metal
+const signEdgeMaterial = new THREE.MeshBasicMaterial( { opacity: 0, transparent: true } ); // dark edge
+const signPoleMaterial = new MeshBasicMaterial( { color: 0x666666 } );
 
 @Injectable()
 export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
@@ -145,35 +147,11 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 		return textObject3d;
 	}
 
-	private buildSignBoardMesh ( signal: TvRoadSignal ): Mesh {
-
-		const geometry = this.buildSignGeometry( signal );
-
-		const material = this.getSignMaterial( signal );
-
-		return new Mesh( geometry, material );
-
-	}
-
-	private buildSignGeometry ( signal: TvRoadSignal ): PlaneGeometry {
-
-		const width = signal.width || 0.5;
-
-		const height = signal.height || 0.5;
-
-		const geometry = this.createSquare( width, height );
-
-		geometry.rotateX( 90 * Maths.Deg2Rad );
-
-		return geometry;
-	}
-
 	private createPole ( poleHeight: number, poleRadius: number ): Object3D {
 
 		const geometry = new CylinderGeometry( poleRadius, poleRadius, poleHeight, 32 );
-		const material = new MeshBasicMaterial( { color: ColorUtils.LIGHTGRAY } );
 
-		const pole = new Mesh( geometry, material );
+		const pole = new Mesh( geometry, signPoleMaterial );
 
 		pole.rotateX( 90 * Maths.Deg2Rad );
 
@@ -182,28 +160,59 @@ export class RoadSignalBuilder implements MeshBuilder<TvRoadSignal> {
 		return pole;
 	}
 
-	private createRectangle (): PlaneGeometry {
+	private buildSignBoardMesh ( signal: TvRoadSignal, shape: 'circle' | 'square' = 'circle' ): Mesh {
 
-		return new PlaneGeometry( 1, 1.5 );
+		const material = this.getSignMaterial( signal );
 
+		if ( shape === 'circle' ) {
+
+			return this.createRoundedSign( signal.width * 0.5 || 0.5, material )
+
+		} else if ( shape === 'square' ) {
+
+			return this.createSquareSign(
+				signal.width || 0.5,
+				signal.height || 0.5,
+				material
+			)
+
+		}
 	}
 
-	private createSquare ( width: number = 1, height: number = 1 ): PlaneGeometry {
+	private createSquareSign ( width: number, height: number, signFrontMaterial: THREE.Material ): THREE.Mesh {
 
-		return new PlaneGeometry( width, height );
+		// Order: +X, -X, +Y, -Y, +Z, -Z
+		const materials = [
+			signEdgeMaterial,  // right
+			signEdgeMaterial,  // left
+			signEdgeMaterial,  // top
+			signEdgeMaterial,  // bottom
+			signFrontMaterial, // front
+			signBackMaterial   // back
+		];
 
+		const geometry = new THREE.BoxGeometry( width, height, 0.01 );
+		const mesh = new THREE.Mesh( geometry, materials );
+
+		mesh.rotation.x = Math.PI / 2;
+
+		return mesh;
 	}
 
-	private createTiltedSquare ( sign: string, signal: TvRoadSignal ): CylinderGeometry {
+	private createRoundedSign ( radius: number, signFrontMaterial: THREE.Material ): THREE.Mesh {
 
-		return new CylinderGeometry( 0.5, 0.5, 0.05, 4, 1 );
+		const materials = [
+			signEdgeMaterial,  // edge
+			signBackMaterial,   // back
+			signFrontMaterial, // front
+		];
 
-	}
+		const geometry = new THREE.CylinderGeometry( radius, radius, 0.01 );
+		const mesh = new THREE.Mesh( geometry, materials );
 
-	private createSpherical (): CircleGeometry {
+		mesh.rotation.y = Math.PI / 2;
 
-		return new CircleGeometry( 0.5 );
-
+		return mesh;
 	}
 
 	private getSignMaterial ( signal: TvRoadSignal ): any {
