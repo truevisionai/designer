@@ -43,10 +43,6 @@ export class DebugServiceProvider {
 
 			debugService = this.injector.get( PointDebugService );
 
-		} else if ( type === ToolType.PropPolygon ) {
-
-			debugService = this.injector.get( HasSplineDebugService );
-
 		} else if ( type === ToolType.LaneHeight ) {
 
 			debugService = this.injector.get( LaneHeightDebugService );

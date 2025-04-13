@@ -24,7 +24,6 @@ import { RoadTool } from "./road/road-tool";
 import { RoadCircleTool } from "./road-circle/road-circle-tool";
 import { ManeuverTool } from "./maneuver/maneuver-tool";
 import { PropPointTool } from "./prop-point/prop-point-tool";
-import { PropPolygonTool } from "./prop-polygon/prop-polygon.tool";
 import { PropSpanTool } from "./prop-span/prop-span-tool";
 import { PolePropTool } from "./prop-pole/pole-prop.tool";
 import { LaneMarkingTool } from "./lane-marking/lane-marking-tool";
@@ -41,7 +40,6 @@ import { ParkingRoadTool } from "./parking/parking-road-tool";
 import { ParkingLotTool } from "./parking/parking-lot.tool";
 import { DepPointStrategy } from "../core/strategies/select-strategies/control-point-strategy";
 import { SelectionService } from "./selection.service";
-import { PropPolygon } from "../map/prop-polygon/prop-polygon.model";
 import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
 import { ControlPointFactory } from "../factories/control-point.factory";
 import { DataServiceProvider } from "./data-service-provider.service";
@@ -62,7 +60,6 @@ import { EntityService } from "../scenario/entity/entity.service";
 import { LaneHeightToolService } from './lane-height/lane-height-tool.service';
 import { DebugConnectionTool, DebugConnectionToolService } from "./debug-connections/debug-connections.tool";
 import { SuperElevationTool, SuperElevationToolHelper } from "./road-super-elevation/super-elevation.tool";
-import { ObjectUserDataStrategy } from "../core/strategies/select-strategies/object-user-data-strategy";
 import { Log } from 'app/core/utils/log';
 
 @Injectable( {
@@ -137,9 +134,6 @@ export class ToolFactory {
 			case ToolType.PropPoint:
 				tool = new PropPointTool();
 				break;
-			case ToolType.PropPolygon:
-				tool = new PropPolygonTool();
-				break;
 			case ToolType.PropSpanTool:
 				tool = new PropSpanTool( this.propSpanToolService );
 				break;
@@ -200,12 +194,6 @@ export class ToolFactory {
 	setSelectionStrategies ( tool: BaseTool<any>, type: ToolType ): void {
 
 		this.selectionService.reset();
-
-		if ( type == ToolType.PropPolygon ) {
-			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
-			this.selectionService.registerStrategy( PropPolygon, new ObjectUserDataStrategy<PropPolygon>( PropPolygon.tag, 'polygon' ) );
-			tool.setTypeName( PropPolygon.name );
-		}
 
 		if ( type == ToolType.PropPoint ) {
 			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );

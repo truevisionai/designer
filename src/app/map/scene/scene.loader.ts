@@ -223,7 +223,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	loadParkingGraph ( xml: XmlElement ): void {
 
-		if (!xml) return;
+		if ( !xml ) return;
 
 		this.map.setParkingGraph( ParkingGraph.fromSceneJSON( xml ) )
 
@@ -797,7 +797,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( id ) polygon.id = id;
 
-		spline.getControlPoints().forEach( point => point.mainObject = polygon );
+		const points = spline.getControlPoints().map( p => p.clone() );
+
+		spline.clearControlPoints();
+
+		points.forEach( point => polygon.addPointAt( point.position, point.index ) );
 
 		this.readAsOptionalArray( xml.props || xml.prop, prop => {
 

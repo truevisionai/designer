@@ -413,7 +413,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 
 	}
 
-	showPolyline ( spline: AbstractSpline ): void {
+	showPolyline ( spline: AbstractSpline, color = ColorUtils.WHITE ): void {
 
 		if ( spline.getControlPointCount() < 2 ) return;
 
@@ -425,7 +425,7 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 			points.push( points[ 0 ] );
 		}
 
-		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH, ColorUtils.WHITE );
+		const line = this.debugService.createDebugLine( spline, points, LINE_WIDTH, color );
 
 		this.polylines.addItem( spline, line );
 

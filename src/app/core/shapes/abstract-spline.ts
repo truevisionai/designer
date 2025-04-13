@@ -106,6 +106,10 @@ export abstract class AbstractSpline {
 		return this.map;
 	}
 
+	clearControlPoints (): void {
+		this.controlPoints = [];
+	}
+
 	getControlPoints (): AbstractControlPoint[] {
 		return this.controlPoints;
 	}

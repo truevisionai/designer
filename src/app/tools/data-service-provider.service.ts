@@ -41,9 +41,6 @@ export class DataServiceProvider {
 			case ToolType.PropPoint:
 				return this.propPointService;
 
-			case ToolType.PropPolygon:
-				return this.propPolygonService;
-
 			case ToolType.LaneHeight:
 				return this.laneService;
 

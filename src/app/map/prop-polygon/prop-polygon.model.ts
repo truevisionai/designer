@@ -4,8 +4,9 @@
 
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { TvTransform } from '../models/tv-transform';
-import { MathUtils } from "three";
+import { MathUtils, Vector3 } from "three";
 import { PropPoint } from "../prop-point/prop-point.model";
+import { PropPolygonPoint } from 'app/modules/prop-polygon/objects/prop-polygon-point';
 
 export class PropPolygon {
 
@@ -38,6 +39,19 @@ export class PropPolygon {
 		this.props.push( { guid, transform } );
 
 	}
+
+	addPointAt ( position: Vector3, index: number ): void {
+
+		const point = new PropPolygonPoint( this );
+
+		point.position.copy( position );
+
+		point.index = index;
+
+		this.spline.addControlPoint( point );
+
+	}
+
 
 }
 

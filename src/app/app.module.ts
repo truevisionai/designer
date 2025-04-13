@@ -41,6 +41,7 @@ import { RoadElevationModule } from './modules/road-elevation/road-elevation.mod
 import { CrosswalkToolModule } from './modules/crosswalk/crosswalk-tool.module';
 import { JunctionToolModule } from "./modules/junction/junction.module";
 import { ParkingSpotModule } from './modules/parking-spot/parking-spot.module';
+import { PropPolygonModule } from './modules/prop-polygon/prop-polygon.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory ( httpClient: HttpClient ): TranslateHttpLoader {
@@ -74,6 +75,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 		BuilderModule,
 		LaneWidthModule,
 		PropCurveModule,
+		PropPolygonModule,
 		SurfaceToolModule,
 		RoadElevationModule,
 		CrosswalkToolModule,

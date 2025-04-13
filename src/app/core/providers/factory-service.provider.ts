@@ -32,10 +32,6 @@ export class FactoryServiceProvider {
 				factory = new PropPointFactory();
 				break;
 
-			case ToolType.PropPolygon:
-				factory = new PropPolygonFactory();
-				break;
-
 			default:
 				return;
 				break;
