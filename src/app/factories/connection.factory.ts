@@ -100,7 +100,7 @@ export class ConnectionFactory {
 		const incomingLaneCoord = incoming.toLaneCoord( innerLink.getIncomingLane() );
 		const outgoingLaneCoord = outgoing.toLaneCoord( innerLink.getOutgoingLane() );
 
-		const spline = SplineFactory.createFromLaneCoords( incomingLaneCoord, outgoingLaneCoord );
+		const spline = SplineFactory.createFromLaneCoord( incomingLaneCoord, outgoingLaneCoord );
 
 		connection.getRoad().setSplineAndSegment( spline );
 

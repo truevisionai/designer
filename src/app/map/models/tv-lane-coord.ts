@@ -31,6 +31,10 @@ export class TvLaneCoord {
 		return this.laneDistance;
 	}
 
+	get roadDistance (): RoadDistance {
+		return this.laneSection.s + this.laneDistance as RoadDistance;
+	}
+
 	toString (): string {
 		return `LaneCoord: Road:${ this.road.id } Section:${ this.laneSection.id } Lane:${ this.lane.id } s:${ this.laneDistance } offset:${ this.offset }`;
 	}
@@ -128,6 +132,38 @@ export class TvLaneCoord {
 
 	getRoadMark (): TvLaneRoadMark {
 		return this.lane.getRoadMarkAt( this.laneDistance );
+	}
+
+	getEntryPosition (): TvPosTheta {
+		if ( this.lane.isRight ) {
+			if ( this.contact == TvContactPoint.START ) {
+				return this.road.getLaneEndPosition( this.lane, this.roadDistance );
+			} else {
+				return this.road.getLaneStartPosition( this.lane, this.roadDistance );
+			}
+		} else {
+			if ( this.contact == TvContactPoint.START ) {
+				return this.road.getLaneStartPosition( this.lane, this.roadDistance );
+			} else {
+				return this.road.getLaneEndPosition( this.lane, this.roadDistance );
+			}
+		}
+	}
+
+	getExitPosition (): TvPosTheta {
+		if ( this.lane.isRight ) {
+			if ( this.contact == TvContactPoint.START ) {
+				return this.road.getLaneStartPosition( this.lane, this.roadDistance );
+			} else {
+				return this.road.getLaneEndPosition( this.lane, this.roadDistance );
+			}
+		} else {
+			if ( this.contact == TvContactPoint.START ) {
+				return this.road.getLaneEndPosition( this.lane, this.roadDistance );
+			} else {
+				return this.road.getLaneStartPosition( this.lane, this.roadDistance );
+			}
+		}
 	}
 
 }

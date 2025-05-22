@@ -132,6 +132,31 @@ export class SplineFactory {
 		return this.createRoadSpline( entry.position, entryDirection, exit.position, exitDirection, divider );
 	}
 
+	static createFromLaneCoord ( entry: TvLaneCoord, exit: TvLaneCoord, divider: number = 3 ): AbstractSpline {
+
+		let entryDirection: Vector3, exitDirection: Vector3;
+
+		if ( entry.contact === TvContactPoint.START ) {
+			entryDirection = entry.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			entryDirection = entry.posTheta.toDirectionVector();
+		}
+
+		if ( exit.contact === TvContactPoint.START ) {
+			exitDirection = exit.posTheta.toDirectionVector().multiplyScalar( -1 );
+		} else {
+			exitDirection = exit.posTheta.toDirectionVector();
+		}
+
+		return this.createRoadSpline(
+			entry.getEntryPosition().toVector3(),
+			entryDirection,
+			exit.getExitPosition().toVector3(),
+			exitDirection,
+			divider
+		);
+	}
+
 	static createFromRoadCoords ( start: TvRoadCoord | RoadNode, end: TvRoadCoord | RoadNode ): AbstractSpline {
 
 		let startDirection: Vector3, endDirection: Vector3;
