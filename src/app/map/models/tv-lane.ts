@@ -896,6 +896,15 @@ export class TvLane implements ISelectable, IHasUpdate {
 		return section.getLaneById( this.predecessorId );
 
 	}
+
+	isEqualOrAfter ( target: TvLane ): boolean {
+		return Math.abs( this.id ) >= Math.abs( target.id );
+	}
+
+	isEqualOrBefore ( target: TvLane ): boolean {
+		return Math.abs( this.id ) <= Math.abs( target.id );
+	}
+
 	private detectDirection (): TravelDirection | undefined {
 
 		if ( this.isCenter ) return undefined;

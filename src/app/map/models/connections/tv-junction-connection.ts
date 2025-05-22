@@ -120,6 +120,10 @@ export class TvJunctionConnection {
 		return this.turnType == TurnType.RIGHT;
 	}
 
+	get isLeftTurn (): boolean {
+		return this.turnType == TurnType.LEFT;
+	}
+
 	getIncomingRoad (): TvRoad {
 		return this.incomingRoad;
 	}
@@ -357,13 +361,10 @@ export class TvJunctionConnection {
 
 		const contactPoint = this.getIncomingRoadContact();
 		const direction = LaneUtils.determineDirection( contactPoint );
-		const lanes = this.getIncomingLaneSection().getLanes().filter( lane => lane.matchesDirection( direction ) );
+		const side = LaneUtils.findIncomingSide( contactPoint );
+		const lanes = this.getIncomingLaneSection().getLanes().filter( lane => lane.side === side );
 
-		if ( contactPoint == TvContactPoint.END ) {
-			return lanes.sort( DESC );
-		} else {
-			return lanes.sort( ASC );
-		}
+		return lanes.sort( ( a, b ) => Math.abs( a.id ) - Math.abs( b.id ) );
 
 	}
 
@@ -377,14 +378,10 @@ export class TvJunctionConnection {
 
 		const contactPoint = this.getOutgoingRoadContact();
 		const direction = LaneUtils.determineOutDirection( contactPoint );
-		const lanes = this.getOutgoingLaneSection().getLanes().filter( lane => lane.matchesDirection( direction ) );
+		const side = LaneUtils.findOutgoingSide( contactPoint );
+		const lanes = this.getOutgoingLaneSection().getLanes().filter( lane => lane.side === side );
 
-		if ( contactPoint == TvContactPoint.START ) {
-			return lanes.sort( DESC );
-		} else {
-			return lanes.sort( ASC );
-		}
-
+		return lanes.sort( ( a, b ) => Math.abs( a.id ) - Math.abs( b.id ) )
 	}
 
 	markAsCornerConnection (): void {

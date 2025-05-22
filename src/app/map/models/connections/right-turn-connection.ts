@@ -4,7 +4,6 @@ import { TvLaneCoord } from "../tv-lane-coord";
 import { createLaneDistance } from "../../road/road-distance";
 import { LaneUtils } from "../../../utils/lane.utils";
 import { TvJunctionConnection } from "./tv-junction-connection";
-import { TvLane } from "../tv-lane";
 
 export class RightTurnConnection extends TvJunctionConnection {
 
@@ -20,61 +19,43 @@ export class RightTurnConnection extends TvJunctionConnection {
 
 	getEntryCoords (): TvLaneCoord[] {
 
-		const incomingLanes = this.getIncomingLanes();
-		const incomingContact = this.getIncomingRoadContact();
+		const contact = this.getIncomingRoadContact();
+		const direction = LaneUtils.determineDirection( contact );
+		const side = LaneUtils.findIncomingSide( contact );
 
-		const drivingLanes = incomingLanes.filter( lane => lane.isDrivingLane );
+		const entries: TvLaneCoord[] = this.getIncomingCoords();
 
-		if ( drivingLanes.length === 0 ) {
-			const nonDrivingLanes = this.getIncomingLaneSection().getLanesAfterRightBoundary()
-			return nonDrivingLanes.map( lane => lane.toLaneCoord( createLaneDistance( lane, incomingContact ) ) );
+		const drivingEntries = entries.filter( coord => coord.lane.isDrivingLane );
+
+		if ( drivingEntries.length == 0 ) {
+			return entries.filter( coord => this.isCornerConnection || coord.lane.isDrivingLane );
 		}
 
-		const outerLane = drivingLanes[ drivingLanes.length - 1 ];
+		const last = drivingEntries[ drivingEntries.length - 1 ];
 
-		if ( !outerLane ) return [];
-
-		return [ outerLane.toLaneCoord( createLaneDistance( outerLane, incomingContact ) ) ];
+		return entries.filter( exit => exit.lane.isEqualOrAfter( last.lane ) )
+			.filter( exit => this.isCornerConnection || exit.lane.isDrivingLane );
 
 	}
 
 	getExitCoords (): TvLaneCoord[] {
 
-		const contactPoint = this.getOutgoingRoadContact()
-		const outgoingCoords = this.getOutgoingCoords();
+		const contact = this.getOutgoingRoadContact();
+		const direction = LaneUtils.determineOutDirection( contact );
+		const side = LaneUtils.findOutgoingSide( contact );
 
-		let drivingCoords = outgoingCoords.filter( coord => coord.lane.isDrivingLane );
+		const exits: TvLaneCoord[] = this.getOutgoingCoords();
 
-		if ( outgoingCoords.length == 0 ) {
-			return this.getNonDrivingCoords();
+		const drivingExits = exits.filter( coord => coord.lane.isDrivingLane );
+
+		if ( drivingExits.length == 0 ) {
+			return exits.filter( coord => this.isCornerConnection || coord.lane.isDrivingLane );
 		}
 
-		if ( drivingCoords.length == 0 ) {
-			return [];
-		}
+		const lastExit = drivingExits[ drivingExits.length - 1 ];
 
-		if ( contactPoint == TvContactPoint.START ) {
-
-			// right lanes
-			// sort by lane id in ascending order
-			drivingCoords = drivingCoords.sort( ( a, b ) => b.lane.id - a.lane.id );
-
-			return [
-				drivingCoords[ drivingCoords.length - 1 ]
-			];
-
-
-		} else {
-
-			// left lanes
-			// sort by lane id in descending order
-			drivingCoords = drivingCoords.sort( ( a, b ) => b.lane.id - a.lane.id );
-
-			return [
-				drivingCoords[ 0 ]
-			];
-
-		}
+		return exits.filter( exit => exit.lane.isEqualOrAfter( lastExit.lane ) )
+			.filter( exit => this.isCornerConnection || exit.lane.isDrivingLane );
 
 	}
 

@@ -19,38 +19,41 @@ export class LeftTurnConnection extends TvJunctionConnection {
 
 	getEntryCoords (): TvLaneCoord[] {
 
-		const contactPoint = this.getIncomingRoadContact();
-		const direction = LaneUtils.determineDirection( contactPoint );
+		const contact = this.getIncomingRoadContact();
+		const direction = LaneUtils.determineDirection( contact );
+		const side = LaneUtils.findIncomingSide( contact );
 
-		const entryLanes = this.getIncomingLanes()
-			.filter( lane => lane.matchesDirection( direction ) )
-			.filter( lane => lane.isDrivingLane );
+		const entries: TvLaneCoord[] = this.getIncomingCoords();
 
-		if ( entryLanes.length === 0 ) return [];
+		const drivingEntries = entries.filter( coord => coord.lane.isDrivingLane );
 
-		const entryLane = entryLanes[ 0 ];
+		if ( drivingEntries.length == 0 ) {
+			return entries.filter( coord => this.isCornerConnection || coord.lane.isDrivingLane );
+		}
 
-		const laneDistance = createLaneDistance( entryLane, contactPoint );
+		const firstExit = drivingEntries[ 0 ];
 
-		return [ entryLane.toLaneCoord( laneDistance ) ];
+		return entries.filter( exit => exit.lane.equals( firstExit.lane ) || this.isCornerConnection )
+
 	}
 
 	getExitCoords (): TvLaneCoord[] {
 
-		const contactPoint = this.getOutgoingRoadContact();
-		const direction = LaneUtils.determineOutDirection( contactPoint );
+		const contact = this.getOutgoingRoadContact();
+		const direction = LaneUtils.determineOutDirection( contact );
+		const side = LaneUtils.findOutgoingSide( contact );
 
-		const exitLanes = this.getOutgoingLanes()
-			.filter( lane => lane.matchesDirection( direction ) )
-			.filter( lane => lane.isDrivingLane );
+		const exits: TvLaneCoord[] = this.getOutgoingCoords();
 
-		if ( exitLanes.length === 0 ) return [];
+		const drivingExits = exits.filter( coord => coord.lane.isDrivingLane );
 
-		const exitLane = exitLanes[ 0 ];
+		if ( drivingExits.length == 0 ) {
+			return exits.filter( coord => this.isCornerConnection || coord.lane.isDrivingLane );
+		}
 
-		const laneDistance = createLaneDistance( exitLane, contactPoint );
+		const firstExit = drivingExits[ 0 ];
 
-		return [ exitLane.toLaneCoord( laneDistance ) ];
+		return exits.filter( exit => exit.lane.equals( firstExit.lane ) || this.isCornerConnection );
 
 	}
 

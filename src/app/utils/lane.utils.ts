@@ -98,6 +98,26 @@ export class LaneUtils {
 		return TravelDirection.backward;
 	}
 
+	static findIncomingSide ( contact: TvContactPoint ): TvLaneSide {
+
+		if ( contact == TvContactPoint.START ) {
+			return TvLaneSide.LEFT;
+		}
+
+		return TvLaneSide.RIGHT;
+
+	}
+
+	static findOutgoingSide ( contact: TvContactPoint ): TvLaneSide {
+
+		if ( contact == TvContactPoint.END ) {
+			return TvLaneSide.LEFT;
+		}
+
+		return TvLaneSide.RIGHT;
+
+	}
+
 	// when we only have incoming lane
 	static copyPreviousLane ( prevLane: TvLane, prevSection: TvLaneSection, prevRoad: TvRoad, lane: TvLane ): void {
 

@@ -15,13 +15,55 @@ export class LaneLinkFactory {
 		connection.getRoad().getLaneProfile().addDefaultLaneSection();
 		connection.getLaneSection().addCenterLane();
 
-		this.createDrivingLinks( connection ).forEach( link => links.push( link ) );
+		this.createNewLinks( connection ).forEach( link => links.push( link ) );
 
-		if ( connection.shouldCreateNonDrivingLinks() ) {
-			this.createNonDrivingLinks( connection ).forEach( link => links.push( link ) );
+		return links;
+
+	}
+
+	private static createNewLinks ( connection: TvJunctionConnection ): TvJunctionLaneLink[] {
+
+		const entries = connection.getEntryCoords();
+		const exits = connection.getExitCoords();
+
+		const links: TvJunctionLaneLink[] = [];
+
+		let id = 1;
+
+		for ( const entry of entries ) {
+
+			for ( const exit of exits ) {
+
+				if ( !this.canConnect( entry, exit ) ) continue;
+
+				const connectingLane = entry.lane.clone( id++ * -1 );
+
+				connectingLane.side = TvLaneSide.RIGHT;
+
+				if ( !connection.isCornerConnection ) {
+					connectingLane.removeRoadMarks();
+				}
+
+				connection.getLaneSection().addLaneInstance( connectingLane );
+
+				connectingLane.setLinks( entry.lane, exit.lane );
+
+				links.push( new TvJunctionLaneLink( entry.lane, connectingLane ) );
+
+				break;
+
+			}
+
 		}
 
 		return links;
+
+
+	}
+
+	static canConnect ( entry: TvLaneCoord, exit: TvLaneCoord ): boolean {
+
+		return entry.canConnect( exit );
 
 	}
 
