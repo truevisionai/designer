@@ -124,6 +124,10 @@ export class TvJunctionConnection {
 		return this.turnType == TurnType.LEFT;
 	}
 
+	get isStraight (): boolean {
+		return this.turnType == TurnType.STRAIGHT;
+	}
+
 	getIncomingRoad (): TvRoad {
 		return this.incomingRoad;
 	}

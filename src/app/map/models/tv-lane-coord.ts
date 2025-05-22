@@ -52,6 +52,14 @@ export class TvLaneCoord {
 		console.error( `TvRoadCoord.contact: s is not 0 or length ${ this.laneDistance } ${ this.road.length }` );
 	}
 
+	get isStart (): boolean {
+		return this.contact === TvContactPoint.START;
+	}
+
+	get isEnd (): boolean {
+		return this.contact === TvContactPoint.END;
+	}
+
 	get posTheta () {
 		return this.road.getLaneStartPosition( this.lane, this.laneSection.s + this.laneDistance as RoadDistance, this.offset );
 	}

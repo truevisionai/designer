@@ -51,6 +51,14 @@ export class TvRoadCoord {
 
 	}
 
+	get isStart (): boolean {
+		return this.contact === TvContactPoint.START;
+	}
+
+	get isEnd (): boolean {
+		return this.contact === TvContactPoint.END;
+	}
+
 	get laneSection () {
 		return this.road.getLaneProfile().getLaneSectionAtContact( this.contact );
 	}
