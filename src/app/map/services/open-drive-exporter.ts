@@ -1076,6 +1076,10 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 			console.error( 'Unknown junction type: ' + junction.type );
 
+		} else if ( junction.type == TvJunctionType.AUTO ) {
+
+			xml = this.writeDefaultJunction( junction );
+
 		} else {
 
 			console.error( 'Unknown junction type: ' + junction.type );
