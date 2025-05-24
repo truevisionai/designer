@@ -111,7 +111,7 @@ describe( 'RoadRampTool', () => {
 
 	it( 'should create entry for right lane on freeway road', () => {
 
-		const freeway = createFreewayRoad( { id: 1 } );
+		const freeway = createFreewayRoad();
 
 		const start = freeway.getLaneProfile().getFirstLaneSection().getLaneById( -5 ).toLaneCoord( 50 );
 
@@ -200,7 +200,7 @@ describe( 'RoadRampTool', () => {
 
 		it( 'should create exit for right lane on freeway road', () => {
 
-			const freeway = createFreewayRoad( { id: 1 } );
+			const freeway = createFreewayRoad();
 
 			const start = freeway.getLaneProfile().getFirstLaneSection().getLaneById( -5 ).toLaneCoord( 0 );
 
@@ -221,7 +221,7 @@ describe( 'RoadRampTool', () => {
 
 		it( 'should create exit with 2 right lanes on freeway road', () => {
 
-			const freeway = createFreewayRoad( { id: 1 } );
+			const freeway = createFreewayRoad();
 
 			const start = freeway.getLaneProfile().getFirstLaneSection().getLaneById( -4 ).toLaneCoord( 0 );
 

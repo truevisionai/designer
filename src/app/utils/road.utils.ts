@@ -83,9 +83,9 @@ export class RoadUtils {
 
 	}
 
-	static divideRoad ( parent: TvRoad, s: number, newRoadId: number ): TvRoad {
+	static divideRoad ( parent: TvRoad, s: number ): TvRoad {
 
-		const clone = this.clone( parent, s, newRoadId );
+		const clone = this.clone( parent, s );
 
 		this.divideObjects( parent, s, clone );
 
@@ -94,9 +94,9 @@ export class RoadUtils {
 		return clone;
 	}
 
-	static clone ( road: TvRoad, s: number, id: number ): TvRoad {
+	static clone ( road: TvRoad, s: number ): TvRoad {
 
-		const clone = road.clone( s, id );
+		const clone = road.clone( s );
 
 		clone.sStart = road.sStart + s;
 

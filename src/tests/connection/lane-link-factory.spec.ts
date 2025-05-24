@@ -237,8 +237,8 @@ describe( 'LaneLinkFactory', () => {
 
 		beforeEach( () => {
 
-			incomingRoad = createOneWayRoad( { id: 1 } );
-			outgoingRoad = createDefaultRoad( { id: 2 } );
+			incomingRoad = createOneWayRoad();
+			outgoingRoad = createDefaultRoad();
 
 			const map = new TvMap();
 
@@ -376,8 +376,8 @@ describe( 'LaneLinkFactory', () => {
 
 		beforeEach( () => {
 
-			incomingRoad = createFreewayRoad( { id: 1 } );
-			outgoingRoad = createFreewayRoad( { id: 2 } );
+			incomingRoad = createFreewayRoad();
+			outgoingRoad = createFreewayRoad();
 
 			const map = new TvMap();
 

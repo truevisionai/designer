@@ -236,7 +236,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const id = parseInt( xml.attr_id, 10 );
 		const junction = this.parseJunctionId( xml.attr_junction );
 
-		const road = new TvRoad( name, length, id, junction );
+		const road = new TvRoad( name, junction );
 
 		road.trafficRule = TvRoad.stringToRule( xml.attr_trafficRule );
 

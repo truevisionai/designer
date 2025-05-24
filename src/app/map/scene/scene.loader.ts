@@ -474,7 +474,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
-		const road = new TvRoad( name, length, id, junction );
+		const road = new TvRoad( name, junction );
+
+		road.setId( id );
 
 		road.trafficRule = TvRoad.stringToRule( xml.attr_trafficRule );
 

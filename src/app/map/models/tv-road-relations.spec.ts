@@ -14,7 +14,7 @@ describe( 'TvRoadRelations', () => {
 	let roadRelations: TvRoadRelations;
 
 	beforeEach( () => {
-		road = RoadFactory.createDefaultRoad( { id: 1 } );
+		road = RoadFactory.createDefaultRoad();
 		roadRelations = new TvRoadRelations( road );
 	} );
 
