@@ -28,7 +28,16 @@ export class StraightConnection extends TvJunctionConnection {
 		const drivingEntries = entries.filter( coord => coord.lane.isDrivingLane );
 
 		if ( drivingEntries.length == 0 ) {
-			return entries.filter( coord => this.isCornerConnection || coord.lane.isDrivingLane );
+			const nonDrivingEntries = this.getIncomingLaneSection().getLanes().filter( lane => lane.matchesDirection( direction ) ).map( lane => lane.toLaneCoord( contact ) );
+			if ( nonDrivingEntries.length == 0 ) {
+				return [];
+			}
+			const first = nonDrivingEntries[ 0 ];
+			if ( this.isCornerConnection ) {
+				return [ first ];
+			} else {
+				return [];
+			}
 		}
 
 		const firstExit = drivingEntries[ 0 ];
@@ -50,7 +59,16 @@ export class StraightConnection extends TvJunctionConnection {
 		const drivingExits = exits.filter( coord => coord.lane.isDrivingLane );
 
 		if ( drivingExits.length == 0 ) {
-			return exits.filter( coord => this.isCornerConnection || coord.lane.isDrivingLane );
+			const nonDrivingEntries = this.getOutgoingLaneSection().getLanes().filter( lane => lane.matchesDirection( direction ) ).map( lane => lane.toLaneCoord( contact ) );
+			if ( nonDrivingEntries.length == 0 ) {
+				return [];
+			}
+			const first = nonDrivingEntries[ 0 ];
+			if ( this.isCornerConnection ) {
+				return [ first ];
+			} else {
+				return [];
+			}
 		}
 
 		const firstExit = drivingExits[ 0 ];

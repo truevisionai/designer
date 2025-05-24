@@ -10,6 +10,8 @@ import { RoadService } from "app/services/road/road.service";
 import { IntersectionGroup } from "./Intersection-group";
 import { IntersectionGroupHelper } from "./intersection-group-helper";
 import { AutoJunction } from "../map/models/junctions/auto-junction";
+import { AddJunctionConnectionForEachLane } from "app/services/junction/create-junction-with-single-connection";
+import { SplineGeometryGenerator } from "app/services/spline/spline-geometry-generator";
 
 @Injectable( {
 	providedIn: 'root'
@@ -21,7 +23,8 @@ export class AutomaticJunctions {
 		public roadService: RoadService,
 		public junctionFactory: JunctionFactory,
 		public junctionService: JunctionService,
-		public connectionManager: ConnectionManager
+		public connectionManager: ConnectionManager,
+		private splineBuilder: SplineGeometryGenerator,
 	) {
 	}
 
@@ -166,7 +169,9 @@ export class AutomaticJunctions {
 
 		const links = group.getJunctionLinks( junction );
 
-		this.connectionManager.addConnectionsFromLinks( junction, links );
+		const helper = ( new AddJunctionConnectionForEachLane( this.roadService.roadFactory, this.splineBuilder ) );
+
+		helper.add( junction, links );
 
 		return junction;
 
@@ -202,7 +207,9 @@ export class AutomaticJunctions {
 
 		const links = group.getJunctionLinks( junction );
 
-		this.connectionManager.addConnectionsFromLinks( junction, links );
+		const helper = ( new AddJunctionConnectionForEachLane( this.roadService.roadFactory, this.splineBuilder ) );
+
+		helper.add( junction, links );
 
 		junction.updateBoundary();
 

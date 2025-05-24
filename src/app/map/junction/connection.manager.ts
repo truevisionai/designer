@@ -14,6 +14,8 @@ import { TvJunctionConnection } from "../models/connections/tv-junction-connecti
 import { TvContactPoint } from "../models/tv-common";
 import { ConnectionGeometryService } from "app/services/junction/connection-geometry.service";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
+import { AddJunctionConnectionForEachLane } from "app/services/junction/create-junction-with-single-connection";
+import { RoadFactory } from "app/factories/road-factory.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -23,6 +25,7 @@ export class ConnectionManager {
 	constructor (
 		private splineBuilder: SplineGeometryGenerator,
 		private connectionFactory: ConnectionFactory,
+		private roadFactory: RoadFactory,
 		private connectionGeometryService: ConnectionGeometryService,
 	) {
 	}
@@ -81,31 +84,10 @@ export class ConnectionManager {
 
 		junction.removeAllConnections();
 
-		for ( let i = 0; i < sortedLinks.length; i++ ) {
+		const helper = new AddJunctionConnectionForEachLane( this.roadFactory, this.splineBuilder );
 
-			const linkA = sortedLinks[ i ];
+		helper.add( junction, sortedLinks );
 
-			let rightConnectionCreated = false;
-
-			for ( let j = i + 1; j < sortedLinks.length; j++ ) {
-
-				const linkB = sortedLinks[ j ];
-
-				// roads should be different
-				if ( linkA.element === linkB.element ) continue;
-
-				if ( linkA.element instanceof TvJunction || linkB.element instanceof TvJunction ) continue;
-
-				// check if this is the first and last connection
-				const isFirstAndLast = i == 0 && j == sortedLinks.length - 1;
-
-				this.connectionFactory.addConnections( junction, linkA.toRoadCoord(), linkB.toRoadCoord(), !rightConnectionCreated );
-				this.connectionFactory.addConnections( junction, linkB.toRoadCoord(), linkA.toRoadCoord(), isFirstAndLast );
-
-				rightConnectionCreated = true;
-
-			}
-		}
 	}
 
 	addConnectionsForRoad ( junction: TvJunction, road: TvRoad, contact: TvContactPoint ): void {

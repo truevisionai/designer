@@ -87,6 +87,10 @@ export class TvLaneCoord {
 		return new Orientation( 0, 0, 0 );
 	}
 
+	distanceTo ( exit: TvLaneCoord ): number {
+		return this.position.distanceTo( exit.position );
+	}
+
 	canConnect ( otherLane: TvLaneCoord ): boolean {
 
 		if ( this.road.id === otherLane.road.id ) return false;
