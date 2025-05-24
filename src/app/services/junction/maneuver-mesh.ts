@@ -14,6 +14,7 @@ import { LanePositionService } from "../lane/lane-position.service";
 import { GeometryUtils } from "../surface/geometry-utils";
 import { LaneDirectionHelper } from "app/modules/builder/builders/od-lane-direction-builder";
 import { TvRoad } from "app/map/models/tv-road.model";
+import { Environment } from "app/core/utils/environment";
 
 
 export class ManeuverMesh extends Mesh implements INode {
@@ -125,8 +126,18 @@ export class ManeuverMesh extends Mesh implements INode {
 
 	public static create ( junction: TvJunction, connection: TvJunctionConnection, link: TvJunctionLaneLink ): ManeuverMesh {
 
+		let color = ColorUtils.GREEN;
+
+		if ( !Environment.production ) {
+			if ( connection.isLeftTurn ) {
+				color = ColorUtils.RED;
+			} else if ( connection.isStraight ) {
+				color = ColorUtils.BLUE;
+			}
+		}
+
 		const material = new MeshBasicMaterial( {
-			color: ColorUtils.GREEN,
+			color: color,
 			opacity: 0.2,
 			transparent: true,
 			depthTest: false,
