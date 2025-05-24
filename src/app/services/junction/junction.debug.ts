@@ -31,6 +31,7 @@ import { RoadDistance } from 'app/map/road/road-distance';
 import { createGeometryFromBoundary } from 'app/modules/builder/builders/junction-boundary.builder';
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 import { Color } from 'app/core/maths';
+import { Environment } from 'app/core/utils/environment';
 
 @Injectable( {
 	providedIn: 'root'
@@ -212,7 +213,11 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 			connection.getLaneLinks().forEach( link => {
 
-				if ( link.connectingLane.type != TvLaneType.driving ) return;
+				if ( Environment.production ) {
+					if ( link.connectingLane.isDrivingLane ) {
+						return;
+					}
+				}
 
 				const maneuverMesh = this.createManeuver( junction, connection, link );
 
