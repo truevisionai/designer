@@ -16,7 +16,7 @@ describe( 'OpenDrive Parsing', () => {
 
 		setupTest();
 
-		parser = TestBed.inject( OpenDrive14Parser );
+		parser = new OpenDrive14Parser( null );
 		testHelper = TestBed.inject( SplineTestHelper );
 
 	} );

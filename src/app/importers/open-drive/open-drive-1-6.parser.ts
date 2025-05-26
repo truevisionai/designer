@@ -13,9 +13,6 @@ import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { SnackBar } from 'app/services/snack-bar.service';
 
 
-@Injectable( {
-	providedIn: 'root'
-} )
 export class OpenDrive16Parser extends OpenDrive14Parser {
 
 	constructor ( snackBar: SnackBar ) {

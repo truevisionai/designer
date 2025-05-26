@@ -77,7 +77,6 @@ import {
 } from '../junction-boundary/tv-junction-boundary';
 import { Log } from 'app/core/utils/log';
 import { InvalidTypeException, ModelNotFoundException } from 'app/exceptions/exceptions';
-import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { PropCurvePoint } from 'app/modules/prop-curve/objects/prop-curve-point';
 import { JunctionFactory } from 'app/factories/junction.factory';
@@ -98,8 +97,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 	constructor (
 		private threeService: ThreeService,
 		private snackBar: SnackBar,
-		private storage: StorageService,
-		private openDriverParser: OpenDrive14Parser,
+		private storage: StorageService
 	) {
 		super();
 	}
@@ -474,9 +472,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
-		const road = new TvRoad( name, junction );
-
-		road.setId( id );
+		const road = new TvRoad( name, junction, id );
 
 		road.trafficRule = TvRoad.stringToRule( xml.attr_trafficRule );
 
