@@ -87,11 +87,11 @@ export class TvRoad {
 
 	private static counter: number = 0;
 
-	constructor ( name?: string, junction?: TvJunction ) {
+	constructor ( name?: string, junction?: TvJunction, id?: number ) {
 
 		this.uuid = MathUtils.generateUUID();
 		this.name = name;
-		this._id = TvRoad.counter++;
+		this._id = id || TvRoad.counter++;
 		this._junction = junction;
 		this.planView = new TvPlaneView();
 		this.relations = new TvRoadRelations( this );
@@ -103,6 +103,8 @@ export class TvRoad {
 
 		this.signalGroup.name = 'SignalGroup';
 		this.objectGroup.name = 'ObjectGroup';
+
+		this.setId( this._id );
 	}
 
 	setMap ( map: TvMap ): void {
@@ -111,6 +113,11 @@ export class TvRoad {
 
 	setId ( id: number ): void {
 		this._id = id;
+
+		// set counter to maximum id value
+		if ( id >= TvRoad.counter ) {
+			TvRoad.counter = id + 1;
+		}
 	}
 
 	getMap (): TvMap {
