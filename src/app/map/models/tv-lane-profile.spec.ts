@@ -14,7 +14,7 @@ describe( 'TvLaneProfile', () => {
 	let road: TvRoad;
 
 	beforeEach( () => {
-		road = new TvRoad( 'Road', 100, 0 );
+		road = new TvRoad();
 		spyOn( road, 'getLength' ).and.returnValue( 100 );
 		laneProfile = new TvLaneProfile( road );
 	} );

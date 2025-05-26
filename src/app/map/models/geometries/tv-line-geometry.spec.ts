@@ -31,7 +31,7 @@ describe( 'TvLineGeometry', () => {
 
 		map = mapService.map;
 
-		road = new TvRoad( '', 10, 1 );
+		road = new TvRoad();
 
 	} );
 
@@ -166,9 +166,9 @@ describe( 'TvLineGeometry', () => {
 		// add roads
 		// 3 straight road
 		// ==========|==========|==========
-		const road1 = map.addNewRoad( '', 10, 1 );
-		const road2 = map.addNewRoad( '', 10, 2 );
-		const road3 = map.addNewRoad( '', 10, 3 );
+		const road1 = map.addNewRoad();
+		const road2 = map.addNewRoad();
+		const road3 = map.addNewRoad();
 
 		road1.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
 		road2.getPlanView().addGeometryLine( 0, 10, 0, 0, 10 );
@@ -176,27 +176,27 @@ describe( 'TvLineGeometry', () => {
 
 		let roadResult = roadService.findNearestRoad( new Vector2( 0, 0 ) );
 		expect( roadResult ).not.toBeNull();
-		expect( roadResult.id ).toBe( 1 );
+		expect( roadResult.id ).toBe( road1.id );
 
 		roadResult = roadService.findNearestRoad( new Vector2( 1, 10 ) );
 		expect( roadResult ).not.toBeNull();
-		expect( roadResult.id ).toBe( 1 );
+		expect( roadResult.id ).toBe( road1.id );
 
 		roadResult = roadService.findNearestRoad( new Vector2( 11, 0 ) );
 		expect( roadResult ).not.toBeNull();
-		expect( roadResult.id ).toBe( 2 );
+		expect( roadResult.id ).toBe( road2.id );
 
 		roadResult = roadService.findNearestRoad( new Vector2( 11, 10 ) );
 		expect( roadResult ).not.toBeNull();
-		expect( roadResult.id ).toBe( 2 );
+		expect( roadResult.id ).toBe( road2.id );
 
 		roadResult = roadService.findNearestRoad( new Vector2( 21, 0 ) );
 		expect( roadResult ).not.toBeNull();
-		expect( roadResult.id ).toBe( 3 );
+		expect( roadResult.id ).toBe( road3.id );
 
 		roadResult = roadService.findNearestRoad( new Vector2( 21, 10 ) );
 		expect( roadResult ).not.toBeNull();
-		expect( roadResult.id ).toBe( 3 );
+		expect( roadResult.id ).toBe( road3.id );
 
 	} );
 

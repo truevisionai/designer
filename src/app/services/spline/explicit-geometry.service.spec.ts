@@ -30,7 +30,7 @@ describe( 'ExplicitGeometryService', () => {
 		service = TestBed.get( ExplicitGeometryService );
 		builder = TestBed.get( SplineGeometryGenerator );
 
-		const road = new TvRoad( '', 0, 100 );
+		const road = new TvRoad();
 
 		spline = SplineFactory.createSpline( SplineType.EXPLICIT );
 

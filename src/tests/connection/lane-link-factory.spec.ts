@@ -133,8 +133,8 @@ describe( 'LaneLinkFactory', () => {
 
 		beforeEach( () => {
 
-			incomingRoad = RoadFactory.makeRoad( { id: 1, leftLaneCount: 3, rightLaneCount: 3 } );
-			outgoingRoad = RoadFactory.makeRoad( { id: 2, leftLaneCount: 3, rightLaneCount: 3 } );
+			incomingRoad = RoadFactory.makeRoad( { leftLaneCount: 3, rightLaneCount: 3 } );
+			outgoingRoad = RoadFactory.makeRoad( { leftLaneCount: 3, rightLaneCount: 3 } );
 
 			const map = new TvMap();
 
@@ -185,8 +185,8 @@ describe( 'LaneLinkFactory', () => {
 
 		beforeEach( () => {
 
-			incomingRoad = createOneWayRoad( { id: 1 } );
-			outgoingRoad = createOneWayRoad( { id: 2 } );
+			incomingRoad = createOneWayRoad();
+			outgoingRoad = createOneWayRoad();
 
 			const map = new TvMap();
 
@@ -301,8 +301,8 @@ describe( 'LaneLinkFactory', () => {
 
 		beforeEach( () => {
 
-			incomingRoad = createFreewayOneWayRoad( { id: 1 } );
-			outgoingRoad = createFreewayOneWayRoad( { id: 2 } );
+			incomingRoad = createFreewayOneWayRoad();
+			outgoingRoad = createFreewayOneWayRoad();
 
 			const map = new TvMap();
 

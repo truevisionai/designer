@@ -14,7 +14,7 @@ describe( 'OdRoadLanes', () => {
 
 		pose = new TvPosTheta();
 
-		road = new TvRoad( '', 30, 1 );
+		road = new TvRoad();
 
 		const s = 0;
 		const x = 0;

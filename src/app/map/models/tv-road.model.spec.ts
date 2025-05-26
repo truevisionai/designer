@@ -17,7 +17,7 @@ describe( 'RoadTests', () => {
 
 		pose = new TvPosTheta();
 
-		road = new TvRoad( '', 30, 1 );
+		road = new TvRoad();
 
 		// 3 straight road lines
 		road.getPlanView().addGeometryLine( 0, 0, 0, 0, 10 );
