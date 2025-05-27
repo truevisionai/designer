@@ -666,7 +666,7 @@ export class TvRoad {
 
 	clone ( s: number ): TvRoad {
 
-		const road = new TvRoad( null, this._junction );
+		const road = new TvRoad( this.name, this._junction );
 
 		road.spline = this.spline;
 		road.type = this.type.map( type => type.clone() );
