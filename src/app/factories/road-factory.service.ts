@@ -26,7 +26,6 @@ import { Maths } from "../utils/maths";
 export class RoadMakeOptions {
 	maxSpeed?: number = 40;
 	type?: TvRoadType = TvRoadType.UNKNOWN;
-	id?: number;
 	position?: Vector3;
 	hdg?: number = 0;
 	length?: number = 100
@@ -48,15 +47,15 @@ export class RoadFactory {
 	) {
 	}
 
-	static createRoad ( id: number = -1 ): TvRoad {
+	static createRoad (): TvRoad {
 
-		return new TvRoad( '', 0, id, null );
+		return new TvRoad();
 
 	}
 
 	static makeRoad ( options?: RoadMakeOptions ): TvRoad {
 
-		const road = this.createRoad( options?.id );
+		const road = this.createRoad();
 
 		const position = options.position ?? new Vector3( 0, 0, 0 );
 		const hdg = options.hdg ?? 0;
@@ -161,7 +160,7 @@ export class RoadFactory {
 
 	static createDefaultRoad ( params?: Partial<TvRoad> ): TvRoad {
 
-		const road = this.createRoad( params?.id );
+		const road = this.createRoad();
 
 		const roadStyle = RoadStyleManager.getDefaultRoadStyle( road );
 
@@ -380,13 +379,9 @@ export class RoadFactory {
 		return profile;
 	}
 
-	createNewRoad ( name?: string, length?: number, id?: number, junction?: TvJunction ): TvRoad {
+	createNewRoad (): TvRoad {
 
-		const roadId = id || this.getNextRoadId( id );
-
-		const roadName = name || `Road${ roadId }`;
-
-		const road = new TvRoad( roadName, length || 0, roadId, junction );
+		const road = new TvRoad();
 
 		const spline = new AutoSpline();
 
@@ -396,13 +391,9 @@ export class RoadFactory {
 
 	}
 
-	createFakeRoad ( name?: string, length?: number, junction?: TvJunction ): TvRoad {
+	createFakeRoad (): TvRoad {
 
-		const roadId = -1;
-
-		const roadName = name || `Road${ roadId }`;
-
-		const road = new TvRoad( roadName, length || 0, roadId, junction );
+		const road = new TvRoad();
 
 		road.sStart = 0;
 
@@ -412,11 +403,7 @@ export class RoadFactory {
 
 	createConnectingRoad ( junction: TvJunction, entry: TvLaneCoord, exit: TvLaneCoord ): TvRoad {
 
-		const roadId = this.getNextConnectingRoadId();
-
-		const roadName = `Road${ roadId }`;
-
-		const road = new TvRoad( roadName, length || 0, roadId, junction );
+		const road = new TvRoad( null, junction );
 
 		road.sStart = 0;
 

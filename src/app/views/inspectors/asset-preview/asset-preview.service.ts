@@ -413,7 +413,7 @@ export class AssetPreviewService {
 
 	buildRoadStyleObject ( roadStyle: RoadStyle ): Object3D {
 
-		const road = new TvRoad( '', 0, 1 );
+		const road = new TvRoad();
 
 		road.getPlanView().addGeometryLine( 0, -250, 0, 0, 500 );
 

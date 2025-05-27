@@ -163,9 +163,7 @@ export class ConnectionFactory {
 
 	private static createConnectingRoad ( junction: TvJunction, incoming: TvRoadCoord, outgoing: TvRoadCoord ): TvRoad {
 
-		const roadId = incoming.road.getMap().generateRoadId( false );
-
-		const connectingRoad = RoadFactory.createRoad( roadId );
+		const connectingRoad = RoadFactory.createRoad();
 
 		connectingRoad.setPredecessorRoad( incoming.road, incoming.contact );
 

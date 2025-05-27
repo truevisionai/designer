@@ -51,20 +51,17 @@ import { findTurnTypeOfConnectingRoad } from 'app/map/models/connections/connect
 import { ConnectionFactory } from 'app/factories/connection.factory';
 
 
-@Injectable( {
-	providedIn: 'root'
-} )
 export class OpenDrive14Parser implements IOpenDriveParser {
 
 	protected map: TvMap;
 
 	constructor ( private snackBar: SnackBar ) {
 
+		this.map = new TvMap();
+
 	}
 
 	public parse ( xml: XmlElement ): TvMap {
-
-		this.map = new TvMap();
 
 		const openDRIVE: XmlElement = xml.OpenDRIVE;
 
@@ -81,7 +78,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		readXmlArray( openDRIVE.junction, ( xml ) => {
 
-			this.map.addJunction( this.parseJunction( xml ) );
+			const junction = this.parseJunction( xml );
+
+			this.map.addJunction( junction );
 
 		} );
 
@@ -236,7 +235,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const id = parseInt( xml.attr_id, 10 );
 		const junction = this.parseJunctionId( xml.attr_junction );
 
-		const road = new TvRoad( name, length, id, junction );
+		const road = new TvRoad( name, junction, id );
 
 		road.trafficRule = TvRoad.stringToRule( xml.attr_trafficRule );
 

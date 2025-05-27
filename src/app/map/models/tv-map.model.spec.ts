@@ -60,7 +60,7 @@ describe( 'OpenDrive Model', () => {
 
 		map = mapService.map;
 
-		road = map.addNewRoad( '', 10, 1 );
+		road = map.addNewRoad();
 
 		laneSection = new TvLaneSection( 1, 0, true, road );
 

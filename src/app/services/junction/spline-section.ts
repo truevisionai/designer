@@ -230,7 +230,7 @@ export abstract class SplineSection {
 
 		const id = this.spline.getMap().generateRoadId();
 
-		const roadAfterJunction = existingRoad?.clone( 0, id );
+		const roadAfterJunction = existingRoad?.clone( 0 );
 
 		// set the successor and predecessor to null to avoid linking the road to the junction
 		roadAfterJunction.removeLinks();
@@ -253,7 +253,7 @@ export abstract class SplineSection {
 
 		const id = this.spline.getMap().generateRoadId();
 
-		const roadBeforeJunction = existingRoad?.clone( 0, id );
+		const roadBeforeJunction = existingRoad?.clone( 0 );
 
 		// set the successor and predecessor to null to avoid linking the road to the junction
 		roadBeforeJunction.removeLinks();

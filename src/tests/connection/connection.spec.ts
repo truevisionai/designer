@@ -143,8 +143,8 @@ describe( 'TvJunctionConnection', () => {
 
 		beforeEach( () => {
 
-			incomingRoad = RoadFactory.makeRoad( { id: 1, leftLaneCount: 3, rightLaneCount: 3 } );
-			outgoingRoad = RoadFactory.makeRoad( { id: 2, leftLaneCount: 3, rightLaneCount: 3 } );
+			incomingRoad = RoadFactory.makeRoad( { leftLaneCount: 3, rightLaneCount: 3 } );
+			outgoingRoad = RoadFactory.makeRoad( { leftLaneCount: 3, rightLaneCount: 3 } );
 
 			map = new TvMap();
 
@@ -219,8 +219,8 @@ describe( 'TvJunctionConnection', () => {
 
 		beforeEach( () => {
 
-			incomingRoad = createFreewayOneWayRoad( { id: 1 } );
-			outgoingRoad = createFreewayOneWayRoad( { id: 2 } );
+			incomingRoad = createFreewayOneWayRoad();
+			outgoingRoad = createFreewayOneWayRoad();
 
 			map = new TvMap();
 

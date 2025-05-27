@@ -130,7 +130,7 @@ export function exportCorrectLaneOrder ( laneSection: TvLaneSection ) {
 
 export function createDefaultRoad ( options?: RoadMakeOptions ): TvRoad {
 
-	const road = RoadFactory.createDefaultRoad( options?.id || -1 );
+	const road = RoadFactory.createDefaultRoad();
 
 	const position = options?.position ?? new Vector3( 0, 0, 0 );
 	const hdg = options?.hdg ?? 0;
@@ -144,7 +144,7 @@ export function createDefaultRoad ( options?: RoadMakeOptions ): TvRoad {
 
 export function createOneWayRoad ( options?: RoadMakeOptions ): TvRoad {
 
-	const road = RoadFactory.makeRoad( { id: options?.id, leftLaneCount: 0, rightLaneCount: 0 } );
+	const road = RoadFactory.makeRoad( { leftLaneCount: 0, rightLaneCount: 0 } );
 
 	const laneSection = road.getLaneProfile().getFirstLaneSection();
 
@@ -159,7 +159,7 @@ export function createOneWayRoad ( options?: RoadMakeOptions ): TvRoad {
 
 }
 
-export function createFreewayOneWayRoad ( options: RoadMakeOptions ): TvRoad {
+export function createFreewayOneWayRoad ( options?: RoadMakeOptions ): TvRoad {
 
 	const road = RoadFactory.makeRoad( options );
 
@@ -177,7 +177,7 @@ export function createFreewayOneWayRoad ( options: RoadMakeOptions ): TvRoad {
 
 }
 
-export function createFreewayRoad ( options: RoadMakeOptions ): TvRoad {
+export function createFreewayRoad ( options?: RoadMakeOptions ): TvRoad {
 
 	const road = RoadFactory.makeRoad( options );
 

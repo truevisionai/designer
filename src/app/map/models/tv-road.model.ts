@@ -85,11 +85,13 @@ export class TvRoad {
 
 	private map: TvMap;
 
-	constructor ( name: string, length: number, id: number, junction?: TvJunction ) {
+	private static counter: number = 0;
+
+	constructor ( name?: string, junction?: TvJunction, id?: number ) {
 
 		this.uuid = MathUtils.generateUUID();
 		this.name = name;
-		this._id = id;
+		this._id = id || TvRoad.counter++;
 		this._junction = junction;
 		this.planView = new TvPlaneView();
 		this.relations = new TvRoadRelations( this );
@@ -101,6 +103,8 @@ export class TvRoad {
 
 		this.signalGroup.name = 'SignalGroup';
 		this.objectGroup.name = 'ObjectGroup';
+
+		this.setId( this._id );
 	}
 
 	setMap ( map: TvMap ): void {
@@ -109,6 +113,11 @@ export class TvRoad {
 
 	setId ( id: number ): void {
 		this._id = id;
+
+		// set counter to maximum id value
+		if ( id >= TvRoad.counter ) {
+			TvRoad.counter = id + 1;
+		}
 	}
 
 	getMap (): TvMap {
@@ -655,11 +664,9 @@ export class TvRoad {
 
 	}
 
-	clone ( s: number, id?: number ): TvRoad {
+	clone ( s: number ): TvRoad {
 
-		const name = `Road ${ id || this._id }`
-
-		const road = new TvRoad( name, this.length, id || this._id, this._junction );
+		const road = new TvRoad( this.name, this._junction );
 
 		road.spline = this.spline;
 		road.type = this.type.map( type => type.clone() );

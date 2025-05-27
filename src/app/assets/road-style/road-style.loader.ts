@@ -19,6 +19,7 @@ import { TvElevationProfile } from 'app/map/road-elevation/tv-elevation-profile.
 import { AssetLoader } from "../../core/interfaces/asset.loader";
 import { OpenDrive16Parser } from 'app/importers/open-drive/open-drive-1-6.parser';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
+import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -28,7 +29,7 @@ export class RoadStyleLoader implements AssetLoader {
 	constructor (
 		private storageService: StorageService,
 		private snackBar: SnackBar,
-		private openDriveParser: OpenDrive16Parser,
+		private openDriveService: OpenDriveParserService,
 	) {
 	}
 
@@ -100,9 +101,13 @@ export class RoadStyleLoader implements AssetLoader {
 
 		roadObject.assetGuid = xmlElement.attr_assetGuid;
 
-		this.openDriveParser.parseRoadObjectRepeatArray( roadObject, xmlElement );
+		this.getParser().parseRoadObjectRepeatArray( roadObject, xmlElement );
 
 		return roadObject;
+	}
+
+	getParser (): OpenDrive16Parser {
+		return new OpenDrive16Parser( this.snackBar );
 	}
 
 	importElevationProfile ( json: XmlElement ): TvElevationProfile {

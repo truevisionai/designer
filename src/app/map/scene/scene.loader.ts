@@ -77,7 +77,6 @@ import {
 } from '../junction-boundary/tv-junction-boundary';
 import { Log } from 'app/core/utils/log';
 import { InvalidTypeException, ModelNotFoundException } from 'app/exceptions/exceptions';
-import { OpenDrive14Parser } from 'app/importers/open-drive/open-drive-1-4.parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { PropCurvePoint } from 'app/modules/prop-curve/objects/prop-curve-point';
 import { JunctionFactory } from 'app/factories/junction.factory';
@@ -98,8 +97,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 	constructor (
 		private threeService: ThreeService,
 		private snackBar: SnackBar,
-		private storage: StorageService,
-		private openDriverParser: OpenDrive14Parser,
+		private storage: StorageService
 	) {
 		super();
 	}
@@ -474,7 +472,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		}
 
-		const road = new TvRoad( name, length, id, junction );
+		const road = new TvRoad( name, junction, id );
 
 		road.trafficRule = TvRoad.stringToRule( xml.attr_trafficRule );
 
@@ -489,7 +487,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
-		if ( xml.lateralProfile != null ) this.openDriverParser.parseLateralProfile( road, xml.lateralProfile );
+		if ( xml.lateralProfile != null ) this.parseLateralProfile( road, xml.lateralProfile );
 
 		if ( xml.lanes != null ) this.parseLanes( road, xml.lanes );
 
@@ -1423,7 +1421,32 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLateralProfile ( road: TvRoad, xmlElement: XmlElement ): void {
+	private parseLateralProfile ( road: TvRoad, xml: XmlElement ): void {
+
+		readXmlArray( xml.superelevation, ( xml: XmlElement ) => {
+
+			const s = parseFloat( xml.attr_s ) || 0;
+			const a = parseFloat( xml.attr_a ) || 0;
+			const b = parseFloat( xml.attr_b ) || 0;
+			const c = parseFloat( xml.attr_c ) || 0;
+			const d = parseFloat( xml.attr_d ) || 0;
+
+			road.getLateralProfile().createSuperElevation( s, a, b, c, d );
+
+		} );
+
+		readXmlArray( xml.shape, ( xml: XmlElement ) => {
+
+			const s = parseFloat( xml.attr_s ) || 0;
+			const t = parseFloat( xml.attr_t ) || 0;
+			const a = parseFloat( xml.attr_a ) || 0;
+			const b = parseFloat( xml.attr_b ) || 0;
+			const c = parseFloat( xml.attr_c ) || 0;
+			const d = parseFloat( xml.attr_d ) || 0;
+
+			road.getLateralProfile().addShape( s, t, a, b, c, d );
+
+		} );
 
 	}
 
