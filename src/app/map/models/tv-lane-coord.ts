@@ -129,7 +129,7 @@ export class TvLaneCoord {
 	}
 
 	getLaneDirectionVector (): Vector3 {
-		if ( this.lane.isBackward ) {
+		if ( this.lane.isLeft || this.lane.isBackward ) {
 			return this.posTheta.reverseHeading().toDirectionVector();
 		}
 		return this.posTheta.toDirectionVector();
@@ -140,6 +140,14 @@ export class TvLaneCoord {
 			return this.posTheta.hdg + Math.PI;
 		}
 		return this.posTheta.hdg;
+	}
+
+	getHeading (): number {
+		return this.posTheta.hdg;
+	}
+
+	getHeadingVector (): Vector3 {
+		return this.posTheta.toDirectionVector();
 	}
 
 	getRoadMark (): TvLaneRoadMark {
