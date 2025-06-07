@@ -156,7 +156,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			try {
 
-				const junction = this.map.getJunction( parseInt( xml.attr_id ) );
+				const junctionId = parseInt( xml.attr_id );
+
+				const junction = this.junctions.get( junctionId );
 
 				this.parseJunctionConnections( junction, xml );
 
@@ -211,34 +213,13 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		return header;
 	}
 
-	private parseJunctionId ( value: any ): TvJunction {
-
-		try {
-
-			const id = parseInt( value ) || -1;
-
-			return id > 0 ? this.map.getJunction( id ) : null;
-
-		} catch ( error ) {
-
-			if ( error instanceof ModelNotFoundException ) {
-
-				Log.error( 'Junction not found' );
-
-			} else {
-
-				Log.error( `Unknown error : ${ error.message }` );
-
-			}
-
-		}
-	}
-
 	public parseRoad ( xml: XmlElement ): TvRoad {
 
 		const name = xml.attr_name;
-		const id = parseInt( xml.attr_id, 10 );
-		const junction = this.parseJunctionId( xml.attr_junction );
+		const id = parseInt( xml.attr_id );
+
+		const junctionId = parseInt( xml.attr_junction ) || -1;
+		const junction = junctionId > 0 ? this.findJunction( junctionId ) : null;
 
 		const road = new TvRoad( name, junction );
 
@@ -678,9 +659,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-		const linkedRoad = !isNaN( linkedRoadId ) ? this.map.getRoad( linkedRoadId ) : null;
-		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoad( incomingRoadId ) : null;
-		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoad( connectingRoadId ) : linkedRoad;
+		const linkedRoad = !isNaN( linkedRoadId ) ? this.findRoad( linkedRoadId ) : null;
+		const incomingRoad = !isNaN( incomingRoadId ) ? this.findRoad( incomingRoadId ) : null;
+		const connectingRoad = !isNaN( connectingRoadId ) ? this.findRoad( connectingRoadId ) : linkedRoad;
 
 		if ( !incomingRoad ) {
 			TvConsole.error( "Incoming road not found" );
