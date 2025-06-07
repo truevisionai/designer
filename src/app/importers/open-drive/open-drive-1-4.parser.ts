@@ -55,6 +55,10 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	protected map: TvMap;
 
+	private roads = new Map<number, TvRoad>();
+
+	private junctions = new Map<number, TvJunction>();
+
 	constructor ( private snackBar: SnackBar ) {
 
 		this.map = new TvMap();
@@ -122,7 +126,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			try {
 
-				const road = this.map.getRoad( parseInt( xml.attr_id ) );
+				const roadId = parseInt( xml.attr_id );
+
+				const road = this.roads.get( roadId );
 
 				this.parseRoadLinks( road, xml.link );
 
@@ -231,11 +237,12 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 	public parseRoad ( xml: XmlElement ): TvRoad {
 
 		const name = xml.attr_name;
-		const length = parseFloat( xml.attr_length );
 		const id = parseInt( xml.attr_id, 10 );
 		const junction = this.parseJunctionId( xml.attr_junction );
 
-		const road = new TvRoad( name, junction, id );
+		const road = new TvRoad( name, junction );
+
+		this.roads.set( id, road );
 
 		road.trafficRule = TvRoad.stringToRule( xml.attr_trafficRule );
 
@@ -294,20 +301,13 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	public findRoad ( id: number ): TvRoad | null {
 
-		try {
+		if ( this.roads.has( id ) ) {
 
-			return this.map.getRoad( id );
+			return this.roads.get( id );
 
-		} catch ( error ) {
+		} else {
 
-			if ( error instanceof ModelNotFoundException ) {
-
-				Log.error( `Road not found : ${ id }` );
-
-			} else {
-
-				Log.error( `Unknown error : ${ error.message }` );
-			}
+			Log.error( `Road not found with id: ${ id }` );
 
 		}
 
@@ -315,20 +315,13 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 	public findJunction ( id: number ): TvJunction | null {
 
-		try {
+		if ( this.junctions.has( id ) ) {
 
-			return this.map.getJunction( id );
+			return this.junctions.get( id );
 
-		} catch ( error ) {
+		} else {
 
-			if ( error instanceof ModelNotFoundException ) {
-
-				Log.error( 'Junction not found : ' + id );
-
-			} else {
-
-				Log.error( 'Unknown error : ' + error.message );
-			}
+			Log.error( `Junction not found with id: ${ id }` );
 
 		}
 
@@ -635,8 +628,11 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const id = parseInt( xmlElement.attr_id );
 		const type = TvJunction.stringToType( xmlElement.attr_type );
 
-		return JunctionFactory.createByType( type, name, id );
+		const junction = JunctionFactory.createByType( type, name, id );
 
+		this.junctions.set( id, junction );
+
+		return junction;
 	}
 
 	public parseJunctionConnections ( junction: TvJunction, xmlElement: XmlElement ): void {
