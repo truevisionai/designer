@@ -1,27 +1,19 @@
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { getWorldOriginInLatLong, convertToWGS84String, convertToTMerc } from "app/importers/coordinate-transformer";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
 import { FRENCH_SMALL_XODR, OSM2_XODR, SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 
 import proj4 from 'proj4';
+import { setupTest } from "tests/setup-tests";
 
 describe( 'GeoReference', () => {
 
 	let testHelper: SplineTestHelper;
-	let eventServicePtrovider: EventServiceProvider;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: []
-		} );
+		setupTest();
 
 		testHelper = TestBed.inject( SplineTestHelper );
-		eventServicePtrovider = TestBed.inject( EventServiceProvider );
-		eventServicePtrovider.init();
 
 	} );
 
@@ -102,7 +94,7 @@ describe( 'GeoReference', () => {
 
 		const map = testHelper.openDriveParser.parse( contents );
 
-		const road = map.getRoad( 3690 );
+		const road = map.getRoad( 1 );
 
 		expect( road ).toBeDefined();
 		expect( road.length ).toBe( 6.30498600 );

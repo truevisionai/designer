@@ -55,6 +55,8 @@ export class RoadFactory {
 
 	static makeRoad ( options?: RoadMakeOptions ): TvRoad {
 
+		if ( !options ) options = new RoadMakeOptions();
+
 		const road = this.createRoad();
 
 		const position = options.position ?? new Vector3( 0, 0, 0 );
@@ -81,6 +83,8 @@ export class RoadFactory {
 	}
 
 	static makeHighwayRoad ( options?: RoadMakeOptions ): TvRoad {
+
+		if ( !options ) options = new RoadMakeOptions();
 
 		const road = this.createRoad();
 

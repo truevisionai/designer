@@ -1,33 +1,23 @@
-import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { RoadDividerService } from 'app/services/road/road-divider.service';
-import { RoadService } from 'app/services/road/road.service';
 import { Vector2, Vector3 } from 'app/core/maths';
 import { OpenDriveParserService } from "../../app/importers/open-drive/open-drive-parser.service";
 import { XML } from '../stubs/straight-road-stub';
 import { MapService } from "../../app/services/map/map.service";
 import { SplineService } from 'app/services/spline/spline.service';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
-
+import { setupTest } from 'tests/setup-tests';
 
 describe( 'Service: RoadDivider Simple', () => {
 
-	let eventServiceProvider: EventServiceProvider;
 	let roadDividerService: RoadDividerService;
 	let splineService: SplineService;
 	let testHelper: SplineTestHelper;
 
 	beforeEach( () => {
-		TestBed.configureTestingModule( {
-			providers: [ RoadService ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
 
-		eventServiceProvider = TestBed.get( EventServiceProvider );
-		eventServiceProvider.init();
+		setupTest();
 
 		roadDividerService = TestBed.get( RoadDividerService );
 		splineService = TestBed.get( SplineService );
@@ -130,17 +120,10 @@ describe( 'Service: RoadDivider Junctions', () => {
 	let roadDividerService: RoadDividerService;
 	let mapService: MapService;
 	let splineService: SplineService;
-	let eventServiceProvider: EventServiceProvider;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ RoadService, OpenDriveParserService, RoadDividerService, MapService ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
-
-		eventServiceProvider = TestBed.get( EventServiceProvider );
-		eventServiceProvider.init();
+		setupTest();
 
 		openDriveParser = TestBed.get( OpenDriveParserService );
 		roadDividerService = TestBed.get( RoadDividerService );

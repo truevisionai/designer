@@ -1,9 +1,7 @@
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { TvMap } from "app/map/models/tv-map.model";
-import { RoadService } from "app/services/road/road.service";
 import { SplineTestHelper, TOWN_03, TOWN_04 } from "app/services/spline/spline-test-helper.service";
+import { setupTest } from "tests/setup-tests";
 
 describe( 'TownMap-Tests', () => {
 
@@ -12,10 +10,7 @@ describe( 'TownMap-Tests', () => {
 
 	beforeEach( async () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ RoadService ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		helper = TestBed.inject( SplineTestHelper );
 

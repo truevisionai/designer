@@ -1,15 +1,12 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineTestHelper, STRAIGHT_XODR } from "../../../app/services/spline/spline-test-helper.service";
 import { JunctionToolHelper } from "../../../app/modules/junction/junction-tool.helper";
 import { OpenDriveParserService } from 'app/importers/open-drive/open-drive-parser.service';
-import { Vector3 } from 'app/core/maths';
+import { setupTest } from 'tests/setup-tests';
 
 describe( 'Imported XJunction: Tests', () => {
 
-	let eventServiceProvider: EventServiceProvider;
 	let testHelper: SplineTestHelper;
 	let juctionToolHelper: JunctionToolHelper;
 	let httpClient: HttpClient;
@@ -17,17 +14,12 @@ describe( 'Imported XJunction: Tests', () => {
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		testHelper = TestBed.inject( SplineTestHelper );
 		juctionToolHelper = TestBed.inject( JunctionToolHelper );
 		httpClient = TestBed.inject( HttpClient );
 		parserService = TestBed.inject( OpenDriveParserService );
-
-		eventServiceProvider.init();
 
 	} );
 

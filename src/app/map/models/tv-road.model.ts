@@ -85,7 +85,7 @@ export class TvRoad {
 
 	private map: TvMap;
 
-	private static counter: number = 0;
+	public static counter: number = 0;
 
 	constructor ( name?: string, junction?: TvJunction, id?: number ) {
 

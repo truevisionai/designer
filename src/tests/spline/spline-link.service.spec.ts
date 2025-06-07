@@ -1,35 +1,25 @@
-import { HttpClientModule } from '@angular/common/http';
-import { TestBed, inject } from '@angular/core/testing';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TestBed } from '@angular/core/testing';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
 import { SplineLinkService } from 'app/managers/spline-link.service';
 import { MapService } from 'app/services/map/map.service';
-import { RoadService } from 'app/services/road/road.service';
 import { SplineTestHelper } from 'app/services/spline/spline-test-helper.service';
 import { expectValidMap } from 'tests/base-test.spec';
 import { Vector3 } from 'app/core/maths';
+import { setupTest } from 'tests/setup-tests';
 
 describe( 'SplineLinkService: Tests', () => {
 
 	let testHelper: SplineTestHelper;
 	let mapService: MapService;
-	let eventServiceProvider: EventServiceProvider;
 	let splineLinkService: SplineLinkService;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			providers: [ RoadService, MatSnackBar ],
-			imports: [ HttpClientModule, MatSnackBarModule ]
-		} );
+		setupTest();
 
 		splineLinkService = TestBed.inject( SplineLinkService );
 		testHelper = TestBed.inject( SplineTestHelper );
 		mapService = TestBed.inject( MapService );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
-
-		eventServiceProvider.init();
 
 	} );
 

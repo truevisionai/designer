@@ -1,31 +1,23 @@
-import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { EventServiceProvider } from 'app/listeners/event-service-provider';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplineTestHelper } from "../../../app/services/spline/spline-test-helper.service";
 import { JunctionToolHelper } from "../../../app/modules/junction/junction-tool.helper";
 import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from "../../../app/map/models/tv-common";
 import { expectValidMap } from "../../base-test.spec";
 import { EXPECT_CONNECTION } from "../../expect-junction.spec";
+import { setupTest } from 'tests/setup-tests';
 
 describe( 'CustomJunction: Tests', () => {
 
-	let eventServiceProvider: EventServiceProvider;
 	let testHelper: SplineTestHelper;
 	let juctionToolHelper: JunctionToolHelper;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-		} );
+		setupTest();
 
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		testHelper = TestBed.inject( SplineTestHelper );
 		juctionToolHelper = TestBed.inject( JunctionToolHelper );
-
-		eventServiceProvider.init();
 
 	} );
 
