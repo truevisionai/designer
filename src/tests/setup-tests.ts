@@ -13,6 +13,7 @@ import { ToolFactory } from "../app/tools/tool.factory";
 import { ToolType } from "../app/tools/tool-types.enum";
 import { BaseTool } from "../app/tools/base-tool";
 import { ToolManager } from "../app/managers/tool-manager";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 
 export function setupTest (): void {
 
@@ -23,6 +24,10 @@ export function setupTest (): void {
 	TestBed.inject( EventServiceProvider ).init();
 
 	disableMeshBuilding();
+
+	TvRoad.counter = 1; // Reset road counter for tests
+
+	AbstractSpline.reset();
 
 }
 

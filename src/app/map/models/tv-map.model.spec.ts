@@ -100,7 +100,7 @@ describe( 'OpenDrive Model', () => {
 
 		const result = roadService.findNearestRoad( new Vector2( 1, 1 ) );
 
-		expect( result.id ).toBe( 1 );
+		expect( result.id ).toBe( road.id );
 
 	} );
 
@@ -112,12 +112,12 @@ describe( 'OpenDrive Model', () => {
 
 		const result = TvMapQueries.getLaneByCoords( 1, 1, posTheta );
 
-		expect( result.road.id ).toBe( 1 );
+		expect( result.road.id ).toBe( road.id);
 		expect( result.lane.id ).toBe( 1 );
 
 		const result2 = TvMapQueries.getLaneByCoords( 1, 3, posTheta );
 
-		expect( result2.road.id ).toBe( 1 );
+		expect( result2.road.id ).toBe( road.id );
 		expect( result2.lane.id ).toBe( 2 );
 
 	} );
@@ -130,7 +130,7 @@ describe( 'OpenDrive Model', () => {
 
 		const result = TvMapQueries.getLaneByCoords( 1, -1, posTheta );
 
-		expect( result.road.id ).toBe( 1 );
+		expect( result.road.id ).toBe( road.id );
 		expect( result.lane.id ).toBe( -1 );
 
 	} );

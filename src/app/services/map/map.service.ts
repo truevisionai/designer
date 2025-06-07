@@ -9,8 +9,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { TvMapInstance } from 'app/map/services/tv-map-instance';
 import { Material, Mesh } from "three";
 import { PropPolygon } from "../../map/prop-polygon/prop-polygon.model";
-import { ModelNotFoundException } from 'app/exceptions/exceptions';
-import { Log } from 'app/core/utils/log';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
 
 @Injectable( {
@@ -107,25 +105,7 @@ export class MapService {
 
 	findRoad ( id: number ): TvRoad {
 
-		// return this.map.getRoadById( id );
-
-		try {
-
-			return this.map.getRoad( id );
-
-		} catch ( error ) {
-
-			if ( error instanceof ModelNotFoundException ) {
-
-				Log.error( "Road not found", id );
-
-			} else {
-
-				Log.error( error );
-
-			}
-
-		}
+		return this.map.getRoad( id );
 
 	}
 
@@ -161,49 +141,13 @@ export class MapService {
 
 	findJunction ( id: number ): TvJunction {
 
-		// return this.map.getJunctionById( id );
-
-		try {
-
-			return this.map.getJunction( id );
-
-		} catch ( error ) {
-
-			if ( error instanceof ModelNotFoundException ) {
-
-				Log.error( "Junction not found", id );
-
-			} else {
-
-				Log.error( error );
-
-			}
-
-		}
+		return this.map.getJunction( id );
 
 	}
 
 	removeJunction ( junction: TvJunction ): void {
 
-		// this.map.removeJunction( junction );
-
-		try {
-
-			this.map.removeJunction( junction );
-
-		} catch ( error ) {
-
-			if ( error instanceof ModelNotFoundException ) {
-
-				Log.error( "Junction not found", junction );
-
-			} else {
-
-				Log.error( error );
-
-			}
-
-		}
+		this.map.removeJunction( junction );
 
 	}
 

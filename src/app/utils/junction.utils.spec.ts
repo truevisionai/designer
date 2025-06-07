@@ -2,36 +2,23 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { EventServiceProvider } from "../listeners/event-service-provider";
 import { SplineTestHelper } from "../services/spline/spline-test-helper.service";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { RoadToolHelper } from "../tools/road/road-tool-helper.service";
 import { JunctionUtils } from "./junction.utils";
 import { JunctionService } from "../services/junction/junction.service";
-import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
+import { setupTest } from "tests/setup-tests";
 
 describe( 'JunctionUtils', () => {
 
-	let eventServiceProvider: EventServiceProvider;
 	let helper: SplineTestHelper;
 	let junctionService: JunctionService;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: []
-		} );
+		setupTest();
 
 		helper = TestBed.inject( SplineTestHelper );
 		junctionService = TestBed.inject( JunctionService );
-
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
-		eventServiceProvider.init();
-
-		disableMeshBuilding();
 
 	} );
 

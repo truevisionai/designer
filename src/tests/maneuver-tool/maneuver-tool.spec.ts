@@ -1,38 +1,26 @@
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { EventServiceProvider } from "../../app/listeners/event-service-provider";
-import { HttpClientModule } from "@angular/common/http";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ManeuverTool } from "../../app/tools/maneuver/maneuver-tool";
 import { ManeuverToolHelper } from "../../app/tools/maneuver/maneuver-tool-helper.service";
 import { SplineTestHelper } from "../../app/services/spline/spline-test-helper.service";
 import { JunctionUtils } from "../../app/utils/junction.utils";
-import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvLaneCoord } from "app/map/models/tv-lane-coord";
 import { LaneUtils } from "app/utils/lane.utils";
 import { BaseTool } from "app/tools/base-tool";
 import { LaneDistance } from "app/map/road/road-distance";
+import { setupTest } from "tests/setup-tests";
 
 describe( 'ManeuverTool', () => {
 
 	let tool: BaseTool<any>;
-	let eventServiceProvider: EventServiceProvider;
 	let helper: SplineTestHelper;
 
 	beforeEach( () => {
 
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: []
-		} );
+		setupTest();
 
 		tool = new ManeuverTool( TestBed.inject( ManeuverToolHelper ) )
 		helper = TestBed.inject( SplineTestHelper );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
-
-		disableMeshBuilding();
-
-		eventServiceProvider.init();
 
 	} );
 

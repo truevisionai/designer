@@ -2,14 +2,10 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
-import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
 import { AutoSignalizationType, AutoSignalizeJunctionService, JunctionSignaliztion } from "./auto-signalize-junction.service";
-import { OpenDriveSignals, SignalDatabase } from "app/map/road-signal/road-signal.database";
+import { OpenDriveSignals } from "app/map/road-signal/road-signal.database";
 import { ToolManager } from "app/managers/tool-manager";
 import { ToolBarService } from "app/views/editor/tool-bar/tool-bar.service";
 import { BaseTool } from "../base-tool";
@@ -20,23 +16,15 @@ import { setupTest } from "tests/setup-tests";
 
 describe( 'TrafficLightTool', () => {
 
-	let eventServiceProvider: EventServiceProvider;
 	let testHelper: SplineTestHelper;
 	let signalizationService: AutoSignalizeJunctionService;
 
 	beforeEach( () => {
 
-		disableMeshBuilding();
-
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: []
-		} );
+		setupTest();
 
 		testHelper = TestBed.inject( SplineTestHelper );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		signalizationService = TestBed.inject( AutoSignalizeJunctionService );
-		eventServiceProvider.init();
 
 	} );
 
