@@ -53,9 +53,6 @@ module.exports = function ( config ) {
 		autoWatch: true,
 		browsers: [ 'ChromeDebugging' ],
 		singleRun: false,
-		files: [
-			{ pattern: 'src/**/*.spec.ts', watched: true }
-		],
 		customLaunchers: {
 			ChromeDebugging: {
 				base: 'Chrome',
