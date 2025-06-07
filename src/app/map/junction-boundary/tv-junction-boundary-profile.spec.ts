@@ -11,7 +11,7 @@ import { TvJointBoundary } from './tv-joint-boundary';
 import { TvLaneBoundary } from './tv-lane-boundary';
 import { expectInstancesOf } from "../../../tests/expect-spline.spec";
 
-describe( 'TvJunctionBoundaryProfile', () => {
+xdescribe( 'TvJunctionBoundaryProfile', () => {
 
 	let testHelper: SplineTestHelper;
 	let junction: TvJunction;

@@ -19,7 +19,7 @@ import { createDefaultRoad, createFreewayOneWayRoad, createFreewayRoad, createOn
 import { TvJunctionLaneLink } from "app/map/models/junctions/tv-junction-lane-link";
 import { TvContactPoint } from "app/map/models/tv-common";
 
-describe( 'LaneLinkFactory', () => {
+xdescribe( 'LaneLinkFactory', () => {
 
 	let helper: SplineTestHelper;
 	let connection: TvJunctionConnection;

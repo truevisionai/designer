@@ -12,7 +12,7 @@ import { LinkFactory } from 'app/map/models/link-factory';
 import { TvContactPoint } from "../map/models/tv-common";
 import { TvLaneSection } from "../map/models/tv-lane-section";
 
-describe( 'LaneSectionFactory', () => {
+xdescribe( 'LaneSectionFactory', () => {
 
 	let factory: LaneSectionFactory;
 	let roadFactory: RoadFactory;

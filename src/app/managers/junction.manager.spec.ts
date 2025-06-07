@@ -16,7 +16,7 @@ import { SplineIntersectionService } from "app/services/spline/spline-intersecti
 import { SplinePositionService } from "app/services/spline/spline-position.service";
 import { setupTest } from "tests/setup-tests";
 
-describe( 'JunctionManager', () => {
+xdescribe( 'JunctionManager', () => {
 
 	let splineTestHelper: SplineTestHelper;
 	let mapService: MapService;

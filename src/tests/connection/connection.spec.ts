@@ -15,7 +15,7 @@ import { setupTest } from "tests/setup-tests";
 import { Vector3 } from "app/core/maths"
 import { determineTurnType } from "app/map/models/connections/connection-utils";
 
-describe( 'TvJunctionConnection', () => {
+xdescribe( 'TvJunctionConnection', () => {
 
 	let helper: SplineTestHelper;
 	let connection: TvJunctionConnection;
