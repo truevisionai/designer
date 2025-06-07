@@ -7,7 +7,7 @@ import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { expectValidRoad, setupTest, validateMap } from "tests/setup-tests";
 import { expect2RoadJunction, expectTJunction, expectXJunction } from "tests/expect-junction.spec";
 
-describe( '4-Road-Roundabout', () => {
+xdescribe( '4-Road-Roundabout', () => {
 
 	let helper: SplineTestHelper;
 

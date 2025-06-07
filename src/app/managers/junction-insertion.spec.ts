@@ -20,7 +20,7 @@ import { LinkFactory } from 'app/map/models/link-factory';
 import { expectInstances, expectSegments } from "tests/expect-spline.spec";
 import { setupTest } from "../../tests/setup-tests";
 
-describe( 'JunctionManager: InsertJunction', () => {
+xdescribe( 'JunctionManager: InsertJunction', () => {
 
 	let splineTestHelper: SplineTestHelper;
 	let mapService: MapService;

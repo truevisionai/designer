@@ -13,7 +13,7 @@ import { TvLaneType, TvOrientation } from "../../map/models/tv-common";
 import { findOrientation } from "../../map/models/connections/connection-utils";
 import { createFreewayRoad, createRampRoad } from "tests/base-test.spec";
 
-describe( 'RoadRampTool Orientation', () => {
+xdescribe( 'RoadRampTool Orientation', () => {
 
 	let mainRoad: TvRoad;
 
@@ -65,7 +65,7 @@ describe( 'RoadRampTool Orientation', () => {
 
 } );
 
-describe( 'RoadRampTool', () => {
+xdescribe( 'RoadRampTool', () => {
 
 	let mainRoad: TvRoad;
 

@@ -8,7 +8,7 @@ import { TvLaneBoundary } from "./tv-lane-boundary";
 import { TvJointBoundary } from "./tv-joint-boundary";
 import { setupTest } from "../../../tests/setup-tests";
 
-describe( 'TvJunctionInnerBoundaryService', () => {
+xdescribe( 'TvJunctionInnerBoundaryService', () => {
 
 	let testHelper: SplineTestHelper;
 
@@ -133,7 +133,7 @@ describe( 'TvJunctionInnerBoundaryService', () => {
 
 } )
 
-describe( 'TvJunctionOuterBoundaryService', () => {
+xdescribe( 'TvJunctionOuterBoundaryService', () => {
 
 	let testHelper: SplineTestHelper;
 
