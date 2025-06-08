@@ -123,7 +123,7 @@ export class OpenDriveService {
 
 	getSceneOutput (): any {
 
-		return this.sceneExporter.exportAsString();
+		return this.sceneExporter.exportAsString( this.mapService.map );
 
 	}
 

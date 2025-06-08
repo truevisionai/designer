@@ -12,10 +12,7 @@ import { TvMap } from 'app/map/models/tv-map.model';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Surface } from 'app/map/surface/surface.model';
 import { XMLBuilder } from 'fast-xml-parser';
-import { FileService } from '../../io/file.service';
 import { TvJunctionConnection } from '../models/connections/tv-junction-connection';
-import { SnackBar } from '../../services/snack-bar.service';
-import { TvElectronService } from '../../services/tv-electron.service';
 import { ThreeService } from 'app/renderer/three.service';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneAccess } from 'app/map/models/tv-lane-access';
@@ -28,7 +25,6 @@ import { TvLaneVisibility } from 'app/map/models/tv-lane-visibility';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { XmlElement } from "../../importers/xml.element";
-import { MapService } from "../../services/map/map.service";
 import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { TvTransform } from 'app/map/models/tv-transform';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
@@ -47,12 +43,8 @@ export class SceneExporter implements AssetExporter<TvMap> {
 	readonly extension = 'scene';
 
 	constructor (
-		private fileService: FileService,
-		private electron: TvElectronService,
 		private threeService: ThreeService,
-		private mapService: MapService,
 		private openDrive: OpenDriveExporter,
-		private snackBar: SnackBar,
 		private splineExporter: SplineExporter,
 	) {
 	}
@@ -72,7 +64,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		};
 	}
 
-	exportAsString ( map?: TvMap ): string {
+	exportAsString ( map: TvMap ): string {
 
 		const defaultOptions = {
 			attributeNamePrefix: 'attr_',
@@ -86,7 +78,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		const builder = new XMLBuilder( defaultOptions );
 
-		const scene = this.exportAsJSON( map || this.mapService.map );
+		const scene = this.exportAsJSON( map );
 
 		const xmlDocument = builder.build( scene );
 
@@ -114,7 +106,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		if ( road.spline.getControlPointCount() < 2 ) {
 			TvConsole.error( 'Road spline must have atleast 2 control points. Skipping export' );
-			this.snackBar.error( 'Road spline must have atleast 2 control points. Skipping export' );
 			return;
 		}
 
