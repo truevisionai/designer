@@ -35,3 +35,23 @@ export function readXmlElement ( xml: any, callbackFn: ( xml: XmlElement ) => vo
 	}
 
 }
+
+export function toArray ( items: any ): Record<string, any>[] {
+
+    if ( items != null ) {
+
+        if ( Array.isArray( items ) ) {
+
+            return items;
+
+        } else {
+
+            return [ items ];
+
+        }
+
+    }
+
+    return [];
+
+}
