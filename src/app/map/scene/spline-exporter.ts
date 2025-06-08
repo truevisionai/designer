@@ -10,7 +10,7 @@ import { RoadControlPoint } from "../../objects/road/road-control-point";
 import { TvRoad } from "../models/tv-road.model";
 import { SplineSegmentType } from "../../core/shapes/spline-segment";
 import { TvJunction } from "../models/junctions/tv-junction";
-import { GeometryExporter } from "./geometry-exporter";
+import { exportGeometry } from "./geometry-exporter";
 import { Injectable } from "@angular/core";
 
 @Injectable( {
@@ -18,99 +18,98 @@ import { Injectable } from "@angular/core";
 } )
 export class SplineExporter {
 
-	constructor (
-		private geometryExporter: GeometryExporter
-	) {
-	}
-
 	export ( spline: AbstractSpline ): Record<string, any> {
 
-		if ( spline instanceof DepAutoSpline ) {
-
-			return this.exportDepAutoSpline( spline );
-
-		} else if ( spline instanceof AutoSpline ) {
-
-			return this.exportAutoSpline( spline )
-
-		} else if ( spline instanceof ExplicitSpline ) {
-
-			return this.exportExplicitSpline( spline );
-
-		} else {
-
-			throw new Error( `Unknown spline type:${ spline.type }` );
-
-		}
+		return exportSpline( spline );
 
 	}
 
+}
 
-	private exportExplicitSpline ( spline: ExplicitSpline ): Record<string, any> {
-		return {
-			attr_uuid: spline.uuid,
-			attr_type: spline.type,
-			geometry: spline.getGeometries().map( geometry => this.geometryExporter.export( geometry ) ),
-			point: spline.getControlPoints().map( ( point: RoadControlPoint ) => ( {
-				attr_x: point.position.x,
-				attr_y: point.position.y,
-				attr_z: point.position.z,
-				attr_hdg: point.hdg
-			} ) ),
-			roadSegment: this.exportSegments( spline )
-		};
-	}
+export function exportSpline ( spline: AbstractSpline ): Record<string, any> {
 
-	private exportAutoSpline ( spline: AutoSpline ): Record<string, any> {
-		return {
-			attr_uuid: spline.uuid,
-			attr_type: spline.type,
-			point: spline.controlPointPositions.map( point => ( {
-				attr_x: point.x,
-				attr_y: point.y,
-				attr_z: point.z
-			} ) ),
-			roadSegment: this.exportSegments( spline ),
-		};
+	if ( spline instanceof DepAutoSpline ) {
+
+		return exportDepAutoSpline( spline );
+
+	} else if ( spline instanceof AutoSpline ) {
+
+		return exportAutoSpline( spline )
+
+	} else if ( spline instanceof ExplicitSpline ) {
+
+		return exportExplicitSpline( spline );
+
+	} else {
+
+		throw new Error( `Unknown spline type:${ spline.type }` );
 
 	}
+}
 
-	private exportDepAutoSpline ( spline: DepAutoSpline ): Record<string, any> {
-		return {
-			attr_uuid: spline.uuid,
-			attr_type: spline.type,
-			point: spline.controlPointPositions.map( point => ( {
-				attr_x: point.x,
-				attr_y: point.y,
-				attr_z: point.z
-			} ) ),
-			roadSegment: this.exportSegments( spline )
-		};
-	}
+function exportExplicitSpline ( spline: ExplicitSpline ): Record<string, any> {
+	return {
+		attr_uuid: spline.uuid,
+		attr_type: spline.type,
+		geometry: spline.getGeometries().map( geometry => exportGeometry( geometry ) ),
+		point: spline.getControlPoints().map( ( point: RoadControlPoint ) => ( {
+			attr_x: point.position.x,
+			attr_y: point.position.y,
+			attr_z: point.position.z,
+			attr_hdg: point.hdg
+		} ) ),
+		roadSegment: exportSegments( spline )
+	};
+}
 
-	private exportSegments ( spline: AbstractSpline ): any[] {
+function exportAutoSpline ( spline: AutoSpline ): Record<string, any> {
+	return {
+		attr_uuid: spline.uuid,
+		attr_type: spline.type,
+		point: spline.controlPointPositions.map( point => ( {
+			attr_x: point.x,
+			attr_y: point.y,
+			attr_z: point.z
+		} ) ),
+		roadSegment: exportSegments( spline ),
+	};
 
-		const nodes = [];
+}
 
-		spline.forEachSegment( ( segment, s ) => {
-			nodes.push( {
-				attr_start: s,
-				attr_id: segment?.id,
-				attr_type: this.exportSegmentType( segment )
-			} );
+function exportDepAutoSpline ( spline: DepAutoSpline ): Record<string, any> {
+	return {
+		attr_uuid: spline.uuid,
+		attr_type: spline.type,
+		point: spline.controlPointPositions.map( point => ( {
+			attr_x: point.x,
+			attr_y: point.y,
+			attr_z: point.z
+		} ) ),
+		roadSegment: exportSegments( spline )
+	};
+}
+
+function exportSegments ( spline: AbstractSpline ): any[] {
+
+	const nodes = [];
+
+	spline.forEachSegment( ( segment, s ) => {
+		nodes.push( {
+			attr_start: s,
+			attr_id: segment?.id,
+			attr_type: exportSegmentType( segment )
 		} );
+	} );
 
-		return nodes;
+	return nodes;
+}
+
+function exportSegmentType ( segment: NewSegment ): string {
+	if ( segment instanceof TvRoad ) {
+		return SplineSegmentType.ROAD;
+	} else if ( segment instanceof TvJunction ) {
+		return SplineSegmentType.JUNCTION;
+	} else {
+		return null;
 	}
-
-	private exportSegmentType ( segment: NewSegment ): string {
-		if ( segment instanceof TvRoad ) {
-			return SplineSegmentType.ROAD;
-		} else if ( segment instanceof TvJunction ) {
-			return SplineSegmentType.JUNCTION;
-		} else {
-			return null;
-		}
-	}
-
 }

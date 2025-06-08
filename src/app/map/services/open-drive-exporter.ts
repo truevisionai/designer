@@ -5,11 +5,7 @@
 import { Injectable } from '@angular/core';
 import { XMLBuilder, XmlBuilderOptions } from 'fast-xml-parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
-import { TvArcGeometry } from '../models/geometries/tv-arc-geometry';
-import { TvParamPoly3Geometry } from '../models/geometries/tv-param-poly3-geometry';
-import { TvPoly3Geometry } from '../models/geometries/tv-poly3-geometry';
-import { TvSpiralGeometry } from '../models/geometries/tv-spiral-geometry';
-import { TravelDirection, TvGeometryType, TvLaneSide } from '../models/tv-common';
+import { TravelDirection } from '../models/tv-common';
 import { TvUserData } from '../models/tv-user-data';
 import { TvJunction } from '../models/junctions/tv-junction';
 import { TvVirtualJunction } from '../models/junctions/tv-virtual-junction';
@@ -50,13 +46,12 @@ import { TvLateralProfile, TvLateralProfileShape, TvSuperElevation } from '../mo
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { ThirdOrderPolynom } from '../models/third-order-polynom';
 import { TvLaneProfile } from "../models/tv-lane-profile";
-import { GeometryExporter } from "../scene/geometry-exporter";
 import { ParkingGraph } from '../parking/parking-graph';
 import { ParkingRegion } from '../parking/parking-region';
-import { RoadService } from 'app/services/road/road.service';
 import { RoadObjectFactory } from 'app/services/road-object/road-object.factory';
 import { Vector2 } from 'app/core/maths';
 import { RoadUtils } from 'app/utils/road.utils';
+import { exportGeometry } from '../scene/geometry-exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -69,11 +64,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	private parkingSpaceObjects: Map<number, TvRoadObject[]> = new Map();
 
-	constructor (
-		private geometryExporter: GeometryExporter,
-		private roadService: RoadService,
-	) {
-	}
+	constructor () { }
 
 	exportAsString ( asset: TvMap ): string {
 
@@ -187,7 +178,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	private createParkingSpaceObject ( region: ParkingRegion, targetRoad?: TvRoad ): TvRoadObject {
 
-		const road = targetRoad || this.roadService.findNearestRoad( region.getCenterPosition() );
+		const road = targetRoad || this.map.findNearestRoad( region.getCenterPosition() );
 
 		if ( !road ) {
 			return;
@@ -380,7 +371,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	public writeGeometry ( geometry: TvAbstractRoadGeometry ): XmlElement {
 
-		return this.geometryExporter.export( geometry );
+		return exportGeometry( geometry );
 
 	}
 

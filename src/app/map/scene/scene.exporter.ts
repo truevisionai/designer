@@ -31,9 +31,9 @@ import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvJunctionSegmentBoundary } from '../junction-boundary/tv-junction-boundary';
 import { TvLaneOffset } from "../models/tv-lane-offset";
-import { SplineExporter } from "./spline-exporter";
 import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
 import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
+import { exportSpline } from './spline-exporter';
 
 @Injectable( {
 	providedIn: 'root'
@@ -45,7 +45,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 	constructor (
 		private threeService: ThreeService,
 		private openDrive: OpenDriveExporter,
-		private splineExporter: SplineExporter,
 	) {
 	}
 
@@ -94,7 +93,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			propCurve: this.exportPropCurves( map.propCurves ),
 			propPolygon: this.exportPropPolygons( map.propPolygons ),
 			surface: map.getSurfaces().map( surface => this.exportSurface( surface ) ),
-			spline: map.getSplines().map( spline => this.splineExporter.export( spline ) ),
+			spline: map.getSplines().map( spline => exportSpline( spline ) ),
 			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
 			environment: this.threeService.environment.export(),
 			parkingGraph: map.getParkingGraph().toSceneJSON(),
@@ -123,7 +122,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		};
 
 		if ( road.spline?.type == 'explicit' ) {
-			xml[ 'spline' ] = this.splineExporter.export( road.spline );
+			xml[ 'spline' ] = exportSpline( road.spline );
 		}
 
 		this.writeRoadLinks( xml, road );

@@ -269,42 +269,9 @@ export class RoadService extends BaseDataService<TvRoad> {
 
 	}
 
-	findNearestRoad ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): TvRoad {
+	findNearestRoad ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): TvRoad | null {
 
-		const point = new Vector2( position.x, position.y );
-		const temp = new TvPosTheta();
-
-		let nearestRoad: TvRoad = null;
-		let minDistance = Number.MAX_SAFE_INTEGER;
-
-		for ( const road of this.roads ) {
-
-			if ( roadIdsToIgnore.includes( road.id ) ) continue;
-
-			// // TODO: faster way to check if point is inside road bounding box
-			// if ( !road.boundingBox.expandByScalar( 1 ).containsPoint( point ) ) {
-			// 	continue;
-			// } else {
-			// 	console.warn( 'Road ', road.toString() );
-			// }
-
-			for ( const geometry of road.geometries ) {
-
-				const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
-
-				const distance = point.distanceTo( nearestPoint );
-
-				if ( distance < minDistance ) {
-
-					minDistance = distance;
-					nearestRoad = road;
-
-					if ( posTheta ) posTheta.copy( temp );
-				}
-			}
-		}
-
-		return nearestRoad;
+		return this.mapService.map.findNearestRoad( position, posTheta, ...roadIdsToIgnore );
 
 	}
 
