@@ -17,106 +17,111 @@ import { XmlElement } from "app/importers/xml.element";
 export class GeometryExporter {
 
 	export ( geometry: TvAbstractRoadGeometry ): XmlElement {
+		return exportGeometry( geometry );
+	}
 
-		switch ( geometry.geometryType ) {
 
-			case TvGeometryType.LINE:
-				return this.exportLine( geometry );
-			case TvGeometryType.ARC:
-				return this.exportArc( geometry as TvArcGeometry );
-			case TvGeometryType.SPIRAL:
-				return this.exportSpiral( geometry as TvSpiralGeometry );
-			case TvGeometryType.POLY3:
-				return this.exportPoly3( geometry as TvPoly3Geometry );
-			case TvGeometryType.PARAMPOLY3:
-				return this.exportParamPoly3( geometry as TvParamPoly3Geometry );
-			default:
-				throw new Error( `Unknown geometry type:${ geometry.geometryType }` );
+}
 
-		}
+export function exportGeometry ( geometry: TvAbstractRoadGeometry ): XmlElement {
+
+	switch ( geometry.geometryType ) {
+
+		case TvGeometryType.LINE:
+			return exportLine( geometry );
+		case TvGeometryType.ARC:
+			return exportArc( geometry as TvArcGeometry );
+		case TvGeometryType.SPIRAL:
+			return exportSpiral( geometry as TvSpiralGeometry );
+		case TvGeometryType.POLY3:
+			return exportPoly3( geometry as TvPoly3Geometry );
+		case TvGeometryType.PARAMPOLY3:
+			return exportParamPoly3( geometry as TvParamPoly3Geometry );
+		default:
+			throw new Error( `Unknown geometry type:${ geometry.geometryType }` );
 
 	}
 
-	private exportLine ( geometry: TvAbstractRoadGeometry ): XmlElement {
+}
 
-		const xml = this.createBaseXml( geometry );
+function exportLine ( geometry: TvAbstractRoadGeometry ): XmlElement {
 
-		xml[ 'line' ] = {}
+	const xml = this.createBaseXml( geometry );
 
-		return xml;
+	xml[ 'line' ] = {}
 
-	}
+	return xml;
 
-	private exportArc ( geometry: TvArcGeometry ): XmlElement {
+}
 
-		const xml = this.createBaseXml( geometry );
+function exportArc ( geometry: TvArcGeometry ): XmlElement {
 
-		xml[ 'arc' ] = {
-			attr_curvature: geometry.curvature.toExponential( 16 )
-		};
+	const xml = this.createBaseXml( geometry );
 
-		return xml;
+	xml[ 'arc' ] = {
+		attr_curvature: geometry.curvature.toExponential( 16 )
+	};
 
-	}
+	return xml;
 
-	private exportSpiral ( geometry: TvSpiralGeometry ): XmlElement {
+}
 
-		const xml = this.createBaseXml( geometry );
+function exportSpiral ( geometry: TvSpiralGeometry ): XmlElement {
 
-		xml[ 'spiral' ] = {
-			attr_curvStart: geometry.curvStart.toExponential( 16 ),
-			attr_curvEnd: geometry.curvEnd.toExponential( 16 )
-		};
+	const xml = this.createBaseXml( geometry );
 
-		return xml;
+	xml[ 'spiral' ] = {
+		attr_curvStart: geometry.curvStart.toExponential( 16 ),
+		attr_curvEnd: geometry.curvEnd.toExponential( 16 )
+	};
 
-	}
+	return xml;
 
-	private exportPoly3 ( geometry: TvPoly3Geometry ): XmlElement {
+}
 
-		const xml = this.createBaseXml( geometry );
+function exportPoly3 ( geometry: TvPoly3Geometry ): XmlElement {
 
-		xml[ 'poly3' ] = {
-			attr_a: geometry.attr_a.toExponential( 16 ),
-			attr_b: geometry.attr_b.toExponential( 16 ),
-			attr_c: geometry.attr_c.toExponential( 16 ),
-			attr_d: geometry.attr_d.toExponential( 16 ),
-		};
+	const xml = this.createBaseXml( geometry );
 
-		return xml;
+	xml[ 'poly3' ] = {
+		attr_a: geometry.attr_a.toExponential( 16 ),
+		attr_b: geometry.attr_b.toExponential( 16 ),
+		attr_c: geometry.attr_c.toExponential( 16 ),
+		attr_d: geometry.attr_d.toExponential( 16 ),
+	};
 
-	}
+	return xml;
 
-	private exportParamPoly3 ( geometry: TvParamPoly3Geometry ): XmlElement {
+}
 
-		const xml = this.createBaseXml( geometry );
+function exportParamPoly3 ( geometry: TvParamPoly3Geometry ): XmlElement {
 
-		xml[ 'paramPoly3' ] = {
-			attr_pRange: geometry.pRange,
-			attr_aU: geometry.aU.toExponential( 16 ),
-			attr_bU: geometry.bU.toExponential( 16 ),
-			attr_cU: geometry.cU.toExponential( 16 ),
-			attr_dU: geometry.dU.toExponential( 16 ),
-			attr_aV: geometry.aV.toExponential( 16 ),
-			attr_bV: geometry.bV.toExponential( 16 ),
-			attr_cV: geometry.cV.toExponential( 16 ),
-			attr_dV: geometry.dV.toExponential( 16 ),
-		};
+	const xml = this.createBaseXml( geometry );
 
-		return xml;
+	xml[ 'paramPoly3' ] = {
+		attr_pRange: geometry.pRange,
+		attr_aU: geometry.aU.toExponential( 16 ),
+		attr_bU: geometry.bU.toExponential( 16 ),
+		attr_cU: geometry.cU.toExponential( 16 ),
+		attr_dU: geometry.dU.toExponential( 16 ),
+		attr_aV: geometry.aV.toExponential( 16 ),
+		attr_bV: geometry.bV.toExponential( 16 ),
+		attr_cV: geometry.cV.toExponential( 16 ),
+		attr_dV: geometry.dV.toExponential( 16 ),
+	};
 
-	}
+	return xml;
 
-	private createBaseXml ( geometry: TvAbstractRoadGeometry ): XmlElement {
+}
 
-		return {
-			attr_s: geometry.s.toExponential( 16 ),
-			attr_x: geometry.x.toExponential( 16 ),
-			attr_y: geometry.y.toExponential( 16 ),
-			attr_hdg: geometry.hdg.toExponential( 16 ),
-			attr_length: geometry.length.toExponential( 16 ),
-		};
+function createBaseXml ( geometry: TvAbstractRoadGeometry ): XmlElement {
 
-	}
+	return {
+		attr_s: geometry.s.toExponential( 16 ),
+		attr_x: geometry.x.toExponential( 16 ),
+		attr_y: geometry.y.toExponential( 16 ),
+		attr_hdg: geometry.hdg.toExponential( 16 ),
+		attr_length: geometry.length.toExponential( 16 ),
+	};
 
 }

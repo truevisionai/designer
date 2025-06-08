@@ -12,11 +12,12 @@ import { TvMapHeader } from './tv-map-header';
 import { TvRoad } from './tv-road.model';
 import { Surface } from '../surface/surface.model';
 import { AbstractSpline } from 'app/core/shapes/abstract-spline';
-import { Object3D, Vector2 } from "three";
+import { Object3D, Vector2, Vector3 } from "three";
 import { Object3DMap } from 'app/core/models/object3d-map';
 import { ManagedMap } from "../../core/models/managed-map";
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { ParkingGraph } from "../parking/parking-graph";
+import { TvPosTheta } from './tv-pos-theta';
 
 export class TvMap {
 
@@ -340,6 +341,45 @@ export class TvMap {
 	// hasParkingCurve ( parkingCurve: ParkingCurve ): boolean {
 	// 	return this.parkingCurves.includes( parkingCurve );
 	// }
+
+	findNearestRoad ( position: Vector2 | Vector3, posTheta?: TvPosTheta, ...roadIdsToIgnore: number[] ): TvRoad | null {
+
+		const point = new Vector2( position.x, position.y );
+		const temp = new TvPosTheta();
+
+		let nearestRoad: TvRoad = null;
+		let minDistance = Number.MAX_SAFE_INTEGER;
+
+		for ( const road of this.getRoads() ) {
+
+			if ( roadIdsToIgnore.includes( road.id ) ) continue;
+
+			// // TODO: faster way to check if point is inside road bounding box
+			// if ( !road.boundingBox.expandByScalar( 1 ).containsPoint( point ) ) {
+			// 	continue;
+			// } else {
+			// 	console.warn( 'Road ', road.toString() );
+			// }
+
+			for ( const geometry of road.geometries ) {
+
+				const nearestPoint = geometry.getNearestPointFrom( point.x, point.y, temp );
+
+				const distance = point.distanceTo( nearestPoint );
+
+				if ( distance < minDistance ) {
+
+					minDistance = distance;
+					nearestRoad = road;
+
+					if ( posTheta ) posTheta.copy( temp );
+				}
+			}
+		}
+
+		return nearestRoad;
+
+	}
 
 	/**
 	 * Clears the OpenDrive structure, could be used to start a new document

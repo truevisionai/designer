@@ -65,7 +65,7 @@ export class ExporterFactory {
 
 	getMapExporter ( major: number, minor: number ): AssetExporter<TvMap> {
 
-		return this.openDriveExporter;
+		return new OpenDriveExporter();
 
 	}
 }
