@@ -47,23 +47,26 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	validateRoad ( road: TvRoad ): void {
+	isRoadValid ( road: TvRoad ): boolean {
 
 		if ( road.getPlanView().getGeometryCount() < 1 ) {
-			throw new NoGeometriesFound();
+			return false;
 		}
 
 		if ( Maths.approxEquals( road.getLength(), 0 ) ) {
-			throw new InvalidRoadLength();
+			return false;
 		}
 
+		return true;
 	}
 
 	buildRoad ( road: TvRoad ): GameObject {
 
-		this.validateRoad( road );
-
 		const gameObject = this.createRoadGameObject( road );
+
+		if ( !this.isRoadValid( road ) ) {
+			return gameObject;
+		}
 
 		road.computeLaneSectionCoordinates();
 
