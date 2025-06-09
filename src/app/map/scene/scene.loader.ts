@@ -243,7 +243,17 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			} );
 
-			this.addOrSkipSpline( spline, spline.getFirstSegment<TvRoad>() );
+			if ( spline.type == SplineType.EXPLICIT ) {
+
+				spline.getRoadSegments().forEach( road => {
+
+					if ( !this.explicitSplineCache.has( road ) ) {
+						this.explicitSplineCache.set( road, spline );
+					}
+
+				} );
+
+			}
 
 		} catch ( error ) {
 
