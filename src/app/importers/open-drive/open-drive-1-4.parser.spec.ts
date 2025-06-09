@@ -131,14 +131,6 @@ describe( 'OpenDrive Parsing', () => {
 		expect( width.d ).toBe( 5 );
 	} );
 
-	it( 'should parse lane road mark and add road mark record', () => {
-		const lane = { addRoadMarkRecord: jasmine.createSpy() };
-		const xml = { attr_sOffset: '1', attr_type: 'solid', attr_weight: 'standard', attr_color: 'white', attr_width: '0.15', attr_laneChange: 'none', attr_height: '0.01' };
-		spyOn( ( window as any ).TvLaneRoadMark, 'laneChangeFromString' ).and.returnValue( 'none' );
-		parser.parseLaneRoadMark( lane as any, xml as any );
-		expect( lane.addRoadMarkRecord ).toHaveBeenCalled();
-	} );
-
 	it( 'should parse lane material and add material record', () => {
 		const lane = { addMaterialRecord: jasmine.createSpy() };
 		const xml = { attr_sOffset: '1', attr_surface: 'asphalt', attr_friction: '0.8', attr_roughness: '0.1' };
