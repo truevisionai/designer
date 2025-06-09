@@ -21,6 +21,10 @@ export class DepAutoSpline extends AbstractSpline {
 		throw new Error( 'Method not implemented.' );
 	}
 
+	updateGeometry (): void {
+		throw new Error( 'Method not implemented.' );
+	}
+
 	getPoints ( stepSize: number ): Vector3[] {
 		throw new Error( 'Method not implemented.' );
 	}

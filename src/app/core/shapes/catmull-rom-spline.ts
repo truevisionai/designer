@@ -73,5 +73,11 @@ export class CatmullRomSpline extends AbstractSpline {
 
 	}
 
+	updateGeometry (): void {
+
+		//
+
+	}
+
 
 }

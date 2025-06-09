@@ -70,6 +70,8 @@ export abstract class AbstractSpline {
 
 	abstract updateSegmentGeometryAndBounds (): void;
 
+	abstract updateGeometry (): void;
+
 	protected constructor ( closed?: boolean, tension?: number ) {
 
 		this.id = AbstractSpline.idCounter++;

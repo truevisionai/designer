@@ -194,7 +194,7 @@ function getSmoothSplineCurvePoints ( segA: TvJointBoundary, segB: TvJointBounda
 
 	const spline = SplineFactory.createRoadSpline( entryPosition, entryDirection, exitPosition, exitDirection );
 
-	spline.updateSegmentGeometryAndBounds();
+	spline.updateGeometry();
 
 	spline.getPoints( 0.1 ).forEach( p => {
 		outline.push( new Vector2( p.x, p.y ) );

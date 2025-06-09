@@ -38,6 +38,16 @@ export class AutoSpline extends AbstractSpline {
 
 	updateSegmentGeometryAndBounds (): void {
 
+		this.updateGeometry();
+
+		this.fireMakeSegmentMeshEvents();
+
+		SplineBoundsService.instance.updateBounds( this );
+
+	}
+
+	updateGeometry (): void {
+
 		if ( this.getControlPointCount() < 2 ) {
 			this.clearGeometries();
 			this.clearSegmentGeometries();
@@ -49,9 +59,6 @@ export class AutoSpline extends AbstractSpline {
 
 		AutoGeometryService.instance.updateGeometry( this );
 
-		this.fireMakeSegmentMeshEvents();
-
-		SplineBoundsService.instance.updateBounds( this );
 
 	}
 
