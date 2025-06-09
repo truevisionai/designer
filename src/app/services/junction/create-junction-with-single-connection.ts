@@ -17,6 +17,8 @@ import { SplineGeometryGenerator } from "../spline/spline-geometry-generator";
 
 export class AddJunctionConnectionForEachLane {
 
+	private debug = false;
+
 	private connections = new Set<TvJunctionConnection>();
 
 	private used = new Set<string>();
@@ -58,9 +60,9 @@ export class AddJunctionConnectionForEachLane {
 
 		}
 
-		console.log( 'Connections created', this.connections.size );
-		console.log( 'Connections', this.connections );
-		console.log( 'Junction', junction );
+		if ( this.debug ) Log.debug( 'Connections created', this.connections.size );
+		if ( this.debug ) Log.debug( 'Connections', this.connections );
+		if ( this.debug ) Log.debug( 'Junction', junction );
 
 	}
 
@@ -75,8 +77,8 @@ export class AddJunctionConnectionForEachLane {
 		const entries = helper.getEntryCoords();
 		const exits = helper.getExitCoords();
 
-		console.log( 'Helper', helper.toString() );
-		console.log( 'Entries', entries.map( entry => entry.lane.id ), 'Exits', exits.map( exit => exit.lane.id ) );
+		if ( this.debug ) Log.debug( 'Helper', helper.toString() );
+		if ( this.debug ) Log.debug( 'Entries', entries.map( entry => entry.lane.id ), 'Exits', exits.map( exit => exit.lane.id ) );
 
 		let lastConnection: TvJunctionConnection | undefined;
 
