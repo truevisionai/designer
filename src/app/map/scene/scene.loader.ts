@@ -9,7 +9,7 @@ import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
 import { SplineType } from 'app/core/shapes/spline-type';
 import { CatmullRomSpline } from 'app/core/shapes/catmull-rom-spline';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
-import { readXmlArray, readXmlElement } from 'app/utils/xml-utils';
+import { readXmlArray, readXmlElement, toArray } from 'app/utils/xml-utils';
 import { ScenarioEnvironment } from 'app/scenario/models/actions/scenario-environment';
 import { ThreeService } from 'app/renderer/three.service';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';
@@ -257,20 +257,21 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		readXmlArray( xml.road, xml => {
 
-			const roadId = parseInt( xml.attr_id ) || -1;
+			try {
 
-			if ( roadId < 0 ) return;
+				if ( xml.link == null ) return;
 
-			const road = this.map.getRoad( roadId );
+				const roadId = parseInt( xml.attr_id );
 
-			if ( !road ) {
-				Log.debug( 'NotFound Road:' + roadId );
-				return
+				const road = map.getRoad( roadId );
+
+				this.parseRoadLinks( road, xml.link );
+
+			} catch ( error ) {
+
+				Log.error( 'Road not found', xml, error );
+
 			}
-
-			if ( xml.link == null ) return;
-
-			this.parseRoadLinks( road, xml.link );
 
 		} )
 
@@ -306,7 +307,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		if ( spline.type === SplineType.EXPLICIT ) {
 
 			if ( this.explicitSplineCache.has( road ) ) {
-				Log.warn( 'Road already exists in cache' );
+				Log.warn( 'Road already exists in cache', road.toString() );
 				return;
 			}
 
@@ -878,33 +879,17 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 	private parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		if ( xmlElement.predecessor != null ) {
-
 			this.parseRoadLink( road, xmlElement.predecessor, 0 );
-
 		}
 
 		if ( xmlElement.successor != null ) {
-
 			this.parseRoadLink( road, xmlElement.successor, 1 );
-
 		}
 
-		if ( xmlElement.neighbor != null ) {
+		toArray( xmlElement.neighbor ).forEach( xml => {
+			this.parseRoadLink( road, xml, 2 );
+		} )
 
-			if ( Array.isArray( xmlElement.neighbor ) ) {
-
-				for ( let i = 0; i < xmlElement.neighbor.length; i++ ) {
-
-					this.parseRoadLink( road, xmlElement.neighbor[ i ], 2 );
-
-				}
-
-			} else {
-
-				this.parseRoadLink( road, xmlElement.neighbor, 2 );
-
-			}
-		}
 	}
 
 	private parseRoadLink ( road: TvRoad, xml: XmlElement, type: number ): void {
@@ -916,7 +901,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		try {
 
 			if ( elementType == TvLinkType.ROAD && contactPoint == null ) {
-				Log.warn( 'Unknown contact point of link for road:' + road.toString() );
+				Log.warn( `Unknown contact point of link for road:${ road.toString() }` );
 				return;
 			}
 
@@ -1727,7 +1712,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 		if ( road.hasRoadSignal( id ) ) {
 			// TEMP FIX
-			Log.warn( `Signal with id ${ id } already exists, incrementing id to add it ` + road.toString() );
+			Log.warn( `Signal with id ${ id } already exists, incrementing id to add it` + road.toString() );
 			id = findAvailableId( id, road );
 		}
 
