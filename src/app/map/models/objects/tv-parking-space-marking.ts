@@ -2,6 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
+
 import { TvColors, TvParkingSpaceMarkingSides, TvRoadMarkTypes } from "../tv-common";
 
 export class TvParkingSpaceMarking {
@@ -21,6 +22,15 @@ export class TvParkingSpaceMarking {
 			this.attr_width,
 			this.attr_color
 		);
+	}
+
+	toXODR (): Record<string, any> {
+		return {
+			attr_side: this.attr_side,
+			attr_type: this.attr_type,
+			attr_width: this.attr_width,
+			attr_color: this.attr_color,
+		}
 	}
 
 }

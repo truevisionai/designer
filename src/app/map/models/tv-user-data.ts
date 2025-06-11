@@ -16,4 +16,11 @@ export class TvUserData {
 			this.value
 		);
 	}
+
+	toXODR (): Record<string, any> {
+		return {
+			attr_code: this.code,
+			attr_value: this.value
+		};
+	}
 }

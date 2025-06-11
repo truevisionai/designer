@@ -32,4 +32,16 @@ export class TvCornerRoad {
 		return new TvCornerRoad( this.attr_id, this.road, this.s, this.t, this.dz, this.height );
 
 	}
+
+	toXODR (): Record<string, any> {
+		return {
+			attr_id: this.attr_id,
+			// attr_roadId: this.roadId, // roadId is not part of the OpenDRIVE standard
+			attr_s: this.s,
+			attr_t: this.t,
+			attr_dz: this.dz,
+			attr_height: this.height,
+		};
+	}
+
 }

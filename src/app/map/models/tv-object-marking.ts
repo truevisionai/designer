@@ -164,6 +164,25 @@ export class TvObjectMarking {
 
 	}
 
+	toXODR (): Record<string, any> {
+		return {
+			attr_color: this.color,
+			attr_spaceLength: this.spaceLength,
+			attr_lineLength: this.lineLength,
+			attr_side: this.side,
+			attr_weight: this.weight,
+			attr_startOffset: this.startOffset,
+			attr_stopOffset: this.stopOffset,
+			attr_zOffset: this.zOffset,
+			attr_width: this.width,
+			cornerReference: this.cornerReferences.map( reference => {
+				return {
+					attr_id: reference
+				};
+			} ),
+		};
+	}
+
 }
 
 

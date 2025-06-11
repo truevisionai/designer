@@ -36,4 +36,13 @@ export class TvCornerLocal {
 		);
 	}
 
+	toXODR (): Record<string, any> {
+		return {
+			attr_u: this.attr_u,
+			attr_v: this.attr_v,
+			attr_z: this.attr_z,
+			attr_height: this.attr_height,
+		};
+	}
+
 }

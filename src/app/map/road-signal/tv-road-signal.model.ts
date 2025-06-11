@@ -228,6 +228,13 @@ export class TvSignalDependency {
 	) {
 	}
 
+	toXODR (): Record<string, any> {
+		return {
+			attr_id: this.id,
+			attr_type: this.type || TvSignalDependencyType.Unknown
+		};
+	}
+
 }
 
 /**
@@ -276,5 +283,13 @@ export class TvReference {
 		public elementType: TvReferenceElementType,
 		public type?: string
 	) {
+	}
+
+	toXODR (): Record<string, any> {
+		return {
+			attr_elementId: this.elementId,
+			attr_elementType: this.elementType,
+			attr_type: this.type || ''
+		};
 	}
 }

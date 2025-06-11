@@ -129,4 +129,20 @@ export class TvObjectOutline {
 
 	}
 
+	toXODR (): Record<string, any> {
+		return {
+			attr_id: this.id,
+			attr_fillType: this.fillType,
+			attr_outer: this.outer,
+			attr_closed: this.closed,
+			attr_laneType: this.laneType,
+			cornerRoad: this.cornerRoads.map(
+				cornerRoad => cornerRoad.toXODR()
+			),
+			cornerLocal: this.cornerLocals.map(
+				cornerLocal => cornerLocal.toXODR()
+			),
+		};
+	}
+
 }
