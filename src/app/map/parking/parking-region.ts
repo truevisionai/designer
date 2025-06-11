@@ -48,6 +48,17 @@ export class ParkingRegion {
 		return this.edges.flatMap( edge => [ edge.getStartNode().position, edge.getEndNode().position ] );
 	}
 
+	getUniquePoints (): Vector3[] {
+		const uniquePoints = new Map<string, Vector3>();
+
+		this.edges.forEach( edge => {
+			uniquePoints.set( edge.getStartNode().id, edge.getStartNode().position );
+			uniquePoints.set( edge.getEndNode().id, edge.getEndNode().position );
+		} );
+
+		return Array.from( uniquePoints.values() );
+	}
+
 	getCenterPosition (): Vector3 {
 		if ( this.edges.length === 0 ) return new Vector3();
 		const sum = this.edges.reduce( ( acc, edge ) => acc.add( edge.getStartNode().position ), new Vector3() );
@@ -115,7 +126,7 @@ export class ParkingRegion {
 function createParkingRegionBoundingBox ( region: ParkingRegion ): Box2 {
 
 	// Get all points from the region
-	const points = region.getPoints();
+	const points = region.getUniquePoints();
 
 	if ( points.length === 0 ) {
 		Log.warn( 'No points found in region:', region.id );
@@ -143,4 +154,46 @@ function createParkingRegionBoundingBox ( region: ParkingRegion ): Box2 {
 	// Create a new box with the flattened coordinates
 	return new Box2( flattenedMin, flattenedMax );
 
+}
+
+// Another version of the bounding box creation that considers the region's orientation
+function createBoundingBox ( region: ParkingRegion ): Box2 {
+
+	const points = region.getUniquePoints(); // Use unique points
+
+	if ( points.length < 2 ) return new Box2();
+
+	// For a rectangular parking space, calculate dimensions along its actual orientation
+	const center = region.getCenterPosition();
+
+	// Transform points to local coordinate system based on heading
+	const cos = Math.cos( -region.heading );
+	const sin = Math.sin( -region.heading );
+
+	let minX = Infinity, maxX = -Infinity;
+	let minY = Infinity, maxY = -Infinity;
+
+	points.forEach( point => {
+		// Translate to origin
+		const dx = point.x - center.x;
+		const dy = point.y - center.y;
+
+		// Rotate to align with parking space orientation
+		const localX = dx * cos - dy * sin;
+		const localY = dx * sin + dy * cos;
+
+		minX = Math.min( minX, localX );
+		maxX = Math.max( maxX, localX );
+		minY = Math.min( minY, localY );
+		maxY = Math.max( maxY, localY );
+	} );
+
+	const width = maxX - minX;
+	const length = maxY - minY;
+
+	// Return a box with correct dimensions
+	return new Box2(
+		new Vector2( -width / 2, -length / 2 ),
+		new Vector2( width / 2, length / 2 )
+	);
 }

@@ -27,8 +27,8 @@ export class RoadObjectFactory {
 		);
 
 		object.zOffset = 0;
-		object.length = size.y;
-		object.width = size.x;
+		object.length = size.x;
+		object.width = size.y;
 		object.hdg = heading;
 		object.orientation = TvOrientation.NONE;
 		// object.outline = region.toOutline(); // If OpenDRIVE 1.6+
