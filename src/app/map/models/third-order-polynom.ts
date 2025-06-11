@@ -144,4 +144,13 @@ export class ThirdOrderPolynom {
 
 	}
 
+	toXODR (): Record<string, number> {
+		return {
+			attr_s: this.s,
+			attr_a: this.a,
+			attr_b: this.b,
+			attr_c: this.c,
+			attr_d: this.d,
+		}
+	}
 }

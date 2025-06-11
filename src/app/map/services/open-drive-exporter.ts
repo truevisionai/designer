@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
 import { XMLBuilder, XmlBuilderOptions } from 'fast-xml-parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { TravelDirection } from '../models/tv-common';
@@ -15,11 +14,9 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
 import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { TvLaneMaterial } from '../models/tv-lane-material';
-import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvLaneSpeed } from '../models/tv-lane-speed';
 import { TvLaneVisibility } from '../models/tv-lane-visibility';
-import { TvLaneWidth } from '../models/tv-lane-width';
 import { TvMap } from '../models/tv-map.model';
 import { TvObjectMarking } from '../models/tv-object-marking';
 import { TvRoadObject } from '../models/objects/tv-road-object';
@@ -42,7 +39,6 @@ import { TvMapHeader } from "../models/tv-map-header";
 import { TvRoadTypeClass } from "../models/tv-road-type.class";
 import { TvRoadSpeed } from "../models/tv-road.speed";
 import { AssetExporter } from 'app/core/interfaces/asset-exporter';
-import { TvLateralProfile, TvLateralProfileShape, TvSuperElevation } from '../models/tv-lateral.profile';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { ThirdOrderPolynom } from '../models/third-order-polynom';
 import { TvLaneProfile } from "../models/tv-lane-profile";
@@ -53,9 +49,6 @@ import { Vector2 } from 'app/core/maths';
 import { RoadUtils } from 'app/utils/road.utils';
 import { exportGeometry } from '../scene/geometry-exporter';
 
-@Injectable( {
-	providedIn: 'root'
-} )
 export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	public xmlDocument: object;
@@ -85,6 +78,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	}
 
 	exportAsJSON ( asset: TvMap ): XmlElement {
+
+		this.map = asset;
 
 		return this.writeFile( asset );
 
@@ -258,7 +253,7 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		xml[ 'elevationProfile' ] = this.writeElevationProfile( road.getElevationProfile() );
 
-		xml[ 'lateralProfile' ] = this.writeLateralProfile( road.getLateralProfile() );
+		xml[ 'lateralProfile' ] = road.getLateralProfile().toXODR();
 
 		this.writeLanes( xml, road.getLaneProfile() );
 
@@ -382,41 +377,13 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 
 		return {
-			elevation: elevationProfile.getElevations().map( elevation => this.writePolynomial( elevation ) )
+			elevation: elevationProfile.getElevations().map( elevation => elevation.toXODR() ),
 		};
 
 	}
 
 	writePolynomial ( polynomial: ThirdOrderPolynom ): XmlElement {
-		return {
-			attr_s: polynomial.s,
-			attr_a: polynomial.a,
-			attr_b: polynomial.b,
-			attr_c: polynomial.c,
-			attr_d: polynomial.d,
-		}
-	}
-
-	writeLateralProfile ( lateralProfile: TvLateralProfile ): XmlElement {
-
-		return {
-			superelevation: lateralProfile.getSuperElevations().map( superElevation => this.writePolynomial( superElevation ) ),
-			shape: lateralProfile.getShapes().map( shape => this.writeLateralProfileShape( shape ) ),
-			crossSectionSurface: [],
-		}
-
-	}
-
-
-	writeLateralProfileShape ( shape: TvLateralProfileShape ): XmlElement {
-		return {
-			attr_s: shape.s,
-			attr_t: shape.t,
-			attr_a: shape.a,
-			attr_b: shape.b,
-			attr_c: shape.c,
-			attr_d: shape.d,
-		};
+		return polynomial.toXODR();
 	}
 
 	public writeLanes ( xmlNode: XmlElement, laneProfile: TvLaneProfile ): void {
@@ -485,8 +452,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			attr_level: lane.level === true ? 'true' : 'false',
 			attr_direction: this.exportLaneDirection( lane, lane.direction ),
 			link: {},
-			width: [],
-			roadMark: [],
+			width: lane.getWidthArray().map( width => width.toXODR() ),
+			roadMark: lane.roadMarks.map( roadMark => roadMark.toXODR() ),
 			material: [],
 			visibility: [],
 			speed: [],
@@ -495,14 +462,6 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		};
 
 		this.writeLaneLinks( laneNode, lane );
-
-		for ( const width of lane.getWidthArray() ) {
-			this.writeLaneWidth( laneNode, width );
-		}
-
-		lane.roadMarks.forEach( roadMark => {
-			this.writeLaneRoadMark( laneNode, roadMark );
-		} )
 
 		for ( let i = 0; i < lane.getLaneMaterialCount(); i++ ) {
 			this.writeLaneMaterial( laneNode, lane.getLaneMaterial( i ) );
@@ -573,31 +532,6 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 
 		return 'standard'
-	}
-
-	public writeLaneWidth ( xmlNode: XmlElement, laneWidth: TvLaneWidth ): void {
-
-		xmlNode.width.push( {
-			attr_sOffset: laneWidth.s,
-			attr_a: laneWidth.a,
-			attr_b: laneWidth.b,
-			attr_c: laneWidth.c,
-			attr_d: laneWidth.d,
-		} );
-	}
-
-	public writeLaneRoadMark ( xmlNode: XmlElement, laneRoadMark: TvLaneRoadMark ): void {
-
-		xmlNode.roadMark.push( {
-			attr_sOffset: laneRoadMark.sOffset,
-			attr_type: laneRoadMark.type,
-			attr_weight: laneRoadMark.weight,
-			attr_color: laneRoadMark.color,
-			attr_material: laneRoadMark.materialName,
-			attr_width: laneRoadMark.width,
-			attr_laneChange: laneRoadMark.laneChange,
-			attr_height: laneRoadMark.height,
-		} );
 	}
 
 	public writeLaneMaterial ( xmlNode: XmlElement, laneMaterial: TvLaneMaterial ): void {

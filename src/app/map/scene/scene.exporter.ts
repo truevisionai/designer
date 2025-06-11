@@ -129,9 +129,11 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		this.writeRoadType( xml, road );
 
-		xml[ 'elevationProfile' ] = this.openDrive.writeElevationProfile( road.getElevationProfile() );
+		xml[ 'elevationProfile' ] = {
+			elevation: road.getElevationProfile().getElevations().map( elevation => elevation.toXODR() )
+		}
 
-		xml[ 'lateralProfile' ] = this.openDrive.writeLateralProfile( road.getLateralProfile() );
+		xml[ 'lateralProfile' ] = road.getLateralProfile().toXODR();
 
 		this.writeLanes( xml, road );
 

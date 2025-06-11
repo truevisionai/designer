@@ -300,4 +300,18 @@ export class TvLaneRoadMark {
 		return true;
 
 	}
+
+	toXODR (): Record<string, any> {
+		return {
+			attr_sOffset: this.sOffset,
+			attr_type: this.type,
+			attr_weight: this.weight,
+			attr_color: this.color,
+			attr_material: this.materialName,
+			attr_width: this.width,
+			attr_laneChange: this.laneChange,
+			attr_height: this.height,
+		}
+	}
+
 }

@@ -27,7 +27,6 @@ export class ExporterFactory {
 		private roadStyleExporter: RoadExporterService,
 		private meshExporter: TvMeshExporter,
 		private sceneExporter: SceneExporter,
-		private openDriveExporter: OpenDriveExporter,
 	) {
 	}
 
