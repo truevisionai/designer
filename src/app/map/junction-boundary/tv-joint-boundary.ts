@@ -4,7 +4,8 @@ import { TvLane } from "../models/tv-lane";
 import { TvPosTheta } from "../models/tv-pos-theta";
 import { Log } from "../../core/utils/log";
 import { TvBoundarySegmentType, TvJunctionSegmentBoundary } from "./tv-junction-boundary";
-import { createRoadDistance, RoadDistance } from "../road/road-distance";
+import { createRoadDistance } from "../road/road-distance";
+import { TvLaneCoord } from "../models/tv-lane-coord";
 
 // roadId="2" contactPoint="end" jointLaneStart="2" jointLaneEnd="-1"
 // using for incoming/outgoing roads
@@ -39,6 +40,22 @@ export class TvJointBoundary extends TvJunctionSegmentBoundary {
 		this.contactPoint = contactPoint;
 		this.jointLaneStart = jointLaneStart;
 		this.jointLaneEnd = jointLaneEnd
+	}
+
+	get isStart (): boolean {
+		return this.contactPoint === TvContactPoint.START;
+	}
+
+	get isEnd (): boolean {
+		return this.contactPoint === TvContactPoint.END;
+	}
+
+	getStartLaneCoord (): TvLaneCoord {
+		return this.jointLaneStart.toLaneCoord( createRoadDistance( this.road, this.contactPoint ) );
+	}
+
+	getEndLaneCoord (): TvLaneCoord {
+		return this.jointLaneEnd.toLaneCoord( createRoadDistance( this.road, this.contactPoint ) );
 	}
 
 	getJointLaneStart (): TvLane {
@@ -83,6 +100,40 @@ export class TvJointBoundary extends TvJunctionSegmentBoundary {
 
 		return [ start, mid, end ];
 
+	}
+
+	private getLastLanePosition ( lane: TvLane, contact: TvContactPoint ): TvPosTheta {
+		const roadDistance = createRoadDistance( this.road, contact );
+		if ( lane.isRight ) {
+			if ( contact == TvContactPoint.START ) {
+				return this.road.getLaneStartPosition( lane, roadDistance );
+			} else {
+				return this.road.getLaneEndPosition( lane, roadDistance );
+			}
+		} else {
+			if ( contact == TvContactPoint.START ) {
+				return this.road.getLaneEndPosition( lane, roadDistance );
+			} else {
+				return this.road.getLaneStartPosition( lane, roadDistance );
+			}
+		}
+	}
+
+	private getStartLanePosition ( lane: TvLane, contact: TvContactPoint ): TvPosTheta {
+		const roadDistance = createRoadDistance( this.road, contact );
+		if ( lane.isRight ) {
+			if ( contact == TvContactPoint.START ) {
+				return this.road.getLaneEndPosition( lane, roadDistance );
+			} else {
+				return this.road.getLaneStartPosition( lane, roadDistance );
+			}
+		} else {
+			if ( contact == TvContactPoint.START ) {
+				return this.road.getLaneStartPosition( lane, roadDistance );
+			} else {
+				return this.road.getLaneEndPosition( lane, roadDistance );
+			}
+		}
 	}
 
 	// eslint-disable-next-line max-lines-per-function

@@ -25,8 +25,7 @@ import { TvLaneVisibility } from 'app/map/models/tv-lane-visibility';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 import { TvRoadObject } from 'app/map/models/objects/tv-road-object';
 import { XmlElement } from "../../importers/xml.element";
-import { MapService } from "../../services/map/map.service";
-import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
+import { exportRoadObject, exportRoadSignal } from 'app/map/services/open-drive-exporter';
 import { TvTransform } from 'app/map/models/tv-transform';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
 import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
@@ -45,8 +44,6 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	constructor (
 		private threeService: ThreeService,
-		private mapService: MapService,
-		private openDrive: OpenDriveExporter,
 	) {
 	}
 
@@ -65,7 +62,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 		};
 	}
 
-	exportAsString ( map?: TvMap ): string {
+	exportAsString ( map: TvMap ): string {
 
 		const defaultOptions = {
 			attributeNamePrefix: 'attr_',
@@ -79,7 +76,7 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		const builder = new XMLBuilder( defaultOptions );
 
-		const scene = this.exportAsJSON( map || this.mapService.map );
+		const scene = this.exportAsJSON( map );
 
 		const xmlDocument = builder.build( scene );
 
@@ -131,9 +128,11 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 		this.writeRoadType( xml, road );
 
-		xml[ 'elevationProfile' ] = this.openDrive.writeElevationProfile( road.getElevationProfile() );
+		xml[ 'elevationProfile' ] = {
+			elevation: road.getElevationProfile().getElevations().map( elevation => elevation.toXODR() )
+		}
 
-		xml[ 'lateralProfile' ] = this.openDrive.writeLateralProfile( road.getLateralProfile() );
+		xml[ 'lateralProfile' ] = road.getLateralProfile().toXODR();
 
 		this.writeLanes( xml, road );
 
@@ -602,9 +601,11 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	writeRoadObject ( roadObject: TvRoadObject ): XmlElement {
 
-		const xml = this.openDrive.writeRoadObject( roadObject );
+		const xml = exportRoadObject( roadObject, roadObject.road );
 
-		roadObject.assetGuid ? xml[ 'attr_assetGuid' ] = roadObject.assetGuid : null;
+		if ( roadObject.assetGuid ) {
+			xml[ 'attr_assetGuid' ] = roadObject.assetGuid;
+		}
 
 		return xml
 	}
@@ -621,9 +622,11 @@ export class SceneExporter implements AssetExporter<TvMap> {
 
 	writeSignal ( signal: TvRoadSignal ): XmlElement {
 
-		const xml = this.openDrive.writeSignal( signal );
+		const xml = exportRoadSignal( signal );
 
-		if ( signal.assetGuid != null ) xml[ 'attr_assetGuid' ] = signal.assetGuid;
+		if ( signal.assetGuid ) {
+			xml[ 'attr_assetGuid' ] = signal.assetGuid;
+		}
 
 		return xml;
 

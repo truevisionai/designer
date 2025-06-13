@@ -33,6 +33,17 @@ export class TvLateralProfileShape {
 	public b: number;
 	public c: number;
 	public d: number;
+
+	toXODR (): Record<string, number> {
+		return {
+			attr_s: this.s,
+			attr_t: this.t,
+			attr_a: this.a,
+			attr_b: this.b,
+			attr_c: this.c,
+			attr_d: this.d,
+		}
+	}
 }
 
 export class TvLateralProfile {
@@ -128,6 +139,14 @@ export class TvLateralProfile {
 			}
 			return a.s - b.s;
 		} );
+	}
+
+	toXODR (): Record<string, any> {
+		return {
+			superelevation: this.getSuperElevations().map( superElevation => superElevation.toXODR() ),
+			shape: this.getShapes().map( shape => shape.toXODR() ),
+			crossSectionSurface: [],
+		}
 	}
 
 }

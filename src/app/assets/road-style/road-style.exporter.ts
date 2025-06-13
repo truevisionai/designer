@@ -3,11 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvLaneSide } from 'app/map/models/tv-common';
 import { TvLane } from 'app/map/models/tv-lane';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
 import { TvRoadTypeClass } from 'app/map/models/tv-road-type.class';
-import { OpenDriveExporter } from 'app/map/services/open-drive-exporter';
 import { RoadStyle } from "./road-style.model";
 import { TvLaneOffset } from 'app/map/models/tv-lane-offset';
 import { AssetExporter } from "../../core/interfaces/asset-exporter";
@@ -21,7 +19,6 @@ import { JsonObject } from 'app/importers/xml.element';
 export class RoadExporterService implements AssetExporter<RoadStyle> {
 
 	constructor (
-		private openDriveExporter: OpenDriveExporter,
 		private sceneExporter: SceneExporter,
 	) {
 	}
@@ -122,8 +119,8 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 			attr_type: lane.type,
 			attr_level: lane.level,
 			// link: {},
-			width: [],
-			roadMark: [],
+			width: lane.getWidthArray().map( width => width.toXODR() ),
+			roadMark: lane.roadMarks.toArray().map( roadMark => roadMark.toXODR() ),
 			// material: [],
 			// visibility: [],
 			// speed: [],
@@ -131,13 +128,6 @@ export class RoadExporterService implements AssetExporter<RoadStyle> {
 			// height: []
 		};
 
-		for ( const width of lane.getWidthArray() ) {
-			this.openDriveExporter.writeLaneWidth( laneNode, width );
-		}
-
-		for ( const roadMark of lane.roadMarks.toArray() ) {
-			this.openDriveExporter.writeLaneRoadMark( laneNode, roadMark );
-		}
 
 		// NOTE: below lane properties can be added as needed
 

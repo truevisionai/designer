@@ -38,4 +38,12 @@ export class TvObjectMaterial {
 		);
 	}
 
+	toXODR (): Record<string, any> {
+		return {
+			attr_surface: this.attr_surface,
+			attr_friction: this.attr_friction,
+			attr_roughness: this.attr_roughness,
+		}
+	}
+
 }

@@ -39,6 +39,16 @@ export class ExplicitSpline extends AbstractSpline {
 
 	updateSegmentGeometryAndBounds (): void {
 
+		this.updateGeometry();
+
+		this.fireMakeSegmentMeshEvents();
+
+		SplineBoundsService.instance.updateBounds( this );
+
+	}
+
+	updateGeometry (): void {
+
 		if ( this.getControlPointCount() < 2 ) {
 			this.clearGeometries();
 			this.clearSegmentGeometries();
@@ -49,10 +59,6 @@ export class ExplicitSpline extends AbstractSpline {
 		}
 
 		ExplicitGeometryService.instance.updateGeometry( this );
-
-		this.fireMakeSegmentMeshEvents();
-
-		SplineBoundsService.instance.updateBounds( this );
 
 	}
 

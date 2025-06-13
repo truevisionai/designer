@@ -25,6 +25,16 @@ export class TvLaneWidth extends ThirdOrderPolynom {
 		return new TvLaneWidth( s || this.s, this.a, this.b, this.c, this.d );
 
 	}
+
+	toXODR (): Record<string, number> {
+		return {
+			attr_sOffset: this.s,
+			attr_a: this.a,
+			attr_b: this.b,
+			attr_c: this.c,
+			attr_d: this.d,
+		}
+	}
 }
 
 

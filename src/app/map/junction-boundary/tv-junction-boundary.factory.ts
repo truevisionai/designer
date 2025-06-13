@@ -22,37 +22,20 @@ import { RoadDistance } from "../road/road-distance";
 } )
 export class TvJunctionBoundaryFactory {
 
-	static createJointSegment ( junction: TvJunction, incoming: TvRoadCoord ): TvJunctionSegmentBoundary {
-
-		// let startLane: TvLane;
-		// let endLane: TvLane;
-
-		// if ( incomingRoadCoord.contact == TvContactPoint.END ) {
-
-		// 	startLane = incomingRoadCoord.laneSection.getLeftMostLane();
-		// 	endLane = incomingRoadCoord.laneSection.getRightMostLane();
-
-		// } else {
-
-		// 	startLane = incomingRoadCoord.laneSection.getRightMostLane();
-		// 	endLane = incomingRoadCoord.laneSection.getLeftMostLane();
-
-		// }
-
-		// return new TvJointBoundary( incomingRoadCoord.road, incomingRoadCoord.contact, startLane, endLane );
+	static createJointSegment ( junction: TvJunction, incoming: TvRoadCoord ): TvJointBoundary {
 
 		let startLane: TvLane;
 		let endLane: TvLane;
 
 		if ( incoming.contact == TvContactPoint.END ) {
 
-			startLane = this.getHighestLaneLink( junction, incoming );
-			endLane = this.getLowestLaneLink( junction, incoming );
+			startLane = incoming.laneSection.getLeftCarriagewayBoundaryLane();
+			endLane = incoming.laneSection.getRightCarriagewayBoundaryLane();
 
 		} else {
 
-			startLane = this.getLowestLaneLink( junction, incoming );
-			endLane = this.getHighestLaneLink( junction, incoming );
+			startLane = incoming.laneSection.getRightCarriagewayBoundaryLane();
+			endLane = incoming.laneSection.getLeftCarriagewayBoundaryLane();
 
 		}
 

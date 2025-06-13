@@ -32,6 +32,7 @@ import { createGeometryFromBoundary } from 'app/modules/builder/builders/junctio
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 import { Color } from 'app/core/maths';
 import { Environment } from 'app/core/utils/environment';
+import { createGeometryFromBoundaryJoints } from 'app/modules/builder/builders/junction-mesh.builder';
 
 @Injectable( {
 	providedIn: 'root'
@@ -171,7 +172,7 @@ export class JunctionDebugService extends BaseDebugger<TvJunction> {
 
 	createJunctionOverlay ( junction: TvJunction ): JunctionOverlay {
 
-		const geometry = createGeometryFromBoundary( junction.outerBoundary );
+		const geometry = createGeometryFromBoundaryJoints( junction.outerBoundary );
 
 		// this.debugBoundary( junction.outerBoundary );
 

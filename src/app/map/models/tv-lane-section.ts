@@ -16,6 +16,7 @@ import { LaneSectionWidthCalculator } from "./lane-section-width-calculator";
 
 const DESC = ( a: TvLane, b: TvLane ) => b.id - a.id;
 const ASC = ( a: TvLane, b: TvLane ) => a.id - b.id;
+const IN_TO_OUT = ( a: TvLane, b: TvLane ) => Math.abs( a.id ) - Math.abs( b.id );
 
 export class TvLaneSection {
 
@@ -182,6 +183,10 @@ export class TvLaneSection {
 
 	}
 
+	getSortedLeftLanes (): TvLane[] {
+		return this.getLeftLanes().sort( IN_TO_OUT );
+	}
+
 	areLeftLanesInOrder (): boolean {
 
 		const leftLanes = this.getLeftLanes();
@@ -242,6 +247,10 @@ export class TvLaneSection {
 
 		return this.laneArray.filter( lane => lane.isRight );
 
+	}
+
+	getSortedRightLanes (): TvLane[] {
+		return this.getRightLanes().sort( IN_TO_OUT );
 	}
 
 	getLaneById ( laneId: number ): TvLane {
@@ -960,6 +969,19 @@ export class TvLaneSection {
 		return lastLane ? lastLane.id : 0;
 	}
 
+	getRightCarriagewayBoundaryLane (): TvLane {
+		let lastLane: TvLane | undefined;
+		for ( const lane of this.getRightLanes().sort( IN_TO_OUT ) ) {
+			if ( lane.isCarriageWay() ) {
+				lastLane = lane;
+			}
+		}
+		if ( lastLane ) {
+			return lastLane;
+		}
+		return this.getCenterLane();
+	}
+
 	getLeftCarriagewayBoundary (): number {
 		let lastLane: TvLane;
 		for ( const lane of this.getLeftLanes().sort( ASC ) ) {
@@ -968,6 +990,19 @@ export class TvLaneSection {
 			}
 		}
 		return lastLane ? lastLane.id : 0;
+	}
+
+	getLeftCarriagewayBoundaryLane (): TvLane {
+		let lastLane: TvLane | undefined;
+		for ( const lane of this.getLeftLanes().sort( IN_TO_OUT ) ) {
+			if ( lane.isCarriageWay() ) {
+				lastLane = lane;
+			}
+		}
+		if ( lastLane ) {
+			return lastLane;
+		}
+		return this.getCenterLane();
 	}
 
 	getLanesAfterRightBoundary (): TvLane[] {

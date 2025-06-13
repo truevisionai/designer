@@ -2,7 +2,6 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { Injectable } from '@angular/core';
 import { XMLBuilder, XmlBuilderOptions } from 'fast-xml-parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
 import { TravelDirection } from '../models/tv-common';
@@ -15,26 +14,19 @@ import { TvLane } from '../models/tv-lane';
 import { TvLaneAccess } from '../models/tv-lane-access';
 import { TvLaneHeight } from '../lane-height/lane-height.model';
 import { TvLaneMaterial } from '../models/tv-lane-material';
-import { TvLaneRoadMark } from '../models/tv-lane-road-mark';
 import { TvLaneSection } from '../models/tv-lane-section';
 import { TvLaneSpeed } from '../models/tv-lane-speed';
 import { TvLaneVisibility } from '../models/tv-lane-visibility';
-import { TvLaneWidth } from '../models/tv-lane-width';
 import { TvMap } from '../models/tv-map.model';
-import { TvObjectMarking } from '../models/tv-object-marking';
 import { TvRoadObject } from '../models/objects/tv-road-object';
 import { TvRoad } from '../models/tv-road.model';
-import { TvCornerLocal } from "../models/objects/tv-corner-local";
-import { TvCornerRoad } from "../models/objects/tv-corner-road";
-import { TvObjectOutline } from "../models/objects/tv-object-outline";
 import { XmlElement } from 'app/importers/xml.element';
 import { TvConsole } from 'app/core/utils/console';
 import { TvObjectRepeat } from '../models/objects/tv-object-repeat';
-import { TvLaneValidity } from '../models/objects/tv-lane-validity';
 import { TvObjectPolyline } from "../models/objects/tv-object-polyline";
 import { TvObjectVertexRoad } from "../models/objects/tv-object-vertex-road";
 import { TvObjectVertexLocal } from "../models/objects/tv-object-vertex-local";
-import { TvReference, TvRoadSignal, TvSignalDependency } from '../road-signal/tv-road-signal.model';
+import { TvRoadSignal } from '../road-signal/tv-road-signal.model';
 import { TvJunctionController } from '../models/junctions/tv-junction-controller';
 import { TvJunctionPriority } from '../models/junctions/tv-junction-priority';
 import { TvControllerControl, TvSignalController } from '../signal-controller/tv-signal-controller';
@@ -42,7 +34,6 @@ import { TvMapHeader } from "../models/tv-map-header";
 import { TvRoadTypeClass } from "../models/tv-road-type.class";
 import { TvRoadSpeed } from "../models/tv-road.speed";
 import { AssetExporter } from 'app/core/interfaces/asset-exporter';
-import { TvLateralProfile, TvLateralProfileShape, TvSuperElevation } from '../models/tv-lateral.profile';
 import { TvElevationProfile } from '../road-elevation/tv-elevation-profile.model';
 import { ThirdOrderPolynom } from '../models/third-order-polynom';
 import { TvLaneProfile } from "../models/tv-lane-profile";
@@ -53,9 +44,6 @@ import { Vector2 } from 'app/core/maths';
 import { RoadUtils } from 'app/utils/road.utils';
 import { exportGeometry } from '../scene/geometry-exporter';
 
-@Injectable( {
-	providedIn: 'root'
-} )
 export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	public xmlDocument: object;
@@ -85,6 +73,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 	}
 
 	exportAsJSON ( asset: TvMap ): XmlElement {
+
+		this.map = asset;
 
 		return this.writeFile( asset );
 
@@ -258,12 +248,12 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 		xml[ 'elevationProfile' ] = this.writeElevationProfile( road.getElevationProfile() );
 
-		xml[ 'lateralProfile' ] = this.writeLateralProfile( road.getLateralProfile() );
+		xml[ 'lateralProfile' ] = road.getLateralProfile().toXODR();
 
 		this.writeLanes( xml, road.getLaneProfile() );
 
 		xml[ 'objects' ] = {
-			object: road.getRoadObjects().map( roadObject => this.writeRoadObject( roadObject, road ) )
+			object: road.getRoadObjects().map( roadObject => exportRoadObject( roadObject, road ) )
 		};
 
 		if ( road.getSignalCount() > 0 ) {
@@ -382,41 +372,13 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		}
 
 		return {
-			elevation: elevationProfile.getElevations().map( elevation => this.writePolynomial( elevation ) )
+			elevation: elevationProfile.getElevations().map( elevation => elevation.toXODR() ),
 		};
 
 	}
 
 	writePolynomial ( polynomial: ThirdOrderPolynom ): XmlElement {
-		return {
-			attr_s: polynomial.s,
-			attr_a: polynomial.a,
-			attr_b: polynomial.b,
-			attr_c: polynomial.c,
-			attr_d: polynomial.d,
-		}
-	}
-
-	writeLateralProfile ( lateralProfile: TvLateralProfile ): XmlElement {
-
-		return {
-			superelevation: lateralProfile.getSuperElevations().map( superElevation => this.writePolynomial( superElevation ) ),
-			shape: lateralProfile.getShapes().map( shape => this.writeLateralProfileShape( shape ) ),
-			crossSectionSurface: [],
-		}
-
-	}
-
-
-	writeLateralProfileShape ( shape: TvLateralProfileShape ): XmlElement {
-		return {
-			attr_s: shape.s,
-			attr_t: shape.t,
-			attr_a: shape.a,
-			attr_b: shape.b,
-			attr_c: shape.c,
-			attr_d: shape.d,
-		};
+		return polynomial.toXODR();
 	}
 
 	public writeLanes ( xmlNode: XmlElement, laneProfile: TvLaneProfile ): void {
@@ -485,8 +447,8 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 			attr_level: lane.level === true ? 'true' : 'false',
 			attr_direction: this.exportLaneDirection( lane, lane.direction ),
 			link: {},
-			width: [],
-			roadMark: [],
+			width: lane.getWidthArray().map( width => width.toXODR() ),
+			roadMark: lane.roadMarks.map( roadMark => roadMark.toXODR() ),
 			material: [],
 			visibility: [],
 			speed: [],
@@ -495,14 +457,6 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		};
 
 		this.writeLaneLinks( laneNode, lane );
-
-		for ( const width of lane.getWidthArray() ) {
-			this.writeLaneWidth( laneNode, width );
-		}
-
-		lane.roadMarks.forEach( roadMark => {
-			this.writeLaneRoadMark( laneNode, roadMark );
-		} )
 
 		for ( let i = 0; i < lane.getLaneMaterialCount(); i++ ) {
 			this.writeLaneMaterial( laneNode, lane.getLaneMaterial( i ) );
@@ -575,31 +529,6 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		return 'standard'
 	}
 
-	public writeLaneWidth ( xmlNode: XmlElement, laneWidth: TvLaneWidth ): void {
-
-		xmlNode.width.push( {
-			attr_sOffset: laneWidth.s,
-			attr_a: laneWidth.a,
-			attr_b: laneWidth.b,
-			attr_c: laneWidth.c,
-			attr_d: laneWidth.d,
-		} );
-	}
-
-	public writeLaneRoadMark ( xmlNode: XmlElement, laneRoadMark: TvLaneRoadMark ): void {
-
-		xmlNode.roadMark.push( {
-			attr_sOffset: laneRoadMark.sOffset,
-			attr_type: laneRoadMark.type,
-			attr_weight: laneRoadMark.weight,
-			attr_color: laneRoadMark.color,
-			attr_material: laneRoadMark.materialName,
-			attr_width: laneRoadMark.width,
-			attr_laneChange: laneRoadMark.laneChange,
-			attr_height: laneRoadMark.height,
-		} );
-	}
-
 	public writeLaneMaterial ( xmlNode: XmlElement, laneMaterial: TvLaneMaterial ): void {
 
 		xmlNode.material.push( {
@@ -647,402 +576,12 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} );
 	}
 
-	public writeRoadObject ( roadObject: TvRoadObject, road?: TvRoad ): XmlElement {
-
-		const xml = {
-			attr_type: roadObject.attr_type,
-			attr_name: roadObject.name,
-			attr_id: roadObject.id,
-			attr_s: roadObject.s,
-			attr_t: roadObject.t
-		};
-
-		if ( roadObject.zOffset ) xml[ 'attr_zOffset' ] = roadObject.zOffset;
-		if ( roadObject.validLength ) xml[ 'attr_validLength' ] = roadObject.validLength;
-		if ( roadObject.orientation ) xml[ 'attr_orientation' ] = roadObject.toOrientationString();
-		if ( roadObject.length ) xml[ 'attr_length' ] = roadObject.length;
-		if ( roadObject.width ) xml[ 'attr_width' ] = roadObject.width;
-		if ( roadObject.radius ) xml[ 'attr_radius' ] = roadObject.radius;
-		if ( roadObject.height ) xml[ 'attr_height' ] = roadObject.height;
-		if ( roadObject.hdg ) xml[ 'attr_hdg' ] = roadObject.hdg;
-		if ( roadObject.pitch ) xml[ 'attr_pitch' ] = roadObject.pitch;
-		if ( roadObject.roll ) xml[ 'attr_roll' ] = roadObject.roll;
-
-		this.writeObjectMaterial( xml, roadObject );
-
-		this.writeObjectParkingSpace( xml, roadObject );
-
-		if ( roadObject.repeats.length > 0 ) {
-			xml[ 'repeat' ] = roadObject.repeats.map( repeat => this.writeObjectRepeat( repeat, road ) );
-		}
-
-		if ( roadObject.validity.length > 0 ) {
-			xml[ 'validity' ] = roadObject.validity.map( validity => this.writeObjectValidity( validity ) );
-		}
-
-		if ( roadObject.userData.length > 0 ) {
-			xml[ 'userData' ] = roadObject.userData.map( userData => this.writeUserData( userData ) );
-		}
-
-		if ( roadObject.markings.length > 0 ) {
-			xml[ 'markings' ] = {
-				marking: roadObject.markings.map( marking => this.writeObjectMarking( marking ) )
-			};
-		}
-
-		if ( roadObject.outlines.length > 0 ) {
-			xml[ 'outlines' ] = {
-				outline: roadObject.outlines.map( outline => this.writeObjectOutlineV2( outline ) )
-			};
-		}
-
-		if (
-			roadObject.skeleton &&
-			roadObject.skeleton.polylines.length > 0 &&
-			roadObject.skeleton.polylines[ 0 ].vertices.length > 0
-		) {
-			xml[ 'skeleton' ] = {
-				'polyline': roadObject.skeleton.polylines.map( polyline => this.writeObjectPolyline( polyline ) )
-			};
-		}
-
-		return xml;
-
-	}
-
-	public writeObjectMarking ( marking: TvObjectMarking ): XmlElement {
-
-		const cornerReference = marking.cornerReferences.map( reference => {
-			return {
-				attr_id: reference
-			};
-		} );
-
-		return {
-			attr_color: marking.color,
-			attr_spaceLength: marking.spaceLength,
-			attr_lineLength: marking.lineLength,
-			attr_side: marking.side,
-			attr_weight: marking.weight,
-			attr_startOffset: marking.startOffset,
-			attr_stopOffset: marking.stopOffset,
-			attr_zOffset: marking.zOffset,
-			attr_width: marking.width,
-			cornerReference: cornerReference,
-		};
-
-	}
-
-	writeObjectRepeat ( repeat: TvObjectRepeat, road?: TvRoad ): XmlElement {
-
-		const xml = {
-			attr_s: repeat.sStart,
-			attr_length: repeat.computeLength( road?.length ),
-			attr_distance: repeat.gap,
-		}
-
-		if ( repeat.tStart ) xml[ 'attr_tStart' ] = repeat.tStart;
-		if ( repeat.tEnd ) xml[ 'attr_tEnd' ] = repeat.tEnd;
-		if ( repeat.widthStart ) xml[ 'attr_widthStart' ] = repeat.widthStart;
-		if ( repeat.widthEnd ) xml[ 'attr_widthEnd' ] = repeat.widthEnd;
-		if ( repeat.heightStart ) xml[ 'attr_heightStart' ] = repeat.heightStart;
-		if ( repeat.heightEnd ) xml[ 'attr_heightEnd' ] = repeat.heightEnd;
-		if ( repeat.zOffsetStart ) xml[ 'attr_zOffsetStart' ] = repeat.zOffsetStart;
-		if ( repeat.zOffsetEnd ) xml[ 'attr_zOffsetEnd' ] = repeat.zOffsetEnd;
-		if ( repeat.lengthStart ) xml[ 'attr_lengthStart' ] = repeat.lengthStart;
-		if ( repeat.lengthEnd ) xml[ 'attr_lengthEnd' ] = repeat.lengthEnd;
-
-		return xml;
-	}
-
-	/**
-	 *
-	 * @param xmlNode
-	 * @param objectOutline
-	 * @deprecated
-	 */
-	public writeObjectOutline ( xmlNode: XmlElement, objectOutline: TvObjectOutline ): void {
-
-		if ( objectOutline != null ) {
-
-			xmlNode[ 'outline' ] = {};
-
-			xmlNode[ 'outline' ] = {
-				cornerRoad: [],
-				cornerLocal: []
-			};
-
-			for ( let i = 0; i < objectOutline.getCornerRoadCount(); i++ ) {
-
-				const cornerRoad = objectOutline.getCornerRoad( i );
-
-				// TODO: ACCESS VIA GETTERS & SETTERS
-				xmlNode.cornerRoad.push( {
-					attr_id: cornerRoad.attr_id,
-					attr_s: cornerRoad.s,
-					attr_t: cornerRoad.t,
-					attr_dz: cornerRoad.dz,
-					attr_heigh: cornerRoad.height,
-				} );
-			}
-
-			for ( let i = 0; i < objectOutline.getCornerLocalCount(); i++ ) {
-
-				const cornerLocal = objectOutline.getCornerLocal( i );
-
-				// TODO: ACCESS VIA GETTERS & SETTERS
-				xmlNode.cornerLocal.push( {
-					attr_u: cornerLocal.attr_u,
-					attr_v: cornerLocal.attr_v,
-					attr_z: cornerLocal.attr_z,
-					attr_height: cornerLocal.attr_height,
-				} );
-			}
-		}
-	}
-
-	public writeObjectOutlineV2 ( outline: TvObjectOutline ): XmlElement {
-
-		return {
-			attr_id: outline.id,
-			attr_fillType: outline.fillType,
-			attr_outer: outline.outer,
-			attr_closed: outline.closed,
-			attr_laneType: outline.laneType,
-			cornerRoad: outline.cornerRoads.map(
-				cornerRoad => this.writeObjectCornerRoad( cornerRoad )
-			),
-			cornerLocal: outline.cornerLocals.map(
-				cornerLocal => this.writeObjectCornerLocal( cornerLocal )
-			),
-		};
-
-	}
-
-	public writeObjectCornerLocal ( cornerLocal: TvCornerLocal ): XmlElement {
-
-		return {
-			attr_u: cornerLocal.attr_u,
-			attr_v: cornerLocal.attr_v,
-			attr_z: cornerLocal.attr_z,
-			attr_height: cornerLocal.attr_height,
-		};
-
-	}
-
-	public writeObjectCornerRoad ( cornerRoad: TvCornerRoad ): XmlElement {
-
-		return {
-			attr_id: cornerRoad.attr_id,
-			// attr_roadId: cornerRoad.roadId, // roadId is not part of the OpenDRIVE standard
-			attr_s: cornerRoad.s,
-			attr_t: cornerRoad.t,
-			attr_dz: cornerRoad.dz,
-			attr_height: cornerRoad.height,
-		};
-
-	}
-
-	public writeObjectMaterial ( xmlNode: XmlElement, roadObject: TvRoadObject ): void {
-
-		if ( roadObject.material != null ) {
-
-			xmlNode[ 'material' ] = {};
-
-			// TODO: ACCESS VIA GETTERS & SETTERS
-			xmlNode.material = {
-				attr_surface: roadObject.material.attr_surface,
-				attr_friction: roadObject.material.attr_friction,
-				attr_roughness: roadObject.material.attr_roughness,
-			};
-		}
-	}
-
-	writeObjectPolyline ( polyline: TvObjectPolyline ): XmlElement {
-
-		if ( polyline.vertices[ 0 ] instanceof TvObjectVertexRoad ) {
-
-			return {
-				attr_id: polyline.id,
-				vertexRoad: polyline.vertices.map( vertex => this.writePolylineVertex( vertex ) )
-			}
-
-		}
-
-		if ( polyline.vertices[ 0 ] instanceof TvObjectVertexLocal ) {
-
-			return {
-				attr_id: polyline.id,
-				vertexLocal: polyline.vertices.map( vertex => this.writePolylineVertex( vertex ) )
-			}
-
-		}
-
-		TvConsole.error( 'Unknown vertex type' );
-	}
-
-	writePolylineVertex ( vertex: any ): XmlElement {
-
-		if ( vertex instanceof TvObjectVertexRoad ) {
-
-			return {
-				attr_id: vertex.id,
-				attr_s: vertex.s,
-				attr_t: vertex.t,
-				attr_dz: vertex.dz,
-				attr_radius: vertex.radius,
-				attr_intersectionPoint: vertex.intersectionPoint,
-			}
-
-		} else if ( vertex instanceof TvObjectVertexLocal ) {
-
-			return {
-				attr_id: vertex.id,
-				attr_u: vertex.uvz.x,
-				attr_v: vertex.uvz.y,
-				attr_z: vertex.uvz.z,
-				attr_radius: vertex.radius,
-				attr_intersectionPoint: vertex.intersectionPoint,
-			}
-		}
-
-	}
-
-	public writeObjectValidity ( validity: TvLaneValidity ): XmlElement {
-
-		return {
-			attr_fromLane: validity.fromLane,
-			attr_toLane: validity.toLane
-		}
-
-	}
-
-	public writeObjectParkingSpace ( xmlNode: XmlElement, roadObject: TvRoadObject ): void {
-
-		if ( roadObject.parkingSpace != null ) {
-
-			xmlNode[ 'parkingSpace' ] = {};
-
-			// TODO: ACCESS VIA GETTERS & SETTERS
-			xmlNode.parkingSpace = {
-				attr_access: roadObject.parkingSpace.attr_access,
-				attr_restriction: roadObject.parkingSpace.attr_restriction,
-				marking: []
-			};
-
-			for ( let i = 0; i < roadObject.parkingSpace.getMarkingCount(); i++ ) {
-
-				const marking = roadObject.parkingSpace.getMarking( i );
-
-				// TODO: ACCESS VIA GETTERS & SETTERS
-				xmlNode.parkingSpace.marking.push( {
-					attr_side: marking.attr_side,
-					attr_type: marking.attr_type,
-					attr_width: marking.attr_width,
-					attr_color: marking.attr_color,
-				} );
-			}
-		}
-	}
 
 	public writeSignals ( road: TvRoad ): XmlElement {
 
 		return {
-			signal: road.getRoadSignals().map( signal => this.writeSignal( signal ) )
+			signal: road.getRoadSignals().map( signal => exportRoadSignal( signal ) )
 		};
-
-	}
-
-	public writeSignal ( signal: TvRoadSignal ): XmlElement {
-
-		const xml = {
-			attr_s: signal.s,
-			attr_t: signal.t,
-			attr_id: signal.id,
-			attr_name: signal.name,
-			attr_dynamic: signal.dynamic,
-			attr_orientation: signal.orientation,
-			attr_zOffset: signal.zOffset,
-			attr_country: signal.country,
-			attr_type: signal.type,
-			attr_subtype: signal.subtype,
-		};
-
-		if ( signal.value != null ) xml[ 'attr_value' ] = signal.value;
-		if ( signal.unit != null ) xml[ 'attr_unit' ] = signal.unit;
-		if ( signal.height != null ) xml[ 'attr_height' ] = signal.height;
-		if ( signal.width != null ) xml[ 'attr_width' ] = signal.width;
-		if ( signal.text != null ) xml[ 'attr_text' ] = signal.text;
-		if ( signal.hOffset != null ) xml[ 'attr_hOffset' ] = signal.hOffset;
-		if ( signal.pitch != null ) xml[ 'attr_pitch' ] = signal.pitch;
-		if ( signal.roll != null ) xml[ 'attr_roll' ] = signal.roll;
-
-		if ( signal.assetGuid ) {
-			signal.userData.delete( 'assetGuid' );
-			signal.userData.set( 'assetGuid', signal.assetGuid );
-		}
-
-		if ( signal.validities.length > 0 ) {
-			xml[ 'validity' ] = signal.validities.map( validity => this.writeObjectValidity( validity ) );
-		}
-
-		if ( signal.userData.size > 0 ) {
-			xml[ 'userData' ] = Array.from( signal.userData.keys() ).map( key => {
-				return {
-					attr_code: key,
-					attr_value: signal.userData.get( key )
-				}
-			} );
-		}
-
-		if ( signal.references.length > 0 ) {
-			xml[ 'reference' ] = signal.references.map( reference => this.writeReference( reference ) );
-		}
-
-		if ( signal.dependencies.length > 0 ) {
-			xml[ 'dependency' ] = signal.dependencies.map( dependency => this.writeSignalDependency( dependency ) );
-		}
-
-		return xml;
-	}
-
-	writeSignalDependency ( dependency: TvSignalDependency ): XmlElement {
-		return {
-			attr_id: dependency.id,
-			attr_type: dependency.type
-		}
-	}
-
-	writeReference ( reference: TvReference ): XmlElement {
-
-		return {
-			attr_id: reference.elementId,
-			attr_elementType: reference.elementType,
-			attr_type: reference.type,
-		}
-
-	}
-
-	public writeSurface ( xmlNode: XmlElement, road: TvRoad ): void {
-	}
-
-	public writeSignalController ( controller: TvSignalController ): XmlElement {
-
-		return {
-			attr_id: controller.id,
-			attr_name: controller.name,
-			attr_sequence: controller.sequence,
-			control: controller.controls.map( control => this.writeSignalControl( control ) )
-		}
-
-	}
-
-	public writeSignalControl ( control: TvControllerControl ): XmlElement {
-
-		return {
-			attr_signalId: control.signalId,
-			attr_type: control.type
-		}
 
 	}
 
@@ -1190,6 +729,209 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 
 	}
 
+	public writeSignalController ( controller: TvSignalController ): XmlElement {
+		return {
+			attr_id: controller.id,
+			attr_name: controller.name,
+			attr_sequence: controller.sequence,
+			control: controller.controls.map( control => this.writeSignalControl( control ) )
+		}
+	}
+
+	public writeSignalControl ( control: TvControllerControl ): XmlElement {
+		return {
+			attr_signalId: control.signalId,
+			attr_type: control.type
+		}
+	}
+
+
 }
 
 
+// eslint-disable-next-line max-lines-per-function
+export function exportRoadObject ( roadObject: TvRoadObject, road: TvRoad ): XmlElement {
+
+	const xml = {
+		attr_type: roadObject.attr_type,
+		attr_name: roadObject.name,
+		attr_id: roadObject.id,
+		attr_s: roadObject.s,
+		attr_t: roadObject.t
+	};
+
+	if ( roadObject.zOffset ) xml[ 'attr_zOffset' ] = roadObject.zOffset;
+	if ( roadObject.validLength ) xml[ 'attr_validLength' ] = roadObject.validLength;
+	if ( roadObject.orientation ) xml[ 'attr_orientation' ] = roadObject.toOrientationString();
+	if ( roadObject.length ) xml[ 'attr_length' ] = roadObject.length;
+	if ( roadObject.width ) xml[ 'attr_width' ] = roadObject.width;
+	if ( roadObject.radius ) xml[ 'attr_radius' ] = roadObject.radius;
+	if ( roadObject.height ) xml[ 'attr_height' ] = roadObject.height;
+	if ( roadObject.hdg ) xml[ 'attr_hdg' ] = roadObject.hdg;
+	if ( roadObject.pitch ) xml[ 'attr_pitch' ] = roadObject.pitch;
+	if ( roadObject.roll ) xml[ 'attr_roll' ] = roadObject.roll;
+	if ( roadObject.material ) xml[ 'material' ] = roadObject.material.toXODR();
+	if ( roadObject.parkingSpace ) xml[ 'parkingSpace' ] = roadObject.parkingSpace.toXODR();
+
+	if ( roadObject.repeats.length > 0 ) {
+		xml[ 'repeat' ] = roadObject.repeats.map( repeat => exportObjectRepeat( repeat, road ) );
+	}
+
+	if ( roadObject.validity.length > 0 ) {
+		xml[ 'validity' ] = roadObject.validity.map( validity => validity.toXODR() );
+	}
+
+	if ( roadObject.userData.length > 0 ) {
+		xml[ 'userData' ] = roadObject.userData.map( userData => userData.toXODR() );
+	}
+
+	if ( roadObject.markings.length > 0 ) {
+		xml[ 'markings' ] = {
+			marking: roadObject.markings.map( marking => marking.toXODR() )
+		};
+	}
+
+	if ( roadObject.outlines.length > 0 ) {
+		xml[ 'outlines' ] = {
+			outline: roadObject.outlines.map( outline => outline.toXODR() )
+		};
+	}
+
+	if (
+		roadObject.skeleton &&
+		roadObject.skeleton.polylines.length > 0 &&
+		roadObject.skeleton.polylines[ 0 ].vertices.length > 0
+	) {
+		xml[ 'skeleton' ] = {
+			'polyline': roadObject.skeleton.polylines.map( polyline => exportObjectPolyline( polyline ) )
+		};
+	}
+
+	return xml;
+
+}
+
+function exportObjectRepeat ( repeat: TvObjectRepeat, road ?: TvRoad ): XmlElement {
+
+	const xml = {
+		attr_s: repeat.sStart,
+		attr_length: repeat.computeLength( road?.length ),
+		attr_distance: repeat.gap,
+	}
+
+	if ( repeat.tStart ) xml[ 'attr_tStart' ] = repeat.tStart;
+	if ( repeat.tEnd ) xml[ 'attr_tEnd' ] = repeat.tEnd;
+	if ( repeat.widthStart ) xml[ 'attr_widthStart' ] = repeat.widthStart;
+	if ( repeat.widthEnd ) xml[ 'attr_widthEnd' ] = repeat.widthEnd;
+	if ( repeat.heightStart ) xml[ 'attr_heightStart' ] = repeat.heightStart;
+	if ( repeat.heightEnd ) xml[ 'attr_heightEnd' ] = repeat.heightEnd;
+	if ( repeat.zOffsetStart ) xml[ 'attr_zOffsetStart' ] = repeat.zOffsetStart;
+	if ( repeat.zOffsetEnd ) xml[ 'attr_zOffsetEnd' ] = repeat.zOffsetEnd;
+	if ( repeat.lengthStart ) xml[ 'attr_lengthStart' ] = repeat.lengthStart;
+	if ( repeat.lengthEnd ) xml[ 'attr_lengthEnd' ] = repeat.lengthEnd;
+
+	return xml;
+}
+
+function exportObjectPolyline ( polyline: TvObjectPolyline ): XmlElement {
+
+	if ( polyline.vertices[ 0 ] instanceof TvObjectVertexRoad ) {
+
+		return {
+			attr_id: polyline.id,
+			vertexRoad: polyline.vertices.map( vertex => exportPolylineVertex( vertex ) )
+		}
+
+	}
+
+	if ( polyline.vertices[ 0 ] instanceof TvObjectVertexLocal ) {
+
+		return {
+			attr_id: polyline.id,
+			vertexLocal: polyline.vertices.map( vertex => exportPolylineVertex( vertex ) )
+		}
+
+	}
+
+	TvConsole.error( 'Unknown vertex type' );
+}
+
+function exportPolylineVertex ( vertex: any ): XmlElement {
+
+	if ( vertex instanceof TvObjectVertexRoad ) {
+
+		return {
+			attr_id: vertex.id,
+			attr_s: vertex.s,
+			attr_t: vertex.t,
+			attr_dz: vertex.dz,
+			attr_radius: vertex.radius,
+			attr_intersectionPoint: vertex.intersectionPoint,
+		}
+
+	} else if ( vertex instanceof TvObjectVertexLocal ) {
+
+		return {
+			attr_id: vertex.id,
+			attr_u: vertex.uvz.x,
+			attr_v: vertex.uvz.y,
+			attr_z: vertex.uvz.z,
+			attr_radius: vertex.radius,
+			attr_intersectionPoint: vertex.intersectionPoint,
+		}
+	}
+
+}
+
+export function exportRoadSignal ( signal: TvRoadSignal ): XmlElement {
+
+	const xml = {
+		attr_s: signal.s,
+		attr_t: signal.t,
+		attr_id: signal.id,
+		attr_name: signal.name,
+		attr_dynamic: signal.dynamic,
+		attr_orientation: signal.orientation,
+		attr_zOffset: signal.zOffset,
+		attr_country: signal.country,
+		attr_type: signal.type,
+		attr_subtype: signal.subtype,
+	};
+
+	if ( signal.value != null ) xml[ 'attr_value' ] = signal.value;
+	if ( signal.unit != null ) xml[ 'attr_unit' ] = signal.unit;
+	if ( signal.height != null ) xml[ 'attr_height' ] = signal.height;
+	if ( signal.width != null ) xml[ 'attr_width' ] = signal.width;
+	if ( signal.text != null ) xml[ 'attr_text' ] = signal.text;
+	if ( signal.hOffset != null ) xml[ 'attr_hOffset' ] = signal.hOffset;
+	if ( signal.pitch != null ) xml[ 'attr_pitch' ] = signal.pitch;
+	if ( signal.roll != null ) xml[ 'attr_roll' ] = signal.roll;
+
+	if ( signal.assetGuid ) {
+		signal.userData.delete( 'assetGuid' );
+		signal.userData.set( 'assetGuid', signal.assetGuid );
+	}
+
+	if ( signal.validities.length > 0 ) {
+		xml[ 'validity' ] = signal.validities.map( validity => validity.toXODR() );
+	}
+
+	if ( signal.userData.size > 0 ) {
+		xml[ 'userData' ] = Array.from( signal.userData.keys() ).map( key => {
+			return {
+				attr_code: key,
+				attr_value: signal.userData.get( key )
+			}
+		} );
+	}
+
+	if ( signal.references.length > 0 ) {
+		xml[ 'reference' ] = signal.references.map( reference => reference.toXODR() );
+	}
+
+	if ( signal.dependencies.length > 0 ) {
+		xml[ 'dependency' ] = signal.dependencies.map( dependency => dependency.toXODR() );
+	}
+
+	return xml;
+}

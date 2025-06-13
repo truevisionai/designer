@@ -43,4 +43,13 @@ export class TvParkingSpace {
 
 	}
 
+	toXODR (): Record<string, any> {
+		return {
+			attr_access: this.attr_access,
+			attr_restriction: this.attr_restriction,
+			marking: this.marking.map( marking => marking.toXODR() ),
+		};
+	}
+
+
 }

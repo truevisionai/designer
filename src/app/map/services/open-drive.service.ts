@@ -24,7 +24,6 @@ export class OpenDriveService {
 	constructor (
 		private fileService: FileService,
 		private storage: StorageService,
-		private openDriveExporter: OpenDriveExporter,
 		private sceneExporter: SceneExporter,
 		private openDriveParserService: OpenDriveParserService,
 		private mapService: MapService,
@@ -117,13 +116,13 @@ export class OpenDriveService {
 
 	getOpenDriveOutput (): string {
 
-		return this.openDriveExporter.getOutput( this.mapService.map );
+		return new OpenDriveExporter().getOutput( this.mapService.map );
 
 	}
 
 	getSceneOutput (): any {
 
-		return this.sceneExporter.exportAsString();
+		return this.sceneExporter.exportAsString( this.mapService.map );
 
 	}
 

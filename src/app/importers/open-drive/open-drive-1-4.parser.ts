@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { ExplicitSpline } from 'app/core/shapes/explicit-spline';
 import { TvConsole } from 'app/core/utils/console';
 import { SnackBar } from 'app/services/snack-bar.service';
-import { readXmlArray, readXmlElement } from '../../utils/xml-utils';
+import { readXmlArray, readXmlElement, toArray } from '../../utils/xml-utils';
 import { TvAbstractRoadGeometry } from '../../map/models/geometries/tv-abstract-road-geometry';
 import {
 	EnumHelper,
@@ -49,6 +49,7 @@ import { Log } from 'app/core/utils/log';
 import { JunctionFactory } from 'app/factories/junction.factory';
 import { findTurnTypeOfConnectingRoad } from 'app/map/models/connections/connection-utils';
 import { ConnectionFactory } from 'app/factories/connection.factory';
+import { TvLaneWidth } from 'app/map/models/tv-lane-width';
 
 
 export class OpenDrive14Parser implements IOpenDriveParser {
@@ -156,7 +157,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			try {
 
-				const junction = this.map.getJunction( parseInt( xml.attr_id ) );
+				const junctionId = parseInt( xml.attr_id );
+
+				const junction = this.junctions.get( junctionId );
 
 				this.parseJunctionConnections( junction, xml );
 
@@ -211,34 +214,13 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		return header;
 	}
 
-	private parseJunctionId ( value: any ): TvJunction {
-
-		try {
-
-			const id = parseInt( value ) || -1;
-
-			return id > 0 ? this.map.getJunction( id ) : null;
-
-		} catch ( error ) {
-
-			if ( error instanceof ModelNotFoundException ) {
-
-				Log.error( 'Junction not found' );
-
-			} else {
-
-				Log.error( `Unknown error : ${ error.message }` );
-
-			}
-
-		}
-	}
-
 	public parseRoad ( xml: XmlElement ): TvRoad {
 
 		const name = xml.attr_name;
-		const id = parseInt( xml.attr_id, 10 );
-		const junction = this.parseJunctionId( xml.attr_junction );
+		const id = parseInt( xml.attr_id );
+
+		const junctionId = parseInt( xml.attr_junction ) || -1;
+		const junction = junctionId > 0 ? this.findJunction( junctionId ) : null;
 
 		const road = new TvRoad( name, junction );
 
@@ -584,21 +566,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 				break;
 
 			case TvGeometryType.PARAMPOLY3:
-
-				const pRange = xmlElement.paramPoly3.attr_pRange;
-
-				const aU = parseFloat( xmlElement.paramPoly3.attr_aU );
-				const bU = parseFloat( xmlElement.paramPoly3.attr_bU );
-				const cU = parseFloat( xmlElement.paramPoly3.attr_cU );
-				const dU = parseFloat( xmlElement.paramPoly3.attr_dU );
-
-				const aV = parseFloat( xmlElement.paramPoly3.attr_aV );
-				const bV = parseFloat( xmlElement.paramPoly3.attr_bV );
-				const cV = parseFloat( xmlElement.paramPoly3.attr_cV );
-				const dV = parseFloat( xmlElement.paramPoly3.attr_dV );
-
-				planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange );
-
+				this.parseParamPoly3( planView, xmlElement, s, x, y, hdg, length );
 				break;
 
 			default:
@@ -606,6 +574,24 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 				break;
 
 		}
+
+	}
+
+	parseParamPoly3 ( planView: TvPlaneView, xmlElement: XmlElement, s, x, y, hdg, length ): void {
+
+		const pRange = xmlElement.paramPoly3.attr_pRange;
+
+		const aU = parseFloat( xmlElement.paramPoly3.attr_aU );
+		const bU = parseFloat( xmlElement.paramPoly3.attr_bU );
+		const cU = parseFloat( xmlElement.paramPoly3.attr_cU );
+		const dU = parseFloat( xmlElement.paramPoly3.attr_dU );
+
+		const aV = parseFloat( xmlElement.paramPoly3.attr_aV );
+		const bV = parseFloat( xmlElement.paramPoly3.attr_bV );
+		const cV = parseFloat( xmlElement.paramPoly3.attr_cV );
+		const dV = parseFloat( xmlElement.paramPoly3.attr_dV );
+
+		planView.addGeometryParamPoly3( s, x, y, hdg, length, aU, bU, cU, dU, aV, bV, cV, dV, pRange );
 
 	}
 
@@ -678,9 +664,9 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		const contactPoint = this.parseContactPoint( xmlElement.attr_contactPoint );
 
-		const linkedRoad = !isNaN( linkedRoadId ) ? this.map.getRoad( linkedRoadId ) : null;
-		const incomingRoad = !isNaN( incomingRoadId ) ? this.map.getRoad( incomingRoadId ) : null;
-		const connectingRoad = !isNaN( connectingRoadId ) ? this.map.getRoad( connectingRoadId ) : linkedRoad;
+		const linkedRoad = !isNaN( linkedRoadId ) ? this.findRoad( linkedRoadId ) : null;
+		const incomingRoad = !isNaN( incomingRoadId ) ? this.findRoad( incomingRoadId ) : null;
+		const connectingRoad = !isNaN( connectingRoadId ) ? this.findRoad( connectingRoadId ) : linkedRoad;
 
 		if ( !incomingRoad ) {
 			TvConsole.error( "Incoming road not found" );
@@ -1116,31 +1102,38 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 			}
 		}
 
-		//  Read Width
-		readXmlArray( xmlElement.width, xml => this.parseLaneWidth( lane, xml ) );
+		for ( const xml of toArray( xmlElement.width ) ) {
+			lane.addWidthRecordInstance( this.parseLaneWidth( xml ) );
+		}
 
-		//  Read RoadMark
-		readXmlArray( xmlElement.roadMark, xml => this.parseLaneRoadMark( lane, xml ) );
+		for ( const xml of toArray( xmlElement.roadMark ) ) {
+			this.parseLaneRoadMark( lane, xml );
+		}
 
-		//  Read material
-		readXmlArray( xmlElement.material, xml => this.parseLaneMaterial( lane, xml ) );
+		for ( const xml of toArray( xmlElement.material ) ) {
+			this.parseLaneMaterial( lane, xml );
+		}
 
-		//  Read visibility
-		readXmlArray( xmlElement.visibility, xml => this.parseLaneVisibility( lane, xml ) );
+		for ( const xml of toArray( xmlElement.visibility ) ) {
+			this.parseLaneVisibility( lane, xml );
+		}
 
-		//  Read speed
-		readXmlArray( xmlElement.speed, xml => this.parseLaneSpeed( lane, xml ) );
+		for ( const xml of toArray( xmlElement.speed ) ) {
+			this.parseLaneSpeed( lane, xml );
+		}
 
-		//  Read access
-		readXmlArray( xmlElement.access, xml => this.parseLaneAccess( lane, xml ) );
+		for ( const xml of toArray( xmlElement.access ) ) {
+			this.parseLaneAccess( lane, xml );
+		}
 
-		//  Read height
-		readXmlArray( xmlElement.height, xml => this.parseLaneHeight( lane, xml ) );
+		for ( const xml of toArray( xmlElement.height ) ) {
+			this.parseLaneHeight( lane, xml );
+		}
 
 		return lane;
 	}
 
-	public parseLaneWidth ( lane: TvLane, xmlElement: XmlElement ): void {
+	public parseLaneWidth ( xmlElement: XmlElement ): TvLaneWidth {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 
@@ -1149,7 +1142,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const c = parseFloat( xmlElement.attr_c );
 		const d = parseFloat( xmlElement.attr_d );
 
-		lane.addWidthRecord( sOffset, a, b, c, d );
+		return new TvLaneWidth( sOffset, a, b, c, d );
 
 	}
 

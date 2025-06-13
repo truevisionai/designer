@@ -7,6 +7,8 @@ import { TvRoadCoord } from "../models/TvRoadCoord";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvJunctionBoundaryFactory } from "app/map/junction-boundary/tv-junction-boundary.factory";
 import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
+import { TvJointBoundary } from "./tv-joint-boundary";
+import { TvLaneBoundary } from "./tv-lane-boundary";
 
 export class TvJunctionBoundaryProfile {
 
@@ -35,12 +37,57 @@ export class TvJunctionBoundaryProfile {
 
 		sorted.forEach( coord => {
 
+			const jointBoundary = TvJunctionBoundaryFactory.createJointSegment( this.junction, coord );
+
 			// NOTE: Sequence of the following code is important
-			this.outerBoundary.addSegment( TvJunctionBoundaryFactory.createJointSegment( this.junction, coord ) );
+			this.outerBoundary.addSegment( jointBoundary );
+
+			// this.getLaneBoundaries( this.junction, coord, jointBoundary ).forEach( segment => {
+			// 	this.outerBoundary.addSegment( segment );
+			// } );
 
 			this.findAndAddCornerRoad( this.junction, coord, this.outerBoundary );
 
 		} );
+	}
+
+	private getLaneBoundaries ( junction: TvJunction, incoming: TvRoadCoord, jointBoundary: TvJointBoundary ): TvLaneBoundary[] {
+
+		const boundaryRoad = jointBoundary.road;
+		const endLane = jointBoundary.getJointLaneEnd();
+		let connections = junction.getConnectionsByRoad( boundaryRoad )
+			.filter( connection => connection.laneLinks.find( link => link.isLinkedToLane( endLane ) ) )
+			.filter( connection => connection.isCornerConnection );
+
+		if ( connections.length === 0 ) {
+			connections = junction.getConnectionsByRoad( boundaryRoad )
+				.filter( connection => connection.laneLinks.find( link => link.isLinkedToLane( endLane ) ) )
+		}
+
+		if ( connections.length === 0 ) {
+			console.error( `No connections found for road ${ boundaryRoad.id } at junction ${ junction.id }` );
+			return [];
+		}
+
+		const connection = connections[ 0 ];
+		const link = connection.getLaneLinks().find( link => link.isLinkedToLane( endLane ) );
+
+		if ( !link ) {
+			console.error( `No lane found for connection ${ connection.id } at junction ${ junction.id }` );
+			return [];
+		}
+
+		const segments = [];
+
+		traverseLanes( connection.connectingRoad, link.to, ( lane: TvLane ) => {
+
+			const laneBoundarySegment = TvJunctionBoundaryFactory.createLaneBoundary( connection.connectingRoad, lane )
+
+			segments.push( laneBoundarySegment );
+
+		} );
+
+		return segments;
 	}
 
 	private findAndAddCornerRoad ( junction: TvJunction, incoming: TvRoadCoord, boundary: TvJunctionBoundary ): void {

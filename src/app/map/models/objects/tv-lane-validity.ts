@@ -24,4 +24,11 @@ export class TvLaneValidity {
 		);
 	}
 
+	toXODR (): Record<string, any> {
+		return {
+			fromLane: this.fromLane,
+			toLane: this.toLane
+		};
+	}
+
 }

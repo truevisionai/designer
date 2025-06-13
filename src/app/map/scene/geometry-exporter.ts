@@ -46,7 +46,7 @@ export function exportGeometry ( geometry: TvAbstractRoadGeometry ): XmlElement 
 
 function exportLine ( geometry: TvAbstractRoadGeometry ): XmlElement {
 
-	const xml = this.createBaseXml( geometry );
+	const xml = createBaseXml( geometry );
 
 	xml[ 'line' ] = {}
 
@@ -56,7 +56,7 @@ function exportLine ( geometry: TvAbstractRoadGeometry ): XmlElement {
 
 function exportArc ( geometry: TvArcGeometry ): XmlElement {
 
-	const xml = this.createBaseXml( geometry );
+	const xml = createBaseXml( geometry );
 
 	xml[ 'arc' ] = {
 		attr_curvature: geometry.curvature.toExponential( 16 )
@@ -68,7 +68,7 @@ function exportArc ( geometry: TvArcGeometry ): XmlElement {
 
 function exportSpiral ( geometry: TvSpiralGeometry ): XmlElement {
 
-	const xml = this.createBaseXml( geometry );
+	const xml = createBaseXml( geometry );
 
 	xml[ 'spiral' ] = {
 		attr_curvStart: geometry.curvStart.toExponential( 16 ),
@@ -81,7 +81,7 @@ function exportSpiral ( geometry: TvSpiralGeometry ): XmlElement {
 
 function exportPoly3 ( geometry: TvPoly3Geometry ): XmlElement {
 
-	const xml = this.createBaseXml( geometry );
+	const xml = createBaseXml( geometry );
 
 	xml[ 'poly3' ] = {
 		attr_a: geometry.attr_a.toExponential( 16 ),
@@ -96,7 +96,7 @@ function exportPoly3 ( geometry: TvPoly3Geometry ): XmlElement {
 
 function exportParamPoly3 ( geometry: TvParamPoly3Geometry ): XmlElement {
 
-	const xml = this.createBaseXml( geometry );
+	const xml = createBaseXml( geometry );
 
 	xml[ 'paramPoly3' ] = {
 		attr_pRange: geometry.pRange,

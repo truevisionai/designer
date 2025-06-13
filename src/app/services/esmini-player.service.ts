@@ -19,7 +19,6 @@ export class EsminiPlayerService {
 
 	constructor (
 		private fileService: FileService,
-		private openDriveExporter: OpenDriveExporter,
 		private electronService: TvElectronService,
 		private editor: EditorService,
 	) {
@@ -131,7 +130,7 @@ export class EsminiPlayerService {
 
 	saveMap ( path: string ): string {
 
-		const odString = this.openDriveExporter.getOutput( this.editor.map );
+		const odString = new OpenDriveExporter().getOutput( this.editor.map );
 
 		const odFilePath = path + '/models.xodr';
 
