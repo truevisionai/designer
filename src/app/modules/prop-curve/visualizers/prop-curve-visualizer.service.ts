@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseVisualizer } from 'app/core/visualizers/base-visualizer';
 import { NodeVisualizer } from 'app/core/visualizers/node-visualizer';

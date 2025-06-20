@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { MathUtils, Vector2, Vector3 } from "three";
 import { TurnType, TvContactPoint, TvLaneType, TvOrientation } from "../tv-common";
 import { TvLaneCoord } from "../tv-lane-coord";

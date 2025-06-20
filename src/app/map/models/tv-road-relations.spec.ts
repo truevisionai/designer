@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvRoadRelations } from './tv-road-relations';
 import { TvRoad } from './tv-road.model';
 import { TvLinkType } from './tv-link';

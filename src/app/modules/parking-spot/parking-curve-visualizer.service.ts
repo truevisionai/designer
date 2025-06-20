@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { BaseVisualizer } from "../../core/visualizers/base-visualizer";
 import { ParkingCurve } from "../../map/parking/parking-curve";

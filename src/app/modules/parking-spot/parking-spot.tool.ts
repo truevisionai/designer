@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { SplineService } from "../../services/spline/spline.service";
 import { BaseToolService } from "../../tools/base-tool.service";

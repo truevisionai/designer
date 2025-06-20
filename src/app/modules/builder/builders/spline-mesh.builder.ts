@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { MeshBuilder } from "app/core/builders/mesh.builder";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";

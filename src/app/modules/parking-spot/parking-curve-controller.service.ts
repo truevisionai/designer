@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { BaseController } from "../../core/controllers/base-controller";
 import { ParkingCurve } from "../../map/parking/parking-curve";

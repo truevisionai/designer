@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ParkingCurve } from "../../map/parking/parking-curve";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";

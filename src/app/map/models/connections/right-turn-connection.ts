@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvRoad } from "../tv-road.model";
 import { TurnType, TvContactPoint } from "../tv-common";
 import { TvLaneCoord } from "../tv-lane-coord";

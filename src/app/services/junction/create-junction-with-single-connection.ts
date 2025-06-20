@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Log } from "app/core/utils/log";
 import { ConnectionFactory } from "app/factories/connection.factory";
 import { determineTurnType } from "app/map/models/connections/connection-utils";

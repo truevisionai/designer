@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { AbstractControlPoint } from "app/objects/abstract-control-point";
 import { DebugLine } from "app/objects/debug-line";

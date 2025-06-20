@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SimpleControlPoint } from "../../../objects/simple-control-point";
 import { ParkingNode } from "../../../map/parking/parking-node";
 import { Vector3 } from "three";

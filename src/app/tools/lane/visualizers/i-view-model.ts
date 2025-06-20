@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Object3D } from "three";
 import { IView } from "./i-view";
 import { ColorUtils } from "../../../views/shared/utils/colors.service";

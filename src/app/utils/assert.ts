@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 export abstract class Assert {
 
 	static isCount ( value: number, expected: number, message?: string ): void {

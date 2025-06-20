@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvJunctionType } from "./tv-junction-type";
 import { TvJunction } from "./tv-junction";
 

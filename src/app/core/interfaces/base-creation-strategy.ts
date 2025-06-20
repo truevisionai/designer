@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { PointerEventData } from "app/events/pointer-event-data";
 import { CreationStrategy, ValidationPassed, ValidationResult } from "./creation-strategy";
 

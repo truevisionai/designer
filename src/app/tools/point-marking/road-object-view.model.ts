@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseViewModel } from "../lane/visualizers/i-view-model";
 import { TvRoadObject } from "../../map/models/objects/tv-road-object";
 import { PointView } from "../lane/visualizers/point.view";

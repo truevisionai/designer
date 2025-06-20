@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ColorRepresentation } from "three";
 import { IViewModel } from "./i-view-model";
 import { Vector3 } from "app/core/maths";

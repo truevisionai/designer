@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { SplineIntersection } from "app/services/junction/spline-intersection";
 import { IntersectionGroup } from "./Intersection-group";
 import { Log } from "app/core/utils/log";

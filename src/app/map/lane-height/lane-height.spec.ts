@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvLaneHeight } from './lane-height.model';
 
 function createMockLaneHeight ( sOffset: number, innerHeight: number, outerHeight: number ): TvLaneHeight {

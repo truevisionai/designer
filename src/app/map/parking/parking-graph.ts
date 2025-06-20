@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Vector3 } from "three";
 import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { ParkingCurve } from "./parking-curve";

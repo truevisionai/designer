@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Log } from "app/core/utils/log";
 import { RoadWidthService } from "app/services/road/road-width.service";
 import { Box2, Vector2 } from "three";

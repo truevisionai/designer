@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseController } from 'app/core/controllers/base-controller';
 import { PropCurve } from 'app/map/prop-curve/prop-curve.model';

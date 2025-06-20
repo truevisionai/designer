@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { DynamicControlPoint } from "../../../objects/dynamic-control-point";
 import { ParkingCurve } from "../../../map/parking/parking-curve";
 import { Vector3 } from "three";

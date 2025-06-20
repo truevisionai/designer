@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { BaseView } from "./base.view";
 import { IView } from "./i-view";

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { BaseCreationStrategy } from "app/core/interfaces/base-creation-strategy";
 import { ValidationResult, ValidationFailed, ValidationPassed } from "app/core/interfaces/creation-strategy";

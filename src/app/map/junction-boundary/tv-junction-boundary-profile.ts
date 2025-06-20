@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Log } from "app/core/utils/log";
 import { TvJunctionBoundary } from "app/map/junction-boundary/tv-junction-boundary";
 import { GeometryUtils } from "app/services/surface/geometry-utils";

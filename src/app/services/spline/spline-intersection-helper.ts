@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline } from "../../core/shapes/abstract-spline";
 import { SplineIntersection } from "../junction/spline-intersection";
 import { Box2, Vector2, Vector3 } from "three";

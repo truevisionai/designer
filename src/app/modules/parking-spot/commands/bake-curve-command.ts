@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { BaseCommand } from "app/commands/base-command";
 import { MapEvents } from "app/events/map-events";
 import { ParkingCurve } from "app/map/parking/parking-curve";

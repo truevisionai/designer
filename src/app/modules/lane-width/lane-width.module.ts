@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injector, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LaneWidthTool } from './services/lane-width-tool';

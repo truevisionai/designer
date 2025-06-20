@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { EventEmitter } from "app/events/event-emitter";
 import { Points, BufferGeometry, PointsMaterial, Vector3, Float32BufferAttribute, ColorRepresentation } from "three";
 import { IView } from "./i-view";

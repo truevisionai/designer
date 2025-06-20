@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 type Listener<T = any> = ( arg: T ) => void;
 
 export class EventEmitter<T = any> {

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { RoadGeometryService } from './road-geometry.service';
 import { TvRoad } from '../../map/models/tv-road.model';
 import { Vector3 } from 'app/core/maths';

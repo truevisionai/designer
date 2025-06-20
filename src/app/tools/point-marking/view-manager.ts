@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Object3D } from 'three';
 import { IViewModel } from '../lane/visualizers/i-view-model';
 import { SceneService } from 'app/services/scene.service';

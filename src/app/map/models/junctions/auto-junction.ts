@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline } from "../../../core/shapes/abstract-spline";
 import { TvJunctionType } from "./tv-junction-type";
 import { SplineIntersection } from "../../../services/junction/spline-intersection";

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvRoadObject } from "app/map/models/objects/tv-road-object";
 import { TvRoad } from "app/map/models/tv-road.model";
 import { TvRoadSignal } from "app/map/road-signal/tv-road-signal.model";

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { LinkFactory } from "app/map/models/link-factory";
 import { TvContactPoint } from "app/map/models/tv-common";

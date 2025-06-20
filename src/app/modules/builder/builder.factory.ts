@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Inject, Injectable, Injector } from "@angular/core";
 import { MeshBuilder, BUILD_PROVIDERS, BuilderProvider } from "app/core/builders/mesh.builder";
 import { ConstructorFunction } from "app/core/models/class-map";

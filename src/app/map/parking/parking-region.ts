@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ParkingEdge } from "./parking-edge";
 import { MathUtils } from "three/src/math/MathUtils";
 import { Vector2, Vector3 } from "three";

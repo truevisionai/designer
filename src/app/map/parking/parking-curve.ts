@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { CatmullRomSpline } from "app/core/shapes/catmull-rom-spline";
 import { TvPosTheta } from "app/map/models/tv-pos-theta";

@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { RoadLinker } from "../link/road-linker";
 import { TvJunction } from "./junctions/tv-junction";

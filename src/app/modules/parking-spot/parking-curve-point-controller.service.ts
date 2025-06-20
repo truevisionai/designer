@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { PointController } from "../../core/controllers/point-controller";
 import { SplineService } from "../../services/spline/spline.service";

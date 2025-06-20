@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { KeyboardEvents } from "app/events/keyboard-events";
 import { MouseButton, PointerEventData } from "app/events/pointer-event-data";
 import { AppService } from "app/services/app.service";

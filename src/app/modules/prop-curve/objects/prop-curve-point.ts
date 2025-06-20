@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { PropCurve } from "app/map/prop-curve/prop-curve.model";
 import { SimpleControlPoint } from "app/objects/simple-control-point";
 

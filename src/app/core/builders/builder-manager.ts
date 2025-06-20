@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { MapEvents } from "app/events/map-events";
 import { TvMap } from "app/map/models/tv-map.model";

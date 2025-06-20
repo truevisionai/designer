@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { TestBed } from "@angular/core/testing";
 import { CreationStrategy } from "app/core/interfaces/creation-strategy";
 import { SplineCreationRoadToolStrategy } from "./spline-creator";

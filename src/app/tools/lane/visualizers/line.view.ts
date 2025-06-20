@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Line2 } from "three/examples/jsm/lines/Line2";
 import { IView } from "./i-view";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";

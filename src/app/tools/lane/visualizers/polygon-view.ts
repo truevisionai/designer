@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { Mesh, ShapeGeometry, MeshBasicMaterial, Vector3, Shape, DoubleSide } from "three";
 

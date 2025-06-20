@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { Injectable } from "@angular/core";
 import { FreeValidationCreationStrategy } from "../../../core/interfaces/base-creation-strategy";
 import { PointerEventData } from "../../../events/pointer-event-data";

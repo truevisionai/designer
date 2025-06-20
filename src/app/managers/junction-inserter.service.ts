@@ -1,3 +1,7 @@
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
+
 import { AbstractSpline, NewSegment } from 'app/core/shapes/abstract-spline';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { TvContactPoint } from 'app/map/models/tv-common';
