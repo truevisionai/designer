@@ -6,13 +6,14 @@ import { MapEvents } from "app/events/map-events";
 import { TvMap } from "app/map/models/tv-map.model";
 import { SceneService } from "../services/scene.service";
 import { Injectable } from "@angular/core";
+import { Environment } from "app/core/utils/environment";
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class MapManager {
 
-	private debug = true;
+	private debug = !Environment.production;
 
 	constructor () {
 
@@ -21,6 +22,13 @@ export class MapManager {
 	init (): void {
 
 		MapEvents.mapRemoved.subscribe( e => this.onMapRemoved( e ) );
+		MapEvents.mapImported.subscribe( e => this.onMapImported( e ) );
+
+	}
+
+	onMapImported ( map: TvMap ): void {
+
+		if ( this.debug ) console.debug( "onMapImported", map );
 
 	}
 
