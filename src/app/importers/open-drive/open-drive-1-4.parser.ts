@@ -105,19 +105,19 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 			const road = this.parseRoad( xml );
 
+			road.spline = this.createSplineFromRoad( road );
+
 			this.map.addRoad( road );
 
-			if ( road.spline ) {
-
-				this.map.addSpline( road.spline );
-
-			} else {
-
-				Log.error( 'Spline not found for road', road.toString() );
-
-			}
+			this.map.addSpline( road.spline );
 
 		} );
+
+	}
+
+	private createSplineFromRoad ( road: TvRoad ): ExplicitSpline {
+
+		return SplineFactory.createExplicitSpline( road.getPlanView().getGeomtries(), road );
 
 	}
 
@@ -231,8 +231,6 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		this.parseRoadTypes( road, xml );
 
 		if ( xml.planView ) this.parsePlanView( road, xml.planView );
-
-		road.spline = SplineFactory.createExplicitSpline( road.getPlanView().getGeomtries(), road );
 
 		if ( xml.elevationProfile != null ) this.parseElevationProfile( road, xml.elevationProfile );
 
