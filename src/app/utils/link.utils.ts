@@ -4,6 +4,7 @@
 
 import { TvRoad } from "app/map/models/tv-road.model";
 import { LaneUtils } from "./lane.utils";
+import { Log } from "app/core/utils/log";
 
 export class LinkUtils {
 
@@ -14,6 +15,7 @@ export class LinkUtils {
 	 * The linking helps in junction connections and lane changing
 	 * @param road
 	 */
+	// eslint-disable-next-line max-lines-per-function
 	static updateLaneUuidLinks ( road: TvRoad ): void {
 
 		for ( let i = 0; i < road.laneSections.length; i++ ) {
@@ -31,11 +33,13 @@ export class LinkUtils {
 
 					const id = currentLane.successorId ?? currentLane.id;
 
-					const successorLane = nextLaneSection.getLaneById( id );
+					if ( nextLaneSection.hasLane( id ) ) {
 
-					if ( successorLane ) {
+						currentLane.setSuccessor( nextLaneSection.getLaneById( id ) );
 
-						currentLane.setSuccessor( successorLane );
+					} else {
+
+						Log.warn( "LinkUtils", `No successor lane found for lane ${ currentLane.id } in next lane section` );
 
 					}
 
@@ -48,11 +52,13 @@ export class LinkUtils {
 
 						const id = currentLane.successorId ?? currentLane.id;
 
-						const successorLane = nextLaneSection.getLaneById( id );
+						if ( nextLaneSection.hasLane( id ) ) {
 
-						if ( successorLane ) {
+							currentLane.setSuccessor( nextLaneSection.getLaneById( id ) );
 
-							currentLane.setSuccessor( successorLane );
+						} else {
+
+							Log.warn( "LinkUtils", `No successor lane found for lane ${ currentLane.id } in next road` );
 
 						}
 
@@ -68,11 +74,13 @@ export class LinkUtils {
 
 					const id = currentLane.predecessorId ?? currentLane.id;
 
-					const predecessorLane = prevLaneSection.getLaneById( id );
+					if ( prevLaneSection.hasLane( id ) ) {
 
-					if ( predecessorLane ) {
+						currentLane.setPredecessor( prevLaneSection.getLaneById( id ) );
 
-						currentLane.setPredecessor( predecessorLane );
+					} else {
+
+						Log.warn( "LinkUtils", `No predecessor lane found for lane ${ currentLane.id } in previous lane section` );
 
 					}
 
@@ -85,13 +93,16 @@ export class LinkUtils {
 
 						const id = currentLane.predecessorId ?? currentLane.id;
 
-						const predecessorLane = prevLaneSection.getLaneById( id );
+						if ( prevLaneSection.hasLane( id ) ) {
 
-						if ( predecessorLane ) {
+							currentLane.setPredecessor( prevLaneSection.getLaneById( id ) );
 
-							currentLane.setPredecessor( predecessorLane );
+						} else {
+
+							Log.warn( "LinkUtils", `No predecessor lane found for lane ${ currentLane.id } in previous road` );
 
 						}
+
 					}
 				}
 			}

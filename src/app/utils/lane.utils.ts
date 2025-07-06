@@ -44,7 +44,7 @@ export class LaneUtils {
 	 * @param road
 	 * @param laneSection
 	 */
-	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
+	static findPreviousLaneSection ( road: TvRoad, laneSection: TvLaneSection ): TvLaneSection | undefined {
 
 		return road.getLaneProfile().getPreviousLaneSection( laneSection );
 
