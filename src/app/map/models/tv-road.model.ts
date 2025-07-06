@@ -32,6 +32,7 @@ import { TvMap } from './tv-map.model';
 import { TvLaneCoord } from "./tv-lane-coord";
 import { TvRoadRelations } from './tv-road-relations';
 import { TvLaneSection } from './tv-lane-section';
+import { Log } from 'app/core/utils/log';
 
 export class TvRoad {
 
@@ -770,6 +771,12 @@ export class TvRoad {
 			} );
 
 		} );
+
+		if ( !boundingBox ) {
+			Log.warn( 'TvRoad', 'No bounding box found for road', this.toString() );
+			this.boundingBox = new Box2( new Vector2( 0, 0 ), new Vector2( 0, 0 ) );
+			return;
+		}
 
 		this.boundingBox = new Box2();
 		this.boundingBox.min.x = boundingBox.min.x;
