@@ -512,6 +512,17 @@ export abstract class AbstractSpline {
 		for ( const geometry of this.geometries ) {
 			if ( sOffset >= geometry.s && sOffset <= geometry.endS ) {
 				return geometry.getRoadCoord( sOffset );
+				// Uncomment the following lines if you want to calculate height at the offset
+				// const position = geometry.getRoadCoord( sOffset );
+				// const height = this.getHeightAtOffset( sOffset );
+				// return new TvPosTheta(
+				// 	position.x,
+				// 	position.y,
+				// 	position.hdg,
+				// 	sOffset,
+				// 	0, // t is not used in this context
+				// 	height
+				// );
 			}
 		}
 	}
