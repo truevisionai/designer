@@ -122,7 +122,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private importFromString ( contents: string ): boolean {
+	public importFromString ( contents: string ): boolean {
 
 		this.map = new TvMap();
 
@@ -153,7 +153,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return true;
 	}
 
-	private importScene ( xml: XmlElement ): void {
+	public importScene ( xml: XmlElement ): void {
 
 		this.loadJunctions( xml, this.map );
 
@@ -263,7 +263,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private loadRoadLinks ( xml: XmlElement, map: TvMap ): void {
+	public loadRoadLinks ( xml: XmlElement, map: TvMap ): void {
 
 		readXmlArray( xml.road, xml => {
 
@@ -287,7 +287,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private loadRoads ( xml: XmlElement, map: TvMap ): void {
+	public loadRoads ( xml: XmlElement, map: TvMap ): void {
 
 		this.readAsOptionalArray( xml.road, xml => {
 
@@ -312,7 +312,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private addOrSkipSpline ( spline: AbstractSpline, road: TvRoad ): void {
+	public addOrSkipSpline ( spline: AbstractSpline, road: TvRoad ): void {
 
 		if ( spline.type === SplineType.EXPLICIT ) {
 
@@ -333,7 +333,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private loadJunctions ( xml: XmlElement, map: TvMap ): void {
+	public loadJunctions ( xml: XmlElement, map: TvMap ): void {
 
 		this.readAsOptionalArray( xml.junction, xml => {
 
@@ -354,7 +354,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseSpline ( xml: XmlElement, segments: Map<number, NewSegment> ): AbstractSpline {
+	public parseSpline ( xml: XmlElement, segments: Map<number, NewSegment> ): AbstractSpline {
 
 		let spline: AbstractSpline;
 
@@ -434,7 +434,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private readEnvironment ( xml: XmlElement ): void {
+	public readEnvironment ( xml: XmlElement ): void {
 
 		let environment: ScenarioEnvironment;
 
@@ -452,7 +452,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private importProp ( xml: XmlElement ): void {
+	public importProp ( xml: XmlElement ): void {
 
 		const propObject = this.preparePropObject( xml );
 
@@ -462,7 +462,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseRoad ( xml: XmlElement ): TvRoad {
+	public parseRoad ( xml: XmlElement ): TvRoad {
 
 		const name = xml.attr_name || 'untitled';
 		const length = parseFloat( xml.attr_length );
@@ -511,7 +511,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return road;
 	}
 
-	private importSurface ( xml: XmlElement ): Surface {
+	public importSurface ( xml: XmlElement ): Surface {
 
 		const rotation = parseFloat( xml.attr_rotation ) || 0.0;
 
@@ -542,7 +542,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return surface;
 	}
 
-	private parseExplicitSpline ( xml: XmlElement, road: TvRoad ): AbstractSpline {
+	public parseExplicitSpline ( xml: XmlElement, road: TvRoad ): AbstractSpline {
 
 		const geometries = this.parseSplineGeometries( xml );
 
@@ -597,7 +597,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return TvGeometryType.SPIRAL;
 	}
 
-	private parseSplineGeometries ( xml: XmlElement ): TvAbstractRoadGeometry[] {
+	public parseSplineGeometries ( xml: XmlElement ): TvAbstractRoadGeometry[] {
 
 		const geometries = [];
 
@@ -613,7 +613,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseAutoSpline ( xml: XmlElement ): AbstractSpline {
+	public parseAutoSpline ( xml: XmlElement ): AbstractSpline {
 
 		const spline = SplineFactory.createSpline();
 
@@ -629,7 +629,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseAutoSplineVersion2 ( xml: XmlElement ): AbstractSpline {
+	public parseAutoSplineVersion2 ( xml: XmlElement ): AbstractSpline {
 
 		const spline = SplineFactory.createSpline();
 
@@ -694,7 +694,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private importPropCurveSpline ( xml: XmlElement, curve: PropCurve ): CatmullRomSpline {
+	public importPropCurveSpline ( xml: XmlElement, curve: PropCurve ): CatmullRomSpline {
 
 		const type = xml.attr_type || 'catmullrom';
 		const closed = xml.attr_closed === 'true';
@@ -719,7 +719,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return spline;
 	}
 
-	private importCatmullSpline ( xml: XmlElement, mainObject?: any ): CatmullRomSpline {
+	public importCatmullSpline ( xml: XmlElement, mainObject?: any ): CatmullRomSpline {
 
 		const type = xml.attr_type || 'catmullrom';
 		const closed = xml.attr_closed === 'true';
@@ -742,7 +742,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return spline;
 	}
 
-	private importVector3 ( xml: XmlElement ): Vector3 {
+	public importVector3 ( xml: XmlElement ): Vector3 {
 
 		return new Vector3(
 			parseFloat( xml.attr_x ),
@@ -752,7 +752,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private importPropCurve ( xml: XmlElement ): PropCurve {
+	public importPropCurve ( xml: XmlElement ): PropCurve {
 
 		const guid = xml.attr_guid;
 
@@ -792,7 +792,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return curve;
 	}
 
-	private importPropPolygon ( xml: XmlElement ): PropPolygon {
+	public importPropPolygon ( xml: XmlElement ): PropPolygon {
 
 		const id = xml.attr_id;
 
@@ -825,7 +825,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return polygon;
 	}
 
-	private importTransform ( xml: XmlElement ): TvTransform {
+	public importTransform ( xml: XmlElement ): TvTransform {
 
 		const position = new Vector3(
 			parseFloat( xml.position.attr_x ) || 0,
@@ -849,7 +849,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private preparePropObject ( xml: XmlElement ): Object3D {
+	public preparePropObject ( xml: XmlElement ): Object3D {
 
 		const instance = AssetDatabase.getPropObject( xml.attr_guid );
 
@@ -886,7 +886,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return prop;
 	}
 
-	private parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseRoadLinks ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		if ( xmlElement.predecessor != null ) {
 			this.parseRoadLink( road, xmlElement.predecessor, 0 );
@@ -902,7 +902,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseRoadLink ( road: TvRoad, xml: XmlElement, type: number ): void {
+	public parseRoadLink ( road: TvRoad, xml: XmlElement, type: number ): void {
 
 		const elementType = this.parseElementType( xml.attr_elementType );
 		const elementId = parseFloat( xml.attr_elementId );
@@ -944,7 +944,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private findElement ( type: TvLinkType, elementId: number ): any {
+	public findElement ( type: TvLinkType, elementId: number ): any {
 
 		if ( type == TvLinkType.ROAD ) {
 
@@ -962,7 +962,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseElementType ( value: string ): TvLinkType {
+	public parseElementType ( value: string ): TvLinkType {
 
 		if ( value === 'road' ) {
 
@@ -980,7 +980,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseContactPoint ( value: string ): TvContactPoint {
+	public parseContactPoint ( value: string ): TvContactPoint {
 
 		if ( value === 'start' ) {
 
@@ -998,7 +998,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseRoadTypes ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseRoadTypes ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		// if ( !xmlElement.type ) console.warn( 'no road type tag not present' );
 
@@ -1033,7 +1033,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseGeometry ( xml: XmlElement ): TvLineGeometry | TvArcGeometry | TvSpiralGeometry | TvPoly3Geometry | TvParamPoly3Geometry {
+	public parseGeometry ( xml: XmlElement ): TvLineGeometry | TvArcGeometry | TvSpiralGeometry | TvPoly3Geometry | TvParamPoly3Geometry {
 
 		const s = parseFloat( xml.attr_s );
 		const x = parseFloat( xml.attr_x );
@@ -1100,7 +1100,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseJunction ( xmlElement: XmlElement ): TvJunction {
+	public parseJunction ( xmlElement: XmlElement ): TvJunction {
 
 		const name = xmlElement.attr_name;
 		const id = parseInt( xmlElement.attr_id );
@@ -1112,7 +1112,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 	}
 
-	private parseJunctionConnections ( junction: TvJunction, xmlElement: XmlElement ): void {
+	public parseJunctionConnections ( junction: TvJunction, xmlElement: XmlElement ): void {
 
 		readXmlArray( xmlElement.connection, xml => {
 
@@ -1129,7 +1129,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseJunctionPriorities ( junction: TvJunction, xmlElement: XmlElement ): void {
+	public parseJunctionPriorities ( junction: TvJunction, xmlElement: XmlElement ): void {
 
 		readXmlArray( xmlElement.priority, xml => {
 
@@ -1139,7 +1139,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseJunctionControllers ( junction: TvJunction, xmlElement: XmlElement ): void {
+	public parseJunctionControllers ( junction: TvJunction, xmlElement: XmlElement ): void {
 
 		readXmlArray( xmlElement.controller, xml => {
 
@@ -1153,7 +1153,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseJunctionBoundary ( xmlElement: XmlElement ): TvJunctionBoundary {
+	public parseJunctionBoundary ( xmlElement: XmlElement ): TvJunctionBoundary {
 
 		const boundary = new TvJunctionBoundary();
 
@@ -1254,7 +1254,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return laneBoundary;
 	}
 
-	private parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ): any {
+	public parseJunctionConnection ( xmlElement: XmlElement, junction: TvJunction ): any {
 
 		const id = parseInt( xmlElement.attr_id );
 		const incomingRoadId = parseInt( xmlElement.attr_incomingRoad );
@@ -1312,7 +1312,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return connection;
 	}
 
-	private parseJunctionConnectionLaneLink ( xmlElement: XmlElement, junction: TvJunction, connection: TvJunctionConnection ): TvJunctionLaneLink {
+	public parseJunctionConnectionLaneLink ( xmlElement: XmlElement, junction: TvJunction, connection: TvJunctionConnection ): TvJunctionLaneLink {
 
 		const fromLaneId = parseInt( xmlElement.attr_from );
 		const toLaneId = parseInt( xmlElement.attr_to );
@@ -1381,7 +1381,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {
+	public parseJunctionPriority ( xmlElement: XmlElement ): TvJunctionPriority {
 
 		const high = parseInt( xmlElement.attr_high );
 		const low = parseInt( xmlElement.attr_low );
@@ -1389,7 +1389,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return new TvJunctionPriority( high, low );
 	}
 
-	private parseJunctionController ( xmlElement: XmlElement ): TvJunctionController {
+	public parseJunctionController ( xmlElement: XmlElement ): TvJunctionController {
 
 		const id = parseInt( xmlElement.attr_id );
 		const type = xmlElement.attr_type;
@@ -1398,7 +1398,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return new TvJunctionController( id, type, sequence );
 	}
 
-	private parseElevationProfile ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseElevationProfile ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		road.addElevationProfile();
 
@@ -1416,7 +1416,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLateralProfile ( road: TvRoad, xml: XmlElement ): void {
+	public parseLateralProfile ( road: TvRoad, xml: XmlElement ): void {
 
 		readXmlArray( xml.superelevation, ( xml: XmlElement ) => {
 
@@ -1445,7 +1445,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLanes ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseLanes ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		readXmlArray( xmlElement.laneSection, ( xml ) => {
 
@@ -1477,7 +1477,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		// }
 	}
 
-	private parseObjects ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseObjects ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		// @ts-ignore
 		if ( xmlElement != null && xmlElement !== '' ) {
@@ -1497,7 +1497,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 	}
 
-	private parseObject ( road: TvRoad, xmlElement: XmlElement ): any {
+	public parseObject ( road: TvRoad, xmlElement: XmlElement ): any {
 
 		const type = xmlElement.attr_type;
 		const name = xmlElement.attr_name;
@@ -1614,7 +1614,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseObjectMarking ( xml: XmlElement, road: TvRoad ): TvObjectMarking {
+	public parseObjectMarking ( xml: XmlElement, road: TvRoad ): TvObjectMarking {
 
 		const color = xml.attr_color;
 		const spaceLength = parseFloat( xml.attr_spaceLength );
@@ -1637,7 +1637,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return marking;
 	}
 
-	private parseObjectOutline ( xml: XmlElement, road: TvRoad ): TvObjectOutline {
+	public parseObjectOutline ( xml: XmlElement, road: TvRoad ): TvObjectOutline {
 
 		const outline = new TvObjectOutline( parseInt( xml.attr_id ) ?? 0 );
 
@@ -1648,7 +1648,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return outline;
 	}
 
-	private parseCornerRoad ( xml: XmlElement, road: TvRoad ): TvCornerRoad {
+	public parseCornerRoad ( xml: XmlElement, road: TvRoad ): TvCornerRoad {
 
 		const id = parseFloat( xml.attr_id );
 		const s = parseFloat( xml.attr_s );
@@ -1660,7 +1660,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseRoadObjectRepeat ( roadObject: TvRoadObject, xmlElement: XmlElement ): TvObjectRepeat {
+	public parseRoadObjectRepeat ( roadObject: TvRoadObject, xmlElement: XmlElement ): TvObjectRepeat {
 
 		const s = parseFloat( xmlElement.attr_s );
 		const length = parseFloat( xmlElement.attr_length );
@@ -1682,13 +1682,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		return repeat;
 	}
 
-	private parseSignals ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseSignals ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		readXmlArray( xmlElement.signal, x => this.parseSignal( road, x ) );
 
 	}
 
-	private parseSignal ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseSignal ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		function findAvailableId ( id: number, road: TvRoad ): number {
 
@@ -1761,7 +1761,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 	}
 
-	private parseSignalValidity ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
+	public parseSignalValidity ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
 
 		if ( xmlElement.validity != null && xmlElement.validity !== '' ) {
 
@@ -1785,7 +1785,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 	}
 
-	private parseSignalDependency ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
+	public parseSignalDependency ( signal: TvRoadSignal, xmlElement: XmlElement ): void {
 
 		if ( xmlElement.dependency != null && xmlElement.dependency !== '' ) {
 
@@ -1809,11 +1809,11 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		}
 	}
 
-	private parseSurface ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseSurface ( road: TvRoad, xmlElement: XmlElement ): void {
 
 	}
 
-	private parseLaneSection ( road: TvRoad, xmlElement: XmlElement ): void {
+	public parseLaneSection ( road: TvRoad, xmlElement: XmlElement ): void {
 
 		const id = road.laneSections.length + 1;
 		const s = parseFloat( xmlElement.attr_s );
@@ -1842,7 +1842,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		road.getLaneProfile().addLaneSection( laneSection );
 	}
 
-	private parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ): void {
+	public parseLane ( laneSection: TvLaneSection, xmlElement: XmlElement, laneSide: TvLaneSide ): void {
 
 		const id = parseFloat( xmlElement.attr_id );
 		const type = TvLane.stringToType( xmlElement.attr_type );
@@ -1897,7 +1897,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneWidth ( lane: TvLane, xmlElement: XmlElement ): void {
+	public parseLaneWidth ( lane: TvLane, xmlElement: XmlElement ): void {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 
@@ -1910,7 +1910,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneRoadMark ( lane: TvLane, xmlElement: XmlElement ): any {
+	public parseLaneRoadMark ( lane: TvLane, xmlElement: XmlElement ): any {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset ) || 0;
 		const type = xmlElement.attr_type || TvRoadMarkTypes.SOLID;
@@ -1927,7 +1927,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneMaterial ( lane: TvLane, xmlElement: XmlElement ): void {
+	public parseLaneMaterial ( lane: TvLane, xmlElement: XmlElement ): void {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const surface = xmlElement.attr_surface;
@@ -1938,7 +1938,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneVisibility ( lane: TvLane, xmlElement: XmlElement ): void {
+	public parseLaneVisibility ( lane: TvLane, xmlElement: XmlElement ): void {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const forward = parseFloat( xmlElement.attr_forward );
@@ -1950,7 +1950,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneSpeed ( lane: TvLane, xmlElement: XmlElement ): void {
+	public parseLaneSpeed ( lane: TvLane, xmlElement: XmlElement ): void {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const max = parseFloat( xmlElement.attr_max );
@@ -1960,7 +1960,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneAccess ( lane: TvLane, xmlElement: XmlElement ): void {
+	public parseLaneAccess ( lane: TvLane, xmlElement: XmlElement ): void {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const restriction = xmlElement.attr_restriction;
@@ -1969,7 +1969,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneHeight ( lane: TvLane, xmlElement: XmlElement ): void {
+	public parseLaneHeight ( lane: TvLane, xmlElement: XmlElement ): void {
 
 		const sOffset = parseFloat( xmlElement.attr_sOffset );
 		const inner = parseFloat( xmlElement.attr_inner );
@@ -1979,7 +1979,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseUserData ( xmlElement: XmlElement ): TvUserData[] {
+	public parseUserData ( xmlElement: XmlElement ): TvUserData[] {
 
 		const response: TvUserData[] = [];
 
@@ -2007,7 +2007,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 	}
 
-	private parseLaneOffset ( road: TvRoad, xml: XmlElement ): void {
+	public parseLaneOffset ( road: TvRoad, xml: XmlElement ): void {
 
 		const s = parseFloat( xml.attr_s );
 		const a = parseFloat( xml.attr_a );
@@ -2018,7 +2018,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		road.getLaneProfile().createAndAddLaneOffset( s, a, b, c, d );
 	}
 
-	private parseControl ( xml: XmlElement ): TvControllerControl {
+	public parseControl ( xml: XmlElement ): TvControllerControl {
 
 		const signalId = parseFloat( xml.attr_signalId );
 		const type = xml.attr_type;
