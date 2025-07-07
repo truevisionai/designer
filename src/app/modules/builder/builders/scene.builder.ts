@@ -62,7 +62,14 @@ export class SceneBuilder {
 	buildSplineAndRoads ( map: TvMap ): void {
 
 		// NOTE: sequence spline & road building is important
-		map.getSplines().forEach( spline => this.splineBuilder.buildGeometry( spline ) );
+		map.getSplines().forEach( spline => {
+			// NOTE: to avoid open-drive import issues
+			// we will only build geometry if it is not already built
+			if ( spline.getGeometryCount() == 0 ) {
+				this.splineBuilder.buildGeometry( spline );
+			}
+
+		} );
 		map.getRoads().forEach( road => this.buildOrRemoveRoad( map, road ) );
 		map.getSplines().forEach( spline => this.splineBuilder.updateBounds( spline ) );
 
