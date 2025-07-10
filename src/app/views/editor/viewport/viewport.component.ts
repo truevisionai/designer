@@ -368,7 +368,14 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.fireSelectionEvents();
 
-		if ( intersection?.object?.type === 'Points' ) {
+		// HACK
+		// only Points check is not sufficient,
+		// for now we check for tag also
+		// which is present on all control points
+		if (
+			intersection?.object?.type === 'Points' &&
+			intersection.object['tag'] != null
+		) {
 
 			this.viewControllerService.disableControls();
 
