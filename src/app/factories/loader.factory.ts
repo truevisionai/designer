@@ -10,6 +10,7 @@ import { TvObjectLoader } from "../assets/object/tv-object.loader";
 import { SceneLoader } from "../map/scene/scene.loader";
 import { TvTextureLoader } from "../assets/texture/tv-texture.loader";
 import { RoadStyleLoader } from "../assets/road-style/road-style.loader";
+import { PointCloudLoader } from 'app/assets/point-cloud/point-cloud-loader';
 
 
 @Injectable( {
@@ -22,6 +23,7 @@ export class LoaderFactory {
 	) {
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	getLoader ( type: AssetType ): AssetLoader {
 
 		let loader: AssetLoader;
@@ -80,6 +82,10 @@ export class LoaderFactory {
 
 			case AssetType.ROAD_STYLE:
 				loader = this.injector.get( RoadStyleLoader );
+				break;
+
+			case AssetType.POINT_CLOUD:
+				loader = this.injector.get( PointCloudLoader );
 				break;
 
 			default:

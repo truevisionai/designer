@@ -8,6 +8,7 @@ import { TextureImporter } from "../importers/texture.importer";
 import { FileExtension } from "../io/file-extension";
 import { TvConsole } from "../core/utils/console";
 import { Importer } from "../core/interfaces/importer";
+import { PointCloudImporter } from "app/assets/point-cloud/point-cloud-importer";
 
 @Injectable( {
 	providedIn: 'root'
@@ -16,10 +17,12 @@ export class ImporterFactory {
 
 	constructor (
 		private modelImporter: ModelImporter,
-		private textureImporter: TextureImporter
+		private textureImporter: TextureImporter,
+		private pointCloudImporter: PointCloudImporter,
 	) {
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	getImporter ( extension: string ): Importer {
 
 		let importer: Importer;
@@ -73,6 +76,10 @@ export class ImporterFactory {
 				// 	.subscribe( () => {
 				// 		this.onFolderChanged( this.currentFolder );
 				// 	} );
+				break;
+
+			case FileExtension.PCD:
+				importer = this.pointCloudImporter;
 				break;
 
 			default:

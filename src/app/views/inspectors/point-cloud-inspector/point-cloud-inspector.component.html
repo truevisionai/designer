@@ -1,0 +1,43 @@
+<!--
+  ~ Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+  -->
+
+<div *ngIf="settings"
+	class="inspector-form-container">
+
+	<app-vector3-field [value]="settings.translation"
+		(changed)="onChange($event, 'translation')"
+		label="Translate">
+	</app-vector3-field>
+
+	<app-vector3-field [value]="settings.rotation"
+		(changed)="onChange($event, 'rotation')"
+		label="Rotation">
+	</app-vector3-field>
+
+	<app-double-field [value]="settings.scale"
+		(changed)="onChange($event, 'scale')"
+		label="Scale">
+	</app-double-field>
+
+	<app-double-field [value]="settings.opacity"
+		(changed)="onChange($event, 'opacity')"
+		label="Opacity">
+	</app-double-field>
+
+	<app-color-field [value]="settings.color"
+		(changed)="onChange($event, 'color')"
+		label="Color">
+	</app-color-field>
+
+	<app-double-field [value]="settings.pointSize"
+		(changed)="onChange($event, 'pointSize')"
+		label="Point Size">
+	</app-double-field>
+
+	<app-double-field [value]="settings.pointsToSkip"
+		(changed)="onChange($event, 'pointsToSkip')"
+		label="Point To Skip">
+	</app-double-field>
+
+</div>

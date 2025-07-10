@@ -11,6 +11,8 @@ import { Asset, AssetType } from 'app/assets/asset.model';
 import { LoaderFactory } from 'app/factories/loader.factory';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { PointerEventData } from 'app/events/pointer-event-data';
+import { SceneService } from 'app/services/scene.service';
+import { PointCloudAsset } from 'app/assets/point-cloud/point-cloud-asset';
 
 @Injectable( {
 	providedIn: 'root'
@@ -44,9 +46,33 @@ export class ViewportService {
 				this.loadScene( asset );
 				break;
 
+			case AssetType.POINT_CLOUD:
+				this.loadPointCloud( asset );
+				break;
+
 			default:
 				this.importAsset( asset, event );
 				break;
+		}
+
+	}
+
+	loadPointCloud ( asset: Asset ): void {
+
+		const assetLoader = this.loaderFactory.getLoader( AssetType.POINT_CLOUD );
+
+		const pointCloudAsset = assetLoader.load( asset ) as PointCloudAsset;
+
+		if ( pointCloudAsset && pointCloudAsset.object3D ) {
+
+			SceneService.addToMain( pointCloudAsset.object3D, false );
+
+			this.snackBar.success( `Point cloud loaded: ${ pointCloudAsset.name }` );
+
+		} else {
+
+			this.snackBar.error( `Failed to load point cloud: ${ asset.name }` );
+
 		}
 
 	}
