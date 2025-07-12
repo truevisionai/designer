@@ -119,7 +119,12 @@ export class TvSceneFileService {
 		// USE LAST FILE IN DEV MODE ONLY
 		if ( lastFile != null && lastFile != 'undefined' && !Environment.production ) {
 
-			this.openFromPath( lastFile );
+			try {
+				this.openFromPath( lastFile );
+			} catch ( error ) {
+				this.newScene();
+				this.snackBar.error( `Failed to open last file: ${ error.message }` );
+			}
 
 		} else {
 

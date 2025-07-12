@@ -9,9 +9,10 @@ import { FileExtension } from "app/io/file-extension";
 import { FileUtils } from "app/io/file-utils";
 import { StorageService } from "app/io/storage.service";
 import { SnackBar } from "app/services/snack-bar.service";
-import { Object3D, PointsMaterial } from "three";
+import { Points, PointsMaterial } from "three";
 import { AssetService } from "../asset.service";
 import { PointCloudAsset } from "./point-cloud-asset";
+import { PointCloudObject } from "./point-cloud-object";
 
 // JSM
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
@@ -81,7 +82,7 @@ export class PointCloudImporter implements Importer {
 
 	}
 
-	private createPointCloudAsset ( points: Object3D, sourcePath: string, destinationFolder: string ): void {
+	private createPointCloudAsset ( points: Points, sourcePath: string, destinationFolder: string ): void {
 
 		const sourceFilename = FileUtils.getFilenameFromPath( sourcePath );
 
@@ -89,7 +90,14 @@ export class PointCloudImporter implements Importer {
 
 		this.storageService.copyFileSync( sourcePath, destinationPath );
 
-		const asset = new PointCloudAsset( points.name || 'PointCloud', destinationPath, points );
+		const object3D = PointCloudObject.fromPoints( points, points.uuid );
+
+		const asset = new PointCloudAsset( points.name || 'PointCloud', destinationPath );
+
+		asset.setObject3D( object3D );
+
+		asset.metadata.guid = object3D.uuid;
+		asset.metadata.path = destinationPath;
 
 		const json = JSON.stringify( asset.metadata, null, 2 );
 

@@ -84,6 +84,11 @@ import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
 import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
 import { ParkingGraph } from '../parking/parking-graph';
 import { parseRoadDistance } from "../road/road-distance";
+import { Metadata } from 'app/assets/metadata.model';
+import { PointCloudSettings } from 'app/assets/point-cloud/point-cloud-settings';
+import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader';
+import { PointCloudObject } from 'app/assets/point-cloud/point-cloud-object';
+import { PointCloudAsset } from 'app/assets/point-cloud/point-cloud-asset';
 
 @Injectable( {
 	providedIn: 'root'
@@ -97,7 +102,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 	constructor (
 		private threeService: ThreeService,
 		private snackBar: SnackBar,
-		private storage: StorageService
+		private storage: StorageService,
 	) {
 		super();
 	}
@@ -216,6 +221,67 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		this.readEnvironment( xml.environment );
 
 		this.loadParkingGraph( xml.parkingGraph );
+
+		this.loadPointClouds( xml.pointCloudAssets );
+
+	}
+
+	loadPointClouds ( xml: XmlElement ): void {
+
+		if ( !xml ) return;
+
+		this.readAsOptionalArray( xml.pointCloud, xml => {
+
+			const guid = xml.attr_assetGuid;
+			const name = xml.attr_name;
+			const settings = PointCloudSettings.fromSceneJSON( xml.settings );
+
+			if ( guid && AssetDatabase.has( guid ) ) {
+
+				const asset = AssetDatabase.getInstance<Metadata>( guid );
+
+				console.log( 'Loading point cloud asset:', asset.guid, asset );
+
+				const loader = new PCDLoader();
+
+				const buffer = this.storage.readFileSync( asset.path );
+
+				const arrayBuffer = buffer.buffer.slice( buffer.byteOffset, buffer.byteOffset + buffer.byteLength );
+
+				const points = loader.parse( arrayBuffer );
+
+				// // Rotate Z-up to Y-up (PCD → Three.js)
+				// const m = new Matrix4().makeRotationX( -Math.PI / 2 );
+				// points.geometry.applyMatrix4( m );
+
+				// Optional: Flip if needed
+				// points.geometry.scale(1, 1, -1);
+
+				points.geometry.center();
+
+				const pointCloudObject = PointCloudObject.fromPoints( points, asset.guid );
+
+				const pointCloudAsset = new PointCloudAsset( name, asset.path, guid );
+
+				pointCloudAsset.metadata.guid = asset.guid;
+				pointCloudAsset.metadata.path = asset.path;
+
+				pointCloudAsset.setObject3D( pointCloudObject );
+
+				pointCloudObject.setSettings( settings );
+				pointCloudObject.applySettings( settings );
+
+				this.map.addPointCloud( pointCloudObject );
+
+				console.log( 'Point cloud loaded:', pointCloudAsset.name, pointCloudAsset.guid, pointCloudAsset );
+
+			} else {
+
+				console.warn( 'Point cloud not found', xml );
+
+			}
+
+		} );
 
 	}
 

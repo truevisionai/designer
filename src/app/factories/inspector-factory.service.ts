@@ -11,7 +11,6 @@ import { StandardMaterialInspector } from "../views/inspectors/material-inspecto
 import { AssetPreviewService } from "../views/inspectors/asset-preview/asset-preview.service";
 import { MaterialInspector } from "../views/inspectors/material-inspector/material-inspector.component";
 import { TvMaterialService } from "../assets/material/tv-material.service";
-import { PointCloudInspectorComponent } from 'app/views/inspectors/point-cloud-inspector/point-cloud-inspector.component';
 
 @Injectable( {
 	providedIn: 'root'
@@ -35,10 +34,6 @@ export class InspectorFactory {
 			AppInspector.setInspector( MaterialInspector, asset );
 
 			// this.setMaterialInspector( assets );
-
-		} else if ( asset.type == AssetType.POINT_CLOUD ) {
-
-			AppInspector.setInspector( PointCloudInspectorComponent, asset );
 
 		} else {
 

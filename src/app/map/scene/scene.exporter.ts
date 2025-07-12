@@ -96,6 +96,9 @@ export class SceneExporter implements AssetExporter<TvMap> {
 			junction: map.getJunctions().map( junction => this.exportJunction( junction ) ),
 			environment: this.threeService.environment.export(),
 			parkingGraph: map.getParkingGraph().toSceneJSON(),
+			pointCloudAssets: {
+				pointCloud: map.getPointClouds().map( pointCloud => pointCloud.toSceneJSON() )
+			},
 		};
 
 	}

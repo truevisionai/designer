@@ -277,7 +277,7 @@ export class LoadingService {
 
 		this.assets.filter( asset => asset.type == AssetType.POINT_CLOUD ).forEach( asset => {
 
-			AssetDatabase.setInstance( asset.guid, asset.metadata );
+			AssetDatabase.setInstance( asset.guid, asset );
 
 		} );
 

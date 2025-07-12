@@ -1,41 +1,27 @@
-import { Color, Object3D, Vector3 } from "three";
 import { Asset, AssetType } from "../asset.model";
 import { Metadata, MetaImporter } from "../metadata.model";
-
-export class PointCloudAssetSettings {
-	public translation: Vector3 = new Vector3( 0, 0, 0 );
-	public scale: number = 1.0;
-	public rotation: Vector3 = new Vector3( 0, 0, 0 );
-	public opacity: number = 1.0;
-	public color: Color = new Color( 0xffffff );
-	public pointSize: number = 0.01;
-	public pointsToSkip: number = 0;
-}
+import { PointCloudObject } from "./point-cloud-object";
 
 export class PointCloudAsset extends Asset {
 
-	public readonly object3D: Object3D;
+	public object3D: PointCloudObject;
 
-	public settings: PointCloudAssetSettings = new PointCloudAssetSettings();
-
-	constructor ( name: string, path: string, pointCloud: Object3D ) {
-
+	constructor ( name: string, path: string, guid?: string ) {
 		super( AssetType.POINT_CLOUD, name, path );
-
-		this.object3D = pointCloud;
-
-		this.metadata = PointCloudAsset.createMeta( {
-			guid: pointCloud.uuid, name, path
-		}, this.settings );
+		this.metadata = PointCloudAsset.createMeta( { name, path, guid } );
 	}
 
-	static createMeta ( data: Partial<Asset>, settings: PointCloudAssetSettings ): Metadata {
+	setObject3D ( object: PointCloudObject ): void {
+		this.object3D = object;
+	}
+
+	static createMeta ( data: Partial<Asset> ): Metadata {
 		return {
 			guid: data.guid || undefined,
 			path: data.path || undefined,
 			isFolder: false,
 			importer: MetaImporter.POINT_CLOUD,
-			data: settings,
+			data: undefined,
 			preview: data.preview || undefined,
 		};
 	}

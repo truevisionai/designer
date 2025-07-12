@@ -41,7 +41,6 @@ import { TextureInspector } from '../views/inspectors/texture-inspector/texture-
 import { EnvironmentInspectorComponent } from 'app/views/inspectors/environment-inspector/environment-inspector.component';
 import { AssetInspectorComponent } from 'app/views/inspectors/asset-inspector/asset-inspector.component';
 import { WorldSettingInspectorComponent } from 'app/views/inspectors/world-setting-inspector/world-setting-inspector.component';
-import { PointCloudInspectorComponent } from 'app/views/inspectors/point-cloud-inspector/point-cloud-inspector.component';
 
 
 @NgModule( {
@@ -60,7 +59,6 @@ import { PointCloudInspectorComponent } from 'app/views/inspectors/point-cloud-i
 		EnvironmentInspectorComponent,
 		WorldSettingInspectorComponent,
 		AssetInspectorComponent,
-		PointCloudInspectorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -105,7 +103,6 @@ import { PointCloudInspectorComponent } from 'app/views/inspectors/point-cloud-i
 		DynamicArrayInspectorComponent,
 		EnvironmentInspectorComponent,
 		WorldSettingInspectorComponent,
-		PointCloudInspectorComponent,
 	]
 } )
 export class TvMapModule {
