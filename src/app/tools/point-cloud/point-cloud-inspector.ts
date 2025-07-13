@@ -3,79 +3,10 @@
 //  */
 
 import { PointCloudObject } from "app/assets/point-cloud/point-cloud-object";
-import { PointCloudSettings } from "app/assets/point-cloud/point-cloud-settings";
-import { SerializedField } from "app/core/components/serialization";
+import { PointColorMode } from "app/assets/point-cloud/point-cloud-settings";
+import { Commands } from "app/commands/commands";
+import { SerializedAction, SerializedField } from "app/core/components/serialization";
 import { Vector3 } from "three";
-
-// import { TvLane } from "../../map/models/tv-lane";
-// import { LaneService } from "../../services/lane/lane.service";
-// import { SerializedAction, SerializedField } from "../../core/components/serialization";
-// import { TravelDirection, TvLaneType } from "../../map/models/tv-common";
-// import { Commands } from "../../commands/commands";
-// import { LaneFactory } from "app/services/lane/lane.factory";
-
-// export class LaneInspector {
-
-// 	constructor (
-// 		public lane: TvLane,
-// 		public laneService: LaneService
-// 	) {
-// 	}
-
-// 	@SerializedField( { label: 'Lane Id', type: 'int', disabled: true } )
-// 	get laneId (): number {
-// 		return Number( this.lane.id );
-// 	}
-
-// 	set laneId ( value: number ) {
-// 		this.lane.id = value;
-// 	}
-
-// 	@SerializedField( { type: 'enum', enum: TvLaneType } )
-// 	get type (): TvLaneType {
-// 		return this.lane.type;
-// 	}
-
-// 	set type ( value: TvLaneType ) {
-// 		this.laneService.setLaneType( this.lane, value );
-// 	}
-
-// 	@SerializedField( { type: 'boolean' } )
-// 	get level (): boolean {
-// 		return this.lane.level;
-// 	}
-
-// 	set level ( value ) {
-// 		this.lane.level = value;
-// 	}
-
-// 	@SerializedField( { type: 'enum', enum: TravelDirection } )
-// 	get direction () {
-// 		return this.lane.direction;
-// 	}
-
-// 	set direction ( value: TravelDirection ) {
-// 		this.lane.direction = value;
-// 	}
-
-// 	@SerializedAction()
-// 	duplicate (): void {
-
-// 		const duplicate = LaneFactory.createDuplicate( this.lane );
-
-// 		Commands.AddObject( duplicate );
-
-// 	}
-
-// 	@SerializedAction()
-// 	delete (): void {
-
-// 		Commands.RemoveObject( this.lane );
-
-// 	}
-
-// }
-
 
 export class PointCloudInspector {
 
@@ -160,4 +91,48 @@ export class PointCloudInspector {
 		this.applySettings();
 	}
 
+	@SerializedField( { type: 'enum', label: 'Color Mode', enum: PointColorMode, description: 'The color mode of the point cloud.' } )
+	get colorMode (): PointColorMode {
+		return this.pointCloud.settings.colorMode;
+	}
+
+	set colorMode ( value: PointColorMode ) {
+		this.pointCloud.settings.colorMode = value;
+		this.applySettings();
+	}
+
+	@SerializedField( { type: 'boolean', label: 'Use Custom Intensity' } )
+	get useCustomIntensity (): boolean {
+		return this.pointCloud.settings.useCustomIntensity;
+	}
+
+	set useCustomIntensity ( value: boolean ) {
+		this.pointCloud.settings.useCustomIntensity = value;
+		this.applySettings();
+	}
+
+	@SerializedField( { type: 'int', label: 'Intensity Min' } )
+	get intensityMin (): number {
+		return this.pointCloud.settings.intensityMin;
+	}
+
+	set intensityMin ( value: number ) {
+		this.pointCloud.settings.intensityMin = value;
+		this.applySettings();
+	}
+
+	@SerializedField( { type: 'int', label: 'Intensity Max' } )
+	get intensityMax (): number {
+		return this.pointCloud.settings.intensityMax;
+	}
+
+	set intensityMax ( value: number ) {
+		this.pointCloud.settings.intensityMax = value;
+		this.applySettings();
+	}
+
+	@SerializedAction()
+	delete (): void {
+		Commands.RemoveObject( this.pointCloud );
+	}
 }
