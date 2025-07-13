@@ -2,8 +2,9 @@ import * as THREE from "three";
 import { Points, PointsMaterial } from "three";
 import { PointCloudSettings, PointColorMode } from "./point-cloud-settings";
 import { turboColorMap } from "app/utils/turbo-color-map";
+import { IHasPosition } from "app/objects/i-has-position";
 
-export class PointCloudObject extends Points<THREE.BufferGeometry, PointsMaterial> {
+export class PointCloudObject extends Points<THREE.BufferGeometry, PointsMaterial> implements IHasPosition {
 
 	public settings = new PointCloudSettings();
 
@@ -19,20 +20,54 @@ export class PointCloudObject extends Points<THREE.BufferGeometry, PointsMateria
 		return true;
 	}
 
+	setPosition ( position: THREE.Vector3 ): void {
+		this.position.copy( position );
+		this.updateMatrix();
+	}
+
+	getPosition (): THREE.Vector3 {
+		return this.position.clone();
+	}
+
+	getRotation (): THREE.Vector3 {
+		return new THREE.Vector3().setFromEuler( this.rotation );
+	}
+
+	setRotation ( rotation: THREE.Vector3 ): void {
+		this.rotation.setFromVector3( rotation );
+		this.updateMatrix();
+	}
+
+	getOpacity (): number {
+		return this.material.opacity;
+	}
+
+	setOpacity ( opacity: number ): void {
+		this.material.opacity = opacity;
+		this.material.transparent = opacity < 1;
+		this.material.needsUpdate = true;
+	}
+
 	setSettings ( settings: PointCloudSettings ): void {
 		this.settings = settings;
 	}
 
+	getColor (): THREE.Color {
+		return this.material.color;
+	}
+
+	setColor ( color: THREE.Color | string ): void {
+		if ( typeof color === 'string' ) {
+			this.material.color.set( color );
+		} else {
+			this.material.color.copy( color );
+		}
+		this.material.needsUpdate = true;
+	}
+
 	applySettings ( settings: PointCloudSettings ): void {
 
-		this.position.copy( settings.position );
 		this.scale.setScalar( settings.scale );
-
-		this.rotation.set(
-			THREE.MathUtils.degToRad( settings.rotation.x ),
-			THREE.MathUtils.degToRad( settings.rotation.y ),
-			THREE.MathUtils.degToRad( settings.rotation.z )
-		);
 
 		this.material.size = settings.pointSize;
 		this.material.opacity = settings.opacity;
@@ -56,6 +91,16 @@ export class PointCloudObject extends Points<THREE.BufferGeometry, PointsMateria
 		return {
 			attr_assetGuid: this.assetGuid,
 			attr_name: this.name,
+			position: {
+				attr_x: this.position.x,
+				attr_y: this.position.y,
+				attr_z: this.position.z
+			},
+			rotation: {
+				attr_x: this.rotation.x,
+				attr_y: this.rotation.y,
+				attr_z: this.rotation.z
+			},
 			settings: this.settings.toSceneJSON()
 		};
 	}

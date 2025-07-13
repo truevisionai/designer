@@ -19,15 +19,13 @@ export class PointCloudInspector {
 		this.pointCloud.applySettings( this.pointCloud.settings );
 	}
 
-	// now for each field in settings, we create a getter and setter
-
 	@SerializedField( { type: 'vector3', label: 'Position' } )
 	get position (): Vector3 {
-		return this.pointCloud.settings.position;
+		return this.pointCloud.getPosition()
 	}
 
 	set position ( value: Vector3 ) {
-		this.pointCloud.settings.position = value;
+		this.pointCloud.setPosition( value );
 		this.applySettings();
 	}
 
@@ -43,31 +41,31 @@ export class PointCloudInspector {
 
 	@SerializedField( { type: 'vector3', label: 'Rotation' } )
 	get rotation (): Vector3 {
-		return this.pointCloud.settings.rotation;
+		return this.pointCloud.getRotation();
 	}
 
 	set rotation ( value: Vector3 ) {
-		this.pointCloud.settings.rotation = value;
+		this.pointCloud.setRotation( value );
 		this.applySettings();
 	}
 
 	@SerializedField( { type: 'float', label: 'Opacity' } )
 	get opacity (): number {
-		return this.pointCloud.settings.opacity;
+		return this.pointCloud.getOpacity();
 	}
 
 	set opacity ( value: number ) {
-		this.pointCloud.settings.opacity = value;
+		this.pointCloud.setOpacity( value );
 		this.applySettings();
 	}
 
 	@SerializedField( { type: 'color', label: 'Color' } )
 	get color (): any {
-		return this.pointCloud.settings.color;
+		return this.pointCloud.getColor();
 	}
 
 	set color ( value: any ) {
-		this.pointCloud.settings.color = value;
+		this.pointCloud.setColor( value );
 		this.applySettings();
 	}
 

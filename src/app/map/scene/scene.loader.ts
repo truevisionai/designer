@@ -234,6 +234,10 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			const guid = xml.attr_assetGuid;
 			const name = xml.attr_name;
+
+			const position = this.importVector3( xml.position );
+			const rotation = this.importVector3( xml.rotation );
+
 			const settings = PointCloudSettings.fromSceneJSON( xml.settings );
 
 			if ( guid && AssetDatabase.has( guid ) ) {
@@ -260,6 +264,10 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 				points.geometry.center();
 
 				const pointCloudObject = PointCloudObject.fromPoints( points, asset.guid );
+
+				pointCloudObject.name = name;
+				pointCloudObject.setPosition( position );
+				pointCloudObject.setRotation( rotation );
 
 				const pointCloudAsset = new PointCloudAsset( name, asset.path, guid );
 
