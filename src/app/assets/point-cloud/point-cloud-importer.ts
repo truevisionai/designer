@@ -37,7 +37,7 @@ export class PointCloudImporter implements Importer {
 		switch ( extension ) {
 
 			case FileExtension.PCD:
-				this.importPointCloud( sourcePath, destinationFolder );
+				await this.importPointCloud( sourcePath, destinationFolder );
 				break;
 
 			default:
