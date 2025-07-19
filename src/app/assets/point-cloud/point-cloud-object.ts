@@ -81,7 +81,8 @@ export class PointCloudObject extends Points<THREE.BufferGeometry, PointsMateria
 
 		// apply points to skip
 		if ( settings.pointsToSkip > 0 ) {
-			this.geometry.setDrawRange( 0, this.geometry.attributes.position.count - settings.pointsToSkip );
+			const clampedPointsToSkip = Math.min(settings.pointsToSkip, this.geometry.attributes.position.count);
+			this.geometry.setDrawRange( 0, this.geometry.attributes.position.count - clampedPointsToSkip );
 		}
 
 		colorPointCloud( this );
