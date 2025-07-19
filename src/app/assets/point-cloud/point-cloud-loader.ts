@@ -25,7 +25,7 @@ export class PointCloudLoader implements AssetLoader {
 		const name = asset.name || 'PointCloud';
 		const path = asset.path || '';
 
-		const pointCloudAsset = new PointCloudAsset( name, path );
+		const pointCloudAsset = new PointCloudAsset( name, path, asset.guid );
 
 		// NOTE: important
 		pointCloudAsset.metadata.guid = asset.guid;

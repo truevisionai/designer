@@ -92,7 +92,9 @@ export class PointCloudImporter implements Importer {
 
 		const object3D = PointCloudObject.fromPoints( points, points.uuid );
 
-		const asset = new PointCloudAsset( points.name || 'PointCloud', destinationPath );
+		const name = points.name || 'PointCloud';
+
+		const asset = new PointCloudAsset( name, destinationPath, object3D.uuid );
 
 		asset.setObject3D( object3D );
 

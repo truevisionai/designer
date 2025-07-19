@@ -6,7 +6,7 @@ export class PointCloudAsset extends Asset {
 
 	public object3D: PointCloudObject;
 
-	constructor ( name: string, path: string, guid?: string ) {
+	constructor ( name: string, path: string, guid: string ) {
 		super( AssetType.POINT_CLOUD, name, path );
 		this.metadata = PointCloudAsset.createMeta( { name, path, guid } );
 	}
