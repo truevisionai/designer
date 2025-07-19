@@ -1,4 +1,5 @@
-import { Vector3, Color } from "three";
+import { Log } from "app/core/utils/log";
+import { Color } from "three";
 
 export enum PointColorMode {
 	Grey = 'grey',
@@ -38,6 +39,20 @@ export class PointCloudSettings {
 
 	static fromSceneJSON ( json: any ): PointCloudSettings {
 
+		function parseColorMode ( mode: string ): PointColorMode {
+			switch ( mode ) {
+				case PointColorMode.Grey:
+				case PointColorMode.Classification:
+				case PointColorMode.Color:
+				case PointColorMode.Intensity:
+				case PointColorMode.Height:
+					return mode;
+				default:
+					Log.warn( `Unknown color mode: ${ mode }. Defaulting to Grey.` );
+					return PointColorMode.Grey; // default fallback
+			}
+		}
+
 		const settings = new PointCloudSettings();
 
 		settings.scale = parseFloat( json.attr_scale ) || 1.0;
@@ -45,7 +60,7 @@ export class PointCloudSettings {
 		settings.color = new Color( parseInt( json.attr_color ) || 0xffffff );
 		settings.pointSize = parseFloat( json.attr_pointSize ) || 0.01;
 		settings.pointsToSkip = parseInt( json.attr_pointsToSkip ) || 0;
-		settings.colorMode = json.attr_colorMode || PointColorMode.Grey;
+		settings.colorMode = parseColorMode( json.attr_colorMode );
 		settings.useCustomIntensity = json.attr_useCustomIntensity || false;
 		settings.intensityMin = parseFloat( json.attr_intensityMin ) || 0;
 		settings.intensityMax = parseFloat( json.attr_intensityMax ) || 255;
