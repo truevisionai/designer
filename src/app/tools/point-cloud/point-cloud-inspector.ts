@@ -1,6 +1,6 @@
-// /*
-//  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
-//  */
+/*
+ * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
+ */
 
 import { PointCloudObject } from "app/assets/point-cloud/point-cloud-object";
 import { PointColorMode } from "app/assets/point-cloud/point-cloud-settings";
@@ -19,7 +19,7 @@ export class PointCloudInspector {
 		this.pointCloud.applySettings( this.pointCloud.settings );
 	}
 
-	@SerializedField( { type: 'vector3', label: 'Position' } )
+	@SerializedField( { type: 'vector3', label: 'Position', description: 'The position of the point cloud.' } )
 	get position (): Vector3 {
 		return this.pointCloud.getPosition()
 	}
@@ -29,7 +29,7 @@ export class PointCloudInspector {
 		this.applySettings();
 	}
 
-	@SerializedField( { type: 'float', label: 'Scale' } )
+	@SerializedField( { type: 'float', label: 'Scale', description: 'The scale of the point cloud.' } )
 	get scale (): number {
 		return this.pointCloud.settings.scale;
 	}
@@ -39,7 +39,7 @@ export class PointCloudInspector {
 		this.applySettings();
 	}
 
-	@SerializedField( { type: 'vector3', label: 'Rotation' } )
+	@SerializedField( { type: 'vector3', label: 'Rotation', description: 'The rotation of the point cloud.' } )
 	get rotation (): Vector3 {
 		return this.pointCloud.getRotation();
 	}
@@ -49,7 +49,14 @@ export class PointCloudInspector {
 		this.applySettings();
 	}
 
-	@SerializedField( { type: 'float', label: 'Opacity' } )
+	@SerializedField( {
+		type: 'float',
+		label: 'Opacity',
+		description: 'The opacity of the point cloud.',
+		min: 0,
+		max: 1,
+		step: 0.01
+	} )
 	get opacity (): number {
 		return this.pointCloud.getOpacity();
 	}
@@ -69,7 +76,13 @@ export class PointCloudInspector {
 		this.applySettings();
 	}
 
-	@SerializedField( { type: 'float', label: 'Point Size' } )
+	@SerializedField( {
+		type: 'float',
+		label: 'Point Size',
+		description: 'The size of each point in the point cloud.',
+		min: 0.001,
+		max: 0.1,
+	} )
 	get pointSize (): number {
 		return this.pointCloud.settings.pointSize;
 	}
@@ -79,7 +92,13 @@ export class PointCloudInspector {
 		this.applySettings();
 	}
 
-	@SerializedField( { type: 'int', label: 'Points to Skip' } )
+	@SerializedField( {
+		type: 'int',
+		label: 'Points to Skip',
+		description: 'The number of points to skip when processing the point cloud.',
+		min: 0,
+		max: 10000,
+	} )
 	get pointsToSkip (): number {
 		return this.pointCloud.settings.pointsToSkip;
 	}
