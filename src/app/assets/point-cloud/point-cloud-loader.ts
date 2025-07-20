@@ -10,6 +10,7 @@ import { PointCloudObject } from "./point-cloud-object";
 import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader';
 import { StorageService } from 'app/io/storage.service';
 import { BufferAttribute, BufferGeometry, PointsMaterial } from 'three';
+import { Log } from 'app/core/utils/log';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,16 +21,12 @@ export class PointCloudLoader implements AssetLoader {
 
 	load ( asset: Asset ): PointCloudAsset {
 
-		const pointCloudObject = this.loadPointCloud( asset );
+		const pointCloudObject = loadPointCloud( this.storageService, asset.path, asset.guid );
 
 		const name = asset.name || 'PointCloud';
 		const path = asset.path || '';
 
 		const pointCloudAsset = new PointCloudAsset( name, path, asset.guid );
-
-		// NOTE: important
-		pointCloudAsset.metadata.guid = asset.guid;
-		pointCloudAsset.metadata.path = asset.path;
 
 		pointCloudAsset.setObject3D( pointCloudObject );
 
@@ -37,48 +34,42 @@ export class PointCloudLoader implements AssetLoader {
 
 	}
 
-	private loadPointCloud ( asset: Asset ): PointCloudObject {
+}
 
-		try {
+export function loadPointCloud ( storageService: StorageService, sourcePath: string, guid: string ): PointCloudObject {
 
-			const loader = new PCDLoader();
+	try {
 
-			const buffer = this.storageService.readFileSync( asset.path );
+		const loader = new PCDLoader();
 
-			const arrayBuffer = buffer.buffer.slice( buffer.byteOffset, buffer.byteOffset + buffer.byteLength );
+		const buffer = storageService.readFileSync( sourcePath );
 
-			const points = loader.parse( arrayBuffer );
+		const arrayBuffer = buffer.buffer.slice( buffer.byteOffset, buffer.byteOffset + buffer.byteLength );
 
-			// // Rotate Z-up to Y-up (PCD → Three.js)
-			// const m = new Matrix4().makeRotationX( -Math.PI / 2 );
-			// points.geometry.applyMatrix4( m );
+		const points = loader.parse( arrayBuffer );
 
-			// Optional: Flip if needed
-			// points.geometry.scale(1, 1, -1);
+		// // Rotate Z-up to Y-up (PCD → Three.js)
+		// const m = new Matrix4().makeRotationX( -Math.PI / 2 );
+		// points.geometry.applyMatrix4( m );
 
-			points.geometry.center();
+		// Optional: Flip if needed
+		// points.geometry.scale(1, 1, -1);
 
-			return PointCloudObject.fromPoints( points, asset.guid );
+		points.geometry.center();
 
-		} catch ( error ) {
+		return PointCloudObject.fromPoints( points, guid );
 
-			console.error( 'Error loading point cloud:', error );
+	} catch ( error ) {
 
-			const geometry = new BufferGeometry();
-			const material = new PointsMaterial( { size: 0.05, color: 0xffffff } );
+		Log.error( 'Error loading point cloud:', error );
 
-			geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 0 ), 3 ) );
-			geometry.setAttribute( 'color', new BufferAttribute( new Float32Array( 0 ), 3 ) );
+		const geometry = new BufferGeometry();
+		const material = new PointsMaterial( { size: 0.05, color: 0xffffff } );
 
-			// Create a default material if the PCDLoader fails
+		geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 0 ), 3 ) );
+		geometry.setAttribute( 'color', new BufferAttribute( new Float32Array( 0 ), 3 ) );
 
-			const pointCloudObject = new PointCloudObject( asset.guid, geometry, material );
-
-			pointCloudObject.name = asset.name || 'PointCloud';
-
-			return pointCloudObject;
-
-		}
+		return new PointCloudObject( guid, geometry, material );
 
 	}
 

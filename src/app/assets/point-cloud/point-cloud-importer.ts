@@ -9,13 +9,13 @@ import { FileExtension } from "app/io/file-extension";
 import { FileUtils } from "app/io/file-utils";
 import { StorageService } from "app/io/storage.service";
 import { SnackBar } from "app/services/snack-bar.service";
-import { Points, PointsMaterial } from "three";
+import { MathUtils } from "three";
 import { AssetService } from "../asset.service";
 import { PointCloudAsset } from "./point-cloud-asset";
 import { PointCloudObject } from "./point-cloud-object";
 
 // JSM
-import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
+import { loadPointCloud } from "./point-cloud-loader";
 
 
 @Injectable( {
@@ -52,27 +52,11 @@ export class PointCloudImporter implements Importer {
 
 		try {
 
+			const guid = MathUtils.generateUUID();
 
-			const loader = new PCDLoader();
+			const pointCloudObject = loadPointCloud( this.storageService, sourcePath, guid );
 
-			const buffer = this.storageService.readFileSync( sourcePath );
-
-			const arrayBuffer = buffer.buffer.slice( buffer.byteOffset, buffer.byteOffset + buffer.byteLength );
-
-			const points = loader.parse( arrayBuffer );
-
-			( points.material as PointsMaterial ).size = 0.001;
-
-			points.geometry.center();
-
-			// // Rotate Z-up to Y-up (PCD → Three.js)
-			// const m = new Matrix4().makeRotationX( -Math.PI / 2 );
-			// points.geometry.applyMatrix4( m );
-
-			// Optional: Flip if needed
-			// points.geometry.scale(1, 1, -1);
-
-			this.createPointCloudAsset( points, sourcePath, destinationFolder );
+			this.createPointCloudAsset( pointCloudObject, sourcePath, destinationFolder );
 
 		} catch ( error ) {
 
@@ -82,7 +66,7 @@ export class PointCloudImporter implements Importer {
 
 	}
 
-	private createPointCloudAsset ( points: Points, sourcePath: string, destinationFolder: string ): void {
+	private createPointCloudAsset ( pointCloudObject: PointCloudObject, sourcePath: string, destinationFolder: string ): void {
 
 		const sourceFilename = FileUtils.getFilenameFromPath( sourcePath );
 
@@ -90,16 +74,9 @@ export class PointCloudImporter implements Importer {
 
 		this.storageService.copyFileSync( sourcePath, destinationPath );
 
-		const object3D = PointCloudObject.fromPoints( points, points.uuid );
+		const asset = new PointCloudAsset( sourceFilename, destinationPath, pointCloudObject.uuid );
 
-		const name = points.name || 'PointCloud';
-
-		const asset = new PointCloudAsset( name, destinationPath, object3D.uuid );
-
-		asset.setObject3D( object3D );
-
-		asset.metadata.guid = object3D.uuid;
-		asset.metadata.path = destinationPath;
+		asset.setObject3D( pointCloudObject );
 
 		const json = JSON.stringify( asset.metadata, null, 2 );
 

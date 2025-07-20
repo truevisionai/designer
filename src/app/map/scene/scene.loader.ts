@@ -89,6 +89,7 @@ import { PointCloudSettings } from 'app/assets/point-cloud/point-cloud-settings'
 import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader';
 import { PointCloudObject } from 'app/assets/point-cloud/point-cloud-object';
 import { PointCloudAsset } from 'app/assets/point-cloud/point-cloud-asset';
+import { loadPointCloud } from 'app/assets/point-cloud/point-cloud-loader';
 
 @Injectable( {
 	providedIn: 'root'
@@ -244,35 +245,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 				const asset = AssetDatabase.getInstance<Metadata>( guid );
 
-				console.log( 'Loading point cloud asset:', asset.guid, asset );
-
-				const loader = new PCDLoader();
-
-				const buffer = this.storage.readFileSync( asset.path );
-
-				const arrayBuffer = buffer.buffer.slice( buffer.byteOffset, buffer.byteOffset + buffer.byteLength );
-
-				const points = loader.parse( arrayBuffer );
-
-				// // Rotate Z-up to Y-up (PCD → Three.js)
-				// const m = new Matrix4().makeRotationX( -Math.PI / 2 );
-				// points.geometry.applyMatrix4( m );
-
-				// Optional: Flip if needed
-				// points.geometry.scale(1, 1, -1);
-
-				points.geometry.center();
-
-				const pointCloudObject = PointCloudObject.fromPoints( points, asset.guid );
+				const pointCloudObject = loadPointCloud( this.storage, asset.path, asset.guid );
 
 				pointCloudObject.name = name;
 				pointCloudObject.setPosition( position );
 				pointCloudObject.setRotation( rotation );
 
 				const pointCloudAsset = new PointCloudAsset( name, asset.path, guid );
-
-				pointCloudAsset.metadata.guid = asset.guid;
-				pointCloudAsset.metadata.path = asset.path;
 
 				pointCloudAsset.setObject3D( pointCloudObject );
 
@@ -281,11 +260,9 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 				this.map.addPointCloud( pointCloudObject );
 
-				console.log( 'Point cloud loaded:', pointCloudAsset.name, pointCloudAsset.guid, pointCloudAsset );
-
 			} else {
 
-				console.warn( 'Point cloud not found', xml );
+				Log.warn( 'Point cloud not found', xml );
 
 			}
 
