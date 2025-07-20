@@ -68,6 +68,8 @@ export class LoadingService {
 
 		this.loadOpenScenarioFiles();
 
+		this.loadPointCloudFiles();
+
 		this.editorSettings.loadSettings();
 	}
 
@@ -268,6 +270,16 @@ export class LoadingService {
 		// }
 
 		// } );
+
+	}
+
+	loadPointCloudFiles (): void {
+
+		this.assets.filter( asset => asset.type == AssetType.POINT_CLOUD ).forEach( asset => {
+
+			AssetDatabase.setInstance( asset.guid, asset );
+
+		} );
 
 	}
 

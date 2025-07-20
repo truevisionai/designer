@@ -22,7 +22,8 @@ export enum AssetType {
 	PREFAB,
 	OBJECT,
 	GEOMETRY,
-	ROAD_MARKING
+	ROAD_MARKING,
+	POINT_CLOUD
 }
 
 /** Flat node with expandable and level information */
@@ -45,9 +46,7 @@ export class Asset {
 	}
 
 	get isDirectory (): boolean {
-
 		return this.type === AssetType.DIRECTORY;
-
 	}
 
 	get isMaterial (): boolean {
@@ -58,6 +57,11 @@ export class Asset {
 		return this.type == AssetType.TEXTURE;
 	}
 
+	get isPointCloud (): boolean {
+		return this.type === AssetType.POINT_CLOUD;
+	}
+
+	// eslint-disable-next-line max-lines-per-function
 	get thumbnail (): string {
 
 		let response = null;
@@ -98,6 +102,10 @@ export class Asset {
 
 			case AssetType.ROAD_STYLE:
 				response = this.preview;
+				break;
+
+			case AssetType.POINT_CLOUD:
+				response = 'assets/pcd-icon.jpg';
 				break;
 
 			default:
@@ -221,6 +229,9 @@ export class Asset {
 			case AssetType.ROAD_MARKING:
 				return 'road_marking';
 
+			case AssetType.POINT_CLOUD:
+				return 'point_cloud';
+
 		}
 
 	}
@@ -231,88 +242,43 @@ export class Asset {
 
 			case MetaImporter.TEXTURE:
 				return AssetType.TEXTURE;
-				break;
 
 			case MetaImporter.MATERIAL:
 				return AssetType.MATERIAL;
-				break;
 
 			case MetaImporter.MODEL:
 				return AssetType.MODEL;
-				break;
 
 			case MetaImporter.ROAD_STYLE:
 				return AssetType.ROAD_STYLE;
-				break;
 
 			case MetaImporter.ENTITY:
 				return AssetType.ENTITY;
-				break;
 
 			case MetaImporter.SCENE:
 				return AssetType.SCENE;
-				break;
 
 			case MetaImporter.PREFAB:
 				return AssetType.PREFAB;
-				break;
 
 			case MetaImporter.OBJECT:
 				return AssetType.OBJECT;
-				break;
 
 			case MetaImporter.OPENDRIVE:
 				return AssetType.OPENDRIVE;
-				break;
 
 			case MetaImporter.OPENSCENARIO:
 				return AssetType.OPENSCENARIO;
-				break;
+
+			case MetaImporter.POINT_CLOUD:
+				return AssetType.POINT_CLOUD;
 
 			default:
 				return AssetType.FILE;
-				break;
 
 		}
 
 	}
 
-	static getExtensionByAssetType ( type: AssetType ): string {
-
-		switch ( type ) {
-
-			case AssetType.DIRECTORY:
-				return;
-
-			case AssetType.MATERIAL:
-				return FileExtension.MATERIAL;
-
-			case AssetType.SCENE:
-				return FileExtension.SCENE;
-
-			case AssetType.ROAD_STYLE:
-				return FileExtension.ROADSTYLE;
-
-			case AssetType.TEXTURE:
-				return FileExtension.ROADSIGN;
-
-			case AssetType.ROAD_SIGN:
-				return FileExtension.ROADSIGN;
-
-			case AssetType.OPENDRIVE:
-				return FileExtension.OPENDRIVE;
-
-			case AssetType.OPENSCENARIO:
-				return FileExtension.OPENSCENARIO;
-
-			case AssetType.PREFAB:
-				return FileExtension.PREFAB;
-
-			case AssetType.OBJECT:
-				return FileExtension.OBJECT;
-
-		}
-
-	}
 
 }

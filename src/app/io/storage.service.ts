@@ -133,6 +133,16 @@ export class StorageService {
 
 	}
 
+	readFileSync ( path: string ): Buffer {
+
+		if ( this.exists( path ) === false ) {
+			throw new Error( `File not found: ${ path }` );
+		}
+
+		return this.fileService.fs.readFileSync( path ); // returns Buffer
+
+	}
+
 	copyFileSync ( sourcePath: string, destinationPath: string ): PutFileResponse {
 
 		try {

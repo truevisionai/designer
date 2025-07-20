@@ -18,6 +18,7 @@ import { ManagedMap } from "../../core/models/managed-map";
 import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/exceptions';
 import { ParkingGraph } from "../parking/parking-graph";
 import { TvPosTheta } from './tv-pos-theta';
+import { PointCloudObject } from 'app/assets/point-cloud/point-cloud-object';
 
 export class TvMap {
 
@@ -53,6 +54,10 @@ export class TvMap {
 
 	private parkingGraph: ParkingGraph;
 
+	private pointClouds: PointCloudObject[] = [];
+
+	private pointCloudGroup: Object3DMap<PointCloudObject, Object3D>;
+
 	constructor () {
 
 		this.surfaceGroup = new Object3DMap( this.gameObject );
@@ -62,6 +67,8 @@ export class TvMap {
 		this.propCurvesGroup = new Object3DMap( this.gameObject );
 
 		this.propPolygonsGroup = new Object3DMap( this.gameObject );
+
+		this.pointCloudGroup = new Object3DMap<PointCloudObject, Object3D>( this.gameObject );
 
 		this.header = new TvMapHeader();
 
@@ -381,6 +388,22 @@ export class TvMap {
 
 	}
 
+	public getPointClouds (): PointCloudObject[] {
+		return this.pointClouds;
+	}
+
+	public addPointCloud ( cloud: PointCloudObject ): void {
+		this.pointClouds.push( cloud );
+		this.pointCloudGroup.add( cloud, cloud );
+	}
+
+	public removePointCloud ( cloud: PointCloudObject ): void {
+		const index = this.pointClouds.indexOf( cloud );
+		if ( index !== -1 ) this.pointClouds.splice( index, 1 );
+		this.pointCloudGroup.remove( cloud );
+	}
+
+
 	/**
 	 * Clears the OpenDrive structure, could be used to start a new document
 	 */
@@ -399,5 +422,10 @@ export class TvMap {
 		this.surfaces.splice( 0, this.surfaces.length );
 
 		this.splines.splice( 0, this.splines.length );
+
+		this.pointClouds.splice( 0, this.pointClouds.length );
+
+		this.pointCloudGroup.clear();
+
 	}
 }

@@ -37,4 +37,8 @@ export enum FileExtension {
 	OBJECT = 'object',
 	MATERIAL = 'material',
 	GEOMETRY = 'geometry',
+
+	// point cloud file extensions
+	PCD = 'pcd',
+
 }

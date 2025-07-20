@@ -84,6 +84,12 @@ import { TvLaneBoundary } from "../junction-boundary/tv-lane-boundary";
 import { TvJointBoundary } from "../junction-boundary/tv-joint-boundary";
 import { ParkingGraph } from '../parking/parking-graph';
 import { parseRoadDistance } from "../road/road-distance";
+import { Metadata } from 'app/assets/metadata.model';
+import { PointCloudSettings } from 'app/assets/point-cloud/point-cloud-settings';
+import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader';
+import { PointCloudObject } from 'app/assets/point-cloud/point-cloud-object';
+import { PointCloudAsset } from 'app/assets/point-cloud/point-cloud-asset';
+import { loadPointCloud } from 'app/assets/point-cloud/point-cloud-loader';
 
 @Injectable( {
 	providedIn: 'root'
@@ -97,7 +103,7 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 	constructor (
 		private threeService: ThreeService,
 		private snackBar: SnackBar,
-		private storage: StorageService
+		private storage: StorageService,
 	) {
 		super();
 	}
@@ -216,6 +222,51 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 		this.readEnvironment( xml.environment );
 
 		this.loadParkingGraph( xml.parkingGraph );
+
+		this.loadPointClouds( xml.pointCloudAssets );
+
+	}
+
+	loadPointClouds ( xml: XmlElement ): void {
+
+		if ( !xml ) return;
+
+		this.readAsOptionalArray( xml.pointCloud, xml => {
+
+			const guid = xml.attr_assetGuid;
+			const name = xml.attr_name;
+
+			const position = this.importVector3( xml.position );
+			const rotation = this.importVector3( xml.rotation );
+
+			const settings = PointCloudSettings.fromSceneJSON( xml.settings );
+
+			if ( guid && AssetDatabase.has( guid ) ) {
+
+				const asset = AssetDatabase.getInstance<Metadata>( guid );
+
+				const pointCloudObject = loadPointCloud( this.storage, asset.path, asset.guid );
+
+				pointCloudObject.name = name;
+				pointCloudObject.setPosition( position );
+				pointCloudObject.setRotation( rotation );
+
+				const pointCloudAsset = new PointCloudAsset( name, asset.path, guid );
+
+				pointCloudAsset.setObject3D( pointCloudObject );
+
+				pointCloudObject.setSettings( settings );
+				pointCloudObject.applySettings( settings );
+
+				this.map.addPointCloud( pointCloudObject );
+
+			} else {
+
+				Log.warn( 'Point cloud not found', xml );
+
+			}
+
+		} );
 
 	}
 

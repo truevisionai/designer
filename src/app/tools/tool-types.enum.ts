@@ -39,5 +39,6 @@ export enum ToolType {
 	TextMarkingTool,
 	PropSpanTool,
 	PolePropTool,
-	LaneHeight
+	LaneHeight,
+	PointCloudTool,
 }

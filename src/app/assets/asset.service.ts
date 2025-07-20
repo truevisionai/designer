@@ -405,7 +405,7 @@ export class AssetService {
 
 		if ( !metadata ) return;
 
-		this.storageService.writeSync( path + '.meta', JSON.stringify( metadata ) );
+		this.storageService.writeSync( `${ path }.meta`, JSON.stringify( metadata ) );
 
 	}
 

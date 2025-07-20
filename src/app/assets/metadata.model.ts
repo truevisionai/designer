@@ -32,4 +32,5 @@ export enum MetaImporter {
 	ROAD_STYLE = 'RoadStyleImporter',
 	ROAD_MARKING = 'RoadMarkingImporter',
 	ENTITY = 'EntityImporter',
+	POINT_CLOUD = 'PointCloudImporter'
 }

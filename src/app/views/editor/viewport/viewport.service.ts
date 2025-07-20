@@ -11,6 +11,8 @@ import { Asset, AssetType } from 'app/assets/asset.model';
 import { LoaderFactory } from 'app/factories/loader.factory';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { PointerEventData } from 'app/events/pointer-event-data';
+import { PointCloudAsset } from 'app/assets/point-cloud/point-cloud-asset';
+import { MapService } from 'app/services/map/map.service';
 
 @Injectable( {
 	providedIn: 'root'
@@ -20,7 +22,8 @@ export class ViewportService {
 	constructor (
 		private loaderFactory: LoaderFactory,
 		private sceneFileService: TvSceneFileService,
-		private snackBar: SnackBar
+		private snackBar: SnackBar,
+		private mapService: MapService,
 	) {
 	}
 
@@ -44,9 +47,33 @@ export class ViewportService {
 				this.loadScene( asset );
 				break;
 
+			case AssetType.POINT_CLOUD:
+				this.loadPointCloud( asset );
+				break;
+
 			default:
 				this.importAsset( asset, event );
 				break;
+		}
+
+	}
+
+	loadPointCloud ( asset: Asset ): void {
+
+		const assetLoader = this.loaderFactory.getLoader( AssetType.POINT_CLOUD );
+
+		const assetInstance = assetLoader.load( asset ) as PointCloudAsset;
+
+		if ( assetInstance && assetInstance.object3D ) {
+
+			this.mapService.map.addPointCloud( assetInstance.object3D );
+
+			this.snackBar.success( `Point cloud loaded: ${ assetInstance.name }` );
+
+		} else {
+
+			this.snackBar.error( `Failed to load point cloud: ${ asset.name }` );
+
 		}
 
 	}

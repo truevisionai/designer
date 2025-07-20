@@ -7,6 +7,8 @@ import { TvMap } from "app/map/models/tv-map.model";
 import { SceneService } from "../services/scene.service";
 import { Injectable } from "@angular/core";
 import { Environment } from "app/core/utils/environment";
+import { TvRoad } from "app/map/models/tv-road.model";
+import { AbstractSpline } from "app/core/shapes/abstract-spline";
 
 @Injectable( {
 	providedIn: 'root'
@@ -73,6 +75,10 @@ export class MapManager {
 		} );
 
 		map.clear();
+
+		TvRoad.counter = 0;
+
+		AbstractSpline.reset();
 
 	}
 

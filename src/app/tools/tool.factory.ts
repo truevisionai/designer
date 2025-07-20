@@ -61,6 +61,7 @@ import { LaneHeightToolService } from './lane-height/lane-height-tool.service';
 import { DebugConnectionTool, DebugConnectionToolService } from "./debug-connections/debug-connections.tool";
 import { SuperElevationTool, SuperElevationToolHelper } from "./road-super-elevation/super-elevation.tool";
 import { Log } from 'app/core/utils/log';
+import { PointCloudTool } from './point-cloud/point-cloud.tool';
 
 @Injectable( {
 	providedIn: 'root'
@@ -107,6 +108,7 @@ export class ToolFactory {
 		return tool;
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	createToolInstance ( type: ToolType ): Tool {
 
 		if ( this.toolMap.has( type ) ) {
@@ -181,6 +183,9 @@ export class ToolFactory {
 				break;
 			case ToolType.TrafficLight:
 				tool = new TrafficLightTool( this.trafficLightToolService );
+				break;
+			case ToolType.PointCloudTool:
+				tool = this.injector.get( PointCloudTool );
 				break;
 			default:
 				Log.error( 'Invalid tool type' + type );
