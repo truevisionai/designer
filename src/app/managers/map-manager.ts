@@ -76,8 +76,6 @@ export class MapManager {
 
 		map.clear();
 
-		TvRoad.counter = 0;
-
 		AbstractSpline.reset();
 
 	}

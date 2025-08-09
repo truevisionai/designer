@@ -86,6 +86,11 @@ export class TvRoad {
 
 	private map: TvMap;
 
+	/**
+	 * Counter for road IDs, used to ensure unique IDs for roads.
+	 * NOTE: DO NOT RESET THIS COUNTER UNLESS YOU ARE SURE ABOUT THE CONSEQUENCES.
+	 * Resetting this counter can lead to ID conflicts and data integrity issues.
+	 */
 	public static counter: number = 0;
 
 	constructor ( name?: string, junction?: TvJunction, id?: number ) {
