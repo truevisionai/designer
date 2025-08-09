@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/assets/asset-database';
+import { AssetRepositoryService } from 'app/assets/asset-repository.service';
 import {
 	AmbientLight, Bone,
 	BufferGeometry,
@@ -41,6 +41,7 @@ import { Injectable } from "@angular/core";
 import { Asset } from "../../assets/asset.model";
 import { StorageService } from "../../io/storage.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
+import { MaterialAsset } from '../material/tv-material.asset';
 
 @Injectable( {
 	providedIn: 'root'
@@ -48,7 +49,8 @@ import { AssetLoader } from "../../core/interfaces/asset.loader";
 export class TvObjectLoader implements AssetLoader {
 
 	constructor (
-		private storage: StorageService
+		private storage: StorageService,
+		private assetRepository: AssetRepositoryService
 	) {
 	}
 
@@ -136,6 +138,8 @@ export class TvObjectLoader implements AssetLoader {
 
 		}
 
+		const repo = this.assetRepository;
+
 		function getMaterial ( name: any ): any {
 
 			if ( name === undefined ) return undefined;
@@ -148,13 +152,13 @@ export class TvObjectLoader implements AssetLoader {
 
 					const uuid = name[ i ];
 
-					if ( !AssetDatabase.has( uuid ) ) {
+					if ( !repo.has( uuid ) ) {
 
 						console.warn( 'Undefined material', uuid );
 
 					}
 
-					array.push( AssetDatabase.getMaterial( uuid )?.material );
+					array.push( repo.getInstance<MaterialAsset>( uuid )?.material );
 
 				}
 
@@ -162,13 +166,13 @@ export class TvObjectLoader implements AssetLoader {
 
 			}
 
-			if ( !AssetDatabase.has( name ) ) {
+			if ( !repo.has( name ) ) {
 
 				console.warn( 'Undefined material', name );
 
 			}
 
-			return AssetDatabase.getMaterial( name )?.material;
+			return repo.getInstance<MaterialAsset>( name )?.material;
 
 		}
 

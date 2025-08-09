@@ -5,8 +5,9 @@
 import { Injectable } from "@angular/core";
 import { BufferGeometry, ObjectLoader } from "three";
 import { TvMesh } from "./tv-mesh";
-import { AssetDatabase } from "../../assets/asset-database";
+import { AssetRepositoryService } from "../../assets/asset-repository.service";
 import { TvStandardMaterial } from "../material/tv-standard-material";
+import { MaterialAsset } from "../material/tv-material.asset";
 
 @Injectable( {
 	providedIn: 'root'
@@ -15,8 +16,7 @@ export class TvMeshLoader {
 
 	private loader = new ObjectLoader();
 
-	constructor () {
-	}
+	constructor ( private assetRepository: AssetRepositoryService ) { }
 
 	parse ( json: any ): TvMesh {
 
@@ -47,12 +47,12 @@ export class TvMeshLoader {
 		if ( materialGuid instanceof Array ) {
 
 			mesh.material = materialGuid
-				.map( guid => AssetDatabase.getMaterial( guid )?.material )
+				.map( guid => this.assetRepository.getInstance<MaterialAsset>( guid )?.material )
 				.filter( material => material != undefined );
 
 		} else {
 
-			const material = AssetDatabase.getMaterial( materialGuid )?.material;
+			const material = this.assetRepository.getInstance<MaterialAsset>( materialGuid )?.material;
 
 			if ( material ) {
 
@@ -72,7 +72,7 @@ export class TvMeshLoader {
 
 		if ( geometryGuid == undefined ) return;
 
-		mesh.geometry = AssetDatabase.getInstance<BufferGeometry>( geometryGuid );
+		mesh.geometry = this.assetRepository.getInstance<BufferGeometry>( geometryGuid );
 
 	}
 
