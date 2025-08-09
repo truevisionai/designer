@@ -4,7 +4,7 @@
 
 import {
 	AfterViewInit,
-	ApplicationRef,
+	ApplicationRef, ChangeDetectorRef,
 	Component,
 	ElementRef,
 	HostListener,
@@ -27,7 +27,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 
 	@Input() folder: Asset;
 
-	widthInPercent: string;
+	widthInPercent: string = '0%';
 
 	files: Asset[] = [];
 
@@ -46,6 +46,7 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 		private appRef: ApplicationRef,
 		private projectBrowserService: ProjectBrowserService,
 		private assetService: AssetService,
+		private cdr: ChangeDetectorRef,
 	) {
 	}
 
@@ -77,7 +78,11 @@ export class FolderFilesComponent implements OnInit, AfterViewInit {
 		// 125 is the minimum width for the item
 		const count = Math.floor( width / 100 );
 
-		this.widthInPercent = ( 100 / count ) + '%';
+		// defer to next microtask so it doesn't change during current check
+		Promise.resolve().then( () => {
+			this.widthInPercent = `${ 100 / count }%`;
+			this.cdr.detectChanges(); // or markForCheck() if OnPush
+		} );
 
 	}
 
