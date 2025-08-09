@@ -413,9 +413,13 @@ export class SceneLoader extends AbstractReader implements AssetLoader {
 
 			spline = this.parseAutoSplineVersion2( xml );
 
+			this.map.addSpline( spline );
+
 		} else if ( xml?.attr_type === 'auto' ) {
 
 			spline = this.parseAutoSpline( xml );
+
+			this.map.addSpline( spline );
 
 		} else if ( xml?.attr_type === 'explicit' ) {
 
