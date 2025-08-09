@@ -16,8 +16,7 @@ export class TvMeshLoader {
 
 	private loader = new ObjectLoader();
 
-        constructor ( private assetRepository: AssetRepositoryService ) {
-        }
+	constructor ( private assetRepository: AssetRepositoryService ) { }
 
 	parse ( json: any ): TvMesh {
 
@@ -48,12 +47,12 @@ export class TvMeshLoader {
 		if ( materialGuid instanceof Array ) {
 
 			mesh.material = materialGuid
-                                .map( guid => this.assetRepository.getInstance<MaterialAsset>( guid )?.material )
+				.map( guid => this.assetRepository.getInstance<MaterialAsset>( guid )?.material )
 				.filter( material => material != undefined );
 
 		} else {
 
-                        const material = this.assetRepository.getInstance<MaterialAsset>( materialGuid )?.material;
+			const material = this.assetRepository.getInstance<MaterialAsset>( materialGuid )?.material;
 
 			if ( material ) {
 
@@ -73,7 +72,7 @@ export class TvMeshLoader {
 
 		if ( geometryGuid == undefined ) return;
 
-                mesh.geometry = this.assetRepository.getInstance<BufferGeometry>( geometryGuid );
+		mesh.geometry = this.assetRepository.getInstance<BufferGeometry>( geometryGuid );
 
 	}
 

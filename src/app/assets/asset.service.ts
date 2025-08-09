@@ -20,6 +20,7 @@ import { MaterialAsset } from "./material/tv-material.asset";
 import { RoadStyle } from "./road-style/road-style.model";
 import { TvStandardMaterial } from "./material/tv-standard-material";
 import { TextureAsset } from './texture/tv-texture.model';
+import { AssetDatabase } from './asset-database';
 
 @Injectable( {
 	providedIn: 'root'
@@ -31,11 +32,12 @@ export class AssetService {
 	assetCreated = new EventEmitter<Asset>();
 
 	constructor (
+		private assetDatabase: AssetDatabase, // Dont Remove
 		private storageService: StorageService,
 		private metadataFactory: MetadataFactory,
 		private snackBar: SnackBar,
-                private exporterFactory: ExporterFactory,
-                private assetRepository: AssetRepositoryService,
+		private exporterFactory: ExporterFactory,
+		private assetRepository: AssetRepositoryService,
 	) {
 	}
 
@@ -59,13 +61,13 @@ export class AssetService {
 
 	getTexture ( guid: string ): TextureAsset {
 
-                return this.assetRepository.getInstance<TextureAsset>( guid );
+		return this.assetRepository.getInstance<TextureAsset>( guid );
 
 	}
 
 	getInstance<T> ( guid: string ): T {
 
-                return this.assetRepository.getInstance<T>( guid );
+		return this.assetRepository.getInstance<T>( guid );
 
 	}
 
@@ -89,19 +91,19 @@ export class AssetService {
 
 	getMetadata ( guid: string ): Metadata {
 
-                return this.assetRepository.getMetadata( guid );
+		return this.assetRepository.getMetadata( guid );
 
 	}
 
 	setMetadata ( guid: string, metadata: Metadata ): void {
 
-                this.assetRepository.setMetadata( guid, metadata );
+		this.assetRepository.setMetadata( guid, metadata );
 
 	}
 
 	setInstance ( guid: string, instance: any ): void {
 
-                this.assetRepository.setInstance( guid, instance );
+		this.assetRepository.setInstance( guid, instance );
 
 	}
 
@@ -137,7 +139,7 @@ export class AssetService {
 
 		this.writeAssetFile( asset, data );
 
-                this.assetRepository.setInstance( asset.guid, instance );
+		this.assetRepository.setInstance( asset.guid, instance );
 
 		this.addAsset( asset );
 
@@ -202,7 +204,7 @@ export class AssetService {
 
 	saveAssetByGuid ( type: AssetType, guid: string, object: any ): void {
 
-                const metadata = this.assetRepository.getMetadata( guid );
+		const metadata = this.assetRepository.getMetadata( guid );
 
 		if ( !metadata ) return;
 
@@ -227,7 +229,7 @@ export class AssetService {
 
 	saveAsset ( data: Asset ): void {
 
-                this.saveAssetByGuid( data.type, data.metadata.guid, this.assetRepository.getInstance( data.metadata.guid ) );
+		this.saveAssetByGuid( data.type, data.metadata.guid, this.assetRepository.getInstance( data.metadata.guid ) );
 
 	}
 
@@ -237,7 +239,7 @@ export class AssetService {
 
 		if ( asset.type == AssetType.MATERIAL ) {
 
-                    const instance = this.assetRepository.getInstance<TvStandardMaterial>( asset.metadata.guid );
+			const instance = this.assetRepository.getInstance<TvStandardMaterial>( asset.metadata.guid );
 
 			const clone = instance.clone();
 
@@ -356,9 +358,9 @@ export class AssetService {
 
 		asset.isDeleted = true;
 
-                this.assetRepository.removeInstance( asset.metadata.guid );
+		this.assetRepository.removeInstance( asset.metadata.guid );
 
-                this.assetRepository.removeMetadata( asset.metadata.guid );
+		this.assetRepository.removeMetadata( asset.metadata.guid );
 
 	}
 
@@ -396,7 +398,7 @@ export class AssetService {
 
 	updateMetaFileByAsset ( asset: Asset ): void {
 
-                this.assetRepository.setMetadata( asset.metadata.guid, asset.metadata );
+		this.assetRepository.setMetadata( asset.metadata.guid, asset.metadata );
 
 		this.updateMetaFile( asset.path, asset.metadata );
 
@@ -449,11 +451,11 @@ export class AssetService {
 
 	getAssetName ( guid: string ): string {
 
-                const metadata = this.assetRepository.getMetadata( guid );
-                if ( metadata ) {
-                        return FileUtils.getFilenameFromPath( metadata.path );
-                }
-                return 'Unknown';
+		const metadata = this.assetRepository.getMetadata( guid );
+		if ( metadata ) {
+			return FileUtils.getFilenameFromPath( metadata.path );
+		}
+		return 'Unknown';
 
 	}
 

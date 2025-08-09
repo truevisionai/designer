@@ -48,11 +48,11 @@ import { MaterialAsset } from '../material/tv-material.asset';
 } )
 export class TvObjectLoader implements AssetLoader {
 
-        constructor (
-                private storage: StorageService,
-                private assetRepository: AssetRepositoryService
-        ) {
-        }
+	constructor (
+		private storage: StorageService,
+		private assetRepository: AssetRepositoryService
+	) {
+	}
 
 	load ( asset: Asset ): TvObjectAsset {
 
@@ -138,42 +138,43 @@ export class TvObjectLoader implements AssetLoader {
 
 		}
 
-                const repo = this.assetRepository;
-                function getMaterial ( name: any ): any {
+		const repo = this.assetRepository;
 
-                        if ( name === undefined ) return undefined;
+		function getMaterial ( name: any ): any {
 
-                        if ( Array.isArray( name ) ) {
+			if ( name === undefined ) return undefined;
 
-                                const array: Material[] = [];
+			if ( Array.isArray( name ) ) {
 
-                                for ( let i = 0, l = name.length; i < l; i++ ) {
+				const array: Material[] = [];
 
-                                        const uuid = name[ i ];
+				for ( let i = 0, l = name.length; i < l; i++ ) {
 
-                                        if ( !repo.has( uuid ) ) {
+					const uuid = name[ i ];
 
-                                                console.warn( 'Undefined material', uuid );
+					if ( !repo.has( uuid ) ) {
 
-                                        }
+						console.warn( 'Undefined material', uuid );
 
-                                        array.push( repo.getInstance<MaterialAsset>( uuid )?.material );
+					}
 
-                                }
+					array.push( repo.getInstance<MaterialAsset>( uuid )?.material );
 
-                                return array;
+				}
 
-                        }
+				return array;
 
-                        if ( !repo.has( name ) ) {
+			}
 
-                                console.warn( 'Undefined material', name );
+			if ( !repo.has( name ) ) {
 
-                        }
+				console.warn( 'Undefined material', name );
 
-                        return repo.getInstance<MaterialAsset>( name )?.material;
+			}
 
-                }
+			return repo.getInstance<MaterialAsset>( name )?.material;
+
+		}
 
 		function getTexture ( uuid: any ): any {
 
