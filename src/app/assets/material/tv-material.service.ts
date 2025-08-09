@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AssetDatabase } from "../../assets/asset-database";
+import { AssetRepositoryService } from "../../assets/asset-repository.service";
 import { FileExtension } from "../../io/file-extension";
 import { MaterialAsset } from "./tv-material.asset";
 import { AssetService } from "../../assets/asset.service";
@@ -17,15 +17,16 @@ import { StorageService } from "../../io/storage.service";
 export class TvMaterialService {
 
 	constructor (
-		public assetService: AssetService,
-		private exporter: TvMaterialExporter,
-		private storageService: StorageService,
+                public assetService: AssetService,
+                private exporter: TvMaterialExporter,
+                private storageService: StorageService,
+                private assetRepository: AssetRepositoryService,
 	) {
 	}
 
 	createAsset ( destinationFolder: string, material: MaterialAsset ): string {
 
-		if ( AssetDatabase.has( material.guid ) ) {
+                if ( this.assetRepository.has( material.guid ) ) {
 			return material.guid;
 		}
 
@@ -33,7 +34,7 @@ export class TvMaterialService {
 
 		const asset = this.assetService.createMaterialAsset( destinationFolder, filename, material );
 
-		AssetDatabase.setInstance( material.guid, material.material );
+                this.assetRepository.setInstance( material.guid, material.material );
 
 		this.assetService.addAsset( asset );
 

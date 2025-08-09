@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { AssetDatabase } from 'app/assets/asset-database';
+import { AssetRepositoryService } from 'app/assets/asset-repository.service';
 import {
 	AmbientLight, Bone,
 	BufferGeometry,
@@ -41,16 +41,18 @@ import { Injectable } from "@angular/core";
 import { Asset } from "../../assets/asset.model";
 import { StorageService } from "../../io/storage.service";
 import { AssetLoader } from "../../core/interfaces/asset.loader";
+import { MaterialAsset } from '../material/tv-material.asset';
 
 @Injectable( {
 	providedIn: 'root'
 } )
 export class TvObjectLoader implements AssetLoader {
 
-	constructor (
-		private storage: StorageService
-	) {
-	}
+        constructor (
+                private storage: StorageService,
+                private assetRepository: AssetRepositoryService
+        ) {
+        }
 
 	load ( asset: Asset ): TvObjectAsset {
 
@@ -136,41 +138,42 @@ export class TvObjectLoader implements AssetLoader {
 
 		}
 
-		function getMaterial ( name: any ): any {
+                const repo = this.assetRepository;
+                function getMaterial ( name: any ): any {
 
-			if ( name === undefined ) return undefined;
+                        if ( name === undefined ) return undefined;
 
-			if ( Array.isArray( name ) ) {
+                        if ( Array.isArray( name ) ) {
 
-				const array: Material[] = [];
+                                const array: Material[] = [];
 
-				for ( let i = 0, l = name.length; i < l; i++ ) {
+                                for ( let i = 0, l = name.length; i < l; i++ ) {
 
-					const uuid = name[ i ];
+                                        const uuid = name[ i ];
 
-					if ( !AssetDatabase.has( uuid ) ) {
+                                        if ( !repo.has( uuid ) ) {
 
-						console.warn( 'Undefined material', uuid );
+                                                console.warn( 'Undefined material', uuid );
 
-					}
+                                        }
 
-					array.push( AssetDatabase.getMaterial( uuid )?.material );
+                                        array.push( repo.getInstance<MaterialAsset>( uuid )?.material );
 
-				}
+                                }
 
-				return array;
+                                return array;
 
-			}
+                        }
 
-			if ( !AssetDatabase.has( name ) ) {
+                        if ( !repo.has( name ) ) {
 
-				console.warn( 'Undefined material', name );
+                                console.warn( 'Undefined material', name );
 
-			}
+                        }
 
-			return AssetDatabase.getMaterial( name )?.material;
+                        return repo.getInstance<MaterialAsset>( name )?.material;
 
-		}
+                }
 
 		function getTexture ( uuid: any ): any {
 
