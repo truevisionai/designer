@@ -18,8 +18,6 @@ describe( 'T-Junction', () => {
 		splineTestHelper = TestBed.inject( SplineTestHelper );
 		mapService = TestBed.inject( MapService );
 
-		AbstractSpline.reset();
-
 	} );
 
 	afterEach( () => {

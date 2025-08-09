@@ -187,8 +187,6 @@ describe( 'SplineLinkService: Tests', () => {
 
 	it( 'should update connected splines with junction at end', () => {
 
-		AbstractSpline.reset();
-
 		testHelper.addCustomJunctionWith2Roads();
 
 		testHelper.addStraightRoadSpline( new Vector3( 100, -50, 0 ), 100, 90 );
@@ -213,8 +211,6 @@ describe( 'SplineLinkService: Tests', () => {
 	} );
 
 	it( 'should update connected splines with junction at start', () => {
-
-		AbstractSpline.reset();
 
 		testHelper.addCustomJunctionWith2Roads();
 
@@ -242,8 +238,6 @@ describe( 'SplineLinkService: Tests', () => {
 	} );
 
 	it( 'should update connected splines with junction in the middle', () => {
-
-		AbstractSpline.reset();
 
 		testHelper.create2CustomJunctionWith3Roads();
 

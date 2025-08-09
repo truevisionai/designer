@@ -54,7 +54,7 @@ export abstract class AbstractSpline {
 
 	public tension: number;
 
-	private static idCounter = 1;
+	private static counter = 1;
 
 	private splineSegmentProfile: SplineSegmentProfile;
 	private splineLinks: SplineLinks;
@@ -62,8 +62,8 @@ export abstract class AbstractSpline {
 
 	private map: TvMap;
 
-	static reset (): void {
-		this.idCounter = 1;
+	static resetCounter (): void {
+		this.counter = 1;
 	}
 
 	abstract getPoints ( stepSize: number ): Vector3[];
@@ -74,7 +74,7 @@ export abstract class AbstractSpline {
 
 	protected constructor ( closed?: boolean, tension?: number ) {
 
-		this.id = AbstractSpline.idCounter++;
+		this.id = AbstractSpline.counter++;
 
 		this.uuid = MathUtils.generateUUID();
 

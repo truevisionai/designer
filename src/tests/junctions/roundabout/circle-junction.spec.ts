@@ -17,8 +17,6 @@ xdescribe( '4-Road-Roundabout', () => {
 
 		helper = TestBed.inject( SplineTestHelper );
 
-		AbstractSpline.reset();
-
 	} );
 
 	it( 'should handle horizontal spline', fakeAsync( () => {

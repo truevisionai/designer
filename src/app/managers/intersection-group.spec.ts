@@ -84,7 +84,7 @@ describe( 'IntersectionGroup', () => {
 
 	it( 'should detect 1 group for circle-default-junction', fakeAsync( () => {
 
-		AbstractSpline.reset();
+		AbstractSpline.resetCounter();
 
 		splineTestHelper.addCircleRoad( 50 );
 

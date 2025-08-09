@@ -77,8 +77,6 @@ describe( 'ManeuverTool', () => {
 
 	it( 'should return true if links can connect', fakeAsync( () => {
 
-		AbstractSpline.reset();
-
 		helper.addDefaultJunction();
 
 		tick( 1000 );

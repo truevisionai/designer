@@ -27,7 +27,7 @@ export function setupTest (): void {
 
 	TvRoad.counter = 1; // Reset road counter for tests
 
-	AbstractSpline.reset();
+	AbstractSpline.resetCounter();
 
 }
 
