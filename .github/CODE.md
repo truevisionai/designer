@@ -359,3 +359,18 @@ onPointerMoved(pointerEventData: PointerEventData): void {
 ### Conclusion
 
 The recommended approach is to handle the exception in the service (`RoadService`) to maintain consistency, reduce code duplication, and simplify the tool classes. This approach centralizes error handling and makes the application more maintainable. If more context-specific handling is needed, consider providing additional information in the exceptions or using a combination of both approaches.
+
+## MVVM Architecture
+
+Always pass the Model to SetValueCommand or SetPositionCommand. Here’s why:
+Model is the Source of Truth:
+
+Changes should always be applied to the Model since it represents the persistent state of your application.
+The ViewModel reflects the Model’s state and is regenerated dynamically when needed.
+Why not pass the ViewModel?
+
+ViewModels are transient and are tied to user interactions. If you pass a ViewModel, you might run into issues when the ViewModel is destroyed (e.g., when the road is unselected).
+Passing the Model ensures that commands are consistent and reusable, even if the ViewModel or View is recreated.
+Why not pass the View?
+
+Views are purely visual and should never contain logic or state. Passing them tightly couples UI with business logic, violating MVVM principles.
