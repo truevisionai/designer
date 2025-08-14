@@ -57,7 +57,6 @@ export class SplineTestHelper {
 		public roadService: RoadService,
 		public roadFactory: RoadFactory,
 		public junctionService: JunctionService,
-		public junctionFactory: JunctionFactory,
 		public cirleToolService: RoadCircleToolService,
 		public splineLinkService: SplineLinkService,
 		public junctionToolHelper: JunctionToolHelper,

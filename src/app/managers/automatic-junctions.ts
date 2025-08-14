@@ -25,7 +25,6 @@ export class AutomaticJunctions {
 	constructor (
 		public mapService: MapService,
 		public roadService: RoadService,
-		public junctionFactory: JunctionFactory,
 		public junctionService: JunctionService,
 		public connectionManager: ConnectionManager,
 		private splineBuilder: SplineGeometryGenerator,
@@ -187,7 +186,7 @@ export class AutomaticJunctions {
 
 		if ( group.getJunctions().length == 0 ) {
 
-			junction = this.junctionFactory.createAutoJunctionFromGroup( group );
+			junction = JunctionFactory.createAutoJunctionFromGroup( group );
 
 		} else {
 

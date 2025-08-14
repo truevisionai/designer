@@ -10,7 +10,6 @@ import { Injectable } from '@angular/core';
 import { AbstractFactory } from "../core/interfaces/abstract-factory";
 import { Vector3 } from 'app/core/maths';
 import { Asset } from 'app/assets/asset.model';
-import { MapService } from 'app/services/map/map.service';
 import { TvJunctionType } from 'app/map/models/junctions/tv-junction-type';
 import { Log } from 'app/core/utils/log';
 import { SplineIntersection } from "../services/junction/spline-intersection";
@@ -23,10 +22,6 @@ import { DefaultJunction } from "../map/models/junctions/default-junction";
 	providedIn: 'root'
 } )
 export class JunctionFactory extends AbstractFactory<TvJunction> {
-
-	constructor ( private mapService: MapService ) {
-		super();
-	}
 
 	static createByType ( type: TvJunctionType, name: string, id: number ): TvJunction {
 
@@ -69,7 +64,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 		return new DefaultJunction( 'Junction', 0 );
 	}
 
-	createOrGetJunctionFromGroup ( group: IntersectionGroup ): TvJunction {
+	static createOrGetJunctionFromGroup ( group: IntersectionGroup ): TvJunction {
 
 		const junctions = group.getJunctions();
 
@@ -77,21 +72,21 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 		if ( junctions.length == 0 ) {
 
-			return this.createAutoJunction( group.getRepresentativePosition() );
+			return JunctionFactory.createJunctionAt( group.getRepresentativePosition() );
 
 		}
 
 		if ( junctions.length == 1 ) {
 
-			return junctions[0];
+			return junctions[ 0 ];
 
 		}
 
 	}
 
-	createAutoJunction ( position: Vector3 ): TvJunction {
+	static createJunctionAt ( position: Vector3 ): TvJunction {
 
-		const junction = this.createByType( TvJunctionType.AUTO );
+		const junction = JunctionFactory.createFromType( TvJunctionType.AUTO );
 
 		junction.centroid = position;
 
@@ -99,9 +94,9 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createAutoJunctionFromGroup ( group: IntersectionGroup ): AutoJunction {
+	static createAutoJunctionFromGroup ( group: IntersectionGroup ): AutoJunction {
 
-		const junction = this.createByType( TvJunctionType.AUTO ) as AutoJunction;
+		const junction = JunctionFactory.createFromType( TvJunctionType.AUTO ) as AutoJunction;
 
 		junction.centroid = group.getRepresentativePosition();
 
@@ -111,9 +106,9 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createAutoJunctionFromIntersection ( intersection: SplineIntersection ): TvJunction {
+	static createAutoJunctionFromIntersection ( intersection: SplineIntersection ): TvJunction {
 
-		const junction = this.createByType( TvJunctionType.AUTO ) as AutoJunction;
+		const junction = JunctionFactory.createFromType( TvJunctionType.AUTO ) as AutoJunction;
 
 		junction.centroid = intersection.getPosition();
 
@@ -127,7 +122,7 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	createFromPosition ( position: Vector3 ): TvJunction {
 
-		const junction = this.createByType();
+		const junction = JunctionFactory.createFromType();
 
 		junction.centroid = position;
 
@@ -141,9 +136,9 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createByType ( type: any = TvJunctionType.DEFAULT ): TvJunction {
+	static createFromType ( type: TvJunctionType = TvJunctionType.DEFAULT ): TvJunction {
 
-		const id = this.mapService.map.getNextJunctionId();
+		const id = TvJunction.getNextId();
 
 		const name = `Junction${ id }`;
 
@@ -159,9 +154,9 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createVirtualJunction ( mainRoad: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
+	static createVirtualJunction ( mainRoad: TvRoad, sStart: number, sEnd: number, orientation: TvOrientation ): TvVirtualJunction {
 
-		const id = this.mapService.map.getNextJunctionId();
+		const id = TvJunction.getNextId();
 
 		const name = `VirtualJunction${ id }`;
 
@@ -169,9 +164,9 @@ export class JunctionFactory extends AbstractFactory<TvJunction> {
 
 	}
 
-	createCustomJunction ( position: Vector3 ): TvJunction {
+	static createCustomJunction ( position: Vector3 ): TvJunction {
 
-		const junction = this.createByType();
+		const junction = JunctionFactory.createFromType();
 
 		junction.centroid = position;
 

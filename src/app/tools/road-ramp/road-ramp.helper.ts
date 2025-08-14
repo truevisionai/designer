@@ -38,7 +38,6 @@ export class RampToolHelper {
 		public junctionService: JunctionService,
 		public mapService: MapService,
 		public roadCutService: RoadDividerService,
-		public junctionFactory: JunctionFactory,
 		public splineService: SplineService,
 		public splineBuilder: SplineGeometryGenerator,
 		public roadDividerService: RoadDividerService,
@@ -55,7 +54,7 @@ export class RampToolHelper {
 
 			const orientation = TvOrientation.PLUS;
 
-			const junction = this.junctionFactory.createByType();
+			const junction = JunctionFactory.createFromType();
 
 			const road = this.roadService.clone( startPosition.road );
 

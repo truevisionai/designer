@@ -109,7 +109,7 @@ xdescribe( 'JunctionManager: InsertJunction', () => {
 
 	it( 'should insert junction in middle on spline with two roads', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createByType();
+		const J1 = JunctionFactory.createFromType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ) );
 
@@ -146,8 +146,8 @@ xdescribe( 'JunctionManager: InsertJunction', () => {
 
 	it( 'should insert second junction before first junction', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createByType();
-		const J2 = splineTestHelper.junctionFactory.createByType();
+		const J1 = JunctionFactory.createFromType();
+		const J2 = JunctionFactory.createFromType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ), 300 );
 
@@ -194,7 +194,7 @@ xdescribe( 'JunctionManager: InsertJunction', () => {
 
 	it( 'should insert at end with existing roads before junction', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createByType();
+		const J1 = JunctionFactory.createFromType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ) );
 
@@ -230,7 +230,7 @@ xdescribe( 'JunctionManager: InsertJunction', () => {
 
 	it( 'should insert at end and remove full covered road', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createByType();
+		const J1 = JunctionFactory.createFromType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ) );
 
@@ -270,7 +270,7 @@ xdescribe( 'JunctionManager: InsertJunction', () => {
 
 	it( 'should insert start with two roads after junction', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createByType();
+		const J1 = JunctionFactory.createFromType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ) );
 
@@ -384,9 +384,9 @@ xdescribe( 'JunctionManager: InsertJunction', () => {
 
 	it( 'should insert 3rd junction between 2 existing junctions', () => {
 
-		const J1 = splineTestHelper.junctionFactory.createByType();
-		const J2 = splineTestHelper.junctionFactory.createByType();
-		const J3 = splineTestHelper.junctionFactory.createByType();
+		const J1 = JunctionFactory.createFromType();
+		const J2 = JunctionFactory.createFromType();
+		const J3 = JunctionFactory.createFromType();
 
 		const spline = splineTestHelper.createStraightSpline( new Vector3( 0, 0, 0 ), 200 );
 

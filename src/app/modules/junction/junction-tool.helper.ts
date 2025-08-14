@@ -33,7 +33,6 @@ export class JunctionToolHelper {
 		public mapService: MapService,
 		public roadService: RoadService,
 		public connectionFactory: ConnectionFactory,
-		public junctionFactory: JunctionFactory,
 	) {
 	}
 
@@ -43,7 +42,7 @@ export class JunctionToolHelper {
 
 		const centroid = this.roadService.findCentroid( sortedLinks );
 
-		const junction = this.junctionFactory.createCustomJunction( centroid );
+		const junction = JunctionFactory.createCustomJunction( centroid );
 
 		if ( this.debug ) Log.info( 'coords', sortedLinks.length, sortedLinks );
 

@@ -19,7 +19,6 @@ import { BaseDataService } from "../../core/interfaces/data.service";
 export class JunctionService extends BaseDataService<TvJunction> {
 
 	constructor (
-		private factory: JunctionFactory,
 		private mapService: MapService,
 	) {
 		super();

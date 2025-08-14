@@ -41,7 +41,6 @@ export class JunctionManager {
 		public roadFactory: RoadFactory,
 		public roadManager: RoadManager,
 		public roadService: RoadService,
-		public junctionFactory: JunctionFactory,
 		public junctionService: JunctionService,
 		public junctionRoadService: JunctionRoadService,
 		public splineFixer: SplineFixerService,
@@ -384,7 +383,7 @@ export class JunctionManager {
 
 	createCoordAndAddLinksAndJunction ( group: IntersectionGroup ): void {
 
-		const junction = this.junctionFactory.createOrGetJunctionFromGroup( group );
+		const junction = JunctionFactory.createOrGetJunctionFromGroup( group );
 
 		const links: TvLink[] = this.getRoadLinkFromCoords( group, junction );
 
