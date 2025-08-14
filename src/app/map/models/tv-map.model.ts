@@ -245,7 +245,8 @@ export class TvMap {
 	}
 
 	getNextJunctionId (): number {
-		return this.junctions.next();
+		// return this.junctions.next();
+		return TvJunction.getNextId();
 	}
 
 	getJunctionCount (): number {

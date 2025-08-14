@@ -14,6 +14,7 @@ import { ToolType } from "../app/tools/tool-types.enum";
 import { BaseTool } from "../app/tools/base-tool";
 import { ToolManager } from "../app/managers/tool-manager";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
+import { TvJunction } from "../app/map/models/junctions/tv-junction";
 
 export function setupTest (): void {
 
@@ -28,6 +29,7 @@ export function setupTest (): void {
 	TvRoad.counter = 1; // Reset road counter for tests
 
 	AbstractSpline.resetCounter();
+	TvJunction.resetCounter();
 
 }
 

@@ -51,6 +51,16 @@ export class TvJunction {
 
 	private uuid: string;
 
+	private static counter = 1;
+
+	public static getNextId (): number {
+		return TvJunction.counter++;
+	}
+
+	public static resetCounter (): void {
+		TvJunction.counter = 1;
+	}
+
 	protected constructor ( public name: string, public id: number ) {
 
 		this.uuid = MathUtils.generateUUID();

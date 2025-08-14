@@ -1,34 +1,21 @@
-import { HttpClientModule } from "@angular/common/http";
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { EventServiceProvider } from "app/listeners/event-service-provider";
-import { JunctionManager } from "app/managers/junction-manager";
-import { disableMeshBuilding } from "app/modules/builder/builders/od-builder-config";
 import { TvJunctionBoundaryFactory } from "app/map/junction-boundary/tv-junction-boundary.factory";
 import { MapService } from "app/services/map/map.service";
 import { SplineTestHelper } from "app/services/spline/spline-test-helper.service";
+import { setupTest } from "../setup-tests";
 
 
 describe( 'JunctionBoundary Tests', () => {
 
 	let splineTestHelper: SplineTestHelper;
-	let eventServiceProvider: EventServiceProvider;
 	let mapService: MapService;
 
 	beforeEach( () => {
 
-		disableMeshBuilding();
-
-		TestBed.configureTestingModule( {
-			imports: [ HttpClientModule, MatSnackBarModule ],
-			providers: []
-		} );
+		setupTest();
 
 		splineTestHelper = TestBed.inject( SplineTestHelper );
-		eventServiceProvider = TestBed.inject( EventServiceProvider );
 		mapService = TestBed.inject( MapService );
-
-		eventServiceProvider.init();
 
 	} );
 

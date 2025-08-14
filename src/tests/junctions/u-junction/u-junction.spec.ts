@@ -39,11 +39,11 @@ describe( 'U-Junction', () => {
 
 		expect( mapService.getJunctionCount() ).toBe( 2 );
 
-		expect( mapService.findJunction( 1 ) ).toBeDefined();
-		expect( mapService.findJunction( 2 ) ).toBeDefined();
+		expect( mapService.map.getJunctions()[ 0 ] ).toBeDefined();
+		expect( mapService.map.getJunctions()[ 1 ] ).toBeDefined();
 
-		expectXJunction( mapService.findJunction( 1 ) );
-		expectXJunction( mapService.findJunction( 2 ) );
+		expectXJunction( mapService.map.getJunctions()[ 0 ] );
+		expectXJunction( mapService.map.getJunctions()[ 1 ] );
 
 		expect( mapService.getNonJunctionRoadCount() ).toBe( 6 );
 
@@ -105,7 +105,7 @@ describe( 'U-Junction', () => {
 
 		expect( mapService.getJunctionCount() ).toBe( 1 );
 
-		expectXJunction( mapService.findJunction( 2 ) );
+		expectXJunction( mapService.map.getJunctions()[ 0 ] );
 
 		expect( mapService.getNonJunctionRoadCount() ).toBe( 4 );
 
@@ -125,7 +125,7 @@ describe( 'U-Junction', () => {
 
 		expect( mapService.getJunctionCount() ).toBe( 1 );
 
-		expectTJunction( mapService.findJunction( 2 ) );
+		expectTJunction( mapService.map.getJunctions()[ 0 ] );
 
 		expect( mapService.getNonJunctionRoadCount() ).toBe( 4 );
 
@@ -145,8 +145,8 @@ describe( 'U-Junction', () => {
 
 		expect( mapService.getJunctionCount() ).toBe( 2 );
 
-		expectTJunction( mapService.findJunction( 1 ) );
-		expectTJunction( mapService.findJunction( 2 ) );
+		expectTJunction( mapService.map.getJunctions()[ 0 ] );
+		expectTJunction( mapService.map.getJunctions()[ 1 ] );
 
 		expect( mapService.getNonJunctionRoadCount() ).toBe( 4 );
 

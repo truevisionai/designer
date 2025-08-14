@@ -13,7 +13,7 @@ describe( 'H-Junction Tests', () => {
 	let helper: SplineTestHelper;
 	let mapService: MapService;
 
-	beforeEach( async () => {
+	beforeEach( () => {
 
 		setupTest();
 
@@ -40,17 +40,17 @@ describe( 'H-Junction Tests', () => {
 
 		expect( mapService.getJunctionCount() ).toBe( 2 );
 
-		expect( mapService.findJunction( 1 ) ).toBeDefined();
-		expect( mapService.findJunction( 2 ) ).toBeDefined();
+		expect( mapService.map.getJunctions()[ 0 ] ).toBeDefined();
+		expect( mapService.map.getJunctions()[ 1 ] ).toBeDefined();
 
-		expectXJunction( mapService.findJunction( 1 ) );
-		expectXJunction( mapService.findJunction( 2 ) );
+		expectXJunction( mapService.map.getJunctions()[ 0 ] );
+		expectXJunction( mapService.map.getJunctions()[ 1 ] );
 
 		expect( mapService.nonJunctionRoads.length ).toBe( 7 );
 
 	}
 
-	it( 'should have correct segments', async () => {
+	it( 'should have correct segments', () => {
 
 		const splines = helper.createHShapeWithXJunctions();
 
@@ -58,7 +58,7 @@ describe( 'H-Junction Tests', () => {
 
 	} );
 
-	it( 'should create simple h-junction with 3 roads', async () => {
+	it( 'should create simple h-junction with 3 roads', () => {
 
 		helper.createHShapeWithXJunctions();
 
@@ -66,7 +66,7 @@ describe( 'H-Junction Tests', () => {
 
 	} );
 
-	it( 'every non-junction roads to have junction connections', async () => {
+	it( 'every non-junction roads to have junction connections', () => {
 
 		helper.createHShapeWithXJunctions();
 
@@ -79,7 +79,7 @@ describe( 'H-Junction Tests', () => {
 	} );
 
 
-	it( 'should handle simple horizontal spline update', async () => {
+	it( 'should handle simple horizontal spline update', () => {
 
 		const splines = helper.createHShapeWithXJunctions();
 
@@ -92,7 +92,7 @@ describe( 'H-Junction Tests', () => {
 	} );
 
 
-	it( 'should have same segments after big horizontal spline update', async () => {
+	it( 'should have same segments after big horizontal spline update', () => {
 
 		const splines = helper.createHShapeWithXJunctions();
 
@@ -109,7 +109,7 @@ describe( 'H-Junction Tests', () => {
 	} );
 
 
-	it( 'should handle H shape to TT shape conversion', async () => {
+	it( 'should handle H shape to TT shape conversion', () => {
 
 		// horizontal spline will be moved to the top
 		// which will create two T-junction on the top
@@ -129,8 +129,8 @@ describe( 'H-Junction Tests', () => {
 		expect( mapService.getJunctionCount() ).toBe( 2 );
 		expect( mapService.getNonJunctionRoadCount() ).toBe( 5 );
 
-		expectTJunction( mapService.findJunction( 1 ) );
-		expectTJunction( mapService.findJunction( 2 ) );
+		expectTJunction( mapService.map.getJunctions()[ 0 ] );
+		expectTJunction( mapService.map.getJunctions()[ 1 ] );
 
 	} );
 
