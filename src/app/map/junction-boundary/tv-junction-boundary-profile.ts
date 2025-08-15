@@ -16,11 +16,10 @@ import { TvLaneBoundary } from "./tv-lane-boundary";
 
 export class TvJunctionBoundaryProfile {
 
-	constructor (
-		private junction: TvJunction,
-		private outerBoundary?: TvJunctionBoundary,
-	) {
-		this.outerBoundary = outerBoundary || new TvJunctionBoundary();
+	private outerBoundary: TvJunctionBoundary;
+
+	constructor ( private readonly junction: TvJunction ) {
+		this.outerBoundary = new TvJunctionBoundary();
 	}
 
 	getOuterBoundary (): TvJunctionBoundary {
