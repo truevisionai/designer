@@ -71,6 +71,11 @@ export class TvJunction {
 
 		this.boundaryProfile = new TvJunctionBoundaryProfile( this );
 
+		// ensure that the id is unique and does not conflict with the counter
+		if ( id >= TvJunction.counter ) {
+			TvJunction.counter = this.id + 1;
+		}
+
 	}
 
 	get auto (): boolean {
