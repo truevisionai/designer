@@ -7,8 +7,6 @@ import { TvRoad } from 'app/map/models/tv-road.model';
 import { RoadFactory } from 'app/factories/road-factory.service';
 import { SplineFactory } from '../spline/spline.factory';
 import { MapService } from '../map/map.service';
-import { TvLink, TvLinkType } from 'app/map/models/tv-link';
-import { LinkFactory } from 'app/map/models/link-factory';
 import { TvLane } from 'app/map/models/tv-lane';
 import { Vector2, Vector3 } from 'app/core/maths';
 import { TvMapQueries } from 'app/map/queries/tv-map-queries';
@@ -23,11 +21,8 @@ import { TvPosTheta } from "../../map/models/tv-pos-theta";
 import { Maths } from "../../utils/maths";
 import { TvLaneCoord } from 'app/map/models/tv-lane-coord';
 import { RoadUtils } from 'app/utils/road.utils';
-import { GeometryUtils } from '../surface/geometry-utils';
-import { MapQueryService } from 'app/map/queries/map-query.service';
 import { Log } from 'app/core/utils/log';
 import { ModelNotFoundException } from 'app/exceptions/exceptions';
-import { Commands } from 'app/commands/commands';
 import { RoadWidthService } from './road-width.service';
 import { LaneDistance } from 'app/map/road/road-distance';
 
@@ -390,11 +385,5 @@ export class RoadService extends BaseDataService<TvRoad> {
 		return position;
 	}
 
-	findCentroid ( links: TvLink[] ): Vector3 {
 
-		const points = links.map( link => link.getPosition().toVector3() );
-
-		return GeometryUtils.getCentroid( points );
-
-	}
 }

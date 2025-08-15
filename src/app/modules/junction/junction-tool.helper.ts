@@ -4,16 +4,14 @@
 
 import { Injectable } from '@angular/core';
 import { JunctionService } from 'app/services/junction/junction.service';
-import { MapService } from 'app/services/map/map.service';
 import { BaseToolService } from '../../tools/base-tool.service';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
 import { JunctionDebugService } from "../../services/junction/junction.debug";
 import { TvLink } from 'app/map/models/tv-link';
-import { Log } from 'app/core/utils/log';
-import { RoadService } from 'app/services/road/road.service';
 import { ConnectionFactory } from 'app/factories/connection.factory';
 import { JunctionFactory } from "../../factories/junction.factory";
 import { GeometryUtils } from 'app/services/surface/geometry-utils';
+import { Vector3 } from "../../core/maths";
 
 @Injectable( {
 	providedIn: 'root'
@@ -30,8 +28,6 @@ export class JunctionToolHelper {
 		public junctionDebugger: JunctionDebugService,
 		public junctionService: JunctionService,
 		public base: BaseToolService,
-		public mapService: MapService,
-		public roadService: RoadService,
 		public connectionFactory: ConnectionFactory,
 	) {
 	}
@@ -40,15 +36,21 @@ export class JunctionToolHelper {
 
 		const sortedLinks: TvLink[] = GeometryUtils.sortRoadLinks( roadLinks );
 
-		const centroid = this.roadService.findCentroid( sortedLinks );
+		const centroid = this.findCentroid( sortedLinks );
 
 		const junction = JunctionFactory.createCustomJunction( centroid );
-
-		if ( this.debug ) Log.info( 'coords', sortedLinks.length, sortedLinks );
 
 		this.addConnections( sortedLinks, junction );
 
 		return junction;
+	}
+
+	private findCentroid ( links: TvLink[] ): Vector3 {
+
+		const points = links.map( link => link.getPosition().toVector3() );
+
+		return GeometryUtils.getCentroid( points );
+
 	}
 
 	private addConnections ( sortedLinks: TvLink[], junction: TvJunction ): void {
