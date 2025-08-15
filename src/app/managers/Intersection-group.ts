@@ -78,7 +78,7 @@ export class IntersectionGroup {
 
 		Assert.isLessThanOrEqual( junctions.length, 1, 'More than one junction found in group' );
 
-		return Array.from( junctions );
+		return junctions;
 
 	}
 
@@ -109,11 +109,11 @@ export class IntersectionGroup {
 
 		const junctions = new Set<TvJunction>();
 
+		const center = this.getRepresentativePosition();
+
+		const groupPosition = new Vector2( center.x, center.y );
+
 		this.getJunctionSegments().forEach( junction => {
-
-			const center = this.getRepresentativePosition();
-
-			const groupPosition = new Vector2( center.x, center.y );
 
 			const isNearGroup = junction.distanceToPoint( groupPosition ) < 10;
 
@@ -157,7 +157,7 @@ export class IntersectionGroup {
 
 	private getJunctionSegments (): TvJunction[] {
 
-		const junctions = [];
+		const junctions: TvJunction[] = [];
 
 		this.splines.forEach( spline => {
 
@@ -169,7 +169,7 @@ export class IntersectionGroup {
 
 		} );
 
-		return Array.from( junctions );
+		return junctions
 
 	}
 
