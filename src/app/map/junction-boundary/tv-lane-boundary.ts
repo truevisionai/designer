@@ -51,6 +51,16 @@ export class TvLaneBoundary extends TvJunctionSegmentBoundary {
 
 	getPoints (): TvPosTheta[] {
 
+		if ( this.road.geometries.length == 0 ) {
+			Log.warn( 'Road has no geometries', this.road.toString() );
+			return [];
+		}
+
+		if ( this.road.length == 0 ) {
+			Log.warn( 'Road has no length', this.road.toString() );
+			return [];
+		}
+
 		if ( this.boundaryLane.isCarriageWay() ) {
 			return this.getOuterPoints();
 		}
@@ -61,31 +71,11 @@ export class TvLaneBoundary extends TvJunctionSegmentBoundary {
 
 	getOuterPoints ( stepSize: number = 1 ): TvPosTheta[] {
 
-		if ( this.road.geometries.length == 0 ) {
-			Log.warn( 'Road has no geometries', this.road.toString() );
-			return [];
-		}
-
-		if ( this.road.length == 0 ) {
-			Log.warn( 'Road has no length', this.road.toString() );
-			return [];
-		}
-
 		return this.getBoundaryPositions( stepSize, TvLaneLocation.END );
 
 	}
 
 	getInnerPoints ( stepSize: number = 1 ): TvPosTheta[] {
-
-		if ( this.road.geometries.length == 0 ) {
-			Log.warn( 'Road has no geometries', this.road.toString() );
-			return [];
-		}
-
-		if ( this.road.length == 0 ) {
-			Log.warn( 'Road has no length', this.road.toString() );
-			return [];
-		}
 
 		return this.getBoundaryPositions( stepSize, TvLaneLocation.START );
 
