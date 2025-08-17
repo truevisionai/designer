@@ -4,9 +4,9 @@
 
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { CROSSING8_XODR, SplineTestHelper, TOWN_01 } from "app/services/spline/spline-test-helper.service";
-import { TvLaneBoundary } from "./tv-lane-boundary";
-import { TvJointBoundary } from "./tv-joint-boundary";
-import { setupTest } from "../../../tests/setup-tests";
+import { TvLaneBoundary } from "../tv-lane-boundary";
+import { TvJointBoundary } from "../tv-joint-boundary";
+import { setupTest } from "../../../../tests/setup-tests";
 
 xdescribe( 'TvJunctionInnerBoundaryService', () => {
 

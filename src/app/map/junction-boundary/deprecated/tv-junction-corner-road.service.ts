@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { TvJunction } from "../models/junctions/tv-junction";
-import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
-import { TvRoad } from "../models/tv-road.model";
+import { TvJunction } from "../../models/junctions/tv-junction";
+import { TvJunctionConnection } from "../../models/connections/tv-junction-connection";
+import { TvRoad } from "../../models/tv-road.model";
 
 @Injectable( {
 	providedIn: 'root'

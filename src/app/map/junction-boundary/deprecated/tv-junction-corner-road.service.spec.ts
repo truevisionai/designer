@@ -4,8 +4,8 @@
 
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { TvJunctionCornerRoadService } from './tv-junction-corner-road.service';
-import { CROSSING8_XODR, SplineTestHelper, TOWN_01, TOWN_02 } from "../../services/spline/spline-test-helper.service";
-import { setupTest } from "../../../tests/setup-tests";
+import { CROSSING8_XODR, SplineTestHelper, TOWN_01, TOWN_02 } from "../../../services/spline/spline-test-helper.service";
+import { setupTest } from "../../../../tests/setup-tests";
 
 xdescribe( 'TvJunctionCornerRoadService', () => {
 

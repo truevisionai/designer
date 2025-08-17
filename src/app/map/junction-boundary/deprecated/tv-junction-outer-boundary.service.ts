@@ -3,18 +3,18 @@
  */
 
 import { Injectable } from "@angular/core";
-import { TvJunction } from "../models/junctions/tv-junction";
-import { TvContactPoint } from "../models/tv-common";
-import { TvLane } from "../models/tv-lane";
-import { TvRoad } from "../models/tv-road.model";
-import { TvRoadCoord } from "../models/TvRoadCoord";
-import { TvJunctionBoundary } from "./tv-junction-boundary";
+import { TvJunction } from "../../models/junctions/tv-junction";
+import { TvContactPoint } from "../../models/tv-common";
+import { TvLane } from "../../models/tv-lane";
+import { TvRoad } from "../../models/tv-road.model";
+import { TvRoadCoord } from "../../models/TvRoadCoord";
+import { TvJunctionBoundary } from "../tv-junction-boundary";
 import { TvJunctionCornerRoadService } from "./tv-junction-corner-road.service";
 import { DebugDrawService } from "app/services/debug/debug-draw.service";
 import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { traverseLanes } from "app/utils/traverseLanes";
-import { TvLaneBoundary } from "./tv-lane-boundary";
-import { TvJointBoundary } from "./tv-joint-boundary";
+import { TvLaneBoundary } from "../tv-lane-boundary";
+import { TvJointBoundary } from "../tv-joint-boundary";
 import { Log } from "app/core/utils/log";
 
 
