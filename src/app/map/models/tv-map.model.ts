@@ -177,19 +177,7 @@ export class TvMap {
 	 * @param road
 	 */
 	insertRoad ( road: TvRoad ): void {
-
-		road.setId( this.generateRoadId() );
-
 		this.addRoad( road );
-
-	}
-
-	/**
-	 *
-	 * @param road
-	 */
-	updateRoadId ( road: TvRoad ): void {
-		road.setId( this.generateRoadId() );
 	}
 
 	hasRoad ( road: TvRoad | number ): boolean {

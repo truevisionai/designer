@@ -49,7 +49,11 @@ export class RoadFactory {
 
 	static createRoad (): TvRoad {
 
-		return new TvRoad();
+		const id = TvRoad.getNextId();
+
+		const name = `Road-${ id }`;
+
+		return new TvRoad( name, null, id );
 
 	}
 

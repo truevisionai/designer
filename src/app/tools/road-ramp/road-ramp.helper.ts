@@ -72,8 +72,6 @@ export class RampToolHelper {
 
 		const rampRoad = RoadFactory.createRampRoad( startCoord, endCoord );
 
-		this.mapService.map.updateRoadId( rampRoad );
-
 		return rampRoad;
 
 	}

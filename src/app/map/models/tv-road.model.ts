@@ -78,7 +78,7 @@ export class TvRoad {
 
 	public readonly name: string;
 
-	private _id: number;
+	public readonly id: number;
 
 	private _junction: TvJunction;
 
@@ -91,13 +91,21 @@ export class TvRoad {
 	 * NOTE: DO NOT RESET THIS COUNTER UNLESS YOU ARE SURE ABOUT THE CONSEQUENCES.
 	 * Resetting this counter can lead to ID conflicts and data integrity issues.
 	 */
-	public static counter: number = 0;
+	private static counter: number = 0;
+
+	public static resetCounter ( id = 1 ): void {
+		TvRoad.counter = id;
+	}
+
+	public static getNextId (): number {
+		return TvRoad.counter++;
+	}
 
 	constructor ( name?: string, junction?: TvJunction, id?: number ) {
 
 		this.uuid = MathUtils.generateUUID();
 		this.name = name;
-		this._id = id || TvRoad.counter++;
+		this.id = id || TvRoad.getNextId();
 		this._junction = junction;
 		this.planView = new TvPlaneView();
 		this.relations = new TvRoadRelations( this );
@@ -110,28 +118,16 @@ export class TvRoad {
 		this.signalGroup.name = 'SignalGroup';
 		this.objectGroup.name = 'ObjectGroup';
 
-		this.setId( this._id );
+		// set counter to maximum id value
+		if ( id >= TvRoad.counter ) TvRoad.counter = id + 1;
 	}
 
 	setMap ( map: TvMap ): void {
 		this.map = map;
 	}
 
-	setId ( id: number ): void {
-		this._id = id;
-
-		// set counter to maximum id value
-		if ( id >= TvRoad.counter ) {
-			TvRoad.counter = id + 1;
-		}
-	}
-
 	getMap (): TvMap {
 		return this.map;
-	}
-
-	get id (): number {
-		return this._id;
 	}
 
 	get sStart (): number {
@@ -235,11 +231,11 @@ export class TvRoad {
 	toString (): string {
 
 		if ( this.isJunction ) {
-			return `ConnectingRoad:${ this._id } Junction:${ this.junctionId } Successor:${ this.successor?.id } Predecessor:${ this.predecessor?.id }`;
+			return `ConnectingRoad:${ this.id } Junction:${ this.junctionId } Successor:${ this.successor?.id } Predecessor:${ this.predecessor?.id }`;
 		}
 
 		// return `Road:${ this.id } Successor:${ this.successor?.type }:${ this.successor?.element.id } Predecessor:${ this.predecessor?.type }:${ this.predecessor?.element.id }`;
-		return `Road:${ this._id }`;
+		return `Road:${ this.id }`;
 
 	}
 

@@ -26,8 +26,7 @@ export function setupTest (): void {
 
 	disableMeshBuilding();
 
-	TvRoad.counter = 1; // Reset road counter for tests
-
+	TvRoad.resetCounter();
 	AbstractSpline.resetCounter();
 	TvJunction.resetCounter();
 
