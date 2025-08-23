@@ -94,7 +94,7 @@ describe( 'GeoReference', () => {
 
 		const map = testHelper.openDriveParser.parse( contents );
 
-		const road = map.getRoad( 1 );
+		const road = map.getRoads()[ 0 ];
 
 		expect( road ).toBeDefined();
 		expect( road.length ).toBe( 6.30498600 );

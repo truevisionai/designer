@@ -222,7 +222,7 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 		const junctionId = parseInt( xml.attr_junction ) || -1;
 		const junction = junctionId > 0 ? this.findJunction( junctionId ) : null;
 
-		const road = new TvRoad( name, junction );
+		const road = new TvRoad( name, junction, id );
 
 		this.roads.set( id, road );
 
