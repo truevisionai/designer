@@ -53,7 +53,7 @@ export class JunctionMeshBuilder implements MeshBuilder<TvJunction> {
 
 	build ( junction: TvJunction ): Object3D {
 
-		const geometry = this.getJunctionOutlineGeometry( junction );
+		const geometry = this.getJunctionGeometry( junction );
 
 		return new Mesh( geometry, this.junctionMaterial );
 

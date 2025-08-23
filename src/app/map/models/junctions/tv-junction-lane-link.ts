@@ -96,5 +96,14 @@ export class TvJunctionLaneLink {
 	isLinkedToLane ( lane: TvLane ): boolean {
 		return this.incomingLane.equals( lane ) || this.connectingLane.isSuccessor( lane ) || this.connectingLane.isPredecessor( lane );
 	}
+
+	matchesFromAndTo ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
+
+		const incomingMatches = this.incomingLane.laneSection.road.equals( incomingRoad );
+		const outgoingMatches = this.connectingRoad.getSuccessor().equals( outgoingRoad ) ||
+			this.connectingRoad.getPredecessor().equals( outgoingRoad );
+
+		return incomingMatches && outgoingMatches;
+	}
 }
 

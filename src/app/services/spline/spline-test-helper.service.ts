@@ -42,6 +42,7 @@ export const TOWN_04 = 'assets/open-drive/town-04.xodr';
 export const TOWN_05 = 'assets/open-drive/town-05.xodr';
 export const TOWN_06 = 'assets/open-drive/town-06.xodr';
 export const TOWN_07 = 'assets/open-drive/town-07.xodr';
+export const TONGJI = 'assets/open-drive/tongji.xodr';
 
 export const FRENCH_SMALL_XODR = 'assets/stubs/french-small.xodr';
 export const OSM2_XODR = 'assets/stubs/osm-2-xodr-small.xodr';

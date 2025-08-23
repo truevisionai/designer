@@ -102,6 +102,10 @@ export class TvJunction {
 		return this.boundaryProfile.getOuterBoundary();
 	}
 
+	getBoundaryProfile(): TvJunctionBoundaryProfile {
+		return this.boundaryProfile;
+	}
+
 	setMap ( map: TvMap ): void {
 		this.map = map;
 	}
