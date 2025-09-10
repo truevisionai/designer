@@ -14,13 +14,15 @@ import { TvReferenceElementType, TvRoadSignal, TvSignalDependencyType } from 'ap
 import { TvSignalControllerFactory } from 'app/map/signal-controller/tv-signal-controller.factory';
 import { TvSignalControllerService } from "../../map/signal-controller/tv-signal-controller.service";
 import { TvJunctionController } from "../../map/models/junctions/tv-junction-controller";
-import { RoadSignalService } from "../../map/road-signal/road-signal.service";
 import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { LaneUtils } from 'app/utils/lane.utils';
 import { Log } from 'app/core/utils/log';
 import { EmptyController } from 'app/core/controllers/empty-controller';
 import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
 import { createRoadDistance } from 'app/map/road/road-distance';
+import { MapEvents } from "../../events/map-events";
+import { RoadSignalAddedEvent, RoadSignalRemovedEvent } from "../../events/road-object.events";
+import { Maths } from 'app/utils/maths';
 
 export enum AutoSignalizationType {
 	ALL_GO,
@@ -46,7 +48,6 @@ export class AutoSignalizeJunctionService {
 
 	constructor (
 		private signalFactory: RoadSignalFactory,
-		private signalService: RoadSignalService,
 		private controllerService: TvSignalControllerService,
 		private controllerFactory: TvSignalControllerFactory
 	) {
@@ -103,10 +104,16 @@ export class AutoSignalizeJunctionService {
 
 		signals.forEach( signal => {
 
-			const existingSignal = this.signalService.findSignal( road, signal );
+			const existingSignal = road.getRoadSignals().find( item =>
+				item.type == signal.type && Maths.approxEquals( item.s, signal.s )
+			);
 
 			if ( existingSignal ) {
-				this.signalService.removeSignal( road, existingSignal );
+
+				road.removeRoadSignal( signal );
+
+				MapEvents.roadSignalRemoved.emit( new RoadSignalRemovedEvent( road, existingSignal ) );
+
 			}
 
 			road.addSignal( signal );
@@ -121,7 +128,9 @@ export class AutoSignalizeJunctionService {
 
 	addSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
-		this.signalService.addSignal( road, signal );
+		road.addRoadSignalInstance( signal );
+
+		MapEvents.roadSignalAdded.emit( new RoadSignalAddedEvent( road, signal ) );
 
 	}
 
@@ -333,11 +342,15 @@ export class AutoSignalizeJunctionService {
 
 		for ( const incomingRoad of junction.getIncomingRoads() ) {
 
-			const signals = this.signalService.findSignalsByType( incomingRoad, [ '206', '205', '294', '1000001' ] );
+			const signals = incomingRoad.getRoadSignals().filter( signal => {
+				[ '206', '205', '294', '1000001' ].includes( signal.type );
+			} );
 
 			for ( const signal of signals ) {
 
-				this.signalService.removeSignal( incomingRoad, signal );
+				incomingRoad.removeRoadSignal( signal );
+
+				MapEvents.roadSignalRemoved.emit( new RoadSignalRemovedEvent( incomingRoad, signal ) );
 
 			}
 		}

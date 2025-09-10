@@ -7,7 +7,6 @@ import { TvRoadCoord } from 'app/map/models/TvRoadCoord';
 import { TvDynamicTypes, TvOrientation, TvUnit } from 'app/map/models/tv-common';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { Asset } from 'app/assets/asset.model';
-import { RoadSignalIdService } from "./road-signal-id.service";
 
 const POLE_SIGN_ZOFFSET = 2.0;
 const ROAD_SIGN_HEIGHT = 0.5;
@@ -18,9 +17,7 @@ const ROAD_SIGN_WIDTH = 0.5;
 } )
 export class RoadSignalFactory {
 
-	constructor (
-		private idService: RoadSignalIdService
-	) {
+	constructor () {
 	}
 
 	static createMockRoadSignal (): TvRoadSignal {
@@ -132,15 +129,9 @@ export class RoadSignalFactory {
 
 	private createSignal ( s: number, t: number, name: string ): TvRoadSignal {
 
-		const id = this.getNextId();
+		const id = TvRoadSignal.getNextId();
 
 		return new TvRoadSignal( s, t, id, name );
-
-	}
-
-	private getNextId (): number {
-
-		return this.idService.getNextId();
 
 	}
 }
