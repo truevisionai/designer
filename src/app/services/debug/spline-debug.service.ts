@@ -491,8 +491,10 @@ export class SplineDebugService extends BaseDebugger<AbstractSpline> {
 			end.x, end.y, end.z
 		] );
 
+		const color = contact == TvContactPoint.START ? ColorUtils.GREEN : ColorUtils.RED;
+
 		const lineMaterial = new LineMaterial( {
-			color: RoadNode.defaultColor,
+			color: color,
 			linewidth: RoadNode.defaultWidth,
 			resolution: new Vector2( window.innerWidth, window.innerHeight ), // Add this line
 			depthTest: false,
