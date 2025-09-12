@@ -76,9 +76,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 		const laneSections = road.getLaneProfile().getLaneSections();
 
-		for ( let i = 0; i < laneSections.length; i++ ) {
-
-			const laneSection = laneSections[ i ];
+		for ( const laneSection of laneSections ) {
 
 			laneSection.gameObject = this.buildLaneSection( road, laneSection );
 
@@ -164,7 +162,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return true;
 	}
 
-	private createRoadGameObject ( road: TvRoad ): any {
+	private createRoadGameObject ( road: TvRoad ): GameObject {
 
 		const gameObject = new GameObject( 'Road:' + road.id );
 
@@ -173,7 +171,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return gameObject;
 	}
 
-	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): any {
+	private buildLaneSection ( road: TvRoad, laneSection: TvLaneSection ): GameObject {
 
 		const laneSectionMesh = new GameObject( 'LaneSection' );
 
@@ -216,7 +214,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 		return laneSectionMesh;
 	}
 
-	private createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
+	private createCenterLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): GameObject {
 
 		const geometry = new BufferGeometry();
 
@@ -226,9 +224,9 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	private buildLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
+	private buildLane ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): GameObject {
 
-		let stepSize = road.isJunction ? OdBuilderConfig.JUNCTION_STEP : OdBuilderConfig.ROAD_STEP;
+		const stepSize = road.isJunction ? OdBuilderConfig.JUNCTION_STEP : OdBuilderConfig.ROAD_STEP;
 
 		lane.meshData = null;
 		lane.meshData = new MeshGeometryData;
@@ -239,12 +237,12 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 		for ( let sOffset = sStart; sOffset < sEnd; sOffset += stepSize ) {
 
-			this.makeLaneVertices( road, laneSection, lane, sOffset );
+			this.makeLaneVertices( road, laneSection, lane, sOffset as RoadDistance );
 
 		}
 
 		// add last s geometry to close any gaps
-		this.makeLaneVertices( road, laneSection, lane, sEnd - Maths.Epsilon );
+		this.makeLaneVertices( road, laneSection, lane, sEnd - Maths.Epsilon as RoadDistance );
 
 		let perStep = 2;
 
@@ -275,7 +273,7 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	buildLaneV2 ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): any {
+	private buildLaneV2 ( lane: TvLane, laneSection: TvLaneSection, road: TvRoad ): GameObject {
 
 		const geometry = new LaneBufferGeometry( lane, laneSection, road );
 
@@ -338,36 +336,35 @@ export class RoadMeshBuilder implements MeshBuilder<TvRoad> {
 
 	}
 
-	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, sOffset: number ): void {
+	private makeLaneVertices ( road: TvRoad, laneSection: TvLaneSection, lane: TvLane, roadDistance: RoadDistance ): void {
 
-		const distance = sOffset - laneSection.s as RoadDistance;
-		const start = road.getLaneStartPosition( lane, distance, 0, false );
-		const end = road.getLaneEndPosition( lane, distance, 0, false );
+		const start = road.getLaneStartPosition( lane, roadDistance, 0, false );
+		const end = road.getLaneEndPosition( lane, roadDistance, 0, false );
 
-		const width = lane.getWidthValue( sOffset - laneSection.s );
-		const height = lane.getHeightValue( sOffset - laneSection.s );
+		const width = lane.getWidthValue( roadDistance - laneSection.s );
+		const height = lane.getHeightValue( roadDistance - laneSection.s );
 
 		let vv1: Vertex;
 		let vv2: Vertex;
 
 		const v1 = new Vertex();
 		v1.position = start.position?.clone();
-		v1.uvs = new Vector2( 0, sOffset );
+		v1.uvs = new Vector2( 0, roadDistance );
 
 		if ( height.inner > 0 ) {
 			vv1 = new Vertex();
 			vv1.position = start.position?.clone().add( new Vector3( 0, 0, height.inner ) );
-			vv1.uvs = new Vector2( height.inner, sOffset );
+			vv1.uvs = new Vector2( height.inner, roadDistance );
 		}
 
 		const v2 = new Vertex();
 		v2.position = end.position?.clone();
-		v2.uvs = new Vector2( height.inner + width, sOffset );
+		v2.uvs = new Vector2( height.inner + width, roadDistance );
 
 		if ( height.outer > 0 ) {
 			vv2 = new Vertex();
 			vv2.position = end.position?.clone().add( new Vector3( 0, 0, height.outer ) );
-			vv2.uvs = new Vector2( height.inner + width + height.outer, sOffset );
+			vv2.uvs = new Vector2( height.inner + width + height.outer, roadDistance );
 		}
 
 		if ( lane.isRight ) {
