@@ -22,7 +22,6 @@ import { AssetService } from 'app/assets/asset.service';
 import { FileUtils } from 'app/io/file-utils';
 import { ProjectService } from './editor/project.service';
 import { MapEvents } from 'app/events/map-events';
-import { RoadSignalIdService } from "../map/road-signal/road-signal-id.service";
 import { LocalStorage, STORAGE_KEYS } from './local-storage';
 import { Environment } from 'app/core/utils/environment';
 import { MapFixer } from './map/map-fixer.service';
@@ -44,7 +43,6 @@ export class TvSceneFileService {
 		private projectService: ProjectService,
 		private snackBar: SnackBar,
 		private scenarioService: ScenarioService,
-		private signalIdService: RoadSignalIdService,
 		private localStorage: LocalStorage,
 		private mapFixer: MapFixer,
 	) {
@@ -141,8 +139,6 @@ export class TvSceneFileService {
 		SceneService.removeFromMain( map.gameObject );
 
 		map.destroy();
-
-		this.signalIdService.reset();
 
 		MapEvents.mapRemoved.emit( map );
 	}

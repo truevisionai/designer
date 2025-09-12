@@ -19,6 +19,8 @@ import { SimpleControlPoint } from "../../objects/simple-control-point";
 import { DebugState } from 'app/services/debug/debug-state';
 import { Log } from 'app/core/utils/log';
 import { Commands } from 'app/commands/commands';
+import { MapEvents } from "../../events/map-events";
+import { RoadSignalAddedEvent, RoadSignalRemovedEvent, RoadSignalUpdatedEvent } from "../../events/road-object.events";
 
 export class RoadSignTool extends BaseTool<any> {
 
@@ -300,7 +302,9 @@ export class RoadSignTool extends BaseTool<any> {
 
 	private addRoadSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
-		this.tool.roadSignalService.addSignal( road, signal );
+		road.addSignal( signal );
+
+		MapEvents.roadSignalAdded.emit( new RoadSignalAddedEvent( road, signal ) );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
 
@@ -308,7 +312,7 @@ export class RoadSignTool extends BaseTool<any> {
 
 	private updateRoadSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
-		this.tool.roadSignalService.updateSignal( road, signal );
+		MapEvents.roadSignalUpdated.emit( new RoadSignalUpdatedEvent( road, signal ) );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
 
@@ -316,7 +320,9 @@ export class RoadSignTool extends BaseTool<any> {
 
 	private removeRoadSignal ( road: TvRoad, signal: TvRoadSignal ): void {
 
-		this.tool.roadSignalService.removeSignal( road, signal );
+		road.removeRoadSignal( signal );
+
+		MapEvents.roadSignalRemoved.emit( new RoadSignalRemovedEvent( road, signal ) );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.DEFAULT );
 

@@ -11,6 +11,8 @@ import { SelectionService } from './selection.service';
 import { Vector3 } from 'app/core/maths';
 import { ViewControllerService } from "../views/editor/viewport/view-controller.service";
 import { CursorService } from 'app/services/editor/cursor.service';
+import { MapService } from "../services/map/map.service";
+import { TvMap } from 'app/map/models/tv-map.model';
 
 @Injectable( {
 	providedIn: 'root'
@@ -24,11 +26,16 @@ export class BaseToolService {
 	private movingStrategies: IMovingStrategy[] = [];
 
 	constructor (
-		public injector: Injector,
-		public selection: SelectionService,
-		private viewController: ViewControllerService,
-		private cursorService: CursorService,
+		public readonly injector: Injector,
+		public readonly selection: SelectionService,
+		public readonly viewController: ViewControllerService,
+		public readonly cursorService: CursorService,
+		public readonly mapService: MapService,
 	) {
+	}
+
+	get map (): TvMap {
+		return this.mapService.map;
 	}
 
 	addSelectionStrategy ( strategy: BaseSelectionStrategy<any> ): void {

@@ -47,6 +47,16 @@ export class TvRoadSignal {
 
 	public mesh: Object3D;
 
+	private static counter: number = 1;
+
+	public static getNextId (): number {
+		return TvRoadSignal.counter++;
+	}
+
+	public static resetCounter (): void {
+		TvRoadSignal.counter = 1;
+	}
+
 	/**
 	 *
 	 * @param s
@@ -89,6 +99,8 @@ export class TvRoadSignal {
 		public roll: number = 0
 	) {
 		this.uuid = MathUtils.generateUUID();
+		// set counter to maximum id value
+		if ( id >= TvRoadSignal.counter ) TvRoadSignal.counter = id + 1;
 	}
 
 	setRoad ( road: TvRoad ): void {

@@ -4,7 +4,6 @@
 
 import { Injectable } from '@angular/core';
 import { BaseToolService } from '../base-tool.service';
-import { RoadSignalService } from 'app/map/road-signal/road-signal.service';
 import { TvRoadSignal } from 'app/map/road-signal/tv-road-signal.model';
 import { RoadService } from 'app/services/road/road.service';
 import { RoadSignalFactory } from 'app/map/road-signal/road-signal.factory';
@@ -19,7 +18,6 @@ export class TextMarkingToolService {
 	constructor (
 		public toolDebugger: TextMarkingToolDebugger,
 		public base: BaseToolService,
-		public signalService: RoadSignalService,
 		public roadService: RoadService,
 		public signalFactory: RoadSignalFactory,
 	) {

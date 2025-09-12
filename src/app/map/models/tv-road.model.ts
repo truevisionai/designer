@@ -105,7 +105,7 @@ export class TvRoad {
 
 		this.uuid = MathUtils.generateUUID();
 		this.name = name;
-		this.id = id || TvRoad.getNextId();
+		this.id = id ?? TvRoad.getNextId();
 		this._junction = junction;
 		this.planView = new TvPlaneView();
 		this.relations = new TvRoadRelations( this );

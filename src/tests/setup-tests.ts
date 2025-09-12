@@ -15,6 +15,7 @@ import { BaseTool } from "../app/tools/base-tool";
 import { ToolManager } from "../app/managers/tool-manager";
 import { AbstractSpline } from "app/core/shapes/abstract-spline";
 import { TvJunction } from "../app/map/models/junctions/tv-junction";
+import { TvRoadSignal } from "app/map/road-signal/tv-road-signal.model";
 
 export function setupTest (): void {
 
@@ -29,6 +30,7 @@ export function setupTest (): void {
 	TvRoad.resetCounter();
 	AbstractSpline.resetCounter();
 	TvJunction.resetCounter();
+	TvRoadSignal.resetCounter();
 
 }
 

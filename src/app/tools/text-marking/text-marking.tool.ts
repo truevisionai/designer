@@ -19,6 +19,8 @@ import { AnyLaneMovingStrategy } from "app/core/strategies/move-strategies/any-l
 import { NewLanePosition } from "app/scenario/models/positions/tv-lane-position";
 import { Commands } from "app/commands/commands";
 import { RoadDistance } from "app/map/road/road-distance";
+import { MapEvents } from "../../events/map-events";
+import { RoadSignalAddedEvent, RoadSignalRemovedEvent, RoadSignalUpdatedEvent } from "../../events/road-object.events";
 
 export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
@@ -255,7 +257,9 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		const road = signal.getRoad();
 
-		this.tool.signalService.addSignal( road, signal );
+		road.addSignal( signal );
+
+		MapEvents.roadSignalAdded.emit( new RoadSignalAddedEvent( road, signal ) );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
 
@@ -265,7 +269,7 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		const road = signal.getRoad();
 
-		this.tool.signalService.updateSignal( road, signal );
+		MapEvents.roadSignalUpdated.emit( new RoadSignalUpdatedEvent( road, signal ) );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
 
@@ -275,7 +279,9 @@ export class TextMarkingTool extends BaseTool<TvRoadSignal> {
 
 		const road = signal.getRoad();
 
-		this.tool.signalService.removeSignal( road, signal );
+		road.removeRoadSignal( signal );
+
+		MapEvents.roadSignalRemoved.emit( new RoadSignalRemovedEvent( road, signal ) );
 
 		this.tool.toolDebugger.updateDebugState( road, DebugState.SELECTED );
 
