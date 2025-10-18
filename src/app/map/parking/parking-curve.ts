@@ -16,6 +16,12 @@ import { ParkingRegion } from "./parking-region";
 import { readXmlArray } from "app/utils/xml-utils";
 import { ParkingCurvePoint } from "app/modules/parking-spot/objects/parking-curve-point";
 
+export enum ParkingSide {
+	LEFT = 'left',
+	RIGHT = 'right',
+	BOTH = 'both'
+}
+
 export class ParkingCurve {
 
 	public static tag = 'parkingCurve';
@@ -31,6 +37,9 @@ export class ParkingCurve {
 	// Angle offset for stalls (in radians)
 	// Positive angle rotates counter-clockwise from the road direction
 	private stallAngle: number = 0;
+
+	// Which side(s) of the curve should have parking spots
+	private side: ParkingSide = ParkingSide.BOTH;
 
 	private parkingGraph: ParkingGraph;
 
@@ -89,6 +98,28 @@ export class ParkingCurve {
 		this.stallAngle = degrees * ( Math.PI / 180 );
 	}
 
+	getSide (): ParkingSide {
+		return this.side;
+	}
+
+	setSide ( side: ParkingSide ): void {
+		this.side = side;
+	}
+
+	/**
+	 * Check if parking spots should be generated on the left side
+	 */
+	hasLeftSide (): boolean {
+		return this.side === ParkingSide.LEFT || this.side === ParkingSide.BOTH;
+	}
+
+	/**
+	 * Check if parking spots should be generated on the right side
+	 */
+	hasRightSide (): boolean {
+		return this.side === ParkingSide.RIGHT || this.side === ParkingSide.BOTH;
+	}
+
 	addPoint ( point: AbstractControlPoint ): void {
 		this.spline.addControlPoint( point );
 	}
@@ -110,12 +141,12 @@ export class ParkingCurve {
 	}
 
 	// ------------------------------------------
-	// PREVIEW: DOUBLE-SIDED PARKING
+	// PREVIEW: SIDE-AWARE PARKING
 	// ------------------------------------------
 
 	/**
 	 * Generates ephemeral ParkingRegions for UI preview.
-	 * Each "center" spawns two stalls: left & right.
+	 * Respects the 'side' property to generate stalls on left, right, or both sides.
 	 */
 	generatePreviewRegions (): ParkingRegion[] {
 
@@ -124,8 +155,15 @@ export class ParkingCurve {
 
 		centers.forEach( ( center, index ) => {
 
-			previewRegions.push( this.createPreviewRegion( center, +1 ) ); // Left stall
-			previewRegions.push( this.createPreviewRegion( center, -1 ) ); // Right stall
+			// Generate left stall if left side is enabled
+			if ( this.hasLeftSide() ) {
+				previewRegions.push( this.createPreviewRegion( center, +1 ) );
+			}
+
+			// Generate right stall if right side is enabled
+			if ( this.hasRightSide() ) {
+				previewRegions.push( this.createPreviewRegion( center, -1 ) );
+			}
 
 		} );
 
@@ -155,8 +193,8 @@ export class ParkingCurve {
 	}
 
 	/**
-	 * Creates permanent ParkingRegions in the ParkingGraph for each center.
-	 * Each center spawns two stalls: left & right.
+	 * Creates permanent ParkingRegions in the ParkingGraph.
+	 * Respects the 'side' property to generate stalls on left, right, or both sides.
 	 */
 	bake ( graph: ParkingGraph ): ParkingRegion[] {
 
@@ -167,8 +205,8 @@ export class ParkingCurve {
 
 			const center = centers[ i ];
 
-			// Left stall
-			{
+			// Generate left stall if left side is enabled
+			if ( this.hasLeftSide() ) {
 				const corners = this.computeRectCorners( center, +1 );
 				const cornerNodes = corners.map( pos => graph.getOrCreateNode( pos ) );
 				const edges: ParkingEdge[] = [];
@@ -185,8 +223,8 @@ export class ParkingCurve {
 				newRegions.push( region );
 			}
 
-			// Right stall
-			{
+			// Generate right stall if right side is enabled
+			if ( this.hasRightSide() ) {
 				const corners = this.computeRectCorners( center, -1 );
 				const cornerNodes = corners.map( pos => graph.getOrCreateNode( pos ) );
 				const edges: ParkingEdge[] = [];
@@ -326,6 +364,11 @@ export class ParkingCurve {
 			parkingCurve.stallDepth = parseFloat( json.attr_stallDepth );
 		}
 
+		// Load side if present
+		if ( json.attr_side !== undefined ) {
+			parkingCurve.side = json.attr_side as ParkingSide;
+		}
+
 		const controlPoints = [];
 
 		readXmlArray( json.spline.point, ( point: any ) => {
@@ -350,6 +393,7 @@ export class ParkingCurve {
 			attr_stallAngle: this.stallAngle,
 			attr_stallWidth: this.stallWidth,
 			attr_stallDepth: this.stallDepth,
+			attr_side: this.side,
 			spline: {
 				attr_uuid: this.spline.uuid,
 				attr_type: this.spline.type,

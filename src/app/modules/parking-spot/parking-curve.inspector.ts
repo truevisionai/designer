@@ -2,7 +2,7 @@
  * Copyright Truesense AI Solutions Pvt Ltd, All Rights Reserved.
  */
 
-import { ParkingCurve } from "../../map/parking/parking-curve";
+import { ParkingCurve, ParkingSide } from "../../map/parking/parking-curve";
 import { AbstractControlPoint } from "../../objects/abstract-control-point";
 import { SerializedAction, SerializedField } from "../../core/components/serialization";
 import { CommandHistory } from "../../commands/command-history";
@@ -42,6 +42,15 @@ export class ParkingCurveInspector {
 
 	set stallAngle ( value: number ) {
 		this.parkingCurve.setAngleDegrees( value );
+	}
+
+	@SerializedField( { type: 'enum', enum: ParkingSide } )
+	get parkingSide (): ParkingSide {
+		return this.parkingCurve.getSide();
+	}
+
+	set parkingSide ( value: ParkingSide ) {
+		this.parkingCurve.setSide( value );
 	}
 
 	@SerializedAction( { label: 'Bake Parking Curve' } )
