@@ -28,6 +28,8 @@ export class ParkingCurve {
 	// Depth outward from center line (perpendicular)
 	private stallDepth: number = 5.0; // Adjust as needed
 
+	private stallAngle: number = Maths.Deg2Rad * 90; // 90 degrees
+
 	private parkingGraph: ParkingGraph;
 
 	constructor ( spline?: AbstractSpline ) {
@@ -98,43 +100,30 @@ export class ParkingCurve {
 
 		centers.forEach( ( center, index ) => {
 
-			// Left stall
-			{
-				const corners = this.computeRectCorners( center, +1 );  // +1 => above centerline
-				const tempNodes = corners.map( pos => new ParkingNode( pos ) );
-				const tempEdges: ParkingEdge[] = [];
-
-				for ( let i = 0; i < tempNodes.length; i++ ) {
-					const start = tempNodes[ i ];
-					const end = tempNodes[ ( i + 1 ) % tempNodes.length ];
-					tempEdges.push( new ParkingEdge( start, end ) );
-				}
-
-				const region = new ParkingRegion( center.hdg - Maths.PI2 );
-				region.setEdges( tempEdges );
-				previewRegions.push( region );
-			}
-
-			// Right stall
-			{
-				const corners = this.computeRectCorners( center, -1 ); // -1 => below centerline
-				const tempNodes = corners.map( pos => new ParkingNode( pos ) );
-				const tempEdges: ParkingEdge[] = [];
-
-				for ( let i = 0; i < tempNodes.length; i++ ) {
-					const start = tempNodes[ i ];
-					const end = tempNodes[ ( i + 1 ) % tempNodes.length ];
-					tempEdges.push( new ParkingEdge( start, end ) );
-				}
-
-				const region = new ParkingRegion( center.hdg + Maths.PI2 );
-				region.setEdges( tempEdges );
-				previewRegions.push( region );
-			}
+			previewRegions.push( this.createPreviewRegion( center, +1 ) ); // Left stall
+			previewRegions.push( this.createPreviewRegion( center, -1 ) ); // Right stall
 
 		} );
 
 		return previewRegions;
+
+	}
+
+	private createPreviewRegion ( center: TvPosTheta, offsetSign: number ): ParkingRegion {
+
+		const corners = this.computeRectCorners( center, offsetSign );
+		const tempNodes = corners.map( pos => new ParkingNode( pos ) );
+		const tempEdges: ParkingEdge[] = [];
+
+		for ( let i = 0; i < tempNodes.length; i++ ) {
+			const start = tempNodes[ i ];
+			const end = tempNodes[ ( i + 1 ) % tempNodes.length ];
+			tempEdges.push( new ParkingEdge( start, end ) );
+		}
+
+		const region = new ParkingRegion( center.hdg - ( offsetSign * Maths.PI2 ) );
+		region.setEdges( tempEdges );
+		return region;
 
 	}
 
