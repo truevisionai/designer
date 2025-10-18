@@ -19,6 +19,7 @@ import { DuplicateKeyException, ModelNotFoundException } from 'app/exceptions/ex
 import { ParkingGraph } from "../parking/parking-graph";
 import { TvPosTheta } from './tv-pos-theta';
 import { PointCloudObject } from 'app/assets/point-cloud/point-cloud-object';
+import { ParkingCurve } from '../parking/parking-curve';
 
 export class TvMap {
 
@@ -39,6 +40,8 @@ export class TvMap {
 	public propCurvesGroup: Object3DMap<PropCurve, Object3D>;
 
 	public propPolygonsGroup: Object3DMap<PropPolygon, Object3D>;
+
+	public parkingCurveGroup: Object3DMap<ParkingCurve, Object3D>;
 
 	public header: TvMapHeader;
 
@@ -67,6 +70,8 @@ export class TvMap {
 		this.propCurvesGroup = new Object3DMap( this.gameObject );
 
 		this.propPolygonsGroup = new Object3DMap( this.gameObject );
+
+		this.parkingCurveGroup = new Object3DMap( this.gameObject );
 
 		this.pointCloudGroup = new Object3DMap<PointCloudObject, Object3D>( this.gameObject );
 

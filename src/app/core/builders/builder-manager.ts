@@ -14,6 +14,7 @@ import { AbstractSpline } from "../shapes/abstract-spline";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Mesh } from "three";
 import { Log } from "../utils/log";
+import { ParkingCurve } from "app/map/parking/parking-curve";
 
 @Injectable( {
 	providedIn: 'root'
@@ -46,6 +47,8 @@ export class BuilderManager {
 			this.buildJunction( object, this.mapService.map );
 		} else if ( object instanceof AbstractSpline ) {
 			this.buildSpline( object, this.mapService.map );
+		} else if ( object instanceof ParkingCurve ) {
+			this.buildParkingCurve( object, this.mapService.map );
 		} else {
 			Log.error( 'Unknown object type', object );
 		}
@@ -143,6 +146,20 @@ export class BuilderManager {
 		// Log.debug( 'Remove spline mesh', spline.toString() );
 
 		spline.getRoadSegments().forEach( road => this.removeRoadMesh( road, map ) );
+
+	}
+
+	buildParkingCurve ( parkingCurve: ParkingCurve, map: TvMap ): void {
+
+		const mesh = this.factory.getBuilder( parkingCurve ).build( parkingCurve );
+
+		map.parkingCurveGroup.add( parkingCurve, mesh );
+
+	}
+
+	removeParkingCurve ( parkingCurve: ParkingCurve, map: TvMap ): void {
+
+		map.parkingCurveGroup.remove( parkingCurve );
 
 	}
 

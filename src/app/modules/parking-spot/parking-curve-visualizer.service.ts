@@ -14,6 +14,7 @@ import { SharpArrowObject } from "../../objects/lane-arrow-object";
 import { ParkingRegion } from "../../map/parking/parking-region";
 import { Polygon } from "../../tools/lane/visualizers/polygon-view";
 import { ParkingNodePoint } from "./objects/parking-node-point";
+import { MapEvents } from "app/events/map-events";
 
 @Injectable()
 export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
@@ -71,6 +72,10 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 		this.splineDebugService.showControlPoints( object.getSpline() );
 
 		this.showSpots( object );
+
+		console.log( 'Updated visualizer for parking curve' );
+
+		MapEvents.makeMesh.emit( object );
 
 	}
 

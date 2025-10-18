@@ -25,6 +25,8 @@ import { RoadSignalBuilder } from './builders/road-signal.builder';
 import { JunctionBoundaryBuilder } from './builders/junction-boundary.builder';
 import { AutoJunction } from "../../map/models/junctions/auto-junction";
 import { DefaultJunction } from "../../map/models/junctions/default-junction";
+import { ParkingCurve } from 'app/map/parking/parking-curve';
+import { ParkingCurveBuilder } from './builders/parking-curve.builder';
 
 const Managers = [
 	SurfaceMeshManager,
@@ -60,6 +62,7 @@ const Builders = [
 	RoadObjectBuilder,
 	LaneRoadMarkBuilder,
 	RoadSignalBuilder,
+	ParkingCurveBuilder,
 ]
 
 const Providers = [
@@ -144,6 +147,14 @@ const Providers = [
 		useValue: {
 			key: TvRoadSignal,
 			builderClass: RoadSignalBuilder,
+		},
+		multi: true,
+	},
+	{
+		provide: BUILD_PROVIDERS,
+		useValue: {
+			key: ParkingCurve,
+			builderClass: ParkingCurveBuilder,
 		},
 		multi: true,
 	},
