@@ -28,7 +28,9 @@ export class ParkingCurve {
 	// Depth outward from center line (perpendicular)
 	private stallDepth: number = 5.0; // Adjust as needed
 
-	private stallAngle: number = Maths.Deg2Rad * 90; // 90 degrees
+	// Angle offset for stalls (in radians)
+	// Positive angle rotates counter-clockwise from the road direction
+	private stallAngle: number = 0;
 
 	private parkingGraph: ParkingGraph;
 
@@ -63,6 +65,28 @@ export class ParkingCurve {
 
 	setLength ( length: number ): void {
 		this.stallDepth = length;
+	}
+
+	getAngle (): number {
+		return this.stallAngle;
+	}
+
+	setAngle ( angle: number ): void {
+		this.stallAngle = angle;
+	}
+
+	/**
+	 * Get stall angle in degrees
+	 */
+	getAngleDegrees (): number {
+		return this.stallAngle * ( 180 / Math.PI );
+	}
+
+	/**
+	 * Set stall angle in degrees
+	 */
+	setAngleDegrees ( degrees: number ): void {
+		this.stallAngle = degrees * ( Math.PI / 180 );
 	}
 
 	addPoint ( point: AbstractControlPoint ): void {
@@ -121,7 +145,10 @@ export class ParkingCurve {
 			tempEdges.push( new ParkingEdge( start, end ) );
 		}
 
-		const region = new ParkingRegion( center.hdg - ( offsetSign * Maths.PI2 ) );
+		// Stall heading is perpendicular to road plus the stall angle offset
+		const perpAngle = center.hdg + offsetSign * Math.PI / 2;
+		const heading = perpAngle + offsetSign * this.stallAngle;
+		const region = new ParkingRegion( heading );
 		region.setEdges( tempEdges );
 		return region;
 
@@ -153,7 +180,8 @@ export class ParkingCurve {
 				}
 
 				const region = graph.createRegion( edges );
-				region.setHeading( center.hdg - Maths.PI2 );
+				const perpAngle = center.hdg + Maths.PI2;
+				region.setHeading( perpAngle + this.stallAngle );
 				newRegions.push( region );
 			}
 
@@ -170,7 +198,8 @@ export class ParkingCurve {
 				}
 
 				const region = graph.createRegion( edges );
-				region.setHeading( center.hdg + Maths.PI2 );
+				const perpAngle = center.hdg - Maths.PI2;
+				region.setHeading( perpAngle - this.stallAngle );
 				newRegions.push( region );
 			}
 
@@ -180,45 +209,66 @@ export class ParkingCurve {
 	}
 
 	/**
-	 * Computes the corners of one rectangular stall.  We assume:
-	 * - 'stallWidth' is along the spline direction
-	 * - 'stallDepth' extends outwards from the center line
+	 * Computes the corners of one rectangular stall for angled parking.
+	 *
+	 * Key insight: For angled parking, the stall's width direction should be
+	 * along the road direction, while the depth extends at an angle.
+	 *
+	 * - 'stallWidth' is along the road/centerline direction
+	 * - 'stallDepth' extends outward at 'stallAngle' from perpendicular
 	 * - offsetSign = +1 => left side, -1 => right side
 	 */
 	private computeRectCorners ( center: TvPosTheta, offsetSign: number ): Vector3[] {
 
 		const w = this.stallWidth;
 		const d = this.stallDepth;
+		const hdg = center.hdg;
 
-		// Define local corners with the centerline at local Y=0
-		// and the outer edge at local Y= offsetSign * d
+		// Calculate perpendicular angle to the road
+		const perpAngle = hdg + offsetSign * Math.PI / 2;
+
+		// Apply stall angle: positive angle means the stall leans forward (in driving direction)
+		// For offsetSign = +1 (left): lean counter-clockwise from perpendicular
+		// For offsetSign = -1 (right): lean clockwise from perpendicular
+		const stallDirection = perpAngle + offsetSign * this.stallAngle;
+
+		// Unit vectors
+		const roadDirX = Math.cos( hdg );
+		const roadDirY = Math.sin( hdg );
+		const stallDirX = Math.cos( stallDirection );
+		const stallDirY = Math.sin( stallDirection );
+
+		// Define corners relative to center:
+		// Start from center and go along road direction for width,
+		// then perpendicular outward for depth
 		const halfW = w * 0.5;
-		const localCorners = [
-			new Vector3( -halfW, 0, 0 ),
-			new Vector3( +halfW, 0, 0 ),
-			new Vector3( +halfW, offsetSign * d, 0 ),
-			new Vector3( -halfW, offsetSign * d, 0 ),
-		];
 
-		// Rotate by the road heading
-		const cosH = Math.cos( center.hdg );
-		const sinH = Math.sin( center.hdg );
+		// Corner positions in world coordinates
+		const corner0 = new Vector3(
+			center.x - halfW * roadDirX,
+			center.y - halfW * roadDirY,
+			0
+		);
 
-		const worldCorners = localCorners.map( local => {
+		const corner1 = new Vector3(
+			center.x + halfW * roadDirX,
+			center.y + halfW * roadDirY,
+			0
+		);
 
-			// Rotate around origin
-			const rx = local.x * cosH - local.y * sinH;
-			const ry = local.x * sinH + local.y * cosH;
+		const corner2 = new Vector3(
+			corner1.x + d * stallDirX,
+			corner1.y + d * stallDirY,
+			0
+		);
 
-			// Translate to the stall's center
-			return new Vector3(
-				center.x + rx,
-				center.y + ry,
-				0
-			);
-		} );
+		const corner3 = new Vector3(
+			corner0.x + d * stallDirX,
+			corner0.y + d * stallDirY,
+			0
+		);
 
-		return worldCorners;
+		return [ corner0, corner1, corner2, corner3 ];
 	}
 
 	private getPotentialSpots (): TvPosTheta[] {
@@ -261,6 +311,21 @@ export class ParkingCurve {
 
 		parkingCurve.id = json.attr_id;
 
+		// Load stall angle if present
+		if ( json.attr_stallAngle !== undefined ) {
+			parkingCurve.stallAngle = parseFloat( json.attr_stallAngle );
+		}
+
+		// Load stall width if present
+		if ( json.attr_stallWidth !== undefined ) {
+			parkingCurve.stallWidth = parseFloat( json.attr_stallWidth );
+		}
+
+		// Load stall depth if present
+		if ( json.attr_stallDepth !== undefined ) {
+			parkingCurve.stallDepth = parseFloat( json.attr_stallDepth );
+		}
+
 		const controlPoints = [];
 
 		readXmlArray( json.spline.point, ( point: any ) => {
@@ -282,6 +347,9 @@ export class ParkingCurve {
 	toSceneJSON (): any {
 		return {
 			attr_id: this.id,
+			attr_stallAngle: this.stallAngle,
+			attr_stallWidth: this.stallWidth,
+			attr_stallDepth: this.stallDepth,
 			spline: {
 				attr_uuid: this.spline.uuid,
 				attr_type: this.spline.type,
@@ -294,4 +362,3 @@ export class ParkingCurve {
 		};
 	}
 }
-

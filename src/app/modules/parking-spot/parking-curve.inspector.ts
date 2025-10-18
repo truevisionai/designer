@@ -35,6 +35,15 @@ export class ParkingCurveInspector {
 		this.parkingCurve.setLength( value );
 	}
 
+	@SerializedField( { type: 'float' } )
+	get stallAngle (): number {
+		return this.parkingCurve.getAngleDegrees();
+	}
+
+	set stallAngle ( value: number ) {
+		this.parkingCurve.setAngleDegrees( value );
+	}
+
 	@SerializedAction( { label: 'Bake Parking Curve' } )
 	bake (): void {
 
