@@ -20,6 +20,7 @@ import { ParkingGraph } from "../parking/parking-graph";
 import { TvPosTheta } from './tv-pos-theta';
 import { PointCloudObject } from 'app/assets/point-cloud/point-cloud-object';
 import { ParkingCurve } from '../parking/parking-curve';
+import { ParkingRegion } from '../parking/parking-region';
 
 export class TvMap {
 
@@ -42,6 +43,8 @@ export class TvMap {
 	public propPolygonsGroup: Object3DMap<PropPolygon, Object3D>;
 
 	public parkingCurveGroup: Object3DMap<ParkingCurve, Object3D>;
+
+	public parkingRegionGroup: Object3DMap<ParkingRegion, Object3D>;
 
 	public header: TvMapHeader;
 
@@ -72,6 +75,8 @@ export class TvMap {
 		this.propPolygonsGroup = new Object3DMap( this.gameObject );
 
 		this.parkingCurveGroup = new Object3DMap( this.gameObject );
+
+		this.parkingRegionGroup = new Object3DMap( this.gameObject );
 
 		this.pointCloudGroup = new Object3DMap<PointCloudObject, Object3D>( this.gameObject );
 

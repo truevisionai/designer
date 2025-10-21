@@ -10,7 +10,7 @@ import { Maths } from "app/utils/maths";
 import { Vector3 } from "three";
 import { MathUtils } from "three/src/math/MathUtils";
 import { ParkingGraph } from "./parking-graph";
-import { ParkingEdge } from "./parking-edge";
+import { EdgeMarkingColor, EdgeMarkingStyle, ParkingEdge, ParkingEdgeType } from "./parking-edge";
 import { ParkingNode } from "./parking-node";
 import { ParkingRegion } from "./parking-region";
 import { readXmlArray } from "app/utils/xml-utils";
@@ -40,6 +40,8 @@ export class ParkingCurve {
 
 	// Which side(s) of the curve should have parking spots
 	private side: ParkingSide = ParkingSide.BOTH;
+
+	private color: EdgeMarkingColor = EdgeMarkingColor.WHITE;
 
 	private parkingGraph: ParkingGraph;
 
@@ -120,6 +122,14 @@ export class ParkingCurve {
 		return this.side === ParkingSide.RIGHT || this.side === ParkingSide.BOTH;
 	}
 
+	getColor (): EdgeMarkingColor {
+		return this.color;
+	}
+
+	setColor ( color: EdgeMarkingColor ): void {
+		this.color = color;
+	}
+
 	addPoint ( point: AbstractControlPoint ): void {
 		this.spline.addControlPoint( point );
 	}
@@ -178,9 +188,23 @@ export class ParkingCurve {
 		const tempEdges: ParkingEdge[] = [];
 
 		for ( let i = 0; i < tempNodes.length; i++ ) {
+
 			const start = tempNodes[ i ];
 			const end = tempNodes[ ( i + 1 ) % tempNodes.length ];
-			tempEdges.push( new ParkingEdge( start, end ) );
+
+			const edge = new ParkingEdge( start, end );
+
+			edge.setMarkingColor( this.color );
+
+			if ( i == 0 ) {
+				edge.setType( ParkingEdgeType.ENTRY );
+				edge.setMarkingStyle( EdgeMarkingStyle.NONE );
+			} else {
+				edge.setType( ParkingEdgeType.BOUNDARY );
+				edge.setMarkingStyle( EdgeMarkingStyle.SOLID );
+			}
+
+			tempEdges.push( edge );
 		}
 
 		// Stall heading is perpendicular to road plus the stall angle offset

@@ -8,6 +8,7 @@ import { SerializedAction, SerializedField } from "../../core/components/seriali
 import { CommandHistory } from "../../commands/command-history";
 import { BakeCurveCommand } from "./commands/bake-curve-command";
 import { Commands } from "../../commands/commands";
+import { EdgeMarkingColor } from "app/map/parking/parking-edge";
 
 export class ParkingCurveInspector {
 
@@ -51,6 +52,15 @@ export class ParkingCurveInspector {
 
 	set parkingSide ( value: ParkingSide ) {
 		this.parkingCurve.setSide( value );
+	}
+
+	@SerializedField( { type: 'enum', enum: EdgeMarkingColor } )
+	get color (): EdgeMarkingColor {
+		return this.parkingCurve.getColor();
+	}
+
+	set color ( value: EdgeMarkingColor ) {
+		this.parkingCurve.setColor( value );
 	}
 
 	@SerializedAction( { label: 'Bake Parking Curve' } )

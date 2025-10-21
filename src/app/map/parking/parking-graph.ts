@@ -25,6 +25,10 @@ export class ParkingGraph {
 		return this.parkingCurves.length;
 	}
 
+	getParkingRegions (): readonly ParkingRegion[] {
+		return this.regions;
+	}
+
 	addParkingCurve ( parkingCurve: ParkingCurve ): void {
 		parkingCurve.setParkingGraph( this );
 		this.parkingCurves.push( parkingCurve );
@@ -190,14 +194,7 @@ export class ParkingGraph {
 
 		readXmlArray( json.edge, ( json: any ) => {
 
-			const startNode = graph.getNodesById( json.attr_startNodeId );
-			const endNode = graph.getNodesById( json.attr_endNodeId );
-			const markingGuid = json.attr_markingGuid;
-			const id = json.attr_id;
-
-			const edge = new ParkingEdge( startNode, endNode, markingGuid );
-
-			edge.id = id;
+			const edge = ParkingEdge.fromSceneJSON( json, graph );
 
 			graph.addEdge( edge );
 

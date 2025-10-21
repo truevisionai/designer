@@ -15,6 +15,7 @@ import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { Mesh } from "three";
 import { Log } from "../utils/log";
 import { ParkingCurve } from "app/map/parking/parking-curve";
+import { ParkingRegion } from "app/map/parking/parking-region";
 
 @Injectable( {
 	providedIn: 'root'
@@ -49,8 +50,11 @@ export class BuilderManager {
 			this.buildSpline( object, this.mapService.map );
 		} else if ( object instanceof ParkingCurve ) {
 			this.buildParkingCurve( object, this.mapService.map );
+		} else if ( object instanceof ParkingRegion ) {
+			this.buildParkingRegion( object, this.mapService.map );
 		} else {
 			Log.error( 'Unknown object type', object );
+			console.error( 'Unknown object type', object );
 		}
 
 	}
@@ -65,6 +69,7 @@ export class BuilderManager {
 			this.removeSpline( object, this.mapService.map );
 		} else {
 			Log.error( 'Unknown object type', object );
+			console.error( 'Unknown object type', object );
 		}
 
 	}
@@ -160,6 +165,20 @@ export class BuilderManager {
 	removeParkingCurve ( parkingCurve: ParkingCurve, map: TvMap ): void {
 
 		map.parkingCurveGroup.remove( parkingCurve );
+
+	}
+
+	buildParkingRegion ( parkingRegion: ParkingRegion, map: TvMap ): void {
+
+		const mesh = this.factory.getBuilder( parkingRegion ).build( parkingRegion );
+
+		map.parkingRegionGroup.add( parkingRegion, mesh );
+
+	}
+
+	removeParkingRegion ( parkingRegion: ParkingRegion, map: TvMap ): void {
+
+		map.parkingRegionGroup.remove( parkingRegion );
 
 	}
 

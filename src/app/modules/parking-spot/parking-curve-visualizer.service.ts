@@ -15,6 +15,7 @@ import { ParkingRegion } from "../../map/parking/parking-region";
 import { Polygon } from "../../tools/lane/visualizers/polygon-view";
 import { ParkingNodePoint } from "./objects/parking-node-point";
 import { MapEvents } from "app/events/map-events";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
 
 @Injectable()
 export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
@@ -144,7 +145,7 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		parkingCurve.generatePreviewRegions().forEach( region => {
 
-			const arrowObject = new SharpArrowObject( region.getCenterPosition(), region.heading );
+			const arrowObject = new SharpArrowObject( region.getCenterPosition(), region.heading, ColorUtils.CYAN, 1.0 );
 			const edgeObject = LineView.create( region.getPoints(), 1 );
 			const regionObject = this.createRegionObject( region, parkingCurve );
 

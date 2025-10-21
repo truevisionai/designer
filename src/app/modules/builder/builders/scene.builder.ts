@@ -55,6 +55,14 @@ export class SceneBuilder {
 
 		map.propPolygons.forEach( polygon => this.propPolygonMeshManager.buildPropPolygon( polygon, map ) );
 
+		map.getParkingGraph().getParkingCurves().forEach( curve => {
+			MapEvents.makeMesh.emit( curve );
+		} );
+
+		map.getParkingGraph().getParkingRegions().forEach( region => {
+			MapEvents.makeMesh.emit( region );
+		} );
+
 		SceneService.addToMain( map.gameObject );
 
 	}
