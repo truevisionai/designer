@@ -3,6 +3,7 @@
  */
 
 import { BaseCommand } from "app/commands/base-command";
+import { MapEvents } from "app/events/map-events";
 import { ParkingEdge } from "app/map/parking/parking-edge";
 import { ParkingGraph } from "app/map/parking/parking-graph";
 import { ParkingNode } from "app/map/parking/parking-node";
@@ -40,6 +41,10 @@ export class DeleteParkingNodeCommand extends BaseCommand {
 
 		this.graph.pruneDangling();
 
+		this.removed.regions.forEach( r => MapEvents.removeMesh.emit( r ) );
+
+		MapEvents.objectUpdated.emit( this.graph );
+
 	}
 
 	undo (): void {
@@ -49,6 +54,10 @@ export class DeleteParkingNodeCommand extends BaseCommand {
 		this.removed.edges.forEach( e => this.graph.addEdge( e ) );
 
 		this.removed.regions.forEach( r => this.graph.addRegion( r ) );
+
+		this.removed.regions.forEach( r => MapEvents.makeMesh.emit( r ) );
+
+		MapEvents.objectUpdated.emit( this.graph );
 
 	}
 

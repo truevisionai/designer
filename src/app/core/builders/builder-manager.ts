@@ -67,6 +67,10 @@ export class BuilderManager {
 			this.removeJunctionMesh( object, this.mapService.map );
 		} else if ( object instanceof AbstractSpline ) {
 			this.removeSpline( object, this.mapService.map );
+		} else if ( object instanceof ParkingCurve ) {
+			this.removeParkingCurve( object, this.mapService.map );
+		} else if ( object instanceof ParkingRegion ) {
+			this.removeParkingRegion( object, this.mapService.map );
 		} else {
 			Log.error( 'Unknown object type', object );
 			console.error( 'Unknown object type', object );
