@@ -337,8 +337,22 @@ export class ParkingCurve {
 
 		const centers: TvPosTheta[] = [];
 		const w = this.stallWidth;
+		const EPS = 1e-6;
+
+		if ( w <= Maths.Epsilon ) {
+			return centers;
+		}
 
 		const ctrlPts = this.spline.controlPointPositions;
+
+		if ( ctrlPts.length < 2 ) {
+			return centers;
+		}
+
+		const halfW = w * 0.5;
+		let accumulatedLength = 0;
+		let nextCenterDistance = halfW;
+
 		for ( let i = 0; i < ctrlPts.length - 1; i++ ) {
 
 			const start = ctrlPts[ i ];
@@ -348,18 +362,33 @@ export class ParkingCurve {
 			const dy = end.y - start.y;
 			const segLen = Math.sqrt( dx * dx + dy * dy );
 
-			// how many stalls fit in this segment
-			const spotsPerSegment = Math.floor( segLen / w );
+			if ( segLen <= EPS ) {
+				accumulatedLength += segLen;
+				continue;
+			}
 
-			for ( let j = 0; j < spotsPerSegment; j++ ) {
+			const hdg = Math.atan2( dy, dx );
 
-				const t = ( j + 0.5 ) * w / segLen;
+			while ( nextCenterDistance <= accumulatedLength + segLen + EPS ) {
+
+				const distIntoSegment = nextCenterDistance - accumulatedLength;
+
+				if ( distIntoSegment < -EPS ) {
+					// Numeric drift pushed the next center slightly behind this segment; nudge forward.
+					nextCenterDistance = accumulatedLength + EPS;
+					continue;
+				}
+
+				const t = Maths.clamp( distIntoSegment / segLen, 0, 1 );
 				const cx = start.x + t * dx;
 				const cy = start.y + t * dy;
-				const hdg = Math.atan2( dy, dx ); // direction along the segment
 
 				centers.push( new TvPosTheta( cx, cy, hdg ) );
+
+				nextCenterDistance += w;
 			}
+
+			accumulatedLength += segLen;
 		}
 
 		return centers;
