@@ -464,7 +464,7 @@ export class ParkingGraph {
 	}
 
 	/** Collect the *incident* deletion set for a single node. */
-	collectIncidentDeletion ( node: ParkingNode ) {
+	collectIncidentDeletion ( node: ParkingNode ): { nodes: ParkingNode[], edges: ParkingEdge[], regions: ParkingRegion[] } {
 		const edges = this.getEdgesForNode( node );
 		const regionsSet = new Set<ParkingRegion>();
 		edges.forEach( e => this.getRegionsForEdge( e ).forEach( r => regionsSet.add( r ) ) );
@@ -476,7 +476,7 @@ export class ParkingGraph {
 	}
 
 	/** Collect the *connected component* from a start node (undirected BFS). */
-	collectConnectedSubgraph ( start: ParkingNode ): any {
+	collectConnectedSubgraph ( start: ParkingNode ): { nodes: ParkingNode[], edges: ParkingEdge[], regions: ParkingRegion[] } {
 		const visitNode = new Set<ParkingNode>();
 		const visitEdge = new Set<ParkingEdge>();
 

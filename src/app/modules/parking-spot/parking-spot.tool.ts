@@ -105,7 +105,7 @@ export class ParkingSpotTool extends ToolWithHandler {
 
 			const graph = this.tool.mapService.map.getParkingGraph()
 
-			this.tool.parkignCurveVisualizer.updateParkingGraph( graph );
+			this.tool.parkignCurveVisualizer.updateByNode( graph, object );
 
 		} else {
 
