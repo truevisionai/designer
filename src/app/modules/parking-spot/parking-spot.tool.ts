@@ -29,17 +29,23 @@ import { ParkingCurveInspector } from "./parking-curve.inspector";
 import { ParkingNodePoint } from "./objects/parking-node-point";
 import { ParkingCurvePoint } from "./objects/parking-curve-point";
 
+
+@Injectable()
+export class ParkingNodePointDragHandler extends SimpleControlPointDragHandler<ParkingNodePoint> {
+
+}
+
 @Injectable()
 export class ParkingSpotToolService {
 
 	constructor (
 		public mapService: MapService,
-		public parkingCurvService: ParkingCurveService,
+		public parkingCurveService: ParkingCurveService,
 		public splineService: SplineService,
 		public base: BaseToolService,
 		public parkingCurveCreator: ParkingCurveCreator,
 		public parkingCurvePointCreator: ParkingCurvePointCreator,
-		public parkignCurveVisualizer: ParkingCurveVisualizer,
+		public parkingCurveVisualizer: ParkingCurveVisualizer,
 	) {
 	}
 }
@@ -83,9 +89,9 @@ export class ParkingSpotTool extends ToolWithHandler {
 		this.addVisualizer( ParkingCurve, this.tool.base.injector.get( ParkingCurveVisualizer ) );
 
 		this.addDragHandler( ParkingCurvePoint, this.tool.base.injector.get( SimpleControlPointDragHandler ) );
-		this.addDragHandler( ParkingNodePoint, this.tool.base.injector.get( SimpleControlPointDragHandler ) );
+		this.addDragHandler( ParkingNodePoint, this.tool.base.injector.get( ParkingNodePointDragHandler ) );
 
-		this.tool.parkignCurveVisualizer.showParkingGraph( this.tool.mapService.map.getParkingGraph() );
+		this.tool.parkingCurveVisualizer.showParkingGraph( this.tool.mapService.map.getParkingGraph() );
 
 	}
 
@@ -97,7 +103,7 @@ export class ParkingSpotTool extends ToolWithHandler {
 
 		} else if ( object instanceof ParkingGraph ) {
 
-			this.tool.parkignCurveVisualizer.showParkingGraph( object );
+			this.tool.parkingCurveVisualizer.showParkingGraph( object );
 
 		} else if ( object instanceof ParkingNode ) {
 
@@ -105,7 +111,9 @@ export class ParkingSpotTool extends ToolWithHandler {
 
 			const graph = this.tool.mapService.map.getParkingGraph()
 
-			this.tool.parkignCurveVisualizer.updateByNode( graph, object );
+			this.tool.parkingCurveVisualizer.updateByNode( graph, object );
+
+			console.log( 'Updating parking node visualizer' );
 
 		} else {
 
