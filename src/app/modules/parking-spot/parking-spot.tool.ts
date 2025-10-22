@@ -17,7 +17,6 @@ import { MapService } from "app/services/map/map.service";
 import { SimpleControlPointDragHandler } from "app/core/drag-handlers/point-drag-handler.service";
 import { ObjectUserDataStrategy } from "app/core/strategies/select-strategies/object-user-data-strategy";
 import { ParkingGraph } from "app/map/parking/parking-graph";
-import { ParkingNode } from "app/map/parking/parking-node";
 import { ParkingCurveController } from "./parking-curve-controller.service";
 import { ParkingCurvePointController, ParkingNodeController, ParkingNodeVisualizer } from "./parking-curve-point-controller.service";
 import { ParkingCurveVisualizer } from "./parking-curve-visualizer.service";
@@ -94,14 +93,6 @@ export class ParkingSpotTool extends ToolWithHandler {
 		} else if ( object instanceof ParkingGraph ) {
 
 			this.tool.parkingCurveVisualizer.showParkingGraph( object );
-
-		} else if ( object instanceof ParkingNode ) {
-
-			// NOTE: hack to update parking graph
-
-			const graph = this.tool.mapService.map.getParkingGraph()
-
-			this.tool.parkingCurveVisualizer.updateByNode( graph, object );
 
 		} else {
 

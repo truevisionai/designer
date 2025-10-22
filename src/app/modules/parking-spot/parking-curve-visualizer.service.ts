@@ -79,8 +79,6 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		this.showSpots( object );
 
-		console.log( 'Updated visualizer for parking curve' );
-
 		MapEvents.makeMesh.emit( object );
 
 	}
