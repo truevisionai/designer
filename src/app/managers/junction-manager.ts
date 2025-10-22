@@ -181,7 +181,7 @@ export class JunctionManager {
 
 		const incomingSplines = junction.getIncomingSplines();
 
-		this.junctionRoadService.removeLinks( junction );
+		junction.removeLinksWithIncomingRoads();
 
 		for ( const incomingSpline of incomingSplines ) {
 
@@ -189,7 +189,7 @@ export class JunctionManager {
 
 		}
 
-		this.junctionRoadService.removeAll( junction );
+		this.removeConnectingRoads( junction );
 
 		this.mapService.removeJunction( junction );
 
@@ -207,6 +207,26 @@ export class JunctionManager {
 			for ( const group of groups ) {
 
 				this.createCoordAndAddLinksAndJunction( group );
+
+			}
+
+		}
+
+	}
+
+	removeConnectingRoads ( junction: TvJunction ): void {
+
+		const connections = junction.getConnections();
+
+		for ( const connection of connections ) {
+
+			if ( this.mapService.hasRoad( connection.connectingRoad ) ) {
+
+				this.roadService.remove( connection.connectingRoad );
+
+			} else {
+
+				Log.warn( 'Road already removed', connection.connectingRoad.toString() );
 
 			}
 

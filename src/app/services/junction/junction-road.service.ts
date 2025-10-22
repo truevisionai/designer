@@ -57,53 +57,11 @@ export class JunctionRoadService {
 
 	removeLinks ( junction: TvJunction ): void {
 
-		const incomingRoads = junction.getIncomingRoads();
 
-		incomingRoads.forEach( road => {
-
-			this.removeLink( junction, road );
-
-		} );
 
 	}
 
-	removeLink ( junction: TvJunction, road: TvRoad ): void {
 
-		if ( road.successor?.equals( junction ) ) {
-
-			road.removeSuccessor();
-
-		} else if ( road.predecessor?.equals( junction ) ) {
-
-			road.removePredecessor();
-
-		} else {
-
-			Log.warn( 'Road is not connected to junction', road.toString(), junction.toString() );
-
-		}
-
-	}
-
-	removeAll ( junction: TvJunction ): void {
-
-		const connections = junction.getConnections();
-
-		for ( const connection of connections ) {
-
-			if ( this.mapService.hasRoad( connection.connectingRoad ) ) {
-
-				this.roadService.remove( connection.connectingRoad );
-
-			} else {
-
-				Log.warn( 'Road already removed', connection.connectingRoad.toString() );
-
-			}
-
-		}
-
-	}
 
 	getJunctionGates ( junction: TvJunction ): TvLaneCoord[] {
 

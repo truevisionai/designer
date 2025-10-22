@@ -92,19 +92,15 @@ export class SplineLinkService {
 
 	private removeJunctionSegments ( spline: AbstractSpline ): void {
 
-		for ( const segment of spline.getSegments() ) {
+		for ( const junctions of spline.getJunctionSegments() ) {
 
-			if ( segment instanceof TvJunction ) {
+			if ( this.mapService.hasJunction( junctions ) ) {
 
-				if ( this.mapService.hasJunction( segment ) ) {
+				this.junctionManager.removeJunction( junctions, spline, true );
 
-					this.junctionManager.removeJunction( segment, spline, true );
+			} else {
 
-				} else {
-
-					Log.warn( "Junction already removed", segment.toString() );
-
-				}
+				Log.warn( "Junction already removed", junctions.toString() );
 
 			}
 
