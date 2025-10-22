@@ -239,6 +239,19 @@ export class ParkingCurve {
 
 	}
 
+	private configureEdgeAppearance ( edge: ParkingEdge, edgeIndex: number ): void {
+
+		if ( edgeIndex === 0 ) {
+			edge.setType( ParkingEdgeType.ENTRY );
+			edge.setMarkingStyle( EdgeMarkingStyle.NONE );
+		} else if ( edge.getType() !== ParkingEdgeType.ENTRY ) {
+			edge.setType( ParkingEdgeType.BOUNDARY );
+			edge.setMarkingStyle( EdgeMarkingStyle.SOLID );
+		}
+
+		edge.setMarkingColor( this.color );
+	}
+
 	/**
 	 * Creates permanent ParkingRegions in the ParkingGraph.
 	 * Respects the 'side' property to generate stalls on left, right, or both sides.
@@ -262,7 +275,9 @@ export class ParkingCurve {
 				for ( let c = 0; c < cornerNodes.length; c++ ) {
 					const startNode = cornerNodes[ c ];
 					const endNode = cornerNodes[ ( c + 1 ) % cornerNodes.length ];
-					edges.push( graph.getOrCreateEdge( startNode, endNode ) );
+					const edge = graph.getOrCreateEdge( startNode, endNode );
+					this.configureEdgeAppearance( edge, c );
+					edges.push( edge );
 				}
 
 				const region = graph.createRegion( edges );
@@ -280,7 +295,9 @@ export class ParkingCurve {
 				for ( let c = 0; c < cornerNodes.length; c++ ) {
 					const startNode = cornerNodes[ c ];
 					const endNode = cornerNodes[ ( c + 1 ) % cornerNodes.length ];
-					edges.push( graph.getOrCreateEdge( startNode, endNode ) );
+					const edge = graph.getOrCreateEdge( startNode, endNode );
+					this.configureEdgeAppearance( edge, c );
+					edges.push( edge );
 				}
 
 				const region = graph.createRegion( edges );

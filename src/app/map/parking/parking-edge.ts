@@ -14,16 +14,16 @@ export enum ParkingEdgeType {
 	BOUNDARY = 'boundary',
 	/** Entry/exit edge (typically no marking or different marking) */
 	ENTRY = 'entry',
-	/** Edge adjacent to driving lane */
-	LANE_ADJACENT = 'lane_adjacent',
-	/** Edge shared between two parking stalls */
-	SHARED = 'shared',
-	/** Edge along a wall or barrier */
-	WALL = 'wall',
-	/** Edge along a curb */
-	CURB = 'curb',
-	/** Custom edge type for special cases */
-	CUSTOM = 'custom'
+	// /** Edge adjacent to driving lane */
+	// LANE_ADJACENT = 'lane_adjacent',
+	// /** Edge shared between two parking stalls */
+	// SHARED = 'shared',
+	// /** Edge along a wall or barrier */
+	// WALL = 'wall',
+	// /** Edge along a curb */
+	// CURB = 'curb',
+	// /** Custom edge type for special cases */
+	// CUSTOM = 'custom'
 }
 
 /**
@@ -73,9 +73,15 @@ export class ParkingEdge {
 	constructor (
 		private startNode: ParkingNode,
 		private endNode: ParkingNode,
-		private markingGuid?: string
+		private markingGuid?: string,
+		type: ParkingEdgeType = ParkingEdgeType.BOUNDARY,
+		markingStyle: EdgeMarkingStyle = EdgeMarkingStyle.SOLID,
+		markingColor: EdgeMarkingColor = EdgeMarkingColor.WHITE
 	) {
 		this.id = MathUtils.generateUUID();
+		this.type = type;
+		this.markingStyle = markingStyle;
+		this.markingColor = markingColor;
 	}
 
 	shouldRenderMarking (): boolean {
@@ -131,13 +137,15 @@ export class ParkingEdge {
 		const startNode = graph.getNodesById( json.attr_startNodeId );
 		const endNode = graph.getNodesById( json.attr_endNodeId );
 
-		const edge = new ParkingEdge( startNode, endNode );
+		const type = ( json.attr_type as ParkingEdgeType ) ?? ParkingEdgeType.BOUNDARY;
+		const style = ( json.attr_markingStyle as EdgeMarkingStyle ) ?? EdgeMarkingStyle.SOLID;
+		const color = ( json.attr_markingColor as EdgeMarkingColor ) ?? EdgeMarkingColor.WHITE;
 
-		edge.setType( json.attr_type as ParkingEdgeType );
-		edge.setMarkingStyle( json.attr_markingStyle as EdgeMarkingStyle );
-		edge.setMarkingColor( json.attr_markingColor as EdgeMarkingColor );
-		edge.markingGuid = json.attr_markingGuid;
-		edge.id = json.attr_id;
+		const edge = new ParkingEdge( startNode, endNode, json.attr_markingGuid, type, style, color );
+
+		if ( json.attr_id ) {
+			edge.id = json.attr_id;
+		}
 
 		return edge;
 	}
