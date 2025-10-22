@@ -18,7 +18,6 @@ import { SimpleControlPointDragHandler } from "app/core/drag-handlers/point-drag
 import { ObjectUserDataStrategy } from "app/core/strategies/select-strategies/object-user-data-strategy";
 import { ParkingGraph } from "app/map/parking/parking-graph";
 import { ParkingNode } from "app/map/parking/parking-node";
-import { ParkingCurveService } from "./parking-curve.service";
 import { ParkingCurveController } from "./parking-curve-controller.service";
 import { ParkingCurvePointController, ParkingNodeController, ParkingNodeVisualizer } from "./parking-curve-point-controller.service";
 import { ParkingCurveVisualizer } from "./parking-curve-visualizer.service";
@@ -32,7 +31,6 @@ export class ParkingSpotToolService {
 
 	constructor (
 		public mapService: MapService,
-		public parkingCurveService: ParkingCurveService,
 		public splineService: SplineService,
 		public base: BaseToolService,
 		public parkingCurveCreator: ParkingCurveCreator,

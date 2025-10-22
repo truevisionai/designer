@@ -5,7 +5,6 @@
 import { Injectable } from "@angular/core";
 import { PointController } from "../../core/controllers/point-controller";
 import { SplineService } from "../../services/spline/spline.service";
-import { ParkingCurveService } from "./parking-curve.service";
 import { ParkingCurveInspector } from "./parking-curve.inspector";
 import { ParkingNodeInspector } from "./parking-node-inspector";
 import { ParkingCurvePoint } from "./objects/parking-curve-point";
@@ -17,7 +16,7 @@ import { ToolManager } from "app/managers/tool-manager";
 @Injectable()
 export class ParkingCurvePointController extends PointController<ParkingCurvePoint> {
 
-	constructor ( private splineService: SplineService, private parkingCurveService: ParkingCurveService ) {
+	constructor ( private splineService: SplineService ) {
 		super();
 	}
 
