@@ -40,7 +40,11 @@ export class ParkingRegion {
 	}
 
 	removeEdge ( edge: ParkingEdge ): void {
-		this.edges.splice( this.edges.indexOf( edge ), 1 );
+		const index = this.edges.indexOf( edge );
+
+		if ( index !== -1 ) {
+			this.edges.splice( index, 1 );
+		}
 	}
 
 	setEdges ( edges: ParkingEdge[] ): void {
