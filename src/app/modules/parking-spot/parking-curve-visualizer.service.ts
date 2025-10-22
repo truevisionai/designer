@@ -18,15 +18,16 @@ import { MapEvents } from "app/events/map-events";
 import { ColorUtils } from "app/views/shared/utils/colors.service";
 import { ParkingNode } from "app/map/parking/parking-node";
 import { ParkingEdge } from "app/map/parking/parking-edge";
+import { Object3DMap } from "app/core/models/object3d-map";
 
 @Injectable()
 export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 	private parkingCurveObjects: Object3DArrayMap<ParkingCurve, Object3D[]> = new Object3DArrayMap();
 
-	private nodeObjects: Object3DArrayMap<ParkingNode, Object3D[]> = new Object3DArrayMap();
+	private nodeObjects: Object3DMap<ParkingNode, Object3D> = new Object3DMap();
 
-	private edgeObjects: Object3DArrayMap<ParkingEdge, Object3D[]> = new Object3DArrayMap();
+	private edgeObjects: Object3DMap<ParkingEdge, Object3D> = new Object3DMap();
 
 	constructor (
 		private splineDebugService: SplineDebugService,
@@ -135,13 +136,13 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		graph.getNodes().forEach( parkingNode => {
 
-			this.nodeObjects.addItem( parkingNode, new ParkingNodePoint( parkingNode, parkingNode.position ) );
+			this.nodeObjects.add( parkingNode, new ParkingNodePoint( parkingNode, parkingNode.position ) );
 
 		} );
 
 		graph.getEdges().forEach( parkingEdge => {
 
-			this.edgeObjects.addItem( parkingEdge, LineView.create( parkingEdge.getNodePositions() ) );
+			this.edgeObjects.add( parkingEdge, LineView.create( parkingEdge.getNodePositions() ) );
 
 		} );
 
@@ -153,17 +154,27 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		nodes.forEach( parkingNode => {
 
-			this.nodeObjects.removeKey( parkingNode );
+			const nodeObject = this.nodeObjects.get( parkingNode );
 
-			this.nodeObjects.addItem( parkingNode, new ParkingNodePoint( parkingNode, parkingNode.position ) );
+			if ( nodeObject ) {
+
+				nodeObject.position.copy( parkingNode.position );
+
+				nodeObject.updateMatrixWorld( true );
+
+			} else {
+
+				this.nodeObjects.add( parkingNode, new ParkingNodePoint( parkingNode, parkingNode.position ) );
+
+			}
 
 		} );
 
 		edges.forEach( parkingEdge => {
 
-			this.edgeObjects.removeKey( parkingEdge );
+			this.edgeObjects.remove( parkingEdge );
 
-			this.edgeObjects.addItem( parkingEdge, LineView.create( parkingEdge.getNodePositions() ) );
+			this.edgeObjects.add( parkingEdge, LineView.create( parkingEdge.getNodePositions() ) );
 
 		} );
 

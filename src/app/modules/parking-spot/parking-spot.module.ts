@@ -5,7 +5,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TOOL_PROVIDERS } from "../../tools/tool";
-import { ParkingNodePointDragHandler, ParkingSpotTool, ParkingSpotToolService } from "./parking-spot.tool";
+import { ParkingSpotTool, ParkingSpotToolService } from "./parking-spot.tool";
 import { ParkingCurveCreator, ParkingCurvePointCreator } from "./services/parking-spot-creation-strategy";
 import { ParkingCurveService } from "./parking-curve.service";
 import { ParkingCurveController } from "./parking-curve-controller.service";
@@ -17,7 +17,6 @@ const Controllers = [
 	ParkingCurvePointController,
 	ParkingCurveController,
 	ParkingNodeController,
-	ParkingNodePointDragHandler,
 ];
 
 const Services = [

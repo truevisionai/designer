@@ -18,8 +18,6 @@ import { SimpleControlPointDragHandler } from "app/core/drag-handlers/point-drag
 import { ObjectUserDataStrategy } from "app/core/strategies/select-strategies/object-user-data-strategy";
 import { ParkingGraph } from "app/map/parking/parking-graph";
 import { ParkingNode } from "app/map/parking/parking-node";
-import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
-import { EmptyController } from "app/core/controllers/empty-controller";
 import { ParkingCurveService } from "./parking-curve.service";
 import { ParkingCurveController } from "./parking-curve-controller.service";
 import { ParkingCurvePointController, ParkingNodeController, ParkingNodeVisualizer } from "./parking-curve-point-controller.service";
@@ -28,12 +26,6 @@ import { ParkingCurvePointVisualizer } from "./parking-curve-point-visualizer.se
 import { ParkingCurveInspector } from "./parking-curve.inspector";
 import { ParkingNodePoint } from "./objects/parking-node-point";
 import { ParkingCurvePoint } from "./objects/parking-curve-point";
-
-
-@Injectable()
-export class ParkingNodePointDragHandler extends SimpleControlPointDragHandler<ParkingNodePoint> {
-
-}
 
 @Injectable()
 export class ParkingSpotToolService {
@@ -89,7 +81,7 @@ export class ParkingSpotTool extends ToolWithHandler {
 		this.addVisualizer( ParkingCurve, this.tool.base.injector.get( ParkingCurveVisualizer ) );
 
 		this.addDragHandler( ParkingCurvePoint, this.tool.base.injector.get( SimpleControlPointDragHandler ) );
-		this.addDragHandler( ParkingNodePoint, this.tool.base.injector.get( ParkingNodePointDragHandler ) );
+		this.addDragHandler( ParkingNodePoint, this.tool.base.injector.get( SimpleControlPointDragHandler ) );
 
 		this.tool.parkingCurveVisualizer.showParkingGraph( this.tool.mapService.map.getParkingGraph() );
 
@@ -112,8 +104,6 @@ export class ParkingSpotTool extends ToolWithHandler {
 			const graph = this.tool.mapService.map.getParkingGraph()
 
 			this.tool.parkingCurveVisualizer.updateByNode( graph, object );
-
-			console.log( 'Updating parking node visualizer' );
 
 		} else {
 
