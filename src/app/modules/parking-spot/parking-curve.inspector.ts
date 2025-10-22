@@ -9,10 +9,6 @@ import { CommandHistory } from "../../commands/command-history";
 import { BakeCurveCommand } from "./commands/bake-curve-command";
 import { Commands } from "../../commands/commands";
 import { EdgeMarkingColor } from "app/map/parking/parking-edge";
-import { ParkingNode } from "app/map/parking/parking-node";
-import { Vector3 } from "three";
-import { ParkingGraph } from "app/map/parking/parking-graph";
-import { DeleteParkingNodeCommand } from "./commands/delete-parking-node-command";
 
 export class ParkingCurveInspector {
 
@@ -91,41 +87,3 @@ export class ParkingCurveInspector {
 
 }
 
-
-export class ParkingNodeInspector {
-
-	constructor (
-		public node: ParkingNode,
-		public graph: ParkingGraph,
-	) {
-	}
-
-	@SerializedField( { type: 'vector3' } )
-	get position (): Vector3 {
-		return this.node.position;
-	}
-
-	set position ( value: Vector3 ) {
-		this.node.position.copy( value );
-	}
-
-	@SerializedAction( { label: 'Delete Parking Node' } )
-	deleteNode (): void {
-		CommandHistory.execute( new DeleteParkingNodeCommand( this.graph, this.node ) );
-	}
-
-	// @SerializedAction( { label: 'Delete Parking Edges' } )
-	// deleteEdges (): void {
-	// 	Commands.RemoveObject( this.graph.getEdgesForNode( this.node ) );
-	// }
-
-	// @SerializedAction( { label: 'Delete Parking Region' } )
-	// deleteRegion (): void {
-	// 	Commands.RemoveObject( this.graph.getRegionForNode( this.node ) );
-	// }
-
-	// @SerializedAction( { label: 'Delete Parking Regions' } )
-	// deleteAllRegions (): void {
-	// 	Commands.RemoveObject( this.node );
-	// }
-}
