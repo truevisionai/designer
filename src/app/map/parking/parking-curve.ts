@@ -581,6 +581,11 @@ export class ParkingCurve {
 			parkingCurve.side = json.attr_side as ParkingSide;
 		}
 
+		// Load marking color if present
+		if ( json.attr_markingColor !== undefined ) {
+			parkingCurve.color = json.attr_markingColor as EdgeMarkingColor;
+		}
+
 		const controlPoints = [];
 
 		readXmlArray( json.spline.point, ( point: any ) => {
@@ -606,6 +611,7 @@ export class ParkingCurve {
 			attr_stallWidth: this.stallWidth,
 			attr_stallDepth: this.stallDepth,
 			attr_side: this.side,
+			attr_markingColor: this.color,
 			spline: {
 				attr_uuid: this.spline.uuid,
 				attr_type: this.spline.type,
