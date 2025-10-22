@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { PointController } from "../../core/controllers/point-controller";
 import { SplineService } from "../../services/spline/spline.service";
 import { ParkingCurveService } from "./parking-curve.service";
-import { ParkingCurveInspector } from "./parking-curve.inspector";
+import { ParkingCurveInspector, ParkingNodeInspector } from "./parking-curve.inspector";
 import { ParkingCurvePoint } from "./objects/parking-curve-point";
 import { MapService } from "app/services/map/map.service";
 import { PointVisualizer } from "app/tools/maneuver/point-visualizer";
@@ -82,7 +82,7 @@ export class ParkingNodeController extends PointController<ParkingNodePoint> {
 
 	showInspector ( point: ParkingNodePoint ): void {
 
-		// this.setInspector( new ParkingCurveInspector( point.mainObject, point ) );
+		this.setInspector( new ParkingNodeInspector( point.mainObject, this.mapService.map.getParkingGraph() ) );
 
 	}
 
