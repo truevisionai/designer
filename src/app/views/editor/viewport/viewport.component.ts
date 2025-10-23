@@ -35,6 +35,8 @@ import { AssetType } from 'app/assets/asset.model';
 import { isView, IView } from 'app/tools/lane/visualizers/i-view';
 import { Vector2 } from 'app/core/maths';
 import { SelectionService } from 'app/tools/selection.service';
+import { PointerModeService, PointerSelectionMode } from 'app/tools/pointer-mode.service';
+import { Subscription } from 'rxjs';
 
 @Component( {
 	selector: 'app-viewport',
@@ -80,6 +82,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	private showWireframe = false;
 
+	private pointerModeSubscription?: Subscription;
+
+	public readonly pointerSelectionMode = PointerSelectionMode;
+
+	public currentPointerMode: PointerSelectionMode = PointerSelectionMode.Pointer;
+
 	get isProduction () {
 		return Environment.production;
 	}
@@ -114,6 +122,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		private sceneService: SceneService,
 		private selectionService: SelectionService,
 		private dragManager: ViewportDragManager,
+		private pointerModeService: PointerModeService,
 	) {
 		this.render = this.render.bind( this );
 	}
@@ -122,6 +131,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.prevTime = ( performance || Date ).now();
 		this.beginTime = ( performance || Date ).now();
+
+		this.pointerModeSubscription = this.pointerModeService.modeChanges.subscribe( mode => {
+			this.currentPointerMode = mode;
+		} );
 
 	}
 
@@ -183,6 +196,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.renderer.dispose();
 
 		cancelAnimationFrame( this.animationId );
+
+		this.pointerModeSubscription?.unsubscribe();
 	}
 
 	render (): void {
@@ -252,25 +267,50 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( !this.onCanvas ) return;
 
+		const isBoxMode = this.pointerModeService.isBoxSelection();
+
 		this.intersections = this.getIntersections( event, true );
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
 		if ( !intersection ) {
-			this.lastObject?.onMouseOut();
-			this.lastObject = null;
+
+			if ( isBoxMode && this.isPointerDown ) {
+
+				const pointerData = this.preparePointerData( event, null );
+				pointerData.pointerDown = this.isPointerDown;
+				this.eventSystem.pointerMoved.emit( pointerData );
+
+			} else {
+
+				this.lastObject?.onMouseOut();
+				this.lastObject = null;
+
+			}
+
 			return;
 		}
 
 		if ( this.isPointerDown ) {
 
-			if ( !this.dragManager.isDragging ) {
-				this.dragManager.onDragStart( intersection.object, this.preparePointerData( event, intersection ) );
+			const pointerData = this.preparePointerData( event, intersection );
+			pointerData.pointerDown = true;
+
+			if ( isBoxMode ) {
+
+				this.eventSystem.pointerMoved.emit( pointerData );
+
+			} else {
+
+				if ( !this.dragManager.isDragging ) {
+					this.dragManager.onDragStart( intersection.object, pointerData );
+				}
+
+				this.dragManager.onDrag( intersection.object, pointerData );
+
+				this.eventSystem.pointerMoved.emit( pointerData );
+
 			}
-
-			this.dragManager.onDrag( intersection.object, this.preparePointerData( event, intersection ) );
-
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, intersection ) );
 
 			return;
 		}
@@ -334,11 +374,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-		if ( !intersection ) return;
+		const isBoxMode = this.pointerModeService.isBoxSelection();
+
+		if ( !intersection && !isBoxMode ) return;
 
 		if ( $event.button === MouseButton.LEFT ) {
 
-			this.handleLeftClick( $event, intersection );
+			this.handleLeftClick( $event, intersection, isBoxMode );
 
 		} else if ( $event.button === MouseButton.MIDDLE ) {
 
@@ -364,28 +406,44 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	handleLeftClick ( event: MouseEvent, intersection: Intersection ): void {
+	setPointerMode ( mode: PointerSelectionMode ): void {
 
-		this.fireSelectionEvents();
+		this.pointerModeService.setMode( mode );
 
-		// HACK
-		// only Points check is not sufficient,
-		// for now we check for tag also
-		// which is present on all control points
-		if (
-			intersection?.object?.type === 'Points' &&
-			intersection.object['tag'] != null
-		) {
+	}
 
-			this.viewControllerService.disableControls();
+	handleLeftClick ( event: MouseEvent, intersection: Intersection, isBoxMode: boolean = false ): void {
+
+		if ( !intersection && !isBoxMode ) return;
+
+		const pointerData = this.preparePointerData( event, intersection );
+
+		pointerData.pointerDown = true;
+
+		if ( isBoxMode ) {
+
+			// this.viewControllerService.disableControls();
 
 		} else {
 
-			this.viewControllerService.enableControls();
+			this.fireSelectionEvents();
+
+			if (
+				intersection?.object?.type === 'Points' &&
+				intersection.object[ 'tag' ] != null
+			) {
+
+				this.viewControllerService.disableControls();
+
+			} else {
+
+				this.viewControllerService.enableControls();
+
+			}
 
 		}
 
-		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
+		this.eventSystem.pointerDown.emit( pointerData );
 
 	}
 
@@ -410,15 +468,21 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( this.intersections.length > 0 ) {
 
-			this.eventSystem.pointerUp.emit( this.preparePointerData( event, this.intersections[ 0 ] ) );
+			const pointerData = this.preparePointerData( event, this.intersections[ 0 ] );
 
-			this.dragManager.onDragEnd( this.preparePointerData( event, this.intersections[ 0 ] ) );
+			pointerData.pointerDown = false;
 
+			this.eventSystem.pointerUp.emit( pointerData );
 
-		} else {
+			if ( !this.pointerModeService.isBoxSelection() ) {
+				this.dragManager.onDragEnd( pointerData );
+			}
 
-			// dont fire if no interaction
-			// this.eventSystem.pointerUp.emit( this.preparePointerData( event, null ) );
+		} else if ( this.pointerModeService.isBoxSelection() ) {
+
+			const pointerData = this.preparePointerData( event, null );
+			pointerData.pointerDown = false;
+			this.eventSystem.pointerUp.emit( pointerData );
 
 		}
 
@@ -641,6 +705,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		}
 
+		p.mouseEvent = $event;
+
 		// ADDITIONAL
 		if ( $event.button == 0 ) {
 			p.button = MouseButton.LEFT;
@@ -649,6 +715,8 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		} else if ( $event.button == 2 ) {
 			p.button = MouseButton.RIGHT;
 		}
+
+		p.pointerDown = this.isPointerDown;
 
 		return p;
 	}

@@ -10,12 +10,22 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { Object3D } from "three";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { BasePointTool } from "../base-point-tool";
+import { BoxSelectionConfig } from '../box-selection-service';
+import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 
 export class PropPointTool extends BasePointTool<PropInstance> {
 
 	public name: string = 'PropPointTool';
 
 	public toolType = ToolType.PropPoint;
+
+	private readonly boxSelectionStrategy = new DepPointStrategy<AbstractControlPoint>();
+
+	private readonly boxSelectionConfig: BoxSelectionConfig<AbstractControlPoint> = {
+		strategy: this.boxSelectionStrategy,
+		label: 'control point',
+		allowBatchDelete: true,
+	};
 
 	constructor () {
 
@@ -40,6 +50,12 @@ export class PropPointTool extends BasePointTool<PropInstance> {
 	init (): void {
 
 		this.setHint( 'use SHIFT + LEFT CLICK to create control point' );
+
+	}
+
+	getBoxSelectionConfig (): BoxSelectionConfig<AbstractControlPoint> | undefined {
+
+		return this.boxSelectionConfig;
 
 	}
 
