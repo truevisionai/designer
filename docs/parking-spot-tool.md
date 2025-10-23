@@ -81,3 +81,5 @@ Changes reflect instantly in the preview.
 - Use undo/redo after baking or moving nodes if you want to compare layouts quickly.
 - Keep stall angle small on tight corners; the tool automatically merges or widens stalls that fall below minimum width/area thresholds.
 - Re-open the tool to refresh the parking graph view if you import or load new parking data from the scene file.
+- When exporting to OpenDRIVE (`.xodr`) the tool converts each parking region into a `parkingSpace` road object anchored to the nearest road. 
+- Importing an `.xodr` with `parkingSpace` objects will recreate the parking graph from those objects, but only rectangular outlines and basic access/marking data are preserved. If an imported stall sits far from any road, review the placement manually after import.
