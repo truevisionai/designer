@@ -15,8 +15,9 @@ export class ParkingRegion {
 
 	public id: string;
 
-	constructor ( public heading: number ) {
+	constructor ( public heading: number, edges: ParkingEdge[] = [] ) {
 		this.id = MathUtils.generateUUID();
+		this.edges = edges;
 	}
 
 	setHeading ( heading: number ): void {

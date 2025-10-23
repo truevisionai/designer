@@ -72,6 +72,10 @@ export class ParkingGraph {
 		this.registerEdge( edge );
 	}
 
+	addEdges ( edges: ParkingEdge[] ): void {
+		edges.forEach( edge => this.addEdge( edge ) );
+	}
+
 	removeEdge ( edge: ParkingEdge ): void {
 		if ( !this.edges.has( edge.id ) ) {
 			throw new Error( `Edge with id ${ edge.id } not found` );
@@ -88,6 +92,10 @@ export class ParkingGraph {
 
 		this.nodes.set( node.id, node );
 		this.registerNode( node );
+	}
+
+	addNodes ( nodes: ParkingNode[] ): void {
+		nodes.forEach( node => this.addNode( node ) );
 	}
 
 	removeNode ( node: ParkingNode ): void {
@@ -165,11 +173,13 @@ export class ParkingGraph {
 	 * Find or create a node at a given (x,y,z).
 	 * You can implement tolerance logic if you want to reuse
 	 * existing nodes that are "close enough" to reduce duplicates.
+	 * @param position The position to find or create the node at.
+	 * @param tolerance Distance within which to consider existing nodes as matches.
 	 */
-	public getOrCreateNode ( position: Vector3 ): ParkingNode {
+	public getOrCreateNode ( position: Vector3, tolerance = 0.01 ): ParkingNode {
 		// For simplicity, let's skip tolerance and do exact matches
 		for ( const node of this.nodes.values() ) {
-			if ( node.position.distanceTo( position ) < 0.01 ) {
+			if ( node.position.distanceTo( position ) < tolerance ) {
 				return node;
 			}
 		}
@@ -188,14 +198,14 @@ export class ParkingGraph {
 		this.ensureNodeEntry( start.id );
 		this.ensureNodeEntry( end.id );
 
-			const startIncidents = this.edgesByNode.get( start.id );
-			if ( startIncidents ) {
-				for ( const edgeId of startIncidents ) {
-					const candidate = this.edges.get( edgeId );
-					if ( !candidate ) continue;
+		const startIncidents = this.edgesByNode.get( start.id );
+		if ( startIncidents ) {
+			for ( const edgeId of startIncidents ) {
+				const candidate = this.edges.get( edgeId );
+				if ( !candidate ) continue;
 
-					const forward = candidate.matches( start, end );
-					const reverse = candidate.matches( end, start );
+				const forward = candidate.matches( start, end );
+				const reverse = candidate.matches( end, start );
 
 				if ( forward || reverse ) {
 					return candidate;
