@@ -4,7 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { Camera, Intersection, Object3D, Vector3 } from "three";
+import { Camera, Intersection, Object3D, PerspectiveCamera, Vector3 } from "three";
 import { Observable, Subject } from 'rxjs';
 import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
@@ -50,12 +50,16 @@ export class BoxSelectionService {
 		private cameraService: CameraService,
 		private sceneService: SceneService,
 	) {
+
 		this.cameraService.cameraChanged.subscribe( ( camera ) => this.onCameraChanged( camera ) );
+
+		this.configureSelectionBox( this.cameraService.camera );
+
 	}
 
 	private onCameraChanged ( camera: Camera ): void {
 
-		this.box = new SelectionBox( camera, this.sceneService.scene, 1 );
+		this.configureSelectionBox( camera );
 
 	}
 
@@ -73,7 +77,7 @@ export class BoxSelectionService {
 
 		this.isSelecting = false;
 
-		this.box = new SelectionBox( this.cameraService.camera, this.sceneService.scene, 1 );
+		this.configureSelectionBox( this.cameraService.camera );
 
 	}
 
@@ -278,6 +282,36 @@ export class BoxSelectionService {
 			object.select();
 
 		}
+
+	}
+
+	private configureSelectionBox ( camera: Camera ): void {
+
+		const scene = this.sceneService.scene;
+
+		if ( !this.box ) {
+
+			this.box = new SelectionBox( camera, scene, this.getSelectionDepth( camera ) );
+
+			return;
+
+		}
+
+		this.box.camera = camera;
+		this.box.scene = scene;
+		this.box.deep = this.getSelectionDepth( camera );
+
+	}
+
+	private getSelectionDepth ( camera: Camera ): number {
+
+		if ( camera instanceof PerspectiveCamera ) {
+
+			return camera.far;
+
+		}
+
+		return Number.MAX_VALUE;
 
 	}
 
