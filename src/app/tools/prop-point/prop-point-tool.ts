@@ -11,21 +11,13 @@ import { Object3D } from "three";
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { BasePointTool } from "../base-point-tool";
 import { BoxSelectionConfig } from '../box-selection-service';
-import { DepPointStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
+import { PointSelectionStrategy } from 'app/core/strategies/select-strategies/control-point-strategy';
 
 export class PropPointTool extends BasePointTool<PropInstance> {
 
 	public name: string = 'PropPointTool';
 
 	public toolType = ToolType.PropPoint;
-
-	private readonly boxSelectionStrategy = new DepPointStrategy<AbstractControlPoint>();
-
-	private readonly boxSelectionConfig: BoxSelectionConfig<AbstractControlPoint> = {
-		strategy: this.boxSelectionStrategy,
-		label: 'control point',
-		allowBatchDelete: true,
-	};
 
 	constructor () {
 
@@ -54,9 +46,9 @@ export class PropPointTool extends BasePointTool<PropInstance> {
 	}
 
 	getBoxSelectionConfig (): BoxSelectionConfig<AbstractControlPoint> | undefined {
-
-		return this.boxSelectionConfig;
-
+		return {
+			strategy: new PointSelectionStrategy()
+		}
 	}
 
 	onCreateObject ( e: PointerEventData ): void {

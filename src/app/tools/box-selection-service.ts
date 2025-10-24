@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
 import { Camera, Intersection, Object3D, PerspectiveCamera, Vector3 } from "three";
 import { Observable, Subject } from 'rxjs';
-import { BaseSelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
+import { SelectionStrategy } from 'app/core/strategies/select-strategies/select-strategy';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { RendererService } from 'app/renderer/renderer.service';
 import { CameraService } from 'app/renderer/camera.service';
@@ -15,9 +15,7 @@ import { SelectionHelper } from './selection-helper';
 import { SelectionBox } from './selection-box';
 
 export interface BoxSelectionConfig<T = any> {
-	strategy: BaseSelectionStrategy<T>;
-	label?: string;
-	allowBatchDelete?: boolean;
+	strategy: SelectionStrategy<T>;
 }
 
 @Injectable( {
@@ -31,7 +29,7 @@ export class BoxSelectionService {
 
 	private box: SelectionBox;
 
-	private selectStrategy: BaseSelectionStrategy<any>;
+	private selectStrategy: SelectionStrategy<any>;
 
 	private filteredCollection: any[] = [];
 
@@ -63,13 +61,13 @@ export class BoxSelectionService {
 
 	}
 
-	setStrategy ( strategy: BaseSelectionStrategy<any> ): void {
+	setStrategy ( strategy: SelectionStrategy<any> ): void {
 
 		this.selectStrategy = strategy;
 
 	}
 
-	init ( strategy?: BaseSelectionStrategy<any> ): void {
+	init ( strategy?: SelectionStrategy<any> ): void {
 
 		if ( strategy ) this.setStrategy( strategy );
 

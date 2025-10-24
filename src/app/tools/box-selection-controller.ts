@@ -4,12 +4,10 @@
 
 import { Injectable } from '@angular/core';
 import { PointerEventData } from 'app/events/pointer-event-data';
-import { CommandHistory } from 'app/commands/command-history';
-import { RemoveObjectCommand } from 'app/commands/remove-object-command';
 import { ToolManager } from 'app/managers/tool-manager';
-import { StatusBarService } from 'app/services/status-bar.service';
 import { PointerModeService, PointerSelectionMode } from './pointer-mode.service';
 import { BoxSelectionConfig, BoxSelectionService } from './box-selection-service';
+import { Commands } from 'app/commands/commands';
 
 @Injectable( {
 	providedIn: 'root'
@@ -74,15 +72,9 @@ export class BoxSelectionController {
 
 		if ( this.activeSelection.length === 0 ) return false;
 
-		if ( this.activeConfig?.allowBatchDelete !== true ) return false;
+		Commands.RemoveObject( this.activeSelection );
 
-		const commands = this.activeSelection.map( object => new RemoveObjectCommand( object, true ) );
-
-		if ( commands.length === 0 ) return false;
-
-		CommandHistory.executeMany( ...commands );
-
-		StatusBarService.setHint( `${ commands.length } ${ this.getLabel( commands.length ) } deleted` );
+		console.log( `BoxSelectionController: Deleted ${ this.activeSelection.length } objects` );
 
 		this.reset();
 
@@ -99,14 +91,7 @@ export class BoxSelectionController {
 
 		if ( !this.pointerModeService.isBoxSelection() ) return;
 
-		if ( selection.length === 0 ) {
-
-			StatusBarService.clearHint();
-
-			return;
-		}
-
-		StatusBarService.setHint( `${ selection.length } ${ this.getLabel( selection.length ) } selected` );
+		console.log( `BoxSelectionController: ${ selection.length } objects selected` );
 
 	}
 
@@ -114,18 +99,15 @@ export class BoxSelectionController {
 
 		this.activeSelection = selection;
 
-		if ( selection.length === 0 ) {
-			StatusBarService.setHint( 'No selectable objects found in region' );
-		}
+		console.log( `BoxSelectionController: Selection completed with ${ selection.length } objects` );
 
 	}
 
 	private onSelectionCancelled (): void {
 
 		this.activeSelection = [];
-		this.activeConfig = undefined;
 
-		StatusBarService.clearHint();
+		this.activeConfig = undefined;
 
 	}
 
@@ -139,16 +121,6 @@ export class BoxSelectionController {
 
 		this.activeSelection = [];
 		this.activeConfig = undefined;
-
-	}
-
-	private getLabel ( count: number ): string {
-
-		const label = this.activeConfig?.label || 'object';
-
-		if ( count === 1 ) return label;
-
-		return label.endsWith( 's' ) ? label : `${ label }s`;
 
 	}
 
