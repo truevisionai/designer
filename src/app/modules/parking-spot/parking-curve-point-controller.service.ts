@@ -5,18 +5,19 @@
 import { Injectable } from "@angular/core";
 import { PointController } from "../../core/controllers/point-controller";
 import { SplineService } from "../../services/spline/spline.service";
-import { ParkingCurveService } from "./parking-curve.service";
 import { ParkingCurveInspector } from "./parking-curve.inspector";
+import { ParkingNodeInspector } from "./parking-node-inspector";
 import { ParkingCurvePoint } from "./objects/parking-curve-point";
 import { MapService } from "app/services/map/map.service";
 import { PointVisualizer } from "app/tools/maneuver/point-visualizer";
 import { ParkingNodePoint } from "./objects/parking-node-point";
 import { ToolManager } from "app/managers/tool-manager";
+import { ParkingCurveVisualizer } from "./parking-curve-visualizer.service";
 
 @Injectable()
 export class ParkingCurvePointController extends PointController<ParkingCurvePoint> {
 
-	constructor ( private splineService: SplineService, private parkingCurveService: ParkingCurveService ) {
+	constructor () {
 		super();
 	}
 
@@ -82,7 +83,7 @@ export class ParkingNodeController extends PointController<ParkingNodePoint> {
 
 	showInspector ( point: ParkingNodePoint ): void {
 
-		// this.setInspector( new ParkingCurveInspector( point.mainObject, point ) );
+		this.setInspector( new ParkingNodeInspector( point.mainObject, this.mapService.map.getParkingGraph() ) );
 
 	}
 
@@ -91,6 +92,20 @@ export class ParkingNodeController extends PointController<ParkingNodePoint> {
 
 @Injectable()
 export class ParkingNodeVisualizer extends PointVisualizer<ParkingNodePoint> {
+
+	constructor ( private parkingCurveVisualizer: ParkingCurveVisualizer, private mapService: MapService ) {
+
+		super();
+
+	}
+
+	onUpdated ( object: ParkingNodePoint ): void {
+
+		const graph = this.mapService.map.getParkingGraph()
+
+		this.parkingCurveVisualizer.updateByNode( graph, object.mainObject );
+
+	}
 
 	protected override updateSpline ( object: ParkingNodePoint ): void {
 

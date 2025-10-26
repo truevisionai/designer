@@ -10,11 +10,42 @@ import { Maths } from "app/utils/maths";
 import { Vector3 } from "three";
 import { MathUtils } from "three/src/math/MathUtils";
 import { ParkingGraph } from "./parking-graph";
-import { ParkingEdge } from "./parking-edge";
+import { EdgeMarkingColor, EdgeMarkingStyle, ParkingEdge, ParkingEdgeType } from "./parking-edge";
 import { ParkingNode } from "./parking-node";
 import { ParkingRegion } from "./parking-region";
 import { readXmlArray } from "app/utils/xml-utils";
 import { ParkingCurvePoint } from "app/modules/parking-spot/objects/parking-curve-point";
+
+interface PolylineSegment {
+	start: Vector3;
+	end: Vector3;
+	length: number;
+	heading: number;
+	cumulativeStart: number;
+}
+
+interface ParkingStallPlacement {
+	center: TvPosTheta;
+	centerDistance: number;
+	startDistance: number;
+	endDistance: number;
+}
+
+interface ParkingStallQuad {
+	corners: Vector3[];
+	heading: number;
+	center: TvPosTheta;
+	width: number;
+	area: number;
+	startIndex: number;
+	endIndex: number;
+}
+
+export enum ParkingSide {
+	LEFT = 'left',
+	RIGHT = 'right',
+	BOTH = 'both'
+}
 
 export class ParkingCurve {
 
@@ -27,6 +58,15 @@ export class ParkingCurve {
 	private stallWidth: number = 2.5;
 	// Depth outward from center line (perpendicular)
 	private stallDepth: number = 5.0; // Adjust as needed
+
+	// Angle offset for stalls (in radians)
+	// Positive angle rotates counter-clockwise from the road direction
+	private stallAngle: number = 0;
+
+	// Which side(s) of the curve should have parking spots
+	private side: ParkingSide = ParkingSide.BOTH;
+
+	private color: EdgeMarkingColor = EdgeMarkingColor.WHITE;
 
 	private parkingGraph: ParkingGraph;
 
@@ -63,6 +103,58 @@ export class ParkingCurve {
 		this.stallDepth = length;
 	}
 
+	getAngle (): number {
+		return this.stallAngle;
+	}
+
+	setAngle ( angle: number ): void {
+		this.stallAngle = angle;
+	}
+
+	/**
+	 * Get stall angle in degrees
+	 */
+	getAngleDegrees (): number {
+		return this.stallAngle * ( 180 / Math.PI );
+	}
+
+	/**
+	 * Set stall angle in degrees
+	 */
+	setAngleDegrees ( degrees: number ): void {
+		this.stallAngle = degrees * ( Math.PI / 180 );
+	}
+
+	getSide (): ParkingSide {
+		return this.side;
+	}
+
+	setSide ( side: ParkingSide ): void {
+		this.side = side;
+	}
+
+	/**
+	 * Check if parking spots should be generated on the left side
+	 */
+	hasLeftSide (): boolean {
+		return this.side === ParkingSide.LEFT || this.side === ParkingSide.BOTH;
+	}
+
+	/**
+	 * Check if parking spots should be generated on the right side
+	 */
+	hasRightSide (): boolean {
+		return this.side === ParkingSide.RIGHT || this.side === ParkingSide.BOTH;
+	}
+
+	getColor (): EdgeMarkingColor {
+		return this.color;
+	}
+
+	setColor ( color: EdgeMarkingColor ): void {
+		this.color = color;
+	}
+
 	addPoint ( point: AbstractControlPoint ): void {
 		this.spline.addControlPoint( point );
 	}
@@ -84,160 +176,151 @@ export class ParkingCurve {
 	}
 
 	// ------------------------------------------
-	// PREVIEW: DOUBLE-SIDED PARKING
+	// PREVIEW: SIDE-AWARE PARKING
 	// ------------------------------------------
 
 	/**
 	 * Generates ephemeral ParkingRegions for UI preview.
-	 * Each "center" spawns two stalls: left & right.
+	 * Respects the 'side' property to generate stalls on left, right, or both sides.
 	 */
 	generatePreviewRegions (): ParkingRegion[] {
 
-		const centers = this.getPotentialSpots();
+		const segments = this.buildPolylineSegments();
+		const placements = this.getStallPlacements( segments );
 		const previewRegions: ParkingRegion[] = [];
 
-		centers.forEach( ( center, index ) => {
+		if ( placements.length === 0 ) {
+			return previewRegions;
+		}
 
-			// Left stall
-			{
-				const corners = this.computeRectCorners( center, +1 );  // +1 => above centerline
-				const tempNodes = corners.map( pos => new ParkingNode( pos ) );
-				const tempEdges: ParkingEdge[] = [];
+		if ( this.hasLeftSide() ) {
+			const leftQuads = this.buildStallQuadsForSide( segments, placements, +1 );
+			leftQuads.forEach( quad => previewRegions.push( this.createPreviewRegion( quad ) ) );
+		}
 
-				for ( let i = 0; i < tempNodes.length; i++ ) {
-					const start = tempNodes[ i ];
-					const end = tempNodes[ ( i + 1 ) % tempNodes.length ];
-					tempEdges.push( new ParkingEdge( start, end ) );
-				}
-
-				const region = new ParkingRegion( center.hdg - Maths.PI2 );
-				region.setEdges( tempEdges );
-				previewRegions.push( region );
-			}
-
-			// Right stall
-			{
-				const corners = this.computeRectCorners( center, -1 ); // -1 => below centerline
-				const tempNodes = corners.map( pos => new ParkingNode( pos ) );
-				const tempEdges: ParkingEdge[] = [];
-
-				for ( let i = 0; i < tempNodes.length; i++ ) {
-					const start = tempNodes[ i ];
-					const end = tempNodes[ ( i + 1 ) % tempNodes.length ];
-					tempEdges.push( new ParkingEdge( start, end ) );
-				}
-
-				const region = new ParkingRegion( center.hdg + Maths.PI2 );
-				region.setEdges( tempEdges );
-				previewRegions.push( region );
-			}
-
-		} );
+		if ( this.hasRightSide() ) {
+			const rightQuads = this.buildStallQuadsForSide( segments, placements, -1 );
+			rightQuads.forEach( quad => previewRegions.push( this.createPreviewRegion( quad ) ) );
+		}
 
 		return previewRegions;
 
 	}
 
+	private createPreviewRegion ( quad: ParkingStallQuad ): ParkingRegion {
+
+		const tempNodes = quad.corners.map( pos => new ParkingNode( pos ) );
+		const tempEdges: ParkingEdge[] = [];
+
+		for ( let i = 0; i < tempNodes.length; i++ ) {
+
+			const start = tempNodes[ i ];
+			const end = tempNodes[ ( i + 1 ) % tempNodes.length ];
+
+			const edge = new ParkingEdge( start, end );
+
+			edge.setMarkingColor( this.color );
+
+			if ( i == 0 ) {
+				edge.setType( ParkingEdgeType.ENTRY );
+				edge.setMarkingStyle( EdgeMarkingStyle.NONE );
+			} else {
+				edge.setType( ParkingEdgeType.BOUNDARY );
+				edge.setMarkingStyle( EdgeMarkingStyle.SOLID );
+			}
+
+			tempEdges.push( edge );
+		}
+
+		// Stall heading is perpendicular to road plus the stall angle offset
+		const region = new ParkingRegion( quad.heading );
+		region.setEdges( tempEdges );
+		return region;
+
+	}
+
+	private configureEdgeAppearance ( edge: ParkingEdge, edgeIndex: number ): void {
+
+		if ( edgeIndex === 0 ) {
+			edge.setType( ParkingEdgeType.ENTRY );
+			edge.setMarkingStyle( EdgeMarkingStyle.NONE );
+		} else if ( edge.getType() !== ParkingEdgeType.ENTRY ) {
+			edge.setType( ParkingEdgeType.BOUNDARY );
+			edge.setMarkingStyle( EdgeMarkingStyle.SOLID );
+		}
+
+		edge.setMarkingColor( this.color );
+	}
+
 	/**
-	 * Creates permanent ParkingRegions in the ParkingGraph for each center.
-	 * Each center spawns two stalls: left & right.
+	 * Creates permanent ParkingRegions in the ParkingGraph.
+	 * Respects the 'side' property to generate stalls on left, right, or both sides.
 	 */
 	bake ( graph: ParkingGraph ): ParkingRegion[] {
 
-		const centers = this.getPotentialSpots();
+		const segments = this.buildPolylineSegments();
+		const placements = this.getStallPlacements( segments );
 		const newRegions: ParkingRegion[] = [];
 
-		for ( let i = 0; i < centers.length; i++ ) {
+		if ( placements.length === 0 ) {
+			return newRegions;
+		}
 
-			const center = centers[ i ];
-
-			// Left stall
-			{
-				const corners = this.computeRectCorners( center, +1 );
-				const cornerNodes = corners.map( pos => graph.getOrCreateNode( pos ) );
+		if ( this.hasLeftSide() ) {
+			const leftQuads = this.buildStallQuadsForSide( segments, placements, +1 );
+			leftQuads.forEach( quad => {
+				const cornerNodes = quad.corners.map( pos => graph.getOrCreateNode( pos ) );
 				const edges: ParkingEdge[] = [];
 
 				for ( let c = 0; c < cornerNodes.length; c++ ) {
 					const startNode = cornerNodes[ c ];
 					const endNode = cornerNodes[ ( c + 1 ) % cornerNodes.length ];
-					edges.push( graph.getOrCreateEdge( startNode, endNode ) );
+					const edge = graph.getOrCreateEdge( startNode, endNode );
+					this.configureEdgeAppearance( edge, c );
+					edges.push( edge );
 				}
 
 				const region = graph.createRegion( edges );
-				region.setHeading( center.hdg - Maths.PI2 );
+				region.setHeading( quad.heading );
 				newRegions.push( region );
-			}
+			} );
+		}
 
-			// Right stall
-			{
-				const corners = this.computeRectCorners( center, -1 );
-				const cornerNodes = corners.map( pos => graph.getOrCreateNode( pos ) );
+		if ( this.hasRightSide() ) {
+			const rightQuads = this.buildStallQuadsForSide( segments, placements, -1 );
+			rightQuads.forEach( quad => {
+				const cornerNodes = quad.corners.map( pos => graph.getOrCreateNode( pos ) );
 				const edges: ParkingEdge[] = [];
 
 				for ( let c = 0; c < cornerNodes.length; c++ ) {
 					const startNode = cornerNodes[ c ];
 					const endNode = cornerNodes[ ( c + 1 ) % cornerNodes.length ];
-					edges.push( graph.getOrCreateEdge( startNode, endNode ) );
+					const edge = graph.getOrCreateEdge( startNode, endNode );
+					this.configureEdgeAppearance( edge, c );
+					edges.push( edge );
 				}
 
 				const region = graph.createRegion( edges );
-				region.setHeading( center.hdg + Maths.PI2 );
+				region.setHeading( quad.heading );
 				newRegions.push( region );
-			}
-
+			} );
 		}
 
 		return newRegions;
 	}
 
-	/**
-	 * Computes the corners of one rectangular stall.  We assume:
-	 * - 'stallWidth' is along the spline direction
-	 * - 'stallDepth' extends outwards from the center line
-	 * - offsetSign = +1 => left side, -1 => right side
-	 */
-	private computeRectCorners ( center: TvPosTheta, offsetSign: number ): Vector3[] {
+	private buildPolylineSegments (): PolylineSegment[] {
 
-		const w = this.stallWidth;
-		const d = this.stallDepth;
-
-		// Define local corners with the centerline at local Y=0
-		// and the outer edge at local Y= offsetSign * d
-		const halfW = w * 0.5;
-		const localCorners = [
-			new Vector3( -halfW, 0, 0 ),
-			new Vector3( +halfW, 0, 0 ),
-			new Vector3( +halfW, offsetSign * d, 0 ),
-			new Vector3( -halfW, offsetSign * d, 0 ),
-		];
-
-		// Rotate by the road heading
-		const cosH = Math.cos( center.hdg );
-		const sinH = Math.sin( center.hdg );
-
-		const worldCorners = localCorners.map( local => {
-
-			// Rotate around origin
-			const rx = local.x * cosH - local.y * sinH;
-			const ry = local.x * sinH + local.y * cosH;
-
-			// Translate to the stall's center
-			return new Vector3(
-				center.x + rx,
-				center.y + ry,
-				0
-			);
-		} );
-
-		return worldCorners;
-	}
-
-	private getPotentialSpots (): TvPosTheta[] {
-
-		const centers: TvPosTheta[] = [];
-		const w = this.stallWidth;
-
+		const segments: PolylineSegment[] = [];
 		const ctrlPts = this.spline.controlPointPositions;
+		const EPS = 1e-6;
+
+		if ( ctrlPts.length < 2 ) {
+			return segments;
+		}
+
+		let cumulative = 0;
+
 		for ( let i = 0; i < ctrlPts.length - 1; i++ ) {
 
 			const start = ctrlPts[ i ];
@@ -247,21 +330,244 @@ export class ParkingCurve {
 			const dy = end.y - start.y;
 			const segLen = Math.sqrt( dx * dx + dy * dy );
 
-			// how many stalls fit in this segment
-			const spotsPerSegment = Math.floor( segLen / w );
+			if ( segLen <= EPS ) {
+				cumulative += segLen;
+				continue;
+			}
 
-			for ( let j = 0; j < spotsPerSegment; j++ ) {
+			segments.push( {
+				start,
+				end,
+				length: segLen,
+				heading: Math.atan2( dy, dx ),
+				cumulativeStart: cumulative
+			} );
 
-				const t = ( j + 0.5 ) * w / segLen;
-				const cx = start.x + t * dx;
-				const cy = start.y + t * dy;
-				const hdg = Math.atan2( dy, dx ); // direction along the segment
+			cumulative += segLen;
+		}
 
-				centers.push( new TvPosTheta( cx, cy, hdg ) );
+		return segments;
+	}
+
+	// eslint-disable-next-line max-lines-per-function
+	private getStallPlacements ( segments: PolylineSegment[] ): ParkingStallPlacement[] {
+
+		const placements: ParkingStallPlacement[] = [];
+		const w = this.stallWidth;
+		const EPS = 1e-6;
+
+		if ( segments.length === 0 || w <= Maths.Epsilon ) {
+			return placements;
+		}
+
+		const halfW = w * 0.5;
+		const lastSegment = segments[ segments.length - 1 ];
+		const totalLength = lastSegment.cumulativeStart + lastSegment.length;
+
+		if ( totalLength <= EPS ) {
+			return placements;
+		}
+
+		let nextCenterDistance = halfW;
+		let segmentIndex = 0;
+
+		while ( nextCenterDistance <= totalLength + EPS ) {
+
+			while ( segmentIndex < segments.length &&
+				nextCenterDistance > segments[ segmentIndex ].cumulativeStart + segments[ segmentIndex ].length + EPS ) {
+				segmentIndex++;
+			}
+
+			if ( segmentIndex >= segments.length ) {
+				break;
+			}
+
+			const segment = segments[ segmentIndex ];
+			const distIntoSegment = nextCenterDistance - segment.cumulativeStart;
+
+			if ( distIntoSegment < -EPS ) {
+				nextCenterDistance = segment.cumulativeStart + halfW;
+				continue;
+			}
+
+			const t = Maths.clamp( distIntoSegment / segment.length, 0, 1 );
+			const cx = segment.start.x + t * ( segment.end.x - segment.start.x );
+			const cy = segment.start.y + t * ( segment.end.y - segment.start.y );
+
+			placements.push( {
+				center: new TvPosTheta( cx, cy, segment.heading ),
+				centerDistance: nextCenterDistance,
+				startDistance: Math.max( 0, nextCenterDistance - halfW ),
+				endDistance: Math.min( totalLength, nextCenterDistance + halfW )
+			} );
+
+			nextCenterDistance += w;
+		}
+
+		return placements;
+	}
+
+	private buildStallQuadsForSide ( segments: PolylineSegment[], placements: ParkingStallPlacement[], offsetSign: number ): ParkingStallQuad[] {
+
+		const quads: ParkingStallQuad[] = [];
+
+		if ( placements.length === 0 ) {
+			return quads;
+		}
+
+		const EPS = 1e-6;
+		const minWidth = this.stallWidth;
+		const minArea = this.stallWidth * this.stallDepth;
+
+		let index = 0;
+
+		while ( index < placements.length ) {
+
+			let startIndex = index;
+			let endIndex = index;
+			let quad = this.computeStallQuad( segments, placements, startIndex, endIndex, offsetSign );
+
+			while ( endIndex < placements.length - 1 &&
+				( quad.width + EPS < minWidth || quad.area + EPS < minArea ) ) {
+				endIndex++;
+				quad = this.computeStallQuad( segments, placements, startIndex, endIndex, offsetSign );
+			}
+
+			while ( ( quad.width + EPS < minWidth || quad.area + EPS < minArea ) && quads.length > 0 ) {
+
+				const prev = quads.pop();
+
+				if ( !prev ) {
+					break;
+				}
+
+				startIndex = prev.startIndex;
+				endIndex = Math.max( endIndex, prev.endIndex );
+				quad = this.computeStallQuad( segments, placements, startIndex, endIndex, offsetSign );
+			}
+
+			if ( quad.width + EPS < minWidth || quad.area + EPS < minArea ) {
+				break;
+			}
+
+			quad.startIndex = startIndex;
+			quad.endIndex = endIndex;
+			quads.push( quad );
+			index = endIndex + 1;
+		}
+
+		return quads;
+	}
+
+	private computeStallQuad ( segments: PolylineSegment[], placements: ParkingStallPlacement[], startIndex: number, endIndex: number, offsetSign: number ): ParkingStallQuad {
+
+		const depth = this.stallDepth;
+		const startPlacement = placements[ startIndex ];
+		const endPlacement = placements[ endIndex ];
+
+		const startPose = this.getPointOnSegments( segments, startPlacement.startDistance );
+		const endPose = this.getPointOnSegments( segments, endPlacement.endDistance );
+
+		const startInner = new Vector3( startPose.x, startPose.y, startPose.z ?? 0 );
+		const endInner = new Vector3( endPose.x, endPose.y, endPose.z ?? 0 );
+
+		const startPerp = startPose.hdg + offsetSign * Math.PI / 2;
+		const endPerp = endPose.hdg + offsetSign * Math.PI / 2;
+
+		const startDirAngle = startPerp + offsetSign * this.stallAngle;
+		const endDirAngle = endPerp + offsetSign * this.stallAngle;
+
+		const startOuter = new Vector3(
+			startInner.x + depth * Math.cos( startDirAngle ),
+			startInner.y + depth * Math.sin( startDirAngle ),
+			startInner.z
+		);
+
+		const endOuter = new Vector3(
+			endInner.x + depth * Math.cos( endDirAngle ),
+			endInner.y + depth * Math.sin( endDirAngle ),
+			endInner.z
+		);
+
+		const corners = [ startInner, endInner, endOuter, startOuter ];
+		const width = startInner.distanceTo( endInner );
+		const area = this.computeQuadArea( startInner, endInner, endOuter, startOuter );
+
+		const center = this.computeGroupCenter( placements, startIndex, endIndex );
+		const meanHeading = center.hdg;
+		const perpAngle = meanHeading + offsetSign * Math.PI / 2;
+		const heading = perpAngle + offsetSign * this.stallAngle;
+
+		return {
+			corners,
+			heading,
+			center,
+			width,
+			area,
+			startIndex,
+			endIndex
+		};
+	}
+
+	private computeQuadArea ( a: Vector3, b: Vector3, c: Vector3, d: Vector3 ): number {
+
+		return Maths.areaOfTriangle( a, b, c ) + Maths.areaOfTriangle( a, c, d );
+	}
+
+	private computeGroupCenter ( placements: ParkingStallPlacement[], startIndex: number, endIndex: number ): TvPosTheta {
+
+		let sumX = 0;
+		let sumY = 0;
+		let sumCos = 0;
+		let sumSin = 0;
+		let count = 0;
+
+		for ( let i = startIndex; i <= endIndex; i++ ) {
+			const center = placements[ i ].center;
+			sumX += center.x;
+			sumY += center.y;
+			sumCos += Math.cos( center.hdg );
+			sumSin += Math.sin( center.hdg );
+			count++;
+		}
+
+		if ( count === 0 ) {
+			return new TvPosTheta( 0, 0, 0 );
+		}
+
+		const avgX = sumX / count;
+		const avgY = sumY / count;
+		const avgHdg = Math.atan2( sumSin, sumCos );
+
+		return new TvPosTheta( avgX, avgY, avgHdg );
+	}
+
+	private getPointOnSegments ( segments: PolylineSegment[], distance: number ): TvPosTheta {
+
+		if ( segments.length === 0 ) {
+			return new TvPosTheta( 0, 0, 0 );
+		}
+
+		const EPS = 1e-6;
+		const lastSegment = segments[ segments.length - 1 ];
+		const totalLength = lastSegment.cumulativeStart + lastSegment.length;
+		const clampedDistance = Maths.clamp( distance, 0, totalLength );
+
+		for ( const segment of segments ) {
+
+			if ( clampedDistance <= segment.cumulativeStart + segment.length + EPS ) {
+
+				const distIntoSegment = clampedDistance - segment.cumulativeStart;
+				const ratio = segment.length > EPS ? Maths.clamp( distIntoSegment / segment.length, 0, 1 ) : 0;
+				const x = segment.start.x + ratio * ( segment.end.x - segment.start.x );
+				const y = segment.start.y + ratio * ( segment.end.y - segment.start.y );
+
+				return new TvPosTheta( x, y, segment.heading );
 			}
 		}
 
-		return centers;
+		const finalSeg = segments[ segments.length - 1 ];
+		return new TvPosTheta( finalSeg.end.x, finalSeg.end.y, finalSeg.heading );
 	}
 
 	static fromSceneJSON ( json: any ): ParkingCurve {
@@ -271,6 +577,31 @@ export class ParkingCurve {
 		const parkingCurve = new ParkingCurve( spline );
 
 		parkingCurve.id = json.attr_id;
+
+		// Load stall angle if present
+		if ( json.attr_stallAngle !== undefined ) {
+			parkingCurve.stallAngle = parseFloat( json.attr_stallAngle );
+		}
+
+		// Load stall width if present
+		if ( json.attr_stallWidth !== undefined ) {
+			parkingCurve.stallWidth = parseFloat( json.attr_stallWidth );
+		}
+
+		// Load stall depth if present
+		if ( json.attr_stallDepth !== undefined ) {
+			parkingCurve.stallDepth = parseFloat( json.attr_stallDepth );
+		}
+
+		// Load side if present
+		if ( json.attr_side !== undefined ) {
+			parkingCurve.side = json.attr_side as ParkingSide;
+		}
+
+		// Load marking color if present
+		if ( json.attr_markingColor !== undefined ) {
+			parkingCurve.color = json.attr_markingColor as EdgeMarkingColor;
+		}
 
 		const controlPoints = [];
 
@@ -293,6 +624,11 @@ export class ParkingCurve {
 	toSceneJSON (): any {
 		return {
 			attr_id: this.id,
+			attr_stallAngle: this.stallAngle,
+			attr_stallWidth: this.stallWidth,
+			attr_stallDepth: this.stallDepth,
+			attr_side: this.side,
+			attr_markingColor: this.color,
 			spline: {
 				attr_uuid: this.spline.uuid,
 				attr_type: this.spline.type,
@@ -305,4 +641,3 @@ export class ParkingCurve {
 		};
 	}
 }
-

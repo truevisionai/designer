@@ -15,8 +15,9 @@ export class ParkingRegion {
 
 	public id: string;
 
-	constructor ( public heading: number ) {
+	constructor ( public heading: number, edges: ParkingEdge[] = [] ) {
 		this.id = MathUtils.generateUUID();
+		this.edges = edges;
 	}
 
 	setHeading ( heading: number ): void {
@@ -40,7 +41,11 @@ export class ParkingRegion {
 	}
 
 	removeEdge ( edge: ParkingEdge ): void {
-		this.edges.splice( this.edges.indexOf( edge ), 1 );
+		const index = this.edges.indexOf( edge );
+
+		if ( index !== -1 ) {
+			this.edges.splice( index, 1 );
+		}
 	}
 
 	setEdges ( edges: ParkingEdge[] ): void {

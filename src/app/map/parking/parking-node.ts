@@ -9,7 +9,7 @@ export class ParkingNode {
 	public id: string;
 
 	constructor (
-		public readonly position?: Vector3,
+		public position: Vector3,
 		private markingGuid?: string
 	) {
 		this.id = MathUtils.generateUUID();

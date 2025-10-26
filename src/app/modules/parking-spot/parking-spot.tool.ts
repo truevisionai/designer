@@ -17,10 +17,6 @@ import { MapService } from "app/services/map/map.service";
 import { SimpleControlPointDragHandler } from "app/core/drag-handlers/point-drag-handler.service";
 import { ObjectUserDataStrategy } from "app/core/strategies/select-strategies/object-user-data-strategy";
 import { ParkingGraph } from "app/map/parking/parking-graph";
-import { ParkingNode } from "app/map/parking/parking-node";
-import { EmptyVisualizer } from "app/core/visualizers/empty-visualizer";
-import { EmptyController } from "app/core/controllers/empty-controller";
-import { ParkingCurveService } from "./parking-curve.service";
 import { ParkingCurveController } from "./parking-curve-controller.service";
 import { ParkingCurvePointController, ParkingNodeController, ParkingNodeVisualizer } from "./parking-curve-point-controller.service";
 import { ParkingCurveVisualizer } from "./parking-curve-visualizer.service";
@@ -34,12 +30,11 @@ export class ParkingSpotToolService {
 
 	constructor (
 		public mapService: MapService,
-		public parkingCurvService: ParkingCurveService,
 		public splineService: SplineService,
 		public base: BaseToolService,
 		public parkingCurveCreator: ParkingCurveCreator,
 		public parkingCurvePointCreator: ParkingCurvePointCreator,
-		public parkignCurveVisualizer: ParkingCurveVisualizer,
+		public parkingCurveVisualizer: ParkingCurveVisualizer,
 	) {
 	}
 }
@@ -85,7 +80,7 @@ export class ParkingSpotTool extends ToolWithHandler {
 		this.addDragHandler( ParkingCurvePoint, this.tool.base.injector.get( SimpleControlPointDragHandler ) );
 		this.addDragHandler( ParkingNodePoint, this.tool.base.injector.get( SimpleControlPointDragHandler ) );
 
-		this.tool.parkignCurveVisualizer.showParkingGraph( this.tool.mapService.map.getParkingGraph() );
+		this.tool.parkingCurveVisualizer.showParkingGraph( this.tool.mapService.map.getParkingGraph() );
 
 	}
 
@@ -97,15 +92,7 @@ export class ParkingSpotTool extends ToolWithHandler {
 
 		} else if ( object instanceof ParkingGraph ) {
 
-			this.tool.parkignCurveVisualizer.showParkingGraph( object );
-
-		} else if ( object instanceof ParkingNode ) {
-
-			// NOTE: hack to update parking graph
-
-			const graph = this.tool.mapService.map.getParkingGraph()
-
-			this.tool.parkignCurveVisualizer.updateParkingGraph( graph );
+			this.tool.parkingCurveVisualizer.showParkingGraph( object );
 
 		} else {
 

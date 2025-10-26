@@ -14,13 +14,20 @@ import { SharpArrowObject } from "../../objects/lane-arrow-object";
 import { ParkingRegion } from "../../map/parking/parking-region";
 import { Polygon } from "../../tools/lane/visualizers/polygon-view";
 import { ParkingNodePoint } from "./objects/parking-node-point";
+import { MapEvents } from "app/events/map-events";
+import { ColorUtils } from "app/views/shared/utils/colors.service";
+import { ParkingNode } from "app/map/parking/parking-node";
+import { ParkingEdge } from "app/map/parking/parking-edge";
+import { Object3DMap } from "app/core/models/object3d-map";
 
 @Injectable()
 export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 	private parkingCurveObjects: Object3DArrayMap<ParkingCurve, Object3D[]> = new Object3DArrayMap();
 
-	private graphObjects: Object3DArrayMap<ParkingGraph, Object3D[]> = new Object3DArrayMap();
+	private nodeObjects: Object3DMap<ParkingNode, Object3D> = new Object3DMap();
+
+	private edgeObjects: Object3DMap<ParkingEdge, Object3D> = new Object3DMap();
 
 	constructor (
 		private splineDebugService: SplineDebugService,
@@ -72,6 +79,8 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		this.showSpots( object );
 
+		MapEvents.makeMesh.emit( object );
+
 	}
 
 	onRemoved ( object: ParkingCurve ): void {
@@ -99,7 +108,9 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		this.parkingCurveObjects.clear();
 
-		this.graphObjects.clear();
+		this.nodeObjects.clear();
+
+		this.edgeObjects.clear();
 
 	}
 
@@ -117,19 +128,59 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 	updateParkingGraph ( graph: ParkingGraph ): void {
 
-		this.graphObjects.clear();
+		this.nodeObjects.clear();
 
-		graph.getNodes().forEach( parkinNode => {
+		this.edgeObjects.clear();
 
-			this.graphObjects.addItem( graph, new ParkingNodePoint( parkinNode, parkinNode.position ) )
+		graph.getNodes().forEach( parkingNode => {
+
+			this.nodeObjects.add( parkingNode, new ParkingNodePoint( parkingNode, parkingNode.position ) );
 
 		} );
 
 		graph.getEdges().forEach( parkingEdge => {
 
-			this.graphObjects.addItem( graph, LineView.create( parkingEdge.getNodePositions() ) );
+			this.edgeObjects.add( parkingEdge, LineView.create( parkingEdge.getNodePositions() ) );
 
 		} );
+
+	}
+
+	updateByNode ( graph: ParkingGraph, node: ParkingNode ): void {
+
+		const { nodes, edges, regions } = graph.collectIncidentDeletion( node );
+
+		nodes.forEach( parkingNode => {
+
+			const nodeObject = this.nodeObjects.get( parkingNode );
+
+			if ( nodeObject ) {
+
+				nodeObject.position.copy( parkingNode.position );
+
+				nodeObject.updateMatrixWorld( true );
+
+			} else {
+
+				this.nodeObjects.add( parkingNode, new ParkingNodePoint( parkingNode, parkingNode.position ) );
+
+			}
+
+		} );
+
+		edges.forEach( parkingEdge => {
+
+			this.edgeObjects.remove( parkingEdge );
+
+			this.edgeObjects.add( parkingEdge, LineView.create( parkingEdge.getNodePositions() ) );
+
+		} );
+
+		regions.forEach( region => {
+
+			MapEvents.makeMesh.emit( region );
+
+		});
 
 	}
 
@@ -139,7 +190,7 @@ export class ParkingCurveVisualizer extends BaseVisualizer<ParkingCurve> {
 
 		parkingCurve.generatePreviewRegions().forEach( region => {
 
-			const arrowObject = new SharpArrowObject( region.getCenterPosition(), region.heading );
+			const arrowObject = new SharpArrowObject( region.getCenterPosition(), region.heading, ColorUtils.CYAN, 1.0 );
 			const edgeObject = LineView.create( region.getPoints(), 1 );
 			const regionObject = this.createRegionObject( region, parkingCurve );
 

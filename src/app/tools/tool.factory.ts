@@ -24,6 +24,7 @@ import { RoadTool } from "./road/road-tool";
 import { RoadCircleTool } from "./road-circle/road-circle-tool";
 import { ManeuverTool } from "./maneuver/maneuver-tool";
 import { PropPointTool } from "./prop-point/prop-point-tool";
+import { PropPointToolService } from "./prop-point/prop-point-tool.service";
 import { PropSpanTool } from "./prop-span/prop-span-tool";
 import { PolePropTool } from "./prop-pole/pole-prop.tool";
 import { LaneMarkingTool } from "./lane-marking/lane-marking-tool";
@@ -43,7 +44,6 @@ import { SelectionService } from "./selection.service";
 import { FactoryServiceProvider } from "../core/providers/factory-service.provider";
 import { ControlPointFactory } from "../factories/control-point.factory";
 import { DataServiceProvider } from "./data-service-provider.service";
-import { PropInstance } from 'app/map/prop-point/prop-instance.object';
 import { Tool, TOOL_PROVIDERS } from "./tool";
 import { LaneHeightTool } from './lane-height/lane-height.tool';
 import { BaseLaneTool } from "./base-lane.tool";
@@ -53,7 +53,6 @@ import { DebugLine } from 'app/objects/debug-line';
 import { DepSelectLineStrategy } from 'app/core/strategies/select-strategies/select-line-strategy';
 import { MidLaneMovingStrategy, } from "../core/strategies/move-strategies/end-lane.moving.strategy";
 import { LanePointNode } from "../objects/lane-node";
-import { SimpleControlPoint } from "../objects/simple-control-point";
 import { TrafficLightTool } from './traffic-light/traffic-light.tool';
 import { TrafficLightToolService } from './traffic-light/traffic-light-tool.service';
 import { EntityService } from "../scenario/entity/entity.service";
@@ -83,6 +82,7 @@ export class ToolFactory {
 		private parkingRoadToolService: ParkingRoadToolService,
 		private textMarkingToolService: TextMarkingToolService,
 		private propSpanToolService: PropSpanToolService,
+		private propPointToolService: PropPointToolService,
 		private propBarrierToolService: PolePropToolService,
 		private pointMarkingToolService: PointMarkingToolService,
 		private measurementToolService: MeasurementToolService,
@@ -134,7 +134,7 @@ export class ToolFactory {
 				tool = new ManeuverTool( this.maneuverToolService );
 				break;
 			case ToolType.PropPoint:
-				tool = new PropPointTool();
+				tool = new PropPointTool( this.propPointToolService );
 				break;
 			case ToolType.PropSpanTool:
 				tool = new PropSpanTool( this.propSpanToolService );
@@ -199,11 +199,6 @@ export class ToolFactory {
 	setSelectionStrategies ( tool: BaseTool<any>, type: ToolType ): void {
 
 		this.selectionService.reset();
-
-		if ( type == ToolType.PropPoint ) {
-			this.selectionService.registerStrategy( SimpleControlPoint, new DepPointStrategy() );
-			tool.setTypeName( PropInstance.name );
-		}
 
 		tool.setSelectionService( this.selectionService );
 

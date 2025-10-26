@@ -246,6 +246,18 @@ export class TvRoadObject {
 		this.roll = value.z;
 	}
 
+	get isParkingSpace (): boolean {
+		return this.attr_type == TvRoadObjectType.parkingSpace;
+	}
+
+	get hasPositiveOrientation (): boolean {
+		return this.orientation === TvOrientation.PLUS;
+	}
+
+	get hasNegativeOrientation (): boolean {
+		return this.orientation === TvOrientation.MINUS;
+	}
+
 	getRepeatCount (): number {
 		return this.repeat.length;
 	}
