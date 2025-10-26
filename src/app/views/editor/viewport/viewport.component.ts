@@ -41,6 +41,7 @@ import { Subscription } from 'rxjs';
 @Component( {
 	selector: 'app-viewport',
 	templateUrl: './viewport.component.html',
+	styleUrls: [ './viewport.component.css' ]
 } )
 export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 

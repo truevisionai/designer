@@ -36,8 +36,6 @@ export class BoxSelectionController {
 			}
 		} );
 
-		ToolManager.toolChanged.subscribe( () => this.reset() );
-
 	}
 
 	beginSession ( event: PointerEventData, config: BoxSelectionConfig<any> ): void {

@@ -3,6 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
+import { ToolManager } from 'app/managers/tool-manager';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 export enum PointerSelectionMode {
@@ -21,6 +22,10 @@ export class PointerModeService {
 
 	get currentMode (): PointerSelectionMode {
 		return this.modeSubject.value;
+	}
+
+	constructor () {
+		ToolManager.toolChanged.subscribe( () => this.reset() );
 	}
 
 	setMode ( mode: PointerSelectionMode ): void {
