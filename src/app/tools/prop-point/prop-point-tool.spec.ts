@@ -15,6 +15,7 @@ import { PropModel } from "app/map/prop-point/prop-model.model";
 import { DynamicMeta } from "app/assets/metadata.model";
 import { AssetDatabase } from "app/assets/asset-database";
 import { Object3D, Intersection } from "three";
+import { CommandHistory } from "app/commands/command-history";
 
 fdescribe( 'PropPointTool', () => {
 
@@ -90,6 +91,24 @@ fdescribe( 'PropPointTool', () => {
 
 		expect( mapService.map.getProps() ).not.toContain( created );
 		expect( tool.getSelectedObjectCount() ).toBe( 0 );
+
+	} );
+
+	it( 'should restore prop mesh on undo after delete', () => {
+
+		const created = createPropAt( new Vector3( 2, 3, 0 ) );
+
+		expect( created.parent ).toBeTruthy();
+		expect( created.object.parent ).toBe( created );
+
+		tool.onDeleteKeyDown();
+
+		expect( created.parent ).toBeFalsy();
+
+		CommandHistory.undo();
+
+		expect( created.parent ).toBeTruthy();
+		expect( created.object.parent ).toBe( created );
 
 	} );
 
