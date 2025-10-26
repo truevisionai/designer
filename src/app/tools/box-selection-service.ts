@@ -14,6 +14,7 @@ import { SceneService } from 'app/services/scene.service';
 import { SelectionHelper } from './selection-helper';
 import { SelectionBox } from './selection-box';
 import { BoxSelectionDeletionHandler } from './deletion/scoped-deletion.handler';
+import { Environment } from 'app/core/utils/environment';
 
 export interface BoxSelectionConfig<T = any> {
 	strategy: SelectionStrategy<T>;
@@ -24,6 +25,8 @@ export interface BoxSelectionConfig<T = any> {
 	providedIn: 'root'
 } )
 export class BoxSelectionService {
+
+	private debug = !Environment.production;
 
 	private isSelecting = false;
 
@@ -83,7 +86,9 @@ export class BoxSelectionService {
 
 	reset (): void {
 
-		console.log( 'BoxSelectionService: Resetting selection service' );
+		if ( this.debug ) {
+			console.log( 'BoxSelectionService: Resetting selection service' );
+		}
 
 		this.clearHighlights();
 
