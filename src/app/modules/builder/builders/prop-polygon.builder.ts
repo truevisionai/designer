@@ -241,7 +241,7 @@ export class PropPolygonBuilder extends MeshBuilder<PropPolygon> {
 
 	private getChildMeshesAndMaterials ( propInstance: Object3D ): IChildAndMesh[] {
 
-		let childMeshesAndMaterials: IChildAndMesh[];
+		let childMeshesAndMaterials: IChildAndMesh[] = [];
 
 		if ( propInstance instanceof Group ) {
 
