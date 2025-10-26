@@ -8,6 +8,8 @@ import { ToolManager } from 'app/managers/tool-manager';
 import { PointerModeService, PointerSelectionMode } from './pointer-mode.service';
 import { BoxSelectionConfig, BoxSelectionService } from './box-selection-service';
 import { Commands } from 'app/commands/commands';
+import { SelectObjectCommand } from 'app/commands/select-object-command';
+import { UnselectObjectCommand } from 'app/commands/unselect-object-command';
 
 @Injectable( {
 	providedIn: 'root'
@@ -87,11 +89,19 @@ export class BoxSelectionController {
 
 	private onSelectionUpdated ( selection: any[] ): void {
 
+		// check which objects were unselected
+		const unselectedObjects = this.activeSelection.filter( obj => !selection.includes( obj ) );
+
+		// unselect them
+		new UnselectObjectCommand( unselectedObjects ).execute();
+
 		this.activeSelection = selection;
 
 		if ( !this.pointerModeService.isBoxSelection() ) return;
 
 		console.log( `BoxSelectionController: ${ selection.length } objects selected` );
+
+		new SelectObjectCommand( this.activeSelection ).execute();
 
 	}
 
@@ -101,9 +111,13 @@ export class BoxSelectionController {
 
 		console.log( `BoxSelectionController: Selection completed with ${ selection.length } objects` );
 
+		new SelectObjectCommand( this.activeSelection ).execute();
+
 	}
 
 	private onSelectionCancelled (): void {
+
+		new UnselectObjectCommand( this.activeSelection ).execute();
 
 		this.activeSelection = [];
 
