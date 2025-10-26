@@ -7,8 +7,6 @@ import {
 	Component,
 	ElementRef,
 	HostListener,
-	Injectable,
-	Input,
 	OnDestroy,
 	OnInit,
 	ViewChild
@@ -32,11 +30,18 @@ import { CameraService } from "../../../renderer/camera.service";
 import { MapService } from 'app/services/map/map.service';
 import { ToolManager } from 'app/managers/tool-manager';
 import { AssetType } from 'app/assets/asset.model';
-import { isView, IView } from 'app/tools/lane/visualizers/i-view';
+import { IView } from 'app/tools/lane/visualizers/i-view';
 import { Vector2 } from 'app/core/maths';
 import { SelectionService } from 'app/tools/selection.service';
 import { PointerModeService, PointerSelectionMode } from 'app/tools/pointer-mode.service';
 import { Subscription } from 'rxjs';
+import { ViewportDragManager } from "./viewport-drag-manager";
+import {
+	BoxSelectionModeHandler,
+	PointerModeHandler,
+	PointerModeHandlerContext,
+	PointerSelectionModeHandler
+} from "./pointer-modes/pointer-mode-handlers";
 
 @Component( {
 	selector: 'app-viewport',
@@ -89,6 +94,10 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	public currentPointerMode: PointerSelectionMode = PointerSelectionMode.Pointer;
 
+	private readonly pointerHandlers = new Map<PointerSelectionMode, PointerModeHandler>();
+
+	private pointerHandler?: PointerModeHandler;
+
 	get isProduction () {
 		return Environment.production;
 	}
@@ -126,6 +135,11 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		private pointerModeService: PointerModeService,
 	) {
 		this.render = this.render.bind( this );
+
+		this.pointerHandlers.set( PointerSelectionMode.Pointer, new PointerSelectionModeHandler() );
+		this.pointerHandlers.set( PointerSelectionMode.BoxSelection, new BoxSelectionModeHandler() );
+
+		this.pointerHandler = this.pointerHandlers.get( this.currentPointerMode ) ?? this.pointerHandlers.get( PointerSelectionMode.Pointer );
 	}
 
 	ngOnInit (): void {
@@ -135,6 +149,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		this.pointerModeSubscription = this.pointerModeService.modeChanges.subscribe( mode => {
 			this.currentPointerMode = mode;
+			this.pointerHandler = this.pointerHandlers.get( mode ) ?? this.pointerHandlers.get( PointerSelectionMode.Pointer );
 		} );
 
 	}
@@ -268,72 +283,14 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		if ( !this.onCanvas ) return;
 
-		const isBoxMode = this.pointerModeService.isBoxSelection();
-
 		this.intersections = this.getIntersections( event, true );
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-		if ( !intersection ) {
-
-			if ( isBoxMode && this.isPointerDown ) {
-
-				const pointerData = this.preparePointerData( event, null );
-				pointerData.pointerDown = this.isPointerDown;
-				this.eventSystem.pointerMoved.emit( pointerData );
-
-			} else {
-
-				this.lastObject?.onMouseOut();
-				this.lastObject = null;
-
-			}
-
-			return;
-		}
-
-		if ( this.isPointerDown ) {
-
-			const pointerData = this.preparePointerData( event, intersection );
-			pointerData.pointerDown = true;
-
-			if ( isBoxMode ) {
-
-				this.eventSystem.pointerMoved.emit( pointerData );
-
-			} else {
-
-				if ( !this.dragManager.isDragging ) {
-					this.dragManager.onDragStart( intersection.object, pointerData );
-				}
-
-				this.dragManager.onDrag( intersection.object, pointerData );
-
-				this.eventSystem.pointerMoved.emit( pointerData );
-
-			}
-
-			return;
-		}
-
-		if ( isView( intersection.object ) ) {
-
-			if ( this.lastObject === intersection.object ) return;
-
-			this.lastObject?.onMouseOut();
-			this.lastObject = null;
-
-			this.lastObject = intersection.object;
-			this.lastObject.onMouseOver();
-
-		} else {
-
-			this.lastObject?.onMouseOut();
-			this.lastObject = null;
-
-			this.eventSystem.pointerMoved.emit( this.preparePointerData( event, intersection ) );
-
-		}
+		this.pointerHandler?.onMouseMove(
+			this.getPointerHandlerContext(),
+			{ event, intersection }
+		);
 
 	}
 
@@ -375,13 +332,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-		const isBoxMode = this.pointerModeService.isBoxSelection();
-
-		if ( !intersection && !isBoxMode ) return;
-
 		if ( $event.button === MouseButton.LEFT ) {
 
-			this.handleLeftClick( $event, intersection, isBoxMode );
+			this.pointerHandler?.onLeftMouseDown(
+				this.getPointerHandlerContext(),
+				{ event: $event, intersection }
+			);
 
 		} else if ( $event.button === MouseButton.MIDDLE ) {
 
@@ -395,13 +351,13 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	handleRightClick ( event: MouseEvent, intersection: Intersection ): void {
+	handleRightClick ( event: MouseEvent, intersection: Intersection | null ): void {
 
 		this.eventSystem.pointerDown.emit( this.preparePointerData( event, intersection ) );
 
 	}
 
-	handleMiddleClick ( event: MouseEvent, intersection: Intersection ): void {
+	handleMiddleClick ( event: MouseEvent, intersection: Intersection | null ): void {
 
 		// do nothing
 
@@ -410,41 +366,6 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 	setPointerMode ( mode: PointerSelectionMode ): void {
 
 		this.pointerModeService.setMode( mode );
-
-	}
-
-	handleLeftClick ( event: MouseEvent, intersection: Intersection, isBoxMode: boolean = false ): void {
-
-		if ( !intersection && !isBoxMode ) return;
-
-		const pointerData = this.preparePointerData( event, intersection );
-
-		pointerData.pointerDown = true;
-
-		if ( isBoxMode ) {
-
-			// this.viewControllerService.disableControls();
-
-		} else {
-
-			this.fireSelectionEvents();
-
-			if (
-				intersection?.object?.type === 'Points' &&
-				intersection.object[ 'tag' ] != null
-			) {
-
-				this.viewControllerService.disableControls();
-
-			} else {
-
-				this.viewControllerService.enableControls();
-
-			}
-
-		}
-
-		this.eventSystem.pointerDown.emit( pointerData );
 
 	}
 
@@ -467,25 +388,12 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		}
 
-		if ( this.intersections.length > 0 ) {
+		const intersection = this.intersections?.length > 0 ? this.intersections[ 0 ] : null;
 
-			const pointerData = this.preparePointerData( event, this.intersections[ 0 ] );
-
-			pointerData.pointerDown = false;
-
-			this.eventSystem.pointerUp.emit( pointerData );
-
-			if ( !this.pointerModeService.isBoxSelection() ) {
-				this.dragManager.onDragEnd( pointerData );
-			}
-
-		} else if ( this.pointerModeService.isBoxSelection() ) {
-
-			const pointerData = this.preparePointerData( event, null );
-			pointerData.pointerDown = false;
-			this.eventSystem.pointerUp.emit( pointerData );
-
-		}
+		this.pointerHandler?.onMouseUp(
+			this.getPointerHandlerContext(),
+			{ event, intersection }
+		);
 
 	}
 
@@ -612,6 +520,23 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
+	private getPointerHandlerContext (): PointerModeHandlerContext {
+
+		return {
+			eventSystem: this.eventSystem,
+			dragManager: this.dragManager,
+			viewControllerService: this.viewControllerService,
+			isPointerDown: this.isPointerDown,
+			fireSelectionEvents: this.fireSelectionEvents.bind( this ),
+			preparePointerData: this.preparePointerData.bind( this ),
+			getLastObject: () => this.lastObject,
+			setLastObject: ( object?: IView ) => {
+				this.lastObject = object;
+			}
+		};
+
+	}
+
 	fireSelectionEvents (): void {
 
 		if ( this.intersections.length > 0 ) {
@@ -674,7 +599,7 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	}
 
-	preparePointerData ( $event: MouseEvent, i: THREE.Intersection ): PointerEventData {
+	preparePointerData ( $event: MouseEvent, i: THREE.Intersection | null ): PointerEventData {
 
 		let p = new PointerEventData();
 
@@ -883,59 +808,4 @@ export class ViewportComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.raycaster.params.Line2.threshold = lineThreshold;
 
 	}
-}
-
-
-@Injectable( {
-	providedIn: 'root'
-} )
-class ViewportDragManager {
-
-	private dragStartPosition: Vector3;
-
-	private selectedObject: IView | undefined;
-
-	isDragging: boolean;
-
-	constructor () {
-
-	}
-
-	onDragStart ( selectedObject: object, event: PointerEventData ): void {
-
-		if ( !isView( selectedObject ) ) return;
-
-		this.selectedObject = selectedObject;
-
-		this.isDragging = true;
-
-		this.dragStartPosition = event.point.clone();
-
-		this.selectedObject.emit( 'dragStart', event );
-
-	}
-
-	onDragEnd ( event: PointerEventData ): void {
-
-		this.isDragging = false;
-
-		if ( !isView( this.selectedObject ) ) return;
-
-		this.selectedObject.emit( 'dragEnd', event );
-
-		this.selectedObject = undefined;
-
-		this.dragStartPosition = undefined;
-
-	}
-
-	onDrag ( object: object, event: PointerEventData ): void {
-
-		if ( !isView( this.selectedObject ) ) return;
-
-		this.selectedObject.emit( 'drag', event );
-
-	}
-
-
 }
