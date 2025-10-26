@@ -74,9 +74,13 @@ export class BoxSelectionController {
 
 		if ( this.activeSelection.length === 0 ) return false;
 
-		Commands.RemoveObject( this.activeSelection );
+		const selection = [ ...this.activeSelection ];
 
-		console.log( `BoxSelectionController: Deleted ${ this.activeSelection.length } objects` );
+		this.activeSelection = [];
+
+		Commands.RemoveObject( selection );
+
+		console.log( `BoxSelectionController: Deleted ${ selection.length } objects` );
 
 		this.reset();
 
