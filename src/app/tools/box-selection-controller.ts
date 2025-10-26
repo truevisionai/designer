@@ -78,7 +78,11 @@ export class BoxSelectionController {
 
 		this.activeSelection = [];
 
-		Commands.RemoveObject( selection, true );
+		const handled = this.activeConfig?.deleteHandler?.handleDelete( selection );
+
+		if ( !handled ) {
+			Commands.RemoveObject( selection, true );
+		}
 
 		console.log( `BoxSelectionController: Deleted ${ selection.length } objects` );
 

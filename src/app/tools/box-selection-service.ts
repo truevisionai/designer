@@ -13,9 +13,11 @@ import { CameraService } from 'app/renderer/camera.service';
 import { SceneService } from 'app/services/scene.service';
 import { SelectionHelper } from './selection-helper';
 import { SelectionBox } from './selection-box';
+import { BoxSelectionDeletionHandler } from './deletion/scoped-deletion.handler';
 
 export interface BoxSelectionConfig<T = any> {
 	strategy: SelectionStrategy<T>;
+	deleteHandler?: BoxSelectionDeletionHandler<T>;
 }
 
 @Injectable( {
