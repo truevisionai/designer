@@ -17,7 +17,7 @@ import { AssetDatabase } from "app/assets/asset-database";
 import { Object3D, Intersection } from "three";
 import { CommandHistory } from "app/commands/command-history";
 
-fdescribe( 'PropPointTool', () => {
+describe( 'PropPointTool', () => {
 
 	let tool: PropPointTool;
 	let mapService: MapService;
