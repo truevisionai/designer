@@ -24,6 +24,7 @@ import { MeshBuilder } from 'app/core/builders/mesh.builder';
 import { JunctionBoundaryBuilder } from './junction-boundary.builder';
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 import { TvJointBoundary } from 'app/map/junction-boundary/tv-joint-boundary';
+import { TvLaneBoundary } from 'app/map/junction-boundary/tv-lane-boundary';
 import { SplineFactory } from 'app/services/spline/spline.factory';
 
 const ASPHALT_GUID = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
@@ -72,7 +73,7 @@ export class JunctionMeshBuilder implements MeshBuilder<TvJunction> {
 
 	getJunctionOutlineGeometry ( junction: TvJunction ): BufferGeometry {
 
-		const outline = getOutlineFromJointBoundary( junction.getBoundary() );
+		const outline = getOutlineFromJointBoundaryFixed( junction.getBoundary() );
 
 		const shape = new Shape( outline.map( p => new Vector2( p.x, p.y ) ) );
 
@@ -201,4 +202,73 @@ function getSmoothSplineCurvePoints ( segA: TvJointBoundary, segB: TvJointBounda
 	} );
 
 	return outline;
+}
+
+
+
+const OUTLINE_EPSILON = 1e-4;
+
+function getOutlineFromJointBoundaryFixed ( boundary: TvJunctionBoundary ): Vector2[] {
+
+	const outline: Vector2[] = [];
+
+	const segments = boundary.getSegments();
+
+	for ( const segment of segments ) {
+
+		let points: Vector2[];
+
+		if ( segment instanceof TvJointBoundary ) {
+
+			points = segment.getInnerPoints().map( p => p.toVector2() );
+
+		} else if ( segment instanceof TvLaneBoundary ) {
+
+			points = segment.getInnerPoints( 0.5 ).map( p => p.toVector2() );
+
+		} else {
+
+			points = segment.getPoints().map( p => p.toVector2() );
+
+		}
+
+		appendUniquePoints( outline, points );
+	}
+
+	closeIfLooped( outline );
+
+	return outline;
+
+}
+
+function appendUniquePoints ( outline: Vector2[], points: Vector2[] ): void {
+
+	for ( const point of points ) {
+
+		if ( outline.length === 0 ) {
+			outline.push( point );
+			continue;
+		}
+
+		const last = outline[ outline.length - 1 ];
+
+		if ( last.distanceToSquared( point ) <= OUTLINE_EPSILON * OUTLINE_EPSILON ) {
+			continue;
+		}
+
+		outline.push( point );
+	}
+
+}
+
+function closeIfLooped ( outline: Vector2[] ): void {
+
+	if ( outline.length < 3 ) return;
+
+	const first = outline[ 0 ];
+	const last = outline[ outline.length - 1 ];
+
+	if ( first.distanceToSquared( last ) <= OUTLINE_EPSILON * OUTLINE_EPSILON ) {
+		outline.pop();
+	}
 }
