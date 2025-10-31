@@ -5,7 +5,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TvJunction } from '../models/junctions/tv-junction';
 import { TvJunctionBoundary } from './tv-junction-boundary';
-import { CROSSING8_XODR, SplineTestHelper, TONGJI, TOWN_01 } from 'app/services/spline/spline-test-helper.service';
+import { CROSSING8_XODR, ROUNDABOUT_XODR, SplineTestHelper, TONGJI, TOWN_01 } from 'app/services/spline/spline-test-helper.service';
 import { setupTest } from 'tests/setup-tests';
 import { TvJointBoundary } from './tv-joint-boundary';
 import { TvLaneBoundary } from './tv-lane-boundary';
@@ -346,6 +346,32 @@ describe( 'TvJunctionBoundaryProfile', () => {
 			const connection = junction.getBoundaryProfile().pickConnectingConnection( road3, road2 );
 
 			expect( connection ).toBeDefined();
+
+		} );
+
+	} )
+
+	describe( 'Roundabout', () => {
+
+		it( 'should give correct incoming road count', async () => {
+
+			const map = await testHelper.loadAndParseXodr( ROUNDABOUT_XODR );
+
+			const junction = map.getJunction( 43 );
+
+			// 108, 115, 113
+			expect( junction.getIncomingRoadCount() ).toBe( 3 );
+			expect( junction.getRoadLinks().length ).toBe( 3 );
+
+			// 111, 109, 110
+			expect( junction.getConnectionCount() ).toBe( 3 );
+			expect( junction.getLaneLinkCount() ).toBe( 10 );
+
+			const boundary = junction.outerBoundary;
+
+			junction.updateBoundary();
+
+			expect( boundary.getSegmentCount() ).toBe( 6 );
 
 		} );
 

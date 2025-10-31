@@ -33,7 +33,7 @@ export class TvJunctionBoundingBox {
 
 		try {
 
-			const points: TvPosTheta[] = this.getPoints();
+			const points: Vector2[] = this.getPoints();
 
 			const box = this.makeBox( points );
 
@@ -47,7 +47,7 @@ export class TvJunctionBoundingBox {
 
 	}
 
-	private makeBox ( points: TvPosTheta[] ): Box2 {
+	private makeBox ( points: Vector2[] ): Box2 {
 
 		if ( points.length < 2 ) {
 			Log.error( 'JunctionBuilder.buildBoundingBox: Invalid boundary points', this.junction.toString() );
@@ -56,13 +56,53 @@ export class TvJunctionBoundingBox {
 
 		const box = new Box2();
 
-		box.setFromPoints( points.map( p => new Vector2( p.x, p.y ) ) );
+		box.setFromPoints( points );
 
 		return box;
 
 	}
 
-	private getPoints (): TvPosTheta[] {
+	private getPoints (): Vector2[] {
+
+		let points = this.getEdgePointsFromConnections();
+
+		if ( points.length == 0 ) {
+			Log.warn( `Junction ${ this.junction.id } has no connections, using incoming roads for bounding box calculation` );
+			points = this.getEdgePointsFromIncomingRoads();
+		}
+
+		if ( points.length == 0 ) {
+			Log.error( `Junction ${ this.junction.id } has no incoming roads, using default bounding box` );
+		}
+
+		return points;
+	}
+
+	/**
+	 * Collect two extreme points per connection (left/right edge at contact s)
+	 */
+	private getEdgePointsFromConnections (): Vector2[] {
+
+		const out: Vector2[] = [];
+
+		for ( const connection of this.junction.getConnections() ) {
+
+			const road = connection.getIncomingRoad();
+			const s = connection.contactPoint === TvContactPoint.START ? 0 : ( road.length - 1e-6 );
+			const width = road.getRoadWidthAt( s );
+
+			// getPosThetaAt returns TvPosTheta with x = worldX, y = worldZ in your code
+			const leftPos = road.getPosThetaAt( s, width.leftSideWidth );
+			const rightPos = road.getPosThetaAt( s, -width.rightSideWidth );
+
+			out.push( new Vector2( leftPos.x, leftPos.y ) );
+			out.push( new Vector2( rightPos.x, rightPos.y ) );
+		}
+
+		return out;
+	}
+
+	private getEdgePointsFromIncomingRoads (): Vector2[] {
 
 		const points: TvPosTheta[] = [];
 
@@ -80,8 +120,7 @@ export class TvJunctionBoundingBox {
 
 		} );
 
-		return points;
-
+		return points.map( p => new Vector2( p.x, p.y ) );
 	}
 
 }
