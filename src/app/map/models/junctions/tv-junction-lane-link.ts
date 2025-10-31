@@ -100,8 +100,8 @@ export class TvJunctionLaneLink {
 	matchesFromAndTo ( incomingRoad: TvRoad, outgoingRoad: TvRoad ): boolean {
 
 		const incomingMatches = this.incomingLane.laneSection.road.equals( incomingRoad );
-		const outgoingMatches = this.connectingRoad.getSuccessor().equals( outgoingRoad ) ||
-			this.connectingRoad.getPredecessor().equals( outgoingRoad );
+		const outgoingMatches = this.connectingRoad.getSuccessor()?.equals( outgoingRoad ) ||
+			this.connectingRoad.getPredecessor()?.equals( outgoingRoad );
 
 		return incomingMatches && outgoingMatches;
 	}
