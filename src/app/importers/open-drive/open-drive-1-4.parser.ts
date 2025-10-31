@@ -250,6 +250,8 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 				this.parseJunctionControllers( junction, xml );
 
+				// junction.updatePositionAndBounds();
+
 			} catch ( error ) {
 
 				if ( error instanceof ModelNotFoundException ) {

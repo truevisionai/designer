@@ -134,7 +134,19 @@ export class TvJunction {
 
 		const roads = new Set<TvRoad>();
 
-		this.connections.forEach( connection => {
+		this.map.getRoads().forEach( road => {
+
+			if ( road.predecessor?.equals( this ) ) {
+				roads.add( road );
+			}
+
+			if ( road.successor?.equals( this ) ) {
+				roads.add( road );
+			}
+
+		} );
+
+		this.getConnections().forEach( connection => {
 
 			if ( connection.connectingRoad?.predecessor?.isRoad ) {
 				roads.add( connection.connectingRoad.predecessor.element as TvRoad );
@@ -174,26 +186,49 @@ export class TvJunction {
 
 	getRoadLinks (): TvLink[] {
 
-		const links: TvLink[] = [];
+		let links: TvLink[] = [];
 
 		const incomingRoads = this.getIncomingRoads();
 
-		for ( const road of incomingRoads ) {
+		for ( const incomingRoad of incomingRoads ) {
 
-			if ( road.geometries.length == 0 ) continue;
-
-			if ( road.successor?.equals( this ) ) {
-				links.push( LinkFactory.createRoadLink( road, TvContactPoint.END ) );
-			}
-
-			if ( road.predecessor?.equals( this ) ) {
-				links.push( LinkFactory.createRoadLink( road, TvContactPoint.START ) );
+			if ( incomingRoad.geometries.length == 0 ) {
+				// skip roads without geometries
+			} else if ( incomingRoad.successor?.equals( this ) ) {
+				links.push( LinkFactory.createRoadLink( incomingRoad, TvContactPoint.END ) );
+			} else if ( incomingRoad.predecessor?.equals( this ) ) {
+				links.push( LinkFactory.createRoadLink( incomingRoad, TvContactPoint.START ) );
+			} else {
+				// no direct link found, we have to infer from proximity
+				const contact = this.inferContact( incomingRoad, this );
+				links.push( LinkFactory.createRoadLink( incomingRoad, contact ) );
 			}
 
 		}
 
+		// links = GeometryUtils.sortRoadLinks( links );
+
 		return links;
 	}
+
+	private inferContact ( incomingRoad: TvRoad, junction: TvJunction ): TvContactPoint {
+
+		const start = incomingRoad.getStartCoord().position;                         // START point (s=0)
+		const end = incomingRoad.getEndCoord().position; // END point
+
+		// 1) If an endpoint is inside the junction bbox, use that
+		// if ( junction.containsPoint( start ) ) return TvContactPoint.START;
+		// if ( junction.containsPoint( end ) ) return TvContactPoint.END;
+
+		// 2) Fallback: whichever endpoint is closer to the junction centroid
+		const c = junction.getBoundingBox().getCenter( new Vector2() );
+
+		const d0 = c.distanceTo( new Vector2( start.x, start.y ) );
+		const d1 = c.distanceTo( new Vector2( end.x, end.y ) );
+
+		return d1 < d0 ? TvContactPoint.END : TvContactPoint.START;
+	}
+
 
 	getJunctionPriorityCount (): number {
 
