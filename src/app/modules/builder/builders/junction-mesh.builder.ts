@@ -5,17 +5,14 @@
 import { Injectable } from '@angular/core';
 import {
 	BufferGeometry,
-	CubicBezierCurve,
 	DoubleSide,
 	Material,
 	Mesh,
 	MeshStandardMaterial,
 	Object3D,
 	RepeatWrapping,
-	Shape,
-	ShapeGeometry,
 	Texture,
-	Vector2,
+	Vector3,
 } from "three";
 import { OdTextures } from 'app/deprecated/od.textures';
 import { TvJunction } from 'app/map/models/junctions/tv-junction';
@@ -24,19 +21,20 @@ import { MeshBuilder } from 'app/core/builders/mesh.builder';
 import { JunctionBoundaryBuilder } from './junction-boundary.builder';
 import { TvJunctionBoundary } from 'app/map/junction-boundary/tv-junction-boundary';
 import { TvJointBoundary } from 'app/map/junction-boundary/tv-joint-boundary';
-import { SplineFactory } from 'app/services/spline/spline.factory';
+import { TvLaneBoundary } from 'app/map/junction-boundary/tv-lane-boundary';
+import { DelaunatorHelper } from 'app/services/surface/delaunay';
 
 const ASPHALT_GUID = '09B39764-2409-4A58-B9AB-D9C18AD5485C';
 
 export function createGeometryFromBoundaryJoints ( boundary: TvJunctionBoundary ): BufferGeometry {
 
-	const outline = getOutlineFromJointBoundary( boundary );
+	const outline = getBoundaryPointsWithElevation( boundary );
 
-	const shape = new Shape( outline.map( p => new Vector2( p.x, p.y ) ) );
+	if ( outline.length < 3 ) {
+		return new BufferGeometry();
+	}
 
-	const geometry = new ShapeGeometry( shape );
-
-	return geometry;
+	return DelaunatorHelper.createFromPoints( outline );
 
 }
 
@@ -72,13 +70,13 @@ export class JunctionMeshBuilder implements MeshBuilder<TvJunction> {
 
 	getJunctionOutlineGeometry ( junction: TvJunction ): BufferGeometry {
 
-		const outline = getOutlineFromJointBoundary( junction.getBoundary() );
+		const outline = getBoundaryPointsWithElevation( junction.getBoundary() );
 
-		const shape = new Shape( outline.map( p => new Vector2( p.x, p.y ) ) );
+		if ( outline.length < 3 ) {
+			return new BufferGeometry();
+		}
 
-		const geometry = new ShapeGeometry( shape );
-
-		return geometry;
+		return DelaunatorHelper.createFromPoints( outline );
 
 	}
 
@@ -108,97 +106,71 @@ export class JunctionMeshBuilder implements MeshBuilder<TvJunction> {
 
 }
 
-function getOutlineFromJointBoundary ( boundary: TvJunctionBoundary ): Vector2[] {
+const OUTLINE_EPSILON = 1e-4;
 
-	const outline: Vector2[] = [];
+function getBoundaryPointsWithElevation ( boundary: TvJunctionBoundary ): Vector3[] {
 
-	const jointSegments = boundary.getSegments().filter( s => s.isJointSegment );
+	const outline: Vector3[] = [];
 
-	for ( let i = 0; i < jointSegments.length; i++ ) {
+	const segments = boundary.getSegments();
 
-		const segA = jointSegments[ i ] as TvJointBoundary;
-		let segB = jointSegments[ i + 1 ] as TvJointBoundary | undefined;
+	for ( const segment of segments ) {
 
-		const startCoord = segA.getStartLaneCoord();
-		const endCoord = segA.getEndLaneCoord();
+		let points: Vector3[];
 
-		const pStart = startCoord.getEntryPosition().toVector2();
-		outline.push( pStart );
+		if ( segment instanceof TvJointBoundary ) {
 
-		const pEnd = endCoord.getExitPosition().toVector2();
-		outline.push( pEnd );
+			points = segment.getInnerPoints().map( p => p.toVector3() );
 
-		if ( !segB ) {
-			segB = jointSegments[ 0 ] as TvJointBoundary;
+		} else if ( segment instanceof TvLaneBoundary ) {
+
+			points = segment.getInnerPoints( 0.5 ).map( p => p.toVector3() );
+
+		} else {
+
+			points = segment.getPoints().map( p => p.toVector3() );
+
 		}
 
-		getSmoothSplineCurvePoints( segA, segB ).forEach( p => {
-			outline.push( p );
-		} );
+		appendUniquePoints( outline, points );
 	}
 
+	closeIfLooped( outline );
+
 	return outline;
 
 }
 
-function getSmoothBezierCurvePoints ( segA: TvJointBoundary, segB: TvJointBoundary ): Vector2[] {
+function appendUniquePoints ( outline: Vector3[], points: Vector3[] ): void {
 
-	const outline: Vector2[] = [];
-	const divider = 2;
-	const entry = segA.getEndLaneCoord();
-	const exit = segB.getStartLaneCoord();
+	for ( const point of points ) {
 
-	const entryPosition = entry.getExitPosition().toVector3()
-	const exitPosition = exit.getEntryPosition().toVector3();
+		if ( !point ) continue;
 
-	const entryDirection = entry.getHeadingVector().normalize();
-	const exitDirection = exit.getHeadingVector().normalize();
+		if ( outline.length === 0 ) {
+			outline.push( point );
+			continue;
+		}
 
-	if ( entry.isStart ) entryDirection.negate();
-	if ( exit.isStart ) exitDirection.negate();
+		const last = outline[ outline.length - 1 ];
 
-	const distance = entryPosition.distanceTo( exitPosition );
+		if ( last.distanceToSquared( point ) <= OUTLINE_EPSILON * OUTLINE_EPSILON ) {
+			continue;
+		}
 
-	// v2 and v3 are the control points
-	const v2 = entryPosition.clone().add( entryDirection.multiplyScalar( distance / divider ) );
-	const v3 = exitPosition.clone().add( exitDirection.multiplyScalar( distance / divider ) );
+		outline.push( point );
+	}
 
-	const bezier = new CubicBezierCurve(
-		new Vector2( entryPosition.x, entryPosition.y ),
-		new Vector2( v2.x, v2.y ),
-		new Vector2( v3.x, v3.y ),
-		new Vector2( exitPosition.x, exitPosition.y )
-	);
-
-	bezier.getPoints( 20 ).forEach( p => {
-		outline.push( new Vector2( p.x, p.y ) );
-	} );
-
-	return outline;
 }
 
-function getSmoothSplineCurvePoints ( segA: TvJointBoundary, segB: TvJointBoundary ): Vector2[] {
+function closeIfLooped ( outline: Vector3[] ): void {
 
-	const outline: Vector2[] = [];
-	const entry = segA.getEndLaneCoord();
-	const exit = segB.getStartLaneCoord();
+	if ( outline.length < 3 ) return;
 
-	const entryPosition = entry.getExitPosition().toVector3()
-	const exitPosition = exit.getEntryPosition().toVector3();
+	const first = outline[ 0 ];
+	const last = outline[ outline.length - 1 ];
 
-	const entryDirection = entry.getHeadingVector().normalize();
-	const exitDirection = exit.getHeadingVector().normalize();
-
-	if ( entry.isStart ) entryDirection.negate();
-	if ( exit.isStart ) exitDirection.negate();
-
-	const spline = SplineFactory.createRoadSpline( entryPosition, entryDirection, exitPosition, exitDirection );
-
-	spline.updateGeometry();
-
-	spline.getPoints( 0.1 ).forEach( p => {
-		outline.push( new Vector2( p.x, p.y ) );
-	} );
-
-	return outline;
+	if ( first.distanceToSquared( last ) <= OUTLINE_EPSILON * OUTLINE_EPSILON ) {
+		outline.pop();
+	}
 }
