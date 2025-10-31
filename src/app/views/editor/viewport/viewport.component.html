@@ -50,6 +50,20 @@
 		matTooltipPosition="left">
 		<mat-icon>delete</mat-icon>
 	</button>
+	<button (click)="setPointerMode(pointerSelectionMode.Pointer)"
+		mat-icon-button
+		matTooltip="Pointer Mode"
+		matTooltipPosition="left"
+		[color]="currentPointerMode === pointerSelectionMode.Pointer ? 'accent' : undefined">
+		<mat-icon>pan_tool_alt</mat-icon>
+	</button>
+	<button (click)="setPointerMode(pointerSelectionMode.BoxSelection)"
+		mat-icon-button
+		matTooltip="Box Selection Mode"
+		matTooltipPosition="left"
+		[color]="currentPointerMode === pointerSelectionMode.BoxSelection ? 'accent' : undefined">
+		<mat-icon>highlight_alt</mat-icon>
+	</button>
 </mat-toolbar>
 
 <div #viewHelper

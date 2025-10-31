@@ -7,6 +7,7 @@ import { PointerEventData } from "../events/pointer-event-data";
 import { Asset } from "../assets/asset.model";
 import { InjectionToken } from '@angular/core';
 import { Vector3 } from "app/core/maths"
+import { BoxSelectionConfig } from './box-selection-service';
 
 export const TOOL_PROVIDERS = new InjectionToken<Tool[]>( 'TOOL_PROVIDERS' );
 
@@ -62,5 +63,7 @@ export interface Tool {
 	onDuplicateKeyDown (): void;
 
 	onDeleteKeyDown (): void;
+
+	getBoxSelectionConfig? (): BoxSelectionConfig<any> | undefined;
 
 }

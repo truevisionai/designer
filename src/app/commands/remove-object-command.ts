@@ -17,13 +17,29 @@ export class RemoveObjectCommand extends BaseCommand {
 			MapEvents.objectUnselected.emit( this.object );
 		}
 
-		MapEvents.objectRemoved.emit( this.object );
+		if ( Array.isArray( this.object ) ) {
+
+			this.object.forEach( obj => MapEvents.objectRemoved.emit( obj ) );
+
+		} else {
+
+			MapEvents.objectRemoved.emit( this.object );
+
+		}
 
 	}
 
 	undo (): void {
 
-		MapEvents.objectAdded.emit( this.object );
+		if ( Array.isArray( this.object ) ) {
+
+			this.object.forEach( obj => MapEvents.objectAdded.emit( obj ) );
+
+		} else {
+
+			MapEvents.objectAdded.emit( this.object );
+
+		}
 
 		if ( this.fireUnselectEvent ) {
 			MapEvents.objectSelected.emit( this.object );

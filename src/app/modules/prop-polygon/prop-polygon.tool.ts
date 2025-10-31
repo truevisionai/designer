@@ -20,6 +20,9 @@ import { PointerEventData } from 'app/events/pointer-event-data';
 import { TvMap } from 'app/map/models/tv-map.model';
 import { MapService } from 'app/services/map/map.service';
 import { Vector3 } from 'three';
+import { BoxSelectionConfig } from 'app/tools/box-selection-service';
+import { CompositeSelectionStrategy } from 'app/core/strategies/select-strategies/composite-selection-strategy';
+import { PropPolygonBoxDeletionHandler } from './services/prop-polygon-box-deletion.handler';
 
 @Injectable()
 export class PropPolygonToolService {
@@ -27,6 +30,7 @@ export class PropPolygonToolService {
 	constructor (
 		public base: BaseToolService,
 		public mapService: MapService,
+		public boxDeletionHandler: PropPolygonBoxDeletionHandler,
 	) {
 	}
 }
@@ -37,9 +41,20 @@ export class PropPolygonTool extends ToolWithHandler {
 
 	public toolType: ToolType = ToolType.PropPolygon;
 
+	private readonly pointSelectionStrategy: PointSelectionStrategy;
+	private readonly polygonSelectionStrategy: PropPolygonSelectionStrategy;
+	private readonly boxSelectionStrategy: CompositeSelectionStrategy<PropPolygon | PropPolygonPoint>;
+
 	constructor ( private tool: PropPolygonToolService ) {
 
 		super();
+
+		this.pointSelectionStrategy = new PointSelectionStrategy();
+		this.polygonSelectionStrategy = new PropPolygonSelectionStrategy( this.tool.mapService.map );
+		this.boxSelectionStrategy = new CompositeSelectionStrategy<PropPolygon | PropPolygonPoint>( [
+			this.pointSelectionStrategy,
+			this.polygonSelectionStrategy
+		] );
 
 	}
 
@@ -50,8 +65,8 @@ export class PropPolygonTool extends ToolWithHandler {
 
 		this.setTypeName( PropPolygon.name );
 
-		this.addSelectionStrategy( PropPolygonPoint, new PointSelectionStrategy() );
-		this.addSelectionStrategy( PropPolygon, new PropPolygonSelectionStrategy( this.tool.mapService.map ) );
+		this.addSelectionStrategy( PropPolygonPoint, this.pointSelectionStrategy );
+		this.addSelectionStrategy( PropPolygon, this.polygonSelectionStrategy );
 
 		this.addController( PropPolygonPoint, this.tool.base.injector.get( PropPolygonPointController ) );
 		this.addController( PropPolygon, this.tool.base.injector.get( PropPolygonController ) );
@@ -64,6 +79,18 @@ export class PropPolygonTool extends ToolWithHandler {
 		this.addCreationStrategy( this.tool.base.injector.get( PropPolygonPointCreator ) );
 		this.addCreationStrategy( this.tool.base.injector.get( PropPolygonCreator ) );
 
+		this.tool.base.map.propPolygons.forEach( propPolygon => {
+			this.tool.base.injector.get( PropPolygonVisualizer ).onDefault( propPolygon );
+		} )
+
+	}
+
+	getBoxSelectionConfig?(): BoxSelectionConfig<PropPolygon | PropPolygonPoint> {
+
+		return {
+			strategy: this.boxSelectionStrategy,
+			deleteHandler: this.tool.boxDeletionHandler,
+		};
 	}
 
 	enable (): void {

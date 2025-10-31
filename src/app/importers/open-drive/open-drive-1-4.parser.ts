@@ -50,6 +50,9 @@ import { JunctionFactory } from 'app/factories/junction.factory';
 import { findTurnTypeOfConnectingRoad } from 'app/map/models/connections/connection-utils';
 import { ConnectionFactory } from 'app/factories/connection.factory';
 import { TvLaneWidth } from 'app/map/models/tv-lane-width';
+import { ParkingGraph } from 'app/map/parking/parking-graph';
+import { Vector3 } from 'three';
+import { EdgeMarkingStyle, ParkingEdgeType } from 'app/map/parking/parking-edge';
 
 
 export class OpenDrive14Parser implements IOpenDriveParser {
@@ -95,7 +98,87 @@ export class OpenDrive14Parser implements IOpenDriveParser {
 
 		this.parseJunctionElements( openDRIVE );
 
+		this.updateParkingGraph();
+
 		return this.map;
+
+	}
+
+	updateParkingGraph (): void {
+
+		const graph = this.map.getParkingGraph();
+
+		this.map.getRoads().forEach( road => {
+			road.getRoadObjects().filter( obj => obj.isParkingSpace ).forEach( obj => {
+				this.importParkingSpace( graph, road, obj );
+			} );
+		} );
+
+	}
+
+	importParkingSpace ( graph: ParkingGraph, road: TvRoad, roadObject: TvRoadObject ): void {
+
+		// Stall dimensions (meters)
+		const spotWidth = roadObject.width ?? 2.5;
+		const spotLength = roadObject.length ?? 5.0;
+
+		// Pose of the reference line at (s, t)
+		const point = road.getPosThetaAt( roadObject.s, roadObject.t );
+		const center = point.toVector3();
+
+		// Compose final heading:
+		const objHdg = roadObject.hdg || 0;
+
+		let heading: number;
+
+		if ( roadObject.hasPositiveOrientation ) {
+			heading = point.hdg + objHdg;
+		} else if ( roadObject.hasNegativeOrientation ) {
+			heading = point.hdg + objHdg + Math.PI;
+		} else {
+			heading = point.hdg + objHdg;
+		}
+
+		// Optional: z-offset from OpenDRIVE (if present)
+		if ( roadObject.zOffset > 0 ) {
+			center.z += roadObject.zOffset;
+		}
+
+		// Local basis in XY plane: forward (u) and left (v)
+		const c = Math.cos( heading ), s = Math.sin( heading );
+		const u = new Vector3( c, s, 0 );      // forward along stall length
+		const v = new Vector3( -s, c, 0 );     // left   along stall width
+
+		const halfL = spotLength * 0.5;
+		const halfW = spotWidth * 0.5;
+
+		// Corners in counter-clockwise order (front = +u, back = -u; left = +v, right = -v)
+		const frontLeft = graph.getOrCreateNode( center.clone().addScaledVector( u, +halfL ).addScaledVector( v, +halfW ) );
+		const frontRight = graph.getOrCreateNode( center.clone().addScaledVector( u, +halfL ).addScaledVector( v, -halfW ) );
+		const backRight = graph.getOrCreateNode( center.clone().addScaledVector( u, -halfL ).addScaledVector( v, -halfW ) );
+		const backLeft = graph.getOrCreateNode( center.clone().addScaledVector( u, -halfL ).addScaledVector( v, +halfW ) );
+
+		// Reuse edges when adjacent stalls share boundaries
+		const e1 = graph.getOrCreateEdge( frontLeft, frontRight );
+		const e2 = graph.getOrCreateEdge( frontRight, backRight );
+		const e3 = graph.getOrCreateEdge( backRight, backLeft );
+		const e4 = graph.getOrCreateEdge( backLeft, frontLeft );
+
+		// Region heading: choose how you want to interpret it.
+		// If you want the stall’s "drive-in" direction, use H.
+		// If you want the "perpendicular boundary" direction, use H ± π/2.
+		const region = graph.createRegion( [ e1, e2, e3, e4 ] );
+
+		region.setHeading( heading );
+
+		// If you track color/style/type per edge, set here (optional)
+		e1.setType( ParkingEdgeType.ENTRY );
+		e1.setMarkingStyle( EdgeMarkingStyle.NONE );
+
+		[ e2, e3, e4 ].forEach( e => {
+			e.setType( ParkingEdgeType.BOUNDARY );
+			e.setMarkingStyle( EdgeMarkingStyle.SOLID );
+		} );
 
 	}
 

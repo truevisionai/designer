@@ -592,6 +592,28 @@ export class TvJunction {
 		this.boundaryProfile.update();
 	}
 
+	removeLinksWithIncomingRoads (): void {
+
+		this.getIncomingRoads().forEach( road => {
+
+			if ( road.successor?.equals( this ) ) {
+
+				road.removeSuccessor();
+
+			} else if ( road.predecessor?.equals( this ) ) {
+
+				road.removePredecessor();
+
+			} else {
+
+				Log.warn( 'Road is not connected to junction', road.toString(), this.toString() );
+
+			}
+
+		} )
+
+	}
+
 	getAdjacentRoadCoord ( target: TvRoad ): TvRoadCoord {
 
 		const coords = this.getRoadLinks().map( link => link.toRoadCoord() );

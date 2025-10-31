@@ -15,4 +15,9 @@ export class ParkingNodePoint extends SimpleControlPoint<ParkingNode> {
 		this.userData.tag = this.tag = ParkingNodePoint.TAG;
 	}
 
+	setPosition ( position: Vector3 ): void {
+		super.setPosition( position );
+		this.mainObject.position.copy( this.position );
+	}
+
 }

@@ -4,7 +4,7 @@
 
 import { XMLBuilder, XmlBuilderOptions } from 'fast-xml-parser';
 import { TvAbstractRoadGeometry } from '../models/geometries/tv-abstract-road-geometry';
-import { TravelDirection } from '../models/tv-common';
+import { TravelDirection, TvParkingSpaceAccess } from '../models/tv-common';
 import { TvUserData } from '../models/tv-user-data';
 import { TvJunction } from '../models/junctions/tv-junction';
 import { TvVirtualJunction } from '../models/junctions/tv-virtual-junction';
@@ -43,6 +43,7 @@ import { RoadObjectFactory } from 'app/services/road-object/road-object.factory'
 import { Vector2 } from 'app/core/maths';
 import { RoadUtils } from 'app/utils/road.utils';
 import { exportGeometry } from '../scene/geometry-exporter';
+import { TvParkingSpace } from '../models/objects/tv-parking-space';
 
 export class OpenDriveExporter implements AssetExporter<TvMap> {
 
@@ -191,6 +192,9 @@ export class OpenDriveExporter implements AssetExporter<TvMap> {
 		} else {
 			this.parkingSpaceObjects.set( road.id, [ roadObject ] );
 		}
+
+		roadObject.parkingSpace = new TvParkingSpace();
+		roadObject.parkingSpace.attr_access = TvParkingSpaceAccess.ALL;
 
 		return roadObject;
 
@@ -811,7 +815,7 @@ export function exportRoadObject ( roadObject: TvRoadObject, road: TvRoad ): Xml
 
 }
 
-function exportObjectRepeat ( repeat: TvObjectRepeat, road ?: TvRoad ): XmlElement {
+function exportObjectRepeat ( repeat: TvObjectRepeat, road?: TvRoad ): XmlElement {
 
 	const xml = {
 		attr_s: repeat.sStart,

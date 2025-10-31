@@ -24,7 +24,7 @@ export class PointDebugService extends BaseDebugger<PropInstance> {
 
 	onHighlight ( object: PropInstance ): void {
 
-		this.createOrUpdate( object );
+		this.createOrUpdate( object )?.onMouseOver();
 
 	}
 
@@ -41,6 +41,8 @@ export class PointDebugService extends BaseDebugger<PropInstance> {
 	}
 
 	onUnhighlight ( object: PropInstance ): void {
+
+		this.points.get( object.id )?.onMouseOut();
 
 	}
 

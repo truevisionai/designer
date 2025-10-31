@@ -35,9 +35,23 @@ export class PropPointService extends BaseDataService<PropInstance> {
 
 	add ( prop: PropInstance ): void {
 
+		this.ensurePropAttachment( prop );
+
 		this.mapService.map.addProp( prop );
 
 		this.mapService.map.propsGroup.add( prop, prop );
+
+	}
+
+	private ensurePropAttachment ( prop: PropInstance ): void {
+
+		if ( !prop?.object ) return;
+
+		if ( prop.object.parent !== prop ) {
+
+			prop.add( prop.object );
+
+		}
 
 	}
 
