@@ -157,6 +157,12 @@ export class TvLaneSection {
 
 	}
 
+	getCarriageWayLanes (): TvLane[] {
+
+		return this.getLanes().filter( lane => lane.isCarriageWay );
+
+	}
+
 	/**
 	 * Check if the tested s-offset is inside the lane section interval
 	 * @param sCheck A double s-offset value that has to be checked

@@ -51,7 +51,7 @@ export class JunctionMeshBuilder implements MeshBuilder<TvJunction> {
 
 	build ( junction: TvJunction ): Object3D {
 
-		const geometry = this.getJunctionOutlineGeometry( junction );
+		const geometry = this.getJunctionGeometry( junction );
 
 		return new Mesh( geometry, this.junctionMaterial );
 
@@ -118,13 +118,13 @@ function getBoundaryPointsWithElevation ( boundary: TvJunctionBoundary ): Vector
 
 		let points: Vector3[];
 
-		if ( segment instanceof TvJointBoundary ) {
+		if ( segment.isJointSegment ) {
 
 			points = segment.getInnerPoints().map( p => p.toVector3() );
 
-		} else if ( segment instanceof TvLaneBoundary ) {
+		} else if ( segment.isLaneSegment) {
 
-			points = segment.getInnerPoints( 0.5 ).map( p => p.toVector3() );
+			points = segment.getInnerPoints().map( p => p.toVector3() );
 
 		} else {
 
