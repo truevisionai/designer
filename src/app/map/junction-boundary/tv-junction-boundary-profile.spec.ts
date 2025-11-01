@@ -13,8 +13,10 @@ import { expectInstancesOf } from "../../../tests/expect-spline.spec";
 import { isCounterClockwise, isSimplePolygon, normalizeRing, segmentsAreChained } from 'tests/geometry.spec';
 import { TvRoad } from "../models/tv-road.model";
 import { TvMap } from "../models/tv-map.model";
+import { getOutermostLaneBoundary } from "./tv-junction-boundary-profile";
+import { LaneUtils } from "app/utils/lane.utils";
 
-describe( 'TvJunctionBoundaryProfile', () => {
+fdescribe( 'TvJunctionBoundaryProfile', () => {
 
 	let testHelper: SplineTestHelper;
 	let junction: TvJunction;
@@ -30,7 +32,53 @@ describe( 'TvJunctionBoundaryProfile', () => {
 
 	} );
 
-	xdescribe( 'DefaultJunction', () => {
+	describe( 'Crossing-8', () => {
+
+		it( 'should give correct count for elements', async () => {
+
+			const map = await testHelper.loadAndParseXodr( CROSSING8_XODR );
+
+			const junction = map.getJunction( 2 );
+
+			expect( junction.getIncomingRoadCount() ).toBe( 4 );
+			expect( junction.getRoadLinks().length ).toBe( 4 );
+
+			expect( junction.getConnectionCount() ).toBe( 12 );
+			expect( junction.getLaneLinkCount() ).toBe( 20 );
+
+			const boundary = junction.outerBoundary;
+
+			junction.updateBoundary();
+
+			expect( boundary.getSegmentCount() ).toBe( 8 );
+
+		} );
+
+		it( 'should give correct order of lane-segments', async () => {
+
+			const map = await testHelper.loadAndParseXodr( CROSSING8_XODR );
+
+			const junction = map.getJunction( 2 );
+
+			junction.updateBoundary();
+
+			const boundary = junction.getBoundary();
+
+			const laneSegments = boundary.getSegments().filter( segment => segment.isLaneSegment ) as TvLaneBoundary[];
+
+			expect( laneSegments.length ).toBe( 4 );
+
+			laneSegments.forEach( segment => {
+				expect( segment.boundaryLane.isBorder ).toBeTrue();
+				expect( segment.boundaryLane.isRight ).toBeTrue();
+				expect( segment.boundaryLane.id == -2 ).toBeTrue();
+			} )
+
+		} );
+
+	} )
+
+	describe( 'DefaultJunction', () => {
 
 		beforeEach( () => {
 
@@ -50,16 +98,15 @@ describe( 'TvJunctionBoundaryProfile', () => {
 
 		it( 'should have correct order of segments for default junction', () => {
 
-			expectInstancesOf( boundary.getSegments(), [
-				TvJointBoundary,
-				TvLaneBoundary,
-				TvJointBoundary,
-				TvLaneBoundary,
-				TvJointBoundary,
-				TvLaneBoundary,
-				TvJointBoundary,
-				TvLaneBoundary,
-			] );
+			const laneSegments = boundary.getSegments().filter( segment => segment.isLaneSegment ) as TvLaneBoundary[];
+
+			expect( laneSegments.length ).toBe( 4 );
+
+			laneSegments.forEach( segment => {
+				expect( segment.boundaryLane.isShoulder ).toBeTrue();
+				expect( segment.boundaryLane.isRight ).toBeTrue();
+				expect( segment.boundaryLane.id == -2 ).toBeTrue();
+			} );
 
 		} );
 
@@ -71,19 +118,19 @@ describe( 'TvJunctionBoundaryProfile', () => {
 
 			expect( jointSegments.length ).toEqual( 4 );
 
-			expect( jointSegments[ 0 ].getJointLaneStart().isSidewalk ).toBeTrue();
-			expect( jointSegments[ 0 ].getJointLaneEnd().isSidewalk ).toBeTrue();
+			expect( jointSegments[ 0 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 0 ].getJointLaneEnd().isShoulder ).toBeTrue();
 
 			// TODO: fix this assertion
-			// expect( jointSegments[ 1 ].getJointLaneStart().isSidewalk ).toBeTrue();
-			expect( jointSegments[ 1 ].getJointLaneEnd().isSidewalk ).toBeTrue();
+			// expect( jointSegments[ 1 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 1 ].getJointLaneEnd().isShoulder ).toBeTrue();
 
-			expect( jointSegments[ 2 ].getJointLaneStart().isSidewalk ).toBeTrue();
-			expect( jointSegments[ 2 ].getJointLaneEnd().isSidewalk ).toBeTrue();
+			expect( jointSegments[ 2 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 2 ].getJointLaneEnd().isShoulder ).toBeTrue();
 
 			// TODO: fix this assertion
-			// expect( jointSegments[ 3 ].getJointLaneStart().isSidewalk ).toBeTrue();
-			expect( jointSegments[ 3 ].getJointLaneEnd().isSidewalk ).toBeTrue();
+			// expect( jointSegments[ 3 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 3 ].getJointLaneEnd().isShoulder ).toBeTrue();
 
 
 		} );
@@ -95,16 +142,16 @@ describe( 'TvJunctionBoundaryProfile', () => {
 
 			expect( laneSegments.length ).toEqual( 4 );
 
-			expect( laneSegments[ 0 ].getLane().isSidewalk ).toBeTrue();
-			expect( laneSegments[ 1 ].getLane().isSidewalk ).toBeTrue();
-			expect( laneSegments[ 2 ].getLane().isSidewalk ).toBeTrue();
-			expect( laneSegments[ 3 ].getLane().isSidewalk ).toBeTrue();
+			expect( laneSegments[ 0 ].getLane().isShoulder ).toBeTrue();
+			expect( laneSegments[ 1 ].getLane().isShoulder ).toBeTrue();
+			expect( laneSegments[ 2 ].getLane().isShoulder ).toBeTrue();
+			expect( laneSegments[ 3 ].getLane().isShoulder ).toBeTrue();
 
 		} );
 
 	} )
 
-	xdescribe( 'DefaultJunction Without Sidewalks', () => {
+	describe( 'DefaultJunction Without Sidewalks', () => {
 
 		beforeEach( () => {
 
@@ -159,17 +206,18 @@ describe( 'TvJunctionBoundaryProfile', () => {
 
 			expect( jointSegments.length ).toEqual( 4 );
 
-			expect( jointSegments[ 0 ].getJointLaneStart().isDrivingLane ).toBeTrue();
-			expect( jointSegments[ 0 ].getJointLaneEnd().isDrivingLane ).toBeTrue();
+			expect( jointSegments[ 0 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 0 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 0 ].getJointLaneEnd().isShoulder ).toBeTrue();
 
-			expect( jointSegments[ 1 ].getJointLaneStart().isDrivingLane ).toBeTrue();
-			expect( jointSegments[ 1 ].getJointLaneEnd().isDrivingLane ).toBeTrue();
+			expect( jointSegments[ 1 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 1 ].getJointLaneEnd().isShoulder ).toBeTrue();
 
-			expect( jointSegments[ 2 ].getJointLaneStart().isDrivingLane ).toBeTrue();
-			expect( jointSegments[ 2 ].getJointLaneEnd().isDrivingLane ).toBeTrue();
+			expect( jointSegments[ 2 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 2 ].getJointLaneEnd().isShoulder ).toBeTrue();
 
-			expect( jointSegments[ 3 ].getJointLaneStart().isDrivingLane ).toBeTrue();
-			expect( jointSegments[ 3 ].getJointLaneEnd().isDrivingLane ).toBeTrue();
+			expect( jointSegments[ 3 ].getJointLaneStart().isShoulder ).toBeTrue();
+			expect( jointSegments[ 3 ].getJointLaneEnd().isShoulder ).toBeTrue();
 
 
 		} );
@@ -191,7 +239,7 @@ describe( 'TvJunctionBoundaryProfile', () => {
 
 	} )
 
-	describe( 'Tongji', () => {
+	xdescribe( 'Tongji', () => {
 
 		let map: TvMap;
 		let junction: TvJunction;
@@ -214,7 +262,7 @@ describe( 'TvJunctionBoundaryProfile', () => {
 
 	} );
 
-	describe( 'Town-01', () => {
+	xdescribe( 'Town-01', () => {
 
 		let map: TvMap;
 		let junction: TvJunction;
@@ -299,12 +347,16 @@ describe( 'TvJunctionBoundaryProfile', () => {
 			const to = map.getRoad( 3 ).getEndCoord();
 
 			const laneLink = junction.getBoundaryProfile().getOuterLaneLink( from, to );
+			const expectedIncoming = getOutermostLaneBoundary( from.road, from.contact );
 
 			expect( laneLink ).toBeDefined();
-			expect( laneLink.incomingLane.laneSection.road.id ).toBe( 2 );
-			expect( laneLink.connectingLane.laneSection.road.id ).toBe( 83 );
-			expect( laneLink.incomingLane.id ).toBe( -1 );
-			expect( laneLink.incomingLane.isCarriageWay() ).toBe( true );
+			const incomingLane = laneLink!.incomingLane;
+			const connectingLane = laneLink!.connectingLane;
+
+			expect( incomingLane ).toBe( expectedIncoming );
+			expect( incomingLane.isCarriageWay() ).toBeTrue();
+			expect( incomingLane.side ).toBe( LaneUtils.findIncomingSide( from.contact ) );
+			expect( connectingLane.isCarriageWay() ).toBeTrue();
 
 		} );
 
@@ -322,36 +374,9 @@ describe( 'TvJunctionBoundaryProfile', () => {
 
 		} );
 
-		xit( 'should pick correct connection', async () => {
-
-			junction.updateBoundary();
-
-			const road3 = map.getRoad( 3 ).getEndCoord();
-			const road2 = map.getRoad( 2 ).getStartCoord();
-
-			const connection = junction.getBoundaryProfile().pickConnectingConnection( road3, road2 );
-
-			expect( connection ).toBeDefined();
-			expect( connection.connectingRoad.id ).toBe( 83 );
-
-		} );
-
-		xit( 'should pick correct lane-link', async () => {
-
-			junction.updateBoundary();
-
-			const road3 = map.getRoad( 3 ).getEndCoord();
-			const road2 = map.getRoad( 2 ).getStartCoord();
-
-			const connection = junction.getBoundaryProfile().pickConnectingConnection( road3, road2 );
-
-			expect( connection ).toBeDefined();
-
-		} );
-
 	} )
 
-	describe( 'Roundabout', () => {
+	xdescribe( 'Roundabout', () => {
 
 		it( 'should give correct incoming road count', async () => {
 

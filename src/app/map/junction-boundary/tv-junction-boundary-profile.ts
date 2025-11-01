@@ -11,10 +11,10 @@ import { TvRoadCoord } from "../models/TvRoadCoord";
 import { TvJunction } from "../models/junctions/tv-junction";
 import { TvJunctionBoundaryFactory } from "app/map/junction-boundary/tv-junction-boundary.factory";
 import { TvJunctionConnection } from "../models/connections/tv-junction-connection";
-import { TvJointBoundary } from "./tv-joint-boundary";
-import { TvLaneBoundary } from "./tv-lane-boundary";
-import { TvContactPoint } from "../models/tv-common";
+import { TvContactPoint, TvLaneSide } from "../models/tv-common";
 import { TvRoad } from "../models/tv-road.model";
+import { LaneUtils } from "app/utils/lane.utils";
+import { TvJunctionLaneLink } from "../models/junctions/tv-junction-lane-link";
 
 export class TvJunctionBoundaryProfile {
 
@@ -98,198 +98,135 @@ export class TvJunctionBoundaryProfile {
 		}
 	}
 
-	private getLaneBoundaries ( junction: TvJunction, incoming: TvRoadCoord, jointBoundary: TvJointBoundary ): TvLaneBoundary[] {
+	addLaneBoundaries ( from: TvRoadCoord, to: TvRoadCoord ): void {
 
-		const boundaryRoad = jointBoundary.road;
-		const endLane = jointBoundary.getJointLaneEnd();
-		let connections = junction.getConnectionsByRoad( boundaryRoad )
-			.filter( connection => connection.laneLinks.find( link => link.isLinkedToLane( endLane ) ) )
-			.filter( connection => connection.isCornerConnection );
+		const selection = this.pickOuterLaneSelection( from, to );
 
-		if ( connections.length === 0 ) {
-			connections = junction.getConnectionsByRoad( boundaryRoad )
-				.filter( connection => connection.laneLinks.find( link => link.isLinkedToLane( endLane ) ) )
-		}
-
-		if ( connections.length === 0 ) {
-			console.error( `No connections found for road ${ boundaryRoad.id } at junction ${ junction.id }` );
-			return [];
-		}
-
-		const connection = connections[ 0 ];
-		const link = connection.getLaneLinks().find( link => link.isLinkedToLane( endLane ) );
-
-		if ( !link ) {
-			console.error( `No lane found for connection ${ connection.id } at junction ${ junction.id }` );
-			return [];
-		}
-
-		const segments = [];
-
-		traverseLanes( connection.connectingRoad, link.to, ( lane: TvLane ) => {
-
-			const laneBoundarySegment = TvJunctionBoundaryFactory.createLaneBoundary( connection.connectingRoad, lane )
-
-			segments.push( laneBoundarySegment );
-
-		} );
-
-		return segments;
-	}
-
-	private findAndAddCornerRoad ( junction: TvJunction, incoming: TvRoadCoord, boundary: TvJunctionBoundary ): void {
-
-		const adjacent = junction.getAdjacentRoadCoord( incoming.road );
-
-		const connection = junction.findCornerConnection( incoming.road, adjacent.road );
-
-		if ( !connection ) {
-			Log.warn( 'No corner road found for junction connection' );
+		if ( !selection ) {
+			Log.warn( "TvJunctionBoundaryProfile", `Unable to find outer lane selection between road ${ from.road.id } and ${ to.road.id }` );
 			return;
 		}
 
-		// get the lane link which is connected to the lowest lane
-		const link = connection.getOuterLaneLink();
+		const { laneLink } = selection;
+		const connectingRoad = laneLink.connectingLane.getRoad();
 
-		if ( !link ) {
-			Log.warn( 'No lane link found for corner road' );
-			return;
+		traverseLanes( connectingRoad, laneLink.connectingLane.id, ( lane: TvLane ) => {
+			this.outerBoundary.addSegment( TvJunctionBoundaryFactory.createLaneBoundary( connectingRoad, lane ) );
+		} );
+	}
+
+	getOuterLaneLink ( from: TvRoadCoord, to: TvRoadCoord ): TvJunctionLaneLink | undefined {
+
+		return this.pickOuterLaneSelection( from, to )?.laneLink;
+
+	}
+
+	private pickOuterLaneSelection ( from: TvRoadCoord, to: TvRoadCoord ): { connection: TvJunctionConnection, laneLink: TvJunctionLaneLink } | undefined {
+
+		const connections = this.junction.getConnectionsBetween( from.road, to.road );
+
+		if ( connections.length === 0 ) {
+			return undefined;
 		}
 
-		traverseLanes( connection.connectingRoad, link.to, ( lane: TvLane ) => {
+		const side = LaneUtils.findIncomingSide( from.contact );
 
-			boundary.addSegment( TvJunctionBoundaryFactory.createLaneBoundary( connection.connectingRoad, lane ) );
-
-		} );
-
-	}
-
-	private getConnectionWithOutermostLane ( connections: TvJunctionConnection[] ): TvJunctionConnection {
-
-		return this.findConnectionByLaneId( connections, true );
-
-	}
-
-	private getOuterMostCarriagewayConnection ( connections: TvJunctionConnection[] ): TvJunctionConnection {
-
-		return this.findConnectionByLaneId( connections, false );
-
-	}
-
-	private findConnectionByLaneId ( connections: TvJunctionConnection[], allLanes: boolean ): TvJunctionConnection {
-
-		let outerConnection: TvJunctionConnection | null = null;
-		let maxDistanceFromZero: number = -Infinity;
+		let bestSelection: { connection: TvJunctionConnection, laneLink: TvJunctionLaneLink } | undefined;
 
 		for ( const connection of connections ) {
 
-			const laneIds = connection.getLaneLinks()
-				.filter( link => allLanes || link.incomingLane.isCarriageWay() )
-				.map( link => link.incomingLane.id );
+			const laneLink = this.selectOuterLaneLink( connection, from, side );
 
-			const farthestLaneId = laneIds.reduce( ( acc, id ) => Math.abs( id ) > Math.abs( acc ) ? id : acc, 0 );
+			if ( !laneLink ) continue;
 
-			if ( Math.abs( farthestLaneId ) > maxDistanceFromZero ) {
-				outerConnection = connection;
-				maxDistanceFromZero = Math.abs( farthestLaneId );
+			if ( !bestSelection ) {
+				bestSelection = { connection, laneLink };
+				continue;
+			}
+
+			if ( this.isMoreOuter( laneLink, bestSelection.laneLink, side ) ) {
+				bestSelection = { connection, laneLink };
 			}
 
 		}
 
-		return outerConnection!;
+		if ( bestSelection ) {
+			return bestSelection;
+		}
+
+		const fallbackConnection = connections[ 0 ];
+		const fallbackLink = fallbackConnection.getOuterLaneLink();
+
+		if ( fallbackLink ) {
+			return { connection: fallbackConnection, laneLink: fallbackLink };
+		}
+
+		return undefined;
 	}
 
-	public pickConnectingConnection ( from: TvRoadCoord, to: TvRoadCoord ): TvJunctionConnection | null {
+	private selectOuterLaneLink ( connection: TvJunctionConnection, from: TvRoadCoord, side: TvLaneSide ): TvJunctionLaneLink | undefined {
 
-		// 1) filter connections linked to from.road at from.cp lane ends
-		// 2) among candidates that also reach to.road/to.cp (directly or via connectingRoad),
-		//    pick the one whose turning angle matches CCW traversal best (positive smallest turn)
-		// 3) tie-breaker: prefer "corner" connections for short gaps, else major through connection
+		const laneLinksForRoad = connection.getLaneLinks()
+			.filter( link => link.incomingLane.getRoad().equals( from.road ) );
 
-		// const connections = this.junction.getConnectionsBetween( from.road, to.road );
-		// const connections = this.junction.getConnections().filter( conn => {
-		// 	return conn.incomingRoad.equals( from.road ) && conn.isLinkedToRoad( to.road )
-		// } );
-
-		const connections = this.junction.getConnections().filter( conn => {
-			return conn.isLinkedToRoad( from.road ) && conn.isLinkedToRoad( to.road )
-		} );
-
-		if ( connections.length === 0 ) {
-			throw new Error( `No connection found between ${ from.road.id } and ${ to.road.id }` );
+		if ( laneLinksForRoad.length === 0 ) {
+			return undefined;
 		}
 
-		if ( connections.length > 1 ) {
-			throw new Error( `Multiple connections found between ${ from.road.id } and ${ to.road.id }` );
-		}
+		const carriageWayLinks = laneLinksForRoad.filter( link => link.incomingLane.isCarriageWay() );
+		const candidates = carriageWayLinks.length > 0 ? carriageWayLinks : laneLinksForRoad;
 
-		const connection = connections.length == 1 ? connections[ 0 ] : null;
-
-		if ( !connection ) {
-			// Log.warn( `No connections found between ${ from.road.id } and ${ to.road.id }` );
-			// return null;
-		}
-
-		return connection;
-
+		return candidates.reduce( ( outer, link ) => {
+			if ( !outer ) return link;
+			return this.isMoreOuter( link, outer, side ) ? link : outer;
+		}, undefined as TvJunctionLaneLink | undefined );
 	}
 
-	public addLaneBoundaries ( from: TvRoadCoord, to: TvRoadCoord ): void {
+	private isMoreOuter ( candidate: TvJunctionLaneLink, current: TvJunctionLaneLink, side: TvLaneSide ): boolean {
 
-		const link = this.getOuterLaneLink( from, to );
+		const candidateId = candidate.incomingLane.id;
+		const currentId = current.incomingLane.id;
 
-		if ( !link ) {
-			return;
+		if ( side === TvLaneSide.RIGHT ) {
+			return candidateId < currentId;
+		} else if ( side === TvLaneSide.LEFT ) {
+			return candidateId > currentId;
 		}
 
-		const connectingRoad = link.connectingRoad;
-		const connectingLane = link.connectingLane
-
-		traverseLanes( connectingRoad, connectingLane.id, ( lane: TvLane ) => {
-			this.outerBoundary.addSegment( TvJunctionBoundaryFactory.createLaneBoundary( connectingRoad, lane ) );
-		} );
-
-	}
-
-	public getOuterLaneLink ( from: TvRoadCoord, to: TvRoadCoord ) {
-
-		// filter by from.road and from.contact
-		// sort in descending order of lane id
-		const lanelinks = this.junction.getLaneLinks()
-			.filter( link => link.matchesFromAndTo( from.road, to.road ) )
-			.sort( ( a, b ) => {
-				return Math.abs( b.incomingLane.id ) - Math.abs( a.incomingLane.id );
-			} )
-
-		if ( lanelinks.length == 0 ) {
-			console.error( `No lane links found for road ${ from.road.id } to road ${ to.road.id } at junction ${ this.junction.id }` );
-			return;
-		}
-
-		return lanelinks[ lanelinks.length - 1 ];
-
+		return Math.abs( candidateId ) > Math.abs( currentId );
 	}
 
 }
 
-export function getOutermostLaneBoundary ( road: TvRoad, contact: TvContactPoint, onlyDrivingLanes = false ): TvLane {
+export function getOutermostLaneBoundary ( road: TvRoad, contact: TvContactPoint ): TvLane | undefined {
 
-	const laneSection = road.getLaneSectionAt( contact );
+	const laneSection = road.getLaneProfile().getLaneSectionAtContact( contact );
 
-	if ( contact === TvContactPoint.END ) {
-
-		const lanes = laneSection.getRightLanes()
-			.filter( lane => onlyDrivingLanes ? lane.isDrivingLane : lane.isCarriageWay() );
-
-		return lanes[ lanes.length - 1 ];
-
-	} else {
-
-		const lanes = laneSection.getLeftLanes()
-			.filter( lane => onlyDrivingLanes ? lane.isDrivingLane : lane.isCarriageWay() );
-
-		return lanes[ 0 ];
+	if ( !laneSection ) {
+		Log.warn( "TvJunctionBoundaryProfile", `Missing lane section for road ${ road.id } at ${ contact }` );
+		return road.getLaneProfile().getFirstLaneSection()?.getCenterLane();
 	}
 
-}
+	const side = LaneUtils.findIncomingSide( contact );
+	const candidateLanes = laneSection.getLanesBySide( side );
 
+	if ( candidateLanes.length === 0 ) {
+		Log.warn( "TvJunctionBoundaryProfile", `No lanes on side ${ side } for road ${ road.id }` );
+		return laneSection.getCenterLane();
+	}
+
+	const carriageWay = candidateLanes.filter( lane => lane.isCarriageWay() );
+	const lanesToConsider = carriageWay.length > 0 ? carriageWay : candidateLanes;
+
+	return lanesToConsider.reduce( ( selected, lane ) => {
+		if ( !selected ) return lane;
+		if ( side === TvLaneSide.RIGHT ) {
+			return lane.id < selected.id ? lane : selected;
+		}
+		if ( side === TvLaneSide.LEFT ) {
+			return lane.id > selected.id ? lane : selected;
+		}
+		return Math.abs( lane.id ) > Math.abs( selected.id ) ? lane : selected;
+	}, undefined as TvLane | undefined );
+
+}

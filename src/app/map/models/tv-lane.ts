@@ -186,8 +186,16 @@ export class TvLane implements ISelectable, IHasUpdate {
 		return this.type == TvLaneType.driving;
 	}
 
+	get isBorder (): boolean {
+		return this.type == TvLaneType.border;
+	}
+
 	get isSidewalk (): boolean {
 		return this.type == TvLaneType.sidewalk;
+	}
+
+	get isShoulder (): boolean {
+		return this.type == TvLaneType.shoulder;
 	}
 
 	get laneSection (): TvLaneSection {
