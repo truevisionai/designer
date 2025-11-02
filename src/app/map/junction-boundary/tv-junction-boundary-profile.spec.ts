@@ -16,7 +16,7 @@ import { TvMap } from "../models/tv-map.model";
 import { getOutermostLaneBoundary } from "./tv-junction-boundary-profile";
 import { LaneUtils } from "app/utils/lane.utils";
 
-fdescribe( 'TvJunctionBoundaryProfile', () => {
+describe( 'TvJunctionBoundaryProfile', () => {
 
 	let testHelper: SplineTestHelper;
 	let junction: TvJunction;
