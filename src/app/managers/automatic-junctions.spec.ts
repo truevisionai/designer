@@ -44,8 +44,6 @@ describe( "AutomaticJunctions", () => {
 		const horizontal = addSpline( SplineFactory.createStraightSplineAndPoints( new Vector3( -100, 0, 0 ), 200 ) );
 		const vertical = addSpline( SplineFactory.createStraightSplineAndPoints( new Vector3( 0, -100, 0 ), 200, 90 ) );
 
-		automaticJunctions.detectJunctions( horizontal );
-		automaticJunctions.detectJunctions( vertical );
 
 		expect( mapService.junctions.length ).toBe( 1 );
 
@@ -57,6 +55,8 @@ describe( "AutomaticJunctions", () => {
 		const diagonal = addSpline( SplineFactory.createStraightSplineAndPoints( new Vector3( -150, -150, 0 ), 300, 45 ) );
 
 		automaticJunctions.detectJunctions( diagonal );
+		automaticJunctions.detectJunctions( horizontal );
+		automaticJunctions.detectJunctions( vertical );
 		automaticJunctions.detectJunctions( horizontal );
 		automaticJunctions.detectJunctions( vertical );
 
@@ -79,6 +79,49 @@ describe( "AutomaticJunctions", () => {
 		expect( horizontal.getJunctionSegments()[ 0 ] ).toBe( junction );
 		expect( vertical.getJunctionSegments()[ 0 ] ).toBe( junction );
 		expect( diagonal.getJunctionSegments()[ 0 ] ).toBe( junction );
+
+	} );
+
+	it( "should refresh junction sections on every spline when one spline moves", () => {
+
+		const horizontal = addSpline( SplineFactory.createStraightSplineAndPoints( new Vector3( -150, 0, 0 ), 300 ) );
+		const vertical = addSpline( SplineFactory.createStraightSplineAndPoints( new Vector3( 0, -150, 0 ), 300, 90 ) );
+		const diagonal = addSpline( SplineFactory.createStraightSplineAndPoints( new Vector3( -150, -150, 0 ), 300, 45 ) );
+
+		automaticJunctions.detectJunctions( horizontal );
+		automaticJunctions.detectJunctions( vertical );
+		automaticJunctions.detectJunctions( diagonal );
+
+		const initialKeys = [ ...horizontal.getSegmentKeys() ];
+		const junction = mapService.junctions[ 0 ];
+		const initialCenter = junction.centroid.clone();
+
+		diagonal.getControlPoints().forEach( cp => cp.position.x += 50 );
+
+		diagonal.updateSegmentGeometryAndBounds();
+
+		automaticJunctions.detectJunctions( diagonal );
+		automaticJunctions.detectJunctions( horizontal );
+		automaticJunctions.detectJunctions( vertical );
+
+		expect( horizontal.getJunctionSegments().length ).toBeGreaterThan( 0 );
+		expect( vertical.getJunctionSegments().length ).toBeGreaterThan( 0 );
+		expect( diagonal.getJunctionSegments().length ).toBeGreaterThan( 0 );
+
+		const updatedKeys = horizontal.getSegmentKeys();
+
+		expect( updatedKeys[ 1 ] ).not.toEqual( initialKeys[ 1 ] );
+
+		expectCorrectSegmentOrder( horizontal );
+		expectCorrectSegmentOrder( vertical );
+		expectCorrectSegmentOrder( diagonal );
+
+		const movedCentroid = mapService.junctions
+			.filter( j => j.getIncomingSplines().some( spline => spline.uuid === diagonal.uuid ) )
+			.map( j => j.centroid )
+			.find( centroid => !centroid.equals( initialCenter ) );
+
+		expect( movedCentroid ).toBeDefined();
 
 	} );
 

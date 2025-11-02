@@ -135,6 +135,8 @@ export class AutomaticJunctions {
 
 	private createOrUpdateGroup ( spline: AbstractSpline, existingJunctions: TvJunction[], group: IntersectionGroup ): void {
 
+		group.reComputeJunctionOffsets( true );
+
 		const existingJunction = existingJunctions.find( junction => group.matchesJunction( junction ) ) as AutoJunction;
 
 		if ( existingJunction ) {
@@ -165,6 +167,8 @@ export class AutomaticJunctions {
 	}
 
 	private createJunctionFromGroup ( spline: AbstractSpline, group: IntersectionGroup ): TvJunction {
+
+		group.reComputeJunctionOffsets( true );
 
 		const junction = this.createOrGetJunctionFromGroup( group, spline );
 

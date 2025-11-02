@@ -8,7 +8,6 @@ import { TvLink } from "app/map/models/tv-link";
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
 import { SplineSection, SplineSectionFactory } from 'app/services/junction/spline-section';
 import { GeometryUtils } from "app/services/surface/geometry-utils";
-import { Assert } from "app/utils/assert";
 import { Box2, Vector2, Vector3 } from "three";
 import { AutoJunction } from "../map/models/junctions/auto-junction";
 
@@ -76,9 +75,27 @@ export class IntersectionGroup {
 
 		const junctions = this.getJunctionsViaSplines();
 
-		Assert.isLessThanOrEqual( junctions.length, 1, 'More than one junction found in group' );
+		if ( junctions.length <= 1 ) {
+			return junctions;
+		}
 
-		return junctions;
+		const groupSplineIds = new Set( this.getSplines().map( spline => spline.uuid ) );
+		const center = this.getRepresentativePosition();
+		const groupPosition = new Vector2( center.x, center.y );
+
+		const scored = junctions.map( junction => {
+			const incoming = new Set( junction.getIncomingSplines().map( spline => spline.uuid ) );
+			const score = Array.from( incoming ).filter( id => groupSplineIds.has( id ) ).length;
+			const distance = junction.distanceToPoint( groupPosition );
+			return { junction, score, distance };
+		} );
+
+		scored.sort( ( a, b ) => {
+			if ( b.score !== a.score ) return b.score - a.score;
+			return a.distance - b.distance;
+		} );
+
+		return [ scored[ 0 ].junction ];
 
 	}
 
@@ -181,12 +198,13 @@ export class IntersectionGroup {
 
 		for ( const intersection of intersections ) {
 
-			this.intersections.set( intersection.getKey(), intersection );
+			const key = this.generateIntersectionKey( intersection, this.intersections );
+
+			this.intersections.set( key, intersection );
 
 			this.splines.add( intersection.spline );
 			this.splines.add( intersection.otherSpline );
 
-			// Expand the group area to include the new intersection area
 			this.area.expandByPoint( intersection.area.min );
 			this.area.expandByPoint( intersection.area.max );
 
@@ -196,7 +214,17 @@ export class IntersectionGroup {
 
 	hasSplineIntersection ( intersection: SplineIntersection ): boolean {
 
-		return this.intersections.has( intersection.getKey() );
+		const baseKey = intersection.getKey();
+
+		for ( const key of this.intersections.keys() ) {
+
+			if ( key === baseKey || key.startsWith( `${ baseKey }_` ) ) {
+				return true;
+			}
+
+		}
+
+		return false;
 
 	}
 
@@ -324,14 +352,18 @@ export class IntersectionGroup {
 
 	matchesJunction ( junction: TvJunction ): boolean {
 
-		if ( !this.area.intersectsBox( junction.boundingBox ) ) return false;
+		if ( junction.getKey() !== this.getKey() ) return false;
 
-		const junctionSplineIds = new Set( junction.getIncomingSplines().map( spline => spline.uuid ) );
-		const groupSplineIds = new Set( this.getSplines().map( spline => spline.uuid ) );
+		if ( this.area.intersectsBox( junction.boundingBox ) ) return true;
 
-		const allJunctionSplinesPresent = Array.from( junctionSplineIds ).every( id => groupSplineIds.has( id ) );
+		const center = this.getRepresentativePosition();
+		const groupPosition = new Vector2( center.x, center.y );
+		const distance = junction.distanceToPoint( groupPosition );
 
-		return allJunctionSplinesPresent;
+		const size = this.area.getSize( new Vector2() );
+		const threshold = Math.max( size.length() * 1.5, 50 );
+
+		return distance <= threshold;
 
 	}
 
@@ -355,11 +387,26 @@ export class IntersectionGroup {
 
 	reComputeJunctionOffsets ( force: boolean = false ): void {
 
-		if ( !force && this.getSplines().length < 2 ) return;
-
-		// if group has more than 2 spline we should recalculate junctions regions
-		// for each of them to update their start/end positions
 		const splines = this.getSplines();
+
+		if ( splines.length < 2 ) return;
+
+		const updatedIntersections = new Map<string, SplineIntersection>();
+		const updatedArea = new Box2().makeEmpty();
+
+		const registerIntersection = ( intersection: SplineIntersection ): void => {
+
+			const key = this.generateIntersectionKey( intersection, updatedIntersections );
+
+			updatedIntersections.set( key, intersection );
+
+			updatedArea.expandByPoint( intersection.area.min );
+			updatedArea.expandByPoint( intersection.area.max );
+
+			this.splines.add( intersection.spline );
+			this.splines.add( intersection.otherSpline );
+
+		};
 
 		for ( let a = 0; a < splines.length; a++ ) {
 
@@ -371,23 +418,21 @@ export class IntersectionGroup {
 
 				const intersections = spline.getIntersections( element );
 
-				intersections.forEach( i => this.addSplineIntersection( i ) );
+				for ( let i = 0; i < intersections.length; i++ ) {
+
+					registerIntersection( intersections[ i ] );
+
+				}
 
 			}
 
 		}
 
-		// group.getSplines().forEach( spline => {
+		if ( updatedIntersections.size === 0 ) return;
 
-		// const offset = group.getOffset( spline );
-
-		// this.createRoadCoordNew( spline, offset.sStart, offset.sEnd, junction, group ).forEach( c => coords.push( c ) );
-
-		// this.splineBuilder.buildGeometry( spline );
-
-		// } );
-
-		// DebugDrawService.instance.drawBox2D( group.area, COLOR.WHITE );
+		this.intersections = updatedIntersections;
+		this.area.copy( updatedArea );
+		this.centroid = undefined;
 
 	}
 
@@ -429,6 +474,27 @@ export class IntersectionGroup {
 		}
 
 		return extents;
+
+	}
+
+	private generateIntersectionKey ( intersection: SplineIntersection, store: Map<string, SplineIntersection> ): string {
+
+		const baseKey = intersection.getKey();
+
+		if ( !store.has( baseKey ) ) {
+			return baseKey;
+		}
+
+		let index = 1;
+
+		let nextKey = `${ baseKey }_${ index }`;
+
+		while ( store.has( nextKey ) ) {
+			index++;
+			nextKey = `${ baseKey }_${ index }`;
+		}
+
+		return nextKey;
 
 	}
 }
