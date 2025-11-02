@@ -179,9 +179,9 @@ export function createGroupsFromIntersections ( intersections: SplineIntersectio
 
 		// }
 
-		group.centroid = group.getRepresentativePosition();
-
 		group.reComputeJunctionOffsets();
+
+		group.centroid = group.getRepresentativePosition();
 
 		groups.push( group );
 
@@ -195,7 +195,10 @@ export function createGroupsFromIntersections ( intersections: SplineIntersectio
 
 			const otherGroup = groups[ j ];
 
-			const distance = group.centroid.distanceTo( otherGroup.centroid );
+			const groupCentroid = group.centroid ?? group.getRepresentativePosition();
+			const otherCentroid = otherGroup.centroid ?? otherGroup.getRepresentativePosition();
+
+			const distance = groupCentroid.distanceTo( otherCentroid );
 
 			const intersect = group.area.intersectsBox( otherGroup.area );
 
@@ -205,11 +208,11 @@ export function createGroupsFromIntersections ( intersections: SplineIntersectio
 
 				group.merge( otherGroup );
 
+				group.reComputeJunctionOffsets();
+
 				group.centroid = group.getRepresentativePosition();
 
 				groups.splice( j, 1 );
-
-				group.reComputeJunctionOffsets();
 
 				j--;
 
