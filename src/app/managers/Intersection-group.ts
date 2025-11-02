@@ -385,28 +385,27 @@ export class IntersectionGroup {
 
 	}
 
+	// eslint-disable-next-line max-lines-per-function
 	reComputeJunctionOffsets ( force: boolean = false ): void {
 
 		const splines = this.getSplines();
 
 		if ( splines.length < 2 ) return;
 
-		const updatedIntersections = new Map<string, SplineIntersection>();
-		const updatedArea = new Box2().makeEmpty();
+		const previousIntersections = Array.from( this.intersections.values() );
+		const previousArea = this.area.clone();
+		const previousCentroid = previousIntersections.length > 0 ? this.getRepresentativePosition().clone() : undefined;
 
-		const registerIntersection = ( intersection: SplineIntersection ): void => {
+		const dynamicMargin = previousArea.getSize( new Vector2() ).length();
+		const margin = Math.max( 20, dynamicMargin * 0.25 );
 
-			const key = this.generateIntersectionKey( intersection, updatedIntersections );
+		const areaWithMargin = previousArea.clone();
+		if ( !areaWithMargin.isEmpty() ) {
+			areaWithMargin.min.addScalar( -margin );
+			areaWithMargin.max.addScalar( margin );
+		}
 
-			updatedIntersections.set( key, intersection );
-
-			updatedArea.expandByPoint( intersection.area.min );
-			updatedArea.expandByPoint( intersection.area.max );
-
-			this.splines.add( intersection.spline );
-			this.splines.add( intersection.otherSpline );
-
-		};
+		const rawIntersections: SplineIntersection[] = [];
 
 		for ( let a = 0; a < splines.length; a++ ) {
 
@@ -418,13 +417,50 @@ export class IntersectionGroup {
 
 				const intersections = spline.getIntersections( element );
 
-				for ( let i = 0; i < intersections.length; i++ ) {
-
-					registerIntersection( intersections[ i ] );
-
-				}
+				rawIntersections.push( ...intersections );
 
 			}
+
+		}
+
+		if ( rawIntersections.length === 0 ) return;
+
+		const updatedIntersections = new Map<string, SplineIntersection>();
+		const updatedArea = new Box2().makeEmpty();
+
+		const shouldKeep = ( intersection: SplineIntersection ): boolean => {
+
+			if ( previousIntersections.length === 0 ) return true;
+
+			const intersects = !areaWithMargin.isEmpty() && areaWithMargin.intersectsBox( intersection.area );
+
+			if ( intersects ) return true;
+
+			if ( previousCentroid ) {
+
+				const distance = intersection.position.distanceTo( previousCentroid );
+
+				if ( distance <= margin ) return true;
+
+			}
+
+			return false;
+
+		};
+
+		for ( const intersection of rawIntersections ) {
+
+			if ( !shouldKeep( intersection ) ) continue;
+
+			const key = this.generateIntersectionKey( intersection, updatedIntersections );
+
+			updatedIntersections.set( key, intersection );
+
+			updatedArea.expandByPoint( intersection.area.min );
+			updatedArea.expandByPoint( intersection.area.max );
+
+			this.splines.add( intersection.spline );
+			this.splines.add( intersection.otherSpline );
 
 		}
 
