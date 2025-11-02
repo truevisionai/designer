@@ -6,7 +6,7 @@ import { AbstractSpline, NewSegment } from "app/core/shapes/abstract-spline";
 import { TvJunction } from "app/map/models/junctions/tv-junction";
 import { TvLink } from "app/map/models/tv-link";
 import { SplineIntersection } from 'app/services/junction/spline-intersection';
-import { SplineSection } from 'app/services/junction/spline-section';
+import { SplineSection, SplineSectionFactory } from 'app/services/junction/spline-section';
 import { GeometryUtils } from "app/services/surface/geometry-utils";
 import { Assert } from "app/utils/assert";
 import { Box2, Vector2, Vector3 } from "three";
@@ -34,7 +34,7 @@ export class IntersectionGroup {
 
 		this.updateSectionOffsets();
 
-		for ( const section of this.getSplineSections() ) {
+		for ( const section of this.getUniqueSplineSections() ) {
 
 			section.insertJunction( junction );
 
@@ -48,7 +48,7 @@ export class IntersectionGroup {
 
 		this.updateSectionOffsets();
 
-		for ( const section of this.getSplineSections() ) {
+		for ( const section of this.getUniqueSplineSections() ) {
 
 			section.updateJunction( junction );
 
@@ -86,7 +86,9 @@ export class IntersectionGroup {
 
 		const links = new Map<NewSegment, TvLink>();
 
-		const sections = this.getSplineSections();
+		this.updateSectionOffsets();
+
+		const sections = this.getUniqueSplineSections();
 
 		for ( const section of sections ) {
 
@@ -255,15 +257,20 @@ export class IntersectionGroup {
 
 	getOffset ( spline: AbstractSpline ): any {
 
-		const sections = this.getSplineSections().filter( section => section.spline.equals( spline ) );
+		this.updateSectionOffsets();
 
-		const startValues = sections.map( section => section.getStart() );
-		const endValues = sections.map( section => section.getEnd() );
+		const section = this.getUniqueSplineSections().find( section => section.spline.equals( spline ) );
 
-		const sStart = Math.min( ...startValues );
-		const sEnd = Math.max( ...endValues );
+		if ( section ) {
 
-		return { sStart, sEnd };
+			const sStart = section.getStart();
+			const sEnd = section.getEnd();
+
+			return { sStart, sEnd };
+
+		}
+
+		return { sStart: 0, sEnd: 0 };
 
 	}
 
@@ -293,9 +300,17 @@ export class IntersectionGroup {
 
 	updateSectionOffsets (): void {
 
+		const extents = this.computeExtentsBySpline();
+
 		for ( const section of this.getSplineSections() ) {
 
-			section.updateOffsets( this.area );
+			const extent = extents.get( section.spline );
+
+			if ( !extent ) continue;
+
+			section.setOffsets( extent.start, extent.end );
+
+			section.updateOffsetSegments();
 
 		}
 
@@ -309,7 +324,14 @@ export class IntersectionGroup {
 
 	matchesJunction ( junction: TvJunction ): boolean {
 
-		return junction.getKey() == this.getKey() && this.area.intersectsBox( junction.boundingBox );
+		if ( !this.area.intersectsBox( junction.boundingBox ) ) return false;
+
+		const junctionSplineIds = new Set( junction.getIncomingSplines().map( spline => spline.uuid ) );
+		const groupSplineIds = new Set( this.getSplines().map( spline => spline.uuid ) );
+
+		const allJunctionSplinesPresent = Array.from( junctionSplineIds ).every( id => groupSplineIds.has( id ) );
+
+		return allJunctionSplinesPresent;
 
 	}
 
@@ -366,6 +388,47 @@ export class IntersectionGroup {
 		// } );
 
 		// DebugDrawService.instance.drawBox2D( group.area, COLOR.WHITE );
+
+	}
+
+	private getUniqueSplineSections (): SplineSection[] {
+
+		const extents = this.computeExtentsBySpline();
+
+		const sections: SplineSection[] = [];
+
+		extents.forEach( ( extent, spline ) => {
+
+			sections.push( SplineSectionFactory.create( spline, extent.start, extent.end ) );
+
+		} );
+
+		return sections;
+
+	}
+
+	private computeExtentsBySpline (): Map<AbstractSpline, { start: number; end: number }> {
+
+		const extents = new Map<AbstractSpline, { start: number; end: number }>();
+
+		for ( const section of this.getSplineSections() ) {
+
+			const existing = extents.get( section.spline );
+
+			if ( !existing ) {
+
+				extents.set( section.spline, { start: section.getStart(), end: section.getEnd() } );
+
+			} else {
+
+				existing.start = Math.min( existing.start, section.getStart() );
+				existing.end = Math.max( existing.end, section.getEnd() );
+
+			}
+
+		}
+
+		return extents;
 
 	}
 }
