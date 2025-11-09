@@ -7,7 +7,7 @@ import { CameraService } from 'app/renderer/camera.service';
 import { CanvasService } from 'app/renderer/canvas.service';
 import { Vector2, Vector3 } from 'app/core/maths';
 
-export interface TooltipInterface {
+export interface TooltipRef {
 	id: number;
 	content: string;
 	position: Vector2;
@@ -20,13 +20,13 @@ export class ToolTipService {
 
 	static instance: ToolTipService;
 
-	public tooltipAdded = new EventEmitter<TooltipInterface>();
-	public tooltipUpdated = new EventEmitter<TooltipInterface>();
-	public tooltipRemoved = new EventEmitter<TooltipInterface>();
+	public tooltipAdded = new EventEmitter<TooltipRef>();
+	public tooltipUpdated = new EventEmitter<TooltipRef>();
+	public tooltipRemoved = new EventEmitter<TooltipRef>();
 
-	private tooltips = new Map<number, TooltipInterface>();
+	private tooltips = new Map<number, TooltipRef>();
 
-	private lastTooltip: TooltipInterface;
+	private lastTooltip: TooltipRef;
 
 	constructor (
 		private canvasService: CanvasService,
@@ -35,7 +35,7 @@ export class ToolTipService {
 		ToolTipService.instance = this;
 	}
 
-	createFrom3D ( text: string, position: Vector2 | Vector3 ): any {
+	createFrom3D ( text: string, position: Vector2 | Vector3 ): TooltipRef {
 
 		const id = this.tooltips.size + 1;
 
@@ -71,7 +71,7 @@ export class ToolTipService {
 
 	}
 
-	private createTooltip ( id: number, content: string, position: Vector2 ): any {
+	private createTooltip ( id: number, content: string, position: Vector2 ): TooltipRef {
 
 		const toolTip = { id, content, position };
 
@@ -118,7 +118,7 @@ export class ToolTipService {
 
 	}
 
-	removeToolTip ( toolTip: TooltipInterface ): void {
+	removeToolTip ( toolTip: TooltipRef ): void {
 
 		if ( this.tooltips.has( toolTip.id ) ) {
 
@@ -130,7 +130,7 @@ export class ToolTipService {
 
 	}
 
-	getTooltips (): Map<number, TooltipInterface> {
+	getTooltips (): Map<number, TooltipRef> {
 
 		return this.tooltips;
 

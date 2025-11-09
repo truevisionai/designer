@@ -8,7 +8,7 @@ import { BaseTool } from '../base-tool';
 import { SceneService } from 'app/services/scene.service';
 import { MeasurementToolService } from './measurement-tool.service';
 import { BufferGeometry, Line, LineBasicMaterial } from "three";
-import { TooltipInterface } from 'app/services/debug/tool-tip.service';
+import { TooltipRef } from 'app/services/debug/tool-tip.service';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
 import { Vector3 } from 'app/core/maths';
 
@@ -24,7 +24,7 @@ export class MeasurementTool extends BaseTool<any>{
 	private startPoint: AbstractControlPoint;
 	private endPoint: AbstractControlPoint;
 
-	private toolTip: TooltipInterface;
+	private toolTip: TooltipRef;
 
 	constructor ( private tool: MeasurementToolService ) {
 

@@ -3,7 +3,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ToolTipService, TooltipInterface } from 'app/services/debug/tool-tip.service';
+import { ToolTipService, TooltipRef } from 'app/services/debug/tool-tip.service';
 
 @Component( {
 	selector: 'app-tooltip',
@@ -14,7 +14,7 @@ export class TooltipComponent implements OnInit {
 
 	constructor ( private tooltipService: ToolTipService ) { }
 
-	tooltips: TooltipInterface[] = [];
+	tooltips: TooltipRef[] = [];
 
 	ngOnInit (): void {
 

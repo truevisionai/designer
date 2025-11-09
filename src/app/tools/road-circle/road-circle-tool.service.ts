@@ -13,14 +13,12 @@ import {
 	Vector3
 } from "three";
 import { SceneService } from '../../services/scene.service';
-import { TextObject3d } from 'app/objects/text-object';
 import { ColorUtils } from 'app/views/shared/utils/colors.service';
 import { TvRoad } from 'app/map/models/tv-road.model';
 import { Maths } from 'app/utils/maths';
 import { TvContactPoint } from 'app/map/models/tv-common';
 import { Injectable } from '@angular/core';
 import { RoadFactory } from 'app/factories/road-factory.service';
-import { DebugTextService } from 'app/services/debug/debug-text.service';
 import { ViewControllerService } from 'app/views/editor/viewport/view-controller.service';
 import { RoadService } from 'app/services/road/road.service';
 import { SplineService } from "../../services/spline/spline.service";
@@ -28,6 +26,7 @@ import { ControlPointFactory } from "../../factories/control-point.factory";
 import { SplineGeometryGenerator } from "../../services/spline/spline-geometry-generator";
 import { TvArcGeometry } from 'app/map/models/geometries/tv-arc-geometry';
 import { AbstractControlPoint } from 'app/objects/abstract-control-point';
+import { TooltipRef, ToolTipService } from "app/services/debug/tool-tip.service";
 
 @Injectable( {
 	providedIn: 'root'
@@ -36,21 +35,21 @@ export class RoadCircleToolService {
 
 	private line: LineLoop;
 
-	private text3d: TextObject3d;
-
 	private start: Vector3;
 
 	private end: Vector3;
 
 	private radius: number;
 
+	private tooltipRef: TooltipRef | undefined;
+
 	constructor (
 		public splineBuilder: SplineGeometryGenerator,
 		public splineService: SplineService,
 		public roadService: RoadService,
 		public roadFactory: RoadFactory,
-		public debugTextService: DebugTextService,
 		public viewController: ViewControllerService,
+		public tooltipService: ToolTipService,
 	) {
 	}
 
@@ -58,7 +57,7 @@ export class RoadCircleToolService {
 
 		SceneService.removeFromTool( this.line );
 
-		SceneService.removeFromTool( this.text3d );
+		this.tooltipService.clear();
 
 	}
 
@@ -82,7 +81,7 @@ export class RoadCircleToolService {
 
 		this.radius = radius;
 
-		let circleGeometry = new CircleGeometry( radius, radius * 4 );
+		const circleGeometry = new CircleGeometry( radius, radius * 4 );
 
 		this.line = new LineLoop( circleGeometry, new LineBasicMaterial( { color: ColorUtils.CYAN, linewidth: 4 } ) );
 
@@ -90,13 +89,10 @@ export class RoadCircleToolService {
 
 		this.line.position.copy( centre );
 
-		this.text3d = this.debugTextService.createTextObject( 'Radius: ' + radius.toFixed( 2 ), 10 );
-
-		this.text3d.position.copy( centre );
+		this.tooltipRef = this.tooltipService.createFrom3D( `Radius: ${ radius.toFixed( 2 ) }`, centre );
 
 		SceneService.addToolObject( this.line );
 
-		SceneService.addToolObject( this.text3d );
 	}
 
 	reset (): void {
@@ -109,7 +105,7 @@ export class RoadCircleToolService {
 
 		SceneService.removeFromTool( this.line );
 
-		SceneService.removeFromTool( this.text3d );
+		this.tooltipService.removeToolTip( this.tooltipRef );
 
 	}
 
@@ -131,7 +127,10 @@ export class RoadCircleToolService {
 
 		this.line.geometry = circleBufferGeometry;
 
-		this.debugTextService.updateText( this.text3d, 'Radius: ' + radius.toFixed( 2 ) );
+		this.tooltipService.updateTooltipPosition( this.tooltipRef.id, end );
+
+		this.tooltipService.updateTooltipContent( this.tooltipRef.id, `Radius: ${ radius.toFixed( 2 ) }` );
+
 	}
 
 	createRoads (): TvRoad[] {

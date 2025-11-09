@@ -7,7 +7,7 @@ import { ControlPointFactory } from 'app/factories/control-point.factory';
 import { TextObject3d } from 'app/objects/text-object';
 import { DebugDrawService } from 'app/services/debug/debug-draw.service';
 import { DebugTextService } from 'app/services/debug/debug-text.service';
-import { ToolTipService, TooltipInterface } from 'app/services/debug/tool-tip.service';
+import { ToolTipService, TooltipRef } from 'app/services/debug/tool-tip.service';
 import { SceneService } from 'app/services/scene.service';
 import { Vector3 } from 'app/core/maths';
 
@@ -36,7 +36,7 @@ export class MeasurementToolService {
 
 	}
 
-	removeToolTip ( toolTip: TooltipInterface ): void {
+	removeToolTip ( toolTip: TooltipRef ): void {
 
 		this.toolTipService.removeToolTip( toolTip );
 
