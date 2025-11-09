@@ -1,0 +1,47 @@
+<div class="map-hierarchy" fxFlexFill fxLayout="column">
+	<mat-toolbar class="native-border inspector-toolbar">
+		<!-- <span>Map Hierarchy</span> -->
+		<span class="map-hierarchy__toolbar-spacer"></span>
+		<button mat-icon-button
+			matTooltip="Refresh hierarchy"
+			(click)="refreshTree()">
+			<mat-icon>refresh</mat-icon>
+		</button>
+	</mat-toolbar>
+
+	<perfect-scrollbar>
+		<mat-tree [dataSource]="dataSource"
+			[treeControl]="treeControl"
+			class="map-hierarchy__tree">
+
+			<mat-tree-node *matTreeNodeDef="let node; when: hasChild"
+				matTreeNodePadding
+				matTreeNodePaddingIndent="12"
+				(click)="onNodeClicked(node)"
+				[class.map-hierarchy__node--selected]="isSelected(node)"
+				class="map-hierarchy__node">
+				<button mat-icon-button
+					matTreeNodeToggle
+					(click)="$event.stopPropagation()">
+					<mat-icon class="mat-icon-rtl-mirror">
+						{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+					</mat-icon>
+				</button>
+				<!-- <mat-icon class="map-hierarchy__type-icon">{{ getNodeIcon(node) }}</mat-icon> -->
+				<span class="map-hierarchy__label">{{ node.label }}</span>
+			</mat-tree-node>
+
+			<mat-tree-node *matTreeNodeDef="let node"
+				matTreeNodePadding
+				matTreeNodePaddingIndent="12"
+				(click)="onNodeClicked(node)"
+				[class.map-hierarchy__node--selected]="isSelected(node)"
+				class="map-hierarchy__node">
+				<button mat-icon-button disabled></button>
+				<!-- <mat-icon class="map-hierarchy__type-icon">{{ getNodeIcon(node) }}</mat-icon> -->
+				<span class="map-hierarchy__label">{{ node.label }}</span>
+			</mat-tree-node>
+
+		</mat-tree>
+	</perfect-scrollbar>
+</div>

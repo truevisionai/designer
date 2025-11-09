@@ -43,6 +43,7 @@ import { ProjectBrowserComponent } from './project-browser/project-browser.compo
 import { ProjectHierarchyComponent } from './project-browser/project-hierarchy/project-hierarchy.component';
 import { ToolBarComponent } from './tool-bar/tool-bar.component';
 import { SceneHierarchyComponent } from './scene-hierarchy/scene-hierarchy.component';
+import { MapHierarchyComponent } from './map-hierarchy/map-hierarchy.component';
 import { ViewportComponent } from "./viewport/viewport.component";
 import { GraphViewportComponent } from './graph-viewport/graph-viewport.component';
 import { ViewportNewComponent } from './viewport-new/viewport-new.component';
@@ -66,6 +67,7 @@ import { ObjectInspectorComponent } from "../inspectors/object-inspector/object-
 		ConsoleComponent,
 		TutorialsDialogComponent,
 		SceneHierarchyComponent,
+		MapHierarchyComponent,
 		ViewportComponent,
 		GraphViewportComponent,
 		ViewportNewComponent,
