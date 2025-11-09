@@ -5,17 +5,12 @@
 		flex: 1 1 auto;
 	}
 
-	&__tree {
-		// padding: 0 0.5rem 0.5rem;
-	}
-
 	&__node {
 		display: flex;
 		align-items: center;
 		gap: 0.25rem;
 		cursor: pointer;
 		border-radius: 4px;
-		padding: 0.15rem 0.25rem;
 
 		&--selected {
 			background: rgba( 255, 255, 255, 0.08 );

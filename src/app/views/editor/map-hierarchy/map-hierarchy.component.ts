@@ -8,9 +8,12 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { Subscription } from 'rxjs';
 import { MapEvents } from 'app/events/map-events';
 import { MapService } from 'app/services/map/map.service';
-import { CommandHistory } from 'app/commands/command-history';
-import { SelectObjectCommand } from 'app/commands/select-object-command';
 import { TvLaneSection } from 'app/map/models/tv-lane-section';
+import { TvRoad } from 'app/map/models/tv-road.model';
+import { AbstractSpline } from 'app/core/shapes/abstract-spline';
+import { RoadDebugService } from 'app/services/debug/road-debug.service';
+import { SplineDebugService } from 'app/services/debug/spline-debug.service';
+import { DebugState } from 'app/services/debug/debug-state';
 import { MapHierarchyBuilder } from './map-hierarchy.builder';
 import { MapHierarchyFocusService } from './map-hierarchy-focus.service';
 import {
@@ -52,11 +55,17 @@ export class MapHierarchyComponent implements OnInit, OnDestroy {
 
 	private refreshTimer?: ReturnType<typeof setTimeout>;
 
+	private highlightedRoad?: TvRoad;
+
+	private highlightedSpline?: AbstractSpline;
+
 	constructor (
 		private readonly mapService: MapService,
 		private readonly builder: MapHierarchyBuilder,
 		private readonly focusService: MapHierarchyFocusService,
 		private readonly changeDetector: ChangeDetectorRef,
+		private readonly roadDebug: RoadDebugService,
+		private readonly splineDebug: SplineDebugService,
 	) {
 	}
 
@@ -72,11 +81,14 @@ export class MapHierarchyComponent implements OnInit, OnDestroy {
 		if ( this.refreshTimer ) {
 			clearTimeout( this.refreshTimer );
 		}
+		this.clearRoadHighlight();
 	}
 
 	onNodeClicked ( node: MapHierarchyFlatNode ): void {
 
 		if ( !node ) return;
+
+		this.clearRoadHighlight();
 
 		this.selectedNodeId = node.id;
 
@@ -109,18 +121,24 @@ export class MapHierarchyComponent implements OnInit, OnDestroy {
 
 	private selectNode ( node: MapHierarchyFlatNode ): void {
 
-		return;
+		switch ( node.type ) {
+			case MapHierarchyNodeType.Road:
+				this.highlightRoad( node.data as TvRoad );
+				return;
 
-		if ( node.type === MapHierarchyNodeType.LaneSection ) {
-			const section = node.data as TvLaneSection;
-			const parentRoad = section?.getRoad?.() ?? section?.road;
-			if ( parentRoad ) {
-				CommandHistory.execute( new SelectObjectCommand( parentRoad ) );
+			case MapHierarchyNodeType.LaneSection: {
+				this.clearRoadHighlight();
+				const section = node.data as TvLaneSection;
+				const parentRoad = section?.getRoad?.() ?? section?.road;
+				if ( parentRoad ) {
+					this.highlightRoad( parentRoad );
+				}
+				return;
 			}
-			return;
-		}
 
-		CommandHistory.execute( new SelectObjectCommand( node.data ) );
+			default:
+				this.clearRoadHighlight();
+		}
 	}
 
 	private listenToMapEvents (): void {
@@ -155,5 +173,43 @@ export class MapHierarchyComponent implements OnInit, OnDestroy {
 		this.dataSource.data = this.builder.build( this.mapService.roads );
 
 		this.changeDetector.markForCheck();
+	}
+
+	private highlightRoad ( road: TvRoad ): void {
+
+		if ( !road ) return;
+
+		if ( this.highlightedRoad && this.highlightedRoad !== road ) {
+			this.roadDebug.unHighlightRoad( this.highlightedRoad );
+		}
+
+		this.roadDebug.highlightRoad( road );
+		this.highlightedRoad = road;
+
+		const spline = road?.spline;
+
+		if ( this.highlightedSpline && this.highlightedSpline !== spline ) {
+			this.splineDebug.setDebugState( this.highlightedSpline, DebugState.DEFAULT );
+		}
+
+		if ( spline ) {
+			this.splineDebug.highlight( spline );
+			this.highlightedSpline = spline;
+		} else {
+			this.highlightedSpline = undefined;
+		}
+	}
+
+	private clearRoadHighlight (): void {
+
+		if ( this.highlightedRoad ) {
+			this.highlightedRoad = undefined;
+		}
+
+		if ( this.highlightedSpline ) {
+			this.highlightedSpline = undefined;
+		}
+
+		this.splineDebug.clear();
 	}
 }
