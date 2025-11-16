@@ -4,7 +4,6 @@
 
 import { Vector3 } from "three";
 import { ParkingCurve } from "./parking-curve";
-import { Maths } from "app/utils/maths";
 import { ParkingGraph } from "./parking-graph";
 import { ParkingCurvePoint } from "../../modules/parking-spot/objects/parking-curve-point";
 
@@ -143,7 +142,10 @@ describe( 'ParkingGraph Import/Export', () => {
 			attr_id: edge.id,
 			attr_startNodeId: edge.getStartNode().id,
 			attr_endNodeId: edge.getEndNode().id,
-			attr_markingGuid: edge.getMarkingGuid()
+			attr_markingGuid: edge.getMarkingGuid(),
+			attr_type: edge.getType(),
+			attr_markingStyle: edge.getMarkingStyle(),
+			attr_markingColor: edge.getMarkingColor()
 		} );
 
 	} );
