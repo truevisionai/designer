@@ -210,7 +210,7 @@ export class TvJunction {
 
 		}
 
-		// links = GeometryUtils.sortRoadLinks( links );
+		links = GeometryUtils.sortRoadLinks( links );
 
 		return links;
 	}
