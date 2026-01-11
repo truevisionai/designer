@@ -824,6 +824,47 @@ export class TvRoad {
 
 	}
 
+	matches ( otherRoad: TvRoad ): boolean {
+
+		if ( this.isJunction || otherRoad.isJunction ) return false;
+
+		if ( !this.areRoadTypesMatching( otherRoad ) ) return false;
+
+		if ( !this.getLaneProfile().areOffsetsMatching( otherRoad.getLaneProfile() ) ) return false;
+
+		if ( this.getLaneProfile().getLaneSectionCount() !== otherRoad.getLaneProfile().getLaneSectionCount() ) return false;
+
+		const lastSectionA = this.getLaneProfile().getLastLaneSection();
+		const firstSectionB = otherRoad.getLaneProfile().getFirstLaneSection();
+
+		if ( !lastSectionA || !firstSectionB ) return false;
+
+		const offsetA = this.length - lastSectionA.s;
+
+		if ( !lastSectionA.isContinuousWith( firstSectionB, offsetA, 0 ) ) return false;
+
+		const end = this.getEndPosTheta();
+		const start = otherRoad.getStartPosTheta();
+
+		if ( end.distanceTo( start.position ) > 0.05 ) return false;
+
+		if ( !Maths.approxEquals( end.hdg, start.hdg, 1e-2 ) ) return false;
+
+		return true;
+
+	}
+
+	private areRoadTypesMatching ( otherRoad: TvRoad ): boolean {
+
+		if ( this.type !== otherRoad.type ) return false;
+
+		for ( let i = 0; i < this.type.length; i++ ) {
+			if ( !this.type[ i ].matches( otherRoad.type[ i ] ) ) return false;
+		}
+
+		return true;
+	}
+
 	static ruleToString ( rule: TrafficRule ): string {
 
 		return rule === TrafficRule.LHT ? 'LHT' : 'RHT';

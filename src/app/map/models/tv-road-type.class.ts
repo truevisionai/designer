@@ -71,6 +71,12 @@ export class TvRoadTypeClass {
 
 	}
 
+	matches ( other: TvRoadTypeClass ): boolean {
+		return this.type === other.type &&
+			this.speed.max === other.speed.max &&
+			this.speed.unit === other.speed.unit;
+	}
+
 	clone (): TvRoadTypeClass {
 		return new TvRoadTypeClass( this.s, this.type, this.speed.max, this.speed.unit );
 	}

@@ -155,6 +155,11 @@ export class Maths {
 
 	}
 
+	public static getRightNormalVector ( hdg: number ): Vector2 {
+		return new Vector2( Math.cos( hdg - Maths.PI2 ), Math.sin( hdg - Maths.PI2 ) ).normalize();
+	}
+
+
 	public static directionV2 ( start: Vector3, end: Vector3, point: Vector3 ): TvSide {
 
 		// Calculate the vector from the start point of the line to the point in question

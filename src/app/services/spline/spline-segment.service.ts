@@ -213,4 +213,108 @@ export class SplineSegmentService {
 
 	}
 
+	/**
+	 * Attempts to merge the first pair of adjacent road segments in the spline when they are
+	 * geometrically continuous and have matching lane/topology metadata.
+	 * Returns true if a merge was performed.
+	 */
+	mergeAdjacentRoadSegmentsIfCompatible ( spline: AbstractSpline ): boolean {
+
+		for ( const segment of spline.getSegments() ) {
+
+			if ( !( segment instanceof TvRoad ) ) continue;
+
+			const next = spline.getNextSegment( segment );
+
+			if ( !( next instanceof TvRoad ) ) continue;
+
+			if ( !segment.matches( next ) ) continue;
+
+			this.mergeRoadSegments( spline, segment, next );
+
+			return true;
+		}
+
+		return false;
+	}
+
+
+	// eslint-disable-next-line max-lines-per-function
+	private mergeRoadSegments ( spline: AbstractSpline, roadA: TvRoad, roadB: TvRoad ): void {
+
+		const offset = roadA.length;
+
+		roadB.getPlanView().geometries.forEach( geometry => {
+			const clone = geometry.clone();
+			clone.s += offset;
+			roadA.getPlanView().addGeometry( clone );
+		} );
+
+		roadB.getLaneProfile().getLaneOffsets().forEach( laneOffset => {
+			const clone = laneOffset.clone( laneOffset.s + offset );
+			roadA.getLaneProfile().addLaneOffset( clone );
+		} );
+
+		roadB.getLaneProfile().getLaneSections().forEach( section => {
+			const clone = section.cloneAtS( section.id, section.s + offset, undefined, roadA );
+			roadA.getLaneProfile().addLaneSection( clone );
+		} );
+
+		roadA.computeLaneSectionCoordinates();
+		roadA.getLaneProfile().updateLaneOffsetValues( roadA.length );
+
+		roadB.getRoadObjects().forEach( obj => {
+			const clone = obj.clone();
+			clone.s = obj.s + offset;
+			roadA.addRoadObject( clone );
+		} );
+
+		roadB.getRoadSignals().forEach( signal => {
+			roadA.addRoadSignal(
+				signal.s + offset,
+				signal.t,
+				signal.id,
+				signal.name,
+				signal.dynamic,
+				signal.orientation,
+				signal.zOffset,
+				signal.country,
+				signal.type,
+				signal.subtype,
+				signal.value,
+				signal.unit,
+				signal.height,
+				signal.width,
+				signal.text,
+				signal.hOffset,
+				signal.pitch,
+				signal.roll
+			);
+		} );
+
+		if ( roadB.successor ) {
+			roadA.setSuccessor( roadB.successor.clone() );
+		} else {
+			roadA.removeSuccessor();
+		}
+
+		if ( roadA.successor?.isRoad ) {
+			const successorRoad = roadA.successor.element as TvRoad;
+			successorRoad.setPredecessor( LinkFactory.createRoadLink( roadA, roadA.successor.contactPoint ) );
+		}
+
+		spline.removeSegment( roadB );
+
+		if ( this.mapService.hasRoad( roadB ) ) {
+			this.mapService.removeRoad( roadB );
+		} else {
+			Log.warn( "Road already removed", roadB.toString() );
+		}
+
+		MapEvents.removeMesh.emit( roadB );
+
+		SplineUtils.updateInternalLinks( spline );
+
+		spline.updateSegmentGeometryAndBounds();
+	}
 }

@@ -62,6 +62,34 @@ export class TvLaneProfile {
 		return this.laneOffsets.toArray();
 	}
 
+	areOffsetsMatching ( otherProfile: TvLaneProfile ): boolean {
+
+		const offsetsA = this.getLaneOffsets();
+		const offsetsB = otherProfile.getLaneOffsets();
+
+		if ( offsetsA.length !== offsetsB.length ) return false;
+
+		for ( let i = 0; i < offsetsA.length; i++ ) {
+
+			if ( !offsetsA[ i ].isEquivalent( offsetsB[ i ] ) ) return false;
+
+		}
+
+		return true;
+	}
+
+	isContinuousWith ( otherProfile: TvLaneProfile, offsetA: number = 0 ): boolean {
+
+		if ( this.getLaneSectionCount() !== otherProfile.getLaneSectionCount() ) return false;
+
+		const lastSectionA = this.getLastLaneSection();
+		const firstSectionB = otherProfile.getFirstLaneSection();
+
+		if ( !lastSectionA || !firstSectionB ) return false;
+
+		return lastSectionA.isContinuousWith( firstSectionB, offsetA, 0 );
+	}
+
 	getLaneSectionById ( id: number ): TvLaneSection {
 		return this.laneSections.find( laneSection => laneSection.id === id );
 	}

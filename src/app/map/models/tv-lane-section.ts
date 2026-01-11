@@ -472,6 +472,19 @@ export class TvLaneSection {
 
 	}
 
+	isContinuousWith ( otherLaneSection: TvLaneSection, sOffset: number = 0, otherSOffset: number = 0 ): boolean {
+
+		if ( !this.isMatching( otherLaneSection ) ) return false;
+
+		if ( !this.isWidthMatching( otherLaneSection, sOffset, otherSOffset ) ) return false;
+
+		if ( !this.isHeightMatching( otherLaneSection, sOffset, otherSOffset ) ) return false;
+
+		if ( !this.isMarkingMatching( otherLaneSection, sOffset, otherSOffset ) ) return false;
+
+		return true;
+	}
+
 	isHeightMatching ( laneSection: TvLaneSection, sOffset: number = 0, otherSOffset: number = 0 ): boolean {
 
 		if ( this.lanes.size !== laneSection.lanes.size ) return false;
@@ -1085,4 +1098,3 @@ export class TvLaneSection {
 		}
 	}
 }
-
